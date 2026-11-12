@@ -154,12 +154,13 @@ i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *pa
 f32 IndyGrappleHeightTolerancePc = 0.1f;
 i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    GRAPPLE_DYNAMIC_PC *grapple = owner->indy_connection_helper->target;
     f32 difference;
-    if (owner->character_context != LEGOCONTEXT_GRAPPLE || owner->grapple != owner->indy_connection_helper->target) {
+    if (owner->character_context != LEGOCONTEXT_GRAPPLE || owner->grapple != grapple) {
         ClearSpecialMove(owner);
         return 0;
     }
-    GameObjectSetCanUse(owner, owner->indy_connection_helper->target, 1, 0x32, 0.0f);
+    GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
     owner->ai_packet.movement_destination = owner->position;
     owner->ai_packet.movement_stopping_distance = 0;
     if (owner->ai_packet.fallback_path_info.connection == owner->ai_packet.path_info.connection) {
@@ -183,7 +184,8 @@ i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *pa
         owner->indy_connection_helper->jump_off_dy + owner->ai_packet.special_move_node->position.y - owner->position.y;
     if (difference > IndyGrappleHeightTolerancePc) {
         owner->indy_guideline_state.movement_direction = 1;
-        if (owner->context_hover_target_y > 0.0f)
+        // MATCH-EXCEPTION: negated <= keeps retail's unordered-compare branch (test ah,1).
+        if (!(owner->context_hover_target_y <= 0.0f))
             return 1;
     } else if (difference < -IndyGrappleHeightTolerancePc) {
         owner->indy_guideline_state.movement_direction = 2;
@@ -199,6 +201,7 @@ f32 IndyGrappleReleaseRadiusPc = 1.0f;
 i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
     GRAPPLE_DYNAMIC_PC *grapple = owner->indy_connection_helper->target;
+    f32 distance;
     GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
     owner->ai_packet.movement_stopping_distance = 0;
@@ -211,10 +214,15 @@ i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *pack
         ClearSpecialMove(owner);
         return 0;
     }
-    if (grapple->field_4c == 0.0f || NuVecXZDistSqr(&owner->ai_packet.special_move_node->position, &owner->position,
-                                                    NULL) < IndyGrappleReleaseRadiusPc * IndyGrappleReleaseRadiusPc) {
+    if (grapple->field_4c == 0.0f) {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+    } else {
+        distance = NuVecXZDistSqr(&owner->ai_packet.special_move_node->position, &owner->position, NULL);
+        if (distance < IndyGrappleReleaseRadiusPc * IndyGrappleReleaseRadiusPc) {
+            owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        }
     }
     return 1;
 }
@@ -461,7 +469,7 @@ i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32
     if (TryToTeleportToNextNode(owner, destination, 0))
         return 1;
     if (owner->indy_connection_helper != NULL) {
-        if (owner->indy_connection_helper->connection != owner->ai_packet.path_info.connection ||
+        if (owner->ai_packet.path_info.connection != owner->indy_connection_helper->connection ||
             (owner->indy_connection_helper->direction != 0xff &&
              owner->ai_packet.path_info.direction != owner->indy_connection_helper->direction) ||
             owner->indy_connection_helper->type != 1 ||
