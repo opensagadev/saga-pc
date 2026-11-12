@@ -161,19 +161,19 @@ i32 __cdecl ReadPad(i32 port) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 mode;
     f32 axis_x, axis_y;
-    u32 directions;
     if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn() != 0) {
         mode = 1;
     } else if (readpads_always != 0 || world == NULL || world->current_level == NULL ||
                world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA ||
                (world->current_level->flags & 0x400) != 0) {
         mode = 2;
-    } else if (port >= PLAYERCOUNT || Player[port] == NULL) {
-        mode = 1;
-    } else if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) != 0) {
-        mode = 2;
     } else {
-        mode = 3;
+        mode = 1;
+        if (port < PLAYERCOUNT && Player[port] != NULL) {
+            mode = 2;
+            if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) == 0)
+                mode = 3;
+        }
     }
     gamepad->left_held = 0;
     gamepad->left_pressed = 0;
@@ -181,42 +181,44 @@ i32 __cdecl ReadPad(i32 port) {
     gamepad->right_pressed = 0;
     gamepad->held = 0;
     gamepad->pressed = 0;
-    if (pad == NULL || GamePadReadBackendPc(pad, 0) == 0)
-        return mode == 1 ? 1 : 0;
+    if (pad == NULL || GamePadReadBackendPc(pad, 0) == 0) {
+        if (mode != 1)
+            mode = 0;
+        return mode;
+    }
     if (mode == 1)
-        return 1;
+        return mode;
     if (mode == 3) {
         gamepad->pressed |= pad->digital_buttons_pressed & GAMEPAD_START;
-        return 3;
+        return mode;
     }
-    axis_x = (f32)pad->analog_left_x - 127.5f;
-    axis_y = (f32)pad->analog_left_y - 127.5f;
-    directions = 0;
+
+    gamepad->left_held = 0;
+    axis_x = pad->analog_left_x - 127.5;
     if (axis_x < -85.0f)
-        directions = GAMEPAD_DLEFT;
+        gamepad->left_held = GAMEPAD_DLEFT;
     else if (axis_x > 85.0f)
-        directions = GAMEPAD_DRIGHT;
+        gamepad->left_held = GAMEPAD_DRIGHT;
+    axis_y = pad->analog_left_y - 127.5;
     if (axis_y < -85.0f)
-        directions |= GAMEPAD_DUP;
+        gamepad->left_held |= GAMEPAD_DUP;
     else if (axis_y > 85.0f)
-        directions |= GAMEPAD_DDOWN;
-    gamepad->left_held = directions;
-    gamepad->left_pressed = directions & ~gamepad->left_previous;
-    gamepad->left_previous = directions;
-    axis_x = (f32)pad->analog_right_x - 127.5f;
-    axis_y = (f32)pad->analog_right_y - 127.5f;
-    directions = 0;
+        gamepad->left_held |= GAMEPAD_DDOWN;
+    gamepad->left_pressed = (gamepad->left_previous ^ gamepad->left_held) & gamepad->left_held;
+    gamepad->left_previous = gamepad->left_held;
+    gamepad->right_held = 0;
+    axis_x = pad->analog_right_x - 127.5;
     if (axis_x < -85.0f)
-        directions = GAMEPAD_DLEFT;
+        gamepad->right_held = GAMEPAD_DLEFT;
     else if (axis_x > 85.0f)
-        directions = GAMEPAD_DRIGHT;
+        gamepad->right_held = GAMEPAD_DRIGHT;
+    axis_y = pad->analog_right_y - 127.5;
     if (axis_y < -85.0f)
-        directions |= GAMEPAD_DUP;
+        gamepad->right_held |= GAMEPAD_DUP;
     else if (axis_y > 85.0f)
-        directions |= GAMEPAD_DDOWN;
-    gamepad->right_held = directions;
-    gamepad->right_pressed = directions & ~gamepad->right_previous;
-    gamepad->right_previous = directions;
+        gamepad->right_held |= GAMEPAD_DDOWN;
+    gamepad->right_pressed = (gamepad->right_previous ^ gamepad->right_held) & gamepad->right_held;
+    gamepad->right_previous = gamepad->right_held;
     gamepad->input_ready = 1;
     gamepad->held = pad->digital_buttons;
     gamepad->pressed = pad->digital_buttons_pressed;
