@@ -712,69 +712,70 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
 i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
 void __cdecl APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *,
                                  i32(__cdecl *)(APIOBJECT_PC *, APIOBJECT_PC *));
-static i32 Collide2Objects(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
-    GAMEOBJECT *first = (GAMEOBJECT *)first_input;
-    GAMEOBJECT *second = (GAMEOBJECT *)second_input;
+typedef struct collision_masks_view_pc_s {
+    u8 unknown_0000[0x1e8];
+    u64 collision_identity_mask;
+    u64 collision_contact_mask;
+} COLLISION_MASKS_VIEW_PC;
+STATIC_ASSERT(offsetof(COLLISION_MASKS_VIEW_PC, collision_identity_mask) == 0x1e8);
+STATIC_ASSERT(offsetof(COLLISION_MASKS_VIEW_PC, collision_contact_mask) == 0x1f0);
+static i32 Collide2Objects(APIOBJECT_PC *first, APIOBJECT_PC *second) {
     f32 first_vertical_velocity = first->velocity.y;
     f32 second_vertical_velocity = second->velocity.y;
-    GAMEOBJECT *first_object = ((APIOBJECT_PC *)first)->owner;
-    GAMEOBJECT *second_object = ((APIOBJECT_PC *)second)->owner;
+    GAMEOBJECT *first_object = (GAMEOBJECT *)first->owner;
+    GAMEOBJECT *second_object = (GAMEOBJECT *)second->owner;
     f32 maximum_velocity, velocity_squared, maximum_squared, scale;
     i32 collision_result = ForcePushed_SuperPush_Occurring(first_object, second_object);
     if (collision_result != 0) {
-        collision_result = ((second_object->collision_identity_mask[0] & first_object->collision_contact_mask[0]) |
-                                (second_object->collision_identity_mask[1] & first_object->collision_contact_mask[1]) ||
-                            (first_object->collision_identity_mask[0] & second_object->collision_contact_mask[0]) |
-                                (first_object->collision_identity_mask[1] & second_object->collision_contact_mask[1]))
+        collision_result = ((COLLISION_MASKS_VIEW_PC *)second_object)->collision_identity_mask &
+                                       ((COLLISION_MASKS_VIEW_PC *)first_object)->collision_contact_mask ||
+                                   ((COLLISION_MASKS_VIEW_PC *)second_object)->collision_contact_mask &
+                                       ((COLLISION_MASKS_VIEW_PC *)first_object)->collision_identity_mask
                                ? 1
                                : 2;
-        first->collision_contact_mask[0] |= second->collision_identity_mask[0];
-        first->collision_contact_mask[1] |= second->collision_identity_mask[1];
-        second->collision_contact_mask[0] |= first->collision_identity_mask[0];
-        second->collision_contact_mask[1] |= first->collision_identity_mask[1];
-    } else {
-        if (WORLD->current_level == DOGFIGHTA_LDATA)
-            collision_result = APIObjectCollision(first_input, second_input);
-        else
-            collision_result = APIObjectCollision2D(first_input, second_input);
-        if (collision_result == 2 && VehicleArea == 0) {
-            if ((first_object->character_data->game_character->flags_090 & 0x1000) &&
-                (f64)first->horizontal_velocity_magnitude >
-                    (f64)first_object->character_data->game_character->run_speed * .5)
-                StartFlatten(first_object, second_object);
-            else if ((second_object->character_data->game_character->flags_090 & 0x1000) &&
-                     (f64)second->horizontal_velocity_magnitude >
-                         (f64)second_object->character_data->game_character->run_speed * .5)
-                StartFlatten(second_object, first_object);
-            else if (second_vertical_velocity < 0 && (first_object->character_data->game_character->flags_090 & 0x40) &&
-                     first_object->level_object_index == -1)
-                first->velocity.y = (f32)((f64)first->velocity.y + (f64)second_vertical_velocity * .5);
-            else if (first_vertical_velocity < 0 && (second_object->character_data->game_character->flags_090 & 0x40) &&
-                     second_object->level_object_index == -1)
-                second->velocity.y = (f32)((f64)second->velocity.y + (f64)first_vertical_velocity * .5);
-        }
-        maximum_velocity = (f32)((f64)first->character_data->game_character->run_speed * 1.25);
-        if (maximum_velocity < 1)
-            maximum_velocity = 1;
-        velocity_squared =
-            (f32)((f64)first->velocity.x * first->velocity.x + (f64)first->velocity.z * first->velocity.z);
-        maximum_squared = (f32)((f64)maximum_velocity * maximum_velocity);
-        if (velocity_squared > maximum_squared) {
-            scale = maximum_velocity / NuFsqrt(velocity_squared);
-            first->velocity.x *= scale;
-            first->velocity.z *= scale;
-        }
-        maximum_velocity = (f32)((f64)second->character_data->game_character->run_speed * 1.25);
-        if (maximum_velocity < 1)
-            maximum_velocity = 1;
-        velocity_squared =
-            (f32)((f64)second->velocity.x * second->velocity.x + (f64)second->velocity.z * second->velocity.z);
-        maximum_squared = (f32)((f64)maximum_velocity * maximum_velocity);
-        if (velocity_squared > maximum_squared) {
-            scale = maximum_velocity / NuFsqrt(velocity_squared);
-            second->velocity.x *= scale;
-            second->velocity.z *= scale;
-        }
+        ((COLLISION_MASKS_VIEW_PC *)first)->collision_contact_mask |=
+            ((COLLISION_MASKS_VIEW_PC *)second)->collision_identity_mask;
+        ((COLLISION_MASKS_VIEW_PC *)second)->collision_contact_mask |=
+            ((COLLISION_MASKS_VIEW_PC *)first)->collision_identity_mask;
+        return collision_result;
+    }
+    if (WORLD->current_level == DOGFIGHTA_LDATA)
+        collision_result = APIObjectCollision(first, second);
+    else
+        collision_result = APIObjectCollision2D(first, second);
+    if (collision_result == 2 && VehicleArea == 0) {
+        if ((first_object->character_data->game_character->flags_090 & 0x1000) &&
+            first->horizontal_velocity_magnitude > first_object->character_data->game_character->run_speed * 0.5)
+            StartFlatten(first_object, second_object);
+        else if ((second_object->character_data->game_character->flags_090 & 0x1000) &&
+                 second->horizontal_velocity_magnitude > second_object->character_data->game_character->run_speed * 0.5)
+            StartFlatten(second_object, first_object);
+        else if (second_vertical_velocity < 0.0f && (first_object->character_data->game_character->flags_090 & 0x40) &&
+                 first_object->level_object_index == -1)
+            first->velocity.y += second_vertical_velocity * 0.5;
+        else if (first_vertical_velocity < 0.0f && (second_object->character_data->game_character->flags_090 & 0x40) &&
+                 second_object->level_object_index == -1)
+            second->velocity.y += first_vertical_velocity * 0.5;
+    }
+    maximum_velocity = first->character_data->game_character->run_speed * 1.25;
+    if (maximum_velocity < 1.0f)
+        maximum_velocity = 1.0f;
+    velocity_squared = first->velocity.x * first->velocity.x + first->velocity.z * first->velocity.z;
+    maximum_squared = maximum_velocity * maximum_velocity;
+    if (velocity_squared > maximum_squared) {
+        scale = maximum_velocity / NuFsqrt(velocity_squared);
+        first->velocity.x *= scale;
+        first->velocity.z *= scale;
+    }
+    maximum_velocity = second->character_data->game_character->run_speed * 1.25;
+    if (maximum_velocity < 1.0f)
+        maximum_velocity = 1.0f;
+    velocity_squared = second->velocity.x * second->velocity.x + second->velocity.z * second->velocity.z;
+    maximum_squared = maximum_velocity * maximum_velocity;
+    if (velocity_squared > maximum_squared) {
+        scale = maximum_velocity / NuFsqrt(velocity_squared);
+        second->velocity.x *= scale;
+        second->velocity.z *= scale;
     }
     return collision_result;
 }
