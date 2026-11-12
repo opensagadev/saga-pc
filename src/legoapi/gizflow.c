@@ -918,19 +918,14 @@ static void GizFlowConfigConditionTypePc(NUFPAR_PC *parser) {
     i32 index;
     GIZFLOW_CONDITION_TYPE_PC *type;
 
-    NuFParGetWord(parser);
     index = 0;
-    type = gizflow_condition_types_pc;
-    while (load_conditiontype == -1) {
+    NuFParGetWord(parser);
+    for (type = gizflow_condition_types_pc; type->type != -1 && load_conditiontype == -1; ++index, ++type) {
         if (NuStrICmp(type->name, parser->word_buffer_ptr) == 0) {
             load_conditiontype = index;
             if (type->load != NULL)
                 type->load(parser);
         }
-        ++index;
-        ++type;
-        if (type->type == -1)
-            break;
     }
 }
 
