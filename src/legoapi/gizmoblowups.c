@@ -658,7 +658,11 @@ i32 __cdecl GizmoBlowupGetTypeFromNameTableId(WORLDINFO *world, i32 id) {
 
 GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     i32 i;
-    if (world && world->gizmo_blowup_types && world->gizmo_blowup_type_count && name) {
+    if (world == NULL)
+        return NULL;
+    if (world->gizmo_blowup_types == NULL || world->gizmo_blowup_type_count == 0)
+        return NULL;
+    if (name) {
         for (i = 0; i < world->gizmo_blowup_type_count; ++i)
             if (!NuStrCmp(world->gizmo_blowup_types[i].name, name))
                 return &world->gizmo_blowup_types[i];
