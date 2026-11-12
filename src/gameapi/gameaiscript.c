@@ -6204,21 +6204,22 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     union {
         f32 value;
         u32 bits;
-    } absolute;
+    } magnitude, absolute;
 
     GAMEOBJECT *object;
     i32 i;
     char *value;
-    f32 speed = 1000000000.0f;
-    f32 minimum = 0.0f;
-    f32 maximum = 1000000000.0f;
     f32 multiplier = 1.0f;
+    f32 maximum = 1000000000.0f;
+    f32 speed;
     i32 multiply = 0;
+    f32 minimum = 0.0f;
 
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = ((APIOBJECT_PC *)packet->owner)->owner;
     if (first_time) {
+        speed = 1000000000.0f;
         if (num_params != 0) {
             for (i = 0; i < num_params; i++) {
                 value = NuStrIStr(params[i], (char *)AIControlMultiplyName);
@@ -6242,11 +6243,11 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
                     speed = AIParamToFloat(processor, params[i]);
             }
         }
-        absolute.value = minimum;
-        absolute.bits &= 0x7fffffffu;
+        magnitude.value = minimum;
+        absolute.bits = magnitude.bits & 0x7fffffff;
         minimum = absolute.value;
-        absolute.value = maximum;
-        absolute.bits &= 0x7fffffffu;
+        magnitude.value = maximum;
+        absolute.bits = magnitude.bits & 0x7fffffff;
         maximum = absolute.value;
         if (processor->action_data_4 == 0.0f) {
             if (multiply) {
@@ -6289,8 +6290,8 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     if (processor->action_data_4 > 0.0f && object->run_speed_override < MoveSplineRunSpeedSentinel) {
         object->run_speed_override =
             SeekValF(object->run_speed_override, processor->action_data_5, processor->action_data_4);
-        absolute.value = object->run_speed_override - processor->action_data_5;
-        absolute.bits &= 0x7fffffffu;
+        magnitude.value = object->run_speed_override - processor->action_data_5;
+        absolute.bits = magnitude.bits & 0x7fffffff;
         if (absolute.value < 0.01f)
             object->run_speed_override = processor->action_data_5;
         else
