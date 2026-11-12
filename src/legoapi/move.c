@@ -9234,9 +9234,9 @@ STATIC_ASSERT(offsetof(WEIRDO_BATARANG_READER_PC, batarang) == 0xcc0);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
 
 void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
-    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
