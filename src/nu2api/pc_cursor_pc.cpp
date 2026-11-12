@@ -235,28 +235,22 @@ extern "C" u8 PcCursorImagePc[0x1080] = {
 #pragma data_seg()
 
 extern "C" void __cdecl PcCreateCursorMaterialPc(void) {
-    NUMTL *material;
     if (PcCursorTextureIdPc == -1) {
         NUTEXDIM_PC *texture = static_cast<NUTEXDIM_PC *>(NuAlloc(sizeof(NUTEXDIM_PC), ".\\windows.cpp", 0x642));
-        texture->width = 0;
-        texture->height = 0;
-        memset(texture->checksum, 0, sizeof(texture->checksum));
-        texture->ref_count = 0;
-        texture->resource = NULL;
+        memset(texture, 0, sizeof(*texture));
         texture->image_data = PcCursorImagePc;
         texture->image_size = sizeof(PcCursorImagePc);
         PcCursorTextureIdPc = NuTexCreateNative(texture);
     }
-    material = NuMtlCreate(1);
-    PcCursorMaterialPc = material;
-    material->diffuse_r = 1.0f;
-    material->diffuse_g = 1.0f;
-    material->diffuse_b = 1.0f;
-    material->attribs.cull_mode = 2;
-    material->attribs.z_mode = 3;
-    material->opacity = 1.0f;
-    material->attribs.alpha_mode = 1;
-    material->attribs.unknown_2_4 = 1;
-    material->texture_id = (i16)PcCursorTextureIdPc;
-    NuMtlUpdate(material);
+    PcCursorMaterialPc = NuMtlCreate(1);
+    PcCursorMaterialPc->diffuse_r = 1.0f;
+    PcCursorMaterialPc->diffuse_g = 1.0f;
+    PcCursorMaterialPc->diffuse_b = 1.0f;
+    PcCursorMaterialPc->attribs.cull_mode = 2;
+    PcCursorMaterialPc->attribs.z_mode = 3;
+    PcCursorMaterialPc->opacity = 1.0f;
+    PcCursorMaterialPc->attribs.alpha_mode = 1;
+    PcCursorMaterialPc->attribs.unknown_2_4 = 1;
+    PcCursorMaterialPc->texture_id = (i16)PcCursorTextureIdPc;
+    NuMtlUpdate(PcCursorMaterialPc);
 }
