@@ -260,11 +260,18 @@ void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
 void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
     char temporary[200];
     VirtualStackAllocator memory(temporary, sizeof(temporary));
-    i32 state = 0, type = 0, count = -1, vertex = -1, pixel = -1, depth = 0, semantic = 1;
-    u32 flags = 1;
+    i32 count = -1;
+    i32 pixel = -1;
+    char *custom = NULL;
+    i32 vertex = -1;
+    char *name = NULL;
+    i32 state = 0;
+    i32 type = 0;
     u8 shared = 0;
-    char *name = NULL, *custom = NULL;
+    u32 flags = 1;
+    i32 depth = 0;
     ShaderLexicalSlicePc token = {NULL, 0};
+    i32 semantic = 1;
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
     while (state != 26 && reader->Next(input, cursor, &token)) {
         switch (state) {
@@ -353,8 +360,8 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     flags = 0x3020;
                     state = 10;
                 } else if (token.Equals("shared")) {
-                    shared = 1;
                     state = 9;
+                    shared = 1;
                 } else
                     state = 26;
                 break;
@@ -367,7 +374,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 10:
                 if (token.Equals(",")) {
-                    flags = 0x3020 | (shared ? 0x4000 : 0);
+                    flags |= shared ? 0x4000 : 0;
                     state = 13;
                 } else {
                     if (token.StartsWith("vreg"))
