@@ -2494,15 +2494,8 @@ void __cdecl rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s
 /* Native 0x00639130..0x0063914b: three unused cdecl UI callback arguments. */
 extern RTL_LIGHT_PC clipboard_light;
 void __cdecl cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *source = curr_rtl;
-    u32 word;
-    i32 index;
-    if (source != NULL) {
-        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-            memcpy(&word, (u8 *)source + index * sizeof(u32), sizeof(word));
-            memcpy((u8 *)&clipboard_light + index * sizeof(u32), &word, sizeof(word));
-        }
-    }
+    if (curr_rtl != NULL)
+        clipboard_light = *curr_rtl;
 }
 
 /* Fragment for the natural rtl.c owner; real data definitions are owned by CPP.
@@ -2536,19 +2529,11 @@ void __cdecl cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 }
 
 void __cdecl cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    RTL_FOG_MIGRATION_PC *source;
-    u32 word;
-    u32 index;
     (void)menu;
     (void)item;
     (void)value;
-    source = curr_fog;
-    if (source != NULL) {
-        for (index = 0; index < sizeof(clipboard_fog) / sizeof(word); ++index) {
-            memcpy(&word, (u8 *)source + index * sizeof(word), sizeof(word));
-            memcpy((u8 *)&clipboard_fog + index * sizeof(word), &word, sizeof(word));
-        }
-    }
+    if (curr_fog != NULL)
+        clipboard_fog = *curr_fog;
 }
 
 STATIC_ASSERT(offsetof(struct edui_slider_s, value) == 0x54);
@@ -2850,13 +2835,7 @@ void __cdecl cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void __cdecl cbLightProperties(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *source = curr_rtl;
-    u32 word;
-    i32 index;
-    for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-        memcpy(&word, (u8 *)source + index * sizeof(u32), sizeof(word));
-        memcpy((u8 *)&menu_undo + index * sizeof(u32), &word, sizeof(word));
-    }
+    menu_undo = *curr_rtl;
     cbTriggerSubMenu(menu, item, buttons);
 }
 
