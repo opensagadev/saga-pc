@@ -429,14 +429,14 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         } else {
             timer = timers->target_timer - 2.0f * FRAMETIME;
             timers->target_timer = timer;
-            if (0.0f > timer)
+            if (timer < 0.0f)
                 timers->target_timer = 0.0f;
         }
     } else if ((TORPEDO_PACKET_PC(object)->flags & 6) == 0) {
         if (timers->target_timer > 0.0f) {
             timer = timers->target_timer - 2.0f * FRAMETIME;
             timers->target_timer = timer;
-            if (0.0f > timer)
+            if (timer < 0.0f)
                 timers->target_timer = 0.0f;
         } else
             TORPEDO_PACKET_PC(object)->target = NULL;
