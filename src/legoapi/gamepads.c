@@ -250,6 +250,6 @@ i32 __cdecl GamePads_SkipMovie(void) {
         skipped = 1;
     PCPresentationPlatformLeafPc();
     if (NuKeyboard_db(0x1c) != 0 || NuKeyboard_db(0x39) != 0 || 0 != NuKeyboard_db(1))
-        return 1;
+        skipped = 1;
     return skipped;
 }
