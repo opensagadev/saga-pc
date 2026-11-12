@@ -132,13 +132,9 @@ extern "C" char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) 
         }
         if (custom != -1) {
             NuStrCpy(buffer, Game.customiser_start[custom].name);
-            i32 i = 14;
-            while (buffer[i] == ' ') {
-                --i;
-                buffer[i + 1] = 0;
-                if (i < 0)
-                    break;
-            }
+            i32 i;
+            for (i = 14; i >= 0 && buffer[i] == ' '; --i)
+                buffer[i] = 0;
             if (i < 0)
                 NuStrCpy(buffer, "?");
             return buffer;
