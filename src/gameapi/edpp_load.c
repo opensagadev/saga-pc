@@ -824,13 +824,14 @@ void __cdecl edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 butto
 }
 
 void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    eduimenu_s *parent;
+    eduimenu_s *parent = NULL;
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         DebrisReScale(debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index, edpp_scale_factor);
     }
-    parent = menu->parent;
-    if (parent != NULL)
+    if (menu->parent != NULL) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
+    }
     if (menu->callback != NULL)
         menu->callback(menu, parent);
 }
