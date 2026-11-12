@@ -874,7 +874,7 @@ void __cdecl DeathStar2BattleD_Update(WORLDINFO *world) {
     i32 angle, i;
     u8 *flags = (u8 *)LevFlag;
     (void)world;
-    if (flags[0] != 0 && qrand() < 0x800)
+    if (flags[0] > 0 && qrand() < 0x800)
         NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259021893143654f), 0.0f, 0, 0);
     shield_gizmo = LevGizmo[7];
     if (shield_gizmo != NULL) {
