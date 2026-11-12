@@ -1327,11 +1327,14 @@ static __declspec(noinline) void CutSceneCreateContentsPc(VARIPTR *buffer, char 
             instance->center.x = (f32)((instance->scene->bounds->min.x + instance->scene->bounds->max.x) * 0.5);
             instance->center.y = (f32)((instance->scene->bounds->min.y + instance->scene->bounds->max.y) * 0.5);
             instance->center.z = (f32)((instance->scene->bounds->min.z + instance->scene->bounds->max.z) * 0.5);
-        } else
-            instance->center.x = instance->center.y = instance->center.z = 0.0f;
+        } else {
+            instance->center.x = 0.0f;
+            instance->center.y = 0.0f;
+            instance->center.z = 0.0f;
+        }
         instance->rate = 1.0f;
         if (end != NULL && buffer->addr > end->addr)
-            CutSceneLoadDiagnosticPc(buffer);
+            ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
     }
 }
 
