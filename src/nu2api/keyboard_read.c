@@ -161,8 +161,11 @@ i32 cbInteractMenuScrollDown(edui_interact_s *interact) {
 
 i32 cbInteractMenuCancelChild(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
-    if (menu && menu->child && menu->child->callback)
-        menu->child->callback(menu->child, menu);
+    if (menu != NULL) {
+        eduimenu_s *child = menu->child;
+        if (child != NULL && child->callback != NULL)
+            child->callback(child, menu);
+    }
     return 0;
 }
 
