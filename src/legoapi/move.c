@@ -4464,7 +4464,7 @@ i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 
     if (BonusWinner != -1)
         return 0;
     data = object->character_data->game_character;
-    if (weapon_mode != 0 && (object->flags_e20 & 0x10000) == 0) {
+    if (weapon_mode != 0 && (object->field_e22 & 1) == 0) {
         if (weapon_mode == 2) {
             SetWeaponOut(object);
         } else {
@@ -4642,8 +4642,8 @@ finish:
 
 weapon_in:
     if (weapon_mode == 0 || ((object->pad->runtime_flags & 4) == 0 && special_pressed == 0) ||
-        (object->flags_e20 & 0x10000) == 0 || object->field_e33 != 0 || context == 6 || context == 7 ||
-        context == 0x47 || context == 0x46 || context == 0x0b || context == 0x2e ||
+        (object->field_e22 & 1) == 0 || object->field_e33 != 0 || context == 6 || context == 7 || context == 0x47 ||
+        context == 0x46 || context == 0x0b || context == 0x2e ||
         (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
         context == 8 || context == 0x1b || context == 0x1d)
         return 0;
