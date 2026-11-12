@@ -10692,16 +10692,17 @@ static void __cdecl AiEditorDeleteAntinodeAnswerPc(eduimenu_s *menu, eduiitem_s 
 
 eduimenu_s *__cdecl antinodeEditor_DeleteAntinodeMenu(void) {
     eduimenu_s *menu;
-    if (aieditor->selected_antinode == NULL || aieditor->selected_antinode != aieditor->nearest_antinode)
-        return NULL;
-    menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancelPc, "Delete Antinode??");
-    if (menu != NULL) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
-                                                (char *)MenuPcString75f2c0));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorDeleteAntinodeAnswerPc,
-                                                (char *)MenuPcString75f2c4));
+    if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancelPc, "Delete Antinode??");
+        if (menu != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    AiEditorDeleteAntinodeAnswerPc, (char *)MenuPcString75f2c0));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    AiEditorDeleteAntinodeAnswerPc, (char *)MenuPcString75f2c4));
+            return menu;
+        }
     }
-    return menu;
+    return NULL;
 }
 
 static void antinodeEditorDrawOnePc(EDANTINODE_s *node, i32 segments, u32 colour, i32 solid) {
@@ -17401,16 +17402,17 @@ eduimenu_s *__cdecl areaEditorDeleteMenu(void) {
 
 eduimenu_s *__cdecl locatorEditor_DeleteLocatorMenu(void) {
     eduimenu_s *menu;
-    if (aieditor->current_locator == NULL || aieditor->current_locator != aieditor->nearest_locator)
-        return NULL;
-    menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancelPc, "Delete locator??");
-    if (menu != NULL) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c0));
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c4));
+    if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancelPc, "Delete locator??");
+        if (menu != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c0));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    AiEditorDeleteLocatorSelectionPc, (char *)MenuPcString75f2c4));
+            return menu;
+        }
     }
-    return menu;
+    return NULL;
 }
 
 static __declspec(noinline) void pathEditor_DestroyPath(EDAIPATH_s *path) {
