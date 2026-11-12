@@ -4341,10 +4341,10 @@ i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32
                              VuVec *near_intersection) {
     __declspec(align(16)) VuVec end = origin + direction;
     __declspec(align(16)) VuVec delta = end - origin;
-    f32 a = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+    f32 c = VuVecLengthSq(center);
+    f32 a = (delta.z * delta.z) + (delta.x * delta.x + delta.y * delta.y);
     __declspec(align(16)) VuVec offset = origin - center;
     f32 b = 2 * VuVecDot(delta, offset);
-    f32 c = VuVecLengthSq(center);
     c += VuVecLengthSq(origin);
     c -= 2.0 * VuVecDot(center, origin);
     c -= radius * radius;
