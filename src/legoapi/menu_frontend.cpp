@@ -205,11 +205,11 @@ extern "C" void __cdecl DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
 static void DrawSaveSlotsImplPc(MENU *menu, f32 y) {
     f32 width = MenuSaveSlotsWidthPc;
     f32 step_y = MenuSaveSlotsStepYPc;
-    f32 x = (f32)(-(width + width) * 0.5);
+    f32 x = (f32)(0.0f - (width + width) * 0.5);
     y = (f32)(y + (f64)0.3f);
     for (i32 slot = 0; slot < 6; ++slot) {
         if (slot == 3) {
-            x = (f32)(-(width + width) * 0.5);
+            x = (f32)(0.0f - (width + width) * 0.5);
             y = (f32)(y - (f64)0.35f);
         }
         DrawGameState(x, y, menu->selected_row == menu->first_row && menu->selected_column == slot, slot);
