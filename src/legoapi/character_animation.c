@@ -404,11 +404,11 @@ void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
                 if (object->pad->input_magnitude <= ((f64)object->character_data->game_character->walk_speed +
                                                      object->character_data->game_character->run_speed) *
                                                         0.5) {
-                    if ((object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f)
+                    if ((object->field_e22 & 1) != 0 || object->weapon_scale > 0.0f)
                         object->anim_packet.requested_animation = 64;
                     else
                         object->anim_packet.requested_animation = 0;
-                } else if ((object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f)
+                } else if ((object->field_e22 & 1) != 0 || object->weapon_scale > 0.0f)
                     object->anim_packet.requested_animation = 23;
                 else
                     object->anim_packet.requested_animation = 3;
@@ -624,7 +624,7 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = 11;
         } else if (object->character_context == 27 || object->character_context == 29 ||
                    object->character_context == 18 || object->character_context == 8)
-            if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+            if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
             else
@@ -632,7 +632,7 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
         else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f)
                 MoveAnim_Manage(object, object->pad->input_magnitude, 1, 1);
-            else if ((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) {
+            else if ((object->field_e22 & 1) != 0 || object->field_e33 == 1) {
                 if (object->character_data->game_character->hover_fall_mode == 0 &&
                     (object->character_data->model_flags & 0x80) != 0) {
                     if (object->character_model->action_animations[118] != NULL)
@@ -665,7 +665,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((object->flags_e20 & 0x1000000) != 0) {
-        if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+        if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
             object->character_model->action_animations[39] != NULL)
             object->anim_packet.requested_animation = 39;
         else
@@ -685,7 +685,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = 11;
         } else if (object->character_context == 27 || object->character_context == 29 ||
                    object->character_context == 18 || object->character_context == 8)
-            if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+            if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
             else
@@ -701,7 +701,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
                 } else
                     MoveAnim_Manage(object, object->pad->input_magnitude,
                                     (object->character_data->game_character->flags_090 & 8) == 0, 1);
-            } else if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+            } else if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                        object->character_model->action_animations[25] != NULL)
                 object->anim_packet.requested_animation = 25;
         }
@@ -787,7 +787,7 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
                         ? 0
                         : (object->character_data->game_character->flags_090 & 8) == 0;
                 MoveAnim_Manage(object, object->pad->input_magnitude, tiptoe, 1);
-            } else if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+            } else if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                        object->character_model->model_data_b[25] != NULL)
                 object->anim_packet.requested_animation = 25;
         }
