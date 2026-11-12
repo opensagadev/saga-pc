@@ -710,8 +710,10 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
     FreePlayModelCount = 0;
     FreePlayResidentCount = 0;
     FreePlayBonusCount = 0;
-    if (model1 == -1)
+    if (model1 == -1) {
         model2 = -1;
+        model1 = -1;
+    }
     models[0] = model1;
     models[1] = model2;
     lost_temple = LOSTTEMPLE_ADATA;
