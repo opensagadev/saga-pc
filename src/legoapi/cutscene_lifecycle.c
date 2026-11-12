@@ -1293,11 +1293,11 @@ CutTriggerInstanceCreatePc(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene, CUT_LOAD_T
     buffer->addr = (buffer->addr + 15) & ~15;
     instance = (CUT_LOAD_TRIGGER_INSTANCE *)buffer->void_ptr;
     buffer->addr += 8;
-    instance->states = NULL;
+    memset(instance, 0, 8);
     instance->owner = owner;
     instance->states = (CUT_LOAD_TRIGGER_STATE_PC *)buffer->void_ptr;
-    buffer->addr += count * 4;
-    memset(instance->states, 0, count * 4);
+    buffer->addr += count * sizeof(CUT_LOAD_TRIGGER_STATE_PC);
+    memset(instance->states, 0, count * sizeof(CUT_LOAD_TRIGGER_STATE_PC));
     return instance;
 }
 
