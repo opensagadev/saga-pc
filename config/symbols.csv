@@ -19756,6 +19756,7 @@ address,symbol,size,ctype
 0x76b1c0,??_C@_02POGCAHMO@th?$AA@,3,const char[]
 0x76b1c8,__real@4040aaaac0000000,8,const double
 0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
+0x76b1f8,__real@3fefff2e48e8a71e,8,const f64
 0x76b200,??_C@_07OHKEKKIE@Timings?$AA@,8,const char[]
 0x76b20c,??_7BaseThing@@6B@,48,native exactVT binding; unimplemented extent unclaimed
 0x76b23c,??_C@_03PFLBMEDE@Res?$AA@,4,const char[]
