@@ -241,51 +241,52 @@ void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
     SIGNAL_s *signal = world->signals;
     i32 index;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
-        f32 target_scale = 0.0f;
+        f32 target_scale;
         signal->radius = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.1f + (f64)0.8f);
-        if ((signal->flags & 3) != 3) {
-            signal->scale = 0.0f;
-            signal->flags &= ~4;
-            continue;
-        }
-        if ((signal->flags & 4) != 0) {
-            i32 player_index;
-            for (player_index = 0; player_index < 8; ++player_index) {
-                GAMEOBJECT *player = (GAMEOBJECT *)Player[player_index];
-                if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001 &&
-                    player->id == (u16)signal->suit->character_id &&
-                    (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) <
-                        0.49000006914138794) {
-                    NUVEC offset;
-                    f32 along_normal;
-                    f32 distance;
-                    f32 radius;
-                    f32 lateral_squared;
-                    NuVecSub(&offset, &player->collision_position, &signal->position);
-                    along_normal = NuVecDot(&offset, &signal->normal);
-                    distance = NuVecMag(&offset);
-                    radius = (f32)((f64)player->bounds_radius + (f64)0.3f);
-                    lateral_squared = (f32)((f64)distance * distance - (f64)along_normal * along_normal);
-                    if ((f64)lateral_squared < (f64)radius * radius)
-                        break;
+        if (signal->visible && signal->active) {
+            if (signal->in_use) {
+                i32 player_index;
+                for (player_index = 0; player_index < 8; ++player_index) {
+                    GAMEOBJECT *player = (GAMEOBJECT *)Player[player_index];
+                    if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
+                        player->id == (u16)signal->suit->character_id &&
+                        (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) <
+                            0.49000006914138794) {
+                        NUVEC offset;
+                        f32 along_normal;
+                        f32 distance;
+                        f32 radius;
+                        f32 lateral_squared;
+                        NuVecSub(&offset, &player->collision_position, &signal->position);
+                        along_normal = NuVecDot(&offset, &signal->normal);
+                        distance = NuVecMag(&offset);
+                        radius = (f32)((f64)player->bounds_radius + (f64)0.3f);
+                        lateral_squared = (f32)((f64)distance * distance - (f64)along_normal * along_normal);
+                        if ((f64)lateral_squared < (f64)radius * radius)
+                            break;
+                    }
                 }
+                if (player_index == 8)
+                    signal->in_use = 0;
+                target_scale = 0.0f;
+            } else {
+                ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+                message.text = TTab[*signal->suit->text_id];
+                message.position = &signal->target_position;
+                message.scale = 1.0f;
+                message.red = 0xff;
+                message.green = 0xff;
+                message.blue = 0;
+                message.alpha = 0x30;
+                message.flags = 0x87;
+                AddGameMsg(&message);
+                target_scale = 1.0f;
             }
-            if (player_index == 8)
-                signal->flags &= ~4;
+            signal->scale = SeekLinearF(signal->scale, target_scale, (f32)(3.0 * FRAMETIME));
         } else {
-            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
-            message.text = TTab[*signal->suit->text_id];
-            message.position = &signal->target_position;
-            message.scale = 1.0f;
-            message.red = 0xff;
-            message.green = 0xff;
-            message.blue = 0;
-            message.alpha = 0x30;
-            message.flags = 0x87;
-            AddGameMsg(&message);
-            target_scale = 1.0f;
+            signal->scale = 0.0f;
+            signal->in_use = 0;
         }
-        signal->scale = SeekLinearF(signal->scale, target_scale, (f32)(3.0 * FRAMETIME));
     }
 }
 
