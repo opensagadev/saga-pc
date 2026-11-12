@@ -3438,11 +3438,11 @@ extern "C" {
     void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
         level->max_gameantinodes = 0x100;
         level->max_gizmoblowups = 0x40;
-        level->max_gizmoblowuptypes = 0x40;
         level->max_pickups = 0x100;
         level->max_obstacle_objects = 0x80;
         level->max_buildit_objects = 0x80;
         level->max_force_objects = 0x80;
+        level->max_gizmoblowuptypes = 0x40;
         level->max_bombgen_objects = 0x10;
 
         level->max_tightropes = 10;
@@ -3480,8 +3480,8 @@ extern "C" {
         level->max_bridges = 5;
         level->max_plugs = 10;
 
-        level->wind_speed = 3.0f;
         level->wind_size = 512.0f;
+        level->wind_speed = 3.0f;
     }
 
     void __cdecl FixUpAreas(void) {
