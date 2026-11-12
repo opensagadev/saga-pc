@@ -389,17 +389,16 @@ extern "C" {
     }
 
     static void CS_tex_anim(NUFPAR_PC *fp) {
-        if (CS_texanimcount > 3) {
-            return;
-        }
-        CUT_LOAD_TEXANIM_PC *animation = &CS_CutInfo->texture_animations[CS_texanimcount];
-        animation->index = NuFParGetInt(fp);
-        if (animation->index == -1) {
-            return;
-        }
-        animation->frame = static_cast<f32>(NuFParGetInt(fp));
-        if (animation->frame >= 1.0f) {
-            ++CS_texanimcount;
+        if (CS_texanimcount < 4) {
+            i32 index = NuFParGetInt(fp);
+            CS_CutInfo->texture_animations[CS_texanimcount].index = index;
+            if (index != -1) {
+                CUT_LOAD_TEXANIM_PC *animation = &CS_CutInfo->texture_animations[CS_texanimcount];
+                animation->frame = static_cast<f32>(NuFParGetInt(fp));
+                if (1.0f <= animation->frame) {
+                    ++CS_texanimcount;
+                }
+            }
         }
     }
 
