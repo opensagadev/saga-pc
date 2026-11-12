@@ -285,13 +285,11 @@ void __cdecl loadsaveCallEachFrame(void) {
     UpdateSaveSlots();
     memcard_slotsused = 0;
     if (saveload_savepresent != 0) {
-        i32 slot;
-        i32 used = 0;
-        for (slot = 0; slot < SAVESLOTS; ++slot) {
-            if (saveload_slotused[slot] != 0)
-                ++used;
+        i32 i;
+        for (i = 0; i < SAVESLOTS; ++i) {
+            if (saveload_slotused[i] != 0)
+                ++memcard_slotsused;
         }
-        memcard_slotsused = used;
     }
 }
 
