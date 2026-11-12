@@ -885,19 +885,18 @@ extern "C" {
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = &object->special;
-            params.stop_fn = PartStop_Flickerer;
-            params.draw_fn = PartDraw_Flickerer;
-            params.impact_fn = PartImpact_Brick;
             params.field_14 = 0.2f;
             params.field_18 = 0.2f;
             params.gravity = -4.0f;
             params.flags = 0x90;
             params.field_c4 = 1;
+            params.stop_fn = PartStop_Flickerer;
+            params.draw_fn = PartDraw_Flickerer;
+            params.impact_fn = PartImpact_Brick;
             params.time_step = FRAMETIME;
             part = AddPart(&params);
             if (part != NULL) {
-                f32 random = ((f32)(qrand())) * 1.5259021893143654e-05f;
-                part->time_remaining = random + random + 7.0f;
+                part->time_remaining = qrand() * 1.5259021893143654e-05 * 2.0 + 7.0;
             }
         }
     }
