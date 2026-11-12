@@ -96,7 +96,6 @@ extern "C" {
         AREA_DATA_PC *areas;
         u8 single_buffer = 8;
         u32 end;
-        u32 old_buffer_end;
 
         if (area1 != -1) {
             areas = ADataList;
@@ -492,14 +491,14 @@ i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
         world->area_index = (i8)world->current_level->area_index;
         if (world->area_index != -1) {
             world->area = &ADataList[world->area_index];
-            world->episode_index = (i8)world->area->episode_index;
+            world->episode_index = (i8)ADataList[world->area_index].episode_index;
         }
         world->page_pp = -1;
         world->page_anim = -1;
         world->page_grass = -1;
         world->page_bridge = -1;
         world->page_part = -1;
-        progress_index = (i8)world->current_level->area_level_index;
+        progress_index = (i8)LDataList[level_index].area_level_index;
         if (progress_index != -1 && progress_index < 12)
             world->level_progress = &LevelProgressData[progress_index];
         else
@@ -520,7 +519,7 @@ void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
     LOG_INFO("Stream level begin: next_level=%d", next_level);
     PCDeviceResetState();
     if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & 8) == 0))
-        LWORLD = WORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
+        LWORLD = LWORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
     if (WorldInfo_Reset(LWORLD, next_level) != 0) {
         waiting_for_level = next_level;
         WorldInfo_Load(LWORLD); /* Native 56069c: actual ordinary cdecl1. */
