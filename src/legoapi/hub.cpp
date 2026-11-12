@@ -2155,7 +2155,7 @@ static void HubDrawMiniKitCountPc(f32 x, f32 y, i32 count, i32 total, f32 alpha)
              0, 255, 0, 127, (u8)(i32)(128.0 * alpha));
     const u16 rotation = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     const f32 scale = NuTrigTable[((i32)(alpha * 16384.0) >> 1) & 0x7fff] * PANEL_MINIKITSCALE;
-    const u16 tilt = (u16)(i32)(1820.0 * NuTrigTable[rotation & 0x7fff]);
+    const u16 tilt = (u16)(i32)(1820.0 * NU_SIN_LUT(rotation * 2));
     DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, tilt, rotation, 0,
                              &WORLD->level_objects[object].special, 2);
 }
