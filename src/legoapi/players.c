@@ -3104,8 +3104,6 @@ static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 chara
 void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
     i32 character_id;
     i32 current_animation;
-    CHARACTER_MODEL_LAYERS_PC *model;
-    CHARACTER_ANIMATION_LOCATOR_PC *configuration;
     DRAW_ATTACHMENTS_PACKET_PC animation;
     NUMTX *override_matrix = NULL;
     if (object->suit != NULL && (object->suit->flags & 2) != 0) {
@@ -3137,9 +3135,8 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
     if (character_id == -1)
         return;
     current_animation = CurrentAnim(&object->anim_packet);
-    model = object->character_model;
-    configuration = model->animations[current_animation];
-    if (configuration != NULL && (configuration->misc_flags & 8) != 0)
+    if (object->character_model->animations[current_animation] != NULL &&
+        (object->character_model->animations[current_animation]->misc_flags & 8) != 0)
         return;
     DrawCharacterAttachmentModelPc(object, character_id, joint_matrices, &animation.packet,
                                    object->character_data->game_character->extra_character_locator, override_matrix);
