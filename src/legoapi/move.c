@@ -6871,7 +6871,7 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
                     continue;
                 displacement.x = other->position.x - object->position.x;
                 displacement.z = other->position.z - object->position.z;
-                NuVecRotateY(&displacement, &displacement, -(i32)(u16)object->supporting_platform_id);
+                NuVecRotateY(&displacement, &displacement, -object->field_0x276);
                 if (displacement.x < 0.0f)
                     object->movement_spline_lateral_speed += speeder_offset_speed;
                 else
