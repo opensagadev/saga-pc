@@ -4065,24 +4065,23 @@ i32 __cdecl AISysSetLevelPath(AISYS_PC *system, char *name) {
     AIPATH_PC *path = NULL;
     i32 index;
 
-    if (system == NULL || system->path_sys == NULL) {
-        return 0;
-    }
-    if (name == NULL) {
-        path = system->path_sys->paths[0];
-    } else {
-        for (index = 0; index < system->path_sys->path_count; ++index) {
-            if (NuStrICmp(system->path_sys->paths[index]->name, name) == 0) {
-                path = system->path_sys->paths[index];
-                break;
+    if (system != NULL && system->path_sys != NULL) {
+        if (name != NULL) {
+            for (index = 0; index < system->path_sys->path_count; ++index) {
+                if (NuStrICmp(system->path_sys->paths[index]->name, name) == 0) {
+                    path = system->path_sys->paths[index];
+                    break;
+                }
             }
+        } else {
+            path = system->path_sys->paths[0];
+        }
+        if (path != NULL && path != system->path_sys->active_path) {
+            system->path_sys->active_path = path;
+            return 1;
         }
     }
-    if (path == NULL || path == system->path_sys->active_path) {
-        return 0;
-    }
-    system->path_sys->active_path = path;
-    return 1;
+    return 0;
 }
 
 void __cdecl AIPathCalcExtents(AIPATH_PC *path) {
