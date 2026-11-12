@@ -2463,9 +2463,10 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     i32 separate_seek_rates;
     NUVEC seek_rates;
     i32 seek_vertical;
-    u16 secondary_lean;
+    i32 secondary_lean;
     f32 turn_rate;
     u16 pitch;
+    u16 roll;
     pad = object->pad;
     operator_object = object;
     current_animation = CurrentAnim(&object->anim_packet);
@@ -2556,7 +2557,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             object->roll_angle = SeekRot(object->roll_angle, 0, 8.0f);
         }
     } else if (object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) {
-        u16 roll;
         object->movement_mode = 2;
         if (pad->input_magnitude > 0.0f) {
             NUVEC direction;
@@ -3321,8 +3321,9 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             f32 multiplier;
             current_speed = NuVecMag(&object->velocity);
             target_speed = NuVecMag(&object->target_velocity);
-            multiplier = 5.0f;
-            if (target_speed > 0.0f) {
+            if (!(target_speed > 0.0f)) {
+                multiplier = 5.0f;
+            } else {
                 f32 ratio;
                 ratio = current_speed / target_speed;
                 if (ratio > 1.0f)
@@ -3371,36 +3372,36 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         i32 lean;
         rate = (i32)((f32)(RotDiff(object->previous_movement_angle, object->field_0x276)) / FRAMETIME);
         if (rate < -0x10000)
-            lean = -0x2000;
+            rate = -0x10000;
         else if (rate > 0x10000)
+            rate = 0x10000;
+        lean = rate / 4;
+        if (lean < -0x2000)
+            lean = -0x2000;
+        else if (lean > 0x2000)
             lean = 0x2000;
-        else {
-            lean = rate / 4;
-            if (lean < -0x2000)
-                lean = -0x2000;
-            if (lean > 0x2000)
-                lean = 0x2000;
-        }
         object->movement_lean_angle = SeekRot(object->movement_lean_angle, (u16)(lean), 8.0f);
     } else if (object->character_context == 0x4b) {
         i32 lean;
-        lean = 0;
         if (object->pad->input_magnitude > 0.0f) {
             lean = (i32)((f32)(RotDiff(object->previous_movement_angle, object->field_0x276)) / FRAMETIME) / 15;
-            if (lean > 0x2000)
-                lean = 0x2000;
             if (lean < -0x2000)
                 lean = -0x2000;
+            else if (lean > 0x2000)
+                lean = 0x2000;
+        } else {
+            lean = 0;
         }
         object->movement_lean_angle = SeekRot(object->movement_lean_angle, (u16)(lean), 8.0f);
     } else {
         object->movement_lean_angle = 0;
     }
-    secondary_lean = 0;
     if (object->character_context == 0x3d && object->field_7aa != 0x85)
-        secondary_lean = object->field_7b3 == 0 ? 0xce39 : 0x3c71;
+        secondary_lean = object->field_7b3 == 0 ? -0x31c7 : 0x3c71;
     else if (object->character_context == 0x2f && object->field_7aa == 5)
-        secondary_lean = 0xc000;
+        secondary_lean = -0x4000;
+    else
+        secondary_lean = 0;
     object->secondary_lean_angle = SeekRot(object->secondary_lean_angle, secondary_lean, 5.0f);
     GizmoBlowupCheckProximity(WORLD, object);
 }
