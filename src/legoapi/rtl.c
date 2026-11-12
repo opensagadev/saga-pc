@@ -89,32 +89,32 @@ void rtlResetEx(RTL_DATA_PC *data, i32 reset_cached) {
 static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float strength) {
     i32 slot, move;
     switch (light->type) {
-    case 1:
-        for (slot = 0; slot < 3; ++slot) {
-            if (lighting_data->ambient_strengths[slot] < strength) {
-                for (move = 2; move != slot; --move) {
-                    lighting_data->ambient_lights[move] = lighting_data->ambient_lights[move - 1];
-                    lighting_data->ambient_strengths[move] = lighting_data->ambient_strengths[move - 1];
+        case 1:
+            for (slot = 0; slot < 3; ++slot) {
+                if (lighting_data->ambient_strengths[slot] < strength) {
+                    for (move = 2; move != slot; --move) {
+                        lighting_data->ambient_lights[move] = lighting_data->ambient_lights[move - 1];
+                        lighting_data->ambient_strengths[move] = lighting_data->ambient_strengths[move - 1];
+                    }
+                    lighting_data->ambient_lights[slot] = light;
+                    lighting_data->ambient_strengths[slot] = strength;
+                    return;
                 }
-                lighting_data->ambient_lights[slot] = light;
-                lighting_data->ambient_strengths[slot] = strength;
-                return;
             }
-        }
-        break;
-    default:
-        for (slot = 0; slot < 3; ++slot) {
-            if (lighting_data->directional_strengths[slot] < strength) {
-                for (move = 2; move != slot; --move) {
-                    lighting_data->directional_lights[move] = lighting_data->directional_lights[move - 1];
-                    lighting_data->directional_strengths[move] = lighting_data->directional_strengths[move - 1];
+            break;
+        default:
+            for (slot = 0; slot < 3; ++slot) {
+                if (lighting_data->directional_strengths[slot] < strength) {
+                    for (move = 2; move != slot; --move) {
+                        lighting_data->directional_lights[move] = lighting_data->directional_lights[move - 1];
+                        lighting_data->directional_strengths[move] = lighting_data->directional_strengths[move - 1];
+                    }
+                    lighting_data->directional_lights[slot] = light;
+                    lighting_data->directional_strengths[slot] = strength;
+                    return;
                 }
-                lighting_data->directional_lights[slot] = light;
-                lighting_data->directional_strengths[slot] = strength;
-                return;
             }
-        }
-        break;
+            break;
     }
     rtl_error = 1;
 }
@@ -1489,7 +1489,7 @@ void __cdecl edrtlDrawRTLInfo(void) {
         NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)(curr_rtl->position.x),
                       (f64)(curr_rtl->position.y), (f64)(curr_rtl->position.z));
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", light_types[curr_rtl->type <= 9 ? curr_rtl->type : 9]);
+        NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", light_types[MAX(0, MIN(9, curr_rtl->type))]);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", (f64)(curr_rtl->inner_radius));
         y += height;
@@ -1507,11 +1507,8 @@ void __cdecl edrtlDrawRTLInfo(void) {
             y += height;
         }
         if (curr_rtl->field_7a != -1 || (curr_rtl->field_7a == -1 && curr_rtl->field_79 == -1)) {
-            NuQFntPrintEx(
-                system_qfont, x, y, 16, "MODIFIER: %s",
-                modifier_names[(curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b) < 0
-                                   ? 0
-                                   : (curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b)]);
+            NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s",
+                          modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->field_7b))]);
             y += height;
         }
         if (curr_rtl->type == 5 && curr_rtl->field_5e != 0) {
