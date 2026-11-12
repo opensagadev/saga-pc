@@ -246,15 +246,16 @@ extern "C" {
         team->formation_mode = qrand() / 0x4000;
         team->state_timer = static_cast<f32>(qrand()) * (4.0f / 65535.0f) + 1.0f;
 
-        const NUVEC &destination = team->path->pts[team->waypoint_index];
-        const NUVEC &origin = team->path->pts[team->route_index];
-        team->facing_angle = NuAtan2D(destination.x - origin.x, destination.z - origin.z);
+        NUVEC delta;
+        delta.x = team->path->pts[team->waypoint_index].x - team->path->pts[team->route_index].x;
+        delta.z = team->path->pts[team->waypoint_index].z - team->path->pts[team->route_index].z;
+        team->facing_angle = NuAtan2D(delta.x, delta.z);
 
         if (droid_hack == 0) {
-            if (team->formation_mode == 1)
-                team->formation_state = 0x11;
-            else
+            if (team->formation_mode != 1)
                 team->formation_shape = qrand() / (0xffff / 3 + 1);
+            else
+                team->formation_shape = 1;
         } else {
             team->formation_shape = 4;
         }
@@ -263,15 +264,13 @@ extern "C" {
         minisnowtrooper_s *trooper = team->troopers;
         for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
             trooper->state_flags &= ~0x40;
-            if (droid_hack != 0) {
-                trooper->state_flags = (trooper->state_flags & 0x8f) | 0x20;
-            } else {
-                const i32 slot = qrand() / (0xffff / 3 + 1) + 1;
-                trooper->state_flags = (trooper->state_flags & 0xcf) | ((slot & 3) << 4);
-            }
+            if (droid_hack == 0)
+                trooper->slot = qrand() / (0xffff / 3 + 1) + 1;
+            else
+                trooper->slot = 2;
             trooper->formation_index = static_cast<u8>(i);
         }
-        team->route_state |= 0x10;
+        team->mode_changed = 1;
     }
 
     void InitMiniSnowTroopers(WORLDINFO *world, i32 team_count, i32 trooper_count, i32 use_droids) {
