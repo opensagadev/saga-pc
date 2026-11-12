@@ -37,7 +37,7 @@ void __cdecl EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
     if ((object->flags_1fc & 0x80) == 0)
         volume = (f32)((f64)volume * (f64).6f);
     pitch = (f32)((f64)object->engine_level * (f64).4f + (f64).6f);
-    pitch = (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f + (f64)pitch);
+    pitch += (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f);
     pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
     PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);
 }
