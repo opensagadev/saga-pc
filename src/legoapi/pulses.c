@@ -206,6 +206,13 @@ void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     }
 }
 
+/* TODO(saga.h): GAMEOBJECT.flags_e24 bits 16-18 are a 3-bit hit-side field (3 = behind, 4 = in front). */
+typedef struct GAMEOBJECT_HIT_SIDE_PC {
+    u32 low_flags : 16;
+    u32 hit_side : 3;
+    u32 high_flags : 13;
+} GAMEOBJECT_HIT_SIDE_PC;
+
 void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     WORLDINFO *world;
     NUVEC hit_direction;
@@ -220,46 +227,47 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     hit_direction.z = system->hit_direction_radius_origin;
     NuVecRotateY(&hit_direction, &hit_direction, 0x4000);
     for (i = 0; i < system->pulse_count; ++i) {
-        PULSE_PC *pulse = &system->pulses[i];
         NUVEC *position;
         NUVEC direction;
         f32 collide_radius;
         i32 player_index;
-        if (pulse->gizmo != NULL) {
-            i32 visible = GizmoGetVisibility(world->gizmo_sys, pulse->gizmo);
+        if (system->pulses[i].gizmo != NULL) {
+            i32 visible = GizmoGetVisibility(world->gizmo_sys, system->pulses[i].gizmo);
             if (visible == 0) {
                 system->pulses[i].disabled = 1;
                 NuSpecialSetVisibility(&system->pulses[i].special, 0);
             }
         }
-        pulse = &system->pulses[i];
-        if (pulse->disabled != 0)
+        if (system->pulses[i].disabled != 0)
             continue;
-        position = NuSpecialGetDrawPos(&pulse->special);
-        pulse = &system->pulses[i];
-        pulse->timer -= FRAMETIME;
-        if (pulse->timer <= 0.0f && netclient == 0) {
-            if (pulse->active != 0) {
-                pulse->active = 0;
-                pulse->timer = pulse->off_time;
+        position = NuSpecialGetDrawPos(&system->pulses[i].special);
+        system->pulses[i].timer -= FRAMETIME;
+        if (system->pulses[i].timer <= 0.0f && netclient == 0) {
+            if (system->pulses[i].active != 0) {
+                system->pulses[i].active = 0;
+                system->pulses[i].timer = system->pulses[i].off_time;
                 GameAudio_PlaySfxById(system->sfx_turn_off, position, 0, 0);
             } else {
-                pulse->active = 1;
-                pulse->timer = pulse->on_time;
+                system->pulses[i].active = 1;
+                system->pulses[i].timer = system->pulses[i].on_time;
                 GameAudio_PlaySfxById(system->sfx_turn_on, position, 0, 0);
             }
             NuSpecialSetVisibility(&system->pulses[i].special, system->pulses[i].active);
-            GameAudio_PlaySfxById(system->pulses[i].active != 0 ? system->sfx_on_loop : system->sfx_off_loop, position,
-                                  0, 0);
+            if (system->pulses[i].active != 0)
+                GameAudio_PlaySfxById(system->sfx_on_loop, position, 0, 0);
+            else
+                GameAudio_PlaySfxById(system->sfx_off_loop, position, 0, 0);
         }
         if (system->pulses[i].active == 0)
             continue;
         collide_radius = system->collide_radius;
-        direction.x = hit_direction.x;
-        direction.y = 0.0f;
-        direction.z = hit_direction.z;
-        if (system->radial_hit_direction != 0) {
+        if (system->radial_hit_direction == 0) {
+            direction.x = hit_direction.x;
+            direction.y = 0.0f;
+            direction.z = hit_direction.z;
+        } else {
             direction.x = position->x - hit_direction.x;
+            direction.y = 0.0f;
             direction.z = position->z - hit_direction.z;
             NuVecNorm(&direction, &direction);
         }
@@ -270,7 +278,7 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
             union {
                 f32 value;
                 u32 bits;
-            } absolute_distance;
+            } signed_distance, absolute_distance;
             i32 handle;
             if (player == NULL || (player->flags_1fc & 0x80) == 0 || player->dead != 0 ||
                 (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) ||
@@ -285,22 +293,26 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 NuVecRotateY(&offset, &offset, 0x4000);
                 distance = direction.x * offset.x + direction.z * offset.z;
             }
-            absolute_distance.value = distance;
-            absolute_distance.bits &= 0x7fffffffU;
+            // MATCH-EXCEPTION: NuFabs expanded by hand (argument copy, masked result); a static helper leaves an
+            // out-of-line copy that retail's pulses unit does not have.
+            signed_distance.value = distance;
+            absolute_distance.bits = signed_distance.bits & 0x7fffffffU;
             if (!(absolute_distance.value < collide_radius))
                 continue;
-            if (system->radial_hit_direction == 0 &&
-                (offset.x * system->hit_direction_line + offset.z * system->hit_direction_radius_origin < 0.0f))
-                continue;
+            if (system->radial_hit_direction == 0) {
+                f32 side = offset.x * system->hit_direction_line + offset.z * system->hit_direction_radius_origin;
+                if (side < 0.0f)
+                    continue;
+            }
             GameAudio_PlaySfxById(system->sfx_hit_player, &player->collision_position, 0, 0);
             if (ObjHitObj(NULL, player, 1, 0, 0, 1) == 2) {
                 KillRumble(player);
                 continue;
             }
             TakeHitRumble(player, 0.7f);
+            ((GAMEOBJECT_HIT_SIDE_PC *)&player->flags_e24)->hit_side = distance < 0.0f ? 3 : 4;
             player->velocity.x = 0.0f;
             player->velocity.z = 0.0f;
-            player->flags_e24 = (player->flags_e24 & ~0x70000U) | (distance < 0.0f ? 0x30000 : 0x40000);
             handle = -1;
             AddFiniteShotDebrisEffect(&handle, world->game_debris_sys->entries[system->debris_hit_player].effect,
                                       &player->collision_position, 1);
