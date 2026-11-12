@@ -1571,54 +1571,55 @@ void EdFileWriteNuVec(NUVEC *value);
 i32 edrtlBurnoutSave(char *filename, BURN_SET_PC *set) {
     i32 index;
     i32 count = 0;
-    if (!set)
-        return 0;
-    for (index = 0; index < 32; ++index) {
-        if (set->burnouts[index].active)
-            ++count;
-    }
-    EdFileSetMedia(1);
-    if (!EdFileOpen(filename, 1))
-        return 0;
-    EdFileSetReadWrongEndianess(1);
-    EdFileWriteInt(5);
-    EdFileWriteInt(count);
-    EdFileWriteFloat(set->parameters.field_24);
-    EdFileWriteFloat(set->parameters.field_14);
-    EdFileWriteFloat(set->parameters.field_1c);
-    EdFileWriteFloat(set->field_b8);
-    EdFileWriteFloat(set->field_bc);
-    EdFileWriteFloat(set->field_c0);
-    EdFileWriteFloat(set->field_c4);
-    EdFileWriteFloat(set->field_c8);
-    EdFileWriteFloat(set->field_cc);
-    for (index = 0; index < 32; ++index) {
-        if (set->burnouts[index].active) {
-            EdFileWriteNuVec(&set->burnouts[index].position);
-            EdFileWriteFloat(set->burnouts[index].field_10);
-            EdFileWriteFloat(set->burnouts[index].field_14);
-            EdFileWriteFloat(set->burnouts[index].field_18);
-            EdFileWriteFloat(set->burnouts[index].field_1c);
-            EdFileWriteFloat(set->burnouts[index].field_20);
+    if (set) {
+        for (index = 0; index < 32; ++index) {
+            if (set->burnouts[index].active)
+                ++count;
+        }
+        EdFileSetMedia(1);
+        if (EdFileOpen(filename, 1)) {
+            EdFileSetReadWrongEndianess(1);
+            EdFileWriteInt(5);
+            EdFileWriteInt(count);
+            EdFileWriteFloat(set->parameters.field_24);
+            EdFileWriteFloat(set->parameters.field_14);
+            EdFileWriteFloat(set->parameters.field_1c);
+            EdFileWriteFloat(set->field_b8);
+            EdFileWriteFloat(set->field_bc);
+            EdFileWriteFloat(set->field_c0);
+            EdFileWriteFloat(set->field_c4);
+            EdFileWriteFloat(set->field_c8);
+            EdFileWriteFloat(set->field_cc);
+            for (index = 0; index < 32; ++index) {
+                if (set->burnouts[index].active) {
+                    EdFileWriteNuVec(&set->burnouts[index].position);
+                    EdFileWriteFloat(set->burnouts[index].field_10);
+                    EdFileWriteFloat(set->burnouts[index].field_14);
+                    EdFileWriteFloat(set->burnouts[index].field_18);
+                    EdFileWriteFloat(set->burnouts[index].field_1c);
+                    EdFileWriteFloat(set->burnouts[index].field_20);
+                }
+            }
+            EdFileWriteFloat(set->parameters.field_04);
+            EdFileWriteFloat(set->parameters.field_08);
+            EdFileWriteFloat(set->parameters.field_0c);
+            EdFileWriteFloat(set->parameters.field_10);
+            EdFileWriteFloat(set->parameters.field_20);
+            EdFileWriteInt(set->parameters.field_28);
+            EdFileWriteFloat(set->parameters.field_2c);
+            EdFileWriteFloat(set->parameters.field_30);
+            EdFileWriteFloat(set->parameters.field_34);
+            EdFileWriteFloat(set->parameters.field_38);
+            EdFileWriteFloat(set->parameters.field_3c);
+            EdFileWriteFloat(set->parameters.field_40);
+            EdFileWriteFloat(set->parameters.field_44);
+            EdFileWriteFloat(set->parameters.field_48);
+            EdFileClose();
+            EdFileSetReadWrongEndianess(0);
+            return 1;
         }
     }
-    EdFileWriteFloat(set->parameters.field_04);
-    EdFileWriteFloat(set->parameters.field_08);
-    EdFileWriteFloat(set->parameters.field_0c);
-    EdFileWriteFloat(set->parameters.field_10);
-    EdFileWriteFloat(set->parameters.field_20);
-    EdFileWriteInt(set->parameters.field_28);
-    EdFileWriteFloat(set->parameters.field_2c);
-    EdFileWriteFloat(set->parameters.field_30);
-    EdFileWriteFloat(set->parameters.field_34);
-    EdFileWriteFloat(set->parameters.field_38);
-    EdFileWriteFloat(set->parameters.field_3c);
-    EdFileWriteFloat(set->parameters.field_40);
-    EdFileWriteFloat(set->parameters.field_44);
-    EdFileWriteFloat(set->parameters.field_48);
-    EdFileClose();
-    EdFileSetReadWrongEndianess(0);
-    return 1;
+    return 0;
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
