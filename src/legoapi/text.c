@@ -65,12 +65,12 @@ void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end) {
     (void)buf_end;
 
     TTab_Original = table;
-    buf->addr = ((u32)table + table_size + 3) & ~3U;
+    buf->addr = (buf->addr + table_size + 3) & ~3U;
     memset(table, 0, table_size);
     table[0] = Text_ErrorString;
     TTab = table + 1;
-    Text_StringBits = (u32 *)buf->void_ptr;
     Text_MaxStrings_Overall = count;
+    Text_StringBits = (u32 *)buf->void_ptr;
     memset(Text_StringBits, 0, ((count + 31) / 32) * sizeof(u32));
     buf->addr += ((count + 31) / 32) * sizeof(u32);
 }
