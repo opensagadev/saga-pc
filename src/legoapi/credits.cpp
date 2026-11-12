@@ -262,36 +262,39 @@ extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
         f32 progress;
         legoSetMusicVolume(0.0f);
         CreditsTime += FRAMETIME;
-        if (CreditsFlag != 1) {
-            if (CreditsFlag != 2) {
-                if (CreditsTime >= 1.1f) {
-                    FADETYPE fade_type = {FADE_TYPE_STILL};
-                    NewLData = HUB_LDATA;
-                    FadeSys.SetFade(fade_type, 0);
+        switch (CreditsFlag) {
+            case 1:
+                if (previous_time < (f64)0.1f && CreditsTime >= (f64)0.1f) {
+                    music_man.StopAll(0);
+                    MusicClearAll();
+                    SoundKillAll();
                 }
-                progress = 1.0f - CreditsTime;
-                if (progress < 0.0f)
-                    progress = 0.0f;
-            } else {
+                if (CreditsTime >= 1.0f) {
+                    CreditsFlag = 2;
+                    GameAudio_PlaySfx(0x2b, NULL, 0, 0);
+                    progress = 1.0f;
+                } else {
+                    progress = CreditsTime;
+                }
+                break;
+            case 2:
                 if (CreditsTime >= 3.0f) {
                     CreditsFlag = 3;
                     CreditsTime = 0.0f;
                 }
                 progress = 1.0f;
-            }
-        } else {
-            if (previous_time < (f64)0.1f && CreditsTime >= (f64)0.1f) {
-                music_man.StopAll(0);
-                MusicClearAll();
-                SoundKillAll();
-            }
-            if (CreditsTime >= 1.0f) {
-                CreditsFlag = 2;
-                GameAudio_PlaySfx(0x2b, NULL, 0, 0);
-                progress = 1.0f;
-            } else {
-                progress = CreditsTime;
-            }
+                break;
+            default:
+                if (CreditsTime >= 1.1f) {
+                    FADETYPE fade_type;
+                    NewLData = HUB_LDATA;
+                    fade_type.type = FADE_TYPE_STILL;
+                    FadeSys.SetFade(fade_type, 0);
+                }
+                progress = 1.0f - CreditsTime;
+                if (progress < 0.0f)
+                    progress = 0.0f;
+                break;
         }
         CreditsAlpha = NuTrigTable[((i32)((f64)progress * 16384.0) >> 1) & 0x7fff];
     } else {
