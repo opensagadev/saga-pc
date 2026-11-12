@@ -4960,7 +4960,9 @@ extern "C" i32 __cdecl NuOcclusionManagerIsInitialised(void) {
 }
 
 extern "C" i32 __cdecl NuOcclusionManagerIsEnabled(void) {
-    return (g_OcclusionManager.initialized && g_OcclusionManager.enabled) != 0;
+    // MATCH-EXCEPTION: the int ternary narrowed to bool gives retail's `mov eax, 1` / `test al, al`
+    // (the original went through an inlined bool accessor).
+    return (bool)(g_OcclusionManager.initialized && g_OcclusionManager.enabled ? TRUE : FALSE) != 0;
 }
 /* Original legoapi/render/light/occlusion.cpp family; public material APIs
  * preserve the original inline operations without exposing private ABIs. */
