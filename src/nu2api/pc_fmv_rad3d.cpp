@@ -304,9 +304,10 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
     RadFmvSetDrawStatePc(image, alpha);
     RADFMV_TEXTURE_PC **texture = image->textures;
     f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
+    f32 px;
     f32 py = y;
     for (u32 row = 0; row < image->full_rows; ++row) {
-        f32 px = x;
+        px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
             image->device->methods->set_texture(image->device, 0, *texture++);
             RadFmvDrawQuadPc(image->device, px, py, xs, ys, image->maximum_texture, image->maximum_texture, alpha);
@@ -319,7 +320,7 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
         py += y_step;
     }
     if (image->remainder_height) {
-        f32 px = x;
+        px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
             image->device->methods->set_texture(image->device, 0, *texture++);
             RadFmvDrawQuadPc(image->device, px, py, xs, ys, image->maximum_texture, image->remainder_height, alpha);
@@ -333,9 +334,10 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
 }
 void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
     f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
+    f32 px;
     f32 py = y;
     for (u32 row = 0; row < image->full_rows; ++row) {
-        f32 px = x;
+        px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
             RadFmvDrawOutlinePc(image->device, px, py, xs, ys, image->maximum_texture, image->maximum_texture);
             px += x_step;
@@ -345,7 +347,7 @@ void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) 
         py += y_step;
     }
     if (image->remainder_height) {
-        f32 px = x;
+        px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
             RadFmvDrawOutlinePc(image->device, px, py, xs, ys, image->maximum_texture, image->remainder_height);
             px += x_step;
