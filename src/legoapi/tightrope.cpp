@@ -39,8 +39,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
 typedef struct tightrope_progress_recovered_pc_s {
-    u32 active_mask;
-    u32 visible_mask;
+    u32 active_mask[1];
+    u32 visible_mask[1];
 } TIGHTROPE_PROGRESS_PC;
 STATIC_ASSERT(sizeof(TIGHTROPE_s) == 0x48);
 STATIC_ASSERT(offsetof(TIGHTROPE_s, start_position) == 0x10);
@@ -96,36 +96,27 @@ extern "C" {
 
     i32 __cdecl TightRopes_Load(WORLDINFO *world, void *unused) {
         i32 version, index;
-        if (world->tightrope_count != 0)
-            return 0;
-        version = EdFileReadInt();
-        world->tightrope_count = EdFileReadInt();
-        for (index = 0; index < world->tightrope_count; ++index) {
-            EdFileRead(world->tightropes[index].name, 16);
-            EdFileReadNuVec(&world->tightropes[index].start_position);
-            EdFileReadNuVec(&world->tightropes[index].end_position);
-            if (version >= 2) {
-                u16 angle = EdFileReadUnsignedShort();
-                world->tightropes[index].field_0x28 = angle;
-                angle = EdFileReadUnsignedShort();
-                world->tightropes[index].field_0x2a = angle;
-                angle = EdFileReadUnsignedShort();
-                world->tightropes[index].field_0x2c = angle;
-                angle = EdFileReadUnsignedShort();
-                world->tightropes[index].field_0x2e = angle;
-                {
-                    u8 endpoint = EdFileReadUnsignedChar();
-                    world->tightropes[index].field_0x30 = endpoint;
-                    endpoint = EdFileReadUnsignedChar();
-                    world->tightropes[index].field_0x31 = endpoint;
-                }
-                if (version >= 3) {
-                    i8 show = EdFileReadChar();
-                    world->tightropes[index].field_0x32 = show;
+        if (world->tightrope_count == 0) {
+            version = EdFileReadInt();
+            world->tightrope_count = EdFileReadInt();
+            for (index = 0; index < world->tightrope_count; ++index) {
+                EdFileRead(world->tightropes[index].name, 16);
+                EdFileReadNuVec(&world->tightropes[index].start_position);
+                EdFileReadNuVec(&world->tightropes[index].end_position);
+                if (version >= 2) {
+                    world->tightropes[index].field_0x28 = EdFileReadUnsignedShort();
+                    world->tightropes[index].field_0x2a = EdFileReadUnsignedShort();
+                    world->tightropes[index].field_0x2c = EdFileReadUnsignedShort();
+                    world->tightropes[index].field_0x2e = EdFileReadUnsignedShort();
+                    world->tightropes[index].field_0x30 = EdFileReadUnsignedChar();
+                    world->tightropes[index].field_0x31 = EdFileReadUnsignedChar();
+                    if (version >= 3)
+                        world->tightropes[index].field_0x32 = EdFileReadChar();
                 }
             }
+            return 1;
         }
-        return 1;
+        return 0;
     }
 
     void *__cdecl TightRopes_ReserveBufferSpace(WORLDINFO *world) {
@@ -160,9 +151,10 @@ extern "C" {
         for (index = 0; index < world->tightrope_count; ++index, ++rope) {
             TightRopeInitRecordPc(rope);
             if (progress != NULL && index < 32) {
-                u32 mask = 1u << index;
-                rope->visible = (progress->visible_mask & mask) != 0;
-                rope->active = (progress->active_mask & mask) != 0;
+                i32 word = index / 32;
+                u32 mask = 1 << (index & 31);
+                rope->visible = (progress->visible_mask[word] & mask) != 0;
+                rope->active = (progress->active_mask[word] & mask) != 0;
             }
         }
     }
@@ -324,8 +316,8 @@ extern "C" {
 
     void __cdecl TightRopes_ClearProgress(void *world, TIGHTROPE_PROGRESS_PC *progress) {
         if (progress != NULL) {
-            progress->active_mask = 0xffffffffu;
-            progress->visible_mask = 0xffffffffu;
+            progress->active_mask[0] = 0xffffffffu;
+            progress->visible_mask[0] = 0xffffffffu;
         }
     }
 
@@ -334,17 +326,18 @@ extern "C" {
         i32 index;
         if (progress == NULL)
             return;
-        progress->active_mask = 0xffffffffu;
-        progress->visible_mask = 0xffffffffu;
+        progress->active_mask[0] = 0xffffffffu;
+        progress->visible_mask[0] = 0xffffffffu;
         if (world == NULL || world->tightropes == NULL)
             return;
         rope = world->tightropes;
         for (index = 0; index < world->tightrope_count && index < 32; ++index, ++rope) {
-            u32 mask = 1u << index;
+            i32 word = index / 32;
+            u32 mask = 1 << (index & 31);
             if (rope->visible == 0)
-                progress->visible_mask &= ~mask;
+                progress->visible_mask[word] &= ~mask;
             if (rope->active == 0)
-                progress->active_mask &= ~mask;
+                progress->active_mask[word] &= ~mask;
         }
     }
 #pragma data_seg(".data$TightRopeRegistryNamePc")
@@ -393,19 +386,25 @@ extern "C" {
 
 static i32 TightRopeSetPositionPc(TIGHTROPE_MOTION_PC *rope, NUVEC *position, GAMEOBJECT *object) {
     f32 margin;
-    i32 result = 1;
+    i32 result;
     NuVecSub(position, position, &rope->start);
     position->z = NuVecDot(position, &rope->direction);
-    margin = object == NULL
-                 ? (f64)0.1f
-                 : ((object->character_data->game_character->flags_090 & 0x10000000) != 0 ? object->bounds_half_height
-                                                                                          : object->bounds_radius);
+    if (object != NULL) {
+        if ((object->character_data->game_character->flags_090 & 0x10000000) != 0)
+            margin = object->bounds_half_height;
+        else
+            margin = object->bounds_radius;
+    } else {
+        margin = 0.1f;
+    }
     if (position->z > rope->horizontal_length - margin) {
         position->z = rope->horizontal_length - margin;
         result = 0;
     } else if (margin > position->z) {
         position->z = margin;
         result = 0;
+    } else {
+        result = 1;
     }
     NuVecScale(position, &rope->direction, position->z);
     NuVecAdd(position, position, &rope->start);
@@ -517,27 +516,34 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     return 1;
 }
 
+struct TIGHTROPE_OBJECT_FLAGS_PC {
+    u32 unknown_bits : 3;
+    u32 origin_hold : 1;
+};
 extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
     object->lower_position = *position;
-    object->upper_position = object->lower_position;
+    object->upper_position = *position;
+    object->collision_position = *position;
     object->upper_position.y += object->bounds_half_height;
-    object->collision_position = object->lower_position;
     object->lower_position.y -= object->bounds_half_height;
-    if (TightRope_Attach(object, WORLD) == 0) {
-        return 0;
+    if (TightRope_Attach(object, WORLD) != 0) {
+        object->position.x = object->collision_position.x;
+        object->position.z = object->collision_position.z;
+        if ((static_cast<PLAYERCHARACTERCONFIG_PC *>(object->character_data->game_character)->flags_090 & 0x80000) !=
+            0) {
+            object->position.y = object->launch_origin.y - object->character_bottom * object->origin_scale;
+        } else {
+            object->position.y = object->launch_origin.y - object->character_top * object->origin_scale;
+        }
+        u32 origin_flag = (object->flags_e24 >> 3) & 1;
+        object->flags_e24 &= ~8;
+        GameObjectOrigin(object);
+        // MATCH-EXCEPTION: bit 3 of flags_e24 is a 1-bit field that GAMEOBJECT does not declare; a local
+        // bitfield view gives retail's insert.
+        ((TIGHTROPE_OBJECT_FLAGS_PC *)&object->flags_e24)->origin_hold = origin_flag;
+        return 1;
     }
-    object->position.x = object->collision_position.x;
-    object->position.z = object->collision_position.z;
-    if ((static_cast<PLAYERCHARACTERCONFIG_PC *>(object->character_data->game_character)->flags_090 & 0x80000) != 0) {
-        object->position.y = object->launch_origin.y - object->character_bottom * object->origin_scale;
-    } else {
-        object->position.y = object->launch_origin.y - object->character_top * object->origin_scale;
-    }
-    u8 origin_flag = (object->field_e24 >> 3) & 1;
-    object->field_e24 &= ~8;
-    GameObjectOrigin(object);
-    object->field_e24 = (object->field_e24 & ~8) | (origin_flag << 3);
-    return 1;
+    return 0;
 }
 
 extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
