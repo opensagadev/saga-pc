@@ -15,32 +15,40 @@ extern "C" {
     i32 MiniTrooperGroundRefreshMaskPc = 15;
 
     static void MiniTrooperPitchMatrixPc(NUMTX *matrix, i32 angle) {
-        f32 cosine = NU_COS_LUT(angle);
-        f32 sine = NU_SIN_LUT(angle);
+        const f32 cosine = NU_COS_LUT(angle);
+        const f32 sine = NU_SIN_LUT(angle);
         matrix->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
         matrix->m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
         matrix->m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
         matrix->m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-        matrix->m10 = matrix->m13 = matrix->m20 = matrix->m23 = 0.0f;
-        matrix->m11 = matrix->m22 = cosine;
+        matrix->m10 = 0.0f;
+        matrix->m11 = cosine;
         matrix->m12 = sine;
+        matrix->m13 = 0.0f;
+        matrix->m20 = 0.0f;
         matrix->m21 = -sine;
+        matrix->m22 = cosine;
+        matrix->m23 = 0.0f;
         matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
         matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
         matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
     static void MiniTrooperYawMatrixPc(NUMTX *matrix, i32 angle) {
-        f32 cosine = NU_COS_LUT(angle);
-        f32 sine = NU_SIN_LUT(angle);
-        matrix->m00 = matrix->m22 = cosine;
-        matrix->m01 = matrix->m03 = matrix->m21 = matrix->m23 = 0.0f;
+        const f32 cosine = NU_COS_LUT(angle);
+        const f32 sine = NU_SIN_LUT(angle);
+        matrix->m00 = cosine;
+        matrix->m01 = 0.0f;
         matrix->m02 = -sine;
-        matrix->m20 = sine;
+        matrix->m03 = 0.0f;
         matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
         matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
         matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
         matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+        matrix->m20 = sine;
+        matrix->m21 = 0.0f;
+        matrix->m22 = cosine;
+        matrix->m23 = 0.0f;
         matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
         matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
         matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
