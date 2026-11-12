@@ -308,7 +308,7 @@ void edgraClumpReseed(i32 index) {
 
 void edgracbApplyGlobalFade(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 i;
-    struct eduimenu_s *parent;
+    struct eduimenu_s *parent = NULL;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
         if (GrassClumps[i].element_count) {
             GrassClumps[i].near_distance = edgra_global_fadein;
@@ -316,9 +316,10 @@ void edgracbApplyGlobalFade(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
         }
     }
     edgraInitAllClumps();
-    parent = menu->parent;
-    if (parent)
+    if (menu->parent) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
+    }
     if (menu->callback)
         menu->callback(menu, parent);
 }
