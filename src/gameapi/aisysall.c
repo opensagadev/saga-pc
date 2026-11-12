@@ -10468,20 +10468,15 @@ static void antinodeEditor_AntinodeMoved(EDANTINODE_s *node) {
 }
 
 static void __cdecl AiEditorAntinodeGameFlagsPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    EDANTINODE_s *selected;
     (void)menu;
     (void)event;
     if (aieditor->selected_antinode != NULL) {
-        if ((aieditor->selected_antinode->game_flags & (u8)item->data) != 0)
+        if ((aieditor->selected_antinode->game_flags & item->data) != 0)
             aieditor->selected_antinode->game_flags &= ~(u8)item->data;
         else
             aieditor->selected_antinode->game_flags |= (u8)item->data;
-        selected = aieditor->selected_antinode;
-        if ((selected->game_flags & 0x80) != 0) {
-            selected->special.scene = NULL;
-            selected->special.special = NULL;
-            selected->special.display_special = NULL;
-        }
+        if ((aieditor->selected_antinode->game_flags & 0x80) != 0)
+            memset(&aieditor->selected_antinode->special, 0, sizeof(aieditor->selected_antinode->special));
     }
 }
 
