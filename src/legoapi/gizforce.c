@@ -1611,11 +1611,11 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     GAMEOBJECT *object = (GAMEOBJECT *)object_pointer;
     GIZMO_PC *gizmo;
     GIZFORCE_PC *force;
-    GIZMO_PC *best = NULL;
-    GIZMO_PC *previous = NULL;
-    NUVEC *best_position = NULL;
-    NUVEC *previous_position = NULL;
-    f32 best_distance = 1000000000.0f;
+    GIZMO_PC *best;
+    GIZMO_PC *previous;
+    NUVEC *best_position;
+    NUVEC *previous_position;
+    f32 best_distance;
     NUVEC direction_copy, delta;
     f32 minimum_x, minimum_z, maximum_x, maximum_z;
     f32 distance_spill, dot_spill, dx_spill, dz_spill;
@@ -1625,6 +1625,11 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     i32 index;
     if (set == NULL || set->data == NULL || type == NULL)
         return NULL;
+    best_distance = 1000000000.0f;
+    best = NULL;
+    previous = NULL;
+    best_position = NULL;
+    previous_position = NULL;
     direction_copy = *direction;
     minimum_x = (f64)origin->x - (f64)radius;
     minimum_z = (f64)origin->z - (f64)radius;
@@ -1640,8 +1645,8 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
         force = (GIZFORCE_PC *)gizmo->object;
         if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x10000) != 0)
             continue;
-        if (minimum_x > force->position.x || maximum_x < force->position.x || minimum_z > force->position.z ||
-            maximum_z < force->position.z)
+        if (force->position.x < minimum_x || force->position.x > maximum_x || force->position.z < minimum_z ||
+            force->position.z > maximum_z)
             continue;
         if (planar == 0)
             distance_spill = NuVecDistSqr(&force->position, origin, &delta);
