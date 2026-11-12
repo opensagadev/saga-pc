@@ -10028,25 +10028,23 @@ static void __cdecl AiEditorRouteUsersCancelPc(eduimenu_s *menu, eduimenu_s *chi
 }
 
 static void __cdecl AiEditorSetRouteUsersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    AIEDITOR_RENDER_STATE *state;
     EDAIPATHROUTE_s *route;
     u64 mask;
     (void)menu;
     (void)event;
     if (item == NULL)
         return;
-    state = aieditor;
-    if (state->current_path == NULL)
+    if (aieditor->current_path == NULL)
         return;
-    route = state->current_path->current_route;
+    route = aieditor->current_path->current_route;
     if (route == NULL || (u32)item->data >= 64)
         return;
     mask = (u64)1 << item->data;
     if ((route->user_mask & mask) != 0) {
-        state->current_path->current_route->user_mask &= ~mask;
+        aieditor->current_path->current_route->user_mask &= ~mask;
         item->flags &= ~1;
     } else {
-        state->current_path->current_route->user_mask |= mask;
+        aieditor->current_path->current_route->user_mask |= mask;
         item->flags |= 1;
     }
 }
@@ -11102,7 +11100,7 @@ static void __cdecl AiEditorSetAreaActivationPc(eduimenu_s *menu, eduiitem_s *it
     (void)event;
     if (item != NULL && aieditor->selected_creature != NULL) {
         for (link = NuLinkedListGetHead(&aieditor->areas); link != NULL;
-             link = NuLinkedListGetNext(&aieditor->areas, link), ++index) {
+             ++index, link = NuLinkedListGetNext(&aieditor->areas, link)) {
             if (index == item->data) {
                 aieditor->selected_creature->activation_area = (EDAIAREA_s *)link;
                 aieditor->selected_creature->activation = 1;
@@ -11228,7 +11226,7 @@ static void __cdecl AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *it
         return;
     }
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
-         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link), ++index) {
+         ++index, locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
         if (index == item->data) {
             aieditor->selected_creature->respawn_locator = locator;
             return;
@@ -11239,7 +11237,7 @@ static void __cdecl AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *it
 static void __cdecl AiEditorSelectRespawnLocatorPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
     EDLOCATOR_s *locator;
-    i32 index = 0;
+    i32 index;
     (void)item;
     (void)event;
     if (menu == NULL)
@@ -11247,8 +11245,9 @@ static void __cdecl AiEditorSelectRespawnLocatorPc(eduimenu_s *parent, eduiitem_
     eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc,
                                               aieditor->selected_creature->respawn_locator == NULL, 1,
                                               AiEditorSetRespawnLocatorPc, "NONE"));
+    index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
-         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link), ++index) {
+         ++index, locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
         i32 selected = aieditor->selected_creature->respawn_locator == locator;
         eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
                                                   AiEditorSetRespawnLocatorPc, locator->name));
