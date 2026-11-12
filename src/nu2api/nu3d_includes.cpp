@@ -4296,15 +4296,17 @@ extern "C" {
         return NuQFntReadBuffer(&aligned, buffer, end);
     }
 
+    i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
+
     VUFNT *__cdecl NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
         FONT_LOAD_READER_PC *reader = (FONT_LOAD_READER_PC *)font;
         FONT_LOAD_READER_PC *duplicate;
         PC_MATERIAL_CREATE_VIEW *material, *original;
-        u32 previous_plane;
+        i32 previous_plane;
         if (font == NULL)
             AnimationDiagnosticNoOpPc();
         duplicate = (FONT_LOAD_READER_PC *)((buffer->addr + 15) & ~15U);
-        buffer->void_ptr = duplicate;
+        buffer->addr = (buffer->addr + 15) & ~15U;
         buffer->addr += reader->size;
         if (buffer->addr < end->addr) {
             PCByteCopy_candidate(duplicate, font, reader->size);
@@ -4312,10 +4314,7 @@ extern "C" {
             duplicate->glyphs = (VUFNTCHAR *)((u32)duplicate->glyphs + (u32)duplicate - (u32)font);
             duplicate->unicode_map = (VUCHARIDX *)((u32)duplicate->unicode_map + (u32)duplicate - (u32)font);
         }
-        if (plane < 0 || plane >= 24)
-            AnimationDiagnosticNoOpPc();
-        previous_plane = numtl_renderplane;
-        numtl_renderplane = plane;
+        previous_plane = NuMtlSetCurrentRenderPlane(plane);
         duplicate->material = (flags & 8) ? NuMtlCreate3D(1) : NuMtlCreate(1);
         material = (PC_MATERIAL_CREATE_VIEW *)duplicate->material;
         original = (PC_MATERIAL_CREATE_VIEW *)font->material;
@@ -4332,9 +4331,7 @@ extern "C" {
         if (flags & 0x40)
             ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes &= ~0xc000U;
         NuMtlUpdate(duplicate->material);
-        if (previous_plane >= 24)
-            AnimationDiagnosticNoOpPc();
-        numtl_renderplane = previous_plane;
+        NuMtlSetCurrentRenderPlane(previous_plane);
         return (VUFNT *)duplicate;
     }
 
