@@ -217,15 +217,15 @@ i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 
     (void)output;
     if ((flags & 0x200) != 0) {
         u32 saved = state->flags.bits.output_state;
-        i32 result;
         state->flags.value = flags | 0x400;
-        result = flowbox_callbacks[box->type].process(system, box, 0);
-        state->flags.bits.output_state = saved;
-        if (result != 0)
+        if (flowbox_callbacks[box->type].process(system, box, 0)) {
+            state->flags.bits.output_state = saved;
             return 1;
+        }
+        state->flags.bits.output_state = saved;
         return 0;
     }
-    return (flags >> 1) & 1;
+    return ((u8)flags >> 1) & 1;
 }
 
 void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
