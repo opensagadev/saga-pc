@@ -124,16 +124,16 @@ extern "C" void SetAccessibilityPc(u8 restore) {
         SystemParametersInfoA(SPI_SETFILTERKEYS, sizeof(PcFilterKeys), &PcFilterKeys, 0);
     } else {
         STICKYKEYS sticky = PcStickyKeys;
-        TOGGLEKEYS toggle = PcToggleKeys;
-        FILTERKEYS filter = PcFilterKeys;
         if (!(sticky.dwFlags & 1)) {
             sticky.dwFlags &= ~12;
             SystemParametersInfoA(SPI_SETSTICKYKEYS, sizeof(sticky), &sticky, 0);
         }
+        TOGGLEKEYS toggle = PcToggleKeys;
         if (!(toggle.dwFlags & 1)) {
             toggle.dwFlags &= ~12;
             SystemParametersInfoA(SPI_SETTOGGLEKEYS, sizeof(toggle), &toggle, 0);
         }
+        FILTERKEYS filter = PcFilterKeys;
         if (!(filter.dwFlags & 1)) {
             filter.dwFlags &= ~12;
             SystemParametersInfoA(SPI_SETFILTERKEYS, sizeof(filter), &filter, 0);
