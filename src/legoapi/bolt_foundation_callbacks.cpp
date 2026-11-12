@@ -323,9 +323,9 @@ extern "C" void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point,
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 effect;
     if (world->current_level == DOGFIGHTA_LDATA) {
+        effect = 0x2e;
         if (bolt->field_104 != -1)
             points = &bolt->dogfight_hit_position;
-        effect = 0x2e;
     } else {
         effect = bolt->hit_debris;
     }
