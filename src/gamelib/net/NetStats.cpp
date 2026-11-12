@@ -93,7 +93,6 @@ void NetStats::Update() {
 
 void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     f32 half_width = width * 0.5;
-    f32 right = x + half_width;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     NuPrim2DBegin(0xf, 5, NULL);
@@ -101,10 +100,9 @@ void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     NetPrimSetColour(0x80000080);
     NetPrimPosition(x, y, 0.0f);
     NetPrimSetColour(0x80000080);
-    f32 bottom = y - height;
-    NetPrimPosition(x, bottom, 0.0f);
+    NetPrimPosition(x, y - height, 0.0f);
     NetPrimSetColour(0x80000080);
-    NetPrimPosition(right, bottom, 0.0f);
+    NetPrimPosition(x + half_width, y - height, 0.0f);
 
     NuPrim2DEnd();
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
@@ -113,6 +111,7 @@ void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     NuQFntPushPrintMode(2);
     VUFNT *font = system_qfont;
     f32 font_height = NuQFntHeight(font);
+    f32 right = x + half_width;
     NuQFntSetColour(font, 0x80808080);
     NuQFntSetScale(font, 0.75f, 0.75f);
 
