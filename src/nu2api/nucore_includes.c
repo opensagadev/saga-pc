@@ -2006,13 +2006,7 @@ i32 __cdecl NuDatFileRead(NUFILE file, void *destination, i32 size) {
     }
 
     remaining = info->file_length + info->start - info->position;
-    if (remaining < 0) {
-        remaining = 0;
-    }
-    to_read = size;
-    if ((i64)to_read >= remaining) {
-        to_read = (i32)remaining;
-    }
+    to_read = (i32)MIN(size, MAX(0, remaining));
     if (to_read != 0) {
         bytes_read = NuFileRead(open_file->dat_file, destination, to_read);
         if (bytes_read >= 0) {
