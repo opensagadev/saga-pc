@@ -10734,10 +10734,8 @@ static void antinodeEditorDrawOnePc(EDANTINODE_s *node, i32 segments, u32 colour
             maximum.x = node->base_radius;
             maximum.y = node->upper_height;
             maximum.z = node->base_height;
-            if (!solid) {
-                minimum.y = 0.0f;
-                maximum.y = 0.0f;
-            }
+            if (!solid)
+                minimum.y = maximum.y = 0.0f;
             NuRndrBoundingBox(&minimum, &maximum, &matrix, colour);
             break;
         }
