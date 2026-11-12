@@ -140,8 +140,7 @@ void __cdecl CharShadows_Update(void) {
                     layer = EShadowInfo();
                     extended_height = EShadY;
                     if ((f64)extended_height != 2000000.0 && (u32)layer <= 16 && (TerLayer[layer].flags & 1) != 0) {
-                        if (height >= extended_height ||
-                            (f64)locator_position->y + (f64)0.075f < (f64)extended_height) {
+                        if (height < extended_height || (f64)locator_position->y + (f64)0.075f < (f64)height) {
                             slot->position.y = 2000000.0f;
                             height = 2000000.0f;
                         }
