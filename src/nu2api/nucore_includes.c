@@ -8462,7 +8462,7 @@ unsigned char ImplodeGetByteFromMem() {
 void ImplodeFillBuf(i32 count) {
     implode_bitbuf <<= count;
 
-    while (ImplodeAvailableBitsPc < count) {
+    while (count > ImplodeAvailableBitsPc) {
         implode_bitbuf |= ImplodeSubBitsPc << (count -= ImplodeAvailableBitsPc);
 
         if (implode_compsize != 0) {
