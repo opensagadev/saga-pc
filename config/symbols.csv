@@ -10789,6 +10789,7 @@ address,symbol,size,ctype
 0x006d3430,_StartupParseArgument,3,"i32 __cdecl (i32, char **)"
 0x006d3440,_StartupOpenDats,116,"void __cdecl (const char **, i32, VARIPTR *)"
 0x6d34c0,_StartupDatsSelectPc,39,void __cdecl (i32)
+0x6d3550,?wcsstr@@YAPA_WPA_WPB_W@Z,5,"wchar_t *__cdecl (wchar_t *, const wchar_t *)"
 0x6d37d0,?HashAuxiliaryBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,220,
 0x6d38f0,?PromoteConfigPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@H0@Z,115,
 0x6d3990,?ReadConfiguration@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@PBD@Z,262,"void __thiscall PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *)"
