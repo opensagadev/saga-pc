@@ -104,11 +104,11 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 va_arg(args, i32);
                 break;
             case 10:
+                audio_enabled = 1;
                 audio_gate = va_arg(args, i32);
                 audio_buffer_size = va_arg(args, i32);
                 audio_names = va_arg(args, void *);
                 audio_parameter = va_arg(args, void *);
-                audio_enabled = 1;
                 break;
             case 28:
                 audio_enabled = 0;
@@ -142,8 +142,14 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 break;
             case 18: {
                 i32 mode = va_arg(args, i32);
-                if (video_height == 224 && (mode == 2 || mode == 8))
-                    video_height = 256;
+                if (video_height == 224) {
+                    switch (mode) {
+                        case 2:
+                        case 8:
+                            video_height = 256;
+                            break;
+                    }
+                }
                 break;
             }
             case 33:
@@ -188,6 +194,11 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
             case 60:
                 supplied_window = va_arg(args, HWND);
                 break;
+            case 56:
+            case 57:
+            case 58:
+                va_arg(args, i32);
+                continue;
             case 82:
                 NuPadSetMaxGamePads(va_arg(args, i32));
                 break;
@@ -196,8 +207,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 break;
             case 79:
                 NuHwParameter4fPc = va_arg(args, u32);
-                icon = va_arg(args, u32);
-                break;
+                /* fall through */
             case 83:
                 icon = va_arg(args, u32);
                 break;
@@ -234,57 +244,52 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     }
     /* The two device-specific tables choose this same low-capability path.
      * Their exact finite ID sets are retained in vendor-protocol-native.json. */
-    switch (PCDeviceBackend.identifier.vendor) {
-        case 0x10de:
-            switch (PCDeviceBackend.identifier.device_id) {
-                case 0xf3:
-                case 0x14f:
-                case 0x161:
-                case 0x162:
-                case 0x163:
-                case 0x1df:
-                case 0x221:
-                case 0x7e1:
-                    PcWindowOptions.SetUseHires(0);
-                    PcWindowOptions.SetOption459(0);
-                    PcWindowOptions.Save();
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case 0x1002:
-            switch (PCDeviceBackend.identifier.device_id) {
-                case 0x7142:
-                case 0x7146:
-                case 0x714d:
-                case 0x714e:
-                case 0x715e:
-                case 0x7162:
-                case 0x7166:
-                case 0x716d:
-                case 0x716e:
-                case 0x717e:
-                case 0x7180:
-                case 0x7183:
-                case 0x7187:
-                case 0x718f:
-                case 0x71a0:
-                case 0x71a3:
-                case 0x71a7:
-                case 0x71af:
-                case 0x71c3:
-                case 0x71e3:
-                    PcWindowOptions.SetUseHires(0);
-                    PcWindowOptions.SetOption459(0);
-                    PcWindowOptions.Save();
-                    break;
-                default:
-                    break;
-            }
-            break;
-        default:
-            break;
+    if (PCDeviceBackend.identifier.vendor == 0x10de) {
+        switch (PCDeviceBackend.identifier.device_id) {
+            case 0xf3:
+            case 0x14f:
+            case 0x161:
+            case 0x162:
+            case 0x163:
+            case 0x1df:
+            case 0x221:
+            case 0x7e1:
+                PcWindowOptions.SetUseHires(0);
+                PcWindowOptions.SetOption459(0);
+                PcWindowOptions.Save();
+                break;
+            default:
+                break;
+        }
+    } else if (PCDeviceBackend.identifier.vendor == 0x1002) {
+        switch (PCDeviceBackend.identifier.device_id) {
+            case 0x7142:
+            case 0x7146:
+            case 0x714d:
+            case 0x714e:
+            case 0x715e:
+            case 0x7162:
+            case 0x7166:
+            case 0x716d:
+            case 0x716e:
+            case 0x717e:
+            case 0x7180:
+            case 0x7183:
+            case 0x7187:
+            case 0x718f:
+            case 0x71a0:
+            case 0x71a3:
+            case 0x71a7:
+            case 0x71af:
+            case 0x71c3:
+            case 0x71e3:
+                PcWindowOptions.SetUseHires(0);
+                PcWindowOptions.SetOption459(0);
+                PcWindowOptions.Save();
+                break;
+            default:
+                break;
+        }
     }
     if (PcWindowOptions.usehires) {
         PCDeviceBackend.requested_multisample = 0;
