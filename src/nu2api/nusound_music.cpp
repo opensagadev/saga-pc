@@ -845,7 +845,7 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     indexes = (f32 *)((cursor->addr + 3) & ~3u);
     cursor->addr = (cursor->addr + 3) & ~3u;
     cursor->addr += 0x2000;
-    album_count = extra_track_count = index_count = 0;
+    index_count = extra_track_count = album_count = 0;
     NuFParSetInterpreterErrorHandler(NULL);
     NUFPAR_PC *parser = NuFParCreate((char *)file);
     if (parser != NULL) {
@@ -877,8 +877,8 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     if (new_tracks != old_tracks) {
         if (extra_track_count != 0)
             PCByteCopy_candidate(new_tracks, old_tracks, extra_track_count * sizeof(Track));
-        extra_tracks = new_tracks;
         i32 delta = (i32)((char *)new_tracks - (char *)old_tracks);
+        extra_tracks = new_tracks;
         for (i32 i = 0; i < album_count; ++i)
             if (albums[i].tracks_source != NULL)
                 albums[i].tracks_source = (Track *)((char *)albums[i].tracks_source + delta);
@@ -888,8 +888,8 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     if (new_indexes != old_indexes) {
         if (index_count != 0)
             PCByteCopy_candidate(new_indexes, old_indexes, index_count * sizeof(f32));
-        indexes = new_indexes;
         i32 delta = (i32)((char *)new_indexes - (char *)old_indexes);
+        indexes = new_indexes;
         for (i32 i = 0; i < extra_track_count; ++i)
             if (extra_tracks[i].entry_times != NULL)
                 extra_tracks[i].entry_times = (f32 *)((char *)extra_tracks[i].entry_times + delta);
