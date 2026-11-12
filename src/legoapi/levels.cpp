@@ -795,8 +795,9 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
                 index = 21;
             }
             ids[index] = -1;
-            for (i16 *id = ids; *id != -1; ++id) {
-                if (World_AppendFreePlayPrivate(*id) != 0)
+            i32 model;
+            for (index = 0; (model = ids[index]) != -1; ++index) {
+                if (World_AppendFreePlayPrivate(model) != 0)
                     ++FreePlayBonusCount;
             }
         }
