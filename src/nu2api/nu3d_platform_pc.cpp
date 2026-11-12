@@ -2220,9 +2220,17 @@ extern "C" {
     }
 
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *view, NUMTX *projection) {
-        NUVEC scale = {PCSpecialProjectionAdjust.x_scale, PCSpecialProjectionAdjust.y_scale, 1.0f};
-        NUVEC translation = {PCSpecialProjectionAdjust.x_offset, PCSpecialProjectionAdjust.y_offset, 0.0f};
+        NUVEC scale;
+        NUVEC translation;
+        scale.z = 1.0f;
+        translation.x = 0.0f;
+        translation.y = 0.0f;
+        translation.z = 0.0f;
+        scale.x = PCSpecialProjectionAdjust.x_scale;
+        scale.y = PCSpecialProjectionAdjust.y_scale;
         NuMtxSetScale(&PcGeometryScaleMatrixPc, &scale);
+        translation.x = PCSpecialProjectionAdjust.x_offset;
+        translation.y = PCSpecialProjectionAdjust.y_offset;
         NuMtxSetTranslation(&PcGeometryTranslationMatrixPc, &translation);
         NuMtxMulH(&PcGeometryAdjustedProjectionMatrixPc, projection, &PcGeometryScaleMatrixPc);
         NuMtxMulH(&PcGeometryAdjustedProjectionMatrixPc, &PcGeometryAdjustedProjectionMatrixPc,
@@ -2244,9 +2252,11 @@ extern "C" {
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         NuShaderManagerSetfv(0x46, &depth.x);
-        f32 left, right, bottom, top;
-        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &left, &right, &bottom, &top, &z_near, &z_far);
-        NUVEC4 frustum = {left, right - left, bottom, top - bottom};
+        NUVEC4 frustum;
+        NuMtxGetFrustumD3D(&PcGeometryProjectionMatrixPc, &frustum.x, &frustum.y, &frustum.z, &frustum.w, &z_near,
+                           &z_far);
+        frustum.y -= frustum.x;
+        frustum.w -= frustum.z;
         NuShaderManagerSetfv(0x47, &frustum.x);
     }
 
