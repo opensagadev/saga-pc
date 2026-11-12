@@ -4643,31 +4643,49 @@ extern "C" {
     }
 
     f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text) {
+        f32 length;
         f32 x_scale;
-        f32 length = 0.0f;
         u16 character;
+        f32 width;
         if (font == NULL) {
             font = system_qfont;
+            if (font == NULL)
+                return 0.0f;
         }
-        if (font == NULL) {
-            return 0.0f;
-        }
+        length = 0.0f;
         x_scale = *font->x_scale;
-        while ((character = *text++) != 0) {
-            f32 width;
-            volatile f32 gap;
-            if (character >= '0' && character <= '9' && (NuQFntMode & 1) != 0) {
-                u16 zero = NuQFntEncodeUnicodeChar(font, '0');
-                width = font->glyphs[zero].width;
-            } else if (character == 0xffff) {
-                width = 0.0f;
-            } else if (character == ' ' && nuqfnt_space_width != 0.0f) {
-                width = nuqfnt_space_width;
-            } else {
-                width = font->glyphs[character].width;
+        while (*text != 0) {
+            character = *text++;
+            switch (character) {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if ((NuQFntMode & 1) != 0)
+                        width = font->glyphs[NuQFntEncodeUnicodeChar(font, '0')].width;
+                    else
+                        width = font->glyphs[character].width;
+                    break;
+                case 0xffff:
+                    width = 0.0f;
+                    break;
+                case ' ':
+                    if (nuqfnt_space_width != 0.0f) {
+                        width = nuqfnt_space_width;
+                        break;
+                    }
+                    /* fall through */
+                default:
+                    width = font->glyphs[character].width;
+                    break;
             }
-            gap = font->ic_gap;
-            length = (gap + width) + length;
+            length = font->ic_gap + width + length;
         }
         return length * qfnt_len_scale * x_scale;
     }
