@@ -421,7 +421,7 @@ SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
     for (index = 0; index < world->signal_count; ++index, ++signal) {
         f32 signal_distance;
         if (object != NULL) {
-            if ((signal->flags & 3) != 3 || (signal->flags & 4) != 0 || (u16)signal->suit->character_id != object->id)
+            if (!signal->visible || !signal->active || signal->in_use || (u16)signal->suit->character_id != object->id)
                 continue;
             signal_distance = NuVecDistSqr(position, &signal->target_position, NULL);
         } else {
