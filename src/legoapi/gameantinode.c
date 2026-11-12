@@ -220,7 +220,7 @@ void *__cdecl GameAntinode_UpdateAntiNodeUsingData(void *opaque_system, void *op
     ANTINODE_PC *node = (ANTINODE_PC *)opaque_node;
     ANTINODE_DATA_PC *data = (ANTINODE_DATA_PC *)opaque_data;
     f32 radius;
-    if (!data || !position)
+    if (!position || !data)
         return node;
     if (data->mode & 1)
         disabled = 1;
@@ -232,19 +232,25 @@ void *__cdecl GameAntinode_UpdateAntiNodeUsingData(void *opaque_system, void *op
         node->position = data->position;
         NuVecRotateY(&node->position, &node->position, angle);
         NuVecAdd(&node->position, &node->position, position);
-        node->min_y = data->min_y + position->y;
-        node->max_y = data->max_y + position->y;
         node->radius = data->radius;
         node->extent_x = data->extent_x;
         node->extent_z = data->extent_z;
+        node->min_y = data->min_y + position->y;
+        node->max_y = data->max_y + position->y;
         node->angle = (u16)(data->angle + angle);
         node->shape = data->shape;
         node->remaining_time = duration;
-        radius = node->radius;
-        if (node->shape == 1)
-            radius = node->extent_x > node->extent_z ? node->extent_x : node->extent_z;
-        else if (node->shape == 2)
-            radius = NuFsqrt(node->extent_x * node->extent_x + node->extent_z * node->extent_z);
+        switch (node->shape) {
+            case 1:
+                radius = node->extent_x > node->extent_z ? node->extent_x : node->extent_z;
+                break;
+            case 2:
+                radius = NuFsqrt(node->extent_x * node->extent_x + node->extent_z * node->extent_z);
+                break;
+            default:
+                radius = node->radius;
+                break;
+        }
         GameAntinode_FindGridPosition(system->world, &node->position, radius, radius, &node->grid_min_x,
                                       &node->grid_min_z, &node->grid_max_x, &node->grid_max_z);
     } else if (!disabled)
