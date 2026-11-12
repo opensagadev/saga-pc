@@ -660,7 +660,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     if ((object->flags_e20 & 0x1000000) != 0) {
-        if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
+        if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
             object->character_model->action_animations[39] != NULL)
             object->anim_packet.requested_animation = 39;
         else
@@ -673,13 +673,10 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
             JumpAnimCode(object);
         else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0) {
-            if (object->character_model->action_animations[39] != NULL)
-                object->anim_packet.requested_animation = 39;
-            else
-                object->anim_packet.requested_animation = 11;
-        } else if (object->character_context == 27 || object->character_context == 29 ||
-                   object->character_context == 18 || object->character_context == 8) {
+        else if (object->character_context == 27 && (object->flags_e20 & 0x80) == 0 && (object->flags_e20 & 0x500) == 0)
+            object->anim_packet.requested_animation = object->character_model->action_animations[39] != NULL ? 39 : 11;
+        else if (object->character_context == 27 || object->character_context == 29 ||
+                 object->character_context == 18 || object->character_context == 8) {
             if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
@@ -687,13 +684,13 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = 11;
         } else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
-                if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
-                    if ((object->weapon_scale == 1.0f || object->field_e33 == 1) &&
-                        object->character_model->action_animations[63] != NULL)
-                        object->anim_packet.requested_animation = 63;
-                    else
-                        object->anim_packet.requested_animation = 4;
-                } else
+                if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST)
+                    object->anim_packet.requested_animation =
+                        (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
+                                object->character_model->action_animations[63] != NULL
+                            ? 63
+                            : 4;
+                else
                     MoveAnim_Manage(object, object->pad->input_magnitude,
                                     (object->character_data->game_character->flags_090 & 8) == 0, 1);
             } else if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
@@ -702,17 +699,17 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
         }
         if (UsingExtraActionsFn != NULL && UsingExtraActionsFn(object)) {
             switch (object->anim_packet.requested_animation) {
-                case 0:
-                    object->anim_packet.requested_animation = 114;
-                    break;
                 case 1:
                     object->anim_packet.requested_animation = 117;
                     break;
-                case 3:
-                    object->anim_packet.requested_animation = 115;
-                    break;
                 case 4:
                     object->anim_packet.requested_animation = 113;
+                    break;
+                case 0:
+                    object->anim_packet.requested_animation = 114;
+                    break;
+                case 3:
+                    object->anim_packet.requested_animation = 115;
                     break;
                 case 5:
                     object->anim_packet.requested_animation = 116;
