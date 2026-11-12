@@ -6661,9 +6661,10 @@ i32 __cdecl Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
                                        char **params, i32 count, i32 first_time, f32 elapsed) {
     NUVEC offset = {0.0f, 0.0f, 0.0f};
     if (first_time != 0) {
-        NUSPECIALHANDLE source = {0};
+        NUSPECIALHANDLE source;
         i32 index;
         char *value;
+        memset(&source, 0, sizeof(source));
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], "from=");
             if (value != NULL)
