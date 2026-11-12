@@ -482,49 +482,42 @@ void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
 
 i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    struct GIZMOPICKUPRUNTIMESYS_s *system;
     GIZMOPICKUP_PC *pickup;
-    i32 version, value, index;
-    f32 number;
+    i32 version, index;
     (void)unused;
-    if (world->pickup_runtime_sys->pickup_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    value = EdFileReadInt();
-    world->pickup_runtime_sys->pickup_count = value;
-    if (version >= 3) {
-        value = EdFileReadInt();
-        world->pickup_runtime_sys->total_score = value;
-    }
-    if (version >= 5) {
-        number = EdFileReadFloat();
-        world->pickup_runtime_sys->draw_distance = number;
-        number = EdFileReadFloat();
-        system = world->pickup_runtime_sys;
-        system->pickup_scale = number;
-        if (version > 5) {
-            AreaPickupScale = system->pickup_scale;
+    if (world->pickup_runtime_sys->pickup_count == 0) {
+        version = EdFileReadInt();
+        world->pickup_runtime_sys->pickup_count = EdFileReadInt();
+        if (version >= 3)
+            world->pickup_runtime_sys->total_score = EdFileReadInt();
+        if (version >= 5) {
+            world->pickup_runtime_sys->draw_distance = EdFileReadFloat();
+            world->pickup_runtime_sys->pickup_scale = EdFileReadFloat();
+            if (version > 5)
+                AreaPickupScale = world->pickup_runtime_sys->pickup_scale;
+            else {
+                SetAreaPickupScalePc(world->area_index);
+                world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
+            }
         } else {
-            SetAreaPickupScalePc(world->area_index);
-            world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
+            AreaPickupScale = 1.0f;
+            world->pickup_runtime_sys->pickup_scale = 1.0f;
         }
-    } else {
-        AreaPickupScale = 1.0f;
-        world->pickup_runtime_sys->pickup_scale = 1.0f;
+        AdjustPickupDrawDistancePc(version, world->area_index, &world->pickup_runtime_sys->draw_distance);
+        SetAreaPickupGravity(world->area_index, world->level_idx);
+        pickup = world->pickup_runtime_sys->pickups;
+        for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
+            EdFileRead(pickup->name, sizeof(pickup->name));
+            EdFileReadNuVec(&pickup->position);
+            pickup->unknown_14[0] = (u8)EdFileReadChar();
+            if (version >= 2)
+                pickup->unknown_14[1] = (u8)EdFileReadChar();
+            if (version >= 4)
+                pickup->activation_group = (u8)EdFileReadChar();
+        }
+        return 1;
     }
-    AdjustPickupDrawDistancePc(version, world->area_index, &world->pickup_runtime_sys->draw_distance);
-    SetAreaPickupGravity(world->area_index, world->level_idx);
-    pickup = world->pickup_runtime_sys->pickups;
-    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
-        EdFileRead(pickup->name, sizeof(pickup->name));
-        EdFileReadNuVec(&pickup->position);
-        pickup->unknown_14[0] = (u8)EdFileReadChar();
-        if (version >= 2)
-            pickup->unknown_14[1] = (u8)EdFileReadChar();
-        if (version >= 4)
-            pickup->activation_group = (u8)EdFileReadChar();
-    }
-    return 1;
+    return 0;
 }
 
 typedef struct PICKUP_RESET_RECORD_PC {
