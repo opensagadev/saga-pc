@@ -140,22 +140,16 @@ static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {
     }
 }
 
-static i32 JumpLandAnimPc(GAMEOBJECT *object) {
-    if (object->action_movement_state == 8 && object->character_model->model_data_b[0xb5] != NULL)
-        return 0xb5;
-    if (object->character_model->model_data_b[5] != NULL)
-        return 5;
-    return -1;
-}
-
 static void JumpAnimCode(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
     i32 landing = (object->context_variant_flags >> 15) & 1;
-    i32 animation;
     if (landing) {
-        animation = JumpLandAnimPc(object);
-        if (animation != -1) {
-            object->anim_packet.requested_animation = (i16)animation;
+        if (object->action_movement_state == 8 && object->character_model->model_data_b[0xb5] != NULL) {
+            object->anim_packet.requested_animation = 0xb5;
+            return;
+        }
+        if (object->character_model->model_data_b[5] != NULL) {
+            object->anim_packet.requested_animation = 5;
             return;
         }
     }
