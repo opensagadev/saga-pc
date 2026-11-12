@@ -119,21 +119,6 @@ STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, header) == 0);
 extern const char NuFileSourcePathPC[50];
 
 /* Append to nufile.c: real existing NuFileWrite is intentionally in this TU. */
-typedef union PC_FILE_WRITE_WORD32 {
-    u32 value;
-    u8 bytes[4];
-} PC_FILE_WRITE_WORD32;
-STATIC_ASSERT(sizeof(PC_FILE_WRITE_WORD32) == 4);
-
-typedef union PC_FILE_WRITE_FLOAT32 {
-    f32 value;
-    u32 representation;
-    u8 bytes[4];
-} PC_FILE_WRITE_FLOAT32;
-STATIC_ASSERT(sizeof(PC_FILE_WRITE_FLOAT32) == 4);
-STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, value) == 0);
-STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, representation) == 0);
-STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, bytes) == 0);
 
 extern i32 nufile_lsn_allowed;
 
@@ -1634,67 +1619,76 @@ static PC_FILEPAKITEM *GetItems(PC_FILEPAKHDR_V0 *header) {
     }
 }
 
+static void NuFileEndianSwap16(void *value) {
+    u8 *value_ptr;
+    u16 swapped;
+    u8 *swap_ptr;
+
+    value_ptr = (u8 *)value;
+    swap_ptr = (u8 *)&swapped;
+    swap_ptr[0] = value_ptr[1];
+    swap_ptr[1] = value_ptr[0];
+    *((u16 *)value) = swapped;
+}
+
+static void NuFileEndianSwap32(void *value) {
+    u8 *value_ptr;
+    u32 swapped;
+    u8 *swap_ptr;
+
+    value_ptr = (u8 *)value;
+    swap_ptr = (u8 *)&swapped;
+    swap_ptr[0] = value_ptr[3];
+    swap_ptr[1] = value_ptr[2];
+    swap_ptr[2] = value_ptr[1];
+    swap_ptr[3] = value_ptr[0];
+    *((u32 *)value) = swapped;
+}
+
 i32 __cdecl NuFileWriteFloat(NUFILE file, f32 value) {
-    i32 swap_endian = NuFile_SwapEndianOnWrite;
-    PC_FILE_WRITE_FLOAT32 input;
-    PC_FILE_WRITE_WORD32 output;
-    input.value = value;
-    if (swap_endian != 0) {
-        output.bytes[0] = input.bytes[3];
-        output.bytes[1] = input.bytes[2];
-        output.bytes[2] = input.bytes[1];
-        output.bytes[3] = input.bytes[0];
-        input.representation = output.value;
+    f32 tmp = value;
+    if (NuFile_SwapEndianOnWrite != 0) {
+        NuFileEndianSwap32(&tmp);
     }
-    return NuFileWrite(file, &input.value, 4);
+    return NuFileWrite(file, &tmp, sizeof(tmp));
 }
 
 i32 __cdecl NuFileWriteInt(NUFILE file, i32 value) {
-    PC_FILE_WRITE_WORD32 input, output;
-    input.value = (u32)value;
-    output.value = input.value;
+    i32 tmp;
+
+    tmp = value;
     if (NuFile_SwapEndianOnWrite != 0) {
-        output.bytes[0] = input.bytes[3];
-        output.bytes[1] = input.bytes[2];
-        output.bytes[2] = input.bytes[1];
-        output.bytes[3] = input.bytes[0];
+        NuFileEndianSwap32(&tmp);
     }
-    return NuFileWrite(file, &output.value, 4);
+
+    return NuFileWrite(file, &tmp, sizeof(i32));
 }
 
 u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value) {
-    PC_FILE_WRITE_WORD32 input, output;
-    input.value = value;
-    output.value = input.value;
+    u32 tmp;
+
+    tmp = value;
     if (NuFile_SwapEndianOnWrite != 0) {
-        output.bytes[0] = input.bytes[3];
-        output.bytes[1] = input.bytes[2];
-        output.bytes[2] = input.bytes[1];
-        output.bytes[3] = input.bytes[0];
+        NuFileEndianSwap32(&tmp);
     }
-    return (u32)NuFileWrite(file, &output.value, 4);
+
+    return NuFileWrite(file, &tmp, sizeof(u32));
 }
 
 i32 __cdecl NuFileWriteShort(NUFILE file, i16 value) {
-    PC_FILE_WRITE_WORD32 input, output;
-    input.value = (u16)value;
-    output.value = input.value;
+    i16 tmp = value;
     if (NuFile_SwapEndianOnWrite != 0) {
-        output.bytes[0] = input.bytes[1];
-        output.bytes[1] = input.bytes[0];
+        NuFileEndianSwap16(&tmp);
     }
-    return NuFileWrite(file, &output.value, 2);
+    return NuFileWrite(file, &tmp, sizeof(tmp));
 }
 
 i32 __cdecl NuFileWriteUnsignedShort(NUFILE file, u16 value) {
-    PC_FILE_WRITE_WORD32 input, output;
-    input.value = value;
-    output.value = input.value;
+    u16 tmp = value;
     if (NuFile_SwapEndianOnWrite != 0) {
-        output.bytes[0] = input.bytes[1];
-        output.bytes[1] = input.bytes[0];
+        NuFileEndianSwap16(&tmp);
     }
-    return NuFileWrite(file, &output.value, 2);
+    return NuFileWrite(file, &tmp, sizeof(tmp));
 }
 
 i32 __cdecl NuFileWriteChar(NUFILE file, i8 value) {
