@@ -101,7 +101,7 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                     error -= sock->unknown_98;
                 else if (error < sock->unknown_98 * -0.5)
                     error += sock->unknown_98;
-                if (0.0f > speedervals[processor->action_data_1].distance)
+                if (speedervals[processor->action_data_1].distance < 0.0f)
                     reference = error > 0.0f ? player : player2;
                 else
                     reference = error > 0.0f ? player2 : player;
@@ -180,7 +180,7 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                     processor->action_timer = 0.0f;
                     return 0;
                 }
-                if (speedervals[0].distance * 0.8f < distance || 0.0f < processor->action_timer) {
+                if (distance > speedervals[0].distance * 0.8f || processor->action_timer > 0.0f) {
                     if (speeder_hitpoints_lost < 2) {
                         processor->action_timer += elapsed;
                         if (!(speeder_ahead_time < processor->action_timer))
@@ -194,7 +194,7 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             case 1:
                 if (players_going_forward == 0)
                     goto reset;
-                if (0.0f > distance) {
+                if (distance < 0.0f) {
                     SpeederChase_SetMode(processor, 2);
                     return 0;
                 }
@@ -206,19 +206,25 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                 }
                 break;
             case 2:
-                if (players_going_forward == 0)
-                    goto reset;
-                if (player->character_context == 0x36)
-                    SpeederChase_SetMode(processor, 3);
-                if (0.0f < speeder_shootrate) {
-                    processor->action_timer -= elapsed;
-                    if (processor->action_timer <= 0.0f) {
-                        processor->action_timer = NuRandFloat() * speeder_shootrate + speeder_shootrate * 0.5f;
-                        if (can_fire != 0) {
-                            object->pad->buttons_pressed |= GAMEPAD_ACTION;
-                            return 0;
+                if (players_going_forward != 0) {
+                    if (player->character_context == 0x36)
+                        SpeederChase_SetMode(processor, 3);
+                    if (speeder_shootrate > 0.0f) {
+                        processor->action_timer -= elapsed;
+                        if (processor->action_timer <= 0.0f) {
+                            processor->action_timer = NuRandFloat() * speeder_shootrate + speeder_shootrate * 0.5f;
+                            if (can_fire != 0) {
+                                object->pad->buttons_pressed |= GAMEPAD_ACTION;
+                                return 0;
+                            }
                         }
                     }
+                } else {
+                // MATCH-EXCEPTION: case 1 jumps into case 2's else block; retail lays the shared
+                // SetMode(0) tail out after case 2's body, which no goto-free form reproduced.
+                reset:
+                    SpeederChase_SetMode(processor, 0);
+                    return 0;
                 }
                 break;
             case 3:
@@ -230,9 +236,6 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                 SpeederChase_SetMode(processor, 0);
                 return 0;
         }
-        return 0;
-    reset:
-        SpeederChase_SetMode(processor, 0);
     }
     return 0;
 }
