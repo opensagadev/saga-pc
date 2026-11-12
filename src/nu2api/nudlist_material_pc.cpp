@@ -6,15 +6,6 @@ typedef struct PC_DL_MATERIAL_READER {
     u32 reflection_flags;
 } PC_DL_MATERIAL_READER;
 STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
-typedef struct PC_DL_FACE_ON_READER {
-    NUMTX matrix;
-    f32 scale_factor;
-    NUMTX second_matrix;
-} PC_DL_FACE_ON_READER;
-STATIC_ASSERT(offsetof(PC_DL_FACE_ON_READER, matrix) == 0);
-STATIC_ASSERT(offsetof(PC_DL_FACE_ON_READER, scale_factor) == 0x40);
-STATIC_ASSERT(offsetof(PC_DL_FACE_ON_READER, second_matrix) == 0x44);
-STATIC_ASSERT(sizeof(PC_DL_FACE_ON_READER) == 0x84);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
@@ -114,29 +105,33 @@ extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
     matrix->m32 = shadow;
 }
 
+// Packet: NUMTX world, f32 magnitude, NUMTX face_on (0x84 bytes), read with a moving cursor.
 extern "C" void __cdecl NuDisplayListFaceOnTransformPc(void *arg) {
-    PC_DL_FACE_ON_READER *packet = (PC_DL_FACE_ON_READER *)arg;
-    NUVEC4 position, scale, tint;
+    VARIPTR packet;
+    NUVEC4 values, tint;
     f32 opacity;
-    position.x = packet->matrix.m30;
-    position.y = packet->matrix.m31;
-    position.z = packet->matrix.m32;
-    position.w = 1.0f;
-    packet->matrix.m30 = 0.0f;
-    packet->matrix.m31 = 0.0f;
-    packet->matrix.m32 = 0.0f;
-    opacity = packet->matrix.m33;
-    packet->matrix.m33 = 1.0f;
-    NuMtxTranspose(&packet->matrix, &packet->matrix);
-    PCDeviceSetVertexShaderConstantsF(0x50, &packet->matrix.m00, 4);
-    PCDeviceSetVertexShaderConstantsF(0x59, &position.x, 1);
-    scale.x = packet->scale_factor;
-    scale.y = 1.0f;
-    scale.z = 0.0f;
-    scale.w = 0.0f;
-    PCDeviceSetVertexShaderConstantsF(0x54, &scale.x, 1);
-    NuMtxTranspose(&packet->second_matrix, &packet->second_matrix);
-    PCDeviceSetVertexShaderConstantsF(0x55, &packet->second_matrix.m00, 4);
+    packet.void_ptr = arg;
+    NUMTX *matrix = (NUMTX *)packet.void_ptr;
+    values.x = matrix->m30;
+    values.y = matrix->m31;
+    values.z = matrix->m32;
+    values.w = 1.0f;
+    matrix->m30 = 0.0f;
+    matrix->m31 = 0.0f;
+    matrix->m32 = 0.0f;
+    opacity = matrix->m33;
+    matrix->m33 = 1.0f;
+    NuMtxTranspose(matrix, matrix);
+    PCDeviceSetVertexShaderConstantsF(0x50, &matrix->m00, 4);
+    packet.char_ptr += sizeof(NUMTX);
+    PCDeviceSetVertexShaderConstantsF(0x59, &values.x, 1);
+    values.x = *(f32 *)packet.void_ptr;
+    packet.char_ptr += sizeof(f32);
+    values.y = 1.0f;
+    values.z = values.w = 0.0f;
+    PCDeviceSetVertexShaderConstantsF(0x54, &values.x, 1);
+    NuMtxTranspose((NUMTX *)packet.void_ptr, (NUMTX *)packet.void_ptr);
+    PCDeviceSetVertexShaderConstantsF(0x55, (f32 *)packet.void_ptr, 4);
     tint = NuDisplayHandlerTintPc;
     if (opacity < 1.0f) {
         tint.w *= opacity;
