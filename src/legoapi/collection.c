@@ -172,12 +172,12 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
                                      i32 use_all_characters, f32 scale) {
     i32 index;
     (void)buffer_end;
+    collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
     collection->columns = (u16)columns;
     collection->count = 0;
-    collection->title_id = title_id;
     collection->name = name;
+    collection->title_id = title_id;
     collection->scale = scale;
-    collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
     if (use_all_characters == 0) {
         for (index = 0; index < CollectCount; ++index) {
             COLLECTID_PC *source = &CollectList[index];
@@ -194,7 +194,6 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
         }
     } else {
         for (index = 0; index < CHARCOUNT; ++index) {
-            COLLECTID_PC *entry;
             if (excluded_model_flags != 0 && (apicharsys->char_data[index].model_flags & excluded_model_flags) != 0)
                 continue;
             if (required_game_flags != 0 && (GCDataList[index].flags_090 & required_game_flags) != required_game_flags)
@@ -202,9 +201,9 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
             if (required_model_flags != 0 &&
                 (CDataList[index].model_flags & required_model_flags) != required_model_flags)
                 continue;
-            entry = &collection->list[collection->count++];
-            memset(entry, 0, sizeof(*entry));
-            entry->id = (i16)index;
+            memset(&collection->list[collection->count], 0, sizeof(COLLECTID_PC));
+            collection->list[collection->count].id = (i16)index;
+            collection->count++;
         }
     }
     buffer->addr = (u32)(collection->list + collection->count);
