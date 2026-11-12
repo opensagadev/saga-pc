@@ -14516,42 +14516,45 @@ extern "C" {
 
     DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32 count, i16 *indices, NUANIMDATA2_PC *animation, f32 frame) {
         NUANIM_TIME2_PC time;
-        DWA_WEIGHT_BLOCK_PC **result;
+        DWA_WEIGHT_BLOCK_PC **result = NULL;
         i32 render;
-        if (animation == NULL)
-            return NULL;
-        if (count == 0)
-            return NULL;
-        NuAnimData2CalcTime(animation, frame, &time);
-        if (indices == NULL)
-            count = 1;
-        result = NuRndrCreateBlendShapeDWAPointers(count);
-        memset(result, 0, ((u32)count * 4 + 15u) >> 4);
-        if (result == NULL)
-            return NULL;
-        for (render = 0; render < count; ++render) {
-            i32 node = indices == NULL ? 0 : indices[render];
-            i32 curve_count, curve;
-            DWA_WEIGHT_BLOCK_PC *weights;
-            DWA_CURVE_CELL_PC *cells;
-            i8 *types;
-            if (node < 0)
-                continue;
-            if (node >= NuAnimNumNodes(animation)) {
-                result[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
-                continue;
-            }
-            curve_count = animation->curve_count;
-            weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
-            result[render] = weights;
-            cells = &animation->curves[curve_count * node];
-            types = &animation->curve_types[curve_count * node];
-            if (weights == NULL)
-                continue;
-            for (curve = 0; curve < curve_count; ++curve) {
-                f32 value = types[curve] == 0 ? cells[curve].constant
-                                              : NuAnimCurve2CalcValEx(&cells[curve], &time, types[curve]);
-                weights->values[curve] = value;
+        if (animation != NULL && count != 0) {
+            NuAnimData2CalcTime(animation, frame, &time);
+            if (indices == NULL)
+                count = 1;
+            result = NuRndrCreateBlendShapeDWAPointers(count);
+            memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+            if (result != NULL) {
+                for (render = 0; render < count; ++render) {
+                    i32 node;
+                    i32 curve_count, curve;
+                    DWA_WEIGHT_BLOCK_PC *weights;
+                    DWA_CURVE_CELL_PC *cells;
+                    i8 *types;
+                    if (indices != NULL) {
+                        node = indices[render];
+                        if (node < 0)
+                            continue;
+                        if (node >= NuAnimNumNodes(animation)) {
+                            result[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                            continue;
+                        }
+                    } else {
+                        node = 0;
+                    }
+                    curve_count = animation->curve_count;
+                    weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+                    result[render] = weights;
+                    cells = &animation->curves[curve_count * node];
+                    types = &animation->curve_types[curve_count * node];
+                    if (weights == NULL)
+                        continue;
+                    for (curve = 0; curve < curve_count; ++curve) {
+                        f32 value = types[curve] == 0 ? cells[curve].constant
+                                                      : NuAnimCurve2CalcValEx(&cells[curve], &time, types[curve]);
+                        weights->values[curve] = value;
+                    }
+                }
             }
         }
         return result;
