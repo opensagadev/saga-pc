@@ -371,31 +371,31 @@ void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys)
 }
 i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
                        u32 discard) {
-    if (image->lock_index) {
-        image->lock_index = 0;
-        return 0;
+    if (!image->lock_index) {
+        if (pixels || pitch) {
+            RADFMV_LOCK_PC locked;
+            if (image->texture->methods->lock(image->texture, 0, &locked, NULL, discard ? 0x2000 : 0) < 0)
+                return 0;
+            if (pixels)
+                *pixels = locked.bits;
+            if (pitch)
+                *pitch = locked.pitch;
+            if (x)
+                *x = 0;
+            if (y)
+                *y = 0;
+            if (w)
+                *w = image->width;
+            if (h)
+                *h = image->height;
+        }
+        if (surface)
+            *surface = image->bink_format;
+        image->lock_index = 1;
+        return 1;
     }
-    if (pixels || pitch) {
-        RADFMV_LOCK_PC locked;
-        if (image->texture->methods->lock(image->texture, 0, &locked, NULL, discard ? 0x2000 : 0) < 0)
-            return 0;
-        if (pixels)
-            *pixels = locked.bits;
-        if (pitch)
-            *pitch = locked.pitch;
-        if (x)
-            *x = 0;
-        if (y)
-            *y = 0;
-        if (w)
-            *w = image->width;
-        if (h)
-            *h = image->height;
-    }
-    if (surface)
-        *surface = image->bink_format;
-    image->lock_index = 1;
-    return 1;
+    image->lock_index = 0;
+    return 0;
 }
 void RadFmvUnlockSinglePc(RADFMV_IMAGE_PC *image) {
     image->texture->methods->unlock(image->texture, 0);
