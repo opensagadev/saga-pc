@@ -47,19 +47,17 @@ extern NUVEC nusound_special_positions[5];
 
 void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
     (void)volume;
-    if (flags == 0) {
+    if (flags != 0) {
+        if (flags == 1 || flags == 3) {
+            nusound_special_positions[1] = *position;
+            PlaySfxById(sfx_id, &nusound_special_positions[1]);
+        }
+        if (flags == 2 || flags == 3) {
+            nusound_special_positions[2] = *position;
+            PlaySfxById(sfx_id, &nusound_special_positions[2]);
+        }
+    } else
         PlaySfxById(sfx_id, position);
-        return;
-    }
-    if ((flags & ~2) == 1) {
-        nusound_special_positions[1] = *position;
-        PlaySfxById(sfx_id, &nusound_special_positions[1]);
-    }
-    flags -= 2;
-    if ((u32)flags <= 1) {
-        nusound_special_positions[2] = *position;
-        PlaySfxById(sfx_id, &nusound_special_positions[2]);
-    }
 }
 
 void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
