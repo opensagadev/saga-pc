@@ -2756,6 +2756,8 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
 
 /* PC47ab00 1123bytes. Native episode ECX, alpha/area/mode stack; C++static source. */
 static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
+    char text[64];
+    char score[64];
     if (episode == -1) {
         if (area == -1)
             return;
@@ -2782,28 +2784,33 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     SmartTextEx(TTab[title], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                 HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
                 opacity);
-    f32 x = 0.0f;
-    f32 time = 0.0f;
-    char text[128];
+    f32 x;
+    f32 time;
     switch (mode) {
         case 0:
             x = -0.4f;
             time = Game.episode_save[episode].superstory_time_limit;
             SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
                         HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
-            Text_MakeScore(Game.episode_save[episode].superstory_score_target, text);
-            Text3DEx(text, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
+            Text_MakeScore(Game.episode_save[episode].superstory_score_target, score);
+            Text3DEx(score, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                      HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
             break;
         case 1:
             if (character_area == -1)
                 return;
             time = Game.area_save[character_area].challenge_trial_time;
+            x = 0.0f;
             break;
         case 2:
             if (vehicle_area == -1)
                 return;
             time = Game.area_save[vehicle_area].challenge_trial_time;
+            x = 0.0f;
+            break;
+        default:
+            time = 0.0f;
+            x = 0.0f;
             break;
     }
     if (mode != -1) {
