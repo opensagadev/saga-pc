@@ -209,8 +209,8 @@ extern "C" {
                 current_level->water_ripple_end_rgba[3] = 0;
 
                 current_level->water_ripple_life = 0.5f;
-                current_level->cam_pullback_dist = 0.5f;
-                current_level->cam_lateral_dist = 0.5f;
+                current_level->cam_pullback_dist = 0.0f;
+                current_level->cam_lateral_dist = 0.0f;
                 current_level->reflection_y = LevelConfigFarDistance;
                 current_level->area_level_index = -1;
                 current_level->blob_shadow_fade_near = 5;
@@ -220,8 +220,8 @@ extern "C" {
                 current_level->reflection_range = 10;
                 current_level->raycast_step = 5;
                 current_level->platform_scan_distance = 5;
-                current_level->conveyor_x_speed = LevelConfigFarDistance;
-                current_level->conveyor_z_speed = LevelConfigFarDistance;
+                current_level->conveyor_x_speed = 0.0f;
+                current_level->conveyor_z_speed = 0.0f;
 
                 for (music_index = 0; music_index < 6; music_index++) {
                     current_level->music_tracks[music_index] = -1;
