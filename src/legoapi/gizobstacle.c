@@ -89,12 +89,9 @@ void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     char *blowup_name;
     i32 play;
     i32 index;
-    if (count <= 0) {
-        return;
-    }
     special_name = NULL;
-    blowup_name = NULL;
     play = 1;
+    blowup_name = NULL;
     for (index = 0; index < count; ++index) {
         char *value = NuStrIStr(params[index], "BlowUp=");
         if (value != NULL) {
