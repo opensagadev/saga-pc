@@ -1682,7 +1682,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     u8 value;
     u8 focus_value;
     i32 index;
-    f32 duration, blend;
+    f32 signed_duration, duration, blend;
     i32 reverse;
     NUMTX look_at;
     NUVEC translation;
@@ -1782,30 +1782,27 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     if ((camera_state->flags & 2) == 0)
         return;
     target = &state->targets[camera_state->event_index];
-    duration = fabsf(target->duration);
+    // MATCH-EXCEPTION: retail takes the absolute value by clearing the sign bit in an integer register.
+    signed_duration = target->duration;
+    *(u32 *)&duration = *(u32 *)&signed_duration & 0x7fffffff;
     reverse = NuFsign(target->duration) < 0.0f;
-    if (reverse && target->start_frame + duration <= frame) {
+    if (reverse && frame >= target->start_frame + duration) {
         camera_state->flags &= ~2;
         return;
     }
-    translation.x = CutSceneCameraMatrixPc.m30;
-    translation.y = CutSceneCameraMatrixPc.m31;
-    translation.z = CutSceneCameraMatrixPc.m32;
+    translation = *(NUVEC *)&CutSceneCameraMatrixPc.m30;
     look_at = CutSceneCameraMatrixPc;
     NuMtxLookAtZ(&look_at, target->target);
-    if (duration > 0.01f) {
+    blend = 1.0f;
+    if (duration > 0.01f)
         blend = (frame - target->start_frame) / duration;
-        if (blend > 1.0f || (!(blend < 0.0f) && reverse))
-            blend = 1.0f - blend;
-    } else
-        blend = reverse ? 0.0f : 1.0f;
+    if (blend > 1.0f || (!(blend < 0.0f) && reverse))
+        blend = 1.0f - blend;
     NuMtxToQuat(&look_at, &target_rotation);
     NuMtxToQuat(&CutSceneCameraMatrixPc, &camera_rotation);
     NuQuatSlerp(&blended_rotation, &camera_rotation, &target_rotation, blend);
     NuQuatToMtx(&blended_rotation, &CutSceneCameraMatrixPc);
-    CutSceneCameraMatrixPc.m30 = translation.x;
-    CutSceneCameraMatrixPc.m31 = translation.y;
-    CutSceneCameraMatrixPc.m32 = translation.z;
+    *(NUVEC *)&CutSceneCameraMatrixPc.m30 = translation;
 }
 
 STATIC_ASSERT(offsetof(CUT_LOAD_TRIGGER_FLAG_PC, flags) == 2);
