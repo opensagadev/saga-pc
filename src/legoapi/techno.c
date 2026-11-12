@@ -552,7 +552,7 @@ TECHNO_PC *__cdecl Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJ
     i32 index;
     for (index = 0; index < world->techno_count; ++index, ++techno) {
         if (object != NULL) {
-            if ((techno->flags & 3) != 3 || techno->ground_position.y == 2000000.0f)
+            if (!techno->bits.visible || !techno->bits.active || techno->ground_position.y == 2000000.0f)
                 continue;
             candidate_distance = NuVecDistSqr(position, &techno->ground_position, NULL);
         } else {
