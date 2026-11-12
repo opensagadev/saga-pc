@@ -128,7 +128,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     TERRAIN_PLAYER_IMPACT_PC impact_records[8];
     i32 impact_count;
     f32 movement_scale;
-    i32 ai_controlled;
+    i32 terrain_moved;
 
     movement_scale = 1.0f;
     entry_pad = object->pad;
@@ -137,7 +137,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
     entry_menu_id = GetMenuID();
     entry_platform = object->supporting_platform_id;
 
-    ai_controlled = 0;
+    terrain_moved = 0;
     impact_count = -1;
 
     if (object->dead == 0) {
@@ -148,7 +148,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             i32 terrain_mask;
             f32 entry_vertical_velocity;
             const AIPATHINFO_PC *path_info;
-            const AIPATHCNX_PC *path_connection;
+            i32 ai_controlled;
             i32 special_path_endpoints;
             i32 shadow_grounding;
             i32 retain_floor;
@@ -168,17 +168,16 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 (WORLD->area != HOTHBATTLE_ADATA || api->character_data->game_character->field_028 != 0.0f)) {
                 terrain_mask |= 0x40;
             }
-            object->flags_e20 &= ~8u;
             entry_vertical_velocity = api->velocity.y;
+            object->flags_e20 &= ~8u;
             path_info = &object->ai_packet.path_info;
-            path_connection = path_info->connection;
             special_path_endpoints = 0;
-            if (path_info->path != NULL && path_connection != NULL) {
+            if (path_info->path != NULL && path_info->connection != NULL) {
                 const AIPATHNODE_PC *nodes;
 
                 nodes = path_info->path->nodes;
-                if ((nodes[path_connection->node_indices[path_info->direction == 0]].runtime_flags |
-                     nodes[path_connection->node_indices[path_info->direction]].runtime_flags) &
+                if ((nodes[path_info->connection->node_indices[path_info->direction == 0]].runtime_flags |
+                     nodes[path_info->connection->node_indices[path_info->direction]].runtime_flags) &
                     0x82)
                     special_path_endpoints = 1;
             }
@@ -294,7 +293,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 api->position.x += api->velocity.x * FRAMETIME;
                 api->position.y += api->velocity.y * FRAMETIME;
                 api->position.z += api->velocity.z * FRAMETIME;
-            } else if (shadow_grounding || retain_floor || 0 != (WORLD->current_level->flags & 0x10)) {
+            } else if (shadow_grounding || retain_floor || (WORLD->current_level->flags & 0x10) != 0) {
 
                 api->respawn_timer = 0.0f;
                 if ((api->flags_1fc_word & 4) == 0) {
@@ -365,9 +364,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 i32 stopped_without_terrain;
 
                 if ((api->flags_1fc_word & 4) != 0) {
-                    api->velocity.x = 0.0f;
-                    api->velocity.y = 0.0f;
-                    api->velocity.z = 0.0f;
+                    api->velocity.x = api->velocity.y = api->velocity.z = 0.0f;
                 } else {
                     NUVEC collision_position;
                     NUVEC movement;
@@ -387,8 +384,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     object->contact_material_word = 0;
 
                     if (object->use_model_origin > 0 && api->field_281 != 0 &&
-                        (0.0f != movement.x || movement.z != 0.0f) &&
-                        !(ENDORBATTLEC_LDATA == WORLD->current_level && object->id == GameObjectRotationAtstId)) {
+                        (movement.x != 0.0f || movement.z != 0.0f) &&
+                        !(WORLD->current_level == ENDORBATTLEC_LDATA && object->id == GameObjectRotationAtstId)) {
                         i32 deflection_mode;
 
                         deflection_mode = 0;
@@ -484,6 +481,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     NewTerrainScaleYMask(&collision_position, &movement, ((u8 *)(&object->field_1050)), object_index,
                                          entry_pad->input_magnitude > 0.0f ? 0.0f : movement_threshold * FRAMETIME,
                                          api->collision_radius, object->collision_y_scale, 0, 0, terrain_mask);
+                    terrain_moved = 1;
                     IgnoreWallSplines = 0;
                     for (i = 0; i < excluded_count; ++i) {
                         PlatOnOff(excluded_platforms[i], 1);
@@ -569,34 +567,40 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                    ? GameShadow(object, &api->position, 5.0f, terrain_mask | 0x1f)
                                    : api->floor_height;
                 stopped_without_terrain = 0;
-                if (floor_height != 2000000.0f) {
-                    f32 bottom_offset;
-                    f32 top;
-                    f32 bottom;
-                    f32 height;
-
-                    object->flags_e20 |= 2;
-                    bottom_offset = api->origin_scale * object->character_bottom;
-                    top = object->character_top * api->origin_scale + api->position.y;
-                    bottom = api->position.y + bottom_offset;
-                    height = top - bottom;
-                    if ((api->flags_1fc_word & 4) == 0 && floor_height > 0.1f * height + bottom &&
-                        height + 0.01f >= (floor_height + height) - top) {
-                        api->position.y = floor_height - bottom_offset;
-                    }
-                } else {
+                if (floor_height == 2000000.0f) {
                     object->flags_e20 &= ~2u;
                     if (NOTERRAINSTOP != 0) {
-                        api->velocity.x = 0.0f;
-                        api->velocity.z = 0.0f;
                         api->position.x = api->start_position.x;
                         api->position.z = api->start_position.z;
+                        api->velocity.x = 0.0f;
+                        api->velocity.z = 0.0f;
                         stopped_without_terrain = 1;
+                    }
+                } else {
+                    object->flags_e20 |= 2;
+                    if (terrain_moved) {
+                        f32 top;
+                        f32 bottom_offset;
+                        f32 bottom;
+                        f32 height;
+
+                        top = object->character_top * api->origin_scale + api->position.y;
+                        bottom_offset = object->character_bottom * api->origin_scale;
+                        bottom = api->position.y + bottom_offset;
+                        height = top - bottom;
+                        if (floor_height > 0.1f * height + bottom && height + 0.01f >= (floor_height + height) - top) {
+                            api->position.y = floor_height - bottom_offset;
+                        }
                     }
                 }
                 if (!stopped_without_terrain && (api->flags_1fc_word & 4) == 0) {
-                    api->floor_height = floor_height;
-                    GetSurfaceInfo(object, floor_height != 2000000.0f ? 1 : 0, floor_height);
+                    api->floor_height = 2000000.0f;
+                    if (floor_height != 2000000.0f) {
+                        api->floor_height = floor_height;
+                        GetSurfaceInfo(object, 1, floor_height);
+                    } else {
+                        GetSurfaceInfo(object, 0, floor_height);
+                    }
                     if (api->supporting_platform_id == -1 && api->field_281 != 0 && object->terrain_platform_id != -1) {
                         api->supporting_platform_id = object->terrain_platform_id;
                     }
