@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Kept as a macro: the original compiler inlined this helper into both call sites. */
-
 void DeathStar2BattleFire_Draw(WORLDINFO *world) {
     u16 yaw = 0;
     u16 pitch = 0;
@@ -10,6 +8,7 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
     NUVEC difference;
     NUVEC average;
     SPLINEPOS position;
+    f32 distance;
     if (Paused != 0)
         return;
 
@@ -21,7 +20,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.x = average.x - position.position.x;
         difference.y = average.y - position.position.y;
         difference.z = average.z - position.position.z;
-        if (NuVecMagSqr(&difference) < fire_clip_dist)
+        distance = NuVecMagSqr(&difference);
+        if (distance < fire_clip_dist)
             AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
                                               FRAMETIME, pitch, yaw, NULL);
         MoveSplinePosition(&position, -40.0f);
@@ -35,7 +35,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.x = average.x - position.position.x;
         difference.y = average.y - position.position.y;
         difference.z = average.z - position.position.z;
-        if (NuVecMagSqr(&difference) < fire_clip_dist)
+        distance = NuVecMagSqr(&difference);
+        if (distance < fire_clip_dist)
             AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 67,
                                               FRAMETIME, pitch, yaw, NULL);
         MoveSplinePosition(&position, 40.0f);
@@ -49,7 +50,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
         difference.x = average.x - position.position.x;
         difference.y = average.y - position.position.y;
         difference.z = average.z - position.position.z;
-        if (NuVecMagSqr(&difference) < fire_clip_dist)
+        distance = NuVecMagSqr(&difference);
+        if (distance < fire_clip_dist)
             AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[121].effect, &position.position, 33,
                                               FRAMETIME, pitch, yaw, NULL);
         MoveSplinePosition(&position, -40.0f);
