@@ -2035,7 +2035,7 @@ void __cdecl PartUpdate_Heart(PART_PC *part) {
 
 void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
                                                NUMTX *emitter_orientation, NUMTX *particle_orientation) {
-    u16 priority = 20000;
+    u16 priority;
     if (effect < 0 || debtab[effect] == NULL)
         return;
     switch (debtab[effect]->particle_type) {
@@ -2047,6 +2047,9 @@ void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVE
             break;
         case 7:
             priority = 10000;
+            break;
+        default:
+            priority = 20000;
             break;
     }
     AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count, time, emitter_orientation,
