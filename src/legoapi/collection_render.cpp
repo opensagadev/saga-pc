@@ -9,7 +9,7 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
     f32 size = COLLECTION_ICONSIZE * scale;
     if (collection->list == NULL || ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
         return;
-    const i32 columns = collection->columns, count = collection->count;
+    const i32 count = collection->count, columns = collection->columns;
     if (columns <= 0 || count <= 0)
         return;
     const i32 rows = count / columns + 1;
@@ -17,12 +17,12 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
         dx = (f32)(dx * .75);
         size = (f32)(size * .875);
     }
+    i32 found = 0;
     i32 selected_x[2] = {-1, -1}, selected_y[2] = {-1, -1};
     if (models != NULL && Collection_GetSelectingPlayerIDsFn != NULL) {
         i16 ids[2] = {-1, -1};
         Collection_GetSelectingPlayerIDsFn(ids);
         if (ids[0] != -1 || ids[1] != -1) {
-            i32 found = 0;
             for (i32 row = 0; row < rows; ++row)
                 for (i32 col = 0; col < columns; ++col) {
                     if (found != 2 && row * columns + col < count) {
