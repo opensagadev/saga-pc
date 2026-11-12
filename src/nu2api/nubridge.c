@@ -75,7 +75,7 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
     NUVEC4 point;
     NUVEC first[512], second[512];
     NUMTX matrix;
-    i32 boundaries[9];
+    i32 boundaries[8]; /* retail size: boundaries[group + 1] can write one past the end with all 8 bridges */
     NUVEC4 offsets[2];
     if (NuBridgeProc) {
         bridge = Bridges;
@@ -473,9 +473,9 @@ void NuBridgeUpdate(NUVEC *position) {
 
 void __cdecl NuBridgeInit(void) {
     void *saved_terrain = TerrainGetCur();
+    NUBRIDGE_PC *bridge = Bridges;
     i32 i, j;
-    for (i = 0; i < 8; ++i) {
-        NUBRIDGE_PC *bridge = &Bridges[i];
+    for (i = 0; i < 8; ++i, ++bridge) {
         if (bridge->active) {
             TerrainSetCur(bridge->terrain);
             for (j = 0; j < bridge->platform_count; ++j) {
@@ -507,6 +507,20 @@ void __cdecl NuBridgeRemove(i32 index) {
     TerrainSetCur(saved_terrain);
 }
 
+static i32 NuBridgeAlloc(void) {
+    i32 index;
+    NUBRIDGE_PC *bridge = Bridges;
+    for (index = 0; index < 8; ++index, ++bridge) {
+        if (!bridge->active)
+            return index;
+    }
+    return -1;
+}
+
+static void NuBridgeOn(i32 enabled) {
+    NuBridgeProc = enabled;
+}
+
 i32 __cdecl NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end,
                            f32 width, i16 rotation, f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier,
                            i32 count, f32 field_b04, f32 field_b08, i32 field_ae7, u32 colour) {
@@ -520,75 +534,72 @@ i32 __cdecl NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDL
     if (count > 24)
         printf("to many sections/n");
 
-    NuBridgeProc = 1;
-    for (index = 0; index < 8; ++index) {
-        if (!Bridges[index].active)
-            break;
-    }
-    if (index == 8)
-        return -1;
+    NuBridgeOn(1);
+    index = NuBridgeAlloc();
+    if (index != -1) {
 
-    bridge = &Bridges[index];
-    bridge->special = *first;
-    bridge->second_special = *second;
-    bridge->scene = scene;
-    bridge->active = 1;
-    bridge->idle_frames = 0;
-    bridge->terrain = TerrainGetCur();
-    bridge->platform_count = (i8)count;
-    bridge->spring_strength = spring_strength;
-    bridge->damping = damping;
-    bridge->width = width;
-    bridge->gravity = gravity;
-    bridge->load_multiplier = load_multiplier;
-    bridge->field_b04 = field_b04;
-    bridge->field_b08 = field_b08;
-    bridge->field_ae7 = (u8)field_ae7;
-    bridge->colour = colour;
+        bridge = &Bridges[index];
+        bridge->special = *first;
+        bridge->second_special = *second;
+        bridge->scene = scene;
+        bridge->active = 1;
+        bridge->idle_frames = 0;
+        bridge->terrain = TerrainGetCur();
+        bridge->platform_count = (i8)count;
+        bridge->spring_strength = spring_strength;
+        bridge->damping = damping;
+        bridge->width = width;
+        bridge->gravity = gravity;
+        bridge->load_multiplier = load_multiplier;
+        bridge->field_b04 = field_b04;
+        bridge->field_b08 = field_b08;
+        bridge->field_ae7 = (u8)field_ae7;
+        bridge->colour = colour;
 
-    bridge->centre.x = (end->x + start->x) * 0.5f;
-    bridge->centre.y = (end->y + start->y) * 0.5f;
-    bridge->centre.z = (end->z + start->z) * 0.5f;
-    delta.x = end->x - start->x;
-    delta.y = end->y - start->y;
-    delta.z = end->z - start->z;
-    bridge->cull_radius_squared = (delta.x * 0.5f) * (delta.x * 0.5f) + (delta.y * 0.5f) * (delta.y * 0.5f) +
-                                  (delta.z * 0.5f) * (delta.z * 0.5f) + 1.0f;
-    bridge->in_range = 0;
+        bridge->centre.x = (end->x + start->x) * 0.5f;
+        bridge->centre.y = (end->y + start->y) * 0.5f;
+        bridge->centre.z = (end->z + start->z) * 0.5f;
+        delta.x = end->x - start->x;
+        delta.y = end->y - start->y;
+        delta.z = end->z - start->z;
+        bridge->cull_radius_squared = (delta.x * 0.5f) * (delta.x * 0.5f) + (delta.y * 0.5f) * (delta.y * 0.5f) +
+                                      (delta.z * 0.5f) * (delta.z * 0.5f) + 1.0f;
+        bridge->in_range = 0;
 
-    inverse_length = 1.0f / NuFsqrt(delta.x * delta.x + delta.z * delta.z);
-    side.x = -delta.z * inverse_length;
-    side.y = 0.0f;
-    side.z = delta.x * inverse_length;
-    bridge->rotation_y = rotation;
+        inverse_length = 1.0f / NuFsqrt(delta.x * delta.x + delta.z * delta.z);
+        side.x = -delta.z * inverse_length;
+        side.y = 0.0f;
+        side.z = delta.x * inverse_length;
+        bridge->rotation_y = rotation;
 
-    /* The retail loop is intentionally not clamped to the 24-element arrays. */
-    for (i = 0; i < count; ++i) {
-        if (NuSpecialExistsFn(&bridge->special)) {
-            bridge->platforms[i] =
-                (i16)NewPlatInst(&bridge->platform_matrices[i], NuSpecialGetInstanceix(&bridge->special));
-        } else {
-            bridge->platforms[i] = -1;
+        /* The retail loop is intentionally not clamped to the 24-element arrays. */
+        for (i = 0; i < count; ++i) {
+            if (NuSpecialExistsFn(&bridge->special)) {
+                bridge->platforms[i] =
+                    (i16)NewPlatInst(&bridge->platform_matrices[i], NuSpecialGetInstanceix(&bridge->special));
+            } else {
+                bridge->platforms[i] = -1;
+            }
+
+            NuMtxSetIdentity(&bridge->platform_matrices[i]);
+            NuMtxPreRotateY(&bridge->platform_matrices[i], bridge->rotation_y);
+            bridge->platform_matrices[i].m30 = delta.x * i / (count - 1) + start->x;
+            bridge->platform_matrices[i].m31 = delta.y * i / (count - 1) + start->y;
+            bridge->platform_matrices[i].m32 = delta.z * i / (count - 1) + start->z;
+            bridge->edge_positions[i][0].x = delta.x * i / (count - 1) + start->x - side.x * width * 0.5f;
+            bridge->edge_positions[i][0].y = delta.y * i / (count - 1) + start->y;
+            bridge->edge_positions[i][0].z = delta.z * i / (count - 1) + start->z - side.z * width * 0.5f;
+            bridge->edge_positions[i][1].x = delta.x * i / (count - 1) + start->x + side.x * width * 0.5f;
+            bridge->edge_positions[i][1].y = delta.y * i / (count - 1) + start->y;
+            bridge->edge_positions[i][1].z = delta.z * i / (count - 1) + start->z + side.z * width * 0.5f;
+            bridge->edge_motion[i][0].x = 0.0f;
+            bridge->edge_motion[i][0].y = 0.0f;
+            bridge->edge_motion[i][0].z = 0.0f;
+            bridge->edge_motion[i][1].x = 0.0f;
+            bridge->edge_motion[i][1].y = 0.0f;
+            bridge->edge_motion[i][1].z = 0.0f;
+            bridge->contact_frames = 0;
         }
-
-        NuMtxSetIdentity(&bridge->platform_matrices[i]);
-        NuMtxPreRotateY(&bridge->platform_matrices[i], bridge->rotation_y);
-        bridge->platform_matrices[i].m30 = delta.x * i / (count - 1) + start->x;
-        bridge->platform_matrices[i].m31 = delta.y * i / (count - 1) + start->y;
-        bridge->platform_matrices[i].m32 = delta.z * i / (count - 1) + start->z;
-        bridge->edge_positions[i][0].x = delta.x * i / (count - 1) + start->x - side.x * width * 0.5f;
-        bridge->edge_positions[i][0].y = delta.y * i / (count - 1) + start->y;
-        bridge->edge_positions[i][0].z = delta.z * i / (count - 1) + start->z - side.z * width * 0.5f;
-        bridge->edge_positions[i][1].x = delta.x * i / (count - 1) + start->x + side.x * width * 0.5f;
-        bridge->edge_positions[i][1].y = delta.y * i / (count - 1) + start->y;
-        bridge->edge_positions[i][1].z = delta.z * i / (count - 1) + start->z + side.z * width * 0.5f;
-        bridge->edge_motion[i][0].x = 0.0f;
-        bridge->edge_motion[i][0].y = 0.0f;
-        bridge->edge_motion[i][0].z = 0.0f;
-        bridge->edge_motion[i][1].x = 0.0f;
-        bridge->edge_motion[i][1].y = 0.0f;
-        bridge->edge_motion[i][1].z = 0.0f;
-        bridge->contact_frames = 0;
     }
 
     return index;
