@@ -453,14 +453,13 @@ extern "C" {
                 continue;
             if ((grapple->flags & 4) != 0 && (grapple->flags & 8) == 0 &&
                 Grapple_Occupied(grapple, NULL, NULL) == NULL) {
-                NUVEC rope_start = grapple->hook_position;
+                NURND_VERTEX3D_PC vertices[2];
+                vertices[0].position = grapple->hook_position;
                 if (GrappleCurvedRopeEnabledPc != 0) {
-                    DrawRopeCurved(&rope_start, grapple->rope_points, 6, 0, NULL);
+                    DrawRopeCurved(&vertices[0].position, grapple->rope_points, 6, 0, NULL);
                 } else {
-                    NURND_VERTEX3D_PC vertices[2];
                     vertices[0].colour = GrappleRopeColourPc;
                     vertices[1].colour = vertices[0].colour;
-                    vertices[0].position = rope_start;
                     for (i32 point = 0; point < 6; ++point) {
                         vertices[1].position = grapple->rope_points[point];
                         NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
@@ -487,9 +486,7 @@ extern "C" {
                 f32 distance_squared;
                 if (FindNearestPlayerToVec(&grapple->ground_position, &nearest_player, &distance_squared, 0, 0) == 0)
                     continue;
-                f64 ratio = (f64)distance_squared / 6.0;
-                if (!(ratio < 1.0))
-                    ratio = 1.0;
+                f64 ratio = MIN((f64)distance_squared / 6.0, 1.0);
                 alpha = target_alpha - NU_SIN_LUT((ratio * 16384.0 + 49152.0) + 16384.0);
             }
             if (alpha > 0.0f)
