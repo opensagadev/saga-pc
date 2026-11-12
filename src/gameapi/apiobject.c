@@ -971,13 +971,12 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                           f32 frame_time, NUMTX *output_matrices,
                           void (*footprint_callback)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *debris_sys) {
     i32 result;
-    i32 evaluate_only;
+    i32 evaluate_only = 0;
+    DWA_WEIGHT_BLOCK_PC **dwa = NULL;
 
     drawcharactermodel_locatorsupdated = 0;
     if (model == NULL)
         return 0;
-    result = 0;
-    evaluate_only = 0;
     if (animation != NULL) {
         if (animation->overlay_animation != -1) {
             if (animation->requested_animation >= 0 && animation->requested_animation < apicharsys->model_id_capacity &&
@@ -1022,7 +1021,8 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                 evaluate_only = 1;
         }
     }
-    if (model->hierarchy == NULL || matrix == NULL)
+    result = 0;
+    if (matrix == NULL)
         goto cleanup;
 
     {
@@ -1030,7 +1030,6 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
         NUVEC bounds_max;
         i16 render_indices[32];
         i32 render_count;
-        DWA_WEIGHT_BLOCK_PC **dwa;
         i32 evaluated;
         i32 render_flags;
 
@@ -1048,42 +1047,46 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
             NuHGobjRestrictEvaluation(model->hierarchy);
 
         render_count = ModelAnimLayerListDispatchPc(model, render_indices, flags);
-        if (render_count <= 0)
+        if (render_count < 1)
             goto cleanup;
 
-        dwa = NULL;
-        if (evaluate_only == 0 && animation != NULL && drawcharactermodel_nobsa == 0 &&
-            drawcharactermodel_restpose == 0) {
-            if (animation->blending != 0 && animation->blend_source_animation >= 0 &&
-                animation->blend_source_animation < apicharsys->model_id_capacity &&
-                model->model_data_c[animation->blend_source_animation] != NULL &&
-                animation->blend_target_animation >= 0 &&
-                animation->blend_target_animation < apicharsys->model_id_capacity &&
-                model->model_data_c[animation->blend_target_animation] != NULL) {
-                dwa = NuHGobjEvalDwaBlend2(render_count, render_indices,
-                                           ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_source_animation])),
-                                           animation->blend_source_time,
-                                           ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_target_animation])),
-                                           animation->blend_target_time,
-                                           animation->blend_elapsed_pc / animation->blend_duration_pc);
-            } else if (animation->blending != 0 && animation->blend_target_animation >= 0 &&
-                       animation->blend_target_animation < apicharsys->model_id_capacity &&
-                       model->model_data_c[animation->blend_target_animation] != NULL) {
-                dwa = NuHGobjEvalDwa2(render_count, render_indices,
-                                      ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_target_animation])),
-                                      animation->blend_target_time);
-            } else if (animation->blending != 0 && animation->blend_source_animation >= 0 &&
-                       animation->blend_source_animation < apicharsys->model_id_capacity &&
-                       model->model_data_c[animation->blend_source_animation] != NULL) {
-                dwa = NuHGobjEvalDwa2(render_count, render_indices,
-                                      ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_source_animation])),
-                                      animation->blend_source_time);
-            } else if (animation->blending == 0 && animation->animation_index >= 0 &&
-                       animation->animation_index < apicharsys->model_id_capacity &&
-                       model->model_data_c[animation->animation_index] != NULL) {
-                dwa = NuHGobjEvalDwa2(render_count, render_indices,
-                                      ((NUANIMDATA2_PC *)(model->model_data_c[animation->animation_index])),
-                                      animation->current_time);
+        if (evaluate_only == 0) {
+            if (animation != NULL && drawcharactermodel_nobsa == 0 && drawcharactermodel_restpose == 0) {
+                if (animation->blending != 0 && animation->blend_source_animation >= 0 &&
+                    animation->blend_source_animation < apicharsys->model_id_capacity &&
+                    model->model_data_c[animation->blend_source_animation] != NULL &&
+                    animation->blend_target_animation >= 0 &&
+                    animation->blend_target_animation < apicharsys->model_id_capacity &&
+                    model->model_data_c[animation->blend_target_animation] != NULL) {
+                    dwa = NuHGobjEvalDwaBlend2(
+                        render_count, render_indices,
+                        ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_source_animation])),
+                        animation->blend_source_time,
+                        ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_target_animation])),
+                        animation->blend_target_time, animation->blend_elapsed_pc / animation->blend_duration_pc);
+                } else if (animation->blending != 0 && animation->blend_target_animation >= 0 &&
+                           animation->blend_target_animation < apicharsys->model_id_capacity &&
+                           model->model_data_c[animation->blend_target_animation] != NULL) {
+                    dwa = NuHGobjEvalDwa2(render_count, render_indices,
+                                          ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_target_animation])),
+                                          animation->blend_target_time);
+                } else if (animation->blending != 0 && animation->blend_source_animation >= 0 &&
+                           animation->blend_source_animation < apicharsys->model_id_capacity &&
+                           model->model_data_c[animation->blend_source_animation] != NULL) {
+                    dwa = NuHGobjEvalDwa2(render_count, render_indices,
+                                          ((NUANIMDATA2_PC *)(model->model_data_c[animation->blend_source_animation])),
+                                          animation->blend_source_time);
+                } else if (animation->blending == 0 && animation->animation_index >= 0 &&
+                           animation->animation_index < apicharsys->model_id_capacity &&
+                           model->model_data_c[animation->animation_index] != NULL) {
+                    dwa = NuHGobjEvalDwa2(render_count, render_indices,
+                                          ((NUANIMDATA2_PC *)(model->model_data_c[animation->animation_index])),
+                                          animation->current_time);
+                } else {
+                    dwa = NULL;
+                }
+            } else {
+                dwa = NULL;
             }
         }
 
