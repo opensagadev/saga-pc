@@ -35,8 +35,7 @@ i32 __cdecl Cheat_PowerUpActive(i32 index) {
         }
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[player];
-            if (object != NULL && object->powerup_time > 0.0f &&
-                (index == -1 || (i8)object->field_280 == index)) {
+            if (object != NULL && object->powerup_time > 0.0f && (index == -1 || (i8)object->field_280 == index)) {
                 return 1;
             }
         }
