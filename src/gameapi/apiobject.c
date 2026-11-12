@@ -869,9 +869,10 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         }
 
         source_motion.x = source_root->x - object->previous_animation_root.x;
-        source_motion.y = (BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) != 0
-                              ? source_root->y - object->previous_animation_root.y
-                              : 0.0f;
+        if ((BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) != 0)
+            source_motion.y = source_root->y - object->previous_animation_root.y;
+        else
+            source_motion.y = 0.0f;
         source_motion.z = source_root->z - object->previous_animation_root.z;
         object->previous_animation_root = *source_root;
 
@@ -899,9 +900,10 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         }
 
         target_motion.x = target_root->x - object->previous_blend_target_root.x;
-        target_motion.y = (BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) != 0
-                              ? target_root->y - object->previous_blend_target_root.y
-                              : 0.0f;
+        if ((BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) != 0)
+            target_motion.y = target_root->y - object->previous_blend_target_root.y;
+        else
+            target_motion.y = 0.0f;
         target_motion.z = target_root->z - object->previous_blend_target_root.z;
         object->previous_blend_target_root = *target_root;
 
