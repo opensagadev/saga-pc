@@ -13,10 +13,12 @@ void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 gro
 
 void __cdecl NuWindInit(void) {
     i32 index;
-    NuWindWave = 0;
-    NuWindDir = 0;
+    i32 count;
     NuWindDir2 = 0;
-    for (index = 0; index < NuWindMaxGroupsPC; ++index)
+    NuWindDir = 0;
+    NuWindWave = 0;
+    count = NuWindMaxGroupsPC;
+    for (index = 0; index < count; ++index)
         NuWindGroup[index].in_use = 0;
 }
 
