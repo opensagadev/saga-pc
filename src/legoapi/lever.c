@@ -446,12 +446,9 @@ static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 index;
     (void)data;
-    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
-        return;
     for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
-        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
-        if (NuStrLen(lever->name) != 0)
-            AddGizmo(system, type_id, NULL, lever);
+        if (NuStrLen(((LEVER_WORLD_PC *)world)->levers[index].name) != 0)
+            AddGizmo(system, type_id, NULL, &((LEVER_WORLD_PC *)world)->levers[index]);
     }
 }
 static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
