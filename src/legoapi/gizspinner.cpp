@@ -153,9 +153,9 @@ static __declspec(noinline) GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
     if (LEGOCONTEXT_PUSHSPINNER == -1)
         return NULL;
     for (i32 index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && object->character_context == LEGOCONTEXT_PUSHSPINNER && object->grapple == spinner)
-            return object;
+        if (Player[index] != NULL && ((GAMEOBJECT *)Player[index])->character_context == LEGOCONTEXT_PUSHSPINNER &&
+            ((GAMEOBJECT *)Player[index])->grapple == spinner)
+            return (GAMEOBJECT *)Player[index];
     }
     return NULL;
 }
