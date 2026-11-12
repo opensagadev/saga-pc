@@ -1943,13 +1943,12 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
                 FastWeaponIn(object, 0);
                 object->field_7aa = 0x66;
                 object->grapple = nearest;
-                u16 angle =
-                    (u16)NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
+                object->movement_facing_angle =
+                    NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
                 nearest = (DETONATOR_s *)object->grapple;
-                object->movement_facing_angle = angle;
-                object->launch_origin.x = nearest->position.x - NU_SIN_LUT(angle) * 0.1684f;
-                object->launch_origin.z = nearest->position.z - NU_COS_LUT(angle) * 0.1684f;
-                object->takeover_start_angle = (u16)RotDiff(angle, nearest->rotation_y);
+                object->launch_origin.x = nearest->position.x - NU_SIN_LUT(object->movement_facing_angle) * 0.1684f;
+                object->launch_origin.z = nearest->position.z - NU_COS_LUT(object->movement_facing_angle) * 0.1684f;
+                object->takeover_start_angle = (u16)RotDiff(object->movement_facing_angle, nearest->rotation_y);
             } else if (DetonatorPlacementSlot(object) != NULL &&
                        object->floor_height != GameObjectNearFloorNoFloorHeight &&
                        object->lower_position.y - object->floor_height < 0.155f) {
@@ -2007,7 +2006,7 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
                 AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f))
                 return;
-            if (*frame < marker)
+            if (!(*frame >= marker))
                 return;
         } else if (!(object->context_timer < 0.5f)) {
             return;
