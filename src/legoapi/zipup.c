@@ -659,24 +659,20 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
     i32 joint;
 
     PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-    joint = character->grapple_locators[0];
-    if (joint != -1 && object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+    if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
+        object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
-        return;
-    }
-    joint = character->weapon_shoot_joints[0];
-    if (joint != -1 && object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+    } else if ((joint = character->weapon_shoot_joints[0]) != -1 &&
+               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
-        return;
-    }
-    joint = character->weapon_joints[0];
-    if (joint != -1 && object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+    } else if ((joint = character->weapon_joints[0]) != -1 &&
+               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
         *position = object->locator_matrices[joint].translation;
-        return;
+    } else {
+        position->x = object->collision_position.x;
+        position->y = object->collision_position.y + object->field_b0;
+        position->z = object->collision_position.z;
     }
-    position->x = object->collision_position.x;
-    position->y = object->collision_position.y + object->field_b0;
-    position->z = object->collision_position.z;
 }
 
 static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
