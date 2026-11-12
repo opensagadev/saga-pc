@@ -2701,9 +2701,8 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
     SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
                 HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                 HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
-    AREA_SAVE_PICKUP_PC *save = &Game.area_save[area_index];
     if ((area->flags & 0x10) == 0) {
-        if (save->area_complete != 0) {
+        if (Game.area_save[area_index].area_complete != 0) {
             if ((area->flags & 0x800) != 0)
                 Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleYPc - .05000000074505806), phase, -1, -1);
             else
@@ -2711,22 +2710,22 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
         }
         return;
     }
-    if (save->area_complete != 0 && (area->flags & 4) == 0) {
+    if (Game.area_save[area_index].area_complete != 0 && (area->flags & 4) == 0) {
         Episode_CountOpenAreas((i8)area->episode_index, area_index, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
-        const f32 sine = NuTrigTable[((i32)(phase * 16384.0) >> 1) & 0x7fff];
-        const f32 bar_y = HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY;
         char text[128];
         if (HubBothTrueJediGoldBricksPc != 0) {
-            DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
-            NuStrCpy(text, save->true_hero_complete[0] != 0 ? "$" : "X");
+            DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
-            DrawBuildUpBar(HubAreaPanelXPc[4], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
-            NuStrCpy(text, save->true_hero_complete[1] != 0 ? "$" : "X");
+            DrawBuildUpBar(HubAreaPanelXPc[4], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            NuStrCpy(text, Game.area_save[area_index].true_hero_complete[1] != 0 ? "$" : "X");
             Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
@@ -2734,14 +2733,21 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
                         1, NULL, 0, (i32)(HubTrueJediTypeAlphaPc * phase));
         } else {
-            DrawBuildUpBar(HubAreaPanelXPc[1], bar_y, 100, 100, sine, 1.0f, 1.0f, 0);
-            NuStrCpy(text, save->true_hero_complete[0] != 0 || save->true_hero_complete[1] != 0 ? "$" : "X");
+            DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
+                           NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
+            NuStrCpy(text, Game.area_save[area_index].true_hero_complete[0] != 0 ||
+                                   Game.area_save[area_index].true_hero_complete[1] != 0
+                               ? "$"
+                               : "X");
+            // MATCH-EXCEPTION: retail converts phase * 128.0 again here instead of reusing alpha.
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
         if ((area->flags & 0x10) != 0)
-            HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, save->minikit_count, 10, phase);
-        Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase, save->red_brick_collected, 1);
+            HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10,
+                                  phase);
+        Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase,
+                               Game.area_save[area_index].red_brick_collected, 1);
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
         HubDrawMiniKitCharacterPc = 1;
         HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
