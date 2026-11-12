@@ -950,16 +950,16 @@ i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *n
     char suffix[16];
     char shortened_name[64];
     i32 type_index;
-    i32 suffix_number;
+    i32 suffix_number = 1;
     i32 name_length;
     if (system != NULL && name != NULL && result != NULL) {
         for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index) {
-            GIZMOTYPE_PC *type = &((GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types)[type_index];
-            if (NuStrICmp(prefix, type->prefix) != 0 && GizmoNameUsesPrefix(name, type->prefix))
+            if (NuStrICmp(prefix, ((GIZMOTYPES_PC *)gizmotypes)->types[type_index].prefix) != 0 &&
+                GizmoNameUsesPrefix(name, ((GIZMOTYPES_PC *)gizmotypes)->types[type_index].prefix))
                 return 0;
         }
         name_length = NuStrLen(name);
-        for (suffix_number = 1; suffix_number < 999; ++suffix_number) {
+        for (; suffix_number < 999; ++suffix_number) {
             i32 suffix_length;
             sprintf(suffix, "%d", suffix_number);
             suffix_length = NuStrLen(suffix);
