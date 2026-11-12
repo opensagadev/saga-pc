@@ -174,7 +174,7 @@ typedef struct cut_load_sound_state_s {
     u32 unknown_00[4];
 } CUT_LOAD_SOUND_STATE;
 typedef struct cut_load_locator_instance_s {
-    u32 unknown_00;
+    f32 frame;
     union {
         i32 index;
         CUT_LOAD_FOCUS_TARGET *focus;
@@ -403,10 +403,9 @@ extern f32 CutSceneDebrisAxisSizePc;
 
 static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system,
                                           CUT_LOAD_LOCATOR_INSTANCE *instance, f32 frame, NUMTX *parent) {
-    i32 effect = system->types[locator->type_index].function_index;
+    u16 effect = system->types[locator->type_index].function_index;
     NUANIM_TIME2_PC time;
     f32 scale, rate;
-    i32 visible;
     NUMTX matrix;
     NUVEC *position;
     i32 finite;
@@ -414,10 +413,10 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
         return;
     if (locator->animation != NULL)
         NuAnimData2CalcTime((NUANIMDATA2_PC *)locator->animation, frame, &time);
-    visible = NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, &rate);
-    if (visible != 0) {
+    if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, &rate) != 0) {
         if (scale < 0.0f && (locator->flags & 0x10) == 0)
-            scale = (f32)debtab[effect]->frequency * -scale;
+            // MATCH-EXCEPTION: retail negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
+            scale = (f32)debtab[effect]->frequency * (0.0f - scale);
         if ((f64)scale > 0.10000000149011612) {
             if ((locator->flags & 0x10) != 0 && instance->effect.index != 0)
                 return;
@@ -458,7 +457,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
             DebFreeInstantly(&instance->effect.index);
     } else
         instance->effect.index = 0;
-    instance->unknown_00 = 0;
+    instance->frame = 0.0f;
 }
 
 static void CutMatrixAssignPrivatePc(NUMTX *destination, NUMTX *source) {
