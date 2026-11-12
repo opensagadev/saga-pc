@@ -1196,10 +1196,11 @@ extern "C" {
     i32 __cdecl Batman_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AIPATHCNX_PC *connection = packet->path_info.connection;
-        AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
-        AIPATHNODE_PC *destination = &nodes[connection->node_indices[packet->path_info.direction == 0]];
+        AIPATHNODE_PC *destination =
+            &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
         if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
-            packet->movement_destination = nodes[connection->node_indices[packet->path_info.direction]].position;
+            packet->movement_destination =
+                packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
             packet->movement_stopping_distance = 0.0f;
             ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
