@@ -168,7 +168,7 @@ char *__cdecl GlobalCharacterName(i32 id) {
 }
 void __cdecl GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i32 unused, void *creature) {
     i16 layers[32];
-    i16 model_id;
+    i32 model_id;
     i32 count;
     CHARACTER_MODEL_LAYERS_PC *model;
     NUVEC scale;
