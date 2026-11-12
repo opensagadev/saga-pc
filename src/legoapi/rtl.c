@@ -895,10 +895,10 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
                 set->lights[i].type = 0;
         case 4:
             for (i = 0; i < 128; ++i) {
-                set->lights[i].intensity = 1.0f;
                 set->lights[i].field_79 = -1;
                 set->lights[i].field_7a = -1;
                 set->lights[i].field_7b = 0;
+                set->lights[i].intensity = 1.0f;
             }
         default:
             for (i = 0; i < 128; ++i) {
