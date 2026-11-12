@@ -581,6 +581,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
     }
 }
 extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
+    i32 index;
     Area_PlayerModelCount = 0;
     AreaPlayerModelsPc[0].model_id = -1;
     Area_StoryModelCount = 0;
@@ -601,12 +602,12 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
     }
 
     if (Mission_Active(MissionSys) != NULL && ((AREA_MISSION_READER_PC *)MissionSys)->character_count > 0) {
-        i16 mission_characters[64];
+        i16 mission_characters[48];
         PCByteCopy_candidate(mission_characters, ((AREA_MISSION_READER_PC *)MissionSys)->character_ids,
                              ((AREA_MISSION_READER_PC *)MissionSys)->character_count * sizeof(i16));
         const u8 shuffle_count = ((AREA_MISSION_READER_PC *)MissionSys)->character_count;
         if (shuffle_count > 2) {
-            for (i32 swap = 0; swap < shuffle_count * 3; ++swap) {
+            for (index = 0; index < shuffle_count * 3; ++index) {
                 const i32 first = qrand() / (0xffff / ((AREA_MISSION_READER_PC *)MissionSys)->character_count + 1);
                 const i32 second =
                     (qrand() / (0xffff / (((AREA_MISSION_READER_PC *)MissionSys)->character_count - 1) + 1) + first) %
@@ -616,7 +617,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 mission_characters[second] = held;
             }
         }
-        for (i32 index = 0; index < ((AREA_MISSION_READER_PC *)MissionSys)->character_count; ++index) {
+        for (index = 0; index < ((AREA_MISSION_READER_PC *)MissionSys)->character_count; ++index) {
             if (Area_MissionModelCount < 0x30) {
                 Area_MissionModelList[Area_MissionModelCount].model_id = (i16)(mission_characters[index]);
                 Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
@@ -652,32 +653,29 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
 
     NUFPAR_PC *fp = NuFParCreate(path);
     if (fp == NULL) {
-        const i16 first = s[0];
-        AreaPlayerModelsPc[0].model_id = first;
+        AreaPlayerModelsPc[0].model_id = s[0];
         AreaPlayerModelsPc[0].count = 1;
-        const i16 second = s[1];
-        AreaPlayerModelsPc[1].model_id = second;
+        AreaPlayerModelsPc[1].model_id = s[1];
         AreaPlayerModelsPc[1].count = 1;
         AreaPlayerModelsPc[2].model_id = -1;
         Area_PlayerModelCount = 2;
-        AREA_STORY_MODELS_PC[0].model_id = first;
+        AREA_STORY_MODELS_PC[0].model_id = AreaPlayerModelsPc[0].model_id;
         AREA_STORY_MODELS_PC[0].count = 1;
-        AREA_STORY_MODELS_PC[1].model_id = second;
+        AREA_STORY_MODELS_PC[1].model_id = AreaPlayerModelsPc[1].model_id;
         AREA_STORY_MODELS_PC[1].count = 1;
         AREA_STORY_MODELS_PC[2].model_id = -1;
         Area_StoryModelCount = 2;
-        Area_PlayerIDList[0] = first;
-        Area_PlayerIDList[1] = second;
+        Area_PlayerIDList[0] = AreaPlayerModelsPc[0].model_id;
+        Area_PlayerIDList[1] = AreaPlayerModelsPc[1].model_id;
         Area_PlayerIDList[2] = -1;
         return;
     }
 
     AREA_SUPERCOUNTER_PC counters[10];
     AREA_SUPERCOUNTER_PC *counter = NULL;
-    i32 counter_count = 0;
     i32 in_counter = 0;
+    i32 counter_count = 0;
     i32 level_index;
-    i32 index;
     while (NuFParGetLine(fp) != 0) {
         NuFParGetWord(fp);
         if (fp->word_buffer_ptr[0] == '\0')
@@ -697,8 +695,8 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 counter->pickups[counter->pickup_count].use_special = 1;
                 while (NuFParGetWord(fp) != 0) {
                     if (NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
-                        if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &level_index) != NULL)
-                            counter->pickups[counter->pickup_count].level_index = static_cast<i16>(level_index);
+                        if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &index) != NULL)
+                            counter->pickups[counter->pickup_count].level_index = static_cast<i16>(index);
                     } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_gizmo") == 0) {
                         if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
                             NuStrCpy(counter->pickups[counter->pickup_count].position_name, fp->word_buffer_ptr);
@@ -766,14 +764,14 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 if (NuFParGetWord(fp) != 0)
                     story_token = 1;
             }
-            if (NuStrICmp(fp->word_buffer_ptr, "freeplay_only") == 0) {
-                LevelLoad[LevelLoadCount].flags = (LevelLoad[LevelLoadCount].flags & ~1) | 2;
-                if (NuFParGetWord(fp) == 0 && story_token == 0)
-                    continue;
-            } else {
+            if (NuStrICmp(fp->word_buffer_ptr, "freeplay_only") != 0) {
                 // The reference applies both bits after a lone story_only
                 // token; retain that sequential token-processing behavior.
                 LevelLoad[LevelLoadCount].flags |= 3;
+            } else {
+                LevelLoad[LevelLoadCount].flags = (LevelLoad[LevelLoadCount].flags & ~1) | 2;
+                if (NuFParGetWord(fp) == 0 && story_token == 0)
+                    continue;
             }
             Level_FindByName(fp->word_buffer_ptr, &level_index);
             if (level_index == -1 || LDataList[level_index].area_index != area)
