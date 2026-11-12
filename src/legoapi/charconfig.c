@@ -1918,9 +1918,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                         NuStrCpy(path, directory);
                         NuStrCat(path, filename);
                         item = NuFilePakGetItem(pak, path);
-                        if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0)
-                            result = 0;
-                        else if (size <= 0)
+                        if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0)
                             result = 0;
                         else {
                             end = size;
