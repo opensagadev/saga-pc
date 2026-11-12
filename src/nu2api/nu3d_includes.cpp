@@ -11294,6 +11294,9 @@ extern "C" {
         sprintf(detail, "%d: ", index);
         NuStrCat(text, detail);
         switch (item->type) {
+            case 0x87:
+                sprintf(detail, "DUMMY            ");
+                break;
             case 0x80:
                 sprintf(detail, "MTL              ");
                 break;
@@ -11303,8 +11306,23 @@ extern "C" {
             case 0x82:
                 sprintf(detail, "GEOMCALL         ");
                 break;
+            case 0x93:
+                sprintf(detail, "GEOMCALL2D       ");
+                break;
+            case 0x97:
+                sprintf(detail, "LINECALL2D       ");
+                break;
+            case 0x9f:
+                sprintf(detail, "LINEBUFFER       ");
+                break;
+            case 0x8f:
+                sprintf(detail, "FACEON           ");
+                break;
             case 0x83:
                 sprintf(detail, "MTXLOAD          ");
+                break;
+            case 0x90:
+                sprintf(detail, "FACEON_TRANSFORM ");
                 break;
             case 0x84:
                 sprintf(detail, "TERMINATE        ");
@@ -11315,14 +11333,8 @@ extern "C" {
             case 0x86:
                 sprintf(detail, "CLUT             ");
                 break;
-            case 0x87:
-                sprintf(detail, "DUMMY            ");
-                break;
             case 0x88:
                 sprintf(detail, "DLIST            ");
-                break;
-            case 0x8b:
-                sprintf(detail, "DYNAMIC GEOMETRY ");
                 break;
             case 0x8c:
                 sprintf(detail, "TRANSFORM_REF    ");
@@ -11330,29 +11342,17 @@ extern "C" {
             case 0x8d:
                 sprintf(detail, "NEXT             ");
                 break;
-            case 0x8e:
-                sprintf(detail, "END ITEM         ");
-                break;
-            case 0x8f:
-                sprintf(detail, "FACEON           ");
-                break;
-            case 0x90:
-                sprintf(detail, "FACEON_TRANSFORM ");
-                break;
-            case 0x93:
-                sprintf(detail, "GEOMCALL2D       ");
+            case 0x8b:
+                sprintf(detail, "DYNAMIC GEOMETRY ");
                 break;
             case 0x94:
                 sprintf(detail, "LIGHTS           ");
                 break;
-            case 0x95:
-                sprintf(detail, "DEBUG GEOMCALL   ");
-                break;
-            case 0x97:
-                sprintf(detail, "LINECALL2D       ");
-                break;
             case 0x9a:
                 sprintf(detail, "CAMERA           ");
+                break;
+            case 0x95:
+                sprintf(detail, "DEBUG GEOMCALL   ");
                 break;
             case 0x9b:
                 sprintf(detail, "FX SCREEN COPY   ");
@@ -11366,11 +11366,11 @@ extern "C" {
             case 0x9e:
                 sprintf(detail, "FX SPEED BLUR    ");
                 break;
-            case 0x9f:
-                sprintf(detail, "LINEBUFFER       ");
-                break;
             case 0xa0:
                 sprintf(detail, "GEOM CLIPPED     ");
+                break;
+            case 0x8e:
+                sprintf(detail, "END ITEM         ");
                 break;
             case 0xad:
                 sprintf(detail, "INST_SURF_GEOM ITEM ");
