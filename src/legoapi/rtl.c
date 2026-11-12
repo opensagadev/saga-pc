@@ -505,46 +505,46 @@ i32 __cdecl rtlDynamicAlloc(void) {
     if (rtl_dynamic_pool == NULL)
         return -1;
     light = (RTL_LIGHT_PC *)NuLstAllocTail(rtl_dynamic_pool);
-    if (light == NULL)
-        return -1;
-    light->position.x = 0.0f;
-    light->position.y = 0.0f;
-    light->position.z = 0.0f;
-    light->inner_radius = 1.0f;
-    light->outer_radius = 2.0f;
-    light->colour.x = 1.0f;
-    light->colour.y = 1.0f;
-    light->colour.z = 1.0f;
-    light->secondary_colour.x = 0.5f;
-    light->secondary_colour.y = 0.5f;
-    light->secondary_colour.z = 0.5f;
-    light->type = 2;
-    light->flags &= ~1;
-    light->field_5e = 0;
-    light->field_60 = 0;
-    light->parameters[0] = 0.1f;
-    light->parameters[1] = 0.1f;
-    light->parameters[2] = 0.1f;
-    light->parameters[3] = 0.1f;
-    light->parameter_54 = 0.0f;
-    light->pitch = 0;
-    light->yaw = 0;
-    light->direction.x = 0.0f;
-    light->direction.y = 0.0f;
-    light->direction.z = 1.0f;
-    light->field_64 = 0.0f;
-    light->intensity = 1.0f;
-    light->field_7a = -1;
-    light->field_79 = -1;
-    light->field_7b = 0;
-    light->field_7c = NULL;
-    NuVecRotateX(&light->direction, &light->direction, light->pitch);
-    NuVecRotateY(&light->direction, &light->direction, light->yaw);
-    light->uid = (i16)RtlUidCounterPc++;
-    if (RtlUidCounterPc == 0)
-        ++RtlUidCounterPc;
-    ++rtl_dynamic_cnt;
-    return ((NULNKHDR *)light - 1)->id;
+    if (light != NULL) {
+        light->type = 4;
+        light->position.x = light->position.y = light->position.z = 0.0f;
+        light->inner_radius = 1.0f;
+        light->outer_radius = 2.0f;
+        light->colour.x = 1.0f;
+        light->colour.y = 1.0f;
+        light->colour.z = 1.0f;
+        light->secondary_colour.x = 0.5f;
+        light->secondary_colour.y = 0.5f;
+        light->secondary_colour.z = 0.5f;
+        light->type = 2;
+        light->disabled = 0;
+        light->field_5e = 0;
+        light->field_60 = 0;
+        light->parameters[0] = 0.1f;
+        light->parameters[1] = 0.1f;
+        light->parameters[2] = 0.1f;
+        light->parameters[3] = 0.1f;
+        light->parameter_54 = 0.0f;
+        light->pitch = 0;
+        light->yaw = 0;
+        light->direction.x = 0.0f;
+        light->direction.y = 0.0f;
+        light->direction.z = 1.0f;
+        light->field_64 = 0.0f;
+        light->intensity = 1.0f;
+        light->field_7a = -1;
+        light->field_79 = -1;
+        light->field_7b = 0;
+        light->field_7c = NULL;
+        NuVecRotateX(&light->direction, &light->direction, light->pitch);
+        NuVecRotateY(&light->direction, &light->direction, light->yaw);
+        light->uid = (i16)RtlUidCounterPc++;
+        if (RtlUidCounterPc == 0)
+            ++RtlUidCounterPc;
+        ++rtl_dynamic_cnt;
+        return ((NULNKHDR *)light - 1)->id;
+    }
+    return -1;
 }
 i32 __cdecl rtlDynamicSetType(i32 id, i32 type) {
     RTL_LIGHT_PC *light;
