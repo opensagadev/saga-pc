@@ -1316,36 +1316,31 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
 i32 __cdecl DebrisNuASin(f32);
 DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
     i32 trail;
-    i16 particle_index;
     DEBRISPARTICLE_PC *particle;
     NUVEC vector;
     i32 angle_y;
     f64 random;
     f32 sine;
-    i16 angle_z;
+    i32 angle_z;
     NUMTX scale;
-    i16 trail_index;
     DEBRISPARTICLE_PC *trail_particle;
     if (key->particle_cursor >= key->particle_count)
         key->particle_cursor = 0;
-    particle_index = key->particle_cursor;
-
     if (effect->particle_type == 7)
-        particle = &key->particle_chunks[particle_index / 12]->particles[particle_index % 12];
+        particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
     else
-        particle = &key->particle_chunks[particle_index / 32]->particles[particle_index % 32];
+        particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
     ++key->particle_cursor;
     particle->start_time = time;
     key->emission_epoch = time;
     particle->inverse_lifetime = 64.0f / effect->particle_lifetime;
 
     vector.x = NuFsqrt(NuRandFloatSeeded(&debrisseed));
-    vector.y = 0.0f;
-    vector.z = 0.0f;
+    vector.y = vector.z = 0.0f;
     angle_y = (i32)(NuRandFloatSeeded(&debrisseed) * 65536.0f);
     random = NuRandFloatSeeded(&debrisseed);
     sine = random + random - 1.0f;
-    angle_z = (i16)(DebrisNuASin(sine));
+    angle_z = (i16)DebrisNuASin(sine);
     NuVecRotateZ(&vector, &vector, angle_z);
     NuVecRotateY(&vector, &vector, angle_y);
 
@@ -1381,11 +1376,10 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     for (trail = 0; trail < (i8)(effect->trail_count); ++trail) {
         if (key->particle_cursor >= key->particle_count)
             key->particle_cursor = 0;
-        trail_index = key->particle_cursor;
         if (effect->particle_type == 7)
-            trail_particle = &key->particle_chunks[trail_index / 12]->particles[trail_index % 12];
+            trail_particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
         else
-            trail_particle = &key->particle_chunks[trail_index / 32]->particles[trail_index % 32];
+            trail_particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
         ++key->particle_cursor;
         *trail_particle = *particle;
         trail_particle->start_time += (f32)(trail + 1) * effect->trail_time;
@@ -2804,6 +2798,7 @@ i32 __cdecl GetSfxIdN(char *, i32);
 i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 count, i;
+    char *special_name;
     if (name[0] == 0)
         return -1;
     if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0)
@@ -2813,8 +2808,11 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     count = NuGScnNumSpecials(scene);
     for (i = 0; i < count; ++i) {
         NuGScnGetSpecial(&special, scene, i);
-        if (NuSpecialExistsFn(&special) && NuStrNCmp(name, NuSpecialGetName(&special), 16) == 0)
-            return i;
+        if (NuSpecialExistsFn(&special)) {
+            special_name = NuSpecialGetName(&special);
+            if (NuStrNCmp(name, special_name, 16) == 0)
+                return i;
+        }
     }
     return -1;
 }
