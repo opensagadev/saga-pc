@@ -135,21 +135,21 @@ char *__cdecl GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
 }
 
 void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibility, i32 mode) {
-    GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
     GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_ptr;
-    i32 command = visibility == 0 ? 2 : 6;
+    i32(__cdecl * activate_rev)(GIZMO_PC *, i32, i32);
+    i32 command = 2;
+    if (visibility != 0)
+        command = 6;
     if (gizmo == NULL || gizmotypes == NULL)
         return;
-    registry = (GIZMOTYPES_PC *)gizmotypes;
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.activate_rev_fn == NULL)
+    activate_rev = ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn;
+    if (activate_rev == NULL)
         return;
-    if (type->fns.activate_rev_fn(gizmo, reverse, command | 1) == 0)
+    command |= 1;
+    if (activate_rev(gizmo, reverse, command) == 0)
         return;
-    registry = (GIZMOTYPES_PC *)gizmotypes;
-    type = &registry->types[gizmo->type_id];
-    type->fns.activate_rev_fn(gizmo, reverse, command);
+    command &= ~1;
+    ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn(gizmo, reverse, command);
     if (visibility != 0)
         GizmoSetVisibility(system, gizmo, reverse == 0, 1);
     (void)mode;
