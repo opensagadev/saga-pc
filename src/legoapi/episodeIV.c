@@ -458,7 +458,8 @@ f32 TrenchMaxHeightMovePc = 5.0f;
 #pragma data_seg()
 
 void __cdecl TrenchMove(GAMEOBJECT *object) {
-    f32 phase, target_x, target_y, target_z, height_difference;
+    NUVEC target;
+    f32 phase, height_difference;
     i32 roll, target_roll;
     GAMEPAD_PC *pad;
     f32 input_magnitude;
@@ -472,8 +473,8 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     input_angle = pad->input_angle;
     pad->previous_input_magnitude = input_magnitude;
     pad->previous_input_angle = input_angle;
-    object->flags_ef0 &= ~0x4000;
     object->previous_movement_angle = object->field_0x276;
+    object->flags_ef0 &= ~0x4000;
     object->flags_107a = 0;
     if (object->model_draw_result != 0)
         object->field_f10 = 0.0f;
@@ -497,23 +498,23 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     if (object->character_context == 0x2a) {
         phase = object->context_timer / TURNTIME;
         if (object->movement_facing_angle > 0x8000)
-            target_x = phase * TrenchLaneOffsetPc + (1.0f - phase) * -TrenchLaneOffsetPc;
+            target.x = (1.0f - phase) * -TrenchLaneOffsetPc + phase * TrenchLaneOffsetPc;
         else
-            target_x = phase * -TrenchLaneOffsetPc + (1.0f - phase) * TrenchLaneOffsetPc;
-        target_x = trenchrun.position.x + target_x;
+            target.x = (1.0f - phase) * TrenchLaneOffsetPc + phase * -TrenchLaneOffsetPc;
+        target.x = trenchrun.position.x + target.x;
     } else if (object->movement_facing_angle > 0x8000) {
-        target_x = trenchrun.position.x + TrenchLaneOffsetPc;
+        target.x = trenchrun.position.x + TrenchLaneOffsetPc;
     } else {
-        target_x = trenchrun.position.x - TrenchLaneOffsetPc;
+        target.x = trenchrun.position.x - TrenchLaneOffsetPc;
     }
-    object->position.x = SeekValF(object->position.x, target_x, TrenchSeekXPc);
-    target_y = VehicleTurnOrLoopOffset(object) + (object->movement_spline_offset.y + trenchrun.position.y);
-    height_difference = target_y - object->position.y;
+    object->position.x = SeekValF(object->position.x, target.x, TrenchSeekXPc);
+    target.y = VehicleTurnOrLoopOffset(object) + (object->movement_spline_offset.y + trenchrun.position.y);
+    height_difference = target.y - object->position.y;
     if (height_difference > TrenchMaxHeightMovePc)
-        target_y = TrenchMaxHeightMovePc + object->position.y;
-    object->position.y = SeekValF(object->position.y, target_y, TrenchSeekYPc);
-    target_z = object->movement_spline_offset.z + trenchrun.position.z;
-    object->position.z = SeekValF(object->position.z, target_z, TrenchSeekZPc);
+        target.y = TrenchMaxHeightMovePc + object->position.y;
+    object->position.y = SeekValF(object->position.y, target.y, TrenchSeekYPc);
+    target.z = object->movement_spline_offset.z + trenchrun.position.z;
+    object->position.z = SeekValF(object->position.z, target.z, TrenchSeekZPc);
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
