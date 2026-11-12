@@ -178,8 +178,10 @@ void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
     s = (ADD_TORP_SYS_PC *)w->torpedo_machine_sys;
     if (s->items == NULL)
         return;
-    for (i = 0; i < s->count; ++i)
-        s->items[i].flags |= 3;
+    for (i = 0; i < s->count; ++i) {
+        ADD_TORP_PC *torp = &s->items[i];
+        torp->flags |= 3;
+    }
 }
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -254,7 +256,7 @@ STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
     GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
     AI_GIZMO_NAME_PROCESS_PC *process;
-    i8 length, total;
+    i8 length;
     if (gizmo == NULL || gizmo->object == NULL)
         return NULL;
     process = (AI_GIZMO_NAME_PROCESS_PC *)gizmo->object;
@@ -266,25 +268,25 @@ char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
         NuStrCpy(AIGizmoNameBufferPc, "");
     length = (i8)NuStrLen(AIGizmoNameBufferPc);
     if (process->locator_set_name != NULL) {
-        total = (i8)((u8)length + (u8)NuStrLen("()"));
-        total = (i8)((u8)total + (u8)NuStrLen(process->locator_set_name));
-        if (total < 16) {
+        length += (i8)NuStrLen("()");
+        length += (i8)NuStrLen(process->locator_set_name);
+        if (length < 16) {
             NuStrCat(AIGizmoNameBufferPc, "(");
             NuStrCat(AIGizmoNameBufferPc, process->locator_set_name);
             NuStrCat(AIGizmoNameBufferPc, ")");
         }
     } else if (process->locator_name != NULL) {
-        total = (i8)((u8)length + (u8)NuStrLen("()"));
-        total = (i8)((u8)total + (u8)NuStrLen(process->locator_name));
-        if (total < 16) {
+        length += (i8)NuStrLen("()");
+        length += (i8)NuStrLen(process->locator_name);
+        if (length < 16) {
             NuStrCat(AIGizmoNameBufferPc, "(");
             NuStrCat(AIGizmoNameBufferPc, process->locator_name);
             NuStrCat(AIGizmoNameBufferPc, ")");
         }
     } else if (process->context_name != NULL) {
-        total = (i8)((u8)length + (u8)NuStrLen("()"));
-        total = (i8)((u8)total + (u8)NuStrLen(process->context_name));
-        if (total < 16) {
+        length += (i8)NuStrLen("()");
+        length += (i8)NuStrLen(process->context_name);
+        if (length < 16) {
             NuStrCat(AIGizmoNameBufferPc, "(");
             NuStrCat(AIGizmoNameBufferPc, process->context_name);
             NuStrCat(AIGizmoNameBufferPc, ")");

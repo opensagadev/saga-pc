@@ -530,6 +530,7 @@ extern "C" {
     void __cdecl ChrisDogFightADraw(WORLDINFO *world);
 
     static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
+#define DOGFIGHT_SPACE ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)
 #define COPY_ELEMENT(field) destination->field = source->field
         COPY_ELEMENT(m00);
         COPY_ELEMENT(m01);
@@ -1076,9 +1077,9 @@ extern "C" {
 
     static __declspec(noinline) void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count) {
         i32 i;
-        for (i = 0; i < count; ++i) {
-            records[i].current_value = records[i].reset_value;
-            records[i].current_state = records[i].reset_state;
+        for (i = 0; i < count; ++i, ++records) {
+            records->current_value = records->reset_value;
+            records->current_state = records->reset_state;
         }
     }
 
@@ -1560,14 +1561,12 @@ extern "C" {
     }
 
     static __declspec(noinline) DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void) {
-        DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         i32 i;
-        if (space == NULL) {
-            return NULL;
-        }
-        for (i = 0; i < 8; ++i) {
-            if (space->groups[i].active == 0) {
-                return &space->groups[i];
+        if (WORLD->level_specific_data != NULL) {
+            for (i = 0; i < 8; ++i) {
+                if (DOGFIGHT_SPACE->groups[i].active == 0) {
+                    return &DOGFIGHT_SPACE->groups[i];
+                }
             }
         }
         return NULL;
@@ -1952,8 +1951,8 @@ extern "C" {
                 return 0;
         }
         space->coin_history[index].spline_id = fighter->spline->id;
-        ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->coin_history[index].spawn_time = fighter->spawn_time;
-        ++((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->coin_history_count;
+        DOGFIGHT_SPACE->coin_history[index].spawn_time = fighter->spawn_time;
+        ++DOGFIGHT_SPACE->coin_history_count;
         return 1;
     }
 
@@ -2246,7 +2245,7 @@ extern "C" {
         DOGFIGHT_FIGHTER_PC *fighter;
         if (spline->point_count == 0)
             return;
-        if (!(spline->next_spawn > space->door_elapsed && spline->next_spawn <= space->door_countdown))
+        if (!(space->door_elapsed < spline->next_spawn && space->door_countdown >= spline->next_spawn))
             return;
         fighter = QueuedFighterSelectorPc(space);
         fighter->fields.spawn_time = spline->next_spawn;
