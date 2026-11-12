@@ -6818,13 +6818,11 @@ i32 __cdecl Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
                         object->ai_packet.flags &= ~0x0c000000u;
                 }
             }
-            return 1;
-        }
-        if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
+        } else if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
             object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
             object->ai_packet.movement_target_radius = range;
             if (range > 0.0f)
-                object->ai_packet.flags ^= (((u32)range_type << 26) ^ object->ai_packet.flags) & 0x0c000000u;
+                object->ai_packet.flags = (object->ai_packet.flags & ~0x0c000000u) | ((range_type & 3) << 26);
             else
                 object->ai_packet.flags &= ~0x0c000000u;
         }
