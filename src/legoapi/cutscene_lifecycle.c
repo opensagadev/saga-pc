@@ -910,26 +910,23 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
         return NULL;
     scene = (CUT_SCENE_LOAD_PC *)buffer->void_ptr;
     if (scene->version >= 10) {
+        scene->loaded_size = size;
         scene->string_delta = (i32)scene - scene->string_delta;
         scene->relocation_delta = (i32)scene - scene->relocation_delta;
-        scene->loaded_size = size;
-        if ((scene->flags & 8) != 0) {
-            CutSceneFixPtrsPc(scene, 0, 0);
-            buffer->addr += size;
-            CutSceneRemapFocusPc(scene, buffer);
-        } else {
+        if ((scene->flags & 8) == 0) {
             CutSceneFixPtrsPc(scene, scene->relocation_delta, 0);
             if ((scene->flags & 1) == 0 || no_stream_buffers != 0) {
                 buffer->addr += size;
                 CutSceneRemapFocusPc(scene, buffer);
             } else {
-                addr = (buffer->addr + scene->stream_buffer_offset + 15) & ~15;
-                scene->stream_buffer_0 = (void *)addr;
-                addr += scene->stream_buffer_size + 0x400;
+                addr = scene->stream_buffer_offset + buffer->addr;
+                addr += 15;
+                scene->stream_buffer_0 = (void *)(addr & ~15);
+                addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
                 if (CutSceneSingleStreamBufferPc == 0) {
-                    addr = (addr + 15) & ~15;
-                    scene->stream_buffer_1 = (void *)addr;
-                    addr += scene->stream_buffer_size + 0x400;
+                    addr += 15;
+                    scene->stream_buffer_1 = (void *)(addr & ~15);
+                    addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
                 }
                 buffer->addr = addr;
                 filename_length = NuStrLen(path);
@@ -939,6 +936,10 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                 scene->filename = filename_destination;
                 CutSceneRemapFocusPc(scene, buffer);
             }
+        } else {
+            CutSceneFixPtrsPc(scene, 0, 0);
+            buffer->addr += size;
+            CutSceneRemapFocusPc(scene, buffer);
         }
     } else {
         void *first_animation;
@@ -962,21 +963,20 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                     first_animation = scene->camera_system->animation;
                 else if (scene->rigid_system != NULL && scene->rigid_system->rigids->animation != NULL)
                     first_animation = scene->rigid_system->rigids->animation;
-                else if (scene->character_system != NULL) {
-                    if (scene->character_system->characters->animation != NULL)
-                        first_animation = scene->character_system->characters->animation;
-                    else if (scene->character_system->characters->face_animation != NULL)
-                        first_animation = scene->character_system->characters->face_animation;
-                }
+                else if (scene->character_system != NULL && scene->character_system->characters->animation != NULL)
+                    first_animation = scene->character_system->characters->animation;
+                else if (scene->character_system != NULL &&
+                         scene->character_system->characters->face_animation != NULL)
+                    first_animation = scene->character_system->characters->face_animation;
                 if (scene->stream_buffer_offset != 0)
                     first_animation = (void *)(buffer->addr + scene->stream_buffer_offset);
-                addr = ((u32)first_animation + 15) & ~15;
-                scene->stream_buffer_0 = (void *)addr;
-                addr += scene->stream_buffer_size + 0x400;
+                addr = (u32)first_animation + 15;
+                scene->stream_buffer_0 = (void *)(addr & ~15);
+                addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
                 if (CutSceneSingleStreamBufferPc == 0) {
-                    addr = (addr + 15) & ~15;
-                    scene->stream_buffer_1 = (void *)addr;
-                    addr += scene->stream_buffer_size + 0x400;
+                    addr += 15;
+                    scene->stream_buffer_1 = (void *)(addr & ~15);
+                    addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
                 }
                 buffer->addr = addr;
                 filename_length = NuStrLen(path);
