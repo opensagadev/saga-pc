@@ -49,11 +49,12 @@ i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled) {
     if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
         return 0;
     light = (TERRAIN_DYNAMIC_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
-    if (light == NULL)
-        return 0;
-    previous = (light->flags & 1) == 0;
-    light->flags = (light->flags & ~1) | (enabled == 0);
-    return previous;
+    if (light != NULL) {
+        previous = (light->flags & 1) == 0;
+        light->flags = (light->flags & ~1) | (enabled == 0);
+        return previous;
+    }
+    return 0;
 }
 
 #define NU_SIN_LUT(a) NuTrigTable[((a) >> 1) & 0x7fff]
@@ -552,13 +553,16 @@ i32 __cdecl rtlDynamicAlloc(void) {
 }
 i32 __cdecl rtlDynamicSetType(i32 id, i32 type) {
     RTL_LIGHT_PC *light;
-    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max || type <= 0 || type >= 9)
+    if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
         return 0;
-    light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
-    if (light == NULL)
-        return 0;
-    light->type = (u8)type;
-    return 1;
+    if (type > 0 && type <= 8) {
+        light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
+        if (light != NULL) {
+            light->type = (u8)type;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 i32 __cdecl rtlDynamicSetPos(i32 id, NUVEC *position) {
@@ -830,13 +834,12 @@ i32 rtlDynamicSetRadii(i32 id, f32 inner, f32 outer) {
     if (rtl_dynamic_pool == NULL || id < 0 || id >= rtl_dynamic_max)
         return 0;
     light = (RTL_LIGHT_PC *)NuLstGetByIdx(rtl_dynamic_pool, id);
-    if (light == NULL)
-        return 0;
-    light->inner_radius = inner;
-    if (outer < inner)
-        outer = inner;
-    light->outer_radius = outer;
-    return 1;
+    if (light != NULL) {
+        light->inner_radius = inner;
+        light->outer_radius = inner > outer ? inner : outer;
+        return 1;
+    }
+    return 0;
 }
 
 i32 rtlDynamicSetColours(i32 id, NUVEC *colour, NUVEC *secondary) {
