@@ -7186,13 +7186,13 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
 
 i32 Action_JudderGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 param_4, i32 param_5, f32 param_6) {
+    f32 time = 0.1f;
+    i32 axis = 0;
     (void)sys;
     (void)packet;
     (void)param_6;
     if (param_5 != 0) {
         i32 index;
-        i32 axis = 0;
-        f32 time = 0.1f;
         for (index = 0; index < param_4; ++index) {
             if (NuStrIStr(params[index], "axis=x") != NULL) {
                 axis = 0;
@@ -11632,12 +11632,13 @@ i32 __cdecl Action_GizmoActivate(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1,
     i32 enabled = 1;
     i32 index;
     char *value;
-    if (first_time != 0 && count > 0) {
+    if (first_time != 0) {
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-            if (value != NULL)
-                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen(AIScriptActionNameArgPrefix));
-            else if (NuStrICmp(params[index], AIActionFalseName) == 0)
+            if (value != NULL) {
+                value += NuStrLen(AIScriptActionNameArgPrefix);
+                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value);
+            } else if (NuStrICmp(params[index], AIActionFalseName) == 0)
                 enabled = 0;
         }
         if (gizmo != NULL)
@@ -11652,12 +11653,13 @@ i32 __cdecl Action_GizmoSetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unu
     i32 enabled = 1;
     i32 index;
     char *value;
-    if (first_time != 0 && count > 0) {
+    if (first_time != 0) {
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-            if (value != NULL)
-                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value + NuStrLen(AIScriptActionNameArgPrefix));
-            else if (NuStrICmp(params[index], AIActionFalseName) == 0)
+            if (value != NULL) {
+                value += NuStrLen(AIScriptActionNameArgPrefix);
+                gizmo = GizmoFindByName(WORLD->gizmo_sys, -1, value);
+            } else if (NuStrICmp(params[index], AIActionFalseName) == 0)
                 enabled = 0;
         }
         if (gizmo != NULL)
