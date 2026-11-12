@@ -4855,6 +4855,7 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     f32 goal_range;
     f32 attack_range;
     f32 attack_squared;
+    NUVEC delta;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
@@ -4897,11 +4898,11 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         return 0;
     target = (GAMEOBJECT *)opponent->owner;
     object->portal_flags |= 0x20u;
-    if ((((APIOBJECT_PC *)target)->flags_low & 0x1001u) != 0x1001u || target->dead != 0 ||
-        target->character_context == 0x2b ||
+    if (!(((APIOBJECT_PC *)target)->flags_low & 1) || !(((APIOBJECT_PC *)target)->flags_low & 0x1000) ||
+        target->dead != 0 || target->character_context == 0x2b ||
         ((((APIOBJECT_PC *)target)->flags_low & 0x80u) != 0 && target->spawn_protection_timer > 1.5f))
         return 0;
-    distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT_PC *)packet->owner)->position, NULL);
+    distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT_PC *)packet->owner)->position, &delta);
     if ((object->flags_ef4 & 0x2000u) != 0) {
         reloaded_opponent = (APIOBJECT_PC *)object->ai_packet.opponent;
         if (oneAtOnce_CanAttack(object, (GAMEOBJECT *)reloaded_opponent->owner) != 0) {
@@ -4912,28 +4913,30 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
             processor->action_data_1 |= 2;
         }
     }
-    if ((processor->action_data_1 & 2) == 0) {
+    if ((processor->action_data_1 & 2) != 0) {
+        if (distance_squared <
+            (packet->movement_instruction_parameter - aitol) * (packet->movement_instruction_parameter - aitol)) {
+            AIMoveInstruction(packet, &target->ai_packet.last_path_position, packet->mover_height,
+                              &target->ai_packet.path_info, 2, packet->movement_instruction_parameter);
+            packet->goal_speed_mode = 0;
+        } else if (distance_squared > (packet->movement_instruction_parameter + aitol) *
+                                          (packet->movement_instruction_parameter + aitol)) {
+            AIMoveInstruction(packet, &target->ai_packet.last_path_position, packet->mover_height,
+                              &target->ai_packet.path_info, 1, packet->movement_instruction_parameter);
+            packet->goal_speed_mode = 0;
+        } else
+            packet->movement_look_target = &target->position;
+    } else {
         goal_range = target->ai_packet.mover_height + packet->movement_instruction_parameter + packet->mover_height;
         AIMoveInstruction(packet, &target->ai_packet.last_path_position, 0.0f, &target->ai_packet.path_info, 1,
                           goal_range);
         packet->goal_speed_mode = 0;
-    } else if (distance_squared <
-               (packet->movement_instruction_parameter - aitol) * (packet->movement_instruction_parameter - aitol)) {
-        AIMoveInstruction(packet, &target->ai_packet.last_path_position, packet->mover_height,
-                          &target->ai_packet.path_info, 2, packet->movement_instruction_parameter);
-        packet->goal_speed_mode = 0;
-    } else if (distance_squared >
-               (packet->movement_instruction_parameter + aitol) * (packet->movement_instruction_parameter + aitol)) {
-        AIMoveInstruction(packet, &target->ai_packet.last_path_position, packet->mover_height,
-                          &target->ai_packet.path_info, 1, packet->movement_instruction_parameter);
-        packet->goal_speed_mode = 0;
-    } else
-        packet->movement_look_target = &target->position;
+    }
     fire = 0;
     if (processor->action_data_4 > 0.0f) {
         if (target->character_context == 0x5a)
             return 0;
-        distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT_PC *)packet->owner)->position, NULL);
+        distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT_PC *)packet->owner)->position, &delta);
         attack_range = target->ai_packet.mover_height + processor->action_data_4 + object->ai_packet.mover_height;
         attack_squared = attack_range * attack_range;
         if (distance_squared < attack_squared)
