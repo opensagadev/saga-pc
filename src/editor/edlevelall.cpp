@@ -2698,8 +2698,8 @@ i32 LevelEditor::AddScene(char *name, NUGSCN *scene, i32 active) {
     if (reset_pending < 10) {
         result = reset_pending++;
         NuStrNCpy(scenes[result].name, name, 32);
-        scenes[result].active = active;
         scenes[result].scene = scene;
+        scenes[result].active = active;
     }
     return result;
 }
