@@ -73,9 +73,9 @@ i32 __cdecl oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
 }
 
 f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
-    i32 player_index = ((APIOBJECT_PC *)object->ai_packet.opponent)->locator_name_index;
     i32 unassigned = 0;
     i32 row = 0;
+    i32 player_index = ((APIOBJECT_PC *)object->ai_packet.opponent)->locator_name_index;
     if ((u32)player_index <= 8) {
         i32 index = 0;
         GAMEOBJECT *candidate = AtOnce_attackingPlayer[player_index][index].object;
