@@ -8492,7 +8492,7 @@ void __cdecl DrawLocator(NUVEC *position, f32 width, i32 direction, i32 colour) 
     vertices[0].colour = colour;
     vertices[1].colour = colour;
     centre = *position;
-    centre.y += 0.25f;
+    centre.y += aiEditor_DrawYOffset;
     offset.x = width;
     offset.y = 0.0f;
     offset.z = 0.0f;
