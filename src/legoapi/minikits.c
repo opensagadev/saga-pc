@@ -204,6 +204,16 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
     }
 }
 
+void CollectAllMiniKits(AREASAVE_s *save) {
+    i32 i;
+    if (save == NULL)
+        return;
+    for (i = 0; i < AREACOUNT; ++i) {
+        save[i].minikit_count = (ADataList[i].flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
+        save[i].minikit_complete = 1;
+    }
+}
+
 i32 AllMiniKitsDone(AREASAVE_s *save) {
     i32 i;
     if (save == NULL) {
