@@ -5425,19 +5425,18 @@ __declspec(noinline) void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC
     if (path != NULL) {
         from = AIPathFindNode(system, path, from_name);
         to = AIPathFindNode(system, path, to_name);
-        if (to == NULL || from == NULL || from == to) {
+        if (from == NULL || to == NULL || from == to) {
             return NULL;
         }
         to_index = (i32)(to - path->nodes);
         for (index = 0; index < from->connection_count; ++index) {
-            AIPATHCNX_PC *connection = from->connections[index];
-            if (connection->node_indices[0] == to_index) {
+            if (from->connections[index]->node_indices[0] == to_index) {
                 *direction = 1;
-                return connection;
+                return from->connections[index];
             }
-            if (connection->node_indices[1] == to_index) {
+            if (from->connections[index]->node_indices[1] == to_index) {
                 *direction = 0;
-                return connection;
+                return from->connections[index];
             }
         }
     }
