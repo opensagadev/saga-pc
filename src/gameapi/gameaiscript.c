@@ -4899,7 +4899,7 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     object->portal_flags |= 0x20u;
     if ((((APIOBJECT_PC *)target)->flags_low & 0x1001u) != 0x1001u || target->dead != 0 ||
         target->character_context == 0x2b ||
-        ((((APIOBJECT_PC *)target)->flags_low & 0x80u) != 0 && !(target->spawn_protection_timer > 1.5f)))
+        ((((APIOBJECT_PC *)target)->flags_low & 0x80u) != 0 && target->spawn_protection_timer > 1.5f))
         return 0;
     distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT_PC *)packet->owner)->position, NULL);
     if ((object->flags_ef4 & 0x2000u) != 0) {
