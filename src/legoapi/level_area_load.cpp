@@ -843,6 +843,16 @@ extern "C" {
         }
     }
 
+    void *__cdecl LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
+        STARTUP_LEVEL_OBJECT_PC *object = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
+        i32 i;
+        for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
+            if (object->platform_id == platform_id)
+                return object;
+        }
+        return NULL;
+    }
+
     char *__cdecl LevelObject_FindNameFromIndex(i32 index) {
         char *name = "";
         if (ObjTabList == NULL || index < 0 || index >= LEVELOBJECTCOUNT)
