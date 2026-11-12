@@ -2497,7 +2497,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
 }
 
 void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
-    INSTNUGCUTSCENE *owner;
+    INSTNUGCUTSCENE *owner = active_cutscene_instances;
     if (++CutSceneSynchroCounterPc > 0xff)
         CutSceneSynchroCounterPc = 1;
     CutSceneQuitPromptPc = 0;
@@ -2506,7 +2506,7 @@ void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
     CutSceneCameraChangedPc = 0;
     if (paused != 0)
         skip = 0;
-    for (owner = active_cutscene_instances; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next) {
+    for (; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next) {
         CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
         if (((i32)(instance->flags_88 << 5) >> 24) != CutSceneSynchroCounterPc)
             CutSceneInstanceUpdatePc(instance, paused, skip, elapsed);
