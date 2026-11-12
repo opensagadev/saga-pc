@@ -1548,62 +1548,53 @@ i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT
     i32 index;
     i32 point;
     i32 player_index;
-    if (system == NULL || system->hit_test_gizmo_count == 0)
-        return 0;
-    for (index = 0; index < system->hit_test_gizmo_count; ++index) {
-        force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
-        if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x10000) != 0)
-            continue;
-        if ((f64)force->position.x - (f64)force->radius > (f64)maximum->x)
-            continue;
-        if ((f64)force->radius + (f64)force->position.x < (f64)minimum->x)
-            continue;
-        if ((f64)force->position.z - (f64)force->radius > (f64)maximum->z)
-            continue;
-        if ((f64)force->position.z + (f64)force->radius < (f64)minimum->z)
-            continue;
-        if ((f64)force->position.y - (f64)force->radius > (f64)maximum->y)
-            continue;
-        if ((f64)force->radius + (f64)force->position.y < (f64)minimum->y)
-            continue;
-        point = (i32)((u32)point_count - 1u);
-        while (point >= 0) {
-            if (SphereSphereOverlap(&force->position, force->radius, &points[point], radius) != 0)
-                break;
-            --point;
-        }
-        if (point < 0)
-            continue;
-        origin = object != NULL ? &object->collision_position : &points[point];
-        distance_spill = NuVecDistSqr(origin, &force->position, NULL);
-        distance = distance_spill;
-        if (best_distance > distance) {
-            best_distance = distance;
-            best = force;
+    if (system != NULL) {
+        for (index = 0; index < system->hit_test_gizmo_count; ++index) {
+            force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
+            if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
+                (force->runtime_flags & 0x10000) != 0)
+                continue;
+            if (maximum->x < force->position.x - force->radius || minimum->x > force->radius + force->position.x ||
+                maximum->z < force->position.z - force->radius || minimum->z > force->radius + force->position.z ||
+                maximum->y < force->position.y - force->radius || minimum->y > force->radius + force->position.y)
+                continue;
+            for (point = point_count - 1; point >= 0; --point) {
+                if (SphereSphereOverlap(&force->position, force->radius, &points[point], radius) != 0) {
+                    origin = object != NULL ? &object->collision_position : &points[point];
+                    distance_spill = NuVecDistSqr(origin, &force->position, NULL);
+                    distance = distance_spill;
+                    if (distance < best_distance) {
+                        best_distance = distance;
+                        best = force;
+                    }
+                    break;
+                }
+            }
         }
     }
-    if (best == NULL)
-        return 0;
-    if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
-        (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
-        (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
-    }
-    (void)BoltType_FindByID((u8)bolt->type_id, world);
-    player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
-    if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
-        if (object != NULL) {
-            NewRumble(object->pad->bound_pad, 0.4f, 0);
-            GameCam_HitJudder();
+    if (best != NULL) {
+        if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+            (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
+            (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
         }
-    } else {
-        NuVecSub(&normal, &best->position, &bolt->position);
-        NuVecNorm(&normal, &normal);
-        GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
-        Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+        (void)BoltType_FindByID((u8)bolt->type_id, world);
+        player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+        if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
+            if (object != NULL) {
+                NewRumble(object->pad->bound_pad, 0.4f, 0);
+                GameCam_HitJudder();
+            }
+        } else {
+            NuVecSub(&normal, &best->position, &bolt->position);
+            NuVecNorm(&normal, &normal);
+            GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
+            Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+        }
+        if (BoltSys->stop_targeting != NULL)
+            BoltSys->stop_targeting(object, points);
+        return 1;
     }
-    if (BoltSys->stop_targeting != NULL)
-        BoltSys->stop_targeting(object, points);
-    return 1;
+    return 0;
 }
 
 GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_distance, NUVEC *output_position,
