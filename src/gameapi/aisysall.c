@@ -18007,6 +18007,7 @@ eduimenu_s *__cdecl areaEditor_Process(FRAME_PAD_PC *pad) {
     EDAIAREA_s *area;
     char name[16];
     i32 index = 0;
+    i32 duplicate;
     f32 size;
     if (pad->digital_buttons_pressed & 0x80)
         return areaEditorOptionsMenu();
@@ -18052,17 +18053,20 @@ eduimenu_s *__cdecl areaEditor_Process(FRAME_PAD_PC *pad) {
                 aieditor->selected_area->size.y = previous->size.y;
                 aieditor->selected_area->size.z = previous->size.z;
             } else {
-                aieditor->selected_area->size.z = aieditor->selected_area->size.y = aieditor->selected_area->size.x =
+                aieditor->selected_area->size.x = aieditor->selected_area->size.y = aieditor->selected_area->size.z =
                     1.0f;
             }
             do {
                 sprintf(name, "Area%d", ++index);
+                duplicate = 0;
                 for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
                      area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-                    if (NuStrICmp(name, area->name) == 0)
+                    if (NuStrICmp(name, area->name) == 0) {
+                        duplicate = 1;
                         break;
+                    }
                 }
-            } while (area != NULL);
+            } while (duplicate);
             strcpy(aieditor->selected_area->name, name);
         }
     } else if (pad->digital_buttons_pressed & 0x10) {
@@ -18124,7 +18128,7 @@ eduimenu_s *__cdecl areaEditor_Process(FRAME_PAD_PC *pad) {
 done:
     if (aieditor->selected_area != NULL && (aieditor->selected_area->flags & 1) &&
         aieditor->selected_area->size.x != aieditor->selected_area->size.z) {
-        size = aieditor->selected_area->size.z > aieditor->selected_area->size.x ? aieditor->selected_area->size.x
+        size = aieditor->selected_area->size.x < aieditor->selected_area->size.z ? aieditor->selected_area->size.x
                                                                                  : aieditor->selected_area->size.z;
         aieditor->selected_area->size.x = size;
     }
