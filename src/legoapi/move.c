@@ -9392,18 +9392,16 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
     i32 selected_choke;
     i32 selected_second;
     i32 selected_direct;
+    i32 candidate_direct;
     i32 target_special;
-    i32 continuing_direct;
-    i32 continuing_second;
+    i32 candidate_second;
     i32 super_weirdo;
     f32 best_distance;
     GAMEOBJECT *candidate;
     u32 candidate_flags;
     i32 candidate_choke;
-    i32 candidate_second;
-    i32 candidate_direct;
     f32 distance;
-    i32 forced;
+    u16 forced;
 
     if (object->character_context == 0x1b || (object->flags_e20 & 0x20000) != 0 ||
         (object->field_280 != 0xff && MiniCutCam != 0) || (object->flags_e20 & 0x1000000) != 0) {
@@ -9431,8 +9429,8 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
 
     if ((object->pad->runtime_flags & 0x10) != 0 && ((GAMEOBJECT *)object->field_d20) != NULL) {
         best = ((GAMEOBJECT *)object->field_d20);
-        continuing_direct = 0;
-        continuing_second = second_style;
+        candidate_direct = 0;
+        candidate_second = second_style;
         if (choke_style == 0 && object->character_data->game_character->weapon_action == 0x0c &&
             (object->character_data->model_flags & 8) != 0 && best->id == (u16)id_GAMORREANGUARD) {
             choke_style = 1;
@@ -9440,24 +9438,31 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
         target_special = best->character_data->model_flags & 0x10;
         if (target_special == 0 && (best->character_data->game_character->flags_090 & 0x40) != 0 &&
             best->character_model->model_data_b[0x41] != NULL) {
-            continuing_direct = 1;
+            candidate_direct = 1;
         } else if (choke_style == 0 && second_style == 0) {
             if (target_special == 0 && best->character_model->model_data_b[0x41] != NULL) {
-                continuing_direct = 1;
+                candidate_direct = 1;
             } else if (best->character_model->model_data_b[0x2b] == NULL &&
                        (target_special == 0 || best->character_model->model_data_b[5] == NULL)) {
                 return;
             }
-        } else if ((second_style != 0 ? best->character_model->model_data_b[0x54]
-                                      : best->character_model->model_data_b[0x53]) == NULL) {
+        } else if (second_style != 0) {
+            if (best->character_model->model_data_b[0x54] == NULL) {
+                if (target_special == 0)
+                    return;
+                candidate_direct = 0;
+                choke_style = 0;
+                candidate_second = 0;
+            }
+        } else if (best->character_model->model_data_b[0x53] == NULL) {
             if (target_special == 0)
                 return;
-            continuing_direct = 0;
+            candidate_direct = 0;
             choke_style = 0;
-            continuing_second = 0;
+            candidate_second = 0;
         }
-        selected_direct = continuing_direct;
-        selected_second = continuing_second;
+        selected_direct = candidate_direct;
+        selected_second = candidate_second;
         selected_choke = choke_style;
     } else {
         super_weirdo = SuperWeirdo(object);
@@ -9539,8 +9544,15 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
             } else if (super_weirdo != 0 && qrand() < 0x8000 && (candidate->character_data->model_flags & 0x10) == 0 &&
                        candidate->character_model->model_data_b[0x41] != NULL) {
                 candidate_direct = 1;
-            } else if ((second_style != 0 ? candidate->character_model->model_data_b[0x54]
-                                          : candidate->character_model->model_data_b[0x53]) == NULL) {
+            } else if (second_style != 0) {
+                if (candidate->character_model->model_data_b[0x54] == NULL) {
+                    if ((candidate->character_data->model_flags & 0x10) == 0)
+                        continue;
+                    candidate_choke = 0;
+                    candidate_second = 0;
+                    candidate_direct = 0;
+                }
+            } else if (candidate->character_model->model_data_b[0x53] == NULL) {
                 if ((candidate->character_data->model_flags & 0x10) == 0)
                     continue;
                 candidate_choke = 0;
@@ -9588,11 +9600,11 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
             return;
         }
 
-        object->character_context = 0x1b;
-        object->force_target = best;
-        object->field_7b3 = 0;
         object->context_timer = 0.0f;
+        object->force_target = best;
         object->context_duration = 0.3f;
+        object->character_context = 0x1b;
+        object->field_7b3 = 0;
         GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         object->flags_e20 &= ~0x380u;
         if (selected_direct != 0) {
@@ -9606,7 +9618,9 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
 
         if ((object->flags_e20 & 0x400) == 0) {
             FaceOpponent(object, NULL);
-            if ((object->flags_e20 & 0x200) == 0) {
+            if ((object->flags_e20 & 0x200) != 0) {
+                PlaySfx("ForceMindTrick", &object->collision_position);
+            } else {
                 u32 activation_flags;
                 Player_ClearContext(best, 1);
                 Player_ResetContexts(best->ai_player_packet_pc);
@@ -9619,10 +9633,11 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                     best->field_7aa = 0x53;
                     best->action_movement_state = 3;
                 } else {
-                    if (best->character_model->model_data_b[0x2b] != NULL)
-                        best->field_7aa = 0x2b;
+                    if (best->character_model->model_data_b[0x2b] == NULL &&
+                        best->character_model->model_data_b[5] != NULL)
+                        best->field_7aa = 5;
                     else
-                        best->field_7aa = (best->character_model->model_data_b[5] != NULL ? 5 : 0x2b);
+                        best->field_7aa = 0x2b;
                     best->action_movement_state = 0;
                     if ((object->flags_1fc & 0x80) && Cheat_IsOn(0x13)) {
                         best->action_movement_state = 4;
@@ -9632,8 +9647,6 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                 best->character_context = 0x1c;
                 FastWeaponIn(best, 0);
                 FaceOpponent(best, NULL);
-            } else {
-                PlaySfx("ForceMindTrick", &object->collision_position);
             }
         }
         PlaySfx("JForcePush", &object->collision_position);
