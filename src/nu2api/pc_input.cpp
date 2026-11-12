@@ -544,11 +544,12 @@ const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
 
 void NuKeyboardOwner_PC::RescanDevicesPc() {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    PC_INPUT_DEVICE_PC *devices = runtime->devices;
     device_count = 0;
     PcXInputDeviceCount = 0;
     for (i32 port = 0; port < 4; ++port) {
         PC_XINPUT_CAPABILITIES_PC caps;
-        PC_INPUT_DEVICE_PC *record = &runtime->devices[port];
+        PC_INPUT_DEVICE_PC *record = &devices[port];
         if (XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&caps) == 0) {
             record->capabilities_valid = 1;
             runtime->InitXInputCaps(&caps, record);
@@ -561,7 +562,7 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
         }
     }
     for (i32 port = 4; port < 10; ++port) {
-        PC_INPUT_DEVICE_PC *record = &runtime->devices[port];
+        PC_INPUT_DEVICE_PC *record = &devices[port];
         if (record->device != NULL) {
             record->device->methods->unacquire(record->device);
             if (record->device != NULL) {
@@ -572,16 +573,16 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
         record->kind = 0;
         record->capabilities_valid = 0;
     }
-    if (device != NULL) {
-        device->methods->unacquire(device);
-        if (device != NULL) {
-            device->methods->release(device);
-            device = NULL;
+    if (nu_keyboard_owner.device != NULL) {
+        nu_keyboard_owner.device->methods->unacquire(nu_keyboard_owner.device);
+        if (nu_keyboard_owner.device != NULL) {
+            nu_keyboard_owner.device->methods->release(nu_keyboard_owner.device);
+            nu_keyboard_owner.device = NULL;
         }
         for (i32 port = 10; port < 14; ++port) {
-            runtime->devices[port].device = NULL;
-            runtime->devices[port].kind = 0;
-            runtime->devices[port].capabilities_valid = 0;
+            devices[port].device = NULL;
+            devices[port].kind = 0;
+            devices[port].capabilities_valid = 0;
         }
     }
     device_count = 0;
