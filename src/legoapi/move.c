@@ -824,15 +824,10 @@ void __cdecl ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f3
 
 static void IsTurnRequested(GAMEOBJECT *object, u16 input_angle, i32 *turn, i32 finish_turn) {
     if (object == (GAMEOBJECT *)Player[0] || object == (GAMEOBJECT *)Player[1]) {
-        union {
-            f32 value;
-            u32 bits;
-        } waggle;
-        u32 bits;
-        waggle.value = object->pad->waggle_magnitude;
-        bits = waggle.bits & 0x7fffffff;
-        waggle.bits = bits;
-        if (waggle.value > 0.25f)
+        f32 waggle = object->pad->waggle_magnitude;
+        f32 magnitude;
+        *(u32 *)&magnitude = *(u32 *)&waggle & 0x7fffffff;
+        if (magnitude > 0.25f)
             return;
     }
     if (abs(RotDiff(object->field_0x276, input_angle)) < 0x71c7)
