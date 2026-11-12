@@ -9758,8 +9758,8 @@ STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
 extern "C" {
     extern void(__cdecl **PCDisplayItemHandlersPc)(void *);
     void __cdecl NuHtmlHeading(char *text, ...);
-    void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
-                                         i32 file_handle);
+    static void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
+                                                i32 file_handle);
 }
 
 extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
@@ -11426,10 +11426,10 @@ extern "C" {
     }
 
     /* Writes every item of a display list to the HTML capture. Bit 0 of flags follows
-     * jump items (id 1); bit 1 selects the 0x84 terminator instead of 0x8e. Retail passes
-     * items in EAX (a whole-program-optimised private ABI); this port uses cdecl. */
-    void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
-                                         i32 file_handle) {
+     * jump items (id 1); bit 1 selects the 0x84 terminator instead of 0x8e. Static, so VC8
+     * passes items in EAX as retail does. */
+    static void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
+                                                i32 file_handle) {
         i32 index = 0;
         u32 end;
         if (item == NULL)
@@ -11437,10 +11437,18 @@ extern "C" {
         end = (flags & 2) ? 0x84 : 0x8e;
         do {
             DisplayListPrintItem(item, index, type_count, types, file_handle);
-            if ((flags & 1) && item->id == 1)
-                item = (NUDISPLAYLISTITEM *)item->next;
-            else
+            if (flags & 1) {
+                switch (item->id) {
+                    case 1:
+                        item = (NUDISPLAYLISTITEM *)item->next;
+                        break;
+                    default:
+                        ++item;
+                        break;
+                }
+            } else {
                 ++item;
+            }
             ++index;
         } while (item->type != end);
         DisplayListPrintItem(item, index, type_count, types, file_handle);
