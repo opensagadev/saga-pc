@@ -328,20 +328,18 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
 
 GAMEOBJECT *__cdecl Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX_PC *connection) {
     GAMEOBJECT *object;
-    i32 index, count, jump_context;
+    i32 index;
     if (LEGOCONTEXT_GRAPPLE == -1)
         return NULL;
     object = Obj;
-    count = HIGHGAMEOBJECT;
-    jump_context = LEGOCONTEXT_JUMP;
-    for (index = 0; index < count; ++index, ++object) {
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object == excluded)
-            continue;
-        if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple)
-            return object;
-        if (connection != NULL && object->ai_packet.path_info.connection == connection && jump_context != -1 &&
-            object->character_context == jump_context)
-            return object;
+    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && excluded != object) {
+            if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple)
+                return object;
+            if (connection != NULL && object->ai_packet.path_info.connection == connection && LEGOCONTEXT_JUMP != -1 &&
+                object->character_context == LEGOCONTEXT_JUMP)
+                return object;
+        }
     }
     return NULL;
 }
