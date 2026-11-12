@@ -2371,7 +2371,6 @@ f32 __cdecl Condition_SockDistanceToOpponent(AISYS_PC *unused0, AISCRIPTPROCESS_
 
 f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
                                             char *unused3, void *unused4) {
-    f32 result = 0.0f;
     NUVEC player_offset, object_offset;
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
@@ -2381,10 +2380,10 @@ f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_P
             NuVecRotateY(&player_offset, &player_offset, -player->sock_position.heading);
             NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
             NuVecRotateY(&object_offset, &object_offset, -object->sock_position.heading);
-            result = player_offset.x - object_offset.x;
+            return player_offset.x - object_offset.x;
         }
     }
-    return result;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_PlayerDistanceAlongSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
