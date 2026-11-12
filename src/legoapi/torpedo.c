@@ -533,7 +533,7 @@ f32 __cdecl TorpedoRatioPc(f32 numerator, f32 denominator) {
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 /* NuASin polynomial; this unit carries its own instance. */
-i32 __cdecl TorpedoArcSinePc(f32 sin) {
+i16 __cdecl TorpedoArcSinePc(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
