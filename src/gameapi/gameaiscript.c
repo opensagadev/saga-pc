@@ -4038,11 +4038,11 @@ i32 __cdecl Action_SetAIOverrideControl(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     char *value;
     GAMEOBJECT *character;
 
+    object = NULL;
     enabled = 1;
-    if (!first_time) {
-        object = processor->action_data_3;
-    } else {
-        object = packet != NULL && packet->owner != NULL ? (APIOBJECT_PC *)packet->owner : NULL;
+    if (first_time) {
+        if (packet != NULL && packet->owner != NULL)
+            object = (APIOBJECT_PC *)packet->owner;
         for (index = 0; index < param_count; ++index) {
             value = NuStrIStr(params[index], (char *)AreaConfigKeyword_character);
             if (value != NULL) {
@@ -4054,6 +4054,7 @@ i32 __cdecl Action_SetAIOverrideControl(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
         }
         processor->action_data_3 = object;
     }
+    object = processor->action_data_3;
     if (object != NULL) {
         if (enabled) {
             character = (GAMEOBJECT *)object->owner;
