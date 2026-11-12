@@ -5,77 +5,112 @@
 
 extern const GUID PcWbemClassId, PcWbemInterfaceId;
 
+// The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
+// TODO(saga.h): retail returns BOOL (movzx of the bool; InputEnumDevicesPc tests eax), so
+// the prototype should be `extern "C" BOOL IsXInputProductPc(const GUID *);`.
 extern "C" u8 IsXInputProductPc(const GUID *product) {
     IWbemLocator *locator = NULL;
-    IWbemServices *services = NULL;
     IEnumWbemClassObject *enumerator = NULL;
-    IWbemClassObject *objects[20] = {NULL};
+    IWbemClassObject *devices[20] = {NULL};
+    IWbemServices *services = NULL;
     BSTR namespace_name = NULL;
+    BSTR device_id = NULL;
     BSTR class_name = NULL;
-    BSTR property_name = NULL;
-    ULONG returned = 0;
-    u8 result = 0;
-    u8 initialized_com = CoInitialize(NULL) >= 0;
+    DWORD returned = 0;
+    bool is_xinput = false;
+    UINT index = 0;
     VARIANT value;
-    if (CoCreateInstance(PcWbemClassId, NULL, 1, PcWbemInterfaceId, (void **)&locator) < 0 || locator == NULL)
+    HRESULT hr;
+
+    hr = CoInitialize(NULL);
+    bool cleanup_com = SUCCEEDED(hr);
+
+    hr = CoCreateInstance(PcWbemClassId, NULL, CLSCTX_INPROC_SERVER, PcWbemInterfaceId, (LPVOID *)&locator);
+    if (FAILED(hr) || locator == NULL)
         goto cleanup;
+
     namespace_name = SysAllocString(L"\\\\.\\root\\cimv2");
     if (namespace_name == NULL)
         goto cleanup;
     class_name = SysAllocString(L"Win32_PNPEntity");
     if (class_name == NULL)
-        goto free_strings;
-    property_name = SysAllocString(L"DeviceID");
-    if (property_name == NULL)
-        goto free_strings;
-    if (locator->ConnectServer(namespace_name, NULL, NULL, NULL, 0, NULL, NULL, &services) < 0 || services == NULL)
-        goto free_strings;
-    CoSetProxyBlanket(services, 10, 0, NULL, 3, 3, NULL, 0);
-    if (services->CreateInstanceEnum(class_name, 0, NULL, &enumerator) < 0 || enumerator == NULL)
-        goto free_strings;
-    while (enumerator->Next(10000, 20, objects, &returned) >= 0 && returned != 0) {
-        for (ULONG index = 0; index < returned; ++index) {
-            if (objects[index]->Get(property_name, 0, &value, NULL, NULL) >= 0 && value.vt == VT_BSTR &&
-                value.bstrVal != NULL && wcsstr((const wchar_t *)value.bstrVal, L"IG_") != NULL) {
-                u32 vendor = 0;
-                u32 device = 0;
-                const wchar_t *vendor_text = wcsstr((const wchar_t *)value.bstrVal, L"VID_");
-                if (vendor_text != NULL && swscanf(vendor_text, L"VID_%4X", &vendor) != 1)
-                    vendor = 0;
-                const wchar_t *device_text = wcsstr((const wchar_t *)value.bstrVal, L"PID_");
-                if (device_text != NULL && swscanf(device_text, L"PID_%4X", &device) != 1)
-                    device = 0;
-                if (((device & 0xffff) << 16 | (vendor & 0xffff)) == product->Data1) {
-                    result = 1;
-                    goto free_strings;
+        goto cleanup;
+    device_id = SysAllocString(L"DeviceID");
+    if (device_id == NULL)
+        goto cleanup;
+
+    hr = locator->ConnectServer(namespace_name, NULL, NULL, 0L, 0L, NULL, NULL, &services);
+    if (FAILED(hr) || services == NULL)
+        goto cleanup;
+
+    CoSetProxyBlanket(services, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, RPC_C_AUTHN_LEVEL_CALL,
+                      RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE);
+
+    hr = services->CreateInstanceEnum(class_name, 0, NULL, &enumerator);
+    if (FAILED(hr) || enumerator == NULL)
+        goto cleanup;
+
+    for (;;) {
+        hr = enumerator->Next(10000, 20, devices, &returned);
+        if (FAILED(hr))
+            goto cleanup;
+        if (returned == 0)
+            break;
+
+        for (index = 0; index < returned; index++) {
+            hr = devices[index]->Get(device_id, 0L, &value, NULL, NULL);
+            if (SUCCEEDED(hr) && value.vt == VT_BSTR && value.bstrVal != NULL) {
+                if (wcsstr(value.bstrVal, L"IG_")) {
+                    DWORD pid = 0, vid = 0;
+                    WCHAR *vid_text = wcsstr(value.bstrVal, L"VID_");
+                    if (vid_text && swscanf(vid_text, L"VID_%4X", &vid) != 1)
+                        vid = 0;
+                    WCHAR *pid_text = wcsstr(value.bstrVal, L"PID_");
+                    if (pid_text && swscanf(pid_text, L"PID_%4X", &pid) != 1)
+                        pid = 0;
+
+                    DWORD vid_pid = MAKELONG(vid, pid);
+                    if (vid_pid == product->Data1) {
+                        is_xinput = true;
+                        goto cleanup;
+                    }
                 }
             }
-            if (objects[index] != NULL) {
-                objects[index]->Release();
-                objects[index] = NULL;
+            if (devices[index]) {
+                devices[index]->Release();
+                devices[index] = NULL;
             }
         }
     }
-free_strings:
-    SysFreeString(namespace_name);
-    if (property_name != NULL)
-        SysFreeString(property_name);
-    if (class_name != NULL)
-        SysFreeString(class_name);
+
 cleanup:
-    for (u32 index = 0; index < 20; ++index) {
-        if (objects[index] != NULL) {
-            objects[index]->Release();
-            objects[index] = NULL;
+    if (namespace_name)
+        SysFreeString(namespace_name);
+    if (device_id)
+        SysFreeString(device_id);
+    if (class_name)
+        SysFreeString(class_name);
+    for (index = 0; index < 20; index++) {
+        if (devices[index]) {
+            devices[index]->Release();
+            devices[index] = NULL;
         }
     }
-    if (enumerator != NULL)
+    if (enumerator) {
         enumerator->Release();
-    if (services != NULL)
-        services->Release();
-    if (locator != NULL)
+        enumerator = NULL;
+    }
+    if (locator) {
         locator->Release();
-    if (initialized_com)
+        locator = NULL;
+    }
+    if (services) {
+        services->Release();
+        services = NULL;
+    }
+
+    if (cleanup_com)
         CoUninitialize();
-    return result;
+
+    return is_xinput;
 }
