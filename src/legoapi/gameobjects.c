@@ -2464,7 +2464,7 @@ void __cdecl ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     object->flags_e20 &= 0x7fffffff;
     rider->ai_packet.path_info.flags_word &= ~1u;
     object->ai_update_position = object->position;
-    if (rider->field_280 != 0xff || object->field_280 != 0xff) {
+    if ((i8)rider->field_280 != -1 || (i8)object->field_280 != -1) {
         GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
     if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
@@ -4069,17 +4069,17 @@ void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system) {
 GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 required_flags, f32 radius,
                                           f32 extra_radius, i32 animation, i32 character_id, i32 player_index,
                                           f32 *distance_squared, i32 horizontal_only, i32 (*filter)(GAMEOBJECT *)) {
+    f32 radius_squared = radius * radius;
     GAMEOBJECT *nearest = NULL;
     f32 nearest_distance = 100000000.0f;
-    f32 radius_squared = radius * radius;
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         f32 x, y, z, distance;
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || (object->flags_e20 & 0x20) ||
-            (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000))
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
+            (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000))
             continue;
-        if (character_id != -1 && object->id != character_id)
+        if (character_id != -1 && (i16)object->id != character_id)
             continue;
         if (player_index >= 0) {
             if (player_index < 2) {
