@@ -3077,8 +3077,10 @@ Placeable *PlaceableHelper::Find(char *name) {
 
 i32 PlaceableHelper::Find(char *name, Placeable **objects, i32 capacity) {
     i32 count = 0;
-    for (i32 index = 0; index < object_type_count; index++)
-        count += object_types[index].object_interface->Find(name, objects + count, capacity - count);
+    for (i32 index = 0; index < object_type_count; index++) {
+        PlaceableInterface *object_interface = object_types[index].object_interface;
+        count += object_interface->Find(name, objects + count, capacity - count);
+    }
     return count;
 }
 
