@@ -9686,13 +9686,10 @@ i32 __cdecl Action_FaceCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
 
 i32 __cdecl Action_FaceCharacter(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                  i32 param_count, i32 first_time, f32 elapsed) {
-    i32 index;
-    char *value;
-    GAMEOBJECT *target;
-
     if (first_time != 0) {
+        i32 index;
         for (index = 0; index < param_count; ++index) {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+            char *value = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (value != NULL) {
                 processor->action_data_3 = GetNamedGameObject(sys, value + 10);
             } else {
@@ -9700,10 +9697,8 @@ i32 __cdecl Action_FaceCharacter(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
             }
         }
     }
-    target = (GAMEOBJECT *)(processor->action_data_3);
-    if (packet != NULL && target != NULL) {
-        packet->movement_look_target = &target->position;
-    }
+    if (packet != NULL && processor->action_data_3 != NULL)
+        packet->movement_look_target = &((GAMEOBJECT *)processor->action_data_3)->position;
     if (processor->action_timer > 0.0f) {
         processor->action_timer -= elapsed;
         if (processor->action_timer <= 0.0f) {
