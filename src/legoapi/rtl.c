@@ -1180,7 +1180,6 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
     i32 i;
     f32 nearest_distance = -1.0f;
     i32 nearest_index = -1;
-    BURN_OUT_PC *burnout;
     f32 distance;
     f32 desired_threshold;
     f32 desired_intensity;
@@ -1197,14 +1196,14 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
         return;
     }
 
-    for (i = 0, burnout = set->burnouts; i < 32; ++i, ++burnout) {
-        if (!burnout->active)
-            continue;
-        distance = NuVecDist(camera_position, &burnout->position, NULL);
-        if (distance < burnout->field_20 + burnout->field_1c &&
-            (nearest_distance < 0.0f || distance < nearest_distance)) {
-            nearest_index = i;
-            nearest_distance = distance;
+    for (i = 0; i < 32; ++i) {
+        if (set->burnouts[i].active) {
+            distance = NuVecDist(camera_position, &set->burnouts[i].position, NULL);
+            if (distance < set->burnouts[i].field_1c + set->burnouts[i].field_20 &&
+                (nearest_distance < 0.0f || distance < nearest_distance)) {
+                nearest_index = i;
+                nearest_distance = distance;
+            }
         }
     }
 
