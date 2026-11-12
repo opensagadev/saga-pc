@@ -325,13 +325,6 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
     if (animation->action_id == -1)
         return;
     effect = &effects[*effect_count];
-    effect->frame[0] = 1.0f;
-    effect->frame[1] = 1.0f;
-    effect->rumble = 0.0f;
-    effect->shake = 0.0f;
-    effect->judder = 0.0f;
-    effect->minimum = 0.0f;
-    effect->maximum = 0.0f;
     effect->character_id = character_id;
     effect->debris_id = -1;
     effect->action_id = animation->action_id;
@@ -343,15 +336,22 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
     effect->surfaces = 0xffff;
     effect->bits_on = 0;
     effect->bits_off = 0;
+    effect->frame[0] = 1.0f;
+    effect->frame[1] = 1.0f;
+    effect->rumble = 0.0f;
+    effect->shake = 0.0f;
+    effect->judder = 0.0f;
+    effect->minimum = 0.0f;
+    effect->maximum = 0.0f;
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) == 0)
             continue;
         if (NuStrICmp(parser->word_buffer_ptr, "deb_name") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                effect->debris_id =
-                    perm_debrissys == NULL
-                        ? -1
-                        : (i16)(FindGameDebris((APIDEBRISSYS_PC *)(perm_debrissys), parser->word_buffer_ptr));
+                if (perm_debrissys != NULL)
+                    effect->debris_id = (i16)FindGameDebris((APIDEBRISSYS_PC *)perm_debrissys, parser->word_buffer_ptr);
+                else
+                    effect->debris_id = -1;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "condition") == 0) {
             if (NuFParGetWord(parser) != 0) {
@@ -397,10 +397,12 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
                     effect->flags |= 8;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_frame") == 0) {
-            effect->particle_rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            effect->particle_rate = rate;
             effect->flags |= 1;
         } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_second") == 0) {
-            effect->particle_rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
+            effect->particle_rate = rate;
             effect->flags |= 0x800001;
         } else if (NuStrICmp(parser->word_buffer_ptr, "locators") == 0) {
             while (NuFParGetWord(parser) != 0) {
