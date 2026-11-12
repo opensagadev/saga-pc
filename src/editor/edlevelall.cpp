@@ -6094,8 +6094,9 @@ void *SplineHelper::CreateObject(void *, i32, i32) {
 /* Only a spline whose knots are all gone is destroyed. */
 void SplineHelper::DestroyObject(void *object, i32) {
     theLevelEditor.destroying_objects = 1;
-    for (SplineObject *spline = first_object; spline != NULL; spline = spline->next) {
-        if (spline == object && spline->knots.count == 0) {
+    SplineObject *spline = static_cast<SplineObject *>(object);
+    for (SplineObject *other = first_object; other != NULL; other = other->next) {
+        if (other == spline && spline->knots.count == 0) {
             if (spline->next != NULL)
                 spline->next->previous = spline->previous;
             else
