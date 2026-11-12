@@ -70,39 +70,48 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
             devices[port].alternate_deadzone = config->alternate_deadzone;
         }
         for (i32 i = 0; i < 32; ++i) {
-            if (!commands[i].active)
-                continue;
-            i32 axis = commands[i].axis;
-            if (axis >= 0) {
-                u8 kind = config->axes[axis][0];
-                u16 primary = config->axes[axis][1];
-                u16 secondary = config->axes[axis][2];
-                switch (kind) {
-                    case 10:
-                        bindings[i].kind = 7;
-                        bindings[i].value = commands[i].active == 2 ? secondary : primary;
-                        break;
-                    case 11:
-                        bindings[i].kind = 1;
-                        bindings[i].value = commands[i].active == 2 ? secondary : primary;
-                        break;
-                    case 2:
-                    case 3:
-                    case 5:
-                    case 6:
-                    case 12:
-                    case 13:
-                        bindings[i].kind = kind;
-                        bindings[i].value = secondary;
-                        break;
+            if (commands[i].active) {
+                i32 axis = commands[i].axis;
+                i32 button = commands[i].button;
+                if (axis >= 0) {
+                    i32 kind = config->axes[axis][0];
+                    i32 primary = config->axes[axis][1];
+                    i32 secondary = config->axes[axis][2];
+                    switch (kind) {
+                        case 10:
+                            bindings[i].kind = 7;
+                            bindings[i].value = commands[i].active == 2 ? secondary : primary;
+                            break;
+                        case 11:
+                            bindings[i].kind = 1;
+                            bindings[i].value = commands[i].active == 2 ? secondary : primary;
+                            break;
+                        case 2:
+                        case 3:
+                        case 5:
+                        case 6:
+                        case 12:
+                        case 13:
+                            bindings[i].kind = kind;
+                            bindings[i].value = secondary;
+                            break;
+                    }
                 }
-            }
-            i32 button = commands[i].button;
-            if ((u32)button <= 15 && bindings[i].kind == 0) {
-                u8 kind = config->buttons[button][0];
-                if (kind >= 1 && kind <= 7) {
-                    bindings[i].kind = kind;
-                    bindings[i].value = config->buttons[button][1];
+                if ((u32)button <= 15 && bindings[i].kind == 0) {
+                    i32 kind = config->buttons[button][0];
+                    i32 value = config->buttons[button][1];
+                    switch (kind) {
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            bindings[i].kind = kind;
+                            bindings[i].value = value;
+                            break;
+                    }
                 }
             }
         }
