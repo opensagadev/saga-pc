@@ -118,10 +118,10 @@ void __cdecl oneAtOnce_SetNumAttackers(i32 attackers) {
     AtOnce_maxAttackers = attackers;
 }
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-
 void oneAtOnce_SetAttackersPerRow(i32 attackers) {
-    AtOnce_attackersPerRow = MAX(0, attackers);
+    if (attackers < 0)
+        attackers = 0;
+    AtOnce_attackersPerRow = attackers;
 }
 
 void oneAtOnce_SetDistPerRow(float distance) {
