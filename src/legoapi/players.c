@@ -1176,40 +1176,38 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
     f32 model_state;
-    CHARACTERDATA_PC *character;
-    CHARACTER_MODEL_LAYERS_PC *model;
-    PLAYERCHARACTERCONFIG_PC *runtime;
-    if (object->character_context == 0x17 && !(duration > object->context_timer))
-        return 0;
-    model_state = object->origin_scale_override;
-    Player_ClearContext(object, 1);
-    if (object->character_context == 0x3e)
-        return 0;
-    Player_ResetContexts(object->ai_player_packet_pc);
-    object->character_context = 0x17;
-    object->origin_scale_override = model_state;
-    if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet, (char *)PlayerBeenDeactivatedPc))
-        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
-                        (AISCRIPTPROCESS_PC *)&object->ai_packet, FRAMETIME);
-    character = object->character_data;
-    model = object->character_model;
-    runtime = character->game_character;
-    if (source != NULL && (source->character_data->model_flags & 0x40) && runtime->weapon_action == 1 &&
-        model->model_data_b[0x62] != NULL) {
-        duration = 4.0f;
-        object->field_7aa = 0x62;
-    } else if (model->model_data_b[0x81] != NULL && !(model->animation_configs[0x81]->flags & 2))
-        object->field_7aa = 0x81;
-    else
-        object->field_7aa = model->model_data_b[0x41] != NULL ? 0x41 : 1;
-    if (character->model_flags & 0x20)
-        SetProtocolDroidDeactivatedAction(object);
-    object->action_movement_state = 0;
-    object->context_timer = duration;
-    object->context_duration = 0.0f;
-    object->context_hover_target_y = 0.0f;
-    NewBuzz(object->pad->bound_pad, 0.1f, 0);
-    return 1;
+    if (object->character_context != 0x17 || object->context_timer < duration) {
+        model_state = object->origin_scale_override;
+        Player_ClearContext(object, 1);
+        if (object->character_context != 0x3e) {
+            Player_ResetContexts(object->ai_player_packet_pc);
+            object->character_context = 0x17;
+            object->origin_scale_override = model_state;
+            if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet,
+                                                 (char *)PlayerBeenDeactivatedPc))
+                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
+                                (AISCRIPTPROCESS_PC *)&object->ai_packet, FRAMETIME);
+            if (source != NULL && (source->character_data->model_flags & 0x40) &&
+                object->character_data->game_character->weapon_action == 1 &&
+                object->character_model->model_data_b[0x62] != NULL) {
+                duration = 4.0f;
+                object->field_7aa = 0x62;
+            } else if (object->character_model->model_data_b[0x81] != NULL &&
+                       !(object->character_model->animation_configs[0x81]->flags & 2))
+                object->field_7aa = 0x81;
+            else
+                object->field_7aa = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;
+            if (object->character_data->model_flags & 0x20)
+                SetProtocolDroidDeactivatedAction(object);
+            object->action_movement_state = 0;
+            object->context_timer = duration;
+            object->context_duration = 0.0f;
+            object->context_hover_target_y = 0.0f;
+            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 __declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
@@ -1351,10 +1349,8 @@ void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
 void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
     ResetPlayerPacket(((PLAYER_PACKET_STORAGE_PC *)object)->player_packet_storage, object->character_data);
     object->fall_acceleration_timer = 0.0f;
+    object->movement_direction = v000;
     object->hud_icon_timer = 0.0f;
-    object->movement_direction_x = v000.x;
-    object->movement_direction.y = v000.y;
-    object->movement_direction_z = v000.z;
     object->input_toggle_hold_time = TOGGLEHOLDTIME;
     object->flags_ef0 |= 0x80;
     ResetCharacterIdle(object, 2, GetDefaultIdle(object));
@@ -2203,19 +2199,20 @@ void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2], index;
     if (VehicleArea != 0 || GAMEDEMO != 0)
         return;
-    if (force == 0 && (WORLD->current_level->flags & 0x4e2) != 2)
+    if (force == 0 && (!(WORLD->current_level->flags & 2) || (WORLD->current_level->flags & 0x4e0)))
         return;
     ids[0] = first_id;
     ids[1] = second_id;
     for (index = 0; index < 2; ++index) {
         i32 id = ids[index];
         if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && id != PlayerID[index] && Collection_Got(id) == 1 &&
-            GCDataList[id].hover_fall_mode != 0 && PlayerID[(index - 1) & 1] != id)
+            GCDataList[id].hover_fall_mode != 0 && id != PlayerID[(index - 1) & 1])
             PlayerID[index] = id;
     }
-    if (first_id != second_id && PlayerID[1] == first_id && PlayerID[0] == second_id) {
-        PlayerID[0] = first_id;
-        PlayerID[1] = second_id;
+    if (first_id != second_id && first_id == PlayerID[1] && second_id == PlayerID[0]) {
+        index = PlayerID[0];
+        PlayerID[0] = PlayerID[1];
+        PlayerID[1] = index;
     }
 }
 
