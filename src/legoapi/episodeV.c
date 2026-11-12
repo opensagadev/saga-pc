@@ -628,11 +628,10 @@ void __cdecl AsteroidChaseB_Update(WORLDINFO *world) {
     i32 i;
     Asteroids_Update();
     for (i = 0; i < 4; i++) {
-        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) != 0) {
-            if ((((u8 *)LevFlag)[0] & (1 << i)) == 0) {
-                ((u8 *)LevFlag)[0] |= (u8)(1 << i);
-                AddMiscPickups(&classicBlowups[i]->position, -1, -1, 1);
-            }
+        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) != 0 &&
+            (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
+            ((u8 *)LevFlag)[0] |= (u8)(1 << i);
+            AddMiscPickups(&classicBlowups[i]->position, -1, -1, 1);
         } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) == 0 &&
                    (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
             ((u8 *)LevFlag)[0] &= ~(u8)(1 << i);
