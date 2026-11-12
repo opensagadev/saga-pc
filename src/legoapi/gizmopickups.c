@@ -523,7 +523,14 @@ i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
 typedef struct PICKUP_RESET_RECORD_PC {
     char name[8];
     NUVEC position;
-    u8 type_code, config_flags, model_variant, flags;
+    u8 type_code, config_flags, model_variant;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1, enabled : 1, visible : 1, collected : 1, drawn : 1, draw_visible : 1, alternate_type : 1,
+                activated : 1;
+        };
+    };
     u8 unknown_18[4];
     f32 floor;
     u16 shadow_x, shadow_z;
@@ -619,16 +626,19 @@ void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_
         for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
             GizmoPickups_Reset(world, pickup);
             if (progress != NULL && index < 512) {
-                i32 word = index >> 5;
+                i32 word = index / 32;
                 u32 bit = 1u << (index & 31);
-                pickup->flags = (pickup->flags & ~4) | ((progress->visible[word] & bit) != 0 ? 4 : 0);
-                pickup->flags = (pickup->flags & ~2) | ((progress->enabled[word] & bit) != 0 ? 2 : 0);
-                pickup->flags = (pickup->flags & ~8) | ((progress->collected[word] & bit) != 0 ? 8 : 0);
-                pickup->flags = (pickup->flags & ~0x80) | ((progress->activated[word] & bit) != 0 ? 0x80 : 0);
-                if ((pickup->config_flags & 1) != 0 && (pickup->flags & 0x80) == 0)
-                    pickup->flags &= ~6;
+                pickup->visible = (progress->visible[word] & bit) != 0;
+                pickup->enabled = (progress->enabled[word] & bit) != 0;
+                pickup->collected = (progress->collected[word] & bit) != 0;
+                pickup->activated = (progress->activated[word] & bit) != 0;
+                if ((pickup->config_flags & 1) != 0 && !pickup->activated) {
+                    pickup->enabled = 0;
+                    pickup->visible = 0;
+                }
             } else if ((pickup->config_flags & 1) != 0) {
-                pickup->flags &= ~6;
+                pickup->enabled = 0;
+                pickup->visible = 0;
             }
             if (GizmoPickupSys->gizmo_type_id != -1 && pickup->type_index == GizmoPickupSys->gizmo_type_id &&
                 Game_LevelSave != NULL) {
@@ -649,9 +659,8 @@ void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_
             }
         }
     }
-    system = world->pickup_runtime_sys;
-    if (system->temporary_pickups != NULL)
-        memset(system->temporary_pickups, 0, 0xb00);
+    if (world->pickup_runtime_sys->temporary_pickups != NULL)
+        memset(world->pickup_runtime_sys->temporary_pickups, 0, 0xb00);
 }
 
 extern i32 turret_gizmotype_id, gizbuildit_gizmotype_id;
