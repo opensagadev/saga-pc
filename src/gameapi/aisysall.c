@@ -11880,7 +11880,6 @@ void __cdecl creatureEditor_Enter(void) {
     AISCRIPT_PC *script;
     EDAIAREA_s *area;
     EDLOCATOR_s *locator;
-    char *name;
     f32 offset;
     i32 i;
     memset(&aieditor->creatures, 0, sizeof(aieditor->creatures));
@@ -11913,37 +11912,17 @@ void __cdecl creatureEditor_Enter(void) {
             creature->script_params[1] = source->script_params[1];
             creature->script_params[2] = source->script_params[2];
             creature->script_params[3] = source->script_params[3];
-            name = creature->script_name;
-            if (name != NULL) {
-                if (aieditor->ai_system != NULL) {
-                    for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&aieditor->ai_system->scripts); script != NULL;
-                         script = (AISCRIPT_PC *)NuLinkedListGetNext(&aieditor->ai_system->scripts, &script->link)) {
-                        if (NuStrICmp(name, script->name) == 0)
-                            goto found;
-                    }
-                }
-                for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts); script != NULL;
-                     script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link)) {
-                    if (NuStrICmp(name, script->name) == 0)
-                        goto found;
-                }
+            script = AIScriptFind(aieditor->ai_system, creature->script_name, 1, 1, 1);
+            if (script != NULL) {
+                if ((source->flags & 2) == 0)
+                    creature->script_params[0] = script->params[0].default_value;
+                if ((source->flags & 4) == 0)
+                    creature->script_params[1] = script->params[1].default_value;
+                if ((source->flags & 8) == 0)
+                    creature->script_params[2] = script->params[2].default_value;
+                if ((source->flags & 0x10) == 0)
+                    creature->script_params[3] = script->params[3].default_value;
             }
-            for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts); script != NULL;
-                 script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link)) {
-                if (NuStrICmp(GizmoDefaultOutputName, script->name) == 0)
-                    goto found;
-            }
-            goto areas;
-        found:
-            if ((source->flags & 2) == 0)
-                creature->script_params[0] = script->params[0].default_value;
-            if ((source->flags & 4) == 0)
-                creature->script_params[1] = script->params[1].default_value;
-            if ((source->flags & 8) == 0)
-                creature->script_params[2] = script->params[2].default_value;
-            if ((source->flags & 0x10) == 0)
-                creature->script_params[3] = script->params[3].default_value;
-        areas:
             if (source->area != NULL) {
                 for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
                      area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
@@ -11972,18 +11951,20 @@ void __cdecl creatureEditor_Enter(void) {
                 }
             }
             creature->activation = source->activation_type;
-            if (source->activation_type == 1) {
-                creature->activation = 0;
-                if (source->activate_area != NULL) {
-                    for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
-                         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-                        if (NuStrICmp(area->name, (char *)source->activate_area) == 0) {
-                            creature->activation_area = area;
-                            creature->activation = 1;
-                            break;
+            switch (source->activation_type) {
+                case 1:
+                    creature->activation = 0;
+                    if (source->activate_area != NULL) {
+                        for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
+                             area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
+                            if (NuStrICmp(area->name, (char *)source->activate_area) == 0) {
+                                creature->activation_area = area;
+                                creature->activation = 1;
+                                break;
+                            }
                         }
                     }
-                }
+                    break;
             }
             creature->difficulty = source->activation_difficulty;
             creature->min_respawns = source->min_respawn_count;
