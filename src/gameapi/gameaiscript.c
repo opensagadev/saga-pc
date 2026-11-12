@@ -10685,9 +10685,9 @@ i32 __cdecl Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
 
     (void)processor;
     (void)param_6;
+    release = 0;
     object = NULL;
     target = NULL;
-    release = 0;
     if (param_5 == 0) {
         return 1;
     }
