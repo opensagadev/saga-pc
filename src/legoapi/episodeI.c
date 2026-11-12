@@ -1475,8 +1475,8 @@ void __cdecl UpdatePodRaceMines(void) {
         }
     } else {
         for (i = 0; i < 64; i++) {
-            u64 mask = (u64)(i64)(1 << i);
-            if ((mask & *(u64 *)client_mines.present_words) == 0 || (mask & *(u64 *)client_mines.exploded_words) != 0)
+            if (((u64)(i64)(1 << i) & *(u64 *)client_mines.present_words) == 0 ||
+                ((u64)(i64)(1 << i) & *(u64 *)client_mines.exploded_words) != 0)
                 continue;
             radius = minesys.mine_radius * PodMineAreaScalePc;
             for (j = 0; j < count; j++) {
@@ -1489,7 +1489,7 @@ void __cdecl UpdatePodRaceMines(void) {
                 distance = delta.x * delta.x + delta.z * delta.z;
                 if (distance < reach * reach) {
                     PodRaceExplodeClientMinePc(&client_mines.positions[i], object);
-                    *(u64 *)client_mines.exploded_words |= mask;
+                    *(u64 *)client_mines.exploded_words |= (u64)(i64)(1 << i);
                 }
             }
         }
