@@ -8994,13 +8994,12 @@ i32 __cdecl Action_SetPathCnxFlag(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     (void)processor;
     (void)packet;
     (void)param_6;
-    from = NULL;
-    to = NULL;
+    both_ways = 0;
+    set = 1;
     add_flags = 0;
     remove_flags = 0;
-    set = 1;
-    both_ways = 0;
-    direction = 0;
+    from = NULL;
+    to = NULL;
     if (sys == NULL || sys->path_sys == NULL || sys->path_sys->path_count == 0 || first_time == 0) {
         return 1;
     }
