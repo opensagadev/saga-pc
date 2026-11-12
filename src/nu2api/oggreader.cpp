@@ -78,7 +78,9 @@ HRESULT OggReader::Unknown08Pc(u32 a, u32 b) {
     return E_FAIL;
 }
 WAVEFORMATEX *OggReader::GetFormat(void) {
-    return compressed ? &compressed_format : &format;
+    if (!compressed)
+        return &format;
+    return &compressed_format;
 }
 i32 OggReader::GetSize(void) {
     if (!compressed)
