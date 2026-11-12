@@ -372,7 +372,7 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edptl_quickdel_menu) {
         i32 type;
         for (type = 1; type < debinf_count; ++type) {
-            EDPP_PARTICLE_PC *particle;
+            i32 index, used;
             DEBRIS_INFO_PC *effect;
             if (!debtab[type]) {
                 continue;
@@ -382,12 +382,15 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
                 continue;
             }
 
-            for (particle = edpp_ptls; particle < &edpp_ptls[512]; ++particle) {
-                if (particle->instance_id != -1 && particle->instance_id != 99999 && particle->effect_index == type) {
+            used = 0;
+            for (index = 0; index < 512; ++index) {
+                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999 &&
+                    edpp_ptls[index].effect_index == type) {
+                    used = 1;
                     break;
                 }
             }
-            if (particle < &edpp_ptls[512]) {
+            if (used) {
                 eduiMenuAddItem(edptl_quickdel_menu,
                                 eduiItemSelCreate(type, edblack, 0, 1, cbPtlQuickDeleteType, effect->name));
             } else {
