@@ -151,11 +151,13 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
                                frame >= event->previous_frame) {
                         play = 1;
                     }
-                } else if ((flags & 4) != 0 && (flags & 8) != 0) {
+                    // MATCH-EXCEPTION: bit 2 is read as (flags >> 2) & 1, the code VC8 emits for a one-bit
+                    // bitfield member; the event flags are a plain u8 in saga.h
+                } else if (((flags >> 2) & 1) != 0 && (flags & 8) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame))
                         play = 1;
-                } else if ((flags & 4) != 0) {
+                } else if (((flags >> 2) & 1) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->previous_frame == 0.0f && event->trigger_frame == 1.0f))
                         play = 1;
