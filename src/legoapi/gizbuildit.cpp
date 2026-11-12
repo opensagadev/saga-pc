@@ -1070,25 +1070,25 @@ extern "C" {
 
     void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
-        i32 restored_count = 0, i;
+        i32 restored_count, i;
         f32 progress;
         if (buildit == NULL || buildit->anim_set == NULL)
             return;
         if (keep_built_pieces && buildit->anim_object_count != 0) {
             progress = (f32)buildit->built_object_count / (i32)buildit->anim_object_count;
-            if (progress >= 0.5f) {
-                if (progress < (f64)0.9f)
-                    restored_count = buildit->anim_object_count >> 1;
-                else
-                    restored_count = buildit->built_object_count;
-            }
-        }
+            if (progress < 0.5f)
+                restored_count = 0;
+            else if (progress < (f64)0.9f)
+                restored_count = buildit->anim_object_count >> 1;
+            else
+                restored_count = buildit->built_object_count;
+        } else
+            restored_count = 0;
         buildit->availability_flags |= 2;
         for (i = 0; i < buildit->anim_object_count; ++i) {
-            if (emit_debris && i < buildit->built_object_count) {
-                BUILDIT_RESET_MATRICES_PC *data = (BUILDIT_RESET_MATRICES_PC *)buildit->anim_objects[i]->object_data;
+            BUILDIT_RESET_MATRICES_PC *data = (BUILDIT_RESET_MATRICES_PC *)buildit->anim_objects[i]->object_data;
+            if (emit_debris && i < buildit->built_object_count)
                 AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], (NUVEC *)&data->end_mtx.m30);
-            }
         }
         if (buildit->linked_buildit != NULL) {
             for (i = restored_count; i < buildit->anim_object_count; ++i) {
@@ -1098,12 +1098,10 @@ extern "C" {
         } else {
             GameAnimSet_SetVisibility(buildit->anim_set, 1);
             for (i = restored_count; i < buildit->anim_object_count; ++i) {
-                GAMEANIMOBJ *object = buildit->anim_objects[i];
-                object->instance_animation->flags &= ~1u;
-                object->instance_animation->ltime = object->start_frame;
+                buildit->anim_objects[i]->instance_animation->flags &= ~1u;
+                buildit->anim_objects[i]->instance_animation->ltime = buildit->anim_objects[i]->start_frame;
             }
-            buildit->reset_step_timer = 0.3f;
-            buildit->reset_step_duration = 0.3f;
+            buildit->reset_step_timer = buildit->reset_step_duration = 0.3f;
         }
         buildit->availability_flags &= ~4;
         buildit->built_object_count = (u8)restored_count;
