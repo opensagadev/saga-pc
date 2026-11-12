@@ -637,7 +637,7 @@ void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr)
     for (i = 0; i < system->count; ++i, ++obstacle) {
         GizObstacle_ResetOnePrivate(world, obstacle);
         if (progress && i < 128) {
-            i32 word = i >> 5;
+            i32 word = i / 32;
             u32 bit = 1u << (i & 31);
             obstacle->progress_flags = (obstacle->progress_flags & ~2u) | ((progress->visible[word] & bit) != 0) * 2;
             obstacle->progress_flags = (obstacle->progress_flags & ~1u) | ((progress->enabled[word] & bit) != 0);
