@@ -11628,6 +11628,8 @@ void __cdecl creatureEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
     f32 radius;
     f32 normalized_x;
     f32 old_y;
+    f32 height_change;
+    f32 abs_height_change;
     i32 angle;
 
     for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
@@ -11652,7 +11654,9 @@ void __cdecl creatureEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
             NuVecAdd(&creature->position, &creature->position, &movement);
             NuVecScale(&movement, &direction, creature->check.width);
             NuVecAdd(&creature->position, &creature->position, &movement);
-            if (AIPathFabs(old_y - creature->position.y) > 1.5f) {
+            height_change = old_y - creature->position.y;
+            *(i32 *)&abs_height_change = *(i32 *)&height_change & 0x7fffffff;
+            if (abs_height_change > 1.5f) {
                 creature->position.y = old_y;
             }
             angle = (i32)(NuAtan2(difference.x, difference.z) * 10430.378f);
