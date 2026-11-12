@@ -39,13 +39,14 @@ STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
 
 i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
     i32 cursor = *index;
-    u8 old_value;
+    i32 old_value;
+    i32 new_value;
     if (cursor >= state->count)
         cursor = state->count - 1;
     if (cursor < 0)
         cursor = 0;
     old_value = state->values[cursor];
-    if (state->times[cursor] <= frame) {
+    if (frame >= state->times[cursor]) {
         while (cursor < state->count - 1) {
             ++cursor;
             if (state->times[cursor] > frame) {
@@ -60,7 +61,8 @@ i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 f
                 break;
         }
     }
-    *value = state->values[cursor];
+    new_value = state->values[cursor];
+    *value = (u8)new_value;
     *index = (u8)cursor;
-    return old_value != *value;
+    return old_value != new_value;
 }
