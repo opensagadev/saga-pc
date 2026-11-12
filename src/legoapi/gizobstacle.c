@@ -912,29 +912,31 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             obstacle->runtime_flags &= ~0x40u;
         if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
             ((obstacle->anim_set->flags & 2) || !obstacle->anim_set->animated_object_count) &&
-            obstacle->anim_set->state == 2 && (obstacle->blowup_type != -1 || obstacle->pickup_count)) {
-            if (obstacle->blowup_type != -1) {
-                if (obstacle->config_flags & 0x200) {
-                    GAMEANIMOBJ *object;
-                    for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object;
-                         object = object->next) {
-                        NUVEC *position = NuSpecialGetDrawPos(&object->special);
-                        if (position)
-                            GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, position);
-                    }
-                } else
-                    GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, &obstacle->evaluated_position);
-                GameAnimSet_SetVisibility(obstacle->anim_set, 0);
-                obstacle->runtime_flags |= 0x80;
-            }
-            if (obstacle->pickup_count && (!(obstacle->runtime_flags & 1) || (obstacle->config_flags & 0x80))) {
-                NUVEC position, direction;
-                NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
-                NuVecRotateX(&direction, &v010, (u16)obstacle->pickup_direction_x);
-                NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
-                AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1,
-                           obstacle->pickup_scatter_height, 2000000.0f, NULL, 1, 0);
-                obstacle->runtime_flags |= 1;
+            obstacle->anim_set->state == 2) {
+            if (obstacle->blowup_type != -1 || obstacle->pickup_count) {
+                if (obstacle->blowup_type != -1) {
+                    if (obstacle->config_flags & 0x200) {
+                        GAMEANIMOBJ *object;
+                        for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object;
+                             object = object->next) {
+                            NUVEC *position = NuSpecialGetDrawPos(&object->special);
+                            if (position)
+                                GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, position);
+                        }
+                    } else
+                        GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, &obstacle->evaluated_position);
+                    GameAnimSet_SetVisibility(obstacle->anim_set, 0);
+                    obstacle->runtime_flags |= 0x80;
+                }
+                if (obstacle->pickup_count && (!(obstacle->runtime_flags & 1) || (obstacle->config_flags & 0x80))) {
+                    NUVEC position, direction;
+                    NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
+                    NuVecRotateX(&direction, &v010, (u16)obstacle->pickup_direction_x);
+                    NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
+                    AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1,
+                               obstacle->pickup_scatter_height, 2000000.0f, NULL, 1, 0);
+                    obstacle->runtime_flags |= 1;
+                }
             }
             if (obstacle->playback_state == 3) {
                 GameAnimSet_JumpToStart(obstacle->anim_set);
