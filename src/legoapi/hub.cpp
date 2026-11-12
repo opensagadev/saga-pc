@@ -2303,12 +2303,13 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
             case 1: {
                 if (text[0] != 0)
                     NuStrCat(text, ": ");
-                ARCADE_MODE_PC *mode = &Arcade_Mode[ArcadeItem.entries[i].index];
-                char *mode_text = TTab[*mode->text];
-                NuStrCat(text, mode_text != NULL ? mode_text : "?");
-                if ((u32)mode->target > 0) {
+                if (TTab[*Arcade_Mode[ArcadeItem.entries[i].index].text] != NULL)
+                    NuStrCat(text, TTab[*Arcade_Mode[ArcadeItem.entries[i].index].text]);
+                else
+                    NuStrCat(text, "?");
+                if ((u32)Arcade_Mode[ArcadeItem.entries[i].index].target > 0) {
                     NuStrCat(text, " (");
-                    Text_MakeScore(mode->target, number);
+                    Text_MakeScore(Arcade_Mode[ArcadeItem.entries[i].index].target, number);
                     NuStrCat(text, number);
                     NuStrCat(text, ")");
                 }
