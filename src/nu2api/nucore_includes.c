@@ -4785,18 +4785,19 @@ static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_
     if (alignment > 0) {
         u32 payload = (u32)*allocated + 12;
         u32 aligned_payload = (payload + alignment - 1) & ~(alignment - 1);
-        u32 adjustment = aligned_payload - payload;
-        *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)*allocated + adjustment);
-        *size -= adjustment;
-        remainder_size += adjustment;
+        *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)*allocated + aligned_payload - payload);
+        *size -= aligned_payload - payload;
+        remainder_size += aligned_payload - payload;
     }
-    (*allocated)->size_flags = 0x80000000U | *size;
+    (*allocated)->size_flags |= 0x80000000U;
+    (*allocated)->size_flags = ((*allocated)->size_flags & 0x80000000U) | *size;
     (*allocated)->next = NULL;
     (*allocated)->previous = NULL;
     ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) +
                                     sizeof(NUALLOC_MANAGER_BLOCK_PC)))
         ->previous_block = *allocated;
-    (*remainder)->size_flags = remainder_size;
+    (*remainder)->size_flags &= 0x7fffffffU;
+    (*remainder)->size_flags = ((*remainder)->size_flags & 0x80000000U) | remainder_size;
     (*remainder)->next = NULL;
     (*remainder)->previous = NULL;
     ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) +
