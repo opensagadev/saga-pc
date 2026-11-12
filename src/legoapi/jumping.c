@@ -315,8 +315,7 @@ i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
             ResetMiniAnimPacket(&view->mini_animation, -1);
             view->fall_animation_time = 0.0f;
             object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-            // MATCH-EXCEPTION: bit 11 of flags_e24 is a 1-bit field copied from bit 10; saga.h has no bitfield for it.
-            object->flags_e24 ^= ((object->flags_e24 << 1) ^ object->flags_e24) & 0x800;
+            object->flags_e24 = (object->flags_e24 & ~0x800) | ((object->flags_e24 & 0x400) << 1);
             return 1;
         }
     }
