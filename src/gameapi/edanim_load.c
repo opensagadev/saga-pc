@@ -143,16 +143,15 @@ void edanimDetermineNearestSound(float distance) {
 
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
     i32 index;
-    EDANIM_PARAM_PC *parameters = AnimParams;
-    for (index = particle_index; index < parameters[parameter_index].effect_count - 1; ++index) {
-        parameters[parameter_index].effect_ids[index] = parameters[parameter_index].effect_ids[index + 1];
-        parameters[parameter_index].effect_intervals[index] = parameters[parameter_index].effect_intervals[index + 1];
-        parameters[parameter_index].effect_flags[index] = parameters[parameter_index].effect_flags[index + 1];
-        memcpy(parameters[parameter_index].effect_positions[index],
-               parameters[parameter_index].effect_positions[index + 1], sizeof(NUVEC));
-        strcpy(parameters[parameter_index].effect_names[index], parameters[parameter_index].effect_names[index + 1]);
+    for (index = particle_index; index < AnimParams[parameter_index].effect_count - 1; ++index) {
+        AnimParams[parameter_index].effect_ids[index] = AnimParams[parameter_index].effect_ids[index + 1];
+        AnimParams[parameter_index].effect_intervals[index] = AnimParams[parameter_index].effect_intervals[index + 1];
+        AnimParams[parameter_index].effect_flags[index] = AnimParams[parameter_index].effect_flags[index + 1];
+        memcpy(AnimParams[parameter_index].effect_positions[index],
+               AnimParams[parameter_index].effect_positions[index + 1], sizeof(NUVEC));
+        strcpy(AnimParams[parameter_index].effect_names[index], AnimParams[parameter_index].effect_names[index + 1]);
     }
-    --parameters[parameter_index].effect_count;
+    --AnimParams[parameter_index].effect_count;
 }
 
 i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
