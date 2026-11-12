@@ -15044,7 +15044,9 @@ extern "C" {
         u8 index;
         if (object->joint_count > DdMaxJointsPc)
             DdMaxJointsPc = object->joint_count;
-        scales[255].x = scales[255].y = scales[255].z = 1.0f;
+        scales[255].x = 1.0f;
+        scales[255].y = 1.0f;
+        scales[255].z = 1.0f;
         NuAnimDataCalcTime(animation_a, frame_a, &time_a);
         chunk_a = (NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk];
         NuAnimDataCalcTime(animation_b, frame_b, &time_b);
@@ -15063,22 +15065,20 @@ extern "C" {
         for (index = 0; index < object->joint_count; ++index) {
             NUMTX *output = &matrices[index];
             NUHGOBJ_JOINT_OVERRIDE_PC *joint_override = override_count != 0 ? joint_overrides[index] : NULL;
-            NUANIM_LEGACY_SET_PC *first = chunk_a->curve_sets[index];
-            NUANIM_LEGACY_SET_PC *second = chunk_b->curve_sets[index];
-            NUMTX *local = &local_matrix;
-            u8 parent_index;
-            if (first != NULL && second != NULL) {
-                NUHGOBJ_EVAL_JOINT_PC *joint = &object->joints[index];
-                NuAnimCurveSetApplyBlendToJoint2(first, &time_a, second, &time_b, blend, joint, &scales[index],
-                                                 &scales[joint->parent_index], &local_matrix, joint_override);
+            NUMTX *local;
+            if (chunk_a->curve_sets[index] != NULL && chunk_b->curve_sets[index] != NULL) {
+                NuAnimCurveSetApplyBlendToJoint2(chunk_a->curve_sets[index], &time_a, chunk_b->curve_sets[index],
+                                                 &time_b, blend, &object->joints[index], &scales[index],
+                                                 &scales[object->joints[index].parent_index], &local_matrix,
+                                                 joint_override);
+                local = &local_matrix;
             } else {
                 local = &object->bind_matrices[index];
             }
-            parent_index = object->joints[index].parent_index;
-            if (parent_index == 0xff)
+            if (object->joints[index].parent_index == 0xff)
                 *output = *local;
             else
-                NuMtxMulVU0(output, local, &matrices[parent_index]);
+                NuMtxMulVU0(output, local, &matrices[object->joints[index].parent_index]);
         }
     }
 
