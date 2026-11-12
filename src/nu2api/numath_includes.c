@@ -2584,25 +2584,29 @@ void NuQuatNeg2(NUQUAT *out, NUQUAT *in) {
 }
 
 void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
-    __m128 source = _mm_loadu_ps(&from->x);
-    __m128 target = _mm_loadu_ps(&to->x);
-    __m128 products = _mm_mul_ps(source, target);
+    __m128 target = _mm_load_ps(&to->x);
+    __m128 source = _mm_load_ps(&from->x);
+    __m128 products = _mm_mul_ps(target, source);
     __m128 dot_vector = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
+    __m128 end;
     f32 dot;
-    _mm_store_ss(&dot, _mm_add_ss(_mm_shuffle_ps(dot_vector, dot_vector, 0xb1), dot_vector));
+    dot_vector = _mm_add_ss(_mm_shuffle_ps(dot_vector, dot_vector, 0xb1), dot_vector);
+    dot = dot_vector.m128_f32[0];
 
     if (dot < 0.0f) {
         dot = -dot;
-        target = _mm_sub_ps(_mm_setzero_ps(), target);
+        end = _mm_sub_ps(_mm_setzero_ps(), target);
+    } else {
+        end = target;
     }
 
     if (dot > 0.85f) {
-        __m128 result = _mm_add_ps(_mm_mul_ps(_mm_sub_ps(target, source), _mm_set1_ps(t)), source);
+        __m128 result = _mm_add_ps(_mm_mul_ps(_mm_sub_ps(end, source), _mm_set1_ps(t)), source);
         __m128 squared = _mm_mul_ps(result, result);
         __m128 sum = _mm_add_ps(_mm_shuffle_ps(squared, squared, 0x4e), squared);
         sum = _mm_add_ps(_mm_shuffle_ps(sum, sum, 0xb1), sum);
         result = _mm_mul_ps(_mm_rsqrt_ps(sum), result);
-        _mm_storeu_ps(&out->x, result);
+        _mm_store_ps(&out->x, result);
     } else {
         f32 a;
         f32 b;
@@ -2635,9 +2639,8 @@ void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
                 v;
         from_factor = sin_u * inverse_sine;
         to_factor = sin_v * inverse_sine;
-        target = _mm_mul_ps(target, _mm_set1_ps(to_factor));
-        source = _mm_mul_ps(source, _mm_set1_ps(from_factor));
-        _mm_storeu_ps(&out->x, _mm_add_ps(source, target));
+        _mm_store_ps(&out->x, _mm_add_ps(_mm_mul_ps(_mm_set1_ps(from_factor), _mm_load_ps(&from->x)),
+                                         _mm_mul_ps(_mm_set1_ps(to_factor), end)));
     }
 }
 
