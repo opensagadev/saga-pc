@@ -601,8 +601,10 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
         name[length] = 0;
         NuSpecialFind(world->current_gscn, &entry->special, name, 1);
         entry->event_count = EdFileReadChar();
-        if (version >= 2)
-            entry->flags = (entry->flags & 0xf0) | (EdFileReadChar() & 0xf);
+        if (version >= 2) {
+            u8 type = EdFileReadChar();
+            entry->flags = (entry->flags & 0xf0) | (type & 0xf);
+        }
         ++world->special_sfx_count;
     }
     event = world->special_sfx_events;
