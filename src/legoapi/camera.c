@@ -815,12 +815,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, grabber) == 0x46ec);
 i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 __cdecl NuVecMagVU0(NUVEC *v);
 
-static __forceinline f32 NuFabs(f32 f) {
-    f32 rv;
-    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
-    return rv;
-}
-
 #define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
     do {                                                                                                               \
         union {                                                                                                        \
@@ -970,6 +964,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 roll_override;
     u16 roll_hint;
     i32 roll_hint_valid;
+    f32 roll_seek_override;
     f32 stop_blend_rate;
     f32 blend;
     f32 angle_blend;
@@ -988,10 +983,8 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 player_roll[2], vehicle_player[2];
     u16 player_yaw[2];
     f32 walker_distance_sq = 0.0f;
-    f32 roll_seek_override = 0.0f;
     f32 blend_duration = 0.5f;
     f32 camera_shake = 0.0f;
-    f32 landspeeder_lookahead = 0.0f, landspeeder_yaw = -1.0f, landspeeder_speed = 0.0f;
     MiniCutCam = 0;
     NuCameraProjectionFarClipBias = WORLD->current_level->display.farclip_hack;
     menu_id = GetMenuID();
@@ -1137,26 +1130,34 @@ mode_selected:
     pitch_override = -1, yaw_override = -1, roll_override = 0;
     roll_hint = 0;
     roll_hint_valid = 0;
-    stop_blend_rate = 0.1f;
+    roll_seek_override = 0.0f, stop_blend_rate = 0.1f;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
     selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    if (NuFabs(left_y) < 34.0f)
-        left_y = 0.0f;
-    left_y /= 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_y);
+        left_y = magnitude < 34.0f ? 0.0f : left_y / 127.5f;
+    }
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    if (NuFabs(left_x) < 34.0f)
-        left_x = 0.0f;
-    left_x /= 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_x);
+        left_x = magnitude < 34.0f ? 0.0f : left_x / 127.5f;
+    }
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    if (NuFabs(right_y) < 34.0f)
-        right_y = 0.0f;
-    right_y /= 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_y);
+        right_y = magnitude < 34.0f ? 0.0f : right_y / 127.5f;
+    }
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    if (NuFabs(right_x) < 34.0f)
-        right_x = 0.0f;
-    right_x /= 127.5f;
+    {
+        f32 magnitude;
+        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
+        right_x = magnitude < 34.0f ? 0.0f : right_x / 127.5f;
+    }
     switch (camera->mode) {
         i32 index;
 
@@ -1165,6 +1166,7 @@ mode_selected:
             // Case 1 prefix. Original 0x111314..0x1129bf and its child branches.
 
             i32 player_count = 0, vehicle_count = 0;
+            f32 landspeeder_speed = 0.0f, landspeeder_yaw = -1.0f, landspeeder_lookahead = 0.0f;
             for (i = 0; i < 2; i++) {
                 struct nuvec_s *source_position;
                 GAMEOBJECT *object = Player[i];
