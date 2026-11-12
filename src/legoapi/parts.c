@@ -869,7 +869,7 @@ void __cdecl PartUpdate_Basketball(PART_PC *part) {
     if (LevGizmo[0] == NULL)
         return;
     blowup = (GIZMOBLOWUP_PC *)LevGizmo[0]->object;
-    if ((blowup->status_flags & 0x800001) == 0 &&
+    if ((blowup->status_flags & 0x800000) == 0 && (blowup->status_flags & 1) == 0 &&
         NuVecDistSqr(&blowup->position, &part->position, NULL) < 0.1f * 0.1f) {
         GizmoActivate(WORLD->gizmo_sys, LevGizmo[0], 1, 0);
         GizmoBlowupBlowup(blowup, 1, -1, -1, NULL, 1);
@@ -1070,11 +1070,11 @@ __declspec(noinline) void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 
 
 i32 __cdecl PARTLookupType(char *name) {
     i32 index;
-    if (name != NULL && name[0] != 0) {
-        for (index = 0; index < 128; ++index) {
-            if (NuStrNICmp(name, part_types[index].name, 16) == 0)
-                return index;
-        }
+    if (name == NULL || name[0] == 0)
+        return -1;
+    for (index = 0; index < 128; ++index) {
+        if (NuStrNICmp(name, part_types[index].name, 16) == 0)
+            return index;
     }
     return -1;
 }
