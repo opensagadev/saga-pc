@@ -731,7 +731,10 @@ u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u3
 void __cdecl CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     NUVEC momentum;
     (void)flags;
-    if (object->current_hp > 0 && object->current_hp < object->field_107e)
+    // MATCH-EXCEPTION: retail tests the same range twice (likely a macro/PC variant pair that
+    // expanded to the same check); a single test drops the second compare.
+    if ((object->current_hp > 0 && object->current_hp < object->field_107e) ||
+        (object->current_hp > 0 && object->current_hp < object->field_107e))
         ++object->current_hp;
     if (object->saved_hitpoints < 4)
         ++object->saved_hitpoints;
