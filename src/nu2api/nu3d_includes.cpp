@@ -3375,11 +3375,10 @@ extern "C" {
 
     void *__cdecl NuAnimData2Relocate(void **data, VARIPTR *cursor) {
         void *source = *data;
-        i32 magic = *(i32 *)source;
         NuAnimData2FileHeader_PC *header;
         void *relocated_animation;
         u32 offset;
-        if (magic >= 0x414e4934 && magic <= 0x414e4935) {
+        if (*(i32 *)source >= 0x414e4934 && *(i32 *)source <= 0x414e4935) {
             u32 size = NuAnimGetAnimDataSizeANI3((ANI3_HEADER_PC *)source);
             void *destination;
             destination = (void *)((cursor->addr + 15) & ~15u);
