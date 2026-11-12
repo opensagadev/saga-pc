@@ -1038,7 +1038,7 @@ static void RandomisePaintsPc(void) {
         if (i == 0) {
             i++;
         } else if (i == 1) {
-            if (randpaints[1] != randpaints[0])
+            if (randpaints[i] != randpaints[0])
                 i++;
         }
     } while (i < 2);
