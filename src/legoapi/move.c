@@ -1498,7 +1498,10 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
             speed *= water_mul;
             object->target_velocity.z = speed;
             if (object->character_context == 0x3a) {
-                object->target_velocity.x = object->field_7b3 == 0 ? 0.4f : -0.4f;
+                if (object->field_7b3 == 0)
+                    object->target_velocity.x = 0.4f;
+                else
+                    object->target_velocity.x = -0.4f;
                 if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
                     speed = (f32)((f64)object->target_velocity.x * (f64)0.4f);
                     object->target_velocity.x = speed * PODSPRINT_RUNSPEED;
@@ -3216,9 +3219,10 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             } else {
                                 if (object->id == (u16)id_GONKDROID) {
                                     if (Cheat_IsOn(8) == 0)
-                                        walking_speed = CurrentAnim(&object->anim_packet) == 5
-                                                            ? 0.5f * object->character_data->game_character->run_speed
-                                                            : object->character_data->game_character->walk_speed;
+                                        if (CurrentAnim(&object->anim_packet) == 5)
+                                            walking_speed = 0.5f * object->character_data->game_character->run_speed;
+                                        else
+                                            walking_speed = object->character_data->game_character->walk_speed;
                                 } else if (object->id == (u16)id_C3PO || object->id == (u16)id_TC14) {
                                     if (object->character_context == -1 && object->field_db0 > 0.0f) {
                                         walking_speed = MovementWalkingSpeedPC(object, 0.6f);
@@ -9637,9 +9641,10 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                     best->field_7aa = 0x53;
                     best->action_movement_state = 3;
                 } else {
-                    best->field_7aa = best->character_model->model_data_b[0x2b] != NULL
-                                          ? 0x2b
-                                          : (best->character_model->model_data_b[5] != NULL ? 5 : 0x2b);
+                    if (best->character_model->model_data_b[0x2b] != NULL)
+                        best->field_7aa = 0x2b;
+                    else
+                        best->field_7aa = (best->character_model->model_data_b[5] != NULL ? 5 : 0x2b);
                     best->action_movement_state = 0;
                     if ((object->flags_1fc & 0x80) && Cheat_IsOn(0x13)) {
                         best->action_movement_state = 4;
