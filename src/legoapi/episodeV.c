@@ -220,48 +220,48 @@ const char TrooperCannonBaseFormatPc[7] = "BASE%d";
 const char TrooperCannonAINamePc[14] = "CannonTrooper";
 
 void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
-    i32 number, index = 0;
+    i32 cannon, index = 0;
     char name[32];
+    GAMEOBJECT *trooper;
     if (troopercannons_beenReset != 0 && (netclient == 0 || troopercannons[0].object != NULL))
         return;
-    for (number = 1; number < 5; ++number) {
-        TROOPERCANNON_PC *cannon = &troopercannons[index];
-        GAMEOBJECT *trooper;
-        memset(cannon, 0, sizeof(*cannon));
-        sprintf(name, TrooperCannonBuilditFormatPc, number);
-        cannon->buildit = (GIZBUILDIT_s *)GizBuildIt_Find(world, name);
-        if (cannon->buildit != NULL) {
-            sprintf(name, TrooperCannonCharacterFormatPc, number);
-            cannon->object = GetNamedGameObject(world->ai_sys, name);
-            if (cannon->object != NULL)
-                NuStrCpy(cannon->character_name, name);
+    for (cannon = 0; cannon < 4; ++cannon) {
+        memset(&troopercannons[index], 0, sizeof(troopercannons[index]));
+        sprintf(name, TrooperCannonBuilditFormatPc, cannon + 1);
+        troopercannons[index].buildit = (GIZBUILDIT_s *)GizBuildIt_Find(world, name);
+        if (troopercannons[index].buildit != NULL) {
+            sprintf(name, TrooperCannonCharacterFormatPc, cannon + 1);
+            troopercannons[index].object = GetNamedGameObject(world->ai_sys, name);
+            if (troopercannons[index].object != NULL)
+                NuStrCpy(troopercannons[index].character_name, name);
         }
-        sprintf(name, TrooperCannonBaseFormatPc, number);
-        cannon->base = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);
+        sprintf(name, TrooperCannonBaseFormatPc, cannon + 1);
+        troopercannons[index].base = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);
         if (netclient != 0) {
-            if (cannon->object != NULL)
+            if (troopercannons[index].object != NULL)
                 ++index;
             continue;
         }
-        if (cannon->buildit != NULL && cannon->object != NULL) {
-            if ((world->level_progress->destroyed_trooper_cannon_mask & (1u << index)) == 0) {
-                if (cannon->base != NULL) {
-                    GizmoSetVisibility(world->gizmo_sys, cannon->base, 1, 1);
-                    GizObstacle_PlayBackwards((GIZOBSTACLE *)cannon->base->object);
+        if (troopercannons[index].buildit != NULL && troopercannons[index].object != NULL) {
+            if ((world->level_progress->destroyed_trooper_cannon_mask & (1u << cannon)) == 0) {
+                if (troopercannons[index].base != NULL) {
+                    GizmoSetVisibility(world->gizmo_sys, troopercannons[index].base, 1, 1);
+                    GizObstacle_PlayBackwards((GIZOBSTACLE *)troopercannons[index].base->object);
                 }
-                GizBuildIt_Finish(cannon->buildit);
-                GizBuildit_SetVisibility(cannon->buildit, 0);
-                cannon->rebuilding = 0;
+                GizBuildIt_Finish(troopercannons[index].buildit);
+                GizBuildit_SetVisibility(troopercannons[index].buildit, 0);
+                troopercannons[cannon].rebuilding = 0;
                 ActivateCharacter(name, NULL, 0);
-                AddGameDebris(world->game_debris_sys, 0x5c, &cannon->object->collision_position);
-                trooper = AddDynamicCreature(trooper_id, &cannon->object->collision_position,
-                                             cannon->object->field_0x276, (char *)TrooperCannonAINamePc,
-                                             &cannon->object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
+                AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
+                trooper =
+                    AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
+                                       troopercannons[index].object->field_0x276, (char *)TrooperCannonAINamePc,
+                                       &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL)
-                    TakeOverGameObject(trooper, cannon->object, 0, 1);
+                    TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
             } else {
-                GizBuildIt_SetToStart(cannon->buildit, 0, 0);
-                cannon->rebuilding = 1;
+                GizBuildIt_SetToStart(troopercannons[index].buildit, 0, 0);
+                troopercannons[cannon].rebuilding = 1;
             }
         }
         ++index;
