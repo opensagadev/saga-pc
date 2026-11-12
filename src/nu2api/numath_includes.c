@@ -1513,9 +1513,9 @@ void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v) {
     m->m00 = v->x;
     m->m01 = v->y;
     m->m02 = v->z;
-    m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
-    m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
-    m->m22 = m->m00 * m->m11 - m->m01 * m->m10;
+    m->m20 = (m->m01 * m->m12) - (m->m02 * m->m11);
+    m->m21 = (m->m02 * m->m10) - (m->m00 * m->m12);
+    m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
 
     s = NuFsqrt(m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22);
     s = NuFdiv(1.0f, s);
@@ -1547,9 +1547,9 @@ void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
     m->m00 = m->m00 * s;
     m->m01 = m->m01 * s;
     m->m02 = m->m02 * s;
-    m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
-    m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
-    m->m22 = m->m00 * m->m11 - m->m01 * m->m10;
+    m->m20 = (m->m01 * m->m12) - (m->m02 * m->m11);
+    m->m21 = (m->m02 * m->m10) - (m->m00 * m->m12);
+    m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
 }
 
 void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
@@ -1719,8 +1719,8 @@ void __cdecl NuMtxOrth(NUMTX *m) {
     m->m11 = m->m11 * magnitude;
     m->m12 = m->m12 * magnitude;
 
-    m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
-    m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
+    m->m20 = (m->m01 * m->m12) - (m->m02 * m->m11);
+    m->m21 = (m->m02 * m->m10) - (m->m00 * m->m12);
     m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
     m->m10 = m->m21 * m->m02 - m->m22 * m->m01;
     m->m11 = m->m22 * m->m00 - m->m20 * m->m02;
