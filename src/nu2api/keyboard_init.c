@@ -183,14 +183,12 @@ void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count) {
         i32 key;
         key = keys[i];
         if ((u32)(key - 10) <= 3) {
-            state->records[key].active = 1;
             recognized = 1;
+            state->records[key].active = 1;
         }
     }
     if (!recognized) {
-        i32 fallback_action;
-        fallback_action = state->fallback_action == 0 ? 0 : 1;
-        state->records[10 + fallback_action].active = 1;
+        state->records[state->fallback_action != 0 ? 11 : 10].active = 1;
     }
 }
 
