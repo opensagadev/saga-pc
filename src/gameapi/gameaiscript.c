@@ -3981,15 +3981,14 @@ i32 __cdecl Action_SetScriptState(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     i32 index;
     AISTATE_PC *state;
     GAMEOBJECT *object;
-    index = 0;
     target = NULL;
-    state_name = NULL;
     creature_set = 0;
+    state_name = NULL;
     if (first_time == 0)
         return 1;
     if (packet != NULL && packet->owner != NULL)
         target = (APIOBJECT_PC *)packet->owner;
-    for (; index < count; index++) {
+    for (index = 0; index < count; index++) {
         if ((value = NuStrIStr(params[index], (char *)AIGameCharacterName)) != NULL) {
             if (GetNamedGameObjectCallback != NULL)
                 target = GetNamedGameObjectCallback(system, value + 10);
@@ -4000,28 +3999,29 @@ i32 __cdecl Action_SetScriptState(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         } else if ((value = NuStrIStr(params[index], (char *)AIGameStateName)) != NULL)
             state_name = value + 6;
     }
-    if (state_name == NULL)
-        return 1;
-    if (creature_set != 0) {
-        object = Obj;
-        for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
-            if ((((APIOBJECT_PC *)object)->flags_low & 1) != 0 && (((APIOBJECT_PC *)object)->flags_low & 0x1000) != 0 &&
-                object->ai_packet.creature_set == creature_set) {
-                state = AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.base_script);
-                if (state != NULL) {
-                    ((APIOBJECT_PC *)object)->ai->script_processor.active_ref_count = 0;
-                    AIScriptProcessorInit(system, ((APIOBJECT_PC *)object)->ai,
-                                          &((APIOBJECT_PC *)object)->ai->script_processor, NULL, NULL, NULL, 0,
-                                          ((APIOBJECT_PC *)object)->ai->script_processor.base_script, state);
+    if (state_name != NULL) {
+        if (creature_set != 0) {
+            object = Obj;
+            for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
+                if ((((APIOBJECT_PC *)object)->flags_low & 1) != 0 &&
+                    (((APIOBJECT_PC *)object)->flags_low & 0x1000) != 0 &&
+                    object->ai_packet.creature_set == creature_set) {
+                    state = AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.base_script);
+                    if (state != NULL) {
+                        ((APIOBJECT_PC *)object)->ai->script_processor.active_ref_count = 0;
+                        AIScriptProcessorInit(system, ((APIOBJECT_PC *)object)->ai,
+                                              &((APIOBJECT_PC *)object)->ai->script_processor, NULL, NULL, NULL, 0,
+                                              ((APIOBJECT_PC *)object)->ai->script_processor.base_script, state);
+                    }
                 }
             }
-        }
-    } else if (target != NULL && target->ai != NULL && target->ai->script_processor.base_script != NULL) {
-        state = AIStateFind(state_name, target->ai->script_processor.base_script);
-        if (state != NULL) {
-            target->ai->script_processor.active_ref_count = 0;
-            AIScriptProcessorInit(system, target->ai, &target->ai->script_processor, NULL, NULL, NULL, 0,
-                                  target->ai->script_processor.base_script, state);
+        } else if (target != NULL && target->ai != NULL && target->ai->script_processor.base_script != NULL) {
+            state = AIStateFind(state_name, target->ai->script_processor.base_script);
+            if (state != NULL) {
+                target->ai->script_processor.active_ref_count = 0;
+                AIScriptProcessorInit(system, target->ai, &target->ai->script_processor, NULL, NULL, NULL, 0,
+                                      target->ai->script_processor.base_script, state);
+            }
         }
     }
     return 1;
