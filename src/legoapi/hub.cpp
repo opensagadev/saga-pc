@@ -1102,6 +1102,14 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
 }
 
 #define HUB_SIN_LUT_PC(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
+static inline HUB_AREA_INFO_PC *HubFindAreaInfoPc(i32 area) {
+    for (HUB_AREA_INFO_PC *info = HubAreaInfoPc; info->area_name != NULL; ++info) {
+        if (info->area != NULL && area == info->area->index)
+            return info;
+    }
+    return NULL;
+}
+
 extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL)
         return;
@@ -1110,51 +1118,44 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     i32 selected = -1;
     for (i32 area = 0; area < AREACOUNT; ++area) {
         if (ADataList[area].flags & 0x10) {
-            areas[count] = area;
             if (area == HubMiniKitViewerAreaPc)
                 selected = count;
+            areas[count] = area;
             ++count;
         }
     }
     for (i32 index = 0; index < count; ++index) {
-        HUB_MINIKIT_RUNTIME_PC *kit = ((HUB_WORLD_READER_PC *)world)->minikits;
         const i32 area = areas[index];
-        HUB_MINIKIT_PIECES_PC *pieces = ((HUB_WORLD_READER_PC *)world)->pieces[area];
-        if (pieces == NULL || ADataList[area].minikit_id == -1)
+        HUB_MINIKIT_RUNTIME_PC *kit = &((HUB_WORLD_READER_PC *)world)->minikits[area];
+        if (((HUB_WORLD_READER_PC *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1)
             continue;
-        HUB_AREA_INFO_PC *info;
-        for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-            if (info->area != NULL && info->area->index == area)
-                break;
-        }
-        if (info->area_name == NULL)
-            info = NULL;
-        f32 x;
+        HUB_AREA_INFO_PC *info = HubFindAreaInfoPc(area);
+        f32 offset;
         if (area == areas[(selected + (count - 2)) % count])
-            x = -(f32)((f64)HubMiniKitViewerStepPc * 2.0);
+            offset = -HubMiniKitViewerStepPc * 2.0;
         else if (area == areas[(selected + (count - 1)) % count])
-            x = -HubMiniKitViewerStepPc;
+            offset = -HubMiniKitViewerStepPc;
         else if (area == areas[selected])
-            x = 0.0f;
+            offset = 0.0f;
         else if (area == areas[(selected + 1) % count])
-            x = HubMiniKitViewerStepPc;
+            offset = HubMiniKitViewerStepPc;
         else if (area == areas[(selected + 2) % count])
-            x = (f32)((f64)HubMiniKitViewerStepPc * 2.0);
+            offset = HubMiniKitViewerStepPc * 2.0;
         else
             continue;
-        x += HubMiniKitViewerPositionPc.x;
+        f32 x = HubMiniKitViewerPositionPc.x + offset;
         if (HubMiniKitViewerMoveWaitPc > 0.0f) {
             const f32 wait_ease =
                 (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(HubMiniKitViewerMoveWaitPc * 32768.0f + 16384.0f))) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)HubMiniKitViewerMovePc;
         }
-        kit += area;
+        HUB_MINIKIT_PIECES_PC *pieces = ((HUB_WORLD_READER_PC *)world)->pieces[area];
         const f32 scale = kit->scale;
         const f32 lift =
             (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
         const u16 phase_x = (i32)(HUB_SIN_LUT_PC(kit->phase_x) * 910.0f);
-        const u16 phase_z = (i32)(HUB_SIN_LUT_PC(kit->phase_z) * 910.0f);
         const u16 phase_y = (i32)(HUB_SIN_LUT_PC(kit->phase_y) * 910.0f);
+        const u16 phase_z = (i32)(HUB_SIN_LUT_PC(kit->phase_z) * 910.0f);
         const u16 rotation = (i32)(RotDiff(0, phase_y) * scale) + kit->rotation;
         const f32 bob = HUB_SIN_LUT_PC(kit->phase_rotation) * 0.025f * scale;
         const f32 tilt_scale = (info ? info->panel_scale : 1.0f) * scale;
@@ -1163,9 +1164,12 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
         MiniKitRotateX(&matrix, (i32)(RotDiff(0, phase_x) * scale));
         MiniKitRotateZ(&matrix, (i32)(RotDiff(0, phase_z) * scale));
         MiniKitRotateY(&matrix, rotation);
-        matrix.m30 = x + kit->offset_x;
-        matrix.m31 = HubMiniKitViewerPositionPc.y + (lift + bob + (info ? info->panel_offset : 0.0f));
-        matrix.m32 = HubMiniKitViewerPositionPc.z + kit->offset_z;
+        matrix.m30 = x;
+        matrix.m31 = HubMiniKitViewerPositionPc.y;
+        matrix.m32 = HubMiniKitViewerPositionPc.z;
+        matrix.m30 += kit->offset_x;
+        matrix.m31 += lift + bob + (info ? info->panel_offset : 0.0f);
+        matrix.m32 += kit->offset_z;
         NuMtxPreRotateZ(&matrix, (i32)(RotDiff(0, kit->rotation_velocity) * scale));
         for (i32 piece = 0; piece < pieces->piece_count; ++piece) {
             if (pieces->pieces[piece].enabled && NuSpecialExistsFn(&pieces->pieces[piece].special) &&
