@@ -168,18 +168,14 @@ extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
     return 0;
 }
 extern void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world) {
-    void *reserved;
-
-    reserved = NULL;
     world->zipups = NULL;
     world->zipup_count = 0;
     if (world->current_level->max_zipups > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->zipups = (ZIPUP_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->current_level->max_zipups * sizeof(ZIPUP_PC);
-        reserved = world->zipups;
     }
-    return reserved;
+    return world->zipups;
 }
 
 typedef struct zipup_transport_view_pc_s {
