@@ -6931,7 +6931,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                 if (NuFParGetWord(parser) > 0) {
                     NuUTF8ToUnicode(word, (u8 *)parser->word_buffer_ptr);
                     length = NuStrLenW(word);
-                    if (length <= 3) {
+                    if (length < 4) {
                         for (j = length; j >= 0; --j) {
                             word[j + 1] = word[j];
                         }
