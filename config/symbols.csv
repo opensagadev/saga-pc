@@ -1973,6 +1973,7 @@ address,symbol,size,ctype
 0x4c0ae0,_Shards_RegisterGizmo,278,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x4c0c00,_Shard_Collect,123,
 0x4c0c80,_Shards_HandleLostObj,82,"void __cdecl(WORLDINFO *,GAMEOBJECT *)"
+0x4c0d50,_ShopMtxCopyPc,95,
 0x4c0db0,_NuMtxRotateXInline,217,
 0x4c0e90,_NuMtxRotateYInline,219,
 0x4c0f70,_NuMtxRotateZInline,215,
@@ -2008,8 +2009,10 @@ address,symbol,size,ctype
 0x4c6c50,_DrawShopPanel,21,
 0x4c6c70,_Shop_CanSelectPc,384,i32 __cdecl(void)
 0x4c6df0,_Shop_CollectAllCharacters,129,void __cdecl (i32)
+0x4c6e80,_ShopMtxSetIdentityPc,10,
 0x4c6e90,_ItemMenu,1613,i32 __cdecl(void *)
 0x4c74e0,_UpdateShop,484,i32 __cdecl(void *)
+0x4c76d0,_DrawQuestion,125,"void __cdecl (NUVEC *, f32, f32)"
 0x4c7750,_DrawShopPrompts,201,void __cdecl(void)
 0x4c7820,_GetShopCamLookPos,89,void __cdecl (NUVEC *)
 0x4c78b0,_Signals_Load,198,"i32 __cdecl(WORLDINFO *, void *)"
