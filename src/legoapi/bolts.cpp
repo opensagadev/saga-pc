@@ -2275,6 +2275,7 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     NUVEC position;
     NUMTX orientation;
     i32 type_id, hit_flags;
+    NUVEC old_points[3];
     message.Read16(owner_index);
     message.Read(&position, 4, 3);
     message.Read(&orientation, 4, 16);
@@ -2300,7 +2301,6 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)))
         return;
     if (bolt->active != 0) {
-        NUVEC old_points[3];
         Bolt_GeneratePointsPrivate(bolt, old_points);
         BoltSys->debris(bolt, old_points, -1, NULL, 0);
     }
@@ -2360,13 +2360,13 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
         GameAudio_PlaySfxById(BoltShootIdScratch, &position, 0, 0);
     BoltShootPositionScratch = position;
     bolt->time = 0.0f;
-    bolt->active = 1;
+    bolt->owner = owner;
     bolt->position = position;
     bolt->previous_position = position;
+    bolt->flags = flags;
+    bolt->active = 1;
     bolt->field_102 = 0;
     bolt->hit_platform = -1;
-    bolt->owner = owner;
-    bolt->flags = flags;
     bolt->field_e4 = 2000000.0f;
     bolt->reflection_height = 2000000.0f;
     bolt->field_105 = -1;
@@ -2379,13 +2379,14 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
         if (owner->reflection_height != 2000000.0f && owner->reflection_enabled == 2)
             bolt->reflection_height = owner->reflection_height;
     }
-    f32 collision_radius = bolt->radius;
-    if ((flags & 0x200) == 0)
-        collision_radius = (f32)((f64)collision_radius * (f64)(1.0f / 3.0f));
+    if ((flags & 0x200) != 0)
+        bolt->collision_radius = bolt->radius;
+    else
+        bolt->collision_radius = (f32)((f64)bolt->radius * (f64)(1.0f / 3.0f));
     bolt->radius *= bolt->scale;
-    bolt->collision_radius = collision_radius * bolt->scale;
-    bolt->velocity.x = 0.0f;
+    bolt->collision_radius *= bolt->scale;
     bolt->velocity.y = 0.0f;
+    bolt->velocity.x = 0.0f;
     bolt->velocity.z = bolt->speed;
     NuMtxSetRotationX(&bolt->effect_orientation, 0x4000);
     bolt->orientation = orientation;
@@ -2417,13 +2418,15 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     if (bolt->acceleration_y != 0.0f)
         movement.y =
             (f32)((f64)bolt->velocity.y * (f64)0.2f + (f64)bolt->acceleration_y * .5 * (f64)0.04000000283122063f);
-    f32 back_distance = 0.01f;
+    f32 back_distance;
     if (owner != NULL) {
-        back_distance = owner->collision_radius;
         if ((owner->character_data->model_flags & 0x2000) == 0 &&
             (owner->character_data->game_character->flags_090 & 0x80) == 0)
-            back_distance *= 3.0f;
-    }
+            back_distance = owner->collision_radius * 3.0f;
+        else
+            back_distance = owner->collision_radius;
+    } else
+        back_distance = 0.01f;
     NUVEC back, start;
     NuVecScale(&back, &bolt->direction, back_distance);
     NuVecSub(&start, &bolt->position, &back);
@@ -2432,7 +2435,7 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     bolt->ray_time = 0.2f;
     if ((bolt->flags & 4) == 0 && Bolt_RayCastPrivate(bolt, &start, &movement)) {
         f32 offset_time = (back_distance / initial_distance) * bolt->lifetime;
-        bolt->lifetime = bolt->ray_time + offset_time;
+        bolt->lifetime = offset_time + bolt->ray_time;
         f32 hit_time_product = NewRayCastGetTOFI() * bolt->lifetime;
         bolt->lifetime = hit_time_product - offset_time;
         if (bolt->lifetime <= 0.0f) {
@@ -2444,7 +2447,7 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
                 bolt->type->end_callback(bolt);
             if ((bolt->flags & 0x10000) == 0 && !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max,
                                                                      bolt->collision_radius, NULL)) {
-                bool hit = false;
+                i32 hit = 0;
                 GAMEOBJECT *current_owner = static_cast<GAMEOBJECT *>(bolt->owner);
                 if ((bolt->flags & 0x13) != 0 ||
                     (current_owner != NULL &&
@@ -2452,10 +2455,10 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
                     if (!hit)
                         hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min,
-                                               &bolt->bounds_max, bolt->collision_radius, NULL) != 0;
+                                               &bolt->bounds_max, bolt->collision_radius, NULL);
                     if (!hit)
                         hit = Bolt_HitBlowupPrivate(bolt, points, &bolt->bounds_min, &bolt->bounds_max,
-                                                    bolt->collision_radius, NULL) != 0;
+                                                    bolt->collision_radius, NULL);
                     if (!hit)
                         hit = Bolt_HitParts(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
                                             Bolt_HitPartMode(bolt)) != NULL;
