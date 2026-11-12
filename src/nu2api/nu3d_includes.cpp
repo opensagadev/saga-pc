@@ -7413,7 +7413,6 @@ extern "C" {
         NuTime now;
         NuTime delta;
         f32 elapsed;
-        i32 accumulator;
 
         if (NuTimeBar_Initialised == 0) {
             return 0;
@@ -7422,8 +7421,7 @@ extern "C" {
         NuTimeGet(&now);
         NuTimeSub(&delta, &now, &timebar->start_times[slot]);
         elapsed = NuTimeMicroSeconds(&delta);
-        accumulator = 1 - timebar->toggle_flags[slot];
-        timebar->accumulators[accumulator][slot] += (u32)elapsed;
+        timebar->accumulators[1 - timebar->toggle_flags[slot]][slot] += (u32)elapsed;
         return (u32)timebar->accumulators[1 - timebar->toggle_flags[slot]][slot];
     }
 
