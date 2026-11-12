@@ -902,46 +902,35 @@ static void CC_turn_rate_2(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_banking(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x1;
+static void CC_SetRuntimeFlag(NUFPAR_PC *parser, u32 flag) {
+    charconfig.runtime->flags_090 |= flag;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x1u;
+        charconfig.runtime->flags_090 &= ~flag;
     }
+}
+
+static void CC_banking(NUFPAR_PC *parser) {
+    CC_SetRuntimeFlag(parser, 0x1);
 }
 
 static void CC_choke(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x2;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x2u;
-    }
+    CC_SetRuntimeFlag(parser, 0x2);
 }
 
 static void CC_lightning(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x4;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x4u;
-    }
+    CC_SetRuntimeFlag(parser, 0x4);
 }
 
 static void CC_resist_zap(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x4000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x4000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x4000);
 }
 
 static void CC_ghost(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x8000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x8000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x8000);
 }
 
 static void CC_has_no_turn(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x10000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x10000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x10000);
 }
 
 static void CC_speed_up_time(NUFPAR_PC *parser) {
@@ -961,17 +950,11 @@ static void CC_loop_height(NUFPAR_PC *parser) {
 }
 
 static void CC_no_tiptoe(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x8;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x8u;
-    }
+    CC_SetRuntimeFlag(parser, 0x8);
 }
 
 static void CC_already_got_hat(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x10;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x10u;
-    }
+    CC_SetRuntimeFlag(parser, 0x10);
 }
 
 static void CC_not_got_hat(NUFPAR_PC *parser) {
@@ -979,66 +962,39 @@ static void CC_not_got_hat(NUFPAR_PC *parser) {
 }
 
 static void CC_punch_weapon_out(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x20;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x20u;
-    }
+    CC_SetRuntimeFlag(parser, 0x20);
 }
 
 static void CC_can_take_over(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x40;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x40u;
-    }
+    CC_SetRuntimeFlag(parser, 0x40);
 }
 
 static void CC_turning_circle(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x100;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x100u;
-    }
+    CC_SetRuntimeFlag(parser, 0x100);
 }
 
 static void CC_slide_orientation(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x200;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x200u;
-    }
+    CC_SetRuntimeFlag(parser, 0x200);
 }
 
 static void CC_can_drag_bombs(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x400;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x400u;
-    }
+    CC_SetRuntimeFlag(parser, 0x400);
 }
 
 static void CC_extra_toggle(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x80000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x80000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x80000000);
 }
 
 static void CC_can_flatten(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x1000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x1000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x1000);
 }
 
 static void CC_tightrope_walk(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x80000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x80000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x80000);
 }
 
 static void CC_car_wheels(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x100000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x100000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x100000);
 }
 
 static void CC_is_a_girl(NUFPAR_PC *parser) {
@@ -1130,137 +1086,87 @@ static void CC_hit_points(NUFPAR_PC *parser) {
     charconfig.runtime->hitpoints = (u8)(NuFParGetInt(parser));
 }
 
-static void CC_baddie(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x4;
+static void CC_SetModelFlag(NUFPAR_PC *parser, u32 flag) {
+    charconfig.character->model_flags |= flag;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x4u;
+        charconfig.character->model_flags &= ~flag;
     }
+}
+
+static void CC_baddie(NUFPAR_PC *parser) {
+    CC_SetModelFlag(parser, 0x4);
 }
 
 static void CC_jedi(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x8;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x8u;
-    }
+    CC_SetModelFlag(parser, 0x8);
 }
 
 static void CC_droid(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x10;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x10u;
-    }
+    CC_SetModelFlag(parser, 0x10);
 }
 
 static void CC_protocol(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x30;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x30u;
-    }
+    CC_SetModelFlag(parser, 0x30);
 }
 
 static void CC_astromech(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x50;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x50u;
-    }
+    CC_SetModelFlag(parser, 0x50);
 }
 
 static void CC_cannon(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x800;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x800u;
-    }
+    CC_SetRuntimeFlag(parser, 0x800);
 }
 
 static void CC_bounty_hunter(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x1000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x1000000u;
-    }
+    CC_SetModelFlag(parser, 0x1000000);
 }
 
 static void CC_blaster(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x10000080;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x10000080u;
-    }
+    CC_SetModelFlag(parser, 0x10000080);
 }
 
 static void CC_teleport(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x40000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x40000u;
-    }
+    CC_SetModelFlag(parser, 0x40000);
 }
 
 static void CC_zipup(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x100000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x100000u;
-    }
+    CC_SetModelFlag(parser, 0x100000);
 }
 
 static void CC_untargetable(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x80000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x80000u;
-    }
+    CC_SetModelFlag(parser, 0x80000);
 }
 
 static void CC_orientate(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x100;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x100u;
-    }
+    CC_SetModelFlag(parser, 0x100);
 }
 
 static void CC_neutral(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x200;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x200u;
-    }
+    CC_SetModelFlag(parser, 0x200);
 }
 
 static void CC_complex_shadow(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x10000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x10000u;
-    }
+    CC_SetModelFlag(parser, 0x10000);
 }
 
 static void CC_shadow_orientation(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x200000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x200000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x200000);
 }
 
 static void CC_can_open_doors(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x400;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x400u;
-    }
+    CC_SetModelFlag(parser, 0x400);
 }
 
 static void CC_non_stick(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x800;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x800u;
-    }
+    CC_SetModelFlag(parser, 0x800);
 }
 
 static void CC_can_shoot_offscreen(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x1000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x1000u;
-    }
+    CC_SetModelFlag(parser, 0x1000);
 }
 
 static void CC_can_fire(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x10000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x10000000u;
-    }
+    CC_SetModelFlag(parser, 0x10000000);
 }
 
 static void CC_can_poo(NUFPAR_PC *parser) {
@@ -1296,10 +1202,7 @@ static void CC_dont_draw_rider(NUFPAR_PC *parser) {
 }
 
 static void CC_minikit(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x4000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x4000000u;
-    }
+    CC_SetModelFlag(parser, 0x4000000);
 }
 
 static void CC_minikit_with_scene(NUFPAR_PC *parser) {
@@ -1403,73 +1306,43 @@ static void CC_has_whip(NUFPAR_PC *parser) {
 }
 
 static void CC_respawn(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x8000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x8000000u;
-    }
+    CC_SetModelFlag(parser, 0x8000000);
 }
 
 static void CC_vehicle(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x2000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x2000u;
-    }
+    CC_SetModelFlag(parser, 0x2000);
 }
 
 static void CC_only_active_when_taken_over(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x20000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x20000000u;
-    }
+    CC_SetModelFlag(parser, 0x20000000);
 }
 
 static void CC_beast(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x40000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x40000000u;
-    }
+    CC_SetModelFlag(parser, 0x40000000);
 }
 
 static void CC_prefers_brawling(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x80000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x80000000u;
-    }
+    CC_SetModelFlag(parser, 0x80000000);
 }
 
 static void CC_dontpush(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x4000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x4000u;
-    }
+    CC_SetModelFlag(parser, 0x4000);
 }
 
 static void CC_dont_move_out_of_way(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x2000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x2000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x2000);
 }
 
 static void CC_dontmove(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x80;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x80u;
-    }
+    CC_SetRuntimeFlag(parser, 0x80);
 }
 
 static void CC_jetpack(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x8000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x8000u;
-    }
+    CC_SetModelFlag(parser, 0x8000);
 }
 
 static void CC_oldheadmovement(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x20000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x20000u;
-    }
+    CC_SetModelFlag(parser, 0x20000);
 }
 
 static void CC_atatheadmovement(NUFPAR_PC *parser) {
@@ -1477,80 +1350,47 @@ static void CC_atatheadmovement(NUFPAR_PC *parser) {
 }
 
 static void CC_cannotbigjump(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x200000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x200000u;
-    }
+    CC_SetModelFlag(parser, 0x200000);
 }
 
 static void CC_no_offpath_teleport(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x400000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x400000u;
-    }
+    CC_SetModelFlag(parser, 0x400000);
 }
 
 static void CC_no_kill_parts(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x2000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x2000000u;
-    }
+    CC_SetModelFlag(parser, 0x2000000);
 }
 
 static void CC_high_jump(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x400000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x400000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x400000);
 }
 
 static void CC_super_strength(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x800000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x800000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x800000);
 }
 
 static void CC_transformatron(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x1000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x1000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x1000000);
 }
 
 static void CC_bypass_security(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x2000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x2000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x2000000);
 }
 
 static void CC_hazard_protection(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x4000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x4000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x4000000);
 }
 
 static void CC_wall_jump(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x8000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x8000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x8000000);
 }
 
 static void CC_got_batarang(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x20000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x20000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x20000000);
 }
 
 static void CC_tightrope_tilt(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x10000000;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.runtime->flags_090 &= ~0x10000000u;
-    }
+    CC_SetRuntimeFlag(parser, 0x10000000);
 }
 
 static void CC_combat_roll(NUFPAR_PC *parser) {
