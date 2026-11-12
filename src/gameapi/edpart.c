@@ -1381,7 +1381,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
 
             EdFileWrite(((PART_RUNTIME_TYPE_PC *)part_types)[index].name, 16);
             for (variant = 0; variant < 8; ++variant)
-                EdFileWriteChar(((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant]);
+                EdFileWriteChar((u8)((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant]);
             for (variant = 0; variant < 8; ++variant) {
                 i16 effect_id = ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[variant];
                 NUSPECIALHANDLE special;
