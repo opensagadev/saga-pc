@@ -274,15 +274,11 @@ LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index) {
 
 void __cdecl SuperCounters_Reset(i32 area_index) {
     if (area_index != -1) {
-        AREA_DATA_PC *area;
-        AREA_SUPERCOUNTER_PC *super_counters;
         i32 index;
 
-        area = &ADataList[area_index];
-        super_counters = area->super_counters;
-        if (super_counters != NULL && area->super_counter_count != 0) {
-            for (index = 0; index < area->super_counter_count; ++index) {
-                super_counters[index].collected_count = 0;
+        if (ADataList[area_index].super_counters != NULL) {
+            for (index = 0; index < ADataList[area_index].super_counter_count; ++index) {
+                ADataList[area_index].super_counters[index].collected_count = 0;
             }
         }
     }
