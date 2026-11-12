@@ -45,11 +45,12 @@ NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
+    material->opacity = DebrisGlassMaterialOpacity;
     material->attribs.cull_mode = 2;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.unknown_2_1_2 = 2;
-    material->opacity = DebrisGlassMaterialOpacity;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;
+
     if (disable_depth_write != 0)
         material->secondary.disable_depth_write = 1;
     material->texture_id = (i16)texture_id;
