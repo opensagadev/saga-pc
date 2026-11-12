@@ -71,34 +71,27 @@ i32 __cdecl oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
 }
 
 f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
-    APIOBJECT_PC *opponent;
-    AIONCEATTACKER_PC *attackers;
-    GAMEOBJECT *candidate;
-    i32 player_index;
-    i32 row;
-    i32 unassigned;
-    i32 index;
-    opponent = (APIOBJECT_PC *)object->ai_packet.opponent;
-    player_index = opponent->locator_name_index;
-    if ((u32)player_index > 8)
-        return 0.75f;
-    attackers = AtOnce_attackingPlayer[player_index];
-    row = 0;
-    unassigned = 0;
-    index = 0;
-    candidate = attackers[index].object;
-    while (candidate != NULL && index < 17) {
-        if (candidate == object)
-            return (f32)((f32)row * AtOnce_RowDist + AtOnce_InitialRowDist);
-        unassigned += candidate->one_at_once_player == 0xff;
-        if (unassigned >= AtOnce_attackersPerRow) {
-            row++;
-            unassigned = 0;
+    i32 player_index = ((APIOBJECT_PC *)object->ai_packet.opponent)->locator_name_index;
+    i32 unassigned = 0;
+    i32 row = 0;
+    if ((u32)player_index <= 8) {
+        i32 index = 0;
+        GAMEOBJECT *candidate = AtOnce_attackingPlayer[player_index][index].object;
+        while (candidate != NULL && index < 17) {
+            if (candidate == object)
+                return (f32)row * AtOnce_RowDist + AtOnce_InitialRowDist;
+            if (candidate->one_at_once_player == 0xff)
+                unassigned++;
+            if (unassigned >= AtOnce_attackersPerRow) {
+                row++;
+                unassigned = 0;
+            }
+            index++;
+            candidate = AtOnce_attackingPlayer[player_index][index].object;
         }
-        index++;
-        candidate = attackers[index].object;
+        return AtOnce_InitialRowDist;
     }
-    return AtOnce_InitialRowDist;
+    return 0.75f;
 }
 
 extern i32 LegoContextNetWaitPc;
