@@ -402,56 +402,54 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
 }
 
 static i32 MenuUpdateTitleFadePc(MENU *menu) {
-    f32 music_volume = 0.0f;
-    if (Game.options_save.music_enabled)
-        music_volume = GameGetMusicVolume(&TempOptions);
-    if (newgamefade == 0) {
-        legoSetMusicVolume(music_volume);
-        return 0;
-    }
-    if (newgamefade == 1) {
-        if (newgamewait > 0.0f)
+    f32 music_volume = Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
+    if (newgamefade != 0) {
+        if (newgamefade == 1) {
+            if (newgamewait > 0.0f)
+                newgamewait -= FRAMETIME;
+            else {
+                newgamealpha += FRAMETIME * 2.0f;
+                if (newgamealpha > 1.0f) {
+                    newgamealpha = 1.0f;
+                    newgamefade = 0;
+                }
+            }
+        } else if (newgamewait > 0.0f) {
+            music_volume = 0.0f;
             newgamewait -= FRAMETIME;
-        else {
-            newgamealpha += FRAMETIME * 2.0f;
-            if (newgamealpha > 1.0f) {
-                newgamealpha = 1.0f;
-                newgamefade = 0;
+            if (newgamewait <= 0.0f) {
+                if (!NOSOUND) {
+                    music_man.StopAll(0);
+                    MusicClearAll();
+                    SoundKillAll();
+                }
+                Movie_Play(Trailer[0], &characterbuffer_ptr, &characterbuffer_end, DEFAULTFRAMETIME, NULL,
+                           (f32)Game.options_save.music_volume / 10.0f);
+                FinishLoop(2);
+                ResetTimer(&GameTimer, 0.0f);
+                menu->menu_time = 0.0f;
+                menu->time_04 = 0.0f;
+                newgamealpha = 0.0f;
+                newgamefade = 1;
+                newgamewait = 0.5f;
+                if (!NOSOUND && !NOMUSIC) {
+                    music_man.StopAll(0);
+                    GamePlayMusic(WORLD->current_level, 0, &Game.options_save);
+                }
             }
-        }
-    } else if (newgamewait > 0.0f) {
-        music_volume = 0.0f;
-        newgamewait -= FRAMETIME;
-        if (newgamewait <= 0.0f) {
-            if (!NOSOUND) {
-                music_man.StopAll(0);
-                MusicClearAll();
-                SoundKillAll();
+        } else if (newgamefade == 2) {
+            newgamealpha -= FRAMETIME * 2.0f;
+            if (newgamealpha <= 0.0f) {
+                newgamealpha = 0.0f;
+                newgamewait = 0.1f;
             }
-            Movie_Play(Trailer[0], &characterbuffer_ptr, &characterbuffer_end, DEFAULTFRAMETIME, NULL,
-                       (f32)Game.options_save.music_volume / 10.0f);
-            FinishLoop(2);
-            ResetTimer(&GameTimer, 0.0f);
-            menu->menu_time = 0.0f;
-            menu->time_04 = 0.0f;
-            newgamealpha = 0.0f;
-            newgamefade = 1;
-            newgamewait = 0.5f;
-            if (!NOSOUND && !NOMUSIC) {
-                music_man.StopAll(0);
-                GamePlayMusic(WORLD->current_level, 0, &Game.options_save);
-            }
+            music_volume *= newgamealpha;
         }
-    } else if (newgamefade == 2) {
-        newgamealpha -= FRAMETIME * 2.0f;
-        if (newgamealpha <= 0.0f) {
-            newgamealpha = 0.0f;
-            newgamewait = 0.1f;
-        }
-        music_volume *= newgamealpha;
+        legoSetMusicVolume(music_volume);
+        return 1;
     }
     legoSetMusicVolume(music_volume);
-    return 1;
+    return 0;
 }
 extern "C" {
 
