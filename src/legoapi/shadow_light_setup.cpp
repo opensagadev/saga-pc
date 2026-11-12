@@ -28,13 +28,14 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
     camera_forward_pc.y = camera->mtx.m21;
     camera_forward_pc.z = camera->mtx.m22;
     camera_forward_pc.w = 1.0f;
-    active_render_set_count = (i32)((u32)split_count - 1u);
+    i32 set_count = split_count - 1;
+    active_render_set_count = set_count;
     camera_forward_pc.w = 0.0f;
     for (i32 i = 0; i < split_count; ++i)
         split_distances_pc[i] = splits[i];
     f32 near_clip = camera->near_clip;
     f32 far_clip = camera->far_clip;
-    for (i32 i = 0; i < active_render_set_count; ++i) {
+    for (i32 i = 0; i < set_count; ++i) {
         NURNDRLIGHTRECORD &set = render_sets[i];
         camera->near_clip = splits[i];
         camera->far_clip = splits[i + 1];
@@ -45,7 +46,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
         PostShadowComputeCapsulePc(&light_direction4_pc, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc,
                                    &set.shadow_radius_pc);
     }
-    for (i32 i = 0; i < active_render_set_count; ++i) {
+    for (i32 i = 0; i < set_count; ++i) {
         split_planes_pc[i].x = 0.0f;
         split_planes_pc[i].y = 0.0f;
         split_planes_pc[i].z = 1.0f / splits[i + 1];
