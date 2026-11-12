@@ -730,18 +730,19 @@ static i32 __cdecl GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GA
 }
 static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
     i32 state;
+    u32 players = 0;
     obstacle->proximity_output = 0;
     if (!(obstacle->runtime_flags & 8)) {
         f32 closest = obstacle->trigger_radius * obstacle->trigger_radius;
         NUVEC *closest_position = NULL;
         GAMEOBJECT *closest_object = NULL;
-        u32 players = 0;
+        f32 distance;
         i32 i;
         GAMEOBJECT *object;
         if (obstacle->mode == 1 || obstacle->mode == 2 || obstacle->mode == 5 || obstacle->mode == 6) {
             if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != -1 && obstacle->trigger_mode == 0xff &&
                 !(obstacle->config_flags & 0x4435)) {
-                f32 distance = NuVecDistSqr(&GameCam->position, &obstacle->secondary_position, NULL);
+                distance = NuVecDistSqr(&GameCam->position, &obstacle->secondary_position, NULL);
                 if (distance < closest && GizObstacle_PosWithinBox(obstacle, &GameCam->position)) {
                     closest = distance;
                     closest_position = &GameCam->position;
@@ -749,28 +750,27 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             }
             if (!(obstacle->config_flags & 1)) {
                 for (i = 0; i < GizObstacleTriggerCountPc; ++i) {
-                    f32 distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggersPc[i], NULL);
+                    distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggersPc[i], NULL);
                     if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggersPc[i])) {
-                        closest = distance;
                         closest_position = GizObstacleTriggersPc[i];
+                        closest = distance;
                     }
                 }
             }
         }
         for (i = 0, object = Obj; i < HIGHGAMEOBJECT; ++i, ++object) {
             i8 player;
-            f32 distance;
             if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
                 (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) ||
                 !(object->flags_1044 & 1) || (object->flags_e20 & 0x20))
                 continue;
             player = (i8)object->field_280;
             if (player != -1)
-                players |= 1u << ((u8)player & 31);
+                players |= 1 << player;
             if ((obstacle->config_flags & 4) && player == -1)
                 continue;
-            if (((obstacle->config_flags & 0x20) && (i8)object->flags_1fc >= 0) ||
-                (CInfo[object->character_context].flags & 0x8000) ||
+            if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & 0x80)) ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) ||
                 ((obstacle->config_flags & 0x400) && !object->rider) ||
                 ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & 4)) ||
                 ((obstacle->config_flags & 8) && !(object->character_data->model_flags & 0x2000)) ||
@@ -795,18 +795,22 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                     closest = distance;
                     closest_position = &object->lower_position;
                     closest_object = object;
-                    if (player != -1)
-                        players &= ~(1u << ((u8)player & 31));
+                    if ((i8)object->field_280 != -1)
+                        players &= ~(1 << (i8)object->field_280);
                 }
-            } else if ((obstacle->config_flags & 0x2000) && player != -1 &&
+            } else if ((obstacle->config_flags & 0x2000) && (i8)object->field_280 != -1 &&
                        distance < obstacle->trigger_radius * obstacle->trigger_radius &&
                        GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
                        GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
-                players &= ~(1u << ((u8)player & 31));
+                players &= ~(1 << (i8)object->field_280);
             }
         }
-        if (((obstacle->config_flags & 1) && !closest_position) ||
-            (!(obstacle->config_flags & 1) && closest_position && (!(obstacle->config_flags & 0x2000) || !players))) {
+        if (obstacle->config_flags & 1) {
+            if (!closest_position) {
+                obstacle->triggering_object = closest_object;
+                obstacle->proximity_output = 1;
+            }
+        } else if (closest_position && (!(obstacle->config_flags & 0x2000) || !players)) {
             obstacle->triggering_object = closest_object;
             obstacle->proximity_output = 1;
         }
@@ -823,10 +827,11 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             obstacle->auto_return_timer = obstacle->auto_return_delay;
         }
     } else if (!obstacle->proximity_output && !(obstacle->runtime_flags & 0x44)) {
-        if (!(obstacle->auto_return_timer > 0.0f))
+        if (obstacle->auto_return_timer > 0.0f) {
+            if (state == 2)
+                obstacle->auto_return_timer -= FRAMETIME;
+        } else
             GizObstacle_PlayBackwards(obstacle);
-        else if (state == 2)
-            obstacle->auto_return_timer -= FRAMETIME;
     }
 }
 static void __cdecl GizObstacleUpdate_NoTrigger(GIZOBSTACLE *obstacle) {
