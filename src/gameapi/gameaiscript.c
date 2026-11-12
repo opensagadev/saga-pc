@@ -6615,11 +6615,7 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
     NuVecRotateY(&part->velocity, &part->velocity, part->rotation_y);
     {
         position.x = part->position.x + part->velocity.x * time;
-        {
-            f64 vertical_velocity = part->velocity.y;
-            vertical_velocity *= time;
-            position.y = vertical_velocity + part->position.y + part->gravity * time;
-        }
+        position.y = part->position.y + part->velocity.y * time + part->gravity * time;
         position.z = part->position.z + part->velocity.z * time;
         NuMtxSetRotationX(&part->transform, NuAngAdd(part->rotation_x, 0x4000));
         NuMtxRotateY(&part->transform, part->rotation_y);
