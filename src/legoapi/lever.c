@@ -403,44 +403,48 @@ static i32 Levers_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 version, index;
     (void)data;
-    if (((LEVER_WORLD_PC *)world)->lever_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    ((LEVER_WORLD_PC *)world)->lever_count = EdFileReadInt();
-    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
-        EdFileRead(((LEVER_WORLD_PC *)world)->levers[index].name, 16);
-        EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].position);
-        ((LEVER_WORLD_PC *)world)->levers[index].yaw = EdFileReadShort();
-        ((LEVER_WORLD_PC *)world)->levers[index].model_variant = EdFileReadChar();
-        if (version >= 2) {
-            u16 automatic = EdFileReadChar() & 1;
-            ((LEVER_WORLD_PC *)world)->levers[index].flags =
-                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x20) | (automatic << 5);
+    if (((LEVER_WORLD_PC *)world)->lever_count == 0) {
+        version = EdFileReadInt();
+        ((LEVER_WORLD_PC *)world)->lever_count = EdFileReadInt();
+        for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
+            EdFileRead(((LEVER_WORLD_PC *)world)->levers[index].name, 16);
+            EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].position);
+            ((LEVER_WORLD_PC *)world)->levers[index].yaw = EdFileReadShort();
+            ((LEVER_WORLD_PC *)world)->levers[index].model_variant = EdFileReadChar();
+            if (version >= 2) {
+                char bit = EdFileReadChar() & 1;
+                ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                    (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x20) | (bit << 5);
+            }
+            if (version >= 3)
+                ((LEVER_WORLD_PC *)world)->levers[index].auto_reset_delay = EdFileReadFloat();
+            else
+                ((LEVER_WORLD_PC *)world)->levers[index].auto_reset_delay = 2.0f;
+            if (version >= 4) {
+                char bit = EdFileReadChar() & 1;
+                ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                    (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x100) | (bit << 8);
+            } else
+                ((LEVER_WORLD_PC *)world)->levers[index].flags &= ~0x100;
+            if (version >= 5) {
+                EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].target_offset);
+                ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = EdFileReadFloat();
+            } else {
+                ((LEVER_WORLD_PC *)world)->levers[index].target_offset.y = 0.0f;
+                ((LEVER_WORLD_PC *)world)->levers[index].target_offset.x = 0.0f;
+                ((LEVER_WORLD_PC *)world)->levers[index].target_offset.z = -0.1441f;
+                ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = 1.0f;
+            }
+            if (version >= 6) {
+                char bit = EdFileReadChar() & 1;
+                ((LEVER_WORLD_PC *)world)->levers[index].flags =
+                    (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x200) | (bit << 9);
+            }
+            ((LEVER_WORLD_PC *)world)->levers[index].platform_id = -1;
         }
-        ((LEVER_WORLD_PC *)world)->levers[index].auto_reset_delay = version >= 3 ? EdFileReadFloat() : 2.0f;
-        if (version >= 4) {
-            u16 hidden = EdFileReadChar() & 1;
-            ((LEVER_WORLD_PC *)world)->levers[index].flags =
-                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x100) | (hidden << 8);
-        } else
-            ((LEVER_WORLD_PC *)world)->levers[index].flags &= ~0x100;
-        if (version >= 5) {
-            EdFileReadNuVec(&((LEVER_WORLD_PC *)world)->levers[index].target_offset);
-            ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = EdFileReadFloat();
-        } else {
-            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.y = 0.0f;
-            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.x = 0.0f;
-            ((LEVER_WORLD_PC *)world)->levers[index].target_offset.z = -0.1441f;
-            ((LEVER_WORLD_PC *)world)->levers[index].target_indicator_scale = 1.0f;
-        }
-        if (version >= 6) {
-            u16 hidden = EdFileReadChar() & 1;
-            ((LEVER_WORLD_PC *)world)->levers[index].flags =
-                (((LEVER_WORLD_PC *)world)->levers[index].flags & ~0x200) | (hidden << 9);
-        }
-        ((LEVER_WORLD_PC *)world)->levers[index].platform_id = -1;
+        return 1;
     }
-    return 1;
+    return 0;
 }
 static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
