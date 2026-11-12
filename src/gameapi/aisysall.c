@@ -8524,14 +8524,13 @@ void locatorEditorDrawLocators(void) {
         i32 index;
         for (index = 0; index < 64; ++index) {
             i32 colour;
-            locator = (*state)->current_locator_set->locators[index];
-            if (locator == NULL)
+            if ((*state)->current_locator_set->locators[index] == NULL)
                 break;
-
-            if (locator == (*state)->current_locator) {
-                colour = locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
+            locator = (*state)->current_locator_set->locators[index];
+            if ((*state)->current_locator == locator) {
+                colour = (*state)->current_locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
             } else {
-                colour = locator == (*state)->nearest_locator ? -1 : 0x32323232;
+                colour = (*state)->nearest_locator == locator ? -1 : 0x32323232;
             }
             DrawLocator(&locator->position, aiEditor_LocatorWidth, locator->direction, colour);
             locator->drawn = 1;
@@ -8542,15 +8541,15 @@ void locatorEditorDrawLocators(void) {
         if (!locator->drawn) {
             i32 colour;
             if ((*state)->current_locator_set != NULL) {
-                if (locator == (*state)->current_locator) {
-                    colour = locator == (*state)->nearest_locator ? 0x50 : 0x28;
+                if ((*state)->current_locator == locator) {
+                    colour = (*state)->current_locator == (*state)->nearest_locator ? 0x50 : 0x28;
                 } else {
-                    colour = locator == (*state)->nearest_locator ? 0x64646464 : 0x32323232;
+                    colour = (*state)->nearest_locator == locator ? 0x64646464 : 0x32323232;
                 }
-            } else if (locator == (*state)->current_locator) {
-                colour = locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
+            } else if ((*state)->current_locator == locator) {
+                colour = (*state)->current_locator == (*state)->nearest_locator ? 0xff0000ff : 0x800000ff;
             } else {
-                colour = locator == (*state)->nearest_locator ? -1 : 0x32323232;
+                colour = (*state)->nearest_locator == locator ? -1 : 0x32323232;
             }
             DrawLocator(&locator->position, aiEditor_LocatorWidth, locator->direction, colour);
             locator->drawn = 1;
