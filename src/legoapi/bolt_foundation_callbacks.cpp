@@ -355,12 +355,13 @@ extern "C" void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point,
         PlaySfx("exp_thermalDet", points);
         GameCam_HitJudder();
         EXPLOSION_PC *explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
-        GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
-        if (explosion != NULL && Arcade != 0 && owner != NULL && (owner == Player[0] || owner == Player[1]) &&
-            (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x1000) != 0 &&
-            (owner->field_280 == 0 || owner->field_280 == 1)) {
-            explosion->flags |= 0x10000;
-            explosion->owner = static_cast<GAMEOBJECT *>(bolt->owner);
+        if (explosion != NULL && Arcade != 0) {
+            GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
+            if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
+                (owner->flags_1fc_word & 0x1000) != 0 && (owner->field_280 == 0 || owner->field_280 == 1)) {
+                explosion->flags |= 0x10000;
+                explosion->owner = static_cast<GAMEOBJECT *>(bolt->owner);
+            }
         }
     }
 }
