@@ -265,20 +265,21 @@ extern "C" {
             if (NuFParGetWord(parser) == 0)
                 continue;
             if (active != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "teleport_end") != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "teleport_end") == 0) {
+                    active = 0;
+                    if (NuStrLen(Tel_teleport->name) == 0) {
+                        NuStrCpy(Tel_teleport->name, TeleportConfigDataPc.name_prefix);
+                        NuStrCat(Tel_teleport->name, "TeleportNoSpline!");
+                        GizmoGetUniqueName(((WORLD_TELEPORT_CONFIG_PC *)WORLD)->gizmo_system,
+                                           TeleportConfigDataPc.name_prefix, Tel_teleport->name, Tel_teleport->name,
+                                           0x40);
+                    }
+                    if (teleport->path != NULL) {
+                        ++teleport;
+                        ++world->teleport_count;
+                    }
+                } else {
                     NuFParInterpretWord(parser);
-                    continue;
-                }
-                active = 0;
-                if (NuStrLen(Tel_teleport->name) == 0) {
-                    NuStrCpy(Tel_teleport->name, TeleportConfigDataPc.name_prefix);
-                    NuStrCat(Tel_teleport->name, "TeleportNoSpline!");
-                    GizmoGetUniqueName(((WORLD_TELEPORT_CONFIG_PC *)WORLD)->gizmo_system,
-                                       TeleportConfigDataPc.name_prefix, Tel_teleport->name, Tel_teleport->name, 0x40);
-                }
-                if (teleport->path != NULL) {
-                    ++teleport;
-                    ++world->teleport_count;
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "teleport_start") == 0) {
                 Tel_worldinfo = world;
