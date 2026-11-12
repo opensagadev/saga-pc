@@ -8890,8 +8890,8 @@ i32 __cdecl Action_TriggerBlowUp(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     GIZMOBLOWUP_PC *blowup;
     char *value;
     GIZMO_PC *gizmo;
-    if (param_5 != 0 && param_4 > 0) {
-        blowup = NULL;
+    blowup = NULL;
+    if (param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
             if (value != NULL) {
