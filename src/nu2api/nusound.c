@@ -52,30 +52,24 @@ void __cdecl AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id
         return;
     }
 
-    index = 0;
-    while (index < world->level_sfx_count && world->level_sfx[index].id != sfx_id) {
-        index++;
+    for (index = 0; index < world->level_sfx_count; index++) {
+        if (world->level_sfx[index].id == sfx_id)
+            break;
     }
     if (index < world->level_sfx_count) {
-        if (world->level_sfx[index].references != 0xff) {
+        if (world->level_sfx[index].references < 0xff)
             world->level_sfx[index].references++;
-        }
         return;
     }
-    if (index >= 64) {
+    if (world->level_sfx_count >= 64)
         return;
-    }
-
-    if (position != NULL) {
-        world->level_sfx[index].position = *position;
-    } else {
-        world->level_sfx[index].position.x = 0.0f;
-        world->level_sfx[index].position.y = 0.0f;
-        world->level_sfx[index].position.z = 0.0f;
-    }
-    world->level_sfx[index].id = (i16)sfx_id;
-    world->level_sfx[index].references = 1;
-    world->level_sfx_count = index + 1;
+    if (position != NULL)
+        world->level_sfx[world->level_sfx_count].position = *position;
+    else
+        world->level_sfx[world->level_sfx_count].position = APIObjectZeroMomentumPC;
+    world->level_sfx[world->level_sfx_count].id = (i16)sfx_id;
+    world->level_sfx[world->level_sfx_count].references = 1;
+    world->level_sfx_count++;
 }
 
 void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
