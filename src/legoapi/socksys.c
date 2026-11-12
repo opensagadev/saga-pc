@@ -15,6 +15,15 @@
      : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                         \
                                            : (i32)(to) - (i32)(from))
 #define SOCK_FLAG_SCALE_LATERAL_OFFSET 0x200
+
+// The SDK's NuFdiv: 0 when either operand is 0.
+static f32 SockFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 #define SOCK_FLAG_CLAMP_TARGET_Y 0x20
 #define SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER 0x80
 #define SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK 0x400
@@ -1297,7 +1306,7 @@ void ComplexSockAngles(SOCKROT_PC *angles) {
                     NuVecSub(&direction, &to, &from);
                     distance =
                         NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-                    ratio = distance == 0.0f ? 0.0f : 1.0f / distance;
+                    ratio = SockFdiv(1.0f, distance);
                     direction.x *= ratio;
                     direction.y *= ratio;
                     direction.z *= ratio;
@@ -1310,10 +1319,22 @@ void ComplexSockAngles(SOCKROT_PC *angles) {
                             midpoint = to;
                         } else {
                             ratio = projection / distance;
-                            angles->x +=
-                                (u16)((f32)(SOCK_ROTATION_DELTA(angles->x, positions[i].midpoint_rotation.x)) * ratio);
-                            angles->y +=
-                                (u16)((f32)(SOCK_ROTATION_DELTA(angles->y, positions[i].midpoint_rotation.y)) * ratio);
+                            {
+                                i32 difference = positions[i].midpoint_rotation.x - angles->x;
+                                if (difference > 0x8000)
+                                    difference -= 0x10000;
+                                else if (difference < -0x8000)
+                                    difference += 0x10000;
+                                angles->x += (u16)((f32)difference * ratio);
+                            }
+                            {
+                                i32 difference = positions[i].midpoint_rotation.y - angles->y;
+                                if (difference > 0x8000)
+                                    difference -= 0x10000;
+                                else if (difference < -0x8000)
+                                    difference += 0x10000;
+                                angles->y += (u16)((f32)difference * ratio);
+                            }
                             midpoint.x += (to.x - midpoint.x) * ratio;
                             midpoint.y += (to.y - midpoint.y) * ratio;
                             midpoint.z += (to.z - midpoint.z) * ratio;
@@ -1605,40 +1626,38 @@ void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
 
 void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction) {
     SOCK_PC *sock;
-    i32 limit;
+    i32 length;
 
     position->sock_index = -1;
-    if (system == NULL || (u32)index > 63u) {
+    if (system == NULL)
         return;
-    }
+    if (index < 0 || index > 63)
+        return;
     sock = &system->socks[index];
-    limit = sock->length;
     if (sock->unknown_33 != 0) {
-        ++limit;
-        if (segment > limit) {
+        length = sock->length + 1;
+        if (segment > length)
             segment = 0;
-        }
-    } else if (segment > limit) {
-        segment = limit;
+    } else {
+        length = sock->length;
+        if (segment > length)
+            segment = length;
     }
-    if (segment < 0) {
+    if (segment < 0)
         segment = 0;
-    }
-    if (fraction < 0.0f) {
+    if (fraction < 0.0f)
         fraction = 0.0f;
-    } else if (fraction > 1.0f) {
+    else if (fraction > 1.0f)
         fraction = 1.0f;
-    }
-    position->next_segment = (i16)(u16)((u32)segment + 1u);
-    position->ratio = fraction;
     position->sock_index = (i8)index;
     position->segment = (i16)segment;
-    if ((i32)position->next_segment == limit && sock->unknown_33 != 0) {
+    position->ratio = fraction;
+    position->next_segment = (i16)(segment + 1);
+    if (position->next_segment == length && sock->unknown_33 != 0)
         position->next_segment = 0;
-    }
     position->candidate_count = 1;
     position->flags = 0;
-    position->candidate_mask = 1u << ((u32)index & 31u);
+    position->candidate_mask = 1u << index;
     FillSockPosition(system, position);
     position->camera_position = temp_sockcampos;
     SockSysPointAlongMID(sock, position, &position->midpoint);
