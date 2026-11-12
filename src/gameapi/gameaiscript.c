@@ -6510,10 +6510,11 @@ i32 __cdecl Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, A
 i32 __cdecl Action_AddPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                              i32 count, i32 first_time, f32 elapsed) {
     if (first_time != 0) {
-        NUSPECIALHANDLE special = {0};
+        NUSPECIALHANDLE special;
         NUVEC position;
         i32 index;
         char *value;
+        memset(&special, 0, sizeof(special));
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral75782c);
             if (value != NULL)
@@ -6533,7 +6534,7 @@ i32 __cdecl Action_AddPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
                             GameDeflectPartGravity);
             NuMtxSetTranslation(&matrix, &position);
             part = Default_ADDPART;
-            part.field_14 = part.field_18 = 0.1f;
+            part.field_18 = part.field_14 = 0.1f;
             part.gravity = GameDeflectPartGravity;
             part.time_step = FRAMETIME;
             part.matrix = &matrix;
