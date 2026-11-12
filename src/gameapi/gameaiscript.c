@@ -11361,20 +11361,23 @@ i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     char *name;
     (void)processor;
     (void)param_6;
+    object = NULL;
+    enabled = 1;
     if (param_5 != 0) {
-        enabled = 1;
-        object = packet != NULL ? packet->owner->objptr : NULL;
-
-        for (index = 0; index < param_4; ++index) {
-            name = NuStrIStr(params[index], (char *)AreaConfigKeyword_character);
-            if (name != NULL) {
-                name += 10;
-                if (NuStrICmp(name, (char *)AITransferLiteral757f7c) == 0 && packet != NULL)
-                    object = packet->owner->objptr;
-                else
-                    object = GetNamedGameObject(WORLD->ai_sys, name);
-            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
-                enabled = 0;
+        if (packet != NULL)
+            object = packet->owner->objptr;
+        if (param_4 != 0) {
+            for (index = 0; index < param_4; ++index) {
+                name = NuStrIStr(params[index], (char *)AreaConfigKeyword_character);
+                if (name != NULL) {
+                    name += 10;
+                    if (NuStrICmp(name, (char *)AITransferLiteral757f7c) == 0 && packet != NULL)
+                        object = packet->owner->objptr;
+                    else
+                        object = GetNamedGameObject(WORLD->ai_sys, name);
+                } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+                    enabled = 0;
+            }
         }
         if (object != NULL) {
             object->flags_ef4 = (object->flags_ef4 & ~0x2000u) | ((enabled & 1) << 13);
