@@ -9672,7 +9672,8 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
 
 /* Creates a copy of source (or, for a singleton class, re-creates it). */
 i32 ClassEditor::CreateObject(ClassObject &source) {
-    ClassObject created(source.ed_class);
+    ClassObject created;
+    created.ed_class = source.ed_class;
     if (theLevelEditor.current_led_file == -1) {
         SelectLED(-1);
         return 1;
