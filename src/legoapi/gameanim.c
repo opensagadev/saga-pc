@@ -1545,7 +1545,7 @@ void __cdecl AnimatePlayer(GAMEOBJECT *object) {
     if (override_from != -1 && ((override_from == 0xe9 && object->character_context != 0x1c) ||
                                 object->anim_packet.requested_animation == override_from))
         object->anim_packet.requested_animation = object->ai_packet.animation_override_to;
-    if (model == NULL || (object->dead != 0 && (object->death_delay == 0.0f || object->dead == 1)))
+    if (model == NULL || (object->dead != 0 && object->death_delay == 0.0f) || object->dead == 1)
         return;
     direction = 1.0f;
     if ((object->flags_ef0 & 0x4000) != 0)
