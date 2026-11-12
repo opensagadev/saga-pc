@@ -40,7 +40,9 @@
    "member": "build\\intel\\mt_obj\\atox.obj",
    "symbols": [
     "_atol",
-    "__atol_l"
+    "__atol_l",
+    "__atoi64",
+    "__atoi64_l"
    ]
   },
   {
@@ -2857,7 +2859,12 @@
     "libcpmt#00017:__ehhandler$?_Xran@_String_base@std@@SAXXZ",
     "??0invalid_argument@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
     "??1invalid_argument@std@@UAE@XZ",
-    "??_Ginvalid_argument@std@@UAEPAXI@Z"
+    "??_Ginvalid_argument@std@@UAEPAXI@Z",
+    "libcpmt#00017:__unwindfunclet$?_Xinvarg@_String_base@std@@SAXXZ$0",
+    "libcpmt#00017:__ehhandler$?_Xinvarg@_String_base@std@@SAXXZ",
+    "??0out_of_range@std@@QAE@ABV01@@Z",
+    "?_Xinvarg@_String_base@std@@SAXXZ",
+    "??0invalid_argument@std@@QAE@ABV01@@Z"
    ]
   }
  ]

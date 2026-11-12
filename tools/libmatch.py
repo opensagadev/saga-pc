@@ -83,7 +83,7 @@ def adjacent(code, text_va, end, start):
     return 0 <= gap < 16 and code[end - text_va:start - text_va] == b"\xcc" * gap
 
 
-MAX_BETWEEN = 6  # functions a neighbour search may step over
+MAX_BETWEEN = 12  # functions a neighbour search may step over
 
 
 def place_by_order(sequences, code, text_va, anchors=None):
@@ -319,6 +319,8 @@ def main():
                 if len(hits) > MAX_HITS and anchor is not None and 0 <= anchor - text_va <= len(code) - len(raw) \
                         and re.compile(pattern, re.S).match(code, anchor - text_va):
                     hits = [anchor]  # too common to place by order, but the map binds the name here
+                # Code the map gives to other functions is not this one's.
+                hits = [h for h in hits if h == anchor or not overlaps(mapped, h, h + len(raw))]
                 item = {"archive": archive, "index": index, "member": member, "file": file,
                         "obj": obj, "symbol": symbol["name"], "hits": hits, "size": len(raw), "region": region}
                 if not hits or len(hits) > MAX_HITS:

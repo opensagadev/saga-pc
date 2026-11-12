@@ -405,7 +405,8 @@ since the linker keeps a member's functions in object order. The search steps ov
 functions absent from that spot (removed as unreferenced, or COMDATs another member
 supplied), and a mapped near-miss with the same extent (at most one changed byte in
 16, e.g. a function that indexes the later CRT's larger `ioinfo`) marks where its
-neighbours sit without being credited itself. When several twins
+neighbours sit without being credited itself. Masked hits inside code the map
+gives to other functions are discarded first. When several twins
 (A/W variants) claim one address, the one the map or an unambiguous candidate
 refers to there is kept; a candidate whose references contradict the map is
 dropped, as is one whose direct call lands on a different function the map
