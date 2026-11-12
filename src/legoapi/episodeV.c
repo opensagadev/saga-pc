@@ -1299,8 +1299,8 @@ AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
 }
 
 void __cdecl HothBattle_ManageBackgroundCreatures(void) {
-    AILOCATORSET_PC *set = AIPathFindLocatorSet(WORLD->ai_sys, "spawn");
     u8 wave_types = 0;
+    AILOCATORSET_PC *set = AIPathFindLocatorSet(WORLD->ai_sys, "spawn");
     i32 type, last, index;
     f32 radius;
     AILOCATOR_PC *spawn, *entry;
