@@ -230,7 +230,7 @@ void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS
         return;
     shard = (SHARD_s *)world->shards;
     for (index = 0; index < world->shard_count && index < 128; ++index, ++shard) {
-        i32 word = index >> 5;
+        i32 word = index / 32;
         u32 mask = 1u << (index & 31);
         if (shard->collected)
             progress->collected[word] |= mask;
@@ -249,7 +249,7 @@ void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
     for (index = 0; index < world->shard_count; ++index, ++progress_record) {
         ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
         if (progress != NULL && index < 128) {
-            i32 word = index >> 5;
+            i32 word = index / 32;
             u32 mask = 1u << (index & 31);
             progress_record->collected = (progress->collected[word] & mask) != 0;
             progress_record->visible = (progress->visible[word] & mask) != 0;
