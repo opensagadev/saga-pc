@@ -1014,8 +1014,10 @@ static __declspec(noinline) i32 ForceUpdateCentrePc(GIZFORCE_PC *force, i32 fram
 
 static __declspec(noinline) f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJECT *object) {
     f32 target = 1.0f;
-    if (force != NULL && object != NULL) {
-        if (Cheats_CheckFlags(0x400000) != 0 || object->powerup_time > 0.0f)
+    if (force != NULL) {
+        // MATCH-EXCEPTION: retail stores the default speed again once force is known (second fstp of 1.0).
+        target = 1.0f;
+        if (object != NULL && (Cheats_CheckFlags(0x400000) != 0 || object->powerup_time > 0.0f))
             target = 3.0f;
     }
     return SeekValF(force->animation_speed, target, ForceAnimationSeekRatePc);
