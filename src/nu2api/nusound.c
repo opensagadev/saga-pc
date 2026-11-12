@@ -1588,18 +1588,18 @@ void PlayMusic(i32 track, i32 mode) {
 
 void SwapMusic(i32 mode) {
     i32 previous_track;
-    i32 queued_track;
+    i32 track;
     if (NOSOUND != 0 || NOMUSIC != 0) {
         return;
     }
     previous_track = Music.current_track;
-    queued_track = Music.queued_track;
     Music.primary_stream = (i16)(1 - Music.primary_stream);
-    Music.current_track = (i16)queued_track;
+    Music.current_track = Music.queued_track;
     Music.queued_track = (i16)previous_track;
+    track = Music.current_track;
     NuSound3ResumeStereoStream(Music.primary_stream);
     if (mode == 1) {
-        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[queued_track].index * MusicVolume));
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * MusicVolume));
         NuSound3PauseStereoStream(1 - Music.primary_stream);
         NuSound3SetStreamVolume(1 - Music.primary_stream, 0);
         Music.transition = 1.0f;
@@ -1610,7 +1610,7 @@ void SwapMusic(i32 mode) {
         } else {
             Music.transition = 0.0f;
         }
-        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[queued_track].index * Music.transition));
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * Music.transition));
         Music.state = mode == 3 ? 6 : 5;
     }
     NuSound3Update();
