@@ -61,7 +61,7 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *SecurityDoorOutputNamePc;
 
-static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, NUANG angle) {
+static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
     NuMtxSetRotationY(&door->leaf_matrix[0], -(i32)angle);
     translation.x = 0.2667f;
