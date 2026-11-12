@@ -3537,7 +3537,6 @@ extern "C" {
     }
 
     void __cdecl StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress) {
-        LEVEL_PROGRESS_TRANSFER_PC *saved = (LEVEL_PROGRESS_TRANSFER_PC *)progress;
         i32 index;
 
         if (area_progress == 0) {
@@ -3563,25 +3562,29 @@ extern "C" {
                 goto store_flags;
             }
         }
-        StoreProgressAICharacter(progress);
-        if (StartupGameFlag1 != 0) {
-            Grabber_StoreProgress(world, progress);
-        }
-        GizmoSysStoreProgress(world->gizmo_sys, world, index);
-        if (saved != NULL) {
-            GizFlowStoreProgress(world->giz_flow, &saved->giz_flow_progress);
-            StoreSceneProgress(world->current_gscn, &saved->scene_progress, 0);
-        }
-        GameAnimSys_StoreProgress(world->game_anim_sys, index);
-        WorldStoreScriptsProgressPC(world, progress);
-    store_flags:
-        if (saved != NULL) {
-            if (world->level_progress != progress) {
-                PCByteCopy_candidate(saved->disabled_effect_names, world->level_progress->disabled_effect_names,
-                                     sizeof(saved->disabled_effect_names));
+        if (area_progress != 0 || world->area == NULL || (world->area->flags & 4) == 0) {
+            StoreProgressAICharacter(progress);
+            if (StartupGameFlag1 != 0) {
+                Grabber_StoreProgress(world, progress);
             }
-            saved->flags =
-                (saved->flags & ~4U) | ((((WORLD_PERSISTENCE_FLAGS_PC *)world)->progress_flags << 2) & 4) | 2;
+            GizmoSysStoreProgress(world->gizmo_sys, world, index);
+            if (progress != NULL) {
+                GizFlowStoreProgress(world->giz_flow, &((LEVEL_PROGRESS_TRANSFER_PC *)progress)->giz_flow_progress);
+                StoreSceneProgress(world->current_gscn, &((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scene_progress, 0);
+            }
+            GameAnimSys_StoreProgress(world->game_anim_sys, index);
+            WorldStoreScriptsProgressPC(world, progress);
+        }
+    store_flags:
+        if (progress != NULL) {
+            if (world->level_progress != progress) {
+                PCByteCopy_candidate(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names,
+                                     world->level_progress->disabled_effect_names,
+                                     sizeof(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names));
+            }
+            ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags =
+                (((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags & ~4U) |
+                ((((WORLD_PERSISTENCE_FLAGS_PC *)world)->progress_flags << 2) & 4) | 2;
         }
     }
 
