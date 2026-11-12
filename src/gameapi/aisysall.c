@@ -1863,11 +1863,13 @@ AISTATE_PC *__cdecl AIStateFind(const char *name, AISCRIPT_PC *script) {
     AISTATE_PC *state;
 
     state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
-    while (state != NULL) {
-        if (NuStrICmp(name, state->name) == 0) {
-            return state;
+    if (name != NULL) {
+        while (state != NULL) {
+            if (NuStrICmp(name, state->name) == 0) {
+                return state;
+            }
+            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
         }
-        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
     }
 
     return NULL;
