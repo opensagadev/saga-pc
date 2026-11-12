@@ -6,9 +6,13 @@ extern const char *PcCompanyName, *PcProductName;
 extern i32 PcUsePersonalFolder;
 extern char PcUserFolder[], PcFileDirectory[], PcFilePath[];
 extern "C" char *__cdecl PcGetUserFolder(const char *unused_company, const char *unused_product) {
-    HRESULT result =
-        SHGetFolderPathA(NULL, PcUsePersonalFolder ? CSIDL_PERSONAL : CSIDL_LOCAL_APPDATA, NULL, 0, PcUserFolder);
-    return result < 0 ? NULL : PcUserFolder;
+    i32 folder = CSIDL_LOCAL_APPDATA;
+    if (PcUsePersonalFolder)
+        folder = CSIDL_PERSONAL;
+    HRESULT result = SHGetFolderPathA(NULL, folder, NULL, 0, PcUserFolder);
+    if (FAILED(result))
+        return NULL;
+    return PcUserFolder;
 }
 extern "C" FILE *__cdecl PcOpenPlatformFile(const char *name, const char *prefix, i32 use_user_folder,
                                             const char *mode) {
