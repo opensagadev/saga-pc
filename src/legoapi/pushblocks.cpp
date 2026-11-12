@@ -1003,7 +1003,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
     f32 nearest_distance = 1000000000.0f;
     PUSH_BLOCK_PC *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
-        if ((block->packed_state_flags & 0x01040100u) != 0x01040000u)
+        if ((block->packed_state_flags & 0x00040000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
+            (block->packed_state_flags & 0x100u) != 0)
             continue;
         NUVEC *candidate = block->position;
         if (candidate->x < minimum.x || candidate->x > maximum.x || candidate->z < minimum.z ||
