@@ -1424,8 +1424,8 @@ extern "C" {
                     return 1;
                 }
                 owner->pad->buttons_held |= GAMEPAD_SPECIAL;
-                owner->ai_packet.movement_stopping_distance = 0.0f;
                 owner->ai_packet.movement_destination = owner->position;
+                owner->ai_packet.movement_stopping_distance = 0.0f;
                 return 1;
             }
             if ((owner->flags_e24 & 0x80) != 0) {
@@ -1435,8 +1435,8 @@ extern "C" {
                 SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
                 return 1;
             }
-            owner->ai_packet.movement_stopping_distance = 0.0f;
             owner->ai_packet.movement_destination = owner->position;
+            owner->ai_packet.movement_stopping_distance = 0.0f;
             return 1;
         }
         ClearSpecialMove(owner);
