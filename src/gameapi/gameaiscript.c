@@ -9143,29 +9143,29 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     NUMTX *matrix;
     i32 index;
 
+    start = 0.0f;
+    end = 1000000000.0f;
     target_position.x = 1000000000.0f;
     target_position.y = 1000000000.0f;
     target_position.z = 1000000000.0f;
     camera_position.x = 1000000000.0f;
     camera_position.y = 1000000000.0f;
     camera_position.z = 1000000000.0f;
+    blend_in = 0.0f;
+    blend_out = 0.0f;
     camera_delta.x = 0.0f;
     camera_delta.y = 0.0f;
     camera_delta.z = 0.0f;
     range = 1.0f;
-    rotation_x = 0;
-    rotation_y = 0;
+    follow_target = 0;
+    use_current_camera = 0;
+    borders = 1;
     target_locator = NULL;
     target_character = NULL;
     target_object = NULL;
     camera_locator = NULL;
-    follow_target = 0;
-    borders = 1;
-    use_current_camera = 0;
-    start = 0.0f;
-    end = 1000000000.0f;
-    blend_in = 0.0f;
-    blend_out = 0.0f;
+    rotation_y = 0;
+    rotation_x = 0;
     if (first_time != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp((char *)AITransferLiteral757a68, params[index]) == 0) {
