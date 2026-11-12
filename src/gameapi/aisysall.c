@@ -5994,44 +5994,40 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
         if ((((u64)1 << route_index) & node->route_membership_mask) == 0) {
             return NULL;
         }
-        if ((((u64)1 << route_index) & node->route_boundary_mask) != 0) {
-            if (connection == NULL) {
-                return NULL;
-            }
-            if ((((u64)1 << route_index) & connection->route_mask) == 0) {
-                return connection;
-            }
-        }
-        route = &packet->path_info.path->routes[packet->current_route];
-        connection = NULL;
-        if ((((u64)1 << packet->current_route) & packet->path_info.path->nodes[destination].route_membership_mask) !=
-            0) {
-            connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[destination]];
-        } else {
-            nearest = FLT_MAX;
-            for (index = 0; index < route->exit_node_count; ++index) {
-                first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
-                                                     packet->current_route, 0);
-                second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination,
-                                                      0xff, (u32)((u64)(1) << packet->current_route));
-                if (first != FLT_MAX && second != FLT_MAX) {
-                    distance = first + second;
-                } else {
-                    distance = FLT_MAX;
+        if ((((u64)1 << route_index) & node->route_boundary_mask) == 0 ||
+            (connection != NULL && (((u64)1 << route_index) & connection->route_mask) != 0)) {
+            route = &packet->path_info.path->routes[packet->current_route];
+            connection = NULL;
+            if ((((u64)1 << packet->current_route) &
+                 packet->path_info.path->nodes[destination].route_membership_mask) != 0) {
+                connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[destination]];
+            } else {
+                nearest = FLT_MAX;
+                for (index = 0; index < route->exit_node_count; ++index) {
+                    first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
+                                                         packet->current_route, 0);
+                    second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination,
+                                                          0xff, (u32)((u64)(1) << packet->current_route));
+                    if (first != FLT_MAX && second != FLT_MAX) {
+                        distance = first + second;
+                    } else {
+                        distance = FLT_MAX;
+                    }
+                    if (distance < nearest) {
+                        nearest = distance;
+                        next_node = route->exit_nodes[index];
+                    }
                 }
-                if (distance < nearest) {
-                    nearest = distance;
-                    next_node = route->exit_nodes[index];
-                }
+                if (nearest != FLT_MAX)
+                    connection_index =
+                        route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
+                else
+                    return NULL;
             }
-            if (nearest == FLT_MAX) {
-                return NULL;
+            if (connection_index < node->connection_count) {
+                connection = node->connections[connection_index];
+                *direction = connection->node_indices[0] != node_index;
             }
-            connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
-        }
-        if (connection_index < node->connection_count) {
-            connection = node->connections[connection_index];
-            *direction = connection->node_indices[0] != node_index;
         }
     }
     return connection;
