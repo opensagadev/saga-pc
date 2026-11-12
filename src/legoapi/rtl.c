@@ -2282,7 +2282,8 @@ static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vert
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
 }
 void __cdecl edrtlDrawCursor(void) {
-    NURND_VERTEX3D_PC line[2];
+    /* Retail's frame (0x90) holds three vertices; only two are used. */
+    NURND_VERTEX3D_PC line[3];
     line[0].position.x = burn_editor_position_pc.x - cursor_size;
     line[0].position.y = burn_editor_position_pc.y;
     line[0].position.z = burn_editor_position_pc.z;
