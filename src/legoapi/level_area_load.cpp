@@ -755,21 +755,23 @@ extern "C" {
     static i32 ExtraLevelObject_NameTableIndex = 0;
 
     i32 __cdecl LevelObject_AddExtra(char *name, i32 kind) {
-        if (LEVELOBJECTCOUNT < LEVELOBJECTMAX && ExtraLevelObject_NameTable != NULL) {
-            i32 length = NuStrLen(name);
-            if (length + ExtraLevelObject_NameTableIndex + 1 < ExtraLevelObject_NameTableSize) {
-                char *destination = ExtraLevelObject_NameTable + ExtraLevelObject_NameTableIndex;
-                LEVEL_OBJECT_CONFIG_PC *object = &ObjTabList[LEVELOBJECTCOUNT];
-                object->kind = (u8)kind;
-                object->name = destination;
-                ++LEVELOBJECTCOUNT;
-                ++EXTRALEVELOBJECTCOUNT;
-                NuStrCpy(destination, name);
-                ExtraLevelObject_NameTableIndex += length + 1;
-                return 1;
-            }
-        }
-        return 0;
+        i32 length;
+        char *destination;
+        if (LEVELOBJECTCOUNT >= LEVELOBJECTMAX)
+            return 0;
+        if (ExtraLevelObject_NameTable == NULL)
+            return 0;
+        length = NuStrLen(name);
+        if (length + ExtraLevelObject_NameTableIndex + 1 >= ExtraLevelObject_NameTableSize)
+            return 0;
+        ObjTabList[LEVELOBJECTCOUNT].kind = (u8)kind;
+        destination = ExtraLevelObject_NameTable + ExtraLevelObject_NameTableIndex;
+        ObjTabList[LEVELOBJECTCOUNT].name = destination;
+        ++LEVELOBJECTCOUNT;
+        ++EXTRALEVELOBJECTCOUNT;
+        NuStrCpy(destination, name);
+        ExtraLevelObject_NameTableIndex += length + 1;
+        return 1;
     }
 
     void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
