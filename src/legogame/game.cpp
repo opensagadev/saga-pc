@@ -1556,7 +1556,6 @@ void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 id;
-    i16 icon;
     if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
         (WORLD->current_level->flags & 0x800000) != 0) {
         return;
@@ -1565,13 +1564,10 @@ void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
         return;
     }
     if ((object->flags_ef0 & 0x100000) == 0) {
-        f32 timer = object->hud_icon_timer;
-        if (!(timer > 0.0f)) {
+        if (!(object->hud_icon_timer > 0.0f))
             return;
-        }
-        if (timer < 2.0f && !(NuFmod(timer, 0.4f) >= (f64)0.2f)) {
+        if (!(object->hud_icon_timer >= 2.0f) && !(NuFmod(object->hud_icon_timer, 0.4f) >= (f64)0.2f))
             return;
-        }
     }
     message = AddGameMsg_Default;
     position.x = object->collision_position.x;
@@ -1586,12 +1582,10 @@ void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
         message.unknown_34 += 0.002f;
     }
     id = (i16)object->id;
-    icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[id].icon_model;
-    if (icon != -1 && GCDataList[id].hover_fall_mode == 0 && (i32)icon != PCArcadeUnpairedIconModel) {
-        icon = (i16)((u16)icon + 1);
-    }
-    message.icon = icon;
-    message.special = &WORLD->level_objects[(i32)icon];
+    message.icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[(i16)object->id].icon_model;
+    if (message.icon != -1 && GCDataList[id].hover_fall_mode == 0 && message.icon != PCArcadeUnpairedIconModel)
+        message.icon++;
+    message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
     message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[(i32)message.icon];
