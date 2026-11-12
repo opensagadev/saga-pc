@@ -4707,8 +4707,8 @@ extern "C" {
     }
 
     void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch) {
-        qfnt_justify_squash = squash < 1.0f ? 1.0f : squash;
-        qfnt_justify_stretch = stretch < 1.0f ? 1.0f : stretch;
+        qfnt_justify_squash = 1.0f > squash ? 1.0f : squash;
+        qfnt_justify_stretch = 1.0f > stretch ? 1.0f : stretch;
     }
 
     void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...) {
