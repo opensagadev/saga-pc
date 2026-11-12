@@ -4691,35 +4691,53 @@ extern "C" {
     }
 
     f32 __cdecl NuQFntPrintLenU(VUFNT *font, char *text) {
-        u8 *cursor;
+        f32 length;
         f32 x_scale;
-        f32 length = 0.0f;
         if (font == NULL) {
             font = system_qfont;
+            if (font == NULL)
+                return 0.0f;
         }
-        if (font == NULL) {
-            return 0.0f;
-        }
+        length = 0.0f;
         x_scale = *font->x_scale;
-        cursor = (u8 *)text;
-        while (*cursor != '\0') {
+        while (*text != '\0') {
             u16 character;
             u16 qcode;
             f32 width;
-            cursor = NuUnicodeCharFromUTF8(&character, cursor);
+            text = (char *)NuUnicodeCharFromUTF8(&character, (u8 *)text);
             qcode = NuQFntEncodeUnicodeChar(font, character);
-            if (qcode == 0xffff) {
+            if (qcode == 0xffff)
                 qcode = NuQFntEncodeUnicodeChar(font, '?');
+            switch (character) {
+                case ' ':
+                    if (nuqfnt_space_width != 0.0f) {
+                        width = nuqfnt_space_width;
+                        break;
+                    }
+                    width = font->glyphs[qcode].width;
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    if ((NuQFntMode & 1) != 0) {
+                        qcode = NuQFntEncodeUnicodeChar(font, '0');
+                        width = font->glyphs[qcode].width;
+                    } else {
+                        width = font->glyphs[qcode].width;
+                    }
+                    break;
+                default:
+                    width = font->glyphs[qcode].width;
+                    break;
             }
-            if (character == ' ' && nuqfnt_space_width != 0.0f) {
-                width = nuqfnt_space_width;
-            } else {
-                if (character >= '0' && character <= '9' && (NuQFntMode & 1) != 0) {
-                    qcode = NuQFntEncodeUnicodeChar(font, '0');
-                }
-                width = font->glyphs[qcode].width;
-            }
-            length += width + font->ic_gap;
+            length = width + font->ic_gap + length;
         }
         return length * qfnt_len_scale * x_scale;
     }
