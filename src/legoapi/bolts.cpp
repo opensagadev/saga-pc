@@ -2448,10 +2448,9 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
             if ((bolt->flags & 0x10000) == 0 && !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max,
                                                                      bolt->collision_radius, NULL)) {
                 i32 hit = 0;
-                GAMEOBJECT *current_owner = static_cast<GAMEOBJECT *>(bolt->owner);
                 if ((bolt->flags & 0x13) != 0 ||
-                    (current_owner != NULL &&
-                     ((current_owner->portal_flags & 0x10000000) != 0 || current_owner->field_f00 == 5))) {
+                    (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
+                                             static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
                     if (!hit)
                         hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min,
