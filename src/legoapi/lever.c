@@ -8,6 +8,26 @@ i32 __cdecl Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
 }
 
+/* GIZMO_LEVER_PC.flags as the u16 bitfields retail reads and stores (belongs in saga.h). */
+typedef struct lever_flag_bits_pc_s {
+    u16 interacting : 1;
+    u16 being_pulled : 1;
+    u16 goodie : 1;
+    u16 baddie : 1;
+    u16 visible : 1;
+    u16 auto_reset : 1;
+    u16 returning : 1;
+    u16 enabled : 1;
+    u16 hide_base : 1;
+    u16 hide_target_indicator : 1;
+    u16 unused_10 : 1;
+    u16 interaction_finished : 1;
+    u16 pulled_down : 1;
+    u16 unused_13 : 3;
+} LEVER_FLAG_BITS_PC;
+STATIC_ASSERT(sizeof(LEVER_FLAG_BITS_PC) == 2);
+#define LEVER_BITS(lever) ((LEVER_FLAG_BITS_PC *)&(lever)->flags)
+
 typedef struct LEVER_WORLD_PC {
     u8 unknown_000[0x5068];
     GIZMO_LEVER_PC *levers;
@@ -37,9 +57,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
 void __cdecl ReleaseLever(GAMEOBJECT *object) {
     if (object->character_context == 0x4a) {
-        GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)object->grapple;
-        if (lever != NULL && (lever->flags & 2) == 0)
-            lever->flags &= ~1;
+        if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->being_pulled)
+            LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->interacting = 0;
     }
 }
 void __cdecl Lever_GetAbsTargetPos(GIZMO_LEVER_PC *lever, NUVEC *position) {
@@ -278,7 +297,7 @@ static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
     if (gizmo == NULL || gizmo->object == NULL)
         return;
     lever = (GIZMO_LEVER_PC *)gizmo->object;
-    lever->flags = (lever->flags & ~0x80) | ((enabled != 0) << 7);
+    LEVER_BITS(lever)->enabled = enabled != 0;
     if (enabled != 0)
         Lever_Reset(lever);
 }
@@ -288,8 +307,8 @@ static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
         return 1;
     lever = (GIZMO_LEVER_PC *)gizmo->object;
     if ((query & 1) != 0)
-        return (lever->flags & 0x80) != 0 ? value : value == 0;
-    lever->flags = (lever->flags & ~0x80) | ((value == 0) << 7);
+        return LEVER_BITS(lever)->enabled ? value : value == 0;
+    LEVER_BITS(lever)->enabled = value == 0;
     return 1;
 }
 static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
@@ -298,12 +317,12 @@ static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL)
         return;
     lever = (GIZMO_LEVER_PC *)gizmo->object;
-    was_visible = (lever->flags & 0x10) != 0;
-    lever->flags = (lever->flags & ~0x10) | ((visible != 0) << 4);
-    if ((lever->flags & 0x10) != 0 && was_visible == 0) {
+    was_visible = LEVER_BITS(lever)->visible;
+    LEVER_BITS(lever)->visible = visible != 0;
+    if (LEVER_BITS(lever)->visible && was_visible == 0) {
         lever->platform_id = NewPlatPickupInst(lever, 3);
         PlatInstRotate(lever->platform_id, 1);
-    } else if ((lever->flags & 0x10) == 0 && was_visible != 0)
+    } else if (!LEVER_BITS(lever)->visible && was_visible != 0)
         DeletePlatinst(lever->platform_id);
 }
 static void *Levers_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
