@@ -171,6 +171,10 @@ void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
         node->kind = 5;
         node->next = NULL;
         node->enabled = enabled;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
     if (tail == NULL)
         head = node;
@@ -241,6 +245,10 @@ void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
         node->kind = 6;
         node->next = NULL;
         node->flags = flags;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
     if (tail == NULL)
         head = node;
@@ -537,8 +545,8 @@ ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesIni
     include_directories[0] = 0;
     head = NULL;
     tail = NULL;
-    arena = NULL;
     emit_text = 0;
+    arena = NULL;
     memset(branches, 0, sizeof(branches));
     branch_count = 0;
     memset(scopes, 0, sizeof(scopes));
