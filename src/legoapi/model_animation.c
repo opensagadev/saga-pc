@@ -2,17 +2,18 @@
 #include <string.h>
 
 i32 __cdecl PCBuildModelLayerList(CHARACTER_MODEL_LAYERS_PC *model, i16 *indices, u32 mask) {
-    i32 count = 0, index = 0;
-    u32 bit = 1;
-    if (model == NULL)
-        return 0;
-    while (index < 32 && index < model->hierarchy->render_count) {
-        if ((mask & bit) != 0) {
-            *indices++ = (i16)index;
-            ++count;
+    i32 count = 0;
+    if (model != NULL) {
+        i32 index = 0;
+        u32 bit = 1;
+        while (index < 32 && model->hierarchy->render_count > index) {
+            if ((mask & bit) != 0) {
+                *indices++ = (i16)index;
+                ++count;
+            }
+            ++index;
+            bit += bit;
         }
-        ++index;
-        bit += bit;
     }
     return count;
 }
