@@ -3876,9 +3876,10 @@ extern "C" {
     f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy,
                                         f32 width, f32 line_spacing, u32 colour, NUMTX *matrix) {
         f32 saved_space_width = nuqfnt_space_width;
-        f32 space_width = saved_space_width == 0.0f ? font->space_width : saved_space_width;
-        f32 saved_ic_gap = font->ic_gap, printed_space_width, line_height;
         u16 encoded_space[2] = {0x20, 0};
+        f32 saved_ic_gap = font->ic_gap;
+        f32 space_width = saved_space_width == 0.0f ? font->space_width : saved_space_width;
+        f32 printed_space_width, line_height;
         u16 hyphen;
         i32 line_number = 0;
         (void)stream;
