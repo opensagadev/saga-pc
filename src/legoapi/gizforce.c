@@ -691,9 +691,7 @@ static __declspec(noinline) void ForceFindBaseSpecialPc(GIZFORCE_PC *force) {
     char socket_name[64];
     if (force == NULL)
         return;
-    force->along_socket.scene = NULL;
-    force->along_socket.special = NULL;
-    force->along_socket.display_special = NULL;
+    memset(&force->along_socket, 0, sizeof(force->along_socket));
     if (!(force->config_flags & 0x40))
         return;
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
@@ -756,7 +754,7 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
         if (version >= 11) {
             force->collision_mask = (u8)EdFileReadChar();
             if (version == 11 && force->collision_mask != 0)
-                force->collision_mask = (u8)(1u << ((force->collision_mask - 1) & 31));
+                force->collision_mask = (u8)(1 << (force->collision_mask - 1));
         }
         force->activation_mode = (u8)EdFileReadChar();
         if (version == 1)
@@ -775,9 +773,7 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
             force->vertical_range = EdFileReadFloat();
         force->blowup_type = -1;
         if (version >= 4) {
-            if (version == 4) {
-                force->blowup_type = EdFileReadShort();
-            } else {
+            if (version >= 5) {
                 length = (i8)EdFileReadChar();
                 if (length != 0) {
                     EdFileRead(blowup_name, length);
@@ -785,6 +781,8 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
                     if (force->blowup_type != -1)
                         force->runtime_flags |= 0x400;
                 }
+            } else {
+                force->blowup_type = EdFileReadShort();
             }
             force->pickup_count = EdFileReadShort();
             force->pickup_rotation_x = EdFileReadShort();
@@ -793,8 +791,10 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
         }
         if (version >= 10)
             force->activation_radius = EdFileReadFloat();
+        else if (world->area != NULL && (world->area->flags & 1))
+            force->activation_radius = 12.0f;
         else
-            force->activation_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
+            force->activation_radius = 1.75f;
         force->start_sfx_id = -1;
         force->loop_sfx_id = -1;
         force->stop_sfx_id = -1;
