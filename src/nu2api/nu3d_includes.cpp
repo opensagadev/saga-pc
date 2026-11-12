@@ -11386,22 +11386,27 @@ extern "C" {
         NuStrCat(text, detail);
         sprintf(detail, "(%x)", (u32)item->next);
         NuStrCat(text, detail);
-        selected = type_count == 0;
-        for (type_index = 0; type_index < type_count; ++type_index) {
-            if (types[type_index] == item->type) {
-                selected = 1;
-                break;
+        if (type_count == 0)
+            selected = 1;
+        else {
+            selected = 0;
+            for (type_index = 0; type_index < type_count; ++type_index) {
+                if (types[type_index] == item->type) {
+                    selected = 1;
+                    break;
+                }
             }
         }
         if (nudlist_frame_active >= 1 && selected) {
-            if (file_handle == 0) {
+            if (file_handle != 0) {
+                NuHtmlWrite(text);
+                NuHtmlWrite("</br>\n");
+                if (item->id == 0)
+                    NuHtmlWrite("<font color = \"#000000\">");
+            } else {
                 PCSpecialEmptyHandler_candidate();
                 return;
             }
-            NuHtmlWrite(text);
-            NuHtmlWrite("</br>\n");
-            if (item->id == 0)
-                NuHtmlWrite("<font color = \"#000000\">");
         }
         if (file_handle != 0)
             DisplayListPrintItemPS(item, file_handle);
