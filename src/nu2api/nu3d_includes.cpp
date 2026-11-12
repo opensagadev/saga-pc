@@ -15147,7 +15147,6 @@ extern "C" {
                     i32 node;
                     i32 count_a, count_b, curve_count, curve;
                     DWA_WEIGHT_BLOCK_PC *weights;
-                    f64 inverse_blend;
                     if (render_indices != NULL) {
                         node = render_indices[render];
                         if (node < 0)
@@ -15176,9 +15175,8 @@ extern "C" {
                     curve_count = count_a > count_b ? count_a : count_b;
                     weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
                     weights_by_render[render] = weights;
-                    if (weights == NULL || curve_count <= 0)
+                    if (weights == NULL)
                         continue;
-                    inverse_blend = 1.0 - blend;
                     for (curve = 0; curve < curve_count; ++curve) {
                         f32 value_a, value_b;
                         NUANIM_LEGACY_SET_PC *set;
@@ -15196,7 +15194,7 @@ extern "C" {
                         } else {
                             value_b = 0.0f;
                         }
-                        weights->values[curve] = value_b * blend + value_a * inverse_blend;
+                        weights->values[curve] = value_b * blend + value_a * (1.0f - blend);
                     }
                 }
             }
