@@ -676,12 +676,16 @@ static __declspec(noinline) char *ForceCopyNamePrefixPc(char *source, char *dest
     i32 index = 0;
     if (destination == NULL || source == NULL)
         return NULL;
-    while (index++ < capacity - 1) {
-        char value = *source++;
-        *destination++ = value;
-        if (value == '_' || *source == '\0')
+    do {
+        char value;
+        if (index++ >= capacity - 1)
             break;
-    }
+        value = *source;
+        *destination++ = value;
+        source++;
+        if (value == '_')
+            break;
+    } while (*source != '\0');
     return result;
 }
 
