@@ -1549,7 +1549,10 @@ static void HubResolveAreaInfoPc(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
 static void HubResolveEpisodeInfoPc(HUB_EPISODE_INFO_PC *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
     for (; info->episode != -1; ++info) {
-        info->data = info->episode >= 0 && info->episode < EPISODECOUNT ? &EDataList[info->episode] : NULL;
+        if (info->episode >= 0 && info->episode < EPISODECOUNT)
+            info->data = &EDataList[info->episode];
+        else
+            info->data = NULL;
         info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
         NuSpecialFind(w->scene, &info->lock_on, (char *)info->lock_on_name, 1);
     }
