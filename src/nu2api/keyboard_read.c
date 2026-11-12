@@ -218,14 +218,20 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     NUVEC *old_opposite;
     i32 pitch;
     NUVEC *new_opposite;
-    f32 zoom_scale = camera->auto_zoom_dist_scale != 0.0f
-                         ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base
-                         : 1.0f;
+    f32 zoom_scale;
+    f32 mouse_y;
+    f32 mouse_x;
+    f32 mouse_z;
+    u32 buttons;
 
-    f32 mouse_y = NuMouseReadYRel();
-    f32 mouse_x = NuMouseReadXRel();
-    f32 mouse_z = NuMouseReadZRel();
-    u32 buttons = NuMouseReadButtons();
+    if (camera->auto_zoom_dist_scale != 0.0f)
+        zoom_scale = EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base;
+    else
+        zoom_scale = 1.0f;
+    mouse_y = NuMouseReadYRel();
+    mouse_x = NuMouseReadXRel();
+    mouse_z = NuMouseReadZRel();
+    buttons = NuMouseReadButtons();
     if (camera->allow_distance) {
         f32 distance = camera->distance - mouse_z * camera->distance_speed * zoom_scale;
         camera->distance = MIN(-camera->minimum_distance, distance);
@@ -408,12 +414,8 @@ i32 __cdecl NuKeyboard_db(i32 key) {
 /* Private Source proposal; append in keyboard_read.c after old source. */
 void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     f32 frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
-    f32 move_speed = camera->auto_move_dist_scale != 0.0f
-                         ? camera->auto_move_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_move_base
-                         : 1.0f;
-    f32 zoom_speed = camera->auto_zoom_dist_scale != 0.0f
-                         ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base
-                         : 1.0f;
+    f32 move_speed;
+    f32 zoom_speed;
     NUVEC offset;
     NUMTX rotation;
     NUVEC old_opposite;
@@ -421,6 +423,14 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     i32 yaw_delta;
     i32 pitch_delta;
 
+    if (camera->auto_move_dist_scale != 0.0f)
+        move_speed = EdcamFabsPc(camera->distance) * camera->auto_move_dist_scale + camera->auto_move_base;
+    else
+        move_speed = 1.0f;
+    if (camera->auto_zoom_dist_scale != 0.0f)
+        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
+    else
+        zoom_speed = 1.0f;
     offset.z = 0.0f;
     offset.y = 0.0f;
     offset.x = 0.0f;
@@ -487,12 +497,14 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
         return;
 
     frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
-    move_speed = camera->auto_move_dist_scale != 0.0f
-                     ? camera->auto_move_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_move_base
-                     : 1.0f;
-    zoom_speed = camera->auto_zoom_dist_scale != 0.0f
-                     ? camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base
-                     : 1.0f;
+    if (camera->auto_move_dist_scale != 0.0f)
+        move_speed = camera->auto_move_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_move_base;
+    else
+        move_speed = 1.0f;
+    if (camera->auto_zoom_dist_scale != 0.0f)
+        zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
+    else
+        zoom_speed = 1.0f;
     pad_yaw_axis = pad->analog_right_x;
     pad_pitch_axis = pad->analog_right_y;
     if (camera->freedoms & EDCAM_FREEDOM_DISTANCE) {
