@@ -228,29 +228,33 @@ i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *pack
 }
 i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-    if (owner->character_context != 0x46) {
-        ClearSpecialMove(owner);
-        return 0;
-    }
-    if (owner->ai_packet.special_move_node->position.y > owner->special_move_source_pc->position.y) {
-        if (IndyGrappleCanJumpPc(owner)) {
+    if (owner->character_context == 0x46) {
+        if (owner->ai_packet.special_move_node->position.y > owner->special_move_source_pc->position.y) {
+            if (IndyGrappleCanJumpPc(owner)) {
+                owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+                owner->ai_packet.movement_stopping_distance = 0;
+                owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+                SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
+                return 1;
+            }
+            owner->pad->buttons_held |= GAMEPAD_SPECIAL;
+            owner->ai_packet.movement_stopping_distance = 0;
+            owner->ai_packet.movement_destination = owner->position;
+            return 1;
+        }
+        if (owner->flags_e24 & 0x80) {
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0;
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             return 1;
         }
-        owner->pad->buttons_held |= GAMEPAD_SPECIAL;
-    } else if (owner->flags_e24 & 0x80) {
-        owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0;
-        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-        SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
+        owner->ai_packet.movement_destination = owner->position;
         return 1;
     }
-    owner->ai_packet.movement_destination = owner->position;
-    owner->ai_packet.movement_stopping_distance = 0;
-    return 1;
+    ClearSpecialMove(owner);
+    return 0;
 }
 
 f32 IndyJumpDistancePc[2] = {0.8f, 1.2f};

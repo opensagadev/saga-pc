@@ -149,61 +149,64 @@ void __cdecl edbriDetermineNearest(f32 distance) {
 }
 
 i32 __cdecl edbriLoadPage(char *path, void *scene) {
-    i32 page = 0;
-    i32 version, count, index, i;
-    while (page < 8 && edbri_page_used[page])
-        ++page;
-    if (page == 8)
+    i32 page = -1;
+    i32 count, index, i;
+    char name[20];
+    for (i = 0; i < 8; i++) {
+        if (!edbri_page_used[i]) {
+            page = i;
+            break;
+        }
+    }
+    if (page == -1)
         return -1;
     EdFileSetMedia(1);
     if (!EdFileOpen(path, 0))
         return -1;
-    version = EdFileReadInt();
-    if (version > 1) {
+    if (EdFileReadInt() > 1) {
         EdFileClose();
         return -1;
     }
     count = EdFileReadInt();
-    if (count + edbri_bridges_used > 64)
+    if (edbri_bridges_used + count > 64)
         count = 64 - edbri_bridges_used;
     index = 0;
-    i = 0;
-    while (i < count) {
-        PC_EDBRIDGE *bridge;
-        char name[20];
+    for (i = 0; i < count; i++) {
         /* Retail tests the record before checking the index limit. */
         while (edBridges[index].connection_index != 0xff && index < 64)
             ++index;
-        if (index >= 64) {
-            ++i;
-            continue;
+        if (index < 64) {
+            edBridges[index].instance_id = -1;
+            EdFileReadNuVec(&edBridges[index].position);
+            edBridges[index].length = EdFileReadFloat();
+            edBridges[index].field_14 = EdFileReadFloat();
+            edBridges[index].rotation_z = EdFileReadShort();
+            edBridges[index].rotation_y = EdFileReadShort();
+            edBridges[index].connection_index = (u8)page;
+            edBridges[index].field_1d = EdFileReadChar();
+            edBridges[index].field_1e = EdFileReadChar();
+            EdFileRead(name, sizeof(name));
+            if (name[0] == '\0')
+                edBridges[index].special_20 = -1;
+            else
+                edBridges[index].special_20 = edbitsLookupInstance(name, (NUGSCN *)scene);
+            EdFileRead(name, sizeof(name));
+            if (name[0] == '\0')
+                edBridges[index].special_24 = -1;
+            else
+                edBridges[index].special_24 = edbitsLookupInstance(name, (NUGSCN *)scene);
+            edBridges[index].field_28 = EdFileReadFloat();
+            edBridges[index].field_2c = EdFileReadFloat();
+            edBridges[index].field_30 = EdFileReadFloat();
+            edBridges[index].field_34 = EdFileReadFloat();
+            edBridges[index].field_38 = EdFileReadFloat();
+            edBridges[index].field_3c = EdFileReadFloat();
+            edBridges[index].red = (u8)EdFileReadChar();
+            edBridges[index].green = (u8)EdFileReadChar();
+            edBridges[index].blue = (u8)EdFileReadChar();
+            edBridges[index].field_43 = (u8)EdFileReadChar();
+            ++edbri_bridges_used;
         }
-        bridge = &edBridges[index];
-        bridge->instance_id = -1;
-        EdFileReadNuVec(&bridge->position);
-        bridge->length = EdFileReadFloat();
-        bridge->field_14 = EdFileReadFloat();
-        bridge->rotation_z = EdFileReadShort();
-        bridge->rotation_y = EdFileReadShort();
-        bridge->connection_index = (u8)page;
-        bridge->field_1d = EdFileReadChar();
-        bridge->field_1e = EdFileReadChar();
-        EdFileRead(name, sizeof(name));
-        bridge->special_20 = name[0] ? edbitsLookupInstance(name, (NUGSCN *)scene) : -1;
-        EdFileRead(name, sizeof(name));
-        bridge->special_24 = name[0] ? edbitsLookupInstance(name, (NUGSCN *)scene) : -1;
-        bridge->field_28 = EdFileReadFloat();
-        bridge->field_2c = EdFileReadFloat();
-        bridge->field_30 = EdFileReadFloat();
-        bridge->field_34 = EdFileReadFloat();
-        bridge->field_38 = EdFileReadFloat();
-        bridge->field_3c = EdFileReadFloat();
-        bridge->red = (u8)EdFileReadChar();
-        bridge->green = (u8)EdFileReadChar();
-        bridge->blue = (u8)EdFileReadChar();
-        bridge->field_43 = (u8)EdFileReadChar();
-        ++edbri_bridges_used;
-        ++i;
     }
     EdFileClose();
     edbri_nearest = -1;
@@ -235,15 +238,12 @@ void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     NuVecRotateZ(&delta, &delta, edBridges[index].rotation_z);
     NuVecRotateY(&delta, &delta, edBridges[index].rotation_y);
     NuVecAdd(&end, &edBridges[index].position, &delta);
-    first.scene = NULL;
-    first.special = NULL;
-    first.display_special = NULL;
-    colour = edBridges[index].red + ((edBridges[index].green << 8) + (edBridges[index].blue << 16) + 0x80000000u);
+    // MATCH-EXCEPTION: alpha 0x80 folded into the blue term; retail subtracts 0x8000 before the shifts.
+    colour = edBridges[index].red + ((edBridges[index].green << 8) + ((edBridges[index].blue - 0x8000) << 16));
+    memset(&first, 0, sizeof(first));
     if (edBridges[index].special_20 != -1)
         NuGScnGetSpecial(&first, edbits_base_scene, edBridges[index].special_20);
-    second.scene = NULL;
-    second.special = NULL;
-    second.display_special = NULL;
+    memset(&second, 0, sizeof(second));
     if (edBridges[index].special_24 != -1)
         NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
     edBridges[index].instance_id =

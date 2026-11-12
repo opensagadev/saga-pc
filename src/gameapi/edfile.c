@@ -3775,7 +3775,8 @@ static i32 EduiInteractionContainsCursorPc(edui_interact_s *interact) {
 }
 
 static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
-    if (menu && (menu == eduiInteractLocked->menu || menu->parent == eduiInteractLocked->menu)) {
+    eduimenu_s *locked_menu = eduiInteractLocked->menu;
+    if (menu && (menu == locked_menu || menu->parent == locked_menu)) {
         eduiInteractLocked = eduiInteractLocked->callback(eduiInteractLocked) ? eduiInteractLocked : NULL;
     }
     return eduiInteractLocked != NULL;
@@ -3813,17 +3814,17 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     (void)pad;
     if (edmain_cursor_enabled) {
         if (eduiInteractLocked != NULL) {
-            if ((eduiInteractLocked->menu != NULL && eduiInteractLocked->item != NULL) ||
-                !eduiInteractLocked->field_20) {
-                result = EduiProcessLockedInteractionPc(menu);
-                return result;
-            }
-            eduiInteractLocked = NULL;
+            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->field_20)
+                eduiInteractLocked = NULL;
         }
-        interact = &eduiInteracts[numInteracts - 1];
-        for (index = 0; index < numInteracts; index++, interact--) {
-            if (EduiInteractHelperPc6272a0(menu, interact))
-                return 1;
+        if (eduiInteractLocked != NULL) {
+            result = EduiProcessLockedInteractionPc(menu);
+        } else {
+            interact = &eduiInteracts[numInteracts - 1];
+            for (index = 0; index < numInteracts; index++, interact--) {
+                if (EduiInteractHelperPc6272a0(menu, interact))
+                    return 1;
+            }
         }
     }
     return result;
