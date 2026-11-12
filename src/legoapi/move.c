@@ -2467,6 +2467,8 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     f32 turn_rate;
     u16 pitch;
     u16 roll;
+    NUVEC position;
+    NUVEC target;
     pad = object->pad;
     operator_object = object;
     current_animation = CurrentAnim(&object->anim_packet);
@@ -2559,11 +2561,10 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     } else if (object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) {
         object->movement_mode = 2;
         if (pad->input_magnitude > 0.0f) {
-            NUVEC direction;
-            NuVecRotateX(&direction, &v010,
+            NuVecRotateX(&position, &v010,
                          (i32)((desired_speed / object->character_data->game_character->run_speed) * 2730.0f));
-            NuVecRotateY(&direction, &direction, input_angle);
-            FindAnglesZX(&direction, &pitch, &roll);
+            NuVecRotateY(&position, &position, input_angle);
+            FindAnglesZX(&position, &pitch, &roll);
         } else {
             roll = 0;
             pitch = 0;
@@ -2623,13 +2624,13 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 object->movement_facing_angle = object->force_heading;
         } else if (object->character_context == 0x2d) {
             if ((object->flags_1f8 & 0x40000) == 0) {
-                NUVEC centre;
                 DIRECTIONAL_BUILDIT_PC *buildit;
-                GizGetBuildItPlayerPos(object, NULL, &centre);
+                GizGetBuildItPlayerPos(object, NULL, &position);
                 buildit = (DIRECTIONAL_BUILDIT_PC *)(object->grapple);
                 if ((buildit->state_flags & 0x20) != 0)
                     GizBuildItPushAwayFromStart(object, buildit);
-                object->movement_facing_angle = NuAtan2D(centre.x - object->position.x, centre.z - object->position.z);
+                object->movement_facing_angle =
+                    NuAtan2D(position.x - object->position.x, position.z - object->position.z);
             }
         } else if (object->character_context == 0x10 && (object->context_flags_pc & 0x40) == 0) {
             if (FaceOpponent(object, NULL) != 0)
@@ -2810,31 +2811,28 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 break;
             } else if (object->character_context == 0x4a) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
-                    NUVEC position;
                     f32 rate;
-                    position = ((DIRECTIONAL_LEVER_PC *)(object->grapple))->floor_position;
+                    target = ((DIRECTIONAL_LEVER_PC *)(object->grapple))->floor_position;
                     rate = 10.0f * object->context_hover_target_y + 5.0f;
-                    object->target_velocity.x = (position.x - object->position.x) * rate;
-                    object->target_velocity.z = (position.z - object->position.z) * rate;
+                    object->target_velocity.x = (target.x - object->position.x) * rate;
+                    object->target_velocity.z = (target.z - object->position.z) * rate;
                 }
                 break;
             } else if (object->character_context == 0x0b) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
-                    NUVEC position;
                     f32 rate;
-                    GizPanel_GetAbsTargetPos((void *)(object->grapple), &position, 1);
+                    GizPanel_GetAbsTargetPos((void *)(object->grapple), &target, 1);
                     rate = 10.0f * object->context_hover_target_y + 5.0f;
-                    object->target_velocity.x = (position.x - object->position.x) * rate;
-                    object->target_velocity.z = (position.z - object->position.z) * rate;
+                    object->target_velocity.x = (target.x - object->position.x) * rate;
+                    object->target_velocity.z = (target.z - object->position.z) * rate;
                 }
                 break;
             } else if (object->character_context == 0x61 && (object->flags_1f8 & 0x40000) == 0) {
-                NUVEC position;
                 f32 rate;
-                position = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
+                target = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
                 rate = 10.0f * object->context_hover_target_y + 5.0f;
-                object->target_velocity.x = (position.x - object->position.x) * rate;
-                object->target_velocity.z = (position.z - object->position.z) * rate;
+                object->target_velocity.x = (target.x - object->position.x) * rate;
+                object->target_velocity.z = (target.z - object->position.z) * rate;
                 break;
             } else if (object->character_context == 0x51) {
                 DIRECTIONAL_TECHNO_PC *techno;
@@ -2988,7 +2986,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.x = 0.0f;
                     object->target_velocity.z = 0.0f;
                 } else if (object->character_context == 0x2d) {
-                    NUVEC position;
                     position = object->position;
                     GizGetBuildItPlayerPos(object, &position, NULL);
                     object->target_velocity.x = (position.x - object->position.x) * 3.0f;
@@ -3300,7 +3297,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 i32 count;
                 count = ParticlesPerSecond(60.0f, FRAMETIME);
                 if (count > 0) {
-                    NUVEC position;
                     position.x = object->collision_position.x;
                     position.y = object->water_height;
                     position.z = object->collision_position.z;
