@@ -1343,6 +1343,10 @@ extern f32 ShopPurchasePulseDurationPc;
 
 /* 004c2660..004c2725. Preserve the PC purchase pulse owner separately from the
  * existing shop initialization value at 0087bbd0. */
+i32 CheckCash(shopitem_s *items, i32 item) {
+    return Game.coins >= (u32)items[item].price;
+}
+
 i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     u32 *bits = NULL;
@@ -1566,6 +1570,18 @@ static i32 Shop_CanSelectPc(void) {
             return CutScenePlayer_CanStart(CutShelfIds[3]) != 0;
     }
     return 0;
+}
+
+void Shop_CollectAllCharacters(i32 mode) {
+    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    i32 i;
+    if (mode != 0)
+        return;
+    for (i = 0; i < ShopCollectionPc.count && i < 100; ++i) {
+        save->character_purchased_bits[i / 32] |= (u32)((u64)1 << (i % 32));
+        if (WORLD->current_level == HUB_LDATA)
+            CharItems[i].unlocked = 1;
+    }
 }
 
 /* 004c7750..004c7819. Keep the affordability predicate separate from actual
