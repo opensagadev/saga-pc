@@ -11426,6 +11426,7 @@ void __cdecl aieditor_SetCurrentScript(char *name, EDAICREATURE_s *creature) {
 
 void __cdecl creatureEditor_cbSetScript(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     char *name;
+    i32 i;
     (void)menu;
     (void)event;
     if (item != NULL && aieditor->selected_creature != NULL) {
@@ -11434,10 +11435,8 @@ void __cdecl creatureEditor_cbSetScript(eduimenu_s *menu, eduiitem_s *item, u32 
             aieditor_SetCurrentScript(name, NULL);
             if (NuStrICmp(aieditorsettings.script_name, aieditor->selected_creature->script_name) != 0) {
                 strcpy(aieditor->selected_creature->script_name, aieditorsettings.script_name);
-                aieditor->selected_creature->script_params[0] = aieditorsettings.script_params[0];
-                aieditor->selected_creature->script_params[1] = aieditorsettings.script_params[1];
-                aieditor->selected_creature->script_params[2] = aieditorsettings.script_params[2];
-                aieditor->selected_creature->script_params[3] = aieditorsettings.script_params[3];
+                for (i = 0; i < 4; ++i)
+                    aieditor->selected_creature->script_params[i] = aieditorsettings.script_params[i];
                 aieditor->selected_creature->flags &= ~0x1e;
                 aieditor->selected_creature->flags |= aieditorsettings.script_flags;
             }
@@ -15740,14 +15739,13 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
 }
 
 void __cdecl creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    i32 i;
     (void)item;
     (void)event;
     aieditor_SetCurrentScript(aieditorsettings.script_name, NULL);
     if (aieditor->selected_creature != NULL) {
-        aieditor->selected_creature->script_params[0] = aieditorsettings.script_params[0];
-        aieditor->selected_creature->script_params[1] = aieditorsettings.script_params[1];
-        aieditor->selected_creature->script_params[2] = aieditorsettings.script_params[2];
-        aieditor->selected_creature->script_params[3] = aieditorsettings.script_params[3];
+        for (i = 0; i < 4; ++i)
+            aieditor->selected_creature->script_params[i] = aieditorsettings.script_params[i];
         aieditor->selected_creature->flags &= ~0x1e;
     }
     eduiMenuDetach(menu);
@@ -17788,6 +17786,7 @@ eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
     i32 angle;
     i32 quarter;
     i32 remainder;
+    i32 i;
     if (pad->digital_buttons_pressed & 0x80)
         return creatureEditorOptionsMenu();
     if (pad->digital_buttons & 0x40) {
@@ -17836,10 +17835,8 @@ eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
                 strcpy(aieditor->selected_creature->name, name);
                 if (strlen(aieditorsettings.script_name) != 0)
                     strcpy(aieditor->selected_creature->script_name, aieditorsettings.script_name);
-                aieditor->selected_creature->script_params[0] = aieditorsettings.script_params[0];
-                aieditor->selected_creature->script_params[1] = aieditorsettings.script_params[1];
-                aieditor->selected_creature->script_params[2] = aieditorsettings.script_params[2];
-                aieditor->selected_creature->script_params[3] = aieditorsettings.script_params[3];
+                for (i = 0; i < 4; ++i)
+                    aieditor->selected_creature->script_params[i] = aieditorsettings.script_params[i];
                 aieditor->selected_creature->flags &= ~0x1e;
                 aieditor->selected_creature->flags |= aieditorsettings.script_flags;
                 aieditor->selected_creature->check.path = aieditor->current_path;
