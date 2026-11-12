@@ -1411,8 +1411,8 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         return NULL;
     }
     group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
+    cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc) + 1;
     result = group_header;
-    cursor = group_header + 1;
     limit = cursor + 508;
     if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(TerrainScaleWorkBasePc) + 0x63c18) {
         return NULL;
@@ -1454,8 +1454,8 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(subset) + 1;
         TERRAIN_GROUP_PC *group = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
         f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
-        if (group->chunk_type == 1 && TERRAIN_NSS_PLATFORM(group).scene_object != NULL) {
-            TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSS_PLATFORM(group);
+        TERRAIN_PLATFORM_PC *platform;
+        if (group->chunk_type == 1 && (platform = &TERRAIN_NSS_PLATFORM(group))->scene_object != NULL) {
             if (TERRAIN_NSS_MATRIX(group)->m30 > TERRAIN_NSS_PLATFORM(group).previous_matrix.m30) {
                 local_min_x = min_x - group->origin.x;
                 local_max_x =
