@@ -1533,7 +1533,6 @@ void __cdecl HothBattleE_UpdateWave(void) {
     i32 pending = 0, type, wave_index, index;
     char state[16];
     GAMEOBJECT *object;
-    HOTHBATTLE_MELEE_WAVE_s *wave;
     HOTH_ANTINODE_PC *node;
     f32 radius;
     i32 count;
@@ -1558,18 +1557,22 @@ void __cdecl HothBattleE_UpdateWave(void) {
             melee.wave_delay = 0.0f;
             melee.initialize_wave = 1;
             pending = 1;
+        } else if (melee.transition_phase == 0) {
+            if (MiniCutCam != 0)
+                melee.transition_phase = 1;
         } else if (melee.transition_phase > 0) {
             if (MiniCutCam == 0) {
                 if (melee.transition_phase == 1) {
                     object = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+                        // MATCH-EXCEPTION: field_280 (u8 in saga.h) is read as signed -1 so that it shares the
+                        // cached 0xff byte register with the transition_phase tests, as retail does.
                         if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                            object->id != (u16)id_ATAT && object->field_280 == 0xff &&
+                            object->id != (u16)id_ATAT && (i8)object->field_280 == -1 &&
                             (object->character_data->model_flags & 4) != 0)
                             KillGameObject(object, 4, 0);
                     }
-                    for (index = 0; index < 6; ++index)
-                        melee.background_creatures[index] = NULL;
+                    memset(melee.background_creatures, 0, sizeof(melee.background_creatures));
                     melee.transition_phase = 2;
                 }
                 if (HothBattle_StartNewWave() == 0)
@@ -1578,8 +1581,7 @@ void __cdecl HothBattleE_UpdateWave(void) {
                 melee.current_wave = melee.next_wave;
                 pending = 1;
             }
-        } else if (melee.transition_phase == 0 && MiniCutCam != 0)
-            melee.transition_phase = 1;
+        }
     }
     for (type = 0; type < melee.creature_count; ++type)
         SpawnMeleeCreatureType(type);
@@ -1587,32 +1589,32 @@ void __cdecl HothBattleE_UpdateWave(void) {
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
-        node->excluded_character_types = (i64)(i32) ~(1u << (melee.waves[0].creatures[1]->hostility_group & 31));
+        node->excluded_character_types = (i64)(i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
-        node->excluded_character_types = (i64)(i32) ~(1u << (melee.waves[0].creatures[0]->hostility_group & 31));
+        node->excluded_character_types = (i64)(i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {
-        wave = &melee.waves[wave_index];
         count = 0;
         for (index = 0; index < 4; ++index) {
-            object = wave->creatures[index];
+            object = melee.waves[wave_index].creatures[index];
             if (object != NULL) {
-                if ((object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
-                    --wave->active_count;
-                    --wave->remaining_count;
-                    wave->creatures[index] = NULL;
-                    PlaySfxAndSetPitch("TrueJedi_100pc", NULL, 1.5f);
-                } else
+                if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0)
                     ++count;
+                else {
+                    --melee.waves[wave_index].active_count;
+                    --melee.waves[wave_index].remaining_count;
+                    melee.waves[wave_index].creatures[index] = NULL;
+                    PlaySfxAndSetPitch("TrueJedi_100pc", NULL, 1.5f);
+                }
             }
         }
-        if (wave->active_count != count)
-            wave->active_count = (u8)count;
-        if (wave->remaining_count != 0)
+        if (melee.waves[wave_index].active_count != count)
+            melee.waves[wave_index].active_count = (u8)count;
+        if (melee.waves[wave_index].remaining_count > 0)
             pending = 1;
     }
-    if ((pending | MiniCutCam) == 0 && NOAICREATURES == 0 && melee.current_wave == melee.next_wave)
+    if (MiniCutCam == 0 && pending == 0 && NOAICREATURES == 0 && melee.next_wave == melee.current_wave)
         ++melee.next_wave;
 }
 
