@@ -7092,8 +7092,8 @@ i32 __cdecl Action_EnableSock(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     (void)sys;
     (void)packet;
     (void)param_6;
-    sock_index = -1;
     enabled = 1;
+    sock_index = -1;
     if (param_5 != 0) {
         i32 index;
         for (index = 0; index < param_4; ++index) {
