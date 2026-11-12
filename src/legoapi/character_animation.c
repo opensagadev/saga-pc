@@ -142,7 +142,8 @@ static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {
 
 static void JumpAnimCode(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
-    if ((object->context_variant_flags & 0x8000) != 0) {
+    i32 landing = (object->context_variant_flags >> 15) & 1;
+    if (landing) {
         if (object->action_movement_state == 8 && object->character_model->model_data_b[0xb5] != NULL) {
             object->anim_packet.requested_animation = 0xb5;
             return;
@@ -153,7 +154,7 @@ static void JumpAnimCode(GAMEOBJECT *object) {
         }
     }
     object->anim_packet.requested_animation = object->field_7aa;
-    if ((object->context_variant_flags & 0x8000) != 0 || object->field_7aa == 0x49)
+    if (landing || object->field_7aa == 0x49)
         return;
     if (object->action_movement_state != 0 && object->action_movement_state != 1 &&
         object->action_movement_state != 6 && object->action_movement_state != 7 && object->action_movement_state != 9)
