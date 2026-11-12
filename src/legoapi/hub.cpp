@@ -2526,25 +2526,29 @@ extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char 
 }
 /* PC4015e0 462 bytes. Exact command family, no prefix/default substitution. */
 extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
-    i32 action;
-    if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0)
-        action = 12;
-    else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 ||
-             NuStrICmp(command, "[S]") == 0)
-        action = 15;
-    else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 ||
-             NuStrICmp(command, "[O]") == 0)
-        action = 13;
-    else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 || NuStrICmp(command, "[X]") == 0)
-        action = 14;
-    else if (NuStrICmp(command, "[TOGGLELEFT]") == 0)
-        action = 16;
-    else if (NuStrICmp(command, "[TOGGLERIGHT]") == 0)
-        action = 18;
-    else
-        return 0;
-    NuStrCpy(output, TextButtonStringPc(action, TTab[816], TTab[817]));
-    return 1;
+    if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(12, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[ACTION]") == 0 || NuStrICmp(command, "[SQUARE]") == 0 ||
+               NuStrICmp(command, "[S]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(15, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[SPECIAL]") == 0 || NuStrICmp(command, "[CIRCLE]") == 0 ||
+               NuStrICmp(command, "[O]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(13, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[JUMP]") == 0 || NuStrICmp(command, "[CROSS]") == 0 ||
+               NuStrICmp(command, "[X]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(14, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[TOGGLELEFT]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(16, TTab[816], TTab[817]));
+        return 1;
+    } else if (NuStrICmp(command, "[TOGGLERIGHT]") == 0) {
+        NuStrCpy(output, TextButtonStringPc(18, TTab[816], TTab[817]));
+        return 1;
+    }
+    return 0;
 }
 
 /* PC4b79a0,1846bytes. Selecting arguments are unused natively; local selecting IDs initialized-1. */
