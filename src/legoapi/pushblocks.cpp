@@ -766,17 +766,15 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 }
             }
         }
-        if (0 == (p->packed_state_flags & 0x40u) &&
-            (2u == (p->packed_state_flags & 3u) || p->position->x != p->snap_origin.x ||
-             p->snap_origin.z != p->position->z)) {
-            p->target_velocity.x = p->velocity.z = p->target_velocity.z = p->velocity.x = 0.0f;
+        if (p->flag_006 == 0 && (((p->packed_state_flags & 2u) != 0 && p->flag_000 == 0) ||
+                                 p->snap_origin.x != p->position->x || p->snap_origin.z != p->position->z)) {
+            p->velocity.x = p->velocity.z = p->target_velocity.x = p->target_velocity.z = 0.0f;
         }
-        if ((p->packed_state_flags & 0x49u) == 0)
+        if (p->flag_000 == 0 && (p->packed_state_flags & 8u) == 0 && p->flag_006 == 0)
             continue;
-        if ((p->packed_state_flags & 0x41u) != 0) {
+        if (p->flag_000 != 0 || p->flag_006 != 0) {
             i32 surface = p->terrain_info[0];
-            bool same = p->terrain_info[1] == surface && p->terrain_info[2] == surface && p->terrain_info[3] == surface;
-            if (same) {
+            if (p->terrain_info[1] == surface && p->terrain_info[2] == surface && p->terrain_info[3] == surface) {
                 if (static_cast<u32>(surface) <= 31u && (TerSurface[surface].flags & 0x20000u) != 0)
                     p->packed_state_flags |= 0x40u;
                 else
@@ -784,28 +782,29 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             }
             if (p->pushing_object != NULL) {
                 if ((p->packed_state_flags & 0x40u) == 0)
-                    p->target_velocity.z = p->target_velocity.x = 0.0f;
+                    p->target_velocity.x = p->target_velocity.z = 0.0f;
                 if (GizPushFabsPc(p->pushing_object->target_velocity.x) >
                     GizPushFabsPc(p->pushing_object->target_velocity.z)) {
-                    p->target_velocity.x = p->pushing_object->target_velocity.x * FRAMETIME;
-                    p->velocity.z = p->target_velocity.z = 0.0f;
+                    p->target_velocity.x = FRAMETIME * p->pushing_object->target_velocity.x;
+                    p->target_velocity.z = p->velocity.z = 0.0f;
                 } else {
-                    p->velocity.x = p->target_velocity.x = 0.0f;
-                    p->target_velocity.z = p->pushing_object->target_velocity.z * FRAMETIME;
+                    p->target_velocity.x = p->velocity.x = 0.0f;
+                    p->target_velocity.z = FRAMETIME * p->pushing_object->target_velocity.z;
                 }
-            } else if (same) {
-                f32 scale = TerSurface[surface].movement_scale;
+            } else if (p->terrain_info[0] == p->terrain_info[1] && p->terrain_info[0] == p->terrain_info[2] &&
+                       p->terrain_info[0] == p->terrain_info[3]) {
+                f32 scale = TerSurface[p->terrain_info[0]].movement_scale;
                 p->target_velocity.x *= scale;
                 p->target_velocity.z *= scale;
             } else {
-                p->target_velocity.x = p->velocity.x = p->target_velocity.z = p->velocity.z = 0.0f;
+                p->velocity.z = p->target_velocity.z = p->velocity.x = p->target_velocity.x = 0.0f;
             }
             p->velocity.x = SeekValF(p->velocity.x, p->target_velocity.x, PushVelocitySeekRatePc);
             p->velocity.z = SeekValF(p->velocity.z, p->target_velocity.z, PushVelocitySeekRatePc);
             f32 stop_speed = (30.0 / (1.0 / static_cast<f64>(FRAMETIME))) * static_cast<f64>(0.00001f);
             if (p->velocity.x == 0.0f) {
                 if (GizPushFabsPc(p->velocity.z) <= stop_speed) {
-                    p->velocity.z = p->target_velocity.z = 0.0f;
+                    p->target_velocity.z = p->velocity.z = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
             } else {
@@ -818,7 +817,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         if ((p->packed_state_flags & 8u) != 0) {
             p->target_velocity.x = 0.0f;
             p->target_velocity.y = PushFallingSpeedPc * FRAMETIME;
-            p->target_velocity.z = p->velocity.x = 0.0f;
+            p->velocity.x = p->target_velocity.z = 0.0f;
             p->velocity.y = SeekValF(p->velocity.y, p->target_velocity.y, PushVelocitySeekRatePc);
             p->velocity.z = 0.0f;
         } else {
@@ -868,6 +867,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             heights[2] = GameShadow(NULL, &corners[2], 0.1f, -1);
             p->terrain_info[2] = static_cast<i8>(ShadowInfo());
             p->extra_terrain_info.bytes[2] = static_cast<i8>(EShadowInfo());
+            heights[3] = GameShadow(NULL, &corners[3], 0.1f, -1);
         } else {
             NewTerrPlatformsOff();
             heights[0] = GameShadow(NULL, &corners[0], 0.1f, -1);
@@ -882,8 +882,8 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->terrain_info[2] = static_cast<i8>(ShadowInfo());
             p->extra_terrain_info.bytes[2] = static_cast<i8>(EShadowInfo());
             NewTerrPlatformsOff();
+            heights[3] = GameShadow(NULL, &corners[3], 0.1f, -1);
         }
-        heights[3] = GameShadow(NULL, &corners[3], 0.1f, -1);
         p->terrain_info[3] = static_cast<i8>(ShadowInfo());
         p->extra_terrain_info.bytes[3] = static_cast<i8>(EShadowInfo());
         PlatOnOff(p->platform_id, 1);
