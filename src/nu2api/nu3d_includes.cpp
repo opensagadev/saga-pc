@@ -14395,7 +14395,7 @@ nurndrlightrecord_s::nurndrlightrecord_s() {
         item->id = 1;
         shadow_lists_pc[i].material_last = shadow_lists_pc[i].first;
         shadow_lists_pc[i].state = render_states[i];
-        NuDisplayListResetStateCache(shadow_lists_pc[i].state);
+        NuDisplayListResetStateCache(render_states[i]);
         shadow_lists_pc[i].material_last = shadow_lists_pc[i].first;
     }
 }
