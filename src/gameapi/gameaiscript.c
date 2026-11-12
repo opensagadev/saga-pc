@@ -11789,7 +11789,6 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
                                 i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *actor;
     GAMEOBJECT *opponent;
-    APIOBJECT_PC *owner;
     SOCKPOSITION_PC projected_position;
     NUVEC opponent_offset;
     NUVEC actor_offset;
@@ -11799,12 +11798,9 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     char *value;
     i32 index;
 
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
-    owner = (APIOBJECT_PC *)packet->owner;
-    if (owner->owner == NULL)
-        return 1;
-    actor = (GAMEOBJECT *)owner->owner;
+    actor = packet->owner->objptr;
 
     if (first_time != 0) {
         actor->portal_flags |= 0x4000u;
