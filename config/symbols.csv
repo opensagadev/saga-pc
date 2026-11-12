@@ -4780,6 +4780,7 @@ address,symbol,size,ctype
 0x0056eff0,_PickupSetRotationYPc,162,
 0x0056f0a0,_PickupRotateYPc,219,
 0x56f180,_GizmoPickups_InitSys,10,void __cdecl(PICKUP_TYPE_SYSTEM_PC*)
+0x56f190,_FindPickupTypeIndex,40,i32 __cdecl(u8)
 0x56f240,_GizmoPickups_DrawList,846,
 0x56f590,_GizmoPickups_Draw,64,"void __cdecl(void *, void *, f32)"
 0x56f5d0,_GizmoPickups_GetMaxGizmos,25,i32 __cdecl(void *)
