@@ -5409,7 +5409,6 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     AILOCATOR_PC *end;
     f32 random;
     f32 distance_squared;
-    f32 interval;
     i32 index;
     char *value;
     NUVEC destination;
@@ -5454,8 +5453,8 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
                 processor->action_timer -= elapsed;
                 if (((APIOBJECT_PC *)packet->opponent)->leader_selection_state == 0 &&
                     processor->action_timer <= 0.0f) {
-                    interval = processor->action_data_5;
-                    processor->action_timer = (f32)(NuRandFloat() * interval + 0.5 * interval);
+                    processor->action_timer =
+                        (f32)(NuRandFloat() * processor->action_data_5 + 0.5 * processor->action_data_5);
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;
                     object->script_fire_target = (GAMEOBJECT *)((APIOBJECT_PC *)packet->opponent)->owner;
                 }
