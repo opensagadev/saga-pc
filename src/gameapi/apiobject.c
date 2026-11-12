@@ -2318,30 +2318,30 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
         }
         if (pak != NULL) {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) != 0 || (area_animation != 0 && (animation->flags & 1) == 0) ||
-                    (area_animation == 0 && (animation->flags & 1) != 0))
-                    continue;
-                if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
-                    if (RedirectAnimFn == NULL ||
-                        RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
-                        NuStrCpy(path, directory);
-                        NuStrCat(path, animation->name);
+                if ((animation->flags & 0x8000) == 0 && ((area_animation != 0 && (animation->flags & 1) != 0) ||
+                                                         (area_animation == 0 && (animation->flags & 1) == 0))) {
+                    if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
+                        if (RedirectAnimFn == NULL ||
+                            RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
+                            NuStrCpy(path, directory);
+                            NuStrCat(path, animation->name);
+                        }
+                        NuStrCat(path, animation_extension);
+                        item = NuFilePakGetItem(pak, path);
+                        if (item != 0)
+                            NuFilePakSetItemRequired(pak, item, 1);
                     }
-                    NuStrCat(path, animation_extension);
-                    item = NuFilePakGetItem(pak, path);
-                    if (item != 0)
-                        NuFilePakSetItemRequired(pak, item, 1);
-                }
-                if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
-                    if (RedirectAnimFn == NULL ||
-                        RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
-                        NuStrCpy(path, directory);
-                        NuStrCat(path, animation->name);
+                    if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
+                        if (RedirectAnimFn == NULL ||
+                            RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
+                            NuStrCpy(path, directory);
+                            NuStrCat(path, animation->name);
+                        }
+                        NuStrCat(path, deformation_extension);
+                        item = NuFilePakGetItem(pak, path);
+                        if (item != 0)
+                            NuFilePakSetItemRequired(pak, item, 1);
                     }
-                    NuStrCat(path, deformation_extension);
-                    item = NuFilePakGetItem(pak, path);
-                    if (item != 0)
-                        NuFilePakSetItemRequired(pak, item, 1);
                 }
             }
             buffer->addr -= NuFilePakCondense(pak);
@@ -2349,7 +2349,8 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
                             ? ((CHARACTERDATA_PC *)&apicharsys->char_data[model_id])->animations
                             : NULL;
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) == 0 && ((animation->flags & 1) != 0) == (area_animation != 0)) {
+                if ((animation->flags & 0x8000) == 0 && ((area_animation != 0 && (animation->flags & 1) != 0) ||
+                                                         (area_animation == 0 && (animation->flags & 1) == 0))) {
                     if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL ||
                             RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
