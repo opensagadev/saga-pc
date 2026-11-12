@@ -40,9 +40,8 @@ STATIC_ASSERT(offsetof(ARCADE_COIN_PACKET_PC, scale) == 4);
 void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
     ADD_GAME_MESSAGE_PC message = PCArcadeMessageTemplate;
     NUVEC position;
-    char text[16];
-    i32 earned, goal, icon, character_id;
-    LEVEL_OBJECT_RUNTIME_PC *special;
+    char text[32];
+    i32 earned, goal, icon, marker, character_id;
     (void)unused;
     if (reset_score != 0) {
         Arcade_Score[player_index] = 0;
@@ -51,6 +50,7 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
         if (BonusWinner != -1)
             return;
         if (Arcade_BothPlayersActive()) {
+            earned = 1;
             goal = PCArcadePointGoals[(i8)ArcadeItem.play];
             Arcade_Points[player_index]++;
             if (goal > 0 && Arcade_Points[player_index] >= goal) {
@@ -59,11 +59,10 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
                 NewMenu(11, -1, -1);
                 Arcade_Score[player_index]++;
             }
-            earned = 1;
         } else {
+            earned = 0;
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             NewRumbleAllPlayers(0.0f, 0.2f, 0, 1);
-            earned = 0;
         }
     }
     if (earned != 0) {
@@ -73,13 +72,21 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
         GameAudio_PlaySfx(0x2c, NULL, 0, 0);
         GameAudio_PlaySfx(0x26, NULL, 0, 0);
     }
-    NuSPrintf(text, Text_TimeS, reset_score != 0 ? Arcade_Score[player_index] : Arcade_Points[player_index]);
-    position.x = player_index == 0 ? -0.015f : 0.015f;
-    message.unknown_4f = player_index == 0 ? 8 : 2;
+    if (reset_score != 0)
+        NuSPrintf(text, Text_TimeS, Arcade_Score[player_index]);
+    else
+        NuSPrintf(text, Text_TimeS, Arcade_Points[player_index]);
+    if (player_index == 0) {
+        position.x = -0.015f;
+        message.unknown_4f = 8;
+    } else {
+        position.x = 0.015f;
+        message.unknown_4f = 2;
+    }
     position.y = PCArcadePointMessageY;
     position.z = 1.0f;
     message.text = text;
-    message.position = message.target_position = &position;
+    message.target_position = message.position = &position;
     message.scale = 0.7f;
     message.target_scale = 2.1f;
     message.flags = 0x4028;
@@ -91,7 +98,7 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
         Arcade_NeedTwoPlayers_Scale = 1.5f;
         return;
     }
-    character_id = ((GAMEOBJECT *)Player[player_index])->id;
+    character_id = (i16)((GAMEOBJECT *)Player[player_index])->id;
     icon = CDataList[character_id].icon_model;
     if (icon == -1)
         return;
@@ -103,14 +110,14 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
     message = PCArcadeMessageTemplate;
     message.scale = 0.333f;
     message.target_scale = 0.555f;
-    message.duration = 2.5f;
-    message.flags = 0x14120;
     message.position = &position;
     message.special = &WORLD->level_objects[icon];
+    message.flags = 0x14120;
+    message.duration = 2.5f;
     AddGameMsg(&message);
-    special = &WORLD->level_objects[player_index == 0 ? 0xa6 : 0xa5];
-    if (special->active != 0) {
-        message.special = special;
+    marker = player_index == 0 ? 0xa6 : 0xa5;
+    if (WORLD->level_objects[marker].active != 0) {
+        message.special = &WORLD->level_objects[marker];
         AddGameMsg(&message);
     }
 }
