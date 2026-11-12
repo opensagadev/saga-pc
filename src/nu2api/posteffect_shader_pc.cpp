@@ -39,16 +39,14 @@ POST_SHADER_PROGRAM_PC *__thiscall POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {
     i32 index = cursor;
     for (; index < 64; ++index) {
         if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0)
-            break;
+            goto found;
     }
-    if (index >= 64) {
-        for (index = 0; index < cursor; ++index) {
-            if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0)
-                break;
-        }
-        if (index >= cursor)
-            return NULL;
+    for (index = 0; index < cursor; ++index) {
+        if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0)
+            goto found;
     }
+    return NULL;
+found:
     occupied[index >> 3] |= (u8)(1 << (index & 7));
     cursor = (index + 1) % 64;
     return &programs[index];
