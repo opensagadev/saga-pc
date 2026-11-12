@@ -144,7 +144,7 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
     packet->path_connection_state = 0;
     SetSpecialMove(owner, destination, source, 0);
     owner->pad->buttons_held |= GAMEPAD_JUMP;
-    if (owner->id == id_GEONOSIAN) {
+    if (owner->id == (u16)id_GEONOSIAN) {
         if (owner->jump_variant_state == 0 || owner->jump_variant_state == 3)
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
     } else {
