@@ -1146,19 +1146,16 @@ extern "C" {
     /* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
     void __cdecl LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
         i32 index, parameter;
-        AI_SCRIPT_PROGRESS_VIEW_PC *progress;
         if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0)
             return;
         for (index = 0; index < 32; ++index) {
-            progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
-            if (NuStrLen(progress->scripts[index].name) == 0)
+            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name) == 0)
                 break;
-            progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
-            if (NuStrICmp(progress->scripts[index].name, process->name) == 0) {
-                for (parameter = 0; parameter < 4; ++parameter) {
-                    progress = (AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress;
-                    process->processor.params[parameter] = progress->scripts[index].params[parameter];
-                }
+            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name, process->name) ==
+                0) {
+                for (parameter = 0; parameter < 4; ++parameter)
+                    process->processor.params[parameter] =
+                        ((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].params[parameter];
                 break;
             }
         }
