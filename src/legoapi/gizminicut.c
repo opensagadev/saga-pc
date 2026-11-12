@@ -174,31 +174,31 @@ void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
 static void *__cdecl GizMiniCut_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
-    i32 i, count;
+    i32 i;
     view->minicuts = NULL;
     view->count = 0;
-    if (world->current_level->max_minicuts == 0)
-        return NULL;
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    view->minicuts = (MINICUT_PC *)world->giz_buffer.addr;
-    world->giz_buffer.addr += world->current_level->max_minicuts * sizeof(MINICUT_PC);
-    memset(view->minicuts, 0, world->current_level->max_minicuts * sizeof(MINICUT_PC));
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    view->parts = (MINICUT_PART_PC *)world->giz_buffer.addr;
-    count = world->current_level->max_minicuts * world->current_level->max_minicut_stages;
-    world->giz_buffer.addr += count * sizeof(MINICUT_PART_PC);
-    memset(view->parts, 0,
-           world->current_level->max_minicuts * world->current_level->max_minicut_stages * sizeof(MINICUT_PART_PC));
-    for (i = 0; i < world->current_level->max_minicuts; ++i) {
-        MINICUT_PC *cut = &view->minicuts[i];
-        cut->parts = &view->parts[i * world->current_level->max_minicut_stages];
-        cut->blend_out = 2.5f;
-        cut->hold_time = 2.5f;
-        cut->tracking_speed = 10.0f;
-        cut->end_time = 10.0f;
-        cut->blend_in = 0.0f;
-        cut->part_count = 0;
-        sprintf(cut->name, "Minicut %i", i + 1);
+    if (world->current_level->max_minicuts != 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        view->minicuts = (MINICUT_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_minicuts * sizeof(MINICUT_PC);
+        memset(view->minicuts, 0, world->current_level->max_minicuts * sizeof(MINICUT_PC));
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        view->parts = (MINICUT_PART_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr +=
+            world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC);
+        memset(view->parts, 0,
+               world->current_level->max_minicut_stages * world->current_level->max_minicuts *
+                   sizeof(MINICUT_PART_PC));
+        for (i = 0; i < world->current_level->max_minicuts; ++i) {
+            view->minicuts[i].parts = &view->parts[i * world->current_level->max_minicut_stages];
+            view->minicuts[i].blend_out = 2.5f;
+            view->minicuts[i].hold_time = 2.5f;
+            view->minicuts[i].tracking_speed = 10.0f;
+            view->minicuts[i].end_time = 10.0f;
+            view->minicuts[i].blend_in = 0.0f;
+            view->minicuts[i].part_count = 0;
+            sprintf(view->minicuts[i].name, "Minicut %i", i + 1);
+        }
     }
     return view->minicuts;
 }
