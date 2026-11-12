@@ -71,7 +71,8 @@ extern "C" {
         char time[64];
         if (saveload_slotused[slot] == 0)
             createslotfolder(slot);
-        FILE *file = fopen(fullslotname(slot), "wb");
+        char *name = fullslotname(slot);
+        FILE *file = fopen(name, "wb");
         memset(&header, 0, sizeof(header));
         header.magic = 0x52474d48;
         header.version = 1;
