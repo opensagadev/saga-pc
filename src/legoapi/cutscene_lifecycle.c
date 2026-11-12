@@ -665,7 +665,21 @@ typedef struct cut_instance_load_pc_s {
     NUVEC center;
     NUVEC bounds_min, bounds_max;
     f32 radius_squared;
-    u32 flags_88, flags_8c;
+    union {
+        u32 flags_88;
+        struct {
+            u32 flags_88_bits_0_12 : 13;
+            i32 repeat_count : 5;
+            u32 flags_88_bit_18 : 1;
+            u32 synchro : 8;
+        };
+    };
+    union {
+        u32 flags_8c;
+        struct {
+            i32 skip_frames : 4;
+        };
+    };
     f32 current_frame, render_frame, rate;
     CUT_LOAD_CAMERA_INSTANCE *camera_instance;
     CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;
@@ -2267,13 +2281,12 @@ static void CutSceneStreamHoldFramePc(CUT_INSTANCE_LOAD_PC *instance) {
     CutSceneMissingObjectDiagnosticPc(instance->scene->filename);
 }
 
-static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 skip, f32 elapsed) {
-    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i32 skip, f32 elapsed) {
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     f32 overflow;
     i32 repeat_count;
     instance->flags_8c &= ~0x1000U;
-    instance->flags_88 = (instance->flags_88 & ~0x7f80000U) | (((u32)CutSceneSynchroCounterPc << 19) & 0x7f80000);
+    instance->synchro = CutSceneSynchroCounterPc;
     if ((instance->flags_88 & 0x800) != 0 || (scene->flags & 8) != 0)
         return;
     instance->elapsed = elapsed;
@@ -2282,25 +2295,25 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
         if (camera != NULL && camera->m30 < instance->bounds_max.x && camera->m30 > instance->bounds_min.x &&
             camera->m31 < instance->bounds_max.y && camera->m31 > instance->bounds_min.y &&
             camera->m32 < instance->bounds_max.z && camera->m32 > instance->bounds_min.z)
-            CutSceneInstanceSfxRequestPc(owner);
+            CutSceneInstanceSfxRequestPc((INSTNUGCUTSCENE *)instance);
     }
     instance->flags_88 &= ~0x40000000U;
-    if (instance->skip_countdown != 0 && (instance->flags_88 & 1) == 0 && (instance->flags_8c & 0xf) != 0) {
-        instance->flags_8c = (instance->flags_8c & ~0xfU) | ((((i32)(instance->flags_8c << 28) >> 28) - 1) & 0xf);
+    if (instance->skip_countdown != 0 && (instance->flags_88 & 1) == 0 && instance->skip_frames != 0) {
+        instance->skip_frames--;
         instance->flags_88 |= 0x40000000;
         paused = 1;
     }
     if ((instance->flags_88 & 2) == 0) {
         if ((instance->flags_88 & 1) != 0 || (instance->flags_88 & 0x40) == 0)
             return;
-        instNuGCutSceneStart(owner);
+        instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
     }
     if ((scene->flags & 8) != 0 && (instance->flags_88 & 0x8000000) == 0)
         return;
     if (instance->scene->version >= 2) {
         if ((instance->flags_88 & 0x20000000) != 0 && CutSceneLoadingInstancePc == NULL &&
             (instance->flags_88 & 0x8000000) == 0 && instance->stream_index != (u8)instance->saved_scene->unknown_40)
-            CutSceneLoadingInstancePc = owner;
+            CutSceneLoadingInstancePc = (INSTNUGCUTSCENE *)instance;
         else if (instance->queued_stream_instance != NULL && CutSceneLoadingInstancePc == NULL &&
                  instance->stream_index == (u8)instance->saved_scene->unknown_40) {
             CutSceneLoadingInstancePc = instance->queued_stream_instance;
@@ -2340,34 +2353,34 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
                             instance->rate = -instance->rate;
                         instance->current_frame = 2.0f - instance->current_frame;
                     } else {
-                        repeat_count = (i32)(instance->flags_88 << 14) >> 27;
+                        repeat_count = instance->repeat_count;
                         if (repeat_count > 0) {
                             overflow = 1.0f - instance->current_frame;
-                            instance->flags_88 =
-                                (instance->flags_88 & ~0x3e000U) | (((u32)(repeat_count - 1) << 13) & 0x3e000);
-                            instNuGCutSceneStart(owner);
+                            instance->repeat_count = repeat_count - 1;
+                            instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
                             instance->flags_88 |= 1;
                             instance->current_frame += overflow;
                         } else if (instance->chained_instance != NULL) {
                             CUT_INSTANCE_LOAD_PC *next;
                             overflow = 1.0f - instance->current_frame;
-                            instNuGCutSceneEndFirstFrame(owner);
+                            instNuGCutSceneEndFirstFrame((INSTNUGCUTSCENE *)instance);
                             instNuGCutSceneStart(instance->chained_instance);
                             next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                             next->current_frame += overflow;
                             CutSceneClipTestPc(next);
-                            CutSceneInstanceUpdatePc(instance->chained_instance, 0, skip, elapsed);
+                            CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip,
+                                                     elapsed);
                             instance->chained_instance = NULL;
                             return;
                         } else {
-                            instNuGCutSceneEndFirstFrame(owner);
+                            instNuGCutSceneEndFirstFrame((INSTNUGCUTSCENE *)instance);
                             return;
                         }
                     }
                 } else if ((instance->flags_88 & 0x20) != 0)
                     instance->current_frame = 1.0f;
                 else
-                    instNuGCutSceneEndFirstFrame(owner);
+                    instNuGCutSceneEndFirstFrame((INSTNUGCUTSCENE *)instance);
             } else if (!(instance->current_frame < ((f64)scene->duration - 1.0))) {
                 CUT_SCENE_LOAD_PC *current = instance->scene;
                 if (current->version >= 2 && (current->flags & 1) != 0) {
@@ -2376,7 +2389,7 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
                             instance->flags_88 |= 0x1000;
                             instance->current_frame = ((f64)scene->duration - 1.0);
                         } else {
-                            instNuGCutSceneEnd(owner);
+                            instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
                             instance->accumulated_duration = 0.0f;
                         }
                     } else if ((instance->flags_88 & 0x8000000) == 0)
@@ -2408,7 +2421,7 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
                             else
                                 CutSceneSwapStreamAssetPc(instance);
                             instance->flags_88 &= ~0x8000000U;
-                            instNuGCutSceneStart(owner);
+                            instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
                             instance->flags_88 |= 1;
                             instance->current_frame += overflow;
                         }
@@ -2425,16 +2438,15 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
                     if (instance->end_callback != NULL) {
                         void(__cdecl * callback)(INSTNUGCUTSCENE *) = instance->end_callback;
                         instance->end_callback = NULL;
-                        callback(owner);
+                        callback((INSTNUGCUTSCENE *)instance);
                     }
-                    repeat_count = (i32)(instance->flags_88 << 14) >> 27;
+                    repeat_count = instance->repeat_count;
                     if (repeat_count > 0) {
-                        instance->flags_88 =
-                            (instance->flags_88 & ~0x3e000U) | (((u32)(repeat_count - 1) << 13) & 0x3e000);
+                        instance->repeat_count = repeat_count - 1;
                         overflow = instance->current_frame - ((f64)scene->duration - 1.0);
                         if (overflow > scene->duration)
                             overflow = 0.0f;
-                        instNuGCutSceneStart(owner);
+                        instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
                         instance->flags_88 |= 1;
                         instance->current_frame += overflow;
                     } else if (instance->chained_instance != NULL) {
@@ -2442,23 +2454,23 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
                         overflow = instance->current_frame - ((f64)scene->duration - 1.0);
                         if (overflow > scene->duration)
                             overflow = 0.0f;
-                        instNuGCutSceneEnd(owner);
+                        instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
                         instNuGCutSceneStart(instance->chained_instance);
                         next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                         next->current_frame += overflow;
                         CutSceneClipTestPc(next);
-                        CutSceneInstanceUpdatePc(instance->chained_instance, 0, skip, elapsed);
+                        CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip, elapsed);
                         instance->chained_instance = NULL;
                         return;
                     } else if ((instance->flags_88 & 8) != 0) {
                         overflow = instance->current_frame - ((f64)scene->duration - 1.0);
                         if (overflow > scene->duration)
                             overflow = 0.0f;
-                        instNuGCutSceneStart(owner);
+                        instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
                         instance->flags_88 |= 1;
                         instance->current_frame += overflow;
                     } else
-                        instNuGCutSceneEnd(owner);
+                        instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
                 }
             }
         }
@@ -2469,22 +2481,23 @@ static void CutSceneInstanceUpdatePc(INSTNUGCUTSCENE *owner, i32 paused, i32 ski
     instance->render_frame = instance->current_frame;
     if ((instance->flags_88 & 0x40000) != 0) {
         if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL)
-            CutSceneCharacterSysUpdatePc(owner, scene->duration - instance->current_frame, paused);
+            CutSceneCharacterSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame,
+                                         paused);
         if (CutSceneUpdateCamerasPc != 0 && instance->camera_instance != NULL)
-            CutSceneCameraSysUpdatePc(owner, scene->duration - instance->current_frame);
+            CutSceneCameraSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->current_frame);
         if (instance->trigger_instance != NULL)
             CutSceneTriggerSysUpdatePc(instance, scene->duration - instance->render_frame);
         if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL)
-            CutSceneRigidSysUpdatePc(owner, scene->duration - instance->render_frame, paused);
+            CutSceneRigidSysUpdatePc((INSTNUGCUTSCENE *)instance, scene->duration - instance->render_frame, paused);
     } else {
         if (CutSceneRenderCharactersPc != 0 && instance->character_instance != NULL)
-            CutSceneCharacterSysUpdatePc(owner, instance->current_frame, paused);
+            CutSceneCharacterSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->current_frame, paused);
         if (CutSceneUpdateCamerasPc != 0 && instance->camera_instance != NULL)
-            CutSceneCameraSysUpdatePc(owner, instance->current_frame);
+            CutSceneCameraSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->current_frame);
         if (instance->trigger_instance != NULL)
             CutSceneTriggerSysUpdatePc(instance, instance->render_frame);
         if (CutSceneRenderRigidsPc != 0 && instance->rigid_instance != NULL)
-            CutSceneRigidSysUpdatePc(owner, instance->render_frame, paused);
+            CutSceneRigidSysUpdatePc((INSTNUGCUTSCENE *)instance, instance->render_frame, paused);
     }
 }
 
@@ -2501,7 +2514,7 @@ void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
     for (owner = active_cutscene_instances; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next) {
         CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
         if (((i32)(instance->flags_88 << 5) >> 24) != CutSceneSynchroCounterPc)
-            CutSceneInstanceUpdatePc(owner, paused, skip, elapsed);
+            CutSceneInstanceUpdatePc(instance, paused, skip, elapsed);
     }
 }
 
