@@ -1204,18 +1204,16 @@ void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
 
 f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     f32 end_frame;
-    f32 position;
+    f32 position = 0.0f;
     NUINSTANIM *animation = NuSpecialGetInstAnim(special);
-    if (animation == NULL || special->scene->instance_animation_data[animation->animation_index] == NULL) {
-        return 0.0f;
+    if (animation != NULL && special->scene->instance_animation_data[animation->animation_index] != NULL) {
+        end_frame = NuSpecialGetAnimEndFrame(special);
+        position = (animation->ltime - 1.0f) / (end_frame - 1.0f);
+        if (position < 0.0f)
+            position = 0.0f;
+        else if (position > 1.0f)
+            position = 1.0f;
     }
-    end_frame = NuSpecialGetAnimEndFrame(special);
-    position = (animation->ltime - 1.0f) / (end_frame - 1.0f);
-    if (position < 0.0f) {
-        return 0.0f;
-    }
-    if (position > 1.0f)
-        return 1.0f;
     return position;
 }
 
