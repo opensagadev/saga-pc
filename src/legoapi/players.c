@@ -2501,8 +2501,6 @@ PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
     i32 index;
     if (PlayerItemTypePc == NULL)
         return NULL;
-    if (PlayerItemTypeCountPc <= 0)
-        return NULL;
     for (index = 0; index < PlayerItemTypeCountPc; ++index)
         if (PlayerItemTypePc[index].id == id)
             return &PlayerItemTypePc[index];

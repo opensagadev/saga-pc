@@ -1132,9 +1132,8 @@ __declspec(noinline) void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i
     void *ptr = NULL;
 
     if (buf != NULL && end != NULL && buf->addr + (u32)size < end->addr) {
-        buf->addr = (buf->addr + 3) & ~3u;
-        ptr = buf->void_ptr;
-        buf->addr += (u32)size;
+        ptr = (void *)((buf->addr + 3) & ~3u);
+        buf->addr = ((buf->addr + 3) & ~3u) + (u32)size;
     }
     if (ptr != NULL) {
         memset(ptr, 0, (u32)size);
@@ -1232,11 +1231,12 @@ __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
         return;
     }
     do {
+        NUINSTANIM *animation;
         --instance;
-        if (instance->animation != NULL) {
-            instance->animation->fparam1 = instance->animation->tfactor;
-        }
         --count;
+        animation = instance->animation;
+        if (animation != NULL)
+            animation->fparam1 = animation->tfactor;
     } while (count != 0);
 }
 
