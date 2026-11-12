@@ -14508,15 +14508,15 @@ extern "C" {
                                              void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
                                              void *root_data) {
         ANI3_BUFFER_PC buffer;
-        NUVEC root_translation = {0.0f, 0.0f, 0.0f};
+        NUVEC root_translation;
         NUVEC blend_translation;
         f32 adjusted_time_a, adjusted_time_b;
-        NUJOINTPROCANIMFN_PC callback;
         u8 quaternion_mode;
         buffer.joint_count = 0;
         buffer.max_joints = globalbuffer->scratch_joint_capacity;
         buffer.joints = (ANI3_JOINT_PC *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
         buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
+        root_translation.x = root_translation.y = root_translation.z = 0.0f;
         quaternion_mode = ForceEulerToQuat | ((animation_a->format_flags | animation_b->format_flags) & 1);
         if (AnimQuatDepthPc < 4) {
             AnimQuatSavedPc[AnimQuatDepthPc++] = ForceEulerToQuat;
@@ -14531,9 +14531,8 @@ extern "C" {
         adjusted_time_b = time_b - 1.0;
         ANI_SimpleAni3PlayerV4Joint_Blend(animation_b, adjusted_time_b, &buffer, blend, object->joint_count, 0,
                                           &blend_translation);
-        callback = JointProcAnimFn;
-        if (override_count != 0 && callback != NULL)
-            callback(&buffer, object, override_count, (NUHGOBJ_JOINT_OVERRIDE_PC *)overrides);
+        if (override_count != 0 && JointProcAnimFn != NULL)
+            JointProcAnimFn(&buffer, object, override_count, (NUHGOBJ_JOINT_OVERRIDE_PC *)overrides);
         NuAnimBuffEvaluate_3(&buffer, object, matrices, animation_a, root_fn, &root_translation, root_data);
         NuScratchRelease();
         NuScratchRelease();
