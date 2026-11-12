@@ -8015,21 +8015,23 @@ static __declspec(noinline) EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
         distance = NuVecXZDistSqr(&aieditor->camera_position, &area->position, &difference);
         if (distance < best) {
             difference.y = aieditor->camera_position.y - area->position.y;
-            if (check_inside == 0) {
-                best = distance;
-                nearest = area;
-            } else if (area->flags & 1) {
-                if (area->size.x * area->size.x > distance && area->size.y > difference.y && difference.y > -2.0f) {
-                    best = distance;
-                    nearest = area;
+            if (check_inside != 0) {
+                if (area->flags & 1) {
+                    if (area->size.x * area->size.x > distance && difference.y < area->size.y && difference.y > -2.0f) {
+                        best = distance;
+                        nearest = area;
+                    }
+                } else {
+                    NuVecRotateY(&difference, &difference, -(i16)area->rotation);
+                    if (difference.x < area->size.x && difference.y < area->size.y && difference.z < area->size.z &&
+                        difference.x > -area->size.x && difference.y > -2.0f && difference.z > -area->size.z) {
+                        best = distance;
+                        nearest = area;
+                    }
                 }
             } else {
-                NuVecRotateY(&difference, &difference, -area->rotation);
-                if (area->size.x > difference.x && area->size.y > difference.y && area->size.z > difference.z &&
-                    -area->size.x < difference.x && difference.y > -2.0f && -area->size.z < difference.z) {
-                    best = distance;
-                    nearest = area;
-                }
+                best = distance;
+                nearest = area;
             }
         }
     }
