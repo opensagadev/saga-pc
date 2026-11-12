@@ -663,9 +663,9 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     memcpy(&message, &AddGameMsg_Default, sizeof(message));
                     message.scale = 1.0f;
                     message.green = static_cast<u8>(colour[1]);
-                    message.position = &BATARANG_PACKET_PC(object)->sight_position;
                     message.red = static_cast<u8>(colour[0]);
                     message.blue = static_cast<u8>(colour[2]);
+                    message.position = &BATARANG_PACKET_PC(object)->sight_position;
                     message.text = text;
                     message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
                     message.flags = 0x1080;
