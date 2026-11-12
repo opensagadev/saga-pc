@@ -889,8 +889,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         PlatOnOff(p->platform_id, 1);
         BlockInBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index,
                      &p->supporting_block);
-        if (p->supporting_block != NULL || p->previous_supporting_block != NULL) {
-            p->previous_supporting_block = p->supporting_block;
+        struct pushblock_s *below = p->supporting_block;
+        if (below != NULL || p->previous_supporting_block != NULL) {
+            p->previous_supporting_block = below;
             f32 support[4];
             TerrainBlockOnBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), corners,
                                 support);
@@ -900,20 +901,22 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         } else {
             p->previous_supporting_block = NULL;
         }
-        f64 low = static_cast<f64>(p->ground_height) - PushBlockGapEpsilonPc;
-        f64 high = static_cast<f64>(p->ground_height) + PushBlockGapEpsilonPc;
-        if ((heights[0] < low && heights[1] < low && heights[2] < low && heights[3] < low) ||
-            (heights[0] > high && high < heights[1] && heights[2] > high && heights[3] > high)) {
-            p->ground_height =
-                ((static_cast<f64>(heights[0]) + heights[1]) + heights[2] + heights[3]) * 0.25 + PushBlockGapEpsilonPc;
+        NUVEC *position = p->position;
+        f32 ground = p->ground_height;
+        if ((heights[0] < ground - PushBlockGapEpsilonPc && heights[1] < ground - PushBlockGapEpsilonPc &&
+             heights[2] < ground - PushBlockGapEpsilonPc && heights[3] < ground - PushBlockGapEpsilonPc) ||
+            (heights[0] > ground + PushBlockGapEpsilonPc && heights[1] > ground + PushBlockGapEpsilonPc &&
+             heights[2] > ground + PushBlockGapEpsilonPc && heights[3] > ground + PushBlockGapEpsilonPc)) {
+            f32 height = ((heights[0] + heights[1]) + heights[2] + heights[3]) * 0.25 + PushBlockGapEpsilonPc;
+            p->ground_height = height;
+            p->ground_offset = (position->y + p->bounds_min.y) - height;
             p->packed_state_flags |= 8u;
-            p->ground_offset = (p->position->y + p->bounds_min.y) - p->ground_height;
         }
-        if (p->supporting_block != NULL) {
-            p->ground_height = p->position->y + reinterpret_cast<PUSH_BLOCK_PC *>(p->supporting_block)->bounds_max.y;
-            p->ground_offset = (p->position->y + p->bounds_min.y) - p->ground_height;
+        if (below != NULL) {
+            p->ground_height = below->bounds_max.y + position->y;
+            p->ground_offset = (p->bounds_min.y + position->y) - p->ground_height;
         }
-        if (p->ground_offset > 0.0f) {
+        if (p->ground_offset > PushBlockGapEpsilonPc + 0.0) {
             p->packed_state_flags |= 8u;
         } else if ((p->packed_state_flags & 8u) != 0) {
             p->settled_height = p->ground_height;
@@ -940,14 +943,14 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 position->z = p->snap_origin.z;
                 p->extra_terrain_info.word = p->previous_extra_terrain_info;
                 p->packed_state_flags &= ~0xc0u;
-                p->target_velocity.x = p->target_velocity.z = p->velocity.x = p->velocity.z = 0.0f;
+                p->velocity.z = p->velocity.x = p->target_velocity.z = p->target_velocity.x = 0.0f;
                 NuSpecialUpdate(&p->special);
                 for (i32 j = 0; j < p->end_position_count; ++j) {
                     if (0 != NuSpecialExistsFn(&p->end_position_specials[j])) {
-                        NUMTX *matrix = NuSpecialGetInstanceMtx(&p->end_position_specials[j]);
-                        if (reinterpret_cast<u32>(matrix) != 0xffffffd0u) {
-                            matrix->m30 = p->snap_origin.x;
-                            matrix->m32 = p->snap_origin.z;
+                        NUVEC *translation = &NuSpecialGetInstanceMtx(&p->end_position_specials[j])->translation;
+                        if (translation != NULL) {
+                            translation->x = p->snap_origin.x;
+                            translation->z = p->snap_origin.z;
                             NuSpecialUpdate(&p->end_position_specials[j]);
                         }
                     }
@@ -955,10 +958,11 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 p->packed_state_flags &= ~0x401u;
             }
             if ((p->packed_state_flags & 0x800u) != 0) {
-                p->target_velocity.y = p->velocity.y = 0.0f;
+                p->velocity.y = p->target_velocity.y = 0.0f;
                 p->packed_state_flags &= ~0x808u;
-                p->ground_height = p->settled_height;
-                f32 settled_y = p->settled_height - p->bounds_min.y;
+                f32 settled = p->settled_height;
+                p->ground_height = settled;
+                f32 settled_y = settled - p->bounds_min.y;
                 position->y = settled_y;
                 p->ground_offset = (settled_y + p->bounds_min.y) - p->ground_height;
                 NuSpecialUpdate(&p->special);
@@ -972,7 +976,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 Hint_SetComplete(PushBlockHintIdPc);
         }
     }
-    for (i32 index = 0; world->push_block_count > index; ++index) {
+    for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0)
             continue;
@@ -984,7 +988,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 p->pushing_object->flags_ef0 &= ~1u;
             }
         }
-        if ((p->packed_state_flags & 0x220u) == 0) {
+        if ((p->packed_state_flags & 0x20u) == 0 && (p->packed_state_flags & 0x200u) == 0) {
             i32 safe = 0;
             for (i32 j = 0; j < 4; ++j)
                 if (p->extra_terrain_info.bytes[j] == 8 || p->terrain_info[j] == 14)
