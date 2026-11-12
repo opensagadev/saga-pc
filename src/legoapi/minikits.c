@@ -161,7 +161,7 @@ void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 re
         draw_matrix = kit->pieces[i].matrix;
         NuMtxMul(&draw_matrix, &draw_matrix, matrix);
         NuSpecialDrawAt(&kit->pieces[i].special, &draw_matrix);
-        if (reflection_axis != 0 && reflection_plane != 0.0f &&
+        if (reflection_axis != 0 && reflection_plane != 2000000.0f &&
             MatrixReflection(&draw_matrix, reflection_axis, reflection_plane, reflection_height, &reflected) != 0) {
             NuRndrStartReflectionRender(0);
             NuSpecialDrawAt(&kit->pieces[i].special, &reflected);
