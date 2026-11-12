@@ -660,8 +660,7 @@ extern "C" {
         for (record = &table[0]; record->name != NULL; record++) {
             if (levspl_i_start == -1 && NuStrICmp(record->name, LevelSplinesStartName) == 0) {
                 levspl_i_start = LEVELSPLINECOUNT;
-            }
-            if (levspl_i_startcam == -1 && NuStrICmp(record->name, LevelSplinesStartCamName) == 0) {
+            } else if (levspl_i_startcam == -1 && NuStrICmp(record->name, LevelSplinesStartCamName) == 0) {
                 levspl_i_startcam = LEVELSPLINECOUNT;
             }
             LEVELSPLINECOUNT++;
@@ -932,11 +931,8 @@ extern "C" {
 }
 
 void __cdecl GoToNewLevel(i32 level_index) {
-    i32 waiting;
-
-    waiting = waiting_for_level;
     NewLData = &LDataList[level_index];
-    if (waiting != -1)
+    if (waiting_for_level != -1)
         waiting_for_new_level = 1;
 }
 
