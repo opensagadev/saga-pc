@@ -75,43 +75,37 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
     return NULL;
 }
 // AddDefinition body; retail inlines it into EmitProgram only.
+char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
 #define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                        \
     do {                                                                                                               \
         ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                      \
         if (definition != NULL) {                                                                                      \
             const char *stored_value;                                                                                  \
             if ((VALUE) != NULL) {                                                                                     \
-                i32 length = (i32)strlen(VALUE);                                                                       \
-                char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
-                (DICTIONARY)->scratch.cursor += length + 1;                                                            \
-                memcpy(copy, (VALUE), length + 1);                                                                     \
-                stored_value = copy;                                                                                   \
+                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                \
             } else {                                                                                                   \
                 stored_value = NULL;                                                                                   \
             }                                                                                                          \
             definition->value = stored_value;                                                                          \
             definition->emit = (u8)(EMIT);                                                                             \
         } else {                                                                                                       \
-            i32 length = (i32)strlen(NAME);                                                                            \
-            char *stored_name = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                \
-            (DICTIONARY)->scratch.cursor += length + 1;                                                                \
-            memcpy(stored_name, NAME, length + 1);                                                                     \
+            char *stored_name = ShaderCloneArenaStringPc(NAME, &(DICTIONARY)->scratch);                                \
             const char *stored_value;                                                                                  \
             if ((VALUE) != NULL) {                                                                                     \
-                length = (i32)strlen(VALUE);                                                                           \
-                char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
-                (DICTIONARY)->scratch.cursor += length + 1;                                                            \
-                memcpy(copy, (VALUE), length + 1);                                                                     \
-                stored_value = copy;                                                                                   \
+                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                \
             } else {                                                                                                   \
                 stored_value = NULL;                                                                                   \
             }                                                                                                          \
-            definition = reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                    \
+            ShaderMacroDefinitionPc *storage =                                                                         \
+                reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                             \
             (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                           \
-            if (definition != NULL) {                                                                                  \
-                definition->name = stored_name;                                                                        \
-                definition->value = stored_value;                                                                      \
-                definition->emit = (u8)(EMIT);                                                                         \
+            if (storage != NULL) {                                                                                     \
+                storage->name = stored_name;                                                                           \
+                storage->value = stored_value;                                                                         \
+                storage->emit = (u8)(EMIT);                                                                            \
+                definition = storage;                                                                                  \
+            } else {                                                                                                   \
+                definition = NULL;                                                                                     \
             }                                                                                                          \
             (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                        \
         }                                                                                                              \
@@ -640,12 +634,12 @@ void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
 void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *output) {
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        u32 flags = node->flags;
-        if (!(emit_centroid != 0 && (flags & 0x4020) == 0x4020)) {
-            if ((flags & 0x20) == 0 || node->expansion_state <= 0 || FindDefinition(node->name) != NULL)
+        if (!(emit_centroid != 0 && (node->flags & 0x4020) == 0x4020)) {
+            bool uniform = (node->flags >> 5) & 1;
+            if (!uniform || node->expansion_state <= 0 || FindDefinition(node->name) != NULL)
                 continue;
         }
-        bool unavailable = output_stage == 0 ? (flags & 0x2000) == 0 : (flags & 0x1000) == 0;
+        bool unavailable = output_stage == 0 ? (node->flags & 0x2000) == 0 : (node->flags & 0x1000) == 0;
         const char *alias = RenderASTName(node);
         output->AppendText("#define ");
         output->AppendText(alias);
@@ -653,7 +647,7 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         SHADER_ADD_DEFINITION_PC(this, alias, NULL, 0);
         if (node->type == 21)
             continue;
-        const char *shared = !unavailable && emit_semantics != 0 && (flags & 0x4020) == 0x4020 ? "shared " : "";
+        const char *shared = !unavailable && emit_semantics != 0 && (node->flags & 0x4020) == 0x4020 ? "shared " : "";
         char array_suffix[64];
         if (node->array_count >= 0)
             sprintf(array_suffix, "[%d] ", node->array_count);
@@ -671,7 +665,8 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
             semantic_name = "";
         }
         char register_suffix[64];
-        if (!unavailable && (flags & 0x20) != 0) {
+        bool uniform = (node->flags >> 5) & 1;
+        if (!unavailable && uniform) {
             i32 index = output_stage == 0 ? node->vertex_register : node->pixel_register;
             ShaderUniformRecordPc *record = NuShaderUniformGetByString(node->name);
             if (record != NULL)
@@ -683,9 +678,10 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         } else {
             register_suffix[0] = 0;
         }
+        const char *type_name = ShaderCompilerTypeNamesPc[node->type];
         output->AppendText(shared);
         output->AppendText("uniform ");
-        output->AppendText(ShaderCompilerTypeNamesPc[node->type]);
+        output->AppendText(type_name);
         output->AppendText(NuBlankStringValue);
         output->AppendText(node->name);
         output->AppendText(array_suffix);
@@ -701,7 +697,7 @@ ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(con
     return *this;
 }
 
-__declspec(noinline) char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
+char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
     i32 length = (i32)strlen(source);
     char *result = reinterpret_cast<char *>(arena->cursor);
     arena->cursor += length + 1;
