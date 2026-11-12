@@ -729,9 +729,15 @@ i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet
                 continue;
             }
         }
-        if (helmet == 0 || object->helmet == helmet) {
-            return 1;
+        if (helmet != 0) {
+            if (object->helmet != helmet) {
+                continue;
+            }
+            if (require_all == 0) {
+                return 1;
+            }
         }
+        return 1;
     }
     if (FreePlay != 0) {
         for (index = 0; index < apicharsys->character_count; ++index) {
@@ -748,9 +754,15 @@ i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet
                     continue;
                 }
             }
-            if (weapon_action == -1 || GCDataList[index].weapon_action == weapon_action) {
-                return 1;
+            if (weapon_action != -1) {
+                if (GCDataList[index].weapon_action != weapon_action) {
+                    continue;
+                }
+                if (require_all == 0) {
+                    return 1;
+                }
             }
+            return 1;
         }
     }
     return 0;
@@ -769,7 +781,7 @@ void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
             target.y = MAGNETOFFSET;
         }
     }
-    if ((object->character_context == 0x44 && object->field_7aa != 5 && object->field_7aa != 6) ||
+    if ((object->character_context == 0x44 && object->field_7aa != 6 && object->field_7aa != 5) ||
         (object->character_context == 0x43 && object->context_variant == 5)) {
         target = object->context_position_offset;
     }
@@ -783,13 +795,13 @@ void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
     }
     distance = NuVecDist(&target, &object->render_offset, &delta);
     step = (f32)((f64)FRAMETIME * (f64)0.4f);
-    if (distance > step) {
-        NuVecNorm(&delta, &delta);
-        NuVecScale(&delta, &delta, step);
-        NuVecAdd(&object->render_offset, &object->render_offset, &delta);
-    } else {
+    if (step >= distance) {
         object->render_offset = target;
+        return;
     }
+    NuVecNorm(&delta, &delta);
+    NuVecScale(&delta, &delta, step);
+    NuVecAdd(&object->render_offset, &object->render_offset, &delta);
 }
 
 i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object) {
