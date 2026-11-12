@@ -349,10 +349,10 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
     menu->draw_y = -menu->selected_row * MENUDY * menu->item_scale;
     for (i32 i = 0; i < 45; ++i) {
         i32 index = (i + 44) % 45;
-        CHEAT_PC *cheat = &ExtrasCheatsPc[index];
         f32 alpha = 0.5f;
-        if (index >= 8 && !(save->unlocked[index / 32] & (1u << (index & 31))) && cheat->area_index != -1 &&
-            !save->areas[cheat->area_index].red_brick_unlocked) {
+        if (index >= 8 && !(save->unlocked[index / 32] & (1u << (index & 31))) &&
+            ExtrasCheatsPc[index].area_index != -1 &&
+            !save->areas[ExtrasCheatsPc[index].area_index].red_brick_unlocked) {
             NuStrCpy(text, TTab[TextIdPc88074c]);
             sprintf(number, ExtrasLockedNumberFormatPc, index - 7);
             NuStrCat(text, number);
@@ -360,13 +360,13 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
         } else {
             if (save->unlocked[index / 32] & (1u << (index & 31))) {
                 alpha = 1.0f;
-                NuStrCpy(number, TTab[Cheat_IsOn(index) ? tON : tOFF]);
+                NuStrCpy(number, Cheat_IsOn(index) ? TTab[tON] : TTab[tOFF]);
                 if (BonusArea && Cheat_CheckFlags(index, 0x200000))
                     alpha = 0.5f;
             } else {
                 NuStrCpy(number, TTab[TextIdPc880764]);
             }
-            sprintf(text, ExtrasNameFormatPc, TTab[*cheat->text_id], number);
+            sprintf(text, ExtrasNameFormatPc, TTab[*ExtrasCheatsPc[index].text_id], number);
         }
         dme_sy = menu->item_scale;
         if (index >= 8)
@@ -386,12 +386,11 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
         } absolute;
         absolute.value = menu->draw_y;
         absolute.bits &= 0x7fffffff;
-        f32 distance = absolute.value;
-        if (distance > ExtrasFadeStartPc) {
-            if (distance > ExtrasFadeEndPc)
+        if (absolute.value > ExtrasFadeStartPc) {
+            if (absolute.value > ExtrasFadeEndPc)
                 alpha = 0.0f;
             else
-                alpha *= 1.0f - (distance - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
+                alpha *= 1.0f - (absolute.value - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
         }
         if (Paused) {
             dme_align = PauseMenus_Align;
