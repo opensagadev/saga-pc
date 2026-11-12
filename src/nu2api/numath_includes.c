@@ -2030,12 +2030,12 @@ void __cdecl NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNea
 }
 
 void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
-    matrix->m00 = (z_near + z_near) / (right - left);
+    matrix->m00 = 2.0f * z_near / (right - left);
     matrix->m01 = 0.0f;
     matrix->m02 = 0.0f;
     matrix->m03 = 0.0f;
     matrix->m10 = 0.0f;
-    matrix->m11 = (z_near + z_near) / (top - bottom);
+    matrix->m11 = 2.0f * z_near / (top - bottom);
     matrix->m12 = 0.0f;
     matrix->m13 = 0.0f;
     matrix->m20 = (right + left) / (left - right);
@@ -2049,12 +2049,12 @@ void __cdecl NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, 
 }
 
 void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 z_near, f32 z_far) {
-    matrix->m00 = (z_near + z_near) / (right - left);
+    matrix->m00 = 2.0f * z_near / (right - left);
     matrix->m01 = 0.0f;
     matrix->m02 = 0.0f;
     matrix->m03 = 0.0f;
     matrix->m10 = 0.0f;
-    matrix->m11 = (z_near + z_near) / (top - bottom);
+    matrix->m11 = 2.0f * z_near / (top - bottom);
     matrix->m12 = 0.0f;
     matrix->m13 = 0.0f;
     matrix->m20 = (right + left) / (left - right);
