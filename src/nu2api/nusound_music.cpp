@@ -180,8 +180,7 @@ i32 NuMusic::StopAll(i32 mode) {
                 voice->status = 1;
             }
             voice->track_index = 0;
-            voice->tracks[0] = NULL;
-            voice->tracks[1] = NULL;
+            memset(voice->tracks, 0, sizeof(voice->tracks));
             voice->fade_rate = 0.0f;
             voice->gain = 0.0f;
         }
