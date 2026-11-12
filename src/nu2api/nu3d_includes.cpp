@@ -3714,108 +3714,103 @@ extern "C" {
         f32 height;
         f32 space_width;
         u32 colour;
-        i32 is_3d;
+        u32 is_3d;
+        u16 character;
 
-        if (text == NULL) {
-            return;
-        }
-        if (font->material->texture_id > 0) {
-            NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
-            inverse_texture_width = 1.0f / (f32)texture_dimensions->width;
-            inverse_texture_height = 1.0f / (f32)texture_dimensions->height;
-        } else {
-            inverse_texture_width = 1.0f;
-            inverse_texture_height = 1.0f;
-        }
-
-        height = font->height * *font->y_scale;
-        if (nuqfnt_space_width == 0.0f) {
-            space_width = font->space_width * *font->x_scale;
-        } else {
-            space_width = nuqfnt_space_width * *font->x_scale;
-        }
-
-        ++NuPrimCSPos;
-        NuPrimSetCoordinateSystem(0);
-        is_3d = flags & 4;
-        if (is_3d) {
-            NuPrim3DBegin(12, 7, font->material, &font->platform_data->matrix);
-        } else {
-            NuPrim2DBegin(16, 7, font->material);
-        }
-
-        colour = render_data->colour;
-        while (*text != 0) {
-            u16 character = *text++;
-            VUFNTCHAR *glyph = &font->glyphs[character];
-            f32 advance;
-            f32 left;
-            f32 right;
-            f32 top;
-            f32 bottom;
-
-            if (character == 0x20) {
-                advance = space_width;
+        if (text != NULL) {
+            if (font->material->texture_id > 0) {
+                NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
+                inverse_texture_width = 1.0f / texture_dimensions->width;
+                inverse_texture_height = 1.0f / texture_dimensions->height;
             } else {
-                advance = glyph->width * *font->x_scale;
+                inverse_texture_width = 1.0f;
+                inverse_texture_height = 1.0f;
+            }
+
+            height = font->height * *font->y_scale;
+            if (nuqfnt_space_width != 0.0f) {
+                space_width = nuqfnt_space_width * *font->x_scale;
+            } else {
+                space_width = font->space_width * *font->x_scale;
+            }
+
+            ++NuPrimCSPos;
+            NuPrimSetCoordinateSystem(0);
+            is_3d = flags & 4;
+            if (is_3d) {
+                NuPrim3DBegin(12, 7, font->material, &font->platform_data->matrix);
+            } else {
+                NuPrim2DBegin(16, 7, font->material);
+            }
+
+            colour = render_data->colour;
+            while ((character = *text) != 0) {
+                VUFNTCHAR *glyph = &font->glyphs[character];
+                ++text;
+                f32 glyph_width = character == 0x20 ? space_width : glyph->width * *font->x_scale;
+                f32 advance = glyph_width;
+                f32 left;
+                f32 top;
+                f32 bottom;
+
+                if (is_3d) {
+                    top = y - height;
+                    bottom = y;
+                } else {
+                    top = y;
+                    bottom = y + height;
+                }
+                left = x;
+                if ((flags & 1) != 0 && (u16)(character - 0x30) <= 9) {
+                    i16 zero_index = (i16)NuQFntEncodeUnicodeChar(font, 0x30);
+                    VUFNTCHAR *zero = &font->glyphs[zero_index];
+                    f32 digit_width = zero->width * *font->x_scale;
+                    left = (digit_width - glyph_width) + x;
+                    advance = digit_width;
+                }
+                if (character != 0x20) {
+                    f32 right = left + glyph_width;
+                    if (is_3d) {
+                        f32 u0 = inverse_texture_width * glyph->x;
+                        f32 v0 = inverse_texture_height * glyph->y;
+                        f32 u1 = (glyph->width + glyph->x) * inverse_texture_width;
+                        f32 v1 = (glyph->y + font->height) * inverse_texture_height;
+                        QFONT_VERTEX(left, top, z, u0, v1);
+                        QFONT_VERTEX(right, top, z, u1, v1);
+                        QFONT_VERTEX(right, bottom, z, u1, v0);
+                        QFONT_VERTEX(right, bottom, z, u1, v0);
+                        QFONT_VERTEX(left, bottom, z, u0, v0);
+                        QFONT_VERTEX(left, top, z, u0, v1);
+                    } else {
+                        QFONT_PRIM_VERTEX_PC *vertex;
+                        f32 u0, v0, u1, v1;
+                        NuRndrPrimSetColourPrivate((i32)colour);
+                        v0 = inverse_texture_height * glyph->y;
+                        u0 = inverse_texture_width * glyph->x;
+                        vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                        vertex->u = u0;
+                        vertex->v = v0;
+                        NuPrim2DAddXYZ(left, top, 0.0f);
+                        NuRndrPrimSetColourPrivate((i32)colour);
+                        v1 = (glyph->y + font->height) * inverse_texture_height;
+                        u1 = (glyph->x + glyph->width) * inverse_texture_width;
+                        vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                        vertex->u = u1;
+                        vertex->v = v1;
+                        NuPrim2DAddXYZ(right, bottom, 0.0f);
+                    }
+                }
+                x = x + font->ic_gap * *font->x_scale + advance;
             }
 
             if (is_3d) {
-                top = y - height;
-                bottom = y;
+                NuPrim3DEnd();
             } else {
-                top = y;
-                bottom = y + height;
+                NuPrim2DEnd();
             }
-            if ((flags & 1) != 0 && character >= 0x30 && character < 0x3a) {
-                u16 zero_index = NuQFntEncodeUnicodeChar(font, 0x30);
-                VUFNTCHAR *zero = &font->glyphs[(i16)zero_index];
-                f32 digit_width = zero->width * *font->x_scale;
-                f32 adjustment = digit_width - advance;
-                left = adjustment + x;
-                right = left + advance;
-                advance = digit_width;
-            } else {
-                left = x;
-                right = x + advance;
-            }
-            if (character != 0x20) {
-                f32 u0 = glyph->x * inverse_texture_width;
-                f32 v0 = glyph->y * inverse_texture_height;
-                f32 u1 = (glyph->x + glyph->width) * inverse_texture_width;
-                f32 v1 = (glyph->y + font->height) * inverse_texture_height;
-
-                if (is_3d) {
-                    QFONT_VERTEX(left, top, z, u0, v1);
-                    QFONT_VERTEX(right, top, z, u1, v1);
-                    QFONT_VERTEX(right, bottom, z, u1, v0);
-                    QFONT_VERTEX(right, bottom, z, u1, v0);
-                    QFONT_VERTEX(left, bottom, z, u0, v0);
-                    QFONT_VERTEX(left, top, z, u0, v1);
-                } else {
-                    QFONT_PRIM_VERTEX_PC *vertex;
-                    NuRndrPrimSetColourPrivate((i32)colour);
-                    vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
-                    vertex->u = u0;
-                    vertex->v = v0;
-                    NuPrim2DAddXYZ(left, top, 0.0f);
-                    NuRndrPrimSetColourPrivate((i32)colour);
-                    vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
-                    vertex->u = u1;
-                    vertex->v = v1;
-                    NuPrim2DAddXYZ(right, bottom, 0.0f);
-                }
-            }
-            x = (f32)((f64)font->ic_gap * *font->x_scale + advance + x);
+            --NuPrimCSPos;
+            NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
         }
-
-        if (is_3d) {
-            NuPrim3DEnd();
-        } else {
-            NuPrim2DEnd();
-        }
-        --NuPrimCSPos;
-        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
     }
 
 #undef QFONT_VERTEX
