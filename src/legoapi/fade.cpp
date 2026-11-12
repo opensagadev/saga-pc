@@ -140,10 +140,10 @@ void FadeStillWipe::InitFade() {
         pause_rndr_on = 0;
         info->fade = 1.0f;
         info->rate = 2.0f;
-        if (info->field_28 != 0) {
+        if (FadeSys.field_28 != 0) {
             NeedScreenGrab(1);
         } else {
-            info->field_28 = 1;
+            FadeSys.field_28 = 1;
         }
         wait_till_next_frame = FRAMES_TO_WAIT;
     }
@@ -262,10 +262,11 @@ void FadeSystem::Update() {
 
     if (fades[type] != 0)
         fades[type]->UpdateFade();
-    if (fade == 0.0f || fade == 1.0f)
+    if (fade == 0.0f || fade == 1.0f) {
+        if (fade == 0.0f)
+            pending_type = FADE_TYPE_NONE;
         rate = 0.0f;
-    if (fade == 0.0f)
-        pending_type = FADE_TYPE_NONE;
+    }
 }
 
 void FadeSystem::Draw() {
