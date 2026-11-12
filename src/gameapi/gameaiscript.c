@@ -5271,7 +5271,8 @@ i32 __cdecl Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
 i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
-    NUVEC *target;
+    i32 nearest = 0;
+    char *name = NULL;
     (void)sys;
     if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner == NULL) {
         return 1;
@@ -5279,14 +5280,11 @@ i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
     if (param_5 != 0) {
-        char *name;
-        i32 nearest;
         i32 index;
+        NUSPECIALHANDLE special;
         packet->movement_instruction_parameter = idealgoalrange;
         processor->action_data_5 = engagefiretime;
 
-        name = NULL;
-        nearest = 0;
         for (index = 0; index < param_4; ++index) {
             char *value = NuStrIStr(params[index], (char *)"name");
             if (value != NULL) {
@@ -5304,15 +5302,13 @@ i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         if (name != NULL) {
             if (nearest != 0) {
                 NUSPECIALHANDLE specials[50];
-                const i32 special_count = NuSpecialFindMulti(WORLD->current_gscn, specials, name, 50, 0);
-                if (special_count >= 1) {
-                    i32 index;
+                i32 special_count = NuSpecialFindMulti(WORLD->current_gscn, specials, name, 50, 0);
+                if (special_count != 0) {
                     f32 nearest_distance = 1.0e9f;
                     NUVEC difference;
                     for (index = 0; index < special_count; ++index) {
                         NUVEC *position = NuSpecialGetDrawPos(&specials[index]);
-                        const f32 distance =
-                            NuVecDistSqr(&((APIOBJECT_PC *)packet->owner)->position, position, &difference);
+                        f32 distance = NuVecDistSqr(&((APIOBJECT_PC *)packet->owner)->position, position, &difference);
                         if (distance < nearest_distance) {
                             nearest_distance = distance;
                             processor->action_data_3 = position;
@@ -5320,7 +5316,6 @@ i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
                     }
                 }
             } else {
-                NUSPECIALHANDLE special;
                 if (NuSpecialFind(WORLD->current_gscn, &special, name, 1) != 0) {
                     processor->action_data_3 = NuSpecialGetDrawPos(&special);
                 }
@@ -5333,23 +5328,20 @@ i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         }
     }
 
-    target = (NUVEC *)processor->action_data_3;
-    if (target == NULL) {
+    if (processor->action_data_3 == NULL) {
         return 0;
     }
 
-    packet->movement_look_target = target;
+    packet->movement_look_target = (NUVEC *)processor->action_data_3;
     processor->action_timer -= param_6;
-    object->field_e4c = *target;
+    object->field_e4c = *(NUVEC *)processor->action_data_3;
     object->portal_flags |= 0x8000;
     object->portal_flags |= 0x20;
-    if (processor->action_timer > 0.0f) {
-        return 0;
+    if (processor->action_timer <= 0.0f) {
+        object->portal_flags = (object->portal_flags & ~0x20000u) | ((processor->action_data_1 & 1) << 17);
+        processor->action_timer = NuRandFloat() * processor->action_data_5 + processor->action_data_5 * 0.5;
+        object->pad->buttons_pressed |= GAMEPAD_ACTION;
     }
-
-    object->portal_flags = (object->portal_flags & ~0x20000u) | ((processor->action_data_1 & 1) << 17);
-    processor->action_timer = (0.5f + NuRandFloat()) * processor->action_data_5;
-    object->pad->buttons_pressed |= GAMEPAD_ACTION;
     return 0;
 }
 
