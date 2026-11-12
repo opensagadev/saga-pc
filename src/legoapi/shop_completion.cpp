@@ -39,6 +39,8 @@ extern "C" {
     void __cdecl ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME_PC *save = reinterpret_cast<SHOP_COMPLETION_GAME_PC *>(&Game);
         i32 i;
+        AREA_DATA_PC *area;
+        AREASAVE_s *area_save;
         save->completion_points = 0;
         save->gold_bricks = 0;
         memset(CompletionPointInfoRecalculatePc, 0, sizeof(CompletionPointInfoRecalculatePc));
@@ -52,10 +54,10 @@ extern "C" {
                     AddToCompletionPoints(POINTS_PER_CHARACTER);
             }
         }
-        for (i = 0; i < AREACOUNT; ++i) {
-            AREA_DATA_PC *area = &ADataList[i];
-            AREASAVE_s *area_save = &save->area_save[i];
-            if (area == HUB_ADATA || (area->flags & 0x2022) != 0)
+        area = ADataList;
+        area_save = save->area_save;
+        for (i = 0; i < AREACOUNT; ++i, ++area_save, ++area) {
+            if (area == HUB_ADATA || (area->flags & 0x22) != 0 || (area->flags & 0x2000) != 0)
                 continue;
             if ((area->flags & 0x100) != 0) {
                 CompletionPointInfoRecalculatePc[1] += POINTS_PER_SUPERBONUSCOMPLETE;
@@ -131,7 +133,8 @@ extern "C" {
         }
         for (i = 0; i < 44; ++i) {
             CompletionPointInfoRecalculatePc[4] += POINTS_PER_CHEAT;
-            if ((save->purchased_extra_bits[i >> 5] & (1U << (i & 31))) != 0)
+            // MATCH-EXCEPTION: unsigned word index (retail shr) with a signed loop counter (jl).
+            if ((save->purchased_extra_bits[(u32)i >> 5] & (1U << (i & 31))) != 0)
                 AddToCompletionPoints(POINTS_PER_CHEAT);
         }
         for (i = 0; i < SHOPHINTCOUNT; ++i) {
