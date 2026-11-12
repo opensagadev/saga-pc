@@ -102,15 +102,17 @@ extern "C" {
     }
     i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size) {
         PC_SAVE_HEADER_PC header;
-        FILE *file = fopen(fullslotname(slot), "rb");
-        if (file == NULL)
-            return 0;
-        fread(&header, sizeof(header), 1, file);
-        if (header.api_data_size != 0)
-            fseek(file, header.api_data_size, SEEK_CUR);
-        fread(buffer, size, 1, file);
-        fclose(file);
-        return 1;
+        char *name = fullslotname(slot);
+        FILE *file = fopen(name, "rb");
+        if (file != NULL) {
+            fread(&header, sizeof(header), 1, file);
+            if (header.api_data_size != 0)
+                fseek(file, header.api_data_size, SEEK_CUR);
+            fread(buffer, size, 1, file);
+            fclose(file);
+            return 1;
+        }
+        return 0;
     }
     i32 __cdecl saveloadDeleteSlot(i32 slot) {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
