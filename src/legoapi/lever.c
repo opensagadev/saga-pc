@@ -177,7 +177,7 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 typedef struct LEVER_PROGRESS_PC {
-    u32 pulled_down, enabled, visible;
+    u32 pulled_down[1], enabled[1], visible[1];
 } LEVER_PROGRESS_PC;
 STATIC_ASSERT(sizeof(LEVER_PROGRESS_PC) == 12);
 STATIC_ASSERT(offsetof(LEVER_PROGRESS_PC, enabled) == 4);
@@ -333,50 +333,58 @@ static void Levers_ClearProgress(void *world, void *progress_ptr) {
     (void)world;
     if (progress == NULL)
         return;
-    progress->pulled_down = 0;
-    progress->enabled = ~0u;
-    progress->visible = ~0u;
+    progress->pulled_down[0] = 0;
+    progress->enabled[0] = ~0u;
+    progress->visible[0] = ~0u;
 }
 static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    GIZMO_LEVER_PC *lever;
     i32 index;
     (void)data;
     if (progress == NULL)
         return;
     Levers_ClearProgress(NULL, progress);
-    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
+    if (world == NULL)
         return;
-    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count && index < 32; ++index) {
-        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
-        u32 bit = 1u << index;
-        if ((lever->flags & 2) != 0 && lever->pull_progress >= 1.0f)
-            progress->pulled_down |= bit;
-        if ((lever->flags & 0x80) == 0)
-            progress->enabled &= ~bit;
-        if ((lever->flags & 0x10) == 0)
-            progress->visible &= ~bit;
+    lever = ((LEVER_WORLD_PC *)world)->levers;
+    if (lever == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count && index < 32; ++index, ++lever) {
+        i32 word = index / 32;
+        u32 bit = 1 << (index & 31);
+        if (LEVER_BITS(lever)->being_pulled && lever->pull_progress >= 1.0f)
+            progress->pulled_down[word] |= bit;
+        if (!LEVER_BITS(lever)->visible)
+            progress->visible[word] &= ~bit;
+        if (!LEVER_BITS(lever)->enabled)
+            progress->enabled[word] &= ~bit;
     }
 }
 static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    GIZMO_LEVER_PC *lever;
     i32 index;
     (void)data;
-    if (world == NULL || ((LEVER_WORLD_PC *)world)->levers == NULL)
+    if (world == NULL)
         return;
-    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
-        GIZMO_LEVER_PC *lever = &((LEVER_WORLD_PC *)world)->levers[index];
+    lever = ((LEVER_WORLD_PC *)world)->levers;
+    if (lever == NULL)
+        return;
+    for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index, ++lever) {
         Lever_Reset(lever);
         if (progress != NULL && index < 32) {
-            u32 bit = 1u << index;
-            if ((progress->pulled_down & bit) != 0) {
+            i32 word = index / 32;
+            u32 bit = 1 << (index & 31);
+            if ((progress->pulled_down[word] & bit) != 0) {
                 lever->pull_progress = 1.0f;
-                lever->flags |= 2;
+                LEVER_BITS(lever)->being_pulled = 1;
                 lever->animation_frame = 0x8000;
             }
-            lever->flags = (lever->flags & ~0x80) | (((progress->enabled & bit) != 0) << 7);
-            lever->flags = (lever->flags & ~0x10) | (((progress->visible & bit) != 0) << 4);
+            LEVER_BITS(lever)->visible = (progress->visible[word] & bit) != 0;
+            LEVER_BITS(lever)->enabled = (progress->enabled[word] & bit) != 0;
         }
     }
 }
