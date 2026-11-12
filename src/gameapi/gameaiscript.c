@@ -3779,7 +3779,6 @@ i32 __cdecl Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     i32 type_count;
     f32 range_squared;
     char *value;
-    f32 range;
     i32 local_type;
     i32 global_type;
     NUVEC origin;
@@ -3787,23 +3786,21 @@ i32 __cdecl Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     NUVEC difference;
     f32 distance_squared;
     i32 matching_type;
-    AIPACKET_PC *object_packet;
     i32 index, object_index, type_index;
     (void)sys;
     (void)param_6;
+    range_squared = 0.0f;
+    state_name = NULL;
+    type_count = 0;
     if (param_5 == 0) {
         return 1;
     }
 
-    state_name = NULL;
-
-    type_count = 0;
-    range_squared = 0.0f;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AITransferLiteral757724);
         if (value != NULL) {
-            range = AIParamToFloat(processor, value + 6);
-            range_squared = range * range;
+            range_squared = AIParamToFloat(processor, value + 6);
+            range_squared *= range_squared;
         } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral75772c)) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                 local_type = (u8)(LevelCharacterTypeIDFn(value + 5));
@@ -3819,34 +3816,39 @@ i32 __cdecl Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         }
     }
 
-    if (state_name == NULL || (type_count == 0 && !(range_squared > 0.0f))) {
+    if (state_name == NULL || (type_count <= 0 && !(range_squared > 0.0f))) {
         processor->next_state = AIStateFind(state_name, processor->script);
         return 1;
     }
 
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
-        origin = packet->owner->objptr->collision_position;
+        object = packet->owner->objptr;
+        origin = object->collision_position;
     }
 
     for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
         object = &Obj[object_index];
-        if ((object->flags_1fc_word & (1u | 0x1000u)) != (1u | 0x1000u) || (object->flags_1f8 & 0x400) == 0) {
+        if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
 
         NuVecSub(&difference, &origin, &object->position);
         distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
 
-        matching_type = type_count == 0;
-        for (type_index = 0; type_index < type_count; ++type_index) {
-            if ((i16)object->id == types[type_index]) {
-                matching_type = 1;
+        if (type_count != 0) {
+            matching_type = 0;
+            for (type_index = 0; type_index < type_count; ++type_index) {
+                if ((i16)object->id == types[type_index]) {
+                    matching_type = 1;
+                }
             }
-        }
-        if (matching_type != 0 && range_squared > distance_squared) {
-            object_packet = ((APIOBJECT_PC *)object)->ai;
-            object_packet->script_processor.next_state =
-                AIStateFind(state_name, object_packet->script_processor.script);
+            if (matching_type != 0 && range_squared > distance_squared) {
+                ((APIOBJECT_PC *)object)->ai->script_processor.next_state =
+                    AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.script);
+            }
+        } else if (range_squared > distance_squared) {
+            ((APIOBJECT_PC *)object)->ai->script_processor.next_state =
+                AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.script);
         }
     }
     return 1;
