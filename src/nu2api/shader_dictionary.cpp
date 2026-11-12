@@ -716,7 +716,8 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
         switch (node->kind) {
             case 0: {
                 i32 value;
-                if (EvaluateCondition(node->data.branch.condition, &value) && value != 0)
+                ShaderConditionNodePc *condition = node->data.branch.condition;
+                if (EvaluateCondition(condition, &value) && value != 0)
                     Expand(node->data.branch.if_true, output);
                 else if (node->data.branch.if_false != NULL)
                     Expand(node->data.branch.if_false, output);
