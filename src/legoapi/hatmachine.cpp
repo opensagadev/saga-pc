@@ -6,7 +6,17 @@ struct HATMACHINE_PC {
     u16 yaw;
     u8 configured_hat, displayed_hat;
     i8 animation_state;
-    u8 model_letter, model_special_index, flags;
+    u8 model_letter, model_special_index;
+    union {
+        u8 flags;
+        struct {
+            u8 state_bit0 : 1;
+            u8 state_bit1 : 1;
+            u8 visible : 1;
+            u8 enabled : 1;
+            u8 reserved_state_bits : 4;
+        };
+    };
     NUVEC player_position, target_offset;
     u16 terrain_pitch, terrain_roll;
     i16 platform_id;
@@ -349,11 +359,11 @@ extern "C" {
             return;
         HATMACHINE_PC *machine = (HATMACHINE_PC *)gizmo->object;
         const i32 was_visible = (machine->flags >> 2) & 1;
-        machine->flags = (machine->flags & ~4) | ((visible != 0) << 2);
-        if ((machine->flags & 4) != 0 && was_visible == 0) {
+        machine->visible = visible != 0;
+        if (machine->visible && was_visible == 0) {
             machine->platform_id = NewPlatPickupInst(machine, 2);
             PlatInstRotate(machine->platform_id, 1);
-        } else if ((machine->flags & 4) == 0 && was_visible != 0)
+        } else if (!machine->visible && was_visible != 0)
             DeletePlatinst(machine->platform_id);
     }
     static void HatMachine_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *) {
@@ -406,7 +416,10 @@ extern "C" {
         machine->hat_delay = 0.0f;
         machine->state_duration = 0.0f;
         machine->animation_time = 0.0f;
-        machine->model_special_index = machine->model_letter == 'r' ? 0x22 : 0x20 + (machine->model_letter == 'o');
+        if (machine->model_letter == 'r')
+            machine->model_special_index = 0x22;
+        else
+            machine->model_special_index = 0x20 + (machine->model_letter == 'o');
         if (machine->configured_hat != 0)
             machine->displayed_hat = machine->configured_hat;
         else
@@ -450,10 +463,10 @@ extern "C" {
             if (machine->hat_delay > 0.0f) {
                 machine->hat_delay -= FRAMETIME;
                 if (machine->hat_delay <= 0.0f && machine->displayed_hat == 0) {
-                    if (machine->configured_hat != 0)
-                        machine->displayed_hat = machine->configured_hat;
-                    else
+                    if (machine->configured_hat == 0)
                         machine->displayed_hat = 1 - (u8)(NuFloatRand((NURAND *)&GAMERAND) * -4.0);
+                    else
+                        machine->displayed_hat = machine->configured_hat;
                     machine->hat_delay = 1.0f;
                 }
             }
