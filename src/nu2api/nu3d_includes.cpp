@@ -3378,12 +3378,12 @@ extern "C" {
         i32 magic = *(i32 *)source;
         NuAnimData2FileHeader_PC *header;
         void *relocated_animation;
+        u32 offset;
         if (magic >= 0x414e4934 && magic <= 0x414e4935) {
             u32 size = NuAnimGetAnimDataSizeANI3((ANI3_HEADER_PC *)source);
             void *destination;
-            cursor->addr = (cursor->addr + 15) & ~15u;
-            destination = cursor->void_ptr;
-            cursor->addr += size;
+            destination = (void *)((cursor->addr + 15) & ~15u);
+            cursor->addr = ((cursor->addr + 15) & ~15u) + size;
             *data = destination;
             memcpy(destination, source, size);
             NuAnimRelocatePtrsANI3((ANI3_HEADER_PC *)destination, (i32)((u32)destination - (u32)source));
@@ -3396,7 +3396,8 @@ extern "C" {
         *data = cursor->void_ptr;
         cursor->addr += *(u32 *)*data;
         header = (NuAnimData2FileHeader_PC *)*data;
-        relocated_animation = NuAnimData2FixPtrs(header->animation, (i32)((u32)header - header->relocation_base), 0, 0);
+        offset = (u32)header - header->relocation_base;
+        relocated_animation = NuAnimData2FixPtrs(header->animation, (i32)offset, 0, 0);
         ((NuAnimData2FileHeader_PC *)*data)->animation = relocated_animation;
         header = (NuAnimData2FileHeader_PC *)*data;
         header->relocation_base = (u32)header;
