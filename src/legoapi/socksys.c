@@ -1772,10 +1772,6 @@ f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
     }
     return y;
 }
-typedef union SOCK_CAMERA_FLOAT_BITS_PC {
-    f32 value;
-    u32 bits;
-} SOCK_CAMERA_FLOAT_BITS_PC;
 void __cdecl PerspectMidPoint(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
 i32 __cdecl SockSegmentsAhead(SOCK_PC *, i32, i32 *, i32 *);
 i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
@@ -1888,8 +1884,7 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
             }
 
             if (sock->camera_rail_offset != 0.0f) {
-                scratch.x = 0.0f;
-                scratch.y = 0.0f;
+                scratch.x = scratch.y = 0.0f;
                 scratch.z = 1.0f;
                 NuVecRotateX(&scratch, &scratch, candidate->camera_rotation.x);
                 NuVecRotateY(&scratch, &scratch, candidate->camera_rotation.y);
@@ -2151,16 +2146,13 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
         }
     }
     if (player_count == 2 && two_player_pullback != 0.0f) {
-        SOCK_CAMERA_FLOAT_BITS_PC absolute_difference;
-
         // The reference has distinct spatial and planar pullback blocks.
 #define SOCK_CAMERA_PAIR_PULLBACK(distance_service, with_y)                                                            \
     do {                                                                                                               \
         if ((sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION) !=  \
             0) {                                                                                                       \
-            absolute_difference.value = (f64)player_camera_positions[0].y - player_camera_positions[1].y;              \
-            absolute_difference.bits &= 0x7fffffffu;                                                                   \
-            pair_offset = absolute_difference.value;                                                                   \
+            f32 vertical_separation = (f64)player_camera_positions[0].y - player_camera_positions[1].y;                \
+            *(u32 *)&pair_offset = *(u32 *)&vertical_separation & 0x7fffffff;                                          \
         } else                                                                                                         \
             pair_offset = distance_service(&player_camera_positions[0], &player_camera_positions[1], NULL);            \
         pair_offset *= -two_player_pullback;                                                                           \
