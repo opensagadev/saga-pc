@@ -800,7 +800,10 @@ void __cdecl SetCoinType(i32 model, GIZMOPICKUP_PC *pickup) {
         pickup->model_variant = (u8)(model - 0xd5);
     }
     count = GizmoPickupType[pickup->type_index].random_model_count;
-    pickup->model_variant = count ? pickup->model_variant % count : 0;
+    if (count > 0)
+        pickup->model_variant %= count;
+    else
+        pickup->model_variant = 0;
 }
 
 i32 GetRandomCoinType() {
