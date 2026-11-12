@@ -11144,8 +11144,8 @@ extern "C" {
     void __cdecl NuVpSetPosition2(f32 x, f32 y) {
         x += RenderPostViewportPrefixPc.x_offset;
         y += RenderPostViewportPrefixPc.y_offset;
-        vpCurrent.x = (i32)(((f64)PS2_REZ_W * x / PS2_VREZ_W + ((f64)PS2_VCNTR_X - (PS2_REZ_W >> 1))) * 16.0);
-        vpCurrent.y = (i32)(((f64)PS2_REZ_H * y / PS2_VREZ_H + ((f64)PS2_VCNTR_Y - (PS2_REZ_H >> 1))) * 16.0);
+        vpCurrent.x = (i32)((PS2_REZ_W * x / PS2_VREZ_W + ((f32)PS2_VCNTR_X - (PS2_REZ_W >> 1))) * 16.0f);
+        vpCurrent.y = (i32)((PS2_REZ_H * y / PS2_VREZ_H + ((f32)PS2_VCNTR_Y - (PS2_REZ_H >> 1))) * 16.0f);
         NuVpDirtyPc = 1;
     }
     void __cdecl NuVpSetPosition(f32 x, f32 y) {
