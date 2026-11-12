@@ -5372,8 +5372,9 @@ AIAREA_PC *__cdecl AISysFindArea(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < system->area_count; ++index) {
-            if (NuStrICmp(name, system->areas[index].name) == 0) {
-                return &system->areas[index];
+            AIAREA_PC *area = &system->areas[index];
+            if (NuStrICmp(name, area->name) == 0) {
+                return area;
             }
         }
     }
@@ -5384,9 +5385,8 @@ AIPATH_PC *__cdecl AISysFindPath(AISYS_PC *system, char *name) {
     i32 index;
     if (system != NULL && system->path_sys != NULL) {
         for (index = 0; index < system->path_sys->path_count; ++index) {
-            AIPATH_PC *path = system->path_sys->paths[index];
-            if (NuStrICmp(path->name, name) == 0) {
-                return path;
+            if (NuStrICmp(system->path_sys->paths[index]->name, name) == 0) {
+                return system->path_sys->paths[index];
             }
         }
     }
