@@ -3079,9 +3079,9 @@ Placeable *PlaceableHelper::FindObject(char *name) {
 void *PlaceableHelper::GetNextObject(void *object, i32 (*filter)(void *)) {
     for (object = GetNextObject(object); object != NULL; object = GetNextObject(object)) {
         if (filter(object) != 0)
-            return object;
+            break;
     }
-    return NULL;
+    return object;
 }
 
 Placeable *PlaceableHelper::Find(char *name) {
