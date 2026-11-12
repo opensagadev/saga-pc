@@ -5264,33 +5264,28 @@ extern "C" {
     }
 
     void __cdecl DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *global) {
-        NUPRIM_RENDER_STATE_IDS_PC *state;
         void *packet;
 
         if (global == NULL) {
             return;
         }
-
-        state = (NUPRIM_RENDER_STATE_IDS_PC *)list->render_state;
-        if (state->global_id == global->counter_0020) {
+        if (((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->global_id == global->counter_0020) {
             return;
         }
 
-        if ((u16)state->lights_id != global->lights_id) {
-            packet = global->light_packet_cache;
-            if (packet == NULL) {
-                packet = DisplayListBuildLightPacket(global);
-                global->light_packet_cache = packet;
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->lights_id != global->lights_id) {
+            if (global->light_packet_cache == NULL) {
+                global->light_packet_cache = DisplayListBuildLightPacket(global);
             }
-            NuDisplayListLinkItem(list, 0x94, packet);
-            state->lights_id = global->lights_id;
+            NuDisplayListLinkItem(list, 0x94, global->light_packet_cache);
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->lights_id = global->lights_id;
         }
 
-        if ((u16)state->camera_id != global->camera_id) {
-            packet = global->camera_packet_cache;
-            if (packet == NULL) {
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->camera_id != global->camera_id) {
+            if (global->camera_packet_cache == NULL) {
                 NUMTX projection;
-                NUPRIM_CAMERA_PACKET_PC *camera;
+                VARIPTR *cursor;
+                f32 *viewport;
                 memset(&projection.m01, 0, sizeof(projection) - sizeof(projection.m00));
                 projection.m00 = global->projection_0154;
                 projection.m11 = global->projection_0158;
@@ -5298,61 +5293,62 @@ extern "C" {
                 projection.m23 = global->projection_0160;
                 projection.m32 = global->projection_0164;
                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-                camera = (NUPRIM_CAMERA_PACKET_PC *)NuDisplayListStreamCursor->void_ptr;
-                NuDisplayListStreamCursor->addr += sizeof(*camera);
-                camera->id = ((i32)(i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
-                camera->view = global->camera_matrix;
-                camera->projection = projection;
-                camera->viewport[0] = global->viewport_x;
-                camera->viewport[1] = global->viewport_y;
-                camera->viewport[2] = global->viewport_width;
-                camera->viewport[3] = global->viewport_height;
-                packet = camera;
-                global->camera_packet_cache = packet;
+                cursor = NuDisplayListStreamCursor;
+                global->camera_packet_cache = cursor->void_ptr;
+                *(i32 *)cursor->void_ptr =
+                    ((i32)(i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
+                cursor->addr += sizeof(i32);
+                *(NUMTX *)cursor->void_ptr = global->camera_matrix;
+                cursor->addr += sizeof(NUMTX);
+                *(NUMTX *)cursor->void_ptr = projection;
+                cursor->addr += sizeof(NUMTX);
+                viewport = (f32 *)cursor->void_ptr;
+                *viewport++ = global->viewport_x;
+                cursor->void_ptr = viewport;
+                *viewport++ = global->viewport_y;
+                cursor->void_ptr = viewport;
+                *viewport++ = global->viewport_width;
+                cursor->void_ptr = viewport;
+                *viewport++ = global->viewport_height;
+                cursor->void_ptr = viewport;
             }
-            NuDisplayListLinkItem(list, 0x9a, packet);
-            state->camera_id = global->camera_id;
+            NuDisplayListLinkItem(list, 0x9a, global->camera_packet_cache);
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->camera_id = global->camera_id;
         }
 
-        if ((u16)state->fog_id != global->fog_id) {
-            packet = global->fog_packet_cache;
-            if (packet == NULL) {
-                packet = DisplayListBuildFogPacket(global);
-                global->fog_packet_cache = packet;
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->fog_id != global->fog_id) {
+            if (global->fog_packet_cache == NULL) {
+                global->fog_packet_cache = DisplayListBuildFogPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xa6, packet);
-            state->fog_id = global->fog_id;
+            NuDisplayListLinkItem(list, 0xa6, global->fog_packet_cache);
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->fog_id = global->fog_id;
         }
 
-        if ((u16)state->konst_id != global->counter_001e) {
-            packet = global->konst_packet_cache;
-            if (packet == NULL) {
-                packet = DisplayListBuildKonstPacket(global);
-                global->konst_packet_cache = packet;
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->konst_id != global->counter_001e) {
+            if (global->konst_packet_cache == NULL) {
+                global->konst_packet_cache = DisplayListBuildKonstPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xa5, packet);
-            state->konst_id = global->counter_001e;
+            NuDisplayListLinkItem(list, 0xa5, global->konst_packet_cache);
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->konst_id = global->counter_001e;
         }
 
-        if ((u16)state->reflection_id != global->reflection_id) {
-            packet = global->reflection_packet_cache;
-            if (packet == NULL) {
-                packet = DisplayListBuildReflectionPacket(global);
-                global->reflection_packet_cache = packet;
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->reflection_id != global->reflection_id) {
+            if (global->reflection_packet_cache == NULL) {
+                global->reflection_packet_cache = DisplayListBuildReflectionPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xab, packet);
-            state->reflection_id = global->reflection_id;
+            NuDisplayListLinkItem(list, 0xab, global->reflection_packet_cache);
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->reflection_id = global->reflection_id;
         }
 
-        if ((u16)state->vertex_groups_id != global->vertex_groups_id) {
+        if ((u16)((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->vertex_groups_id != global->vertex_groups_id) {
             packet = DisplayListBuildVertexGroupPacket(global);
             if (packet != NULL) {
                 NuDisplayListLinkItem(list, 0xa9, packet);
             }
-            state->vertex_groups_id = global->vertex_groups_id;
+            ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->vertex_groups_id = global->vertex_groups_id;
         }
 
-        state->global_id = global->counter_0020;
+        ((NUPRIM_RENDER_STATE_IDS_PC *)list->render_state)->global_id = global->counter_0020;
     }
 
     void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
