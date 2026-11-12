@@ -97,8 +97,8 @@ extern "C" void __cdecl GizActions_PlayForcePc(GIZFLOW_PC *flow, FLOWBOX_PC *unu
 STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
 
 extern "C" void __cdecl GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
-    i32 index = -1;
     i32 enabled = 1;
+    i32 index = -1;
     for (i32 i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)"ix=");
         if (value != NULL) {
