@@ -118,13 +118,11 @@ static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
 static void __cdecl Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 index;
-    PORTAL_CALLBACK_PC *portal;
     if (world == NULL || world->current_gscn == NULL)
         return;
     for (index = 0; index < world->current_gscn->max_portals; ++index) {
-        portal = (PORTAL_CALLBACK_PC *)&world->current_gscn->portals[index];
-        if (portal->id != 0)
-            AddGizmo(system, type_id, NULL, portal);
+        if (world->current_gscn->portals[index].id != 0)
+            AddGizmo(system, type_id, NULL, &world->current_gscn->portals[index]);
     }
 }
 static char *__cdecl Portal_GetGizmoName(GIZMO_PC *gizmo) {
