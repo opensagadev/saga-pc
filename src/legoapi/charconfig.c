@@ -205,28 +205,25 @@ static void CC_scale(NUFPAR_PC *parser) {
 }
 
 static void CC_layer(NUFPAR_PC *parser) {
-    i32 i;
-    GAMECHARACTERLAYER_PC *layer;
     u32 bit;
-    PLAYERCHARACTERCONFIG_PC *data = charconfig.runtime;
-    if ((charconfig.flags & 2) == 0 || data->layer_count >= 32)
+    i32 i;
+    if ((charconfig.flags & 2) == 0 || charconfig.runtime->layer_count >= 32)
         return;
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 24)
         return;
-    layer = &data->layers[data->layer_count];
-    NuStrCpy(layer->name, parser->word_buffer_ptr);
+    NuStrCpy(charconfig.runtime->layers[charconfig.runtime->layer_count].name, parser->word_buffer_ptr);
     bit = NuFParGetInt(parser);
-    if (bit >= 32)
+    if (bit > 31)
         return;
-    for (i = 0; i < data->layer_count; ++i) {
-        if (data->layers[i].mask_bit == (i32)(bit))
+    for (i = 0; i < charconfig.runtime->layer_count; ++i) {
+        if (charconfig.runtime->layers[i].mask_bit == (i32)bit)
             return;
     }
+    charconfig.runtime->layers[charconfig.runtime->layer_count].mask_bit = (i16)bit;
+    charconfig.runtime->layers[charconfig.runtime->layer_count].hierarchy_layer_index = -1;
+    charconfig.runtime->layer_count++;
     charconfig.named_layers = 1;
-    layer->mask_bit = (i16)(bit);
-    layer->hierarchy_layer_index = -1;
-    ++data->layer_count;
-    data->make_layer_list = MakeLayerList_Name;
+    charconfig.runtime->make_layer_list = MakeLayerList_Name;
 }
 
 static void CC_fixed_layers(NUFPAR_PC *parser) {
