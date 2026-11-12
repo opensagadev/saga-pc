@@ -2297,12 +2297,9 @@ static const char *const CreditsEpisodeMusicPc[6] = {"Ep1_EndCredits", "Ep2_EndC
                                                      "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
 
 extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
-    i32 episode = 0;
-    if (LastAData != NULL) {
-        i32 last_episode = (i8)LastAData->episode_index;
-        if (last_episode >= 0 && last_episode <= 5) {
-            episode = last_episode;
-        }
+    i32 episode = LastAData != NULL ? LastAData->episode_index : 0;
+    if (episode < 0 || episode > 5) {
+        episode = 0;
     }
     const char *music_name = CreditsEpisodeMusicPc[episode];
     world->current_level->music_index = GetMusicIndex((char *)music_name, MusicInfo, -1);
@@ -2315,7 +2312,9 @@ extern "C" void __cdecl Credits_Init_Game(WORLDINFO *world) {
     Credits_Init(world);
     PicturesFixUpPc(world);
     NUVEC scale;
-    scale.x = scale.y = scale.z = CreditsPictureScalePc;
+    scale.z = CreditsPictureScalePc;
+    scale.y = CreditsPictureScalePc;
+    scale.x = CreditsPictureScalePc;
     NuMtxSetScale(&LevMtx, &scale);
     LevMtx.m31 = CreditsPictureBaseYPc;
     LevMtx.m32 = CreditsPictureBaseZPc;
