@@ -59,7 +59,7 @@ void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
 }
 
 void Faders_Reset(WORLDINFO *world) {
-    if (world->faders != NULL && world->fader_count > 0) {
+    if (world->faders != NULL) {
         i32 i;
         for (i = 0; i < world->fader_count; ++i) {
             NuSpecialSetVisibility(&world->faders[i].special, 0);
