@@ -870,11 +870,15 @@ static i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
         return 0;
     target_distance = NuVecDistSqr(&opponent->collision_position, &object->collision_position, &difference);
     length = NuFsqrt(target_distance);
-    inverse = length != 0.0f ? 1.0f / length : 0.0f;
+    if (length != 0.0f)
+        inverse = 1.0f / length;
+    else
+        inverse = 0.0f;
     NuVecScale(&direction, &difference, inverse);
     for (index = 0; index < 8; index++) {
         member = (GAMEOBJECT *)Player[index];
-        if (member == NULL || (member->flags_1fc_word & 0x1001u) != 0x1001u || member == object || member == opponent)
+        if (member == NULL || (member->flags_1fc_word & 1) == 0 || (member->flags_1fc_word & 0x1000) == 0 ||
+            member == object || member == opponent)
             continue;
         if (NuVecDistSqr(&object->collision_position, &member->collision_position, &difference) < target_distance) {
             member = (GAMEOBJECT *)Player[index];
