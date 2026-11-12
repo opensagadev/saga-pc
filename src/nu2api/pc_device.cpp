@@ -385,10 +385,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory() {
     factory->methods->get_adapter_identifier(factory, 0, 0, &identifier);
     factory->methods->get_adapter_display_mode(factory, 0, &desktop_mode);
     aspect_mode = FindAspect(desktop_mode.width, desktop_mode.height);
+    aspect = (f32)desktop_mode.width / (f32)desktop_mode.height;
     active_aspect_mode = aspect_mode;
-    f32 ratio = (f32)((f64)desktop_mode.width / (f64)desktop_mode.height);
-    aspect = ratio;
-    active_aspect = ratio;
+    active_aspect = aspect;
 }
 i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32 width, u32 height) {
     f32 ratio = (f32)((f64)width / (f64)height);
