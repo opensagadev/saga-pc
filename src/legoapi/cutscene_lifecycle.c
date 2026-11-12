@@ -1187,23 +1187,26 @@ static __declspec(noinline) CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCrea
             CUT_LOAD_RIGID_INSTANCE *target = &instance->rigids[i];
             if (gscene != NULL && gscene != rigid->scene) {
                 if (rigid->special != NULL) {
+                    NUDISPLAY_LIST_PC *display_list;
                     target->special.scene = gscene;
-                    if (gscene->display_list != NULL) {
+                    display_list = gscene->display_list;
+                    if (display_list != NULL) {
                         i32 index = (i32)(((i32)rigid->special - (i32)rigid->scene->display_list->specials) / 0xd0);
+                        target->special.display_special = (NUMTX *)&display_list->specials[index];
                         target->special.special = NULL;
-                        target->special.display_special = (NUMTX *)&gscene->display_list->specials[index];
                     } else {
                         i32 index = (i32)(((i32)rigid->special - (i32)rigid->scene->specials) / 0x4c);
-                        target->special.display_special = NULL;
                         target->special.special = (NUMTX *)&gscene->specials[index];
+                        target->special.display_special = NULL;
                     }
                     if ((rigid->flags & 2) != 0)
                         target->visible = rigid->flags & 1;
                 } else
                     CutSceneMissingObjectDiagnosticPc(rigid->name);
             } else {
-                target->special.scene = rigid->scene;
-                if (rigid->scene != NULL && rigid->scene->display_list != NULL) {
+                NUGSCN *owner = rigid->scene;
+                target->special.scene = owner;
+                if (owner != NULL && owner->display_list != NULL) {
                     target->special.special = NULL;
                     target->special.display_special = (NUMTX *)rigid->special;
                 } else {
