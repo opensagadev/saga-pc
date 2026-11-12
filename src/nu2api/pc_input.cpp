@@ -531,7 +531,10 @@ i32 NuKeyboardOwner_PC::SetMouseCooperativePc(i32 value) {
     mouse_cooperative = value;
     if (mouse != NULL) {
         mouse->methods->unacquire(mouse);
-        mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, value ? 5 : 6);
+        if (value)
+            mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 5);
+        else
+            mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 6);
         mouse->methods->acquire(mouse);
     }
     return previous;
