@@ -4645,6 +4645,8 @@ address,symbol,size,ctype
 0x5663a0,_FadeLoop,601,
 0x00566630,_SetLevelExBlowupFlags,10,void __cdecl (u32)
 0x566640,_SetLevelBlowupCallbackPc,14,void __cdecl (LEVEL_BLOWUP_CALLBACK_PC)
+0x566650,_RemapTypeFlagToBlowupFlag,34,u32 __cdecl (u32)
+0x566680,_RemapAllTypeFlagsToBlowupFlags,73,u32 __cdecl (u32)
 0x5666d0,_InitGizmoBlowupTypes,93,i32 __cdecl (WORLDINFO *)
 0x566730,_InitGizmoBlowups,112,i32 __cdecl (WORLDINFO *)
 0x5667a0,_InitGizmoBlowupsMtxBuffer,73,i32 __cdecl (WORLDINFO *)
@@ -4673,7 +4675,9 @@ address,symbol,size,ctype
 0x00567800,_GizmoBlowupBlowup,1385,"i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
 0x568010,_GizmoBlowupEarlyUpdate,1122,"void __cdecl (void *, void *, f32)"
+0x568480,_PlayAnim,106,"void __cdecl (NUINSTANIM *, f32 *, f32, i32)"
 0x5684f0,_GizmoBlowupLateUpdate,98,"void __cdecl (void *, void *, f32)"
+0x568560,_GizmoBlowupTypeNameBlank,29,i32 __cdecl (char *)
 0x568580,_GizBlowup_InitSingleTerrain,286,i32 __cdecl (GIZMOBLOWUP_PC *)
 0x5686a0,_GizBlowup_InitTerrain,106,void __cdecl (void)
 0x568710,_GizBlowup_DeleteSingleTerrain,79,void __cdecl (GIZMOBLOWUP_PC *)
@@ -34168,6 +34172,7 @@ address,symbol,size,ctype
 0x802f54,_blowup_gizmotype_id,4,i32
 0x00802f58,_MAXBLOWUPRANDSPANG,4,i32
 0x00802f5c,_BlowupOutputNamesPc,12,char *[3]
+0x802f68,_flagremaptab,256,u32[32][2]
 0x803068,_GizmoBlowupHitMultiplierPc,4,GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC
 0x8030d0,_GizmoRegistryNewBlowupNamePtrPc,4,char *
 0x8030e4,_LedgeTerrain_CheckAnims,4,i32
