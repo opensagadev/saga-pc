@@ -1110,24 +1110,27 @@ void __cdecl PreResetCode(GAMEOBJECT *object) {
     }
 }
 
+extern const f64 GameObjectNearFloorNoFloorHeight;
+
 f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
-    f32 offset, height, hover;
-    if ((object->character_data->model_flags & 0x2000) == 0 ||
-        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000) != 0)
-        return 0.0f;
-    offset = VehicleTurnOrLoopOffset(object);
-    if (object->field_283 == 7 || object->field_283 == 0x10)
+    f32 offset, height;
+    if ((object->character_data->model_flags & 0x2000) != 0 &&
+        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000) == 0) {
+        offset = VehicleTurnOrLoopOffset(object);
+        if (object->field_283 != 7 && object->field_283 != 0x10) {
+            height = object->floor_height;
+            if (height != GameObjectNearFloorNoFloorHeight) {
+                if (object->water_height != GameObjectNearFloorNoFloorHeight && object->water_height > height)
+                    height = object->water_height;
+                if (WORLD->current_level->hover_height != 0.0f)
+                    return height + WORLD->current_level->hover_height + offset;
+                return height + object->character_data->game_character->field_028 + offset;
+            }
+            return LevelConfigFarDistance;
+        }
         return object->water_height + offset;
-    height = object->floor_height;
-    if (height == 0.0f)
-        return 0.0f;
-    if (object->water_height != 0.0f && object->water_height > height)
-        height = object->water_height;
-    hover = WORLD->current_level->hover_height;
-    if (hover != 0.0f)
-        return (f32)(height + hover + offset);
-    hover = object->character_data->game_character->field_028;
-    return (f32)(height + hover + offset);
+    }
+    return LevelConfigFarDistance;
 }
 
 i32 __cdecl KillGameObject(GAMEOBJECT *, i32, i32);
