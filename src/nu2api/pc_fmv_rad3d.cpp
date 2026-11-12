@@ -269,8 +269,8 @@ void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
         free(image);
     }
 }
-i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
-                             u32 *h, u32 discard) {
+i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
+                      u32 discard) {
     RADFMV_LOCK_PC locked;
     if (image->lock_index >= image->texture_count ||
         image->textures[image->lock_index]->methods->lock(image->textures[image->lock_index], 0, &locked, NULL,
@@ -362,8 +362,8 @@ void RadFmvBlitSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f3
 void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
     RadFmvDrawOutlinePc(image->device, x, y, xs, ys, image->width, image->height);
 }
-i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
-                              u32 *h, u32 discard) {
+i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
+                       u32 discard) {
     if (image->lock_index) {
         image->lock_index = 0;
         return 0;
@@ -393,8 +393,7 @@ i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *s
 void RadFmvUnlockSinglePc(RADFMV_IMAGE_PC *image) {
     image->texture->methods->unlock(image->texture, 0);
 }
-RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha,
-                                             u32 maximum) {
+RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     (void)maximum;
     RADFMV_IMAGE_PC *image = static_cast<RADFMV_IMAGE_PC *>(malloc(0x50));
     if (!image)
