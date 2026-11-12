@@ -8146,13 +8146,13 @@ i32 __cdecl Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 
 i32 Action_SetObstacleToEnd(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 param_4, i32 param_5, f32 param_6) {
+    GIZOBSTACLE *obstacle = NULL;
     (void)sys;
     (void)processor;
     (void)packet;
     (void)param_6;
     if (param_5 != 0 && param_4 != 0) {
         i32 index;
-        GIZOBSTACLE *obstacle = NULL;
         for (index = 0; index < param_4; ++index) {
             char *value = NuStrIStr(params[index], "name=");
             if (value != NULL) {
