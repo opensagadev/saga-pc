@@ -62,11 +62,11 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     min_x = min_y = min_z = 10000000.0f;
     max_x = max_y = max_z = -10000000.0f;
     for (index = 0; index < count; ++index, ++matrix) {
-        if (min_x > matrix->m30)
+        if (matrix->m30 < min_x)
             min_x = matrix->m30;
-        if (min_y > matrix->m31)
+        if (matrix->m31 < min_y)
             min_y = matrix->m31;
-        if (min_z > matrix->m32)
+        if (matrix->m32 < min_z)
             min_z = matrix->m32;
         if (matrix->m30 > max_x)
             max_x = matrix->m30;
@@ -174,7 +174,7 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                                 contact_height = (matrix->m33 * 0.2f) / group->value20;
                             } else {
                                 contact_radius = 0.45f;
-                                if (0.0f > positions[closest]->y - matrix->m31) {
+                                if (positions[closest]->y - matrix->m31 < 0.0f) {
                                     contact_height = (matrix->m33 * 0.2f) / group->value20;
                                 } else {
                                     contact_height =
@@ -229,7 +229,7 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                                 contact_x = (contact_x - matrix->m10) * group->field_48;
                                 contact_z = (contact_z - matrix->m12) * group->field_48;
                                 scale = contact_x * contact_x + contact_z * contact_z;
-                                if (group->field_44 < scale) {
+                                if (scale > group->field_44) {
                                     scale = group->field_40 / NuFsqrt(scale);
                                     contact_x *= scale;
                                     contact_z *= scale;
