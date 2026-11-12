@@ -573,11 +573,13 @@ void __cdecl DrawCables(void) {
 }
 
 GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radius) {
+    f32 radius_squared = radius * radius;
     GAMEOBJECT *nearest = NULL, *candidate = Obj;
     f32 nearest_distance = 100000000.0f;
-    f32 minimum_x = position->x - radius, maximum_x = position->x + radius;
-    f32 minimum_z = position->z - radius, maximum_z = position->z + radius;
-    f32 radius_squared = radius * radius;
+    f32 minimum_x = position->x - radius;
+    f32 minimum_z = position->z - radius;
+    f32 maximum_x = position->x + radius;
+    f32 maximum_z = position->z + radius;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         i8 context = candidate->character_context;
