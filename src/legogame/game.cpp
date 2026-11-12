@@ -613,6 +613,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     i32 i;
     GAMEOBJECT **player_slot;
     char script_name[32];
+    void(__cdecl * callback)(WORLDINFO *);
     if ((ResetBits & 0x20) != 0 && WORLD->current_level->area_level_index != -1)
         ClearLevelProgress(WORLD->current_level->area_level_index, WORLD);
     Cheats_Reset();
@@ -669,8 +670,8 @@ extern "C" void __cdecl CheckResetBits(void) {
     TerrainLastChatterSfxPc = -1;
     tieonsfxwait = 1.0f;
     tieoffsfxwait = 1.0f;
-    FalconDebKey[0] = -1;
     FalconDebKey[1] = -1;
+    FalconDebKey[0] = -1;
     LevelNameTime = 0.0f;
     LevelNameMul = LevelChange != 0 ? 3.0f : 0.0f;
     memset(&LevelLightingDataPc, 0, sizeof(LevelLightingDataPc));
@@ -698,12 +699,12 @@ extern "C" void __cdecl CheckResetBits(void) {
     party_under_cover = 0;
     nbaddies_can_see_players = 0;
     if (reset_restart != 0) {
-        LevTime[0] = 0.0f;
         LevTime[1] = 0.0f;
+        LevTime[0] = 0.0f;
         BonusCoinTotal = 0;
     }
     if (WORLD->object_sys != NULL)
-        WORLD->object_sys->flags &= ~1;
+        WORLD->object_sys->flags_word &= ~1;
     if ((ResetBits & 0x20) != 0)
         GizmoSysClearLevelProgress(WORLD, WORLD->current_level->area_level_index);
     GameAnimSys_ReStoreProgress(WORLD->game_anim_sys, WORLD->current_level->area_level_index);
@@ -715,7 +716,8 @@ extern "C" void __cdecl CheckResetBits(void) {
         GameAISysReset(WORLD->ai_sys);
         ReStoreStatusTakeOverObjectSys(1);
         AIScriptInitConditions(WORLD->ai_sys);
-        for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
+        for (i = 0; i < 8; ++i) {
+            player_slot = (GAMEOBJECT **)&Player[i];
             if (*player_slot == NULL)
                 continue;
             InitPlayerAI(*player_slot);
@@ -729,8 +731,10 @@ extern "C" void __cdecl CheckResetBits(void) {
             } else if (Mission_Active(NULL) != NULL) {
                 if (AIScriptFind(WORLD->ai_sys, "Mission", 0, 1, 0) != NULL)
                     sprintf(script_name, "Mission");
+                else if (AIScriptFind(WORLD->ai_sys, ActionSnapPartyName, 0, 1, 0) != NULL)
+                    sprintf(script_name, ActionSnapPartyName);
                 else
-                    goto party_script;
+                    sprintf(script_name, "GeneralParty");
             } else if (AIScriptFind(WORLD->ai_sys, (*player_slot)->character_data->name, 0, 1, 0) != NULL) {
                 sprintf(script_name, (*player_slot)->character_data->name);
             } else {
@@ -741,7 +745,6 @@ extern "C" void __cdecl CheckResetBits(void) {
                 else
                     sprintf(script_name, "NoWeapon");
                 if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL) {
-                party_script:
                     if (AIScriptFind(WORLD->ai_sys, ActionSnapPartyName, 0, 1, 0) != NULL)
                         sprintf(script_name, ActionSnapPartyName);
                     else
@@ -782,9 +785,9 @@ extern "C" void __cdecl CheckResetBits(void) {
     AITriggerSetSysReset((TRIGGER_SYSTEM_PC *)WORLD->ai_trigger_set);
     AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)WORLD->ai_trigger_set);
     if ((ResetBits & 0x10) != 0) {
-        for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
-            if (*player_slot != NULL)
-                ResetPlayer(*player_slot, 1, NULL, 0);
+        for (i = 0; i < 8; ++i) {
+            if (Player[i] != NULL)
+                ResetPlayer((GAMEOBJECT *)Player[i], 1, NULL, 0);
         }
         VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     }
@@ -794,13 +797,14 @@ extern "C" void __cdecl CheckResetBits(void) {
             LevHSpecialExists |= (u64)1 << i;
     }
     WORLD->blowup_target_candidate_count = 0;
-    if (WORLD->current_level->callbacks[2] != NULL)
-        ((void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[2])(WORLD);
+    callback = (void(__cdecl *)(WORLDINFO *))WORLD->current_level->callbacks[2];
+    if (callback != NULL)
+        callback(WORLD);
     CharPlatforms_Reset((CHARPLATFORMSYS_s *)WORLD->shadow_platform_list_pc);
     SetSoundFadeDist(WORLD, &Game.options_save);
-    TempOptions.master_volume = Game.options_save.master_volume;
     TempOptions.sound_volume = Game.options_save.sound_volume;
     TempOptions.music_volume = Game.options_save.music_volume;
+    TempOptions.master_volume = Game.options_save.master_volume;
     if (WORLD->level_progress != NULL && (WORLD->level_progress->flags & 2) == 0 && WORLD->camera_splines[1] != NULL &&
         gone_through_door_to_new_mode == 0 && gone_through_door_to_new_level == 0 && come_from_an_editor == 0)
         GameCameraMakeMiniCut(WORLD->camera_splines[1], 0.0f, 2.0f, 0.0f, 1.0f, 0, 1);
