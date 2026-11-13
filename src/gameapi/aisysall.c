@@ -12687,39 +12687,40 @@ static __declspec(noinline) i32 AIScriptProcessReferences(AISYS_PC *system, AIPA
     NULISTHDR *references;
     AIREFSCRIPT_PC *reference;
     AICONDITION_PC *entry_condition;
-    if (system == NULL || processor == NULL || processor->script == NULL || processor->active_ref_count >= 4)
-        return 0;
-    for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&processor->script->reference_scripts); reference != NULL;
-         reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&processor->script->reference_scripts, &reference->link)) {
-        processor->param_stack[1].is_first_time_state = 1;
-        processor->param_stack[1].force_complex_eval = 1;
-        if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
-             AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
-            reference->script != NULL) {
-            processor->param_stack[0].is_first_time_state = 1;
-            processor->param_stack[0].force_complex_eval = 1;
-            entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions, packet,
-                                                             processor, 0);
-            if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
-                goto found;
+    if (system != NULL && processor != NULL && processor->script != NULL && processor->active_ref_count < 4) {
+        for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&processor->script->reference_scripts);
+             reference != NULL; reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&processor->script->reference_scripts,
+                                                                                  &reference->link)) {
+            processor->param_stack[1].is_first_time_state = 1;
+            processor->param_stack[1].force_complex_eval = 1;
+            if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
+                 AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
+                reference->script != NULL) {
+                processor->param_stack[0].is_first_time_state = 1;
+                processor->param_stack[0].force_complex_eval = 1;
+                entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions,
+                                                                 packet, processor, 0);
+                if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
+                    goto found;
+            }
         }
-    }
-    if (processor->state == NULL)
-        return 0;
-    references = &processor->state->reference_scripts;
-    for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references); reference != NULL;
-         reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(references, &reference->link)) {
-        processor->param_stack[1].is_first_time_state = 1;
-        processor->param_stack[1].force_complex_eval = 1;
-        if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
-             AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
-            reference->script != NULL) {
-            processor->param_stack[0].is_first_time_state = 1;
-            processor->param_stack[0].force_complex_eval = 1;
-            entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions, packet,
-                                                             processor, 0);
-            if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
-                goto found;
+        if (processor->state != NULL) {
+            references = &processor->state->reference_scripts;
+            for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references); reference != NULL;
+                 reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(references, &reference->link)) {
+                processor->param_stack[1].is_first_time_state = 1;
+                processor->param_stack[1].force_complex_eval = 1;
+                if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
+                     AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
+                    reference->script != NULL) {
+                    processor->param_stack[0].is_first_time_state = 1;
+                    processor->param_stack[0].force_complex_eval = 1;
+                    entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions,
+                                                                     packet, processor, 0);
+                    if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
+                        goto found;
+                }
+            }
         }
     }
     return 0;
