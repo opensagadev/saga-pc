@@ -11563,28 +11563,40 @@ i32 __thiscall PC_POST_DATA_PORT_MANAGER::Register(const char *name, void *data)
 }
 
 extern "C" void __cdecl PostFilterInitSharedResourcesPc(void) {
-    if (PostResourcePortsPc[0].index >= 0)
-        --PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].references;
+    if (PostResourcePortsPc[0].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index];
+        --entry->references;
+    }
     PostResourcePortsPc[0].manager = &PostResourceManagerPc;
     PostResourcePortsPc[0].index = PostResourceManagerPc.Register("postEffect.outFramebuffer", NULL);
-    if (PostResourcePortsPc[1].index >= 0)
-        --PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].references;
+    if (PostResourcePortsPc[1].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index];
+        --entry->references;
+    }
     PostResourcePortsPc[1].manager = &PostResourceManagerPc;
     PostResourcePortsPc[1].index = PostResourceManagerPc.Register("postEffect.colorBuffer", NULL);
-    if (PostResourcePortsPc[2].index >= 0)
-        --PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].references;
+    if (PostResourcePortsPc[2].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index];
+        --entry->references;
+    }
     PostResourcePortsPc[2].manager = &PostResourceManagerPc;
     PostResourcePortsPc[2].index = PostResourceManagerPc.Register("postEffect.normalBuffer", NULL);
-    if (PostResourcePortsPc[3].index >= 0)
-        --PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index].references;
+    if (PostResourcePortsPc[3].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index];
+        --entry->references;
+    }
     PostResourcePortsPc[3].manager = &PostResourceManagerPc;
     PostResourcePortsPc[3].index = PostResourceManagerPc.Register("postEffect.velocityBuffer", NULL);
-    if (PostResourcePortsPc[4].index >= 0)
-        --PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index].references;
+    if (PostResourcePortsPc[4].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index];
+        --entry->references;
+    }
     PostResourcePortsPc[4].manager = &PostResourceManagerPc;
     PostResourcePortsPc[4].index = PostResourceManagerPc.Register("postEffect.depthRTBuffer", NULL);
-    if (PostResourcePortsPc[5].index >= 0)
-        --PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].references;
+    if (PostResourcePortsPc[5].index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index];
+        --entry->references;
+    }
     PostResourcePortsPc[5].manager = &PostResourceManagerPc;
     PostResourcePortsPc[5].index = PostResourceManagerPc.Register("postEffect.depthBuffer", NULL);
     PostBlurFramebufferPc = PCGraphicsCreateFramebuffer();
