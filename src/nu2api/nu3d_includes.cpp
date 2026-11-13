@@ -7181,8 +7181,8 @@ extern "C" {
         dump_state = -1;
         NuFileClose(fh);
         xTiles = yTiles = xPos = yPos = 0.0f;
-        w = (f32)PS2_VREZ_W;
         h = (f32)PS2_VREZ_H;
+        w = (f32)PS2_VREZ_W;
         RenderPostViewportSetPc(0.0f, 0.0f, w, h, 0.0f, 0.0f, w, h);
         NuRndrDoingScreenGrab = 0;
         return 0;
