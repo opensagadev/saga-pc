@@ -273,7 +273,13 @@ steers VC8 code generation (moving `<string.h>`/`<stdio.h>` in game.cpp or
 (`tools/check.py --format-fix`); the pinned Ogg Vorbis sources keep their style
 (`config/clang-format-vendored`) because their checksums are pinned. The single
 `clang-format off` region is gone (the identity-matrix macro in data.cpp holds
-only the values now; objects identical). Before and after:
+only the values now; objects identical). The tree-wide reformat is one
+mechanical commit, listed in `.git-blame-ignore-revs` (`git config
+blame.ignoreRevsFile .git-blame-ignore-revs`); its objects are byte-identical to
+the commit before it. After a rebase it is regenerated rather than merged:
+drop the commit, take `.clang-format` from it and run `make format`. The only
+`__LINE__` user left is the `LOG` macro in debug/diagnostics.h, which no unit
+calls; `STATIC_ASSERT` names its typedefs with `__COUNTER__`. Before and after:
 
 ```c
 /* before (legogame/zipup.c) */
