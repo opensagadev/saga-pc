@@ -371,8 +371,7 @@ extern "C" {
     i32 __cdecl newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
-            if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 &&
-                Game.initial_store_pack_flags != areaSuitBits)
+            if ((((u8 *)&packet->lsw_packet->field_0x00)[3] & 1) != 0 && Game.initial_store_pack_flags != areaSuitBits)
                 return 1;
         } else {
             i16 temple_ids[2];
