@@ -812,6 +812,8 @@ class EdSpecialObjectControl : public EdControl {
     virtual void Process(EdInputContext &input);
     virtual void Render();
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    void GetVal(NUSPECIALHANDLE &value);
+    void SetVal(NUSPECIALHANDLE &value);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbSelectObject(eduimenu_s *, eduiitem_s *item, u32);
     static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
@@ -4057,6 +4059,14 @@ EdSpecialObjectControl::~EdSpecialObjectControl() {
 }
 
 /* Takes the scene object with the typed name, if there is one. */
+void EdSpecialObjectControl::GetVal(NUSPECIALHANDLE &value) {
+    reference->GetMemberData(object, EdType_NuHSpecial, &value, 0);
+}
+
+void EdSpecialObjectControl::SetVal(NUSPECIALHANDLE &value) {
+    reference->SetMemberData(object, EdType_NuHSpecial, &value, 0, NULL);
+}
+
 void EdSpecialObjectControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     EdSpecialObjectControl *control = static_cast<EdSpecialObjectControl *>(item->data_ptr);
     NUSPECIALHANDLE selected;
@@ -4070,7 +4080,7 @@ void EdSpecialObjectControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     }
     if (NuSpecialExistsFn(&selected) != 0) {
         eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), NuSpecialGetName(&selected));
-        control->reference->SetMemberData(control->object, EdType_NuHSpecial, &selected, 0, NULL);
+        control->SetVal(selected);
     }
 }
 
@@ -4093,7 +4103,7 @@ void EdSpecialObjectControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32)
         selected = &cleared;
     }
     EdSpecialObjectControl *control = active_special_object_control;
-    control->reference->SetMemberData(control->object, EdType_NuHSpecial, selected, 0, NULL);
+    control->SetVal(*selected);
 }
 
 void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
@@ -4103,8 +4113,7 @@ void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32)
     if (menu == NULL)
         return;
     NUSPECIALHANDLE selected;
-    active_special_object_control->reference->GetMemberData(active_special_object_control->object, EdType_NuHSpecial,
-                                                            &selected, 0);
+    active_special_object_control->GetVal(selected);
     eduiMenuAddItem(menu, eduiItemSelCreate((u32)-1, item->colours, 0, 0, cbSelectObject, "None"));
     Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter);
     while (object != NULL) {
