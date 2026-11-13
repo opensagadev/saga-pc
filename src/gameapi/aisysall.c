@@ -6701,6 +6701,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     AIPATHCNX_PC *destination_connection;
     NUVEC difference;
     f32 distance_squared;
+    f32 distance;
+    f32 scale;
     AIPATHCNX_PC *target;
     AIPATHCNX_PC *current;
     i32 goal_index;
@@ -6726,7 +6728,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     NUVEC offset;
     i32 angle;
     i32 angle_2;
-    NUVEC offset_2;
 
     direction = 0;
     attempted_routes = 0;
@@ -6817,7 +6818,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 }
                 if ((connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
                     {
-                        candidate = FLT_MAX;
                         if (destination_distance_0 != FLT_MAX &&
                             endpoint_distances[0 == packet->path_info.direction] != FLT_MAX) {
                             candidate = AIPathNodeDistanceToPathNode(
@@ -6827,6 +6827,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                                 candidate +=
                                     endpoint_distances[packet->path_info.direction == 0] + destination_distance_0;
                             }
+                        } else {
+                            candidate = FLT_MAX;
                         }
                         if (candidate < best_distance) {
                             best_distance = candidate;
@@ -6836,7 +6838,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                     }
                     {
-                        candidate_2 = FLT_MAX;
                         if (destination_distance_1 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
                             candidate_2 = AIPathNodeDistanceToPathNode(
@@ -6846,6 +6847,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                                 candidate_2 +=
                                     endpoint_distances[packet->path_info.direction == 0] + destination_distance_1;
                             }
+                        } else {
+                            candidate_2 = FLT_MAX;
                         }
                         if (candidate_2 < best_distance) {
                             best_distance = candidate_2;
@@ -6857,7 +6860,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 }
                 if ((connection->traversal_flags[0 == packet->path_info.direction] & 0x40000000) == 0) {
                     {
-                        candidate_3 = FLT_MAX;
                         if (destination_distance_0 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction] != FLT_MAX) {
                             candidate_3 = AIPathNodeDistanceToPathNode(
@@ -6866,6 +6868,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                             if (candidate_3 != FLT_MAX) {
                                 candidate_3 += destination_distance_0 + endpoint_distances[packet->path_info.direction];
                             }
+                        } else {
+                            candidate_3 = FLT_MAX;
                         }
                         if (candidate_3 < best_distance) {
                             best_distance = candidate_3;
@@ -6875,7 +6879,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                     }
                     {
-                        candidate_4 = FLT_MAX;
                         if (destination_distance_1 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction] != FLT_MAX) {
                             candidate_4 = AIPathNodeDistanceToPathNode(
@@ -6885,6 +6888,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                                 candidate_4 = candidate_4 + (destination_distance_1 +
                                                              endpoint_distances[packet->path_info.direction]);
                             }
+                        } else {
+                            candidate_4 = FLT_MAX;
                         }
                         if (candidate_4 < best_distance) {
                             best_distance = candidate_4;
@@ -6904,6 +6909,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 if (((attempted_routes >> packet->current_route) & 1) != 0) {
                     return;
                 }
+                destination_distance_0 =
+                    AIPathFabs(packet->fallback_path_info.distance * destination_connection->distance);
+                destination_distance_1 =
+                    AIPathFabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
             }
             packet->goal_path_node = &path->nodes[goal_index];
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
@@ -6954,7 +6963,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         packet->movement_destination = path->nodes[current_2->node_indices[packet->path_info.direction]].position;
         packet->flags |= 0x00400000u;
         packet->movement_stopping_distance = 0.0f;
-        packet->frame_state = flags_2;
+        packet->frame_state = current_2->traversal_flags[packet->path_info.direction];
         return;
     }
     if (current_2 == destination_connection &&
@@ -6980,12 +6989,17 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 AIMoveAdjustDestinationPath(system, packet);
             }
         }
-        NuVecScale(&difference, &difference, packet->movement_parameter / NuFsqrt(distance_squared));
+        distance = NuFsqrt(distance_squared);
+        scale = packet->movement_parameter / distance;
+        NuVecScale(&difference, &difference, scale);
         packet->movement_destination.x = packet->fallback_destination.x - difference.x;
         packet->movement_destination.y = packet->fallback_destination.y;
         packet->movement_destination.z = packet->fallback_destination.z - difference.z;
-        packet->movement_stopping_distance =
-            packet->fallback_stopping_distance < packet->movement_parameter ? 0.0f : packet->fallback_stopping_distance;
+        if (packet->movement_parameter > packet->fallback_stopping_distance) {
+            packet->movement_stopping_distance = 0.0f;
+        } else {
+            packet->movement_stopping_distance = packet->fallback_stopping_distance;
+        }
         return;
     }
     shared = NULL;
@@ -7017,15 +7031,15 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 packet->movement_destination = object->position;
                 packet->flags |= 0x00400000u;
                 packet->movement_stopping_distance = 0.0f;
-                packet->frame_state = flags_2;
+                packet->frame_state = next_2->traversal_flags[direction];
                 return;
             }
-            if ((packet->capabilities & flags_2) != 0) {
-                packet->navigation_flags |= 1;
-            } else {
+            if ((packet->capabilities & flags_2) == 0) {
                 packet->flags |= 0x00600000u;
                 packet->frame_state = next_2->traversal_flags[direction];
                 next_2 = NULL;
+            } else {
+                packet->navigation_flags |= 1;
             }
         }
         if (next_2 != NULL) {
@@ -7074,7 +7088,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]].position;
     packet->movement_stopping_distance = 0.0f;
 
-    if (NuVecDistSqr(&packet->movement_destination, &object->position, &offset_2) < 1.0f) {
+    if (NuVecDistSqr(&packet->movement_destination, &object->position, &offset) < 1.0f) {
         packet->movement_destination = object->position;
     }
     packet->flags |= 0x00400000u;
