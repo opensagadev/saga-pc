@@ -1796,13 +1796,16 @@ i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32
 
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
 i32 __cdecl CustomiserMenu_Update(void) {
+    i32 quit = 0;
+    i32 cancel_name = 0;
+    i32 toggle = 0;
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)CharacterCustomiser;
-    i32 active_index, active_count, select[2], cancel = 0, player;
-    i32 cancel_name = 0, toggle = 0, quit = 0;
+    i32 active_index, active_count, select[2], cancel, player;
     if (customiser == NULL)
         quit = 1;
     Customiser_GetActiveWeirdoIndex(&active_index, &active_count);
     BlipD[0] = BlipD[1] = BlipU[0] = BlipU[1] = BlipR[0] = BlipR[1] = BlipL[0] = BlipL[1] = 0.0f;
+    cancel = 0;
 
     for (player = 0; player < 2; ++player) {
         GAMEPAD_RUNTIME_INPUT_PC *pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
@@ -1840,8 +1843,8 @@ i32 __cdecl CustomiserMenu_Update(void) {
             i32 side, old_mode, new_mode = -1, randomise = 0;
             if (MissionMenuPacketPc.active_player[player] == 0)
                 continue;
-            held = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held |
-                   ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held;
+            held = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held |
+                   ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held;
             pressed = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->pressed |
                       ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_pressed;
 
