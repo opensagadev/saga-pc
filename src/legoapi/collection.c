@@ -335,7 +335,7 @@ STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, cheat_code) == 0xc);
 STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 
 /* Native 594220 is an actual RET with no argument reads. */
-static void __cdecl CollectionConfigDiagnosticPc(char *file, ...) {
+void __cdecl CollectionConfigDiagnosticPc(char *file, ...) {
     (void)file;
 }
 
