@@ -1,8 +1,12 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail performs these absolute-value operations inline with x87 FABS. */
-#define NUBRIDGE_ABS(value) ((value) < 0.0f ? -(value) : (value))
+/* NuFabs: copies the value with the sign bit cleared into a new float. */
+static __inline f32 NuBridgeFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    f32 result = *(f32 *)&bits;
+    return result;
+}
 
 /* Builds a scaled frame for each rope segment; the PC build has the draw calls compiled out. */
 void __cdecl NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
@@ -229,21 +233,21 @@ void NuBridgeUpdate(NUVEC *position) {
                         if (bridge->idle_frames < 180) {
                             for (i = 1; i < bridge->platform_count - 1; ++i) {
                                 bridge->edge_motion[i][0].x =
-                                    bridge->edge_motion[i][0].x + (-bridge->edge_motion[i][0].x * bridge->damping);
+                                    bridge->edge_motion[i][0].x - bridge->edge_motion[i][0].x * bridge->damping;
                                 bridge->edge_motion[i][0].y =
                                     bridge->edge_motion[i][0].y +
                                     (bridge->gravity - bridge->edge_motion[i][0].y * bridge->damping);
                                 bridge->edge_motion[i][0].z =
-                                    bridge->edge_motion[i][0].z + (-bridge->edge_motion[i][0].z * bridge->damping);
+                                    bridge->edge_motion[i][0].z - bridge->edge_motion[i][0].z * bridge->damping;
                                 bridge->edge_motion[i][1].x =
-                                    bridge->edge_motion[i][1].x + (-bridge->edge_motion[i][1].x * bridge->damping);
+                                    bridge->edge_motion[i][1].x - bridge->edge_motion[i][1].x * bridge->damping;
                                 bridge->edge_motion[i][1].y =
                                     bridge->edge_motion[i][1].y +
                                     (bridge->gravity - bridge->edge_motion[i][1].y * bridge->damping);
                                 bridge->edge_motion[i][1].z =
-                                    bridge->edge_motion[i][1].z + (-bridge->edge_motion[i][1].z * bridge->damping);
+                                    bridge->edge_motion[i][1].z - bridge->edge_motion[i][1].z * bridge->damping;
                                 bridge->edge_motion[i][0].x =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x)) *
                                         (bridge->edge_positions[i - 1][0].x - bridge->edge_positions[i][0].x) *
                                         bridge->spring_strength * 0.5f +
@@ -251,7 +255,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y)) *
                                         (bridge->edge_positions[i - 1][0].y - bridge->edge_positions[i][0].y) *
                                         bridge->spring_strength * 0.5f +
@@ -259,7 +263,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z)) *
                                         (bridge->edge_positions[i - 1][0].z - bridge->edge_positions[i][0].z) *
                                         bridge->spring_strength * 0.5f +
@@ -267,7 +271,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][0].x =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x)) *
                                         (bridge->edge_positions[i + 1][0].x - bridge->edge_positions[i][0].x) *
                                         bridge->spring_strength * 0.5f +
@@ -275,7 +279,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].x;
                                 bridge->edge_motion[i][0].y =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y)) *
                                         (bridge->edge_positions[i + 1][0].y - bridge->edge_positions[i][0].y) *
                                         bridge->spring_strength * 0.5f +
@@ -283,7 +287,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].y;
                                 bridge->edge_motion[i][0].z =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z)) *
                                         (bridge->edge_positions[i + 1][0].z - bridge->edge_positions[i][0].z) *
                                         bridge->spring_strength * 0.5f +
@@ -291,7 +295,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][0].z;
                                 bridge->edge_motion[i][1].x =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x)) *
                                         (bridge->edge_positions[i - 1][1].x - bridge->edge_positions[i][1].x) *
                                         bridge->spring_strength * 0.5f +
@@ -299,7 +303,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y)) *
                                         (bridge->edge_positions[i - 1][1].y - bridge->edge_positions[i][1].y) *
                                         bridge->spring_strength * 0.5f +
@@ -307,7 +311,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z)) *
                                         (bridge->edge_positions[i - 1][1].z - bridge->edge_positions[i][1].z) *
                                         bridge->spring_strength * 0.5f +
@@ -315,7 +319,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][1].z;
                                 bridge->edge_motion[i][1].x =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x)) *
                                         (bridge->edge_positions[i + 1][1].x - bridge->edge_positions[i][1].x) *
                                         bridge->spring_strength * 0.5f +
@@ -323,7 +327,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][1].x;
                                 bridge->edge_motion[i][1].y =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y)) *
                                         (bridge->edge_positions[i + 1][1].y - bridge->edge_positions[i][1].y) *
                                         bridge->spring_strength * 0.5f +
@@ -331,7 +335,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                         bridge->spring_strength +
                                     bridge->edge_motion[i][1].y;
                                 bridge->edge_motion[i][1].z =
-                                    NUBRIDGE_ABS(
+                                    NuBridgeFabsPc(
                                         (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z)) *
                                         (bridge->edge_positions[i + 1][1].z - bridge->edge_positions[i][1].z) *
                                         bridge->spring_strength * 0.5f +
@@ -468,8 +472,6 @@ void NuBridgeUpdate(NUVEC *position) {
         }
     }
 }
-
-#undef NUBRIDGE_ABS
 
 i32 __cdecl NuBridgeAlloc(void) {
     i32 index;
