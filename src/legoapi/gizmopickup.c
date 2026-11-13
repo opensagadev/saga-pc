@@ -965,12 +965,12 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[model].special;
     params.flags = 0x56;
-    if (model >= 0xd5 && model <= 0xd8) {
+    if (params.part_id >= 0xd5 && params.part_id <= 0xd8) {
         params.flags |= 0x200;
-    } else if (model >= 0xc7 && model <= 0xca) {
+    } else if (params.part_id >= 0xc7 && params.part_id <= 0xca) {
         params.flags |= 0x200;
         params.callback_30 = PartExtra_BlueCoin;
-    } else if (model >= 0xd5 && model <= 0xd8) {
+    } else if (params.part_id >= 0xd5 && params.part_id <= 0xd8) {
         params.flags |= 0x200;
         params.callback_30 = PartExtra_PurpleCoin;
     } else {
