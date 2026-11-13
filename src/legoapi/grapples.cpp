@@ -1079,13 +1079,14 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         if (PlayerGrappleSwingModePc == 0) {
             u16 angle = object->movement_facing_angle;
             const u16 old_angle = object->takeover_start_angle;
-            if (static_cast<i16>(angle) <= -1)
+            if (angle >= 0x8000)
                 angle += 0x8000;
             i32 difference;
-            object->takeover_start_angle =
-                TurnRot(static_cast<u16>(old_angle * 2), static_cast<u16>(2 * angle), 0x2000, &difference) >> 1;
+            object->takeover_start_angle = TurnRot(static_cast<u16>(object->takeover_start_angle * 2),
+                                                   static_cast<u16>(2 * angle), 0x2000, &difference) >>
+                                           1;
             if ((difference > 0 && object->takeover_start_angle < old_angle) ||
-                (difference < 0 && old_angle < object->takeover_start_angle))
+                (difference < 0 && object->takeover_start_angle > old_angle))
                 object->field_7a8 += 0x8000;
         }
         const f32 period = ((f64)object->context_hover_target_y / 1.5) * 2.0 + 1.0;
