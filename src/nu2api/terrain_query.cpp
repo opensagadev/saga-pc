@@ -5,7 +5,8 @@
 extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-    extern void *TerI, *TerrOverRideScan;
+    extern TerrainQuery_s *TerI;
+    extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
@@ -214,7 +215,7 @@ extern "C" {
         }
 
         if (hit_index >= 0) {
-            group_header = static_cast<TerrainQuery_s *>(TerI)->scan_words;
+            group_header = TerI->scan_words;
             max_x = (f32)(saved_position.x + 0.1f);
             max_z = (f32)(saved_position.z + 0.1f);
             TERRAIN_NS_SET->index_levels[hit_index].cache_age = 8;
@@ -280,7 +281,7 @@ extern "C" {
             group_header->header.shape_count = 0;
             group_header->header.terrain_group = 0;
             shape_count = 0;
-            group_header = static_cast<TerrainQuery_s *>(TerI)->scan_words;
+            group_header = TerI->scan_words;
             cursor = group_header + 1;
             limit = cursor + 508;
             max_x = (f32)(saved_position.x + 0.1f);
@@ -383,7 +384,6 @@ extern "C" {
 #undef TERRAIN_NS_LOCAL_BOUNDS
 #undef TERRAIN_NS_CACHED_SHAPES
 #define TERRAIN_STH_SET (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
-#define TERRAIN_STH_QUERY (static_cast<TerrainQuery_s *>(TerI))
 #define TERRAIN_STH_PLATFORM(group_ptr) (TERRAIN_STH_SET->platforms[(group_ptr)->scene_index])
 #define TERRAIN_STH_MATRIX(group_ptr) (static_cast<NUMTX *>(TERRAIN_STH_PLATFORM(group_ptr).scene_object))
 #define TERRAIN_STH_GROUP_OVERLAP(lo_x, lo_y, lo_z, hi_x, hi_y, hi_z, group_ptr)                                       \
@@ -440,7 +440,7 @@ extern "C" {
         if (handle == NULL) {
             return;
         }
-        query = TERRAIN_STH_QUERY;
+        query = TerI;
         group_header = query->scan_words;
         cursor = query->scan_words + 1;
         limit = cursor + 508;
@@ -541,8 +541,7 @@ extern "C" {
                         shapes += handle[0];
                     }
                 } else {
-                    const f64 dy =
-                        ((min_y + max_y) * NuQFntHalfScale - group->origin.y) * TERRAIN_STH_QUERY->inverse_object_scale;
+                    const f64 dy = ((min_y + max_y) * NuQFntHalfScale - group->origin.y) * TerI->inverse_object_scale;
                     const f64 dx = (min_x + max_x) * NuQFntHalfScale - group->origin.x;
                     const f64 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
                     const f32 distance_sq = dx * dx + dy * dy + dz * dz;
@@ -628,7 +627,7 @@ extern "C" {
         scaled_count = 0;
         vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~u32(15));
         ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
-        query = TERRAIN_STH_QUERY;
+        query = TerI;
         group_header = query->scan_words;
         cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(query->scan_list_storage) + 1;
         limit = cursor + 508;
@@ -678,7 +677,7 @@ extern "C" {
                 break;
             }
         }
-        query = TERRAIN_STH_QUERY;
+        query = TerI;
         query->scan_list = group_header;
         min_x = (f32)(min_x - 0.05f);
         max_x = (f32)(max_x + 0.05f);
@@ -781,7 +780,7 @@ extern "C" {
                         }
                         TERRAIN_SHAPE *surface = &ScaleTerrain[scaled_count];
                         memcpy(surface->material, source->material, 4);
-                        query = TERRAIN_STH_QUERY;
+                        query = TerI;
                         surface->vertices[0].x = vertices[0].x;
                         surface->vertices[0].z = vertices[0].z;
                         surface->vertices[0].y =
@@ -896,7 +895,7 @@ extern "C" {
                                         NuFsqrt(source->normals[1].x * source->normals[1].x +
                                                 source->normals[1].y * source->normals[1].y * query->object_scale_sq +
                                                 source->normals[1].z * source->normals[1].z));
-                                    query = TERRAIN_STH_QUERY;
+                                    query = TerI;
                                     surface = &ScaleTerrain[scaled_count];
                                     surface->normals[1].x = source->normals[1].x * inverse;
                                     surface->normals[1].y = query->object_scale * source->normals[1].y * inverse;
@@ -908,7 +907,7 @@ extern "C" {
                                     1.0f, NuFsqrt(source->normals[0].x * source->normals[0].x +
                                                   source->normals[0].y * source->normals[0].y * query->object_scale_sq +
                                                   source->normals[0].z * source->normals[0].z));
-                                query = TERRAIN_STH_QUERY;
+                                query = TerI;
                                 surface = &ScaleTerrain[scaled_count];
                                 surface->normals[0].x = source->normals[0].x * inverse;
                                 surface->normals[0].y = query->object_scale * source->normals[0].y * inverse;
@@ -936,7 +935,6 @@ extern "C" {
     }
 
 #undef TERRAIN_STH_SET
-#undef TERRAIN_STH_QUERY
 #undef TERRAIN_STH_PLATFORM
 #undef TERRAIN_STH_MATRIX
 #undef TERRAIN_STH_GROUP_OVERLAP
@@ -951,14 +949,14 @@ extern "C" {
         f32 primary_start = 0.0f;
         f32 secondary_start = 0.0f;
         f32 secondary_end = 0.0f;
-        TerrainQuery_s *query = (TerrainQuery_s *)TerI;
+        TerrainQuery_s *query = TerI;
         f32 radius = query->collision_radius;
         i32 result = 0;
         query->hit_type = result;
         query->hit_time = 999.9f;
         const f64 horizontal_length =
             NuFsqrt(query->movement.x * query->movement.x + query->movement.z * query->movement.z);
-        query = (TerrainQuery_s *)TerI;
+        query = TerI;
         query->horizontal_movement_length = horizontal_length;
         NUVEC *origin = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[group_index].origin;
         query->local_start.x = query->position.x - origin->x;
@@ -996,7 +994,7 @@ extern "C" {
             }
         }
         if (test != 0 && HitPoly(primary_start, primary_end, secondary_start, secondary_end, surface)) {
-            ((TerrainQuery_s *)TerI)->terrain_group_index = group_index;
+            TerI->terrain_group_index = group_index;
             result = 1;
         }
         return result;
@@ -1005,7 +1003,7 @@ extern "C" {
 
 extern "C" void RayImpact(NUVEC *movement) {
     TerrainMoveImpactData();
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = TerI;
     switch (query->hit_type) {
         case 1:
         case 2:
@@ -1071,20 +1069,20 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
     query->separation_epsilon = 0.01f;
     query->compare_epsilon = 0.00001f;
     ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     query->position.y *= query->inverse_object_scale;
     query->movement.y = query->movement.y * query->inverse_object_scale;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        ShadNorm = static_cast<TerrainQuery_s *>(TerI)->movement_normal;
+        ShadNorm = TerI->movement_normal;
         movement->y *= query->object_scale;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" i32 __cdecl TerrainPlatId(void) {
@@ -1094,11 +1092,11 @@ extern "C" i32 __cdecl TerrainPlatId(void) {
 STATIC_ASSERT(offsetof(TERRAIN_SHAPE, material) == 0x60);
 
 extern "C" f32 __cdecl NewRayCastGetTOFI(void) {
-    return static_cast<TerrainQuery_s *>(TerI)->hit_time;
+    return TerI->hit_time;
 }
 
 extern "C" i32 __cdecl NewRayCastGetImpactTerrainType(void) {
-    TERRAIN_SHAPE *surface = static_cast<TerrainQuery_s *>(TerI)->surface;
+    TERRAIN_SHAPE *surface = TerI->surface;
     return surface ? surface->material[0] : 0;
 }
 
@@ -1114,18 +1112,18 @@ extern "C" void __cdecl NewTerrHitInfo(u8 *info) {
 }
 
 extern "C" void __cdecl NewRayCastGetImpactNormal(NUVEC *normal) {
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = TerI;
     if (query != NULL) {
         *normal = query->movement_normal;
     }
 }
 
 extern "C" f32 __cdecl NewRayCastGetEmbedDist(void) {
-    return static_cast<TerrainQuery_s *>(TerI)->unclamped_hit_time;
+    return TerI->unclamped_hit_time;
 }
 
 extern "C" i32 __cdecl NewRayCastHitWallSpline(void) {
-    return static_cast<TerrainQuery_s *>(TerI)->shape_adjusted;
+    return TerI->shape_adjusted;
 }
 
 extern "C" i32 NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags) {
@@ -1162,18 +1160,18 @@ extern "C" i32 NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan
     query->separation_epsilon = 0.01f;
     query->compare_epsilon = 0.00001f;
     ScanTerrain(1, 0, scan_flags != 0 ? 0x40 : 0);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" i32 NewRayCastMask(NUVEC *position, NUVEC *movement, f32 radius, i32 terrain_mask, i32 scan_flags) {
@@ -1210,18 +1208,18 @@ extern "C" i32 NewRayCastMask(NUVEC *position, NUVEC *movement, f32 radius, i32 
     query->separation_epsilon = 0.01f;
     query->compare_epsilon = 0.00001f;
     ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" i32 NewRayCastSet(NUVEC *position, NUVEC *movement, f32 radius, f32 separation_epsilon, f32 compare_epsilon,
@@ -1259,18 +1257,18 @@ extern "C" i32 NewRayCastSet(NUVEC *position, NUVEC *movement, f32 radius, f32 s
     query->separation_epsilon = separation_epsilon;
     query->compare_epsilon = compare_epsilon;
     ScanTerrain(scan_type, 0, scan_flags != 0 ? 0x40 : 0);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f32 separation_epsilon,
@@ -1307,18 +1305,18 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     query->separation_epsilon = separation_epsilon;
     query->compare_epsilon = compare_epsilon;
     ScanTerrain(scan_type, terrain_mask, scan_flags != 0 ? 0x40 : 0);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 static u8 *TempStackPtrPc = 0;
@@ -1481,8 +1479,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
                     shapes += count;
                 }
             } else {
-                const f64 dy = ((min_y + max_y) * 0.5 - group->origin.y) *
-                               static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
+                const f64 dy = ((min_y + max_y) * 0.5 - group->origin.y) * TerI->inverse_object_scale;
                 const f64 dx = (min_x + max_x) * 0.5 - group->origin.x;
                 const f64 dz = (min_z + max_z) * 0.5 - group->origin.z;
                 const f32 distance_sq = dx * dx + dy * dy + dz * dz;
@@ -1703,7 +1700,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
             }
         }
     }
-    static_cast<TerrainQuery_s *>(TerI)->scan_list = group_header;
+    TerI->scan_list = group_header;
     scan->min_x = (f32)(scan->min_x - 0.05f);
     scan->max_x = (f32)(scan->max_x + 0.05f);
     scan->min_y = (f32)(scan->min_y - 0.05f);
@@ -1794,8 +1791,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
                         }
                     }
                 } else if (group->chunk_type != -1) {
-                    const f64 dy = ((scan->max_y + scan->min_y) * 0.5 - group->origin.y) *
-                                   static_cast<TerrainQuery_s *>(TerI)->inverse_object_scale;
+                    const f64 dy = ((scan->max_y + scan->min_y) * 0.5 - group->origin.y) * TerI->inverse_object_scale;
                     const f64 dx = (scan->max_x + scan->min_x) * 0.5 - group->origin.x;
                     const f64 dz = (scan->max_z + scan->min_z) * 0.5 - group->origin.z;
                     // Retail reuses the local minimum Y slot for the distance; Y is not read again here.
@@ -2034,7 +2030,7 @@ extern "C" i32 NewRayCastSetHandel(NUVEC *position, NUVEC *movement, f32 radius,
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
     const f32 inverse_radius = radius == 0.0f ? 0.0f : TerrainDivideNonzeroPC(1.0f, radius);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     query->inverse_collision_radius = inverse_radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
@@ -2048,19 +2044,19 @@ extern "C" i32 NewRayCastSetHandel(NUVEC *position, NUVEC *movement, f32 radius,
     query->separation_epsilon = separation_epsilon;
     query->compare_epsilon = compare_epsilon;
     ScanTerrainHandel(scan_type, handle);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
         TerrPoly = query->surface;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, f32 separation_epsilon,
@@ -2100,18 +2096,18 @@ extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, 
     query->compare_epsilon = 0.0f;
     ScanTerrainPlatform(static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->platforms[platform_index].terrain_group_index,
                         terrain_mask);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     DerotateMovementVector();
     HitTerrain();
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
+        query = TerI;
         ShadNorm = query->movement_normal;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 extern "C" {
@@ -2145,8 +2141,8 @@ extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, 
     ShadRoofPoly = NULL;
     TerrainSurfaceClassPc = 0;
     ShadPoly = NULL;
-    TerI = NuScratchAlloc32(sizeof(TerrainQuery_s));
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    TerrainQuery_s *query = TerI;
     query->object_scale = 1.0f;
     query->object_scale_sq = 1.0f;
     query->inverse_object_scale = 1.0f;
@@ -2204,7 +2200,7 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     query->hit_flags = NULL;
     DerotateMovementVector();
     HitTerrPoly(TerrPoly, TerrPolyObj);
-    query = static_cast<TerrainQuery_s *>(TerI);
+    query = TerI;
     switch (query->hit_type) {
         case 1:
         case 2:
@@ -2229,7 +2225,7 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
             break;
     }
     NuScratchRelease();
-    return static_cast<TerrainQuery_s *>(TerI)->hit_type;
+    return TerI->hit_type;
 }
 
 STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, id) == 0);
@@ -2242,7 +2238,7 @@ STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 
 extern "C" void RotateTerrain(TERRAIN_SHAPE *surface) {
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = TerI;
     const f32 sin_pitch = NuTrigTable[(static_cast<i32>(query->movement_pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
     const f32 cos_pitch =
         NuTrigTable[(static_cast<i32>(query->movement_pitch + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];
@@ -2373,7 +2369,7 @@ found:
     second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[second_vertex].z
 
 extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
-    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
+    TerrainQuery_s *query = TerI;
     if ((query->hit_type & 0xf) != TERRAIN_HIT_TYPE_CYLINDER) {
         return;
     }

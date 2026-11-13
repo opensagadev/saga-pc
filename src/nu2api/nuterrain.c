@@ -438,8 +438,8 @@ extern i32 PlatSkinMaxStore;
 extern i32 PlatSkinMaxSize;
 extern u8 *PlatSkinMem;
 
-/* Keep public CurrentTerrain/TerI as existing void* storage. Cast TerI locally
- * to TerrainQuery_s* (the 0x948-byte query packet). Keep existing
+/* Keep public CurrentTerrain as existing void* storage. TerI points at the
+ * 0x948-byte TerrainQuery_s query packet. Keep existing
  * PLATFORM.scene_object as void*, locally accessed through NUMTX*; PLATFORM.instance_flags
  * points at the owning instance's flags word. No full scene-owner type transfer.
  */
@@ -501,7 +501,7 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     SkinMemInfo[selected].last_use = (i32)TerrainUpadteCnt;
 }
 
-extern void *TerI;
+extern TerrainQuery_s *TerI;
 extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
 extern u16 NuTerrPlatsOff;
 extern i16 castnum, TerrainShadowFloorIndexPc;
@@ -635,7 +635,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         TERRAIN_SCAN_WORD_PC *entry;
 
         cache = &TERRAIN_ROT_SET->index_levels[hit_index];
-        group_header = ((TerrainQuery_s *)TerI)->scan_words;
+        group_header = TerI->scan_words;
         max_x = saved_position.x + 0.10000000149011612;
         max_z = saved_position.z + 0.10000000149011612;
         min_x = saved_position.x - 0.10000000149011612;
@@ -685,7 +685,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             max_z = saved_position.z + 0.10000000149011612;
             min_x = saved_position.x - 0.10000000149011612;
             min_z = saved_position.z - 0.10000000149011612;
-            group_header = ((TerrainQuery_s *)TerI)->scan_words;
+            group_header = TerI->scan_words;
         }
         cursor = group_header + 1;
         limit = cursor + 508;
@@ -735,7 +735,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 TERRAIN_ROT_FINISH_GROUP(group_indices[cell_group]);
             }
         }
-        query = (TerrainQuery_s *)TerI;
+        query = TerI;
         if (TERRAIN_ROT_SET->index_levels[oldest_index].cache_age < 2) {
             TERRAIN_SCAN_WORD_PC *entry;
 
@@ -1038,7 +1038,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 
     castnum = -1;
     TerrainShadowFloorIndexPc = -1;
-    scan = ((TerrainQuery_s *)TerI)->scan_words;
+    scan = TerI->scan_words;
     /* MATCH-EXCEPTION: retail loads the group table once, after the loop's
      * entry test (the original hoisted CurrentTerrain->groups itself); the
      * guarded load reproduces that placement. */
@@ -1256,7 +1256,7 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
         return LevelConfigFarDistance;
     }
 
-    TerI = (TerrainQuery_s *)NuScratchAlloc32(0x948);
+    TerI = NuScratchAlloc32(0x948);
     ScaleTerrain = ScaleTerrainT1;
     local_position = *position;
     NewScanRot(&local_position, mask);
@@ -2796,7 +2796,7 @@ STATIC_ASSERT(offsetof(TERRAIN_DEBUG_SOURCE_LINK_PC, source_polygon) == 0);
 STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
 
 void TerrDrawImpactPol(void) {
-    TerrainQuery_s *query = (TerrainQuery_s *)TerI;
+    TerrainQuery_s *query = TerI;
     TERRAIN_POLYGON_INFO_PC *surface;
     TERRAIN_POLYGON_INFO_PC *scaled;
     if (query == NULL || query->surface == NULL) {

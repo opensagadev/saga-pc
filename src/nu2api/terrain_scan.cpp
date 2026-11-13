@@ -3,14 +3,14 @@
 extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-    extern void *TerI, *TerrOverRideScan;
+    extern TerrainQuery_s *TerI;
+    extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
 
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
-#define TERRAIN_QUERY_PC (static_cast<TerrainQuery_s *>(TerI))
 #define TERRAIN_SET_CURRENT_PC (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
 #define TERRAIN_PLATFORM_OF_PC(group_arg) (TERRAIN_SET_CURRENT_PC->platforms[(group_arg).scene_index])
 #define TERRAIN_PLATFORM_MATRIX_PC(group_arg) (static_cast<NUMTX *>(TERRAIN_PLATFORM_OF_PC(group_arg).scene_object))
@@ -66,7 +66,7 @@ extern "C" {
                     1.0f, NuFsqrt(source->normals[1].x * source->normals[1].x +                                        \
                                   source->normals[1].y * source->normals[1].y * query->object_scale_sq +               \
                                   source->normals[1].z * source->normals[1].z));                                       \
-                query = TERRAIN_QUERY_PC;                                                                              \
+                query = TerI;                                                                                          \
                 scaled = &ScaleTerrain[scaled_shape_count];                                                            \
                 scaled->normals[1].x = source->normals[1].x * inverse_length;                                          \
                 scaled->normals[1].y = query->object_scale * source->normals[1].y * inverse_length;                    \
@@ -78,7 +78,7 @@ extern "C" {
                 1.0f, NuFsqrt(source->normals[0].x * source->normals[0].x +                                            \
                               source->normals[0].y * source->normals[0].y * query->object_scale_sq +                   \
                               source->normals[0].z * source->normals[0].z));                                           \
-            query = TERRAIN_QUERY_PC;                                                                                  \
+            query = TerI;                                                                                              \
             scaled = &ScaleTerrain[scaled_shape_count];                                                                \
             scaled->normals[0].x = source->normals[0].x * inverse_length;                                              \
             scaled->normals[0].y = query->object_scale * source->normals[0].y * inverse_length;                        \
@@ -95,7 +95,7 @@ extern "C" {
             scan_radius = NuFsqrt((query_arg)->movement.x * (query_arg)->movement.x +                                  \
                                   (query_arg)->movement.y * (query_arg)->movement.y +                                  \
                                   (query_arg)->movement.z * (query_arg)->movement.z);                                  \
-            (query_arg) = TERRAIN_QUERY_PC;                                                                            \
+            (query_arg) = TerI;                                                                                        \
             scan_radius = (query_arg)->collision_radius + 0.1f + scan_radius;                                          \
             max_x = (query_arg)->position.x + 0.05f + scan_radius;                                                     \
             max_y = (query_arg)->position.y + 0.05f + (query_arg)->object_scale * scan_radius;                         \
@@ -128,7 +128,7 @@ extern "C" {
             }                                                                                                          \
             scan_radius = NuFsqrt((min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +              \
                                   (min_z - max_z) * (min_z - max_z));                                                  \
-            (query_arg) = TERRAIN_QUERY_PC;                                                                            \
+            (query_arg) = TerI;                                                                                        \
         } break;                                                                                                       \
     }
 
@@ -141,21 +141,21 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
     ScaleTerrain = ScaleTerrainT1;
     platinrange = 0;
-    TERRAIN_QUERY_PC->scan_group_index = -1;
+    TerI->scan_group_index = -1;
 
     u8 *group_header;
     TERRAIN_SHAPE **cursor;
     u8 *limit;
     i32 group_shape_count;
-    group_header = TERRAIN_QUERY_PC->scan_list_storage;
+    group_header = TerI->scan_list_storage;
     cursor = reinterpret_cast<TERRAIN_SHAPE **>(group_header + sizeof(TERRAIN_SHAPE *));
-    limit = TERRAIN_QUERY_PC->scan_list_storage + sizeof(TERRAIN_QUERY_PC->scan_list_storage) - 12;
+    limit = TerI->scan_list_storage + sizeof(TerI->scan_list_storage) - 12;
     group_shape_count = 0;
 
     TERRAIN_GROUP *terrain_groups = TERRAIN_SET_CURRENT_PC->groups;
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
 
-    TerrainQuery_s *query = TERRAIN_QUERY_PC;
+    TerrainQuery_s *query = TerI;
     TERRAIN_SCAN_BOUNDS_PC(query, query->scan_result);
     if (query->object_scale > 1.0f) {
         scan_radius += (query->object_scale - 1.0) * query->collision_radius;
@@ -186,7 +186,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
             if (group.scene_index < 0) {
                 TerrainSkinAllocate(&group);
-                query = TERRAIN_QUERY_PC;
+                query = TerI;
             }
 
             TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
@@ -267,7 +267,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             TERRAIN_FINISH_SCAN_GROUP_PC(TERRAIN_SET_CURRENT_PC->max_groups + pick_index);
         }
     }
-    TERRAIN_QUERY_PC->scan_list = group_header;
+    TerI->scan_list = group_header;
     min_x -= 0.05f;
     max_x += 0.05f;
     min_y -= 0.05f;
@@ -398,22 +398,22 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
                         if (!(vertices[0].x > local_min_x || vertices[1].x > local_min_x ||
                               vertices[2].x > local_min_x || vertices[3].x > local_min_x)) {
-                            query = TERRAIN_QUERY_PC;
+                            query = TerI;
                             continue;
                         }
                         if (!(vertices[0].x < local_max_x || vertices[1].x < local_max_x ||
                               vertices[2].x < local_max_x || vertices[3].x < local_max_x)) {
-                            query = TERRAIN_QUERY_PC;
+                            query = TerI;
                             continue;
                         }
                         if (!(vertices[0].z > local_min_z || vertices[1].z > local_min_z ||
                               vertices[2].z > local_min_z || vertices[3].z > local_min_z)) {
-                            query = TERRAIN_QUERY_PC;
+                            query = TerI;
                             continue;
                         }
                         if (!(vertices[0].z < local_max_z || vertices[1].z < local_max_z ||
                               vertices[2].z < local_max_z || vertices[3].z < local_max_z)) {
-                            query = TERRAIN_QUERY_PC;
+                            query = TerI;
                             continue;
                         }
                         TERRAIN_SHAPE *transformed = &ScaleTerrain[scaled_shape_count];
@@ -421,7 +421,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         transformed->material[1] = shape->material[1];
                         transformed->flags = shape->flags;
                         transformed->normal_flags = shape->normal_flags;
-                        query = TERRAIN_QUERY_PC;
+                        query = TerI;
                         platinrange = 1;
                         transformed->vertices[0].x = vertices[0].x;
                         transformed->vertices[0].z = vertices[0].z;
@@ -478,7 +478,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         *cursor++ = transformed;
                         ++group_shape_count;
                         ++scaled_shape_count;
-                        query = TERRAIN_QUERY_PC;
+                        query = TerI;
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
                 }
@@ -596,7 +596,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 }
 
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
-    TerrainQuery_s *query = TERRAIN_QUERY_PC;
+    TerrainQuery_s *query = TerI;
     WallSplinesOnly = 0;
     ScaleTerrain = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);

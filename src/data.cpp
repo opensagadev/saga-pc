@@ -12613,7 +12613,7 @@ struct TERRAIN_SKIN_USE_RECORD_PC;
 extern "C" {
 // Accessed terrain state and literals; full original allocation extents remain unknown.
 #pragma bss_seg(".bss$TerI")
-    void *TerI = 0;
+    TerrainQuery_s *TerI = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainPlatformsOffPc")
     u16 NuTerrPlatsOff = 0;
