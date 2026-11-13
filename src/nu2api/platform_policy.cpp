@@ -14,7 +14,7 @@ struct PC_PLATFORM_POLICY_PC {
 STATIC_ASSERT(offsetof(PC_PLATFORM_POLICY_METHODS_PC, release) == 8);
 STATIC_ASSERT(offsetof(PC_PLATFORM_POLICY_METHODS_PC, check) == 0x18);
 
-extern "C" u8 PcPlatformPolicy(u8 report_error) {
+extern "C" i32 PcPlatformPolicy(u8 report_error) {
     BOOL allowed = TRUE;
     PC_PLATFORM_POLICY_PC *policy = NULL;
     u8 initialized_com = CoInitialize(NULL) >= 0;

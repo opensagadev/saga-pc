@@ -450,8 +450,13 @@ struct FLOWBOX_PC {
     };
     u8 last_process_frame;
     u8 loop_checksum;
-    u8 state_flags_low;
-    u8 state_flags_high;
+    union {
+        u16 state_flags;
+        struct {
+            u8 state_flags_low;
+            u8 state_flags_high;
+        };
+    };
     void *data;
     FLOWBOX_PC **parents;
     FLOWBOX_PC **children;
@@ -491,6 +496,7 @@ STATIC_ASSERT(offsetof(FLOWBOX_PC, type) == 0x3);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, runtime_id) == 0x4);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, last_process_frame) == 0x8);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, loop_checksum) == 0x9);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags) == 0xa);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_low) == 0xa);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_high) == 0xb);
 STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
@@ -545,7 +551,7 @@ STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
 
 typedef struct repeat_sfx_entry_pc_s {
     i16 sfx_id;
-    u8 state;
+    i8 state;
     i8 play_count;
     f32 start_delay;
     f32 repeat_delay;
@@ -5829,7 +5835,7 @@ typedef struct gameobject_s {
     i8 field_283;
     union {
         u8 unknown_0284;
-        u8 roof_surface_id_pc;
+        i8 roof_surface_id_pc;
     };
     u8 jump_animation_state;
     union {
@@ -16552,7 +16558,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
         i16 render_priority;
         i8 dynamic_priority;
         i8 page, detail_levels;
-        u8 facing_mode;
+        i8 facing_mode;
         i16 facing_rotation_x, facing_rotation_y;
     } EDPP_PARTICLE_PC;
     STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
@@ -19396,7 +19402,7 @@ extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *de
 extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
 extern "C" void __cdecl PcInputSaveConfigurationPc();
 
-extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[15];
+extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[24];
 extern PC_DI_CAPS_PC PcKeyboardCapabilities;
 extern "C" u8 IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
@@ -19548,7 +19554,7 @@ extern "C" void __cdecl PcShutdown(void);
 extern "C" void __cdecl PcKeyDown(i32 scan_code);
 extern "C" void __cdecl PcKeyUp(i32 scan_code);
 extern "C" void __cdecl PcPrepareTiming(void);
-extern "C" u8 __cdecl PcPlatformPolicy(u8 enabled);
+extern "C" i32 __cdecl PcPlatformPolicy(u8 enabled);
 extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
 
 STATIC_ASSERT(sizeof(WNDCLASSEXA) == 48);
@@ -21359,7 +21365,18 @@ extern "C" {
 typedef struct GRAPPLE_MOTION_PC {
     char name[16];
     NUVEC position;
-    u8 has_terrain_platform, retain_attachment, flags, unknown_1f;
+    u8 has_terrain_platform, retain_attachment;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 disabled : 1;
+            u8 reversed : 1;
+            u8 reserved_flags : 4;
+        };
+    };
+    u8 unknown_1f;
     u16 y_rotation, x_rotation;
     NUVEC ground_position, hook_position, shadow_probe_position;
     u16 ground_x_rotation, ground_z_rotation;
@@ -25152,16 +25169,16 @@ struct GIZBOMBGEN_s {
     struct gameobject_s *generated_bomb;
     i16 field_0x28;
     union {
-        u8 flags;
+        u16 flags;
         struct {
-            u8 active : 1;
-            u8 visible : 1;
-            u8 reserved_flags : 6;
+            u16 active : 1;
+            u16 visible : 1;
+            u16 reserved_flags : 14;
         };
     };
-    u8 field_0x2b;
 };
 STATIC_ASSERT(sizeof(struct GIZBOMBGEN_s) == 44);
+STATIC_ASSERT(offsetof(struct GIZBOMBGEN_s, flags) == 0x2a);
 
 struct GIZBOMBGENSYS_s {
     struct GIZBOMBGEN_s *bomb_generators;
@@ -25277,7 +25294,8 @@ struct GIZTORPMACHINE_s {
         struct {
             u8 active : 1;
             u8 visible : 1;
-            u8 reserved_flags : 6;
+            u8 alternate : 1;
+            u8 reserved_flags : 5;
         };
     };
 };
@@ -25503,8 +25521,8 @@ STATIC_ASSERT(sizeof(struct SIGNAL_s) == 148);
 
 struct SIGNALPROGRESS_s {
     char suit_letters[32];
-    u32 active_mask;
-    u32 visible_mask;
+    u32 active_mask[1];
+    u32 visible_mask[1];
 };
 STATIC_ASSERT(sizeof(struct SIGNALPROGRESS_s) == 40);
 

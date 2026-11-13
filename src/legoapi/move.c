@@ -7307,7 +7307,7 @@ void __cdecl Hang_MoveCode(GAMEOBJECT *object) {
             return;
         }
         variant = object->context_variant;
-        if (object->roof_surface_id_pc != variant) {
+        if ((u8)object->roof_surface_id_pc != variant) {
             object->character_context = -1;
             object->velocity.y = 0.0f;
             return;

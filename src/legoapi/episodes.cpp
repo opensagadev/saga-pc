@@ -29,6 +29,7 @@ extern i32 EpRedBrickTotal, EpRedBrickCount, EpGoldBrickTotal, EpGoldBrickCount;
 extern i32 EpisodeGoldBrickForSuperStoryPc, EpisodeGoldBrickForSuperBonusPc, EpisodeGoldBrickForChallengePc;
 extern i32 HubBothTrueJediGoldBricksPc;
 extern "C" {
+    void __cdecl EpisodesConfigDiagnosticPc(char *path);
 
     EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                                    i32 *count_out) {
@@ -39,6 +40,7 @@ extern "C" {
         i32 in_episode = 0;
 
         if (parser == NULL) {
+            EpisodesConfigDiagnosticPc(path);
             if (count_out != NULL) {
                 *count_out = 0;
             }
@@ -128,6 +130,7 @@ extern "C" {
 
         NuFParDestroy(parser);
         if (episode_count == 0) {
+            EpisodesConfigDiagnosticPc(path);
             return NULL;
         }
 

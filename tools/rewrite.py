@@ -431,7 +431,8 @@ def rule_inline_local(source):
         if not refs or any(_assigned(source, r) for r in refs):
             continue
         # Operand bases of the initializer must not be written before the last use.
-        bases = {n.referenced for n in [init, *source.walk(init)] if n.kind == K.DECL_REF_EXPR}
+        bases = {n.referenced.hash for n in [init, *source.walk(init)]
+                 if n.kind == K.DECL_REF_EXPR and n.referenced is not None}
         last = max(r.extent.end.offset for r in refs)
         start = decl_stmt.extent.end.offset
         written = False
@@ -440,7 +441,8 @@ def rule_inline_local(source):
             a = node.extent.start.offset
             if not start <= a <= last:
                 continue
-            if node.kind == K.DECL_REF_EXPR and node.referenced in bases and _assigned(source, node):
+            if node.kind == K.DECL_REF_EXPR and node.referenced is not None and node.referenced.hash in bases and \
+                    _assigned(source, node):
                 written = True
             if node.kind == K.CALL_EXPR:
                 calls = True
@@ -640,7 +642,9 @@ def _decl_names(source, stmt):
 
 
 def _initializer_refs(source, decl):
-    return {n.referenced for n in source.walk(decl) if n.kind == K.DECL_REF_EXPR}
+    # Cursor.hash, not the cursor: older clang bindings define __eq__ without __hash__.
+    return {n.referenced.hash for n in source.walk(decl)
+            if n.kind == K.DECL_REF_EXPR and n.referenced is not None}
 
 
 def rule_swap_decls(source):
@@ -655,7 +659,7 @@ def rule_swap_decls(source):
             a_vars, b_vars = _decl_names(source, first), _decl_names(source, second)
             if not a_vars or not b_vars:
                 continue
-            if any(set(a_vars) & _initializer_refs(source, d) for d in b_vars):
+            if any({v.hash for v in a_vars} & _initializer_refs(source, d) for d in b_vars):
                 continue  # the second initializer reads the first variable
             a, _ = source.span(first)
             _, b = source.span(second)

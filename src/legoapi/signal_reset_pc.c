@@ -75,15 +75,17 @@ void __cdecl Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
         return;
     signal = world->signals;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
-        u32 mask;
+        i32 word;
+        u32 bit;
         SignalResetRecordPc(signal);
         if (progress == NULL || index >= 32)
             continue;
-        mask = 1u << index;
+        word = index / 32;
+        bit = 1 << (index & 31);
         if (progress->suit_letters[index] != 0)
             signal->suit = Suit_FindFromLetter(progress->suit_letters[index]);
-        SignalSetVisiblePc(signal, (progress->visible_mask & mask) != 0);
-        signal->flags = (signal->flags & ~2) | (((progress->active_mask & mask) != 0) << 1);
+        SignalSetVisiblePc(signal, (progress->visible_mask[word] & bit) != 0);
+        signal->active = (progress->active_mask[word] & bit) != 0;
     }
 }
 
@@ -140,8 +142,8 @@ void *__cdecl Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 void __cdecl Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
     if (progress != NULL) {
         memset(progress->suit_letters, 0, sizeof(progress->suit_letters));
-        progress->active_mask = 0xffffffffu;
-        progress->visible_mask = 0xffffffffu;
+        progress->active_mask[0] = 0xffffffffu;
+        progress->visible_mask[0] = 0xffffffffu;
     }
 }
 
@@ -152,13 +154,16 @@ void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRES
     if (progress == NULL || world == NULL || world->signals == NULL)
         return;
     signal = world->signals;
-    for (index = 0; index < world->signal_count && index < 32; ++index, ++signal) {
-        u32 mask = 1u << index;
-        progress->suit_letters[index] = world->signals[index].suit->letter;
-        if ((signal->flags & 1) == 0)
-            progress->visible_mask &= ~mask;
-        if ((signal->flags & 2) == 0)
-            progress->active_mask &= ~mask;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        if (index < 32) {
+            i32 word = index / 32;
+            u32 bit = 1 << (index & 31);
+            progress->suit_letters[index] = world->signals[index].suit->letter;
+            if (!signal->visible)
+                progress->visible_mask[word] &= ~bit;
+            if (!signal->active)
+                progress->active_mask[word] &= ~bit;
+        }
     }
 }
 
