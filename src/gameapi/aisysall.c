@@ -11014,10 +11014,11 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
 }
 
 i32 creatureEditor_IsSelectable(EDAICREATURE_s *creature) {
+    i32 selectable = 1;
     if ((aieditorsettings.display_options & 0x400) && aieditor->selected_creature != NULL &&
         aieditor->selected_creature->set != creature->set)
-        return 0;
-    return 1;
+        selectable = 0;
+    return selectable;
 }
 
 EDAICREATURE_s *__cdecl creatureEditor_GetNearest(i32 use_radius) {
@@ -11095,10 +11096,11 @@ static void __cdecl AiEditorSetAreaActivationPc(eduimenu_s *menu, eduiitem_s *it
 }
 
 static void __cdecl AiEditorActivationDifficultyPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL)
-        aieditor->selected_creature->difficulty = (u8)(i32)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->difficulty = (u8)(i32)slider->value;
 }
 
 void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
@@ -11194,10 +11196,11 @@ void __cdecl creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item,
 }
 
 void __cdecl creatureEditor_cb_assigntoset(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL)
-        aieditor->selected_creature->set = (u8)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->set = (u8)slider->value;
 }
 
 static void __cdecl AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -15844,19 +15847,21 @@ void __cdecl creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item,
 }
 
 void __cdecl creatureEditor_cb_ngroup(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
-        aieditor->selected_creature->group_count = (u8)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->group_count = (u8)slider->value;
         creatureEditor_Updated(aieditor->selected_creature);
     }
 }
 
 void __cdecl creatureEditor_cb_nacross(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
-        aieditor->selected_creature->across_count = (u8)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->across_count = (u8)slider->value;
         creatureEditor_Updated(aieditor->selected_creature);
     }
 }
