@@ -4526,22 +4526,7 @@ void UpdateParts(f32 time) {
         state = (PART_TERRAIN_STATE_PC *)part;
         if ((part->active & 1) == 0)
             continue;
-        part->previous_transform.m00 = part->transform.m00;
-        part->previous_transform.m01 = part->transform.m01;
-        part->previous_transform.m02 = part->transform.m02;
-        part->previous_transform.m03 = part->transform.m03;
-        part->previous_transform.m10 = part->transform.m10;
-        part->previous_transform.m11 = part->transform.m11;
-        part->previous_transform.m12 = part->transform.m12;
-        part->previous_transform.m13 = part->transform.m13;
-        part->previous_transform.m20 = part->transform.m20;
-        part->previous_transform.m21 = part->transform.m21;
-        part->previous_transform.m22 = part->transform.m22;
-        part->previous_transform.m23 = part->transform.m23;
-        part->previous_transform.m30 = part->transform.m30;
-        part->previous_transform.m31 = part->transform.m31;
-        part->previous_transform.m32 = part->transform.m32;
-        part->previous_transform.m33 = part->transform.m33;
+        PartRuntimeMatrixCopyPrivate(&part->previous_transform, &part->transform);
         part->scale_time += time;
         if ((part->active & 2) == 0) {
             f32 movement_time = time;
@@ -4574,7 +4559,7 @@ void UpdateParts(f32 time) {
                             part->velocity.x *= part->field_ec;
                             part->velocity.z *= part->field_ec;
                             if (part->impact_normal.y > 0.5f) {
-                                part->velocity.y = part->velocity.y * part->field_ec;
+                                part->velocity.y *= part->field_ec;
                                 if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
                                         part->velocity.z * part->velocity.z <
                                     PartStopSpeedSquaredPc) {
@@ -4604,7 +4589,7 @@ void UpdateParts(f32 time) {
                     }
                     if (PartRaycastsEnabledPrivate != 0)
                         CastPart(part, PartCollisionIntervalPc);
-                    if ((part->active & 4) != 0 && movement_time >= part->field_f4)
+                    if ((part->active & 4) != 0 && part->field_f4 <= movement_time)
                         movement_time = 0.0f;
                 }
                 part->field_f4 -= movement_time;
@@ -4614,7 +4599,7 @@ void UpdateParts(f32 time) {
                     part->move_fn(part, movement_time);
                 } else {
                     part->position.x += part->velocity.x * movement_time;
-                    part->position.y += movement_time * part->velocity.y;
+                    part->position.y += part->velocity.y * movement_time;
                     part->velocity.y += part->gravity * movement_time;
                     part->position.z += part->velocity.z * movement_time;
                 }
@@ -4643,7 +4628,7 @@ void UpdateParts(f32 time) {
             }
             if ((part->flags & 0x80) != 0) {
                 for (axis = 0; axis < 2; ++axis) {
-                    angle = (i32)((f64)part->field_124[3 + axis] * time);
+                    angle = (i32)((f32)part->field_124[3 + axis] * time);
                     switch (part->rotation_axes[axis]) {
                         case 1:
                             NuMtxPreRotateX(&part->transform, angle);
@@ -4669,22 +4654,7 @@ void UpdateParts(f32 time) {
                 direction.x = -part->velocity.x;
                 direction.y = -part->velocity.y;
                 direction.z = -part->velocity.z;
-                mtx.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-                mtx.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
-                mtx.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
-                mtx.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-                mtx.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-                mtx.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-                mtx.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-                mtx.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-                mtx.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-                mtx.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-                mtx.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-                mtx.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-                mtx.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-                mtx.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-                mtx.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-                mtx.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+                PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
                 NuMtxLookAtZ(&mtx, &direction);
                 memmove(&part->transform, &mtx, 0x30);
             }
@@ -4704,22 +4674,7 @@ void UpdateParts(f32 time) {
         }
         if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
             velocity = part->velocity;
-            mtx.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
-            mtx.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
-            mtx.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
-            mtx.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
-            mtx.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-            mtx.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-            mtx.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-            mtx.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-            mtx.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-            mtx.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-            mtx.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-            mtx.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-            mtx.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-            mtx.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-            mtx.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-            mtx.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+            PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
             velocity.x = -velocity.x;
             velocity.y = -velocity.y;
             velocity.z = -velocity.z;
@@ -4740,11 +4695,13 @@ void UpdateParts(f32 time) {
                                                    0, 0, NULL, part->effect_scale);
         }
         if (part->lighting_handle != NULL) {
-            if ((part->flags & 0x1000) != 0) {
-                offscreen.x = offscreen.y = offscreen.z = 10000.0f;
-                rtlDynamicSetPos(*part->lighting_handle, &offscreen);
-            } else {
+            if ((part->flags & 0x1000) == 0) {
                 rtlDynamicSetPos(*part->lighting_handle, &part->position);
+            } else {
+                offscreen.x = 10000.0f;
+                offscreen.y = 10000.0f;
+                offscreen.z = 10000.0f;
+                rtlDynamicSetPos(*part->lighting_handle, &offscreen);
             }
         }
         if (part->callback_1ac != NULL)
