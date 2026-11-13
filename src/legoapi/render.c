@@ -806,7 +806,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             for (player = 0; player < 2; ++player) {
                 u32 remaining = packet->coins_remaining[player];
                 if (remaining != 0) {
-                    u32 rate = 35, threshold = 100, amount;
+                    u32 threshold = 100, rate = 35, amount;
                     while (remaining >= threshold) {
                         threshold *= 10u;
                         rate *= 10u;
@@ -814,12 +814,13 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
                     amount = (u32)((f64)rate * (f64)elapsed);
                     if (amount > remaining)
                         amount = remaining;
-                    else if (amount == 0)
+                    else if (amount < 1)
                         amount = 1;
                     packet->coins_remaining[player] = remaining - amount;
                     IncreaseScore(packet->score, (u64)amount, 0);
                 }
-                finished += packet->coins_remaining[player] == 0;
+                if (packet->coins_remaining[player] == 0)
+                    ++finished;
             }
             PlaySfx("PickupCoin", NULL);
             if (finished == 2) {
@@ -1069,12 +1070,15 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
 void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 > 0) {
-            f32 alpha, time = 0.0f;
-            if (stage->field_0x18 < 0.5f)
+            f32 alpha, time;
+            if (stage->field_0x18 < 0.5f) {
                 alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
-            else {
+                time = 0.0f;
+            } else {
                 alpha = 1.0f;
-                if (!(stage->field_0x18 < 3.0f))
+                if (stage->field_0x18 < 3.0f)
+                    time = 0.0f;
+                else
                     time = (f64)stage->field_0x18 - 3.0;
             }
             {
@@ -1343,11 +1347,9 @@ void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
                 ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
                 char text[256];
                 NUVEC position;
-                i32 player;
                 PlaySfx("TrueJedi_100pc", NULL);
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                player = (packet->flags_word >> 5) & 1;
-                BonusScore[player] = (i32)((u32)BonusScore[player] + 1u);
+                BonusScore[(packet->flags_word >> 5) & 1]++;
                 sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
                 if ((packet->field_0xb0 & 0x20) == 0) {
                     position.x = -0.015f;
@@ -1366,7 +1368,8 @@ void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
                 message.flags = 0x4028;
                 message.duration = 1.0f;
                 AddGameMsg(&message);
-            } else if ((f64)NuFmod(previous, 0.2f) < (f64)0.1f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
+            } else if (accumulated < 2.0f && (f64)NuFmod(previous, 0.2f) < (f64)0.1f &&
+                       (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
                 PlaySfx((char *)GameAudioName00758838Pc, NULL);
             }
         }
