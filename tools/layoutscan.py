@@ -478,6 +478,58 @@ def unit_markers(functions, units, use_exe=True):
         return {int(u["start"], 16): u["marker"] for u in units if u["evidence"] == "marker"}, False
 
 
+REPEAT = "second VuVecMake"
+
+
+def repeated_helper_markers(comps, functions):
+    """Unit-start markers at the second and later VuVecMake copies inside one compiland.
+
+    VuVecMake is a header static: VC8 emits it at most once per compiland that
+    includes the vector header, so a compiland row holding two copies holds two
+    compilands. The marker is put at the start of the helper run around the later
+    copy (the empty static and fabs copies before it). Returns {va: label}.
+    """
+    from tools import unitmap
+    from tools.lib import number, project, retail
+    target = project()["target"]
+    base, size = number(target["text_va"]), number(target["text_size"])
+    text = retail(target).read_va(base, size)
+    pieces = unitmap.text_pieces(text, base, [(f["va"], f["size"], f["symbol"]) for f in functions])
+    patterns = unitmap.helper_patterns(text, base, pieces)
+    starts = [p["va"] for p in pieces]
+    result = {}
+    by_va = {f["va"]: f for f in functions}
+    for comp in comps:
+        copies = [p for p in pieces[bisect.bisect_left(starts, comp["start"]):bisect.bisect_left(starts, comp["end"])]
+                  if unitmap.piece_bytes(text, base, p) == unitmap.VUVECMAKE]
+        for copy in copies[1:]:
+            i = j = starts.index(copy["va"])
+            while i > 0 and unitmap.piece_bytes(text, base, pieces[i - 1]) in patterns \
+                    and pieces[i - 1]["va"] > copies[0]["va"]:
+                i -= 1
+            result[pieces[i]["va"]] = REPEAT
+            for piece in pieces[i:j + 1]:
+                if piece["va"] in by_va:
+                    by_va[piece["va"]]["helper_copy"] = True
+    return result
+
+
+def lead_into_next(atoms):
+    """A REPEAT atom holding only header-static copies opens the compiland after it."""
+    out = []
+    for i, atom in enumerate(atoms):
+        if atom.marker == REPEAT and atom.functions and all(f.get("helper_copy") for f in atom.functions) \
+                and i + 1 < len(atoms):
+            nxt = atoms[i + 1]
+            nxt.key = getattr(nxt, "key", nxt.start)
+            nxt.functions = atom.functions + nxt.functions
+            nxt.start = atom.start
+            nxt.marker = nxt.marker or REPEAT
+            continue
+        out.append(atom)
+    return out
+
+
 # ------------------------------------------------------------------ segmentation
 
 
@@ -595,7 +647,7 @@ def segment(functions, units, markers, batman):
     order = [f["va"] for f in functions if not f["library"]]
     smoothed = dict(zip(order, smooth([labels[va][0] if labels[va] else None for va in order])))
     atoms = []
-    for atom in atoms_of(functions, units, markers):
+    for atom in lead_into_next(atoms_of(functions, units, markers)):
         atoms.extend(split_blocks(atom, [smoothed[f["va"]] for f in atom.functions]))
     for atom in atoms:
         votes = collections.Counter(smoothed[f["va"]] for f in atom.functions if smoothed[f["va"]])
@@ -603,7 +655,7 @@ def segment(functions, units, markers, batman):
             stem, n = votes.most_common(1)[0]
             if n * 2 >= sum(votes.values()):
                 atom.label, atom.evidence = stem, "batman"
-        review = REVIEW.get(atom.start)
+        review = REVIEW.get(getattr(atom, "key", atom.start))
         if review:
             atom.review = review
             atom.join = review.get("join", False)
@@ -695,7 +747,7 @@ def build(functions, units, markers, batman, retail, cxx=None):
                 and not (atom.review and not atom.join):
             groups[-1].append(atom)
         elif groups and atom.label and groups[-1][-1].label == atom.label and atom.evidence == "batman" \
-                and groups[-1][-1].evidence == "batman":
+                and groups[-1][-1].evidence == "batman" and atom.marker != REPEAT:
             # Same Batman file across a marker: TCS split what Batman merged, or a stray marker.
             atom.marker_inside = True
             groups[-1].append(atom)
@@ -1010,6 +1062,11 @@ def main(argv=None):
     retail = retail_files(args.exe, functions) if Path(args.exe).is_file() else {}
     cxx = retail_cxx(args.exe, functions) if Path(args.exe).is_file() else {}
     comps = build(functions, units, markers, batman, retail, cxx)
+    if from_exe:
+        repeats = repeated_helper_markers(comps, functions)
+        if repeats:
+            markers = {**markers, **repeats}
+            comps = build(functions, units, markers, batman, retail, cxx)
     if args.show:
         va = int(args.show, 16)
         for c in comps:

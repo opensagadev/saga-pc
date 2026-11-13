@@ -54,6 +54,49 @@ source exists; update it together with the header when revising a declaration.
 Matching bytes do not prove the exact original typedef spelling, signedness,
 source name, or prototype.
 
+## Evidence for code rows, and address names
+
+A row in this file claims an address, a linker name and an extent. Rows added
+since the code-mapping pass also record why, in
+[`code-evidence.csv`](code-evidence.csv) (written and checked by
+`tools/codemap.py`; extents from `tools/unmapped.py --functions`). Its columns:
+
+| Column | Meaning |
+| --- | --- |
+| `address`, `size`, `symbol` | the symbols.csv row |
+| `evidence` | `copy`, `compiler`, `sibling` or `extent` (below) |
+| `proposed` | a name the evidence suggests but cannot spell as a linker name (a sibling function in a C++ compiland, whose MSVC decoration needs the prototype; a helper copy whose compiland is undetermined) |
+| `compiland` | the compiland of config/layout-target.csv holding the function |
+| `signals` | the independent observations behind the row |
+| `port` | a source to port from, when one exists (`android:<path>` in the public Android decompilation) |
+
+| Evidence | What proves it | Name |
+| --- | --- | --- |
+| `copy` | bytes equal (near-call displacements masked) to a named header-static helper; or the empty static directly before such a copy (`NuError`, which the sibling build declares `extern "C"` and emits first in every object) | the helper's name with the compiland's prefix, as the earlier copies are named: `_<Prefix><Helper>Pc` in C, `?<Prefix><Helper>` with the helper's signature in C++ (`<Prefix>` is the compiland's file stem in CamelCase, qualified by its directory when two compilands share a stem) |
+| `compiler` | a `.CRT$XC` table slot points at it, or a `.CRT$XC` stub registers it with `atexit` | `??__E<object>@@YAXXZ` / `??__F<object>@@YAXXZ` when the stub passes the object as `this` (`mov ecx, offset object` before the constructor or destructor call); otherwise an address name |
+| `sibling` | the sibling build has a function of that name between the same two named neighbours of the same source file, and its named callees, float constants or named globals agree; it is the only candidate there with an agreeing signal, and this the only unmapped function there that agrees with it | the C name in a C compiland; in a C++ compiland an address name with the name in `proposed` |
+| `extent` | only the decoded extent | address name |
+
+Runtime and SDK library functions are named by `tools/libmatch.py` and recorded
+in [`library-objects.json`](library-objects.json); they are not repeated in
+the ledger. Rows older than the ledger carry no recorded evidence (most come
+from reference symbol data).
+
+**Address names.** A function whose extent is known but whose name is not gets
+the standard address name `fun_` followed by the eight lowercase hex digits of
+its retail address: `fun_0060a1b0`, linker name `_fun_0060a1b0` (C decoration;
+the row is renamed, and decorated as C++ if needed, when the function is
+identified or ported). One format everywhere: no `FUN_`, `sub_`, upper-case
+digits or shortened addresses. The analogous form for data is `dat_` plus
+eight hex digits (`dat_007facf0`, linker name `_dat_007facf0`); no row uses it
+yet. Address names are counted separately from identified names
+(`matching.json` `mapping_code_address_named_bytes`; README) and by
+`tools/oddscan.py` (class `address-name`), as a class that shrinks through real
+names, not as a violation. Existing older forms (`FUN_`/`DAT_`/`sub_`/`data_0x`
+identifiers and address-suffixed names such as `_AlternateGame_callback_925180_PC`,
+counted by oddscan's `hex-name`) are left as they are; a later rename batch
+brings unnamed functions and data to these two forms.
+
 ## External symbols
 
 The original PE import directory supplies 197 four-byte IAT slots: 191 imports by

@@ -44,6 +44,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 FABS = bytes.fromhex("8b44240425ffffff7f89442404d9442404c3")
+# The by-value vector constructor (VuVecMake): a header static that VC8 emits in
+# every compiland including the vector header, so at most once per compiland.
+VUVECMAKE = bytes.fromhex("d9442404d918d9442408d95804d944240cd95808d9442410d9580cc3")
 EMPTY = b"\xc3"
 ALIGN = 16
 MAX_HELPER = 192

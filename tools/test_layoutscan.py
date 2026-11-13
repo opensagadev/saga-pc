@@ -46,6 +46,17 @@ class LayoutScanTests(unittest.TestCase):
         # Runs shorter than three are moved functions, not files.
         self.assertEqual(len(layoutscan.split_blocks(atom, ["x", "x", "x", "x", "x", "x", "y", "y"])), 1)
 
+    def test_second_header_static_copy_opens_the_next_compiland(self):
+        copy = dict(fn(0x100, "_fun_00000100", size=28), helper_copy=True)
+        lead = layoutscan.Atom(0x100, 0x120, [copy], "legoapi/a.c", layoutscan.REPEAT)
+        nxt = layoutscan.Atom(0x120, 0x200, [fn(0x120)], "legoapi/a.c", "")
+        atoms = layoutscan.lead_into_next([lead, nxt])
+        self.assertEqual([(a.start, a.key, a.marker, len(a.functions)) for a in atoms],
+                         [(0x100, 0x120, layoutscan.REPEAT, 2)])
+        # A marker atom with code of its own stays a compiland.
+        own = layoutscan.Atom(0x100, 0x120, [copy, fn(0x110)], "legoapi/a.c", layoutscan.REPEAT)
+        self.assertEqual(len(layoutscan.lead_into_next([own, layoutscan.Atom(0x120, 0x200, [fn(0x120)], "", "")])), 2)
+
     def test_inner_rows_one_range_per_file(self):
         fs = [fn(0x100 + 16 * i) for i in range(9)]
         labels = {f["va"]: None for f in fs}

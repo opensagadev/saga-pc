@@ -1,244 +1,263 @@
 start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,implemented,exact_bytes,lost,foreign,our_files
-0x401000,0x401802,src/legogame/pcbatman.cpp,,legogame,file+marker+review,high,ret 28,8,1817,1817,1817,0,0,legogame/pcbatman.cpp:1078 legoapi/hub.cpp:462 legoapi/control_setup.cpp:112 legoapi/gamepads.c:67 editor/edlevelall.cpp:50 legogame/startup.cpp:48
-0x401810,0x401863,src/legogame/?0x401810,,legogame,marker+review+android,none,ret ret 28,3,7,7,7,0,0,legoapi/gamepads.c:7
-0x401870,0x4028b4,src/legogame/aitrigger.c,,legogame,batman+marker,high,ret 28,9,4064,4064,1672,22,0,legogame/aitrigger.c:4063 nu2api/nuapi.c:1
-0x4028c0,0x403c83,src/legogame/attracto.c,,legogame,batman+marker,high,ret fabs 28,27,4804,4804,3002,21,0,legogame/attracto.c:4804
-0x403c90,0x405d4b,src/legogame/batarang.c,,legogame,batman+marker,high,fabs 54,20,8125,8125,2859,219,0,legoapi/batarang.cpp:8071 gameapi/aisysall.c:54
-0x405d70,0x407e1d,src/legogame/batman_gameai.c,,legogame,review,low,,22,8255,8255,5922,258,0,legoapi/batarang.cpp:8255
+0x401000,0x401802,src/legogame/pcbatman.cpp,,legogame,file+marker+review,high,ret 28,10,1846,1817,1817,0,0,legogame/pcbatman.cpp:1078 legoapi/hub.cpp:462 legoapi/control_setup.cpp:112 legoapi/gamepads.c:67 editor/edlevelall.cpp:50 legogame/startup.cpp:48
+0x401810,0x401863,src/legogame/?0x401810,,legogame,marker+review+android,none,ret ret 28,4,35,7,7,0,0,legoapi/gamepads.c:7
+0x401870,0x4028b4,src/legogame/aitrigger.c,,legogame,batman+marker,high,ret 28,10,4092,4064,1672,22,0,legogame/aitrigger.c:4063 nu2api/nuapi.c:1
+0x4028c0,0x403c83,src/legogame/attracto.c,,legogame,batman+marker,high,ret fabs 28,29,4833,4804,3002,21,0,legogame/attracto.c:4804
+0x403c90,0x405d4b,src/legogame/batarang.c,,legogame,batman+marker,high,fabs 54,23,8198,8125,2859,219,0,legoapi/batarang.cpp:8071 gameapi/aisysall.c:54
+0x405d50,0x407e3c,src/legogame/batman_gameai.c,,legogame,marker+review,low,,24,8311,8255,5922,258,0,legoapi/batarang.cpp:8255
 0x407e40,0x408760,src/legogame/bolt.c,,legogame,batman,medium,,6,2300,2300,983,28,0,legogame/bolt.c:2300
-0x4087a0,0x40a4a5,src/legogame/cable.c,,legogame,review,medium,,8,7284,7284,1233,190,0,legogame/cable.c:7284
-0x40a4b0,0x40e6fa,src/legogame/camera.c,,legogame,batman+marker,high,fabs 22 28,11,16626,16626,268,2114,0,legogame/camera.c:16625 legoapi/camera.c:1
-0x40e700,0x413b50,src/legogame/chris.cpp,,legogame,code+marker+review,medium,ret fabs 28,53,19457,19457,6604,1297,0,legogame/chris.cpp:19456 legoapi/flightspline_diagnostic_pc.c:1
-0x413b70,0x413efe,src/legogame/config.c,,legogame,batman,medium,,1,910,910,910,0,0,legogame/config.c:910
-0x413f00,0x42009e,src/legogame/creature.c,,legogame,batman+marker,high,fabs,76,48588,48588,18823,1602,49,legogame/creature.c:46670 legoapi/players.c:1900 legoapi/pushing.c:18
-0x4200c0,0x42362f,src/legogame/?0x4200c0,,legogame,review+android,none,,27,12318,12318,3440,1071,0,legoapi/control_setup.cpp:12298 legoapi/player_device_port_pc.c:20
-0x423670,0x426b06,src/legogame/customise.c,,legogame,review,medium,,25,13206,13206,2274,547,0,legogame/customise.c:13206
-0x426b30,0x4277a2,src/legogame/detonator.c,,legogame,batman,medium,,9,3115,3115,3115,0,0,legogame/detonator.cpp:3115
+0x4087a0,0x40a4a5,src/legogame/cable.c,,legogame,review,medium,,9,7312,7284,1233,190,0,legogame/cable.c:7284
+0x40a4b0,0x40e6fa,src/legogame/camera.c,,legogame,batman+marker,high,fabs 22 28,14,16776,16708,268,2138,0,legogame/camera.c:16707 legoapi/camera.c:1
+0x40e700,0x413b50,src/legogame/chris.cpp,,legogame,code+marker+review,medium,ret fabs 28,63,19732,19457,6604,1297,0,legogame/chris.cpp:19456 legoapi/flightspline_diagnostic_pc.c:1
+0x413b50,0x413efe,src/legogame/config.c,,legogame,batman+marker,high,,2,938,910,910,0,0,legogame/config.c:910
+0x413f00,0x42009e,src/legogame/creature.c,,legogame,batman+marker,high,fabs,78,48639,48588,18823,1602,49,legogame/creature.c:46670 legoapi/players.c:1900 legoapi/pushing.c:18
+0x4200a0,0x42366c,src/legogame/?0x4200a0,,legogame,marker+review+android,none,,30,12441,12362,3440,1076,0,legoapi/control_setup.cpp:12342 legoapi/player_device_port_pc.c:20
+0x423670,0x426b2c,src/legogame/customise.c,,legogame,review,medium,,26,13234,13206,2274,547,0,legogame/customise.c:13206
+0x426b30,0x4277cc,src/legogame/detonator.c,,legogame,batman,medium,,10,3143,3115,3115,0,0,legogame/detonator.cpp:3115
 0x4277d0,0x428930,src/legogame/dropinout.c,,legogame,batman,medium,,9,4398,4398,1434,106,0,legogame/dropinout.c:4398
-0x428930,0x42f461,src/legogame/game.c,,legogame,batman+marker,high,fabs 28,95,26617,26617,19758,878,0,legogame/game.cpp:26616 legoapi/cutscene_hooks.c:1
-0x42f4a0,0x430117,src/legogame/game_deb.c,,legogame,batman,medium,,8,3165,3165,2102,185,0,legogame/game_deb.c:3165
-0x430120,0x4398b4,src/legogame/game_obj.c,,legogame,batman+marker,high,ret fabs 54 28,42,38304,38304,9071,2294,0,legogame/game_obj.c:38304
-0x4398c0,0x43ff91,src/legogame/gameai.c,,legogame,batman+marker,high,ret 28,65,25683,25683,12200,2340,0,legogame/gameai.c:25683
-0x43ffa0,0x457e93,src/legogame/gameaiscript.c,,legogame,batman+marker,high,ret fabs 54 28,442,94194,94194,59954,1501,0,legogame/gameaiscript.c:93968 legoapi/ai_sys.c:226
-0x457ec0,0x458461,src/legogame/gamehint.c,,legogame,batman,medium,,4,1396,1396,179,131,0,legogame/gamehint.c:1395 legoapi/status_alternate_pc.cpp:1
-0x458470,0x45e345,src/legogame/?0x458470,,legogame,marker+review+android,none,fabs 54 28,43,23933,23933,8567,951,0,legoapi/status_alternate_pc.cpp:23933
-0x45e350,0x46433e,src/legogame/gamestatus.c,,legogame,marker+review,medium,fabs 54 28,58,24080,24080,12645,761,0,legogame/gamestatus.c:24076 legoapi/render.c:3 legoapi/screen.cpp:1
-0x464360,0x465dcc,src/legogame/gizactions.c,,legogame,batman,medium,,24,6601,6601,6294,1,0,legogame/gizactions.c:6601
-0x465dd0,0x4667eb,src/legogame/gizbombgen.c,,legogame,batman+marker,high,ret 28,18,2194,2194,2194,0,0,legogame/gizbombgen.c:2194
-0x4667f0,0x46a44b,src/legogame/gizforce.c,,legogame,batman+marker,high,ret 28,58,14918,14918,7843,531,0,legogame/gizforce.c:14918
-0x46a450,0x46a868,src/legogame/gizgame.c,,legogame,batman,medium,,4,1026,1026,957,14,0,legogame/gizgame.c:1026
+0x428930,0x42f461,src/legogame/game.c,,legogame,batman+marker,high,fabs 28,96,26645,26617,19758,878,0,legogame/game.cpp:26616 legoapi/cutscene_hooks.c:1
+0x42f470,0x430117,src/legogame/game_deb.c,,legogame,batman+marker,high,,9,3193,3165,2102,185,0,legogame/game_deb.c:3165
+0x430120,0x4398b4,src/legogame/game_obj.c,,legogame,batman+marker,high,ret fabs 54 28,46,38405,38304,9071,2294,0,legogame/game_obj.c:38304
+0x4398c0,0x43ff91,src/legogame/gameai.c,,legogame,batman+marker,high,ret 28,67,25712,25683,12200,2340,0,legogame/gameai.c:25683
+0x43ffa0,0x457e93,src/legogame/gameaiscript.c,,legogame,batman+marker,high,ret fabs 54 28,446,94295,94194,59954,1501,0,legogame/gameaiscript.c:93968 legoapi/ai_sys.c:226
+0x457ea0,0x458461,src/legogame/gamehint.c,,legogame,batman+marker,high,,5,1424,1396,179,131,0,legogame/gamehint.c:1395 legoapi/status_alternate_pc.cpp:1
+0x458470,0x45e345,src/legogame/?0x458470,,legogame,marker+review+android,none,fabs 54 28,44,23961,23933,8567,951,0,legoapi/status_alternate_pc.cpp:23933
+0x45e350,0x46433e,src/legogame/gamestatus.c,,legogame,marker+review,medium,fabs 54 28,59,24125,24097,12645,761,0,legogame/gamestatus.c:24093 legoapi/render.c:3 legoapi/screen.cpp:1
+0x464340,0x465dcc,src/legogame/gizactions.c,,legogame,batman+marker,high,,25,6629,6601,6294,1,0,legogame/gizactions.c:6601
+0x465dd0,0x4667eb,src/legogame/gizbombgen.c,,legogame,batman+marker,high,ret 28,20,2223,2194,2194,0,0,legogame/gizbombgen.c:2194
+0x4667f0,0x46a12e,src/legogame/gizforce.c,,legogame,batman+marker,high,ret 28,57,14192,14163,7088,531,0,legogame/gizforce.c:14163
+0x46a130,0x46a44b,src/legogame/?0x46a130,,legogame,marker+android,none,,4,783,755,755,0,0,legogame/gizforce.c:755
+0x46a450,0x46a8cc,src/legogame/gizgame.c,,legogame,batman,medium,,6,1108,1026,957,14,0,legogame/gizgame.c:1026
 0x46a8d0,0x46d7e2,src/legogame/gizmopickup.c,,legogame,review,high,,47,11658,11658,7956,154,0,legogame/gizmopickup.c:11658
-0x46d7f0,0x46f88a,src/legogame/gizpanel.c,,legogame,batman+marker,high,ret 28,28,7987,7987,2630,267,0,legogame/gizpanel.c:7987
-0x46f890,0x47000e,src/legogame/giztorpedo.c,,legogame,batman+marker,high,ret 28,15,1749,1749,1749,0,0,legogame/giztorpedo.c:1749
-0x470050,0x47276c,src/legogame/grabber.c,,legogame,review,medium,,22,9876,9876,5496,8,0,legogame/grabber.c:9876
-0x472770,0x47482a,src/legogame/hatmachine.c,,legogame,marker+review,medium,ret fabs 54 28,24,8086,8086,4030,481,0,legogame/hatmachine.cpp:8086
-0x474830,0x481a6f,src/legogame/hub.cpp,,legogame,batman+code+marker,high,ret fabs 23 28,106,52624,52624,23388,2470,0,legogame/hub.cpp:52622 legoapi/hub.cpp:2
-0x481a70,0x482bf1,src/legogame/ledge.c,,legogame,batman+marker,high,ret fabs 28,20,4075,4075,2748,38,0,legogame/ledge.cpp:4075
-0x482c00,0x486f1a,src/legogame/legoapi_status.cpp,,legogame,batman+code+marker,high,ret 54 28,29,16879,16879,4112,1116,0,legogame/legoapi_status.cpp:16879
-0x486f20,0x488e82,src/legogame/legoapi_tag.c,,legogame,batman+marker,high,ret 28,17,7858,7858,3092,245,0,legogame/legoapi_tag.c:7857 legoapi/render.c:1
-0x488e90,0x48fc27,src/legogame/levels.cpp,,legogame,batman+code+marker,high,ret 28,89,27401,27401,10466,1696,0,legogame/levels.cpp:27401
-0x48fc30,0x491360,src/legogame/lever.c,,legogame,batman+marker,high,ret fabs 28,27,5644,5644,3777,164,0,legogame/lever.c:5644
-0x491380,0x491b83,src/legogame/lsw_hub_ai.c,,legogame,review,low,,11,1913,1913,837,56,0,legoapi/lsw_hub_ai.c:1913
-0x491b90,0x493c2c,src/legogame/?0x491b90,,legogame,code+marker+review+android,none,ret ret 28,4,8219,8219,1172,828,0,batman.cpp:8219
-0x493c30,0x496e11,src/legogame/menu.cpp,,legogame,batman+code+marker,high,fabs 28,42,12200,12200,7594,271,0,legogame/menu.cpp:12200
-0x496e20,0x497c05,src/legogame/missions.c,,legogame,batman+marker,high,fabs 28,10,3415,3415,1030,45,0,legogame/missions.c:3415
-0x497c10,0x4b7051,src/legogame/move.c,,legogame,batman+marker+review,high,ret fabs,218,125846,125846,53692,3566,0,legogame/move.c:125846
-0x4b7080,0x4bc29b,src/legogame/panel.cpp,,legogame,batman+code+review,medium,,28,20721,20721,3880,1222,0,legogame/panel.cpp:20721
-0x4bc2f0,0x4bcac6,src/legogame/pursuit.c,,legogame,review,medium,,13,1893,1893,1893,0,0,legogame/pursuit.c:1893
+0x46d7f0,0x46f88a,src/legogame/gizpanel.c,,legogame,batman+marker,high,ret 28,30,8016,7987,2630,267,0,legogame/gizpanel.c:7987
+0x46f890,0x47000e,src/legogame/giztorpedo.c,,legogame,batman+marker,high,ret 28,17,1778,1749,1749,0,0,legogame/giztorpedo.c:1749
+0x470010,0x47276c,src/legogame/grabber.c,,legogame,marker+review,medium,,24,9927,9876,5496,8,0,legogame/grabber.c:9876
+0x472770,0x47482a,src/legogame/hatmachine.c,,legogame,marker+review,medium,ret fabs 54 28,27,8133,8086,4030,481,0,legogame/hatmachine.cpp:8086
+0x474830,0x47f5f5,src/legogame/hub.cpp,,legogame,batman+code+marker,high,ret fabs 23 28,84,43560,43490,18311,2371,0,legogame/hub.cpp:43488 legoapi/hub.cpp:2
+0x47f600,0x481a6f,src/legogame/?0x47f600,,legogame,marker+android,none,,27,9162,9134,5077,99,0,legogame/hub.cpp:9134
+0x481a70,0x482bf1,src/legogame/ledge.c,,legogame,batman+marker,high,ret fabs 28,23,4122,4075,2748,38,0,legogame/ledge.cpp:4075
+0x482c00,0x486f1a,src/legogame/legoapi_status.cpp,,legogame,batman+code+marker,high,ret 54 28,31,16908,16879,4112,1116,0,legogame/legoapi_status.cpp:16879
+0x486f20,0x488e82,src/legogame/legoapi_tag.c,,legogame,batman+marker,high,ret 28,18,7886,7858,3092,245,0,legogame/legoapi_tag.c:7857 legoapi/render.c:1
+0x488e90,0x48fc27,src/legogame/levels.cpp,,legogame,batman+code+marker,high,ret 28,91,27430,27401,10466,1696,0,legogame/levels.cpp:27401
+0x48fc30,0x491360,src/legogame/lever.c,,legogame,batman+marker,high,ret fabs 28,30,5691,5644,3777,164,0,legogame/lever.c:5644
+0x491360,0x491b83,src/legogame/lsw_hub_ai.c,,legogame,marker+review,low,,12,1941,1913,837,56,0,legoapi/lsw_hub_ai.c:1913
+0x491b90,0x493c2c,src/legogame/?0x491b90,,legogame,code+marker+review+android,none,ret ret 28,6,8248,8219,1172,828,0,batman.cpp:8219
+0x493c30,0x496e11,src/legogame/menu.cpp,,legogame,batman+code+marker,high,fabs 28,44,12246,12200,7594,271,0,legogame/menu.cpp:12200
+0x496e20,0x497c05,src/legogame/missions.c,,legogame,batman+marker,high,fabs 28,12,3461,3415,1030,45,0,legogame/missions.c:3415
+0x497c10,0x4b7051,src/legogame/move.c,,legogame,batman+marker+review,high,ret fabs,223,126000,125903,53692,3577,0,legogame/move.c:125903
+0x4b7060,0x4bc2bc,src/legogame/panel.cpp,,legogame,batman+code+marker+review,medium,,30,20777,20721,3880,1222,0,legogame/panel.cpp:20721
+0x4bc2f0,0x4bcaec,src/legogame/pursuit.c,,legogame,review,medium,,14,1921,1893,1893,0,0,legogame/pursuit.c:1893
 0x4bcaf0,0x4bce21,src/legogame/radio.c,,legogame,batman,medium,,3,805,805,805,0,0,legogame/radio.cpp:805
-0x4bce30,0x4bdca4,src/legogame/securitydoor.c,,legogame,batman+marker,high,ret 28,24,3444,3444,3339,0,0,legogame/securitydoor.c:3444
-0x4bdcd0,0x4c00fc,src/legogame/sfx.c,,legogame,batman+review,medium,,4,9203,9203,358,343,0,legogame/sfx.c:9203
-0x4c0100,0x4c0cd2,src/legogame/shard.c,,legogame,batman+marker,high,ret 28,21,2650,2650,2017,11,0,legogame/shard.c:2650
-0x4c0d50,0x4c7879,src/legogame/shop.c,,legogame,review,medium,,42,27182,27182,9753,1216,0,legogame/shop.c:27182
-0x4c7880,0x4c8bad,src/legogame/signal.c,,legogame,batman+marker,high,ret 28,25,4660,4660,3112,11,0,legogame/signal.c:4660
-0x4c8bd0,0x4c9a05,src/legogame/speederchase.c,,legogame,review,medium,,9,3474,3474,3151,22,0,legogame/speederchase.c:3474
-0x4c9a40,0x4cad84,src/legogame/startup.cpp,,legogame,code+review,medium,,13,4731,4731,2619,192,0,legogame/startup.cpp:4731
-0x4cadb0,0x4cc8bc,src/legogame/starwars_gameai.c,,legogame,review,medium,,16,6822,6822,5956,65,0,legogame/starwars_gameai.c:6822
+0x4bce30,0x4bdca4,src/legogame/securitydoor.c,,legogame,batman+marker,high,ret 28,26,3473,3444,3339,0,0,legogame/securitydoor.c:3444
+0x4bdcb0,0x4c00fc,src/legogame/sfx.c,,legogame,batman+marker+review,high,,6,9259,9203,358,343,0,legogame/sfx.c:9203
+0x4c0100,0x4c0cd2,src/legogame/shard.c,,legogame,batman+marker,high,ret 28,23,2679,2650,2017,11,0,legogame/shard.c:2650
+0x4c0d30,0x4c7879,src/legogame/shop.c,,legogame,marker+review,medium,,43,27210,27182,9753,1216,0,legogame/shop.c:27182
+0x4c7880,0x4c8899,src/legogame/signal.c,,legogame,batman+marker,high,ret 28,26,3940,3911,2363,11,0,legogame/signal.c:3911
+0x4c88a0,0x4c8bad,src/legogame/?0x4c88a0,,legogame,marker+android,none,,2,777,749,749,0,0,legogame/signal.c:749
+0x4c8bb0,0x4c9a2c,src/legogame/speederchase.c,,legogame,marker+review,medium,,11,3530,3474,3151,22,0,legogame/speederchase.c:3474
+0x4c9a40,0x4cadac,src/legogame/startup.cpp,,legogame,code+review,medium,,14,4759,4731,2619,192,0,legogame/startup.cpp:4731
+0x4cadb0,0x4cc8dc,src/legogame/starwars_gameai.c,,legogame,review,medium,,17,6850,6822,5956,65,0,legogame/starwars_gameai.c:6822
 0x4cc8e0,0x4cca34,src/legogame/suit.c,,legogame,batman,medium,,5,279,279,279,0,0,legogame/suit.c:279
-0x4cca50,0x4cdd0c,src/legogame/techno.c,,legogame,batman+marker,high,ret ret 28,30,4485,4485,3961,17,0,legogame/techno.c:4484 legoapi/techno_diagnostic_pc.c:1
-0x4cdd10,0x4cf291,src/legogame/teleport.c,,legogame,batman+marker,high,ret fabs 28,29,5222,5222,2396,69,0,legogame/teleport.cpp:5222
-0x4cf2a0,0x4cf653,src/legogame/text.c,,legogame,batman+marker,high,ret 28,5,850,850,850,0,0,legogame/text.c:849 legoapi/text.c:1
-0x4cf680,0x4d0646,src/legogame/thermaldetonators.c,,legogame,batman,medium,,8,3979,3979,2839,156,0,legoapi/thermaldetonators.c:3979
-0x4d0650,0x4d1e70,src/legogame/tightrope.c,,legogame,batman+marker,high,ret fabs 28,24,5731,5731,4240,254,0,legogame/tightrope.cpp:5731
-0x4d1e70,0x4d41b7,src/legogame/torpedo.c,,legogame,batman+marker,high,ret fabs 54,25,8491,8491,5127,101,0,legogame/torpedo.c:8491
-0x4d41c0,0x4d4cb2,src/legogame/traffic.c,,legogame,batman+marker,high,ret 28,11,2452,2452,1005,64,0,legogame/traffic.c:2452
-0x4d4ce0,0x4d5593,src/legogame/transform.c,,legogame,batman,medium,,5,2200,2200,2200,0,0,legogame/transform.c:2200
-0x4d55a0,0x4d8185,src/legogame/zipup.c,,legogame,batman+marker,high,ret fabs,32,10866,10866,4644,594,0,legogame/zipup.c:10866
-0x4d8190,0x4ddc7f,src/legogame/episodeI.c,,legogame,marker+review,high,ret 28,75,22023,22023,16765,349,0,legogame/episodeI.c:22014 legoapi/episodeI.c:9
-0x4ddc80,0x4e2cce,src/legogame/episodeII.c,,legogame,marker+review,high,ret 28,54,20036,20036,15022,56,0,legogame/episodeII.c:20035 legoapi/episodeI.c:1
-0x4e2cf0,0x4e4a14,src/legogame/episodeIII.c,,legogame,review,medium,,42,7066,7066,7066,0,0,legogame/episodeIII.c:7056 legoapi/episodeIII.c:10
-0x4e4a40,0x4e5ea1,src/legogame/episodeIV.c,,legogame,review,medium,,35,4970,4970,3821,45,0,legogame/episodeIV.c:4970
-0x4e5f10,0x4e9f0c,src/legogame/episodeV.c,,legogame,review,medium,,76,15729,15729,11743,598,0,legoapi/episodeV.c:15729
-0x4e9f30,0x4eead7,src/legogame/episodeVI.c,,legogame,review,medium,,45,19061,19061,8980,643,0,legoapi/episodeVI.c:19061
-0x4eeae0,0x4eed91,src/nu2api/?0x4eeae0,,nu2api,marker+review+android,none,ret 28,2,642,642,1,114,0,legoapi/grapples.cpp:641 legoapi/episodeVI.c:1
+0x4cca50,0x4cdd0c,src/legogame/techno.c,,legogame,batman+marker,high,ret ret 28,31,4513,4485,3961,17,0,legogame/techno.c:4484 legoapi/techno_diagnostic_pc.c:1
+0x4cdd10,0x4cf291,src/legogame/teleport.c,,legogame,batman+marker,high,ret fabs 28,32,5269,5222,2396,69,0,legogame/teleport.cpp:5222
+0x4cf2a0,0x4cf653,src/legogame/text.c,,legogame,batman+marker,high,ret 28,7,879,850,850,0,0,legogame/text.c:849 legoapi/text.c:1
+0x4cf660,0x4d0646,src/legogame/thermaldetonators.c,,legogame,batman+marker,high,,9,4007,3979,2839,156,0,legoapi/thermaldetonators.c:3979
+0x4d0650,0x4d1e70,src/legogame/tightrope.c,,legogame,batman+marker,high,ret fabs 28,27,5778,5731,4240,254,0,legogame/tightrope.cpp:5731
+0x4d1e70,0x4d41b7,src/legogame/torpedo.c,,legogame,batman+marker,high,ret fabs 54,30,8588,8491,5127,101,0,legogame/torpedo.c:8491
+0x4d41c0,0x4d4cb2,src/legogame/traffic.c,,legogame,batman+marker,high,ret 28,13,2481,2452,1005,64,0,legogame/traffic.c:2452
+0x4d4cc0,0x4d5593,src/legogame/transform.c,,legogame,batman+marker,high,,6,2228,2200,2200,0,0,legogame/transform.c:2200
+0x4d55a0,0x4d8185,src/legogame/zipup.c,,legogame,batman+marker,high,ret fabs,37,10963,10866,4644,594,0,legogame/zipup.c:10866
+0x4d8190,0x4ddc7f,src/legogame/episodeI.c,,legogame,marker+review,high,ret 28,83,22217,22023,16765,349,0,legogame/episodeI.c:22014 legoapi/episodeI.c:9
+0x4ddc80,0x4e2cce,src/legogame/episodeII.c,,legogame,marker+review,high,ret 28,55,20064,20036,15022,56,0,legogame/episodeII.c:20035 legoapi/episodeI.c:1
+0x4e2cd0,0x4e4a3c,src/legogame/episodeIII.c,,legogame,marker+review,medium,,44,7122,7066,7066,0,0,legogame/episodeIII.c:7056 legoapi/episodeIII.c:10
+0x4e4a40,0x4e5f0c,src/legogame/episodeIV.c,,legogame,review,medium,,36,4998,4970,3821,45,0,legogame/episodeIV.c:4970
+0x4e5f10,0x4e9f2c,src/legogame/episodeV.c,,legogame,review,medium,,77,15757,15729,11743,598,0,legoapi/episodeV.c:15729
+0x4e9f30,0x4eead7,src/legogame/episodeVI.c,,legogame,review,medium,,46,19089,19061,8980,643,0,legoapi/episodeVI.c:19061
+0x4eeae0,0x4eed91,src/nu2api/?0x4eeae0,,nu2api,marker+review+android,none,ret 28,3,670,642,1,114,0,legoapi/grapples.cpp:641 legoapi/episodeVI.c:1
 0x4eeda0,0x4ef6b4,src/nu2api/?0x4eeda0,,nu2api,android,none,,16,2153,2153,437,435,0,nu2api/nualloc.c:2067 nu2api/nucore_includes.c:84 nu2api/nudebug.c:2
-0x4ef6e0,0x4fe623,src/nu2api/nucore_includes.cpp,numem_gen.cpp ? nufile.c nufilepak_gen.cpp nufpar_gen.cpp numemblk.c numemhi_gen.cpp ? nuqt_gen.cpp ? VirtualStackAllocator_gen.cpp ? nutime_gen.cpp ? nuapi_gen.cpp nupad.cpp nuvideo_gen.cpp nuonline_gen.cpp ? maketree.c ? nurdpi_gen.cpp ? nufiledecode_gen.cpp ? huffdecode.c nupad.cpp nufile.c ?,nu2api,review,high,,402,55868,55868,41199,1105,0,nu2api/nucore_includes.c:55866 nu2api/nudebug.c:2
-0x4fe640,0x4ffef4,src/nu2api/nucore_pc_includes.cpp,nuerror_pc.cpp nuonline_pc.cpp nuerror_gen.cpp nuvideo_pc.cpp bgproc_pc.cpp ? nuthread.cpp nufile_pc.c nudir_gen.cpp nufile_pc.c ?,nu2api,batman+file+marker+review,medium,ret ret 28,67,5355,5355,4347,156,156,nu2api/nufile_pc.c:2399 nu2api/bgproc.c:1164 nu2api/nuvideo.c:720 nu2api/nupsfile.c:396 nu2api/nutimebar.c:243 nu2api/nuerror.c:242 nu2api/nuthread.c:189 nu2api/nuapi.c:2
-0x4fff00,0x508f2e,src/nu2api/cutscene_include.cpp,gcutscn.cpp trigger.c,nu2api,marker+review,medium,ret ret ret fabs 54 28 95,162,35306,35306,17702,1830,925,legoapi/cutscene_lifecycle.c:17995 legoapi/gcutscn.c:10004 legoapi/cutscene_hooks.c:4080 legoapi/gcutscn_locators.c:3225 nu2api/nudebug.c:2
-0x508f30,0x512832,src/gameapi/gamemenuall.cpp,apimenu.c apisave.c apitext.c ?,gameapi,code+file+marker+review,medium,ret ret 28,153,34855,34855,22688,623,483,gameapi/apisave.c:11456 legoapi/text.c:9553 legoapi/menu.c:7127 legoapi/menu_video.cpp:4349 legoapi/objectsall.c:1065 legoapi/control_setup.cpp:468 legoapi/hub.cpp:388 legoapi/menu_pause.cpp:234 legoapi/menus.cpp:110 nu2api/textinput_labels_pc.c:69 nu2api/pc_device.cpp:36
-0x512850,0x53d129,src/gameapi/aisysall.cpp,aiscript.c ? aisys.c aiterr.cpp ? AIBugPit.cpp,gameapi,marker+review,high,ret ret ret fabs 54 22,557,168830,168830,102363,2310,0,gameapi/aisysall.c:168830
-0x53d130,0x53d1a9,src/gamelib/net/?0x53d130,,gamelib,marker+review+android,none,ret ret 28,4,33,33,33,0,0,gameapi/message.cpp:32 gameapi/aisysall.c:1
+0x4ef6e0,0x4fe623,src/nu2api/nucore_includes.cpp,numem_gen.cpp ? nufile.c nufilepak_gen.cpp nufpar_gen.cpp numemblk.c numemhi_gen.cpp ? nuqt_gen.cpp ? VirtualStackAllocator_gen.cpp ? nutime_gen.cpp ? nuapi_gen.cpp nupad.cpp nuvideo_gen.cpp nuonline_gen.cpp ? maketree.c ? nurdpi_gen.cpp ? nufiledecode_gen.cpp ? huffdecode.c nupad.cpp nufile.c ?,nu2api,review,high,,402,55869,55869,41199,1105,0,nu2api/nucore_includes.c:55867 nu2api/nudebug.c:2
+0x4fe640,0x4ffef4,src/nu2api/nucore_pc_includes.cpp,nuerror_pc.cpp nuonline_pc.cpp nuerror_gen.cpp nuvideo_pc.cpp bgproc_pc.cpp ? nuthread.cpp nufile_pc.c nudir_gen.cpp nufile_pc.c ?,nu2api,batman+file+marker+review,medium,ret ret 28,68,5383,5355,4347,156,156,nu2api/nufile_pc.c:2399 nu2api/bgproc.c:1164 nu2api/nuvideo.c:720 nu2api/nupsfile.c:396 nu2api/nutimebar.c:243 nu2api/nuerror.c:242 nu2api/nuthread.c:189 nu2api/nuapi.c:2
+0x4fff00,0x508f2e,src/nu2api/cutscene_include.cpp,gcutscn.cpp trigger.c,nu2api,marker+review,medium,ret ret ret fabs 54 28 95,163,35334,35306,17702,1830,925,legoapi/cutscene_lifecycle.c:17995 legoapi/gcutscn.c:10004 legoapi/cutscene_hooks.c:4080 legoapi/gcutscn_locators.c:3225 nu2api/nudebug.c:2
+0x508f30,0x512832,src/gameapi/gamemenuall.cpp,apimenu.c apisave.c apitext.c ?,gameapi,code+file+marker+review,medium,ret ret 28,155,34884,34855,22688,623,483,gameapi/apisave.c:11456 legoapi/text.c:9553 legoapi/menu.c:7127 legoapi/menu_video.cpp:4349 legoapi/objectsall.c:1065 legoapi/control_setup.cpp:468 legoapi/hub.cpp:388 legoapi/menu_pause.cpp:234 legoapi/menus.cpp:110 nu2api/textinput_labels_pc.c:69 nu2api/pc_device.cpp:36
+0x512850,0x53d129,src/gameapi/aisysall.cpp,aiscript.c ? aisys.c aiterr.cpp ? AIBugPit.cpp,gameapi,marker+review,high,ret ret ret fabs 54 22,559,168901,168855,102363,2322,0,gameapi/aisysall.c:168855
+0x53d130,0x53d1a9,src/gamelib/net/?0x53d130,,gamelib,marker+review+android,none,ret ret 28,5,61,33,33,0,0,gameapi/message.cpp:32 gameapi/aisysall.c:1
 0x53d1b0,0x53db4a,src/gamelib/net/?0x53d1b0,,gamelib,code+review+android,none,,25,1704,1659,931,15,0,gameapi/message.cpp:1600 legoapi/bolts.cpp:59
-0x53db50,0x543e9a,src/nu2api/socksysall.cpp,utilities.cpp socksys.c saveload.cpp,nu2api,marker+review,high,ret ret fabs 54,124,24110,24110,17510,20,0,legoapi/socksys.c:22347 gameapi/shop_persistence.cpp:1154 gameapi/saveload.cpp:482 legoapi/aiactions_transfer.cpp:71 legoapi/menu_pause.cpp:54 legoapi/socksys_diagnostic_pc.c:2
-0x543ed0,0x545529,src/nu2api/nubridge.c,,nu2api,marker+review,medium,ret ret fabs,10,5613,5613,2540,49,0,nu2api/nubridge.c:5613
+0x53db50,0x543e9a,src/nu2api/socksysall.cpp,utilities.cpp socksys.c saveload.cpp,nu2api,marker+review,high,ret ret fabs 54,125,24128,24110,17510,20,0,legoapi/socksys.c:22347 gameapi/shop_persistence.cpp:1154 gameapi/saveload.cpp:482 legoapi/aiactions_transfer.cpp:71 legoapi/menu_pause.cpp:54 legoapi/socksys_diagnostic_pc.c:2
+0x543ed0,0x545529,src/nu2api/nubridge.c,,nu2api,marker+review,medium,ret ret fabs,11,5614,5613,2540,49,0,nu2api/nubridge.c:5613
 0x545540,0x545df4,src/nu2api/nuobject.c,,nu2api,batman,medium,,9,2022,2022,2022,0,0,nu2api/nuobject.c:2022
 0x545e10,0x546fbc,src/nu2api/nuwind.c,,nu2api,batman,medium,,8,4485,4485,4485,0,0,nu2api/nuwind.c:4485
 0x546fd0,0x54705e,src/nu2api/glutils.c,,nu2api,review,medium,,1,142,142,142,0,0,nu2api/glutils.c:142
-0x547060,0x5476b5,src/nu2api/listman.c,,nu2api,file+review,high,,17,1469,1469,1469,0,0,nu2api/listman.c:1469
+0x547060,0x5476dc,src/nu2api/listman.c,,nu2api,file+review,high,,18,1497,1469,1469,0,0,nu2api/listman.c:1469
 0x5476e0,0x5477d7,src/legoapi/buffers.c,,legoapi,batman,medium,,3,234,234,234,0,0,legoapi/buffers.cpp:234
-0x5477e0,0x548f85,src/legoapi/audio.cpp,,legoapi,batman+code+marker,high,fabs 28,45,5529,5529,4927,40,0,legoapi/audio.cpp:5526 legoapi/sfx.cpp:1 nu2api/nusound.c:1 legoapi/perm.c:1
-0x548fb0,0x5494c7,src/legoapi/timing.c,,legoapi,batman,medium,,5,1279,1279,1279,0,0,legoapi/timing.c:1279
-0x5494d0,0x54a54c,src/legoapi/camera.c,,legoapi,batman+marker,high,fabs,18,3888,3888,3833,6,0,legoapi/camera.c:3558 legoapi/simpletons.c:286 nu2api/nuvideo.c:44
-0x54a550,0x54b50c,src/legoapi/gamepads.c,,legoapi,batman+marker,high,ret fabs 28,23,3655,3655,2278,52,0,legoapi/gamepads.c:3655
-0x54b510,0x54cd2d,src/legoapi/text.c,,legoapi,batman+marker,high,ret 28,21,5990,5990,2211,225,0,legoapi/text.c:5990
-0x54cd30,0x54f957,src/legoapi/grapples.c,,legoapi,batman+marker,high,ret fabs 28,39,10952,10952,6103,115,0,legoapi/grapples.cpp:10952
-0x54f960,0x5536fe,src/legoapi/utilities.c,,legoapi,batman+marker,high,ret ret fabs 54 28 95,67,14882,14882,10804,335,0,legoapi/utilities.c:14881 legoapi/texanim_scripts.c:1
-0x553700,0x557088,src/legoapi/gizspinner.c,,legoapi,batman+marker,high,ret ret fabs 23 28 162,46,14264,14264,9860,633,0,legoapi/gizspinner.cpp:14264
-0x557090,0x55956e,src/legoapi/gizobstacle.c,,legoapi,batman+marker,high,ret 28,46,9007,9007,6799,33,0,legoapi/gizobstacle.c:9007
-0x559570,0x55b172,src/legoapi/gizmo.c,,legoapi,batman+marker,high,ret ret 28,42,6404,6404,3935,117,0,legoapi/gizmo.c:6403 legoapi/render.c:1
-0x55b1c0,0x55c0ec,src/legoapi/characters.c,,legoapi,batman,medium,,26,3593,3593,3477,25,0,legoapi/characters.cpp:3593
-0x55c0f0,0x55c8e6,src/legoapi/gamestructure.cpp,,legoapi,batman+code+marker,high,ret 28,13,1922,1403,1403,0,0,legoapi/gamestructure.cpp:1403
-0x55c950,0x55dd9f,src/legoapi/gameobjects.c,,legoapi,batman,medium,,18,5076,5076,1794,107,0,legoapi/gameobjects.c:5076
+0x5477e0,0x548f85,src/legoapi/audio.cpp,,legoapi,batman+code+marker,high,fabs 28,47,5575,5529,4927,40,0,legoapi/audio.cpp:5526 legoapi/sfx.cpp:1 nu2api/nusound.c:1 legoapi/perm.c:1
+0x548f90,0x5494c7,src/legoapi/timing.c,,legoapi,batman+marker,high,,6,1307,1279,1279,0,0,legoapi/timing.c:1279
+0x5494d0,0x54a54c,src/legoapi/camera.c,,legoapi,batman+marker,high,fabs,20,3934,3888,3833,6,0,legoapi/camera.c:3558 legoapi/simpletons.c:286 nu2api/nuvideo.c:44
+0x54a550,0x54b50c,src/legoapi/gamepads.c,,legoapi,batman+marker,high,ret fabs 28,25,3684,3655,2278,52,0,legoapi/gamepads.c:3655
+0x54b510,0x54cd2d,src/legoapi/text.c,,legoapi,batman+marker,high,ret 28,23,6019,5990,2211,225,0,legoapi/text.c:5990
+0x54cd30,0x54f957,src/legoapi/grapples.c,,legoapi,batman+marker,high,ret fabs 28,42,10999,10952,6103,115,0,legoapi/grapples.cpp:10952
+0x54f960,0x5536fe,src/legoapi/utilities.c,,legoapi,batman+marker,high,ret ret fabs 54 28 95,70,14982,14882,10804,335,0,legoapi/utilities.c:14881 legoapi/texanim_scripts.c:1
+0x553700,0x557088,src/legoapi/gizspinner.c,,legoapi,batman+marker,high,ret ret fabs 23 28 162,48,14315,14264,9860,633,0,legoapi/gizspinner.cpp:14264
+0x557090,0x55956e,src/legoapi/gizobstacle.c,,legoapi,batman+marker,high,ret 28,48,9036,9007,6799,33,0,legoapi/gizobstacle.c:9007
+0x559570,0x55b172,src/legoapi/gizmo.c,,legoapi,batman+marker,high,ret ret 28,43,6432,6404,3935,117,0,legoapi/gizmo.c:6403 legoapi/render.c:1
+0x55b180,0x55c0ec,src/legoapi/characters.c,,legoapi,batman+marker,high,,28,3649,3593,3477,25,0,legoapi/characters.cpp:3593
+0x55c0f0,0x55c8e6,src/legoapi/gamestructure.cpp,,legoapi,batman+code+marker,high,ret 28,15,1951,1403,1403,0,0,legoapi/gamestructure.cpp:1403
+0x55c930,0x55ddbc,src/legoapi/gameobjects.c,,legoapi,batman+marker,high,,20,5132,5076,1794,107,0,legoapi/gameobjects.c:5076
 0x55ddc0,0x55f3a7,src/legoapi/players.c,,legoapi,batman,medium,,19,5186,5186,2071,117,0,legoapi/players.c:5186
-0x55f3b0,0x560ab2,src/legoapi/worldinfo.cpp,,legoapi,batman+code+marker,high,ret 28,26,5629,5629,4032,15,0,legoapi/worldinfo.cpp:5629
-0x560ac0,0x561b7e,src/legoapi/gamemessages.c,,legoapi,batman+marker,high,fabs 54 28,12,4180,4180,1600,238,0,legoapi/gamemessages.c:4180
-0x561ba0,0x56448f,src/legoapi/jumping.cpp,,legoapi,batman,medium,,34,10232,10232,3539,851,0,legoapi/jumping.c:9941 legoapi/fade.cpp:291
+0x55f3b0,0x560ab2,src/legoapi/worldinfo.cpp,,legoapi,batman+code+marker,high,ret 28,28,5658,5629,4032,15,0,legoapi/worldinfo.cpp:5629
+0x560ac0,0x561b7e,src/legoapi/gamemessages.c,,legoapi,batman+marker,high,fabs 54 28,13,4208,4180,1600,238,0,legoapi/gamemessages.c:4180
+0x561b80,0x56448f,src/legoapi/jumping.cpp,,legoapi,batman+marker,high,,36,10288,10232,3539,851,0,legoapi/jumping.c:9941 legoapi/fade.cpp:291
 0x5644c0,0x5665f9,src/legoapi/screen.cpp,,legoapi,batman+code,medium,,31,8226,8226,7168,17,0,legoapi/screen.cpp:8226
-0x566600,0x56b6ea,src/legoapi/gizmoblowups.c,,legoapi,batman+marker,high,ret 28,67,20162,20162,8544,726,0,legoapi/gizmoblowups.c:20162
-0x56b6f0,0x56cd72,src/legoapi/climbing.c,,legoapi,batman+marker,high,fabs 28,15,5592,5592,4006,28,0,legoapi/climbing.c:5592
+0x566600,0x56b6ea,src/legoapi/gizmoblowups.c,,legoapi,batman+marker,high,ret 28,69,20246,20217,8544,732,0,legoapi/gizmoblowups.c:20217
+0x56b6f0,0x56cd72,src/legoapi/climbing.c,,legoapi,batman+marker,high,fabs 28,17,5638,5592,4006,28,0,legoapi/climbing.c:5592
+0x56cd80,0x56cdac,src/legoapi/?0x56cd80,,legoapi,marker+android,none,ret 28,2,29,0,0,0,0,
 0x56cdb0,0x56d2ec,src/legoapi/guidelines.c,,legoapi,review,medium,,17,1196,1196,1196,0,0,legoapi/guidelines.c:1196
-0x56d2f0,0x56dfbb,src/legoapi/tubes.c,,legoapi,batman+marker,high,ret fabs 28,27,3044,3044,3044,0,0,legoapi/tubes.c:3044
-0x56e000,0x56e5ad,src/legoapi/cheats.c,,legoapi,batman,medium,,15,1162,1162,993,5,0,legoapi/cheats.c:1162
+0x56d2f0,0x56dfbb,src/legoapi/tubes.c,,legoapi,batman+marker,high,ret fabs 28,29,3073,3044,3044,0,0,legoapi/tubes.c:3044
+0x56dfc0,0x56e5cc,src/legoapi/cheats.c,,legoapi,batman+marker,high,,18,1246,1162,993,5,0,legoapi/cheats.c:1162
 0x56e5d0,0x56eef2,src/legoapi/explosions.c,,legoapi,batman,medium,,6,2300,2300,396,168,0,legoapi/explosions.c:2300
-0x56ef00,0x571825,src/legoapi/gizmopickups.c,,legoapi,batman+marker,high,ret 23 28,47,9997,9997,7551,62,0,legoapi/gizmopickups.c:9996 legoapi/gizmo_lifecycle_pc.c:1
-0x571850,0x57233a,src/legoapi/parts.c,,legoapi,batman,medium,,14,2706,2706,1634,69,0,legoapi/parts.c:2502 legoapi/parts_load.c:204
+0x56ef00,0x571825,src/legoapi/gizmopickups.c,,legoapi,batman+marker,high,ret 23 28,50,10049,9997,7551,62,0,legoapi/gizmopickups.c:9996 legoapi/gizmo_lifecycle_pc.c:1
+0x571830,0x57235c,src/legoapi/parts.c,,legoapi,batman+marker,high,,16,2762,2706,1634,69,0,legoapi/parts.c:2502 legoapi/parts_load.c:204
 0x572360,0x572aba,src/legoapi/surfaces.c,,legoapi,batman,medium,,10,1822,1822,613,116,0,legoapi/surfaces.c:1822
-0x572ac0,0x574dbb,src/legoapi/areas.c,,legoapi,batman+marker,high,ret ret 28,19,8679,8679,4662,117,0,legoapi/areas.cpp:8678 legoapi/areas_diagnostic_pc.c:1
-0x574de0,0x574e88,src/legoapi/menus.c,,legoapi,batman,medium,,3,164,164,108,4,0,legoapi/text.c:104 legoapi/menu_titles.cpp:60
-0x574e90,0x57631e,src/legoapi/doors.c,,legoapi,batman+marker,high,ret fabs 28,32,4967,4967,3506,79,0,legoapi/doors.c:4967
-0x576340,0x576bb3,src/legoapi/hint.c,,legoapi,batman,medium,,19,1805,1805,1805,0,0,legoapi/hint.c:1805
-0x576bc0,0x578718,src/legoapi/minicamcut.c,,legoapi,batman+marker,high,ret ret 54 28,11,6750,6750,3234,381,0,legoapi/minicamcut.c:6750
-0x578740,0x5787c4,src/legoapi/netplay.c,,legoapi,batman,medium,,3,117,117,117,0,0,legoapi/netplay.c:116 legoapi/leveldata.c:1
-0x578890,0x57a80c,src/legoapi/levels.cpp,,legoapi,batman+code+marker,high,ret ret 28,81,7460,7460,6036,199,0,legoapi/levels.cpp:7459 legoapi/levels_diagnostic_pc.c:1
-0x57a810,0x57f647,src/legoapi/cutscenes.cpp,,legoapi,batman+code+marker,high,ret ret fabs 28,85,19346,19346,9273,440,0,legoapi/cutscenes.cpp:19345 nu2api/nudebug.c:1
-0x57f650,0x584592,src/legoapi/bolts.cpp,,legoapi,batman+code+marker,high,ret 54,67,19579,19579,10877,139,0,legoapi/bolts.cpp:19118 gamelib/net/NetworkObjectManager.cpp:351 gameapi/message.cpp:110
-0x5845a0,0x589f33,src/legoapi/charconfig.c,,legoapi,batman+marker,high,ret ret fabs 54 28,222,21224,21224,17204,485,0,legoapi/charconfig.c:21224
-0x589f60,0x58a504,src/legoapi/charshadows.c,,legoapi,batman,medium,,3,1428,1428,686,0,0,legoapi/charshadows.c:1428
-0x58a510,0x58aadc,src/legoapi/missions.c,,legoapi,batman+marker,high,ret 28,9,1392,1392,481,25,0,legoapi/missions.c:1391 legoapi/mission_diagnostic_pc.c:1
-0x58aae0,0x58b34c,src/legoapi/specialmoves.c,,legoapi,batman+marker,high,ret 28,13,2016,2016,1298,104,0,legoapi/specialmoves.c:2015 legoapi/specialmoves_diagnostic_pc.c:1
-0x58b350,0x58b6fa,src/legoapi/shovesys.c,,legoapi,batman+marker,high,ret fabs 28,3,844,844,146,121,0,legoapi/shovesys.c:844
-0x58b720,0x58b8aa,src/legoapi/hits.c,,legoapi,batman,medium,,5,357,357,357,0,0,legoapi/hits.c:357
-0x58b8d0,0x58bc38,src/legoapi/charplatforms.c,,legoapi,batman,medium,,4,849,849,849,0,0,legoapi/charplatforms.c:849
-0x58bc60,0x58d311,src/legoapi/animation.c,,legoapi,batman,medium,,9,5738,5738,4788,117,0,legoapi/animation.c:5738
+0x572ac0,0x574dbb,src/legoapi/areas.c,,legoapi,batman+marker,high,ret ret 28,20,8707,8679,4662,117,0,legoapi/areas.cpp:8678 legoapi/areas_diagnostic_pc.c:1
+0x574dc0,0x574e88,src/legoapi/menus.c,,legoapi,batman+marker,high,,4,192,164,108,4,0,legoapi/text.c:104 legoapi/menu_titles.cpp:60
+0x574e90,0x57631e,src/legoapi/doors.c,,legoapi,batman+marker,high,ret fabs 28,35,5014,4967,3506,79,0,legoapi/doors.c:4967
+0x576320,0x576bb3,src/legoapi/hint.c,,legoapi,batman+marker,high,,20,1833,1805,1805,0,0,legoapi/hint.c:1805
+0x576bc0,0x578718,src/legoapi/minicamcut.c,,legoapi,batman+marker,high,ret ret 54 28,14,6833,6750,3234,381,0,legoapi/minicamcut.c:6750
+0x578720,0x5787c4,src/legoapi/netplay.c,,legoapi,batman+marker,high,,4,145,117,117,0,0,legoapi/netplay.c:116 legoapi/leveldata.c:1
+0x578890,0x57a80c,src/legoapi/levels.cpp,,legoapi,batman+code+marker,high,ret ret 28,83,7489,7460,6036,199,0,legoapi/levels.cpp:7459 legoapi/levels_diagnostic_pc.c:1
+0x57a810,0x57f647,src/legoapi/cutscenes.cpp,,legoapi,batman+code+marker,high,ret ret fabs 28,87,19392,19346,9273,440,0,legoapi/cutscenes.cpp:19345 nu2api/nudebug.c:1
+0x57f650,0x584592,src/legoapi/bolts.cpp,,legoapi,batman+code+marker,high,ret 54,71,19685,19579,10877,139,0,legoapi/bolts.cpp:19118 gamelib/net/NetworkObjectManager.cpp:351 gameapi/message.cpp:110
+0x5845a0,0x589f33,src/legoapi/charconfig.c,,legoapi,batman+marker,high,ret ret fabs 54 28,223,21252,21224,17204,485,0,legoapi/charconfig.c:21224
+0x589f40,0x58a504,src/legoapi/charshadows.c,,legoapi,batman+marker,high,,4,1456,1428,686,0,0,legoapi/charshadows.c:1428
+0x58a510,0x58aadc,src/legoapi/missions.c,,legoapi,batman+marker,high,ret 28,10,1420,1392,481,25,0,legoapi/missions.c:1391 legoapi/mission_diagnostic_pc.c:1
+0x58aae0,0x58b34c,src/legoapi/specialmoves.c,,legoapi,batman+marker,high,ret 28,14,2044,2016,1298,104,0,legoapi/specialmoves.c:2015 legoapi/specialmoves_diagnostic_pc.c:1
+0x58b350,0x58b6fa,src/legoapi/shovesys.c,,legoapi,batman+marker,high,ret fabs 28,6,891,844,146,121,0,legoapi/shovesys.c:844
+0x58b700,0x58b8cc,src/legoapi/hits.c,,legoapi,batman+marker,high,,7,413,357,357,0,0,legoapi/hits.c:357
+0x58b8d0,0x58bc5c,src/legoapi/charplatforms.c,,legoapi,batman,medium,,5,877,849,849,0,0,legoapi/charplatforms.c:849
+0x58bc60,0x58d33c,src/legoapi/animation.c,,legoapi,batman,medium,,10,5766,5738,4788,117,0,legoapi/animation.c:5738
 0x58d340,0x58e8e2,src/legoapi/fighting.c,,legoapi,batman,medium,,21,5289,5289,3614,38,0,legoapi/fighting.c:5289
-0x58e8f0,0x5925b9,src/legoapi/gizbuildit.c,,legoapi,batman+marker,high,ret fabs 54 28,45,15059,15059,7835,88,0,legoapi/gizbuildit.cpp:15059
-0x5925c0,0x59420b,src/legoapi/customiser.c,,legoapi,marker+review,medium,ret 28,20,6897,6897,2877,294,0,legoapi/customiser.c:6896 legoapi/customise_diagnostic_pc.c:1
-0x594210,0x5954b1,src/legoapi/collection.cpp,,legoapi,batman+marker,high,ret ret 28,16,4231,4231,2885,142,142,legoapi/collection.c:2445 legoapi/collection_render.cpp:1198 legoapi/lighting_unit.cpp:588
+0x58e8f0,0x5925b9,src/legoapi/gizbuildit.c,,legoapi,batman+marker,high,ret fabs 54 28,48,15106,15059,7835,88,0,legoapi/gizbuildit.cpp:15059
+0x5925c0,0x59420b,src/legoapi/customiser.c,,legoapi,marker+review,medium,ret 28,21,6925,6897,2877,294,0,legoapi/customiser.c:6896 legoapi/customise_diagnostic_pc.c:1
+0x594210,0x5951c7,src/legoapi/collection.c,,legoapi,batman+marker,high,ret ret 28,15,3854,3826,2628,137,137,legoapi/collection.c:2445 legoapi/collection_render.cpp:1198 legoapi/lighting_unit.cpp:183
+0x595200,0x5954b1,src/legoapi/?0x595200,,legoapi,marker+android,none,,4,451,405,257,5,0,legoapi/lighting_unit.cpp:405
 0x5954f0,0x5970a8,src/legoapi/lighting.cpp,,legoapi,batman+code,medium,,25,6761,6761,4336,91,0,legoapi/lighting_unit.cpp:6760 legoapi/shadow.c:1
-0x5970b0,0x597bf5,src/legoapi/snake.c,,legoapi,batman+marker,high,fabs,8,2737,2737,275,105,0,legoapi/snake.c:2737
-0x597c20,0x5999e0,src/legoapi/carrying.c,,legoapi,batman,medium,,13,7511,7511,2131,246,0,legoapi/carrying.c:7511
-0x5999e0,0x59a595,src/legoapi/minikits.c,,legoapi,batman+marker,high,ret 28,11,2888,2888,2324,1,0,legoapi/minikits.c:2888
-0x59a5a0,0x59b32d,src/legoapi/gameantinode.c,,legoapi,batman+marker,high,fabs 54 28,9,2843,2843,2194,44,0,legoapi/gameantinode.c:2843
-0x59b330,0x59baf0,src/legoapi/episodes.c,,legoapi,batman+marker,high,ret 28,7,1793,1793,403,32,0,legoapi/episodes.cpp:1792 legoapi/episodes_diagnostic_pc.c:1
-0x59baf0,0x59cb62,src/legoapi/pushing.c,,legoapi,batman+marker,high,fabs 28,5,4116,4116,989,272,0,legoapi/pushing.c:4116
-0x59cb90,0x59d741,src/legoapi/credits.cpp,,legoapi,code+review,medium,,9,2856,2856,2856,0,0,legoapi/credits.cpp:2856
-0x59d750,0x59f942,src/legoapi/gizflow.c,,legoapi,batman+marker,high,ret ret ret 28,56,7875,7875,5235,351,0,legoapi/gizflow.c:7873 legoapi/gizflow_diagnostic.c:2
-0x59f970,0x5a043e,src/legoapi/tagging.c,,legoapi,batman,medium,,10,2611,2611,1834,72,0,legoapi/tagging.c:2611
-0x5a0440,0x5a1bcd,src/legoapi/gameanim.c,,legoapi,batman+marker,high,ret ret 28,41,5671,5671,4731,22,0,legoapi/gameanim.c:5670 legoapi/render.c:1
-0x5a1bd0,0x5a1eda,src/legoapi/faders.c,,legoapi,batman+marker,high,ret 28,3,711,711,335,32,0,legoapi/faders.c:711
-0x5a1ee0,0x5a2a5b,src/legoapi/ripples.c,,legoapi,batman+marker,high,ret 28,19,2629,2629,1512,243,0,legoapi/ripples.c:2629
-0x5a2a60,0x5a3726,src/legoapi/pulses.c,,legoapi,batman+marker,high,fabs 28,6,2958,2958,1631,81,0,legoapi/pulses.c:2648 legoapi/streaks.cpp:310
+0x5970b0,0x597bf5,src/legoapi/snake.c,,legoapi,batman+marker,high,fabs,10,2783,2737,275,105,0,legoapi/snake.c:2737
+0x597c00,0x5999e0,src/legoapi/carrying.c,,legoapi,batman+marker,high,,14,7539,7511,2131,246,0,legoapi/carrying.c:7511
+0x5999e0,0x59a595,src/legoapi/minikits.c,,legoapi,batman+marker,high,ret 28,13,2917,2888,2324,1,0,legoapi/minikits.c:2888
+0x59a5a0,0x59b32d,src/legoapi/gameantinode.c,,legoapi,batman+marker,high,fabs 54 28,12,2943,2843,2194,44,0,legoapi/gameantinode.c:2843
+0x59b330,0x59baf0,src/legoapi/episodes.c,,legoapi,batman+marker,high,ret 28,8,1821,1793,403,32,0,legoapi/episodes.cpp:1792 legoapi/episodes_diagnostic_pc.c:1
+0x59baf0,0x59cb62,src/legoapi/pushing.c,,legoapi,batman+marker,high,fabs 28,7,4162,4116,989,272,0,legoapi/pushing.c:4116
+0x59cb70,0x59d741,src/legoapi/credits.cpp,,legoapi,code+marker+review,medium,,10,2884,2856,2856,0,0,legoapi/credits.cpp:2856
+0x59d750,0x59f942,src/legoapi/gizflow.c,,legoapi,batman+marker,high,ret ret ret 28,57,7927,7899,5235,361,0,legoapi/gizflow.c:7897 legoapi/gizflow_diagnostic.c:2
+0x59f950,0x5a043e,src/legoapi/tagging.c,,legoapi,batman+marker,high,,11,2639,2611,1834,72,0,legoapi/tagging.c:2611
+0x5a0440,0x5a1bcd,src/legoapi/gameanim.c,,legoapi,batman+marker,high,ret ret 28,42,5699,5671,4731,22,0,legoapi/gameanim.c:5670 legoapi/render.c:1
+0x5a1bd0,0x5a1eda,src/legoapi/faders.c,,legoapi,batman+marker,high,ret 28,5,740,711,335,32,0,legoapi/faders.c:711
+0x5a1ee0,0x5a2a5b,src/legoapi/ripples.c,,legoapi,batman+marker,high,ret 28,21,2658,2629,1512,243,0,legoapi/ripples.c:2629
+0x5a2a60,0x5a34ee,src/legoapi/pulses.c,,legoapi,batman+marker,high,fabs 28,6,2676,2648,1321,81,0,legoapi/pulses.c:2648
+0x5a34f0,0x5a3726,src/legoapi/?0x5a34f0,,legoapi,marker+android,none,,2,338,310,310,0,0,legoapi/streaks.cpp:310
 0x5a3730,0x5a438e,src/legoapi/streaks.c,,legoapi,batman,medium,,5,3152,3152,792,256,0,legoapi/streaks.cpp:3152
-0x5a4390,0x5a8062,src/legoapi/pushblocks.c,,legoapi,batman+marker,high,28 ret fabs 28,33,15179,15179,4315,287,0,legoapi/pushblocks.cpp:15179
-0x5a8090,0x5a836b,src/legoapi/particles.c,,legoapi,batman,medium,,7,698,698,510,9,0,legoapi/particles.c:698
-0x5a8390,0x5a8563,src/legoapi/charpivot.c,,legoapi,batman,medium,,2,464,464,464,0,0,legoapi/charpivot.c:464
+0x5a4390,0x5a43ac,src/legoapi/?0x5a4390,,legoapi,marker+android,none,28 ret fabs 28,1,28,0,0,0,0,
+0x5a43b0,0x5a8062,src/legoapi/pushblocks.c,,legoapi,batman+marker,high,,36,15226,15179,4315,287,0,legoapi/pushblocks.cpp:15179
+0x5a8070,0x5a838c,src/legoapi/particles.c,,legoapi,batman+marker,high,,9,754,698,510,9,0,legoapi/particles.c:698
+0x5a8390,0x5a858c,src/legoapi/charpivot.c,,legoapi,batman,medium,,3,492,464,464,0,0,legoapi/charpivot.c:464
 0x5a8590,0x5a86c4,src/legoapi/playeritems.c,,legoapi,batman,medium,,4,239,239,239,0,0,legoapi/playeritems.c:239
-0x5a86d0,0x5aab25,src/legoapi/simpletons.c,,legoapi,marker+review,medium,fabs 23 28,15,9109,9109,2829,291,0,legoapi/simpletons_pc.cpp:9109
-0x5aab50,0x5ab073,src/legoapi/gizmessage.c,,legoapi,batman,medium,,15,1190,1190,767,74,0,legoapi/gizmessage.c:1190
-0x5ab0a0,0x5ab274,src/legoapi/aipathcnxhelper.c,,legoapi,batman,medium,,4,440,440,440,0,0,legoapi/aipathcnxhelper.c:440
+0x5a86d0,0x5aab25,src/legoapi/simpletons.c,,legoapi,marker+review,medium,fabs 23 28,18,9178,9109,2829,291,0,legoapi/simpletons_pc.cpp:9109
+0x5aab30,0x5ab09c,src/legoapi/gizmessage.c,,legoapi,batman+marker,high,,17,1246,1190,767,74,0,legoapi/gizmessage.c:1190
+0x5ab0a0,0x5ab2cc,src/legoapi/aipathcnxhelper.c,,legoapi,batman,medium,,5,468,440,440,0,0,legoapi/aipathcnxhelper.c:440
 0x5ab2d0,0x5ae0fe,src/legoapi/gizturret.c,,legoapi,batman+review,medium,,34,11265,11265,5006,787,0,legoapi/gizturret.cpp:11265
-0x5ae100,0x5ae9f7,src/legoapi/gizspecial.c,,legoapi,batman+marker,high,ret 28,20,2108,2108,2108,0,0,legoapi/gizspecial.c:2108
-0x5aea20,0x5af0ad,src/legoapi/edbobs.c,,legoapi,batman,medium,,5,1641,1641,1641,0,0,legoapi/gizspecial.c:1641
-0x5af0b0,0x5af4c4,src/legoapi/gizportal.c,,legoapi,batman+marker,high,ret 28,13,898,898,898,0,0,legoapi/gizportal.c:898
-0x5af4f0,0x5af935,src/legoapi/edgizshadow.c,,legoapi,review,medium,,10,1019,1019,1019,0,0,legoapi/edgizshadow.c:1019
-0x5af940,0x5affa0,src/legoapi/plugs.c,,legoapi,batman+marker,high,ret 28,20,1431,1431,1143,30,0,legoapi/plugs.c:1431
-0x5affa0,0x5b0335,src/legoapi/gizrandom.c,,legoapi,batman+marker,high,ret 28,10,809,809,809,0,0,legoapi/gizrandom.c:809
-0x5b0340,0x5b0769,src/legoapi/giztimers.c,,legoapi,batman+marker,high,ret 28,12,927,927,927,0,0,legoapi/giztimers.c:927
-0x5b0770,0x5b0fea,src/legoapi/gizminicut.c,,legoapi,batman+marker,high,ret 28,14,1997,1997,1667,0,0,legoapi/gizminicut.c:1997
-0x5b1080,0x5b16b1,src/legoapi/fade.cpp,,legoapi,batman,medium,,29,1318,1318,1318,0,0,legoapi/fade.cpp:1174 legoapi/gamethings.cpp:84 gameapi/supportall.cpp:60
-0x5b16c0,0x5b174d,src/legoapi/things.cpp,,legoapi,batman+code,medium,,3,102,102,102,0,0,legoapi/gamethings.cpp:102
+0x5ae100,0x5ae9f7,src/legoapi/gizspecial.c,,legoapi,batman+marker,high,ret 28,22,2137,2108,2108,0,0,legoapi/gizspecial.c:2108
+0x5aea00,0x5af0ad,src/legoapi/edbobs.c,,legoapi,batman+marker,high,,6,1669,1641,1641,0,0,legoapi/gizspecial.c:1641
+0x5af0b0,0x5af4c4,src/legoapi/gizportal.c,,legoapi,batman+marker,high,ret 28,15,927,898,898,0,0,legoapi/gizportal.c:898
+0x5af4d0,0x5af935,src/legoapi/edgizshadow.c,,legoapi,marker+review,medium,,11,1047,1019,1019,0,0,legoapi/edgizshadow.c:1019
+0x5af940,0x5affa0,src/legoapi/plugs.c,,legoapi,batman+marker,high,ret 28,22,1460,1431,1143,30,0,legoapi/plugs.c:1431
+0x5affa0,0x5b0335,src/legoapi/gizrandom.c,,legoapi,batman+marker,high,ret 28,12,838,809,809,0,0,legoapi/gizrandom.c:809
+0x5b0340,0x5b0769,src/legoapi/giztimers.c,,legoapi,batman+marker,high,ret 28,14,956,927,927,0,0,legoapi/giztimers.c:927
+0x5b0770,0x5b0fea,src/legoapi/gizminicut.c,,legoapi,batman+marker,high,ret 28,16,2026,1997,1667,0,0,legoapi/gizminicut.c:1997
+0x5b0ff0,0x5b16b1,src/legoapi/fade.cpp,,legoapi,batman+marker,high,,31,1374,1318,1318,0,0,legoapi/fade.cpp:1174 legoapi/gamethings.cpp:84 gameapi/supportall.cpp:60
+0x5b16c0,0x5b176c,src/legoapi/things.cpp,,legoapi,batman+code,medium,,4,130,102,102,0,0,legoapi/gamethings.cpp:102
 0x5b1770,0x5b1e97,src/legoapi/specialsfx.c,,legoapi,batman,medium,,6,1777,1777,1777,0,0,legoapi/specialsfx.c:1777
-0x5b1ea0,0x5b2176,src/legoapi/edsplines.c,,legoapi,batman+marker,high,ret ret 28,2,652,652,102,57,0,gameapi/edspline_load.c:652
-0x5b2350,0x5b2690,src/legoapi/movies.c,,legoapi,batman+marker,high,ret 28,4,771,771,538,6,0,legoapi/movies.cpp:770 legoapi/movies_diagnostic_pc.c:1
-0x5b26b0,0x5b2d93,src/legoapi/whip.c,,legoapi,batman,medium,,2,1760,1760,1760,0,0,legoapi/whip.c:1760
-0x5b2da0,0x5c01fa,src/nu2api/numath_includes.cpp,nuvec_gen.cpp ? nuvec4_gen.cpp ? nufloat_gen.cpp ? nuquat_gen.cpp ? nuplane_gen.cpp nurand_gen.cpp ? nupatch_gen.cpp ? nugraph.c nutrig.c,nu2api,file+marker+review,high,ret ret fabs 54,276,51598,51598,48238,92,0,nu2api/numath_includes.c:51598
+0x5b1ea0,0x5b2176,src/legoapi/edsplines.c,,legoapi,batman+marker,high,ret ret 28,4,681,652,102,57,0,gameapi/edspline_load.c:652
+0x5b2350,0x5b2690,src/legoapi/movies.c,,legoapi,batman+marker,high,ret 28,5,799,771,538,6,0,legoapi/movies.cpp:770 legoapi/movies_diagnostic_pc.c:1
+0x5b2690,0x5b2d93,src/legoapi/whip.c,,legoapi,batman+marker,high,,3,1788,1760,1760,0,0,legoapi/whip.c:1760
+0x5b2da0,0x5c023c,src/nu2api/numath_includes.cpp,nuvec_gen.cpp ? nuvec4_gen.cpp ? nufloat_gen.cpp ? nuquat_gen.cpp ? nuplane_gen.cpp nurand_gen.cpp ? nupatch_gen.cpp ? nugraph.c nutrig.c,nu2api,file+marker+review,high,ret ret fabs 54,280,51699,51598,48238,92,0,nu2api/numath_includes.c:51598
 0x5c0240,0x5c0301,src/nu2api/nufloat_pc.c,,nu2api,review,low,,5,159,159,159,0,0,nu2api/nufloat.c:158 nu2api/numtx.c:1
 0x5c0310,0x5c1301,src/nu2api/numaths.c,,nu2api,review,low,,39,3561,3561,3535,18,0,nu2api/numtx.c:2509 nu2api/nuvec.c:862 legoapi/debris_callbacks.c:108 nu2api/nu3d_includes.cpp:81 nu2api/nudebug.c:1
-0x5c1360,0x5f7438,src/nu2api/nu3d_includes.cpp,? numotionfilter_gen.cpp nuposteffect_gen.cpp numotionaccumfilter_gen.cpp nupostfilter_gen.cpp numainfilter_gen.cpp ? nuspeedblurfilter_gen.cpp ? nuqfnt_gen.cpp nuinstsurfgeom_gen.cpp ? nudynamiclight_gen.cpp nudynamiclight_renderset_gen.cpp ? nuanim.c ? nuanimation_gen.cpp nuspline_gen.cpp ? numtl_gen.cpp nutexanm.c NuHGobjEval_gen.cpp ? nucamera_gen.c ? nuvport_gen.cpp ? nupostproc_gen.cpp nutimebar.c ? nutimebar.c ? nuportal_gen.cpp nugscn_gen.cpp nushadermtldesc_gen.cpp ? nuprim_gen.cpp ? nustencilshadow_gen.cpp ? nurndrframelights.cpp ? nuoctree_gen.cpp ? nuanim.c ? nuanim.c ? nuvisi_gen.cpp ?,nu2api,code+file+marker+review,high,fabs 54,759,191230,190620,75872,10111,1486,nu2api/nu3d_includes.cpp:140033 nu2api/nurndr.c:24740 nu2api/nucamera.c:8145 nu2api/nutexanim.c:7273 legoapi/render.c:5964 nu2api/nuparticle_state.c:773 nu2api/nufrustum_pc.cpp:711 legoapi/shadow_light_setup.cpp:649 gameapi/apiobject.c:586 nu2api/geometry_publish.cpp:522 legoapi/aiactions_transfer.cpp:354 nu2api/nuhtml.c:274 nu2api/nustateanim.c:208 gamelib/nuwind.c:192 nu2api/nuvec.c:118 nu2api/nu3d_platform_pc.cpp:50 nu2api/nuthread.c:26 nu2api/nudebug.c:1 nu2api/pc_device.cpp:1
-0x5f7490,0x60ded5,src/nu2api/nu3d_pc_includes.cpp,NuEffectTex_pc.cpp nutex_pc.cpp nuwater_PC.cpp nustencilshadows_PC.cpp nupostfilter_gen.cpp NuMotionAccumFilter.cpp NuSpeedBlurFilter.cpp ? nustream.c nurndr_pc.cpp ? nurndr.cpp ? nurndr_dlist.cpp ? nuptl_dlist.cpp ? nudlistPC.cpp ? nuprim_dlist.cpp nuportal_pc.cpp ? numainfilter_gen.cpp nugscn_dlist.c ? nugamma.cpp nucamera.cpp nuhgo_dlist.cpp ? nuoctree_gen.cpp nugobj.c ? nucamera_dlist.cpp ? numtl_dlist.c ?,nu2api,batman+code+file+marker+review,medium,ret ret ret 28,483,72290,72290,38146,2795,875,nu2api/nu3d_platform_pc.cpp:52976 nu2api/posteffect_shader_pc.cpp:8727 nu2api/nudlist_material_pc.cpp:8389 nu2api/nurndr_swap.cpp:1489 nu2api/pc_device.cpp:614 legoapi/gameai.c:70 nu2api/geometry_publish.cpp:13 nu2api/nuparticle_state.c:10 nu2api/nudebug.c:2
-0x60dee0,0x60e174,src/gamelib/net/?0x60dee0,,gamelib,marker+android,none,ret 28,14,498,498,498,0,0,gamelib/net/TTNetwork.cpp:360 gamelib/net/NetStats.cpp:138
+0x5c1360,0x5f7438,src/nu2api/nu3d_includes.cpp,? numotionfilter_gen.cpp nuposteffect_gen.cpp numotionaccumfilter_gen.cpp nupostfilter_gen.cpp numainfilter_gen.cpp ? nuspeedblurfilter_gen.cpp ? nuqfnt_gen.cpp nuinstsurfgeom_gen.cpp ? nudynamiclight_gen.cpp nudynamiclight_renderset_gen.cpp ? nuanim.c ? nuanimation_gen.cpp nuspline_gen.cpp ? numtl_gen.cpp nutexanm.c NuHGobjEval_gen.cpp ? nucamera_gen.c ? nuvport_gen.cpp ? nupostproc_gen.cpp nutimebar.c ? nutimebar.c ? nuportal_gen.cpp nugscn_gen.cpp nushadermtldesc_gen.cpp ? nuprim_gen.cpp ? nustencilshadow_gen.cpp ? nurndrframelights.cpp ? nuoctree_gen.cpp ? nuanim.c ? nuanim.c ? nuvisi_gen.cpp ?,nu2api,code+file+marker+review,high,fabs 54,770,191625,190709,75872,10120,1486,nu2api/nu3d_includes.cpp:140122 nu2api/nurndr.c:24740 nu2api/nucamera.c:8145 nu2api/nutexanim.c:7273 legoapi/render.c:5964 nu2api/nuparticle_state.c:773 nu2api/nufrustum_pc.cpp:711 legoapi/shadow_light_setup.cpp:649 gameapi/apiobject.c:586 nu2api/geometry_publish.cpp:522 legoapi/aiactions_transfer.cpp:354 nu2api/nuhtml.c:274 nu2api/nustateanim.c:208 gamelib/nuwind.c:192 nu2api/nuvec.c:118 nu2api/nu3d_platform_pc.cpp:50 nu2api/nuthread.c:26 nu2api/nudebug.c:1 nu2api/pc_device.cpp:1
+0x5f7490,0x60ded5,src/nu2api/nu3d_pc_includes.cpp,NuEffectTex_pc.cpp nutex_pc.cpp nuwater_PC.cpp nustencilshadows_PC.cpp nupostfilter_gen.cpp NuMotionAccumFilter.cpp NuSpeedBlurFilter.cpp ? nustream.c nurndr_pc.cpp ? nurndr.cpp ? nurndr_dlist.cpp ? nuptl_dlist.cpp ? nudlistPC.cpp ? nuprim_dlist.cpp nuportal_pc.cpp ? numainfilter_gen.cpp nugscn_dlist.c ? nugamma.cpp nucamera.cpp nuhgo_dlist.cpp ? nuoctree_gen.cpp nugobj.c ? nucamera_dlist.cpp ? numtl_dlist.c ?,nu2api,batman+code+file+marker+review,medium,ret ret ret 28,490,72458,72291,38146,2795,875,nu2api/nu3d_platform_pc.cpp:52977 nu2api/posteffect_shader_pc.cpp:8727 nu2api/nudlist_material_pc.cpp:8389 nu2api/nurndr_swap.cpp:1489 nu2api/pc_device.cpp:614 legoapi/gameai.c:70 nu2api/geometry_publish.cpp:13 nu2api/nuparticle_state.c:10 nu2api/nudebug.c:2
+0x60dee0,0x60e174,src/gamelib/net/?0x60dee0,,gamelib,marker+android,none,ret 28,16,527,498,498,0,0,gamelib/net/TTNetwork.cpp:360 gamelib/net/NetStats.cpp:138
 0x60e180,0x60e1a9,src/gamelib/net/?0x60e180,,gamelib,android,none,,1,41,41,41,0,0,gamelib/net/TTNetwork.cpp:41
 0x60e1b0,0x60e64c,src/gamelib/net/?0x60e1b0,,gamelib,android,none,,15,1061,1061,1061,0,0,gamelib/net/TTNetwork.cpp:1061
-0x60e650,0x60e82f,src/gamelib/net/?0x60e650,,gamelib,marker+android,none,ret 28 ret,5,207,207,207,0,0,gamelib/net/TTNetwork.cpp:207
+0x60e650,0x60e82f,src/gamelib/net/?0x60e650,,gamelib,marker+android,none,ret 28 ret,7,236,207,207,0,0,gamelib/net/TTNetwork.cpp:207
 0x60e830,0x60ed2c,src/gamelib/net/?0x60e830,,gamelib,android,none,,18,1049,987,987,0,0,gamelib/net/TTNetwork.cpp:987
 0x60ed30,0x60eda3,src/gamelib/net/?0x60ed30,,gamelib,review+android,none,,8,29,29,29,0,0,editor/edlevelall.cpp:29
-0x60edb0,0x60f473,src/gamelib/net/?0x60edb0,,gamelib,android,none,,12,1366,1281,1029,21,19,gamelib/net/TTNetwork.cpp:1109 gamelib/net/NetStats.cpp:159 gamelib/net/NetMessagePc.cpp:13
+0x60edb0,0x60f2dd,src/gamelib/net/?0x60edb0,,gamelib,android,none,,11,1235,1122,978,3,0,gamelib/net/TTNetwork.cpp:1109 gamelib/net/NetMessagePc.cpp:13
+0x60f3a0,0x60f473,src/gamelib/net/?0x60f3a0,,gamelib,marker+android,none,,3,187,159,51,19,0,gamelib/net/NetStats.cpp:159
 0x60f4b0,0x60f548,src/gamelib/net/?0x60f4b0,,gamelib,android,none,,4,148,148,148,0,0,gamelib/net/NetStats.cpp:148
-0x60f550,0x60ffa8,src/gamelib/net/?0x60f550,,gamelib,android,none,,3,2624,2624,744,1,0,gamelib/net/NetStats.cpp:2624
+0x60f550,0x60ffcc,src/gamelib/net/?0x60f550,,gamelib,android,none,,4,2652,2624,744,1,0,gamelib/net/NetStats.cpp:2624
 0x60ffd0,0x610383,src/gamelib/net/?0x60ffd0,,gamelib,android,none,,16,842,842,842,0,0,gamelib/net/V2SessionManager.cpp:842
 0x610390,0x610493,src/gamelib/net/?0x610390,,gamelib,android,none,,17,55,55,55,0,0,gamelib/net/V2SessionManager.cpp:55
-0x6104a0,0x610aa2,src/gamelib/net/?0x6104a0,,gamelib,marker+android,none,ret ret 28,9,1384,1384,466,123,0,gamelib/util/Refpack.cpp:1322 nu2api/nunetemu.cpp:61 gamelib/net/V2SessionManager.cpp:1
+0x6104a0,0x610a26,src/gamelib/net/?0x6104a0,,gamelib,marker+android,none,ret ret 28,8,1352,1323,405,123,0,gamelib/util/Refpack.cpp:1322 gamelib/net/V2SessionManager.cpp:1
+0x610a30,0x610aa2,src/gamelib/net/?0x610a30,,gamelib,marker+android,none,,4,89,61,61,0,0,nu2api/nunetemu.cpp:61
 0x610ab0,0x610ab9,src/gamelib/net/?0x610ab0,,gamelib,android,none,,1,9,9,9,0,0,nu2api/nunetemu.cpp:9
 0x610ac0,0x611889,src/gamelib/net/?0x610ac0,,gamelib,code+android,none,,14,3200,3200,2278,76,0,nu2api/nunetemu.cpp:3200
-0x611890,0x611b41,src/gamelib/net/?0x611890,,gamelib,marker+android,none,ret ret 22 28 ret,21,269,269,244,22,22,gamelib/net/NetworkObjectManager.cpp:192 editor/edlevelall.cpp:77
+0x611890,0x611b41,src/gamelib/net/?0x611890,,gamelib,marker+android,none,ret ret 22 28 ret,24,320,269,244,22,22,gamelib/net/NetworkObjectManager.cpp:192 editor/edlevelall.cpp:77
 0x611c60,0x612703,src/gamelib/net/?0x611c60,,gamelib,android,none,,21,2511,2511,1487,4,0,gamelib/net/NetworkObjectManager.cpp:2511
 0x612710,0x612748,src/gamelib/net/?0x612710,,gamelib,android,none,,3,30,30,30,0,0,gamelib/net/NetworkObjectManager.cpp:30
 0x612750,0x61326f,src/gamelib/net/?0x612750,,gamelib,android,none,,34,1958,1927,1816,38,0,gamelib/net/NetworkObjectManager.cpp:1806 editor/edlevelall.cpp:62 gameapi/message.cpp:59
 0x613270,0x6133d5,src/gamelib/net/?0x613270,,gamelib,android,none,,4,330,299,70,7,0,gamelib/net/NetworkObjectManager.cpp:299
-0x6133e0,0x61720f,src/gamelib/net/?0x6133e0,,gamelib,code+android,none,,56,15026,14978,7290,583,0,gamelib/net/NetworkObjectManager.cpp:14835 gamelib/net/Ftp.cpp:143
-0x617270,0x61799d,src/gamelib/net/?0x617270,,gamelib,android,none,,24,1320,1320,1212,74,0,gamelib/net/Ftp.cpp:1320
+0x6133e0,0x61720f,src/gamelib/net/?0x6133e0,,gamelib,code+android,none,,57,15054,14978,7290,583,0,gamelib/net/NetworkObjectManager.cpp:14835 gamelib/net/Ftp.cpp:143
+0x617270,0x6179bc,src/gamelib/net/?0x617270,,gamelib,android,none,,25,1348,1320,1212,74,0,gamelib/net/Ftp.cpp:1320
 0x6179c0,0x617a52,src/gamelib/net/?0x6179c0,,gamelib,android,none,,3,133,133,133,0,0,gamelib/util/Utilities.cpp:133
 0x617a60,0x617c0a,src/gamelib/net/?0x617a60,,gamelib,android,none,,1,426,426,426,0,0,nu2api/unref.cpp:426
-0x617c10,0x62a4ad,src/gameapi/edtoolsall.cpp,edmain.cpp edui.cpp edfile.c edui.cpp fileselect.c ? edui.cpp,gameapi,file+marker+review,high,ret fabs 22 11 28,344,70240,70202,33345,3834,2418,gameapi/edfile.c:38364 gameapi/edui_widget_render_pc.cpp:26761 nu2api/keyboard_read.c:4365 gameapi/edtools_outline_pc.cpp:627 editor/edtoolsall.c:85
-0x62a5e0,0x630d61,src/gameapi/apiobject.c,,gameapi,marker+review,high,ret ret fabs 54 11,74,25351,25351,13899,379,0,gameapi/apiobject.c:25348 nu2api/nudebug.c:2 nu2api/pc_fmv_leaves.cpp:1
+0x617c10,0x62a4ad,src/gameapi/edtoolsall.cpp,edmain.cpp edui.cpp edfile.c edui.cpp fileselect.c ? edui.cpp,gameapi,file+marker+review,high,ret fabs 22 11 28,347,70291,70202,33345,3834,2418,gameapi/edfile.c:38364 gameapi/edui_widget_render_pc.cpp:26761 nu2api/keyboard_read.c:4365 gameapi/edtools_outline_pc.cpp:627 editor/edtoolsall.c:85
+0x62a5e0,0x630d61,src/gameapi/apiobject.c,,gameapi,marker+review,high,ret ret fabs 54 11,75,25369,25351,13899,379,0,gameapi/apiobject.c:25348 nu2api/nudebug.c:2 nu2api/pc_fmv_leaves.cpp:1
 0x630e00,0x631064,src/nu2api/nufmv/nufmv_gen.c,,nu2api,review,low,,1,612,612,0,79,0,nu2api/pc_fmv.cpp:612
-0x6310c0,0x633386,src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp,,nu2api,file+marker+review,high,ret 28,49,8350,8350,6526,327,38,nu2api/nufmv/pc/Bink/dsplay_bink.cpp:5214 nu2api/pc_fmv_player.cpp:2802 nu2api/pc_fmv_control.cpp:334
-0x633390,0x633def,src/gameapi/supportall.cpp,,gameapi,marker+review,medium,ret ret 28,27,2304,2304,2054,16,0,gameapi/supportall.cpp:2119 legoapi/memorymanager.cpp:169 editor/edlevelall.cpp:16
-0x633df0,0x64233d,src/gameapi/rtl.c,,gameapi,batman+file+marker+review,high,ret ret fabs 11,309,55542,55402,44610,650,28,gameapi/rtl.c:43111 legoapi/rtlhelper.cpp:11749 editor/edlevelall.cpp:541 legoapi/rtl_empty_pc.c:1
-0x642340,0x64fd8c,src/gameapi/objectsall.cpp,partterr.cpp edpart.cpp part.cpp ?,gameapi,marker+review,high,ret fabs 54,210,53688,53688,38874,909,62,legoapi/parts.c:33647 gameapi/edpart.c:19264 legoapi/game_deb.c:777
-0x64fd90,0x693b06,src/gameapi/gameliball.cpp,? audio.c debris.c ? edbits.c edgra.c ? terrain.c ? edptl.c,gameapi,file+marker+review,high,ret ret ret fabs 54,811,266033,265703,147824,13693,13576,gameapi/edpp.c:51949 nu2api/nuterrain.c:33140 nu2api/terrain_query.cpp:26621 nu2api/terrain_collision.cpp:24103 legoapi/debris_engine.c:21850 gameapi/edgrass.c:13658 nu2api/nusound.c:13219 legoapi/parts.c:12826 gameapi/edanim_load.c:10555 nu2api/terrain_scan.cpp:9297 gameapi/edbri.c:8874 gameapi/edbits.c:7795 gameapi/edpp_load.c:7456 legoapi/gameanim.c:6604 legoapi/debris_generators.cpp:6182 gameapi/edgra.c:4444 legoapi/specialsfx.c:2856 gameapi/edanim_update.c:1816 legoapi/game_deb.c:1403 legoapi/debris_callbacks.c:836 legoapi/sfx.cpp:123 nu2api/terrain_diagnostic.c:55 legoapi/shadow.c:41
-0x693b60,0x696a3f,src/nu2api/nusound3_include.cpp,numusic_gen.cpp,nu2api,code+marker+review,medium,ret ret 28,98,11164,11061,9117,11,0,nu2api/nusound_music.cpp:11061
-0x696a90,0x698fca,src/nu2api/nusound3/pc/nusound.cpp,,nu2api,file+marker+review,medium,ret ret ret 28,62,6704,6704,3192,248,0,nu2api/nusound_pc.cpp:5970 nu2api/nustream.cpp:541 nu2api/nusound.c:193
-0x698fe0,0x6996c6,src/nu2api/?0x698fe0,,nu2api,marker+android,none,ret ret 28,7,1480,1480,321,308,0,nu2api/nustream.cpp:1480
+0x6310c0,0x631288,src/nu2api/nufmv/pc/Bink/dsplay_bink.cpp,,nu2api,marker+review,high,ret 28,9,363,334,334,0,0,nu2api/pc_fmv_control.cpp:334
+0x6312d0,0x633386,src/gameapi/?0x6312d0,,gameapi,file+marker+android,none,,43,8044,8016,6192,327,38,nu2api/nufmv/pc/Bink/dsplay_bink.cpp:5214 nu2api/pc_fmv_player.cpp:2802
+0x633390,0x633def,src/gameapi/supportall.cpp,,gameapi,marker+review,medium,ret ret 28,29,2333,2304,2054,16,0,gameapi/supportall.cpp:2119 legoapi/memorymanager.cpp:169 editor/edlevelall.cpp:16
+0x633df0,0x64233d,src/gameapi/rtl.c,,gameapi,batman+file+marker+review,high,ret ret fabs 11,311,55571,55402,44610,650,28,gameapi/rtl.c:43111 legoapi/rtlhelper.cpp:11749 editor/edlevelall.cpp:541 legoapi/rtl_empty_pc.c:1
+0x642340,0x64fd8c,src/gameapi/objectsall.cpp,partterr.cpp edpart.cpp part.cpp ?,gameapi,marker+review,high,ret fabs 54,214,53789,53688,38874,909,62,legoapi/parts.c:33647 gameapi/edpart.c:19264 legoapi/game_deb.c:777
+0x64fd90,0x693b06,src/gameapi/gameliball.cpp,? audio.c debris.c ? edbits.c edgra.c ? terrain.c ? edptl.c,gameapi,file+marker+review,high,ret ret ret fabs 54,812,266061,265703,147824,13693,13576,gameapi/edpp.c:51949 nu2api/nuterrain.c:33140 nu2api/terrain_query.cpp:26621 nu2api/terrain_collision.cpp:24103 legoapi/debris_engine.c:21850 gameapi/edgrass.c:13658 nu2api/nusound.c:13219 legoapi/parts.c:12826 gameapi/edanim_load.c:10555 nu2api/terrain_scan.cpp:9297 gameapi/edbri.c:8874 gameapi/edbits.c:7795 gameapi/edpp_load.c:7456 legoapi/gameanim.c:6604 legoapi/debris_generators.cpp:6182 gameapi/edgra.c:4444 legoapi/specialsfx.c:2856 gameapi/edanim_update.c:1816 legoapi/game_deb.c:1403 legoapi/debris_callbacks.c:836 legoapi/sfx.cpp:123 nu2api/terrain_diagnostic.c:55 legoapi/shadow.c:41
+0x693b60,0x696a3f,src/nu2api/nusound3_include.cpp,numusic_gen.cpp,nu2api,code+marker+review,medium,ret ret 28,99,11192,11061,9117,11,0,nu2api/nusound_music.cpp:11061
+0x696a90,0x698fca,src/nu2api/nusound3/pc/nusound.cpp,,nu2api,file+marker+review,medium,ret ret ret 28,64,6764,6704,3192,248,0,nu2api/nusound_pc.cpp:5970 nu2api/nustream.cpp:541 nu2api/nusound.c:193
+0x698fe0,0x6996c6,src/nu2api/?0x698fe0,,nu2api,marker+android,none,ret ret 28,10,1541,1480,321,308,0,nu2api/nustream.cpp:1480
 0x6996d0,0x699795,src/nu2api/?0x6996d0,,nu2api,android,none,,4,163,163,44,52,0,nu2api/nustream.cpp:163
 0x6997a0,0x69a178,src/nu2api/?0x6997a0,,nu2api,code+android,none,,9,2485,2485,313,277,0,nu2api/nustream.cpp:2485
-0x69a180,0x69a7e4,src/nu2api/wavreader.cpp,,nu2api,batman+marker,high,ret 28,16,1463,1463,1172,13,0,nu2api/wavreader.cpp:1463
-0x69a7f0,0x69b240,src/nu2api/oggreader.cpp,,nu2api,batman+file+marker,high,ret ret 28,16,2443,2443,2443,0,0,nu2api/oggreader.cpp:2411 lib/ogg-vorbis/vorbis/vorbisfile.c:32
-0x6b7c40,0x6d306f,src/editor/edlevelall.cpp,,editor,code+marker+review,medium,ret ret fabs 22 23 28,727,101067,100720,68165,3448,0,editor/edlevelall.cpp:100720
-0x6d3070,0x6d3555,src/nu2api/?0x6d3070,,nu2api,marker+android,none,ret ret ret 28,7,855,855,223,77,0,nu2api/input_runtime.cpp:632 legoapi/startup_dats.c:155 nu2api/keyboard_read.c:59 nu2api/input_detection.cpp:5 nu2api/nuapi.c:3 nu2api/pc_fmv_leaves.cpp:1
-0x6d3560,0x6daf9d,src/nu2api/PCInput.cpp,,nu2api,batman+code+marker,high,ret ret fabs 28,141,24438,24403,7740,3285,713,nu2api/input_runtime.cpp:14322 nu2api/pc_input.cpp:5107 nu2api/nupad_text.cpp:1614 nu2api/keyboard_init.c:1132 nu2api/input_detection.cpp:773 nu2api/key_events.cpp:465 nu2api/keyboard_read.c:463 nu2api/input_descriptors.cpp:316 nu2api/pc_options.cpp:143 nu2api/nuapi.c:25 nu2api/nupad_pc.c:19 nu2api/textinput_labels_pc.c:10 nu2api/numouse.c:7 legoapi/keyboard_base_port_pc.c:6 nu2api/pc_fmv_leaves.cpp:1
+0x69a180,0x69a7e4,src/nu2api/wavreader.cpp,,nu2api,batman+marker,high,ret 28,17,1491,1463,1172,13,0,nu2api/wavreader.cpp:1463
+0x69a7f0,0x69b240,src/nu2api/oggreader.cpp,,nu2api,batman+file+marker,high,ret ret 28,19,2504,2443,2443,0,0,nu2api/oggreader.cpp:2411 lib/ogg-vorbis/vorbis/vorbisfile.c:32
+0x6b7c40,0x6d306f,src/editor/edlevelall.cpp,,editor,code+marker+review,medium,ret ret fabs 22 23 28,727,101126,100779,68165,3453,0,editor/edlevelall.cpp:100779
+0x6d3070,0x6d3555,src/nu2api/?0x6d3070,,nu2api,marker+android,none,ret ret ret 28,9,884,855,223,77,0,nu2api/input_runtime.cpp:632 legoapi/startup_dats.c:155 nu2api/keyboard_read.c:59 nu2api/input_detection.cpp:5 nu2api/nuapi.c:3 nu2api/pc_fmv_leaves.cpp:1
+0x6d3560,0x6daeb1,src/nu2api/PCInput.cpp,,nu2api,batman+code+marker,high,ret ret fabs 28,133,24349,24260,7597,3285,713,nu2api/input_runtime.cpp:14322 nu2api/pc_input.cpp:5107 nu2api/nupad_text.cpp:1614 nu2api/keyboard_init.c:1132 nu2api/input_detection.cpp:773 nu2api/key_events.cpp:465 nu2api/keyboard_read.c:463 nu2api/input_descriptors.cpp:316 nu2api/nuapi.c:25 nu2api/nupad_pc.c:19 nu2api/textinput_labels_pc.c:10 nu2api/numouse.c:7 legoapi/keyboard_base_port_pc.c:6 nu2api/pc_fmv_leaves.cpp:1
+0x6daec0,0x6daf9d,src/nu2api/?0x6daec0,,nu2api,marker+android,none,,12,171,143,143,0,0,nu2api/pc_options.cpp:143
 0x6dafa0,0x6db1b3,src/nu2api/?0x6dafa0,,nu2api,android,none,,18,470,470,227,50,0,nu2api/pc_options.cpp:470
 0x6db1c0,0x6db793,src/nu2api/?0x6db1c0,,nu2api,android,none,,28,1157,1157,1157,0,0,nu2api/pc_options.cpp:1157
 0x6db7a0,0x6dbaad,src/nu2api/?0x6db7a0,,nu2api,android,none,,4,708,708,708,0,0,nu2api/pc_options.cpp:700 nu2api/nufile_pc.c:8
-0x6dbab0,0x6dddba,src/nu2api/nuwin32/pcapi.cpp,,nu2api,file+marker+review,high,ret 28,19,7141,7141,4211,393,0,nu2api/hardware_dispatch.cpp:4508 nu2api/pc_window.cpp:928 nu2api/platform_files.cpp:897 nu2api/platform_policy.cpp:321 nu2api/pc_options.cpp:284 nu2api/nuwin.c:109 nu2api/save_folder.cpp:69 gameapi/shop_persistence.cpp:25
-0x6dddf0,0x6de654,src/nu2api/nuwin32/windows.cpp,,nu2api,file+review,medium,,12,1880,1880,1880,0,0,nu2api/pc_window.cpp:1509 nu2api/pc_cursor_pc.cpp:217 nu2api/numouse.c:154
-0x6de6d0,0x6dee23,src/nu2api/nuwin32/Stubs.cpp,,nu2api,batman+review,low,,19,400,400,400,0,0,legoapi/menu_titles.cpp:177 nu2api/nuscratch.c:137 nu2api/nupad_pc.c:65 nu2api/nufile_mc.c:15 nu2api/bgproc.c:4 nu2api/nudebug.c:2
+0x6dbab0,0x6dc6a2,src/nu2api/nuwin32/pcapi.cpp,,nu2api,file+marker+review,high,ret 28,3,2959,2930,0,393,0,nu2api/hardware_dispatch.cpp:2930
+0x6dc6c0,0x6dddba,src/nu2api/?0x6dc6c0,,nu2api,marker+android,none,,19,4239,4211,4211,0,0,nu2api/hardware_dispatch.cpp:1578 nu2api/pc_window.cpp:928 nu2api/platform_files.cpp:897 nu2api/platform_policy.cpp:321 nu2api/pc_options.cpp:284 nu2api/nuwin.c:109 nu2api/save_folder.cpp:69 gameapi/shop_persistence.cpp:25
+0x6dddf0,0x6de67c,src/nu2api/nuwin32/windows.cpp,,nu2api,file+review,medium,,13,1908,1880,1880,0,0,nu2api/pc_window.cpp:1509 nu2api/pc_cursor_pc.cpp:217 nu2api/numouse.c:154
+0x6de680,0x6dee23,src/nu2api/nuwin32/Stubs.cpp,,nu2api,batman+marker+review,low,,22,457,400,400,0,0,legoapi/menu_titles.cpp:177 nu2api/nuscratch.c:137 nu2api/nupad_pc.c:65 nu2api/nufile_mc.c:15 nu2api/bgproc.c:4 nu2api/nudebug.c:2
 0x6dee30,0x6df004,src/nu2api/?0x6dee30,,nu2api,review+android,none,,10,141,141,141,0,0,nu2api/nuwin32/d3dApiCalls.cpp:116 nu2api/nufile_mc.c:25
-0x6df010,0x6dfea0,src/nu2api/nuwin32/d3dApiCalls.cpp,,nu2api,file+marker+review,high,ret ret 28,22,1132,1132,1123,5,0,nu2api/nuwin32/d3dApiCalls.cpp:1132
-0x6dff30,0x6e1703,src/nu2api/?0x6dff30,,nu2api,marker+android,none,ret ret 28,12,5932,5932,651,82,0,nu2api/nudebug_pc.cpp:5932
+0x6df010,0x6dfea0,src/nu2api/nuwin32/d3dApiCalls.cpp,,nu2api,file+marker+review,high,ret ret 28,24,1161,1132,1123,5,0,nu2api/nuwin32/d3dApiCalls.cpp:1132
+0x6dff30,0x6e1703,src/nu2api/?0x6dff30,,nu2api,marker+android,none,ret ret 28,13,5960,5932,651,82,0,nu2api/nudebug_pc.cpp:5932
 0x6e1750,0x6e17fc,src/nu2api/?0x6e1750,,nu2api,android,none,,1,172,172,172,0,0,nu2api/nudebug_pc.cpp:172
-0x6e1820,0x6e4fe5,src/nu2api/nuwin32/d3dCore.cpp,,nu2api,file+marker+review,high,ret 28,111,12762,12762,7268,422,0,nu2api/pc_device.cpp:12616 legoapi/menu_video.cpp:146
-0x6e4ff0,0x6e6714,src/nu2api/nuwin32/d3dCalls.cpp,,nu2api,file+review,medium,,97,5381,5381,4820,17,0,nu2api/pc_device.cpp:3608 nu2api/cpu_features.cpp:1773
+0x6e1820,0x6e4530,src/nu2api/nuwin32/d3dCore.cpp,,nu2api,file+marker+review,high,ret 28,47,10529,10500,5006,422,0,nu2api/pc_device.cpp:10354 legoapi/menu_video.cpp:146
+0x6e4530,0x6e4fe5,src/nu2api/?0x6e4530,,nu2api,code+marker+android,none,,67,2290,2262,2262,0,0,nu2api/pc_device.cpp:2262
+0x6e4ff0,0x6e6714,src/nu2api/nuwin32/d3dCalls.cpp,,nu2api,file+review,medium,,98,5409,5381,4820,17,0,nu2api/pc_device.cpp:3608 nu2api/cpu_features.cpp:1773
 0x740f00,0x741057,src/gamelib/util/VirtualStackAllocator.cpp,,gamelib,review,medium,,6,238,238,238,0,0,gamelib/util/VirtualStackAllocator.cpp:238
-0x7412e0,0x741962,src/nu2api/nushadermanager_gen.cpp,,nu2api,batman+code,medium,,31,1224,1224,972,24,13,nu2api/nushadermanager_gen.cpp:978 nu2api/nushadermanager.cpp:124 nu2api/nuvertexdecl.c:82 nu2api/nushader.c:40
+0x7412e0,0x74185f,src/nu2api/nushadermanager_gen.cpp,,nu2api,batman+code,medium,,31,1170,1142,890,24,13,nu2api/nushadermanager_gen.cpp:978 nu2api/nushadermanager.cpp:124 nu2api/nushader.c:40
+0x7418f0,0x741962,src/nu2api/?0x7418f0,,nu2api,marker+android,none,,2,110,82,82,0,0,nu2api/nuvertexdecl.c:82
 0x741970,0x742328,src/nu2api/VertexDeclarations.cpp,,nu2api,batman,medium,,9,2309,2309,448,386,50,nu2api/nuvertexdecl.c:1684 nu2api/nushaderobject_pc.cpp:585 nu2api/nushaderobject.c:40
-0x742330,0x743958,src/nu2api/nushaderobject.cpp,,nu2api,batman+code,low,,12,5430,5430,393,259,6,nu2api/nushaderobject_pc.cpp:4781 nu2api/nushaderobject.c:649
-0x743990,0x743d50,src/nu2api/nushaderobjectbase.cpp,,nu2api,batman,medium,,10,834,834,233,0,0,nu2api/nushaderobjectbase.cpp:834
-0x743de0,0x744210,src/nu2api/nushaderobject.cpp,,nu2api,batman+code+marker,low,ret 28,4,940,940,940,0,0,nu2api/nushaderobject_pc.cpp:940
-0x744210,0x74431f,src/nu2api/shaderSemantics.cpp,,nu2api,batman,medium,,3,216,216,216,0,0,nu2api/shaderSemantics.cpp:216
-0x7443d0,0x745919,src/nu2api/ShaderObjectKey.cpp,,nu2api,batman+code,medium,,45,4155,4155,1901,219,115,nu2api/nushadermanager.cpp:2521 nu2api/nushaderkey.cpp:1328 nu2api/shader_compiler.cpp:292 nu2api/shader_dictionary.cpp:14
-0x745920,0x74635f,src/nu2api/ShaderManagerHLSL.cpp,,nu2api,batman+marker,high,ret 28,14,2294,2294,2042,29,0,nu2api/nushadermanager.cpp:1965 nu2api/crc16.cpp:255 nu2api/shader_compiler.cpp:74
-0x746360,0x7493d8,src/nu2api/CRC16.cpp,,nu2api,batman,medium,,74,10947,10947,8511,71,28,nu2api/shader_dictionary.cpp:7449 nu2api/shader_compiler.cpp:2133 nu2api/shader_buffer_allocator.cpp:678 nu2api/nushadermanager.cpp:494 nu2api/crc16.cpp:125 nu2api/shader_lexical.cpp:68
-0x7493e0,0x74bade,src/nu2api/?0x7493e0,,nu2api,code+marker+android,none,ret 28,50,8588,8588,3332,1472,134,nu2api/shader_compiler.cpp:5494 nu2api/shader_lexical.cpp:2370 nu2api/shader_parser.cpp:724
-0x74bae0,0x74e168,src/nu2api/?0x74bae0,,nu2api,code+marker+android,none,ret 28,57,9091,9091,4255,536,192,nu2api/shader_parser.cpp:8386 nu2api/shader_lexical.cpp:705
+0x742330,0x743958,src/nu2api/nushaderobject.cpp,,nu2api,batman+code,low,,14,5459,5430,393,259,6,nu2api/nushaderobject_pc.cpp:4781 nu2api/nushaderobject.c:649
+0x743990,0x743d50,src/nu2api/nushaderobjectbase.cpp,,nu2api,batman,medium,,11,862,834,233,0,0,nu2api/nushaderobjectbase.cpp:834
+0x743de0,0x744210,src/nu2api/nushaderobject.cpp,,nu2api,batman+code+marker,low,ret 28,6,969,940,940,0,0,nu2api/nushaderobject_pc.cpp:940
+0x744210,0x74431f,src/nu2api/shaderSemantics.cpp,,nu2api,batman,medium,,4,244,216,216,0,0,nu2api/shaderSemantics.cpp:216
+0x7443d0,0x744b53,src/nu2api/ShaderObjectKey.cpp,,nu2api,batman,low,,28,1526,1498,680,85,19,nu2api/nushadermanager.cpp:1319 nu2api/nushaderkey.cpp:179
+0x744ba0,0x745919,src/nu2api/ShaderObjectKey.cpp,,nu2api,batman+code+marker,low,,19,2685,2657,1221,133,96,nu2api/nushadermanager.cpp:1202 nu2api/nushaderkey.cpp:1149 nu2api/shader_compiler.cpp:292 nu2api/shader_dictionary.cpp:14
+0x745920,0x74635f,src/nu2api/ShaderManagerHLSL.cpp,,nu2api,batman+marker,high,ret 28,16,2323,2294,2042,29,0,nu2api/nushadermanager.cpp:1965 nu2api/crc16.cpp:255 nu2api/shader_compiler.cpp:74
+0x746360,0x746e3c,src/nu2api/CRC16.cpp,,nu2api,batman,medium,,20,1967,1939,1871,14,14,nu2api/shader_dictionary.cpp:1746 nu2api/crc16.cpp:125 nu2api/shader_lexical.cpp:68
+0x746e40,0x74873c,src/nu2api/?0x746e40,,nu2api,marker+android,none,,21,6280,6252,4468,48,5,nu2api/shader_dictionary.cpp:5703 nu2api/shader_buffer_allocator.cpp:549
+0x748740,0x7493d8,src/nu2api/?0x748740,,nu2api,marker+android,none,,36,2784,2756,2172,8,0,nu2api/shader_compiler.cpp:2133 nu2api/nushadermanager.cpp:494 nu2api/shader_buffer_allocator.cpp:129
+0x7493e0,0x74a9c7,src/nu2api/?0x7493e0,,nu2api,marker+android,none,ret 28,10,5522,5494,852,1338,0,nu2api/shader_compiler.cpp:5494
+0x74a9d0,0x74af79,src/nu2api/?0x74a9d0,,nu2api,marker+android,none,,12,1362,1334,720,134,0,nu2api/shader_lexical.cpp:1334
+0x74af80,0x74bade,src/nu2api/?0x74af80,,nu2api,code+marker+android,none,,31,1788,1760,1760,0,0,nu2api/shader_lexical.cpp:1036 nu2api/shader_parser.cpp:724
+0x74bae0,0x74e168,src/nu2api/?0x74bae0,,nu2api,code+marker+android,none,ret 28,59,9120,9091,4255,536,192,nu2api/shader_parser.cpp:8386 nu2api/shader_lexical.cpp:705
 0x74e170,0x74ed75,src/nu2api/nurain.c,,nu2api,batman+marker,high,fabs,8,2320,2320,194,1,0,nu2api/nurain.c:2278 nu2api/pc_fmv_texture.cpp:42
