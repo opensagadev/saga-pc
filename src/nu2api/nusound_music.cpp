@@ -592,30 +592,28 @@ void NuMusic::Process(f32 delta) {
     }
     duck_gain = 1.0f;
     duck_rate = 1.0f;
+    Voice *voice = voices;
     for (i32 index = 0; index < 2; ++index) {
-        Track *track = voices[index].tracks[voices[index].track_index];
-        if (track != NULL && voices[index].status == 7) {
-            duck_gain = duck_gain < track->duck_volume ? duck_gain : track->duck_volume;
+        Track *track = voice[index].tracks[voice[index].track_index];
+        if (track != NULL && voice[index].status == 7) {
+            duck_gain = MIN(duck_gain, track->duck_volume);
             duck_rate = 1.0f / track->duck_fade > duck_rate ? 1.0f / track->duck_fade : duck_rate;
         }
     }
-    if (duck_current > duck_gain) {
-        f64 current = duck_current - (f64)duck_rate * delta;
-        duck_current = duck_gain > current ? duck_gain : (f32)current;
-    } else if (duck_current < duck_gain) {
-        f64 current = (f64)duck_rate * delta + duck_current;
-        duck_current = duck_gain < current ? duck_gain : (f32)current;
+    if (duck_gain < duck_current) {
+        f64 current = duck_current - duck_rate * delta;
+        duck_current = current < duck_gain ? duck_gain : current;
+    } else if (duck_gain > duck_current) {
+        f64 current = duck_rate * delta + duck_current;
+        duck_current = current > duck_gain ? duck_gain : current;
     }
-    for (i32 index = 0; index < 2; ++index) {
-        Voice *voice = &voices[index];
+    for (i32 index = 0; index < 2; ++index, ++voice) {
         Track *current_track = voice->tracks[voice->track_index];
         if (delta != 0.0f) {
             i32 stream_status = NuSound3GetStereoStreamStatus(voice->stream_index * 2);
             if (voice->status == 7 && voice->fade_rate != 0.0f) {
-                f32 gain = voice->fade_rate * delta + voice->gain;
-                voice->gain = gain > 1.0f ? 1.0f : gain;
-                if (voice->gain < 0.0f)
-                    voice->gain = 0.0f;
+                voice->gain += voice->fade_rate * delta;
+                voice->gain = MAX(0.0, MIN(1.0f, voice->gain));
                 if (voice->gain == 0.0f) {
                     voice->fade_rate = 0.0f;
                     if ((voice->flags & 1) != 0) {
