@@ -100,11 +100,17 @@ bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
 }
 
 void *__cdecl operator new(size_t bytes);
-bool ShaderLexicalSlicePc::Equals(const char *text) {
-    for (i32 i = 0; i < length; ++i)
-        if (begin[i] != text[i])
+// MATCH-EXCEPTION: retail calls Equals everywhere; the pointer-walking body is small enough
+// that VC8 would otherwise inline it into ShaderDeclarationSemanticPc.
+__declspec(noinline) bool ShaderLexicalSlicePc::Equals(const char *text) {
+    const char *source = begin;
+    for (i32 i = 0; i < length; ++i) {
+        if (*source != *text)
             return false;
-    return text[length > 0 ? length : 0] == 0;
+        ++source;
+        ++text;
+    }
+    return *text == 0;
 }
 bool ShaderLexicalSlicePc::StartsWith(const char *text) {
     const char *source = begin;
@@ -127,14 +133,14 @@ __declspec(noinline) char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator
     return result;
 }
 i32 ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix) {
-    u32 result = 0;
-    u32 multiplier = 1;
+    i32 result = 0;
     const char *p = begin + length - 1;
-    for (i32 count = length - skipped_prefix; count > 0; --count) {
-        result += (u32)((i32)(signed char)*p-- - '0') * multiplier;
+    i32 multiplier = 1;
+    for (i32 i = 0; i < length - skipped_prefix; ++i) {
+        result += (*p-- - '0') * multiplier;
         multiplier *= 10;
     }
-    return (i32)result;
+    return result;
 }
 bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice) {
     const char *p = reinterpret_cast<const char *>(input->data) + *cursor;
