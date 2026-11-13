@@ -806,16 +806,7 @@ void __cdecl NuPPUnpack(void *source, void *destination) {
             *dst++ = *copy++;
         }
         count = length - 1;
-        if (distance == 0) {
-            // A zero offset repeats the previous byte.
-            distance = *copy | (distance & 0xff00);
-            do {
-                dst[0] = distance;
-                count--;
-                dst[1] = distance;
-                dst += 2;
-            } while (count >= 0);
-        } else {
+        if (distance != 0) {
             do {
                 first = copy[0];
                 second = copy[1];
@@ -823,6 +814,15 @@ void __cdecl NuPPUnpack(void *source, void *destination) {
                 dst[0] = first;
                 count--;
                 copy += 2;
+                dst += 2;
+            } while (count >= 0);
+        } else {
+            // A zero offset repeats the previous byte.
+            distance = *copy | (distance & 0xff00);
+            do {
+                dst[0] = distance;
+                count--;
+                dst[1] = distance;
                 dst += 2;
             } while (count >= 0);
         }
