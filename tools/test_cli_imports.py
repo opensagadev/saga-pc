@@ -111,6 +111,8 @@ main=ns['main'];globals=main.__globals__
 replacements={{'project':lambda:config,'load_symbols':lambda:records,'check_headers':lambda:None}}
 if '{entry}'=='match':
  replacements.update(retail=lambda target:pe,objdiff=lambda:(Path('unused-objdiff'),{{'version':'synthetic'}}),load_json=lambda path:{{'version':'synthetic'}},section_mapping_progress=lambda *args:{{}})
+ # The reproduced-data inputs compare the real objects and archives (tools/datadiff.py).
+ replacements.update(reproduced_inputs=lambda *args:({{}},{{}}))
 with patch.dict(globals,replacements),patch.object(data_members,'evaluate_members',side_effect=evaluate),patch('subprocess.check_output',return_value=b''),patch('subprocess.run',side_effect=AssertionError('no compiler or runtime is allowed in this regression')),patch.object(sys,'argv',['{entry}.py']+(['--objects'] if '{entry}'=='check' else [])):
  main()
 assert seen==['complete typed parent official relocation']
@@ -119,6 +121,7 @@ if '{entry}'=='match':
  report=json.loads(Path('build/objdiff/summary.json').read_text())
  assert report['data_members'][0]['exact_match']
  assert report['data_member_migrations']==[]
+ assert 'reproduced_file_backed_data_percent' in report['progress'] and 'reproduced_data_comparison' in report['progress']
 ''')
 
     def test_all_cli_dependency_imports_are_canonical(self):
