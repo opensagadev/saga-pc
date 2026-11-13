@@ -1657,7 +1657,7 @@ address,symbol,size,ctype
 0x496d40,_MenuUpdateBonusComplete,83,void __cdecl(MENU *)
 0x496da0,_MenuDrawBonusComplete,113,void __cdecl(MENU *)
 0x496e60,_EndMissionsMenu,65,void __cdecl(void)
-0x496eb0,?MissionIconPositionsPc@@YAXPAUMISSION_SYSTEM_READER_PC@@H@Z,214,
+0x496eb0,_MissionIconPositionsPc,214,
 0x496f90,_MenuInitMissions,97,void __cdecl(MENU *)
 0x497000,_MenuDrawMissions,1340,void __cdecl(MENU *)
 0x497540,_MenuUpdateEndMission,83,void __cdecl(MENU *)
