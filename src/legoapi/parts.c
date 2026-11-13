@@ -4678,10 +4678,10 @@ void __cdecl DrawParts(i32 keep_offscreen) {
         matrix = &part->transform;
         if (part->field_214 != 1.0f) {
             PartRuntimeMatrixCopyPrivate(&scaled, matrix);
+            matrix = &scaled;
             scale.z = part->field_214;
             scale.x = scale.y = scale.z;
-            NuMtxPreScale(&scaled, &scale);
-            matrix = &scaled;
+            NuMtxPreScale(matrix, &scale);
         }
         if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0)
             part->active |= 0x600;
