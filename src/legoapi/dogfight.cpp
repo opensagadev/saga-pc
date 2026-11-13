@@ -912,8 +912,7 @@ extern "C" {
         f32 distance = 0.0f;
         i32 point, sample;
         f32 point_value, along, squared;
-        __declspec(align(16)) NUVEC4 previous, current;
-        __declspec(align(16)) NUVEC difference;
+        __declspec(align(16)) NUVEC4 previous, current, difference;
         for (point = 0; point < spline->point_count; ++point) {
             point_value = (f32)point;
             along = (f32)((f64)point_value / spline->point_count);
@@ -1162,7 +1161,7 @@ extern "C" {
         NuVecRotateY((NUVEC *)&up, (NUVEC *)direction, -world_yaw);
         world_pitch = (i16)NuAtan2D(up.y, up.z);
         up.x = 1.0f;
-        up.y = up.z = up.w = 0.0f;
+        up.w = up.z = up.y = 0.0f;
         NuVecRotateZ((NUVEC *)&up, (NUVEC *)&up, (i16)(i32)fighter->target_position.w + 16384);
         NuVecRotateX((NUVEC *)&up, (NUVEC *)&up, -world_pitch);
         NuVecRotateY((NUVEC *)&up, (NUVEC *)&up, world_yaw);
@@ -1724,7 +1723,6 @@ extern "C" {
         NUVEC4 ray;
         GAMEOBJECT *player;
         f32 nearest = 35.0f;
-        f32 remaining;
         i32 i;
 
         player = (GAMEOBJECT *)Player[0];
@@ -1800,9 +1798,8 @@ extern "C" {
             }
             NewRumbleAllPlayers(strength, 0.0f, 0, 0);
         }
-        remaining = (f32)(DogfightResetTimerPc - FRAMETIME);
-        DogfightResetTimerPc = remaining;
-        if (remaining < 0.0f) {
+        DogfightResetTimerPc -= FRAMETIME;
+        if (DogfightResetTimerPc < 0.0f) {
             GameCam_Judder(GameCam, 0.2f, 2, NULL);
             NewRumbleAllPlayers(0.3f, 0.0f, 0, 0);
             DogfightResetTimerPc = (f32)((f64)NuRandFloat() * 10.0 + 3.0);
