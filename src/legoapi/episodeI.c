@@ -600,9 +600,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
     }
 
     sock = WORLD->sock_sys;
-    ahead = ahead;
     MoveSockPosition(sock, &object->sock_position, sockstep, &ahead);
-    goal = goal;
     if (target != NULL) {
         f32 wanted;
         f32 speed;
@@ -622,7 +620,6 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
         else if (speed < min_speed_mul)
             object->movement_speed_scale_pc = min_speed_mul;
 
-        target_offset = target_offset, object_offset = object_offset;
         NuVecSub(&target_offset, &target->position, &target->sock_position.midpoint);
         NuVecRotateY(&target_offset, &target_offset, -target->sock_heading);
         NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
@@ -646,13 +643,10 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
                 origin.x = object->position.x;
                 origin.y = object->position.y + 1.0f;
                 origin.z = object->position.z;
-                target_delta = target_delta;
                 NuVecSub(&target_delta, &target->velocity, &object->velocity);
-                throw_velocity = throw_velocity;
                 MakeThrowVector(&throw_velocity, &origin, &target->collision_position, &target_delta,
                                 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc);
                 NuVecAdd(&throw_velocity, &throw_velocity, &object->velocity);
-                matrix = matrix;
                 NuMtxSetTranslation(&matrix, &origin);
                 part = Default_ADDPART;
                 part.matrix = &matrix;
