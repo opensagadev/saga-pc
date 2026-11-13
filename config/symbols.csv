@@ -4404,6 +4404,7 @@ address,symbol,size,ctype
 0x5559c0,_GizSpinner_BoltHitPlatPc,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
 0x555fb0,_GizSpinner_Find,215,"GIZSPINNER_s * __cdecl(WORLDINFO *, NUVEC *, i32)"
+0x556090,_GizSpinner_FindNearest,213,"GIZSPINNER_s *__cdecl(NUVEC *, WORLDINFO *, f32 *)"
 0x556170,_GizSpinner_GetOutput,30,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x556190,_GizSpinner_Update,1865,void __cdecl(GIZSPINNER_s *)
 0x5568e0,_GizSpinners_Update,998,
