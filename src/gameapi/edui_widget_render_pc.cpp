@@ -348,20 +348,18 @@ i32 __cdecl eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     if (stage != NULL) {
         f32 span = (f32)width;
         do {
-            i32 offset = (i32)(stage->time * span);
-            i32 marker_x = (x + offset - 2) << 4;
-            i32 marker_y = ((y + (height >> 1)) << 3) - 16;
-            i32 marker_height = ((height >> 1) << 3) + 16;
+            i32 left = x + (i32)(stage->time * span);
             if (edui_donotdraw == 0)
-                NuRndrRect2di(marker_x, marker_y, 80, marker_height, stage->colour, (NUMTL *)uimtls[0]);
+                NuRndrRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16,
+                              stage->colour, (NUMTL *)uimtls[0]);
             if (stage == gradient->selected_stage) {
                 if (edui_donotdraw == 0)
-                    NuRndrLineRect2di(marker_x, marker_y, 80, marker_height, 0x80ffffff,
-                                      (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+                    NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16,
+                                      0x80ffffff, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
             } else {
                 if (edui_donotdraw == 0)
-                    NuRndrLineRect2di(marker_x, marker_y, 80, marker_height, 0x80000000,
-                                      (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+                    NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16,
+                                      0x80000000, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
             }
             stage = stage->next;
         } while (stage != NULL);
