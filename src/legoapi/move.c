@@ -1129,6 +1129,7 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
 
 void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     NUVEC carwash_delta, a, b, direction, separation;
+    NUVEC *carwash_position;
     GAMEPAD_PC *pad;
     GAMEOBJECT *other;
     GAMEOBJECT *operator_object;
@@ -1146,11 +1147,11 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     u16 normal_yaw;
     u16 tangent;
     i32 outside;
-    i32 inside = 0;
+    i32 inside;
     f32 edge_x;
     f32 edge_z;
     f32 seek_rate;
-    i32 special_lean = 0;
+    i32 special_lean;
     f32 water_mul;
     f32 half;
     f32 decel;
@@ -1167,16 +1168,20 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
 
     pad = object->pad;
     operator_object = object;
+    inside = 0;
+    special_lean = 0;
 
     if (CarWashHack == NULL && object->id == (u16)id_LANDSPEEDER && WORLD->current_level == MOSEISLEYB_LDATA &&
-        NuSpecialExistsFn(&LevHSpecial[0]) &&
-        NuVecXZDistSqr(NuSpecialGetDrawPos(&LevHSpecial[0]), &object->collision_position, &carwash_delta) < 0.36f) {
-        CarWashHack = object;
-        if (pad->input_magnitude > (object->character_data->game_character->walk_speed +
-                                    object->character_data->game_character->run_speed) *
-                                       0.5f &&
-            (LevGizObst[0] == NULL || LevGizObst[0]->anim_set == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0))
-            CarWashHack = NULL;
+        NuSpecialExistsFn(&LevHSpecial[0])) {
+        carwash_position = NuSpecialGetDrawPos(&LevHSpecial[0]);
+        if (NuVecXZDistSqr(carwash_position, &object->collision_position, &carwash_delta) < 0.36f) {
+            CarWashHack = object;
+            if (pad->input_magnitude > (object->character_data->game_character->walk_speed +
+                                        object->character_data->game_character->run_speed) *
+                                           0.5f &&
+                (LevGizObst[0] == NULL || LevGizObst[0]->anim_set == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0))
+                CarWashHack = NULL;
+        }
     }
     if (object->id == (u16)id_WOOKIEFLYER && object->character_context == 0x17)
         ApplyGravity(object, NULL, 0.0f, 10.0f, NULL);
@@ -2015,7 +2020,7 @@ i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
             object->velocity = vehicle->velocity;
             object->field_dc8 = vehicle->field_dc8;
             object->secondary_lean_angle = object->tertiary_lean_angle = object->movement_lean_angle = 0;
-            object->roll_angle = object->pitch_angle = 0;
+            object->pitch_angle = object->roll_angle = 0;
         }
     } else {
         object->target_velocity.y = 0.0f;
