@@ -16600,30 +16600,6 @@ extern "C" {
     f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CS_area")
-    i32 CS_area = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_fadefogcount")
-    i32 CS_fadefogcount = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_texanimcount")
-    i32 CS_texanimcount = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_buffptr")
-    VARIPTR *CS_buffptr = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_CutInfo")
-    CUT_LOAD_RECORD_PC *CS_CutInfo = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_worldinfo")
-    WORLDINFO *CS_worldinfo = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_ALIGN")
     u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
 #pragma bss_seg()
@@ -17876,14 +17852,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CS_buffend")
-    VARIPTR *CS_buffend = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CS_cutsys")
-    CUT_LOAD_SYS_PC *CS_cutsys = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$CutScene_OverrideConfigFileNameFn")
     void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
 #pragma bss_seg()

@@ -10301,12 +10301,6 @@ extern "C" {
     extern f32 CUTSUBTITLEDEFAULT_SCALEX;
     extern f32 CUTSUBTITLEDEFAULT_SCALEY;
     extern f32 CUTSUBTITLEDEFAULT_FITWIDTH;
-    extern i32 CS_area;
-    extern i32 CS_fadefogcount;
-    extern i32 CS_texanimcount;
-    extern VARIPTR *CS_buffptr;
-    extern CUT_LOAD_RECORD_PC *CS_CutInfo;
-    extern WORLDINFO *CS_worldinfo;
     extern u8 CUTSUBTITLEDEFAULT_ALIGN;
     extern f32 CUTSUBTITLEDEFAULT_X;
 
@@ -10397,8 +10391,6 @@ extern "C" {
 
     extern CUT_LOAD_LIST_ENTRY_PC *CutList;
     extern i32 CUTCOUNT;
-    extern CUT_LOAD_SYS_PC *CS_cutsys;
-    extern VARIPTR *CS_buffend;
     extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
     CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *, NUGSCN *, NUGSCN *, i32, VARIPTR *, VARIPTR *, i32, i32,
                                             WORLDINFO *);

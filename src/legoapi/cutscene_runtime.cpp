@@ -1,4 +1,28 @@
 #include "saga.h"
+#pragma bss_seg(".bss$CS_area")
+static i32 CS_area = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_fadefogcount")
+static i32 CS_fadefogcount = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_texanimcount")
+static i32 CS_texanimcount = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_buffptr")
+static VARIPTR *CS_buffptr = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_CutInfo")
+static CUT_LOAD_RECORD_PC *CS_CutInfo = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_worldinfo")
+static WORLDINFO *CS_worldinfo = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_cutsys")
+static CUT_LOAD_SYS_PC *CS_cutsys = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CS_buffend")
+static VARIPTR *CS_buffend = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$CutBlobShadowAlpha")
 static u8 CutBlobShadowAlpha = 0;
 #pragma bss_seg()
@@ -430,12 +454,11 @@ extern "C" {
     } while (0)
 
     static void CS_subtitle(NUFPAR_PC *fp) {
-        CUT_LOAD_RECORD_PC *info = CS_CutInfo;
-        if (info->subtitle_data == NULL) {
-            info->subtitle_data = reinterpret_cast<CUT_LOAD_SUBTITLE_PC *>(CS_buffptr->addr);
+        if (CS_CutInfo->subtitle_data == NULL) {
+            CS_CutInfo->subtitle_data = reinterpret_cast<CUT_LOAD_SUBTITLE_PC *>(CS_buffptr->addr);
         }
 
-        CUT_LOAD_SUBTITLE_PC *subtitle = &info->subtitle_data[info->subtitle_count];
+        CUT_LOAD_SUBTITLE_PC *subtitle = &CS_CutInfo->subtitle_data[CS_CutInfo->subtitle_count];
         subtitle->text_id = -1;
         subtitle->red = CUTSUBTITLEDEFAULT_R;
         subtitle->green = CUTSUBTITLEDEFAULT_G;
