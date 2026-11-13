@@ -180,8 +180,9 @@ Never commit original game files, assets, compiler binaries or extracted objects
    from the bundled SDK go in `src/externals.h`.
 3. Compare: `make -j"$(nproc)" diff FUNC=NuRand` (C name, exact linker symbol
    or original address).
-4. Run `make -j"$(nproc)" match` to refresh `matching.json` and the README
-   badges, then commit.
+4. Run `make -j"$(nproc)" match` to refresh `matching.json`, the README
+   badges and their SVG files in `docs/badges/`, then commit them together
+   (`tools/check.py` fails when they disagree).
 
 Explicitly initialize globals and function statics that would otherwise receive
 zero initialization (`= 0` or `= {0}`). Preserve existing nonzero initializers and

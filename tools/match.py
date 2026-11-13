@@ -447,11 +447,6 @@ def contrast(background, text):
     return (lighter + 0.05) / (darker + 0.05)
 
 
-def shields_brightness(rgb):
-    """Brightness as shields' badge-maker computes it (lib/color.js brightness(), YIQ luma to 2 places)."""
-    return round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000, 2)
-
-
 def oklch_to_srgb(lightness, chroma, hue):
     """(r, g, b) of 0..255 channels for an OKLCH colour, or None outside the sRGB gamut."""
     a, b = chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
@@ -467,45 +462,40 @@ def oklch_to_srgb(lightness, chroma, hue):
                  for c in linear)
 
 
-# shields' badge-maker (colorsForBackground in lib/badge-renderers.js) draws the message
-# text #333 instead of white when the background's brightness is above 0.69, in every
-# style. The badge colours keep clear of that switch: saturated orange with white text
-# below BADGE_DARK_TEXT_FROM, bright colours with #333 text from there on.
-SHIELDS_DARK_TEXT_ABOVE = 0.69
-SHIELDS_DARK_TEXT = (0x33, 0x33, 0x33)
-WHITE = (0xff, 0xff, 0xff)
-BADGE_DARK_TEXT_FROM = 88  # percent; the one value where the text turns from white to #333
-BADGE_MIN_BRIGHTNESS = 0.74  # bright colours, #333 text
-BADGE_MIN_WHITE_CONTRAST = 3.0  # orange colours, white text (shields' own orange fe7d37 has 2.56)
-BADGE_ORANGE_HUES = (34, 56)  # OKLCH hues: orange-red at 0 %, orange just below BADGE_DARK_TEXT_FROM
-BADGE_HUES = (25, 136, 150)  # OKLCH hue scale of the bright colours (orange-amber at 88 %, lime below 100 %), green at 100 %
+# The percentage badges are our own SVG files in shields' for-the-badge look (shields
+# forces white text on darker colours and has no text colour parameter): one dark text
+# colour on every badge, and a saturated colour that keeps it readable.
+BADGE_TEXT = (0x22, 0x22, 0x22)
+BADGE_MIN_TEXT_CONTRAST = 4.5  # WCAG AA
+# (percent, OKLCH hue): red-orange at 0, orange at 75, then amber, yellow and lime; the hue
+# runs linearly in log10(101 - percent) between these points, so 90, 94, 97, 99 and 99.9
+# each get a hue of their own.
+BADGE_HUE_POINTS = ((0, 34), (75, 57), (90, 70), (94, 85), (97, 99), (99, 116), (99.9, 133), (100, 136))
+BADGE_FULL_GREEN = "4fff88"  # only for a displayed 100.000
 
 
 def badge_hue(shown):
-    """OKLCH hue of a badge for a displayed percentage."""
-    if shown < BADGE_DARK_TEXT_FROM:
-        low, high = BADGE_ORANGE_HUES
-        return low + (high - low) * shown / BADGE_DARK_TEXT_FROM
-    red, top, green = BADGE_HUES
-    if shown >= 100:
-        return green
-    return red + (top - red) * (1 - math.log10(101 - shown) / math.log10(101)) ** 1.2
+    """OKLCH hue of a badge for a displayed percentage below 100."""
+    x = math.log10(101 - shown)
+    for (low, low_hue), (high, high_hue) in zip(BADGE_HUE_POINTS, BADGE_HUE_POINTS[1:]):
+        if shown <= high:
+            start, end = math.log10(101 - low), math.log10(101 - high)
+            return low_hue + (high_hue - low_hue) * (x - start) / (end - start)
+    return BADGE_HUE_POINTS[-1][1]
 
 
 @functools.lru_cache(maxsize=None)
 def badge_color(value):
     """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
 
-    Below BADGE_DARK_TEXT_FROM the hue runs from orange-red to orange, as saturated as
-    white text at BADGE_MIN_WHITE_CONTRAST allows. From there the OKLCH hue runs on
-    through amber and yellow to lime along (1 - log(101 - v) / log(101)) ** 1.2, a
-    logarithmic scale of the shortfall that gives 90..99.9 more than half of the hue
-    range, so 90, 94, 97, 99 and 99.9 are different hues. Only a displayed 100.000 gets
-    the full green. These bright colours take the most chroma inside the sRGB gamut whose
-    shields brightness (unrounded) is at least BADGE_MIN_BRIGHTNESS, so shields gives
-    them #333 text.
+    Only a displayed 100.000 gets BADGE_FULL_GREEN. Below it the hue follows
+    BADGE_HUE_POINTS, and each hue takes the most saturated colour inside the sRGB gamut
+    (its OKLCH cusp), made lighter only as far as BADGE_TEXT needs for a contrast of
+    BADGE_MIN_TEXT_CONTRAST.
     """
     shown = min(max(float(f"{value:.3f}"), 0), 100)
+    if shown >= 100:
+        return BADGE_FULL_GREEN
     hue = badge_hue(shown)
 
     def widest(lightness):
@@ -515,39 +505,90 @@ def badge_color(value):
             low, high = (middle, high) if oklch_to_srgb(lightness, middle, hue) else (low, middle)
         return low, oklch_to_srgb(lightness, low, hue)
     # The widest chroma rises with lightness up to the hue's cusp and falls after it,
-    # while the brightness keeps rising and the contrast with white keeps falling.
+    # while the contrast with the dark text keeps rising.
     low, high = 0.4, 1.0
     for _ in range(40):
         left, right = low + (high - low) / 3, high - (high - low) / 3
         low, high = (left, high) if widest(left)[0] < widest(right)[0] else (low, right)
     cusp = low
-    dark_text = shown >= BADGE_DARK_TEXT_FROM
     low, high = 0.4, 1.0
     for _ in range(30):
         middle = (low + high) / 2
-        rgb = widest(middle)[1]
-        if dark_text:
-            enough = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000 >= BADGE_MIN_BRIGHTNESS
-        else:
-            enough = contrast(rgb, WHITE) < BADGE_MIN_WHITE_CONTRAST  # too light for white text
+        enough = contrast(widest(middle)[1], BADGE_TEXT) >= BADGE_MIN_TEXT_CONTRAST
         low, high = (low, middle) if enough else (middle, high)
-    # Dark text: the cusp or the lowest lightness bright enough. White text: the cusp or the
-    # highest lightness still dark enough.
-    lightness = max(cusp, high) if dark_text else min(cusp, low)
-    return bytes(widest(lightness)[1]).hex()
+    return bytes(widest(max(cusp, high))[1]).hex()
 
 
-def update_badge(stats):
-    path = ROOT / "README.md"
-    content = path.read_text()
-    def image(field, label="", alt=None):
-        # for-the-badge style; table cells carry no label text, only the percentage.
-        value = stats[field]
-        return (f"![{alt or f'{value:.3f}%'}](https://img.shields.io/badge/{label}-{value:.3f}%25-"
-                f"{badge_color(value)}?style=for-the-badge)")
+# Character widths of Verdana 10px from anafanafo 2.0.0 (the table shields' badge-maker
+# measures with), for the characters the badges use.
+VERDANA_10PX_WIDTHS = {
+    "bold": dict(zip(" %.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", (
+        3.42, 12.72, 3.61, *[7.11] * 10,
+        7.76, 7.62, 7.24, 8.3, 6.83, 6.5, 8.11, 8.37, 5.46, 5.55, 7.71, 6.37, 9.48,
+        8.47, 8.5, 7.33, 8.5, 7.82, 7.1, 6.82, 8.12, 7.64, 11.28, 7.64, 7.37, 6.92))),
+    "normal": dict(zip(" %.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", (
+        3.52, 10.76, 3.64, *[6.36] * 10,
+        6.84, 6.86, 6.98, 7.71, 6.32, 5.75, 7.75, 7.51, 4.21, 4.55, 6.93, 5.57, 8.43,
+        7.48, 7.87, 6.03, 7.87, 6.95, 6.84, 6.16, 7.32, 6.84, 9.89, 6.85, 6.15, 6.85))),
+}
+
+
+def svg_number(value):
+    return f"{round(value, 2):g}"
+
+
+def badge_svg(message, color, label=""):
+    """SVG text of a for-the-badge style badge, laid out as shields' badge-maker 6.0.0 does it.
+
+    Widths come from VERDANA_10PX_WIDTHS (truncated to whole pixels, plus 1.25 letter
+    spacing per character) and each text carries textLength, so the result does not
+    depend on the viewer's fonts. The message is BADGE_TEXT on `color`; a label sits in
+    white on shields' grey.
+    """
+    label, message = label.upper(), message.upper()
+
+    def width(text, weight):
+        return int(sum(VERDANA_10PX_WIDTHS[weight][char] for char in text)) + 1.25 * len(text) if text else 0
+    # Whole-pixel rectangles (shields keeps the fraction) so the README can give the size.
+    label_width = math.ceil(24 + width(label, "normal")) if label else 0
+    message_width = math.ceil(24 + width(message, "bold"))
+    accessible = f"{label}: {message}" if label else message
+    texts = []
+    if label:
+        texts.append(f'<text transform="scale(.1)" x="{svg_number(10 * label_width / 2)}" y="175" '
+                     f'textLength="{svg_number(10 * width(label, "normal"))}">{label}</text>')
+    texts.append(f'<text transform="scale(.1)" x="{svg_number(10 * (label_width + message_width / 2))}" y="175" '
+                 f'textLength="{svg_number(10 * width(message, "bold"))}" fill="#{bytes(BADGE_TEXT).hex()}" '
+                 f'font-weight="bold">{message}</text>')
+    rects = ([f'<rect width="{svg_number(label_width)}" height="28" fill="#555"/>'] if label else []) + [
+        f'<rect{f" x={chr(34)}{svg_number(label_width)}{chr(34)}" if label else ""} '
+        f'width="{svg_number(message_width)}" height="28" fill="#{color}"/>']
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{svg_number(label_width + message_width)}" '
+            f'height="28" role="img" aria-label="{accessible}"><title>{accessible}</title>'
+            f'<g shape-rendering="crispEdges">{"".join(rects)}</g>'
+            '<g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" '
+            f'text-rendering="geometricPrecision" font-size="100">{"".join(texts)}</g></svg>\n')
+
+
+BADGE_DIR = "docs/badges"
+
+
+def render_badges(stats, content):
+    """The README text with its badge blocks for `stats`, and {repository path: SVG text}."""
+    svgs = {}
+
+    def image(field, name, label=""):
+        # Table cells carry no label text, only the percentage.
+        message = f"{stats[field]:.3f}%"
+        svg = badge_svg(message, badge_color(stats[field]), label)
+        path = f"{BADGE_DIR}/{name}.svg"
+        svgs[path] = svg
+        width = re.match(r'<svg [^>]*width="([^"]+)"', svg).group(1)
+        alt = f"{label}: {message}" if label else message
+        return f'<img src="{path}" alt="{alt}" width="{width}" height="28">'
 
     badge = ("<!-- matching-badge -->\n"
-             + image("fuzzy_coverage_percent", "fuzzy%20code%20match", "fuzzy code match")
+             + image("fuzzy_coverage_percent", "fuzzy-code-match", "fuzzy code match")
              + "<!-- /matching-badge -->")
     # The exact row counts alignment padding after exact functions when the report has it;
     # matching_percent stays the strict function-only number.
@@ -563,40 +604,41 @@ def update_badge(stats):
         named, address_named = stats["mapping_code_named_percent"], stats["mapping_code_address_named_percent"]
         stats = {**stats, "mapping_code_named_share_percent": 100 * named / (named + address_named)
                  if named + address_named else 0}
-    # (depth, name, field, meaning); a row without a field is a group heading. The meanings
-    # stay short: GitHub squeezes the badge column when the first column's text is long,
-    # which scales the badges down. docs/mapping-status.md has the full definitions.
-    rows = [(0, "Code", None, None),
-            (1, "Fuzzy match", "fuzzy_coverage_percent",
+    # (depth, name, field, badge file, meaning); a row without a field is a group heading.
+    # The meanings stay short: GitHub squeezes the badge column when the first column's
+    # text is long, which scales the badges down. docs/mapping-status.md has the details.
+    rows = [(0, "Code", None, None, None),
+            (1, "Fuzzy match", "fuzzy_coverage_percent", "fuzzy",
              "objdiff's fuzzy match over all original code, by size "
              "([details](docs/mapping-status.md#what-the-readme-numbers-measure))."),
-            (1, "Exact match", *exact),
-            (1, "Mapped", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
+            (1, "Exact match", exact[0], "exact", exact[1]),
+            (1, "Mapped", "mapping_code_with_padding_percent" if padded else "mapping_code_percent", "mapped-code",
              f"known code, with the padding between functions ({padding:.1f}%)." if padded
              else "known code extents.")]
     if "mapping_code_named_percent" in stats:
         share = stats["mapping_code_named_share_percent"]
-        rows.append((2, "Named", "mapping_code_named_share_percent",
+        rows.append((2, "Named", "mapping_code_named_share_percent", "named-code",
                      f"mapped functions with real names; {100 - share:.1f}% are `fun_XXXXXXXX`."))
-    rows += [(0, "Data", None, None),
+    rows += [(0, "Data", None, None, None),
              (1, "Mapped file-backed", "mapping_file_backed_data_with_padding_percent" if padded
-              else "mapping_file_backed_data_percent",
+              else "mapping_file_backed_data_percent", "mapped-data",
               "known data in the executable, with its padding." if padded
               else "known data in the executable.")]
     if "reproduced_file_backed_data_percent" in stats:
-        rows.append((2, "Reproduced", "reproduced_file_backed_data_percent",
+        rows.append((2, "Reproduced", "reproduced_file_backed_data_percent", "reproduced-data",
                      "file-backed data we define byte-exactly "
                      "([details](docs/mapping-status.md#reproduced-data))."))
-    rows.append((1, "Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "known zero-initialized storage."))
+    rows.append((1, "Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "mapped-bss",
+                 "known zero-initialized storage."))
 
-    def row(depth, name, field, meaning):
+    def row(depth, name, field, badge_name, meaning):
         if field is None:
             return f"| **{name}** | |"
         indent = "&nbsp;" * (4 * depth - 2) + "↳ "
-        return f"| {indent}**{name}**: {meaning} | {image(field)} |"
+        return f"| {indent}**{name}**: {meaning} | {image(field, badge_name)} |"
 
     # The non-breaking spaces give the badge column a minimum width that GitHub's table
-    # layout keeps; the images alone can shrink to nothing.
+    # layout keeps; images can shrink below their width attribute.
     table = ("<!-- mapping-badge -->\n\n| Metric | Coverage" + "&nbsp;" * 10 + " |\n"
              "| --- | --- |\n"
              + "\n".join(row(*entry) for entry in rows)
@@ -606,7 +648,17 @@ def update_badge(stats):
                                 lambda _: replacement, content, flags=re.S)
         if count != 1:
             raise ValueError(f"README must have one {metric}-badge marker pair")
+    return content, svgs
+
+
+def update_badge(stats):
+    """Rewrite the README badge blocks and the badge SVGs from matching.json progress."""
+    path = ROOT / "README.md"
+    content, svgs = render_badges(stats, path.read_text())
     path.write_text(content)
+    for name, svg in svgs.items():
+        (ROOT / name).parent.mkdir(parents=True, exist_ok=True)
+        (ROOT / name).write_text(svg)
 
 
 def display_name(symbol):

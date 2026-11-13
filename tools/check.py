@@ -477,6 +477,26 @@ def check_unit_table():
                          "(run python3 tools/unitmap.py):\n  - " + "\n  - ".join(errors[:20]))
 
 
+def check_badges():
+    """README badge blocks and docs/badges/*.svg follow matching.json's progress."""
+    if __package__:
+        from .match import BADGE_DIR, render_badges
+    else:
+        from tools.match import BADGE_DIR, render_badges
+    report, readme = ROOT / "matching.json", ROOT / "README.md"
+    if not report.is_file() or not readme.is_file():
+        return  # synthetic trees
+    content, svgs = render_badges(load_json(report)["progress"], readme.read_text())
+    stale = [] if content == readme.read_text() else ["README.md"]
+    stale += [name for name, svg in svgs.items()
+              if not (ROOT / name).is_file() or (ROOT / name).read_text() != svg]
+    stale += [str(path.relative_to(ROOT)) for path in sorted((ROOT / BADGE_DIR).glob("*.svg"))
+              if str(path.relative_to(ROOT)) not in svgs]
+    if stale:
+        raise ValueError("Badges are stale against matching.json (python3 -c \"import json, tools.match as m; "
+                         "m.update_badge(json.load(open('matching.json'))['progress'])\"): " + ", ".join(stale))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
@@ -511,6 +531,7 @@ def main():
     check_headers()
     check_diagnostic_boundaries()
     check_unit_table()
+    check_badges()
     files = subprocess.check_output(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
     forbidden = {".exe", ".dll", ".obj", ".o", ".pdb", ".lib", ".zip", ".7z", ".dat", ".obb", ".apk"}
