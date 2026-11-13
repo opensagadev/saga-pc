@@ -12311,15 +12311,18 @@ void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char 
 
 void __cdecl xConditionMacro(NUFPAR_PC *parser) {
     AICONDITIONMACRO_PC *macro;
+    VARIPTR *buffer;
+    VARIPTR *buffer_end;
 
     if (NuFParGetWord(parser) == 0) {
         return;
     }
-    macro = (AICONDITIONMACRO_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                             sizeof(AICONDITIONMACRO_PC));
+    buffer = aiscript_load_buffer;
+    buffer_end = aiscript_load_end_buffer;
+    macro = (AICONDITIONMACRO_PC *)AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AICONDITIONMACRO_PC));
     if (macro != NULL) {
         memset(macro, 0, sizeof(AICONDITIONMACRO_PC));
-        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, buffer, buffer_end);
         NuLinkedListAppend(&aiscript_load_script->condition_macros, &macro->link);
         aiscript_load_conditions = &macro->conditions;
         condition_has_no_goto = 1;
