@@ -3134,7 +3134,7 @@ i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
 }
 
 i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
-    i32 in_quoted_text = 0;
+    i32 in_quoted_text;
     i32 found_quotes = 0;
     i32 length;
 
@@ -3142,8 +3142,9 @@ i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
         return NuFParGetWordW(parser);
     }
 
-    old_line_pos = parser->line_position;
     length = 0;
+    in_quoted_text = 0;
+    old_line_pos = parser->line_position;
 
     while (parser->line_buffer_ptr[parser->line_position & (parser->line_buffer_size - 1)] != '\0') {
         char character = parser->line_buffer_ptr[parser->line_position];
