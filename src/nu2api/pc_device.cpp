@@ -851,11 +851,6 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     ResetTargets();
     PCDeviceClear(0, NULL, 1, 0, 1.0f, 0);
     view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     present_result = view->methods->present(view, NULL, NULL, NULL, NULL);
     for (i32 i = 0; i != 8; ++i) {
         PCDeviceSetSamplerState(i, 5, 2);
