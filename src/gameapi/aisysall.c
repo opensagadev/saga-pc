@@ -11137,25 +11137,27 @@ void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *ite
 }
 
 static void __cdecl AiEditorRespawnMinCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
-        aieditor->selected_creature->min_respawns = (i32)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->min_respawns = (i32)slider->value;
         if (aieditor->selected_creature->min_respawns > aieditor->selected_creature->max_respawns) {
             aieditor->selected_creature->min_respawns = aieditor->selected_creature->max_respawns;
-            eduiItemSliderSetVal((edui_slider_s *)item, (f32)aieditor->selected_creature->min_respawns);
+            eduiItemSliderSetVal(slider, (f32)aieditor->selected_creature->min_respawns);
         }
     }
 }
 
 static void __cdecl AiEditorRespawnMaxCountPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     (void)menu;
     (void)event;
     if (aieditor->selected_creature != NULL) {
-        aieditor->selected_creature->max_respawns = (i32)((edui_slider_s *)item)->value;
+        aieditor->selected_creature->max_respawns = (i32)slider->value;
         if (aieditor->selected_creature->max_respawns < aieditor->selected_creature->min_respawns) {
             aieditor->selected_creature->max_respawns = aieditor->selected_creature->min_respawns;
-            eduiItemSliderSetVal((edui_slider_s *)item, (f32)aieditor->selected_creature->max_respawns);
+            eduiItemSliderSetVal(slider, (f32)aieditor->selected_creature->max_respawns);
         }
     }
 }
