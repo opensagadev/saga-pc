@@ -3674,7 +3674,7 @@ void __cdecl UpdatePartEmits(f32 time) {
     NUVEC position, velocity;
     NUMTX matrix;
     NUSPECIALHANDLE special;
-    f32 interval, shift, previous_distance, emission_time, pause, random, range;
+    f32 interval, shift, previous_distance, emission_time, pause, range;
     i16 angle_x, angle_y, angle_z;
     i32 last_switch_change = -1;
     for (i = 0; i < 40; ++i) {
@@ -3782,12 +3782,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                 (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
                 params = Default_ADDPART;
                 params.field_c0 = type->particle_scale;
-                random = NuRandFloatSeeded(&partseed);
-                position.x = (random + random) * type->position_random.x - type->position_random.x;
-                random = NuRandFloatSeeded(&partseed);
-                position.y = (random + random) * type->position_random.y - type->position_random.y;
-                random = NuRandFloatSeeded(&partseed);
-                position.z = (random + random) * type->position_random.z - type->position_random.z;
+                position.x = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.x - type->position_random.x;
+                position.y = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.y - type->position_random.y;
+                position.z = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.z - type->position_random.z;
                 NuVecRotateZ(&position, &position, emitter->rotation_2c);
                 NuVecRotateY(&position, &position, emitter->rotation_2e);
                 NuVecRotateX(&position, &position, emitter->rotation_30);
@@ -3796,12 +3793,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                 velocity.x = 0.0f;
                 velocity.y = type->speed;
                 velocity.z = 0.0f;
-                random = NuRandFloatSeeded(&partseed);
-                velocity.x += (random + random) * type->velocity_random.x - type->velocity_random.x;
-                random = NuRandFloatSeeded(&partseed);
-                velocity.y += (random + random) * type->velocity_random.y - type->velocity_random.y;
-                random = NuRandFloatSeeded(&partseed);
-                velocity.z += (random + random) * type->velocity_random.z - type->velocity_random.z;
+                velocity.x += NuRandFloatSeeded(&partseed) * 2.0f * type->velocity_random.x - type->velocity_random.x;
+                velocity.y += NuRandFloatSeeded(&partseed) * 2.0f * type->velocity_random.y - type->velocity_random.y;
+                velocity.z += NuRandFloatSeeded(&partseed) * 2.0f * type->velocity_random.z - type->velocity_random.z;
                 NuVecRotateZ(&velocity, &velocity, emitter->rotation_2c);
                 NuVecRotateY(&velocity, &velocity, emitter->rotation_2e);
                 NuVecRotateX(&velocity, &velocity, emitter->rotation_30);
@@ -3829,14 +3823,11 @@ void __cdecl UpdatePartEmits(f32 time) {
                 params.field_a4 = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
                 NuMtxSetIdentity(&matrix);
                 range = (f32)type->rotation_random[0];
-                random = NuRandFloatSeeded(&partseed);
-                angle_x = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[0] - range);
+                angle_x = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[0] - range);
                 range = (f32)type->rotation_random[1];
-                random = NuRandFloatSeeded(&partseed);
-                angle_y = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[1] - range);
+                angle_y = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[1] - range);
                 range = (f32)type->rotation_random[2];
-                random = NuRandFloatSeeded(&partseed);
-                angle_z = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[2] - range);
+                angle_z = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[2] - range);
                 for (axis = 0; axis < 3; ++axis) {
                     params.field_a8[axis] = type->rotation[axis];
                     params.field_a8[axis + 3] = type->rotation_random[axis];
