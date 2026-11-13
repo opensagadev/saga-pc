@@ -931,11 +931,9 @@ void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
     if (strict_mode != 0)
         old_handler = NuFParSetInterpreterErrorHandler(TrackParseErrorFn);
     NuFParPushComCTX(parser, track_jmp_tab);
-    if (*parser->word_buffer_ptr != 0 && *parser->word_buffer_ptr != ';') {
-        do {
-            NuFParGetWord(parser);
-            NuFParInterpretWordCTX(parser, this);
-        } while (*parser->word_buffer_ptr != 0);
+    while (*parser->word_buffer_ptr != 0 && *parser->word_buffer_ptr != ';') {
+        NuFParGetWord(parser);
+        NuFParInterpretWordCTX(parser, this);
     }
     NuFParPopCom(parser);
     if (strict_mode != 0)
