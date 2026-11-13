@@ -3463,7 +3463,6 @@ i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     i32 index;
     char *value;
     APIOBJECT_PC *opponent;
-    NUVEC direction;
 
     (void)sys;
     if (packet == NULL) {
@@ -3498,6 +3497,8 @@ i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         if (processor->action_data_4 == 0.0f) {
             packet->movement_look_target = &opponent->position;
         } else {
+            NUVEC direction;
+
             direction.x = opponent->position.z - packet->owner->position.z;
             direction.z = packet->owner->position.x - opponent->position.x;
             direction.y = 0.0f;
