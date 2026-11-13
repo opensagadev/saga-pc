@@ -602,7 +602,7 @@ extern "C" void __cdecl SetShadowLight(void) {
         secondary_eye.x += (f64)ShadowLightEyeDistancePc * 2.0;
         secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
         secondary_eye.z += (f64)ShadowLightEyeDistancePc * 2.0;
-    } else if (ShadowAveragePlayerBoundsPc(&direction, &secondary_strength) != 0 && secondary_strength > 0.0f) {
+    } else if (ShadowAveragePlayerBoundsPc(&direction, &secondary_strength) != 0 && secondary_strength >= 0.0f) {
         NuVecAdd(&direction, &direction, &WORLD->shadow_editor->direction);
         NuVecNorm(&direction, &direction);
         eye = center;
