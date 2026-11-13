@@ -1461,12 +1461,6 @@ static inline VuVec operator*(const VuVec &a, f32 scale) {
     return product;
 }
 
-static inline void operator*=(VuVec &v, f32 scale) {
-    v.x *= scale;
-    v.y *= scale;
-    v.z *= scale;
-}
-
 /* Unit-length copy of a direction, as a point (w = 1). */
 static inline void VuVecNormalise(VuVec &destination, VuVec &source) {
     NuVecNorm(&destination.xyz, &source.xyz);
@@ -2518,38 +2512,46 @@ void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 
 void __cdecl EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius,
                                   f32 limit, f32 offset) {
     __declspec(align(16)) NUMTX transform;
-    VuVec direction;
-    VuVec center;
+    __declspec(align(16)) NUVEC4 direction;
+    __declspec(align(16)) NUVEC4 center;
     NUANGVEC angles;
     f32 length;
+    f32 inverse_length;
     f32 half_length;
+    f32 minimum_radius;
     f32 first_radius;
     f32 second_radius;
-    VuVecCopy(direction, *(VuVec *)end - *(VuVec *)start);
-    length = VuVecLength(direction);
+    direction.x = end->x - start->x;
+    direction.y = end->y - start->y;
+    direction.z = end->z - start->z;
+    direction.w = 0.0f;
+    length = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     if (length > 0.0f) {
-        direction *= 1.0f / length;
+        inverse_length = 1.0f / length;
+        direction.x *= inverse_length;
+        direction.y *= inverse_length;
+        direction.z *= inverse_length;
         if (direction.x == 0.0f && direction.z == 0.0f) {
             angles.x = 0x2000;
             angles.y = 0;
         } else {
             angles.y = NuAtan2D(direction.x, direction.z);
-            NuVecRotateY(&direction.xyz, &direction.xyz, -angles.y);
+            NuVecRotateY((NUVEC *)&direction, (NUVEC *)&direction, -angles.y);
             angles.x = -NuAtan2D(direction.y, direction.z);
         }
         angles.z = 0;
-        VuVecCopy(center, (*(VuVec *)end + *(VuVec *)start) * 0.5f);
+        center.x = (end->x + start->x) * 0.5f;
+        center.y = (end->y + start->y) * 0.5f;
+        center.z = (end->z + start->z) * 0.5f;
+        center.w = 0.0f;
         NuMtxSetRotateXYZVU0(&transform, &angles);
-        NuMtxTranslate(&transform, &center.xyz);
+        NuMtxTranslate(&transform, (NUVEC *)&center);
         half_length = length * 0.5f;
-        first_radius = radius * half_length;
-        second_radius = first_radius * 0.1f;
-        if (limit > first_radius)
-            first_radius = limit;
+        minimum_radius = radius * half_length;
+        first_radius = limit > minimum_radius ? limit : minimum_radius;
         if (first_radius > offset)
             first_radius = offset;
-        if (limit > second_radius)
-            second_radius = limit;
+        second_radius = limit > minimum_radius * 0.1f ? limit : minimum_radius * (f64)0.1f;
         if (second_radius > offset)
             second_radius = offset;
         EdDrawPolyCylinder(&transform, half_length, first_radius, second_radius, sides, colour, 1, 1);
