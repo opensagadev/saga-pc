@@ -5799,6 +5799,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
     AIPATHCNX_PC *current;
     AIPATHNODE_PC *node;
     i32 index;
+    i32 remaining;
     info->flags_word &= 0xfffe;
     if (system == NULL || system->path_sys == NULL || system->path_sys->path_count == 0) {
         return;
@@ -5844,7 +5845,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         }
     }
     if (search_all_paths == 0) {
-        i32 remaining = checks;
+        remaining = checks;
         if (remaining > info->path->node_count)
             remaining = info->path->node_count;
         while (remaining != 0) {
@@ -5861,11 +5862,12 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
     } else {
         AIPATH_PC *saved_path = info->path;
         AIPATHCNX_PC *saved_connection = info->connection;
-        u8 saved_direction = info->direction;
+        i32 saved_direction = info->direction;
         u8 start_path;
-        u16 start_node;
+        i32 start_node;
         i32 inside_extents = 0;
-        if (info->path_index == 0xff) {
+        // MATCH-EXCEPTION: retail tests the u8 index against both -1 (never true) and 0xff.
+        if (info->path_index == -1 || info->path_index == 0xff) {
             info->path_index = saved_path->index;
         }
         if (info->path_index >= system->path_sys->path_count) {
@@ -5878,7 +5880,8 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         AISysResetPathSearchConnectionChecks(info->path);
         start_path = info->path_index;
         start_node = info->next_check;
-        while (checks != 0) {
+        remaining = checks;
+        while (remaining != 0) {
             if (inside_extents == 0) {
                 inside_extents = AIPathCheckExtents(info->path, position);
             }
@@ -5914,7 +5917,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
                 AISysResetPathSearchConnectionChecks(info->path);
                 inside_extents = 0;
             }
-            --checks;
+            --remaining;
             if (info->path_index == start_path && info->next_check == start_node) {
                 break;
             }
