@@ -30507,12 +30507,6 @@ extern "C" {
 #pragma data_seg(".data$CamDewbackLiftPc")
     f32 CamDewbackLiftPc = 1.5f;
 
-#pragma data_seg(".data$GameCamLookRotXPc")
-    i32 GameCamLookRotXPc = 10;
-
-#pragma data_seg(".data$GameCamLookRotYPc")
-    i32 GameCamLookRotYPc = 15;
-
 #pragma data_seg(".data$PlayPlaneCornersPc")
     NUVEC PlayPlaneCornersPc[4] = {
         {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
