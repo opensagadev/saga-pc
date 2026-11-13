@@ -6753,7 +6753,7 @@ extern "C" {
 extern "C" {
 
     typedef struct material_cleanup_flags_pc_s {
-        u16 flags;
+        i16 flags;
     } MATERIAL_CLEANUP_FLAGS_PC;
     STATIC_ASSERT(offsetof(MATERIAL_CLEANUP_FLAGS_PC, flags) == 0);
 
@@ -6765,18 +6765,19 @@ extern "C" {
     STATIC_ASSERT(offsetof(MATERIAL_OVERRIDE_CLEANUP_PC, original) == 4);
 
     void __cdecl NuMtlDestroy(NUMTL *material) {
-        NULNKHDR *node;
-        ((MATERIAL_CLEANUP_FLAGS_PC *)material)->flags &= ~1U;
+        MATERIAL_OVERRIDE_CLEANUP_PC *entry;
+        ((MATERIAL_CLEANUP_FLAGS_PC *)material)->flags &= ~1;
         NuDisplayListDestroyMtl(material);
-        node = NuLstGetNext(g_overrideList, NULL);
-        while (node != NULL) {
-            MATERIAL_OVERRIDE_CLEANUP_PC *entry = (MATERIAL_OVERRIDE_CLEANUP_PC *)node;
-            node = NuLstGetNext(g_overrideList, node);
+        entry = (MATERIAL_OVERRIDE_CLEANUP_PC *)NuLstGetNext(g_overrideList, NULL);
+        while (entry != NULL) {
+            MATERIAL_OVERRIDE_CLEANUP_PC *next =
+                (MATERIAL_OVERRIDE_CLEANUP_PC *)NuLstGetNext(g_overrideList, (NULNKHDR *)entry);
             if (entry->original == material) {
-                ((MATERIAL_CLEANUP_FLAGS_PC *)entry->material)->flags &= ~1U;
+                ((MATERIAL_CLEANUP_FLAGS_PC *)entry->material)->flags &= ~1;
                 NuDisplayListDestroyMtl(entry->material);
                 NuLstFree((NULNKHDR *)entry);
             }
+            entry = next;
         }
     }
 
