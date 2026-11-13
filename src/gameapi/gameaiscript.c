@@ -8221,37 +8221,35 @@ i32 __cdecl Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     object = NULL;
     keep_out = -1;
     enabled = 1;
-    if (param_5 == 0) {
-        return 1;
-    }
-
-    if (packet != NULL && packet->owner != NULL) {
-        object = packet->owner->objptr;
-    }
-    if (param_4 != 0) {
-        for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                object = GetNamedGameObject(sys, value + 10);
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ec4)) != NULL) {
-                keep_out = NuStrICmp(value + 9, (char *)AITransferLiteral757ebc) == 0;
-            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                enabled = 0;
+    if (param_5 != 0) {
+        if (packet != NULL && packet->owner != NULL) {
+            object = packet->owner->objptr;
+        }
+        if (param_4 != 0) {
+            for (index = 0; index < param_4; ++index) {
+                value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+                if (value != NULL) {
+                    object = GetNamedGameObject(sys, value + 10);
+                } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ec4)) != NULL) {
+                    keep_out = NuStrICmp(value + 9, (char *)AITransferLiteral757ebc) == 0;
+                } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                    enabled = 0;
+                }
             }
         }
-    }
 
-    if (object != NULL) {
-        if (enabled != 0) {
-            object->flags_e20 |= 0x10000u;
-            object->weapon_scale = 1.0f;
-            if (keep_out != -1) {
-                object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out << 4) & 0x10u);
+        if (object != NULL) {
+            if (enabled != 0) {
+                object->flags_e20 |= 0x10000u;
+                object->weapon_scale = 1.0f;
+                if (keep_out != -1) {
+                    object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out << 4) & 0x10u);
+                }
+            } else {
+                object->weapon_scale = 0.0f;
+                object->flags_e20 &= (u32)(~0x10000u);
+                object->portal_flags &= (u32)(~0x10u);
             }
-        } else {
-            object->weapon_scale = 0.0f;
-            object->flags_e20 &= (u32)(~0x10000u);
-            object->portal_flags &= (u32)(~0x10u);
         }
     }
     return 1;
