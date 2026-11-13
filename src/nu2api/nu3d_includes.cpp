@@ -4632,7 +4632,7 @@ extern "C" {
             font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map + (u32)font);
             remaining = NuFileOpenSize(texture_file);
             while (remaining != 0) {
-                size = NuFileRead(texture_file, buffer, remaining > 1024 ? 1024 : remaining);
+                size = NuFileRead(texture_file, buffer, remaining < 1024 ? remaining : 1024);
                 NuFileWrite(file, buffer, size);
                 remaining -= size;
             }
