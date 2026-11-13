@@ -11258,6 +11258,8 @@ address,symbol,size,ctype
 0x6dc760,_RegisterWindowCallbackPc,25,void __cdecl(PC_WINDOW_CALLBACK_PC)
 0x6dc7a0,_SetAccessibilityPc,230,void __cdecl(u8)
 0x6dc890,_PcNativeSelectLanguage,1578,i32 __cdecl (const char *)
+0x6dcec0,?SkipArgumentSpacesPc@@YAPADPAD@Z,25,char *__cdecl(char *)
+0x6dcee0,?ParseArgumentTokenPc@@YAPADPADDPAPAD@Z,67,"char *__cdecl(char *,char,char **)"
 0x6dcf30,_ParsePlatformArgumentsPc,418,void __cdecl(char*)
 0x6dd160,_PcPlatformPolicy,321,i32 __cdecl(u8)
 0x6dd2b0,_PublishWindowPc,37,"i32 __cdecl(HWND,i32)"
