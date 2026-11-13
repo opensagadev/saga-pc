@@ -42,7 +42,10 @@ __declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
         if ((part->active & 1) != 0 && part->source_special != NULL && part->special.scene == scene) {
-            memset(&part->special, 0, sizeof(part->special));
+            NUSPECIALHANDLE *special = &part->special;
+            special->scene = NULL;
+            special->special = NULL;
+            special->display_special = NULL;
             part->active &= ~1;
             part->source_special = NULL;
         }
