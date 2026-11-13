@@ -969,7 +969,7 @@ extern "C" {
                     distance = packet->path_info.distance * packet->path_info.connection->horizontal_distance;
                     packet->path_connection_state = 1;
                     if (packet->path_info.direction != 0) {
-                        if (source->radius > distance)
+                        if (distance < source->radius)
                             packet->path_connection_state = 0;
                     } else if (distance >
                                (f64)packet->path_info.connection->horizontal_distance - destination->radius) {
