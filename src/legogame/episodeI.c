@@ -5,7 +5,6 @@
 /* Retail unit 0x4d8190-0x4ddc7f: definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);

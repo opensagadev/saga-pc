@@ -131,7 +131,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
 STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
-STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, movement_look_target) == 0x4ac);
 extern i32 EmperorFloorRouteOnPc;

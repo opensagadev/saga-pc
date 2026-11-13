@@ -13,7 +13,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, area_level_index) == 0xc8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_processor) +
                   offsetof(AISCRIPTPROCESS_PC, script) ==
               0x2cc);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 extern void *Door_Last;

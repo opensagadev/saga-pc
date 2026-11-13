@@ -349,5 +349,4 @@ STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, reset_word) == 0x3c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);

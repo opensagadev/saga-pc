@@ -3,7 +3,6 @@
 
 /* Retail unit 0x5999e0-0x59a595 (legoapi/minikits.c): definitions in retail address order. */
 
-STATIC_ASSERT(sizeof(VARIPTR) == 4);
 STATIC_ASSERT(sizeof(*Char_MiniKit) == 4);
 extern f32 KITPOS2YPc;
 

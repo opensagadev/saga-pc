@@ -7,13 +7,11 @@ extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_connection_state) == 0x139);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
-STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
 
 typedef struct STARWARS_PREPARE_PC {
     u32 capabilities;

@@ -20,20 +20,6 @@ extern "C" {
     extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];
     extern const char StarWarsTakeOverJumpPc[13];
 }
-STATIC_ASSERT(sizeof(AIPATHNODE_PC) == 0x5c);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, position) == 4);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, radius) == 0x10);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, radius_squared) == 0x14);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, runtime_flags) == 0x2b);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, special_handle) == 0x40);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_destination) == 0x104);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_stopping_distance) == 0x110);
-STATIC_ASSERT(offsetof(AIPACKET_PC, mover_height) == 0x120);
-STATIC_ASSERT(offsetof(AIPACKET_PC, inside_path_node) == 0x124);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_connection_state) == 0x139);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) == 0x158);
-STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
-STATIC_ASSERT(offsetof(AIPACKET_PC, capabilities) == 0x1f4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_reentry_timer) == 0xd28);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);

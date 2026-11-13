@@ -9,7 +9,6 @@ extern "C" {
     extern i32(__cdecl *MovieInputFn)(void);
 }
 
-STATIC_ASSERT(sizeof(VARIPTR) == 4);
 STATIC_ASSERT(offsetof(NUFPAR_PC, file_name) == 8);
 STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 extern "C" {

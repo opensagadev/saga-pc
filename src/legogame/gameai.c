@@ -4,12 +4,6 @@
 #include <stdio.h>
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_destination) == 0x104);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_stopping_distance) == 0x110);
-STATIC_ASSERT(offsetof(AILOCATOR_PC, rotation) == 0x1c);
-STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
-STATIC_ASSERT(offsetof(AIROW_PC, is_alive) == 0x2d);
-STATIC_ASSERT(offsetof(AIROW_PC, flags) == 0x30);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
 STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);

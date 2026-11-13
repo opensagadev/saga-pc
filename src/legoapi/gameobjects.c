@@ -39,7 +39,6 @@ typedef union TAGSCRIPTSTATE_PC {
     } fields;
 } TAGSCRIPTSTATE_PC;
 
-STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
 STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) - offsetof(AIPACKET_PC, script_processor) == 0xc8);
 STATIC_ASSERT(sizeof(TAGSCRIPTSTATE_PC) == 0xcc);
 
@@ -117,10 +116,6 @@ STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, angle) == 0x20);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, shape) == 0x22);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, mode) == 0x23);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_collision_priority_pc) == 0x292);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_resolved_collision_priority_pc) == 0x294);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, rumble) == 0x40);
 

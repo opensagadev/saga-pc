@@ -1106,6 +1106,7 @@ typedef struct AIPATHINFO_PC {
     f32 width;
 } AIPATHINFO_PC;
 
+/* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
 STATIC_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
 STATIC_ASSERT(offsetof(AIPATHINFO_PC, path) == 0);
 STATIC_ASSERT(offsetof(AIPATHINFO_PC, connection) == 4);
@@ -1121,119 +1122,90 @@ typedef struct AIPATHNODE_PC AIPATHNODE_PC;
 typedef struct AIPATHROUTE_PC AIPATHROUTE_PC;
 
 typedef struct AIPATHCNX_PC {
-    u32 traversal_flags[2];
-    u32 original_traversal_flags[2];
-    u8 node_indices[2];
-    i16 rotation;
-    u16 route_mask;
-    u8 open;
-    u8 last_search_checksum;
-    f32 distance;
-    f32 horizontal_distance;
-    f32 max_horizontal_distance;
-} AIPATHCNX_PC;
-
-STATIC_ASSERT(sizeof(AIPATHCNX_PC) == 0x24);
-STATIC_ASSERT(offsetof(AIPATHCNX_PC, node_indices) == 0x10);
-STATIC_ASSERT(offsetof(AIPATHCNX_PC, rotation) == 0x12);
-STATIC_ASSERT(offsetof(AIPATHCNX_PC, route_mask) == 0x14);
-STATIC_ASSERT(offsetof(AIPATHCNX_PC, horizontal_distance) == 0x1c);
+    u32 traversal_flags[2];          // 0x00
+    u32 original_traversal_flags[2]; // 0x08
+    u8 node_indices[2];              // 0x10
+    i16 rotation;                    // 0x12
+    u16 route_mask;                  // 0x14
+    u8 open;                         // 0x16
+    u8 last_search_checksum;         // 0x17
+    f32 distance;                    // 0x18
+    f32 horizontal_distance;         // 0x1c
+    f32 max_horizontal_distance;     // 0x20
+} AIPATHCNX_PC;                      // size 0x24
 
 struct AIPATHNODE_PC {
-    char *name;
-    NUVEC position;
-    f32 radius;
-    f32 radius_squared;
-    f32 min_height;
-    f32 min_height_offset;
-    f32 max_height;
-    f32 max_height_offset;
-    u8 connection_count;
-    u8 flags;
-    u8 has_special;
-    u8 runtime_flags;
-    i16 path_flags;
-    u8 distance_cache_nodes[2];
-    u8 special_route_index;
-    u8 padding_31[3];
-    AIPATHCNX_PC **connections;
-    f32 distance_cache[2];
-    NUSPECIALHANDLE special_handle;
-    NUVEC special_position;
-    u16 route_membership_mask;
-    u16 route_boundary_mask;
-};
-
-STATIC_ASSERT(sizeof(AIPATHNODE_PC) == 0x5c);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, position) == 0x04);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, special_handle) == 0x40);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, connections) == 0x34);
-STATIC_ASSERT(offsetof(AIPATHNODE_PC, route_membership_mask) == 0x58);
+    char *name;                     // 0x00
+    NUVEC position;                 // 0x04
+    f32 radius;                     // 0x10
+    f32 radius_squared;             // 0x14
+    f32 min_height;                 // 0x18
+    f32 min_height_offset;          // 0x1c
+    f32 max_height;                 // 0x20
+    f32 max_height_offset;          // 0x24
+    u8 connection_count;            // 0x28
+    u8 flags;                       // 0x29
+    u8 has_special;                 // 0x2a
+    u8 runtime_flags;               // 0x2b
+    i16 path_flags;                 // 0x2c
+    u8 distance_cache_nodes[2];     // 0x2e
+    u8 special_route_index;         // 0x30
+    u8 padding_31[3];               // 0x31
+    AIPATHCNX_PC **connections;     // 0x34
+    f32 distance_cache[2];          // 0x38
+    NUSPECIALHANDLE special_handle; // 0x40
+    NUVEC special_position;         // 0x4c
+    u16 route_membership_mask;      // 0x58
+    u16 route_boundary_mask;        // 0x5a
+}; // size 0x5c
 
 struct AIPATHROUTE_PC {
-    char *name;
-    u8 *node_routes;
-    u8 *node_directions;
-    u8 *exit_nodes;
-    u8 route_count;
-    u8 exit_node_count;
-    u8 padding_12[2];
-    u8 **route_nodes;
-    u32 character_mask[4];
-};
-
-STATIC_ASSERT(sizeof(AIPATHROUTE_PC) == 0x28);
-STATIC_ASSERT(offsetof(AIPATHROUTE_PC, character_mask) == 0x18);
+    char *name;            // 0x00
+    u8 *node_routes;       // 0x04
+    u8 *node_directions;   // 0x08
+    u8 *exit_nodes;        // 0x0c
+    u8 route_count;        // 0x10
+    u8 exit_node_count;    // 0x11
+    u8 padding_12[2];      // 0x12
+    u8 **route_nodes;      // 0x14
+    u32 character_mask[4]; // 0x18
+}; // size 0x28
 
 typedef struct AIPATHNODELINK_PC {
-    u8 node_index;
-    u8 unknown_1;
-    i16 special_route_index;
-} AIPATHNODELINK_PC;
-
-STATIC_ASSERT(sizeof(AIPATHNODELINK_PC) == 4);
-STATIC_ASSERT(offsetof(AIPATHNODELINK_PC, special_route_index) == 2);
+    u8 node_index;           // 0x0
+    u8 unknown_1;            // 0x1
+    i16 special_route_index; // 0x2
+} AIPATHNODELINK_PC;         // size 0x4
 
 typedef struct AIPATH_PC {
-    char name[0x10];
-    u8 node_count;
-    u8 flags;
-    u16 connection_count;
-    u8 route_count;
-    u8 index;
-    u8 unknown_16[2];
-    u8 updated_node_bits[0x20];
-    u8 previous_inside_node_bits[32];
-    u8 inside_node_bits[0x20];
-    u8 search_checksum;
-    u8 search_reset_node;
-    u8 special_route_count;
-    u8 unknown_7b;
-    AIPATHNODE_PC *nodes;
-    AIPATHCNX_PC *connections;
-    u8 **route_matrix;
-    AIPATHROUTE_PC *routes;
-    AIPATHNODELINK_PC *special_routes;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-} AIPATH_PC;
-
-STATIC_ASSERT(offsetof(AIPATH_PC, special_route_count) == 0x7a);
-STATIC_ASSERT(offsetof(AIPATH_PC, special_routes) == 0x8c);
+    char name[0x10];                   // 0x00
+    u8 node_count;                     // 0x10
+    u8 flags;                          // 0x11
+    u16 connection_count;              // 0x12
+    u8 route_count;                    // 0x14
+    u8 index;                          // 0x15
+    u8 unknown_16[2];                  // 0x16
+    u8 updated_node_bits[0x20];        // 0x18
+    u8 previous_inside_node_bits[32];  // 0x38
+    u8 inside_node_bits[0x20];         // 0x58
+    u8 search_checksum;                // 0x78
+    u8 search_reset_node;              // 0x79
+    u8 special_route_count;            // 0x7a
+    u8 unknown_7b;                     // 0x7b
+    AIPATHNODE_PC *nodes;              // 0x7c
+    AIPATHCNX_PC *connections;         // 0x80
+    u8 **route_matrix;                 // 0x84
+    AIPATHROUTE_PC *routes;            // 0x88
+    AIPATHNODELINK_PC *special_routes; // 0x8c
+    NUVEC bounds_min;                  // 0x90
+    NUVEC bounds_max;                  // 0x9c
+} AIPATH_PC;                           // size 0xa8
 
 typedef struct AIPATHSPECIALROUTE_PC {
-    u8 path_count;
-    u8 unknown_1[3];
-    AIPATH_PC **paths;
-} AIPATHSPECIALROUTE_PC;
-
-STATIC_ASSERT(sizeof(AIPATHSPECIALROUTE_PC) == 8);
-STATIC_ASSERT(offsetof(AIPATHSPECIALROUTE_PC, paths) == 4);
-STATIC_ASSERT(offsetof(AIPATH_PC, updated_node_bits) == 0x18);
-STATIC_ASSERT(offsetof(AIPATH_PC, route_count) == 0x14);
-STATIC_ASSERT(offsetof(AIPATH_PC, search_checksum) == 0x78);
-STATIC_ASSERT(offsetof(AIPATH_PC, nodes) == 0x7c);
-STATIC_ASSERT(offsetof(AIPATH_PC, routes) == 0x88);
+    u8 path_count;       // 0x0
+    u8 unknown_1[3];     // 0x1
+    AIPATH_PC **paths;   // 0x4
+} AIPATHSPECIALROUTE_PC; // size 0x8
 
 struct gameobject_s;
 
@@ -1253,810 +1225,594 @@ typedef struct AISCRIPTPROCESSSTACK_PC {
     u8 unknown_12[2];
 } AISCRIPTPROCESSSTACK_PC;
 
+/* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
 STATIC_ASSERT(sizeof(AISCRIPTPROCESSSTACK_PC) == 0x14);
 
 struct AISCRIPTPROCESS_PC {
-    AISCRIPT_PC *base_script;
-    AISCRIPT_PC *script;
-    AISTATE_PC *state;
-    AIACTION_PC *action_node;
-    AISTATE_PC *next_state;
-    f32 params[4];
-    f32 script_timer;
-    AISCRIPTPROCESSSTACK_PC param_stack[2];
-    u32 flags;
-    AIREFSCRIPT_PC *active_refs[4];
-    i32 active_ref_count;
-    u8 action_data_1;
-    u8 action_data_2;
-    u16 action_data_6;
-    void *action_data_3;
-    f32 action_data_4;
-    f32 action_data_5;
-    NUVEC action_pos;
-    AIPATHINFO_PC path_info;
-    f32 action_timer;
-    u32 unknown_a0;
-    struct AILOCATOR_PC *locator;
-    struct AILOCATORSET_PC *locator_set;
+    AISCRIPT_PC *base_script;               // 0x00
+    AISCRIPT_PC *script;                    // 0x04
+    AISTATE_PC *state;                      // 0x08
+    AIACTION_PC *action_node;               // 0x0c
+    AISTATE_PC *next_state;                 // 0x10
+    f32 params[4];                          // 0x14
+    f32 script_timer;                       // 0x24
+    AISCRIPTPROCESSSTACK_PC param_stack[2]; // 0x28
+    u32 flags;                              // 0x50
+    AIREFSCRIPT_PC *active_refs[4];         // 0x54
+    i32 active_ref_count;                   // 0x64
+    u8 action_data_1;                       // 0x68
+    u8 action_data_2;                       // 0x69
+    u16 action_data_6;                      // 0x6a
+    void *action_data_3;                    // 0x6c
+    f32 action_data_4;                      // 0x70
+    f32 action_data_5;                      // 0x74
+    NUVEC action_pos;                       // 0x78
+    AIPATHINFO_PC path_info;                // 0x84
+    f32 action_timer;                       // 0x9c
+    u32 unknown_a0;                         // 0xa0
+    struct AILOCATOR_PC *locator;           // 0xa4
+    struct AILOCATORSET_PC *locator_set;    // 0xa8
 
-    union {
-        u32 field_ac;
-        struct nugspline_s *myspline;
+    union {                           // 0xac
+        u32 field_ac;                 // 0xac
+        struct nugspline_s *myspline; // 0xac
     };
 
-    u8 creature_set;
-    u8 unknown_b1;
-    u16 unknown_b2;
-    u8 interrupt_priority;
-    u8 interrupt_id;
-    u16 action_data_7;
-    f32 interrupt_timer;
-    AISTATE_PC *interrupt_state;
-    AISTATE_PC *return_to_state;
-    void *local_messages;
-};
-
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, state) == 8);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_node) == 0xc);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, next_state) == 0x10);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, params) == 0x14);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, script_timer) == 0x24);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, param_stack) == 0x28);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, flags) == 0x50);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, active_refs) == 0x54);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, active_ref_count) == 0x64);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_1) == 0x68);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_3) == 0x6c);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_4) == 0x70);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_5) == 0x74);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_pos) == 0x78);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, path_info) == 0x84);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_timer) == 0x9c);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator) == 0xa4);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_b2) == 0xb2);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, interrupt_priority) == 0xb4);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, interrupt_id) == 0xb5);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_7) == 0xb6);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, interrupt_timer) == 0xb8);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, interrupt_state) == 0xbc);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, return_to_state) == 0xc0);
-STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, local_messages) == 0xc4);
+    u8 creature_set;             // 0xb0
+    u8 unknown_b1;               // 0xb1
+    u16 unknown_b2;              // 0xb2
+    u8 interrupt_priority;       // 0xb4
+    u8 interrupt_id;             // 0xb5
+    u16 action_data_7;           // 0xb6
+    f32 interrupt_timer;         // 0xb8
+    AISTATE_PC *interrupt_state; // 0xbc
+    AISTATE_PC *return_to_state; // 0xc0
+    void *local_messages;        // 0xc4
+}; // size 0xc8
 
 typedef f32(__cdecl *AICONDITION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 typedef void *(__cdecl *AICONDITION_INIT_PC)(AISYS_PC *, char *, AISCRIPT_PC *);
 
 typedef struct AICONDITIONDEF_PC {
-    const char *name;
-    AICONDITION_EVAL_PC eval_fn;
-    AICONDITION_INIT_PC init_fn;
-} AICONDITIONDEF_PC;
-
-STATIC_ASSERT(sizeof(AICONDITIONDEF_PC) == 0xc);
-STATIC_ASSERT(offsetof(AICONDITIONDEF_PC, eval_fn) == 4);
-STATIC_ASSERT(offsetof(AICONDITIONDEF_PC, init_fn) == 8);
+    const char *name;            // 0x0
+    AICONDITION_EVAL_PC eval_fn; // 0x4
+    AICONDITION_INIT_PC init_fn; // 0x8
+} AICONDITIONDEF_PC;             // size 0xc
 
 typedef i32(__cdecl *AIACTION_EVAL_PC)(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
 typedef struct AIACTIONDEF_PC {
-    const char *name;
-    AIACTION_EVAL_PC eval_fn;
-    u8 replicate_on_first_action;
-    u8 is_game_action;
-    i16 index;
-} AIACTIONDEF_PC;
-
-STATIC_ASSERT(sizeof(AIACTIONDEF_PC) == 0xc);
-STATIC_ASSERT(offsetof(AIACTIONDEF_PC, eval_fn) == 4);
-STATIC_ASSERT(offsetof(AIACTIONDEF_PC, replicate_on_first_action) == 8);
-STATIC_ASSERT(offsetof(AIACTIONDEF_PC, is_game_action) == 9);
-STATIC_ASSERT(offsetof(AIACTIONDEF_PC, index) == 0xa);
+    const char *name;             // 0x0
+    AIACTION_EVAL_PC eval_fn;     // 0x4
+    u8 replicate_on_first_action; // 0x8
+    u8 is_game_action;            // 0x9
+    i16 index;                    // 0xa
+} AIACTIONDEF_PC;                 // size 0xc
 
 struct AIPACKET_PC {
-    union {
-        AISCRIPTPROCESS_PC script_processor;
+    union {                                  // 0x000
+        AISCRIPTPROCESS_PC script_processor; // 0x000
 
-        struct {
-            struct AISCRIPT_PC *base_script;
-            struct AISCRIPT_PC *script;
-            struct AISTATE_PC *state;
-            struct nulistlnk_s *action_node;
-            struct AISTATE_PC *next_state;
-            f32 params[4];
-            f32 script_timer;
-            AISCRIPTPROCESSSTACK_PC param_stack[2];
-            u8 unknown_50[0x4];
-            struct AIREFSCRIPT_PC *active_refs[4];
-            i32 active_ref_count;
-            u8 action_data_1;
-            u8 action_data_2;
-            u16 action_data_6;
-            void *action_data_3;
-            f32 action_data_4;
-            f32 action_data_5;
-            NUVEC script_action_position;
-            AIPATHINFO_PC script_destination_path_info;
-            f32 action_timer;
-            u8 unknown_a0[0x4];
-            struct AILOCATOR_PC *locator;
-            struct AILOCATORSET_PC *locator_set;
-            u8 unknown_ac[0x4];
-            u8 creature_set;
-            u8 unknown_0b1[0x17];
+        struct {                                        // 0x000
+            struct AISCRIPT_PC *base_script;            // 0x000
+            struct AISCRIPT_PC *script;                 // 0x004
+            struct AISTATE_PC *state;                   // 0x008
+            struct nulistlnk_s *action_node;            // 0x00c
+            struct AISTATE_PC *next_state;              // 0x010
+            f32 params[4];                              // 0x014
+            f32 script_timer;                           // 0x024
+            AISCRIPTPROCESSSTACK_PC param_stack[2];     // 0x028
+            u8 unknown_50[0x4];                         // 0x050
+            struct AIREFSCRIPT_PC *active_refs[4];      // 0x054
+            i32 active_ref_count;                       // 0x064
+            u8 action_data_1;                           // 0x068
+            u8 action_data_2;                           // 0x069
+            u16 action_data_6;                          // 0x06a
+            void *action_data_3;                        // 0x06c
+            f32 action_data_4;                          // 0x070
+            f32 action_data_5;                          // 0x074
+            NUVEC script_action_position;               // 0x078
+            AIPATHINFO_PC script_destination_path_info; // 0x084
+            f32 action_timer;                           // 0x09c
+            u8 unknown_a0[0x4];                         // 0x0a0
+            struct AILOCATOR_PC *locator;               // 0x0a4
+            struct AILOCATORSET_PC *locator_set;        // 0x0a8
+            u8 unknown_ac[0x4];                         // 0x0ac
+            u8 creature_set;                            // 0x0b0
+            u8 unknown_0b1[0x17];                       // 0x0b1
 
-            union {
-                u8 unknown_0c8[4];
-                void *takeover_script_link;
+            union {                         // 0x0c8
+                u8 unknown_0c8[4];          // 0x0c8
+                void *takeover_script_link; // 0x0c8
             };
 
-            AISCRIPTPROCESS_PC *alternate_processor;
+            AISCRIPTPROCESS_PC *alternate_processor; // 0x0cc
         };
     };
-    struct gameobject_s *owner;
-    struct gameobject_s *nearest_opponent;
-    f32 nearest_opponent_metric;
-    struct gameobject_s *target_dc;
-    f32 target_metric_e0;
-    struct gameobject_s *opponent;
-    f32 opponent_metric;
-    struct gameobject_s *target_ec;
-    f32 target_metric_f0;
-    struct gameobject_s *dont_avoid_character;
-    NUVEC creature_origin;
-    NUVEC movement_destination;
-    f32 movement_stopping_distance;
-    NUVEC movement_position;
-    f32 mover_height;
+    struct gameobject_s *owner;                // 0x0d0
+    struct gameobject_s *nearest_opponent;     // 0x0d4
+    f32 nearest_opponent_metric;               // 0x0d8
+    struct gameobject_s *target_dc;            // 0x0dc
+    f32 target_metric_e0;                      // 0x0e0
+    struct gameobject_s *opponent;             // 0x0e4
+    f32 opponent_metric;                       // 0x0e8
+    struct gameobject_s *target_ec;            // 0x0ec
+    f32 target_metric_f0;                      // 0x0f0
+    struct gameobject_s *dont_avoid_character; // 0x0f4
+    NUVEC creature_origin;                     // 0x0f8
+    NUVEC movement_destination;                // 0x104
+    f32 movement_stopping_distance;            // 0x110
+    NUVEC movement_position;                   // 0x114
+    f32 mover_height;                          // 0x120
 
-    union {
-        u16 unknown_124;
-        i16 inside_path_node;
+    union {                   // 0x124
+        u16 unknown_124;      // 0x124
+        i16 inside_path_node; // 0x124
     };
 
-    i16 animation_override_from;
-    i16 animation_override_to;
-    u8 unknown_12a[0x6];
-    u32 route_mask_low;
-    u32 route_mask_high;
+    i16 animation_override_from; // 0x126
+    i16 animation_override_to;   // 0x128
+    u8 unknown_12a[0x6];         // 0x12a
+    u32 route_mask_low;          // 0x130
+    u32 route_mask_high;         // 0x134
 
-    union {
-        u8 unknown_138;
-        u8 creature_index;
+    union {                // 0x138
+        u8 unknown_138;    // 0x138
+        u8 creature_index; // 0x138
     };
 
-    union {
-        u8 path_update_flag;
-        u8 path_connection_state;
+    union {                       // 0x139
+        u8 path_update_flag;      // 0x139
+        u8 path_connection_state; // 0x139
     };
 
-    u16 available_routes;
-    u8 current_route;
-    u8 next_route;
-    u8 reset_mode;
-    u8 goal_speed_mode;
-    u8 movement_stopped;
-    u8 unknown_141;
-    u8 divert_search_index;
-    u8 divert_node_index;
-    struct AIGROUP_PC *group;
-    u8 group_member_index;
-    u8 group_column;
-    u8 group_row;
-    u8 movement_target_direction;
-    NUVEC terrain_origin;
-    AIPATHINFO_PC path_info;
-    NUVEC last_path_position;
+    u16 available_routes;         // 0x13a
+    u8 current_route;             // 0x13c
+    u8 next_route;                // 0x13d
+    u8 reset_mode;                // 0x13e
+    u8 goal_speed_mode;           // 0x13f
+    u8 movement_stopped;          // 0x140
+    u8 unknown_141;               // 0x141
+    u8 divert_search_index;       // 0x142
+    u8 divert_node_index;         // 0x143
+    struct AIGROUP_PC *group;     // 0x144
+    u8 group_member_index;        // 0x148
+    u8 group_column;              // 0x149
+    u8 group_row;                 // 0x14a
+    u8 movement_target_direction; // 0x14b
+    NUVEC terrain_origin;         // 0x14c
+    AIPATHINFO_PC path_info;      // 0x158
+    NUVEC last_path_position;     // 0x170
 
-    union {
-        void *current_path_node;
-        AIPATHNODE_PC *goal_path_node;
+    union {                            // 0x17c
+        void *current_path_node;       // 0x17c
+        AIPATHNODE_PC *goal_path_node; // 0x17c
     };
 
-    f32 movement_instruction_parameter;
+    f32 movement_instruction_parameter; // 0x180
 
-    union {
-        void *path_target;
-        AIPATHNODE_PC *special_move_node;
+    union {                               // 0x184
+        void *path_target;                // 0x184
+        AIPATHNODE_PC *special_move_node; // 0x184
     };
 
-    AIPATHCNX_PC *movement_target;
-    f32 antinode_timer;
-    AIPATHCNX_PC *intersection_connection;
-    AIPATHCNX_PC *intersection_target_connection;
-    NUVEC right_diversion;
-    NUVEC left_diversion;
+    AIPATHCNX_PC *movement_target;                // 0x188
+    f32 antinode_timer;                           // 0x18c
+    AIPATHCNX_PC *intersection_connection;        // 0x190
+    AIPATHCNX_PC *intersection_target_connection; // 0x194
+    NUVEC right_diversion;                        // 0x198
+    NUVEC left_diversion;                         // 0x1a4
 
-    union {
-        u8 unknown_1b0[4];
-        struct AILOCATOR_PC *respawn_locator;
+    union {                                   // 0x1b0
+        u8 unknown_1b0[4];                    // 0x1b0
+        struct AILOCATOR_PC *respawn_locator; // 0x1b0
     };
 
-    NUVEC fallback_destination;
-    f32 fallback_stopping_distance;
-    f32 movement_parameter;
-    u8 unknown_1c8[4];
-    AIPATHINFO_PC fallback_path_info;
-    NUVEC *movement_look_target;
+    NUVEC fallback_destination;       // 0x1b4
+    f32 fallback_stopping_distance;   // 0x1c0
+    f32 movement_parameter;           // 0x1c4
+    u8 unknown_1c8[4];                // 0x1c8
+    AIPATHINFO_PC fallback_path_info; // 0x1cc
+    NUVEC *movement_look_target;      // 0x1e4
 
-    union {
-        u32 flags;
+    union {        // 0x1e8
+        u32 flags; // 0x1e8
 
-        struct {
-            u8 flags_low;
-            u8 selection_flags;
-            u8 route_flags;
-            u8 priority_flags;
+        struct {                // 0x1e8
+            u8 flags_low;       // 0x1e8
+            u8 selection_flags; // 0x1e9
+            u8 route_flags;     // 0x1ea
+            u8 priority_flags;  // 0x1eb
         };
 
-        struct {
-            u32 : 15;
-            u32 antinode_clockwise : 1;
-            u32 : 16;
+        struct {                        // 0x1e8
+            u32 : 15;                   // 0x1e8:0
+            u32 antinode_clockwise : 1; // 0x1e8:15
+            u32 : 16;                   // 0x1e8:16
         };
     };
 
-    u32 navigation_flags;
-    f32 movement_target_radius;
-    u32 capabilities;
-    i32 frame_state;
-    u32 respawn_count;
-    f32 spawn_delay;
-    u8 unknown_204[4];
-    f32 time_off_path;
-};
+    u32 navigation_flags;       // 0x1ec
+    f32 movement_target_radius; // 0x1f0
+    u32 capabilities;           // 0x1f4
+    i32 frame_state;            // 0x1f8
+    u32 respawn_count;          // 0x1fc
+    f32 spawn_delay;            // 0x200
+    u8 unknown_204[4];          // 0x204
+    f32 time_off_path;          // 0x208
+}; // size 0x20c
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, script_processor) == 0x0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, alternate_processor) == 0xcc);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_instruction_parameter) == 0x180);
-STATIC_ASSERT(offsetof(AIPACKET_PC, creature_set) == 0xb0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) == 0x138);
-STATIC_ASSERT(offsetof(AIPACKET_PC, respawn_locator) == 0x1b0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, respawn_count) == 0x1fc);
-STATIC_ASSERT(offsetof(AIPACKET_PC, spawn_delay) == 0x200);
-STATIC_ASSERT(offsetof(AIPACKET_PC, divert_search_index) == 0x142);
-STATIC_ASSERT(offsetof(AIPACKET_PC, divert_node_index) == 0x143);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_target_direction) == 0x14b);
-STATIC_ASSERT(offsetof(AIPACKET_PC, goal_path_node) == 0x17c);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_target) == 0x188);
-STATIC_ASSERT(offsetof(AIPACKET_PC, intersection_connection) == 0x190);
-STATIC_ASSERT(offsetof(AIPACKET_PC, intersection_target_connection) == 0x194);
-STATIC_ASSERT(offsetof(AIPACKET_PC, right_diversion) == 0x198);
-STATIC_ASSERT(offsetof(AIPACKET_PC, left_diversion) == 0x1a4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, frame_state) == 0x1f8);
-STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, route_mask_low) == 0x130);
-STATIC_ASSERT(offsetof(AIPACKET_PC, route_mask_high) == 0x134);
-STATIC_ASSERT(offsetof(AIPACKET_PC, unknown_124) == 0x124);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_update_flag) == 0x139);
-STATIC_ASSERT(offsetof(AIPACKET_PC, current_route) == 0x13c);
-STATIC_ASSERT(offsetof(AIPACKET_PC, next_route) == 0x13d);
-STATIC_ASSERT(offsetof(AIPACKET_PC, available_routes) == 0x13a);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) == 0x158);
-STATIC_ASSERT(offsetof(AIPACKET_PC, current_path_node) == 0x17c);
-STATIC_ASSERT(offsetof(AIPACKET_PC, capabilities) == 0x1f4);
-
-STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
-STATIC_ASSERT(offsetof(AIPACKET_PC, locator) == 0xa4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, nearest_opponent) == 0xd4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, nearest_opponent_metric) == 0xd8);
-STATIC_ASSERT(offsetof(AIPACKET_PC, target_dc) == 0xdc);
-STATIC_ASSERT(offsetof(AIPACKET_PC, target_metric_e0) == 0xe0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, opponent) == 0xe4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, opponent_metric) == 0xe8);
-STATIC_ASSERT(offsetof(AIPACKET_PC, target_ec) == 0xec);
-STATIC_ASSERT(offsetof(AIPACKET_PC, target_metric_f0) == 0xf0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_destination) == 0x104);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_stopping_distance) == 0x110);
-STATIC_ASSERT(offsetof(AIPACKET_PC, reset_mode) == 0x13e);
-STATIC_ASSERT(offsetof(AIPACKET_PC, fallback_destination) == 0x1b4);
-STATIC_ASSERT(offsetof(AIPACKET_PC, fallback_stopping_distance) == 0x1c0);
-STATIC_ASSERT(offsetof(AIPACKET_PC, movement_parameter) == 0x1c4);
-STATIC_ASSERT(offsetof(AIPATH_PC, search_reset_node) == 0x79);
-STATIC_ASSERT(offsetof(AIPATH_PC, bounds_min) == 0x90);
-STATIC_ASSERT(offsetof(AIPATH_PC, bounds_max) == 0x9c);
 STATIC_ASSERT(offsetof(AIPATHINFO_PC, flags_word) == 0xe);
 
 typedef struct APIOBJECT_PC {
-    void *owner;
-    AIPACKET_PC *ai;
-    u8 unknown_008[0x48];
-    struct CHARACTER_MODEL_LAYERS_PC *character_model;
-    struct characterdata_pc_s *character_data;
-    u16 facing_angle;
-    u16 movement_facing_angle;
-    NUVEC position;
-    NUVEC velocity;
-    NUVEC previous_velocity;
-    NUVEC collision_position;
-    NUVEC start_position;
-    NUVEC initial_position;
-    f32 scaled_radius;
-    u8 unknown_a8[0x4];
-    f32 collision_radius;
+    void *owner;                                       // 0x000
+    AIPACKET_PC *ai;                                   // 0x004
+    u8 unknown_008[0x48];                              // 0x008
+    struct CHARACTER_MODEL_LAYERS_PC *character_model; // 0x050
+    struct characterdata_pc_s *character_data;         // 0x054
+    u16 facing_angle;                                  // 0x058
+    u16 movement_facing_angle;                         // 0x05a
+    NUVEC position;                                    // 0x05c
+    NUVEC velocity;                                    // 0x068
+    NUVEC previous_velocity;                           // 0x074
+    NUVEC collision_position;                          // 0x080
+    NUVEC start_position;                              // 0x08c
+    NUVEC initial_position;                            // 0x098
+    f32 scaled_radius;                                 // 0x0a4
+    u8 unknown_a8[0x4];                                // 0x0a8
+    f32 collision_radius;                              // 0x0ac
 
-    union {
-        u8 unknown_0b0[0x148];
+    union {                    // 0x0b0
+        u8 unknown_0b0[0x148]; // 0x0b0
 
-        struct {
-            u8 unknown_b0_to_1b4[0x104];
-            NUVEC last_safe_position;
-            NUVEC previous_position;
-            NUVEC respawn_position;
-            u8 unknown_1d8[0x4];
-            f32 bounds_radius;
-            f32 bounds_half_height;
-            u8 unknown_1e4[0x4];
-            u32 collision_identity_mask[2];
-            u32 collision_contact_mask[2];
+        struct {                            // 0x0b0
+            u8 unknown_b0_to_1b4[0x104];    // 0x0b0
+            NUVEC last_safe_position;       // 0x1b4
+            NUVEC previous_position;        // 0x1c0
+            NUVEC respawn_position;         // 0x1cc
+            u8 unknown_1d8[0x4];            // 0x1d8
+            f32 bounds_radius;              // 0x1dc
+            f32 bounds_half_height;         // 0x1e0
+            u8 unknown_1e4[0x4];            // 0x1e4
+            u32 collision_identity_mask[2]; // 0x1e8
+            u32 collision_contact_mask[2];  // 0x1f0
         };
     };
 
-    u32 motion_flags;
+    u32 motion_flags; // 0x1f8
 
-    union {
-        u32 flags_low;
+    union {            // 0x1fc
+        u32 flags_low; // 0x1fc
 
-        struct {
-            u32 : 17;
-            u32 ignore_antinodes : 1;
-            u32 : 14;
+        struct {                      // 0x1fc
+            u32 : 17;                 // 0x1fc:0
+            u32 ignore_antinodes : 1; // 0x1fc:17
+            u32 : 14;                 // 0x1fc:18
         };
     };
 
-    u8 unknown_200[0xc];
-    NUSPECIALHANDLE collision_special;
-    u8 unknown_218_b[0x8];
-    f32 water_height;
-    u8 unknown_224[0x4];
-    f32 velocity_magnitude;
-    f32 horizontal_velocity_magnitude;
-    f32 view_distance;
-    f32 hear_distance;
-    f32 max_view_height;
-    f32 min_view_height;
-    f32 ai_visibility_extension;
-    u8 unknown_244[0x18];
-    f32 previous_animation_root_time;
-    f32 previous_blend_target_root_time;
-    struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;
-    struct CHARACTERANIM_CONFIG_PC *previous_blend_target_root_info;
-    u8 unknown_26c[0xc];
-    u16 pitch_angle;
-    u8 unknown_27a[0x2];
-    u16 roll_angle;
-    i16 supporting_platform_id;
-    i8 locator_name_index;
-    u8 grounded;
-    u8 unknown_282[9];
-    u8 leader_selection_state;
-    u8 unknown_28c;
-    u8 object_id;
-    u8 unknown_28e[0x4];
-    u16 ai_collision_priority_pc;
-    u16 ai_resolved_collision_priority_pc;
-    u8 unknown_296[0x2];
-    struct APIOBJECT_PC *collision_link;
-} APIOBJECT_PC;
+    u8 unknown_200[0xc];                                             // 0x200
+    NUSPECIALHANDLE collision_special;                               // 0x20c
+    u8 unknown_218_b[0x8];                                           // 0x218
+    f32 water_height;                                                // 0x220
+    u8 unknown_224[0x4];                                             // 0x224
+    f32 velocity_magnitude;                                          // 0x228
+    f32 horizontal_velocity_magnitude;                               // 0x22c
+    f32 view_distance;                                               // 0x230
+    f32 hear_distance;                                               // 0x234
+    f32 max_view_height;                                             // 0x238
+    f32 min_view_height;                                             // 0x23c
+    f32 ai_visibility_extension;                                     // 0x240
+    u8 unknown_244[0x18];                                            // 0x244
+    f32 previous_animation_root_time;                                // 0x25c
+    f32 previous_blend_target_root_time;                             // 0x260
+    struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;    // 0x264
+    struct CHARACTERANIM_CONFIG_PC *previous_blend_target_root_info; // 0x268
+    u8 unknown_26c[0xc];                                             // 0x26c
+    u16 pitch_angle;                                                 // 0x278
+    u8 unknown_27a[0x2];                                             // 0x27a
+    u16 roll_angle;                                                  // 0x27c
+    i16 supporting_platform_id;                                      // 0x27e
+    i8 locator_name_index;                                           // 0x280
+    u8 grounded;                                                     // 0x281
+    u8 unknown_282[9];                                               // 0x282
+    u8 leader_selection_state;                                       // 0x28b
+    u8 unknown_28c;                                                  // 0x28c
+    u8 object_id;                                                    // 0x28d
+    u8 unknown_28e[0x4];                                             // 0x28e
+    u16 ai_collision_priority_pc;                                    // 0x292
+    u16 ai_resolved_collision_priority_pc;                           // 0x294
+    u8 unknown_296[0x2];                                             // 0x296
+    struct APIOBJECT_PC *collision_link;                             // 0x298
+} APIOBJECT_PC;                                                      // size 0x29c
 
-STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, position) == 0x5c);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, object_id) == 0x28d);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, locator_name_index) == 0x280);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, grounded) == 0x281);
-STATIC_ASSERT(offsetof(AIPATH_PC, inside_node_bits) == 0x58);
-STATIC_ASSERT(offsetof(AIPACKET_PC, inside_path_node) == 0x124);
-STATIC_ASSERT(offsetof(AIPACKET_PC, terrain_origin) == 0x14c);
-STATIC_ASSERT(offsetof(AIPACKET_PC, last_path_position) == 0x170);
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_target) == 0x184);
-STATIC_ASSERT(offsetof(AIPACKET_PC, navigation_flags) == 0x1ec);
-STATIC_ASSERT(offsetof(AIPACKET_PC, time_off_path) == 0x208);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, character_data) == 0x54);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_radius) == 0xac);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, flags_low) == 0x1fc);
-STATIC_ASSERT(offsetof(APIOBJECT_PC, supporting_platform_id) == 0x27e);
 typedef APIOBJECT_PC *(__cdecl *APIOBJECT_FROM_ID_PC)(u8);
 
 typedef struct AIACTIONMACRO_PC AIACTIONMACRO_PC;
 typedef struct AICONDITIONMACRO_PC AICONDITIONMACRO_PC;
 
 struct AIACTION_PC {
-    NULISTLNK link;
-    char **params;
-    i32 param_count;
-    AIACTIONDEF_PC *definition;
-};
-
-STATIC_ASSERT(sizeof(AIACTION_PC) == 0x14);
-STATIC_ASSERT(offsetof(AIACTION_PC, params) == 0x08);
-STATIC_ASSERT(offsetof(AIACTION_PC, definition) == 0x10);
+    NULISTLNK link;             // 0x00
+    char **params;              // 0x08
+    i32 param_count;            // 0x0c
+    AIACTIONDEF_PC *definition; // 0x10
+}; // size 0x14
 
 struct AICONDITION_PC {
-    NULISTLNK link;
-    f32 param_value;
-    i8 comparison;
-    i8 param_index;
-    u16 flags;
-    char *complex_expression;
-    char *argument;
-    void *initialized_argument;
-    AICONDITIONDEF_PC *definition;
-    char *next_state_name;
-    AISTATE_PC *next_state;
-    AICONDITION_PC *parameter_condition;
-};
-
-STATIC_ASSERT(sizeof(AICONDITION_PC) == 0x2c);
-STATIC_ASSERT(offsetof(AICONDITION_PC, param_value) == 0x08);
-STATIC_ASSERT(offsetof(AICONDITION_PC, comparison) == 0x0c);
-STATIC_ASSERT(offsetof(AICONDITION_PC, flags) == 0x0e);
-STATIC_ASSERT(offsetof(AICONDITION_PC, complex_expression) == 0x10);
-STATIC_ASSERT(offsetof(AICONDITION_PC, argument) == 0x14);
-STATIC_ASSERT(offsetof(AICONDITION_PC, definition) == 0x1c);
-STATIC_ASSERT(offsetof(AICONDITION_PC, next_state) == 0x24);
-STATIC_ASSERT(offsetof(AICONDITION_PC, parameter_condition) == 0x28);
+    NULISTLNK link;                      // 0x00
+    f32 param_value;                     // 0x08
+    i8 comparison;                       // 0x0c
+    i8 param_index;                      // 0x0d
+    u16 flags;                           // 0x0e
+    char *complex_expression;            // 0x10
+    char *argument;                      // 0x14
+    void *initialized_argument;          // 0x18
+    AICONDITIONDEF_PC *definition;       // 0x1c
+    char *next_state_name;               // 0x20
+    AISTATE_PC *next_state;              // 0x24
+    AICONDITION_PC *parameter_condition; // 0x28
+}; // size 0x2c
 
 struct AIREFSCRIPT_PC {
-    NULISTLNK link;
-    char *name;
-    AISCRIPT_PC *script;
-    char *return_state_name;
-    AISTATE_PC *return_state;
-    u32 check_global_scripts : 1;
-    u32 check_level_scripts : 1;
-    NULISTHDR conditions;
-};
-
-STATIC_ASSERT(sizeof(AIREFSCRIPT_PC) == 0x24);
-STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, script) == 0x0c);
-STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, return_state_name) == 0x10);
-STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, return_state) == 0x14);
-STATIC_ASSERT(offsetof(AIREFSCRIPT_PC, conditions) == 0x1c);
+    NULISTLNK link;               // 0x00
+    char *name;                   // 0x08
+    AISCRIPT_PC *script;          // 0x0c
+    char *return_state_name;      // 0x10
+    AISTATE_PC *return_state;     // 0x14
+    u32 check_global_scripts : 1; // 0x18:0
+    u32 check_level_scripts : 1;  // 0x18:1
+    NULISTHDR conditions;         // 0x1c
+}; // size 0x24
 
 struct AISTATE_PC {
-    NULISTLNK link;
-    NULISTHDR conditions;
-    NULISTHDR actions;
-    char *name;
-    NULISTHDR reference_scripts;
-};
-
-STATIC_ASSERT(sizeof(AISTATE_PC) == 0x24);
-STATIC_ASSERT(offsetof(AISTATE_PC, conditions) == 0x08);
-STATIC_ASSERT(offsetof(AISTATE_PC, actions) == 0x10);
-STATIC_ASSERT(offsetof(AISTATE_PC, name) == 0x18);
-STATIC_ASSERT(offsetof(AISTATE_PC, reference_scripts) == 0x1c);
+    NULISTLNK link;              // 0x00
+    NULISTHDR conditions;        // 0x08
+    NULISTHDR actions;           // 0x10
+    char *name;                  // 0x18
+    NULISTHDR reference_scripts; // 0x1c
+}; // size 0x24
 
 struct AIACTIONMACRO_PC {
-    NULISTLNK link;
-    char *name;
-    NULISTHDR actions;
-};
-
-STATIC_ASSERT(sizeof(AIACTIONMACRO_PC) == 0x14);
-STATIC_ASSERT(offsetof(AIACTIONMACRO_PC, actions) == 0x0c);
+    NULISTLNK link;    // 0x00
+    char *name;        // 0x08
+    NULISTHDR actions; // 0x0c
+}; // size 0x14
 
 struct AICONDITIONMACRO_PC {
-    NULISTLNK link;
-    char *name;
-    NULISTHDR conditions;
-};
-
-STATIC_ASSERT(sizeof(AICONDITIONMACRO_PC) == 0x14);
-STATIC_ASSERT(offsetof(AICONDITIONMACRO_PC, conditions) == 0x0c);
+    NULISTLNK link;       // 0x00
+    char *name;           // 0x08
+    NULISTHDR conditions; // 0x0c
+}; // size 0x14
 
 typedef struct AISCRIPTPARAM_PC {
-    char *name;
-    f32 default_value;
-} AISCRIPTPARAM_PC;
-
-STATIC_ASSERT(sizeof(AISCRIPTPARAM_PC) == 0x08);
+    char *name;        // 0x0
+    f32 default_value; // 0x4
+} AISCRIPTPARAM_PC;    // size 0x8
 
 typedef struct AILOCATOR_PC {
-    char name[0x10];
-    NUVEC position;
+    char name[0x10]; // 0x00
+    NUVEC position;  // 0x10
 
-    union {
-        i32 rotation;
-        u32 flags;
+    union {           // 0x1c
+        i32 rotation; // 0x1c
+        u32 flags;    // 0x1c
     };
 
-    AIPATHINFO_PC path_info;
+    AIPATHINFO_PC path_info; // 0x20
 
-    union {
-        i32 rotation_offset;
-        u32 locator_flags;
+    union {                  // 0x38
+        i32 rotation_offset; // 0x38
+        u32 locator_flags;   // 0x38
     };
-} AILOCATOR_PC;
-
-STATIC_ASSERT(offsetof(AILOCATOR_PC, position) == 0x10);
-STATIC_ASSERT(sizeof(AILOCATOR_PC) == 0x3c);
+} AILOCATOR_PC; // size 0x3c
 
 typedef struct AILOCATORSET_PC {
-    char name[0x10];
-    i8 locator_count;
-    u8 unknown_11[3];
-    u8 *locator_entries;
-    u8 *assigned;
-} AILOCATORSET_PC;
-
-STATIC_ASSERT(sizeof(AILOCATORSET_PC) == 0x1c);
-STATIC_ASSERT(offsetof(AILOCATORSET_PC, locator_count) == 0x10);
-STATIC_ASSERT(offsetof(AILOCATORSET_PC, locator_entries) == 0x14);
-STATIC_ASSERT(offsetof(AILOCATORSET_PC, assigned) == 0x18);
+    char name[0x10];     // 0x00
+    i8 locator_count;    // 0x10
+    u8 unknown_11[3];    // 0x11
+    u8 *locator_entries; // 0x14
+    u8 *assigned;        // 0x18
+} AILOCATORSET_PC;       // size 0x1c
 
 typedef struct AIAREA_PC {
-    char name[0x10];
-    NUVEC position;
-    f32 half_width;
-    f32 height;
-    f32 half_depth;
-    i16 rotation;
-    u8 runtime_flags;
-    u8 game_flags;
-    u8 unknown_2c[12];
-    AISYS_PC *system;
-    u8 unknown_3c[4];
-} AIAREA_PC;
-
-STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40); /* PC differs from Android's 0x3c. */
+    char name[0x10];   // 0x00
+    NUVEC position;    // 0x10
+    f32 half_width;    // 0x1c
+    f32 height;        // 0x20
+    f32 half_depth;    // 0x24
+    i16 rotation;      // 0x28
+    u8 runtime_flags;  // 0x2a
+    u8 game_flags;     // 0x2b
+    u8 unknown_2c[12]; // 0x2c
+    AISYS_PC *system;  // 0x38
+    u8 unknown_3c[4];  // 0x3c
+} AIAREA_PC;           // size 0x40 (Android: 0x3c)
 
 typedef struct AIPATHSYS_PC {
-    u8 path_count;
-    u8 unknown_01[3];
-    AIPATH_PC **paths;
-    AIPATH_PC *active_path;
-    AIPATHSPECIALROUTE_PC *special_routes;
-} AIPATHSYS_PC;
+    u8 path_count;                         // 0x0
+    u8 unknown_01[3];                      // 0x1
+    AIPATH_PC **paths;                     // 0x4
+    AIPATH_PC *active_path;                // 0x8
+    AIPATHSPECIALROUTE_PC *special_routes; // 0xc
+} AIPATHSYS_PC;                            // size 0x10
 
-STATIC_ASSERT(offsetof(AIPATHSYS_PC, special_routes) == 0xc);
-STATIC_ASSERT(offsetof(AIPATHSYS_PC, paths) == 4);
-STATIC_ASSERT(offsetof(AIPATHSYS_PC, active_path) == 8);
 typedef i32(__cdecl *AI_PREPARING_SPECIAL_MOVE_PC)(AIPACKET_PC *, APIOBJECT_PC *, i32);
 
 typedef struct AIANTINODE_PC {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 min_y_offset;
-    f32 max_y;
-    f32 max_y_offset;
-    NUSPECIALHANDLE special_handle;
-    NUVEC special_position;
-    i32 rotation;
-    i32 rotation_offset;
-    f32 base_radius, base_height;
-    u8 enabled;
-    u8 game_flags;
-    u8 type;
-    u8 has_special;
-    u8 unknown_4c_b[0x4];
-    u8 special_type;
-    u8 unknown_51[0x7];
-} AIANTINODE_PC;
-
-STATIC_ASSERT(sizeof(AIANTINODE_PC) == 0x58);
-STATIC_ASSERT(offsetof(AIANTINODE_PC, special_handle) == 0x20);
-STATIC_ASSERT(offsetof(AIANTINODE_PC, special_position) == 0x2c);
-STATIC_ASSERT(offsetof(AIANTINODE_PC, rotation) == 0x38);
-STATIC_ASSERT(offsetof(AIANTINODE_PC, rotation_offset) == 0x3c);
-STATIC_ASSERT(offsetof(AIANTINODE_PC, has_special) == 0x4b);
+    NUVEC position;                 // 0x00
+    f32 radius;                     // 0x0c
+    f32 min_y;                      // 0x10
+    f32 min_y_offset;               // 0x14
+    f32 max_y;                      // 0x18
+    f32 max_y_offset;               // 0x1c
+    NUSPECIALHANDLE special_handle; // 0x20
+    NUVEC special_position;         // 0x2c
+    i32 rotation;                   // 0x38
+    i32 rotation_offset;            // 0x3c
+    f32 base_radius, base_height;   // 0x40
+    u8 enabled;                     // 0x48
+    u8 game_flags;                  // 0x49
+    u8 type;                        // 0x4a
+    u8 has_special;                 // 0x4b
+    u8 unknown_4c_b[0x4];           // 0x4c
+    u8 special_type;                // 0x50
+    u8 unknown_51[0x7];             // 0x51
+} AIANTINODE_PC;                    // size 0x58
 
 typedef struct AIROW_PC {
-    AIPATHINFO_PC path_info;
-    NUVEC position;
-    i32 rotation;
-    AIPATHCNX_PC *next_connection;
-    u8 next_direction;
-    u8 is_alive;
-    u8 unknown_2e[2];
+    AIPATHINFO_PC path_info;       // 0x00
+    NUVEC position;                // 0x18
+    i32 rotation;                  // 0x24
+    AIPATHCNX_PC *next_connection; // 0x28
+    u8 next_direction;             // 0x2c
+    u8 is_alive;                   // 0x2d
+    u8 unknown_2e[2];              // 0x2e
 
-    union {
-        u32 flags;
+    union {        // 0x30
+        u32 flags; // 0x30
 
-        struct {
-            u32 is_clockwise : 1;
-            u32 is_turning : 1;
-            u32 flags_bits_2_31 : 30;
+        struct {                      // 0x30
+            u32 is_clockwise : 1;     // 0x30:0
+            u32 is_turning : 1;       // 0x30:1
+            u32 flags_bits_2_31 : 30; // 0x30:2
         };
     };
-} AIROW_PC;
-
-STATIC_ASSERT(sizeof(AIROW_PC) == 0x34);
+} AIROW_PC; // size 0x34
 
 typedef struct AIGROUP_PC {
-    APIOBJECT_PC *leader;
-    i16 rotation_speed;
-    u8 row_count;
-    u8 member_count;
-    u8 count_across;
-    u8 unknown_09[3];
-    APIOBJECT_PC *members[16];
-    i32 member_is_alive;
+    APIOBJECT_PC *leader;      // 0x000
+    i16 rotation_speed;        // 0x004
+    u8 row_count;              // 0x006
+    u8 member_count;           // 0x007
+    u8 count_across;           // 0x008
+    u8 unknown_09[3];          // 0x009
+    APIOBJECT_PC *members[16]; // 0x00c
+    i32 member_is_alive;       // 0x04c
 
-    union {
-        u32 flags;
+    union {        // 0x050
+        u32 flags; // 0x050
 
-        struct {
-            u32 flags_bits_0_1 : 2;
-            u32 is_reversed : 1;
-            u32 flags_bit_3 : 1;
-            u32 is_row_turning : 1;
-            u32 flags_bits_5_31 : 27;
+        struct {                      // 0x050
+            u32 flags_bits_0_1 : 2;   // 0x050:0
+            u32 is_reversed : 1;      // 0x050:2
+            u32 flags_bit_3 : 1;      // 0x050:3
+            u32 is_row_turning : 1;   // 0x050:4
+            u32 flags_bits_5_31 : 27; // 0x050:5
         };
     };
 
-    AIROW_PC rows[4];
-    f32 radius;
-    f32 x_spacing;
-    f32 z_spacing;
-    f32 max_speed;
-} AIGROUP_PC;
-
-STATIC_ASSERT(sizeof(AIGROUP_PC) == 0x134);
+    AIROW_PC rows[4]; // 0x054
+    f32 radius;       // 0x124
+    f32 x_spacing;    // 0x128
+    f32 z_spacing;    // 0x12c
+    f32 max_speed;    // 0x130
+} AIGROUP_PC;         // size 0x134
 
 typedef struct AICREATURE_PC {
-    char name[16];
-    char script_name[16];
-    NUVEC position;
-    i32 y_rotation;
-    AIPATHINFO_PC path_info;
-    i32 flags;
-    u8 set;
-    u8 unknown_4d[0x1];
-    i16 type;
-    u8 count;
-    u8 count_across;
-    u8 unknown_52[0x6];
-    u32 active_mask;
-    f32 x_spacing;
-    f32 z_spacing;
-    f32 script_params[4];
-    AIAREA_PC *activate_area;
-    void *area;
-    void *locator;
-    void *respawn_locator;
-    u8 activation_difficulty;
-    i8 min_respawn_count;
-    i8 max_respawn_count;
-    u8 activation_type;
-    f32 min_respawn_time;
-    f32 max_respawn_time;
-    f32 start_stagger;
-    f32 view_distance;
-    f32 hear_distance;
-    f32 max_view_height;
-    f32 min_view_height;
-} AICREATURE_PC;
-
-STATIC_ASSERT(offsetof(AICREATURE_PC, name) == 0);
-STATIC_ASSERT(offsetof(AICREATURE_PC, position) == 0x20);
-STATIC_ASSERT(offsetof(AICREATURE_PC, path_info) == 0x30);
-STATIC_ASSERT(offsetof(AICREATURE_PC, flags) == 0x48);
-STATIC_ASSERT(offsetof(AICREATURE_PC, script_params) == 0x64);
-STATIC_ASSERT(sizeof(AICREATURE_PC) == 0xa4);
-STATIC_ASSERT(offsetof(AICREATURE_PC, min_respawn_count) == 0x85);
-STATIC_ASSERT(offsetof(AICREATURE_PC, max_respawn_count) == 0x86);
-STATIC_ASSERT(offsetof(AICREATURE_PC, min_respawn_time) == 0x88);
-STATIC_ASSERT(offsetof(AICREATURE_PC, max_respawn_time) == 0x8c);
+    char name[16];            // 0x00
+    char script_name[16];     // 0x10
+    NUVEC position;           // 0x20
+    i32 y_rotation;           // 0x2c
+    AIPATHINFO_PC path_info;  // 0x30
+    i32 flags;                // 0x48
+    u8 set;                   // 0x4c
+    u8 unknown_4d[0x1];       // 0x4d
+    i16 type;                 // 0x4e
+    u8 count;                 // 0x50
+    u8 count_across;          // 0x51
+    u8 unknown_52[0x6];       // 0x52
+    u32 active_mask;          // 0x58
+    f32 x_spacing;            // 0x5c
+    f32 z_spacing;            // 0x60
+    f32 script_params[4];     // 0x64
+    AIAREA_PC *activate_area; // 0x74
+    void *area;               // 0x78
+    void *locator;            // 0x7c
+    void *respawn_locator;    // 0x80
+    u8 activation_difficulty; // 0x84
+    i8 min_respawn_count;     // 0x85
+    i8 max_respawn_count;     // 0x86
+    u8 activation_type;       // 0x87
+    f32 min_respawn_time;     // 0x88
+    f32 max_respawn_time;     // 0x8c
+    f32 start_stagger;        // 0x90
+    f32 view_distance;        // 0x94
+    f32 hear_distance;        // 0x98
+    f32 max_view_height;      // 0x9c
+    f32 min_view_height;      // 0xa0
+} AICREATURE_PC;              // size 0xa4
 
 typedef union variptr_u {
-    void *void_ptr;
-    char *char_ptr;
-    u32 addr;
-} VARIPTR;
-
-STATIC_ASSERT(sizeof(VARIPTR) == 4);
+    void *void_ptr; // 0x0
+    char *char_ptr; // 0x0
+    u32 addr;       // 0x0
+} VARIPTR;          // size 0x4
 
 struct AISYS_PC {
-    void *storage;
-    VARIPTR storage_end;
-    VARIPTR storage_cursor;
-    i32 storage_size;
-    AIPATHSYS_PC *path_sys;
+    void *storage;          // 0x0000
+    VARIPTR storage_end;    // 0x0004
+    VARIPTR storage_cursor; // 0x0008
+    i32 storage_size;       // 0x000c
+    AIPATHSYS_PC *path_sys; // 0x0010
 
-    union {
-        u8 unknown_14[4];
-        i32 creature_count;
+    union {                 // 0x0014
+        u8 unknown_14[4];   // 0x0014
+        i32 creature_count; // 0x0014
     };
 
-    AICREATURE_PC *creatures;
-    NULISTHDR scripts;
-    i32 locator_count;
-    AILOCATOR_PC *locators;
-    i32 locator_set_count;
-    AILOCATORSET_PC *locator_sets;
-    i32 area_count;
-    AIAREA_PC *areas;
-    AIGROUP_PC groups[16];
-    i32 antinode_count;
-    AIANTINODE_PC *antinodes;
-    u8 next_area_check;
-    u8 goody_idx;
+    AICREATURE_PC *creatures;      // 0x0018
+    NULISTHDR scripts;             // 0x001c
+    i32 locator_count;             // 0x0024
+    AILOCATOR_PC *locators;        // 0x0028
+    i32 locator_set_count;         // 0x002c
+    AILOCATORSET_PC *locator_sets; // 0x0030
+    i32 area_count;                // 0x0034
+    AIAREA_PC *areas;              // 0x0038
+    AIGROUP_PC groups[16];         // 0x003c
+    i32 antinode_count;            // 0x137c
+    AIANTINODE_PC *antinodes;      // 0x1380
+    u8 next_area_check;            // 0x1384
+    u8 goody_idx;                  // 0x1385
 
-    union {
-        u8 unknown_1386[0x2];
-        i16 reset_flags;
+    union {                   // 0x1386
+        u8 unknown_1386[0x2]; // 0x1386
+        i16 reset_flags;      // 0x1386
     };
 
-    void *game_sys;
-    APIOBJECT_PC *player_1;
-    APIOBJECT_PC *player_2;
-};
-
-STATIC_ASSERT(offsetof(AISYS_PC, storage_end) == 4);
-STATIC_ASSERT(offsetof(AISYS_PC, creatures) == 0x18);
-STATIC_ASSERT(offsetof(AISYS_PC, path_sys) == 0x10);
-STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
-STATIC_ASSERT(offsetof(AISYS_PC, locator_count) == 0x24);
-STATIC_ASSERT(offsetof(AISYS_PC, locators) == 0x28);
-STATIC_ASSERT(offsetof(AISYS_PC, locator_set_count) == 0x2c);
-STATIC_ASSERT(offsetof(AISYS_PC, locator_sets) == 0x30);
-STATIC_ASSERT(offsetof(AISYS_PC, area_count) == 0x34);
-STATIC_ASSERT(offsetof(AISYS_PC, areas) == 0x38);
-
-STATIC_ASSERT(offsetof(AISYS_PC, groups) == 0x3c);
-STATIC_ASSERT(offsetof(AISYS_PC, antinode_count) == 0x137c);
-STATIC_ASSERT(offsetof(AISYS_PC, antinodes) == 0x1380);
-STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);
-STATIC_ASSERT(offsetof(AISYS_PC, player_2) == 0x1390);
-STATIC_ASSERT(offsetof(AILOCATOR_PC, rotation) == 0x1c);
-STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
-STATIC_ASSERT(offsetof(AILOCATOR_PC, rotation_offset) == 0x38);
+    void *game_sys;         // 0x1388
+    APIOBJECT_PC *player_1; // 0x138c
+    APIOBJECT_PC *player_2; // 0x1390
+}; // size 0x1394
 
 struct AISCRIPT_PC {
-    NULISTLNK link;
-    char *name;
-    char *derived_from;
-    NULISTHDR states;
-    AISCRIPTPARAM_PC params[4];
-    AISTATE_PC *base_state;
-    u32 flags_3c;
-    NULISTHDR reference_scripts;
-    NULISTHDR condition_macros;
-    NULISTHDR action_macros;
-};
-
-STATIC_ASSERT(offsetof(AISCRIPT_PC, link) == 0x0);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 0x8);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, derived_from) == 0xc);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, states) == 0x10);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, params) == 0x18);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, flags_3c) == 0x3c);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, reference_scripts) == 0x40);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, base_state) == 0x38);
-STATIC_ASSERT(sizeof(AISCRIPT_PC) == 0x58);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, condition_macros) == 0x48);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, action_macros) == 0x50);
+    NULISTLNK link;              // 0x00
+    char *name;                  // 0x08
+    char *derived_from;          // 0x0c
+    NULISTHDR states;            // 0x10
+    AISCRIPTPARAM_PC params[4];  // 0x18
+    AISTATE_PC *base_state;      // 0x38
+    u32 flags_3c;                // 0x3c
+    NULISTHDR reference_scripts; // 0x40
+    NULISTHDR condition_macros;  // 0x48
+    NULISTHDR action_macros;     // 0x50
+}; // size 0x58
 
 typedef struct gizaimessage_s {
-    NULISTLNK links;
-    char name[32];
-    f32 value;
-    i8 output_values[8];
-    i8 output_count;
-    u8 unknown_35;
-    u16 flags;
-} GIZAIMESSAGE;
-
-STATIC_ASSERT(sizeof(GIZAIMESSAGE) == 0x38);
-STATIC_ASSERT(offsetof(GIZAIMESSAGE, name) == 8);
-STATIC_ASSERT(offsetof(GIZAIMESSAGE, value) == 0x28);
-STATIC_ASSERT(offsetof(GIZAIMESSAGE, output_values) == 0x2c);
-STATIC_ASSERT(offsetof(GIZAIMESSAGE, output_count) == 0x34);
-STATIC_ASSERT(offsetof(GIZAIMESSAGE, flags) == 0x36);
+    NULISTLNK links;     // 0x00
+    char name[32];       // 0x08
+    f32 value;           // 0x28
+    i8 output_values[8]; // 0x2c
+    i8 output_count;     // 0x34
+    u8 unknown_35;       // 0x35
+    u16 flags;           // 0x36
+} GIZAIMESSAGE;          // size 0x38
 
 typedef struct gizaimessagesys_s {
-    i32 count;
-    GIZAIMESSAGE *messages;
-    NULISTHDR free_list;
-    NULISTHDR active_list;
-} GIZAIMESSAGESYS;
-
-STATIC_ASSERT(sizeof(GIZAIMESSAGESYS) == 0x18);
-STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, messages) == 4);
-STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, free_list) == 8);
-STATIC_ASSERT(offsetof(GIZAIMESSAGESYS, active_list) == 0x10);
+    i32 count;              // 0x00
+    GIZAIMESSAGE *messages; // 0x04
+    NULISTHDR free_list;    // 0x08
+    NULISTHDR active_list;  // 0x10
+} GIZAIMESSAGESYS;          // size 0x18
 
 typedef struct nudathdr_s NUDATHDR;
 typedef struct vufnt_s VUFNT;
@@ -14037,11 +13793,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i16 id_ANAKINPADAWAN;
 
     extern NUSPECIALHANDLE LevHSpecial[88];
-    STATIC_ASSERT(offsetof(AIPACKET_PC, movement_position) == 0x114);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, mover_height) == 0x120);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, movement_target_radius) == 0x1f0);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, motion_flags) == 0x1f8);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_special) == 0x20c);
     STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
     STATIC_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
     STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
@@ -14222,20 +13973,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl SetToLastSafePos(GAMEOBJECT *);
     i32 __cdecl AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *, char *);
     extern i32 LevSafePlatID[2];
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, character_model) == 0x50);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, horizontal_velocity_magnitude) == 0x22c);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, view_distance) == 0x230);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, hear_distance) == 0x234);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, max_view_height) == 0x238);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, min_view_height) == 0x23c);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, y_rotation) == 0x2c);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, x_spacing) == 0x5c);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, z_spacing) == 0x60);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, view_distance) == 0x94);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, hear_distance) == 0x98);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, max_view_height) == 0x9c);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, min_view_height) == 0xa0);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, creature_origin) == 0xf8);
     STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, blend_out_time) == 0x14);
     STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, playback_rate) == 0x18);
     STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
@@ -14245,7 +13982,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(GAMEOBJECT, camera_saved_position) == 0xc74);
     STATIC_ASSERT(offsetof(GAMECAMERA, blend_time) == 0x1bc);
     STATIC_ASSERT(offsetof(GAMECAMERA, blend_duration) == 0x1c0);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) == 0xc8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, tag_cooldown) == 0x7c0);
     STATIC_ASSERT(offsetof(GAMEOBJECT, tag_player_index) == 0x7c4);
     STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
@@ -14382,11 +14118,6 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl SockSys_Configure(SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
     void __cdecl SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
     i32 __cdecl ObjInTube(GAMEOBJECT *);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, count) == 0x50);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, activate_area) == 0x74);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, activation_difficulty) == 0x84);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, activation_type) == 0x87);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, start_stagger) == 0x90);
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
     STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
@@ -14436,7 +14167,6 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern GAMEOBJECT *player2;
     STATIC_ASSERT(offsetof(GAMEOBJECT, one_at_once_player) == 0x1084);
     STATIC_ASSERT(offsetof(GAMEOBJECT, attack_override) == 0x1085);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, movement_stopped) == 0x140);
     i32 __cdecl GetMenuID(void);
     f32 __cdecl GamePad_Rotate(GAMEOBJECT *);
     i32 __cdecl GamePad_Waggle(GAMEPAD_PC *);
@@ -15474,38 +15204,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, tiptoe_speed) == 0x14);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, goal_speed_mode) == 0x13f);
     f32 __cdecl GetCharacterGoalSpeed(APIOBJECT_PC *);
-    STATIC_ASSERT(offsetof(AIROW_PC, path_info) == 0x0);
-    STATIC_ASSERT(offsetof(AIROW_PC, position) == 0x18);
-    STATIC_ASSERT(offsetof(AIROW_PC, rotation) == 0x24);
-    STATIC_ASSERT(offsetof(AIROW_PC, next_connection) == 0x28);
-    STATIC_ASSERT(offsetof(AIROW_PC, next_direction) == 0x2c);
-    STATIC_ASSERT(offsetof(AIROW_PC, is_alive) == 0x2d);
-    STATIC_ASSERT(offsetof(AIROW_PC, flags) == 0x30);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, leader) == 0x0);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, rotation_speed) == 0x4);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, row_count) == 0x6);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, member_count) == 0x7);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, count_across) == 0x8);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, members) == 0xc);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, member_is_alive) == 0x4c);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, flags) == 0x50);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, rows) == 0x54);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, radius) == 0x124);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, x_spacing) == 0x128);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, z_spacing) == 0x12c);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, max_speed) == 0x130);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, script_action_position) == 0x78);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, script_destination_path_info) == 0x84);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, group) == 0x144);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, group_member_index) == 0x148);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, group_column) == 0x149);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, group_row) == 0x14a);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, fallback_path_info) == 0x1cc);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, movement_look_target) == 0x1e4);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0x0);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, leader_selection_state) == 0x28b);
     typedef i32(__cdecl *AI_RESPAWN_ON_PATH_PC)(APIOBJECT_PC *);
     typedef f32(__cdecl *AI_CHARACTER_GOAL_SPEED_PC)(APIOBJECT_PC *);
     typedef i32(__cdecl *AI_MID_SPECIAL_MOVE_PC)(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
@@ -17012,13 +16711,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NewArea_ResetGlobalsPC(void);
     void __cdecl NewArea(void);
     void __cdecl ResetMinikitCounter(void);
-    STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, locator_set) == 0xa8);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, last_safe_position) == 0x1b4);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, previous_position) == 0x1c0);
-    STATIC_ASSERT(offsetof(APIOBJECT_PC, respawn_position) == 0x1cc);
     STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, flags_word) == 0x210);
     STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-    STATIC_ASSERT(offsetof(AIGROUP_PC, flags) == 0x50);
     void __cdecl NuPPUnpack(void *, void *);
     i32 __cdecl NuPPLoadBuffer(NUFILE file, void *buffer, i32 capacity);
     extern const char AITransferLiteral757a94[9];
@@ -17181,8 +16875,6 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char WorldObjectAnimFormat[7];
     extern const char WorldLevelConfigFormat[7];
     void __cdecl GameCam_NewShake(GAMECAMERA *, f32, f32, f32);
-    STATIC_ASSERT(offsetof(AIPACKET_PC, dont_avoid_character) == 0xf4);
-    STATIC_ASSERT(offsetof(AICREATURE_PC, type) == 0x4e);
     STATIC_ASSERT(offsetof(GAMEOBJECT, is_underwater) == 0x286);
     STATIC_ASSERT(offsetof(GAMEOBJECT, effect_flags) == 0x289);
     STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_pc) == 0x7b7);
@@ -30625,13 +30317,10 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
 STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, unknown_d8) == 0xd8);
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor.params) == 0x24);
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
-STATIC_ASSERT(offsetof(AISYS_PC, creature_count) == 0x14);
-STATIC_ASSERT(offsetof(AISYS_PC, reset_flags) == 0x1386);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30642,13 +30331,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(AIAREA_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(AIAREA_PC, half_width) == 0x1c);
-STATIC_ASSERT(offsetof(AIAREA_PC, height) == 0x20);
-STATIC_ASSERT(offsetof(AIAREA_PC, half_depth) == 0x24);
-STATIC_ASSERT(offsetof(AIAREA_PC, rotation) == 0x28);
-STATIC_ASSERT(offsetof(AIAREA_PC, runtime_flags) == 0x2a);
-STATIC_ASSERT(offsetof(AIAREA_PC, system) == 0x38);
 STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, paths) == 0x28);
 STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, area_locators) == 0x50);
 STATIC_ASSERT(offsetof(HUB_AI_MUSIC_VIEW_PC, door_state) == 0xf2);
@@ -30686,8 +30368,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, special_move_node) == 0x184);
-STATIC_ASSERT(offsetof(AIPACKET_PC, goal_path_node) == 0x17c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30740,7 +30420,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(AIPACKET_PC, path_connection_state) == 0x139);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);

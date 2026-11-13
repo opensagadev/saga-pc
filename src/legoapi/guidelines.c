@@ -38,8 +38,6 @@ STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 extern char AIRegistryTextPc007575bc[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 
-STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
-STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
 STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
 STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);

@@ -41,7 +41,6 @@ void __cdecl GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
 
 STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
-STATIC_ASSERT(sizeof(AICREATURE_PC) == 0xa4);
 
 typedef struct gizobstacle_system_pc_s {
     GIZOBSTACLE *obstacles;
