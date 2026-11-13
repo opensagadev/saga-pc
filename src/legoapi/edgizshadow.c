@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <string.h>
 
+/* Retail unit 0x5af4f0-0x5af935: definitions in retail address order. */
+
 typedef struct shadow_world_view_pc_s {
     u8 reserved_0000[0x5110];
     EDGIZSHADOW_PC *shadow_editor;
@@ -19,7 +21,55 @@ STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_2c) == 0x2c);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_30) == 0x30);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, preset) == 0x34);
 STATIC_ASSERT(offsetof(SHADOW_WORLD_VIEW_PC, shadow_editor) == 0x5110);
-i32 edGizShadow_gizmotype_id = 0;
+
+static i32 __cdecl Shadow_GetMaxGizmos(void *world) {
+    return 1;
+}
+
+static void __cdecl Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
+    SHADOW_WORLD_VIEW_PC *world = (SHADOW_WORLD_VIEW_PC *)world_ptr;
+    AddGizmo(system, type_id, NULL, &world->shadow_editor);
+}
+
+static char *__cdecl Shadow_GetGizmoName(GIZMO_PC *gizmo) {
+    return ShadowGizmoNamePc;
+}
+
+static i32 __cdecl Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+    return 0;
+}
+
+static char *__cdecl Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    return ShadowOutputNamePc;
+}
+
+static i32 __cdecl Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}
+
+static void *__cdecl Shadow_ReserveBufferSpace(void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
+    view->shadow_editor = (EDGIZSHADOW_PC *)world->giz_buffer.addr;
+    world->giz_buffer.addr += sizeof(EDGIZSHADOW_PC);
+    memset(view->shadow_editor, 0, sizeof(EDGIZSHADOW_PC));
+    view->shadow_editor->direction.x = -2.0f;
+    view->shadow_editor->direction.y = -10.0f;
+    view->shadow_editor->direction.z = -2.0f;
+    view->shadow_editor->field_0c = 0.3f;
+    view->shadow_editor->field_10 = 2.0f;
+    view->shadow_editor->field_14 = 0.5f;
+    view->shadow_editor->field_18 = 0.0005f;
+    view->shadow_editor->field_1c = 0.01f;
+    view->shadow_editor->field_20 = 22.0f;
+    view->shadow_editor->field_24 = 0.5f;
+    view->shadow_editor->field_28 = 0.0f;
+    view->shadow_editor->field_2c = 0.0f;
+    view->shadow_editor->field_30 = -2.0f;
+    view->shadow_editor->preset = 0;
+    return view->shadow_editor;
+}
 
 static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
     switch (preset) {
@@ -52,48 +102,7 @@ static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
             break;
     }
 }
-static i32 __cdecl Shadow_GetMaxGizmos(void *world) {
-    return 1;
-}
-static void __cdecl Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    SHADOW_WORLD_VIEW_PC *world = (SHADOW_WORLD_VIEW_PC *)world_ptr;
-    AddGizmo(system, type_id, NULL, &world->shadow_editor);
-}
-static char *__cdecl Shadow_GetGizmoName(GIZMO_PC *gizmo) {
-    return ShadowGizmoNamePc;
-}
-static i32 __cdecl Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
-    return 0;
-}
-static char *__cdecl Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ShadowOutputNamePc;
-}
-static i32 __cdecl Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
-    return 1;
-}
-static void *__cdecl Shadow_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-    view->shadow_editor = (EDGIZSHADOW_PC *)world->giz_buffer.addr;
-    world->giz_buffer.addr += sizeof(EDGIZSHADOW_PC);
-    memset(view->shadow_editor, 0, sizeof(EDGIZSHADOW_PC));
-    view->shadow_editor->direction.x = -2.0f;
-    view->shadow_editor->direction.y = -10.0f;
-    view->shadow_editor->direction.z = -2.0f;
-    view->shadow_editor->field_0c = 0.3f;
-    view->shadow_editor->field_10 = 2.0f;
-    view->shadow_editor->field_14 = 0.5f;
-    view->shadow_editor->field_18 = 0.0005f;
-    view->shadow_editor->field_1c = 0.01f;
-    view->shadow_editor->field_20 = 22.0f;
-    view->shadow_editor->field_24 = 0.5f;
-    view->shadow_editor->field_28 = 0.0f;
-    view->shadow_editor->field_2c = 0.0f;
-    view->shadow_editor->field_30 = -2.0f;
-    view->shadow_editor->preset = 0;
-    return view->shadow_editor;
-}
+
 static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
@@ -144,6 +153,8 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     }
     return 1;
 }
+i32 edGizShadow_gizmotype_id = 0;
+
 ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
