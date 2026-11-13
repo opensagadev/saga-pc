@@ -445,7 +445,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
             }
         }
         if (oldest != NULL) {
-            los->queried_at[oldest->index] = (u32)LevelTimer.update_count;
+            los->queried_at[oldest->index] = LevelTimer.update_count;
             if (((GIZFORCE_BEST_PC *)oldest->force)->config_flags & 0x800) {
                 ((GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] &=
                     ~(1u << (oldest->index & 31));
