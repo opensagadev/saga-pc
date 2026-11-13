@@ -1068,16 +1068,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
 STATIC_ASSERT(sizeof(GIZMOSET_PC) == 0x14);
 STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 
-typedef struct force_runtime_bits_pc_s {
-    u32 active : 1;
-    u32 visible : 1;
-    u32 other_02 : 14;
-    u32 destroyed : 1;
-    u32 other_17 : 4;
-    u32 being_used : 1;
-    u32 other_22 : 10;
-} FORCE_RUNTIME_BITS_PC;
-STATIC_ASSERT(sizeof(FORCE_RUNTIME_BITS_PC) == 4);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
 
 void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time) {
@@ -1121,7 +1111,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
         force->using_object = NULL;
         playing_forwards = 0;
         updating_animation = 0;
-        ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->being_used = user != NULL;
+        force->being_used = user != NULL;
         was_moving = (force->anim_set->flags >> 1) & 1;
         force->runtime_flags &= ~0x80u;
         if ((force->runtime_flags & 0x1000) != 0 && force->field_50 == 0.0f) {
@@ -1308,7 +1298,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
         }
         if ((force->runtime_flags & 0x8000) != 0 && GizForce_Complete(force))
             force->runtime_flags &= ~0x8000u;
-        if (!((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->destroyed && (force->config_flags & 0x300) != 0)
+        if (!force->destroyed && (force->config_flags & 0x300) != 0)
             system->hit_test_gizmos[system->hit_test_gizmo_count++] = gizmo;
         if ((i8)force->runtime_flags < 0 && !GizForce_Complete(force)) {
             if ((force->config_flags & 0x400) != 0) {
@@ -1436,7 +1426,7 @@ void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
     force = (GIZFORCE_PC *)gizmo->object;
     if (active != 0 && !(force->runtime_flags & 1))
         GameAnimSet_JumpToStart(force->anim_set);
-    ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->active = active != 0;
+    force->enabled = active != 0;
     if (active != 0) {
         force->field_48 = 0.0f;
         force->field_50 = 0.0f;
@@ -1458,7 +1448,7 @@ void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (force == NULL)
         return;
     GameAnimSet_SetVisibility(force->anim_set, visible);
-    ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->visible = visible != 0;
+    force->visible = visible != 0;
 }
 
 i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {

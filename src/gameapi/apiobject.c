@@ -2216,15 +2216,6 @@ typedef struct CHARACTER_PACK_ANIMATION_PC {
 STATIC_ASSERT(offsetof(CHARACTER_PACK_ANIMATION_PC, animation_magic) == 4);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
-/* TODO(saga.h): retail calls the 0x62a5e0 debug no-op with 0, 1 or 2 message arguments (a stripped
-   debug print); declare it unprototyped, `void __cdecl PCCharacterSystemExistingNoOp();`, and drop this. */
-// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
-#define PC_DEBUG_MESSAGE_NOOP ((void(__cdecl *)())PCCharacterSystemExistingNoOp)
-/* TODO(saga.h): the 0x62a5f0 debug no-op is likewise called with 0 or 1 message arguments; declare it
-   unprototyped, `void __cdecl PCCharacterModelDiagnosticNoOp();`, and drop this. */
-// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
-#define PC_MODEL_DIAGNOSTIC_NOOP ((void(__cdecl *)())PCCharacterModelDiagnosticNoOp)
-
 void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VARIPTR *buffer,
                                     VARIPTR buffer_end, i32 area_models) {
     char animation_extension[5] = ".an3";
@@ -2269,9 +2260,9 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             model = &apicharsys->models[apicharsys->playermodelids[model_id]];
         } else {
             if (area_models != 0 && list->count != 0)
-                PC_MODEL_DIAGNOSTIC_NOOP(character->name);
+                PCCharacterModelDiagnosticNoOp(character->name);
             else
-                PC_MODEL_DIAGNOSTIC_NOOP(character->name);
+                PCCharacterModelDiagnosticNoOp(character->name);
             model = &apicharsys->models[apicharsys->loaded_model_count];
             APICharacterModelReset(model);
             NuStrCpy(path, directory);
@@ -2420,7 +2411,7 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             }
         }
         if (buffer->addr >= buffer_end.addr)
-            PC_DEBUG_MESSAGE_NOOP((buffer->addr - buffer_end.addr) / 1024, character->name);
+            PCCharacterSystemExistingNoOp((buffer->addr - buffer_end.addr) / 1024, character->name);
         if (loaded != 0) {
             model->model_id = (i16)model_id;
             model->flags = (model->flags & ~1) | (area_models != 0 && list->count != 0 ? 1 : 0);
@@ -2521,7 +2512,7 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
     (void)buffer_end; /* Genuine native formal is unused; no fabricated capacity. */
     parser = NuFParCreate(file);
     if (parser == NULL)
-        PC_DEBUG_MESSAGE_NOOP(file);
+        PCCharacterSystemExistingNoOp(file);
     if (maximum > 500)
         maximum = 500;
     buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
@@ -2609,7 +2600,7 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
             *count_out = count;
         return (CHARACTERDATA_PC *)first;
     }
-    PC_DEBUG_MESSAGE_NOOP(file);
+    PCCharacterSystemExistingNoOp(file);
     return NULL;
 }
 
