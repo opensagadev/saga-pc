@@ -2219,8 +2219,9 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     i32 count;
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) {
         ids[0] = *(i16 *)Trailer[1];
+        opacity[0] = 128;
         ids[1] = *(i16 *)Trailer[4];
-        opacity[1] = opacity[0] = 128;
+        opacity[1] = 128;
         count = 2;
     } else {
         ids[0] = complete != 0 ? TextIdPc8808b8 : TextIdPc8808a4;
