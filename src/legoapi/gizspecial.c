@@ -103,6 +103,19 @@ GIZMO_PC *__cdecl createGizSpecial(void *unused, char *name) {
     return AddGizmo(world->gizmo_sys, gizspecial_gizmotype_id, NULL, special);
 }
 
+char *__cdecl GizSpecial_GetName(GIZFLOW_SPECIAL_PC *special) {
+    return special->name;
+}
+
+GIZFLOW_SPECIAL_PC *__cdecl GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD_PC *world) {
+    i32 index;
+    for (index = 0; index < world->specials->count; ++index) {
+        if (NuStrICmp(GizSpecial_GetName(&world->specials->specials[index]), name) == 0)
+            return &world->specials->specials[index];
+    }
+    return NULL;
+}
+
 #include <string.h>
 
 typedef struct gizspecial_callback_pc_s {
