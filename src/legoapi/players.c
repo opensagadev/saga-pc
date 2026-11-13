@@ -2811,7 +2811,6 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     i32 restore_hitpoints;
     i32 player_index;
     u16 facing;
-    SOCK_PC *sock;
     PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
     if (object == NULL)
         return;
@@ -2857,14 +2856,15 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
                     if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag[0] & 0xff) != 0)
                         object->position.x = (f32)((f64)object->position.x + 12.0);
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
-                    sock = &WORLD->sock_sys->socks[object->sock_position.sock_index];
-                    if ((sock->flags & 1) == 0) {
+                    if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
                         object->position = object->sock_position.midpoint;
                         if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 &&
                             Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                             NUVEC offset;
                             f32 side = object == Player[0] ? -1.0f : 1.0f;
-                            NuVecNorm(&offset, &sock->segments[object->sock_position.segment].planes[4]);
+                            NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]
+                                                    .segments[object->sock_position.segment]
+                                                    .planes[4]);
                             NuVecScale(&offset, &offset, side);
                             NuVecAdd(&object->position, &object->position, &offset);
                         }
@@ -2877,8 +2877,9 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
                 }
             }
         }
-        player_index = (i8)object->field_280;
-        if (player_index < 0 || player_index >= 8)
+        if ((i8)object->field_280 >= 0 && (i8)object->field_280 < 8)
+            player_index = (i8)object->field_280;
+        else
             player_index = object->hostility_group;
         facing = (u16)starts[player_index].angle;
         object->pitch_angle = 0;
@@ -2943,7 +2944,10 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     object->flags_ef0 |= 0x80;
     object->field_1010 = 0.0f;
     object->field_da8 = 0.0f;
-    object->flags_1f8 &= ~0x100u;
+    // MATCH-EXCEPTION: retail clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100 emits a
+    // memory and.
+    object->flags_1f8 |= 0x100;
+    object->flags_1f8 ^= 0x100;
     object->flags_e20 |= 0x8000;
     object->directional_seek_multiplier = 1.0f;
     object->dead = 0;
@@ -2953,7 +2957,7 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     object->field_dbc = 0.0f;
     object->field_f10 = 0.0f;
     object->camera_screen_position.z = -1.0f;
-    object->field_de0 = -1.0f;
+    object->field_de0 = 0.0f;
 }
 
 /* Private source fragment for src/legoapi/players.c; not a standalone TU.
