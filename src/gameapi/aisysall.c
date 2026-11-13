@@ -5540,18 +5540,15 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
 
     if (route_index != 0xff && previous_connection != NULL && (((i64)1 << route_index) & connection->route_mask) == 0) {
         AIPATHNODE_PC *shared;
-        u8 shared_index;
 
         if (previous_connection->node_indices[0] == connection->node_indices[0] ||
-            previous_connection->node_indices[0] == connection->node_indices[1]) {
-            shared_index = previous_connection->node_indices[0];
-        } else if (previous_connection->node_indices[1] == connection->node_indices[0] ||
-                   previous_connection->node_indices[1] == connection->node_indices[1]) {
-            shared_index = previous_connection->node_indices[1];
-        } else {
+            previous_connection->node_indices[0] == connection->node_indices[1])
+            shared = &path->nodes[previous_connection->node_indices[0]];
+        else if (previous_connection->node_indices[1] == connection->node_indices[0] ||
+                 previous_connection->node_indices[1] == connection->node_indices[1])
+            shared = &path->nodes[previous_connection->node_indices[1]];
+        else
             return 0;
-        }
-        shared = &path->nodes[shared_index];
         if (shared == NULL || (((i64)1 << route_index) & shared->route_boundary_mask) == 0) {
             return 0;
         }
