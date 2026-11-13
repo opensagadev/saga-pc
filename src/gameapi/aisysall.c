@@ -12387,13 +12387,12 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
             if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
                 done = 1;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "Script")) != NULL) {
-                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("Script"), copy, aiscript_load_buffer,
-                                            aiscript_load_end_buffer);
-                reference->name = copy;
+                cursor += sizeof("Script");
+                reference->name = AIScriptCopyStringPc(cursor, aiscript_load_buffer, aiscript_load_end_buffer);
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "ReturnState")) != NULL) {
-                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("ReturnState"), copy, aiscript_load_buffer,
-                                            aiscript_load_end_buffer);
-                reference->return_state_name = copy;
+                cursor += sizeof("ReturnState");
+                reference->return_state_name =
+                    AIScriptCopyStringPc(cursor, aiscript_load_buffer, aiscript_load_end_buffer);
             } else if (NuStrICmp(parser->word_buffer_ptr, "CONDITIONS") == 0) {
                 aiscript_load_conditions = &reference->conditions;
                 condition_has_no_goto = 1;
