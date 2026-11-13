@@ -200,25 +200,52 @@ static __inline f32 ZipUpFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-static i32 __cdecl ZipUpArcSinePc(f32 value) {
-    f32 magnitude, root, low, b, c, d;
-    f64 t, square, cube, fourth, polynomial;
-    magnitude = ZipUpFabsPc(value);
-    root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude ? root : magnitude;
-    b = (f32)MAX(MIN((magnitude - (f64)0.70710677f) * (f64)3.40282e38f, 1.0), -1.0);
-    c = (f32)(value * (f64)3.40282e38f > 1.0 ? 1.0 : value * (f64)3.40282e38f);
-    c = MAX(c, -1.0f);
-    d = b * c + c;
-    t = (f64)b * c * low;
-    square = t * t;
-    cube = square * t;
-    fourth = square * square;
-    polynomial = d * (f64)0.785398f + t * -1.0 + (PCPathArcSineCoefficient3 * t) * square +
-                 (PCPathArcSineCoefficient5 * square) * cube + (cube * PCPathArcSineCoefficient7) * fourth +
-                 (square * cube) * (fourth * PCPathArcSineCoefficient9);
-    return (i32)(polynomial * (f64)10430.4f);
+#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define ASIN_POW2(x) ((x) * (x))
+#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
+#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
+#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
+static i32 __cdecl ZipUpArcSinePc(f32 sin) {
+    f32 abs;
+    f32 sqrt;
+    f32 unknown_a;
+    f32 unknown_b;
+    f32 unknown_c;
+    f32 unknown_d;
+
+    abs = ZipUpFabsPc(sin);
+    sqrt = NuFsqrt(1.0f - sin * sin);
+
+    unknown_a = MIN(sqrt, abs);
+
+    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+
+    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
+    unknown_c = MAX(unknown_c, -1.0f);
+
+    unknown_d = unknown_b * unknown_c + unknown_c;
+
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
+             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+           10430.4f;
 }
+#undef ASIN_NEG_1_OVER_6
+#undef ASIN_NEG_3_OVER_40
+#undef ASIN_NEG_5_OVER_112
+#undef ASIN_NEG_35_OVER_1152
+#undef ASIN_POW2
+#undef ASIN_POW3
+#undef ASIN_POW4
+#undef ASIN_POW5
 
 #define NU_SIN_LUT(a) NuTrigTable[((i32)(a) >> 1) & 0x7fff]
 #define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
