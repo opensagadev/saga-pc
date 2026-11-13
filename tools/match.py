@@ -328,7 +328,15 @@ def text_coverage(functions, target, externals=(), padding=(), data=()):
     }
 
 
-def progress(functions, target, padding=()):
+def progress(functions, target, padding=(), data=()):
+    """Exact and fuzzy code progress over the original .text.
+
+    fuzzy_coverage_percent = sum(objdiff fuzzy% x size of each original function) / fuzzy_denominator_bytes,
+    fuzzy_denominator_bytes = .text - identified alignment padding - identified data stored in .text.
+    Unported and unidentified code stay in the denominator at 0%: the definition of objdiff's whole-binary
+    fuzzy_match_percent, where padding and data belong to no function symbol. The exact percentages count
+    byte-identical functions (and the alignment padding after them) over all of .text.
+    """
     total = number(target["text_size"])
     start = number(target["text_va"])
     for row in functions:
@@ -365,13 +373,19 @@ def progress(functions, target, padding=()):
             active[index] = score
         previous = address
     matched_padding = sum(run["size"] for run in padding if run["exact"])
+    padding_bytes = sum(run["size"] for run in padding)
+    text_data = covered_bytes((number(row["address"]), row["target_size"]) for row in data
+                              if row.get("target_size") and start <= number(row["address"]) < start + total)
+    denominator = total - padding_bytes - text_data
     return {"text_bytes": total, "mapped_code_bytes": mapped,
             "matched_code_bytes": matched, "matching_percent": 100 * matched / total,
-            "padding_bytes": sum(run["size"] for run in padding),
+            "padding_bytes": padding_bytes,
             "matched_padding_bytes": matched_padding,
             "matched_code_with_padding_bytes": matched + matched_padding,
             "matching_with_padding_percent": 100 * (matched + matched_padding) / total,
-            "fuzzy_coverage_percent": 100 * fuzzy_bytes / total,
+            "fuzzy_text_data_bytes": text_data,
+            "fuzzy_denominator_bytes": denominator,
+            "fuzzy_coverage_percent": 100 * fuzzy_bytes / denominator if denominator else 0.0,
             "mapped_functions": len(functions),
             "matched_functions": sum(r["exact_match"] for r in functions)}
 
@@ -438,7 +452,12 @@ def update_badge(stats):
     # The mapped badges count proven alignment padding between known extents when the
     # report has it; mapping_<kind>_percent stays the symbol-only number.
     padded = "mapping_code_with_padding_percent" in stats
-    rows = [exact,
+    fuzzy = ("fuzzy%20code%20match", "fuzzy_coverage_percent", "fuzzy code match",
+             "Similarity of code, alignment padding excluded: objdiff's fuzzy match of each original function "
+             "weighted by its size, over all original code (.text without alignment padding and the data "
+             "stored in it; unported and unidentified code count as 0). Same definition as the whole-binary "
+             "objdiff fuzzy match of the Android decompilation.")
+    rows = [fuzzy, exact,
             ("mapped%20code", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
              "mapped code", "Known code extents and the alignment padding between them." if padded
              else "Known code extents."),
@@ -449,7 +468,7 @@ def update_badge(stats):
             ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent", "mapped zero-fill/BSS",
              "Known zero-initialized storage.")]
     if "mapping_code_named_percent" in stats:
-        rows.insert(2, ("named%20code", "mapping_code_named_percent", "named code",
+        rows.insert(3, ("named%20code", "mapping_code_named_percent", "named code",
                         f"Mapped code under identified names; another "
                         f"{stats['mapping_code_address_named_percent']:.3f}% is bounded under address names "
                         f"(`fun_XXXXXXXX`)."))
@@ -670,7 +689,7 @@ def main():
         result["code_components"] = code_components
     if not args.function:
         padding = padding_runs(functions, target, pe.read_va, externals.values())
-        result["progress"] = progress(functions, target, padding)
+        result["progress"] = progress(functions, target, padding, data)
         result["text_coverage"] = text_coverage(functions, target, externals.values(), padding, data)
         result["progress"].update(objdiff_progress(report, functions))
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
@@ -704,7 +723,8 @@ def main():
         stats = result["progress"]
         print(f"Objdiff fuzzy: {stats['objdiff_fuzzy_percent']:.3f}% across "
               f"{stats['objdiff_total_code']} compared original code bytes")
-        print(f"Fuzzy code coverage: {stats['fuzzy_coverage_percent']:.3f}% of original .text")
+        print(f"Fuzzy code coverage: {stats['fuzzy_coverage_percent']:.3f}% of {stats['fuzzy_denominator_bytes']} "
+              "original code bytes (.text without alignment padding and text data)")
         print(f"Exact code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
               f"({stats['matching_percent']:.3f}% of original .text)")
         print(f"Exact code with padding: {stats['matched_code_with_padding_bytes']}/{stats['text_bytes']} bytes "

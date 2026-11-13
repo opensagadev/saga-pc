@@ -34,12 +34,23 @@ class ProgressTests(unittest.TestCase):
         self.assertEqual(stats["matching_percent"], 0)
         self.assertEqual(stats["mapped_code_bytes"], 16)
 
-    def test_fuzzy_coverage_uses_original_text_denominator(self):
+    def test_fuzzy_coverage_without_padding_uses_original_text_denominator(self):
         row = self.row(exact=False)
         row["objects"] = [{"objdiff_percent": 50.0}]
         stats = match.progress([row], self.target)
         self.assertEqual(stats["fuzzy_coverage_percent"], 100 * 8 / 4096)
         self.assertEqual(stats["matching_percent"], 0)
+
+    def test_fuzzy_denominator_excludes_padding_and_text_data_only(self):
+        row = self.row(exact=False)
+        row["objects"] = [{"objdiff_percent": 50.0}]
+        padding = [{"address": 0x401010, "size": 6, "exact": False}]
+        data = [{"address": "0x401100", "target_size": 90}, {"address": "0x403000", "target_size": 50}]
+        stats = match.progress([row], self.target, padding, data)
+        self.assertEqual(stats["fuzzy_denominator_bytes"], 4096 - 6 - 90)
+        self.assertEqual(stats["fuzzy_text_data_bytes"], 90)
+        self.assertEqual(stats["fuzzy_coverage_percent"], 100 * 8 / (4096 - 6 - 90))
+        self.assertEqual(stats["matching_with_padding_percent"], 100 * 0 / 4096)
 
     def test_fuzzy_aliases_count_once_at_least_similar_score(self):
         first = self.row(exact=False)
@@ -82,7 +93,8 @@ class ProgressTests(unittest.TestCase):
             self.assertTrue(updated.startswith("before\n"))
             self.assertTrue(updated.endswith("\nafter\n"))
             self.assertIn("fuzzy%20code%20match-1.294%25-red", updated)
-            self.assertEqual(updated.count("https://img.shields.io/badge/"), 5)
+            self.assertEqual(updated.count("https://img.shields.io/badge/"), 6)
+            self.assertIn("fuzzy%20code%20match-1.294%25-red) | Similarity of code, alignment padding excluded", updated)
             self.assertIn("![fuzzy code match]", updated)
             self.assertIn(build_badge, updated)
             self.assertIn("| Metric / coverage | Meaning |", updated)
@@ -90,7 +102,7 @@ class ProgressTests(unittest.TestCase):
             self.assertIn("![mapped code](https://img.shields.io/badge/mapped%20code-25.000%25-red) | Known code extents. |", updated)
             self.assertIn("mapped%20file--backed%20data-25.000%25-orange) | Known data stored in the executable. |", updated)
             self.assertIn("mapped%20zero--fill%2FBSS-75.000%25-brightgreen) | Known zero-initialized storage. |", updated)
-            self.assertEqual(sum(line.startswith("| ![") for line in updated.splitlines()), 4)
+            self.assertEqual(sum(line.startswith("| ![") for line in updated.splitlines()), 5)
             self.assertTrue(updated.splitlines()[1].startswith("<!-- matching-badge -->"))
             match.update_badge(stats)
             self.assertEqual(path.read_text(), updated)
