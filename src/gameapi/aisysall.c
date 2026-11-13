@@ -9232,18 +9232,19 @@ static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIP
     nodes[1].min_height = second->position.y + second->lower_height - tolerance;
     nodes[1].max_height = second->position.y + second->upper_height + tolerance;
     path.nodes = nodes;
-    path.connections = &connection;
     path.node_count = 2;
     path.connection_count = 1;
+    path.connections = &connection;
     connection.node_indices[0] = 1;
     connection.horizontal_distance = NuVecXZDist(&first->position, &second->position, &horizontal);
     if (connection.horizontal_distance == 0.0f)
         connection.horizontal_distance = 0.0001f;
     connection.rotation = (i16)(NuAtan2(horizontal.x, horizontal.z) * AIPathAngularScale);
-    if (!WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0))
-        return 0;
-    TestPointPathCheck(point, first, second, fraction, width, angle, tolerance);
-    return 1;
+    if (WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0)) {
+        TestPointPathCheck(point, first, second, fraction, width, angle, tolerance);
+        return 1;
+    }
+    return 0;
 }
 
 /* Native 0x524810: retest the previous edge, then the edges through each of
