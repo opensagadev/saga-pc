@@ -1031,9 +1031,9 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                     if (animation == -1 || object->character_model->model_data_b[animation] == NULL)
                         animation = LEGOACT_LEDGE_IDLE;
                     if (animation != -1 && object->character_model->model_data_b[animation] != NULL) {
+                        object->field_7aa = animation;
                         object->field_7b3 = 1;
                         NUVEC offset = GrapplePointOffset;
-                        object->field_7aa = animation;
                         NuVecRotateX(&offset, &offset, GRAPPLE_CURRENT->x_rotation);
                         offset.z += object->bounds_radius;
                         NuVecRotateY(&offset, &offset, GRAPPLE_CURRENT->y_rotation);
