@@ -366,16 +366,16 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     GIZFORCE_OBJECT_BEST_PC *target = (GIZFORCE_OBJECT_BEST_PC *)object;
     GIZFORCE_LOS_BEST_PC *los;
     GIZFORCE_TARGET_RECORD_PC *oldest = NULL, *best = NULL, *record;
-    f32 oldest_time = 1000000000.0f, best_distance = 1000000000.0f, facing_x, facing_z, distance;
+    f32 best_distance = 1000000000.0f, oldest_time = 1000000000.0f, distance;
     i32 super_force, count = 0, i;
-    NUVEC delta, direction;
+    NUVEC delta, direction, facing;
     if (system == NULL || object == NULL)
         return 0;
     super_force = SuperWeirdo(object) || ((object->flags_1fc & 0x80) && Cheat_IsOn(25));
     target->target = NULL;
     target->animation = NULL;
-    facing_x = NuTrigTable[object->movement_facing_angle >> 1];
-    facing_z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
+    facing.x = NuTrigTable[object->movement_facing_angle >> 1];
+    facing.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
     for (i = 0; i < system->visible_count; ++i) {
         GIZFORCE_PC *force = system->visible_forces[i];
         GIZFORCE_BEST_PC *fields = (GIZFORCE_BEST_PC *)force;
@@ -414,7 +414,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                     continue;
                 draw_position = NuSpecialGetDrawPos(&animation->special);
                 distance = NuVecDistSqr(draw_position, &object->collision_position, &delta);
-                if (delta.x * facing_x + delta.z * facing_z < 0.0f)
+                if (delta.x * facing.x + delta.z * facing.z < 0.0f)
                     continue;
                 PossibleForceTargetsPc[count].force = force;
                 PossibleForceTargetsPc[count].animation = animation;
@@ -423,7 +423,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                 ++count;
             }
         } else {
-            if (delta.x * facing_x + delta.z * facing_z < 0.0f)
+            if (delta.x * facing.x + delta.z * facing.z < 0.0f)
                 continue;
             PossibleForceTargetsPc[count].force = force;
             PossibleForceTargetsPc[count].animation = NULL;
