@@ -1270,7 +1270,8 @@ static u32 CustomiserPreviewLayerMaskPc(CUSTOMISER_CONFIG_PC *customiser, const 
  * layer masks, model and gameplay flags, weapon and blade colour. */
 void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 side, category;
+    u32 side;
+    i32 category;
     if (customiser == NULL)
         return;
     for (side = 0; side < 2; ++side) {
