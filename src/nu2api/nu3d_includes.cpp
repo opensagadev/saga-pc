@@ -10246,22 +10246,24 @@ void NuMainFilterGen::initResources() {
     active_filter_count = 0;
 }
 /* Bound by the post filters only; private to this unit, so retail passes the program in ESI. The
- * posteffect_shader_pc.cpp copy and the saga.h declaration are leftovers of the normalized ABI. */
-extern "C" static void PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *program) {
-    if (program != NULL) {
-        if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
-            PCDeviceSetVertexShaderPc(program->vertex_shader);
-            NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+ * posteffect_shader_pc.cpp copy is a leftover of the normalized ABI. */
+extern "C" {
+    static void PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *program) {
+        if (program != NULL) {
+            if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
+                PCDeviceSetVertexShaderPc(program->vertex_shader);
+                NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+            }
+            if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
+                PCDeviceSetPixelShaderPc(program->pixel_shader);
+                NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+            }
+        } else {
+            PCDeviceSetVertexShaderPc(NULL);
+            PCDeviceSetPixelShaderPc(NULL);
+            NuDisplayHandlerVertexShaderCachePc = NULL;
+            NuDisplayHandlerPixelShaderCachePc = NULL;
         }
-        if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
-            PCDeviceSetPixelShaderPc(program->pixel_shader);
-            NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
-        }
-    } else {
-        PCDeviceSetVertexShaderPc(NULL);
-        PCDeviceSetPixelShaderPc(NULL);
-        NuDisplayHandlerVertexShaderCachePc = NULL;
-        NuDisplayHandlerPixelShaderCachePc = NULL;
     }
 }
 void NuMainFilterGen::initTextureResources(i32 width, i32 height) {
@@ -15431,28 +15433,30 @@ extern "C" void __cdecl PostShadowBuildBasisPc(NUVEC *direction, NUVEC *up, NUMT
     NuMtxInv(basis, inverse);
 }
 /* Private to this unit: retail passes count in EAX and vertices in ECX, offset/scale/four outputs on the stack. */
-extern "C" static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale,
-                                                 f32 *xmin_out, f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
-    f32 xmin = 3.4028234663852886e+38f, xmax = -3.4028234663852886e+38f, ymin = 3.4028234663852886e+38f,
-        ymax = -3.4028234663852886e+38f;
-    for (i32 i = 0; i < count; ++i) {
-        NUVEC result;
-        NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
-        f32 x = result.x * scale / result.z;
-        f32 y = result.y * scale / result.z;
-        if (x < xmin)
-            xmin = x;
-        else if (x > xmax)
-            xmax = x;
-        if (y < ymin)
-            ymin = y;
-        else if (y > ymax)
-            ymax = y;
+extern "C" {
+    static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale, f32 *xmin_out,
+                                          f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
+        f32 xmin = 3.4028234663852886e+38f, xmax = -3.4028234663852886e+38f, ymin = 3.4028234663852886e+38f,
+            ymax = -3.4028234663852886e+38f;
+        for (i32 i = 0; i < count; ++i) {
+            NUVEC result;
+            NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
+            f32 x = result.x * scale / result.z;
+            f32 y = result.y * scale / result.z;
+            if (x < xmin)
+                xmin = x;
+            else if (x > xmax)
+                xmax = x;
+            if (y < ymin)
+                ymin = y;
+            else if (y > ymax)
+                ymax = y;
+        }
+        *xmin_out = xmin;
+        *xmax_out = xmax;
+        *ymin_out = ymin;
+        *ymax_out = ymax;
     }
-    *xmin_out = xmin;
-    *xmax_out = xmax;
-    *ymin_out = ymin;
-    *ymax_out = ymax;
 }
 
 #define SHADOW_COPY_VEC4(dst, src)                                                                                     \
