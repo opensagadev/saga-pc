@@ -466,11 +466,11 @@ def oklch_to_srgb(lightness, chroma, hue):
 # forces white text on darker colours and has no text colour parameter), with one text
 # colour on every badge. Set BADGE_TEXT to (0xff, 0xff, 0xff) for shields' white text.
 BADGE_TEXT = (0x1a, 0x1a, 0x1a)
-# A gradient over shields' classic named colours (red, orange, yellow, yellowgreen,
-# green): (percent, colour) stops, interpolated in OKLCH and placed linearly in
-# log10(101 - percent), so the stops crowd towards 100 and 90, 94, 97, 99 and 99.9 differ.
-BADGE_STOPS = ((0, "e05d44"), (60, "fe7d37"), (91.5, "dfb317"), (97.8, "a4a61d"), (99.9, "97ca00"))
-BADGE_FULL_GREEN = "44cc11"  # brightgreen, only for a displayed 100.000
+# A perceptual gradient over shields' named colours: (percent, colour) stops, red up to
+# 50 %, orange at 80 %, brightgreen at 100 % (97ca00 for shields' plain green), linear in
+# the percentage between them and interpolated in OKLCH along the shorter hue arc, so
+# orange runs to green through yellow rather than through olive.
+BADGE_STOPS = ((50, "e05d44"), (80, "fe7d37"), (100, "44cc11"))
 
 
 def srgb_to_oklch(rgb):
@@ -489,17 +489,15 @@ def srgb_to_oklch(rgb):
 def badge_color(value):
     """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
 
-    Only a displayed 100.000 gets BADGE_FULL_GREEN; below it the colour runs through
-    BADGE_STOPS, with the chroma reduced where the interpolation leaves the sRGB gamut.
+    The colour runs through BADGE_STOPS (flat before the first and after the last), with
+    the chroma reduced where the interpolation leaves the sRGB gamut.
     """
     shown = min(max(float(f"{value:.3f}"), 0), 100)
-    if shown >= 100:
-        return BADGE_FULL_GREEN
-    x = math.log10(101 - shown)
+    if shown <= BADGE_STOPS[0][0]:
+        return BADGE_STOPS[0][1]
     for (low, low_color), (high, high_color) in zip(BADGE_STOPS, BADGE_STOPS[1:]):
         if shown <= high:
-            start, end = math.log10(101 - low), math.log10(101 - high)
-            t = (x - start) / (end - start)
+            t = (shown - low) / (high - low)
             first, second = (srgb_to_oklch(bytes.fromhex(color)) for color in (low_color, high_color))
             hue_step = (second[2] - first[2] + 180) % 360 - 180
             lightness, chroma = (a + (b - a) * t for a, b in zip(first[:2], second[:2]))

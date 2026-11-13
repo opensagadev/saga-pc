@@ -154,34 +154,26 @@ class ProgressTests(unittest.TestCase):
         rgb = bytes.fromhex(match.badge_color(value))
         return colorsys.rgb_to_hls(*(channel / 255 for channel in rgb))[0] * 360
 
-    def test_badge_hue_rises_monotonically_to_full_green_only_at_100(self):
-        values = [step / 10 for step in range(1001)] + [99.95, 99.99, 99.999, 99.9994]
-        hues = [self.hue(value) for value in sorted(values)]
+    def test_badge_stops_are_shields_named_colours(self):
+        self.assertEqual(match.BADGE_STOPS, ((50, "e05d44"), (80, "fe7d37"), (100, "44cc11")))
+        for value, color in ((0, "e05d44"), (50, "e05d44"), (80, "fe7d37"), (100, "44cc11"),
+                             (99.9996, "44cc11")):  # displayed as 100.000
+            with self.subTest(value=value):
+                self.assertEqual(match.badge_color(value), color)
+        self.assertEqual({match.badge_color(step / 10) for step in range(501)}, {"e05d44"})
+
+    def test_badge_hue_rises_from_50(self):
+        hues = [self.hue(step / 10) for step in range(500, 1001)]
         # Rounding to 8-bit channels moves a hue by a fraction of a degree, no more.
         for lower, higher in zip(hues, hues[1:]):
             self.assertGreater(higher, lower - 0.5)
-        key = [self.hue(value) for value in (0, 60, 90, 94, 97, 99, 99.9, 100)]
+        key = [self.hue(value) for value in (50, 65, 80, 90, 95, 100)]
         self.assertEqual(key, sorted(set(key)))
-        full = match.badge_color(100)
-        self.assertEqual(match.badge_color(99.9996), full)  # displayed as 100.000
-        self.assertEqual([value for value in values if match.badge_color(value) == full], [100.0])
-        self.assertGreater(self.hue(100) - self.hue(99.999), 20)
 
-    def test_badge_colors_near_the_top_are_distinct(self):
-        def distance(a, b):
-            a, b = bytes.fromhex(match.badge_color(a)), bytes.fromhex(match.badge_color(b))
-            return math.dist(a, b)
-        def oklab(value):
-            lightness, chroma, hue = match.srgb_to_oklch(bytes.fromhex(match.badge_color(value)))
-            return lightness, chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
-        # shields' yellow, yellowgreen and green lie close together, which bounds these distances.
-        values = (60, 90, 94, 97, 99, 99.9, 100)
-        for low, high in zip(values, values[1:]):
-            with self.subTest(low=low, high=high):
-                self.assertGreaterEqual(distance(low, high), 20)
-                self.assertGreaterEqual(math.dist(oklab(low), oklab(high)), 0.03)
-        self.assertGreater(distance(99.9, 100), 80)
-        self.assertGreater(distance(60, 95), 80)
+    def test_badge_orange_to_green_passes_through_yellow(self):
+        # OKLCH along the shorter hue arc keeps the chroma up; OKLab would go through olive.
+        r, g, b = bytes.fromhex(match.badge_color(90))
+        self.assertTrue(r > 0xb0 and g > 0x90 and b < 0x20, match.badge_color(90))
 
     def test_badge_text_stays_readable(self):
         for step in range(1001):
@@ -189,14 +181,6 @@ class ProgressTests(unittest.TestCase):
                 rgb = bytes.fromhex(match.badge_color(step / 10))
                 self.assertGreaterEqual(match.contrast(rgb, match.BADGE_TEXT), 4.5)
         self.assertEqual(match.contrast((255, 255, 255), (0, 0, 0)), 21)
-
-    def test_badge_stops_are_shields_named_colours(self):
-        for value, color in match.BADGE_STOPS[:-1]:
-            with self.subTest(value=value):
-                self.assertEqual(match.badge_color(value), color)
-        self.assertEqual([color for _, color in match.BADGE_STOPS] + [match.BADGE_FULL_GREEN],
-                         ["e05d44", "fe7d37", "dfb317", "a4a61d", "97ca00", "44cc11"])
-        self.assertLess(math.dist(bytes.fromhex(match.badge_color(99.9)), bytes.fromhex("97ca00")), 8)
 
 
 def badge_img(name, message, label=""):
