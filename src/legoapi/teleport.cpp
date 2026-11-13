@@ -409,6 +409,7 @@ static void TeleportSetSegmentDurationPc(GAMEOBJECT *object, i32 start, i32 end)
 
 extern "C" void __cdecl Teleports_Reset(WORLDINFO *world) {
     TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    NUMTX matrix;
     if (teleport == NULL)
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
@@ -423,6 +424,7 @@ extern "C" void __cdecl Teleports_Reset(WORLDINFO *world) {
 
 extern "C" void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
     TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    NUMTX matrix;
     if (teleport == NULL)
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
@@ -432,13 +434,14 @@ extern "C" void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
 
 extern "C" void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
     TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)world)->teleports;
+    NUMTX matrix;
     if (teleport == NULL)
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
         for (i32 flap = 0; flap < 2; ++flap) {
             teleport->flap_angle[flap] = SeekRot(teleport->flap_angle[flap], teleport->flap_target[flap], 5.0f);
             if (NuSpecialExistsFn(&(&teleport->flap1_special)[flap])) {
-                NUMTX matrix = (&teleport->flap1_matrix)[flap];
+                matrix = (&teleport->flap1_matrix)[flap];
                 NuMtxPreRotateX(&matrix,
                                 (teleport->flags & 8) != 0 ? -teleport->flap_angle[flap] : teleport->flap_angle[flap]);
                 NuSpecialSetDrawMtx(&(&teleport->flap1_special)[flap], &matrix);
