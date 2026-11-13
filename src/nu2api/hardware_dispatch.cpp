@@ -245,7 +245,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     /* The two device-specific tables choose this same low-capability path.
      * Their exact finite ID sets are retained in vendor-protocol-native.json. */
     if (PCDeviceBackend.identifier.vendor == 0x10de) {
-        switch (PCDeviceBackend.identifier.device_id) {
+        switch ((i32)PCDeviceBackend.identifier.device_id) {
             case 0xf3:
             case 0x14f:
             case 0x161:
