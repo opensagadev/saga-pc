@@ -225,14 +225,14 @@ static void __cdecl GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 }
 static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
     GIZSPECIAL_CALLBACK_PC *special;
-    if (gizmo == NULL)
-        return NULL;
-    if (gizmo->object == NULL)
-        return NULL;
-    special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
-    if (special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special))
-        return NULL;
-    return NuSpecialGetPos(&special->anim_set->objects->special);
+    if (gizmo != NULL) {
+        special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
+        if (special == NULL || special->anim_set->object_count == 0 ||
+            !NuSpecialExistsFn(&special->anim_set->objects->special))
+            return NULL;
+        return NuSpecialGetPos(&special->anim_set->objects->special);
+    }
+    return NULL;
 }
 static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
@@ -241,11 +241,13 @@ static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, 
     if (world == NULL || world->specials->specials == NULL)
         return 0;
     for (index = 0; index < world->specials->count; ++index) {
-        special = &world->specials->specials[index];
-        if (special->anim_set != NULL && NuStrICmp(name, special->name) == 0) {
-            results[count++] = GizmoFindByName(world->gizmo_sys, -1, special->name);
-            if (count == capacity)
-                return -1;
+        if (world->specials->specials[index].anim_set != NULL) {
+            special = &world->specials->specials[index];
+            if (NuStrICmp(name, special->name) == 0) {
+                results[count++] = GizmoFindByName(world->gizmo_sys, -1, special->name);
+                if (count == capacity)
+                    return -1;
+            }
         }
     }
     return count;
@@ -409,9 +411,9 @@ void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
 i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
                                      u8 version, char *prefix, char *suffix) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 success = 1, i;
     u8 file_version = EdFileReadChar();
     u8 count = EdFileReadChar();
-    i32 success = 1, i;
     for (i = 0; i < count; ++i) {
         char name[64];
         i32 length = (i8)EdFileReadChar();
