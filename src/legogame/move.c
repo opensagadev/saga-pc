@@ -5062,14 +5062,17 @@ i32 __cdecl ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
             } else {
                 nearest = NULL;
             }
-            if (nearest != NULL)
+            if (nearest != NULL) {
                 angle = NuAtan2D(nearest->collision_position.x - object->collision_position.x,
                                  nearest->collision_position.z - object->collision_position.z);
-            else
+                object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
+                object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+            } else {
                 angle = NuAtan2D(object->collision_position.x - source->collision_position.x,
                                  object->collision_position.z - source->collision_position.z);
-            object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
-            object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+                object->target_velocity.x = NuTrigTable[angle >> 1] * ForcePush_Speed;
+                object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * ForcePush_Speed;
+            }
             return 0;
         }
     } else {
