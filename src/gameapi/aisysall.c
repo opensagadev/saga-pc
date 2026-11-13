@@ -4678,7 +4678,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
     NUVEC local_destination;
     i32 object_angle;
     i32 turn;
-    i32 turn_offset;
+    i32 turn_offset = 0;
     i32 corner_angle;
     i32 angle;
     NUVEC gradient;
@@ -4709,7 +4709,6 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
         NuVecRotateY(&local_destination, difference, -antinode->rotation);
         turn = NuAtan2D(local_destination.x, local_destination.z);
         turn = NuAngSub(turn, object_angle);
-        turn_offset = 0;
         if (object->ai->antinode_timer > 0.0f) {
             if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
                  INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
