@@ -576,9 +576,9 @@ void NuMusic::Process(f32 delta) {
     if (this == NULL || the_music_player == NULL)
         return;
     if (fader_current != fader_target) {
-        if (fader_target > fader_current) {
+        if (fader_current < fader_target) {
             fader_current = delta * fader_rate + fader_current;
-            if (fader_target <= fader_current) {
+            if (fader_current >= fader_target) {
                 fader_rate = 0.0f;
                 fader_current = fader_target;
             }
@@ -592,17 +592,12 @@ void NuMusic::Process(f32 delta) {
     }
     duck_gain = 1.0f;
     duck_rate = 1.0f;
-    Track *track = voices[0].tracks[voices[0].track_index];
-    if (track != NULL && voices[0].status == 7) {
-        duck_gain = 1.0f < track->duck_volume ? 1.0f : track->duck_volume;
-        f32 rate = 1.0f / track->duck_fade;
-        duck_rate = rate > 1.0f ? rate : 1.0f;
-    }
-    track = voices[1].tracks[voices[1].track_index];
-    if (track != NULL && voices[1].status == 7) {
-        duck_gain = duck_gain < track->duck_volume ? duck_gain : track->duck_volume;
-        f32 rate = 1.0f / track->duck_fade;
-        duck_rate = rate > duck_rate ? rate : duck_rate;
+    for (i32 index = 0; index < 2; ++index) {
+        Track *track = voices[index].tracks[voices[index].track_index];
+        if (track != NULL && voices[index].status == 7) {
+            duck_gain = duck_gain < track->duck_volume ? duck_gain : track->duck_volume;
+            duck_rate = 1.0f / track->duck_fade > duck_rate ? 1.0f / track->duck_fade : duck_rate;
+        }
     }
     if (duck_current > duck_gain) {
         f64 current = duck_current - (f64)duck_rate * delta;
