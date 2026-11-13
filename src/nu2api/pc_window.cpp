@@ -195,6 +195,10 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     }
 }
 
+// MATCH-EXCEPTION: platform_policy.cpp defines PcPlatformPolicy returning a full int (it loads the
+// BOOL result into eax), but retail WinMain tests only al, so this unit saw a byte-returning prototype.
+extern "C" u8 __cdecl PcPlatformPolicy(u8 enabled);
+
 extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line, i32 show) {
     PCInputWindow_candidate = instance;
     NuHwShowCommandPc = show;

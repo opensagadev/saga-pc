@@ -114,6 +114,14 @@ extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
     PCDeviceBackend.PostEffectBarrierPc();
 }
 
+extern "C" i32 __cdecl PcApiGetCallBufferCount(void) {
+    return PcApiCallBufferCount;
+}
+
+extern "C" void *__cdecl PcApiGetCallBuffer(void) {
+    return PcApiCallBuffer;
+}
+
 extern "C" i32 __cdecl PCFrameBeginScenePc(void) {
     PCDeviceBeginScenePc();
     return 0;

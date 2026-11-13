@@ -47,12 +47,6 @@ extern "C" {
         if (metadata != NULL)
             PCByteCopy_candidate(PcSaveHeaderMetadataPc, metadata, 16);
     }
-    i32 __cdecl PcApiGetCallBufferCount(void) {
-        return PcApiCallBufferCount;
-    }
-    void *__cdecl PcApiGetCallBuffer(void) {
-        return PcApiCallBuffer;
-    }
     i32 __cdecl SaveCreateDirectoryPc(char *path);
     void __cdecl createslotfolder(i32) {
 #ifndef SAGA_DEBUG

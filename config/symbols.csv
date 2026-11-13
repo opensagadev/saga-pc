@@ -1149,7 +1149,7 @@ address,symbol,size,ctype
 0x467ab0,_GizForces_GetMaxGizmos,25,i32 __cdecl(void *)
 0x467ad0,_GizForces_AddGizmos,92,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x467b30,_GizmoForce_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x467b40,_GizmoForce_GetOutput,193,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x467b40,_GizmoForce_GetOutput,228,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x467c30,_GizmoForce_GetOutputName,100,
 0x467ca0,_GizmoForce_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x467cb0,_GizForces_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
@@ -3323,7 +3323,7 @@ address,symbol,size,ctype
 0x0050e530,_SetGameFont,10,void __cdecl (VUFNT *)
 0x0050e540,_Set3DGameFont,10,void __cdecl (VUFNT *)
 0x50e550,_LoadGameFont,194,"VUFNT *__cdecl(char *,char *,VARIPTR *,VARIPTR *,i32)"
-0x50e620,_UnloadGameFont,114,void __cdecl(void)
+0x50e620,_UnloadGameFont,114,void __cdecl(i32)
 0x50e6a0,_SetQFont2D,47,void __cdecl (void)
 0x0050e6d0,_SmartTextSetWidescreen,21,"void __cdecl (f32, f32)"
 0x0050e6f0,_SmartTextGetWidescreen,33,"void __cdecl (f32 *, f32 *)"
@@ -4370,7 +4370,7 @@ address,symbol,size,ctype
 0x00553720,?SpinnerFabsPc@@YAMM@Z,18,static f32 __cdecl(f32)
 0x00553780,?SpinnerMatrixSetRotationYPc@@YAXPAUnumtx_s@@H@Z,162,
 0x00553830,?SpinnerMatrixRotateYPc@@YAXPAUnumtx_s@@H@Z,219,
-0x00553910,?SpinnerOwnerPc@@YAPAUgameobject_s@@PAUGIZSPINNER_s@@@Z,75,
+0x00553910,?SpinnerOwnerPc@@YAPAUgameobject_s@@PAUGIZSPINNER_s@@@Z,59,
 0x5539a0,_SpinnerBoundsResetPc,252,
 0x553aa0,_GizSpinner_Load,1953,
 0x554250,_GizSpinner_ReserveBufferSpace,252,
@@ -11038,7 +11038,7 @@ address,symbol,size,ctype
 0x006d4e50,@NuKeyboardGetStateValue67ec_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e60,@NuKeyboardInsertInputRecord_candidate@28,135,"void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
 0x006d5040,_NuKeyboardBasePortPc,6,i32 __cdecl (void)
-0x6d5080,_IsXInputProductPc,773,u8 __cdecl(const GUID*)
+0x6d5080,_IsXInputProductPc,773,BOOL __cdecl(const GUID*)
 0x6d5390,_ConfigureJoystickRangesPc,797,void __cdecl(NuKeyboardDevice_PC*)
 0x6d56b0,??0NuKeyboardOwner_PC@@QAE@XZ,82,NuKeyboardOwner_PC *__thiscall (void)
 0x6d5710,??1NuKeyboardOwner_PC@@QAE@XZ,16,void __thiscall (void)
@@ -11106,6 +11106,7 @@ address,symbol,size,ctype
 0x6d7350,?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z,188,"u8 __thiscall(i32,i32)"
 0x6d7430,?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
+0x6d7960,?PollKeyboardPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,35,i32 __thiscall(void)
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
 0x6d7d80,?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z,1360,"i32 __thiscall(i32,PC_INPUT_SAMPLE_PC*,i32,PC_INPUT_RAW_SAMPLE_PC*,PC_INPUT_MOUSE_RUNTIME_PC*,u8**)"
 0x6d8370,?CombineUiButtonsPc@PC_INPUT_RUNTIME_PC@@QAEIHI@Z,285,"u32 __thiscall(i32,u32)"
@@ -39818,7 +39819,7 @@ address,symbol,size,ctype
 0x29755d4,_PcInputCommandFilterPc,4,
 0x29755d8,_PcMouseAxisIdlePc,12,f32[3]
 0x29755f8,_TextInputNameCallbackPc,4,"void (__cdecl *)(i32,char*)"
-0x29755fc,?PcXInputDeviceCount@@3HA,4,i32
+0x29755fc,_PcXInputDeviceCount,4,i32
 0x02975600,_nu_keyboard_previous_key_index,4,i32
 0x02975604,_nu_keyboard_no_key_state,4,i32
 0x297560c,_PcMouseCurrentAnglePc,4,i32

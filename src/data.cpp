@@ -2411,7 +2411,6 @@ PC_INPUT_CONFIG_PC PcStaticInputConfigs[24] = {
       {0x01, 0x82},
       {0x01, 0x83}}}};
 i32 PcInputSelectedPort = -1;
-i32 PcXInputDeviceCount = 0;
 PC_DI_CAPS_PC PcKeyboardCapabilities = {};
 
 extern "C" {
@@ -8233,8 +8232,6 @@ extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     u32 PCImplodeWordMask = 0xffffffff;
     NULISTHDR global_aiscripts = {0};
-    u16 **BadWords = 0;
-    i32 NumBadWords = 0;
     BOLTTYPE_PC GlobalBoltType_Default = {"null", 4.0f, 2.0f, 0.0f,   0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}},
                                           -1,     0,    1,    0xff,   0,      0,    NULL, NULL,
                                           NULL,   NULL, NULL, {NULL}, {NULL}, 0,    {-1}, {-1},
@@ -30246,8 +30243,7 @@ extern "C" {
                              0.2f,
                              0.01f,
                              0.1f,
-                             {0x3f},
-                             {0, 0, 0}};
+                             {0x3f}};
 
 #pragma data_seg(".data$gp_cam")
     edcam_s *gp_cam = &edcam_default;

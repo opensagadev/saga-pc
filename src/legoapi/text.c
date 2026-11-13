@@ -1466,7 +1466,7 @@ VUFNT *__cdecl LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VAR
     return QFont2D;
 }
 
-void __cdecl UnloadGameFont(void) {
+void __cdecl UnloadGameFont(i32 unused) {
     if (QFont2DLower != NULL) {
         NuQFntDestroy(QFont2DLower);
         QFont2DLower = NULL;

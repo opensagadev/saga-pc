@@ -456,6 +456,10 @@ struct FLOWBOX_PC {
             u8 state_flags_low;
             u8 state_flags_high;
         };
+        struct {
+            u16 enabled : 1;
+            u16 reserved_state_flags : 15;
+        };
     };
     void *data;
     FLOWBOX_PC **parents;
@@ -1440,7 +1444,14 @@ typedef struct APIOBJECT_PC {
         };
     };
     u32 motion_flags;
-    u32 flags_low;
+    union {
+        u32 flags_low;
+        struct {
+            u32 : 17;
+            u32 ignore_antinodes : 1;
+            u32 : 14;
+        };
+    };
     u8 unknown_200[0xc];
     NUSPECIALHANDLE collision_special;
     u8 unknown_218_b[0x8];
@@ -3292,7 +3303,17 @@ STATIC_ASSERT(offsetof(LEVELSPLINE_PC, area) == 0xe);
 typedef struct rtlset_pc_s RTLSET_PC;
 
 typedef struct scene_special_progress_pc_s {
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 frame : 11;
+            u32 visible : 1;
+            u32 playing : 1;
+            u32 waiting : 1;
+            u32 repeating : 1;
+            u32 unused : 17;
+        };
+    };
     f32 tfactor;
 } SCENESPECIALPROGRESS_PC;
 STATIC_ASSERT(sizeof(SCENESPECIALPROGRESS_PC) == 8);
@@ -5829,7 +5850,10 @@ typedef struct gameobject_s {
     u16 field_0x276;
     u16 roll_angle;
     i16 supporting_platform_id;
-    u8 field_280;
+    union {
+        u8 field_280;
+        i8 player_index; /* -1 when no player controls the object */
+    };
     u8 field_281;
     u8 field_282;
     i8 field_283;
@@ -5970,7 +5994,7 @@ typedef struct gameobject_s {
     i8 special_move_pc;
     u8 action_movement_state;
     u8 jump_sequence;
-    u8 unknown_7ba[0x1];
+    i8 whip_action;
     i8 hit_variant;
     union {
         u32 context_variant_flags;
@@ -6168,6 +6192,11 @@ typedef struct gameobject_s {
     union {
         u32 flags_e24;
         u8 field_e24;
+        struct {
+            u32 : 16;
+            u32 hit_side : 3; /* 3 = hit from behind, 4 = from the front */
+            u32 : 13;
+        };
     };
     u8 unknown_0e28[7];
     u8 block_latch;
@@ -10620,7 +10649,7 @@ extern "C" {
     void __cdecl NuQFntWriteUniversalFont(char *, VUFNT *, char *);
     VUFNT *__cdecl LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
     VUFNT *__cdecl LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
-    void __cdecl UnloadGameFont(void);
+    void __cdecl UnloadGameFont(i32 unused);
     void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
 
     void __cdecl NuQFntSetSpaceWidth(VUFNT *, f32);
@@ -13000,8 +13029,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char AIScriptListPathFormat[14];
     extern const char AIScriptFileExtension[5];
     extern const char NuBlankStringValue[2];
-    extern u16 **BadWords;
-    extern i32 NumBadWords;
     extern const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4];
@@ -18992,7 +19019,7 @@ struct PC_DI_FACTORY_PC {
 };
 extern const GUID PcDirectInput8AId, PcSystemMouseId, PcSystemKeyboardId;
 extern const PC_DI_DATA_FORMAT_PC PcMouseDataFormat, PcKeyboardDataFormat, PcJoystickDataFormat;
-extern i32 PcInputSelectedPort, PcXInputDeviceCount;
+extern i32 PcInputSelectedPort;
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *, void *);
 STATIC_ASSERT(sizeof(PC_DI_CAPS_PC) == 44);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, flags) == 4);
@@ -19334,6 +19361,13 @@ struct PC_INPUT_RUNTIME_PC {
     PC_INPUT_COMMAND_PC commands[32];
     u8 *keyboard_state;
     PC_INPUT_RUNTIME_PC();
+    i32 PollKeyboardPc() {
+        if (!keyboard_polled) {
+            keyboard_polled = 1;
+            keyboard_state = NuKeyboardPoll(&nu_keyboard_owner);
+        }
+        return 1;
+    }
     void InitConfiguration();
     void ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *);
     __declspec(noinline) PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
@@ -19404,7 +19438,7 @@ extern "C" void __cdecl PcInputSaveConfigurationPc();
 
 extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[24];
 extern PC_DI_CAPS_PC PcKeyboardCapabilities;
-extern "C" u8 IsXInputProductPc(const GUID *);
+extern "C" BOOL IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
 STATIC_ASSERT(sizeof(PC_INPUT_CONFIG_PC) == 0x9c);
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data2) == 0x44);
@@ -19554,7 +19588,6 @@ extern "C" void __cdecl PcShutdown(void);
 extern "C" void __cdecl PcKeyDown(i32 scan_code);
 extern "C" void __cdecl PcKeyUp(i32 scan_code);
 extern "C" void __cdecl PcPrepareTiming(void);
-extern "C" i32 __cdecl PcPlatformPolicy(u8 enabled);
 extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
 
 STATIC_ASSERT(sizeof(WNDCLASSEXA) == 48);
@@ -19668,6 +19701,8 @@ extern "C" {
     extern char PcModuleFilename[260];
     extern void *PcApiCallBuffer;
     extern i32 PcApiCallBufferCount;
+    i32 __cdecl PcApiGetCallBufferCount(void);
+    void *__cdecl PcApiGetCallBuffer(void);
     extern u32 CpuVendorPc;
     extern u32 CpuHas3dnowPc;
     extern u32 CpuHasSse2Pc;
@@ -21846,7 +21881,26 @@ struct GIZMO_LEVER_PC {
     f32 idle_animation_timer, pull_progress, auto_reset_timer, auto_reset_delay, target_indicator_scale;
     u16 yaw;
     i16 model_special_index, platform_id;
-    u16 animation_frame, terrain_pitch, terrain_roll, flags;
+    u16 animation_frame, terrain_pitch, terrain_roll;
+    union {
+        u16 flags;
+        struct {
+            u16 interacting : 1;
+            u16 being_pulled : 1;
+            u16 goodie : 1;
+            u16 baddie : 1;
+            u16 visible : 1;
+            u16 auto_reset : 1;
+            u16 returning : 1;
+            u16 enabled : 1;
+            u16 hide_base : 1;
+            u16 hide_target_indicator : 1;
+            u16 unused_10 : 1;
+            u16 interaction_finished : 1;
+            u16 pulled_down : 1;
+            u16 unused_13 : 3;
+        };
+    };
     u8 model_variant, reserved_97[9];
 };
 STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
@@ -26147,8 +26201,17 @@ struct eduimenu_s {
     void *font;
     void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     char *title;
-    u32 flags : 3;
-    u32 unknown_flags : 29;
+    union {
+        struct {
+            u32 flags : 3;
+            u32 unknown_flags : 29;
+        };
+        struct {
+            u32 : 2;
+            u32 pinned : 1;
+            u32 : 29;
+        };
+    };
     struct eduimenu_s *child;
     struct eduimenu_s *parent;
 };
@@ -26636,19 +26699,18 @@ struct edcam_s {
     f32 auto_zoom_base;
     f32 auto_zoom_dist_scale;
     union {
-        u8 freedoms;
+        u32 freedoms;
         struct {
-            u8 allow_position_x : 1;
-            u8 allow_position_y : 1;
-            u8 allow_position_z : 1;
-            u8 allow_pitch : 1;
-            u8 allow_yaw : 1;
-            u8 allow_distance : 1;
-            u8 invert_pad_pitch : 1;
-            u8 reserved_freedom : 1;
+            u32 allow_position_x : 1;
+            u32 allow_position_y : 1;
+            u32 allow_position_z : 1;
+            u32 allow_pitch : 1;
+            u32 allow_yaw : 1;
+            u32 allow_distance : 1;
+            u32 invert_pad_pitch : 1;
+            u32 reserved_freedom : 1;
         };
     };
-    u8 padding_91[3];
 };
 STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 

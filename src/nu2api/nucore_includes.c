@@ -7036,6 +7036,9 @@ void __cdecl NuStrSubstituteString(char *dst, char *src, char *search, char *rep
     *dst = 0;
 }
 
+static u16 **BadWords;
+static i32 NumBadWords;
+
 void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     i32 count;
     i32 i;

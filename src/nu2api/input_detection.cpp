@@ -6,9 +6,7 @@
 extern const GUID PcWbemClassId, PcWbemInterfaceId;
 
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
-// TODO(saga.h): retail returns BOOL (movzx of the bool; InputEnumDevicesPc tests eax), so
-// the prototype should be `extern "C" BOOL IsXInputProductPc(const GUID *);`.
-extern "C" u8 IsXInputProductPc(const GUID *product) {
+extern "C" BOOL IsXInputProductPc(const GUID *product) {
     IWbemLocator *locator = NULL;
     IEnumWbemClassObject *enumerator = NULL;
     IWbemClassObject *devices[20] = {NULL};

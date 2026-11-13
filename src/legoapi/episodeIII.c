@@ -89,7 +89,8 @@ void __cdecl Boulder_Kill(PART_PC *part, i32 unused) {
 static void __cdecl BoulderSpawnPc(i32 index) {
     ADDPART_PC params;
     PART_PC *part;
-    if (LevInstAnimResetPc.animations[index] != NULL && LevHSpecial[index].display_special != NULL) {
+    NUINSTANIM **animation = &LevInstAnimResetPc.animations[index];
+    if (*animation != NULL && LevHSpecial[index].display_special != NULL) {
         params = Default_ADDPART;
         params.matrix = &NuMtxSetIdentityTemplate;
         params.velocity = &v000;
@@ -106,9 +107,9 @@ static void __cdecl BoulderSpawnPc(i32 index) {
         part = AddPart(&params);
         if (part != NULL)
             boulder_part[index] = part;
-        LevInstAnimResetPc.animations[index]->ltime = 1.0f;
-        LevInstAnimResetPc.animations[index]->flags |= 1;
-        LevInstAnimResetPc.animations[index]->matrix = NuMtxSetIdentityTemplate;
+        (*animation)->ltime = 1.0f;
+        (*animation)->flags |= 1;
+        (*animation)->matrix = NuMtxSetIdentityTemplate;
         NuSpecialSetVisibility(&LevHSpecial[index], 1);
     }
 }

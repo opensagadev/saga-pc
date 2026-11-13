@@ -3,6 +3,7 @@
 
 extern "C" const char PCKeyboardMouse1Name_candidate[15], PCKeyboardMouse2Name_candidate[16],
     PCKeyboard1Name_candidate[10], PCKeyboard2Name_candidate[10];
+static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
     if (port < 0)
         return NULL;
