@@ -6858,8 +6858,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                         if (candidate < best_distance) {
                             best_distance = candidate;
-                            direction = packet->path_info.direction == 0;
                             goal_index = destination_connection->node_indices[0];
+                            direction = packet->path_info.direction == 0;
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -6878,8 +6878,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                         if (candidate < best_distance) {
                             best_distance = candidate;
-                            direction = packet->path_info.direction == 0;
                             goal_index = destination_connection->node_indices[1];
+                            direction = packet->path_info.direction == 0;
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -6988,16 +6988,16 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     }
     shared = NULL;
     if (current_2->node_indices[0] == destination_connection->node_indices[0]) {
-        shared = &path->nodes[destination_connection->node_indices[0]];
+        shared = &path->nodes[current_2->node_indices[0]];
         direction = 0;
     } else if (current_2->node_indices[0] == destination_connection->node_indices[1]) {
-        shared = &path->nodes[destination_connection->node_indices[1]];
+        shared = &path->nodes[current_2->node_indices[0]];
         direction = 1;
     } else if (current_2->node_indices[1] == destination_connection->node_indices[0]) {
-        shared = &path->nodes[destination_connection->node_indices[0]];
+        shared = &path->nodes[current_2->node_indices[1]];
         direction = 0;
     } else if (current_2->node_indices[1] == destination_connection->node_indices[1]) {
-        shared = &path->nodes[destination_connection->node_indices[1]];
+        shared = &path->nodes[current_2->node_indices[1]];
         direction = 1;
     }
 
