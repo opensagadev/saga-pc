@@ -33746,7 +33746,7 @@ address,symbol,size,ctype
 0x7f5d4c,_SpeedBlurScalePc,4,f32
 0x7f5db0,_AdaptiveDifficultyRecoveryTimePc,4,f32
 0x7f5db4,_AdaptiveDifficultyRecoveryThresholdPc,4,f32
-0x007f5db8,?lastCameraMtx@?1??SpeedBlur_Update@@9@9,4,i32
+0x007f5db8,?lastCameraMtx@?1??SpeedBlur_Update@@9@4HA,4,i32
 0x7f5dc4,_FalconDebKey,8,i32[2]
 0x7f5dcc,_GunshipDustEmissionRatePc,4,f32
 0x7f5dd0,_debris_name,588,char *[147]
@@ -35981,7 +35981,7 @@ address,symbol,size,ctype
 0x0087661c,_podrace_die_angle_b,2,u16
 0x00876620,_podrace_die_angle_c,2,u16
 0x876624,_deathstar_hold_count,4,i32
-0x00876628,?cameraMtxs@?1??SpeedBlur_Update@@9@9,128,NUMTX[2]
+0x00876628,?cameraMtxs@?1??SpeedBlur_Update@@9@4PAUnumtx_s@@A,128,NUMTX[2]
 0x8766a8,_RippleSetPc,4,RIPPLE_SET_PC *
 0x8766b0,_KillPartsBikesPc,208,KILLPARTS_BIKE_PC[4]
 0x00876850,_tieonsfxwait,4,f32

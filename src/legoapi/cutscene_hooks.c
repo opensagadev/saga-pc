@@ -9,26 +9,6 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, position) == 0x30);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
 
-void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
-    if (obstacle->mode == 2 && obstacle->trigger_radius < 0.25f) {
-        obstacle->start_sfx_id = (i16)GetSfxId(GetSfxSwPPadName);
-    }
-}
-
-void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera);
-
-void __cdecl SpeedBlur_Update(void) {
-    static NUMTX cameraMtxs[2];
-    static i32 lastCameraMtx = -1;
-    if (lastCameraMtx < 0) {
-        cameraMtxs[0] = cameraMtxs[1] = GameCam->render_mtx;
-        lastCameraMtx = 0;
-    }
-    NuLightSpeedBlurOldCameraPos(&cameraMtxs[lastCameraMtx]);
-    lastCameraMtx = 1 - lastCameraMtx;
-    cameraMtxs[lastCameraMtx] = GameCam->render_mtx;
-}
-
 #define CUT_HAND_FLIP(m)                                                                                               \
     do {                                                                                                               \
         (m)->m02 = -(m)->m02;                                                                                          \
