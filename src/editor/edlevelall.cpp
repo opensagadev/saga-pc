@@ -5682,12 +5682,15 @@ void EdClass::SerialiseObject(EdStream &stream, void *object) {
     if (object != NULL) {
         u8 data[256];
         for (EdRef *member = members; member != NULL; member = member->next) {
+            i32 skip = 0;
             if (stream.flags & 0x400000) {
                 if (member->attributes & 0x400000)
-                    continue;
+                    skip = 1;
             } else if (member->attributes & 0x10000000) {
-                continue;
+                skip = 1;
             }
+            if (skip)
+                continue;
             if (member->attributes & 0x80000000) {
                 EdClass *member_class = theRegistry.GetClass(member->type_id);
                 member_class->SerialiseObject(stream, member->GetMemberObject(object));
@@ -5761,12 +5764,15 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (!(member->attributes & 0x80000000))
             continue;
+        i32 skip = 0;
         if (stream.flags & 0x400000) {
             if (member->attributes & 0x400000)
-                continue;
+                skip = 1;
         } else if (member->attributes & 0x10000000) {
-            continue;
+            skip = 1;
         }
+        if (skip)
+            continue;
         theRegistry.GetClass(member->type_id)->GetStreamClasses(stream, stream_classes, count, capacity);
         result = 1;
     }
@@ -8049,12 +8055,15 @@ void EdRegistry::GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &coun
     memset(used_classes, 0, sizeof(used_classes));
     for (i32 index = 0; index < class_count; index++) {
         EdClass *object_class = &classes[index];
+        i32 skip = 0;
         if (stream.flags & 0x400000) {
             if (object_class->flags & 0x400000)
-                continue;
+                skip = 1;
         } else if (object_class->flags & 0x10000000) {
-            continue;
+            skip = 1;
         }
+        if (skip)
+            continue;
         i32 stream_classes[64];
         i32 stream_class_count = 0;
         object_class->GetStreamClasses(stream, stream_classes, stream_class_count, 64);
@@ -8185,14 +8194,22 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                 if (stream.mode != 1) {
                     if (stream.mode != 2)
                         continue;
+                    i32 skip = 0;
                     if (stream.flags & 0x400000) {
                         if (member->attributes & 0x400000)
-                            continue;
+                            skip = 1;
                     } else if (member->attributes & 0x10000000) {
-                        continue;
+                        skip = 1;
                     }
+                    if (skip)
+                        continue;
                 }
-                if (!(member->attributes & 0x80000000)) {
+                if (member->attributes & 0x80000000) {
+                    EdClass *source_class = registry->GetClass(source->type_id);
+                    EdClass *member_class = theRegistry.GetClass(member->type_id);
+                    void *member_object = member->GetMemberObject(object);
+                    member_class->SerialiseObject(stream, member_object, source_class, registry);
+                } else {
                     EdType *type = theRegistry.GetType(member->type_id);
                     i32 type_size = member->size > 0 ? member->size : type->size;
                     if (stream.mode == 2)
@@ -8200,10 +8217,6 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                     type->serialise(stream, data, type_size);
                     if (stream.mode == 1)
                         member->SetMemberData(object, member->type_id, data, sizeof(data), NULL);
-                } else {
-                    EdClass *source_class = registry->GetClass(source->type_id);
-                    EdClass *member_class = theRegistry.GetClass(member->type_id);
-                    member_class->SerialiseObject(stream, member->GetMemberObject(object), source_class, registry);
                 }
             } else {
                 EdType *type = registry->GetType(source->type_id);
@@ -9282,12 +9295,15 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
             EdClass *object_class = &classes[index];
             if (object_class->object_interface == NULL)
                 continue;
+            i32 skip = 0;
             if (stream.flags & 0x400000) {
                 if (object_class->flags & 0x400000)
-                    continue;
+                    skip = 1;
             } else if (object_class->flags & 0x10000000) {
-                continue;
+                skip = 1;
             }
+            if (skip)
+                continue;
             count++;
         }
         stream.SerialiseBuffer(&count, sizeof(count), 1);
@@ -9295,12 +9311,15 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
             EdClass *object_class = &classes[index];
             if (object_class->object_interface == NULL)
                 continue;
+            i32 skip = 0;
             if (stream.flags & 0x400000) {
                 if (object_class->flags & 0x400000)
-                    continue;
+                    skip = 1;
             } else if (object_class->flags & 0x10000000) {
-                continue;
+                skip = 1;
             }
+            if (skip)
+                continue;
             stream.BeginBlock("ObjectList");
             stream.SerialiseString(&object_class->name);
             object_count = 0;
