@@ -683,7 +683,6 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
     NUVEC *positions[2];
     f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_base, wave_scale;
     i32 index, point, count, context;
-    u32 x_phase, z_phase;
     (void)unused_system;
     (void)unused_time;
     for (index = 0; index < view->grapple_count; ++index, ++grapple) {
@@ -714,13 +713,16 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
         } else {
             y_offset = (f64)grapple->rope_length * (f64)(f32)0.333f;
             sway = (f64)grapple->rope_length * (f64)(f32)0.0125f;
-            x_phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0);
-            x_phase += (u32)index * 0x2000;
-            attachment.x = (f64)NuTrigTable[((i32)x_phase >> 1) & 0x7fff] * sway + grapple->hook_position.x;
+            attachment.x = (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
+                                           index * 0x2000) *
+                               sway +
+                           grapple->hook_position.x;
             attachment.y = grapple->hook_position.y - y_offset;
-            z_phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0);
-            z_phase += (u32)index * 0x2666;
-            attachment.z = (f64)NuTrigTable[((i32)z_phase >> 1) & 0x7fff] * sway + grapple->hook_position.z;
+            attachment.z =
+                (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0) +
+                                index * 0x2666) *
+                    sway +
+                grapple->hook_position.z;
         }
         distance = NuVecDist(&attachment, &grapple->hook_position, &direction);
         if (grapple->rope_length > distance) {
@@ -742,12 +744,15 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
             if (occupant != NULL && slack > 0.0f) {
                 wave_base = (f64)slack * (f64)(f32)0.1f;
                 wave_scale = ((f64)(point + 1) / 6.0) * wave_base;
-                x_phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0);
-                x_phase += (u32)index * 0x2000;
-                grapple->target_rope_points[point].x += (f64)NuTrigTable[((i32)x_phase >> 1) & 0x7fff] * wave_scale;
-                z_phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0);
-                z_phase += (u32)index * 0x2666;
-                grapple->target_rope_points[point].z += (f64)NuTrigTable[((i32)z_phase >> 1) & 0x7fff] * wave_scale;
+                grapple->target_rope_points[point].x +=
+                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
+                                    index * 0x2000) *
+                    wave_scale;
+                grapple->target_rope_points[point].z +=
+                    (f64)NU_SIN_LUT(
+                        (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0) +
+                        index * 0x2666) *
+                    wave_scale;
             }
         }
         for (point = 0; point < 6; ++point)
