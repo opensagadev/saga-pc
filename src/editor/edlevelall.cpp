@@ -5412,18 +5412,18 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
 /* Places a new menu right of the others, wrapping back to the left edge. */
 void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
     eduimenu_s *menu = property_menu->menu;
-    bool use_stored_metrics = true;
-    bool placed;
+    i32 use_stored_metrics = 1;
+    i32 placed;
     menu->x = 20;
     menu->y = 5;
     do {
-        placed = true;
+        placed = 1;
         for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
             eduimenu_s *other_menu = other->menu;
             if (other_menu != menu) {
-                use_stored_metrics = false;
+                use_stored_metrics = 0;
                 if (menu->x + menu->width >= other_menu->x && menu->x <= other_menu->x + other_menu->width) {
-                    placed = false;
+                    placed = 0;
                     menu->x += 10;
                     break;
                 }
