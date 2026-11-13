@@ -10330,21 +10330,21 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     NUVEC *reference_position;
     NUVEC *second_position;
     GAMEOBJECT *object;
-    object = NULL;
-    second_position = NULL;
-    ignore_assigned = -1;
-    next = 0;
-    set_name = NULL;
-    use_player = 0;
-    use_opponent = 0;
-    use_second_player = 0;
-    first = 0;
-    looping = 0;
-    finish_at_end = 0;
-    random = 0;
-    furthest = 0;
     max_range = 0.0f;
     off_screen_radius = 0.0f;
+    object = NULL;
+    random = 0;
+    next = 0;
+    use_player = 0;
+    use_opponent = 0;
+    furthest = 0;
+    use_second_player = 0;
+    looping = 0;
+    finish_at_end = 0;
+    ignore_assigned = -1;
+    first = 0;
+    set_name = NULL;
+    second_position = NULL;
     if (first_time == 0) {
         return 1;
     }
@@ -10405,8 +10405,8 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
         } else if (NuStrICmp(params[index], GizActionLiteral7582e8) == 0) {
             ignore_assigned = 0;
         } else if (NuStrICmp(params[index], GizActionLiteral7582d0) == 0) {
-            furthest = 1;
             use_opponent = 1;
+            furthest = 1;
         } else if (NuStrICmp(params[index], GizActionLiteral7582b4) == 0) {
             furthest = 1;
             use_player = 1;
@@ -10418,7 +10418,11 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     }
 
     if (ignore_assigned == -1) {
-        ignore_assigned = next ^ 1;
+        if (!next) {
+            ignore_assigned = 1;
+        } else {
+            ignore_assigned = 0;
+        }
     }
     if (object == NULL) {
         return 1;
@@ -10452,17 +10456,15 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     if (next) {
         GizActionNextLocator(sys, locator_set, looping, finish_at_end, ignore_assigned, target);
     } else {
-        if (!random) {
-            if (furthest) {
-                AILocatorSet_AssignFurthestLocator(sys, locator_set, target, max_range, reference_position,
-                                                   second_position, off_screen_radius, ignore_assigned);
-            } else {
-                AILocatorSet_AssignNearestLocator(sys, locator_set, target, max_range, reference_position,
-                                                  second_position, off_screen_radius, ignore_assigned);
-            }
-        } else {
+        if (random) {
             AILocatorSet_AssignRandomLocator(sys, locator_set, target, max_range, reference_position, off_screen_radius,
                                              ignore_assigned);
+        } else if (furthest) {
+            AILocatorSet_AssignFurthestLocator(sys, locator_set, target, max_range, reference_position, second_position,
+                                               off_screen_radius, ignore_assigned);
+        } else {
+            AILocatorSet_AssignNearestLocator(sys, locator_set, target, max_range, reference_position, second_position,
+                                              off_screen_radius, ignore_assigned);
         }
     }
     return 1;
