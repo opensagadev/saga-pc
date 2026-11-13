@@ -502,17 +502,14 @@ extern "C" {
     void __cdecl EdDrawBegin(i32 index);
     void __cdecl EdDrawEnd(void);
     void __cdecl EdDrawMtx(NUMTX *matrix);
-#define EDDRAW_ADD_XYZ(px, py, pz)                                                                                     \
-    do {                                                                                                               \
-        f32 x_ = (px);                                                                                                 \
-        f32 y_ = (py);                                                                                                 \
-        f32 z_ = (pz);                                                                                                 \
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x_;                                               \
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y_;                                               \
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z_;                                               \
-        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX_PC);                                                     \
-        NuPrimVertexCount++;                                                                                           \
-    } while (0)
+    /* Appends a vertex position and moves the stream to the next vertex. */
+    static inline void EdDrawAddXYZ(f32 x, f32 y, f32 z) {
+        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x;
+        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y;
+        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX_PC);
+        NuPrimVertexCount++;
+    }
     void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
     void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
 #define EDDRAW_LINE_CIRCLE(rotate, base_y, base_z)                                                                     \
@@ -2308,9 +2305,9 @@ void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
         NewPrim = 2;
     }
     EdDrawSetVertexColour(vertex_colour);
-    EDDRAW_ADD_XYZ(a->x, a->y, a->z);
+    EdDrawAddXYZ(a->x, a->y, a->z);
     EdDrawSetVertexColour(vertex_colour);
-    EDDRAW_ADD_XYZ(b->x, b->y, b->z);
+    EdDrawAddXYZ(b->x, b->y, b->z);
 }
 
 void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
@@ -2460,11 +2457,11 @@ void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
         NewPrim = 3;
     }
     EdDrawSetVertexColour(vertex_colour);
-    EDDRAW_ADD_XYZ(a->x, a->y, a->z);
+    EdDrawAddXYZ(a->x, a->y, a->z);
     EdDrawSetVertexColour(vertex_colour);
-    EDDRAW_ADD_XYZ(b->x, b->y, b->z);
+    EdDrawAddXYZ(b->x, b->y, b->z);
     EdDrawSetVertexColour(vertex_colour);
-    EDDRAW_ADD_XYZ(c->x, c->y, c->z);
+    EdDrawAddXYZ(c->x, c->y, c->z);
 }
 
 void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
