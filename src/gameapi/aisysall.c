@@ -2847,10 +2847,7 @@ f32 __cdecl Condition_InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
         if (area == NULL)
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         if (area != NULL && area->system != NULL) {
-            i32 index = (i32)(area - area->system->areas);
-            i64 mask = (i32)(1u << (index & 31));
-            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
-            if ((membership & mask) != 0)
+            if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0)
                 return 1.0f;
         }
     }
@@ -2955,10 +2952,7 @@ f32 __cdecl Condition_PlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC
         if (area == NULL)
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         if (area != NULL && area->system != NULL) {
-            i32 index = (i32)(area - area->system->areas);
-            i64 mask = (i32)(1u << (index & 31));
-            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
-            if ((membership & mask) != 0)
+            if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0)
                 return 1.0f;
         }
     }
@@ -3044,10 +3038,7 @@ f32 __cdecl Condition_OpponentInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_
         if (area == NULL)
             area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
         if (area != NULL && area->system != NULL) {
-            i32 index = (i32)(area - area->system->areas);
-            i64 mask = (i32)(1u << (index & 31));
-            u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
-            if ((membership & mask) != 0)
+            if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0)
                 return 1.0f;
         }
     }
