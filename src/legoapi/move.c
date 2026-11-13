@@ -5158,54 +5158,53 @@ STATIC_ASSERT(offsetof(COMBO_AI_VIEW_PC, nearest_opponent_metric) == 0x3a0);
 
 static u8 SetComboOpponent(GAMEOBJECT *object, f32 range, i32 update_heading, i32 mode) {
     i32 searched = 0;
-    u8 result = 0;
+    i32 result = 0;
     COMBO_AI_VIEW_PC *ai = (COMBO_AI_VIEW_PC *)object;
     object->force_target = NULL;
     object->blowup_target = NULL;
     if ((object->flags_1fc & 0x80) != 0 && mode == 0 && object->pad->input_magnitude > 0.0f) {
         object->force_target = ObjOpponent(object, range, 0.0f, 0, 0, 1);
-        searched = 1;
         if (object->force_target != NULL)
             result = 1;
+        searched = 1;
     }
     if (object->force_target == NULL && ai->primary_target_ref != NULL && ai->nearest_opponent_metric < range) {
-        ComboOpponent_Range2 = ai->nearest_opponent_metric;
         object->force_target = *ai->primary_target_ref;
+        ComboOpponent_Range2 = ai->nearest_opponent_metric;
         result = 1;
         goto finished;
     }
-    if ((object->flags_1fc & 0x80) == 0) {
-        if ((object->portal_flags & 0x40) != 0 || object->field_f00 == 5) {
+    if ((object->flags_1fc & 0x80) != 0) {
+        if (!searched) {
+            object->force_target = ObjOpponent(object, range, 0.0f, 0, 0, 1);
+            if (object->force_target != NULL)
+                result = 1;
+        }
+        if (object->force_target == NULL) {
             object->blowup_target = (BLOWUP_TARGET_PC *)GizmoBlowUpOpponent(object, range, 0.0f, 0.0f, mode, 0, 0, 0);
             if (object->blowup_target != NULL) {
                 ComboOpponent_Range2 = GizmoBlowUpOpponent_Range2;
                 result = 4;
+                goto finished;
+            }
+            object->force_target = PlayerOpponent(object, range, 0x2000);
+            if (object->force_target != NULL) {
+                ComboOpponent_Range2 = PlayerOpponent_Range2;
+                result = 2;
+                goto finished;
             }
         }
-        goto finished;
-    }
-    if (!searched) {
-        object->force_target = ObjOpponent(object, range, 0.0f, 0, 0, 1);
-        if (object->force_target != NULL)
-            result = 1;
-    }
-    if (object->force_target == NULL) {
+        if (!result && !searched) {
+            object->force_target = ObjOpponent(object, range, 0.0f, 0, 0, 1);
+            if (object->force_target != NULL)
+                result = 1;
+        }
+    } else if ((object->portal_flags & 0x40) != 0 || object->field_f00 == 5) {
         object->blowup_target = (BLOWUP_TARGET_PC *)GizmoBlowUpOpponent(object, range, 0.0f, 0.0f, mode, 0, 0, 0);
         if (object->blowup_target != NULL) {
             ComboOpponent_Range2 = GizmoBlowUpOpponent_Range2;
             result = 4;
-            goto finished;
         }
-        object->force_target = PlayerOpponent(object, range, 0x2000);
-        if (object->force_target != NULL) {
-            ComboOpponent_Range2 = PlayerOpponent_Range2;
-            result = 2;
-            goto finished;
-        }
-    }
-    if (!result && !searched) {
-        object->force_target = ObjOpponent(object, range, 0.0f, 0, 0, 1);
-        result = object->force_target != NULL;
     }
 finished:
     if (update_heading != 0 && object->force_target == NULL && object->pad->input_magnitude > 0.0f &&
