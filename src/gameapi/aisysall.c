@@ -14267,7 +14267,6 @@ i32 __cdecl aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delt
     f32 closest;
     f32 distance;
     i32 hit;
-    struct nuhspecial_s *platform_handle;
     eduimenu_s *(__cdecl * process)(FRAME_PAD_PC *);
     aieditor->pad_buttons = pad->digital_buttons;
     aieditor->pad_pressed = pad->digital_buttons_pressed;
@@ -14288,10 +14287,7 @@ i32 __cdecl aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delt
     edcamGetPosAng(&aieditor->cursor_position, &aieditor->camera_pitch, &aieditor->camera_yaw);
     NuVecSub(&aieditor->cursor_movement, &aieditor->cursor_position, &previous_position);
     aieditor->flags &= ~4;
-    platform_handle = &aieditor->cursor_platform;
-    platform_handle->scene = NULL;
-    platform_handle->special = NULL;
-    platform_handle->display_special = NULL;
+    memset(&aieditor->cursor_platform, 0, sizeof(aieditor->cursor_platform));
     aieditor->camera_position = aieditor->cursor_position;
     terrain_height = AITerrShadow(&aieditor->cursor_position, 0.0f, 5.0f, -1);
     platform = AITerrShadowOnPlatform();
