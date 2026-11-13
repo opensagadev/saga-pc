@@ -5993,8 +5993,11 @@ void SplineObject::GenBezierPoints() {
 void SplineObject::Draw(i32 selected, i32 straight, i32 show_points, f32) {
     i32 colour = selected ? 0x80008080 : 0x80808080;
     EdDrawBegin(0);
-    for (SplineKnot *knot = knots.first; knot != NULL && knot->next != NULL; knot = knot->next) {
-        SplineKnot *next = knot->next;
+    SplineKnot *next;
+    for (SplineKnot *knot = knots.first; knot != NULL; knot = next) {
+        next = knot->next;
+        if (next == NULL)
+            break;
         if (straight != 0 || step < SplineMinStep)
             EdDrawLineSegment(&knot->position.xyz, &next->position.xyz, colour);
         else
