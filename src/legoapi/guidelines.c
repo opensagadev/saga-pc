@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x56cdb0-0x56d2ec: definitions in retail address order. */
+
 typedef struct guideline_record_pc_s {
     char name[8];
     NUVEC start_position;
@@ -31,17 +33,19 @@ STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 extern char AIRegistryTextPc007575bc[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 
-void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
-    world->guidelines = NULL;
-    world->guideline_count = 0;
-    if (level->max_guidelines > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->guidelines = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += level->max_guidelines * sizeof(GUIDELINE_RECORD_PC);
-    }
-    return world->guidelines;
-}
+STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
+STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);
+STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
+STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
+
+void __cdecl GuideLines_Draw(void *world, void *unused, f32 delta_time);
+#pragma const_seg(".rdata$PCContextName_GuideLine")
+const char PCContextName_GuideLine[10] = "GuideLine";
+#pragma const_seg()
 
 i32 __cdecl GuideLines_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
@@ -57,6 +61,18 @@ i32 __cdecl GuideLines_Load(void *world_ptr, void *unused) {
         return 1;
     }
     return 0;
+}
+
+void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
+    LEVELDATA_PC *level = world->current_level;
+    world->guidelines = NULL;
+    world->guideline_count = 0;
+    if (level->max_guidelines > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        world->guidelines = world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += level->max_guidelines * sizeof(GUIDELINE_RECORD_PC);
+    }
+    return world->guidelines;
 }
 
 void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
@@ -76,7 +92,25 @@ void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     }
 }
 
-void __cdecl GuideLines_Draw(void *world, void *unused, f32 delta_time) {
+INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
+    INDY_GUIDELINE_PC *nearest = NULL, *guide = (INDY_GUIDELINE_PC *)world->guidelines;
+    i32 nearest_endpoint = -1, index, side;
+    f32 nearest_distance = 1000000000.0f, candidate;
+    for (index = 0; index < world->guideline_count; ++index, ++guide) {
+        for (side = 0; side < 2; ++side) {
+            candidate = NuVecDistSqr(position, &guide->endpoints[side], NULL);
+            if (candidate < nearest_distance) {
+                nearest_distance = candidate;
+                nearest = guide;
+                nearest_endpoint = side;
+            }
+        }
+    }
+    if (endpoint != NULL)
+        *endpoint = nearest_endpoint;
+    if (distance != NULL)
+        *distance = nearest_distance;
+    return nearest;
 }
 
 void __cdecl GuideLine_Activate(GIZMO_PC *gizmo, i32 active) {
@@ -95,6 +129,14 @@ void __cdecl GuideLine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 
 i32 __cdecl GuideLines_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_guidelines : 0;
+}
+
+void __cdecl GuideLines_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+    i32 index;
+    for (index = 0; index < world->guideline_count; ++index) {
+        if (NuStrLen(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name) != 0)
+            AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD_PC *)world->guidelines)[index]);
+    }
 }
 
 char *__cdecl GuideLine_GetGizmoName(GIZMO_PC *gizmo) {
@@ -144,29 +186,12 @@ void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_
             progress->active_mask[word] &= ~bit;
     }
 }
-
-void __cdecl GuideLines_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
-    i32 index;
-    for (index = 0; index < world->guideline_count; ++index) {
-        if (NuStrLen(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name) != 0)
-            AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD_PC *)world->guidelines)[index]);
-    }
-}
-
-#pragma const_seg(".rdata$PCContextName_GuideLine")
-const char PCContextName_GuideLine[10] = "GuideLine";
-#pragma const_seg()
 #pragma data_seg(".data$GuideLineRegistryNamePc")
 char *GuideLineRegistryNamePc = (char *)PCContextName_GuideLine;
 #pragma data_seg()
 #pragma data_seg(".data$GuideLineAddTypePc")
 ADDGIZMOTYPE_PC GuideLineAddTypePc = {0};
 #pragma data_seg()
-STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
 
 ADDGIZMOTYPE_PC *__cdecl GuideLines_RegisterGizmo(i32 unused_type_id) {
     char *name = GuideLineRegistryNamePc;
@@ -202,4 +227,7 @@ ADDGIZMOTYPE_PC *__cdecl GuideLines_RegisterGizmo(i32 unused_type_id) {
     GuideLineAddTypePc.fns.post_load_fn = NULL;
     GuideLineAddTypePc.fns.add_level_sfx_fn = NULL;
     return &GuideLineAddTypePc;
+}
+
+void __cdecl GuideLines_Draw(void *world, void *unused, f32 delta_time) {
 }
