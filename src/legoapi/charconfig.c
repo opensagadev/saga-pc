@@ -1816,22 +1816,19 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         }
         NuFParDestroy(parser);
     }
-    character->model_flags |= 1;
-    if ((charconfig.flags & 0xc) == 4)
-        data->turn_rate_2 = data->turn_rate;
-    if ((charconfig.flags & 0x10) == 0 && (character->model_flags & 0x2000) != 0) {
-        data->ai_update_distances[0] = vehicle_timebase_dist[0];
-        data->ai_update_distances[1] = vehicle_timebase_dist[1];
-        data->ai_update_distances[2] = vehicle_timebase_dist[2];
-        data->ai_update_distances[3] = vehicle_timebase_dist[3];
-        data->ai_update_intervals[0] = (u8)(vehicle_timebase_nframes[0]);
-        data->ai_update_intervals[1] = (u8)(vehicle_timebase_nframes[1]);
-        data->ai_update_intervals[2] = (u8)(vehicle_timebase_nframes[2]);
-        data->ai_update_intervals[3] = (u8)(vehicle_timebase_nframes[3]);
+    charconfig.character->model_flags |= 1;
+    if ((charconfig.flags & 4) != 0 && (charconfig.flags & 8) == 0)
+        charconfig.runtime->turn_rate_2 = charconfig.runtime->turn_rate;
+    if ((charconfig.flags & 0x10) == 0 && (charconfig.character->model_flags & 0x2000) != 0) {
+        for (i = 0; i < 4; ++i) {
+            charconfig.runtime->ai_update_distances[i] = vehicle_timebase_dist[i];
+            charconfig.runtime->ai_update_intervals[i] = (u8)vehicle_timebase_nframes[i];
+        }
     }
-    CharConfig_CalculateJumpStats(data->jump_speed, data->gravity, &data->jump_duration, &data->jump_height);
-    CharConfig_CalculateJumpStats(data->second_jump_speed, data->gravity, &data->second_jump_duration,
-                                  &data->second_jump_height);
+    CharConfig_CalculateJumpStats(charconfig.runtime->jump_speed, charconfig.runtime->gravity,
+                                  &charconfig.runtime->jump_duration, &charconfig.runtime->jump_height);
+    CharConfig_CalculateJumpStats(charconfig.runtime->second_jump_speed, charconfig.runtime->gravity,
+                                  &charconfig.runtime->second_jump_duration, &charconfig.runtime->second_jump_height);
     if ((charconfig.flags & 0x20) != 0) {
         charconfig.character->animation_count = charconfig.animation_count;
         charconfig.character->animations[charconfig.animation_count].name = NULL;
@@ -1845,27 +1842,28 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         }
         if (charconfig.effect_count > 0) {
             effects[charconfig.effect_count++].character_id = -1;
-            arena->addr = ((arena->addr + 3) & ~3u);
-            character->effects = (CHARACTER_EFFECT_CONFIG_PC *)(arena->void_ptr);
-            PCByteCopy_candidate(character->effects, effects, charconfig.effect_count * sizeof(*effects));
-            arena->addr += charconfig.effect_count * sizeof(*effects);
+            charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+            charconfig.character->effects = (CHARACTER_EFFECT_CONFIG_PC *)charconfig.arena->void_ptr;
+            PCByteCopy_candidate(charconfig.character->effects, effects, charconfig.effect_count * sizeof(*effects));
+            charconfig.arena->addr += charconfig.effect_count * sizeof(*effects);
         }
     }
     if ((charconfig.flags & 2) != 0) {
-        if (data->layer_count == 0) {
-            data->layers = NULL;
-            data->layer_count = 0;
+        if (charconfig.runtime->layer_count == 0) {
+            charconfig.runtime->layers = NULL;
+            charconfig.runtime->layer_count = 0;
         } else {
-            arena->addr = ((arena->addr + 3) & ~3u);
-            data->layers = (GAMECHARACTERLAYER_PC *)(arena->void_ptr);
-            arena->addr += data->layer_count * sizeof(*layers);
-            PCByteCopy_candidate(data->layers, layers, data->layer_count * sizeof(*layers));
-            data->layer_lookup = (i8 *)(arena->void_ptr);
-            arena->addr += 32;
+            charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+            charconfig.runtime->layers = (GAMECHARACTERLAYER_PC *)charconfig.arena->void_ptr;
+            charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC);
+            PCByteCopy_candidate(charconfig.runtime->layers, charconfig.layer_scratch,
+                                 charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC));
+            charconfig.runtime->layer_lookup = (i8 *)charconfig.arena->void_ptr;
+            charconfig.arena->addr += 32;
             for (bit = 0; bit < 32; ++bit) {
-                for (layer = 0; layer < data->layer_count; ++layer) {
-                    if (data->layers[layer].mask_bit == bit)
-                        data->layer_lookup[bit] = (i8)(layer);
+                for (layer = 0; layer < charconfig.runtime->layer_count; ++layer) {
+                    if (charconfig.runtime->layers[layer].mask_bit == bit)
+                        charconfig.runtime->layer_lookup[bit] = (i8)layer;
                 }
             }
         }
