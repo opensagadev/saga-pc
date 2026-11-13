@@ -325,12 +325,13 @@ void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
                     else
                         fade = (f32)(((f64)NuFsqrt(lateral_squared) - 0.75) / 0.75);
                     if (along_normal < 0.0f || along_normal > 2.0f) {
+                        f32 overshoot;
                         if (along_normal >= 0.0f)
-                            along_normal = (f32)((f64)along_normal - 2.0);
+                            overshoot = (f32)((f64)along_normal - 2.0);
                         else
-                            along_normal = -along_normal;
-                        if (along_normal < 0.75f)
-                            fade = (f32)((f64)fade + (1.0 - (f64)fade) * ((f64)along_normal / 0.75));
+                            overshoot = -along_normal;
+                        if (overshoot < 0.75f)
+                            fade = (f32)((f64)fade + (1.0 - (f64)fade) * ((f64)overshoot / 0.75));
                         else
                             fade = 1.0f;
                     }
