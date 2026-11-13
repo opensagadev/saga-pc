@@ -288,18 +288,18 @@ i32 __cdecl eduicbRenderColourSlider(eduimenu_s *unused_menu, eduiitem_s *item, 
     EduiPrintAlignedTextPc(edui_font, (x + 116) << 4, (y << 3) + baseline, 64, slider->base.format,
                            (i32)slider->base.value);
     u32 colour = slider->red + (slider->green << 8) + (slider->blue << 16);
-    EduiDrawGradientSpanPc(x, y + height, width, height, 0xff000000, colour, 0.0f, 1.0f);
+    y += height;
+    EduiDrawGradientSpanPc(x, y, width, height, 0xff000000, colour, 0.0f, 1.0f);
     if (edui_donotdraw == 0) {
-        f32 span = (f32)width;
-        i32 top = (y + height) << 3;
-        i32 bottom = ((y + height * 2) << 3) - 8;
-        i32 marker = (i32)(slider->base.normalized_value * span + (x + 1)) << 4;
+        i32 bottom = (y + height - 1) << 3;
+        i32 marker = (i32)(slider->base.normalized_value * width + (x + 1)) << 4;
+        i32 top = y << 3;
         NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
         if (edui_donotdraw == 0) {
-            marker = (i32)(slider->base.normalized_value * span + x) << 4;
+            marker = (i32)(slider->base.normalized_value * width + x) << 4;
             NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
-                marker = (i32)(slider->base.normalized_value * span + (x - 1)) << 4;
+                marker = (i32)(slider->base.normalized_value * width + (x - 1)) << 4;
                 NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
             }
         }
@@ -377,30 +377,29 @@ extern "C" i32 __cdecl eduicbRenderGreyPick(eduimenu_s *unused_menu, eduiitem_s 
     item->y = y;
     EduiDrawGradientSpanPc(x, y, width, height, 0x80000000, 0x80ffffff, 0.0f, 1.0f);
     if (edui_donotdraw == 0) {
-        f32 span = (f32)(width - 2);
         f32 plus_x = (f32)(x + 1);
-        i32 top = y << 3;
-        i32 middle_y = (y + (height >> 1)) << 3;
-        i32 bottom = ((y + height) << 3) - 8;
-        i32 marker = (i32)(pick->value * span + plus_x) << 4;
-        NuRndrLine2di(marker, top, marker, middle_y - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+        i32 marker = (i32)(pick->value * (width - 2) + plus_x) << 4;
+        NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
         if (edui_donotdraw == 0) {
             f32 middle_x = (f32)x;
-            marker = (i32)(pick->value * span + middle_x) << 4;
-            NuRndrLine2di(marker, top, marker, middle_y - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+            marker = (i32)(pick->value * (width - 2) + middle_x) << 4;
+            NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
                 f32 minus_x = (f32)(x - 1);
-                marker = (i32)(pick->value * span + minus_x) << 4;
-                NuRndrLine2di(marker, top, marker, middle_y - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+                marker = (i32)(pick->value * (width - 2) + minus_x) << 4;
+                NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
                 if (edui_donotdraw == 0) {
-                    marker = (i32)(pick->value * span + plus_x) << 4;
-                    NuRndrLine2di(marker, middle_y, marker, bottom, 0x80000000, (NUMTL *)uimtls[0]);
+                    marker = (i32)(pick->value * (width - 2) + plus_x) << 4;
+                    NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000,
+                                  (NUMTL *)uimtls[0]);
                     if (edui_donotdraw == 0) {
-                        marker = (i32)(pick->value * span + middle_x) << 4;
-                        NuRndrLine2di(marker, middle_y, marker, bottom, 0x80000000, (NUMTL *)uimtls[0]);
+                        marker = (i32)(pick->value * (width - 2) + middle_x) << 4;
+                        NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000,
+                                      (NUMTL *)uimtls[0]);
                         if (edui_donotdraw == 0) {
-                            marker = (i32)(pick->value * span + minus_x) << 4;
-                            NuRndrLine2di(marker, middle_y, marker, bottom, 0x80000000, (NUMTL *)uimtls[0]);
+                            marker = (i32)(pick->value * (width - 2) + minus_x) << 4;
+                            NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000,
+                                          (NUMTL *)uimtls[0]);
                         }
                     }
                 }
