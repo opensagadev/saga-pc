@@ -9,7 +9,9 @@
 // nudlist_material_pc.
 // The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
 // nufloat, numtx, nuhtml, nustateanim and nufrustum_pc stay separate: merged, their small leaves inline into
-// nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate, TestBox).
+// nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2, TestBox).
+// StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
+// PCSpecialEmptyHandler_candidate, so it knew the hook's register use (same unit).
 // nuvec and nucamera stay separate for the same reason (AnimationDiagnosticNoOpPc and the nucamera
 // getters fold into their callers); nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5%
 // to 66.3%.
@@ -6090,6 +6092,32 @@ extern "C" {
             }
         }
         return inside_vertices == plane_count * 8 ? 1 : 2;
+    }
+
+    i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
+        u8 next = *index;
+        i32 changed = 0;
+
+        while (*index < state->count && frame >= state->times[*index]) {
+            *value = state->values[*index];
+            ++*index;
+            changed = 1;
+        }
+        if (changed != 0) {
+            return changed;
+        }
+        while (next != 0 && state->times[next - 1] > frame) {
+            *index = --next;
+            if (next != 0) {
+                *value = state->values[next - 1];
+            } else {
+                PCSpecialEmptyHandler_candidate();
+                *value = state->values[0];
+            }
+            next = *index;
+            changed = 1;
+        }
+        return changed;
     }
 
     i32 __cdecl NuPortalClipTestBox(NUVEC *center, NUVEC *extent, NUPORTAL_FRUSTUM_PC *frustum) {
