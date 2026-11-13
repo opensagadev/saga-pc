@@ -953,8 +953,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                                  : MissionMenuPacketPc.active_player[0] != 0 ? 0
                                  : MissionMenuPacketPc.active_player[1] != 0 ? 1
                                                                              : -1;
-        const u16 *selection = Game.customiser_start[side].pieces;
-        u16 torso_flags;
+        u32 torso_flags;
         CHARACTER_MODEL_LAYERS_PC *model;
         ANIMPACKET_PC *packet;
         i32 saber_colour, intro;
@@ -967,15 +966,15 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         UpdateCustomPieceAnim(&CustomiseHeadAnimPc[side], 0xd556, 0x2aaa);
         UpdateCustomPieceAnim(&CustomiseArmsAnimPc[side], 0x1555, 0x4000);
         UpdateCustomPieceAnim(&CustomiseLegsAnimPc[side], 0xe000, 0x4000);
-        torso_flags = customiser->piece_sets[1][selection[1]].availability_flags;
+        torso_flags = customiser->piece_sets[1][Game.customiser_start[side].pieces[1]].availability_flags;
         if ((torso_flags & 1) != 0) {
             if ((torso_flags & 4) != 0) {
-                if ((customiser->piece_sets[0][selection[0]].availability_flags & 8) != 0)
+                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & 8) != 0)
                     no_hat = CustomiseHeadOffsetPc;
                 else
                     no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.8f;
             } else {
-                if ((customiser->piece_sets[0][selection[0]].availability_flags & 8) != 0)
+                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & 8) != 0)
                     no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.8f;
                 else
                     no_hat = (f64)CustomiseHeadOffsetPc * (f64)0.6f;
@@ -989,7 +988,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         model = APICharacterLoaded(customiser->character_ids[side]);
         if (model == NULL)
             continue;
-        saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][selection[2]].weapon_model, NULL);
+        saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
         if (runtime->animation_state[side] > 0)
             --runtime->animation_state[side];
         packet = &runtime->animation_packets[side].packet;
