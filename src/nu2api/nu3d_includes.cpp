@@ -8351,9 +8351,10 @@ extern "C" {
             PC_DISPLAY_MATERIAL_PC *material = (PC_DISPLAY_MATERIAL_PC *)PCDisplayMaterialDeleteQueue[queued];
             NUDISPLAYLISTITEM *items;
             NUSORTPRI *sort;
-            i32 index = -1, key, sort_index = -1, i, link, count;
+            i32 index, key, sort_index, i, link, count;
             if (material->display_list == NULL)
                 continue;
+            index = -1;
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (scene->display_materials[i] == (NUMTL *)material) {
                     index = i;
@@ -8365,6 +8366,7 @@ extern "C" {
             if (--PCDisplayMaterialReferenceCounts[index] > 0)
                 continue;
             key = material->sort_layer * 131072 + material->sort_priority;
+            sort_index = -1;
             for (i = 0; i < scene->sort_count; ++i) {
                 if (scene->sort_pris[i].sort_pri == key)
                     sort_index = i;
