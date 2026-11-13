@@ -12076,12 +12076,17 @@ void __cdecl xConditions(NUFPAR_PC *parser) {
                 NuFParGetWord(parser);
 
                 if (cond->parameter_condition == NULL) {
-                    i8 param_index;
                     i32 i;
                     char *param;
 
                     param = NuStrIStr(parser->word_buffer_ptr, "param");
-                    if (param == NULL) {
+                    if (param != NULL) {
+                        cond->param_index = NuAToI(param);
+
+                        if (cond->param_index >= 0 && cond->param_index < 4) {
+                            cond->flags |= 4;
+                        }
+                    } else {
                         for (i = 0; i < 4; i++) {
                             char *param_name = aiscript_load_script->params[i].name;
 
@@ -12092,19 +12097,14 @@ void __cdecl xConditions(NUFPAR_PC *parser) {
                                 break;
                             }
                         }
-                    } else {
-                        param_index = NuAToI(param);
-                        cond->param_index = param_index;
-
-                        if (param_index >= 0 && param_index < 4) {
-                            cond->flags |= 4;
-                        }
                     }
 
                     if (!(cond->flags & 4)) {
 
                         for (i = 0; i < AIScriptConstCursorPc; i++) {
-                            if (NuStrICmp(AIScriptConstantRecordsPc[i].name, parser->word_buffer_ptr) == 0) {
+                            char *const_name = AIScriptConstantRecordsPc[i].name;
+
+                            if (const_name != NULL && NuStrICmp(const_name, parser->word_buffer_ptr) == 0) {
                                 cond->param_value = AIScriptConstantRecordsPc[i].default_val;
 
                                 break;
