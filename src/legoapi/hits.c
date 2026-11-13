@@ -672,12 +672,19 @@ refill:
     goto hurt;
 }
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static __forceinline f32 HitsFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 void __cdecl FloatRumble(GAMEOBJECT *object) {
-    f32 velocity, strength;
+    f32 strength;
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        velocity = object->velocity.y;
-        *(u32 *)&strength = *(u32 *)&velocity & 0x7fffffff;
+        strength = HitsFabsPc(object->velocity.y);
         strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
         if (strength > 1.0f)
             strength = 1.0f;
