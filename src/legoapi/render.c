@@ -142,7 +142,7 @@ void __cdecl GameFog_Update(WORLDINFO *world) {
     }
     if (GameFogSnap != 0 || fog != previous) {
         if (fog != NULL) {
-            GameFogNew.colour_channels[0] = (f32)(fog->colour >> 24);
+            GameFogNew.colour_channels[0] = (f32)(fog->colour >> 24 & 0xff);
             GameFogNew.colour_channels[1] = (f32)(fog->colour >> 16 & 0xff);
             GameFogNew.colour_channels[2] = (f32)(fog->colour >> 8 & 0xff);
             GameFogNew.colour_channels[3] = (f32)(fog->colour & 0xff);
@@ -150,7 +150,7 @@ void __cdecl GameFog_Update(WORLDINFO *world) {
             GameFogNew.end = fog->end;
             GameFogNew.density = fog->density;
             GameFogNew.low_quality_density = (f32)fog->low_quality_density;
-            GameFogNew.low_quality_colour_channels[0] = (f32)(fog->low_quality_colour >> 24);
+            GameFogNew.low_quality_colour_channels[0] = (f32)(fog->low_quality_colour >> 24 & 0xff);
             GameFogNew.low_quality_colour_channels[1] = (f32)(fog->low_quality_colour >> 16 & 0xff);
             GameFogNew.low_quality_colour_channels[2] = (f32)(fog->low_quality_colour >> 8 & 0xff);
             GameFogNew.low_quality_colour_channels[3] = (f32)(fog->low_quality_colour & 0xff);
@@ -490,7 +490,7 @@ void __cdecl DrawGameMessages(void) {
         if (message->delay > 0.0f) {
             continue;
         }
-        if (!(message->duration > message->elapsed) && message->expired == 0) {
+        if (!(message->elapsed < message->duration) && message->expired == 0) {
             continue;
         }
 
