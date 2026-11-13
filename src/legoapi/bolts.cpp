@@ -2172,10 +2172,10 @@ extern "C" {
 
             if (reading_type != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, ("bolttype_end")) == 0) {
+                    reading_type = 0;
                     if (type.name[0] != '\0') {
                         BoltTypeStoreConfigPrivatePc(&type, world);
                     }
-                    reading_type = 0;
                 } else {
                     NuFParInterpretWord(parser);
                 }
@@ -2183,16 +2183,15 @@ extern "C" {
             }
 
             if (NuStrICmp(parser->word_buffer_ptr, ("bolttype_start")) == 0) {
+                reading_type = 1;
                 BT_worldinfo = world;
                 BT_bolttype = &type;
-                BT_gdeb_moving_count = 0;
                 BT_scene = things_scene;
-                memset(&type, 0, sizeof(type));
                 memcpy(&type, &GlobalBoltType_Default, sizeof(type));
                 type.name[0] = '\0';
                 type.moving_debris[0] = -1;
                 type.moving_debris[1] = -1;
-                reading_type = 1;
+                BT_gdeb_moving_count = 0;
             }
         }
         NuFParDestroy(parser);
