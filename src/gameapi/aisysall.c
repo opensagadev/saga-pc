@@ -7319,6 +7319,7 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
     i32 angle;
     i32 angle_2;
     i32 destination_angle;
+    u8 route;
 
     if (packet->movement_target != NULL) {
         node_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
@@ -7331,12 +7332,13 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
         node_index_2 = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
         node = &packet->path_info.path->nodes[node_index_2];
         start = NuRandInt() % node->connection_count;
+        route = packet->current_route;
         for (index = 0; index < node->connection_count; ++index) {
             packet->movement_target = node->connections[(index + start) % node->connection_count];
             target = packet->movement_target;
             if (target != packet->path_info.connection) {
-                if (packet->current_route == 0xff || (((u64)1 << packet->current_route) & (target->route_mask)) != 0 ||
-                    (((u64)1 << packet->current_route) & (node->route_boundary_mask)) != 0) {
+                if (route == 0xff || (((u64)1 << route) & (target->route_mask)) != 0 ||
+                    (((u64)1 << route) & (node->route_boundary_mask)) != 0) {
                     if (target->node_indices[0] == node_index_2)
                         packet->movement_target_direction = 0;
                     else
