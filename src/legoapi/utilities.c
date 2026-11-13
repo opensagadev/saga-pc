@@ -1360,25 +1360,25 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     dco_prerotatez = 0;
     if (object != NULL) {
         id = object->id;
-        model = object->character_model;
-        axis = object->reflection_enabled;
         plane = object->reflection_height;
+        model = object->character_model;
         hat = object->helmet;
+        axis = object->reflection_enabled;
     } else {
         id = dco_id;
         if (id == -1 || dco_gcdata == NULL || dco_cmodel == NULL)
             return;
         model = dco_cmodel;
-        axis = dco_reflectaxis;
-        plane = dco_reflectcoord;
         hat = dco_wearinghat;
+        plane = dco_reflectcoord;
+        axis = dco_reflectaxis;
     }
+    dco_id = -1;
+    dco_reflectcoord = 2000000.0f;
     dco_gcdata = NULL;
     dco_cmodel = NULL;
-    dco_id = -1;
-    dco_reflectaxis = 0;
-    dco_reflectcoord = 2000000.0f;
     dco_wearinghat = 0;
+    dco_reflectaxis = 0;
     if (world == NULL)
         world = WorldInfo_CurrentlyActive();
     if (object_id != -1) {
@@ -1394,7 +1394,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     else
         matrix = joints[locator];
     if (second_locator != -1 && model->points_of_interest[second_locator] != NULL) {
-        NUVEC position = {matrix.m30, matrix.m31, matrix.m32};
+        NUVEC position = matrix.translation;
         if (!position_only) {
             NUMTX first = matrix;
             NUMTX second = joints[second_locator];
@@ -1417,11 +1417,9 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
             NuMtxPreTranslate(&matrix, &offset);
     }
     if (rotation != NULL) {
-        NUVEC position = {matrix.m30, matrix.m31, matrix.m32};
+        NUVEC position = matrix.translation;
         NuMtxMulR(&matrix, rotation, &matrix);
-        matrix.m30 = position.x;
-        matrix.m31 = position.y;
-        matrix.m32 = position.z;
+        matrix.translation = position;
     }
     if (translation != NULL)
         NuMtxTranslate(&matrix, translation);
