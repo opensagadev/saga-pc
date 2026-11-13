@@ -831,8 +831,11 @@ i32 GetRandomCoinType() {
 i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     u32 lost;
     i32 adjustment;
-    if (Player_HasInvincibility(object) || (object->character_data->game_character->flags_090 & 0x8000) ||
-        object->coin_packet == NULL)
+    if (Player_HasInvincibility(object))
+        return 0;
+    if (object->character_data->game_character->flags_090 & 0x8000)
+        return 0;
+    if (object->coin_packet == NULL)
         return 0;
     switch (cause) {
         case 1:
