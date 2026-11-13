@@ -6111,12 +6111,7 @@ void SplineHelper::SerialiseObject(EdStream &stream, void *object) {
     if (stream.mode == 1) {
         stream.SerialiseBuffer(&knot_count, sizeof(knot_count), 1);
         for (i32 index = 0; index < knot_count; index++) {
-            SplineKnot *knot = (SplineKnot *)theMemoryManager.AllocPool(sizeof(SplineKnot), 1);
-            if (knot != NULL) {
-                knot->next = NULL;
-                knot->previous = NULL;
-                knot->led_file = Placeable::CurrentLedFile;
-            }
+            SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
             theKnotHelper.object_class->SerialiseObject(stream, knot);
             if (knot != NULL) {
                 knot->spline = spline;
