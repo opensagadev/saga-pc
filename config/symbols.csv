@@ -8787,6 +8787,7 @@ address,symbol,size,ctype
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
 0x6424c0,_PartRuntimeMatrixCopyPrivate,95,
 0x642530,_PartRayCast,48,"i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)"
+0x642560,_PartPlatId,5,"i32 __cdecl (void)"
 0x642570,_CastPart,1315,"void __cdecl CastPart(PART_PC *part, f32 time)"
 0x642aa0,_edpartRegisterPointerToGameCharLocation,5,"void __cdecl (NUVEC *)"
 0x642ab0,_edpartPtlShelve,49,"void __cdecl (i32)"
