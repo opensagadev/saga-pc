@@ -489,17 +489,19 @@ f32 __cdecl NuCameraCalcRootFStop(f32 focal_length, f32 aperture) {
 
 i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix) {
     NUMTX matrix;
-    i32 common = -1;
+    i32 common;
     i32 i;
     if (world_matrix != NULL)
         NuMtxMulH(&matrix, world_matrix, &vmtx);
     else
         matrix = vmtx;
+    common = -1;
     for (i = 0; i < count; ++i) {
         NUVEC t;
-        i32 flags = 0;
+        i32 flags;
         f32 negative_z;
         NuVecMtxTransform(&t, &points[i], &matrix);
+        flags = 0;
         if (t.z < global_camera.near_clip)
             flags |= 0x20;
         if (t.z > global_camera.far_clip)
@@ -507,7 +509,7 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
         negative_z = -t.z;
         if (t.x < negative_z * zx)
             flags |= 1;
-        if (t.x > t.z * zx)
+        if (t.z * zx < t.x)
             flags |= 2;
         if (t.y < negative_z * zy)
             flags |= 8;
