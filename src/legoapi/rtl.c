@@ -181,7 +181,8 @@ i32 __cdecl rtlDynamicMasterEnable(i32 enabled) {
     return old;
 }
 
-/* Inline nu2 helper (no out-of-line copy in retail); the shared pointer it leaves keeps ambient in EBX. */
+/* nu2 helper; VC8 inlines it here and also keeps an out-of-line copy (retail 0x633e30). The shared pointer it
+   leaves keeps ambient in EBX. */
 static __inline void NuVecClear(NUVEC *v) {
     v->x = v->y = v->z = 0.0f;
 }
