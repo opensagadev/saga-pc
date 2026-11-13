@@ -9899,7 +9899,7 @@ extern "C" void __cdecl NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 
         if (static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].type != 0x8f) {
             void *geometry_data = static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].next;
             for (u32 i = 0; i < visible_count; ++i) {
-                NUMTX *matrix = &matrices[clip != 0 ? static_cast<u8>(visible[i]) : i];
+                NUMTX *matrix = clip != 0 ? &matrices[static_cast<u8>(visible[i])] : &matrices[i];
                 void *transform = DisplayListCreateGeomTransformPS(
                     buffer, matrix, scene->display_materials[list->material_id], geometry_data, NULL);
                 list->items->type = 0x8c;
@@ -9914,7 +9914,7 @@ extern "C" void __cdecl NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 
             }
         } else {
             for (u32 i = 0; i < visible_count; ++i) {
-                NUMTX *matrix = &matrices[clip != 0 ? static_cast<u8>(visible[i]) : i];
+                NUMTX *matrix = clip != 0 ? &matrices[static_cast<u8>(visible[i])] : &matrices[i];
                 void *transform = DisplayListCreateFaceonTransformPS(
                     buffer, matrix, scene->display_materials[list->material_id],
                     static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].next);
