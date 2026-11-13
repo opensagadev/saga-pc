@@ -2875,12 +2875,12 @@ void HubDrawAreaStatsPc(f32 phase, i32 area, i32 mode);
 static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode);
 static void HubDrawSelectModePc(void) {
     const i32 state = selectmodemode;
-    if ((state == 1 || state == 2 || state == 3) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
+    if ((state == 2 || state == 1 || state == 3) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
         return;
     if (state == 4 && pFadeInfo->fade > 0.0f)
         return;
     f32 alpha = 1.0f;
-    if (state == 1 || state == 2 || state == 3 || state == 4) {
+    if (state == 2 || state == 1 || state == 3 || state == 4) {
         if (!(selectmodetime < .5f))
             return;
         alpha = 1.0f - NuTrigTable[((i32)(selectmodetime / selectmodeduration * 16384.0) >> 1) & 0x7fff];
