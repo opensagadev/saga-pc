@@ -96,6 +96,12 @@ struct MemoryBuffer {
         used = 0;
         remaining = finish->addr - begin->addr;
     }
+    void Set(VARIPTR *begin, VARIPTR *finish) {
+        position = begin;
+        end = finish;
+        used = 0;
+        remaining = end->addr - position->addr;
+    }
 
     VARIPTR *position;
     VARIPTR *end;
@@ -109,6 +115,19 @@ struct MemoryBuffer {
             allocation = position->void_ptr;
             position->addr += size;
             memset(allocation, 0, size);
+            used += size;
+            remaining -= size;
+        }
+        return allocation;
+    }
+    void *Allocate(u32 size, u32 alignment, i32 clear) {
+        void *allocation = NULL;
+        if (size < end->addr - position->addr) {
+            position->addr = (position->addr + alignment - 1) & ~(alignment - 1);
+            allocation = position->void_ptr;
+            position->addr += size;
+            if (clear)
+                memset(allocation, 0, size);
             used += size;
             remaining -= size;
         }
@@ -2664,27 +2683,29 @@ void LevelEditor::SetPadText(i32 buttons, char *text) {
 /* Several scenes load between these two calls: the class editor's load
  * initialisation runs once around the whole batch. */
 void LevelEditor::BeginMultiLoad(variptr_u *buffer, variptr_u *buffer_end) {
-    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer source;
     MemoryBuffer scratch;
+    source.Set(buffer, buffer_end);
     if (editor_buffer_from_front == 0) {
         editor_buffer_end = *buffer_end;
         editor_buffer_begin.addr = buffer_end->addr - 0x20000;
     }
     editor_buffer_cursor = editor_buffer_begin;
-    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    scratch.Set(&editor_buffer_cursor, &editor_buffer_end);
     multi_load_active = 1;
     theClassEditor.PreLoadInitialisation(&source, &scratch);
 }
 
 void LevelEditor::EndMultiLoad(variptr_u *buffer, variptr_u *buffer_end) {
-    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer source;
     MemoryBuffer scratch;
+    source.Set(buffer, buffer_end);
     if (editor_buffer_from_front == 0) {
         editor_buffer_end = *buffer_end;
         editor_buffer_begin.addr = buffer_end->addr - 0x20000;
     }
     editor_buffer_cursor = editor_buffer_begin;
-    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    scratch.Set(&editor_buffer_cursor, &editor_buffer_end);
     theClassEditor.PostLoadInitialisation(&source, &scratch);
     multi_load_active = 0;
     current_led_file = -1;
@@ -8936,9 +8957,10 @@ void EdSfxNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target
  * the file image and scratch data to the editor buffer. Returns the scene
  * index, or -1. */
 i32 LevelEditor::Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags) {
-    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer source;
     MemoryBuffer scratch;
     i32 result = -1;
+    source.Set(buffer, buffer_end);
     if (editor_buffer_from_front == 0) {
         editor_buffer_end = *buffer_end;
         editor_buffer_begin.addr = buffer_end->addr - 0x20000;
@@ -8954,18 +8976,14 @@ i32 LevelEditor::Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, 
         NuStrCpy(scenes[Placeable::CurrentLedFile].directory, directory);
     current_led_file = Placeable::CurrentLedFile;
     editor_buffer_cursor = editor_buffer_begin;
-    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    scratch.Set(&editor_buffer_cursor, &editor_buffer_end);
     SetSaveFilename(filename);
     if (!multi_load_active)
         theClassEditor.PreLoadInitialisation(&source, &scratch);
     void *file_data = scratch.position->void_ptr;
     i32 file_size = NuFileLoadBuffer(save_filename, file_data, scratch.remaining);
     if (file_size > 0) {
-        if ((u32)file_size < scratch.end->addr - scratch.position->addr) {
-            scratch.position->addr += file_size;
-            scratch.used += file_size;
-            scratch.remaining -= file_size;
-        }
+        scratch.Allocate(file_size, 1, 0);
         NUFILE file = NuMemFileOpen(file_data, file_size, 0);
         if (file) {
             EdFileInputStream stream(&source, &scratch);
@@ -8982,6 +9000,8 @@ i32 LevelEditor::Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, 
             } else {
                 result = -1;
             }
+        } else {
+            EdMessage(save_filename);
         }
     } else {
         EdMessage(save_filename);
