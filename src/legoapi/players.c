@@ -2055,7 +2055,7 @@ void DrawGameObjectsDraw(i32 pass) {
                                            (u8)object->field_107c != 0 ? &object->draw_tertiary_mtx : NULL,
                                            object->locator_matrices, object, object->layer_mask);
         object->model_draw_result = drawn;
-        object->flags_e24 ^= ((u32)drawcharactermodel_locatorsupdated * 8 ^ object->flags_e24) & 8;
+        object->flags_e24 ^= ((drawcharactermodel_locatorsupdated << 3) ^ object->flags_e24) & 8;
         if (drawn != 0) {
             DrawParaphernaliaPc(object);
         } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) &&
