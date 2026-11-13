@@ -155,19 +155,19 @@ void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     i32 particle;
     f32 height;
     f32 lower;
-    TAG_TRANSFER_PC *transfer;
+    NUVEC *previous;
     if (target->field_280 == 0 || target->field_280 == 1) {
         TagTransfersPc[(i8)target->field_280].source = source;
         TagTransfersPc[(i8)target->field_280].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {
-            height = (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
-            TagTransfersPc[(i8)target->field_280].height_fraction[particle] = height;
-            transfer = &TagTransfersPc[(i8)target->field_280];
-            height = transfer->height_fraction[particle];
-            transfer->previous[particle].x = source->collision_position.x;
-            transfer->previous[particle].z = source->collision_position.z;
+            TagTransfersPc[(i8)target->field_280].height_fraction[particle] =
+                (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
+            height = TagTransfersPc[(i8)target->field_280].height_fraction[particle];
+            previous = &TagTransfersPc[(i8)target->field_280].previous[particle];
+            previous->x = source->collision_position.x;
+            previous->z = source->collision_position.z;
             lower = source->collision_min.y;
-            transfer->previous[particle].y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+            previous->y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
         }
     }
     if ((target->flags_1fc_word & 0x80) != 0) {
