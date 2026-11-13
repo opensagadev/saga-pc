@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x4701d0-0x47276c (legogame/grabber.c): definitions in retail address order. */
+
 typedef struct grabber_progress_source_pc_s {
     u8 unknown_0000[0x484];
     f32 stored_tfactor;
@@ -27,20 +29,6 @@ typedef struct level_grabber_progress_pc_s {
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_frame) == 0x2810);
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_tfactor) == 0x2814);
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_parameter) == 0x2818);
-
-void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
-    if (world != NULL && progress != NULL) {
-        GRABBER_PROGRESS_SOURCE_PC *grabber = ((WORLD_GRABBER_PROGRESS_PC *)world)->grabber;
-        LEVEL_GRABBER_PROGRESS_PC *saved = (LEVEL_GRABBER_PROGRESS_PC *)progress;
-        if (grabber != NULL) {
-            saved->stored_frame = grabber->stored_frame;
-            saved->stored_tfactor = grabber->stored_tfactor;
-            saved->stored_parameter = grabber->stored_parameter;
-        } else {
-            saved->stored_tfactor = 2000000.0f;
-        }
-    }
-}
 
 typedef struct grabber_pc_s {
     NUMTX matrix;
@@ -129,26 +117,74 @@ STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, scene) == 0x13c);
 STATIC_ASSERT(offsetof(WORLD_GRABBER_PC, grabber) == 0x46ec);
+typedef struct grab_config_data_pc_s {
+    f32 level_y_offset;
+    NUFPCOMJMP keywords[9];
+} GRAB_CONFIG_DATA_PC;
+STATIC_ASSERT(offsetof(GRAB_CONFIG_DATA_PC, keywords) == 4);
+STATIC_ASSERT(sizeof(GRAB_CONFIG_DATA_PC) == 76);
+typedef struct grabber_hg_view_pc_s {
+    u8 unknown_000[0x19c];
+    i32 shadow_surface_points;
+    u8 suppress_shadow_points;
+} GRABBER_HG_VIEW_PC;
+STATIC_ASSERT(offsetof(GRABBER_HG_VIEW_PC, suppress_shadow_points) == 0x1a0);
+typedef struct grabber_antinode_view_pc_s {
+    u8 unknown_00[0x50];
+    i64 object_mask;
+} GRABBER_ANTINODE_VIEW_PC;
+STATIC_ASSERT(offsetof(GRABBER_ANTINODE_VIEW_PC, object_mask) == 0x50);
+GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
+extern i32 CharacterBlobShadowsOnPc;
+i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
+#define GRABBER_FIND_SWITCH(field, name)                                                                               \
+    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                            \
+    if (gizmo != NULL) {                                                                                               \
+        GrabCurrentPc->field = *gizmo;                                                                                 \
+        if (GrabCurrentPc->field != NULL && GrabCurrentPc->field->anim_set == NULL)                                    \
+            GrabCurrentPc->field = NULL;                                                                               \
+    } else                                                                                                             \
+        GrabCurrentPc->field = NULL
+#define GRABBER_SWITCH_ON(obstacle)                                                                                    \
+    ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
+
+static void __cdecl Grab_invert_x(NUFPAR_PC *parser);
+static void __cdecl Grab_move_xy(NUFPAR_PC *parser);
+static void __cdecl Grab_radius(NUFPAR_PC *parser);
+static void __cdecl Grab_rotate(NUFPAR_PC *parser);
+static void __cdecl Grab_scale(NUFPAR_PC *parser);
+static void __cdecl Grab_shadow(NUFPAR_PC *parser);
+static void __cdecl Grab_speed(NUFPAR_PC *parser);
+static void __cdecl Grab_type(NUFPAR_PC *parser);
+static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a);
+static void GrabberMtxRotateX(NUMTX *m, NUANG a);
 GRABBER_PC *GrabCurrentPc = 0;
+
 static void __cdecl Grab_radius(NUFPAR_PC *parser) {
     GrabCurrentPc->radius = NuFParGetFloat(parser);
 }
+
 static void __cdecl Grab_speed(NUFPAR_PC *parser) {
     GrabCurrentPc->speed = NuFParGetFloat(parser);
 }
+
 static void __cdecl Grab_rotate(NUFPAR_PC *parser) {
     GrabCurrentPc->bits.rotate = NuFParGetInt(parser);
 }
+
 static void __cdecl Grab_scale(NUFPAR_PC *parser) {
     GrabCurrentPc->scale = NuFParGetFloat(parser);
 }
+
 static void __cdecl Grab_move_xy(NUFPAR_PC *parser) {
     if (NuFParGetInt(parser) != 0)
         GrabCurrentPc->move_xy = 1;
 }
+
 static void __cdecl Grab_invert_x(NUFPAR_PC *parser) {
     GrabCurrentPc->invert_x = 1;
 }
+
 static void __cdecl Grab_type(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) == 0)
         return;
@@ -159,17 +195,12 @@ static void __cdecl Grab_type(NUFPAR_PC *parser) {
     else
         GrabCurrentPc->character_id = GrabMachineIdPc;
 }
+
 static void __cdecl Grab_shadow(NUFPAR_PC *parser) {
     GrabCurrentPc->flags |= 0x10;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0)
         GrabCurrentPc->flags &= ~0x10;
 }
-typedef struct grab_config_data_pc_s {
-    f32 level_y_offset;
-    NUFPCOMJMP keywords[9];
-} GRAB_CONFIG_DATA_PC;
-STATIC_ASSERT(offsetof(GRAB_CONFIG_DATA_PC, keywords) == 4);
-STATIC_ASSERT(sizeof(GRAB_CONFIG_DATA_PC) == 76);
 static GRAB_CONFIG_DATA_PC GrabConfigDataPc = {-0.3f,
                                                {{"radius", Grab_radius},
                                                 {"speed", Grab_speed},
@@ -180,6 +211,7 @@ static GRAB_CONFIG_DATA_PC GrabConfigDataPc = {-0.3f,
                                                 {"invert_x", Grab_invert_x},
                                                 {"shadow", Grab_shadow},
                                                 {NULL, NULL}}};
+
 void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_GRABBER_PC *world = (WORLD_GRABBER_PC *)world_ptr;
     NUSPECIALHANDLE special;
@@ -235,71 +267,6 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     world->grabber->platform_id = -1;
 }
 
-typedef struct grabber_hg_view_pc_s {
-    u8 unknown_000[0x19c];
-    i32 shadow_surface_points;
-    u8 suppress_shadow_points;
-} GRABBER_HG_VIEW_PC;
-STATIC_ASSERT(offsetof(GRABBER_HG_VIEW_PC, suppress_shadow_points) == 0x1a0);
-
-typedef struct grabber_antinode_view_pc_s {
-    u8 unknown_00[0x50];
-    i64 object_mask;
-} GRABBER_ANTINODE_VIEW_PC;
-STATIC_ASSERT(offsetof(GRABBER_ANTINODE_VIEW_PC, object_mask) == 0x50);
-
-GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
-void __cdecl PartKill_Grabber(PART_PC *part, i32 unused1);
-
-static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
-    f32 cosz;
-    f32 sinz;
-
-    cosz = NU_COS_LUT(a);
-    sinz = NU_SIN_LUT(a);
-    m->m00 = cosz;
-    m->m01 = sinz;
-    m->m02 = 0.0f;
-    m->m03 = 0.0f;
-    m->m10 = -sinz;
-    m->m11 = cosz;
-    m->m12 = 0.0f;
-    m->m13 = 0.0f;
-    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
-}
-
-static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
-    f32 cosx;
-    f32 sinx;
-    f32 m01;
-    f32 m11;
-    f32 m21;
-    f32 m31;
-
-    cosx = NU_COS_LUT(a);
-    sinx = NU_SIN_LUT(a);
-    m01 = m->m01;
-    m11 = m->m11;
-    m21 = m->m21;
-    m31 = m->m31;
-
-    m->m01 = (m01 * cosx) - (m->m02 * sinx);
-    m->m02 = (m01 * sinx) + (m->m02 * cosx);
-    m->m11 = (m11 * cosx) - (m->m12 * sinx);
-    m->m12 = (m11 * sinx) + (m->m12 * cosx);
-    m->m21 = (m21 * cosx) - (m->m22 * sinx);
-    m->m22 = (m21 * sinx) + (m->m22 * cosx);
-    m->m31 = (m31 * cosx) - (m->m32 * sinx);
-    m->m32 = (m31 * sinx) + (m->m32 * cosx);
-}
-
 static i32 GrabberFindShadow(NUVEC *position, GRABBER_PC *grabber) {
     NUVEC probe;
     f32 height;
@@ -352,12 +319,28 @@ NUVEC *__cdecl Grabber_GetGrabPos(void *context, NUMTX *matrix) {
     return &grabber->grab_position;
 }
 
+void PartKill_Grabber(PART_PC *part, i32 unused1) {
+    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)part->field_210;
+    NUVEC *position = &part->position;
+    i32 i;
+    PlaySfx("Explode2", position);
+    GameCam_Judder(GameCam, 0.5f, 0, position);
+    for (i = 4; i < 7; ++i) {
+        if (blowup->type->particle_types[i] != -1)
+            AddGameDebris(WORLD->game_debris_sys, blowup->type->particle_types[i], position);
+    }
+    for (i = 0; i < 2; ++i) {
+        if (blowup->type->particle_types[i] != -1)
+            AddFiniteShotPART(blowup->type->particle_types[i], position, 1);
+    }
+    AddExplosion(position, 0.6f, 0.3f, NULL, -1, 0x27);
+    GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
+    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+}
+
 static i32 __cdecl IsGrabbable(GAMEOBJECT *object) {
     return (object->character_data->game_character->flags_090 & 0x8000) == 0;
 }
-
-extern i32 CharacterBlobShadowsOnPc;
-i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
 
 void __cdecl Grabber_Draw(WORLDINFO *world) {
     GRABBER_PC *grabber;
@@ -440,6 +423,20 @@ void __cdecl Grabber_Draw(WORLDINFO *world) {
     }
 }
 
+void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
+    if (world != NULL && progress != NULL) {
+        GRABBER_PROGRESS_SOURCE_PC *grabber = ((WORLD_GRABBER_PROGRESS_PC *)world)->grabber;
+        LEVEL_GRABBER_PROGRESS_PC *saved = (LEVEL_GRABBER_PROGRESS_PC *)progress;
+        if (grabber != NULL) {
+            saved->stored_frame = grabber->stored_frame;
+            saved->stored_tfactor = grabber->stored_tfactor;
+            saved->stored_parameter = grabber->stored_parameter;
+        } else {
+            saved->stored_tfactor = 2000000.0f;
+        }
+    }
+}
+
 static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
     GAMEOBJECT *victim;
     NUVEC position;
@@ -476,15 +473,6 @@ static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
     grabber->victim->flags_ef0 &= ~0x2000000;
     grabber->victim->ai_update_position = grabber->victim->position;
 }
-
-#define GRABBER_FIND_SWITCH(field, name)                                                                               \
-    gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                            \
-    if (gizmo != NULL) {                                                                                               \
-        GrabCurrentPc->field = *gizmo;                                                                                 \
-        if (GrabCurrentPc->field != NULL && GrabCurrentPc->field->anim_set == NULL)                                    \
-            GrabCurrentPc->field = NULL;                                                                               \
-    } else                                                                                                             \
-        GrabCurrentPc->field = NULL
 
 void __cdecl Grabber_Reset(WORLDINFO *world) {
     GRABBER_PC *grabber;
@@ -569,9 +557,6 @@ void __cdecl Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
         grabber->carried_blowup = NULL;
     }
 }
-
-#define GRABBER_SWITCH_ON(obstacle)                                                                                    \
-    ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
 
 void __cdecl Grabber_Update(WORLDINFO *world) {
     GRABBER_PC *grabber;
@@ -938,4 +923,53 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
             }
         }
     }
+}
+
+static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
+    f32 cosz;
+    f32 sinz;
+
+    cosz = NU_COS_LUT(a);
+    sinz = NU_SIN_LUT(a);
+    m->m00 = cosz;
+    m->m01 = sinz;
+    m->m02 = 0.0f;
+    m->m03 = 0.0f;
+    m->m10 = -sinz;
+    m->m11 = cosz;
+    m->m12 = 0.0f;
+    m->m13 = 0.0f;
+    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m01;
+    f32 m11;
+    f32 m21;
+    f32 m31;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m01 = m->m01;
+    m11 = m->m11;
+    m21 = m->m21;
+    m31 = m->m31;
+
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
