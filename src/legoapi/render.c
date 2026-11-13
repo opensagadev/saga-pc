@@ -637,8 +637,7 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     DrawPanel3DObjectNoAlpha(wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0, &icon->special, 2);
     if (alignment == 0) {
         rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.5f) / 2.5 * 65536.0);
-        DrawPanel3DObjectNoAlpha(-wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0,
-                                 &WORLD->level_objects[0xd4].special, 2);
+        DrawPanel3DObjectNoAlpha(-wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0, &icon->special, 2);
     }
 }
 
