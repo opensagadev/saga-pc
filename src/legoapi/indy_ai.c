@@ -3,12 +3,13 @@ void __cdecl ClearSpecialMove(GAMEOBJECT *);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
 i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-    AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
-    AIPATHNODE_PC *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
-    AIPATHNODE_PC *destination = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+    AIPATHNODE_PC *destination =
+        &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+    AIPATHNODE_PC *source =
+        &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
     AIPATHNODE_PC *node;
     AIPATH_PC *path;
-    i32 skip_inside = 0;
+    i32 skip_inside;
     i32 index, instance;
     NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
     NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
@@ -21,12 +22,12 @@ i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet,
     node = owner->ai_packet.special_move_node;
     if (node->has_special != 0 && (node->runtime_flags & 2) != 0) {
         path = owner->ai_packet.path_info.path;
+        skip_inside = 1;
         if (path != NULL) {
             index = node - path->nodes;
-            if ((path->updated_node_bits[index / 8] & (1u << (index % 8))) == 0)
+            if ((path->updated_node_bits[index / 8] & (1 << (index % 8))) == 0)
                 AIPathNodeUpdatePos(system, path, node);
         }
-        skip_inside = 1;
         if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
             instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
             if (instance == ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)
@@ -34,28 +35,30 @@ i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet,
                                 .scene_object_index)
                 skip_inside = 0;
         }
+    } else {
+        skip_inside = 0;
     }
     if (((GAMEOBJECT *)object)->respawn_timer > 2.0f ||
         (skip_inside == 0 && owner->ai_packet.inside_path_node ==
                                  owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
         ClearSpecialMove(owner);
     } else if (owner->character_context != 0 && owner->character_context != 0x5b && owner->character_context != 0x55 &&
-               (owner->ai_packet.special_move_node->min_height > owner->position.y ||
+               (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                 (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
                 owner->special_move_timer_pc < -5.0f)) {
         ClearSpecialMove(owner);
     }
-    node = owner->ai_packet.special_move_node;
-    if (node == NULL)
-        return 0;
-    if ((owner->portal_flags & 0x1000) != 0 && owner->velocity.y < 0.0f) {
-        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-        owner->portal_flags &= ~0x1000;
+    if (owner->ai_packet.special_move_node != NULL) {
+        if ((owner->portal_flags & 0x1000) != 0 && owner->velocity.y < 0.0f) {
+            owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+            owner->portal_flags &= ~0x1000;
+        }
+        owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+        owner->ai_packet.movement_stopping_distance = 0.0f;
+        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        return 1;
     }
-    owner->ai_packet.movement_destination = node->position;
-    owner->ai_packet.movement_stopping_distance = 0.0f;
-    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
-    return 1;
+    return 0;
 }
 
 i32 __cdecl Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
