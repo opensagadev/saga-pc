@@ -493,14 +493,20 @@ void __cdecl PartExtra_PurpleCoin(PART_PC *part) {
         PartExtraCoinsPrivate(&part->position, 57);
 }
 
+static __forceinline f32 NuFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f)
+        return 0.0f;
+    return a / b;
+}
+
 static void __cdecl PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
-    f32 gain;
+    f32 gain, target;
     GAMEOBJECT *object;
     (void)timestep;
     if (part->initial_time == 0.0f)
         gain = 0.0f;
     else
-        gain = 1.0f - (part->scale_time != 0.0f ? part->scale_time / part->initial_time : 0.0f);
+        gain = 1.0f - NuFdiv(part->scale_time, part->initial_time);
     if (gain <= 0.0f) {
         part->active |= 2;
         if (part->stop_fn != NULL)
@@ -508,9 +514,10 @@ static void __cdecl PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
         return;
     }
     object = FindNearestGameObject(&part->position, NULL, 0, 0.0f, 0.0f, -1, -1, 99, NULL, 0, NULL);
-    if (object != NULL)
-        part->velocity.y =
-            SeekValF(part->velocity.y, (f32)((f64)(object->collision_position.y - part->position.y) * 3.0), 3.0f);
+    if (object != NULL) {
+        target = (f32)((f64)(object->collision_position.y - part->position.y) * 3.0);
+        part->velocity.y = SeekValF(part->velocity.y, target, 3.0f);
+    }
     part->position.x += part->velocity.x * gain * FRAMETIME;
     part->position.y += part->velocity.y * gain * FRAMETIME;
     part->position.z += part->velocity.z * gain * FRAMETIME;
