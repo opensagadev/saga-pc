@@ -970,6 +970,18 @@ extern "C" {
         return result;
     }
 
+    /* A type 6 key word: the 8-bit value, with the packed tangents above it returned through blend_bits. */
+    static inline u32 ANI_GetKeyParts2(u8 *keys, u32 *blend_bits) {
+        u32 v = *(u32 *)keys;
+        *blend_bits = v >> 8;
+        return (u8)v;
+    }
+
+    /* One 6-bit tangent of a type 6 key, scaled to 0..1. */
+    static inline f32 ANI_GetBlend2(u32 bits, i32 sub_key) {
+        return (f32)((bits >> (sub_key * 6)) & 0x3f) * 0.01587302f;
+    }
+
     i32 __cdecl ANI_SimpleAni3PlayerV4Joint_Quat3(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer,
                                                   i32 joint_count, i32 first_joint) {
         const u8 *node_flags = anim->node_flags;
@@ -1504,21 +1516,29 @@ extern "C" {
 
     i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, i32 joint_count,
                                             i32 first_joint) {
-        const u8 *node_flags;
-        i32 key_stride;
-        f32 *out;
         i32 whole;
         i32 quarter;
         f32 fraction;
+        f32 *out;
+        const u16 *curve_types;
         u8 *keys;
         const u16 *constants;
         ANI3_SCALEMIN_PC *scale_min;
-        const u16 *curve_types;
+        u32 key_stride;
+        u16 type;
         i32 count;
-        const u8 *end_flags;
-        u8 *joint_flags;
         i32 group;
         i32 i;
+        const u8 *node_flags;
+        const u8 *end_flags;
+        u8 *joint_flags;
+        u8 flags;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        f32 start;
+        f32 next;
+        f32 blend;
 
         if ((anim->format_flags & 1) != 0) {
             if ((anim->format_flags & 2) != 0)
@@ -1543,27 +1563,27 @@ extern "C" {
         }
         out = &buffer->joints->translation.x;
         whole = (i32)frame;
-        key_stride = anim->key_stride;
         scale_min = anim->scale_min;
-        curve_types = anim->curve_types;
         constants = (const u16 *)anim->constants - 16;
         fraction = frame - (f32)whole;
         quarter = whole & 3;
+        key_stride = anim->key_stride;
         keys = anim->keys + (whole / 4) * key_stride;
         count = joint_count;
         if (anim->node_count < count)
             count = anim->node_count;
-        end_flags = node_flags + first_joint;
+        curve_types = anim->curve_types;
         joint_flags = buffer->joint_flags + first_joint;
+        end_flags = node_flags + first_joint;
         for (; node_flags < end_flags; ++node_flags) {
-            u8 flags = *node_flags;
+            flags = *node_flags;
             for (group = 0; group < 3; ++group) {
                 if (!(flags & CurveGroupMasks[group])) {
                     out += 4;
                     curve_types += 3;
                 } else {
                     for (i = 0; i < 3; ++i) {
-                        u32 type = *curve_types++;
+                        type = *curve_types++;
                         if (type < 16) {
                             keys += 4;
                             ++scale_min;
@@ -1575,7 +1595,7 @@ extern "C" {
         }
         end_flags += count;
         for (; node_flags < end_flags; ++node_flags) {
-            u8 flags = *node_flags;
+            flags = *node_flags;
             *joint_flags++ = flags;
             for (group = 0; group < 3; ++group) {
                 if (!(flags & CurveGroupMasks[group])) {
@@ -1588,25 +1608,26 @@ extern "C" {
                     curve_types += 3;
                 } else {
                     for (i = 3; i != 0; --i) {
-                        u32 type = *curve_types++;
+                        type = *curve_types++;
                         if (type != 6) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            u32 v;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                *out = ((next - start) * tangent + start) * scale_min->scale + scale_min->minimum;
+                                start = (f32)value0;
+                                blend = (ANI_GetBlend2(blend_bits, quarter + 1) - blend) * fraction + blend;
+                                *out = (((f32)value1 - start) * blend + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
+                                f32 a;
+                                f32 b;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                a = (next - start) * blend + start;
+                                b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
                                 *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
                             keys += 4;
