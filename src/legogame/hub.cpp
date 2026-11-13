@@ -178,29 +178,10 @@ typedef struct world_minikit_reader_pc_s {
     u8 unknown_2988[0x158];
     u8 *hub_minikits;
 } WORLD_MINIKIT_READER_PC;
-extern "C" i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser);
 
 static __forceinline f32 HubFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
-}
-extern "C" {
-    i32 __cdecl Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
 }
 extern "C" const char HubTableTextPc00752d20[] = "grievous";
 extern "C" const char HubTableTextPc00752d48[] = "jabba";

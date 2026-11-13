@@ -113,7 +113,6 @@ extern i16 TextIdPc880894, TextIdPc880898;
 void __cdecl Hub_ClearStats(void);
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
-i32 __cdecl Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category);
 /* 424750/92. Can share the fuller Customiser canonical type once integrated. */
 typedef struct hub_customiser_menu_reader_pc_s {
     u8 unknown_00[0x6c];

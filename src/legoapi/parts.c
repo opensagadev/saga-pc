@@ -995,8 +995,6 @@ STATIC_ASSERT(offsetof(PART_PC, effect_id_1f8) == 0x1f8);
 STATIC_ASSERT(offsetof(PART_PC, field_208) == 0x208);
 STATIC_ASSERT(offsetof(PART_PC, field_214) == 0x214);
 
-void __cdecl edpartSetParticlePage(i32 page);
-i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene);
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
 static NUVEC PartImpactNormalPrivate = {0};

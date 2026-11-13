@@ -271,7 +271,6 @@ typedef struct player_reset_fields_pc_s {
     u8 unknown_e08[0x275];
     u8 pre_reset_state;
 } PLAYER_RESET_FIELDS_PC;
-extern f32 animduration_blendouttime;
 typedef struct player_suit_name_pc_s {
     u8 unknown_000[0x4];
     char *name;
@@ -351,10 +350,6 @@ typedef struct player_init_flags_pc_s {
     u32 flags_e20_bits_0_15 : 16;
     u32 stored_flag : 1;
 } PLAYER_INIT_FLAGS_PC;
-void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id);
-NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object);
-void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode);
-void __cdecl Player_ResetContexts(void *packet_ptr);
 extern i32 movegamecamera_forcesock;
 typedef union DRAW_ATTACHMENTS_PACKET_PC {
     ANIMPACKET_PC packet;

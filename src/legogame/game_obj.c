@@ -111,10 +111,6 @@ typedef struct KILLPARTS_RIDER_LIGHT_PC {
     u8 unknown_0[0x628];
     NUVEC intensity[2];
 } KILLPARTS_RIDER_LIGHT_PC;
-void __cdecl PartImpact_Brick(PART_PC *part);
-
-void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
-               i32 use_vehicle_velocity, u16 *angle_override);
 
 static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;

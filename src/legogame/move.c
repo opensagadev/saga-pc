@@ -432,9 +432,6 @@ static __forceinline f32 PushFabsPc(f32 value) {
     f32 result = *(f32 *)&bits;
     return result;
 }
-i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
-                      i32 fire_mode);
-void __cdecl Move_POD(GAMEOBJECT *object);
 
 /* NuASin polynomial; this unit carries its own instance. */
 static i16 MovementArcSine(f32 sin) {

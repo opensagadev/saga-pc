@@ -15,52 +15,6 @@ static __forceinline f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
     return result;
 }
-void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl CollectCharcters_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active);
-void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl SuperStoryScore_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current);
-void __cdecl TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet);
-void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
 
 /* Retail keeps an out-of-line copy at 0x45e350; every caller inlines it. */
 static __inline f32 StatusFabsPc(f32 value) {

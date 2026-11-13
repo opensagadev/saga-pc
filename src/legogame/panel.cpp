@@ -55,13 +55,8 @@ extern "C" {
     extern i32 HudPausePromptGreenPc;
     extern u8 HudPausePromptBluePc;
     void Arcade_ResetPanel(void);
-    void Arcade_UpdatePanel(i32 paused);
     void __cdecl Arcade_DrawPanel(i32 paused);
 }
-extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 count, i32 total);
-extern "C" void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
-                                                 i32 red, i32 green, i32 blue, f32 max_width, i32 center);
-extern "C" i32 Text_ExpandButtonString(char *command, char *output);
 extern "C" NUMTL *FadeMtl2;
 extern "C" void __cdecl DrawPauseFade(void);
 typedef struct PANEL_PRIM_VERTEX_PC {

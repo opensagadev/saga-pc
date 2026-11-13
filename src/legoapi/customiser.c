@@ -93,8 +93,6 @@ typedef struct KILLPARTS_CUSTOMISER_PC {
     u8 unknown_70[0x104];
     KILLPARTS_SAVED_PIECES_PC *save;
 } KILLPARTS_CUSTOMISER_PC;
-void __cdecl SetKillPartMom(NUVEC *momentum);
-void __cdecl PartImpact_Brick(PART_PC *part);
 
 static i32 __cdecl CustomiserPieceAvailableDefaultPrivatePc(CUSTOMPIECE_LAYERS_PC *input) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
