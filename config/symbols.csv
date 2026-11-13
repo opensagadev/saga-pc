@@ -8952,6 +8952,9 @@ address,symbol,size,ctype
 0x64b410,_CreateScaledPARTEffect,928,"i32 __cdecl(i32, f32)"
 0x64b7f0,_KillPartsByScene,83,void __cdecl (NUGSCN *)
 0x64b860,_edpartDestroy,36,
+0x64b890,_edpartCreate,19,"void __cdecl (NUVEC *, i32)"
+0x64b8b0,_edpartPtlChangeType,108,"i32 __cdecl (i32, i32)"
+0x64b920,_edpartDestroyAllEffects,47,"void __cdecl (void)"
 0x64b950,_edpartDeleteType,187,
 0x64ba10,_edpartLoadSingleType,2277,"void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page)"
 0x64c300,_edpartLoadPageEx,946,"i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count)"
