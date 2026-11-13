@@ -475,12 +475,13 @@ void __cdecl BackDrop_Update(f32 dt) {
 /* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
 void __cdecl DrawGameMessages(void) {
 
-    GAME_MESSAGE_PC *message = GameMessage;
-    GAME_MESSAGE_PC *end = message + 128;
-    for (; message != end; ++message) {
+    GAME_MESSAGE_PC *message;
+    i32 index;
+    for (index = 0; index < 128; ++index) {
         u32 flags;
         f32 progress, scale;
         NUVEC position;
+        message = &GameMessage[index];
         if (message->active == 0) {
             continue;
         }
