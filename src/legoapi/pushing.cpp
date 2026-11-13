@@ -86,7 +86,7 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
             }
         }
         if (planar == 0)
-            return amount;
+            goto done; // MATCH-EXCEPTION: retail leaves through the function's single return here, not its own epilogue
     }
     if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
         CHARACTERDATA_PC *data = object->character_data;
@@ -99,6 +99,7 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
             vertical = 1.0f;
         object->target_velocity.y -= vertical * data->game_character->run_speed;
     }
+done:
     return amount;
 }
 
