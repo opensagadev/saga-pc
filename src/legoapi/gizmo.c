@@ -1050,38 +1050,6 @@ extern "C" {
 }
 #endif
 
-void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
-    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
-    i32 i;
-    i32 size;
-    buffer->addr = (buffer->addr + 3) & ~3u;
-    view->hub_minikits = buffer->void_ptr;
-    buffer->addr = (buffer->addr + AREACOUNT * 0x7c + 3) & ~3u;
-    view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
-    size = AREACOUNT * 4;
-    memset(view->pieces_by_id, 0, size);
-    buffer->addr += size;
-    for (i = 0; i < AREACOUNT; ++i) {
-        i32 minikit_id;
-        i32 piece_count;
-        view->pieces_by_id[i] = NULL;
-        piece_count = (ADataList[i].flags & 0x10) != 0 ? 10 : 0;
-        minikit_id = ADataList[i].minikit_id;
-        if (piece_count > 0 && minikit_id != -1) {
-            view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
-            buffer->addr += 0x18;
-            MiniKit_Load(view->pieces_by_id[i], minikit_id, buffer, end, NULL);
-            if (view->pieces_by_id[i]->scene != NULL) {
-                MiniKit_InitPieces(view->pieces_by_id[i], piece_count, buffer, end);
-                view->pieces_by_id[i]->area_index = (i8)i;
-            } else {
-                view->pieces_by_id[i] = NULL;
-                buffer->addr -= 0x18;
-            }
-        }
-    }
-}
-
 /* Original source name unknown. The native entry is exactly RET (0x559570, in this unit). */
 void __cdecl GizmoDiagnosticPc(char *format, ...) {
     (void)format;
