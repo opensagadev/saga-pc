@@ -298,9 +298,7 @@ static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
                        ((f64)NuTrigTable[((i32)((f64)techno->ground_offset * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) *
                            0.5) *
                       29127.0);
-            if (slot != 0)
-                hand_angle = -hand_angle;
-            NuMtxSetRotationY(&matrix, hand_angle);
+            NuMtxSetRotationY(&matrix, slot != 0 ? -hand_angle : hand_angle);
             NuMtxTranslate(&matrix, &TechnoSysPc.hand_offsets[slot]);
             NuMtxRotateY(&matrix, techno->y_rotation);
             NuVecAdd(&matrix.translation, &matrix.translation, &techno->position);
