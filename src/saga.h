@@ -14817,6 +14817,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special);
     void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special);
     void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void __cdecl DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix);
     void __cdecl NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
     void __cdecl NuMtxSetRotationZ(NUMTX *matrix, NUANG angle);

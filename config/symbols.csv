@@ -7182,7 +7182,7 @@ address,symbol,size,ctype
 0x5f6ab0,?RenderShadowPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXHPAUPC_FRAMEBUFFER_PC@@@Z,419,thiscall native index and framebuffer
 0x5f6c60,?render@NuDeferredFilterGen@@UAEXXZ,1975,complete native deferred render
 0x5f7420,_NuDynamicLightCreate,24,struct PC_SPECIAL_SHADOW_LIGHT *__cdecl(void)
-0x005f7490,_DisplayListUpdateSpecialTransformPS,1,"void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
+0x005f7490,_DisplayListSpecialTransformNoOpPc,1,"void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
 0x005f7490,_PCClipScreenUnsupported,1,void __cdecl (void)
 0x5f7490,_PCGraphicsRenderTextureAllocationError,1,void __cdecl(void)
 0x5f7490,_NuTexBmpUnsupportedDepthPc,1,"void __cdecl (i32, const char *)"
@@ -7432,6 +7432,7 @@ address,symbol,size,ctype
 0x603980,_NuDisplaySceneAddPS,42,void __cdecl(NUDISPLAY_LIST_PC *)
 0x6039b0,_NuDisplaySceneDestroyPS,1,void __cdecl(NUDISPLAY_LIST_PC *)
 0x6039d0,_NuDisplaySceneClonePS,58,"void __cdecl(NUDISPLAY_LIST_PC *,NUDISPLAY_LIST_PC *,VARIPTR *)"
+0x603a10,_DisplayListUpdateSpecialTransformPS,5,"void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
 0x00603a20,_NuDisplayListVertexGroupsPc,63,void __cdecl(void *)
 0x00603a60,_NuDisplayListVertexOffsetsPc,49,void __cdecl(void *)
 0x603aa0,_PostShadowSelectHandlersPc,41,cdecl mode

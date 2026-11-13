@@ -27,6 +27,11 @@ void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
 void __cdecl NuFrameEndLeafPc(void) {
 }
 
+void __cdecl DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    (void)special;
+    (void)matrix;
+}
+
 /* PC has no PS2 screen grab; the dump is empty. */
 void __cdecl NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y) {
 }

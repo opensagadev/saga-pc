@@ -1383,11 +1383,10 @@ extern "C" {
     STATIC_ASSERT(offsetof(AMBIENT_SPECULAR_RENDER_VIEW_PC, global_specular) == 0x8c);
     // @@FUNCTIONS
 
-    /* The PC backend's transform-update leaf is a single ret instruction; retail
-     * reaches it through a jump thunk, so callers in other units never inline it. */
+    /* The PC backend has no special-transform work: the leaf forwards to the shared empty
+     * diagnostic (0x603a10 is a lone jmp to it). */
     void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
-        (void)special;
-        (void)matrix;
+        DisplayListSpecialTransformNoOpPc(special, matrix);
     }
 
     static __declspec(noinline) void PCSpecialTransposeMatrix(NUMTX *out, NUMTX *matrix) {
