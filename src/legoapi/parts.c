@@ -1230,6 +1230,12 @@ __declspec(noinline) void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, 
     }
 }
 
+i32 DebrisGetParticleCount(i32 handle) {
+    if (handle == -1)
+        return 0;
+    return debkeydata[handle].allocated_chunk_count;
+}
+
 void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
     if (handle != -1) {
         debkeydata[handle].trigger_first = first;
@@ -1243,13 +1249,14 @@ void DebrisStartOffset(i32 handle, f32 offset) {
     DebrisStartOffsetEx(debkeydata + handle, offset);
 }
 
+void AddDebrisEffectToStack(DEBRISKEY_PC *key);
+
 void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     i32 i;
     DEBRIS_INFO_PC *effect;
     i32 newly_allocated;
     i32 key_index;
     f32 now;
-    DEBRISKEY_PC *key;
     newly_allocated = 0;
     if (effect_index == -1 || effect_index == 0 || effect_index >= debinf_count) {
         return;
@@ -1336,13 +1343,13 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     DebrisOrientation(key_index, 0, 0);
     DebrisReflectionOrientation(key_index, 0, 0, 0, 0.9f);
     DebrisSetTrigger(key_index, 0, -1, 0);
-    if (newly_allocated) {
-        key = debkeydata + key_index;
-        if (debris_keystack != NULL)
-            debris_keystack->next = key;
-        key->previous = debris_keystack;
-        debris_keystack = key;
-    }
+    if (newly_allocated)
+        AddDebrisEffectToStack(debkeydata + key_index);
+}
+
+void AddRotatedDebrisEffect(i32 *handle, i32 effect, f32 x, f32 y, f32 z, i16 rotation_x, i16 rotation_y) {
+    AddDebrisEffect(handle, effect, x, y, z);
+    DebrisEmitterOrientation(*handle, rotation_x, rotation_y, 0);
 }
 
 i32 __cdecl DebrisNuASin(f32);
@@ -1864,6 +1871,12 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     debris_control_stack_lock = 0;
 }
 
+void AddVariableShotDebrisEffectMtx4(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
+                                     NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 priority, i8 flags) {
+    AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count * 30, debris_time_increment,
+                                      emitter_orientation, particle_orientation, priority, flags);
+}
+
 void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
                                              NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
@@ -1887,12 +1900,18 @@ void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC 
                                       emitter_orientation, particle_orientation, priority, 0);
 }
 
-void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation) {
+void AddVariableShotDebrisEffectMtx(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation,
+                                    NUMTX *particle_orientation) {
     NUMTX orientation;
     DebrisMtxCopyPrivate(&orientation, &ANI3_EVAL_IDENTITY_MATRIX);
     DebrisMtxRotateZPrivate(&orientation, z_rotation);
     DebrisMtxRotateYPrivate(&orientation, y_rotation);
-    AddVariableShotDebrisEffectMtx3(effect, position, &APIObjectZeroMomentumPC, count, &orientation, NULL);
+    AddVariableShotDebrisEffectMtx3(effect, position, &APIObjectZeroMomentumPC, count, &orientation,
+                                    particle_orientation);
+}
+
+void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation) {
+    AddVariableShotDebrisEffectMtx(effect, position, count, z_rotation, y_rotation, NULL);
 }
 
 i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation, i16 y_rotation,
@@ -2363,6 +2382,17 @@ void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
         debkeydata[handle].field_2f2 = -1;
         debkeydata[handle].gscene = NULL;
     }
+}
+
+void DebrisSetDrawFlag(i32 handle, i8 draw_flag) {
+    debkeydata[handle].orientation_flags = draw_flag;
+}
+
+void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
+    if (debris_keystack != NULL)
+        debris_keystack->next = key;
+    key->previous = debris_keystack;
+    debris_keystack = key;
 }
 
 // MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
