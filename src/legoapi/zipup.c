@@ -608,13 +608,10 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     CanDrawZipUpSwirls = AvailableToPlayer(0x100000, -1, 0, 0);
 
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
-        GAMEOBJECT *occupant;
-
-        occupant = zipup->occupant;
-        if (occupant != NULL && occupant->character_context == -1) {
-            occupant->context_variant_flags &= ~0x20;
-            occupant->grapple = NULL;
+        if (zipup->occupant != NULL && zipup->occupant->character_context == -1) {
+            zipup->occupant->context_variant_flags &= ~0x20;
             zipup->flags_word &= ~0x100;
+            zipup->occupant->grapple = NULL;
             zipup->occupant = NULL;
         }
     }
