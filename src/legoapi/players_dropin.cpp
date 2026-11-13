@@ -267,6 +267,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
+/* Players whose drop-in flag (0x80) is set. */
+extern "C" i32 __cdecl GetNumLocalPlayers(void) {
+    i32 count = 0;
+    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80))
+        count = 1;
+    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80))
+        count++;
+    return count < 0 ? 0 : count;
+}
+
 extern "C" i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     if (WORLD != NULL && WORLD->current_level == FACTORYF_LDATA)
         return 0;
