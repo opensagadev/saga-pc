@@ -12641,26 +12641,38 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                     comparison_value = condition->param_value;
                 switch (condition->comparison) {
                     case 0:
-                        comparison_passed = condition_value == comparison_value;
+                        if (condition_value == comparison_value)
+                            comparison_passed = 1;
                         break;
                     case 1:
-                        comparison_passed = condition_value < comparison_value;
+                        if (condition_value < comparison_value)
+                            comparison_passed = 1;
                         break;
                     case 2:
-                        comparison_passed = condition_value > comparison_value;
+                        if (condition_value > comparison_value)
+                            comparison_passed = 1;
                         break;
                     case 3:
-                        comparison_passed = condition_value <= comparison_value;
+                        if (condition_value <= comparison_value)
+                            comparison_passed = 1;
                         break;
                     case 4:
-                        comparison_passed = condition_value >= comparison_value;
+                        if (condition_value >= comparison_value)
+                            comparison_passed = 1;
                         break;
                     case 5:
-                        comparison_passed = condition_value != comparison_value;
+                        if (condition_value != comparison_value)
+                            comparison_passed = 1;
                         break;
                 }
             }
-            if (!comparison_passed) {
+            if (comparison_passed) {
+                if ((condition->flags & 1) == 0) {
+                    AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+                    processor->param_stack[stack_index].is_first_time_state = 0;
+                    return condition;
+                }
+            } else {
                 while ((condition->flags & 1) != 0) {
                     condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
                     if (condition == NULL)
@@ -12672,10 +12684,6 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                             processor->param_stack[stack_index].complex_params[condition->param_index];
                     }
                 }
-            } else if ((condition->flags & 1) == 0) {
-                AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
-                processor->param_stack[stack_index].is_first_time_state = 0;
-                return condition;
             }
             if (condition != NULL)
                 condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
