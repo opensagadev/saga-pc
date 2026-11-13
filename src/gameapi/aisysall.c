@@ -16804,10 +16804,14 @@ i32 __cdecl Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
         index = node - packet->path_info.path->nodes;
         AISysCharacterSetPath(packet, packet->path_info.path);
         processor->path_info.connection = node->connections[0];
-        processor->path_info.distance = index == processor->path_info.connection->node_indices[0] ? 0.0f : 1.0f;
-        processor->path_info.width = 0.0f;
+        if (processor->path_info.connection->node_indices[0] == index) {
+            processor->path_info.distance = 0.0f;
+        } else {
+            processor->path_info.distance = 1.0f;
+        }
         processor->path_info.direction = 0;
         processor->path_info.flags_word |= 1;
+        processor->path_info.width = 0.0f;
         AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 2,
                           packet->movement_instruction_parameter);
         return 0;
@@ -16815,7 +16819,7 @@ i32 __cdecl Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     node_2 = (AIPATHNODE_PC *)(processor->action_data_3);
     if (node_2 != NULL) {
         distance = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
-        if (!(node_2->radius_squared > distance)) {
+        if (!(distance < node_2->radius_squared)) {
             AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 2,
                               packet->movement_instruction_parameter);
             return 0;
