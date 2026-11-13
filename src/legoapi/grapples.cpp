@@ -361,9 +361,10 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
             if (!(object->upper_position.y < grapple->shadow_probe_position.y)) {
                 continue;
             }
+            // MATCH-EXCEPTION: hooked != 1 (not !hooked) keeps the retail re-test of hooked.
             if (!((hooked &&
                    object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length)) ||
-                  (!hooked && object->collision_position.y > grapple->ground_position.y))) {
+                  (hooked != 1 && object->collision_position.y > grapple->ground_position.y))) {
                 continue;
             }
             NuVecSub(&local, &object->upper_position, &grapple->hook_position);
