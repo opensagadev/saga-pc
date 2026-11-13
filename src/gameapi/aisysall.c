@@ -9330,14 +9330,10 @@ void __cdecl pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIP
 /* Native 524b00..524b62. */
 EDAIPATH_s *__cdecl pathEditor_GetPath(char *name) {
     EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
-    if (name != NULL) {
-        for (;;) {
-            if (path == NULL)
-                break;
-            if (NuStrICmp(name, path->name) == 0)
-                return path;
-            path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
-        }
+    while (name != NULL && path != NULL) {
+        if (NuStrICmp(name, path->name) == 0)
+            return path;
+        path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
     }
     return aieditor->current_path;
 }
