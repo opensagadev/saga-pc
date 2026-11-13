@@ -55,8 +55,8 @@ static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
         NuVecInvMtxTransform(&direction, &object->head_target_position,
                              &object->locator_matrices[object->character_data->game_character->head_locator]);
         if (direction.z < 0.0f) {
-            angle = NuAtan2(-direction.x, -direction.z);
-            first = joints->overrides[joints->count].rotation.x - angle;
+            f32 yaw = NuAtan2(-direction.x, -direction.z);
+            first = joints->overrides[joints->count].rotation.x - yaw;
             if (first >= object->character_data->game_character->field_050)
                 first = object->character_data->game_character->field_050;
             else if (first <= -object->character_data->game_character->field_050)
@@ -154,8 +154,8 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
             NuVecInvMtxTransform(&direction, &object->head_target_position,
                                  &object->locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
-                angle = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
-                first = angle - joints->overrides[joints->count].rotation.y;
+                f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
+                first = pitch - joints->overrides[joints->count].rotation.y;
                 if (first >= object->character_data->game_character->field_054)
                     first = object->character_data->game_character->field_054;
                 else if (first <= -object->character_data->game_character->field_054)
@@ -256,8 +256,8 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             NuVecInvMtxTransform(&direction, &object->head_target_position,
                                  &object->locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
-                angle = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
-                first = joints->overrides[joints->count].rotation.y - angle;
+                f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
+                first = joints->overrides[joints->count].rotation.y - pitch;
                 if (first >= object->character_data->game_character->field_054)
                     first = object->character_data->game_character->field_054;
                 else if (first <= -object->character_data->game_character->field_054)
