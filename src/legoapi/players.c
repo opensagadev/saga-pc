@@ -2415,8 +2415,8 @@ extern char PlayerMissionStartDoorPc[];
 extern char PlayerArcadeStartDoorPc[];
 void __cdecl Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
-    NUGSPLINE *spline = NULL;
-    i32 first_pair = 0;
+    NUGSPLINE *spline;
+    i32 first_pair;
     i32 index;
     for (index = 0; index < 8; ++index) {
         PlayerStartRecordInitPc[index].position = &v000;
@@ -2425,15 +2425,20 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     if (world->start_door != NULL && !bonus) {
         spline = world->start_door->spline;
         first_pair = 2;
-    } else if (PlayerStartSplineIndexPc != -1) {
-        spline = world->camera_splines[PlayerStartSplineIndexPc];
+    } else {
+        if (PlayerStartSplineIndexPc != -1)
+            spline = world->camera_splines[PlayerStartSplineIndexPc];
+        else
+            spline = NULL;
+        first_pair = 0;
     }
     if (spline != NULL) {
         i32 pair = first_pair;
         for (index = 0; index < 8; ++index) {
             NUVEC direction;
-            PlayerStartRecordInitPc[index].position = &spline->pts[pair * 2];
-            NuVecSub(&direction, &spline->pts[pair * 2 + 1], PlayerStartRecordInitPc[index].position);
+            i32 point = pair * 2;
+            PlayerStartRecordInitPc[index].position = &spline->pts[point];
+            NuVecSub(&direction, &spline->pts[point + 1], PlayerStartRecordInitPc[index].position);
             PlayerStartRecordInitPc[index].angle = NuAtan2D(direction.x, direction.z);
             ++pair;
             if (pair * 2 + 2 > spline->length)
@@ -2466,9 +2471,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             door = Door_FindByIndex(world, hub_startoutsidebonusdoor_area, -1, NULL);
         } else if (last_area != -1) {
             i32 area = last_area;
-            AREA_DATA_PC *area_data = &ADataList[area];
-            if ((area_data->flags & 4) != 0 && area_data->episode_index != -1) {
-                area = Episode_FindAreaFromFlags(&EDataList[area_data->episode_index], 5, 5);
+            i32 episode;
+            if ((ADataList[area].flags & 4) != 0 && (episode = ADataList[area].episode_index) != -1) {
+                area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
                 if (area == -1)
                     area = last_area;
             }
