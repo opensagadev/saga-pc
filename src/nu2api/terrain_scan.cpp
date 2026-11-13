@@ -16,13 +16,14 @@ extern "C" {
 #define TERRAIN_SET_CURRENT_PC (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
 #define TERRAIN_PLATFORM_OF_PC(group_arg) (TERRAIN_SET_CURRENT_PC->platforms[(group_arg).scene_index])
 #define TERRAIN_PLATFORM_MATRIX_PC(group_arg) (static_cast<NUMTX *>(TERRAIN_PLATFORM_OF_PC(group_arg).scene_object))
-static inline NUVEC TerCrossProduct(NUVEC *a, NUVEC *b) {
-    NUVEC result;
-    result.x = a->y * b->z - a->z * b->y;
-    result.y = a->z * b->x - b->z * a->x;
-    result.z = a->x * b->y - b->x * a->y;
-    return result;
-}
+#define TERRAIN_CROSS_PRODUCT_PC(result_arg, a_arg, b_arg)                                                             \
+    do {                                                                                                               \
+        NUVEC cross;                                                                                                   \
+        cross.x = (a_arg).y * (b_arg).z - (a_arg).z * (b_arg).y;                                                       \
+        cross.y = (a_arg).z * (b_arg).x - (b_arg).z * (a_arg).x;                                                       \
+        cross.z = (a_arg).x * (b_arg).y - (b_arg).x * (a_arg).y;                                                       \
+        (result_arg) = cross;                                                                                          \
+    } while (0)
 #define TERRAIN_FINISH_SCAN_GROUP_PC(group_index_arg)                                                                  \
     do {                                                                                                               \
         if (group_shape_count != 0) {                                                                                  \
@@ -448,7 +449,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             b.x = transformed->vertices[2].x - transformed->vertices[3].x;
                             b.y = transformed->vertices[2].y - transformed->vertices[3].y;
                             b.z = transformed->vertices[2].z - transformed->vertices[3].z;
-                            transformed->normals[1] = TerCrossProduct(&a, &b);
+                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[1], a, b);
                             const f32 inverse = TerrainDivideNonzeroPC(
                                 1.0f, NuFsqrt(transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y +
@@ -468,7 +469,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             b.x = transformed->vertices[1].x - transformed->vertices[0].x;
                             b.y = transformed->vertices[1].y - transformed->vertices[0].y;
                             b.z = transformed->vertices[1].z - transformed->vertices[0].z;
-                            transformed->normals[0] = TerCrossProduct(&a, &b);
+                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[0], a, b);
                             const f32 length = NuFsqrt(transformed->normals[0].x * transformed->normals[0].x +
                                                        transformed->normals[0].y * transformed->normals[0].y +
                                                        transformed->normals[0].z * transformed->normals[0].z);
