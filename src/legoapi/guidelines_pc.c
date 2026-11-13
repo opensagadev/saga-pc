@@ -43,7 +43,8 @@ void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
     return world->guidelines;
 }
 
-i32 __cdecl GuideLines_Load(WORLDINFO *world, void *unused) {
+i32 __cdecl GuideLines_Load(void *world_ptr, void *unused) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 index;
     if (world->guideline_count == 0) {
         EdFileReadInt();
@@ -197,7 +198,7 @@ ADDGIZMOTYPE_PC *__cdecl GuideLines_RegisterGizmo(i32 unused_type_id) {
     GuideLineAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GuideLines_StoreProgress;
     GuideLineAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GuideLines_Reset;
     GuideLineAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GuideLines_ReserveBufferSpace;
-    GuideLineAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))GuideLines_Load;
+    GuideLineAddTypePc.fns.load_fn = GuideLines_Load;
     GuideLineAddTypePc.fns.post_load_fn = NULL;
     GuideLineAddTypePc.fns.add_level_sfx_fn = NULL;
     return &GuideLineAddTypePc;

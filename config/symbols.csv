@@ -4770,7 +4770,7 @@ address,symbol,size,ctype
 0x56cab0,_ClimbObject_FindNormalPc,328,void __cdecl(CLIMB_SLOT_PC *)
 0x56cc00,_InitClimbObjectSys,262,
 0x56cd10,_FindClimbObject,98,"CLIMB_SLOT_PC *__cdecl(CLIMB_SYSTEM_PC *, AIPATHCNX_PC *)"
-0x0056cdb0,_GuideLines_Load,126,"i32 __cdecl(WORLDINFO *, void *)"
+0x0056cdb0,_GuideLines_Load,126,"i32 __cdecl(void *, void *)"
 0x0056ce30,_GuideLines_ReserveBufferSpace,85,void *__cdecl(WORLDINFO *)
 0x0056cea0,_GuideLines_Reset,136,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS_PC *)"
 0x56cf30,_GuideLine_FindNearest,179,"INDY_GUIDELINE_PC *__cdecl(NUVEC *, WORLDINFO *, i32 *, f32 *)"
