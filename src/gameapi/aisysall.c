@@ -5271,14 +5271,14 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                         nearest = candidate;
                     }
                 }
-                if (nearest != FLT_MAX) {
-                    distance += nearest;
-                    break;
+                if (nearest == FLT_MAX) {
+                    if (cached_distance != NULL) {
+                        *cached_distance = FLT_MAX;
+                    }
+                    return FLT_MAX;
                 }
-                if (cached_distance != NULL) {
-                    *cached_distance = nearest;
-                }
-                return nearest;
+                distance += nearest;
+                break;
             }
         } else {
             connection_index = path->route_matrix[node_index][destination_node];
