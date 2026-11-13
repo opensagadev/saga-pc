@@ -157,13 +157,13 @@ extern void __cdecl GizAction_ChangeTechnoTgt(GIZFLOW_PC *, FLOWBOX_PC *, char *
 extern void __cdecl GizAction_SetAIMessage(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizAction_SetAIState(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_CompleteLevel(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
-extern void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_GoToNewLevel(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_GoThroughDoor(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
-extern void __cdecl GizActions_PlaySpecialPc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
-extern void __cdecl GizActions_PlayForcePc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlaySpecial(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlayForce(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_ChangeObstTriggerType(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
-extern void __cdecl GizActions_PlayCutscenePc(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+extern void __cdecl GizActions_PlayCutscene(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_HitBlowup(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 extern void __cdecl GizActions_EnableSock(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
 
@@ -180,14 +180,14 @@ GIZACTIONDEF_PC game_gizactiondefs[24] = {
     {GizActionNameSetAIMessagePc, GizAction_SetAIMessage},
     {GizActionNameSetAIStatePc, GizAction_SetAIState},
     {GizActionNameCompleteLevelPc, GizActions_CompleteLevel},
-    {GizActionNameGoToNewLevelPc, GizActions_GoToNewLevelPc},
+    {GizActionNameGoToNewLevelPc, GizActions_GoToNewLevel},
     {GizActionNameGoThroughDoorPc, GizActions_GoThroughDoor},
     {GizActionNamePlayObstaclePc, GizActions_PlayObstacle},
-    {GizActionNamePlaySpecialPc, GizActions_PlaySpecialPc},
-    {GizActionNamePlayForcePc, GizActions_PlayForcePc},
+    {GizActionNamePlaySpecialPc, GizActions_PlaySpecial},
+    {GizActionNamePlayForcePc, GizActions_PlayForce},
     {GizActionNameChangeObstTriggerTypePc, GizActions_ChangeObstTriggerType},
     {GizActionNamePlayRadioPc, GizActions_PlayRadio},
-    {GizActionNamePlayCutscenePc, GizActions_PlayCutscenePc},
+    {GizActionNamePlayCutscenePc, GizActions_PlayCutscene},
     {GizActionNameHitBlowupPc, GizActions_HitBlowup},
     {GizActionNameActivateBeltPc, GizActions_ActivateBelt},
     {GizActionNameEnableSockPc, GizActions_EnableSock},

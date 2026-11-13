@@ -141,7 +141,7 @@ extern "C" void __cdecl NuShaderManagerSetElementsfv(i32 semantic, i32 first_ele
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv(semantic, first_element, count, values);
 }
 
-extern "C" void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
+extern "C" void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     PC_SHADER_MANAGER_VIEW *manager = reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots);
     if (manager->bound_slot != shader) {
         manager->bound_slot = shader;

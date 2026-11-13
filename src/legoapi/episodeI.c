@@ -1369,7 +1369,7 @@ void __cdecl UpdatePodRaceLapDisplay(f32 dt) {
         podhurryalpha = 0.0f;
     }
     if (podhurry_i > 0 && podhurry_i != -1 && podhurry_i != oldhurry)
-        TickTockSfxPc();
+        TickTockSfx();
     if (Paused != 0)
         return;
     if (PodRacePc != NULL && PodRacePc->lap_countdown > 0.0f && podstartracealpha < 1.0f) {

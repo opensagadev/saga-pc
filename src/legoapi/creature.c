@@ -245,7 +245,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
 STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
 
-static void __cdecl CreatureCrate_StopPc(PART_PC *part) {
+static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;
     u16 debris;
     i32 type;
@@ -300,7 +300,7 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters.owner = object;
     parameters.draw_fn = CreatureCrate_DrawPc;
     parameters.move_fn = CreatureCrate_MovePc;
-    parameters.stop_fn = CreatureCrate_StopPc;
+    parameters.stop_fn = CreatureCrate_Stop;
     part = AddPart(&parameters);
     if (part == NULL)
         return;

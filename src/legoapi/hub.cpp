@@ -3166,7 +3166,7 @@ static void HubDrawFreePlaySelectPc(void) {
         const f32 y = (COLLECTION_Y_HUB - offset) *
                           NuTrigTable[((i32)(freeplaytime / freeplayduration * 16384.0) >> 1) & 0x7fff] +
                       offset;
-        Collection_DrawPc(collection, 0.0f, y, collection->scale, list, 1.0f, 1);
+        Collection_Draw(collection, 0.0f, y, collection->scale, list, 1.0f, 1);
         HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
         return;
     }
@@ -3174,7 +3174,7 @@ static void HubDrawFreePlaySelectPc(void) {
         list[0].model_id = MissionMenuPacketPc.player_model[0];
         list[1].model_id = MissionMenuPacketPc.player_model[1];
         list[2].model_id = -1;
-        Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, 1.0f, 1);
+        Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, 1.0f, 1);
         HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
         i32 select[2], back[2], status[2];
         for (i32 player = 0; player < 2; ++player) {
@@ -3224,7 +3224,7 @@ static void HubDrawFreePlaySelectPc(void) {
                 alpha = 0.0f;
             else
                 alpha = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
-            Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
+            Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
             HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
             return;
         }
@@ -3243,7 +3243,7 @@ static void HubDrawFreePlaySelectPc(void) {
     const f32 progress = freeplaytime / freeplayduration;
     if (freeplaymode == 3) {
         const f32 alpha = freeplaytime < .800000011920929 ? (f32)(1.0 - freeplaytime / .800000011920929) : 0.0f;
-        Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
+        Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
     }
     f32 size = HubFreePlayFinalSizePc;
     if (count > 8)
@@ -4443,7 +4443,7 @@ extern "C" {
     extern f32 KITPOS2YPc;
     f32 __cdecl CurrentHintAlpha(void);
     /* Complete native0056e2a0..0056e2dc. */
-    u32 __cdecl Cheat_MultiplyScorePc(u32 score) {
+    u32 __cdecl Cheat_MultiplyScore(u32 score) {
         u32 flags = CheatSystemPtr->flags;
         if ((flags & 4) != 0)
             score *= 2;
@@ -4770,7 +4770,7 @@ extern "C" {
         }
     }
 
-    void DrawSuperStoryTimePc(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
+    void DrawSuperStoryTime(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
         char text[256], auxiliary[256];
         i32 green;
         Text_MakeTime(timer, show_hours, 1, 1, text);
@@ -4790,7 +4790,7 @@ extern "C" {
         }
     }
 
-    static void DrawCoinTotalPc(i32 source, i32 hide_super_story_target) {
+    static void DrawCoinTotal(i32 source, i32 hide_super_story_target) {
         f32 time, y;
         i32 total;
         char text[64], auxiliary[64];
@@ -4802,8 +4802,8 @@ extern "C" {
         DrawCoinTotalYPc = y;
         i32 red = 255, green = 191, blue = 0;
         if (source == 1) {
-            DrawSuperStoryTimePc(-y, SuperStoryTimer.time_elapsed,
-                                 Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
+            DrawSuperStoryTime(-y, SuperStoryTimer.time_elapsed,
+                               Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
             total = SuperStoryScore;
             if ((u32)Game.episode_save[SuperStoryEpisode].superstory_score_target > 0) {
                 if (hide_super_story_target == 0) {
@@ -4950,15 +4950,15 @@ extern "C" {
             }
             i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsPc(drawbosshitpoints) : 0;
             if (WORLD->area == HUB_ADATA)
-                DrawCoinTotalPc(0, hide_super_story_target);
+                DrawCoinTotal(0, hide_super_story_target);
             else if (SuperStory != 0) {
                 if ((WORLD->current_level->flags & 0x2000) != 0)
-                    DrawCoinTotalPc(1, hide_super_story_target);
+                    DrawCoinTotal(1, hide_super_story_target);
             } else if (BonusArea != 0 && Arcade != 0) {
                 Arcade_DrawPanel(Paused != 0 || NetPaused != 0);
             } else if (BonusArea != 0) {
                 if ((WORLD->area->flags & 0x100) != 0) {
-                    DrawCoinTotalPc(2, hide_super_story_target);
+                    DrawCoinTotal(2, hide_super_story_target);
                     if ((f64)DrawCoinTotalYPc != 2000000.0) {
                         Text_MakeScore(BonusCoinTarget, bonus_score);
                         NuStrCpy(coordinate_text, const_cast<char *>("("));
@@ -4969,7 +4969,7 @@ extern "C" {
                     }
                 }
                 if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & 2) != 0) {
-                    DrawSuperStoryTimePc(
+                    DrawSuperStoryTime(
                         -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
                           STATSPOS2YPc),
                         BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
@@ -5101,8 +5101,8 @@ extern "C" {
     extern u8 HudPausePromptBluePc;
     f32 __cdecl CurrentHintAlpha(void);
     void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
-    u32 __cdecl Cheat_MultiplyScorePc(u32);
-    i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *, i32, u8);
+    u32 __cdecl Cheat_MultiplyScore(u32);
+    i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
 
     /* Append in src/legoapi/panel.c after the static DrawHitPointsPc definition.
        Native bounded routine004b9110..004ba185 (4213 bytes), cdecl(i32 paused). */
@@ -5192,7 +5192,7 @@ extern "C" {
                                           0, &WORLD->level_objects[209].special, 0, 1.0f);
                     }
                 } else {
-                    u32 multiplier = Cheat_MultiplyScorePc(1);
+                    u32 multiplier = Cheat_MultiplyScore(1);
                     if ((DoubleScore & (1 << player)) != 0)
                         multiplier *= 2;
                     if (multiplier > 1) {
@@ -5284,7 +5284,7 @@ extern "C" {
                 }
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     ((WORLD->area->flags & 0x10) != 0 ||
-                     ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfTypePc(WORLD, 4, 0) > 0)))
+                     ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0)))
                     DrawMiniKitCount(minikittime, MiniKitScale,
                                      ChallengeMode != 0 ? AreaGlobals_PC.field_20 : AreaGlobals_PC.progress_flags, 10);
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&

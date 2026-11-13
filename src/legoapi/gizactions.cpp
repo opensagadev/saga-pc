@@ -57,7 +57,7 @@ struct GIZACTION_FORCE_ANIMATION_PC {
 STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, flags) == 0xa0);
 
-extern "C" void __cdecl GizActions_PlayForcePc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+extern "C" void __cdecl GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
     char *name = NULL;
     i32 forward = 1;
     i32 snap = 0;
@@ -171,7 +171,7 @@ extern "C" void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *bo
     obstacle->runtime_flags = flags;
 }
 
-extern "C" void __cdecl GizActions_PlaySpecialPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
+extern "C" void __cdecl GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
     char *name = NULL;
     i32 forward = 1;
     i32 snap = 0;
@@ -227,7 +227,7 @@ extern "C" void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBO
     }
 }
 
-extern "C" void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+extern "C" void __cdecl GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
     LEVELDATA_PC *level = NULL;
     char *cutscene_name = NULL;
     for (i32 i = 0; i < count; ++i) {
@@ -366,7 +366,7 @@ extern "C" void __cdecl GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC 
     }
 }
 
-extern "C" void __cdecl GizActions_PlayCutscenePc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
+extern "C" void __cdecl GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
     char *name = NULL;
     for (i32 i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);

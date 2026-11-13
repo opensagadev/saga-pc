@@ -2771,7 +2771,7 @@ i32 __cdecl instNuGCutSceneCharGetStartMtx(INSTNUGCUTSCENE *owner, char *name, N
     return 0;
 }
 
-void __cdecl instNuGCutScenePlayPc(INSTNUGCUTSCENE *owner, i32 forward) {
+void __cdecl instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     if ((instance->flags_88 & 2) != 0) {
         if (forward != 0) {

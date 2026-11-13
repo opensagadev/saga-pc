@@ -1265,7 +1265,7 @@ void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRI
             case 1:
                 instance = instNuGCutSceneFindActivePc(node->a.name);
                 if (instance != NULL) {
-                    instNuGCutScenePlayPc(instance, node->b.value);
+                    instNuGCutScenePlay(instance, node->b.value);
                     done = 1;
                 }
                 if (node->b.value != 0)

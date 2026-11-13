@@ -5,7 +5,7 @@ static i16 id_ROBIN = -1;
 /* Retail unit 0x403c90-0x407e40 (legoapi/items/collect/batarang.cpp): definitions in retail address order. */
 
 extern "C" {
-    i32 __cdecl Batman_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 __cdecl Batman_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
     void __cdecl ClearSpecialMove(GAMEOBJECT *);
 }
 typedef struct batman_prepare_pc_s {
@@ -83,23 +83,23 @@ extern "C" {
 }
 
 extern "C" {
-    i32 __cdecl Batman_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
     i32 __cdecl Batman_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
     i32 __cdecl Batman_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Batman_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
     i32 __cdecl Batman_MidSpecialMove_GlidePc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Batman_MidSpecialMove_GrapplePc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
     i32 __cdecl Batman_MidSpecialMove_SpecialUsePc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Batman_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 __cdecl Batman_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 __cdecl Batman_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 __cdecl Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
+    i32 __cdecl Batman_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
+    i32 __cdecl Batman_PrepareClimb(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
     i32 __cdecl Batman_PrepareGlidePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Batman_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Batman_PrepareHoverTubePc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 __cdecl Batman_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 __cdecl Batman_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 __cdecl Batman_PrepareGrapple(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 __cdecl Batman_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
+    i32 __cdecl Batman_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 __cdecl Batman_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
     i32 __cdecl Batman_PrepareSpecialUsePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 __cdecl Batman_PrepareTakeOverJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
+    i32 __cdecl Batman_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
 }
 extern "C" f32 __cdecl NuFdiv(f32 a, f32 b);
 extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator);
@@ -860,7 +860,7 @@ extern "C" void __cdecl Batarangs_Update(void) {
 }
 extern "C" {
 
-    i32 __cdecl Batman_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 __cdecl Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         u32 capabilities =
             packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
@@ -930,7 +930,7 @@ extern "C" {
     f32 BatmanJumpDistancePc[3] = {0.8f, 1.2f, 10000.0f};
 #pragma data_seg()
 
-    i32 __cdecl Batman_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 __cdecl Batman_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         i32 index;
         GAMEOBJECT *owner;
         u32 flags;
@@ -1201,7 +1201,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Batman_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
+    i32 __cdecl Batman_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AIPATHCNX_PC *connection = packet->path_info.connection;
         AIPATHNODE_PC *destination =
@@ -1221,7 +1221,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Batman_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 __cdecl Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x1f) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -1270,7 +1270,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Batman_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 __cdecl Batman_PrepareClimb(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *source, *destination;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection)
@@ -1397,7 +1397,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Batman_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+    i32 __cdecl Batman_PrepareGrapple(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *source =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
@@ -1422,7 +1422,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Batman_MidSpecialMove_GrapplePc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 __cdecl Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x46) {
             GameObjectSetCanUse(owner, owner->grapple, 1, 0x32, 0.0f);
@@ -1454,7 +1454,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl Batman_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    i32 __cdecl Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -1467,7 +1467,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Batman_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+    i32 __cdecl Batman_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         i32 near_index;
         i32 far_index;
         AIPATHNODE_PC *near_node;
@@ -1534,7 +1534,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Batman_PrepareHoverTubePc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
+    i32 __cdecl Batman_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
         GAMEOBJECT *object;
         AIPATHCNX_PC *connection;
         i32 from;
@@ -1584,7 +1584,7 @@ extern "C" {
         return 1;
     }
 
-    i32 __cdecl Batman_PrepareTakeOverJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
+    i32 __cdecl Batman_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner;
         GAMEOBJECT *participant;
         AIPATHNODE_PC *destination;
@@ -1606,16 +1606,16 @@ extern "C" {
     }
 #pragma data_seg(".data$batman_prepareforspecialmove")
     BATMAN_PREPARE_PC batman_prepareforspecialmove[11] = {
-        {4, Batman_PrepareJumpPc},
-        {0x23, Batman_PrepareJumpPc},
-        {8, Batman_PrepareGrapplePc},
-        {0x20000000, Batman_PrepareObstaclePc},
+        {4, Batman_PrepareJump},
+        {0x23, Batman_PrepareJump},
+        {8, Batman_PrepareGrapple},
+        {0x20000000, Batman_PrepareObstacle},
         {0x10, Batman_PrepareSpecialUsePc},
-        {0x40, Batman_PrepareHoverTubePc},
-        {0x1000, Batman_PrepareBigJumpPc},
-        {0x8000, Batman_PrepareTakeOverJumpPc},
+        {0x40, Batman_PrepareHoverTube},
+        {0x1000, Batman_PrepareBigJump},
+        {0x8000, Batman_PrepareTakeOverJump},
         {0xc0000, Batman_PrepareGlidePc},
-        {0x300000, Batman_PrepareClimbPc},
+        {0x300000, Batman_PrepareClimb},
         {0, NULL},
     };
 #pragma data_seg()
@@ -1663,9 +1663,9 @@ extern "C" {
     }
 #pragma data_seg(".data$batman_midspecialmovefns")
     AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8] = {
-        Batman_MidSpecialMove_DefaultPc,   Batman_MidSpecialMove_StartJumpPc, Batman_MidSpecialMove_SpecialUsePc,
-        Batman_MidSpecialMove_BigJumpPc,   Batman_MidSpecialMove_GlidePc,     Batman_MidSpecialMove_ClimbUpPc,
-        Batman_MidSpecialMove_ClimbDownPc, Batman_MidSpecialMove_GrapplePc,
+        Batman_MidSpecialMove_Default,     Batman_MidSpecialMove_StartJump, Batman_MidSpecialMove_SpecialUsePc,
+        Batman_MidSpecialMove_BigJump,     Batman_MidSpecialMove_GlidePc,   Batman_MidSpecialMove_ClimbUpPc,
+        Batman_MidSpecialMove_ClimbDownPc, Batman_MidSpecialMove_Grapple,
     };
 #pragma data_seg()
 

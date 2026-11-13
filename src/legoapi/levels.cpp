@@ -1286,7 +1286,7 @@ void __cdecl LoadPerm1(void) {
     material->attributes = (material->attributes & ~0x600000u) | 0x100000u;
     material->sort_priority = 0xff;
     material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
-    texture_id = NuTexReadPc("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
+    texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
     ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc)->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterialPc);
     for (index = 0; index < 0x800; ++index)

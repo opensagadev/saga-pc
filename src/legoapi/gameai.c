@@ -529,7 +529,7 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
     }
 }
 
-f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *difficulty) {
+f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *difficulty) {
     f32 threshold;
     f32 elapsed;
     i32 increase;

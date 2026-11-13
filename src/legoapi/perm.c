@@ -49,6 +49,6 @@ void __cdecl LoadPermLoadLegalTexture(void) {
         }
     }
     NuStrCat(path, NuFileExt_dds_PC);
-    legal_tid = NuTexReadPc(path, &texture_base, texture_end);
+    legal_tid = NuTexRead(path, &texture_base, texture_end);
     loadlegal_done = 1;
 }

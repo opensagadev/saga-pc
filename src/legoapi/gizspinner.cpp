@@ -1386,7 +1386,7 @@ extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *or
     return nearest_distance;
 }
 
-extern "C" void __cdecl GizSpinner_ResetAllPc(WORLDINFO *world, void *unused, SpinnerProgressEntryPc *progress) {
+extern "C" void __cdecl GizSpinner_ResetAll(WORLDINFO *world, void *unused, SpinnerProgressEntryPc *progress) {
     i32 index;
     if (world == NULL || world->spinners == NULL || progress == NULL)
         return;
@@ -1435,7 +1435,7 @@ extern "C" ADDGIZMOTYPE_PC *__cdecl Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizSpinner_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizSpinner_ClearProgress;
     addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_StoreProgressData;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_ResetAllPc;
+    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_ResetAll;
     addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizSpinner_ReserveBufferSpace;
     addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizSpinner_Load;
     return addtype;

@@ -2030,7 +2030,7 @@ STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_alpha) == 0xd80);
 STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_radius) == 0xd8c);
 STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, draw_reflection) == 0x107c);
 
-void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
+void __cdecl DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 void __cdecl DrawSnakeBody(GAMEOBJECT *);
 
 typedef struct draw_objects_flags_pc_s {
@@ -2065,8 +2065,8 @@ void DrawGameObjectsDraw(i32 pass) {
                    object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
                    WORLD->level_objects[object->field_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
-            DrawForceGlowSpritePc(&((PARAPHERNALIA_EXTRA_PC *)object)->force_position, object->transform_target_scale,
-                                  object->field_e1e, (f32)(object->transform_alpha / FORCEGLOWTIME), object);
+            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA_PC *)object)->force_position, object->transform_target_scale,
+                                object->field_e1e, (f32)(object->transform_alpha / FORCEGLOWTIME), object);
         }
         if (object->snake_body != NULL) {
             DrawSnakeBody(object);
@@ -3598,7 +3598,7 @@ void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, N
 static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
 static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
-void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
+void __cdecl DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 static void ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
 static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
@@ -3766,13 +3766,13 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
                 glow_alpha = object->context_timer / 0.20000000298023224;
             else
                 glow_alpha = 1.0f;
-            DrawForceGlowSpritePc(&glow_position, glow_radius, 0xdf, glow_alpha, object);
+            DrawForceGlowSprite(&glow_position, glow_radius, 0xdf, glow_alpha, object);
         }
     } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f &&
                WORLD->level_objects[object->field_e1e].active != 0 &&
                (object->character_data->game_character->flags_090 & 0x400) == 0) {
         held_glow_alpha = ((f32)(extra->force_alpha / FORCEGLOWTIME));
-        DrawForceGlowSpritePc(&extra->force_position, extra->force_radius, object->field_e1e, held_glow_alpha, object);
+        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->field_e1e, held_glow_alpha, object);
     }
     if (Cheat_IsOn(2))
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1,

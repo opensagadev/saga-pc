@@ -426,7 +426,7 @@ extern "C" {
     extern u32 PCShaderWaterInitializationBits;
 }
 
-extern "C" void __cdecl NuShaderObjectBaseSetWaterSpeedPc(f32 speed) {
+extern "C" void __cdecl NuShaderObjectBaseSetWaterSpeed(f32 speed) {
     PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10Pc);
 }
 

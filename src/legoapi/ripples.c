@@ -305,7 +305,7 @@ void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR 
         NuStrCat(filename, name);
         buffer->addr = (buffer->addr + 15) & ~15u;
         NuStrCat(filename, ".tex");
-        texture = NuTexReadPc(filename, buffer, *end);
+        texture = NuTexRead(filename, buffer, *end);
         if (texture != 0) {
             *result = NuMtlCreateEx3D(1, 1);
             (*result)->attribs.unknown_1_1_2 = 0;
@@ -573,7 +573,7 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
     RippleEraseCountPc = 0;
 }
 
-void __cdecl DrawRipplePc(RIPPLE_NODE_PC *node) {
+void __cdecl DrawRipple(RIPPLE_NODE_PC *node) {
     NURND_VERTEX3D_PC vertices[4];
     NUMTX matrix;
     f32 size = node->initial_size;
@@ -611,7 +611,7 @@ void __cdecl DrawRippleSet(RIPPLE_SET_PC *set) {
     node = set->newest;
     for (i = 0; i < set->active_count; ++i) {
         if (node != NULL) {
-            DrawRipplePc(node);
+            DrawRipple(node);
             node = node->next;
         }
     }

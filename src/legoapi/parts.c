@@ -2561,7 +2561,7 @@ STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, sort_priority) == 0x76);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, particle_type_tag) == 0x99);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
-i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
+i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
 NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
 NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
 extern i32 DebrisArenaInitializedPc;

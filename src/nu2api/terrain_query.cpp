@@ -2240,7 +2240,7 @@ STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 
-extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
+extern "C" void RotateTerrain(TERRAIN_SHAPE *surface) {
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
     const f32 sin_pitch = NuTrigTable[(static_cast<i32>(query->movement_pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
     const f32 cos_pitch =
@@ -2264,7 +2264,7 @@ extern "C" void RotateTerrainPc(TERRAIN_SHAPE *surface) {
 #undef TERRAIN_RTP_VERTEX
 }
 
-extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+extern "C" void FullDeflectSize(NUVEC *normal, NUVEC *movement, NUVEC *result) {
     const f32 reverse_x = -movement->x;
     const f32 reverse_y = -movement->y;
     const f32 reverse_z = -movement->z;
@@ -2283,7 +2283,7 @@ extern "C" void FullDeflectSizePc(NUVEC *normal, NUVEC *movement, NUVEC *result)
     }
 }
 
-extern "C" void FullReflectTestPc(NUVEC *normal, NUVEC *movement, NUVEC *result) {
+extern "C" void FullReflectTest(NUVEC *normal, NUVEC *movement, NUVEC *result) {
     const f32 reverse_x = -movement->x;
     const f32 reverse_y = -movement->y;
     const f32 reverse_z = -movement->z;
@@ -2302,7 +2302,7 @@ extern "C" void FullReflectTestPc(NUVEC *normal, NUVEC *movement, NUVEC *result)
     }
 }
 
-extern "C" void CubeImpactPc(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 scale, NUVEC *impact) {
+extern "C" void CubeImpact(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 scale, NUVEC *impact) {
     NUVEC corners[8] = {
         {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
         {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, 1.0f},  {1.0f, 1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f},
@@ -2330,7 +2330,7 @@ extern "C" void CubeImpactPc(NUMTX *current, NUMTX *previous, NUVEC *normal, f32
     impact->z = scale * transformed[selected].z + current->m32;
 }
 
-extern "C" void TerrainWallSideSlidePc(NUVEC *movement, void *id, f32 speed, f32 upward_scale, NUANG angle) {
+extern "C" void TerrainWallSideSlide(NUVEC *movement, void *id, f32 speed, f32 upward_scale, NUANG angle) {
     TERRAIN_SET_PC *terrain = static_cast<TERRAIN_SET_PC *>(CurrentTerrain);
     if (terrain == NULL)
         return;
@@ -2367,7 +2367,7 @@ found:
     second->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[second_vertex].x;               \
     second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[second_vertex].y;               \
     second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[second_vertex].z
-extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
+extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
     TerrainQuery_s *query = static_cast<TerrainQuery_s *>(TerI);
     if ((query->hit_type & 0xf) != TERRAIN_HIT_TYPE_CYLINDER)
         return;
@@ -2399,7 +2399,7 @@ extern "C" void TerrainPolyEdgePc(NUVEC *first, NUVEC *second) {
 }
 #undef TERRAIN_TPE_EDGE
 
-extern "C" void NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
+extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
     f64 angle = shape->angle;
     TerrShape = shape;
     TerrShapeAdjCnt = 2;

@@ -820,7 +820,7 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
         ropemtl->attribs.unknown_2_1_2 = 0;
         NuStrCat(path, name);
         buffer->addr = ((buffer->addr + 15) & ~15u);
-        ropemtl->texture_id = NuTexReadPc(path, buffer, *buffer_end);
+        ropemtl->texture_id = NuTexRead(path, buffer, *buffer_end);
         if (ropemtl->texture_id == 0) {
             NuMtlDestroy(ropemtl);
             ropemtl = NULL;

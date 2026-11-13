@@ -33,12 +33,12 @@ STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, sort_priority) == 0x76);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, particle_type_tag) == 0x99);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
-i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
+i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
 NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
 NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
 NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, i32 disable_depth_write,
                                        i32 alpha_mode, i32 sort_priority, i32 depth_mode) {
-    i32 texture_id = NuTexReadPc(name, buffer, buffer_end);
+    i32 texture_id = NuTexRead(name, buffer, buffer_end);
     DEBRIS_MATERIAL_PC *material;
     buffer->addr = (buffer->addr + 15) & ~15u;
     material = (DEBRIS_MATERIAL_PC *)NuMtlCreate3D(1);

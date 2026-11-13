@@ -1,235 +1,234 @@
 #include "saga.h"
 
-f32 __cdecl Condition_GlynTestPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_DebugPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ActivePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GotGunPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PrefersBrawlingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GlynTest(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Debug(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Active(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GotGun(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PrefersBrawling(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_ObstacleAtEndInit(AISYS_PC *, char *, AISCRIPT_PC *);
 void *__cdecl Condition_SpecialAtStartInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ObstacleAtStartPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ObstacleAtStart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ObstacleAtEnd(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ObstacleLockedShutPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ObstacleLockedOpenPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ObstacleLockedShut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ObstacleLockedOpen(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_ObstacleLockedOpenInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ObstacleOpenedByPlayerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ObstacleOpenedByEitherPlayerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ObstacleOpenedByPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ObstacleOpenedByEitherPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ForceAtStartPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ForceAtEndPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_IsVisibleInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_ForceAtStart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ForceAtEnd(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_IsVisibleInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_IsVisible(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_MySetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_ForcePushingInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ForcePushingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_TurretAliveInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_TurretAlivePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_MySet(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_ForcePushingInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_ForcePushing(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_TurretAliveInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_TurretAlive(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_CategoryIsInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_CategoryIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_PlayerCategoryIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IAmAPartyCharacter(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_IAmAInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_IAmAPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OpponentIsAInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_OpponentIsAPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_IAmAInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_IAmA(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OpponentIsAInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_OpponentIsA(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_GameOpponentIsAThreatPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_CanFightLikeAJedi(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_IAmAGoodyPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_IAmABaddyPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_IAmANeutralPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IAmAGoody(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IAmABaddy(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IAmANeutral(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IAmAGoodyBaddyPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_EitherPlayerIsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_EitherPlayerIsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_Player1IsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_Player2IsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_IAmPlayer2Pc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_EitherPlayerIsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_EitherPlayerIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Player1Is(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Player2Is(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IAmPlayer2(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_UsingForcePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerUsingForcePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_UsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_EitherPlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OnForcePlatformInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_OnForcePlatformPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerOnForcePlatformPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerDeflectingPartPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerPullingLeverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OnForcePlatformInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_OnForcePlatform(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerOnForcePlatform(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerOnForcePlatform(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ForceBeingUsed(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerDeflectingPart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerPullingLever(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_EitherPlayerUsingHatMachinePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerUsingPanelPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerWearingHelmetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_ForceCompleteInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ForceCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ForceFinishedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_BuildItCompleteInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_BuildItCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerUsingPanel(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerWearingHelmet(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_ForceCompleteInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_ForceComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ForceFinished(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_BuildItCompleteInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_BuildItComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_BlowupBlownupInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_BlowupBlownupPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_IsAliveInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_IsAlivePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_AIOverrideControlInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_AIOverrideControlPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_IsOnScreenInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_IsOnScreenPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OffScreenTimerInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerOnGroundPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OnGroundPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OnObjectInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerOnObjectPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BlowupBlownup(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_IsAliveInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_IsAlive(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_AIOverrideControlInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_AIOverrideControl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_IsOnScreenInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_IsOnScreen(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OffScreenTimerInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_OffScreenTimer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerOnGround(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OnGround(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BeenAlerted(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OnObjectInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_PlayerOnObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerOnObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_EitherPlayerLocatorRangeXZInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OnObjectPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_SpawnCountPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BehindCameraPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_LocatorOnScreenInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_LocatorOnScreenPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BlockingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_BeenHitInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_BeenHitPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_HoverPhasePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_HitPointsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_HitPointsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CollidingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OnObject(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OnSameObjectAsPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_SpawnCount(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BehindCamera(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_LocatorOnScreenInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_LocatorOnScreen(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Blocking(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_BeenHitInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_BeenHit(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_HoverPhase(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_HitPointsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_HitPoints(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CollidingWithOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Colliding(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_XPosInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_XPosPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_YPosPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ZPosPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_XPos(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_YPos(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ZPos(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_IsSetAliveInit(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_IsSetAlivePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IsSetAlive(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_NumInSetAlive(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ContextPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_InContextInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_InContextPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentContextPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OnDynamicGrappleInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_Player2ActivePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_NumBaddiesInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_NumBaddiesPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Context(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_InContextInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_InContext(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentContext(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OnDynamicGrappleInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_OnDynamicGrapple(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Player2Active(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_NumBaddiesInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_NumBaddies(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_NumForceObjectsInit(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_NumForceObjectsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_BeenToLevelInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_BeenToLevelPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NumForceObjects(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_BeenToLevelInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_BeenToLevel(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_LastLevelInit(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_LastLevelPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_MessageInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_MessagePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_ScriptParamInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_ScriptParamPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_AnimationFinishedInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_RigidAnimFramePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CutSceneStartedInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CutSceneStartedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CutSceneFinishedInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CutSceneFinishedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CutSceneExistsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CutSceneExistsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CutScenePlayingInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CutScenePlayingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_PlayerInSockInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_LastLevel(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_MessageInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_Message(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_ScriptParamInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_ScriptParam(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_AnimationFinishedInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_AnimationFinished(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_RigidAnimFrameInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_RigidAnimFrame(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CutSceneStartedInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CutSceneStarted(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CutSceneFinishedInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CutSceneFinished(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CutSceneExistsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CutSceneExists(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CutScenePlayingInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CutScenePlaying(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_PlayerInSockInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_PlayerInSock(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_SockDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_SockDistanceToOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerDistanceAlongSockPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_FurthestPlayerDistanceAlongSockPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *,
-                                                        void *);
-f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CurrentHintIdPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_HintAvailableInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_HintAvailablePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_HintCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_FreeplayPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerDistanceAlongSock(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_FurthestPlayerDistanceAlongSock(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_FinishedSpline(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CurrentHintId(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_HintAvailableInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_HintAvailable(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_HintComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Freeplay(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IndyPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_MissionModePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_MissionWonPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ChallengeModePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PSPPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BoltsDontGetDeflectedBackPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CheatProgressPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BigJumpCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_RespawnLocatorIsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_RespawnLocatorIsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_InMiniCutPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_MissionMode(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_MissionWon(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ChallengeMode(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PSP(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BoltsDontGetDeflectedBack(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CheatProgress(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BigJumpComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_RespawnLocatorIsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_RespawnLocatorIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_InMiniCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_DropBackInTimerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NumBaddiesThatCanSeePlayersPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_HelpWithTriggersPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PartyContainsDroidsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CannotReachDestinationPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_EitherPlayerPushingSpinnerInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CharacterRangeInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CharacterRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_TakeOverTargetInTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_TakeOverTargetInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_TakenOverInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_DropBackInTimer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PartyUnderCover(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NumBaddiesThatCanSeePlayers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PartyContainsDroids(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CannotReachDestination(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_EitherPlayerPushingSpinnerInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_EitherPlayerPushingSpinner(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CharacterRangeInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CharacterRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BeenSpawned(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_TakeOverTargetInTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_TakeOverTargetInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerInMyTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_TakenOverInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_TakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerTakenOverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerTakenOverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_BeenTakenOverInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_OnSpeederBikeInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_UnderPlayerControlInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_UnderPlayerControlPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CharacterExistsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CharacterExistsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_CharacterTypeExistsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_LastAttackerRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_GotLocatorInSetInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GotOpponentLOSPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EmptyTakeOverPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerTakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerTakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_BeenTakenOverInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_BeenTakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_OnSpeederBikeInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_OnSpeederBike(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_UnderPlayerControlInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_UnderPlayerControl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CharacterExistsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CharacterExists(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_CharacterTypeExistsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_CharacterTypeExists(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_LastAttackerRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_LastAttackerIsActivePlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_GotLocatorInSetInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_GotLocatorInSet(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GotOpponentLOS(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EmptyTakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_HasTakeOverTargetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GotVictimPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ScreenWipePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_HeadTurnRestrictedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_TakeOverRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GotVictim(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ScreenWipe(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_HeadTurnRestricted(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ShopActive(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_SideInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_Side(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestPartyRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentToPlayerRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentPathPosRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestPartyRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestPartyXZRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentToPlayerRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentPathPosRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_GizmoOutput0InitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_GizmoOutput0Pc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GizmoOutput1Pc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GizmoOutput2Pc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GizmoOutput3Pc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_GizmoVisibilityInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_GizmoVisibilityPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_FlowBoxCompleteInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_FlowBoxCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GizmoOutput0(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GizmoOutput1(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GizmoOutput2(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GizmoOutput3(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_GizmoVisibilityInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_GizmoVisibility(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_FlowBoxCompleteInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_FlowBoxComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_AngleAboutMyLocatorToPlayerInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_AngleAboutMyLocatorToPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_AnimSpeedMulPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_PickupBeenTurnedOnInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_PickupBeenTurnedOnPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CanHearRadioPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BeingTowedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_AnimSpeedMul(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_PickupBeenTurnedOnInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_PickupBeenTurnedOn(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CanHearRadio(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BeingTowed(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_RaceLapPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_MusicOn(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_CharacterLoadedInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_CharacterLoaded(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_AreaCompleteInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_AreaCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ShouldAttackOpponentPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_InSwampPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_AreaCompleteInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_AreaComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_ShouldAttackOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_InSwamp(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_InSameTriggerAreaAsNearestPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NetworkGameOnGoingPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NetworkGameOnGoing(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 i32 __cdecl Action_ClearTakeOverTarget(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_DeActivate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CanDefend(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -275,7 +274,7 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET
 i32 __cdecl Action_SetMessage(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetScriptParam(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CopyMessage(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_AddPartPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_AddPart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_AddPartDebris(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_LaunchGuidedMissile(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetHoverPhase(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -345,14 +344,14 @@ i32 __cdecl Action_TakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, cha
 i32 __cdecl Action_ReleaseTakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_AddGameMsgCount(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetCanTakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_IgnoreLastSafePathPosPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_AwkwardShapeOverridePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_IgnoreSlideTerrainPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_SplineFollowTerrainPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_IgnoreLastSafePathPos(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_AwkwardShapeOverride(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_IgnoreSlideTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_SplineFollowTerrain(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_AddMiscPickups(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetLayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CreateRider(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_ThrowDetonatorPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_ThrowDetonator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_UseTimeBasedUpdate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_WalkBackwards(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_AddScriptProcessor(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -361,17 +360,17 @@ i32 __cdecl Action_SetAO_MaxAttackers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET
 i32 __cdecl Action_SetAO_AttackersPerRow(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetAO_RowDist(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetAO_InitRowDist(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_LetGoOfBalloonPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_DrawBossHitPointsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_GoToNewLevelPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_SetTechnoComplete(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_LetGoOfBalloon(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_DrawBossHitPoints(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_GoToNewLevel(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_GizmoActivate(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_GizmoSetVisibility(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_TurnOnPickupPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_TurnOnPickup(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CanHelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CanCollideWithObjects(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_AddTorpedoPacket(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-i32 __cdecl Action_SetShootOpponentsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_SetShootOpponents(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_PartyCanBeUnderCover(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_CreateCreatures(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SpeederBeingChased(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -381,51 +380,51 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, c
 i32 __cdecl Action_BoulderSection(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 void *__cdecl Condition_AlwaysTrueInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_LocatorRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_LocatorRangeXZPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_LocatorRangeYPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_LocatorRangeXZ(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_LocatorRangeY(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_GotLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GotLocatorSetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OnPathPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerOnPathPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentOnPathPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_TimeOffPathPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_CurrentLocatorIsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_InTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GotLocatorSet(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OnPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerOnPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentOnPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_TimeOffPath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_CurrentLocatorIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_InTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_PlayerRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestPlayerRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestPlayerXZRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_InLevelNodePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerInLevelNodePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerInLevelNodePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestPlayerRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestPlayerXZRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_InLevelNode(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerInLevelNode(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerInLevelNode(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_NodeRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GotTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_Player2InTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_EitherPlayerInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_BaddyInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_GoodyInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentInTriggerAreaPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GotTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Player2InTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_EitherPlayerInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_BaddyInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_GoodyInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentInTriggerArea(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_GotOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentIsAThreat(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_OpponentOnSamePath(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_OpponentRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestOpponentRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_YawToOpponentPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentBelowPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OriginRangePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentToOriginPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerToOriginPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentToLocatorPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentToLocatorXZPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_OpponentToLocatorYPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PlayerToLocatorPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_NearestPlayerToLocatorPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_PathBlockedPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_InterruptIDPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_IAmInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-f32 __cdecl Condition_IAmPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_StuckTimePc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_ParamPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestOpponentRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_YawToOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentBelow(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OriginRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentToOrigin(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerToOrigin(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentToLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentToLocatorXZ(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_OpponentToLocatorY(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PlayerToLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_NearestPlayerToLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_PathBlocked(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_InterruptID(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+void *__cdecl Condition_IAmInit(AISYS_PC *, char *, AISCRIPT_PC *);
+f32 __cdecl Condition_IAm(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_StuckTime(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_Param(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 i32 __cdecl Action_SetState(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_ResetTimer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_Idle(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -447,17 +446,17 @@ i32 __cdecl Action_SetParam(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, cha
 i32 __cdecl Action_SetReturnToState(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_ReturnToState(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 void *__cdecl Condition_LocatorRangeInit(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_CurrentLocatorIsInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_InTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_InLevelNodeInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_PlayerInLevelNodeInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_CurrentLocatorIsInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_InTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_InLevelNodeInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_PlayerInLevelNodeInit(AISYS_PC *, char *, AISCRIPT_PC *);
 void *__cdecl Condition_NodeRangeInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_PlayerInTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_BaddyInTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_GoodyInTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_OpponentInTriggerAreaInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_OpponentToLocatorInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
-void *__cdecl Condition_PlayerToLocatorInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_PlayerInTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_BaddyInTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_GoodyInTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_OpponentInTriggerAreaInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_OpponentToLocatorInit(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_PlayerToLocatorInit(AISYS_PC *, char *, AISCRIPT_PC *);
 i32 __cdecl Action_FaceLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_SetRespawnLocator(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
@@ -2001,7 +2000,7 @@ AIACTIONDEF_PC lego_aiactiondefs[208] = {
     {AIRegistryTextPc00756574, Action_SetMessage, 1, 0, 0},
     {AIRegistryTextPc00756568, Action_CopyMessage, 0, 0, 0},
     {AIRegistryTextPc00756558, Action_SetScriptParam, 0, 0, 0},
-    {AIRegistryTextPc00756550, Action_AddPartPc, 0, 0, 0},
+    {AIRegistryTextPc00756550, Action_AddPart, 0, 0, 0},
     {AIRegistryTextPc00756540, Action_AddPartDebris, 0, 0, 0},
     {AIRegistryTextPc0075652c, Action_LaunchGuidedMissile, 0, 0, 0},
     {AIRegistryTextPc0075651c, Action_SetHoverPhase, 0, 0, 0},
@@ -2075,15 +2074,15 @@ AIACTIONDEF_PC lego_aiactiondefs[208] = {
     {AIRegistryTextPc007560d4, Action_AddMiscPickups, 0, 0, 0},
     {AIRegistryTextPc007560c4, Action_SetCanTakeOver, 0, 0, 0},
     {AIRegistryTextPc007560b4, Action_CanBeCarried, 1, 0, 0},
-    {AIRegistryTextPc0075609c, Action_IgnoreLastSafePathPosPc, 0, 0, 0},
-    {AIRegistryTextPc00756084, Action_AwkwardShapeOverridePc, 0, 0, 0},
-    {AIRegistryTextPc00756070, Action_IgnoreSlideTerrainPc, 0, 0, 0},
-    {AIRegistryTextPc0075605c, Action_SplineFollowTerrainPc, 0, 0, 0},
+    {AIRegistryTextPc0075609c, Action_IgnoreLastSafePathPos, 0, 0, 0},
+    {AIRegistryTextPc00756084, Action_AwkwardShapeOverride, 0, 0, 0},
+    {AIRegistryTextPc00756070, Action_IgnoreSlideTerrain, 0, 0, 0},
+    {AIRegistryTextPc0075605c, Action_SplineFollowTerrain, 0, 0, 0},
     {AIRegistryTextPc00756050, Action_SetLayer, 0, 0, 0},
     {AIRegistryTextPc00756044, Action_CreateRider, 0, 0, 0},
     {AIRegistryTextPc00756030, Action_AddTorpedoPacket, 1, 0, 0},
     {AIRegistryTextPc0075601c, Action_SpeederBeingChased, 0, 0, 0},
-    {AIRegistryTextPc0075600c, Action_ThrowDetonatorPc, 0, 0, 0},
+    {AIRegistryTextPc0075600c, Action_ThrowDetonator, 0, 0, 0},
     {AIRegistryTextPc00755ff8, Action_SetScaleOverride, 0, 0, 0},
     {AIRegistryTextPc00755fe4, Action_DisableNarrowSocks, 1, 0, 0},
     {AIRegistryTextPc00755fd0, Action_UseTimeBasedUpdate, 0, 0, 0},
@@ -2095,18 +2094,18 @@ AIACTIONDEF_PC lego_aiactiondefs[208] = {
     {AIRegistryTextPc00755f60, Action_SetAO_AttackersPerRow, 0, 0, 0},
     {AIRegistryTextPc00755f50, Action_SetAO_RowDist, 0, 0, 0},
     {AIRegistryTextPc00755f3c, Action_SetAO_InitRowDist, 0, 0, 0},
-    {AIRegistryTextPc00755f28, Action_SetTechnoCompletePc, 0, 0, 0},
-    {AIRegistryTextPc00755f18, Action_LetGoOfBalloonPc, 0, 0, 0},
-    {AIRegistryTextPc00755f04, Action_DrawBossHitPointsPc, 1, 0, 0},
+    {AIRegistryTextPc00755f28, Action_SetTechnoComplete, 0, 0, 0},
+    {AIRegistryTextPc00755f18, Action_LetGoOfBalloon, 0, 0, 0},
+    {AIRegistryTextPc00755f04, Action_DrawBossHitPoints, 1, 0, 0},
     {AIRegistryTextPc00755ef4, Action_CompleteLevel, 1, 0, 0},
-    {AIRegistryTextPc00755ee4, Action_GoToNewLevelPc, 0, 0, 0},
+    {AIRegistryTextPc00755ee4, Action_GoToNewLevel, 0, 0, 0},
     {AIRegistryTextPc00755ed4, Action_CircleLocator, 0, 0, 0},
     {AIRegistryTextPc00755ec4, Action_GizmoActivate, 0, 0, 0},
     {AIRegistryTextPc00755eb0, Action_GizmoSetVisibility, 0, 0, 0},
-    {AIRegistryTextPc00755ea0, Action_TurnOnPickupPc, 0, 0, 0},
+    {AIRegistryTextPc00755ea0, Action_TurnOnPickup, 0, 0, 0},
     {AIRegistryTextPc00755e8c, Action_CanHelpWithTriggers, 0, 0, 0},
     {AIRegistryTextPc00755e74, Action_CanCollideWithObjects, 0, 0, 0},
-    {AIRegistryTextPc00755e60, Action_SetShootOpponentsPc, 0, 0, 0},
+    {AIRegistryTextPc00755e60, Action_SetShootOpponents, 0, 0, 0},
     {AIRegistryTextPc00755e48, Action_PartyCanBeUnderCover, 0, 0, 0},
     {AIRegistryTextPc00755e3c, Action_SetLapTime, 0, 0, 0},
     {AIRegistryTextPc00755e30, Action_CreatePod, 0, 0, 0},
@@ -2125,175 +2124,175 @@ AIACTIONDEF_PC lego_aiactiondefs[208] = {
 
 #pragma data_seg(".data$lego_aiconditiondefs")
 AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
-    {AIRegistryTextPc007575cc, Condition_GlynTestPc, NULL},
-    {AIRegistryTextPc007575c4, Condition_DebugPc, NULL},
-    {AIRegistryTextPc007575bc, Condition_ActivePc, NULL},
-    {AIRegistryTextPc007575b4, Condition_GotGunPc, NULL},
-    {AIRegistryTextPc007575a4, Condition_PrefersBrawlingPc, NULL},
-    {AIRegistryTextPc0075759c, Condition_IsAlivePc, Condition_IsAliveInitPc},
-    {AIRegistryTextPc00757590, Condition_IsOnScreenPc, Condition_IsOnScreenInitPc},
-    {AIRegistryTextPc00757580, Condition_OffScreenTimerPc, Condition_OffScreenTimerInitPc},
-    {AIRegistryTextPc00757574, Condition_OnObjectPc, Condition_OnObjectInitPc},
-    {AIRegistryTextPc0075755c, Condition_OnSameObjectAsPlayerPc, NULL},
-    {AIRegistryTextPc0075754c, Condition_PlayerOnObjectPc, Condition_OnObjectInitPc},
-    {AIRegistryTextPc00757534, Condition_EitherPlayerOnObjectPc, Condition_OnObjectInitPc},
+    {AIRegistryTextPc007575cc, Condition_GlynTest, NULL},
+    {AIRegistryTextPc007575c4, Condition_Debug, NULL},
+    {AIRegistryTextPc007575bc, Condition_Active, NULL},
+    {AIRegistryTextPc007575b4, Condition_GotGun, NULL},
+    {AIRegistryTextPc007575a4, Condition_PrefersBrawling, NULL},
+    {AIRegistryTextPc0075759c, Condition_IsAlive, Condition_IsAliveInit},
+    {AIRegistryTextPc00757590, Condition_IsOnScreen, Condition_IsOnScreenInit},
+    {AIRegistryTextPc00757580, Condition_OffScreenTimer, Condition_OffScreenTimerInit},
+    {AIRegistryTextPc00757574, Condition_OnObject, Condition_OnObjectInit},
+    {AIRegistryTextPc0075755c, Condition_OnSameObjectAsPlayer, NULL},
+    {AIRegistryTextPc0075754c, Condition_PlayerOnObject, Condition_OnObjectInit},
+    {AIRegistryTextPc00757534, Condition_EitherPlayerOnObject, Condition_OnObjectInit},
     {AIRegistryTextPc00757518, Condition_EitherPlayerLocatorRangeXZ, Condition_EitherPlayerLocatorRangeXZInitPc},
-    {AIRegistryTextPc0075750c, Condition_OnGroundPc, NULL},
-    {AIRegistryTextPc00757500, Condition_BeenAlertedPc, NULL},
-    {AIRegistryTextPc007574f0, Condition_PlayerOnGroundPc, NULL},
-    {AIRegistryTextPc007574e4, Condition_SpawnCountPc, NULL},
-    {AIRegistryTextPc007574d4, Condition_BehindCameraPc, NULL},
-    {AIRegistryTextPc007574c4, Condition_LocatorOnScreenPc, Condition_LocatorOnScreenInitPc},
-    {AIRegistryTextPc007574b8, Condition_BlockingPc, NULL},
-    {AIRegistryTextPc007574b0, Condition_BeenHitPc, Condition_BeenHitInitPc},
-    {AIRegistryTextPc007574a4, Condition_HoverPhasePc, NULL},
-    {AIRegistryTextPc00757498, Condition_HitPointsPc, Condition_HitPointsInitPc},
-    {AIRegistryTextPc00757484, Condition_OnDynamicGrapplePc, Condition_OnDynamicGrappleInitPc},
-    {AIRegistryTextPc0075747c, Condition_XPosPc, Condition_XPosInitPc},
-    {AIRegistryTextPc00757474, Condition_YPosPc, Condition_XPosInitPc},
-    {AIRegistryTextPc0075746c, Condition_ZPosPc, Condition_XPosInitPc},
-    {AIRegistryTextPc00757454, Condition_CollidingWithOpponentPc, NULL},
-    {AIRegistryTextPc00757448, Condition_CollidingPc, NULL},
-    {AIRegistryTextPc00757438, Condition_ObstacleAtStartPc, Condition_ObstacleAtEndInit},
+    {AIRegistryTextPc0075750c, Condition_OnGround, NULL},
+    {AIRegistryTextPc00757500, Condition_BeenAlerted, NULL},
+    {AIRegistryTextPc007574f0, Condition_PlayerOnGround, NULL},
+    {AIRegistryTextPc007574e4, Condition_SpawnCount, NULL},
+    {AIRegistryTextPc007574d4, Condition_BehindCamera, NULL},
+    {AIRegistryTextPc007574c4, Condition_LocatorOnScreen, Condition_LocatorOnScreenInit},
+    {AIRegistryTextPc007574b8, Condition_Blocking, NULL},
+    {AIRegistryTextPc007574b0, Condition_BeenHit, Condition_BeenHitInit},
+    {AIRegistryTextPc007574a4, Condition_HoverPhase, NULL},
+    {AIRegistryTextPc00757498, Condition_HitPoints, Condition_HitPointsInit},
+    {AIRegistryTextPc00757484, Condition_OnDynamicGrapple, Condition_OnDynamicGrappleInit},
+    {AIRegistryTextPc0075747c, Condition_XPos, Condition_XPosInitPc},
+    {AIRegistryTextPc00757474, Condition_YPos, Condition_XPosInitPc},
+    {AIRegistryTextPc0075746c, Condition_ZPos, Condition_XPosInitPc},
+    {AIRegistryTextPc00757454, Condition_CollidingWithOpponent, NULL},
+    {AIRegistryTextPc00757448, Condition_Colliding, NULL},
+    {AIRegistryTextPc00757438, Condition_ObstacleAtStart, Condition_ObstacleAtEndInit},
     {AIRegistryTextPc00757428, Condition_ObstacleAtEnd, Condition_ObstacleAtEndInit},
-    {AIRegistryTextPc00757418, Condition_ObstacleAtStartPc, Condition_SpecialAtStartInitPc},
+    {AIRegistryTextPc00757418, Condition_ObstacleAtStart, Condition_SpecialAtStartInitPc},
     {AIRegistryTextPc00757408, Condition_ObstacleAtEnd, Condition_SpecialAtStartInitPc},
-    {AIRegistryTextPc007573f4, Condition_ObstacleLockedOpenPc, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc007573e0, Condition_ObstacleLockedShutPc, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc007573d0, Condition_ForceAtStartPc, Condition_ForceAtStartInitPc},
-    {AIRegistryTextPc007573c4, Condition_ForceAtEndPc, Condition_ForceAtStartInitPc},
-    {AIRegistryTextPc007573ac, Condition_ObstacleOpenedByPlayerPc, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc0075738c, Condition_ObstacleOpenedByEitherPlayerPc, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc00757378, Condition_AnimationFinishedPc, Condition_AnimationFinishedInitPc},
-    {AIRegistryTextPc0075735c, Condition_EitherPlayerPullingLeverPc, NULL},
+    {AIRegistryTextPc007573f4, Condition_ObstacleLockedOpen, Condition_ObstacleLockedOpenInitPc},
+    {AIRegistryTextPc007573e0, Condition_ObstacleLockedShut, Condition_ObstacleLockedOpenInitPc},
+    {AIRegistryTextPc007573d0, Condition_ForceAtStart, Condition_ForceAtStartInitPc},
+    {AIRegistryTextPc007573c4, Condition_ForceAtEnd, Condition_ForceAtStartInitPc},
+    {AIRegistryTextPc007573ac, Condition_ObstacleOpenedByPlayer, Condition_ObstacleLockedOpenInitPc},
+    {AIRegistryTextPc0075738c, Condition_ObstacleOpenedByEitherPlayer, Condition_ObstacleLockedOpenInitPc},
+    {AIRegistryTextPc00757378, Condition_AnimationFinished, Condition_AnimationFinishedInit},
+    {AIRegistryTextPc0075735c, Condition_EitherPlayerPullingLever, NULL},
     {AIRegistryTextPc00757340, Condition_EitherPlayerUsingHatMachinePc, NULL},
-    {AIRegistryTextPc00757328, Condition_EitherPlayerUsingPanelPc, NULL},
-    {AIRegistryTextPc0075730c, Condition_EitherPlayerWearingHelmetPc, NULL},
-    {AIRegistryTextPc007572fc, Condition_PartyUnderCoverPc, NULL},
-    {AIRegistryTextPc007572e0, Condition_NumBaddiesThatCanSeePlayersPc, NULL},
-    {AIRegistryTextPc007572cc, Condition_PlayerUsingForcePc, Condition_PlayerUsingForceInitPc},
+    {AIRegistryTextPc00757328, Condition_EitherPlayerUsingPanel, NULL},
+    {AIRegistryTextPc0075730c, Condition_EitherPlayerWearingHelmet, NULL},
+    {AIRegistryTextPc007572fc, Condition_PartyUnderCover, NULL},
+    {AIRegistryTextPc007572e0, Condition_NumBaddiesThatCanSeePlayers, NULL},
+    {AIRegistryTextPc007572cc, Condition_PlayerUsingForce, Condition_PlayerUsingForceInitPc},
     {AIRegistryTextPc007572b4, Condition_EitherPlayerUsingForce, Condition_PlayerUsingForceInitPc},
-    {AIRegistryTextPc007572a8, Condition_UsingForcePc, Condition_PlayerUsingForceInitPc},
-    {AIRegistryTextPc00757298, Condition_OnForcePlatformPc, Condition_OnForcePlatformInitPc},
-    {AIRegistryTextPc00757280, Condition_PlayerOnForcePlatformPc, Condition_OnForcePlatformInitPc},
-    {AIRegistryTextPc00757264, Condition_EitherPlayerOnForcePlatformPc, Condition_OnForcePlatformInitPc},
-    {AIRegistryTextPc00757254, Condition_ForceBeingUsedPc, Condition_PlayerUsingForceInitPc},
-    {AIRegistryTextPc00757244, Condition_ForcePushingPc, Condition_ForcePushingInitPc},
-    {AIRegistryTextPc00757238, Condition_TurretAlivePc, Condition_TurretAliveInitPc},
-    {AIRegistryTextPc00757220, Condition_PlayerDeflectingPartPc, NULL},
-    {AIRegistryTextPc00757210, Condition_ForceCompletePc, Condition_ForceCompleteInitPc},
-    {AIRegistryTextPc00757200, Condition_ForceFinishedPc, Condition_ForceCompleteInitPc},
-    {AIRegistryTextPc007571f0, Condition_BuildItCompletePc, Condition_BuildItCompleteInitPc},
-    {AIRegistryTextPc007571e0, Condition_BlowupBlownupPc, Condition_BlowupBlownupInitPc},
-    {AIRegistryTextPc007571d8, Condition_IAmAPc, Condition_IAmAInitPc},
-    {AIRegistryTextPc007571cc, Condition_OpponentIsAPc, Condition_OpponentIsAInitPc},
+    {AIRegistryTextPc007572a8, Condition_UsingForce, Condition_PlayerUsingForceInitPc},
+    {AIRegistryTextPc00757298, Condition_OnForcePlatform, Condition_OnForcePlatformInit},
+    {AIRegistryTextPc00757280, Condition_PlayerOnForcePlatform, Condition_OnForcePlatformInit},
+    {AIRegistryTextPc00757264, Condition_EitherPlayerOnForcePlatform, Condition_OnForcePlatformInit},
+    {AIRegistryTextPc00757254, Condition_ForceBeingUsed, Condition_PlayerUsingForceInitPc},
+    {AIRegistryTextPc00757244, Condition_ForcePushing, Condition_ForcePushingInit},
+    {AIRegistryTextPc00757238, Condition_TurretAlive, Condition_TurretAliveInit},
+    {AIRegistryTextPc00757220, Condition_PlayerDeflectingPart, NULL},
+    {AIRegistryTextPc00757210, Condition_ForceComplete, Condition_ForceCompleteInit},
+    {AIRegistryTextPc00757200, Condition_ForceFinished, Condition_ForceCompleteInit},
+    {AIRegistryTextPc007571f0, Condition_BuildItComplete, Condition_BuildItCompleteInit},
+    {AIRegistryTextPc007571e0, Condition_BlowupBlownup, Condition_BlowupBlownupInitPc},
+    {AIRegistryTextPc007571d8, Condition_IAmA, Condition_IAmAInit},
+    {AIRegistryTextPc007571cc, Condition_OpponentIsA, Condition_OpponentIsAInit},
     {AIRegistryTextPc007571b8, Condition_GameOpponentIsAThreatPc, NULL},
     {AIRegistryTextPc007571a4, Condition_CanFightLikeAJedi, NULL},
-    {AIRegistryTextPc00757198, Condition_IAmAGoodyPc, NULL},
-    {AIRegistryTextPc0075718c, Condition_IAmABaddyPc, NULL},
-    {AIRegistryTextPc00757180, Condition_IAmANeutralPc, NULL},
+    {AIRegistryTextPc00757198, Condition_IAmAGoody, NULL},
+    {AIRegistryTextPc0075718c, Condition_IAmABaddy, NULL},
+    {AIRegistryTextPc00757180, Condition_IAmANeutral, NULL},
     {AIRegistryTextPc00757170, Condition_IAmAGoodyBaddyPc, NULL},
     {AIRegistryTextPc0075715c, Condition_IAmAPartyCharacter, NULL},
     {AIRegistryTextPc00757150, Condition_CategoryIs, Condition_CategoryIsInit},
     {AIRegistryTextPc0075713c, Condition_PlayerCategoryIs, Condition_CategoryIsInit},
-    {AIRegistryTextPc0075712c, Condition_EitherPlayerIsPc, Condition_EitherPlayerIsInitPc},
-    {AIRegistryTextPc00757120, Condition_Player1IsPc, Condition_EitherPlayerIsInitPc},
-    {AIRegistryTextPc00757114, Condition_Player2IsPc, Condition_EitherPlayerIsInitPc},
-    {AIRegistryTextPc00757108, Condition_IsSetAlivePc, Condition_IsSetAliveInit},
+    {AIRegistryTextPc0075712c, Condition_EitherPlayerIs, Condition_EitherPlayerIsInit},
+    {AIRegistryTextPc00757120, Condition_Player1Is, Condition_EitherPlayerIsInit},
+    {AIRegistryTextPc00757114, Condition_Player2Is, Condition_EitherPlayerIsInit},
+    {AIRegistryTextPc00757108, Condition_IsSetAlive, Condition_IsSetAliveInit},
     {AIRegistryTextPc007570f8, Condition_NumInSetAlive, Condition_IsSetAliveInit},
-    {AIRegistryTextPc007570f0, Condition_ContextPc, NULL},
-    {AIRegistryTextPc007570e4, Condition_InContextPc, Condition_InContextInitPc},
-    {AIRegistryTextPc007570d4, Condition_OpponentContextPc, Condition_InContextInitPc},
-    {AIRegistryTextPc007570c4, Condition_Player2ActivePc, NULL},
-    {AIRegistryTextPc007570b8, Condition_NumBaddiesPc, Condition_NumBaddiesInitPc},
-    {AIRegistryTextPc007570a8, Condition_NumForceObjectsPc, Condition_NumForceObjectsInit},
-    {AIRegistryTextPc0075709c, Condition_BeenToLevelPc, Condition_BeenToLevelInitPc},
-    {AIRegistryTextPc00757090, Condition_LastLevelPc, Condition_LastLevelInit},
-    {AIRegistryTextPc00757088, Condition_MessagePc, Condition_MessageInitPc},
-    {AIRegistryTextPc0075707c, Condition_ScriptParamPc, Condition_ScriptParamInitPc},
-    {AIRegistryTextPc0075706c, Condition_CutSceneStartedPc, Condition_CutSceneStartedInitPc},
-    {AIRegistryTextPc00757058, Condition_CutSceneFinishedPc, Condition_CutSceneFinishedInitPc},
-    {AIRegistryTextPc00757048, Condition_CutSceneExistsPc, Condition_CutSceneExistsInitPc},
-    {AIRegistryTextPc00757038, Condition_PlayerInSockPc, Condition_PlayerInSockInitPc},
-    {AIRegistryTextPc00757028, Condition_CutScenePlayingPc, Condition_CutScenePlayingInitPc},
-    {AIRegistryTextPc00757018, Condition_RigidAnimFramePc, Condition_RigidAnimFrameInitPc},
+    {AIRegistryTextPc007570f0, Condition_Context, NULL},
+    {AIRegistryTextPc007570e4, Condition_InContext, Condition_InContextInit},
+    {AIRegistryTextPc007570d4, Condition_OpponentContext, Condition_InContextInit},
+    {AIRegistryTextPc007570c4, Condition_Player2Active, NULL},
+    {AIRegistryTextPc007570b8, Condition_NumBaddies, Condition_NumBaddiesInit},
+    {AIRegistryTextPc007570a8, Condition_NumForceObjects, Condition_NumForceObjectsInit},
+    {AIRegistryTextPc0075709c, Condition_BeenToLevel, Condition_BeenToLevelInit},
+    {AIRegistryTextPc00757090, Condition_LastLevel, Condition_LastLevelInit},
+    {AIRegistryTextPc00757088, Condition_Message, Condition_MessageInit},
+    {AIRegistryTextPc0075707c, Condition_ScriptParam, Condition_ScriptParamInit},
+    {AIRegistryTextPc0075706c, Condition_CutSceneStarted, Condition_CutSceneStartedInit},
+    {AIRegistryTextPc00757058, Condition_CutSceneFinished, Condition_CutSceneFinishedInit},
+    {AIRegistryTextPc00757048, Condition_CutSceneExists, Condition_CutSceneExistsInit},
+    {AIRegistryTextPc00757038, Condition_PlayerInSock, Condition_PlayerInSockInit},
+    {AIRegistryTextPc00757028, Condition_CutScenePlaying, Condition_CutScenePlayingInit},
+    {AIRegistryTextPc00757018, Condition_RigidAnimFrame, Condition_RigidAnimFrameInit},
     {AIRegistryTextPc00757000, Condition_SockDistanceToPlayer, NULL},
     {AIRegistryTextPc00756fe8, Condition_SockDistanceToOpponent, NULL},
     {AIRegistryTextPc00756fd0, Condition_SockXDistanceToPlayer, NULL},
-    {AIRegistryTextPc00756fb8, Condition_PlayerDistanceAlongSockPc, NULL},
-    {AIRegistryTextPc00756f98, Condition_FurthestPlayerDistanceAlongSockPc, NULL},
-    {AIRegistryTextPc00756f88, Condition_FinishedSplinePc, NULL},
-    {AIRegistryTextPc00756f78, Condition_CurrentHintIdPc, NULL},
-    {AIRegistryTextPc00756f68, Condition_HintAvailablePc, Condition_HintAvailableInitPc},
-    {AIRegistryTextPc00756f58, Condition_HintCompletePc, Condition_HintAvailableInitPc},
-    {AIRegistryTextPc00755150, Condition_FreeplayPc, NULL},
+    {AIRegistryTextPc00756fb8, Condition_PlayerDistanceAlongSock, NULL},
+    {AIRegistryTextPc00756f98, Condition_FurthestPlayerDistanceAlongSock, NULL},
+    {AIRegistryTextPc00756f88, Condition_FinishedSpline, NULL},
+    {AIRegistryTextPc00756f78, Condition_CurrentHintId, NULL},
+    {AIRegistryTextPc00756f68, Condition_HintAvailable, Condition_HintAvailableInit},
+    {AIRegistryTextPc00756f58, Condition_HintComplete, Condition_HintAvailableInit},
+    {AIRegistryTextPc00755150, Condition_Freeplay, NULL},
     {AIRegistryTextPc00756f50, Condition_IndyPc, NULL},
-    {AIRegistryTextPc00756f44, Condition_MissionModePc, NULL},
-    {AIRegistryTextPc00756f38, Condition_MissionWonPc, NULL},
-    {AIRegistryTextPc00756f28, Condition_ChallengeModePc, NULL},
-    {AIRegistryTextPc00756f24, Condition_PSPPc, NULL},
-    {AIRegistryTextPc00756f10, Condition_AIOverrideControlPc, Condition_AIOverrideControlInitPc},
-    {AIRegistryTextPc00756ef4, Condition_BoltsDontGetDeflectedBackPc, NULL},
-    {AIRegistryTextPc00756ee4, Condition_CheatProgressPc, NULL},
-    {AIRegistryTextPc00756ed4, Condition_BigJumpCompletePc, NULL},
-    {AIRegistryTextPc00756ec0, Condition_RespawnLocatorIsPc, Condition_RespawnLocatorIsInitPc},
-    {AIRegistryTextPc00756eb4, Condition_InMiniCutPc, NULL},
+    {AIRegistryTextPc00756f44, Condition_MissionMode, NULL},
+    {AIRegistryTextPc00756f38, Condition_MissionWon, NULL},
+    {AIRegistryTextPc00756f28, Condition_ChallengeMode, NULL},
+    {AIRegistryTextPc00756f24, Condition_PSP, NULL},
+    {AIRegistryTextPc00756f10, Condition_AIOverrideControl, Condition_AIOverrideControlInit},
+    {AIRegistryTextPc00756ef4, Condition_BoltsDontGetDeflectedBack, NULL},
+    {AIRegistryTextPc00756ee4, Condition_CheatProgress, NULL},
+    {AIRegistryTextPc00756ed4, Condition_BigJumpComplete, NULL},
+    {AIRegistryTextPc00756ec0, Condition_RespawnLocatorIs, Condition_RespawnLocatorIsInit},
+    {AIRegistryTextPc00756eb4, Condition_InMiniCut, NULL},
     {AIRegistryTextPc00756ea0, Condition_MaulShouldRunAway, NULL},
-    {AIRegistryTextPc00756e90, Condition_DropBackInTimerPc, NULL},
-    {AIRegistryTextPc00756e7c, Condition_HelpWithTriggersPc, NULL},
-    {AIRegistryTextPc00756e60, Condition_EitherPlayerPushingSpinnerPc, Condition_EitherPlayerPushingSpinnerInitPc},
-    {AIRegistryTextPc00756e50, Condition_CharacterRangePc, Condition_CharacterRangeInitPc},
-    {AIRegistryTextPc00756e44, Condition_BeenSpawnedPc, NULL},
-    {AIRegistryTextPc00756e30, Condition_LastAttackerRangePc, NULL},
-    {AIRegistryTextPc00756e14, Condition_LastAttackerIsActivePlayerPc, NULL},
-    {AIRegistryTextPc00756e00, Condition_PartyContainsDroidsPc, NULL},
-    {AIRegistryTextPc00756de8, Condition_CannotReachDestinationPc, NULL},
-    {AIRegistryTextPc00756ddc, Condition_TakenOver, Condition_TakenOverInitPc},
-    {AIRegistryTextPc00756dcc, Condition_PlayerTakenOverPc, NULL},
-    {AIRegistryTextPc00756db4, Condition_EitherPlayerTakenOverPc, NULL},
-    {AIRegistryTextPc00756da4, Condition_BeenTakenOverPc, Condition_BeenTakenOverInitPc},
-    {AIRegistryTextPc00756d94, Condition_OnSpeederBikePc, Condition_OnSpeederBikeInitPc},
-    {AIRegistryTextPc00756d80, Condition_UnderPlayerControlPc, Condition_UnderPlayerControlInitPc},
-    {AIRegistryTextPc00756d70, Condition_CharacterExistsPc, Condition_CharacterExistsInitPc},
-    {AIRegistryTextPc00756d5c, Condition_CharacterTypeExistsPc, Condition_CharacterTypeExistsInitPc},
-    {AIRegistryTextPc00756d4c, Condition_GotLocatorInSetPc, Condition_GotLocatorInSetInitPc},
-    {AIRegistryTextPc00756d3c, Condition_GotOpponentLOSPc, NULL},
-    {AIRegistryTextPc00756d2c, Condition_EmptyTakeOverPc, NULL},
+    {AIRegistryTextPc00756e90, Condition_DropBackInTimer, NULL},
+    {AIRegistryTextPc00756e7c, Condition_HelpWithTriggers, NULL},
+    {AIRegistryTextPc00756e60, Condition_EitherPlayerPushingSpinner, Condition_EitherPlayerPushingSpinnerInit},
+    {AIRegistryTextPc00756e50, Condition_CharacterRange, Condition_CharacterRangeInit},
+    {AIRegistryTextPc00756e44, Condition_BeenSpawned, NULL},
+    {AIRegistryTextPc00756e30, Condition_LastAttackerRange, NULL},
+    {AIRegistryTextPc00756e14, Condition_LastAttackerIsActivePlayer, NULL},
+    {AIRegistryTextPc00756e00, Condition_PartyContainsDroids, NULL},
+    {AIRegistryTextPc00756de8, Condition_CannotReachDestination, NULL},
+    {AIRegistryTextPc00756ddc, Condition_TakenOver, Condition_TakenOverInit},
+    {AIRegistryTextPc00756dcc, Condition_PlayerTakenOver, NULL},
+    {AIRegistryTextPc00756db4, Condition_EitherPlayerTakenOver, NULL},
+    {AIRegistryTextPc00756da4, Condition_BeenTakenOver, Condition_BeenTakenOverInit},
+    {AIRegistryTextPc00756d94, Condition_OnSpeederBike, Condition_OnSpeederBikeInit},
+    {AIRegistryTextPc00756d80, Condition_UnderPlayerControl, Condition_UnderPlayerControlInit},
+    {AIRegistryTextPc00756d70, Condition_CharacterExists, Condition_CharacterExistsInit},
+    {AIRegistryTextPc00756d5c, Condition_CharacterTypeExists, Condition_CharacterTypeExistsInit},
+    {AIRegistryTextPc00756d4c, Condition_GotLocatorInSet, Condition_GotLocatorInSetInit},
+    {AIRegistryTextPc00756d3c, Condition_GotOpponentLOS, NULL},
+    {AIRegistryTextPc00756d2c, Condition_EmptyTakeOver, NULL},
     {AIRegistryTextPc00756d18, Condition_HasTakeOverTargetPc, NULL},
-    {AIRegistryTextPc00756d08, Condition_TakeOverRangePc, NULL},
-    {AIRegistryTextPc00756cec, Condition_TakeOverTargetInTriggerAreaPc, Condition_TakeOverTargetInTriggerAreaInitPc},
-    {AIRegistryTextPc00756cd0, Condition_EitherPlayerInMyTriggerAreaPc, NULL},
-    {AIRegistryTextPc00756cc4, Condition_GotVictimPc, NULL},
-    {AIRegistryTextPc00756cb8, Condition_IsVisible, Condition_IsVisibleInitPc},
-    {AIRegistryTextPc00756cb0, Condition_MySetPc, NULL},
-    {AIRegistryTextPc00756ca4, Condition_ScreenWipePc, NULL},
-    {AIRegistryTextPc00756c98, Condition_IAmPlayer2Pc, NULL},
-    {AIRegistryTextPc00756c84, Condition_HeadTurnRestrictedPc, NULL},
+    {AIRegistryTextPc00756d08, Condition_TakeOverRange, NULL},
+    {AIRegistryTextPc00756cec, Condition_TakeOverTargetInTriggerArea, Condition_TakeOverTargetInTriggerAreaInit},
+    {AIRegistryTextPc00756cd0, Condition_EitherPlayerInMyTriggerArea, NULL},
+    {AIRegistryTextPc00756cc4, Condition_GotVictim, NULL},
+    {AIRegistryTextPc00756cb8, Condition_IsVisible, Condition_IsVisibleInit},
+    {AIRegistryTextPc00756cb0, Condition_MySet, NULL},
+    {AIRegistryTextPc00756ca4, Condition_ScreenWipe, NULL},
+    {AIRegistryTextPc00756c98, Condition_IAmPlayer2, NULL},
+    {AIRegistryTextPc00756c84, Condition_HeadTurnRestricted, NULL},
     {AIRegistryTextPc00756c78, Condition_ShopActive, NULL},
     {AIRegistryTextPc00756c70, Condition_Side, Condition_SideInit},
-    {AIRegistryTextPc00756c5c, Condition_NearestPartyRangePc, NULL},
-    {AIRegistryTextPc00756c48, Condition_NearestPartyXZRangePc, NULL},
-    {AIRegistryTextPc00756c30, Condition_OpponentToPlayerRangePc, NULL},
-    {AIRegistryTextPc00756c18, Condition_OpponentPathPosRangePc, NULL},
-    {AIRegistryTextPc00756c08, Condition_GizmoOutput0Pc, Condition_GizmoOutput0InitPc},
-    {AIRegistryTextPc00756bf8, Condition_GizmoOutput1Pc, Condition_GizmoOutput0InitPc},
-    {AIRegistryTextPc00756be8, Condition_GizmoOutput2Pc, Condition_GizmoOutput0InitPc},
-    {AIRegistryTextPc00756bd8, Condition_GizmoOutput3Pc, Condition_GizmoOutput0InitPc},
-    {AIRegistryTextPc00756bc8, Condition_GizmoVisibilityPc, Condition_GizmoVisibilityInitPc},
+    {AIRegistryTextPc00756c5c, Condition_NearestPartyRange, NULL},
+    {AIRegistryTextPc00756c48, Condition_NearestPartyXZRange, NULL},
+    {AIRegistryTextPc00756c30, Condition_OpponentToPlayerRange, NULL},
+    {AIRegistryTextPc00756c18, Condition_OpponentPathPosRange, NULL},
+    {AIRegistryTextPc00756c08, Condition_GizmoOutput0, Condition_GizmoOutput0InitPc},
+    {AIRegistryTextPc00756bf8, Condition_GizmoOutput1, Condition_GizmoOutput0InitPc},
+    {AIRegistryTextPc00756be8, Condition_GizmoOutput2, Condition_GizmoOutput0InitPc},
+    {AIRegistryTextPc00756bd8, Condition_GizmoOutput3, Condition_GizmoOutput0InitPc},
+    {AIRegistryTextPc00756bc8, Condition_GizmoVisibility, Condition_GizmoVisibilityInit},
     {AIRegistryTextPc00756bac, Condition_AngleAboutMyLocatorToPlayer, Condition_AngleAboutMyLocatorToPlayerInit},
-    {AIRegistryTextPc00756b9c, Condition_AnimSpeedMulPc, NULL},
-    {AIRegistryTextPc00756b88, Condition_PickupBeenTurnedOnPc, Condition_PickupBeenTurnedOnInitPc},
-    {AIRegistryTextPc00756b78, Condition_FlowBoxCompletePc, Condition_FlowBoxCompleteInitPc},
-    {AIRegistryTextPc00756b68, Condition_CanHearRadioPc, NULL},
-    {AIRegistryTextPc00751930, Condition_BeingTowedPc, NULL},
+    {AIRegistryTextPc00756b9c, Condition_AnimSpeedMul, NULL},
+    {AIRegistryTextPc00756b88, Condition_PickupBeenTurnedOn, Condition_PickupBeenTurnedOnInit},
+    {AIRegistryTextPc00756b78, Condition_FlowBoxComplete, Condition_FlowBoxCompleteInit},
+    {AIRegistryTextPc00756b68, Condition_CanHearRadio, NULL},
+    {AIRegistryTextPc00751930, Condition_BeingTowed, NULL},
     {AIRegistryTextPc00756b60, Condition_RaceLapPc, NULL},
     {AIRegistryTextPc00756b58, Condition_MusicOn, NULL},
     {AIRegistryTextPc00756b48, Condition_CharacterLoaded, Condition_CharacterLoadedInit},
-    {AIRegistryTextPc00756b38, Condition_AreaCompletePc, Condition_AreaCompleteInitPc},
-    {AIRegistryTextPc00756b20, Condition_ShouldAttackOpponentPc, NULL},
-    {AIRegistryTextPc00756b18, Condition_InSwampPc, NULL},
+    {AIRegistryTextPc00756b38, Condition_AreaComplete, Condition_AreaCompleteInit},
+    {AIRegistryTextPc00756b20, Condition_ShouldAttackOpponent, NULL},
+    {AIRegistryTextPc00756b18, Condition_InSwamp, NULL},
     {AIRegistryTextPc00756af4, Condition_InSameTriggerAreaAsNearestPlayer, NULL},
-    {AIRegistryTextPc00756ae0, Condition_NetworkGameOnGoingPc, NULL},
+    {AIRegistryTextPc00756ae0, Condition_NetworkGameOnGoing, NULL},
     {AIRegistryTextPc00756ad4, Condition_InHubArea, Condition_InHubAreaInit},
     {NULL, NULL, NULL},
 };
@@ -2364,52 +2363,52 @@ AICONDITIONDEF_PC api_aiconditiondefs[50] = {
     {AIRegistryTextPc0075ff04, NULL, NULL},
     {AIRegistryTextPc0075fef8, Condition_AlwaysTrue, Condition_AlwaysTrueInit},
     {AIRegistryTextPc0075fee8, Condition_LocatorRange, Condition_LocatorRangeInit},
-    {AIRegistryTextPc0075fed8, Condition_LocatorRangeXZPc, Condition_LocatorRangeInit},
-    {AIRegistryTextPc0075fec8, Condition_LocatorRangeYPc, Condition_LocatorRangeInit},
+    {AIRegistryTextPc0075fed8, Condition_LocatorRangeXZ, Condition_LocatorRangeInit},
+    {AIRegistryTextPc0075fec8, Condition_LocatorRangeY, Condition_LocatorRangeInit},
     {AIRegistryTextPc0075fec0, Condition_Timer, NULL},
     {AIRegistryTextPc0075feb8, Condition_Random, NULL},
     {AIRegistryTextPc0075feac, Condition_GotLocator, NULL},
-    {AIRegistryTextPc0075fe9c, Condition_GotLocatorSetPc, NULL},
-    {AIRegistryTextPc0075fe88, Condition_CurrentLocatorIsPc, Condition_CurrentLocatorIsInitPc},
-    {AIRegistryTextPc0075fe78, Condition_InTriggerAreaPc, Condition_InTriggerAreaInitPc},
+    {AIRegistryTextPc0075fe9c, Condition_GotLocatorSet, NULL},
+    {AIRegistryTextPc0075fe88, Condition_CurrentLocatorIs, Condition_CurrentLocatorIsInit},
+    {AIRegistryTextPc0075fe78, Condition_InTriggerArea, Condition_InTriggerAreaInit},
     {AIRegistryTextPc0075fe6c, Condition_PlayerRange, NULL},
-    {AIRegistryTextPc0075fe58, Condition_NearestPlayerRangePc, NULL},
-    {AIRegistryTextPc0075fe40, Condition_NearestPlayerXZRangePc, NULL},
-    {AIRegistryTextPc0075fe34, Condition_InLevelNodePc, Condition_InLevelNodeInitPc},
-    {AIRegistryTextPc0075fe20, Condition_PlayerInLevelNodePc, Condition_PlayerInLevelNodeInitPc},
-    {AIRegistryTextPc0075fe08, Condition_EitherPlayerInLevelNodePc, Condition_PlayerInLevelNodeInitPc},
+    {AIRegistryTextPc0075fe58, Condition_NearestPlayerRange, NULL},
+    {AIRegistryTextPc0075fe40, Condition_NearestPlayerXZRange, NULL},
+    {AIRegistryTextPc0075fe34, Condition_InLevelNode, Condition_InLevelNodeInit},
+    {AIRegistryTextPc0075fe20, Condition_PlayerInLevelNode, Condition_PlayerInLevelNodeInit},
+    {AIRegistryTextPc0075fe08, Condition_EitherPlayerInLevelNode, Condition_PlayerInLevelNodeInit},
     {AIRegistryTextPc0075fdfc, Condition_NodeRangePc, Condition_NodeRangeInitPc},
-    {AIRegistryTextPc0075fdec, Condition_GotTriggerAreaPc, NULL},
-    {AIRegistryTextPc0075fdd8, Condition_PlayerInTriggerAreaPc, Condition_PlayerInTriggerAreaInitPc},
-    {AIRegistryTextPc0075fdc0, Condition_Player2InTriggerAreaPc, Condition_PlayerInTriggerAreaInitPc},
-    {AIRegistryTextPc0075fda4, Condition_EitherPlayerInTriggerAreaPc, Condition_PlayerInTriggerAreaInitPc},
-    {AIRegistryTextPc0075fd90, Condition_BaddyInTriggerAreaPc, Condition_BaddyInTriggerAreaInitPc},
-    {AIRegistryTextPc0075fd7c, Condition_GoodyInTriggerAreaPc, Condition_GoodyInTriggerAreaInitPc},
-    {AIRegistryTextPc0075fd64, Condition_OpponentInTriggerAreaPc, Condition_OpponentInTriggerAreaInitPc},
+    {AIRegistryTextPc0075fdec, Condition_GotTriggerArea, NULL},
+    {AIRegistryTextPc0075fdd8, Condition_PlayerInTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {AIRegistryTextPc0075fdc0, Condition_Player2InTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {AIRegistryTextPc0075fda4, Condition_EitherPlayerInTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {AIRegistryTextPc0075fd90, Condition_BaddyInTriggerArea, Condition_BaddyInTriggerAreaInit},
+    {AIRegistryTextPc0075fd7c, Condition_GoodyInTriggerArea, Condition_GoodyInTriggerAreaInit},
+    {AIRegistryTextPc0075fd64, Condition_OpponentInTriggerArea, Condition_OpponentInTriggerAreaInit},
     {AIRegistryTextPc0075fd58, Condition_GotOpponent, NULL},
-    {AIRegistryTextPc007571b8, Condition_OpponentIsAThreatPc, NULL},
+    {AIRegistryTextPc007571b8, Condition_OpponentIsAThreat, NULL},
     {AIRegistryTextPc0075fd44, Condition_OpponentOnSamePath, NULL},
     {AIRegistryTextPc0075fd34, Condition_OpponentRange, NULL},
-    {AIRegistryTextPc0075fd1c, Condition_NearestOpponentRangePc, NULL},
-    {AIRegistryTextPc0075fd0c, Condition_YawToOpponentPc, NULL},
-    {AIRegistryTextPc0075fcfc, Condition_OpponentBelowPc, NULL},
-    {AIRegistryTextPc0075fcf0, Condition_OriginRangePc, NULL},
-    {AIRegistryTextPc0075fcdc, Condition_OpponentToOriginPc, NULL},
-    {AIRegistryTextPc0075fccc, Condition_PlayerToOriginPc, NULL},
-    {AIRegistryTextPc0075fcb8, Condition_OpponentToLocatorPc, Condition_OpponentToLocatorInitPc},
-    {AIRegistryTextPc0075fca4, Condition_OpponentToLocatorXZPc, Condition_OpponentToLocatorInitPc},
-    {AIRegistryTextPc0075fc90, Condition_OpponentToLocatorYPc, Condition_OpponentToLocatorInitPc},
-    {AIRegistryTextPc0075fc80, Condition_PlayerToLocatorPc, Condition_PlayerToLocatorInitPc},
-    {AIRegistryTextPc0075fc68, Condition_NearestPlayerToLocatorPc, Condition_PlayerToLocatorInitPc},
-    {AIRegistryTextPc0075fc60, Condition_OnPathPc, NULL},
-    {AIRegistryTextPc0075fc50, Condition_PlayerOnPathPc, NULL},
-    {AIRegistryTextPc0075fc40, Condition_OpponentOnPathPc, NULL},
-    {AIRegistryTextPc0075fc34, Condition_TimeOffPathPc, NULL},
-    {AIRegistryTextPc0075fc28, Condition_PathBlockedPc, NULL},
-    {AIRegistryTextPc0075fc1c, Condition_InterruptIDPc, NULL},
-    {AIRegistryTextPc0075fc18, Condition_IAmPc, Condition_IAmInitPc},
-    {AIRegistryTextPc0075fc0c, Condition_StuckTimePc, NULL},
-    {AIRegistryTextPc0075fc04, Condition_ParamPc, NULL},
+    {AIRegistryTextPc0075fd1c, Condition_NearestOpponentRange, NULL},
+    {AIRegistryTextPc0075fd0c, Condition_YawToOpponent, NULL},
+    {AIRegistryTextPc0075fcfc, Condition_OpponentBelow, NULL},
+    {AIRegistryTextPc0075fcf0, Condition_OriginRange, NULL},
+    {AIRegistryTextPc0075fcdc, Condition_OpponentToOrigin, NULL},
+    {AIRegistryTextPc0075fccc, Condition_PlayerToOrigin, NULL},
+    {AIRegistryTextPc0075fcb8, Condition_OpponentToLocator, Condition_OpponentToLocatorInit},
+    {AIRegistryTextPc0075fca4, Condition_OpponentToLocatorXZ, Condition_OpponentToLocatorInit},
+    {AIRegistryTextPc0075fc90, Condition_OpponentToLocatorY, Condition_OpponentToLocatorInit},
+    {AIRegistryTextPc0075fc80, Condition_PlayerToLocator, Condition_PlayerToLocatorInit},
+    {AIRegistryTextPc0075fc68, Condition_NearestPlayerToLocator, Condition_PlayerToLocatorInit},
+    {AIRegistryTextPc0075fc60, Condition_OnPath, NULL},
+    {AIRegistryTextPc0075fc50, Condition_PlayerOnPath, NULL},
+    {AIRegistryTextPc0075fc40, Condition_OpponentOnPath, NULL},
+    {AIRegistryTextPc0075fc34, Condition_TimeOffPath, NULL},
+    {AIRegistryTextPc0075fc28, Condition_PathBlocked, NULL},
+    {AIRegistryTextPc0075fc1c, Condition_InterruptID, NULL},
+    {AIRegistryTextPc0075fc18, Condition_IAm, Condition_IAmInit},
+    {AIRegistryTextPc0075fc0c, Condition_StuckTime, NULL},
+    {AIRegistryTextPc0075fc04, Condition_Param, NULL},
     {NULL, NULL, NULL},
 };
 #pragma data_seg()

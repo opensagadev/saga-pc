@@ -789,7 +789,7 @@ void __cdecl DrawSubItemMenu2D(void);
 void __cdecl DrawSubItemMenu3D(void);
 
 /* 004c1080..004c11ba: input argument is EAX in the original same-TU helper. */
-static void Shop_GetInputPc(SHOP_INPUT_PC *input) {
+static void Shop_GetInput(SHOP_INPUT_PC *input) {
     i32 player;
     GAMEPAD_RUNTIME_INPUT_PC *pad;
     u32 held, pressed;
@@ -874,7 +874,7 @@ i32 __cdecl ItemMenu(void *menu) {
     f32 reverse_phase, old_factor, forward_factor;
     i32 old_angle, forward_angle;
     (void)menu;
-    Shop_GetInputPc(&input);
+    Shop_GetInput(&input);
     if (ShopSlideTimerPc >= 0.0f) {
         ShopSlideTimerPc -= FRAMETIME;
         ShopNameAlpha = 0.0f;
@@ -1103,7 +1103,7 @@ i32 __cdecl SubItemMenu(void *menu) {
     f32 ypush = 0.0f, phase, factor;
     i32 angle;
     (void)menu;
-    Shop_GetInputPc(&input);
+    Shop_GetInput(&input);
     if (ShopHintDrawWaitPc > 0.0f) {
         ShopHintDrawWaitPc -= FRAMETIME;
         ShopNameAlpha = 0.0f;
@@ -1908,7 +1908,7 @@ i32 __cdecl CodeMenu(void *menu) {
     char code[7];
     u32 crc;
     (void)menu;
-    Shop_GetInputPc(&input);
+    Shop_GetInput(&input);
     if (ShopSlideTimerPc >= 0.0f)
         ShopSlideTimerPc -= FRAMETIME;
     if (ShopCodeRepeatTimerPc >= 0.0f)

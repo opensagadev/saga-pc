@@ -4454,7 +4454,7 @@ extern "C" {
                 sprintf(filename, "%s", path);
             else
                 sprintf(filename, "%s", texture_path);
-            texture_id = NuTexReadPc(filename, buffer, *end);
+            texture_id = NuTexRead(filename, buffer, *end);
             if (texture_id != 0) {
                 font->material = NuMtlCreate(1);
                 if (font->material != NULL) {
@@ -4480,7 +4480,7 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane);
+    void __cdecl NuMtlSetRenderPlane(NUMTL *material, i32 plane);
     VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
         i32 sort_priority = options >> 16;
         options &= 0xffff;
@@ -4541,7 +4541,7 @@ extern "C" {
         result->material = (NUMTL *)((buffer->addr + 15) & ~15U);
         buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(PC_MATERIAL_CREATE_VIEW);
         memcpy(result->material, font->material, sizeof(PC_MATERIAL_CREATE_VIEW));
-        NuMtlSetRenderPlanePc(result->material, options);
+        NuMtlSetRenderPlane(result->material, options);
         if (flags & 8)
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high &= ~4U;
         else
@@ -9836,9 +9836,9 @@ extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
             NuHtmlWrite("<font face=courier new>\n");
             DisplayListPrintItemsPc(sort->items, 3, 0, NULL, nudlist_field_958);
         }
-        NuDisplayListDrawItemsPc(sort->items);
+        NuDisplayListDrawItems(sort->items);
     }
-    NuDisplayListDrawItemsPc(&PCSafeRenderScenes[scene_id]->render_2d_first);
+    NuDisplayListDrawItems(&PCSafeRenderScenes[scene_id]->render_2d_first);
     PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
 }
 
@@ -15663,7 +15663,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER_PC *) {
             PCDeviceSetRenderState(23, 4);
             NuDisplayHandlerTintPc = PostShadowWhitePc;
             NuShaderManagerSetfv(0x38, &PostShadowWhitePc.x);
-            NuDisplayListDrawItemsPc(list.first);
+            NuDisplayListDrawItems(list.first);
             list.material_last = list.first;
         }
     }

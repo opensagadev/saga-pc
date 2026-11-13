@@ -605,7 +605,7 @@ void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTE
                 if (customiser->categories[category]->material_tag == -1)
                     continue;
                 NuStrCat(path, ".pnt");
-                resource->texture_id = NuTexReadPc(path, &characterbuffer_ptr, characterbuffer_end);
+                resource->texture_id = NuTexRead(path, &characterbuffer_ptr, characterbuffer_end);
                 if (resource->texture_id == 0)
                     continue;
                 for (material_index = 0;
@@ -1238,7 +1238,7 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     }
                 }
                 if (resource->texture_id == 0) {
-                    resource->texture_id = NuTexReadPc(path, &world->giz_buffer, world->buffer_end);
+                    resource->texture_id = NuTexRead(path, &world->giz_buffer, world->buffer_end);
                     CustomiserLoadTracePc(path);
                 }
             }

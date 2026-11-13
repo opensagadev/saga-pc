@@ -241,7 +241,7 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
 void __cdecl GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system) {
     GizmoPickupSys = system;
 }
-static GIZMOPICKUP_PC *GizmoPickups_CollideListPc(GAMEOBJECT *object, GIZMOPICKUP_PC *pickups, i32 count) {
+static GIZMOPICKUP_PC *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP_PC *pickups, i32 count) {
     i32 collide_2d, coin_magnet, index;
     f32 collide_scale, scaled_pickup, normal_pickup, radius_x, radius_y, dx, dz, radius;
     GIZMO_PICKUP_TYPE_PC *type;
@@ -313,13 +313,13 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
     (void)unused;
     if (world == NULL || (object->flags_1f8 & 0x40000) != 0)
         return NULL;
-    pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->temporary_pickups, 64);
+    pickup = GizmoPickups_CollideList(object, world->pickup_runtime_sys->temporary_pickups, 64);
     if (pickup != NULL)
         temporary = 1;
     else {
         temporary = 0;
-        pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->pickups,
-                                            world->pickup_runtime_sys->pickup_count);
+        pickup = GizmoPickups_CollideList(object, world->pickup_runtime_sys->pickups,
+                                          world->pickup_runtime_sys->pickup_count);
     }
     if (pickup != NULL) {
         pickup->flags |= 8;
@@ -742,8 +742,8 @@ static __declspec(noinline) NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
     return matrix;
 }
 
-static __declspec(noinline) void GizmoPickups_UpdateListPc(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count,
-                                                           i32 play_nearby) {
+static __declspec(noinline) void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count,
+                                                         i32 play_nearby) {
     i32 detectors, index, eligible, complete;
     f32 nearest_distance;
     NUVEC *nearest;
@@ -848,9 +848,9 @@ void __cdecl GizmoPickups_Update(void *world_pointer, void *unused_system, f32 u
     if (world == NULL)
         return;
     system = world->pickup_runtime_sys;
-    GizmoPickups_UpdateListPc(world, system->pickups, system->pickup_count, 1);
+    GizmoPickups_UpdateList(world, system->pickups, system->pickup_count, 1);
     system = world->pickup_runtime_sys;
-    GizmoPickups_UpdateListPc(world, system->temporary_pickups, 64, 0);
+    GizmoPickups_UpdateList(world, system->temporary_pickups, 64, 0);
 }
 
 static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
@@ -1013,7 +1013,7 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
 
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 /* Complete native00570030..00570082. */
-i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *world, i32 type, u8 filter) {
+i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
     GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;
     i32 count = 0;

@@ -2387,7 +2387,7 @@ STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
 
-void TerrDrawPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
+void TerrDraw(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     TERRAIN_POLYGON_INFO_PC *record;
     NUVEC *origin;
     i32 i;
@@ -2437,7 +2437,7 @@ void TerrDrawPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     }
 }
 
-void TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
+void TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
     TERRAIN_POLYGON_INFO_PC *record = terrain;
     i32 i;
     f32 t;
@@ -2485,7 +2485,7 @@ void TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *terrain, NUVEC *situation) {
     }
 }
 
-void TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
+void TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     TERRAIN_PLATFORM_PC *platform;
     i32 i;
     NUVEC4 points[5], *normal;
@@ -2566,7 +2566,7 @@ void TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
 #undef TERRAIN_TDP_GROUP
 }
 
-void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
+void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
     TERRAIN_PLATFORM_PC *platform;
     NUVEC4 points[4], normals[2];
     const NUVEC *origin;
@@ -2661,7 +2661,7 @@ typedef struct terrain_debug_source_link_pc_s {
 STATIC_ASSERT(offsetof(TERRAIN_DEBUG_SOURCE_LINK_PC, source_polygon) == 0);
 STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
 
-void TerrDrawImpactPolPc(void) {
+void TerrDrawImpactPol(void) {
     TerrainQuery_s *query = (TerrainQuery_s *)TerI;
     TERRAIN_POLYGON_INFO_PC *surface;
     TERRAIN_POLYGON_INFO_PC *scaled;
@@ -2671,7 +2671,7 @@ void TerrDrawImpactPolPc(void) {
     scaled = TerrainScaledShapeCursorPc;
     if ((u32)surface >= (u32)scaled && (u32)surface < (u32)scaled + 0xc800)
         surface = ((TERRAIN_DEBUG_SOURCE_LINK_PC *)surface)->source_polygon;
-    TerrDrawPc(surface, query->terrain_group_index);
+    TerrDraw(surface, query->terrain_group_index);
 }
 
 void DrawMPlatPc(i32 index) {
@@ -2689,12 +2689,12 @@ void DrawMPlatPc(i32 index) {
     while (batch->marker >= 0) {
         shape = (TERRAIN_POLYGON_INFO_PC *)(batch + 1);
         for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape)
-            TerrDrawPlatPc(shape, ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index);
+            TerrDrawPlat(shape, ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].terrain_group_index);
         batch = (TERRAIN_SHAPE_BATCH *)shape;
     }
 }
 
-void DrawMSituPc(i32 index) {
+void DrawMSitu(i32 index) {
     TERRAIN_GROUP_PC *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[index];
     TERRAIN_SHAPE_BATCH *batch;
     TERRAIN_POLYGON_INFO_PC *shape;
@@ -2705,12 +2705,12 @@ void DrawMSituPc(i32 index) {
     while (batch->marker >= 0) {
         shape = (TERRAIN_POLYGON_INFO_PC *)(batch + 1);
         for (remaining = batch->shape_count; remaining > 0; --remaining, ++shape)
-            TerrDrawPc(shape, (i16)index);
+            TerrDraw(shape, (i16)index);
         batch = (TERRAIN_SHAPE_BATCH *)shape;
     }
 }
 
-void SphereDrawExPc(NUVEC *centre, f32 radius, f32 vertical_scale, i32 colour) {
+void SphereDrawEx(NUVEC *centre, f32 radius, f32 vertical_scale, i32 colour) {
     f64 radius_squared = (f64)radius * radius;
     f64 scaled_radius = (f64)radius * vertical_scale;
     f32 lower_radius, upper_radius, lower_y, upper_y;
@@ -2745,11 +2745,11 @@ void SphereDrawExPc(NUVEC *centre, f32 radius, f32 vertical_scale, i32 colour) {
     }
 }
 
-void SphereDrawPc(NUVEC *centre, f32 radius, f32 vertical_scale) {
-    SphereDrawExPc(centre, radius, vertical_scale, 0x00400000);
+void SphereDraw(NUVEC *centre, f32 radius, f32 vertical_scale) {
+    SphereDrawEx(centre, radius, vertical_scale, 0x00400000);
 }
 
-void DrawWallSplinePc(f32 height) {
+void DrawWallSpline(f32 height) {
     i32 i;
     NUVEC start, end;
     if (WallSplCount == 0)
@@ -3103,7 +3103,7 @@ STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, points) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
 
-void TerrainScanWallSplinePc(TERRAIN_SPATIAL_NODE *node) {
+void TerrainScanWallSpline(TERRAIN_SPATIAL_NODE *node) {
     u32 first = 0;
     while ((i32)(node->point_count - 3) >= (i32)first) {
         NUVEC minimum, maximum;
@@ -3132,7 +3132,7 @@ void TerrainScanWallSplinePc(TERRAIN_SPATIAL_NODE *node) {
         node->points[first].y = 2147483648.0f;
 }
 
-void TerrainAddWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+void TerrainAddWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
     TERRAIN_SPATIAL_CHUNK *chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node));
     chunk->previous = terrain->spatial_nodes;
     terrain->spatial_nodes = node;
@@ -3140,7 +3140,7 @@ void TerrainAddWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain)
 
 #define TERRAIN_SPATIAL_PREVIOUS(n)                                                                                    \
     (((TERRAIN_SPATIAL_CHUNK *)((u8 *)(n) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous)
-void TerrainRemoveWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
     TERRAIN_SPATIAL_NODE *current, *last;
     if (terrain == NULL)
         return;

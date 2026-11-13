@@ -7594,7 +7594,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
 
-static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position, u16 *wall_angle) {
+static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, u16 *wall_angle) {
     i8 surface;
     i32 difference;
     u16 inward_angle;
@@ -7659,7 +7659,7 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             object->context_timer = FRAMETIME + object->context_timer;
         if (object->field_7b3 == 0 && object->context_timer >= object->context_hover_target_y)
             object->field_7b3 = 1;
-        if (LedgeTerrain_AttachPc(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
+        if (LedgeTerrain_Attach(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
             f32 x = object->external_force.x;
             f32 z = object->external_force.z;
             object->movement_facing_angle = wall_angle + 0x8000;
@@ -7740,7 +7740,7 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         return;
     if (!(object->pad->input_magnitude > 0.0f))
         return;
-    if (LedgeTerrain_AttachPc(object, GamePad_InputAngle(object, object->pad), &position, &wall_angle) == 0)
+    if (LedgeTerrain_Attach(object, GamePad_InputAngle(object, object->pad), &position, &wall_angle) == 0)
         return;
     object->character_context = (i8)LEGOCONTEXT_LEDGETERRAIN;
     object->velocity = v000;
@@ -9549,7 +9549,7 @@ void __cdecl Move_WEIRDO(GAMEOBJECT *object) {
     HairMovement(object);
 }
 
-void __cdecl DrawForceGlowSpritePc(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {
+void __cdecl DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAMEOBJECT *object) {
     WORLDINFO *world;
     NUVEC direction, draw_position, scale;
     NUMTX matrix;

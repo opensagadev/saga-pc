@@ -3,7 +3,7 @@
 i32 __cdecl GizForces_GetMaxGizmos(void *);
 void __cdecl GizForces_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
 void __cdecl GizForces_Update(void *, void *, f32);
-void __cdecl GizForces_DrawPc(void *, void *, f32);
+void __cdecl GizForces_Draw(void *, void *, f32);
 char *__cdecl GizmoForce_GetGizmoName(GIZMO_PC *);
 i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *, i32, i32);
 char *__cdecl GizmoForce_GetOutputName(GIZMO_PC *, i32);
@@ -128,7 +128,7 @@ ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32 type_id) {
     addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizForces_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizForces_AddGizmos;
     addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizForces_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizForces_DrawPc;
+    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizForces_Draw;
     addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoForce_GetGizmoName;
     addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoForce_GetOutput;
     addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoForce_GetOutputName;

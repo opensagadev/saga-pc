@@ -1069,25 +1069,25 @@ static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 loopin
     set->assigned[candidate] = object->object_id;
 }
 
-f32 __cdecl Condition_GlynTestPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                 void *argument) {
+f32 __cdecl Condition_GlynTest(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
     return 1.0f;
 }
 
-f32 __cdecl Condition_DebugPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                              void *argument) {
+f32 __cdecl Condition_Debug(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                            void *argument) {
     return debug_condition;
 }
 
-f32 __cdecl Condition_ActivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                               void *argument) {
+f32 __cdecl Condition_Active(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
     if (packet != NULL && packet->reset_mode == 2)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_GotGunPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                               void *argument) {
+f32 __cdecl Condition_GotGun(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                             void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         if ((packet->owner->objptr->portal_flags & 4) != 0)
             return 1.0f;
@@ -1096,8 +1096,8 @@ f32 __cdecl Condition_GotGunPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AI
     return 0.0f;
 }
 
-f32 __cdecl Condition_PrefersBrawlingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_PrefersBrawling(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         if ((packet->owner->character_data->model_flags & 0x80000000u) != 0)
             return 1.0f;
@@ -1114,8 +1114,8 @@ void *__cdecl Condition_SpecialAtStartInitPc(AISYS_PC *system, char *name, AISCR
     return GizmoFindByName(WORLD->gizmo_sys, gizspecial_gizmotype_id, name);
 }
 
-f32 __cdecl Condition_ObstacleAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_ObstacleAtStart(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0)
         return 1.0f;
     return 0.0f;
@@ -1128,15 +1128,15 @@ f32 __cdecl Condition_ObstacleAtEnd(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 0.0f;
 }
 
-f32 __cdecl Condition_ObstacleLockedShutPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_ObstacleLockedShut(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     if ((((GIZOBSTACLE *)argument)->runtime_flags & 8) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ObstacleLockedOpenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_ObstacleLockedOpen(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     if ((((GIZOBSTACLE *)argument)->runtime_flags & 4) != 0)
         return 1.0f;
     return 0.0f;
@@ -1149,16 +1149,16 @@ void *__cdecl Condition_ObstacleLockedOpenInitPc(AISYS_PC *system, char *name, A
     return NULL;
 }
 
-f32 __cdecl Condition_ObstacleOpenedByPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                               char *name, void *argument) {
+f32 __cdecl Condition_ObstacleOpenedByPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
     GIZOBSTACLE *obstacle = (GIZOBSTACLE *)argument;
     if (obstacle != NULL && player != NULL && obstacle->triggering_object == player)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ObstacleOpenedByEitherPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                     char *name, void *argument) {
+f32 __cdecl Condition_ObstacleOpenedByEitherPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                   char *name, void *argument) {
     GIZOBSTACLE *obstacle = (GIZOBSTACLE *)argument;
     if (obstacle != NULL) {
         if (player != NULL && obstacle->triggering_object == player)
@@ -1173,21 +1173,21 @@ void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *system, char *name, AISCRIP
     return GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
 }
 
-f32 __cdecl Condition_ForceAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_ForceAtStart(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ForceAtEndPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_ForceAtEnd(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_IsVisibleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_IsVisibleInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name;
 }
 
@@ -1200,19 +1200,19 @@ f32 __cdecl Condition_IsVisible(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, 
     return 0.0f;
 }
 
-f32 __cdecl Condition_MySetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                              void *argument) {
+f32 __cdecl Condition_MySet(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                            void *argument) {
     return (f32)process->creature_set;
 }
 
-void *__cdecl Condition_ForcePushingInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_ForcePushingInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL)
         return GetNamedGameObjectCallback(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_ForcePushingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_ForcePushing(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL) {
         if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
@@ -1224,7 +1224,7 @@ f32 __cdecl Condition_ForcePushingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     return 0.0f;
 }
 
-void *__cdecl Condition_TurretAliveInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_TurretAliveInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GIZMO_PC *gizmo;
     void *turret;
     gizmo = GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
@@ -1236,8 +1236,8 @@ void *__cdecl Condition_TurretAliveInitPc(AISYS_PC *system, char *name, AISCRIPT
     return NULL;
 }
 
-f32 __cdecl Condition_TurretAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_TurretAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     AI_CONDITION_TURRET_PC *turret = (AI_CONDITION_TURRET_PC *)argument;
     u16 flags;
     if (turret != NULL) {
@@ -1277,7 +1277,7 @@ f32 __cdecl Condition_IAmAPartyCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     return 0.0f;
 }
 
-void *__cdecl Condition_IAmAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_IAmAInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL && system != NULL) {
         for (index = 0; index < CHARCOUNT; ++index) {
@@ -1288,15 +1288,15 @@ void *__cdecl Condition_IAmAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *sc
     return (void *)-1;
 }
 
-f32 __cdecl Condition_IAmAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                             void *argument) {
+f32 __cdecl Condition_IAmA(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                           void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
         (i32)(i16)packet->owner->objptr->id == (i32)argument)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_OpponentIsAInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OpponentIsAInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL && system != NULL) {
         for (index = 0; index < CHARCOUNT; ++index) {
@@ -1307,8 +1307,8 @@ void *__cdecl Condition_OpponentIsAInitPc(AISYS_PC *system, char *name, AISCRIPT
     return (void *)-1;
 }
 
-f32 __cdecl Condition_OpponentIsAPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_OpponentIsA(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr != NULL &&
         (i16)packet->opponent->objptr->id == (i32)argument)
         return 1.0f;
@@ -1330,22 +1330,22 @@ f32 __cdecl Condition_CanFightLikeAJedi(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_IAmAGoodyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_IAmAGoody(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 5) == 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_IAmABaddyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_IAmABaddy(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10001) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_IAmANeutralPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_IAmANeutral(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 4) != 0)
         return 1.0f;
     return 0.0f;
@@ -1358,35 +1358,35 @@ f32 __cdecl Condition_IAmAGoodyBaddyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 0.0f;
 }
 
-void *__cdecl Condition_EitherPlayerIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_EitherPlayerIsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL)
         return GetNamedGameObjectCallback(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_EitherPlayerIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_EitherPlayerIs(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     if (system != NULL && argument != NULL && (system->player_1 == argument || system->player_2 == argument))
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_Player1IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_Player1Is(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (system != NULL && argument != NULL && system->player_1 == argument)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_Player2IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_Player2Is(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (system != NULL && argument != NULL && system->player_2 == argument)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_IAmPlayer2Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_IAmPlayer2(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         GAMEOBJECT *current = player;
         GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
@@ -1405,15 +1405,15 @@ void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *system, char *name, AIS
     return gizmo != NULL ? gizmo->object : NULL;
 }
 
-f32 __cdecl Condition_UsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_UsingForce(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (GizForce_GameObjUsingForce(packet->owner->objptr, (GIZFORCE_PC *)argument) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerUsingForcePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
+f32 __cdecl Condition_PlayerUsingForce(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
     if (GizForce_GameObjUsingForce(player, (GIZFORCE_PC *)argument) != 0)
         return 1.0f;
     return 0.0f;
@@ -1429,7 +1429,7 @@ f32 __cdecl Condition_EitherPlayerUsingForce(AISYS_PC *unused0, AISCRIPTPROCESS_
     return 0.0f;
 }
 
-void *__cdecl Condition_OnForcePlatformInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OnForcePlatformInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
     GIZFORCE_PC *force;
     if (gizmo != NULL) {
@@ -1440,8 +1440,8 @@ void *__cdecl Condition_OnForcePlatformInitPc(AISYS_PC *system, char *name, AISC
     return NULL;
 }
 
-f32 __cdecl Condition_OnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
     GAMEOBJECT *object;
     i16 platform_id;
@@ -1467,8 +1467,8 @@ f32 __cdecl Condition_OnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                              char *name, void *argument) {
+f32 __cdecl Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
     GAMEOBJECT *object;
     i16 platform_id;
@@ -1494,8 +1494,8 @@ f32 __cdecl Condition_PlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                    char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
     GAMEOBJECT *first;
     GAMEOBJECT *second;
@@ -1540,23 +1540,23 @@ f32 __cdecl Condition_EitherPlayerOnForcePlatformPc(AISYS_PC *system, AISCRIPTPR
     return 0.0f;
 }
 
-f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_ForceBeingUsed(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     GIZFORCE_PC *force = (GIZFORCE_PC *)argument;
     if (force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0))
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerDeflectingPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
+f32 __cdecl Condition_PlayerDeflectingPart(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     if (player != NULL && player->force_part != NULL)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerPullingLeverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                 char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerPullingLever(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                               char *name, void *argument) {
     GIZMO_LEVER_PC *target;
     if (player != NULL && player->character_context == 0x4a && (target = (GIZMO_LEVER_PC *)player->grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0))
@@ -1581,8 +1581,8 @@ f32 __cdecl Condition_EitherPlayerUsingHatMachinePc(AISYS_PC *system, AISCRIPTPR
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerUsingPanelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                               char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerUsingPanel(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
     GIZPANEL_s *target;
     if (player != NULL && player->character_context == 0x0b && (target = (GIZPANEL_s *)player->grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0))
@@ -1593,38 +1593,38 @@ f32 __cdecl Condition_EitherPlayerUsingPanelPc(AISYS_PC *system, AISCRIPTPROCESS
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerWearingHelmetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                  char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerWearingHelmet(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                char *name, void *argument) {
     if (player->helmet == 5)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_ForceCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_ForceCompleteInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
     return gizmo != NULL ? gizmo->object : NULL;
 }
 
-f32 __cdecl Condition_ForceCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_ForceComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (argument != NULL && GizForce_Complete((GIZFORCE_PC *)argument) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ForceFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_ForceFinished(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (argument != NULL && ForceAnimationDonePc((GIZFORCE_PC *)argument) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_BuildItCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_BuildItCompleteInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return GizmoFindByName(WORLD->gizmo_sys, gizbuildit_gizmotype_id, name);
 }
 
-f32 __cdecl Condition_BuildItCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_BuildItComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     GIZMO_PC *gizmo = (GIZMO_PC *)argument;
     GIZBUILDIT_PC *buildit;
     if (gizmo != NULL) {
@@ -1639,22 +1639,22 @@ void *__cdecl Condition_BlowupBlownupInitPc(AISYS_PC *system, char *name, AISCRI
     return GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
 }
 
-f32 __cdecl Condition_BlowupBlownupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_BlowupBlownup(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_IsAliveInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_IsAliveInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     (void)script;
     if (name != NULL && GetNamedGameObjectCallback != NULL)
         return GetNamedGameObjectCallback(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_IsAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *argument) {
+f32 __cdecl Condition_IsAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
     APIOBJECT_PC *object = (APIOBJECT_PC *)argument;
     AIGROUP_PC *group;
     GAMEOBJECT *member;
@@ -1682,14 +1682,14 @@ f32 __cdecl Condition_IsAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
     return 0.0f;
 }
 
-void *__cdecl Condition_AIOverrideControlInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_AIOverrideControlInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL)
         return GetNamedGameObjectCallback(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_AIOverrideControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
+f32 __cdecl Condition_AIOverrideControl(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL) {
         if (packet == NULL || packet->owner == NULL)
@@ -1701,14 +1701,14 @@ f32 __cdecl Condition_AIOverrideControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return 0.0f;
 }
 
-void *__cdecl Condition_IsOnScreenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_IsOnScreenInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL)
         return GetNamedGameObjectCallback(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_IsOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_IsOnScreen(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL) {
         if (packet == NULL || packet->owner == NULL)
@@ -1720,7 +1720,7 @@ f32 __cdecl Condition_IsOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     return 0.0f;
 }
 
-void *__cdecl Condition_OffScreenTimerInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OffScreenTimerInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     APIOBJECT_PC *object;
     if (name != NULL && GetNamedGameObjectCallback != NULL) {
         object = GetNamedGameObjectCallback(system, name);
@@ -1730,8 +1730,8 @@ void *__cdecl Condition_OffScreenTimerInitPc(AISYS_PC *system, char *name, AISCR
     return NULL;
 }
 
-f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_OffScreenTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL)
         object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
@@ -1740,15 +1740,15 @@ f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerOnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_PlayerOnGround(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     if (player != NULL && (player->field_281 != 0 || player->field_282 != 0))
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_OnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                 void *argument) {
+f32 __cdecl Condition_OnGround(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
     GAMEOBJECT *object;
     if (packet != NULL && packet->owner != NULL) {
         object = packet->owner->objptr;
@@ -1758,8 +1758,8 @@ f32 __cdecl Condition_OnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_BeenAlerted(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         if (packet->owner->objptr->alert_target != NULL)
             return 1.0f;
@@ -1768,7 +1768,7 @@ f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 0.0f;
 }
 
-void *__cdecl Condition_OnObjectInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OnObjectInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     NUSPECIALHANDLE special;
     if (CurrentTerrain != NULL) {
         if (NuSpecialFind(WORLD->current_gscn, &special, name, 1) != 0)
@@ -1777,8 +1777,8 @@ void *__cdecl Condition_OnObjectInitPc(AISYS_PC *system, char *name, AISCRIPT_PC
     return (void *)-1;
 }
 
-f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_PlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     i32 platform = (i32)argument;
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
         player->supporting_platform_id == platform) {
@@ -1790,8 +1790,8 @@ f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     i32 platform = (i32)argument;
 
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
@@ -1838,8 +1838,8 @@ f32 __cdecl Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *unused0, AISCRIPTPROC
     return 1.0e9f;
 }
 
-f32 __cdecl Condition_OnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                 void *argument) {
+f32 __cdecl Condition_OnObject(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         i32 platform = (i32)argument;
@@ -1854,8 +1854,8 @@ f32 __cdecl Condition_OnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
+f32 __cdecl Condition_OnSameObjectAsPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         if ((object->field_281 != 0 || object->field_282 != 0) && (player->field_281 != 0 || player->field_282 != 0) &&
@@ -1865,15 +1865,15 @@ f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_P
     return 0.0f;
 }
 
-f32 __cdecl Condition_SpawnCountPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_SpawnCount(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (packet != NULL)
         return (f32)packet->respawn_count;
     return 0.0f;
 }
 
-f32 __cdecl Condition_BehindCameraPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_BehindCamera(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         if (object != NULL) {
@@ -1886,12 +1886,12 @@ f32 __cdecl Condition_BehindCameraPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     return 0.0f;
 }
 
-void *__cdecl Condition_LocatorOnScreenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_LocatorOnScreenInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return AIPathFindLocator(system, name);
 }
 
-f32 __cdecl Condition_LocatorOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_LocatorOnScreen(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
     if (locator == NULL)
         locator = process->locator;
@@ -1900,8 +1900,8 @@ f32 __cdecl Condition_LocatorOnScreenPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                 void *argument) {
+f32 __cdecl Condition_Blocking(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
     GAMEOBJECT *object;
     u64 flags;
     if (packet != NULL && packet->owner != NULL) {
@@ -1916,7 +1916,7 @@ f32 __cdecl Condition_BlockingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-void *__cdecl Condition_BeenHitInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_BeenHitInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     APIOBJECT_PC *object;
     if (name != NULL && GetNamedGameObjectCallback != NULL) {
         object = GetNamedGameObjectCallback(system, name);
@@ -1926,8 +1926,8 @@ void *__cdecl Condition_BeenHitInitPc(AISYS_PC *system, char *name, AISCRIPT_PC 
     return NULL;
 }
 
-f32 __cdecl Condition_BeenHitPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *argument) {
+f32 __cdecl Condition_BeenHit(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL && packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
@@ -1938,14 +1938,14 @@ f32 __cdecl Condition_BeenHitPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
     return 0.0f;
 }
 
-f32 __cdecl Condition_HoverPhasePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_HoverPhase(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (packet != NULL && packet->owner != NULL)
         return (f32)packet->owner->objptr->jump_variant_state;
     return 0.0f;
 }
 
-void *__cdecl Condition_HitPointsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_HitPointsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     (void)script;
     if (name != NULL && system != NULL)
@@ -1953,8 +1953,8 @@ void *__cdecl Condition_HitPointsInitPc(AISYS_PC *system, char *name, AISCRIPT_P
     return object;
 }
 
-f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_HitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     (void)system;
     (void)process;
@@ -1968,8 +1968,8 @@ f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return 0.0f;
 }
 
-f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                              char *name, void *argument) {
+f32 __cdecl Condition_CollidingWithOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
     GAMEOBJECT *opponent, *owner;
     if (packet != NULL && (opponent = packet->opponent) != NULL && (owner = packet->owner) != NULL &&
         (U64_PAIR(opponent->collision_identity_mask) & U64_PAIR(owner->collision_contact_mask)) != 0)
@@ -1977,8 +1977,8 @@ f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_
     return 0.0f;
 }
 
-f32 __cdecl Condition_CollidingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_Colliding(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (packet != NULL && packet->owner != NULL && U64_PAIR(packet->owner->collision_contact_mask) != 0)
         return 1.0f;
     return 0.0f;
@@ -1991,8 +1991,8 @@ void *__cdecl Condition_XPosInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *sc
     return object;
 }
 
-f32 __cdecl Condition_XPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                             void *argument) {
+f32 __cdecl Condition_XPos(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                           void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL && packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
@@ -2001,8 +2001,8 @@ f32 __cdecl Condition_XPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     return 0.0f;
 }
 
-f32 __cdecl Condition_YPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                             void *argument) {
+f32 __cdecl Condition_YPos(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                           void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL && packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
@@ -2011,8 +2011,8 @@ f32 __cdecl Condition_YPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     return 0.0f;
 }
 
-f32 __cdecl Condition_ZPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                             void *argument) {
+f32 __cdecl Condition_ZPos(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                           void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL && packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
@@ -2033,8 +2033,8 @@ void *__cdecl Condition_IsSetAliveInit(AISYS_PC *unused0, char *arg, AISCRIPT_PC
     return (void *)((intptr_t)set);
 }
 
-f32 __cdecl Condition_IsSetAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_IsSetAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     i32 set = (i32)argument;
     if (set == -1)
         set = process->creature_set;
@@ -2053,14 +2053,14 @@ f32 __cdecl Condition_NumInSetAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 0.0f;
 }
 
-f32 __cdecl Condition_ContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *argument) {
+f32 __cdecl Condition_Context(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         return (f32)(i32)packet->owner->objptr->character_context;
     return -1.0f;
 }
 
-void *__cdecl Condition_InContextInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_InContextInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (NuStrICmp(name, "DEACTIVATED") == 0)
         return (void *)23;
     if (NuStrICmp(name, "FORCEDBACK") == 0)
@@ -2084,30 +2084,30 @@ void *__cdecl Condition_InContextInitPc(AISYS_PC *system, char *name, AISCRIPT_P
     return (void *)(NuStrICmp(name, "GRAPPLE") == 0 ? 70 : 100);
 }
 
-f32 __cdecl Condition_InContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_InContext(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
         packet->owner->objptr->character_context == (i32)argument)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_OpponentContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_OpponentContext(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr->character_context == (i32)argument)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_OnDynamicGrappleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OnDynamicGrappleInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
+f32 __cdecl Condition_OnDynamicGrapple(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL) {
         if (packet == NULL || packet->owner == NULL)
@@ -2122,19 +2122,19 @@ f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     return 0.0f;
 }
 
-f32 __cdecl Condition_Player2ActivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_Player2Active(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (player2 != NULL)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_NumBaddiesInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_NumBaddiesInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return NULL;
 }
 
-f32 __cdecl Condition_NumBaddiesPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_NumBaddies(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     i32 count = 0;
     i32 index;
     GAMEOBJECT *object = Obj;
@@ -2157,12 +2157,12 @@ void *__cdecl Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRI
 }
 
 /* Retail returns zero unconditionally. */
-f32 __cdecl Condition_NumForceObjectsPc(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2,
-                                        char *unused3, void *unused4) {
+f32 __cdecl Condition_NumForceObjects(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2,
+                                      char *unused3, void *unused4) {
     return 0.0f;
 }
 
-void *__cdecl Condition_BeenToLevelInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_BeenToLevelInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL && system != NULL && WORLD->area != NULL) {
         for (index = 0; index < WORLD->area->level_count; ++index) {
@@ -2173,8 +2173,8 @@ void *__cdecl Condition_BeenToLevelInitPc(AISYS_PC *system, char *name, AISCRIPT
     return (void *)-1;
 }
 
-f32 __cdecl Condition_BeenToLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_BeenToLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     i32 index = (i32)argument;
     if (index != -1)
         return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS_PC *)LevelProgressData)[index].visited_flags & 1u);
@@ -2193,29 +2193,29 @@ void *__cdecl Condition_LastLevelInit(AISYS_PC *system, char *name, AISCRIPT_PC 
     return (void *)((i32)-1);
 }
 
-f32 __cdecl Condition_LastLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_LastLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (LastLData != NULL && (i32)LastLData->index == (i32)argument)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_MessageInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     void *message = NULL;
     if (name != NULL && system != NULL && gizaimessagesys != NULL)
         message = CheckGizAIMessage(gizaimessagesys, name, NULL);
     return message;
 }
 
-f32 __cdecl Condition_MessagePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *argument) {
+f32 __cdecl Condition_Message(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
     GIZAIMESSAGE *message = (GIZAIMESSAGE *)argument;
     if (message != NULL)
         return message->value;
     return 0.0f;
 }
 
-void *__cdecl Condition_ScriptParamInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_ScriptParamInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL) {
         for (index = 0; index < 4; ++index) {
@@ -2227,15 +2227,15 @@ void *__cdecl Condition_ScriptParamInitPc(AISYS_PC *system, char *name, AISCRIPT
     return (void *)-1;
 }
 
-f32 __cdecl Condition_ScriptParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_ScriptParam(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     i32 index = (i32)argument;
     if (index >= 0)
         return process->params[index];
     return 0.0f;
 }
 
-void *__cdecl Condition_AnimationFinishedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_AnimationFinishedInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     NUSPECIALHANDLE special;
     NuSpecialFind(WORLD->current_gscn, &special, name, 1);
     if (NuSpecialExistsFn(&special) != 0)
@@ -2243,8 +2243,8 @@ void *__cdecl Condition_AnimationFinishedInitPc(AISYS_PC *system, char *name, AI
     return NULL;
 }
 
-f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
+f32 __cdecl Condition_AnimationFinished(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
     NUINSTANIM *instance = (NUINSTANIM *)argument;
     void *animation;
     f64 time;
@@ -2262,7 +2262,7 @@ f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return 0.0f;
 }
 
-void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_RigidAnimFrameInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     NUSPECIALHANDLE special;
     NuSpecialFind(WORLD->current_gscn, &special, name, 1);
     if (NuSpecialExistsFn(&special))
@@ -2270,19 +2270,19 @@ void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *system, char *name, AISCR
     return NULL;
 }
 
-f32 __cdecl Condition_RigidAnimFramePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_RigidAnimFrame(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     if (argument != NULL)
         return ((NUINSTANIM *)argument)->ltime;
     return 1.0f;
 }
 
-void *__cdecl Condition_CutSceneStartedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CutSceneStartedInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return CutScene_Find(WORLD->cutscene_sys, name);
 }
 
-f32 __cdecl Condition_CutSceneStartedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_CutSceneStarted(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     CUTINFO *cutscene = (CUTINFO *)argument;
     if (cutscene != NULL && cutscene->instance != NULL &&
         (((CONDITION_CUT_INSTANCE_READER_PC *)cutscene->instance)->flags & 2) != 0)
@@ -2290,12 +2290,12 @@ f32 __cdecl Condition_CutSceneStartedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-void *__cdecl Condition_CutSceneFinishedInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CutSceneFinishedInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return CutScene_Find(WORLD->cutscene_sys, name);
 }
 
-f32 __cdecl Condition_CutSceneFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
+f32 __cdecl Condition_CutSceneFinished(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
     CUTINFO *cutscene = (CUTINFO *)argument;
     if (cutscene != NULL && cutscene->instance != NULL &&
         instNuGCutSceneIsFinished((INSTNUGCUTSCENE *)cutscene->instance) != 0)
@@ -2303,32 +2303,32 @@ f32 __cdecl Condition_CutSceneFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     return 0.0f;
 }
 
-void *__cdecl Condition_CutSceneExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CutSceneExistsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return CutScene_Find(WORLD->cutscene_sys, name);
 }
 
-f32 __cdecl Condition_CutSceneExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_CutSceneExists(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     if (argument != NULL)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_CutScenePlayingInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CutScenePlayingInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return CutScene_Find(WORLD->cutscene_sys, name);
 }
 
-f32 __cdecl Condition_CutScenePlayingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_CutScenePlaying(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     return 0.0f;
 }
 
-void *__cdecl Condition_PlayerInSockInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_PlayerInSockInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return FindSock(WORLD->sock_sys, name);
 }
 
-f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_PlayerInSock(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL && WORLD->sock_sys != NULL && &WORLD->sock_sys->socks[(i8)player->sock_index] == argument)
         return 1.0f;
     return 0.0f;
@@ -2379,15 +2379,15 @@ f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_P
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerDistanceAlongSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                char *name, void *argument) {
+f32 __cdecl Condition_PlayerDistanceAlongSock(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                              char *name, void *argument) {
     if (player != NULL)
         return player->sock_position.distance;
     return 0.0f;
 }
 
-f32 __cdecl Condition_FurthestPlayerDistanceAlongSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
-                                                        AIPACKET_PC *packet, char *name, void *argument) {
+f32 __cdecl Condition_FurthestPlayerDistanceAlongSock(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
+                                                      AIPACKET_PC *packet, char *name, void *argument) {
     if (player != NULL) {
         if (player2 != NULL && player2->sock_position.distance > player->sock_position.distance)
             return player2->sock_position.distance;
@@ -2396,8 +2396,8 @@ f32 __cdecl Condition_FurthestPlayerDistanceAlongSockPc(AISYS_PC *system, AISCRI
     return 0.0f;
 }
 
-f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_FinishedSpline(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     GAMEOBJECT *object;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         object = packet->owner->objptr;
@@ -2411,33 +2411,33 @@ f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return -1.0f;
 }
 
-f32 __cdecl Condition_CurrentHintIdPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_CurrentHintId(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     return (f32)Hint_CurrentId();
 }
 
-void *__cdecl Condition_HintAvailableInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_HintAvailableInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL)
         return (void *)NuAToI(name);
     return NULL;
 }
 
-f32 __cdecl Condition_HintAvailablePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_HintAvailable(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (argument != NULL && Hint_isAvailable((i32)argument) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_HintCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_HintComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL && Hint_isCompleteByIdPc((i32)argument) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_FreeplayPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                 void *argument) {
+f32 __cdecl Condition_Freeplay(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
     return (f32)FreePlay;
 }
 
@@ -2446,66 +2446,66 @@ f32 __cdecl Condition_IndyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     return (f32)StartupGameFlag0;
 }
 
-f32 __cdecl Condition_MissionModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_MissionMode(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     if (Mission_Active(NULL) != NULL)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_MissionWonPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_MissionWon(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (MissionSys != NULL && MissionSys->state == 2)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ChallengeModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_ChallengeMode(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (ChallengeMode != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_PSPPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                            void *argument) {
+f32 __cdecl Condition_PSP(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                          void *argument) {
     return 0.0f;
 }
 
-f32 __cdecl Condition_BoltsDontGetDeflectedBackPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                  char *name, void *argument) {
+f32 __cdecl Condition_BoltsDontGetDeflectedBack(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->field_ef0 & 8) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_CheatProgressPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_CheatProgress(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     return 0.0f;
 }
 
-f32 __cdecl Condition_BigJumpCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_BigJumpComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr->character_context == 0x1f)
         return 0.0f;
     return 1.0f;
 }
 
-void *__cdecl Condition_RespawnLocatorIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_RespawnLocatorIsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL)
         return AIPathFindLocator(system, name);
     return NULL;
 }
 
-f32 __cdecl Condition_RespawnLocatorIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
+f32 __cdecl Condition_RespawnLocatorIs(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
     if (argument != NULL && packet != NULL && packet->respawn_locator == argument)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_InMiniCutPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_InMiniCut(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (MiniCutCam != 0 || (name != NULL && ObstacleCamSpl != NULL))
         return 1.0f;
     return 0.0f;
@@ -2538,13 +2538,13 @@ f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_DropBackInTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_DropBackInTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     return drop_back_in_timer;
 }
 
-f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_PartyUnderCover(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     (void)system;
     (void)process;
     (void)packet;
@@ -2555,13 +2555,13 @@ f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_NumBaddiesThatCanSeePlayersPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                    char *name, void *argument) {
+f32 __cdecl Condition_NumBaddiesThatCanSeePlayers(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
     return (f32)nbaddies_can_see_players;
 }
 
-f32 __cdecl Condition_HelpWithTriggersPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
+f32 __cdecl Condition_HelpWithTriggers(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
     if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
         i32 index = packet->owner->hostility_group;
         if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system->field_0x42c0[index] != -1 &&
@@ -2573,8 +2573,8 @@ f32 __cdecl Condition_HelpWithTriggersPc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     return 0.0f;
 }
 
-f32 __cdecl Condition_PartyContainsDroidsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                            char *name, void *argument) {
+f32 __cdecl Condition_PartyContainsDroids(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
@@ -2585,19 +2585,19 @@ f32 __cdecl Condition_PartyContainsDroidsPc(AISYS_PC *system, AISCRIPTPROCESS_PC
     return 0.0f;
 }
 
-f32 __cdecl Condition_CannotReachDestinationPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                               char *name, void *argument) {
+f32 __cdecl Condition_CannotReachDestination(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
     if (packet != NULL && (packet->flags & 0x400000) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_EitherPlayerPushingSpinnerInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_EitherPlayerPushingSpinnerInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return GizSpinner_FindBySpecialName(WORLD, name);
 }
 
-f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                   char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerPushingSpinner(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                 char *name, void *argument) {
     if (argument != NULL) {
         if (player != NULL && player->character_context == 0x28 && player->grapple == argument)
             return 1.0f;
@@ -2607,15 +2607,15 @@ f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *system, AISCRIPTPRO
     return 0.0f;
 }
 
-void *__cdecl Condition_CharacterRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CharacterRangeInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_CharacterRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (packet != NULL && packet->owner != NULL && object != NULL) {
         NUVEC difference;
@@ -2624,20 +2624,20 @@ f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 1000000000.0f;
 }
 
-f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
+f32 __cdecl Condition_BeenSpawned(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     // MATCH-EXCEPTION: field_280 is a signed char in the original (compared with -1); saga.h declares u8
     if (packet != NULL && packet->owner != NULL && (i8)packet->owner->field_280 == -1 && packet->creature_index == 0xff)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_TakeOverTargetInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_TakeOverTargetInTriggerAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name != NULL ? AISysFindArea(system, name) : NULL;
 }
 
-f32 __cdecl Condition_TakeOverTargetInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                    char *name, void *argument) {
+f32 __cdecl Condition_TakeOverTargetInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
         AIAREA_PC *area = (AIAREA_PC *)argument;
         GAMEOBJECT *target = NULL;
@@ -2658,8 +2658,8 @@ f32 __cdecl Condition_TakeOverTargetInTriggerAreaPc(AISYS_PC *system, AISCRIPTPR
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                    char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerInMyTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
     AIAREA_PC *area;
     GAMEOBJECT *object;
     i32 index;
@@ -2687,7 +2687,7 @@ f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *system, AISCRIPTPR
     return 0.0f;
 }
 
-void *__cdecl Condition_TakenOverInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_TakenOverInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
@@ -2717,15 +2717,15 @@ f32 __cdecl Condition_TakenOver(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, 
     return 0.0f;
 }
 
-f32 __cdecl Condition_PlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_PlayerTakenOver(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (player != NULL && player->takeover_source != NULL && player->character_context != 0x3b)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_EitherPlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                              char *name, void *argument) {
+f32 __cdecl Condition_EitherPlayerTakenOver(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
     GAMEOBJECT *object = player;
     if (object != NULL && object->takeover_source != NULL && object->character_context != 0x3b)
         return 1.0f;
@@ -2735,15 +2735,15 @@ f32 __cdecl Condition_EitherPlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_
     return 0.0f;
 }
 
-void *__cdecl Condition_BeenTakenOverInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_BeenTakenOverInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_BeenTakenOver(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL) {
         GAMEOBJECT *owner = packet->owner;
@@ -2758,15 +2758,15 @@ f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 0.0f;
 }
 
-void *__cdecl Condition_OnSpeederBikeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_OnSpeederBikeInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_OnSpeederBike(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object == NULL && packet->owner != NULL)
         object = packet->owner->objptr;
@@ -2776,36 +2776,36 @@ f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 0.0f;
 }
 
-void *__cdecl Condition_UnderPlayerControlInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_UnderPlayerControlInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_UnderPlayerControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_UnderPlayerControl(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
     if (object != NULL && (object->flags_1fc_word & 0x80) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_CharacterExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CharacterExistsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GAMEOBJECT *object = NULL;
     if (name != NULL && system != NULL)
         object = GetNamedGameObject(system, name);
     return object;
 }
 
-f32 __cdecl Condition_CharacterExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_CharacterExists(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (argument != NULL)
         return 1.0f;
     return 0.0f;
 }
 
-void *__cdecl Condition_CharacterTypeExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_CharacterTypeExistsInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL && system != NULL) {
         for (index = 0; index < CHARCOUNT; ++index) {
@@ -2816,8 +2816,8 @@ void *__cdecl Condition_CharacterTypeExistsInitPc(AISYS_PC *system, char *name, 
     return (void *)-1;
 }
 
-f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                            char *name, void *argument) {
+f32 __cdecl Condition_CharacterTypeExists(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
     i32 index;
     if (argument != NULL) {
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
@@ -2829,8 +2829,8 @@ f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC
     return 0.0f;
 }
 
-f32 __cdecl Condition_LastAttackerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
+f32 __cdecl Condition_LastAttackerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
     GAMEOBJECT *object;
     NUVEC difference;
     (void)system;
@@ -2845,8 +2845,8 @@ f32 __cdecl Condition_LastAttackerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return NuVecDist(&object->position, &object->last_attacker->position, &difference);
 }
 
-f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                   char *name, void *argument) {
+f32 __cdecl Condition_LastAttackerIsActivePlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                 char *name, void *argument) {
     GAMEOBJECT *object;
     GAMEOBJECT *attacker;
     (void)system;
@@ -2862,12 +2862,12 @@ f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *system, AISCRIPTPRO
     return 0.0f;
 }
 
-void *__cdecl Condition_GotLocatorInSetInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_GotLocatorInSetInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return AIPathFindLocatorSet(system, name);
 }
 
-f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_GotLocatorInSet(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     AILOCATORSET_PC *set = (AILOCATORSET_PC *)argument;
     if (set != NULL) {
         AILOCATOR_PC *locator = process->locator;
@@ -2883,8 +2883,8 @@ f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 0.0f;
 }
 
-f32 __cdecl Condition_GotOpponentLOSPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
+f32 __cdecl Condition_GotOpponentLOS(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
     GAMEOBJECT *object, *opponent;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 0.0f;
@@ -2900,8 +2900,8 @@ f32 __cdecl Condition_GotOpponentLOSPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 0.0f;
 }
 
-f32 __cdecl Condition_EmptyTakeOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_EmptyTakeOver(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     i32 character = -1;
     i32 index;
     GAMEOBJECT *object;
@@ -2931,8 +2931,8 @@ f32 __cdecl Condition_HasTakeOverTargetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return 0.0f;
 }
 
-f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
+f32 __cdecl Condition_TakeOverRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                    void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         GAMEOBJECT *target = packet->owner->objptr->takeover_target;
         if (target != NULL)
@@ -2941,22 +2941,22 @@ f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 1000000000.0f;
 }
 
-f32 __cdecl Condition_GotVictimPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
+f32 __cdecl Condition_GotVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->flags_e24 & 1) != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ScreenWipePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_ScreenWipe(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (FadeSys.fade > 0.0f)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_HeadTurnRestrictedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_HeadTurnRestricted(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         return (f32)(packet->owner->objptr->flags_ef0 >> 16 & 1);
     return 0.0f;
@@ -3003,8 +3003,8 @@ f32 __cdecl Condition_Side(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACK
     return 0.0f;
 }
 
-f32 __cdecl Condition_NearestPartyRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
+f32 __cdecl Condition_NearestPartyRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
     f32 nearest = 1000000000.0f;
     if (packet != NULL && packet->owner != NULL && system != NULL) {
         NUVEC difference;
@@ -3023,8 +3023,8 @@ f32 __cdecl Condition_NearestPartyRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return nearest;
 }
 
-f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                            char *name, void *argument) {
+f32 __cdecl Condition_NearestPartyXZRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                          char *name, void *argument) {
     f32 nearest = 1000000000.0f;
     if (packet != NULL && packet->owner != NULL && system != NULL) {
         NUVEC difference;
@@ -3043,8 +3043,8 @@ f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC
     return nearest;
 }
 
-f32 __cdecl Condition_OpponentToPlayerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                              char *name, void *argument) {
+f32 __cdecl Condition_OpponentToPlayerRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                            char *name, void *argument) {
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL && packet->opponent != NULL && system != NULL &&
         system->player_1 != NULL)
@@ -3052,8 +3052,8 @@ f32 __cdecl Condition_OpponentToPlayerRangePc(AISYS_PC *system, AISCRIPTPROCESS_
     return 1000000000.0f;
 }
 
-f32 __cdecl Condition_OpponentPathPosRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
+f32 __cdecl Condition_OpponentPathPosRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
         AIPACKET_PC *opponent_packet = ((APIOBJECT_PC *)packet->opponent)->ai;
         if (opponent_packet != NULL) {
@@ -3070,55 +3070,55 @@ void *__cdecl Condition_GizmoOutput0InitPc(AISYS_PC *system, char *name, AISCRIP
     return NULL;
 }
 
-f32 __cdecl Condition_GizmoOutput0Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_GizmoOutput0(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL)
         return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 0, 1);
     return 0.0f;
 }
 
-f32 __cdecl Condition_GizmoOutput1Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_GizmoOutput1(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL)
         return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1);
     return 0.0f;
 }
 
-f32 __cdecl Condition_GizmoOutput2Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_GizmoOutput2(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL)
         return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 2, 1);
     return 0.0f;
 }
 
-f32 __cdecl Condition_GizmoOutput3Pc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_GizmoOutput3(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (argument != NULL)
         return (f32)(u32)GizmoGetOutput(WORLD->gizmo_sys, argument, 3, 1);
     return 0.0f;
 }
 
-void *__cdecl Condition_GizmoVisibilityInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_GizmoVisibilityInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL)
         return GizmoFindByName(WORLD->gizmo_sys, -1, name);
     return NULL;
 }
 
-f32 __cdecl Condition_GizmoVisibilityPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_GizmoVisibility(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     if (argument != NULL)
         return (f32)GizmoGetVisibility(WORLD->gizmo_sys, argument);
     return 0.0f;
 }
 
-void *__cdecl Condition_FlowBoxCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_FlowBoxCompleteInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL)
         return FlowBoxFindByName(WORLD->giz_flow, name);
     return NULL;
 }
 
-f32 __cdecl Condition_FlowBoxCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                        void *argument) {
+f32 __cdecl Condition_FlowBoxComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     FLOWBOX_PC *box = (FLOWBOX_PC *)argument;
     if (box != NULL)
         return (box->state_flags_low & 2) != 0 ? 1.0 : 0.0;
@@ -3148,35 +3148,35 @@ f32 __cdecl Condition_AngleAboutMyLocatorToPlayer(AISYS_PC *unused0, AISCRIPTPRO
     return 0.0f;
 }
 
-f32 __cdecl Condition_AnimSpeedMulPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_AnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         return packet->owner->objptr->animation_speed_multiplier;
     return 1.0f;
 }
 
-void *__cdecl Condition_PickupBeenTurnedOnInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_PickupBeenTurnedOnInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL)
         return GizmoPickup_FindByName(WORLD, name);
     return NULL;
 }
 
-f32 __cdecl Condition_PickupBeenTurnedOnPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_PickupBeenTurnedOn(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     if (argument != NULL)
         return (f32)GizmoPickup_BeenTurnedOn((GIZMOPICKUP_PC *)argument);
     return 0.0f;
 }
 
-f32 __cdecl Condition_CanHearRadioPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_CanHearRadio(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     if (radios_playing != 0)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_BeingTowedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                   void *argument) {
+f32 __cdecl Condition_BeingTowed(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
     if (packet != NULL && (packet->owner->objptr->flags_ef4 & 0x200) != 0)
         return 1.0f;
     return 0.0f;
@@ -3207,20 +3207,20 @@ f32 __cdecl Condition_CharacterLoaded(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 0.0f;
 }
 
-void *__cdecl Condition_AreaCompleteInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_AreaCompleteInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return name != NULL ? Area_FindByName(name, NULL) : NULL;
 }
 
-f32 __cdecl Condition_AreaCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                     void *argument) {
+f32 __cdecl Condition_AreaComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
     AREA_DATA_PC *area = (AREA_DATA_PC *)argument;
     if (area != NULL && Game.area_save[area->index].area_complete == 1)
         return 1.0f;
     return 0.0f;
 }
 
-f32 __cdecl Condition_ShouldAttackOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
+f32 __cdecl Condition_ShouldAttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     GAMEOBJECT *object;
     GAMEOBJECT *opponent;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
@@ -3234,8 +3234,8 @@ f32 __cdecl Condition_ShouldAttackOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_P
     return 0.0f;
 }
 
-f32 __cdecl Condition_InSwampPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                void *argument) {
+f32 __cdecl Condition_InSwamp(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
         packet->owner->objptr->field_283 == 9)
         return 1.0f;
@@ -3261,8 +3261,8 @@ f32 __cdecl Condition_InSameTriggerAreaAsNearestPlayer(AISYS_PC *unused0, AISCRI
     return 0.0f;
 }
 
-f32 __cdecl Condition_NetworkGameOnGoingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
+f32 __cdecl Condition_NetworkGameOnGoing(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
     return 0.0f;
 }
 
@@ -6477,8 +6477,8 @@ i32 __cdecl Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, A
     return 1;
 }
 
-i32 __cdecl Action_AddPartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                             i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_AddPart(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                           i32 count, i32 first_time, f32 elapsed) {
     if (first_time != 0) {
         NUSPECIALHANDLE special;
         NUVEC position;
@@ -10854,8 +10854,8 @@ i32 __cdecl Action_CanBeCarried(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
-i32 __cdecl Action_IgnoreLastSafePathPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                           char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_IgnoreLastSafePathPos(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                         char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object = NULL;
     APIOBJECT_PC *named;
     i32 ignore = 1;
@@ -10890,8 +10890,8 @@ i32 __cdecl Action_IgnoreLastSafePathPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
     return 1;
 }
 
-i32 __cdecl Action_AwkwardShapeOverridePc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                          char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_AwkwardShapeOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                        char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object = NULL;
     APIOBJECT_PC *named;
     i32 enabled = 1;
@@ -10926,8 +10926,8 @@ i32 __cdecl Action_AwkwardShapeOverridePc(AISYS_PC *system, AISCRIPTPROCESS_PC *
     return 1;
 }
 
-i32 __cdecl Action_IgnoreSlideTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                        char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_IgnoreSlideTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                      char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object = NULL;
     APIOBJECT_PC *named;
     i32 enabled = 1;
@@ -10960,8 +10960,8 @@ i32 __cdecl Action_IgnoreSlideTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     return 1;
 }
 
-i32 __cdecl Action_SplineFollowTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                         char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_SplineFollowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object = NULL;
     APIOBJECT_PC *named;
     i32 enabled = 1;
@@ -11103,8 +11103,8 @@ i32 __cdecl Action_CreateRider(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, A
     return 1;
 }
 
-i32 __cdecl Action_ThrowDetonatorPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                    i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_ThrowDetonator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;
     CHARACTER_MODEL_LAYERS_PC *model;
     (void)system;
@@ -11418,8 +11418,8 @@ i32 __cdecl Action_SetAO_InitRowDist(AISYS_PC *unused0, AISCRIPTPROCESS_PC *proc
     return 1;
 }
 
-i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_SetTechnoComplete(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 count, i32 first_time, f32 elapsed) {
     i32 complete = 1;
     GAMEOBJECT *object = NULL;
     TECHNO_PC *techno = NULL;
@@ -11452,15 +11452,15 @@ i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 1;
 }
 
-i32 __cdecl Action_LetGoOfBalloonPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                    i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_LetGoOfBalloon(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                  i32 count, i32 first_time, f32 elapsed) {
     if (packet != NULL && packet->owner != NULL)
         LetGoOfBalloon(packet->owner->objptr);
     return 1;
 }
 
-i32 __cdecl Action_DrawBossHitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_DrawBossHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 count, i32 first_time, f32 elapsed) {
     if (packet != NULL && packet->owner != NULL)
         DrawBossHitPoints(packet->owner->objptr);
     return 1;
@@ -11510,8 +11510,8 @@ choose_level:
     return 1;
 }
 
-i32 __cdecl Action_GoToNewLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                  i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_GoToNewLevel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 count, i32 first_time, f32 elapsed) {
     LEVELDATA_PC *level = NULL;
     char *cutscene_name = NULL;
     char *value;
@@ -11626,8 +11626,8 @@ i32 __cdecl Action_GizmoSetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unu
     return 1;
 }
 
-i32 __cdecl Action_TurnOnPickupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
-                                  i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_TurnOnPickup(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                i32 count, i32 first_time, f32 elapsed) {
     GIZMOPICKUP_PC *pickup = NULL;
     if (first_time != 0) {
         i32 index;
@@ -11718,8 +11718,8 @@ i32 __cdecl Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unuse
     return 1;
 }
 
-i32 __cdecl Action_SetShootOpponentsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
-                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+i32 __cdecl Action_SetShootOpponents(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                     char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;
     i32 index;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)

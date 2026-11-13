@@ -953,7 +953,7 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
 }
 
 STATIC_ASSERT(offsetof(GIZFORCE_PC, room_id) == 0x80);
-void __cdecl GizForces_DrawPc(void *world_pointer, void *system_pointer, f32 unused) {
+void __cdecl GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
     GIZFORCE_PC *force;

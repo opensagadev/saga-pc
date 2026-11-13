@@ -10674,7 +10674,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, character_map) == 0x20);
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, glyphs) == 0x120);
 
-    void __cdecl NuMtlSetRenderPlanePc(NUMTL *, i32);
+    void __cdecl NuMtlSetRenderPlane(NUMTL *, i32);
     extern i32 create_qfont2dlower, create_qfont2dz, create_qfont3d, create_qfont3dz;
     extern VUFNT *QFont2DZ, *QFont3D;
     void __cdecl NuQFntDestroy(VUFNT *);
@@ -12514,16 +12514,16 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl DeRotateTerrain(TERRAIN_POLYGON_INFO_PC *);
     struct TERRAIN_SPATIAL_NODE;
     struct TERRAIN_SET_PC;
-    void __cdecl RotateTerrainPc(TERRAIN_POLYGON_INFO_PC *);
-    void __cdecl TerrainScanWallSplinePc(struct TERRAIN_SPATIAL_NODE *);
-    void __cdecl TerrainAddWallSplinePc(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
-    void __cdecl TerrainRemoveWallSplinePc(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
-    void __cdecl FullDeflectSizePc(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl FullReflectTestPc(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl CubeImpactPc(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
-    void __cdecl TerrainWallSideSlidePc(NUVEC *, void *, f32, f32, NUANG);
-    void __cdecl TerrainPolyEdgePc(NUVEC *, NUVEC *);
-    void __cdecl NewTerrAxisFreedomPc(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
+    void __cdecl RotateTerrain(TERRAIN_POLYGON_INFO_PC *);
+    void __cdecl TerrainScanWallSpline(struct TERRAIN_SPATIAL_NODE *);
+    void __cdecl TerrainAddWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void __cdecl TerrainRemoveWallSpline(struct TERRAIN_SPATIAL_NODE *, struct TERRAIN_SET_PC *);
+    void __cdecl FullDeflectSize(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl FullReflectTest(NUVEC *, NUVEC *, NUVEC *);
+    void __cdecl CubeImpact(NUMTX *, NUMTX *, NUVEC *, f32, NUVEC *);
+    void __cdecl TerrainWallSideSlide(NUVEC *, void *, f32, f32, NUANG);
+    void __cdecl TerrainPolyEdge(NUVEC *, NUVEC *);
+    void __cdecl NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
     void __cdecl DeRotatePoint(NUVEC *);
     i16 __cdecl InsideLineF(f32, f32, f32, f32, f32, f32);
     i16 __cdecl InsidePolLines(f32, f32, f32, f32, f32, f32, f32, f32, f32, NUVEC *);
@@ -15027,7 +15027,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 nu_water_reset_state;
     extern i32 nu_water_reset_status;
     void __cdecl NuWaterSpeed(f32);
-    void __cdecl NuShaderObjectBaseSetWaterSpeedPc(f32);
+    void __cdecl NuShaderObjectBaseSetWaterSpeed(f32);
     extern i32 nu_water_flow_state;
     void __cdecl NuWaterClearPc(void);
     void __cdecl NuWaterReset(void);
@@ -15780,7 +15780,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
     extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
     extern f32 AdaptiveDifficultyRecoveryTimePc;
-    f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *);
+    f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *);
     f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
     extern i8 adtabentries[9][4];
     extern i8 (*adtab)[4];
@@ -16956,7 +16956,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
     i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
     i32 __cdecl NuGScnFixupTID(NUGSCN *, i32);
-    i32 __cdecl NuTexReadPc(char *, VARIPTR *, VARIPTR);
+    i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
     void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
     void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
 
@@ -20669,7 +20669,7 @@ extern "C" {
     void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *);
     void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *);
     INSTNUGCUTSCENE *__cdecl instNuGCutSceneFindActivePc(char *name);
-    void __cdecl instNuGCutScenePlayPc(INSTNUGCUTSCENE *owner, i32 forward);
+    void __cdecl instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward);
     void __cdecl NuGCutSceneSysRender(i32);
     struct cut_load_rigid_s;
     extern void(__cdecl *CutSceneRigidRenderCallbackPc)(struct cut_load_rigid_s *, NUMTX *);
@@ -20704,16 +20704,16 @@ extern "C" {
     f32 __cdecl NewShadowHandelEx(NUVEC *, f32, f32, f32, i32, i16 *);
     i32 __cdecl TerrainTrackBack(NUVEC *, NUVEC *, f32, f32, NUVEC *);
     i32 __cdecl NewRayCastPlatForm(NUVEC *, NUVEC *, f32, f32, i32, i32);
-    void __cdecl TerrDrawPc(TERRAIN_POLYGON_INFO_PC *, i16);
-    void __cdecl TerrDrawSituPc(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
-    void __cdecl TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *, i16);
-    void __cdecl TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *, i16, i32);
-    void __cdecl TerrDrawImpactPolPc(void);
+    void __cdecl TerrDraw(TERRAIN_POLYGON_INFO_PC *, i16);
+    void __cdecl TerrDrawSitu(TERRAIN_POLYGON_INFO_PC *, NUVEC *);
+    void __cdecl TerrDrawPlat(TERRAIN_POLYGON_INFO_PC *, i16);
+    void __cdecl TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *, i16, i32);
+    void __cdecl TerrDrawImpactPol(void);
     void __cdecl DrawMPlatPc(i32);
-    void __cdecl DrawMSituPc(i32);
-    void __cdecl SphereDrawExPc(NUVEC *, f32, f32, i32);
-    void __cdecl SphereDrawPc(NUVEC *, f32, f32);
-    void __cdecl DrawWallSplinePc(f32);
+    void __cdecl DrawMSitu(i32);
+    void __cdecl SphereDrawEx(NUVEC *, f32, f32, i32);
+    void __cdecl SphereDraw(NUVEC *, f32, f32);
+    void __cdecl DrawWallSpline(f32);
 
     struct TERRAIN_SKIN_STREAM_PC;
     struct TERRAIN_SKIN_INFO_PC;
@@ -22952,7 +22952,7 @@ extern "C" {
     void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
 #ifdef __cplusplus
 }
 #endif
@@ -23017,7 +23017,7 @@ extern "C" {
     void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
     void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
     void __cdecl NuDisplayListDrawRenderScene_candidate(i32);
-    void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *);
+    void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *);
 #ifdef __cplusplus
 }
 #endif
@@ -28803,7 +28803,7 @@ extern "C" {
     void __cdecl DrawPlayerIconPrompts(i32, i32, f32, i32, i32, i32, i32, i32, i32, f32, i32, i32, i32, i32);
     void __cdecl Hub_DrawImportantBrick(i32, f32, f32, f32, i32, i32);
     char *__cdecl GameObj_GetNamePc(i32, GAMEOBJECT *, char *);
-    void __cdecl Collection_DrawPc(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
+    void __cdecl Collection_Draw(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
 
 #ifdef __cplusplus
     extern "C" {
@@ -28994,8 +28994,8 @@ extern "C" {
     void __cdecl GizmoPickups_SetOnOff(void);
     f32 __cdecl CurrentHintAlpha(void);
     void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
-    u32 __cdecl Cheat_MultiplyScorePc(u32);
-    i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *, i32, u8);
+    u32 __cdecl Cheat_MultiplyScore(u32);
+    i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
 #ifdef __cplusplus
 }
 #endif
@@ -29313,8 +29313,8 @@ extern "C" {
     extern f32 TimerScalePc;
     extern f32 TimerAlphaPc;
     extern i32 TickTockStatePc;
-    void __cdecl DrawTimerPc(i32 time, i32 expanded, i32 reset);
-    void __cdecl TickTockSfxPc(void);
+    void __cdecl DrawTimer(i32 time, i32 expanded, i32 reset);
+    void __cdecl TickTockSfx(void);
     void __cdecl Doors_SetLastDoor(DOOR_s *door);
     void __cdecl BonusGunshipA_ResetPc(WORLDINFO *);
     void __cdecl BonusGunshipA_UpdatePc(WORLDINFO *);

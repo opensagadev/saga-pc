@@ -300,7 +300,7 @@ extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     buffer->addr = (buffer->addr + 15) & ~15u;
     StreakMaterialPc->particle_type_tag = -112;
     reinterpret_cast<STREAK_MATERIAL_SCALE_PC *>(StreakMaterialPc)->effect_scale = 5.0f;
-    StreakMaterialPc->texture_id = static_cast<i16>(NuTexReadPc(name, buffer, end));
+    StreakMaterialPc->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
     NuMtlUpdate(StreakMaterialPc);
     StreakReflectionMaterialPc = NuMtlCreate3D(1);
     StreakReflectionMaterialPc->attribs.unknown_1_1_2 = 0;

@@ -465,7 +465,7 @@ extern "C" void __cdecl LoadSpecialSfxFile(void *world_ptr) {
 
 i32 TickTockStatePc = 0;
 
-void __cdecl TickTockSfxPc(void) {
+void __cdecl TickTockSfx(void) {
     if (TickTockStatePc != 0) {
         PlaySfxById(GameAudio->sfx_ids[0x1d], NULL);
         TickTockStatePc = 0;

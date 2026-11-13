@@ -32,7 +32,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
     PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
     PCDeviceSetStreamSourcePc(3, NULL, 0, 0);
-    NuShaderManagerBindShaderPc(NULL);
+    NuShaderManagerBindShader(NULL);
     NuDebrisRendererFlushBuffers();
     NuDisplayListSwapBuffersEndFrame();
     NuRndrSwapStreamBuffers();
@@ -133,9 +133,9 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         }
         if (rendered_effect) {
             PCDevicePostEffectBarrierPc();
-            NuShaderManagerBindShaderPc(NULL);
+            NuShaderManagerBindShader(NULL);
             NuPostEffectRender(destination);
-            NuShaderManagerBindShaderPc(NULL);
+            NuShaderManagerBindShader(NULL);
             PCDeviceResetSamplerDefaultsPc();
         }
         if (scene->unknown_214 != 0) {

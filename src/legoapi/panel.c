@@ -309,7 +309,7 @@ f32 TimerScalePc = 1.0f;
 f32 TimerAlphaPc = 1.0f;
 static const char DrawTimerFormatPc[3] = "%d";
 
-void __cdecl DrawTimerPc(i32 time, i32 expanded, i32 reset) {
+void __cdecl DrawTimer(i32 time, i32 expanded, i32 reset) {
     char text[16];
     f32 scale;
     if (reset != 0) {

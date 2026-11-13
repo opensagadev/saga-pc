@@ -195,7 +195,7 @@ extern "C" {
     void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
     void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *);
+    void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
     void __cdecl NuMtlSetRenderStatesPS(NUMTL *);
     GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32);
 
@@ -249,7 +249,7 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         PCDeviceSetPixelShaderPc(NULL);
         NuDisplayHandlerVertexShaderCachePc = NULL;
         NuDisplayHandlerPixelShaderCachePc = NULL;
-        NuShaderManagerBindShaderPc(NULL);
+        NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclarationPc(NuDisplayMaterialDebrisDeclarationPc);
         PCDisplayHandlerBindProgramsPc((u8)material->common.particle_type_tag == 0x97
                                            ? NuDisplayMaterialGlassProgramsPc
@@ -277,7 +277,7 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         }
     } else if ((material->variant_flags & 0x200000) != 0) {
         PCShaderSetMaterialParametersPc(shader, &material->common);
-        NuShaderManagerBindShaderPc(NULL);
+        NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexShaderPc(NULL);
         PCDeviceSetPixelShaderPc(NULL);
         NuDisplayHandlerVertexShaderCachePc = NULL;
@@ -299,20 +299,20 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
     } else if (material->common.display_list != NULL) {
         if (shader != NULL) {
             PCShaderSetMaterialParametersPc(shader, &material->common);
-            NuShaderManagerBindShaderPc(shader);
+            NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
             if (RenderFrameSceneFlagsPc != 0)
                 PCDeviceSetPixelShaderPc(NULL);
         } else {
             PCGraphicsRenderTextureAllocationError();
-            NuShaderManagerBindShaderPc(NULL);
+            NuShaderManagerBindShader(NULL);
         }
     } else if (shader != NULL) {
         PCShaderSetMaterialParametersPc(shader, &material->common);
-        NuShaderManagerBindShaderPc(shader);
+        NuShaderManagerBindShader(shader);
         PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
     } else {
-        NuShaderManagerBindShaderPc(NULL);
+        NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclarationPc(NuDisplayMaterialDefaultDeclarationPc);
         PCDisplayHandlerBindProgramsPc(NuDisplayMaterialDefaultProgramsPc);
     }

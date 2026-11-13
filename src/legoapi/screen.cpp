@@ -1466,7 +1466,7 @@ void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
         i32 id = StatusNewCharacterIdsPc[(i32)((u32)stage->field_0x14 - 1u)];
         if (id == -1)
             return;
-        Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
+        Collection_Draw(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, 1.0f, 0);
         f32 x = 0.0f;
         f32 y = StatusCollectionIconYPc;
         f32 size = 0.4f;
@@ -1520,10 +1520,10 @@ void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
             ratio = time / duration;
         else
             ratio = 0.0f;
-        Collection_DrawPc(collection, 0.0f,
-                          (StatusCollectionYPc - start_y) * NuTrigTable[((i32)(ratio * 16384.0f) >> 1) & 0x7fff] +
-                              start_y,
-                          collection->scale, NULL, 1.0f, 0);
+        Collection_Draw(collection, 0.0f,
+                        (StatusCollectionYPc - start_y) * NuTrigTable[((i32)(ratio * 16384.0f) >> 1) & 0x7fff] +
+                            start_y,
+                        collection->scale, NULL, 1.0f, 0);
     }
 }
 
@@ -1544,7 +1544,7 @@ void __cdecl CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
             ratio = 0.0f;
         alpha = 1.0f - ratio;
     }
-    Collection_DrawPc(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
+    Collection_Draw(collection, 0.0f, StatusCollectionYPc, collection->scale, NULL, alpha, 0);
 }
 
 void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {

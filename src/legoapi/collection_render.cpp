@@ -2,8 +2,8 @@
 /* PC594c301198bytes,cdecl7args. Native rows=count/columns+1 always. */
 extern "C" f32 COLLECTION_DX, COLLECTION_DY, COLLECTION_ICONSIZE;
 extern "C" i32 LEGOOBJ_ICON_FRAME_NEUTRAL, LEGOOBJ_ICON_FRAME_GREEN, LEGOOBJ_ICON_FRAME_BLUE;
-extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale,
-                                  APICHARACTERMODELLIST *models, f32 alpha, i32 hide_selected) {
+extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models,
+                                f32 alpha, i32 hide_selected) {
     f32 dx = COLLECTION_DX * scale;
     const f32 dy = COLLECTION_DY * scale;
     f32 size = COLLECTION_ICONSIZE * scale;

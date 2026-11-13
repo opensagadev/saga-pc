@@ -1868,7 +1868,7 @@ extern "C" {
         return &frame->targets[index];
     }
 
-    i32 __cdecl NuTexReadPc(char *name, VARIPTR *buffer, VARIPTR end) {
+    i32 __cdecl NuTexRead(char *name, VARIPTR *buffer, VARIPTR end) {
         char filename[1024];
         NUFILE file;
         i32 size, id;
@@ -2121,7 +2121,7 @@ extern "C" {
     }
 
     void __cdecl NuWaterSpeed(f32 speed) {
-        NuShaderObjectBaseSetWaterSpeedPc(speed);
+        NuShaderObjectBaseSetWaterSpeed(speed);
     }
 
     void __cdecl NuRndrShadowVolumeFinishPc(void) {
@@ -4312,7 +4312,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane) {
+    void __cdecl NuMtlSetRenderPlane(NUMTL *material, i32 plane) {
     }
 
     void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
@@ -4716,7 +4716,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *items) {
+    void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *items) {
         NuDisplayListExecute(items, PCDisplayItemHandlersPc);
     }
 
@@ -6620,7 +6620,7 @@ extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
         NuDisplayHandlerMaterialPc = material;
         if (!(material->vertex_format & 0x300000) && material->common.display_list != NULL) {
             PCShaderSetMaterialParametersPc(shader, &material->common);
-            NuShaderManagerBindShaderPc(shader);
+            NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
         }
         u32 flags = material->attributes_word;

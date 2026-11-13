@@ -462,7 +462,7 @@ void __cdecl VaderA_Init(WORLDINFO *world) {
 }
 
 void __cdecl VaderA_Reset(WORLDINFO *world) {
-    DrawTimerPc(0, 0, 1);
+    DrawTimer(0, 0, 1);
     if (netclient == 0 && vader_a.count != 0)
         VaderA_StartCollapseStage(world);
     if (vader_a.timer_message != NULL)
@@ -515,7 +515,7 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
                 vader_a.count++;
             }
             if (vader_a.subtitle != 0 || (vader_a.timer > 0.0f && (i32)previous_time != (i32)vader_a.timer))
-                TickTockSfxPc();
+                TickTockSfx();
         } else if (netclient == 0 && vader_a.timer <= 0.0f) {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[0];
             if (object != NULL && (object->flags_1fc & 0x80) != 0)
@@ -546,7 +546,7 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
 
 void __cdecl VaderA_DrawPanel(WORLDINFO *world) {
     if (vader_a.count != 0 && (i16)vader_a.count < 3) {
-        DrawTimerPc((i32)vader_a.timer + 1, vader_a.subtitle, 0);
+        DrawTimer((i32)vader_a.timer + 1, vader_a.subtitle, 0);
         vader_a.subtitle = 0;
     }
 }

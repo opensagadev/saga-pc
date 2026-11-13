@@ -131,7 +131,7 @@ A decompiler-shaped `if (n > 0) { p = Obj; i = 0; do { ...; ++i; ++p; } while (i
 compiles differently from the original
 `for (i = 0; i < HIGHGAMEOBJECT; ++i) { object = &Obj[index]; ... }`; VC8 does
 the rotation and strength reduction itself. Example:
-`Condition_EmptyTakeOverPc`. Sample: 1.
+`Condition_EmptyTakeOver`. Sample: 1.
 
 ### I13: explicit `(f64)` casts change negation folding
 

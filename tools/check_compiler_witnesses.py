@@ -15,8 +15,8 @@ from tools.lib import (archive_members, bindings_for, changed_files, changed_tre
 
 WITNESSES = [
     ('integer', 'src/nu2api/numath_includes.c', '_NuRand'),
-    ('x87', 'src/gameapi/aisysall.c', '_Condition_CurrentLocatorIsPc'),
-    ('x87-struct-global', 'src/gameapi/gameaiscript.c', '_Condition_PlayerOnGroundPc'),
+    ('x87', 'src/gameapi/aisysall.c', '_Condition_CurrentLocatorIs'),
+    ('x87-struct-global', 'src/gameapi/gameaiscript.c', '_Condition_PlayerOnGround'),
     ('switch', 'src/legoapi/gameobjects.c', '_GetCharacterGoalSpeed'),
     ('struct-loop-call', 'src/legoapi/parts.c', '_Part_FindFromHSpecial'),
     ('private-call', 'src/legoapi/move.c', '_DodgeCode'),

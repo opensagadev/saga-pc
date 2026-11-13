@@ -303,7 +303,7 @@ void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *world) {
                 BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
             } else if (MiscTime > 0.0f && (i32)MiscTime != (i32)previous_time) {
                 TimerScalePc = 1.25f;
-                TickTockSfxPc();
+                TickTockSfx();
             }
         }
         BonusGunshipBNetPacketPc->progress = BONUS_GUNSHIP_FLAGS_PC_VIEW->progress;
@@ -319,7 +319,7 @@ void __cdecl BonusGunshipB_UpdatePc(WORLDINFO *world) {
 void __cdecl BonusGunshipB_PanelPc(WORLDINFO *world) {
     if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
         if (MiscTime > 0.0f)
-            DrawTimerPc((i32)MiscTime + 1, 0, 0);
+            DrawTimer((i32)MiscTime + 1, 0, 0);
     }
 }
 
