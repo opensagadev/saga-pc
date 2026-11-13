@@ -97,8 +97,7 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
 }
 
 void __cdecl WeaponOutCode(GAMEOBJECT *object) {
-    ANIMPACKET_PC *packet;
-    f32 start, end, time;
+    f32 start, end, *time;
     if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT)
         return;
     if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
@@ -107,9 +106,8 @@ void __cdecl WeaponOutCode(GAMEOBJECT *object) {
         object->character_context = -1;
         return;
     }
-    packet = &object->anim_packet;
-    if ((packet->blending && packet->blend_target_animation != object->field_7aa) ||
-        (!packet->blending && packet->animation_index != object->field_7aa)) {
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->field_7aa) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->field_7aa)) {
         object->weapon_scale = 0.0f;
         return;
     }
@@ -120,10 +118,12 @@ void __cdecl WeaponOutCode(GAMEOBJECT *object) {
         if (object->weapon_scale != 0.0f)
             return;
     } else {
-        if (object->weapon_scale != 0.0f || object->field_e33 == 1 || packet->requested_animation != object->field_7aa)
+        if (object->weapon_scale != 0.0f || object->field_e33 == 1 ||
+            object->anim_packet.requested_animation != object->field_7aa)
             return;
-        time = packet->blending ? packet->blend_target_time : packet->current_time;
-        if (!(time >= start))
+        time =
+            object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        if (!(*time >= start))
             return;
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
@@ -204,8 +204,7 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
 }
 
 void __cdecl WeaponInCode(GAMEOBJECT *object) {
-    ANIMPACKET_PC *packet;
-    f32 start, end, time;
+    f32 start, end, *time;
     if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN)
         return;
     if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
@@ -214,9 +213,8 @@ void __cdecl WeaponInCode(GAMEOBJECT *object) {
         object->character_context = -1;
         return;
     }
-    packet = &object->anim_packet;
-    if ((packet->blending && packet->blend_target_animation != object->field_7aa) ||
-        (!packet->blending && packet->animation_index != object->field_7aa)) {
+    if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->field_7aa) ||
+        (!object->anim_packet.blending && object->anim_packet.animation_index != object->field_7aa)) {
         object->weapon_scale = 1.0f;
         return;
     }
@@ -227,10 +225,12 @@ void __cdecl WeaponInCode(GAMEOBJECT *object) {
         if (object->weapon_scale != 1.0f)
             return;
     } else {
-        if (object->weapon_scale != 1.0f || object->field_e33 == 2 || packet->requested_animation != object->field_7aa)
+        if (object->weapon_scale != 1.0f || object->field_e33 == 2 ||
+            object->anim_packet.requested_animation != object->field_7aa)
             return;
-        time = packet->blending ? packet->blend_target_time : packet->current_time;
-        if (!(time >= start))
+        time =
+            object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
+        if (!(*time >= start))
             return;
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
