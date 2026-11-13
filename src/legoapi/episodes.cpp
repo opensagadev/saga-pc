@@ -227,10 +227,9 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         i32 id = episode->area_ids[i];
         if (area_index != -1 && id != area_index)
             continue;
-        AREA_DATA_PC *area = &ADataList[id];
-        if (area == HUB_ADATA || (area->flags & 0x22) != 0)
+        if (&ADataList[id] == HUB_ADATA || (ADataList[id].flags & 0x22) != 0)
             continue;
-        if ((area->flags & 0x100) != 0) {
+        if ((ADataList[id].flags & 0x100) != 0) {
             if (EpisodeGoldBrickForSuperBonusPc != 0) {
                 ++EpGoldBrickTotal;
                 if (records[i].area_complete != 0)
@@ -238,9 +237,9 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             }
             continue;
         }
-        if ((area->flags & 4) != 0) {
+        if ((ADataList[id].flags & 4) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)records[id].challenge_time < (f64)area->challenge_trial_time)
+            if ((f64)records[id].challenge_time < (f64)ADataList[id].challenge_trial_time)
                 ++EpGoldBrickCount;
             continue;
         }
@@ -254,7 +253,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             ++EpCompleteCount;
             ++EpGoldBrickCount;
         }
-        if ((area->flags & 0x10) == 0)
+        if ((ADataList[id].flags & 0x10) == 0)
             continue;
         ++EpGoldBrickTotal;
         if (save->minikit_complete != 0)
