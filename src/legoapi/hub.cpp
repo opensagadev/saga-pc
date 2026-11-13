@@ -1685,8 +1685,7 @@ extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
     if (HubAreaInfoPc[0].area_name != NULL) {
         HUB_AREA_INFO_PC *info = HubAreaInfoPc;
         do {
-            GIZMO_PC *gizmo = (GIZMO_PC *)info->bonus_gizmo;
-            if (gizmo != NULL && gizmo->object == buildit)
+            if (info->bonus_gizmo != NULL && ((GIZMO_PC *)info->bonus_gizmo)->object == buildit)
                 return 1;
             ++info;
         } while (info->area_name != NULL);
