@@ -466,7 +466,10 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     pod->spline = spline;
     duration = (f64)time_factor * race->previous_lap_display;
     difference = end - start;
-    pod->speed = duration > 0.0 ? (f32)((difference * (f64)spline->length) / duration) : 1.0f;
+    if (duration > 0.0)
+        pod->speed = (difference * (f64)spline->length) / duration;
+    else
+        pod->speed = 1.0f;
     CalcSplinePointFromDist(spline, &position, start * spline->length);
     CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrementPc) * spline->length);
     PodMatrixCopyPrivatePc(&pod->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
