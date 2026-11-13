@@ -15872,8 +15872,12 @@ void NuDeferredFilterGen::render() {
     PCGraphicsBindFramebuffer(output);
     i32 width = NuFramebufferGetWidth(output), height = NuFramebufferGetHeight(output);
     PCGraphicsSubmitViewportPc(0, 0, width, height);
-    bool special = output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL;
-    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[special ? 2 : 3]);
+    POST_SHADER_PROGRAM_PC *program;
+    if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL)
+        program = (POST_SHADER_PROGRAM_PC *)programs[2];
+    else
+        program = (POST_SHADER_PROGRAM_PC *)programs[3];
+    PostShaderProgramBindPc(program);
     f32 parameters_pc[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
     PCDeviceSetPixelShaderConstantsF(0xa0, parameters_pc, 1);
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
