@@ -491,10 +491,6 @@ void CustomiserMenu_End() {
     }
 }
 
-void __cdecl Detonators_Reset(void) {
-    memset(Detonator, 0, sizeof(Detonator));
-}
-
 static __inline i32 DetonatorPlacementSlot(GAMEOBJECT *object) {
     i32 count;
     i32 available = -1;

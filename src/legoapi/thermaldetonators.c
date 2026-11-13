@@ -1,29 +1,6 @@
 #include "saga.h"
 
 /* Retail unit 0x4cf680-0x4d0650 (legoapi/thermaldetonators.c): definitions in retail address order. */
-EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
-    f32 radius, duration, amount;
-    AddGameDebris(WORLD->game_debris_sys, 0x49, position);
-    AddGameDebris(WORLD->game_debris_sys, 0x4a, position);
-    AddGameDebris(WORLD->game_debris_sys, 0x4b, position);
-    AddPartDebris(WORLD->part_debris_sys, 2, position);
-    NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
-    PlaySfx("exp_thermalDet", position);
-    radius = 0.75f;
-    duration = 0.5f;
-    if ((flags & 0x1000) != 0) {
-        radius = 1.3125f;
-        duration = 0.875f;
-        amount = qrand() < 0x8000 ? -1.0f : 1.0f;
-        GameCam_Judder(GameCam, amount * 2.0f, 2, position);
-        GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
-        PlaySfx("exp_thermalDet", position);
-    } else {
-        GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
-    }
-    return AddExplosion(position, radius, duration, NULL, -1, (u32)flags | 0x67);
-}
-
 f32 DropInOutScale(GAMEOBJECT *object) {
     const u8 context = (u8)(object->character_context);
     if (context == CHARACTER_CONTEXT_DROP_IN)
