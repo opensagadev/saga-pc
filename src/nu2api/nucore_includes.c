@@ -1932,7 +1932,6 @@ i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset) {
 
 i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destination, i32 capacity) {
     NUFILE file;
-    PC_NUDATFILEINFO *info;
     i32 size;
 
     nufile_lasterror = 0;
@@ -1943,18 +1942,18 @@ i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destinat
             }
         }
 
-        info = &pc_dat_file_infos[file - 0x800];
-        if (info->compression_mode != 0) {
-            size = info->decompressed_length;
+        if (pc_dat_file_infos[file - 0x800].compression_mode != 0) {
+            size = pc_dat_file_infos[file - 0x800].decompressed_length;
         } else {
-            size = info->file_length;
+            size = pc_dat_file_infos[file - 0x800].file_length;
         }
 
         if (size <= capacity && size != 0) {
             while (NuDatFileRead(file, destination, size) < 0) {
-                do {
+                NuFileRetry();
+                while (NuDatFileSeek(file, 0, 0) < 0) {
                     NuFileRetry();
-                } while (NuDatFileSeek(file, 0, 0) < 0);
+                }
             }
 
             if (header->mode == 3) {
