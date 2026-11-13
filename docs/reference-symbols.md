@@ -145,3 +145,69 @@ differently. Many sibling functions were rewritten after the PC release
 (AI condition evaluation, vertex declarations, `edanimLoadPage` became a
 wrapper), and GCC inlines helpers that retail calls, so a call-list difference
 alone is mostly noise (213 of 284 engine leads differ sibling -> retail).
+
+### Detector pass (`tools/sibscan.py`)
+
+The pilot's advice was automatic passes with manual work only on hits.
+`tools/sibscan.py` runs seven detectors over every non-exact function with a
+same-named sibling function (704) and prints ranked hits; `--exact-sample N`
+runs them on exact functions, where every hit is noise.
+
+```sh
+python3 tools/sibscan.py                        # all detectors, ranked hits
+python3 tools/sibscan.py --detector calls       # one detector
+python3 tools/sibscan.py --exact-sample 600     # false-positive rate per detector
+python3 tools/sibscan.py --all --names out.csv  # original-name candidates
+```
+
+| detector | what it compares | hits | noise on 599 exact | worked | exact | improved |
+|---|---|---:|---:|---:|---:|---:|
+| joins | compare blocks reached by two forward edges, sibling and retail more than ours (I46) | 21 | 0 (15.4% without the retail filter) | 2 | 0 | 0 |
+| vararg | parameter-pointer walks in our variadic sources, sibling va_start (I47) | 0 | 0 | - | - | - |
+| stores | stores per field offset or global, sibling agrees with retail | 29 | 0 (9.7%) | 3 | 1 | 0 |
+| calls | call multiset or order, sibling agrees with retail | 17 | 0 (35.2%) | 6 | 3 | 4 |
+| consts | constants, immediates, field offsets shared by sibling and retail but not ours (and the reverse) | 54 | 0 (40.7%) | 6 | 2 | 2 |
+| files | empty or tiny callee: sibling file vs our unit (I35) | 6 | 1 | 3 | 0 | 0 |
+| shape | loop count and counter direction, sibling agrees with retail | 15 | 0 (29.2%) | 4 | 2 | 0 |
+
+Every detector but `joins` and `files` needs retail to differ from ours, so it
+cannot fire on exact functions; the bracketed rate is the sibling-versus-ours
+noise that the retail filter removes. GCC joins compares far more often than
+VC8, so `joins` alone (sibling more than ours) flagged 34% of the leads and
+15% of exact functions; requiring retail to agree left 21 hits. GCC keeps a
+single return, so early returns are not compared. `files` mostly reports
+folded no-op hooks and helpers the sibling moved between files.
+
+Exact: `Condition_OriginRange`, `Condition_OpponentToOrigin`,
+`Condition_PlayerToOrigin` (an element pointer for the creature; the sibling
+shares one NuVecDist call), `NuStrFindPosU` (loop test at the head, range
+compare), `Tag_NewTransfer` (stores through a vector pointer),
+`Signals_StoreProgress` (loop bounded by both limits, indexed suit read),
+`GizSpinner_GetTargetPoints` (direction derived from the position angle, int
+step). Improved: `Hub_DrawPanel` 94.36 -> 97.37, `CastPart` 82.09 -> 84.54
+(impact recorded after each cast, position before normal),
+`ForcePushed_SetTargetMom` 92.91 -> 94.42, `PartImpact_ThermalDetonator`
+80.00 -> 81.79 (state set before the sound), `NuPortalVisibility` 97.96 ->
+99.85, `KillPartsByScene` 78.27 -> 79.19, `GizSpinner_Spin` 68.78 -> 69.15.
+
+Recurring lessons: where the sibling has one call reached from two branches,
+retail usually tail-merged two identical calls; the fix is to make the two
+paths identical (same element-pointer arithmetic, same load order), not to
+write one call. Where the sibling repeats a block per branch, so did the
+source. A `u16` step or angle where retail keeps an `int` shows as a
+zero-extension in ours.
+
+Tried without result: `ResetGizAIMessageSys` (constant CSE of zero),
+`CharConfig_ConfigureAll` and `DrawPanel` (block placement in large functions;
+the sibling versions were rewritten), `instNuGCutSceneServiceLoad` (retail
+and sibling reload the instance pointer at every use), `StartDoorPositions`
+(data layout), `NuASin` (the sibling uses a sign function), `NuMtxMulnVU0`
+(retail does not tail-call).
+
+`--all --names` aligns the call and global-access lists of every function
+with a counterpart (exact functions included) and keeps placeholder names
+whose aligned sibling name is unique and not already one of ours.
+`config/sibling-names.csv` lists them for a later rename batch: `high` when the
+pair appears in two functions or the names share a word, `low` otherwise
+(alignment can shift by one in long global lists, so check `low` rows by
+hand).
