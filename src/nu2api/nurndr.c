@@ -993,8 +993,8 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     f32 far_scale = parameters->far_scale * 128.0f;
     f32 near_angle = parameters->near_angle / 180.0f;
     f32 far_angle = parameters->far_angle / 180.0f;
-    f32 angle_delta = far_angle - near_angle;
     f32 scale_delta = far_scale - near_scale;
+    f32 angle_delta = far_angle - near_angle;
     RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefixPc;
     PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
     __declspec(align(16)) NUCAMERA camera;
@@ -1022,7 +1022,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
         adjacent = 1.0f / IMAGE_TAN_HALF_FOV(half_fov);
         first = 0;
     }
-    if (camera.fov != camFov) {
+    if (camFov != camera.fov) {
         f32 half_fov = camera.fov * 0.5f;
         adjacent = 1.0f / IMAGE_TAN_HALF_FOV(half_fov);
         camera.fov = camFov;
