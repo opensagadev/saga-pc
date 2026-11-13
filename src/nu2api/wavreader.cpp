@@ -1,6 +1,7 @@
 #include "saga.h"
 #include <string.h>
-extern "C" void __cdecl PCDecoderDiagnosticNoOpPc(...);
+extern "C" void __cdecl PCDecoderDiagnosticNoOpPc(...) {
+}
 
 WavReader::WavReader(void) {
     file = NULL;
