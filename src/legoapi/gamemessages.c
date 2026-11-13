@@ -293,9 +293,15 @@ void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duratio
 }
 
 void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {
-    const i32 red = 0xff;
-    const i32 green = 0xff - ((((u32)(colour_type)) < 1) << 6);
-    const i32 blue = ~(-((i32)(((u32)(colour_type)) < 1))) & 0xff;
+    u8 red, green, blue;
+    red = 0xff;
+    if (colour_type != 0) {
+        blue = 0xff;
+        green = 0xff;
+    } else {
+        green = 0xbf;
+        blue = 0;
+    }
     AddFancyMessageRGB(text, x, y, scale, duration, message_id, red, green, blue);
 }
 
