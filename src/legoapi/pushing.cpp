@@ -91,9 +91,12 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
     if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
         CHARACTERDATA_PC *data = object->character_data;
         f32 ceiling = (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
-        f32 vertical = object->position.y < ceiling ? (object->position.y - object->sock_position.midpoint.y) /
-                                                          (ceiling - object->sock_position.midpoint.y)
-                                                    : 1.0f;
+        f32 vertical;
+        if (object->position.y < ceiling)
+            vertical =
+                (object->position.y - object->sock_position.midpoint.y) / (ceiling - object->sock_position.midpoint.y);
+        else
+            vertical = 1.0f;
         object->target_velocity.y -= vertical * data->game_character->run_speed;
     }
     return amount;
