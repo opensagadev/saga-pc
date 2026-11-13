@@ -69,12 +69,7 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
         return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
     return UnfilteredHasLayer(which);
 }
-/* The vertex format holds the UV set count in bits 9-10; a filtered variant uses UVs only with an override. */
-static inline i32 ShaderFilterHasUvSets(const PC_SHADER_MATERIAL_FILTER_VIEW *filter, u32 format, i32 count) {
-    if (filter->variant != 0 && filter->descriptor->override_mode == 0)
-        return 0;
-    return (i8)((format >> 9) & 3) >= count;
-}
+#define SHADER_VERTEX_FORMAT_HAS_UV_SETS(format, count) ((i8)(((format) >> 9) & 3) >= (count))
 
 u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     u32 v = descriptor->vertex_format;
@@ -85,11 +80,11 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     colour0 = (v >> 16) & 1;
     if ((colour0 || (v & 0x20000)) && !(v & 0x400000))
         result |= 2;
-    if (ShaderFilterHasUvSets(this, v, 1))
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 1))
         result |= 4;
-    if (ShaderFilterHasUvSets(this, v, 2))
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 2))
         result |= 8;
-    if (ShaderFilterHasUvSets(this, v, 3))
+    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 3))
         result |= 0x10;
     if ((colour0 || (v & 0x20000)) && (v & 0x400000))
         result |= 0x40;
@@ -180,6 +175,8 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAbove() const {
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAtOrBelow() const {
     return variant == 0 && (descriptor->layer_flags & 0x100000) != 0 && descriptor->surface_threshold <= parameter;
 }
+
+#undef SHADER_VERTEX_FORMAT_HAS_UV_SETS
 
 template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
