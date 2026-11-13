@@ -54,11 +54,8 @@ extern "C" void __cdecl ResetRepeatSfx(void) {
         RepeatSfxQueue[0].sfx_id = -1;
 }
 
-void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_count_arg, f32 repeat_delay,
+void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32 repeat_delay,
                            NUVEC *position) {
-    u8 play_count;
-
-    play_count = (u8)play_count_arg;
     if (play_count == 1 && start_delay == 0.0f) {
         if (sfx_id != -1) {
             PlaySfxById(sfx_id, position);
@@ -79,7 +76,7 @@ void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_cou
     }
     RepeatSfxQueue[RepeatSfxQueueHead].sfx_id = (i16)sfx_id;
     RepeatSfxQueue[RepeatSfxQueueHead].start_delay = start_delay;
-    RepeatSfxQueue[RepeatSfxQueueHead].play_count = (i8)play_count;
+    RepeatSfxQueue[RepeatSfxQueueHead].play_count = play_count;
     RepeatSfxQueue[RepeatSfxQueueHead].repeat_delay = repeat_delay;
     RepeatSfxQueue[RepeatSfxQueueHead].position = position;
     RepeatSfxQueueHead = (RepeatSfxQueueHead + 1) & 0x1f;

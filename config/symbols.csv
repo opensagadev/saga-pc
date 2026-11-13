@@ -4181,7 +4181,7 @@ address,symbol,size,ctype
 0x00548690,_UpdateLevelSfx,121,"void __cdecl (WORLDINFO *, i32)"
 0x548710,_TickTockSfxPc,76,void __cdecl (void)
 0x548780,_ResetRepeatSfx,61,void __cdecl (void)
-0x005487c0,_PlayRepeatSfx,209,"void __cdecl (char *, i32, f32, i32, f32, NUVEC *)"
+0x005487c0,_PlayRepeatSfx,209,"void __cdecl (char *, i32, f32, char, f32, NUVEC *)"
 0x005488a0,_UpdateRepeatSfx,135,void __cdecl (void)
 0x548930,_SetSoundFadeDist,110,"void __cdecl (WORLDINFO *, OPTIONSSAVE *)"
 0x005489a0,_NewAreaMusicChanges,11,void __cdecl (void)

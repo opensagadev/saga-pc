@@ -16235,7 +16235,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *, NUVEC *, AIPATHCNX_PC *, i32);
     extern REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32];
     extern i32 RepeatSfxQueueHead;
-    void __cdecl PlayRepeatSfx(char *, i32, f32, i32, f32, NUVEC *);
+    void __cdecl PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
     void __cdecl UpdateRepeatSfx(void);
     extern TERRAIN_LAYER_PC TerLayer[17];
     extern NUVEC ANI3_EVAL_SCALE_ARRAY[256];

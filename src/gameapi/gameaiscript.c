@@ -9100,7 +9100,7 @@ i32 __cdecl Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
         position_ptr = &position;
     }
     if (name != NULL) {
-        PlayRepeatSfx(name, -1, start_delay, (i32)play_count, repeat_delay, position_ptr);
+        PlayRepeatSfx(name, -1, start_delay, play_count, repeat_delay, position_ptr);
     }
     return 1;
 }
