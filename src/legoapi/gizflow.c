@@ -362,7 +362,7 @@ STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->assist_id) == 1);
 STATIC_ASSERT(offsetof(GIZFLOW_BOX_LOADER_PREFIX_PC, state_flags) == 0xa);
 STATIC_ASSERT(sizeof(((GIZFLOW_BOX_LOADER_PREFIX_PC *)0)->state_flags) == 2);
 
-static __declspec(noinline) void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
+static void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
     if (box->parent_count != 0) {

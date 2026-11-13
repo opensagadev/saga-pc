@@ -553,7 +553,7 @@ void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
     curr_set = set;
 }
 
-static __declspec(noinline) void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
+static void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
     dst->m00 = src->m00;
     dst->m01 = src->m01;
     dst->m02 = src->m02;

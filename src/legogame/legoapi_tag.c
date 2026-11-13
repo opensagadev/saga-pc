@@ -691,8 +691,7 @@ void __cdecl TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 ble
     }
 }
 
-__declspec(noinline) void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera,
-                                                     i32 immediate) {
+void __cdecl TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 immediate) {
     if (immediate != 0) {
         TakeOverGameObject2(rider, vehicle, blend_camera);
     } else {

@@ -2,7 +2,7 @@
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
-__declspec(noinline) void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera);
+void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera);
 void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera);
 void __cdecl MakePlayPlanes(GAMECAMERA *camera);
 void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);

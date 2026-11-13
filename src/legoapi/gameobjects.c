@@ -221,7 +221,7 @@ extra:
     }
 }
 
-__declspec(noinline) void __cdecl ScaleGameObject(GAMEOBJECT *object) {
+void __cdecl ScaleGameObject(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
@@ -257,8 +257,8 @@ i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
     return 0;
 }
 
-__declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
-                                                        i32 vehicle_only, i32 non_level_only) {
+GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only, i32 vehicle_only,
+                                   i32 non_level_only) {
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
@@ -474,8 +474,7 @@ void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     }
 }
 
-__declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room,
-                                                   NUGSCN *scene) {
+void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {
     if (enabled != 0) {
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
         object->portal_flags |= 0x00400000;
@@ -628,8 +627,7 @@ safe_position_done:
     object->flags_ef4 &= ~4;
 }
 
-__declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
-                                                      f32 parameter) {
+void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;
     object->field_f00 = action;
     object->use_action_frames = grapple_attach_frames;
@@ -733,8 +731,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_frame_event) == 0x1072);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_start_index) == 0x1081);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_search_index) == 0x1089);
-
-#pragma intrinsic(__movsd)
 
 /* Native 0x0043fda0, 390 bytes. */
 STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);

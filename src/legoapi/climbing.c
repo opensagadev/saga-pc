@@ -222,7 +222,7 @@ i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-__declspec(noinline) i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
+i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
     if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0) {
         return 0;
     }

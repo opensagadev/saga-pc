@@ -3,7 +3,7 @@
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. Retail keeps this
  * TU's out-of-line copy at 0x617c20. */
-static __forceinline f32 EdcamFabsPc(f32 f) {
+static f32 EdcamFabsPc(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;

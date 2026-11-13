@@ -35,7 +35,7 @@ extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
 
 static __inline f32 UtilitiesFabsPc(f32 value);
 
-static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
+static void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;
     result->m01 = source->m01;
     result->m02 = source->m02;
@@ -178,7 +178,7 @@ i32 __cdecl OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
            0.0;
 }
 
-__declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
+void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     u16 x_angle = (u16)NuAtan2D(normal->z, normal->y);
     NUVEC rotated;
     u16 z_angle;
@@ -275,7 +275,7 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     return (u16)(current - step);
 }
 
-__declspec(noinline) f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
+f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
     NUVEC input, target;
     NuVecRotateY(&input, &v001, input_angle);
     NuVecRotateY(&target, &v001, direction);
@@ -422,7 +422,7 @@ void __cdecl QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right
     NuQuatToMtx(&value, out);
 }
 
-__declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
+f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
     i32 handles[16];
     i32 handle_count = 0;
     i32 i;
@@ -1183,7 +1183,7 @@ void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
 }
 
 /* PC animation constructors call the shared game allocator out of line. */
-__declspec(noinline) void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
+void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
     void *ptr = NULL;
 
     if (buf != NULL && end != NULL && buf->addr + (u32)size < end->addr) {
@@ -1272,7 +1272,7 @@ f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     return position;
 }
 
-__declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
+void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
     NUINSTANCE *instance;
     i32 count;
 

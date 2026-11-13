@@ -318,7 +318,7 @@ static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCA
     return 0;
 }
 
-static __declspec(noinline) void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
+static void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
     if (record == NULL) {
         return;
     }
@@ -460,7 +460,7 @@ void __cdecl JediB_Reset(WORLDINFO *world) {
     jedi_b.unique_spawned &= ~3u;
 }
 
-static __declspec(noinline) void __cdecl JediBKilledCallbackPc(GAMEOBJECT *object) {
+static void __cdecl JediBKilledCallbackPc(GAMEOBJECT *object) {
     i32 index, other, wave;
     i32 alive = 0;
     if (object == NULL) {
@@ -497,7 +497,7 @@ static __declspec(noinline) void __cdecl JediBKilledCallbackPc(GAMEOBJECT *objec
     }
 }
 
-static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
+static void JediBStartPhasePc(WORLDINFO *world) {
     JEDIB_PHASE_PC *phase_lists[3] = {jedi_b_phase1, jedi_b_phase2, jedi_b_phase3};
     JEDIB_PHASE_PC *entry;
     AILOCATOR_PC *locator;
@@ -607,7 +607,7 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
     jedi_b.state = 1;
 }
 
-static __declspec(noinline) void JediBTickPhasePc(void) {
+static void JediBTickPhasePc(void) {
     i32 done, i, release;
     GAMEOBJECT *boss;
     jedi_b.timer += FRAMETIME;
@@ -669,7 +669,7 @@ static __declspec(noinline) void JediBTickPhasePc(void) {
     }
 }
 
-static __declspec(noinline) void JediBEndPhasePc(WORLDINFO *world) {
+static void JediBEndPhasePc(WORLDINFO *world) {
     if (jedi_b.timer < (f64)0.1f) {
         jedi_b.timer += FRAMETIME;
         return;

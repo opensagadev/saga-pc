@@ -1273,7 +1273,7 @@ extern "C" {
 
 // Retail private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
 extern "C" {
-    static __declspec(noinline) NUMTX *__cdecl BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
+    static NUMTX *__cdecl BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
         f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
         f32 m01 = m->m01;
@@ -1292,7 +1292,7 @@ extern "C" {
         return m;
     }
 
-    static __declspec(noinline) NUMTX *__cdecl BoltDrawRotateZPrivate(NUMTX *m, i32 angle) {
+    static NUMTX *__cdecl BoltDrawRotateZPrivate(NUMTX *m, i32 angle) {
         f32 cos_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         f32 sin_z = NuTrigTable[(angle >> 1) & 0x7fff];
         f32 m00 = m->m00;

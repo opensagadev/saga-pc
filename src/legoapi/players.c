@@ -412,7 +412,7 @@ i32 __cdecl CanPullLevers(i32 id) {
     return (flags & 0x40088) != 0;
 }
 
-__declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
+void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     if (Player_ClearContextFn != NULL) {
         Player_ClearContextFn(object, mode);
     }
@@ -475,8 +475,8 @@ i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     return 0;
 }
 
-__declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum,
-                                           GAMEOBJECT *object, GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
+void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object,
+                      GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
     i32 count, i;
     NUVEC bounds_min, bounds_max;
     NUVEC target;

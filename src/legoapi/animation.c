@@ -118,7 +118,7 @@ void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unuse
     }
 }
 
-static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
+static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first, second, blend, angle;
     i32 allowed;
@@ -222,7 +222,7 @@ static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
     joints->count = joints->count + 1;
 }
 
-static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
+static void HeadMovementAlternatePc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first, second, blend, angle;
     i32 allowed;
@@ -330,7 +330,7 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
+static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
     f32 first, second, blend, angle;
     i32 allowed;

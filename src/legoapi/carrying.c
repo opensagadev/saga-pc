@@ -765,7 +765,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
     }
 }
 
-__declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
+i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     f32 speed = 0.0f;
     object->target_velocity.x = 0.0f;
     object->target_velocity.z = 0.0f;
@@ -789,7 +789,7 @@ __declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32
     return 0;
 }
 
-__declspec(noinline) i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
+i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
     if (object->field_7b3 == 0) {
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
         object->field_0x276 = object->facing_angle;
@@ -813,7 +813,7 @@ __declspec(noinline) i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 in
     return 1;
 }
 
-__declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
+i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
         if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6) {
             return 1;

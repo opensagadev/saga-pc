@@ -887,7 +887,7 @@ AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32 count, f32
     return result;
 }
 
-static __declspec(noinline) AILOCATOR_PC *FirstSpawnSetLocator(AILOCATORSET_PC *set, AISYS_PC *sys) {
+static AILOCATOR_PC *FirstSpawnSetLocator(AILOCATORSET_PC *set, AISYS_PC *sys) {
     AILOCATOR_PC *locator = NULL;
     if (set != NULL && set->locator_count != 0) {
         locator = &sys->locators[set->locator_entries[0]];
@@ -6169,7 +6169,7 @@ i32 __cdecl Action_RemoveThrownForceObjects(AISYS_PC *system, AISCRIPTPROCESS_PC
     return 1;
 }
 
-static __declspec(noinline) ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, i32 count) {
+static ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, i32 count) {
     i32 index;
     i32 selection;
     ZIPUP_s *result;
@@ -6193,7 +6193,7 @@ static __declspec(noinline) ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, 
     return result;
 }
 
-static __declspec(noinline) ZIPUP_s *FindSpawnZipUp(char *name) {
+static ZIPUP_s *FindSpawnZipUp(char *name) {
     i32 index;
     ZIPUP_s *zipup = (ZIPUP_s *)WORLD->zipups;
     for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {

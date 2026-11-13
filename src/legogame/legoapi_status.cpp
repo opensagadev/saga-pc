@@ -104,7 +104,7 @@ extern "C" {
     i32 DrawGoldBrick_Stage = 0;
     i32 DrawGoldBrick_Phase = 0;
 
-    __declspec(noinline) void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
+    void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
         (void)unused;
         if (packet->gold_brick_enabled[index] != 0) {

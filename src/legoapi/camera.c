@@ -120,7 +120,7 @@ extern f32 GameCamShakeDirSeekPc;
 extern f32 GameCamShakeOffsetSeekPc;
 extern i32 PlayPlanesUseRenderMtxPc;
 
-__declspec(noinline) void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
+void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }

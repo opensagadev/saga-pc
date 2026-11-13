@@ -76,7 +76,7 @@ static void LedgeSetAttachPositionPc(GAMEOBJECT *object, NUVEC *position, u16 an
 }
 
 /* Retail takes these absolute values through the float's bit pattern. */
-static __forceinline f32 LedgeFabsPc(f32 value) {
+static f32 LedgeFabsPc(f32 value) {
     f32 result;
     *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
     return result;

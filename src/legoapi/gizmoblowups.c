@@ -728,7 +728,7 @@ void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_pt
     }
 }
 
-static __declspec(noinline) void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
+static void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
     RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
     NUINSTANIM *animation;
     blowup->status_flags = (blowup->status_flags & 0xfeff7ffe) | 0x804000;

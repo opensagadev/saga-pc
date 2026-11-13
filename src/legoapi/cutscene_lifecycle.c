@@ -841,8 +841,7 @@ struct cut_locator_function_entry_pc_s {
 STATIC_ASSERT(offsetof(CUT_LOCATOR_FUNCTION_ENTRY_PC, reset) == 8);
 STATIC_ASSERT(sizeof(CUT_LOCATOR_FUNCTION_ENTRY_PC) == 20);
 
-static __declspec(noinline) void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
-                                                    i32 mode) {
+static void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_CAMERA_SYSTEM *system;
     if (scene->camera_system != NULL) {
         system = (CUT_LOAD_CAMERA_SYSTEM *)((u32)scene->camera_system + string_delta);
@@ -863,8 +862,7 @@ static __declspec(noinline) void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i3
     }
 }
 
-static __declspec(noinline) void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
-                                                     i32 mode) {
+static void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_LOCATOR_SYSTEM *system;
     i32 i;
     if (scene->locator_system != NULL) {
@@ -892,8 +890,7 @@ static __declspec(noinline) void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i
     }
 }
 
-static __declspec(noinline) void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
-                                                   i32 mode) {
+static void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_RIGID_SYSTEM *system;
     i32 i;
     if (scene->rigid_system != NULL) {
@@ -918,8 +915,7 @@ static __declspec(noinline) void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32
     }
 }
 
-static __declspec(noinline) void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
-                                                       i32 mode) {
+static void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta, i32 mode) {
     CUT_LOAD_CHARACTER_SYSTEM *system;
     i32 i;
     if (scene->character_system != NULL) {
@@ -965,7 +961,7 @@ static __declspec(noinline) void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene,
     }
 }
 
-static __declspec(noinline) void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta) {
+static void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta) {
     CUT_LOAD_TRIGGER_SYSTEM *system = scene->trigger_system;
     i32 i;
     if (system != NULL) {
@@ -982,7 +978,7 @@ static __declspec(noinline) void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i
     }
 }
 
-static __declspec(noinline) void NuGCutSceneFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 relocation_delta, i32 mode) {
+static void NuGCutSceneFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 relocation_delta, i32 mode) {
     scene->strings = scene->strings ? (char *)((u32)scene->strings + scene->string_delta) : NULL;
     if (scene->camera_system != NULL) {
         CutCameraFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
@@ -1002,7 +998,7 @@ static __declspec(noinline) void NuGCutSceneFixPtrs(CUT_SCENE_LOAD_PC *scene, i3
     scene->bounds = scene->bounds ? (CUT_LOAD_BOUNDS *)((u32)scene->bounds + scene->string_delta) : NULL;
 }
 
-__declspec(noinline) void CutSceneRemapFocusPc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
+void CutSceneRemapFocusPc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
     CUT_LOAD_LOCATOR *locator;
     i32 i;
     if ((scene->version & 0xff) < 5 || scene->camera_system == NULL ||
@@ -1158,7 +1154,7 @@ void *__cdecl NuGCutSceneLoadAddr(char *path, CUT_SCENE_LOAD_PC *scene, i32 load
     return NULL;
 }
 
-static __declspec(noinline) void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
+static void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     CUT_LOAD_LOCATOR_SYSTEM *locators = scene->locator_system;
     NUSPECIALHANDLE handle;
@@ -1187,7 +1183,7 @@ static __declspec(noinline) void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, 
     }
 }
 
-static __declspec(noinline) i32 CutFindLocatorFunctionPc(char *name) {
+static i32 CutFindLocatorFunctionPc(char *name) {
     i32 i = 0;
     if (CutSceneLocatorFunctionsPc != NULL) {
         for (; CutSceneLocatorFunctionsPc[i].name != NULL; ++i) {
@@ -1199,7 +1195,7 @@ static __declspec(noinline) i32 CutFindLocatorFunctionPc(char *name) {
     return -1;
 }
 
-static __declspec(noinline) void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
+static void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
     CUT_LOAD_LOCATOR_SYSTEM *system = scene->locator_system;
     u32 i;
     for (i = 0; i < system->type_count; ++i) {
@@ -1234,7 +1230,7 @@ static __declspec(noinline) void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene
     }
 }
 
-static __declspec(noinline) void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
+static void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
     CUT_LOAD_TRIGGER_SYSTEM *system = scene->trigger_system;
     i32 i, j;
     for (i = 0; i < system->count; ++i) {
@@ -1280,7 +1276,7 @@ void __cdecl NuGCutSceneFixUp(void *asset, NUGSCN *gscene, void *extra_scene, i3
     }
 }
 
-static __declspec(noinline) void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
+static void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     NUSPECIALHANDLE handle;
     i32 i;
@@ -1321,7 +1317,7 @@ void __cdecl NuGCutRigidForceInstanced(void *asset) {
 }
 
 /* Places the instance's bounding-box centre in world space for its matrix. */
-static __declspec(noinline) void NuGCutSceneUpdateMtx(CUT_INSTANCE_LOAD_PC *instance, NUMTX *matrix) {
+static void NuGCutSceneUpdateMtx(CUT_INSTANCE_LOAD_PC *instance, NUMTX *matrix) {
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     if (scene->bounds != NULL) {
         instance->center.x = (scene->bounds->max.x + scene->bounds->min.x) * 0.5;
@@ -1337,8 +1333,7 @@ static __declspec(noinline) void NuGCutSceneUpdateMtx(CUT_INSTANCE_LOAD_PC *inst
     }
 }
 
-static __declspec(noinline) CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(CUT_LOAD_CAMERA_SYSTEM *system,
-                                                                                VARIPTR *buffer) {
+static CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(CUT_LOAD_CAMERA_SYSTEM *system, VARIPTR *buffer) {
     CUT_LOAD_CAMERA_INSTANCE *instance = NULL;
     if (system != NULL && system->count != 0 && buffer != NULL) {
         buffer->addr = (buffer->addr + 15) & ~15;
@@ -1353,8 +1348,8 @@ static __declspec(noinline) CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(
     return instance;
 }
 
-static __declspec(noinline) CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreatePc(CUT_SCENE_LOAD_PC *scene,
-                                                                                     VARIPTR *buffer, NUGSCN *gscene) {
+static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreatePc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer,
+                                                                NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     CUT_LOAD_RIGID_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
@@ -1406,8 +1401,7 @@ static __declspec(noinline) CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCrea
     return instance;
 }
 
-static __declspec(noinline) CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreatePc(CUT_SCENE_LOAD_PC *scene,
-                                                                                             VARIPTR *buffer) {
+static CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInstanceCreatePc(CUT_SCENE_LOAD_PC *scene, VARIPTR *buffer) {
     CUT_LOAD_CHARACTER_SYSTEM *system = scene->character_system;
     CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
@@ -1437,8 +1431,7 @@ static __declspec(noinline) CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *CutCharacterInst
     return instance;
 }
 
-static __declspec(noinline) CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *
-CutLocatorInstanceCreatePc(CUT_LOAD_LOCATOR_SYSTEM *system, VARIPTR *buffer) {
+static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreatePc(CUT_LOAD_LOCATOR_SYSTEM *system, VARIPTR *buffer) {
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *instance = NULL;
     i32 i;
     if (system != NULL && system->count != 0 && buffer != NULL) {
@@ -1481,8 +1474,8 @@ CutLocatorInstanceCreatePc(CUT_LOAD_LOCATOR_SYSTEM *system, VARIPTR *buffer) {
     return instance;
 }
 
-static __declspec(noinline) CUT_LOAD_TRIGGER_INSTANCE *
-CutTriggerInstanceCreatePc(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
+static CUT_LOAD_TRIGGER_INSTANCE *CutTriggerInstanceCreatePc(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene,
+                                                             CUT_LOAD_TRIGGER_OWNER *owner) {
     i32 count = scene->trigger_system->count;
     CUT_LOAD_TRIGGER_INSTANCE *instance;
     buffer->addr = (buffer->addr + 15) & ~15;
@@ -1496,9 +1489,9 @@ CutTriggerInstanceCreatePc(VARIPTR *buffer, CUT_SCENE_LOAD_PC *scene, CUT_LOAD_T
     return instance;
 }
 
-static __declspec(noinline) void CutSceneCreateContentsPc(VARIPTR *buffer, char *name, CUT_INSTANCE_LOAD_PC *instance,
-                                                          CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene,
-                                                          CUT_LOAD_TRIGGER_OWNER *extra_scene, VARIPTR *end) {
+static void CutSceneCreateContentsPc(VARIPTR *buffer, char *name, CUT_INSTANCE_LOAD_PC *instance,
+                                     CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene, CUT_LOAD_TRIGGER_OWNER *extra_scene,
+                                     VARIPTR *end) {
     if (scene != NULL) {
         instance->scene = scene;
         instance->saved_scene = scene;
@@ -1705,7 +1698,7 @@ void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
 }
 
 /* Jumps an instance to its last frame and settles the rigid and locator systems there. */
-static __declspec(noinline) void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
+static void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
     CUT_SCENE_LIFECYCLE_PC *scene;
     u32 flags = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
     scene = instance->scene;
@@ -2143,7 +2136,7 @@ static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame
     }
 }
 
-static __forceinline void CutCameraSysStartPc(CUT_LOAD_CAMERA_INSTANCE *state, CUT_LOAD_CAMERA_SYSTEM *system) {
+static void CutCameraSysStartPc(CUT_LOAD_CAMERA_INSTANCE *state, CUT_LOAD_CAMERA_SYSTEM *system) {
     u32 i;
     state->state_index = 0;
     state->camera_index = system->starting_camera;
@@ -2178,7 +2171,7 @@ static void CutSceneLocatorSysStartPc(CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states, 
     }
 }
 
-static __forceinline void CutTriggerSysStartPc(CUT_INSTANCE_LOAD_PC *instance) {
+static void CutTriggerSysStartPc(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
     CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;

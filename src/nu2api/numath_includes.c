@@ -46,14 +46,14 @@ STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f3
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
-static __forceinline f32 NuFdiv(f32 a, f32 b) {
+static f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
 
-static __forceinline f32 NuFabs(f32 f) {
+static f32 NuFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -1018,7 +1018,7 @@ NUVEC *__cdecl NuMtxGetScale(NUVEC *out, NUMTX *matrix) {
     return out;
 }
 
-__declspec(noinline) void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
+void __cdecl NuMtxPreScale(NUMTX *m, NUVEC *s) {
     m->m00 *= s->x;
     m->m01 *= s->x;
     m->m02 *= s->x;

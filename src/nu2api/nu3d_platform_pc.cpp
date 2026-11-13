@@ -333,7 +333,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC, rows) == 0);
     extern "C" i32 PcGeometryMatrixCapacityPc;
 
-    static __declspec(noinline) void PcGeometryCopyMatrixPc(NUMTX *dst, const NUMTX *src) {
+    static void PcGeometryCopyMatrixPc(NUMTX *dst, const NUMTX *src) {
         dst->m00 = src->m00;
         dst->m01 = src->m01;
         dst->m02 = src->m02;
@@ -770,7 +770,7 @@ extern "C" {
         extern const char NuMaterialSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\numtl_dlist.c";
     }
 
-    extern "C" __declspec(noinline) void __cdecl Nu360MtlInit(void) {
+    extern "C" void __cdecl Nu360MtlInit(void) {
         NuDisplayMaterialDebrisProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
             PostShaderProgramCreatePc(2, NuMaterialShaderTokens769710Pc, NuMaterialShaderTokens769840Pc));
         if (PCDeviceHardwareVertexProcessingPC > 1) {
@@ -1403,7 +1403,7 @@ extern "C" {
         DisplayListSpecialTransformNoOpPc(special, matrix);
     }
 
-    static __declspec(noinline) void PCSpecialTransposeMatrix(NUMTX *out, NUMTX *matrix) {
+    static void PCSpecialTransposeMatrix(NUMTX *out, NUMTX *matrix) {
         f32 saved;
         out->m00 = matrix->m00;
         saved = matrix->m01;
@@ -1429,7 +1429,7 @@ extern "C" {
         out->m33 = matrix->m33;
     }
 
-    static __declspec(noinline) void NuLgtSetVertexColor(i32 colour) {
+    static void NuLgtSetVertexColor(i32 colour) {
         i32 converted;
         if (NuPrimNeedsOverbrightening) {
             converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
@@ -1731,8 +1731,7 @@ extern "C" {
 
     /* Retail calls this from NuDeferredFilter::ResizeTexturesPc instead of inlining it: its x87
      * byte-count conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
-    __declspec(noinline) void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
-                                                                    i32 height, i32 levels) {
+    void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels) {
         if (texture == NULL) {
             return;
         }
@@ -2140,7 +2139,7 @@ extern "C" {
         nu_water_reset_status = 0;
     }
 
-    __declspec(noinline) void __cdecl NuWaterReset(void) {
+    void __cdecl NuWaterReset(void) {
         nu_water_reset_state = 1;
         nu_water_reset_status = 0;
     }
@@ -6822,7 +6821,7 @@ extern "C" {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
 
-    __declspec(noinline) void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
+    void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
         state->mtl = NULL;
         state->tex_id = -1;
         state->global_id = -1;

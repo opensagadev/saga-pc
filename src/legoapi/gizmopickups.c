@@ -205,7 +205,7 @@ const char PickupCollectedOutputTextPc[10] = "Collected";
 const char GizmoRegistryGizmoPickupsNamePc[] = "GizmoPickup";
 #pragma const_seg()
 
-static __declspec(noinline) NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
+static NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
@@ -227,7 +227,7 @@ static __declspec(noinline) NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle
     return matrix;
 }
 
-static __declspec(noinline) NUMTX *PickupSetRotationYPc(NUMTX *matrix, i32 angle) {
+static NUMTX *PickupSetRotationYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = cosine;
@@ -249,7 +249,7 @@ static __declspec(noinline) NUMTX *PickupSetRotationYPc(NUMTX *matrix, i32 angle
     return matrix;
 }
 
-static __declspec(noinline) NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
+static NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = matrix->m00, m10 = matrix->m10, m20 = matrix->m20, m30 = matrix->m30;
@@ -280,7 +280,7 @@ static i32 FindPickupTypeIndex(u8 type_code) {
     return 0;
 }
 
-static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
+static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
     i32 index, angle, model_index, opacity;
     GIZMO_PICKUP_TYPE_PC *type;
     NUMTX matrix;
@@ -520,7 +520,7 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
     }
 }
 
-static __declspec(noinline) void SetAreaPickupScalePc(i32 area) {
+static void SetAreaPickupScalePc(i32 area) {
     u16 flags;
     AreaPickupScale = 1.0f;
     if (area < 0 || area >= AREACOUNT) {
@@ -536,7 +536,7 @@ static __declspec(noinline) void SetAreaPickupScalePc(i32 area) {
     }
 }
 
-static __declspec(noinline) void AdjustPickupDrawDistancePc(i32 version, i32 area, f32 *distance) {
+static void AdjustPickupDrawDistancePc(i32 version, i32 area, f32 *distance) {
     if (version > 6) {
         return;
     }
@@ -593,7 +593,7 @@ void __cdecl GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-static __declspec(noinline) void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
+static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
     f32 floor;
     pickup->type_index = (u8)FindPickupTypeIndex(pickup->type_code);
     NewTerrPlatformsOff();
@@ -1283,8 +1283,7 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
     }
 }
 
-static __declspec(noinline) void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count,
-                                                         i32 play_nearby) {
+static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count, i32 play_nearby) {
     i32 detectors, index, eligible, complete;
     f32 nearest_distance;
     NUVEC *nearest;

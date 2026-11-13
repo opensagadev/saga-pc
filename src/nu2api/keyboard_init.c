@@ -190,9 +190,8 @@ void __cdecl PcInput_EnableKeyboards(const i16 *keys, i32 count) {
     }
 }
 
-__declspec(noinline) void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
-                                                                 i32 field_00, i32 field_01, i32 field_02,
-                                                                 u16 field_04) {
+void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index, i32 field_00,
+                                            i32 field_01, i32 field_02, u16 field_04) {
     NuKeyboardInitLayout_PC *layout;
     i32 i;
 

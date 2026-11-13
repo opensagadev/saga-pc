@@ -161,7 +161,7 @@ i32 Text_StripComments(char *text, char *dest, i32 separators) {
     return count;
 }
 
-__declspec(noinline) void IntroText_SetTextID(i32 id) {
+void IntroText_SetTextID(i32 id) {
     if (id > 0 && TTab[id] != NULL) {
         INTROTEXT_ID = id;
     }
@@ -269,7 +269,7 @@ void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32
 void __cdecl Text_FillInExtendedSaveInfo(void) {
 }
 
-__declspec(noinline) void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
+void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
     if (fn != NULL) {
         buttonmapfn = fn;
     }

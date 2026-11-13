@@ -45,7 +45,7 @@ STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
 STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static __forceinline f32 HitsFabsPc(f32 f) {
+static f32 HitsFabsPc(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;

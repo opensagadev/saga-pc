@@ -312,7 +312,7 @@ static NUVEC *GetTorpTargetPositionAndRadius(void *target, u8 target_type, f32 *
     return NULL;
 }
 
-static __declspec(noinline) void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
+static void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
     if (target == NULL) {
         return;
     }

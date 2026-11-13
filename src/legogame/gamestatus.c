@@ -5,7 +5,7 @@ void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alp
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
 
-static __forceinline f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
+static f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
     return result;
 }

@@ -22,7 +22,7 @@ void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
 /* Native 686950: instructions [686950,686f8a), alignment [686f8a,686f8c),
  * 12-entry switch table [686f8c,686fbc). Total mapped extent 1644 bytes. */
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
-static __forceinline f32 EdAnimFabsPc(f32 value) {
+static f32 EdAnimFabsPc(f32 value) {
     f32 result;
     *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
     return result;

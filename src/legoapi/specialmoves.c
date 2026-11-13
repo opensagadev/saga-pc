@@ -154,7 +154,7 @@ i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     return -1;
 }
 
-static __declspec(noinline) void SpecialMove_KillVictim(GAMEOBJECT *victim) {
+static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
     if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0) {
         objhitobj_throwkillpartsup = 1;
     }
@@ -215,7 +215,7 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
     }
 }
 
-__declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
+void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
     i32 move = object->special_move_pc;
     f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;

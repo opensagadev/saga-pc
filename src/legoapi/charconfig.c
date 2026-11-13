@@ -108,7 +108,7 @@ f32 CharConfigAbsFloat(f32 value) {
     return *(f32 *)&bits;
 }
 
-static __declspec(noinline) i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *mask) {
+static i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *mask) {
     i32 count = 0;
     *mask = 0;
     while (NuFParGetWord(parser) != 0) {
@@ -121,7 +121,7 @@ static __declspec(noinline) i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *
     return count;
 }
 
-static __declspec(noinline) i32 CC_ReadNamedLayerMask(NUFPAR_PC *parser, u32 *mask) {
+static i32 CC_ReadNamedLayerMask(NUFPAR_PC *parser, u32 *mask) {
     i32 count = 0;
     *mask = 0;
     while (NuFParGetWord(parser) != 0) {
@@ -172,7 +172,7 @@ static void CC_ReadSfx(NUFPAR_PC *parser, i16 *sfx) {
     }
 }
 
-static __declspec(noinline) void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *locators) {
+static void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *locators) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         locators[i] = -1;
@@ -185,7 +185,7 @@ static __declspec(noinline) void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *lo
     }
 }
 
-static __declspec(noinline) void CC_SetTimebase(NUFPAR_PC *parser, i32 index) {
+static void CC_SetTimebase(NUFPAR_PC *parser, i32 index) {
     if (NuFParGetWord(parser) != 0) {
         f32 distance = NuAToF(parser->word_buffer_ptr);
         if (NuFParGetWord(parser) != 0) {
@@ -327,23 +327,22 @@ static void CC_bsa_default(NUFPAR_PC *parser) {
     }
 }
 
-static __declspec(noinline) void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u32 flags) {
+static void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u32 flags) {
     animation->flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->flags &= ~flags;
     }
 }
 
-static __declspec(noinline) void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags) {
+static void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags) {
     animation->misc_flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->misc_flags &= ~flags;
     }
 }
 
-static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation,
-                                                   i32 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
-                                                   i32 *effect_count) {
+static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i32 character_id,
+                              CHARACTER_EFFECT_CONFIG_PC *effects, i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG_PC *effect;
     if (animation->action_id == -1) {
         return;

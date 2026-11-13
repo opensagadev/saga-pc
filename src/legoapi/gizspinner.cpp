@@ -76,7 +76,7 @@ STATIC_ASSERT(sizeof(SpinnerProgressEntryPc) == 8);
 STATIC_ASSERT(offsetof(SpinnerProgressEntryPc, flags) == 6);
 
 /* Retail takes these absolute values through the float's bit pattern. */
-static __forceinline f32 SpinnerFabsPc(f32 value) {
+static f32 SpinnerFabsPc(f32 value) {
     i32 bits = *(i32 *)&value & 0x7fffffff;
     f32 result = *(f32 *)&bits;
     return result;
@@ -118,7 +118,7 @@ extern "C" void __cdecl SpinnerMissingSpecialPc(char *format, ...) {
     (void)format;
 }
 
-static __declspec(noinline) void SpinnerMatrixSetRotationYPc(NUMTX *matrix, i32 angle) {
+static void SpinnerMatrixSetRotationYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     matrix->m00 = cosine;
@@ -139,7 +139,7 @@ static __declspec(noinline) void SpinnerMatrixSetRotationYPc(NUMTX *matrix, i32 
     matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
 }
 
-static __declspec(noinline) void SpinnerMatrixRotateYPc(NUMTX *matrix, i32 angle) {
+static void SpinnerMatrixRotateYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
     f32 m00 = matrix->m00, m10 = matrix->m10;
@@ -154,7 +154,7 @@ static __declspec(noinline) void SpinnerMatrixRotateYPc(NUMTX *matrix, i32 angle
     matrix->m32 = (f64)matrix->m32 * cosine - (f64)m30 * sine;
 }
 
-static __declspec(noinline) GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
+static GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
     if (LEGOCONTEXT_PUSHSPINNER == -1) {
         return NULL;
     }
@@ -168,7 +168,7 @@ static __declspec(noinline) GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
 }
 
 extern "C" {
-    static __declspec(noinline) void SpinnerBoundsResetPc(GIZSPINNER_s *spinner) {
+    static void SpinnerBoundsResetPc(GIZSPINNER_s *spinner) {
         NUVEC minimum, maximum, arm_minimum, arm_maximum;
         f32 x_extent, z_extent;
         NuSpecialGetBounds((NUSPECIALHANDLE *)&spinner->special, &minimum, &maximum);
@@ -537,7 +537,7 @@ extern "C" i32 __cdecl GizSpinner_GetNumOutputs(void *gizmo) {
     return ((GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object)->output_count;
 }
 
-static __declspec(noinline) i32 GizSpinner_WithinOutput(GIZSPINNER_s *spinner) {
+static i32 GizSpinner_WithinOutput(GIZSPINNER_s *spinner) {
     GAMEANIMOBJ *object;
     NUINSTANIM *instance;
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
@@ -559,7 +559,7 @@ static __declspec(noinline) i32 GizSpinner_WithinOutput(GIZSPINNER_s *spinner) {
     return -1;
 }
 
-static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 output) {
+static void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 output) {
     GAMEANIMOBJ *object;
     NUINSTANIM *instance;
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
@@ -842,7 +842,7 @@ extern "C" void __cdecl GizSpinner_ClearProgress(void *owner, void *progress_ptr
     memset(progress, 0, 0x40);
 }
 
-static __declspec(noinline) void SpinnerResetEntryPc(GIZSPINNER_s *spinner, SpinnerProgressEntryPc *progress) {
+static void SpinnerResetEntryPc(GIZSPINNER_s *spinner, SpinnerProgressEntryPc *progress) {
     if (progress != NULL && (progress->flags & 1) != 0) {
         spinner->rotation = progress->rotation;
         if (progress->position == 1.0f) {
@@ -1008,8 +1008,7 @@ extern "C" i32 __cdecl GizSpinner_UsingSpecial(void *results_ptr, void *world_pt
 }
 
 extern "C" {
-    static __declspec(noinline) void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt,
-                                                            SPINNER_HIT_FLAGS_STACK_PC argument) {
+    static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt, SPINNER_HIT_FLAGS_STACK_PC argument) {
         u8 *hit_flags = argument.value;
         GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
         if (spinner == NULL || (spinner->state_flags & 8) != 0) {

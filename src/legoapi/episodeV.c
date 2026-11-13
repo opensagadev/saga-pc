@@ -95,14 +95,14 @@ typedef struct HOTH_ANTINODE_PC {
 
 void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count);
 
-static __forceinline void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
+static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
         StarDestroyerTurrets[index]->opponent = position;
         StarDestroyerTurrets[index]->opponent_type = 2;
     }
 }
 
-static __forceinline void AsteroidSetAngVec(NUANGVEC *out, NUANG x, NUANG y, NUANG z) {
+static void AsteroidSetAngVec(NUANGVEC *out, NUANG x, NUANG y, NUANG z) {
     out->x = x;
     out->y = y;
     out->z = z;

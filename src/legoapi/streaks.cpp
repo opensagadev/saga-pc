@@ -5,9 +5,8 @@ static STREAK_HEADER_PC *streakhdrs_used = 0;
 // Retail uses EDI/ESI for the endpoint pointers and six stack arguments.
 // Keep the complete helper beside its sole caller for VC8's internal ABI.
 extern "C" {
-    static __declspec(noinline) void StreakBezierPointPrivate(NUVEC *result, NUVEC *start, NUVEC *end,
-                                                              NUVEC *start_tangent, NUVEC *end_tangent,
-                                                              i32 negate_start, i32 negate_end, f32 amount) {
+    static void StreakBezierPointPrivate(NUVEC *result, NUVEC *start, NUVEC *end, NUVEC *start_tangent,
+                                         NUVEC *end_tangent, i32 negate_start, i32 negate_end, f32 amount) {
         NUVEC negative_start, negative_end, control_a, control_b;
         if (negate_start != 0) {
             NuVecScale(&negative_start, start_tangent, -1.0f);

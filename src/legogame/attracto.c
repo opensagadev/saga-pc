@@ -132,7 +132,7 @@ const char PCAttractoOutputTextPc[7] = "Filled";
 #pragma const_seg()
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static __forceinline f32 AttractoFabsPc(f32 f) {
+static f32 AttractoFabsPc(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;

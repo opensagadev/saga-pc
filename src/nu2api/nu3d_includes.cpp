@@ -5863,8 +5863,8 @@ extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, b
 }
 
 /* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
-static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,
-                                                              const NUVEC4 *point_a, const NUVEC4 *point_b) {
+static void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin, const NUVEC4 *point_a,
+                                         const NUVEC4 *point_b) {
     __declspec(align(16)) NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
     __declspec(align(16)) NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
     NuVecCross(reinterpret_cast<NUVEC *>(plane), &a, &b);
@@ -7707,7 +7707,7 @@ extern "C" {
     i32 do_boxtree = 0;
     i32 BoxTreeDrawBoundsPc = 1;
 
-    static __declspec(noinline) void BoxTreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
+    static void BoxTreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
         i32 i;
         for (i = 0; i < count; ++i) {
             i32 instance = instances[i];
@@ -8017,7 +8017,7 @@ extern "C" {
         return CreateTimeBar(NULL, unused_buffer, colours, 16);
     }
 
-    __declspec(noinline) void __cdecl NuTimeBarInitEx(VARIPTR *buffer, VARIPTR unused_buffer) {
+    void __cdecl NuTimeBarInitEx(VARIPTR *buffer, VARIPTR unused_buffer) {
         NUMTL *material;
         memset(NuTimeBar_SetList, 0, sizeof(NuTimeBar_SetList));
         CreateTimeBar(buffer, unused_buffer, NULL, 7);
@@ -9375,9 +9375,9 @@ extern "C" {
 
 #define PC_LIST_ITEM (static_cast<NUDISPLAYLISTITEM *>(list->items))
 
-    static __declspec(noinline) void DisplayListProcessGeomPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
-                                                              NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet,
-                                                              f32 alpha, i32 shadow) {
+    static void DisplayListProcessGeomPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
+                                         NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, f32 alpha,
+                                         i32 shadow) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
         void *next = geometry->next;
         void *transform = DisplayListCreateGeomTransformPS(
@@ -9398,10 +9398,8 @@ extern "C" {
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
 
-    static __declspec(noinline) void DisplayListProcessLightmappedPC(NUDISPLAYLIST_PC *list,
-                                                                     NUDISPLAYLISTITEM *geometry,
-                                                                     NUDISPLAYLISTITEM **output, NUMTX *matrix,
-                                                                     void **packet, f32 alpha) {
+    static void DisplayListProcessLightmappedPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
+                                                NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, f32 alpha) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
@@ -9428,9 +9426,9 @@ extern "C" {
         DisplayListSetAlphaPS(output[1], output[2], alpha);
     }
 
-    static __declspec(noinline) void DisplayListProcessSkinPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
-                                                              NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet,
-                                                              NUMTX *skin, void *weights, i32 shadow) {
+    static void DisplayListProcessSkinPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
+                                         NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, NUMTX *skin,
+                                         void *weights, i32 shadow) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
@@ -9461,8 +9459,8 @@ extern "C" {
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
 
-    static __declspec(noinline) void DisplayListProcessFaceonPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
-                                                                NUDISPLAYLISTITEM **output, NUMTX *matrix, f32 alpha) {
+    static void DisplayListProcessFaceonPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
+                                           NUDISPLAYLISTITEM **output, NUMTX *matrix, f32 alpha) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
         NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id],
@@ -9483,10 +9481,10 @@ extern "C" {
 
 #undef PC_LIST_ITEM
 
-    static __declspec(noinline) void
-    DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST_PC *list,
-                                    NUDISPLAYLISTITEM *geometry, i32 index, NUDISPLAYLISTITEM **output, NUMTX *matrix,
-                                    void **packet, NUMTX *skin, void *weights, f32 alpha, i32 shadow) {
+    static void DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST_PC *list,
+                                                NUDISPLAYLISTITEM *geometry, i32 index, NUDISPLAYLISTITEM **output,
+                                                NUMTX *matrix, void **packet, NUMTX *skin, void *weights, f32 alpha,
+                                                i32 shadow) {
         if (geometry->type != 0x8f) {
             if (skin == NULL) {
                 if ((material->shader_flags & 0x80000000u) != 0 && index > 1 &&
@@ -9503,7 +9501,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) f32 DisplaySceneDistanceFadePC(f32 distance, f32 start, f32 end) {
+    static f32 DisplaySceneDistanceFadePC(f32 distance, f32 start, f32 end) {
         f32 alpha;
         if (end > start) {
             alpha = 1.0f;
@@ -11125,7 +11123,7 @@ extern "C" void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
     PCGraphicsFramebufferBarrierPc(0, 1);
 }
 
-static __forceinline void PostFilterBindProgramPc(const POST_SHADER_PROGRAM_PC *program) {
+static void PostFilterBindProgramPc(const POST_SHADER_PROGRAM_PC *program) {
     if (program != NULL) {
         if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
             PCDeviceSetVertexShaderPc(program->vertex_shader);
@@ -11374,7 +11372,7 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth)
 }
 
 /* Normalizes the xyz part and makes the result a homogeneous direction (w = 1). */
-static __forceinline void PostVec4NormalizeDirection(NUVEC4 *vector) {
+static void PostVec4NormalizeDirection(NUVEC4 *vector) {
     NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
     vector->w = 1.0f;
 }
@@ -11649,15 +11647,15 @@ extern "C" {
     void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
     i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
 
-    __declspec(noinline) void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
+    void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
         NuVec4Scale(out, input, scale);
     }
 
-    __declspec(noinline) i32 __cdecl NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode) {
+    i32 __cdecl NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode) {
         return NuRndrBeginScene(flags);
     }
 
-    __declspec(noinline) void __cdecl NuRndrEndSceneEx(i32 flags) {
+    void __cdecl NuRndrEndSceneEx(i32 flags) {
         NuRndrEndScene();
     }
 } // extern "C"
@@ -12347,8 +12345,7 @@ struct SHADOW_PRODUCER_MATERIAL_PC {
 STATIC_ASSERT(offsetof(SHADOW_PRODUCER_MATERIAL_PC, alternate) == 0x268);
 
 /* The local helper's native compiler ABI uses ECX, EDX and three caller-clean stack words. */
-static __declspec(noinline) i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC *start,
-                                                    f32 radius0, f32 radius1) {
+static i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC *start, f32 radius0, f32 radius1) {
     __declspec(align(16)) NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
     f32 length = (segment.x * segment.x + segment.y * segment.y) + segment.z * segment.z;
     NUVEC delta = {point->x - start->x, point->y - start->y, point->z - start->z};

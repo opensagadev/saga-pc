@@ -28,7 +28,7 @@ STATIC_ASSERT(offsetof(OBJECT_COIN_PACKET_PC, coin_packet) == 0x7fc);
 STATIC_ASSERT(offsetof(GAME_SAVE_SCORE_PC, coins) == 0x7c14);
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
-static __forceinline f32 GameMessagesFabsPc(f32 f) {
+static f32 GameMessagesFabsPc(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;

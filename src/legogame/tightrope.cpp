@@ -671,7 +671,7 @@ extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed)
 
 extern "C" {
 
-    __declspec(noinline) i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
+    i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
         NUVEC *anchor;
         TIGHTROPE_MOVEMENT_PC *rope;
         u16 rotation;

@@ -993,7 +993,7 @@ u8 __cdecl LevelCharacterTypeID(char *name) {
 
 const char *GameAISkipCharactersPc[4] = {GameAIBatmanPc, GameAIRobinPc, GameAIGlidePackPc, NULL};
 
-static __declspec(noinline) i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *name) {
+static i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *name) {
     i32 index;
     for (index = 0; GameAISkipCharactersPc[index] != NULL; ++index) {
         if (NuStrICmp(name, (char *)GameAISkipCharactersPc[index]) == 0) {

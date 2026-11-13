@@ -284,7 +284,7 @@ void __cdecl GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     NuFParDestroy(parser);
 }
 
-static __declspec(noinline) char *ForceCopyNamePrefixPc(char *destination, char *source, i32 capacity) {
+static char *ForceCopyNamePrefixPc(char *destination, char *source, i32 capacity) {
     char *result = destination;
     i32 index = 0;
     if (destination == NULL || source == NULL) {
@@ -305,7 +305,7 @@ static __declspec(noinline) char *ForceCopyNamePrefixPc(char *destination, char 
     return result;
 }
 
-static __declspec(noinline) void ForceFindBaseSpecialPc(GIZFORCE_PC *force) {
+static void ForceFindBaseSpecialPc(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
     char *name;
     char socket_name[64];
@@ -543,13 +543,13 @@ NUVEC *__cdecl GizmoForce_GetPos(GIZMO_PC *gizmo) {
     return &((FLOW_FORCE_POSITION_PC *)gizmo->object)->position;
 }
 
-static __declspec(noinline) i32 ForceUpdateCentrePc(GIZFORCE_PC *force, i32 frame_selection) {
+static i32 ForceUpdateCentrePc(GIZFORCE_PC *force, i32 frame_selection) {
     force->position = force->file_position;
     force->radius = 1.0f;
     return GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, frame_selection, 1, 1);
 }
 
-static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_PC *force) {
+static void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
     force->runtime_flags = (force->runtime_flags & 0xffe2049fu) | 3;
     force->animation_speed = 1.0f;
@@ -579,7 +579,7 @@ static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_P
 
 f32 ForceAnimationSeekRatePc = 5.0f;
 
-static __declspec(noinline) f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJECT *object) {
+static f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJECT *object) {
     f32 target = 1.0f;
     if (force != NULL) {
         // MATCH-EXCEPTION: retail stores the default speed again once force is known (second fstp of 1.0).
@@ -621,7 +621,7 @@ static void GizForce_PlayBackwardsFn(GIZFORCE_PC *force) {
 
 // MATCH-EXCEPTION: retail calls this wrapper out of line from GizForces_Update; VC8 would
 // otherwise inline it there (it already stays out of line in GizmoForce_ActivateRev).
-__declspec(noinline) void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
+void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
     if (force != NULL) {
         if (force->runtime_flags & 0x40) {
             GizForce_PlayBackwardsFn(force);
@@ -641,7 +641,7 @@ void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force) {
     }
 }
 
-static __declspec(noinline) f32 GizForce_GetHeight(GIZFORCE_PC *force) {
+static f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
     f32 minimum_y, maximum_y;
     f32 height;
@@ -664,7 +664,7 @@ static __declspec(noinline) f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     return height;
 }
 
-static __declspec(noinline) void GizForce_AddToStack(GIZFORCE_PC *force) {
+static void GizForce_AddToStack(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) == 0 && force->group != NULL && force->group->member_count < 8) {
         if (force->group->member_count != 0) {
             GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
@@ -676,7 +676,7 @@ static __declspec(noinline) void GizForce_AddToStack(GIZFORCE_PC *force) {
     }
 }
 
-static __declspec(noinline) void ForceGroupPopPc(GIZFORCE_PC *force) {
+static void ForceGroupPopPc(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) != 0 && force->group != NULL && force->group->member_count != 0 &&
         force->group->forces[force->group->member_count - 1] == force) {
         /* Retail clears slot COUNT (not COUNT-1); count8 aliases combined_height. */
@@ -801,7 +801,7 @@ i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
     return 0;
 }
 
-__declspec(noinline) i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
+i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
     return force != NULL && object != NULL && object->character_context == 8 &&
            ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
 }
@@ -1020,7 +1020,7 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
 
 /* Retail uses private EDI FORCE and two stack arguments; all three callers
  * are rebuilt below with this ordinary C contract. */
-static __declspec(noinline) i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 player_index) {
+static i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 player_index) {
     u32 flags = force->runtime_flags;
     u32 config;
     GAMEANIMOBJ *animation;

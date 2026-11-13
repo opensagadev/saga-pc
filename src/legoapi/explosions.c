@@ -33,7 +33,7 @@ void __cdecl ResetExplosions(void) {
 void __cdecl DrawExplosions(void) {
 }
 
-static __declspec(noinline) void Explosion_Feedback(EXPLOSION_PC *explosion) {
+static void Explosion_Feedback(EXPLOSION_PC *explosion) {
     if ((explosion->flags & 0x40) != 0) {
         NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();

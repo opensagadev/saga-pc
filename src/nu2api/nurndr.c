@@ -52,7 +52,7 @@ void NuRndrAxisArrows(NUVEC *position, void *unused1, f32 length, NUMTL *materia
     NuRndrAxisArrowsMtx(&matrix, length, material);
 }
 
-static __forceinline f32 NuFdiv(f32 a, f32 b) {
+static f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -506,8 +506,6 @@ void __cdecl NuRndrAxes(NUMTX *matrix, f32 length) {
     NuRndrAxisBright(matrix, length, 0xff);
 }
 
-#pragma inline_depth(0)
-
 void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     NUMTX matrix = NuMtxSetIdentityTemplate;
     f32 dx;
@@ -549,8 +547,6 @@ void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     }
     NuPrim3DEnd();
 }
-
-#pragma inline_depth()
 
 #undef LOCATOR_PRIM_POSITION
 
@@ -822,9 +818,6 @@ void __cdecl NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colour
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-/* Native keeps the private colour call out of line in this loop. */
-#pragma inline_depth(0)
-
 i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
     i32 i;
     ++NuPrimCSPos;
@@ -846,8 +839,6 @@ i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
     return 1;
 }
-
-#pragma inline_depth()
 
 #define PORTAL_DEBUG_SIN(ANGLE) NuTrigTable[((i32)(ANGLE) >> 1) & 0x7fff]
 #define PORTAL_DEBUG_COS(ANGLE) NuTrigTable[(((i32)(ANGLE) + 16384) >> 1) & 0x7fff]
@@ -1128,7 +1119,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     PCSpecialProjectionAdjust = saved_adjust;
 }
 
-__declspec(noinline) u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
+u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
     (void)minimum_unused;
     (void)maximum_unused;
     return (u8)MIN(255.0f, MAX(0.0f, value));
@@ -1161,7 +1152,7 @@ STATIC_ASSERT(offsetof(PC_SHADOW_EDGE_PC, count) == 12);
 STATIC_ASSERT(sizeof(RENDERER_ARENA_VERTEX_PC) == 16);
 STATIC_ASSERT(offsetof(RENDERER_ARENA_VERTEX_PC, colour) == 12);
 
-__declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
+void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
     RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);

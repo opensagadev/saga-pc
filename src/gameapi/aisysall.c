@@ -157,7 +157,7 @@ static f32 ***distance_tables = NULL;
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
-static __forceinline f32 NuFdiv(f32 a, f32 b) {
+static f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -165,7 +165,7 @@ static __forceinline f32 NuFdiv(f32 a, f32 b) {
 }
 
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
-static __forceinline f32 AIPathFabs(f32 value) {
+static f32 AIPathFabs(f32 value) {
     union {
         f32 value;
         u32 bits;
@@ -1522,7 +1522,7 @@ SOCK_PC *__cdecl FindSock(SOCKSYS_PC *system, char *name);
 
 extern const char AIOverrideAllKeywordPc[9];
 
-static __declspec(noinline) f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
+static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
     if (numerator == 0.0f || denominator == 0.0f) {
         return 0.0f;
     }
@@ -1531,7 +1531,7 @@ static __declspec(noinline) f32 AIPathSafeDivide(f32 numerator, f32 denominator)
 
 /* Native 0x5128e0: signed 16-bit angle difference; emitted out of line
  * although every use is inlined. */
-static __forceinline i32 AiAngDiffPc(i32 a, i32 b) {
+static i32 AiAngDiffPc(i32 a, i32 b) {
     i32 difference = (a - b) & 0xffff;
     if (difference >= 0x8000) {
         difference -= 0x10000;
@@ -1576,25 +1576,25 @@ i16 __cdecl PCPathArcSine(f32 sin) {
 
 /* Native 0x512a40..0x512afa: small helpers that retail emits out of line
  * although every use is inlined. */
-static __forceinline i16 PCPathArcCos(f32 cos) {
+static i16 PCPathArcCos(f32 cos) {
     return 0x4000 - PCPathArcSine(cos);
 }
 
-static __forceinline void AiVecSubPc(NUVEC *dst, NUVEC *a, NUVEC *b) {
+static void AiVecSubPc(NUVEC *dst, NUVEC *a, NUVEC *b) {
     dst->x = a->x - b->x;
     dst->y = a->y - b->y;
     dst->z = a->z - b->z;
 }
 
-static __forceinline f32 AiVecMagSqrPc(NUVEC *v) {
+static f32 AiVecMagSqrPc(NUVEC *v) {
     return v->x * v->x + v->y * v->y + v->z * v->z;
 }
 
-static __forceinline void AiVecMtxTransformPc(NUVEC *dst, NUVEC *src, NUMTX *mtx) {
+static void AiVecMtxTransformPc(NUVEC *dst, NUVEC *src, NUMTX *mtx) {
     NuVecMtxTransform(dst, src, mtx);
 }
 
-static __forceinline void AiRndrSetCullDistance(f32 distance) {
+static void AiRndrSetCullDistance(f32 distance) {
     AiRndrCullDistance = distance;
 }
 
@@ -1877,7 +1877,7 @@ static i32 AiParseExpressionNameLoopup(char *name, f32 *float_out, i32 *int_out)
     return 0;
 }
 
-__declspec(noinline) f32 AiParseExpression(char *expr) {
+f32 AiParseExpression(char *expr) {
     f32 value;
 
     ExpressionRequiredNameLookup = 0;
@@ -2412,7 +2412,7 @@ void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
     }
 }
 
-static __declspec(noinline) i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
+static i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
     AIACTION_PC *action;
     if (processor != NULL) {
         if (processor->action_node != NULL) {
@@ -4112,7 +4112,7 @@ void __cdecl AIPathCalcExtents(AIPATH_PC *path) {
     NuVecAdd(&path->bounds_max, &path->bounds_max, &delta);
 }
 
-__declspec(noinline) i32 __cdecl AIPathCheckExtents(AIPATH_PC *path, NUVEC *position) {
+i32 __cdecl AIPathCheckExtents(AIPATH_PC *path, NUVEC *position) {
     if (position->x < path->bounds_min.x || position->y < path->bounds_min.y || position->z < path->bounds_min.z ||
         position->x > path->bounds_max.x || position->y > path->bounds_max.y || position->z > path->bounds_max.z) {
         return 0;
@@ -5428,7 +5428,7 @@ AIPATH_PC *__cdecl AISysFindPath(AISYS_PC *system, char *name) {
     return NULL;
 }
 
-__declspec(noinline) AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *system, AIPATH_PC *path, char *name) {
+AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *system, AIPATH_PC *path, char *name) {
     i32 index;
     if (path == NULL && system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0) {
         path = system->path_sys->active_path;
@@ -5443,8 +5443,7 @@ __declspec(noinline) AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *system, AIP
     return NULL;
 }
 
-__declspec(noinline) void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char *to_name,
-                                                     i32 *direction) {
+void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC *path, char *from_name, char *to_name, i32 *direction) {
     AIPATHNODE_PC *from;
     AIPATHNODE_PC *to;
     i32 to_index;
@@ -5800,8 +5799,7 @@ void __cdecl AISysFindRoute(AIPACKET_PC *packet) {
     } while (route != start_route);
 }
 
-__declspec(noinline) void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position,
-                                                           AIPATHCNX_PC *connection, i32 direction) {
+void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position, AIPATHCNX_PC *connection, i32 direction) {
     AIPACKET_PC *path_packet = packet;
     AIPATH_PC *path;
     u32 connection_flags;
@@ -7736,8 +7734,7 @@ AILOCALMESSAGE_PC *__cdecl QueryLocalAIMessage(AISCRIPTPROCESS_PC *processor, AI
     return message->next;
 }
 
-__declspec(noinline) void __cdecl AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *system,
-                                                                          AILOCATORSET_PC *locator_set) {
+void __cdecl AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *system, AILOCATORSET_PC *locator_set) {
     i32 index;
     if (locator_set == NULL || APIOBJECTFromObjIDFn == NULL) {
         return;
@@ -8079,7 +8076,7 @@ void __cdecl aieditor_Render(f32 x_scale, f32 y_scale) {
 }
 
 /* Native 520e10..520e93: private position argument EDI. */
-static __declspec(noinline) EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotation, i32 flags) {
+static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotation, i32 flags) {
     EDAIAREA_s *area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->free_areas);
     if (area != NULL) {
         NuLinkedListRemove(&aieditor->free_areas, &area->link);
@@ -8131,7 +8128,7 @@ void __cdecl areaEditorSaveData(void) {
 }
 
 /* Native 520fe0..521155. */
-static __declspec(noinline) EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
+static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
     EDAIAREA_s *area;
     EDAIAREA_s *nearest = NULL;
     f32 best = FLT_MAX;
@@ -8369,7 +8366,7 @@ static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, 
 }
 
 /* Native 521c50..521ca4: private name argument EDI. */
-static __declspec(noinline) EDLOCATORSET_s *locatorEditor_FindLocatorSet(char *name) {
+static EDLOCATORSET_s *locatorEditor_FindLocatorSet(char *name) {
     EDLOCATORSET_s *set;
     for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
          set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
@@ -8748,7 +8745,7 @@ EDAIPATH_s *__cdecl pathEditorAllocPathPc(void) {
     return path;
 }
 
-static __declspec(noinline) EDAIPATHNODE_s *pathEditor_CreateNode(EDAIPATH_s *path) {
+static EDAIPATHNODE_s *pathEditor_CreateNode(EDAIPATH_s *path) {
     EDAIPATHNODE_s *node = NULL;
     if (path != NULL && path->node_count < 254) {
         node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->free_path_nodes);
@@ -8799,8 +8796,8 @@ static EDAIPATHNODE_s *pathEditor_GetNearestNode(EDAIPATH_s *path, i32 require_r
     return nearest;
 }
 
-static __declspec(noinline) EDAIPATHNODE_s *pathEditor_GetNearestPathNode(EDAIPATH_s **nearest_path, i32 require_radius,
-                                                                          EDAIPATH_s *exclude) {
+static EDAIPATHNODE_s *pathEditor_GetNearestPathNode(EDAIPATH_s **nearest_path, i32 require_radius,
+                                                     EDAIPATH_s *exclude) {
     EDAIPATH_s *path;
     EDAIPATH_s *best_path = NULL;
     EDAIPATHNODE_s *best_node = NULL;
@@ -8833,7 +8830,7 @@ static __declspec(noinline) EDAIPATHNODE_s *pathEditor_GetNearestPathNode(EDAIPA
     return NULL;
 }
 
-static __declspec(noinline) void pathEditor_SelectNearestPath(void) {
+static void pathEditor_SelectNearestPath(void) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node = pathEditor_GetNearestPathNode(&path, 0, NULL);
     if (node != NULL) {
@@ -8843,7 +8840,7 @@ static __declspec(noinline) void pathEditor_SelectNearestPath(void) {
     }
 }
 
-static __declspec(noinline) i32 pathEditor_GetNearestRuntimeNode(AIPATH_PC *runtime) {
+static i32 pathEditor_GetNearestRuntimeNode(AIPATH_PC *runtime) {
     i32 nearest = -1;
     i32 index;
     NUVEC delta;
@@ -8875,7 +8872,7 @@ static __declspec(noinline) EDAIPATHCNX_s *pathEditor_FindConnection(EDAIPATHNOD
     return NULL;
 }
 
-static __declspec(noinline) i32 pathEditor_ConnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
+static i32 pathEditor_ConnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
     i32 index;
     i32 other_index;
     if (node != NULL && other != NULL) {
@@ -8897,7 +8894,7 @@ static __declspec(noinline) i32 pathEditor_ConnectNodes(EDAIPATHNODE_s *node, ED
     return 0;
 }
 
-static __declspec(noinline) i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
+static i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
     i32 index;
     i32 other_index;
     if (node != NULL && other != NULL) {
@@ -9308,7 +9305,7 @@ void pathEditorDrawPaths(void) {
 }
 
 /* Native 5242b0..52431a. */
-static __declspec(noinline) void pathEditor_CalcNodeIXs(void) {
+static void pathEditor_CalcNodeIXs(void) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node;
     i32 index;
@@ -9983,7 +9980,7 @@ void __cdecl pathEditor_cbNodeFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u3
     }
 }
 
-static __declspec(noinline) EDAISHAREDPATHNODE_s *pathEditor_AllocSharedNode(void) {
+static EDAISHAREDPATHNODE_s *pathEditor_AllocSharedNode(void) {
     EDAISHAREDPATHNODE_s *shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->free_shared_nodes);
     if (shared != NULL) {
         NuLinkedListRemove(&aieditor->free_shared_nodes, &shared->link);
@@ -9992,7 +9989,7 @@ static __declspec(noinline) EDAISHAREDPATHNODE_s *pathEditor_AllocSharedNode(voi
     return shared;
 }
 
-static __declspec(noinline) void pathEditor_DestroySharedNode(EDAISHAREDPATHNODE_s *shared) {
+static void pathEditor_DestroySharedNode(EDAISHAREDPATHNODE_s *shared) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node;
     if (shared == NULL) {
@@ -11072,7 +11069,7 @@ void antinodeEditorSaveData(void) {
 }
 
 /* Native 528450..5285ae: private type argument EDI. */
-static __declspec(noinline) EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
+static EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
     EDAICREATURE_s *creature = NULL;
     if (type != -1) {
         creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->free_creatures);
@@ -11121,7 +11118,7 @@ static __declspec(noinline) EDAICREATURE_s *CreateCreature(i32 type, NUVEC *posi
 }
 
 /* Native 5285b0..5285e9: private creature argument ESI. */
-static __declspec(noinline) void creatureEditorDestroyCreature(EDAICREATURE_s *creature) {
+static void creatureEditorDestroyCreature(EDAICREATURE_s *creature) {
     if (creature != NULL) {
         NuLinkedListRemove(&aieditor->creatures, &creature->link);
         memset(creature, 0, sizeof(EDAICREATURE_s));
@@ -12906,9 +12903,9 @@ i32 __cdecl AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char
     return 1;
 }
 
-static __declspec(noinline) void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET_PC *packet,
-                                                                      AISCRIPTPROCESS_PC *processor,
-                                                                      AICONDITION_PC *condition, i32 stack_index) {
+static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET_PC *packet,
+                                                 AISCRIPTPROCESS_PC *processor, AICONDITION_PC *condition,
+                                                 i32 stack_index) {
     AICONDITION_PC *remaining;
     if (processor->param_stack[stack_index].force_complex_eval != 0) {
         if (processor->param_stack[stack_index].is_first_time_state != 0) {
@@ -12925,10 +12922,8 @@ static __declspec(noinline) void AIScriptFillRemainingComplexOperands(NULISTHDR 
     }
 }
 
-static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions,
-                                                                           AIPACKET_PC *packet,
-                                                                           AISCRIPTPROCESS_PC *processor,
-                                                                           i32 stack_index) {
+static AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions, AIPACKET_PC *packet,
+                                                      AISCRIPTPROCESS_PC *processor, i32 stack_index) {
     AICONDITION_PC *condition;
     f32 condition_value = 0.0f;
     f32 comparison_value;
@@ -13028,8 +13023,7 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
     return NULL;
 }
 
-static __declspec(noinline) i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet,
-                                                          AISCRIPTPROCESS_PC *processor) {
+static i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor) {
     NULISTHDR *references;
     AIREFSCRIPT_PC *reference;
     AICONDITION_PC *entry_condition;
@@ -13383,8 +13377,7 @@ i32 __cdecl Action_SetRespawnLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     return 1;
 }
 
-__declspec(noinline) void __cdecl AIPathCnxSetTemporaryBlock(AIPATH_PC *path, char *from_name, char *to_name,
-                                                             i32 blocked) {
+void __cdecl AIPathCnxSetTemporaryBlock(AIPATH_PC *path, char *from_name, char *to_name, i32 blocked) {
     AIPATHNODE_PC *from;
     AIPATHNODE_PC *to;
     AIPATHCNX_PC *connection;
@@ -15914,7 +15907,7 @@ void __cdecl pathEditor_cbCancelDisconnectNodeMenu(eduimenu_s *menu, eduimenu_s 
     AiEditorClearMainMenuPc();
 }
 
-static __declspec(noinline) void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+static void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
     if (!(node->flags & 0x80) && NuSpecialExistsFn(&aieditor->cursor_platform)) {
         node->special = aieditor->cursor_platform;
         NuVecInvMtxTransform(&node->platform_position, &node->position,
@@ -16232,7 +16225,7 @@ void __cdecl creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u3
 }
 
 /* Native 534740..534777: private menu argument ESI. */
-static __declspec(noinline) void creatureEditorAddResetParamsItem(eduimenu_s *menu) {
+static void creatureEditorAddResetParamsItem(eduimenu_s *menu) {
     if (menu != NULL && creatureEditor_ResetParamsItem == NULL) {
         creatureEditor_ResetParamsItem =
             eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, 1, 1,
@@ -16384,8 +16377,7 @@ eduimenu_s *__cdecl creatureEditorDeleteMenu(void) {
     return NULL;
 }
 
-__declspec(noinline) void __cdecl FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, u8 flags,
-                                                  f32 movement_parameter) {
+void __cdecl FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, u8 flags, f32 movement_parameter) {
     i32 movement_mode;
     NUVEC *destination;
     f32 stopping_distance;
@@ -17882,7 +17874,7 @@ eduimenu_s *__cdecl locatorEditor_DeleteLocatorMenu(void) {
     return NULL;
 }
 
-static __declspec(noinline) void pathEditor_DestroyPath(EDAIPATH_s *path) {
+static void pathEditor_DestroyPath(EDAIPATH_s *path) {
     EDAIPATHNODE_s *node;
     if (path == NULL) {
         return;

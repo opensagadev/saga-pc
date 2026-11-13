@@ -409,7 +409,7 @@ void __cdecl BlockSfx(GAMEOBJECT *object) {
     }
 }
 
-__declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
+i32 __cdecl CanStepBack(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
         return 1;
@@ -424,7 +424,7 @@ __declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
     return 0;
 }
 
-__declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
+i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
     BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
     f32 inner_distance, outer_distance, speed, distance_squared, blend;

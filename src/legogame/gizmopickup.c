@@ -531,7 +531,7 @@ void __cdecl PartExtra_PurpleCoin(PART_PC *part) {
     }
 }
 
-static __forceinline f32 NuFdiv(f32 a, f32 b) {
+static f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }

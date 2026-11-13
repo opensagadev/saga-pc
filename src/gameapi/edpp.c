@@ -18,7 +18,7 @@ static struct edui_slider_s *grad_jib_y_freq_item = 0;
 struct eduimenu_s *ptljibmenu = 0;
 #pragma bss_seg()
 
-__declspec(noinline) void __cdecl edppPtlDestroy(i32 index) {
+void __cdecl edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
         if (edpp_ptls[index].instance_id != 99999) {
             DebFreeInstantly(&edpp_ptls[index].instance_id);

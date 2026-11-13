@@ -107,7 +107,7 @@ void DebrisSetRenderGroup(i32 group) {
     debris_render_group = group;
 }
 
-__declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
+void __cdecl PARTStartOffset(i32 index, f32 offset) {
     PART_EMIT_PC *emitter;
     PARTTYPE_LOOKUP_PC *type;
     f32 period;
@@ -148,7 +148,7 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
     emitter->time_38 = partglobaltime;
 }
 
-__declspec(noinline) i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
+i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
     i32 i;
     if (part_emits_used == 40) {
         return -1;

@@ -29,7 +29,7 @@ void __cdecl PlaySfxAndSetVolume(char *name, NUVEC *position, f32 volume) {
     }
 }
 
-__declspec(noinline) void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
+void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, 1.0f);
 }
 
@@ -593,7 +593,7 @@ void __cdecl SfxBitsStore(SoundTable *sound_table) {
     PCByteCopy(sound_table, SfxBits, 0xc8);
 }
 
-__declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table) {
+void __cdecl SfxBitsRestore(SoundTable *sound_table) {
     PCByteCopy(SfxBits, sound_table, 0xc8);
 }
 
@@ -900,7 +900,7 @@ void __cdecl NuSound3SetDat(NUDATHDR *header) {
     NuSoundDat = header;
 }
 
-__declspec(noinline) i32 __cdecl NuSound3SetReverb(i32 enable) {
+i32 __cdecl NuSound3SetReverb(i32 enable) {
     i32 previous = SoundVoiceManager.option_d14;
     SoundVoiceManager.option_d14 = enable != 0;
     return previous;

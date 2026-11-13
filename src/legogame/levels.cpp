@@ -335,7 +335,7 @@ typedef struct ai_script_progress_view_pc_s {
 
 #define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
-    __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene);
+    void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
     typedef struct world_script_progress_pc_s {
         char name[16];

@@ -170,7 +170,7 @@ i32 __cdecl Cheat_PowerUpActive(i32 index) {
     return 0;
 }
 
-__declspec(noinline) void __cdecl Cheats_Update(void) {
+void __cdecl Cheats_Update(void) {
     if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
         Cheat_PowerUpTime -= FRAMETIME;
         if (Cheat_PowerUpTime <= 0.0f) {

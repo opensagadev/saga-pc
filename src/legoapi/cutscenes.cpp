@@ -975,8 +975,7 @@ extern "C" {
         {const_cast<char *>("drawgizmosys"), CS_draw_gizmo_sys},
         {NULL, NULL}};
 
-    static __declspec(noinline) void CutScene_Configure(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf,
-                                                        VARIPTR *buf_end) {
+    static void CutScene_Configure(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf, VARIPTR *buf_end) {
         CUT_LOAD_STATE_PC states[32];
         CS_buffend = buf_end;
         CS_CutInfo = cut;
@@ -1100,9 +1099,8 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) CUT_LOAD_SYS_PC *CutScenesLoadListedPc(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode,
-                                                                       VARIPTR *buf, VARIPTR *buf_end, i32 area,
-                                                                       i32 level, WORLDINFO *world) {
+    static CUT_LOAD_SYS_PC *CutScenesLoadListedPc(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf,
+                                                  VARIPTR *buf_end, i32 area, i32 level, WORLDINFO *world) {
         CUT_LOAD_SYS_PC *sys;
         void *initial;
         CUT_LOAD_RECORD_PC *cut;

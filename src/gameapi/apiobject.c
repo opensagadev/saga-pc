@@ -192,7 +192,7 @@ STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, hostility_masks) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 
-static __forceinline f32 APIObjectFabs(f32 value);
+static f32 APIObjectFabs(f32 value);
 
 static f32 APIObjectSafeDividePc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -2969,8 +2969,7 @@ void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_cou
 
 /* Table sine and cosine of an angle in radians; the cosine negates the angle as retail does. */
 
-static __declspec(noinline) void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale,
-                                                               i32 wind_speed) {
+static void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i32 wind_speed) {
     f32 amplitude = (f32)(((f64)wind_scale / 65535.0) * global_windscale);
     f32 speed = (f32)(((f64)wind_speed / 65535.0) * global_windspeed);
     u32 seed = (u32)wind_speed;
@@ -2996,7 +2995,7 @@ void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_spe
 // extern "C"
 
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
-static __forceinline f32 APIObjectFabs(f32 value) {
+static f32 APIObjectFabs(f32 value) {
     f32 result;
     *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
     return result;

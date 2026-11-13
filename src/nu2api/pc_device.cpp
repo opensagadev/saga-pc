@@ -1845,8 +1845,7 @@ extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
     return PCDeviceBackend.EndScene();
 }
 
-extern "C" __declspec(noinline) void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer,
-                                                                       u32 offset, u32 stride) {
+extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC *buffer, u32 offset, u32 stride) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_buffer == buffer && PCDeviceStateCachePc.stream_stride == stride &&
             PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset) {

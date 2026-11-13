@@ -498,7 +498,7 @@ typedef struct CHARACTER_COMMUNICATE_READER_PC {
 } CHARACTER_COMMUNICATE_READER_PC;
 
 /* Retail takes this absolute value through the float's bit pattern. */
-static __forceinline f32 PushFabsPc(f32 value) {
+static f32 PushFabsPc(f32 value) {
     i32 bits = *(i32 *)&value & 0x7fffffff;
     f32 result = *(f32 *)&bits;
     return result;
@@ -617,7 +617,7 @@ static void MovementMtxRotateZPc(NUMTX *matrix, i32 angle) {
     matrix->m31 = (m30 * sin_z) + (matrix->m31 * cos_z);
 }
 
-static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
+static i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
     NUVEC direction;
     f32 delta, threshold, delta_x, delta_z;
     if (VehicleArea != 0 || (object->flags_1fc_word & 0x80) == 0) {
@@ -1107,7 +1107,7 @@ void __cdecl KeepVehicleOnScreen(GAMEOBJECT *object, i32 sides, i32 top, i32 bot
     }
 }
 
-__declspec(noinline) i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
+i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
     GAMEOBJECT *target;
     if (position == NULL) {
         target = object->force_target;
@@ -1127,7 +1127,7 @@ __declspec(noinline) i32 __cdecl FaceOpponent(GAMEOBJECT *object, NUVEC *positio
 }
 
 /* Retain with MovePlayer_DIRECTIONAL; retail physical ABI is ECX object plus caller-clean stack float. */
-static __declspec(noinline) f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
+static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     f32 speed = (object->character_data->game_character->run_speed * scale) / NuTimeBarColumnStep;
     if (object->pad->input_magnitude <=
         (object->character_data->game_character->tiptoe_speed + object->character_data->game_character->walk_speed) *
@@ -1983,7 +1983,7 @@ void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
     }
 }
 
-static void __declspec(noinline) VehicleThrustPc(GAMEOBJECT *object) {
+static void VehicleThrustPc(GAMEOBJECT *object) {
     VEHICLE_THRUST_VIEW_PC *view = (VEHICLE_THRUST_VIEW_PC *)object;
     f32 speed = GetVehicleSpeedMul(object, object->pad->input_magnitude);
     f32 target;
@@ -2009,7 +2009,7 @@ void __cdecl StartLaunch(GAMEOBJECT *object) {
     object->ai_update_position = object->launch_origin = object->position;
 }
 
-static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
+static void VehicleLaunchPc(GAMEOBJECT *object) {
     f32 hover, time, blend;
     i32 phase;
     if (object->character_context != 0x2c) {
@@ -2276,7 +2276,7 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target, GAMEOBJECT *owner) {
+static i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target, GAMEOBJECT *owner) {
     i8 context;
     PLAYERCHARACTERCONFIG_PC *data;
     if ((target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 || target->dead != 0 ||
@@ -2335,7 +2335,7 @@ void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     object->force_throw_target = NULL;
 }
 
-static __declspec(noinline) void GrabCode(GAMEOBJECT *object) {
+static void GrabCode(GAMEOBJECT *object) {
     f32 previous, time;
     GAMEOBJECT *target;
     i16 animation;
@@ -2422,7 +2422,7 @@ clear:
     object->character_context = -1;
 }
 
-static __declspec(noinline) void BeastCrushCodePc(GAMEOBJECT *object) {
+static void BeastCrushCodePc(GAMEOBJECT *object) {
     f32 *frame;
     f32 event;
     if (object->character_context != 0x3f) {
@@ -2599,8 +2599,7 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
     return nearest;
 }
 
-static __declspec(noinline) void PunchSelectOpponentPc(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 mode,
-                                                       i32 gizmo_first) {
+static void PunchSelectOpponentPc(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 mode, i32 gizmo_first) {
     object->force_target = NULL;
     object->blowup_target = NULL;
     if (!gizmo_first) {
@@ -2720,7 +2719,7 @@ finished:
     return result;
 }
 
-static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
+static void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
     if ((object->flags_1f8 & 0x40000) != 0 && object->player_index != -1) {
         return;
@@ -3072,7 +3071,7 @@ void ComboRotateCode(GAMEOBJECT *object, i32 action_held) {
     object->facing_angle = object->movement_facing_angle = object->field_0x276;
 }
 
-static __declspec(noinline) GAMEOBJECT *BlockFindAttackPc(GAMEOBJECT *object) {
+static GAMEOBJECT *BlockFindAttackPc(GAMEOBJECT *object) {
     i32 i;
     GAMEOBJECT *candidate;
     void **animations = object->character_model->model_data_b;
@@ -3090,7 +3089,7 @@ static __declspec(noinline) GAMEOBJECT *BlockFindAttackPc(GAMEOBJECT *object) {
     return NULL;
 }
 
-static __declspec(noinline) GAMEOBJECT *BlockFindSpecialAttackPc(GAMEOBJECT *object) {
+static GAMEOBJECT *BlockFindSpecialAttackPc(GAMEOBJECT *object) {
     i32 i;
     GAMEOBJECT *candidate;
     void **animations;
@@ -3114,7 +3113,7 @@ static __declspec(noinline) GAMEOBJECT *BlockFindSpecialAttackPc(GAMEOBJECT *obj
     return NULL;
 }
 
-static __declspec(noinline) PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object) {
+static PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object) {
     void **animations;
     f32 radius;
     if (object->player_index == -1) {
@@ -3129,7 +3128,7 @@ static __declspec(noinline) PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object)
 }
 
 /* PC0049e2b0: object in ESI, variant on stack. */
-static __declspec(noinline) void StartComboJump(GAMEOBJECT *object, i32 variant) {
+static void StartComboJump(GAMEOBJECT *object, i32 variant) {
     object->velocity.y = object->character_data->game_character->second_jump_speed;
     object->context_variant_flags &= ~0x10000u;
     object->character_context = 0;
@@ -3157,7 +3156,7 @@ static __declspec(noinline) void StartComboJump(GAMEOBJECT *object, i32 variant)
 }
 
 /* PC0049e370: object in ESI; result in EAX. */
-static __declspec(noinline) i32 StartBlock(GAMEOBJECT *object) {
+static i32 StartBlock(GAMEOBJECT *object) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
     if (NewBlockAction(object) != 0) {
         object->character_context = 0xc;
@@ -3306,7 +3305,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
     StartBlock(object);
 }
 
-static __declspec(noinline) void StartDodgePc(GAMEOBJECT *object) {
+static void StartDodgePc(GAMEOBJECT *object) {
     i32 previous_animation = object->field_7aa;
     BOLT_PC *bolt = object->incoming_bolt;
     NUVEC perpendicular = bolt->direction;
@@ -3371,7 +3370,7 @@ i32 __cdecl Dodge_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-static __declspec(noinline) void PunchRangesPc(GAMEOBJECT *object, f32 *gap, f32 *charge_gap) {
+static void PunchRangesPc(GAMEOBJECT *object, f32 *gap, f32 *charge_gap) {
     CHARACTER_MODEL_LAYERS_PC *model;
     if (object->id == (u16)VehicleBoltId7f17d4Pc) {
         model = APICharacterLoaded(PunchRangeCompanionIdPc);
@@ -3388,8 +3387,7 @@ static __declspec(noinline) void PunchRangesPc(GAMEOBJECT *object, f32 *gap, f32
     }
 }
 
-static __declspec(noinline) void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_target,
-                                           i32 suppress_combo, f32 cooldown) {
+static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_target, i32 suppress_combo, f32 cooldown) {
     f32 punch_gap, punch_charge_gap;
     f32 opponent_range = StartupGameFlag1 != 0 ? 1.25f : 2.0f;
     i32 angle;
@@ -4319,8 +4317,8 @@ static void JediLightCode(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held,
-                                                     i32 jump_pressed, i32 special_pressed) {
+static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held, i32 jump_pressed,
+                                i32 special_pressed) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
     object->context_variant_flags &= ~2u;
     if (object->character_context == 5) {
@@ -4661,8 +4659,7 @@ void __cdecl EndForce(GAMEOBJECT *object, i32 mode) {
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
-static __declspec(noinline) void HighlightForceObject(GAMEOBJECT *object, GIZFORCE_PC *force,
-                                                      FORCE_ANIMATION_OBJECT_PC *animation) {
+static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE_PC *force, FORCE_ANIMATION_OBJECT_PC *animation) {
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
     NUVEC *position;
     object->flags_e20 |= 0x20000;
@@ -4688,7 +4685,7 @@ static __declspec(noinline) void HighlightForceObject(GAMEOBJECT *object, GIZFOR
     }
 }
 
-static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
+static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     i32 previous = (object->flags_ef4 >> 20) & 1, start = 0, can_use;
     FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
     FORCE_ATTENTION_PC *attention = (FORCE_ATTENTION_PC *)object;
@@ -4844,7 +4841,7 @@ void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode) {
     }
 }
 
-static __declspec(noinline) void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
+static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
     NUVEC origins[2], target_position, reflected_origin, reflected_target, delta;
     f32 height, distance, plane;
     i32 random, index;
@@ -5374,7 +5371,7 @@ static i32 ForcePushEligible(GAMEOBJECT *candidate, GAMEOBJECT *object, GAMEOBJE
     return ((character->flags_094 >> 9) & 1) == 0;
 }
 
-static __declspec(noinline) void ForcePushed_MoveCode(GAMEOBJECT *object) {
+static void ForcePushed_MoveCode(GAMEOBJECT *object) {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
     i32 index;
@@ -6445,7 +6442,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
     }
 }
 
-static __declspec(noinline) void FireBountyHunterRocket(GAMEOBJECT *object) {
+static void FireBountyHunterRocket(GAMEOBJECT *object) {
     f32 *playing;
     f32 release_frame;
     f32 remaining;
@@ -6505,8 +6502,7 @@ void __cdecl GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
     }
 }
 
-static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
-                                          i32 delay_pressed) {
+static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, i32 delay_pressed) {
     BOLTTYPE_PC *bolt;
     GAMEOBJECT *target;
     GIZMOBLOWUP_PC *blowup;
@@ -6754,7 +6750,7 @@ void __cdecl SlideCode(GAMEOBJECT *object) {
     }
 }
 
-__declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
+i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
     u16 direction;
     NUVEC lateral;
 
@@ -6785,7 +6781,7 @@ __declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 inpu
     return 0;
 }
 
-static __declspec(noinline) void FloatAdvancePc(GAMEOBJECT *object) {
+static void FloatAdvancePc(GAMEOBJECT *object) {
     if (object->pad->input_magnitude > 0.0f && object->character_model->model_data_b[0xe5] != NULL) {
         object->field_7aa = 0xe5;
     } else {
@@ -6880,7 +6876,7 @@ static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void BeastStartFallCodePc(GAMEOBJECT *object) {
+static void BeastStartFallCodePc(GAMEOBJECT *object) {
     if (object->character_context == -1 && object->jump_variant_state == 0 && object->field_281 != 0 &&
         object->field_282 == 0) {
         if ((((BEAST_FALL_VIEW_PC *)object)->fall_animation_time >= (f32)0.2f || (object->flags_e24 & 0x400) != 0) &&
@@ -7072,7 +7068,7 @@ static void MoveAnim_Check(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
+static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
     EXPLOSION_PC *explosion;
     if ((object->character_data->model_flags & 0x10) == 0 || (object->flags_e24 & 0x200) != 0) {
         return;
@@ -7097,7 +7093,7 @@ static __declspec(noinline) void SelfDestructCode(GAMEOBJECT *object, i32 presse
     }
 }
 
-static __declspec(noinline) void SmartBombCode(GAMEOBJECT *object) {
+static void SmartBombCode(GAMEOBJECT *object) {
     VEHICLE_WEAPONS_STATE_PC *state = (VEHICLE_WEAPONS_STATE_PC *)object;
     i32 old_phase;
     f32 sign;
@@ -7149,7 +7145,7 @@ static void AnimationWeaponEffectPc(GAMEOBJECT *object) {
     PlaySfxByIdAndSetVolume(sound, &object->collision_position, object->weapon_scale);
 }
 
-static __declspec(noinline) void DodgemCode(GAMEOBJECT *object) {
+static void DodgemCode(GAMEOBJECT *object) {
     GAMEOBJECT *other;
     NUVEC position;
     i32 i, effect, count;
@@ -8049,14 +8045,14 @@ void __cdecl Animate_ATAT(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void StartDroidekaFoldPc(GAMEOBJECT *object) {
+static void StartDroidekaFoldPc(GAMEOBJECT *object) {
     object->character_context = 0x32;
     object->field_7aa = 0x23;
     object->context_timer = AnimDuration((i16)object->id, 0x23, 0.0f, 0.0f, 1);
     PlaySfx("DDekaFold", &object->collision_position);
 }
 
-static __declspec(noinline) void DroidekaRollingCodePc(GAMEOBJECT *object) {
+static void DroidekaRollingCodePc(GAMEOBJECT *object) {
     if (object->character_context == 0x32) {
         if (object->pad->input_magnitude >= (f64)object->character_data->game_character->run_speed - (f64)0.1f) {
             object->character_context = 0x31;
@@ -8088,7 +8084,7 @@ static __declspec(noinline) void DroidekaRollingCodePc(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void ShieldCode(GAMEOBJECT *object) {
+static void ShieldCode(GAMEOBJECT *object) {
     f32 target = 0.0f, previous;
     i32 animation;
     if (object->shield_hitpoints > 0) {
@@ -8212,7 +8208,7 @@ void __cdecl CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode)
     }
 }
 
-static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
+static void PodBoostCodePc(GAMEOBJECT *object) {
     POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
     if (object->player_index == -1) {
         return;
@@ -8245,7 +8241,7 @@ static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
     }
 }
 
-static __declspec(noinline) void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_held) {
+static void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_held) {
     f32 target, rate;
     POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
     if (object->player_index == -1) {
@@ -10319,7 +10315,7 @@ i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
     return 1;
 }
 
-static __declspec(noinline) i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
+static i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
     i8 context;
     u32 flags;
     if (!ZapTarget(target) || (owner != NULL && target == owner) || target->player_index != -1 ||
@@ -10337,7 +10333,7 @@ static __declspec(noinline) i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOB
     return (flags & 0x8000) == 0;
 }
 
-static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
+static void DeactivatedCode(GAMEOBJECT *object) {
     i32 controlled = 0, i, kind, count, selected;
     f32 duration, range;
     f64 elapsed;
@@ -11024,7 +11020,7 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
     }
 }
 
-static __declspec(noinline) void CommunicateCode(GAMEOBJECT *object, i32 pressed, i32 mode) {
+static void CommunicateCode(GAMEOBJECT *object, i32 pressed, i32 mode) {
     COMMUNICATE_MOVE_VIEW_PC *view = (COMMUNICATE_MOVE_VIEW_PC *)object;
     GAMEOBJECT *target;
     f32 *frame, *events;

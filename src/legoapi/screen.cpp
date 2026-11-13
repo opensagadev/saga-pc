@@ -645,7 +645,7 @@ extern "C" void __cdecl GrabStillScreen(void) {
     }
 }
 
-extern "C" __declspec(noinline) void NeedScreenGrab(i32 needed) {
+extern "C" void NeedScreenGrab(i32 needed) {
     ScreenGrabNeeded = needed != 0;
 }
 

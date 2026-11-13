@@ -476,62 +476,56 @@ extern "C" {
     i32 DogfightDebrisKeysPc[4] = {-1, -1, -1, -1};
 #pragma data_seg()
 
-    static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source);
-    static __declspec(noinline) void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix);
-    static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale);
+    static void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source);
+    static void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix);
+    static i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale);
     void ChrisAnakinCUpdate();
-    static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    static __declspec(noinline) void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
+    static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
+    static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     DOGFIGHT_QUICK_BOLT_PC *__cdecl QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
-    static __declspec(noinline) i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity,
-                                                      f32 duration, i32 type, i32 model_id);
-    static __declspec(noinline) void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
-    static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
-    static __declspec(noinline) f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
-    static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index);
-    static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
-    static __declspec(noinline) void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count);
-    static __declspec(noinline) DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space);
-    static __declspec(noinline) void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count);
-    static __declspec(noinline) void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
+                                 i32 type, i32 model_id);
+    static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
+    static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
+    static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
+    static void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index);
+    static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
+    static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count);
+    static DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count);
+    static void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
     static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group);
-    static __declspec(noinline) void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance,
-                                                        i32 mode);
-    static __declspec(noinline) i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix,
-                                                      f32 shot_speed);
-    static __declspec(noinline) void StarFighterTargetPc(starfighter_s *fighter);
+    static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
+    static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed);
+    static void StarFighterTargetPc(starfighter_s *fighter);
     i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFER_PC *info);
-    static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record);
-    static __declspec(noinline) DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void);
-    static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer);
+    static void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record);
+    static DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void);
+    static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer);
     void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
-    static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
     void SpaceRumbleProcess(void);
-    static __declspec(noinline) void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
+    static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry);
     void __cdecl ResetSpaceFromWorldPc(WORLDINFO *world);
     void ChrisAnakinBInit();
     void ChrisDogFightAReset(WORLDINFO *world);
     void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
-    static __declspec(noinline) i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position,
-                                                           NUVEC *velocity);
+    static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
     i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    static __declspec(noinline) void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position,
-                                                        i32 mode, i32 count);
+    static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
-    static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
-                                                          DOGFIGHT_FIGHTER_PC *record);
-    static __declspec(noinline) void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
-                                                           DOGFIGHT_SPACE_PC *space);
+    static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record);
+    static void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_SPACE_PC *space);
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
-    static __declspec(noinline) void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state);
-    static __declspec(noinline) void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
+    static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state);
+    static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
     void __cdecl ChrisDogFightAInit(WORLDINFO *world);
     void __cdecl ChrisDogFightAUpdate(WORLDINFO *world);
     void __cdecl ChrisDogFightADraw(WORLDINFO *world);
 
-    static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
+    static void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source) {
 #define DOGFIGHT_SPACE ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)
 #define COPY_ELEMENT(field) destination->field = source->field
         COPY_ELEMENT(m00);
@@ -553,7 +547,7 @@ extern "C" {
 #undef COPY_ELEMENT
     }
 
-    static __declspec(noinline) void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix) {
+    static void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix) {
         f32 x = (f64)matrix->m10 * input->y + (f64)input->x * matrix->m00 + (f64)matrix->m20 * input->z;
         f32 y = (f64)matrix->m01 * input->x + (f64)matrix->m11 * input->y + (f64)matrix->m21 * input->z;
         output->z = (f64)matrix->m02 * input->x + (f64)matrix->m12 * input->y + (f64)matrix->m22 * input->z;
@@ -561,7 +555,7 @@ extern "C" {
         output->y = y;
     }
 
-    static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
+    static i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
         __declspec(align(16)) NUMTX scaled;
         i32 model_index = apicharsys->playermodelids[model_id];
         if (model_index != -1) {
@@ -615,7 +609,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         __declspec(align(16)) NUVEC player0;
         __declspec(align(16)) NUVEC player1;
         __declspec(align(16)) NUVEC step;
@@ -681,7 +675,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
         if (buffer == NULL || buffer->capacity == 0) {
             return;
@@ -718,8 +712,8 @@ extern "C" {
         return record;
     }
 
-    static __declspec(noinline) i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity,
-                                                      f32 duration, i32 type, i32 model_id) {
+    static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
+                                 i32 type, i32 model_id) {
         DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
         f64 dx, dy, dz;
         if (record != NULL) {
@@ -880,8 +874,7 @@ extern "C" {
         CalcSplinePoint(spline, result, distance);
     }
 
-    static __declspec(noinline) void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points,
-                                                          i32 count) {
+    static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
         f32 step, along;
         i32 i;
         step = 1.0 / (f64)(count - 1);
@@ -894,7 +887,7 @@ extern "C" {
         points[count - 1] = spline->points[spline->point_count - 1];
     }
 
-    static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
         __declspec(align(16)) NUVEC4 current, previous, difference;
@@ -923,7 +916,7 @@ extern "C" {
         return distance;
     }
 
-    static __declspec(noinline) f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         i32 point, sample;
         f32 point_value, along, squared;
@@ -948,7 +941,7 @@ extern "C" {
         return distance;
     }
 
-    static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index) {
+    static void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index) {
         i32 point;
         spline->point_count = EdFileReadInt();
         spline->reset_value = EdFileReadFloat();
@@ -1018,7 +1011,7 @@ extern "C" {
     }
 
     /* Native debug paths retain these vector evaluations without line submission calls. */
-    static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
+    static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
         __declspec(align(16)) NUVEC4 points[512], direction, axis;
         i32 count, i, from;
         i16 yaw, pitch;
@@ -1078,7 +1071,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
+    static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
         i32 i;
         DOGFIGHT_CROSS_PC *cross = crosses;
         for (i = 0; i < count; ++i, ++cross) {
@@ -1106,7 +1099,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space) {
+    static DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space) {
         i32 i;
         for (i = 0; i < 96; ++i) {
             if (space->queued_fighters[i].fields.active == 0) {
@@ -1116,7 +1109,7 @@ extern "C" {
         return NULL;
     }
 
-    static __declspec(noinline) void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count) {
+    static void DogfightResetSplineHistoryPc(DOGFIGHT_SPLINE_HISTORY_PC *records, i32 count) {
         i32 i;
         for (i = 0; i < count; ++i, ++records) {
             records->current_value = records->reset_value;
@@ -1124,7 +1117,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
         DOGFIGHT_RESET_BUFFER_PC *buffer;
         DogfightDrawScalePc.x = 4.0f;
         DogfightDrawScalePc.y = 4.0f;
@@ -1168,8 +1161,7 @@ extern "C" {
         group->draw_target = 0;
     }
 
-    static __declspec(noinline) void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance,
-                                                        i32 mode) {
+    static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
         __declspec(align(16)) NUVEC4 local, up;
         i16 yaw, pitch, world_yaw, world_pitch, roll;
         f64 limit;
@@ -1214,8 +1206,7 @@ extern "C" {
     }
 
     /* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
-    static __declspec(noinline) i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix,
-                                                      f32 shot_speed) {
+    static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed) {
         __declspec(align(16)) NUVEC offset, local;
         NUVEC *target_position, *target_velocity, *axis, *front, *right, *up;
         GAMEOBJECT *player;
@@ -1326,7 +1317,7 @@ extern "C" {
         return 0;
     }
 
-    static __declspec(noinline) void StarFighterTargetPc(starfighter_s *fighter) {
+    static void StarFighterTargetPc(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         DOGFIGHT_TARGET_SPLINE_PC *spline = (DOGFIGHT_TARGET_SPLINE_PC *)fighter->spline;
         DOGFIGHT_FIGHTER_PC *record;
@@ -1601,7 +1592,7 @@ extern "C" {
         return 1;
     }
 
-    static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
+    static void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUMTX scaled;
         if (fighter->model_id < 0) {
@@ -1636,7 +1627,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void) {
+    static DOGFIGHT_GROUP_PC *SelectFreeFlightGroupPc(void) {
         i32 i;
         if (WORLD->level_specific_data != NULL) {
             for (i = 0; i < 8; ++i) {
@@ -1648,7 +1639,7 @@ extern "C" {
         return NULL;
     }
 
-    static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
+    static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         __declspec(align(16)) NUVEC step;
         f32 speed;
         i32 i, active = 0;
@@ -1723,7 +1714,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
         NUVEC4 *direction;
         f32 value;
         i32 i = 6;
@@ -1875,7 +1866,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
+    static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
         i32 i, j;
@@ -2032,7 +2023,7 @@ extern "C" {
         }
     }
 
-    __declspec(noinline) i32 __cdecl ShipDropCoins(starfighter_s *fighter) {
+    i32 __cdecl ShipDropCoins(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         i32 index;
         for (index = 0; index < space->coin_history_count; ++index) {
@@ -2050,8 +2041,7 @@ extern "C" {
         return 1;
     }
 
-    static __declspec(noinline) i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position,
-                                                           NUVEC *velocity) {
+    static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity) {
         __declspec(align(16)) NUVEC relative_position;
         __declspec(align(16)) NUVEC relative_velocity;
         __declspec(align(16)) NUVEC step;
@@ -2168,8 +2158,7 @@ extern "C" {
         return 0;
     }
 
-    static __declspec(noinline) void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position,
-                                                        i32 mode, i32 count) {
+    static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count) {
         SOCK_PC *sock;
         __declspec(align(16)) NUVEC a, b, c, d, difference;
         i32 i, end;
@@ -2284,8 +2273,7 @@ extern "C" {
         ChrisAnakinCReset();
     }
 
-    static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
-                                                          DOGFIGHT_FIGHTER_PC *record) {
+    static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUVEC4 direction;
         i32 model;
@@ -2349,8 +2337,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
-                                                           DOGFIGHT_SPACE_PC *space) {
+    static void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_SPACE_PC *space) {
         DOGFIGHT_FIGHTER_PC *fighter;
         if (spline->point_count == 0) {
             return;
@@ -2430,7 +2417,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
+    static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
         __declspec(align(16)) NUVEC4 start, target;
         if (state->actions == NULL) {
             return;
@@ -2483,7 +2470,7 @@ extern "C" {
         }
     }
 
-    static __declspec(noinline) void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
+    static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
         DOGFIGHT_QUICK_BUFFER_PC *buffer;
         GAMEOBJECT *player0, *player1;
         DOOR_s *door;

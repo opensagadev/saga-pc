@@ -235,7 +235,7 @@ void EdFileWriteNuVec(NUVEC *value) {
     EdFileWriteFloat(value->z);
 }
 
-__declspec(noinline) void __cdecl EdFileRead(void *buffer, i32 length) {
+void __cdecl EdFileRead(void *buffer, i32 length) {
     i32 count;
     while (length > 0) {
         count = sizeof(edfile_buffer) - edfile_buffer_pointer;

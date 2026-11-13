@@ -46,7 +46,7 @@ static __inline f32 PlayersFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-__declspec(noinline) i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
+i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
     i32 pushing_obstacle, difference;
     u16 input_angle, angle;
     if ((LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) ||

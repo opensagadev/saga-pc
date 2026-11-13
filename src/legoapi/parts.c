@@ -43,7 +43,7 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     part_platimpactcnt = 0;
 }
 
-__declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
+void __cdecl KillPartsByScene(NUGSCN *scene) {
     PART_PC *part = Part;
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
@@ -117,7 +117,7 @@ void __cdecl edpartClearPage(i8 page) {
     part_page_used[page] = 0;
 }
 
-__declspec(noinline) i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
+i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
     i32 i;
     if (name == NULL || name[0] == 0) {
         return -1;
@@ -194,7 +194,7 @@ void __cdecl KillPart(PART_PC *part, i32 reason) {
     }
 }
 
-__declspec(noinline) void __cdecl NewPartRotation(PART_PC *part) {
+void __cdecl NewPartRotation(PART_PC *part) {
     i32 index;
     for (index = 0; index < 2; ++index) {
         do {
@@ -204,7 +204,7 @@ __declspec(noinline) void __cdecl NewPartRotation(PART_PC *part) {
     }
 }
 
-__declspec(noinline) void __cdecl NewPartOrderedRotation(PART_PC *part) {
+void __cdecl NewPartOrderedRotation(PART_PC *part) {
     part->field_124[0] = part->rotation_parameters[0] +
                          (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[3]);
     part->field_124[1] = part->rotation_parameters[1] +
@@ -403,7 +403,7 @@ PART_PC *__cdecl HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_c
     return NULL;
 }
 
-__declspec(noinline) void edpartStartPage(u8 page) {
+void edpartStartPage(u8 page) {
     i32 i;
     i8 signed_page = (i8)page;
 
@@ -1134,7 +1134,7 @@ void Parts_Stop(WORLDINFO *world) {
     }
 }
 
-__declspec(noinline) void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
+void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     i32 effect;
 
     if (sys == NULL || index < 0 || index >= part_debris_count) {
@@ -1380,7 +1380,7 @@ __declspec(noinline) void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32
     }
 }
 
-__declspec(noinline) void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
+void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].emitter_momentum.x = x;
         debkeydata[handle].emitter_momentum.y = y;
@@ -1388,7 +1388,7 @@ __declspec(noinline) void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y
     }
 }
 
-__declspec(noinline) void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
+void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].momentum.x = x;
         debkeydata[handle].momentum.y = y;
@@ -1409,7 +1409,7 @@ i32 __cdecl PARTLookupType(char *name) {
     return -1;
 }
 
-static __declspec(noinline) void DebrisMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
+static void DebrisMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
     destination->m02 = source->m02;
@@ -1428,7 +1428,7 @@ static __declspec(noinline) void DebrisMtxCopyPrivate(NUMTX *destination, const 
     destination->m33 = source->m33;
 }
 
-static __declspec(noinline) void DebrisMtxRotateXPrivate(NUMTX *m, i32 a) {
+static void DebrisMtxRotateXPrivate(NUMTX *m, i32 a) {
     f32 cosx;
     f32 sinx;
     f32 m01;
@@ -1452,7 +1452,7 @@ static __declspec(noinline) void DebrisMtxRotateXPrivate(NUMTX *m, i32 a) {
     m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
 
-static __declspec(noinline) void DebrisMtxRotateYPrivate(NUMTX *m, i32 a) {
+static void DebrisMtxRotateYPrivate(NUMTX *m, i32 a) {
     f32 cosx;
     f32 sinx;
     f32 m00;
@@ -1476,7 +1476,7 @@ static __declspec(noinline) void DebrisMtxRotateYPrivate(NUMTX *m, i32 a) {
     m->m32 = m->m32 * cosx - m30 * sinx;
 }
 
-static __declspec(noinline) void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
+static void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
     f32 cosx;
     f32 sinx;
     f32 m00;
@@ -1532,7 +1532,7 @@ void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
     debkeydata[handle].orientation_dirty = 0.0f;
 }
 
-__declspec(noinline) void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
+void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, f32 plane, f32 scale) {
     if (handle != -1) {
         debkeydata[handle].reflection_x = x;
         debkeydata[handle].reflection_y = y;
@@ -1790,7 +1790,7 @@ static f32 DebrisFabs(f32 f) {
     return rv;
 }
 
-static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
+static f32 DebrisDivide(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }

@@ -135,7 +135,7 @@ static i32 __cdecl DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
-__declspec(noinline) void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
+void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     void *allocation = NULL;
     if (buffer != NULL && end != NULL && buffer->addr + (u32)size < end->addr) {
         allocation = (void *)((buffer->addr + 15) & ~15u);
@@ -265,7 +265,7 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     return system;
 }
 
-static __declspec(noinline) void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
+static void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     i32 index;

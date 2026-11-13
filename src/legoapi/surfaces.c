@@ -117,7 +117,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
     }
 }
 
-__declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
+i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     f32 y;
     i32 placed;
 

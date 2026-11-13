@@ -22,8 +22,6 @@ i32 __cdecl PlatInstGetHit(i32 index) {
     return (terrain->platforms[index].flags >> 1) & 1;
 }
 
-#pragma auto_inline(off)
-
 void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
     i32 i;
 
@@ -33,8 +31,6 @@ void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
         }
     }
 }
-
-#pragma auto_inline(on)
 
 #define TERRAIN_NPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 

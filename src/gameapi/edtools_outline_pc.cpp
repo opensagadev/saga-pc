@@ -5,7 +5,7 @@
 
 /* Draws one line between two vertices, optionally transformed by a matrix
  * (copied to aligned storage when it is not 16-byte aligned). */
-static __declspec(noinline) void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
+static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;
     if (matrix != NULL) {

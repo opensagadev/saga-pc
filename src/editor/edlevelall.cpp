@@ -539,7 +539,7 @@ extern "C" {
     ((((EDDRAW_DARKEN_CHANNEL(colour, 16) << 8) | EDDRAW_DARKEN_CHANNEL(colour, 8)) << 8) |                            \
      ((((colour) & 0xff) * 0xdc / 256) & 0xff) | ((colour) & 0xff000000))
 
-    static __declspec(noinline) void EdDrawSetVertexColour(i32 colour) {
+    static void EdDrawSetVertexColour(i32 colour) {
         i32 converted;
         if (NuPrimNeedsOverbrightening != 0) {
             converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff00) + (colour & 0xff000000u);
@@ -6385,7 +6385,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
 }
 
 /* Retail keeps this out of line: SerialiseObject calls it (0x6cda5e). */
-__declspec(noinline) EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
+EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (member->attributes & 0x80000000) {
             if (recursive) {

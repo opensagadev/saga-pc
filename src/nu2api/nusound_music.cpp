@@ -356,7 +356,7 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
 }
 
 /* Empty diagnostic hook; retail calls it with the track name when a name lookup fails. */
-extern "C" __declspec(noinline) void PCMusicTrackNotFound(...) {
+extern "C" void PCMusicTrackNotFound(...) {
 }
 
 i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
@@ -585,7 +585,7 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     return 1;
 }
 
-extern "C" __declspec(noinline) void PCStereoUnknownToken(...) {
+extern "C" void PCStereoUnknownToken(...) {
 }
 
 i32 NuMusic::Voice::Unload(void) {

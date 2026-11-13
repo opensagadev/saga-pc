@@ -197,7 +197,7 @@ typedef struct world_minikit_reader_pc_s {
     u8 *hub_minikits;
 } WORLD_MINIKIT_READER_PC;
 
-static __forceinline f32 HubFabsPc(f32 value) {
+static f32 HubFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }

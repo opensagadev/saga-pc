@@ -62,7 +62,7 @@ extern "C" {
     i32 GizTurretAnimDataVersionPc = 7;
     ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 
-    static __declspec(noinline) void GizTurretClearPc(GIZTURRET_s *turret) {
+    static void GizTurretClearPc(GIZTURRET_s *turret) {
         GAMEANIMSET *set;
         if (turret == NULL) {
             return;
@@ -302,7 +302,7 @@ extern "C" {
         return &((GIZTURRET_s *)gizmo->object)->position;
     }
 
-    static __declspec(noinline) void GizTurrets_Reset(GIZTURRET_s *turret, WORLDINFO *world) {
+    static void GizTurrets_Reset(GIZTURRET_s *turret, WORLDINFO *world) {
         GAMEANIMOBJ *object;
         TURRET_ANIM_DATA_PC *data;
         NUMTX *primary, *secondary;

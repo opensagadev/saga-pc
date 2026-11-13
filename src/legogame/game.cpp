@@ -2085,7 +2085,7 @@ extern "C" {
         }
     }
 
-    __declspec(noinline) static void PartCollidePC(PART_PC *part, i32 three_dimensional) {
+    static void PartCollidePC(PART_PC *part, i32 three_dimensional) {
         i32 i;
         i32 slot;
         i32 count;

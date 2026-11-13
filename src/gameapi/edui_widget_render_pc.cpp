@@ -1810,7 +1810,7 @@ STATIC_ASSERT(offsetof(nugraph_s, x_scale) == 0x44);
 STATIC_ASSERT(offsetof(nugraph_s, y_extent) == 0x50);
 
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
-static __forceinline f32 EduiFabsPc(f32 value) {
+static f32 EduiFabsPc(f32 value) {
     *(u32 *)&value &= 0x7fffffff;
     return value;
 }
