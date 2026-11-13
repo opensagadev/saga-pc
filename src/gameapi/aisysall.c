@@ -13908,8 +13908,10 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
 
     path = packet->path_info.path;
     if (path == NULL) {
-        path = (packet->navigation_flags & 2) != 0 ? system->path_sys->paths[0] : system->path_sys->active_path;
-        AISysCharacterSetPath(packet, path);
+        if ((packet->navigation_flags & 2) != 0)
+            AISysCharacterSetPath(packet, system->path_sys->paths[0]);
+        else
+            AISysCharacterSetPath(packet, system->path_sys->active_path);
         packet->path_info.connection = NULL;
         packet->current_route = 0xff;
         packet->next_route = 0;
