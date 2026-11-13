@@ -8957,6 +8957,7 @@ address,symbol,size,ctype
 0x64f7e0,_edpartDoInput,1375,
 0x64fd40,_edpartProc,76,
 0x0064fdb0,_TerrainDiagnosticNoOpPC,1,"void __cdecl (const void *, ...)"
+0x0064fdc0,_DebrisFabs,18,f32 __cdecl (f32)
 0x64fde0,_DebrisDivide,54,"f32 __cdecl (f32, f32)"
 0x64fde0,_TerrainDivideNonzeroPC,54,"f32 __cdecl(f32,f32)"
 0x0064fe20,_DebrisNuASin,320,i32 __cdecl (f32)
