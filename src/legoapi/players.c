@@ -14,40 +14,6 @@ typedef struct grapple_movement_pc_s {
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, shadow_probe_position) == 0x3c);
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, swing_scale) == 0x4c);
 
-i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
-    u16 sideways_angle;
-    f32 direction, speed;
-    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1];
-    object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
-    sideways_angle = object->movement_facing_angle + 0x4000;
-    direction = PushingTowardsAngle(input_angle, sideways_angle);
-    if (direction > NuTrigTable[0x3555]) {
-        if (LEGOACT_WALLSHUFFLE_RIGHT != -1 &&
-            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[LEGOACT_WALLSHUFFLE_RIGHT] != NULL) {
-            object->field_7aa = LEGOACT_WALLSHUFFLE_RIGHT;
-            speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_WALLSHUFFLE_RIGHT);
-        } else {
-            speed = 0.5f;
-        }
-    } else if (direction < -NuTrigTable[0x3555]) {
-        if (LEGOACT_WALLSHUFFLE_LEFT != -1 &&
-            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[LEGOACT_WALLSHUFFLE_LEFT] != NULL) {
-            object->field_7aa = LEGOACT_WALLSHUFFLE_LEFT;
-            speed = -AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_WALLSHUFFLE_LEFT);
-        } else {
-            speed = -0.5f;
-        }
-    } else {
-        object->field_7aa = LEGOACT_WALLSHUFFLE_IDLE;
-        speed = 0.0f;
-    }
-    if (speed != 0.0f) {
-        object->target_velocity.x += NuTrigTable[sideways_angle >> 1] * speed;
-        object->target_velocity.z += NuTrigTable[((sideways_angle + 0x4000) >> 1) & 0x7fff] * speed;
-    }
-    return 0;
-}
-
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
@@ -79,61 +45,6 @@ typedef struct world_conveyor_pc_s {
 } WORLD_CONVEYOR_PC;
 STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, conveyor) == 0x5170);
-
-static __inline f32 PlayersFabsPc(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
-}
-
-__declspec(noinline) i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
-    i32 pushing_obstacle, difference;
-    u16 input_angle, angle;
-    if ((LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) ||
-        (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 9))
-        pushing_obstacle = 1;
-    else
-        pushing_obstacle = 0;
-    if (((object->flags_1fc & 0x80) || (object->flags_ef4 & 0x30000)) &&
-        (object->pad->input_magnitude > 0.0f || pushing_obstacle) && object->contact_count &&
-        CanClimbSurface(object, (i8)object->contact_material[0]) == 0 &&
-        PlayersFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
-        input_angle = pushing_obstacle ? object->movement_facing_angle : GamePad_InputAngle(object, object->pad);
-        angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
-        difference = RotDiff(input_angle, angle);
-        if (angle_difference != NULL)
-            *angle_difference = difference;
-        difference = abs(difference);
-        if (difference > 0x4e38 ||
-            (difference > 0x1555 && object->field_7aa != -1 &&
-             (object->field_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->field_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
-            if (normal_angle != NULL)
-                *normal_angle = angle;
-            if (surface != NULL)
-                *surface = (i8)object->contact_material[0];
-            return 1;
-        }
-    }
-    if (surface != NULL)
-        *surface = -1;
-    return 0;
-}
-
-void __cdecl SetPushAngle(GAMEOBJECT *object) {
-    SPINNER_MOVEMENT_PC *spinner;
-    u16 angle;
-    i32 adjustment;
-    if (Pushing(object, &angle, NULL, NULL)) {
-        adjustment = 0;
-        spinner = (SPINNER_MOVEMENT_PC *)object->grapple;
-        if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && object->character_context == LEGOCONTEXT_PUSHSPINNER &&
-            (spinner->state_flags & 0x40)) {
-            adjustment = PlayerPushSpinnerDegreesPc;
-            if (spinner->state_flags & 1)
-                adjustment = -adjustment;
-        }
-        object->movement_facing_angle = angle + ((adjustment + 180) * 65536) / 360;
-    }
-}
 
 typedef struct movement_suit_pc_s {
     u8 unknown_00[0xc];
