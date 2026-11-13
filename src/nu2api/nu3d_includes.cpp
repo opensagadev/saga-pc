@@ -11484,7 +11484,7 @@ extern "C" {
         u32 end;
         if (item == NULL)
             return;
-        end = (flags & 2) ? 0x84 : 0x8e;
+        end = ((u8)flags & 2) ? 0x84 : 0x8e; // MATCH-EXCEPTION: byte test of the flags, retail tests al
         do {
             DisplayListPrintItem(item, index, type_count, types, file_handle);
             if (flags & 1) {
