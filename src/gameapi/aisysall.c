@@ -14200,6 +14200,7 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
                 AIMoveDirectlyToDestination(system, packet, object, checks);
                 break;
         }
+        packet->flags &= ~7u;
     } else {
         packet->movement_destination = object->position;
         packet->movement_stopping_distance = 0.0f;
@@ -14208,8 +14209,8 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
             packet->movement_stopping_distance = packet->fallback_stopping_distance;
             packet->movement_destination = packet->fallback_destination;
         }
+        packet->flags &= ~7u;
     }
-    packet->flags &= ~7u;
 }
 
 AIMESSAGESYS_PC *__cdecl CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
