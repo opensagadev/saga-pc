@@ -597,7 +597,7 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
                     jedi_b.baddies[index].object = NULL;
                 }
                 jedi_b.baddies[index].id = id;
-                jedi_b.wave_ids[chosen] = (i16)id;
+                jedi_b.wave_ids[chosen] = jedi_b.baddies[index].id;
                 jedi_b.baddies[index].flags |= 8;
             }
             jedi_b.wave_timer = 0.0f;
