@@ -1252,12 +1252,10 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 f32 dx;
                 f32 negative_radius;
                 f32 dz;
-                f64 velocity_x;
-                f64 push;
+                f32 push;
                 NUVEC floor_end, player_end, floor_delta;
                 f64 jitter;
                 f64 random;
-                f64 floor_x;
                 f64 clamp_radius;
                 f64 upper;
                 f64 floor_y;
@@ -1294,33 +1292,25 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 if (!(player->flags_1f8 & 0x40000))
                     ObjHitObj(NULL, player, 1, 0, 0, 1);
                 player = ((GAMEOBJECT *)Player[i]);
-                velocity_x = player->velocity.x;
                 push = EmperorFloorPushPc;
                 if (dx > 0.0f)
-                    player->velocity.x = (f32)(velocity_x + push);
+                    player->velocity.x += push;
                 else
-                    player->velocity.x = (f32)(velocity_x - push);
+                    player->velocity.x -= push;
                 player = (GAMEOBJECT *)Player[i];
                 if (dz > 0.0f)
-                    player->velocity.z = (f32)(player->velocity.z + push);
+                    player->velocity.z += push;
                 else
-                    player->velocity.z = (f32)(player->velocity.z - push);
+                    player->velocity.z -= push;
 
                 floor_end.x = player->collision_position.x;
                 jitter = EmperorFloorJitterPc;
                 random = NuRandFloat();
                 floor_end.x = (f32)((jitter - (random + random) * jitter) + (f64)floor_end.x);
-                floor_x = floor_position->x;
-                clamp_radius = EmperorFloorRadiusPc;
-                upper = floor_x + clamp_radius;
-                if (floor_end.x > upper) {
-                    floor_end.x = (f32)upper;
-                } else {
-                    f64 lower;
-                    lower = floor_position->x - clamp_radius;
-                    if (lower > floor_end.x)
-                        floor_end.x = (f32)lower;
-                }
+                if (floor_end.x > floor_position->x + EmperorFloorRadiusPc)
+                    floor_end.x = floor_position->x + EmperorFloorRadiusPc;
+                else if (floor_position->x - EmperorFloorRadiusPc > floor_end.x)
+                    floor_end.x = floor_position->x - EmperorFloorRadiusPc;
                 floor_y = floor_position->y;
                 jitter_player = (GAMEOBJECT *)Player[i];
                 floor_end.y = (f32)floor_y;
