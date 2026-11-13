@@ -13028,15 +13028,15 @@ i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
                              i32 param_4, i32 param_5, f32 param_6) {
     char *from = NULL;
     char *to = NULL;
-    i32 both_ways = 0;
     i32 blocked = 1;
+    i32 both_ways = 0;
     i32 index;
     char *value;
 
     (void)processor;
     (void)packet;
     (void)param_6;
-    if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0 && param_4 > 0) {
+    if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIActionFromName);
             if (value != NULL) {
@@ -13052,7 +13052,7 @@ i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
                 blocked = 0;
             }
         }
-        if (to != NULL && from != NULL) {
+        if (from != NULL && to != NULL) {
             AIPathCnxSetTemporaryBlock(sys->path_sys->active_path, from, to, blocked);
             if (both_ways) {
                 AIPathCnxSetTemporaryBlock(sys->path_sys->active_path, to, from, blocked);
