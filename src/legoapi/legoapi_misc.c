@@ -15,12 +15,12 @@ void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *object) {
 #include <math.h>
 void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     i32 angle;
-    phase += GameTimer.time_elapsed;
-    phase = NuFmod(phase, 1.25f);
+    f32 sine;
+    phase = NuFmod(phase + GameTimer.time_elapsed, 1.25f);
     if (phase < 1.0f) {
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
-        phase = NuTrigTable[(angle >> 1) & 0x7fff];
-        *(u32 *)&phase &= 0x7fffffff;
+        sine = NuTrigTable[(angle >> 1) & 0x7fff];
+        *(u32 *)&phase = *(u32 *)&sine & 0x7fffffff;
         phase = 1.0f - phase;
     } else {
         phase = 0.0f;
