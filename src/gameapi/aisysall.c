@@ -12836,13 +12836,17 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
                 processor->flags &= ~1u;
             if ((processor->flags & 1) != 0)
                 continue;
-            if (processor->action_node != NULL)
-                processor->action_node =
-                    (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
+            action = processor->action_node;
+            if (action != NULL)
+                action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &action->link);
             else
-                processor->action_node = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
-            if (processor->action_node != NULL)
+                action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+            if (action != NULL) {
                 processor->flags |= 1;
+                processor->action_node = action;
+            } else {
+                processor->action_node = NULL;
+            }
         }
     }
     if (AIScriptProcessReferences(system, packet, processor) != 0)
