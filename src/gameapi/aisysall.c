@@ -14689,28 +14689,30 @@ void __cdecl locatorEditor_cbSetLocatorSet(eduimenu_s *menu, eduiitem_s *item, u
     (void)menu;
     (void)event;
     if (item != NULL) {
-        if (item->data != 0) {
-            set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
-            for (index = 1; set != NULL; ++index) {
-                if (index == item->data)
-                    break;
-                set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
-            }
-            if (set != NULL && aieditor->current_locator_set != set) {
-                aieditor->current_locator_set = set;
-                if (aieditor->current_locator_set != NULL) {
-                    aieditor->current_locator = aieditor->current_locator_set->locators[0];
-                    if (aieditor->current_locator != NULL) {
-                        aieditor->current_path = aieditor->current_locator->path_check.path;
-                        if (aieditor->current_locator != NULL)
-                            edcamSetPos(&aieditor->current_locator->position);
-                    }
-                } else {
-                    aieditor->current_locator = NULL;
-                }
-            }
-        } else {
+        if (item->data == 0) {
             aieditor->current_locator_set = NULL;
+        } else {
+            index = 1;
+            for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
+                 set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
+                if (item->data == index) {
+                    if (aieditor->current_locator_set != set) {
+                        aieditor->current_locator_set = set;
+                        if (aieditor->current_locator_set != NULL) {
+                            aieditor->current_locator = aieditor->current_locator_set->locators[0];
+                            if (aieditor->current_locator != NULL) {
+                                aieditor->current_path = aieditor->current_locator->path_check.path;
+                                if (aieditor->current_locator != NULL)
+                                    edcamSetPos(&aieditor->current_locator->position);
+                            }
+                        } else {
+                            aieditor->current_locator = NULL;
+                        }
+                    }
+                    break;
+                }
+                index++;
+            }
         }
     }
     AiEditorClearMainMenuPc();
