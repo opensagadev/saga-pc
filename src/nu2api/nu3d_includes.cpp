@@ -5955,9 +5955,7 @@ extern "C" {
                     candidates[1] = room_index;
                 }
             }
-            if (candidate_count < 2) {
-                candidates[candidate_count] = room_index;
-            }
+            candidates[candidate_count] = room_index;
             candidate_count++;
             if (candidate_count == 2 && (first->flags & 1) == 0 && (second->flags & 1) == 0) {
                 break;
