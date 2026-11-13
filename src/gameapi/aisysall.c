@@ -9365,9 +9365,9 @@ static void pathEditorDrawRoute(void) {
         aieditor->current_path->runtime_end < 0 || aieditor->current_path->runtime_end >= path->node_count)
         return;
     end = aieditor->current_path->runtime_end;
-    current = aieditor->current_path->runtime_start;
-    if (current == end)
+    if (aieditor->current_path->runtime_start == end)
         return;
+    current = aieditor->current_path->runtime_start;
     do {
         edge = path->route_matrix[current][end];
         if (edge == 0xff)
