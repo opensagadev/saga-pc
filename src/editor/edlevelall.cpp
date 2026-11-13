@@ -7088,6 +7088,12 @@ void ClassEditor::DestroySelectedObjectsNow() {
     }
 }
 
+void cbCEDeleteConfirmed(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    EdTrace();
+    theClassEditor.DestroySelectedObjectsNow();
+    cbEdLevelDestroyOnSelect(menu, item, buttons);
+}
+
 void ClassEditor::cbDestroyObject(eduimenu_s *, eduiitem_s *item, u32) {
     if (item->data != 0)
         theClassEditor.DestroySelectedObjectsNow();
