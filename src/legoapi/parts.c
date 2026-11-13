@@ -883,29 +883,6 @@ i32 __cdecl PartDraw_Flickerer(PART_PC *part) {
     }
     return draw;
 }
-void __cdecl PartImpact_Basketball(PART_PC *part) {
-    f32 volume = NuVecMag(&part->velocity);
-    if (volume >= 2.5f)
-        volume = 1.0f;
-    else if (volume >= (f64)0.1f)
-        volume = (f32)(((f64)volume - (f64)0.1f) / (f64)2.4f);
-    else
-        return;
-    if (volume > 0.0f)
-        PlaySfxAndSetVolume("BBounce", &part->position, volume);
-}
-
-void __cdecl PartUpdate_Basketball(PART_PC *part) {
-    GIZMOBLOWUP_PC *blowup;
-    if (LevGizmo[0] == NULL)
-        return;
-    blowup = (GIZMOBLOWUP_PC *)LevGizmo[0]->object;
-    if ((blowup->status_flags & 0x800000) == 0 && (blowup->status_flags & 1) == 0 &&
-        NuVecDistSqr(&blowup->position, &part->position, NULL) < 0.1f * 0.1f) {
-        GizmoActivate(WORLD->gizmo_sys, LevGizmo[0], 1, 0);
-        GizmoBlowupBlowup(blowup, 1, -1, -1, NULL, 1);
-    }
-}
 
 // MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
 __declspec(noinline) void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
@@ -1864,13 +1841,6 @@ void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == offsetof(GAMEOBJECT, field_c8c) + sizeof(f32));
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == offsetof(GAMEOBJECT, field_c8c) + 2 * sizeof(f32));
-i32 __cdecl SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
-    object->attack_target_position = target->position;
-    *(NUVEC *)&object->field_c8c = target->velocity;
-    object->flags_e20 |= 0x800;
-    object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)target;
-    return 1;
-}
 
 PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
                             i32 directional, i32 bolt_id) {

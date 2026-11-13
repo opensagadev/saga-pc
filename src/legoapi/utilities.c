@@ -1540,30 +1540,3 @@ static __inline f32 UtilitiesFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
-
-void __cdecl MakeThrowVector(NUVEC *result, NUVEC *origin, NUVEC *target, NUVEC *target_velocity, f32 speed,
-                             f32 gravity) {
-    NUVEC predicted = *target;
-    NUVEC horizontal_origin;
-    NUVEC delta;
-    f32 time;
-    f32 vertical_delta;
-    f32 vertical_speed;
-    u16 angle;
-    i32 i;
-    for (i = 0; i < 3; ++i) {
-        horizontal_origin.x = origin->x;
-        horizontal_origin.y = 0.0f;
-        horizontal_origin.z = origin->z;
-        NuVecSub(&delta, &predicted, &horizontal_origin);
-        time = NuVecMag(&delta) / speed;
-        NuVecAddScale(&predicted, target, target_velocity, time);
-    }
-    time = NuVecXZDist(&predicted, origin, NULL) / speed;
-    vertical_delta = predicted.y - origin->y;
-    vertical_speed = (f32)((f64)vertical_delta / ((f64)FRAMETIME + (f64)time) - (f64)gravity * 0.5 * (f64)time);
-    angle = (u16)NuAtan2D(predicted.x - origin->x, predicted.z - origin->z);
-    result->x = speed * NuTrigTable[angle >> 1];
-    result->y = vertical_speed;
-    result->z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-}

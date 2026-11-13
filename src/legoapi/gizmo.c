@@ -534,10 +534,6 @@ void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     system->flags &= ~4;
 }
 
-i32 __cdecl TwistLevel(LEVELDATA_PC *level) {
-    return DOGFIGHTA_LDATA != NULL && level == DOGFIGHTA_LDATA;
-}
-
 i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position,
                                        NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 planar,
                                        i32 bolt_id) {

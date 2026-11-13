@@ -381,19 +381,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_e24) == 4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 
-void __cdecl ReleaseEat(GAMEOBJECT *object) {
-    GAMEOBJECT *eaten = object->force_target;
-    if (eaten != NULL && (object->flags_e24 & 1) != 0) {
-        KillGameObject(eaten, 2, 0);
-        object->force_target = NULL;
-    }
-    if (object->character_context == 0x39 || object->character_context == 0x38) {
-        object->force_target = NULL;
-        object->character_context = -1;
-    }
-    object->flags_e24 &= ~1u;
-}
-
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
 typedef struct SHOP_UNLOCK_AREA_PC {

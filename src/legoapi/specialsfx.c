@@ -1,70 +1,8 @@
 #include "saga.h"
-void __cdecl PopBalloon(GAMEOBJECT *object) {
-    LetGoOfBalloon(object);
-}
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, engine_level) == 0xd94);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);
-
-void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
-    i32 elapsed_seconds = (i32)object->context_timer;
-    NUVEC delta;
-    NUVEC velocity;
-    f32 speed, ratio;
-    f64 fraction;
-    (void)unused;
-    if ((elapsed_seconds % 2) == 0 && object->field_780 != (f32)elapsed_seconds) {
-        object->field_780 = (f32)elapsed_seconds;
-        DisorientAxisPc = 0;
-        while ((DisorientAxisPc & 5) == 0) {
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
-                DisorientAxisPc |= 1;
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
-                DisorientAxisPc |= 2;
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f)
-                DisorientAxisPc |= 4;
-        }
-    }
-    if (DisorientAxisPc & 1)
-        object->pitch_angle = SeekRot(object->pitch_angle, (u16)(object->pitch_angle + 0x4000), 3.0f);
-    if (DisorientAxisPc & 2)
-        object->field_0x276 = SeekRot(object->field_0x276, (u16)(object->field_0x276 + 0x4000), 3.0f);
-    if (DisorientAxisPc & 4)
-        object->roll_angle = SeekRot(object->roll_angle, (u16)(object->roll_angle + 0x4000), 3.0f);
-    speed = (f32)(75.0 / (NuVecDistSqr(&object->collision_position, &object->external_force, &delta) / 6.0 + 1.0));
-    ratio = (f32)(((f64)delta.x + (f64)0.01f) / ((f64)delta.z + (f64)0.01f));
-    fraction = 1.0 / (f64)ratio;
-    velocity.x = (f32)((1.0 - fraction) * speed);
-    velocity.y = 0.0f;
-    velocity.z = (f32)(fraction * speed);
-    if (velocity.x > 100.0f)
-        velocity.x = 100.0f;
-    else if (velocity.z > 100.0f)
-        velocity.z = 100.0f;
-    if ((delta.x < 0.0f && velocity.x > 0.0f) || (delta.x > 0.0f && velocity.x < 0.0f))
-        velocity.x = -velocity.x;
-    if ((delta.z < 0.0f && velocity.z > 0.0f) || (delta.z > 0.0f && velocity.z < 0.0f))
-        velocity.z = -velocity.z;
-    object->movement_direction = velocity;
-}
-void __cdecl DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
-    if (target != NULL) {
-        if (object->character_context != 0x40)
-            object->context_timer = 0.0f;
-        object->character_context = 0x40;
-        object->external_force = *target;
-    }
-    if (object->character_context != 0x40)
-        return;
-    Disorientate(object, &object->external_force);
-    object->context_timer += FRAMETIME;
-    if (NuVecDistSqr(&object->collision_position, &object->external_force, NULL) > (f64)distance * 1.5 &&
-        object->context_timer > 3.0f) {
-        object->character_context = -1;
-        StartTurn(object);
-    }
-}
 
 void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     WORLDINFO *world = world_info;

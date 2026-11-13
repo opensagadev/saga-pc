@@ -699,27 +699,6 @@ i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
-void __cdecl SetPodMergeAnims(ANIMPACKET_PC *packet, i32 index) {
-    POD_MERGE_PACKET_READER_PC *reader = (POD_MERGE_PACKET_READER_PC *)packet;
-    f32 roll = pod_roll[index];
-    union {
-        f32 value;
-        u32 bits;
-    } value, absolute;
-    if (roll < 0.0f) {
-        reader->requested_animation = 1;
-        reader->overlay_animation = 0x26;
-    } else {
-        reader->requested_animation = 1;
-        reader->overlay_animation = 0x4f;
-    }
-    reader->blend_source_time = pod_animtime[index];
-    reader->blend_target_time = pod_animtime[index];
-    value.value = roll;
-    absolute.bits = value.bits & 0x7fffffff;
-    reader->overlay_weight = absolute.value;
-}
-
 /* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
 typedef struct podrace_levflag_pc_s {
     u8 podrace_state;

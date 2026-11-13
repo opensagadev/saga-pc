@@ -192,43 +192,6 @@ void __cdecl SuperCarry_Release(GAMEOBJECT *object) {
     }
 }
 
-void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
-    i32 hand;
-    NUMTX matrix;
-    NUVEC velocity, centre;
-    ADDPART_PC params;
-    PART_PC *part;
-    if (object->character_context != 0x5d)
-        return;
-    object->character_context = -1;
-    if (WORLD->level_objects[0xf7].active == 0)
-        return;
-    hand = object->character_data->game_character->hand_locators[0];
-    if (hand == -1 || object->character_model->points_of_interest[hand] == NULL)
-        return;
-    NuMtxSetTranslation(&matrix, (NUVEC *)&object->locator_matrices[hand].m30);
-    velocity.x = 0.0f;
-    velocity.y = 0.0f;
-    velocity.z = 0.2f;
-    NuVecMtxRotate(&velocity, &velocity, &matrix);
-    params = Default_ADDPART;
-    params.matrix = &matrix;
-    params.velocity = &velocity;
-    NuSpecialGetRadius(&WORLD->level_objects[0xf7].special, &centre, &params.field_14);
-    params.field_18 = params.field_14;
-    params.part_id = 0xf7;
-    params.special = &WORLD->level_objects[0xf7].special;
-    params.flags = 0x08000200;
-    params.time_step = FRAMETIME;
-    params.gravity = 0.5f;
-    params.owner = object;
-    params.hostility_group = object->hostility_group;
-    params.collision_fn = PartCollide_3D;
-    part = AddPart(&params);
-    if (part != NULL)
-        part->force_flags = (u16)ObjHitObj_Flags(object);
-}
-
 void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
     i32 first, second;
     NUVEC offset;

@@ -463,13 +463,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == 0xc94);
 STATIC_ASSERT(sizeof(NUVEC) == 12);
-i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
-    object->attack_target_position = target->mid_position;
-    *(NUVEC *)&object->field_c8c = v000;
-    object->flags_e20 |= 0x800;
-    object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)target;
-    return 1;
-}
 
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
                                            f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {

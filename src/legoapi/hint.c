@@ -288,30 +288,6 @@ i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-i32 __cdecl Dodge_UpdateHint(HINT_PC *hint) {
-    i32 index;
-    (void)hint;
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL) {
-            if ((object->character_data->model_flags & 0x2000) != 0)
-                return 0;
-            if ((object->flags_1fc & 0x80) != 0 && (object->portal_flags & 1) != 0 &&
-                (object->character_model->model_data_b[0x4f] != NULL ||
-                 object->character_model->model_data_b[0x26] != NULL))
-                return 1;
-        }
-    }
-    return 0;
-}
-
-i32 __cdecl Shop_UpdateHint(HINT_PC *hint) {
-    (void)hint;
-    return 0;
-}
-
 i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     HINT_ZIPUP_PC *zipups;

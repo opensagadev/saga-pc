@@ -210,34 +210,6 @@ __declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
     return 0;
 }
 
-__declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
-    u16 direction;
-    NUVEC lateral;
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude, absolute;
-    if (object->field_281 != 0 && ((magnitude.value = object->surface_normal.x,
-                                    absolute.bits = magnitude.bits & 0x7fffffff, absolute.value > 0.001f) ||
-                                   (magnitude.value = object->surface_normal.z,
-                                    absolute.bits = magnitude.bits & 0x7fffffff, absolute.value > 0.001f)))
-        direction = NuAtan2D(object->surface_normal.x, object->surface_normal.z);
-    else
-        direction = object->movement_facing_angle;
-    object->target_velocity.x = NuTrigTable[direction >> 1] * 1.2f;
-    object->target_velocity.z = NuTrigTable[((direction + 0x4000) >> 1) & 0x7fff] * 1.2f;
-    if (object->field_281 != 0 && input_speed > 0.0f) {
-        lateral.x = NuTrigTable[input_angle >> 1] * input_speed;
-        lateral.z = NuTrigTable[((input_angle + 0x4000) >> 1) & 0x7fff] * input_speed;
-        NuVecRotateY(&lateral, &lateral, -(i32)direction);
-        lateral.z = 0.0f;
-        NuVecRotateY(&lateral, &lateral, direction);
-        object->target_velocity.x += lateral.x;
-        object->target_velocity.z += lateral.z;
-    }
-    return 0;
-}
-
 extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
 
 typedef struct spinner_movement_pc_s {
@@ -761,42 +733,6 @@ i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet
     return 0;
 }
 
-void __cdecl DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
-    NUVEC target = v000;
-    NUVEC delta;
-    f32 distance;
-    f32 step;
-
-    if (object->suit != NULL) {
-        if ((object->suit->flags & 0x10) != 0) {
-            target.y = 0.0076f;
-        } else if ((object->suit->flags & 0x40) != 0) {
-            target.y = MAGNETOFFSET;
-        }
-    }
-    if ((object->character_context == 0x44 && object->field_7aa != 6 && object->field_7aa != 5) ||
-        (object->character_context == 0x43 && object->context_variant == 5)) {
-        target = object->context_position_offset;
-    }
-    if (reset != 0) {
-        object->render_offset = target;
-        return;
-    }
-    if (object->render_offset.x == target.x && object->render_offset.y == target.y &&
-        object->render_offset.z == target.z) {
-        return;
-    }
-    distance = NuVecDist(&target, &object->render_offset, &delta);
-    step = (f32)((f64)FRAMETIME * (f64)0.4f);
-    if (step >= distance) {
-        object->render_offset = target;
-        return;
-    }
-    NuVecNorm(&delta, &delta);
-    NuVecScale(&delta, &delta, step);
-    NuVecAdd(&object->render_offset, &object->render_offset, &delta);
-}
-
 i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object) {
     if (Cheat_IsOn(28) != 0) {
         return 1;
@@ -958,15 +894,6 @@ void __cdecl SetFlicker(GAMEOBJECT *object, f32 duration) {
     object->vehicle_hit_timer = duration;
 }
 
-void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
-    if (object->saved_hitpoints == 3)
-        object->field_7aa = 0x42;
-    else if (object->saved_hitpoints == 2)
-        object->field_7aa = 0x43;
-    else if (object->saved_hitpoints == 1)
-        object->field_7aa = 0x44;
-}
-
 i32 __cdecl Arcade_BothPlayersActive(void) {
     return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
@@ -1012,127 +939,6 @@ STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_hover_height) == 0xdb8)
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, hold_timer) == 0xde4);
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, dynamic_light_id) == 0xe04);
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_state) == 0x107d);
-static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
-    NUVEC direction;
-    f32 delta, threshold, delta_x, delta_z;
-    if (VehicleArea != 0 || (object->flags_1fc_word & 0x80) == 0)
-        return 0;
-    if (object->character_context == 0 &&
-        object->context_timer < object->character_data->game_character->jump_duration * 0.5)
-        return 0;
-    if (!(object->pad->input_magnitude > 0.0f) && object->velocity.x == 0.0f && object->velocity.z == 0.0f)
-        return 0;
-    if ((object->field_281 & 2) != 0 || object->contact_count == 0)
-        return 0;
-    if (!(object->contact_normal.y > NuTrigTable[0x4000]) || !(object->contact_normal.y < NuTrigTable[0x3000]))
-        return 0;
-    delta = object->collision_min.y - object->floor_height;
-    threshold = (f32)(object->bounds_half_height / (f64)0.21f);
-    if (!(delta > threshold * (f64)0.035f))
-        return 0;
-    if (object->pad->input_magnitude > 0.0f) {
-        NuVecRotateY(&direction, &v001, object->movement_facing_angle);
-    } else {
-        direction.x = object->velocity.x;
-        direction.y = 0.0f;
-        direction.z = object->velocity.z;
-        NuVecNorm(&direction, &direction);
-    }
-    delta_x = object->contact_position.x - object->position.x;
-    delta_z = object->contact_position.z - object->position.z;
-    return delta_x * direction.x + delta_z * direction.z > 0.0;
-}
-void __cdecl PreResetCode(GAMEOBJECT *object) {
-    PLAYER_RESET_FIELDS_PC *reset = (PLAYER_RESET_FIELDS_PC *)object;
-    PLAYERCHARACTERCONFIG_PC *character;
-    object->flags_e24 &= 0xffffafcf;
-    object->flags_e20 &= 0xf83fffef;
-    object->flags_ef4 &= 0xdfffffff;
-    object->quick_shoot_bolt_id = -1;
-    object->slam_effect = -1;
-    object->batarang_release = 0;
-    object->debris_joint = -1;
-    DrawOffsetCode(object, 0);
-    if ((object->flags_ef4 & 8) == 0)
-        return;
-    object->flags_e20 &= 0xfff7ffff;
-    reset->weapon_trail_offset.x = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
-    reset->weapon_trail_offset.y = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
-    reset->weapon_trail_offset.z = (f32)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.03f - (f64)0.015f;
-    object->flags_e20 &= ~4u;
-    object->incoming_bolt = NULL;
-    object->incoming_melee = NULL;
-    reset->incoming_special = NULL;
-    object->incoming_part = NULL;
-    if (object->character_context != 0xa)
-        object->flags_e20 &= ~0x800u;
-    object->flags_e20 &= 0xfffddfff;
-    object->terrain_origin_floor_offset = 0.0f;
-    object->sabre_flags = 1;
-    reset->force_glow_candidate = NULL;
-    object->blade_states[0] = object->blade_states[1] = object->blade_states[2] = object->blade_states[3] = -1;
-    object->anim_packet.overlay_animation = -1;
-    if ((object->character_data->model_flags & 0x8040) == 0)
-        object->jump_variant_state = 0;
-    object->flags_e20 &= 0x7fffffff;
-    if (reset->dynamic_light_id != -1)
-        rtlDynamicEnable(reset->dynamic_light_id, 0);
-    object->flags_e24 &= 0xfffffdbf;
-    reset->pre_reset_state = 0;
-    if (object->field_281 != 0)
-        reset->ground_contact_grace_timer = 0.2f;
-    else if (reset->ground_contact_grace_timer > 0.0f)
-        reset->ground_contact_grace_timer -= FRAMETIME;
-    if ((object->flags_1fc_word & 0x80) != 0 && PreResetCanAccelerateFallPc(object))
-        object->fall_acceleration_timer = 0.1f;
-    else if (object->fall_acceleration_timer > 0.0f)
-        object->fall_acceleration_timer -= FRAMETIME;
-    GameObjectNearFloor(object, 1.0f, &reset->nearby_floor_distance);
-    reset->pre_reset_hover_height = GetHoverPosY(object);
-    character = object->character_data->game_character;
-    if (character->blade_colour != -1) {
-        if (object->field_280 != 0xff && Cheat_IsOn(0x19))
-            object->blade_index = 0;
-        else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
-            object->blade_index = 3;
-        else
-            object->blade_index = object->character_data->game_character->blade_colour;
-    } else {
-        object->blade_index = -1;
-    }
-    if ((object->pad->buttons_held & GAMEPAD_ACTION) != 0) {
-        object->flags_e24 &= 0xffff5fff;
-        reset->hold_timer += FRAMETIME;
-    } else {
-        if (reset->hold_timer > 0.0f && reset->hold_timer < 0.25f)
-            object->flags_e24 |= 0x40;
-        object->flags_e24 &= 0xffff5fff;
-        reset->hold_timer = 0.0f;
-    }
-}
-
-extern const f64 GameObjectNearFloorNoFloorHeight;
-
-f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
-    f32 offset, height;
-    if ((object->character_data->model_flags & 0x2000) != 0 &&
-        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000) == 0) {
-        offset = VehicleTurnOrLoopOffset(object);
-        if (object->field_283 != 7 && object->field_283 != 0x10) {
-            height = object->floor_height;
-            if (height != GameObjectNearFloorNoFloorHeight) {
-                if (object->water_height != GameObjectNearFloorNoFloorHeight && object->water_height > height)
-                    height = object->water_height;
-                if (WORLD->current_level->hover_height != 0.0f)
-                    return height + WORLD->current_level->hover_height + offset;
-                return height + object->character_data->game_character->field_028 + offset;
-            }
-            return LevelConfigFarDistance;
-        }
-        return object->water_height + offset;
-    }
-    return LevelConfigFarDistance;
-}
 
 i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
     i32 other, active;
@@ -1225,17 +1031,6 @@ i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
     if (item->type->type != 2)
         return 1;
     return item->ammo > 0;
-}
-
-void __cdecl PostResetCode(GAMEOBJECT *object) {
-    PLAYERCHARACTERCONFIG_PC *character;
-    object->attack_override = 0;
-    if (object->character_data->game_character->sfx_chatter != -1)
-        ChatterSfx(object, object->character_data->game_character->sfx_chatter,
-                   (f32)(u32)object->character_data->game_character->flags_11e);
-    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 &&
-        (object->flags_e24 & 0x2000) == 0)
-        object->tertiary_lean_angle = 0;
 }
 
 extern f32 animduration_blendouttime;
@@ -2646,20 +2441,6 @@ i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-void __cdecl AveragePlayerCurrentSpeedMul(void) {
-    i32 count = 0;
-    avg_currentspeed_mul = 0.0f;
-    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
-        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[0])->current_speed_mul + 0.0);
-        count = 1;
-    }
-    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
-        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[1])->current_speed_mul + (f64)avg_currentspeed_mul);
-        ++count;
-    }
-    if (count > 1)
-        avg_currentspeed_mul = (f32)((1.0 / (f64)count) * (f64)avg_currentspeed_mul);
-}
 void __cdecl SetPlayer(void) {
     if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
         player = Player[0];
