@@ -283,6 +283,23 @@ into a target file in retail order and rewrites `config/*.json` owners.
    the same); config owners (`candidate-only.json`, `code-groups.json`,
    `data-members.json`), hard-coded paths (see below) and matching.json unit
    names change. Do the game library first (largest, highest confidence).
+   Done for 40 files (29 into `src/legogame/`). Left out: 5 undetermined
+   targets (`batman.cpp`, `Refpack.cpp`, `Utilities.cpp`, `nualloc.c`,
+   `unref.cpp`); 3 low-confidence or open names (`lsw_hub_ai.c`, `nufloat.c`,
+   `pc_fmv.cpp`); 6 whose target is a unity file (`apisave.c`, `edpp.c`,
+   `cutscene_lifecycle.c`, `socksys.c`, `numath_includes.c`,
+   `nusound_music.cpp`: batch 4 decides the inner files); 8 already at the
+   target path up to the extension (`episodes`, `gamestructure`, `gizbuildit`,
+   `gizspinner`, `movies`, `pushblocks`, `nushadermanager_gen`,
+   `nushaderobjectbase`: batch 5); 5 whose target stem is taken by another
+   file that still has to be merged (`level_area_load.cpp` -> `levels`,
+   `leveldata.c` -> `netplay`, `mission.c` -> `missions`,
+   `simpletons_pc.cpp` -> `simpletons`, `takeoverobjects.c` -> `tagging`:
+   batch 2). `config/units.csv` `our_files` still names the old paths until
+   the table is regenerated (below). The object link order is the sorted
+   source path, so a rename can change which object supplies a COMDAT inline
+   member (the Fade members now come from `gameapi/supportall.cpp` instead of
+   `legoapi/gamethings.cpp`); the exact set did not change.
 2. **Merges of whole files into their target** (111 files, section `merge`):
    append the file's functions to the carrier in retail address order. Start
    with high-confidence compilands whose pieces are small (`buffers`,
@@ -333,7 +350,11 @@ What depends on names:
   witness files: `aisysall.c`, `gameaiscript.c`, `gameobjects.c`, `move.c`,
   `parts.c`, `numath_includes.c`), `tools/altbuild.py` (`bgproc.c`,
   `crc16.cpp`, `numath_includes.c`) and the example in `tools/globals.py`.
-  Grep for the old path before each rename.
+  Grep for the old path before each rename. Also: a quoted `#include` of a
+  header next to the old file (`pc_fmv_native.h`) and the per-object header
+  dependencies in `Makefile` follow the file's directory, and
+  `config/layout-target.csv` `current_source_files` is regenerated with
+  `tools/layoutscan.py --batman DIR --write`.
 - Unit-start markers are recomputed from the EXE and do not depend on names.
 - Work buckets and notes outside the repository that list unit names need a
   one-time update after batch 1.

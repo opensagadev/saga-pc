@@ -29,7 +29,7 @@ SOURCE_DIRS := $(shell find src -type d)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
 OBJECTS += $(patsubst lib/ogg-vorbis/%,$(OBJ_DIR)/vendored/%,$(DEPENDENCY_SOURCES:.c=.obj))
-$(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
+$(filter $(OBJ_DIR)/nu2api/pc_fmv%.obj $(OBJ_DIR)/nu2api/nufmv/pc/Bink/dsplay_bink.obj,$(OBJECTS)): src/nu2api/pc_fmv_native.h
 
 # Original Vorbis private headers/textual tables belong to these owners only.
 VORBIS_HEADERS := $(filter %.h %.inc,$(DEPENDENCY_FILES))

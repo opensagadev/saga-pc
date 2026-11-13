@@ -1388,7 +1388,7 @@ void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
         RtlSpecularStatePc(&data->field_134, NULL);
 }
 
-/* SOURCE DRAFT ONLY: append in existing src/legoapi/rtl.c after its genuine
+/* SOURCE DRAFT ONLY: append in existing src/gameapi/rtl.c after its genuine
  * burn_editor_position_pc definition. Native extents for new working data views
  * remain unknown; no allocation credit, sections, attributes or caller activation.
  * Existing system_qfont, modifiers, PS2_REZ_W, and burn_editor_position_pc owners

@@ -107,7 +107,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/zipup.c",
+   "unit": "src/legogame/zipup.c",
    "symbol": "_ZipUpFabsPc",
    "kind": "function"
   },
@@ -387,7 +387,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/ledges.cpp",
+   "unit": "src/legogame/ledge.cpp",
    "symbol": "?LedgeFabsPc@@YAMM@Z",
    "kind": "function"
   },
