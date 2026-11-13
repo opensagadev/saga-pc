@@ -723,22 +723,6 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 extern i32 HubDoorNewLevelPc;
 
-i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
-    CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;
-    i32 found;
-    i32 index;
-    if (system != NULL && cutscene != NULL) {
-        found = -1;
-        for (index = 0; index < system->count; ++index) {
-            if (system->records[index] == cutscene)
-                found = index;
-        }
-        if (found != -1)
-            return (WorldInfo_CurrentlyActive()->level_progress->progress_state & (1 << found)) != 0;
-    }
-    return 0;
-}
-
 void __cdecl Hub_ActivateDoorMenu(void *argument) {
     LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
     i32 area = (*level)->area_index;

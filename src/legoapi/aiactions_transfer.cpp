@@ -141,16 +141,6 @@ extern "C" {
     }
 }
 
-extern "C" {
-    void *__cdecl CutScene_FindInst(CUTSYS_PC *system, char *name) {
-        if (system == NULL)
-            return NULL;
-        for (i32 index = 0; index < system->count; ++index)
-            if (NuStrICmp(system->records[index]->name, name) == 0)
-                return system->records[index]->instance;
-        return NULL;
-    }
-}
 typedef struct bulk_ai_panel_pc_s {
     u8 unknown_00[0x50];
     NUVEC position;

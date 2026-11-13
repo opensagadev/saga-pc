@@ -40,9 +40,6 @@ void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
 }
 
 STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
-void *__cdecl CutScenePlayer_Active(void) {
-    return CutScenePlayerPc != NULL ? CutScenePlayerPc->active : NULL;
-}
 
 typedef struct CUT_PLAYER_STATE_PC {
     NUSPECIALHANDLE special;
@@ -65,30 +62,6 @@ typedef struct CUT_PLAYER_INST_ANIM_PC {
 } CUT_PLAYER_INST_ANIM_PC;
 STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, time) == 0x4c);
 STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, flags) == 0x50);
-void __cdecl CutScenePlayer_SetObjects(CUTINFO *owner) {
-    // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter slot.
-    i32 i;
-    if (CutScenePlayerPc == NULL || CutScenePlayerPc->active == NULL)
-        return;
-    if (((CUT_PLAYER_RECORD_PC *)owner)->states == NULL)
-        return;
-    for (i = 0; i < ((CUT_PLAYER_RECORD_PC *)owner)->state_count; ++i) {
-        u8 flags = ((CUT_PLAYER_RECORD_PC *)owner)->states[i].flags;
-        if ((flags & 1) != 0)
-            NuSpecialSetVisibility(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special, 1);
-        else if ((flags & 2) != 0)
-            NuSpecialSetVisibility(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special, 0);
-        else if ((flags & 4) != 0) {
-            f32 time = NuSpecialGetAnimEndFrame(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special);
-            CUT_PLAYER_INST_ANIM_PC *animation =
-                (CUT_PLAYER_INST_ANIM_PC *)NuSpecialGetInstAnim(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special);
-            if (animation != NULL) {
-                animation->flags |= 1;
-                animation->time = time;
-            }
-        }
-    }
-}
 
 STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
@@ -113,192 +86,16 @@ STATIC_ASSERT(offsetof(CUT_PLAYER_CONFIG_PC, intro_text) == 0x10);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CONFIG_PC, midtro_text) == 0x14);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CONFIG_PC, outro_text) == 0x18);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CONFIG_PC, ending_text) == 0x1c);
-extern i32(__cdecl *CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
-
-CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void) {
-    return CutScenePlayerPc;
-}
-
-void __cdecl CutScenePlayer_Reset(void) {
-    if (CutScenePlayerPc != NULL)
-        CutScenePlayerPc->active = NULL;
-}
-
-void __cdecl CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end, i16 *clip_text, i16 *intro,
-                                      i16 *midtro, i16 *outro, i16 *ending) {
-    NUFPAR_PC *fp;
-    CUT_PLAYER_CONFIG_PC player;
-    CUT_PLAYER_CLIP_CONFIG_PC *clip;
-    i32 level;
-
-    fp = NuFParCreate(file);
-    if (fp == NULL) {
-        CutSceneConfigMissingPc(file);
-        return;
-    }
-    buffer->addr = (buffer->addr + 3) & ~3U;
-    player.clips = (CUT_PLAYER_CLIP_CONFIG_PC *)buffer->void_ptr;
-    player.active = NULL;
-    player.clip_count = 0;
-    player.clip_text = clip_text;
-    player.intro_text = intro;
-    player.midtro_text = midtro;
-    player.outro_text = outro;
-    player.ending_text = ending;
-    while (NuFParGetLine(fp)) {
-        if (!NuFParGetWord(fp) || NuStrICmp(fp->word_buffer_ptr, "clip") != 0)
-            continue;
-        clip = &player.clips[player.clip_count];
-        clip->level_id = -1;
-        clip->type = 0;
-        clip->name[0] = 0;
-        while (NuFParGetWord(fp)) {
-            if (NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
-                if (NuFParGetWord(fp)) {
-                    if (Level_FindByName(fp->word_buffer_ptr, &level) != NULL)
-                        clip->level_id = (i16)level;
-                    else
-                        CutSceneConfigMissingPc(fp->word_buffer_ptr);
-                }
-            } else if (NuStrICmp(fp->word_buffer_ptr, "name") == 0) {
-                if (NuFParGetWord(fp) && NuStrLen(fp->word_buffer_ptr) < 64)
-                    NuStrCpy(clip->name, fp->word_buffer_ptr);
-            } else if (NuStrICmp(fp->word_buffer_ptr, "intro") == 0) {
-                clip->type = 0;
-            } else if (NuStrICmp(fp->word_buffer_ptr, "midtro") == 0) {
-                clip->type = 1;
-            } else if (NuStrICmp(fp->word_buffer_ptr, "outro") == 0) {
-                clip->type = 2;
-            } else if (NuStrICmp(fp->word_buffer_ptr, "ending") == 0) {
-                clip->type = 3;
-            }
-        }
-        if (clip->level_id != -1 && (CutScenePlayer_AcceptFn == NULL || CutScenePlayer_AcceptFn(clip) != 0))
-            ++player.clip_count;
-    }
-    NuFParDestroy(fp);
-    if (player.clip_count > 0) {
-        buffer->void_ptr = player.clips + player.clip_count;
-        PCByteCopy_candidate(buffer->void_ptr, &player, sizeof(player));
-        CutScenePlayerPc = (CUT_PLAYER_ACTIVE_PC *)buffer->void_ptr;
-        buffer->addr += sizeof(player);
-    } else {
-        CutSceneConfigMissingPc(file);
-    }
-}
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
 STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
 STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
 
-/* 0057e720..0057e7d2, ordinary one-argument cdecl. */
-i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;
-    i32 area_id, episode;
-    if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
-        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
-        area_id = LDataList[clips[clip_id].level_id].area_index;
-        if (area_id != -1) {
-            if ((ADataList[area_id].flags & 2) != 0) {
-                episode = ADataList[area_id].episode_index;
-                if (episode != -1 && Episode_IsComplete(&EDataList[episode], NULL) != 0)
-                    return 2;
-            } else if (Game_AreaSave != NULL && Game_AreaSave[area_id].area_complete != 0) {
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-
-/* 0057e7e0..0057e849. The following 0057e850 text function is a separate
- * native owner. PC accepts one argument and does not write return_door. */
-void __cdecl CutScenePlayer_Start(i32 clip_id) {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;
-    if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
-        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
-        NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
-        CutScenePlayerPc->active = &((CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips)[clip_id];
-        NextArea_FreePlay = 0;
-        FreePlay = 0;
-    }
-}
-
-extern const char Text_UnknownText[2];
-extern const char CutPlayerClipFormatPc[8], CutPlayerTextSeparatorPc[4];
 STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 
-/* 0057e850..0057ea41 instructions, alignment to0057ea44, four-entry table
- *0057ea44..0057ea54. PC mode is only a boolean controlling the type suffix. */
-void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;
-    LEVELDATA_PC *level;
-    i32 area_id, episode;
-    if (CutScenePlayerPc == NULL) {
-        if (title != NULL)
-            NuStrCpy(title, Text_UnknownText);
-        if (subtitle != NULL)
-            NuStrCpy(subtitle, Text_UnknownText);
-        return;
-    }
-    if (title != NULL) {
-        if (CutScenePlayerPc->clip_text != NULL)
-            sprintf(title, TTab[*CutScenePlayerPc->clip_text], id + 1);
-        else
-            sprintf(title, CutPlayerClipFormatPc, id + 1);
-        if (mode != 0) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
-            switch (clips[id].type) {
-                case 0:
-                    if (CutScenePlayerPc->intro_text != NULL) {
-                        NuStrCat(title, CutPlayerTextSeparatorPc);
-                        NuStrCat(title, TTab[*CutScenePlayerPc->intro_text]);
-                    }
-                    break;
-                case 1:
-                    if (CutScenePlayerPc->midtro_text != NULL) {
-                        NuStrCat(title, CutPlayerTextSeparatorPc);
-                        NuStrCat(title, TTab[*CutScenePlayerPc->midtro_text]);
-                    }
-                    break;
-                case 2:
-                    if (CutScenePlayerPc->outro_text != NULL) {
-                        NuStrCat(title, CutPlayerTextSeparatorPc);
-                        NuStrCat(title, TTab[*CutScenePlayerPc->outro_text]);
-                    }
-                    break;
-                case 3:
-                    if (CutScenePlayerPc->ending_text != NULL) {
-                        NuStrCat(title, CutPlayerTextSeparatorPc);
-                        NuStrCat(title, TTab[*CutScenePlayerPc->ending_text]);
-                    }
-                    break;
-            }
-        }
-    }
-    if (subtitle != NULL) {
-        clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
-        level = &LDataList[clips[id].level_id];
-        area_id = level->area_index;
-        if (area_id == -1) {
-            NuStrCpy(subtitle, Text_UnknownText);
-            return;
-        }
-        if ((ADataList[area_id].flags & 2) != 0) {
-            episode = (i8)level->episode;
-            if (episode == -1) {
-                NuStrCpy(subtitle, Text_UnknownText);
-                return;
-            }
-            NuStrCpy(subtitle, TTab[EDataList[episode].text_id]);
-        } else {
-            NuStrCpy(subtitle, TTab[ADataList[area_id].name_id]);
-        }
-    }
-}
 typedef struct cut_average_rigid_system_pc_s {
     void *rigids;
     u16 count;
