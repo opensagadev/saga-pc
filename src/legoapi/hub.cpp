@@ -2430,8 +2430,10 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
     }
     if (text == -1)
         return;
-    const u16 rotation = (u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, .5f) * 2.0f) * 65536.0);
-    const f64 pulse = (f64)NuTrigTable[rotation >> 1] * .25 + .75;
+    const f64 pulse =
+        (f64)NuTrigTable[(u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, .5f) * 2.0f) * 65536.0) >> 1] *
+            .25 +
+        .75;
     SmartTextEx(TTab[text], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
                 HubEpisodeTitleSizePc, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)(pulse * alpha_scaled));
 }
