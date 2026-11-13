@@ -1,5 +1,15 @@
 #include "saga.h"
 
+f32 DropInOutScale(GAMEOBJECT *object) {
+    const u8 context = (u8)(object->character_context);
+    if (context == CHARACTER_CONTEXT_DROP_IN)
+        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f) >> 1) & 0x7fff];
+    if (context == CHARACTER_CONTEXT_DROP_OUT)
+        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f + 16384.0f) >> 1) &
+                           0x7fff];
+    return 1.0f;
+}
+
 void __cdecl DropInOutCode(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
     GAMEOBJECT *other;

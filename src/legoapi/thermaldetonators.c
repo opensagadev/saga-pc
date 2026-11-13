@@ -1,16 +1,6 @@
 #include "saga.h"
 
 /* Retail unit 0x4cf680-0x4d0650 (legoapi/thermaldetonators.c): definitions in retail address order. */
-f32 DropInOutScale(GAMEOBJECT *object) {
-    const u8 context = (u8)(object->character_context);
-    if (context == CHARACTER_CONTEXT_DROP_IN)
-        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f) >> 1) & 0x7fff];
-    if (context == CHARACTER_CONTEXT_DROP_OUT)
-        return NuTrigTable[((i32)(object->context_timer / object->context_duration * 16384.0f + 16384.0f) >> 1) &
-                           0x7fff];
-    return 1.0f;
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
