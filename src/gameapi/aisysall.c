@@ -7472,8 +7472,10 @@ void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i3
     for (i = 1; i <= segments; ++i) {
         i32 angle;
         (*first).position = (*second).position;
-        (*second).position = *centre;
-        angle = (i * 65536) / segments;
+        (*second).position.x = centre->x;
+        (*second).position.y = centre->y;
+        (*second).position.z = centre->z;
+        angle = (i << 16) / segments;
         {
             NUVEC offset = {radius_x * NU_SIN_LUT(angle), 0.0f, radius_z * NU_COS_LUT(angle)};
             NuVecRotateY(&offset, &offset, rotation);
