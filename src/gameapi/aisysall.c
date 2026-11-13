@@ -14102,12 +14102,12 @@ void AIRetreatFromDestination2(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_
     AIPATHINFO_PC path_info;
 
     distance = NuVecXZDist(&object->position, &packet->fallback_destination, &difference);
-    if (distance != 0.0f) {
-        NuVecScale(&difference, &difference, packet->movement_parameter / distance);
-    } else {
+    if (distance == 0.0f) {
         difference.x = packet->movement_parameter;
         difference.y = 0.0f;
         difference.z = 0.0f;
+    } else {
+        NuVecScale(&difference, &difference, packet->movement_parameter / distance);
     }
     NuVecAdd(&packet->movement_destination, &packet->fallback_destination, &difference);
     packet->movement_stopping_distance = 0.0f;
@@ -14117,9 +14117,9 @@ void AIRetreatFromDestination2(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_
         NuVecAdd(&packet->movement_destination, &object->position, &difference);
     }
 
+    path_info = packet->path_info;
     position = object->position;
     path_position = packet->last_path_position;
-    path_info = packet->path_info;
     object->position = packet->movement_destination;
     AISysGetCharacterPathPos(system, object, packet, 0, 1);
     packet->movement_destination = packet->last_path_position;
