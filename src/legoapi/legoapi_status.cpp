@@ -1025,29 +1025,39 @@ extern "C" {
         f32 step;
         f32 y;
         labels[1] = -1;
-        if ((packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 || packet->mission_state != 0) {
+        if ((packet->flags_word & 0x100u) != 0) {
             labels[0] = TextIdPc88083c;
             labels[1] = TextIdPc8806f8;
-        } else if ((packet->flags_word & 0x40u) != 0 ||
-                   (packet->area_id != -1 && (u8)areas[packet->area_id].episode_index == 0xff)) {
+        } else if (packet->challenge_state != 0) {
+            labels[0] = TextIdPc88083c;
+            labels[1] = TextIdPc8806f8;
+        } else if (packet->mission_state != 0) {
+            labels[0] = TextIdPc88083c;
+            labels[1] = TextIdPc8806f8;
+        } else if ((packet->flags_word & 0x40u) != 0) {
             labels[0] = TextIdPc8806f8;
-        } else if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 &&
-                   (areas[packet->next_area].flags & 2u) == 0 && Game.area_save[packet->next_area].complete == 0) {
+        } else if (packet->area_id != -1 && (u8)areas[packet->area_id].episode_index == 0xff) {
             labels[0] = TextIdPc8806f8;
-            locked = 1;
         } else {
-            if (packet->next_area != -1 && (areas[packet->next_area].flags & 2u) != 0)
-                labels[0] = TextIdPc880744;
-            else
-                labels[0] = TextIdPc880704;
-            if ((packet->flags_word & 8u) != 0)
-                labels[1] = TextIdPc8806f8;
+            u32 chapter = (packet->flags_word >> 3) & 1;
+            if (chapter != 0 && packet->next_area != -1 && (areas[packet->next_area].flags & 2u) == 0 &&
+                Game.area_save[packet->next_area].complete == 0) {
+                labels[0] = TextIdPc8806f8;
+                locked = 1;
+            } else {
+                if (packet->next_area != -1 && (areas[packet->next_area].flags & 2u) != 0)
+                    labels[0] = TextIdPc880744;
+                else
+                    labels[0] = TextIdPc880704;
+                if (chapter != 0)
+                    labels[1] = TextIdPc8806f8;
+            }
         }
         title = StatusCoinsTitleYPc;
         if (StartupGameFlag1 != 0)
             step = StatusPromptStepYPc;
         else
-            step = -((f64)title + (f64)title);
+            step = -(title + title);
         if (labels[1] == -1) {
             i16 label;
             count = 1;
@@ -1058,15 +1068,16 @@ extern "C" {
                             (i32)((f64)alpha * 128.0));
             }
         } else {
-            count = 2;
-            y = 0.0f;
             if (StartupGameFlag1 != 0 && packet->newly_completed != 0 && packet->area != NULL &&
                 packet->area == NEGOTIATIONS_ADATA) {
                 Hint_SetHintFromId(0x26c, 0, 1);
                 Hint_SetComplete(0x26c);
                 y = StatusPromptHintYPc;
                 Hint_Draw(-1);
+            } else {
+                y = 0.0f;
             }
+            count = 2;
             y = (f64)y - (f64)step * 0.5;
         }
         if ((packet->flags_word & 0x100u) != 0)
