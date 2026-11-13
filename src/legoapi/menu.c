@@ -57,11 +57,6 @@ void MenuReset(void) {
     MenuSetPlatformState(-1);
 }
 
-i32 __cdecl Hub_InMenu(void) {
-    i32 id = GetMenuID();
-    return id == 13 || id == 12 || id == 14 || id == 15 || id == 16 || id == 17 || id == 8;
-}
-
 typedef struct PC_MENU_SERVICE_VIEW {
     f32 menu_time, time_04;
     i16 selected_column, selected_row;

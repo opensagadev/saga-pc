@@ -721,30 +721,6 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
-extern i32 HubDoorNewLevelPc;
-
-void __cdecl Hub_ActivateDoorMenu(void *argument) {
-    LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
-    i32 area = (*level)->area_index;
-    i32 menu;
-    if (area == -1)
-        return;
-    if (HubDoorAreaPc != area) {
-        *level = NULL;
-        return;
-    }
-    MakeMenuPacket();
-    HubDoorNewLevelPc = ADataList[area].levels[0];
-    *level = NULL;
-    HubAreaTimePc = 0.0f;
-    HubEpisodeTimePc = 0.0f;
-    MainRenderTargetTime = 0.0f;
-    NeedScreenGrab(1);
-    BackDrop_ResetColours();
-    menu = (ADataList[area].flags & 4) ? 16 : 15;
-    Hint_CancelCurrent();
-    NewMenu(menu, -1, -1);
-}
 
 STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
 

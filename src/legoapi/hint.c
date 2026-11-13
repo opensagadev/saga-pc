@@ -56,8 +56,6 @@ STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
 STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 
-NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
-
 void Hint_ExpandButtons(char *input, char *output) {
     char token[256];
     char expanded[64];
@@ -348,33 +346,3 @@ void __cdecl Hint_Process(f32 elapsed) {
 }
 
 /* Append to src/legoapi/hint.c. */
-
-i32 __cdecl Percent_UpdateHint(HINT_PC *hint) {
-    if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
-        CustomiserCompletionSavePc != NULL &&
-        ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
-        i32 nearby = 0, active = 0, index;
-        for (index = 0; index < 2; ++index) {
-            GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-            if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-                ++active;
-                if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f)
-                    ++nearby;
-            }
-        }
-        if (active > 0 && nearby == active) {
-            hint->colour_index = 4;
-            return 1;
-        }
-    }
-    return 0;
-}
-
-i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *hint) {
-    if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
-        Game.losttemple_trailer_watched != 0) {
-        hint->colour_index = 4;
-        return 1;
-    }
-    return 0;
-}

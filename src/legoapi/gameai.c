@@ -20,38 +20,14 @@ extern AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn;
 extern AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn;
 extern AI_CLEAR_CREATURES_PC ClearAICreaturesFn;
 
-extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
-extern u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION;
-extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
-void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
-void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
-
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
-void __cdecl Indy_GameAISysInit(void) {
-    LEGO_AIPATHCNX_JUMP = 0x1;
-    LEGO_AIPATHCNX_FORGOODIES = 0x100;
-    LEGO_AIPATHCNX_FORBADDIES = 0x200;
-    LEGO_AIPATHCNX_BIGJUMP = 0x4;
-    LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x20;
-    LEGO_AIPATHCNX_JUMP_NOW = 0x40;
-    LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x80;
-    LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0x10;
-    InitFn_PreparingForSpecialMove(Indy_PreparingForSpecialMove);
-    InitFn_MidSpecialMove(Indy_MidSpecialMove);
-    HubInitAIFnPc = LSW_Hub_InitAI;
-    HubResetAIFnPc = LSW_Hub_ResetAI;
-    HubUpdateAIFnPc = LSW_Hub_UpdateAI;
-    AIPathCnxHelperSysInitFn = Indy_AIPathCnxHelperSysInit;
-}
 
 AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0, SpecialRouteCharacterNameFn = 0;
 AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn = 0;
 AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn = 0;
 AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn = 0;
 AI_CLEAR_CREATURES_PC ClearAICreaturesFn = 0;
-i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0, LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0;
 typedef struct EQUIVALENTOBJECTGROUP_PC {
     i16 object_count;
     i16 byte_size;
