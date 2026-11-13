@@ -46,7 +46,9 @@ typedef struct {
     GIZBOMBGEN_s *items;
     u16 count, capacity;
     void *pool;
-    u16 reset_flags;
+    i16 reset : 1;
+    i16 reset_saved : 1;
+    i16 reset_flags_unused : 14;
     u16 opaque_0e;
     void *progress;
 } ADD_BOMB_RESET_SYS_PC;
@@ -65,7 +67,7 @@ STATIC_ASSERT(offsetof(ADD_TELEPORT_WORLD_PC, count) == 0x4684);
 STATIC_ASSERT(offsetof(ADD_AI_WORLD_PC, count) == 0x2aec);
 STATIC_ASSERT(offsetof(ADD_AI_WORLD_PC, items) == 0x2af0);
 STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 0xdc);
-STATIC_ASSERT(offsetof(ADD_BOMB_RESET_SYS_PC, reset_flags) == 0xc);
+STATIC_ASSERT(offsetof(ADD_BOMB_RESET_SYS_PC, opaque_0e) == 0xe);
 STATIC_ASSERT(offsetof(ADD_BOMB_RESET_SYS_PC, progress) == 0x10);
 STATIC_ASSERT(sizeof(struct GIZSPINNER_s) == 0x304);
 STATIC_ASSERT(offsetof(struct GIZSPINNER_s, name) == 0x40);
@@ -104,9 +106,11 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     i32 i;
     (void)data;
-    for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i)
-        if (w->pickup_runtime_sys->pickups[i].unknown_14[1] & 2)
-            AddGizmo(giz, type, NULL, &w->pickup_runtime_sys->pickups[i]);
+    for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i) {
+        struct GIZMOPICKUP_PC *pickup = &w->pickup_runtime_sys->pickups[i];
+        if (pickup->unknown_14[1] & 2)
+            AddGizmo(giz, type, NULL, pickup);
+    }
 }
 void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
@@ -160,11 +164,11 @@ void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void
 void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     ADD_BOMB_RESET_SYS_PC *s = (ADD_BOMB_RESET_SYS_PC *)data;
-    s->reset_flags |= 1;
+    s->reset = 1;
     if (come_from_an_editor != 0)
-        s->reset_flags &= (u16)~2;
+        s->reset_saved = 0;
     else
-        s->reset_flags = (u16)((s->reset_flags & ~2u) | (((u8)w->unknown_0114[1] & 1u) << 1));
+        s->reset_saved = w->unknown_0114[1];
     s->progress = progress;
 }
 void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
