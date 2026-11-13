@@ -283,12 +283,11 @@ counter_sound:
 
 void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant,
                                      GAMEOBJECT *object, i32 ignored) {
-    i32 player_index, player0_active, player1_active, main_total, model_id, multiplier = 0;
+    i32 player_index, player0_active, player1_active, main_total, model_id, multiplier;
     NUVEC target;
     f32 target_scale;
     u32 score;
     ADD_GAME_MESSAGE_PC message;
-    COINPACKET_PICKUP_PC *packet;
     char text[8];
     (void)ignored;
     if (object != NULL)
@@ -307,16 +306,16 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     }
     if (player_index != 0 && player_index != 1)
         return;
-    if (type_index >= 2 && type_index <= 3 && object != NULL) {
+    if ((type_index == 2 || type_index == 3) && object != NULL) {
         if (world->area != NULL && (world->area->flags & 0x104) == 4)
             NewBuzzFrames(object->pad->bound_pad, 1, 0);
         else
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
     }
-    if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3)
-        PlaySfx((char *)PickupTypeLiteral758c5c, position);
-    else
+    if (DoubleScoreTime <= 0.0f && type_index != 2 && type_index != 3)
         PlaySfx((char *)PickupCoinSfx_PC, position);
+    else
+        PlaySfx((char *)PickupTypeLiteral758c5c, position);
     if (CoinsGoToMainTotal()) {
         target.x = cointotal_x[player_index];
         main_total = 1;
@@ -340,18 +339,18 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     message.special = &world->level_objects[message.icon];
     message.player_index = (i8)player_index;
     message.score = score;
+    multiplier = 0;
     if (object != NULL && object->coin_packet != NULL) {
         if (DoubleScore & (1 << player_index)) {
             if (StartupGameFlag1) {
                 score += score;
                 message.score = score;
             } else {
-                packet = (COINPACKET_PICKUP_PC *)object->coin_packet;
-                multiplier = packet->multiplier;
+                multiplier = ((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (packet->multiplier < 10)
-                    ++packet->multiplier;
+                if (((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier < 10)
+                    ++((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
                 ((COINPACKET_PICKUP_PC *)object->coin_packet)->timer = 0.5f;
                 score = message.score;
             }
@@ -363,7 +362,7 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     }
     if (main_total)
         message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
-    message.scale = AreaPickupScale * PANEL_COINSCALE_START;
+    message.scale = PANEL_COINSCALE_START * AreaPickupScale;
     message.position = position;
     message.target_position = &target;
     message.target_scale = target_scale;
