@@ -18114,41 +18114,44 @@ done:
 
 eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
     eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
-    if (menu == NULL)
-        return NULL;
-    eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
-                                            AiEditorModeMenuPc, "Select Editor Mode"));
-    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-    eduiMenuAddItem(
-        menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-    eduiMenuAddItem(menu,
-                    eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
-    if (aieditor->current_locator != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL)
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                locatorEditor_cbRenameLocatorMenu, "Rename Locator"));
-    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, locatorEditor_cbCreateLocatorSet,
-                                            "Create Locator Set"));
-    if (NuLinkedListGetHead(&aieditor->locator_sets) != NULL) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                locatorEditor_cbSelectLocatorSet, "Select Locator Set"));
-        if (aieditor->current_locator_set != NULL) {
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                    locatorEditor_cbDeleteLocatorSet, "Delete Locator Set"));
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorModeMenuPc, "Select Editor Mode"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        if (aieditor->current_locator != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL)
             eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                    locatorEditor_cbRenameLocatorSetMenu, "Rename Locator Set"));
+                                                    locatorEditor_cbRenameLocatorMenu, "Rename Locator"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                locatorEditor_cbCreateLocatorSet, "Create Locator Set"));
+        if (NuLinkedListGetHead(&aieditor->locator_sets) != NULL) {
             eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                    locatorEditor_cbAddLocatorsByName, "Add Locators To Set By Name"));
-            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
-                                                    locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
+                                                    locatorEditor_cbSelectLocatorSet, "Select Locator Set"));
+            if (aieditor->current_locator_set != NULL) {
+                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbDeleteLocatorSet, "Delete Locator Set"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbRenameLocatorSetMenu, "Rename Locator Set"));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                  locatorEditor_cbAddLocatorsByName, "Add Locators To Set By Name"));
+                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
+            }
         }
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 25) >> 31, 3,
+                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 27) >> 31, 2,
+                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        return menu;
     }
-    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
-                                               (i32)(aieditorsettings.display_options << 25) >> 31, 3,
-                                               AiEditorDisplayBit6Pc, "Stop Platforms"));
-    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
-                                               (i32)(aieditorsettings.display_options << 27) >> 31, 2,
-                                               AiEditorDisplayBit4Pc, "Snap Height"));
-    return menu;
+    return NULL;
 }
 
 eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
