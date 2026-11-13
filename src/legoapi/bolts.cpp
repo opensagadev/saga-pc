@@ -2746,13 +2746,14 @@ extern "C" {
             }
         } else if (object->field_ea0_target != NULL) {
             GAMEOBJECT *target = object->field_ea0_target;
+            intercept_position = &target->collision_position;
             velocity = &target->velocity;
-            target_position = intercept_position = &target->collision_position;
             if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
                 adjusted_position = target->collision_position;
                 adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
                 target_position = &adjusted_position;
-            }
+            } else
+                target_position = &target->collision_position;
         } else if ((object->flags_e20 & 0x800) != 0) {
             target_position = intercept_position = &aimed_position;
         }
