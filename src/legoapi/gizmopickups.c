@@ -850,20 +850,17 @@ void __cdecl GizmoPickups_Update(void *world_pointer, void *unused_system, f32 u
 }
 
 static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
-    i32 index, model_index, angle, opacity, drawn;
+    i32 index, angle, model_index, opacity;
     GIZMO_PICKUP_TYPE_PC *type;
     NUMTX matrix;
     NUVEC shadow_position;
     f32 maximum_distance_squared, shadow_distance_squared, dx, dz, distance_squared, factor;
-    f32 draw_distance;
-    f64 half_distance;
     if (pickup == NULL || Missions_PickupsOff(MissionSys))
         return;
     NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f);
-    draw_distance = world->pickup_runtime_sys->draw_distance;
-    maximum_distance_squared = draw_distance * draw_distance;
-    half_distance = (f64)draw_distance * 0.5;
-    shadow_distance_squared = (f32)(half_distance * half_distance);
+    maximum_distance_squared = world->pickup_runtime_sys->draw_distance * world->pickup_runtime_sys->draw_distance;
+    shadow_distance_squared =
+        (f32)((world->pickup_runtime_sys->draw_distance * 0.5) * (world->pickup_runtime_sys->draw_distance * 0.5));
     for (index = 0; index < count; ++index, ++pickup) {
         if (!(pickup->flags & 1))
             continue;
@@ -871,20 +868,21 @@ static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPI
         if (!(pickup->flags & 4) || (pickup->flags & 8) || !(pickup->flags & 0x20) ||
             (pickup->room >= 0 && world->rooms_visible_ptr[pickup->room] == 0))
             continue;
-        type = &GizmoPickupSys->types[pickup->type_index];
         if ((pickup->flags & 0x40) && GizmoPickupSys->alternate_type != -1)
             type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
+        else
+            type = &GizmoPickupSys->types[pickup->type_index];
         if (type->field_0f != 0)
             continue;
         dx = pickup->position.x - GameCam->position.x;
         dz = pickup->position.z - GameCam->position.z;
         distance_squared = dx * dx + dz * dz;
-        if (maximum_distance_squared < distance_squared)
+        if (distance_squared > maximum_distance_squared)
             continue;
         model_index = type->first_model_id + pickup->model_variant;
         if (world->level_objects[model_index].active != 0) {
             if (type->flags & 1) {
-                angle = (i32)((f64)NuTrigTable[pickup->rotation & 0x7fff] * 1820.0);
+                angle = (i32)((f64)NU_SIN_LUT(pickup->rotation * 2) * 1820.0);
                 PickupSetRotationXPc(&matrix, angle);
                 PickupRotateYPc(&matrix, pickup->rotation);
                 NuMtxTranslate(&matrix, &pickup->position);
@@ -898,9 +896,8 @@ static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPI
                 NuMtxPreScaleU(&matrix, AreaPickupScale);
             if (pickup->unknown_14[1] & 8)
                 ResetShadowMapRendering();
-            drawn = NuSpecialDrawAt(&world->level_objects[model_index].special, &matrix);
-            pickup->flags = (pickup->flags & ~0x10) | (drawn != 0 ? 0x10 : 0);
-            if ((pickup->flags & 0x10) && type->overlay_model_id != -1 &&
+            pickup->state_drawn = NuSpecialDrawAt(&world->level_objects[model_index].special, &matrix) != 0;
+            if (pickup->state_drawn && type->overlay_model_id != -1 &&
                 world->level_objects[type->overlay_model_id].active != 0) {
                 ResetShadowMapRendering();
                 NuSpecialDrawAt(&world->level_objects[type->overlay_model_id].special, &matrix);
@@ -910,7 +907,7 @@ static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPI
                 EnableShadowMapRendering(0);
         }
         if (VehicleArea == 0 && (f64)pickup->floor != GameObjectNearFloorNoFloorHeight &&
-            shadow_distance_squared > distance_squared) {
+            distance_squared < shadow_distance_squared) {
             shadow_position.x = pickup->position.x;
             shadow_position.y = (f32)((f64)pickup->floor + (f64)(f32)0.005f);
             shadow_position.z = pickup->position.z;
