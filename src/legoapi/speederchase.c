@@ -279,9 +279,6 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
     nearest_distance = 1.0e8f;
     for (i = 0, target = Obj; i < HIGHGAMEOBJECT; ++i, ++target) {
         i8 context;
-        PLAYERCHARACTERCONFIG_PC *runtime;
-        u32 object_flags;
-        u32 target_flags;
         NUVEC delta;
         f32 distance;
         i32 behind;
@@ -290,17 +287,24 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
             target = (GAMEOBJECT *)((APIOBJECT_PC *)object->ai_packet.opponent)->owner;
             i = HIGHGAMEOBJECT;
         }
-        if (target == object || (target->flags_1fc_word & 0x1001) != 0x1001 || target->dead != 0 ||
-            target->collision_min.y > object->collision_max.y)
+        if (target == object || (target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 ||
+            target->dead != 0 || object->collision_max.y < target->collision_min.y)
             continue;
-        if ((player_filter == 1 && target->field_280 != 0xff) || (player_filter == 2 && target->field_280 == 0xff))
-            continue;
+        switch (player_filter) {
+            case 1:
+                if (target->field_280 != 0xff)
+                    continue;
+                break;
+            case 2:
+                if (target->field_280 == 0xff)
+                    continue;
+                break;
+        }
         context = target->character_context;
         if (context == 0x17) {
             if (target->current_hp == 0)
                 continue;
-            runtime = target->character_data->game_character;
-            if ((runtime->flags_090 & 0x40) != 0)
+            if ((target->character_data->game_character->flags_090 & 0x40) != 0)
                 continue;
         }
         if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || context == 0x3b || context == 0x39 || context == 0x3c)
@@ -309,13 +313,11 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
             continue;
         if (context == 0xe || context == 0xd || context == 0x47 || context == 0x35 || context == 0x46)
             continue;
-        runtime = target->character_data->game_character;
-        if ((runtime->flags_090 & 0x8000) != 0 || (object->rider != NULL && target == object->rider))
+        if ((target->character_data->game_character->flags_090 & 0x8000) != 0 ||
+            (object->rider != NULL && target == object->rider))
             continue;
-        object_flags = object->flags_1f8;
-        target_flags = target->flags_1f8;
-        if ((object_flags & 0x10000) == 0 && (target_flags & 0x10000) == 0 && (object->flags_1fc_word & 0x80) == 0 &&
-            ((object_flags ^ target_flags) & 5) == 0)
+        if ((object->flags_1f8 & 0x10000) == 0 && (target->flags_1f8 & 0x10000) == 0 &&
+            (object->flags_1fc_word & 0x80) == 0 && ((object->flags_1f8 ^ target->flags_1f8) & 5) == 0)
             continue;
         if (mode != 0) {
             if (context == 0x5f || context == 0x60 ||
@@ -326,7 +328,7 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
                 if ((object->flags_1fc_word & 0x80) == 0 && target->field_280 != 0xff)
                     continue;
                 if (target->field_280 != 0xff) {
-                    if (((object_flags ^ target_flags) & 1) == 0 &&
+                    if (((object->flags_1f8 ^ target->flags_1f8) & 1) == 0 &&
                         (object->ai_packet.opponent != NULL || target->ai_packet.opponent != NULL))
                         continue;
                     if (CanPunchGirls == 0 && (object->flags_ef4 & 0x800) == 0 && (target->flags_ef4 & 0x800) != 0 &&
@@ -335,16 +337,17 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
                         if (move == -1 || SpecialMove_GetFlags(move, 1) == 0)
                             continue;
                     }
-                } else if (WORLD->current_level != HUB_LDATA && (target_flags & 0x10005) == 0) {
+                } else if (WORLD->current_level != HUB_LDATA && (target->flags_1f8 & 0x10005) == 0) {
                     continue;
                 }
             }
             if ((target->character_data->model_flags & 0x2000) != 0 ||
-                ((runtime->flags_090 & 0x40) != 0 && (target->flags_1fc_word & 0x80) == 0))
+                ((target->character_data->game_character->flags_090 & 0x40) != 0 &&
+                 (target->flags_1fc_word & 0x80) == 0))
                 continue;
         }
         if (!(allow_untargeted != 0 && (ignore_ai != 0 || object->ai_packet.opponent == NULL || mode != 0)) &&
-            (target_flags & 1) == 0)
+            (target->flags_1f8 & 1) == 0)
             continue;
         distance = NuVecDistSqr(&target->position, &object->position, &delta);
         if (!(distance < range_squared))

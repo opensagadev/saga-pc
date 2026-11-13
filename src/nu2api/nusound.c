@@ -622,13 +622,14 @@ i32 __cdecl SfxBitTab(const SoundTable *table, i32 sound_id) {
 
 i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
     i32 pair_index;
+    i16 id;
 
     if (quiet_index == -1) {
         return -1;
     }
 
-    for (pair_index = 0; AmbientPairTab[pair_index * 2] != -1; pair_index++) {
-        if (AmbientPairTab[pair_index * 2] == quiet_index) {
+    for (pair_index = 0; (id = AmbientPairTab[pair_index * 2]) != -1; pair_index++) {
+        if (id == quiet_index) {
             return AmbientPairTab[pair_index * 2 + 1];
         }
     }
