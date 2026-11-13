@@ -5,11 +5,11 @@
 extern "C" void __cdecl MenuPcStringsInit(void) {
     MENU_PC_STRING_ENTRY *entry = MenuPcStringTable827940;
     switch (NuLanguageGet()) {
+        case 18:
+            entry = MenuPcStringTable827800;
+            break;
         case 2:
             entry = MenuPcStringTable827a80;
-            break;
-        case 3:
-            entry = MenuPcStringTable827e40;
             break;
         case 4:
             entry = MenuPcStringTable827bc0;
@@ -17,11 +17,11 @@ extern "C" void __cdecl MenuPcStringsInit(void) {
         case 5:
             entry = MenuPcStringTable827d00;
             break;
+        case 3:
+            entry = MenuPcStringTable827e40;
+            break;
         case 8:
             entry = MenuPcStringTable827f80;
-            break;
-        case 18:
-            entry = MenuPcStringTable827800;
             break;
     }
     memset(MenuPcStrings, 0, sizeof(MenuPcStrings));
