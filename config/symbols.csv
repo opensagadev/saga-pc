@@ -1632,7 +1632,7 @@ address,symbol,size,ctype
 0x494890,_MenuDrawExtras,785,
 0x494bb0,?MenuUpdateTitleFadePc@@YAHPAUmenu_s@@@Z,571,
 0x00494df0,_MenuEnterNewGame,38,void __cdecl (MENU *)
-0x494e20,_MenuUpdateNewGame,724,void __cdecl(MENU *)
+0x494e20,_MenuUpdateNewGame,752,void __cdecl(MENU *)
 0x495110,_MenuDrawNewGame,370,void __cdecl(MENU *)
 0x495290,_MenuUpdateSelectLanguage,53,
 0x4952d0,_MenuDrawSelectLanguage,49,
@@ -5076,7 +5076,7 @@ address,symbol,size,ctype
 0x0057a6d0,_NewLevelFromMenu,160,"void __cdecl(LEVELDATA_PC*, i32, i32, i32)"
 0x57a770,_LevelStreaming_DoorOverride,156,
 0x57a820,_CutSceneConfigMissingPc,1,void __cdecl(char *)
-0x57a870,_CutScenes_ConfigureList,912,
+0x57a870,_CutScenes_ConfigureList,1074,
 0x57acb0,_CS_fpsec,23,void __cdecl(NUFPAR_PC *)
 0x57acd0,_CS_no_fog,10,void __cdecl(NUFPAR_PC *)
 0x57ace0,_CS_draw_world,88,void __cdecl(NUFPAR_PC *)
