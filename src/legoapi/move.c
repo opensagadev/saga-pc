@@ -8485,7 +8485,8 @@ static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 act
         if (((object->pad->runtime_flags & 4) != 0 || special_pressed) && (object->flags_e20 & 0x10000) != 0 &&
             object->field_e33 == 0 && context != 6 && context != 7 && context != 0x12 && context != 0x1b &&
             context != 0x1d &&
-            !(context == 0 && (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
+            !(object->character_context == 0 &&
+              (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
             context != 0xd && context != 0xe && context != 0x2e && (object->flags_e20 & 0x1000000) == 0 &&
             (((COMBO_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x4000000) == 0 &&
             ((((COMBO_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x8000000) == 0 ||
