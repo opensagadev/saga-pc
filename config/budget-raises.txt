@@ -1,0 +1,3 @@
+# Reviewed budget raises (tools/budget.py --guard). Budgets only go down; a change that
+# raises one adds a line here in the same change: FILE KEY NEW-VALUE REASON
+# config/oddscan-budget.json goto 398 retail block order of NuFoo needs a second label

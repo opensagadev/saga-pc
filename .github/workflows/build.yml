@@ -72,6 +72,12 @@ jobs:
         env:
           CLANG_FORMAT: clang-format-18
           CLANG_TIDY: clang-tidy-18
+      - name: Fetch main history for the budget guard
+        # Commits only (no trees or blobs); tools/budget.py --guard compares the budget files
+        # with the merge base and reads the two files it needs on demand.
+        run: |
+          git fetch --no-tags --filter=tree:0 --unshallow origin +refs/heads/main:refs/remotes/origin/main \
+            || git fetch --no-tags --filter=tree:0 origin +refs/heads/main:refs/remotes/origin/main
       - name: Check project and tooling
         run: make -j"$(nproc)" check-core
       - name: Build executable and check symbol coverage

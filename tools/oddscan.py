@@ -12,10 +12,10 @@ block or at file scope. It needs no compiler and no originals.
     python3 tools/oddscan.py --magic            # enum and flag candidates, ranked by use
     python3 tools/oddscan.py --magic --hints DIR   # also match values against the enums of another tree
     python3 tools/oddscan.py --check            # fail if a class exceeds config/oddscan-budget.json
-    python3 tools/oddscan.py --write-budget     # store the current counts as the budget
+    python3 tools/oddscan.py --write-budget     # lower the budget to the current counts
 
 `--check` only fails on growth; a class that shrank is reported so the budget
-can be lowered. Vendored sources (lib/ogg-vorbis, fetched by tools/dependencies.py)
+can be lowered. Budgets only go down (tools/budget.py --guard). Vendored sources (lib/ogg-vorbis, fetched by tools/dependencies.py)
 are scanned and reported separately when present, never budgeted.
 
 The magic-number analysis keys a field by its member name and resolves it to a
@@ -32,6 +32,11 @@ import json
 from pathlib import Path
 import re
 import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tools import budget  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = ROOT / "config/oddscan-budget.json"
@@ -1027,28 +1032,27 @@ def main(argv=None):
     parser.add_argument("--magic", action="store_true", help="print enum and flag candidates")
     parser.add_argument("--top", type=int, default=3, help="top files per class in the table")
     parser.add_argument("--check", action="store_true", help="fail when a class exceeds its budget")
-    parser.add_argument("--write-budget", action="store_true", help="store the current counts as the budget")
+    parser.add_argument("--write-budget", action="store_true", help="lower the budget to the current counts")
     parser.add_argument("--budget", type=Path, default=BUDGET)
     parser.add_argument("--hints", type=Path,
                         help="another source tree whose enums/#defines are offered as names for literal values")
     args = parser.parse_args(argv)
     result = report(magic_limit=0 if args.json else 40, hints=args.hints)
+    counts = {row["class"]: row["count"] for row in result["classes"]}
     if args.write_budget:
-        budget = {row["class"]: row["count"] for row in result["classes"]}
-        args.budget.write_text(json.dumps(budget, indent=2) + "\n")
+        old = load_budget(args.budget)
+        budget.write(args.budget, budget.lowered(old, counts) if old else counts)
         print(f"Wrote {args.budget.relative_to(ROOT) if args.budget.is_relative_to(ROOT) else args.budget}")
         return 0
     if args.check:
-        over, under = check(result, load_budget(args.budget))
-        for name, count, allowed in under:
-            print(f"oddscan: {name} went down to {count} (budget {allowed}); lower the budget")
-        for name, count, allowed in over:
-            print(f"oddscan: {name} has {count}, budget {allowed if allowed is not None else 'missing'}",
-                  file=sys.stderr)
+        over, under = budget.compare(counts, load_budget(args.budget))
+        status = budget.report("oddscan", over, under, "python3 tools/oddscan.py --write-budget")
         if over:
-            return 1
-        print(f"oddscan: all {len(result['classes'])} classes within budget")
-        return 0
+            print("oddscan: list a class with python3 tools/oddscan.py --list --class NAME "
+                  "(docs/cleanup-audit.md)", file=sys.stderr)
+        else:
+            print(f"oddscan: all {len(result['classes'])} classes within budget")
+        return status
     if args.json:
         json.dump(result, sys.stdout, indent=1, sort_keys=False)
         print()
