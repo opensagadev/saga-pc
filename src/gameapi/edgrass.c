@@ -897,12 +897,12 @@ i32 __cdecl edgraClumpCreate(NUVEC *position) {
             ++individual;
         GrassClumps[index].individual_index = (i16)individual;
         IndGrassClumpsUsed[individual] = 1;
-        EDGRA_INDIVIDUAL(individual, 0)->position.x = 0.0f;
-        EDGRA_INDIVIDUAL(individual, 0)->position.y = 0.0f;
-        EDGRA_INDIVIDUAL(individual, 0)->position.z = 0.0f;
-        EDGRA_INDIVIDUAL(individual, 0)->field_0c = 1.0f;
-        EDGRA_INDIVIDUAL(individual, 0)->field_10 = (i16)edgra_rotz;
-        EDGRA_INDIVIDUAL(individual, 0)->field_12 = (i16)edgra_roty;
+        GetIndGrassClump(individual, 0)->position.x = 0.0f;
+        GetIndGrassClump(individual, 0)->position.y = 0.0f;
+        GetIndGrassClump(individual, 0)->position.z = 0.0f;
+        GetIndGrassClump(individual, 0)->field_0c = 1.0f;
+        GetIndGrassClump(individual, 0)->field_10 = (i16)edgra_rotz;
+        GetIndGrassClump(individual, 0)->field_12 = (i16)edgra_roty;
         ++edgra_ind_clumps_used;
     } else {
         GrassClumps[index].individual_index = -1;
