@@ -5804,24 +5804,23 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         return;
     }
     if (search_all_paths != 0) {
-        path = info->path;
-        if (path == NULL) {
-            path = system->path_sys->paths[0];
+        if (info->path == NULL) {
+            info->path = system->path_sys->paths[0];
             info->connection = NULL;
-            info->path = path;
             info->next_check = 0;
         }
+        path = info->path;
     } else {
         if (path == NULL) {
             path = system->path_sys->active_path;
         }
         if (info->path != path) {
-            info->connection = NULL;
             info->path = path;
+            info->connection = NULL;
             info->next_check = 0;
         }
     }
-    AISysResetPathSearchConnectionChecks(path);
+    AISysResetPathSearchConnectionChecks(info->path);
     current = info->connection;
     if (current != NULL) {
         if (WithinConnection(system, position, path, current, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
@@ -5845,7 +5844,9 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         }
     }
     if (search_all_paths == 0) {
-        i32 remaining = info->path->node_count < checks ? info->path->node_count : checks;
+        i32 remaining = checks;
+        if (remaining > info->path->node_count)
+            remaining = info->path->node_count;
         while (remaining != 0) {
             node = &info->path->nodes[info->next_check];
             for (index = 0; index < node->connection_count; ++index) {
