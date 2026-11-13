@@ -7374,7 +7374,7 @@ f32 __cdecl NuTimeMilliSeconds(NuTime *time) {
 }
 
 f32 __cdecl NuTimeScanlines(NuTime *time) {
-    return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * NuTime_RefreshRate);
+    return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * 60.0);
 }
 
 void __cdecl NuCommandLine(i32 *__restrict count, char ***__restrict arguments) {
