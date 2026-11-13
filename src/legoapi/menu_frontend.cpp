@@ -596,14 +596,13 @@ extern "C" {
             GameDrawMenuEntry(menu, Text_LanguageList[i].localized_name);
     }
 
-    void __cdecl UpdateGameMenu(GAMEPAD_PC *input, i32 check_buttons) {
-        MENU_INPUT_PAD_PC *pad;
+    void __cdecl UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
         MENU *menu;
         i32 menu_id = GetMenuID();
-        i32 menu_active, active_players, device, both_pads = 0;
+        i32 menu_active, active_players, device, both_pads;
         i32 first_active, second_active, previous_item, previous_column, result;
         i32 previous_menu;
-        u8 widescreen;
+        i32 widescreen;
         if (check_buttons != 0 && WORLD != NULL) {
             MenuUpdateButtonHistoryPc();
         }
@@ -630,11 +629,11 @@ extern "C" {
             MenuKeyboardOverrideActivePc = 0;
             MenuKeyboardPendingPc = 0;
         }
-        pad = (MENU_INPUT_PAD_PC *)input;
         menu = &GameMenu[GameMenuLevel];
         previous_menu = menu->menu;
+        both_pads = 0;
         if ((Paused != 0 || NetPaused != 0) && pause_i_pad != -1) {
-            pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[pause_i_pad];
+            pad = (GAMEPAD_PC *)&GamePadStorage[pause_i_pad];
         } else if (WORLD == NULL) {
             both_pads = 1;
         } else if (menu_id != -1 && WORLD->current_level == TITLES_LDATA) {
@@ -644,12 +643,12 @@ extern "C" {
         } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
                    (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
             both_pads = 1;
-        } else if (pad == (MENU_INPUT_PAD_PC *)&GamePadStorage[0]) {
+        } else if (pad == (GAMEPAD_PC *)&GamePadStorage[0]) {
             if (WORLD->current_level == CREDITS_LDATA) {
                 first_active = PlayerProgress[0].active;
                 second_active = PlayerProgress[1].active;
                 if (second_active != 0 && first_active == 0)
-                    pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
+                    pad = (GAMEPAD_PC *)&GamePadStorage[1];
                 if (first_active == 0 && second_active == 0) {
                     both_pads = 1;
                     readpads_always = 1;
@@ -662,7 +661,7 @@ extern "C" {
                 if (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000)
                     second_active = 0;
                 if (second_active != 0 && first_active == 0)
-                    pad = (MENU_INPUT_PAD_PC *)((GAMEOBJECT *)Player[1])->pad;
+                    pad = ((GAMEOBJECT *)Player[1])->pad;
                 if (first_active == 0 && second_active == 0) {
                     both_pads = 1;
                     readpads_always = 1;
@@ -691,21 +690,25 @@ extern "C" {
             Game.options_save.widescreen = widescreen;
         }
         if (!(((FADEINFO_PC *)&FadeSys)->fade > 0.0f) && NewMode == 0 && NewLData == NULL && editor_active == 0) {
-            u32 held = 0, pressed = 0, alternate_held = 0, alternate_pressed = 0;
-            if (menu_id != 1 || !(GameTimer.time_elapsed < 4.0f)) {
-                if (both_pads != 0) {
-                    MENU_INPUT_PAD_PC *first = (MENU_INPUT_PAD_PC *)&GamePadStorage[0];
-                    MENU_INPUT_PAD_PC *second = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
-                    held = first->held | second->held;
-                    pressed = first->pressed | second->pressed;
-                    alternate_held = first->alternate_held | second->alternate_held;
-                    alternate_pressed = first->alternate_pressed | second->alternate_pressed;
-                } else {
-                    held = pad->held;
-                    pressed = pad->pressed;
-                    alternate_held = pad->alternate_held;
-                    alternate_pressed = pad->alternate_pressed;
-                }
+            u32 held, pressed, alternate_held, alternate_pressed;
+            if (menu_id == 1 && GameTimer.time_elapsed < 4.0f) {
+                held = 0;
+                pressed = 0;
+                alternate_held = 0;
+                alternate_pressed = 0;
+            } else if (both_pads != 0) {
+                MENU_INPUT_PAD_PC *first = (MENU_INPUT_PAD_PC *)&GamePadStorage[0];
+                MENU_INPUT_PAD_PC *second = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
+                held = first->held | second->held;
+                pressed = first->pressed | second->pressed;
+                alternate_held = first->alternate_held | second->alternate_held;
+                alternate_pressed = first->alternate_pressed | second->alternate_pressed;
+            } else {
+                MENU_INPUT_PAD_PC *input = (MENU_INPUT_PAD_PC *)pad;
+                held = input->held;
+                pressed = input->pressed;
+                alternate_held = input->alternate_held;
+                alternate_pressed = input->alternate_pressed;
             }
             previous_item = menu->selected_item;
             previous_column = menu->selected_item_column;
