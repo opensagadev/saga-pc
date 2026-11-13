@@ -1607,8 +1607,8 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
             if (active_count == 2)
                 x += side == 0 ? -CustomiseNameSideGapPc : CustomiseNameSideGapPc;
             for (column = 0; column < 15; ++column) {
-                f32 scale = 1.0f;
-                i32 letter_red = red, letter_green = green, letter_blue = blue;
+                f32 scale;
+                i32 letter_red, letter_green, letter_blue;
                 if (column == CustomiseNameXPc[side]) {
                     const i32 colour = menu_flash == 0 ? 255 : 191;
                     letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
@@ -1625,6 +1625,10 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                     letter[0] = Game.customiser_start[side].name[column];
                     if (column > CustomiseNameXPc[side] && column >= length && letter[0] == ' ')
                         letter[0] = '.';
+                    scale = 1.0f;
+                    letter_red = red;
+                    letter_green = green;
+                    letter_blue = blue;
                 }
                 Text3D(letter, x, -0.6499999761581421f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5),
                        0.5f, 0, letter_red, letter_green, letter_blue);
