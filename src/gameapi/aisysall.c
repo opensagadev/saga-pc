@@ -14160,12 +14160,15 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
         packet->flags |= 0x80080000u;
         return;
     }
-    packet->movement_destination = object->position;
-    packet->movement_stopping_distance = 0.0f;
     if (packet->path_info.path != NULL && packet->path_info.connection != NULL) {
+        packet->movement_destination = object->position;
+        packet->movement_stopping_distance = 0.0f;
         switch (packet->flags & 7) {
             case 1:
                 AIMoveToDestination(system, packet, object, checks);
+                break;
+            case 6:
+                AIMoveToDestinationAvoidingCamera(system, packet, object, checks);
                 break;
             case 2:
                 AIRetreatFromDestination(system, packet, object, checks);
@@ -14176,14 +14179,13 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
             case 4:
                 AIWander(system, packet, object, checks);
                 break;
-            case 6:
-                AIMoveToDestinationAvoidingCamera(system, packet, object, checks);
-                break;
             case 7:
                 AIMoveDirectlyToDestination(system, packet, object, checks);
                 break;
         }
     } else {
+        packet->movement_destination = object->position;
+        packet->movement_stopping_distance = 0.0f;
         mode = packet->flags & 7;
         if (mode == 1 || mode == 7 || mode == 6) {
             packet->movement_stopping_distance = packet->fallback_stopping_distance;
