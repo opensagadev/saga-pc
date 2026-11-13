@@ -19,7 +19,7 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
     BGPROCINFO *info;
     BGVAR *var;
     u8 *string_end;
-    i32 *argument;
+    va_list args;
     i32 type;
 
     EnterCriticalSection(&bgproc_critical_section);
@@ -31,7 +31,7 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
         info->work_started = 0;
         info->unknown_flag_2 = 0;
         type = first_type;
-        argument = &first_type;
+        va_start(args, first_type);
         info->do_fn = do_fn;
         info->ack_fn = ack_fn;
         info->var_count = 0;
@@ -40,33 +40,33 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
             switch (type) {
                 case 1:
                 case 5:
-                    var->value.i32_value = *++argument;
+                    var->value.i32_value = va_arg(args, i32);
                     break;
                 case 2:
-                    ++argument;
-                    var->value.float_value = *(f32 *)argument;
+                    var->value.float_value = va_arg(args, f32);
                     break;
                 case 3: {
-                    char *string = *(char **)++argument;
+                    char *string = va_arg(args, char *);
                     string_end -= (u32)NuStrLen(string) + 1u;
                     var->value.string_value = (char *)string_end;
                     NuStrCpy((char *)string_end, string);
                     break;
                 }
                 case 4:
-                    var->value.u32_value = *(u32 *)++argument;
+                    var->value.u32_value = va_arg(args, u32);
                     break;
                 case 6:
-                    var->value.i32_value = *++argument;
+                    var->value.i32_value = va_arg(args, i32);
                     break;
                 default:
                     bgProcDataOversize(type);
                     break;
             }
-            type = *++argument;
+            type = va_arg(args, i32);
             ++info->var_count;
             ++var;
         }
+        va_end(args);
     }
     if (info == NULL || (u8 *)var > string_end) {
         ((void(__cdecl *)(void))bgProcDataOversize)();
