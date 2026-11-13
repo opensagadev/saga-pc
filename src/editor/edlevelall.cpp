@@ -2375,24 +2375,18 @@ void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_ang
     i32 angle;
     i32 remaining;
     i32 previous_angle;
-    f32 negative_radius;
     if (segments == 0)
         segments = 16;
     step = 0x10000 / segments;
     if (first_angle < last_angle) {
-        remaining = (last_angle - first_angle) & 0xffff;
-        if (remaining >= 0x8000)
-            remaining -= 0x10000;
+        remaining = VuAngleDifference(last_angle, first_angle);
         angle = first_angle;
     } else {
-        remaining = (first_angle - last_angle) & 0xffff;
-        if (remaining >= 0x8000)
-            remaining -= 0x10000;
+        remaining = VuAngleDifference(first_angle, last_angle);
         angle = last_angle;
     }
     if (remaining <= 0)
         return;
-    negative_radius = -radius;
     do {
         previous_angle = angle;
         if (remaining > step) {
@@ -2405,14 +2399,14 @@ void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_ang
         switch (axis) {
             case 1:
                 first.w = 1.0f;
-                first.x = negative_radius * 0.0f;
-                first.y = negative_radius * 0.0f;
-                first.z = negative_radius;
+                first.x = -radius * 0.0f;
+                first.y = -radius * 0.0f;
+                first.z = -radius;
                 NuVecRotateY((NUVEC *)&first, (NUVEC *)&first, -previous_angle);
                 second.w = 1.0f;
-                second.y = negative_radius * 0.0f;
-                second.x = negative_radius * 0.0f;
-                second.z = negative_radius;
+                second.y = -radius * 0.0f;
+                second.x = -radius * 0.0f;
+                second.z = -radius;
                 NuVecRotateY((NUVEC *)&second, (NUVEC *)&second, -angle);
                 break;
             case 2:
