@@ -244,7 +244,9 @@ static void GizForce_PlayBackwardAnimationPc(GIZFORCE_PC *force) {
     }
 }
 
-void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
+// MATCH-EXCEPTION: retail calls this wrapper out of line from GizForces_Update; VC8 would
+// otherwise inline it there (it already stays out of line in GizmoForce_ActivateRev).
+__declspec(noinline) void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
     if (force != NULL) {
         if (force->runtime_flags & 0x40)
             GizForce_PlayBackwardAnimationPc(force);
@@ -1061,9 +1063,25 @@ STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
 STATIC_ASSERT(sizeof(GIZMOSET_PC) == 0x14);
 STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 
+typedef struct force_runtime_bits_pc_s {
+    u32 active : 1;
+    u32 visible : 1;
+    u32 other_02 : 19;
+    u32 being_used : 1;
+    u32 other_22 : 10;
+} FORCE_RUNTIME_BITS_PC;
+STATIC_ASSERT(sizeof(FORCE_RUNTIME_BITS_PC) == 4);
+STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
+
 void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    NUVEC offset;
+    NUVEC particle_offset;
+    NUVEC direction;
+    NUVEC position;
+    NUVEC centre;
+    f32 radius;
     GIZMOSYS_PC *gizmos;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
@@ -1083,10 +1101,9 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
     for (index = 0; index < set->count; ++index, ++gizmo) {
         GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
         GAMEOBJECT *user;
-        i32 was_moving, playing_forwards = 0, started_shaking = 0, updating_animation = 0;
+        i32 was_moving, still_rising, playing_forwards, updating_animation, started_shaking = 0;
         GAMEANIMOBJ *object;
         FORCE_RESET_GROUP_PC *group;
-        NUVEC offset;
         if (force->using_object != NULL && force->group != NULL && (force->runtime_flags & 0x20) == 0 &&
             (force->group->runtime_flags & 1) != 0 && force->using_object->character_context == 8) {
             force->using_object->character_context = -1;
@@ -1095,46 +1112,51 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
         }
         user = force->using_object;
         force->using_object = NULL;
-        force->runtime_flags = (force->runtime_flags & ~0x200000u) | (user != NULL ? 0x200000u : 0);
+        playing_forwards = 0;
+        updating_animation = 0;
+        ((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->being_used = user != NULL;
         was_moving = (force->anim_set->flags >> 1) & 1;
         force->runtime_flags &= ~0x80u;
         if ((force->runtime_flags & 0x1000) != 0 && force->field_50 == 0.0f) {
             offset.x = 0.0f;
-            offset.y = (force->runtime_flags & 0x20) != 0
-                           ? GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height
-                           : 0.0f;
+            if ((force->runtime_flags & 0x20) == 0)
+                offset.y = 0.0f;
+            else
+                offset.y = GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height;
             offset.z = 0.0f;
             GameAnimSet_SetOffset(force->anim_set, &offset);
             force->runtime_flags &= ~0x1000u;
         }
-        if ((force->runtime_flags & 3) != 3 || force->anim_set == NULL || (force->runtime_flags & 0x10010) != 0)
+        if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || force->anim_set == NULL ||
+            (force->runtime_flags & 0x10) != 0 || (force->runtime_flags & 0x10000) != 0)
             continue;
-        if (NuCameraClipTestSphere(&force->position, force->radius, &numtx_identity) == 0) {
+        if (NuCameraClipTestSphere(&force->position, force->radius, &NuMtxSetIdentityTemplate) == 0) {
             ((GIZFORCE_PC **)system->visible_forces)[system->visible_force_count++] = force;
             force->runtime_flags |= 0x80;
         }
-        if (user == NULL && force->effect_scale > 1.0f && (force->config_flags & 2) == 0 && force->group == NULL &&
-            GameAnimSet_GetCurrentFrame(force->anim_set) > force->effect_scale && !ForceAnimationDonePc(force))
-            playing_forwards = 1;
+        still_rising = user == NULL && force->effect_scale > 1.0f && (force->config_flags & 2) == 0 &&
+                       force->group == NULL && GameAnimSet_GetCurrentFrame(force->anim_set) > force->effect_scale &&
+                       !ForceAnimationDonePc(force);
         force->animation_speed = ForceUpdateSpeedPc(force, user);
-        if (user == NULL && !playing_forwards && (force->runtime_flags & 0x8000) == 0) {
+        if (user == NULL && !still_rising && (force->runtime_flags & 0x8000) == 0) {
             force->field_50 = 0.0f;
-            if (!ForceAnimationDonePc(force)) {
-                GizForce_PlayBackwards(force);
-            } else if ((force->runtime_flags & 0x20) == 0 &&
-                       ((force->config_flags & 2) != 0 || force->field_48 > 0.0f)) {
-                f32 remaining = (f64)force->field_48 - FRAMETIME;
-                force->field_48 = remaining;
-                if (remaining <= 0.0f)
-                    force->field_48 = 0.0f;
-                if (force->field_48 == 0.0f) {
-                    if ((force->config_flags & 0x40) != 0 && (force->runtime_flags & 0x800) != 0) {
-                        GameAnimSet_SetVisibility(force->anim_set, 1);
-                        force->runtime_flags &= ~0x800u;
+            if (ForceAnimationDonePc(force)) {
+                if ((force->runtime_flags & 0x20) == 0 && ((force->config_flags & 2) != 0 || force->field_48 > 0.0f)) {
+                    f32 remaining = (f64)force->field_48 - FRAMETIME;
+                    force->field_48 = remaining;
+                    if (remaining <= 0.0f)
+                        force->field_48 = 0.0f;
+                    if (force->field_48 == 0.0f) {
+                        if ((force->config_flags & 0x40) != 0 && (force->runtime_flags & 0x800) != 0) {
+                            GameAnimSet_SetVisibility(force->anim_set, 1);
+                            force->runtime_flags &= ~0x800u;
+                        }
+                        GizForce_PlayBackwards(force);
+                        force->runtime_flags &= ~0x2000u;
                     }
-                    GizForce_PlayBackwards(force);
-                    force->runtime_flags &= ~0x2000u;
                 }
+            } else {
+                GizForce_PlayBackwards(force);
             }
         } else {
             force->runtime_flags &= ~0x4000u;
@@ -1146,11 +1168,10 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             } else {
                 force->field_48 = force->force_strength;
                 if (force->force_range > 0.0f && (force->runtime_flags & 0x2000) == 0 && force->anim_set->state == 2) {
-                    f32 elapsed;
-                    started_shaking = force->field_50 == 0.0f;
-                    elapsed = (f64)force->field_50 + FRAMETIME;
-                    force->field_50 = elapsed;
-                    if (elapsed >= force->force_range) {
+                    if (force->field_50 == 0.0f)
+                        started_shaking = 1;
+                    force->field_50 += FRAMETIME;
+                    if (force->field_50 >= force->force_range) {
                         force->runtime_flags |= 0x2000;
                         force->field_50 = 0.0f;
                     }
@@ -1242,10 +1263,9 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 }
                 if (force->pickup_count != 0 && (force->runtime_flags & 0x200) == 0) {
                     i32 hearts = ReleaseHearts();
-                    NUVEC direction, position;
                     NuVecAdd(&position, &force->position, &force->effect_position);
-                    NuVecRotateX(&direction, &v010, force->pickup_rotation_x);
-                    NuVecRotateY(&direction, &direction, force->pickup_rotation_y);
+                    NuVecRotateX(&direction, &v010, (u16)force->pickup_rotation_x);
+                    NuVecRotateY(&direction, &direction, (u16)force->pickup_rotation_y);
                     AddPickups((u16)force->pickup_count, hearts, 0, 0, &position, &direction, 2.0f, -1,
                                force->activation_radius, LevelConfigFarDistance, NULL, 1, 0);
                     force->runtime_flags |= 0x200;
@@ -1264,8 +1284,8 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                     force->group->runtime_flags |= 4;
                     group = force->group;
                     for (group_index = 0; group_index < group->configured_count; ++group_index) {
-                        i32 mask = (i8)group->forces[group_index]->collision_mask;
-                        if (mask != 0 && (mask & (1u << (group_index & 31))) == 0) {
+                        const i8 mask = (i8)group->forces[group_index]->collision_mask;
+                        if (mask != 0 && (mask & (1 << group_index)) == 0) {
                             group->runtime_flags &= ~4u;
                             break;
                         }
@@ -1284,11 +1304,9 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             if ((force->config_flags & 0x400) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
-                    NUVEC centre;
-                    f32 radius = 0.0f;
-                    NUVEC particle_offset;
                     if ((data->field_0x04 & 1) != 0 || !NuSpecialExistsFn(&object->special))
                         continue;
+                    radius = 0.0f;
                     NuSpecialGetRadius(&object->special, &centre, (f32 *)&radius);
                     radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                     NuVecMtxTransformVU0(&centre, &centre, NuSpecialGetDrawMtx(&object->special));
@@ -1298,14 +1316,17 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                     NuVecRotateZ(&particle_offset, &particle_offset, qrand());
                     NuVecRotateY(&particle_offset, &particle_offset, (u16)qrand());
                     NuVecAdd(&centre, &centre, &particle_offset);
-                    if ((force->runtime_flags & 0x20000) == 0)
-                        AddVariableShotDebrisEffectTimed1(
-                            WORLD->game_debris_sys->entries[(force->config_flags & 0x10) != 0 ? 110 : 109].effect,
-                            &centre, (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
+                    if ((force->config_flags & 0x10) != 0) {
+                        if ((force->runtime_flags & 0x20000) == 0)
+                            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[110].effect, &centre,
+                                                              (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
+                    } else if ((force->runtime_flags & 0x20000) == 0) {
+                        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[109].effect, &centre,
+                                                          (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
+                    }
                 }
             } else if ((force->runtime_flags & 0x20000) == 0) {
-                NUVEC centre, particle_offset;
-                f32 radius = 0.0f;
+                radius = 0.0f;
                 GameAnimSet_GetCentreAndRadius(force->anim_set, &centre, (f32 *)&radius, 2, 1, 1);
                 radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                 particle_offset.x = 0.0f;
@@ -1388,13 +1409,6 @@ i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_re
     }
     return 0;
 }
-typedef struct force_runtime_bits_pc_s {
-    u32 active : 1;
-    u32 visible : 1;
-    u32 other : 30;
-} FORCE_RUNTIME_BITS_PC;
-STATIC_ASSERT(sizeof(FORCE_RUNTIME_BITS_PC) == 4);
-STATIC_ASSERT(offsetof(GIZFORCE_PC, runtime_flags) == 0xa0);
 
 void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZFORCE_PC *force;
