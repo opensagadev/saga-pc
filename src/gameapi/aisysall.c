@@ -6477,10 +6477,10 @@ static void FormationMove(AIGROUP_PC *group, i32 (*move)(AIGROUP_PC *, AIROW_PC 
     AIROW_PC *previous;
     AIROW_PC *row;
     turning = 0;
+    previous = NULL;
     if (move != NULL && (group->flags & 8u)) {
-        previous = NULL;
         if ((group->flags & 4u)) {
-            for (i = group->row_count - 1; i != -1; --i) {
+            for (i = group->row_count - 1; i >= 0; --i) {
                 row = &group->rows[i];
                 if (row->is_alive) {
                     if (move(group, row, previous, group->leader) != 0)
@@ -6503,33 +6503,29 @@ static void FormationMove(AIGROUP_PC *group, i32 (*move)(AIGROUP_PC *, AIROW_PC 
             }
         }
     }
-    group->flags = (group->flags & ~0x10u) | ((u32)turning << 4);
+    group->is_row_turning = turning;
 }
 
 static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination, i32 *nearest_node, f32 *distance) {
-    i32 node;
-    f32 nearest;
+    AIPATHNODELINK_PC *routes = path->special_routes;
+    f32 nearest = FLT_MAX;
+    i32 node = -1;
     i32 index;
-    u8 candidate_node;
     f32 candidate;
 
-    node = -1;
-    nearest = FLT_MAX;
-
     for (index = 0; index < path->special_route_count; ++index) {
-        candidate_node = path->special_routes[index].node_index;
-        candidate = NuVecDistSqr(&path->nodes[candidate_node].position, destination, NULL);
+        candidate = NuVecDistSqr(&path->nodes[routes[index].node_index].position, destination, NULL);
         if (candidate < nearest) {
             nearest = candidate;
-            node = candidate_node;
+            node = routes[index].node_index;
         }
     }
-    if (node < 0) {
-        return 0;
+    if (node >= 0) {
+        *nearest_node = node;
+        *distance = nearest;
+        return 1;
     }
-    *nearest_node = node;
-    *distance = nearest;
-    return 1;
+    return 0;
 }
 
 static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC *packet, NUVEC *destination) {
