@@ -831,8 +831,8 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                       \
     do {                                                                                                               \
         u32 allocation_size = (input_size);                                                                            \
-        VARIPTR *allocation_cursor = (input_cursor);                                                                   \
         VARIPTR *allocation_end = (input_end);                                                                         \
+        VARIPTR *allocation_cursor = (input_cursor);                                                                   \
         void *allocation_result = NULL;                                                                                \
         if (allocation_cursor != NULL && allocation_end != NULL) {                                                     \
             if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                    \
