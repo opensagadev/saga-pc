@@ -8907,8 +8907,8 @@ i32 __cdecl Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
             object->pad->runtime_flags |= 0x10;
             object->field_d20 = (u32)object->force_target;
             object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
-            object->flags_e20 &= ~0x20000u;
             object->character_context = -1;
+            object->flags_e20 &= ~0x20000u;
             FindForcePushTarget(object, 0, 0);
         }
     }
@@ -8921,17 +8921,18 @@ i32 __cdecl Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
                 object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
             }
         }
-        return 0;
-    }
-    object->pad->runtime_flags |= 0x10;
-    object->field_d20 = (u32)processor->action_data_3;
-    object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
-    memcpy(&action_object, &processor->action_data_4, sizeof(action_object));
-    if (action_object != NULL) {
-        return action_object != object->force_target;
-    }
-    if (object->character_context == 0x1b && object->force_target != NULL) {
-        memcpy(&processor->action_data_4, &object->force_target, sizeof(object->force_target));
+    } else {
+        object->pad->runtime_flags |= 0x10;
+        object->field_d20 = (u32)processor->action_data_3;
+        object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
+        memcpy(&action_object, &processor->action_data_4, sizeof(action_object));
+        if (action_object != NULL) {
+            if (action_object != object->force_target) {
+                return 1;
+            }
+        } else if (object->character_context == 0x1b && object->force_target != NULL) {
+            memcpy(&processor->action_data_4, &object->force_target, sizeof(object->force_target));
+        }
     }
     return 0;
 }
