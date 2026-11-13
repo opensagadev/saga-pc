@@ -1218,6 +1218,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     i32 key_index;
     f32 now;
     DEBRISKEY_PC *key;
+    newly_allocated = 0;
     if (effect_index == -1 || effect_index == 0 || effect_index >= debinf_count) {
         return;
     }
@@ -1228,15 +1229,13 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
         return;
     }
 
-    newly_allocated = 0;
+    if (*handle == -1) {
+        *handle = DebAlloc();
+        newly_allocated = 1;
+    }
     key_index = *handle;
     if (key_index == -1) {
-        key_index = DebAlloc();
-        *handle = key_index;
-        if (key_index == -1) {
-            return;
-        }
-        newly_allocated = 1;
+        return;
     }
 
     now = effect->time_group == 4 ? panelglobaltime : globaltime;
@@ -1272,8 +1271,10 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].field_2f9 = 1;
     debkeydata[key_index].user_data = NULL;
     debkeydata[key_index].field_2fa = 0;
-    debkeydata[key_index].emission_epoch =
-        debkeydata[key_index].emission_end_time < now ? debkeydata[key_index].emission_end_time : now;
+    if (debkeydata[key_index].emission_end_time < now)
+        debkeydata[key_index].emission_epoch = debkeydata[key_index].emission_end_time;
+    else
+        debkeydata[key_index].emission_epoch = now;
     debkeydata[key_index].emission_disabled = 0;
 
     switch (effect->particle_type) {
@@ -1293,7 +1294,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     for (i = 0; i < 4; ++i) {
         debkeydata[key_index].collision_timers[i] = 9999;
         if (effect->sound_data[i * 3] != -1) {
-            if (effect->sound_data[i * 3 + 1] == 3 || effect->sound_data[i * 3 + 1] == 4)
+            if (effect->sound_data[i * 3 + 1] == 4 || effect->sound_data[i * 3 + 1] == 3)
                 debkeydata[key_index].collision_timers[i] = 1;
             debkeydata[key_index].process_collision_sound = 1;
         }
