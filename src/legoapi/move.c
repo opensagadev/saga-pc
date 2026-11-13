@@ -4806,8 +4806,7 @@ void __cdecl ForcedBackCode(GAMEOBJECT *object) {
             if (object->context_timer < 0.0f)
                 object->context_timer = 0.0f;
         }
-        radius = (f32)((f64)ForceBackRadiusPc + (f64)0.2f);
-        if (ForceBackPosPc == NULL || distance > radius * radius) {
+        if (ForceBackPosPc == NULL || distance > (radius = (f32)((f64)ForceBackRadiusPc + (f64)0.2f)) * radius) {
             if (object->context_timer <= 0.0f) {
                 object->character_context = -1;
                 object->flags_ef0 &= ~0x02000000;
