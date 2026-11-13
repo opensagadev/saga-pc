@@ -6219,7 +6219,7 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
     NuVecRotateY(&rotated, &offset, row->rotation);
     NuVecAdd(&centre, &rotated, &row->position);
     if (!(row->flags & 2u)) {
-        if (row->path_info.connection == row->next_connection) {
+        if (row->next_connection == row->path_info.connection) {
             node = &row->path_info.path->nodes[row->next_connection->node_indices[row->path_info.direction == 0]];
             distance = NuVecXZDistSqr(&row->position, &node->position, &rotated);
             if (distance < node->radius_squared) {
