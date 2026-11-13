@@ -622,7 +622,7 @@ void NuMusic::Process(f32 delta) {
                             voice->status = 0;
                             voice->play_time = 0.0f;
                         }
-                        voice->flags &= ~1;
+                        voice->flags_word &= ~1U;
                     } else if (current_track->entry_count != 0) {
                         i32 result =
                             NuSound3PlayStereoV(2, voice->stream_index, 3,
@@ -657,7 +657,10 @@ void NuMusic::Process(f32 delta) {
                     }
                     break;
                 case 4:
-                    if (stream_status == 2 || (stream_status == 0 && voice->play_time > 0.25f)) {
+                    if (stream_status == 2) {
+                        voice->play_time = 0.0f;
+                        voice->status = 5;
+                    } else if (stream_status == 0 && voice->play_time > 0.25f) {
                         voice->play_time = 0.0f;
                         voice->status = 5;
                     }
@@ -698,7 +701,7 @@ void NuMusic::Process(f32 delta) {
             f32 volume =
                 master_volume * duck * voice->gain * class_volume * fader_current * attenuation * global_attenuation;
             voice->volume = volume;
-            if (volume != voice->last_volume) {
+            if (voice->last_volume != volume) {
                 NuSound3SetStreamVolume(voice->stream_index * 2, (i32)((f64)volume * 16383.0));
                 voice->last_volume = voice->volume;
             }
