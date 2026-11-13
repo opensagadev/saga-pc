@@ -47,36 +47,36 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         return state->weapon_ammo.type->bolt_override;
     }
     id = (i16)object->id;
-    if (id == (i16)VehicleSpecialShooterIdPc) {
+    if (id == VehicleSpecialShooterIdPc) {
         return 43;
     }
-    if (id == (i16)VehicleBoltId7f19a4Pc) {
+    if (id == VehicleBoltId7f19a4Pc) {
         result = 7 + 2 * (state->bolt_fire_phase != 0);
         if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA) {
             return 8;
         }
         return result;
     }
-    if (id == (i16)VehicleBoltId7f1a9cPc || id == (i16)VehicleBoltId7f1aa0Pc) {
+    if (id == VehicleBoltId7f1a9cPc || id == VehicleBoltId7f1aa0Pc) {
         return 34;
     }
-    if (id == (i16)VehicleBoltId7f1b34Pc || id == (i16)VehicleBoltId7f1b38Pc || id == (i16)id_ZAMSSPEEDER) {
+    if (id == VehicleBoltId7f1b34Pc || id == VehicleBoltId7f1b38Pc || id == id_ZAMSSPEEDER) {
         return 11;
     }
-    if (id == (i16)id_FLASHSPEEDER) {
+    if (id == id_FLASHSPEEDER) {
         return 20;
     }
-    if (id == (i16)id_XWING || id == (i16)VehicleBoltId7f195cPc) {
+    if (id == id_XWING || id == VehicleBoltId7f195cPc) {
         return 6;
     }
-    if (id == (i16)id_SPEEDERBIKE || id == (i16)VehicleBoltId7f19a8Pc) {
+    if (id == id_SPEEDERBIKE || id == VehicleBoltId7f19a8Pc) {
         return 10;
     }
-    if (id == (i16)VehicleBoltId7f18b4Pc || id == (i16)VehicleBoltId7f1a24Pc) {
+    if (id == VehicleBoltId7f18b4Pc || id == VehicleBoltId7f1a24Pc) {
         return 11;
     }
-    if (id == (i16)id_TIEFIGHTER || id == (i16)VehicleBoltId7f1a28Pc || id == (i16)VehicleBoltId7f196cPc ||
-        id == (i16)id_TIEBOMBER || id == (i16)VehicleBoltId7f1a2cPc) {
+    if (id == id_TIEFIGHTER || id == VehicleBoltId7f1a28Pc || id == VehicleBoltId7f196cPc || id == id_TIEBOMBER ||
+        id == VehicleBoltId7f1a2cPc) {
         if (world != NULL) {
             if (world->current_level == DEATHSTARBATTLED_LDATA) {
                 return 13;
@@ -87,29 +87,29 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return 12;
     }
-    if (id == (i16)VehicleBoltId7f1b00Pc || id == (i16)VehicleBoltId7f1ad8Pc || id == (i16)VehicleBoltId7f1b04Pc ||
-        id == (i16)id_MINITIEBOMBER || id == (i16)VehicleBoltId7f1aecPc || id == (i16)VehicleBoltId7f1b08Pc ||
-        id == (i16)VehicleBoltId7f1b0cPc || id == (i16)id_MINIATAT || id == (i16)id_MINISTARDESTROYER) {
+    if (id == VehicleBoltId7f1b00Pc || id == VehicleBoltId7f1ad8Pc || id == VehicleBoltId7f1b04Pc ||
+        id == id_MINITIEBOMBER || id == VehicleBoltId7f1aecPc || id == VehicleBoltId7f1b08Pc ||
+        id == VehicleBoltId7f1b0cPc || id == id_MINIATAT || id == id_MINISTARDESTROYER) {
         return 23;
     }
-    if (id == (i16)VehicleBoltId7f1af0Pc) {
+    if (id == VehicleBoltId7f1af0Pc) {
         return 21 + (state->bolt_fire_phase != 0);
     }
-    if (id == (i16)id_JEDISTARFIGHTERYELLOWEP3 || id == (i16)VehicleBoltId7f19e8Pc) {
+    if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == VehicleBoltId7f19e8Pc) {
         if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA &&
             WORLD->level_objects[0x12d].active != 0) {
             return 32;
         }
         return 33;
     }
-    if (id == (i16)VehicleBoltId7f17d0Pc || id == (i16)VehicleBoltId7f17d4Pc || id == (i16)VehicleBoltId7f1aacPc) {
+    if (id == VehicleBoltId7f17d0Pc || id == VehicleBoltId7f17d4Pc || id == VehicleBoltId7f1aacPc) {
         result = 42;
         if (WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active == 0) {
             result = 0;
         }
         return result;
     }
-    if (id == (i16)id_CATAPULT) {
+    if (id == id_CATAPULT) {
         return 29;
     }
     if (object->character_data->move_fn == Move_CANNON) {
@@ -121,37 +121,37 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (GCDataList[id].weapon_model == 22) {
         return 2;
     }
-    if (id == (i16)id_BIGGUN) {
+    if (id == id_BIGGUN) {
         return 20;
     }
-    if (id == (i16)id_BOBAFETT || id == (i16)VehicleBoltId7f190cPc) {
+    if (id == id_BOBAFETT || id == VehicleBoltId7f190cPc) {
         return 26;
     }
-    if (id == (i16)VehicleBoltId7f1910Pc) {
+    if (id == VehicleBoltId7f1910Pc) {
         return 3;
     }
-    if (id == (i16)id_ATAT) {
+    if (id == id_ATAT) {
         return 24;
     }
-    if (id == (i16)GameObjectRotationAtstId || id == (i16)id_CLONEWALKER) {
+    if (id == (i16)GameObjectRotationAtstId || id == id_CLONEWALKER) {
         return 4;
     }
-    if (id == (i16)id_ATST_LOWRES) {
+    if (id == id_ATST_LOWRES) {
         return 25;
     }
-    if (id == (i16)id_DROIDEKA || id == (i16)id_MINIDROIDEKA) {
+    if (id == id_DROIDEKA || id == id_MINIDROIDEKA) {
         return 17;
     }
-    if (id == (i16)id_STAP || id == (i16)id_STAP2) {
+    if (id == id_STAP || id == id_STAP2) {
         return 0;
     }
-    if (id == (i16)VehicleBoltId7f1924Pc) {
+    if (id == VehicleBoltId7f1924Pc) {
         return 27 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
-    if (id == (i16)VehicleBoltId7f1928Pc) {
+    if (id == VehicleBoltId7f1928Pc) {
         return 28 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
     }
-    if (id == (i16)id_REPUBLICGUNSHIP || id == (i16)id_REPUBLICGUNSHIP_GREEN) {
+    if (id == id_REPUBLICGUNSHIP || id == id_REPUBLICGUNSHIP_GREEN) {
         if (WORLD->current_level == BONUS_GUNSHIPA_LDATA) {
             return 35;
         }
@@ -160,7 +160,7 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return fallback;
     }
-    if (id == (i16)id_NEW_REPUBLIC_GUNSHIP || id == (i16)id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+    if (id == id_NEW_REPUBLIC_GUNSHIP || id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         if (WORLD->current_level == GUNSHIPA_LDATA) {
             return 37;
         }
@@ -169,10 +169,10 @@ i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         }
         return fallback;
     }
-    if (id == (i16)id_SENTRYDROID) {
+    if (id == id_SENTRYDROID) {
         return 0;
     }
-    if (id == (i16)VehicleBoltId7f1a38Pc) {
+    if (id == VehicleBoltId7f1a38Pc) {
         return 0;
     }
     return fallback;
@@ -221,11 +221,11 @@ void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unu
         GameCam_HitJudder();
         explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
         if (explosion != NULL && Arcade != 0) {
-            GAMEOBJECT *owner = ((GAMEOBJECT *)bolt->owner);
+            GAMEOBJECT *owner = bolt->owner;
             if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
                 (owner->flags_1fc_word & 0x1000) != 0 && (owner->field_280 == 0 || owner->field_280 == 1)) {
                 explosion->flags |= 0x10000;
-                explosion->owner = ((GAMEOBJECT *)bolt->owner);
+                explosion->owner = bolt->owner;
             }
         }
     }

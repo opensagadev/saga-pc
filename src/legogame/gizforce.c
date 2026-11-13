@@ -336,7 +336,7 @@ static void __cdecl edgizforce_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) 
     if (object == NULL) {
         return;
     }
-    data = (GIZFORCEANIMDATA_s *)object->object_data;
+    data = object->object_data;
     if (data == NULL) {
         data = &temporary;
     }
@@ -350,8 +350,8 @@ const char GizmoRegistryGizForceNamePc[] = "GizForce";
 #pragma const_seg()
 
 i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    WORLDINFO *world = world_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     u8 version;
     i32 index, length;
@@ -413,7 +413,7 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
         force->blowup_type = -1;
         if (version >= 4) {
             if (version >= 5) {
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length != 0) {
                     EdFileRead(blowup_name, length);
                     force->blowup_type = (i16)GizmoBlowupGetNameTableId(blowup_name);
@@ -463,7 +463,7 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
 }
 
 void __cdecl GizForces_PostLoad(void *world, void *pointer) {
-    REGISTRY_FORCE_SYSTEM_PC *system = (REGISTRY_FORCE_SYSTEM_PC *)pointer;
+    REGISTRY_FORCE_SYSTEM_PC *system = pointer;
     REGISTRY_FORCE_RECORD_PC *force;
     i32 i;
     if (system == NULL) {
@@ -472,7 +472,7 @@ void __cdecl GizForces_PostLoad(void *world, void *pointer) {
     force = system->forces;
     for (i = 0; i < system->count; ++i, ++force) {
         if (force->runtime_flags & 0x400) {
-            i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, force->blowup_type);
+            i32 type_id = GizmoBlowupGetTypeFromNameTableId(world, force->blowup_type);
             force->runtime_flags &= ~0x400u;
             force->blowup_type = (i16)type_id;
         }
@@ -480,7 +480,7 @@ void __cdecl GizForces_PostLoad(void *world, void *pointer) {
 }
 
 void __cdecl GizForces_AddLevelSfx(void *world, void *system_pointer, i32 *ids, i32 *count, i32 capacity) {
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     i32 index;
     (void)world;
@@ -502,17 +502,16 @@ void __cdecl GizForces_AddLevelSfx(void *world, void *system_pointer, i32 *ids, 
 }
 
 void *__cdecl GizForces_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
+    WORLDINFO *world = pointer;
     REGISTRY_FORCE_SYSTEM_PC *system;
     i32 i;
-    system = (REGISTRY_FORCE_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+    system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_force;
-    system->forces = (REGISTRY_FORCE_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                 system->capacity * sizeof(*system->forces));
+    system->forces =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->forces));
     system->hit_test_gizmos =
-        (GIZMO_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(void *));
-    system->visible_forces = (REGISTRY_FORCE_RECORD_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                          system->capacity * sizeof(void *));
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(void *));
+    system->visible_forces = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(void *));
     system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8,
                                                      (u16)world->current_level->max_force_objects);
     for (i = 0; i < system->capacity; ++i) {
@@ -528,7 +527,7 @@ void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL) {
         return;
     }
-    force = (GIZFORCE_PC *)gizmo->object;
+    force = gizmo->object;
     if (force == NULL) {
         return;
     }
@@ -560,7 +559,7 @@ static void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_PC *force) {
         return;
     }
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
-        GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
+        GIZFORCEANIMDATA_s *data = object->object_data;
         data->platform_id = -1;
         if (world->terrain != NULL && (data->flags & 1) == 0 && NuSpecialExistsFn(&object->special) != 0) {
             data->platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
@@ -696,7 +695,7 @@ i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
         return 0;
     }
     for (index = 0; index < 2; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+        GAMEOBJECT *object = Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->transform_alpha > 0.0f &&
             object->transform_target != NULL && object->unknown_0e28[4] == 0) {
             return 1;
@@ -706,8 +705,8 @@ i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
 }
 
 void __cdecl GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    WORLDINFO *world = world_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     GAMEANIMOBJ *object;
     NUMTX *draw_matrix, reflection;
@@ -737,13 +736,13 @@ void __cdecl GizForces_Draw(void *world_pointer, void *system_pointer, f32 unuse
         if (object == NULL) {
             continue;
         }
-        draw_matrix = NuSpecialGetDrawMtx((NUSPECIALHANDLE *)&object->special);
-        NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, draw_matrix);
+        draw_matrix = NuSpecialGetDrawMtx(&object->special);
+        NuSpecialDrawAt(&force->along_socket, draw_matrix);
         if (force->config_flags & 4) {
             reflection_height = force->vertical_range + draw_matrix->m31;
             if (MatrixReflection(draw_matrix, 2, reflection_height, WORLD->current_level->reflection_y, &reflection)) {
                 NuRndrStartReflectionRender(0);
-                NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, &reflection);
+                NuSpecialDrawAt(&force->along_socket, &reflection);
                 NuRndrEndReflectionRender();
             }
         }
@@ -845,7 +844,7 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 spee
 }
 
 i32 __cdecl GizForces_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_force;
     }
@@ -853,7 +852,7 @@ i32 __cdecl GizForces_GetMaxGizmos(void *world_ptr) {
 }
 
 void __cdecl GizForces_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZFORCESYS_s *s = (GIZFORCESYS_s *)data;
+    GIZFORCESYS_s *s = data;
     i32 i;
     (void)world;
     if (s == NULL) {
@@ -871,7 +870,7 @@ char *__cdecl GizmoForce_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
-    GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
+    GIZFORCE_PC *force = gizmo->object;
     if (((!(force->runtime_flags & 2) && force->blowup_type == -1) || !(force->runtime_flags & 1)) && force_read == 0) {
         return 0;
     }
@@ -950,7 +949,7 @@ void *__cdecl GizForces_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void __cdecl GizForces_ClearProgress(void *owner, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
+    FORCE_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -965,8 +964,8 @@ void __cdecl GizForces_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
-    FORCE_PROGRESS_SYSTEM_PC *system = (FORCE_PROGRESS_SYSTEM_PC *)data;
+    FORCE_PROGRESS_PC *progress = progress_ptr;
+    FORCE_PROGRESS_SYSTEM_PC *system = data;
     FORCE_PROGRESS_RECORD_PC *record;
     FORCE_PROGRESS_GROUP_PC *force_group;
     i32 index, group, slot, word;
@@ -1031,7 +1030,7 @@ static i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i
     if ((config & 0x100) != 0) {
         force->runtime_flags = flags | 0x8000;
         if (player_index != -1) {
-            player = (GAMEOBJECT *)Player[player_index];
+            player = Player[player_index];
             if ((player->flags_1fc_word & 0x80) != 0) {
                 NewBuzz(player->pad->bound_pad, 0.1f, 0);
             }
@@ -1062,7 +1061,7 @@ static i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i
         return 0;
     }
     if (player_index != -1) {
-        player = (GAMEOBJECT *)Player[player_index];
+        player = Player[player_index];
         if ((player->flags_1fc_word & 0x80) != 0) {
             NewBuzz(player->pad->bound_pad, 0.1f, 0);
         }
@@ -1071,7 +1070,7 @@ static i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i
 }
 
 i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     GAMEANIMOBJ *animation;
     i32 count;
@@ -1079,7 +1078,7 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
     if (system != NULL) {
         count = system->hit_test_gizmo_count;
         for (index = 0; index < count; ++index) {
-            force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
+            force = system->hit_test_gizmos[index]->object;
             if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
                 (force->runtime_flags & 0x100) == 0 || (force->runtime_flags & 0x10000) != 0) {
                 continue;
@@ -1087,7 +1086,7 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
             animation = force->anim_set->objects;
             while (animation != NULL) {
                 if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
-                    (void)BoltType_FindByID((u8)bolt->type_id, world);
+                    (void)BoltType_FindByID(bolt->type_id, world);
                     GizForces_BoltHitPlat(force, world,
                                           bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1);
                     return 1;
@@ -1110,7 +1109,7 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     u16 far_angle = TargetDeg_Far;
     u16 mid_angle = TargetDeg_Mid;
     GIZFORCESYS_s *system;
-    GAMEOBJECT *object = (GAMEOBJECT *)object_pointer;
+    GAMEOBJECT *object = object_pointer;
     GIZMO_PC *gizmo;
     GIZFORCE_PC *force;
     GIZMO_PC *best;
@@ -1142,10 +1141,10 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
         direction_copy.y = 0.0f;
         NuVecNorm(&direction_copy, &direction_copy);
     }
-    system = (GIZFORCESYS_s *)set->data;
+    system = set->data;
     for (index = 0; index < system->hit_test_gizmo_count; ++index) {
         gizmo = system->hit_test_gizmos[index];
-        force = (GIZFORCE_PC *)gizmo->object;
+        force = gizmo->object;
         if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
             (force->runtime_flags & 0x10000) != 0) {
             continue;
@@ -1182,7 +1181,7 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
         } else {
             target_angle = far_angle;
         }
-        if (!(NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff] < dot)) {
+        if (!(NuTrigTable[((target_angle + 0x4000) >> 1) & 0x7fff] < dot)) {
             continue;
         }
         if (!(best_distance > distance)) {
@@ -1219,7 +1218,7 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
 i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points,
                               i32 point_count, f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type,
                               u8 *hit_flags) {
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     GIZFORCE_PC *best = NULL;
     f32 best_distance = 1000000000.0f;
@@ -1232,7 +1231,7 @@ i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT
     i32 player_index;
     if (system != NULL) {
         for (index = 0; index < system->hit_test_gizmo_count; ++index) {
-            force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
+            force = system->hit_test_gizmos[index]->object;
             if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
                 (force->runtime_flags & 0x10000) != 0) {
                 continue;
@@ -1258,10 +1257,10 @@ i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT
     }
     if (best != NULL) {
         if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
-            (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
+            (void)BoltType_FindByID(bolt->type_id, WORLD);
             (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
         }
-        (void)BoltType_FindByID((u8)bolt->type_id, world);
+        (void)BoltType_FindByID(bolt->type_id, world);
         player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
         if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
             if (object != NULL) {
@@ -1310,7 +1309,7 @@ void __cdecl GizmoForce_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo == NULL) {
         return;
     }
-    force = (GIZFORCE_PC *)gizmo->object;
+    force = gizmo->object;
     if (active != 0 && !(force->runtime_flags & 1)) {
         GameAnimSet_JumpToStart(force->anim_set);
     }
@@ -1335,7 +1334,7 @@ i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
     if (gizmo == NULL) {
         return 0;
     }
-    force = (GIZFORCE_PC *)gizmo->object;
+    force = gizmo->object;
     if (force == NULL) {
         return 0;
     }
@@ -1353,9 +1352,9 @@ i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
 }
 
 void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)data_ptr;
-    FORCE_RESET_PROGRESS_PC *progress = (FORCE_RESET_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    GIZFORCESYS_s *system = data_ptr;
+    FORCE_RESET_PROGRESS_PC *progress = progress_ptr;
     GIZFORCE_PC *force;
     i32 index;
     NUVEC offset;
@@ -1416,8 +1415,8 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
 }
 
 void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
-    GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
+    WORLDINFO *world = world_pointer;
+    GIZFORCESYS_s *system = system_pointer;
     NUVEC offset;
     NUVEC particle_offset;
     NUVEC direction;
@@ -1432,7 +1431,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
     if (world == NULL || system == NULL) {
         return;
     }
-    gizmos = (GIZMOSYS_PC *)world->gizmo_sys;
+    gizmos = world->gizmo_sys;
     if (gizmos == NULL || gizmos->sets == NULL) {
         return;
     }
@@ -1444,7 +1443,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
     set = &gizmos->sets[force_gizmotype_id];
     gizmo = set->gizmos;
     for (index = 0; index < set->count; ++index, ++gizmo) {
-        GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
+        GIZFORCE_PC *force = gizmo->object;
         GAMEOBJECT *user;
         i32 was_moving, still_rising, playing_forwards, updating_animation, started_shaking = 0;
         GAMEANIMOBJ *object;
@@ -1587,7 +1586,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             }
             if ((force->config_flags & 0x2000) == 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                    GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
+                    GIZFORCEANIMDATA_s *data = object->object_data;
                     if ((data->flags & 2) == 0 && data->platform_id != -1) {
                         AddShoveObject(&object->special, data->platform_id);
                     }
@@ -1664,12 +1663,12 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
         if ((i8)force->runtime_flags < 0 && !GizForce_Complete(force)) {
             if ((force->config_flags & 0x400) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                    GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
+                    GIZFORCEANIMDATA_s *data = object->object_data;
                     if ((data->field_0x04 & 1) != 0 || !NuSpecialExistsFn(&object->special)) {
                         continue;
                     }
                     radius = 0.0f;
-                    NuSpecialGetRadius(&object->special, &centre, (f32 *)&radius);
+                    NuSpecialGetRadius(&object->special, &centre, &radius);
                     radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                     NuVecMtxTransformVU0(&centre, &centre, NuSpecialGetDrawMtx(&object->special));
                     particle_offset.x = 0.0f;
@@ -1694,7 +1693,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 }
             } else if ((force->runtime_flags & 0x20000) == 0) {
                 radius = 0.0f;
-                GameAnimSet_GetCentreAndRadius(force->anim_set, &centre, (f32 *)&radius, 2, 1, 1);
+                GameAnimSet_GetCentreAndRadius(force->anim_set, &centre, &radius, 2, 1, 1);
                 radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                 particle_offset.x = 0.0f;
                 if (radius == 0.0f) {
@@ -1725,7 +1724,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
 }
 
 i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
-    GIZFORCE_SYS_BEST_PC *system = (GIZFORCE_SYS_BEST_PC *)system_ptr;
+    GIZFORCE_SYS_BEST_PC *system = system_ptr;
     GIZFORCE_OBJECT_BEST_PC *target = (GIZFORCE_OBJECT_BEST_PC *)object;
     GIZFORCE_LOS_BEST_PC *los;
     GIZFORCE_TARGET_RECORD_PC *oldest = NULL, *best = NULL, *record;
@@ -1807,7 +1806,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
             ++count;
         }
     }
-    los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
+    los = object->gizforce_los_info;
     if (los != NULL) {
         record = PossibleForceTargetsPc;
         for (i = 0; i < count; ++i, ++record) {
@@ -1861,7 +1860,7 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         }
     }
 choose:
-    los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
+    los = object->gizforce_los_info;
     record = PossibleForceTargetsPc;
     for (i = 0; i < count; ++i, ++record) {
         if (los != NULL && record->index != -1 &&
