@@ -16959,7 +16959,8 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
                             packet->flags |= 0x10000000u;
                         } else {
                             NUVEC movement_delta;
-                            movement_delta.x = packet->movement_destination.x - object->position.x;
+                            f32 object_x = object->position.x;
+                            movement_delta.x = packet->movement_destination.x - object_x;
                             movement_delta.y = 0.0f;
                             movement_delta.z = packet->movement_destination.z - object->position.z;
                             if (NuVecDot(&movement_delta, &delta) < 0.0f) {
