@@ -8729,12 +8729,11 @@ extern "C" {
             f32 *range = &scene->fade_levels[clip_index];
             if (*range != 0.0f) {
                 if ((scene->visibility_flags[group_index] & 0x20) != 0) {
-                    NUVEC4 *center = &scene->clip_bounds[group_index * 2];
                     __declspec(align(16)) NUVEC delta;
                     f32 distance;
-                    delta.x = global_camera.mtx.m30 - center->x;
-                    delta.y = global_camera.mtx.m31 - center->y;
-                    delta.z = global_camera.mtx.m32 - center->z;
+                    delta.x = global_camera.mtx.m30 - scene->clip_bounds[group_index * 2].x;
+                    delta.y = global_camera.mtx.m31 - scene->clip_bounds[group_index * 2].y;
+                    delta.z = global_camera.mtx.m32 - scene->clip_bounds[group_index * 2].z;
                     distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
                     while (*range > distance) {
                         ++range;
