@@ -14138,12 +14138,12 @@ void AIRetreatFromDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_P
     }
     if ((packet->path_info.flags & 1u) != 0) {
         distance = NuVecXZDist(&object->position, &packet->fallback_destination, &difference);
-        if (distance != 0.0f) {
-            NuVecScale(&difference, &difference, packet->movement_parameter / distance);
-        } else {
+        if (distance == 0.0f) {
             difference.x = packet->movement_parameter;
             difference.y = 0.0f;
             difference.z = 0.0f;
+        } else {
+            NuVecScale(&difference, &difference, packet->movement_parameter / distance);
         }
         NuVecAdd(&packet->movement_destination, &object->position, &difference);
         packet->movement_stopping_distance = 0.0f;
