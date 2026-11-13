@@ -8227,13 +8227,19 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
                 if ((attacker->flags_1fc_word & 0x1000) != 0 && attacker->dead == 0) {
                     if ((object->flags_e20 & 0x20000000) != 0) {
                         if (attacker->character_context == 0x26 &&
-                            (u16)attacker->field_7aa == (u16)state->blocked_attack_stage &&
+                            attacker->field_7aa == (i16)state->blocked_attack_stage &&
                             (attacker->id != (u16)id_GAMORREANGUARD || attacker->field_7aa != 0x56 ||
                              (attacker->context_flags_pc & 0x40) == 0))
                             return;
-                    } else if (attacker->character_context == 5 &&
-                               (i32)attacker->combo_stage + 1 <= (i32)state->blocked_attack_stage)
+                        state->blocked_attack_stage = 0;
                         return;
+                    } else {
+                        if (attacker->character_context == 5 &&
+                            (i32)attacker->combo_stage + 1 <= (i32)state->blocked_attack_stage)
+                            return;
+                        state->blocked_attack_stage = 0;
+                        return;
+                    }
                 }
                 state->blocked_attack_stage = 0;
                 return;
