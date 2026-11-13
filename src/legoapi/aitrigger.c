@@ -76,20 +76,25 @@ i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *, GIZFORCE_PC *);
 GAMEOBJECT *__cdecl Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX_PC *);
 
 static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
-    if (gizmo->type_id == lever_gizmotype_id)
-        return (((TRIGGER_LEVER_PC *)gizmo->object)->flags & 0x82) == 0x80;
-    if (gizmo->type_id == obstacle_gizmotype_id) {
+    if (gizmo->type_id == lever_gizmotype_id) {
+        u16 flags = ((TRIGGER_LEVER_PC *)gizmo->object)->flags;
+        if ((flags & 0x80) && !(flags & 2))
+            return 1;
+    } else if (gizmo->type_id == obstacle_gizmotype_id) {
         GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
-        return (obstacle->progress_flags & 1) && obstacle->anim_set->state != 2;
-    }
-    if (gizmo->type_id == spinner_gizmotype_id)
-        return ((TRIGGER_SPINNER_PC *)gizmo->object)->room_index == -1;
-    if (gizmo->type_id == force_gizmotype_id) {
+        if ((obstacle->progress_flags & 1) && obstacle->anim_set->state != 2)
+            return 1;
+    } else if (gizmo->type_id == spinner_gizmotype_id) {
+        if (((TRIGGER_SPINNER_PC *)gizmo->object)->room_index == -1)
+            return 1;
+    } else if (gizmo->type_id == force_gizmotype_id) {
         TRIGGER_FORCE_PC *force = (TRIGGER_FORCE_PC *)gizmo->object;
-        return (force->progress_flags & 1) && force->using_object == NULL && force->active_state == 0;
+        if ((force->progress_flags & 1) && force->using_object == NULL && force->active_state == 0)
+            return 1;
+    } else if (gizmo->type_id == grapple_gizmotype_id) {
+        if (Grapple_Occupied(gizmo->object, NULL, NULL) == NULL)
+            return 1;
     }
-    if (gizmo->type_id == grapple_gizmotype_id)
-        return Grapple_Occupied(gizmo->object, NULL, NULL) == NULL;
     return 0;
 }
 i32 __cdecl GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
