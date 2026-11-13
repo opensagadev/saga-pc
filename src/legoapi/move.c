@@ -5155,7 +5155,7 @@ typedef struct COMBO_AI_VIEW_PC {
 STATIC_ASSERT(offsetof(COMBO_AI_VIEW_PC, primary_target_ref) == 0x39c);
 STATIC_ASSERT(offsetof(COMBO_AI_VIEW_PC, nearest_opponent_metric) == 0x3a0);
 
-static u8 SetComboOpponent(GAMEOBJECT *object, f32 range, i32 update_heading, i32 mode) {
+static i32 SetComboOpponent(GAMEOBJECT *object, f32 range, i32 update_heading, i32 mode) {
     i32 searched = 0;
     i32 result = 0;
     COMBO_AI_VIEW_PC *ai = (COMBO_AI_VIEW_PC *)object;

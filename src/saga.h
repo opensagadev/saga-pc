@@ -23595,9 +23595,6 @@ extern "C" {
 
     /* Source stack interfaces. */
     GAMEOBJECT *__cdecl PlayerOpponent(GAMEOBJECT *, f32, i32);
-    u8 __cdecl SetComboOpponent(GAMEOBJECT *, f32, i32, i32);
-    void __cdecl JediLightCode(GAMEOBJECT *);
-    void __cdecl SwipeCode(GAMEOBJECT *, i32, i32);
     NUVEC *__cdecl GetZapOrigin(GAMEOBJECT *);
     void __cdecl ZapCode(GAMEOBJECT *, i32, i32);
     extern f32 PlayerOpponent_Range2;
