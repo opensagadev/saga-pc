@@ -2567,11 +2567,12 @@ f32 __cdecl Condition_NumBaddiesThatCanSeePlayersPc(AISYS_PC *system, AISCRIPTPR
 
 f32 __cdecl Condition_HelpWithTriggersPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                          void *argument) {
-    AITRIGGERSETSYS_s *triggers = ((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system;
-    u8 index;
-    if (triggers != NULL && packet != NULL && packet->owner != NULL) {
-        index = packet->owner->hostility_group;
-        if (triggers->field_0x42c0[index] != -1 && triggers->sets[triggers->field_0x4280[index]].field_0x20e != 0)
+    if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
+        i32 index = packet->owner->hostility_group;
+        if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system->field_0x42c0[index] != -1 &&
+            ((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)
+                    ->trigger_system->sets[((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system->field_0x4280[index]]
+                    .field_0x20e != 0)
             return 1.0f;
     }
     return 0.0f;
@@ -3134,23 +3135,21 @@ void *Condition_AngleAboutMyLocatorToPlayerInit(AISYS_PC *unused0, char *name, A
 
 f32 __cdecl Condition_AngleAboutMyLocatorToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                                   char *unused3, void *argument) {
-    f32 result = 0.0f;
     if (argument != NULL && processor->locator != NULL && packet != NULL && packet->owner != NULL) {
-        GAMEOBJECT *object = packet->owner;
         GAMEOBJECT *target = NULL;
         if ((intptr_t)argument == -1)
             target = player;
         else if ((intptr_t)argument == 1)
             target = (GAMEOBJECT *)Player[1];
         if (target != NULL) {
-            NUANG object_angle = NuAtan2D(object->position.x - processor->locator->position.x,
-                                          object->position.z - processor->locator->position.z);
+            NUANG object_angle = NuAtan2D(packet->owner->position.x - processor->locator->position.x,
+                                          packet->owner->position.z - processor->locator->position.z);
             NUANG target_angle = NuAtan2D(target->position.x - processor->locator->position.x,
                                           target->position.z - processor->locator->position.z);
-            result = (f32)(NuAngSub(target_angle, object_angle));
+            return (f32)(NuAngSub(target_angle, object_angle));
         }
     }
-    return result;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_AnimSpeedMulPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
