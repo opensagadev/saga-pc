@@ -6494,7 +6494,7 @@ extern "C" {
         f32 near_clip;
         NUVEC near_position;
         NUPORTAL_FRUSTUM_PC *frustum;
-        i16 camera_room;
+        i32 camera_room;
         u32 i;
         PortalInitialisePsPc(scene);
         camera_position = NuPortalOverrideCameraPc != NULL ? NuPortalOverrideCameraPc : &NuPortalWorldCameraPc;
