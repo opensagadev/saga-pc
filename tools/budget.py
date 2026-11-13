@@ -7,6 +7,7 @@ counts with a budget file; a count above its budget fails CI:
     config/oddscan-budget.json   tools/oddscan.py --check    oddity classes (docs/cleanup-audit.md)
     config/declscan-budget.json  tools/declscan.py --check   unit declaration classes A-E (docs/declarations.md)
     config/warning-budget.json   tools/warnings.py --check   MSVC warning codes per build kind
+    config/castscan-budget.json  tools/castscan.py --check   explicit casts per cause class (docs/cast-audit.md)
 
 Each tool's `--write-budget` lowers its budget to the current counts (it never
 raises one). Raising a budget is a reviewed exception: `--guard` compares every
@@ -28,7 +29,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-BUDGET_FILES = ("config/oddscan-budget.json", "config/declscan-budget.json", "config/warning-budget.json")
+BUDGET_FILES = ("config/oddscan-budget.json", "config/declscan-budget.json", "config/warning-budget.json",
+                "config/castscan-budget.json")
 RAISES = "config/budget-raises.txt"
 
 
