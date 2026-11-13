@@ -384,12 +384,12 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
         destination = packet->fallback_path_info.connection;
         current = packet->path_info.connection;
         if (destination == current) {
-            edge = far_node->radius / destination->horizontal_distance;
+            edge = far_node->radius / current->horizontal_distance;
             if (far_index != 0) {
-                if (1.0f - edge > packet->fallback_path_info.distance) {
+                if (packet->fallback_path_info.distance < 1.0f - edge) {
                     goto reset_connection;
                 }
-            } else if (edge < packet->fallback_path_info.distance) {
+            } else if (packet->fallback_path_info.distance > edge) {
                 goto reset_connection;
             }
         }
