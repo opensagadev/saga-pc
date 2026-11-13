@@ -681,7 +681,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
     GAMEOBJECT *occupant, *attached, *linked;
     NUVEC attachment, direction;
     NUVEC *positions[2];
-    f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_base, wave_scale;
+    f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_scale;
     i32 index, point, count, context;
     (void)unused_system;
     (void)unused_time;
@@ -742,8 +742,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
             grapple->target_rope_points[point].y = (f64)direction.y * offset + attachment.y;
             grapple->target_rope_points[point].z = (f64)direction.z * offset + attachment.z;
             if (occupant != NULL && slack > 0.0f) {
-                wave_base = (f64)slack * (f64)(f32)0.1f;
-                wave_scale = ((f64)(point + 1) / 6.0) * wave_base;
+                wave_scale = ((f64)(point + 1) / 6.0) * ((f64)slack * (f64)(f32)0.1f);
                 grapple->target_rope_points[point].x +=
                     (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
                                     index * 0x2000) *
