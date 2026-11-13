@@ -1485,12 +1485,12 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
         object->portal_flags |= 4;
     else
         object->portal_flags &= ~4u;
+    object->portal_flags = (object->portal_flags & 0x25fffc27) | 8;
     object->flags_ef0 &= 0xc7ffe6c0;
     object->hover_height_override = 1000000000.0f;
     object->flags_ef4 &= 0x31f7e95c;
     object->collision_scale_override = 1000000000.0f;
     object->flags_ef8_word &= 0xfffffffc;
-    object->portal_flags = (object->portal_flags & 0x25fffc27) | 8;
     object->doomed_escape_locator = NULL;
     if ((object->flags_1f8 & 0x400) != 0)
         object->flags_ef4 &= ~0x40000u;
@@ -1503,13 +1503,13 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
         object->ai_packet.flags = (object->ai_packet.flags & ~0x8000000u) | 0x4000000u;
     else
         object->ai_packet.flags &= ~0xc000000u;
+    object->movement_speed_scale_pc = 1.0f;
     object->flags_ef4 &= 0xfe5fffff;
     object->portal_flags &= 0xfff3ffff;
     if ((character->model_flags & 0x8000000) != 0)
         object->portal_flags |= 0x100000;
     else
         object->portal_flags &= ~0x100000u;
-    object->movement_speed_scale_pc = 1.0f;
     object->tag_flags &= ~2u;
     object->field_ec4 = 0.0f;
     object->ai_packet.flags &= 0xffffafff;
