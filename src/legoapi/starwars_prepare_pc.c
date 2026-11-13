@@ -553,8 +553,8 @@ check:
         distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
         if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
                             owner->character_context == 0x44)) {
-            packet->movement_destination = object->position;
             ready = 1;
+            packet->movement_destination = object->position;
         }
         packet->movement_stopping_distance = 0.0f;
         jump_distance = (flags & 0x20) != 0
