@@ -11087,7 +11087,7 @@ i32 __cdecl Action_CreateRider(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, A
     GAMEOBJECT *rider;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         vehicle = packet->owner->objptr;
-    if (first_time != 0 && count > 0) {
+    if (first_time != 0 && 0 < count) {
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
             if (value != NULL) {
@@ -11100,9 +11100,12 @@ i32 __cdecl Action_CreateRider(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, A
                 script = value + 7;
         }
         if (model != -1 && vehicle->rider == NULL) {
-            rider =
-                AddDynamicCreature(model, &vehicle->collision_position, 0,
-                                   script != NULL ? script : GizmoDefaultOutputName, NULL, NULL, 0, NULL, NULL, 0, 0);
+            if (script != NULL)
+                rider =
+                    AddDynamicCreature(model, &vehicle->collision_position, 0, script, NULL, NULL, 0, NULL, NULL, 0, 0);
+            else
+                rider = AddDynamicCreature(model, &vehicle->collision_position, 0, GizmoDefaultOutputName, NULL, NULL,
+                                           0, NULL, NULL, 0, 0);
             if (rider != NULL)
                 TakeOverGameObject(rider, vehicle, 0, 1);
         }
