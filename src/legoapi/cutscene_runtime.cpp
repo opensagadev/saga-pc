@@ -814,11 +814,15 @@ extern "C" {
     static __declspec(noinline) CUT_LOAD_SYS_PC *CutScenesLoadListedPc(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode,
                                                                        VARIPTR *buf, VARIPTR *buf_end, i32 area,
                                                                        i32 level, WORLDINFO *world) {
+        CUT_LOAD_SYS_PC *sys;
+        void *initial;
+        CUT_LOAD_RECORD_PC *cut;
         CUT_LOAD_RECORD_PC *entries[32];
-        char path[128], config_path[128];
-        void *initial = buf->void_ptr;
-        CUT_LOAD_SYS_PC *sys = reinterpret_cast<CUT_LOAD_SYS_PC *>((buf->addr + 3) & ~3U);
+        char path[128];
+        char config_path[128];
+        initial = buf->void_ptr;
         CS_area = area;
+        sys = reinterpret_cast<CUT_LOAD_SYS_PC *>((reinterpret_cast<u32>(initial) + 3) & ~3U);
         buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
         sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
         buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
@@ -830,7 +834,7 @@ extern "C" {
             void *mark = buf->void_ptr;
             entries[sys->count] = reinterpret_cast<CUT_LOAD_RECORD_PC *>(mark);
             buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
-            CUT_LOAD_RECORD_PC *cut = entries[sys->count];
+            cut = entries[sys->count];
             NuStrCpy(path, "cut\\");
             NuStrCat(path, CutList[i].directory);
             NuStrCat(path, WorldPathSeparator);
@@ -838,27 +842,25 @@ extern "C" {
             NuStrCpy(config_path, path);
             NuStrCat(config_path, AreaResidentsExtension);
             CutSceneConfigurePc(cut, config_path, buf, buf_end);
-            if (!(cut->flags & 0x800) && InStory() == 0 && !(LDataList[level].flags & 0xe0)) {
-                buf->void_ptr = mark;
-                continue;
+            if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & 0xe0) != 0) {
+                NuStrCpy(config_path, path);
+                NuStrCat(config_path, NuFileExt_cu2_PC);
+                cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
+                if (cut->scene != NULL) {
+                    NuStrCpy(cut->name, CutList[i].name);
+                    NuGCutSceneFixUp(cut->scene, gscn1, 0, fixup_mode);
+                    NuGCutSceneFixUpExtra(cut->scene, gscn2);
+                    cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, CutList[i].name, buf, 0);
+                    if (cut->instance != NULL) {
+                        reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
+                            cut->frames_per_second * DEFAULTFRAMETIME;
+                        buf->addr = (buf->addr + 15) & ~15U;
+                    }
+                    ++sys->count;
+                    continue;
+                }
             }
-            NuStrCpy(config_path, path);
-            NuStrCat(config_path, NuFileExt_cu2_PC);
-            cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
-            if (cut->scene == NULL) {
-                buf->void_ptr = mark;
-                continue;
-            }
-            NuStrCpy(cut->name, CutList[i].name);
-            NuGCutSceneFixUp(cut->scene, gscn1, 0, fixup_mode);
-            NuGCutSceneFixUpExtra(cut->scene, gscn2);
-            cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, CutList[i].name, buf, 0);
-            if (cut->instance != NULL) {
-                reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
-                    cut->frames_per_second * DEFAULTFRAMETIME;
-                buf->addr = (buf->addr + 15) & ~15U;
-            }
-            ++sys->count;
+            buf->void_ptr = mark;
         }
         if (sys->count <= 0) {
             buf->void_ptr = initial;
