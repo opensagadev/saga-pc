@@ -8790,13 +8790,13 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         vertices[1].position.y = second->upper_height + second->position.y;
         AiRndrLine3d(vertices, NULL, NULL);
         vertices[0].position = first->position;
-        vertices[0].colour = colour;
         vertices[0].position.x -= first->radius * direction.z;
         vertices[0].position.z += first->radius * direction.x;
+        vertices[0].colour = colour;
         vertices[1].position = second->position;
-        vertices[1].colour = colour;
         vertices[1].position.x -= second->radius * direction.z;
         vertices[1].position.z += second->radius * direction.x;
+        vertices[1].colour = colour;
         vertices[0].position.y = first->lower_height + first->position.y;
         vertices[1].position.y = second->lower_height + second->position.y;
         AiRndrLine3d(vertices, NULL, NULL);
