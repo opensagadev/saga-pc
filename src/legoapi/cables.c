@@ -334,8 +334,8 @@ void __cdecl UpdateCables(void) {
                                 line_distance =
                                     NuLineToPointDistSqrEx(&path[0], &path[1], &object->collision_position, &closest);
                                 combined = object->bounds_half_height + object->bounds_radius;
-                                if (combined * combined > line_distance &&
-                                    object->collision_position.y + object->bounds_half_height > closest.y &&
+                                if (line_distance < combined * combined &&
+                                    closest.y < object->collision_position.y + object->bounds_half_height &&
                                     closest.y > object->collision_position.y - object->bounds_half_height) {
                                     f32 dx = object->collision_position.x - closest.x;
                                     f32 dz = object->collision_position.z - closest.z;
