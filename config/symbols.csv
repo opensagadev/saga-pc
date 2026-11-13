@@ -6408,6 +6408,7 @@ address,symbol,size,ctype
 0x5c13c0,_RenderPostASinPc,320,i16 __cdecl(f32)
 0x5c1600,_VisibilityAbsoluteFourPc,90,
 0x5c1680,?OccluderVertexSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void private (NUVEC4 *vertex EAX, f32 x, f32 y, f32 z, f32 w)"
+0x5c1750,?OccluderCross@@YAXPAUnuvec_s@@ABU1@1@Z,16,"void private (NUVEC *dst stack, const NUVEC &a ECX, const NUVEC &b EAX); out-of-line copy of the inline cross-product helper, no callers"
 0x5c1880,@NuQuatMulAlignedPc@12,118,"void private (const NUQUAT *parent ECX, const NUQUAT *rotation EDX, NUQUAT *out stack; caller cleanup)"
 0x5c1950,_NuVec4AbsPrivatePc,90,"void private (NUVEC4 *out, const NUVEC4 *in); native source EAX, destination ECX"
 0x5c19d0,_NuAnimMtxCopyPrivatePc,95,
