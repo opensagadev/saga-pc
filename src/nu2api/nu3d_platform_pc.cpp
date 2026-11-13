@@ -3927,7 +3927,8 @@ extern "C" {
             static_cast<f32>(static_cast<u32>(effect->texture_v1) & 0x1ffU) * static_cast<f64>(1.0f / 255.0f);
 
         f32 width, height, rotation, alpha, red, green, blue;
-        f32 time, duration, elapsed, wave_x, wave_y, texture_x_numerator, texture_y_numerator;
+        f32 time, duration, elapsed, wave_x, wave_y;
+        f32 position_x, position_y, texture_x, texture_y, edge_x, edge_y;
         i32 i;
         for (i32 frame_index = 0; frame_index < 64; ++frame_index) {
             width = height = rotation = 0.0f;
@@ -3966,26 +3967,28 @@ extern "C" {
                     break;
                 }
             }
-            wave_x = effect->jib_x_amplitude * NU_SIN_LUT(65536.0 * effect->jib_x_frequency * time);
-            wave_y = effect->jib_y_amplitude * NU_SIN_LUT(65536.0 * effect->jib_y_frequency * time);
-            texture_x_numerator =
-                NU_SIN_LUT(rotation + 16384.0) * (width / 4.0f) - (height / 4.0f) * NU_SIN_LUT(rotation) + wave_x;
-            texture_y_numerator =
-                NU_SIN_LUT(rotation) * (-width / 4.0f) - (height / 4.0f) * NU_SIN_LUT(rotation + 16384.0) + wave_y;
-
-            DEBRIS_PARTICLE_FRAME_PC &frame = header->frames[frame_index];
-            frame.position.x =
-                (NU_SIN_LUT(rotation + 16384.0) * (-width / 4.0f) - (height / 4.0f) * NU_SIN_LUT(rotation) + wave_x) /
-                2048.0f;
-            frame.position.y =
-                (NU_SIN_LUT(rotation) * (width / 4.0f) - (height / 4.0f) * NU_SIN_LUT(rotation + 16384.0) + wave_y) /
-                2048.0f;
+            wave_x = effect->jib_x_amplitude * NU_SIN_LUT(65536.0 * (effect->jib_x_frequency * time));
+            wave_y = effect->jib_y_amplitude * NU_SIN_LUT(65536.0 * (effect->jib_y_frequency * time));
+            DEBRIS_PARTICLE_FRAME_PC &frame = effect->native_data->frames[frame_index];
+            rotation -= 16384.0;
+            position_x =
+                -(width / 4.0f) * NU_SIN_LUT(rotation + 16384.0) - (height / 4.0f) * NU_SIN_LUT(rotation) + wave_x;
+            position_y =
+                (width / 4.0f) * NU_SIN_LUT(rotation) - (height / 4.0f) * NU_SIN_LUT(rotation + 16384.0) + wave_y;
+            texture_x =
+                (width / 4.0f) * NU_SIN_LUT(rotation + 16384.0) - (height / 4.0f) * NU_SIN_LUT(rotation) + wave_x;
+            texture_y =
+                -(width / 4.0f) * NU_SIN_LUT(rotation) - (height / 4.0f) * NU_SIN_LUT(rotation + 16384.0) + wave_y;
+            edge_x = (height / 2.0f) * NU_SIN_LUT(rotation);
+            edge_y = (height / 2.0f) * NU_SIN_LUT(rotation + 16384.0);
+            frame.position.x = position_x / 2048.0f;
+            frame.position.y = position_y / 2048.0f;
             frame.position.z = 0.0f;
-            frame.texture_offset.x = texture_x_numerator / 2048.0f;
-            frame.texture_offset.y = texture_y_numerator / 2048.0f;
+            frame.texture_offset.x = texture_x / 2048.0f;
+            frame.texture_offset.y = texture_y / 2048.0f;
             frame.texture_offset.z = 0.0f;
-            frame.extent.x = (texture_x_numerator + NU_SIN_LUT(rotation) * (height / 2.0f)) / 2048.0f;
-            frame.extent.y = (texture_y_numerator + NU_SIN_LUT(rotation + 16384.0) * (height / 2.0f)) / 2048.0f;
+            frame.extent.x = (texture_x + edge_x) / 2048.0f;
+            frame.extent.y = (texture_y + edge_y) / 2048.0f;
             frame.extent.z = 0.0f;
             for (i = 0; i < 7; ++i) {
                 if (effect->colour_keys[i].time <= time && time <= effect->colour_keys[i + 1].time) {
@@ -4021,8 +4024,7 @@ extern "C" {
                 }
             }
             alpha += alpha;
-            if (alpha > 255.0f)
-                alpha = 255.0f;
+            alpha = alpha < 255.0f ? alpha : 255.0f;
             frame.colour = (((static_cast<u32>(alpha) << 8) | static_cast<u32>(red)) << 8 | static_cast<u32>(green))
                                << 8 |
                            static_cast<u32>(blue);
