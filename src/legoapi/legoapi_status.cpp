@@ -248,44 +248,21 @@ extern "C" {
     }
 
     /* Native status-stage handlers call this shared routine. */
-    __declspec(noinline) void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
-        if (StatusPacket.player0_active != 0 && (player == -1 || player == 0)) {
-            if (amount > 0.0f && (StatusPacket.player0_rumble_time <= 0.0f ||
-                                  amount > StatusPacket.player0_rumble_time / StatusPacket.player0_rumble_duration *
-                                               StatusPacket.player0_rumble_amount)) {
-                StatusPacket.player0_rumble_amount = amount;
-                StatusPacket.player0_rumble_duration = amount;
-                StatusPacket.player0_rumble_time = amount;
-            }
-            if (buzz > StatusPacket.player0_buzz_amount) {
-                StatusPacket.player0_buzz_amount = buzz;
-            }
-            if (priority > 0) {
-                const i32 old_priority = StatusPacket.player0_rumble_priority;
-                priority = (i32)((u32)priority + 1u);
-                if (priority > old_priority) {
-                    StatusPacket.player0_rumble_priority = (u8)(priority);
+    void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
+        for (i32 i = 0; i < 2; ++i) {
+            if (StatusPacket.player_active[i] != 0 && (player == -1 || player == i)) {
+                RUMBLE_PACKET_RESOURCE_PC *rumble =
+                    &((STATUS_RUMBLE_PAIR_PC *)&StatusPacket.player0_rumble_amount)->players[i];
+                if (amount > 0.0f &&
+                    (rumble->amount <= 0.0f || amount > rumble->amount / rumble->decay_duration * rumble->intensity)) {
+                    rumble->intensity = amount;
+                    rumble->decay_duration = amount;
+                    rumble->amount = amount;
                 }
-            }
-        }
-
-        if (StatusPacket.player1_active != 0 && (player == -1 || player == 1)) {
-            if (amount > 0.0f && (StatusPacket.player1_rumble_time <= 0.0f ||
-                                  amount > StatusPacket.player1_rumble_time / StatusPacket.player1_rumble_duration *
-                                               StatusPacket.player1_rumble_amount)) {
-                StatusPacket.player1_rumble_amount = amount;
-                StatusPacket.player1_rumble_duration = amount;
-                StatusPacket.player1_rumble_time = amount;
-            }
-            if (buzz > StatusPacket.player1_buzz_amount) {
-                StatusPacket.player1_buzz_amount = buzz;
-            }
-            if (priority > 0) {
-                const i32 old_priority = StatusPacket.player1_rumble_priority;
-                priority = (i32)((u32)priority + 1u);
-                if (priority > old_priority) {
-                    StatusPacket.player1_rumble_priority = (u8)(priority);
-                }
+                if (buzz > rumble->duration)
+                    rumble->duration = buzz;
+                if (priority > 0 && ++priority > rumble->active)
+                    rumble->active = (u8)priority;
             }
         }
     }
@@ -979,26 +956,30 @@ extern "C" {
 }
 
 void __cdecl AddStatusMiniKitParts(void) {
-    NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
-    for (i32 i = 0; i < 3; ++i) {
-        StatusMiniKitPartLightingPc.values[i] = PanelLightingColoursPc[i];
-        StatusMiniKitPartLightingPc.values[i + 3] = PanelLightingDirectionsPc[i];
-    }
-    StatusMiniKitPartLightingPc.values[6] = PanelLightingAmbientPc;
     f32 delay = 0.0f;
+    NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
+    StatusMiniKitPartLightingPc.values[0] = PanelLightingColoursPc[0];
+    StatusMiniKitPartLightingPc.values[3] = PanelLightingDirectionsPc[0];
+    StatusMiniKitPartLightingPc.values[1] = PanelLightingColoursPc[1];
+    StatusMiniKitPartLightingPc.values[4] = PanelLightingDirectionsPc[1];
+    StatusMiniKitPartLightingPc.values[2] = PanelLightingColoursPc[2];
+    StatusMiniKitPartLightingPc.values[5] = PanelLightingDirectionsPc[2];
+    StatusMiniKitPartLightingPc.values[6] = PanelLightingAmbientPc;
     for (i32 i = 0; i < 10; ++i) {
         if (StatusMiniKitDrawCachePc[i].active == 0)
             continue;
-        NUVEC velocity = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * 0.25 + 0.25), 0.0f};
+        NUVEC velocity;
+        velocity.x = velocity.z = 0.0f;
+        velocity.y = (f32)qrand() * (1.0f / 65535.0f) * 0.25f + 0.25f;
         NuVecRotateZ(&velocity, &velocity, qrand());
         ADDPART_PC part = Default_ADDPART;
         part.matrix = &StatusMiniKitDrawCachePc[i].matrix;
         part.velocity = &velocity;
+        part.lighting_data = &StatusMiniKitPartLightingPc;
+        part.special = &StatusMiniKitDrawCachePc[i].piece->special;
         part.flags = 0x480;
         part.gravity = 0.0f;
-        part.special = &StatusMiniKitDrawCachePc[i].piece->special;
         part.time_step = FRAMETIME;
-        part.lighting_data = &StatusMiniKitPartLightingPc;
         AddPart(&part);
         for (i32 coin = 0; coin < 5; ++coin) {
             NUVEC position = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.1f), 1.0f};
@@ -1021,27 +1002,7 @@ void __cdecl AddStatusMiniKitParts(void) {
             message.target_is_coin_total = 1;
             AddGameMsg(&message);
             if (delay == 0.0f) {
-                i32 priority = 1;
-                if (StatusPacket.player_active[0] != 0) {
-                    if (StatusPacket.player0_buzz_amount < 0.0f)
-                        StatusPacket.player0_buzz_amount = 0.0f;
-                    if (priority > 0) {
-                        i32 previous_priority = StatusPacket.player0_rumble_priority;
-                        ++priority;
-                        if (priority > previous_priority)
-                            StatusPacket.player0_rumble_priority = (u8)priority;
-                    }
-                }
-                if (StatusPacket.player_active[1] != 0) {
-                    if (StatusPacket.player1_buzz_amount < 0.0f)
-                        StatusPacket.player1_buzz_amount = 0.0f;
-                    if (priority > 0) {
-                        i32 previous_priority = StatusPacket.player1_rumble_priority;
-                        ++priority;
-                        if (priority > previous_priority)
-                            StatusPacket.player1_rumble_priority = (u8)priority;
-                    }
-                }
+                NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 1);
                 AddGameDebris(WORLD->game_debris_sys, 0x38, &position);
             }
             delay = (f32)((f64)delay + (f64)0.1f);
