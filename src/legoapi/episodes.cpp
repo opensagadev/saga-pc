@@ -36,8 +36,8 @@ extern "C" {
         NUFPAR_PC *parser = NuFParCreate(path);
         EPISODEDATA_PC *episode_base;
         EPISODEDATA_PC *episode;
-        i32 episode_count = 0;
-        i32 in_episode = 0;
+        i32 episode_count;
+        i32 in_episode;
 
         if (parser == NULL) {
             EpisodesConfigDiagnosticPc(path);
@@ -50,86 +50,79 @@ extern "C" {
         buffer->addr = (buffer->addr + 3) & ~3u;
         episode_base = (EPISODEDATA_PC *)buffer->void_ptr;
         episode = episode_base;
+        episode_count = 0;
+        in_episode = 0;
 
         while (NuFParGetLine(parser) != 0) {
-            char *word;
-
             NuFParGetWord(parser);
-            word = parser->word_buffer_ptr;
-            if (word[0] == '\0') {
+            if (parser->word_buffer_ptr[0] == '\0') {
                 continue;
             }
 
-            if (!in_episode) {
-                if (episode_count < max_count && NuStrICmp(word, EpisodeConfigKeyword_episode_start) == 0) {
-                    episode->name_id = -1;
-                    episode->text_id = -1;
-                    episode->area_count = 0;
-                    episode->index = (u8)episode_count;
-                    in_episode = 1;
-                }
-                continue;
-            }
+            if (in_episode) {
+                if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_episode_end) == 0) {
+                    in_episode = 0;
+                    if (episode->area_count > 0) {
+                        episode_count++;
+                        episode++;
+                    }
+                } else if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_area) == 0) {
+                    if (episode->area_count < 10 && NuFParGetWord(parser) != 0) {
+                        AREA_DATA_PC *area;
+                        i32 area_index;
+                        i32 prior_episode_index;
+                        i32 area_slot;
+                        i32 found;
 
-            if (NuStrICmp(word, EpisodeConfigKeyword_episode_end) == 0) {
-                in_episode = 0;
-                if (episode->area_count > 0) {
-                    episode_count++;
-                    episode++;
-                }
-                continue;
-            }
-
-            if (NuStrICmp(word, EpisodeConfigKeyword_area) == 0) {
-                if (episode->area_count < 10 && NuFParGetWord(parser) != 0) {
-                    AREA_DATA_PC *area;
-                    i32 area_index;
-                    i32 prior_episode_index;
-                    i32 area_slot;
-                    i32 found = 0;
-
-                    area = Area_FindByName(parser->word_buffer_ptr, &area_index);
-                    if (area_index != -1) {
-                        for (area_slot = 0; area_slot < episode->area_count; area_slot++) {
-                            if (episode->area_ids[area_slot] == area_index) {
-                                found = 1;
-                                break;
-                            }
-                        }
-
-                        for (prior_episode_index = 0; found == 0 && prior_episode_index < episode_count;
-                             prior_episode_index++) {
-                            EPISODEDATA_PC *prior_episode = &episode_base[prior_episode_index];
-                            for (area_slot = 0; area_slot < prior_episode->area_count; area_slot++) {
-                                if (prior_episode->area_ids[area_slot] == area_index) {
-                                    found = 1;
+                        area = Area_FindByName(parser->word_buffer_ptr, &area_index);
+                        if (area_index != -1) {
+                            for (area_slot = 0; area_slot < episode->area_count; area_slot++) {
+                                if (episode->area_ids[area_slot] == area_index) {
                                     break;
                                 }
                             }
-                        }
 
-                        if (found == 0) {
-                            i32 area_count = episode->area_count;
-                            episode->area_ids[area_count] = (i16)area_index;
-                            episode->area_count = (u8)(area_count + 1);
-                            if ((area->flags & 6) == 0) {
-                                episode->regular_areas++;
+                            if (area_slot == episode->area_count) {
+                                found = 0;
+                                for (prior_episode_index = 0; found == 0 && prior_episode_index < episode_count;
+                                     prior_episode_index++) {
+                                    for (area_slot = 0;
+                                         found == 0 && area_slot < episode_base[prior_episode_index].area_count;
+                                         area_slot++) {
+                                        if (episode_base[prior_episode_index].area_ids[area_slot] == area_index) {
+                                            found = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (found == 0) {
+                                    episode->area_ids[episode->area_count] = (i16)area_index;
+                                    episode->area_count++;
+                                    if ((area->flags & 6) == 0) {
+                                        episode->regular_areas++;
+                                    }
+                                }
                             }
                         }
                     }
+                } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_name_id) == 0) {
+                    episode->name_id = (i16)NuFParGetInt(parser);
+                } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_text_id) == 0) {
+                    episode->text_id = (i16)NuFParGetInt(parser);
                 }
-                continue;
-            }
-
-            if (NuStrICmp(word, AreaConfigKeyword_name_id) == 0) {
-                episode->name_id = (i16)NuFParGetInt(parser);
-            } else if (NuStrICmp(word, AreaConfigKeyword_text_id) == 0) {
-                episode->text_id = (i16)NuFParGetInt(parser);
+            } else if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_episode_start) == 0 &&
+                       episode_count < max_count) {
+                episode->name_id = -1;
+                episode->text_id = -1;
+                episode->area_count = 0;
+                episode->index = (u8)episode_count;
+                in_episode = 1;
             }
         }
 
         NuFParDestroy(parser);
-        if (episode_count == 0) {
+        if (episode_count <= 0) {
             EpisodesConfigDiagnosticPc(path);
             return NULL;
         }
