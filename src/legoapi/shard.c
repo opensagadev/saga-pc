@@ -2207,16 +2207,15 @@ void __cdecl DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if (Game.game_time >= id * 3600)
-            buyable = show_name = 1;
-        else {
+        } else if (Game.game_time < id * 3600) {
             SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
             SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
                         1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
             buyable = show_name = 0;
-        }
+        } else
+            buyable = show_name = 1;
     } else if (item->type == 5) {
         id = (u16)item->item_id;
         available = CutScenePlayer_CanStart(id);
