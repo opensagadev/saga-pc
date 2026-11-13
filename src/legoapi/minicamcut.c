@@ -1,5 +1,30 @@
 #include "saga.h"
+
+/* Retail unit 0x576bc0-0x578718: definitions in retail address order. */
 #include <string.h>
+typedef struct MINICAM_CAMERA_PC {
+    u8 unknown000[0xe8];
+    NUVEC render_position;
+    u8 unknown0f4[0x28];
+    NUVEC position;
+    u8 unknown128[0xd0];
+    u16 pitch;
+    u8 unknown1fa[2];
+    u16 yaw;
+    u8 unknown1fe[0x2e];
+    i8 mode;
+} MINICAM_CAMERA_PC;
+#define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
+STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, render_position) == 0xe8);
+STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, position) == 0x11c);
+STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, pitch) == 0x1f8);
+STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, yaw) == 0x1fc);
+STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, mode) == 0x22c);
+
+void __cdecl Minicam_InitSystem(void) {
+    memset(&MiniCam, 0, sizeof(MiniCam));
+}
+
 void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVEC position) {
     if (type == 6 || type == 7) {
         i32 i;
@@ -130,25 +155,6 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
     ++MiniCam.command_count;
 }
 
-typedef struct MINICAM_CAMERA_PC {
-    u8 unknown000[0xe8];
-    NUVEC render_position;
-    u8 unknown0f4[0x28];
-    NUVEC position;
-    u8 unknown128[0xd0];
-    u16 pitch;
-    u8 unknown1fa[2];
-    u16 yaw;
-    u8 unknown1fe[0x2e];
-    i8 mode;
-} MINICAM_CAMERA_PC;
-#define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, render_position) == 0xe8);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, position) == 0x11c);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, pitch) == 0x1f8);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, yaw) == 0x1fc);
-STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, mode) == 0x22c);
-
 void MiniCam_ChangeMode(i32 mode) {
     if (mode == 0) {
         NUVEC delta;
@@ -265,6 +271,54 @@ void Minicam_CalcCamPos(void) {
         NuVecRotateY(&MiniCam.position, &MiniCam.position, MiniCam.yaw);
         ObstacleCamRotZ = MiniCam.roll;
         NuVecAdd(&MiniCam.position, &MiniCam.position, &MiniCam.target);
+    }
+}
+
+void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders,
+                           i32 hold_until_players_move) {
+    if (spline == NULL)
+        return;
+    ObstacleCamSpl = spline;
+    ObstacleCamStart = start;
+    ObstacleCamEnd = end;
+    ObstacleCamTime = 0.0f;
+    ObstacleCamRotZ = 0;
+    ObstacleCamBlendInTime = blend_in;
+    ObstacleCamBlendOutTime = blend_out;
+    ObstacleCamCutTgtPtr = NULL;
+    ObstacleCamCutCamPtr = NULL;
+    ObstacleCamBorders = borders;
+    ObstacleCamHoldUntilPlayersMove = VehicleArea == 0 ? hold_until_players_move : 0;
+    if (borders != 0) {
+        if (start == 0.0f && blend_in <= 0.0f)
+            CutBorderScale = 1.0f;
+    }
+    if (start <= 0.0f && blend_in <= 0.0f) {
+        GameCam->mode = -1;
+        GameCam->blend_time = GameCam->blend_duration;
+    }
+    Hint_CancelCurrent();
+    ObstacleCamAlwaysSnapAnglesPc = 0;
+}
+
+void GameCameraMakeMiniCut2(NUVEC *camera, NUVEC *target, i32 target_guid, float start, float end, float blend_in,
+                            float blend_out, i32 follow_target, i32 follow_camera, i32 borders) {
+    ObstacleCamCutSpline.length = 2;
+    ObstacleCamCutSpline.pt_size = 12;
+    ObstacleCamCutSpline.pts = ObstacleCamCutPts;
+    ObstacleCamTargetGuid = target_guid;
+    if (camera != NULL) {
+        ObstacleCamCutPts[0] = *camera;
+    }
+    if (target != NULL) {
+        ObstacleCamCutPts[1] = *target;
+    }
+    GameCameraMakeMiniCut(&ObstacleCamCutSpline, start, end, blend_in, blend_out, borders, 0);
+    if (target != NULL && follow_target != 0) {
+        ObstacleCamCutTgtPtr = target;
+    }
+    if (camera != NULL && follow_camera != 0) {
+        ObstacleCamCutCamPtr = camera;
     }
 }
 
@@ -462,6 +516,95 @@ void Minicam_Update(void) {
     Minicam_CalcCamPos();
 }
 
-void __cdecl Minicam_InitSystem(void) {
-    memset(&MiniCam, 0, sizeof(MiniCam));
+void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 roll, void *focus, i32 target_guid,
+                            NUVEC *position, float start_time, float blend_in_time, float end_time,
+                            float blend_out_time, float blend_time, float hold_time, float max_time, i32 borders,
+                            NUGSPLINE *spline, i8 mode, i8 easing) {
+    NUVEC command_origin;
+    f32 remaining_duration;
+    GameCam->blend_time = 0.0f;
+    if (flags & 0x200) {
+        NUVEC reset_origin;
+        memset(&MiniCam, 0, sizeof(MiniCam));
+        reset_origin = v000;
+        Minicam_AddCommand(1, blend_in_time, 0, NULL, reset_origin);
+        MiniCam.duration = max_time;
+        if ((flags & 0x80) && focus != NULL) {
+            MiniCam.focus = (NUVEC *)focus;
+            MiniCam.focus_offset = reset_origin;
+            MiniCam.target = *(NUVEC *)focus;
+            MiniCam.position = *position;
+            GameCameraMakeMiniCut2(&MiniCam.position, &MiniCam.target, target_guid, start_time, 1000000000.0f,
+                                   blend_in_time, 0.0f, 1, 1, MiniCam.borders);
+        } else {
+            MiniCam.focus = &MiniCam.target;
+            MiniCam.focus_offset = reset_origin;
+            MiniCam.target = reset_origin;
+            MiniCam.position = *position;
+            GameCameraMakeMiniCut2(&MiniCam.position, NULL, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f,
+                                   0, 1, MiniCam.borders);
+        }
+    }
+
+    if ((flags & 0x1c00) == 0) {
+        blend_time = 0.0f;
+        flags |= 0x800;
+    }
+    command_origin = v000;
+    if (flags & 0x80)
+        Minicam_AddCommand(8, 0.0f, 0, focus, command_origin);
+    if (flags & 0x100)
+        Minicam_AddCommand(16, 0.0f, 0, NULL, *position);
+    else if (flags & 0x2000)
+        Minicam_AddCommand(17, 0.0f, 0, spline, command_origin);
+    else if (flags & 1)
+        Minicam_AddCommand(9, distance, 0, NULL, command_origin);
+    if (flags & 0x10)
+        Minicam_AddCommand(13, 0.0f, pitch, NULL, command_origin);
+    else if (flags & 2)
+        Minicam_AddCommand(10, 0.0f, pitch, NULL, command_origin);
+    if (flags & 0x20)
+        Minicam_AddCommand(14, 0.0f, yaw, NULL, command_origin);
+    else if (flags & 4)
+        Minicam_AddCommand(11, 0.0f, yaw, NULL, command_origin);
+    if (flags & 0x40)
+        Minicam_AddCommand(15, 0.0f, roll, NULL, command_origin);
+    if (flags & 8)
+        Minicam_AddCommand(12, 0.0f, roll, NULL, command_origin);
+    if (mode != -1)
+        Minicam_AddCommand(6, 0.0f, mode, NULL, command_origin);
+    if (easing != -1)
+        Minicam_AddCommand(7, 0.0f, easing, NULL, command_origin);
+
+    if ((flags & 1) && (flags & 4) && blend_in_time > 0.0f && blend_time == 0.0f)
+        blend_time = 0.01f;
+    if ((flags & 0x800) && (flags & 0x1000)) {
+        if (hold_time > blend_time) {
+            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+            Minicam_AddCommand(5, hold_time - blend_time, 0, NULL, command_origin);
+        } else {
+            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+        }
+    } else if (flags & 0x800) {
+        Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+    } else if (flags & 0x1000) {
+        Minicam_AddCommand(5, hold_time, 0, NULL, command_origin);
+    }
+    if (flags & 0x400) {
+        remaining_duration = end_time;
+        if ((flags & 0x800) && (flags & 0x1000)) {
+            if (hold_time > blend_time)
+                remaining_duration = end_time - hold_time;
+            else
+                remaining_duration = end_time - blend_time;
+        } else if (flags & 0x800) {
+            remaining_duration = end_time - blend_time;
+        } else if (flags & 0x1000) {
+            remaining_duration = end_time - hold_time;
+        }
+        Minicam_AddCommand(3, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
+        ObstacleCamBlendOutTime = blend_out_time;
+    }
+    if (borders != 0)
+        MiniCam.borders = 1;
 }
