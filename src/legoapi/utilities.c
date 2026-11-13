@@ -469,9 +469,7 @@ static void SplinePointAngles(NUGSPLINE *spline, i32 index, i32 looping, u16 *pi
     if (pitch == NULL && angle == NULL) {
         return;
     }
-    dx = 0.0f;
-    dy = 0.0f;
-    dz = 0.0f;
+    dx = dy = dz = 0.0f;
     current = &spline->pts[index];
     previous = NULL;
     previous_index = index - 1;
@@ -579,9 +577,7 @@ f32 __cdecl SplineLength(NUGSPLINE *spline, i32 closed) {
         return 0.0f;
     if (spline->length < 2)
         return 0.0f;
-    segment_count = spline->length;
-    if (closed == 0)
-        --segment_count;
+    segment_count = closed ? spline->length : spline->length - 1;
     length = 0.0f;
     previous = spline->pts;
     for (segment = 0; segment < segment_count; ++segment) {
@@ -925,8 +921,8 @@ void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *sp
         return;
     result->spline = spline;
     result->looping = (i8)looping;
+    logical_count = result->looping ? spline->length + 1 : spline->length;
     point_count = spline->length;
-    logical_count = result->looping ? point_count + 1 : point_count;
     if (first_point >= 0) {
         index = first_point;
         if (index >= logical_count)
