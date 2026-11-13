@@ -3788,8 +3788,9 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
         }
     } else {
         const i32 count = FreePlayResidentCount + FreePlayBonusCount;
-        for (i32 index = 0; index < count; ++index) {
-            const i32 model = FreePlayModelList[index + 2].model_id;
+        APICHARACTERMODELLIST *entry = &FreePlayModelList[2];
+        for (i32 index = 0; index < count; ++index, ++entry) {
+            const i32 model = entry->model_id;
             if (model == -1)
                 break;
             if (area != -1) {
@@ -3800,7 +3801,7 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
                     continue;
             }
             if (Collection_Got(model) != 0)
-                fplist[fpcount++] = FreePlayModelList[index + 2];
+                fplist[fpcount++] = *entry;
         }
     }
     fplist[fpcount].model_id = -1;
