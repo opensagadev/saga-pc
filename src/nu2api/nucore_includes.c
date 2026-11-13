@@ -7645,8 +7645,8 @@ static f32 CalcRamp(f32 ramp) {
 void NuPadProcessReadData(NUGENERICPAD *pad) {
     f32 ramp_rate_normal;
 
-    pad->digital_buttons_pressed = pad->digital_buttons & ~pad->digital_buttons_prev;
-    pad->digital_buttons_released = ~pad->digital_buttons & pad->digital_buttons_prev;
+    pad->digital_buttons_pressed = (pad->digital_buttons ^ pad->digital_buttons_prev) & pad->digital_buttons;
+    pad->digital_buttons_released = (pad->digital_buttons ^ pad->digital_buttons_prev) & pad->digital_buttons_prev;
 
     pad->digital_buttons_prev = pad->digital_buttons;
 
