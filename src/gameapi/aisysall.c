@@ -5851,8 +5851,8 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         while (remaining != 0) {
             node = &info->path->nodes[info->next_check];
             for (index = 0; index < node->connection_count; ++index) {
-                if (WithinConnection(system, position, path, node->connections[index], 1, NULL, 0xff, 0xff, info, 0.0f,
-                                     1)) {
+                AIPATHCNX_PC *candidate = node->connections[index];
+                if (WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
                     return;
                 }
             }
@@ -5865,7 +5865,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         i32 saved_direction = info->direction;
         u8 start_path;
         i32 start_node;
-        i32 inside_extents = 0;
+        i32 inside_extents;
         // MATCH-EXCEPTION: retail tests the u8 index against both -1 (never true) and 0xff.
         if (info->path_index == -1 || info->path_index == 0xff) {
             info->path_index = saved_path->index;
@@ -5880,6 +5880,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         AISysResetPathSearchConnectionChecks(info->path);
         start_path = info->path_index;
         start_node = info->next_check;
+        inside_extents = 0;
         remaining = checks;
         while (remaining != 0) {
             if (inside_extents == 0) {
