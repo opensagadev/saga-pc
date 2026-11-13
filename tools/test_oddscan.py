@@ -153,6 +153,19 @@ class OddScanTests(unittest.TestCase):
         over, _ = oddscan.check(result, {"goto": 3})
         self.assertEqual(over, [("noinline", 1, None)])
 
+    def test_layout_classes(self):
+        body = "".join(f"    x = {n};\n" for n in range(oddscan.DENSE_LINES))
+        text = ('extern "C" {\n#include <string.h>\n}\n#include "saga.h"\nstatic i32 x;\n#include <stdio.h>\n'
+                f"void Dense(void) {{\n{body}}}\n\nvoid Spaced(void) {{\n    x = 1;\n\n{body}}}\n"
+                "void Packed(void) {\n    x = 1; x = 2;\n    for (x = 0; x < 2; x++) {\n    }\n"
+                "    // x = 3;\n    // keeps x = 3 for the caller\n    /* Foo(x); */\n}\n")
+        scan = oddscan.FileScan("src/legoapi/layout.c", text)
+        self.assertEqual([line for line, _ in scan.findings["include-mid-file"]], [6])
+        self.assertEqual([line for line, _ in scan.findings["dense-function"]], [7])
+        self.assertEqual(scan.counts["multi-statement-line"], 1)
+        self.assertEqual(scan.counts["commented-code"], 2)
+        self.assertEqual(scan.counts["long-function"], 0)
+
     def test_int_value_and_bits(self):
         self.assertEqual(oddscan.int_value("-0x10"), -16)
         self.assertEqual(oddscan.int_value("12u"), 12)

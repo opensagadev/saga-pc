@@ -43,7 +43,17 @@ BUDGET = ROOT / "config/oddscan-budget.json"
 VENDORED = ROOT / "lib/ogg-vorbis"
 SUFFIXES = {".c", ".cpp", ".h", ".inc"}
 
-# (class, group, description). The group is the audit section (a-g).
+# Thresholds of the layout classes (group h).
+DENSE_LINES = 40
+LONG_FUNCTION = 400
+LONG_FILE = 5000
+DATA_FILE_LINES = 200
+COMMENTED_CODE = re.compile(
+    r'^(?:[A-Za-z_][\w.\->\[\]]*\s*(?:[-+*/|&^]?=(?!=)|\()[^;]*\)?\s*;'
+    r'|(?:if|for|while|switch)\s*\(.*\)\s*\{?|return\b[^.]*;|#\s*(?:include|define|if|ifdef|endif)\b'
+    r'|\}\s*(?:else\b.*)?|break;|continue;)\s*$')
+
+# (class, group, description). The group is the audit section (a-g; h: layout).
 CLASSES = [
     ("pragma-seg", "a", "#pragma const_seg/data_seg/bss_seg/code_seg/section/alloc_text/init_seg (placement)"),
     ("pragma-optimizer", "a", "#pragma optimize/inline_depth/inline_recursion/auto_inline/intrinsic/function"),
@@ -103,6 +113,13 @@ CLASSES = [
     ("magic-flag", "g", "single-bit literal in a bit operation"),
     ("magic-mask", "g", "multi-bit literal in a bit operation"),
     ("magic-bound", "g", "literal in a relational comparison (limits, sizes)"),
+    ("include-mid-file", "h", "#include after the first declaration or definition of a file"),
+    ("dense-function", "h", f"function body of {DENSE_LINES}+ lines without a blank line"),
+    ("long-function", "h", f"function of more than {LONG_FUNCTION} lines"),
+    ("long-file", "h", f"source file of more than {LONG_FILE} lines"),
+    ("multi-statement-line", "h", "line with more than one statement (outside for headers and macros)"),
+    ("data-file", "h", f"file of more than {DATA_FILE_LINES} lines with under 2% blank lines (tables, generated look)"),
+    ("commented-code", "h", "comment line that reads as code (commented-out code)"),
     ("enum-anonymous", "g", "anonymous enum"),
     ("enum-value-name", "g", "enum member named by its value (FOO_0x10, STATE_3)"),
 ]
@@ -303,7 +320,10 @@ class FileScan:
         self.aliases = {}                                # typedef name -> struct tag
         self.var_types = collections.defaultdict(collections.Counter)  # identifier -> declared type names
         self.top_level_statements = []                   # (line, text) at file or extern "C" scope
+        self.functions = []                              # (first line, last line) of function definitions
+        self.first_code_line = None                      # first ; { } outside extern "C"/namespace braces
         self.scan(text)
+        self.layout(text)
 
     def add(self, cls, line, text=""):
         self.counts[cls] += 1
@@ -332,6 +352,8 @@ class FileScan:
             directive = in_macro or stripped.startswith("#")
             if directive:
                 if not in_macro:
+                    if self.first_code_line is not None and INCLUDE.match(line):
+                        self.add("include-mid-file", number, raw)
                     self.directive(number, line, lines, raw_lines)
                     if IF0.match(line):
                         self.add("if0", number, raw)
@@ -346,6 +368,8 @@ class FileScan:
                 if match.group(1) not in KEYWORDS:
                     self.var_types[match.group(2)][match.group(1)] += 1
             if in_function:
+                if line.count(";") > 1 and not re.search(r'\bfor\s*\(', line):
+                    self.add("multi-statement-line", number, raw)
                 if EXTERN_LOCAL.search(line):
                     self.add("local-extern", number, raw)
                 if VOLATILE.search(line):
@@ -375,6 +399,9 @@ class FileScan:
                         entry["body"].append(segment)
                 char = event.group()
                 text_head = " ".join(head).strip()
+                if self.first_code_line is None and (char != "{" or self.brace_kind(text_head, stack)
+                                                     not in ("extern", "namespace")) and (char != "}" or text_head):
+                    self.first_code_line = number
                 if char == "{":
                     kind = self.brace_kind(text_head, stack)
                     for entry in stack:
@@ -394,6 +421,8 @@ class FileScan:
                 elif char == "}":
                     if stack:
                         entry = stack.pop()
+                        if entry["kind"] == "function" and not any(e["kind"] == "function" for e in stack):
+                            self.functions.append((entry["line"], number))
                         if entry.get("is_switch") and switch_stack:
                             switch_stack.pop()
                         if entry["kind"] in ("struct", "union", "class", "enum"):
@@ -433,6 +462,31 @@ class FileScan:
                 for entry in stack:
                     if entry["kind"] in ("struct", "union", "class", "enum"):
                         entry["body"].append(remainder)
+
+    def layout(self, text):
+        """Classes of group h: what clang-format cannot normalise."""
+        raw_lines = text.split("\n")
+        if raw_lines and raw_lines[-1] == "":
+            raw_lines.pop()
+        blank = [not line.strip() for line in raw_lines]
+        for first, last in self.functions:
+            length = last - first + 1
+            if length > LONG_FUNCTION:
+                self.add("long-function", first, raw_lines[first - 1])
+            if length >= DENSE_LINES and not any(blank[first:last - 1]):
+                self.add("dense-function", first, raw_lines[first - 1])
+        if len(raw_lines) > LONG_FILE:
+            self.add("long-file", 1, f"{len(raw_lines)} lines")
+        if len(raw_lines) > DATA_FILE_LINES and sum(blank) < 0.02 * len(raw_lines):
+            self.add("data-file", 1, f"{len(raw_lines)} lines, {sum(blank)} blank")
+        _, comments = lex(text)
+        for index, parts in sorted(comments.items()):
+            for part in parts:
+                body = re.sub(r'^\s*(?://+|/\*+|\*+(?!/))', "", part)
+                body = re.sub(r'\*+/\s*$', "", body).strip()
+                if body and COMMENTED_CODE.match(body):
+                    self.add("commented-code", index + 1, part)
+                    break
 
     @staticmethod
     def brace_kind(head, stack):
