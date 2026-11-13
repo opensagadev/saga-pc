@@ -160,10 +160,9 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
 
     NuPrim2DBegin(0xf, 5, NULL);
     NetPrimSetColour(0x80000080);
-    f32 limit = y - height + byte_scale * 4352.0;
-    NetPrimPosition(x, limit, 0.0f);
+    NetPrimPosition(x, y - height + byte_scale * 4352.0, 0.0f);
     NetPrimSetColour(0x80000080);
-    NetPrimPosition(right, limit, 0.0f);
+    NetPrimPosition(right, y - height + byte_scale * 4352.0, 0.0f);
     NuPrim2DEnd();
 
     f32 sample_y;
