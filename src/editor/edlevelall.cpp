@@ -2388,14 +2388,16 @@ void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_ang
     if (remaining <= 0)
         return;
     do {
+        i32 delta;
         previous_angle = angle;
         if (remaining > step) {
-            angle += step;
+            delta = step;
             remaining -= step;
         } else {
-            angle += remaining;
+            delta = remaining;
             remaining = 0;
         }
+        angle += delta;
         switch (axis) {
             case 1:
                 first.w = 1.0f;
