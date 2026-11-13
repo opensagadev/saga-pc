@@ -4012,16 +4012,20 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
 
     if (HubEpisodePc != -1 && HubStatsTimePc > 0.0f) {
         i32 total;
-        if (HubEpisodePc == 999)
+        if (HubEpisodePc == 999) {
             total = ((GIZBUILDIT_PC *)HubBuildItPc)->anim_object_count * 2;
-        else {
+            Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, HubStatsTimePc,
+                                   Game.gold_bricks > total ? total : Game.gold_bricks, total);
+        } else {
             GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[HubEpisodePc].bonus_gizmo;
-            if (!gizmo)
-                return;
-            total = ((GIZBUILDIT_PC *)gizmo->object)->anim_object_count;
+            if (gizmo != NULL) {
+                i32 count = Game.gold_bricks;
+                total = ((GIZBUILDIT_PC *)gizmo->object)->anim_object_count;
+                if (count > total)
+                    count = total;
+                Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, HubStatsTimePc, count, total);
+            }
         }
-        const i32 count = total > Game.gold_bricks ? Game.gold_bricks : total;
-        Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, HubStatsTimePc, count, total);
     }
 }
 
