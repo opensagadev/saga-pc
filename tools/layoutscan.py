@@ -13,6 +13,9 @@ from the evidence below, strongest first:
   batman   the file of the same-named function in the LEGO Batman Mac debug map
            (private, never committed; `--batman DIR` with debugmap.tsv.gz and,
            for the files #included into unity builds, the binary itself)
+  code     (language only) C++-only constructs in the retail code of the
+           block: EH frames, operator new/delete, vtables, calls of thiscall
+           members (retail_cxx)
   review   a decision recorded in REVIEW below, with its reason (alphabetical
            order of the game library, the PS2 sibling-game dump of
            docs/reference-symbols.md, C++-only constructs, ...)
@@ -356,6 +359,74 @@ def retail_files(exe, functions):
     return out
 
 
+# Linker names whose retail code is C++ only: thiscall members (`@@QAE`, `@@UAE`,
+# ...: access code, `this` qualifier, calling convention E), the global and
+# class operators new/delete, and the EH frame handler.
+THISCALL = re.compile(r"@@[AEIMQU][A-D]E")
+NEW_DELETE = re.compile(r"^\?\?[23]@|^\?\?_[UV]@|^\?\?[23]\w+@@S")
+
+
+def retail_cxx(exe, functions):
+    """Function VA -> C++-only constructs in its retail code.
+
+    Read from the retail bytes, with config/symbols.csv only naming the
+    targets: a C compiland cannot produce any of them.
+
+      eh        a C++ EH frame (`push -1; push handler; mov eax, fs:[0]` with
+                a handler `mov eax, funcinfo; jmp __CxxFrameHandler*`; C SEH
+                uses `_except_handler*` instead)
+      new       a call to operator new/delete or a class operator new/delete
+      vtable    a vtable address (`??_7`) as an operand
+      thiscall  a call to a thiscall member whose convention is proven: the
+                callee or the caller matches exactly
+    Each value is a set of (kind, detail) pairs.
+    """
+    from tools.binary import PE
+    pe = PE(exe)
+    by_va = {f["va"]: f for f in functions}
+    handlers = {f["va"] for f in functions if "CxxFrameHandler" in f["symbol"]}
+    vtables = {}
+    for row in read_csv(ROOT / "config/symbols.csv"):
+        if row["symbol"].startswith("??_7"):
+            try:
+                vtables[int(row["address"], 16).to_bytes(4, "little")] = row["symbol"]
+            except ValueError:
+                continue
+        elif "CxxFrameHandler" in row["symbol"]:
+            try:
+                handlers.add(int(row["address"], 16))
+            except ValueError:
+                continue
+    out = collections.defaultdict(set)
+    for f in functions:
+        if f["funclet"] or f["library"]:
+            continue
+        code = pe.read_va(f["va"], f["size"])
+        for i in range(len(code) - 4):
+            if code[i] == 0xE8:
+                target = (f["va"] + i + 5 + int.from_bytes(code[i + 1:i + 5], "little", signed=True)) & 0xFFFFFFFF
+                callee = by_va.get(target)
+                if callee is None:
+                    continue
+                if NEW_DELETE.match(callee["symbol"]):
+                    out[f["va"]].add(("new", callee["symbol"]))
+                elif THISCALL.search(callee["symbol"]) and (callee["exact"] or f["exact"]):
+                    out[f["va"]].add(("thiscall", callee["symbol"]))
+            elif code[i:i + 3] == b"\x6a\xff\x68" and code[i + 7:i + 13] == b"\x64\xa1\x00\x00\x00\x00":
+                handler = int.from_bytes(code[i + 3:i + 7], "little")
+                try:
+                    stub = pe.read_va(handler, 10)
+                except Exception:
+                    continue
+                if stub[0] == 0xB8 and stub[5] == 0xE9:
+                    jump = (handler + 10 + int.from_bytes(stub[6:10], "little", signed=True)) & 0xFFFFFFFF
+                    if jump in handlers:
+                        out[f["va"]].add(("eh", f"0x{handler:x}"))
+            if code[i:i + 4] in vtables:
+                out[f["va"]].add(("vtable", vtables[code[i:i + 4]]))
+    return out
+
+
 def unit_markers(functions, units, use_exe=True):
     """Unit-start marker VAs: recomputed from the EXE when present, else the
     `marker` rows of config/layout-android-units.csv."""
@@ -538,7 +609,28 @@ def segment(functions, units, markers, batman):
 CXX_MEMBER = re.compile(r"^\?\?[0-9_]|^\?\w+@\w+@@[QAIEMUS]")
 
 
-def language(fs, ext_votes, retail, unity):
+def cxx_reason(fs, cxx):
+    """Summary of the retail C++-only constructs in a compiland's own (non-member) code."""
+    found = collections.defaultdict(list)
+    for f in fs:
+        if CXX_MEMBER.match(f["symbol"]):
+            continue  # a COMDAT inline member may come from another compiland
+        for kind, detail in sorted(cxx.get(f["va"], ())):
+            found[kind].append((name_key(f["symbol"]), name_key(detail)))
+    if not found:
+        return None
+    parts = []
+    for kind in ("eh", "new", "vtable", "thiscall"):
+        if found[kind]:
+            callers = sorted({c for c, _ in found[kind]})
+            what = {"eh": "C++ EH frame", "new": "operator new/delete call", "vtable": "vtable store",
+                    "thiscall": "call of a thiscall member"}[kind]
+            examples = ", ".join(sorted({f"{c}->{d}" if kind != "eh" else c for c, d in found[kind]})[:2])
+            parts.append(f"{what} in {len(callers)} function(s) ({examples})")
+    return "retail code: " + "; ".join(parts)
+
+
+def language(fs, ext_votes, retail, unity, cxx=None):
     """(language, reason) for a compiland."""
     members = sum(1 for f in fs if CXX_MEMBER.match(f["symbol"]))
     if retail:
@@ -547,6 +639,9 @@ def language(fs, ext_votes, retail, unity):
             return "c", "retail __FILE__ .c"
         if exts == {".cpp"}:
             return "cpp", "retail __FILE__ .cpp"
+    construct = cxx_reason(fs, cxx or {})
+    if construct:
+        return "cpp", construct
     if members >= 2:
         return "cpp", f"{members} C++ member/special functions"
     if unity:
@@ -558,7 +653,7 @@ def language(fs, ext_votes, retail, unity):
     return "c?", "no C++ construct; TCS game/legoapi code assumed C (Batman converted to .cpp)"
 
 
-def build(functions, units, markers, batman, retail):
+def build(functions, units, markers, batman, retail, cxx=None):
     atoms, labels = segment(functions, units, markers, batman)
     groups = []
     for atom in atoms:
@@ -586,12 +681,13 @@ def build(functions, units, markers, batman, retail):
             files |= retail.get(f["va"], set())
         ext_votes = collections.Counter(labels[f["va"]][1] for f in fs if labels[f["va"]])
         unity = name in UNITY
-        lang, lang_why = language(fs, ext_votes, files, unity)
+        lang, lang_why = language(fs, ext_votes, files, unity, cxx)
         review = head.review or {}
         if review.get("lang"):
             lang, lang_why = review["lang"], "review: " + review.get("why", "")
         evidence = sorted({a.evidence for a in g if a.evidence} | ({"marker"} if head.marker else set())
-                          | ({"file"} if files else set()))
+                          | ({"file"} if files else set())
+                          | ({"code"} if lang_why.startswith("retail code") else set()))
         if not name:
             conf, evidence = "none", evidence + ["android"]
         elif review.get("conf"):
@@ -880,7 +976,8 @@ def main(argv=None):
     markers, from_exe = unit_markers(functions, units, Path(args.exe).is_file())
     batman = load_batman(args.batman) if args.batman else None
     retail = retail_files(args.exe, functions) if Path(args.exe).is_file() else {}
-    comps = build(functions, units, markers, batman, retail)
+    cxx = retail_cxx(args.exe, functions) if Path(args.exe).is_file() else {}
+    comps = build(functions, units, markers, batman, retail, cxx)
     if args.show:
         va = int(args.show, 16)
         for c in comps:

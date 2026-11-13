@@ -75,6 +75,12 @@ class LayoutScanTests(unittest.TestCase):
         self.assertEqual(layoutscan.language([fn(1)], {}, {"d:\\a\\rtl.c"}, False)[0], "c")
         self.assertEqual(layoutscan.language([fn(1)], {".c": 3}, set(), False)[0], "c")
         self.assertEqual(layoutscan.language([fn(1)], {}, set(), False)[0], "c?")
+        # Retail C++ constructs in the compiland's own code decide; those of members do not.
+        cxx = {1: {("thiscall", "?Draw@FadeSystem@@QAEXXZ")}, 2: {("vtable", "??_7Fade@@6B@")}}
+        lang, why = layoutscan.language([fn(1)], {}, set(), False, cxx)
+        self.assertEqual(lang, "cpp")
+        self.assertIn("FadeSystem::Draw", why)
+        self.assertEqual(layoutscan.language([fn(2, "??0Fade@@QAE@XZ")], {}, set(), False, cxx)[0], "cpp?")
 
 
 if __name__ == "__main__":
