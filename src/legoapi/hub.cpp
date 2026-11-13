@@ -1748,9 +1748,10 @@ static void HubSetBuildItPiecesVisiblePc(GIZBUILDIT_PC *buildit, i32 count) {
 
 /* 474e50/248. No Android autosave addition in the PC original. */
 static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
-    const i32 gold_bricks = Game.gold_bricks;
+    i32 i = 0;
     i32 bit = 0;
-    for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
+    const i32 gold_bricks = Game.gold_bricks;
+    for (; HubAreaInfoPc[i].area_name != NULL; ++i) {
         GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
         if (gizmo == NULL)
             continue;
@@ -1766,7 +1767,7 @@ static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
             }
         }
         if (GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0)
-            Game.hub_buildit_completed |= (u8)(1U << (bit & 31));
+            Game.hub_buildit_completed |= (u8)(1 << bit);
         ++bit;
     }
 }
