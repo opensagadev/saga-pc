@@ -306,7 +306,8 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_PC *info, const NUVEC 
 #define TERRAIN_SKIN_NORMAL(normal, a, b)                                                                              \
     do {                                                                                                               \
         NUVEC cross;                                                                                                   \
-        f32 length, inverse;                                                                                           \
+        f32 length;                                                                                                    \
+        f32 inverse;                                                                                                   \
         cross.x = (a).y * (b).z - (a).z * (b).y;                                                                       \
         cross.y = (a).z * (b).x - (a).x * (b).z;                                                                       \
         cross.z = (a).x * (b).y - (a).y * (b).x;                                                                       \

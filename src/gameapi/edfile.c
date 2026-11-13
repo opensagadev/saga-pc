@@ -2098,7 +2098,10 @@ static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMT
 /* Line primitives in 640x448 units; the coordinates are rounded to f32 first. */
 #define EDUI_DRAW_LINE(x0, y0, x1, y1, colour, material)                                                               \
     do {                                                                                                               \
-        f32 line_x0 = (x0), line_y0 = (y0), line_x1 = (x1), line_y1 = (y1);                                            \
+        f32 line_x0 = (x0);                                                                                            \
+        f32 line_y0 = (y0);                                                                                            \
+        f32 line_x1 = (x1);                                                                                            \
+        f32 line_y1 = (y1);                                                                                            \
         if (edui_donotdraw == 0)                                                                                       \
             NuRndrLine2di((i32)(line_x0 * EduiScaleXPc), (i32)(line_y0 * EduiScaleYPc), (i32)(line_x1 * EduiScaleXPc), \
                           (i32)(line_y1 * EduiScaleYPc), colour, material);                                            \
@@ -2106,7 +2109,10 @@ static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMT
 
 #define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                     \
     do {                                                                                                               \
-        f32 rect_x = (x), rect_y = (y), rect_width = (width), rect_height = (height);                                  \
+        f32 rect_x = (x);                                                                                              \
+        f32 rect_y = (y);                                                                                              \
+        f32 rect_width = (width);                                                                                      \
+        f32 rect_height = (height);                                                                                    \
         if (edui_donotdraw == 0)                                                                                       \
             NuRndrLineRect2di((i32)(rect_x * EduiScaleXPc), (i32)(rect_y * EduiScaleYPc),                              \
                               (i32)(rect_width * EduiScaleXPc), (i32)(rect_height * EduiScaleYPc), colour, material);  \

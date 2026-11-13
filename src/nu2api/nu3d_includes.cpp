@@ -5464,7 +5464,9 @@ STATIC_ASSERT(offsetof(OCCLUDER_PRIM_VERTEX_PC, colour) == 0xc);
 
 #define OCCLUDER_PRIM_POSITION(source)                                                                                 \
     do {                                                                                                               \
-        f32 position_x = (source).x, position_y = (source).y, position_z = (source).z;                                 \
+        f32 position_x = (source).x;                                                                                   \
+        f32 position_y = (source).y;                                                                                   \
+        f32 position_z = (source).z;                                                                                   \
         ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = position_x;                              \
         ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = position_y;                              \
         ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = position_z;                              \
@@ -9195,7 +9197,8 @@ extern "C" {
 #define CLIP_TEST_BOUNDS()                                                                                             \
     {                                                                                                                  \
         NUVEC4 *center = &scene->clip_bounds[group_index * 2];                                                         \
-        NUVEC minimum, maximum;                                                                                        \
+        NUVEC minimum;                                                                                                 \
+        NUVEC maximum;                                                                                                 \
         minimum.x = center->x - center[1].x;                                                                           \
         minimum.y = center->y - center[1].y;                                                                           \
         minimum.z = center->z - center[1].z;                                                                           \

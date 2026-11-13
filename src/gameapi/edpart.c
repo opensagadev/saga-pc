@@ -341,7 +341,8 @@ void __cdecl edpartInitType(i32 index) {
 #define EDPART_ADD_TYPE(menu, list)                                                                                    \
     do {                                                                                                               \
         struct eduimenu_s *parent = NULL;                                                                              \
-        i32 index, i;                                                                                                  \
+        i32 index;                                                                                                     \
+        i32 i;                                                                                                         \
         if (part_types_used < 128) {                                                                                   \
             for (index = 0; index < 128; ++index) {                                                                    \
                 if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] == 0) {                                        \

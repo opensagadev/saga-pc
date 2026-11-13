@@ -838,7 +838,8 @@ void __cdecl DebrisProcessAllocation(void) {
 /* Retail inlines SetSfxBit_On/SetSfxBit_OnEx into the emitter sound loop. */
 #define DEBRIS_SET_SFX_BIT_ON(sound_id)                                                                                \
     do {                                                                                                               \
-        i32 sample_id, word;                                                                                           \
+        i32 sample_id;                                                                                                 \
+        i32 word;                                                                                                      \
         if ((sound_id) >= 0) {                                                                                         \
             sample_id = (i32)(SfxInfo[(sound_id)].sample_id_flags << 17) >> 17;                                        \
             if ((u32)sample_id <= 0x63f) {                                                                             \
