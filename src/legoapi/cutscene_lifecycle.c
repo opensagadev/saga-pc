@@ -2244,11 +2244,11 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
             CutSceneStreamDiagnosticPc(instance->scene->filename);
         else {
             if ((instance->flags_88 & 0x10000000) != 0) {
-                instance->flags_88 &= ~0x10000000U;
                 instance->pending_stream = instance->stream_buffer_1;
+                instance->flags_88 &= ~0x10000000U;
             } else {
-                instance->flags_88 |= 0x10000000;
                 instance->pending_stream = instance->stream_buffer_0;
+                instance->flags_88 |= 0x10000000;
             }
             CutSceneStreamDiagnosticPc(instance->scene->filename);
         }
