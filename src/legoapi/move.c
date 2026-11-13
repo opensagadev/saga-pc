@@ -9966,9 +9966,8 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
                 return;
             timer = object->context_timer - FRAMETIME;
             object->context_timer = timer;
-            if (timer > 0.0f)
-                return;
-            object->character_context = -1;
+            if (timer <= 0.0f)
+                object->character_context = -1;
             return;
     }
 }
