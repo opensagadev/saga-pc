@@ -51,7 +51,6 @@ WIN32_FIND_DATAA FileDirectoryFindDataPc[16] = {0};
 i32 FileDirectoryOpenCountPc = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
 const char FileDirectorySourceNamePc[56] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c";
-const char FileDirectoryWildcardPc[4] = "*.*";
 void __cdecl FileDirectoryErrorPc(i32 error);
 
 i32 __cdecl NuFileExists(char *filepath) {
@@ -211,10 +210,8 @@ i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entr
     return strlen(entry->name);
 }
 
-extern i32 FileDirectoryOpenCountPc;          /* 921268 */
-extern char *FileDirectoryPathSlotsPc[16];    /* 921270 */
-extern const char FileDirectoryWildcardPc[4]; /* 75ece0,*.* */
-extern const char WorldPathSeparator[2];      /* 75a204 */
+extern i32 FileDirectoryOpenCountPc;       /* 921268 */
+extern char *FileDirectoryPathSlotsPc[16]; /* 921270 */
 
 i32 __cdecl FileDirectoryHostOpenPc(char *path) {
     char search[200];
@@ -228,8 +225,8 @@ i32 __cdecl FileDirectoryHostOpenPc(char *path) {
         return 0;
     strcpy(search, path);
     if (search[strlen(search) - 1] != '\\')
-        strcat(search, WorldPathSeparator);
-    strcat(search, FileDirectoryWildcardPc);
+        strcat(search, "\\");
+    strcat(search, "*.*");
     FileDirectoryPathSlotsPc[slot] = (char *)NuAlloc(strlen(search) + 4, FileDirectorySourceNamePc, 0x21a);
     strcpy(FileDirectoryPathSlotsPc[slot], search);
     ++FileDirectoryOpenCountPc;

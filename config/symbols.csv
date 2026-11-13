@@ -18354,7 +18354,7 @@ address,symbol,size,ctype
 0x0075ec90,_bgproc_resume_event_name,9,const char[9]
 0x0075ec9c,_bgproc_work_event_name,11,const char[11]
 0x0075eca8,_FileDirectorySourceNamePc,56,const char[56]
-0x0075ece0,_FileDirectoryWildcardPc,4,const char[4]
+0x0075ece0,??_C@_03EMIMMIHL@?$CK?4?$CK?$AA@,4,const char[4]
 0x0075ece4,__real@7f7fffff,4,const f32
 0x75ece8,__real@43530000,4,const f32
 0x75ecec,__real@43510000,4,const f32
