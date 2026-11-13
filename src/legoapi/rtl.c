@@ -340,10 +340,16 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                 continue;
             }
             if (identity >= 0 && light->type != 7) {
-                if (((1 << identity) & (u16)light->field_60) ||
-                    (light->field_5e != 0 && light->type == 5 &&
-                     (identity == -1 || !((1 << identity) & (u16)light->field_5e))) ||
-                    (restricted != 0 && light->field_5e == 0)) {
+                if ((1 << identity) & (u16)light->field_60) {
+                    light = GetNextRTL(set, light, indices, &index);
+                    continue;
+                }
+                if (light->field_5e != 0 && light->type == 5 &&
+                    (identity == -1 || !((1 << identity) & (u16)light->field_5e))) {
+                    light = GetNextRTL(set, light, indices, &index);
+                    continue;
+                }
+                if (restricted != 0 && light->field_5e == 0) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
@@ -383,15 +389,12 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                                 lighting_data->field_134.z += light->direction.z * strength;
                                 lighting_data->specular_value += strength;
                                 if (light->intensity > 16.0f) {
-                                    lighting_data->field_134.x +=
-                                        (f32)((i32)(light->intensity) & 15) *
-                                        NU_SIN_LUT(((i32)(light->intensity) >> 4) * rtltimer1) * strength * rtlwob;
-                                    lighting_data->field_134.y +=
-                                        (f32)((i32)(light->intensity) & 15) *
-                                        NU_COS_LUT(((i32)(light->intensity) >> 4) * rtltimer1) * strength * rtlwob;
-                                    lighting_data->field_134.z +=
-                                        (f32)((i32)(light->intensity) & 15) *
-                                        NU_COS_LUT(((i32)(light->intensity) >> 4) * rtltimer1) * strength * rtlwob;
+                                    lighting_data->field_134.x += NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
+                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.y += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
+                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.z += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
+                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
                                 }
                             }
                             if (position != NULL && (light->flags & 2)) {
