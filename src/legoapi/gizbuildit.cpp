@@ -510,7 +510,7 @@ extern "C" {
         BUILDIT_MOVEMENT_PC *buildit = (BUILDIT_MOVEMENT_PC *)context;
         BUILDIT_MATRICES_PC *data;
         BUILDIT_ANIMATION_PC *object;
-        NUVEC minimum = v000, maximum = v000, start_position, centre, radius_centre, player_position, position;
+        NUVEC maximum = v000, minimum = v000, start_position, centre, radius_centre, player_position, position;
         f32 radius, nearest_distance, dx, dz, distance;
         i32 nearest = 0, i;
         if (player == NULL || buildit == NULL || buildit->anim_set == NULL || buildit->anim_object_count == 0)
@@ -539,6 +539,7 @@ extern "C" {
             NuSpecialGetBounds(&object->special, &minimum, &maximum);
             NuSpecialGetRadius(&object->special, &radius_centre, &radius);
         } else {
+            centre = start_position;
             for (i = 0; i < buildit->anim_object_count; ++i) {
                 data = buildit->anim_objects[i]->object_data;
                 position = *(NUVEC *)&data->start_mtx.m30;
@@ -553,7 +554,6 @@ extern "C" {
                 if (!(minimum.z < dz))
                     minimum.z = dz;
             }
-            centre = start_position;
             radius = NuFsqrt(maximum.z * maximum.z + maximum.x * maximum.x);
         }
         maximum.x += centre.x;
