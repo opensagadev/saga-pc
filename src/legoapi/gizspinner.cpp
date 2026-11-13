@@ -81,6 +81,15 @@ static __forceinline f32 SpinnerFabsPc(f32 value) {
     return result;
 }
 
+/* Looks the special up in the level scene first, then in the shared things scene. */
+static i32 SpinnerFindSpecialPc(WORLDINFO *world, NUSPECIALHANDLE *special, char *name) {
+    NuSpecialFind(world->current_gscn, special, name, 0);
+    if (NuSpecialExistsFn(special) != 0)
+        return 1;
+    NuSpecialFind(things_scene, special, name, 0);
+    return NuSpecialExistsFn(special) != 0;
+}
+
 // Retail private helper receives spinner in EAX, bolt in ESI, and flags on the stack.
 // A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
 struct SPINNER_HIT_FLAGS_STACK_PC {
@@ -218,6 +227,7 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
                 world->spinners[index].initial_rotation = EdFileReadShort();
                 name_length = (i8)EdFileReadChar();
                 EdFileRead(special_name, name_length);
+                // MATCH-EXCEPTION: the SpinnerFindSpecialPc lookup written out; retail tests each result in place here.
                 NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
                 if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
                     NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
@@ -263,11 +273,7 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
                         end_frame = AIPositionUnsetPc;
                         name_length = (i8)EdFileReadChar();
                         EdFileRead(special_name, name_length);
-                        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
-                        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
-                            NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
-                            NuSpecialExistsFn((NUSPECIALHANDLE *)&special);
-                        }
+                        SpinnerFindSpecialPc(world, (NUSPECIALHANDLE *)&special, special_name);
                         if (version >= 3) {
                             start_frame = EdFileReadFloat();
                             end_frame = EdFileReadFloat();
@@ -559,6 +565,13 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
         GameAnimSet_Play(spinner->anim_set, 0.25f, 1);
         spinner->rotation += (i32)(direction * ((f64)frequency * difference * 5461.0));
     }
+}
+
+/* 0 while the animation is reset, 2 once it has reached its end, 1 otherwise. */
+extern "C" i32 __cdecl GizSpinner_GetState(GIZSPINNER_s *spinner) {
+    if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0)
+        return 0;
+    return (spinner->anim_set->state == 2) + 1;
 }
 
 extern "C" void __cdecl GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {
@@ -899,6 +912,11 @@ extern "C" void __cdecl GizSpinner_SetVisibility(void *gizmo_pointer, i32 visibl
             spinner->anti_node = NULL;
         }
     }
+}
+
+extern "C" void __cdecl GizSpinner_GetSpinnerPos(GIZSPINNER_s *spinner, NUVEC *position) {
+    if (position != NULL && spinner != NULL)
+        *position = spinner->position;
 }
 
 extern "C" i32 __cdecl GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 capacity, char *name) {
