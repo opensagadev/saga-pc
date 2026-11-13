@@ -13069,18 +13069,15 @@ i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
 i32 __cdecl Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                            char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 direction;
-    char *from;
-    char *to;
-    f32 length;
+    char *from = NULL;
+    char *to = NULL;
+    f32 length = 0.0f;
     i32 i;
     char *value;
     AIPATHCNX_PC *connection;
 
     direction = 0;
     if (sys != NULL && first_time != 0) {
-        from = NULL;
-        to = NULL;
-        length = 0.0f;
         for (i = 0; i < param_count; i++) {
             value = NuStrIStr(params[i], (char *)AIActionFromName);
             if (value != NULL) {
@@ -13091,13 +13088,15 @@ i32 __cdecl Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *pr
                 length = AIParamToFloatEx(packet, processor, value + 7);
             }
         }
-        if (to != NULL && from != NULL) {
+        if (from != NULL && to != NULL) {
             connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, sys->path_sys->active_path, from, to, &direction));
             if (connection != NULL) {
                 connection->max_horizontal_distance = length;
-                if (length != 0.0f &&
-                    connection->horizontal_distance > length + sys->path_sys->active_path->nodes[0].radius +
-                                                          sys->path_sys->active_path->nodes[0].radius) {
+                if (length == 0.0f) {
+                    connection->traversal_flags[0] &= ~0x08000000;
+                    connection->traversal_flags[1] &= ~0x08000000;
+                } else if (connection->horizontal_distance > length + sys->path_sys->active_path->nodes[0].radius +
+                                                                 sys->path_sys->active_path->nodes[0].radius) {
                     connection->traversal_flags[0] |= 0x08000000;
                     connection->traversal_flags[1] |= 0x08000000;
                 } else {
