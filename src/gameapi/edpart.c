@@ -432,8 +432,9 @@ extern struct eduimenu_s *edpart_changegenrate_menu;
 extern struct eduimenu_s *edpart_maxlife_menu;
 
 void __cdecl edpartChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     if (edpart_nearest_type)
-        edpart_nearest_type->emission_rate = (f32)(i32)((edui_slider_s *)item)->value;
+        edpart_nearest_type->emission_rate = (f32)(i32)slider->value;
 }
 
 void __cdecl edpartCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
