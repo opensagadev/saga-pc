@@ -81,11 +81,6 @@ static __forceinline f32 SpinnerFabsPc(f32 value) {
     return result;
 }
 
-typedef union SpinnerFloatBitsPc {
-    f32 value;
-    u32 bits;
-} SpinnerFloatBitsPc;
-
 // Retail private helper receives spinner in EAX, bolt in ESI, and flags on the stack.
 // A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
 struct SPINNER_HIT_FLAGS_STACK_PC {
@@ -518,8 +513,7 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
         (instance = object->instance_animation) == NULL)
         return -1;
-    f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
-    f32 length = rounded_length;
+    f32 length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 rounded_margin = length / 40.0;
     f32 margin = rounded_margin;
     i32 last = spinner->output_count - 1;
@@ -539,8 +533,7 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
         (instance = object->instance_animation) == NULL || output == -1 || (spinner->state_flags & 0x40) != 0)
         return;
-    f32 rounded_rate = instance->fparam1;
-    f32 rate = rounded_rate;
+    f32 rate = instance->fparam1;
     u32 flags = spinner->state_flags;
     i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
     f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
@@ -550,35 +543,23 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
         target = 1.0f;
     else
         target = ((f64)spinner->animation_points[output + 1] - 1.0) / ((f64)length - 1.0);
-    f32 rounded_duration = length / ((f64)spinner->animation_speed * rate * 60.0);
-    SpinnerFloatBitsPc duration_raw;
-    SpinnerFloatBitsPc duration;
-    duration_raw.value = rounded_duration;
-    duration.bits = duration_raw.bits & 0x7fffffff;
-    f32 rounded_frequency = 60.0 * spinner->animation_speed * rate / length;
-    SpinnerFloatBitsPc frequency_raw;
-    SpinnerFloatBitsPc frequency;
-    frequency_raw.value = rounded_frequency;
-    frequency.bits = frequency_raw.bits & 0x7fffffff;
-    f32 rounded_difference = (f64)target - spinner->field_70;
-    SpinnerFloatBitsPc difference_raw;
-    SpinnerFloatBitsPc difference;
-    difference_raw.value = rounded_difference;
-    difference.bits = difference_raw.bits & 0x7fffffff;
-    if (difference.value < 0.001f) {
+    f32 duration = SpinnerFabsPc(length / ((f64)spinner->animation_speed * rate * 60.0));
+    f32 frequency = SpinnerFabsPc(60.0 * spinner->animation_speed * rate / length);
+    f32 difference = SpinnerFabsPc((f64)target - spinner->field_70);
+    if (difference < 0.001f) {
         GameAnimSet_Stop(spinner->anim_set);
         GameAnimSet_JumpToAnimPos(spinner->anim_set, target);
-        f32 rounded_rotation_a = (f64)duration.value * 30.0;
-        f32 rounded_rotation_b = (f64)rounded_rotation_a / length;
-        f32 rounded_rotation_c = (f64)rounded_rotation_b * ((f64)length / 100.0);
-        spinner->rotation = (u16)((i32)(((f64)target * 100.0 * rounded_rotation_c) * 65536.0 / 360.0 * direction) +
+        f32 rotation = (f64)duration * 30.0;
+        rotation = rotation / length;
+        rotation = rotation * (length / 100.0);
+        spinner->rotation = (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) +
                                   spinner->initial_rotation);
     } else if (spinner->field_70 > target) {
         GameAnimSet_Play(spinner->anim_set, -0.25f, 1);
-        spinner->rotation -= (i32)((f64)difference.value * frequency.value * 5461.0 * direction);
+        spinner->rotation -= (i32)(direction * ((f64)frequency * difference * 5461.0));
     } else if (target > spinner->field_70) {
         GameAnimSet_Play(spinner->anim_set, 0.25f, 1);
-        spinner->rotation += (i32)((f64)difference.value * frequency.value * 5461.0 * direction);
+        spinner->rotation += (i32)(direction * ((f64)frequency * difference * 5461.0));
     }
 }
 
