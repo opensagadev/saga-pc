@@ -2075,7 +2075,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     f32 input = pad->input_direction_z;
     f32 height, blend, speed, seek_rate;
-    u16 heading = 0, pitch = 0, roll;
+    u16 heading = 0, pitch, roll;
     i32 index;
     if (object->field_280 == 0xff)
         return 0;
@@ -2110,7 +2110,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
         pitch = (u16)(i32)((f64)RotDiff(0, temp_zrot) * blend);
         roll = (u16)(i32)((f64)RotDiff(0, temp_xrot) * blend);
     } else {
-        roll = 0;
+        pitch = roll = 0;
     }
     object->pitch_angle = SeekRot(object->pitch_angle, pitch, 8.0f);
     object->roll_angle = SeekRot(object->roll_angle, roll, 8.0f);
