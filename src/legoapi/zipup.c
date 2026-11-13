@@ -318,7 +318,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 PlaySfx(GrapDetach_text, &object->collision_position);
                 if ((object->flags_1fc & 0x80) != 0)
                     Hint_SetComplete(0x262);
-                object->field_0x276 = object->movement_facing_angle = object->facing_angle =
+                object->movement_facing_angle = object->facing_angle = object->field_0x276 =
                     NuAtan2D(destination->x - object->position.x, destination->z - object->position.z);
                 object->airborne_action_timer = NuVecXZDist(&object->position, destination, NULL) /
                                                 object->character_data->game_character->jump_duration;
