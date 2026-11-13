@@ -148,14 +148,6 @@ i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_pla
 #define GRABBER_SWITCH_ON(obstacle)                                                                                    \
     ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
 
-static void __cdecl Grab_invert_x(NUFPAR_PC *parser);
-static void __cdecl Grab_move_xy(NUFPAR_PC *parser);
-static void __cdecl Grab_radius(NUFPAR_PC *parser);
-static void __cdecl Grab_rotate(NUFPAR_PC *parser);
-static void __cdecl Grab_scale(NUFPAR_PC *parser);
-static void __cdecl Grab_shadow(NUFPAR_PC *parser);
-static void __cdecl Grab_speed(NUFPAR_PC *parser);
-static void __cdecl Grab_type(NUFPAR_PC *parser);
 static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a);
 static void GrabberMtxRotateX(NUMTX *m, NUANG a);
 GRABBER_PC *GrabCurrentPc = 0;

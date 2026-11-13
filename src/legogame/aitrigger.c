@@ -83,7 +83,6 @@ STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
 STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
 STATIC_ASSERT(offsetof(AITRIGGERSET_s, flags_word) == 0x210);
 STATIC_ASSERT(sizeof(AITRIGGERSET_s) == 0x214);
-i32 __cdecl AITriggerSetAddTrigger(AISYS_PC *, AITRIGGERSET_s *, GIZMO_PC *);
 #define AITRIGGER_RELEASE(system, set, index)                                                                          \
     if ((set)->trigger_indices[index] != -1) {                                                                         \
         (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                    \

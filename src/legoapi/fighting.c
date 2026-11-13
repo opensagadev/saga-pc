@@ -97,15 +97,10 @@ STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, secondary_flags) == 0x9c);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, platform_id) == 0x102);
 
-extern i32(__cdecl *Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *);
-extern void(__cdecl *Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
-extern void(__cdecl *Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *);
 typedef struct weapon_rate_pc_s {
     u8 unknown_000[0xd40];
     f32 weapon_scale_rate;
 } WEAPON_RATE_PC;
-extern i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
-extern i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
@@ -117,7 +112,6 @@ typedef struct HOLD_RUNTIME_VIEW_PC {
     f32 hold_timer;
 } HOLD_RUNTIME_VIEW_PC;
 STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
-extern i32(__cdecl *CanStartHoldFn)(GAMEOBJECT *);
 
 i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward, difference;

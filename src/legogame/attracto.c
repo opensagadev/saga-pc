@@ -110,7 +110,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 extern char TextInputKeyNameTextPc7516c0[1];
-extern char *AttractoOutputNamePc;
 extern void __cdecl Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void __cdecl Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 #pragma const_seg(".rdata$PCContextName_Attracto")

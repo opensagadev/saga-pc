@@ -83,8 +83,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(WORLD_INITIAL_RESET_PC, reset_flags) == 0x118);
     void __cdecl ResetSounds(void);
     i32 __cdecl AmbientFromQuiet(i32);
-    extern void(__cdecl *WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
-    extern void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
     typedef struct world_resource_icons_reader_pc_s {
         u8 unknown_0000[0x2964];
         NUGSCN *icons_scene;

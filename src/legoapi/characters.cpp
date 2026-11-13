@@ -110,9 +110,6 @@ STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_STAR
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
-extern "C" {
-    i32 __cdecl CanWearHatsInFreePlay(i32 id);
-}
 typedef void(__cdecl *CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 typedef struct character_callback_writer_pc_s {
     i32 name_id;

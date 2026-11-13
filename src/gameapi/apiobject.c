@@ -81,7 +81,6 @@ STATIC_ASSERT(offsetof(PC_ANIMATION_RENDER_VIEW, overlay_weight) == 0x44);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
-extern void(__cdecl *APIObjResetShadowMapRenderingFn)(void), (__cdecl * APIObjEnableShadowMapRenderingFn)(void);
 typedef struct minianimpacket_pc_s {
     f32 current_time;
     f32 previous_time;
