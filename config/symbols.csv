@@ -9113,13 +9113,17 @@ address,symbol,size,ctype
 0x655ad0,_DebrisOrientationMtx,86,"void __cdecl(i32, NUMTX *)"
 0x655b30,_DebrisEmitterOrientationMtx,98,"void __cdecl (i32, NUMTX *)"
 0x655ba0,_DebrisReflectionOrientation,88,"void __cdecl (i32, i16, i16, f32, f32)"
+0x655c00,_DebrisGetParticleCount,33,"i32 __cdecl (i32)"
 0x655c30,_DebrisStartOffsetEx,368,"void __cdecl (DEBRISKEY_PC *, f32)"
 0x655da0,_DebrisStartOffset,34,"void __cdecl (i32, f32)"
 0x655dd0,_DebrisSetTrigger,67,"void __cdecl (i32, i32, i32, f32)"
 0x655f30,_DebrisSetRoomID,135,"void __cdecl (i32,NUGSCN *)"
+0x655fc0,_DebrisSetDrawFlag,28,"void __cdecl (i32, i8)"
+0x655fe0,_AddDebrisEffectToStack,38,"void __cdecl (DEBRISKEY_PC *)"
 0x656010,_RemoveDebrisEffectFromStack,100,void __cdecl (DEBRISKEY_PC *)
 0x00656080,_DebrisProcessSpheres,332,"void __cdecl (DEBRISPARTICLE_PC *, f32, DEBRIS_INFO_PC *, DEBRISKEY_PC *, i32)"
 0x6561d0,_AddVariableShotDebrisEffectTimed5,2846,"void __cdecl (i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8)"
+0x656cf0,_AddVariableShotDebrisEffectMtx4,70,"void __cdecl (i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *, u16, i8)"
 0x656d40,_AddVariableShotDebrisEffectTimed3,115,"void __cdecl (i32,NUVEC *,NUVEC *,i32,f32,NUMTX *,NUMTX *)"
 0x656dc0,_AddVariableShotDebrisEffectMtx3,126,"void __cdecl (i32, NUVEC *, NUVEC *, i32, NUMTX *, NUMTX *)"
 0x00656e40,_DebrisSetRenderGroup,10,void __cdecl (i32)
@@ -9619,12 +9623,14 @@ address,symbol,size,ctype
 0x684720,_DebrisSetFacing,103,"void __cdecl (i32,u8,i16,i16)"
 0x684790,_CreateScaledEffect,1098,"i32 __cdecl(i32, f32)"
 0x684be0,_AddVariableShotDebrisEffectTimed1,86,"void __cdecl (i32,NUVEC *,i32,f32,i16,i16,NUMTX *)"
+0x684c40,_AddVariableShotDebrisEffectMtx,78,"void __cdecl (i32, NUVEC *, i32, i16, i16, NUMTX *)"
 0x684c90,_AddVariableShotDebrisEffect,71,"void __cdecl (i32, NUVEC *, i32, i16, i16)"
 0x684ce0,_AddScaledVariableShotDebrisEffect,72,
 0x684d30,_AddScaledVariableShotDebrisEffect1,75,"i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y, NUMTX *orientation, f32 scale)"
 0x684d80,_AddScaledVariableShotDebrisEffect2,75,"i32 __cdecl(i32, NUVEC *, i32, f32, NUMTX *, NUMTX *, f32)"
 0x684dd0,_AddScaledVariableShotDebrisEffect3,75,
 0x684ee0,_AddDebrisEffect,1025,"void __cdecl (i32 *, i32, f32, f32, f32)"
+0x6852f0,_AddRotatedDebrisEffect,67,"void __cdecl (i32 *, i32, f32, f32, f32, i16, i16)"
 0x685340,_DebrisPopulateInstance,558,"void __cdecl(i32, f32)"
 0x685570,_DebrisShift,502,void __cdecl(NUMTX *)
 0x685770,_DebrisDraw,1232,"void __cdecl(i32,i32)"
