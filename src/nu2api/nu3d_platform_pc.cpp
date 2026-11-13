@@ -2786,7 +2786,7 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE_PC::ReleaseResources() {
-        for (i32 index = 0; index != 256; ++index) {
+        for (u32 index = 0; index != 256; ++index) {
             PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
             if (item != NULL && item->surface != NULL) {
                 if (item->texture->surface == NULL)
@@ -2797,24 +2797,25 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE_PC::RestoreResources() {
-        for (i32 index = 0; index != 256; ++index) {
-            PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
-            if (item == NULL)
-                continue;
-            if (item->texture == NULL)
-                item->surface = NULL;
-            else if (item->texture->surface != NULL) {
-                item->surface = item->texture->surface;
-                PcSurfaceRegistry[index]->width = PcSurfaceRegistry[index]->texture->width;
-                PcSurfaceRegistry[index]->height = PcSurfaceRegistry[index]->texture->height;
-            } else {
-                PC_TEXTURE_LEVEL_DESC_PC description;
-                item->texture->resource->methods->get_surface_level(item->texture->resource, item->level,
-                                                                    &item->surface);
-                item = PcSurfaceRegistry[index];
-                item->texture->resource->methods->get_level_desc(item->texture->resource, item->level, &description);
-                PcSurfaceRegistry[index]->width = (u16)description.width;
-                PcSurfaceRegistry[index]->height = (u16)description.height;
+        for (u32 index = 0; index != 256; ++index) {
+            if (PcSurfaceRegistry[index] != NULL) {
+                if (PcSurfaceRegistry[index]->texture != NULL) {
+                    if (PcSurfaceRegistry[index]->texture->surface != NULL) {
+                        PcSurfaceRegistry[index]->surface = PcSurfaceRegistry[index]->texture->surface;
+                        PcSurfaceRegistry[index]->width = PcSurfaceRegistry[index]->texture->width;
+                        PcSurfaceRegistry[index]->height = PcSurfaceRegistry[index]->texture->height;
+                    } else {
+                        PC_TEXTURE_LEVEL_DESC_PC description;
+                        PcSurfaceRegistry[index]->texture->resource->methods->get_surface_level(
+                            PcSurfaceRegistry[index]->texture->resource, PcSurfaceRegistry[index]->level,
+                            &PcSurfaceRegistry[index]->surface);
+                        PcSurfaceRegistry[index]->texture->resource->methods->get_level_desc(
+                            PcSurfaceRegistry[index]->texture->resource, PcSurfaceRegistry[index]->level, &description);
+                        PcSurfaceRegistry[index]->width = (u16)description.width;
+                        PcSurfaceRegistry[index]->height = (u16)description.height;
+                    }
+                } else
+                    PcSurfaceRegistry[index]->surface = NULL;
             }
         }
     }
@@ -5108,62 +5109,10 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsReleaseFramebuffers(void) {
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            PC_EFFECT_SURFACE_PC *target = &frame->targets[0];
-            if (target->texture != NULL || target->level != 0) {
-                target->Reset();
-                target->texture = NULL;
-                target->owns_texture = 0;
-                target->surface = NULL;
-                target->level = 0;
-                target->field_10 = 0;
-                target->width = target->height = 0;
-            }
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            PC_EFFECT_SURFACE_PC *target = &frame->targets[1];
-            if (target->texture != NULL || target->level != 0) {
-                target->Reset();
-                target->texture = NULL;
-                target->owns_texture = 0;
-                target->surface = NULL;
-                target->level = 0;
-                target->field_10 = 0;
-                target->width = target->height = 0;
-            }
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            PC_EFFECT_SURFACE_PC *target = &frame->targets[2];
-            if (target->texture != NULL || target->level != 0) {
-                target->Reset();
-                target->texture = NULL;
-                target->owns_texture = 0;
-                target->surface = NULL;
-                target->level = 0;
-                target->field_10 = 0;
-                target->width = target->height = 0;
-            }
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcSecondaryFramebuffer;
-            PC_EFFECT_SURFACE_PC *target = &frame->targets[0];
-            if (target->texture != NULL || target->level != 0) {
-                target->Reset();
-                target->texture = NULL;
-                target->owns_texture = 0;
-                target->surface = NULL;
-                target->level = 0;
-                target->field_10 = 0;
-                target->width = target->height = 0;
-            }
-            frame->changed = 1;
-        }
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 0, NULL, 0);
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 1, NULL, 0);
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, NULL, 0);
+        PCGraphicsAttachFramebuffer(PcSecondaryFramebuffer, 0, NULL, 0);
     }
 
     void __cdecl PCGraphicsRestoreFramebuffers(void) {
@@ -5885,9 +5834,10 @@ extern "C" {
         NuLgtStateCapacityPc = 8;
         memset(NuLgtStateSlotsPc, 0, sizeof(NuLgtStateSlotsPc));
         for (i = 0; i < 8; ++i) {
-            NuLgtStateSlotsPc[i].next = i == 7 ? -1 : i + 1;
             NuLgtStateSlotsPc[i].previous = i - 1;
+            NuLgtStateSlotsPc[i].next = i + 1;
         }
+        NuLgtStateSlotsPc[7].next = -1;
         NuLgtStateActiveCountPc = 0;
         NuLgtArcLaserCnt = 0;
         NuLgtArcLaserOldCnt = 0;
