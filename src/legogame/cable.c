@@ -1,22 +1,9 @@
 #include "saga.h"
 #include <math.h>
-
 #include <string.h>
 
-void InitCables(WORLDINFO *world) {
-    memset(cables, 0, sizeof(cables));
+/* Retail unit 0x4087a0-0x40a4a5: definitions in retail address order. */
 
-    targetmomf = default_targetmomf;
-    ownermomf = default_ownermomf;
-    max_cable_length = default_max_cable_length;
-    tow_length = default_tow_length;
-
-    if (GUNSHIP_ADATA != NULL && world != NULL && world->area == GUNSHIP_ADATA) {
-        targetmomf = 4.0f;
-        max_cable_length = 10.0f;
-        tow_length = 0.0f;
-    }
-}
 struct CABLE_RECORD_PC {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
@@ -48,7 +35,6 @@ STATIC_ASSERT(offsetof(CABLE_RECORD_PC, point_count) == 0x1e7);
 STATIC_ASSERT(offsetof(CABLE_RECORD_PC, wrap_count) == 0x1e8);
 STATIC_ASSERT(offsetof(CABLE_RECORD_PC, flags) == 0x1ea);
 STATIC_ASSERT(sizeof(CABLE_RECORD_PC) == 0x1ec);
-
 // The retail cable code tests the character context flags as a 64-bit field.
 typedef struct cable_context_info_pc_s {
     const char *name;
@@ -57,7 +43,6 @@ typedef struct cable_context_info_pc_s {
 } CABLE_CONTEXT_INFO_PC;
 STATIC_ASSERT(sizeof(CABLE_CONTEXT_INFO_PC) == 0x10);
 STATIC_ASSERT(offsetof(CABLE_CONTEXT_INFO_PC, flags) == 0x8);
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
 
@@ -67,6 +52,22 @@ static f32 CableFdiv(f32 a, f32 b) {
         return 0.0f;
     return a / b;
 }
+
+void InitCables(WORLDINFO *world) {
+    memset(cables, 0, sizeof(cables));
+
+    targetmomf = default_targetmomf;
+    ownermomf = default_ownermomf;
+    max_cable_length = default_max_cable_length;
+    tow_length = default_tow_length;
+
+    if (GUNSHIP_ADATA != NULL && world != NULL && world->area == GUNSHIP_ADATA) {
+        targetmomf = 4.0f;
+        max_cable_length = 10.0f;
+        tow_length = 0.0f;
+    }
+}
+
 CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
     CABLE_RECORD_PC *cable;
