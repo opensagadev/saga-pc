@@ -9834,59 +9834,59 @@ i32 __cdecl Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
 i32 __cdecl Action_MoveForward(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;
-    i32 minimum_turn;
-    i32 maximum_turn;
+    i32 random_direction = 0;
+    i32 minimum_turn = 0;
+    i32 maximum_turn = 0;
     i32 turn;
-    i32 random_direction;
     i32 index;
     char *value;
     NUVEC destination;
-    if (player == NULL || packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+    if (player != NULL) {
+        if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+            return 0;
+        object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+        if (first_time != 0) {
+            processor->action_data_4 = (f32)object->field_0x276;
+            turn = 0;
+            for (index = 0; index < count; index++) {
+                if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0)
+                    continue;
+                value = NuStrIStr(params[index], (char *)AIGameMinimumTurnName);
+                if (value != NULL) {
+                    minimum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIGameMaximumTurnName);
+                if (value != NULL) {
+                    maximum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
+                    continue;
+                }
+                if (NuStrIStr(params[index], (char *)AIGameRandomTurnDirectionName) != NULL) {
+                    random_direction = 1;
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIGameTurnName);
+                if (value != NULL)
+                    turn = (i32)((i32)AIParamToFloat(processor, value + 5) * (f64)(65536.0f / 360.0f));
+            }
+            if (maximum_turn != 0)
+                turn = (i32)((f32)(maximum_turn - minimum_turn) * NuRandFloat()) + minimum_turn;
+            if (turn != 0) {
+                if (random_direction != 0 && (NuRand(NULL) & 1) != 0)
+                    turn = -turn;
+                processor->action_data_4 = (f32)NuAngAdd((NUANG)processor->action_data_4, turn);
+            }
+        }
+        if ((packet->path_info.flags & 1) == 0)
+            return 0;
+        destination.x = 0.0f;
+        destination.y = 0.0f;
+        destination.z = 10.0f;
+        NuVecRotateY(&destination, &destination, (NUANG)processor->action_data_4);
+        NuVecAdd(&destination, &destination, &object->position);
+        AIMoveInstruction(packet, &destination, 0.0f, &packet->path_info, 1, 0.01f);
         return 0;
-    object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
-    if (first_time != 0) {
-        processor->action_data_4 = (f32)object->field_0x276;
-        minimum_turn = 0;
-        maximum_turn = 0;
-        turn = 0;
-        random_direction = 0;
-        for (index = 0; index < count; index++) {
-            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0)
-                continue;
-            value = NuStrIStr(params[index], (char *)AIGameMinimumTurnName);
-            if (value != NULL) {
-                minimum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIGameMaximumTurnName);
-            if (value != NULL) {
-                maximum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
-                continue;
-            }
-            if (NuStrIStr(params[index], (char *)AIGameRandomTurnDirectionName) != NULL) {
-                random_direction = 1;
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIGameTurnName);
-            if (value != NULL)
-                turn = (i32)((i32)AIParamToFloat(processor, value + 5) * (f64)(65536.0f / 360.0f));
-        }
-        if (maximum_turn != 0)
-            turn = (i32)((f32)(maximum_turn - minimum_turn) * NuRandFloat()) + minimum_turn;
-        if (turn != 0) {
-            if (random_direction != 0 && (NuRand(NULL) & 1) != 0)
-                turn = -turn;
-            processor->action_data_4 = (f32)NuAngAdd((NUANG)processor->action_data_4, turn);
-        }
     }
-    if ((packet->path_info.flags & 1) == 0)
-        return 0;
-    destination.x = 0.0f;
-    destination.y = 0.0f;
-    destination.z = 10.0f;
-    NuVecRotateY(&destination, &destination, (NUANG)processor->action_data_4);
-    NuVecAdd(&destination, &destination, &object->position);
-    AIMoveInstruction(packet, &destination, 0.0f, &packet->path_info, 1, 0.01f);
     return 0;
 }
 
