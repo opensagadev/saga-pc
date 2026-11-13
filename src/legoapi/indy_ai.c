@@ -86,30 +86,31 @@ i32 __cdecl Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet,
 }
 
 i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
-    i32 near_index;
     i32 far_index;
+    AIPATHNODE_PC *nodes;
     AIPATHNODE_PC *near_node;
     AIPATHNODE_PC *far_node;
     NUVEC offset;
-    f32 radius;
+    f32 radius, scale;
     f32 distance;
-    AIPATHCNX_PC *destination;
-    AIPATHCNX_PC *current;
     f32 edge;
 
-    far_index = !(packet->path_info.distance > 0.5f);
-    near_index = far_index == 0;
-    near_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[near_index]];
-    far_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[far_index]];
+    if (packet->path_info.distance > 0.5f)
+        far_index = 0;
+    else
+        far_index = 1;
+    nodes = packet->path_info.path->nodes;
+    near_node = &nodes[packet->path_info.connection->node_indices[far_index == 0]];
+    far_node = &nodes[packet->path_info.connection->node_indices[far_index]];
 
     offset.x = far_node->position.x - near_node->position.x;
     offset.y = 0.0f;
     offset.z = far_node->position.z - near_node->position.z;
     radius = near_node->radius - packet->mover_height;
-    if (radius < 0.0f) {
+    if (radius < 0.0f)
         radius = 0.0f;
-    }
-    NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
+    scale = radius / packet->path_info.connection->horizontal_distance;
+    NuVecScale(&offset, &offset, scale);
     NuVecAdd(&packet->movement_destination, &near_node->position, &offset);
     offset.x = packet->path_info.width;
     offset.y = 0.0f;
@@ -119,27 +120,26 @@ i32 __cdecl Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i3
     packet->movement_stopping_distance = 0.0f;
     distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
     if (distance < ai_moveradius * ai_moveradius) {
-        destination = packet->fallback_path_info.connection;
-        current = packet->path_info.connection;
-        if (destination == current) {
-            edge = far_node->radius / destination->horizontal_distance;
+        if (packet->fallback_path_info.connection == packet->path_info.connection) {
+            edge = far_node->radius / packet->path_info.connection->horizontal_distance;
             if (far_index != 0) {
-                if (1.0f - edge > packet->fallback_path_info.distance) {
+                if (packet->fallback_path_info.distance < 1.0f - edge)
                     goto reset_connection;
-                }
-            } else if (edge < packet->fallback_path_info.distance) {
+            } else if (packet->fallback_path_info.distance > edge) {
                 goto reset_connection;
             }
         }
-        if (packet->path_info.direction == far_index) {
+        if (packet->path_info.direction == far_index)
             return 0;
-        }
-        if (packet->path_connection_state == 0) {
-            if (current->open == 0) {
-                packet->path_connection_state = 1;
-            }
-        } else if (packet->path_connection_state == 1 && current->open != 0) {
-            SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+        switch (packet->path_connection_state) {
+            case 0:
+                if (packet->path_info.connection->open == 0)
+                    packet->path_connection_state = 1;
+                break;
+            case 1:
+                if (packet->path_info.connection->open != 0)
+                    SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                break;
         }
     } else {
     reset_connection:
