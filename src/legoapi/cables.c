@@ -529,7 +529,8 @@ void __cdecl DrawCables(void) {
                     ground_end = endpoint.y;
                 NuVecSub(&step, &endpoint, &previous);
                 subdivisions = CableFdiv(cable->segment_lengths[segment], cable->total_length) * subdivision_scale;
-                step_length = CableFdiv(cable->segment_lengths[segment], (f32)ceil((f64)subdivisions));
+                subdivisions = (f32)ceil((f64)subdivisions);
+                step_length = CableFdiv(cable->segment_lengths[segment], subdivisions);
                 NuVecScale(&step, &step, CableFdiv(step_length, cable->segment_lengths[segment]));
                 cursor = previous;
                 for (local_distance = 0.0f; local_distance + 0.5f * step_length < cable->segment_lengths[segment];
