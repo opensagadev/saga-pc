@@ -699,10 +699,11 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     NuFParPopCom(parser);
     if (load_gizmotype < 0 || NuStrLen(load_gizmoname) == 0)
         return;
-    name_size = NuStrLen(load_gizmoname) + NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix) + 1;
+    name_size = NuStrLen(load_gizmoname);
+    name_size += NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
     data->gizmos[data->gizmo_count] =
         (FLOWBOXGIZMOREF_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMOREF_PC)));
-    data->gizmos[data->gizmo_count]->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, name_size));
+    data->gizmos[data->gizmo_count]->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, name_size + 1));
     NuStrCpy(data->gizmos[data->gizmo_count]->name, load_gizmoname);
     if (load_gizmotype == giztimer_gizmotype_id) {
         data->gizmos[data->gizmo_count]->gizmo = createGizTimer(NULL, load_t_time, load_t_randomTime, load_gizmoname);
