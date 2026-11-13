@@ -3221,6 +3221,7 @@ extern "C" {
                                       ANI3_HEADER_PC *animation, ANI3_ROOT_CALLBACK_PC root_fn, NUVEC *root_translation,
                                       void *root_data) {
         void *callback_data[256];
+        ANI3_BUFFER_PC *current;
         ANI3_JOINT_PC *joint;
         NUHGOBJ_EVAL_JOINT_PC *hierarchy_joint;
         NUVEC *scale;
@@ -3237,10 +3238,10 @@ extern "C" {
         u8 flags;
         u8 *joint_flags;
 
-        if (buffer == NULL)
-            buffer = (ANI3_BUFFER_PC *)globalbuffer;
-        if (buffer->use_quaternions != 0) {
-            NuAnimBuffEvaluate_3_QuatB(NULL, buffer, object, matrices, animation, root_fn, root_translation, root_data);
+        current = buffer != NULL ? buffer : (ANI3_BUFFER_PC *)globalbuffer;
+        if (current->use_quaternions != 0) {
+            NuAnimBuffEvaluate_3_QuatB(NULL, current, object, matrices, animation, root_fn, root_translation,
+                                       root_data);
             return;
         }
         if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
@@ -3259,9 +3260,9 @@ extern "C" {
         if ((i32)(u16)animation->node_count < count)
             count = (u16)animation->node_count;
         hierarchy_joint = object->joints;
-        joint_flags = buffer->joint_flags;
+        joint_flags = current->joint_flags;
         root_values.x = root_values.y = root_values.z = 0.0f;
-        joint = buffer->joints;
+        joint = current->joints;
         scale = ANI3_EVAL_SCALE_ARRAY;
         for (index = 0; index < count; ++index, ++matrix, ++joint, ++scale, ++hierarchy_joint) {
             parent = hierarchy_joint->parent_index;
@@ -3270,9 +3271,9 @@ extern "C" {
                 rotation.x = joint->rotation.x;
                 rotation.y = joint->rotation.y;
                 rotation.z = joint->rotation.z;
-                angles.x = (i32)((f64)rotation.x * AIPathAngularScale);
-                angles.y = (i32)((f64)rotation.y * AIPathAngularScale);
-                angles.z = (i32)((f64)rotation.z * AIPathAngularScale);
+                angles.x = (i32)(rotation.x * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(rotation.y * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(rotation.z * PC_NUANG_PER_RADIAN);
                 NuMtxSetRotateXYZVU0(matrix, &angles);
                 if ((flags & 0x20) != 0)
                     NuMtxMulRVU0(matrix, matrix, &hierarchy_joint->bind_matrix);
