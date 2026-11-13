@@ -198,7 +198,6 @@ extern "C" i32 __cdecl Episodes_Completed(void) {
  * counts the superstory brick regardless of area filter, and has no Android
  * Store_IsPackUnlocked guard. No backing or capacity is inferred here. */
 i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SAVE_PC *saves) {
-    EPISODE_AREA_SAVE_READER_PC *records = (EPISODE_AREA_SAVE_READER_PC *)saves;
     i32 open = 0;
     EpCompleteCount = EpCompleteTotal = 0;
     EpMiniKitCount = EpMiniKitTotal = 0;
@@ -225,18 +224,19 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         if ((ADataList[id].flags & 0x100) != 0) {
             if (EpisodeGoldBrickForSuperBonusPc != 0) {
                 ++EpGoldBrickTotal;
-                if (records[i].area_complete != 0)
+                if (saves[i].area_complete != 0)
                     ++EpGoldBrickCount;
             }
             continue;
         }
         if ((ADataList[id].flags & 4) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)records[id].challenge_time < (f64)ADataList[id].challenge_trial_time)
+            if ((f64)((EPISODE_AREA_SAVE_READER_PC *)&saves[id])->challenge_time <
+                (f64)ADataList[id].challenge_trial_time)
                 ++EpGoldBrickCount;
             continue;
         }
-        EPISODE_AREA_SAVE_READER_PC *save = &records[id];
+        EPISODE_AREA_SAVE_READER_PC *save = (EPISODE_AREA_SAVE_READER_PC *)&saves[id];
         ++EpCompleteTotal;
         EpMiniKitTotal += 10;
         if (save->complete != 0)
