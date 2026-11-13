@@ -345,30 +345,6 @@ i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *object, NUMTX *matrix, i32 count, i16 *
     NuHGobjEval(object, 0, NULL, matrices);
     return NuHGobjRndrMtxDwa(object, matrix, count, layers, matrices, NULL, 0);
 }
-i32 __cdecl EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
-    EQUIVALENTOBJECTGROUP_PC *group;
-    i32 group_index, index, candidate;
-    if (special != NULL && NuSpecialExistsFn(special)) {
-        group = (EQUIVALENTOBJECTGROUP_PC *)world->equivalent_groups;
-        if (group != NULL) {
-            for (group_index = 0; group_index < world->equivalent_group_count; ++group_index) {
-                for (index = 0; index < group->object_count; ++index) {
-                    if (NuSpecialCompare(special, &group->objects[index])) {
-                        for (candidate = 0; candidate < group->object_count; ++candidate) {
-                            if (NuSpecialGetVisibilityFn(&group->objects[candidate])) {
-                                *special = group->objects[candidate];
-                                return 1;
-                            }
-                        }
-                        return 0;
-                    }
-                }
-                group = (EQUIVALENTOBJECTGROUP_PC *)((u8 *)group + group->byte_size);
-            }
-        }
-    }
-    return 0;
-}
 void __cdecl ClearSpecialMove(GAMEOBJECT *object) {
     object->special_move_timer_pc = 1.0f;
     object->ai_packet.special_move_node = NULL;

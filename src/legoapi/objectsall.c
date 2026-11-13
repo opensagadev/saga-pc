@@ -144,43 +144,5 @@ STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, objects) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
 STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
 
-void __cdecl EquivalentObjects_Configure(WORLDINFO *world, char *config) {
-    NUFPAR_PC *parser;
-    EQUIVALENT_GROUP_PC *cursor;
-    world->equivalent_groups = NULL;
-    world->equivalent_group_count = 0;
-    if (world->current_gscn == NULL)
-        return;
-    parser = NuFParCreateMem("equivalentobjects", config, 0xffff);
-    if (parser == NULL)
-        return;
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    cursor = (EQUIVALENT_GROUP_PC *)world->giz_buffer.addr;
-    world->equivalent_groups = cursor;
-    while (NuFParGetLine(parser) != 0) {
-        NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer_ptr, "equivalentobjects") != 0)
-            continue;
-        cursor->object_count = 0;
-        cursor->byte_size = 4;
-        while (NuFParGetWord(parser) != 0) {
-            if (NuSpecialFind(world->current_gscn, &cursor->objects[cursor->object_count], parser->word_buffer_ptr,
-                              1) != 0) {
-                ++cursor->object_count;
-                cursor->byte_size += sizeof(NUSPECIALHANDLE);
-            }
-        }
-        if (cursor->object_count > 0) {
-            cursor = (EQUIVALENT_GROUP_PC *)((u8 *)cursor + cursor->byte_size);
-            ++world->equivalent_group_count;
-        }
-    }
-    NuFParDestroy(parser);
-    if (world->equivalent_group_count > 0)
-        world->giz_buffer.addr = ((u32)cursor + 15U) & ~15U;
-    else
-        world->equivalent_groups = NULL;
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
