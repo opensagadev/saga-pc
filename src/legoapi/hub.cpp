@@ -5386,12 +5386,8 @@ extern "C" void __cdecl Arcade_UpdateEndMenu(MENU *menu) {
 }
 
 extern "C" void __cdecl Arcade_DrawEndMenu(MENU *menu) {
-    u32 flash, green;
-    (void)menu;
     if (MenuStopDraw != 0)
         return;
-    flash = (u32)menu_flash;
-    /* Native replaces only the low byte of the negated colour argument. */
-    green = ((0u - flash) & 0xffffff00u) | (flash != 0 ? 191u : 255u);
-    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, green, 0, 1.7f, 1, NULL, 0, 128);
+    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1,
+                NULL, 0, 128);
 }

@@ -100,7 +100,7 @@ i32 __cdecl SnakeASinPc(f32 sin) {
 #undef POW4
 #undef POW5
 
-extern f32 SnakeBodyDefaultScalePc;
+static f32 SnakeBodyDefaultScalePc = 1.0f;
 
 SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
     SNAKE_BODY_PC *body;

@@ -973,7 +973,7 @@ extern u8 MENUENTRYR, MENUENTRYG, MENUENTRYB;
 extern u8 MENUFLASH0R, MENUFLASH0G, MENUFLASH0B;
 extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
 
-void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
+void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
     f32 scale, spacing;
     /* Retail writes low bytes, then forwards each partially written 32-bit color slot. */
@@ -981,8 +981,7 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, i32 alpha) {
         u8 byte;
         u32 slot;
     } red, green, blue;
-    /* Retail clamps only the low byte of the alpha slot and forwards the whole slot. */
-    *(u8 *)&alpha = (u8)alpha > 128 ? 128 : (u8)alpha;
+    alpha = alpha > 128 ? 128 : alpha;
     scale = (view->item_scale_x == 0.0f ? MenuTextScalePc : view->item_scale_x) * dme_sy;
     spacing = (view->item_spacing == 0.0f ? MENUDY : view->item_spacing) * dme_sy;
     if (view->item_offsets != NULL) {

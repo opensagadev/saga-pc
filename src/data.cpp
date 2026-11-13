@@ -16057,9 +16057,6 @@ extern "C" {
 #pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
     f32 SnakeDebrisUpwardSpeedPc = 1.0f;
 #pragma data_seg()
-#pragma data_seg(".data$SnakeBodyDefaultScalePc")
-    f32 SnakeBodyDefaultScalePc = 1.0f;
-#pragma data_seg()
 #pragma bss_seg(".bss$PCMaterialPoolPc")
     NUMTL *PCMaterialPoolPc = 0;
 #pragma bss_seg()

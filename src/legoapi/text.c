@@ -991,8 +991,8 @@ extern f32 STCOORDSCALE, SmartTextDefaultWidthPc, SmartTextLongestWidthPc;
 i32 __cdecl FindNextBreak(u8 *, i32);
 i32 __cdecl FindNearestBreak(u8 *, i32);
 i32 __cdecl NuStrFindPosU(u8 *, i32);
-void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
-                 u32 green, u32 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
+void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                 u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
     typedef struct box_geometry_pc_s {
         f32 reserved, x, y, z, width, height;
     } BOX_GEOMETRY_PC;
@@ -1216,9 +1216,9 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     followon_line = 0;
     TextScaleY_candidate = saved_y_scale;
 }
-void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
-void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
-                          u32 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
+void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
+void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
+                          u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
     VUFNT *saved_font = SmartTextFont;
     if (QFont2DLower != NULL)
         SmartTextFont = QFont2DLower;
@@ -1226,16 +1226,16 @@ void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 s
     SmartTextFont = saved_font;
 }
 
-void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
-                     u32 green, u32 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw,
+void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                     u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw,
                      u32 alpha) {
     SmartTextEx2(text, x - x_scale * 0.007f, y - y_scale * 0.01f, z, x_scale, y_scale, z_scale, alignment, 0, 0, 0,
                  max_width, max_lines, message_box, suppress_draw, alpha);
     SmartTextEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, max_width, max_lines,
                 message_box, suppress_draw, alpha);
 }
-void __cdecl MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
-                             u32 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
+void __cdecl MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
+                             u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
     if (MenuDrawDropShadows != 0) {
         f32 shadow_x = (f32)((f64)x + (f64)sx * (f64)0.015f);
         f32 shadow_y = (f32)((f64)y - (f64)sy * (f64)0.015f);

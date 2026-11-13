@@ -590,6 +590,11 @@
    "unit": "src/nu2api/shader_dictionary.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/lighting_unit.cpp",
+   "symbol": "_EnableShadowLight",
+   "kind": "function"
   }
  ]
 }

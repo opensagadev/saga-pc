@@ -1791,7 +1791,7 @@ struct AISYS_PC {
     u8 goody_idx;
     union {
         u8 unknown_1386[0x2];
-        u16 reset_flags;
+        i16 reset_flags;
     };
     void *game_sys;
     APIOBJECT_PC *player_1;
@@ -10921,12 +10921,12 @@ extern "C" {
     extern i32 EdppUnresolvedInstancesPc;
     extern char **PartDebrisNameListPc;
 
-    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
+    void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
     i32 __cdecl FindNextBreak(u8 *, i32);
     i32 __cdecl FindNearestBreak(u8 *, i32);
     i32 __cdecl NuStrFindPosU(u8 *, i32);
-    void __cdecl SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, u32);
-    void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, f32, i32, void *, i32, i32);
+    void __cdecl SmartTextEx2(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, u32);
+    void __cdecl MenuSmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
     void __cdecl DrawMenuHeader(void);
     void __cdecl DrawMenu(i32);
     void __cdecl DrawPanel(void);
@@ -21303,7 +21303,7 @@ extern "C" {
     void __cdecl MenuRememberCursor(MENU *);
     void __cdecl BackupMenu(void);
     void __cdecl BackupMenuNoFn(void);
-    void __cdecl DrawMenuEntryEx(MENU *, char *, i32);
+    void __cdecl DrawMenuEntryEx(MENU *, char *, u8);
     extern f32 dme_sx;
     extern i32 dme_rgb;
     extern i32 dme_align;
@@ -30583,7 +30583,7 @@ struct NetworkObject {
     void Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags);
     void Destroy();
 
-    u16 flags;
+    i16 flags;
     i16 id;
     u32 unknown_04;
     const V2Peer *owner;

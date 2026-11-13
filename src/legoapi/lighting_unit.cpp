@@ -452,10 +452,20 @@ extern "C" {
         SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
     }
 
+    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc, which retail inlines here. */
+    static void EnableShadowLight(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
+        if (enabled != 0 && light->enabled == 0) {
+            i32 i;
+            for (i = 0; i < light->render_set_count; ++i) {
+                light->render_sets[i].shadow_lists_pc[0].material_last = light->render_sets[i].shadow_lists_pc[0].first;
+                light->render_sets[i].shadow_lists_pc[1].material_last = light->render_sets[i].shadow_lists_pc[1].first;
+            }
+        }
+        light->enabled = enabled;
+    }
+
     void __cdecl InitShadowLights(void) {
         struct PC_SPECIAL_SHADOW_LIGHT *light;
-        i32 enabled;
-        i32 i;
 
         PCShadowCurrentLight = NuDynamicLightCreate();
         NuDynamicLightSetParameteri(PCShadowCurrentLight, 5, 2);
@@ -483,15 +493,7 @@ extern "C" {
         light->parameter_4 = 0;
         NuMtxSetOrthoBlend(&light->projection, -60.0f, 60.0f, -60.0f, 60.0f, 0.0f, 300.0f);
 
-        light = PCShadowSecondaryLight;
-        enabled = 1;
-        if (enabled != 0 && light->enabled == 0) {
-            for (i = 0; i < light->render_set_count; ++i) {
-                light->render_sets[i].shadow_lists_pc[0].material_last = light->render_sets[i].shadow_lists_pc[0].first;
-                light->render_sets[i].shadow_lists_pc[1].material_last = light->render_sets[i].shadow_lists_pc[1].first;
-            }
-        }
-        light->enabled = enabled;
+        EnableShadowLight(PCShadowSecondaryLight, 1);
     }
 
     /* File-local, so VC8 passes center in EDI as retail does; radius stays on the stack. */

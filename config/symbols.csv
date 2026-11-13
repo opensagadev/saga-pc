@@ -2218,7 +2218,7 @@ address,symbol,size,ctype
 0x4d4810,_TrafficAnimSys_Reset,363,
 0x4d4980,_TrafficAnimSys_Update,373,
 0x4d4b00,_TrafficAnimSys_Draw,434,
-0x4d4ce0,_RotateTargetMatrix,224,"void __cdecl(NUMTX *, i32)"
+0x4d4ce0,_RotateTargetMatrix,215,"void __cdecl(NUMTX *, i32)"
 0x4d4dc0,_Transform_MoveCode,1102,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x4d5210,_TransformDrawTargetPc,685,"void __cdecl(NUVEC *, f32, f32)"
 0x4d54c0,_Transform_TargettedByObj,131,GAMEOBJECT *__cdecl(void *)
@@ -3316,8 +3316,8 @@ address,symbol,size,ctype
 0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,u8)"
 0x50d240,_FindNextBreak,375,"i32 __cdecl(u8*,i32)"
 0x50d3c0,_FindNearestBreak,690,"i32 __cdecl(u8*,i32)"
-0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,u32)"
-0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,u32)"
+0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,i32)"
+0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
 0x50e410,_SmartTextExDrop,252,
 0x0050e520,_SmartTextSetFont,10,void __cdecl (VUFNT *)
 0x0050e530,_SetGameFont,10,void __cdecl (VUFNT *)
@@ -3340,7 +3340,7 @@ address,symbol,size,ctype
 0x50f260,_MenuUpdateVideoConfirmPc,227,void __cdecl(MENU *)
 0x50f350,_MenuUpdateHiresNoticePc,32,void __cdecl(MENU *)
 0x50f370,_MenuUpdateQuitPc,58,void __cdecl(MENU *)
-0x50f3b0,_MenuSmartTextEx,260,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,f32,i32,void*,i32,i32)"
+0x50f3b0,_MenuSmartTextEx,260,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,i32)"
 0x50f4c0,_MenuText3DEx,217,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,i32)"
 0x50f5a0,_DrawMenuHeader,113,void __cdecl(void)
 0x50f680,_MenuDrawNoticePc,95,"void __cdecl(char *, u32, u32, u32)"
@@ -6528,7 +6528,7 @@ address,symbol,size,ctype
 0x005ca2f0,_NuAnimBuffDestroyScratch,41,void __cdecl (ANI3_BUFFER_PC *)
 0x005ca320,_ANI_FixUpAddrs,107,"void __cdecl (ANI3_HEADER_PC *, i32, i32)"
 0x5ca390,_NuAnimBuffEvaluateCallback,30,"void __cdecl (ANI3_EVAL_CALLBACK_PC, void **, i32 *)"
-0x5ca3b0,_NuAnimSetForceEulerToQuat,17,
+0x5ca3b0,_NuAnimSetForceEulerToQuat,16,
 0x005ca420,_NuAnimGetAnimLOD,39,"void *__cdecl (void *, i32)"
 0x005ca450,_NuAnimNumNodes,30,
 0x005ca470,_NuAnimEndFrame,58,f32 __cdecl (void *)
@@ -7942,7 +7942,7 @@ address,symbol,size,ctype
 0x616230,?Push@NetworkObjectManager@@QAEHPBUNetworkObject@@PAVNetReplicator@@AAUReplicatorData@@PAUNetPeerPush@1@@Z,521,
 0x616440,?ReceiveAcquireMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,196,
 0x616510,?ReceiveAcquiredMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,215,
-0x6165f0,?Receive@NetworkObjectManager@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,700,
+0x6165f0,?Receive@NetworkObjectManager@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,752,
 0x6168e0,?PeerLeft@NetworkObjectManager@@UAEXABVV2Peer@@H@Z,412,
 0x616a80,?RegisterObject@NetworkObjectManager@@QAEHPAXPAUEdClass@@H@Z,203,
 0x616b50,?PushObject@NetworkObjectManager@@QAEHPAUNetworkObject@@PAUNetPeerPush@1@H@Z,386,
