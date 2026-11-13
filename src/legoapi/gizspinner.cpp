@@ -519,11 +519,11 @@ extern "C" i32 __cdecl GizSpinner_GetNumOutputs(void *gizmo) {
 }
 
 static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
-    if (spinner == NULL || spinner->anim_set == NULL || spinner->primary_anim_obj == NULL ||
-        spinner->primary_anim_obj->instance_animation == NULL)
+    GAMEANIMOBJ *object;
+    NUINSTANIM *instance;
+    if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
+        (instance = object->instance_animation) == NULL)
         return -1;
-    GAMEANIMOBJ *object = spinner->primary_anim_obj;
-    NUINSTANIM *instance = object->instance_animation;
     f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
     f32 rounded_margin = length / 40.0;
@@ -531,10 +531,10 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
     i32 last = spinner->output_count - 1;
     for (i32 output = 0; output < last; ++output) {
         f32 point = spinner->animation_points[output + 1];
-        if ((f64)point + margin > instance->ltime && instance->ltime > (f64)point - margin)
+        if (instance->ltime < (f64)point + margin && instance->ltime > (f64)point - margin)
             return output;
     }
-    if ((f64)length + margin > instance->ltime && (f64)length - margin < instance->ltime)
+    if (instance->ltime < (f64)length + margin && instance->ltime > (f64)length - margin)
         return last;
     return -1;
 }
