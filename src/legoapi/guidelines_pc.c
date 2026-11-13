@@ -67,8 +67,10 @@ void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     for (index = 0; index < world->guideline_count; ++index, ++guide) {
         guide->flags |= 3;
         if (progress != NULL && index < 32) {
-            guide->visible = (progress->visible_mask[index / 32] & (1 << (index & 31))) != 0;
-            guide->active = (progress->active_mask[index / 32] & (1 << (index & 31))) != 0;
+            i32 word = index / 32;
+            i32 bit = 1 << (index & 31);
+            guide->visible = (progress->visible_mask[word] & bit) != 0;
+            guide->active = (progress->active_mask[word] & bit) != 0;
         }
     }
 }
@@ -133,11 +135,12 @@ void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_
         return;
     guide = (GUIDELINE_RECORD_PC *)world->guidelines;
     for (index = 0; index < world->guideline_count && index < 32; ++index, ++guide) {
-        u32 mask = 1u << index;
+        i32 word = index / 32;
+        i32 bit = 1 << (index & 31);
         if (!guide->visible)
-            progress->visible_mask[0] &= ~mask;
+            progress->visible_mask[word] &= ~bit;
         if (!guide->active)
-            progress->active_mask[0] &= ~mask;
+            progress->active_mask[word] &= ~bit;
     }
 }
 
