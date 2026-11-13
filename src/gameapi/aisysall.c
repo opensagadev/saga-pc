@@ -16759,12 +16759,11 @@ i32 __cdecl Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
 
     AIMoveInstruction(packet, NULL, 0.0f, NULL, 4, packet->movement_instruction_parameter);
 
-    if (!(processor->action_timer > completion_time)) {
-        return 0;
+    if (processor->action_timer > completion_time) {
+        processor->action_timer -= elapsed;
+        return processor->action_timer <= completion_time;
     }
-
-    processor->action_timer -= elapsed;
-    return completion_time >= processor->action_timer;
+    return 0;
 }
 
 i32 __cdecl Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
