@@ -688,7 +688,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT_PC *light, f32 elapsed) {
                 light->ambient.y = light->colour.y * blend + light->secondary_colour.y * (1.0f - blend);
                 light->ambient.z = light->colour.z * blend + light->secondary_colour.z * (1.0f - blend);
                 if (light->parameter_54 >= light->field_64) {
-                    light->field_64 = -light->parameters[2] - NuRandFloat() * light->parameters[3];
+                    light->field_64 = -light->parameters[2] - (NuRandFloat() * light->parameters[3]);
                     light->parameter_54 = 0.0f;
                 }
             } else {
@@ -4061,7 +4061,7 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
         if (hide_types[curr_set->lights[i].type])
             continue;
         distance =
-            (RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x) +
+            ((RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x)) +
             (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
             (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
         if (distance < RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius && distance < nearest_distance) {
