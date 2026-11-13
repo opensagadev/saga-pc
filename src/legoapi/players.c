@@ -2249,6 +2249,12 @@ void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     }
 }
 
+typedef struct player_init_flags_pc_s {
+    u8 unknown_000[0xe20];
+    u32 flags_e20_bits_0_15 : 16;
+    u32 stored_flag : 1;
+} PLAYER_INIT_FLAGS_PC;
+
 void __cdecl Players_Init(void) {
     GAMEOBJECT **players = (GAMEOBJECT **)Player;
     PLAYER_INIT_PROGRESS_PC *progress = (PLAYER_INIT_PROGRESS_PC *)PlayerProgress;
@@ -2301,18 +2307,18 @@ void __cdecl Players_Init(void) {
             object->helmet = 0;
             if (UsePlayerList != 0) {
                 i32 slot = (i8)object->field_280;
-                object->player_controlled = progress[slot].active;
+                object->player_controlled = PlayerProgress[slot].active;
                 if (Area != last_area) {
                     object->flags_e20 &= ~0x10000u;
                     extra->previous_state = 0;
                 } else if (UsePlayerList == 1) {
-                    object->flags_e20 ^= ((u32)progress[slot].stored_flag << 16 ^ object->flags_e20) & 0x10000;
-                    object->current_hp = progress[slot].hitpoints;
+                    ((PLAYER_INIT_FLAGS_PC *)object)->stored_flag = PlayerProgress[slot].field_7;
+                    object->current_hp = PlayerProgress[slot].hitpoints;
                     if (object->current_hp > object->field_107e)
                         object->current_hp = (i8)object->field_107e;
-                    object->helmet = (i8)progress[slot].helmet;
-                    extra->previous_state = progress[slot].previous_state;
-                    object->powerup_time = progress[slot].powerup_time;
+                    object->helmet = PlayerProgress[slot].field_a;
+                    extra->previous_state = PlayerProgress[slot].unknown_0004;
+                    object->powerup_time = PlayerProgress[slot].field_c;
                     object->suit = PlayerSuit[slot];
                     if (object->torpedo != NULL)
                         object->torpedo->count = PlayerTorpedoCount[slot];
@@ -2355,11 +2361,12 @@ void __cdecl Players_Init(void) {
     UsePlayerList = 0;
     for (index = 0; index < 2; ++index) {
         if (players[index] != NULL) {
-            PLAYER_COIN_PACKET_PC *coins;
             players[index]->coin_packet = &CoinPacket[index];
-            coins = (PLAYER_COIN_PACKET_PC *)players[index]->coin_packet;
-            coins->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
-            coins->coins = Area == last_area ? progress[index].coins : 0;
+            ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
+            if (Area == last_area)
+                ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->coins = progress[index].coins;
+            else
+                ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->coins = 0;
             players[index]->gizforce_los_info = &GizForceLOSInfo[index];
             memcpy(&BackUpPlayers[index], players[index], 0x10d8);
         }
