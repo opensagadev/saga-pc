@@ -1119,7 +1119,7 @@ address,symbol,size,ctype
 0x466940,_GizForceSFX_completesfx,72,
 0x466990,_GizForceSFX_returnsfx,72,
 0x4669e0,_GizForceSFX_Configure,258,"void __cdecl(WORLDINFO *,char *)"
-0x466af0,_ForceCopyNamePrefixPc,62,char * (char * source; char * destination; i32 capacity) optimizer-private
+0x466af0,_ForceCopyNamePrefixPc,62,char * (char * destination; char * source; i32 capacity) optimizer-private
 0x466b30,_ForceFindBaseSpecialPc,179,void (GIZFORCE_PC *) optimizer-private
 0x466bf0,_edgizforce_ReadAnimSetData,43,void __cdecl(GAMEANIMOBJ *; u8)
 0x466c20,_GizForces_Load,784,
