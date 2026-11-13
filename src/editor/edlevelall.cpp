@@ -5725,13 +5725,13 @@ void EdClass::CopyObject(void *destination, void *source) {
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (member->attributes & 0x1800000)
             continue;
-        if (member->attributes < 0) {
+        if (member->attributes & 0x80000000) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *source_member = member->GetMemberObject(source);
             void *destination_member = member->GetMemberObject(destination);
             member_class->CopyObject(destination_member, source_member);
         } else {
-            u32 data[64];
+            u8 data[256];
             member->GetMemberData(source, member->type_id, data, sizeof(data));
             member->SetMemberData(destination, member->type_id, data, sizeof(data), NULL);
         }
