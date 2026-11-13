@@ -1102,8 +1102,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 object->field_7a8 += 0x8000;
             return;
         }
-        if (!((static_cast<i16>(old_phase) > -1 && static_cast<i16>(object->field_7a8) <= -1) ||
-              object->field_7a8 < old_phase))
+        if (!((old_phase < 0x8000 && object->field_7a8 >= 0x8000) || object->field_7a8 < old_phase))
             return;
         i32 change = -10;
         if (object->pad->input_magnitude != 0.0f) {
