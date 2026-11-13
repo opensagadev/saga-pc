@@ -1222,7 +1222,7 @@ void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
 void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
     DEBRISKEY_PC *key;
     DEBRIS_INFO_PC *effect;
-    f32 now, end_time, emission_time, interval;
+    f32 end_time, emission_time, interval;
     i32 count;
     if (duration < 0.0f || handle == -1)
         return;
@@ -1232,9 +1232,13 @@ void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
         return;
     if (duration == 0.0f)
         duration = effect->particle_lifetime;
-    now = effect->time_group == 4 ? panelglobaltime : globaltime;
-    end_time = now + debris_time_increment;
-    emission_time = now - duration;
+    if (effect->time_group == 4) {
+        end_time = panelglobaltime + debris_time_increment;
+        emission_time = panelglobaltime - duration;
+    } else {
+        end_time = globaltime + debris_time_increment;
+        emission_time = globaltime - duration;
+    }
     if (key->previous_allocated_chunk_count == 0)
         DebReAlloc(key,
                    (i32)(forced_debris_thinning != 0 ? effect->max_particles / debris_thinning_level
@@ -1244,13 +1248,13 @@ void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
     key->finite = 1;
     if (key->allocated_chunk_count <= 0)
         return;
+    count = 0;
     interval = 1.0f / (forced_debris_thinning != 0
                            ? effect->frequency / debris_thinning_level
                            : effect->frequency /
                                  (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level));
     key->emission_epoch = emission_time;
     emission_time += interval;
-    count = 0;
     while (emission_time < end_time && ++count < 1000) {
         DEBRISPARTICLE_PC *particle = key->generator(key, effect, emission_time);
         if (effect->process_spheres != 0 && particle != NULL)
