@@ -334,11 +334,10 @@ void __cdecl DrawTimerPc(i32 time, i32 expanded, i32 reset) {
 
 extern f32 HudBossIconScalePc, MeleeRowsSpacingPc;
 
-#define MELEE_TARGET_SPREAD_PC (1.0 - ((f64)NU_SIN_LUT(phase) + 1.0) * 0.5)
-
 void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
     f32 alpha, scale, spacing, time, half_count, left, right;
-    i32 phase, split, index;
+    f64 wave;
+    i32 split, index;
     if (FadeSys.fade != 0.0f || count <= 0)
         return;
     alpha = statstime;
@@ -347,14 +346,14 @@ void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
     time = SuperStory != 0 ? 1.0f : minikittime;
     split = (count + 1) / 2;
     half_count = (f32)split;
-    phase = (i32)((f64)time * 32768.0 + 16384.0);
+    wave = ((f64)NU_SIN_LUT((i32)((f64)time * 32768.0 + 16384.0)) + 1.0) * 0.5;
     if ((count & 1) != 0) {
-        left = (f32)(0.0 - (((f64)0.4f + 0.5 * (f64)spacing - (f64)0.05f * half_count) * MELEE_TARGET_SPREAD_PC));
+        left = (f32)(0.0 - ((f64)0.4f + 0.5 * (f64)spacing - (f64)0.05f * half_count) * (1.0 - wave));
         half_count = (f32)((f64)half_count - 1.0);
-        right = (f32)(((f64)0.4f - 0.5 * (f64)spacing - (f64)0.05f * half_count) * MELEE_TARGET_SPREAD_PC + spacing);
+        right = (f32)(((f64)0.4f - 0.5 * (f64)spacing - (f64)0.05f * half_count) * (1.0 - wave) + spacing);
     } else {
-        left = (f32)((f32)(-(0.5 * (f64)spacing)) - ((f64)0.4f - (f64)0.05f * half_count) * MELEE_TARGET_SPREAD_PC);
-        right = (f32)(((f64)0.4f - (f64)0.05f * half_count) * MELEE_TARGET_SPREAD_PC + (f32)(0.5 * (f64)spacing));
+        left = (f32)((f32)(-(0.5 * (f64)spacing)) - ((f64)0.4f - (f64)0.05f * half_count) * (1.0 - wave));
+        right = (f32)(((f64)0.4f - (f64)0.05f * half_count) * (1.0 - wave) + (f32)(0.5 * (f64)spacing));
     }
     alpha = (f32)((1.0 - CurrentHintAlpha()) * alpha);
     for (index = 0; index < count; ++index) {
@@ -369,8 +368,6 @@ void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
         }
     }
 }
-
-#undef MELEE_TARGET_SPREAD_PC
 
 /* PC 0x0087b950 / 0x0087b970 / 0x0087b980 / 0x0087b99c / 0x0087b9a4: melee target counter state. */
 i8 meleeTarg_maxCount[4] = {0};
