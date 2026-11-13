@@ -1470,12 +1470,10 @@ GIZMOBLOWUP_PC *__cdecl FindNearestGizmoBlowUp(WORLDINFO *world, NUVEC *position
         GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
         if ((blowup->status_flags & 0x800000) != 0 && (blowup->status_flags & 1) == 0 &&
             (blowup->status_flags & 0x4000) != 0) {
-            NUVEC delta;
-            f32 distance;
-            delta.x = blowup->position.x - position->x;
-            delta.y = blowup->position.y - position->y;
-            delta.z = blowup->position.z - position->z;
-            distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            f32 dx = blowup->position.x - position->x;
+            f32 dy = blowup->position.y - position->y;
+            f32 dz = blowup->position.z - position->z;
+            f32 distance = dx * dx + dy * dy + dz * dz;
             if (distance < max_distance_squared && distance < nearest_distance) {
                 nearest_distance = distance;
                 nearest = blowup;
