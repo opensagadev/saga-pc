@@ -292,8 +292,8 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters.velocity = &velocity;
     parameters.field_14 = 0.1f;
     parameters.field_18 = 0.1f;
-    parameters.time_step = FRAMETIME;
     parameters.special = &WORLD->level_objects[0xe6].special;
+    parameters.time_step = FRAMETIME;
     parameters.gravity = -2.0f;
     parameters.flags = 0x313;
     parameters.owner = object;
@@ -304,12 +304,13 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     if (part == NULL)
         return;
     part->force_flags = (u16)ObjHitObj_Flags(object);
-    if (!(delay > 0.0f)) {
+    if (delay > 0.0f) {
+        ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = delay;
+    } else {
         part->move_fn = NULL;
         part->draw_fn = NULL;
-        delay = 0.0f;
+        ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = 0.0f;
     }
-    ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = delay;
     object->flags_1fc_word &= ~0x1000u;
     object->ai_packet.reset_mode = 3;
 }
