@@ -811,7 +811,25 @@
    "member": "build\\intel\\mt_obj\\chsize.obj",
    "symbols": [
     "__chsize_nolock",
-    "__chsize"
+    "__chsize",
+    "__chsize_s"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 187,
+   "member": "build\\intel\\mt_obj\\close.obj",
+   "symbols": [
+    "__close_nolock",
+    "__close"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 188,
+   "member": "build\\intel\\mt_obj\\commit.obj",
+   "symbols": [
+    "__commit"
    ]
   },
   {
@@ -826,10 +844,72 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 200,
+   "member": "build\\intel\\mt_obj\\ioinit.obj",
+   "symbols": [
+    "__ioinit",
+    "__ioterm"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 201,
+   "member": "build\\intel\\mt_obj\\isatty.obj",
+   "symbols": [
+    "__isatty"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 203,
+   "member": "build\\intel\\mt_obj\\lseek.obj",
+   "symbols": [
+    "__lseek_nolock",
+    "__lseek"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 204,
+   "member": "build\\intel\\mt_obj\\lseeki64.obj",
+   "symbols": [
+    "__lseeki64_nolock",
+    "__lseeki64"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 206,
    "member": "build\\intel\\mt_obj\\open.obj",
    "symbols": [
-    "__sopen_s"
+    "__sopen_s",
+    "libcmt#00206:__tsopen_nolock",
+    "__sopen_helper",
+    "__open",
+    "__sopen"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 208,
+   "member": "build\\intel\\mt_obj\\osfinfo.obj",
+   "symbols": [
+    "__set_osfhnd",
+    "__free_osfhnd",
+    "__get_osfhandle",
+    "___lock_fhandle",
+    "__unlock_fhandle",
+    "__alloc_osfhnd",
+    "__open_osfhandle"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 210,
+   "member": "build\\intel\\mt_obj\\read.obj",
+   "symbols": [
+    "__read_nolock",
+    "__read"
    ]
   },
   {
@@ -838,7 +918,18 @@
    "member": "build\\intel\\mt_obj\\setmode.obj",
    "symbols": [
     "__set_fmode",
-    "__get_fmode"
+    "__get_fmode",
+    "__setmode_nolock",
+    "__setmode"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 215,
+   "member": "build\\intel\\mt_obj\\write.obj",
+   "symbols": [
+    "__write_nolock",
+    "__write"
    ]
   },
   {
@@ -1572,7 +1663,8 @@
    "member": "build\\intel\\mt_obj\\fgetwc.obj",
    "symbols": [
     "_fgetwc",
-    "_getwc"
+    "_getwc",
+    "__fgetwc_nolock"
    ]
   },
   {
@@ -1585,11 +1677,37 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 483,
+   "member": "build\\intel\\mt_obj\\fputc.obj",
+   "symbols": [
+    "_fputc",
+    "_putc"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 486,
    "member": "build\\intel\\mt_obj\\fputwc.obj",
    "symbols": [
     "_fputwc",
-    "_putwc"
+    "_putwc",
+    "__fputwc_nolock"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 489,
+   "member": "build\\intel\\mt_obj\\_filbuf.obj",
+   "symbols": [
+    "__filbuf"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 490,
+   "member": "build\\intel\\mt_obj\\_filwbuf.obj",
+   "symbols": [
+    "__filwbuf"
    ]
   },
   {
@@ -1602,7 +1720,24 @@
     "__lock_file",
     "__lock_file2",
     "__unlock_file",
-    "__unlock_file2"
+    "__unlock_file2",
+    "___initstdio"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 492,
+   "member": "build\\intel\\mt_obj\\_flsbuf.obj",
+   "symbols": [
+    "__flsbuf"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 493,
+   "member": "build\\intel\\mt_obj\\_flswbuf.obj",
+   "symbols": [
+    "__flswbuf"
    ]
   },
   {
@@ -1686,7 +1821,8 @@
     "__fprintf_s_l",
     "_fprintf_s",
     "__fprintf_p_l",
-    "__fprintf_p"
+    "__fprintf_p",
+    "_fprintf"
    ]
   },
   {
@@ -1714,7 +1850,8 @@
    "index": 512,
    "member": "build\\intel\\mt_obj\\ftell.obj",
    "symbols": [
-    "_ftell"
+    "_ftell",
+    "__ftell_nolock"
    ]
   },
   {
@@ -1773,6 +1910,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 539,
+   "member": "build\\intel\\mt_obj\\stream.obj",
+   "symbols": [
+    "__getstream"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 543,
    "member": "build\\intel\\mt_obj\\swscanf.obj",
    "symbols": [
@@ -1788,7 +1933,8 @@
    "index": 546,
    "member": "build\\intel\\mt_obj\\ungetc.obj",
    "symbols": [
-    "_ungetc"
+    "_ungetc",
+    "__ungetc_nolock"
    ]
   },
   {
@@ -1796,7 +1942,8 @@
    "index": 547,
    "member": "build\\intel\\mt_obj\\ungetwc.obj",
    "symbols": [
-    "_ungetwc"
+    "_ungetwc",
+    "__ungetwc_nolock"
    ]
   },
   {
@@ -1823,7 +1970,8 @@
     "__vfprintf_p_l",
     "_vfprintf",
     "_vfprintf_s",
-    "__vfprintf_p"
+    "__vfprintf_p",
+    "_vfprintf_helper"
    ]
   },
   {
@@ -1899,7 +2047,8 @@
     "libcmt#00579:__hextodec",
     "libcmt#00579:__inc",
     "libcmt#00579:__un_inc",
-    "libcmt#00579:__whiteout"
+    "libcmt#00579:__whiteout",
+    "__input_l"
    ]
   },
   {
@@ -1911,7 +2060,8 @@
     "libcmt#00580:__hextodec",
     "libcmt#00580:__inc",
     "libcmt#00580:__un_inc",
-    "libcmt#00580:__whiteout"
+    "libcmt#00580:__whiteout",
+    "__input_s_l"
    ]
   },
   {
@@ -1921,7 +2071,8 @@
    "symbols": [
     "libcmt#00581:_write_char",
     "libcmt#00581:_write_multi_char",
-    "libcmt#00581:_write_string"
+    "libcmt#00581:_write_string",
+    "__output_l"
    ]
   },
   {
@@ -1933,7 +2084,8 @@
     "libcmt#00582:_write_char",
     "libcmt#00582:_write_multi_char",
     "libcmt#00582:_write_string",
-    "_get_crtdouble_arg"
+    "_get_crtdouble_arg",
+    "__output_p_l"
    ]
   },
   {
@@ -1943,7 +2095,8 @@
    "symbols": [
     "libcmt#00583:_write_char",
     "libcmt#00583:_write_multi_char",
-    "libcmt#00583:_write_string"
+    "libcmt#00583:_write_string",
+    "__output_s_l"
    ]
   },
   {
@@ -2273,7 +2426,8 @@
     "libcmt#00820:__tzset_nolock",
     "__set_daylight",
     "__set_dstbias",
-    "__set_timezone"
+    "__set_timezone",
+    "libcmt#00820:__isindst_nolock"
    ]
   },
   {
