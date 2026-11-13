@@ -1,12 +1,13 @@
 # saga-pc
 
 <!-- matching-badge -->
-![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-90.913%25-brightgreen)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-94.207%25-brightgreen)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 <!-- mapping-badge -->
 
 | Metric / coverage | Meaning |
 | --- | --- |
+| ![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-94.207%25-brightgreen) | Similarity of code, alignment padding excluded: objdiff's fuzzy match of each original function weighted by its size, over all original code (.text without alignment padding and the data stored in it; unported and unidentified code count as 0). Same definition as the whole-binary objdiff fuzzy match of the Android decompilation. |
 | ![exact code match](https://img.shields.io/badge/exact%20code%20match-60.545%25-orange) | Byte-identical code and the alignment padding after it. |
 | ![mapped code](https://img.shields.io/badge/mapped%20code-100.000%25-brightgreen) | Known code extents and the alignment padding between them. |
 | ![named code](https://img.shields.io/badge/named%20code-94.285%25-brightgreen) | Mapped code under identified names; another 2.417% is bounded under address names (`fun_XXXXXXXX`). |
