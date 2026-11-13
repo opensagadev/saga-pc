@@ -383,33 +383,6 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 
-i32 __cdecl SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
-    (void)hit_type;
-    if (blowup != NULL) {
-        if (NuStrCmp(blowup->name, "thermocrate_011") == 0)
-            return 0;
-        if (NuStrCmp(blowup->name, "thermocrate_021") == 0)
-            return 0;
-        if (NuStrCmp(blowup->name, "thermocrate_031") == 0)
-            return 0;
-        if (NuStrCmp(blowup->name, "minikit101") == 0)
-            return 0;
-    }
-    return 1;
-}
-
-void SpeederChaseA_Reset(WORLDINFO *unused0) {
-    troopercannons_beenReset = 0;
-    InitBikeParts();
-    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "SpeedersToKill", NULL);
-    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "SpeedersKilled", NULL);
-    LevAIMessage[2] = CheckGizAIMessage(gizaimessagesys, "Stage", NULL);
-    LevAIMessage[3] = CheckGizAIMessage(gizaimessagesys, "Phase", NULL);
-    LevAIMessage[4] = CheckGizAIMessage(gizaimessagesys, "KeepPlayersOnSpeeders", NULL);
-    LevAIMessage[5] = CheckGizAIMessage(gizaimessagesys, "SpeederMode", NULL);
-    players_going_forward = 1;
-}
-
 /* PC4c6c50/21, append to shard.c (or retain C linkage in C++).
  * 880100 native callback BSS0, single owner; SHOPACTIVE existing880494. */
 extern void(__cdecl *ShopDrawPanelFnPc)(void);
