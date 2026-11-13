@@ -200,6 +200,12 @@ i32 __cdecl rtlDynamicMasterEnable(i32 enabled) {
     return old;
 }
 
+/* Absolute value by clearing the float's sign bit; retail keeps an out-of-line copy at 0x633e10. */
+static __inline f32 RtlFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 /* nu2 helper; VC8 inlines it here and also keeps an out-of-line copy (retail 0x633e30). The shared pointer it
    leaves keeps ambient in EBX. */
 static __inline void NuVecClear(NUVEC *v) {
@@ -3970,11 +3976,7 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
     f32 dist;
     i16 previous_yaw;
     i16 previous_pitch;
-    union {
-        f32 value;
-        u32 bits;
-    } distance;
-    u32 bits;
+    f32 distance;
     f32 move_scale;
     NUVEC previous_position;
     RTL_LIGHT_PC updated;
@@ -4013,11 +4015,8 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
         previous_yaw = (i16)(peay);
         previous_pitch = (i16)(peax);
         edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
-        distance.value = edcamGetDist();
-        bits = distance.bits;
-        bits &= 0x7fffffff;
-        distance.bits = bits;
-        move_scale = 1.0f > camscale_factor * distance.value ? 1.0f : camscale_factor * distance.value;
+        distance = RtlFabsPc(edcamGetDist());
+        move_scale = 1.0f > camscale_factor * distance ? 1.0f : camscale_factor * distance;
 
         if (menu_cancelled && pad->digital_buttons)
             return 0;
@@ -4242,11 +4241,7 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
     static NUVEC dragoff;
     static NUVEC dragstart;
     static RTL_FOG_MIGRATION_PC *drag_fog;
-    union {
-        f32 value;
-        u32 bits;
-    } distance;
-    u32 bits;
+    f32 distance;
     f32 camera_step;
 
     fog_editor_active = 1;
@@ -4275,11 +4270,8 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
     } else {
         edcamMoveEx(pad, delta_time);
         edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
-        distance.value = edcamGetDist();
-        bits = distance.bits;
-        bits &= 0x7fffffff;
-        distance.bits = bits;
-        camera_step = 1.0f > camscale_factor * distance.value ? 1.0f : camscale_factor * distance.value;
+        distance = RtlFabsPc(edcamGetDist());
+        camera_step = 1.0f > camscale_factor * distance ? 1.0f : camscale_factor * distance;
 
         if (menu_cancelled && pad->digital_buttons)
             return 0;
