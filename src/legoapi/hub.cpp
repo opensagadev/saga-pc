@@ -2903,8 +2903,8 @@ static void HubDrawSelectModePc(void) {
     if (MainRenderTime <= 0.0f)
         HubDrawSelectModeMenuPc(1, alpha);
     else if (MainRenderTime < 1.0f) {
-        const f32 menu_alpha = 1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff];
-        HubDrawSelectModeMenuPc(0, menu_alpha * alpha);
+        HubDrawSelectModeMenuPc(
+            0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
     if (!(MainRenderTime > 0.0f) && selectmodemode == 0 && alpha == 1.0f)
         DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac,
