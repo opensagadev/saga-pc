@@ -948,12 +948,31 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     return set;
 }
 
+void __cdecl rtlSaveSet(char *path, RTL_SET_PC *set) {
+    NUFILE file = NuFileOpen(path, 1);
+    if (file != 0) {
+        NuFileWrite(file, set, sizeof(RTL_SET_PC));
+        NuFileClose(file);
+    }
+}
+
 NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
 i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
     rtl_dynamic_pool = NuLstCreateBuff(max_lights, sizeof(RTL_LIGHT_PC), buffer, end, 0x10);
     rtl_dynamic_max = max_lights;
     rtl_dynamic_cnt = 0;
     return max_lights;
+}
+
+void __cdecl rtlSetShadowFlickerScale(NUVEC *scale) {
+    rtl_shadow_flicker = *scale;
+}
+
+void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
+    if (time != 0.0f)
+        rtl_shadow_blend_rate = 1.0f / time;
+    else
+        rtl_shadow_blend_rate = 10000.0f;
 }
 
 #include <string.h>
@@ -1373,6 +1392,9 @@ void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
 f32 edrtl_text_scale = 1.0f;
 i32 rtl_debug = 0;
 RTL_SET_PC *curr_set = NULL;
+RTL_SET_PC *__cdecl rtlGetCurrentSet(void) {
+    return curr_set;
+}
 RTL_LIGHT_PC *curr_rtl = NULL;
 RTL_LIGHT_PC *base_rtl = NULL;
 RTL_LIGHT_PC *rtl_locked = NULL;
@@ -1380,6 +1402,13 @@ NUMTL *mtls[3] = {0};
 i32 modifier_cnt = 1;
 static char *default_modifier_names[1] = {"default"};
 char **modifier_names = default_modifier_names;
+
+void __cdecl rtlSetModifiers(f32 *values, char **names, i32 count) {
+    modifiers = values;
+    modifier_names = names;
+    modifier_cnt = count > 32 ? 32 : count;
+}
+
 f32 lockflash = 0.0f;
 f32 lockflash_rate = 0.7f;
 static i32 maxundo = 0;
@@ -1390,6 +1419,11 @@ static i32 helpmode = 0;
 i32 help_line = 190;
 char *userid_names[16] = {"NO ID", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
                           "ID 8",  "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+
+void __cdecl rtlSetUserIdName(i32 index, char *name) {
+    if (index < 16 && index > 0)
+        userid_names[index] = name;
+}
 STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
@@ -2629,6 +2663,47 @@ void __cdecl edrtlSaveUndo(void) {
     }
 }
 
+static void edrtlInvalidateUndo(void) {
+    rtl_undo_cnt = 0;
+    rtl_undo_maxcnt = 0;
+    rtl_undo_ix = 0;
+    undo_item->flags |= 2u;
+    redo_item->flags |= 2u;
+}
+
+extern f32 min_r, def_fr;
+
+void __cdecl rtlSetMinR(f32 radius) {
+    min_r = radius;
+    def_fr = min_r * 2.0f;
+}
+
+i32 __cdecl NuMiscNextPow2(i32 value);
+void __cdecl RtlUiCreateFailedPc(void);
+
+/* Carves the undo snapshots (128 lights each), the per-snapshot light pointers and camera positions from the
+   editor buffer; at least two snapshots. */
+void __cdecl rtlSetUndoBuffer(VARIPTR *buffer, VARIPTR end, i32 count) {
+    maxundo = NuMiscNextPow2(count) < 2 ? 2 : NuMiscNextPow2(count);
+    rtl_undo = (RTL_LIGHT_PC *)((buffer->addr + 3) & ~3);
+    buffer->addr = (buffer->addr + 3) & ~3;
+    buffer->addr += maxundo * sizeof(RTL_LIGHT_PC) * 128;
+    curr_rtl_undo = (RTL_LIGHT_PC **)((buffer->addr + 3) & ~3);
+    buffer->addr = (buffer->addr + 3) & ~3;
+    buffer->addr += maxundo * sizeof(RTL_LIGHT_PC *);
+    rtl_locked_undo = (RTL_LIGHT_PC **)((buffer->addr + 3) & ~3);
+    buffer->addr = (buffer->addr + 3) & ~3;
+    buffer->addr += maxundo * sizeof(RTL_LIGHT_PC *);
+    base_rtl_undo = (RTL_LIGHT_PC **)((buffer->addr + 3) & ~3);
+    buffer->addr = (buffer->addr + 3) & ~3;
+    buffer->addr += maxundo * sizeof(RTL_LIGHT_PC *);
+    curpos_undo = (NUVEC *)((buffer->addr + 3) & ~3);
+    buffer->addr = (buffer->addr + 3) & ~3;
+    buffer->addr += maxundo * sizeof(NUVEC);
+    if (buffer->addr > end.addr)
+        RtlUiCreateFailedPc();
+}
+
 void __cdecl cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (clipboard_light.type != 0) {
         edrtlSaveUndo();
@@ -2952,6 +3027,11 @@ __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0
 __declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
     "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
     "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+
+void __cdecl rtlSetAssocName(i32 index, char *name) {
+    if (index < 16)
+        camdir_id_names[index] = name;
+}
 
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
@@ -3473,6 +3553,13 @@ void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 b
     RefreshUI();
 }
 
+void __cdecl rtlScaleSetMultipliers(f32 scale, RTL_SET_PC *set_ptr) {
+    RTL_SET_PC *set = set_ptr;
+    i32 i;
+    for (i = 0; i < 128; ++i)
+        set->lights[i].intensity = set->lights[i].intensity * scale;
+}
+
 void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 
 void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
@@ -3738,11 +3825,7 @@ void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     curr_set = rtlLoadSet(path, &buffer, 0x7fffffff);
     curr_rtl = NULL;
     base_rtl = NULL;
-    rtl_undo_cnt = 0;
-    rtl_undo_maxcnt = 0;
-    rtl_undo_ix = 0;
-    undo_item->flags |= 2u;
-    redo_item->flags |= 2u;
+    edrtlInvalidateUndo();
     RefreshUI();
 }
 
