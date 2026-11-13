@@ -605,179 +605,179 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
     if (EdFileOpen(path, 0)) {
         EdFileSetReadWrongEndianess(1);
         version = EdFileReadInt();
-        if (version <= 9 && version >= 1) {
-            if (version >= 9) {
-                edgra_global_fadein = EdFileReadFloat();
-                edgra_global_fadeout = EdFileReadFloat();
-            } else {
-                edgra_global_fadein = 15.0f;
-                edgra_global_fadeout = 25.0f;
-            }
-            clump_count = EdFileReadInt();
-            if (clump_count + edgra_clumps_used > EDGRA_MAX_CLUMPS)
-                clump_count = EDGRA_MAX_CLUMPS - edgra_clumps_used;
-            matrix_count = version >= 8 ? EdFileReadInt() : 0x3000;
-            vector_cursor = edbits_editmode == 1 && edgra_vecbuffer != NULL
-                                ? (u32)edgra_vecbuffer
-                                : matrix_base + matrix_count * sizeof(NUMTX);
-            slot = 0;
-            for (file_index = 0; file_index < clump_count; ++file_index) {
-                PC_EDGRACLUMP *clump;
-                char name[20];
-                i32 skipped_individuals, individual, element;
-                /* Retail proceeds with the limit record if no free slot was found. */
-                while (GrassClumps[slot].element_count != 0 && slot < EDGRA_MAX_CLUMPS)
-                    ++slot;
-                clump = &GrassClumps[slot];
-                EdFileRead(name, sizeof(name));
-                clump->special_index = edbitsLookupInstance(name, (NUGSCN *)scene);
-                clump->element_count = EdFileReadInt();
-                clump->position.x = EdFileReadFloat();
-                clump->position.y = EdFileReadFloat();
-                clump->position.z = EdFileReadFloat();
-                clump->size = EdFileReadFloat();
-                clump->field_18 = EdFileReadFloat();
-                if (version >= 2)
-                    clump->flags = EdFileReadInt();
-                else
-                    clump->flags = 1;
-                if (version >= 3)
-                    clump->field_20 = EdFileReadFloat();
-                else
-                    clump->field_20 = 1.0f;
-                clump->page = (u8)page;
-                if (version >= 5) {
-                    clump->unknown_25 = (u8)EdFileReadChar();
-                    clump->unknown_26 = (u8)EdFileReadChar();
-                } else {
-                    clump->unknown_25 = 1;
-                    clump->unknown_26 = 1;
-                }
-                if (version >= 6)
-                    clump->kind = (u8)EdFileReadChar();
-                else
-                    clump->kind = 1;
-                if (version >= 4) {
-                    clump->seed = EdFileReadInt();
-                    clump->field_2c = EdFileReadFloat();
-                    clump->field_30 = EdFileReadFloat();
-                } else {
-                    clump->seed = 0;
-                    clump->field_2c = 0.2f;
-                    clump->field_30 = 1.7625f;
-                }
-                if (version >= 5) {
-                    clump->rotation_z = EdFileReadShort();
-                    clump->rotation_y = EdFileReadShort();
-                } else {
-                    clump->rotation_z = 0;
-                    clump->rotation_y = 0;
-                }
-                if (version >= 6) {
-                    clump->near_distance = EdFileReadFloat();
-                    clump->far_distance = EdFileReadFloat();
-                } else {
-                    clump->near_distance = 15.0f;
-                    clump->far_distance = 25.0f;
-                }
-                if (version >= 7) {
-                    clump->field_42 = (u8)EdFileReadChar();
-                    clump->field_43 = (u8)EdFileReadChar();
-                    clump->field_44 = EdFileReadFloat();
-                } else if (clump->kind == 1) {
-                    clump->field_42 = 0;
-                    clump->field_43 = 0;
-                    clump->field_44 = 0.0f;
-                    clump->near_distance = 20.0f;
-                    clump->far_distance = 20.0f;
-                } else if (clump->kind == 2) {
-                    clump->field_42 = 1;
-                    clump->field_43 = 1;
-                    clump->field_44 = 0.05f;
-                } else if (clump->kind == 3) {
-                    clump->field_42 = 0;
-                    clump->field_43 = 0;
-                    clump->field_44 = 0.0f;
-                }
-                skipped_individuals = 0;
-                if (version >= 6 && clump->kind == 3) {
-                    individual = 0;
-                    if (edgra_ind_clumps_used == EDGRA_MAX_INDIVIDUAL_CLUMPS) {
-                        skipped_individuals = clump->element_count;
-                        clump->element_count = 0;
-                    } else {
-                        while (IndGrassClumpsUsed[individual] != 0)
-                            ++individual;
-                        clump->individual_index = (i16)individual;
-                        IndGrassClumpsUsed[individual] = 1;
-                        if (clump->element_count > EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP) {
-                            skipped_individuals = clump->element_count - EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP;
-                            clump->element_count = EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP;
-                        }
-                        for (element = 0; element < clump->element_count; ++element) {
-                            GetIndGrassClump(individual, element)->position.x = EdFileReadFloat();
-                            GetIndGrassClump(individual, element)->position.y = EdFileReadFloat();
-                            GetIndGrassClump(individual, element)->position.z = EdFileReadFloat();
-                            GetIndGrassClump(individual, element)->field_0c = EdFileReadFloat();
-                            GetIndGrassClump(individual, element)->field_10 = EdFileReadShort();
-                            GetIndGrassClump(individual, element)->field_12 = EdFileReadShort();
-                        }
-                    }
-                    for (element = 0; element < skipped_individuals; ++element) {
-                        EdFileReadFloat();
-                        EdFileReadFloat();
-                        EdFileReadFloat();
-                        EdFileReadFloat();
-                        EdFileReadShort();
-                        EdFileReadShort();
-                    }
-                }
-                clump->vector_buffer = (void *)vector_cursor;
-                if (version >= 8) {
-                    edgra_page_vectors_valid[page] = 1;
-                    for (element = 0; element < clump->element_count; ++element) {
-                        ((NUVEC *)clump->vector_buffer)[element].x = EdFileReadFloat();
-                        ((NUVEC *)clump->vector_buffer)[element].y = EdFileReadFloat();
-                        ((NUVEC *)clump->vector_buffer)[element].z = EdFileReadFloat();
-                    }
-                } else
-                    edgra_page_vectors_valid[page] = 0;
-                if (clump->element_count < 4)
-                    clump->element_count = 4;
-                if (clump->special_index == -1)
-                    clump->element_count = 0;
-                if (file_index % edgra_clumpthin != 0 && edbits_editmode == 0) {
-                    clump->element_count = 0;
-                } else if (edgra_elementthin != 1 && edbits_editmode == 0) {
-                    clump->element_count = (edgra_elementthin + clump->element_count - 1) / edgra_elementthin;
-                }
-                if (clump->element_count > 0) {
-                    vector_cursor += clump->element_count * sizeof(NUVEC);
-                    ++edgra_clumps_used;
-                    edgra_last_clump_in_buffer = slot;
-                    edgra_free_vecbuffer = (void *)vector_cursor;
-                }
-            }
+        if (version > 9 || version < 1) {
             EdFileSetReadWrongEndianess(0);
             EdFileClose();
-            edgra_nearest = -1;
-            edgraDetermineNearestClump(1.0f);
-            edgra_page_scene[page] = (NUGSCN *)scene;
-            edgra_page_terrain[page] = (void *)terrain;
-            edgra_page_used[page] = 1;
-            if (edgra_page_vectors_valid[page]) {
-                void *saved_scene = PCGrassTerrainScene;
-                PCGrassTerrainScene = scene;
-                edgraCalculatePage((i8)page, 0);
-                PCGrassTerrainScene = saved_scene;
+            return -1;
+        }
+        if (version >= 9) {
+            edgra_global_fadein = EdFileReadFloat();
+            edgra_global_fadeout = EdFileReadFloat();
+        } else {
+            edgra_global_fadein = 15.0f;
+            edgra_global_fadeout = 25.0f;
+        }
+        clump_count = EdFileReadInt();
+        if (clump_count + edgra_clumps_used > EDGRA_MAX_CLUMPS)
+            clump_count = EDGRA_MAX_CLUMPS - edgra_clumps_used;
+        matrix_count = version >= 8 ? EdFileReadInt() : 0x3000;
+        vector_cursor = edbits_editmode == 1 && edgra_vecbuffer != NULL ? (u32)edgra_vecbuffer
+                                                                        : matrix_base + matrix_count * sizeof(NUMTX);
+        slot = 0;
+        for (file_index = 0; file_index < clump_count; ++file_index) {
+            PC_EDGRACLUMP *clump;
+            char name[20];
+            i32 skipped_individuals, individual, element;
+            /* Retail proceeds with the limit record if no free slot was found. */
+            while (GrassClumps[slot].element_count != 0 && slot < EDGRA_MAX_CLUMPS)
+                ++slot;
+            clump = &GrassClumps[slot];
+            EdFileRead(name, sizeof(name));
+            clump->special_index = edbitsLookupInstance(name, (NUGSCN *)scene);
+            clump->element_count = EdFileReadInt();
+            clump->position.x = EdFileReadFloat();
+            clump->position.y = EdFileReadFloat();
+            clump->position.z = EdFileReadFloat();
+            clump->size = EdFileReadFloat();
+            clump->field_18 = EdFileReadFloat();
+            if (version >= 2)
+                clump->flags = EdFileReadInt();
+            else
+                clump->flags = 1;
+            if (version >= 3)
+                clump->field_20 = EdFileReadFloat();
+            else
+                clump->field_20 = 1.0f;
+            clump->page = (u8)page;
+            if (version >= 5) {
+                clump->unknown_25 = (u8)EdFileReadChar();
+                clump->unknown_26 = (u8)EdFileReadChar();
+            } else {
+                clump->unknown_25 = 1;
+                clump->unknown_26 = 1;
             }
-            if (edbits_editmode != 1 || edgra_vecbuffer == NULL)
-                buffer->addr = vector_cursor;
-            (void)buffer_end;
-            return page;
+            if (version >= 6)
+                clump->kind = (u8)EdFileReadChar();
+            else
+                clump->kind = 1;
+            if (version >= 4) {
+                clump->seed = EdFileReadInt();
+                clump->field_2c = EdFileReadFloat();
+                clump->field_30 = EdFileReadFloat();
+            } else {
+                clump->seed = 0;
+                clump->field_2c = 0.2f;
+                clump->field_30 = 1.7625f;
+            }
+            if (version >= 5) {
+                clump->rotation_z = EdFileReadShort();
+                clump->rotation_y = EdFileReadShort();
+            } else {
+                clump->rotation_z = 0;
+                clump->rotation_y = 0;
+            }
+            if (version >= 6) {
+                clump->near_distance = EdFileReadFloat();
+                clump->far_distance = EdFileReadFloat();
+            } else {
+                clump->near_distance = 15.0f;
+                clump->far_distance = 25.0f;
+            }
+            if (version >= 7) {
+                clump->field_42 = (u8)EdFileReadChar();
+                clump->field_43 = (u8)EdFileReadChar();
+                clump->field_44 = EdFileReadFloat();
+            } else if (clump->kind == 1) {
+                clump->field_42 = 0;
+                clump->field_43 = 0;
+                clump->field_44 = 0.0f;
+                clump->near_distance = 20.0f;
+                clump->far_distance = 20.0f;
+            } else if (clump->kind == 2) {
+                clump->field_42 = 1;
+                clump->field_43 = 1;
+                clump->field_44 = 0.05f;
+            } else if (clump->kind == 3) {
+                clump->field_42 = 0;
+                clump->field_43 = 0;
+                clump->field_44 = 0.0f;
+            }
+            skipped_individuals = 0;
+            if (version >= 6 && clump->kind == 3) {
+                individual = 0;
+                if (edgra_ind_clumps_used == EDGRA_MAX_INDIVIDUAL_CLUMPS) {
+                    skipped_individuals = clump->element_count;
+                    clump->element_count = 0;
+                } else {
+                    while (IndGrassClumpsUsed[individual] != 0)
+                        ++individual;
+                    clump->individual_index = (i16)individual;
+                    IndGrassClumpsUsed[individual] = 1;
+                    if (clump->element_count > EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP) {
+                        skipped_individuals = clump->element_count - EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP;
+                        clump->element_count = EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP;
+                    }
+                    for (element = 0; element < clump->element_count; ++element) {
+                        GetIndGrassClump(individual, element)->position.x = EdFileReadFloat();
+                        GetIndGrassClump(individual, element)->position.y = EdFileReadFloat();
+                        GetIndGrassClump(individual, element)->position.z = EdFileReadFloat();
+                        GetIndGrassClump(individual, element)->field_0c = EdFileReadFloat();
+                        GetIndGrassClump(individual, element)->field_10 = EdFileReadShort();
+                        GetIndGrassClump(individual, element)->field_12 = EdFileReadShort();
+                    }
+                }
+                for (element = 0; element < skipped_individuals; ++element) {
+                    EdFileReadFloat();
+                    EdFileReadFloat();
+                    EdFileReadFloat();
+                    EdFileReadFloat();
+                    EdFileReadShort();
+                    EdFileReadShort();
+                }
+            }
+            clump->vector_buffer = (void *)vector_cursor;
+            if (version >= 8) {
+                edgra_page_vectors_valid[page] = 1;
+                for (element = 0; element < clump->element_count; ++element) {
+                    ((NUVEC *)clump->vector_buffer)[element].x = EdFileReadFloat();
+                    ((NUVEC *)clump->vector_buffer)[element].y = EdFileReadFloat();
+                    ((NUVEC *)clump->vector_buffer)[element].z = EdFileReadFloat();
+                }
+            } else
+                edgra_page_vectors_valid[page] = 0;
+            if (clump->element_count < 4)
+                clump->element_count = 4;
+            if (clump->special_index == -1)
+                clump->element_count = 0;
+            if (file_index % edgra_clumpthin != 0 && edbits_editmode == 0) {
+                clump->element_count = 0;
+            } else if (edgra_elementthin != 1 && edbits_editmode == 0) {
+                clump->element_count = (edgra_elementthin + clump->element_count - 1) / edgra_elementthin;
+            }
+            if (clump->element_count > 0) {
+                vector_cursor += clump->element_count * sizeof(NUVEC);
+                ++edgra_clumps_used;
+                edgra_last_clump_in_buffer = slot;
+                edgra_free_vecbuffer = (void *)vector_cursor;
+            }
         }
         EdFileSetReadWrongEndianess(0);
         EdFileClose();
+        edgra_nearest = -1;
+        edgraDetermineNearestClump(1.0f);
+        edgra_page_scene[page] = (NUGSCN *)scene;
+        edgra_page_terrain[page] = (void *)terrain;
+        edgra_page_used[page] = 1;
+        if (edgra_page_vectors_valid[page]) {
+            void *saved_scene = PCGrassTerrainScene;
+            PCGrassTerrainScene = scene;
+            edgraCalculatePage((i8)page, 0);
+            PCGrassTerrainScene = saved_scene;
+        }
+        if (edbits_editmode != 1 || edgra_vecbuffer == NULL)
+            buffer->addr = vector_cursor;
+        (void)buffer_end;
+        return page;
     }
     return -1;
 }
