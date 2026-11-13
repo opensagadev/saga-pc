@@ -13996,12 +13996,12 @@ extern "C" {
         } else {
             NUVEC4 minimum;
             NUVEC4 maximum;
-            minimum.x = center.x - world_extent.x;
-            minimum.y = center.y - world_extent.y;
-            minimum.z = center.z - world_extent.z;
             maximum.x = center.x + world_extent.x;
             maximum.y = center.y + world_extent.y;
             maximum.z = center.z + world_extent.z;
+            minimum.x = center.x - world_extent.x;
+            minimum.y = center.y - world_extent.y;
+            minimum.z = center.z - world_extent.z;
             display_scene->clip_bounds[display->instance_ix * 2] = minimum;
             display_scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
         }
