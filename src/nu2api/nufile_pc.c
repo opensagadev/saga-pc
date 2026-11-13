@@ -149,15 +149,15 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
         entry->flags = (((flags >> 2) | (host.flags & 0x40)) >> 4);
         entry->size = host.size;
         entry->created.second = host.created.second;
-        entry->created.hour = host.created.hour;
         entry->created.minute = host.created.minute;
+        entry->created.hour = host.created.hour;
         entry->created.day = host.created.day;
         entry->created.month = host.created.month;
-        entry->modified.second = host.modified.second;
         entry->created.year = (u16)(((u16)host.created.year_high << 8) + host.created.year_low);
+        entry->modified.second = host.modified.second;
+        entry->modified.minute = host.modified.minute;
         entry->modified.hour = host.modified.hour;
         entry->modified.day = host.modified.day;
-        entry->modified.minute = host.modified.minute;
         entry->modified.month = host.modified.month;
         entry->modified.year = (u16)(((u16)host.modified.year_high << 8) + host.modified.year_low);
         strcpy(entry->name, host.name);
