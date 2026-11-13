@@ -5185,14 +5185,14 @@ i32 __cdecl NuStrFindPosU(u8 *text, i32 character_index) {
     i32 index = 0, count = 0;
     if (character_index == 0)
         return 0;
-    if (text[0] == 0)
-        return 0;
-    do {
-        ++index;
-        ++count;
-        while ((u8)(text[index] - 0x80) <= 0x3f)
-            ++index;
-    } while (count != character_index && text[index] != 0);
+    while (text[index] != 0) {
+        index++;
+        count++;
+        while (text[index] >= 0x80 && text[index] <= 0xbf)
+            index++;
+        if (character_index == count)
+            break;
+    }
     return index;
 }
 
