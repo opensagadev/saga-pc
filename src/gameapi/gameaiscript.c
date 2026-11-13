@@ -8821,12 +8821,16 @@ i32 __cdecl Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     view = (AI_FORCE_FIELDS_PC *)force;
     if (!(view->runtime_flags & 1))
         return 0;
-    valid_category = CharCategory_IsCategory(object, (view->config_flags & 0x10) ? 1 : 0) != 0;
+    valid_category = 1;
+    if (view->config_flags & 0x10) {
+        if (CharCategory_IsCategory(object, 1) == 0)
+            valid_category = 0;
+    } else if (CharCategory_IsCategory(object, 0) == 0) {
+        valid_category = 0;
+    }
     if (triggered_by_hit) {
         view->runtime_flags |= 0x8000;
-        return 0;
-    }
-    if (valid_category) {
+    } else if (valid_category) {
         packet->movement_look_target = &view->position;
         object->pad->runtime_flags |= 4;
         ((AI_FORCE_OBJECT_PC *)object)->force = force;
@@ -8837,9 +8841,9 @@ i32 __cdecl Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
             }
             return 1;
         }
-        return GizForce_Complete(force) != 0;
-    }
-    if (FreePlay != 0) {
+        if (GizForce_Complete(force) != 0)
+            return 1;
+    } else if (FreePlay != 0) {
         processor->action_timer -= delta;
         if (processor->action_timer < 0.0f) {
             processor->action_timer = 0.5f;
