@@ -8070,14 +8070,11 @@ void EdRegistry::GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &coun
 /* Whether an object belongs in the stream: its replication group must match
  * and its flags must not exclude it. */
 static i32 IsStreamObject(EdStream &stream, EdClass *object_class, void *object) {
-    EdMember member;
-    i32 object_flags = 0;
     i16 group = 0;
+    i32 object_flags = 0;
     i32 result = 1;
-    if (object_class->FindMember(&member, object, 1, 1))
-        member.reference->GetAttributeData(member.object, 1, EdType_Int, &object_flags, 0);
-    if (object_class->FindMember(&member, object, 0x100, 1))
-        member.reference->GetAttributeData(member.object, 0x100, EdType_Short, &group, 0);
+    object_class->GetAttributeData(object, 1, EdType_Int, &object_flags, 0);
+    object_class->GetAttributeData(object, 0x100, EdType_Short, &group, 0);
     if (stream.unknown_10 != group)
         result = 0;
     if (stream.flags & 0x400000) {
