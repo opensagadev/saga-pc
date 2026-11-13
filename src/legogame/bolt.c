@@ -1,0 +1,229 @@
+#include "saga.h"
+
+/* Retail unit 0x407e40-0x408760: definitions in retail address order. */
+
+STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
+STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_debris) == 0xfc);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_part_debris) == 0xfe);
+STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
+STATIC_ASSERT(offsetof(BOLT_PC, field_104) == 0x104);
+STATIC_ASSERT(offsetof(BOLT_PC, dogfight_hit_position) == 0x12c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_mode) == 0x107a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
+STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+STATIC_ASSERT(85 * sizeof(GAMEDEBRISENTRY_PC) == 0x6a4);
+typedef struct VEHICLE_FIRE_STATE_PC {
+    u8 unknown_000[0x7f4];
+    WEAPON_AMMO_PC weapon_ammo;
+    u8 unknown_7fc[0xe3a - 0x7fc];
+    u8 bolt_fire_phase;
+} VEHICLE_FIRE_STATE_PC;
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) == 0x7f4);
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, bolt_fire_phase) == 0xe3a);
+
+i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
+    i32 id, result;
+    if (object == NULL)
+        return fallback;
+    if (StartupGameFlag0 != 0 && state->weapon_ammo.type != NULL && state->weapon_ammo.type->bolt_override != -1)
+        return state->weapon_ammo.type->bolt_override;
+    id = (i16)object->id;
+    if (id == (i16)VehicleSpecialShooterIdPc)
+        return 43;
+    if (id == (i16)VehicleBoltId7f19a4Pc) {
+        result = 7 + 2 * (state->bolt_fire_phase != 0);
+        if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA)
+            return 8;
+        return result;
+    }
+    if (id == (i16)VehicleBoltId7f1a9cPc || id == (i16)VehicleBoltId7f1aa0Pc)
+        return 34;
+    if (id == (i16)VehicleBoltId7f1b34Pc || id == (i16)VehicleBoltId7f1b38Pc || id == (i16)id_ZAMSSPEEDER)
+        return 11;
+    if (id == (i16)id_FLASHSPEEDER)
+        return 20;
+    if (id == (i16)id_XWING || id == (i16)VehicleBoltId7f195cPc)
+        return 6;
+    if (id == (i16)id_SPEEDERBIKE || id == (i16)VehicleBoltId7f19a8Pc)
+        return 10;
+    if (id == (i16)VehicleBoltId7f18b4Pc || id == (i16)VehicleBoltId7f1a24Pc)
+        return 11;
+    if (id == (i16)id_TIEFIGHTER || id == (i16)VehicleBoltId7f1a28Pc || id == (i16)VehicleBoltId7f196cPc ||
+        id == (i16)id_TIEBOMBER || id == (i16)VehicleBoltId7f1a2cPc) {
+        if (world != NULL) {
+            if (world->current_level == DEATHSTARBATTLED_LDATA)
+                return 13;
+            if (world->current_level == DOGFIGHTA_LDATA)
+                return 14;
+        }
+        return 12;
+    }
+    if (id == (i16)VehicleBoltId7f1b00Pc || id == (i16)VehicleBoltId7f1ad8Pc || id == (i16)VehicleBoltId7f1b04Pc ||
+        id == (i16)id_MINITIEBOMBER || id == (i16)VehicleBoltId7f1aecPc || id == (i16)VehicleBoltId7f1b08Pc ||
+        id == (i16)VehicleBoltId7f1b0cPc || id == (i16)id_MINIATAT || id == (i16)id_MINISTARDESTROYER)
+        return 23;
+    if (id == (i16)VehicleBoltId7f1af0Pc)
+        return 21 + (state->bolt_fire_phase != 0);
+    if (id == (i16)id_JEDISTARFIGHTERYELLOWEP3 || id == (i16)VehicleBoltId7f19e8Pc) {
+        if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0)
+            return 32;
+        return 33;
+    }
+    if (id == (i16)VehicleBoltId7f17d0Pc || id == (i16)VehicleBoltId7f17d4Pc || id == (i16)VehicleBoltId7f1aacPc) {
+        result = 42;
+        if (WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active == 0)
+            result = 0;
+        return result;
+    }
+    if (id == (i16)id_CATAPULT)
+        return 29;
+    if (object->character_data->move_fn == Move_CANNON)
+        return 20;
+    if (GCDataList[id].weapon_action == 8)
+        return 2;
+    if (GCDataList[id].weapon_model == 22)
+        return 2;
+    if (id == (i16)id_BIGGUN)
+        return 20;
+    if (id == (i16)id_BOBAFETT || id == (i16)VehicleBoltId7f190cPc)
+        return 26;
+    if (id == (i16)VehicleBoltId7f1910Pc)
+        return 3;
+    if (id == (i16)id_ATAT)
+        return 24;
+    if (id == (i16)GameObjectRotationAtstId || id == (i16)id_CLONEWALKER)
+        return 4;
+    if (id == (i16)id_ATST_LOWRES)
+        return 25;
+    if (id == (i16)id_DROIDEKA || id == (i16)id_MINIDROIDEKA)
+        return 17;
+    if (id == (i16)id_STAP || id == (i16)id_STAP2)
+        return 0;
+    if (id == (i16)VehicleBoltId7f1924Pc)
+        return 27 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
+    if (id == (i16)VehicleBoltId7f1928Pc)
+        return 28 + (Cheat_IsOn(0x29) != 0 ? 3 : 0);
+    if (id == (i16)id_REPUBLICGUNSHIP || id == (i16)id_REPUBLICGUNSHIP_GREEN) {
+        if (WORLD->current_level == BONUS_GUNSHIPA_LDATA)
+            return 35;
+        if (WORLD->current_level == BONUS_GUNSHIPB_LDATA)
+            return 36;
+        return fallback;
+    }
+    if (id == (i16)id_NEW_REPUBLIC_GUNSHIP || id == (i16)id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+        if (WORLD->current_level == GUNSHIPA_LDATA)
+            return 37;
+        if (WORLD->current_level == GUNSHIPB_LDATA)
+            return 38;
+        return fallback;
+    }
+    if (id == (i16)id_SENTRYDROID)
+        return 0;
+    if (id == (i16)VehicleBoltId7f1a38Pc)
+        return 0;
+    return fallback;
+}
+
+void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no_explosion) {
+    i32 i;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 effect;
+    if (world->current_level == DOGFIGHTA_LDATA) {
+        effect = 0x2e;
+        if (bolt->field_104 != -1)
+            points = &bolt->dogfight_hit_position;
+    } else {
+        effect = bolt->hit_debris;
+    }
+    for (i = 0; i < 3; ++i) {
+        if ((bolt->flags & 0x40000200) != 0 && point == -1) {
+            if (i != 1)
+                continue;
+        } else if (point != -1 && point != i) {
+            continue;
+        }
+        AddGameDebris(world->game_debris_sys, effect, &points[i]);
+        if (!(bolt->flags & 0x10000000) && Player_HasDoubleBoltDamage_FromBolt(bolt))
+            AddGameDebris(world->game_debris_sys, effect, &points[i]);
+    }
+    if (bolt->hit_part_debris != -1)
+        AddPartDebris(world->part_debris_sys, bolt->hit_part_debris, &bolt->position);
+    if (bolt->type_id == 0x1d) {
+        AddGameDebris(world->game_debris_sys, 0x7f, &bolt->position);
+        AddPartDebris(world->part_debris_sys, 6, &bolt->position);
+        GameCam_NewShake(GameCam, 0.75f, 0.75f, 1.0f);
+        NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
+    }
+    if (no_explosion == 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 0x80) != 0 &&
+        Cheat_IsOn(0x12) && (world->area == NULL || !(world->area->flags & 1))) {
+        EXPLOSION_PC *explosion;
+        AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
+        NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, 0.3f, 0);
+        PlaySfx("exp_thermalDet", points);
+        GameCam_HitJudder();
+        explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
+        if (explosion != NULL && Arcade != 0) {
+            GAMEOBJECT *owner = ((GAMEOBJECT *)bolt->owner);
+            if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
+                (owner->flags_1fc_word & 0x1000) != 0 && (owner->field_280 == 0 || owner->field_280 == 1)) {
+                explosion->flags |= 0x10000;
+                explosion->owner = ((GAMEOBJECT *)bolt->owner);
+            }
+        }
+    }
+}
+
+i32 __cdecl Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
+    if (part->field_206 == 1 && part->scale_time < 2.0f)
+        return 1;
+    if (part->field_206 == 2 && part->scale_time < 1.0f)
+        return 1;
+    return 0;
+}
+
+i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
+    i16 id = object->id;
+    if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT ||
+        id == id_MINIROYALSTARSHIP || id == VehicleBoltId7f1aecPc) {
+        if (object->bolt_fire_phase == 0 && (index == 0 || index == 2))
+            return 0;
+        if (object->bolt_fire_phase == 1 && (index == 1 || index == 3))
+            return 0;
+    } else if (id == VehicleBoltId7f19a4Pc || id == VehicleBoltId7f1af0Pc) {
+        if (index != object->bolt_fire_phase)
+            return 0;
+    } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8Pc ||
+               id == id_JEDISTARFIGHTERYELLOWEP3) {
+        if (index != object->bolt_fire_phase)
+            return 0;
+    }
+    return 1;
+}
+
+void __cdecl EndBolt_EwokTorpedo(BOLT_PC *bolt) {
+    Detonate(&bolt->position, 0);
+}
+
+void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 effect = world->game_debris_sys->entries[85].effect;
+    if (effect != -1)
+        AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
+}
