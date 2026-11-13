@@ -456,44 +456,43 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             sample->position.y += GrassClumps[clump_index].position.y;
             sample->position.z += GrassClumps[clump_index].position.z;
             if (GrassClumps[clump_index].kind == 3) {
-                sample->scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
-                                    IndGrassClumps[GrassClumps[clump_index].individual_index *
-                                                       EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
-                                                   element]
-                                        .field_0c +
-                                GrassClumps[clump_index].field_2c;
+                computed_scale =
+                    IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP +
+                                   element]
+                        .field_0c *
+                    (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
+                sample->scale = computed_scale + GrassClumps[clump_index].field_2c;
             } else {
                 switch ((i8)GrassClumps[clump_index].unknown_26) {
                     case 1: {
                         random = (f32)(NuRandFloatSeeded(&seed) - 0.25);
                         computed_scale = (f32)(1.25 * sample->scale);
                         computed_scale = (f32)(((f64)1.2f - computed_scale) + random * random);
-                        computed_scale = (f32)(computed_scale / (f64)1.7625f * GrassClumps[clump_index].field_30);
-                        if (computed_scale < GrassClumps[clump_index].field_2c)
-                            computed_scale = GrassClumps[clump_index].field_2c;
-                        sample->scale = computed_scale;
+                        sample->scale = (f32)(computed_scale / (f64)1.7625f * GrassClumps[clump_index].field_30);
+                        if (sample->scale < GrassClumps[clump_index].field_2c)
+                            sample->scale = GrassClumps[clump_index].field_2c;
                         break;
                     }
                     case 2:
-                        sample->scale = NuRandFloatSeeded(&seed) *
-                                            (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) +
-                                        GrassClumps[clump_index].field_2c;
+                        computed_scale = NuRandFloatSeeded(&seed) *
+                                         (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
+                        sample->scale = computed_scale + GrassClumps[clump_index].field_2c;
                         break;
                     case 3: {
                         limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
                                                                                 : GrassClumps[clump_index].size;
-                        sample->scale = GrassClumps[clump_index].field_30 -
-                                        (limited / GrassClumps[clump_index].size) *
-                                            (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
+                        computed_scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
+                                         (limited / GrassClumps[clump_index].size);
+                        sample->scale = GrassClumps[clump_index].field_30 - computed_scale;
                         break;
                     }
                     case 4: {
                         limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
                                                                                 : GrassClumps[clump_index].size;
                         angle = (i32)(-(limited / GrassClumps[clump_index].size) * 16384.0);
-                        sample->scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
-                                            NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] +
-                                        GrassClumps[clump_index].field_2c;
+                        computed_scale = NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] *
+                                         (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c);
+                        sample->scale = computed_scale + GrassClumps[clump_index].field_2c;
                         break;
                     }
                 }
