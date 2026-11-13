@@ -20,6 +20,7 @@ address,symbol,size,ctype
 0x401e40,_AITriggerSetSysProcess,2392,void __cdecl(TRIGGER_SYSTEM_PC *)
 0x4027a0,_AITriggerSysAutoSetUp,237,
 0x402890,_AITriggerSetSysCreate,36,"void * __cdecl (VARIPTR *, VARIPTR *)"
+0x4028d0,_AttractoFabsPc,18,"f32 __cdecl (f32)"
 0x402910,_Attractos_Load,203,"i32 __cdecl(WORLDINFO *,void *)"
 0x4029e0,_Attractos_InitTerrain,69,void __cdecl(WORLDINFO *)
 0x402a30,_Attractos_ReserveBufferSpace,77,void * __cdecl(WORLDINFO *)
@@ -4758,7 +4759,7 @@ address,symbol,size,ctype
 0x56ca60,_CreateClimbObjectSys,70,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
 0x56cab0,_ClimbObject_FindNormalPc,328,void __cdecl(CLIMB_SLOT_PC *)
 0x56cc00,_InitClimbObjectSys,262,
-0x56cd10,_FindClimbObject,114,"CLIMB_SLOT_PC *__cdecl(CLIMB_SYSTEM_PC *, AIPATHCNX_PC *)"
+0x56cd10,_FindClimbObject,98,"CLIMB_SLOT_PC *__cdecl(CLIMB_SYSTEM_PC *, AIPATHCNX_PC *)"
 0x0056cdb0,_GuideLines_Load,126,"i32 __cdecl(WORLDINFO *, void *)"
 0x0056ce30,_GuideLines_ReserveBufferSpace,85,void *__cdecl(WORLDINFO *)
 0x0056cea0,_GuideLines_Reset,136,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS_PC *)"
