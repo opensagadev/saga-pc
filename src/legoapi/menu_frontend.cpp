@@ -1023,23 +1023,25 @@ extern "C" {
         SHOPACTIVE = 0;
         ShopNameAlpha = 0.0f;
         shop_quit = 1;
+        i32 changed = 1;
         if (HubForceShopSavePc == 0) {
             TempGame.game_time = Game.game_time;
-            if (memcmp(&TempGame, &Game, sizeof(Game)) == 0) {
+            changed = memcmp(&TempGame, &Game, sizeof(Game));
+        }
+        if (changed != 0) {
+            HubForceShopSavePc = 0;
+            NuMainStatusHelperPc(NULL);
+            Hub_ClearStats();
+            Text_FillInExtendedSaveInfo();
+            if (TriggerAutoSave() != 0) {
                 EndShopMenu(0);
                 return;
             }
-        }
-        HubForceShopSavePc = 0;
-        NuMainStatusHelperPc(NULL);
-        Hub_ClearStats();
-        Text_FillInExtendedSaveInfo();
-        if (TriggerAutoSave() != 0) {
+            shop_save_done = 1;
+            NewMenu(1000, -1, -1);
+        } else {
             EndShopMenu(0);
-            return;
         }
-        shop_save_done = 1;
-        NewMenu(1000, -1, -1);
     }
 
     /* 00496650..00496738. Callback remains unwired until the full native shop
