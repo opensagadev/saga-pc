@@ -173,10 +173,10 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
         HubAiMusicStatePc.area_message->value = (f32)HubAiMusicStatePc.area;
     HubAiMusicStatePc.table_count = 0;
     for (index = 0; index < 8; ++index) {
-        if (HubAiMusicStatePc.area == 0)
-            sprintf(name, HubAITableFormatPc, index);
-        else
+        if (HubAiMusicStatePc.area != 0)
             sprintf(name, HubAITableAreaFormatPc, HubAiMusicStatePc.area, index);
+        else
+            sprintf(name, HubAITableFormatPc, index);
         HubAiMusicStatePc.table_locators[index] = AIPathFindLocator(world->ai_sys, name);
         if (HubAiMusicStatePc.table_locators[index] == NULL)
             return;
