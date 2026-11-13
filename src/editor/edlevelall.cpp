@@ -6860,7 +6860,11 @@ i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
         }
         entry = (ClassObjectListEntry *)theMemoryManager.AllocPool(sizeof(ClassObjectListEntry), 1);
         if (entry != NULL) {
-            memset(entry, 0, sizeof(ClassObjectListEntry));
+            entry->next = NULL;
+            entry->previous = NULL;
+            entry->ed_class = NULL;
+            entry->object = NULL;
+            entry->reference = NULL;
             entry->ed_class = object.ed_class;
             entry->object = object.object;
             entry->reference = object.reference;
@@ -6892,7 +6896,11 @@ i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
         if (object.object != NULL) {
             entry = (ClassObjectListEntry *)theMemoryManager.AllocPool(sizeof(ClassObjectListEntry), 1);
             if (entry != NULL) {
-                memset(entry, 0, sizeof(ClassObjectListEntry));
+                entry->next = NULL;
+                entry->previous = NULL;
+                entry->ed_class = NULL;
+                entry->object = NULL;
+                entry->reference = NULL;
                 entry->ed_class = object.ed_class;
                 entry->object = object.object;
                 entry->reference = object.reference;
