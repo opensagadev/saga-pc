@@ -3073,11 +3073,11 @@ i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
     u16 *line;
     u16 *word;
 
-    old_line_pos = parser->line_position;
     line = (u16 *)parser->line_buffer_ptr;
     word = (u16 *)parser->word_buffer_ptr;
     length = 0;
     in_quoted_text = 0;
+    old_line_pos = parser->line_position;
 
     while (line[parser->line_position & ((parser->line_buffer_size >> 1) - 1)] != 0) {
         u16 character = line[parser->line_position];
