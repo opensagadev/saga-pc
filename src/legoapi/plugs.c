@@ -126,17 +126,21 @@ static void __cdecl Plugs_Reset(void *world_ptr, void *data, void *progress_ptr)
     CARRY_PLUG_PC *plug;
     i32 i;
     (void)data;
-    if (world == NULL || world->plug_system == NULL || world->plug_system->plugs == NULL)
+    if (world == NULL || world->plug_system == NULL)
         return;
     plug = world->plug_system->plugs;
+    if (plug == NULL)
+        return;
     for (i = 0; i < world->plug_system->count; ++i, ++plug) {
         plug->active = 1;
         plug->visible = 1;
         plug->plugged = 0;
         if (progress != NULL && i < 32) {
-            plug->visible = (progress->visible_mask[i / 32] & (1 << (i & 31))) != 0;
-            plug->active = (progress->active_mask[i / 32] & (1 << (i & 31))) != 0;
-            plug->plugged = (progress->plugged_mask[i / 32] & (1 << (i & 31))) != 0;
+            i32 word = i / 32;
+            i32 bit = 1 << (i & 31);
+            plug->visible = (progress->visible_mask[word] & bit) != 0;
+            plug->active = (progress->active_mask[word] & bit) != 0;
+            plug->plugged = (progress->plugged_mask[word] & bit) != 0;
         }
     }
 }
@@ -210,18 +214,21 @@ static void __cdecl Plugs_StoreProgress(void *world_ptr, void *data, void *progr
     progress->visible_mask[0] = 0xffffffff;
     progress->active_mask[0] = 0xffffffff;
     progress->plugged_mask[0] = 0;
-    if (world == NULL || world->plug_system == NULL || world->plug_system->plugs == NULL)
+    if (world == NULL || world->plug_system == NULL)
         return;
     plug = world->plug_system->plugs;
+    if (plug == NULL)
+        return;
     for (i = 0; i < world->plug_system->count && i < 32; ++i, ++plug) {
-        u32 bit = 1u << i;
+        i32 word = i / 32;
+        i32 bit = 1 << (i & 31);
         if (!plug->visible)
-            progress->visible_mask[0] &= ~bit;
+            progress->visible_mask[word] &= ~bit;
         if (!plug->active)
-            progress->active_mask[0] &= ~bit;
+            progress->active_mask[word] &= ~bit;
         /* Retail sets the plugged bit in the active mask. */
         if (plug->plugged)
-            progress->active_mask[0] |= bit;
+            progress->active_mask[word] |= bit;
     }
 }
 
