@@ -221,8 +221,12 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
             Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
         }
     } else {
-        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, menu_flash == 0 ? 255 : 191,
-                    menu_flash == 0 ? 63 : 31, 0, 1.7f, 1);
+        i32 colour_a = 255, colour_b = 63;
+        if (menu_flash != 0) {
+            colour_a = 191;
+            colour_b = 31;
+        }
+        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
     }
 }
 
