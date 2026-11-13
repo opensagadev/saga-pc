@@ -983,7 +983,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 down = 1;
                 if (Grapple_RopeSwingRotate == 0 || (GRAPPLE_CURRENT->flags & 4) == 0)
                     object->movement_facing_angle = GRAPPLE_CURRENT->y_rotation;
-            } else if (absolute_difference <= 24575 &&
+            } else if (absolute_difference < 0x6000 &&
                        (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags & 1) == 0) {
                 if (difference > 0) {
                     swing_positive = 1;
