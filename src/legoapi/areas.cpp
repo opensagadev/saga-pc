@@ -1,11 +1,10 @@
 #include "saga.h"
+#include <string.h>
 
 extern "C" {
     AREA_DATA_PC *__cdecl Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
     void __cdecl AreasConfigDiagnosticPc(char *message);
 }
-#include "saga.h"
-#include <string.h>
 
 typedef struct area_gizmotype_pc_s {
     u8 unknown_0000[0x44];
@@ -422,8 +421,6 @@ extern "C" i8 __cdecl Area_CharIDInCurrentList(i32 character_id) {
     return -1;
 }
 
-#include "saga.h"
-#include <string.h>
 typedef struct AREA_MISSION_READER_PC {
     u8 unknown_00[0x1f];
     u8 character_count;

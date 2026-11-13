@@ -117,8 +117,6 @@ STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
 #define ASIN_POW3(x) ((x) * ASIN_POW2(x))
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-#define NU_SIN_LUT(a) NuTrigTable[((i32)(a) >> 1) & 0x7fff]
-#define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
 typedef struct zipup_progress_pc_s {
     u32 active_mask[1], visible_mask[1];
 } ZIPUP_PROGRESS_PC;

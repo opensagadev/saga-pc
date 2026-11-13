@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 typedef struct edpp_file_particle_pc_s {
     NUVEC position;
     i32 effect_index;

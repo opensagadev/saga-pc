@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Retail unit 0x4028c0-0x403c83 (legogame/attracto.c): definitions in retail address order. */
 

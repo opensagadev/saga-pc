@@ -1,6 +1,7 @@
 #include "saga.h"
 
 #include <string.h>
+#include <float.h>
 
 NURNDRLIBSCENE currentScene = {0};
 NUVPCURRENT vpCurrent = {0};
@@ -1097,8 +1098,6 @@ __declspec(noinline) u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 ma
     (void)maximum_unused;
     return (u8)MIN(255.0f, MAX(0.0f, value));
 }
-
-#include <float.h>
 
 PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
 PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;

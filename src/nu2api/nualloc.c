@@ -1,10 +1,10 @@
 #include "saga.h"
+#include <stdlib.h>
+#include <string.h>
+
 static void *NuAllocPeakEnd1 = 0;
 static NUALLOC_POOL *NuAllocPool = 0;
 static u32 NuAllocRecordSerial = 0;
-
-#include <stdlib.h>
-#include <string.h>
 
 struct nualloc_record_s {
     struct nualloc_record_s *next;

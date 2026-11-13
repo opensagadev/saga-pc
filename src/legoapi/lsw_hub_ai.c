@@ -1,4 +1,6 @@
 #include "saga.h"
+#include <stdio.h>
+#include <string.h>
 
 extern i16 CharacterFixupIdPc007f18c4;
 
@@ -48,8 +50,6 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 
 /* Native HubAI producer family. Insert in lsw_hub_ai.c after the existing
  * Hub_MakeListCharactersAvailable native body, with shared state refined. */
-#include <stdio.h>
-#include <string.h>
 extern const char *HubAreaNamesPc[10];
 extern const char HubAILocatorFormatPc[6];
 extern const char HubAIAreaMessagePc[5];

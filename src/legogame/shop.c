@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "saga.h"
+#include <string.h>
+#include <float.h>
 
 #pragma data_seg(".data$PartVectorSpreadDegrees_PC")
 static i32 PartVectorSpreadDegrees_PC = 30;
@@ -155,8 +157,6 @@ f32 __cdecl PARTGetTotalOffTime(i32 type) {
         return part_types[type].emission_pause + part_types[type].emission_pause_random;
     return 0.0f;
 }
-
-#include <string.h>
 
 void __cdecl KillPart(PART_PC *part, i32 reason) {
     if ((part->active & 1) == 0) {
@@ -1332,8 +1332,6 @@ i32 __cdecl PARTLookupType(char *name) {
     return -1;
 }
 
-#include "saga.h"
-#include <string.h>
 static __declspec(noinline) void DebrisMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -3627,7 +3625,6 @@ void __cdecl UpdatePartEmits(f32 time) {
         debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
 }
 
-#include <float.h>
 i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
     i32 hit = NewRayCast(position, movement, radius, flags);
     NewRayCastGetImpactNormal(&PART_NORM);

@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
@@ -1018,7 +1019,6 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
 // MATCH-EXCEPTION: retail inlines this checked allocator with no out-of-line copy; a static inline function
 // leaves a COMDAT in the object, so it is written as a macro.
 
-#include <stdio.h>
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);

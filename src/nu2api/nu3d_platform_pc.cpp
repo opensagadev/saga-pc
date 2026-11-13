@@ -9,6 +9,9 @@
 
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
+#include <float.h>
+#include <stdio.h>
+#include <string.h>
 #pragma bss_seg(".bss$NuDebrisCurrentPacket")
 static NATIVE_PARTICLE_PACKET_PC *NuDebrisCurrentPacket = 0;
 #pragma bss_seg()
@@ -18,10 +21,6 @@ static u32 NuDebrisCurrentVertexCount = 0;
 #pragma bss_seg(".bss$NuDebrisVertexBufferSize")
 static u32 NuDebrisVertexBufferSize = 0;
 #pragma bss_seg()
-
-#include <float.h>
-#include <stdio.h>
-#include <string.h>
 
 extern "C" {
 

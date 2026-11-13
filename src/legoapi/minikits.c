@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Retail unit 0x5999e0-0x59a595 (legoapi/minikits.c): definitions in retail address order. */
 

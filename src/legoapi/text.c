@@ -1,13 +1,12 @@
 #include "saga.h"
+#include <stdio.h>
+#include <string.h>
+
 static char **TTab_Original = 0;
 extern const char Text_ErrorText[7];
 static char *Text_ErrorString = (char *)Text_ErrorText;
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
-
-#include <stdio.h>
-
-#include <string.h>
 
 extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);

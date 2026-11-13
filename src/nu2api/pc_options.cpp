@@ -1,5 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
+#include <shlobj.h>
+#include <string.h>
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetWidth(i32 value) {
     client_width = value;
 }
@@ -84,8 +87,6 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8 value) {
     speedblursupported = value;
 }
 
-#include <shlobj.h>
-#include <string.h>
 extern "C" void __cdecl PCOptionsBuildFolder(char *destination) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder != 0)

@@ -1,4 +1,6 @@
 #include "saga.h"
+#include <stdio.h>
+#include <string.h>
 
 /* Retail unit 0x55f3b0-0x560ab2 (legoapi/worldinfo.cpp), with GizmoSysClearLevelProgress
    (legoapi/gizmo.c) before it and SetAreaPickupGravity (legoapi/gizmopickups.c) after it: definitions
@@ -9,9 +11,6 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 
 extern "C" {
-#include <stdio.h>
-#include <string.h>
-
     STATIC_ASSERT(offsetof(WORLDINFO, level_min) == 0x144);
     STATIC_ASSERT(offsetof(WORLDINFO, level_max) == 0x150);
 

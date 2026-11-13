@@ -1,6 +1,8 @@
 #include "saga.h"
 
 #include <string.h>
+#include <math.h>
+#include <float.h>
 
 static i32 force_camera_farclip = 0;
 static f32 NuCameraOrthoScale = 0.1f;
@@ -520,7 +522,6 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
     return common;
 }
 
-#include <math.h>
 void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
     NUVEC world_up = {0.0f, 1.0f, 0.0f};
     NUVEC right;
@@ -590,7 +591,6 @@ void __cdecl NuMtxCalcFaceY(NUMTX *m, NUVEC *v) {
     m->m32 = v->z;
 }
 
-#include <float.h>
 i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32 far_clip, i32 flags,
                                            f32 *min_depth) {
     NUMTX transform;

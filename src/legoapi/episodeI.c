@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
+#include <math.h>
 #pragma bss_seg(".bss$MaulA_ai_message")
 
 typedef struct racepod_resource_pc_s {
@@ -56,8 +57,6 @@ STATIC_ASSERT(offsetof(SNIPER_s, state) == 0x1c);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);
-
-#include <math.h>
 
 typedef struct pod_race_countdown_reader_pc_s {
     u8 unknown_0000[0xb000];

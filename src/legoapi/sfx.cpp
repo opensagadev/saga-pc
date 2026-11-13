@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 extern "C" f32 AUDIOFADELEVEL;
 
@@ -42,5 +43,3 @@ extern "C" i32 __cdecl IsSfxLooping(i32 id) {
         return (SfxInfo[id].sample_id_flags >> 15) & 1;
     return -1;
 }
-
-#include <stdio.h>

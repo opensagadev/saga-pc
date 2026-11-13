@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 #pragma bss_seg(".bss$edptl_detail_menu")
 struct eduimenu_s *edptl_detail_menu = 0;
 #pragma bss_seg(".bss$grad_jib_x_amp_item")

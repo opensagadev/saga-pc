@@ -1,4 +1,6 @@
 #include "saga.h"
+#include <string.h>
+
 typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 unknown_000[0xe9];
     u8 max_timers;
@@ -115,8 +117,6 @@ GIZFLOW_SPECIAL_PC *__cdecl GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD
     }
     return NULL;
 }
-
-#include <string.h>
 
 typedef struct gizspecial_callback_pc_s {
     char name[32];

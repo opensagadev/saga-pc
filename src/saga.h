@@ -14,6 +14,7 @@
 #include <shlobj.h>
 #include <objbase.h>
 #include <oleauto.h>
+#include <math.h>
 // The engine's SSE vector header (retail keeps its VuVec SSE helper copies in nu2api units) brought <xmmintrin.h>
 // into every engine unit. VC8 compiles that header's __inline __m128 wrappers, whose aligned frames keep EBX out of the
 // register arguments of every static function in the unit. The bundled Ogg Vorbis sources never included it.
@@ -39,9 +40,14 @@ typedef double f64;
 
 #define SAGA_JOIN_IMPL(a, b) a##b
 #define SAGA_JOIN(a, b) SAGA_JOIN_IMPL(a, b)
-#define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __LINE__)[(expression) ? 1 : -1]
+#define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
+// src/debug/diagnostics.h defines the Debug versions when a unit includes it first.
+#ifndef STUBBED
 #define STUBBED() ((void)0)
+#endif
+#ifndef STUBBED_NAMED
 #define STUBBED_NAMED(name) ((void)0)
+#endif
 // Retail reads several adjacent u32 pairs (bit masks, CInfo flags) as one 64-bit value.  The structs keep their u32
 // members so that their alignment stays at 4; this accesses such a pair in place as a u64.
 #define U64_PAIR(pair) (*(u64 *)(pair))
@@ -8564,8 +8570,6 @@ STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
-
-#include <math.h>
 
 typedef struct nulgtlaser_pc_s {
     NUVEC start, end;

@@ -1,4 +1,7 @@
 #include "saga.h"
+#include <float.h>
+#include <string.h>
+#include <stdio.h>
 #pragma data_seg(".data$RtlFileVersionPc")
 static i32 RtlFileVersionPc = 5;
 #pragma data_seg()
@@ -50,9 +53,6 @@ i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled) {
     }
     return 0;
 }
-
-#define NU_SIN_LUT(a) NuTrigTable[((a) >> 1) & 0x7fff]
-#define NU_COS_LUT(a) NuTrigTable[(((a) + 0x4000) >> 1) & 0x7fff]
 
 void rtlResetEx(RTL_DATA_PC *data, i32 reset_cached) {
     i32 index;
@@ -783,7 +783,6 @@ void __cdecl rtlProcessLights(void *set, f32 frame_time) {
     }
 }
 
-#include <float.h>
 void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
     RTL_LIGHT_PC *light;
     f32 minimum_x;
@@ -979,7 +978,6 @@ void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
         rtl_shadow_blend_rate = 10000.0f;
 }
 
-#include <string.h>
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
@@ -1623,8 +1621,6 @@ void __cdecl edrtlDrawRTLInfo(void) {
     }
     edrtlDrawHelp();
 }
-
-#include <stdio.h>
 
 void EdFileWriteInt(i32 value);
 void EdFileWriteNuVec(NUVEC *value);

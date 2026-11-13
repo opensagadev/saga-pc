@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 void __cdecl Particles_Stop(WORLDINFO *world) {
     if (world->page_anim != -1)
@@ -49,7 +50,6 @@ void __cdecl Particles_Start(WORLDINFO *world) {
         edanimStartPage(world->page_anim);
 }
 
-#include <stdio.h>
 void __cdecl Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named_count) {
     char path[256];
     VARIPTR end;

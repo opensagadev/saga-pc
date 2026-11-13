@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Retail unit 0x5b1770-0x5b1e97: definitions in retail address order. */
 

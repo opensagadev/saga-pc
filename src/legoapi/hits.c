@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Retail unit 0x58b720-0x58b8aa (legoapi/hits.c): definitions in retail address order. */
 
@@ -48,7 +49,6 @@ GAMEOBJECT *__cdecl BossKilled(i32 character_id) {
     return NULL;
 }
 
-#include <stdio.h>
 typedef struct combat_coinpacket_pc_s {
     u32 coins;
 } COMBAT_COINPACKET_PC;

@@ -1,4 +1,6 @@
 #include "saga.h"
+#include <string.h>
+#include <math.h>
 
 extern "C" {
 
@@ -9,8 +11,6 @@ extern "C" {
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
 
-#include <string.h>
-#include <math.h>
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 enum {
     NUTRIGTABLE_COUNT = 32768,

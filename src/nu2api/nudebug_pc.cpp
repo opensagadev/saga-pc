@@ -1,6 +1,9 @@
 #include "saga.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <signal.h>
+#include <process.h>
+#include <string.h>
 
 extern "C" void __cdecl NuFileWriteString(NUFILE file, const char *text);
 
@@ -23,10 +26,6 @@ void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *for
         OutputDebugStringA(PCNativeDebugOutputBuffer);
 }
 
-#include <signal.h>
-#include <process.h>
-#include <stdarg.h>
-#include <stdio.h>
 void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list arguments;
     if (format != NULL) {
@@ -133,10 +132,6 @@ extern "C" void __cdecl PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state,
     if (state->write_log && state->log_file != 0)
         NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
 }
-
-#include "saga.h"
-#include <string.h>
-#include <stdio.h>
 
 void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
     header.third = header.first = header.second = -1;

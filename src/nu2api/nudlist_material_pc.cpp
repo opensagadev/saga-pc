@@ -1,6 +1,8 @@
 // Display-list material/transform handlers and post-filter members of the platform range; the 7x7
 // high/direct blurs and the Gaussian kernel helpers (0x5c3da0-0x5c4d30) are in nu3d_includes.cpp.
 #include "saga.h"
+#include <math.h>
+
 typedef struct PC_DL_MATERIAL_READER {
     u8 unknown_0000[0x40];
     u32 reflection_flags;
@@ -433,8 +435,6 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
     NuShaderManagerSetfv(0x38, &NuDisplayHandlerDefaultTintPc.x);
     NuDisplayHandlerOpacityPc = -1.0f;
 }
-
-#include <math.h>
 
 extern "C" {
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;

@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 /* Retail unit 0x55c950-0x55dd9f: definitions in retail address order. */
 
@@ -594,10 +595,6 @@ __declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *
  * character_data pointer54 -> game_character pointer24 -> field_028 f32.
  * No new aggregate/type claim in this private source access view.
  */
-
-#include <string.h>
-
-#include <string.h>
 
 /* Bitwise absolute value through a float temporary, as retail does. */
 

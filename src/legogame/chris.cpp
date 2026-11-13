@@ -3,12 +3,11 @@
 // definitions follow retail address order.
 
 #include "saga.h"
+#include <stdio.h>
 #pragma bss_seg(".bss$MaxRadialCamY")
 static f32 MaxRadialCamY = 0;
 #pragma bss_seg(".bss$RadialMoveCentre")
 static NUVEC4 RadialMoveCentre = {0};
-
-#include <stdio.h>
 
 extern "C" {
     extern const f32 DogfightOriginEndXPc;

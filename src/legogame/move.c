@@ -142,8 +142,6 @@ typedef struct directional_buildit_pc_s {
     u8 unknown00[0x72];
     u8 state_flags;
 } DIRECTIONAL_BUILDIT_PC;
-#define NU_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
-#define NU_COS_LUT(a) (NuTrigTable[((((i32)(a)) + 0x4000) >> 1) & 0x7fff])
 typedef struct directional_world_pc_s {
     u8 unknown00[0x46ec];
     void *grabber;

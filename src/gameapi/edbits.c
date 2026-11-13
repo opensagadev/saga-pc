@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 void edbitsRegisterSaveFormat(char *general_save_directory, char *general_save_name, char *general_save_extension,
                               char *level_save_directory, char *level_save_name, char *level_save_extension) {

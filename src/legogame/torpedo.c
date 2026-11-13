@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 typedef struct torpedo_pickup_positions_pc_s {
     u8 count;
@@ -894,7 +895,5 @@ void __cdecl DrawTorpedos(GAMEOBJECT *object) {
             NuSpecialDrawAt(&WORLD->level_objects[0x7a].special, &matrix);
     }
 }
-
-#include <string.h>
 
 #undef TORPEDO_PACKET_PC

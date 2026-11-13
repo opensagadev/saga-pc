@@ -1,12 +1,12 @@
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #define AISYSALL_SCRIPT_DIAGNOSTIC_PROTOTYPES
 #include "saga.h"
-static VARIPTR *aiscript_load_end_buffer = 0;
-
 #include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+
+static VARIPTR *aiscript_load_end_buffer = 0;
 
 extern NULISTLNK *__cdecl NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 

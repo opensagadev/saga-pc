@@ -2417,8 +2417,6 @@ extern "C" {
     NUGSCN *big_icon_scene = NULL;
 }
 
-#include "saga.h"
-
 extern "C" char TextInputKeyNameTextPc7516c0[];
 extern "C" char TextInputKeyNameTextPc753370[];
 extern "C" char TextInputKeyNameTextPc753374[];
@@ -7581,7 +7579,6 @@ char *PcInputKeyNames824be0[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc7719c8,
                                     TextInputKeyNameTextPc7719bc};
 
-#include "saga.h"
 extern "C" {
 #pragma data_seg(".data$PlayerStartSplineIndexPc")
     i32 PlayerStartSplineIndexPc = -1;
@@ -9072,20 +9069,18 @@ extern "C" {
 #pragma bss_seg(".bss$pNuCam")
     NUCAMERA *pNuCam = 0;
 #pragma bss_seg()
-    // clang-format off: LLVM 18 and newer format initializer macros differently.
-#define IDENTITY_NUMTX {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
-    // clang-format on
-    NUMTX NuMtxSetIdentityTemplate = IDENTITY_NUMTX;
-    NUMTX vmtx = IDENTITY_NUMTX;
-    NUMTX pmtx = IDENTITY_NUMTX;
-    NUMTX cmtx = IDENTITY_NUMTX;
-    NUMTX smtx = IDENTITY_NUMTX;
-    NUMTX vpmtx = IDENTITY_NUMTX;
-    NUMTX vpc_sci_mtx = IDENTITY_NUMTX;
-    NUMTX vpc_vport_mtx = IDENTITY_NUMTX;
-    NUMTX pc_vport_mtx = IDENTITY_NUMTX;
-    NUMTX vpsmtx = IDENTITY_NUMTX;
-    NUMTX clip_planes = IDENTITY_NUMTX;
+#define IDENTITY_NUMTX 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    NUMTX NuMtxSetIdentityTemplate = {IDENTITY_NUMTX};
+    NUMTX vmtx = {IDENTITY_NUMTX};
+    NUMTX pmtx = {IDENTITY_NUMTX};
+    NUMTX cmtx = {IDENTITY_NUMTX};
+    NUMTX smtx = {IDENTITY_NUMTX};
+    NUMTX vpmtx = {IDENTITY_NUMTX};
+    NUMTX vpc_sci_mtx = {IDENTITY_NUMTX};
+    NUMTX vpc_vport_mtx = {IDENTITY_NUMTX};
+    NUMTX pc_vport_mtx = {IDENTITY_NUMTX};
+    NUMTX vpsmtx = {IDENTITY_NUMTX};
+    NUMTX clip_planes = {IDENTITY_NUMTX};
 #undef IDENTITY_NUMTX
 #pragma bss_seg(".bss$nuspecial_const_alpha_enabled")
     i32 nuspecial_const_alpha_enabled = 0;

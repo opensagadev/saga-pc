@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 #include <float.h>
 #pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
 static INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;

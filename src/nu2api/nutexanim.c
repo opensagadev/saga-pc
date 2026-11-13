@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 #pragma data_seg(".data$g_texAnimCriticalSection")
 static i32 g_texAnimCriticalSection = -1;
 #pragma data_seg()
@@ -74,7 +75,6 @@ PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material
     return environment;
 }
 
-#include <string.h>
 typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
 struct TEXTURE_ANIM_PROGRAM_PC {
     TEXTURE_ANIM_PROGRAM_PC *next, *previous;

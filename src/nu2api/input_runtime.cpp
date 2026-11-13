@@ -1,4 +1,7 @@
 #include "saga.h"
+#include <stdio.h>
+#include <string.h>
+
 static u32 PcMousePressedMaskPc = 0;
 
 i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count) {
@@ -252,8 +255,6 @@ STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_00) == 0);
 STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_01) == 1);
 STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_02) == 2);
 
-#include <stdio.h>
-#include <string.h>
 extern "C" void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *);
 extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
 
@@ -1182,7 +1183,6 @@ extern "C" void __cdecl PcInputEndFramePc(void) {
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
-#include <string.h>
 
 void PC_INPUT_RUNTIME_PC::CopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
     if (port < 0)
@@ -1572,7 +1572,6 @@ extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 ke
 }
 
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
-#include <stdio.h>
 extern u8 PcInputWriteTextProfiles;
 extern const char *PcInputBindingKindNames[14];
 extern const char PcInputProfileHeader[], PcInputProfileGuidChar[], PcInputProfileGuidEnd[], PcInputProfileNumbers[];

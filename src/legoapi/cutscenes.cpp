@@ -2531,5 +2531,3 @@ extern "C" {
 
     /* NuFabs: the SDK macro copies the value with the sign bit cleared into the destination. */
 }
-
-#include "saga.h"

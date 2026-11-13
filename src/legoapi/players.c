@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <string.h>
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
@@ -894,8 +895,6 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     object->field_de0 = 0.0f;
 }
 
-#include <string.h>
-
 static i32 Customise_FindLetter(char character) {
     i32 letter = 0;
     for (; letter != 38; ++letter)
@@ -909,7 +908,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 0xc);
 
-#include <string.h>
 STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);

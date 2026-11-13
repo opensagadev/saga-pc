@@ -1,6 +1,7 @@
 #include "saga.h"
 
 #include <stdio.h>
+#include <string.h>
 /* Existing compiled native owners; declarations only, no replacement bodies/data. */
 #ifdef __cplusplus
 extern "C" {
@@ -71,8 +72,6 @@ extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
 
 /* Additional source-private viewer state/native menu-reader view, genuine
  * original backing/ownership gate pending; no placeholder storage emitted. */
-
-#include <string.h>
 
 /* Application fragment for the existing hub.cpp owner. Native 47cdd0/3846.
  * Private draft: declarations/data ownership listed separately; no activation.

@@ -1,10 +1,9 @@
 #include "saga.h"
+#include <string.h>
+#include <stdio.h>
 
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS_PC, flags) == 0x60);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-
-#include <string.h>
-#include <stdio.h>
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
 typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);

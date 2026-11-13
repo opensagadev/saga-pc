@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 typedef struct cut_scene_pre_end_pc_s {
     u8 unknown_00[8];

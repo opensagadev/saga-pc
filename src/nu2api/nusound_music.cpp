@@ -475,8 +475,6 @@ void NuMusic::Debug(i32 unused, i32 y) {
     NuQFntPopPrintMode();
 }
 
-#include <stdarg.h>
-
 struct PC_STEREO_PLAY_PACKET {
     i32 option11;
     i32 reserved;

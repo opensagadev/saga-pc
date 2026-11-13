@@ -1,6 +1,9 @@
 #define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 // Copies a NUL-terminated string into the parse arena.
 #define ARENA_COPY_STRING(copy, string)                                                                                \
     do {                                                                                                               \
@@ -537,8 +540,6 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
     }
 }
 
-#include <stdio.h>
-#include <stdlib.h>
 template <class T> inline void SafeDeleteArray(T *&pointer) {
     if (pointer != NULL) {
         delete[] pointer;

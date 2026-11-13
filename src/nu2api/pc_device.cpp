@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 extern "C" void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture) {
     if (*texture != NULL) {
@@ -314,7 +316,6 @@ extern "C" void __cdecl PCDeviceReleaseResourcePc(PC_TEXTURE_RESOURCE_PC *resour
     PCDeviceLastResult = static_cast<HRESULT>(resource->methods->release(resource));
 }
 
-#include <math.h>
 PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC() {
     aspect = 1.3333334f;
     active_aspect = 1.3333334f;
@@ -583,7 +584,6 @@ extern "C" void __cdecl PCDeviceCreateTexture(u32 width, u32 height, u32 levels,
         device->methods->create_texture(device, width, height, levels, usage, format, pool, texture, NULL);
 }
 
-#include <stdlib.h>
 extern "C" {
     void __cdecl PCDeviceEvictManagedResources();
     void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
