@@ -3900,27 +3900,27 @@ i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)
     return hit;
 }
 
+i32 PartPlatId(void) {
+    return TerrainPlatId();
+}
+
 void __cdecl CastPart(PART_PC *part, f32 time) {
     PART_TERRAIN_STATE_PC *state = (PART_TERRAIN_STATE_PC *)part;
     i32 hit;
     f32 distance, radius;
-    f64 step, half_gravity;
     NUVEC movement;
     NUVEC cast_movement;
     part->active &= ~4;
     part->field_f4 = time;
-    step = time;
-    movement.x = step * part->velocity.x;
-    half_gravity = (f64)part->gravity * 0.5;
-    movement.y = step * step * half_gravity + step * part->velocity.y;
-    movement.z = step * part->velocity.z;
+    movement.x = time * part->velocity.x;
+    movement.y = time * time * (0.5 * part->gravity) + time * part->velocity.y;
+    movement.z = time * part->velocity.z;
     if (part->velocity.y > 0.0f && movement.y <= 0.0f) {
         time = -part->velocity.y / part->gravity;
         part->field_f4 = time;
-        step = time;
-        movement.x = step * part->velocity.x;
-        movement.y = step * step * half_gravity + step * part->velocity.y;
-        movement.z = step * part->velocity.z;
+        movement.x = time * part->velocity.x;
+        movement.y = time * time * (0.5 * part->gravity) + time * part->velocity.y;
+        movement.z = time * part->velocity.z;
     }
     distance = NuVecMagSqr(&movement);
     if (distance < 0.001f || distance > 10000.0f || !_finite(distance) || _isnan(distance)) {
@@ -3979,7 +3979,7 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
     }
 impact:
     part->active |= 4;
-    state->platform_id = TerrainPlatId();
+    state->platform_id = PartPlatId();
     part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
     part->field_f4 *= NewRayCastGetTOFI();
     part->impact_normal = PART_NORM;
