@@ -9149,7 +9149,7 @@ extern "C" {
                                          void *blend_values) {
         NUMTX wind_matrix;
         NUVEC center, minimum, maximum;
-        void *transform_packet = NULL;
+        void *transform_packet;
         NUDISPLAYLISTITEM *first_and_last[3];
         (void)skinned;
         if (handle == NULL)
@@ -9159,17 +9159,22 @@ extern "C" {
             WindShear(&wind_matrix, matrix, special->wind_scale, special->wind_speed);
             matrix = &wind_matrix;
         }
-        i32 clip = PCSpecialClipState;
-        if (clip == -1)
+        i32 clip;
+        if (PCSpecialClipState == -1)
             clip = NuCameraClipTestExtents(reinterpret_cast<NUVEC *>(&special->common.bounds_min),
                                            reinterpret_cast<NUVEC *>(&special->common.bounds_max), matrix, 0.0f, 0);
+        else
+            clip = PCSpecialClipState;
         NUDISPLAY_LIST_PC *scene = static_cast<NUGSCN *>(handle->scene)->display_list;
-        i32 previous_shadow = 0, shadow_clip = 0;
+        i32 previous_shadow, shadow_clip;
         if ((scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialActiveShadowLights > 0) {
             previous_shadow = PCSpecialShadowClipResultsPresent;
             NuVecMtxTransform(&minimum, reinterpret_cast<NUVEC *>(&special->common.bounds_min), matrix);
             NuVecMtxTransform(&maximum, reinterpret_cast<NUVEC *>(&special->common.bounds_max), matrix);
             shadow_clip = NuSpecialClipTestShadowLights(&minimum, &maximum, 0);
+        } else {
+            previous_shadow = 0;
+            shadow_clip = 0;
         }
         if (clip == 0 && shadow_clip == 0)
             return 0;
@@ -9177,8 +9182,7 @@ extern "C" {
                  reinterpret_cast<NUVEC *>(&special->common.bounds_max));
         NuVecScale(&center, &center, 0.5f);
         NuVecMtxTransform(&center, &center, matrix);
-        NUVEC camera_position = {global_camera.mtx.m30, global_camera.mtx.m31, global_camera.mtx.m32};
-        f32 distance = NuVecDistSqr(&center, &camera_position, NULL);
+        f32 distance = NuVecDistSqr(&center, reinterpret_cast<NUVEC *>(&global_camera.mtx.m30), NULL);
         if (distance < 0.0f)
             distance = 0.0f;
         PC_DISPLAY_CLIP_OBJECT_PC *object = special->clip_objects;
@@ -9201,6 +9205,7 @@ extern "C" {
             if (alpha == 0.0f)
                 return 0;
         }
+        transform_packet = NULL;
         for (u32 i = 0; i < static_cast<u32>(object->material_count); ++i) {
             PC_SPECIAL_RENDER_MATERIAL *material =
                 reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(scene->display_materials[object->material_ids[i]]);
