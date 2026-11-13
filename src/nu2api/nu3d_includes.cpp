@@ -3260,10 +3260,10 @@ extern "C" {
         joint_flags = buffer->joint_flags;
         joint = buffer->joints;
         hierarchy_joint = object->joints;
-        for (index = 0; index < count; ++index, ++joint, ++hierarchy_joint) {
-            matrix = &matrices[index];
+        matrix = matrices;
+        scale = ANI3_EVAL_SCALE_ARRAY;
+        for (index = 0; index < count; ++index, ++matrix, ++joint, ++scale, ++hierarchy_joint) {
             parent = hierarchy_joint->parent_index;
-            scale = &ANI3_EVAL_SCALE_ARRAY[index];
             flags = *joint_flags++;
             if ((flags & 1) != 0) {
                 rotation.x = joint->rotation.x;
@@ -3332,8 +3332,8 @@ extern "C" {
             if (AnimBuffEvalCB != NULL && callback_data[index] != NULL)
                 AnimBuffEvalCB(matrix, callback_data[index], NULL);
         }
-        for (; index < object->joint_count; ++index)
-            matrices[index] = NuMtxSetIdentityTemplate;
+        for (; index < object->joint_count; ++index, ++matrix)
+            *matrix = NuMtxSetIdentityTemplate;
         AnimBuffEvalCB = NULL;
         AnimBuffEvalData = NULL;
         AnimBuffEvalJoint = NULL;
