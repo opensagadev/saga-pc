@@ -996,7 +996,8 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
     GIZMOBLOWUPTYPE_PC *output_type;
     GIZMOBLOWUP_PC *output_blowup;
     char text[256], lookup_text[256], particle_text[256], part_text[256];
-    i32 version, file_types = 0, file_instances, index, particle, alternate, length;
+    i32 version, file_types = 0, file_instances, index, particle, alternate;
+    i8 length;
     i32 missing_type, added_types = 0;
     NUINSTANIM *animation;
     NUVEC position;
@@ -1016,19 +1017,20 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
         for (index = 0; index < file_types; ++index) {
             missing_type = 0;
             memset(&type, 0, sizeof(type));
-            length = (i8)EdFileReadChar();
+            length = EdFileReadChar();
             EdFileRead(text, length);
             NuStrCpy(type.name, text);
-            length = (i8)EdFileReadChar();
+            length = EdFileReadChar();
             EdFileRead(text, length);
             Gizmo_FindNuSpecial(world->current_gscn, &type.animated_special, text, 1, world->gizmo_sys, "BlowUp",
                                 type.name);
             if (!NuSpecialExistsFn(&type.animated_special))
                 missing_type = 1;
-            type.particle_types[0] = type.particle_types[1] = -1;
+            type.particle_types[0] = -1;
+            type.particle_types[1] = -1;
             if (version >= 17) {
                 for (particle = 0; particle < 2; ++particle) {
-                    length = (i8)EdFileReadChar();
+                    length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(part_text, length);
                         type.particle_types[particle] = -1;
@@ -1036,7 +1038,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
                     }
                 }
             } else if (version >= 5) {
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length > 0) {
                     EdFileRead(part_text, length);
                     type.particle_types[0] = (i16)PARTLookupType(part_text);
@@ -1048,7 +1050,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
                 type.particle_types[particle] = -1;
             if (version >= 4) {
                 for (particle = 4; particle < 7; ++particle) {
-                    length = (i8)EdFileReadChar();
+                    length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
                         type.particle_types[particle] = -1;
@@ -1059,7 +1061,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             }
             if (version >= 26) {
                 for (particle = 2; particle < 4; ++particle) {
-                    length = (i8)EdFileReadChar();
+                    length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
                         type.particle_types[particle] = -1;
@@ -1069,7 +1071,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             }
             if (version >= 27) {
                 for (particle = 7; particle < 9; ++particle) {
-                    length = (i8)EdFileReadChar();
+                    length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(particle_text, length);
                         type.particle_types[particle] = -1;
@@ -1088,7 +1090,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             type.animation_time_scale = version >= 8 ? EdFileReadFloat() : 0.0f;
             if (version >= 9) {
                 memset(text, 0, sizeof(text));
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length > 0) {
                     EdFileRead(text, length);
                     Gizmo_FindNuSpecial(world->current_gscn, &type.decal_special, text, 1, world->gizmo_sys,
@@ -1117,7 +1119,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             if (version >= 22) {
                 for (alternate = 0; alternate < 4; ++alternate) {
                     memset(text, 0, sizeof(text));
-                    length = (i8)EdFileReadChar();
+                    length = EdFileReadChar();
                     if (length > 0) {
                         EdFileRead(text, length);
                         Gizmo_FindNuSpecial(world->current_gscn, &type.alternate_specials[alternate], text, 1,
@@ -1129,7 +1131,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
                 type.field_098 = EdFileReadFloat();
             } else if (version >= 18) {
                 memset(text, 0, sizeof(text));
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length > 0) {
                     EdFileRead(text, length);
                     Gizmo_FindNuSpecial(world->current_gscn, &type.alternate_specials[0], text, 1, world->gizmo_sys,
@@ -1145,7 +1147,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             }
             if (version >= 19) {
                 memset(text, 0, 16);
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length > 0) {
                     EdFileRead(text, length);
                     text[16] = 0;
@@ -1156,7 +1158,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
             if (version >= 20) {
                 memset(text, 0, 16);
                 memset(&type.burst_special, 0, sizeof(type.burst_special));
-                length = (i8)EdFileReadChar();
+                length = EdFileReadChar();
                 if (length > 0) {
                     EdFileRead(text, length);
                     Gizmo_FindNuSpecial(world->current_gscn, &type.burst_special, text, 1, world->gizmo_sys,
@@ -1176,10 +1178,10 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
     }
     for (index = 0; index < file_instances; ++index) {
         memset(&blowup, 0, sizeof(blowup));
-        length = (i8)EdFileReadChar();
+        length = EdFileReadChar();
         EdFileRead(text, length);
         if (version >= 2) {
-            length = (i8)EdFileReadChar();
+            length = EdFileReadChar();
             EdFileRead(blowup.name, length);
             blowup.name_terminator = 0;
         }
