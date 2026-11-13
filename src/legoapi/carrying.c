@@ -222,13 +222,13 @@ void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
     params.matrix = &matrix;
     params.velocity = &velocity;
     NuSpecialGetRadius(&WORLD->level_objects[0xf7].special, &centre, &params.field_14);
-    params.time_step = FRAMETIME;
-    params.flags = 0x08000200;
-    params.special = &WORLD->level_objects[0xf7].special;
+    params.field_18 = params.field_14;
     params.part_id = 0xf7;
+    params.special = &WORLD->level_objects[0xf7].special;
+    params.flags = 0x08000200;
+    params.time_step = FRAMETIME;
     params.gravity = 0.5f;
     params.owner = object;
-    params.field_18 = params.field_14;
     params.hostility_group = object->hostility_group;
     params.collision_fn = PartCollide_3D;
     part = AddPart(&params);
