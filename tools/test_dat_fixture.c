@@ -16,7 +16,6 @@ static const char expected_payloads[2][4] = {
 HANDLE pc_file_handles[32];
 FILEINFO file_info[33];
 FILEBUFF file_buff[4];
-i32 file_time_count;
 i32 nufile_buffering_enabled;
 i32 nufile_blkcnt = 1;
 PC_NUFILE_READBLOCK nufile_blkinfo[1024];
@@ -68,7 +67,6 @@ NUFPAR_PC NuFParRecords[4];
 char NuFParBuffers[4][0x1000];
 NUFPAR_PC *NuFParRecordBase;
 char *NuFParBufferBase;
-i32 old_line_pos;
 void(__cdecl *fnInterpreterError)(NUFPAR_PC *);
 
 extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
