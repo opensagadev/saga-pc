@@ -5689,22 +5689,29 @@ extern "C" i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *direction, const 
     f32 extrusion = -PostShadowPlaneExtrusionPc;
     __declspec(align(16)) NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
     u8 positive[6];
+    __declspec(align(16)) NUVEC b;
+    __declspec(align(16)) NUVEC a;
+    __declspec(align(16)) NUVEC normal;
     i32 count = 0;
     NUVEC4 *output = planes;
     for (i32 face = 0; face < 6; ++face) {
         const NUVEC4 *origin = &corners[PostShadowCubeFaceIndicesPc[face][0]];
         const NUVEC4 *point_a = &corners[PostShadowCubeFaceIndicesPc[face][1]];
         const NUVEC4 *point_b = &corners[PostShadowCubeFaceIndicesPc[face][2]];
-        NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
-        NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
-        NUVEC normal;
+        b.x = point_b->x - origin->x;
+        b.y = point_b->y - origin->y;
+        b.z = point_b->z - origin->z;
+        a.x = point_a->x - origin->x;
+        a.y = point_a->y - origin->y;
+        a.z = point_a->z - origin->z;
         NuVecCross(&normal, &a, &b);
         f32 dot = (normal.y * offset.y + normal.x * offset.x) + normal.z * offset.z;
         positive[face] = dot >= 0.0f;
         if (positive[face] == 0) {
-            output->x = -normal.x;
-            output->y = -normal.y;
-            output->z = -normal.z;
+            NUVEC inward = {-normal.x, -normal.y, -normal.z};
+            output->x = inward.x;
+            output->y = inward.y;
+            output->z = inward.z;
             output->w = 0.0f;
             NuVecNorm(reinterpret_cast<NUVEC *>(output), reinterpret_cast<NUVEC *>(output));
             ++count;
