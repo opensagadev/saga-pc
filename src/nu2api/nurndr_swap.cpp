@@ -1,7 +1,7 @@
 #include "saga.h"
 
 extern "C" {
-    i32 __cdecl PCFrameBeginScenePc(i32 begin); /* retail pushes 1; the d3d_api_lifetime body ignores it */
+    i32 __cdecl PCFrameBeginScenePc(i32 begin);
     void __cdecl PCFrameResetTargetsPc(void);
     void __cdecl PCFrameConfigureTargetsPc(void);
     void __cdecl NuDisplayListHtmlEndPc(void);

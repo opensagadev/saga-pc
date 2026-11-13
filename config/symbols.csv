@@ -11331,7 +11331,7 @@ address,symbol,size,ctype
 0x6df8b0,_PCDeviceSetWorldIdentityPc,138,void __cdecl(void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfa20,_PCDeviceResetSamplerDefaultsPc,72,void __cdecl(void)
-0x6dfd30,_PCFrameBeginScenePc,8,i32 __cdecl(void)
+0x6dfd30,_PCFrameBeginScenePc,8,i32 __cdecl(i32)
 0x006dfd40,_PCFramePresentNativePc,36,"i32 __cdecl(i32,i32)"
 0x6dfd70,_PCFrameResetTargetsPc,10,void __cdecl(void)
 0x6dfd80,_PCFrameConfigureTargetsPc,10,void __cdecl(void)

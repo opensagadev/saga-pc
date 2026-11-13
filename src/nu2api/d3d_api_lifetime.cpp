@@ -122,7 +122,8 @@ extern "C" void *__cdecl PcApiGetCallBuffer(void) {
     return PcApiCallBuffer;
 }
 
-extern "C" i32 __cdecl PCFrameBeginScenePc(void) {
+extern "C" i32 __cdecl PCFrameBeginScenePc(i32 begin) {
+    (void)begin;
     PCDeviceBeginScenePc();
     return 0;
 }
