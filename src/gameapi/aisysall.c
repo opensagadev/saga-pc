@@ -12939,7 +12939,8 @@ i32 __cdecl Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
             value = NuStrIStr(params[index], "name");
             if (value != NULL) {
                 ++index;
-                processor->action_data_3 = AIPathFindLocator(sys, value + NuStrLen("name") + 1);
+                value += NuStrLen("name") + 1;
+                processor->action_data_3 = AIPathFindLocator(sys, value);
             }
         }
     }
