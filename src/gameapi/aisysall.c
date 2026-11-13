@@ -6626,7 +6626,6 @@ static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
     f32 nearest;
     AIPATH_PC *selected = NULL;
     i32 nearest_node;
-    f32 nearest_node_distance;
 
     first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
     second = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[1]];
@@ -6648,11 +6647,12 @@ static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
     }
     nearest = FLT_MAX;
     for (index = 0; index < route->path_count; ++index) {
-        /* PC ignores success. With no nearest node the output is stale or uninitialized. */
+        /* PC ignores success and reuses first_distance as the output: with no nearest node it keeps the
+         * previous value (the first node distance, or the previous path's result). */
         AIMoveFindNearestSpecialRouteNode(route->paths[index], &packet->fallback_destination, &nearest_node,
-                                          &nearest_node_distance);
-        if (nearest_node_distance < nearest) {
-            nearest = nearest_node_distance;
+                                          &first_distance);
+        if (first_distance < nearest) {
+            nearest = first_distance;
             selected = route->paths[index];
         }
     }
