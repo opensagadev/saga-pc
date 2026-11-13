@@ -1,43 +1,5 @@
 #include "saga.h"
 
-PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names,
-                                      i32 page) {
-    PARTDEBRISSYS *system;
-    i32 i, type;
-    system = (PARTDEBRISSYS *)((buffer->addr + 15) & ~(u32)15);
-    buffer->addr = ((buffer->addr + 15) & ~(u32)15) + sizeof(PARTDEBRISSYS);
-    if (system != NULL) {
-        memset(system, 0, sizeof(*system));
-        system->capacity = capacity;
-        system->named_count = named_count;
-        system->entries = (PARTDEBRISENTRY *)((buffer->addr + 15) & ~(u32)15);
-        buffer->addr = ((buffer->addr + 15) & ~(u32)15) + capacity * sizeof(PARTDEBRISENTRY);
-        if (system->entries != NULL) {
-            memset(system->entries, -1, capacity * sizeof(PARTDEBRISENTRY));
-            i = 0;
-            if (names != NULL) {
-                for (; i < system->named_count; ++i) {
-                    NuStrCpy(system->entries[i].name, names[i]);
-                    system->entries[i].id = -1;
-                    system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
-                }
-            }
-            for (type = 0; i < system->capacity && type < 128; ++type) {
-                system->entries[i].id = -1;
-                if (part_types[type].variant_count > 0) {
-                    NuStrCpy(system->entries[i].name, part_types[type].name);
-                    system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
-                    ++i;
-                }
-            }
-            for (; i < system->capacity; ++i)
-                system->entries[i].id = -1;
-            return system;
-        }
-    }
-    return NULL;
-}
-
 i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     i32 i;
 
@@ -291,17 +253,4 @@ void __cdecl DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
 
 i32 __cdecl LookupDebrisEffect(char *name) {
     return LookupDebrisEffectPage(name, 0);
-}
-
-void __cdecl InitPartTable(char **names) {
-    i32 count = 0;
-    part_debris_count = count;
-    PartDebrisNameListPc = names;
-    if (names != NULL && *names != NULL) {
-        while (*names != NULL) {
-            names++;
-            count++;
-        }
-        part_debris_count = count;
-    }
 }
