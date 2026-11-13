@@ -12,7 +12,6 @@ static u32 *Text_StringBits = 0;
 extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);
 extern i32 __cdecl NuStrLenW(const NUWCHAR *str);
-extern i16 TextIdPc880894, TextIdPc880898;
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
@@ -168,17 +167,6 @@ __declspec(noinline) void IntroText_SetTextID(i32 id) {
     }
 }
 
-void Text_InitDefaultStrings(void) {
-    TTab[tNULL] = txt_NULL;
-    TTab[tUNKNOWN] = txt_UNKNOWN;
-    TTab[tENGLISH] = apitxt_ENGLISH;
-    TTab[tFRENCH] = apitxt_FRENCH;
-    TTab[tGERMAN] = apitxt_GERMAN;
-    TTab[tITALIAN] = apitxt_ITALIAN;
-    TTab[tSPANISH] = apitxt_SPANISH;
-    TTab[tDANISH] = apitxt_DANISH;
-}
-
 static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
     if (NuStrICmp(parser->word_buffer_ptr, TextPlatform360) == 0)
         return 1;
@@ -269,47 +257,6 @@ void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32
     *buffer = out;
 }
 
-void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
-    char language[32];
-    char path[256];
-    u8 *string_buffer = (u8 *)buffer->void_ptr;
-
-    (void)buffer_end;
-
-    TextRegisterButtonMapFn(Text_DecodeButtons);
-    NuStrCpy(language, Text_GetLanguagePath(Text_Language));
-
-    NuStrCpy(path, TextLoadPermTextDirectory);
-    NuStrCat(path, language);
-    NuStrCat(path, AreaResidentsExtension);
-    Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
-
-    if (StartupGameFlag1 != 0) {
-        IntroText_SetTextID(tALONGTIMEAGO);
-    } else {
-        NuStrCpy(path, TextLoadPermTextDirectory);
-        NuStrCat(path, language);
-        NuStrCat(path, TextLoadPermAPIExtension);
-        Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
-    }
-
-    buffer->addr = ((u32)string_buffer + 3U) & ~3U;
-
-    if (TTab[TextIdPc880894] != NULL)
-        NuStrCpy(Game.customiser_start[0].name, TTab[TextIdPc880894]);
-    if (TTab[TextIdPc880898] != NULL)
-        NuStrCpy(Game.customiser_start[1].name, TTab[TextIdPc880898]);
-    FinishWeirdoNames(-1);
-    Customiser_InitNames(CharacterCustomiser);
-    MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);
-}
-
-void Text_DecodeButtons(char *source, char *destination) {
-    if (NuStrICmp(source, Text_WibbleCodeword) == 0) {
-        NuStrCpy(destination, Text_CrossCodeword);
-    }
-}
-
 /* Retail 4cf4b0 consists solely of RET. */
 void __cdecl Text_FillInExtendedSaveInfo(void) {
 }
@@ -347,39 +294,6 @@ void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale) {
     }
     if (coordinate_scale != NULL) {
         *coordinate_scale = STCOORDSCALE;
-    }
-}
-
-void Text_SetLanguage_Game(i32 language) {
-    switch (language) {
-        case 4:
-            INTROTEXT_Y = 0.13f;
-            INTROTEXT_SCALE = 0.575f;
-            break;
-        case 2:
-            INTROTEXT_Y = 0.115f;
-            INTROTEXT_SCALE = 0.5f;
-            break;
-        case 3:
-            INTROTEXT_Y = 0.14f;
-            INTROTEXT_SCALE = 0.61f;
-            break;
-        case 8:
-            INTROTEXT_Y = 0.15f;
-            INTROTEXT_SCALE = 0.67f;
-            break;
-        case 5:
-            INTROTEXT_Y = 0.17f;
-            INTROTEXT_SCALE = 0.76f;
-            break;
-        case 0:
-            INTROTEXT_Y = 0.0f;
-            INTROTEXT_SCALE = 1.8f;
-            break;
-        default:
-            INTROTEXT_Y = 0.175f;
-            INTROTEXT_SCALE = 0.79f;
-            break;
     }
 }
 
