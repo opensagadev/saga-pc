@@ -603,7 +603,7 @@ def derive(ctx, kind, library=None):
     raise ValueError(f"Unknown kind {kind!r}")
 
 
-def derive_library_data(ctx, by_name):
+def library_layout(ctx):
     """Place whole data sections of linked archive members from one mapped symbol.
 
     The linker contributes a section whole, so a symbol the map already binds
@@ -612,9 +612,10 @@ def derive_library_data(ctx, by_name):
     then equal retail byte for byte (relocation fields: bound targets compared,
     others masked); an uninitialized section must lie in retail zero bytes.
     Each symbol extends to the next symbol of its section or the section end.
+    Returns {(address, linker name): extent}.
     """
     bindings = bindings_for(ctx.records)
-    out, claimed = [], set()
+    layout = {}
     for entry in library_entries():
         try:
             obj = prepare_member(COFF(library_member_path(entry["archive"], entry["index"])),
@@ -643,24 +644,25 @@ def derive_library_data(ctx, by_name):
                     continue
             elif not _relocated_equal(obj, section, bytearray(COFF_section_bytes(obj, section)), retail, bindings):
                 continue
-            # Each symbol extends to the next symbol of the section (or its end).
             starts = sorted({s["value"] for s in members})
             for s in members:
-                address = base + s["value"]
                 following = [v for v in starts if v > s["value"]]
-                extent = (following[0] if following else size) - s["value"]
-                if s["name"] in by_name and address not in by_name[s["name"]]:
-                    continue
-                if (address, s["name"]) in claimed:
-                    continue
-                claimed.add((address, s["name"]))
-                existing = s["name"] in by_name
-                row = next((r for r in ctx.records if r["symbol"] == s["name"] and r["address"] == address), None)
-                if row is not None and row["size"] is not None:
-                    continue
-                if any(ctx.is_mapped(v) for v in range(address, address + extent)) and row is None:
-                    continue
-                out.append((address, s["name"], extent, row["ctype"] if row else "", existing))
+                layout.setdefault((base + s["value"], s["name"]), (following[0] if following else size) - s["value"])
+    return layout
+
+
+def derive_library_data(ctx, by_name):
+    rows = {(r["address"], r["symbol"]): r for r in ctx.records if r["address"] is not None}
+    out = []
+    for (address, name), extent in sorted(library_layout(ctx).items()):
+        if name in by_name and address not in by_name[name]:
+            continue  # the map binds this name elsewhere: never a second address
+        row = rows.get((address, name))
+        if row is not None and row["size"] is not None:
+            continue
+        if row is None and any(ctx.is_mapped(v) for v in range(address, address + extent)):
+            continue
+        out.append((address, name, extent, row["ctype"] if row else "", row is not None))
     return out
 
 
@@ -695,6 +697,10 @@ def verify(ctx):
     names_at = collections.defaultdict(set)
     for r in ctx.records:
         names_at[r["address"]].add(r["symbol"])
+    sizes = {(r["address"], r["symbol"]): r["size"] for r in ctx.records}
+    for key, extent in library_layout(ctx).items():
+        if sizes.get(key) not in (None, extent):
+            errors.append(f"{key[1]} at {key[0]:#x}: size {sizes[key]} but its archive member section gives {extent}")
     for r in ctx.records:
         if r["address"] is None:
             continue
