@@ -21878,7 +21878,7 @@ extern "C" {
     i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *);
     u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *, NUMTX *, PC_GEOMETRY_MORPH_WEIGHTS_PC *);
     void __cdecl PcResetGeometryOriginStatePc(void);
-    void __cdecl PCGraphicsInitializeFramebuffers(u8, i32, VARIPTR *, VARIPTR);
+    void __cdecl PCGraphicsInitializeFramebuffers(u32, i32, VARIPTR *, VARIPTR);
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
     void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     extern i32 PcGeometryRegistryCountPc;

@@ -348,7 +348,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuGobjRegistryInitPc();
     NuRndrInitLeafPc(buffer, *end);
     NuInitDebrisRenderer(buffer, *end);
-    PCGraphicsInitializeFramebuffers((u8)PCDeviceBackend.render_target_flags, 0, buffer, *end);
+    PCGraphicsInitializeFramebuffers(PCDeviceBackend.render_target_flags, 0, buffer, *end);
     NuPostEffectInit(PCDeviceBackend.shader_flags, buffer, *end);
     NuRndrBufferDescriptorsInitPc(buffer, *end);
     PcResetGeometryOriginStatePc();

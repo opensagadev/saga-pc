@@ -6156,7 +6156,7 @@ extern "C" {
     PC_FRAMEBUFFER_PC::~PC_FRAMEBUFFER_PC() {
     }
 
-    void __cdecl PCGraphicsInitializeFramebuffers(u8 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
+    void __cdecl PCGraphicsInitializeFramebuffers(u32 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
         (void)unused;
         (void)buffer;
         (void)end;
