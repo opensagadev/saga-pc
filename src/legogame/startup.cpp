@@ -104,19 +104,19 @@ extern "C" {
         }
 
         FRAMETIME = DEFAULTFRAMETIME;
+        tail_timer = 0.2f;
         pNuCam->mtx = NuMtxSetIdentityTemplate;
         NuCameraSet(pNuCam);
         InitPanel(Game.options_save.widescreen);
         NuQFntSetCoordinateSystem(3);
-        NUSPECIALHANDLE special = {NULL, NULL, NULL};
+        NUSPECIALHANDLE special = {};
         NUVEC scale_vec = {0.125f, 0.125f, 0.125f};
         NuMtxSetScale(&scale, &scale_vec);
         scale.m32 = 1.0f;
+        language_timer = 3.3f;
         if (PAL == 0) {
             LoadPerm_LanguageSelect = 3;
         }
-        language_timer = 3.3f;
-        tail_timer = 0.2f;
         legal_timer = 0.0f;
         ready_timer = 0.0f;
         intro_timer = 0.0f;
