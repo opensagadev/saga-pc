@@ -83,13 +83,13 @@ __declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabl
     if (enabled != 0) {
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
         object->portal_flags |= 0x00400000;
-        if (room != -1) {
-            object->portal_room = room;
-        } else if (scene != NULL) {
-            object->portal_room = NuPortalWhichRoom(scene, &object->collision_position);
-        } else {
-            object->portal_room = -1;
+        if (room == -1) {
+            if (scene != NULL)
+                room = NuPortalWhichRoom(scene, &object->collision_position);
+            else
+                room = -1;
         }
+        object->portal_room = room;
     } else {
         object->portal_flags &= ~0x00400000;
     }
