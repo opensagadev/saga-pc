@@ -1390,6 +1390,7 @@ address,symbol,size,ctype
 0x47ecb0,?HubUpdateBonusModePc@@YAXXZ,2344,
 0x47f5e0,_MenuUpdateSelectMode,5,
 0x47f5f0,_MenuUpdateBonusMode,5,
+0x47f620,_IndyConnectionHelperIsTypePc,58,"i32 __cdecl(GAMEOBJECT *, u8)"
 0x47f660,_Indy_MidSpecialMove_DefaultPc,647,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
 0x47f8f0,_Indy_PrepareClimbPc,238,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x47f9e0,_Indy_MidSpecialMove_ClimbUpPc,589,"i32 __cdecl(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *)"
@@ -4123,6 +4124,7 @@ address,symbol,size,ctype
 0x545db0,_NuFadeObjSetup,68,"void __cdecl(VARIPTR *, VARIPTR, i32, i32)"
 0x545e10,_NuWindInit,53,void __cdecl(void)
 0x545e50,_NuWindAllocateGrp,60,PC_NUWINDGROUP *__cdecl(void)
+0x545e90,_NuWindFreeGrp,14,void __cdecl(PC_NUWINDGROUP *)
 0x545ea0,_NuWindCreateMtx,1246,"PC_NUWINDGROUP *__cdecl(NUSPECIALHANDLE *,NUMTX *,i16,f32,f32,i32,f32,f32)"
 0x546380,_NuWindUpdateArray,2711,void __cdecl (NUVEC **)
 0x546e20,_NuWindUpdate,54,void __cdecl (NUVEC *)
@@ -4217,6 +4219,7 @@ address,symbol,size,ctype
 0x54a2f0,_GameCam_Reset,232,void __cdecl(GAMECAMERA *)
 0x54a3e0,_GameCam_Blend,298,"void __cdecl (GAMECAMERA *, f32, f32, i32)"
 0x54a510,_GameCam_GetAdjustedYRot,60,u16 __cdecl (GAMECAMERA *)
+0x54a560,_HitsFabsPc,18,"f32 __cdecl (f32)"
 0x54a5a0,_GamePad_Allocate,49,GAMEPAD_PC *__cdecl (void)
 0x0054a5e0,_GamePads_Init,117,void __cdecl (void)
 0x0054a690,_GamePad_Rotate,224,f32 __cdecl (GAMEOBJECT *)
@@ -4598,6 +4601,8 @@ address,symbol,size,ctype
 0x560630,_WorldInfo_StreamLevel,154,void __cdecl(BGPROCINFO *)
 0x5606d0,_LevelStreaming_Update,969,void __cdecl(WORLDINFO *)
 0x00560aa0,_WorldInfo_Activate,18,void __cdecl (void)
+0x560ac0,_GameMessagesFabsPc,18,"f32 __cdecl (f32)"
+0x560ae0,_GameMessagesFdivPc,54,"f32 __cdecl (f32, f32)"
 0x560b40,_ResetGameMessages,32,void __cdecl (void)
 0x560b60,_AddGameMsg,1078,GAME_MESSAGE_PC * __cdecl (ADD_GAME_MESSAGE_PC *)
 0x560fa0,_AddGameMessage,123,"GAME_MESSAGE_PC * __cdecl (char *,NUVEC *,f32,NUVEC *,f32,u8,u8,u8,u32,f32)"
@@ -4777,11 +4782,13 @@ address,symbol,size,ctype
 0x0056d140,_GuideLines_ClearProgress,22,"void __cdecl(void *, GUIDELINE_PROGRESS_PC *)"
 0x0056d160,_GuideLines_StoreProgress,126,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS_PC *)"
 0x0056d1e0,_GuideLines_RegisterGizmo,268,ADDGIZMOTYPE_PC *__cdecl(i32)
+0x56d300,_TubesFabsPc,18,"f32 __cdecl (f32)"
 0x56d340,_Tubes_Load,158,
 0x56d3e0,_Tubes_ReserveBufferSpace,77,
 0x56d430,_Tube_Activate,28,
 0x56d450,_Tube_ActivateRev,89,
 0x56d4b0,_Tube_SetVisibility,30,
+0x56d4d0,_Tube_ResetDerivedPc,22,void private (TUBE_CALLBACKS_PC * EAX)
 0x56d4f0,_Tubes_Reset,169,
 0x56d5a0,_Tubes_Draw,1,
 0x56d5b0,_Tubes_GetMaxGizmos,25,
@@ -5454,6 +5461,7 @@ address,symbol,size,ctype
 0x58abf0,_SpecialMoves_Configure,718,"void __cdecl(char*,VARIPTR*,VARIPTR*)"
 0x58aec0,_SpecialMove_GetAttackerAction,27,i32 __cdecl(i32)
 0x58aee0,_SpecialMove_GetVictimAction,28,i32 __cdecl(i32)
+0x58af00,_SpecialMove_GetDistanceApart,26,f32 __cdecl(i32)
 0x58af20,_SpecialMove_GetFlags,49,"u32 __cdecl(i32,u32)"
 0x58af60,_SpecialMove_Check,273,"i32 __cdecl(GAMEOBJECT *,GAMEOBJECT *)"
 0x58b080,_SpecialMoveApplyDamagePc,108,void private (GAMEOBJECT * ESI)
@@ -5928,6 +5936,8 @@ address,symbol,size,ctype
 0x5ae130,_GizSpecial_GetMaxGizmos,18,
 0x5ae150,_GizSpecial_AddGizmos,98,
 0x005ae1c0,_createGizSpecial,344,"GIZMO_PC *__cdecl (void *, char *)"
+0x5ae320,_GizSpecial_GetName,5,char * __cdecl(GIZFLOW_SPECIAL_PC *)
+0x5ae330,_GizSpecial_FindByName,93,"GIZFLOW_SPECIAL_PC * __cdecl(char *, GIZFLOW_LOAD_WORLD_PC *)"
 0x5ae390,_GizSpecial_GetGizmoName,14,
 0x5ae3a0,_GizSpecial_GetOutput,117,
 0x5ae420,_GizSpecial_GetOutputName,29,
@@ -8398,6 +8408,7 @@ address,symbol,size,ctype
 0x00630b40,_APICharacterSysInit,541,"void __cdecl (VARIPTR *, VARIPTR, i32, i32, i32, i32, APICHARACTERDATA *, void (__cdecl *)(APIOBJECT_PC *))"
 0x630d60,_FmvOptionErrorPc,1,
 0x630e00,_NuFmvPlayV,612,
+0x631110,_FmvGetTimePc,78,f32 __cdecl(void)
 0x631160,_FmvStopPc,12,
 0x631170,_FmvStartPc,151,
 0x631210,_FmvStepPc,27,
@@ -8415,7 +8426,11 @@ address,symbol,size,ctype
 0x631d90,_FmvReleaseImagePc,82,void __cdecl(PC_FMV_MOVIE_PC *)
 0x631df0,_FmvRestoreImagePc,68,void __cdecl(PC_FMV_MOVIE_PC *)
 0x631e40,_FmvFadePc,28,
+0x631e60,_RadFmvCheckFormatPc,40,"i32 __cdecl(GRAPHICS_FACTORY_PC *, u32, u32)"
 0x631e90,_RadFmvInitializeFormatsPc,396,
+0x632020,_RadFmvOpenPc,317,RADFMV_CONTEXT_PC * __cdecl(HWND)
+0x632160,_RadFmvClosePc,62,void __cdecl(RADFMV_CONTEXT_PC *)
+0x6321a0,_RadFmvDescribePc,6,const char * __cdecl(void)
 0x6321b0,_RadFmvBeginScenePc,58,
 0x6321f0,_RadFmvEndScenePc,44,
 0x632220,_RadFmvResizePc,86,
@@ -9837,7 +9852,11 @@ address,symbol,size,ctype
 0x00695170,?GetSoundFiles@NuMusic@@QAEXPAPAUnusound_filename_info_s@@PAH@Z,66,"void __thiscall (NuMusic *, nusound_filename_info_s **, i32 *)"
 0x006951c0,_numusicGetDuckVolume,34,f32 __cdecl (void)
 0x6951f0,_NuSound3InitV,364,"i32 __cdecl(VARIPTR *,VARIPTR,i32,i32,...)"
+0x695360,_NuSound3InitTablePc,33,"i32 __cdecl(SFX_FILE_INFO_PC *, i32, i32)"
+0x695390,_NuSound3InitDefaultPc,30,i32 __cdecl(SFX_FILE_INFO_PC *)
 0x6953b0,_NuSound3PlayStereoV,396,"i32 __cdecl(i32, ...)"
+0x695540,?NuMusicGainToDecibels@@YAMM@Z,69,f32 __cdecl(f32)
+0x695590,?NuMusicDecibelsToGain@@YAMM@Z,65,static f32 __cdecl(f32)
 0x6955e0,?Load@Voice@NuMusic@@QAEHPAVTrack@2@H@Z,94,"i32 __thiscall (NuMusic::Voice *, NuMusic::Track *, i32)"
 0x695640,?Unload@Voice@NuMusic@@QAEHXZ,209,i32 __thiscall NuMusic::Voice::Unload(void)
 0x695720,?Cue@Voice@NuMusic@@QAEHXZ,172,i32 __thiscall (NuMusic::Voice *)
@@ -9971,6 +9990,7 @@ address,symbol,size,ctype
 0x69a230,?Reset@WavReader@@UAEJXZ,21,HRESULT __thiscall(WavReader *)
 0x69a250,?Close@WavReader@@UAEJXZ,35,HRESULT __thiscall(WavReader *)
 0x69a280,?SeekTime@WavReader@@UAEHM@Z,103,"i32 __thiscall(WavReader *,f32)"
+0x69a2f0,?WavReaderSetFilePointerPc@@YGHPAXT_LARGE_INTEGER@@PAT1@K@Z,55,"BOOL __stdcall(HANDLE, LARGE_INTEGER, LARGE_INTEGER *, DWORD)"
 0x69a330,??1WavReader@@UAE@XZ,32,void __thiscall(WavReader *)
 0x69a350,?FindChunkPc@WavReader@@QAEHPAXPBDPAUPC_WAVE_CHUNK_PC@@@Z,181,"i32 __thiscall(WavReader *,HANDLE,const char *,PC_WAVE_CHUNK_PC *)"
 0x69a410,?SkipChunkPc@WavReader@@QAEHPAXPBUPC_WAVE_CHUNK_PC@@@Z,66,"i32 __thiscall(WavReader *,HANDLE,const PC_WAVE_CHUNK_PC *)"
@@ -20206,6 +20226,7 @@ address,symbol,size,ctype
 0x76b1c0,??_C@_02POGCAHMO@th?$AA@,3,const char[]
 0x76b1c8,__real@4040aaaac0000000,8,const double
 0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
+0x76b1ec,??_C@_09FFKEDGBB@Direct3D9?$AA@,10,const char[]
 0x76b1f8,__real@3fefff2e48e8a71e,8,const f64
 0x76b200,??_C@_07OHKEKKIE@Timings?$AA@,8,const char[]
 0x76b20c,??_7BaseThing@@6B@,48,native exactVT binding; unimplemented extent unclaimed
@@ -21188,6 +21209,7 @@ address,symbol,size,ctype
 0x76eec8,_NuMusicDebugClassFormat,9,const char[9]
 0x76eed4,_NuMusicDebugTrackFormat,9,const char[9]
 0x76eee0,_NuMusicDebugVoiceFormat,9,const char[9]
+0x76eeec,__real@c2c80000,4,f32
 0x0076eef0,__real@40cfff8000000000,8,const f64
 0x76eef8,_NuMusicLanguageTokenPc,6,char[6]
 0x76ef00,??_C@_04EDENFOBH@?4ogg?$AA@,5,const char[]
