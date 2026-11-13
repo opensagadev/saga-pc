@@ -1252,9 +1252,9 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
                     memset(special_name, 0, sizeof(special_name));
                     EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
                     special_name[16] = '\0';
+                    void *gizmo_sys = world->gizmo_sys;
                     if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
-                                            world->gizmo_sys, const_cast<char *>("PushBlockLinkObject"),
-                                            block->name) == 0)
+                                            gizmo_sys, const_cast<char *>("PushBlockLinkObject"), block->name) == 0)
                         --block->end_position_count;
                 }
             }
