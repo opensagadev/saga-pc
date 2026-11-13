@@ -394,7 +394,7 @@ extern "C" void DrawStillScreen(i32 clear) {
         NuRndrClear(0x500, 0, 1.0f);
     }
     if (MainRenderTime < 1.0f) {
-        const u32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080u;
+        const i32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080;
         u32 colours[4] = {colour, colour, colour, colour};
         NuRndrGradRectUV2di(ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc, 0.0f, 0.0f, 1.0f,
                             1.0f, colours, (NUMTL *)pause_rndr_mtl);
