@@ -790,9 +790,10 @@ void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct eduimenu_s *parent = NULL;
     i32 create_type = edpp_create_type;
+    struct eduimenu_s *parent;
     edpp_create_type = edptl_clipboard_entry;
+    parent = NULL;
     edppDeleteEffect(edpp_create_type);
     edpp_create_type = -1;
 
