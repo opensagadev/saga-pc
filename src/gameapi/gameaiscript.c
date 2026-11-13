@@ -9560,17 +9560,17 @@ i32 __cdecl Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     AILOCATOR_PC *locator;
 
     (void)param_6;
+    radius = 1.5f;
+    object = NULL;
+    enabled = 1;
+    type = 0;
+    position = NULL;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    position = NULL;
-    radius = 1.5f;
-    type = 0;
-    enabled = 1;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AIGameCharacterName);
         if (value != NULL) {
@@ -9580,7 +9580,9 @@ i32 __cdecl Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             }
         } else if ((value = NuStrIStr(params[index], (char *)AIPathLocatorName)) != NULL) {
             locator = AIPathFindLocator(sys, value + 8);
-            position = locator != NULL ? &locator->position : NULL;
+            if (locator != NULL) {
+                position = &locator->position;
+            }
         } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7581a0)) != NULL) {
             radius = AIParamToFloat(processor, value + 7);
         } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
