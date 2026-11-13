@@ -326,10 +326,11 @@ void __cdecl BonusGunshipB_PanelPc(WORLDINFO *world) {
 static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
     f32 floor_y;
     if (netclient == 0) {
-        if (world->ai_sys != NULL) {
+        AISYS_PC *ai = world->ai_sys;
+        if (ai != NULL) {
             i32 index;
-            i32 count = world->ai_sys->antinode_count;
-            AIANTINODE_PC *node = world->ai_sys->antinodes;
+            i32 count = ai->antinode_count;
+            AIANTINODE_PC *node = ai->antinodes;
             for (index = 0; index < count; index++, node++) {
                 if (node->radius != 0.0f) {
                     f32 dx = position->x - node->position.x;
@@ -337,11 +338,11 @@ static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCA
                     f32 dist_sqr = dx * dx + dz * dz;
                     f32 r = node->radius + 1.0f;
                     if (dist_sqr < r * r) {
-                        f64 scale = (f64)r / NuFsqrt(dist_sqr);
+                        f32 scale = r / NuFsqrt(dist_sqr);
                         dx *= scale;
-                        position->x = node->position.x + dx;
+                        position->x = dx + node->position.x;
                         dz *= scale;
-                        position->z = node->position.z + dz;
+                        position->z = dz + node->position.z;
                         break;
                     }
                 }
