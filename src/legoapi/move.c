@@ -2787,36 +2787,28 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 object->position = object->start_position;
                 object->collision_position = object->initial_position;
                 object->velocity = v000;
-                break;
             } else if (object->character_context == 0x45) {
                 move_vertical = WallShuffle_SetTargetMom(object, input_angle);
-                break;
             } else if (object->character_context == 0x55) {
                 move_vertical = LedgeTerrain_SetTargetMom(object);
-                break;
             } else if (object->character_context == 0x5b) {
                 object->target_velocity.x = (object->launch_origin.x - object->upper_position.x) * 20.0f;
                 object->target_velocity.y = (object->launch_origin.y - object->upper_position.y) * 20.0f;
                 object->target_velocity.z = (object->launch_origin.z - object->upper_position.z) * 20.0f;
                 move_vertical = 1;
-                break;
             } else if (object->character_context == 0x27 || object->character_context == 0x28 ||
                        object->character_context == 0x59) {
                 object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1];
                 object->velocity.x = object->target_velocity.x;
                 object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
                 object->velocity.z = object->target_velocity.z;
-                break;
             } else if (object->character_context == 0x4e) {
                 move_vertical = Hang_SetTargetMom(object);
-                break;
             } else if (object->character_context == 0x43) {
                 move_vertical = Climb_SetTargetMom(object, input_angle);
-                break;
             } else if (object->character_context == 0x46) {
                 Grapple_SetRotOrder(object);
                 move_vertical = Grapple_SetTargetMom(object);
-                break;
             } else if (object->character_context == 0x4a) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
                     target = ((DIRECTIONAL_LEVER_PC *)(object->grapple))->floor_position;
@@ -2824,7 +2816,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.x = (target.x - object->position.x) * turn_rate;
                     object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 }
-                break;
             } else if (object->character_context == 0x0b) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
                     GizPanel_GetAbsTargetPos((void *)(object->grapple), &target, 1);
@@ -2832,31 +2823,26 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.x = (target.x - object->position.x) * turn_rate;
                     object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 }
-                break;
             } else if (object->character_context == 0x61 && (object->flags_1f8 & 0x40000) == 0) {
                 target = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
                 turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
                 object->target_velocity.x = (target.x - object->position.x) * turn_rate;
                 object->target_velocity.z = (target.z - object->position.z) * turn_rate;
-                break;
             } else if (object->character_context == 0x51) {
                 DIRECTIONAL_TECHNO_PC *techno;
                 techno = (DIRECTIONAL_TECHNO_PC *)(object->grapple);
                 object->target_velocity.x = (techno->ground_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (techno->ground_position.z - object->position.z) * 5.0f;
-                break;
             } else if (object->character_context == 0x53) {
                 DIRECTIONAL_ATTRACTO_PC *attracto;
                 attracto = (DIRECTIONAL_ATTRACTO_PC *)(object->grapple);
                 object->target_velocity.x = (attracto->active_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (attracto->active_position.z - object->position.z) * 5.0f;
-                break;
             } else if (object->character_context == 0x5c) {
                 DIRECTIONAL_SECURITYDOOR_PC *door;
                 door = (DIRECTIONAL_SECURITYDOOR_PC *)(object->grapple);
                 object->target_velocity.x = (door->player_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (door->player_position.z - object->position.z) * 5.0f;
-                break;
             } else if (object->character_context == 0x4c) {
                 DIRECTIONAL_SIGNAL_PC *signal;
                 signal = (DIRECTIONAL_SIGNAL_PC *)(object->grapple);
@@ -2864,16 +2850,13 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 object->target_velocity.y = (signal->target_position.y - object->collision_position.y) * 5.0f;
                 object->target_velocity.z = (signal->target_position.z - object->collision_position.z) * 5.0f;
                 move_vertical = 1;
-                break;
             } else if (object->character_context == 0x44) {
                 move_vertical = TightRope_SetTargetMom(object);
-                break;
             } else if (object->character_context == 0x4f) {
                 move_vertical = Glide_SetTargetMom(object);
                 seek_rates.y = seek_rates.x;
                 seek_rates.x = seek_rates.z = 2.0f;
                 separate_seek_rates = 1;
-                break;
             } else {
                 f32 water_speed_multiplier;
                 f32 walking_speed;
@@ -2933,15 +2916,15 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         break;
                     }
                     if (object->character_context == 0x5a) {
-                        if (object->field_7b3 == 0 && (object->flags_1fc_word & 2) == 0) {
+                        if (object->field_7b3 > 0 || (object->flags_1fc_word & 2) != 0) {
+                            object->target_velocity.x = 0.0f;
+                            object->target_velocity.z = 0.0f;
+                        } else {
                             object->target_velocity.x =
                                 -NuTrigTable[object->movement_facing_angle >> 1] * object->external_force.z;
                             object->target_velocity.z =
                                 -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
                                 object->external_force.z;
-                        } else {
-                            object->target_velocity.x = 0.0f;
-                            object->target_velocity.z = 0.0f;
                         }
                         break;
                     }
