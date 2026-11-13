@@ -5,4 +5,3 @@
 void NetMessagePoolError(void) {
     theNetSessionManager->error = (i32)0xa0001000;
 }
-

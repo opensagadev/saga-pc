@@ -8231,10 +8231,9 @@ extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     u32 PCImplodeWordMask = 0xffffffff;
     NULISTHDR global_aiscripts = {0};
-    BOLTTYPE_PC GlobalBoltType_Default = {"null", 4.0f, 2.0f, 0.0f,   0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}},
-                                          -1,     0,    1,    -1,     0,      0,    NULL, NULL,
-                                          NULL,   NULL, NULL, {NULL}, {NULL}, 0,    {-1}, {-1},
-                                          {0}};
+    BOLTTYPE_PC GlobalBoltType_Default = {
+        "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
+        NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
     BOLTSYS_PC GlobalBoltSystem_Default = {
         &GlobalBoltType_Default,        1,    NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default,
         Bolt_GetShootDirection_Default, NULL, NULL,
