@@ -277,7 +277,8 @@ void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
     } else {
         SetDefaultCharacterAnimPc(object);
         if (object->character_context == 0) {
-            if (object->pad->input_magnitude > 0.0f)
+            f32 magnitude = object->pad->input_magnitude;
+            if (magnitude > 0.0f)
                 object->anim_packet.requested_animation = 37;
             else
                 object->anim_packet.requested_animation = 36;
