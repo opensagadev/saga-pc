@@ -1431,7 +1431,7 @@ address,symbol,size,ctype
 0x4820b0,_Ledges_ClearProgress,37,"void __cdecl(void *,LEDGE_PROGRESS_PC *)"
 0x4820e0,_Ledges_StoreProgress,153,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS_PC *)"
 0x482180,_Ledges_RegisterGizmo,268,ADDGIZMOTYPE_PC * __cdecl(i32)
-0x482290,?LedgeSetAttachPositionPc@@YAXPAUnuvec_s@@GPAUgameobject_s@@@Z,124,
+0x482290,?LedgeSetAttachPositionPc@@YAXPAUgameobject_s@@PAUnuvec_s@@G@Z,124,
 0x482310,?LedgeAttachPointPc@@YAPAULEDGE_MOTION_PC@@PAUWORLDINFO_s@@PAUnuvec_s@@11PAG@Z,1165,
 0x4827a0,_Ledge_MoveCode,1105,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x00482c10,_StatusScoreRatioPc,54,"f32 __cdecl(f32, f32)"
