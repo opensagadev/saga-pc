@@ -13891,6 +13891,7 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
     i32 check_adjacent_connections;
     AIPATHNODE_PC *first_node;
     AIPATHCNX_PC *candidate;
+    i32 candidate_direction;
     AIPATHNODE_PC *second_node;
     i32 remaining_checks;
     AIPATHNODE_PC *node;
@@ -13945,23 +13946,25 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
         first_node = &path->nodes[current_connection->node_indices[current_direction]];
         for (connection_index = 0; connection_index < first_node->connection_count; ++connection_index) {
             candidate = first_node->connections[connection_index];
-            if (candidate != current_connection &&
-                CharacterTestPathCnx(system, object, packet, candidate,
-                                     candidate->node_indices[0] != current_connection->node_indices[current_direction],
-                                     &nearest_distance_squared) != 0)
-                return;
+            if (candidate != current_connection) {
+                candidate_direction = candidate->node_indices[0] != current_connection->node_indices[current_direction];
+                if (CharacterTestPathCnx(system, object, packet, candidate, candidate_direction,
+                                         &nearest_distance_squared) != 0)
+                    return;
+            }
         }
 
         path = packet->path_info.path;
         second_node = &path->nodes[current_connection->node_indices[current_direction == 0]];
         for (connection_index = 0; connection_index < second_node->connection_count; ++connection_index) {
             candidate = second_node->connections[connection_index];
-            if (candidate != current_connection &&
-                CharacterTestPathCnx(system, object, packet, candidate,
-                                     candidate->node_indices[0] !=
-                                         current_connection->node_indices[current_direction == 0],
-                                     &nearest_distance_squared) != 0)
-                return;
+            if (candidate != current_connection) {
+                candidate_direction =
+                    candidate->node_indices[0] != current_connection->node_indices[current_direction == 0];
+                if (CharacterTestPathCnx(system, object, packet, candidate, candidate_direction,
+                                         &nearest_distance_squared) != 0)
+                    return;
+            }
         }
     }
 
