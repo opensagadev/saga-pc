@@ -431,16 +431,12 @@ void PeriscodeCode(GAMEOBJECT *object) {
         i32 locator = object->character_data->game_character->thingy_locator;
         if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
             object->locator_matrices[locator].m31 < object->water_height) {
-            f32 clearance = object->roof_height_pc - object->water_height;
-            if (object->roof_height_pc == 2000000.0f || !(clearance > 0.0f) || !(clearance < 0.26f)) {
-                f32 depth;
-                if (object->floor_height == 2000000.0f) {
+            f32 gap;
+            if (object->roof_height_pc == 2000000.0f ||
+                !((gap = object->roof_height_pc - object->water_height) > 0.0f) || !(gap < 0.26f)) {
+                if (object->floor_height == 2000000.0f ||
+                    !((gap = (f32)(object->floor_height > object->water_height)) > 0.0f) || !(gap < 0.26f))
                     target = 1.0f;
-                } else {
-                    depth = (f32)(object->water_height >= object->floor_height);
-                    if (!(depth > 0.0f) || !(depth < 0.26f))
-                        target = 1.0f;
-                }
             }
         }
     }
