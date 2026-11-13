@@ -150,35 +150,42 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     PcNoFocusPolicy = 0;
     char *cursor = command_line;
     while (*cursor != 0) {
+        i32 index = PcArgc;
         while (*cursor == ' ')
             ++cursor;
-        char *start;
-        i32 length = 0;
         if (*cursor == '"') {
-            start = ++cursor;
+            i32 length = 0;
+            ++cursor;
+            PcArgv[index] = cursor;
             while (*cursor != 0 && *cursor != '"') {
                 ++cursor;
                 ++length;
             }
             if (*cursor == '"')
                 *cursor++ = 0;
+            if (length == 0)
+                PcArgv[index] = NULL;
         } else {
-            start = cursor;
+            i32 length = 0;
+            if (*cursor == ' ')
+                ++cursor;
+            PcArgv[index] = cursor;
             while (*cursor != 0 && *cursor != ' ') {
                 ++cursor;
                 ++length;
             }
             if (*cursor == ' ')
                 *cursor++ = 0;
+            if (length == 0)
+                PcArgv[index] = NULL;
         }
-        PcArgv[PcArgc] = length == 0 ? NULL : start;
-        if (NuStrICmp(PcArgv[PcArgc], "-RelaunchMCE") == 0)
+        if (NuStrICmp(PcArgv[index], "-RelaunchMCE") == 0)
             PcRelaunchMce = 1;
-        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Pause") == 0)
+        else if (NuStrICmp(PcArgv[index], "-NoFocus_Pause") == 0)
             PcNoFocusPolicy = 0;
-        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Process") == 0)
+        else if (NuStrICmp(PcArgv[index], "-NoFocus_Process") == 0)
             PcNoFocusPolicy = 1;
-        else if (NuStrICmp(PcArgv[PcArgc], "-AllowCrashDump") != 0 && PcArgv[PcArgc] != NULL)
+        else if (NuStrICmp(PcArgv[index], "-AllowCrashDump") != 0 && PcArgv[index] != NULL)
             ++PcArgc;
     }
 }
