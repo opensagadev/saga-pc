@@ -194,6 +194,14 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY_PC *) = 0;
     virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY_PC *) = 0;
 };
+struct PC_DI_FACTORY_INTERFACE_PC {
+    virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
+    virtual ULONG __stdcall AddRef(void) = 0;
+    virtual ULONG __stdcall Release(void) = 0;
+    virtual HRESULT __stdcall CreateDevice(REFGUID, NuKeyboardDevice_PC **, IUnknown *) = 0;
+    virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *,
+                                          DWORD) = 0;
+};
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     if (device == NULL)
         return;
@@ -573,9 +581,9 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
     }
     device_count = 0;
     PcXInputDeviceCount = 0;
-    factory->methods->enum_devices(factory, 3, InputEnumDevicesPc, NULL, 1);
-    factory->methods->enum_devices(factory, 2, InputEnumDevicesPc, NULL, 1);
-    factory->methods->enum_devices(factory, 4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
 }
 
 /* Add out-of-line definitions to existing pc_input.cpp. The actual global
