@@ -1161,7 +1161,12 @@ struct SplineKnotList {
     SplineKnot *last;
     i32 count;
 
+    SplineKnotList();
     ~SplineKnotList();
+    SplineKnot *First();
+    SplineKnot *Last();
+    void Clear();
+    i32 Count();
     void InsertAfter(SplineKnot *knot, SplineKnot *after);
     void Remove(SplineKnot *knot);
 };
@@ -1207,9 +1212,6 @@ class SplineObject : public CSListLink<SplineObject> {
         theMemoryManager.FreePool(memory, sizeof(SplineObject));
     }
     SplineObject() {
-        knots.first = NULL;
-        knots.last = NULL;
-        knots.count = 0;
         points.first = NULL;
         points.last = NULL;
         points.block_count = 0;
@@ -4509,6 +4511,24 @@ void PropertyMenuList::Remove(PropertyMenu *menu) {
     count--;
 }
 
+SplineKnotList::SplineKnotList() : first(NULL), last(NULL), count(0) {
+}
+
+SplineKnot *SplineKnotList::First() {
+    return first;
+}
+
+SplineKnot *SplineKnotList::Last() {
+    return last;
+}
+
+/* Forgets the knots without unlinking them. */
+void SplineKnotList::Clear() {
+    last = NULL;
+    first = NULL;
+    count = 0;
+}
+
 /* Retail keeps this out of line: KnotHelper::CreateObject calls it (0x6cf159). */
 __declspec(noinline) void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKnot *after) {
     if (after != NULL) {
@@ -4529,6 +4549,10 @@ __declspec(noinline) void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKn
             first = knot;
     }
     count++;
+}
+
+i32 SplineKnotList::Count() {
+    return count;
 }
 
 void SplineKnotList::Remove(SplineKnot *knot) {
@@ -6000,11 +6024,9 @@ void SplinePointList::Draw() {
 
 void SplineObject::ReverseKnots() {
     SplineKnotList reversed = knots;
-    knots.last = NULL;
-    knots.first = NULL;
-    knots.count = 0;
+    knots.Clear();
     SplineKnot *knot;
-    while ((knot = reversed.last) != NULL) {
+    while ((knot = reversed.Last()) != NULL) {
         reversed.Remove(knot);
         knot->previous = knots.last;
         if (knots.last != NULL)
@@ -6237,7 +6259,7 @@ void SplineHelper::DestroyObject(void *object, i32) {
     theLevelEditor.destroying_objects = 1;
     SplineObject *spline = static_cast<SplineObject *>(object);
     for (SplineObject *other = first_object; other != NULL; other = other->next) {
-        if (other == spline && spline->knots.count == 0) {
+        if (other == spline && spline->knots.Count() == 0) {
             if (spline->next != NULL)
                 spline->next->previous = spline->previous;
             else
@@ -6262,7 +6284,7 @@ void SplineHelper::Render(void *object, i32 selected) {
 i32 KnotHelper::GetNumObjects() {
     i32 count = 0;
     for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next)
-        count += spline->knots.count;
+        count += spline->knots.Count();
     return count;
 }
 
@@ -6271,16 +6293,16 @@ void *KnotHelper::GetNextObject(void *current) {
     SplineKnot *next = NULL;
     if (current == NULL) {
         for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next) {
-            if (spline->knots.count != 0)
-                return spline->knots.first;
+            if (spline->knots.Count() != 0)
+                return spline->knots.First();
         }
     } else {
         next = static_cast<SplineKnot *>(current)->next;
         if (next == NULL) {
             for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL;
                  spline = spline->next) {
-                if (spline->knots.count != 0)
-                    return spline->knots.first;
+                if (spline->knots.Count() != 0)
+                    return spline->knots.First();
             }
             return NULL;
         }
@@ -6295,7 +6317,7 @@ void KnotHelper::DestroyObject(void *object, i32) {
     SplineObject *spline = knot->spline;
     spline->knots.Remove(knot);
     theMemoryManager.FreePool(knot, sizeof(SplineKnot));
-    if (spline->knots.count == 0) {
+    if (spline->knots.Count() == 0) {
         if (spline->next != NULL)
             spline->next->previous = spline->previous;
         else
