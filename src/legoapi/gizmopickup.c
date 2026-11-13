@@ -304,16 +304,21 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     }
     if (player_index != 0 && player_index != 1)
         return;
-    if ((type_index == 2 || type_index == 3) && object != NULL) {
-        if (world->area != NULL && (world->area->flags & 0x104) == 4)
-            NewBuzzFrames(object->pad->bound_pad, 1, 0);
-        else
-            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+    switch (type_index) {
+        case 2:
+        case 3:
+            if (object != NULL) {
+                if (world->area != NULL && (world->area->flags & 0x104) == 4)
+                    NewBuzzFrames(object->pad->bound_pad, 1, 0);
+                else
+                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
+            }
+            break;
     }
-    if (DoubleScoreTime <= 0.0f && type_index != 2 && type_index != 3)
-        PlaySfx((char *)PickupCoinSfx_PC, position);
-    else
+    if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3)
         PlaySfx((char *)PickupTypeLiteral758c5c, position);
+    else
+        PlaySfx((char *)PickupCoinSfx_PC, position);
     if (CoinsGoToMainTotal()) {
         target.x = cointotal_x[player_index];
         main_total = 1;
