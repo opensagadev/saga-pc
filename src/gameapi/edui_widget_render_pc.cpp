@@ -1211,9 +1211,9 @@ static void EduiDrawGradientGridPc(i32 x, i32 y, i32 width, i32 height, f32 star
     width <<= 4;
     y <<= 3;
     height <<= 3;
-    f32 scaled_width = (f32)width;
-    i32 left = (x << 4) + (i32)(scaled_width * start);
-    i32 right = (x << 4) + (i32)(scaled_width * end);
+    x <<= 4;
+    i32 left = x + (i32)(width * start);
+    i32 right = x + (i32)(width * end);
     EDUI_GRADIENT_COLOUR_PC first, second, last_first, last_second;
     first.word = top_left;
     second.word = top_right;
