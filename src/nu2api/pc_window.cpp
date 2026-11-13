@@ -148,6 +148,32 @@ extern "C" void SetAccessibilityPc(u8 restore) {
     }
 }
 
+// Retail keeps standalone cdecl copies of both tokenizer helpers (0x6dcec0, 0x6dcee0) next to
+// ParsePlatformArgumentsPc, which inlines them.
+char *SkipArgumentSpacesPc(char *cursor) {
+    while (*cursor == ' ')
+        ++cursor;
+    return cursor;
+}
+
+char *ParseArgumentTokenPc(char *cursor, char terminator, char **argument) {
+    i32 length = 0;
+    if (*cursor == terminator)
+        ++cursor;
+    *argument = cursor;
+    while (*cursor != 0) {
+        if (*cursor == terminator) {
+            *cursor++ = 0;
+            break;
+        }
+        ++cursor;
+        ++length;
+    }
+    if (length == 0)
+        *argument = NULL;
+    return cursor;
+}
+
 extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     PcArgc = 1;
     GetModuleFileNameA(GetModuleHandleA(NULL), PcModuleFilename, 260);
@@ -157,42 +183,18 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     PcNoFocusPolicy = 0;
     char *cursor = command_line;
     while (*cursor != 0) {
-        i32 index = PcArgc;
-        while (*cursor == ' ')
-            ++cursor;
-        if (*cursor == '"') {
-            i32 length = 0;
-            ++cursor;
-            PcArgv[index] = cursor;
-            while (*cursor != 0 && *cursor != '"') {
-                ++cursor;
-                ++length;
-            }
-            if (*cursor == '"')
-                *cursor++ = 0;
-            if (length == 0)
-                PcArgv[index] = NULL;
-        } else {
-            i32 length = 0;
-            if (*cursor == ' ')
-                ++cursor;
-            PcArgv[index] = cursor;
-            while (*cursor != 0 && *cursor != ' ') {
-                ++cursor;
-                ++length;
-            }
-            if (*cursor == ' ')
-                *cursor++ = 0;
-            if (length == 0)
-                PcArgv[index] = NULL;
-        }
-        if (NuStrICmp(PcArgv[index], "-RelaunchMCE") == 0)
+        cursor = SkipArgumentSpacesPc(cursor);
+        if (*cursor == '"')
+            cursor = ParseArgumentTokenPc(cursor, '"', &PcArgv[PcArgc]);
+        else
+            cursor = ParseArgumentTokenPc(cursor, ' ', &PcArgv[PcArgc]);
+        if (NuStrICmp(PcArgv[PcArgc], "-RelaunchMCE") == 0)
             PcRelaunchMce = 1;
-        else if (NuStrICmp(PcArgv[index], "-NoFocus_Pause") == 0)
+        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Pause") == 0)
             PcNoFocusPolicy = 0;
-        else if (NuStrICmp(PcArgv[index], "-NoFocus_Process") == 0)
+        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Process") == 0)
             PcNoFocusPolicy = 1;
-        else if (NuStrICmp(PcArgv[index], "-AllowCrashDump") != 0 && PcArgv[index] != NULL)
+        else if (NuStrICmp(PcArgv[PcArgc], "-AllowCrashDump") != 0 && PcArgv[PcArgc] != NULL)
             ++PcArgc;
     }
 }
