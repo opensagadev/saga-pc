@@ -307,6 +307,18 @@ typedef struct obstacle_progress_flags_pc_s {
     u32 unknown : 30;
 } OBSTACLE_PROGRESS_FLAGS_PC;
 STATIC_ASSERT(sizeof(OBSTACLE_PROGRESS_FLAGS_PC) == 4);
+typedef struct obstacle_runtime_flags_pc_s {
+    u32 pickups_spawned : 1;
+    u32 pending_blowup_type : 1;
+    u32 ai_active : 1;
+    u32 blocked : 1;
+    u32 has_platform : 1;
+    u32 anim_object_bit_1 : 1;
+    u32 trigger_latched : 1;
+    u32 destroyed : 1;
+    u32 unknown : 24;
+} OBSTACLE_RUNTIME_FLAGS_PC;
+STATIC_ASSERT(sizeof(OBSTACLE_RUNTIME_FLAGS_PC) == 4);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 
 void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
@@ -656,15 +668,15 @@ void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr)
         if (progress && i < 128) {
             i32 word = i / 32;
             u32 bit = 1u << (i & 31);
-            obstacle->progress_flags = (obstacle->progress_flags & ~2u) | ((progress->visible[word] & bit) != 0) * 2;
-            obstacle->progress_flags = (obstacle->progress_flags & ~1u) | ((progress->enabled[word] & bit) != 0);
-            obstacle->runtime_flags = (obstacle->runtime_flags & ~1u) | ((progress->pickups_spawned[word] & bit) != 0);
-            obstacle->runtime_flags = (obstacle->runtime_flags & ~4u) | ((progress->ai_active[word] & bit) != 0) * 4;
-            obstacle->runtime_flags = (obstacle->runtime_flags & ~8u) | ((progress->blocked[word] & bit) != 0) * 8;
-            obstacle->runtime_flags =
-                (obstacle->runtime_flags & ~0x40u) | ((progress->trigger_latched[word] & bit) != 0) * 0x40;
-            obstacle->runtime_flags =
-                (obstacle->runtime_flags & ~0x80u) | ((progress->destroyed[word] & bit) != 0) * 0x80;
+            ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->visible = (progress->visible[word] & bit) != 0;
+            ((OBSTACLE_PROGRESS_FLAGS_PC *)&obstacle->progress_flags)->active = (progress->enabled[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->pickups_spawned =
+                (progress->pickups_spawned[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->ai_active = (progress->ai_active[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->blocked = (progress->blocked[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->trigger_latched =
+                (progress->trigger_latched[word] & bit) != 0;
+            ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->destroyed = (progress->destroyed[word] & bit) != 0;
         }
     }
     GizObstacleTriggerCountPc = 0;
