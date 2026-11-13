@@ -1245,7 +1245,7 @@ void __cdecl InitSoundInfo(i32 index) {
 }
 void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
     NUFPAR_PC *parser = NuFParCreate((char *)file);
-    SFX_FILE_INFO_PC *last;
+    i32 count;
     if (parser != NULL) {
         NuFParPushCom(parser, audioComPc);
         while (NuFParGetLine(parser)) {
@@ -1255,11 +1255,11 @@ void __cdecl LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
         }
         NuFParDestroy(parser);
     }
-    last = &SfxFileInfoPc[NumSfx];
-    last->filename = NULL;
-    last->pitch = 0;
-    last->static_sample = 0;
-    last->index = -1;
+    count = NumSfx;
+    SfxFileInfoPc[count].filename = NULL;
+    SfxFileInfoPc[count].pitch = 0;
+    SfxFileInfoPc[count].static_sample = 0;
+    SfxFileInfoPc[count].index = -1;
     NuSound3SetSampleTable(SfxFileInfoPc, cursor, end);
     memset(SfxBits, 0, 200);
     if (NOSOUND == 0)
