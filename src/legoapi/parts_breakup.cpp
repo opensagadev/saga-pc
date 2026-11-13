@@ -389,7 +389,6 @@ extern "C" {
                 params->draw_fn = PartDraw_Flickerer;
                 params->impact_fn = TiePart_Impact;
                 params->velocity = velocity;
-                AddPart(params);
                 break;
             }
             case 1: {
@@ -410,7 +409,6 @@ extern "C" {
                 params->impact_fn = TiePart_Impact;
                 params->velocity = &spin_velocity;
                 PlaySfx(KillPartsTieSpinsTextPc, &object->collision_position);
-                AddPart(params);
                 break;
             }
             case 0: {
@@ -418,10 +416,10 @@ extern "C" {
                 params->kill_fn = TiePart_KillExplode;
                 params->field_a4 = FRAMETIME;
                 params->velocity = &v000;
-                AddPart(params);
                 break;
             }
         }
+        AddPart(params);
     }
     void __cdecl KillParts_ATAT(ADDPART_PC *params, i32, i32 variant, GAMEOBJECT *) {
         params->flags = variant == 0 ? 0x500 : 0x110;
