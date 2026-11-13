@@ -92,7 +92,7 @@ typedef struct SHOP_SAVE_VIEW_PC {
  * All local callbacks are retained solely by the true publisher below. */
 extern "C" i32 __cdecl Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression)                                                                              \
-    typedef char SAGA_JOIN(game_publisher_static_assert_, __LINE__)[(expression) ? 1 : -1]
+    typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 // Source lease:
 // build/analysis/next-world-loading-wave/game-init-after-MM/callback-contract-v1/object-policy-callbacks.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);

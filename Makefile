@@ -83,7 +83,7 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint check-objects check-warnings lower-warning-budget test match diff inspect clean
+.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint format check-objects check-warnings lower-warning-budget test match diff inspect clean
 
 all: build
 build: link
@@ -162,6 +162,10 @@ check: lint check-core
 lint: dependencies
 	$(PYTHON) tools/check.py --format
 	$(PYTHON) tools/check.py --tidy
+
+# Apply .clang-format to src/ (the vendored sources keep their own style).
+format:
+	$(PYTHON) tools/check.py --format-fix
 
 # Counts that may only go down (tools/budget.py): oddities, unit declarations; warnings: check-warnings.
 check-core: dependencies
