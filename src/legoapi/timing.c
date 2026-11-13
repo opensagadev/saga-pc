@@ -69,31 +69,24 @@ typedef struct GAME_TIMING_MISSION_DATA_PC {
     u8 unknown_00[0x10];
     u16 time;
 } GAME_TIMING_MISSION_DATA_PC;
-typedef struct GAME_TIMING_MISSION_SYSTEM_PC {
-    void *missions;
-    GAME_TIMING_MISSION_DATA_PC *active_mission;
-    TIMER timer;
-} GAME_TIMING_MISSION_SYSTEM_PC;
 typedef struct GAME_TIMING_AREA_SAVE_PC {
     u8 unknown_00[8];
     f32 challenge_trial_time;
 } GAME_TIMING_AREA_SAVE_PC;
 STATIC_ASSERT(offsetof(GAME_TIMING_MISSION_DATA_PC, time) == 0x10);
-STATIC_ASSERT(offsetof(GAME_TIMING_MISSION_SYSTEM_PC, active_mission) == 4);
-STATIC_ASSERT(offsetof(GAME_TIMING_MISSION_SYSTEM_PC, timer) == 8);
 STATIC_ASSERT(sizeof(GAME_TIMING_AREA_SAVE_PC) == 0xc);
 STATIC_ASSERT(offsetof(GAME_TIMING_AREA_SAVE_PC, challenge_trial_time) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 
 void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {
-    f32 target = 0.0f;
-    f32 pulse;
-    GAME_TIMING_MISSION_SYSTEM_PC *mission;
+    f32 target;
     f32 time_limit;
     /* Existing PC owner names are reversed: Mul is the countdown, Time the fade. */
     if (LevelNameMul > 0.0f) {
         LevelNameMul -= FRAMETIME;
         target = 1.0f;
+    } else {
+        target = 0.0f;
     }
     LevelNameTime = SeekLinearF(LevelNameTime, target, FRAMETIME + FRAMETIME);
     if (Paused != 0) {
@@ -137,29 +130,27 @@ void __cdecl GameTiming(WORLDINFO *world, f32 *game_time) {
                             EndChallenge(3, 1);
                         }
                     } else if (Mission_CurrentState(NULL) == 1) {
-                        mission = (GAME_TIMING_MISSION_SYSTEM_PC *)MissionSys;
-                        time_limit = (f32)mission->active_mission->time;
-                        UpdateTimer(&mission->timer);
-                        if (mission->timer.time_elapsed >= time_limit && netclient == 0) {
+                        time_limit = (f32)((GAME_TIMING_MISSION_DATA_PC *)MissionSys->active_mission)->time;
+                        UpdateTimer(&MissionSys->timer);
+                        if (MissionSys->timer.time_elapsed >= time_limit && netclient == 0) {
                             EndMission(MissionSys, 3, 1);
                         }
                     }
                 }
             }
             UpdateGameMessages();
-            target = 0.0f;
             if (DoubleScore != 0 && GetMenuID() == -1) {
                 target = 1.0f;
+            } else {
+                target = 0.0f;
             }
             DoubleScoreTime = SeekLinearF(DoubleScoreTime, target, FRAMETIME);
         }
     }
     UpdateTimer(&GlobalTimer);
     menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
-    pulse = NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f);
-    game_pulse = NuTrigTable[(u16)(i32)(((f64)pulse + (f64)pulse) * 65536.0) >> 1];
-    pulse = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
-    global_pulse = NuTrigTable[(u16)(i32)(((f64)pulse + (f64)pulse) * 65536.0) >> 1];
+    game_pulse = NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0) >> 1];
+    global_pulse = NuTrigTable[(u16)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0) >> 1];
     MainRenderTime = SeekLinearF(MainRenderTime, MainRenderTargetTime, FRAMETIME);
     qrand();
 }
