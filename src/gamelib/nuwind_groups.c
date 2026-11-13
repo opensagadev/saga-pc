@@ -33,6 +33,11 @@ PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void) {
     return NULL;
 }
 
+void __cdecl NuWindFreeGrp(PC_NUWINDGROUP *group) {
+    if (group != NULL)
+        group->in_use = 0;
+}
+
 PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 value20, f32 value24,
                                 i32 flags, f32 near_distance, f32 far_distance) {
     PC_NUWINDGROUP *group = NuWindAllocateGrp();
@@ -40,8 +45,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     i32 index;
     f32 min_x, min_y, min_z, max_x, max_y, max_z;
     if (group == NULL || matrix == NULL) {
-        if (group != NULL)
-            group->in_use = 0;
+        NuWindFreeGrp(group);
         return NULL;
     }
     group->matrices = matrices;
