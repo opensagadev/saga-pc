@@ -15684,12 +15684,21 @@ void NuDeferredFilterGen::render() {
         (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index].data;
     PC_POST_BUFFER_PROXY_PC *depth =
         (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
-    PC_POST_BUFFER_PROXY_PC *resolve[4] = {color, normal, depth_rt, depth};
-    for (i32 i = 0; i < 4; ++i) {
-        if (!resolve[i]->resolved) {
-            PCGraphicsFramebufferBarrierPc(resolve[i]->kind, resolve[i]->enabled);
-            resolve[i]->resolved = true;
-        }
+    if (!color->resolved) {
+        PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
+        color->resolved = true;
+    }
+    if (!normal->resolved) {
+        PCGraphicsFramebufferBarrierPc(normal->kind, normal->enabled);
+        normal->resolved = true;
+    }
+    if (!depth_rt->resolved) {
+        PCGraphicsFramebufferBarrierPc(depth_rt->kind, depth_rt->enabled);
+        depth_rt->resolved = true;
+    }
+    if (!depth->resolved) {
+        PCGraphicsFramebufferBarrierPc(depth->kind, depth->enabled);
+        depth->resolved = true;
     }
     GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
@@ -15732,8 +15741,13 @@ void NuDeferredFilterGen::render() {
             PCDeviceSetRenderState(7, 0);
             PCDeviceSetRenderState(168, 15);
         }
-        POST_SHADER_PROGRAM_PC *program =
-            (POST_SHADER_PROGRAM_PC *)programs[light->parameter_5 == 0 || light->parameter_5 == 1 ? 0 : 1];
+        POST_SHADER_PROGRAM_PC *program;
+        if (light->parameter_5 == 0)
+            program = (POST_SHADER_PROGRAM_PC *)programs[0];
+        else if (light->parameter_5 == 1)
+            program = (POST_SHADER_PROGRAM_PC *)programs[0];
+        else
+            program = (POST_SHADER_PROGRAM_PC *)programs[1];
         if (!first) {
             NuDisplayHandlerVertexShaderCachePc = NULL;
             NuDisplayHandlerPixelShaderCachePc = NULL;
