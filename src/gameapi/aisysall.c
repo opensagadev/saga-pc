@@ -14937,6 +14937,7 @@ void __cdecl pathEditor_DestroyNode(EDAIPATHNODE_s *node, EDAIPATH_s *path) {
 
 AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cursor, void **scratch_end) {
     VARIPTR scratch;
+    NUVEC difference;
     i32 path_count;
     EDAIPATH_s *path_iter;
     AI_PATH_BUILD_SYSTEM_PC *system;
@@ -15099,7 +15100,6 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                                                         }
                                                     }
                                                 } else {
-                                                    NUVEC difference;
                                                     AIPATHCNX_PC *connection;
                                                     runtime->connections[next] = &path->connections[connection_index++];
                                                     runtime->connections[next]->node_indices[0] = node->index;
