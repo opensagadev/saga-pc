@@ -11015,42 +11015,43 @@ EDAICREATURE_s *__cdecl creatureEditor_GetNearest(i32 use_radius) {
     EDAICREATURE_s *nearest = NULL;
     f32 nearest_distance = FLT_MAX;
     EDAICREATURE_s *creature;
-    if (GlobalCharacterHGobjFn == NULL)
-        return NULL;
-    for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
-         creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
-        AI_CREATURE_MODEL_BOUNDS_PC *model;
-        f32 height, min_height, radius, distance;
-        NUVEC delta;
-        if (!creatureEditor_IsSelectable(creature))
-            continue;
-        model = (AI_CREATURE_MODEL_BOUNDS_PC *)GlobalCharacterHGobjFn(creature->character_type);
-        if (model != NULL) {
-            radius = model->radius;
-            min_height = model->min_height;
-            height = model->height;
-        } else {
-            radius = 0.4f;
-            min_height = 0.0f;
-            height = 0.4f;
-        }
-        distance = NuVecXZDistSqr(&aieditor->camera_position, &creature->position, &delta);
-        if (distance < nearest_distance) {
-            if (use_radius) {
-                f32 lower = creature->position.y + min_height;
-                if (lower > creature->position.y) {
-                    height += lower - creature->position.y;
-                    lower = creature->position.y;
-                }
-                if (distance < radius * radius &&
-                    aieditor->camera_position.y >= lower - AiEditorPickHeightTolerancePc &&
-                    aieditor->camera_position.y <= lower + height + AiEditorPickHeightTolerancePc) {
+    if (GlobalCharacterHGobjFn != NULL) {
+        for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
+             creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
+            AI_CREATURE_MODEL_BOUNDS_PC *model;
+            f32 height, min_height, radius, distance;
+            NUVEC delta;
+            if (!creatureEditor_IsSelectable(creature))
+                continue;
+            model = (AI_CREATURE_MODEL_BOUNDS_PC *)GlobalCharacterHGobjFn(creature->character_type);
+            if (model != NULL) {
+                radius = model->radius;
+                min_height = model->min_height;
+                height = model->height;
+            } else {
+                radius = 0.4f;
+                min_height = 0.0f;
+                height = 0.4f;
+            }
+            distance = NuVecXZDistSqr(&aieditor->camera_position, &creature->position, &delta);
+            if (distance < nearest_distance) {
+                if (use_radius) {
+                    f32 extent = height;
+                    f32 lower = creature->position.y + min_height;
+                    if (lower > creature->position.y) {
+                        extent += lower - creature->position.y;
+                        lower = creature->position.y;
+                    }
+                    if (distance < radius * radius &&
+                        aieditor->camera_position.y >= lower - AiEditorPickHeightTolerancePc &&
+                        aieditor->camera_position.y <= lower + extent + AiEditorPickHeightTolerancePc) {
+                        nearest_distance = distance;
+                        nearest = creature;
+                    }
+                } else {
                     nearest_distance = distance;
                     nearest = creature;
                 }
-            } else {
-                nearest_distance = distance;
-                nearest = creature;
             }
         }
     }
