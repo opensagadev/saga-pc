@@ -1208,7 +1208,7 @@ extern "C" {
             target_velocity = &DogfightCachedPlayerVelocityPc;
         } else if (fighter->target_id == -3) {
             *aim_matrix = fighter->matrix;
-            velocity->x = velocity->y = 0.0f;
+            velocity->y = velocity->x = 0.0f;
             velocity->z = shot_speed;
             velocity->w = 0.0f;
             TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
@@ -1281,7 +1281,7 @@ extern "C" {
         pitch = (i16)NuAtan2D(local.y, local.z);
         NuMtxPreRotateY(aim_matrix, yaw);
         NuMtxPreRotateX(aim_matrix, -pitch);
-        velocity->x = velocity->y = 0.0f;
+        velocity->y = velocity->x = 0.0f;
         velocity->z = shot_speed;
         velocity->w = 0.0f;
         TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
