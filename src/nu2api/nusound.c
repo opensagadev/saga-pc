@@ -292,7 +292,7 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
         saved_fade_start = nusound_fade_start;
         saved_fade_end = nusound_fade_end;
-        nusound_fade_start = SfxInfo[sfx_id].falloff_near * saved_fade_start * 0.5;
+        nusound_fade_start = saved_fade_start * SfxInfo[sfx_id].falloff_near * 0.5;
         nusound_fade_end = SfxInfo[sfx_id].falloff_far * saved_fade_end / 15.0;
     }
 
@@ -302,7 +302,11 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
                 (position->y - listener->m31) * (position->y - listener->m31) +
                 (position->z - listener->m32) * (position->z - listener->m32) >
             nusound_fade_end * nusound_fade_end) {
-            goto restore_fade;
+            if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
+                nusound_fade_start = saved_fade_start;
+                nusound_fade_end = saved_fade_end;
+            }
+            return;
         }
     }
 
@@ -326,13 +330,13 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     if (SfxInfo[sfx_id].pitch_rnd != 0.0f) {
         f32 pitch_variation = NuRandFloatSeeded(&nusound_seed) * SfxInfo[sfx_id].pitch_rnd;
         f32 pitch_scale;
-        if ((NuRandIntSeeded(&nusound_seed) & 1u) == 0) {
-            pitch_scale = (f32)(1.0 - (f64)pitch_variation * 0.5);
-        } else {
+        if ((NuRandIntSeeded(&nusound_seed) & 1u) != 0) {
             pitch_scale = 1.0f + pitch_variation;
+        } else {
+            pitch_scale = (f32)(1.0 - (f64)pitch_variation * 0.5);
         }
         pitch_parameter = (i32)(pitch_parameter * pitch_scale);
-        if (loop != 0)
+        if ((SfxInfo[sfx_id].sample_id_flags & 0x8000u) != 0)
             pitch_parameter = -pitch_parameter;
     }
     if (SfxInfo[sfx_id].volume_rnd != 0.0f) {
@@ -373,7 +377,6 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         }
     }
 
-restore_fade:
     if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
         nusound_fade_start = saved_fade_start;
         nusound_fade_end = saved_fade_end;
