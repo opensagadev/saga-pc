@@ -11,10 +11,10 @@ f32 __cdecl Condition_ObstacleAtStart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET
 f32 __cdecl Condition_ObstacleAtEnd(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ObstacleLockedShut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ObstacleLockedOpen(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_ObstacleLockedOpenInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_ObstacleOpenedByPlayerInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_ObstacleOpenedByPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ObstacleOpenedByEitherPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_ForceInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_ForceAtStart(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ForceAtEnd(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_IsVisibleInit(AISYS_PC *, char *, AISCRIPT_PC *);
@@ -37,13 +37,13 @@ f32 __cdecl Condition_CanFightLikeAJedi(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACK
 f32 __cdecl Condition_IAmAGoody(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IAmABaddy(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IAmANeutral(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_IAmAGoodyBaddyPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_IAmAGoodieBaddie(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 void *__cdecl Condition_EitherPlayerIsInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_EitherPlayerIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_Player1Is(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_Player2Is(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_IAmPlayer2(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *, char *, AISCRIPT_PC *);
+void *__cdecl Condition_UsingForceInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_UsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_PlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_EitherPlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
@@ -191,7 +191,7 @@ void *__cdecl Condition_GotLocatorInSetInit(AISYS_PC *, char *, AISCRIPT_PC *);
 f32 __cdecl Condition_GotLocatorInSet(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_GotOpponentLOS(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_EmptyTakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
-f32 __cdecl Condition_HasTakeOverTargetPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
+f32 __cdecl Condition_HasTakeOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_TakeOverRange(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_GotVictim(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
 f32 __cdecl Condition_ScreenWipe(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *);
@@ -2157,12 +2157,12 @@ AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
     {AIRegistryTextPc00757428, Condition_ObstacleAtEnd, Condition_ObstacleAtEndInit},
     {AIRegistryTextPc00757418, Condition_ObstacleAtStart, Condition_SpecialAtStartInitPc},
     {AIRegistryTextPc00757408, Condition_ObstacleAtEnd, Condition_SpecialAtStartInitPc},
-    {AIRegistryTextPc007573f4, Condition_ObstacleLockedOpen, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc007573e0, Condition_ObstacleLockedShut, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc007573d0, Condition_ForceAtStart, Condition_ForceAtStartInitPc},
-    {AIRegistryTextPc007573c4, Condition_ForceAtEnd, Condition_ForceAtStartInitPc},
-    {AIRegistryTextPc007573ac, Condition_ObstacleOpenedByPlayer, Condition_ObstacleLockedOpenInitPc},
-    {AIRegistryTextPc0075738c, Condition_ObstacleOpenedByEitherPlayer, Condition_ObstacleLockedOpenInitPc},
+    {AIRegistryTextPc007573f4, Condition_ObstacleLockedOpen, Condition_ObstacleOpenedByPlayerInit},
+    {AIRegistryTextPc007573e0, Condition_ObstacleLockedShut, Condition_ObstacleOpenedByPlayerInit},
+    {AIRegistryTextPc007573d0, Condition_ForceAtStart, Condition_ForceInit},
+    {AIRegistryTextPc007573c4, Condition_ForceAtEnd, Condition_ForceInit},
+    {AIRegistryTextPc007573ac, Condition_ObstacleOpenedByPlayer, Condition_ObstacleOpenedByPlayerInit},
+    {AIRegistryTextPc0075738c, Condition_ObstacleOpenedByEitherPlayer, Condition_ObstacleOpenedByPlayerInit},
     {AIRegistryTextPc00757378, Condition_AnimationFinished, Condition_AnimationFinishedInit},
     {AIRegistryTextPc0075735c, Condition_EitherPlayerPullingLever, NULL},
     {AIRegistryTextPc00757340, Condition_EitherPlayerUsingHatMachinePc, NULL},
@@ -2170,13 +2170,13 @@ AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
     {AIRegistryTextPc0075730c, Condition_EitherPlayerWearingHelmet, NULL},
     {AIRegistryTextPc007572fc, Condition_PartyUnderCover, NULL},
     {AIRegistryTextPc007572e0, Condition_NumBaddiesThatCanSeePlayers, NULL},
-    {AIRegistryTextPc007572cc, Condition_PlayerUsingForce, Condition_PlayerUsingForceInitPc},
-    {AIRegistryTextPc007572b4, Condition_EitherPlayerUsingForce, Condition_PlayerUsingForceInitPc},
-    {AIRegistryTextPc007572a8, Condition_UsingForce, Condition_PlayerUsingForceInitPc},
+    {AIRegistryTextPc007572cc, Condition_PlayerUsingForce, Condition_UsingForceInit},
+    {AIRegistryTextPc007572b4, Condition_EitherPlayerUsingForce, Condition_UsingForceInit},
+    {AIRegistryTextPc007572a8, Condition_UsingForce, Condition_UsingForceInit},
     {AIRegistryTextPc00757298, Condition_OnForcePlatform, Condition_OnForcePlatformInit},
     {AIRegistryTextPc00757280, Condition_PlayerOnForcePlatform, Condition_OnForcePlatformInit},
     {AIRegistryTextPc00757264, Condition_EitherPlayerOnForcePlatform, Condition_OnForcePlatformInit},
-    {AIRegistryTextPc00757254, Condition_ForceBeingUsed, Condition_PlayerUsingForceInitPc},
+    {AIRegistryTextPc00757254, Condition_ForceBeingUsed, Condition_UsingForceInit},
     {AIRegistryTextPc00757244, Condition_ForcePushing, Condition_ForcePushingInit},
     {AIRegistryTextPc00757238, Condition_TurretAlive, Condition_TurretAliveInit},
     {AIRegistryTextPc00757220, Condition_PlayerDeflectingPart, NULL},
@@ -2191,7 +2191,7 @@ AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
     {AIRegistryTextPc00757198, Condition_IAmAGoody, NULL},
     {AIRegistryTextPc0075718c, Condition_IAmABaddy, NULL},
     {AIRegistryTextPc00757180, Condition_IAmANeutral, NULL},
-    {AIRegistryTextPc00757170, Condition_IAmAGoodyBaddyPc, NULL},
+    {AIRegistryTextPc00757170, Condition_IAmAGoodieBaddie, NULL},
     {AIRegistryTextPc0075715c, Condition_IAmAPartyCharacter, NULL},
     {AIRegistryTextPc00757150, Condition_CategoryIs, Condition_CategoryIsInit},
     {AIRegistryTextPc0075713c, Condition_PlayerCategoryIs, Condition_CategoryIsInit},
@@ -2258,7 +2258,7 @@ AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
     {AIRegistryTextPc00756d4c, Condition_GotLocatorInSet, Condition_GotLocatorInSetInit},
     {AIRegistryTextPc00756d3c, Condition_GotOpponentLOS, NULL},
     {AIRegistryTextPc00756d2c, Condition_EmptyTakeOver, NULL},
-    {AIRegistryTextPc00756d18, Condition_HasTakeOverTargetPc, NULL},
+    {AIRegistryTextPc00756d18, Condition_HasTakeOver, NULL},
     {AIRegistryTextPc00756d08, Condition_TakeOverRange, NULL},
     {AIRegistryTextPc00756cec, Condition_TakeOverTargetInTriggerArea, Condition_TakeOverTargetInTriggerAreaInit},
     {AIRegistryTextPc00756cd0, Condition_EitherPlayerInMyTriggerArea, NULL},

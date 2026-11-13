@@ -418,8 +418,8 @@ address,symbol,size,ctype
 0x42fbf0,_BurnoutApply,256,void __cdecl(i32)
 0x42fcf0,_AddSurfaceRipples,1063,void __cdecl(GAMEOBJECT *)
 0x4301b0,_CreatureCrate_Stop,206,
-0x430280,_CreatureCrate_MovePc,54,
-0x4302c0,_CreatureCrate_DrawPc,28,
+0x430280,_CreatureCrate_MoveFn,54,
+0x4302c0,_CreatureCrate_DrawFn,28,
 0x4302e0,_SpawnCreatureFromCrate,332,"void __cdecl(GAMEOBJECT *, f32, f32)"
 0x430430,_ManageGameObjects,2793,void __cdecl(void)
 0x430f20,_Collide2Objects,748,
@@ -542,10 +542,10 @@ address,symbol,size,ctype
 0x440940,_Condition_ObstacleAtEnd,43,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS_PC *,AIPACKET_PC *,char *,void *)"
 0x440970,_Condition_ObstacleLockedShut,19,
 0x440990,_Condition_ObstacleLockedOpen,19,
-0x4409b0,_Condition_ObstacleLockedOpenInitPc,43,
+0x4409b0,_Condition_ObstacleOpenedByPlayerInit,43,
 0x4409e0,_Condition_ObstacleOpenedByPlayer,28,
 0x440a00,_Condition_ObstacleOpenedByEitherPlayer,42,
-0x440a30,_Condition_ForceAtStartInitPc,39,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x440a30,_Condition_ForceInit,39,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
 0x440a60,_Condition_ForceAtStart,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x440a90,_Condition_ForceAtEnd,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x440ac0,_Condition_IsVisibleInit,5,
@@ -568,13 +568,13 @@ address,symbol,size,ctype
 0x440e50,_Condition_IAmAGoody,33,
 0x440e80,_Condition_IAmABaddy,36,
 0x440eb0,_Condition_IAmANeutral,33,
-0x440ee0,_Condition_IAmAGoodyBaddyPc,36,
+0x440ee0,_Condition_IAmAGoodieBaddie,36,
 0x440f10,_Condition_EitherPlayerIsInit,32,
 0x440f30,_Condition_EitherPlayerIs,38,
 0x440f60,_Condition_Player1Is,30,
 0x440f80,_Condition_Player2Is,30,
 0x440fa0,_Condition_IAmPlayer2,65,
-0x440ff0,_Condition_PlayerUsingForceInitPc,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
+0x440ff0,_Condition_UsingForceInit,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT_PC *)"
 0x441020,_Condition_UsingForce,36,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441050,_Condition_PlayerUsingForce,30,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
 0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *)"
@@ -722,7 +722,7 @@ address,symbol,size,ctype
 0x443430,_Condition_GotLocatorInSet,84,
 0x443490,_Condition_GotOpponentLOS,111,
 0x443500,_Condition_EmptyTakeOver,212,
-0x4435e0,_Condition_HasTakeOverTargetPc,40,
+0x4435e0,_Condition_HasTakeOver,40,
 0x443610,_Condition_TakeOverRange,61,
 0x443650,_Condition_GotVictim,33,
 0x443680,_Condition_ScreenWipe,20,
@@ -1136,7 +1136,7 @@ address,symbol,size,ctype
 0x004673e0,_GizForce_PlayBackwardAnimationPc,104,
 0x00467450,_GizForce_PlayForwards,32,
 0x00467470,_GizForce_PlayBackwards,32,
-0x467490,_ForceAnimatedHeightPc,155,
+0x467490,_GizForce_GetHeight,155,
 0x467530,_ForceGroupPushPc,76,
 0x467580,_ForceGroupPopPc,122,
 0x467600,_GizForce_UpdateHint,102,i32 __cdecl(HINT_PC*)
@@ -1419,7 +1419,7 @@ address,symbol,size,ctype
 0x00481950,_LostTempleC_UpdatePc,287,void __cdecl(WORLDINFO *)
 0x481ac0,_Ledges_Load,235,"i32 __cdecl(WORLDINFO *,void *)"
 0x481bb0,_Ledges_ReserveBufferSpace,93,void * __cdecl(WORLDINFO *)
-0x481c10,_LedgeInitRecordPc,347,void __cdecl(LEDGE_MOTION_PC *)
+0x481c10,_Ledge_Reset,347,void __cdecl(LEDGE_MOTION_PC *)
 0x481d70,_Ledge_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
 0x481d90,_Ledge_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
 0x481db0,_Ledges_Reset,133,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS_PC *)"
@@ -3097,9 +3097,9 @@ address,symbol,size,ctype
 0x5003b0,_instNuGCutSceneEndButNotSystems,77,void __cdecl(INSTNUGCUTSCENE *)
 0x5004e0,_instNuGCutSceneFindActivePc,58,
 0x500520,_instNuGCutSceneAddCamTgt,72,"i32 __cdecl (INSTNUGCUTSCENE *, NUVEC *, f32, f32, i8)"
-0x500570,_CutSceneClipTestPc,142,
+0x500570,_instNuGCutSceneClipTest,142,
 0x500600,_CutSceneSwapStreamAssetPc,549,
-0x500830,_CutSceneCopyStreamAnimationsPc,359,
+0x500830,_copyAnims,359,
 0x5009a0,_NuGCutSceneIsBackgroundLoading,6,i32 __cdecl (void)
 0x5009b0,_instNuGCutScenePreload,27,i32 __cdecl (INSTNUGCUTSCENE *)
 0x5009d0,_instNuGCutSceneSwapBuffers,133,"i32 __cdecl (INSTNUGCUTSCENE *, i32)"
@@ -4345,7 +4345,7 @@ address,symbol,size,ctype
 0x551370,_XZPointToSegmentPc,106,"private same-TU f32(NUVEC *, f32 *, NUVEC *, NUVEC *, f32)"
 0x5513e0,_XZLinesClosest,838,
 0x551730,_LineIntersectSphere,205,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, f32, f32 *)"
-0x551800,_LineIntersectSphereXZPc,153,"i32 __cdecl(NUVEC *, NUVEC *, NUVEC *, f32)"
+0x551800,_LineIntersectCircle,153,"i32 __cdecl(NUVEC *, NUVEC *, NUVEC *, f32)"
 0x005518a0,_MoveSplinePosition,915,"void __cdecl (SPLINEPOS *position, f32 distance)"
 0x00551c40,_GetNearestSplinePos,367,"void __cdecl (NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point, i16 last_point)"
 0x551db0,_EvaluateSplineXZIntersection,622,
@@ -4832,7 +4832,7 @@ address,symbol,size,ctype
 0x0056e5d0,_ResetExplosions,31,void __cdecl (void)
 0x0056e5f0,_AddExplosion,168,"EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
 0x56e6a0,_DrawExplosions,1,void __cdecl (void)
-0x56e6b0,_ExplosionFeedbackPc,82,private native EAX argument EXPLOSION_PC *; writer must review emitted ABI
+0x56e6b0,_Explosion_Feedback,82,private native EAX argument EXPLOSION_PC *; writer must review emitted ABI
 0x56e710,_UpdateExplosion_Generic,1904,void __cdecl (EXPLOSION_PC *)
 0x56ee80,_UpdateExplosions,114,void __cdecl (void)
 0x0056ef50,_PickupSetRotationXPc,160,
@@ -5131,7 +5131,7 @@ address,symbol,size,ctype
 0x0057cd30,_NewCutScene,69,
 0x0057cd80,_CutScene_PlayingOrRequested,78,i32 __cdecl (CUTINFO *)
 0x57cdd0,_CutScene_HasPlayed,102,i32 __cdecl(CUTINFO*)
-0x57ce40,_CutSceneSetStopFlagsPrivatePc,77,
+0x57ce40,_SetStopCutFlags,77,
 0x57ce90,_CutScene_SnapToEnd,21,
 0x57ceb0,_CutScene_StartAudio,1,void __cdecl (void)
 0x57cec0,_CutScenes_Stop,49,void __cdecl (CUTSYS_PC *)
@@ -5960,7 +5960,7 @@ address,symbol,size,ctype
 0x5ae7d0,_GizSpecial_ReserveBuffer,261,
 0x5ae8e0,_GizSpecial_RegisterGizmo,279,
 0x5aea20,_GetAnimDirection,56,i32 __cdecl(NUINSTANIM_TIME_VIEW *)
-0x5aea60,_edbobsDrawCrossPc,401,"void __cdecl (NUVEC *, f32, NUMTL *, i32)"
+0x5aea60,_DrawCross,401,"void __cdecl (NUVEC *, f32, NUMTL *, i32)"
 0x5aec00,_edbobsDrawBox,631,"void __cdecl (NUVEC *, NUVEC *, i32)"
 0x5aee80,_edbobs_DrawCoordinateInfo,140,
 0x5aef10,_GizmoFileReadGameAnimSet,413,"i32 __cdecl (GAMEANIMSET *, void *, void (__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *)"

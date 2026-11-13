@@ -1505,7 +1505,7 @@ extern "C" {
         if (result != NULL && mark_hit != 0) {
             radius = (f32)((f64)object->bounds_radius * 0.75);
             radius = radius * radius;
-            if (LineIntersectSphereXZPc(&result->position, &result->direction, &object->collision_position, radius))
+            if (LineIntersectCircle(&result->position, &result->direction, &object->collision_position, radius))
                 object->flags_e20 |= 0x2000;
         }
         return result;

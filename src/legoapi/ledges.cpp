@@ -291,7 +291,7 @@ extern "C" {
     extern char TextInputKeyNameTextPc7516c0[1];
     extern char *LedgeOutputNamePc;
 
-    static void LedgeInitRecordPc(LEDGE_MOTION_PC *ledge) {
+    static void Ledge_Reset(LEDGE_MOTION_PC *ledge) {
         i32 type;
         for (type = 0; type < 6; ++type) {
             if (ledge->type_code == LedgePiece[type].type_code) {
@@ -386,7 +386,7 @@ extern "C" {
             return;
         LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
-            LedgeInitRecordPc(ledge);
+            Ledge_Reset(ledge);
             if (progress != NULL && i < 128) {
                 i32 word = i / 32;
                 u32 mask = 1u << (i & 31);

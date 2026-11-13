@@ -2070,7 +2070,7 @@ i32 CutSceneUpdateCamerasPc = 1;
 
 extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
 
-static void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
+static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
     CUT_LOAD_CAMERA_SYSTEM *source_camera = source->camera_system;
     CUT_LOAD_CAMERA_SYSTEM *target_camera = target->camera_system;
@@ -2209,7 +2209,7 @@ void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
     }
 }
 
-static void CutSceneClipTestPc(CUT_INSTANCE_LOAD_PC *instance) {
+static void instNuGCutSceneClipTest(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     instance->flags_88 |= 0x400;
     if (scene->bounds == NULL)
@@ -2255,8 +2255,8 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
             CutSceneStreamDiagnosticPc(instance->scene->filename);
         }
         if (CutSceneSingleStreamBufferPc < 2)
-            CutSceneCopyStreamAnimationsPc(
-                instance->scene, (CUT_SCENE_LOAD_PC *)instance->stream_buffers[instance->active_stream_buffer & 1]);
+            copyAnims(instance->scene,
+                      (CUT_SCENE_LOAD_PC *)instance->stream_buffers[instance->active_stream_buffer & 1]);
         else
             CutSceneSwapStreamAssetPc(instance);
         instance->stream_index = (u8)instance->scene->unknown_40;
@@ -2338,7 +2338,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
             instance->queued_stream_instance = NULL;
         }
     }
-    CutSceneClipTestPc(instance);
+    instNuGCutSceneClipTest(instance);
     if ((instance->flags_88 & 0x400) == 0)
         return;
     if ((instance->flags_88 & 4) != 0)
@@ -2385,7 +2385,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
                             instNuGCutSceneStart(instance->chained_instance);
                             next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                             next->current_frame += overflow;
-                            CutSceneClipTestPc(next);
+                            instNuGCutSceneClipTest(next);
                             CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip,
                                                      elapsed);
                             instance->chained_instance = NULL;
@@ -2432,10 +2432,9 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
                             }
                             CutSceneStreamDiagnosticPc(instance->scene->filename);
                             if (CutSceneSingleStreamBufferPc < 2)
-                                CutSceneCopyStreamAnimationsPc(
-                                    instance->scene, (CUT_SCENE_LOAD_PC *)((instance->flags_88 & 0x10000000) != 0
-                                                                               ? instance->stream_buffer_1
-                                                                               : instance->stream_buffer_0));
+                                copyAnims(instance->scene, (CUT_SCENE_LOAD_PC *)((instance->flags_88 & 0x10000000) != 0
+                                                                                     ? instance->stream_buffer_1
+                                                                                     : instance->stream_buffer_0));
                             else
                                 CutSceneSwapStreamAssetPc(instance);
                             instance->flags_88 &= ~0x8000000U;
@@ -2476,7 +2475,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
                         instNuGCutSceneStart(instance->chained_instance);
                         next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                         next->current_frame += overflow;
-                        CutSceneClipTestPc(next);
+                        instNuGCutSceneClipTest(next);
                         CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip, elapsed);
                         instance->chained_instance = NULL;
                         return;
@@ -2717,9 +2716,8 @@ void __cdecl instNuGCutSceneServiceLoad(void) {
         (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags & 8) != 0) {
         instNuGCutSceneSwapBuffers(CutSceneLoadingInstancePc, 1);
         if (CutSceneSingleStreamBufferPc < 2) {
-            CutSceneCopyStreamAnimationsPc(
-                ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene,
-                (CUT_SCENE_LOAD_PC *)((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_1);
+            copyAnims(((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene,
+                      (CUT_SCENE_LOAD_PC *)((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_1);
         } else {
             ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
                 ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 | 0x10000000;

@@ -390,7 +390,7 @@ i32 GetAnimDirection(NUINSTANIM *animation) {
     return -1;
 }
 
-void __cdecl edbobsDrawCrossPc(NUVEC *position, f32 size, NUMTL *material, i32 colour) {
+void __cdecl DrawCross(NUVEC *position, f32 size, NUMTL *material, i32 colour) {
     if (material != NULL)
         colour = ((u8)(i32)(material->diffuse_b * 255.0) << 8 | (u8)(i32)(material->diffuse_g * 255.0)) << 8 |
                  (u8)(i32)(material->diffuse_r * 255.0);

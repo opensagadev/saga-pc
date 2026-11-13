@@ -1142,7 +1142,7 @@ f32 __cdecl Condition_ObstacleLockedOpen(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     return 0.0f;
 }
 
-void *__cdecl Condition_ObstacleLockedOpenInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_ObstacleOpenedByPlayerInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, name);
     if (gizmo != NULL)
         return gizmo->object;
@@ -1169,7 +1169,7 @@ f32 __cdecl Condition_ObstacleOpenedByEitherPlayer(AISYS_PC *system, AISCRIPTPRO
     return 0.0f;
 }
 
-void *__cdecl Condition_ForceAtStartInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_ForceInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     return GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
 }
 
@@ -1351,7 +1351,7 @@ f32 __cdecl Condition_IAmANeutral(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return 0.0f;
 }
 
-f32 __cdecl Condition_IAmAGoodyBaddyPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+f32 __cdecl Condition_IAmAGoodieBaddie(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10000) != 0)
         return 1.0f;
@@ -1400,7 +1400,7 @@ f32 __cdecl Condition_IAmPlayer2(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
     return 0.0f;
 }
 
-void *__cdecl Condition_PlayerUsingForceInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+void *__cdecl Condition_UsingForceInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
     return gizmo != NULL ? gizmo->object : NULL;
 }
@@ -2923,8 +2923,8 @@ f32 __cdecl Condition_EmptyTakeOver(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 0.0f;
 }
 
-f32 __cdecl Condition_HasTakeOverTargetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
+f32 __cdecl Condition_HasTakeOver(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL &&
         packet->owner->objptr->takeover_target != NULL)
         return 1.0f;

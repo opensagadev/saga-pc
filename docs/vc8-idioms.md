@@ -299,7 +299,7 @@ retail                                   ours
 
 `for (...) { if (match) break; } if (i == N) {...} else x = i;` vs the
 original `for (...) { if (match) { x = i; break; } } if (i == N) {...}`.
-Example: `LedgeInitRecordPc` (96.85 -> exact).
+Example: `Ledge_Reset` (96.85 -> exact).
 
 ### I28: one loop clearing two arrays instead of two `memset`s
 
@@ -482,7 +482,7 @@ loaded first. Exact by these: `Action_ResetContext`, `Action_CanBeCarried`,
 Register choice (U3) often follows the expression tree: a field or global read
 directly inside a compare or an argument list gets a different register than
 the same value first held in a local. Retail sometimes has the local
-(`GIZFORCE_PC *top = ...->forces[count - 1]; ForceAnimatedHeightPc(top);` in
+(`GIZFORCE_PC *top = ...->forces[count - 1]; GizForce_GetHeight(top);` in
 `ForceGroupPopPc`, `u16 heading` and `i32 context` in
 `GoingForwardsAlongNarrowSock`, `f32 length_squared` in
 `edbriDetermineNearest`, `f32 timer = detonator->timer` re-read after a call in

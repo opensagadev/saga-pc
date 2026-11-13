@@ -30,7 +30,7 @@ void __cdecl ResetExplosions(void) {
 void __cdecl DrawExplosions(void) {
 }
 
-static __declspec(noinline) void ExplosionFeedbackPc(EXPLOSION_PC *explosion) {
+static __declspec(noinline) void Explosion_Feedback(EXPLOSION_PC *explosion) {
     if ((explosion->flags & 0x40) != 0) {
         NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();
@@ -169,7 +169,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                         Arcade_AIKilled((i8)explosion->field_33);
                 }
             }
-            ExplosionFeedbackPc(explosion);
+            Explosion_Feedback(explosion);
             hit_character = 1;
         }
     }
@@ -184,7 +184,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             hit_type = (explosion->flags & 0x8000) != 0 ? 9 : 2;
         if (GizmoBlowUp_Hit(explosion->owner, &explosion->position, 1, radius, &minimum, &maximum, NULL, hit_type,
                             NULL)) {
-            ExplosionFeedbackPc(explosion);
+            Explosion_Feedback(explosion);
             return;
         }
     }
@@ -199,7 +199,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     bolt.type_id = 1;
     bolt.type = BoltType_FindByID(1, WORLD);
     if (Bolt_HitParts(&bolt, points, &minimum, &maximum, radius, 0) != NULL) {
-        ExplosionFeedbackPc(explosion);
+        Explosion_Feedback(explosion);
     }
 }
 

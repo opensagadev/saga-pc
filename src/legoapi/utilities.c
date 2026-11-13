@@ -800,7 +800,7 @@ i32 __cdecl LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, 
     return 0;
 }
 
-i32 __cdecl LineIntersectSphereXZPc(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
+i32 __cdecl LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
     NUVEC delta;
     f32 projection;
     f32 point_squared;

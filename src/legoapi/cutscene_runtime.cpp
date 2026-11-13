@@ -1833,7 +1833,7 @@ extern "C" {
         }
         return 0;
     }
-    static void CutSceneSetStopFlagsPrivatePc(CUT_LOAD_RECORD_PC *cut) {
+    static void SetStopCutFlags(CUT_LOAD_RECORD_PC *cut) {
         CUTSTOPGAME = 1;
         CutStopInfo = cut;
         CUTDRAWWORLD = cut->flags & 2;
@@ -1913,7 +1913,7 @@ extern "C" {
                 }
             }
         }
-        CutSceneSetStopFlagsPrivatePc(cut);
+        SetStopCutFlags(cut);
         CutBorderScale = 1.0f;
         ACTIVECUTCOUNT = 1;
         cut_waiting_for_new_level = 0;
@@ -2055,7 +2055,7 @@ extern "C" {
             CUT_CONTROLLER_INSTANCE_PC *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance);
             if (instance != NULL && (instance->flags_88 & 2) != 0) {
                 if ((cut->flags & 1) != 0) {
-                    CutSceneSetStopFlagsPrivatePc(cut);
+                    SetStopCutFlags(cut);
                     CutFramePc = static_cast<i32>(static_cast<u32>(CutFramePc) + 1U);
                     goto stopped;
                 }

@@ -870,7 +870,7 @@ static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_P
     GameAnimSet_EvaluateState(force->anim_set);
 }
 
-static __declspec(noinline) f32 ForceAnimatedHeightPc(GIZFORCE_PC *force) {
+static __declspec(noinline) f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
     f32 minimum_y, maximum_y;
     f32 height;
@@ -931,7 +931,7 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
                     if (force->group != NULL && force->group->member_count < 8) {
                         if (force->group->member_count != 0) {
                             GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
-                            force->group->combined_height += ForceAnimatedHeightPc(previous);
+                            force->group->combined_height += GizForce_GetHeight(previous);
                         }
                         force->group->forces[force->group->member_count] = force;
                         ++force->group->member_count;
@@ -1026,7 +1026,7 @@ static __declspec(noinline) void ForceGroupPushPc(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) == 0 && force->group != NULL && force->group->member_count < 8) {
         if (force->group->member_count != 0) {
             GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
-            force->group->combined_height += ForceAnimatedHeightPc(previous);
+            force->group->combined_height += GizForce_GetHeight(previous);
         }
         force->group->forces[force->group->member_count] = force;
         ++force->group->member_count;
@@ -1042,7 +1042,7 @@ static __declspec(noinline) void ForceGroupPopPc(GIZFORCE_PC *force) {
         --force->group->member_count;
         if (force->group->member_count != 0) {
             GIZFORCE_PC *top = force->group->forces[force->group->member_count - 1];
-            force->group->combined_height -= ForceAnimatedHeightPc(top);
+            force->group->combined_height -= GizForce_GetHeight(top);
         }
         force->runtime_flags &= ~0x20u;
         GameAnimSet_SetOffset(force->anim_set, &v000);

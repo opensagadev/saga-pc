@@ -264,7 +264,7 @@ static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
 }
 
-static void __cdecl CreatureCrate_MovePc(PART_PC *part, f32 elapsed) {
+static void __cdecl CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
     CREATURE_CRATE_PART_VIEW_PC *crate = (CREATURE_CRATE_PART_VIEW_PC *)part;
     crate->spawn_delay -= elapsed;
     if (crate->spawn_delay <= 0.0f) {
@@ -273,7 +273,7 @@ static void __cdecl CreatureCrate_MovePc(PART_PC *part, f32 elapsed) {
     }
 }
 
-static i32 __cdecl CreatureCrate_DrawPc(PART_PC *part) {
+static i32 __cdecl CreatureCrate_DrawFn(PART_PC *part) {
     if (((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f)
         return 0;
     return 1;
@@ -298,8 +298,8 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters.gravity = -2.0f;
     parameters.flags = 0x313;
     parameters.owner = object;
-    parameters.draw_fn = CreatureCrate_DrawPc;
-    parameters.move_fn = CreatureCrate_MovePc;
+    parameters.draw_fn = CreatureCrate_DrawFn;
+    parameters.move_fn = CreatureCrate_MoveFn;
     parameters.stop_fn = CreatureCrate_Stop;
     part = AddPart(&parameters);
     if (part == NULL)
