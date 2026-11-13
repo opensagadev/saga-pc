@@ -1,4 +1,5 @@
 """Shared project configuration, symbol inventory and file verification helpers."""
+import sys
 import csv
 import hashlib
 import json
@@ -61,6 +62,14 @@ def runtime_libraries(root):
     pin, directory = runtime_pin(root)
     if pin is None:
         return None
+    if not directory.is_dir():
+        # Not installed yet: fall back to the compiler package's libraries, which link the
+        # same way but leave the update's runtime functions different from retail.
+        if str(directory) not in _WARNED:
+            _WARNED.add(str(directory))
+            print(f"warning: pinned runtime update is not installed ({RUNTIME_DIRECTORY}); "
+                  "using the compiler package's libcmt/libcpmt. Run make setup.", file=sys.stderr)
+        return None
     changed = [name for name, item in pin["files"].items()
                if not (directory / name).is_file() or cached_sha256(directory / name) != item["sha256"]]
     if changed:
@@ -78,6 +87,7 @@ def sha256(path):
 
 
 _DIGESTS = {}
+_WARNED = set()
 
 
 def cached_sha256(path):
@@ -201,8 +211,8 @@ def archive_path(archive):
     pin, runtime = runtime_pin(ROOT)
     if archive.startswith("dxsdk/"):
         path = DXSDK_LIBRARIES / archive.removeprefix("dxsdk/")
-    elif pin and archive in pin["files"]:
-        path = runtime_libraries(ROOT) / archive
+    elif pin and archive in pin["files"] and runtime_libraries(ROOT) is not None:
+        path = runtime / archive
     else:
         path = ROOT / "build/tools/msvc8/lib" / archive
     if not path.is_file():
