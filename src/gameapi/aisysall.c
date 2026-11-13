@@ -16701,9 +16701,9 @@ i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
 
 i32 __cdecl Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 param_count, i32 is_first_time, f32 elapsed) {
-    f32 completion_time;
-    f32 minimum_time;
-    f32 maximum_time;
+    f32 completion_time = 0.0f;
+    f32 minimum_time = 0.0f;
+    f32 maximum_time = 0.0f;
     i32 index;
     char *value;
     f64 first_term;
@@ -16718,12 +16718,8 @@ i32 __cdecl Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
         return 0;
     }
 
-    completion_time = 0.0f;
     if (is_first_time != 0) {
         packet->movement_target = NULL;
-
-        minimum_time = 0.0f;
-        maximum_time = 0.0f;
         for (index = 0; index < param_count; ++index) {
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                 continue;
