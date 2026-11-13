@@ -2383,58 +2383,6 @@ STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, shape) == 0x22);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, mode) == 0x23);
 
 /* Bitwise absolute value through a float temporary, as retail does. */
-#define GAME_ANTI_NODE_ABS(destination, expression)                                                                    \
-    (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
-
-void __cdecl GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
-    GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
-    NUVEC minimum, maximum;
-    NUMTX *matrix;
-    f32 x, z, difference, y;
-    f32 temporary;
-    if (data != NULL) {
-        memset(data, 0, sizeof(*data));
-        if (special != NULL && NuSpecialExistsFn(special)) {
-            NuSpecialGetBounds(special, &minimum, &maximum);
-            matrix = NuSpecialGetMtx(special);
-            NuVecMtxTransform(&minimum, &minimum, matrix);
-            NuVecMtxTransform(&maximum, &maximum, matrix);
-            GAME_ANTI_NODE_ABS(x, (maximum.x - minimum.x) * 0.5);
-            GAME_ANTI_NODE_ABS(z, (maximum.z - minimum.z) * 0.5);
-            GAME_ANTI_NODE_ABS(difference, x - z);
-            if (difference < 0.01f) {
-                data->shape = 0;
-                data->radius = x;
-            } else {
-                data->shape = 1;
-                if (x > z)
-                    data->radius = x;
-                else
-                    data->radius = z;
-            }
-            data->extent_x = x;
-            data->extent_z = z;
-            GAME_ANTI_NODE_ABS(y, (maximum.y - minimum.y) * 0.5);
-            data->min_y = -y;
-            data->max_y = y;
-        }
-    }
-}
-
-void __cdecl GameAntiNodeData_Read(void *opaque_data) {
-    GAME_ANTI_NODE_DATA_PC *data = (GAME_ANTI_NODE_DATA_PC *)opaque_data;
-    if ((u8)EdFileReadChar() <= 0)
-        return;
-    EdFileReadNuVec(&data->position);
-    data->radius = EdFileReadFloat();
-    data->min_y = EdFileReadFloat();
-    data->max_y = EdFileReadFloat();
-    data->extent_x = EdFileReadFloat();
-    data->extent_z = EdFileReadFloat();
-    data->angle = (u16)EdFileReadShort();
-    data->shape = (u8)EdFileReadChar();
-    data->mode = (u8)EdFileReadChar();
-}
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_frames) == 0xf01);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
