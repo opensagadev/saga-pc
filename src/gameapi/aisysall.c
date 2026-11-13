@@ -6709,7 +6709,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     AIPATHCNX_PC *next_2;
     NUVEC target_2;
     i32 use_left;
-    NUVEC offset;
     i32 angle;
     i32 angle_2;
 
@@ -7044,10 +7043,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 use_left = 0;
 
                 if ((packet->flags & 0x00000040u) != 0) {
-                    NuVecSub(&offset, &packet->left_diversion, &object->position);
-                    angle = NuAtan2D(offset.x, offset.z);
-                    NuVecSub(&offset, &target_2, &object->position);
-                    angle_2 = NuAtan2D(offset.x, offset.z);
+                    NuVecSub(&difference, &packet->left_diversion, &object->position);
+                    angle = NuAtan2D(difference.x, difference.z);
+                    NuVecSub(&difference, &target_2, &object->position);
+                    angle_2 = NuAtan2D(difference.x, difference.z);
                     if (NuAngSub(angle_2, angle) < 0) {
                         target_2 = packet->left_diversion;
                         packet->flags |= 0x00080000u;
@@ -7055,10 +7054,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     }
                 }
                 if (!use_left && (packet->flags & 0x00000020u) != 0) {
-                    NuVecSub(&offset, &packet->right_diversion, &object->position);
-                    angle = NuAtan2D(offset.x, offset.z);
-                    NuVecSub(&offset, &target_2, &object->position);
-                    angle_2 = NuAtan2D(offset.x, offset.z);
+                    NuVecSub(&difference, &packet->right_diversion, &object->position);
+                    angle = NuAtan2D(difference.x, difference.z);
+                    NuVecSub(&difference, &target_2, &object->position);
+                    angle_2 = NuAtan2D(difference.x, difference.z);
                     if (NuAngSub(angle_2, angle) > 0) {
                         target_2 = packet->right_diversion;
                         packet->flags |= 0x00080000u;
@@ -7076,7 +7075,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]].position;
     packet->movement_stopping_distance = 0.0f;
 
-    if (NuVecDistSqr(&packet->movement_destination, &object->position, &offset) < 1.0f) {
+    if (NuVecDistSqr(&packet->movement_destination, &object->position, &difference) < 1.0f) {
         packet->movement_destination = object->position;
     }
     packet->flags |= 0x00400000u;
