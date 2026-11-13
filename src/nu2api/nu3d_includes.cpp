@@ -2274,7 +2274,6 @@ extern "C" {
         i32 count;
         const u8 *end_flags;
         u8 *joint_flags;
-        NUVEC *root;
         i32 group;
         i32 i;
 
@@ -2312,9 +2311,8 @@ extern "C" {
             count = anim->node_count;
         end_flags = node_flags + first_joint;
         joint_flags = buffer->joint_flags + first_joint;
-        root = root_translation;
         if (first_joint != 0)
-            root = NULL;
+            root_translation = NULL;
         for (; node_flags < end_flags; ++node_flags) {
             u8 flags = *node_flags;
             for (group = 0; group < 3; ++group) {
@@ -2323,9 +2321,9 @@ extern "C" {
                     curve_types += 3;
                 } else {
                     for (i = 0; i < 3; ++i) {
-                        u16 type = *curve_types++;
+                        u32 type = *curve_types++;
                         if (type < 16) {
-                            keys += 4;
+                            keys += KeyStructSizes[type];
                             ++scale_min;
                         }
                     }
@@ -2341,45 +2339,48 @@ extern "C" {
                 if (!(flags & CurveGroupMasks[group])) {
                     if (group != 2) {
                         out[0] *= inverse_blend;
-                        out[1] *= inverse_blend;
+                        out[1] = inverse_blend * out[1];
                         out[2] *= inverse_blend;
-                        if (root != NULL) {
-                            root->x = root->y = root->z = 0.0f;
-                            root = NULL;
+                        if (root_translation != NULL) {
+                            root_translation->x = root_translation->y = root_translation->z = 0.0f;
+                            root_translation = NULL;
                         }
                     } else {
                         out[0] = out[0] * inverse_blend + blend;
-                        out[1] = out[1] * inverse_blend + blend;
+                        out[1] = inverse_blend * out[1] + blend;
                         out[2] = out[2] * inverse_blend + blend;
                     }
                     out += 4;
                     curve_types += 3;
                 } else {
                     for (i = 0; i < 3; ++i) {
-                        u16 type = *curve_types++;
+                        u32 type = *curve_types++;
                         f32 value;
                         f32 delta;
                         if (type != 6) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            u32 value0;
+                            u32 blend_bits;
+                            u32 v;
+                            u32 value1;
+                            f32 blend0;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                value = (next - start) * tangent + start;
+                                f32 start = (f32)value0;
+                                blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
+                                value =
+                                    (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
-                                value = (b - a) * fraction + a;
+                                f32 next = (f32)value1;
+                                f32 start = (f32)value0;
+                                f32 a = (next - start) * blend0 + start;
+                                f32 b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
+                                value = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
-                            value = value * scale_min->scale + scale_min->minimum;
                             keys += 4;
                             ++scale_min;
                         }
@@ -2390,14 +2391,14 @@ extern "C" {
                                 angle -= 0x10000;
                             delta = (f32)(angle * PCAtan2RadianScale);
                         }
-                        if (root != NULL) {
+                        if (root_translation != NULL) {
                             if (i == 0) {
-                                root->x = value;
+                                root_translation->x = value;
                             } else if (i == 1) {
-                                root->y = value;
+                                root_translation->y = value;
                             } else {
-                                root->z = -value;
-                                root = NULL;
+                                root_translation->z = -value;
+                                root_translation = NULL;
                             }
                         }
                         *out = delta * blend + *out;
