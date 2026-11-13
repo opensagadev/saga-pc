@@ -93,9 +93,11 @@ void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
     }
 }
 
-/* Native 0x0057cf70 clears EAX on both paths, including after loading cut. */
+/* PC never lets a cutscene be skipped here: both outcomes of the Android test return 0. */
 i32 __cdecl CutScene_IsSkippable(CUTINFO *cut) {
-    (void)cut;
+    if (FadeSys.fade == 0.0f && cut != NULL && cut != (CUTINFO *)CutStopInfo) {
+        return 0;
+    }
     return 0;
 }
 
