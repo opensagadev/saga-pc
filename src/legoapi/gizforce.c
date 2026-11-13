@@ -435,11 +435,12 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     }
     los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
     if (los != NULL) {
-        for (i = 0; i < count; ++i) {
-            f32 time = (f32)los->queried_at[PossibleForceTargetsPc[i].index];
+        record = PossibleForceTargetsPc;
+        for (i = 0; i < count; ++i, ++record) {
+            f32 time = (f32)los->queried_at[record->index];
             if (time < oldest_time) {
                 oldest_time = time;
-                oldest = &PossibleForceTargetsPc[i];
+                oldest = record;
             }
         }
         if (oldest != NULL) {
@@ -481,8 +482,8 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     }
 choose:
     los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
-    for (i = 0; i < count; ++i) {
-        record = &PossibleForceTargetsPc[i];
+    record = PossibleForceTargetsPc;
+    for (i = 0; i < count; ++i, ++record) {
         if (los != NULL && record->index != -1 && !(los->clear_bits[record->index >> 5] & (1u << (record->index & 31))))
             continue;
         if (record->distance < best_distance) {
