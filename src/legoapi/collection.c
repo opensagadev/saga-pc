@@ -355,15 +355,13 @@ void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     COLLECTION_COMPLETIONCOUNT = 0;
 
     while (NuFParGetLine(parser) != 0) {
-        i16 id;
         if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "collect") != 0 ||
             NuFParGetWord(parser) == 0)
             continue;
-        id = (i16)CharIDFromName(parser->word_buffer_ptr);
-        entry->id = id;
-        if (id == -1)
+        entry->id = (i16)CharIDFromName(parser->word_buffer_ptr);
+        if (entry->id == -1)
             continue;
-        if (InCollectList_Index(id, CollectList, CollectCount) != -1) {
+        if (InCollectList_Index(entry->id, CollectList, CollectCount) != -1) {
             CollectionConfigDiagnosticPc(file, parser->word_buffer_ptr);
             continue;
         }
@@ -390,12 +388,8 @@ void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
             } else if (NuStrICmp(parser->word_buffer_ptr, "100_percent") == 0) {
                 entry->type = 7;
             } else if (NuStrICmp(parser->word_buffer_ptr, "gold_bricks") == 0) {
-                i32 value;
-                u32 sign;
                 entry->type = 6;
-                value = NuFParGetInt(parser);
-                sign = (u32)(value >> 31);
-                entry->gold_bricks = (u16)(((u32)value ^ sign) - sign);
+                entry->gold_bricks = (u16)abs(NuFParGetInt(parser));
             } else if (NuStrICmp(parser->word_buffer_ptr, "all_minikits_complete") == 0) {
                 entry->type = 4;
             } else if (NuStrICmp(parser->word_buffer_ptr, "minikit") == 0) {
