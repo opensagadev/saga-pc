@@ -1095,13 +1095,13 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
 
             str = SfxNameSlotsPc[NumSfxInst];
             SfxInfo[NumSfxInst].name = str;
-            hash = SfxNameHash(str);
+            hash = SfxNameHash(str) & 0xff;
 
-            if (SfxHashHeads[hash & 0xff] != -1) {
-                SfxInfo[NumSfxInst].next = SfxHashHeads[hash & 0xff];
-                SfxHashHeads[hash & 0xff] = NumSfxInst;
+            if (SfxHashHeads[hash] != -1) {
+                SfxInfo[NumSfxInst].next = SfxHashHeads[hash];
+                SfxHashHeads[hash] = NumSfxInst;
             } else {
-                SfxHashHeads[hash & 0xff] = NumSfxInst;
+                SfxHashHeads[hash] = NumSfxInst;
                 SfxInfo[NumSfxInst].next = -1;
             }
         } else if (NuStrICmp(fpar->word_buffer_ptr, "fname") == 0) {
