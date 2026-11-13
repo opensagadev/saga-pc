@@ -10706,6 +10706,9 @@ address,symbol,size,ctype
 0x6c0880,?SerialiseBuffer@EdFileInputStream@@UAEHPAXHH@Z,111,
 0x6c08f0,?Eat@EdFileOutputStream@@UAEHHH@Z,5,
 0x6c0900,?SerialiseBuffer@EdFileOutputStream@@UAEHPAXHH@Z,164,
+0x6c09b0,?EdTerrInit@@YAXPAX0@Z,1,
+0x6c09c0,?EdTerrShadow@@YAMPAUnuvec_s@@MMH@Z,55,
+0x6c0a00,?EdTerrRay@@YAHAAUVuVec@@0@Z,3,
 0x6c0a10,?LineToPointDistance@@YAMAAUVuVec@@00PAU1@@Z,499,
 0x6c0c10,?LineToPlaneDistance@@YAMAAUVuVec@@00@Z,264,
 0x6c0d20,?LineToPlaneIntersecion@@YAHAAUVuVec@@00PAU1@@Z,281,
@@ -39890,6 +39893,7 @@ address,symbol,size,ctype
 0x2973af4,?EdType_NuMtx@@3HA,4,i32
 0x2973b04,_active_special_object_control,4,EdSpecialObjectControl *
 0x2973b08,_bezierline_depth,4,i32
+0x2973b0c,_edterr_shadow_disabled,4,i32
 0x2973b14,?theEdSystem@@3VEdSystem@@A,12,EdSystem
 0x2973b20,?thePlaceableHelper@@3VPlaceableHelper@@A,136,PlaceableHelper
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,68,EdRegistry
