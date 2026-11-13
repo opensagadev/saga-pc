@@ -13955,17 +13955,16 @@ extern "C" {
         NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
         NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
         __declspec(align(16)) NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
-        NUVEC4 half_extent;
+        NUVEC4 extent;
         NUVEC4 center;
         NUVEC4 abs_row[3];
-        NUVEC4 world_extent;
 
-        half_extent.x = display->bounds_max.x - display->bounds_min.x;
-        half_extent.y = display->bounds_max.y - display->bounds_min.y;
-        half_extent.z = display->bounds_max.z - display->bounds_min.z;
-        half_extent.x *= 0.5;
-        half_extent.y *= 0.5;
-        half_extent.z *= 0.5;
+        extent.x = display->bounds_max.x - display->bounds_min.x;
+        extent.y = display->bounds_max.y - display->bounds_min.y;
+        extent.z = display->bounds_max.z - display->bounds_min.z;
+        extent.x *= 0.5;
+        extent.y *= 0.5;
+        extent.z *= 0.5;
         center.x = display->bounds_max.x + display->bounds_min.x;
         center.y = display->bounds_max.y + display->bounds_min.y;
         center.z = display->bounds_max.z + display->bounds_min.z;
@@ -13988,28 +13987,28 @@ extern "C" {
         }
         NuVec4AbsPrivatePc(&abs_row[1], (NUVEC4 *)&draw_matrix.m10);
         NuVec4AbsPrivatePc(&abs_row[2], (NUVEC4 *)&draw_matrix.m20);
-        world_extent.x = abs_row[0].x * half_extent.x + abs_row[1].x * half_extent.y + abs_row[2].x * half_extent.z;
-        world_extent.y = abs_row[0].y * half_extent.x + abs_row[1].y * half_extent.y + abs_row[2].y * half_extent.z;
-        world_extent.z = abs_row[0].z * half_extent.x + abs_row[1].z * half_extent.y + abs_row[2].z * half_extent.z;
-
+        f32 extent_x = abs_row[0].x * extent.x + abs_row[1].x * extent.y + abs_row[2].x * extent.z;
+        f32 extent_y = abs_row[0].y * extent.x + abs_row[1].y * extent.y + abs_row[2].y * extent.z;
+        extent.z = abs_row[0].z * extent.x + abs_row[1].z * extent.y + abs_row[2].z * extent.z;
+        extent.x = extent_x;
+        extent.y = extent_y;
         NuVecMtxTransform((NUVEC *)&center, (NUVEC *)&center, &draw_matrix);
-        center.w = NuFsqrt(world_extent.x + world_extent.y + world_extent.z);
+        center.w = NuFsqrt(extent.x + extent.y + extent.z);
         if ((display_scene->render_flags & 0x4000) != 0) {
             display_scene->clip_bounds[display->instance_ix * 2] = center;
-            display_scene->clip_bounds[display->instance_ix * 2 + 1] = world_extent;
+            display_scene->clip_bounds[display->instance_ix * 2 + 1] = extent;
         } else {
             NUVEC4 minimum;
             NUVEC4 maximum;
-            maximum.x = center.x + world_extent.x;
-            maximum.y = center.y + world_extent.y;
-            maximum.z = center.z + world_extent.z;
-            minimum.x = center.x - world_extent.x;
-            minimum.y = center.y - world_extent.y;
-            minimum.z = center.z - world_extent.z;
+            maximum.x = center.x + extent.x;
+            maximum.y = center.y + extent.y;
+            maximum.z = center.z + extent.z;
+            minimum.x = center.x - extent.x;
+            minimum.y = center.y - extent.y;
+            minimum.z = center.z - extent.z;
             display_scene->clip_bounds[display->instance_ix * 2] = minimum;
             display_scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
         }
-
         DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
     }
 
