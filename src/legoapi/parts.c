@@ -4721,7 +4721,6 @@ void UpdateParts(f32 time) {
     PART_TERRAIN_STATE_PC *state;
     NUVEC velocity;
     NUVEC direction;
-    NUVEC offscreen;
     NUMTX mtx;
     partglobaltime += time;
     if (partglobaltime > 900.0f)
@@ -4906,6 +4905,7 @@ void UpdateParts(f32 time) {
             if ((part->flags & 0x1000) == 0) {
                 rtlDynamicSetPos(*part->lighting_handle, &part->position);
             } else {
+                NUVEC offscreen;
                 offscreen.x = 10000.0f;
                 offscreen.y = 10000.0f;
                 offscreen.z = 10000.0f;
