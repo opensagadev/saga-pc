@@ -1213,8 +1213,6 @@ static const u8 CreatureCantinaLegsPc[3] = {2, 5, 8};
 static const u8 CreatureCloudHeadPc[3] = {1, 5, 7};
 static const u8 CreatureCloudBodyPc[3] = {2, 3, 6};
 static const u8 CreatureCloudLegsPc[3] = {0, 4, 8};
-static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
-static i32 PlayerItemTypeCountPc = 0;
 
 void __cdecl Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
@@ -1944,16 +1942,6 @@ i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object) {
 void __cdecl SetFlicker(GAMEOBJECT *object, f32 duration) {
     object->flags_e24 &= ~0x70000;
     object->vehicle_hit_timer = duration;
-}
-
-i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
-    if (item == NULL)
-        return 1;
-    if (item->type == NULL)
-        return 1;
-    if (item->type->type != 2)
-        return 1;
-    return item->ammo > 0;
 }
 
 void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
@@ -2864,36 +2852,6 @@ static i32 Customise_FindLetter(char character) {
         if (character == CustomiseLetter[letter])
             break;
     return letter == 38 ? 0 : letter;
-}
-
-void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
-    PlayerItemTypePc = NULL;
-    PlayerItemTypeCountPc = 0;
-    if (types == NULL)
-        return;
-    PlayerItemTypePc = types;
-    while (types->id != -1) {
-        ++types;
-        ++PlayerItemTypeCountPc;
-    }
-    if (PlayerItemTypeCountPc == 0)
-        PlayerItemTypePc = NULL;
-}
-void __cdecl PlayerItemTypes_Reset(WORLDINFO *world) {
-    i32 index;
-    if (PlayerItemTypePc != NULL) {
-        for (index = 0; index < PlayerItemTypeCountPc; ++index)
-            PlayerItemTypePc[index].bolt_id = BoltType_FindIDByName(PlayerItemTypePc[index].bolt_name, world);
-    }
-}
-PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
-    i32 index;
-    if (PlayerItemTypePc == NULL)
-        return NULL;
-    for (index = 0; index < PlayerItemTypeCountPc; ++index)
-        if (PlayerItemTypePc[index].id == id)
-            return &PlayerItemTypePc[index];
-    return NULL;
 }
 
 /* Native ResetPlayer shares the light packet at 4d8 with LightGameObject. */
