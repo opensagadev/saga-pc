@@ -822,7 +822,6 @@ i32 GetRandomCoinType() {
 }
 
 i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
-    LOSE_COINS_PACKET_PC *packet;
     u32 lost;
     i32 adjustment;
     if (Player_HasInvincibility(object) || (object->character_data->game_character->flags_090 & 0x8000) ||
@@ -846,12 +845,11 @@ i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
         else if (adjustment == -1)
             lost >>= 1;
     }
-    packet = (LOSE_COINS_PACKET_PC *)object->coin_packet;
-    if (lost > packet->coins) {
-        lost = packet->coins;
-        packet->coins = 0;
+    if (lost > ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins) {
+        lost = ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins;
+        ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins = 0;
     } else if (lost > 0)
-        packet->coins -= lost;
+        ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins -= lost;
     if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f)
         lost = 0;
     return (i32)lost;
