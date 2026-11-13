@@ -120,10 +120,10 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
 
     NUVEC direction;
 
+    allowed = 1;
     if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
-        allowed = 1;
         first = 0.0f;
         second = 0.0f;
         if (object->anim_packet.blending) {
@@ -222,10 +222,10 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
 
     NUVEC direction;
 
+    allowed = 1;
     if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
-        allowed = 1;
         first = 0.0f;
         second = 0.0f;
         if (object->anim_packet.blending) {
