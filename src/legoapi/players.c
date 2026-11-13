@@ -580,17 +580,14 @@ static SPECIAL_LAYER_PC SpecialLayer[42] = {
 
 u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
-    u32 cape = 0;
     i32 cape_layer = data->cape_layer;
-    u32 hair = 0;
+    u32 cape = cape_layer != -1 ? 1u << cape_layer : 0;
     i32 hair_layer = data->hair_layer;
-    SUIT_LAYERS_PC *suit = (SUIT_LAYERS_PC *)object->suit;
-    if (cape_layer != -1)
-        cape = 1u << cape_layer;
-    if (hair_layer != -1)
-        hair = 1u << hair_layer;
+    u32 hair = hair_layer != -1 ? 1u << hair_layer : 0;
+    SUIT_LAYERS_PC *suit;
     if (object->helmet != 0)
         mask &= ~hair;
+    suit = (SUIT_LAYERS_PC *)object->suit;
     if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_A) {
         if ((suit->flags & 4) != 0) {
             mask = (mask & ~cape) | SpecialLayer[0].mask;
@@ -627,7 +624,7 @@ u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
         }
     } else if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_B) {
         if ((suit->flags & 0x10) != 0) {
-            mask = (mask & ~(hair | cape)) | SpecialLayer[27].mask;
+            mask = (mask & ~hair & ~cape) | SpecialLayer[27].mask;
             if ((mask & SpecialLayer[30].mask) != 0)
                 mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[39].mask;
             else if ((mask & SpecialLayer[31].mask) != 0)
@@ -674,9 +671,9 @@ u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
                 mask |= 0xc0;
         }
     }
-    data = object->character_data->game_character;
-    if (data->ride_layers_off != 0 && object->takeover_source != NULL && object->character_context == 0x3b)
-        mask &= ~data->ride_layers_off;
+    if (object->character_data->game_character->ride_layers_off != 0 && object->takeover_source != NULL &&
+        object->character_context == 0x3b)
+        mask &= ~object->character_data->game_character->ride_layers_off;
     return mask;
 }
 
