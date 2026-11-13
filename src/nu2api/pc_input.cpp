@@ -298,21 +298,20 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
     if (IsXInputProductPc(&instance->product)) {
         i32 port = PcXInputDeviceCount;
         PcInputSelectedPort = port;
-        PC_INPUT_DEVICE_PC *record = &devices[port];
-        record->product = instance->product;
+        devices[port].product = instance->product;
         i32 length = (i32)strlen(instance->product_name);
         if (length > 63)
             length = 63;
-        memset(record->name, 0, 63);
-        PCByteCopy_candidate(record->name, instance->product_name, length);
-        record->kind = 6;
-        record->capabilities_valid = 0;
-        record->deadzone = 64;
+        memset(devices[port].name, 0, 63);
+        PCByteCopy_candidate(devices[port].name, instance->product_name, length);
+        devices[port].kind = 6;
+        devices[port].capabilities_valid = 0;
+        devices[port].deadzone = 64;
         PC_XINPUT_CAPABILITIES_PC capabilities;
         if (XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&capabilities) == 0) {
-            state->InitXInputCaps(&capabilities, record);
-            if (record->button_count == 10 && record->axis_count == 5 && record->pov_count == 1)
-                record->product.Data1 = 0x028e045e;
+            state->InitXInputCaps(&capabilities, &devices[port]);
+            if (devices[port].button_count == 10 && devices[port].axis_count == 5 && devices[port].pov_count == 1)
+                devices[port].product.Data1 = 0x028e045e;
         }
         PC_INPUT_CONFIG_PC *config = state->FindConfig(7, port, state->preferred_key);
         if (!config)
