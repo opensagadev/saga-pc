@@ -411,7 +411,6 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     f64 duration;
     f32 difference;
     __declspec(align(16)) NUVEC4 position, next_position, direction;
-    GAMEOBJECT *object;
     (void)system;
     (void)process;
     (void)ignored;
@@ -441,10 +440,13 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     if ((u32)spline_id > 31 || model_id == 0xffff)
         return 1;
     race = (PODRACE_RESOURCE_PC *)PodRacePc;
-    spline = race->splines;
-    for (spline_index = 0; spline_index < 32; ++spline_index, ++spline)
-        if (spline->id == spline_id)
+    for (spline_index = 0; spline_index < 32; ++spline_index) {
+        spline = &race->splines[spline_index];
+        if (race->splines[spline_index].id == spline_id) {
+            spline = &race->splines[spline_index];
             break;
+        }
+    }
     if (start < 0.0f)
         start = 0.0f;
     else if (start > 1.0f)
@@ -458,41 +460,38 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     pod = RacePodAllocatePrivatePc();
     if (pod == NULL)
         return 1;
-    pod->spline = spline;
     pod->start = start;
     pod->model_id = model_id;
     pod->next = (void *)1;
+    pod->spline = spline;
     duration = (f64)time_factor * race->previous_lap_display;
     difference = end - start;
     pod->speed = duration > 0.0 ? (f32)((difference * (f64)spline->length) / duration) : 1.0f;
     CalcSplinePointFromDist(spline, &position, start * spline->length);
     CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrementPc) * spline->length);
     PodMatrixCopyPrivatePc(&pod->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
-    pod->matrix.m30 = position.x;
-    pod->matrix.m31 = position.y;
-    pod->matrix.m32 = position.z;
-    pod->matrix.m33 = position.w;
+    *(NUVEC4 *)&pod->matrix.m30 = position;
     direction.x = next_position.x - position.x;
     direction.y = next_position.y - position.y;
     direction.z = next_position.z - position.z;
-    direction.w = 0.0f;
     RacePodAlignPrivatePc(pod, &direction, 1.0f, 0);
-    pod->previous_axis.x = pod->previous_axis.y = pod->previous_axis.z = 0.0f;
+    pod->previous_axis.x = 0.0f;
+    pod->previous_axis.y = 0.0f;
+    pod->previous_axis.z = 0.0f;
     pod->previous_axis.w = 1.0f;
     pod->previous_position = position;
     pod->distance = start;
-    object = AddDynamicCreature((i32)pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
-    pod->object = object;
-    if (object == NULL)
+    pod->object = AddDynamicCreature((i32)pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
+    if (pod->object == NULL)
         return 1;
-    object->flags_ef4 |= 0x04000000;
-    object->movement_mode = 5;
+    pod->object->flags_ef4 |= 0x04000000;
+    pod->object->movement_mode = 5;
     if (pacemaker != 0) {
-        PodPacemakerPc = object;
-        object->flags_ef4 |= 0x20;
+        PodPacemakerPc = pod->object;
+        PodPacemakerPc->flags_ef4 |= 0x20;
     }
     if (damaged != 0)
-        object->flags_ef4 |= 0x08000000;
+        pod->object->flags_ef4 |= 0x08000000;
     return 1;
 }
 
