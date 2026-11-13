@@ -310,52 +310,6 @@ ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
     return &addtype;
 }
 
-void Hint_ExpandButtons(char *input, char *output) {
-    char token[256];
-    char expanded[64];
-
-    *output = '\0';
-    while (*input != '\0') {
-        if (*input == '[') {
-            i32 token_length;
-            char *next = input + 1;
-            token[0] = *input;
-            token_length = 1;
-            while (input[token_length] != '\0' && input[token_length] != ']') {
-                token[token_length] = input[token_length];
-                ++token_length;
-            }
-            if (input[token_length] != '\0') {
-                token[token_length++] = ']';
-                token[token_length] = '\0';
-                token_length = NuStrLen(token);
-                if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
-                    char *character = expanded;
-                    while (*character != '\0') {
-                        *output = *character;
-                        output[1] = '\0';
-                        ++character;
-                        ++output;
-                    }
-                    NuStrCat(output, expanded);
-                    input += token_length;
-                    continue;
-                }
-            }
-            *output = *input;
-            output[1] = '\0';
-            ++output;
-            input = next;
-        } else {
-            *output = *input;
-            output[1] = '\0';
-            ++output;
-            ++input;
-        }
-    }
-    *output = '\0';
-}
-
 typedef struct door_config_pc_s {
     char name[128], camera_name[32];
     NUGSPLINE *spline;

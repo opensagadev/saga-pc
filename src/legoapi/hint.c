@@ -1,30 +1,109 @@
 #include "saga.h"
 
+/* Retail unit 0x576340-0x576bb3: definitions in retail address order. */
+
 i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
 STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 
-void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits,
-                                 i32 save_word_count) {
-    hintsys.display_elapsed = 0.0f;
-    hintsys.draw_fn = draw_fn;
-    hintsys.hints = hints;
-    hintsys.save_bits = save_bits;
-    hintsys.save_word_count = save_word_count;
-    hintsys.state = 2;
-    hintsys.active_hint = NULL;
-}
+typedef struct HINT_CANCEL_PC {
+    u8 unknown00[8];
+    f32 display_duration;
+    u8 unknown0c[0xc];
+    f32 cooldown;
+} HINT_CANCEL_PC;
+STATIC_ASSERT(offsetof(HINT_CANCEL_PC, display_duration) == 8);
+STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
+typedef struct HINT_COMPLETION_PC {
+    u16 points;
+    u8 reserved02, flags;
+} HINT_COMPLETION_PC;
+STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
+STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, points) == 0);
+STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, flags) == 3);
+typedef struct HINT_WORLD_TELEPORT_PC {
+    u8 reserved00[0x4684];
+    i32 teleport_count;
+} HINT_WORLD_TELEPORT_PC;
+STATIC_ASSERT(offsetof(HINT_WORLD_TELEPORT_PC, teleport_count) == 0x4684);
+/* Native PC hint updater records retain their original packed field offsets. */
+typedef struct HINT_PANEL_PC {
+    u8 reserved00[0x61];
+    u8 model_variant, flags;
+    u8 reserved63[0x29];
+    f32 target_scale;
+} HINT_PANEL_PC;
+STATIC_ASSERT(sizeof(HINT_PANEL_PC) == 0x90);
+STATIC_ASSERT(offsetof(HINT_PANEL_PC, model_variant) == 0x61);
+STATIC_ASSERT(offsetof(HINT_PANEL_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(HINT_PANEL_PC, target_scale) == 0x8c);
+struct panel_movement_pc_s;
+typedef struct HINT_ZIPUP_PC {
+    u8 name[16];
+    NUVEC lower_position;
+    u8 reserved1c[0x4c];
+    u8 flags;
+    u8 reserved69[0x13];
+} HINT_ZIPUP_PC;
+STATIC_ASSERT(sizeof(HINT_ZIPUP_PC) == 0x7c);
+STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, lower_position) == 0x10);
+STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, flags) == 0x68);
+STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
+STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, area_complete) == 1);
+STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
+STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
+STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 
-i32 __cdecl Hint_isComplete(HINT_PC *hint) {
-    return hint->completed;
-}
+NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
-void __cdecl Hint_SetCompletePc(HINT_PC *hint) {
-    if (hint != NULL && hint->completed == 0) {
-        hint->completed = 1;
-        Hint_SaveGameState(hint);
+void Hint_ExpandButtons(char *input, char *output) {
+    char token[256];
+    char expanded[64];
+
+    *output = '\0';
+    while (*input != '\0') {
+        if (*input == '[') {
+            i32 token_length;
+            char *next = input + 1;
+            token[0] = *input;
+            token_length = 1;
+            while (input[token_length] != '\0' && input[token_length] != ']') {
+                token[token_length] = input[token_length];
+                ++token_length;
+            }
+            if (input[token_length] != '\0') {
+                token[token_length++] = ']';
+                token[token_length] = '\0';
+                token_length = NuStrLen(token);
+                if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
+                    char *character = expanded;
+                    while (*character != '\0') {
+                        *output = *character;
+                        output[1] = '\0';
+                        ++character;
+                        ++output;
+                    }
+                    NuStrCat(output, expanded);
+                    input += token_length;
+                    continue;
+                }
+            }
+            *output = *input;
+            output[1] = '\0';
+            ++output;
+            input = next;
+        } else {
+            *output = *input;
+            output[1] = '\0';
+            ++output;
+            ++input;
+        }
     }
+    *output = '\0';
 }
 
 i32 __cdecl Hint_CurrentId(void) {
@@ -43,6 +122,98 @@ HINT_PC *__cdecl Hint_FindHint(i32 hint_id) {
     return NULL;
 }
 
+i32 __cdecl Hint_isAvailable(i32 hint_id) {
+    HINT_PC *active_hint = hintsys.active_hint;
+    HINT_PC *hint;
+    if (active_hint != NULL && active_hint->id == hint_id)
+        return 0;
+    if (hint_id < 0 || TTab[hint_id] == NULL)
+        return 0;
+    hint = Hint_FindHint(hint_id);
+    if (hint == NULL || hint->completed != 0)
+        return 0;
+    if (hint->cooldown > 0.0f)
+        return 0;
+    return 1;
+}
+
+i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return 0;
+    while (hint->id != -1) {
+        if (hint->id == hint_id)
+            return hint->completed;
+        ++hint;
+    }
+    return 0;
+}
+
+i32 __cdecl Hint_isComplete(HINT_PC *hint) {
+    return hint->completed;
+}
+
+void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits,
+                                 i32 save_word_count) {
+    hintsys.display_elapsed = 0.0f;
+    hintsys.draw_fn = draw_fn;
+    hintsys.hints = hints;
+    hintsys.save_bits = save_bits;
+    hintsys.save_word_count = save_word_count;
+    hintsys.state = 2;
+    hintsys.active_hint = NULL;
+}
+
+void __cdecl Hint_CancelCurrent(void) {
+    HINT_CANCEL_PC *hint = (HINT_CANCEL_PC *)hintsys.active_hint;
+    if (hint != NULL) {
+        if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed)
+            hintsys.display_elapsed = (f32)((f64)hint->display_duration - 0.5);
+        hint->cooldown = 0.0f;
+    }
+}
+
+void __cdecl Hint_Reset(void) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        hint->cooldown = 0.0f;
+        ++hint;
+    }
+    hintsys.display_elapsed = 0.0f;
+    hintsys.state = 2;
+    hintsys.alpha = 0.0f;
+    hintsys.active_hint = NULL;
+}
+
+/* 00576630..00576668. Both arguments are ordinary cdecl stack arguments. */
+void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        if (hint->id == hint_id) {
+            if (reset_completed == 1)
+                hint->completed = 0;
+            hintsys.display_elapsed = 0.0f;
+            return;
+        }
+        ++hint;
+    }
+}
+
+void __cdecl Hint_ClearHintsAndDoneFlags(void) {
+    HINT_PC *hint = hintsys.hints;
+    if (hint == NULL)
+        return;
+    while (hint->id != -1) {
+        hint->flags &= 0xfd;
+        hint->completed = 0;
+        ++hint;
+    }
+}
+
 void __cdecl Hint_SaveGameState(HINT_PC *hint) {
     HINT_PC *candidate;
     i32 index;
@@ -55,6 +226,28 @@ void __cdecl Hint_SaveGameState(HINT_PC *hint) {
             return;
         }
     }
+}
+
+void __cdecl Hint_LoadAllGameState(void) {
+    HINT_PC *hint = hintsys.hints;
+    i32 index;
+    if (hint == NULL || hintsys.save_bits == NULL)
+        return;
+    index = 0;
+    while (hint->id != -1) {
+        i32 word = index / 32;
+        if (word >= hintsys.save_word_count)
+            break;
+        hint->completed = (hintsys.save_bits[word] & (1U << (index % 32))) != 0;
+        ++hint;
+        ++index;
+    }
+}
+
+/* PC576840/31; append to hint.c; update_fn alias below names native+0. */
+void __cdecl Hint_Draw(i32 viewport) {
+    if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL)
+        hintsys.draw_fn(hintsys.active_hint, viewport);
 }
 
 void __cdecl Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
@@ -110,135 +303,53 @@ void __cdecl Hint_SetComplete(i32 hint_id) {
     }
 }
 
-typedef struct HINT_CANCEL_PC {
-    u8 unknown00[8];
-    f32 display_duration;
-    u8 unknown0c[0xc];
-    f32 cooldown;
-} HINT_CANCEL_PC;
-STATIC_ASSERT(offsetof(HINT_CANCEL_PC, display_duration) == 8);
-STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
-void __cdecl Hint_CancelCurrent(void) {
-    HINT_CANCEL_PC *hint = (HINT_CANCEL_PC *)hintsys.active_hint;
+void __cdecl Hint_SetCompletePc(HINT_PC *hint) {
+    if (hint != NULL && hint->completed == 0) {
+        hint->completed = 1;
+        Hint_SaveGameState(hint);
+    }
+}
+
+/* SOURCE ONLY: append to src/legoapi/hint.c; no header/data/map changes. */
+void __cdecl Hint_Process(f32 elapsed) {
+    i32 available = 1;
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    HINT_PC *hint;
+    f32 target;
+    f32 step;
+    if (hintsys.hints == NULL)
+        return;
+
+    /* Existing historical symbol names the DWORD native reads at00803984. */
+    if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 ||
+        SuperStory != 0 || BonusArea != 0 || (world->current_level->flags & 0x200) != 0 ||
+        (world->area != NULL && (world->area->flags & 0x124) != 0) || GetMenuID() != -1 || FadeSys.fade != 0.0f ||
+        (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0))
+        available = 0;
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
+        available = 0;
+
+    for (hint = hintsys.hints; hint->id != -1; ++hint) {
+        if (hintsys.active_hint != hint && hint->cooldown > 0.0f)
+            hint->cooldown -= elapsed;
+        if (!available || hintsys.active_hint != NULL || hint->completed != 0 || hint->update_fn == NULL)
+            continue;
+        if (hint->update_fn(hint) == 0 || hint->cooldown > 0.0f || hint->completed == 1)
+            continue;
+        Hint_SetHint(hint, 0, 0);
+    }
+    target = Hint_AlphaTargetFn != NULL ? Hint_AlphaTargetFn() : 1.0f;
+    step = (f32)((f64)FRAMETIME * 3.0);
+    hintsys.alpha = SeekLinearF(hintsys.alpha, target, step);
+    hint = hintsys.active_hint;
     if (hint != NULL) {
-        if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed)
-            hintsys.display_elapsed = (f32)((f64)hint->display_duration - 0.5);
-        hint->cooldown = 0.0f;
+        hintsys.display_elapsed += elapsed;
+        if (hint->display_duration > 0.0f && hintsys.display_elapsed >= hint->display_duration)
+            hintsys.active_hint = NULL;
     }
-}
-
-void __cdecl Hint_Reset(void) {
-    HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
-        return;
-    while (hint->id != -1) {
-        hint->cooldown = 0.0f;
-        ++hint;
-    }
-    hintsys.display_elapsed = 0.0f;
-    hintsys.state = 2;
-    hintsys.alpha = 0.0f;
-    hintsys.active_hint = NULL;
-}
-
-void __cdecl Hint_ClearHintsAndDoneFlags(void) {
-    HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
-        return;
-    while (hint->id != -1) {
-        hint->flags &= 0xfd;
-        hint->completed = 0;
-        ++hint;
-    }
-}
-
-void __cdecl Hint_LoadAllGameState(void) {
-    HINT_PC *hint = hintsys.hints;
-    i32 index;
-    if (hint == NULL || hintsys.save_bits == NULL)
-        return;
-    index = 0;
-    while (hint->id != -1) {
-        i32 word = index / 32;
-        if (word >= hintsys.save_word_count)
-            break;
-        hint->completed = (hintsys.save_bits[word] & (1U << (index % 32))) != 0;
-        ++hint;
-        ++index;
-    }
-}
-
-/* PC576840/31; append to hint.c; update_fn alias below names native+0. */
-void __cdecl Hint_Draw(i32 viewport) {
-    if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL)
-        hintsys.draw_fn(hintsys.active_hint, viewport);
 }
 
 /* Append to src/legoapi/hint.c. */
-
-/* 00576630..00576668. Both arguments are ordinary cdecl stack arguments. */
-void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed) {
-    HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
-        return;
-    while (hint->id != -1) {
-        if (hint->id == hint_id) {
-            if (reset_completed == 1)
-                hint->completed = 0;
-            hintsys.display_elapsed = 0.0f;
-            return;
-        }
-        ++hint;
-    }
-}
-typedef struct HINT_COMPLETION_PC {
-    u16 points;
-    u8 reserved02, flags;
-} HINT_COMPLETION_PC;
-STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
-STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, points) == 0);
-STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, flags) == 3);
-
-typedef struct HINT_WORLD_TELEPORT_PC {
-    u8 reserved00[0x4684];
-    i32 teleport_count;
-} HINT_WORLD_TELEPORT_PC;
-STATIC_ASSERT(offsetof(HINT_WORLD_TELEPORT_PC, teleport_count) == 0x4684);
-
-/* Native PC hint updater records retain their original packed field offsets. */
-typedef struct HINT_PANEL_PC {
-    u8 reserved00[0x61];
-    u8 model_variant, flags;
-    u8 reserved63[0x29];
-    f32 target_scale;
-} HINT_PANEL_PC;
-STATIC_ASSERT(sizeof(HINT_PANEL_PC) == 0x90);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, model_variant) == 0x61);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(HINT_PANEL_PC, target_scale) == 0x8c);
-struct panel_movement_pc_s;
-
-typedef struct HINT_ZIPUP_PC {
-    u8 name[16];
-    NUVEC lower_position;
-    u8 reserved1c[0x4c];
-    u8 flags;
-    u8 reserved69[0x13];
-} HINT_ZIPUP_PC;
-STATIC_ASSERT(sizeof(HINT_ZIPUP_PC) == 0x7c);
-STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, lower_position) == 0x10);
-STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, flags) == 0x68);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
-STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, area_complete) == 1);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
-STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
-
-NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
 i32 __cdecl Percent_UpdateHint(HINT_PC *hint) {
     if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
@@ -285,69 +396,4 @@ i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
             return 1;
     }
     return 0;
-}
-
-i32 __cdecl Hint_isAvailable(i32 hint_id) {
-    HINT_PC *active_hint = hintsys.active_hint;
-    HINT_PC *hint;
-    if (active_hint != NULL && active_hint->id == hint_id)
-        return 0;
-    if (hint_id < 0 || TTab[hint_id] == NULL)
-        return 0;
-    hint = Hint_FindHint(hint_id);
-    if (hint == NULL || hint->completed != 0)
-        return 0;
-    if (hint->cooldown > 0.0f)
-        return 0;
-    return 1;
-}
-i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
-    HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
-        return 0;
-    while (hint->id != -1) {
-        if (hint->id == hint_id)
-            return hint->completed;
-        ++hint;
-    }
-    return 0;
-}
-
-/* SOURCE ONLY: append to src/legoapi/hint.c; no header/data/map changes. */
-void __cdecl Hint_Process(f32 elapsed) {
-    i32 available = 1;
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
-    HINT_PC *hint;
-    f32 target;
-    f32 step;
-    if (hintsys.hints == NULL)
-        return;
-
-    /* Existing historical symbol names the DWORD native reads at00803984. */
-    if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 ||
-        SuperStory != 0 || BonusArea != 0 || (world->current_level->flags & 0x200) != 0 ||
-        (world->area != NULL && (world->area->flags & 0x124) != 0) || GetMenuID() != -1 || FadeSys.fade != 0.0f ||
-        (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0))
-        available = 0;
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
-        available = 0;
-
-    for (hint = hintsys.hints; hint->id != -1; ++hint) {
-        if (hintsys.active_hint != hint && hint->cooldown > 0.0f)
-            hint->cooldown -= elapsed;
-        if (!available || hintsys.active_hint != NULL || hint->completed != 0 || hint->update_fn == NULL)
-            continue;
-        if (hint->update_fn(hint) == 0 || hint->cooldown > 0.0f || hint->completed == 1)
-            continue;
-        Hint_SetHint(hint, 0, 0);
-    }
-    target = Hint_AlphaTargetFn != NULL ? Hint_AlphaTargetFn() : 1.0f;
-    step = (f32)((f64)FRAMETIME * 3.0);
-    hintsys.alpha = SeekLinearF(hintsys.alpha, target, step);
-    hint = hintsys.active_hint;
-    if (hint != NULL) {
-        hintsys.display_elapsed += elapsed;
-        if (hint->display_duration > 0.0f && hintsys.display_elapsed >= hint->display_duration)
-            hintsys.active_hint = NULL;
-    }
 }
