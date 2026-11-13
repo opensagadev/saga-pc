@@ -175,18 +175,18 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         return NULL;
     if (parameters->special != NULL && NuSpecialExistsFn(parameters->special) == 0)
         return NULL;
-    part = &Part[part_slot_cursor];
     scanned = 0;
-    while ((part->active & 1) != 0 && (part->flags & 0x200) != 0 && scanned < MAXPARTS) {
+    while ((Part[part_slot_cursor].active & 1) != 0 && (Part[part_slot_cursor].flags & 0x200) != 0 &&
+           scanned < MAXPARTS) {
         if (++part_slot_cursor == MAXPARTS) {
             part_slot_cursor = 0;
         }
-        part = &Part[part_slot_cursor];
         ++scanned;
     }
     if (scanned == MAXPARTS) {
         return NULL;
     }
+    part = &Part[part_slot_cursor];
     if ((part->active & 1) != 0) {
         if (part->destroy_fn != NULL) {
             part->destroy_fn(part);
@@ -214,16 +214,16 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     part->field_206 = -1;
     part->field_20b = -1;
     part->time_remaining = part->initial_time = parameters->field_a4;
-    part->active = (part->active & ~0x60u) | 0x21;
-    part->time_step = parameters->time_step;
+    part->active = (part->active & ~0x40u) | 0x20;
     part->scale_time = 0.0f;
+    part->time_step = parameters->time_step;
     part->radius = parameters->field_14;
-    part->field_e0 = (parameters->time_step / PARTSCALEUPTIME) * parameters->field_14;
+    part->field_e0 = (part->time_step / PARTSCALEUPTIME) * part->radius;
     part->field_e4 = parameters->field_18;
     part->field_214 = parameters->field_c0;
     part->gravity = parameters->gravity;
     part->field_ec = parameters->field_20;
-    part->active &= ~2u;
+    part->active = (part->active & ~2u) | 1;
     part->part_id = (i16)parameters->part_id;
     part->field_f0 = parameters->field_88;
     part->flags = parameters->flags;
