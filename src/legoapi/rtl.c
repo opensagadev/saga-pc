@@ -758,17 +758,27 @@ void __cdecl rtlProcessLights(void *set, f32 frame_time) {
 
 #include <float.h>
 void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
-    f32 minimum_x, maximum_x, minimum_z, maximum_z, width, depth;
-    i32 index, row, column, count;
     RTL_LIGHT_PC *light;
+    f32 minimum_x;
+    f32 maximum_x;
+    f32 maximum_z;
+    f32 minimum_z;
+    i32 column;
+    i32 row;
+    i32 index;
+    i32 count;
+    RTL_INDEX_PC *grid;
+    f32 size_x;
+    f32 size_z;
+    char *indices;
 
-    RTL_INDEX_PC *grid = (RTL_INDEX_PC *)buffer->void_ptr;
+    grid = (RTL_INDEX_PC *)buffer->void_ptr;
     buffer->addr += sizeof(RTL_INDEX_PC);
     memset(grid, 0, sizeof(*grid));
     minimum_x = FLT_MAX;
     maximum_x = -FLT_MAX;
-    maximum_z = -FLT_MAX;
     minimum_z = FLT_MAX;
+    maximum_z = -FLT_MAX;
     for (light = set->lights; light->type != 0; ++light) {
         minimum_x = RTL_MIN_PC(minimum_x, light->position.x - light->outer_radius);
         maximum_x = RTL_MAX_PC(maximum_x, light->position.x + light->outer_radius);
@@ -776,27 +786,24 @@ void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
         maximum_z = RTL_MAX_PC(maximum_z, light->position.z + light->outer_radius);
     }
 
-    if (minimum_x > maximum_x || minimum_z > maximum_z) {
+    if (minimum_x > maximum_x || minimum_z > maximum_z)
         return;
-    }
     grid->offset_x = -minimum_x;
     grid->offset_z = -minimum_z;
-    width = maximum_x - minimum_x;
-    depth = maximum_z - minimum_z;
-    if (width <= 0.0f || depth <= 0.0f) {
+    size_x = maximum_x - minimum_x;
+    size_z = maximum_z - minimum_z;
+    if (size_x <= 0.0f || size_z <= 0.0f)
         return;
-    }
-
-    if (width > depth) {
+    if (size_x > size_z) {
         grid->width = 16;
-        count = (i32)(16.0f * depth / width) + 1;
+        count = (i32)((size_z * 16.0f) / size_x) + 1;
         grid->depth = count > 16 ? 16 : count;
-        grid->scale = 16.0f / width;
+        grid->scale = 16.0f / size_x;
     } else {
         grid->depth = 16;
-        count = (i32)(16.0f * width / depth) + 1;
+        count = (i32)((size_x * 16.0f) / size_z) + 1;
         grid->width = count > 16 ? 16 : count;
-        grid->scale = 16.0f / depth;
+        grid->scale = 16.0f / size_z;
     }
 
     grid->cells = (i8 **)((buffer->addr + 3) & ~3u);
@@ -804,25 +811,22 @@ void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
     buffer->addr += grid->width * grid->depth * sizeof(char *);
 
     for (row = 0; row < grid->depth; ++row) {
-        const f32 minimum_cell_z = (f32)(row) / grid->scale - grid->offset_z;
-        const f32 maximum_cell_z = (f32)(row + 1) / grid->scale - grid->offset_z;
+        minimum_z = (f32)(row) / grid->scale - grid->offset_z;
+        maximum_z = (f32)(row + 1) / grid->scale - grid->offset_z;
         for (column = 0; column < grid->width; ++column) {
-            u8 *indices;
-            f32 minimum_cell_x, maximum_cell_x;
             grid->cells[row * grid->width + column] = (i8 *)buffer->void_ptr;
             ++buffer->addr;
-            indices = (u8 *)grid->cells[row * grid->width + column];
+            indices = (char *)grid->cells[row * grid->width + column];
             *indices = 0;
-            minimum_cell_x = (f32)(column) / grid->scale - grid->offset_x;
-            maximum_cell_x = (f32)(column + 1) / grid->scale - grid->offset_x;
-
+            minimum_x = (f32)(column) / grid->scale - grid->offset_x;
+            maximum_x = (f32)(column + 1) / grid->scale - grid->offset_x;
             for (index = 0, light = set->lights; light->type != 0; ++index, ++light) {
-                if (light->type == 5 || !(light->position.x + light->outer_radius < minimum_cell_x ||
-                                          light->position.x - light->outer_radius > maximum_cell_x ||
-                                          light->position.z + light->outer_radius < minimum_cell_z ||
-                                          light->position.z - light->outer_radius > maximum_cell_z)) {
-                    ++indices[0];
-                    indices[(i8)indices[0]] = (u8)index;
+                if (light->type == 5 || !(light->position.x + light->outer_radius < minimum_x ||
+                                          light->position.x - light->outer_radius > maximum_x ||
+                                          light->position.z + light->outer_radius < minimum_z ||
+                                          light->position.z - light->outer_radius > maximum_z)) {
+                    ++*indices;
+                    indices[*indices] = (char)index;
                     ++buffer->addr;
                 }
             }
