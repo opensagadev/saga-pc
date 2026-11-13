@@ -2131,9 +2131,9 @@ extern "C" {
             frame = last;
         out = &buffer->joints->translation.x;
         whole = (i32)frame;
+        quarter = whole & 3;
         curve_types = anim->curve_types;
         scale_min = anim->scale_min;
-        quarter = whole & 3;
         fraction = frame - whole;
         key_stride = anim->key_stride;
         constants = (const u16 *)anim->constants - 16;
