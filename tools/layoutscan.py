@@ -24,7 +24,7 @@ Unity compilands (a .cpp that #includes .c/.cpp files) get one row per included
 file. `--write` replaces config/layout-target.csv; without it the summary is
 printed only.
 
-    python3 tools/layoutscan.py --batman ../miscellaneous/batman-mac --write
+    python3 tools/layoutscan.py --batman build/reference/batman-mac --write
     python3 tools/layoutscan.py --show 0x497c10      # one compiland with its functions
 
 Without the retail EXE the unit-start markers fall back to the `marker` rows of

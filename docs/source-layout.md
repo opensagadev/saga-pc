@@ -12,7 +12,7 @@ moved to that layout. It is an analysis: nothing in `src/` has moved yet.
 - Tool: `tools/layoutscan.py` (stdlib only, test in `tools/test_layoutscan.py`).
 
 ```sh
-python3 tools/layoutscan.py --batman ../miscellaneous/batman-mac --write   # regenerate the table
+python3 tools/layoutscan.py --batman build/reference/batman-mac --write   # regenerate the table
 python3 tools/layoutscan.py --batman DIR --show 0x497c10                   # one compiland, function by function
 python3 tools/layoutscan.py --batman DIR --plan                            # migration action per current file
 ```
