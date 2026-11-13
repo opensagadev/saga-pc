@@ -5219,7 +5219,7 @@ extern "C" {
                     sprintf(text, "%i/%i", AreaGlobals_PC.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
                     score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = packet->scale * HudScoreScalePc;
+                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
                              (u8)icon_alpha);
