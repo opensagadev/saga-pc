@@ -282,7 +282,6 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
 
 extern "C" {
     extern const char PcControlMissingTextPc[];
-    extern NUMTL *FadeMtl;
 
     void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows)
@@ -325,10 +324,6 @@ extern "C" {
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                 break;
         }
-    }
-
-    void __cdecl LoadPermProgressDraw(f32, f32, f32 fade) {
-        NuRndrRect2di(0, 0, 0x2800, 0xe20, ((i32)(fade * 100.0) << 24) | 0xffffff, FadeMtl);
     }
 }
 
