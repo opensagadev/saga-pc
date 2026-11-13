@@ -435,51 +435,58 @@ def repository_paths(value):
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
-    def image(label, field, alt):
+    def image(field, label="", alt=None):
+        # for-the-badge style; table cells carry no label text, only the percentage.
         value = stats[field]
         color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
-        return f"![{alt}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color})"
+        return (f"![{alt or f'{value:.3f}%'}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color}"
+                "?style=for-the-badge)")
 
     badge = ("<!-- matching-badge -->\n"
-             + image("fuzzy%20code%20match", "fuzzy_coverage_percent", "fuzzy code match")
+             + image("fuzzy_coverage_percent", "fuzzy%20code%20match", "fuzzy code match")
              + "<!-- /matching-badge -->")
-    # The exact badge counts alignment padding after exact functions when the report has it;
+    # The exact row counts alignment padding after exact functions when the report has it;
     # matching_percent stays the strict function-only number.
-    exact = ("exact%20code%20match", "matching_with_padding_percent", "exact code match",
-             "Byte-identical code and the alignment padding after it.") \
-        if "matching_with_padding_percent" in stats else \
-        ("exact%20code%20match", "matching_percent", "exact code match", "Byte-identical code.")
-    # The mapped badges count proven alignment padding between known extents when the
+    exact = ("matching_with_padding_percent", "byte-identical code and the alignment padding after it.") \
+        if "matching_with_padding_percent" in stats else ("matching_percent", "byte-identical code.")
+    # The mapped rows count proven alignment padding between known extents when the
     # report has it; mapping_<kind>_percent stays the symbol-only number.
     padded = "mapping_code_with_padding_percent" in stats
-    fuzzy = ("fuzzy%20code%20match", "fuzzy_coverage_percent", "fuzzy code match",
-             "Similarity of code, alignment padding excluded: objdiff's fuzzy match of each original function "
-             "weighted by its size, over all original code (.text without alignment padding and the data "
-             "stored in it; unported and unidentified code count as 0). Same definition as the whole-binary "
-             "objdiff fuzzy match of the Android decompilation.")
-    rows = [fuzzy, exact,
-            ("mapped%20code", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
-             "mapped code", "Known code extents and the alignment padding between them." if padded
-             else "Known code extents."),
-            ("mapped%20file--backed%20data", "mapping_file_backed_data_with_padding_percent" if padded
-             else "mapping_file_backed_data_percent", "mapped file-backed data",
-             "Known data stored in the executable and the zero padding between it." if padded
-             else "Known data stored in the executable."),
-            ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent", "mapped zero-fill/BSS",
-             "Known zero-initialized storage.")]
+    # (depth, name, field, meaning); a row without a field is a group heading.
+    rows = [(0, "Code", None, None),
+            (1, "Fuzzy match", "fuzzy_coverage_percent",
+             "objdiff's fuzzy match of each original function, weighted by its size, over all original code "
+             "(.text without alignment padding and the data stored in it; unported and unidentified code "
+             "count as 0). Same definition as the Android decompilation's whole-binary objdiff fuzzy match."),
+            (1, "Exact match", *exact),
+            (1, "Mapped", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
+             "known code extents and the alignment padding between them." if padded
+             else "known code extents.")]
     if "mapping_code_named_percent" in stats:
-        rows.insert(3, ("named%20code", "mapping_code_named_percent", "named code",
-                        f"Mapped code under identified names; another "
-                        f"{stats['mapping_code_address_named_percent']:.3f}% is bounded under address names "
-                        f"(`fun_XXXXXXXX`)."))
+        rows.append((2, "Named", "mapping_code_named_percent",
+                     f"mapped code under identified names; another "
+                     f"{stats['mapping_code_address_named_percent']:.3f}% is bounded under address names "
+                     f"(`fun_XXXXXXXX`)."))
+    rows += [(0, "Data", None, None),
+             (1, "Mapped file-backed", "mapping_file_backed_data_with_padding_percent" if padded
+              else "mapping_file_backed_data_percent",
+              "known data stored in the executable and the zero padding between it." if padded
+              else "known data stored in the executable.")]
     if "reproduced_file_backed_data_percent" in stats:
-        rows.insert(-1, ("reproduced%20file--backed%20data", "reproduced_file_backed_data_percent",
-                         "reproduced file-backed data",
-                         "Data stored in the executable that our objects or pinned library members define "
-                         "byte-exactly ([details](docs/mapping-status.md#reproduced-data))."))
-    table = ("<!-- mapping-badge -->\n\n| Metric / coverage | Meaning |\n"
+        rows.append((2, "Reproduced", "reproduced_file_backed_data_percent",
+                     "file-backed data that our objects or pinned library members define byte-exactly "
+                     "([details](docs/mapping-status.md#reproduced-data))."))
+    rows.append((1, "Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "known zero-initialized storage."))
+
+    def row(depth, name, field, meaning):
+        if field is None:
+            return f"| **{name}** | |"
+        indent = "&nbsp;" * (4 * depth - 2) + "↳ "
+        return f"| {indent}**{name}**: {meaning} | {image(field)} |"
+
+    table = ("<!-- mapping-badge -->\n\n| Metric | Coverage |\n"
              "| --- | --- |\n"
-             + "\n".join(f"| {image(label, field, alt)} | {meaning} |" for label, field, alt, meaning in rows)
+             + "\n".join(row(*entry) for entry in rows)
              + "\n\n<!-- /mapping-badge -->")
     for metric, replacement in (("matching", badge), ("mapping", table)):
         content, count = re.subn(f"<!-- {metric}-badge -->.*?<!-- /{metric}-badge -->",
