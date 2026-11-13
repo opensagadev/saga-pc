@@ -668,7 +668,7 @@ GIZFORCE_s *GizForces_FindForce(WORLDINFO *world, char *name) {
  * in the companion layout file. */
 extern const char GizmoRegistryGizForceNamePc[];
 
-static __declspec(noinline) char *ForceCopyNamePrefixPc(char *source, char *destination, i32 capacity) {
+static __declspec(noinline) char *ForceCopyNamePrefixPc(char *destination, char *source, i32 capacity) {
     char *result = destination;
     i32 index = 0;
     if (destination == NULL || source == NULL)
@@ -699,7 +699,7 @@ static __declspec(noinline) void ForceFindBaseSpecialPc(GIZFORCE_PC *force) {
         name = NuSpecialGetName(&object->special);
         if (name != NULL) {
             memset(socket_name, 0, sizeof(socket_name));
-            if (ForceCopyNamePrefixPc(name, socket_name, sizeof(socket_name)) != NULL) {
+            if (ForceCopyNamePrefixPc(socket_name, name, sizeof(socket_name)) != NULL) {
                 NuStrCat(socket_name, "b");
                 if (NuSpecialFind(object->special.scene, &force->along_socket, socket_name, 1) != 0)
                     break;
