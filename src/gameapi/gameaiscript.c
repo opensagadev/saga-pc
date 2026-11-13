@@ -7895,7 +7895,7 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     if (node == NULL) {
         return 0;
     }
-    distance = NuVecXZDistSqr(&packet->terrain_origin, &node->position, &difference);
+    distance = NuVecXZDistSqr(&packet->owner->position, &node->position, &difference);
     if (distance < node->radius_squared) {
         memset(&packet->path_info, 0, sizeof(packet->path_info));
         AISysCharacterSetPath(packet, original_path);
