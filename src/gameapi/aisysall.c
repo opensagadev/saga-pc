@@ -13968,13 +13968,13 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
         }
     }
 
-    path = packet->path_info.path;
     if ((packet->navigation_flags & 2) == 0) {
+        path = packet->path_info.path;
         remaining_checks = checks;
         if (remaining_checks > path->node_count)
             remaining_checks = path->node_count;
         for (; remaining_checks > 0; --remaining_checks) {
-            node = &path->nodes[packet->path_info.next_check];
+            node = &packet->path_info.path->nodes[packet->path_info.next_check];
             for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
                 if (CharacterTestPathCnx(system, object, packet, node->connections[connection_index], -1,
                                          &nearest_distance_squared) != 0) {
