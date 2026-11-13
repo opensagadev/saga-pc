@@ -90,19 +90,19 @@ void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
     i32 roll;
     i32 cumulative_weight = 0;
     i32 i;
-    if (active == 0) {
-        random->flags &= (u8)~1;
-        return;
-    }
-    random->flags |= 1;
-    random->selected_output = -1;
-    roll = 1 - (i32)((f64)qrand() * PlayerRandomScalePc * -100.0);
-    for (i = 0; i < random->output_count; ++i) {
-        if (roll >= cumulative_weight && roll <= cumulative_weight + random->output_weights[i]) {
-            random->selected_output = i;
-            break;
+    if (active != 0) {
+        random->flags |= 1;
+        random->selected_output = -1;
+        roll = 1 - (i32)((f64)qrand() * PlayerRandomScalePc * -100.0);
+        for (i = 0; i < random->output_count; ++i) {
+            if (roll >= cumulative_weight && roll <= cumulative_weight + random->output_weights[i]) {
+                random->selected_output = i;
+                break;
+            }
+            cumulative_weight += random->output_weights[i];
         }
-        cumulative_weight += random->output_weights[i];
+    } else {
+        random->flags &= (u8)~1;
     }
 }
 
