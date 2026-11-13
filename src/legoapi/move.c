@@ -3878,7 +3878,7 @@ static __declspec(noinline) void DeactivatedCode(GAMEOBJECT *object) {
             return;
         }
     }
-    if (1000000000.0 != object->context_timer && object->context_timer < object->context_duration)
+    if (1000000000.0 != object->context_timer && object->context_duration > object->context_timer)
         ActivatePlayer(object);
     else if ((object->character_data->model_flags & 0x20) != 0)
         SetProtocolDroidDeactivatedAction(object);
