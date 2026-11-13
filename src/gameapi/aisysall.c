@@ -10709,15 +10709,15 @@ void __cdecl antinodeEditorDrawAntinodes(void) {
     EDANTINODE_s *node;
     for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
          node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
-        u32 colour = 0x50505050;
         i32 segments = 8;
+        i32 colour = 0x50505050;
         if (aieditorsettings.modes.current == AiEditorAntinodeModeIdPc) {
-            if (node == aieditor->selected_antinode) {
-                segments = 32;
-                if (node == aieditor->nearest_antinode)
+            if (aieditor->selected_antinode == node) {
+                if (aieditor->selected_antinode == aieditor->nearest_antinode)
                     colour = NuSpecialExistsFn(&node->special) ? 0xffff0064 : 0xffff0000;
                 else
                     colour = NuSpecialExistsFn(&node->special) ? 0x80800064 : 0x80800000;
+                segments = 32;
             } else if (aieditor->nearest_antinode == node) {
                 colour = 0xffffffff;
                 segments = 32;
