@@ -95,14 +95,14 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     }
     object->portal_flags |= 0x10;
     nearest_distance = processor->action_data_4 * processor->action_data_4;
+    /* MATCH-EXCEPTION: retail scans three entries of the two-entry boulder_part array; the third read is
+       the first word of the next global (vader_a), exactly as the original binary does. */
     for (index = 0; index < 3; ++index) {
-        /* Native third slot aliases the first VaderA field, not array padding. */
-        PART_PC *part = index == 2 ? (PART_PC *)vader_a.in_control_room_message : boulder_part[index];
-        if (part != NULL) {
-            f32 distance = NuVecDistSqr(&object->collision_position, &part->position, &difference);
+        if (boulder_part[index] != NULL) {
+            f32 distance = NuVecDistSqr(&object->collision_position, &boulder_part[index]->position, &difference);
             if (distance < nearest_distance) {
                 nearest_distance = distance;
-                nearest = index == 2 ? (PART_PC *)vader_a.in_control_room_message : boulder_part[index];
+                nearest = boulder_part[index];
             }
         }
     }
