@@ -10755,12 +10755,13 @@ void NuSpeedBlurFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
     if (texture != NULL)
         PostFilterCopyTexturePc(texture, 0, color_texture, 0, PostCopyTexProgramPc, NULL);
+    POST_SHADER_PROGRAM_PC *program = (POST_SHADER_PROGRAM_PC *)programs[0];
     PCDeviceSetRenderState(22, 1);
     PCDeviceSetRenderState(15, 0);
     PCDeviceSetRenderState(27, 0);
     PCDeviceSetRenderState(7, 0);
     PCDeviceSetRenderState(168, 15);
-    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[0]);
+    PostShaderProgramBindPc(program);
     PCDeviceSetVertexShaderConstantsF(0x80, values, 2);
     PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 1);
     PCGraphicsEffectTextureSetLowNibbles(color_texture, 0, 2);
