@@ -104,7 +104,10 @@ static i32 __cdecl Plugs_Load(void *world_ptr, void *data) {
         plug->rotation_x = EdFileReadUnsignedShort();
         plug->rotation_y = EdFileReadUnsignedShort();
         plug->enabled = EdFileReadUnsignedChar();
-        plug->rotation_z = version >= 2 ? EdFileReadUnsignedShort() : 0;
+        if (version >= 2)
+            plug->rotation_z = EdFileReadUnsignedShort();
+        else
+            plug->rotation_z = 0;
     }
     return 1;
 }
