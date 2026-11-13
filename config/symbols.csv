@@ -303,7 +303,7 @@ address,symbol,size,ctype
 0x41ab90,_SetLayersCloudPc,168,
 0x41ac40,_SetLayersBobPc,406,
 0x0041ade0,_FixUpLayers,218,void __cdecl (void)
-0x0041aec0,_AlternateGame_callback_925180_PC,42,
+0x0041aec0,_fun_0041aec0,42,
 0x41aef0,_SuperWeirdo,60,i32 __cdecl(GAMEOBJECT*)
 0x0041af30,_Player_HasPurpleForce,46,i32 __cdecl (GAMEOBJECT *)
 0x41af60,_fun_0041af60,10,
@@ -9961,7 +9961,7 @@ address,symbol,size,ctype
 0x6271a0,_eduiSetActiveMenu,68,
 0x6271f0,_eduiClearActiveMenu,59,eduimenu_s *__cdecl (void)
 0x627230,_cbInteractMenuKeySelect,98,
-0x6272a0,_EduiInteractHelperPc6272a0,126,
+0x6272a0,_fun_006272a0,126,
 0x627320,_eduiProcessInteracts,125,
 0x6273a0,_eduiProcessCursorDefault,406,
 0x627540,_fun_00627540,261,

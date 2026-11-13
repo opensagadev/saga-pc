@@ -383,7 +383,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 
-extern "C" i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object);
+extern "C" i32 __cdecl fun_0041aec0(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object);
 extern "C" void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
@@ -2986,7 +2986,7 @@ void __cdecl InitGameAfterConfig(void) {
         RenderBackdropBlackPc = 1;
         Lighting_FlashRedOnLastHeart = 1;
         CutScenes_InitSystem(&InitCutSettingsAlternatePc);
-        AlternateGameCallbackPc = AlternateGame_callback_925180_PC;
+        AlternateGameCallbackPc = fun_0041aec0;
         APIObjectRegisterAnimRedirect(RedirectAnim, AnimRedirectList_Batman, "chars\\commonanims");
         SurfaceMaskOn(&GetSurfaceInfoDefaultMaskPc.word);
         SurfaceMaskOff(&GetSurfaceInfoRuntimeMaskPc.word);

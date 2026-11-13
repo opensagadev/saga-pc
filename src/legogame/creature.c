@@ -3448,7 +3448,7 @@ void __cdecl FixUpLayers(void) {
     }
 }
 
-i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object) {
+i32 __cdecl fun_0041aec0(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
     if (context == 0x4d && object->field_7b3 == 0) {
         return 2;

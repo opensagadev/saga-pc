@@ -4403,7 +4403,7 @@ static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
     return eduiInteractLocked != NULL;
 }
 
-static i32 EduiInteractHelperPc6272a0(eduimenu_s *menu, edui_interact_s *interact) {
+static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
     i32 result = 0;
     if (interact->menu == menu) {
         if (EduiInteractPressedPc(interact) && EduiInteractionContainsCursorPc(interact)) {
@@ -4446,7 +4446,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
         } else {
             interact = &eduiInteracts[numInteracts - 1];
             for (index = 0; index < numInteracts; index++, interact--) {
-                if (EduiInteractHelperPc6272a0(menu, interact)) {
+                if (fun_006272a0(menu, interact)) {
                     return 1;
                 }
             }
