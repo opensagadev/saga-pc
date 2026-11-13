@@ -6339,6 +6339,7 @@ address,symbol,size,ctype
 0x5be630,_NuPow,341,"f32 __cdecl (f32, f32)"
 0x5be790,_RenderPostLogPc,475,f32 __cdecl(f32)
 0x5be970,_NuExp10,650,f32 __cdecl(f32)
+0x5bec00,_NuMiscNextPow2,38,i32 __cdecl(i32)
 0x005bec80,_NuVecMag,49,f32 __cdecl (NUVEC *)
 0x005becc0,_NuVecDist,182,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bed80,_NuVecXZDist,159,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -8557,6 +8558,8 @@ address,symbol,size,ctype
 0x6353a0,?GetNextObject@FogHelper@@UAEPAXPAX@Z,116,
 0x635420,?Render@FogHelper@@UAEXPAXH@Z,126,
 0x6354a0,_edrtlInitBurnset,259,void __cdecl edrtlInitBurnset(BURN_SET_PC *)
+0x6355b0,_rtlSetAssocName,21,"void __cdecl(i32, char *)"
+0x6355d0,_rtlSetUserIdName,24,"void __cdecl(i32, char *)"
 0x6355f0,_rtlFindByUserId,52,"i32 __cdecl rtlFindByUserId(RTL_SET_PC *, i32)"
 0x635630,_rtlGetDirection,48,"i32 __cdecl (RTL_SET_PC *, i32, NUVEC **)"
 0x635660,_rtlDynamicAlloc,240,i32 __cdecl(void)
@@ -8571,12 +8574,17 @@ address,symbol,size,ctype
 0x635a10,_rtlDynamicMasterEnable,16,i32 __cdecl(i32)
 0x635a20,_rtlResetDynamic,79,i32 __cdecl(void)
 0x635a70,_rtlInitDynamic,56,"i32 __cdecl rtlInitDynamic(VARIPTR *, VARIPTR, i32)"
+0x635ab0,_rtlSetShadowFlickerScale,30,void __cdecl(NUVEC *)
+0x635ad0,_rtlSetShadowFlickerBlendTime,43,void __cdecl(f32)
 0x635b10,_IndexLights,809,"void __cdecl IndexLights(RTL_SET_PC *, VARIPTR *, i32)"
 0x635e40,_rtlLoadSet,376,"RTL_SET_PC *__cdecl rtlLoadSet(char *, VARIPTR *, i32)"
+0x635fc0,_rtlSaveSet,49,"void __cdecl(char *, RTL_SET_PC *)"
+0x636000,_rtlGetCurrentSet,6,RTL_SET_PC *__cdecl(void)
 0x636010,_rtlResetEx,313,"void __cdecl(RTL_DATA_PC *,i32)"
 0x636160,_InsertLight,181,
 0x636220,_InsertAntiLight,28,
 0x636240,_ApplyAntilights,312,"f32 __cdecl(RTL_LIGHT_PC *,RTL_DATA_PC *,f32)"
+0x636380,_rtlSetModifiers,44,"void __cdecl(f32 *, char **, i32)"
 0x6363b0,_rtlSetLights,98,void __cdecl(RTL_DATA_PC *)
 0x636420,_rtlSetSpecularLight,107,void __cdecl(RTL_DATA_PC *)
 0x636490,_rtlCalcLights,744,
@@ -8591,7 +8599,10 @@ address,symbol,size,ctype
 0x6374a0,_RtlProcessLightPrivate,960,
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6378f0,_edrtlSaveUndo,203,void __cdecl(void)
+0x6379c0,_edrtlInvalidateUndo,36,static void __cdecl(void)
 0x6379f0,_rtlCmp,838,
+0x637d40,_rtlSetMinR,19,void __cdecl(f32)
+0x637d60,_rtlSetUndoBuffer,175,"void __cdecl(VARIPTR *, VARIPTR, i32)"
 0x637e10,_rtlAlloc,51,RTL_LIGHT_PC *__cdecl (void)
 0x637e50,_rtlFree,314,void __cdecl (RTL_LIGHT_PC *)
 0x637f90,_fogAlloc,48,RTL_FOG_MIGRATION_PC *__cdecl (void)
@@ -8649,6 +8660,7 @@ address,symbol,size,ctype
 0x639660,_cbSetControls,14,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639670,_cbScaleAllMultipliersUp,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x639770,_cbScaleAllMultipliersDown,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639870,_rtlScaleSetMultipliers,143,"void __cdecl(f32, RTL_SET_PC *)"
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
 0x639b10,_edrtlResetBurnset,50,void __cdecl (BURN_SET_PC *)
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
