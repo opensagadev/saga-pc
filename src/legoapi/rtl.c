@@ -169,11 +169,30 @@ static void RtlDirectionStatePc(NUVEC *d0, NUVEC *c0, NUVEC *d1, NUVEC *c1, NUVE
     PCGlobalLightingState.intensity[2] = *c2;
     NuRndrSetDirectionalLightsPS(d0, c0, d1, c1, d2, c2);
 }
+/* The ambient and specular halves of the same render-state helpers; inlined into rtlSetLights and
+   rtlSetSpecularLight, with out-of-line copies kept at retail 0x633f00 and 0x633f30. */
+static i32 RtlAmbientStatePc(NUVEC *colour) {
+    PCGlobalLightingState.ambient = *colour;
+    return NuRndrSetAmbientLightPS(colour);
+}
+static void RtlSpecularStatePc(const NUVEC *direction, const NUVEC4 *intensity) {
+    if (direction != NULL) {
+        PCGlobalLightingState.specular_direction = *direction;
+        PCGlobalLightingState.specular_direction_missing = 0;
+    } else
+        PCGlobalLightingState.specular_direction_missing = 1;
+    if (intensity != NULL) {
+        /* unknown_64 is the specular intensity (NUVEC4). */
+        *(NUVEC4 *)PCGlobalLightingState.unknown_64 = *intensity;
+        PCGlobalLightingState.specular_intensity_present = 1;
+    } else
+        PCGlobalLightingState.specular_intensity_present = 0;
+    NuRndrSetSpecularLightPS(direction, intensity);
+}
 void __cdecl rtlSetLights(RTL_DATA_PC *data) {
     RtlDirectionStatePc(&data->direction[0], &data->intensity_vectors[0], &data->direction[1],
                         &data->intensity_vectors[1], &data->direction[2], &data->intensity_vectors[2]);
-    PCGlobalLightingState.ambient = data->ambient;
-    NuRndrSetAmbientLightPS(&data->ambient);
+    RtlAmbientStatePc(&data->ambient);
 }
 i32 __cdecl rtlDynamicMasterEnable(i32 enabled) {
     i32 old = rtl_dynamic_lights_enabled;
@@ -1342,16 +1361,8 @@ void __cdecl rtlSetSpecularValue(RTL_DATA_PC *data, f32 value) {
         data->specular_value = value;
 }
 void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
-    if (data->specular_value > 0.0f) {
-        const NUVEC *direction = &data->field_134;
-        if (direction != NULL) {
-            PCGlobalLightingState.specular_direction = *direction;
-            PCGlobalLightingState.specular_direction_missing = 0;
-        } else
-            PCGlobalLightingState.specular_direction_missing = 1;
-        PCGlobalLightingState.specular_intensity_present = 0;
-        NuRndrSetSpecularLightPS(direction, NULL);
-    }
+    if (data->specular_value > 0.0f)
+        RtlSpecularStatePc(&data->field_134, NULL);
 }
 
 /* SOURCE DRAFT ONLY: append in existing src/legoapi/rtl.c after its genuine
