@@ -2681,7 +2681,7 @@ void __cdecl DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32
     const f32 fraction = NuFmod(progress, 1.0f);
     i32 object = 178 - (i32)(GlobalTimer.time_elapsed_mod_seconds * 10.0);
     const f32 spacing =
-        HubBuildBarOverallScalePc * HubBuildBarSpacingPc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
+        HubBuildBarSpacingPc * HubBuildBarOverallScalePc * scale_y * NuTrigTable[((angle + 16384) >> 1) & 0x7fff];
     f32 cursor = (f32)(x - (HubBuildBarSegmentsPc - 1) * spacing * .5);
     for (i32 i = 0; i < HubBuildBarSegmentsPc; ++i) {
         if (count == total) {
