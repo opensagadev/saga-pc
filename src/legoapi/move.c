@@ -7563,49 +7563,49 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         }
         if (object->field_7b3 == 0)
             return;
-        if (!(object->pad->input_magnitude > 0.0f)) {
-            object->field_7aa = LEGOACT_LEDGE_IDLE;
-            return;
-        }
-        input = GamePad_InputAngle(object, object->pad);
-        sideways = object->movement_facing_angle + 0x4000;
-        push = PushingTowardsAngle(input, sideways);
-        if (push > NuTrigTable[0x3555]) {
-            if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
-                object->field_7aa = LEGOACT_LEDGE_RIGHT;
-                anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT);
-                *(u32 *)&speed = *(u32 *)&anim_speed & 0x7fffffff;
+        if (object->pad->input_magnitude > 0.0f) {
+            input = GamePad_InputAngle(object, object->pad);
+            sideways = object->movement_facing_angle + 0x4000;
+            push = PushingTowardsAngle(input, sideways);
+            if (push > NuTrigTable[0x3555]) {
+                if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
+                    object->field_7aa = LEGOACT_LEDGE_RIGHT;
+                    anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT);
+                    *(u32 *)&speed = *(u32 *)&anim_speed & 0x7fffffff;
+                } else {
+                    if (LedgeTerrain_CheckAnims != 0)
+                        return;
+                    speed = 0.5f;
+                }
+            } else if (push < -NuTrigTable[0x3555]) {
+                if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
+                    object->field_7aa = LEGOACT_LEDGE_LEFT;
+                    anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT);
+                    *(u32 *)&magnitude = *(u32 *)&anim_speed & 0x7fffffff;
+                    speed = -magnitude;
+                } else {
+                    if (LedgeTerrain_CheckAnims != 0)
+                        return;
+                    speed = -0.5f;
+                }
             } else {
-                if (LedgeTerrain_CheckAnims != 0)
-                    return;
-                speed = 0.5f;
+                object->field_7aa = LEGOACT_LEDGE_IDLE;
+                return;
             }
-        } else if (push < -NuTrigTable[0x3555]) {
-            if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
-                object->field_7aa = LEGOACT_LEDGE_LEFT;
-                anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT);
-                *(u32 *)&magnitude = *(u32 *)&anim_speed & 0x7fffffff;
-                speed = -magnitude;
-            } else {
-                if (LedgeTerrain_CheckAnims != 0)
-                    return;
-                speed = -0.5f;
-            }
+            if (speed == 0.0f)
+                return;
+            if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+                return;
+            if (speed < 0.0f)
+                travelled = -travelled;
+            offset.x = NuTrigTable[sideways >> 1] * (FRAMETIME * speed + travelled);
+            offset.y = 0.0f;
+            offset.z = NuTrigTable[((sideways + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed + travelled);
+            NuVecAdd(&object->external_force, &object->external_force, &offset);
+            NuVecAdd(&object->launch_origin, &object->launch_origin, &offset);
         } else {
             object->field_7aa = LEGOACT_LEDGE_IDLE;
-            return;
         }
-        if (speed == 0.0f)
-            return;
-        if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
-            return;
-        if (speed < 0.0f)
-            travelled = -travelled;
-        offset.x = NuTrigTable[sideways >> 1] * (FRAMETIME * speed + travelled);
-        offset.y = 0.0f;
-        offset.z = NuTrigTable[((sideways + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed + travelled);
-        NuVecAdd(&object->external_force, &object->external_force, &offset);
-        NuVecAdd(&object->launch_origin, &object->launch_origin, &offset);
         return;
     }
     if (object->field_281 != 0 || !(object->velocity.y <= 0.0f))
