@@ -164,14 +164,14 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     NetPrimPosition(x + half_width, y - height + byte_scale * 4352.0, 0.0f);
     NuPrim2DEnd();
 
-    f32 sample_y;
+    f32 sample_x, sample_y;
     NuPrim2DBegin(0xf, 5, NULL);
     i32 sample = history_index + 1;
     for (i32 i = 0; i < 30; ++i) {
         if (sample >= 30) {
             sample = 0;
         }
-        f32 sample_x = x + (f32)i * x_step;
+        sample_x = x + (f32)i * x_step;
         switch (info) {
             case INFO_BYTES:
                 sample_y = y - height + (f32)history[sample].values[0] * byte_scale;
@@ -192,7 +192,7 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
         if (sample >= 30) {
             sample = 0;
         }
-        f32 sample_x = x + (f32)i * x_step;
+        sample_x = x + (f32)i * x_step;
         switch (info) {
             case INFO_BYTES:
                 sample_y = y - height + (f32)history[sample].values[1] * byte_scale;
