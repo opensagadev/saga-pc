@@ -18359,6 +18359,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
         i32 in_set = 0;
         i32 added;
         i32 index;
+        EDLOCATOR_s *current;
         if (set != NULL && nearest != NULL) {
             for (index = 0; index < 64; ++index) {
                 if (set->locators[index] == nearest) {
@@ -18375,8 +18376,8 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             AiEditorRemoveLocatorFromSetPc(set, nearest);
             if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator)
                 goto refresh_hover;
-            added = AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator,
-                                              aieditor->current_locator);
+            current = aieditor->current_locator;
+            added = AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator, current);
         } else {
             added = AiEditorAddLocatorToSetPc(set, nearest, NULL);
         }
