@@ -7433,9 +7433,10 @@ void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
             Climb_SetMagnetAction(object);
             Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
             object->flags_e24 |= 0x2000;
-            if (object->pad->input_magnitude > 0.0f)
-                object->tertiary_lean_angle = SeekRot(
-                    object->tertiary_lean_angle, RotDiff(object->movement_facing_angle, input_angle) & 0xffff, 9.0f);
+            if (object->pad->input_magnitude > 0.0f) {
+                u16 lean = RotDiff(object->movement_facing_angle, input_angle);
+                object->tertiary_lean_angle = SeekRot(object->tertiary_lean_angle, lean, 9.0f);
+            }
         } else {
             if (object->pad->input_magnitude > 0.0f) {
                 if (abs(RotDiff(object->movement_facing_angle, GamePad_InputAngle(object, object->pad))) <= 0x4000)
