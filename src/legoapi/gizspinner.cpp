@@ -540,32 +540,38 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
 }
 
 static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 output) {
-    if (spinner == NULL || spinner->anim_set == NULL || spinner->primary_anim_obj == NULL ||
-        spinner->primary_anim_obj->instance_animation == NULL || output == -1 || (spinner->state_flags & 0x40) != 0)
+    GAMEANIMOBJ *object;
+    NUINSTANIM *instance;
+    if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
+        (instance = object->instance_animation) == NULL || output == -1 || (spinner->state_flags & 0x40) != 0)
         return;
-    GAMEANIMOBJ *object = spinner->primary_anim_obj;
-    f32 rounded_rate = object->instance_animation->fparam1;
+    f32 rounded_rate = instance->fparam1;
     f32 rate = rounded_rate;
     u32 flags = spinner->state_flags;
     i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
     f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
-    f32 rounded_target =
-        spinner->output_count == 1 ? 1.0 : ((f64)spinner->animation_points[output + 1] - 1.0) / ((f64)length - 1.0);
-    f32 target = rounded_target;
+    f32 target;
+    if (spinner->output_count == 1)
+        target = 1.0f;
+    else
+        target = ((f64)spinner->animation_points[output + 1] - 1.0) / ((f64)length - 1.0);
     f32 rounded_duration = length / ((f64)spinner->animation_speed * rate * 60.0);
+    SpinnerFloatBitsPc duration_raw;
     SpinnerFloatBitsPc duration;
-    duration.value = rounded_duration;
-    duration.bits &= 0x7fffffff;
+    duration_raw.value = rounded_duration;
+    duration.bits = duration_raw.bits & 0x7fffffff;
     f32 rounded_frequency = 60.0 * spinner->animation_speed * rate / length;
+    SpinnerFloatBitsPc frequency_raw;
     SpinnerFloatBitsPc frequency;
-    frequency.value = rounded_frequency;
-    frequency.bits &= 0x7fffffff;
+    frequency_raw.value = rounded_frequency;
+    frequency.bits = frequency_raw.bits & 0x7fffffff;
     f32 rounded_difference = (f64)target - spinner->field_70;
+    SpinnerFloatBitsPc difference_raw;
     SpinnerFloatBitsPc difference;
-    difference.value = rounded_difference;
-    difference.bits &= 0x7fffffff;
-    if (0.001f > difference.value) {
+    difference_raw.value = rounded_difference;
+    difference.bits = difference_raw.bits & 0x7fffffff;
+    if (difference.value < 0.001f) {
         GameAnimSet_Stop(spinner->anim_set);
         GameAnimSet_JumpToAnimPos(spinner->anim_set, target);
         f32 rounded_rotation_a = (f64)duration.value * 30.0;
