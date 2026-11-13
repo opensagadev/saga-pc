@@ -10924,18 +10924,14 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
             i32 first_index = creature->check.first->index;
             if (connection->node_indices[0] == first_index &&
                 (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
-                i32 angle = creature->check.angle;
-                i32 absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
                 connection_index = index;
-                direction = absolute >= 0x4000;
+                direction = abs(creature->check.angle) >= 0x4000;
                 break;
             }
             if (connection->node_indices[0] == creature->check.second->index &&
                 connection->node_indices[1] == first_index) {
-                i32 angle = creature->check.angle;
-                i32 absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
                 connection_index = index;
-                direction = absolute < 0x4000;
+                direction = abs(creature->check.angle) < 0x4000;
                 break;
             }
         }
