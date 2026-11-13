@@ -883,7 +883,6 @@ extern "C" {
     STICKYKEYS PcStickyKeys = {8, 0};
     TOGGLEKEYS PcToggleKeys = {8, 0};
     FILTERKEYS PcFilterKeys = {24, 0, 0, 0, 0, 0};
-    i32 PcArgc = 1;
     extern const CPU_VENDOR_WORDS_PC CpuVendorAmdPc = {0x68747541u, 0x69746e65u, 0x444d4163u, {0}};
     extern const CPU_VENDOR_WORDS_PC CpuVendorCyrixPc = {0x69727943u, 0x736e4978u, 0x64616574u, {0}};
     CPU_VENDOR_WORDS_PC CpuVendorNamePc = {0x3f3f3f3fu, 0x3f3f3f3fu, 0x3f3f3f3fu, {0}};
@@ -8233,7 +8232,7 @@ extern "C" {
     u32 PCImplodeWordMask = 0xffffffff;
     NULISTHDR global_aiscripts = {0};
     BOLTTYPE_PC GlobalBoltType_Default = {"null", 4.0f, 2.0f, 0.0f,   0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}},
-                                          -1,     0,    1,    0xff,   0,      0,    NULL, NULL,
+                                          -1,     0,    1,    -1,     0,      0,    NULL, NULL,
                                           NULL,   NULL, NULL, {NULL}, {NULL}, 0,    {-1}, {-1},
                                           {0}};
     BOLTSYS_PC GlobalBoltSystem_Default = {
@@ -8895,10 +8894,6 @@ extern "C" {
 #pragma bss_seg(".bss$nufile_try_packed")
     i32 nufile_try_packed = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$fpk_err")
-    i32 fpk_err = 0;
-#pragma bss_seg()
-    i32 file_time_count = 0;
     NUFILE_DEVICE devices[16] = {0};
     i32 numdevices = 0;
     NUFILE_DEVICE enum_devices[16] = {0};
@@ -9144,7 +9139,6 @@ extern "C" {
 #pragma bss_seg()
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
-    i32 old_line_pos = 0;
 #pragma bss_seg(".bss$ADataList")
     AREA_DATA_PC *ADataList = 0;
 #pragma bss_seg()
@@ -14367,9 +14361,6 @@ extern "C" {
 #pragma bss_seg(".bss$PCDisplayMaterialStreamUsed")
     u8 *PCDisplayMaterialStreamUsed = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$PCMaterialBlockItemCount")
-    i32 PCMaterialBlockItemCount = 8;
-#pragma data_seg()
 #pragma data_seg(".data$PCMaterialGeometryItemIndex")
     i32 PCMaterialGeometryItemIndex = 6;
 #pragma data_seg()
@@ -35675,3 +35666,9 @@ extern "C" {
     };
 #pragma data_seg()
 }
+
+#pragma data_seg(".data$g_shaderSaveFolder")
+extern "C" {
+    char g_shaderSaveFolder[256] = "shaders";
+}
+#pragma data_seg()

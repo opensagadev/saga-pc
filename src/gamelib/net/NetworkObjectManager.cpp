@@ -28,8 +28,11 @@ STATIC_ASSERT(offsetof(NetworkObjectManager, allow_duplicates) == 0xd96c);
 STATIC_ASSERT(sizeof(NetworkObjectManager) == 0xd970);
 STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 
-void NetTrace(...);
-void NOSTrace(...);
+/* Empty trace hooks of the network object system (retail 0x611890 / 0x6118f0, the start of this unit). */
+void NetTrace(...) {
+}
+void NOSTrace(...) {
+}
 
 /* Serialises replicated members into a NETMESSAGE_PC (Android NetOutputStream). */
 class NetOutputStream : public EdOutputStream {

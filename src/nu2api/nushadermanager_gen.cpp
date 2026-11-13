@@ -160,6 +160,10 @@ extern "C" void *__cdecl NuShaderManagerGetInstance(void) {
     return PCShaderSlots;
 }
 
+extern "C" void __cdecl NuShaderManagerSetShaderSaveFolder(const char *folder) {
+    strcpy(g_shaderSaveFolder, folder);
+}
+
 extern "C" void __cdecl NuShaderManagerDestroy(void) {
     reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
     PCShaderSlots = NULL;

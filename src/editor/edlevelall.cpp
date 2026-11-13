@@ -3434,6 +3434,12 @@ EdType *EdRegistry::GetType(char *name) {
     return NULL;
 }
 
+EdType *EdRegistry::GetType(i32 index) {
+    if (index < 0 || index >= type_count)
+        return NULL;
+    return &types[index];
+}
+
 i32 EdRegistry::GetClassId(char *name) {
     for (i32 index = 0; index < class_count; index++) {
         if (NuStrICmp(classes[index].name, name) == 0)

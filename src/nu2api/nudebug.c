@@ -4,7 +4,7 @@ void __cdecl PCAnimationLoadFailureNoOp(char *path) {
     (void)path;
 }
 
-void __cdecl PCCharacterSystemExistingNoOp(void) {
+void __cdecl PCCharacterSystemExistingNoOp() {
 }
 
 void __cdecl NuPtlDmaSlotsExhaustedPc(void) {
@@ -34,7 +34,7 @@ void __cdecl NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 s
 void __cdecl PCAnimationEffectCheckpoint(void) {
 }
 
-void __cdecl PCCharacterModelDiagnosticNoOp(void) {
+void __cdecl PCCharacterModelDiagnosticNoOp() {
 }
 
 void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...) {

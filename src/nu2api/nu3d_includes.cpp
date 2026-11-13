@@ -8002,6 +8002,8 @@ extern "C" {
     void __cdecl PCThreadCriticalSectionEnter_candidate(i32);
     void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
 
+    static i32 PCMaterialBlockItemCount = 8;
+
     void __cdecl NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *scene) {
         i32 i;
         i32 removed = 0;

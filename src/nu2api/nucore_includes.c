@@ -152,7 +152,9 @@ PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
 char *__cdecl NuIToA(i32, char *, i32);
 extern char *PushBlocksNamePc;
 
-extern i32 old_line_pos;
+static i32 old_line_pos;
+static i32 fpk_err;
+static i32 file_time_count;
 
 #define CLAMP_LINE(position) ((position) & (parser->line_buffer_size - 1))
 #define CLAMP_WORD(position) ((position) & (parser->word_buffer_size - 1))

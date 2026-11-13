@@ -12958,6 +12958,7 @@ address,symbol,size,ctype
 0x007413d0,_NuShaderManagerSetElementsfv,32,
 0x7413f0,_NuShaderManagerSetElementsfv_transpose,32,"void __cdecl(i32,i32,i32,const f32*)"
 0x00741410,_NuShaderManagerGetInstance,6,
+0x741420,_NuShaderManagerSetShaderSaveFolder,29,void __cdecl(const char *)
 0x00741450,?ReleaseShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXPAVNuShaderObject@@@Z,11,
 0x00741460,?DestroyShaders@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXXZ,44,
 0x00741490,?SetCurrentShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXPAVNuShaderObject@@@Z,13,
@@ -35729,6 +35730,7 @@ address,symbol,size,ctype
 0x82aca8,__pow10neg,,
 0x82ae04,__lpdays,,
 0x82ae38,__days,,
+0x82aed0,_g_shaderSaveFolder,256,char[256]
 0x82b030,_PCShaderShininessFactorStorage,4,f32
 0x82b100,_PCShaderWaterThetaStep,4,f32
 0x82b170,_PCShaderWaterAmplitudeScale,4,f32

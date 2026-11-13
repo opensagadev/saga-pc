@@ -669,7 +669,13 @@ typedef struct TERRAIN_PLATFORM_PC {
     u32 unknown_44;
     i16 terrain_group_index;
     i16 scene_object_index;
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 rotating : 1;
+            u32 : 31;
+        };
+    };
     u8 unknown_50[4];
     f32 bounce_54;
     f32 bounce_58;
@@ -3413,13 +3419,13 @@ typedef struct BOLTTYPE_PC_s {
             i16 object_ids[3];
             i16 debris_id;
             i16 moving_debris[2];
-            i16 moving_debris_counts[2];
+            u16 moving_debris_counts[2];
         };
     };
     i16 field_38;
     i16 field_3a;
     u8 field_3c;
-    u8 field_3d;
+    i8 field_3d;
     u16 field_3e;
     u32 field_40;
     void(__cdecl *init_callback)(struct bolt_s *bolt);
@@ -3970,7 +3976,19 @@ typedef struct GIZMOBLOWUP_PC {
     NUVEC bounds_min, bounds_max, decal_offset;
     NUVEC field_07c;
     NUVEC shadow_offset;
-    u32 status_flags;
+    union {
+        u32 status_flags;
+        struct {
+            u32 blown_up : 1;
+            u32 unknown_status_1 : 13;
+            u32 visible : 1;
+            u32 unknown_status_15 : 8;
+            u32 active : 1;
+            u32 unknown_status_24 : 4;
+            u32 secondary_output : 1;
+            u32 unknown_status_29 : 3;
+        };
+    };
     u32 draw_flags;
     u32 secondary_flags, score;
     GIZMOBLOWUPTYPE_PC *type;
@@ -6176,9 +6194,9 @@ typedef struct gameobject_s {
     i16 field_e12;
     i16 held_movement_animation;
     i16 released_movement_animation;
-    u16 movement_lean_angle;
-    u16 secondary_lean_angle;
-    u16 tertiary_lean_angle;
+    i16 movement_lean_angle;
+    i16 secondary_lean_angle;
+    i16 tertiary_lean_angle;
     i16 field_e1e;
     union {
         u32 flags_e20;
@@ -6284,6 +6302,15 @@ typedef struct gameobject_s {
             u8 field_ef1;
             u8 field_ef2;
             u8 flags_ef3;
+        };
+        struct {
+            u32 : 11;
+            u32 doomed_escape_take_damage : 1;
+            u32 invulnerable : 1;
+            u32 : 8;
+            u32 character_toggled : 1;
+            u32 still_take_hit : 1;
+            u32 : 9;
         };
     };
     union {
@@ -8234,7 +8261,7 @@ typedef struct TIMER_s {
     f32 time_elapsed;
     f32 last_time_elapsed;
     f32 time_elapsed_mod_seconds;
-    i32 update_count;
+    u32 update_count;
 } TIMER;
 STATIC_ASSERT(sizeof(TIMER) == 0x10);
 STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
@@ -9860,7 +9887,9 @@ struct gizforce_pc_s {
             u32 completion_released : 1;
             u32 completion_pending : 1;
             u32 destroyed : 1;
-            u32 runtime_bits_17_31 : 15;
+            u32 runtime_bits_17_20 : 4;
+            u32 being_used : 1;
+            u32 runtime_bits_22_31 : 10;
         };
     };
 };
@@ -12207,7 +12236,6 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern VARIPTR PCDisplayMaterialStreamStart;
     extern VARIPTR PCDisplayMaterialStreamEnd;
     extern u8 *PCDisplayMaterialStreamUsed;
-    extern i32 PCMaterialBlockItemCount;
     extern i32 PCMaterialGeometryItemIndex;
     extern i32 PCMaterialLinkItemIndex;
     extern NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24];
@@ -12418,7 +12446,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
     void __cdecl PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
     HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *);
-    void __cdecl PCCharacterModelDiagnosticNoOp(void);
+    void __cdecl PCCharacterModelDiagnosticNoOp();
     void __cdecl Player_ResetContexts(void *);
     void __cdecl SetFlicker(GAMEOBJECT *, f32);
     i32 __cdecl NewBlockAction(GAMEOBJECT *);
@@ -12674,13 +12702,10 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern FILEBUFF file_buff[4];
     extern PC_NUDATFILEINFO pc_dat_file_infos[20];
     extern PC_NUMEMFILE pc_memfiles[20];
-    extern i32 old_line_pos;
     extern i32 nufile_buffering_enabled;
     extern i32 datsys_offset;
     extern i32 nufile_lasterror;
     extern i32 nufile_try_packed;
-    extern i32 fpk_err;
-    extern i32 file_time_count;
     extern const char nufile_disc_suffix[3];
     extern NUFILE_DEVICE devices[16];
     extern i32 numdevices;
@@ -16121,7 +16146,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern const char NuMusicDebugStatus7[8];
     extern const char *NuMusicVoiceStatusText[8];
     extern u32 NuMusicDebugColour;
-    void __cdecl PCCharacterSystemExistingNoOp(void);
+    void __cdecl PCCharacterSystemExistingNoOp();
     void __cdecl APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity,
                                      i32 model_id_capacity, i32 animation_capacity, APICHARACTERDATA *characters,
                                      void(__cdecl *set_lights)(APIOBJECT_PC *));
@@ -19110,7 +19135,18 @@ STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
 /* Private PC contract proposal. Include after saga.h. */
 struct PC_CONTROL_ITEM_PC {
-    u8 kind, command, label, flags;
+    u8 kind, command, label;
+    union {
+        u8 flags;
+        struct {
+            u8 port_mode : 3;
+            u8 flag_08 : 1;
+            u8 flag_10 : 1;
+            u8 unbound_player1 : 1;
+            u8 unbound_player2 : 1;
+            u8 unbound_selected : 1;
+        };
+    };
     f32 pulse;
 };
 struct PC_CONTROL_ROW_PC {
@@ -19668,7 +19704,6 @@ extern "C" {
     extern STICKYKEYS PcStickyKeys;
     extern TOGGLEKEYS PcToggleKeys;
     extern FILTERKEYS PcFilterKeys;
-    extern i32 PcArgc;
     extern const CPU_VENDOR_WORDS_PC CpuVendorAmdPc;
     extern const CPU_VENDOR_WORDS_PC CpuVendorCyrixPc;
     extern CPU_VENDOR_WORDS_PC CpuVendorNamePc;
@@ -22810,6 +22845,8 @@ extern "C" {
 extern "C" {
 #endif
     void __cdecl NuShaderManagerSetElementfv(i32 semantic, i32 element, const f32 *values);
+    extern char g_shaderSaveFolder[256];
+    void __cdecl NuShaderManagerSetShaderSaveFolder(const char *folder);
     void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
     void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
                                                        i32 first_element, i32 count, const f32 *values);
@@ -24868,14 +24905,17 @@ struct ZIPUP_s {
     u16 facing_angle;
     u8 reserved_0x66[2];
     union {
-        u8 flags;
         struct {
-            u8 configuration_flags : 6;
-            u8 active : 1;
-            u8 visible : 1;
+            u8 flags;
+            u8 runtime_flags;
+        };
+        struct {
+            u16 configuration_flags : 6;
+            u16 active : 1;
+            u16 visible : 1;
+            u16 runtime_bits : 8;
         };
     };
-    u8 runtime_flags;
     u8 reserved_0x6a[2];
     f32 lower_ground_height;
     f32 upper_ground_height;
@@ -27741,9 +27781,6 @@ extern "C" {
     void __cdecl NuRndrPrimUV(f32 u, f32 v);
     void __cdecl cbCancelSubMenu(struct eduimenu_s *menu, struct eduimenu_s *arg1);
     void __cdecl cbColourPickSel(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
-    extern struct edui_colour_pick_s *cp_item;
-    extern i32(__cdecl *cp_process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2,
-                                    struct FRAME_PAD_PC *arg3);
     i32 __cdecl cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time,
                                     struct FRAME_PAD_PC *pad);
     void __cdecl cbToggleIndicatorMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
@@ -29888,11 +29925,7 @@ struct EdRegistry {
     char *MapName(char *name);
     i32 GetTypeId(char *name);
     EdType *GetType(char *name);
-    EdType *GetType(i32 index) {
-        if (index < 0 || index >= type_count)
-            return NULL;
-        return &types[index];
-    }
+    EdType *GetType(i32 index);
     i32 GetClassId(char *name);
     i32 GetClassId(EdClass *object_class);
     EdClass *GetClass(char *name);

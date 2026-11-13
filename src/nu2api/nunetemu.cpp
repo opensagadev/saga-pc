@@ -376,6 +376,3 @@ void NuNetEmu::Update() {
     packet_stats.held_packets = packet_count;
 }
 
-/* Empty trace hook called by the network object system. */
-void NetTrace(...) {
-}

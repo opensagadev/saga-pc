@@ -92,7 +92,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x4ffc20,0x4ffef4,src/nu2api/nufile.c,nu2api,file,medium,,3,715,715,90,128,0,nu2api/nufile_pc.c:715
 0x4fff00,0x508f2e,src/legoapi/gcutscn.c,legoapi,marker,high,ret ret ret fabs 54 28 95,131,32979,32979,8196,3522,1654,legoapi/cutscene_lifecycle.c:15890 legoapi/gcutscn.c:9781 legoapi/cutscene_hooks.c:4080 legoapi/gcutscn_locators.c:3225 nu2api/nudebug.c:3
 0x508f30,0x512845,src/gameapi/gamemenuall.cpp,gameapi,marker,high,ret ret 28,154,34860,34860,16639,3398,2600,gameapi/apisave.c:11456 legoapi/text.c:9553 legoapi/menu.c:7127 legoapi/menu_video.cpp:4385 legoapi/objectsall.c:1065 legoapi/control_setup.cpp:468 legoapi/hub.cpp:388 legoapi/menu_pause.cpp:234 legoapi/menus.cpp:110 nu2api/textinput_labels_pc.c:69 lib/libcmt.lib/00832:cvt.obj:5
-0x512850,0x53d129,src/gameapi/aisysall.c,gameapi,marker,high,ret ret ret fabs 54 22,547,168210,168210,34365,15662,0,gameapi/aisysall.c:168207 gameapi/aiscript_diagnostics.c:3
+0x512850,0x53d129,src/gameapi/aisysall.c,gameapi,marker,high,ret ret ret fabs 54 22,547,168210,168210,34365,15662,0,gameapi/aisysall.c:168210
 0x53d130,0x53d1a9,src/gameapi/nufilebase.cpp,gameapi,marker,high,ret ret 28,4,33,33,33,0,0,gameapi/message.cpp:32 gameapi/aisysall.c:1
 0x53d1b0,0x53d612,src/gameapi/Transporter.cpp,gameapi,android,low,,20,444,444,378,8,0,gameapi/message.cpp:385 legoapi/bolts.cpp:59
 0x53d640,0x53d667,src/gameapi/nusound_memorymanager.cpp,gameapi,android,low,,1,39,39,39,0,0,gameapi/message.cpp:39
