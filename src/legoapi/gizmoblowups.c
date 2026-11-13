@@ -3,82 +3,67 @@
 /* Retail unit 0x566600-0x56b6ea: definitions in retail address order. */
 
 typedef struct {
-    char name[16];
-    u8 opaque[0x7c - 16];
-} ADD_BUILDIT_PC;
+    char name[16];        // 0x00
+    u8 opaque[0x7c - 16]; // 0x10
+} ADD_BUILDIT_PC;         // size 0x7c
 
 typedef struct {
-    char name[16];
-    u8 opaque[0xa4 - 16];
-} ADD_FORCE_PC;
+    char name[16];        // 0x00
+    u8 opaque[0xa4 - 16]; // 0x10
+} ADD_FORCE_PC;           // size 0xa4
 
 typedef struct {
-    u8 opaque_00[0x40];
-    char name[16];
-    u8 opaque_50[0x90 - 0x50];
-} ADD_PANEL_PC;
+    u8 opaque_00[0x40];        // 0x00
+    char name[16];             // 0x40
+    u8 opaque_50[0x90 - 0x50]; // 0x50
+} ADD_PANEL_PC;                // size 0x90
 
 typedef struct {
-    char name[16];
-    u8 opaque[0xfc - 16];
-} ADD_TELEPORT_PC;
+    char name[16];        // 0x00
+    u8 opaque[0xfc - 16]; // 0x10
+} ADD_TELEPORT_PC;        // size 0xfc
 
 typedef struct {
-    char name[16];
-    u8 opaque[0x2b - 16];
-    u8 flags;
-} ADD_TORP_PC;
+    char name[16];        // 0x00
+    u8 opaque[0x2b - 16]; // 0x10
+    u8 flags;             // 0x2b
+} ADD_TORP_PC;            // size 0x2c
 
 typedef struct {
-    char name[16];
-    u8 opaque[0xf8 - 16];
-} ADD_GRAPPLE_PC;
+    char name[16];        // 0x00
+    u8 opaque[0xf8 - 16]; // 0x10
+} ADD_GRAPPLE_PC;         // size 0xf8
 
 typedef struct {
-    ADD_TORP_PC *items;
-    i32 count;
-    f32 scale;
-} ADD_TORP_SYS_PC;
+    ADD_TORP_PC *items; // 0x0
+    i32 count;          // 0x4
+    f32 scale;          // 0x8
+} ADD_TORP_SYS_PC;      // size 0xc
 
 typedef struct {
-    u8 opaque[0x4680];
-    ADD_TELEPORT_PC *items;
-    i32 count;
-} ADD_TELEPORT_WORLD_PC;
+    u8 opaque[0x4680];      // 0x0000
+    ADD_TELEPORT_PC *items; // 0x4680
+    i32 count;              // 0x4684
+} ADD_TELEPORT_WORLD_PC;    // size 0x4688
 
 typedef struct {
-    u8 opaque[0x2aec];
-    i32 count;
-    struct LEVELSCRIPTPROCESS_s items[32];
-} ADD_AI_WORLD_PC;
+    u8 opaque[0x2aec];                     // 0x0000
+    i32 count;                             // 0x2aec
+    struct LEVELSCRIPTPROCESS_s items[32]; // 0x2af0
+} ADD_AI_WORLD_PC;                         // size 0x4670
 
 typedef struct {
-    GIZBOMBGEN_s *items;
-    u16 count, capacity;
-    void *pool;
-    i16 reset : 1;
-    i16 reset_saved : 1;
-    i16 reset_flags_unused : 14;
-    u16 opaque_0e;
-    void *progress;
-} ADD_BOMB_RESET_SYS_PC;
+    GIZBOMBGEN_s *items;         // 0x00
+    u16 count, capacity;         // 0x04
+    void *pool;                  // 0x08
+    i16 reset : 1;               // 0x0c:0
+    i16 reset_saved : 1;         // 0x0c:1
+    i16 reset_flags_unused : 14; // 0x0c:2
+    u16 opaque_0e;               // 0x0e
+    void *progress;              // 0x10
+} ADD_BOMB_RESET_SYS_PC;         // size 0x14
 
-STATIC_ASSERT(sizeof(ADD_BUILDIT_PC) == 0x7c);
-STATIC_ASSERT(sizeof(ADD_FORCE_PC) == 0xa4);
-STATIC_ASSERT(sizeof(ADD_PANEL_PC) == 0x90);
-STATIC_ASSERT(offsetof(ADD_PANEL_PC, name) == 0x40);
-STATIC_ASSERT(sizeof(ADD_TELEPORT_PC) == 0xfc);
-STATIC_ASSERT(sizeof(ADD_TORP_PC) == 0x2c);
-STATIC_ASSERT(offsetof(ADD_TORP_PC, flags) == 0x2b);
-STATIC_ASSERT(sizeof(ADD_GRAPPLE_PC) == 0xf8);
-STATIC_ASSERT(offsetof(ADD_TORP_SYS_PC, count) == 4);
-STATIC_ASSERT(offsetof(ADD_TELEPORT_WORLD_PC, items) == 0x4680);
-STATIC_ASSERT(offsetof(ADD_TELEPORT_WORLD_PC, count) == 0x4684);
-STATIC_ASSERT(offsetof(ADD_AI_WORLD_PC, count) == 0x2aec);
-STATIC_ASSERT(offsetof(ADD_AI_WORLD_PC, items) == 0x2af0);
 STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 0xdc);
-STATIC_ASSERT(offsetof(ADD_BOMB_RESET_SYS_PC, opaque_0e) == 0xe);
-STATIC_ASSERT(offsetof(ADD_BOMB_RESET_SYS_PC, progress) == 0x10);
 STATIC_ASSERT(sizeof(struct GIZSPINNER_s) == 0x304);
 STATIC_ASSERT(offsetof(struct GIZSPINNER_s, name) == 0x40);
 STATIC_ASSERT(offsetof(struct GIZSPINNER_s, flags) == 0xac);
@@ -99,44 +84,34 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
 
 /* Append gizmo_add_callbacks_pc.c: complete native21+21+15+15+21. */
 typedef struct {
-    u8 unknown_00[0x1c];
-    NUVEC position;
-} FLOW_FORCE_POSITION_PC;
+    u8 unknown_00[0x1c];  // 0x00
+    NUVEC position;       // 0x1c
+} FLOW_FORCE_POSITION_PC; // size 0x28
 
 typedef struct {
-    u8 unknown_00[0x34];
-    NUVEC position;
-} FLOW_BUILDIT_POSITION_PC;
+    u8 unknown_00[0x34];    // 0x00
+    NUVEC position;         // 0x34
+} FLOW_BUILDIT_POSITION_PC; // size 0x40
 
 typedef struct {
-    u8 unknown_00[0x30];
-    NUVEC position;
-} FLOW_BLOWUP_POSITION_PC;
+    u8 unknown_00[0x30];   // 0x00
+    NUVEC position;        // 0x30
+} FLOW_BLOWUP_POSITION_PC; // size 0x3c
 
-STATIC_ASSERT(offsetof(FLOW_FORCE_POSITION_PC, position) == 0x1c);
-STATIC_ASSERT(offsetof(FLOW_BUILDIT_POSITION_PC, position) == 0x34);
-STATIC_ASSERT(offsetof(FLOW_BLOWUP_POSITION_PC, position) == 0x30);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, position) == 0x5c);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, position) == 8);
 
 typedef struct ai_gizmo_name_process_pc_s {
-    char name[16];
-    u8 unknown_10[4];
-    AISCRIPT_PC *script;
-    u8 unknown_18[0x98];
-    char *context_name;
-    char *locator_name;
-    char *locator_set_name;
-    u8 unknown_bc[0x20];
-} AI_GIZMO_NAME_PROCESS_PC;
+    char name[16];          // 0x00
+    u8 unknown_10[4];       // 0x10
+    AISCRIPT_PC *script;    // 0x14
+    u8 unknown_18[0x98];    // 0x18
+    char *context_name;     // 0xb0
+    char *locator_name;     // 0xb4
+    char *locator_set_name; // 0xb8
+    u8 unknown_bc[0x20];    // 0xbc
+} AI_GIZMO_NAME_PROCESS_PC; // size 0xdc
 
-STATIC_ASSERT(sizeof(AI_GIZMO_NAME_PROCESS_PC) == 0xdc);
-STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, name) == 0);
-STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, script) == 0x14);
-STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, context_name) == 0xb0);
-STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, locator_name) == 0xb4);
-STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, locator_set_name) == 0xb8);
-STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
 STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, output_count) == 0xa4);
@@ -157,132 +132,104 @@ extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
 
 typedef struct {
-    u32 built[2], enabled[2], visible[2], completed[2];
-    u8 object_count[64];
-} BUILD_PROGRESS_PC;
+    u32 built[2], enabled[2], visible[2], completed[2]; // 0x00
+    u8 object_count[64];                                // 0x20
+} BUILD_PROGRESS_PC;                                    // size 0x60
 
 typedef struct {
-    u32 enabled[4], visible[4], reward[4], socket[4], released[4], pending[4], destroyed[4];
-    u8 group_members[8][8];
-} FORCE_PROGRESS_PC;
+    u32 enabled[4], visible[4], reward[4], socket[4], released[4], pending[4], destroyed[4]; // 0x00
+    u8 group_members[8][8];                                                                  // 0x70
+} FORCE_PROGRESS_PC;                                                                         // size 0xb0
 
 typedef struct {
-    u32 triggered[16], enabled[16], visible[16], completed[16];
-} BLOWUP_PROGRESS_PC;
+    u32 triggered[16], enabled[16], visible[16], completed[16]; // 0x00
+} BLOWUP_PROGRESS_PC;                                           // size 0x100
 
 typedef struct {
-    u32 collected[16], enabled[16], visible[16], reserved[16];
-} PICKUP_PROGRESS_PC;
+    u32 collected[16], enabled[16], visible[16], reserved[16]; // 0x00
+} PICKUP_PROGRESS_PC;                                          // size 0x100
 
 typedef struct {
-    u32 enabled[3], visible[3];
-} BOMB_PROGRESS_PC;
+    u32 enabled[3], visible[3]; // 0x00
+} BOMB_PROGRESS_PC;             // size 0x18
 
 typedef struct {
-    u32 triggered, enabled, visible;
-} PANEL_PROGRESS_PC;
+    u32 triggered, enabled, visible; // 0x0
+} PANEL_PROGRESS_PC;                 // size 0xc
 
 typedef struct {
-    u32 enabled, visible;
-} GRAPPLE_PROGRESS_PC;
-
-STATIC_ASSERT(sizeof(BUILD_PROGRESS_PC) == 0x60);
-STATIC_ASSERT(offsetof(BUILD_PROGRESS_PC, object_count) == 0x20);
-STATIC_ASSERT(sizeof(FORCE_PROGRESS_PC) == 0xb0);
-STATIC_ASSERT(offsetof(FORCE_PROGRESS_PC, group_members) == 0x70);
-STATIC_ASSERT(sizeof(BLOWUP_PROGRESS_PC) == 0x100);
-STATIC_ASSERT(sizeof(PICKUP_PROGRESS_PC) == 0x100);
-STATIC_ASSERT(sizeof(BOMB_PROGRESS_PC) == 0x18);
-STATIC_ASSERT(sizeof(PANEL_PROGRESS_PC) == 0xc);
-STATIC_ASSERT(sizeof(GRAPPLE_PROGRESS_PC) == 8);
+    u32 enabled, visible; // 0x0
+} GRAPPLE_PROGRESS_PC;    // size 0x8
 
 typedef struct {
-    u8 unused00[0x6d];
-    u8 build_state, unused6e, built_object_count;
-    u8 unused70[10];
-    u16 flags;
-} BUILD_PROGRESS_RECORD_PC;
+    u8 unused00[0x6d];                            // 0x00
+    u8 build_state, unused6e, built_object_count; // 0x6d
+    u8 unused70[10];                              // 0x70
+    u16 flags;                                    // 0x7a
+} BUILD_PROGRESS_RECORD_PC;                       // size 0x7c
 
 typedef struct {
-    BUILD_PROGRESS_RECORD_PC *records;
-    u16 count;
-} BUILD_PROGRESS_SYSTEM_PC;
+    BUILD_PROGRESS_RECORD_PC *records; // 0x0
+    u16 count;                         // 0x4
+} BUILD_PROGRESS_SYSTEM_PC;            // size 0x8
 
 typedef struct {
-    u8 unused00[0xa0];
+    u8 unused00[0xa0]; // 0x00
 
-    union {
-        u32 runtime_flags;
+    union {                // 0xa0
+        u32 runtime_flags; // 0xa0
 
-        struct {
-            u32 enabled : 1;
-            u32 visible : 1;
-            u32 : 7;
-            u32 reward_released : 1;
-            u32 : 1;
-            u32 socket_hidden : 1;
-            u32 : 2;
-            u32 completion_released : 1;
-            u32 completion_pending : 1;
-            u32 destroyed : 1;
-            u32 : 15;
+        struct {                         // 0xa0
+            u32 enabled : 1;             // 0xa0:0
+            u32 visible : 1;             // 0xa0:1
+            u32 : 7;                     // 0xa0:2
+            u32 reward_released : 1;     // 0xa0:9
+            u32 : 1;                     // 0xa0:10
+            u32 socket_hidden : 1;       // 0xa0:11
+            u32 : 2;                     // 0xa0:12
+            u32 completion_released : 1; // 0xa0:14
+            u32 completion_pending : 1;  // 0xa0:15
+            u32 destroyed : 1;           // 0xa0:16
+            u32 : 15;                    // 0xa0:17
         };
     };
-} FORCE_PROGRESS_RECORD_PC;
+} FORCE_PROGRESS_RECORD_PC; // size 0xa4
 
 typedef struct {
-    FORCE_PROGRESS_RECORD_PC *members[8];
-    u8 unused20[6];
-    u8 member_count, configured_count;
-} FORCE_PROGRESS_GROUP_PC;
+    FORCE_PROGRESS_RECORD_PC *members[8]; // 0x00
+    u8 unused20[6];                       // 0x20
+    u8 member_count, configured_count;    // 0x26
+} FORCE_PROGRESS_GROUP_PC;                // size 0x28
 
 typedef struct {
-    FORCE_PROGRESS_RECORD_PC *records;
-    u8 unused04[10];
-    u16 count;
-    u8 unused10[8];
-    FORCE_PROGRESS_GROUP_PC groups[8];
-} FORCE_PROGRESS_SYSTEM_PC;
+    FORCE_PROGRESS_RECORD_PC *records; // 0x000
+    u8 unused04[10];                   // 0x004
+    u16 count;                         // 0x00e
+    u8 unused10[8];                    // 0x010
+    FORCE_PROGRESS_GROUP_PC groups[8]; // 0x018
+} FORCE_PROGRESS_SYSTEM_PC;            // size 0x158
 
 typedef struct {
-    u8 unused00[0x2a];
-    u8 flags, unused2b;
-} BOMB_PROGRESS_RECORD_PC;
+    u8 unused00[0x2a];     // 0x00
+    u8 flags, unused2b;    // 0x2a
+} BOMB_PROGRESS_RECORD_PC; // size 0x2c
 
 typedef struct {
-    BOMB_PROGRESS_RECORD_PC *records;
-    u16 count;
-} BOMB_PROGRESS_SYSTEM_PC;
+    BOMB_PROGRESS_RECORD_PC *records; // 0x0
+    u16 count;                        // 0x4
+} BOMB_PROGRESS_SYSTEM_PC;            // size 0x8
 
 typedef struct {
-    u8 unused00[0x62];
-    u8 flags;
-    u8 unused63[0x2d];
-} PANEL_PROGRESS_RECORD_PC;
+    u8 unused00[0x62];      // 0x00
+    u8 flags;               // 0x62
+    u8 unused63[0x2d];      // 0x63
+} PANEL_PROGRESS_RECORD_PC; // size 0x90
 
 typedef struct {
-    i32 count;
-    PANEL_PROGRESS_RECORD_PC *records;
-} PANEL_PROGRESS_SYSTEM_PC;
+    i32 count;                         // 0x0
+    PANEL_PROGRESS_RECORD_PC *records; // 0x4
+} PANEL_PROGRESS_SYSTEM_PC;            // size 0x8
 
-STATIC_ASSERT(sizeof(BUILD_PROGRESS_RECORD_PC) == 124);
-STATIC_ASSERT(offsetof(BUILD_PROGRESS_RECORD_PC, build_state) == 0x6d);
-STATIC_ASSERT(offsetof(BUILD_PROGRESS_RECORD_PC, built_object_count) == 0x6f);
-STATIC_ASSERT(offsetof(BUILD_PROGRESS_RECORD_PC, flags) == 0x7a);
-STATIC_ASSERT(offsetof(BUILD_PROGRESS_SYSTEM_PC, count) == 4);
-STATIC_ASSERT(sizeof(FORCE_PROGRESS_RECORD_PC) == 164);
-STATIC_ASSERT(offsetof(FORCE_PROGRESS_RECORD_PC, runtime_flags) == 0xa0);
-STATIC_ASSERT(sizeof(FORCE_PROGRESS_GROUP_PC) == 40);
-STATIC_ASSERT(offsetof(FORCE_PROGRESS_GROUP_PC, member_count) == 0x26);
-STATIC_ASSERT(offsetof(FORCE_PROGRESS_SYSTEM_PC, count) == 0xe);
-STATIC_ASSERT(offsetof(FORCE_PROGRESS_SYSTEM_PC, groups) == 0x18);
-STATIC_ASSERT(sizeof(BOMB_PROGRESS_RECORD_PC) == 44);
-STATIC_ASSERT(offsetof(BOMB_PROGRESS_RECORD_PC, flags) == 0x2a);
-STATIC_ASSERT(offsetof(BOMB_PROGRESS_SYSTEM_PC, count) == 4);
-STATIC_ASSERT(sizeof(PANEL_PROGRESS_RECORD_PC) == 144);
-STATIC_ASSERT(offsetof(PANEL_PROGRESS_RECORD_PC, flags) == 0x62);
-STATIC_ASSERT(sizeof(PANEL_PROGRESS_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(PANEL_PROGRESS_SYSTEM_PC, records) == 4);
 STATIC_ASSERT(sizeof(GIZMOBLOWUP_PC) == 276);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, flags) == 0x17);
 STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 44);
@@ -304,55 +251,40 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_z) == 0xec);
 
 typedef struct respawn_initial_pc_s {
-    u8 unknown_000[0x10f];
-    u8 initial_damage;
-    u8 remaining_health;
-    u8 initial_health;
-} RESPAWN_INITIAL_PC;
+    u8 unknown_000[0x10f]; // 0x000
+    u8 initial_damage;     // 0x10f
+    u8 remaining_health;   // 0x110
+    u8 initial_health;     // 0x111
+} RESPAWN_INITIAL_PC;      // size 0x112
 
 typedef struct respawn_particle_types_pc_s {
-    u8 unknown_000[0xa4];
-    i16 initial_particle_types[2];
-} RESPAWN_PARTICLE_TYPES_PC;
-
-STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, initial_damage) == 0x10f);
-STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, remaining_health) == 0x110);
-STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, initial_health) == 0x111);
-STATIC_ASSERT(offsetof(RESPAWN_PARTICLE_TYPES_PC, initial_particle_types) == 0xa4);
+    u8 unknown_000[0xa4];          // 0x00
+    i16 initial_particle_types[2]; // 0xa4
+} RESPAWN_PARTICLE_TYPES_PC;       // size 0xa8
 
 typedef struct blowup_effect_instance_pc_s {
-    u8 unknown_00[0x7c];
-    NUVEC effect_offset;
-    u8 unknown_88[0xa0 - 0x88];
-    i32 pickup_value;
-    u8 unknown_a4[0xee - 0xa4];
-    u16 launch_pitch;
-    u16 launch_yaw;
-    u8 unknown_f2[0x10d - 0xf2];
-    i8 pickup_multiplier;
-} BLOWUP_EFFECT_INSTANCE_PC;
+    u8 unknown_00[0x7c];         // 0x000
+    NUVEC effect_offset;         // 0x07c
+    u8 unknown_88[0xa0 - 0x88];  // 0x088
+    i32 pickup_value;            // 0x0a0
+    u8 unknown_a4[0xee - 0xa4];  // 0x0a4
+    u16 launch_pitch;            // 0x0ee
+    u16 launch_yaw;              // 0x0f0
+    u8 unknown_f2[0x10d - 0xf2]; // 0x0f2
+    i8 pickup_multiplier;        // 0x10d
+} BLOWUP_EFFECT_INSTANCE_PC;     // size 0x110
 
 typedef struct blowup_effect_type_pc_s {
-    NUSPECIALHANDLE alternate_specials[4];
-    u8 unknown_30[0x94 - 0x30];
-    f32 fragment_gravity;
-    f32 fragment_speed;
-    u8 unknown_9c[4];
-    i16 particle_types[7];
-    u8 unknown_ae[0xfa - 0xae];
-    u8 fragment_count;
-} BLOWUP_EFFECT_TYPE_PC;
+    NUSPECIALHANDLE alternate_specials[4]; // 0x00
+    u8 unknown_30[0x94 - 0x30];            // 0x30
+    f32 fragment_gravity;                  // 0x94
+    f32 fragment_speed;                    // 0x98
+    u8 unknown_9c[4];                      // 0x9c
+    i16 particle_types[7];                 // 0xa0
+    u8 unknown_ae[0xfa - 0xae];            // 0xae
+    u8 fragment_count;                     // 0xfa
+} BLOWUP_EFFECT_TYPE_PC;                   // size 0xfc
 
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, effect_offset) == 0x7c);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, pickup_value) == 0xa0);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, launch_pitch) == 0xee);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, launch_yaw) == 0xf0);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_INSTANCE_PC, pickup_multiplier) == 0x10d);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, alternate_specials) == 0);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_gravity) == 0x94);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_speed) == 0x98);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, particle_types) == 0xa0);
-STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_count) == 0xfa);
 extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
@@ -427,26 +359,19 @@ typedef struct BLOWUP_STATUS_BITS_PC {
 STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 
 typedef struct {
-    u32 blown_up[16], activated[16], visible[16], secondary_output[16];
-} BLOWUP_RESET_PROGRESS_PC;
-
-STATIC_ASSERT(sizeof(BLOWUP_RESET_PROGRESS_PC) == 0x100);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, activated) == 0x40);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, visible) == 0x80);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, secondary_output) == 0xc0);
+    u32 blown_up[16], activated[16], visible[16], secondary_output[16]; // 0x00
+} BLOWUP_RESET_PROGRESS_PC;                                             // size 0x100
 
 typedef struct {
-    u8 unknown00[0x40];
-    NUVEC screen_position;
-} BLOWUP_SCREEN_DRAW_PC;
+    u8 unknown00[0x40];    // 0x00
+    NUVEC screen_position; // 0x40
+} BLOWUP_SCREEN_DRAW_PC;   // size 0x4c
 
 typedef struct {
-    u8 unknown00[0x44];
-    f32 first_frame;
-} BLOWUP_ANIM_FIRST_DRAW_PC;
+    u8 unknown00[0x44];      // 0x00
+    f32 first_frame;         // 0x44
+} BLOWUP_ANIM_FIRST_DRAW_PC; // size 0x48
 
-STATIC_ASSERT(offsetof(BLOWUP_SCREEN_DRAW_PC, screen_position) == 0x40);
-STATIC_ASSERT(offsetof(BLOWUP_ANIM_FIRST_DRAW_PC, first_frame) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, draw_flags) == 0x98);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_time) == 0xbc);

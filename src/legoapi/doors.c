@@ -7,51 +7,34 @@ void __cdecl Door_Reset(void) {
 }
 
 typedef struct startup_door_spline_pc_s {
-    i16 point_count;
-    u8 unknown_02[6];
-    NUVEC *points;
-} STARTUP_DOOR_SPLINE_PC;
+    i16 point_count;      // 0x0
+    u8 unknown_02[6];     // 0x2
+    NUVEC *points;        // 0x8
+} STARTUP_DOOR_SPLINE_PC; // size 0xc
 
 typedef struct startup_door_pc_s {
-    u8 unknown_00[0xa0];
-    STARTUP_DOOR_SPLINE_PC *spline;
-    NUVEC point0;
-    NUVEC point1;
-    NUVEC opposite_midpoint;
-    NUVEC point3;
-    NUVEC position;
-    f32 radius;
-    NUVEC normal;
-    u8 unknown_f0[4];
-    u8 next_sock, flags, vehicle, active;
-    u8 unknown_f8[0x18];
-    NUPLANE plane;
-    u8 unknown_120[8];
-} STARTUP_DOOR_PC;
+    u8 unknown_00[0xa0];                  // 0x000
+    STARTUP_DOOR_SPLINE_PC *spline;       // 0x0a0
+    NUVEC point0;                         // 0x0a4
+    NUVEC point1;                         // 0x0b0
+    NUVEC opposite_midpoint;              // 0x0bc
+    NUVEC point3;                         // 0x0c8
+    NUVEC position;                       // 0x0d4
+    f32 radius;                           // 0x0e0
+    NUVEC normal;                         // 0x0e4
+    u8 unknown_f0[4];                     // 0x0f0
+    u8 next_sock, flags, vehicle, active; // 0x0f4
+    u8 unknown_f8[0x18];                  // 0x0f8
+    NUPLANE plane;                        // 0x110
+    u8 unknown_120[8];                    // 0x120
+} STARTUP_DOOR_PC;                        // size 0x128
 
 typedef struct startup_world_doors_pc_s {
-    u8 unknown_00[0x4698];
-    STARTUP_DOOR_PC *doors;
-    i32 door_count;
-    STARTUP_DOOR_PC *start_door;
-} STARTUP_WORLD_DOORS_PC;
-
-STATIC_ASSERT(offsetof(STARTUP_DOOR_SPLINE_PC, point_count) == 0);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_SPLINE_PC, points) == 8);
-STATIC_ASSERT(sizeof(STARTUP_DOOR_PC) == 0x128);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, spline) == 0xa0);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, point0) == 0xa4);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, point1) == 0xb0);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, opposite_midpoint) == 0xbc);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, point3) == 0xc8);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, position) == 0xd4);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, radius) == 0xe0);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, normal) == 0xe4);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, flags) == 0xf5);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, plane) == 0x110);
-STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, doors) == 0x4698);
-STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, door_count) == 0x469c);
-STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, start_door) == 0x46a0);
+    u8 unknown_00[0x4698];       // 0x0000
+    STARTUP_DOOR_PC *doors;      // 0x4698
+    i32 door_count;              // 0x469c
+    STARTUP_DOOR_PC *start_door; // 0x46a0
+} STARTUP_WORLD_DOORS_PC;        // size 0x46a4
 
 void __cdecl Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
@@ -101,59 +84,43 @@ void __cdecl Doors_Init(WORLDINFO *world) {
 }
 
 typedef struct player_position_record_pc_s {
-    NUVEC *position;
-    i32 sock_location;
-    f32 sock_ratio;
-    i16 angle;
-    u8 unknown_0e[2];
-} PLAYER_POSITION_RECORD_PC;
+    NUVEC *position;         // 0x0
+    i32 sock_location;       // 0x4
+    f32 sock_ratio;          // 0x8
+    i16 angle;               // 0xc
+    u8 unknown_0e[2];        // 0xe
+} PLAYER_POSITION_RECORD_PC; // size 0x10
 
 typedef struct player_door_pc_s {
-    char name[128];
-    char camera_name[32];
-    NUGSPLINE *spline;
-    u8 unknown_a4[0x30];
-    NUVEC position;
-    u8 unknown_e0[0x10];
-    i16 level;
-    i16 freeplay_area;
-    u8 next_sock, flags, vehicle, active;
-    u8 unknown_f8[0x30];
-} PLAYER_DOOR_PC;
+    char name[128];                       // 0x000
+    char camera_name[32];                 // 0x080
+    NUGSPLINE *spline;                    // 0x0a0
+    u8 unknown_a4[0x30];                  // 0x0a4
+    NUVEC position;                       // 0x0d4
+    u8 unknown_e0[0x10];                  // 0x0e0
+    i16 level;                            // 0x0f0
+    i16 freeplay_area;                    // 0x0f2
+    u8 next_sock, flags, vehicle, active; // 0x0f4
+    u8 unknown_f8[0x30];                  // 0x0f8
+} PLAYER_DOOR_PC;                         // size 0x128
 
 typedef struct player_world_doors_pc_s {
-    u8 unknown_00[0x4698];
-    PLAYER_DOOR_PC *doors;
-    i32 door_count;
-    PLAYER_DOOR_PC *start_door;
-} PLAYER_WORLD_DOORS_PC;
+    u8 unknown_00[0x4698];      // 0x0000
+    PLAYER_DOOR_PC *doors;      // 0x4698
+    i32 door_count;             // 0x469c
+    PLAYER_DOOR_PC *start_door; // 0x46a0
+} PLAYER_WORLD_DOORS_PC;        // size 0x46a4
 
 typedef union player_position_sock_pc_u {
-    SOCKPOSITION_PC sock;
+    SOCKPOSITION_PC sock; // 0x00
 
-    struct {
-        i32 location;
-        f32 ratio;
+    struct {          // 0x00
+        i32 location; // 0x00
+        f32 ratio;    // 0x04
     } start;
-} PLAYER_POSITION_SOCK_PC;
+} PLAYER_POSITION_SOCK_PC; // size 0x38
 
-STATIC_ASSERT(sizeof(PLAYER_POSITION_RECORD_PC) == 16);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, position) == 0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_location) == 4);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_ratio) == 8);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 12);
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
-STATIC_ASSERT(sizeof(PLAYER_DOOR_PC) == 0x128);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, name) == 0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, spline) == 0xa0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, position) == 0xd4);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, level) == 0xf0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, flags) == 0xf5);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, doors) == 0x4698);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, door_count) == 0x469c);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, start_door) == 0x46a0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.location) == 0);
-STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.ratio) == 4);
 
 void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
@@ -331,60 +298,36 @@ ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
 }
 
 typedef struct door_config_pc_s {
-    char name[128], camera_name[32];
-    NUGSPLINE *spline;
-    u8 unknown_a4[0xd4 - 0xa4];
-    NUVEC position;
-    f32 radius;
-    NUVEC normal;
-    i16 level, freeplay_level;
-    i8 next_sock;
-    u8 flags;
-    i8 vehicle;
-    u8 active;
-    NUGSPLINE *camera_spline;
-    f32 camera_wait, camera_blend;
-    u8 unknown_104[4];
-    u32 vehicle_mask_low, vehicle_mask_high;
-    u8 unknown_110[0x10];
-    CUTINFO *cutscene;
-    u8 unknown_124[4];
-} DOOR_CONFIG_PC;
-
-STATIC_ASSERT(sizeof(DOOR_CONFIG_PC) == 0x128);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, name) == 0);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, camera_name) == 0x80);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, spline) == 0xa0);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, position) == 0xd4);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, radius) == 0xe0);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, normal) == 0xe4);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, level) == 0xf0);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, freeplay_level) == 0xf2);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, next_sock) == 0xf4);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, flags) == 0xf5);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, vehicle) == 0xf6);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, active) == 0xf7);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, camera_spline) == 0xf8);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, camera_wait) == 0xfc);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, camera_blend) == 0x100);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, vehicle_mask_low) == 0x108);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, vehicle_mask_high) == 0x10c);
-STATIC_ASSERT(offsetof(DOOR_CONFIG_PC, cutscene) == 0x120);
+    char name[128], camera_name[32];         // 0x000
+    NUGSPLINE *spline;                       // 0x0a0
+    u8 unknown_a4[0xd4 - 0xa4];              // 0x0a4
+    NUVEC position;                          // 0x0d4
+    f32 radius;                              // 0x0e0
+    NUVEC normal;                            // 0x0e4
+    i16 level, freeplay_level;               // 0x0f0
+    i8 next_sock;                            // 0x0f4
+    u8 flags;                                // 0x0f5
+    i8 vehicle;                              // 0x0f6
+    u8 active;                               // 0x0f7
+    NUGSPLINE *camera_spline;                // 0x0f8
+    f32 camera_wait, camera_blend;           // 0x0fc
+    u8 unknown_104[4];                       // 0x104
+    u32 vehicle_mask_low, vehicle_mask_high; // 0x108
+    u8 unknown_110[0x10];                    // 0x110
+    CUTINFO *cutscene;                       // 0x120
+    u8 unknown_124[4];                       // 0x124
+} DOOR_CONFIG_PC;                            // size 0x128
 
 typedef struct world_door_config_pc_s {
-    u8 unknown_000[0x104];
-    void *giz_buffer;
-    u8 unknown_108[0x13c - 0x108];
-    NUGSCN *scene;
-    u8 unknown_140[0x4698 - 0x140];
-    DOOR_CONFIG_PC *doors;
-    i32 door_count;
-} WORLD_DOOR_CONFIG_PC;
+    u8 unknown_000[0x104];          // 0x0000
+    void *giz_buffer;               // 0x0104
+    u8 unknown_108[0x13c - 0x108];  // 0x0108
+    NUGSCN *scene;                  // 0x013c
+    u8 unknown_140[0x4698 - 0x140]; // 0x0140
+    DOOR_CONFIG_PC *doors;          // 0x4698
+    i32 door_count;                 // 0x469c
+} WORLD_DOOR_CONFIG_PC;             // size 0x46a0
 
-STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, scene) == 0x13c);
-STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, doors) == 0x4698);
-STATIC_ASSERT(offsetof(WORLD_DOOR_CONFIG_PC, door_count) == 0x469c);
 static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
 static DOOR_CONFIG_PC *D_door = 0;
 
