@@ -312,7 +312,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         hook = &zipup->hook_origin;
         destination = object->field_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & 1) == 0) {
-            if (NuVecDistSqr(&object->position, hook, NULL) < ForcePushApproachInnerSquare ||
+            if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f ||
                 object->context_timer >= 5.0f) {
                 StartJump(object, 6);
                 PlaySfx(GrapDetach_text, &object->collision_position);
