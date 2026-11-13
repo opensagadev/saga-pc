@@ -1843,8 +1843,12 @@ extern "C" {
                 CutSceneConfigMissingPc(reinterpret_cast<char *>(cut->music_handle));
             i32 status = music_man.PlayTrack(16, 1);
             CutSceneMusicStartFramePc = nuapi.frame_count;
-            if (status != 1)
-                CutSceneConfigMissingPc(reinterpret_cast<char *>(status));
+            if (status != 1) {
+                // MATCH-EXCEPTION: retail tests status == 1 below on the eax this diagnostic stub returns (the
+                // empty stub leaves the status there), so the status is read back from the call.
+                status =
+                    reinterpret_cast<i32(__cdecl *)(char *)>(CutSceneConfigMissingPc)(reinterpret_cast<char *>(status));
+            }
             reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
             if ((cut->flags & 1) != 0 && status == 1) {
                 CutSceneWaiting = 1;
@@ -1867,9 +1871,13 @@ extern "C" {
         Panel_Clear();
         CutFramePc = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
-            CUT_LOAD_RECORD_PC *other = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
-            if ((reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(other->instance)->flags_88 & 2) != 0) {
-                if (other != cut && other->instance != NULL && (other->flags & 1) != 0) {
+            if ((reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(
+                     reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance)
+                     ->flags_88 &
+                 2) != 0) {
+                if (reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]) != cut &&
+                    reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance != NULL &&
+                    (reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->flags & 1) != 0) {
                     reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(
                         reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i])->instance)
                         ->rate = 0.0f;
