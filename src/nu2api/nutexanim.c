@@ -16,8 +16,8 @@ void __cdecl NuTexAnimAddList(void *animation) {
         if (node->next == NULL)
             NuSevereWarning(NuTextureAnimationSlotsWarning);
         ntal_free = ntal_free->next;
-        node->next = ntal_first;
         node->previous = NULL;
+        node->next = ntal_first;
         node->first = animation;
         if (node->next != NULL)
             node->next->previous = node;
