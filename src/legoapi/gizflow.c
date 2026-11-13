@@ -58,12 +58,11 @@ i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 outp
     i32 result = 1;
     i32 i;
 
-    if (((box->state_flags_high & 0x40) == 0 && FreePlay == 0) ||
-        ((box->state_flags_high & 0x20) == 0 && FreePlay != 0))
-        return 1;
     data = (FLOWBOXGIZMODATA_PC *)box->data;
+    if (((FLOWBOX_FLAGS(box) & 0x4000) == 0 && FreePlay == 0) || ((FLOWBOX_FLAGS(box) & 0x2000) == 0 && FreePlay != 0))
+        return 1;
     for (i = 0; i < data->gizmo_count; ++i) {
-        if (!GizmoGetOutput(system->gizmo_sys, data->gizmos[i]->gizmo, output, (box->state_flags_high >> 4) & 1))
+        if (!GizmoGetOutput(system->gizmo_sys, data->gizmos[i]->gizmo, output, (FLOWBOX_FLAGS(box) >> 12) & 1))
             result = 0;
     }
     return result;
