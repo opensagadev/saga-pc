@@ -54,10 +54,9 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         return;
     other_level = -1;
     if (no_more_loads == 0) {
-        cut = (CUTINFO *)CutStopInfo;
         if (other_level_override != -1) {
             other_level = other_level_override;
-        } else if (CUTSTOPGAME != 0 && cut != NULL && cut->skip_level != -1 &&
+        } else if (CUTSTOPGAME != 0 && (cut = (CUTINFO *)CutStopInfo) != NULL && cut->skip_level != -1 &&
                    LDataList[cut->skip_level].area_index == LDataList[world->level_idx].area_index) {
             other_level = cut->skip_level;
         } else if (!(world->current_level->flags & 0xe0) && Players_AveragePos(&position, NULL) != 0) {
