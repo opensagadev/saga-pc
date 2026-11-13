@@ -6,12 +6,13 @@ typedef i32(__cdecl *FMV_INPUT_CALLBACK_PC)(void);
 typedef void(__cdecl *FMV_DRAW_CALLBACK_PC)(void);
 
 extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
-    i32 *args = &option;
+    va_list args;
     i32 count = 0, stop_sound = 1, result = 0, mode = 0;
     f32 volume = 1.0f;
     char *name = NULL;
     i32(__cdecl * callback)(void) = NULL;
     char path[256];
+    va_start(args, option);
     while (option != 1) {
         ++count;
         switch (option) {
@@ -20,30 +21,30 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
             case 9:
                 break;
             case 2:
-                name = (char *)*++args;
+                name = va_arg(args, char *);
                 break;
             case 4:
-                mode = *++args == 3;
+                mode = va_arg(args, i32) == 3;
                 break;
             case 5:
             case 6:
             case 10:
             case 11:
             case 12:
-                (void)*++args;
+                va_arg(args, i32);
                 break;
             case 14:
-                volume = *(f32 *)*++args;
+                volume = *va_arg(args, f32 *);
                 break;
             case 7:
-                callback = (FMV_INPUT_CALLBACK_PC) * ++args;
+                callback = va_arg(args, FMV_INPUT_CALLBACK_PC);
                 break;
             case 15:
-                FmvDrawCallbackPc = (FMV_DRAW_CALLBACK_PC) * ++args;
+                FmvDrawCallbackPc = va_arg(args, FMV_DRAW_CALLBACK_PC);
                 break;
             case 8:
-                (void)*++args;
-                (void)*++args;
+                va_arg(args, i32);
+                va_arg(args, i32);
                 break;
             case 13:
                 stop_sound = 0;
@@ -54,8 +55,9 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
                 break;
             }
         }
-        option = *++args;
+        option = va_arg(args, i32);
     }
+    va_end(args);
     if (name != NULL) {
         NuFmvStopSoundPc(stop_sound);
         NuFileGetCurrentDirectory(path);
