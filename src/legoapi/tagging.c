@@ -160,9 +160,8 @@ void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
         TagTransfersPc[(i8)target->field_280].source = source;
         TagTransfersPc[(i8)target->field_280].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {
-            TagTransfersPc[(i8)target->field_280].height_fraction[particle] =
+            height = TagTransfersPc[(i8)target->field_280].height_fraction[particle] =
                 (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
-            height = TagTransfersPc[(i8)target->field_280].height_fraction[particle];
             previous = &TagTransfersPc[(i8)target->field_280].previous[particle];
             previous->x = source->collision_position.x;
             previous->z = source->collision_position.z;
