@@ -9063,9 +9063,9 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
-        NUDISPLAY_LIST_PC *scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene);
-        void *transform = DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                           next, *packet);
+        void *transform = DisplayListCreateGeomTransformPS(
+            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST_PC *>(list->scene)->display_materials[list->material_id],
+            next, *packet);
         *packet = transform;
         PC_LIST_ITEM->type = 0x8c;
         PC_LIST_ITEM->id = 3;
