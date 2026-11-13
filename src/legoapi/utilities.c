@@ -1054,23 +1054,24 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
         delta.z = point.z - position->z;
         distance = delta.x * delta.x + delta.z * delta.z;
         if (distance < best) {
-            closest_index = i;
             closest = point;
+            closest_index = i;
             best = distance;
         }
     }
     {
         NUVEC next_point, previous_point, end_point, start_point, a, b;
         i32 previous, next;
+        f32 next_distance, previous_distance;
         if (closest_index == 0) {
-            previous = count - 2;
-            next = 1;
-        } else if (closest_index == count - 2) {
-            previous = closest_index - 1;
-            next = 0;
-        } else {
-            previous = closest_index - 1;
             next = closest_index + 1;
+            previous = count - 2;
+        } else if (closest_index == count - 2) {
+            next = 0;
+            previous = closest_index - 1;
+        } else {
+            next = closest_index + 1;
+            previous = closest_index - 1;
         }
         next_point = spline->pts[next];
         previous_point = spline->pts[previous];
@@ -1078,12 +1079,14 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
         a.z = next_point.z - position->z;
         b.x = previous_point.x - position->x;
         b.z = previous_point.z - position->z;
-        if (b.x * b.x + b.z * b.z > a.x * a.x + a.z * a.z) {
-            end_point = next_point;
-            start_point = closest;
-        } else {
+        next_distance = a.x * a.x + a.z * a.z;
+        previous_distance = b.x * b.x + b.z * b.z;
+        if (previous_distance <= next_distance) {
             end_point = closest;
             start_point = previous_point;
+        } else {
+            end_point = next_point;
+            start_point = closest;
         }
         if (edge_end != NULL)
             *edge_end = end_point;
