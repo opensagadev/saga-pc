@@ -3143,7 +3143,7 @@ static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 chara
     i16 model_index;
     CHARACTER_MODEL_LAYERS_PC *model;
     NUMTX matrix, reflected;
-    NUMTX *reflection = NULL;
+    NUMTX *reflection;
     if (override_matrix == NULL && (locator == -1 || object->character_model->points_of_interest[locator] == NULL))
         return;
     model_index = apicharsys->playermodelids[character_id];
@@ -3158,6 +3158,8 @@ static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 chara
         MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                          WORLD->current_level->reflection_y, &reflected) != 0)
         reflection = &reflected;
+    else
+        reflection = NULL;
     GameDrawCharacterModel(model, animation, &matrix, NULL, reflection, NULL, NULL, 0xffffffffu);
 }
 
