@@ -899,10 +899,10 @@ extern "C" {
         sys = (CUT_LOAD_SYS_PC *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
         buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
         sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
-        CS_area = param2;
         CS_worldinfo = world;
+        CS_area = param2;
         CS_cutsys = sys;
-        buf->addr = (reinterpret_cast<u32>(sys->character_bits) + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
+        buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
 
         while (NuFParGetLine(fp) != 0) {
             if (NuFParGetWord(fp) == 0 || NuStrICmp(fp->word_buffer_ptr, "cutscene") != 0 || sys->count >= 32 ||
@@ -910,16 +910,17 @@ extern "C" {
                 continue;
             }
 
-            entries[sys->count] = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
+            void *mark = buf->void_ptr;
+            entries[sys->count] = reinterpret_cast<CUT_LOAD_RECORD_PC *>(mark);
             buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
             cut = entries[sys->count];
             NuStrLwr(name, fp->word_buffer_ptr);
-            i32 len = NuStrLen(name);
-            while (len > 0 && name[len - 1] != '.') {
-                --len;
+            i32 dot = NuStrLen(name) - 1;
+            while (dot > 0 && name[dot] != '.') {
+                --dot;
             }
-            if (len > 0) {
-                name[len - 1] = '\0';
+            if (name[dot] == '.') {
+                name[dot] = '\0';
             }
 
             if (name[0] == 'c' && name[1] == 'u' && name[2] == 't' && name[3] == '\\') {
@@ -937,52 +938,53 @@ extern "C" {
             NuStrCat(full_path, name);
             NuStrCat(full_path, AreaResidentsExtension);
 
-            if ((cut->flags & 0x800) == 0 && InStory() == 0 && (LDataList[param3].flags & 0xe0) == 0) {
-                buf->void_ptr = cut;
-                continue;
-            }
-            buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
-            NuStrCpy(full_path, "cut\\");
-            NuStrCat(full_path, name);
-            NuStrCat(full_path, NuFileExt_cu2_PC);
-            cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
-            if (cut->scene == NULL) {
+            if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[param3].flags & 0xe0) != 0) {
+                buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
                 NuStrCpy(full_path, "cut\\");
                 NuStrCat(full_path, name);
-                NuStrCat(full_path, ".cut");
+                NuStrCat(full_path, NuFileExt_cu2_PC);
                 cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
                 if (cut->scene == NULL) {
-                    buf->void_ptr = cut;
+                    NuStrCpy(full_path, "cut\\");
+                    NuStrCat(full_path, name);
+                    NuStrCat(full_path, ".cut");
+                    cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
+                }
+                if (cut->scene != NULL) {
+                    i32 separator = NuStrLen(name) - 1;
+                    while (separator >= 0 && name[separator] != '\\') {
+                        --separator;
+                    }
+                    if (separator < 0) {
+                        NuStrCpy(cut->name, name);
+                    } else {
+                        NuStrCpy(cut->name, name + separator + 1);
+                    }
+                    NuGCutSceneFixUp(cut->scene, gscn1, 0, param1);
+                    NuGCutSceneFixUpExtra(cut->scene, gscn2);
+                    cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, name, buf, 0);
+                    if (cut->instance != NULL) {
+                        reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
+                            cut->frames_per_second * DEFAULTFRAMETIME;
+                        buf->void_ptr = (char *)((buf->addr + 15) & ~15U);
+                    }
+                    sys->count++;
                     continue;
                 }
             }
-            char *base_name = name;
-            for (char *cursor = name; *cursor != '\0'; ++cursor) {
-                if (*cursor == '\\') {
-                    base_name = cursor + 1;
-                }
-            }
-            NuStrCpy(cut->name, base_name);
-            NuGCutSceneFixUp(cut->scene, gscn1, 0, param1);
-            NuGCutSceneFixUpExtra(cut->scene, gscn2);
-            cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, name, buf, 0);
-            if (cut->instance != NULL) {
-                reinterpret_cast<CUT_LOAD_INSTANCE_RATE_PC *>(cut->instance)->rate =
-                    cut->frames_per_second * DEFAULTFRAMETIME;
-                buf->void_ptr = (char *)((buf->addr + 15) & ~15U);
-            }
-            sys->count++;
+            buf->void_ptr = mark;
         }
         NuFParDestroy(fp);
-        if (sys->count <= 0) {
-            buf->void_ptr = initial;
-            return NULL;
+        if (sys->count > 0) {
+            sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
+            u32 size = sys->count * sizeof(CUT_LOAD_RECORD_PC *);
+            PCByteCopy_candidate(sys->records, entries, size);
+            // Retail reserves count pointer-table rows after copying the count entries.
+            buf->addr = (buf->addr + sys->count * size + 3) & ~3U;
+            return sys;
         }
-        sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
-        PCByteCopy_candidate(sys->records, entries, sys->count * sizeof(CUT_LOAD_RECORD_PC *));
-        // Retail reserves count pointer-table rows after copying the count entries.
-        buf->addr = ((buf->addr + sys->count * sizeof(CUT_LOAD_RECORD_PC *) * sys->count + 3) & ~3U);
-        return sys;
+        buf->void_ptr = initial;
+        return NULL;
     }
 }
 
