@@ -2872,6 +2872,13 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     return result;
 }
 
+i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 scale) {
+    i32 scaled = CreateScaledPARTEffect(effect, scale);
+    if (scaled != -1)
+        AddFiniteShotPART(scaled, position, count);
+    return scaled;
+}
+
 extern char PartNullInstanceNamePc[14];
 extern i32 PartLoadParticlePagePc;
 u32 __cdecl EdFileReadUnsignedInt(void);
@@ -4091,6 +4098,24 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
     }
 }
 
+void __cdecl edmainSetLocVec(NUVEC *location);
+
+void edpartRegisterPointerToGameCharLocation(NUVEC *charloc) {
+    edmainSetLocVec(charloc);
+}
+
+void edpartPtlShelve(i32 index) {
+    if (part_emits[index].instance_id != -1 && part_emits[index].instance_id != 99999) {
+        DebFreeInstantly(&part_emits[index].instance_id);
+        part_emits[index].instance_id = 99999;
+    }
+}
+
+void edpartMultipleCopyClear(void) {
+    edpart_copy_source_count = 0;
+    edpart_copyroty = 0;
+}
+
 i32 edpartPlace(i32 index, NUVEC *position) {
     part_emits[index].position = *position;
     part_emits[index].rotation_2c = (i16)edpart_emitrotz;
@@ -4572,6 +4597,14 @@ void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 
     i32 scaled = CreateScaledPARTEffect(effect, scale);
     if (scaled != -1)
         AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
+}
+
+void edpartDestroyAllPages(void) {
+    i32 i;
+    for (i = 0; i < 8; ++i) {
+        if (part_page_used[i] != 0)
+            edpartClearPage(i);
+    }
 }
 
 i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
