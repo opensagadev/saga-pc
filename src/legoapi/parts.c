@@ -836,6 +836,10 @@ u32 NuPartGetSeed(void) {
     return partseed;
 }
 
+void NuPartResetGlobalTime(void) {
+    partglobaltime = 0.0f;
+}
+
 void __cdecl KillAllParts(void) {
     PART_PC *part = Part;
     i32 i;
@@ -1201,6 +1205,17 @@ static __declspec(noinline) void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
     m->m21 = (m20 * sinx) + (m->m21 * cosx);
     m->m30 = (m30 * cosx) - (m->m31 * sinx);
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
+}
+
+void DebFreeAllPanelEffects(void) {
+    i32 j;
+    i32 key;
+    for (j = 0; j < maxdebkeys; ++j) {
+        if (debkeydata[j].effect_index != 0 && debtab[debkeydata[j].effect_index]->time_group == 4) {
+            key = j;
+            DebFreeInstantly(&key);
+        }
+    }
 }
 
 void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
