@@ -4374,6 +4374,7 @@ address,symbol,size,ctype
 0x00553780,?SpinnerMatrixSetRotationYPc@@YAXPAUnumtx_s@@H@Z,162,
 0x00553830,?SpinnerMatrixRotateYPc@@YAXPAUnumtx_s@@H@Z,219,
 0x00553910,?SpinnerOwnerPc@@YAPAUgameobject_s@@PAUGIZSPINNER_s@@@Z,59,
+0x553950,?SpinnerFindSpecialPc@@YAHPAUWORLDINFO_s@@PAUnuspecial_handle_s@@PAD@Z,67,"static i32 (WORLDINFO *, NUSPECIALHANDLE *, char *)"
 0x5539a0,_SpinnerBoundsResetPc,252,
 0x553aa0,_GizSpinner_Load,1953,
 0x554250,_GizSpinner_ReserveBufferSpace,252,
@@ -4388,6 +4389,7 @@ address,symbol,size,ctype
 0x5549d0,_GizSpinner_GetNumOutputs,14,i32 __cdecl(GIZMO_PC *)
 0x005549e0,?SpinnerCurrentOutputPc@@YAHPAUGIZSPINNER_s@@@Z,216,
 0x00554ac0,?SpinnerSeekOutputPc@@YAXPAUGIZSPINNER_s@@H@Z,640,
+0x554d40,_GizSpinner_GetState,42,i32 __cdecl(GIZSPINNER_s *)
 0x554d70,_GizSpinner_PushFail,178,"void __cdecl(GAMEOBJECT *, GIZSPINNER_s *)"
 0x554e30,_GizSpinner_Push,441,"i32 __cdecl(GIZSPINNER_s *, i32)"
 0x554ff0,_GizSpinner_Spin,344,
@@ -4399,6 +4401,7 @@ address,symbol,size,ctype
 0x555550,_GizSpinner_Activate,40,"void __cdecl(GIZMO_PC *, i32)"
 0x555580,_GizSpinner_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x5555a0,_GizSpinner_SetVisibility,524,
+0x5557b0,_GizSpinner_GetSpinnerPos,34,"void __cdecl(GIZSPINNER_s *, NUVEC *)"
 0x5557e0,_GizSpinner_UsingSpecial,336,"i32 __cdecl(void *, void *, i32, char *)"
 0x555930,_GizSpinner_BoltHitPlat,138,void private ABI: EAX spinner; ESI bolt; stack flags pointer
 0x5559c0,_GizSpinner_BoltHitPlatPc,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
