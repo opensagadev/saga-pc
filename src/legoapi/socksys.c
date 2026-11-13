@@ -662,7 +662,8 @@ static void SockEdgeAnglesXY(NUVEC *from, NUVEC *to, u16 *x, u16 *y) {
 
 SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotations) {
     i32 point;
-    for (point = 0; point < sock->cam->length; ++point, ++rotations) {
+    i32 length;
+    for (point = 0; point < (length = sock->cam->length); ++point, ++rotations) {
         i32 previous;
         i32 next;
         NUVEC previous_pos, position, next_pos;
@@ -672,9 +673,9 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
 
         previous = point - 1;
         if (previous < 0)
-            previous = sock->cam->length - 1;
+            previous = length - 1;
         next = point + 1;
-        if (next >= sock->cam->length)
+        if (next >= length)
             next = 0;
         if (spline != NULL) {
             previous_pos = spline->pts[previous];
