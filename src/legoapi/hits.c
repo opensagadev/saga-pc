@@ -622,23 +622,22 @@ impact:
         SetFlicker(target, 0.4f);
         if (target->id == (u16)id_SNAKE)
             SnakeBeenHit(target);
-        PlayerTakeHit(target, attacker);
-        if (target->field_280 != 0xff && damage > 0) {
-            target->saved_hitpoints -= damage;
-            if (target->saved_hitpoints < 1)
-                target->saved_hitpoints = 1;
-            if ((target->character_data->model_flags & 0x20) && target->origin_joint_ready) {
-                i32 index = target->saved_hitpoints - 1;
-                if (index > 2)
-                    index = 2;
-                index = objhit_damage_joints[2 - index];
-                if (target->character_model->points_of_interest[index])
-                    AddGameDebris(WORLD->game_debris_sys, 113, (NUVEC *)(&target->locator_matrices[index].m30));
-            }
-        }
-    } else
-        PlayerTakeHit(target, attacker);
+    }
     result = 1;
+    PlayerTakeHit(target, attacker);
+    if (target->field_280 != 0xff && damage > 0) {
+        target->saved_hitpoints -= damage;
+        if (target->saved_hitpoints < 1)
+            target->saved_hitpoints = 1;
+        if ((target->character_data->model_flags & 0x20) && target->origin_joint_ready) {
+            i32 index = target->saved_hitpoints - 1;
+            if (index > 2)
+                index = 2;
+            index = objhit_damage_joints[2 - index];
+            if (target->character_model->points_of_interest[index])
+                AddGameDebris(WORLD->game_debris_sys, 113, (NUVEC *)(&target->locator_matrices[index].m30));
+        }
+    }
     if (target->id == (u16)id_BODYGUARD && target->current_hp == 1)
         KillParts(target, 4, -1, 1, 0.0f, 0, NULL);
     goto hurt;
