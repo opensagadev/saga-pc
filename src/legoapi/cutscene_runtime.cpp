@@ -1921,10 +1921,12 @@ extern "C" {
                 }
             }
             if (cut == NULL) {
-                for (i32 i = 0; cut == NULL && i < system->count; ++i) {
+                for (i32 i = 0; cut == NULL && i < system->count;) {
                     CUT_LOAD_RECORD_PC *record = reinterpret_cast<CUT_LOAD_RECORD_PC *>(system->records[i]);
                     if ((record->flags & 0x1000) != 0)
                         cut = reinterpret_cast<CUTINFO *>(record);
+                    else
+                        ++i;
                 }
             }
             if (cut != NULL && CutSceneStartPrivatePc(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(cut)) != 0)
