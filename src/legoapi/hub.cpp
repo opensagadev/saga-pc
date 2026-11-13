@@ -3554,16 +3554,16 @@ static void HubUpdateBonusModePc(void) {
                         cancel = 1;
                     else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
                              (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0)
-                        up = player_up[player] = 1;
+                        player_up[player] = up = 1;
                     else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
                              (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0)
-                        down = player_down[player] = 1;
+                        player_down[player] = down = 1;
                     else if ((GamePadStorage[player].menu_directions & GAMEPAD_DLEFT) != 0 ||
                              (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DLEFT) != 0)
-                        left = player_left[player] = 1;
+                        player_left[player] = left = 1;
                     else if ((GamePadStorage[player].menu_directions & GAMEPAD_DRIGHT) != 0 ||
                              (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DRIGHT) != 0)
-                        right = player_right[player] = 1;
+                        player_right[player] = right = 1;
                 }
             }
             if (bonusmodearcade != 0) {
