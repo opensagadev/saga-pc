@@ -12648,7 +12648,7 @@ extern "C" {
             u8 length = command >> 2;
             u8 kind = command & 3;
             if (kind <= 1) {
-                memset(output, (u8)-kind, length);
+                memset(output, (u8)(kind - (kind << 1)), length);
             } else {
                 PCByteCopy_candidate(output, input, length);
                 input += length;
