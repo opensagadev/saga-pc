@@ -5259,12 +5259,11 @@ void OcclusionManager::EndFrame() {
 
 void OcclusionManager::BeginFrame() {
     if (initialized && enabled) {
-        OccluderSet *completed = building_set;
-        OccluderSet *building = current_set;
-        current_set = completed;
-        building_set = building;
-        building->count = 0;
-        building->queries_prepared = false;
+        OccluderSet *previous = current_set;
+        current_set = building_set;
+        building_set = previous;
+        building_set->count = 0;
+        building_set->queries_prepared = false;
         occluded_count = 0;
         query_count = 0;
     }
