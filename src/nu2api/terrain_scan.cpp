@@ -88,43 +88,46 @@ extern "C" {
     } while (0)
 
 #define TERRAIN_SCAN_BOUNDS_PC(query_arg, scan_result_arg)                                                             \
-    if ((scan_result_arg) != 1) {                                                                                      \
-        scan_radius = NuFsqrt((query_arg)->movement.x * (query_arg)->movement.x +                                      \
-                              (query_arg)->movement.y * (query_arg)->movement.y +                                      \
-                              (query_arg)->movement.z * (query_arg)->movement.z);                                      \
-        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
-        scan_radius = (query_arg)->collision_radius + 0.1f + scan_radius;                                              \
-        max_x = (query_arg)->position.x + 0.05f + scan_radius;                                                         \
-        max_y = (query_arg)->position.y + 0.05f + (query_arg)->object_scale * scan_radius;                             \
-        max_z = (query_arg)->position.z + 0.05f + scan_radius;                                                         \
-        min_x = (query_arg)->position.x - 0.05f - scan_radius;                                                         \
-        min_y = (query_arg)->position.y - 0.05f - (query_arg)->object_scale * scan_radius;                             \
-        min_z = (query_arg)->position.z - 0.05f - scan_radius;                                                         \
-    } else {                                                                                                           \
-        if ((query_arg)->movement.x > 0.0f) {                                                                          \
-            min_x = (query_arg)->position.x - 0.02f - (query_arg)->collision_radius;                                   \
-            max_x = (query_arg)->position.x + (query_arg)->movement.x + 0.02f + (query_arg)->collision_radius;         \
-        } else {                                                                                                       \
-            min_x = (query_arg)->position.x + (query_arg)->movement.x - 0.02f - (query_arg)->collision_radius;         \
-            max_x = (query_arg)->position.x + 0.02f + (query_arg)->collision_radius;                                   \
-        }                                                                                                              \
-        if ((query_arg)->movement.y > 0.0f) {                                                                          \
-            min_y = (query_arg)->position.y - 0.02f - (query_arg)->collision_radius;                                   \
-            max_y = (query_arg)->position.y + (query_arg)->movement.y + 0.02f + (query_arg)->collision_radius;         \
-        } else {                                                                                                       \
-            min_y = (query_arg)->position.y + (query_arg)->movement.y - 0.02f - (query_arg)->collision_radius;         \
-            max_y = (query_arg)->position.y + 0.02f + (query_arg)->collision_radius;                                   \
-        }                                                                                                              \
-        if ((query_arg)->movement.z > 0.0f) {                                                                          \
-            min_z = (query_arg)->position.z - 0.02f - (query_arg)->collision_radius;                                   \
-            max_z = (query_arg)->position.z + (query_arg)->movement.z + 0.02f + (query_arg)->collision_radius;         \
-        } else {                                                                                                       \
-            min_z = (query_arg)->position.z + (query_arg)->movement.z - 0.02f - (query_arg)->collision_radius;         \
-            max_z = (query_arg)->position.z + 0.02f + (query_arg)->collision_radius;                                   \
-        }                                                                                                              \
-        scan_radius = NuFsqrt((min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +                  \
-                              (min_z - max_z) * (min_z - max_z));                                                      \
-        (query_arg) = TERRAIN_QUERY_PC;                                                                                \
+    switch (scan_result_arg) {                                                                                         \
+        default: {                                                                                                     \
+            scan_radius = NuFsqrt((query_arg)->movement.x * (query_arg)->movement.x +                                  \
+                                  (query_arg)->movement.y * (query_arg)->movement.y +                                  \
+                                  (query_arg)->movement.z * (query_arg)->movement.z);                                  \
+            (query_arg) = TERRAIN_QUERY_PC;                                                                            \
+            scan_radius = (query_arg)->collision_radius + 0.1f + scan_radius;                                          \
+            max_x = (query_arg)->position.x + 0.05f + scan_radius;                                                     \
+            max_y = (query_arg)->position.y + 0.05f + (query_arg)->object_scale * scan_radius;                         \
+            max_z = (query_arg)->position.z + 0.05f + scan_radius;                                                     \
+            min_x = (query_arg)->position.x - 0.05f - scan_radius;                                                     \
+            min_y = (query_arg)->position.y - 0.05f - (query_arg)->object_scale * scan_radius;                         \
+            min_z = (query_arg)->position.z - 0.05f - scan_radius;                                                     \
+        } break;                                                                                                       \
+        case 1: {                                                                                                      \
+            if ((query_arg)->movement.x > 0.0f) {                                                                      \
+                min_x = (query_arg)->position.x - 0.02f - (query_arg)->collision_radius;                               \
+                max_x = (query_arg)->position.x + (query_arg)->movement.x + 0.02f + (query_arg)->collision_radius;     \
+            } else {                                                                                                   \
+                min_x = (query_arg)->position.x + (query_arg)->movement.x - 0.02f - (query_arg)->collision_radius;     \
+                max_x = (query_arg)->position.x + 0.02f + (query_arg)->collision_radius;                               \
+            }                                                                                                          \
+            if ((query_arg)->movement.y > 0.0f) {                                                                      \
+                min_y = (query_arg)->position.y - 0.02f - (query_arg)->collision_radius;                               \
+                max_y = (query_arg)->position.y + (query_arg)->movement.y + 0.02f + (query_arg)->collision_radius;     \
+            } else {                                                                                                   \
+                min_y = (query_arg)->position.y + (query_arg)->movement.y - 0.02f - (query_arg)->collision_radius;     \
+                max_y = (query_arg)->position.y + 0.02f + (query_arg)->collision_radius;                               \
+            }                                                                                                          \
+            if ((query_arg)->movement.z > 0.0f) {                                                                      \
+                min_z = (query_arg)->position.z - 0.02f - (query_arg)->collision_radius;                               \
+                max_z = (query_arg)->position.z + (query_arg)->movement.z + 0.02f + (query_arg)->collision_radius;     \
+            } else {                                                                                                   \
+                min_z = (query_arg)->position.z + (query_arg)->movement.z - 0.02f - (query_arg)->collision_radius;     \
+                max_z = (query_arg)->position.z + 0.02f + (query_arg)->collision_radius;                               \
+            }                                                                                                          \
+            scan_radius = NuFsqrt((min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +              \
+                                  (min_z - max_z) * (min_z - max_z));                                                  \
+            (query_arg) = TERRAIN_QUERY_PC;                                                                            \
+        } break;                                                                                                       \
     }
 
 extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
@@ -595,66 +598,65 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     TerrainQuery_s *query = TERRAIN_QUERY_PC;
     WallSplinesOnly = 0;
     TerrainScaledShapeCursorPc = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
-    const u8 scan_result = query->scan_result;
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);
     platinrange = 0;
     query->scan_group_index = -1;
     f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
-    TERRAIN_SCAN_BOUNDS_PC(query, scan_result);
+    TERRAIN_SCAN_BOUNDS_PC(query, query->scan_result);
     terminator[0] = 0;
     terminator[1] = 0;
     min_x -= 0.02f;
     min_z -= 0.02f;
-    WallSplCount = 0;
-    i32 wall_count = 0;
     max_x += 0.02f;
     max_z += 0.02f;
+    WallSplCount = 0;
+    i32 wall_count = 0;
     for (TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT_PC->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) -
                                                           offsetof(TERRAIN_SPATIAL_CHUNK, node))
                     ->previous) {
-        const u8 mask = node->field_02 >> 8;
-        if (mask != 0 && (mask & terrain_mask) == 0) {
+        const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->field_02);
+        if (material_bytes[1] != 0 && (material_bytes[1] & terrain_mask) == 0) {
             continue;
         }
-        const u32 material = node->field_02 & 0xff;
-        if (node->point_count != 0) {
-            for (i32 first = 0; first < node->point_count; first += 16) {
-                i32 end;
-                if (node->points[first].y != 2147483648.0f) {
-                    if (node->points[first + 1].y >= min_x && node->points[first].y <= max_x &&
-                        node->points[first + 3].y >= min_z && node->points[first + 2].y <= max_z) {
-                        end = first + 16;
-                        if (end > node->point_count) {
-                            end = node->point_count;
-                        }
-                    } else {
-                        end = 0;
+        const u32 material = material_bytes[0];
+        const u32 mask = material_bytes[1];
+        for (i32 first = 0; first < node->point_count; first += 16) {
+            i32 end;
+            if (node->points[first].y != 2147483648.0f) {
+                if (node->points[first + 1].y >= min_x && node->points[first].y <= max_x &&
+                    node->points[first + 3].y >= min_z && node->points[first + 2].y <= max_z) {
+                    end = first + 16;
+                    if (end > node->point_count) {
+                        end = node->point_count;
                     }
                 } else {
-                    end = node->point_count;
+                    end = 0;
                 }
-                for (i32 i = first; i < end; ++i) {
-                    NUVEC *a = &node->points[i];
-                    NUVEC *b = &node->points[i + 1];
-                    if ((a->x >= min_x && b->x <= max_x) || (b->x >= min_x && a->x <= max_x)) {
-                        if ((a->z >= min_z && b->z <= max_z) || (b->z >= min_z && a->z <= max_z)) {
-                            if (wall_count < 64) {
-                                TERRAIN_WALL_POINT *entry = &static_cast<TERRAIN_WALL_POINT *>(WallSplList)[wall_count];
-                                entry->position = *a;
-                                entry->material[0] = material;
-                                entry->material[1] = mask;
-                                entry->material[2] = 0;
-                                entry->material[3] = 0;
-                                ++wall_count;
-                                ++entry;
-                                entry->position = *b;
-                                entry->material[0] = material;
-                                entry->material[1] = mask;
-                                entry->material[2] = 0;
-                                entry->material[3] = 0;
-                                ++wall_count;
-                            }
+            } else {
+                end = node->point_count;
+            }
+            TERRAIN_WALL_POINT *entry = static_cast<TERRAIN_WALL_POINT *>(WallSplList) + wall_count;
+            for (i32 i = first; i < end; ++i) {
+                NUVEC *a = &node->points[i];
+                NUVEC *b = &node->points[i + 1];
+                if ((a->x >= min_x && b->x <= max_x) || (b->x >= min_x && a->x <= max_x)) {
+                    if ((a->z >= min_z && b->z <= max_z) || (b->z >= min_z && a->z <= max_z)) {
+                        if (wall_count < 64) {
+                            entry->position = *a;
+                            entry->material[0] = material;
+                            entry->material[1] = mask;
+                            entry->material[2] = 0;
+                            entry->material[3] = 0;
+                            ++wall_count;
+                            ++entry;
+                            entry->position = *b;
+                            entry->material[0] = material;
+                            entry->material[1] = mask;
+                            entry->material[2] = 0;
+                            entry->material[3] = 0;
+                            ++wall_count;
+                            ++entry;
                         }
                     }
                 }
