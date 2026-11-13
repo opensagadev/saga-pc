@@ -5466,6 +5466,7 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
                 dst->w = b->w;
             } else {
                 ++count;
+                dst = out++;
                 f32 t = da / (da - db);
                 __declspec(align(16)) NUVEC4 delta;
                 delta.x = b->x - a->x;
@@ -5479,7 +5480,6 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
                 point.x = a->x + scaled.x;
                 point.y = a->y + scaled.y;
                 point.z = a->z + scaled.z;
-                dst = out++;
                 dst->x = point.x;
                 dst->y = point.y;
                 dst->z = point.z;
@@ -5492,6 +5492,8 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
             dst->z = b->z;
             dst->w = b->w;
             ++count;
+            ++count;
+            dst = out++;
             f32 t = -da / (db - da);
             __declspec(align(16)) NUVEC4 delta;
             delta.x = b->x - a->x;
@@ -5505,12 +5507,10 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
             point.x = a->x + scaled.x;
             point.y = a->y + scaled.y;
             point.z = a->z + scaled.z;
-            dst = out++;
             dst->x = point.x;
             dst->y = point.y;
             dst->z = point.z;
             dst->w = point.w;
-            ++count;
         }
     }
     return count;
