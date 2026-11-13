@@ -25,16 +25,16 @@ BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 fi
     EnterCriticalSection(&bgproc_critical_section);
     info = (BGPROCINFO *)NuLstAllocTail(bgproc_procinfo_pool);
     if (info != NULL) {
-        info->work_started = 0;
-        info->unknown_flag_2 = 0;
         var = (BGVAR *)info->data;
         string_end = (u8 *)&info->vars;
         info->vars = var;
+        info->work_started = 0;
+        info->unknown_flag_2 = 0;
+        type = first_type;
+        argument = &first_type;
         info->do_fn = do_fn;
         info->ack_fn = ack_fn;
         info->var_count = 0;
-        type = first_type;
-        argument = &first_type;
         while (type != 7) {
             var->type = type;
             switch (type) {
