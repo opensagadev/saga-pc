@@ -7959,12 +7959,13 @@ void PropertyTool::ToggleActiveMenu() {
 
 void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
     eduimenu_s *menu = property_menu->menu;
-    VuVec start;
-    VuVec end;
+    __declspec(align(16)) VuVec start;
+    __declspec(align(16)) VuVec end;
     if (property_menu->order == -1)
         AutoLocateMenu(property_menu);
-    NuCameraCalcRay((f32)((menu->x + menu->width * 0.5) / 640.0), (f32)((menu->y + menu->height * 0.125) / 448.0),
-                    (NUVEC *)&start, (NUVEC *)&end, NULL);
+    f32 x = menu->x + menu->width * 0.5;
+    f32 y = menu->y + menu->height * 0.125;
+    NuCameraCalcRay((f32)(x / 640.0), (f32)(y / 448.0), (NUVEC *)&start, (NUVEC *)&end, NULL);
     property_menu->objects[0].GetAttributeData(8, EdType_VuVec, &end, 0);
     EdDrawBegin(0);
     EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, (i32)&selected_attr);
