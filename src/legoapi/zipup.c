@@ -230,6 +230,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     NUVEC *destination;
     i32 endpoint;
     i32 player_active;
+    NUVEC end_offset;
 
     transport = (ZIPUP_TRANSPORT_VIEW_PC *)object;
     if (object->character_context == 0x47) {
@@ -360,7 +361,6 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             }
             zipup->flags_word |= 0x200;
             if ((zipup->flags_word & 0x200) != 0) {
-                NUVEC end_offset;
                 NUVEC offset;
                 u16 start_angle;
                 u16 end_angle;
