@@ -5424,6 +5424,7 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
 
 /* Places a new menu right of the others, wrapping back to the left edge. */
 void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
+    f64 border = 0.0;
     eduimenu_s *menu = property_menu->menu;
     i32 use_stored_metrics = 1;
     i32 placed;
@@ -5448,7 +5449,7 @@ void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
             menu->width = menu_startmetrics.width;
             menu->height = menu_startmetrics.height;
         }
-        if (menu->x + menu->width > 640.0 - 0.0) {
+        if (menu->x + menu->width > 640.0 - border) {
             menu->x = 20;
             menu->y = 5;
             return;
