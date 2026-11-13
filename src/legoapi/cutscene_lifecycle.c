@@ -1587,7 +1587,7 @@ static void CutSceneRigidSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
         CUT_LOAD_RIGID_INSTANCE *object = &objects->rigids[i];
         NUMTX matrix;
         u8 visible;
-        if ((rigid->flags & 6) != 6)
+        if ((rigid->flags & 2) == 0 || (rigid->flags & 4) == 0)
             continue;
         if (rigid->state_animation != NULL &&
             StateAnimEvaluate(rigid->state_animation, &object->state_index, &visible, frame) != 0)
