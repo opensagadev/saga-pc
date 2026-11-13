@@ -3673,8 +3673,17 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
         }
         state->impact_material = NewRayCastGetImpactTerrainType();
         if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
-            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
-            goto impact;
+            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
+            part->active |= 4;
+            state->platform_id = PartPlatId();
+            part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+            part->field_f4 *= NewRayCastGetTOFI();
+            part->impact_position.x = part->position.x + cast_movement.x;
+            part->impact_position.y = part->position.y + cast_movement.y;
+            part->impact_position.z = part->position.z + cast_movement.z;
+            part->impact_normal = PART_NORM;
+            return;
+        }
         if (hit > 0x10) {
             part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
             part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
@@ -3690,8 +3699,17 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
     }
     state->impact_material = NewRayCastGetImpactTerrainType();
     if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
-        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
-        goto impact;
+        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
+        part->active |= 4;
+        state->platform_id = PartPlatId();
+        part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
+        part->field_f4 *= NewRayCastGetTOFI();
+        part->impact_position.x = part->position.x + cast_movement.x;
+        part->impact_position.y = part->position.y + cast_movement.y;
+        part->impact_position.z = part->position.z + cast_movement.z;
+        part->impact_normal = PART_NORM;
+        return;
+    }
     if (hit > 0x10) {
         part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
         part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
@@ -3711,15 +3729,14 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
         if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4)
             return;
     }
-impact:
     part->active |= 4;
     state->platform_id = PartPlatId();
     part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
     part->field_f4 *= NewRayCastGetTOFI();
-    part->impact_normal = PART_NORM;
     part->impact_position.x = part->position.x + cast_movement.x;
     part->impact_position.y = part->position.y + cast_movement.y;
     part->impact_position.z = part->position.z + cast_movement.z;
+    part->impact_normal = PART_NORM;
 }
 
 void edpartDestroy(i32 index) {
