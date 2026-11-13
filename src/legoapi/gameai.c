@@ -665,32 +665,28 @@ void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_
     }
 }
 
+f32 TurnCamSafeDurationScalePc = 0.95f;
+
 void TurnCodeCamSafe(GAMEOBJECT *object, NUMTX *matrix) {
-    f32 time;
-    f32 duration;
-    f32 turn_duration;
+    static i16 TURNROLL = 180;
     static i32 TURNPITCH = 200;
     static i16 myang = 0;
+    f32 time, half_duration, pitch_duration, turn_duration;
+    i32 index;
     TURNPITCH = 200;
     myang = 20;
     time = object->context_timer;
-    duration = object->context_duration;
-    turn_duration = duration * 0.95f;
+    half_duration = object->context_duration * 0.5;
+    pitch_duration = half_duration * 0.5;
+    turn_duration = object->context_duration * TurnCamSafeDurationScalePc;
     if (time < turn_duration) {
-        f32 phase;
-        i32 index;
-        f32 wave;
-        const f32 pitch_duration = duration * 0.5f * 0.5f;
         if (time < pitch_duration) {
-            const f32 phase = 1.0f - (1.0f / pitch_duration) * time;
-            const i32 index = (i32)(phase * 16384.0f + 32768.0f + 16384.0f);
-            const f32 wave = NuTrigTable[(index >> 1) & 0x7fff];
-            NuMtxPreRotateX(matrix, (i16)((i32)((wave + 1.0f) * -3640.0f)));
+            index = (i32)((1.0f - (1.0f / pitch_duration) * time) * 16384.0 + 32768.0 + 16384.0);
+            NuMtxPreRotateX(matrix, (i16)(i32)((NuTrigTable[(index >> 1) & 0x7fff] + 1.0f) * -3640.0));
         }
-        phase = 1.0f - (1.0f / turn_duration) * time;
-        index = (i32)(phase * 32768.0f + 16384.0f);
-        wave = NuTrigTable[(index >> 1) & 0x7fff];
-        NuMtxPreRotateZ(matrix, (i16)((i32)((1.0f - (wave + 1.0f) * 0.5f) * 32768.0f)));
+        index = (i32)((1.0f - (1.0f / turn_duration) * time) * 32768.0 + 16384.0);
+        NuMtxPreRotateZ(matrix, (i16)(i32)((1.0f - (NuTrigTable[(index >> 1) & 0x7fff] + 1.0f) * 0.5) *
+                                           (f32)((TURNROLL << 16) / 360)));
     }
 }
 
