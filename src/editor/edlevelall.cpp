@@ -397,6 +397,8 @@ class PropertyTool : public EdTool {
     void AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent);
     void AutoLocateMenu(PropertyMenu *property_menu);
     PropertyMenuMetrics ediGetMenuStartMetrics();
+    void SetMenuControl(eduimenu_s *menu, EdControl *control);
+    bool HasActiveMenu();
     void ediMenuStoreMetrics(eduimenu_s *menu);
     void ediMenuRetrieveMetrics(eduimenu_s *menu);
     PropertyMenu *CreatePropertyMenu(ClassObject &object);
@@ -5646,6 +5648,19 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
     }
 }
 
+void PropertyTool::SetMenuControl(eduimenu_s *menu, EdControl *control) {
+    for (PropertyMenu *property_menu = menus.First(); property_menu != NULL; property_menu = property_menu->next) {
+        if (property_menu->menu == menu) {
+            property_menu->control = control;
+            return;
+        }
+    }
+}
+
+bool PropertyTool::HasActiveMenu() {
+    return menus.First() ? true : false;
+}
+
 PropertyMenuMetrics PropertyTool::ediGetMenuStartMetrics() {
     return menu_startmetrics;
 }
@@ -7584,13 +7599,7 @@ void EdVectorControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
         theClassEditor.SetMode(3);
     else
         theClassEditor.SetMode(0);
-    for (PropertyMenu *property_menu = thePropertyTool.menus.First(); property_menu != NULL;
-         property_menu = property_menu->next) {
-        if (property_menu->menu == menu) {
-            property_menu->control = control;
-            return;
-        }
-    }
+    thePropertyTool.SetMenuControl(menu, control);
 }
 
 void EdVectorControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
@@ -7632,13 +7641,7 @@ void EdMatrixControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
         theClassEditor.SetMode(4);
     if (item == control->components[6] || item == control->components[7] || item == control->components[8])
         theClassEditor.SetMode(5);
-    for (PropertyMenu *property_menu = thePropertyTool.menus.First(); property_menu != NULL;
-         property_menu = property_menu->next) {
-        if (property_menu->menu == menu) {
-            property_menu->control = control;
-            return;
-        }
-    }
+    thePropertyTool.SetMenuControl(menu, control);
 }
 
 void EdMatrixControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value) {
@@ -9167,13 +9170,7 @@ void EdControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
     thePropertyTool.SelectAttr(theClassEditor.manipulator->selected_attribute);
     if (selected != 0)
         *reinterpret_cast<eduiiattr_s *>(item->colours) = thePropertyTool.unselected_attr;
-    for (PropertyMenu *property_menu = thePropertyTool.menus.First(); property_menu != NULL;
-         property_menu = property_menu->next) {
-        if (property_menu->menu == menu) {
-            property_menu->control = control;
-            return;
-        }
-    }
+    thePropertyTool.SetMenuControl(menu, control);
 }
 
 void EdControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
@@ -10044,7 +10041,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
         camera = edmainGetCameraPc();
     else
         camera = &global_camera;
-    input.Update(camera, pad, t, thePropertyTool.menus.First() != NULL);
+    input.Update(camera, pad, t, thePropertyTool.HasActiveMenu());
     if (edmainGetCursorEnabled())
         eduiProcessCursor(0.0f, pad);
     if (field_0x28 != 0 && eduiGetCameraEnabled()) {
@@ -10081,7 +10078,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
                 theLevelEditor.CreateMenu();
             }
         }
-    } else if (edLevelPinnedMenu != NULL && !thePropertyTool.menus.First() != NULL) {
+    } else if (edLevelPinnedMenu != NULL && !thePropertyTool.HasActiveMenu()) {
         NuFntSet(EdLevelFnt);
         NuFntScale(EdLevelFntScale, EdLevelFntScale);
         if (eduiMenuProcess(edLevelPinnedMenu, t, pad) != 0)
