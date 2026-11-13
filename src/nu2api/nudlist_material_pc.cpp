@@ -509,7 +509,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     } while (0)
 
 // One vertex-shader tap offset; retail rounds both coordinates through f32 temporaries.
-struct __declspec(align(8)) POST_BLUR_LOW_OFFSET_PC {
+struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
     f32 x, y, z, w;
 };
 #define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                           \
