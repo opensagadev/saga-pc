@@ -437,7 +437,7 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
                 f32 outer_distance = RtlVuVecLengthSq(RtlVuVecSub(screen_cursor, screen_outer));
                 f32 nearest_distance;
                 i32 nearest_mode;
-                if (outer_distance > inner_distance) {
+                if (inner_distance < outer_distance) {
                     nearest_distance = inner_distance;
                     nearest_mode = 1;
                 } else {
