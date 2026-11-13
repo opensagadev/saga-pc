@@ -5563,29 +5563,6 @@ void __cdecl Move_BEAST(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-typedef struct HOLD_RUNTIME_VIEW_PC {
-    u8 unknown_000[0xde4];
-    f32 hold_timer;
-} HOLD_RUNTIME_VIEW_PC;
-STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
-extern i32(__cdecl *CanStartHoldFn)(GAMEOBJECT *);
-void __cdecl StartHold(GAMEOBJECT *object) {
-    if (CanStartHoldFn == NULL)
-        return;
-    if (CanStartHoldFn(object) == 2) {
-        ((HOLD_RUNTIME_VIEW_PC *)object)->hold_timer = 0.0f;
-        object->character_context = -1;
-        return;
-    }
-    if (LEGOCONTEXT_HOLD != -1 && NewBlockAction(object)) {
-        object->character_context = (i8)LEGOCONTEXT_HOLD;
-        object->context_timer = 0.3f;
-        PlaySabreSfx(NULL, object, NULL, 1);
-        return;
-    }
-    object->character_context = -1;
-}
-
 extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
 /* Source-only logical declarations: physical interfaces/real implementations remain explicit holds. */
 void __cdecl Move_POD(GAMEOBJECT *);
@@ -7611,15 +7588,6 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     object->movement_facing_angle = wall_angle + 0x8000;
     object->launch_origin = position;
     object->context_duration = 0.25f;
-}
-
-void __cdecl HoldCode(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
-        if (object->context_timer > 0.0f)
-            object->context_timer -= FRAMETIME;
-        else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0)
-            object->character_context = -1;
-    }
 }
 
 typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
