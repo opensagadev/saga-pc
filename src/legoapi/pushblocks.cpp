@@ -34,10 +34,6 @@ extern "C" {
     extern i32 LEGOCONTEXT_PUSH;
     extern u16 PushBlockFacingTolerancePc;
 }
-typedef union PUSH_FABS_BITS_PC {
-    f32 value;
-    u32 bits;
-} PUSH_FABS_BITS_PC;
 extern "C" {
     void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
     PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
@@ -277,14 +273,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
             continue;
         NUVEC bmin = block->bounds_min;
         NUVEC bmax = block->bounds_max;
-        PUSH_FABS_BITS_PC absolute, value;
-        value.value = bmax.y;
-        absolute.bits = value.bits & 0x7fffffff;
-        f32 top = block->position->y + absolute.value;
-        PUSH_FABS_BITS_PC absolute2, value2;
-        value2.value = bmin.y;
-        absolute2.bits = value2.bits & 0x7fffffff;
-        f32 bottom = block->position->y - absolute2.value;
+        f32 top = block->position->y + GizPushFabsPc(bmax.y);
+        f32 bottom = block->position->y - GizPushFabsPc(bmin.y);
         if (top > max_y && bottom > max_y)
             continue;
         if (min_y > top && min_y > bottom)
@@ -298,11 +288,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
         delta.z = dz;
         switch (mode) {
             case 0: {
-                PUSH_FABS_BITS_PC a, v;
                 f32 bound;
-                v.value = bmin.x;
-                a.bits = v.bits & 0x7fffffff;
-                gap = dx - a.value;
+                gap = dx - GizPushFabsPc(bmin.x);
                 bound = bmin.z + pos.z - PushBlockGapEpsilonPc;
                 if (object->collision_position.z <= bound)
                     continue;
@@ -316,11 +303,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
                 break;
             }
             case 1: {
-                PUSH_FABS_BITS_PC a, v;
                 f32 bound;
-                v.value = dx;
-                a.bits = v.bits & 0x7fffffff;
-                gap = a.value - bmax.x;
+                gap = GizPushFabsPc(dx) - bmax.x;
                 bound = bmax.z + pos.z - PushBlockGapEpsilonPc;
                 if (object->collision_position.z >= bound)
                     continue;
@@ -334,11 +318,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
                 break;
             }
             case 2: {
-                PUSH_FABS_BITS_PC a, v;
                 f32 bound;
-                v.value = bmin.z;
-                a.bits = v.bits & 0x7fffffff;
-                gap = dz - a.value;
+                gap = dz - GizPushFabsPc(bmin.z);
                 bound = bmax.x + pos.x - PushBlockGapEpsilonPc;
                 if (object->collision_position.x >= bound)
                     continue;
@@ -352,11 +333,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
                 break;
             }
             case 3: {
-                PUSH_FABS_BITS_PC a, v;
                 f32 bound;
-                v.value = dz;
-                a.bits = v.bits & 0x7fffffff;
-                gap = a.value - bmax.z;
+                gap = GizPushFabsPc(dz) - bmax.z;
                 bound = bmin.x + pos.x - PushBlockGapEpsilonPc;
                 if (object->collision_position.x <= bound)
                     continue;
