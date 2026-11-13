@@ -1715,9 +1715,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         clipped_position.x = position->x;
         clipped_position.y = position->y;
         clipped_position.z = position->z;
-        extent.x = 1.0f;
-        extent.y = 1.0f;
-        extent.z = 1.0f;
+        extent.x = extent.y = extent.z = 1.0f;
         if (NuCameraClipTestExtentsAxisAligned(&clipped_position, &extent, effect->clip_extent) == 0)
             return;
     }
