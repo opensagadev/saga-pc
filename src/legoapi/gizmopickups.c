@@ -747,18 +747,21 @@ static __declspec(noinline) NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
 
 static __declspec(noinline) void GizmoPickups_UpdateListPc(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count,
                                                            i32 play_nearby) {
-    i32 detectors = 0, index, eligible, complete;
-    f32 nearest_distance = 100000.0f;
-    NUVEC *nearest = NULL;
+    i32 detectors, index, eligible, complete;
+    f32 nearest_distance;
+    NUVEC *nearest;
     GIZMO_PICKUP_TYPE_PC *type;
     AREA_SUPERCOUNTER_PC *counter;
     AREA_SUPERCOUNTER_PICKUP_PC *counter_pickup;
     GIZMO_PC *gizmo;
-    u8 effect_flags, previous;
+    i32 effect_flags;
     NUVEC position;
     f32 distance, timer;
     if (pickup == NULL || Missions_PickupsOff(MissionSys))
         return;
+    nearest_distance = 100000.0f;
+    nearest = NULL;
+    detectors = 0;
     if (play_nearby && FadeSys.fade == 0.0f && NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)(f32)0.1f) {
         if (Cheats_CheckFlags(0x200))
             detectors = 1;
@@ -769,47 +772,51 @@ static __declspec(noinline) void GizmoPickups_UpdateListPc(WORLDINFO *world, GIZ
     for (index = 0; index < count; ++index, ++pickup) {
         if (!(pickup->flags & 1))
             continue;
-        pickup->rotation = (u16)(i32)((f64)pickup->rotation + (f64)FRAMETIME * 16384.0);
+        pickup->rotation += FRAMETIME * 16384.0;
         pickup->flags |= 0x20;
-        type = &GizmoPickupSys->types[pickup->type_index];
         if ((pickup->flags & 0x40) && GizmoPickupSys->alternate_type != -1)
             type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
-        if (!(pickup->flags & 8) && type->field_0f == 0 && (type->flags & 0x2c)) {
+        else
+            type = &GizmoPickupSys->types[pickup->type_index];
+        if (!(pickup->flags & 8) && type->field_0f == 0) {
             effect_flags = type->flags;
-            eligible = 1;
-            counter = SuperCounter_FindFromNameAndLevel(pickup->name, world, &counter_pickup);
-            if (counter != NULL) {
-                complete = 0;
-                if ((pickup->flags & 6) != 6 && !(counter->processed_flags & 1) &&
-                    counter_pickup->position_gizmo != NULL) {
-                    gizmo = (GIZMO_PC *)counter_pickup->position_gizmo;
-                    if (gizmo->type_id == turret_gizmotype_id)
-                        complete = (((PICKUP_COUNTER_TURRET_PC *)gizmo->object)->flags & 0x20) != 0;
-                    else if (gizmo->type_id == blowup_gizmotype_id)
-                        complete = (((PICKUP_COUNTER_BLOWUP_PC *)gizmo->object)->output_flags & 1) != 0;
-                    else if (gizmo->type_id == gizbuildit_gizmotype_id)
-                        complete = ((PICKUP_COUNTER_BUILDIT_PC *)gizmo->object)->build_state == 2;
+            if (effect_flags & 0x2c) {
+                eligible = 1;
+                counter = SuperCounter_FindFromNameAndLevel(pickup->name, world, &counter_pickup);
+                if (counter != NULL) {
+                    complete = 0;
+                    if ((!pickup->state_enabled || !pickup->state_visible) && !(counter->processed_flags & 1) &&
+                        counter_pickup->position_gizmo != NULL) {
+                        gizmo = (GIZMO_PC *)counter_pickup->position_gizmo;
+                        if (gizmo->type_id == turret_gizmotype_id) {
+                            if (((PICKUP_COUNTER_TURRET_PC *)gizmo->object)->flags & 0x20)
+                                complete = 1;
+                        } else if (gizmo->type_id == blowup_gizmotype_id) {
+                            if (((PICKUP_COUNTER_BLOWUP_PC *)gizmo->object)->output_flags & 1)
+                                complete = 1;
+                        } else if (gizmo->type_id == gizbuildit_gizmotype_id) {
+                            if (((PICKUP_COUNTER_BUILDIT_PC *)gizmo->object)->build_state == 2)
+                                complete = 1;
+                        }
+                    }
+                    if (complete || SuperCounter_AnyCollected(counter, world) ||
+                        ((counter->processed_flags & 1) && (counter->processed_flags & 2)))
+                        eligible = 0;
+                    counter->processed_flags |= 2;
                 }
-                if (complete || SuperCounter_AnyCollected(counter, world)) {
-                    eligible = 0;
-                } else {
-                    previous = counter->processed_flags;
-                    eligible = (previous & 3) != 3;
-                }
-                counter->processed_flags |= 2;
-            }
-            if (eligible) {
-                if (((detectors & 1) && (effect_flags & 4)) || ((detectors & 2) && (effect_flags & 8))) {
-                    position.x = pickup->position.x;
-                    position.y = (f32)((f64)pickup->position.y + 0.5);
-                    position.z = pickup->position.z;
-                    MiniKitDetector(&position);
-                }
-                if (play_nearby) {
-                    distance = NuVecDistSqr(&pickup->position, &GameCam->position, NULL);
-                    if (distance < nearest_distance) {
-                        nearest_distance = distance;
-                        nearest = &pickup->position;
+                if (eligible) {
+                    if (((detectors & 1) && (effect_flags & 4)) || ((detectors & 2) && (effect_flags & 8))) {
+                        position.x = pickup->position.x;
+                        position.y = pickup->position.y + 0.2f;
+                        position.z = pickup->position.z;
+                        MiniKitDetector(&position);
+                    }
+                    if (play_nearby) {
+                        distance = NuVecDistSqr(&pickup->position, &GameCam->position, NULL);
+                        if (distance < nearest_distance) {
+                            nearest_distance = distance;
+                            nearest = &pickup->position;
+                        }
                     }
                 }
             }
