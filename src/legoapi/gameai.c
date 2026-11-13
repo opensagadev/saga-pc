@@ -580,7 +580,7 @@ i32 __cdecl TwistLevel(LEVELDATA_PC *);
 void __cdecl Hint_SetComplete(i32);
 void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
     GAMEOBJECT *other;
-    i32 index, angle_difference, loop_request = 0, roll_request = 0, turn_request = 0;
+    i32 index, angle_difference, loop_request, roll_request, turn_request;
     (void)unused;
     if (WORLD->area != NULL) {
         if (WORLD->area == BATTLEOVERCORUSCANT_ADATA)
@@ -610,6 +610,9 @@ void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_
     if (!(object->character_data->game_character->field_088 > 0.0f) || object->character_context != -1)
         return;
     other = GetOtherActivePlayer(object);
+    loop_request = 0;
+    roll_request = 0;
+    turn_request = 0;
     if (allow_loop != 0 && object->in_narrow_socket != 0 && other != NULL && other->in_narrow_socket != 0 &&
         other->character_context == 0x36 && other->context_timer < (f64)other->context_duration - (f64).2f &&
         other->context_timer > .3f && GoingForwardsAlongNarrowSock(other) == GoingForwardsAlongNarrowSock(object)) {
@@ -625,16 +628,16 @@ void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_
                 roll_request = 2;
             else if ((u32)(angle_difference - 0x71d) <= 0x58e2)
                 roll_request = 1;
-            else if ((angle_difference < 0 ? -angle_difference : angle_difference) >= 0x4000)
+            else if (abs(angle_difference) >= 0x4000)
                 turn_request = 1;
             else
                 loop_request = 1;
         } else
             loop_request = 1;
-        if (allow_loop == 0) {
-            loop_request = 0;
-            turn_request = 0;
-        }
+    }
+    if (allow_loop == 0) {
+        loop_request = 0;
+        turn_request = 0;
     }
     if (jump_pressed == 0)
         return;
