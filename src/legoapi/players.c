@@ -3583,18 +3583,12 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     i32 passenger_locator;
     NUANGVEC passenger_rotation;
     PLAYERCHARACTERCONFIG_PC *config;
-    NUMTX *joints;
     i32 scene_locator;
-    f32 weapon_scale;
     NUVEC glow_position;
     f32 glow_radius;
     f32 glow_alpha;
     f32 held_glow_alpha;
     i32 helmet_locator;
-    u32 throw_layers;
-    i32 throw_reflection;
-    i32 throw_locator;
-    i32 throw_model;
     f32 transform_alpha;
     f32 transform_radius;
     f32 *time;
@@ -3606,14 +3600,13 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     f32 start;
     f32 finish;
     f32 fraction;
-    f32 special_scale;
     NUVEC special_scaling;
     i32 special_phase;
 
+    extra = ((PARAPHERNALIA_EXTRA_PC *)(object));
     if (DrawParaphernaliaEnabledPc == 0)
         return;
 
-    extra = ((PARAPHERNALIA_EXTRA_PC *)(object));
     carried = object->takeover_source;
     if (carried != NULL && object->character_context != 0x3b &&
         (object->character_data->game_character->flags_098[0] & 0x40) == 0) {
@@ -3625,21 +3618,20 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
         if (ride_locator != -1 && object->character_model->points_of_interest[ride_locator] != NULL) {
             matrix = object->locator_matrices[ride_locator];
         } else {
-            carried_position.x = 0.0f;
             carried_position.y = object->bounds_half_height;
+            carried_position.x = 0.0f;
             NuVecMtxRotate(&carried_position, &carried_position, &object->transform);
             NuVecAdd(&carried_position, &carried_position, &object->collision_position);
             matrix = object->transform;
-            matrix.m30 = carried_position.x;
-            matrix.m31 = carried_position.y;
-            matrix.m32 = carried_position.z;
+            matrix.translation = carried_position;
         }
-        carried_reflection = NULL;
         if (carried->reflection_enabled != 0 && carried->reflection_height != 2000000.0 &&
-            ((u8)(WORLD->current_level->reflection_range)) > object->ai_update_distance &&
+            object->ai_update_distance < ((u8)(WORLD->current_level->reflection_range)) &&
             MatrixReflection(&matrix, carried->reflection_enabled, carried->reflection_height,
                              WORLD->current_level->reflection_y, &reflected))
             carried_reflection = &reflected;
+        else
+            carried_reflection = NULL;
         carried_layers = AdjustLayerBits(carried->character_data->game_character->layer_mask_medium, carried);
         if (GameDrawCharacterModel(carried->character_model, &carried->anim_packet, &matrix, NULL, carried_reflection,
                                    attachments, NULL, carried_layers)) {
@@ -3664,19 +3656,16 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
             passenger_rotation.x = -0x4000;
             passenger_rotation.y = object->field_0x276;
             NuMtxSetRotationXYVU0(&matrix, &passenger_rotation);
-            matrix.m30 = ((f32)(object->position.x +
-                                ((f64)(NuTrigTable[object->field_0x276 >> 1])) * object->bounds_radius * 1.75));
-            matrix.m31 = ((f32)(object->collision_min.y +
-                                (((f64)(object->collision_max.y)) - object->collision_min.y) * 0.60000002384185791));
-            matrix.m32 =
-                ((f32)(object->position.z + ((f64)(NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff])) *
-                                                object->bounds_radius * 1.75));
+            matrix.m30 = object->position.x + NuTrigTable[object->field_0x276 >> 1] * object->bounds_radius * 1.75;
+            matrix.m31 =
+                object->collision_min.y + (object->collision_max.y - object->collision_min.y) * 0.60000002384185791;
+            matrix.m32 = object->position.z +
+                         NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff] * object->bounds_radius * 1.75;
         }
         GameDrawCharacterModel(passenger->character_model, &passenger->anim_packet, &matrix, NULL, NULL, NULL, NULL,
                                passenger->character_data->game_character->layer_mask_medium);
     }
     config = object->character_data->game_character;
-    joints = object->locator_matrices;
     if ((config->flags_094 & 1) != 0) {
         if (BonusArea != 0 && VehicleArea != 0)
             CharMiniKit_Draw(((i16)(object->id)), &object->transform, object->reflection_enabled,
@@ -3685,7 +3674,7 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
         scene_locator = config->thingy_locator;
         matrix = scene_locator != -1 && object->character_model->points_of_interest[scene_locator] != NULL &&
                          object->model_draw_result != 0
-                     ? joints[scene_locator]
+                     ? object->locator_matrices[scene_locator]
                      : object->transform;
         reflected = object->draw_tertiary_mtx;
         CharScene_Draw(WORLD, ((i16)(object->id)), &matrix, extra->draw_reflection ? &reflected : NULL);
@@ -3695,23 +3684,23 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
                 (object->context_timer < 0.5f && ((u32)(GameTimer.update_count)) % 6 < 3))) {
         dco_prerotatez = 0xc000;
         DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0],
-                              -1, joints, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              -1, object->locator_matrices, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->character_data->game_character->weapon_action == 1 &&
         AnimPlaying(&object->anim_packet, 0x60, 1, 1) != NULL) {
         DrawObjectOnCharacter(WORLD, object, 9, NULL, object->character_data->game_character->weapon_joints[0], -1,
-                              joints, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f,
+                              1.0f);
     } else if (object->weapon_scale > 0.0f) {
         DrawWeapons(object, extra->draw_reflection, object->weapon_scale);
         if (object->field_d54 > 0.0f) {
             dco_locatorposonly = 1;
-            DrawObjectOnCharacter(WORLD, object, 0x35, NULL,
-                                  object->character_data->game_character->weapon_shoot_joints[0], -1, joints,
-                                  extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+            DrawObjectOnCharacter(
+                WORLD, object, 0x35, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
+                object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
         }
     } else {
-        weapon_scale = ParaphernaliaWeaponScalePc(object);
-        DrawWeapons(object, extra->draw_reflection, weapon_scale);
+        DrawWeapons(object, extra->draw_reflection, ParaphernaliaWeaponScalePc(object));
     }
     if (object->origin_scale_override > 0.0f || object->timer_d34 > 0.0f) {
         ResetShadowMapRendering();
@@ -3724,18 +3713,17 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
         if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == LevelFixupSlotPc0087b194 ||
             WORLD->current_level == DOOKUC_LDATA) {
             glow_position.x = object->collision_position.x;
-            glow_position.y =
-                ((f32)(object->character_bottom * ((f64)(object->origin_scale)) + object->position.y +
-                       (((f64)(object->character_top)) - object->character_bottom) * 0.5 * object->origin_scale));
+            glow_position.y = object->character_bottom * object->origin_scale + object->position.y +
+                              (object->character_top - object->character_bottom) * 0.5 * object->origin_scale;
             glow_position.z = object->collision_position.z;
             glow_radius =
                 object->bounds_radius > object->bounds_half_height ? object->bounds_radius : object->bounds_half_height;
-            glow_radius = ((f32)(glow_radius * 1.75));
+            glow_radius = glow_radius * 1.75;
 
             if (object->context_hover_target_y < 0.20000000298023224)
-                glow_alpha = ((f32)(object->context_hover_target_y / 0.20000000298023224));
+                glow_alpha = object->context_hover_target_y / 0.20000000298023224;
             else if (object->context_timer < 0.20000000298023224)
-                glow_alpha = ((f32)(object->context_timer / 0.20000000298023224));
+                glow_alpha = object->context_timer / 0.20000000298023224;
             else
                 glow_alpha = 1.0f;
             DrawForceGlowSpritePc(&glow_position, glow_radius, 0xdf, glow_alpha, object);
@@ -3748,14 +3736,15 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     }
     if (Cheat_IsOn(2))
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1,
-                              joints, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f,
+                              1.0f);
     if (object->helmet != 0) {
         if ((((i16)(object->id)) == id_CHEWBACCA || ((i16)(object->id)) == id_WOOKIEE) && object->helmet != 5 &&
             object->helmet != 6)
             helmet_locator = 9;
         else
             helmet_locator = object->character_data->game_character->helmet_locator;
-        DrawObjectOnCharacter(WORLD, object, object->helmet + 0xf9, NULL, helmet_locator, -1, joints,
+        DrawObjectOnCharacter(WORLD, object, object->helmet + 0xf9, NULL, helmet_locator, -1, object->locator_matrices,
                               extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->model_draw_result != 0 && object->character_data->game_character->thrust_locators != 0 &&
@@ -3774,21 +3763,18 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     }
     if ((object->flags_e20 & 0x400000) != 0) {
         dco_prerotatez = 0x4000;
-        throw_layers = object->layer_mask;
-        throw_reflection = extra->draw_reflection;
-        throw_locator = object->character_data->game_character->throw_locator;
-        throw_model = BatarangGetObjectFromCharIdPc(((i16)(object->id)));
-        DrawObjectOnCharacter(WORLD, object, throw_model, NULL, throw_locator, -1, joints, throw_reflection,
-                              throw_layers, NULL, NULL, 1.0f, 1.0f);
+        DrawObjectOnCharacter(WORLD, object, BatarangGetObjectFromCharIdPc(((i16)(object->id))), NULL,
+                              object->character_data->game_character->throw_locator, -1, object->locator_matrices,
+                              extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->character_context == 0x46)
         Grapple_DrawLine(object);
     if ((object->flags_e20 & 0x800000) != 0 || object->character_context == 0x58)
         SuperCarry_DrawObject(object);
-    DrawCharacterAttachments(object, joints);
+    DrawCharacterAttachments(object, object->locator_matrices);
     if (object->character_context == 0x5d)
         ParaphernaliaHandPc(object, extra->draw_reflection);
-    if (object->torpedo != NULL && object->torpedo->count != 0)
+    if (object->torpedo != NULL && object->torpedo->count > 0)
         DrawTorpedos(object);
     if (object->character_data->game_character->weapon_action == 0)
         CustomiserDrawAccessoriesPc(CharacterCustomiser, object, NULL);
@@ -3807,7 +3793,7 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
             (time = AnimPlaying(&object->anim_packet, 0x6b, 1, 1)) == NULL)
             return;
         if ((*time >= 70.0f && *time <= 210.0) || (*time >= 310.0f && *time <= 433.0)) {
-            matrix = joints[special_locator];
+            matrix = object->locator_matrices[special_locator];
             NuMtxPreRotateZ(&matrix, -0x4000);
             NuSpecialDrawAt(&WORLD->level_objects[10].special, &matrix);
             if (extra->draw_reflection != 0 &&
@@ -3836,24 +3822,22 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
         start = AnimListFrame(object->character_model, 1, 0);
         if (start >= 1.0f) {
             finish = AnimListFrame(object->character_model, 1, 1);
-            if (start <= finish && *time > start && *time < finish) {
-                fraction = ((f32)((((f64)(*time)) - start) / (((f64)(finish)) - start)));
+            if (finish >= start && *time > start && *time < finish) {
+                fraction = (*time - start) / (finish - start);
 
                 if (fraction < 0.10000000149011612)
-                    special_scale = ((f32)(fraction / 0.10000000149011612));
+                    special_scaling.x = fraction / 0.10000000149011612;
                 else if (fraction < 0.89999997615814209)
-                    special_scale = 1.0f;
+                    special_scaling.x = 1.0f;
                 else
-                    special_scale = ((f32)(1.0 - (fraction - 0.89999997615814209) / 0.10000000149011612));
-                special_scaling.x = special_scale;
-                special_scaling.y = special_scale;
-                special_scaling.z = special_scale;
+                    special_scaling.x = 1.0 - (fraction - 0.89999997615814209) / 0.10000000149011612;
+                special_scaling.y = special_scaling.z = special_scaling.x;
                 NuMtxSetScale(&matrix, &special_scaling);
                 NuMtxRotateX(&matrix, ((u16)(((i32)(fraction * -65536.0)))));
                 NuMtxRotateY(&matrix, object->field_0x276);
-                NuMtxTranslate(&matrix, ((NUVEC *)(&joints[0].m30)));
+                NuMtxTranslate(&matrix, &object->locator_matrices[0].translation);
                 special_phase = ((i32)(fraction * 32768.0));
-                matrix.m31 = ((f32)(matrix.m31 + NuTrigTable[(special_phase >> 1) & 0x7fff] * 0.20000000298023224));
+                matrix.m31 = matrix.m31 + NuTrigTable[(special_phase >> 1) & 0x7fff] * 0.20000000298023224;
                 DrawObjectOnCharacter(WORLD, object, 0xf9, NULL, 0, -1, &matrix, extra->draw_reflection,
                                       object->layer_mask, NULL, NULL, 1.0f, 1.0f);
             }
