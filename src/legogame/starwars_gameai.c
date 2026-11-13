@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x4cadb0-0x4cc8bc: definitions in retail address order. */
+
 extern const char StarWarsStairsTopPc[11], StarWarsStairsTop2Pc[12];
 extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
@@ -25,6 +27,11 @@ extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AI
 void __cdecl ClearSpecialMove(GAMEOBJECT *);
 void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
 void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+typedef struct character_ai_capabilities_pc_s {
+    u8 unknown_00[0x44];
+    u32 path_capabilities;
+} CHARACTER_AI_CAPABILITIES_PC;
+
 i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
     u32 capabilities =
@@ -88,6 +95,7 @@ i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packe
     }
     return 0;
 }
+
 i32 __cdecl StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
     if (owner->character_context == 0) {
@@ -448,6 +456,7 @@ i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *
             0);
     return 0;
 }
+
 i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner = object->objptr;
@@ -464,6 +473,7 @@ i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     }
     return 0;
 }
+
 void __cdecl StarWars_GameAISysInit(void) {
     LEGO_AIPATHCNX_JUMP = 0x1;
     LEGO_AIPATHCNX_R2D2GLIDE = 0x4;
@@ -482,6 +492,79 @@ void __cdecl StarWars_GameAISysInit(void) {
     HubInitAIFnPc = LSW_Hub_InitAI;
     HubResetAIFnPc = LSW_Hub_ResetAI;
     HubUpdateAIFnPc = LSW_Hub_UpdateAI;
+}
+
+void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *object) {
+    CHARACTERDATA_PC *character = object->character_data;
+    object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES_PC *)character)->path_capabilities | 0x20180040;
+    if ((object->flags_1f8 & 1) != 0)
+        object->ai_packet.capabilities |= 0x100;
+    else if ((object->flags_1f8 & 4) == 0)
+        object->ai_packet.capabilities |= 0x80;
+    if (object->character_model->action_animations[6] != NULL)
+        object->ai_packet.capabilities |= 1;
+    if ((character->model_flags & 0x200000) == 0 && (character->model_flags & 8) != 0)
+        object->ai_packet.capabilities |= 0x1000;
+    if ((character->model_flags & 8) != 0)
+        object->ai_packet.capabilities |= 3;
+    if ((character->game_character->flags_090 & 0x400000) != 0)
+        object->ai_packet.capabilities |= 0x23;
+    if ((character->model_flags & 0x40000) != 0)
+        object->ai_packet.capabilities |= 0x10;
+    if ((character->model_flags & 0x40) != 0)
+        object->ai_packet.capabilities |= 0x4004;
+    if ((character->model_flags & 0x100000) != 0)
+        object->ai_packet.capabilities |= 8;
+    if ((character->model_flags & 0x2000) != 0)
+        object->ai_packet.capabilities |= 0x10000;
+    if ((character->model_flags & 0x88) != 0 || (character->game_character->flags_090 & 0x40) != 0)
+        object->ai_packet.capabilities |= 0x8000;
+    if (object->field_280 != 0xff)
+        object->ai_packet.capabilities |= 0x20000;
+    if ((u16)object->id == (u16)id_SNAKE)
+        object->ai_packet.capabilities |= 0x4000;
+}
+
+u32 __cdecl AIPathParseStarWarsFlagPc(char *name) {
+    if (NuStrICmp(name, "DBLJUMP") == 0)
+        return 2;
+    if (NuStrICmp(name, "R2D2GLIDE") == 0)
+        return 4;
+    if (NuStrICmp(name, "ZIPUP") == 0)
+        return 8;
+    if (NuStrICmp(name, "USEHATCH") == 0)
+        return 0x10;
+    if (NuStrICmp(name, "JARJARJUMP") == 0)
+        return 0x20;
+    if (NuStrICmp(name, "HOVERTUBE") == 0)
+        return 0x40;
+    if (NuStrICmp(name, "SWAMP") == 0)
+        return 0x4000;
+    if (NuStrICmp(name, "TAKEOVER") == 0)
+        return 0x8000;
+    if (NuStrICmp(name, "VEHICLE") == 0)
+        return 0x10000;
+    if (NuStrICmp(name, "PARTY") == 0)
+        return 0x20000;
+    if (NuStrICmp(name, "FORGOODIES") == 0)
+        return 0x80;
+    if (NuStrICmp(name, "FORBADDIES") == 0)
+        return 0x100;
+    if (NuStrICmp(name, "OBSTACLE") == 0)
+        return 0x20000000;
+    if (NuStrICmp(name, "JUMP_NOW") == 0)
+        return 0x400;
+    if (NuStrICmp(name, "DONT_JUMP_NOW") == 0)
+        return 0x800;
+    if (NuStrICmp(name, "BLOCKAGE") == 0)
+        return 0x40000;
+    if (NuStrICmp(name, "JUMP") == 0)
+        return 1;
+    if (NuStrICmp(name, "DONTTOGGLE") == 0)
+        return 0x80000;
+    if (NuStrICmp(name, "FULLTERRAIN") == 0)
+        return 0x100000;
+    return 0;
 }
 
 i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
