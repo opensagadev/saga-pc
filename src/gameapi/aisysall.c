@@ -7726,19 +7726,21 @@ void __cdecl AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET_P
 void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC *locator_set, APIOBJECT_PC *object,
                                               f32 max_range, NUVEC *position, f32 off_screen_radius,
                                               i32 ignore_assigned) {
-    f32 max_distance;
+    f32 max_distance = FLT_MAX;
     NUVEC difference;
-    i32 candidate_count = 0;
+    i32 count;
     i32 selected_candidate;
-    i32 candidate_index = 0;
     i32 index;
-    if (object == NULL || locator_set == NULL || object->ai == NULL) {
+    if (locator_set == NULL || object == NULL || object->ai == NULL) {
         return;
     }
-    max_distance = max_range > 0.0f ? max_range * max_range : FLT_MAX;
+    if (max_range > 0.0f) {
+        max_distance = max_range * max_range;
+    }
     if (ignore_assigned != 0) {
         AILocatorSet_CheckLocatorsStillAssigned(system, locator_set);
     }
+    count = 0;
     for (index = 0; index < locator_set->locator_count; ++index) {
         AILOCATOR_PC *locator;
         if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
@@ -7750,13 +7752,14 @@ void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC 
             continue;
         }
         if (NuVecDistSqr(position, &locator->position, &difference) <= max_distance) {
-            ++candidate_count;
+            ++count;
         }
     }
-    if (candidate_count == 0) {
+    if (count == 0) {
         return;
     }
-    selected_candidate = NuRandInt() % candidate_count;
+    selected_candidate = NuRandInt() % count;
+    count = 0;
     for (index = 0; index < locator_set->locator_count; ++index) {
         AILOCATOR_PC *locator;
         if (ignore_assigned != 0 && locator_set->assigned[index] != 0xff) {
@@ -7764,12 +7767,12 @@ void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC 
         }
         locator = &system->locators[locator_set->locator_entries[index]];
         if (NuVecDistSqr(&object->position, &locator->position, &difference) <= max_distance) {
-            if (candidate_index == selected_candidate) {
+            if (selected_candidate == count) {
                 object->ai->locator = locator;
                 locator_set->assigned[index] = object->object_id;
                 break;
             }
-            ++candidate_index;
+            ++count;
         }
     }
 }
