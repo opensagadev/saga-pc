@@ -82,7 +82,6 @@ STATIC_ASSERT(offsetof(CHARACTER_IDLE_POLICY_PC, use_standard_idle) == 0x116);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_animation) == 0x38);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
 extern "C" f32 animduration_blendouttime;
-extern "C" i16 id_R2Q5;
 typedef struct CHARACTER_COMMUNICATE_READER_PC {
     u8 unknown_000[0xd38];
     f32 communicate_blend;
@@ -664,68 +663,6 @@ extern "C" void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
         return;
     }
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
-}
-
-extern "C" void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
-    i32 count, first_joint;
-    if (object->dead == 0 &&
-        (object->character_context == -1 || (object->character_context == 21 && object->field_7aa == 62) ||
-         (object->character_context == 20 && object->field_7aa == 77) ||
-         (object->character_context == 46 && object->field_7aa == 111) ||
-         (object->character_context == 10 && object->field_7aa == 60)) &&
-        object->jump_variant_state == 1 && object->origin_joint_ready != 0) {
-        count = ParticlesPerSecond(100.0f, FRAMETIME);
-        first_joint = object->id == (u16)id_BOBAFETT ? 10 : 7;
-        if (object->character_model->points_of_interest[first_joint] != NULL)
-            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[first_joint].translation, count, 0,
-                             object->facing_angle);
-        if (object->character_model->points_of_interest[8] != NULL)
-            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[8].translation, count, 0,
-                             object->facing_angle);
-        PlaySfx((char *)"JgThrust", &object->collision_position);
-    }
-}
-
-extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
-    CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
-    i32 count, effect, locator;
-    NUVEC position;
-    if (object->dead == 0 && object->character_context == 0 && object->model_draw_result != 0 &&
-        object->origin_joint_ready != 0 &&
-        (object->jump_variant_state != 3 || (object->pad->buttons_held & GAMEPAD_JUMP) != 0)) {
-        count = ParticlesPerFrame(object->jump_variant_state == 3 ? 0.25f : 1.0f, FRAMETIME);
-        if (count > 0) {
-            effect = object->id == (u16)id_R2Q5 ? 12 : 11;
-            if (object->character_model->points_of_interest[2] != NULL)
-                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[2].translation, count,
-                                 0x71c7, object->facing_angle);
-            if (object->character_model->points_of_interest[3] != NULL)
-                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[3].translation, count,
-                                 0x8e38, object->facing_angle);
-        }
-        PlaySfxAndSetVolume((char *)"R2Thrust", &object->collision_position,
-                            object->jump_variant_state == 3 ? 0.5f : 1.0f);
-    } else if (object->character_context == -1 && object->pad->input_magnitude > 0.0f) {
-        if (state->communicate_blend > 0.0f)
-            PlaySfx((char *)"drd_r2_mvt_water_lp", &object->upper_position);
-        else if (object->field_281 != 0)
-            PlaySfx((char *)"R2Move", &object->collision_position);
-    }
-    if (state->communicate_blend > 0.0f && state->communicate_blend < 1.0f) {
-        effect = WORLD->game_debris_sys->entries[object->id == (u16)id_R2Q5 ? 1 : 3].effect;
-        if (effect != -1) {
-            count = ParticlesPerSecond(100.0f, FRAMETIME);
-            if (count > 0) {
-                locator = object->character_data->game_character->thingy_locator;
-                if (locator != -1) {
-                    position = object->locator_matrices[locator].translation;
-                    if (object->field_283 == 9 && position.y < object->water_height)
-                        position.y = object->water_height;
-                    AddVariableShotDebrisEffect(effect, &position, count, 0, 0);
-                }
-            }
-        }
-    }
 }
 
 void __cdecl FinishWeirdoNames(i32 which) {

@@ -176,89 +176,11 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
-    *position = object->collision_position;
-    if (object->id == (u16)id_ATAT) {
-        position->x += NU_SIN_LUT(object->field_0x276) * object->bounds_radius * 1.5;
-        position->z += NU_COS_LUT(object->field_0x276) * object->bounds_radius * 1.5;
-    }
-}
-
 extern "C" void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 effect = world->game_debris_sys->entries[85].effect;
     if (effect != -1)
         AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
-}
-
-extern "C" u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
-    NUVEC temporary;
-    if (direction == NULL)
-        direction = &temporary;
-    if (object->movement_mode == 4) {
-        NUMTX matrix = object->transform;
-        NuMtxPreRotateY(&matrix, 0x8000);
-        NuVecMtxRotate(direction, &v001, &matrix);
-        return object->facing_angle;
-    }
-    CHARACTERDATA_PC *model = object->character_data;
-    PLAYERCHARACTERCONFIG_PC *data = model->game_character;
-    if (data->weapon_shoot_joints[0] != -1 &&
-        ((object->id == (u16)id_ATAT && (object->flags_1fc & 0x80) == 0) || object->id == (u16)id_CLONEWALKER ||
-         object->id == GameObjectRotationAtstId || object->id == (u16)id_ATST_LOWRES)) {
-        direction->x = direction->y = 0.0f;
-        direction->z = object->id == (u16)id_ATAT ? 1.0f : -1.0f;
-        NuVecMtxRotate(direction, direction,
-                       &object->locator_matrices[object->character_data->game_character->weapon_shoot_joints[0]]);
-        return NuAtan2D(direction->x, direction->z);
-    }
-    u16 angle;
-    if ((model->model_flags & 0x2000) == 0 && (data->flags_090 & 0x80) == 0) {
-        angle = object->movement_facing_angle;
-    } else {
-        angle = object->facing_angle;
-        if (object->character_context == 0x2a) {
-            f32 progress = 1.0f - object->context_timer / object->context_duration;
-            if (progress >= 0.25f)
-                angle += 0x8000;
-        }
-    }
-    if (direction != NULL) {
-        direction->x = NU_SIN_LUT(angle);
-        direction->y = 0.0f;
-        direction->z = NU_COS_LUT(angle);
-    }
-    return angle;
-}
-
-extern "C" u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direction) {
-    NUVEC temporary;
-    if (direction == NULL)
-        direction = &temporary;
-    if (object->movement_mode == 4) {
-        NUMTX matrix = object->transform;
-        NuMtxPreRotateY(&matrix, 0x8000);
-        NuVecMtxRotate(direction, &v001, &matrix);
-        return object->facing_angle;
-    }
-    u16 angle;
-    if ((object->character_data->model_flags & 0x2000) == 0 &&
-        (object->character_data->game_character->flags_090 & 0x80) == 0) {
-        angle = object->movement_facing_angle;
-    } else {
-        angle = object->facing_angle;
-        if (object->character_context == 0x2a) {
-            f32 progress = 1.0f - object->context_timer / object->context_duration;
-            if (progress >= 0.25f)
-                angle += 0x8000;
-        }
-    }
-    if (direction != NULL) {
-        direction->x = NU_SIN_LUT(angle);
-        direction->y = 0.0f;
-        direction->z = NU_COS_LUT(angle);
-    }
-    return angle;
 }
 
 extern "C" void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *, i32 no_explosion) {

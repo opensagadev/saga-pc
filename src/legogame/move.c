@@ -461,6 +461,22 @@ static __inline f32 MovePlayerFabs(f32 value) {
     return *(f32 *)&bits;
 }
 
+i16 id_R2Q5;
+typedef struct CHARACTER_COMMUNICATE_READER_PC {
+    u8 unknown_000[0xd38];
+    f32 communicate_blend;
+} CHARACTER_COMMUNICATE_READER_PC;
+
+/* Retail takes this absolute value through the float's bit pattern. */
+static __forceinline f32 PushFabsPc(f32 value) {
+    i32 bits = *(i32 *)&value & 0x7fffffff;
+    f32 result = *(f32 *)&bits;
+    return result;
+}
+i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
+                      i32 fire_mode);
+void __cdecl Move_POD(GAMEOBJECT *object);
+
 /* NuASin polynomial; this unit carries its own instance. */
 static i16 MovementArcSine(f32 sin) {
     f32 abs;
@@ -846,6 +862,104 @@ void __cdecl PreResetCode(GAMEOBJECT *object) {
         object->flags_e24 &= 0xffff5fff;
         reset->hold_timer = 0.0f;
     }
+}
+
+f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
+    SOCKSYS_PC *system = WorldInfo_CurrentlyActive()->sock_sys;
+    SOCK_PC *sock;
+    f32 inner, outer, amount;
+    i32 planar;
+    i32 index;
+    f32 ratio;
+    if (system == NULL)
+        return 0.0f;
+    index = object->sock_position.sock_index;
+    if (index == -1)
+        return 0.0f;
+    sock = &system->socks[index];
+    if ((u8)object->sock_position.candidate_count > 1)
+        return 0.0f;
+    inner = sock->mid_force_inner_radius;
+    outer = sock->mid_force_outer_radius;
+    amount = 0.0f;
+    if (sock->flags & 2) {
+        f32 dy;
+        if (object->movement_mode != 4 && inner > 0.0f && outer > 0.0f) {
+            dy = object->sock_position.midpoint.y - object->position.y;
+            if (dy * dy >= inner * inner) {
+                ratio = (PushFabsPc(dy) - inner) / (outer - inner);
+                object->target_velocity.y += (dy * object->character_data->game_character->run_speed) * ratio;
+                amount = ratio;
+            }
+        }
+    } else {
+        planar = sock->flags & 4;
+        if (inner > 0.0f && outer > 0.0f) {
+            NUVEC delta;
+            f32 distance_squared;
+            f32 inner_squared = inner * inner;
+            if (planar != 0) {
+                delta.x = object->sock_position.midpoint.x - object->position.x;
+                delta.y = 0.0f;
+                delta.z = object->sock_position.midpoint.z - object->position.z;
+                distance_squared = delta.x * delta.x + delta.z * delta.z;
+            } else {
+                NuVecSub(&delta, &object->sock_position.midpoint, &object->position);
+                distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            }
+            if (distance_squared >= inner_squared) {
+                f32 inverse, speed;
+                ratio = (NuFsqrt(distance_squared) - inner) / (outer - inner);
+                if (ratio > 3.0f)
+                    ratio = 3.0f;
+                if (ratio >= 0.0f) {
+                    if (planar == 0 && sock->vertical_scale != 1.0f) {
+                        if (object->movement_mode == 4) {
+                            NuVecInvMtxRotate(&delta, &delta, &object->vehicle_orientation);
+                            delta.y *= 1.0f / sock->vertical_scale;
+                            NuVecMtxRotate(&delta, &delta, &object->vehicle_orientation);
+                        } else {
+                            i32 pitch = RotDiff(0, object->sock_position.midpoint_pitch);
+                            i32 yaw = RotDiff(0, object->sock_heading);
+                            NuVecRotateY(&delta, &delta, -yaw);
+                            NuVecRotateX(&delta, &delta, -pitch);
+                            delta.y *= 1.0f / sock->vertical_scale;
+                            NuVecRotateX(&delta, &delta, pitch);
+                            NuVecRotateY(&delta, &delta, yaw);
+                        }
+                    }
+                    inverse = 1.0f / NuFsqrt(distance_squared);
+                    delta.x *= inverse;
+                    if (planar == 0)
+                        delta.y *= inverse;
+                    delta.z *= inverse;
+                    speed = object->character_data->game_character->run_speed * ratio;
+                    object->target_velocity.x += delta.x * speed;
+                    if (planar == 0)
+                        object->target_velocity.y += delta.y * speed;
+                    object->target_velocity.z += delta.z * speed;
+                    amount = ratio;
+                }
+            }
+            if (planar == 0)
+                goto done; // MATCH-EXCEPTION: retail leaves through the function's single return here, not its own
+                           // epilogue
+        }
+        if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
+            CHARACTERDATA_PC *data = object->character_data;
+            f32 ceiling =
+                (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
+            f32 vertical;
+            if (object->position.y < ceiling)
+                vertical = (object->position.y - object->sock_position.midpoint.y) /
+                           (ceiling - object->sock_position.midpoint.y);
+            else
+                vertical = 1.0f;
+            object->target_velocity.y -= vertical * data->game_character->run_speed;
+        }
+    }
+done:
+    return amount;
 }
 
 void __cdecl MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_object) {
@@ -5584,6 +5698,78 @@ void __cdecl PartImpact_Basketball(PART_PC *part) {
         PlaySfxAndSetVolume("BBounce", &part->position, volume);
 }
 
+u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
+    NUVEC temporary;
+    CHARACTERDATA_PC *model;
+    PLAYERCHARACTERCONFIG_PC *data;
+    u16 angle;
+    if (direction == NULL)
+        direction = &temporary;
+    if (object->movement_mode == 4) {
+        NUMTX matrix = object->transform;
+        NuMtxPreRotateY(&matrix, 0x8000);
+        NuVecMtxRotate(direction, &v001, &matrix);
+        return object->facing_angle;
+    }
+    model = object->character_data;
+    data = model->game_character;
+    if (data->weapon_shoot_joints[0] != -1 &&
+        ((object->id == (u16)id_ATAT && (object->flags_1fc & 0x80) == 0) || object->id == (u16)id_CLONEWALKER ||
+         object->id == GameObjectRotationAtstId || object->id == (u16)id_ATST_LOWRES)) {
+        direction->x = direction->y = 0.0f;
+        direction->z = object->id == (u16)id_ATAT ? 1.0f : -1.0f;
+        NuVecMtxRotate(direction, direction,
+                       &object->locator_matrices[object->character_data->game_character->weapon_shoot_joints[0]]);
+        return NuAtan2D(direction->x, direction->z);
+    }
+    if ((model->model_flags & 0x2000) == 0 && (data->flags_090 & 0x80) == 0) {
+        angle = object->movement_facing_angle;
+    } else {
+        angle = object->facing_angle;
+        if (object->character_context == 0x2a) {
+            f32 progress = 1.0f - object->context_timer / object->context_duration;
+            if (progress >= 0.25f)
+                angle += 0x8000;
+        }
+    }
+    if (direction != NULL) {
+        direction->x = NU_SIN_LUT(angle);
+        direction->y = 0.0f;
+        direction->z = NU_COS_LUT(angle);
+    }
+    return angle;
+}
+
+u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direction) {
+    NUVEC temporary;
+    u16 angle;
+    if (direction == NULL)
+        direction = &temporary;
+    if (object->movement_mode == 4) {
+        NUMTX matrix = object->transform;
+        NuMtxPreRotateY(&matrix, 0x8000);
+        NuVecMtxRotate(direction, &v001, &matrix);
+        return object->facing_angle;
+    }
+    if ((object->character_data->model_flags & 0x2000) == 0 &&
+        (object->character_data->game_character->flags_090 & 0x80) == 0) {
+        angle = object->movement_facing_angle;
+    } else {
+        angle = object->facing_angle;
+        if (object->character_context == 0x2a) {
+            f32 progress = 1.0f - object->context_timer / object->context_duration;
+            if (progress >= 0.25f)
+                angle += 0x8000;
+        }
+    }
+    if (direction != NULL) {
+        direction->x = NU_SIN_LUT(angle);
+        direction->y = 0.0f;
+        direction->z = NU_COS_LUT(angle);
+    }
+    return angle;
+}
+
 i32 __cdecl SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     object->attack_target_position = target->collision_position;
     if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0)
@@ -5848,6 +6034,14 @@ static __declspec(noinline) void FireBountyHunterRocket(GAMEOBJECT *object) {
     object->context_timer = remaining;
     if (remaining > 0.0f)
         object->character_context = 0x14;
+}
+
+void __cdecl GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
+    *position = object->collision_position;
+    if (object->id == (u16)id_ATAT) {
+        position->x += NU_SIN_LUT(object->field_0x276) * object->bounds_radius * 1.5;
+        position->z += NU_COS_LUT(object->field_0x276) * object->bounds_radius * 1.5;
+    }
 }
 
 static __declspec(noinline) void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay,
@@ -6628,6 +6822,26 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     }
 }
 
+void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
+    i32 count, first_joint;
+    if (object->dead == 0 &&
+        (object->character_context == -1 || (object->character_context == 21 && object->field_7aa == 62) ||
+         (object->character_context == 20 && object->field_7aa == 77) ||
+         (object->character_context == 46 && object->field_7aa == 111) ||
+         (object->character_context == 10 && object->field_7aa == 60)) &&
+        object->jump_variant_state == 1 && object->origin_joint_ready != 0) {
+        count = ParticlesPerSecond(100.0f, FRAMETIME);
+        first_joint = object->id == (u16)id_BOBAFETT ? 10 : 7;
+        if (object->character_model->points_of_interest[first_joint] != NULL)
+            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[first_joint].translation, count, 0,
+                             object->facing_angle);
+        if (object->character_model->points_of_interest[8] != NULL)
+            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[8].translation, count, 0,
+                             object->facing_angle);
+        PlaySfx((char *)"JgThrust", &object->collision_position);
+    }
+}
+
 void __cdecl TractorBeamCode(GAMEOBJECT *object) {
     f32 range, range_squared;
     i32 index;
@@ -6907,6 +7121,48 @@ void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
         state->fall_animation_timer += FRAMETIME;
     else
         state->fall_animation_timer = 0.0f;
+}
+
+void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
+    CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
+    i32 count, effect, locator;
+    NUVEC position;
+    if (object->dead == 0 && object->character_context == 0 && object->model_draw_result != 0 &&
+        object->origin_joint_ready != 0 &&
+        (object->jump_variant_state != 3 || (object->pad->buttons_held & GAMEPAD_JUMP) != 0)) {
+        count = ParticlesPerFrame(object->jump_variant_state == 3 ? 0.25f : 1.0f, FRAMETIME);
+        if (count > 0) {
+            effect = object->id == (u16)id_R2Q5 ? 12 : 11;
+            if (object->character_model->points_of_interest[2] != NULL)
+                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[2].translation, count,
+                                 0x71c7, object->facing_angle);
+            if (object->character_model->points_of_interest[3] != NULL)
+                AddGameDebrisRot(WORLD->game_debris_sys, effect, &object->locator_matrices[3].translation, count,
+                                 0x8e38, object->facing_angle);
+        }
+        PlaySfxAndSetVolume((char *)"R2Thrust", &object->collision_position,
+                            object->jump_variant_state == 3 ? 0.5f : 1.0f);
+    } else if (object->character_context == -1 && object->pad->input_magnitude > 0.0f) {
+        if (state->communicate_blend > 0.0f)
+            PlaySfx((char *)"drd_r2_mvt_water_lp", &object->upper_position);
+        else if (object->field_281 != 0)
+            PlaySfx((char *)"R2Move", &object->collision_position);
+    }
+    if (state->communicate_blend > 0.0f && state->communicate_blend < 1.0f) {
+        effect = WORLD->game_debris_sys->entries[object->id == (u16)id_R2Q5 ? 1 : 3].effect;
+        if (effect != -1) {
+            count = ParticlesPerSecond(100.0f, FRAMETIME);
+            if (count > 0) {
+                locator = object->character_data->game_character->thingy_locator;
+                if (locator != -1) {
+                    position = object->locator_matrices[locator].translation;
+                    if (object->field_283 == 9 && position.y < object->water_height)
+                        position.y = object->water_height;
+                    AddVariableShotDebrisEffect(effect, &position, count, 0, 0);
+                }
+            }
+        }
+    }
 }
 
 void __cdecl SetProtocolDroidDeactivatedAction(GAMEOBJECT *object) {
@@ -11463,3 +11719,4 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
     GameObjectOrigin(object);
     AddSurfaceRipples(object);
 }
+

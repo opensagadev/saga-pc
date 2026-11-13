@@ -402,8 +402,8 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/pushing.cpp",
-   "symbol": "?PushFabsPc@@YAMM@Z",
+   "unit": "src/legogame/move.c",
+   "symbol": "_PushFabsPc",
    "kind": "function"
   },
   {
