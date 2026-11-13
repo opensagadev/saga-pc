@@ -173,15 +173,14 @@ void MiniCam_ChangeMode(i32 mode) {
 
 void Minicam_AddDeltas(float duration) {
     f32 fraction;
-    if (MiniCam.delta_time == 0.0f || duration == 0.0f) {
+    if (MiniCam.delta_time == 0.0f || duration == 0.0f)
         fraction = 0.0f;
-    } else {
+    else
         fraction = MiniCam.delta_time / duration;
-        if (fraction < 0.0f)
-            fraction = 0.0f;
-        else if (fraction > 1.0f)
-            fraction = 1.0f;
-    }
+    if (fraction < 0.0f)
+        fraction = 0.0f;
+    else if (fraction > 1.0f)
+        fraction = 1.0f;
     switch (MiniCam.easing) {
         case 1:
             fraction = 1.0f + NuTrigTable[(((i32)(fraction * 16384.0f + 32768.0f + 16384.0f)) >> 1) & 0x7fff];
