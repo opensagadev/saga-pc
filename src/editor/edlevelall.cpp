@@ -1260,19 +1260,32 @@ STATIC_ASSERT(offsetof(SplineObject, led_file) == 0x44);
 STATIC_ASSERT(offsetof(SplineObject, drop) == 0x50);
 STATIC_ASSERT(sizeof(SplineObject) == 0x58);
 
+/* The splines of the level, in creation order. */
+struct SplineObjectList {
+    SplineObject *first;
+    SplineObject *last;
+    i32 count;
+
+    SplineObjectList();
+    SplineObject *First();
+    void InsertAfter(SplineObject *spline, SplineObject *after);
+    void Remove(SplineObject *spline);
+    i32 Count();
+};
+
 /* The spline object class (Android SplineHelper), theSplineHelper. */
 class SplineHelper : public EdClassInterface {
   public:
-    SplineHelper() : first_object(NULL), last_object(NULL), object_count(0), auto_generate_points(1) {
+    SplineHelper() : auto_generate_points(1) {
     }
     virtual void ClearLevel(i32 level);
     virtual void Flush() {
-        last_object = NULL;
-        first_object = NULL;
-        object_count = 0;
+        objects.last = NULL;
+        objects.first = NULL;
+        objects.count = 0;
     }
     virtual i32 GetNumObjects() {
-        return object_count;
+        return objects.Count();
     }
     virtual void *GetNextObject(void *object);
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
@@ -1287,9 +1300,7 @@ class SplineHelper : public EdClassInterface {
     using EdClassInterface::GetNextObject;
     void Initialise();
 
-    SplineObject *first_object;
-    SplineObject *last_object;
-    i32 object_count;
+    SplineObjectList objects;
     i32 auto_generate_points;
 
     static void cbEdSplineAutoGenPoints(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
@@ -1298,7 +1309,7 @@ class SplineHelper : public EdClassInterface {
     static void cbEdSplineSmoothKnot(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     static void cbEdSplineSmoothSpline(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 };
-STATIC_ASSERT(offsetof(SplineHelper, first_object) == 0x8);
+STATIC_ASSERT(offsetof(SplineHelper, objects) == 0x8);
 STATIC_ASSERT(offsetof(SplineHelper, auto_generate_points) == 0x14);
 STATIC_ASSERT(sizeof(SplineHelper) == 0x18);
 extern SplineHelper theSplineHelper;
@@ -5980,6 +5991,54 @@ i32 SplinePointList::Count() {
     return block_count;
 }
 
+SplineObjectList::SplineObjectList() : first(NULL), last(NULL), count(0) {
+}
+
+SplineObject *SplineObjectList::First() {
+    return first;
+}
+
+/* A NULL position appends the spline. */
+void SplineObjectList::InsertAfter(SplineObject *spline, SplineObject *after) {
+    if (after != NULL) {
+        spline->previous = after;
+        spline->next = after->next;
+        if (after->next != NULL)
+            after->next->previous = spline;
+        else
+            last = spline;
+        after->next = spline;
+        count++;
+    } else {
+        spline->next = NULL;
+        spline->previous = last;
+        if (last != NULL)
+            last->next = spline;
+        last = spline;
+        if (first == NULL)
+            first = spline;
+        count++;
+    }
+}
+
+void SplineObjectList::Remove(SplineObject *spline) {
+    if (spline->next != NULL)
+        spline->next->previous = spline->previous;
+    else
+        last = spline->previous;
+    if (spline->previous != NULL)
+        spline->previous->next = spline->next;
+    else
+        first = spline->next;
+    spline->next = NULL;
+    spline->previous = NULL;
+    count--;
+}
+
+i32 SplineObjectList::Count() {
+    return count;
+}
+
 /* The point count of the last block. */
 i32 SplinePointList::GetNumPoints() {
     i32 point_count = 0;
@@ -6256,7 +6315,7 @@ void SplineHelper::SerialiseObject(EdStream &stream, void *object) {
 
 void *SplineHelper::GetNextObject(void *object) {
     if (object == NULL)
-        return first_object;
+        return objects.First();
     return static_cast<SplineObject *>(object)->next;
 }
 
@@ -6264,14 +6323,7 @@ void *SplineHelper::CreateObject(void *, i32, i32) {
     void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
     if (memory != NULL) {
         SplineObject *spline = new (memory) SplineObject;
-        spline->next = NULL;
-        spline->previous = last_object;
-        if (last_object != NULL)
-            last_object->next = spline;
-        last_object = spline;
-        if (first_object == NULL)
-            first_object = spline;
-        object_count++;
+        objects.InsertAfter(spline, NULL);
         return spline;
     }
     return NULL;
@@ -6281,19 +6333,9 @@ void *SplineHelper::CreateObject(void *, i32, i32) {
 void SplineHelper::DestroyObject(void *object, i32) {
     theLevelEditor.destroying_objects = 1;
     SplineObject *spline = static_cast<SplineObject *>(object);
-    for (SplineObject *other = first_object; other != NULL; other = other->next) {
+    for (SplineObject *other = objects.First(); other != NULL; other = other->next) {
         if (other == spline && spline->knots.Count() == 0) {
-            if (spline->next != NULL)
-                spline->next->previous = spline->previous;
-            else
-                last_object = spline->previous;
-            if (spline->previous != NULL)
-                spline->previous->next = spline->next;
-            else
-                first_object = spline->next;
-            spline->next = NULL;
-            spline->previous = NULL;
-            object_count--;
+            objects.Remove(spline);
             delete spline;
             return;
         }
@@ -6306,7 +6348,7 @@ void SplineHelper::Render(void *object, i32 selected) {
 
 i32 KnotHelper::GetNumObjects() {
     i32 count = 0;
-    for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next)
+    for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->next)
         count += spline->knots.Count();
     return count;
 }
@@ -6315,7 +6357,7 @@ i32 KnotHelper::GetNumObjects() {
 void *KnotHelper::GetNextObject(void *current) {
     SplineKnot *next = NULL;
     if (current == NULL) {
-        for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next) {
+        for (SplineObject *spline = theSplineHelper.objects.First(); spline != NULL; spline = spline->next) {
             if (spline->knots.Count() != 0)
                 return spline->knots.First();
         }
@@ -6341,17 +6383,7 @@ void KnotHelper::DestroyObject(void *object, i32) {
     spline->knots.Remove(knot);
     theMemoryManager.FreePool(knot, sizeof(SplineKnot));
     if (spline->knots.Count() == 0) {
-        if (spline->next != NULL)
-            spline->next->previous = spline->previous;
-        else
-            theSplineHelper.last_object = spline->previous;
-        if (spline->previous != NULL)
-            spline->previous->next = spline->next;
-        else
-            theSplineHelper.first_object = spline->next;
-        spline->next = NULL;
-        spline->previous = NULL;
-        theSplineHelper.object_count--;
+        theSplineHelper.objects.Remove(spline);
         delete spline;
     }
 }
@@ -8646,7 +8678,7 @@ void SplineHelper::Initialise() {
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
-    for (SplineObject *spline = first_object; spline != NULL; spline = spline->next)
+    for (SplineObject *spline = objects.First(); spline != NULL; spline = spline->next)
         spline->GenPoints();
 }
 
@@ -8741,14 +8773,7 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
         if (spline == NULL)
             return NULL;
         theClassEditor.MakeUniqueName("NewSpline", spline->name, sizeof(spline->name));
-        spline->next = NULL;
-        spline->previous = theSplineHelper.last_object;
-        if (theSplineHelper.last_object != NULL)
-            theSplineHelper.last_object->next = spline;
-        theSplineHelper.last_object = spline;
-        if (theSplineHelper.first_object == NULL)
-            theSplineHelper.first_object = spline;
-        theSplineHelper.object_count++;
+        theSplineHelper.objects.InsertAfter(spline, NULL);
     }
     SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
     if (knot == NULL)
