@@ -11543,38 +11543,38 @@ i32 __cdecl Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     if (first_time != 0) {
         processor->action_data_1 = 0;
         processor->action_data_3 = processor->locator;
-        for (index = 0; index < param_count; ++index) {
-            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-            if (value == NULL) {
-                value = NuStrIStr(params[index], (char *)AIActionCircleTeleportName);
-            }
-            if (value != NULL) {
-                processor->action_data_3 =
-                    AIPathFindLocator(sys, value + NuStrLen((char *)AIScriptActionNameArgPrefix));
-            } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
-                packet->movement_instruction_parameter =
-                    AIParamToFloatEx(packet, processor, value + NuStrLen((char *)AIPathGoalRangeName) + 1);
-            } else if (NuStrICmp(params[index], (char *)AIActionCircleReverseName) == 0) {
-                packet->flags ^= 0x200;
-            } else if (NuStrICmp(params[index], (char *)AIActionCircleAnticlockwiseName) == 0) {
-                packet->flags &= ~0x200u;
-            } else if (NuStrICmp(params[index], (char *)AIActionCircleClockwiseName) == 0) {
-                packet->flags |= 0x200;
-            } else {
-                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+        if (param_count != 0) {
+            for (index = 0; index < param_count; ++index) {
+                if (AIActionParseSpeedFn != NULL &&
+                    AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+                if (value != NULL || (value = NuStrIStr(params[index], (char *)AIActionCircleTeleportName)) != NULL) {
+                    value += NuStrLen((char *)AIScriptActionNameArgPrefix);
+                    processor->action_data_3 = AIPathFindLocator(sys, value);
+                } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
+                    value += NuStrLen((char *)AIPathGoalRangeName) + 1;
+                    packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, value);
+                } else if (NuStrICmp(params[index], (char *)AIActionCircleReverseName) == 0) {
+                    packet->flags = (packet->flags & ~0x200u) |
+                                    (~packet->flags & 0x200u); // MATCH-EXCEPTION: retail toggles a one-bit bitfield
+                } else if (NuStrICmp(params[index], (char *)AIActionCircleAnticlockwiseName) == 0) {
+                    packet->flags &= ~0x200u;
+                } else if (NuStrICmp(params[index], (char *)AIActionCircleClockwiseName) == 0) {
+                    packet->flags |= 0x200;
+                } else {
+                    packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+                }
             }
         }
     }
     locator = (AILOCATOR_PC *)processor->action_data_3;
-    if (locator != NULL) {
-        AIMoveInstruction(packet, &locator->position, packet->movement_instruction_parameter, &locator->path_info, 3,
-                          packet->movement_instruction_parameter);
-    }
-    if (locator == NULL)
+    if (locator == NULL) {
         return 1;
+    }
+    AIMoveInstruction(packet, &locator->position, packet->movement_instruction_parameter, &locator->path_info, 3,
+                      packet->movement_instruction_parameter);
     return 0;
 }
 
