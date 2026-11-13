@@ -527,7 +527,8 @@ typedef struct cut_load_camera_system_s {
 STATIC_ASSERT(offsetof(CUT_LOAD_CAMERA_SYSTEM, focus_animation) == 0x1c);
 STATIC_ASSERT(offsetof(CUT_LOAD_CAMERA_SYSTEM, focus_state_animation) == 0x20);
 typedef struct cut_load_trigger_event_s {
-    u16 index, unknown_02;
+    i16 index;
+    u16 unknown_02;
     char *name;
     STATE_ANIM_PC *state_animation;
 } CUT_LOAD_TRIGGER_EVENT;
@@ -1097,13 +1098,13 @@ static __declspec(noinline) void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_TRIGGER_EVENT *event = &system->events[i];
         for (j = 0; j < owner->count; ++j) {
-            event->index = 65535;
+            event->index = -1;
             if (NuStrICmp(event->name, owner->entries[j].name) == 0) {
-                event->index = (u16)j;
+                event->index = (i16)j;
                 break;
             }
         }
-        if (event->index == 65535)
+        if (event->index == -1)
             CutSceneLoadDiagnosticPc(event->name);
     }
 }
@@ -1906,9 +1907,9 @@ static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame
             CUT_LOAD_TRIGGER_STATE_PC *state = &states->states[i];
             if (StateAnimEvaluate(event->state_animation, &state->state_index, &value, frame) != 0) {
                 if (value != 0)
-                    states->owner->trigger_states[(i16)event->index].flags |= 1;
+                    states->owner->trigger_states[event->index].flags |= 1;
                 else
-                    states->owner->trigger_states[(i16)event->index].flags &= ~1;
+                    states->owner->trigger_states[event->index].flags &= ~1;
             }
         }
     }
@@ -2025,9 +2026,9 @@ static void CutSceneTriggerSysResetPc(CUT_INSTANCE_LOAD_PC *instance) {
         state->state_index = 0;
         if (StateAnimEvaluate(event->state_animation, &state->state_index, &value, 1.0f) != 0) {
             if (value != 0)
-                states->owner->trigger_states[(i16)event->index].flags |= 1;
+                states->owner->trigger_states[event->index].flags |= 1;
             else
-                states->owner->trigger_states[(i16)event->index].flags &= ~1;
+                states->owner->trigger_states[event->index].flags &= ~1;
         }
     }
 }
