@@ -40,7 +40,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
     GAMEOBJECT *target, *candidate;
-    u32 low, high;
+    u64 mask;
     i32 index;
     target = FindGameObject(((MISSION_END_DATA_VIEW_PC *)system->active_mission)->find_character, 0, 0, 1, 0);
     if (((MISSION_END_SYSTEM_VIEW_PC *)system)->elapsed_time < 3.0f)
@@ -48,23 +48,21 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
     if (GetMenuID() == 9)
         return;
     if (target != NULL) {
-        low = target->collision_identity_mask[0];
-        high = target->collision_identity_mask[1];
+        mask = U64_PAIR(target->collision_identity_mask);
     } else {
-        low = high = 0;
+        mask = 0;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             candidate = &Obj[index];
-            if ((candidate->flags_1fc_word & 0x1001) == 0x1001 && candidate->dead == 0 &&
-                candidate->field_280 == 0xff) {
-                low |= candidate->collision_identity_mask[0];
-                high |= candidate->collision_identity_mask[1];
+            if ((candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 &&
+                candidate->dead == 0 && candidate->field_280 == 0xff) {
+                mask |= U64_PAIR(candidate->collision_identity_mask);
             }
         }
     }
     for (index = 0; index < 8; ++index) {
         candidate = Player[index];
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0 &&
-            ((candidate->collision_contact_mask[0] & low) | (candidate->collision_contact_mask[1] & high)) != 0) {
+            (U64_PAIR(candidate->collision_contact_mask) & mask) != 0) {
             if (netclient != 0)
                 return;
             system->state = 2;
