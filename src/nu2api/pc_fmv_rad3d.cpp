@@ -6,7 +6,9 @@
 #include <string.h>
 
 struct RADFMV_DEVICE_METHODS_PC {
-    void *unknown_000[17];
+    void *unknown_000[2];
+    ULONG(__stdcall *release)(PC_D3D9_DEVICE_PC *);
+    void *unknown_00c[14];
     HRESULT(__stdcall *present)(PC_D3D9_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *);
     void *unknown_048[5];
     HRESULT(__stdcall *create_texture)
@@ -24,6 +26,8 @@ struct RADFMV_FACTORY_METHODS_PC {
     void *unknown_000[10];
     HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY_PC *, u32, u32, u32, u32, u32, u32);
 };
+STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, release) == 0x8);
+STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, present) == 0x44);
 STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, create_texture) == 0x5c);
 STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, begin_scene) == 0xa4);
 STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, clear) == 0xac);
@@ -33,13 +37,16 @@ STATIC_ASSERT(offsetof(RADFMV_FACTORY_METHODS_PC, check_format) == 0x28);
 #define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS_PC *>((device)->methods)
 #define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>((factory)->methods)
 
+extern "C" i32 __cdecl RadFmvCheckFormatPc(GRAPHICS_FACTORY_PC *factory, u32 format, u32 display_format) {
+    return RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, format) >= 0;
+}
 extern "C" i32 __cdecl RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u32 display_format,
                                                  RADFMV_CONTEXT_PC *context) {
     const u32 formats[7][4] = {{22, 0, 4, 0}, {20, 8, 3, 0}, {23, 3, 2, 0}, {24, 2, 2, 0},
                                {21, 1, 4, 1}, {26, 5, 2, 1}, {25, 4, 2, 1}};
     u32 i;
     for (i = 0; i < 7; ++i) {
-        if (RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
+        if (RadFmvCheckFormatPc(factory, formats[i][0], display_format)) {
             context->opaque_format = formats[i][0];
             context->opaque_bink_format = formats[i][1];
             context->opaque_bytes = formats[i][2];
@@ -49,8 +56,7 @@ extern "C" i32 __cdecl RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u
     if (i == 7)
         return 0;
     for (i = 0; i < 7; ++i) {
-        if (formats[i][3] &&
-            RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
+        if (formats[i][3] && RadFmvCheckFormatPc(factory, formats[i][0], display_format)) {
             context->alpha_format = formats[i][0];
             context->alpha_bink_format = formats[i][1];
             context->alpha_bytes = formats[i][2];
@@ -58,6 +64,62 @@ extern "C" i32 __cdecl RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u
         }
     }
     return i != 7;
+}
+extern "C" RADFMV_CONTEXT_PC *__cdecl RadFmvOpenPc(HWND window) {
+    GRAPHICS_PRESENT_PARAMETERS_PC present = {0};
+    GRAPHICS_DISPLAY_MODE_PC mode;
+    GRAPHICS_CAPS_PC caps;
+    GRAPHICS_FACTORY_PC *factory;
+    PC_D3D9_DEVICE_PC *device;
+    RADFMV_CONTEXT_PC *context;
+    factory = reinterpret_cast<GRAPHICS_FACTORY_PC *>(Direct3DCreate9(32));
+    if (factory == NULL)
+        return NULL;
+    if (factory->methods->get_adapter_display_mode(factory, 0, &mode) < 0) {
+        factory->methods->release(factory);
+        return NULL;
+    }
+    context = (RADFMV_CONTEXT_PC *)malloc(sizeof(RADFMV_CONTEXT_PC));
+    if (context == NULL) {
+        factory->methods->release(factory);
+        return NULL;
+    }
+    if (!RadFmvInitializeFormatsPc(factory, mode.format, context)) {
+        factory->methods->release(factory);
+        return NULL;
+    }
+    present.format = mode.format;
+    present.window = window;
+    present.windowed = 1;
+    present.swap_effect = 1;
+    if (factory->methods->create_device(factory, 0, 1, window, 0x40, &present, &device) < 0 &&
+        factory->methods->create_device(factory, 0, 1, window, 0x20, &present, &device) < 0) {
+        free(context);
+        factory->methods->release(factory);
+        return NULL;
+    }
+    device->methods->get_device_caps(device, &caps);
+    context->permits_nonpow2 = (caps.texture_caps >> 8) & 1;
+    context->factory = factory;
+    context->device = device;
+    context->window = window;
+    return context;
+}
+extern "C" void __cdecl RadFmvClosePc(RADFMV_CONTEXT_PC *context) {
+    if (context) {
+        if (context->device) {
+            RAD_DEVICE_METHODS(context->device)->release(context->device);
+            context->device = NULL;
+        }
+        if (context->factory) {
+            context->factory->methods->release(context->factory);
+            context->factory = NULL;
+        }
+        free(context);
+    }
+}
+extern "C" const char *__cdecl RadFmvDescribePc(void) {
+    return "Direct3D9";
 }
 extern "C" void __cdecl RadFmvBeginScenePc(RADFMV_CONTEXT_PC *context) {
     if (context) {
