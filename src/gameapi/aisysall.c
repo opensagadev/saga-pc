@@ -12220,10 +12220,9 @@ void __cdecl xActions(NUFPAR_PC *parser) {
                 i32 param_count;
                 i32 i;
 
-                action = (AIACTION_PC *)AIScriptBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                            sizeof(AIACTION_PC));
+                action = (AIACTION_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                                  sizeof(AIACTION_PC));
                 if (action == NULL) {
-                    AIScriptMissingStateDiagnostic();
                     continue;
                 }
 
