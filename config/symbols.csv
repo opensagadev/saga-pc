@@ -306,6 +306,7 @@ address,symbol,size,ctype
 0x427070,_Detonators_Draw,318,void __cdecl(void)
 0x4271b0,_Detonator_MoveCode,1522,void __cdecl(GAMEOBJECT *)
 0x004277d0,_CheckForPlayersTurnedOff,164,void __cdecl (void)
+0x427880,_GetNumLocalPlayers,61,i32 __cdecl(void)
 0x4278c0,_FreePlay_DropInToPlayerPos,521,
 0x427ad0,_DropInOutScale,103,
 0x00427b40,_DropInOutCode,196,void __cdecl(GAMEOBJECT *)
