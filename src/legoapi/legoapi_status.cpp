@@ -1280,61 +1280,48 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
                          0, 255, (u8)(alpha * 128.0f));
         }
     draw_stages:
-        STATUS_STAGE_s *current;
-        current = StatusPacket.stage;
-        u32 index = 0;
-        STATUS_STAGE_s *stages = StatusStages;
-        while (stages[index].type != -1) {
-            STATUS_STAGE_s *stage = &stages[index];
-            void(__cdecl * draw)(STATUS_STAGE_s *, STATUSPACKET_s *, i32) = stage->draw_callback;
-            if (draw != NULL) {
-                if (stage == current)
-                    current->draw_callback(current, &StatusPacket, 1);
+        for (i32 i = 0; StatusStages[i].type != -1; i++) {
+            STATUS_STAGE_s *stage = &StatusStages[i];
+            if (stage->draw_callback != NULL) {
+                if (stage == StatusPacket.stage)
+                    StatusPacket.stage->draw_callback(StatusPacket.stage, &StatusPacket, 1);
                 else
-                    draw(stage, &StatusPacket, 0);
-                current = StatusPacket.stage;
+                    stage->draw_callback(stage, &StatusPacket, 0);
             }
-            ++index;
-            stages = StatusStages;
         }
         f32 alpha;
-        if (current->type == 11)
+        if (StatusPacket.stage->type == 11)
             return;
-        if (current->type == 12) {
+        if (StatusPacket.stage->type == 12) {
             alpha = 0.0f;
-        } else if (current->type == 10) {
-            alpha = current->field_0x18 < 1.0f ? (f32)(1.0 - (f64)current->field_0x18) : 0.0f;
+        } else if (StatusPacket.stage->type == 10) {
+            alpha = StatusPacket.stage->field_0x18 < 1.0f ? 1.0f - StatusPacket.stage->field_0x18 : 0.0f;
+        } else if (StatusPacket.stage->type == 19 && StatusPacket.stage->field_0x14 != 0) {
+            if (StatusPacket.stage->field_0x18 < 1.0f) {
+                alpha = 1.0f - StatusPacket.stage->field_0x18;
+            } else {
+                f32 fade_start = StatusPacket.stage->field_0x1c - 1.0;
+                if (StatusPacket.stage->field_0x18 >= fade_start)
+                    alpha =
+                        (StatusPacket.stage->field_0x18 - fade_start) / (StatusPacket.stage->field_0x1c - fade_start);
+                else
+                    alpha = 0.0f;
+            }
         } else {
             alpha = 1.0f;
-            if (current->type == 19 && current->field_0x14 != 0) {
-                if (current->field_0x18 < 1.0f) {
-                    alpha = (f32)(1.0 - (f64)current->field_0x18);
-                } else {
-                    f32 fade_start = (f32)((f64)current->field_0x1c - 1.0);
-                    if (current->field_0x18 >= fade_start)
-                        alpha = (f32)(((f64)current->field_0x18 - (f64)fade_start) /
-                                      ((f64)current->field_0x1c - (f64)fade_start));
-                    else
-                        alpha = 0.0f;
-                }
-            }
         }
-        if (StatusDrawPlayerIconsPc != 0) {
-            f32 icon_alpha = iconalphaoverride >= 0.0f ? iconalphaoverride : alpha;
-            Status_DrawPlayerIconsPc(&StatusPacket, StatusIconYPc, icon_alpha);
-        }
+        if (StatusDrawPlayerIconsPc != 0)
+            Status_DrawPlayerIconsPc(&StatusPacket, StatusIconYPc,
+                                     iconalphaoverride >= 0.0f ? iconalphaoverride : alpha);
     } else {
         char time[256];
         f32 remaining = StatusCountdownLimitPc - GameTimer.time_elapsed;
         if (remaining < 0.0f)
             remaining = 0.0f;
         Text_MakeTime(remaining, 0, 0, 0, time);
-        f64 y_phase = NuFmod(GameTimer.time_elapsed, 0.5f);
-        f32 y = (f32)((f64)NuTrigTable[(u16)((y_phase + y_phase) * 65536.0) >> 1] * (f64)0.01f);
-        Text3D(time,
-               (f32)((f64)NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.432f) / (f64)0.432f * 65536.0) >> 1] *
-                     (f64)0.01f),
-               y, 1.0f, 1.0f, 1.0f, 1.0f, 0, 255, 191, 0);
+        Text3D(time, NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.432f) / 0.432f * 65536.0f) >> 1] * 0.01f,
+               NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.5f) * 2.0f * 65536.0f) >> 1] * 0.01f, 1.0f, 1.0f,
+               1.0f, 1.0f, 0, 255, 191, 0);
     }
 }
 
