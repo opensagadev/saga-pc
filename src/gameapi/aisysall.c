@@ -14632,19 +14632,18 @@ void __cdecl locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s
         while (locator != NULL) {
             if (NuStrNICmp(aieditor->pending_locator_name, locator->name, -1) == 0) {
                 for (index = 0; index < 64; ++index) {
-                    if (aieditor->current_locator_set->locators[index] == NULL) {
-                        AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator, NULL);
-                        break;
-                    }
-                    if (NuStrICmp(aieditor->current_locator_set->locators[index]->name, locator->name) > 0) {
-                        i32 length = NuStrLen(aieditor->current_locator_set->locators[index]->name);
-                        if (length >= NuStrLen(locator->name)) {
+                    if (aieditor->current_locator_set->locators[index] != NULL) {
+                        if (NuStrICmp(aieditor->current_locator_set->locators[index]->name, locator->name) > 0 &&
+                            NuStrLen(aieditor->current_locator_set->locators[index]->name) >= NuStrLen(locator->name)) {
                             AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator,
                                                       aieditor->current_locator_set->locators[index]);
                             AiEditorAddLocatorToSetPc(aieditor->current_locator_set,
                                                       aieditor->current_locator_set->locators[index], locator);
                             break;
                         }
+                    } else {
+                        AiEditorAddLocatorToSetPc(aieditor->current_locator_set, locator, NULL);
+                        break;
                     }
                 }
             }
