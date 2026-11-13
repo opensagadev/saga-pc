@@ -6469,13 +6469,12 @@ void ClassEditor::Initialise(variptr_u &first, variptr_u &second, i32) {
 i32 ClassEditor::Editable(void *object, EdClass *object_class, i32 index) {
     i16 scene = 0;
     if (object != NULL) {
-        EdMember member;
-        if (object_class->FindMember(&member, object, 0x100, 1))
-            member.reference->GetAttributeData(member.object, 0x100, EdType_Short, &scene, 0);
-        return theLevelEditor.IsEditable(scene);
-    }
-    if (class_filter & (1 << index))
+        object_class->GetAttributeData(object, 0x100, EdType_Short, &scene, 0);
+        if (theLevelEditor.IsEditable(scene))
+            return 1;
+    } else if (class_filter & (1 << index)) {
         return 1;
+    }
     return 0;
 }
 
