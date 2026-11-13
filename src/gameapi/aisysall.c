@@ -9003,22 +9003,20 @@ void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *ot
 }
 
 static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
-    u8 drawn_connections[255][32];
+    u8 drawn_connections[255][32] = {{0}};
     i16 mode;
     i32 solid;
     u32 active_route = 0;
+    i32 route_index = 0;
     u32 colour;
     EDAIPATHNODE_s *node;
-    memset(drawn_connections, 0, sizeof(drawn_connections));
     mode = aieditorsettings.modes.current;
     solid = (aieditorsettings.display_options & 0x80) &&
             (mode == AiEditorPathsModeIdPc || mode == AiEditorCreaturesModeIdPc || mode == AiEditorLocatorsModeIdPc);
     if (mode == AiEditorRouteModeIdPc) {
-        EDAIPATH_s *selected = aieditor->current_path;
-        u8 shift = selected->current_route != NULL
-                       ? (u8)((i32)((u32)selected->current_route - (u32)selected - offsetof(EDAIPATH_s, routes)) >> 5)
-                       : 0;
-        active_route = shift < 64 ? (u32)((u64)1 << shift) : 0;
+        if (aieditor->current_path->current_route != NULL)
+            route_index = aieditor->current_path->current_route - aieditor->current_path->routes;
+        active_route = (u32)((u64)1 << route_index);
     }
     colour = path == aieditor->current_path ? 0xffffffff : iAISysPathColoursG[path_index % 5];
     if (path != NULL) {
@@ -9028,24 +9026,17 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
             i32 segments;
             u32 node_colour;
             i32 slot;
-            f32 override_height = AiEditorUpperHeightOverridePc;
-            if (override_height != 0.0f)
-                node->upper_height = override_height;
-            override_height = AiEditorLowerHeightOverridePc;
-            if (override_height != 0.0f)
-                node->lower_height = override_height;
+            if (AiEditorUpperHeightOverridePc != 0.0f)
+                node->upper_height = AiEditorUpperHeightOverridePc;
+            if (AiEditorLowerHeightOverridePc != 0.0f)
+                node->lower_height = AiEditorLowerHeightOverridePc;
             first_index = node->index;
-            if (path == aieditor->current_path) {
-                if (path->current_node == node) {
-                    node_colour = 0xff0000ff;
-                    segments = 32;
-                } else if (node == path->other_node) {
-                    node_colour = 0xff00ffff;
-                    segments = 32;
-                } else {
-                    node_colour = colour;
-                    segments = 8;
-                }
+            if (path == aieditor->current_path && path->current_node == node) {
+                node_colour = 0xff0000ff;
+                segments = 32;
+            } else if (path == aieditor->current_path && path->other_node == node) {
+                node_colour = 0xff00ffff;
+                segments = 32;
             } else {
                 node_colour = colour;
                 segments = 8;
@@ -9084,14 +9075,11 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                 }
                 pathEditorDrawConnectionInfo(&node->position, node->radius, &other->position,
                                              node->connections[slot].flags, connection_colour);
-                if (*((u8 *)((u32)drawn_connections + (u32)first_index * 32u + (u32)(second_index / 8))) &
-                    (1u << ((u32)(second_index % 8) & 31u))) {
+                if (drawn_connections[first_index][second_index / 8] & (1 << (second_index % 8))) {
                     continue;
                 }
-                *((u8 *)((u32)drawn_connections + (u32)first_index * 32u + (u32)(second_index / 8))) |=
-                    1u << ((u32)(second_index % 8) & 31u);
-                *((u8 *)((u32)drawn_connections + (u32)second_index * 32u + (u32)(first_index / 8))) |=
-                    1u << ((u32)(first_index % 8) & 31u);
+                drawn_connections[first_index][second_index / 8] |= 1 << (second_index % 8);
+                drawn_connections[second_index][first_index / 8] |= 1 << (first_index % 8);
                 edge_colour = colour;
                 if (path == aieditor->current_path) {
                     if (((node == path->current_node && node->connections[slot].node == path->other_node) ||
