@@ -2221,7 +2221,7 @@ extern "C" {
         PcGeometryInverseViewProjectionMatrixPc = NuMtxSetIdentityTemplate;
         PcGeometryResetMatrixPc = NuMtxSetIdentityTemplate;
         PcGeometryDistanceOriginPc = PcGeometryDefaultOriginPc;
-        for (i32 i = 0; i < 16; ++i) {
+        for (i32 i = 0; i != 16; ++i) {
             PCDeviceSamplerInvalidation[i][1] = 0;
             PCDeviceSamplerInvalidation[i][0] = 0x012449d0;
         }
@@ -2285,8 +2285,13 @@ extern "C" {
             u32 bits;
         } bias;
         PCDeviceSetSamplerState(stage, 9, tuple[0] & 15);
-        bias.value = (((tuple[0] >> 4) ^ tuple[0]) & 15) == 0 ? -10.0f : 0.0f;
-        PCDeviceSetSamplerState(stage, 8, bias.bits);
+        if ((((tuple[0] >> 4) ^ tuple[0]) & 15) == 0) {
+            bias.value = -10.0f;
+            PCDeviceSetSamplerState(stage, 8, bias.bits);
+        } else {
+            bias.value = 0.0f;
+            PCDeviceSetSamplerState(stage, 8, bias.bits);
+        }
         PCDeviceSetSamplerState(stage, 1, (tuple[0] >> 8) & 7);
         PCDeviceSetSamplerState(stage, 2, (tuple[0] >> 11) & 7);
         PCDeviceSetSamplerState(stage, 3, (tuple[0] >> 14) & 7);
@@ -3757,9 +3762,9 @@ extern "C" {
             NuSpecialConstAlpha(1, alpha);
             result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
             NuSpecialConstAlpha(0, 0.0f);
-            return result;
-        }
-        return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
+        } else
+            result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
+        return result;
     }
 
     /* PC implementation of the NuInitDebrisRenderer family. */
@@ -6155,7 +6160,9 @@ extern "C" {
         (void)end;
         memset(PcFramebufferPool, 0, sizeof(PcFramebufferPool));
         memset(PcFramebufferActive, 0, sizeof(PcFramebufferActive));
-        PcBoundFramebuffer = PcDefaultFramebuffer = PcSecondaryFramebuffer = NULL;
+        PcBoundFramebuffer = NULL;
+        PcDefaultFramebuffer = NULL;
+        PcSecondaryFramebuffer = NULL;
         bool multi = PCDeviceBackend.caps.simultaneous_render_targets > 1;
         bool second = multi && (flags & 2);
         bool third = multi && (flags & 4);
