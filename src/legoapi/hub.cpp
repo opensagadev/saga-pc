@@ -5606,17 +5606,6 @@ extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
 
 #include <string.h>
 
-extern "C" i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser) {
-    HUB_CUSTOMISER_MENU_READER_PC *c = (HUB_CUSTOMISER_MENU_READER_PC *)customiser;
-    if (c == NULL || APICharacterLoaded(c->character_ids[0]) == NULL)
-        return 0;
-    if (c->first_animation != 190 && c->first_animation != 99)
-        return 0;
-    if (APICharacterLoaded(c->character_ids[1]) == NULL)
-        return 0;
-    return c->second_animation == 190 || c->second_animation == 99;
-}
-
 /* Application fragment for the existing hub.cpp owner. Native 47cdd0/3846.
  * Private draft: declarations/data ownership listed separately; no activation.
  * Existing misleading Hub* names are deliberately retained by mapped address.

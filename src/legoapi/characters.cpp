@@ -633,22 +633,3 @@ extern "C" {
         return -1;
     }
 }
-
-void __cdecl FinishWeirdoNames(i32 which) {
-    char *name;
-    i32 length;
-    if (which != 1) {
-        name = Game.customiser_start[0].name;
-        NuStrUpr(name, name);
-        for (length = NuStrLen(name); length < 15; ++length)
-            name[length] = ' ';
-        name[15] = '\0';
-    }
-    if (which == 0)
-        return;
-    name = Game.customiser_start[1].name;
-    NuStrUpr(name, name);
-    for (length = NuStrLen(name); length < 15; ++length)
-        name[length] = ' ';
-    name[15] = '\0';
-}
