@@ -1844,15 +1844,15 @@ extern "C" {
         PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
     }
 
-    void __cdecl PCGraphicsClearFramebuffer(u32 mask, u32 colour) {
+    void __cdecl PCGraphicsClearFramebuffer(u32 mask, i32 colour) {
         u32 flags = 0;
         if (PcBoundFramebuffer->targets[0].texture != NULL && (mask & 0x100))
             flags = 1;
         if (PcBoundFramebuffer->targets[4].texture != NULL && (mask & 0x200))
             flags |= 6;
         if (flags != 0) {
-            u32 converted =
-                (colour & 0xff000000u) | ((colour & 0xffu) << 16) | (colour & 0xff00u) | ((colour >> 16) & 0xffu);
+            i32 converted = (((colour >> 24) * 256 + (colour & 0xff)) * 256 + ((colour >> 8) & 0xff)) * 256 +
+                            ((colour >> 16) & 0xff);
             PCDeviceClear(0, NULL, flags, converted, 1.0f, 0);
         }
     }
@@ -3821,16 +3821,21 @@ extern "C" {
     }
 
     DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *memory, i32 *size) {
-        DEBRIS_PARTICLE_CHUNK_PC *chunk = (DEBRIS_PARTICLE_CHUNK_PC *)memory;
+        u8 *cursor = (u8 *)memory;
+        u8 *start = cursor;
+        DEBRIS_PARTICLE_CHUNK_PC *chunk = (DEBRIS_PARTICLE_CHUNK_PC *)cursor;
+        DEBRISPARTICLE_PC *particle;
         i32 i;
         chunk->command = 0x52;
         chunk->next = NULL;
-        chunk->field_014 = 0;
-        chunk->field_018 = 0;
-        chunk->field_01c = 0;
-        chunk->particles[0].position.x = 0.0f;
+        cursor += 0x10;
+        ((u32 *)cursor)[1] = 0;
+        ((u32 *)cursor)[2] = 0;
+        ((u32 *)cursor)[3] = 0;
+        ((u32 *)cursor)[4] = 0;
+        cursor += 0x10;
         for (i = 0; i < 32; ++i) {
-            DEBRISPARTICLE_PC *particle = &chunk->particles[i];
+            particle = (DEBRISPARTICLE_PC *)cursor;
             particle->position.x = 1.0f;
             particle->position.y = 2.0f;
             particle->position.z = 3.0f;
@@ -3839,10 +3844,12 @@ extern "C" {
             particle->momentum.z = 6.0f;
             particle->start_time = -1.0f;
             particle->inverse_lifetime = 128.0f;
+            cursor += sizeof(DEBRISPARTICLE_PC);
         }
-        chunk->end_command = 0;
-        *size = sizeof(*chunk);
-        return chunk;
+        *(u32 *)cursor = 0;
+        cursor += sizeof(u32);
+        *size = (i32)(cursor - start);
+        return (DEBRIS_PARTICLE_CHUNK_PC *)start;
     }
 
     DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSetGlass(void *memory, i32 *size) {
@@ -4956,11 +4963,7 @@ extern "C" {
     void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
         NUMTX *matrix = (NUMTX *)item->next;
         (void)geometry;
-        if (alpha < 0.0f)
-            alpha = 0.0f;
-        if (alpha > 1.0f)
-            alpha = 1.0f;
-        matrix->m33 = alpha;
+        matrix->m33 = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
     }
 
     void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLAYLISTITEM *last, i32 shadow) {
