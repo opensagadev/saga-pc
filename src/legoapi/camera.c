@@ -394,9 +394,6 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
                             float blend_out_time, float blend_time, float hold_time, float max_time, i32 borders,
                             NUGSPLINE *spline, i8 mode, i8 easing) {
     NUVEC command_origin;
-    i32 have_remaining_hold;
-    f32 remaining_hold;
-    f32 elapsed;
     f32 remaining_duration;
     GameCam->blend_time = 0.0f;
     if (flags & 0x200) {
@@ -413,9 +410,9 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
             GameCameraMakeMiniCut2(&MiniCam.position, &MiniCam.target, target_guid, start_time, 1000000000.0f,
                                    blend_in_time, 0.0f, 1, 1, MiniCam.borders);
         } else {
+            MiniCam.focus = &MiniCam.target;
             MiniCam.target = reset_origin;
             MiniCam.focus_offset = reset_origin;
-            MiniCam.focus = &MiniCam.target;
             MiniCam.position = *position;
             GameCameraMakeMiniCut2(&MiniCam.position, NULL, target_guid, start_time, 1000000000.0f, blend_in_time, 0.0f,
                                    0, 1, MiniCam.borders);
@@ -452,31 +449,33 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
     if (easing != -1)
         Minicam_AddCommand(7, 0.0f, easing, NULL, command_origin);
 
-    if ((flags & 5) == 5 && blend_in_time > 0.0f && blend_time == 0.0f)
+    if ((flags & 1) && (flags & 4) && blend_in_time > 0.0f && blend_time == 0.0f)
         blend_time = 0.01f;
-    if ((flags & 0x1800) == 0x1800) {
-        have_remaining_hold = hold_time > blend_time;
-        remaining_hold = have_remaining_hold ? hold_time - blend_time : 0.0f;
-        Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
-        if (have_remaining_hold)
-            Minicam_AddCommand(5, remaining_hold, 0, NULL, command_origin);
+    if ((flags & 0x800) && (flags & 0x1000)) {
+        if (hold_time > blend_time) {
+            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+            Minicam_AddCommand(5, hold_time - blend_time, 0, NULL, command_origin);
+        } else {
+            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+        }
     } else if (flags & 0x800) {
         Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
     } else if (flags & 0x1000) {
         Minicam_AddCommand(5, hold_time, 0, NULL, command_origin);
     }
     if (flags & 0x400) {
-        elapsed = 0.0f;
-        if ((flags & 0x1800) == 0x1800)
-            elapsed = hold_time > blend_time ? hold_time : blend_time;
-        else if (flags & 0x800)
-            elapsed = blend_time;
-        else if (flags & 0x1000)
-            elapsed = hold_time;
-        remaining_duration = end_time - elapsed;
-        if (remaining_duration < 0.0f)
-            remaining_duration = 0.0f;
-        Minicam_AddCommand(3, remaining_duration, 0, NULL, command_origin);
+        remaining_duration = end_time;
+        if ((flags & 0x800) && (flags & 0x1000)) {
+            if (hold_time > blend_time)
+                remaining_duration = end_time - hold_time;
+            else
+                remaining_duration = end_time - blend_time;
+        } else if (flags & 0x800) {
+            remaining_duration = end_time - blend_time;
+        } else if (flags & 0x1000) {
+            remaining_duration = end_time - hold_time;
+        }
+        Minicam_AddCommand(3, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
         ObstacleCamBlendOutTime = blend_out_time;
     }
     if (borders != 0)
