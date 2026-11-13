@@ -525,6 +525,71 @@ is real, the fix is a declaration of the right kind in the right place (the
 original headers had their own declaration counts), found by the header
 migration, not padding asserts.
 
+**Pilot (2026-11-13).** `tools/layoutcheck.py` is in `make check-core`; it
+uses libclang (`--target=i686-pc-windows-msvc`, the flags of
+`tools/declscan.py`, C and C++, each with and without `SAGA_DEBUG`) instead of
+the clang-tidy dump, and checks every struct whose closing line has a
+`// size` comment (format in CONTRIBUTING.md, "Layout comments"; the same
+`// 0x08` member comments as the Android checkout). The VC8 cross-check is not
+built. Converted:
+
+| area | structs | member lines | assert lines removed |
+|---|---:|---:|---:|
+| `src/legoapi/doors.c` (local types) | 9 | 69 | 55 |
+| `src/legoapi/gizmoblowups.c` (local types) | 37 | 120 | 71 |
+| saga.h AI block (lines 1081-2059: 33 structs, 2 kept), plus their asserts in 18 units | 31 | 502 | 475 |
+| total | 77 | 691 | 601 (saga.h 293) |
+
+No assert disagreed with the computed layout. The one sizeof assert with a
+note (`AIAREA_PC`, "PC differs from Android's 0x3c") became `// size 0x40
+(Android: 0x3c)`. The diff is -1,583/+814 lines.
+
+*Mechanism.* VC8 numbers every symbol it creates in a translation unit from
+one counter; the number shows in local label names
+(`$submit$136800` in PCDeviceSetRenderState). A `STATIC_ASSERT` costs ids:
+`offsetof` 3 in C and 4 in C++, `sizeof` 2 in both. Replacing one assert by
+any other assert of the same kind, or by any declaration that costs the same
+number of ids, leaves every object identical; renaming the typedefs does too.
+So the fragile functions depend on the id counter (with a period of about 64
+ids), not on which struct is asserted. Removing even one assert at the end of
+saga.h changes `InitGameAfterConfig`; removing 12 to 18 changes
+`BlockadeRunnerDEjectCreaturePc`.
+
+*Result.* The full AI block (C ids -887, C++ ids -1,164 for every unit after
+it) lost the exact `DebrisSetup2` (parts.c), `BlockadeRunnerDEjectCreaturePc`
+(episodeIV.c) and `BoulderSpawnPc` (episodeIII.c). Adding back ids after the
+block keeps all three at +34 or +46 C ids and loses at least one at most other
+values. The pilot therefore keeps the asserts of `AIPATHINFO_PC` (11 in
+saga.h) and `AISCRIPTPROCESSSTACK_PC` (1); together they cost 34 C ids. Both
+groups are marked with a comment that points here. With them, all 337 units
+compile to the same code and data as before except four functions that
+were already not exact: `InitGameAfterConfig` and `Minicam_Update` (score
+unchanged), `DrawSubItems` (82.98 -> 82.95 %) and `NuRndrParticleGroup`
+(95.92 -> 94.56 %, C++; the kept asserts are tuned for C ids only). The
+exact set by address is unchanged (11,804). In the plain object compare,
+`PCDeviceSetRenderState` and `ShaderCompilerDictionaryPc::EmitAttribute`
+differ only in the name of a local label (`$submit$N`) and link to the same
+bytes. A compare must ignore those names.
+
+*Full conversion.* `python3 tools/layoutcheck.py --convert FILE[:A-B]
+[--skip STRUCT ...]`, one block of saga.h or one unit per batch:
+
+1. Units' own local structs first (about 6,600 unit asserts): they change only
+   their own object, so the check is that unit's object.
+2. saga.h in blocks of a few hundred asserts. After each block, measure the
+   change in the id count. Then choose structs to keep (`--skip`) so the
+   fragile functions land on a working value, and compile the fragile units
+   against the edited header. Last, compile the whole tree and run the
+   exact-set comparison.
+3. The kept structs are listed here. The kept asserts go away when the header
+   migration (section 7) changes the declarations before the fragile
+   functions, which re-tunes them anyway.
+
+At the pilot rate (0.95 assert lines removed per member comment written, and
+a net -1.3 lines per removed assert), the full conversion removes about
+12,500 of the 13,127 assert lines and about 16,000 lines in total. Nearly all
+the risk is in saga.h, about 4,900 lines in about 15 blocks.
+
 ## 7. Header structure
 
 Owner decisions (the target):
