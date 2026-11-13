@@ -102,7 +102,17 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/move.c",
+   "unit": "src/legogame/creature.c",
+   "symbol": "_MovePlayerFabs",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/climbing.c",
+   "symbol": "_MovePlayerFabs",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legogame/move.c",
    "symbol": "_MovePlayerFabs",
    "kind": "function"
   },

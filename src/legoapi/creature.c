@@ -1,25 +1,5 @@
 #include "saga.h"
 
-void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
-    i32 i;
-    for (i = 0; i < CHARCOUNT; ++i) {
-        GCDataList[i] = GCDATA_DEFAULT;
-        if (CDataList[i].name_id == -1)
-            CDataList[i].name_id = tUNKNOWN;
-        if (CDataList[i].move_fn == NULL)
-            CDataList[i].move_fn = Move_CHARACTER;
-        if (CDataList[i].animate_fn == NULL)
-            CDataList[i].animate_fn = Animate_CHARACTER;
-    }
-    if (fixup != NULL) {
-        while (fixup->name != NULL) {
-            if (fixup->id != NULL)
-                *fixup->id = (i16)CharIDFromName(fixup->name);
-            ++fixup;
-        }
-    }
-}
-
 typedef struct level_ai_progress_pc_s {
     u8 unknown_0000[0x2808];
     union {
@@ -29,35 +9,6 @@ typedef struct level_ai_progress_pc_s {
 } LEVEL_AI_PROGRESS_PC;
 STATIC_ASSERT(offsetof(LEVEL_AI_PROGRESS_PC, disabled_ai_object_mask) == 0x2808);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
-
-void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
-    LEVEL_AI_PROGRESS_PC *saved = (LEVEL_AI_PROGRESS_PC *)progress;
-    GAMEOBJECT *object;
-    i32 index;
-
-    if (saved == NULL) {
-        return;
-    }
-    object = Obj;
-    saved->disabled_ai_object_mask[0] = 0;
-    saved->disabled_ai_object_mask[1] = 0;
-    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc & 1) != 0 && (object->flags_1f8 & 0x400) != 0 && object->ai_packet.reset_mode == 4) {
-            u64 bit = (u64)1 << index;
-            saved->disabled_ai_object_mask[0] |= (u32)bit;
-            saved->disabled_ai_object_mask[1] |= (u32)(bit >> 32);
-        }
-    }
-}
-
-void AICreatureResumeScript(GAMEOBJECT *object) {
-    AISCRIPT_PC *script = object->ai_packet.script_processor.base_script;
-    if (script != NULL) {
-        AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, NULL, NULL, NULL,
-                              0, script, script->base_state);
-        object->ai_packet.script_processor.active_ref_count = 0;
-    }
-}
 
 void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
     if (object != NULL &&
@@ -97,160 +48,11 @@ STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
 STATIC_ASSERT(offsetof(AIROW_PC, is_alive) == 0x2d);
 STATIC_ASSERT(offsetof(AIROW_PC, flags) == 0x30);
 
-void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
-    AICREATURE_PC *creature;
-    AIPATHINFO_PC *path_info;
-    AIROW_PC *row;
-    NUVEC offset;
-    i32 angle;
-    if (object == NULL)
-        return;
-    PreResetCode(object);
-    PostResetCode(object);
-    if (system == NULL)
-        return;
-    InitPlayerAI(object);
-    ResetPlayerMoves(object);
-    Player_ClearContext(object, 1);
-    Player_ResetContexts(object->unknown_06c4);
-    object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
-    object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
-    object->saved_hitpoints = 4;
-    creature = &system->creatures[object->ai_packet.creature_index];
-    object->ai_packet.creature_set = ((AI_CREATURE_RESET_VIEW_PC *)creature)->creature_set;
-    if ((creature->flags & 1) != 0)
-        object->ai_packet.flags |= 0x80;
-    else
-        object->ai_packet.flags &= ~0x80u;
-    object->ai_packet.flags &= ~0x40000u;
-    object->view_distance = creature->view_distance;
-    object->hear_distance = creature->hear_distance;
-    object->max_view_height = creature->max_view_height;
-    object->min_view_height = creature->min_view_height;
-    offset.x = (f32)((object->ai_packet.group_column + 1) / 2) * creature->x_spacing;
-    if ((object->ai_packet.group_column & 1) != 0)
-        offset.x = -offset.x;
-    offset.y = 0.0f;
-    offset.z = -creature->z_spacing * (f32)object->ai_packet.group_row;
-    if (object->ai_packet.respawn_count != 0 && object->ai_packet.respawn_locator != NULL) {
-        angle = object->ai_packet.respawn_locator->rotation;
-        NuVecRotateY(&offset, &offset, angle);
-        NuVecAdd(&object->position, &offset, &object->ai_packet.respawn_locator->position);
-        path_info = &object->ai_packet.respawn_locator->path_info;
-        object->ai_packet.respawn_locator = NULL;
-    } else {
-        angle = creature->y_rotation;
-        NuVecRotateY(&offset, &offset, angle);
-        NuVecAdd(&object->position, &offset, &creature->position);
-        path_info = &creature->path_info;
-    }
-    object->collision_position = object->position;
-    object->initial_position = object->position;
-    plr_lastpos = object->collision_position;
-    object->start_position = object->collision_position;
-    object->reset_velocity = v000;
-    object->velocity = object->reset_velocity;
-    InitSurfaceInfo(object);
-    SetObjOnSurface(object, 0);
-    object->field_0x276 = (u16)angle;
-    object->facing_angle = (u16)angle;
-    object->movement_facing_angle = (u16)angle;
-    NuVecRotateYValZ(&object->facing_direction, 1.0f, (u16)angle);
-    AISysCharacterSetPath(&object->ai_packet, path_info->path);
-    AISysCharacterSetPathCnx(&object->ai_packet, &object->position, path_info->connection, path_info->direction);
-    object->dead = 0;
-    AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                          ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, NULL, 1, NULL, NULL);
-    object->ai_packet.inside_path_node = -1;
-    object->ai_packet.current_route = 0xff;
-    object->ai_packet.next_route = 0;
-    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, (i8)object->field_281);
-    ResetAnimPacket(&object->anim_packet, 1);
-    SetAnimTimeRandom(object->character_model, &object->anim_packet);
-    object->ai_packet.movement_stopping_distance = 0.0f;
-    ((AI_RESET_EXTRA_PC *)object)->reset_timer = 0.0f;
-    object->ai_packet.flags &= ~0x1000000u;
-    object->ai_packet.movement_destination = object->position;
-    object->ai_packet.path_target = NULL;
-    ((AI_RESET_EXTRA_PC *)object)->search_state = 0;
-    ((AI_RESET_EXTRA_PC *)object)->avoidance_state = 0;
-    PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
-    object->flags_1fc_word |= 0x1000;
-    ++object->ai_packet.respawn_count;
-    object->ai_packet.reset_mode = 2;
-    if (object->ai_packet.group != NULL) {
-        object->ai_packet.group->member_is_alive |= (u32)((u64)1 << object->ai_packet.group_member_index);
-        row = &object->ai_packet.group->rows[object->ai_packet.group_row];
-        row->is_alive |=
-            (u8)((u64)1 << (object->ai_packet.group_member_index -
-                            ((AI_CREATURE_RESET_VIEW_PC *)creature)->count_across * object->ai_packet.group_row));
-        if (object->ai_packet.group_column == 0) {
-            row->position = object->position;
-            row->path_info = object->ai_packet.path_info;
-            row->rotation = object->field_0x276;
-            row->flags &= ~2u;
-            row->next_connection = NULL;
-        }
-    }
-    object->last_safe_position = object->position;
-    object->ai_update_position = object->position;
-    if ((object->character_data->model_flags & 0x20000000) != 0 &&
-        object->character_model->action_animations[0x41] != NULL) {
-        object->context_timer = 1000000000.0f;
-        object->character_context = 0x17;
-        object->field_7aa = 0x41;
-        ResetAnimPacket(&object->anim_packet, 0x41);
-    }
-}
-
 typedef struct AI_CREATURE_RESET_FLAGS_PC {
     u8 unknown_0000[0x1386];
     u16 reset_flags;
 } AI_CREATURE_RESET_FLAGS_PC;
 STATIC_ASSERT(offsetof(AI_CREATURE_RESET_FLAGS_PC, reset_flags) == 0x1386);
-
-void __cdecl ResetAICreatures(AISYS_PC *system) {
-    GAMEOBJECT *object;
-    AICREATURE_PC *creature;
-    i32 index;
-    if (system == NULL || (((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags & 1) != 0)
-        return;
-    ((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags |= 1;
-    object = Obj;
-    for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1f8 & 0x400) == 0)
-            continue;
-        object->flags_1fc_word &= ~0x1000u;
-        if (WORLD->level_progress != NULL &&
-            (((u64)1 << index) & ((LEVEL_AI_PROGRESS_PC *)WORLD->level_progress)->disabled_ai_objects) != 0) {
-            object->dead = 1;
-        } else {
-            creature = &system->creatures[object->ai_packet.creature_index];
-            object->ai_packet.respawn_count = 0;
-            object->ai_packet.reset_mode = 0;
-            AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                                  ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name,
-                                  (char *)GameObjectState_InActive, 1, NULL, NULL);
-            if (object->ai_packet.script_processor.state != NULL &&
-                object->ai_packet.script_processor.state->name != NULL &&
-                NuStrICmp(object->ai_packet.script_processor.state->name, GameObjectState_InActive) == 0)
-                creature->activation_type = 2;
-            if (creature->activation_type != 0)
-                continue;
-            if (Game.difficulty >= creature->activation_difficulty) {
-                if (creature->count > 1 && creature->start_stagger > 0.0f &&
-                    object->ai_packet.group_member_index != 0) {
-                    object->ai_packet.spawn_delay = (f32)object->ai_packet.group_member_index * creature->start_stagger;
-                    object->ai_packet.reset_mode = 1;
-                } else {
-                    ResetAICreature(object, system);
-                }
-                continue;
-            }
-        }
-        object->ai_packet.reset_mode = 4;
-    }
-}
 
 typedef struct creature_crate_part_view_pc_s {
     u8 unknown_000[0x20c];

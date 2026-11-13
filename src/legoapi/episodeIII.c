@@ -1,14 +1,6 @@
 #include <string.h>
 #include "saga.h"
 
-i32 __cdecl AnakinGreenSabre(GAMEOBJECT *object) {
-    if (FreePlay == 0 && object->id == (u16)id_ANAKINPADAWAN && WORLD->area != NULL &&
-        (WORLD->area == JEDI_ADATA || WORLD->area == DOOKU_ADATA)) {
-        return 1;
-    }
-    return 0;
-}
-
 extern NUVEC boulder_old_pos[2];
 extern f32 boulder_wait;
 extern i32 i_boulder;

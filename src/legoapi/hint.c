@@ -1,5 +1,7 @@
 #include "saga.h"
 
+i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
+
 STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 
@@ -255,22 +257,6 @@ STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 
 NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
-
-i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared) {
-    i32 index;
-    for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-            f32 distance = NuVecDistSqr(&object->collision_position, position, NULL);
-            if (distance < range_squared) {
-                if (distance_squared != NULL)
-                    *distance_squared = distance;
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
 
 i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
     i32 index;

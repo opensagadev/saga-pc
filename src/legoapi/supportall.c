@@ -37,14 +37,6 @@ void __cdecl CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode)
     }
 }
 
-i32 __cdecl SuperWeirdo(GAMEOBJECT *object) {
-    if ((object->flags_1fc & 0x80) != 0 && (Game.customizer_weirdo_flags & 1) != 0 && CharacterCustomiser != NULL &&
-        (object->id == (u16)CharacterCustomiser->character_ids[0] ||
-         object->id == (u16)CharacterCustomiser->character_ids[1]))
-        return 1;
-    return 0;
-}
-
 void __cdecl DebrisKillPlayers(void) {
     i32 i;
     GAMEOBJECT *player;

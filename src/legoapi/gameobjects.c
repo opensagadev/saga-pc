@@ -2894,69 +2894,6 @@ void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
 }
 
-void __cdecl DeactivateGameObject(GAMEOBJECT *object) {
-    if (object == NULL)
-        return;
-    if (object->rider != NULL) {
-        if ((object->flags_1f8 & 0x4000) != 0)
-            ReleaseTakeOver(object, 1);
-        else
-            KillGameObject(object->rider, 4, 0);
-    }
-    object->flags_1fc_word &= ~0x1000u;
-    if (object->ai_packet.creature_index != 0xff &&
-        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)GameObjectState_InActive) != 0) {
-        object->ai_packet.reset_mode = 0;
-        WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
-    } else {
-        object->ai_packet.reset_mode = 4;
-    }
-}
-
-void DeactivateCharacter(char *name) {
-    struct gameobject_s *object;
-    if (Mission_Active(NULL) != NULL || name == NULL)
-        return;
-    object = GetNamedGameObject(WORLD->ai_sys, name);
-    if (object != NULL && (FreePlay == 0 || (object->flags_1f8 & 0x400) != 0)) {
-        DeactivateGameObject(object);
-    }
-}
-
-GAMEOBJECT *__cdecl ActivateCharacter(char *name, NUVEC *position, i32 angle) {
-    GAMEOBJECT *object;
-    if (Mission_Active(NULL) != NULL)
-        return NULL;
-    if (name != NULL && (object = GetNamedGameObject(WORLD->ai_sys, name)) != NULL &&
-        (object->flags_1fc_word & 0x1000) == 0 && (FreePlay == 0 || (object->flags_1f8 & 0x400) != 0)) {
-        if (object->ai_packet.creature_index == 0xff) {
-            object->flags_1fc_word |= 0x1000;
-            AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
-            if (position != NULL) {
-                object->position = *position;
-                object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
-                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
-                object->initial_position = object->position;
-                object->collision_position = object->position;
-                plr_lastpos = object->collision_position;
-                object->start_position = object->collision_position;
-                object->respawn_position = object->position;
-                object->last_safe_position = object->position;
-                object->ai_update_position = object->position;
-                object->reset_velocity = v000;
-                object->velocity = object->reset_velocity;
-                InitSurfaceInfo(object);
-                SetObjOnSurface(object, 0);
-            }
-        } else {
-            ResetAICreature(object, WORLD->ai_sys);
-        }
-        LightGameObject(object, WORLD->rtl_set);
-        return object;
-    }
-    return NULL;
-}
-
 void __cdecl ManageGameObjects(void) {
     i32 i, j, area, alive;
     GAMEOBJECT *candidate, *other, *vehicle, *target;
