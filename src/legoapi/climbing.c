@@ -98,7 +98,6 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
 
 void __cdecl WeaponOutCode(GAMEOBJECT *object) {
     ANIMPACKET_PC *packet;
-    i16 animation;
     f32 start, end, time;
     if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT)
         return;
@@ -109,8 +108,8 @@ void __cdecl WeaponOutCode(GAMEOBJECT *object) {
         return;
     }
     packet = &object->anim_packet;
-    animation = packet->blending ? packet->blend_target_animation : packet->animation_index;
-    if (animation != object->field_7aa) {
+    if ((packet->blending && packet->blend_target_animation != object->field_7aa) ||
+        (!packet->blending && packet->animation_index != object->field_7aa)) {
         object->weapon_scale = 0.0f;
         return;
     }
@@ -206,7 +205,6 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
 
 void __cdecl WeaponInCode(GAMEOBJECT *object) {
     ANIMPACKET_PC *packet;
-    i16 animation;
     f32 start, end, time;
     if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN)
         return;
@@ -217,8 +215,8 @@ void __cdecl WeaponInCode(GAMEOBJECT *object) {
         return;
     }
     packet = &object->anim_packet;
-    animation = packet->blending ? packet->blend_target_animation : packet->animation_index;
-    if (animation != object->field_7aa) {
+    if ((packet->blending && packet->blend_target_animation != object->field_7aa) ||
+        (!packet->blending && packet->animation_index != object->field_7aa)) {
         object->weapon_scale = 1.0f;
         return;
     }
