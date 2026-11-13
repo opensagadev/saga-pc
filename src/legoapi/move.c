@@ -9767,7 +9767,10 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
             FaceOpponent(object, NULL);
         turn_override = 0.333f;
     }
-    direct_turn = object->character_context == 0x33 ? 1 : ((object->flags_ef0 & 0x400) != 0);
+    if (object->character_context == 0x33 || (object->flags_ef0 & 0x400) != 0)
+        direct_turn = 1;
+    else
+        direct_turn = 0;
     if (SuperCarry_Carrying(object))
         turn_rate = object->context_hover_target_y * 8.0f;
     else if (object->character_context != 0x1c && object->character_context != 0x33) {
@@ -9785,7 +9788,7 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
         object->facing_angle = object->movement_facing_angle;
         object->field_0x276 = object->movement_facing_angle;
     } else if (direct_turn == 0 &&
-               (turn_override != 0.0f || (CInfo[object->character_context].parameter & 2) != 0 ||
+               (turn_override != 0.0f || (U64_PAIR(&CInfo[object->character_context].flags) & 0x200000000ULL) != 0 ||
                 (object->character_data->game_character->flags_090 & 0x100) != 0 || SuperCarry_Carrying(object))) {
         if (object->character_context == 0x4b && (object->character_data->game_character->flags_090 & 0x100) == 0)
             turn_rate *= 0.333f;
@@ -9842,8 +9845,8 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
         object->previous_velocity.z = object->velocity.z;
         object->flags_ef0 &= ~0x400u;
         object->flags_1fc_word = (flags & ~4u) | 0x10000u;
-        object->target_velocity = object->velocity;
         object->field_106e = -1;
+        object->target_velocity = object->velocity;
     }
     APIObjectVelocities(object);
     GameObjectOrigin(object);
