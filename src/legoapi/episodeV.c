@@ -1210,10 +1210,19 @@ void HothBattleC_Reset(WORLDINFO *world) {
     GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 1);
 }
 
+/* TODO(saga.h): GIZBOMBGEN_s flags at 0x2a are a u16 bitfield (active, visible) in retail. */
+typedef struct bombgen_flags_pc_s {
+    u16 active : 1;
+    u16 visible : 1;
+    u16 unknown : 14;
+} BOMBGEN_FLAGS_PC;
+STATIC_ASSERT(sizeof(BOMBGEN_FLAGS_PC) == 2);
+
 void HothBattleC_Update(WORLDINFO *world) {
-    if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active &&
-        LevAIMessage[0] != NULL && LevAIMessage[0]->value > 0.0f) {
-        HothBattleC_BombGenerator->active = 1;
+    if (netclient == 0 && HothBattleC_BombGenerator != NULL &&
+        !((BOMBGEN_FLAGS_PC *)&HothBattleC_BombGenerator->flags)->active && LevAIMessage[0] != NULL &&
+        LevAIMessage[0]->value > 0.0f) {
+        ((BOMBGEN_FLAGS_PC *)&HothBattleC_BombGenerator->flags)->active = 1;
     }
     UpdateMiniSnowTroopers(world);
 }
