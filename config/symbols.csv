@@ -14827,6 +14827,7 @@ address,symbol,size,ctype
 0x00755180,_NuScale1000,8,const f64
 0x755180,__real@408f400000000000,8,const f64
 0x755188,__real@c008000000000000,8,const f64
+0x755190,??_C@_0L@LHFOCIPA@PenguinBox?$AA@,11,char []
 0x75519c,??_C@_07IOKLEMJI@GoonBox?$AA@,8,char []
 0x7551a4,??_C@_0BG@GOFIHBHI@ep1_podsprint_sebulba?$AA@,22,char []
 0x7551bc,??_C@_0BI@PLMGKKAN@ep1_podsprint_outoftime?$AA@,24,char []
