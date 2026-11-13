@@ -759,17 +759,23 @@ static void EduiPrintClippedTextPc(void *font, i32 x, i32 y, i32 alignment, i32 
         NuVSPrintf(text, format, args);
         va_end(args);
         i32 width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        i32 left;
         switch (alignment) {
             case 16:
+                left = x;
                 break;
             case 32:
-                x -= width;
+                left = x - width;
                 break;
             case 64:
-                x -= width / 2;
+                left = x - width / 2;
+                break;
+            default:
+                left = x;
                 break;
         }
-        i32 left = x < clip_x ? clip_x : x;
+        if (left < clip_x)
+            left = clip_x;
         char *end = text + NuStrLen(text) - 1;
         while (width > clip_width && end > text) {
             *end-- = 0;
