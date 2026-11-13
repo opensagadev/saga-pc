@@ -161,7 +161,9 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
 extern i32 gizmoerrorlogsize;
 /* Retail calls one empty diagnostic entry with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-void __cdecl GizmoDiagnosticPc();
+void __cdecl GizmoDiagnosticPc(char *format, ...);
+/* MATCH-EXCEPTION: the argument-less calls go through a type without a prototype, as C allows no other way. */
+#define GIZMO_DIAGNOSTIC_BARE() ((void(__cdecl *)())GizmoDiagnosticPc)()
 void __cdecl GizmoNameDiagnosticPc(char *name);
 
 __declspec(noinline) void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
@@ -184,7 +186,7 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
     i32 level;
 
     if (gizmotypes != NULL) {
-        GizmoDiagnosticPc();
+        GIZMO_DIAGNOSTIC_BARE();
         return;
     }
     if (register_functions == NULL) {
@@ -271,10 +273,10 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
                 (buffer)->addr = (((buffer)->addr + 15) & ~15u) + (size);                                              \
                 memset(allocation_, 0, (size));                                                                        \
             } else {                                                                                                   \
-                GizmoDiagnosticPc();                                                                                   \
+                GIZMO_DIAGNOSTIC_BARE();                                                                               \
             }                                                                                                          \
         } else {                                                                                                       \
-            GizmoDiagnosticPc();                                                                                       \
+            GIZMO_DIAGNOSTIC_BARE();                                                                                   \
         }                                                                                                              \
         (result) = (type)allocation_;                                                                                  \
     } while (0)
@@ -514,7 +516,7 @@ void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
             name_length = EdFileReadInt();
             while (name_length != 0) {
                 if (name_length > (i32)sizeof(gizmo_name)) {
-                    GizmoDiagnosticPc();
+                    GIZMO_DIAGNOSTIC_BARE();
                 }
                 memset(gizmo_name, 0, sizeof(gizmo_name));
                 EdFileRead(gizmo_name, name_length);

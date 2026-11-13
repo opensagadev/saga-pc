@@ -91,7 +91,10 @@ STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS098_PC) == 4);
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
 
 /* Defined at the end of this file; retail calls it with and without a path. */
-void __cdecl CharConfigPakDiagnosticPc();
+void __cdecl CharConfigPakDiagnosticPc(const char *format, ...);
+/* MATCH-EXCEPTION: retail also calls it with no arguments or with a number first; those calls go through a type
+ * without a prototype, as C allows no other way. */
+#define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void(__cdecl *)())CharConfigPakDiagnosticPc)
 
 f32 CharConfigAbsFloat(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffffu;
@@ -489,7 +492,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0)
                 return;
         }
-        CharConfigPakDiagnosticPc(100, charconfig.character->name);
+        CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED(100, charconfig.character->name);
         return;
     }
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 40)
@@ -1921,7 +1924,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             CharConfigPakDiagnosticPc(path);
             item = NuFilePakGetItem(pak, path);
             if (item != 0) {
-                CharConfigPakDiagnosticPc();
+                CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
                 if (NuFilePakGetItemInfo(pak, item, &address, &size) != 0 && size > 0) {
                     end = size;
                     saved = ((char *)address)[end];
@@ -1952,7 +1955,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                         CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0,
                                    game_keywords);
                 } else {
-                    CharConfigPakDiagnosticPc();
+                    CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
                     continue;
                 }
             } else {

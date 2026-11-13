@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
+#define AISYSALL_SCRIPT_DIAGNOSTIC_PROTOTYPES
 #include "saga.h"
 static VARIPTR *aiscript_load_end_buffer = 0;
 
@@ -12,6 +13,14 @@ extern NULISTLNK *__cdecl NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 extern void __cdecl EdFileWriteUnsignedChar(u8);
 
 extern const char GameAIEveryonePc[];
+
+/* Script diagnostics, defined variadic at the end of this unit (saga.h leaves their prototypes to this file). */
+void __cdecl AIScriptMissingStateDiagnostic(const char *format, ...);
+void __cdecl AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
+void __cdecl AIScriptMissingConditionDiagnostic(const char *format, ...);
+/* MATCH-EXCEPTION: retail also calls the variadic script diagnostics with no arguments at all; C allows that
+ * call only through a function type without a prototype. */
+#define AI_SCRIPT_DIAGNOSTIC_BARE(diagnostic) ((void(__cdecl *)())(diagnostic))()
 
 enum {
     AIPATHINFO_FLAG_ON_PATH_LOCAL = 0x01,
@@ -139,10 +148,10 @@ static f32 ***distance_tables = NULL;
                 allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                   \
                 memset(allocation_result, 0, allocation_size);                                                         \
             } else {                                                                                                   \
-                AIScriptMissingStateDiagnostic();                                                                      \
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                             \
             }                                                                                                          \
         } else {                                                                                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                 \
         }                                                                                                              \
         destination = (type)allocation_result;                                                                         \
     } while (0)
@@ -651,10 +660,10 @@ STATIC_ASSERT(offsetof(AIPATH_PC, bounds_max) == 0x9c);
                 allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                   \
                 memset(allocation_result, 0, allocation_size);                                                         \
             } else {                                                                                                   \
-                AIScriptMissingStateDiagnostic();                                                                      \
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                             \
             }                                                                                                          \
         } else {                                                                                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                 \
         }                                                                                                              \
         destination = (type)allocation_result;                                                                         \
     } while (0)
@@ -809,10 +818,10 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
                 allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                   \
                 memset(allocation_result, 0, allocation_size);                                                         \
             } else {                                                                                                   \
-                AIScriptMissingStateDiagnostic();                                                                      \
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                             \
             }                                                                                                          \
         } else {                                                                                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                 \
         }                                                                                                              \
         destination = (type)allocation_result;                                                                         \
     } while (0)
@@ -1266,7 +1275,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad);
             entry_->draw = draw_fn;                                                                                    \
             entry_->leave = NULL;                                                                                      \
         } else {                                                                                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                 \
         }                                                                                                              \
         (id) = index_;                                                                                                 \
     } while (0)
@@ -1426,7 +1435,7 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
         buf->addr = ((buf->addr + 15) & ~15u) + size;
         memset(ret, 0, size);
     } else {
-        AIScriptMissingStateDiagnostic();
+        AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     return ret;
 }
@@ -2069,7 +2078,7 @@ void __cdecl xState(NUFPAR_PC *parser) {
         buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(AISTATE_PC);
         memset(state, 0, sizeof(AISTATE_PC));
     } else {
-        AIScriptMissingStateDiagnostic();
+        AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     aiscript_load_state = state;
     aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE_PC, reference_scripts));
@@ -3997,10 +4006,10 @@ __declspec(noinline) void *__cdecl AISysBufferAlloc(VARIPTR *cursor, VARIPTR *en
             cursor->addr = ((cursor->addr + 15) & ~15u) + size;
             memset(result, 0, size);
         } else {
-            AIScriptMissingStateDiagnostic();
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
         }
     } else {
-        AIScriptMissingStateDiagnostic();
+        AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     return result;
 }
@@ -5029,7 +5038,7 @@ void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count,
                     first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
                 }
             } else {
-                AIScriptMissingStateDiagnostic();
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
                 NuVecScale(&difference, &difference, AIPathSafeDivide(overlap, distance));
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             }
@@ -7824,7 +7833,7 @@ i32 __cdecl aieditor_Register(char *name, void(__cdecl *enter)(void), eduimenu_s
         entry->draw = draw;
         entry->leave = leave;
     } else {
-        AIScriptMissingStateDiagnostic();
+        AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     return index;
 }
@@ -8549,7 +8558,7 @@ void __cdecl aieditor_RegisterPathCnxType(const char *name, u32 connection_flag,
     if (name != NULL && strlen(name) < 64 && connection_flag != 0 && (count = AIPathConnectionTypeCountPc) < 32) {
         for (i = 0; i < count; ++i) {
             if (AIPathConnectionTypesPc[i].connection_flag & connection_flag)
-                AIScriptMissingStateDiagnostic();
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
         }
         type = &AIPathConnectionTypesPc[count];
         AIPathConnectionTypeCountPc = count + 1;
@@ -8559,7 +8568,7 @@ void __cdecl aieditor_RegisterPathCnxType(const char *name, u32 connection_flag,
         type->flags = flags;
         return;
     }
-    AIScriptMissingStateDiagnostic();
+    AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
 }
 
 EDAIPATH_s *__cdecl pathEditorAllocPathPc(void) {
@@ -12385,7 +12394,7 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
         }
         NuLinkedListAppend(aiscript_load_refs, &reference->link);
     } else {
-        AIScriptMissingStateDiagnosticAlternate();
+        AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnosticAlternate);
         *aiscript_load_buffer = saved_buffer;
     }
 }
@@ -12456,18 +12465,18 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
             NuFilePakGetItemInfo(pak, item_index, &memfile, &memfile_size);
             file = NuMemFileOpen(memfile, memfile_size, 0);
             if (file == 0) {
-                AIScriptMissingConditionDiagnostic();
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingConditionDiagnostic);
             }
         } else if (AIActionDiagnosticMode == 1) {
-            AIScriptMissingConditionDiagnostic();
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingConditionDiagnostic);
         } else {
-            AIScriptMissingStateDiagnostic();
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
         }
         if (file == 0 && ai_onlyusepackfile == 1) {
             if (AIActionDiagnosticMode == 1) {
-                AIScriptMissingStateDiagnosticAlternate();
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnosticAlternate);
             } else {
-                AIScriptMissingStateDiagnostic();
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
             }
         }
     }

@@ -880,7 +880,6 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
 
 extern f32 MENUBOTY;
 extern u8 MENUWARNR, MENUWARNG, MENUWARNB;
-void __cdecl DrawMenuEntryEx(MENU *, char *, i32);
 void __cdecl MenuDrawSave(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;

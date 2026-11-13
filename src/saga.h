@@ -13401,7 +13401,9 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl AIScriptMissingStateDiagnostic(...);
     void __cdecl AIScriptMissingStateDiagnosticAlternate(...);
     void __cdecl AIScriptMissingConditionDiagnostic(...);
-#else
+#elif !defined(AISYSALL_SCRIPT_DIAGNOSTIC_PROTOTYPES)
+/* aisysall.c defines these variadic and declares their prototypes itself; other C units keep this form, since
+ * VC8's code generation for unrelated units shifts with the declarations it sees here. */
 void __cdecl AIScriptMissingStateDiagnostic();
 void __cdecl AIScriptMissingStateDiagnosticAlternate();
 void __cdecl AIScriptMissingConditionDiagnostic();
@@ -29070,7 +29072,6 @@ extern "C" {
     void __cdecl PCGraphicsFramebufferActionPc(i32);
     void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
     void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
-    void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
     void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
     void __cdecl PCGraphicsDrawPostEffectIndexedPc(void);
     void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *,
