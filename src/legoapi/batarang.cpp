@@ -543,7 +543,7 @@ i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *object) {
     PLAYER_BATARANG_SLOT_PC *packet;
     if ((object->character_data->game_character->flags_090 & 0x20000000) != 0) {
         packet = object->batarang;
-        packet->cooldown = (i16)(50 + (object->id == (u16)ID_DEFAULTCHARACTER_B));
+        packet->cooldown = (object->id == (u16)ID_DEFAULTCHARACTER_B) ? 51 : 50;
         packet = object->batarang;
         if (WORLD->level_objects[packet->cooldown].active != 0) {
             object->context_variant_flags |= 0x20000;
