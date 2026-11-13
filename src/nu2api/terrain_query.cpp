@@ -3,11 +3,8 @@
 extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-    extern i32 WallSplinesOnly, IgnoreWallSplines, WallSplCount, curPickInst;
     extern void *TerI, *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
-    void __cdecl ScanWallSplineTerrain(i32, i32, i32);
-    f32 __cdecl TerrainDivideNonzeroPC(f32, f32);
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
@@ -48,62 +45,12 @@ struct TERRAIN_IMPACT_RECORD {
 };
 typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
 typedef TERRAIN_AXIS_FREEDOM_SHAPE_PC TERRAIN_AXIS_FREEDOM_SHAPE;
-extern "C" {
-    extern TERRAIN_SHAPE TerrPolyInfo, PlatImpactTer;
-    extern i32 TerrainShadowStatusPc, PlatCrush, plathitid, terrhitflags;
-    extern TERRAIN_TRACK_SLOT_PC *CurTrackInfo;
-    extern TERRAIN_AXIS_FREEDOM_SHAPE *TerrShape;
-    extern NUVEC ShadNorm, PlatImpactNorm, TerrWallNorm;
-    extern u8 TerrWallTab[4];
-    extern void *TerImpactData;
-    extern i32 *TerImpactDataCount;
-    extern i32 TerImpactDataMax;
-    extern f32 wallover, TerConTol, TerrWallDeflectYScale;
-    extern const f64 TerrainOpposingContactThresholdPc;
-    extern NUMTX tertempmat;
-    extern NUVEC4 tertempvec4;
-    extern TERRAIN_SPHERE SphereData[];
-    void DerotateMovementVector();
-    void RotateVec(NUVEC *source, NUVEC *destination);
-    void DeRotateTerrain(TERRAIN_SHAPE *surface);
-    void DeRotatePoint(NUVEC *point);
-    i32 CheckCylinder(i32 first_vertex, i32 second_vertex, i32 *vertex_mask, i32 remaining_vertex_mask);
-    i32 CheckSphere(i32 vertex_index);
-    i32 CheckSphereTer(NUVEC *position, f32 radius);
-    i32 HitPoly(f32 primary_start, f32 primary_end, f32 secondary_start, f32 secondary_end, TERRAIN_SHAPE *surface);
-    i32 HitWallSpline();
-    i32 HitTerrain();
-    void NewTerrStoreAnyInfo();
-    void TerrainMoveImpactData();
-    void TerrainImpactNorm();
-    void StorePlatImpact();
-    void TerrainImpact(NUVEC *position, NUVEC *movement, u8 *hit_flags);
-    i32 TerrainImpactPlatform(unsigned char *hit_flags);
-    void FullDeflect(NUVEC *normal, NUVEC *movement, NUVEC *result);
-    void FullDeflectSmallY(NUVEC *normal, NUVEC *movement, NUVEC *result);
-    i32 FullDeflectTest(NUVEC *normal, NUVEC *movement, NUVEC *result);
-    void PlatformConnect(char *track_id, NUVEC *position_delta, NUVEC *movement_delta, i32 platform_index);
-    i32 PlatformChecks(i32 count, NUVEC *movement);
-    i32 TerrainPlatformEmbedded(NUVEC *movement_delta);
-    i32 TerrainPlatformMoveCheck(NUVEC *position, NUVEC *normal, i32 platform_index, i32 resolve_impact,
-                                 i32 keep_embedded_disabled);
-    i32 TerrShapeSideStep(NUVEC *, NUVEC *, u8 *);
-    void TerrainSideClamp(NUVEC *axis, NUVEC *position);
-    i16 InsidePolLines(f32 point_x, f32 point_y, f32 point_z, f32 edge_a_x, f32 edge_a_y, f32 edge_a_z, f32 edge_b_x,
-                       f32 edge_b_y, f32 edge_b_z, NUVEC *normal);
-    i16 InsideLineF(f32 point_u, f32 point_v, f32 line_start_u, f32 line_start_v, f32 line_end_u, f32 line_end_v);
-    TERRAIN_TRACK_SLOT_PC *AllocTerrId();
-}
-
 struct ShadowScanWriter {
     u8 *group_header;
     TERRAIN_SHAPE **cursor;
     u8 *limit;
     i32 shape_count;
 };
-extern "C" {
-    extern i32 TerrPlatDis;
-}
 #define TERRAIN_BOUNDS_OVERLAP(bounds_arg, minimum_arg, maximum_arg)                                                   \
     ((bounds_arg).max_x >= (minimum_arg).x && (bounds_arg).max_y >= (minimum_arg).y &&                                 \
      (bounds_arg).max_z >= (minimum_arg).z && (maximum_arg).x >= (bounds_arg).min_x &&                                 \
@@ -1338,9 +1285,6 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     return static_cast<TerrainQuery_s *>(TerI)->hit_type;
 }
 
-extern "C" {
-    extern void *TempScanStack;
-}
 static u8 *TempStackPtrPc = 0;
 struct TERRAIN_HANDLE_WALL_PAIR_PC {
     TERRAIN_WALL_POINT *first;
@@ -2123,7 +2067,6 @@ extern "C" {
     extern i16 TerrainShadowFloorIndexPc;
     extern u16 TerrainWaterCastIndexPc, TerrainSurfaceClassPc, TerrainPlatformsOffPc;
     extern TERRAIN_SHAPE *TerrainCastAuxPolygonPc;
-    extern TERRAIN_SHAPE *TerrainScaleWorkBasePc;
     f32 NewCast(NUVEC *, f32, f32);
 }
 

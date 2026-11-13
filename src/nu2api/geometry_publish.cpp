@@ -56,13 +56,6 @@ STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_RECORD_PC, frame_stamp) == 0x20);
 STATIC_ASSERT(sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM_PC) == 0xc);
 STATIC_ASSERT(offsetof(PC_GEOMETRY_PUBLISH_SORT_ITEM_PC, output_index) == 0);
 
-extern "C" {
-    extern i32 PcGeometryRegistryCountPc;
-    extern PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc;
-    extern i32 PcGeometryMatrixCapacityPc;
-    extern i32 PcGeometryOutputCapacityPc;
-}
-
 extern "C" i32 __cdecl PcGeometryBackendAvailablePc(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;
 }

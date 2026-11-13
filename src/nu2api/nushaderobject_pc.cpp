@@ -416,16 +416,6 @@ typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
 } PC_SHADER_WATER_MATERIAL_VIEW;
 STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, phase_speed) == 0x60);
 STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, amplitude) == 0x6c);
-extern "C" {
-    extern f32 PCShaderWaterThetaStep;
-    extern f32 PCShaderWaterAmplitudeScale;
-    extern f32 PCShaderWaterTheta;
-    extern i32 PCShaderWaterLastFrame;
-    extern NUVEC4 PCShaderWaterTable[32];
-    extern PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial;
-    extern u32 PCShaderWaterInitializationBits;
-}
-
 extern "C" void __cdecl NuShaderObjectBaseSetWaterSpeed(f32 speed) {
     PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10Pc);
 }

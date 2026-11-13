@@ -1,11 +1,6 @@
 #include "saga.h"
 static i32 NumSfxInst = 0;
 
-extern NUVEC nusound_special_positions[5];
-extern f32 nusound_fade_start;
-extern f32 nusound_fade_end;
-extern u32 nusound_seed;
-
 void __cdecl PlaySfx(char *name, NUVEC *position) {
     i32 sfx_id = GetSfxId(name);
     if (sfx_id != -1) {
@@ -1065,7 +1060,6 @@ char *__cdecl GetSfxName(i32 sound_id) {
     return NULL;
 }
 
-extern i32 NuSound3LoadingSfxPc;
 i32 __cdecl NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }

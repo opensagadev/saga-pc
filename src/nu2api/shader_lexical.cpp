@@ -99,7 +99,6 @@ bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
     return true;
 }
 
-void *__cdecl operator new(size_t bytes);
 // MATCH-EXCEPTION: retail calls Equals everywhere; the pointer-walking body is small enough
 // that VC8 would otherwise inline it into ShaderDeclarationSemanticPc.
 __declspec(noinline) bool ShaderLexicalSlicePc::Equals(const char *text) {

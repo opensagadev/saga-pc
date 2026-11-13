@@ -45,14 +45,9 @@ STATIC_ASSERT(sizeof(NUALLOC_POOL) == 0x10);
 
 /* PC state at 0x88ab38..0x88ab54. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
-extern u32 NuAllocTrackedBytes;
-extern NUALLOC_ARENA *NuAllocArena;
-extern void *NuAllocManager;
-extern void *NuAllocPeakEnd0;
 
 /* The PC copies these three dwords before the returned storage and after it. */
 extern u32 NuAllocHeaderMetadata[3];
-extern u32 NuAllocTailMetadata[3];
 
 /* Retail diagnostic hooks compiled out to a bare RET; defined in nudebug.c. */
 void __cdecl NuAllocBadPointer(void);

@@ -92,11 +92,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(NuAnimReadData, chunks) == 0xc);
     STATIC_ASSERT(offsetof(NuAnimReadData, chunk_storage) == 0x10);
 
-    extern u8 NuAnimDataBitCount[256];
-    extern i32 NuAnimDataBitCountInitialized;
-    extern const f64 NuAnimDataFloatMax;
-    extern const char NuAnimSourceFileName[];
-
 #define CALC_1648_LAST_KEY(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
 
 #define CALC_1648_VALUE(start, end, fraction)                                                                          \
@@ -3564,12 +3559,6 @@ extern "C" {
     extern i32 nuqfnt_initialised;
     extern u8 NuQFntSystemFontBlockPc[0x4930];
 
-    extern i32 nuqfnt_cs_mode;
-    extern f32 qfnt_rezscale_w;
-    extern f32 qfnt_rezscale_h;
-    extern f32 qfnt_offscale_x;
-    extern f32 qfnt_offscale_y;
-
     void __cdecl NuQFntSetPrintMode(u32 mode) {
         NuQFntMode = mode;
     }
@@ -3765,7 +3754,6 @@ extern "C" {
         font->platform_data->matrix = *matrix;
     }
 
-    extern i32 NuPrimCoordSystemStack[];
     typedef struct qfont_prim_vertex_pc_s {
         f32 x, y, z;
         u32 colour;
@@ -4100,7 +4088,6 @@ extern "C" {
         return NuQFntPrintLenU(font, text);
     }
 
-    void __cdecl PCSpecialEmptyHandler_candidate(...);
     struct PC_MATERIAL_CREATE_SHADER {
         u32 flags;
         i32 diffuse_map_id;
@@ -4201,12 +4188,6 @@ extern "C" {
         void *texture;
     } FONT_PTR_BLOCK_PC;
     STATIC_ASSERT(sizeof(FONT_PTR_BLOCK_PC) == 8);
-    void __cdecl NuQFntDestroy(VUFNT *font);
-    i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end);
-    VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end);
-    VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end);
-    VUFNT *__cdecl NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end);
-    VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end);
 
     void __cdecl NuQFntDestroy(VUFNT *font) {
         if (font != NULL) {
@@ -4480,7 +4461,6 @@ extern "C" {
         return NULL;
     }
 
-    void __cdecl NuMtlSetRenderPlane(NUMTL *material, i32 plane);
     VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
         i32 sort_priority = options >> 16;
         options &= 0xffff;
@@ -4651,14 +4631,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, y_scale) == 0x30);
     STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
     STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
-
-    extern u32 NuQFntModeStack[16];
-    extern i32 NuQFntModeStackIndex;
-    extern i32 NuQFntCSModeStack[16];
-    extern i32 NuQFntCSModeStackIndex;
-    extern void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
-    extern void __cdecl NuQFntPrintU(VUFNT *font, char *text);
-    extern u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
 
     void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height) {
         u16 glyph_index;
@@ -5285,9 +5257,6 @@ void OcclusionManager::RenderZPass() const {
 
 extern "C" {
     extern i32 NuRndrDoingScreenGrab;
-    void __cdecl NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z);
-    void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour);
-    void __cdecl NuQFntPrint2dU(VUFNT *font, char *text);
 }
 
 i32 OcclusionRenderOccludersPc = 0;
@@ -6216,18 +6185,6 @@ extern "C" {
         frustum->transposed_planes[31] = planes[7].d;
     }
 
-    extern NUCAMERA *NuPortalCameraPc;
-    extern NUMTX NuPortalLocalViewPc;
-    extern NUMTX NuPortalProjectionScratchPc;
-    extern NUMTX NuPortalProjectionInversePc;
-    extern NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc;
-    extern i32 *NuPortalFrustumCountPc;
-    extern const NUVEC NuPortalBoundsOnePc;
-    extern const NUVEC NuPortalBoundsMinusOnePc;
-    void __cdecl NuMtxInvH(NUMTX *, NUMTX *);
-    f32 __cdecl NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
-    void __cdecl NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
-
     static NUPORTAL_FRUSTUM_PC *allocateFrustrum(i32 plane_count) {
         NUPORTAL_FRUSTUM_PC *frustum = (NUPORTAL_FRUSTUM_PC *)fstack_top.void_ptr;
         u32 planes_address = ((fstack_top.addr + 15) & ~15U) + sizeof(*frustum);
@@ -6368,13 +6325,6 @@ extern "C" {
     /* Native same-TU callers. External declarations below are held genuine targets,
        not substitute implementations; the scratch object is not source-link closed. */
     extern u8 NuPortalVisibilityBitsPc[625];
-    extern NUVEC NuPortalWorldCameraPc;
-    extern NUVEC *NuPortalOverrideCameraPc;
-    extern i16 NuPortalCameraRoomPc;
-    extern i16 NuPortalRoomsVisitedPc[16];
-    extern i32 PCPortalsEnabled;
-    extern i32 NuPortalDebugDrawPc;
-    extern NUPLANE NuPortalNearPlanePc;
     static void drawInitialFrustum(NUPORTAL_FRUSTUM_PC *);
     static void drawFullPortal(NUPORTAL *, NUGSCNROOM *);
     static void drawPartialPortal(NUVEC *, NUPORTAL *, NUGSCNROOM *, NUVEC *);
@@ -6567,15 +6517,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, x) == 0);
     STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, y) == 4);
     STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, colour) == 0x10);
-    extern i32 NuPortalDebugEnabledPc;
-    extern i32 NuPortalCameraSelectPc;
-    extern NUCAMERA NuPortalDebugCameraPc;
-    extern NUCAMERA NuPortalRestoreCameraPc;
-    extern f32 zx;
-    extern f32 zy;
-    void __cdecl NuRndrLine3dDbg(f32, f32, f32, f32, f32, f32, i32);
-    i32 __cdecl NuRndrLineStrip2d(PORTAL_LINE_VERTEX_PC *, NUMTL *, i32);
-    void __cdecl NuRndrSphere(NUVEC *, f32, i32, f32);
 
     static void drawPortalRectangle(NUVEC *minimum, NUVEC *maximum, i32 colour) {
         PORTAL_LINE_VERTEX_PC vertices[8];
@@ -6822,14 +6763,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_MATERIAL_VARIANT_RECORD, original) == 4);
     STATIC_ASSERT(offsetof(PC_MATERIAL_VARIANT_RECORD, vertex_descriptor) == 8);
 
-    extern NUMTL *PCMaterialPoolPc;
-    extern i32 PCMaterialPoolCountPc;
-    void __cdecl NuMtlCreatePS(NUMTL *, i32);
-    void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
-    void __cdecl PCThreadCriticalSectionEnter_candidate(i32);
-    void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
-    NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *);
-
     void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *desc) {
         if (desc == NULL)
             return;
@@ -7007,9 +6940,6 @@ extern "C" {
     void __cdecl NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params);
     void __cdecl NuRndrScreenGrabTileBegin(void **tile);
     void __cdecl NuRndrScreenGrabTileEnd(void **tile);
-    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
-                                         f32 dest_y, f32 dest_right, f32 dest_bottom);
-    extern i32 NuRndrDoingScreenGrab;
 
     static i32 dump_state = -1;
 
@@ -8009,9 +7939,6 @@ extern "C" {
 // ---- nudlist (generic display-list code; the PS/Pc half is in nu3d_platform_pc.cpp) ----
 
 extern "C" {
-    void __cdecl PCThreadCriticalSectionEnter_candidate(i32);
-    void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
-
     static i32 PCMaterialBlockItemCount = 8;
 
     void __cdecl NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *scene) {
@@ -8700,8 +8627,6 @@ extern "C" {
         PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
     }
 
-    extern void *PCDisplayClipSet;
-    extern i32 PCDisplayClipGroupIndex;
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m30) == 0x30);
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m31) == 0x34);
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m32) == 0x38);
@@ -8793,7 +8718,6 @@ typedef struct PC_CLONE_SORT_SELF_VIEW {
 STATIC_ASSERT(sizeof(PC_CLONE_SORT_SELF_VIEW) == 0x24);
 STATIC_ASSERT(offsetof(PC_CLONE_SORT_SELF_VIEW, self) == 0x10);
 STATIC_ASSERT(sizeof(NUDISPLAY_LIST_PC) == 0x90);
-extern "C" void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
 
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
 #define CLONE_ITEMS(scene) static_cast<NUDISPLAYLISTITEM *>((scene)->items)
@@ -9589,14 +9513,6 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_RE
     }
 }
 
-extern "C" {
-    VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *, void *);
-    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *);
-    extern i32 DisplaySceneRenderDisabledPc;
-    extern i32 DisplaySceneSpecialsDisabledPc;
-    extern i32 VisibilityPortalFilterEnabledPc;
-}
-
 typedef union visibility_display_special_reader_pc_u {
     NUDISPLAY_SPECIAL_PC common;
     struct {
@@ -9663,9 +9579,6 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     }
 }
 
-extern "C" void PCThreadCriticalSectionEnter_candidate(i32);
-extern "C" void PCThreadCriticalSectionLeave_candidate(i32);
-extern "C" void NuDisplayListAnimateMtls(f32);
 typedef struct FRAME_MTL_ANIM_DESC_PC {
     u8 u_mode, v_mode, reserved02[2];
     f32 u_amplitude, v_amplitude, u_frequency, v_frequency;
@@ -9700,7 +9613,6 @@ typedef struct FRAME_MTL_SCENE_PC {
 } FRAME_MTL_SCENE_PC;
 STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
 static f32 FrameMaterialAnimationTimePc = 0;
-extern "C" void __cdecl NuMtlSetUVOffsetPS(NUMTL *mtl, u32 layer, f32 u, f32 v);
 void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
     FRAME_MTL_ANIM_SET_PC *set;
     FrameMaterialAnimationTimePc += frame_time;
@@ -9977,11 +9889,7 @@ i32 __cdecl NuPostEffectIsInitialised(u32 mask) {
     return (NuPostEffectInitialisedFlagsPc & mask) != 0;
 }
 
-extern i32 NuPostEffectBackBufferFramePc;
-extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc;
-extern GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc;
-PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void);
-void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
+// Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
 void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
 
 GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32 frame) {
@@ -11176,7 +11084,6 @@ extern "C" {
 extern "C" {
     extern u32 PCGraphicsPostEffectWidthPc;
     extern u32 PCGraphicsPostEffectHeightPc;
-    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
 }
 
 extern "C" void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
@@ -11233,10 +11140,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
+    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
+    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
                                          f32 dest_y, f32 dest_right, f32 dest_bottom);
-    void __cdecl RenderPostViewportResetPc(void);
 
     void __cdecl RenderPostViewportResetPc(void) {
         f32 height = (f32)PS2_VREZ_H;
@@ -11589,7 +11497,6 @@ extern "C" {
 
 /* posteffect_ports_pc */
 extern "C" void __cdecl PCByteCopy_candidate(void *, const void *, u32);
-extern "C" PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void);
 extern "C" PC_POST_DATA_PORT_MANAGER PostResourceManagerPc;
 extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
 extern "C" PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
@@ -11843,7 +11750,6 @@ static __declspec(noinline) i32 ShadowSegmentClipPc(const NUVEC *point, const NU
     f32 difference_squared = difference * difference;
     return difference_squared > distance ? 1 : 2;
 }
-extern "C" void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
 void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadowPc(NUGSCN *scene) {
     SHADOW_PRODUCER_SET_PC *sets = reinterpret_cast<SHADOW_PRODUCER_SET_PC *>(render_sets);
     for (i32 set = 0; set < render_set_count; ++set)
@@ -12100,8 +12006,6 @@ extern "C" {
         }
         return resolved;
     }
-
-    void __cdecl NuTexInitExPS(VARIPTR *buffer);
 
     void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count) {
         NUTEXDIM_PC **list;
@@ -12405,7 +12309,6 @@ extern "C" {
         return (NUHGOBJ_EVAL_PC *)scene;
     }
 
-    void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene);
     typedef struct SCENE_MATERIAL_FLAGS_PC {
         u8 unknown_00[0x44];
         u32 flags;
@@ -12594,13 +12497,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, mode) == 0x20);
     STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, output_size) == 0x24);
     STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, cells) == 0x2c);
-    extern i32 VisibilityEvaluateEnabledPc;
-    extern i32 VisibilityOcclusionEnabledPc;
-    extern i32 VisibilityInstanceTreeEnabledPc;
-    extern i32 VisibilityCameraLockPc;
-    extern i32 VisibilityLoadedOcclusionPc;
-    extern i32 VisibilityUsingOcclusionPc;
-    extern i32 VisibilityCurrentViewBoxPc;
     /* Unsized reference only: no inferred allocation or emitted backing. */
 
     typedef union visibility_tree_flag_word_pc_u {
@@ -12613,8 +12509,6 @@ extern "C" {
     } VISIBILITY_TREE_FLAG_WORD_PC;
     STATIC_ASSERT(sizeof(VISIBILITY_TREE_FLAG_WORD_PC) == sizeof(u32));
     STATIC_ASSERT(offsetof(VISIBILITY_TREE_FLAG_WORD_PC, word) == 0);
-
-    void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
 
     void __cdecl NuCameraLock(i32 lock) {
         if (lock != NuPortalCameraSelectPc && NuPortalCameraSelectPc == 0)
@@ -13045,19 +12939,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_far_distance) == 36);
     STATIC_ASSERT(sizeof(VISIBILITY_EXTENT_SCRATCH_PC) == 16);
     STATIC_ASSERT(offsetof(VISIBILITY_EXTENT_SCRATCH_PC, unknown_w) == 12);
-    extern i32 VisibilityTreeInitialisedPc;
-    extern VISIBILITY_RESULT_READER_PC *VisibilityCurrentResultPc;
-    extern NUMTX VisibilityZeroMatrixTemplatePc;
-    extern NUMTX VisibilityPrimaryPlaneMatrixPc;
-    extern NUMTX VisibilityAlternatePlaneMatrixPc;
-    extern NUMTX VisibilityPrimaryWorldMatrixPc;
-    extern NUMTX VisibilityAlternateWorldMatrixPc;
-    extern NUMTX VisibilityPrimaryAbsoluteMatrixPc;
-    extern NUMTX VisibilityAlternateAbsoluteMatrixPc;
-    extern NUPLANE VisibilityDepthPlanePc;
-    extern NUPLANE VisibilityAbsoluteDepthPlanePc;
-
-    extern f32 VisibilityAlternateHeightPc;
 
 /* Preserve the native f32 load/store before clearing the sign, including NaNs. */
 #define VISIBILITY_ABSOLUTE_COMPONENT_PC(destination, source)                                                          \
@@ -13404,14 +13285,6 @@ extern "C" {
 
 /* nuspecial */
 extern "C" {
-    extern f32 __cdecl NuAnimEndFrameOld(void *animation_data);
-
-    extern i32 nuspecial_draw_state;
-    extern i32 nuspecial_const_alpha_enabled;
-    extern i32 nuspecial_const_tint_enabled;
-    extern f32 nuspecial_const_alpha;
-    extern NUVEC nuspecial_const_tint;
-
     STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
     STATIC_ASSERT(offsetof(NUINSTANCE, object_index) == 0x40);
     STATIC_ASSERT(offsetof(NUINSTANCE, flags) == 0x44);
@@ -15361,24 +15234,19 @@ extern "C" {
 /* Native private register parameters are expressed by typed source arguments. */
 extern "C" {
     extern NUMTX PostShadowViewPc, PostShadowProjectionPc;
-    extern POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
     void __cdecl PCGraphicsClearFramebuffer(u32, i32);
-    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
-    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
+    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
+    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32,
                                        bool, f32, POST_SHADER_PROGRAM_PC *);
     extern NUVEC4 PostShadowWhitePc;
     extern const WCHAR PostDeferredLabelPc[17], PostShadowRenderLabelPc[14];
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
-    void __cdecl PCGraphicsResolveFramebufferPc(i32);
     void __cdecl NuDisplayListShadowTransformPc(void *data);
     void __cdecl NuDisplayListShadowTransformTransposePc(void *data);
     void __cdecl NuDisplayListShadowMaterialPc(void *data);
-    void __cdecl PCGraphicsRenderTextureAllocationError(void);
     void __cdecl PostShadowSelectHandlersPc(i32 mode);
-    void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
-    void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
 }
 
 void NuPostFilterGen::reset() {
@@ -16012,21 +15880,8 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49] = {NuDis
 
 /* nudlist_material_pc */
 extern "C" {
-    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
-    extern PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
     extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc, *PostCopyAuxProgramPc, *PostBlurAuxProgramPc;
     extern f32 PostBlurInputBiasPc;
-    void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
-    void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
-    void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
-    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
-    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32);
-    void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
-    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *);
-    void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
-    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
-    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
 }
 
 // PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.

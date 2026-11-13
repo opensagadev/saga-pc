@@ -256,40 +256,6 @@ STATIC_ASSERT(offsetof(NuKeyboardInitTriplet_PC, unknown_02) == 2);
 #include <string.h>
 extern "C" void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *);
 extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
-extern const char *PcCompanyName, *PcProductName;
-extern "C" char *__cdecl PcGetUserFolder(const char *, const char *);
-extern "C" FILE *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *);
-extern TEXT_INPUT_LABELS_PC PcInputLabels820480;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820560;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820640;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820720;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820800;
-extern TEXT_INPUT_LABELS_PC PcInputLabels8208e0;
-extern TEXT_INPUT_LABELS_PC PcInputLabels8209c0;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820aa0;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820b80;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820c60;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820d40;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820e20;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820f00;
-extern TEXT_INPUT_LABELS_PC PcInputLabels820fe0;
-extern TEXT_INPUT_LABELS_PC PcInputLabels8210c0;
-extern char *PcInputKeyNames821558[];
-extern char *PcInputKeyNames821910[];
-extern char *PcInputKeyNames821cc8[];
-extern char *PcInputKeyNames822080[];
-extern char *PcInputKeyNames8223f8[];
-extern char *PcInputKeyNames822770[];
-extern char *PcInputKeyNames822ae8[];
-extern char *PcInputKeyNames822e60[];
-extern char *PcInputKeyNames8231d8[];
-extern char *PcInputKeyNames823590[];
-extern char *PcInputKeyNames823948[];
-extern char *PcInputKeyNames823d00[];
-extern char *PcInputKeyNames8240b8[];
-extern char *PcInputKeyNames824470[];
-extern char *PcInputKeyNames824828[];
-extern char *PcInputKeyNames824be0[];
 
 void PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *records, const char *directory) {
     char path[1024];
@@ -704,7 +670,6 @@ STATIC_ASSERT(sizeof(PC_DI_JOYSTICK_STATE_PC) == 0x110);
 STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, pov) == 0x20);
 STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, buttons) == 0x30);
 STATIC_ASSERT(offsetof(PC_DI_JOYSTICK_STATE_PC, extended_axes) == 0xb0);
-extern const u8 PcInputPovBitsPc[8];
 
 i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample) {
     memset(sample->axes, 0, 64);
@@ -786,10 +751,6 @@ i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample
 
 // Uncompiled drafts retaining native mouse accumulation and cursor behavior.
 extern u32 PcMouseButtonsMaskPc;
-extern i32 PcMouseCurrentAnglePc, PcMouseTargetAnglePc;
-extern f32 PcMouseRadiusPc, PcMouseInterpolationPc;
-extern "C" f32 __cdecl NuPow(f32, f32);
-extern "C" f32 __cdecl PcInputAspectRatioPc(void);
 
 i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
     if (!(nu_keyboard_device_flags & 1) && !mouse_polled) {
@@ -905,7 +866,6 @@ void PC_INPUT_RUNTIME_PC::ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample) {
 
 // Uncompiled PC control-flow reconstruction. All indexed records require native initialized domains.
 extern u8 PcMouseAxisModesPc[3];
-extern f32 PcMouseAxisIdlePc[3];
 
 i32 PC_INPUT_RUNTIME_PC::TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *out, i32 valid, PC_INPUT_RAW_SAMPLE_PC *raw,
                                              PC_INPUT_MOUSE_RUNTIME_PC *motion, u8 **keys) {

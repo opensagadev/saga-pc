@@ -3,12 +3,9 @@
 extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-    extern i32 WallSplinesOnly, IgnoreWallSplines, WallSplCount, curPickInst;
     extern void *TerI, *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
 
-    void __cdecl ScanWallSplineTerrain(i32, i32, i32);
-    f32 __cdecl TerrainDivideNonzeroPC(f32, f32);
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }

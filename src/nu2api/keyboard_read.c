@@ -342,7 +342,6 @@ void edcamSet(void) {
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow_candidate;
-extern HWND PCInputInstance_candidate;
 i32 __cdecl PCDeviceShowCursorPc(i32 show);
 
 i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {

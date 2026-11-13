@@ -120,8 +120,6 @@ extern "C" void __cdecl PCDeviceSetTextureStageState(u32 stage, i32 state, u32 v
 }
 
 extern "C" const char PCDeviceTextureCubeSourcePathPc[];
-extern "C" void __cdecl PCFrameCriticalSectionEnter_candidate(void);
-extern "C" void __cdecl PCFrameCriticalSectionLeave_candidate(void);
 
 extern "C" void __cdecl PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_PC **texture) {
     PCFrameCriticalSectionEnter_candidate();
@@ -587,9 +585,6 @@ extern "C" void __cdecl PCDeviceCreateTexture(u32 width, u32 height, u32 levels,
 
 #include <stdlib.h>
 extern "C" {
-    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
-    extern i32 PCGraphicsBoundShader;
-    extern i32 PCGraphicsFrameState;
     void __cdecl PCDeviceEvictManagedResources();
     void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
 }
@@ -652,9 +647,6 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh
 extern "C" {
     i32 __cdecl PCGraphicsPrepareVendor();
     void __cdecl PCGraphicsRecreateResources(i32 reset_available);
-    void __cdecl PCDeviceEvictManagedResources();
-    void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
-    extern u32 PCGraphicsMultisampleTypes[5];
     extern void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *);
 }
 void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
@@ -1181,8 +1173,6 @@ void __thiscall PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
 }
 
 extern "C" {
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTarget(i32, i32);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetFormat(i32, i32, i32);
     void __cdecl PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
     HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *);
 }

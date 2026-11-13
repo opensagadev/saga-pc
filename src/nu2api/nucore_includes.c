@@ -35,20 +35,9 @@ static u8 read_buffer[0x40000] = {0};
 i32 read_buffer_size = 0;
 static i32 read_buffer_decoded_size = 0;
 
-extern i32 file_criticalsection;
-extern PC_NUDATFILEINFO *unpack_file_info;
-extern NUDATOPENFILEINFO *unpack_file_odi;
-extern i64 unpack_file_pos;
-
-extern void __cdecl PCThreadCriticalSectionEnter_candidate(i32 section_index);
-extern void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index);
-
-extern i32 numdevices;
-extern NUFILE_DEVICE devices[16];
 extern NUFILE_DEVICE enum_devices[16];
 extern i32 enum_numdevices;
 STATIC_ASSERT(offsetof(NUFILE_DEVICE, params) == 0x24);
-extern i32 DontDoFileUpperCaseHack;
 
 void __cdecl NuDatFileMissingPc(char *filepath);
 void __cdecl NuRDPIVariableErrorPc(char *name);
@@ -72,59 +61,11 @@ STATIC_ASSERT(sizeof(struct NUPPHEADER_PC) == 12);
 #define NUPP_SWAP32(value)                                                                                             \
     (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
 
-extern const char SceneFileExtensionPc[5];
-extern const char NuFileExt_dds_PC[5];
-extern const char NuFileExt_at3_PC[5];
-extern const char NuFileExt_psc_PC[5];
-extern const char NuFileExt_phg_PC[5];
-extern const char NuFileExt_nx2_PC[5];
-extern const char NuFileExt_hx2_PC[5];
-extern const char NuFileExt_h4m_PC[5];
-extern const char NuFileExt_gcm_PC[5];
-extern const char NuFileExt_dsp_PC[5];
-extern const char NuFileExt_ctx_PC[5];
-extern const char NuFileExt_csc_PC[5];
-extern const char NuFileExt_chg_PC[5];
-extern const char NuFileExt_pss_PC[5];
-extern const char NuFileExt_vag_PC[5];
-extern const char NuFileExt_pnt_PC[5];
-extern const char NuFileExt_ghg_PC[5];
-extern const char NuFileExt_pc_ghg_PC[8];
-extern const char NuFileExt_lr_pc_ghg_PC[11];
-extern const char NuFileExt_pc_gsc_PC[8];
-extern const char NuFileExt_bik_PC[5];
-extern const char NuFileExt_wav_PC[5];
-extern const char NuFileExt_cu2_PC[5];
-extern const char NuFileExt_pc_dds_PC[8];
-extern const char NuFileExt_bsa_PC[5];
-extern const char NuFileExt_an3_PC[5];
-extern const char NuFileExt_pam_PC[5];
-extern const char NuFileExt_mib_PC[5];
-extern const char NuFileExt_msf_PC[5];
-extern const char NuFileExt_ps3_tex_PC[9];
-extern const char NuFileExt_ps3_gsc_PC[9];
-extern const char NuFileExt_ps3_ghg_PC[9];
-extern const char NuFileExt_wmv_PC[5];
-extern const char NuFileExt_wavm_PC[6];
-extern const char NuFileExt_wavx_PC[6];
-extern const char NuFileExt_cc2_PC[5];
-extern const char NuFileExt_360_tex_PC[9];
-extern const char NuFileExt_360_gsc_PC[9];
-extern const char NuFileExt_360_ghg_PC[9];
-extern const char NuFileExt_cbs_PC[5];
-extern const char NuFileExt_ca3_PC[5];
-
 STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, header) == 0);
-
-extern const char NuFileSourcePathPC[50];
 
 /* Append to nufile.c: real existing NuFileWrite is intentionally in this TU. */
 
-extern i32 nufile_lsn_allowed;
-
 STATIC_ASSERT(offsetof(NUDATHDR, unknown_b4) == 0xb4);
-
-extern char *NuBlankString;
 
 #define NU_WIDE_LENGTH(text, length)                                                                                   \
     do {                                                                                                               \
@@ -134,23 +75,6 @@ extern char *NuBlankString;
             ++(length);                                                                                                \
         }                                                                                                              \
     } while (0)
-
-PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
-void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-void __cdecl UpdatePushBlocks(void *, void *, f32);
-extern f32 PushVelocitySeekRatePc;
-extern f32 PushFallingSpeedPc;
-extern f32 PushCornerInsetPc;
-extern f32 PushGroundOffsetPc;
-extern f32 PushRumblePeriodPc;
-extern f32 PushRumbleWindowPc;
-extern f32 PushBlockOverlapShrinkPc;
-extern i32 PushBlockHintIdPc;
-void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
-PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
-char *__cdecl NuIToA(i32, char *, i32);
-extern char *PushBlocksNamePc;
 
 static i32 old_line_pos;
 static i32 fpk_err;
@@ -291,7 +215,6 @@ enum {
     PAD_BUTTON_LEFT = 1 << 0xf,
 };
 
-extern void NuPadOpenPS(FRAME_PAD_PC *pad);
 u32 ImplodeDecodeC(void);
 u32 ImplodeDecodeOffset(void);
 void ImplodeMakeTable(i32, u8 *, i32, u16 *);
@@ -301,15 +224,6 @@ u32 ImplodeGetBits(i32 count);
 void ImplodeFillBuf(i32 count);
 u8 ImplodeGetByteFromMem(void);
 void ImplodeError(char *msg, ...);
-extern u32 implode_bitbuf;
-extern u16 implode_left[0x3fb];
-extern u16 implode_right[0x3fb];
-extern i32 gExplodeInitialised;
-
-extern char *implode_inbuffer;
-extern char *implode_outbuffer;
-extern u32 implode_origsize;
-extern u32 implode_compsize;
 
 static i32 ImplodePendingCopyPc = 0;
 
@@ -376,10 +290,6 @@ STATIC_ASSERT(offsetof(TimeBarSet, field_28) == 0x28);
  * below after clearing the real 0x90-byte API record. */
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 
-extern void __cdecl NuKeyboardRead(void);
-extern void __cdecl PCFrameCriticalSectionEnter_candidate(void);
-extern void __cdecl PCFrameCriticalSectionLeave_candidate(void);
-
 extern i32 FrameSleepMillisecondsPc;
 extern f32 FrameStartupDelayPc;
 extern i32 NuApiTextLinePc;
@@ -418,11 +328,9 @@ static i32 hexcodetoint(char value);
 static void NuRDPIGetToken(NURDPICTX_PC *context);
 static i32 NuRDPIPrimary(NURDPICTX_PC *context);
 static i32 NuRDPITerm(NURDPICTX_PC *context);
-static i32 NuRDPIExpression(NURDPICTX_PC *context);
 static void NuRDPFGetToken(NURDPFCTX_PC *context);
 static f32 NuRDPFPrimary(NURDPFCTX_PC *context);
 static f32 NuRDPFTerm(NURDPFCTX_PC *context);
-static f32 NuRDPFExpression(NURDPFCTX_PC *context);
 static NUFPAR_PC *NuAllocFPar(void);
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block);
 static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MANAGER_BLOCK_PC **remainder,

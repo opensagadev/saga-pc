@@ -11,19 +11,6 @@ NUSORTPRI *sort_list = 0;
 i32 render_scene_index = 0;
 NURNDRLIBSCENE sceneParameters[16] = {0};
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
-extern i32 nudlist_alloc_count;
-extern u32 nudlist_alloc_base;
-extern u32 nudlist_alloc_end;
-extern u32 nudlist_item_base;
-extern i32 nudlist_frame_active;
-extern u32 nudlist_field_e80;
-extern u32 nudlist_field_fc8;
-extern i32 nudlist_field_fc4;
-extern u32 nudlist_field_9d0;
-extern u32 nudlist_field_9d8;
-extern u32 nudlist_field_fe4;
-extern NUDISPLAYLISTITEM nudlist_2d_static;
-extern VARIPTR nudlist_stream_cursor;
 
 i32 __cdecl NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
@@ -208,8 +195,6 @@ void __cdecl NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
         item->id = 4;
     }
 }
-
-void __cdecl NuRndrStateInit(void);
 
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
@@ -943,9 +928,6 @@ void __cdecl RenderPostClearScreenPc(void) {
 }
 
 STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
-extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
-void __cdecl RenderPostViewportResetPc(void);
-u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
 #ifndef RENDER_POST_ALPHA_CACHE_PC
 #define RENDER_POST_ALPHA_CACHE_PC cacheValues
 #endif
@@ -1117,10 +1099,6 @@ __declspec(noinline) u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 ma
 }
 
 #include <float.h>
-void __cdecl NuRndrStateSetSpecularLightEx(const NUVEC *, const NUMTX *, const NUVEC *);
-
-void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer);
-void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end);
 
 PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
 PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
@@ -1145,8 +1123,6 @@ STATIC_ASSERT(sizeof(PC_SHADOW_EDGE_PC) == 16);
 STATIC_ASSERT(offsetof(PC_SHADOW_EDGE_PC, count) == 12);
 STATIC_ASSERT(sizeof(RENDERER_ARENA_VERTEX_PC) == 16);
 STATIC_ASSERT(offsetof(RENDERER_ARENA_VERTEX_PC, colour) == 12);
-
-void __cdecl NuRndrInitGeneric(void);
 
 __declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
     RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);

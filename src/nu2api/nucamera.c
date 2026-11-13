@@ -295,7 +295,6 @@ rejected:
     return 1;
 }
 
-extern f32 VisibilityAlternateWidthPc;
 extern i32 NuCameraScissorWidthPc;
 extern i32 NuCameraScissorHeightPc;
 i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
@@ -522,10 +521,6 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
 }
 
 #include <math.h>
-extern NUMTX VisibilityZeroMatrixTemplatePc;
-void __cdecl NuCameraBuildClipPlanes(void);
-void __cdecl NuMtxCalcFaceOn(NUMTX *, NUVEC *);
-void __cdecl NuMtxCalcFaceY(NUMTX *, NUVEC *);
 void __cdecl NuMtxCalcFaceOn(NUMTX *m, NUVEC *v) {
     NUVEC world_up = {0.0f, 1.0f, 0.0f};
     NUVEC right;

@@ -86,10 +86,6 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8 value) {
 
 #include <shlobj.h>
 #include <string.h>
-extern const char *PcCompanyName;
-extern const char *PcProductName;
-extern i32 PcUsePersonalFolder;
-extern char PcUserFolder[260];
 extern "C" void __cdecl PCOptionsBuildFolder(char *destination) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder != 0)

@@ -396,10 +396,6 @@ extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINST
     PCNativeWarningDebugState.Initialize();
 }
 
-extern "C" {
-    extern u32 PcUseUserGeoRegionPc;
-}
-
 extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;

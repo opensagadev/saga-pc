@@ -44,14 +44,7 @@ STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, use_keyboard_override) == 0x67e0);
 STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, device_kind) == 0x67f0);
 
 extern "C" {
-    extern i8 TextInputLastDeviceIndexPc;
-    extern TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc;
-    extern TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc;
     extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
-    extern i8 TextInputButtonLabelIndexPc[11];
-    extern i8 TextInputAxisLabelIndexPc[16];
-    extern u8 TextInputKeyboardOverridePc[32];
-    extern char **TextInputKeyNamesPc;
     i32 __cdecl TextInputLastDevicePc(void) {
         return TextInputLastDeviceIndexPc;
     }

@@ -384,8 +384,6 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
     return TRUE;
 }
 
-void *__cdecl operator new(size_t size);
-
 void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
     DirectInput8Create(instance, 0x800, PcDirectInput8AId, (void **)&factory, NULL);
     factory->methods->create_device(factory, PcSystemMouseId, &mouse, NULL);

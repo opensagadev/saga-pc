@@ -2,9 +2,6 @@
 #include <shlobj.h>
 #include <stdio.h>
 #include <string.h>
-extern const char *PcCompanyName, *PcProductName;
-extern i32 PcUsePersonalFolder;
-extern char PcUserFolder[], PcFileDirectory[], PcFilePath[];
 extern "C" char *__cdecl PcGetUserFolder(const char *unused_company, const char *unused_product) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder)

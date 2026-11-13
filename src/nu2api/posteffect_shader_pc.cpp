@@ -89,7 +89,6 @@ extern "C" POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32 mode, c
 
 extern "C" void __cdecl PostFilterInitSharedResourcesPc(void);
 extern "C" {
-    extern i32 PCDeviceHardwareVertexProcessingPC;
     extern const DWORD PostShaderTokens7656f0[];
     extern const DWORD PostShaderTokens765798[];
     extern const DWORD PostShaderTokens765848[];

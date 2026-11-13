@@ -170,8 +170,6 @@ extern "C" {
     } CAMERA_RENDER_SPECULAR_READER_PC;
     STATIC_ASSERT(offsetof(CAMERA_RENDER_SPECULAR_READER_PC, direction) == 0xdc);
 
-    void __cdecl NuVpGetSize2(f32 *width, f32 *height);
-
     static NUMTX RndrStateTransformPc = {0};
     static NUMTX RndrStateScaledTransformPc = {0};
     static f32 RndrStateTransformScalePc = 1.0f;
@@ -257,8 +255,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometry_count) == 0x14);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_streams) == 0x18);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_stream_count) == 0x1c);
-    void __cdecl NuMtlUpdate(NUMTL *);
-    void __cdecl NuPortalMaxDepth(NUGSCN *, i32);
 
     STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 
@@ -350,19 +346,6 @@ extern "C" {
         (out).z = (v).x * (m)->m02 + (v).y * (m)->m12 + (v).z * (m)->m22;                                              \
         (out).x = x;                                                                                                   \
         (out).y = y;                                                                                                   \
-    }
-
-    extern "C" {
-        extern NUVEC4 PcGeometryDefaultOriginPc;
-        extern NUMTX PcGeometryViewMatrixPc;
-        extern NUMTX PcGeometryProjectionMatrixPc;
-        extern NUMTX PcGeometryViewProjectionMatrixPc;
-        extern NUMTX PcGeometryInverseViewProjectionMatrixPc;
-        extern NUMTX PcGeometryResetMatrixPc;
-        extern NUMTX PcGeometryAdjustedProjectionMatrixPc;
-        extern NUMTX PcGeometryTranslationMatrixPc;
-        extern NUMTX PcGeometryScaleMatrixPc;
-        void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     }
 
     typedef struct PC_GEOMETRY_FORMAT_RECORD_PC {
@@ -509,10 +492,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
 
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
-    extern "C" void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
 
     extern "C" {
-        POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
         extern const DWORD NuMaterialShaderTokens769710Pc[76] = {
             0xfffe0101u, 0x0022fffeu, 0x42415443u, 0x0000001cu, 0x00000053u, 0xfffe0101u, 0x00000001u, 0x0000001cu,
             0x20000120u, 0x0000004cu, 0x00000030u, 0x00000002u, 0x00020004u, 0x0000003cu, 0x00000000u, 0x77656976u,
@@ -877,12 +858,6 @@ extern "C" {
         u32 reflection_flags;
     } PC_DL_MATERIAL_READER;
     STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
-    extern NUVEC4 NuDisplayHandlerTintPc;
-    extern void *NuDisplayHandlerMaterialPc;
-    extern i32 NuDisplayHandlerReflectionPc;
-    extern i32 NuDisplayHandlerCameraIdPc;
-    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
-    void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
 
     typedef struct PC_DL_CAMERA_PROJECTION_READER {
         NUMTX projection;
@@ -958,11 +933,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, vertex_buffer) == 0x18);
     STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, index_buffer) == 0x1c);
 
-    void __cdecl PCDeviceSetStreamSourceFreqPc(u32, u32);
-    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
-    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
-    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
-
     typedef struct PC_DL_GEOMETRY_READER {
         u32 kind, primitive_count;
         u16 vertex_stride;
@@ -1029,18 +999,8 @@ extern "C" {
 
     /* Existing canonical integer slot holds the native 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
-    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
-    void __cdecl PCDeviceDrawPrimitivePc(i32, u32, u32);
-    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
-    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
 
     extern "C" void __cdecl NuStrFixExt(char *, char *, char *, i32);
-    extern const char NuTextureSourcePathPC[];
-    extern const char NuTextureDdsExtensionPc[];
-    extern const char NuTextureEnvironmentCubePathPc[];
-    extern const char NuTexturePhongCubePathPc[];
-    extern PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc, *NuTexturePhongCubePc;
-    void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource);
 
     /* The leading pad keeps the 14-byte file header's 32-bit fields naturally aligned. */
     typedef struct nutexbmp_file_header_pc_s {
@@ -1086,7 +1046,6 @@ extern "C" {
         extern u32 PCGraphicsPostEffectWidthPc;
         extern u32 PCGraphicsPostEffectHeightPc;
         extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
-        extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
     }
 
     STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
@@ -1145,7 +1104,6 @@ extern "C" {
         extern PC_FRAMEBUFFER_PC PcFramebufferPool[32];
         extern u8 PcFramebufferActive[32];
         extern PC_FRAMEBUFFER_PC *PcBoundFramebuffer;
-        extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
         extern PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer;
     }
 
@@ -1178,18 +1136,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, material) == 0x0);
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u0) == 0x4);
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u1) == 0xc);
-    extern NULGTLASER_PC NuLgtLaserData[64];
-    extern NULGTARCLASER_PC NuLgtArcLaserData[16];
-    extern NULGTARCMATERIAL_PC NuLgtArcMtl[4];
-    extern i32 NuLgtLaserCnt, NuLgtLaserOldCnt;
-    extern i32 NuLgtArcLaserCnt, NuLgtArcLaserOldCnt, NuLgtArcLaserFrame;
-    extern i32 NuLgtSeed;
-    extern i32 PS2_REZ_W, PS2_REZ_H;
-    extern i32 NuPrimCoordSystemStack[];
     void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
     void __cdecl NuVec4ScaleForwardPc(NUVEC4 *, NUVEC4 *, f32);
     i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
-    void __cdecl NuRndrEndSceneEx(i32);
 #define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
 #define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                              \
     do {                                                                                                               \
@@ -1199,10 +1148,6 @@ extern "C" {
         vertex->v = (tex_v);                                                                                           \
         NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                   \
     } while (0)
-
-    extern void __cdecl NuKeyboardRead(void);
-    extern void __cdecl PCFrameCriticalSectionEnter_candidate(void);
-    extern void __cdecl PCFrameCriticalSectionLeave_candidate(void);
 
     extern i32 FrameSleepMillisecondsPc;
     extern f32 FrameStartupDelayPc;
@@ -1239,10 +1184,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
     STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
-    extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
-    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
-                                         f32 dest_y, f32 dest_right, f32 dest_bottom);
-    void __cdecl RenderPostViewportResetPc(void);
 
     STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0);
     STATIC_ASSERT(offsetof(NUVPCURRENT, y) == 4);
@@ -1251,22 +1192,6 @@ extern "C" {
 
     typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;
-
-    extern i32 NuPrimCSPos;
-    extern i32 NuPrimCoordSystemStack[];
-    extern i32 NuPrimVertexCount;
-    extern i32 *NuPrimVertexCountPointer;
-    extern VARIPTR *NuPrimStreamBufferPointer;
-    extern i32 NuPrimCurrentPrimitiveType;
-    extern f32 NuPrimXScale;
-    extern f32 NuPrimYScale;
-    extern f32 NuPrimXBias;
-    extern f32 NuPrimYBias;
-
-    extern const f32 NuPrimPS2XScale;
-    extern const f32 NuPrimPS2YScale;
-    extern const f32 NuPrimTwo;
-    extern const f32 NuPrimMinusTwo;
 
     typedef struct nuprimvertex_pc_s {
         f32 x;
@@ -6874,10 +6799,8 @@ extern "C" {
         NuRndrStateSetSpecularLightEx(&view_direction, &matrix, (const NUVEC *)&rndrstream_specular_intensity);
         return 1;
     }
-    extern void NuDisplayListAnimateMtls(f32);
     static f32 FrameShaderMaterialAnimationTimePc = 0;
     static i32 FrameShaderMaterialFirstCallPc = 1;
-    extern f32 FrameMaterialAnimationSpeedPc;
     void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
         i32 i;
         FrameShaderMaterialAnimationTimePc += frame_time;
@@ -7036,9 +6959,6 @@ extern "C" {
         NuRndrQuadBufferInitPc();
         NuRndrGeometryBuffersInitPc();
     }
-    extern u32 PCGraphicsPostEffectWidthPc;
-    extern u32 PCGraphicsPostEffectHeightPc;
-    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
     void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
     /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
     void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
@@ -7064,7 +6984,6 @@ extern "C" {
         PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
         PCGraphicsPostEffectBackBufferTexturePc = texture;
     }
-    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc;
     /* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures.
      */

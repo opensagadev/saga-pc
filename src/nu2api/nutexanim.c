@@ -134,9 +134,7 @@ STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, diffuse_texture_id) == 0xb8);
 static u32 TextureAnimationSignalsOffPc = 0, TextureAnimationSignalsOnPc = 0;
 static i32 TextureAnimationFrameTimePc = 0;
 static u16 TextureAnimationActiveMaskPc = 0;
-extern NURAND TextureAnimationRandomPc;
 static u32 TextureAnimationPreviousSignalsPc = 0;
-extern u16 TextureAnimationScriptMaskPc;
 
 void __cdecl NuTexAnimSetSignals(u32 signals) {
     u32 changed = TextureAnimationPreviousSignalsPc ^ signals;

@@ -152,8 +152,6 @@ i32 __fastcall NuKeyboardGetStateValue67ec_candidate(NuKeyboardState_PC *state, 
     return layout->unknown_67ec;
 }
 
-extern const f32 PCKeyboardDefaultValue_candidate;
-
 typedef struct NuKeyboardActionRecord_PC {
     u8 unknown_00_to_27[0x28];
     u8 active;

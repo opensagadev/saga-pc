@@ -137,7 +137,6 @@ extern "C" void __cdecl PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state,
 #include "saga.h"
 #include <string.h>
 #include <stdio.h>
-extern "C" void __cdecl NuFileWriteString(NUFILE file, const char *text);
 
 void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
     header.third = header.first = header.second = -1;

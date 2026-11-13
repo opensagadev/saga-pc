@@ -166,8 +166,6 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
     return length;
 }
 
-extern WIN32_FIND_DATAA FileDirectoryFindDataPc[16];
-extern HANDLE FileDirectoryHostHandlesPc[16];
 i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;

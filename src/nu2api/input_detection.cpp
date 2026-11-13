@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <wchar.h>
 
-extern const GUID PcWbemClassId, PcWbemInterfaceId;
-
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
 extern "C" BOOL IsXInputProductPc(const GUID *product) {
     IWbemLocator *locator = NULL;

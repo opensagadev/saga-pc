@@ -55,7 +55,6 @@ static __forceinline f32 NuFabs(f32 f) {
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
-f32 __cdecl RenderPostLogPc(f32 value);
 #define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 static i32 curve_points;

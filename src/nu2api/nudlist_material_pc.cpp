@@ -183,22 +183,6 @@ STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 0x1c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_4d4) == 0x4d4);
 
 extern "C" {
-    extern void *NuDisplayMaterialLastPc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc, *NuDisplayHandlerPixelShaderCachePc;
-    extern PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisProgramsPc, *NuDisplayMaterialGlassProgramsPc;
-    extern PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalProgramsPc, *NuDisplayMaterialFaceOnProgramsPc;
-    extern PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultProgramsPc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc, *NuDisplayMaterialFaceOnDeclarationPc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
-    extern i32 NuDisplayMaterialDistortTexturePc;
-    extern i32 PCGraphicsFrameState, PCGraphicsBoundShader;
-    void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *);
-    void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *);
-    void __cdecl NuMtlSetRenderStatesPS(NUMTL *);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32);
-
     static void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
         if (texture != NULL) {
             const u32 *tuple = &texture->flags;
@@ -458,13 +442,7 @@ extern "C" {
     extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc, *PostCopyAuxProgramPc, *PostBlurAuxProgramPc;
     extern f32 PostBlurInputBiasPc;
     void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
-    void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
-    void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
-    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
-    void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
-    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32);
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
-    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *);
     void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
     void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
@@ -690,16 +668,11 @@ extern "C" {
 }
 
 extern "C" {
-    extern PC_POST_BUFFER_PROXY_PC PostProxyBuffersPc[5];
     extern u8 PostBloomAttachPendingPc;
     extern const WCHAR PostEffectRenderLabelPc[];
     extern u32 PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc;
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
     extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc, *PostBlur5x5ProgramPc;
-    extern i32 PCDeviceHardwareVertexProcessingPC;
-    extern NUMTX PcGeometryViewMatrixPc, PcGeometryProjectionMatrixPc;
-    void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32,
-                                       bool, f32, POST_SHADER_PROGRAM_PC *);
     extern PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
 }
 

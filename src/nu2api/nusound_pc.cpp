@@ -79,11 +79,6 @@ extern "C" void __cdecl PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 a
 }
 
 extern "C" {
-    extern NUVEC nusound_special_positions[5];
-    extern f32 nusound_fade_start;
-    extern f32 nusound_fade_end;
-    extern NUMTX *NuSound3Listener;
-
     static i32 __cdecl PCSoundPositionVolumePc(NUVEC *relative, NUVEC *position, i32 volume) {
         f32 distance_squared;
         f32 distance;
@@ -510,9 +505,6 @@ STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
-extern "C" {
-    extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
-}
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
     i32 channel_a;
     i32 channel_b;

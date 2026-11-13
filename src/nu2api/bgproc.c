@@ -104,8 +104,6 @@ BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *d
     return info;
 }
 
-extern HANDLE bgproc_thread_handle_pc;
-
 /* Native Windows worker: the callback never returns during process lifetime. */
 static DWORD WINAPI bgProcWorkerPc(void *unused) {
     (void)unused;

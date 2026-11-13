@@ -1191,9 +1191,6 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 #undef TERRAIN_CROSS
 #undef SHADOW_BOUNDS_OVERLAP
 
-extern i32 TerrainShadowStatusPc;
-extern TERRAIN_POLYGON_INFO_PC *TerrainScaleWorkBasePc;
-
 f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask) {
     NUVEC local_position;
     (void)unused;
@@ -1243,7 +1240,6 @@ void NewTerrPlatformsOff(void) {
     TerrainPlatformsOffPc = 1;
 }
 
-void TerrainDiagnosticNoOpPC(const void *, ...);
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
     char path[100];
     TERRAIN_FILE_CHUNK *chunk;
@@ -1337,12 +1333,6 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
     return group_count;
 }
 
-extern const char TerrainSourcePathPc[];
-extern const f32 TerrainSteepNormalYPc;
-extern void *ScaleTerrainT2, *TempScanStack, *WallSplList;
-extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
-extern TERRAIN_SHAPE *ShadPoly, *TerrPoly;
-extern u8 TerrWallInfo;
 /* Normals exported as NaN (0xffc00000) are replaced by straight up. */
 #define TERRAIN_FIX_NORMAL(normal)                                                                                     \
     if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) { \

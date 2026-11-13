@@ -16,8 +16,6 @@ extern "C" {
     i32 FmvFrequencyReadyPc = 0;                   // 0x02913248
     LARGE_INTEGER FmvFrequencyPc = {1000};         // 0x0080fcd0
     void(__cdecl *FmvDrawCallbackPc)(void) = NULL; // 0x02913170
-    void __cdecl NuFmvStopSoundPc(i32);
-    IDirectSound8 *__cdecl NuFmvGetSoundFactoryPc(void);
 }
 PC_EFFECT_SURFACE_PC FmvSurfacePc; // 0x02913224
 

@@ -494,7 +494,6 @@ STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
-extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet);
 extern "C" f32 PCMusicDuckOverride;
 
 extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
