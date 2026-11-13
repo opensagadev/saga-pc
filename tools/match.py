@@ -90,6 +90,40 @@ def padding_runs(functions, target, read, externals=()):
     return runs
 
 
+DATA_PADDING_ALIGNMENT = 4
+
+
+def data_padding_runs(ranges, sections, image_base, read):
+    """Zero fill the linker leaves between two known data extents.
+
+    A run qualifies when it lies in file-backed .rdata/.data storage, is shorter
+    than four bytes, ends on a four-byte boundary where the next known extent
+    starts, directly follows a known extent and holds only zero bytes (string
+    literals and other odd-sized items before a four-byte aligned item).
+    """
+    merged = []
+    for start, size in sorted(ranges):
+        if merged and start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], start + size)
+        else:
+            merged.append([start, start + size])
+    storage = []
+    for section in sections:
+        flags = section["characteristics"]
+        if section["name"] in (".rsrc", ".reloc") or flags & 0x20 or not flags & 0x40:
+            continue
+        start = image_base + section["virtual_address"]
+        storage.append((start, start + min(section["raw_size"], section["virtual_size"])))
+    runs = []
+    for (_, end), (start, _) in zip(merged, merged[1:]):
+        gap = start - end
+        if 0 < gap < DATA_PADDING_ALIGNMENT and start % DATA_PADDING_ALIGNMENT == 0 \
+                and any(lower <= end and start <= upper for lower, upper in storage) \
+                and not any(read(end, gap)):
+            runs.append({"address": end, "size": gap})
+    return runs
+
+
 def text_coverage(functions, target, externals=(), padding=(), data=()):
     """Describe original text categories without changing exact-match credit.
 
@@ -264,10 +298,17 @@ def update_badge(stats):
              "Byte-identical code and the alignment padding after it.") \
         if "matching_with_padding_percent" in stats else \
         ("exact%20code%20match", "matching_percent", "exact code match", "Byte-identical code.")
+    # The mapped badges count proven alignment padding between known extents when the
+    # report has it; mapping_<kind>_percent stays the symbol-only number.
+    padded = "mapping_code_with_padding_percent" in stats
     rows = [exact,
-            ("mapped%20code", "mapping_code_percent", "mapped code", "Known code extents."),
-            ("mapped%20file--backed%20data", "mapping_file_backed_data_percent", "mapped file-backed data",
-             "Known data stored in the executable."),
+            ("mapped%20code", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
+             "mapped code", "Known code extents and the alignment padding between them." if padded
+             else "Known code extents."),
+            ("mapped%20file--backed%20data", "mapping_file_backed_data_with_padding_percent" if padded
+             else "mapping_file_backed_data_percent", "mapped file-backed data",
+             "Known data stored in the executable and the zero padding between it." if padded
+             else "Known data stored in the executable."),
             ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent", "mapped zero-fill/BSS",
              "Known zero-initialized storage.")]
     table = ("<!-- mapping-badge -->\n\n| Metric / coverage | Meaning |\n"
@@ -488,7 +529,12 @@ def main():
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
                          if r["target_size"] is not None]
         result["progress"].update(mapping_progress(records, target, member_ranges))
-        result["progress"].update(section_mapping_progress(records, target, pe.sections, member_ranges))
+        known = [(r["address"], r["size"]) for r in records if r["address"] is not None and r["size"]]
+        data_padding = data_padding_runs(known + member_ranges, pe.sections, number(target["image_base"]), pe.read_va)
+        result["progress"].update(section_mapping_progress(
+            records, target, pe.sections, member_ranges,
+            [(number(run["address"]), run["size"]) for run in padding] +
+            [(run["address"], run["size"]) for run in data_padding]))
         if "data_members" in config:
             result["data_members"] = members
             result["data_member_proof"] = member_proof
@@ -514,7 +560,8 @@ def main():
                             ("zero_fill_data", "zero-fill/BSS")):
             print(f"Mapped {label}: {stats[f'mapping_{kind}_bytes']}/"
                   f"{stats[f'mapping_{kind}_total_bytes']} bytes "
-                  f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage)")
+                  f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage; "
+                  f"{stats.get(f'mapping_{kind}_with_padding_percent', 0.0):.3f}% with proven alignment padding)")
     if args.function and units:
         for unit in units:
             diff_path = OUT / (unit["name"] + ".diff.json")

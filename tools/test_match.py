@@ -251,6 +251,53 @@ class PaddingTests(unittest.TestCase):
             self.assertNotIn("30.000", text)
 
 
+class DataPaddingTests(unittest.TestCase):
+    sections = [{"name": ".text", "virtual_address": 0x1000, "virtual_size": 0x1000, "raw_size": 0x1000,
+                 "characteristics": 0x60000020},
+                {"name": ".rdata", "virtual_address": 0x2000, "virtual_size": 0x100, "raw_size": 0x100,
+                 "characteristics": 0x40000040},
+                {"name": ".data", "virtual_address": 0x3000, "virtual_size": 0x1000, "raw_size": 0x100,
+                 "characteristics": 0xc0000040}]
+
+    def reader(self, image):
+        return lambda va, size: bytes(image.get(va + i, 0) for i in range(size))
+
+    def test_zero_fill_before_an_aligned_extent_is_padding(self):
+        rows = [(0x402000, 5), (0x402008, 4), (0x40200c, 2), (0x402010, 4)]
+        runs = match.data_padding_runs(rows, self.sections, 0x400000, self.reader({}))
+        self.assertEqual(runs, [{"address": 0x402005, "size": 3}, {"address": 0x40200e, "size": 2}])
+
+    def test_nonzero_long_unbounded_or_zero_fill_storage_is_not_padding(self):
+        cases = [
+            ([(0x402000, 5), (0x402008, 4)], {0x402006: 1}),   # a nonzero byte in the gap
+            ([(0x402000, 4), (0x402008, 4)], {}),              # four bytes: could be an object
+            ([(0x402000, 5), (0x402007, 4)], {}),              # next start not aligned
+            ([(0x402000, 5)], {}),                             # nothing follows
+            ([(0x403200, 5), (0x403208, 4)], {}),              # zero-fill storage, not file bytes
+            ([(0x401000, 5), (0x401008, 4)], {}),              # code
+        ]
+        for rows, image in cases:
+            with self.subTest(rows=rows):
+                self.assertEqual(match.data_padding_runs(rows, self.sections, 0x400000, self.reader(image)), [])
+
+    def test_mapped_badges_count_padding_when_reported(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(match, "ROOT", Path(temp)):
+            path = Path(temp) / "README.md"
+            path.write_text("<!-- matching-badge -->old<!-- /matching-badge -->\n\n"
+                            "<!-- mapping-badge -->old<!-- /mapping-badge -->\n")
+            match.update_badge({"fuzzy_coverage_percent": 80, "matching_percent": 30,
+                                "mapping_code_percent": 90, "mapping_code_with_padding_percent": 92.5,
+                                "mapping_file_backed_data_percent": 40,
+                                "mapping_file_backed_data_with_padding_percent": 41,
+                                "mapping_zero_fill_data_percent": 5, "mapping_zero_fill_data_with_padding_percent": 5})
+            text = path.read_text()
+            self.assertIn("mapped%20code-92.500%25-brightgreen) | Known code extents and the alignment "
+                          "padding between them. |", text)
+            self.assertIn("mapped%20file--backed%20data-41.000%25-orange) | Known data stored in the "
+                          "executable and the zero padding between it. |", text)
+            self.assertNotIn("90.000", text)
+
+
 class ObjdiffProgressTests(unittest.TestCase):
     def functions(self, copies=1):
         return [{"target_size": 16, "objects": [{} for _ in range(copies)]},

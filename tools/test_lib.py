@@ -322,6 +322,20 @@ class ProjectInputTests(unittest.TestCase):
         self.assertEqual(legacy["image_bytes"], 65536)
         self.assertGreater(legacy["mapped_bytes"], result["mapping_code_data_bytes"])
 
+    def test_padding_is_reported_beside_symbol_coverage(self):
+        target, sections = self.section_mapping_fixture()
+        rows = [{"symbol": "_f", "address": 0x401000, "size": 12},
+                {"symbol": "_s", "address": 0x403000, "size": 5}]
+        padding = [(0x40100c, 4), (0x403005, 3), (0x401008, 4)]
+        result = lib.section_mapping_progress(rows, target, sections, (), padding)
+        self.assertEqual(result["mapping_code_bytes"], 12)
+        self.assertEqual(result["mapping_code_with_padding_bytes"], 16)
+        self.assertEqual(result["mapping_file_backed_data_bytes"], 5)
+        self.assertEqual(result["mapping_file_backed_data_with_padding_bytes"], 8)
+        self.assertEqual(result["mapping_zero_fill_data_with_padding_bytes"], 0)
+        self.assertAlmostEqual(result["mapping_code_with_padding_percent"], 100 * 16 / 4096)
+        self.assertNotIn("mapping_code_with_padding_bytes", lib.section_mapping_progress(rows, target, sections))
+
     def test_legacy_virtual_totals_are_unchanged_when_raw_storage_changes(self):
         target, sections = self.section_mapping_fixture()
         rows = [{"symbol": "_uninitialized", "address": 0x404000, "size": 0x1000}]

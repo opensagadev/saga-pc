@@ -612,8 +612,13 @@ def mapping_progress(records, target, member_ranges=()):
     return {"image_bytes": total, "mapped_bytes": mapped, "mapping_percent": 100 * mapped / total}
 
 
-def section_mapping_progress(records, target, sections, member_ranges=()):
+def section_mapping_progress(records, target, sections, member_ranges=(), padding_ranges=()):
     """Known symbol bytes against code/data section storage, not unknown symbol sizes.
+
+    `padding_ranges` are proven alignment fill between known extents (see
+    tools/match.py). They are never symbol bytes; they are reported separately
+    as `mapping_<kind>_with_padding_*` so the badges can count every byte whose
+    nature is known while `mapping_<kind>_*` stays the symbol-only number.
 
     Split data into file-backed storage and zero-fill (including BSS merged into
     .data). Raw file-alignment tails beyond VirtualSize are not image storage.
@@ -630,6 +635,12 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
     selected, occupied = [], []
     storage_totals = {kind: 0 for kind in ("file_backed_data", "zero_fill_data")}
     storage_mapped = dict(storage_totals)
+    storage_padded = dict(storage_totals)
+    padding_ranges = list(padding_ranges)
+
+    def known(lower, upper, extra=()):
+        return covered_bytes((max(lower, a), min(upper, a + n) - max(lower, a))
+                             for a, n in [*ranges, *extra] if a < upper and a + n > lower)
     for section in sections:
         flags = section["characteristics"]
         size, rva, raw = section["virtual_size"], section["virtual_address"], section["raw_size"]
@@ -652,6 +663,8 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
                    for a, n in ranges if a < end and a + n > start]
         entry = dict(name=section["name"], kind=kind, address=hex(start),
                      size=size, mapped_bytes=covered_bytes(clipped))
+        if padding_ranges:
+            entry["padding_bytes"] = known(start, end, padding_ranges) - entry["mapped_bytes"]
         if kind == "data":
             boundary = start + min(raw, size)
             for storage, lower, upper in (("file_backed_data", start, boundary),
@@ -660,6 +673,7 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
                                       for a, n in ranges if a < upper and a + n > lower)
                 storage_totals[storage] += upper - lower
                 storage_mapped[storage] += count
+                storage_padded[storage] += known(lower, upper, padding_ranges) if padding_ranges else count
                 entry[f"{storage}_bytes"] = upper - lower
                 entry[f"mapped_{storage}_bytes"] = count
         selected.append(entry)
@@ -687,4 +701,10 @@ def section_mapping_progress(records, target, sections, member_ranges=()):
         result[f"mapping_{kind}_total_bytes"] = storage_totals[kind]
         result[f"mapping_{kind}_percent"] = (100 * storage_mapped[kind] / storage_totals[kind]
                                              if storage_totals[kind] else 0.0)
+    if padding_ranges:
+        padded = {"code": sum(s["mapped_bytes"] + s["padding_bytes"] for s in code_sections), **storage_padded}
+        totals.update(storage_totals)
+        for kind, count in padded.items():
+            result[f"mapping_{kind}_with_padding_bytes"] = count
+            result[f"mapping_{kind}_with_padding_percent"] = 100 * count / totals[kind] if totals[kind] else 0.0
     return result
