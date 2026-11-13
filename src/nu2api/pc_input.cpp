@@ -105,8 +105,8 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
                     }
                 }
                 if ((u32)button <= 15 && binding->kind == 0) {
-                    i32 kind = config->buttons[button][0];
-                    i32 value = config->buttons[button][1];
+                    u8 kind = config->buttons[button][0];
+                    u8 value = config->buttons[button][1];
                     switch (kind) {
                         case 1:
                         case 2:
