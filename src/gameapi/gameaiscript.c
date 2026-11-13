@@ -11891,312 +11891,316 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     AILOCATORSET_PC *locator_set = NULL;
     f32 max_dy = 1000000000.0f;
     i64 add_capabilities = 0, remove_capabilities = 0;
-    if (first_time == 0)
-        return 1;
-    if (packet != NULL && packet->owner != NULL) {
-        path = &packet->path_info;
-        position = packet->owner->position;
-        yaw = packet->owner->field_0x276;
-    }
-    for (index = 0; index < param_count; ++index) {
-        char *value;
-        if ((value = NuStrIStr(params[index], "mingroupsize")) != NULL)
-            minimum = (i32)(AIParamToFloat(processor, value + 13));
-        else if ((value = NuStrIStr(params[index], "maxgroupsize")) != NULL)
-            maximum = (i32)(AIParamToFloat(processor, value + 13));
-        else if ((value = NuStrIStr(params[index], "groupsize")) != NULL)
-            count = (i32)(AIParamToFloat(processor, value + 10));
-        else if ((value = NuStrIStr(params[index], "start_locator_set=")) != NULL) {
-            value += 18;
-            if (NuStrICmp("myset", value) == 0)
-                locator_set = processor->locator_set;
-            else
-                locator_set = AIPathFindLocatorSet(WORLD->ai_sys, value);
-            if (locator_set != NULL)
-                start_locator = 1;
-        } else if (NuStrICmp("dont_inherit_locator_set", params[index]) == 0)
-            inherit = 0;
-        else if ((value = NuStrIStr(params[index], "locator_set=")) != NULL) {
-            value += 12;
-            if (NuStrICmp("myset", value) == 0)
-                locator_set = processor->locator_set;
-            else
-                locator_set = AIPathFindLocatorSet(WORLD->ai_sys, value);
-            if (locator_set != NULL) {
-                i32 i;
-                AILocatorSet_CheckLocatorsStillAssigned(sys, locator_set);
-                for (i = 0; i < locator_set->locator_count && locator_count < 64; ++i) {
-                    if (locator_set->assigned[i] == 0xff)
-                        locators[locator_count++] = &sys->locators[locator_set->locator_entries[i]];
-                }
-            }
-        } else if ((value = NuStrIStr(params[index], "locator=")) != NULL) {
-            if (locator_count < 64) {
-                AILOCATOR_PC *locator;
-                value += 8;
-                if (NuStrICmp("mylocator", value) == 0)
-                    locator = processor->locator;
+    if (first_time != 0) {
+        if (packet != NULL && packet->owner != NULL) {
+            path = &packet->path_info;
+            position = packet->owner->position;
+            yaw = packet->owner->field_0x276;
+        }
+        for (index = 0; index < param_count; ++index) {
+            char *value;
+            if ((value = NuStrIStr(params[index], "mingroupsize")) != NULL)
+                minimum = (i32)(AIParamToFloat(processor, value + 13));
+            else if ((value = NuStrIStr(params[index], "maxgroupsize")) != NULL)
+                maximum = (i32)(AIParamToFloat(processor, value + 13));
+            else if ((value = NuStrIStr(params[index], "groupsize")) != NULL)
+                count = (i32)(AIParamToFloat(processor, value + 10));
+            else if ((value = NuStrIStr(params[index], "start_locator_set=")) != NULL) {
+                value += 18;
+                if (NuStrICmp("myset", value) == 0)
+                    locator_set = processor->locator_set;
                 else
-                    locator = AIPathFindLocator(sys, value);
-                if (locator != NULL)
-                    locators[locator_count++] = locator;
-            }
-        } else if ((value = NuStrIStr(params[index], "max_range_to_player=")) != NULL)
-            max_range = AIParamToFloat(processor, value + 20);
-        else if ((value = NuStrIStr(params[index], "mindy=")) != NULL)
-            min_dy = AIParamToFloat(processor, value + 6);
-        else if ((value = NuStrIStr(params[index], "maxdy=")) != NULL)
-            max_dy = AIParamToFloat(processor, value + 6);
-        else if ((value = NuStrIStr(params[index], "zipup")) != NULL) {
-            if (locator_count < 32) {
-                ZIPUP_s *zipup;
-                value += 6;
-                zipup = FindSpawnZipUp(value);
-                if (zipup != NULL)
-                    zipups[zipup_count++] = zipup;
-            }
-        } else if (NuStrIStr(params[index], "type=randommap") != NULL) {
-            if (WORLD->current_level == HUB_LDATA) {
-                i16 model = Hub_GetRandomCharType();
-                if (model != -1 && model_count < 10)
-                    models[model_count++] = model;
-            }
-        } else if (NuStrIStr(params[index], "type=generic_goon") != NULL) {
-            if (model_count < 10) {
-                i16 model = GetGenericGoon(0);
-                if (model != -1)
-                    models[model_count++] = model;
-            }
-        } else if ((value = NuStrIStr(params[index], "type")) != NULL) {
-            value += 5;
-            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                if (WORLD->current_level == HUB_LDATA) {
-                    i16 model;
-                    if (NuStrICmp("Barman", value) == 0)
-                        model = id_BARMAN;
-                    else if (NuStrICmp("JABBA", value) == 0)
-                        model = DefaultAnimationJabbaIdPc;
-                    else if (NuStrICmp("CANTINABAND", value) == 0)
-                        model = id_CANTINABAND;
-                    else
-                        continue;
-                    if (apicharsys->playermodelids[model] != -1 && model_count < 10)
-                        models[model_count++] = model;
-                } else {
-                    u16 type = LevelCharacterTypeIDFn(value);
-                    if (type != 0xff) {
-                        i16 model = LevelCharacterGlobalIDFn(type);
-                        if (model != -1 && model_count < 10)
-                            models[model_count++] = model;
+                    locator_set = AIPathFindLocatorSet(WORLD->ai_sys, value);
+                if (locator_set != NULL)
+                    start_locator = 1;
+            } else if (NuStrICmp("dont_inherit_locator_set", params[index]) == 0)
+                inherit = 0;
+            else if ((value = NuStrIStr(params[index], "locator_set=")) != NULL) {
+                value += 12;
+                if (NuStrICmp("myset", value) == 0)
+                    locator_set = processor->locator_set;
+                else
+                    locator_set = AIPathFindLocatorSet(WORLD->ai_sys, value);
+                if (locator_set != NULL) {
+                    i32 i;
+                    AILocatorSet_CheckLocatorsStillAssigned(sys, locator_set);
+                    for (i = 0; i < locator_set->locator_count && locator_count < 64; ++i) {
+                        if (locator_set->assigned[i] == 0xff)
+                            locators[locator_count++] = &sys->locators[locator_set->locator_entries[i]];
                     }
                 }
-            }
-        } else if ((value = NuStrIStr(params[index], "state=")) != NULL)
-            state = value + 6;
-        else if ((value = NuStrIStr(params[index], "script")) != NULL)
-            NuStrCpy(script, value + 7);
-        else if ((value = NuStrIStr(params[index], "xspacing")) != NULL)
-            xspacing = AIParamToFloat(processor, value + 9);
-        else if ((value = NuStrIStr(params[index], "zspacing")) != NULL)
-            zspacing = AIParamToFloat(processor, value + 9);
-        else if ((value = NuStrIStr(params[index], "xoffset")) != NULL)
-            offset.x = AIParamToFloat(processor, value + 8);
-        else if ((value = NuStrIStr(params[index], "yoffset")) != NULL)
-            offset.y = AIParamToFloat(processor, value + 8);
-        else if ((value = NuStrIStr(params[index], "zoffset")) != NULL)
-            offset.z = AIParamToFloat(processor, value + 8);
-        else if ((value = NuStrIStr(params[index], "nacross")) != NULL)
-            across = (i32)(AIParamToFloat(processor, value + 8));
-        else if (NuStrIStr(params[index], "addtoset=myset") != NULL)
-            creature_set = processor->creature_set;
-        else if ((value = NuStrIStr(params[index], "addtoset=")) != NULL)
-            creature_set = (i32)(AIParamToFloat(processor, value + 9));
-        else if ((value = NuStrIStr(params[index], "crate_height=")) != NULL)
-            crate_height = AIParamToFloat(processor, value + 13);
-        else if ((value = NuStrIStr(params[index], "crate_delay=")) != NULL)
-            crate_delay = AIParamToFloat(processor, value + 12);
-        else if (NuStrICmp("not_grouped", params[index]) == 0)
-            grouped = 0;
-        else if (NuStrICmp("dont_set_on_surface", params[index]) == 0)
-            surface = 0;
-        else if (NuStrICmp("zipdown", params[index]) == 0) {
-            zipdown = 1;
-            surface = 0;
-        } else if (NuStrICmp("nearest_player", params[index]) == 0)
-            nearest = 1;
-        else if (NuStrICmp("off_screen", params[index]) == 0 || NuStrICmp("offscreen", params[index]) == 0)
-            offscreen = 1;
-        else if (NuStrICmp("on_screen", params[index]) == 0)
-            onscreen = 1;
-        else if ((value = NuStrIStr(params[index], "fall_chance=")) != NULL)
-            fall_chance = AIParamToFloat(processor, value + 12);
-        else if (NuStrICmp("CheapAsChips", params[index]) == 0)
-            cheap = 1;
-        else if (NuStrIStr(params[index], "ridden_by=myself") != NULL) {
-            if (packet != NULL && packet->owner != NULL)
-                rider = packet->owner->objptr;
-        } else if ((value = NuStrIStr(params[index], "ridden_by=")) != NULL)
-            rider = GetNamedGameObject(sys, value + 10);
-        else if (NuStrICmp("no_gun", params[index]) == 0)
-            no_gun = 1;
-        else if (NuStrICmp("ballooning", params[index]) == 0) {
-            ballooning = 1;
-            surface = 0;
-        } else if ((value = NuStrIStr(params[index], "lose_capability=")) != NULL)
-            remove_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("lose_capability=")));
-        else if ((value = NuStrIStr(params[index], "capability=")) != NULL)
-            add_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("capability=")));
-    }
-    if (minimum >= 0) {
-        if (maximum > minimum) {
-            count = minimum;
-            count += NuRand(NULL) % (maximum + 1 - minimum);
-        } else if (maximum == minimum)
-            count = maximum;
-    }
-    while (count != 0) {
-        i16 model;
-        AILOCATOR_PC *locator;
-        ZIPUP_s *zipup;
-        if (locator_count == 0 && zipup_count == 0 && rider == NULL && start_locator == 0)
-            break;
-        if (model_count == 0)
-            break;
-        model = models[NuRand(NULL) % model_count];
-        locator = NULL;
-        zipup = NULL;
-        if (locator_count != 0 || start_locator != 0) {
-            if (start_locator != 0 && locator_set != NULL) {
-                locator = FirstSpawnSetLocator(locator_set, sys);
-            } else {
-                f32 clip_radius;
-                if (offscreen != 0)
-                    clip_radius = 0.5f + apicharsys->char_data[model].collision_radius;
-                else
-                    clip_radius = 0.0f;
-                if (nearest != 0)
-                    locator = LocalGetNearestLocator(locators, locator_count, clip_radius, &player->position, max_range,
-                                                     onscreen, max_dy, min_dy);
-                else if (max_range == 1000000000.0f)
-                    locator = LocalGetRandomLocator(locators, locator_count, clip_radius, NULL, 1000000000.0f, onscreen,
-                                                    max_dy, min_dy);
-                else
-                    locator = LocalGetRandomLocator(locators, locator_count, clip_radius, &player->collision_position,
-                                                    max_range, onscreen, max_dy, min_dy);
-            }
-            if (locator == NULL)
-                break;
-            path = &locator->path_info;
-            position = locator->position;
-            yaw = locator->flags;
-            offset_applied = 0;
-        } else if (zipup_count != 0) {
-            zipup = LocalGetRandomSpawnZipUp(zipups, zipup_count);
-            if (zipup == NULL)
-                break;
-            position = zipup->lower_position;
-            path = NULL;
-            surface = 0;
-        } else if (rider != NULL) {
-            path = &rider->ai_packet.path_info;
-            position = rider->ai_packet.last_path_position;
-            yaw = rider->field_0x276;
-        }
-        if (offset_applied == 0 && (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f)) {
-            NuVecRotateY(&offset, &offset, yaw);
-            NuVecAdd(&position, &position, &offset);
-            offset_applied = 1;
-        }
-        if (count > 0) {
-            AIGROUP_PC *group = NULL;
-            i32 member;
-            i32 members;
-            if (grouped != 0)
-                members = count;
-            else
-                members = 1;
-            count -= members;
-            for (member = 0; member < members; ++member) {
-                GAMEOBJECT *object;
-                if (member == 0 && members > 1) {
-                    PLAYERCHARACTERCONFIG_PC *data = apicharsys->char_data[model].game_character;
-                    group = CreateAIGroup(sys, across, xspacing, zspacing, data->run_speed);
+            } else if ((value = NuStrIStr(params[index], "locator=")) != NULL) {
+                if (locator_count < 64) {
+                    AILOCATOR_PC *locator;
+                    value += 8;
+                    if (NuStrICmp("mylocator", value) == 0)
+                        locator = processor->locator;
+                    else
+                        locator = AIPathFindLocator(sys, value);
+                    if (locator != NULL)
+                        locators[locator_count++] = locator;
                 }
-                object = AddDynamicCreature(model, &position, yaw, script, path, group, surface, NULL, NULL, 0,
-                                            creature_set);
-                if (object == NULL)
-                    continue;
-                if (state != NULL)
-                    AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, state);
-                object->ai_packet.locator = locator;
-                if (inherit != 0)
-                    object->ai_packet.locator_set = locator_set;
-                if (no_gun != 0)
-                    object->portal_flags &= ~4;
-                if (crate_height != 0.0f)
-                    SpawnCreatureFromCrate(object, crate_height, delay);
-                delay += crate_delay;
-                if (locator_set != NULL && object->ai_packet.locator != NULL) {
-                    i32 i;
-                    for (i = 0; i < locator_set->locator_count; ++i) {
-                        if (locator_set->locator_entries[i] == object->ai_packet.locator - sys->locators) {
-                            locator_set->assigned[i] = object->hostility_group;
-                            break;
+            } else if ((value = NuStrIStr(params[index], "max_range_to_player=")) != NULL)
+                max_range = AIParamToFloat(processor, value + 20);
+            else if ((value = NuStrIStr(params[index], "mindy=")) != NULL)
+                min_dy = AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], "maxdy=")) != NULL)
+                max_dy = AIParamToFloat(processor, value + 6);
+            else if ((value = NuStrIStr(params[index], "zipup")) != NULL) {
+                if (locator_count < 32) {
+                    ZIPUP_s *zipup;
+                    value += 6;
+                    zipup = FindSpawnZipUp(value);
+                    if (zipup != NULL)
+                        zipups[zipup_count++] = zipup;
+                }
+            } else if (NuStrIStr(params[index], "type=randommap") != NULL) {
+                if (WORLD->current_level == HUB_LDATA) {
+                    i16 model = Hub_GetRandomCharType();
+                    if (model != -1 && model_count < 10)
+                        models[model_count++] = model;
+                }
+            } else if (NuStrIStr(params[index], "type=generic_goon") != NULL) {
+                if (model_count < 10) {
+                    i16 model = GetGenericGoon(0);
+                    if (model != -1)
+                        models[model_count++] = model;
+                }
+            } else if ((value = NuStrIStr(params[index], "type")) != NULL) {
+                value += 5;
+                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                    if (WORLD->current_level == HUB_LDATA) {
+                        i16 model;
+                        if (NuStrICmp("Barman", value) == 0)
+                            model = id_BARMAN;
+                        else if (NuStrICmp("JABBA", value) == 0)
+                            model = DefaultAnimationJabbaIdPc;
+                        else if (NuStrICmp("CANTINABAND", value) == 0)
+                            model = id_CANTINABAND;
+                        else
+                            continue;
+                        if (apicharsys->playermodelids[model] != -1 && model_count < 10)
+                            models[model_count++] = model;
+                    } else {
+                        u16 type = LevelCharacterTypeIDFn(value);
+                        if (type != 0xff) {
+                            i16 model = LevelCharacterGlobalIDFn(type);
+                            if (model != -1 && model_count < 10)
+                                models[model_count++] = model;
                         }
                     }
                 }
-                if (zipup != NULL) {
-                    ZIPUP_s *attached_zipup;
-                    ZIPUP_s *current_zipup;
-                    f32 dx;
-                    f32 dz;
-                    i32 rotation;
-                    i32 angle;
-                    object->attached_zipup = zipup;
-                    zipup->runtime_flags |= 1;
-                    attached_zipup = (ZIPUP_s *)object->attached_zipup;
-                    object->context_variant_flags |= 0x20;
-                    object->character_context = 0x47;
-                    object->field_7aa = 0x2a;
-                    object->movement_facing_angle =
-                        NuAtan2D(attached_zipup->upper_position.x - attached_zipup->lower_position.x,
-                                 attached_zipup->upper_position.z - attached_zipup->lower_position.z);
-                    object->field_e22 |= 1;
-                    object->velocity.y = 0.0f;
-                    object->context_timer = 0.0f;
-                    object->field_e33 = (u8)(object->weapon_scale < 1.0f);
-                    PlaySfx("ZipUp", &object->collision_position);
-                    PlayJumpSfx(object, 0);
-                    object->jump_variant_state = 0;
-                    current_zipup = (ZIPUP_s *)object->attached_zipup;
-                    dx = current_zipup->hook_origin.x - attached_zipup->lower_position.x;
-                    dz = current_zipup->hook_origin.z - attached_zipup->lower_position.z;
-                    angle = NuAtan2D(current_zipup->hook_origin.y - attached_zipup->lower_position.y,
-                                     NuFsqrt(dx * dx + dz * dz));
-                    rotation = 0x4000 - (angle < 0 ? -angle : angle);
-                    if (angle < 0)
-                        rotation = -rotation;
-                    object->field_7a4 = rotation;
-                } else if (zipdown != 0 && !(fall_chance > 0.0f && fall_chance > NuRandFloat())) {
-                    object->character_context = 0x35;
-                    object->field_7aa = 0x2a;
-                    object->external_force = object->upper_position;
-                    SetWeaponOut(object);
+            } else if ((value = NuStrIStr(params[index], "state=")) != NULL)
+                state = value + 6;
+            else if ((value = NuStrIStr(params[index], "script")) != NULL)
+                NuStrCpy(script, value + 7);
+            else if ((value = NuStrIStr(params[index], "xspacing")) != NULL)
+                xspacing = AIParamToFloat(processor, value + 9);
+            else if ((value = NuStrIStr(params[index], "zspacing")) != NULL)
+                zspacing = AIParamToFloat(processor, value + 9);
+            else if ((value = NuStrIStr(params[index], "xoffset")) != NULL)
+                offset.x = AIParamToFloat(processor, value + 8);
+            else if ((value = NuStrIStr(params[index], "yoffset")) != NULL)
+                offset.y = AIParamToFloat(processor, value + 8);
+            else if ((value = NuStrIStr(params[index], "zoffset")) != NULL)
+                offset.z = AIParamToFloat(processor, value + 8);
+            else if ((value = NuStrIStr(params[index], "nacross")) != NULL)
+                across = (i32)(AIParamToFloat(processor, value + 8));
+            else if (NuStrIStr(params[index], "addtoset=myset") != NULL)
+                creature_set = processor->creature_set;
+            else if ((value = NuStrIStr(params[index], "addtoset=")) != NULL)
+                creature_set = (i32)(AIParamToFloat(processor, value + 9));
+            else if ((value = NuStrIStr(params[index], "crate_height=")) != NULL)
+                crate_height = AIParamToFloat(processor, value + 13);
+            else if ((value = NuStrIStr(params[index], "crate_delay=")) != NULL)
+                crate_delay = AIParamToFloat(processor, value + 12);
+            else if (NuStrICmp("not_grouped", params[index]) == 0)
+                grouped = 0;
+            else if (NuStrICmp("dont_set_on_surface", params[index]) == 0)
+                surface = 0;
+            else if (NuStrICmp("zipdown", params[index]) == 0) {
+                zipdown = 1;
+                surface = 0;
+            } else if (NuStrICmp("nearest_player", params[index]) == 0)
+                nearest = 1;
+            else if (NuStrICmp("off_screen", params[index]) == 0 || NuStrICmp("offscreen", params[index]) == 0)
+                offscreen = 1;
+            else if (NuStrICmp("on_screen", params[index]) == 0)
+                onscreen = 1;
+            else if ((value = NuStrIStr(params[index], "fall_chance=")) != NULL)
+                fall_chance = AIParamToFloat(processor, value + 12);
+            else if (NuStrICmp("CheapAsChips", params[index]) == 0)
+                cheap = 1;
+            else if (NuStrIStr(params[index], "ridden_by=myself") != NULL) {
+                if (packet != NULL && packet->owner != NULL)
+                    rider = packet->owner->objptr;
+            } else if ((value = NuStrIStr(params[index], "ridden_by=")) != NULL)
+                rider = GetNamedGameObject(sys, value + 10);
+            else if (NuStrICmp("no_gun", params[index]) == 0)
+                no_gun = 1;
+            else if (NuStrICmp("ballooning", params[index]) == 0) {
+                ballooning = 1;
+                surface = 0;
+            } else if ((value = NuStrIStr(params[index], "lose_capability=")) != NULL)
+                remove_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("lose_capability=")));
+            else if ((value = NuStrIStr(params[index], "capability=")) != NULL)
+                add_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("capability=")));
+        }
+        if (minimum >= 0) {
+            if (maximum > minimum) {
+                count = minimum;
+                count += NuRand(NULL) % (maximum + 1 - minimum);
+            } else if (maximum == minimum)
+                count = maximum;
+        }
+        while (count != 0) {
+            i16 model;
+            AILOCATOR_PC *locator;
+            ZIPUP_s *zipup;
+            if (locator_count == 0 && zipup_count == 0 && rider == NULL && start_locator == 0)
+                break;
+            if (model_count == 0)
+                break;
+            model = models[NuRand(NULL) % model_count];
+            locator = NULL;
+            zipup = NULL;
+            if (locator_count != 0 || start_locator != 0) {
+                if (start_locator != 0 && locator_set != NULL) {
+                    locator = FirstSpawnSetLocator(locator_set, sys);
+                } else {
+                    f32 clip_radius;
+                    if (offscreen != 0)
+                        clip_radius = 0.5f + apicharsys->char_data[model].collision_radius;
+                    else
+                        clip_radius = 0.0f;
+                    if (nearest != 0)
+                        locator = LocalGetNearestLocator(locators, locator_count, clip_radius, &player->position,
+                                                         max_range, onscreen, max_dy, min_dy);
+                    else if (max_range == 1000000000.0f)
+                        locator = LocalGetRandomLocator(locators, locator_count, clip_radius, NULL, 1000000000.0f,
+                                                        onscreen, max_dy, min_dy);
+                    else
+                        locator =
+                            LocalGetRandomLocator(locators, locator_count, clip_radius, &player->collision_position,
+                                                  max_range, onscreen, max_dy, min_dy);
                 }
-                if (cheap != 0) {
-                    object->flags_1fc_word |= 0x420;
+                if (locator == NULL)
+                    break;
+                path = &locator->path_info;
+                position = locator->position;
+                yaw = locator->flags;
+                offset_applied = 0;
+            } else if (zipup_count != 0) {
+                zipup = LocalGetRandomSpawnZipUp(zipups, zipup_count);
+                if (zipup == NULL)
+                    break;
+                position = zipup->lower_position;
+                path = NULL;
+                surface = 0;
+            } else if (rider != NULL) {
+                path = &rider->ai_packet.path_info;
+                position = rider->ai_packet.last_path_position;
+                yaw = rider->field_0x276;
+            }
+            if (offset_applied == 0 && (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f)) {
+                NuVecRotateY(&offset, &offset, yaw);
+                NuVecAdd(&position, &position, &offset);
+                offset_applied = 1;
+            }
+            if (count > 0) {
+                AIGROUP_PC *group = NULL;
+                i32 member;
+                i32 members;
+                if (grouped != 0)
+                    members = count;
+                else
+                    members = 1;
+                count -= members;
+                for (member = 0; member < members; ++member) {
+                    GAMEOBJECT *object;
+                    if (member == 0 && members > 1) {
+                        PLAYERCHARACTERCONFIG_PC *data = apicharsys->char_data[model].game_character;
+                        group = CreateAIGroup(sys, across, xspacing, zspacing, data->run_speed);
+                    }
+                    object = AddDynamicCreature(model, &position, yaw, script, path, group, surface, NULL, NULL, 0,
+                                                creature_set);
+                    if (object == NULL)
+                        continue;
+                    if (state != NULL)
+                        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, state);
+                    object->ai_packet.locator = locator;
+                    if (inherit != 0)
+                        object->ai_packet.locator_set = locator_set;
+                    if (no_gun != 0)
+                        object->portal_flags &= ~4;
+                    if (crate_height != 0.0f)
+                        SpawnCreatureFromCrate(object, crate_height, delay);
+                    delay += crate_delay;
+                    if (locator_set != NULL && object->ai_packet.locator != NULL) {
+                        i32 i;
+                        for (i = 0; i < locator_set->locator_count; ++i) {
+                            if (locator_set->locator_entries[i] == object->ai_packet.locator - sys->locators) {
+                                locator_set->assigned[i] = object->hostility_group;
+                                break;
+                            }
+                        }
+                    }
+                    if (zipup != NULL) {
+                        ZIPUP_s *attached_zipup;
+                        ZIPUP_s *current_zipup;
+                        f32 dx;
+                        f32 dz;
+                        i32 rotation;
+                        i32 angle;
+                        object->attached_zipup = zipup;
+                        zipup->runtime_flags |= 1;
+                        attached_zipup = (ZIPUP_s *)object->attached_zipup;
+                        object->context_variant_flags |= 0x20;
+                        object->character_context = 0x47;
+                        object->field_7aa = 0x2a;
+                        object->movement_facing_angle =
+                            NuAtan2D(attached_zipup->upper_position.x - attached_zipup->lower_position.x,
+                                     attached_zipup->upper_position.z - attached_zipup->lower_position.z);
+                        object->flags_e20 |= 0x10000;
+                        object->velocity.y = 0.0f;
+                        if (object->weapon_scale < 1.0f)
+                            object->field_e33 = 1;
+                        else
+                            object->field_e33 = 0;
+                        object->context_timer = 0.0f;
+                        PlaySfx("ZipUp", &object->collision_position);
+                        PlayJumpSfx(object, 0);
+                        object->jump_variant_state = 0;
+                        current_zipup = (ZIPUP_s *)object->attached_zipup;
+                        dx = current_zipup->hook_origin.x - attached_zipup->lower_position.x;
+                        dz = current_zipup->hook_origin.z - attached_zipup->lower_position.z;
+                        angle = NuAtan2D(current_zipup->hook_origin.y - attached_zipup->lower_position.y,
+                                         NuFsqrt(dx * dx + dz * dz));
+                        rotation = 0x4000 - abs(angle);
+                        if (angle < 0)
+                            rotation = -rotation;
+                        object->field_7a4 = rotation;
+                    } else if (zipdown != 0 && !(fall_chance > 0.0f && NuRandFloat() < fall_chance)) {
+                        object->character_context = 0x35;
+                        object->field_7aa = 0x2a;
+                        object->external_force = object->upper_position;
+                        SetWeaponOut(object);
+                    }
+                    if (cheap != 0) {
+                        object->flags_1fc_word |= 0x420;
+                    }
+                    if (rider != NULL)
+                        TakeOverGameObject(rider, object, 0, 1);
+                    else if (ballooning != 0) {
+                        StartBallooning(object, 0);
+                        if (locator != NULL)
+                            SetBallooningHeight(object, locator->position.y);
+                    }
+                    if (add_capabilities != 0)
+                        object->ai_packet.capabilities |= (u32)add_capabilities;
+                    if (remove_capabilities != 0)
+                        object->ai_packet.capabilities &= ~(u32)remove_capabilities;
                 }
-                if (rider != NULL)
-                    TakeOverGameObject(rider, object, 0, 1);
-                else if (ballooning != 0) {
-                    StartBallooning(object, 0);
-                    if (locator != NULL)
-                        SetBallooningHeight(object, locator->position.y);
-                }
-                if (add_capabilities != 0)
-                    object->ai_packet.capabilities |= (u32)add_capabilities;
-                if (remove_capabilities != 0)
-                    object->ai_packet.capabilities &= ~(u32)remove_capabilities;
             }
         }
     }
