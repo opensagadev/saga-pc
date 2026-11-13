@@ -966,7 +966,7 @@ void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_p
     if (world == NULL)
         return;
     system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
-    if (system == NULL || system->panels == NULL || system->count <= 0)
+    if (system == NULL || system->panels == NULL)
         return;
     for (index = 0; index < system->count; ++index) {
         panel = &system->panels[index];

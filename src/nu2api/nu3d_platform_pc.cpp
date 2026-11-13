@@ -4399,10 +4399,11 @@ extern "C" {
         u32 size;
         void *data, *locked_data;
         u8 padding;
-        i32 skip_texture, second_offset, third_offset, fourth_offset;
+        i32 skip_texture;
         SCENE_FILE_TEXTURE_HEADER_PC texture;
         (void)cursor;
         (void)end;
+        section_size = 0;
         if (SceneUploadBufferStartPC.addr == 0) {
             SceneUploadBufferStartPC.void_ptr = NuAlloc(SceneUploadBufferSizePC, SceneUploadSourcePathPC, 0x3f);
             SceneUploadBufferEndPC.addr = SceneUploadBufferStartPC.addr + SceneUploadBufferSizePC;
@@ -4416,23 +4417,17 @@ extern "C" {
         SceneUploadBufferCursorPC.addr += SceneVideoResourcesPC.texture_count * sizeof(*SceneVideoResourcesPC.textures);
         memset(SceneVideoResourcesPC.textures, 0,
                SceneVideoResourcesPC.texture_count * sizeof(*SceneVideoResourcesPC.textures));
-        second_offset = 8;
-        third_offset = 12;
-        fourth_offset = 16;
         for (i = 0; i != SceneVideoResourcesPC.texture_count; ++i) {
             bytes_read += NuFileRead(file, &texture, sizeof(texture));
             if (texture.size == 0) {
                 SceneVideoResourcesPC.textures[i] = NULL;
                 if (texture.width < 0) {
                     SceneVideoResourcesPC.textures[i + 1] = NULL;
-                    SceneVideoResourcesPC.textures[second_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
-                    SceneVideoResourcesPC.textures[third_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
-                    SceneVideoResourcesPC.textures[fourth_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
+                    SceneVideoResourcesPC.textures[i + 2] = NULL;
+                    SceneVideoResourcesPC.textures[i + 3] = NULL;
+                    SceneVideoResourcesPC.textures[i + 4] = NULL;
                     SceneVideoResourcesPC.textures[i + 5] = NULL;
                     i += 5;
-                    second_offset += 20;
-                    third_offset += 20;
-                    fourth_offset += 20;
                 }
             } else if (texture.width == 0) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -4451,14 +4446,11 @@ extern "C" {
                         texture.width = -texture.width;
                         PCDeviceCreateCubeTextureFromMemory(data, texture.size, &SceneVideoResourcesPC.textures[i]);
                         SceneVideoResourcesPC.textures[i + 1] = NULL;
-                        SceneVideoResourcesPC.textures[second_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
-                        SceneVideoResourcesPC.textures[third_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
-                        SceneVideoResourcesPC.textures[fourth_offset / sizeof(*SceneVideoResourcesPC.textures)] = NULL;
+                        SceneVideoResourcesPC.textures[i + 2] = NULL;
+                        SceneVideoResourcesPC.textures[i + 3] = NULL;
+                        SceneVideoResourcesPC.textures[i + 4] = NULL;
                         SceneVideoResourcesPC.textures[i + 5] = NULL;
                         i += 5;
-                        second_offset += 20;
-                        third_offset += 20;
-                        fourth_offset += 20;
                     } else {
                         PCDeviceCreateTextureFromMemoryEx(data, texture.size, texture.width, texture.height, -3, 0, 0,
                                                           1, -1, -1, 0, NULL, NULL, &SceneVideoResourcesPC.textures[i]);
@@ -4469,15 +4461,13 @@ extern "C" {
                 }
                 SceneUploadBufferCursorPC.addr -= texture.size;
             }
-            second_offset += 4;
-            third_offset += 4;
-            fourth_offset += 4;
         }
         bytes_read += NuFileRead(file, &SceneVideoResourcesPC.vertex_buffer_count,
                                  sizeof(SceneVideoResourcesPC.vertex_buffer_count));
         SceneVideoResourcesPC.vertex_buffers = (PC_BUFFER_RESOURCE_PC **)SceneUploadBufferCursorPC.void_ptr;
         SceneUploadBufferCursorPC.addr += SceneVideoResourcesPC.vertex_buffer_count * sizeof(PC_BUFFER_RESOURCE_PC *);
         for (i = 0; i != SceneVideoResourcesPC.vertex_buffer_count; ++i) {
+            size = 0;
             bytes_read += NuFileRead(file, &size, sizeof(size));
             if (size == 0) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -4501,6 +4491,7 @@ extern "C" {
         SceneVideoResourcesPC.index_buffers = (PC_BUFFER_RESOURCE_PC **)SceneUploadBufferCursorPC.void_ptr;
         SceneUploadBufferCursorPC.addr += SceneVideoResourcesPC.index_buffer_count * sizeof(PC_BUFFER_RESOURCE_PC *);
         for (i = 0; i != SceneVideoResourcesPC.index_buffer_count; ++i) {
+            size = 0;
             bytes_read += NuFileRead(file, &size, sizeof(size));
             if (size == 0) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -7045,7 +7036,6 @@ extern "C" {
     /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
     void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
-        i32 index;
         PCGraphicsPostEffectWidthPc = width;
         if (width >= 512)
             PCGraphicsPostEffectWidthPc = 512;
@@ -7063,16 +7053,7 @@ extern "C" {
             PCGraphicsPostEffectHeightPc = height_power >> 1;
         }
         PCGraphicsCreatePostEffectWorkTexture(width, height);
-        for (index = 0; index != 32; ++index) {
-            if (PCGraphicsRenderTextureActive[index] == 0) {
-                PCGraphicsRenderTextureActive[index] = 1;
-                texture = &PCGraphicsRenderTextures[index];
-                goto allocated;
-            }
-        }
-        PCGraphicsRenderTextureAllocationError();
-        texture = NULL;
-    allocated:
+        texture = PCGraphicsAllocRenderTexturePc();
         PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
         PCGraphicsPostEffectBackBufferTexturePc = texture;
     }
