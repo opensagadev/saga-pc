@@ -36,7 +36,7 @@
   "placeholder-field": 9641,
   "hex-name": 12054,
   "candidate-name": 435,
-  "pc-suffix": 51846,
+  "pc-suffix": 51848,
   "comment-draft": 2,
   "comment-todo": 1,
   "comment-retail": 442,
@@ -54,7 +54,7 @@
   "magic-state": 8613,
   "magic-flag": 7483,
   "magic-mask": 1178,
-  "magic-bound": 1626,
+  "magic-bound": 1625,
   "enum-anonymous": 122,
   "enum-value-name": 6
 }
