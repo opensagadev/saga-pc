@@ -104,19 +104,20 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     CREDIT_TYPE_PC *type;
     f32 y;
     i32 index;
-    i32 component;
     CreditsSizePc = 0.0f;
     CreditsDurationPc = 120.0f;
     for (index = 0; index < 5; ++index) {
-        for (component = 0; component < 4; ++component)
-            CreditTypePc[index].colour[component] = CreditTypePc[index].default_colour[component];
         CreditTypePc[index].type = (i8)index;
+        CreditTypePc[index].colour[0] = CreditTypePc[index].default_colour[0];
+        CreditTypePc[index].colour[1] = CreditTypePc[index].default_colour[1];
+        CreditTypePc[index].colour[2] = CreditTypePc[index].default_colour[2];
+        CreditTypePc[index].colour[3] = CreditTypePc[index].default_colour[3];
     }
     NuStrCpy(filename, "stuff\\text\\");
     NuStrCat(filename, "english");
     NuStrCat(filename, "_credits.txt");
-    credit = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
-    CreditList = credit;
+    CreditList = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
+    credit = CreditList;
     CreditCountPc = 0;
     previous = NULL;
     if (credit == NULL)
@@ -143,7 +144,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                         CreditsReadColourPc(parser, &type->colour[3], 128);
                     } else if (CreditCountPc < 1000) {
                         credit->type = type->type;
-                        switch (type->type) {
+                        switch (credit->type) {
                             case 0:
                                 if (previous == NULL || previous->type != 1)
                                     y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
