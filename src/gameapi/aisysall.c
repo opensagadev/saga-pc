@@ -5374,18 +5374,13 @@ AIPATH_PC *__cdecl AISysFindPath(AISYS_PC *system, char *name) {
 
 __declspec(noinline) AIPATHNODE_PC *__cdecl AIPathFindNode(AISYS_PC *system, AIPATH_PC *path, char *name) {
     i32 index;
-    if (path == NULL) {
-        if (system == NULL || system->path_sys == NULL || system->path_sys->path_count == 0) {
-            return NULL;
-        }
+    if (path == NULL && system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
         path = system->path_sys->active_path;
-        if (path == NULL) {
-            return NULL;
-        }
-    }
-    for (index = 0; index < path->node_count; ++index) {
-        if (path->nodes[index].name != NULL && NuStrICmp(path->nodes[index].name, name) == 0) {
-            return &path->nodes[index];
+    if (path != NULL) {
+        for (index = 0; index < path->node_count; ++index) {
+            if (path->nodes[index].name != NULL && NuStrICmp(path->nodes[index].name, name) == 0) {
+                return &path->nodes[index];
+            }
         }
     }
     return NULL;
