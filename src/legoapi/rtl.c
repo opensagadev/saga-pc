@@ -1213,7 +1213,7 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
             f32 fraction =
                 (nearest_distance - set->burnouts[nearest_index].field_1c) / set->burnouts[nearest_index].field_20;
             desired_threshold =
-                set->burnouts[nearest_index].field_10 * (1.0f - fraction) + set->parameters.field_24 * fraction;
+                (set->burnouts[nearest_index].field_10 * (1.0f - fraction)) + (set->parameters.field_24 * fraction);
             desired_intensity =
                 set->burnouts[nearest_index].field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
             desired_dispersion =
