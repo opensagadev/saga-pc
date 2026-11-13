@@ -2461,20 +2461,20 @@ extern "C" {
 
     void __cdecl ANI_Ani3ExtractAllNodeCurves(ANI3_HEADER_PC *anim, f32 frame, f32 *values, i32 node,
                                               char *curve_mask) {
-        i32 curve_count;
-        i32 stride;
         i32 whole_key;
         i32 quarter;
         f32 fraction;
         u16 *types;
+        u8 *keys;
+        u16 *curve_constants;
+        i16 *constants;
         u8 *force_zero;
         ANI3_SCALEMIN_PC *scale_min;
-        i16 *constants;
-        u16 *curve_constants;
-        u8 *keys;
+        i32 stride;
+        u16 type;
+        i32 curve_count;
         i32 n;
         i32 curve;
-        u16 type;
 
         curve_count = anim->curve_count;
         if (ForcePlayEndFrame != 0 && anim->end_frame != 0) {
@@ -2577,12 +2577,10 @@ extern "C" {
                     *values = (f32)constants[keys[quarter]];
                     keys += 4;
                     break;
-                case 10: {
-                    u32 index = keys[quarter];
-                    *(i32 *)values = (i32)constants[index + 1] | ((i32)constants[index] << 16);
+                case 10:
+                    *(i32 *)values = (i32)constants[keys[quarter] + 1] | ((i32)constants[keys[quarter]] << 16);
                     keys += 4;
                     break;
-                }
                 default:
                     *values = (f32)curve_constants[type] * anim->scale + anim->minimum;
                     break;
