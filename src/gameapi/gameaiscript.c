@@ -7889,7 +7889,7 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
         difference.x = node->position.x - target_node->position.x;
         difference.z = node->position.z - target_node->position.z;
         NuVecRotateY(&difference, &difference, -connection->rotation);
-        move_path->distance = difference.z / connection->max_horizontal_distance;
+        move_path->distance = difference.z / connection->horizontal_distance;
         move_path->width = difference.x;
         AIMoveInstruction(packet, &node->position, 0.0f, move_path, 1, packet->movement_instruction_parameter);
         return 0;
