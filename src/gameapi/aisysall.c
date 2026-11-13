@@ -3853,24 +3853,23 @@ i32 __cdecl Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     i32 i;
     AISTATE_PC *state = NULL;
     char *value;
-    if (first_time != 0 && processor != NULL) {
-        if (processor->state != NULL)
-            state = processor->state;
-        for (i = 0; i < count; i++) {
-            value = NuStrIStr(params[i], (char *)AIActionStateName);
-            if (value != NULL) {
-                state = AIStateFind(value + 6, processor->script);
-                if (state == NULL) {
-                    if (AIActionDiagnosticMode == 0)
-                        AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
-                    else
-                        AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name,
-                                                                processor->state->name);
-                }
+    if (first_time == 0 || processor == NULL)
+        return 1;
+    if (processor->state != NULL)
+        state = processor->state;
+    for (i = 0; i < count; i++) {
+        value = NuStrIStr(params[i], (char *)AIActionStateName);
+        if (value != NULL) {
+            state = AIStateFind(value + 6, processor->script);
+            if (state == NULL) {
+                if (AIActionDiagnosticMode == 0)
+                    AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
+                else
+                    AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name, processor->state->name);
             }
         }
-        processor->return_to_state = state;
     }
+    processor->return_to_state = state;
     return 1;
 }
 
