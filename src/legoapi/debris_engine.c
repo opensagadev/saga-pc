@@ -592,7 +592,7 @@ void __cdecl DebrisProcessControlChunks(i32 panel_time) {
             particle->position.y = height;
             height -= control->collision_plane;
             if (SolveQuadratic(effect->gravity, particle->momentum.y, height, &first, &second) != 0) {
-                if (effect->particle_lifetime > MAX(first, second)) {
+                if (MAX(first, second) < effect->particle_lifetime) {
                     const f32 interval = MAX(first, second) - control->collision_time;
                     control->collision_time = MAX(first, second);
                     if (!(interval <= 0.02f)) {
