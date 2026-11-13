@@ -63,7 +63,8 @@ class ConstantNameTests(unittest.TestCase):
 class FakeContext(unmapped.Context):
     """A one-section image: .text at 0x1000 followed by .rdata/.data placeholders."""
 
-    def __init__(self, text, mapped, refs=None):
+    def __init__(self, text, mapped, refs=None, records=()):
+        self.records = list(records)
         self.base = 0
         self.text_start = 0x1000
         self.text = text
@@ -95,6 +96,14 @@ class TextClassTests(unittest.TestCase):
             (16, 5, unmapped.TEXT_CLASSES[4]),
             (21, 11, unmapped.TEXT_CLASSES[2]),
         ])
+
+    def test_initializer_stub_referenced_from_the_crt_table(self):
+        body = b"\xb9\x00\x00\x00\x00\xc3"
+        text = b"\xc3" + b"\xcc" * 15 + body + b"\xcc" * 10 + b"\xc3" * 16
+        records = [{"symbol": "___xc_a", "address": 0x9000, "size": 4},
+                   {"symbol": "___xc_z", "address": 0x9010, "size": 4}]
+        ctx = FakeContext(text, [(0x1000, 0x1001), (0x1020, 0x1030)], {0x1010: [(0x9008, "data")]}, records)
+        self.assertIn((16, 6, unmapped.TEXT_CLASSES[8]), self.classes(ctx))
 
     def test_unreferenced_identical_copies(self):
         body = b"\x8b\x01\xc3"
