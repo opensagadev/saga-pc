@@ -3959,12 +3959,12 @@ void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32)
     eduiMenuAddItem(menu, eduiItemSelCreate((u32)-1, item->colours, 0, 0, cbSelectObject, "None"));
     Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter);
     while (object != NULL) {
+        SpecialObject *special_object = static_cast<SpecialObject *>(object);
         eduiMenuAddItem(menu,
                         eduiItemSelCreate((u32)object, item->colours, 0, 0, cbSelectObject, (char *)object->GetName()));
-        Placeable *next_object = (Placeable *)thePlaceableHelper.GetNextObject(object, SpecialObjectFilter);
-        if (NuSpecialCompare(&static_cast<SpecialObject *>(object)->special, &selected) != 0)
+        object = (Placeable *)thePlaceableHelper.GetNextObject(object, SpecialObjectFilter);
+        if (NuSpecialCompare(&special_object->special, &selected) != 0)
             menu->selected = edui_last_item;
-        object = next_object;
     }
     eduiMenuSortItemsByTxt(menu);
     menu->flags |= 1;
