@@ -3740,7 +3740,7 @@ static void HubUpdateBonusModePc(void) {
         }
         case 1:
             bonusmodetime += FRAMETIME;
-            if (!(bonusmodeduration <= bonusmodetime))
+            if (!(bonusmodetime >= bonusmodeduration))
                 return;
             InitSuperStory(SuperStoryEpisode);
             ((FADEINFO_PC *)&FadeSys)->fade = 1;
@@ -3751,7 +3751,7 @@ static void HubUpdateBonusModePc(void) {
         case 2:
         case 3:
             bonusmodetime += FRAMETIME;
-            if (!(bonusmodeduration <= bonusmodetime))
+            if (!(bonusmodetime >= bonusmodeduration))
                 return;
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
                                   (i8)LDataList[HubDoorNewLevelPc].area_index, -1, 1);
@@ -3765,7 +3765,7 @@ static void HubUpdateBonusModePc(void) {
             return;
         case 4:
             bonusmodetime += FRAMETIME;
-            if (bonusmodeduration <= bonusmodetime)
+            if (bonusmodetime >= bonusmodeduration)
                 WipeBackToHub();
             return;
         default:
