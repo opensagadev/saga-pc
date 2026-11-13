@@ -531,9 +531,9 @@ static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
         count += 1.0f;
     }
     if (count > 0.0f) {
-        f32 inverse_count = 1.0f / count;
-        object->movement_direction_x = response.x * inverse_count;
-        object->movement_direction_z = response.z * inverse_count;
+        count = 1.0f / count;
+        object->movement_direction_x = response.x * count;
+        object->movement_direction_z = response.z * count;
     }
 }
 

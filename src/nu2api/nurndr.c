@@ -93,9 +93,9 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xfU) & ~0xfU;
     cursor = NuDisplayListStreamCursor;
+    count = 0;
     pris = (NUSORTPRI **)cursor->addr;
     cursor->addr = (u32)(pris + nused_sort_pris + 1);
-    count = 0;
 
     for (node = sort_list; node != NULL; node = node->sys_next) {
         sub = node->legacy_display_scene;
@@ -150,9 +150,10 @@ i32 __cdecl NuDisplayListAddRenderScene(void) {
     render_scene_ptrs[render_scene_index]->sort_pris = pris;
 
     if (PCDisplayList2dPc.mtl_last != PCDisplayList2dPc.first) {
-        PCDisplayList2dPc.mtl_last->type = 0x84;
-        PCDisplayList2dPc.mtl_last->next = NULL;
-        PCDisplayList2dPc.mtl_last->id = 4;
+        item = PCDisplayList2dPc.mtl_last;
+        item->type = 0x84;
+        item->next = NULL;
+        item->id = 4;
         render_scene_ptrs[render_scene_index]->render_2d_first = *PCDisplayList2dPc.first;
         NuDisplayListResetStateCache(PCDisplayList2dPc.state);
         PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
@@ -2045,14 +2046,17 @@ void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, 
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, u) == 0x10);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, v) == 0x14);
 void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {
+    LOCATOR_PRIM_VERTEX_PC *vertex;
     NuPrim2DBegin(16, 7, material);
     NuRndrPrimSetColourPrivate(colour);
-    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 0.0f;
-    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 0.0f;
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
     NuPrim2DAddXYZ(x, y, z);
     NuRndrPrimSetColourPrivate(colour);
-    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->u = 1.0f;
-    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->v = 1.0f;
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
     NuPrim2DAddXYZ(x + width, y + height, z);
     NuPrim2DEnd();
 }
