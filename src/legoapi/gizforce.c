@@ -285,13 +285,14 @@ u16 __cdecl GizForces_AngleToForce(NUVEC *position, GIZFORCE_PC *force) {
 i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
     if (!(force->config_flags & 2) && (!(force->force_range > 0.0f) || (force->runtime_flags & 0x2000)) &&
         (!(force->config_flags & 0x40) || (force->runtime_flags & 0x800))) {
-        if (force->anim_set == NULL)
-            return 1;
-        if (force->runtime_flags & 0x40) {
-            if (force->anim_set->state == 0)
-                return 1;
-        } else if (force->anim_set->state == 2)
-            return 1;
+        if (force->anim_set != NULL) {
+            if (force->runtime_flags & 0x40) {
+                if (force->anim_set->state != 0)
+                    return 0;
+            } else if (force->anim_set->state != 2)
+                return 0;
+        }
+        return 1;
     }
     return 0;
 }
