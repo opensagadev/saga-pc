@@ -111,23 +111,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinneranim_objs) == 0x105);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_turrets) == 0x106);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_bombgens) == 0x107);
 
-void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    GIZBOMBGENSYS_s *system;
-    i32 i;
-    system = (GIZBOMBGENSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
-    system->capacity = world->current_level->max_bombgens;
-    system->bomb_generators = (GIZBOMBGEN_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                              system->capacity * sizeof(*system->bomb_generators));
-    system->anim_object_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
-                                                            (u16)world->current_level->max_bombgen_objects);
-    for (i = 0; i < system->capacity; ++i)
-        system->bomb_generators[i].anim_set = GameAnimSet_Create(
-            &world->giz_buffer, &world->buffer_end, (GAMEANIMOBJPOOL *)system->anim_object_pool, world->game_anim_sys);
-    world->giz_bombgen_sys = system;
-    return system;
-}
-
 void __cdecl GizmoPickups_PostLoad(void *world, void *system) {
     (void)world;
     (void)system;

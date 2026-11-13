@@ -152,14 +152,6 @@ void __cdecl GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->reserved, 0, 64);
 }
 
-void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = (BOMB_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-}
-
 void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BLOWUP_PROGRESS_PC *progress = (BLOWUP_PROGRESS_PC *)progress_ptr;
     WORLDINFO *world = (WORLDINFO *)world_ptr;
@@ -223,30 +215,5 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
             progress->enabled[word] &= ~bit;
         if (record->flags & 8)
             progress->collected[word] |= bit;
-    }
-}
-
-void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = (BOMB_PROGRESS_PC *)progress_ptr;
-    BOMB_PROGRESS_SYSTEM_PC *system = (BOMB_PROGRESS_SYSTEM_PC *)data;
-    BOMB_PROGRESS_RECORD_PC *record;
-    i32 index;
-    i32 word;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-
-    record = system->records;
-    for (index = 0; index < system->count; ++index, ++record) {
-        if (index >= 96)
-            break;
-        word = index / 32;
-        bit = 1u << (index & 31);
-        if (!(record->flags & 2))
-            progress->visible[word] &= ~bit;
-        if (!(record->flags & 1))
-            progress->enabled[word] &= ~bit;
     }
 }

@@ -52,7 +52,6 @@ typedef struct {
     u16 opaque_0e;
     void *progress;
 } ADD_BOMB_RESET_SYS_PC;
-extern i32 come_from_an_editor;
 STATIC_ASSERT(sizeof(ADD_BUILDIT_PC) == 0x7c);
 STATIC_ASSERT(sizeof(ADD_FORCE_PC) == 0xa4);
 STATIC_ASSERT(sizeof(ADD_PANEL_PC) == 0x90);
@@ -102,16 +101,6 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
             AddGizmo(giz, type, NULL, pickup);
     }
 }
-void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
-    i32 i;
-    (void)world;
-    if (s == NULL)
-        return;
-    for (i = 0; i < s->count; ++i)
-        if (NuStrLen(s->bomb_generators[i].name) != 0)
-            AddGizmo(giz, type, NULL, &s->bomb_generators[i]);
-}
 void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD_PC *)world_ptr)->items;
     i32 i;
@@ -120,16 +109,6 @@ void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *dat
         return;
     for (i = 0; i < ((ADD_AI_WORLD_PC *)WORLD)->count; ++i, ++item)
         AddGizmo(giz, type, NULL, item);
-}
-void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    ADD_BOMB_RESET_SYS_PC *s = (ADD_BOMB_RESET_SYS_PC *)data;
-    s->reset = 1;
-    if (come_from_an_editor != 0)
-        s->reset_saved = 0;
-    else
-        s->reset_saved = w->unknown_0114[1];
-    s->progress = progress;
 }
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);

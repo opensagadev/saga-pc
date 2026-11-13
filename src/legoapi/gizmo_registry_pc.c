@@ -33,22 +33,6 @@ void __cdecl GizmoPickups_ResetPc(void *, void *, void *);
 void *__cdecl GizmoPickups_ReserveBufferSpace(void *);
 i32 __cdecl GizmoPickups_Load(void *, void *);
 void __cdecl GizmoPickups_PostLoad(void *, void *);
-i32 __cdecl GizBombGens_GetMaxGizmos(void *);
-void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl GizBombGens_Update(void *, void *, f32);
-char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *);
-i32 __cdecl GizmoBombGen_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl GizmoBombGen_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl GizmoBombGen_GetNumOutputs(GIZMO_PC *);
-void __cdecl GizmoBombGen_Activate(GIZMO_PC *, i32);
-void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *, i32);
-NUVEC *__cdecl GizmoBombGen_GetPos(GIZMO_PC *);
-void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl GizBombGens_ClearProgress(void *, void *);
-void __cdecl GizBombGens_StoreProgress(void *, void *, void *);
-void __cdecl GizBombGens_SetResetFlag(void *, void *, void *);
-void *__cdecl GizBombGens_ReserveBufferSpace(void *);
-i32 __cdecl GizBombGens_Load(void *, void *);
 
 #pragma const_seg(".rdata$GizmoRegistryNewBlowupNamePc")
 const char GizmoRegistryNewBlowupNamePc[] = "blowup";
@@ -67,8 +51,6 @@ const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 const char GizmoRegistryGizTurretsNamePc[] = "GizTurret";
 #pragma const_seg()
 char *GizmoRegistryGizTurretsNamePtrPc = (char *)GizmoRegistryGizTurretsNamePc;
-char *GizmoRegistryGizBombGenNamePtrPc = "BombGenerator";
-static ADDGIZMOTYPE_PC GizmoRegistryGizBombGenAddTypePc = {0};
 static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryAINamePc")
 const char GizmoRegistryAINamePc[] = "AIProcessor";
@@ -153,43 +135,6 @@ ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-ADDGIZMOTYPE_PC *__cdecl GizBombGen_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBombGenAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizBombGenNamePtrPc;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.draw_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->fns.bolt_hit_plat_fn = NULL;
-    addtype->fns.get_best_bolt_target_fn = NULL;
-    addtype->fns.bolt_hit_fn = NULL;
-    addtype->fns.post_load_fn = NULL;
-    addtype->fns.add_level_sfx_fn = NULL;
-    addtype->prefix = "";
-    addtype->fns.options = 0x18;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizBombGens_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizBombGens_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizBombGens_Update;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoBombGen_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoBombGen_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizmoBombGen_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBombGen_SetVisibility;
-    addtype->fns.get_pos_fn = (void *)GizmoBombGen_GetPos;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizBombGens_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizBombGens_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizBombGens_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizBombGens_SetResetFlag;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizBombGens_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizBombGens_Load;
-    bombgen_gizmotype_id = type_id;
-    return addtype;
-}
-
 ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryAIAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
@@ -240,13 +185,6 @@ i32 __cdecl GizmoPickups_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world != NULL)
-        return world->current_level->max_bombgens;
-    return 0;
-}
-
 i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
     (void)world_ptr;
     return 32;
@@ -258,8 +196,4 @@ void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x100);
-}
-
-void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, 0x18);
 }
