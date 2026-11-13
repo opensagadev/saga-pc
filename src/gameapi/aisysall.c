@@ -17217,18 +17217,20 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 runtime->max_view_height = creature->max_view_height;
                 runtime->min_view_height = creature->min_view_height;
                 runtime->activation_type = creature->activation;
-                if (creature->activation == 1) {
-                    runtime->activation_type = 0;
-                    if (creature->activation_area != NULL) {
-                        for (item = 0; item < aieditor->ai_system->area_count; ++item) {
-                            AIAREA_PC *runtime_area = &aieditor->ai_system->areas[item];
-                            if (NuStrICmp(creature->activation_area->name, runtime_area->name) == 0) {
-                                runtime->activate_area = runtime_area;
-                                runtime->activation_type = 1;
-                                break;
+                switch (creature->activation) {
+                    case 1:
+                        runtime->activation_type = 0;
+                        if (creature->activation_area != NULL) {
+                            for (item = 0; item < aieditor->ai_system->area_count; ++item) {
+                                AIAREA_PC *runtime_area = &aieditor->ai_system->areas[item];
+                                if (NuStrICmp(creature->activation_area->name, runtime_area->name) == 0) {
+                                    runtime->activate_area = runtime_area;
+                                    runtime->activation_type = 1;
+                                    break;
+                                }
                             }
                         }
-                    }
+                        break;
                 }
             }
         }
