@@ -153,7 +153,7 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     ((AI_RESET_EXTRA_PC *)object)->reset_timer = 0.0f;
     object->ai_packet.flags &= ~0x1000000u;
     object->ai_packet.movement_destination = object->position;
-    object->ai_packet.movement_target = NULL;
+    object->ai_packet.path_target = NULL;
     ((AI_RESET_EXTRA_PC *)object)->search_state = 0;
     ((AI_RESET_EXTRA_PC *)object)->avoidance_state = 0;
     PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
