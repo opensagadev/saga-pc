@@ -1374,6 +1374,13 @@ extern "C" {
         u8 *joint_flags;
         i32 group;
         i32 i;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        u32 v;
+        f32 start;
+        f32 next;
+        f32 blend0;
 
         buffer->use_quaternions = 1;
         if (anim->key_count == 1) {
@@ -1451,20 +1458,22 @@ extern "C" {
                             ++constant_count;
                             second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
-                            first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                            v = *(u32 *)(keys + key_stride);
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            value1 = v & 0xff;
+                            next = (f32)value1;
+                            start = (f32)value0;
+                            first[i] =
+                                ((next - start) * ANI_GetBlend2(blend_bits, quarter) + start) * scale_min->scale +
+                                scale_min->minimum;
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                second[i] = ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                                second[i] = ((next - start) * ANI_GetBlend2(blend_bits, quarter + 1) + start) *
+                                                scale_min->scale +
+                                            scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                second[i] = ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                                second[i] = (((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next) *
+                                                scale_min->scale +
+                                            scale_min->minimum;
                             }
                             keys += 4;
                             ++scale_min;
@@ -1499,21 +1508,21 @@ extern "C" {
                         if (type != 6) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                *out = ((next - start) * tangent + start) * scale_min->scale + scale_min->minimum;
+                                start = (f32)value0;
+                                blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
+                                *out = (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
+                                f32 a;
+                                f32 b;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                a = (next - start) * blend0 + start;
+                                b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
                                 *out = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
                             keys += 4;
@@ -1681,6 +1690,13 @@ extern "C" {
         NUVEC *root;
         i32 group;
         i32 i;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        u32 v;
+        f32 start;
+        f32 next;
+        f32 blend0;
 
         key = frame - anim->first_frame;
         key = key * last;
@@ -1768,22 +1784,22 @@ extern "C" {
                         u32 type = *curve_types++;
                         switch (type) {
                             case 6: {
-                                u32 first_word = *(u32 *)keys;
-                                u32 next_word = *(u32 *)(keys + key_stride);
-                                u32 tangents = first_word >> 8;
-                                f32 start = (f32)(first_word & 0xff);
-                                f32 next = (f32)(next_word & 0xff);
-                                f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
-                                first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                                v = *(u32 *)(keys + key_stride);
+                                value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                                value1 = v & 0xff;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                first[i] =
+                                    ((next - start) * ANI_GetBlend2(blend_bits, quarter) + start) * scale_min->scale +
+                                    scale_min->minimum;
                                 if (quarter < 3) {
-                                    f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                    second[i] =
-                                        ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                                    second[i] = ((next - start) * ANI_GetBlend2(blend_bits, quarter + 1) + start) *
+                                                    scale_min->scale +
+                                                scale_min->minimum;
                                 } else {
-                                    f32 after = (f32)keys[key_stride * 2];
-                                    f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                    second[i] =
-                                        ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                                    second[i] = (((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next) *
+                                                    scale_min->scale +
+                                                scale_min->minimum;
                                 }
                                 keys += 4;
                                 ++scale_min;
@@ -1820,24 +1836,24 @@ extern "C" {
                         if (type != 6) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                value = (next - start) * tangent + start;
+                                start = (f32)value0;
+                                blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
+                                value =
+                                    (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
-                                value = (b - a) * fraction + a;
+                                f32 a;
+                                f32 b;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                a = (next - start) * blend0 + start;
+                                b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
+                                value = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
-                            value = value * scale_min->scale + scale_min->minimum;
                             keys += 4;
                             ++scale_min;
                         }
@@ -1885,6 +1901,13 @@ extern "C" {
         NUVEC *root;
         i32 group;
         i32 i;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        u32 v;
+        f32 start;
+        f32 next;
+        f32 blend0;
 
         key = frame - anim->first_frame;
         key = key * last;
@@ -1976,22 +1999,22 @@ extern "C" {
                         u32 type = *curve_types++;
                         switch (type) {
                             case 6: {
-                                u32 first_word = *(u32 *)keys;
-                                u32 next_word = *(u32 *)(keys + key_stride);
-                                u32 tangents = first_word >> 8;
-                                f32 start = (f32)(first_word & 0xff);
-                                f32 next = (f32)(next_word & 0xff);
-                                f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
-                                first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                                v = *(u32 *)(keys + key_stride);
+                                value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                                value1 = v & 0xff;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                first[i] =
+                                    ((next - start) * ANI_GetBlend2(blend_bits, quarter) + start) * scale_min->scale +
+                                    scale_min->minimum;
                                 if (quarter < 3) {
-                                    f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                    second[i] =
-                                        ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                                    second[i] = ((next - start) * ANI_GetBlend2(blend_bits, quarter + 1) + start) *
+                                                    scale_min->scale +
+                                                scale_min->minimum;
                                 } else {
-                                    f32 after = (f32)keys[key_stride * 2];
-                                    f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                    second[i] =
-                                        ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                                    second[i] = (((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next) *
+                                                    scale_min->scale +
+                                                scale_min->minimum;
                                 }
                                 keys += 4;
                                 ++scale_min;
@@ -2026,24 +2049,24 @@ extern "C" {
                         if (type != 6) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                value = (next - start) * tangent + start;
+                                start = (f32)value0;
+                                blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
+                                value =
+                                    (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
-                                value = (b - a) * fraction + a;
+                                f32 a;
+                                f32 b;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                a = (next - start) * blend0 + start;
+                                b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
+                                value = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
-                            value = value * scale_min->scale + scale_min->minimum;
                             keys += 4;
                             ++scale_min;
                         }
@@ -2091,6 +2114,13 @@ extern "C" {
         NUVEC *root;
         i32 group;
         i32 i;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        u32 v;
+        f32 start;
+        f32 next;
+        f32 blend0;
 
         key = frame - anim->first_frame;
         key = key * last;
@@ -2182,20 +2212,22 @@ extern "C" {
                         if (type != 6) {
                             second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
-                            first[i] = ((next - start) * tangent0 + start) * scale_min->scale + scale_min->minimum;
+                            v = *(u32 *)(keys + key_stride);
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            value1 = v & 0xff;
+                            next = (f32)value1;
+                            start = (f32)value0;
+                            first[i] =
+                                ((next - start) * ANI_GetBlend2(blend_bits, quarter) + start) * scale_min->scale +
+                                scale_min->minimum;
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                second[i] = ((next - start) * tangent1 + start) * scale_min->scale + scale_min->minimum;
+                                second[i] = ((next - start) * ANI_GetBlend2(blend_bits, quarter + 1) + start) *
+                                                scale_min->scale +
+                                            scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                second[i] = ((after - next) * tangent1 + next) * scale_min->scale + scale_min->minimum;
+                                second[i] = (((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next) *
+                                                scale_min->scale +
+                                            scale_min->minimum;
                             }
                             keys += 4;
                             ++scale_min;
@@ -2227,24 +2259,24 @@ extern "C" {
                         if (type != 6) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 first_word = *(u32 *)keys;
-                            u32 next_word = *(u32 *)(keys + key_stride);
-                            u32 tangents = first_word >> 8;
-                            f32 start = (f32)(first_word & 0xff);
-                            f32 next = (f32)(next_word & 0xff);
-                            f32 tangent0 = (f32)((tangents >> (quarter * 6)) & 0x3f) * 0.01587302f;
+                            value0 = ANI_GetKeyParts2(keys, &blend_bits);
+                            v = *(u32 *)(keys + key_stride);
+                            value1 = v & 0xff;
+                            blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 tangent1 = (f32)((tangents >> (quarter * 6 + 6)) & 0x3f) * 0.01587302f;
-                                f32 tangent = (tangent1 - tangent0) * fraction + tangent0;
-                                value = (next - start) * tangent + start;
+                                start = (f32)value0;
+                                blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
+                                value =
+                                    (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 after = (f32)keys[key_stride * 2];
-                                f32 tangent1 = (f32)((next_word >> 8) & 0x3f) * 0.01587302f;
-                                f32 a = (next - start) * tangent0 + start;
-                                f32 b = (after - next) * tangent1 + next;
-                                value = (b - a) * fraction + a;
+                                f32 a;
+                                f32 b;
+                                next = (f32)value1;
+                                start = (f32)value0;
+                                a = (next - start) * blend0 + start;
+                                b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
+                                value = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
                             }
-                            value = value * scale_min->scale + scale_min->minimum;
                             keys += 4;
                             ++scale_min;
                         }
