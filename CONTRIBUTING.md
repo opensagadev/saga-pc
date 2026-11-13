@@ -553,6 +553,12 @@ address or callee that differs, `?` a spot nothing recognised).
 explained by `I` idioms first, then mixed, unexplained and `U`-only), and
 `python3 tools/idiomscan.py Function` shows the tagged spots of one function.
 
+A data row in `matching.json` is only `exact` or `different`, and a table that
+differs leaves the functions reading it exact. `python3 tools/datadiff.py`
+classifies each data difference slot by slot (NULL callbacks, other pointers,
+scalars, zero-fill, extents, unresolved references); see
+[docs/data-status.md](docs/data-status.md).
+
 `python3 tools/altbuild.py UNIT [FLAGS] [-/FLAG]` compiles one unit with other
 compiler flags (`-/GS` drops `/GS`; `--cxx` compiles a C unit as C++) and compares
 each mapped function with the current object, without touching `build/obj`.
