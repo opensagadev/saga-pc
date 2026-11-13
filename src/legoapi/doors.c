@@ -374,7 +374,10 @@ typedef struct door_config_pc_s {
     f32 radius;
     NUVEC normal;
     i16 level, freeplay_level;
-    u8 next_sock, flags, vehicle, active;
+    i8 next_sock;
+    u8 flags;
+    i8 vehicle;
+    u8 active;
     NUGSPLINE *camera_spline;
     f32 camera_wait, camera_blend;
     u8 unknown_104[4];
@@ -526,7 +529,7 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_DOOR_CONFIG_PC *world = (WORLD_DOOR_CONFIG_PC *)world_ptr;
     NUFPAR_PC *parser;
     DOOR_CONFIG_PC *door;
-    i32 in_door = 0;
+    i32 in_door;
     world->doors = NULL;
     if (world->scene == NULL)
         return;
@@ -536,6 +539,7 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
     world->giz_buffer = (void *)(((u32)world->giz_buffer + 3) & ~3u);
     world->doors = door = (DOOR_CONFIG_PC *)world->giz_buffer;
     NuFParPushCom(parser, Door_ConfigKeywords);
+    in_door = 0;
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) == 0)
             continue;
@@ -552,6 +556,7 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
                 NuFParInterpretWord(parser);
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "door_start") == 0) {
+            in_door = 1;
             D_worldinfo = world;
             D_door = door;
             door->name[0] = '\0';
@@ -571,7 +576,6 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
             door->camera_blend = 1.0f;
             door->vehicle_mask_low = 0;
             door->vehicle_mask_high = 0;
-            in_door = 1;
         }
     }
     NuFParDestroy(parser);
