@@ -15690,20 +15690,20 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
     bias.m31 = 0.5f;
     bias.m32 = 0.5f;
     bias.m33 = 1.0f;
-    for (i32 i = 0, reg = 0x8d; i < active_render_set_count; ++i, reg += 7) {
+    for (i32 i = 0; i < active_render_set_count; ++i) {
         NURNDRLIGHTRECORD &set = render_sets[i];
         NUMTX transposed, matrix;
         NuMtxTranspose(&transposed, &set.texture_matrix_pc);
-        PCDeviceSetPixelShaderConstantsF(reg - 4, &transposed.m00, 4);
+        PCDeviceSetPixelShaderConstantsF(i * 7 + 0x89, &transposed.m00, 4);
         NuMtxMulH(&matrix, &inverse, &set.shadow_matrix_pc);
         NuMtxMulH(&matrix, &matrix, &bias);
         NuMtxInvH(&matrix, &matrix);
         f32 column2[4] = {matrix.m02, matrix.m12, matrix.m22, matrix.m32};
         f32 column3[4] = {matrix.m03, matrix.m13, matrix.m23, matrix.m33};
-        PCDeviceSetPixelShaderConstantsF(reg, column2, 1);
-        PCDeviceSetPixelShaderConstantsF(reg + 1, column3, 1);
+        PCDeviceSetPixelShaderConstantsF(i * 7 + 0x8d, column2, 1);
+        PCDeviceSetPixelShaderConstantsF(i * 7 + 0x8e, column3, 1);
         f32 shadow[4] = {set.parameter_100, 1.0f - set.parameter_104, parameter_19, parameter_20 - parameter_19};
-        PCDeviceSetPixelShaderConstantsF(reg + 2, shadow, 1);
+        PCDeviceSetPixelShaderConstantsF(i * 7 + 0x8f, shadow, 1);
     }
 }
 
