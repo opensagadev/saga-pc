@@ -2840,15 +2840,18 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     i32 i, scene;
     char mode;
     EdFileRead(type->name, 16);
-    if (version > 5) {
+    if (version >= 6) {
         for (i = 0; i < 8; ++i)
             type->effect_pages[i] = EdFileReadChar();
     } else {
-        type->effect_pages[0] = version >= 2 ? EdFileReadChar() : 0;
+        if (version >= 2)
+            type->effect_pages[0] = EdFileReadChar();
+        else
+            type->effect_pages[0] = 0;
         for (i = 1; i < 8; ++i)
             type->effect_pages[i] = -1;
     }
-    if (version > 5) {
+    if (version >= 6) {
         for (i = 0; i < 8; ++i) {
             EdFileRead(type->object_names[i], 16);
             type->effect_ids[i] = -1;
@@ -2901,7 +2904,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     }
     type->variant_count = 0;
     for (i = 0; i < 8; ++i) {
-        if (type->effect_ids[i] != 9999 && type->effect_ids[i] != -1)
+        if (type->effect_ids[i] != -1 && type->effect_ids[i] != 9999)
             ++type->variant_count;
     }
     if (version >= 6)
