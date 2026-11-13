@@ -4448,9 +4448,9 @@ extern "C" {
             reader->platform_data = &platform->draw;
             buffer->addr += sizeof(*platform);
             platform = (FONT_RENDER_STORAGE_PC *)reader->platform_data;
-            reader->colour = &platform->draw.colour;
             reader->x_scale = &platform->x_scale;
             reader->y_scale = &platform->y_scale;
+            reader->colour = &platform->draw.colour;
             if (texture_path == NULL)
                 sprintf(filename, "%s", path);
             else
