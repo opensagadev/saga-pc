@@ -2580,8 +2580,8 @@ void NuQuatNeg2(NUQUAT *out, NUQUAT *in) {
 }
 
 void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
-    __m128 target = _mm_load_ps(&to->x);
     __m128 source = _mm_load_ps(&from->x);
+    __m128 target = _mm_load_ps(&to->x);
     __m128 products = _mm_mul_ps(target, source);
     __m128 dot_vector = _mm_add_ps(_mm_shuffle_ps(products, products, 0x4e), products);
     __m128 end;
