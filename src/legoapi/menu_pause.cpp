@@ -21,9 +21,10 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
         GameAudio_PlaySfx(0x20, &object->collision_position, 0, 0);
     }
     ReleaseTakeOver(object, 1);
-    i16 secondary = object->secondary_lean_angle;
-    i16 movement = object->movement_lean_angle;
-    i16 tertiary = object->tertiary_lean_angle;
+    /* The lean angles are signed in retail (loaded with movsx); the shared header has them as u16. */
+    i32 secondary = (i16)object->secondary_lean_angle;
+    i32 movement = (i16)object->movement_lean_angle;
+    i32 tertiary = (i16)object->tertiary_lean_angle;
     ReleaseEat(object);
     if (VehicleArea) {
         ResetPlayerPacket(object->unknown_06c4, object->character_data);
@@ -31,14 +32,19 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
         object->movement_lean_angle = movement;
         object->tertiary_lean_angle = tertiary;
     }
-    object->flags_1fc &= ~0x80u;
+    object->flags_1fc_word &= ~0x80u;
     AICreatureResumeScript(object);
     if (VehicleArea)
         StartDropOut(object);
-    PlayerProgress[player].hitpoints =
-        object->dead || object->character_context == 0x2b ? object->field_107e : object->current_hp;
+    if (object->dead || object->character_context == 0x2b)
+        PlayerProgress[player].hitpoints = object->field_107e;
+    else
+        PlayerProgress[player].hitpoints = object->current_hp;
     object->powerup_time = 0.0f;
-    GameCam_Blend(GameCam, VehicleArea ? 0.5f : 1.0f, 0.0f, 1);
+    if (!VehicleArea)
+        GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+    else
+        GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
     if (resume) {
         ResumeGame(1);
         TextInputSetKeyboardOverridePc(0);
