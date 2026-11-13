@@ -5195,47 +5195,48 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                                          u32 excluded_route_mask) {
     AIPATHNODE_PC *nodes;
     AIPATHNODE_PC *node;
+    AIPATHNODE_PC *start;
     AIPATHNODE_PC *destination;
+    AIPATHCNX_PC *connection;
     AIPATHCNX_PC *previous_connection = NULL;
     AIPATHROUTE_PC *route = NULL;
     f32 *cached_distance = NULL;
     f32 distance = 0.0f;
+    i32 connection_index;
     i32 node_index;
 
     if (path->route_matrix == NULL) {
         return FLT_MAX;
     }
     if (start_node == destination_node) {
-        return 0.0f;
+        return distance;
+    }
+    start = &path->nodes[start_node];
+    destination = &path->nodes[destination_node];
+    if (excluded_route_mask == 0 && route_index == 0xff) {
+        if (start->distance_cache_nodes[0] == destination_node) {
+            return start->distance_cache[0];
+        }
+        if (start->distance_cache_nodes[1] == destination_node) {
+            return start->distance_cache[1];
+        }
+        start->distance_cache_nodes[1] = start->distance_cache_nodes[0];
+        start->distance_cache[1] = start->distance_cache[0];
+        start->distance_cache_nodes[0] = (u8)destination_node;
+        cached_distance = &start->distance_cache[0];
+        *cached_distance = distance;
     }
     nodes = path->nodes;
-    node = &nodes[start_node];
-    destination = &nodes[destination_node];
-    if (excluded_route_mask == 0 && route_index == 0xff) {
-        if (node->distance_cache_nodes[0] == destination_node) {
-            return node->distance_cache[0];
-        }
-        if (node->distance_cache_nodes[1] == destination_node) {
-            return node->distance_cache[1];
-        }
-        node->distance_cache_nodes[1] = node->distance_cache_nodes[0];
-        node->distance_cache_nodes[0] = (u8)destination_node;
-        nodes = path->nodes;
-        node->distance_cache[1] = node->distance_cache[0];
-        cached_distance = &node->distance_cache[0];
-        *cached_distance = 0.0f;
-    }
-    node_index = (i32)(node - nodes);
+    node_index = (i32)(start - nodes);
+    node = start;
     if (route_index != 0xff) {
         route = &path->routes[route_index];
-        if (((u64)node->route_membership_mask & ((u64)1 << route_index)) == 0) {
+        if (((u64)start->route_membership_mask & ((u64)1 << route_index)) == 0) {
             return FLT_MAX;
         }
     }
 
     while (node != destination) {
-        AIPATHCNX_PC *connection;
-        i32 connection_index = 0xff;
         if (route != NULL) {
             if (((u64)destination->route_membership_mask & ((u64)1 << route_index)) != 0) {
                 if (route->node_routes[node_index] < route->route_count &&
@@ -5244,6 +5245,9 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                         route->route_nodes[route->node_routes[node_index]][route->node_routes[destination_node]];
                 } else {
                     AIScriptMissingStateDiagnosticAlternate(route->name, node_index, destination_node);
+                    if (cached_distance != NULL) {
+                        *cached_distance = FLT_MAX;
+                    }
                     return FLT_MAX;
                 }
             } else {
@@ -5273,9 +5277,9 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                     break;
                 }
                 if (cached_distance != NULL) {
-                    *cached_distance = FLT_MAX;
+                    *cached_distance = nearest;
                 }
-                return FLT_MAX;
+                return nearest;
             }
         } else {
             connection_index = path->route_matrix[node_index][destination_node];
