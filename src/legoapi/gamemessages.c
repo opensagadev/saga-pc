@@ -1,6 +1,28 @@
 #include <stdio.h>
 #include "saga.h"
+
+/* Retail unit 0x560ac0-0x561b7e: definitions in retail address order. */
 #include <string.h>
+
+typedef struct coin_packet_pc_s {
+    u32 coins;
+    f32 scale;
+    i16 last_coin;
+    u8 unknown_0a[2];
+} COIN_PACKET_PC;
+typedef struct object_coin_packet_pc_s {
+    u8 unknown_000[0x7fc];
+    COIN_PACKET_PC *coin_packet;
+} OBJECT_COIN_PACKET_PC;
+typedef struct game_save_score_pc_s {
+    u8 unknown_0000[0x7c14];
+    u32 coins;
+} GAME_SAVE_SCORE_PC;
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, coins) == 0);
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, scale) == 4);
+STATIC_ASSERT(offsetof(COIN_PACKET_PC, last_coin) == 8);
+STATIC_ASSERT(offsetof(OBJECT_COIN_PACKET_PC, coin_packet) == 0x7fc);
+STATIC_ASSERT(offsetof(GAME_SAVE_SCORE_PC, coins) == 0x7c14);
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
 static __forceinline f32 GameMessagesFabsPc(f32 f) {
@@ -15,6 +37,12 @@ static f32 GameMessagesFdivPc(f32 a, f32 b) {
         return 0.0f;
     }
     return a / b;
+}
+
+void __cdecl ResetGameMessages(void) {
+    i32 i;
+    for (i = 0; i < 128; ++i)
+        GameMessage[i].active = 0;
 }
 
 GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
@@ -140,6 +168,22 @@ found:
     return slot;
 }
 
+GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
+                                        f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
+    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+    message.text = text;
+    message.position = position;
+    message.scale = scale;
+    message.target_position = target_position;
+    message.target_scale = target_scale;
+    message.red = red;
+    message.green = green;
+    message.blue = blue;
+    message.flags = flags;
+    message.duration = duration;
+    return AddGameMsg(&message);
+}
+
 void __cdecl UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_CALLBACK_PC callback;
@@ -228,31 +272,142 @@ void __cdecl UpdateGameMessages(void) {
     }
 }
 
-void __cdecl ResetGameMessages(void) {
-    i32 i;
-    for (i = 0; i < 128; ++i)
-        GameMessage[i].active = 0;
+/* PC5612f0/267; append to gamemessages.c. Native cdecl3 pointers, all stack. */
+void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
+    GAME_MESSAGE_PC *message = GameMessage;
+    GAME_MESSAGE_PC *end = message + 128;
+    for (; message != end; ++message) {
+        f32 width;
+        NUVEC target, transformed;
+        if (message->active == 0 || message->has_start_position != 0)
+            continue;
+        NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
+        if ((message->position.x - camera_position->x) * camera_direction->x +
+                (message->position.y - camera_position->y) * camera_direction->y +
+                (message->position.z - camera_position->z) * camera_direction->z <=
+            0.0) {
+            message->parameter_fb = 1;
+        } else {
+            message->parameter_fb = 0;
+            if ((message->flags & 4) != 0) {
+                target.x = message->position.x + camera_right->x * message->scale_initial;
+                target.y = message->position.y + camera_right->y * message->scale_initial;
+                target.z = message->position.z + camera_right->z * message->scale_initial;
+                NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
+                width = GameMessagesFabsPc(message->start_position.x - transformed.x);
+                message->scale_current = (f32)(width * 0.5249999761581421);
+            }
+        }
+        if ((message->flags & 2) == 0)
+            message->has_start_position = 1;
+        message->start_position.z = 1.0f;
+    }
 }
 
-typedef struct coin_packet_pc_s {
-    u32 coins;
-    f32 scale;
-    i16 last_coin;
-    u8 unknown_0a[2];
-} COIN_PACKET_PC;
-typedef struct object_coin_packet_pc_s {
-    u8 unknown_000[0x7fc];
-    COIN_PACKET_PC *coin_packet;
-} OBJECT_COIN_PACKET_PC;
-typedef struct game_save_score_pc_s {
-    u8 unknown_0000[0x7c14];
-    u32 coins;
-} GAME_SAVE_SCORE_PC;
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, coins) == 0);
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, scale) == 4);
-STATIC_ASSERT(offsetof(COIN_PACKET_PC, last_coin) == 8);
-STATIC_ASSERT(offsetof(OBJECT_COIN_PACKET_PC, coin_packet) == 0x7fc);
-STATIC_ASSERT(offsetof(GAME_SAVE_SCORE_PC, coins) == 0x7c14);
+/* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
+void __cdecl DrawGameMessages(void) {
+
+    GAME_MESSAGE_PC *message;
+    i32 index;
+    for (index = 0; index < 128; ++index) {
+        u32 flags;
+        f32 progress, scale;
+        NUVEC position;
+        message = &GameMessage[index];
+        if (message->active == 0) {
+            continue;
+        }
+        if (message->parameter_fb != 0 && (message->flags & 0x40000) == 0) {
+            continue;
+        }
+        if (message->delay > 0.0f) {
+            continue;
+        }
+        if (!(message->elapsed < message->duration) && message->expired == 0) {
+            continue;
+        }
+
+        flags = message->flags;
+        progress = message->elapsed / message->duration;
+        if ((flags & 0x100) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 16384.0 + 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x200) != 0) {
+            progress = NuTrigTable[((i32)(progress * 16384.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x400) != 0) {
+            progress = NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        } else if ((flags & 0x800) != 0) {
+            progress = 1.0f - NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
+        }
+
+        scale = (flags & 5) == 5 ? message->scale_current : message->scale_initial;
+        position = message->start_position;
+        if (message->parameter_d4 != 0.0f && message->parameter_fb == 0) {
+            const f32 limit = message->parameter_d4;
+            if (position.x < -limit) {
+                position.x = -limit;
+            } else if (position.x > limit) {
+                position.x = limit;
+            }
+            if (position.y < -limit) {
+                position.y = -limit;
+            } else if (position.y > limit) {
+                position.y = limit;
+            }
+        }
+
+        if ((flags & 8) != 0) {
+            if (message->update_fn != NULL) {
+                message->update_fn(message);
+                flags = message->flags;
+            }
+            position.x = position.x + (message->target_position.x - position.x) * progress;
+            position.y = position.y + (message->target_position.y - position.y) * progress;
+            position.z = position.z + (message->target_position.z - position.z) * progress;
+        }
+        if ((flags & 0x20) != 0) {
+            scale += (message->target_scale - scale) * progress;
+        }
+        position.z += message->parameter_c8;
+        position.x += message->parameter_c4;
+
+        if (message->draw_fn != NULL) {
+            message->draw_fn(message, &position, scale);
+            continue;
+        }
+
+        if (NuSpecialExistsFn(&message->special) != 0) {
+            const u32 draw_flags = message->flags;
+            if ((draw_flags & 0x20000) != 0) {
+                DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                         message->parameter_e2, message->parameter_e4, &message->special, 2);
+            } else {
+                const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale, message->parameter_e0,
+                                  message->parameter_e2, message->parameter_e4, &message->special, 2, alpha);
+            }
+            if (GameMsg_GetExtraObjFn != NULL) {
+                NUSPECIALHANDLE *extra = GameMsg_GetExtraObjFn(message);
+                if (extra != NULL && NuSpecialExistsFn(extra) != 0) {
+                    const u32 draw_flags = message->flags;
+                    if ((draw_flags & 0x20000) != 0) {
+                        DrawPanel3DObjectNoAlpha(position.x, position.y, position.z, scale, scale, scale,
+                                                 message->parameter_e0, message->parameter_e2, message->parameter_e4,
+                                                 extra, 2);
+                    } else {
+                        const f32 alpha = (draw_flags & 0x10000) != 0 ? (f32)(message->alpha * 0.0078125) : 1.0f;
+                        DrawPanel3DObject(position.x, position.y, position.z, scale, scale, scale,
+                                          message->parameter_e0, message->parameter_e2, message->parameter_e4, extra, 2,
+                                          alpha);
+                    }
+                }
+            }
+        } else {
+            const char *text = message->text != NULL ? message->text : message->text_buffer;
+            Text3DEx((char *)text, position.x, position.y, position.z, scale, scale, scale, message->parameter_fc,
+                     message->red, message->green, message->blue, message->alpha);
+        }
+    }
+}
 
 i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
     GAME_MESSAGE_PC *message = GameMessage;
@@ -314,52 +469,4 @@ void AddFancyMessage(char *text, float x, float y, float scale, float duration, 
         blue = 0;
     }
     AddFancyMessageRGB(text, x, y, scale, duration, message_id, red, green, blue);
-}
-
-GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position,
-                                        f32 target_scale, u8 red, u8 green, u8 blue, u32 flags, f32 duration) {
-    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
-    message.text = text;
-    message.position = position;
-    message.scale = scale;
-    message.target_position = target_position;
-    message.target_scale = target_scale;
-    message.red = red;
-    message.green = green;
-    message.blue = blue;
-    message.flags = flags;
-    message.duration = duration;
-    return AddGameMsg(&message);
-}
-
-/* PC5612f0/267; append to gamemessages.c. Native cdecl3 pointers, all stack. */
-void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
-    GAME_MESSAGE_PC *message = GameMessage;
-    GAME_MESSAGE_PC *end = message + 128;
-    for (; message != end; ++message) {
-        f32 width;
-        NUVEC target, transformed;
-        if (message->active == 0 || message->has_start_position != 0)
-            continue;
-        NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
-        if ((message->position.x - camera_position->x) * camera_direction->x +
-                (message->position.y - camera_position->y) * camera_direction->y +
-                (message->position.z - camera_position->z) * camera_direction->z <=
-            0.0) {
-            message->parameter_fb = 1;
-        } else {
-            message->parameter_fb = 0;
-            if ((message->flags & 4) != 0) {
-                target.x = message->position.x + camera_right->x * message->scale_initial;
-                target.y = message->position.y + camera_right->y * message->scale_initial;
-                target.z = message->position.z + camera_right->z * message->scale_initial;
-                NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
-                width = GameMessagesFabsPc(message->start_position.x - transformed.x);
-                message->scale_current = (f32)(width * 0.5249999761581421);
-            }
-        }
-        if ((message->flags & 2) == 0)
-            message->has_start_position = 1;
-        message->start_position.z = 1.0f;
-    }
 }
