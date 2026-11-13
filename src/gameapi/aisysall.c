@@ -9771,13 +9771,13 @@ void __cdecl pathEditor_cbNodeFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u3
     (void)event;
     if (node == NULL)
         return;
-    if ((u8)item->data & node->flags)
-        aieditor->current_path->current_node->flags &= ~(u8)item->data;
+    if (node->flags & item->data)
+        aieditor->current_path->current_node->flags &= ~item->data;
     else
-        aieditor->current_path->current_node->flags |= (u8)item->data;
+        aieditor->current_path->current_node->flags |= item->data;
     node = aieditor->current_path->current_node;
     if (node->flags & 0x80)
-        node->special.display_special = node->special.special = node->special.scene = NULL;
+        memset(&node->special, 0, sizeof(node->special));
 }
 
 static __declspec(noinline) EDAISHAREDPATHNODE_s *pathEditor_AllocSharedNode(void) {
