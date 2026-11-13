@@ -438,7 +438,7 @@ void __cdecl MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **foll
 static i32 ForcePushEligible(GAMEOBJECT *candidate, GAMEOBJECT *object, GAMEOBJECT *source) {
     PLAYERCHARACTERCONFIG_PC *character;
     if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
-        candidate == object || candidate == source || candidate->field_280 != 0xff ||
+        candidate == object || candidate == source || candidate->player_index != -1 ||
         (candidate->portal_flags & 0x08000000) != 0 || CannotKill(candidate) != 0 ||
         (candidate->character_data->model_flags & 0x4002010) != 0x10)
         return 0;
@@ -1385,7 +1385,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                 water_mul = 1.0f;
             } else {
                 water_mul = 1.0f;
-                if (object->field_280 != 0xff && FadeSys.fade > 0.0f &&
+                if (object->player_index != -1 && FadeSys.fade > 0.0f &&
                     (MiniCutCam == 0 || 0 == ((object->flags_1fc_word & 0x100))))
                     object->field_dc8 = VehicleAreaRememberSpeed;
                 else {
@@ -1853,7 +1853,7 @@ i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object) {
     i32 yaw_lean, pitch_lean, roll_lean;
     i32 sock;
     f32 speed, scale;
-    if (object->field_280 == 0xff)
+    if (object->player_index == -1)
         return 0;
     if (DOGFIGHTA_LDATA == NULL || world->current_level != DOGFIGHTA_LDATA || world->sock_sys == NULL)
         return 0;
@@ -1917,7 +1917,7 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
     f32 seek_rate, maximum, fraction, half_speed;
     i32 flicker;
     i32 lean;
-    if (object->field_280 == 0xff)
+    if (object->player_index == -1)
         return 0;
     if (BONUS_GUNSHIPB_LDATA == NULL || world->current_level != BONUS_GUNSHIPB_LDATA || world->sock_sys == NULL ||
         object->sock_position.sock_index == -1)
@@ -2077,7 +2077,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     f32 height, blend, speed, seek_rate;
     u16 heading = 0, pitch, roll;
     i32 index;
-    if (object->field_280 == 0xff)
+    if (object->player_index == -1)
         return 0;
     if (PODRACE_ADATA == NULL)
         return 0;
@@ -2088,7 +2088,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     if (WORLD->current_level == PODRACEB_LDATA && podrace_section != 1 && (FadeSys.fade != 0.0f || MiniCutCam != 0) &&
         object->sock_index != 0xff && object->sock_position.distance < 20.0f)
         input = -0.625f;
-    index = (i8)object->field_280;
+    index = object->player_index;
     if (index < 2) {
         pod_roll_target[index] =
             SeekLinearF(pod_roll_target[index], input, FRAMETIME * PodRollInputRate * MovePlayerFabs(input));
@@ -2235,8 +2235,8 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
                         pad->input_magnitude = 0.0f;
                     else {
                         if ((object->character_data->model_flags & 0x20) != 0 &&
-                            ((object->field_280 != 0xff && object->vehicle_secondary_hp < 3) ||
-                             (object->field_280 == 0xff && object->current_hp < 3)))
+                            ((object->player_index != -1 && object->vehicle_secondary_hp < 3) ||
+                             (object->player_index == -1 && object->current_hp < 3)))
                             pad->input_magnitude = object->character_data->game_character->walk_speed;
                         else if (magnitude < 0.5f && (object->character_data->game_character->flags_090 & 8) == 0)
                             pad->input_magnitude = object->character_data->game_character->tiptoe_speed;
@@ -2712,7 +2712,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 position = (NUVEC *)(pad->operator_data);
                 object->movement_facing_angle =
                     NuAtan2D(position->x - object->position.x, position->z - object->position.z);
-            } else if (object->field_280 != 0xff && (i8)object->field_280 == BonusWinner) {
+            } else if (object->player_index != -1 && object->player_index == BonusWinner) {
                 object->movement_facing_angle =
                     NuAtan2D(GameCam->position.x - object->position.x, GameCam->position.z - object->position.z);
             } else if (pad->input_magnitude > 0.0f &&
@@ -3382,8 +3382,8 @@ void __cdecl LightSabreDebris(GAMEOBJECT *object) {
     blade_count = object->id == (u16)id_GRIEVOUS ? 4 : object->id == (u16)id_DARTHMAUL ? 2 : 1;
     for (blade = 0; blade < blade_count; ++blade) {
         effect = hit_effect;
-        if (object->id == (u16)id_GRIEVOUS && !(object->field_280 != 0xff && Cheat_IsOn(25)) &&
-            !(object->field_280 != 0xff && Player_HasPurpleForce(object)))
+        if (object->id == (u16)id_GRIEVOUS && !(object->player_index != -1 && Cheat_IsOn(25)) &&
+            !(object->player_index != -1 && Player_HasPurpleForce(object)))
             effect = (blade == 0 || blade == 3) ? 3 : 2;
         if (effect == -1 || object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
             continue;
@@ -3452,7 +3452,7 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
 extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
 f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
     f32 height = VehicleGunshipHoverBasePc;
-    if ((i8)object->field_280 >= 2)
+    if (object->player_index >= 2)
         return height;
     if (WORLD->current_level != BONUS_GUNSHIPA_LDATA)
         height = VehicleGunshipHoverOtherPc;
@@ -3686,7 +3686,7 @@ static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target,
     i8 context;
     PLAYERCHARACTERCONFIG_PC *data;
     if ((target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 || target->dead != 0 ||
-        target->field_281 == 0 || (owner != NULL && target == owner) || target->field_280 != 0xff ||
+        target->field_281 == 0 || (owner != NULL && target == owner) || target->player_index != -1 ||
         (target->portal_flags & 0x08000000) != 0 || CannotKill(target) ||
         target->character_model->model_data_b[0x41] == NULL)
         return 0;
@@ -3702,7 +3702,7 @@ static __declspec(noinline) i32 DeactivatedMindTrickFilterPc(GAMEOBJECT *target,
 static __declspec(noinline) i32 DeactivatedZapFilterPc(GAMEOBJECT *owner, GAMEOBJECT *target) {
     i8 context;
     u32 flags;
-    if (!ZapTarget(target) || (owner != NULL && target == owner) || target->field_280 != 0xff ||
+    if (!ZapTarget(target) || (owner != NULL && target == owner) || target->player_index != -1 ||
         (target->portal_flags & 0x08000000) != 0 || CannotKill(target))
         return 0;
     flags = target->character_data->game_character->flags_090;
@@ -4147,7 +4147,7 @@ static __declspec(noinline) void FireBountyHunterRocket(GAMEOBJECT *object) {
     locator = object->character_data->game_character->rocket_locator;
     if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
         return;
-    if (object->field_280 != 0xff && ((object->flags_1fc_word & 0x80) == 0 || Cheat_IsOn(39) == 0))
+    if (object->player_index != -1 && ((object->flags_1fc_word & 0x80) == 0 || Cheat_IsOn(39) == 0))
         return;
     if (object->hud_icon_timer == 2.0f) {
         object->hud_icon_timer = 0.0f;
@@ -4164,7 +4164,7 @@ static __declspec(noinline) void FireBountyHunterRocket(GAMEOBJECT *object) {
 
 static __declspec(noinline) void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     VEHICLE_SHOOT_STATE_PC *state = (VEHICLE_SHOOT_STATE_PC *)object;
-    if ((object->flags_1f8 & 0x40000) != 0 && object->field_280 != 0xff)
+    if ((object->flags_1f8 & 0x40000) != 0 && object->player_index != -1)
         return;
     if ((object->character_data->model_flags & 0x2000) != 0)
         NewBuzzFrames(object->pad->bound_pad, 1, 0);
@@ -4789,8 +4789,8 @@ static __declspec(noinline) void ForcePushed_MoveCode(GAMEOBJECT *object) {
                 objhitobj_killparts_yrot = &angle;
                 if (ObjHitObj(NULL, target, -1, 0, 0, 1) != 2)
                     continue;
-                if ((source->field_280 == 0 || source->field_280 == 1) && target->field_280 == 0xff && Arcade != 0)
-                    Arcade_AIKilled((i8)source->field_280);
+                if ((source->field_280 == 0 || source->field_280 == 1) && target->player_index == -1 && Arcade != 0)
+                    Arcade_AIKilled(source->player_index);
             }
             NewRumble(source->pad->bound_pad, 0.5f, 0);
             NewBuzz(source->pad->bound_pad, 0.1f, 0);
@@ -5058,8 +5058,8 @@ void __cdecl PooCode(GAMEOBJECT *object) {
         volume_view->force_use_volume =
             SeekLinearF(volume_view->force_use_volume, part != NULL ? 1.0f : 0.0f, FRAMETIME);
         if (volume_view->force_use_volume > 0.0f) {
-            PooPositionPc[(i8)object->field_280] = position;
-            PlaySfxAndSetVolume("FliesLp", &PooPositionPc[(i8)object->field_280], volume_view->force_use_volume);
+            PooPositionPc[object->player_index] = position;
+            PlaySfxAndSetVolume("FliesLp", &PooPositionPc[object->player_index], volume_view->force_use_volume);
         }
     }
 }
@@ -5853,7 +5853,7 @@ static __declspec(noinline) void DodgemCode(GAMEOBJECT *object) {
     i32 i, effect, count;
     f32 random;
     if (object->current_hp > 1) {
-        if (object->rider == NULL || object->field_280 != 0xff)
+        if (object->rider == NULL || object->player_index != -1)
             return;
         for (i = 0; i < 2; ++i) {
             other = (GAMEOBJECT *)Player[i];
@@ -5894,7 +5894,7 @@ STATIC_ASSERT(offsetof(POD_BOOST_VIEW_PC, boost_timer) == 0x1038);
 
 static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
     POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
-    if (object->field_280 == 0xff)
+    if (object->player_index == -1)
         return;
     if ((object->flags_e20 & 0x20) == 0 && object->jump_animation_state == 0x14 &&
         object->collision_min.y - object->floor_height < PodBoostHeightPc) {
@@ -5924,7 +5924,7 @@ static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
 static __declspec(noinline) void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_held) {
     f32 target, rate;
     POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
-    if ((i8)object->field_280 == -1) /* TODO(saga.h): field_280 (player index) is signed in retail. */
+    if (object->player_index == -1)
         return;
     rate = (f32)((f64)FRAMETIME * 3.0);
     if (WORLD->area == PODRACE_ADATA) {
@@ -5958,7 +5958,7 @@ void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble) {
 }
 
 void __cdecl PodCollisionCode(GAMEOBJECT *object) {
-    if (GamePlayTimer.time_elapsed < 1.0f || object->field_280 == 0xff || (object->flags_1fc & 0x80) == 0 ||
+    if (GamePlayTimer.time_elapsed < 1.0f || object->player_index == -1 || (object->flags_1fc & 0x80) == 0 ||
         object->contact_count == 0 || !(object->contact_normal.y <= 0.574f) || !(object->contact_normal.y >= -0.574f))
         return;
     if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
@@ -6558,7 +6558,7 @@ gravity_done:
         joint_view->joints[1].joint_index = 1;
         joint_view->joint_count = 2;
     }
-    if (object->field_280 == 0xff && (object->character_data->game_character->flags_090 & 0x40) &&
+    if (object->player_index == -1 && (object->character_data->game_character->flags_090 & 0x40) &&
         object->character_model->model_data_b[0x2a] != NULL &&
         (object->character_data->game_character->flags_094 & 0x8000000))
         Grapple_AddDynamic(object, 0);
@@ -8256,7 +8256,7 @@ static __declspec(noinline) GAMEOBJECT *BlockFindSpecialAttackPc(GAMEOBJECT *obj
 static __declspec(noinline) PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object) {
     void **animations;
     f32 radius;
-    if (object->field_280 == 0xff)
+    if (object->player_index == -1)
         return NULL;
     animations = object->character_model->model_data_b;
     if (animations[0x1a] == NULL && animations[0x1b] == NULL && animations[0x1c] == NULL)
@@ -8425,9 +8425,9 @@ static void JediLightCode(GAMEOBJECT *object) {
         rtlDynamicSetRadii(object->dynamic_light_id, radius + 0.25f, radius + 0.5f);
         brightness = qrand() < 0x8000 ? 0.003921569f : 0.007843138f;
         blade = -1;
-        if (object->field_280 != 0xff && Cheat_IsOn(0x19))
+        if (object->player_index != -1 && Cheat_IsOn(0x19))
             blade = 0;
-        else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
+        else if (object->player_index != -1 && Player_HasPurpleForce(object))
             blade = 3;
         else if (object->id == (u16)id_GRIEVOUS) {
             NUVEC other;
@@ -9032,7 +9032,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                         ((target->character_data->model_flags & 0x10) == 0 || target->field_107e <= 1)) {
                         i32 immune = FreePlay != 0 && (object->flags_e20 & 0x100) != 0 &&
                                      (target->character_data->game_character->flags_090 & 0x4000) != 0;
-                        i32 damage = immune != 0 ? 0 : target->field_280 == 0xff ? target->current_hp : 1;
+                        i32 damage = immune != 0 ? 0 : target->player_index == -1 ? target->current_hp : 1;
                         i32 flags =
                             WORLD->current_level == LevelFixupSlotPc0087b194 && (object->flags_1f8 & 0x400) != 0;
                         if (ObjHitObj(object, target, damage, flags, 0, 1) != 2 && (object->flags_e20 & 0x80) != 0 &&
@@ -9235,7 +9235,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
                              ForceDeflectSeekRatePc + ForceDeflectSeekRatePc);
             }
             part = object->force_part;
-            if (part->owner != NULL && part->owner->field_280 == 0xff) {
+            if (part->owner != NULL && part->owner->player_index == -1) {
                 NuVecSub(&direction, &part->owner->collision_position, &part->position);
                 NuVecNorm(&direction, &direction);
             } else {
@@ -9420,7 +9420,7 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     volume->force_use_volume = SeekLinearF(volume->force_use_volume, force_volume, FRAMETIME);
     if (volume->force_use_volume > 0.0f)
         PlaySfxAndSetVolume("JForceUse", &object->collision_position, volume->force_use_volume);
-    if ((object->flags_1fc & 0x80) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive((i8)object->field_280)) {
+    if ((object->flags_1fc & 0x80) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive(object->player_index)) {
         /* Native computes and pushes hostility_group*.3f before qrand; true qrand reads no arguments. */
         ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.5f),
                        (f32)((f64)object->hostility_group * (f64)0.3f));
@@ -9628,7 +9628,7 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
     u16 forced;
 
     if (object->character_context == 0x1b || (object->flags_e20 & 0x20000) != 0 ||
-        (object->field_280 != 0xff && MiniCutCam != 0) || (object->flags_e20 & 0x1000000) != 0) {
+        (object->player_index != -1 && MiniCutCam != 0) || (object->flags_e20 & 0x1000000) != 0) {
         return;
     }
 
@@ -9724,14 +9724,14 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                 continue;
             }
             if (WORLD->area != NULL && WORLD->area == EMPERORFIGHT_ADATA &&
-                ((candidate->portal_flags & 0x08000000) != 0 || candidate->field_280 != 0xff)) {
+                ((candidate->portal_flags & 0x08000000) != 0 || candidate->player_index != -1)) {
                 continue;
             }
             if (candidate->id == (u16)id_BODYGUARD) {
                 continue;
             }
             if (target_filter == 1) {
-                if (candidate->field_280 != 0xff) {
+                if (candidate->player_index != -1) {
                     continue;
                 }
                 if ((candidate->flags_1f8 & 5) != 0 &&
@@ -9739,7 +9739,7 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                      WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
                     continue;
                 }
-            } else if (target_filter == 2 && candidate->field_280 == 0xff) {
+            } else if (target_filter == 2 && candidate->player_index == -1) {
                 continue;
             }
             if ((candidate->portal_flags & 0x08000000) != 0) {
@@ -9943,7 +9943,7 @@ void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     if (object->character_context != -1)
         return;
     object->character_context = 0x38;
-    if ((i16)victim->id == id_GAMORREANGUARD && (i8)victim->field_280 == -1)
+    if ((i16)victim->id == id_GAMORREANGUARD && victim->player_index == -1)
         object->field_7aa = 0x1f;
     else
         object->field_7aa = 0x64;
@@ -10053,7 +10053,7 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
     object->field_282 = object->field_281;
     object->previous_movement_angle = object->field_0x276;
     Teleport_NetMoveCode(object);
-    if (object->field_280 != 0xff)
+    if (object->player_index != -1)
         TractorBeamCode(object);
     {
         u32 flags = object->flags_1fc_word;
@@ -10128,12 +10128,12 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
             }
             mode = 2;
             if (Arcade != 0 && (object->hit_variant == 0 || object->hit_variant == 1))
-                Arcade_Kill(object->hit_variant, (i8)object->field_280);
+                Arcade_Kill(object->hit_variant, object->player_index);
         kill_object:
             KillParts(object, -1, -1, 1, 0.0f, mode == 2, NULL);
             KillGameObject(object, 2, 0);
             coins = 0;
-            if ((i8)object->field_280 != -1)
+            if (object->player_index != -1)
                 return;
             if (BonusArea != 0)
                 coins = (u16)object->character_data->game_character->coin_value;
