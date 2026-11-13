@@ -3419,13 +3419,11 @@ void __cdecl RefreshUI(void) {
 }
 
 void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    edui_slider_s *slider;
     eduimenu_s *confirmation;
     i32 i;
     edrtlSaveUndo();
-    slider = (edui_slider_s *)global_scale_item;
     for (i = 0; i < 128; ++i)
-        curr_set->lights[i].intensity = slider->value * curr_set->lights[i].intensity;
+        curr_set->lights[i].intensity *= ((edui_slider_s *)global_scale_item)->value;
     eduiMenuAttach(menu, global_confirm_menu);
     confirmation = global_confirm_menu;
     confirmation->x = (i32)((u32)menu->x + 10u);
