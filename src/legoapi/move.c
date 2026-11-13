@@ -4436,13 +4436,11 @@ i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 
     if ((object->portal_flags & 8) == 0 || pressed == 0 ||
         ((context_flags = U64_PAIR(&CInfo[context].flags)) & 0x20) != 0)
         goto weapon_in;
-    {
-        u32 player = (object->flags_1fc_word >> 7) & 1;
-        if (!player && (context == 6 || context == 7))
-            goto weapon_in;
-        if (!player && context == 1 && (object->field_7aa == 0x59 || object->field_7aa == 0xb3))
-            goto weapon_in;
-    }
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && (context == 6 || context == 7))
+        goto weapon_in;
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && context == 1 &&
+        (object->field_7aa == 0x59 || object->field_7aa == 0xb3))
+        goto weapon_in;
     if ((object->character_context == 6 || object->character_context == 7) &&
         (object->character_data->game_character->flags_094 & 0x1000) != 0)
         return 0;
