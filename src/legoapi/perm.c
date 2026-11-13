@@ -79,7 +79,10 @@ i32 __cdecl LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
     if (material == NULL)
         return 0;
     view = (LEGAL_MATERIAL_PC *)material;
-    view->diffuse.x = view->diffuse.y = view->diffuse.z = view->opacity = 1.0f;
+    view->diffuse.x = 1.0f;
+    view->diffuse.y = 1.0f;
+    view->diffuse.z = 1.0f;
+    view->opacity = 1.0f;
     view->shader_flags = 0x1000;
     view->attributes = (view->attributes & 0xffffefe2u) | 0xe022;
     view->texture_id = (i16)texture_id;
