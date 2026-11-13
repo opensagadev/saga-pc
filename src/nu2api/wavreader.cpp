@@ -136,8 +136,8 @@ HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
         i32 count = requested / format.nBlockAlign;
         if (count >= end_sample - current_sample)
             count = end_sample - current_sample;
-        i32 amount = count * format.nBlockAlign;
         i32 offset = current_sample * format.nBlockAlign;
+        i32 amount = count * format.nBlockAlign;
         if ((u32)amount != requested) {
             PCDecoderDiagnosticNoOpPc();
             PCDecoderDiagnosticNoOpPc(requested, amount);
