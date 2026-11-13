@@ -46,6 +46,11 @@ i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
         return PlayerSpecialMoveDataPc[index].victim_animation;
     return -1;
 }
+f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
+    if (index != -1)
+        return PlayerSpecialMoveDataPc[index].distance_apart;
+    return 0.0f;
+}
 u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
     if (index != -1) {
         if (mask != 0)
