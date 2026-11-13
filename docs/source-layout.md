@@ -5,7 +5,7 @@ keeps every object's code together, in source order. The retail .text is
 therefore a sequence of contiguous blocks, one per original source file (or per
 unity file that `#include`s several). This page records which block is which
 file, how that was derived, how sure each row is, and how our `src/` should be
-moved to that layout. It is an analysis: nothing in `src/` has moved yet.
+moved to that layout. Batches 1 and 2 of the plan below are partly done.
 
 - Table: [`config/layout-target.csv`](../config/layout-target.csv), one row per
   compiland, and one row per included file inside a unity compiland.
@@ -314,6 +314,58 @@ into a target file in retail order and rewrites `config/*.json` owners.
    `timing`, `dropinout`, `detonator`, `worldinfo`, `characters`,
    `animation`, `fighting`). Risk: medium (inlining, helper copies, data
    order); run the gate per compiland.
+   Done for 17 compilands, one commit each, with `tools/unitize.py apply`
+   and hand clean-up; each merged block is in retail address order, and
+   functions of other compilands still in the file stay there for batch 3:
+   `legoapi/levels.cpp` (rename of `level_area_load.cpp`), `missions.c`,
+   `buffers.cpp` (new, from `legogame/startup.cpp`), `fighting.c` (all of
+   `climbing.c`), `animation.c`, `legogame/detonator.cpp` (new),
+   `legogame/dropinout.c` (C part only), `worldinfo.cpp` (was `world.cpp`),
+   `characters.cpp`, `legogame/aitrigger.c`, `legogame/attracto.c`,
+   `episodeVI.c`, `hits.c`, `grabber.c`, `minikits.c`, `gameapi/apiobject.c`,
+   `gamepads.c` (C part only). `timing.c` was already complete. A merged file
+   keeps the language of its largest piece (no language flips); C pieces
+   moved into a C++ file go into its `extern "C"` block unchanged. The exact
+   set did not change. Rules learnt:
+   - An empty function that retail folded onto a compiland's leading RET
+     (the `*_diagnostic_pc.c`/`*_diagnostic.c` files, `texanim_scripts.c`,
+     `rtl_empty_pc.c`, the `nudebug.c` and `pc_fmv_leaves.cpp` leaves,
+     `NuMainTrailerLeafPc`) must stay in another file: visible to its callers,
+     VC8 drops the calls (`Levels_ConfigureList` 83.9% -> 76.8%).
+   - VC8 inlines a function defined later in the same file, so a stray of
+     another compiland cannot share a file with a small callee that retail
+     kept in a different compiland; definition order does not help.
+
+   Deferred merges, game side (`src/legoapi`, `src/legogame` targets):
+   - `levels_diagnostic_pc.c`, `mission_diagnostic_pc.c` and the other empty
+     diagnostics above: folded RETs, see the first rule.
+   - `dropinout`: `players_dropin.cpp` and `DropOut` (`menu_pause.cpp`) are
+     C++ (declarations in mid-block), `DropInOutCode` assigns from the
+     `void *Player` array; either language needs code changes.
+   - `worldinfo`: `PortalDoors_Configure/_Update/_Reset` (`gizportal.c`) use
+     implicit declarations and `void *` conversions, so they do not compile
+     as C++.
+   - `characters`: `IconScenes_Init/_FindById/_Load/_Dump` (`menu.c`): the
+     creature stray `LoadSingleCharacter` in `characters.cpp` would inline
+     `IconScene_FindById` (exact -> 81%). Merge after it moves to `creature`
+     (`DrawCharIcon` then becomes exact: 99.45% -> 100%).
+   - `hub`: `indy_special.c` and `gizmo.c` pieces need `void *` casts as C++,
+     and the pieces declare the hub mode globals differently.
+   - `gamepads`: `PadOutPause` (`menu_pause.cpp`) and `DoInput`
+     (`input.cpp`) are C++ (`reinterpret_cast`, mid-block declarations).
+   - `parts`: `parts.c` is mostly `objectsall`/`gameliball` code; merge after
+     its split. `PartImpact_Brick` (`parts_breakup.cpp`) is C++.
+
+   Deferred merges, engine side (`src/nu2api`, `src/gameapi` targets):
+   - `dsplay_bink`: with `pc_fmv_player.cpp` and `pc_fmv_control.cpp` merged,
+     six FMV functions leave exact (`FmvRestorePc`, `FmvSkipPc`, `FmvDrawPc`,
+     `FmvDecodePc`, `FmvClosePc`, `FmvReleaseImagePc`); without
+     `SAGA_VENDORED_LIBRARY` the RAD blitter functions leave exact too.
+   - `supportall`: with `memorymanager.cpp` merged, the COMDAT inline
+     `ThingManager::operator delete` and its deleting destructor (retail
+     0x5b15f0, emitted by another compiland) inline `FreePool` and leave
+     exact.
+
 3. **Splits of mixed files** (150 files, section `split`): first the 64 files
    with one or two stray functions (move the strays to their target), then the
    86 real splits, largest first per target compiland (`players.c` ->
