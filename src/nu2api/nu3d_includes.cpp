@@ -12175,6 +12175,7 @@ extern "C" {
 
 /* nuspecial_shadow_pc */
 extern "C" i32 NuSpecialClipTestShadowLights(NUVEC *minimum, NUVEC *maximum, i32 force) {
+    i32 any = 0;
     if (force)
         PCSpecialShadowClipResultsPresent = 0;
     if (PCSpecialShadowClipResultsPresent) {
@@ -12184,12 +12185,23 @@ extern "C" i32 NuSpecialClipTestShadowLights(NUVEC *minimum, NUVEC *maximum, i32
         }
         return 0;
     }
-    i32 any = 0;
     for (i32 light = 0; light != PCSpecialActiveShadowLights; ++light) {
-        NUVEC min_copy = *minimum;
-        NUVEC max_copy = *maximum;
-        i32 result =
-            reinterpret_cast<PCFrustumClipSet *>(PCSpecialShadowLights[light])->TestBoxes(&min_copy, &max_copy);
+        VuVec min_copy;
+        VuVec max_copy;
+        min_copy.xyz = *minimum;
+        max_copy.xyz = *maximum;
+        __declspec(align(16)) NUVEC4 min_box;
+        __declspec(align(16)) NUVEC4 max_box;
+        max_box.x = max_copy.x;
+        max_box.y = max_copy.y;
+        max_box.z = max_copy.z;
+        max_box.w = max_copy.w;
+        min_box.x = min_copy.x;
+        min_box.y = min_copy.y;
+        min_box.z = min_copy.z;
+        min_box.w = min_copy.w;
+        i32 result = reinterpret_cast<PCFrustumClipSet *>(PCSpecialShadowLights[light])
+                         ->TestBoxes((NUVEC *)&min_box, (NUVEC *)&max_box);
         PCSpecialShadowClipResults[light] = static_cast<u32>(result);
         if (result > 0)
             any = 1;
