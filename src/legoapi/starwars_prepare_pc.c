@@ -347,7 +347,6 @@ i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *obje
 }
 
 i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
-    i32 near_index;
     i32 far_index;
     AIPATHNODE_PC *near_node;
     AIPATHNODE_PC *far_node;
@@ -358,9 +357,11 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
     AIPATHCNX_PC *current;
     f32 edge;
 
-    far_index = !(packet->path_info.distance > 0.5f);
-    near_index = far_index == 0;
-    near_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[near_index]];
+    if (packet->path_info.distance > 0.5f)
+        far_index = 0;
+    else
+        far_index = 1;
+    near_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[far_index == 0]];
     far_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[far_index]];
 
     offset.x = far_node->position.x - near_node->position.x;
@@ -395,12 +396,15 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
         if (packet->path_info.direction == far_index) {
             return 0;
         }
-        if (packet->path_connection_state == 0) {
-            if (current->open == 0) {
-                packet->path_connection_state = 1;
-            }
-        } else if (packet->path_connection_state == 1 && current->open != 0) {
-            SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+        switch (packet->path_connection_state) {
+            case 0:
+                if (current->open == 0)
+                    packet->path_connection_state = 1;
+                break;
+            case 1:
+                if (current->open != 0)
+                    SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                break;
         }
     } else {
     reset_connection:
