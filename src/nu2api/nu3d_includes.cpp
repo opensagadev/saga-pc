@@ -2506,13 +2506,13 @@ extern "C" {
         keys = anim->keys + whole_key / 4 * stride;
         for (n = 0; n < node; ++n) {
             for (curve = 0; curve < curve_count; ++curve) {
-                u16 type = *types++;
+                type = *types++;
+                ++force_zero;
                 if (type < 16) {
                     keys += KeyStructSizes[type];
                     ++scale_min;
                 }
             }
-            force_zero += curve_count;
         }
 
         for (curve = 0; curve < curve_count; ++curve, ++values, ++force_zero) {
@@ -2546,28 +2546,23 @@ extern "C" {
             }
             switch (type) {
                 case 6: {
-                    u32 first = *(u32 *)keys;
-                    u32 next = *(u32 *)(keys + stride);
-                    u32 first_byte = first & 0xff;
-                    u32 next_byte = next & 0xff;
-                    u32 tangents = first >> 8;
-                    i32 shift = quarter * 6;
-                    f32 tangent0 = (f32)((tangents >> shift) & 0x3f) * 0.01587302f;
+                    u32 IValue0, IValue1, IBlend0, V;
+                    f32 Value0, Value1, Blend;
+                    IValue0 = ANI_GetKeyParts2(keys, &IBlend0);
+                    V = *(u32 *)(keys + stride);
+                    IValue1 = V & 0xff;
+                    Blend = ANI_GetBlend2(IBlend0, quarter);
                     if (quarter < 3) {
-                        f32 first_value = (f32)first_byte;
-                        f32 tangent1 = (f32)((tangents >> (shift + 6)) & 0x3f) * 0.01587302f;
-                        key_fraction = (tangent1 - tangent0) * key_fraction + tangent0;
-                        *values = (((f32)next_byte - first_value) * key_fraction + first_value) * scale_min->scale +
-                                  scale_min->minimum;
+                        Value0 = (f32)IValue0;
+                        Blend = (ANI_GetBlend2(IBlend0, quarter + 1) - Blend) * key_fraction + Blend;
+                        *values = (((f32)IValue1 - Value0) * Blend + Value0) * scale_min->scale + scale_min->minimum;
                     } else {
-                        f32 next_value = (f32)next_byte;
-                        f32 first_value = (f32)first_byte;
-                        f32 after;
-                        tangent0 = (next_value - first_value) * tangent0 + first_value;
-                        after = ((f32)keys[stride * 2] - next_value) * ((f32)((next >> 8) & 0x3f) * 0.01587302f) +
-                                next_value;
-                        *values =
-                            ((after - tangent0) * key_fraction + tangent0) * scale_min->scale + scale_min->minimum;
+                        f32 FF;
+                        Value1 = (f32)IValue1;
+                        Value0 = (f32)IValue0;
+                        Blend = (Value1 - Value0) * Blend + Value0;
+                        FF = ((f32)keys[stride * 2] - Value1) * ANI_GetBlend2(V >> 8, 0) + Value1;
+                        *values = ((FF - Blend) * key_fraction + Blend) * scale_min->scale + scale_min->minimum;
                     }
                     keys += 4;
                     ++scale_min;
