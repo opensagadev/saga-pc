@@ -1138,7 +1138,8 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
             f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
             f32 dx = (f64)object->position.x - spinner->position.x;
             f32 dz = (f64)object->position.z - spinner->position.z;
-            if (!(dx * dx + dz * dz < radius * radius))
+            f32 radius_squared = radius * radius;
+            if (!(dx * dx + dz * dz < radius_squared))
                 continue;
             u16 radial = dx != 0.0f || dz != 0.0f ? NuAtan2D(dx, dz) : qrand();
             u16 movement;
@@ -1164,83 +1165,86 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
             object->velocity.z = speed * NuTrigTable[((radial + 0x4000) >> 1) & 0x7fff];
         }
     }
-    if (!stopped) {
-        i32 previous_state = spinner->state;
-        f32 play_speed;
-        if (spinner->spin_timer > 0.0f) {
-            f32 remaining = (f64)spinner->spin_timer - FRAMETIME;
-            spinner->spin_timer = remaining;
-            if (remaining <= 0.0f) {
-                spinner->rotation = spinner->target_rotation;
-                GameAnimSet_Stop(spinner->anim_set);
-                spinner->spin_timer = 0.0f;
-            } else {
-                f32 phase = 1.0 - (f64)remaining * 4.0;
-                f32 blend = NuTrigTable[((i32)((f64)phase * 16384.0) >> 1) & 0x7fff];
-                i32 difference = RotDiff(spinner->previous_rotation, spinner->target_rotation);
-                if ((spinner->state_flags & 1) != 0 && difference < 0)
-                    difference += 0x10000;
-                else if ((spinner->state_flags & 1) == 0 && difference > 0)
-                    difference -= 0x10000;
-                spinner->rotation = (u16)(i32)((f64)difference * blend + spinner->previous_rotation);
-            }
-            goto animation_updated;
-        }
-        if (spinner->room_index != -1) {
-            if ((spinner->room_index == 0x1e && (spinner->state_flags & 4) == 0) ||
-                (spinner->room_index != 0x1e && (spinner->state_flags & 4) != 0)) {
-                play_speed = spinner->anim_set->state == 2 ? 0.0f : spinner->animation_speed;
-            } else {
-                play_speed = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0.0f : -spinner->animation_speed;
-            }
-            if (play_speed != 0.0f)
-                GameAnimSet_Play(spinner->anim_set, play_speed, 1);
-            else
-                GameAnimSet_Stop(spinner->anim_set);
-            goto animation_updated;
-        }
-        if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == 2) ||
-            !(spinner->spin_timer <= 0.0f)) {
+    if (stopped) {
+        spinner->room_index = -1;
+        spinner->field_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
+        return;
+    }
+    i32 previous_state = spinner->state;
+    f32 play_speed;
+    if (spinner->spin_timer > 0.0f) {
+        f32 remaining = (f64)spinner->spin_timer - FRAMETIME;
+        spinner->spin_timer = remaining;
+        if (remaining <= 0.0f) {
+            spinner->rotation = spinner->target_rotation;
             GameAnimSet_Stop(spinner->anim_set);
-            spinner->state_flags &= ~0x40u;
-            goto animation_updated;
+            spinner->spin_timer = 0.0f;
+        } else {
+            f32 phase = 1.0 - (f64)remaining * 4.0;
+            f32 blend = NuTrigTable[((i32)((f64)phase * 16384.0) >> 1) & 0x7fff];
+            i32 difference = RotDiff(spinner->previous_rotation, spinner->target_rotation);
+            if ((spinner->state_flags & 1) != 0 && difference < 0)
+                difference += 0x10000;
+            else if ((spinner->state_flags & 1) == 0 && difference > 0)
+                difference -= 0x10000;
+            spinner->rotation = (u16)(i32)((f64)difference * blend + spinner->previous_rotation);
         }
-        if (spinner->spin_timer > -0.0f) { // never true here: the test above already ruled out > 0
-            spinner->spin_timer -= FRAMETIME;
-            GameAnimSet_Stop(spinner->anim_set);
-            goto animation_updated;
+        goto animation_updated;
+    }
+    if (spinner->room_index != -1) {
+        if ((spinner->room_index == 0x1e && (spinner->state_flags & 4) == 0) ||
+            (spinner->room_index != 0x1e && (spinner->state_flags & 4) != 0)) {
+            play_speed = spinner->anim_set->state == 2 ? 0.0f : spinner->animation_speed;
+        } else {
+            play_speed = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0.0f : -spinner->animation_speed;
         }
-        if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0)
-            goto stop_animation;
-        play_speed = -spinner->animation_points[0];
-        if ((spinner->state_flags & 6) != 0 && (spinner->state_flags & 6) != 6)
-            spinner->rotation +=
-                (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * -5461.0));
-        else
-            spinner->rotation +=
-                (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * 5461.0));
-    play_animation:
-        if (play_speed != 0.0f) {
+        if (play_speed != 0.0f)
             GameAnimSet_Play(spinner->anim_set, play_speed, 1);
-            goto animation_updated;
-        }
-    stop_animation:
+        else
+            GameAnimSet_Stop(spinner->anim_set);
+        goto animation_updated;
+    }
+    if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == 2) ||
+        !(spinner->spin_timer <= 0.0f)) {
         GameAnimSet_Stop(spinner->anim_set);
-    animation_updated:
-        NUMTX matrix;
-        SpinnerMatrixSetRotationYPc(&matrix, spinner->rotation);
-        if (initial_positive_offset != 0)
-            SpinnerMatrixRotateYPc(&matrix, 0x222);
-        else if (initial_negative_offset != 0)
-            SpinnerMatrixRotateYPc(&matrix, -0x222);
-        NuMtxTranslate(&matrix, &spinner->position);
-        spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
-        if (initial_no_judder == 0 && previous_state == 1 && spinner->state != 1) {
-            NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
-            GameCam_Judder(GameCam, -0.2f, 0, NULL);
-            GameAudio_PlaySfx(0x39, &spinner->position, 0, 0);
-            spinner->state_flags |= 0x2000;
-        }
+        spinner->state_flags &= ~0x40u;
+        goto animation_updated;
+    }
+    if (spinner->spin_timer > -0.0f) { // never true here: the test above already ruled out > 0
+        spinner->spin_timer -= FRAMETIME;
+        GameAnimSet_Stop(spinner->anim_set);
+        goto animation_updated;
+    }
+    if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0)
+        goto stop_animation;
+    play_speed = -spinner->animation_points[0];
+    if ((spinner->state_flags & 6) != 0 && (spinner->state_flags & 6) != 6)
+        spinner->rotation +=
+            (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * -5461.0));
+    else
+        spinner->rotation +=
+            (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * 5461.0));
+play_animation:
+    if (play_speed != 0.0f) {
+        GameAnimSet_Play(spinner->anim_set, play_speed, 1);
+        goto animation_updated;
+    }
+stop_animation:
+    GameAnimSet_Stop(spinner->anim_set);
+animation_updated:
+    NUMTX matrix;
+    SpinnerMatrixSetRotationYPc(&matrix, spinner->rotation);
+    if (initial_positive_offset != 0)
+        SpinnerMatrixRotateYPc(&matrix, 0x222);
+    else if (initial_negative_offset != 0)
+        SpinnerMatrixRotateYPc(&matrix, -0x222);
+    NuMtxTranslate(&matrix, &spinner->position);
+    spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
+    if (initial_no_judder == 0 && previous_state == 1 && spinner->state != 1) {
+        NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
+        GameCam_Judder(GameCam, -0.2f, 0, NULL);
+        GameAudio_PlaySfx(0x39, &spinner->position, 0, 0);
+        spinner->state_flags |= 0x2000;
     }
     spinner->room_index = -1;
     spinner->field_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
