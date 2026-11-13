@@ -819,8 +819,8 @@ void __cdecl DebrisProcessGeneration(void) {
     i32 emission;
     i32 handle;
     for (key = debris_keystack; key != NULL; key = next) {
-        emission_interval = 0.0f;
         pause = 0.0f;
+        emission_interval = 0.0f;
         volume = 1.0f;
         emission = 0;
         next = key->previous;
@@ -876,7 +876,7 @@ void __cdecl DebrisProcessGeneration(void) {
                                                     : (f32)effect->frequency / (effect->thinning < debris_thinning_level
                                                                                     ? effect->thinning
                                                                                     : debris_thinning_level));
-        emission_time = key->emission_epoch + emission_interval;
+        emission_time = emission_interval + key->emission_epoch;
         while (emission_time < now + debris_time_increment && ++emission < 100) {
             transitions = 0;
             while (emission_time >= key->emission_end_time && key->emission_time <= emission_time &&
@@ -902,7 +902,7 @@ void __cdecl DebrisProcessGeneration(void) {
                 } else {
                     key->previous_emission_time = key->emission_time;
                     pause = effect->emission_pause + NuRandFloatSeeded(&debrisseed) * effect->emission_pause_random;
-                    key->emission_time = key->emission_end_time + pause;
+                    key->emission_time = pause + key->emission_end_time;
                     if (key->finite == 2)
                         key->finite = 0;
                     if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range)
