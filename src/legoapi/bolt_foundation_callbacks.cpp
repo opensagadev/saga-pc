@@ -76,7 +76,6 @@ extern "C" {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
         i32 id, result;
-        PLAYERCHARACTERCONFIG_PC *config;
         if (object == NULL)
             return fallback;
         if (StartupGameFlag0 != 0 && state->weapon_ammo.type != NULL && state->weapon_ammo.type->bolt_override != -1)
@@ -130,10 +129,9 @@ extern "C" {
             return 29;
         if (object->character_data->move_fn == Move_CANNON)
             return 20;
-        config = &GCDataList[id];
-        if (config->weapon_action == 8)
+        if (GCDataList[id].weapon_action == 8)
             return 2;
-        if (config->weapon_model == 22)
+        if (GCDataList[id].weapon_model == 22)
             return 2;
         if (id == (i16)id_BIGGUN)
             return 20;
