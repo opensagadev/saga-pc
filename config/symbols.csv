@@ -1013,8 +1013,8 @@ address,symbol,size,ctype
 0x0045e1b0,_Save_Alt_Update,200,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045e280,_Fade_Alt_Update,90,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045e2e0,_Alt_registerStatusScreen,101,void __cdecl(void)
-0x0045e350,?StatusFabsPc@@YAMM@Z,18,static f32 __cdecl(f32)
-0x0045e370,?StatusCoinsRatioPc@@YAMMM@Z,54,"static f32 __cdecl(f32, f32)"
+0x0045e350,_StatusFabsPc,18,static f32 __cdecl(f32)
+0x0045e370,_StatusCoinsRatioPc,54,"static f32 __cdecl(f32, f32)"
 0x0045e3d0,_ResetStatusPacket_LSW,13,void __cdecl(STATUSPACKET_s *)
 0x0045e3e0,_InitStatusScreen_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *)"
 0x0045e3f0,_FinishStatusPacket_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *, i32)"
