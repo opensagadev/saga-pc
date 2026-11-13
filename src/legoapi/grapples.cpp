@@ -991,7 +991,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_UP && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
                     object->field_7aa = LEGOACT_GRAPPLE_UP;
-                    speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_UP);
+                    speed = AnimSpeed(object->character_model, object->field_7aa);
                     if (speed < 0.5f)
                         speed = 0.5f;
                 } else
@@ -1035,7 +1035,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_DOWN && object->character_model->model_data_b[LEGOACT_GRAPPLE_DOWN] != NULL) {
                     object->field_7aa = LEGOACT_GRAPPLE_DOWN;
-                    speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_DOWN);
+                    speed = AnimSpeed(object->character_model, object->field_7aa);
                     if (speed < 0.5f)
                         speed = 0.5f;
                 } else
