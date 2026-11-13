@@ -15015,7 +15015,7 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
 
                             for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&editor_path->nodes); node != NULL;
                                  node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &node->link)) {
-                                i32 slot;
+                                u8 slot;
                                 node->index = path->node_count++;
                                 for (slot = 0; slot < 8; ++slot) {
                                     if (node->connections[slot].node != NULL) {
