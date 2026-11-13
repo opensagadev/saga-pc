@@ -2485,7 +2485,11 @@ void __cdecl NuFileExtInit(i32 low_resolution) {
     NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 4);
     NuFileAddExtensionPC(NuFileExt_bik_PC, 8, 4);
     NuFileAddExtensionPC(NuFileExt_pc_gsc_PC, 3, 4);
-    NuFileAddExtensionPC(low_resolution ? NuFileExt_lr_pc_ghg_PC : NuFileExt_pc_ghg_PC, 2, 4);
+    if (low_resolution) {
+        NuFileAddExtensionPC(NuFileExt_lr_pc_ghg_PC, 2, 4);
+    } else {
+        NuFileAddExtensionPC(NuFileExt_pc_ghg_PC, 2, 4);
+    }
 
     NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 0);
     NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 0);
