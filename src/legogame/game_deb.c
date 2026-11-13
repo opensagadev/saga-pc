@@ -405,7 +405,7 @@ void __cdecl BurnoutApply(i32 view) {
         NuRndrSetShadowCoefficientPc(0, WORLD->shadow_editor->field_24);
         NuRndrSetShadowCoefficientPc(1, WORLD->shadow_editor->field_28);
         NuRndrSetShadowCoefficientPc(2, WORLD->shadow_editor->field_2c);
-        NuRndrEnableDeferredPc();
+        NuDeferredShadingRender();
     }
 }
 

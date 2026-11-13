@@ -43,7 +43,7 @@ STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
                                 (MIN(255.0f, (MAX(0.0f, brightness)))), 128)
 #define ALPHA_GRID_CLAMP_COLOUR                                                                                        \
     do {                                                                                                               \
-        const u32 component = RenderPostClampBytePc(0, 255, brightness);                                               \
+        const u32 component = NuPrim2DAddCLR(0, 255, brightness);                                                      \
         colour = RGBA_TO_NUCOLOUR32(component, component, component, 128);                                             \
     } while (0)
 #define ALPHA_GRID_VERTEX(vx, vy, colour_source)                                                                       \
@@ -73,9 +73,9 @@ STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
             } else if (!(angle > parameters->direction_far_angle)) {                                                   \
                 brightness +=                                                                                          \
                     128.0f *                                                                                           \
-                    ((1.0f - RenderPostPowPc((angle - parameters->direction_near_angle) /                              \
-                                                 (parameters->direction_far_angle - parameters->direction_near_angle), \
-                                             parameters->direction_bias)) *                                            \
+                    ((1.0f - NuPowFast((angle - parameters->direction_near_angle) /                                    \
+                                           (parameters->direction_far_angle - parameters->direction_near_angle),       \
+                                       parameters->direction_bias)) *                                                  \
                          (parameters->direction_far_scale - parameters->direction_near_scale) +                        \
                      parameters->direction_near_scale);                                                                \
             }                                                                                                          \

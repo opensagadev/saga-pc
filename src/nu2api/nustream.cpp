@@ -249,7 +249,7 @@ extern "C" i32 __cdecl NuSound3GetStereoStreamStatus(i32 index) {
     return NuSound3StereoStreams[index]->GetStatus();
 }
 
-extern "C" i32 __cdecl NuSound3GetMusicStreamStatusPc(i32 stream) {
+extern "C" i32 __cdecl NuSoundGetStereoStreamStatus(i32 stream) {
     if (stream == 0) {
         return NuSound3GetStereoStreamStatus(PCStereoChannel0A);
     }

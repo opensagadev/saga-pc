@@ -770,7 +770,7 @@ extern "C" {
         extern const char NuMaterialSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\numtl_dlist.c";
     }
 
-    extern "C" __declspec(noinline) void __cdecl NuMtlInitShaderResourcesPc(void) {
+    extern "C" __declspec(noinline) void __cdecl Nu360MtlInit(void) {
         NuDisplayMaterialDebrisProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
             PostShaderProgramCreatePc(2, NuMaterialShaderTokens769710Pc, NuMaterialShaderTokens769840Pc));
         if (PCDeviceHardwareVertexProcessingPC > 1) {
@@ -1214,7 +1214,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u0) == 0x4);
     STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u1) == 0xc);
     void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
-    void __cdecl NuVec4ScaleForwardPc(NUVEC4 *, NUVEC4 *, f32);
+    void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
     i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
 #define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
 #define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                              \
@@ -1230,7 +1230,7 @@ extern "C" {
     extern f32 FrameStartupDelayPc;
     extern i32 NuApiTextLinePc;
     extern f32 NuFrameAccumulatedTimePc;
-    extern const char *__cdecl PcFrameDelayMessagePc(void);
+    extern const char *__cdecl GetPCStartupMessage(void);
     extern u32 __cdecl PcGetRefreshRatePc(void);
     extern void __cdecl bgprocFrameSleepPc(i32 milliseconds);
     extern void __cdecl NuFrameEndLeafPc(void);
@@ -1808,8 +1808,8 @@ extern "C" {
         return PcBootFramebuffersPc.slots[index];
     }
 
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *framebuffer, i32 index,
-                                                                             i32 *level, i32 *field) {
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *framebuffer, i32 index,
+                                                                    i32 *level, i32 *field) {
         PC_EFFECT_SURFACE_PC *target = &framebuffer->targets[index];
         GRAPHICS_RENDER_TEXTURE_PC *texture = target->texture;
         if (texture == NULL) {
@@ -3850,7 +3850,7 @@ extern "C" {
     static u32 NuDebrisCurrentBufferIndex;
 
     /* PC implementation of the NuInitDebrisRenderer family. */
-    void __cdecl NuDebrisCreateVertexBuffersPc(void) {
+    void __cdecl debris_InitializeD3D(void) {
         i32 index;
         NuDebrisCurrentBufferIndex = 0;
         NuDebrisUseSystemMemory = 0;
@@ -4196,7 +4196,7 @@ extern "C" {
     void __cdecl NuKeyboardWindowStateLeafPc(void) {
     }
 
-    void __cdecl PortalInitialisePsPc(NUGSCN *scene) {
+    void __cdecl Initialise_PS(NUGSCN *scene) {
         scene->instance_visibility_flags = NuPortalVisibilityBitsPc;
     }
 
@@ -4214,7 +4214,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PortalSetAllVisiblePc(NUGSCN *scene) {
+    void __cdecl SetAllInstancesVisible(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 255, 625);
@@ -4225,7 +4225,7 @@ extern "C" {
         }
     }
 
-    void __cdecl PortalSetAllHiddenPc(NUGSCN *scene) {
+    void __cdecl SetAllInstancesHidden(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 0, 625);
@@ -5574,7 +5574,7 @@ extern "C" {
             NuDebrisSystemBuffers[index] = buffer->void_ptr;
             buffer->addr += NuDebrisVertexBufferSize;
         }
-        NuDebrisCreateVertexBuffersPc();
+        debris_InitializeD3D();
     }
 
     void __cdecl AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET_PC *group) {
@@ -5834,9 +5834,9 @@ extern "C" {
             }
             vertices[7].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[4], &vertices[6], &clip_matrix);
-            NuVec4ScaleForwardPc(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
+            NuVec4ScaleXYZVU0(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
             NuVec4MtxTransformVU0(&vertices[5], &vertices[7], &clip_matrix);
-            NuVec4ScaleForwardPc(&vertices[5], &vertices[5], 1.0f / vertices[5].w);
+            NuVec4ScaleXYZVU0(&vertices[5], &vertices[5], 1.0f / vertices[5].w);
             if (vertices[4].x < -1.0f && vertices[5].x < -1.0f) {
                 continue;
             }
@@ -5884,7 +5884,7 @@ extern "C" {
             vertices[4].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[4], &vertices[4], &clip_matrix);
             width_scale = 1.0f / vertices[4].w;
-            NuVec4ScaleForwardPc(&vertices[4], &vertices[4], width_scale);
+            NuVec4ScaleXYZVU0(&vertices[4], &vertices[4], width_scale);
             if (remaining < NuLgtLaserData[i].length) {
                 if (remaining < 0.0f) {
                     width_scale *= NuLgtLaserData[i].end_width_ratio;
@@ -5931,7 +5931,7 @@ extern "C" {
                 vertices[5].w = 1.0f;
                 NuVec4MtxTransformVU0(&vertices[5], &vertices[5], &clip_matrix);
                 width_scale = 1.0f / vertices[5].w;
-                NuVec4ScaleForwardPc(&vertices[5], &vertices[5], width_scale);
+                NuVec4ScaleXYZVU0(&vertices[5], &vertices[5], width_scale);
                 if (remaining < NuLgtLaserData[i].length) {
                     if (remaining < 0.0f) {
                         width_scale *= NuLgtLaserData[i].end_width_ratio;
@@ -6115,9 +6115,9 @@ extern "C" {
             }
             vertices[7].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[4], &vertices[6], clip);
-            NuVec4ScaleForwardPc(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
+            NuVec4ScaleXYZVU0(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
             NuVec4MtxTransformVU0(&vertices[5], &vertices[7], clip);
-            NuVec4ScaleForwardPc(&vertices[5], &vertices[5], 1.0f / vertices[5].w);
+            NuVec4ScaleXYZVU0(&vertices[5], &vertices[5], 1.0f / vertices[5].w);
 
             perpendicular.x = (vertices[5].y - vertices[4].y) * ((f32)PS2_REZ_W / 240.0f);
             perpendicular.y = vertices[4].x - vertices[5].x;
@@ -6159,7 +6159,7 @@ extern "C" {
             vertices[4].z = vertices[6].z;
             vertices[4].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[4], &vertices[4], clip);
-            NuVec4ScaleForwardPc(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
+            NuVec4ScaleXYZVU0(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
             vertices[1].x = vertices[4].x;
             vertices[1].y = vertices[4].y;
             vertices[1].z = vertices[4].z;
@@ -6187,7 +6187,7 @@ extern "C" {
                 NuVec4MtxTransformVU0(&vertices[5], &vertices[5], clip);
 
                 reciprocal = 1.0f / vertices[5].w;
-                NuVec4ScaleForwardPc(&vertices[5], &vertices[5], reciprocal);
+                NuVec4ScaleXYZVU0(&vertices[5], &vertices[5], reciprocal);
 
                 if (progress < wobble_limit && NuLgtSeed != 0) {
                     jitter_y = (f32)((NU_LGT_RAND() & 0xff) - 128);
@@ -6641,7 +6641,7 @@ extern "C" {
     }
 
     void __cdecl NuMtlInitExPS(VARIPTR *) {
-        NuMtlInitShaderResourcesPc();
+        Nu360MtlInit();
     }
 
     // @@END
@@ -7112,7 +7112,7 @@ extern "C" {
 
     void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
         NuRndrStreamInit(size, buffer);
-        NuRndrInitConfigPc(buffer, end);
+        NuRndrInit(buffer, end);
     }
 
     static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
@@ -7323,7 +7323,7 @@ extern "C" {
         }
     }
 
-    void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
+    void __cdecl NuRndrInit(VARIPTR *buffer, VARIPTR end) {
         RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
         NUVEC defaults;
         i32 i;

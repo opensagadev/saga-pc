@@ -9,7 +9,7 @@ extern "C" {
     void __cdecl NuRndrGeometryBufferReleasePc(void);
     void __cdecl NuRndrGeometryBufferRestorePc(void);
     void __cdecl NuDebrisReleaseVertexBuffersPc(void);
-    void __cdecl NuDebrisCreateVertexBuffersPc(void);
+    void __cdecl debris_InitializeD3D(void);
     void __cdecl NuRndrDwaReleasePc(void);
     void __cdecl PcGeometryOriginReleasePc(void);
     void __cdecl NuPrimReleaseResourcesPc(void);
@@ -259,7 +259,7 @@ extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
     PCGraphicsRestoreFramebuffers();
     NuKeyboardWindowStateLeafPc();
     NuRndrGeometryBufferRestorePc();
-    NuDebrisCreateVertexBuffersPc();
+    debris_InitializeD3D();
     DebrisRestoreResourcesPc();
     GameRestoreResourcesPc();
     NuTexRestoreResourcesPc();

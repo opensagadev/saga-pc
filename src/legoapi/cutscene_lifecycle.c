@@ -982,7 +982,7 @@ static __declspec(noinline) void CutTriggerFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i
     }
 }
 
-static __declspec(noinline) void CutSceneFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 relocation_delta, i32 mode) {
+static __declspec(noinline) void NuGCutSceneFixPtrs(CUT_SCENE_LOAD_PC *scene, i32 relocation_delta, i32 mode) {
     scene->strings = scene->strings ? (char *)((u32)scene->strings + scene->string_delta) : NULL;
     if (scene->camera_system != NULL) {
         CutCameraFixPtrsPc(scene, scene->string_delta, relocation_delta, mode);
@@ -1044,7 +1044,7 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
         scene->string_delta = (i32)scene - scene->string_delta;
         scene->relocation_delta = (i32)scene - scene->relocation_delta;
         if ((scene->flags & 8) == 0) {
-            CutSceneFixPtrsPc(scene, scene->relocation_delta, 0);
+            NuGCutSceneFixPtrs(scene, scene->relocation_delta, 0);
             if ((scene->flags & 1) == 0 || no_stream_buffers != 0) {
                 buffer->addr += size;
                 CutSceneRemapFocusPc(scene, buffer);
@@ -1066,7 +1066,7 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                 CutSceneRemapFocusPc(scene, buffer);
             }
         } else {
-            CutSceneFixPtrsPc(scene, 0, 0);
+            NuGCutSceneFixPtrs(scene, 0, 0);
             buffer->addr += size;
             CutSceneRemapFocusPc(scene, buffer);
         }
@@ -1085,10 +1085,10 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
             relocation_delta = scene->relocation_delta;
         }
         if (version >= 2 && (scene->flags & 8) != 0) {
-            CutSceneFixPtrsPc(scene, 0, 0);
+            NuGCutSceneFixPtrs(scene, 0, 0);
             buffer->addr += size;
         } else {
-            CutSceneFixPtrsPc(scene, relocation_delta, 0);
+            NuGCutSceneFixPtrs(scene, relocation_delta, 0);
             if (scene->version >= 2 && (scene->flags & 1) != 0 && no_stream_buffers == 0) {
                 first_animation = NULL;
                 if (scene->camera_system != NULL && scene->camera_system->animation != NULL) {
@@ -1140,12 +1140,12 @@ void *__cdecl NuGCutSceneLoadAddr(char *path, CUT_SCENE_LOAD_PC *scene, i32 load
         scene->string_delta = (i32)scene - scene->string_delta;
         scene->relocation_delta = (i32)scene - scene->relocation_delta;
         if ((scene->flags & 8) == 0) {
-            CutSceneFixPtrsPc(scene, scene->relocation_delta, 0);
+            NuGCutSceneFixPtrs(scene, scene->relocation_delta, 0);
             if ((scene->flags & 1) != 0 && no_stream_buffers == 0) {
                 ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
             }
         } else {
-            CutSceneFixPtrsPc(scene, 0, 0);
+            NuGCutSceneFixPtrs(scene, 0, 0);
         }
         CutSceneRemapFocusPc(scene, buffer);
         if (buffer->addr > end->addr) {
@@ -2554,7 +2554,7 @@ static void CutSceneStreamHoldFramePc(CUT_INSTANCE_LOAD_PC *instance) {
     CutSceneMissingObjectDiagnosticPc(instance->scene->filename);
 }
 
-static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i32 skip, f32 elapsed) {
+static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i32 skip, f32 elapsed) {
     CUT_SCENE_LOAD_PC *scene = instance->scene;
     f32 overflow;
     i32 repeat_count;
@@ -2652,8 +2652,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
                             next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                             next->current_frame += overflow;
                             instNuGCutSceneClipTest(next);
-                            CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip,
-                                                     elapsed);
+                            instNuGCutSceneUpdate((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip, elapsed);
                             instance->chained_instance = NULL;
                             return;
                         } else {
@@ -2748,7 +2747,7 @@ static void CutSceneInstanceUpdatePc(CUT_INSTANCE_LOAD_PC *instance, i32 paused,
                         next = (CUT_INSTANCE_LOAD_PC *)instance->chained_instance;
                         next->current_frame += overflow;
                         instNuGCutSceneClipTest(next);
-                        CutSceneInstanceUpdatePc((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip, elapsed);
+                        instNuGCutSceneUpdate((CUT_INSTANCE_LOAD_PC *)instance->chained_instance, 0, skip, elapsed);
                         instance->chained_instance = NULL;
                         return;
                     } else if ((instance->flags_88 & 8) != 0) {
@@ -2817,7 +2816,7 @@ void __cdecl NuGCutSceneSysUpdate(i32 paused, i32 skip, f32 elapsed) {
     for (; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next) {
         CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
         if (((i32)(instance->flags_88 << 5) >> 24) != cutscene_synchro_counter) {
-            CutSceneInstanceUpdatePc(instance, paused, skip, elapsed);
+            instNuGCutSceneUpdate(instance, paused, skip, elapsed);
         }
     }
 }
@@ -3106,7 +3105,7 @@ CUT_SCENE_LOAD_PC *__cdecl RelocateCutScene(CUT_SCENE_LOAD_PC *source, VARIPTR *
         source->string_delta = delta;
         source->relocation_delta = delta;
         PCByteCopy(scene, source, source->loaded_size);
-        CutSceneFixPtrsPc(scene, delta, 1);
+        NuGCutSceneFixPtrs(scene, delta, 1);
     }
     buffer->addr += scene->loaded_size;
     return scene;

@@ -241,7 +241,7 @@ static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, N
 
 static NUVEC GrapplePointOffset = {0.0f, -0.023f, 0.169f};
 
-static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
+static void Grapple_Reset(GRAPPLE_MOTION_PC *grapple) {
     f32 rounded_length;
     f32 length;
     i32 point;
@@ -278,7 +278,7 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
     grapple = (GRAPPLE_MOTION_PC *)world->grapples;
     if (grapple != NULL) {
         for (index = 0; index < world->grapple_count; ++index, ++grapple) {
-            Grapple_ResetSinglePc(&((GRAPPLE_MOTION_PC *)world->grapples)[index]);
+            Grapple_Reset(&((GRAPPLE_MOTION_PC *)world->grapples)[index]);
             if (progress != NULL && index < 32) {
                 word = index / 32;
                 bit = 1u << (index & 31);
@@ -817,7 +817,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
             if (linked != NULL && context != -1 && linked->character_context == context) {
                 grapple->position = attached->lower_position;
                 grapple->y_rotation = (u16)(attached->field_0x276 + 0x8000);
-                Grapple_ResetSinglePc(grapple);
+                Grapple_Reset(grapple);
                 context = LEGOCONTEXT_BEENTAKENOVER;
                 grapple->has_terrain_platform = 1;
                 continue;

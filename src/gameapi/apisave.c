@@ -976,7 +976,7 @@ void __cdecl APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     }
 }
 
-static void MenuDrawNoDataMessagePc(void) {
+static void Draw_NODATAAVAILABLE(void) {
     char message[1024];
     f32 scale = MenuTextScalePc;
     sprintf(message, apitxt_NODATAAVAILABLE, apiGameName);
@@ -989,7 +989,7 @@ void __cdecl MenuEnterNoMemoryCard(MENU *menu) {
 }
 
 void __cdecl MenuDrawNoData(MENU *menu) {
-    MenuDrawNoDataMessagePc();
+    Draw_NODATAAVAILABLE();
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
@@ -1110,7 +1110,7 @@ static void MenuDrawSaveFailedMessagePc(void) {
     }
 }
 
-static void MenuDrawAutoSaveWarningMessagePc(void) {
+static void Draw_AUTOSAVEWARNING(void) {
     char message[1024];
     f32 scale = MenuTextScalePc;
     if (memcard_drawasiconfn != NULL) {
@@ -1186,7 +1186,7 @@ void __cdecl MenuDrawDeleting(MENU *menu) {
 }
 
 void __cdecl MenuDrawAutoSaveWarning(MENU *menu) {
-    MenuDrawAutoSaveWarningMessagePc();
+    Draw_AUTOSAVEWARNING();
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
 }

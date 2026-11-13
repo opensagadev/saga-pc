@@ -2598,7 +2598,7 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
 }
 
 /* New native storage owner: 879b90, i32, initial BSS 0. */
-static void HubDrawMiniKitCountPc(f32 x, f32 y, i32 count, i32 total, f32 alpha) {
+static void Hub_DrawMiniKitCount(f32 x, f32 y, i32 count, i32 total, f32 alpha) {
     const i32 object = HubDrawMiniKitCharacterPc != 0 ? 207 : 206;
     HubDrawMiniKitCharacterPc = 0;
     char text[128];
@@ -2697,14 +2697,14 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
         if ((area->flags & 0x10) != 0) {
-            HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10,
-                                  phase);
+            Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10,
+                                 phase);
         }
         Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase,
                                Game.area_save[area_index].red_brick_collected, 1);
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
         HubDrawMiniKitCharacterPc = 1;
-        HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
+        Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
     } else if ((i8)area->area_index != -1 && (area->flags & 0x14) == 0x10) {
         char text[128];
         sprintf(text, "%s %i", TTab[TextCrawlChapterIdPc], (i8)area->area_index + 1);
@@ -2734,11 +2734,11 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
         text = title;
     } else if (Game.area_save[index].minikit_count > 0) {
         scale = HubEpisodeSubtitleSizePc;
-        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
+        Hub_DrawMiniKitCount(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
         text = TTab[area->name_id];
     } else if ((episode = area->episode_index) != -1 && area->area_index != -1) {
         scale = HubEpisodeSubtitleSizePc;
-        HubDrawMiniKitCountPc(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
+        Hub_DrawMiniKitCount(0.0f, HubEpisodeTitleYPc, Game.area_save[index].minikit_count, 10, phase);
         sprintf(title, "%s, %s %i", TTab[EDataList[episode].name_id], TTab[TextCrawlChapterIdPc],
                 ADataList[index].area_index + 1);
         text = title;
@@ -3016,12 +3016,12 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
         }
-        HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, EpMiniKitCount, EpMiniKitTotal, phase);
+        Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeTitleYPc, EpMiniKitCount, EpMiniKitTotal, phase);
         Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase, EpRedBrickCount, EpRedBrickTotal);
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
         {
             HubDrawMiniKitCharacterPc = 1;
-            HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
+            Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
         }
     }
     if (episode->text_id != -1) {
@@ -3435,7 +3435,7 @@ static f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
 static f32 HubFreePlayNameYPc = 0.125f;
 #pragma data_seg()
 
-static void HubDrawFreePlaySelectPc(void) {
+static void Hub_DrawFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
     if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
@@ -4202,12 +4202,12 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeSubtitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale,
                          PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
             }
-            HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeSubtitleYPc, mini_count, mini_total, HubAreaTimePc);
+            Hub_DrawMiniKitCount(HubAreaPanelXPc[0], HubEpisodeSubtitleYPc, mini_count, mini_total, HubAreaTimePc);
             Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeSubtitleYPc, HubAreaTimePc, red_count, red_total);
             Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeSubtitleYPc, HubAreaTimePc, Game.gold_bricks,
                                    GOLDBRICKPOINTS);
             HubDrawMiniKitCharacterPc = 1;
-            HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeSubtitleYPc, char_count, char_total, HubAreaTimePc);
+            Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeSubtitleYPc, char_count, char_total, HubAreaTimePc);
             stats_xscale = 1.0f;
         } else if (HubAreaPc == 7) {
             if (MissionSys) {
@@ -4314,7 +4314,7 @@ extern "C" void __cdecl MenuDrawBonusMode(MENU *) {
 
 extern "C" void __cdecl MenuDrawFreePlay(MENU *) {
     if (MenuStopDraw == 0) {
-        HubDrawFreePlaySelectPc();
+        Hub_DrawFreePlaySelect();
     }
 } /*47e7a0/15*/
 

@@ -3767,7 +3767,7 @@ extern "C" {
         NuQFntPopPrintMode();
     }
 
-    void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale) {
+    void __cdecl NuQFntSetScale2d(VUFNT *font, f32 x_scale, f32 y_scale) {
         NuQFntPushPrintMode(2);
         NuQFntSetScale(font, x_scale, y_scale);
         NuQFntPopPrintMode();
@@ -4841,7 +4841,7 @@ extern "C" {
             x_scale = y_scale / height;
         }
         NuQFntSetScale(font, x_scale, y_scale);
-        NuQFntSetUVSizePc(font, x_scale, y_scale);
+        NuQFntSetScale2d(font, x_scale, y_scale);
     }
 
     i32 __cdecl NuQFntSetCoordinateSystem(i32 mode) {
@@ -6797,10 +6797,10 @@ extern "C" {
         NUPORTAL_FRUSTUM_PC *frustum;
         i32 camera_room;
         u32 i;
-        PortalInitialisePsPc(scene);
+        Initialise_PS(scene);
         camera_position = NuPortalOverrideCameraPc != NULL ? NuPortalOverrideCameraPc : &NuPortalWorldCameraPc;
         if (PCPortalsEnabled == 0) {
-            PortalSetAllVisiblePc(scene);
+            SetAllInstancesVisible(scene);
             return 0;
         }
         if (scene->max_portals == 0 || scene->num_rooms == 0 || scene->portal_instance_count == 0) {
@@ -6809,7 +6809,7 @@ extern "C" {
         NuPortalFrustumCountPc = &scene->num_portal_frusta;
         scene->num_portal_frusta = 0;
         NuPortalFrustaPc = scene->portal_frusta;
-        PortalSetAllHiddenPc(scene);
+        SetAllInstancesHidden(scene);
         NuPortalCameraPc = &global_camera;
         NuPortalLocalViewPc = global_camera.mtx;
         NuPortalWorldCameraPc = global_camera.mtx.translation;
@@ -10684,7 +10684,7 @@ void NuMainFilterGen::initResources() {
 /* Bound by the post filters only; private to this unit, so retail passes the program in ESI. The
  * posteffect_shader_pc.cpp copy is a leftover of the normalized ABI. */
 extern "C" {
-    static void PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *program) {
+    static void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
         if (program != NULL) {
             if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
                 PCDeviceSetVertexShaderPc(program->vertex_shader);
@@ -10972,7 +10972,7 @@ void NuCopyFilter::destroyResources() {
 }
 
 void NuCopyFilter::render(PC_FRAMEBUFFER_PC *output) {
-    GRAPHICS_RENDER_TEXTURE_PC *color = PCGraphicsGetFramebufferAttachmentPc(input_fbo, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *color = NuFramebufferGetAttachedTex(input_fbo, 0, NULL, NULL);
     if (copy_texture != NULL) {
         copy(color, copy_texture, output);
     } else {
@@ -11059,8 +11059,8 @@ void NuMotionFilterGen::render() {
     }
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE_PC *velocity_texture = velocity->texture;
-    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
-    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[0]);
+    GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
+    NuShaderProgramMakeCurrent((POST_SHADER_PROGRAM_PC *)programs[0]);
     f32 ratio = maximum / scale;
     __declspec(align(16)) f32 params[4];
     __declspec(align(16)) f32 weights[7][4];
@@ -11109,7 +11109,7 @@ extern "C" void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
     PCGraphicsAttachFramebuffer(PostCopyFramebufferPc, 0, destination, destination_level);
     PCGraphicsBindFramebuffer(PostCopyFramebufferPc);
     PCGraphicsSubmitViewportPc(0, 0, width, height);
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     PCGraphicsEffectTextureSetFilterFields(source, 2, 2, 1);
     PCGraphicsEffectTextureSetLowNibbles(source, source_level, source_level);
     POST_FILTER_BIND_TEXTURE(0, source);
@@ -11153,7 +11153,7 @@ void NuMotionAccumFilterGen::render() {
         color->resolved = true;
     }
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
-    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
     f32 weights[256];
     if (frames > 256) {
         AnimationDiagnosticNoOpPc();
@@ -11242,7 +11242,7 @@ void NuSpeedBlurFilterGen::render() {
     computeSpeedBlur((NUVEC4 *)(values + 4));
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth->texture;
-    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
     if (texture != NULL) {
         PostFilterCopyTexturePc(texture, 0, color_texture, 0, PostCopyTexProgramPc, NULL);
     }
@@ -11252,7 +11252,7 @@ void NuSpeedBlurFilterGen::render() {
     PCDeviceSetRenderState(27, 0);
     PCDeviceSetRenderState(7, 0);
     PCDeviceSetRenderState(168, 15);
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     PCDeviceSetVertexShaderConstantsF(0x80, values, 2);
     PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 1);
     PCGraphicsEffectTextureSetLowNibbles(color_texture, 0, 2);
@@ -11303,7 +11303,7 @@ void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, 
         threshold[2] = 0.0f;
         threshold[3] = 0.0f;
         static f32 scaleBias[4] = {1.0f, 1.0f, 0.0f, 0.0f};
-        PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[17]);
+        NuShaderProgramMakeCurrent((POST_SHADER_PROGRAM_PC *)programs[17]);
         PCDeviceSetVertexShaderConstantsF(0xae, threshold, 1);
         PCDeviceSetVertexShaderConstantsF(0xaf, scaleBias, 1);
         PostFilterCopyTexturePc(downsample_texture, 0, color, downsample_lod, (POST_SHADER_PROGRAM_PC *)programs[17],
@@ -11331,7 +11331,7 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth)
     } else {
         program = (POST_SHADER_PROGRAM_PC *)programs[1];
     }
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     if (dof_enabled) {
         f32 fov, aspect, near_z, far_z;
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fov, &aspect, &near_z, &far_z);
@@ -11400,8 +11400,8 @@ void NuMainFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth->texture;
     GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
-    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
-    GRAPHICS_RENDER_TEXTURE_PC *depth_destination = PCGraphicsGetFramebufferAttachmentPc(output, 4, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *depth_destination = NuFramebufferGetAttachedTex(output, 4, NULL, NULL);
     if (bloom_enabled || dof_enabled) {
         preprocessBlurTextures(color_texture, normal_texture);
     }
@@ -11446,7 +11446,7 @@ void NuMainFilterGen::render() {
             AnimationDiagnosticNoOpPc();
             break;
     }
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     if (dof_enabled) {
         PCGraphicsEffectTextureWidth(color_texture);
         PCGraphicsEffectTextureHeight(color_texture);
@@ -11576,7 +11576,7 @@ extern "C" {
 extern "C" void __cdecl PostBlurGaussianChainPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                                 GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                                 i32 levels, bool mip_chain) {
-    PostShaderProgramBindPc(PostBlendTexProgramPc);
+    NuShaderProgramMakeCurrent(PostBlendTexProgramPc);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE_PC *input;
         i32 input_lod;
@@ -11646,10 +11646,10 @@ extern "C" void __cdecl NuPostEffectReleasePc(void) {
 
 /* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform_pc.cpp. */
 extern "C" {
-    void __cdecl NuVec4ScaleForwardPc(NUVEC4 *, NUVEC4 *, f32);
+    void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
     i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
 
-    __declspec(noinline) void __cdecl NuVec4ScaleForwardPc(NUVEC4 *out, NUVEC4 *input, f32 scale) {
+    __declspec(noinline) void __cdecl NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
         NuVec4Scale(out, input, scale);
     }
 
@@ -12178,11 +12178,11 @@ extern "C" void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
     PC_FRAMEBUFFER_PC *bound = PCGraphicsGetBoundFramebufferPc();
     PC_FRAMEBUFFER_PC *target = output != NULL ? output : NuFramebufferGetObject(1);
     PC_FRAMEBUFFER_PC *intermediate = NuFramebufferGetObject(0);
-    GRAPHICS_RENDER_TEXTURE_PC *color = PCGraphicsGetFramebufferAttachmentPc(bound, 0, NULL, NULL);
-    GRAPHICS_RENDER_TEXTURE_PC *normal = PCGraphicsGetFramebufferAttachmentPc(bound, 1, NULL, NULL);
-    GRAPHICS_RENDER_TEXTURE_PC *velocity = PCGraphicsGetFramebufferAttachmentPc(bound, 2, NULL, NULL);
-    GRAPHICS_RENDER_TEXTURE_PC *depth_rt = PCGraphicsGetFramebufferAttachmentPc(bound, 2, NULL, NULL);
-    GRAPHICS_RENDER_TEXTURE_PC *depth = PCGraphicsGetFramebufferAttachmentPc(bound, 4, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *color = NuFramebufferGetAttachedTex(bound, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *normal = NuFramebufferGetAttachedTex(bound, 1, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *velocity = NuFramebufferGetAttachedTex(bound, 2, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *depth_rt = NuFramebufferGetAttachedTex(bound, 2, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *depth = NuFramebufferGetAttachedTex(bound, 4, NULL, NULL);
     PCGraphicsFramebufferActionPc(0);
     PostProxyBuffersPc[0].texture = color;
     PostProxyBuffersPc[0].kind = 0;
@@ -14453,7 +14453,7 @@ extern "C" {
         states->values[group] = (i8)value;
     }
 
-    i32 __cdecl ShadowSetClipStatePc(i32 enabled, i32 state) {
+    i32 __cdecl NuSpecialSetClipping(i32 enabled, i32 state) {
         i32 previous = PCSpecialClipState;
         PCSpecialClipState = enabled == 0 ? -1 : state;
         return previous;
@@ -14468,7 +14468,7 @@ extern "C" {
         }
     }
 
-    void __cdecl ShadowMapResetPc(void) {
+    void __cdecl NuSpecialClearShadowLights(void) {
         i32 i = 0;
         while (i != PCSpecialActiveShadowLights) {
             PCSpecialShadowLights[i]->used_on_specials = 0;
@@ -14501,7 +14501,7 @@ extern "C" {
         return PCSpecialShadowClipResults[index];
     }
 
-    void __cdecl ShadowResetClipResultsPc(void) {
+    void __cdecl NuSpecialClearShadowClipTestResults(void) {
         PCSpecialShadowClipResultsPresent = 0;
     }
 
@@ -15727,7 +15727,7 @@ extern "C" {
         return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
     }
 
-    __declspec(noinline) void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
+    __declspec(noinline) void NuMtxMulArrayVU0(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
         while (count-- != 0) {
             D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
             ++out;
@@ -15815,7 +15815,7 @@ extern "C" {
             }
             if (hierarchy->render_parts[layer].smooth != NULL ||
                 hierarchy->render_parts[layer].alternate_smooth != NULL) {
-                NuMtxMulHArrayPc(skin, hierarchy->inverse_bind, joints, hierarchy->joint_count);
+                NuMtxMulArrayVU0(skin, hierarchy->inverse_bind, joints, hierarchy->joint_count);
                 SAGA_SKIN_CALL(skin_trace_skin, (unsigned)hierarchy, (unsigned)joints, world, (unsigned)skin,
                                hierarchy->joint_count);
                 handle = hierarchy->render_parts[layer].smooth;
@@ -16473,7 +16473,7 @@ void NuDeferredFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth_rt->texture;
-    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *destination = NuFramebufferGetAttachedTex(output, 0, NULL, NULL);
     f32 last_sample = sample_count - 1.0;
     bool first = true;
     for (i32 i = 0; i < dynamic_light_count; ++i) {
@@ -16501,7 +16501,7 @@ void NuDeferredFilterGen::render() {
         }
         D3DPERF_EndEvent();
         PcUpdateGeometryCameraOriginPc(&saved_view, &saved_projection);
-        if (PCGraphicsGetFramebufferAttachmentPc(light_fbo, 0, NULL, NULL) == NULL) {
+        if (NuFramebufferGetAttachedTex(light_fbo, 0, NULL, NULL) == NULL) {
             PCGraphicsAttachFramebuffer(light_fbo, 0, textures[0], 0);
         }
         PCGraphicsBindFramebuffer(light_fbo);
@@ -16525,7 +16525,7 @@ void NuDeferredFilterGen::render() {
             NuDisplayHandlerVertexShaderCachePc = NULL;
             NuDisplayHandlerPixelShaderCachePc = NULL;
         }
-        PostShaderProgramBindPc(program);
+        NuShaderProgramMakeCurrent(program);
         light->RenderConstantsPc(program);
         PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
         {
@@ -16606,7 +16606,7 @@ void NuDeferredFilterGen::render() {
     } else {
         program = (POST_SHADER_PROGRAM_PC *)programs[3];
     }
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     f32 parameters_pc[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
     PCDeviceSetPixelShaderConstantsF(0xa0, parameters_pc, 1);
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
@@ -16736,7 +16736,7 @@ extern "C" {
     extern f32 PostBlurInputBiasPc;
 }
 
-// PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.
+// NuShaderProgramMakeCurrent and the per-stage sampler binds, as retail inlines them here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
     do {                                                                                                               \
         POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
@@ -16765,7 +16765,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     i32 guard = (i32)rounded_radius * 3;
     i32 work_width = PCGraphicsEffectTextureWidth(PCGraphicsPostEffectWorkTexturePc);
     i32 work_height = PCGraphicsEffectTextureHeight(PCGraphicsPostEffectWorkTexturePc);
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE_PC *input;
         i32 input_lod;
@@ -16893,7 +16893,7 @@ extern "C" {
 extern "C" void __cdecl PostBlur7x7DirectPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                             GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                             i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
-    PostShaderProgramBindPc(program);
+    NuShaderProgramMakeCurrent(program);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE_PC *input;
         i32 input_lod;

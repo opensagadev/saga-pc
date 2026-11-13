@@ -154,7 +154,7 @@ i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     return -1;
 }
 
-static __declspec(noinline) void SpecialMoveApplyDamagePc(GAMEOBJECT *victim) {
+static __declspec(noinline) void SpecialMove_KillVictim(GAMEOBJECT *victim) {
     if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0) {
         objhitobj_throwkillpartsup = 1;
     }
@@ -174,7 +174,7 @@ i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
         return 0;
     }
     if (SpecialMove_GetFlags(object->special_move_pc, 4) != 0) {
-        SpecialMoveApplyDamagePc(victim);
+        SpecialMove_KillVictim(victim);
     }
     victim = object->force_target;
     if (victim != NULL) {
@@ -209,7 +209,7 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
         if (object->context_timer <= 0.0f) {
             object->character_context = -1;
             if (SpecialMove_GetFlags(object->special_move_pc, 2) != 0) {
-                SpecialMoveApplyDamagePc(object);
+                SpecialMove_KillVictim(object);
             }
         }
     }

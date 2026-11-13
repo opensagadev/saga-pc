@@ -211,4 +211,8 @@ whose aligned sibling name is unique and not already one of ours.
 `config/sibling-names.csv` lists them for a later rename batch: `high` when the
 pair appears in two functions or the names share a word, `low` otherwise
 (alignment can shift by one in long global lists, so check `low` rows by
-hand).
+hand). `tools/rename.py` applies reviewed lists from `renames/` and removes
+their rows from the file, which keeps only open suggestions: rows whose
+original name is already declared separately in `saga.h` (renaming would need
+that declaration removed, which changes code generation), rows two of our
+functions share, and `low` function rows.

@@ -264,7 +264,7 @@ void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *pa
     currentScene.burnout_parameters_pc = *parameters;
 }
 
-void __cdecl NuRndrEnableDeferredPc(void) {
+void __cdecl NuDeferredShadingRender(void) {
     currentScene.unknown_48 = 1;
 }
 
@@ -980,13 +980,12 @@ STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
             (brightness) += parameters->direction_far_scale * 128.0;                                                   \
         } else if (!(angle > parameters->direction_far_angle)) {                                                       \
             (brightness) +=                                                                                            \
-                ((1.0f -                                                                                               \
-                  (parameters->direction_bias == 1.0f                                                                  \
-                       ? (angle - parameters->direction_near_angle) /                                                  \
-                             (parameters->direction_far_angle - parameters->direction_near_angle)                      \
-                       : RenderPostPowPc((angle - parameters->direction_near_angle) /                                  \
-                                             (parameters->direction_far_angle - parameters->direction_near_angle),     \
-                                         parameters->direction_bias))) *                                               \
+                ((1.0f - (parameters->direction_bias == 1.0f                                                           \
+                              ? (angle - parameters->direction_near_angle) /                                           \
+                                    (parameters->direction_far_angle - parameters->direction_near_angle)               \
+                              : NuPowFast((angle - parameters->direction_near_angle) /                                 \
+                                              (parameters->direction_far_angle - parameters->direction_near_angle),    \
+                                          parameters->direction_bias))) *                                              \
                      (parameters->direction_far_scale - parameters->direction_near_scale) +                            \
                  parameters->direction_near_scale) *                                                                   \
                 128.0;                                                                                                 \
@@ -1082,7 +1081,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
                 if (parameters->directional) {
                     POST_IMAGE_DIRECTIONAL(brightness);
                 }
-                alpha = RenderPostClampBytePc(0, 255, brightness);
+                alpha = NuPrim2DAddCLR(0, 255, brightness);
                 colour = ((u32)alpha << 24) | 0x808080;
             }
             NuRndrPrimSetColourPrivate(colour);
@@ -1129,7 +1128,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     PCSpecialProjectionAdjust = saved_adjust;
 }
 
-__declspec(noinline) u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value) {
+__declspec(noinline) u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
     (void)minimum_unused;
     (void)maximum_unused;
     return (u8)MIN(255.0f, MAX(0.0f, value));

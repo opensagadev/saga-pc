@@ -1,14 +1,14 @@
 #include "saga.h"
 
 void __cdecl PcControlInitializePc(i32, i32, i32, u8);
-u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index);
+u8 __cdecl PcInput_MappingIsGood(i32 port, i32 player_index);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, hitpoints) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
 STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
 STATIC_ASSERT(offsetof(NUVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUVEC, z) == 8);
-i32 __cdecl NuKeyboardBasePortPc(void);
-i32 __cdecl PlayerDevicePortPc(i32 player_index);
+i32 __cdecl PcInput_GetFirstKeyboardPort(void);
+i32 __cdecl PC_CtrlConfigGetPlayerPort(i32 player_index);
 void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_INSIDE(object)                                                                                   \
     ((object)->camera_screen_position.x > -0.85000002384185791 &&                                                      \
@@ -290,7 +290,7 @@ i32 __cdecl PlayersDropInOut(void) {
             if (off == 0 && DropInCaptureDelayPc[index]) {
                 --DropInCaptureDelayPc[index];
                 if (DropInCapturePortPc[index] >= 0) {
-                    port = PcInputSelectPressedDevicePc(~(1u << DropInCapturePortPc[index]), 0x1a, &kind, &value, 1);
+                    port = PcInput_ScanForAnyInput(~(1u << DropInCapturePortPc[index]), 0x1a, &kind, &value, 1);
                     if (port >= 0) {
                         DropInCaptureDelayPc[index] = 5;
                     }
@@ -306,16 +306,16 @@ i32 __cdecl PlayersDropInOut(void) {
                 if (port1 >= 0) {
                     excluded |= 1u << port1;
                 }
-                excluded &= ~(1u << NuKeyboardBasePortPc());
-                port = PcInputSelectPressedDevicePc(excluded, 0x1a, &kind, &value, 1);
+                excluded &= ~(1u << PcInput_GetFirstKeyboardPort());
+                port = PcInput_ScanForAnyInput(excluded, 0x1a, &kind, &value, 1);
                 if (port >= 0 && port != port0 && port != port1) {
                     DropInCapturePortPc[index] = (i16)port;
                     DropInCaptureDelayPc[index] = 5;
                     input_join = 1;
-                    if (TextInputIsKeyboardDevicePc(port)) {
-                        port = PcInputMapKeyboardPortPc(port, index);
+                    if (PcInput_PortIsKeyboard(port)) {
+                        port = PcInput_RemapVirtualKeyboard(port, index);
                         input_join = index != 0 ? value == 0x3c : value == 0x3b;
-                        if (input_join && !PcInputInstallDropInConfigurationPc(port, index)) {
+                        if (input_join && !PcInput_MappingIsGood(port, index)) {
                             NuPadMapPlayerToPort(index, port);
                             PauseGame(index);
                             PcControlInitializePc(2, index, index, 0);
@@ -329,7 +329,7 @@ i32 __cdecl PlayersDropInOut(void) {
         }
         if (index == DropInPendingPlayerPc) {
             input_join = 1;
-            port = PlayerDevicePortPc(index);
+            port = PC_CtrlConfigGetPlayerPort(index);
             DropInPendingPlayerPc = -1;
         }
         if (!((input_join && MiniCutCam == 0) || drop_back_in_timer > 0.0f || force_join || index == -1)) {

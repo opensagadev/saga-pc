@@ -2612,7 +2612,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     maxdebkeys = key_count;
     debinf_count = effect_count;
     DebrisArenaInitializedPc = 1;
-    NuApiSetEndFrameCallbackPc(DebrisProcessTimeSlip);
+    NuRegisterEndFrameCallBackFn(DebrisProcessTimeSlip);
     buffer->addr = (buffer->addr + 15) & ~15u;
     debris_chunk_controls = (DEBRIS_CHUNK_CONTROL_PC *)buffer->addr;
     buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC);

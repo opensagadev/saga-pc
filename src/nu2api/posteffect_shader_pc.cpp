@@ -135,7 +135,7 @@ extern "C" void __cdecl PostFilterInitProgramsPc(i32 width, i32 height) {
     PostBlurAuxProgramPc = PostShaderProgramCreatePc(2, PostShaderTokens765e40, PostShaderTokens765d90);
 }
 
-extern "C" void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *program) {
+extern "C" void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
     if (program != NULL) {
         if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
             PCDeviceSetVertexShaderPc(program->vertex_shader);

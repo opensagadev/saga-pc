@@ -241,7 +241,7 @@ extern "C" void __cdecl PcRelaunchMediaCenter(void) {
     }
 }
 
-extern "C" const char *__cdecl PcFrameDelayMessagePc(void) {
+extern "C" const char *__cdecl GetPCStartupMessage(void) {
     return NULL;
 }
 

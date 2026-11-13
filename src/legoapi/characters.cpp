@@ -200,7 +200,7 @@ extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
     memset(scenes, 0, size);
 }
 
-static void CharacterSceneLoadPrivatePc(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
+static void CharScene_Load(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
     char path[128];
     sprintf(path, "chars\\%s\\%s.gsc", CDataList[model_id].dir, CDataList[model_id].name);
     entry->scene = NuGScnRead(buffer, end, path);
@@ -218,8 +218,8 @@ extern "C" {
                 (CDataList[i].flags & 1) != 0 && world->cutscene_sys != NULL &&
                 ((((CHARACTER_SCENE_CUTSYS_PC *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) !=
                  0)) {
-                CharacterSceneLoadPrivatePc(&((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i], i,
-                                            &world->giz_buffer, world->buffer_end);
+                CharScene_Load(&((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i], i, &world->giz_buffer,
+                               world->buffer_end);
             }
         }
     }
@@ -233,7 +233,7 @@ extern "C" {
             if (KillPartsCharSceneAreaPc[model_id].scene == NULL && (CDataList[model_id].flags & 1) != 0) {
                 /* Retail reuses the loop counter as InModelList's output index. */
                 if (InModelList(list, model_id, &i) != 0 && list[i].count != 0) {
-                    CharacterSceneLoadPrivatePc(&KillPartsCharSceneAreaPc[model_id], model_id, buffer, end);
+                    CharScene_Load(&KillPartsCharSceneAreaPc[model_id], model_id, buffer, end);
                 }
             }
         }

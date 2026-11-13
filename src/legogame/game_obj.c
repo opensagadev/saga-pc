@@ -3672,9 +3672,9 @@ impact:
         }
         if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && (target->flags_1f8 & 1) &&
             !(target->character_data->model_flags & 0x80000) && (flags & 4)) {
-            AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatNpcKillDifficultyAmountPc);
+            AdaptiveDifficultyChange(&adaptivedifficulty, CombatNpcKillDifficultyAmountPc);
         } else if ((target->flags_1fc_word & 0x80) && (flags & 2)) {
-            AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatPlayerDeathDifficultyAmountPc);
+            AdaptiveDifficultyChange(&adaptivedifficulty, CombatPlayerDeathDifficultyAmountPc);
         }
         result = 2;
         goto finish;

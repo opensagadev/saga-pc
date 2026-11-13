@@ -13,7 +13,7 @@ void __cdecl StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {
     }
 }
 
-void __cdecl StartupDatsSelectPc(i32 index) {
+void __cdecl NuWin32SetDFS(i32 index) {
     if (StartupDatCount > 0 && StartupDatList[0] != NULL) {
         NuDatSet(StartupDatList[index]);
     }

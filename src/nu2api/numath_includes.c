@@ -4434,7 +4434,7 @@ f32 __cdecl NuPow(f32 base, f32 exponent) {
     return result;
 }
 
-f32 __cdecl RenderPostPowPc(f32 base, f32 exponent) {
+f32 __cdecl NuPowFast(f32 base, f32 exponent) {
     f32 result;
     if (base == 0.0) {
         return 0.0;

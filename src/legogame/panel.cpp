@@ -26,7 +26,7 @@ extern "C" {
     extern f32 CoinTotalScoreSizePc, CoinTotalCoinOffsetPc, CoinTotalScoreOffsetYPc, CoinTotalTargetOffsetYPc,
         DrawCoinTotalYPc;
     extern f32 HudBossHeartYPc, HudBossHeartScalePc, HudBossIconYPc, HudBossIconScalePc;
-    i32 __cdecl NuKeyboardBasePortPc(void);
+    i32 __cdecl PcInput_GetFirstKeyboardPort(void);
     extern i32 NuMainSkipCutBordersPc, drawautosaveicon;
     extern f32 HudLevelTitleYPc;
     extern f32 HudLevelTitleScalePc;
@@ -268,10 +268,10 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
     const f32 max_width = HubPromptMaxWidthPc;
     const i32 selecting[2] = {-1, -1};
     const f32 spacing = HubPromptSpacingPc;
-    const i32 last_device = TextInputLastDevicePc();
+    const i32 last_device = PcInput_GetCtrlStringPlayer();
     for (i32 player = 0; player < 2; ++player) {
-        TextInputIsPrimaryDevicePc(NuPadGetPort(player));
-        TextInputSetLastDevicePc(player);
+        PcInput_PortIsUC(NuPadGetPort(player));
+        PcInput_SetCtrlStringPlayer(player);
         i32 count = 0;
         if (select[player] != -1) {
             count = 1;
@@ -316,7 +316,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             const i32 green = menu_flash != 0 ? 191 : 255;
             y -= spacing;
             NuStrCpy(text, "[[accept]]");
-            SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
+            SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
             SmartTextEx(TTab[select[player]], x, y, 1.0f, .35f, .25f, .4f, align, 0, green, 0, max_width, 1, NULL, 0,
                         (u8)(i32)(alpha[player] * 128.0));
@@ -334,7 +334,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
                 blue = HubPromptOffColourPc[2];
             }
             Text_ExpandButtonString((char *)(alternate[player] == TextIdPc880780 ? "[T]" : "[O]"), text);
-            SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
+            SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
             SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1,
                         NULL, 0, 128);
@@ -344,7 +344,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             const i32 green = menu_flash != 0 ? 143 : 191;
             y -= spacing;
             Text_ExpandButtonString("[S]", text);
-            SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
+            SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
             SmartTextEx(TTab[other[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, 0, max_width, 1, NULL, 0,
                         (u8)(i32)(alpha[player] * 128.0));
@@ -353,7 +353,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
             const i32 red = menu_flash != 0 ? 191 : 255;
             y -= spacing;
             NuStrCpy(text, "[[back]]");
-            SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
+            SmartText(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
             SmartTextEx(TTab[back[player]], x, y, 1.0f, .35f, .25f, .4f, align, red, 0, 0, max_width, 1, NULL, 0, 128);
         }
@@ -365,7 +365,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
                         NULL, 0, 128);
         }
     }
-    TextInputSetLastDevicePc(last_device);
+    PcInput_SetCtrlStringPlayer(last_device);
 }
 
 extern "C" {
@@ -672,12 +672,12 @@ extern "C" {
                       (u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] *
                       16.0 +
                   96.0);
-        old_input_device = TextInputLastDevicePc();
+        old_input_device = PcInput_GetCtrlStringPlayer();
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object;
             f32 base_alpha, alpha, icon_x, name_x;
             i32 alignment, frame_model, visible, icon_alpha;
-            TextInputSetLastDevicePc(player);
+            PcInput_SetCtrlStringPlayer(player);
             object = (GAMEOBJECT *)Player[player];
             if (object == NULL) {
                 continue;
@@ -865,7 +865,7 @@ extern "C" {
                     STATSPOS2YPc;
             Hub_DrawImportantBrick(211, 0.0f, y, 1.0f, Game.gold_bricks, GOLDBRICKPOINTS);
         }
-        TextInputSetLastDevicePc(old_input_device);
+        PcInput_SetCtrlStringPlayer(old_input_device);
     }
 
     void Panel_Clear() {
@@ -1194,11 +1194,11 @@ extern "C" {
         {
             GAMEPAD_RUNTIME_INPUT_PC *pads = (GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage;
             if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0) {
-                NuPadMapPlayerToPort(0, NuKeyboardBasePortPc() + 1);
+                NuPadMapPlayerToPort(0, PcInput_GetFirstKeyboardPort() + 1);
             }
             if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0 &&
                 (pads[1].input_ready == 0 || (pads[1].bound_pad->flags & 4) == 0)) {
-                NuPadMapPlayerToPort(1, NuKeyboardBasePortPc() + 3);
+                NuPadMapPlayerToPort(1, PcInput_GetFirstKeyboardPort() + 3);
             }
         }
         if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {

@@ -116,11 +116,11 @@ u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index)
     return ResolveAuxiliaryConflictsPc(player_index, 3) == 0;
 }
 
-extern "C" u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index) {
+extern "C" u8 __cdecl PcInput_MappingIsGood(i32 port, i32 player_index) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->InstallDropInConfigurationPc(port, player_index);
 }
 
-extern "C" i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
+extern "C" i32 __cdecl PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     runtime->action_mask = (u32)-1;
     for (i32 port = 0; port < 14; ++port) {
@@ -162,7 +162,7 @@ extern "C" i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 
     return -1;
 }
 
-extern "C" i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player) {
+extern "C" i32 __cdecl PcInput_RemapVirtualKeyboard(i32 port, i32 player) {
     if (port < 10) {
         return port;
     }
@@ -178,11 +178,11 @@ extern "C" i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player) {
     return port;
 }
 
-extern "C" u8 __cdecl PcInputSelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index) {
+extern "C" u8 __cdecl PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->SelectConfigurationPc(port, key, auxiliary_index);
 }
 
-extern "C" void __cdecl PcInputSetCommandFilterPc(i32(__cdecl *filter)(i32, i32)) {
+extern "C" void __cdecl PcInput_SetIsUsedCallBack(i32(__cdecl *filter)(i32, i32)) {
     PcInputCommandFilterPc = filter;
 }
 
@@ -585,7 +585,7 @@ extern "C" i32 __cdecl PcConfigureInputGraphicsCaps() {
 }
 
 // Uncompiled PC reconstruction draft. Append to input_runtime.cpp only after shared contract review.
-extern "C" i32 __cdecl PcInputDeadzonePc(i32 port) {
+extern "C" i32 __cdecl NuPadGetDeadzoneByPortPS(i32 port) {
     if ((u32)(port - 10) <= 3) {
         return 0;
     }

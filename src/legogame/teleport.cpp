@@ -411,7 +411,7 @@ static void TeleportGetSegmentPc(i32 *start, i32 *end, GAMEOBJECT *object) {
     }
 }
 
-static void TeleportSetSegmentDurationPc(GAMEOBJECT *object, i32 start, i32 end) {
+static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
     if (object->character_model->model_data_b[object->field_7aa] != NULL) {
         f32 animation_speed = AnimSpeed(object->character_model, object->field_7aa);
         if (animation_speed != 0.0f) {
@@ -596,7 +596,7 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
                     progress = 1.0f;
                     object->field_7b3 = 0;
                     TeleportGetSegmentPc(&start_index, &end_index, object);
-                    TeleportSetSegmentDurationPc(object, start_index, end_index);
+                    Teleport_SetCrawlTime(object, start_index, end_index);
                     object->context_timer = object->context_duration;
                     teleport = (TELEPORT_MOTION_PC *)object->grapple;
                     NUVEC *segment_start = &teleport->path->pts[start_index];
@@ -673,7 +673,7 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
         object->field_7b3 = 0;
         object->big_jump_animation = 0;
         TeleportGetSegmentPc(&start_index, &end_index, object);
-        TeleportSetSegmentDurationPc(object, start_index, end_index);
+        Teleport_SetCrawlTime(object, start_index, end_index);
         object->context_timer = object->context_duration;
         teleport = (TELEPORT_MOTION_PC *)object->grapple;
         NUVEC *segment_start = &teleport->path->pts[start_index];

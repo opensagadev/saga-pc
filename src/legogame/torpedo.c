@@ -289,7 +289,7 @@ i32 __cdecl getMaxTorpedos(GAMEOBJECT *object) {
     return 3;
 }
 
-static NUVEC *TorpedoTargetPositionPc(void *target, u8 target_type, f32 *radius) {
+static NUVEC *GetTorpTargetPositionAndRadius(void *target, u8 target_type, f32 *radius) {
     if (target != NULL) {
         switch (target_type) {
             case 0:
@@ -627,8 +627,8 @@ void __cdecl TorpedoHitTarget(BOLT_PC *bolt) {
     }
     packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
     if (packet->target != NULL) {
-        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &radius);
+        target_position = GetTorpTargetPositionAndRadius(((GAMEOBJECT *)bolt->owner)->torpedo->target,
+                                                         ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &radius);
         if (target_position != NULL) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
@@ -674,8 +674,9 @@ void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
     if (((GAMEOBJECT *)bolt->owner)->torpedo->target != NULL) {
         NUVEC *target_position;
         f32 target_radius;
-        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
+        target_position =
+            GetTorpTargetPositionAndRadius(((GAMEOBJECT *)bolt->owner)->torpedo->target,
+                                           ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
         if (target_position != NULL) {
             NUVEC direction;
             NuVecSub(&direction, target_position, &bolt->position);

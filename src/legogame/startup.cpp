@@ -14,10 +14,10 @@ extern "C" {
     extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLswPc[10];
     extern char *StartupCharVariantNamesPc[23];
 }
-extern "C" void __cdecl TextInputSetNameCallbackPc(void(__cdecl *)(i32, char *));
+extern "C" void __cdecl PcInput_SetStringUCGfxRemapFn(void(__cdecl *)(i32, char *));
 
 static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
-    if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
+    if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
         return 0;
     }
     return 1;
@@ -389,8 +389,8 @@ extern "C" {
             control_config.blocked_keys = blocked_keys;
             PcControlRegisterPc(&control_config, &permbuffer_ptr, &permbuffer_end);
 
-            TextInputSetNameCallbackPc(TextInputGlyphNamePc);
-            PcInputSetCommandFilterPc(PcInputCommandAllowedPc);
+            PcInput_SetStringUCGfxRemapFn(TextInputGlyphNamePc);
+            PcInput_SetIsUsedCallBack(PcInputCommandAllowedPc);
 
             permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
             PermDataLoaded = 1;

@@ -519,7 +519,7 @@ STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
 
-extern "C" void __cdecl NuKeyboardClearActiveDevicesPc(void) {
+extern "C" void __cdecl PcInput_DisableAllKeyboards(void) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     for (i32 device = 10; device < 14; ++device) {
         state->devices[device].action_keys_active = 0;

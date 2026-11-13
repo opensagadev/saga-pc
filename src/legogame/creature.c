@@ -4459,8 +4459,8 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     }
 }
 
-static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
-                                                   ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
+static void __cdecl DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
+                                                ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
     i16 model_index;
     CHARACTER_MODEL_LAYERS_PC *model;
     NUMTX matrix, reflected;
@@ -4531,8 +4531,8 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
         (object->character_model->animations[current_animation]->misc_flags & 8) != 0) {
         return;
     }
-    DrawCharacterAttachmentModelPc(object, character_id, joint_matrices, &animation.packet,
-                                   object->character_data->game_character->extra_character_locator, override_matrix);
+    DrawExtraCharacterLayerBits(object, character_id, joint_matrices, &animation.packet,
+                                object->character_data->game_character->extra_character_locator, override_matrix);
 }
 
 void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {

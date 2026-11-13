@@ -10930,7 +10930,7 @@ extern "C" {
     i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u32);
     void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
     i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *);
-    /* SpecialMoveApplyDamagePc stays static with private ESI ABI in original caller TU; no public declaration. */
+    /* SpecialMove_KillVictim stays static with private ESI ABI in original caller TU; no public declaration. */
     extern BOLT *objhitobj_bolt;
     extern i32 objhitobj_nohurtsfx;
     extern i32 objhitobj_noimpactsfx;
@@ -11097,7 +11097,7 @@ extern "C" {
     extern NUHGOBJ_EVAL_PC *Temphgobj;
     extern NUMTL *APITrans_Mtl[2];
 
-    void __cdecl NuMtxMulHArrayPc(NUMTX *, NUMTX *, NUMTX *, i32);
+    void __cdecl NuMtxMulArrayVU0(NUMTX *, NUMTX *, NUMTX *, i32);
     void __cdecl NuSpecialForceMaterials(i32, NUMTL **);
     void __cdecl NuRndrStartReflectionRender(i32);
     void __cdecl NuRndrEndReflectionRender(void);
@@ -11203,9 +11203,9 @@ extern "C" {
     void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z);
     void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
     void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
-    i32 __cdecl TextInputLastDevicePc(void);
+    i32 __cdecl PcInput_GetCtrlStringPlayer(void);
     i32 __cdecl NuPadGetPort(i32 player);
-    i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination);
+    i32 __cdecl PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
     extern f32 QFONTSCALEY;
     extern u8 text_preset_r[10];
     extern u8 text_preset_g[10];
@@ -11484,7 +11484,7 @@ extern "C" {
 
     void __cdecl Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *, i32);
     void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *);
-    void __cdecl StartupDatsSelectPc(i32);
+    void __cdecl NuWin32SetDFS(i32);
 
     void __cdecl noterraininit(void);
     void __cdecl TerrSetPlatScanDist(f32 distance);
@@ -11578,13 +11578,13 @@ extern "C" {
     extern i32 RenderHubFromCutscenePlayerPc;
 
     void __cdecl TextInputSetKeyboardOverridePc(i32);
-    void __cdecl TextInputSetLastDevicePc(i32);
-    i32 __cdecl TextInputIsKeyboardDevicePc(i32);
+    void __cdecl PcInput_SetCtrlStringPlayer(i32);
+    i32 __cdecl PcInput_PortIsKeyboard(i32);
     extern i32(__cdecl *PcInputCommandFilterPc)(i32, i32);
-    void __cdecl PcInputSetCommandFilterPc(i32(__cdecl *filter)(i32, i32));
-    i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
-    i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player);
-    u8 __cdecl PcInputSelectConfigurationPc(i32 port, i32 key, i32 auxiliary_index);
+    void __cdecl PcInput_SetIsUsedCallBack(i32(__cdecl *filter)(i32, i32));
+    i32 __cdecl PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
+    i32 __cdecl PcInput_RemapVirtualKeyboard(i32 port, i32 player);
+    u8 __cdecl PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index);
 
     typedef struct PC_SHADOW_QUEUE_RECORD {
         NUVEC position;
@@ -11628,7 +11628,7 @@ extern "C" {
     i32 __cdecl NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
                                              const NUVEC *);
     void __cdecl ShadowMapEnablePc(struct PC_SPECIAL_SHADOW_LIGHT *);
-    void __cdecl ShadowMapResetPc(void);
+    void __cdecl NuSpecialClearShadowLights(void);
 
     f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
     void __cdecl CharScene_Draw(WORLDINFO *, i32, NUMTX *, NUMTX *);
@@ -11813,8 +11813,8 @@ extern "C" {
     void __cdecl Text3DEx2(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, u8);
     void __cdecl MenuText3DEx(char *, f32, f32, f32, f32, f32, f32, u32, u32, u32, u32, i32);
     void __cdecl DrawMenuButtonPromptsEx(i32, i32, i32, i32, u32, u32, u32, u32);
-    char **__cdecl TextInputGetKeyNamesPc(void);
-    i32 __cdecl TextInputIsPrimaryDevicePc(i32);
+    char **__cdecl PcInput_GetKeyNameTable(void);
+    i32 __cdecl PcInput_PortIsUC(i32);
     extern VUFNT *QFont2DLower;
     extern char *apitxt_SELECT, *apitxt_BACK;
     extern char UiSelectPromptLiteralPc[7], UiBackPromptLiteralPc[5];
@@ -15973,9 +15973,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern VARIPTR fstack_top;
     extern VARIPTR fstack_limit;
     void __cdecl NuPortalInit(void);
-    void __cdecl PortalInitialisePsPc(NUGSCN *);
-    void __cdecl PortalSetAllVisiblePc(NUGSCN *);
-    void __cdecl PortalSetAllHiddenPc(NUGSCN *);
+    void __cdecl Initialise_PS(NUGSCN *);
+    void __cdecl SetAllInstancesVisible(NUGSCN *);
+    void __cdecl SetAllInstancesHidden(NUGSCN *);
     void __cdecl PortalFlagRoomVisiblePc(NUGSCNROOM *, NUGSCN *);
     void __cdecl PortalClipRoomPc(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM_PC *);
     extern NUCAMERA *NuPortalCameraPc;
@@ -16729,7 +16729,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern ADAPTIVEDIFFICULTY_PC adaptivedifficulty;
     extern f32 AdaptiveDifficultyRecoveryTimePc;
     f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *);
-    f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
+    f32 __cdecl AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
     extern i8 adtabentries[9][4];
     extern i8 (*adtab)[4];
 
@@ -17098,7 +17098,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale);
     void __cdecl NuQFntSetColour(VUFNT *font, u32 colour);
     void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height);
-    void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale);
+    void __cdecl NuQFntSetScale2d(VUFNT *font, f32 x_scale, f32 y_scale);
     extern u32 NuQFntModeStack[16];
     extern i32 NuQFntModeStackIndex;
     extern const char NuMusicDebugClassInvalid[8];
@@ -17930,7 +17930,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     i32 __cdecl NuTexResolveReference(NUGSCN *, i32);
     i32 __cdecl NuGScnFixupTID(NUGSCN *, i32);
     i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
-    void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
+    void __cdecl NuRegisterEndFrameCallBackFn(void(__cdecl *)(void));
     void __cdecl DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
 
     extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata;
@@ -18597,7 +18597,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(RENDER_POST_BLOOM_READER_PC, direction_bias) == 0x48);
 
     f32 __cdecl RenderPostLogPc(f32);
-    f32 __cdecl RenderPostPowPc(f32, f32);
+    f32 __cdecl NuPowFast(f32, f32);
     i16 __cdecl RenderPostASinPc(f32);
     void __cdecl DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
 
@@ -18739,7 +18739,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
                                 RENDER_POST_BLOOM_READER_PC *parameters);
     void __cdecl RenderPostClearScreenPc(void);
-    u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
+    u8 __cdecl NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value);
 
 #define RENDER_POST_ALPHA_CACHE_PC cacheValues
     i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
@@ -20008,7 +20008,7 @@ extern "C" {
     void __cdecl NuPadSetValid(i32 port, i32 valid);
     void __cdecl NuPadMapPlayerToPort(i32 player, i32 port);
     void __cdecl NuPadAutoConfigurePc(i32 count);
-    void __cdecl NuKeyboardClearActiveDevicesPc(void);
+    void __cdecl PcInput_DisableAllKeyboards(void);
     void __cdecl NuRndrInitStartupMaterialsPc(void);
     extern NUMTL *PCStartupMaterial1Pc, *PCStartupMaterial2Pc;
     extern i16 PlayerLastPort[8];
@@ -21141,7 +21141,7 @@ extern "C" {
     void __cdecl NuRndrQuadBufferInitPc(void);
     void __cdecl NuRndrGeometryBuffersInitPc(void);
     void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *, VARIPTR);
-    void __cdecl NuRndrInitConfigPc(VARIPTR *, VARIPTR);
+    void __cdecl NuRndrInit(VARIPTR *, VARIPTR);
     void __cdecl NuRndrInitGeneric(void);
 #ifdef __cplusplus
 }
@@ -24833,7 +24833,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl PcInputDeadzonePc(i32 port);
+    i32 __cdecl NuPadGetDeadzoneByPortPS(i32 port);
     i32 __cdecl NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
     f32 __cdecl PcInputAspectRatioPc(void);
     void __cdecl NuPadUpdatePads(void);
@@ -30517,7 +30517,7 @@ extern "C" {
     extern i16 TextIdPc8810c0;
 
     /* Append inside saga.h extern "C" block; native C ABI. Existing identical prototypes may be retained once. */
-    void __cdecl SmartTextPc(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
+    void __cdecl SmartText(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
     char *__cdecl TextButtonStringPc(i32, const char *, const char *);
     char *__cdecl TextInputActionLabelPc(i32, i32, i32, i32);
     i32 __cdecl Text_ExpandButtonString(char *, char *);
@@ -30789,7 +30789,7 @@ struct POST_SHADER_PROGRAM_PC {
 STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_PC) == 0x10);
 extern "C" {
     u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
-    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);
     void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32);
     void __cdecl PCGraphicsFramebufferActionPc(i32);
     void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
@@ -30818,7 +30818,7 @@ extern "C" {
     void __cdecl BurnoutApply(i32);
     void __cdecl NuRndrSetBurnoutParametersPc(i32, const BURN_PARAMETERS_PC *);
     void __cdecl NuRndrSetShadowCoefficientPc(i32, f32);
-    void __cdecl NuRndrEnableDeferredPc(void);
+    void __cdecl NuDeferredShadingRender(void);
 #ifdef __cplusplus
 }
 #endif
@@ -30827,8 +30827,8 @@ extern "C" {
 extern "C" {
 #endif
     void __cdecl RenderShadowLights(i32);
-    i32 __cdecl ShadowSetClipStatePc(i32, i32);
-    void __cdecl ShadowResetClipResultsPc(void);
+    i32 __cdecl NuSpecialSetClipping(i32, i32);
+    void __cdecl NuSpecialClearShadowClipTestResults(void);
     void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
 #ifdef __cplusplus
 }

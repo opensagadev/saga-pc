@@ -397,7 +397,7 @@ extern "C" {
         return *(f32 *)&bits;
     }
 
-    f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
+    f32 __cdecl AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
         if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
             f32 sum = amount + difficulty->accumulator;
             difficulty->accumulator = sum;
@@ -1672,7 +1672,7 @@ extern "C" {
                     red = 191;
                     green = 31;
                 }
-                SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+                SmartText(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
             }
             DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals_PC.field_20, 10);
         }

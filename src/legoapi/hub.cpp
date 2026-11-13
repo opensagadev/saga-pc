@@ -80,8 +80,8 @@ extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
 
 /* PC511560 106 bytes. Cdecl all stack, original 13 args + fixed suffix0,0,128. Retail lives in the menu
    unit and is never inlined into hub callers. */
-extern "C" __declspec(noinline) void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
-                                                 i32 red, i32 green, i32 blue, f32 max_width, i32 center) {
+extern "C" __declspec(noinline) void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
+                                               i32 red, i32 green, i32 blue, f32 max_width, i32 center) {
     SmartTextEx(text, x, y, z, sx, sy, sz, align, red, green, blue, max_width, center, NULL, 0, 128);
 }
 

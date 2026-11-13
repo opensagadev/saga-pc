@@ -68,6 +68,6 @@ void __cdecl TextInputGlyphNamePc(i32 code, char *destination) {
     }
 }
 
-void __cdecl TextInputSetNameCallbackPc(void(__cdecl *callback)(i32, char *)) {
+void __cdecl PcInput_SetStringUCGfxRemapFn(void(__cdecl *callback)(i32, char *)) {
     TextInputNameCallbackPc = callback;
 }

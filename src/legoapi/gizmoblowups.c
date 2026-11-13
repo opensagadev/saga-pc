@@ -728,7 +728,7 @@ void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_pt
     }
 }
 
-static __declspec(noinline) void GizmoBlowupRestoreInitialStatePc(GIZMOBLOWUP_PC *blowup) {
+static __declspec(noinline) void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
     RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
     NUINSTANIM *animation;
     blowup->status_flags = (blowup->status_flags & 0xfeff7ffe) | 0x804000;
@@ -751,7 +751,7 @@ void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
     if (blowup == NULL) {
         return;
     }
-    GizmoBlowupRestoreInitialStatePc(blowup);
+    Blowup_Reset(blowup);
     if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000)) {
         if (NuSpecialExistsFn(&blowup->type->animated_special)) {
             NuSpecialSetVisibility(&blowup->type->animated_special, 0);
@@ -2468,7 +2468,7 @@ void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
         }
     }
     if (active != 0) {
-        GizmoBlowupRestoreInitialStatePc(blowup);
+        Blowup_Reset(blowup);
     }
 }
 
@@ -2485,7 +2485,7 @@ void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     blowup = world->gizmo_blowups;
     if (blowup != NULL) {
         for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
-            GizmoBlowupRestoreInitialStatePc(blowup);
+            Blowup_Reset(blowup);
             if (progress != NULL && index < 512) {
                 word = index / 32;
                 bit = 1 << (index & 31);

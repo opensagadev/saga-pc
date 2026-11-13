@@ -456,7 +456,7 @@ extern "C" {
     extern PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
     extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc, *PostCopyAuxProgramPc, *PostBlurAuxProgramPc;
     extern f32 PostBlurInputBiasPc;
-    void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
+    void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *);
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
     void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
@@ -466,7 +466,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
                                           GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                           i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
-// PostShaderProgramBindPc and the per-stage sampler binds, as retail inlines them here.
+// NuShaderProgramMakeCurrent and the per-stage sampler binds, as retail inlines them here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
     do {                                                                                                               \
         POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \

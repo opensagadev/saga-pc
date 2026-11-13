@@ -537,7 +537,7 @@ extern "C" i32 __cdecl GizSpinner_GetNumOutputs(void *gizmo) {
     return ((GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object)->output_count;
 }
 
-static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
+static __declspec(noinline) i32 GizSpinner_WithinOutput(GIZSPINNER_s *spinner) {
     GAMEANIMOBJ *object;
     NUINSTANIM *instance;
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
@@ -1187,7 +1187,7 @@ extern "C" i32 __cdecl GizSpinner_GetOutput(void *gizmo_pointer, i32 output_inde
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
     (void)unused;
     if (spinner != NULL) {
-        return SpinnerCurrentOutputPc(spinner) == output_index;
+        return GizSpinner_WithinOutput(spinner) == output_index;
     }
     return 0;
 }
@@ -1407,7 +1407,7 @@ extern "C" void __cdecl GizSpinners_Update(void *world_pointer, void *unused, f3
             }
         }
         GizSpinner_Update(spinner);
-        i32 output = SpinnerCurrentOutputPc(spinner);
+        i32 output = GizSpinner_WithinOutput(spinner);
         if ((spinner->flags & 0x40) == 0 && output != -1 && spinner->field_0x2d8 > 0.0f) {
             spinner->output_pause_time = spinner->field_0x2d8;
             spinner->flags |= 0x40;

@@ -298,7 +298,7 @@ extern i32 min_delay;
 extern f32 FrameStartupDelayPc;
 extern i32 NuApiTextLinePc;
 extern f32 NuFrameAccumulatedTimePc;
-extern const char *__cdecl PcFrameDelayMessagePc(void);
+extern const char *__cdecl GetPCStartupMessage(void);
 extern u32 __cdecl PcGetRefreshRatePc(void);
 extern void __cdecl bgprocFrameSleepPc(i32 milliseconds);
 extern void __cdecl NuFrameEndLeafPc(void);
@@ -345,7 +345,7 @@ static void NuFileAddExtensionPC(const char *extension, i32 type, i32 platform);
 static void DeadZoneValueXYProper(i32 *x_value, i32 *y_value, i32 deadzone);
 static void DeadZoneValueXY(i32 *x_value, i32 *y_value, i32 deadzone);
 static f32 CalcRamp(f32 ramp);
-static void ImplodeDecodeRingPrivatePc(u32 size, unsigned char *buf);
+static void decode(u32 size, unsigned char *buf);
 static void ImplodeReadOffsetLengthsPrivatePc(i32 table_size, i32 bit_count, i32 zero_value);
 static void ImplodeReadLiteralLengthsPrivatePc();
 
@@ -7515,7 +7515,7 @@ void __cdecl NuFrameSetMinDelay(i32 delay) {
     min_delay = delay;
 }
 
-void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
+void __cdecl PrintStartupString(u32 colour, const char *format, ...) {
     char buffer[256];
     va_list args;
     va_start(args, format);
@@ -7627,8 +7627,8 @@ f32 __cdecl NuFrameEnd(void) {
         FrameStartupDelayPc -= nuapi.frame_time;
         NuApiTextLinePc = 20;
         NuRndrBeginScene(1);
-        if (PcFrameDelayMessagePc() != NULL) {
-            NuApiPrintLinePc(0xffffffffu, PcFrameDelayMessagePc());
+        if (GetPCStartupMessage() != NULL) {
+            PrintStartupString(0xffffffffu, GetPCStartupMessage());
         }
         NuRndrEndScene();
     }
@@ -7769,7 +7769,7 @@ void __cdecl NuPadRecordInit(i32 mode, char *filepath, VARIPTR *buffer, VARIPTR 
     }
 }
 
-void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *callback)(void)) {
+void __cdecl NuRegisterEndFrameCallBackFn(void(__cdecl *callback)(void)) {
     NuApiEndFrameCallbackPc = callback;
 }
 
@@ -8049,7 +8049,7 @@ void NuPadUpdatePads(void) {
         NuPadRecordPlay(g_nupadScannedPads + i);
 
         if (g_nupadScannedPads[i].is_valid) {
-            g_nupadScannedPads[i].deadzone = PcInputDeadzonePc(i);
+            g_nupadScannedPads[i].deadzone = NuPadGetDeadzoneByPortPS(i);
         }
 
         NuPadProcessReadData(g_nupadScannedPads + i);
@@ -8183,7 +8183,7 @@ void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
     i32 old_port;
 
     if (port >= 0) {
-        NuKeyboardClearActiveDevicesPc();
+        PcInput_DisableAllKeyboards();
         NuPadSetStatus(player, 0);
 
         old_port = g_nupadMapping[player].port;
@@ -8761,7 +8761,7 @@ void ImplodeInitGetBits() {
     ImplodeFillBuf(0x20);
 }
 
-static void ImplodeDecodeRingPrivatePc(u32 size, unsigned char *buf) {
+static void decode(u32 size, unsigned char *buf) {
     static u32 ImplodeRingCursorPc = 0;
 
     u32 c;
@@ -8823,7 +8823,7 @@ i32 ExplodeBufferNoHeader(char *in_buf, char *out_buf, i32 compressed_size, i32 
     while (implode_origsize != 0) {
         read_size = implode_origsize < 0x2000 ? implode_origsize : 0x2000;
 
-        ImplodeDecodeRingPrivatePc(read_size, ImplodeRingBufferPc);
+        decode(read_size, ImplodeRingBufferPc);
 
         memcpy(implode_outbuffer, ImplodeRingBufferPc, read_size);
 

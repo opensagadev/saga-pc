@@ -875,7 +875,7 @@ i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
+static void ZipUp_DrawFloorTarget(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
     NUMTX matrix;
     NUVEC position;
     i32 upper;
@@ -945,9 +945,9 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                     }
                 }
 
-                ZipUpDrawMarkerPc(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
+                ZipUp_DrawFloorTarget(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
                 if ((zipup->flags & 8) != 0) {
-                    ZipUpDrawMarkerPc(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
+                    ZipUp_DrawFloorTarget(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
                 }
                 continue;
             }
@@ -978,9 +978,9 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                 continue;
             }
 
-            ZipUpDrawMarkerPc(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
+            ZipUp_DrawFloorTarget(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
             if ((zipup->flags & 8) != 0) {
-                ZipUpDrawMarkerPc(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
+                ZipUp_DrawFloorTarget(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
             }
         }
     }

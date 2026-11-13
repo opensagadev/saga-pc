@@ -402,7 +402,7 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
     }
 }
 
-static i32 MenuUpdateTitleFadePc(MENU *menu) {
+static i32 UpdateTitleSequence(MENU *menu) {
     f32 music_volume = Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
     if (newgamefade != 0) {
         if (newgamefade == 1) {
@@ -486,7 +486,7 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
         NuVideoSetBrightness((f32)((f64)brightness / 10.0));
         return;
     }
-    if (MenuUpdateTitleFadePc(menu)) {
+    if (UpdateTitleSequence(menu)) {
         return;
     }
     if (menu->time_04 >= 30.0) {
@@ -625,20 +625,20 @@ extern "C" {
         if (Menu_InSaveFlow != 0 || Menu_InLoadFlow != 0 || menu_active != 0) {
             if (MenuKeyboardOverrideActivePc == 0) {
                 active_players = 0;
-                device = NuPadGetPort(TextInputLastDevicePc());
+                device = NuPadGetPort(PcInput_GetCtrlStringPlayer());
                 if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
                     active_players = 1;
                 }
                 if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                     ++active_players;
                 }
-                if (active_players < 2 || TextInputIsKeyboardDevicePc(device) != 0) {
+                if (active_players < 2 || PcInput_PortIsKeyboard(device) != 0) {
                     TextInputSetKeyboardOverridePc(1);
                 }
                 MenuKeyboardOverrideActivePc = 1;
             }
         } else if (MenuKeyboardOverrideActivePc != 0) {
-            TextInputSetLastDevicePc(-1);
+            PcInput_SetCtrlStringPlayer(-1);
             TextInputSetKeyboardOverridePc(0);
             MenuKeyboardOverrideActivePc = 0;
             MenuKeyboardPendingPc = 0;
@@ -692,14 +692,14 @@ extern "C" {
             if (GameMenuLevel != 0) {
                 if (both_pads != 0) {
                     if (PlayerProgress[0].active != 0) {
-                        TextInputSetLastDevicePc(0);
+                        PcInput_SetCtrlStringPlayer(0);
                     } else {
-                        TextInputSetLastDevicePc(1);
+                        PcInput_SetCtrlStringPlayer(1);
                     }
                 } else if (first_active != 0) {
-                    TextInputSetLastDevicePc(0);
+                    PcInput_SetCtrlStringPlayer(0);
                 } else {
-                    TextInputSetLastDevicePc(1);
+                    PcInput_SetCtrlStringPlayer(1);
                 }
             }
         }
@@ -761,7 +761,7 @@ extern "C" {
 
 extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
     i32 kind, value;
-    if (MenuUpdateTitleFadePc(menu)) {
+    if (UpdateTitleSequence(menu)) {
         return;
     }
     if (menu->menu_time >= 30.0) {
@@ -771,16 +771,16 @@ extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
     if (!(GameTimer.time_elapsed >= 3.0f)) {
         return;
     }
-    TextInputSetLastDevicePc(0);
-    i32 port = PcInputSelectPressedDevicePc(0, 26, &kind, &value, 1);
+    PcInput_SetCtrlStringPlayer(0);
+    i32 port = PcInput_ScanForAnyInput(0, 26, &kind, &value, 1);
     if (port < 0) {
         return;
     }
-    port = PcInputMapKeyboardPortPc(port, 0);
+    port = PcInput_RemapVirtualKeyboard(port, 0);
     NuPadMapPlayerToPort(0, port);
     NuPadSetValid(port, 1);
-    TextInputSetLastDevicePc(0);
-    if (PcInputSelectConfigurationPc(port, 0, -1)) {
+    PcInput_SetCtrlStringPlayer(0);
+    if (PcInput_SafeGetMapping(port, 0, -1)) {
         NewMenu(1, saveload_savepresent != 0, -1);
     } else {
         NewMenu(22, 0, -1);
@@ -1238,6 +1238,6 @@ extern "C" {
             red = 191;
             green = 143;
         }
-        SmartTextPc(TTab[TextIdPc880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+        SmartText(TTab[TextIdPc880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
     }
 }

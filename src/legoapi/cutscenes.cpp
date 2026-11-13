@@ -975,8 +975,8 @@ extern "C" {
         {const_cast<char *>("drawgizmosys"), CS_draw_gizmo_sys},
         {NULL, NULL}};
 
-    static __declspec(noinline) void CutSceneConfigurePc(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf,
-                                                         VARIPTR *buf_end) {
+    static __declspec(noinline) void CutScene_Configure(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf,
+                                                        VARIPTR *buf_end) {
         CUT_LOAD_STATE_PC states[32];
         CS_buffend = buf_end;
         CS_CutInfo = cut;
@@ -1131,7 +1131,7 @@ extern "C" {
             NuStrCat(path, CutList[i].name);
             NuStrCpy(config_path, path);
             NuStrCat(config_path, AreaResidentsExtension);
-            CutSceneConfigurePc(cut, config_path, buf, buf_end);
+            CutScene_Configure(cut, config_path, buf, buf_end);
             if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & 0xe0) != 0) {
                 NuStrCpy(config_path, path);
                 NuStrCat(config_path, NuFileExt_cu2_PC);
@@ -1224,7 +1224,7 @@ extern "C" CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *config, NUGSCN *gscn1, 
         NuStrCpy(full_path, "cut\\");
         NuStrCat(full_path, config_name);
         NuStrCat(full_path, AreaResidentsExtension);
-        CutSceneConfigurePc(cut, full_path, buf, buf_end);
+        CutScene_Configure(cut, full_path, buf, buf_end);
         NuStrCpy(full_path, "cut\\");
         NuStrCat(full_path, name);
         NuStrCat(full_path, AreaResidentsExtension);
@@ -2332,7 +2332,7 @@ extern "C" {
     static i32 CutFramePc = 0;
     i32 CutSceneMusicStartFramePc = -1;
 
-    static i32 CutSceneStartPrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
+    static i32 CutScene_Start(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
         if (cut == NULL || cut->instance == NULL || CutScenePlayOncePrivatePc(world, cut) != 0) {
             return 0;
         }
@@ -2421,7 +2421,7 @@ extern "C" {
 
     void __cdecl CutScenes_Start(WORLDINFO *world) {
         for (i32 i = 0; i < NewCutInfoCount; ++i) {
-            CutSceneStartPrivatePc(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(NewCutInfo[i]));
+            CutScene_Start(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(NewCutInfo[i]));
         }
         NewCutInfoCount = 0;
     }
@@ -2460,7 +2460,7 @@ extern "C" {
                     }
                 }
             }
-            if (cut != NULL && CutSceneStartPrivatePc(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(cut)) != 0) {
+            if (cut != NULL && CutScene_Start(world, reinterpret_cast<CUT_LOAD_RECORD_PC *>(cut)) != 0) {
                 CutBorderScale = 1.0f;
             }
         }

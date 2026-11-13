@@ -39,7 +39,7 @@ static i32 MissionMenuSelectionPc = 0;
 static f32 MissionIconTargetXPc[20] = {0};
 static f32 MissionIconXPc[20] = {0};
 
-static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initialize) {
+static void UpdateMissionIconX(MISSION_SYSTEM_READER_PC *system, i32 initialize) {
     i32 index;
     f32 x;
     for (index = 0; index < system->count; ++index) {
@@ -74,7 +74,7 @@ void __cdecl MenuInitMissions(MENU *menu) {
     for (index = 0; index < system->count; ++index) {
         MissionIconScalePc[index] = index == MissionMenuSelectionPc ? 1.0f : 0.0f;
     }
-    MissionIconPositionsPc(system, 1);
+    UpdateMissionIconX(system, 1);
 }
 
 f32 MissionBestBrickXPc = -0.15f;
@@ -196,7 +196,7 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
             colour_a = 191;
             colour_b = 31;
         }
-        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
+        SmartText(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
     }
 }
 
@@ -347,6 +347,6 @@ void __cdecl MenuUpdateMissions(MENU *menu) {
             MissionIconScalePc[index] =
                 SeekValF(MissionIconScalePc[index], index == MissionMenuSelectionPc ? 1.0f : 0.0f, 5.0f);
         }
-        MissionIconPositionsPc((MISSION_SYSTEM_READER_PC *)MissionSys, 0);
+        UpdateMissionIconX((MISSION_SYSTEM_READER_PC *)MissionSys, 0);
     }
 }

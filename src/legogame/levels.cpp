@@ -1214,9 +1214,9 @@ extern "C" {
                 NuStrCat(path, "\\");
                 NuStrCat(path, ADataList[area].file);
                 NuStrCat(path, ".gsc");
-                StartupDatsSelectPc((i32)(i8)ADataList[area].episode_index + 1);
+                NuWin32SetDFS((i32)(i8)ADataList[area].episode_index + 1);
                 area_scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
-                StartupDatsSelectPc(0);
+                NuWin32SetDFS(0);
                 if (area_scene != NULL && area_scene->display_list != NULL) {
                     area_scene->display_list->render_flags |= 0x10;
                 }
@@ -1952,17 +1952,17 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         LOG_INFO("Scene load begin: path=%s shadowmethod=%d", path, PcWindowOptions.shadowmethod);
         for (index = 0; index != 11; ++index) {
             if (world->current_level == WorldArchiveOneLevelsPc[index]) {
-                StartupDatsSelectPc(1);
+                NuWin32SetDFS(1);
                 goto archive_selected;
             }
         }
         for (index = 0; index != 4; ++index) {
             if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
-                StartupDatsSelectPc(3);
+                NuWin32SetDFS(3);
                 goto archive_selected;
             }
         }
-        StartupDatsSelectPc((i32)(i8)world->current_level->unknown_00a2 + 1);
+        NuWin32SetDFS((i32)(i8)world->current_level->unknown_00a2 + 1);
     archive_selected:
         if (PcWindowOptions.shadowmethod == 2) {
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
@@ -1970,7 +1970,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
             world->current_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
         }
         LOG_INFO("Scene load returned: path=%s scene=%p", path, (void *)world->current_gscn);
-        StartupDatsSelectPc(0);
+        NuWin32SetDFS(0);
         numtl_force_mipmode = 0;
         StoreSceneProgress(world->current_gscn, &world->scene_progress, 1);
         SaveSceneObjectAnimTFactors(world->current_gscn);

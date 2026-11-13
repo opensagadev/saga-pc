@@ -591,7 +591,7 @@ static __declspec(noinline) f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJEC
     return SeekValF(force->animation_speed, target, ForceAnimationSeekRatePc);
 }
 
-static void GizForce_PlayForwardAnimationPc(GIZFORCE_PC *force) {
+static void GizForce_PlayForwardsFn(GIZFORCE_PC *force) {
     f32 speed;
     if (force != NULL) {
         GameAnimSet_SetRepeating(force->anim_set, 0);
@@ -605,7 +605,7 @@ static void GizForce_PlayForwardAnimationPc(GIZFORCE_PC *force) {
     }
 }
 
-static void GizForce_PlayBackwardAnimationPc(GIZFORCE_PC *force) {
+static void GizForce_PlayBackwardsFn(GIZFORCE_PC *force) {
     f32 speed;
     if (force != NULL) {
         GameAnimSet_SetRepeating(force->anim_set, 0);
@@ -624,9 +624,9 @@ static void GizForce_PlayBackwardAnimationPc(GIZFORCE_PC *force) {
 __declspec(noinline) void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
     if (force != NULL) {
         if (force->runtime_flags & 0x40) {
-            GizForce_PlayBackwardAnimationPc(force);
+            GizForce_PlayBackwardsFn(force);
         } else {
-            GizForce_PlayForwardAnimationPc(force);
+            GizForce_PlayForwardsFn(force);
         }
     }
 }
@@ -634,9 +634,9 @@ __declspec(noinline) void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
 void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force) {
     if (force != NULL) {
         if (force->runtime_flags & 0x40) {
-            GizForce_PlayForwardAnimationPc(force);
+            GizForce_PlayForwardsFn(force);
         } else {
-            GizForce_PlayBackwardAnimationPc(force);
+            GizForce_PlayBackwardsFn(force);
         }
     }
 }
@@ -664,7 +664,7 @@ static __declspec(noinline) f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     return height;
 }
 
-static __declspec(noinline) void ForceGroupPushPc(GIZFORCE_PC *force) {
+static __declspec(noinline) void GizForce_AddToStack(GIZFORCE_PC *force) {
     if ((force->runtime_flags & 0x20) == 0 && force->group != NULL && force->group->member_count < 8) {
         if (force->group->member_count != 0) {
             GIZFORCE_PC *previous = force->group->forces[force->group->member_count - 1];
@@ -1558,7 +1558,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             updating_animation = 1;
             if (force->group != NULL) {
                 if ((force->runtime_flags & 0x20) == 0) {
-                    ForceGroupPushPc(force);
+                    GizForce_AddToStack(force);
                 }
                 if ((force->runtime_flags & 0x20) != 0) {
                     force->group->runtime_flags |= 1;

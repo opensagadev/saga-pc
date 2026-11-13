@@ -51,7 +51,7 @@ STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, device_kind) == 0x67f0);
 extern "C" {
     extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
 
-    i32 __cdecl TextInputLastDevicePc(void) {
+    i32 __cdecl PcInput_GetCtrlStringPlayer(void) {
         return TextInputLastDeviceIndexPc;
     }
 }
@@ -237,7 +237,7 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
     return result;
 }
 
-extern "C" i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination) {
+extern "C" i32 __cdecl PcInput_GetCtrlInputString(i32 device, i32 button, char *destination) {
     TEXT_INPUT_MANAGER_PC *manager = (TEXT_INPUT_MANAGER_PC *)nu_input_state;
     if (device < 0) {
         device = 0;
@@ -260,21 +260,21 @@ extern "C" {
         }
     }
 
-    void __cdecl TextInputSetLastDevicePc(i32 device) {
+    void __cdecl PcInput_SetCtrlStringPlayer(i32 device) {
         TextInputLastDeviceIndexPc = (i8)device;
     }
 
-    i32 __cdecl TextInputIsKeyboardDevicePc(i32 device) {
+    i32 __cdecl PcInput_PortIsKeyboard(i32 device) {
         return (u32)device - 10u <= 3u;
     }
 }
 
 extern "C" {
-    char **__cdecl TextInputGetKeyNamesPc(void) {
+    char **__cdecl PcInput_GetKeyNameTable(void) {
         return TextInputKeyNamesPc;
     }
 
-    i32 __cdecl TextInputIsPrimaryDevicePc(i32 device) {
+    i32 __cdecl PcInput_PortIsUC(i32 device) {
         return (u32)device <= 3u;
     }
 }

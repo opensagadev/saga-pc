@@ -627,7 +627,7 @@ void __cdecl MaskSounds(const u16 *mask) {
 
 f32 MusicVolume = 1.0f;
 f32 CutVolume = 0.8f;
-i32 __cdecl NuSound3GetMusicStreamStatusPc(i32 stream);
+i32 __cdecl NuSoundGetStereoStreamStatus(i32 stream);
 
 static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, i32 one_shot) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
@@ -709,7 +709,7 @@ void __cdecl SoundUpdate(f32 frame_time) {
     switch (Music.state) {
         case 8:
         case 10:
-            if (NuSound3GetMusicStreamStatusPc(Music.primary_stream) != 2) {
+            if (NuSoundGetStereoStreamStatus(Music.primary_stream) != 2) {
                 Music.state = 7;
             }
             break;
@@ -745,14 +745,14 @@ void __cdecl SoundUpdate(f32 frame_time) {
         case 12:
         case 13:
             if ((Music.track_data != NULL && (((INSTNUGCUTSCENE *)Music.track_data)->flags_88 & 2) != 0) ||
-                NuSound3GetMusicStreamStatusPc(1 - Music.primary_stream) == 2) {
+                NuSoundGetStereoStreamStatus(1 - Music.primary_stream) == 2) {
                 Music.resume_frames = 0;
             } else {
                 if (Music.resume_frames < 0x40) {
                     Music.resume_frames++;
                 }
                 if (Music.resume_frames > 8 && Music.current_track != -1 && Music.state != 13 &&
-                    NuSound3GetMusicStreamStatusPc(Music.primary_stream) != 2 && Music.pause_requested == 0) {
+                    NuSoundGetStereoStreamStatus(Music.primary_stream) != 2 && Music.pause_requested == 0) {
                     if (Music.state == 12) {
                         Music.state = 0;
                         NuSound3StopStereoStream(1 - Music.primary_stream);
@@ -770,7 +770,7 @@ void __cdecl SoundUpdate(f32 frame_time) {
                     Music.requested_track = -1;
                 }
             }
-            if (NuSound3GetMusicStreamStatusPc(Music.secondary_stream) != 2) {
+            if (NuSoundGetStereoStreamStatus(Music.secondary_stream) != 2) {
                 if (Music.transition_frames < 0x80) {
                     Music.transition_frames++;
                 }
@@ -780,7 +780,7 @@ void __cdecl SoundUpdate(f32 frame_time) {
             }
             break;
         case 4:
-            if (NuSound3GetMusicStreamStatusPc(Music.secondary_stream) != 2) {
+            if (NuSoundGetStereoStreamStatus(Music.secondary_stream) != 2) {
                 if (Music.transition_frames < 0x80) {
                     Music.transition_frames++;
                 }
@@ -1393,7 +1393,7 @@ i32 PlayingCutMusic(void) {
     if (NOSOUND != 0 || NOMUSIC != 0) {
         return 0;
     }
-    return NuSound3GetMusicStreamStatusPc(1 - Music.primary_stream) != 2;
+    return NuSoundGetStereoStreamStatus(1 - Music.primary_stream) != 2;
 }
 
 i32 PlayCutMusic(i32 track, i32 state, void *context) {
@@ -1409,7 +1409,7 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
         NuSound3PauseStereoStream(Music.primary_stream);
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
         if (Music.requested_track == track && Music.pause_requested == 0 &&
-            NuSound3GetMusicStreamStatusPc(1 - Music.primary_stream) != 2) {
+            NuSoundGetStereoStreamStatus(1 - Music.primary_stream) != 2) {
             NuSound3ResumeStereoStream(1 - Music.primary_stream);
             NuSound3SetStreamVolume(1 - Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
             NuSound3Update();
@@ -1520,7 +1520,7 @@ void PlayMusic(i32 track, i32 mode) {
     }
     NuSound3StopStereoStream(1 - Music.primary_stream);
     if (Music.requested_track == track && Music.pause_requested == 0 &&
-        NuSound3GetMusicStreamStatusPc(Music.primary_stream) != 2) {
+        NuSoundGetStereoStreamStatus(Music.primary_stream) != 2) {
         NuSound3ResumeStereoStream(Music.primary_stream);
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * MusicVolume));
         NuSound3Update();

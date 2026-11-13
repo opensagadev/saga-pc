@@ -535,10 +535,10 @@ extern "C" {
 extern "C" void __cdecl RenderShadowLights(i32 paused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2 && PCShadowCurrentLight != NULL &&
         PCShadowCurrentLight->enabled != 0) {
-        i32 previous = ShadowSetClipStatePc(1, 1);
-        ShadowMapResetPc();
+        i32 previous = NuSpecialSetClipping(1, 1);
+        NuSpecialClearShadowLights();
         ShadowMapEnablePc(PCShadowCurrentLight);
-        ShadowResetClipResultsPc();
+        NuSpecialClearShadowClipTestResults();
         NuRndrBeginScene(1);
         currentScene.dyn_light_count = 1;
         currentScene.dyn_light_ptr = PCShadowCurrentLight;
@@ -546,9 +546,9 @@ extern "C" void __cdecl RenderShadowLights(i32 paused) {
         if (WORLD->current_gscn != NULL) {
             PCShadowCurrentLight->RenderSceneShadowPc(WORLD->current_gscn);
         }
-        ShadowSetClipStatePc(0, previous);
+        NuSpecialSetClipping(0, previous);
         NuRndrEndScene();
-        ShadowMapResetPc();
+        NuSpecialClearShadowLights();
     }
 }
 
@@ -559,7 +559,7 @@ void __cdecl EnableShadowMapRendering(i32 unused) {
 }
 
 void __cdecl ResetShadowMapRendering(void) {
-    ShadowMapResetPc();
+    NuSpecialClearShadowLights();
 }
 
 extern "C" void __cdecl SetSpotLightMode(void) {

@@ -45,7 +45,7 @@ u8 PC_CONTROL_SCREEN_PC::PortAllowed(i32 player, i32 port, i32 allow_keyboard_sh
     }
     for (i32 i = 0; i < player_count; ++i) {
         if (i != player) {
-            if (TextInputIsKeyboardDevicePc(ports[i])) {
+            if (PcInput_PortIsKeyboard(ports[i])) {
                 keyboard_used = 1;
             }
             if (port == ports[i]) {
@@ -53,7 +53,7 @@ u8 PC_CONTROL_SCREEN_PC::PortAllowed(i32 player, i32 port, i32 allow_keyboard_sh
             }
         }
     }
-    if (!allow_keyboard_sharing && keyboard_used && TextInputIsKeyboardDevicePc(port)) {
+    if (!allow_keyboard_sharing && keyboard_used && PcInput_PortIsKeyboard(port)) {
         return 0;
     }
     return 1;
@@ -118,7 +118,7 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
                 if (item->label == 0x28 && !configuration) {
                     item->flags |= 0x80;
                 }
-                if (item->label == 0x2b && !TextInputIsKeyboardDevicePc(ports[selected_player])) {
+                if (item->label == 0x2b && !PcInput_PortIsKeyboard(ports[selected_player])) {
                     item->flags |= 0x80;
                 }
             }
@@ -175,10 +175,10 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
                     }
                 }
                 if (item->flags & 8) {
-                    if (TextInputIsKeyboardDevicePc(ports[0])) {
+                    if (PcInput_PortIsKeyboard(ports[0])) {
                         item->flags |= 0x20;
                     }
-                    if (TextInputIsKeyboardDevicePc(ports[1])) {
+                    if (PcInput_PortIsKeyboard(ports[1])) {
                         item->flags |= 0x40;
                     }
                 }
@@ -193,7 +193,7 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
                     --player;
                 }
                 item->label = 0x22;
-                if (TextInputIsKeyboardDevicePc(ports[player])) {
+                if (PcInput_PortIsKeyboard(ports[player])) {
                     item->label = 0x23;
                 }
             }
@@ -256,7 +256,7 @@ void PC_CONTROL_SCREEN_PC::SaveConfiguration(void) {
         }
         changed = 1;
         PcInputSetDeadzonePc(port, (i32)deadzone[i]);
-        if (TextInputIsKeyboardDevicePc(port)) {
+        if (PcInput_PortIsKeyboard(port)) {
             PcInputSetAlternateDeadzonePc(port, (i32)keyboard_deadzone);
         }
         PcInputCopyBindingsPc(port, 0, i);
@@ -273,7 +273,7 @@ i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
     }
     PcInputResetMouseMotionPc();
     i32 kind, value;
-    if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 0) < 0) {
+    if (PcInput_ScanForAnyInput(0, 0x1a, &kind, &value, 0) < 0) {
         release_frames -= 1;
     } else {
         release_frames = release_reset;
@@ -311,8 +311,8 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
             ports[i] = saved_ports[i];
         } else {
             PcInputCopyBindingsPc(ports[i], 1, i);
-            deadzone[i] = (f32)PcInputDeadzonePc(ports[i]);
-            if (TextInputIsKeyboardDevicePc(ports[i])) {
+            deadzone[i] = (f32)NuPadGetDeadzoneByPortPS(ports[i]);
+            if (PcInput_PortIsKeyboard(ports[i])) {
                 keyboard_deadzone = (f32)PcInputAlternateDeadzonePc(ports[i]);
             }
         }
@@ -389,7 +389,7 @@ extern "C" {
 }
 
 i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt) {
-    i32 device = TextInputLastDevicePc();
+    i32 device = PcInput_GetCtrlStringPlayer();
     if (device < 0) {
         device = 0;
     }
@@ -485,8 +485,8 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         PcInputResetMouseMotionPc();
                     } else {
                         i32 kind, value;
-                        i32 port = PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 1);
-                        port = PcInputMapKeyboardPortPc(port, selected_player);
+                        i32 port = PcInput_ScanForAnyInput(0, 0x1a, &kind, &value, 1);
+                        port = PcInput_RemapVirtualKeyboard(port, selected_player);
                         if (port >= 0) {
                             release_reset = release_frames = 3;
                             PcInputResetMouseMotionPc();
@@ -495,16 +495,16 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                     play_sound(2);
                                 }
                                 ports[selected_player] = port;
-                                PcInputSelectConfigurationPc(port, selected_player, selected_player);
-                                if (TextInputIsKeyboardDevicePc(port)) {
+                                PcInput_SafeGetMapping(port, selected_player, selected_player);
+                                if (PcInput_PortIsKeyboard(port)) {
                                     PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
                                 }
                                 capture_state = 0;
                                 if (!HasMissingBindings()) {
                                     missing_binding = 0;
                                 }
-                                deadzone[selected_player] = (f32)PcInputDeadzonePc(port);
-                                if (TextInputIsKeyboardDevicePc(port)) {
+                                deadzone[selected_player] = (f32)NuPadGetDeadzoneByPortPS(port);
+                                if (PcInput_PortIsKeyboard(port)) {
                                     keyboard_deadzone = (f32)PcInputAlternateDeadzonePc(port);
                                 }
                                 RefreshItems();
@@ -524,8 +524,8 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         PcInputResetMouseMotionPc();
                     } else {
                         i32 kind, value;
-                        i32 port = PcInputSelectPressedDevicePc(0, 0x13, &kind, &value, 1);
-                        port = PcInputMapKeyboardPortPc(port, selected_player);
+                        i32 port = PcInput_ScanForAnyInput(0, 0x13, &kind, &value, 1);
+                        port = PcInput_RemapVirtualKeyboard(port, selected_player);
                         if (port >= 0 && port == ports[selected_player]) {
                             if (PcInputBindingAvailablePc(selected_player, player_count, kind, value)) {
                                 PcInputAssignBindingPc(row->items[row->selected].command, port, kind, value, 1, 1,
@@ -686,26 +686,26 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                         i32 player = PcInputCapturedPortPc();
                                         if (player >= 0 && PcInputIsMouseDevicePc(ports[player])) {
                                             ++ports[player];
-                                            PcInputSelectConfigurationPc(ports[player], player, player);
+                                            PcInput_SafeGetMapping(ports[player], player, player);
                                         }
                                         ++player;
                                         if (player >= player_count) {
                                             player = -1;
                                         } else {
-                                            if (!TextInputIsKeyboardDevicePc(ports[player])) {
+                                            if (!PcInput_PortIsKeyboard(ports[player])) {
                                                 ++player;
                                                 if (player >= player_count) {
                                                     player = -1;
                                                     goto set_captured_port;
                                                 }
-                                                if (!TextInputIsKeyboardDevicePc(ports[player])) {
+                                                if (!PcInput_PortIsKeyboard(ports[player])) {
                                                     goto set_captured_port;
                                                 }
                                             }
                                             if (!PcInputIsMouseDevicePc(ports[player])) {
                                                 --ports[player];
                                             }
-                                            PcInputSelectConfigurationPc(ports[player], player, player);
+                                            PcInput_SafeGetMapping(ports[player], player, player);
                                         }
                                     set_captured_port:
                                         PcInputSetCapturedPortPc(player);
@@ -722,7 +722,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                                                        1, selected_player);
                                                 PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
                                                 deadzone[selected_player] =
-                                                    (f32)PcInputDeadzonePc(ports[selected_player]);
+                                                    (f32)NuPadGetDeadzoneByPortPS(ports[selected_player]);
                                                 break;
                                             }
                                             if (++key == 2) {
@@ -775,7 +775,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                 }
                                 release_reset = release_frames = 3;
                                 PcInputResetMouseMotionPc();
-                                if (TextInputIsKeyboardDevicePc(ports[selected_player])) {
+                                if (PcInput_PortIsKeyboard(ports[selected_player])) {
                                     capture_state = 4;
                                     saved_keyboard_deadzone = keyboard_deadzone;
                                 } else {
@@ -984,7 +984,7 @@ f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignm
     NuQFntSet(font);
     PcControlFontScalePc(font, x_scale * sx, y_scale * sy, &sx, &sy);
     NuQFntSetScale(font, sx, sy);
-    NuQFntSetUVSizePc(font, sx, sy);
+    NuQFntSetScale2d(font, sx, sy);
     f32 height = NuQFntHeight(font);
     f32 baseline = NuQFntBaseline(font);
     y += baseline;
@@ -1179,7 +1179,7 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         f32 sx, sy;
         PcControlFontScalePc(font, x_scale, y_scale, &sx, &sy);
         NuQFntSetScale(font, sx, sy);
-        NuQFntSetUVSizePc(font, sx, sy);
+        NuQFntSetScale2d(font, sx, sy);
         f32 line_height = NuQFntHeight(font);
         f32 y = (f32)(0.05999999865889549 - CountPlayerRows(row) * line_height * 0.5);
         f32 device_y = (f32)(y - line_height * 1.100000023841858);
@@ -1248,7 +1248,7 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                         intensity = (f32)(intensity * 0.4000000059604645);
                     }
                     f32 x = player_count == 2 ? (p == 0 ? left : right) : (f32)(label_x - 0.6499999761581421);
-                    if (!TextInputIsKeyboardDevicePc(ports[p])) {
+                    if (!PcInput_PortIsKeyboard(ports[p])) {
                         DrawDeadzone(x, (f32)(y + line_height * 0.699999988079071 * brightness), 0.0f, 0.25f,
                                      (f32)(brightness * 0.019999999552965164), intensity, intensity, deadzone[p]);
                     }

@@ -587,11 +587,11 @@ void __cdecl TextDecodeCodeword(char *source, char *destination) {
     } else if (NuStrICmp(source, "start") == 0) {
         button = 23;
     }
-    device = TextInputLastDevicePc();
+    device = PcInput_GetCtrlStringPlayer();
     if (device < 0) {
         device = 0;
     }
-    TextInputButtonNamePc(device, button, destination);
+    PcInput_GetCtrlInputString(device, button, destination);
 }
 
 void __cdecl TextDecode(char *text, u8 *destination) {

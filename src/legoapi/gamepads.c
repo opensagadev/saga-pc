@@ -396,10 +396,10 @@ void __cdecl DoInput(WORLDINFO *world) {
         input[index] = ReadPad(index);
     }
     keyboard_mask = 0;
-    if (TextInputIsKeyboardDevicePc(NuPadGetPort(0))) {
+    if (PcInput_PortIsKeyboard(NuPadGetPort(0))) {
         keyboard_mask = 1;
     }
-    if (TextInputIsKeyboardDevicePc(NuPadGetPort(1))) {
+    if (PcInput_PortIsKeyboard(NuPadGetPort(1))) {
         keyboard_mask |= 2;
     }
     changed = PlayersDropInOut();
@@ -499,7 +499,7 @@ i32 __cdecl GamePads_SkipMovie(void) {
     }
     readpads_always = 0;
     if ((world == NULL && GAMEDEMO != 0) || (world != NULL && world->current_level == TITLES_LDATA)) {
-        if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 1) >= 0) {
+        if (PcInput_ScanForAnyInput(0, 0x1a, &kind, &value, 1) >= 0) {
             pressed_device = 1;
         }
     }

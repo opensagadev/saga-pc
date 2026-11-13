@@ -2941,7 +2941,7 @@ void __cdecl StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
     }
 }
 
-static void JetPackBeginFlightPc(GAMEOBJECT *object) {
+static void JetPackUp(GAMEOBJECT *object) {
     object->jump_variant_state = 1;
     PlayJumpSfx(object, 0);
     object->velocity.y = object->character_data->game_character->jump_speed;
@@ -3023,7 +3023,7 @@ void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unu
         if (!(object->context_timer <= 0.0f)) {
             return;
         }
-        JetPackBeginFlightPc(object);
+        JetPackUp(object);
         object->character_context = -1;
         return;
     }
@@ -3040,7 +3040,7 @@ void __cdecl JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unu
     object->field_7aa = 0x48;
     object->context_timer = AnimDuration((i16)object->id, 0x48, 0.0f, 0.0f, 1);
     if (object->context_timer <= 0.0f) {
-        JetPackBeginFlightPc(object);
+        JetPackUp(object);
     } else {
         object->character_context = 0x13;
     }
@@ -3129,7 +3129,7 @@ static __declspec(noinline) PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object)
 }
 
 /* PC0049e2b0: object in ESI, variant on stack. */
-static __declspec(noinline) void ComboJumpStartPc(GAMEOBJECT *object, i32 variant) {
+static __declspec(noinline) void StartComboJump(GAMEOBJECT *object, i32 variant) {
     object->velocity.y = object->character_data->game_character->second_jump_speed;
     object->context_variant_flags &= ~0x10000u;
     object->character_context = 0;
@@ -3157,7 +3157,7 @@ static __declspec(noinline) void ComboJumpStartPc(GAMEOBJECT *object, i32 varian
 }
 
 /* PC0049e370: object in ESI; result in EAX. */
-static __declspec(noinline) i32 ComboBlockStartPc(GAMEOBJECT *object) {
+static __declspec(noinline) i32 StartBlock(GAMEOBJECT *object) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
     if (NewBlockAction(object) != 0) {
         object->character_context = 0xc;
@@ -3224,7 +3224,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
         attacker = object->block_attacker;
         if (attacker != NULL && jump_pressed != 0 && object->character_model->model_data_b[0x12] != NULL) {
             SetComboOpponent(object, 1.0f, 0, 1);
-            ComboJumpStartPc(object, 0);
+            StartComboJump(object, 0);
             return;
         }
         if (object->block_latch == 0) {
@@ -3270,7 +3270,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
         }
         if (pressed != 0 && (object->incoming_bolt != NULL || object->incoming_melee != NULL ||
                              object->incoming_special != NULL || object->incoming_part != NULL)) {
-            if (ComboBlockStartPc(object)) {
+            if (StartBlock(object)) {
                 return;
             }
         }
@@ -3303,7 +3303,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
          object->incoming_part == NULL)) {
         return;
     }
-    ComboBlockStartPc(object);
+    StartBlock(object);
 }
 
 static __declspec(noinline) void StartDodgePc(GAMEOBJECT *object) {
@@ -4400,7 +4400,7 @@ static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 act
                 } else if (object->combo_stage < 2 && jump_pressed &&
                            object->character_model->model_data_b[0x12] != NULL) {
                     SetComboOpponent(object, 1.0f, 0, 1);
-                    ComboJumpStartPc(object, 0);
+                    StartComboJump(object, 0);
                 }
             }
             goto combo_finished;
@@ -4523,7 +4523,7 @@ static __declspec(noinline) void LightSabreComboCode(GAMEOBJECT *object, i32 act
                 SetWeaponOut(object);
                 if (object->incoming_bolt != NULL || object->incoming_melee != NULL ||
                     object->incoming_special != NULL || object->incoming_part != NULL) {
-                    if (ComboBlockStartPc(object)) {
+                    if (StartBlock(object)) {
                         goto combo_finished;
                     }
                 }
@@ -4661,8 +4661,8 @@ void __cdecl EndForce(GAMEOBJECT *object, i32 mode) {
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
-static __declspec(noinline) void ForceGlowTargetPc(GAMEOBJECT *object, GIZFORCE_PC *force,
-                                                   FORCE_ANIMATION_OBJECT_PC *animation) {
+static __declspec(noinline) void HighlightForceObject(GAMEOBJECT *object, GIZFORCE_PC *force,
+                                                      FORCE_ANIMATION_OBJECT_PC *animation) {
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
     NUVEC *position;
     object->flags_e20 |= 0x20000;
@@ -4719,7 +4719,7 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
                     target->force->using_object = object;
                     object->force_heading = GizForces_AngleToForce(&object->position, target->force);
                     AlertSurroundingCreatures(object, &object->collision_position);
-                    ForceGlowTargetPc(object, target->force, target->animation);
+                    HighlightForceObject(object, target->force, target->animation);
                 }
             }
             if (!can_use) {
@@ -4765,7 +4765,7 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
     }
     force = target->force;
     if (force != NULL && (object->flags_1fc & 0x80) && !(object->flags_e20 & 0x20000) && object->field_281) {
-        ForceGlowTargetPc(object, force, target->animation);
+        HighlightForceObject(object, force, target->animation);
     }
     if (object->character_context == 8 && object->id == (u16)id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 &&
         object->rider == NULL && FreePlay == 0) {
@@ -5602,7 +5602,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                         }
                     }
                 } else {
-                    ForceGlowTargetPc(object, force, target->animation);
+                    HighlightForceObject(object, force, target->animation);
                     object->force_heading = GizForces_AngleToForce(&object->position, target->force);
                 }
             }

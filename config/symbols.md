@@ -98,9 +98,9 @@ it above the budget on purpose.
 
 Older address-style names remain: about 1,900 data rows whose name ends in
 their address (`_PcInputText77066c`, `_TextIdPc880e54`,
-`_AITransferLiteral757ebc`), two code rows, and the `FUN_`/`DAT_`/`sub_`/
-`data_0x` identifiers and address-suffixed names in sources (oddscan
-`hex-name`). They are not renamed here. A later rename batch:
+`_AITransferLiteral757ebc`) and the address-suffixed data names in sources
+(oddscan `hex-name`); no code row and no function name in `src/` uses an
+older address form any more. They are not renamed here. A later rename batch:
 
 1. renames each unnamed data row to `dat_XXXXXXXX` (its retail address; C
    decoration `_dat_...`, or the C++ decoration its `ctype` needs) and each

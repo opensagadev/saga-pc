@@ -399,7 +399,7 @@ before the first test; `for (i = 0; Records[i].id != -1; ++i)` (or
 materialise the pointer in the loop preheader. Examples:
 `PCGraphicsPrepareVendor`, `Technos_FindControllingTechno` (both exact).
 `while (count-- != 0)` instead of a trailing `--count` likewise moved the
-decrement before the call in `NuMtxMulHArrayPc`.
+decrement before the call in `NuMtxMulArrayVU0`.
 
 A switch case that returns (`case 0: return;`) where the others break gives
 the `sub eax, 0; je` step of I30 even without other code in the case

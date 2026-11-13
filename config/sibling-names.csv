@@ -1,107 +1,38 @@
 our_name,original_name,kind,evidence
-AdaptiveDifficultyAdjustPc,AdaptiveDifficultyChange,function,high: called at the same position in ObjHitObj
 BeastStartFallCodePc,FallLandCode,function,low: called at the same position in Move_JEDI
 BoltNoSfxPc,addbolt_nosfx,global,high: accessed at the same position in Bolt_AddDeflectedBolt
-CharacterSceneLoadPrivatePc,CharScene_Load,function,high: called at the same position in CharScenes_AreaLoad CharScenes_LevelLoad
-ComboBlockStartPc,StartBlock,function,high: called at the same position in BlockCode
-ComboJumpStartPc,StartComboJump,function,high: called at the same position in BlockCode
 CustomiserCompletionSavePc,Game_CompletionSave,global,high: accessed at the same position in AddToCompletionPoints Game_100PercentComplete
-CutSceneConfigurePc,CutScene_Configure,function,high: called at the same position in CutScenes_Load
 CutSceneFindCharacterPrivatePc,CutScene_FindChar,function,high: called at the same position in CutScene_FindCharacters
-CutSceneFixPtrsPc,NuGCutSceneFixPtrs,function,high: called at the same position in RelocateCutScene
-CutSceneInstanceUpdatePc,instNuGCutSceneUpdate,function,high: called at the same position in NuGCutSceneSysUpdate
 CutSceneRebindPlayerCharactersPrivatePc,CutScene_FindChar,function,high: called at the same position in CutScenes_Reset
 CutSceneReleaseInstanceCharactersPc,instNuGCutCharSysStop,function,low: called at the same position in instNuGCutSceneStop
 CutSceneSetPrimitiveColourPc,NuPrim2DAddCLR,function,low: called at the same position in DisplayCutSceneMemory
-CutSceneStartPrivatePc,CutScene_Start,function,high: called at the same position in CutScenes_Start
 DoorCutCameraPosition0Pc,Door_CutCamPos0,global,high: accessed at the same position in Door_SetCutCam
 DoorCutCameraPosition1Pc,Door_CutCamPos1,global,high: accessed at the same position in Door_SetCutCam
 DoorExitNamePc,Door_ExitName,global,high: accessed at the same position in Door_Reset StartDoorPositions
-DrawCharacterAttachmentModelPc,DrawExtraCharacterLayerBits,function,high: called at the same position in DrawCharacterAttachments
 EdppUseMemcardPc,edpp_usememcard,global,high: accessed at the same position in edppLoadPage
 EpisodeSavePc,Game_EpisodeSave,global,high: accessed at the same position in Episode_CountOpenAreas
 ForceBackObjPc,ForceBackObj,global,high: accessed at the same position in DrawForceBackEffect ResetForceBack SetForceBack
 ForceBackTypePc,ForceBackType,global,high: accessed at the same position in DrawForceBackEffect SetForceBack
-ForceGlowTargetPc,HighlightForceObject,function,high: called at the same position in ForceThrowCode
-ForceGroupPushPc,GizForce_AddToStack,function,high: called at the same position in GizForces_Update
 GamePadReadBackendPc,NuPCReadPad,function,low: called at the same position in ReadPad
-GizForce_PlayBackwardAnimationPc,GizForce_PlayBackwardsFn,function,high: called at the same position in GizForce_PlayBackwards GizForce_PlayForwards
-GizForce_PlayForwardAnimationPc,GizForce_PlayForwardsFn,function,high: called at the same position in GizForce_PlayBackwards GizForce_PlayForwards
-GizmoBlowupRestoreInitialStatePc,Blowup_Reset,function,high: called at the same position in Blowups_Reset GizBlowup_Respawn
-Grapple_InitializeSwingAnglePc,Grapple_Occupied_Allow2,function,high: called at the same position in Grapple_MoveCode
-Grapple_ResetSinglePc,Grapple_Reset,function,high: called at the same position in Grapples_Reset
 GrapplesDrawListPc,Grapples_DrawList,function,high: called at the same position in Grapples_Draw
 HubCompletionPointsPc,COMPLETIONPOINTS,global,high: accessed at the same position in AddToCompletionPoints
-HubDrawFreePlaySelectPc,Hub_DrawFreePlaySelect,function,high: called at the same position in MenuDrawFreePlay
-HubDrawMiniKitCountPc,Hub_DrawMiniKitCount,function,high: called at the same position in Hub_DrawPanel
 HubStatsTextMatrixPc,VuMtxInitRotY,function,low: called at the same position in Hub_Draw3D
 IconScenePc,IconScene,global,high: accessed at the same position in IconScene_FindById
-ImplodeDecodeRingPrivatePc,decode,function,high: called at the same position in ExplodeBufferNoHeader
-JetPackBeginFlightPc,JetPackUp,function,high: called at the same position in JetPackCode
 KillPartsCharSceneAreaPc,CharScene_Area,global,high: accessed at the same position in CharScene_FindHSpecial CharScenes_AreaDump CharScenes_Init
 LastDoorPointerPc,setlastdoor_last,global,high: accessed at the same position in Doors_Init
-MenuDrawAutoSaveWarningMessagePc,Draw_AUTOSAVEWARNING,function,high: called at the same position in MenuDrawAutoSaveWarning
-MenuDrawNoDataMessagePc,Draw_NODATAAVAILABLE,function,high: called at the same position in MenuDrawNoData
-MenuUpdateTitleFadePc,UpdateTitleSequence,function,high: called at the same position in MenuUpdateTitles
-MissionIconPositionsPc,UpdateMissionIconX,function,high: called at the same position in MenuInitMissions MenuUpdateMissions
-NuApiPrintLinePc,PrintStartupString,function,high: called at the same position in NuFrameEnd
-NuApiSetEndFrameCallbackPc,NuRegisterEndFrameCallBackFn,function,high: called at the same position in DebrisSetup2
-NuDebrisCreateVertexBuffersPc,debris_InitializeD3D,function,high: called at the same position in NuInitDebrisRenderer
-NuKeyboardBasePortPc,PcInput_GetFirstKeyboardPort,function,high: called at the same position in PlayersDropInOut
-NuKeyboardClearActiveDevicesPc,PcInput_DisableAllKeyboards,function,high: called at the same position in NuPadMapPlayerToPort
-NuMtlInitShaderResourcesPc,Nu360MtlInit,function,high: called at the same position in NuMtlInitExPS
-NuMtxMulHArrayPc,NuMtxMulArrayVU0,function,high: called at the same position in NuHGobjRndrMtxDwa
-NuQFntSetUVSizePc,NuQFntSetScale2d,function,high: called at the same position in NuQFntSetPointSize
-NuRndrEnableDeferredPc,NuDeferredShadingRender,function,high: called at the same position in BurnoutApply
-NuRndrInitConfigPc,NuRndrInit,function,high: called at the same position in NuRndrInitEx
 NuRndrSetBurnoutParametersPc,NuPostBloom,function,low: called at the same position in BurnoutApply
 NuRndrSetShadowCoefficientPc,NuDeferredShadingSetParameterf,function,low: called at the same position in BurnoutApply
-NuSound3GetMusicStreamStatusPc,NuSoundGetStereoStreamStatus,function,high: called at the same position in PlayingCutMusic SoundUpdate
 NuTexRegisterRenderTargetPc,NuEffectTexMapNative,function,low: called at the same position in NuTexCreateFramebufferCopy
-NuVec4ScaleForwardPc,NuVec4ScaleXYZVU0,function,high: called at the same position in NuLgtArcLaserDraw NuLgtLaserDraw
 NuVpSetIdentityPc,NuVpGetClippingMtx,function,low: called at the same position in NuCameraSet
-PCGraphicsGetFramebufferAttachmentPc,NuFramebufferGetAttachedTex,function,high: called at the same position in NuMotionFilterGen::render
 PCPresentationPlatformLeafPc,NudxInput_Clearflags,function,low: called at the same position in GamePads_SkipMovie
 PCThreadMillisecondsPc,NuTimeGetTime,function,low: called at the same position in OggReader::Open
 PcControlInitializePc,PC_StartCtrlConfig,function,low: called at the same position in PlayersDropInOut
 PcControlRegisterPc,PC_InitCtrlConfig,function,low: called at the same position in LoadPermData
-PcFrameDelayMessagePc,GetPCStartupMessage,function,high: called at the same position in NuFrameEnd
-PcInputDeadzonePc,NuPadGetDeadzoneByPortPS,function,high: called at the same position in NuPadUpdatePads
-PcInputInstallDropInConfigurationPc,PcInput_MappingIsGood,function,high: called at the same position in PlayersDropInOut
-PcInputMapKeyboardPortPc,PcInput_RemapVirtualKeyboard,function,high: called at the same position in MenuUpdateTitles PlayersDropInOut
-PcInputSelectConfigurationPc,PcInput_SafeGetMapping,function,high: called at the same position in MenuUpdateTitles
-PcInputSelectPressedDevicePc,PcInput_ScanForAnyInput,function,high: called at the same position in GamePads_SkipMovie MenuUpdateTitles PlayersDropInOut
-PcInputSetCommandFilterPc,PcInput_SetIsUsedCallBack,function,high: called at the same position in LoadPermData
-PlayerDevicePortPc,PC_CtrlConfigGetPlayerPort,function,high: called at the same position in PlayersDropInOut
 PlayerSetCurrentHpPc,SetHitPoints,function,low: called at the same position in PlayersDropInOut
 PlayerTakeHitReactionPc,canDoDieAir,function,low: called at the same position in ObjHitObj
-PortalInitialisePsPc,Initialise_PS,function,high: called at the same position in NuPortalVisibility
-PortalSetAllHiddenPc,SetAllInstancesHidden,function,high: called at the same position in NuPortalVisibility
-PortalSetAllVisiblePc,SetAllInstancesVisible,function,high: called at the same position in NuPortalVisibility
-PostShaderProgramBindPc,NuShaderProgramMakeCurrent,function,high: called at the same position in NuMainFilterGen::preprocessDofMotionBlur
-RenderPostClampBytePc,NuPrim2DAddCLR,function,high: called at the same position in DrawAlphaGrid DrawAlphaImage
-RenderPostPowPc,NuPowFast,function,high: called at the same position in DrawAlphaGrid DrawAlphaImage
 RenderPostViewportSetPc,NuVpSetRegions,function,low: called at the same position in NuRndrHighResScreenGrab
 RendererAlphaMaskMaterialPc,pAlphaMask,global,high: accessed at the same position in NuRndrInitGeneric RndrMaskScreen
 RendererZClearMaterialPc,pZClearMaterial,global,high: accessed at the same position in NuRndrInitGeneric RndrMaskScreen
-RippleLinkNodesPc,SetupMainPoolPtrs,function,high: called at the same position in InitRipples ResetRippleSet
 RunOutOfPosTabSpacePc,runoutofpostabspace,global,high: accessed at the same position in GizmoPushBlockInitAndReset ResetSinglePushBlock
-ShadowMapResetPc,NuSpecialClearShadowLights,function,high: called at the same position in RenderShadowLights ResetShadowMapRendering ResetShadowMapRenderingFn
-ShadowResetClipResultsPc,NuSpecialClearShadowClipTestResults,function,high: called at the same position in RenderShadowLights
-ShadowSetClipStatePc,NuSpecialSetClipping,function,high: called at the same position in RenderShadowLights
 Shop_DrawItemPc,DrawShelfItemWithScale,function,low: called at the same position in DrawTopShelf
 SignalSetVisiblePc,Signal_SetVisibility,function,high: called at the same position in Signal_SetGizmoVisibility
-SmartTextPc,SmartText,function,high: called at the same position in MenuDrawBonusComplete MenuDrawEndChallenge
-SpecialMoveApplyDamagePc,SpecialMove_KillVictim,function,high: called at the same position in SpecialMove_ReleaseVictim
-SpinnerCurrentOutputPc,GizSpinner_WithinOutput,function,high: called at the same position in GizSpinner_GetOutput
-StartupDatsSelectPc,NuWin32SetDFS,function,high: called at the same position in LoadAreaData WorldInfo_Load
-TeleportSetSegmentDurationPc,Teleport_SetCrawlTime,function,high: called at the same position in Teleport_MoveCode
-TextInputButtonNamePc,PcInput_GetCtrlInputString,function,high: called at the same position in TextDecodeCodeword
-TextInputGetKeyNamesPc,PcInput_GetKeyNameTable,function,high: called at the same position in DrawMenuButtonPromptsEx
-TextInputIsKeyboardDevicePc,PcInput_PortIsKeyboard,function,high: called at the same position in DoInput DrawMenuButtonPromptsEx PlayersDropInOut
-TextInputIsPrimaryDevicePc,PcInput_PortIsUC,function,high: called at the same position in DrawMenuButtonPromptsEx
-TextInputLastDevicePc,PcInput_GetCtrlStringPlayer,function,high: called at the same position in DrawMenuButtonPromptsEx TextDecodeCodeword
-TextInputSetLastDevicePc,PcInput_SetCtrlStringPlayer,function,high: called at the same position in MenuUpdateTitles
-TextInputSetNameCallbackPc,PcInput_SetStringUCGfxRemapFn,function,high: called at the same position in LoadPermData
-TorpedoTargetPositionPc,GetTorpTargetPositionAndRadius,function,high: called at the same position in TorpedoHitTarget Torpedo_UpdateBolt
-ZipUpDrawMarkerPc,ZipUp_DrawFloorTarget,function,high: called at the same position in ZipUps_Draw

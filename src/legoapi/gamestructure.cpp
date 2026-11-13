@@ -29,7 +29,7 @@ extern "C" void __cdecl PauseGame(i32 pad) {
     DoubleScoreTime = 0.0f;
     ResetTimer(&JoinInTimer, 0.0f);
     pause_i_pad = pad;
-    TextInputSetLastDevicePc(pad);
+    PcInput_SetCtrlStringPlayer(pad);
     for (i32 i = 0; i < 8; ++i) {
         if (Player[i]) {
             ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;

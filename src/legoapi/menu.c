@@ -197,9 +197,9 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     f64 row_delta;
     f32 y, scale;
     f64 x;
-    device = NuPadGetPort(TextInputLastDevicePc());
-    if (TextInputIsKeyboardDevicePc(device)) {
-        keys = TextInputGetKeyNamesPc();
+    device = NuPadGetPort(PcInput_GetCtrlStringPlayer());
+    if (PcInput_PortIsKeyboard(device)) {
+        keys = PcInput_GetKeyNameTable();
         accept = keys[28];
         back = keys[1];
         left = keys[203];
@@ -212,7 +212,7 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
         sprintf(accept_text, "~0$s~~ %s", accept, apitxt_SELECT);
         sprintf(cancel_text, "~0%s~~ %s", back, apitxt_BACK);
     }
-    if (!TextInputIsPrimaryDevicePc(device)) {
+    if (!PcInput_PortIsUC(device)) {
         sprintf(axes_text, "%s ~0%s~~ / ~0$s", apitxt_SELECT, left, right);
     } else {
         sprintf(axes_text, "~0$s~~ %s ~0$s", left, apitxt_SELECT, right);

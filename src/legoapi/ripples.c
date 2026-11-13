@@ -325,7 +325,7 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
 static RIPPLE_NODE_PC **eraselist = 0;
 static i32 RippleEraseCountPc = 0;
 
-static void RippleLinkNodesPc(RIPPLE_NODE_PC *nodes, i32 count) {
+static void SetupMainPoolPtrs(RIPPLE_NODE_PC *nodes, i32 count) {
     i32 i;
     if (nodes != NULL) {
         for (i = 1; i < count - 1; ++i) {
@@ -357,7 +357,7 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
     node_count = (*result)->capacity;
     nodes = (RIPPLE_NODE_PC *)((buffer->addr + 127) & ~127u);
     buffer->addr = (u32)nodes + node_count * sizeof(*nodes);
-    RippleLinkNodesPc(nodes, node_count);
+    SetupMainPoolPtrs(nodes, node_count);
     erase_list = (RIPPLE_NODE_PC **)((buffer->addr + 3) & ~3u);
     buffer->addr = (u32)(erase_list + node_count);
     eraselist = erase_list;
@@ -374,7 +374,7 @@ void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
     memset(set, 0, sizeof(*set));
     set->nodes = nodes;
     set->capacity = count;
-    RippleLinkNodesPc(nodes, count);
+    SetupMainPoolPtrs(nodes, count);
     set->free_head = set->nodes;
 }
 
