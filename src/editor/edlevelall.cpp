@@ -193,6 +193,9 @@ class EdFileOutputStream : public EdOutputStream {
             EndBlock();
         }
     }
+    void Close() {
+        file = 0;
+    }
 
     EdStack<i32, 8> block_positions;
     NUFILE file;
@@ -224,6 +227,9 @@ class EdFileInputStream : public EdInputStream {
     virtual char const *BeginBlock(char const *name);
     virtual void EndBlock();
     void Open(NUFILE handle, i32 stream_version);
+    void Close() {
+        file = 0;
+    }
 
     EdStack<Block, 8> blocks;
     char block_names[256];
@@ -9217,7 +9223,7 @@ i32 LevelEditor::Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, 
                 stream.flags = 0x200000;
             stream.Open(file, 4);
             i32 loaded = ReadStream(stream);
-            stream.file = 0;
+            stream.Close();
             NuFileClose(file);
             if (loaded) {
                 scenes[Placeable::CurrentLedFile].editable = 1;
@@ -9254,7 +9260,7 @@ i32 LevelEditor::LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *
         stream.Open(file, 4);
         stream.flags = 0x400000;
         result = ReadStream(stream);
-        stream.file = 0;
+        stream.Close();
         NuFileClose(file);
     }
     if (!multi_load_active)
@@ -9287,7 +9293,7 @@ i32 LevelEditor::Save() {
                 stream.unknown_10 = i;
                 WriteStream(stream);
                 size = (i32)NuFilePos(memory_file);
-                stream.file = 0;
+                stream.Close();
                 NuFileClose(memory_file);
                 output_file = NuFileOpen(save_filename, 1);
                 if (output_file) {
@@ -9318,7 +9324,7 @@ i32 LevelEditor::SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer
         stream.unknown_10 = scene_index;
         WriteStream(stream);
         size = (i32)NuFilePos(file);
-        stream.file = 0;
+        stream.Close();
         NuFileClose(file);
     } else {
         EdMessage(editor_filename);
@@ -9339,7 +9345,7 @@ i32 LevelEditor::SaveState(variptr_u *buffer, variptr_u *buffer_end) {
         stream.flags = 0x400000;
         result = WriteStream(stream);
         NuFilePos(file);
-        stream.file = 0;
+        stream.Close();
         NuFileClose(file);
     } else {
         EdMessage(editor_filename);
