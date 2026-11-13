@@ -307,50 +307,6 @@ extern "C" {
         }
     }
 
-    void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT *object, i32 animation,
-                                               i32 mode, f32 scale) {
-        const i32 joint = object->character_data->game_character->helmet_locator;
-        if (customiser == NULL || joint == -1 || object->character_model->points_of_interest[joint] == NULL)
-            return;
-        KILLPARTS_CUSTOMISER_PC *accessories = reinterpret_cast<KILLPARTS_CUSTOMISER_PC *>(customiser);
-        const i32 side = static_cast<i16>(object->id) != accessories->character_ids[0];
-        KILLPARTS_ACCESSORY_PC *resource = KillPartsAccessoriesPc[side];
-        for (i32 category = 0; category < 9; ++category, ++resource) {
-            if (category == 2)
-                continue;
-            if (category == 0 &&
-                ((accessories->helmet_pieces[static_cast<u16>(accessories->save[side].pieces[1])].layer_flags & 1) !=
-                     0 ||
-                 (accessories->head_pieces[static_cast<u16>(accessories->save[side].pieces[0])].layer_flags & 0x20) !=
-                     0))
-                continue;
-            NUSPECIALHANDLE *special = &resource->special;
-            if (!NuSpecialExistsFn(special))
-                continue;
-            NUVEC momentum;
-            SetKillPartMom(&momentum);
-            momentum.y += scale;
-            if (animation != -1)
-                momentum.y += 1.0f;
-            ADDPART_PC params = Default_ADDPART;
-            params.field_14 = 0.1f;
-            params.field_18 = 0.1f;
-            params.gravity = -5.0f;
-            params.matrix = &object->locator_matrices[joint];
-            params.velocity = &momentum;
-            params.special = special;
-            params.lighting_data = Cheats_CheckFlags(1)
-                                       ? reinterpret_cast<PART_LIGHTING_DATA_PC *>(&KillPartsZeroLightingPc)
-                                       : &reinterpret_cast<KILLPARTS_OBJECT_LIGHT_PC *>(object)->lighting;
-            params.time_step = FRAMETIME;
-            params.flags = mode == 0 ? 0x480 : 0x90;
-            params.stop_fn = PartStop_Flickerer;
-            params.draw_fn = PartDraw_Flickerer;
-            params.impact_fn = PartImpact_Brick;
-            AddPart(&params);
-        }
-    }
-
     void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode,
                                       u16 xrot, u16 yrot, NUVEC *velocity) {
         if (variant != 0)
