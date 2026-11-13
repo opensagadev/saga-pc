@@ -3080,6 +3080,27 @@ extern "C" {
 
     /* Retains original scratch slot255. This path requires the additional
      * initialized physical backing in the handoff. */
+// Member-wise matrix copy, expanded in place (the original copies the identity matrix float by float).
+#define NU_ANIM_MTX_COPY(destination, source)                                                                          \
+    do {                                                                                                               \
+        (destination)->m00 = (source)->m00;                                                                            \
+        (destination)->m01 = (source)->m01;                                                                            \
+        (destination)->m02 = (source)->m02;                                                                            \
+        (destination)->m03 = (source)->m03;                                                                            \
+        (destination)->m10 = (source)->m10;                                                                            \
+        (destination)->m11 = (source)->m11;                                                                            \
+        (destination)->m12 = (source)->m12;                                                                            \
+        (destination)->m13 = (source)->m13;                                                                            \
+        (destination)->m20 = (source)->m20;                                                                            \
+        (destination)->m21 = (source)->m21;                                                                            \
+        (destination)->m22 = (source)->m22;                                                                            \
+        (destination)->m23 = (source)->m23;                                                                            \
+        (destination)->m30 = (source)->m30;                                                                            \
+        (destination)->m31 = (source)->m31;                                                                            \
+        (destination)->m32 = (source)->m32;                                                                            \
+        (destination)->m33 = (source)->m33;                                                                            \
+    } while (0)
+
     void __cdecl NuAnimBuffEvaluate_3_QuatB(NUMTX *base, ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *object,
                                             NUMTX *matrices, ANI3_HEADER_PC *animation, ANI3_ROOT_CALLBACK_PC root_fn,
                                             NUVEC *root_translation, void *root_data) {
@@ -3209,7 +3230,7 @@ extern "C" {
             matrix->m32 = -matrix->m32;
         }
         for (; index < object->joint_count; ++index, ++matrix)
-            *matrix = NuMtxSetIdentityTemplate;
+            NU_ANIM_MTX_COPY(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
         AnimBuffEvalCB = NULL;
         AnimBuffEvalData = NULL;
         AnimBuffEvalJoint = NULL;
