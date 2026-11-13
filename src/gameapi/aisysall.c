@@ -1804,10 +1804,16 @@ static AICONDITIONDEF_PC *AIConditionFind(char *name) {
     AICONDITIONDEF_PC *definition;
 
     if (game_aiconditiondefs != NULL) {
-        for (definition = game_aiconditiondefs; definition->name != NULL; definition++) {
-            if (NuStrICmp(name, definition->name) == 0) {
-                return definition;
-            }
+        definition = game_aiconditiondefs;
+        // MATCH-EXCEPTION: guarded do-while instead of the for loop used by AIActionFind; retail tests
+        // the first name in memory before loading it for the compare, which only this loop shape gives.
+        if (definition->name != NULL) {
+            do {
+                if (NuStrICmp(name, definition->name) == 0) {
+                    return definition;
+                }
+                definition++;
+            } while (definition->name != NULL);
         }
     }
 
