@@ -1560,6 +1560,13 @@ void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *blowup) {
     AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1, 1);
 }
 
+/* The SDK NuFabs; retail keeps this unit's out-of-line copy at 0x64fdc0. */
+static f32 DebrisFabs(f32 f) {
+    f32 rv;
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f)
         return 0.0f;
@@ -1855,31 +1862,18 @@ i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f3
 
 void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     NUMTX matrix;
-    f64 emission_time;
     f32 padding, radius;
     NUVEC extent, minimum;
-    union {
-        f32 value;
-        u32 bits;
-    } velocity_x, velocity_y, velocity_z, momentum;
     DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
     NuMtxTranslate(&matrix, &key->position);
-    velocity_x.value = effect->emitter_velocity.x;
-    /* Keep the period sum unrounded until each extent is stored. */
-    emission_time = (f64)effect->emission_period_random + effect->emission_period;
-    velocity_x.bits &= 0x7fffffff;
-    extent.x = (velocity_x.value * emission_time + effect->momentum_random_x * effect->particle_lifetime) +
+    extent.x = (DebrisFabs(effect->emitter_velocity.x) * (effect->emission_period_random + effect->emission_period) +
+                effect->momentum_random_x * effect->particle_lifetime) +
                effect->emitter_random_extent.x;
-    velocity_y.value = effect->emitter_velocity.y;
-    velocity_y.bits &= 0x7fffffff;
-    momentum.value = effect->momentum_base;
-    momentum.bits &= 0x7fffffff;
-    extent.y =
-        (velocity_y.value * emission_time + (momentum.value + effect->rotor_speed_x) * effect->particle_lifetime) +
-        effect->emitter_random_extent.y;
-    velocity_z.value = effect->emitter_velocity.z;
-    velocity_z.bits &= 0x7fffffff;
-    extent.z = (velocity_z.value * emission_time + effect->rotor_speed_y * effect->particle_lifetime) +
+    extent.y = (DebrisFabs(effect->emitter_velocity.y) * (effect->emission_period_random + effect->emission_period) +
+                (DebrisFabs(effect->momentum_base) + effect->rotor_speed_x) * effect->particle_lifetime) +
+               effect->emitter_random_extent.y;
+    extent.z = (DebrisFabs(effect->emitter_velocity.z) * (effect->emission_period_random + effect->emission_period) +
+                effect->rotor_speed_y * effect->particle_lifetime) +
                effect->emitter_random_extent.z;
     NuVecMtxRotate(&extent, &extent, &key->emitter_orientation);
     if (extent.x < 0.0f)
