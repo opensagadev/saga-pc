@@ -369,7 +369,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 
-static i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object);
+extern "C" i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object);
 extern "C" void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
@@ -3084,13 +3084,6 @@ extern "C" {
 }
 
 // These two genuine Hub functions belong in the Hub owner, not game.cpp.
-
-static i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object) {
-    u8 context = (u8)object->character_context;
-    if (context == 0x4d && object->field_7b3 == 0)
-        return 2;
-    return (context == 0x52) + 1;
-}
 
 static void NuRndrPrimSetColour(i32 colour) {
     i32 converted;

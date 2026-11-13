@@ -190,7 +190,7 @@ address,symbol,size,ctype
 0x415000,_AICreatureResumeScript,68,
 0x415050,_GetDefaultIdle,117,i32 __cdecl(GAMEOBJECT *)
 0x4150d0,_ResetCharacterIdle,240,"void __cdecl(GAMEOBJECT *,i32,i32)"
-0x4151c0,?NewCharacterIdle@@YAXPAUgameobject_s@@H@Z,418,
+0x4151c0,_NewCharacterIdle,418,
 0x415370,_UpdateCharacterIdle,409,void __cdecl(GAMEOBJECT *)
 0x00415510,_GunshipKeepOnScreenPc,600,
 0x00415770,_KeepOnScreen,1250,void __cdecl KeepOnScreen(GAMEOBJECT *)
@@ -221,7 +221,7 @@ address,symbol,size,ctype
 0x41ab90,_SetLayersCloudPc,168,
 0x41ac40,_SetLayersBobPc,406,
 0x0041ade0,_FixUpLayers,218,void __cdecl (void)
-0x0041aec0,?AlternateGame_callback_925180_PC@@YAHPAUgameobject_s@@@Z,42,
+0x0041aec0,_AlternateGame_callback_925180_PC,42,
 0x41aef0,_SuperWeirdo,60,i32 __cdecl(GAMEOBJECT*)
 0x0041af30,_Player_HasPurpleForce,46,i32 __cdecl (GAMEOBJECT *)
 0x41af70,_ResetPlayerMoves,290,void __cdecl(GAMEOBJECT *)
