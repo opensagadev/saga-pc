@@ -15,6 +15,11 @@ the unit with the lint flags (`tools/check.py`):
   E  defined nowhere in the sources (retail-only or dead); `used` tells whether
      the unit references it
 
+`used` counts the references of both build kinds: the unit is parsed a second
+time with the Debug define (`-DSAGA_DEBUG`, as `make BUILD_KIND=Debug` adds), so
+a declaration that only a diagnostic macro argument or a `#ifdef SAGA_DEBUG`
+block uses is used, not removable.
+
 Cross-unit identity is the linker name (`mangled_name`), so a C++ declaration
 that differs from the definition only in a parameter type is not matched.
 
@@ -41,7 +46,8 @@ if __package__ in (None, ""):
 
 from tools.lib import ROOT, dependency_files  # noqa: E402
 
-VERSION = 4
+VERSION = 5
+DEBUG_DEFINE = "-DSAGA_DEBUG"
 CLASSES = "ABCDE"
 CACHE = ROOT / "build/declscan/cache.json"
 OUTPUT = ROOT / "build/declscan.json"
@@ -82,6 +88,50 @@ def parse(path, args, unsaved=None):
     return ci.Index.create().parse(str(path), args=args, unsaved_files=unsaved)
 
 
+def debug_flags(flags):
+    """The same flags for the Debug build kind (Makefile: `CPPFLAGS += /DSAGA_DEBUG`)."""
+    return list(flags) if DEBUG_DEFINE in flags else [*flags, DEBUG_DEFINE]
+
+
+def references(tu, main, wanted):
+    """References to the `wanted` USRs from the top-level cursors of `main`: (counts, users)."""
+    ci = cindex()
+    K = ci.CursorKind
+    main = str(main)
+    refs, users = Counter(), defaultdict(set)
+    ref_kinds = (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR, K.OVERLOADED_DECL_REF)
+
+    def roots(parent):
+        for cursor in parent.get_children():
+            if cursor.kind in (K.LINKAGE_SPEC, K.UNEXPOSED_DECL, K.NAMESPACE):
+                yield from roots(cursor)
+            elif cursor.location.file and cursor.location.file.name == main:
+                yield cursor
+
+    for root in roots(tu.cursor):
+        user = None
+        for node in root.walk_preorder():
+            if node.kind in ref_kinds:
+                target = node.referenced
+                if target is not None:
+                    usr = target.get_usr()
+                    if usr in wanted:
+                        refs[usr] += 1
+                        if user is None:
+                            user = root.mangled_name or root.spelling
+                        users[usr].add(f"{root.extent.start.line}:{user}")
+    return refs, users
+
+
+def collect_debug(facts, tu, main):
+    """Add the references only the Debug build kind sees (`debug_refs`, `debug_users`) to `facts`."""
+    wanted = {decl["usr"] for decl in facts["decls"]}
+    refs, users = references(tu, main, wanted)
+    facts["debug_refs"] = {u: n for u, n in refs.items() if not facts["refs"].get(u)}
+    facts["debug_users"] = {u: sorted(users[u]) for u in facts["debug_refs"]}
+    return facts
+
+
 def collect(tu, main):
     """Plain facts about one parsed unit (JSON-serialisable)."""
     ci = cindex()
@@ -90,7 +140,6 @@ def collect(tu, main):
     decls, local, header, aux_header = [], defaultdict(list), defaultdict(list), set()
     definitions, exports, errors = {}, [], []
     seq = 0
-    roots = []
 
     def visit(parent):
         nonlocal seq
@@ -102,8 +151,6 @@ def collect(tu, main):
             location = cursor.location
             name = location.file.name if location.file else ""
             in_main = name == main
-            if in_main:
-                roots.append(cursor)
             if cursor.kind not in (K.FUNCTION_DECL, K.VAR_DECL):
                 continue
             usr = cursor.get_usr()
@@ -139,20 +186,7 @@ def collect(tu, main):
 
     visit(tu.cursor)
     wanted = {decl["usr"] for decl in decls}
-    refs, users = Counter(), defaultdict(set)
-    ref_kinds = (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR, K.OVERLOADED_DECL_REF)
-    for root in roots:
-        user = None
-        for node in root.walk_preorder():
-            if node.kind in ref_kinds:
-                target = node.referenced
-                if target is not None:
-                    usr = target.get_usr()
-                    if usr in wanted:
-                        refs[usr] += 1
-                        if user is None:
-                            user = root.mangled_name or root.spelling
-                        users[usr].add(f"{root.extent.start.line}:{user}")
+    refs, users = references(tu, main, wanted)
     for diagnostic in tu.diagnostics:
         if diagnostic.severity >= 3:
             errors.append(str(diagnostic))
@@ -166,7 +200,8 @@ def collect(tu, main):
 def _work(job):
     unit, path, flags = job
     try:
-        return unit, collect(parse(path, flags), path)
+        facts = collect(parse(path, flags), path)
+        return unit, collect_debug(facts, parse(path, debug_flags(flags)), path)
     except Exception as error:  # noqa: BLE001 (reported per unit, the scan continues)
         return unit, {"failed": f"{type(error).__name__}: {error}"}
 
@@ -179,7 +214,9 @@ def classify(unit, facts, exports, text):
         usr, seq = decl["usr"], decl["seq"]
         record = {"unit": unit, "line": decl["line"], "end": decl["end"], "name": decl["name"],
                   "kind": decl["kind"], "link": decl["link"], "type": decl["type"],
-                  "used": facts["refs"].get(usr, 0) > 0, "users": facts.get("users", {}).get(usr, [])}
+                  "used": facts["refs"].get(usr, 0) > 0 or facts.get("debug_refs", {}).get(usr, 0) > 0,
+                  "users": facts.get("users", {}).get(usr, []) +
+                  [f"{user} (Debug)" for user in facts.get("debug_users", {}).get(usr, [])]}
         earlier_header = [h for h in facts["header"].get(usr, []) if h[0] < seq]
         later_header = [h for h in facts["header"].get(usr, []) if h[0] > seq]
         earlier_local = [d for d in facts["local"].get(usr, []) if d[0] < seq]

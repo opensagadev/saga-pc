@@ -80,6 +80,10 @@ variables (98), or the function or a user has no mapping (55).
   the code sections of the old and new objects, or compare exact sets by
   address after `tools/match.py --update`. Bisect any change down to the
   declaration that causes it and keep that declaration.
+- The gate for a declaration removal includes the Debug compile
+  (`make -k -j2 BUILD_KIND=Debug build`, zero compile errors): a declaration
+  used only inside a diagnostic macro or a `#ifdef SAGA_DEBUG` block is
+  invisible to the release build. `declscan.py` counts those uses too.
 
 ## Work list for after the layout move
 

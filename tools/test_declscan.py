@@ -40,6 +40,24 @@ static void Later(i32 value) {
 }
 """
 
+DEBUG_UNIT = """#include "saga.h"
+#ifdef SAGA_DEBUG
+#define LOG_WARN_IF(condition, value) do { if (condition) (void)(value); } while (0)
+#else
+#define LOG_WARN_IF(condition, value) ((void)0)
+#endif
+extern i32 ImageBase;
+extern i32 DebugOnly;
+extern i32 Nowhere;
+
+void Check(i32 value) {
+    LOG_WARN_IF(value == ImageBase, value);
+#ifdef SAGA_DEBUG
+    (void)DebugOnly;
+#endif
+}
+"""
+
 OTHER = """void Elsewhere(void) {
 }
 """
@@ -48,7 +66,9 @@ OTHER = """void Elsewhere(void) {
 def facts(name, text):
     args = ["--target=i686-pc-windows-msvc", "-fms-extensions", "-x", "c", "-std=c89", "-I/virtual"]
     unsaved = [(f"/virtual/{name}", text), ("/virtual/saga.h", HEADER)]
-    return declscan.collect(declscan.parse(f"/virtual/{name}", args, unsaved), f"/virtual/{name}")
+    path = f"/virtual/{name}"
+    unit_facts = declscan.collect(declscan.parse(path, args, unsaved), path)
+    return declscan.collect_debug(unit_facts, declscan.parse(path, declscan.debug_flags(args), unsaved), path)
 
 
 @unittest.skipUnless(HAVE_CLANG, "libclang is not installed")
@@ -88,6 +108,17 @@ class ClassifyTests(unittest.TestCase):
         self.assertIn("i32 Proto();", fixed)
         self.assertIn("void Called(void);", fixed)
         self.assertIn("static void Later(i32 value);", fixed)
+
+    def test_debug_only_use_keeps_a_declaration(self):
+        unit = facts("debug.c", DEBUG_UNIT)
+        records = {r["name"]: r for r in declscan.classify("debug.c", unit, {}, DEBUG_UNIT)}
+        for name in ("ImageBase", "DebugOnly"):
+            self.assertEqual((records[name]["cls"], records[name]["used"], records[name]["removable"]),
+                             ("E", True, "used"), name)
+            self.assertTrue(records[name]["users"][0].endswith("(Debug)"), records[name]["users"])
+        self.assertEqual((records["Nowhere"]["used"], records["Nowhere"]["removable"]), (False, ""))
+        self.assertEqual(declscan.debug_flags(["-x", "c"]), ["-x", "c", "-DSAGA_DEBUG"])
+        self.assertEqual(declscan.debug_flags(["-DSAGA_DEBUG"]), ["-DSAGA_DEBUG"])
 
 
 class TextTests(unittest.TestCase):

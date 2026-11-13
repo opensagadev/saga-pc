@@ -1412,6 +1412,8 @@ enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
         }                                                                                                              \
     } while (0)
 
+extern IMAGE_DOS_HEADER __ImageBase;
+
 /* Game-side AI callback registration; retail keeps these in the AI script unit so
    GameAISysInit calls them out of line. */
 typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
