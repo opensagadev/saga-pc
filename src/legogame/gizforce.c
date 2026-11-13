@@ -162,15 +162,10 @@ ADDGIZMOTYPE_PC *__cdecl GizRandom_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl Door_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl GizAIMessage_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32);
-ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl GizBombGen_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl GizPanel_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl Teleport_RegisterGizmo(i32);
 ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32);
-static void __cdecl GizForceSFX_completesfx(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_forcename(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_processsfx(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_returnsfx(NUFPAR_PC *parser);
 
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *object) {
     if (object->gizforce_los_info != NULL)

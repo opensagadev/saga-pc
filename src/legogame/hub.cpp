@@ -169,7 +169,6 @@ typedef struct hub_freeplay_pad_reader_pc_s {
     u8 unknown_00[0x78];
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER_PC;
-static __forceinline f32 HubFabsPc(f32 value);
 typedef struct world_minikit_reader_pc_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;

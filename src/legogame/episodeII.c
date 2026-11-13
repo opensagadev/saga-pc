@@ -28,7 +28,6 @@ typedef struct dooku_c_pc_s {
     GIZAIMESSAGE *hit_message;
     NUSPECIALHANDLE node;
 } DOOKU_C_PC;
-extern f32 FactoryBConveyorStopFrame;
 void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void __cdecl DrawForceBackEffect(NUSPECIALHANDLE *special);
 void __cdecl GizPanel_Reset(void *panel);

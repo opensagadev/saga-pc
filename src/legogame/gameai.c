@@ -50,8 +50,6 @@ typedef void(__cdecl *AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, voi
 typedef void(__cdecl *AI_CLEAR_CREATURES_PC)(void);
 typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
 typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
-extern const char GameAIEveryonePc[];
-extern const char *GameAISkipCharactersPc[4];
 extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
 extern AIACTIONDEF_PC lego_aiactiondefs[], api_aiactiondefs[], *game_aiactiondefs;
 extern AICONDITIONDEF_PC lego_aiconditiondefs[], *game_aiconditiondefs;

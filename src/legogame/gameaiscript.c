@@ -42,7 +42,6 @@ STATIC_ASSERT(offsetof(AITURRET_PARTIAL_PC, controller) == 0xe8);
 
 STATIC_ASSERT(offsetof(AIOBSTACLE_PARTIAL_PC, runtime_flags) == 0x9c);
 
-extern i32 turret_gizmotype_id;
 
 void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
@@ -285,7 +284,6 @@ f32 guided_start_time = 0.5f;
 
 i32 guided_rotate_speed = 240000;
 
-extern i32 __cdecl Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 
 extern i32 __cdecl GizmoGetTypeIDByName(void *, char *);
 

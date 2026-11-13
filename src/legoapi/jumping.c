@@ -63,8 +63,6 @@ extern void(__cdecl *Jump_EndOfLandContextFn)(GAMEOBJECT *);
 extern i32(__cdecl *Slam_GetDebrisFn)(GAMEOBJECT *, i32);
 extern i32(__cdecl *CanGlideFn)(GAMEOBJECT *);
 
-static i32 __cdecl BigJump_JumpAction_Default(GAMEOBJECT *object);
-static i32 __cdecl BigJump_LandAction_Default(GAMEOBJECT *object);
 
 void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {

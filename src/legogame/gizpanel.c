@@ -72,7 +72,6 @@ typedef struct HINT_PANEL_PC {
     f32 target_scale;
 } HINT_PANEL_PC;
 struct panel_movement_pc_s;
-struct panel_movement_pc_s *__cdecl GizPanel_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *, i32);
 
 /* Retail terrain helper is private to these callers (panel arrives in ESI). */
 static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {

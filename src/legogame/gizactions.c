@@ -90,29 +90,6 @@ GAMEOBJECT *__cdecl ActivateCharacter(char *, NUVEC *, i32);
 void __cdecl DeactivateCharacter(char *);
 void __cdecl GizBuildIt_KillParts(GIZBUILDIT_s *);
 
-void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void __cdecl GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-static void GizActions_ActivateBelt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
-void __cdecl GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
-void GizActions_ChangeObstTriggerType(GIZFLOW_PC *flow, FLOWBOX_PC *unused1, char **params, int count);
-void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-void __cdecl GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count);
-void __cdecl GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void __cdecl GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void __cdecl GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void __cdecl GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
-void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count);
-void GizActions_PlayRadio(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count);
-void __cdecl GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
-void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
-void __cdecl GizActions_SetPickupVisibilityPc(GIZFLOW_PC *, FLOWBOX_PC *, char **params, i32 count);
-void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count);
-void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count);
 const char RaceOpponentDistancePrefix[9] = "distance";
 
 void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {

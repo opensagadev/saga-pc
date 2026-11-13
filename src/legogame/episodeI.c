@@ -107,7 +107,6 @@ typedef struct cut_instance_reader_pc_s {
     u32 unknown_8c;
     f32 current_frame;
 } CUT_INSTANCE_READER_PC;
-extern i32 PodRaceKeyPc[8];
 extern i16 CharacterFixupIdPc007f19ac;
 extern i16 CharacterFixupIdPc007f19b0;
 extern i16 CharacterFixupIdPc007f19b4;

@@ -2,9 +2,7 @@
 
 
 void __cdecl PcControlInitializePc(i32, i32, i32, u8);
-i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object);
 u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index);
-void __cdecl StartDropIn(GAMEOBJECT *object);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, hitpoints) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
 STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);

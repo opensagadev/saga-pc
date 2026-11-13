@@ -1206,7 +1206,6 @@ extern "C" {
 
 /* Private collision helpers and callers retain their original translation-unit group. */
 static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
-static i32 Bolt_HitBlowupPrivate(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 
 extern "C" i32 FindAnglesXFullTempPc;
 

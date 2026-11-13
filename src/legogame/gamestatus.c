@@ -6,10 +6,6 @@ void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alp
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
 
-void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
-void __cdecl Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active);
-void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed);
 
 static __forceinline f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
