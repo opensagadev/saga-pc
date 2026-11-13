@@ -10104,17 +10104,19 @@ i32 __cdecl Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
         return 1;
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
     AIMoveInstruction(packet, &processor->action_pos, 0.0f, &processor->path_info, 1, 0.0f);
-    if ((object->flags_ef0 & 0x800000) != 0) {
+    if ((object->flags_ef0 & 0x800000) == 0) {
+        if (FreePlay != 0) {
+            processor->action_timer -= elapsed;
+            if (processor->action_timer < 0.0f) {
+                processor->action_timer = 0.5f;
+                object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
+            }
+        }
+    } else {
         f32 distance = NuVecDistSqr(&packet->terrain_origin, &processor->action_pos, NULL);
         if (distance < ai_moveradius * ai_moveradius) {
             packet->movement_look_target = &lever->position;
             object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
-        }
-    } else if (FreePlay != 0) {
-        processor->action_timer -= elapsed;
-        if (processor->action_timer < 0.0f) {
-            processor->action_timer = 0.5f;
-            object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
         }
     }
     return object->character_context == 0x4a && object->grapple == lever;
