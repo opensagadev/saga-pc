@@ -11787,9 +11787,12 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
                   NuLinkedListCheck(&aieditor->creatures));
     NuQFntSetColour(system_qfont, 0x80000000);
     NuQFntSetScale(system_qfont, xscale, yscale);
-    display = aieditor->selected_creature;
-    if (display == NULL)
+    if (aieditor->selected_creature != NULL)
+        display = aieditor->selected_creature;
+    else if (aieditor->nearest_creature != NULL)
         display = aieditor->nearest_creature;
+    else
+        display = NULL;
     if (display != NULL) {
         f32 distance = NuVecXZDist(&display->position, &aieditor->camera_position, &displacement);
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, "\"%s\", xzrng=%.2f", display->name, distance);
