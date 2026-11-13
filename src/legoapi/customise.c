@@ -1323,7 +1323,6 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
         CHARACTER_MODEL_LAYERS_PC *model = APICharacterLoaded(character_id);
         PLAYERCHARACTERCONFIG_PC *character;
         i32 helmet, selected, category;
-        const u16 *selection = Game.customiser_start[side].pieces;
         RTL_DATA_PC light_data;
         NUMTX matrix;
         u32 mask;
@@ -1337,7 +1336,7 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
         rtlResetEx(&light_data, 1);
         rtlApplySetScale(world->rtl_set, &light_data, &CustomisePos[side], NULL, -1, 1.0f);
         SetLights_RTLDATA(&light_data, 1.0f);
-        mask = CustomiserPreviewLayerMaskPc(customiser, selection, selected, character);
+        mask = CustomiserPreviewLayerMaskPc(customiser, Game.customiser_start[side].pieces, selected, character);
         NuMtxSetRotationY(&matrix, CustomiseYRotPc[side] + 0x8000);
         NuMtxTranslate(&matrix, &CustomisePos[side]);
         if (GameDrawCharacterModel(model, &runtime->animation_packets[side].packet, &matrix, NULL, NULL,
@@ -1352,10 +1351,10 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
                 if (resources == NULL || customiser->piece_counts[category] <= 0 ||
                     customiser->categories[category]->uses_special == 0)
                     continue;
-                resource = &resources[selection[category]];
+                resource = &resources[Game.customiser_start[side].pieces[category]];
                 if (NuSpecialExistsFn(&resource->special) == 0)
                     continue;
-                piece = &customiser->piece_sets[category][selection[category]];
+                piece = &customiser->piece_sets[category][Game.customiser_start[side].pieces[category]];
                 if (GetMenuID() == 12 && customiser_quit == 0 && category == selected &&
                     (active_count == 2 || side == preview_side)) {
                     NuFmod(CustomiseMenuTimePc[side], 0.3f);
@@ -1374,7 +1373,7 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
             LEVEL_OBJECT_RUNTIME_PC *object;
             if (hand == -1 || model->points_of_interest[hand] == NULL)
                 continue;
-            weapon = &customiser->piece_sets[2][selection[2]];
+            weapon = &customiser->piece_sets[2][Game.customiser_start[side].pieces[2]];
             if (weapon->weapon_model == -1)
                 continue;
             object = &world->level_objects[weapon->weapon_model];
