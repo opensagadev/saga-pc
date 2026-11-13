@@ -1126,15 +1126,11 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->can_use_object != grapple)
             return;
-        if (((grapple->flags >> 2) & 1) != 0) {
-            if (!(grapple->activation_progress <= 0.0f) ||
-                (!(object->pad->input_magnitude > 0.0f) && object->field_281 != 0)) {
-                SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
-                return;
-            }
-        } else if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 &&
-                   (4 != (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->panel_use_request) ||
-                    ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->tube_entry_data == NULL)) {
+        if (!((grapple->disabled && grapple->activation_progress <= 0.0f &&
+               (object->pad->input_magnitude > 0.0f || object->field_281 == 0)) ||
+              (!grapple->disabled && ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
+                                      (4 == ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->panel_use_request &&
+                                       ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->tube_entry_data != NULL))))) {
             SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
             return;
         }
@@ -1145,7 +1141,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
         object->field_7b3 = 0;
         object->context_hover_target_y = GrappleFabsPc(grapple->shadow_probe_position.y - object->upper_position.y);
-        if ((grapple->flags & 4) != 0) {
+        if (grapple->disabled) {
             object->context_variant_flags &= ~0x100;
             SetWeaponIn(object);
         } else {
