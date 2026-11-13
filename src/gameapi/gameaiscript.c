@@ -8568,31 +8568,31 @@ i32 __cdecl Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     (void)processor;
     (void)delta;
     object = NULL;
-    if (!first_time)
-        return 1;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
-        object = packet->owner->objptr;
-    if (count > 0) {
-        for (index = 0; index < count; ++index) {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                object = GetNamedGameObject(system, value + 10);
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ee0)) != NULL) {
-                target = GetNamedGameObject(system, value + 7);
-            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                disabled = 1;
+    if (first_time) {
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+            object = packet->owner->objptr;
+        if (count > 0) {
+            for (index = 0; index < count; ++index) {
+                value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+                if (value != NULL) {
+                    object = GetNamedGameObject(system, value + 10);
+                } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ee0)) != NULL) {
+                    target = GetNamedGameObject(system, value + 7);
+                } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                    disabled = 1;
+                }
             }
         }
-    }
-    if (object != NULL) {
-        if (disabled && (object->flags_1fc_word & 0x80) != 0) {
-            if (object->takeover_source != NULL)
-                ReleaseTakeOver(object, 0);
-            else if (TagCharacter(object, target, 0) == 0)
-                disabled = 0;
-            SetPlayer();
+        if (object != NULL) {
+            if (disabled && (object->flags_1fc_word & 0x80) != 0) {
+                if (object->takeover_source != NULL)
+                    ReleaseTakeOver(object, 0);
+                else if (TagCharacter(object, target, 0) == 0)
+                    disabled = 0;
+                SetPlayer();
+            }
+            object->tag_flags = (object->tag_flags & ~2U) | ((disabled << 1) & 2U);
         }
-        object->tag_flags = (object->tag_flags & ~2U) | ((u32)disabled << 1);
     }
     return 1;
 }
