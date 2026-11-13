@@ -768,13 +768,13 @@ void __cdecl edbriDrawCursor(void) {
     NuVecRotateZ(&extent, &extent, edbri_rotz);
     NuVecRotateY(&extent, &extent, edbri_roty);
     line[0].colour = 0xff0000ff;
-    line[1].colour = 0xff0000ff;
     line[0].position.x = edbri_cam_pos.x - extent.x;
     line[0].position.y = edbri_cam_pos.y - extent.y;
     line[0].position.z = edbri_cam_pos.z - extent.z;
     line[1].position.x = edbri_cam_pos.x + extent.x;
     line[1].position.y = edbri_cam_pos.y + extent.y;
     line[1].position.z = edbri_cam_pos.z + extent.z;
+    line[1].colour = 0xff0000ff;
     NuRndrLine3d(line, edbri_mtl, NULL);
 
     NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, (NUMTL *)edbri_mtl_zoff);
