@@ -2948,10 +2948,10 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
 /* Native 6813e0: caller-owned arena start/end and explicit record capacity.
  * This partitions an existing arena; it does not establish its allocation. */
 void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity) {
-    TerrainSkinPoolBasePc = (u8 *)(base + capacity);
     TerrainSkinInfosPc = base;
-    TerrainSkinInfoCapacityPc = capacity;
+    TerrainSkinPoolBasePc = (u8 *)(base + capacity);
     TerrainSkinPoolSlotBytesPc = 0;
+    TerrainSkinInfoCapacityPc = capacity;
     TerrainSkinInfoCountPc = 0;
     TerrainSkinArenaEndPc = end;
     TerrainSkinOriginalGroupCountPc = ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
