@@ -1175,25 +1175,24 @@ void __cdecl NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
 }
 
 void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
-    f32 pitch;
-    f32 yaw;
+    NUVEC angles; /* x: pitch, y: yaw */
     f32 length;
     i32 i;
-    NuRndrAnglesBetweenPointsPc(direction, &pitch, &yaw);
-    if (pitch < 8192.0f) {
-        pitch = 8192.0f;
+    NuRndrAnglesBetweenPointsPc(direction, &angles.x, &angles.y);
+    if (angles.x < 8192.0f) {
+        angles.x = 8192.0f;
     }
     length = NuFsqrt(direction->x * direction->x + direction->y * direction->y + direction->z * direction->z);
     direction->x = 0.0f;
     direction->y = 0.0f;
     direction->z = length;
-    NuRndrRotateVecPc(direction, pitch, yaw);
+    NuRndrRotateVecPc(direction, angles.x, angles.y);
     for (i = 0; i < 8; i++) {
         i32 angle = i * 0x10000 / 8;
         NuRndrShadowDirectionsPc[i].x = NU_COS_LUT(angle);
         NuRndrShadowDirectionsPc[i].y = -NU_SIN_LUT(angle);
         NuRndrShadowDirectionsPc[i].z = 0.0f;
-        NuRndrRotateVecPc(&NuRndrShadowDirectionsPc[i], pitch, yaw);
+        NuRndrRotateVecPc(&NuRndrShadowDirectionsPc[i], angles.x, angles.y);
     }
 }
 
