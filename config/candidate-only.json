@@ -362,6 +362,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legogame/gamestatus.c",
+   "symbol": "_StatusLerpPc",
+   "kind": "function"
+  },
+  {
    "unit": "src/gameapi/aisysall.c",
    "symbol": "_AIPathFabs",
    "kind": "function"
