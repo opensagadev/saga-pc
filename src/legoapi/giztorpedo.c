@@ -151,12 +151,11 @@ void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
 
 i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    GIZTORPMACHINESYS_s *system;
+    TORPEDO_MACHINE_QUERY_SYS_PC *system;
     i32 version, index, length;
-    u8 value;
     (void)unused;
     if (world != NULL) {
-        system = (GIZTORPMACHINESYS_s *)world->torpedo_machine_sys;
+        system = (TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys;
         if (system != NULL && system->count == 0) {
             version = EdFileReadInt();
             system->count = EdFileReadInt();
@@ -169,12 +168,10 @@ i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
                 EdFileRead(system->machines[index].name, length);
                 EdFileReadNuVec(&system->machines[index].position);
                 system->machines[index].y_rotation = EdFileReadShort();
-                if (version >= 2) {
-                    value = EdFileReadUnsignedChar();
-                    system->machines[index].flags = (u8)((system->machines[index].flags & ~4u) | (value != 0 ? 4 : 0));
-                } else {
-                    system->machines[index].flags &= ~4u;
-                }
+                if (version >= 2)
+                    system->machines[index].alternate = EdFileReadUnsignedChar() != 0;
+                else
+                    system->machines[index].alternate = 0;
             }
             return 1;
         }
