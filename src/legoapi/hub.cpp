@@ -2374,12 +2374,15 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
 
 /* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
 void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
-    i32 in_arcade = 0, goal = 0;
+    i32 in_arcade, goal;
     if (Arcade != 0 && (WORLD->area == NULL || WORLD->area != HUB_ADATA)) {
         goal = PCArcadePointGoals[ArcadeItem.entries[2].index];
         in_arcade = 1;
+    } else {
+        in_arcade = 0;
+        goal = 0;
     }
-    char text[16];
+    char text[32];
     if (!(in_arcade != 0 && goal > 0 && Arcade_Points[0] == goal - 1 && menu_flash != 0)) {
         sprintf(text, "%i", scores[0]);
         Text3DEx(text, -0.015f, y, 1.0f, .7f, .7f, .7f, 8, 255, 255, 255, (u8)(i32)((active0 != 0 ? 128 : 32) * alpha));
