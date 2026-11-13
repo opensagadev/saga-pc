@@ -3356,9 +3356,10 @@ i32 __cdecl Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
         }
         if (frames != 0) {
             processor->action_data_1 = (u8)(frames < 0 ? 0 : (frames > 255 ? 255 : frames));
-        } else if (processor->action_timer == 0.0f && maximum > minimum) {
-            processor->action_timer = NuRandFloat() * (maximum - minimum) + minimum;
+            return 0;
         }
+        if (processor->action_timer == 0.0f && maximum > minimum)
+            processor->action_timer = NuRandFloat() * (maximum - minimum) + minimum;
         return 0;
     }
     if (processor->action_data_1 != 0) {
