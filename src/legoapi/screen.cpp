@@ -518,11 +518,11 @@ void __cdecl GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
         else
             displayed = total;
         sprintf(text, "%i/%i", displayed, GOLDBRICKPOINTS);
-        f32 text_y = (0.3f - 1.3f) * blend + 1.3f;
+        f32 text_y = ((0.3f - 1.3f) * blend) + 1.3f;
         SmartTextEx(text, 0.0f, text_y, 1.0f, 1.5f, 1.5f, 1.5f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                     (i32)(blend * 128.0f));
         u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
-        f32 panel_y = (-0.3f - -1.3f) * blend + -1.3f;
+        f32 panel_y = ((-0.3f - -1.3f) * blend) + -1.3f;
         DrawPanel3DObjectNoAlpha(0.0f, panel_y, 1.0f, 1.0f, 1.0f, 1.0f,
                                  (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
                                  &WORLD->level_objects[211].special, 2);
