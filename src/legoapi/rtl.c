@@ -622,7 +622,7 @@ static void RtlApplyModifiersToChainPrivate(RTL_LIGHT_PC *light) {
     if (light->field_7c != NULL && light->field_79 != -1) {
         light->colour = zero;
         light->secondary_colour = zero;
-        light->direction.x = light->direction.y = light->direction.z = 0.0f;
+        NuVecClear(&light->direction);
         source = &light->field_7c[light->field_79];
         for (;;) {
             f32 scale = modifiers[source->field_7b];
