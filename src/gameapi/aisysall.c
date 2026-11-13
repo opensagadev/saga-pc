@@ -8080,16 +8080,18 @@ static void __cdecl AiEditorRenameAreaCancelPc(eduimenu_s *menu, eduimenu_s *chi
 }
 
 void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
-    i32 i;
-    f32 local_x[4] = {-size->x, -size->x, size->x, size->x};
+    f32 local_x[4];
     f32 rotated_x[4];
-    f32 local_z[4] = {-size->z, size->z, size->z, -size->z};
+    f32 local_z[4];
     f32 rotated_z[4];
-    const f32 cosine = NU_COS_LUT(rotation);
-    const f32 sine = NU_SIN_LUT(rotation);
+    i32 i;
+    local_x[0] = local_x[1] = -size->x;
+    local_x[2] = local_x[3] = size->x;
+    local_z[0] = local_z[3] = -size->z;
+    local_z[1] = local_z[2] = size->z;
     for (i = 0; i < 4; ++i) {
-        rotated_x[i] = cosine * local_x[i] + sine * local_z[i];
-        rotated_z[i] = cosine * local_z[i] - sine * local_x[i];
+        rotated_x[i] = NU_COS_LUT(rotation) * local_x[i] + NU_SIN_LUT(rotation) * local_z[i];
+        rotated_z[i] = NU_COS_LUT(rotation) * local_z[i] - NU_SIN_LUT(rotation) * local_x[i];
     }
 #define DRAW_AREA_BOX_EDGE(a, b, y0, y1)                                                                               \
     AiRndrLine3dDbg(position->x + rotated_x[a], y0, position->z + rotated_z[a], position->x + rotated_x[b], y1,        \
