@@ -150,18 +150,18 @@ i32 __cdecl eduicbRenderSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x,
     NuStrCpy(format, item->text);
     NuStrCat(format, slider->format);
     EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, format, slider->value);
+    y += height;
     if (slider->normalized_value >= 0.0f && slider->normalized_value <= 1.0f) {
         if (edui_donotdraw == 0) {
-            i32 top = (y + height) << 3;
-            i32 bottom = (y + height * 2 - 1) << 3;
-            f32 span = (f32)(width - 2);
-            i32 marker = (i32)(slider->normalized_value * span + (x + 1)) << 4;
+            i32 bottom = (y + height - 1) << 3;
+            i32 marker = (i32)(slider->normalized_value * (width - 2) + (x + 1)) << 4;
+            i32 top = y << 3;
             NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
-                marker = (i32)(slider->normalized_value * span + x) << 4;
+                marker = (i32)(slider->normalized_value * (width - 2) + x) << 4;
                 NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
                 if (edui_donotdraw == 0) {
-                    marker = (i32)(slider->normalized_value * span + (x - 1)) << 4;
+                    marker = (i32)(slider->normalized_value * (width - 2) + (x - 1)) << 4;
                     NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
                 }
             }
@@ -192,12 +192,13 @@ i32 __cdecl eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32
     NuStrCpy(format, item->text);
     NuStrCat(format, slider->format);
     EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, format, (i32)slider->value);
+    y += height;
     {
         if (edui_donotdraw == 0) {
-            i32 top = (y + height) << 3;
-            i32 bottom = (y + height * 2 - 1) << 3;
+            i32 bottom = (y + height - 1) << 3;
             f32 span = (f32)(width);
             i32 marker = (i32)(span * slider->normalized_value + (x + 1)) << 4;
+            i32 top = y << 3;
             NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
                 marker = (i32)(span * slider->normalized_value + x) << 4;
