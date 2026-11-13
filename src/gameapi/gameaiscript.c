@@ -5461,10 +5461,10 @@ i32 __cdecl Action_PressSpecialButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    i32 result;
-    if (packet == NULL || packet->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
+    // MATCH-EXCEPTION: retail tests the loaded object again (probably a macro-expanded guard).
     if (object == NULL)
         return 1;
     if (first_time) {
@@ -5474,12 +5474,11 @@ i32 __cdecl Action_PressSpecialButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
         }
     }
     object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
-    result = 1;
-    if (processor->action_data_1 == 0)
-        return result;
-    object->pad->buttons_held |= GAMEPAD_SPECIAL;
-    result = 0;
-    return result;
+    if (processor->action_data_1 != 0) {
+        object->pad->buttons_held |= GAMEPAD_SPECIAL;
+        return 0;
+    }
+    return 1;
 }
 
 i32 __cdecl Action_PressTagButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -5606,28 +5605,28 @@ i32 __cdecl Action_DontAvoidCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 enabled;
     char *value;
 
+    enabled = 1;
+    object = NULL;
+    dont_avoid = NULL;
     if (first_time) {
-        object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-        if (param_count > 0) {
-            dont_avoid = NULL;
-            enabled = 1;
-            for (index = 0; index < param_count; ++index) {
-                value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-                if (value != NULL) {
-                    object = GetNamedGameObject(system, value + 10);
-                    continue;
-                }
-                value = NuStrIStr(params[index], (char *)AITransferLiteral757a5c);
-                if (value != NULL) {
-                    dont_avoid = GetNamedGameObject(system, value + 11);
-                    continue;
-                }
-                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
-                    enabled = 0;
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+            object = packet->owner->objptr;
+        for (index = 0; index < param_count; ++index) {
+            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+            if (value != NULL) {
+                object = GetNamedGameObject(system, value + 10);
+                continue;
             }
-            if (object != NULL && dont_avoid != NULL)
-                object->ai_packet.dont_avoid_character = enabled ? dont_avoid : NULL;
+            value = NuStrIStr(params[index], (char *)AITransferLiteral757a5c);
+            if (value != NULL) {
+                dont_avoid = GetNamedGameObject(system, value + 11);
+                continue;
+            }
+            if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
+                enabled = 0;
         }
+        if (object != NULL && dont_avoid != NULL)
+            object->ai_packet.dont_avoid_character = enabled ? dont_avoid : NULL;
     }
     return 1;
 }
@@ -5803,11 +5802,11 @@ i32 __cdecl Action_SetZeroAcceleration(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     GAMEOBJECT *object;
     i32 enabled;
 
+    enabled = 1;
+    object = NULL;
     if (first_time) {
-        object = NULL;
         if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
-        enabled = 1;
         for (index = 0; index < param_count; ++index) {
             if (NuStrIStr(params[index], (char *)ActionSnapPlayer1Name) != NULL ||
                 NuStrIStr(params[index], (char *)GameAIPlayerName) != NULL)
