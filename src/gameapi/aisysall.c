@@ -12753,7 +12753,7 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
                 AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
                                       processor->active_refs[index - 1]->script, reference->return_state);
             else {
-                creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
+                creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
                 AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
                                       reference->return_state);
             }
@@ -12769,7 +12769,7 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
             AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
                                   processor->active_refs[index - 1]->script, reference->return_state);
         else {
-            creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
+            creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
             AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
                                   reference->return_state);
         }
@@ -12777,8 +12777,7 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
     if (processor->next_state != NULL) {
         AIScriptSetState(processor, processor->next_state);
         processor->next_state = NULL;
-    }
-    if (processor->state == NULL)
+    } else if (processor->state == NULL)
         AIScriptSetState(processor, (AISTATE_PC *)NuLinkedListGetHead(&processor->script->states));
     if (processor->state != NULL) {
         while (processor->action_node != NULL) {
