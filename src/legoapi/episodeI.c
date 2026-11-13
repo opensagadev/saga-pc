@@ -1531,6 +1531,7 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
     f32 ratio;
     f32 speed;
     f32 distance_sq;
+    NUVEC *point;
     if (pod->spline == NULL)
         return 0;
     object = pod->object;
@@ -1539,9 +1540,10 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
         return 0;
     }
     if (!(PodRacePc->lap_countdown > 0.0f)) {
-        direction.x = pod->previous_position.x - pod->matrix.m30;
-        direction.y = pod->previous_position.y - pod->matrix.m31;
-        direction.z = pod->previous_position.z - pod->matrix.m32;
+        point = &pod->previous_position;
+        direction.x = point->x - pod->matrix.m30;
+        direction.y = point->y - pod->matrix.m31;
+        direction.z = point->z - pod->matrix.m32;
         length_sq = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
         dot = direction.y * pod->matrix.m21 + direction.x * pod->matrix.m20 + direction.z * pod->matrix.m22;
         if (!(pod->start >= 1.0f)) {
@@ -1551,10 +1553,10 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     pod->start = 1.0f;
                     break;
                 }
-                CalcSplinePoint(pod->spline, &pod->previous_position, pod->start);
-                direction.x = pod->previous_position.x - pod->matrix.m30;
-                direction.y = pod->previous_position.y - pod->matrix.m31;
-                direction.z = pod->previous_position.z - pod->matrix.m32;
+                CalcSplinePoint(pod->spline, point, pod->start);
+                direction.x = point->x - pod->matrix.m30;
+                direction.y = point->y - pod->matrix.m31;
+                direction.z = point->z - pod->matrix.m32;
                 length_sq = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
                 dot = direction.y * pod->matrix.m21 + direction.x * pod->matrix.m20 + direction.z * pod->matrix.m22;
             }
