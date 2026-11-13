@@ -385,7 +385,7 @@ A call to a small function (even an empty one) that retail keeps, where ours
 inlines it, means the caller's unit only had a declaration: the caller lives
 in another unit than the callee. The neighbours of the caller in retail
 address order name that unit. Examples: `PCDevicePostEffectBarrierPc` (to
-`d3d_api_lifetime.cpp`), `ShaderCompilerBufferAllocatorPc::operator<<` (to
+`nuwin32/d3dApiCalls.cpp`), `ShaderCompilerBufferAllocatorPc::operator<<` (to
 `shader_dictionary.cpp`), and the atexit entry `??__FPCDeviceBackend`, which
 calls the destructor because the global itself was defined next to
 `nu_keyboard_owner` in `data.cpp`. `tools/callset.py` lists these as call-set

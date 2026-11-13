@@ -2129,28 +2129,6 @@ extern "C" void __cdecl PCDeviceValidateDevicePc(u32 *passes) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->validate_device(PCDeviceBackend.device, passes);
 }
 
-extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
-    f32 value;
-    switch (PcWindowOptions.aspect_mode) {
-        case 0:
-            value = 1.3333333730697632f;
-            break;
-        case 1:
-            value = 1.7777777910232544f;
-            break;
-        case 2:
-            value = 1.600000023841858f;
-            break;
-        case 3:
-            value = PCDeviceBackend.active_aspect;
-            break;
-        default:
-            value = 1.3333333730697632f;
-            break;
-    }
-    return value;
-}
-
 void __thiscall PC_DEVICE_STATE_CACHE_PC::Invalidate() {
     vertex_declaration = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
     index_buffer = reinterpret_cast<PC_BUFFER_RESOURCE_PC *>(-1);
@@ -2222,8 +2200,4 @@ extern "C" void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *source, co
 extern "C" i32 __cdecl PCDeviceSetCursorPositionPc(i32 x, i32 y) {
     PCDeviceBackend.device->methods->set_cursor_position(PCDeviceBackend.device, x, y, 0);
     return 0;
-}
-
-extern "C" u32 __cdecl PcGetRefreshRatePc(void) {
-    return PCDeviceBackend.parameters.refresh_rate;
 }

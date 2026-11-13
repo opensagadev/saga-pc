@@ -3,7 +3,6 @@
 extern "C" {
     void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
     void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
-    void __cdecl NuKeyboardWindowStateLeafPc(void);
     extern const f32 InitOnceHalf;
     i32 __cdecl PCDeviceShowCursorPc(i32 show);
     void __cdecl NuRndrDwaInitPc(void);
@@ -388,14 +387,6 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     return 1;
 }
 
-extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance) {
-    PCFrameCriticalSectionIndex_candidate = PCThreadCriticalSectionCreate_candidate();
-    PCDeviceBackend.InitializeAdapter();
-    nu_keyboard_owner.Setup(window, instance);
-    NuKeyboardWindowStateLeafPc();
-    PCNativeWarningDebugState.Initialize();
-}
-
 extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;
@@ -564,17 +555,4 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
         }
     }
     return NuLanguageGet();
-}
-
-extern "C" void __cdecl PCDeviceResetSamplerDefaultsPc(void) {
-    u32 stage = 0;
-    if (PCDeviceBackend.caps.sampler_count_pc == 0)
-        return;
-    do {
-        PCDeviceSetSamplerState(stage, 5, 2);
-        PCDeviceSetSamplerState(stage, 6, 2);
-        PCDeviceSetSamplerState(stage, 7, 2);
-        PCDeviceSetSamplerState(stage, 9, 0);
-        ++stage;
-    } while (stage != PCDeviceBackend.caps.sampler_count_pc);
 }

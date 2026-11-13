@@ -37,18 +37,6 @@ void __cdecl PCDisplayListCriticalSectionLeavePc(void) {
     PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
 }
 
-void __cdecl PCFrameCriticalSectionEnter_candidate(void) {
-    PCThreadCriticalSectionEnter_candidate(PCFrameCriticalSectionIndex_candidate);
-}
-
-void __cdecl PCFrameCriticalSectionLeave_candidate(void) {
-    PCThreadCriticalSectionLeave_candidate(PCFrameCriticalSectionIndex_candidate);
-}
-
-i32 __cdecl PCFrameLoadingYieldEnabled(void) {
-    return PCFrameLoadingYieldEnabledPC;
-}
-
 i64 __cdecl PCThreadMillisecondsPc(void) {
     NuTime time;
     NuTimeGet(&time);

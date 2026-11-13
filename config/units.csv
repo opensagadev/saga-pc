@@ -223,8 +223,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x6dbab0,0x6dddba,src/nu2api/nuwin32/pcapi.cpp,,nu2api,file+marker+review,high,ret 28,19,7141,7141,4211,393,0,nu2api/hardware_dispatch.cpp:4508 nu2api/pc_window.cpp:928 nu2api/platform_files.cpp:897 nu2api/platform_policy.cpp:321 nu2api/pc_options.cpp:284 nu2api/nuwin.c:109 nu2api/save_folder.cpp:69 gameapi/shop_persistence.cpp:25
 0x6dddf0,0x6de654,src/nu2api/nuwin32/windows.cpp,,nu2api,file+review,medium,,12,1880,1880,1880,0,0,nu2api/pc_window.cpp:1509 nu2api/pc_cursor_pc.cpp:217 nu2api/numouse.c:154
 0x6de6d0,0x6dee23,src/nu2api/nuwin32/Stubs.cpp,,nu2api,batman+review,low,,19,400,400,400,0,0,legoapi/menu_titles.cpp:177 nu2api/nuscratch.c:137 nu2api/nupad_pc.c:65 nu2api/nufile_mc.c:15 nu2api/bgproc.c:4 nu2api/nudebug.c:2
-0x6dee30,0x6df004,src/nu2api/?0x6dee30,,nu2api,review+android,none,,10,141,141,141,0,0,nu2api/d3d_api_lifetime.cpp:116 nu2api/nufile_mc.c:25
-0x6df010,0x6dfea0,src/nu2api/nuwin32/d3dApiCalls.cpp,,nu2api,file+marker+review,high,ret ret 28,22,1132,1132,1123,5,5,nu2api/d3d_api_lifetime.cpp:638 nu2api/nuvideo.c:220 nu2api/hardware_dispatch.cpp:127 nu2api/pc_device.cpp:98 nu2api/nuthread.c:35 nu2api/nuframe.c:14
+0x6dee30,0x6df004,src/nu2api/?0x6dee30,,nu2api,review+android,none,,10,141,141,141,0,0,nu2api/nuwin32/d3dApiCalls.cpp:116 nu2api/nufile_mc.c:25
+0x6df010,0x6dfea0,src/nu2api/nuwin32/d3dApiCalls.cpp,,nu2api,file+marker+review,high,ret ret 28,22,1132,1132,1123,5,0,nu2api/nuwin32/d3dApiCalls.cpp:1132
 0x6dff30,0x6e1703,src/nu2api/?0x6dff30,,nu2api,marker+android,none,ret ret 28,12,5932,5932,651,82,0,nu2api/nudebug_pc.cpp:5932
 0x6e1750,0x6e17fc,src/nu2api/?0x6e1750,,nu2api,android,none,,1,172,172,172,0,0,nu2api/nudebug_pc.cpp:172
 0x6e1820,0x6e4fe5,src/nu2api/nuwin32/d3dCore.cpp,,nu2api,file+marker+review,high,ret 28,111,12762,12762,7268,422,0,nu2api/pc_device.cpp:12616 legoapi/menu_video.cpp:146

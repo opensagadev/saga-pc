@@ -2,33 +2,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void __cdecl PCDeviceResetState(void) {
-    i32 stage;
-
-    PCThreadCriticalSectionEnter_candidate(PCFrameCriticalSectionIndex_candidate);
-    PCDeviceSetRenderState(137, 0);
-    PCDeviceSetRenderState(7, 1);
-    PCDeviceSetRenderState(14, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(19, 2);
-    PCDeviceSetRenderState(20, 1);
-    PCDeviceSetRenderState(24, 0);
-    PCDeviceSetRenderState(25, 8);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(52, 0);
-    for (stage = 0; stage < 8; ++stage) {
-        PCDeviceSetSamplerState(stage, 5, 2);
-        PCDeviceSetSamplerState(stage, 6, 2);
-        PCDeviceSetSamplerState(stage, 7, 2);
-    }
-    PCDeviceSetTexture(0, NULL);
-    PCDeviceSetTexture(1, NULL);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetTextureStageState(1, 1, 1);
-    PCDeviceSetTextureStageState(1, 4, 1);
-    PCThreadCriticalSectionLeave_candidate(PCFrameCriticalSectionIndex_candidate);
-}
-
 void __cdecl bgProcDataOversize(i32 size) {
 }
 
