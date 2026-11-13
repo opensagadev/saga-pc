@@ -4656,7 +4656,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *anti
                 gradient.x = -gradient.x;
                 gradient.z = -gradient.z;
             }
-            absolute_turn = turn < 0 ? -turn : turn;
+            absolute_turn = abs(turn);
             if (absolute_turn < 1820) {
                 scale = absolute_turn / 1820.0;
                 gradient.x *= scale;
@@ -4774,7 +4774,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
             gradient.x = -gradient.x;
             gradient.z = -gradient.z;
         }
-        absolute_turn = turn < 0 ? -turn : turn;
+        absolute_turn = abs(turn);
         if (absolute_turn < 1820) {
             scale = absolute_turn / 1820.0;
             gradient.x *= scale;
