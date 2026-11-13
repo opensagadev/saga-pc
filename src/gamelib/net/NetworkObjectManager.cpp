@@ -1051,7 +1051,8 @@ NOSContext &NOSContext::operator=(const NOSContext &other) {
 }
 
 bool NOSContext::operator==(const NOSContext &other) const {
-    return memcmp(bytes, other.bytes, sizeof(bytes)) == 0;
+    // MATCH-EXCEPTION: the redundant bool cast gives retail's direct sete al.
+    return (bool)(memcmp(bytes, other.bytes, sizeof(bytes)) == 0);
 }
 
 void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
