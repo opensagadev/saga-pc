@@ -732,11 +732,25 @@ STATIC_ASSERT(offsetof(SceneInstance, current_transform) == 0x80);
 STATIC_ASSERT(offsetof(SceneInstance, visibility) == 0xc0);
 STATIC_ASSERT(sizeof(SceneInstance) == 0xd0);
 
+/* The scene instances the editor owns, in creation order. */
+struct SceneInstanceList {
+    SceneInstance *first;
+    SceneInstance *last;
+    i32 count;
+
+    SceneInstanceList();
+    SceneInstance *First();
+    void Clear();
+    void InsertAfter(SceneInstance *instance, SceneInstance *after);
+    void Remove(SceneInstance *instance);
+    i32 Count();
+};
+
 /* Editor class for the specials of the loaded scenes plus the instances the
  * editor creates from them. */
 class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
   public:
-    SceneObjectHelper() : owned_first(NULL), owned_last(NULL), owned_object_count(0), show_hidden_wire(1) {
+    SceneObjectHelper() : show_hidden_wire(1) {
     }
     virtual void ClearLevel(i32 level);
     virtual void Flush();
@@ -764,9 +778,7 @@ class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
     i32 iteration_object_index;
     i32 iteration_scene_index;
     char scene_filter[32];
-    SceneInstance *owned_first;
-    SceneInstance *owned_last;
-    i32 owned_object_count;
+    SceneInstanceList owned;
     i32 show_hidden_solid;
     i32 show_hidden_wire;
     i32 show_owned_objects;
@@ -775,7 +787,7 @@ STATIC_ASSERT(offsetof(SceneObjectHelper, scenes) == 0x1c);
 STATIC_ASSERT(offsetof(SceneObjectHelper, scene_counts) == 0x44);
 STATIC_ASSERT(offsetof(SceneObjectHelper, iteration_object_index) == 0x70);
 STATIC_ASSERT(offsetof(SceneObjectHelper, scene_filter) == 0x78);
-STATIC_ASSERT(offsetof(SceneObjectHelper, owned_first) == 0x98);
+STATIC_ASSERT(offsetof(SceneObjectHelper, owned) == 0x98);
 STATIC_ASSERT(sizeof(SceneObjectHelper) == 0xb0);
 extern SceneObjectHelper theSceneObjectHelper;
 
@@ -3818,14 +3830,67 @@ void SceneInstance::SetName(const char *value) {
     name.Set(value);
 }
 
+SceneInstanceList::SceneInstanceList() : first(NULL), last(NULL), count(0) {
+}
+
+SceneInstance *SceneInstanceList::First() {
+    return first;
+}
+
+/* Forgets the instances without unlinking them. */
+void SceneInstanceList::Clear() {
+    last = NULL;
+    first = NULL;
+    count = 0;
+}
+
+/* A NULL position appends the instance. */
+void SceneInstanceList::InsertAfter(SceneInstance *instance, SceneInstance *after) {
+    if (after != NULL) {
+        instance->previous = after;
+        instance->next = after->next;
+        if (after->next != NULL)
+            after->next->previous = instance;
+        else
+            last = instance;
+        after->next = instance;
+        count++;
+    } else {
+        instance->next = NULL;
+        instance->previous = last;
+        if (last != NULL)
+            last->next = instance;
+        last = instance;
+        if (first == NULL)
+            first = instance;
+        count++;
+    }
+}
+
+void SceneInstanceList::Remove(SceneInstance *instance) {
+    if (instance->next != NULL)
+        instance->next->previous = instance->previous;
+    else
+        last = instance->previous;
+    if (instance->previous != NULL)
+        instance->previous->next = instance->next;
+    else
+        first = instance->next;
+    instance->next = NULL;
+    instance->previous = NULL;
+    count--;
+}
+
+i32 SceneInstanceList::Count() {
+    return count;
+}
+
 void SceneObjectHelper::Flush() {
     for (i32 i = 0; i < 10; i++) {
         scenes[i] = NULL;
         scene_counts[i] = 0;
     }
-    owned_last = NULL;
-    owned_first = NULL;
-    owned_object_count = 0;
+    owned.Clear();
 }
 
 /* Builds a SceneObject for every special of each loaded scene, in linear
@@ -3875,7 +3940,7 @@ void SceneObjectHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
 }
 
 i32 SceneObjectHelper::GetNumObjects() {
-    return owned_object_count + scene_object_count;
+    return owned.Count() + scene_object_count;
 }
 
 /* Scene objects of every loaded scene that pass the name filter, then the
@@ -3902,7 +3967,7 @@ void *SceneObjectHelper::GetNextObject(void *object) {
     }
     if (object != NULL) {
         if (static_cast<SceneObject *>(object)->editor_owned == 0)
-            return owned_first;
+            return owned.First();
         return static_cast<SceneInstance *>(object)->next;
     }
     return NULL;
@@ -3911,14 +3976,7 @@ void *SceneObjectHelper::GetNextObject(void *object) {
 void *SceneObjectHelper::CreateObject(void *, i32, i32) {
     SceneInstance *object = new (theMemoryManager.AllocPool(sizeof(SceneInstance), 1)) SceneInstance;
     if (object != NULL) {
-        object->next = NULL;
-        object->previous = owned_last;
-        if (owned_last != NULL)
-            owned_last->next = object;
-        owned_last = object;
-        if (owned_first == NULL)
-            owned_first = object;
-        owned_object_count++;
+        owned.InsertAfter(object, NULL);
         object->SetName("object");
     }
     return object;
@@ -3929,17 +3987,7 @@ void SceneObjectHelper::DestroyObject(void *object, i32) {
     theLevelEditor.destroying_objects = 1;
     if (instance->editor_owned == 0)
         return;
-    if (instance->next != NULL)
-        instance->next->previous = instance->previous;
-    else
-        owned_last = instance->previous;
-    if (instance->previous != NULL)
-        instance->previous->next = instance->next;
-    else
-        owned_first = instance->next;
-    instance->next = NULL;
-    instance->previous = NULL;
-    owned_object_count--;
+    owned.Remove(instance);
     delete instance;
 }
 
@@ -8471,7 +8519,7 @@ void SceneObjectHelper::Initialise() {
 /* Draws the visible editor-owned instances; hidden ones are drawn solid or
  * as a wire sphere while the editors are entered, as the menu options say. */
 void SceneObjectHelper::SubRender() {
-    for (SceneInstance *object = owned_first; object != NULL; object = object->next) {
+    for (SceneInstance *object = owned.First(); object != NULL; object = object->next) {
         if (object->hidden != 0)
             continue;
         if (object->visibility == 0 && (show_hidden_solid == 0 || theLevelEditor.editors_entered == 0)) {
