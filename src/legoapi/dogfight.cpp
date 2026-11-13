@@ -1004,13 +1004,19 @@ extern "C" {
         i16 yaw, pitch;
         if (mode == 1 || (mode != 2 && mode != 3))
             return;
-        count = mode == 3 ? spline->point_count * 8 : 20;
+        count = 20;
+        if (mode == 3)
+            count = spline->point_count * 8;
         SampleFlightSplinePc(spline, points, count);
         for (i = 1; i < count; ++i) {
             if (mode == 3) {
-                direction.x = points[i].x - (f64)points[i - 1].x;
-                direction.y = points[i].y - (f64)points[i - 1].y;
-                direction.z = points[i].z - (f64)points[i - 1].z;
+                {
+                    NUVEC4 *next = &points[i];
+                    NUVEC4 *previous = &points[i - 1];
+                    direction.x = next->x - (f64)previous->x;
+                    direction.y = next->y - (f64)previous->y;
+                    direction.z = next->z - (f64)previous->z;
+                }
                 yaw = (i16)NuAtan2D(direction.x, direction.z);
                 NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
                 pitch = (i16)NuAtan2D(axis.y, axis.z);
@@ -1024,14 +1030,18 @@ extern "C" {
             }
         }
         for (i = 0; i < spline->point_count; ++i) {
-            from = (i32)((f64)(i * count) / (spline->point_count - 1) - 0.5);
+            from = (i32)((f32)(i * count) / (spline->point_count - 1) - 0.5);
             if (from < 0)
                 from = 0;
             else if (from > count - 2)
                 from = count - 2;
-            direction.x = points[from + 1].x - (f64)points[from].x;
-            direction.y = points[from + 1].y - (f64)points[from].y;
-            direction.z = points[from + 1].z - (f64)points[from].z;
+            {
+                NUVEC4 *previous = &points[from];
+                NUVEC4 *next = &points[from + 1];
+                direction.x = next->x - (f64)previous->x;
+                direction.y = next->y - (f64)previous->y;
+                direction.z = next->z - (f64)previous->z;
+            }
             yaw = (i16)NuAtan2D(direction.x, direction.z);
             NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
             pitch = (i16)NuAtan2D(axis.y, axis.z);
@@ -2376,14 +2386,15 @@ extern "C" {
     }
 
     static __declspec(noinline) void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
-        DOGFIGHT_QUICK_BUFFER_PC *buffer = (DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer;
+        DOGFIGHT_QUICK_BUFFER_PC *buffer;
         GAMEOBJECT *player0, *player1;
         DOOR_s *door;
-        i32 i, index, j;
+        i32 i, j;
         space->door_elapsed = space->door_countdown;
         space->door_time += FRAMETIME;
         space->door_countdown += (f64)space->normalized_speed * FRAMETIME;
         ProcessFormationActionsPc((DOGFIGHT_ACTION_STATE_PC *)&space->draw_scale);
+        buffer = (DOGFIGHT_QUICK_BUFFER_PC *)&space->reset_buffer;
         for (i = 0; i < 8; ++i)
             ProcessFlightGroupPc(&space->groups[i], buffer);
         ProcessQuickBoltsPc(buffer);
@@ -2395,21 +2406,17 @@ extern "C" {
         }
         player1 = (GAMEOBJECT *)Player[1];
         player0 = (GAMEOBJECT *)Player[0];
-        index = -1;
         for (i = 6; i != -1; --i) {
             if ((player0 != NULL && player0->sock_position.distance > DogfightDoorsPc[i].distance) ||
                 (player1 != NULL && player1->sock_position.distance > DogfightDoorsPc[i].distance)) {
-                index = i;
-                break;
-            }
-        }
-        if (index >= 0) {
-            door = WORLD->doors;
-            for (j = 0; j < WORLD->door_count; ++j, ++door) {
-                if (NuStrICmp((char *)door, DogfightDoorsPc[index].name) == 0) {
-                    Doors_SetLastDoor(door);
-                    break;
+                door = WORLD->doors;
+                for (j = 0; j < WORLD->door_count; ++j, ++door) {
+                    if (NuStrICmp((char *)door, DogfightDoorsPc[i].name) == 0) {
+                        Doors_SetLastDoor(door);
+                        break;
+                    }
                 }
+                break;
             }
         }
         if (WORLD->area == BATTLEOVERCORUSCANT_ADATA)
