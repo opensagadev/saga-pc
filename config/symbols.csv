@@ -110,6 +110,7 @@ address,symbol,size,ctype
 0x4087e0,_CableVuVecMakePc,28,
 0x00408800,_InitCables,127,void __cdecl (WORLDINFO *)
 0x408880,_CreateCable,147,"CABLE_RECORD_PC *__cdecl(GAMEOBJECT*,GAMEOBJECT*,i32)"
+0x408920,_DestroyCable,49,
 0x408960,_ReleaseCable,213,"void __cdecl(CABLE_RECORD_PC *, i32)"
 0x408a40,_CableAtstToppled,175,void __cdecl(GAMEOBJECT *)
 0x408af0,_UpdateCables,3725,void __cdecl(void)
@@ -1162,6 +1163,7 @@ address,symbol,size,ctype
 0x4665b0,_GizmoBombGen_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x4665c0,_GizBombGens_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x4665e0,_GizBombGens_ClearProgress,31,"void __cdecl(void *, void *)"
+0x466600,_GizBombGen_FindByName,67,
 0x466650,_GizBombGens_StoreProgress,122,"void __cdecl(void *, void *, void *)"
 0x4666d0,_GizBombGen_RegisterGizmo,283,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x4667f0,_GizforceNuErrorPc,1,
@@ -1180,6 +1182,7 @@ address,symbol,size,ctype
 0x466f30,_GizForces_PostLoad,86,"void __cdecl(void *, void *)"
 0x466f90,_GizForces_AddLevelSfx,161,"void __cdecl(void *, void *, i32 *, i32 *, i32)"
 0x467040,_GizForces_ReserveBufferSpace,234,
+0x467130,_GizForce_SetVisibility,54,
 0x467170,_GizmoForce_SetVisibility,60,"void __cdecl(GIZMO_PC *, i32)"
 0x4671b0,_GizmoForce_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x4671d0,_ForceUpdateCentrePc,48,
@@ -1424,6 +1427,7 @@ address,symbol,size,ctype
 0x477d60,_Hub_UpdateMiniKits,1773,
 0x478450,_Hub_DrawMiniKits,1669,void __cdecl(WORLDINFO *)
 0x478ae0,_Hub_LockUnlockDoors,1,void __cdecl(WORLDINFO *)
+0x478af0,_fun_00478af0,5,
 0x00478b00,?HubDrawMiniKitCountPc@@YAXMMHHM@Z,544,
 0x00478d20,_Hub_DrawImportantBrick,517,
 0x00478f30,?HubDrawAreaStatsPc@@YAXMHH@Z,2012,
@@ -1496,6 +1500,7 @@ address,symbol,size,ctype
 0x481d70,_Ledge_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
 0x481d90,_Ledge_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
 0x481db0,_Ledges_Reset,133,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS_PC *)"
+0x481e40,_Ledge_FindNearest,179,
 0x481f00,_Ledges_Draw,162,"void __cdecl(WORLDINFO *,void *,f32)"
 0x481fb0,_Ledges_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x481fd0,_Ledges_AddGizmos,97,"void __cdecl(GIZMOSYS_PC *,i32,WORLDINFO *,void *)"
@@ -2066,6 +2071,7 @@ address,symbol,size,ctype
 0x4c03d0,_Shard_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
 0x4c03f0,_Shards_UpdateBeforeCharacters,48,"void __cdecl(WORLDINFO *,void *,f32)"
 0x4c0420,_Shards_UpdateAfterCharacters,633,"void __cdecl(WORLDINFO *,void *,f32)"
+0x4c06a0,_Shard_FindNearest,145,
 0x4c0740,_Shards_Draw,404,"void __cdecl(WORLDINFO *,void *,f32)"
 0x4c08e0,_Shards_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x4c0900,_Shards_AddGizmos,97,"void __cdecl(GIZMOSYS_PC *,i32,WORLDINFO *,void *)"
@@ -3091,6 +3097,7 @@ address,symbol,size,ctype
 0x4f90f0,_NuTimeWait,256,void __cdecl (f32)
 0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
+0x4f9540,_fun_004f9540,45,
 0x4f9570,_ImplodeReadOffsetLengthsPrivatePc,319,
 0x4f96b0,_ImplodeReadLiteralLengthsPrivatePc,358,
 0x4f9820,_ImplodeDecodeC,151,u32 __cdecl(void)
@@ -3470,6 +3477,8 @@ address,symbol,size,ctype
 0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,u8)"
 0x50d240,_FindNextBreak,375,"i32 __cdecl(u8*,i32)"
 0x50d3c0,_FindNearestBreak,690,"i32 __cdecl(u8*,i32)"
+0x50d680,_fun_0050d680,160,
+0x50d720,_fun_0050d720,496,
 0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,i32)"
 0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
 0x50e410,_SmartTextExDrop,252,
@@ -4529,6 +4538,7 @@ address,symbol,size,ctype
 0x00552760,_EvalAnim2,181,"void __cdecl (NUSPECIALHANDLE *, f32)"
 0x552820,_NuSpecialGetAnimPos,134,
 0x005528b0,_SaveSceneObjectAnimTFactors,60,void __cdecl (NUGSCN *)
+0x5528f0,_DrawRectRGBA,245,
 0x5529f0,_InitTexAnimScripts,203,void __cdecl(char **)
 0x552ac0,_SetTexAnimSignals,13,
 0x552ad0,_Draw3DObject,238,
@@ -4685,6 +4695,7 @@ address,symbol,size,ctype
 0x55b180,_CharactersVuVecMakePc,28,
 0x55b1a0,_fun_0055b1a0,28,
 0x0055b1c0,_CharIDFromName,69,i32 __cdecl (char *)
+0x55b210,_CDataFromName,77,
 0x55b260,_RedirectAnim,112,"i32 __cdecl (char *, void *, CHARACTERANIM_CONFIG_PC *, char *)"
 0x55b2d0,_CharScenes_Init,46,
 0x55b300,?CharacterSceneLoadPrivatePc@@YAXPAUKILLPARTS_CHARSCENE_PC@@HPATvariptr_u@@T2@@Z,145,
@@ -4756,6 +4767,7 @@ address,symbol,size,ctype
 0x55e600,_MovingBackwards,85,i32 __cdecl(GAMEOBJECT *)
 0x55e660,_PushAway,780,"void __cdecl(NUVEC *,float,NUVEC *,NUVEC *,GAMEOBJECT *,GAMEOBJECT *,float,u32)"
 0x55e970,_FindNearestPlayerToVec,148,"u8 __cdecl(NUVEC *, GAMEOBJECT **, f32 *, u8, u32)"
+0x55ea10,_FindFurthestPlayerFromVec,137,
 0x55eaa0,_Player_ToggleCharacter,1787,"void __cdecl(GAMEOBJECT *,i32,i32)"
 0x55f1a0,_Arcade_BothPlayersActive,45,i32 __cdecl (void)
 0x55f1d0,_Player_HasInvincibility,49,i32 __cdecl(GAMEOBJECT*)
@@ -5020,6 +5032,7 @@ address,symbol,size,ctype
 0x56e100,_Cheat_CheckFlags,36,
 0x56e130,_Cheat_SetOn,42,"void __cdecl(i32,i32,i32)"
 0x0056e160,_Cheat_IsOn,98,i32 __cdecl (i32)
+0x56e1d0,_Cheat_GetOnOffBitfield,100,
 0x56e2a0,_Cheat_MultiplyScore,60,u32 __cdecl (u32)
 0x56e2e0,_Cheats_TurnOff,62,void __cdecl(i32)
 0x56e320,_Cheat_StartPowerUp,308,"void __cdecl (NUVEC *,GAMEOBJECT *)"
@@ -5043,6 +5056,7 @@ address,symbol,size,ctype
 0x0056f0a0,_PickupRotateYPc,219,
 0x56f180,_GizmoPickups_InitSys,10,void __cdecl(PICKUP_TYPE_SYSTEM_PC*)
 0x56f190,_FindPickupTypeIndex,40,i32 __cdecl(u8)
+0x56f1c0,_GizmoPickup_FindNearest,125,
 0x56f240,_GizmoPickups_DrawList,846,
 0x56f590,_GizmoPickups_Draw,64,"void __cdecl(void *, void *, f32)"
 0x56f5d0,_GizmoPickups_GetMaxGizmos,25,i32 __cdecl(void *)
@@ -5990,6 +6004,7 @@ address,symbol,size,ctype
 0x0059f0e0,_LoadGizFlow,443,"void *__cdecl (void *, void *, char *, VARIPTR *, VARIPTR *)"
 0x0059f2a0,_ResetGizFlowPointers,271,void __cdecl (GIZFLOW_PC *)
 0x0059f3b0,_GizFlowStoreProgress,164,"void __cdecl (GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress)"
+0x59f460,_SetGizFlowVisible,114,
 0x0059f4e0,_ResetGizFlow,596,"void __cdecl(GIZFLOW_PC *, GIZFLOWPROGRESS_PC *)"
 0x0059f740,_ProcessGizFlow,88,"void __cdecl (GIZFLOW_PC *, f32)"
 0x0059f7a0,_FlowBoxFindByName,89,"FLOWBOX_PC * __cdecl(GIZFLOW_PC *, char *)"
@@ -6198,6 +6213,7 @@ address,symbol,size,ctype
 0x5acde0,_GizTurrets_UpdateHint,171,i32 __cdecl(HINT_PC*)
 0x005ace90,_GizTurretPointWithinBoundsPc,160,
 0x005acf30,_GizTurrets_OpponentSelection,493,"void __cdecl(AI_TURRET_SYSTEM_PC *,i32,APIOBJECT_PC **,i32,APIOBJECT_PC **)"
+0x5ad120,_GizTurret_FindNearest,162,
 0x5ad1d0,_GizTurrets_Draw,119,"void __cdecl(void *, void *, f32)"
 0x5ad250,_GizTurrets_GetMaxGizmos,25,i32 __cdecl(void *)
 0x5ad270,_GizTurrets_AddGizmos,94,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
@@ -6207,6 +6223,7 @@ address,symbol,size,ctype
 0x5ad390,_GizmoTurret_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x5ad3a0,_GizTurrets_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x5ad3c0,_GizTurrets_ClearProgress,70,"void __cdecl(void *, void *)"
+0x5ad410,_GizTurret_FindByName,73,
 0x5ad460,_GizTurrets_StoreProgress,224,"void __cdecl(void *, void *, void *)"
 0x5ad540,_GizTurrets_Hit,672,"i32 __cdecl(WORLDINFO*,struct AI_TURRET_RECORD_PC*,NUVEC*,i32,i32)"
 0x5ad7e0,_GizTurrets_BoltHitPlat,246,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
@@ -6900,6 +6917,7 @@ address,symbol,size,ctype
 0x5cfb40,_NuSpecialMtl,10,void __cdecl(NUMTL *)
 0x005cfb50,_NuSpecialConstAlpha,49,"void __cdecl (i32, f32)"
 0x005cfb90,_NuSpecialConstTint,68,"void __cdecl (i32, const NUVEC *)"
+0x5cfbe0,_fun_005cfbe0,18,
 0x005cfc00,_NuSpecialSetVisibility,185,"void __cdecl (NUSPECIALHANDLE *, i32)"
 0x005cfcc0,_NuSpecialSetCollision,83,"void __cdecl (NUSPECIALHANDLE *, i32)"
 0x005cfd20,_NuSpecialGetCollision,51,i32 __cdecl (NUSPECIALHANDLE *)
@@ -7071,6 +7089,7 @@ address,symbol,size,ctype
 0x5d4780,_NuRndrCalcRandEllipsePos,283,"void __cdecl(NUVEC4 *,NUMTX *,NUVEC *)"
 0x5d48a0,_NuRndrCalcRandCylinderPos,266,"void __cdecl(NUVEC4 *,NUMTX *,NUVEC *)"
 0x5d49b0,_NuHGobjRndrRandShadowSurfacePoints,883,"i32 __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *,i32,NUVEC *,i32)"
+0x5d4d30,_fun_005d4d30,116,
 0x5d4e70,_NuRndrSetBurnoutParametersPc,21,"void __cdecl(i32,const BURN_PARAMETERS_PC *)"
 0x5d5160,_NuRndrEnableDeferredPc,11,void __cdecl(void)
 0x5d5170,_NuRndrSetShadowCoefficientPc,57,"void __cdecl(i32,f32)"
@@ -7161,6 +7180,7 @@ address,symbol,size,ctype
 0x005d86d0,_NuTimeBarEnable,10,void __cdecl (i32)
 0x005d86e0,_NuTimeBarIndicateGpuFrameOut,10,void __cdecl (i32)
 0x5d86f0,_VisibilityTreeInitialisePc,485,
+0x5d88e0,_fun_005d88e0,107,
 0x5d8950,_VisibilityTreePreparePc,527,
 0x5d8b60,_VisibilityTreeClipNodePc,693,
 0x5d8e20,_VisibilityTreeWalkPc,390,
@@ -7189,6 +7209,7 @@ address,symbol,size,ctype
 0x5da840,_NuGScnNumSpecials,22,i32 __cdecl(NUGSCN *)
 0x5da860,_NuGScnGetSpecial,98,"void __cdecl(NUSPECIALHANDLE *, NUGSCN *, i32)"
 0x5da980,_NuCameraClipHGobj,252,"i32 __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *)"
+0x5daab0,_fun_005daab0,46,
 0x005daae0,_NuHGobjPOIMtx,72,"void __cdecl (NUHGOBJ_EVAL_PC *, u8, NUMTX *, NUMTX *, NUMTX *)"
 0x005dab70,_NuHGobjGetLayerIndex,84,i32 __cdecl (const char *; NUHGOBJ_EVAL_PC *)
 0x005dabd0,_NuHGobjReversibleCharacters,16,i32 __cdecl (i32)
@@ -7200,7 +7221,9 @@ address,symbol,size,ctype
 0x5daef0,_NuVpGetSize2,63,"void __cdecl(f32 *, f32 *)"
 0x005db100,_NuVpSetIdentityPc,25,
 0x5db140,_NuVpGetCurrentViewport,6,
+0x5db150,_fun_005db150,62,
 0x5db190,_NuVpSetSourceRect,191,
+0x5db250,_fun_005db250,71,
 0x5db310,_RenderPostViewportResetPc,78,void __cdecl(void)
 0x5db5b0,_NuRndrLine2di,220,
 0x005db690,_NuRndrLine2d,153,"i32 __cdecl (NULINEVERTEX2D_PC *, NUMTL *)"
@@ -7561,6 +7584,7 @@ address,symbol,size,ctype
 0x5f94d0,_NuTexCreateBmpPc,67,NUTEXBMP_PC *__cdecl (const char *)
 0x5f9520,_NuWaterClearPc,13,void __cdecl (void)
 0x005f9530,_NuWaterReset,21,void __cdecl (void)
+0x5f9550,_fun_005f9550,455,
 0x5f9720,_NuWaterReleaseVertexBufferPc,28,void __cdecl(void)
 0x5f9940,_NuWaterSpeed,15,void __cdecl(f32)
 0x005f9960,_PermanentGraphicsResourceSetup,5,void __cdecl(void)
@@ -7671,6 +7695,7 @@ address,symbol,size,ctype
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"
 0x005feef0,_NuRndrShadowInit,5,void __cdecl(u8 *)
 0x005fef60,_NuLightSpotFadeSet,1,void __cdecl(u32)
+0x5fefb0,_fun_005fefb0,80,
 0x5ff040,_NuRndrScreenGrabTileInit,1,"void __cdecl(SCREENGRAB_TILE_PARAMS_PC *, i32, f32, f32, f32)"
 0x5ff050,_NuRndrScreenGrabTileDeInit,1,"void __cdecl(SCREENGRAB_TILE_PARAMS_PC *)"
 0x5ff060,_NuRndrScreenGrabTileBegin,11,"void __cdecl(void **)"
@@ -7693,6 +7718,7 @@ address,symbol,size,ctype
 0x005ffe80,_CreateDmaPartEffectList,21,"DEBRIS_PART_HEADER_PC *__cdecl (void *, i32 *)"
 0x005ffea0,_LinkDmaParticalSets,53,"void __cdecl (DEBRIS_PARTICLE_CHUNK_PC **, i32)"
 0x5ffee0,_NuRndrParticleSetRepeat,231,void __cdecl (NUVEC *)
+0x5fffd0,_fun_005fffd0,645,
 0x600260,_GenericDebinfoDmaTypeUpdate,1855,void __cdecl(DEBRIS_INFO_PC *)
 0x006009a0,_NuPrim2DEnd,24,void __cdecl (void)
 0x006009c0,_NuPrim3DEnd,24,void __cdecl (void)
@@ -7729,6 +7755,7 @@ address,symbol,size,ctype
 0x602840,_NuGScnReleaseDynamicBuffersPc,101,void __cdecl(void)
 0x6028b0,_NuGScnRestoreDynamicBuffersPc,120,void __cdecl(void)
 0x00602930,_NuRndrConfigureLeafPc,1,"void __cdecl(f32, f32, i32)"
+0x602a10,_fun_00602a10,126,
 0x603350,_NuDisplayListInit,127,"void __cdecl(VARIPTR *, i32)"
 0x006033d0,_NuDisplayListDrawItems,20,void __cdecl(NUDISPLAYLISTITEM*)
 0x603430,_DisplayListDebugPS,3,"i32 __cdecl(NUDISPLAYLISTITEM *,char *)"
@@ -7757,11 +7784,16 @@ address,symbol,size,ctype
 0x603ad0,_DisplayListSetAlphaPS,63,"void __cdecl(NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM *,f32)"
 0x603b10,_DisplayListSetShadowCasterFlagPS,15,"void __cdecl(NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM *,i32)"
 0x603b20,_NuDisplayListCameraPc,206,void __cdecl(void*)
+0x603bf0,_fun_00603bf0,205,
 0x00603cc0,_NuCameraSet,91,void (NUCAMERA *)
+0x603e80,_fun_00603e80,65,
 0x00603f10,_NuVecMtxTransformBlock,497,"void __cdecl (NUVEC *, NUVEC *, NUMTX *, i32)"
 0x00604110,_PCVecMtxTransformClipBlocks,456,"void __cdecl (NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *)"
 0x006042e0,_NuCameraClipTestExtents,1608,"i32 __cdecl (NUVEC *, NUVEC *, NUMTX *, f32, i32)"
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
+0x604b50,_fun_00604b50,33,
+0x604b80,_fun_00604b80,23,
+0x604ba0,_fun_00604ba0,71,
 0x604c00,_NuHGobjRndr,70,
 0x604c50,_NuHGobjGetPOI,49,"NUHGOBJ_POI_PC *__cdecl(NUHGOBJ_EVAL_PC *, u8)"
 0x00604d70,?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ,14,
@@ -8725,6 +8757,7 @@ address,symbol,size,ctype
 0x0062e650,_ResetAnimPacket,59,"void __cdecl (ANIMPACKET_PC *, i32)"
 0x62e690,_ResetMiniAnimPacket,43,"void __cdecl(MINIANIMPACKET_PC *,i32)"
 0x62e6c0,_SetAnimTimeRandom,79,"void __cdecl(CHARACTER_MODEL_LAYERS_PC *,ANIMPACKET_PC *)"
+0x62e710,_GetAnimTimeRandom,79,
 0x62e760,_UpdateAnimTimer,591,
 0x62e9b0,_UpdateAnimPacket,1530,"void __cdecl(CHARACTER_MODEL_LAYERS_PC *,ANIMPACKET_PC *,f32,f32,f32,f32)"
 0x62efb0,_AnimPacketMiniToFullPc,114,"void __cdecl(DRAW_ATTACHMENTS_MINI_PC*,ANIMPACKET_PC*)"
@@ -8938,6 +8971,7 @@ address,symbol,size,ctype
 0x635fc0,_rtlSaveSet,49,"void __cdecl(char *, RTL_SET_PC *)"
 0x636000,_rtlGetCurrentSet,6,RTL_SET_PC *__cdecl(void)
 0x636010,_rtlResetEx,313,"void __cdecl(RTL_DATA_PC *,i32)"
+0x636150,_rtlReset,16,
 0x636160,_InsertLight,181,
 0x636220,_InsertAntiLight,28,
 0x636240,_ApplyAntilights,312,"f32 __cdecl(RTL_LIGHT_PC *,RTL_DATA_PC *,f32)"
@@ -9276,6 +9310,7 @@ address,symbol,size,ctype
 0x6485a0,_edpartFileSaveEffectsGeneral,410,
 0x648740,_edpartFileSaveEffectsLevel,410,
 0x6488e0,_edpartLookupObjectInScene,179,"i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene)"
+0x6489a0,_fun_006489a0,30,
 0x6489c0,_edpartSetParticlePage,10,void __cdecl(i32)
 0x6489d0,_edpartLookupObject,28,
 0x006489f0,_edpartStartPage,57,void __cdecl (u8)
@@ -9552,6 +9587,7 @@ address,symbol,size,ctype
 0x659040,_DebrisCollisionCheckFlag,35,"i32 __cdecl(NUVEC *,f32,u8)"
 0x659070,_DebrisCollisionCheck,32,"i32 __cdecl(NUVEC *,f32)"
 0x659090,_DebrisAllCollisionCheckScaleYFlag,77,"i32 __cdecl(NUVEC *,f32,f32,u8)"
+0x6590f0,_fun_006590f0,76,
 0x659140,_DebrisReleaseResourcesPc,1,void __cdecl(void)
 0x659150,_DebrisRestoreResourcesPc,1,void __cdecl(void)
 0x659160,_DebrisGlassInit,194,
@@ -9621,6 +9657,7 @@ address,symbol,size,ctype
 0x65b5f0,_edanimClose,13,void __cdecl(void)
 0x65b600,_edanimEnter,39,
 0x65b630,_edanimLookupSpecial,112,"i32 __cdecl(char *, NUGSCN *)"
+0x65b6c0,_fun_0065b6c0,50,
 0x65b700,_edbitsRegisterSaveFormat,185,
 0x0065b7e0,_edbitsRegisterBaseScene,10,void __cdecl (NUGSCN *)
 0x65b7f0,_edbitsRegisterThingsScene,10,void __cdecl (NUGSCN *)
@@ -10156,6 +10193,7 @@ address,symbol,size,ctype
 0x690180,_AddFiniteShotDebrisEffect2,724,"void __cdecl (i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32)"
 0x690460,_AddFiniteShotDebrisEffect,33,"void __cdecl (i32 *, i32, NUVEC *, i32)"
 0x690490,_AddScaledFiniteShotDebrisEffect,61,"void __cdecl(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32, f32)"
+0x6904d0,_fun_006904d0,65,
 0x690520,_DebrisCleanUpDmaDebTypeTables,239,void __cdecl(void)
 0x690610,_Debris,161,void __cdecl(i32)
 0x6906c0,_edbricbFileLoad,365,

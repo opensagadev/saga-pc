@@ -11,6 +11,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00405d50,28,_BatmanGameaiVuVecMakePc,copy,,legogame/batman_gameai.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00407e20,28,_BoltVuVecMakePc,copy,,legogame/batman_gameai.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004087e0,28,_CableVuVecMakePc,copy,,legogame/cable.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00408920,49,_DestroyCable,sibling,,legogame/cable.c,position between CreateCable and ReleaseCable in cable.o; calls memset,android:src/legoapi/items/objects/cable.cpp
 0x0040a4b0,18,_CameraFabsPc,copy,,legogame/camera.c,bytes equal _AttractoFabsPc,
 0x0040a4d0,22,_CameraVuAngleDifferencePc,copy,,legogame/camera.c,bytes equal ?VuAngleDifference@@YAHHH@Z,
 0x0040a4f0,28,_CameraVuVecMakePc,copy,,legogame/camera.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -50,8 +51,10 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00464340,28,_GizactionsVuVecMakePc,copy,,legogame/gizactions.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00465dd0,1,_GizbombgenNuErrorPc,copy,,legogame/gizbombgen.c,"empty static directly before the VuVecMake copy at 0x465de0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00465de0,28,_GizbombgenVuVecMakePc,copy,,legogame/gizbombgen.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00466600,67,_GizBombGen_FindByName,sibling,,legogame/gizbombgen.c,position between GizBombGens_ClearProgress and GizBombGens_StoreProgress in gizbombgen.o; calls NuStrICmp,android:src/legoapi/gizmos/traps/gizbombgen.cpp
 0x004667f0,1,_GizforceNuErrorPc,copy,,legogame/gizforce.c,"empty static directly before the VuVecMake copy at 0x466800; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00466800,28,_GizforceVuVecMakePc,copy,,legogame/gizforce.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00467130,54,_GizForce_SetVisibility,sibling,,legogame/gizforce.c,position between GizForces_ReserveBufferSpace and GizmoForce_SetVisibility in gizforce.o; calls GameAnimSet_SetVisibility,android:src/legoapi/gizmos/traps/gizforce.cpp
 0x0046a130,28,_fun_0046a130,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0046a870,54,_GizmopickupFdivPc,copy,,legogame/gizgame.c,bytes equal ?NuFdiv@@YAMMM@Z,
 0x0046a8b0,28,_GizmopickupVuVecMakePc,copy,,legogame/gizgame.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -68,10 +71,12 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00474840,18,?HubFabs@@YAMM@Z,copy,,legogame/hub.cpp,bytes equal _AttractoFabsPc,
 0x00474860,23,?HubVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,copy,,legogame/hub.cpp,bytes equal ?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,
 0x00474880,28,?HubVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legogame/hub.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00478af0,5,_fun_00478af0,sibling,Hub_DrawStarField(),legogame/hub.cpp,position between Hub_LockUnlockDoors and Hub_DrawImportantBrick in hub_batman.o; calls GetMenuID,android:src/legoapi/world/levels/hub.cpp
 0x0047f600,28,_fun_0047f600,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00481a70,1,_LedgeNuErrorPc,copy,,legogame/ledge.c,"empty static directly before the Fabs copy at 0x481a80; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00481a80,18,_LedgeFabsPc,copy,,legogame/ledge.c,bytes equal _AttractoFabsPc,
 0x00481aa0,28,_LedgeVuVecMakePc,copy,,legogame/ledge.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00481e40,179,_Ledge_FindNearest,sibling,,legogame/ledge.c,position between Ledges_Reset and Ledges_Draw in liblegoapi.a(ledges.o); calls NuVecDistSqr,android:src/legoapi/gizmos/transport/ledge.cpp
 0x00482c00,1,_LegoapiStatusNuErrorPc,copy,,legogame/legoapi_status.cpp,"empty static directly before the Fdiv copy at 0x482c10; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00482c50,28,?LegoapiStatusVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legogame/legoapi_status.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00486f30,28,_LegoapiTagVuVecMakePc,copy,,legogame/legoapi_tag.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -101,6 +106,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x004c00a0,28,_fun_004c00a0,copy,SfxVuVecMakePc,legogame/sfx.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z; name already mapped elsewhere,
 0x004c0100,1,_ShardNuErrorPc,copy,,legogame/shard.c,"empty static directly before the VuVecMake copy at 0x4c0110; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x004c0110,28,_ShardVuVecMakePc,copy,,legogame/shard.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x004c06a0,145,_Shard_FindNearest,sibling,,legogame/shard.c,position between Shards_UpdateAfterCharacters and Shards_Draw in liblegoapi.a(shards.o); calls NuVecDistSqr,android:src/legoapi/items/collect/shard.cpp
 0x004c0d30,28,_ShopVuVecMakePc,copy,,legogame/shop.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004c7880,1,_SignalNuErrorPc,copy,,legogame/signal.c,"empty static directly before the VuVecMake copy at 0x4c7890; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x004c7890,28,_SignalVuVecMakePc,copy,,legogame/signal.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -147,10 +153,13 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x004e9f10,28,_EpisodeVIVuVecMakePc,copy,,legogame/episodeV.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004ee950,28,_fun_004ee950,copy,EpisodeVIVuVecMakePc,legogame/episodeVI.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z; name already mapped elsewhere,
 0x004eeaf0,28,_fun_004eeaf0,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x004f9540,45,_fun_004f9540,sibling,_read_offset_len,nu2api/nucore_includes.cpp,position between ParseCommandLine and ImplodeDecodeC in libnu2api.a(nucore_includes.o); calls ImplodeFillBuf,android:src/nu2api/nucore/nucore_includes.c
 0x004fe660,28,?NucorePcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nucore_pc_includes.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x004fff90,28,?CutsceneIncludeVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/cutscene_include.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00508f40,1,_GamemenuallNuErrorPc,copy,,gameapi/gamemenuall.cpp,"empty static directly before the VuVecMake copy at 0x508f50; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00508f50,28,?GamemenuallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/gamemenuall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x0050d680,160,_fun_0050d680,sibling,_MessageBoxInitMtl,gameapi/gamemenuall.cpp,position between FindNearestBreak and SmartTextEx in libgameapi.a(apitext.o); calls NuMtlCreate NuMtlUpdate,android:src/legoapi/menus/screens/gamemenuall.cpp
+0x0050d720,496,_fun_0050d720,sibling,"DrawMessageBox(int, float, float, float, float)",gameapi/gamemenuall.cpp,position between FindNearestBreak and SmartTextEx in libgameapi.a(apitext.o); calls NuRndrBeginScene NuRndrEndScene NuRndrGradRectUV2di NuRndrRect2di,android:src/legoapi/menus/screens/gamemenuall.cpp
 0x00512880,18,?AisysallFabs@@YAMM@Z,copy,,gameapi/aisysall.cpp,bytes equal _AttractoFabsPc,
 0x00512a70,28,?AisysallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/aisysall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0053d150,28,_fun_0053d150,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -172,6 +181,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0054f980,18,_UtilitiesFabsPc,copy,,legoapi/utilities.c,bytes equal _AttractoFabsPc,
 0x0054f9a0,54,_UtilitiesFdivPc,copy,,legoapi/utilities.c,bytes equal ?NuFdiv@@YAMMM@Z,
 0x0054f9e0,28,_UtilitiesVuVecMakePc,copy,,legoapi/utilities.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x005528f0,245,_DrawRectRGBA,sibling,,legoapi/utilities.c,position between SaveSceneObjectAnimTFactors and InitTexAnimScripts in liblegoapi.a(utilities.o); calls NuRndrRect2di,android:src/legoapi/misc/utilities.cpp
 0x00553740,23,_GizspinnerVuVecCopyPc,copy,,legoapi/gizspinner.c,bytes equal ?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,
 0x00553760,28,_GizspinnerVuVecMakePc,copy,,legoapi/gizspinner.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00557090,1,_GizobstacleNuErrorPc,copy,,legoapi/gizobstacle.c,"empty static directly before the VuVecMake copy at 0x5570a0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
@@ -179,10 +189,12 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00559590,28,_GizmoVuVecMakePc,copy,,legoapi/gizmo.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0055b180,28,_CharactersVuVecMakePc,copy,,legoapi/characters.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0055b1a0,28,_fun_0055b1a0,copy,CharactersVuVecMakePc,legoapi/characters.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z; name already mapped elsewhere,
+0x0055b210,77,_CDataFromName,sibling,,legoapi/characters.c,position between CharIDFromName and RedirectAnim in liblegoapi.a(characters.o); calls NuStrICmp,android:src/legoapi/characters/core/characters.cpp
 0x0055c0f0,1,_GamestructureNuErrorPc,copy,,legoapi/gamestructure.cpp,"empty static directly before the VuVecMake copy at 0x55c100; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0055c100,28,?GamestructureVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/gamestructure.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0055c930,28,_GameobjectsVuVecMakePc,copy,,legoapi/gameobjects.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0055dda0,28,_PlayersVuVecMakePc,copy,,legoapi/gameobjects.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x0055ea10,137,_FindFurthestPlayerFromVec,sibling,,legoapi/players.c,position between FindNearestPlayerToVec and Player_ToggleCharacter in liblegoapi.a(players.o); calls NuVecDistSqr,android:src/legoapi/characters/core/players.cpp
 0x0055f3b0,1,_WorldinfoNuErrorPc,copy,,legoapi/worldinfo.cpp,"empty static directly before the VuVecMake copy at 0x55f3c0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0055f3c0,28,?WorldinfoVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/worldinfo.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00560b20,28,_GamemessagesVuVecMakePc,copy,,legoapi/gamemessages.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -198,10 +210,12 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0056d320,28,_TubesVuVecMakePc,copy,,legoapi/tubes.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0056dfc0,28,_CheatsVuVecMakePc,copy,,legoapi/cheats.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0056dfe0,28,_fun_0056dfe0,copy,CheatsVuVecMakePc,legoapi/cheats.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z; name already mapped elsewhere,
+0x0056e1d0,100,_Cheat_GetOnOffBitfield,sibling,,legoapi/cheats.c,position between Cheat_IsOn and Cheat_MultiplyScore in liblegoapi.a(cheats.o); calls memset,android:src/legoapi/core/config/cheats.cpp
 0x0056e5b0,28,_ExplosionsVuVecMakePc,copy,,legoapi/cheats.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0056ef00,1,_GizmopickupsNuErrorPc,copy,,legoapi/gizmopickups.c,"empty static directly before the VuVecCopy copy at 0x56ef10; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0056ef10,23,_GizmopickupsVuVecCopyPc,copy,,legoapi/gizmopickups.c,bytes equal ?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,
 0x0056ef30,28,_GizmopickupsVuVecMakePc,copy,,legoapi/gizmopickups.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x0056f1c0,125,_GizmoPickup_FindNearest,sibling,,legoapi/gizmopickups.c,position between GizmoPickups_InitSys and GizmoPickups_DrawList in liblegoapi.a(gizmopickups.o); calls NuVecDistSqr,android:src/legoapi/gizmos/fx/gizmopickups.cpp
 0x00571830,28,_PartsVuVecMakePc,copy,,legoapi/parts.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00572340,28,_SurfacesVuVecMakePc,copy,,legoapi/parts.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00572ae0,28,_AreasVuVecMakePc,copy,,legoapi/areas.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -253,6 +267,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x0059bb10,28,_PushingVuVecMakePc,copy,,legoapi/pushing.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0059cb70,28,?CreditsVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,legoapi/credits.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0059d780,28,_GizflowVuVecMakePc,copy,,legoapi/gizflow.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x0059f460,114,_SetGizFlowVisible,sibling,,legoapi/gizflow.c,position between GizFlowStoreProgress and ResetGizFlow in liblegoapi.a(gizflow.o); calls GizmoSetVisibility,android:src/legoapi/gizmo/base/gizflow.cpp
 0x0059f950,28,_TaggingVuVecMakePc,copy,,legoapi/tagging.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005a0460,28,_GameanimVuVecMakePc,copy,,legoapi/gameanim.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005a1bd0,1,_FadersNuErrorPc,copy,,legoapi/faders.c,"empty static directly before the VuVecMake copy at 0x5a1be0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
@@ -274,6 +289,8 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005aab30,28,_GizmessageVuVecMakePc,copy,,legoapi/gizmessage.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005ab080,28,_AipathcnxhelperVuVecMakePc,copy,,legoapi/gizmessage.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005ab2b0,28,_GizturretVuVecMakePc,copy,,legoapi/aipathcnxhelper.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x005ad120,162,_GizTurret_FindNearest,sibling,,legoapi/gizturret.c,position between GizTurrets_OpponentSelection and GizTurrets_Draw in liblegoapi.a(gizturret.o); calls NuVecDistSqr,android:src/legoapi/gizmos/traps/gizturret.cpp
+0x005ad410,73,_GizTurret_FindByName,sibling,,legoapi/gizturret.c,position between GizTurrets_ClearProgress and GizTurrets_StoreProgress in liblegoapi.a(gizturret.o); calls NuStrICmp,android:src/legoapi/gizmos/traps/gizturret.cpp
 0x005ae100,1,_GizspecialNuErrorPc,copy,,legoapi/gizspecial.c,"empty static directly before the VuVecMake copy at 0x5ae110; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x005ae110,28,_GizspecialVuVecMakePc,copy,,legoapi/gizspecial.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005aea00,28,_EdbobsVuVecMakePc,copy,,legoapi/edbobs.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -310,6 +327,12 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005c1730,18,?Nu3dIncludesVuVecNormalise@@YAXAAUVuVec@@0@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal ?VuVecNormalise@@YAXAAUVuVec@@0@Z,
 0x005c1900,29,?Nu3dIncludesVuVecDot@@YAMABUVuVec@@0@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal ?VuVecDot@@YAMABUVuVec@@0@Z,
 0x005c1920,33,?Nu3dIncludesVuVecLengthSq@@YAMABUVuVec@@@Z,copy,,nu2api/nu3d_includes.cpp,bytes equal ?VuVecLengthSq@@YAMABUVuVec@@@Z,
+0x005cfbe0,18,_fun_005cfbe0,sibling,_NuSpecialReflection,nu2api/nu3d_includes.cpp,position between NuSpecialConstTint and NuSpecialSetVisibility in libnu2api.a(nu3d_includes.o); calls RndrStateSetReflection,android:src/nu2api/nu3d/nu3d_includes.cpp
+0x005d4d30,116,_fun_005d4d30,sibling,_NuRndrAnglesZX,nu2api/nu3d_includes.cpp,position between NuHGobjRndrRandShadowSurfacePoints and NuLightSpeedBlurOldCameraPos in libnu2api.a(nu3d_includes.o); calls NuAtan2D NuVecRotateX,android:src/nu2api/nu3d/nu3d_includes.cpp
+0x005d88e0,107,_fun_005d88e0,sibling,_ChooseCorrectLOD,nu2api/nu3d_includes.cpp,position between NuTimeBarIndicateGpuFrameOut and NuVisiInstTree in libnu2api.a(nu3d_includes.o); calls NuVecMagSqr NuVecSub,android:src/nu2api/nu3d/nu3d_includes.cpp
+0x005daab0,46,_fun_005daab0,sibling,_NuHGobjJointMtx,nu2api/nu3d_includes.cpp,position between NuCameraClipHGobj and NuHGobjPOIMtx in libnu2api.a(nu3d_includes.o); calls NuMtxMulVU0,
+0x005db150,62,_fun_005db150,sibling,_NuViewPortSet,nu2api/nu3d_includes.cpp,position between NuVpGetCurrentViewport and NuVpSetSourceRect in libnu2api.a(nu3d_includes.o); calls NuVpUpdate; floats 0f 224f 640f,android:src/nu2api/nu3d/nu3d_includes.cpp
+0x005db250,71,_fun_005db250,sibling,_NuVpSetDestRect,nu2api/nu3d_includes.cpp,position between NuVpSetSourceRect and NuRndrLine2di in libnu2api.a(nu3d_includes.o); calls NuVpSetPosition2 NuVpSetSize2,android:src/nu2api/nu3d/nu3d_includes.cpp
 0x005f74b0,1,_Nu3dPcIncludesNuErrorPc,copy,,nu2api/nu3d_pc_includes.cpp,"empty static directly before the VuVecMake copy at 0x5f74c0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x005f74c0,28,?Nu3dPcIncludesVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nu3d_pc_includes.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x005f74e0,29,?Nu3dPcIncludesVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,copy,,nu2api/nu3d_pc_includes.cpp,bytes equal ?RtlVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,
@@ -317,6 +340,15 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005f7520,29,?Nu3dPcIncludesVuVecScale@@YA?AUVuVec@@ABU1@M@Z,copy,,nu2api/nu3d_pc_includes.cpp,bytes equal ?RtlVuVecScale@@YA?AUVuVec@@ABU1@M@Z,
 0x005f7540,18,?Nu3dPcIncludesVuVecNormalise@@YAXAAUVuVec@@0@Z,copy,,nu2api/nu3d_pc_includes.cpp,bytes equal ?VuVecNormalise@@YAXAAUVuVec@@0@Z,
 0x005f7570,33,?Nu3dPcIncludesVuVecLengthSq@@YAMABUVuVec@@@Z,copy,,nu2api/nu3d_pc_includes.cpp,bytes equal ?VuVecLengthSq@@YAMABUVuVec@@@Z,
+0x005f9550,455,_fun_005f9550,sibling,_createWaterTable,nu2api/nu3d_pc_includes.cpp,position between NuWaterReset and NuWaterSpeed in libnu2api.a(nu3d_pc_includes.o); calls NuMtxInvR NuMtxScale NuRandFloatSeeded NuVecMtxTransformH,
+0x005fefb0,80,_fun_005fefb0,sibling,_NuRndrRectUVStream,nu2api/nu3d_pc_includes.cpp,position between NuLightSpotFadeSet and NuRndrScreenGrabTileInit in libnu2api.a(nu3d_pc_includes.o); calls NuRndrRectUV2diZ,
+0x005fffd0,645,_fun_005fffd0,sibling,_NuRndrParticleDraw,nu2api/nu3d_pc_includes.cpp,position between NuRndrParticleSetRepeat and GenericDebinfoDmaTypeUpdate in libnu2api.a(nu3d_pc_includes.o); calls NuRndrParticleSetRepeat NuVecMtxTransform,android:src/nu2api/nu3d/android/nuptl_android.c
+0x00602a10,126,_fun_00602a10,sibling,_NuCameraPush,nu2api/nu3d_pc_includes.cpp,position between NuGScnDestroyPS and NuDisplayListInit in libnu2api.a(nu3d_pc_includes.o); calls memcpy,
+0x00603bf0,205,_fun_00603bf0,sibling,_NuCameraLookAt,nu2api/nu3d_pc_includes.cpp,position between DisplayListSetShadowCasterFlagPS and NuCameraSet in libnu2api.a(nu3d_pc_includes.o); calls D3DXMatrixLookAtLH NuMtxGetTranslation NuMtxInv NuMtxSetTranslation,
+0x00603e80,65,_fun_00603e80,sibling,_NuCameraPop,nu2api/nu3d_pc_includes.cpp,position between NuCameraSet and NuCameraClipTestExtents in libnu2api.a(nu3d_pc_includes.o); calls NuCameraSetEx,
+0x00604b50,33,_fun_00604b50,sibling,_NuCameraClipTestExtentsVU0,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuCameraClipTestExtents NuCameraGetClippingMtx,
+0x00604b80,23,_fun_00604b80,sibling,_NuHGobjRead,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuGHGRead,android:src/nu2api/nu3d/android/nuhgo_android.c
+0x00604ba0,71,_fun_00604ba0,sibling,_NuHGobjPOILocalMtxFromIX,nu2api/nu3d_pc_includes.cpp,position between NuCameraClipTestExtents and NuHGobjRndr in libnu2api.a(nu3d_pc_includes.o); calls NuMtxMulVU0,android:src/nu2api/nu3d/android/nuhgo_android.c
 0x0060dee0,1,_fun_0060dee0,copy,NuError,,"empty static directly before the VuVecMake copy at 0x60def0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x0060def0,28,_fun_0060def0,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0060e650,1,_fun_0060e650,copy,NuError,,"empty static directly before the VuVecMake copy at 0x60e660; sibling build: the empty extern ""C"" NuError heads each object's header statics",
@@ -336,6 +368,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00617c40,22,?EdtoolsallVuAngleDifference@@YAHHH@Z,copy,,gameapi/edtoolsall.cpp,bytes equal ?VuAngleDifference@@YAHHH@Z,
 0x00617c70,28,?EdtoolsallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/edtoolsall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x0062a600,18,_ApiobjectFabsPc,copy,,gameapi/apiobject.c,bytes equal _AttractoFabsPc,
+0x0062e710,79,_GetAnimTimeRandom,sibling,,gameapi/apiobject.c,position between SetAnimTimeRandom and UpdateAnimTimer in libgameapi.a(apiobject.o); calls NuAnimEndFrame NuRandFloat,
 0x006310c0,1,_DsplayBinkNuErrorPc,copy,,nu2api/nufmv/pc/Bink/dsplay_bink.cpp,"empty static directly before the VuVecMake copy at 0x6310d0; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x006310d0,28,?DsplayBinkVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nufmv/pc/Bink/dsplay_bink.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x006312d0,28,_fun_006312d0,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
@@ -343,11 +376,16 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006333b0,28,?SupportallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/supportall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00633e00,1,_RtlNuErrorPc,copy,,gameapi/rtl.c,"empty static directly before the Fabs copy at 0x633e10; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00633fe0,28,_RtlVuVecMakePc,copy,,gameapi/rtl.c,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x00636150,16,_rtlReset,sibling,,gameapi/rtl.c,position between rtlResetEx and InsertLight in libgameapi.a(rtl.o); calls rtlResetEx,
 0x00642340,1,_ObjectsallNuErrorPc,copy,,gameapi/objectsall.cpp,"empty static directly before the Fabs copy at 0x642350; sibling build: the empty extern ""C"" NuError heads each object's header statics",
 0x00642350,18,?ObjectsallFabs@@YAMM@Z,copy,,gameapi/objectsall.cpp,bytes equal _AttractoFabsPc,
 0x00642370,54,?ObjectsallFdiv@@YAMMM@Z,copy,,gameapi/objectsall.cpp,bytes equal ?NuFdiv@@YAMMM@Z,
 0x006424a0,28,?ObjectsallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/objectsall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x006489a0,30,_fun_006489a0,sibling,edpartLookupDebrisEffect(char*),gameapi/objectsall.cpp,position between edpartLookupObjectInScene and edpartSetParticlePage in libgameapi.a(objectsall.o); calls LookupDebrisEffectPageOnly,android:src/legoapi/items/objects/objectsall.cpp
 0x0064ff60,28,?GameliballVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/gameliball.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
+0x006590f0,76,_fun_006590f0,sibling,_DebrisGlassClose,gameapi/gameliball.cpp,position between DebrisAllCollisionCheckScaleYFlag and DebrisGlassInit in libgameapi.a(gameliball.o); calls NuMtlDestroy NuTexDestroy,
+0x0065b6c0,50,_fun_0065b6c0,sibling,_edbitsRegisterLevel,gameapi/gameliball.cpp,position between edanimLookupSpecial and edbitsRegisterSaveFormat in libgameapi.a(gameliball.o); calls NuStrCpy,
+0x006904d0,65,_fun_006904d0,sibling,_AddFiniteShotDebrisEffectUserData,gameapi/gameliball.cpp,position between AddScaledFiniteShotDebrisEffect and DebrisCleanUpDmaDebTypeTables in libgameapi.a(gameliball.o); calls AddFiniteShotDebrisEffect2,
 0x00693b80,28,?Nusound3IncludeVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nusound3_include.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
 0x00693c10,1,??1NuMusic@@QAE@XZ,compiler,,nu2api/nusound3_include.cpp,destructor: ??__Fmusic_man@@YAXXZ calls it with ?music_man@@3VNuMusic@@A (NuMusic) as this,
 0x00696ac0,28,?NusoundVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,nu2api/nusound3/pc/nusound.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
