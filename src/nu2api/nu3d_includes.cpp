@@ -11664,8 +11664,7 @@ extern "C" {
 extern "C" const WCHAR PostEffectRenderLabelPc[];
 extern "C" void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
     PC_FRAMEBUFFER_PC *bound = PCGraphicsGetBoundFramebufferPc();
-    if (output == NULL)
-        output = NuFramebufferGetObject(1);
+    PC_FRAMEBUFFER_PC *target = output != NULL ? output : NuFramebufferGetObject(1);
     PC_FRAMEBUFFER_PC *intermediate = NuFramebufferGetObject(0);
     GRAPHICS_RENDER_TEXTURE_PC *color = PCGraphicsGetFramebufferAttachmentPc(bound, 0, NULL, NULL);
     GRAPHICS_RENDER_TEXTURE_PC *normal = PCGraphicsGetFramebufferAttachmentPc(bound, 1, NULL, NULL);
@@ -11720,11 +11719,13 @@ extern "C" void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
     PCDeviceSetRenderState(7, 0);
     PCDeviceSetRenderState(168, 15);
     for (i32 i = 0; i < count; ++i) {
-        PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data =
-            i + 1 < count ? intermediate : output;
+        PC_FRAMEBUFFER_PC *destination = intermediate;
+        if (i + 1 >= count)
+            destination = target;
+        PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data = destination;
         filters[i]->render();
         filters[i]->reset();
-        for (u32 stage = 0; stage < 6; ++stage)
+        for (u32 stage = 0; stage != 6; ++stage)
             PCGraphicsBindEffectTexture(NULL, stage);
     }
     PCDeviceSetRenderState(22, 1);
