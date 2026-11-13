@@ -10715,12 +10715,10 @@ address,symbol,size,ctype
 0x6c1570,?InsertBefore@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,96,
 0x6c15d0,?InsertAfter@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,94,
 0x6c1630,?Remove@PropertyMenuList@@QAEXPAVPropertyMenu@@@Z,63,
-0x6c1770,??0SplinePointList@@QAE@XZ,13,
 0x6c1780,?First@SplinePointList@@QAEPAVSplinePointBlock@@XZ,3,
 0x6c1790,?InsertAfter@SplinePointList@@QAEXPAVSplinePointBlock@@0@Z,101,
 0x6c1800,?Remove@SplinePointList@@QAEXPAVSplinePointBlock@@@Z,68,
 0x6c1850,?Count@SplinePointList@@QAEHXZ,4,
-0x6c18a0,??0SplineKnotList@@QAE@XZ,13,
 0x6c18b0,?First@SplineKnotList@@QAEPAUSplineKnot@@XZ,3,
 0x6c18c0,?Last@SplineKnotList@@QAEPAUSplineKnot@@XZ,4,
 0x6c18d0,?Clear@SplineKnotList@@QAEXXZ,11,
@@ -10780,8 +10778,10 @@ address,symbol,size,ctype
 0x6c22d0,??_GPlaceable@@UAEPAXI@Z,75,native scalar-deleting dtor exactVTidentity
 0x6c2320,??_EPlaceableInterface@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableInterface@@UAEPAXI@Z; no independent body
 0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c2340,??0SplinePointList@@QAE@XZ,13,
 0x6c2350,??1SplinePointList@@QAE@XZ,84,
 0x6c23b0,??0SplineKnot@@QAE@XZ,43,
+0x6c23e0,??0SplineKnotList@@QAE@XZ,13,
 0x6c23f0,??1SplineKnotList@@QAE@XZ,91,
 0x6c2450,??0SplineObject@@QAE@XZ,52,
 0x6c2490,??3SplineObject@@SAXPAX@Z,18,
