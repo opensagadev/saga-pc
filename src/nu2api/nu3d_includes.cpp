@@ -3813,9 +3813,8 @@ extern "C" {
 
         if (text != NULL) {
             if (font->material->texture_id > 0) {
-                NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
-                inverse_texture_width = 1.0f / texture_dimensions->width;
-                inverse_texture_height = 1.0f / texture_dimensions->height;
+                inverse_texture_width = 1.0f / NuTextureDimensions[font->material->texture_id - 1]->width;
+                inverse_texture_height = 1.0f / NuTextureDimensions[font->material->texture_id - 1]->height;
             } else {
                 inverse_texture_width = 1.0f;
                 inverse_texture_height = 1.0f;
