@@ -69,7 +69,8 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
             devices[port].deadzone = config->deadzone;
             devices[port].alternate_deadzone = config->alternate_deadzone;
         }
-        for (i32 i = 0; i < 32; ++i) {
+        PC_INPUT_BINDING_PC *binding = bindings;
+        for (i32 i = 0; i < 32; ++i, ++binding) {
             if (commands[i].active) {
                 i32 axis = commands[i].axis;
                 i32 button = commands[i].button;
@@ -79,12 +80,18 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
                     i32 secondary = config->axes[axis][2];
                     switch (kind) {
                         case 10:
-                            bindings[i].kind = 7;
-                            bindings[i].value = commands[i].active == 2 ? secondary : primary;
+                            binding->kind = 7;
+                            if (commands[i].active == 2)
+                                binding->value = secondary;
+                            else
+                                binding->value = primary;
                             break;
                         case 11:
-                            bindings[i].kind = 1;
-                            bindings[i].value = commands[i].active == 2 ? secondary : primary;
+                            binding->kind = 1;
+                            if (commands[i].active == 2)
+                                binding->value = secondary;
+                            else
+                                binding->value = primary;
                             break;
                         case 2:
                         case 3:
@@ -92,12 +99,12 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
                         case 6:
                         case 12:
                         case 13:
-                            bindings[i].kind = kind;
-                            bindings[i].value = secondary;
+                            binding->kind = kind;
+                            binding->value = secondary;
                             break;
                     }
                 }
-                if ((u32)button <= 15 && bindings[i].kind == 0) {
+                if ((u32)button <= 15 && binding->kind == 0) {
                     i32 kind = config->buttons[button][0];
                     i32 value = config->buttons[button][1];
                     switch (kind) {
@@ -108,8 +115,8 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
                         case 5:
                         case 6:
                         case 7:
-                            bindings[i].kind = kind;
-                            bindings[i].value = value;
+                            binding->kind = kind;
+                            binding->value = value;
                             break;
                     }
                 }
