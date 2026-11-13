@@ -2335,10 +2335,10 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
                 MovePlayer_ROLLING(object);
             else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
                      !MovePlayer_POD(object)) {
-                if ((object->character_data->model_flags & 0x2000) == 0)
-                    MovePlayer_DIRECTIONAL(object);
-                else
+                if ((object->character_data->model_flags & 0x2000) != 0)
                     MovePlayer_VEHICLEDIRECTIONAL(object);
+                else
+                    MovePlayer_DIRECTIONAL(object);
             }
             if (LIFTPLAYER != 0 && menu_id == -1 && !object->dead && object->character_context != 0x2b &&
                 (object->character_data->game_character->flags_090 & 0x80) == 0 && (object->flags_1fc & 0x80) != 0 &&
