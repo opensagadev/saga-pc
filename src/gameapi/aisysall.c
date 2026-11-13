@@ -18533,10 +18533,9 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
                         position.z = node->position.z;
                         edcamSetPos(&position);
                     }
-                } else if (aieditor->current_path->current_node != NULL &&
-                           nearest == aieditor->current_path->current_node) {
-                    position = nearest->position;
-                    nearest->position = aieditor->camera_position;
+                } else if ((node = aieditor->current_path->current_node) != NULL && nearest == node) {
+                    position = node->position;
+                    node->position = aieditor->camera_position;
                     pathEditor_PathNodeMoved(aieditor->current_path->current_node);
                     locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
                     if (AIPathNodeDeletedFn != NULL)
@@ -18614,13 +18613,18 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
         aieditor->flags &= ~1;
         if (aieditor->current_path->current_node != NULL &&
             aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
-            if (pad->digital_buttons & 0x8000 || pad->digital_buttons & 0x2000) {
-                if (pad->digital_buttons & 0x8000)
-                    aieditor->current_path->current_node->radius =
-                        aieditor->current_path->current_node->radius * (f64)0.99f;
-                else
-                    aieditor->current_path->current_node->radius =
-                        aieditor->current_path->current_node->radius * (f64)1.01f;
+            if (pad->digital_buttons & 0x8000) {
+                aieditor->current_path->current_node->radius =
+                    aieditor->current_path->current_node->radius * (f64)0.99f;
+                if (aieditor->current_path->current_node->radius < 0.01f)
+                    aieditor->current_path->current_node->radius = 0.01f;
+                pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+                locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+                if (AIPathNodeDeletedFn != NULL)
+                    AIPathNodeDeletedFn(aieditor->current_path->current_node);
+            } else if (pad->digital_buttons & 0x2000) {
+                aieditor->current_path->current_node->radius =
+                    aieditor->current_path->current_node->radius * (f64)1.01f;
                 if (aieditor->current_path->current_node->radius < 0.01f)
                     aieditor->current_path->current_node->radius = 0.01f;
                 pathEditor_PathNodeMoved(aieditor->current_path->current_node);
