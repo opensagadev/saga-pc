@@ -171,6 +171,7 @@ void __cdecl GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i3
     i32 model_id;
     i32 count;
     CHARACTER_MODEL_LAYERS_PC *model;
+    u32 layer_mask;
     NUVEC scale;
     NUMTX matrix;
     (void)unused;
@@ -179,8 +180,8 @@ void __cdecl GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i3
         model_id = apicharsys->playermodelids[character];
         if (model_id != -1) {
             model = &apicharsys->models[model_id];
-            count = GCDataList[model->model_id].make_layer_list(
-                model, layers, apicharsys->char_data[character].game_character->layer_mask);
+            layer_mask = apicharsys->char_data[character].game_character->layer_mask;
+            count = GCDataList[model->model_id].make_layer_list(model, layers, layer_mask);
             if (count > 0) {
                 angle = NuAngAdd(angle, 0x8000);
                 scale.x = scale.y = scale.z = CDataList[character].model_scale;
