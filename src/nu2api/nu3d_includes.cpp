@@ -16049,18 +16049,21 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             PCGraphicsEffectTextureDimensions(output, (u16)output_lod, &output_width, &output_height);
             f32 dx = radius / (f32)width;
             f32 dy = radius / (f32)height;
-            f64 dx2 = (f64)dx * 2.0;
-            f64 dy2 = (f64)dy * 2.0;
-            f64 dx3 = (f64)dx * 3.0;
-            f64 dy3 = (f64)dy * 3.0;
-            __declspec(align(16)) f32 horizontal[7][4] = {
-                {dx * 0.0f, 0, .34f, 0}, {dx, 0, .18f, 0},        {(f32)dx2, 0, .10f, 0},  {(f32)dx3, 0, .05f, 0},
-                {-dx, 0, .18f, 0},       {(f32)-dx2, 0, .10f, 0}, {(f32)-dx3, 0, .05f, 0},
-            };
-            f32 vertical[7][4] = {
-                {0, dy * 0.0f, .34f, 0}, {0, dy, .18f, 0},        {0, (f32)dy2, .10f, 0},  {0, (f32)dy3, .05f, 0},
-                {0, -dy, .18f, 0},       {0, (f32)-dy2, .10f, 0}, {0, (f32)-dy3, .05f, 0},
-            };
+            NUVEC4 horizontal[7], vertical[7];
+            OccluderVertexSet(&horizontal[0], dx * 0.0f, 0, .34f, 0);
+            OccluderVertexSet(&vertical[0], 0, dy * 0.0f, .34f, 0);
+            OccluderVertexSet(&horizontal[1], dx, 0, .18f, 0);
+            OccluderVertexSet(&vertical[1], 0, dy, .18f, 0);
+            OccluderVertexSet(&horizontal[2], (f32)(dx * 2.0), 0, .10f, 0);
+            OccluderVertexSet(&vertical[2], 0, (f32)(dy * 2.0), .10f, 0);
+            OccluderVertexSet(&horizontal[3], (f32)(dx * 3.0), 0, .05f, 0);
+            OccluderVertexSet(&vertical[3], 0, (f32)(dy * 3.0), .05f, 0);
+            OccluderVertexSet(&horizontal[4], (f32) - (dx * 1.0), 0, .18f, 0);
+            OccluderVertexSet(&vertical[4], 0, (f32) - (dy * 1.0), .18f, 0);
+            OccluderVertexSet(&horizontal[5], (f32) - (dx * 2.0), 0, .10f, 0);
+            OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
+            OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
+            OccluderVertexSet(&vertical[6], 0, (f32) - (dy * 3.0), .05f, 0);
             f32 bias[4] = {1, 1, -.5f / (f32)width, -.5f / (f32)height};
             // Native PC output half-texel terms are positive 1/work extent.
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
@@ -16068,7 +16071,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, PCGraphicsPostEffectWorkTexturePc, 0);
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
             PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
-            PCDeviceSetVertexShaderConstantsF(0xa0, horizontal[0], 7);
+            PCDeviceSetVertexShaderConstantsF(0xa0, &horizontal[0].x, 7);
             PCDeviceSetVertexShaderConstantsF(0xad, bias, 1);
             PCGraphicsEffectTextureSetWrapFields(input, 2, 2);
             if (width <= output_width && height <= output_height)
@@ -16115,7 +16118,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
             PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
             POST_BLUR_BIND_PROGRAM(program);
-            PCDeviceSetVertexShaderConstantsF(0xa0, vertical[0], 7);
+            PCDeviceSetVertexShaderConstantsF(0xa0, &vertical[0].x, 7);
             PCDeviceSetVertexShaderConstantsF(0xad, output_bias, 1);
             PCGraphicsEffectTextureSetWrapFields(output, 2, 2);
             PCGraphicsEffectTextureSetFilterFields(output, 1, 1, 1);
