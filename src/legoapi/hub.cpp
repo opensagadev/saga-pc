@@ -5134,12 +5134,12 @@ extern "C" {
                 continue;
             base_alpha = paused != 0 && player != pause_i_pad && (object->flags_1fc & 0x80) != 0 ? 0.5f : 1.0f;
             if (player == 0) {
-                icon_x = -ICONX;
                 alignment = 2;
+                icon_x = -ICONX;
                 frame_model = 166;
             } else {
-                icon_x = ICONX;
                 alignment = 8;
+                icon_x = ICONX;
                 frame_model = 165;
             }
             alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlphaPc) * base_alpha;
