@@ -12655,13 +12655,7 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                         break;
                 }
             }
-            if (comparison_passed) {
-                if ((condition->flags & 1) == 0) {
-                    AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
-                    processor->param_stack[stack_index].is_first_time_state = 0;
-                    return condition;
-                }
-            } else {
+            if (!comparison_passed) {
                 while ((condition->flags & 1) != 0) {
                     condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
                     if (condition == NULL)
@@ -12673,11 +12667,15 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                             processor->param_stack[stack_index].complex_params[condition->param_index];
                     }
                 }
+            } else if ((condition->flags & 1) == 0) {
+                AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+                processor->param_stack[stack_index].is_first_time_state = 0;
+                return condition;
             }
             if (condition != NULL)
                 condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
         }
-        AIScriptFillRemainingComplexOperands(conditions, packet, processor, NULL, stack_index);
+        AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
         processor->param_stack[stack_index].is_first_time_state = 0;
     }
     return NULL;
