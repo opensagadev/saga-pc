@@ -5036,17 +5036,14 @@ void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count,
                 first_fixed = 1;
             if (second->flags_low & 0x80)
                 second_fixed = 1;
-            if (second->ai_collision_priority_pc < first->ai_collision_priority_pc) {
+            if (second->ai_collision_priority_pc < first->ai_collision_priority_pc)
                 first_fixed = 1;
-                if (second_fixed)
-                    continue;
-            } else if (second->ai_collision_priority_pc > first->ai_collision_priority_pc) {
+            else if (second->ai_collision_priority_pc > first->ai_collision_priority_pc)
                 second_fixed = 1;
-                if (first_fixed)
-                    continue;
-            } else {
+            else
                 continue;
-            }
+            if (first_fixed && second_fixed)
+                continue;
             distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
             if (!(distance < radius))
                 continue;
