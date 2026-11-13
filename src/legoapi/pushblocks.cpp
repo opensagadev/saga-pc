@@ -1360,6 +1360,7 @@ extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct push
 
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
     WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
+    NUMTX evaluated;
     world->push_block_position_count = 0;
     RunOutOfPosTabSpacePc = 0;
     pushposincrease = 0;
@@ -1390,7 +1391,6 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
                 f32 frame = 1.0f;
                 for (i32 position = 0; position < static_cast<i32>(block->animation_positions);
                      ++position, frame += 1.0) {
-                    NUMTX evaluated;
                     EvalAnim(&block->special, frame, &evaluated, 0);
                     block->snap_positions[position] = *reinterpret_cast<NUVEC *>(&evaluated.m30);
                     evaluated = *NuSpecialGetMtx(&block->special);
