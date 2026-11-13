@@ -13955,8 +13955,8 @@ extern "C" {
         NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
         NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
         __declspec(align(16)) NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
-        NUVEC4 extent;
-        NUVEC4 center;
+        __declspec(align(16)) NUVEC4 extent;
+        __declspec(align(16)) NUVEC4 center;
         NUVEC4 abs_row[3];
 
         extent.x = display->bounds_max.x - display->bounds_min.x;
@@ -13998,15 +13998,14 @@ extern "C" {
             display_scene->clip_bounds[display->instance_ix * 2] = center;
             display_scene->clip_bounds[display->instance_ix * 2 + 1] = extent;
         } else {
-            NUVEC4 minimum;
             NUVEC4 maximum;
             maximum.x = center.x + extent.x;
             maximum.y = center.y + extent.y;
             maximum.z = center.z + extent.z;
-            minimum.x = center.x - extent.x;
-            minimum.y = center.y - extent.y;
-            minimum.z = center.z - extent.z;
-            display_scene->clip_bounds[display->instance_ix * 2] = minimum;
+            extent.x = center.x - extent.x;
+            extent.y = center.y - extent.y;
+            extent.z = center.z - extent.z;
+            display_scene->clip_bounds[display->instance_ix * 2] = extent;
             display_scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
         }
         DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
