@@ -807,7 +807,10 @@ extern "C" {
             buildit->start_position.z = (f32)((f64)(start_min.z + start_max.z) * 0.5);
             span = start_max.x - start_min.x;
             span_z = start_max.z - start_min.z;
-            buildit->bounds_radius = span > span_z ? span : span_z;
+            if (span > span_z)
+                buildit->bounds_radius = span;
+            else
+                buildit->bounds_radius = span_z;
             buildit->bounds_radius *= NuTrigTable[0x3000];
             buildit->position.x = (f32)((f64)(end_min.x + end_max.x) * 0.5);
             buildit->position.y = (f32)((f64)(end_min.y + end_max.y) * 0.5);
