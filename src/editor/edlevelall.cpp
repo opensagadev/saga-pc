@@ -8797,9 +8797,10 @@ void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
             if (control->bit_mask & mask) {
                 char bit_name[32];
                 NuSPrintf(bit_name, "%d", bit);
-                eduiItemExpanderAddChild(control->item, eduiItemPropCreateEx((u32)control, &EdLevelAttr, cbSelected,
-                                                                             cbChanged, cbButton, 1, bit_name,
-                                                                             GetEnumString((value & mask) != 0), bit));
+                i32 set = (value & mask) != 0;
+                eduiItemExpanderAddChild(control->item,
+                                         eduiItemPropCreateEx((u32)control, &EdLevelAttr, cbSelected, cbChanged,
+                                                              cbButton, 1, bit_name, GetEnumString(set), bit));
             }
         }
     }
