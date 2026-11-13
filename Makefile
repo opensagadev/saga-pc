@@ -83,7 +83,7 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint check-objects test match diff inspect clean
+.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint check-objects check-warnings lower-warning-budget test match diff inspect clean
 
 all: build
 build: link
@@ -175,6 +175,13 @@ check-core: dependencies
 check-objects: objects
 	$(PYTHON) tools/check.py --objects
 
+# Distinct MSVC warnings per code against config/warning-budget.json (tools/cc.py records them per object).
+check-warnings: objects
+	@$(PYTHON) tools/msvcwarn.py --check $(BUILD_KIND) $(OBJECTS) $(DIAGNOSTIC_OBJECTS)
+
+lower-warning-budget: objects
+	@$(PYTHON) tools/msvcwarn.py --write-budget $(BUILD_KIND) $(OBJECTS) $(DIAGNOSTIC_OBJECTS)
+
 test:
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
@@ -190,6 +197,7 @@ inspect:
 
 clean:
 	rm -rf build/obj build/objdiff build/Debug/obj
+	rm -f build/Debug/*.obj.warnings build/warnings.json build/Debug/warnings.json
 	rm -f build/LEGOStarWarsSaga.exe build/LEGOStarWarsSaga.pdb build/LEGOStarWarsSaga.map build/LEGOStarWarsSaga_debug.exe build/LEGOStarWarsSaga_debug.pdb
 	rm -f build/strict/LEGOStarWarsSaga.strict.exe build/strict/LEGOStarWarsSaga.strict.pdb build/strict/LEGOStarWarsSaga.strict.map build/Debug/LEGOStarWarsSaga.strict_debug.exe build/Debug/LEGOStarWarsSaga.strict_debug.pdb
 	rm -f build/saga_debug_capture.exe build/saga_debug_capture.pdb build/Debug/saga_debug_capture.exe build/Debug/saga_debug_capture.pdb build/Debug/stream_capture.obj build/Debug/log_copier.obj

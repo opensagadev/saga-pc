@@ -11,9 +11,11 @@ import tempfile
 
 if __package__:
     from .lib import ROOT, changed_files, changed_trees, runtime_libraries, toolchain_pin
+    from .msvcwarn import sidecar as warning_record, write_sidecar
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.lib import ROOT, changed_files, changed_trees, runtime_libraries, toolchain_pin
+    from tools.msvcwarn import sidecar as warning_record, write_sidecar
 
 
 def windows(path):
@@ -206,10 +208,15 @@ def main():
         if result.returncode or rejected or not output.is_file():
             action = "Import library generation" if args.implib else "Linking" if args.link else "Compilation"
             raise RuntimeError(f"{action} failed (or MSVC ignored an option)")
+        if not args.link and not args.implib:
+            # The warning budget (tools/msvcwarn.py, make check-warnings) reads these records.
+            write_sidecar(output, log)
         success = True
     finally:
         if not success:
             output.unlink(missing_ok=True)
+            if not args.link and not args.implib:
+                warning_record(output).unlink(missing_ok=True)
     return 0
 
 
