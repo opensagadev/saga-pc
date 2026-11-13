@@ -811,12 +811,13 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
         count = SAVESLOTS;
     else
         count = memcard_slotsused;
+    slot = first;
     if (SAVESLOTS <= 3)
         x = (SAVESLOTS - 1) * -0.25;
     else
         x = 0.0 - (menu->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
             SaveMenuSlideLeftPc * 0.5 / 10.0;
-    for (slot = first; slot <= last; ++slot, x += 0.5) {
+    for (; slot <= last; ++slot, x += 0.5) {
         highlight = menu->selected_row == menu->first_row && menu->selected_column == slot &&
                     SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0;
         if (slot < 0 || slot > menu->last_column)
@@ -872,7 +873,7 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     if (SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0) {
         if (first > 0)
             MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
-        if (menu->last_column > last)
+        if (last < menu->last_column)
             MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
     }
 }
