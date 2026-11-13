@@ -7583,74 +7583,77 @@ void EdManipulator::Render(ClassObjectList &objects) {
 i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
     EdManipulator::Process(input, objects);
     __declspec(align(16)) VuVec position;
-    if (!objects.GetAveragePosition(position))
-        return 0;
-    __declspec(align(16)) VuVec first;
-    __declspec(align(16)) VuVec second;
-    i32 axis = SelectAxis(input, position, first, second, NULL);
-    theLevelEditor.field_0x2c = AxisColour[axis];
-    if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f)
+    if (objects.GetAveragePosition(position)) {
+        __declspec(align(16)) VuVec first;
+        __declspec(align(16)) VuVec second;
+        i32 axis = SelectAxis(input, position, first, second, NULL);
+        theLevelEditor.field_0x2c = AxisColour[axis];
+        if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f)
+            return axis != 0;
+        for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+            ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+            i32 moved;
+            VuVecSetOrigin(position);
+            object->GetAttributeData(8, EdType_VuVec, &position, 0);
+            moved = 0;
+            switch (axis) {
+                case 1:
+                case 2:
+                case 3: {
+                    f32 amount = VuVecDot(first, delta);
+                    if (amount != 0.0f) {
+                        __declspec(align(16)) VuVec offset = first * amount;
+                        position.x += offset.x;
+                        position.y += offset.y;
+                        position.z += offset.z;
+                        moved = 1;
+                    }
+                    break;
+                }
+                case 4:
+                case 5:
+                case 6: {
+                    f32 amount = VuVecDot(delta, first);
+                    if (amount != 0.0f) {
+                        __declspec(align(16)) VuVec offset = first * amount;
+                        position.x += offset.x;
+                        position.y += offset.y;
+                        position.z += offset.z;
+                        moved = 1;
+                    }
+                    amount = VuVecDot(delta, second);
+                    if (amount != 0.0f) {
+                        __declspec(align(16)) VuVec offset = second * amount;
+                        position.x += offset.x;
+                        position.y += offset.y;
+                        position.z += offset.z;
+                        moved = 1;
+                    }
+                    break;
+                }
+                case 7:
+                    if (input.GetHold(38) != 0.0f) {
+                        position.x = theLevelEditor.background_colour[0];
+                        position.y = theLevelEditor.background_colour[1];
+                        position.z = theLevelEditor.background_colour[2];
+                        position.w = theLevelEditor.background_colour[3];
+                        moved = 1;
+                    }
+                    break;
+            }
+            if (moved) {
+                if (theClassEditor.snap_mode == 1 || theClassEditor.snap_mode == 2) {
+                    /* The terrain snap of the other builds is compiled out; only
+                     * the ray normalisation is left. */
+                    VuVec ray = theClassEditor.snap_ray;
+                    NuVecNorm(&ray.xyz, &ray.xyz);
+                }
+                object->SetAttributeData(8, EdType_VuVec, &position, 0);
+            }
+        }
         return axis != 0;
-    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
-        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
-        VuVecSetOrigin(position);
-        object->GetAttributeData(8, EdType_VuVec, &position, 0);
-        switch (axis) {
-            case 1:
-            case 2:
-            case 3: {
-                f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
-                if (amount == 0.0f)
-                    continue;
-                __declspec(align(16)) VuVec offset = first * amount;
-                position.x += offset.x;
-                position.y += offset.y;
-                position.z += offset.z;
-                break;
-            }
-            case 4:
-            case 5:
-            case 6: {
-                i32 moved = 0;
-                f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
-                if (amount != 0.0f) {
-                    __declspec(align(16)) VuVec offset = first * amount;
-                    position.x += offset.x;
-                    position.y += offset.y;
-                    position.z += offset.z;
-                    moved = 1;
-                }
-                amount = delta.x * second.x + delta.y * second.y + delta.z * second.z;
-                if (amount != 0.0f) {
-                    __declspec(align(16)) VuVec offset = second * amount;
-                    position.x += offset.x;
-                    position.y += offset.y;
-                    position.z += offset.z;
-                } else if (!moved) {
-                    continue;
-                }
-                break;
-            }
-            case 7:
-                if (input.GetHold(38) == 0.0f)
-                    continue;
-                position.x = theLevelEditor.background_colour[0];
-                position.y = theLevelEditor.background_colour[1];
-                position.z = theLevelEditor.background_colour[2];
-                position.w = theLevelEditor.background_colour[3];
-                break;
-            default:
-                continue;
-        }
-        if (theClassEditor.snap_mode == 1 || theClassEditor.snap_mode == 2) {
-            /* The terrain snap of the other builds is compiled out; only
-             * the ray normalisation is left. */
-            VuVec ray = theClassEditor.snap_ray;
-            NuVecNorm(&ray.xyz, &ray.xyz);
-        }
-        object->SetAttributeData(8, EdType_VuVec, &position, 0);
     }
-    return axis != 0;
+    return 0;
 }
 
 void EdManMove::Render(ClassObjectList &objects) {
