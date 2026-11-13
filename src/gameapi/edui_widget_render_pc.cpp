@@ -2072,7 +2072,7 @@ extern "C" i32 __cdecl eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s 
     item->y = y;
     char letter[2] = "0";
     if (picker->editing) {
-        EduiRenderWidthPc = MAX(width, height * 10);
+        EduiRenderWidthPc = MAX(height * 10, width);
         if (picker->keyboard_flags & 2) {
             if (edui_donotdraw == 0)
                 NuRndrRect2di(x << 4, y << 3, EduiRenderWidthPc << 4, (height * 6) << 3, item->colours[2],
