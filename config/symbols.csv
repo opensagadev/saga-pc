@@ -10863,6 +10863,9 @@ address,symbol,size,ctype
 0x6c7290,??0SplinePointBlock@@QAE@XZ,60,
 0x6c72d0,??_ESplinePointBlock@@UAEPAXI@Z,,COFF weak alias of ??_GSplinePointBlock@@UAEPAXI@Z; no independent body
 0x6c72d0,??_GSplinePointBlock@@UAEPAXI@Z,60,
+0x6c7310,??0SplinePointBlock@@QAE@H@Z,61,
+0x6c7350,?GetNumPoints@SplinePointList@@QAEHXZ,19,
+0x6c7370,?GetPoint@SplinePointList@@QAEHHAAUVuVec@@@Z,73,
 0x6c73c0,?AddPoint@SplinePointList@@QAEXAAUVuVec@@@Z,188,
 0x6c7480,?Clear@SplinePointList@@QAEXXZ,96,
 0x6c74e0,?Draw@SplinePointList@@QAEXXZ,80,
