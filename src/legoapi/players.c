@@ -640,20 +640,6 @@ i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
     return object != NULL && object->powerup_time > 0.0f;
 }
 
-i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
-    if ((object->flags_1fc_word & 0x80) != 0)
-        return 1;
-    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & 0x80) != 0)
-        return 1;
-    return 0;
-}
-
-void __cdecl SetToLastSafePos(GAMEOBJECT *object) {
-    object->start_position = object->last_safe_position;
-    object->position = object->last_safe_position;
-    object->ai_update_position = object->last_safe_position;
-}
-
 typedef struct player_reset_packet_pc_s {
     u8 unknown_000[0xe8];
     i16 context_animation;
