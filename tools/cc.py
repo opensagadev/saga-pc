@@ -10,10 +10,10 @@ import sys
 import tempfile
 
 if __package__:
-    from .lib import ROOT, changed_files, changed_trees, toolchain_pin
+    from .lib import ROOT, changed_files, changed_trees, runtime_libraries, toolchain_pin
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools.lib import ROOT, changed_files, changed_trees, toolchain_pin
+    from tools.lib import ROOT, changed_files, changed_trees, runtime_libraries, toolchain_pin
 
 
 def windows(path):
@@ -171,7 +171,10 @@ def main():
             flags = [windows(Path(flag)) if flag.lower().endswith(".lib") and Path(flag).is_file()
                      else flag for flag in flags]
             flags = [linker_output_path(flag) for flag in flags]
+            # The pinned runtime update's libcmt.lib/libcpmt.lib come before the package's copies.
+            runtime = runtime_libraries(ROOT)
             command = [wine, str(compiler / "link.exe"), *flags,
+                       *(["/LIBPATH:" + windows(runtime)] if runtime else []),
                        "/LIBPATH:" + windows(compiler.parent / "lib"),
                        "/LIBPATH:" + windows(compiler.parent / "PlatformSDK/Lib"),
                        "/OUT:" + windows(output), *(windows(path) for path in objects)]

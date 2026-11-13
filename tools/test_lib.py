@@ -2,6 +2,7 @@
 
 import csv
 import hashlib
+import json
 from pathlib import Path
 import struct
 import tempfile
@@ -529,6 +530,33 @@ class LibraryArchiveTests(unittest.TestCase):
                 self.assertEqual(lib.archive_path("libcmt.lib"), vc / "libcmt.lib")
                 with self.assertRaisesRegex(ValueError, "make setup"):
                     lib.archive_path("dxsdk/dinput8.lib")
+
+    def test_runtime_update_replaces_package_libraries_and_restamps_extracted_members(self):
+        def archive(body):
+            return b"!<arch>\n" + b"member.obj/".ljust(16) + b" " * 32 + str(len(body)).ljust(10).encode() \
+                + b"`\n" + body + b"\n" * (len(body) & 1)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            vc = root / "build/tools/msvc8/lib"
+            vc.mkdir(parents=True)
+            for name in ("libcmt.lib", "libcpmt.lib", "oldnames.lib"):
+                (vc / name).write_bytes(archive(b"package " + name.encode()))
+            runtime = root / lib.RUNTIME_DIRECTORY
+            runtime.mkdir(parents=True)
+            (runtime / "libcmt.lib").write_bytes(archive(b"update"))
+            (root / "config").mkdir()
+            with patch.object(lib, "ROOT", root):
+                self.assertIsNone(lib.runtime_libraries(root))
+                member = lib.library_member_path("libcmt.lib", 0)
+                self.assertEqual(member.read_bytes(), b"package libcmt.lib")
+                (root / "config/toolchain.json").write_text(json.dumps({"runtime": {"files": {
+                    "libcmt.lib": {"sha256": hashlib.sha256((runtime / "libcmt.lib").read_bytes()).hexdigest()}}}}))
+                self.assertEqual(lib.archive_path("libcmt.lib"), runtime / "libcmt.lib")
+                self.assertEqual(lib.archive_path("libcpmt.lib"), vc / "libcpmt.lib")
+                self.assertEqual(lib.library_member_path("libcmt.lib", 0).read_bytes(), b"update")
+                (runtime / "libcmt.lib").write_bytes(archive(b"changed"))
+                with self.assertRaisesRegex(ValueError, "changed runtime libraries: libcmt.lib; run make setup"):
+                    lib.archive_path("libcmt.lib")
 
 
 def assembler_coff(code, labels):

@@ -41,6 +41,33 @@ def toolchain_pin(root, name=None):
     return secondary[name], Path(root) / "build/tools" / ("msvc8-" + name)
 
 
+RUNTIME_DIRECTORY = "build/tools/msvc8-runtime/lib"
+
+
+def runtime_pin(root):
+    """The pinned static runtime update ("runtime" in config/toolchain.json) and its library directory.
+
+    The retail executable links a later security update's libcmt.lib/libcpmt.lib than the
+    compiler package ships; these replace the package's copies for linking and identification.
+    Returns (None, None) when no update is pinned.
+    """
+    path = Path(root) / "config/toolchain.json"
+    pin = load_json(path).get("runtime") if path.is_file() else None
+    return (pin, Path(root) / RUNTIME_DIRECTORY) if pin else (None, None)
+
+
+def runtime_libraries(root):
+    """The verified runtime update library directory, or None when no update is pinned."""
+    pin, directory = runtime_pin(root)
+    if pin is None:
+        return None
+    changed = [name for name, item in pin["files"].items()
+               if not (directory / name).is_file() or cached_sha256(directory / name) != item["sha256"]]
+    if changed:
+        raise ValueError(f"Missing or changed runtime libraries: {', '.join(changed)}; run make setup")
+    return directory
+
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -48,6 +75,18 @@ def digest(data):
 def sha256(path):
     with Path(path).open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+_DIGESTS = {}
+
+
+def cached_sha256(path):
+    """SHA-256 of a file, recomputed only when its size or modification time changes."""
+    status = Path(path).stat()
+    key = (str(Path(path).resolve()), status.st_size, status.st_mtime_ns)
+    if key not in _DIGESTS:
+        _DIGESTS[key] = sha256(path)
+    return _DIGESTS[key]
 
 
 def changed_files(directory, checksums):
@@ -154,9 +193,16 @@ DXSDK_LIBRARIES = ROOT / "build/tools/dxsdk/Lib/x86"
 
 
 def archive_path(archive):
-    """Pinned archive file: `dxsdk/NAME` is a DirectX SDK library, anything else a VC8 one."""
+    """Pinned archive file: `dxsdk/NAME` is a DirectX SDK library, anything else a VC8 one.
+
+    A library the pinned runtime update provides is taken from it, verified, instead
+    of the compiler package's copy.
+    """
+    pin, runtime = runtime_pin(ROOT)
     if archive.startswith("dxsdk/"):
         path = DXSDK_LIBRARIES / archive.removeprefix("dxsdk/")
+    elif pin and archive in pin["files"]:
+        path = runtime_libraries(ROOT) / archive
     else:
         path = ROOT / "build/tools/msvc8/lib" / archive
     if not path.is_file():
@@ -165,16 +211,24 @@ def archive_path(archive):
 
 
 def library_member_path(archive, index, body=None):
-    """Extract one pinned archive member under build/lib/ (once) and return its path."""
+    """Extract one pinned archive member under build/lib/ (once) and return its path.
+
+    The extracted members are stamped with their archive's SHA-256, so a changed pin
+    (such as the runtime update replacing the compiler package's libcmt.lib) re-extracts them.
+    """
     path = ROOT / "build/lib" / archive / f"{index:05d}.obj"
     if body is not None:
         if not path.is_file() or path.read_bytes() != body:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(body)
         return path
-    if not path.is_file():
-        for member_index, _, member in archive_members(archive_path(archive)):
+    source = archive_path(archive)
+    stamp = path.parent / ".archive-sha256"
+    expected = cached_sha256(source)
+    if not path.is_file() or not stamp.is_file() or stamp.read_text().strip() != expected:
+        for member_index, _, member in archive_members(source):
             library_member_path(archive, member_index, member)
+        stamp.write_text(expected + "\n")
     return path
 
 
