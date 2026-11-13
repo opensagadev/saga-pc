@@ -6628,23 +6628,21 @@ static i32 AIMoveApplyDivertNode(AIPACKET_PC *packet) {
 static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
     AIPATHNODE_PC *first;
     AIPATHNODE_PC *second;
-    f64 first_distance;
+    f32 first_distance;
     f32 second_distance;
     AIPATHNODE_PC *node;
     AIPATHSPECIALROUTE_PC *route;
     i32 index;
     f32 nearest;
-    AIPATH_PC *selected;
+    AIPATH_PC *selected = NULL;
     i32 nearest_node;
     f32 nearest_node_distance;
 
     first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
     second = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[1]];
-    first_distance = (f32)(NuVecDistSqr(&packet->owner->position, &first->position, NULL) - first->radius_squared);
+    first_distance = NuVecDistSqr(&packet->owner->position, &first->position, NULL) - first->radius_squared;
     second_distance = NuVecDistSqr(&packet->owner->position, &second->position, NULL) - second->radius_squared;
     node = first_distance < second_distance ? first : second;
-
-    selected = NULL;
 
     if (node->special_route_index >= packet->path_info.path->special_route_count) {
         return 0;
