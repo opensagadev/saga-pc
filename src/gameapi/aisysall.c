@@ -2215,8 +2215,7 @@ void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf
             memset(dst_cond, 0, sizeof(AICONDITION_PC));
             PCByteCopy_candidate(dst_cond, src_cond, sizeof(AICONDITION_PC));
 
-            dst_cond->link.prev = NULL;
-            dst_cond->link.next = NULL;
+            memset(&dst_cond->link, 0, sizeof(dst_cond->link));
 
             dst_cond->argument = AIScriptCopyStringPc(src_cond->argument, buf, buf_end);
             dst_cond->next_state_name = AIScriptCopyStringPc(src_cond->next_state_name, buf, buf_end);
