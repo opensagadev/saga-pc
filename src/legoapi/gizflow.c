@@ -1,7 +1,9 @@
 #include "saga.h"
 #include <string.h>
 
-#define FLOWBOX_FLAGS(box) ((u16)(((u16)(box)->state_flags_high << 8) | (box)->state_flags_low))
+// MATCH-EXCEPTION: retail reads the two state flag bytes as one u16 (word test at 0xa);
+// FLOWBOX_PC splits them, so read the pair through a u16 until the header has the union.
+#define FLOWBOX_FLAGS(box) (*(u16 *)&(box)->state_flags_low)
 #define FLOWBOX_SET_FLAGS(box, flags)                                                                                  \
     do {                                                                                                               \
         (box)->state_flags_low = (u8)(flags);                                                                          \
@@ -441,7 +443,8 @@ void __cdecl ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time) {
     ++system->frame;
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
-        if (box->last_process_frame != system->frame && (FLOWBOX_FLAGS(box) & 0x101) != 0)
+        if (box->last_process_frame != system->frame &&
+            ((FLOWBOX_FLAGS(box) & 1) != 0 || (FLOWBOX_FLAGS(box) & 0x100) != 0))
             ProcessFlowBox(system, box, system->frame);
         box->last_process_frame = system->frame;
     }
