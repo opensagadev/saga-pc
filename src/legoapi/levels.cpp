@@ -1900,7 +1900,6 @@ extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCE
 extern "C" {
 
     void __cdecl CalculateWorldSize(WORLDINFO *world) {
-        NUGSCN *scene;
         NUVEC minimum = v000;
         NUVEC maximum = v000;
         i32 index;
@@ -1908,25 +1907,31 @@ extern "C" {
         if (world == NULL || world->current_gscn == NULL) {
             return;
         }
-        scene = world->current_gscn;
-        for (index = 0; index < scene->portal_instance_count * 2; index += 2) {
+        for (index = 0; index < world->current_gscn->portal_instance_count * 2; index += 2) {
             NUVEC box_minimum;
             NUVEC box_maximum;
 
-            if (scene->display_list != NULL && (scene->display_list->render_flags & 0x4000) > 0) {
-                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index].z - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x + WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y + WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z + WORLD_PORTAL_BOUNDS_PC(scene)[index].z;
+            if (world->current_gscn->display_list != NULL &&
+                (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
+                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x -
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y -
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z -
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x +
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y +
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z +
+                                WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
             } else {
-                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z;
+                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
             }
             if (box_minimum.x < minimum.x)
                 minimum.x = box_minimum.x;
