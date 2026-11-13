@@ -285,8 +285,9 @@ void Minicam_Update(void) {
     NUVEC *focus = MiniCam.focus;
     f32 command_duration = 0.0f;
     i32 type;
+    i32 done = 0;
 
-    while (MiniCam.current_command < MiniCam.command_count) {
+    while (!done && MiniCam.current_command < MiniCam.command_count) {
         switch (MiniCam.commands[MiniCam.current_command].type) {
             case 0:
                 return;
@@ -294,19 +295,22 @@ void Minicam_Update(void) {
             case 3:
             case 4:
                 command_duration = MiniCam.commands[MiniCam.current_command].duration;
-                goto execute_command;
+                done = 1;
+                break;
             case 2:
-                goto execute_command;
+                done = 1;
+                break;
             case 5:
                 command_duration = MiniCam.commands[MiniCam.current_command].duration;
                 Minicam_ClearDeltas();
-                goto execute_command;
+                done = 1;
+                break;
             case 6: {
-                u16 target_pitch;
+                i32 target_pitch;
                 i32 old_yaw, old_roll;
                 f32 old_distance;
                 MiniCam_ChangeMode(MiniCam.commands[MiniCam.current_command].argument);
-                target_pitch = pitch_rate == 0 ? pitch : (i32)(pitch_rate * 0.0f);
+                target_pitch = (u16)(pitch_rate == 0 ? pitch : (i32)(pitch_rate * 0.0f));
                 old_yaw = MiniCam.target_yaw;
                 old_roll = MiniCam.target_roll;
                 old_distance = MiniCam.target_distance;
@@ -360,10 +364,10 @@ void Minicam_Update(void) {
                 ++MiniCam.current_command;
                 return;
         }
-        ++MiniCam.current_command;
+        if (!done)
+            ++MiniCam.current_command;
     }
 
-execute_command:
     MiniCam.elapsed_time += FRAMETIME;
     if (MiniCam.duration != 0.0f && MiniCam.elapsed_time > MiniCam.duration) {
         Minicam_AddDeltas(command_duration);
