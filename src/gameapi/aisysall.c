@@ -13143,19 +13143,14 @@ i32 __cdecl Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *pro
 
 i32 __cdecl Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 param_count, i32 is_first_time, f32 elapsed) {
-    u8 priority;
-    u8 id;
-    char *state_name;
-    f32 time;
+    u8 priority = 0;
+    u8 id = 0;
+    char *state_name = NULL;
+    f32 time = 0.0f;
     char *value;
     i32 i;
 
-    if (is_first_time && processor != NULL && param_count > 0) {
-        priority = 0;
-        id = 0;
-        state_name = NULL;
-        time = 0.0f;
-
+    if (is_first_time && processor != NULL) {
         for (i = 0; i < param_count; i++) {
             if ((value = NuStrIStr(params[i], "priority")) != NULL) {
                 priority = (i32)(AIParamToFloatEx(packet, processor, value + 9));
