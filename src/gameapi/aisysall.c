@@ -13988,9 +13988,9 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
         return;
     }
 
-    original_path = packet->path_info.path;
-    original_connection = packet->path_info.connection;
     original_direction = packet->path_info.direction;
+    original_connection = packet->path_info.connection;
+    original_path = packet->path_info.path;
 
     // MATCH-EXCEPTION: retail tests the u8 index against -1 (never true after promotion) and then 0xff.
     if (packet->path_info.path_index == -1 || packet->path_info.path_index == 0xff) {
