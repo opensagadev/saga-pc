@@ -266,25 +266,29 @@ __declspec(noinline) i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface
     return 1;
 }
 
+static __inline f32 PlayersFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 __declspec(noinline) i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
-    i32 pushing_obstacle = 0, difference;
+    i32 pushing_obstacle, difference;
     u16 input_angle, angle;
-    if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == object->character_context)
+    if ((LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) ||
+        (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 9))
         pushing_obstacle = 1;
-    else if (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == object->character_context &&
-             object->action_movement_state == 9)
-        pushing_obstacle = 1;
+    else
+        pushing_obstacle = 0;
     if (((object->flags_1fc & 0x80) || (object->flags_ef4 & 0x30000)) &&
         (object->pad->input_magnitude > 0.0f || pushing_obstacle) && object->contact_count &&
         CanClimbSurface(object, (i8)object->contact_material[0]) == 0 &&
-        fabsf(object->contact_normal.y) < NuTrigTable[0x3c71]) {
+        PlayersFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
         input_angle = pushing_obstacle ? object->movement_facing_angle : GamePad_InputAngle(object, object->pad);
         angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
         difference = RotDiff(input_angle, angle);
         if (angle_difference != NULL)
             *angle_difference = difference;
-        if (difference < 0)
-            difference = -difference;
+        difference = abs(difference);
         if (difference > 0x4e38 ||
             (difference > 0x1555 && object->field_7aa != -1 &&
              (object->field_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->field_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
@@ -1767,28 +1771,28 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
 static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models,
                                        i32 *hilt) {
     if (red || green || blue || purple) {
-        if (object->id == id_DARTHMAUL) {
+        if (object->id == (u16)id_DARTHMAUL) {
             models[0] = *hilt = 0x12;
-        } else if (object->id == id_DOOKU && WORLD->level_objects[0x13].active) {
+        } else if (object->id == (u16)id_DOOKU && WORLD->level_objects[0x13].active) {
             models[0] = *hilt = 0x13;
         } else {
             models[0] = *hilt = 0x11;
         }
     }
     if (red) {
-        if (object->id == id_DARTHMAUL) {
+        if (object->id == (u16)id_DARTHMAUL) {
             if (object->dead != 0)
                 return;
             models[1] = 0x6d;
             models[2] = 0x6e;
-            if (object->field_e22 & 8)
+            if (object->flags_e20 & 0x80000)
                 models[3] = 0x6e;
         } else {
             if (object->dead != 0)
                 return;
             models[1] = 0x65;
             models[2] = 0x66;
-            if (object->field_e22 & 8)
+            if (object->flags_e20 & 0x80000)
                 models[3] = 0x66;
         }
         return;
@@ -1799,7 +1803,7 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
             return;
         models[1] = 0x67;
         models[2] = 0x68;
-        if (object->field_e22 & 8)
+        if (object->flags_e20 & 0x80000)
             models[3] = 0x68;
         return;
     }
@@ -1808,14 +1812,14 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
         if (object->dead == 0) {
             models[1] = 0x69;
             models[2] = 0x6a;
-            if (object->field_e22 & 8) {
+            if (object->flags_e20 & 0x80000) {
                 models[3] = 0x6a;
             }
         }
     } else if (purple && object->dead == 0) {
         models[1] = 0x6b;
         models[2] = 0x6c;
-        if (object->field_e22 & 8) {
+        if (object->flags_e20 & 0x80000) {
             models[3] = 0x6c;
         }
     }
