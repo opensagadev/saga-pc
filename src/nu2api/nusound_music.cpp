@@ -607,7 +607,7 @@ void NuMusic::Process(f32 delta) {
             i32 stream_status = NuSound3GetStereoStreamStatus(voice->stream_index * 2);
             if (voice->status == 7 && voice->fade_rate != 0.0f) {
                 voice->gain += voice->fade_rate * delta;
-                voice->gain = MAX(0.0, MIN(1.0f, voice->gain));
+                voice->gain = MAX(0.0f, MIN(1.0f, voice->gain));
                 if (voice->gain == 0.0f) {
                     voice->fade_rate = 0.0f;
                     if ((voice->flags & 1) != 0) {
