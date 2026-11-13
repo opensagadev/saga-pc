@@ -121,8 +121,8 @@ void __cdecl GameCam_HitJudder(void) {
     GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
 
-extern i32 GameCamLookRotXPc;
-extern i32 GameCamLookRotYPc;
+static i32 GameCamLookRotXPc = 10;
+static i32 GameCamLookRotYPc = 15;
 extern NUVEC PlayPlaneCornersPc[4];
 extern f32 PlayPlaneDepthPc;
 extern f32 GameCamShakeRadiusPc;
