@@ -3028,9 +3028,9 @@ extern "C" {
         NuVpGetPosition2(&render_state.viewport_x, &render_state.viewport_y);
         NuVpGetSize2(&render_state.viewport_width, &render_state.viewport_height);
         horizontal = (f64)PS2_REZ_W / 640.0;
-        vertical = (f64)PS2_REZ_H / 224.0;
         render_state.viewport_x = (f32)(render_state.viewport_x * horizontal);
         render_state.viewport_width = (f32)(render_state.viewport_width * horizontal);
+        vertical = (f64)PS2_REZ_H / 224.0;
         render_state.viewport_y = (f32)(render_state.viewport_y * vertical);
         render_state.viewport_height = (f32)(render_state.viewport_height * vertical);
         render_state.camera_packet_cache = NULL;
@@ -3448,22 +3448,25 @@ extern "C" {
     }
 
     void __cdecl NuDisplayListUpdateLightmapPc(void) {
-        PC_DL_LIGHTMAP_UPDATE_READER *packet =
-            (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
-        i32 mode, stage;
+        PC_DL_LIGHTMAP_UPDATE_READER *packet;
+        i32 stage;
         f32 offset[3];
-        if (packet == NULL || (u32)packet == (u32)PCGraphicsBoundShader)
+        if (PCGraphicsFrameScratchCount.lightmap_packet == NULL ||
+            (u32)PCGraphicsFrameScratchCount.lightmap_packet == (u32)PCGraphicsBoundShader)
             return;
-        PCGraphicsBoundShader = (i32)(u32)packet;
-        mode = packet->mode;
-        if (mode == 2 && PcWindowOptions.usehires == 0) {
+        packet = (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
+        PCGraphicsBoundShader = (i32)(u32)PCGraphicsFrameScratchCount.lightmap_packet;
+        if (packet->mode == 2 && PcWindowOptions.usehires == 0)
             packet->mode = 1;
-            mode = 1;
-        }
-        if (mode == 1) {
+        if (packet->mode == 1) {
             NUTEXDIM_PC *texture;
-            stage = PCDeviceHardwareVertexProcessingPC == 1 ? 1 : 0;
-            texture = NuTextureGetDimensions(packet->texture_id == -1 ? 1 : packet->texture_id);
+            stage = 0;
+            if (PCDeviceHardwareVertexProcessingPC == 1)
+                stage = 1;
+            if (packet->texture_id != -1)
+                texture = NuTextureGetDimensions(packet->texture_id);
+            else
+                texture = NuTextureGetDimensions(1);
             PCDeviceSetTexture(stage, texture->resource);
             PCDeviceSetSamplerState(stage, 1, 1);
             PCDeviceSetSamplerState(stage, 2, 1);
@@ -3474,10 +3477,13 @@ extern "C" {
             offset[1] = -packet->y_offset;
             offset[2] = 0.0f;
             NuShaderManagerSetfv(0x60, offset);
-        } else if (mode == 2) {
+        } else if (packet->mode == 2) {
             for (stage = 0; stage < 3; ++stage) {
-                NUTEXDIM_PC *texture =
-                    NuTextureGetDimensions(packet->texture_ids[stage] == -1 ? 1 : packet->texture_ids[stage]);
+                NUTEXDIM_PC *texture;
+                if (packet->texture_ids[stage] != -1)
+                    texture = NuTextureGetDimensions(packet->texture_ids[stage]);
+                else
+                    texture = NuTextureGetDimensions(1);
                 PCDeviceSetTexture(stage, texture->resource);
                 PCDeviceSetSamplerState(stage, 1, 1);
                 PCDeviceSetSamplerState(stage, 2, 1);
@@ -3619,7 +3625,7 @@ extern "C" {
         NuCameraScalingTemplate.m02 = 0.0f;
         NuCameraScalingTemplate.m03 = 0.0f;
         NuCameraScalingTemplate.m10 = 0.0f;
-        NuCameraScalingTemplate.m11 = (f32)(-(f64)height * NuQFntHalfScale);
+        NuCameraScalingTemplate.m11 = (f32)(-height * NuQFntHalfScale);
         NuCameraScalingTemplate.m12 = 0.0f;
         NuCameraScalingTemplate.m13 = 0.0f;
         NuCameraScalingTemplate.m20 = 0.0f;
