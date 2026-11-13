@@ -1088,7 +1088,7 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
     const f32 scale = AreaPickupScale;
     u32 arcade_flags;
     i32 to_panel, remainder, remaining, i, j, type, score, count, both_players;
-    u8 counts[10] = {0};
+    u8 counts[10];
     NUVEC velocity;
     GAMEOBJECT *recipient;
     GAMEOBJECT *eligible[2];
@@ -1117,6 +1117,7 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
         coins = 0;
     if (speed == 1.0f)
         speed *= scale;
+    memset(counts, 0, sizeof(counts));
     if (netclient != 0)
         return;
     remainder = coins % 10;
@@ -1141,8 +1142,8 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
             type = CoinTab[i];
             score = GizmoPickupType[type].score;
             while (remaining - score >= 0) {
-                remaining -= score;
                 ++counts[type];
+                remaining -= score;
             }
         }
     }
@@ -1161,12 +1162,12 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
             }
         }
     }
-    both_players = 0;
     if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) &&
         Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
-        both_players = 1;
         hearts = 2;
-    }
+        both_players = 1;
+    } else
+        both_players = 0;
     for (i = 0; i < hearts; ++i) {
         if (to_panel)
             velocity = v000;
@@ -1174,7 +1175,7 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
             MakePartVector(&velocity, direction, speed);
         recipient = NULL;
         if (both_players)
-            recipient = (GAMEOBJECT *)Player[i == 0 ? 0 : 1];
+            recipient = (GAMEOBJECT *)(i == 0 ? Player[0] : Player[1]);
         else if (owner != NULL)
             recipient = owner;
         else {
