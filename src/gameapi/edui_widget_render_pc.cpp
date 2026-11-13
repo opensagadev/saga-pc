@@ -1011,13 +1011,13 @@ i32 __cdecl cbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_ti
 }
 
 /* Copies the picker's target colour to the clipboard and tints the Paste button with it. Retail calls
-   __ftol2_sse for each channel; VC8 inlines the conversions here because the result is stored to the u32
-   eduiitem_s::colours (an i32 destination keeps the __ftol2_sse calls), which caps the score. */
+   __ftol2_sse for each channel; VC8 inlines the conversions here because the packed value is stored to
+   the u32 eduiitem_s::colours. With colours declared i32 (as retail's codegen implies) this is exact. */
 void __cdecl cbCopy(eduimenu_s *, eduiitem_s *, u32) {
     EduiColourClipboardRedPc = *EduiColourTargetRedPc;
     EduiColourClipboardGreenPc = *EduiColourTargetGreenPc;
     EduiColourClipboardBluePc = *EduiColourTargetBluePc;
-    u32 packed = 0x80;
+    i32 packed = 0x80;
     packed = (packed << 8) | ((i32)(EduiColourClipboardBluePc * 255.0) & 0xff);
     packed = (packed << 8) | ((i32)(EduiColourClipboardGreenPc * 255.0) & 0xff);
     packed = (packed << 8) | ((i32)(EduiColourClipboardRedPc * 255.0) & 0xff);
