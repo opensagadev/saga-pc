@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x4c7880-0x4c8bad: definitions in retail address order. */
+
 STATIC_ASSERT(sizeof(SIGNAL_s) == 0x94);
 STATIC_ASSERT(offsetof(SIGNAL_s, matrix) == 0x10);
 STATIC_ASSERT(offsetof(SIGNAL_s, position) == 0x50);
@@ -19,6 +21,114 @@ STATIC_ASSERT(sizeof(SIGNALPROGRESS_s) == 0x28);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, active_mask) == 0x20);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, visible_mask) == 0x24);
 
+extern const char AIRegistryTextPc007575bc[7];
+STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, max_signals) == 0xea);
+STATIC_ASSERT(offsetof(SIGNAL_s, name) == 0);
+STATIC_ASSERT(sizeof(((SIGNAL_s *)0)->name) == 16);
+STATIC_ASSERT(offsetof(SIGNAL_s, character_letter) == 0x68);
+STATIC_ASSERT(offsetof(SIGNAL_s, suit_letter) == 0x69);
+STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
+STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+extern const char PCContextName_Signal[7];
+extern char TextInputKeyNameTextPc7516c0[1];
+STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
+STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
+STATIC_ASSERT(offsetof(GIZMOFNS_PC, add_level_sfx_fn) == 0x6c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
+STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
+STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
+STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
+STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_flags) == 0x10);
+STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
+STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
+
+i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
+    i32 version;
+    i32 index;
+    if (world->signal_count == 0) {
+        version = EdFileReadInt();
+        world->signal_count = EdFileReadInt();
+        for (index = 0; index < world->signal_count; ++index) {
+            EdFileRead(world->signals[index].name, 16);
+            EdFileReadNuVec(&world->signals[index].position);
+            world->signals[index].character_letter = EdFileReadChar();
+            if (version >= 2) {
+                world->signals[index].suit_letter = EdFileReadChar();
+                world->signals[index].yaw = EdFileReadShort();
+            } else {
+                world->signals[index].suit_letter = 'b';
+                world->signals[index].yaw = 0;
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
+void __cdecl Signals_InitTerrain(WORLDINFO *world) {
+    i32 index;
+    for (index = 0; index < world->signal_count; ++index) {
+        world->signals[index].platform_id = NewPlatPickupInst(&world->signals[index].matrix, 2);
+    }
+}
+
+void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
+    LEVELDATA_PC *level = world->current_level;
+    world->signals = NULL;
+    world->signal_count = 0;
+    if (level->max_signals > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        world->signals = (SIGNAL_s *)world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += level->max_signals * sizeof(SIGNAL_s);
+    }
+    return world->signals;
+}
+
+void __cdecl Signal_Activate(GIZMO_PC *gizmo, i32 active) {
+    if (gizmo != NULL) {
+        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+        signal->active = active != 0;
+    }
+}
+
+i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
+    if (gizmo != NULL) {
+        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+        if (signal != NULL) {
+            if ((reverse & 1) != 0)
+                return active == signal->active;
+            signal->active = active == 0;
+            return 1;
+        }
+    }
+    return 0;
+}
+
 static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
     u8 was_visible = signal->visible;
     signal->visible = visible != 0;
@@ -31,6 +141,11 @@ static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
 void __cdecl Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL)
         SignalSetVisiblePc((SIGNAL_s *)gizmo->object, visible);
+}
+
+NUVEC *__cdecl Signal_GetPos(GIZMO_PC *gizmo) {
+    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
+    return signal != NULL ? &signal->position : NULL;
 }
 
 static void SignalResetRecordPc(SIGNAL_s *signal) {
@@ -89,159 +204,6 @@ void __cdecl Signals_Reset(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
     }
 }
 
-extern const char AIRegistryTextPc007575bc[7];
-
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_signals) == 0xea);
-STATIC_ASSERT(offsetof(SIGNAL_s, name) == 0);
-STATIC_ASSERT(sizeof(((SIGNAL_s *)0)->name) == 16);
-STATIC_ASSERT(offsetof(SIGNAL_s, character_letter) == 0x68);
-STATIC_ASSERT(offsetof(SIGNAL_s, suit_letter) == 0x69);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-
-void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
-    world->signals = NULL;
-    world->signal_count = 0;
-    if (level->max_signals > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->signals = (SIGNAL_s *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += level->max_signals * sizeof(SIGNAL_s);
-    }
-    return world->signals;
-}
-
-i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
-    i32 version;
-    i32 index;
-    if (world->signal_count == 0) {
-        version = EdFileReadInt();
-        world->signal_count = EdFileReadInt();
-        for (index = 0; index < world->signal_count; ++index) {
-            EdFileRead(world->signals[index].name, 16);
-            EdFileReadNuVec(&world->signals[index].position);
-            world->signals[index].character_letter = EdFileReadChar();
-            if (version >= 2) {
-                world->signals[index].suit_letter = EdFileReadChar();
-                world->signals[index].yaw = EdFileReadShort();
-            } else {
-                world->signals[index].suit_letter = 'b';
-                world->signals[index].yaw = 0;
-            }
-        }
-        return 1;
-    }
-    return 0;
-}
-
-void *__cdecl Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, sizeof(SIGNALPROGRESS_s));
-}
-
-void __cdecl Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
-    if (progress != NULL) {
-        memset(progress->suit_letters, 0, sizeof(progress->suit_letters));
-        progress->active_mask[0] = 0xffffffffu;
-        progress->visible_mask[0] = 0xffffffffu;
-    }
-}
-
-void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
-    SIGNAL_s *signal;
-    i32 index;
-    Signals_ClearProgress(world, progress);
-    if (progress == NULL || world == NULL || world->signals == NULL)
-        return;
-    signal = world->signals;
-    for (index = 0; index < world->signal_count; ++index, ++signal) {
-        if (index < 32) {
-            i32 word = index / 32;
-            u32 bit = 1 << (index & 31);
-            progress->suit_letters[index] = signal->suit->letter;
-            if (!signal->visible)
-                progress->visible_mask[word] &= ~bit;
-            if (!signal->active)
-                progress->active_mask[word] &= ~bit;
-        }
-    }
-}
-
-void __cdecl Signals_InitTerrain(WORLDINFO *world) {
-    i32 index;
-    for (index = 0; index < world->signal_count; ++index) {
-        world->signals[index].platform_id = NewPlatPickupInst(&world->signals[index].matrix, 2);
-    }
-}
-
-i32 __cdecl Signals_GetMaxGizmos(WORLDINFO *world) {
-    return world != NULL ? world->current_level->max_signals : 0;
-}
-
-void __cdecl Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused) {
-    i32 index;
-    for (index = 0; index < world->signal_count; ++index) {
-        if (NuStrLen(world->signals[index].name) != 0)
-            AddGizmo(system, type_id, NULL, &world->signals[index]);
-    }
-}
-
-char *__cdecl Signal_GetGizmoName(GIZMO_PC *gizmo) {
-    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
-    return signal != NULL ? signal->name : NULL;
-}
-
-NUVEC *__cdecl Signal_GetPos(GIZMO_PC *gizmo) {
-    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
-    return signal != NULL ? &signal->position : NULL;
-}
-
-void __cdecl Signal_Activate(GIZMO_PC *gizmo, i32 active) {
-    if (gizmo != NULL) {
-        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
-        signal->active = active != 0;
-    }
-}
-
-i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
-    if (gizmo != NULL) {
-        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
-        if (signal != NULL) {
-            if ((reverse & 1) != 0)
-                return active == signal->active;
-            signal->active = active == 0;
-            return 1;
-        }
-    }
-    return 0;
-}
-
-i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
-    SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
-    if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0)
-        return 1;
-    return 0;
-}
-
-char *__cdecl Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
-    return (char *)AIRegistryTextPc007575bc;
-}
-
-i32 __cdecl Signal_GetNumOutputs(GIZMO_PC *unused) {
-    return 1;
-}
-
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
-STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
-
 void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
     SIGNAL_s *signal = world->signals;
     i32 index;
@@ -293,6 +255,32 @@ void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
             signal->in_use = 0;
         }
     }
+}
+
+SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+    SIGNAL_s *nearest = NULL;
+    f32 nearest_distance;
+    SIGNAL_s *signal;
+    i32 index;
+    signal = world->signals;
+    nearest_distance = 1000000000.0f;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        f32 signal_distance;
+        if (object != NULL) {
+            if (!signal->visible || !signal->active || signal->in_use || (u16)signal->suit->character_id != object->id)
+                continue;
+            signal_distance = NuVecDistSqr(position, &signal->target_position, NULL);
+        } else {
+            signal_distance = NuVecDistSqr(position, &signal->position, NULL);
+        }
+        if (signal_distance < nearest_distance) {
+            nearest_distance = signal_distance;
+            nearest = signal;
+        }
+    }
+    if (distance != NULL)
+        *distance = nearest_distance;
+    return nearest;
 }
 
 void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
@@ -347,22 +335,75 @@ void __cdecl Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
     }
 }
 
-extern const char PCContextName_Signal[7];
-extern char TextInputKeyNameTextPc7516c0[1];
+i32 __cdecl Signals_GetMaxGizmos(WORLDINFO *world) {
+    return world != NULL ? world->current_level->max_signals : 0;
+}
 
+void __cdecl Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused) {
+    i32 index;
+    for (index = 0; index < world->signal_count; ++index) {
+        if (NuStrLen(world->signals[index].name) != 0)
+            AddGizmo(system, type_id, NULL, &world->signals[index]);
+    }
+}
+
+char *__cdecl Signal_GetGizmoName(GIZMO_PC *gizmo) {
+    SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
+    return signal != NULL ? signal->name : NULL;
+}
+
+i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
+    SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+    if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0)
+        return 1;
+    return 0;
+}
+
+char *__cdecl Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
+    return (char *)AIRegistryTextPc007575bc;
+}
+
+i32 __cdecl Signal_GetNumOutputs(GIZMO_PC *unused) {
+    return 1;
+}
+
+void *__cdecl Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, sizeof(SIGNALPROGRESS_s));
+}
+
+void __cdecl Signals_ClearProgress(void *unused, SIGNALPROGRESS_s *progress) {
+    if (progress != NULL) {
+        memset(progress->suit_letters, 0, sizeof(progress->suit_letters));
+        progress->active_mask[0] = 0xffffffffu;
+        progress->visible_mask[0] = 0xffffffffu;
+    }
+}
+
+void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *progress) {
+    SIGNAL_s *signal;
+    i32 index;
+    Signals_ClearProgress(world, progress);
+    if (progress == NULL || world == NULL || world->signals == NULL)
+        return;
+    signal = world->signals;
+    for (index = 0; index < world->signal_count; ++index, ++signal) {
+        if (index < 32) {
+            i32 word = index / 32;
+            u32 bit = 1 << (index & 31);
+            progress->suit_letters[index] = signal->suit->letter;
+            if (!signal->visible)
+                progress->visible_mask[word] &= ~bit;
+            if (!signal->active)
+                progress->active_mask[word] &= ~bit;
+        }
+    }
+}
 #pragma data_seg(".data$SignalRegistryNamePc")
 char *SignalRegistryNamePc = (char *)PCContextName_Signal;
 #pragma data_seg()
 #pragma data_seg(".data$SignalAddTypePc")
 ADDGIZMOTYPE_PC SignalAddTypePc = {0};
 #pragma data_seg()
-
-STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, add_level_sfx_fn) == 0x6c);
 
 ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;
@@ -398,51 +439,6 @@ ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddTypePc.fns.post_load_fn = NULL;
     SignalAddTypePc.fns.add_level_sfx_fn = NULL;
     return &SignalAddTypePc;
-}
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
-STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_flags) == 0x10);
-STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
-
-SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
-    SIGNAL_s *nearest = NULL;
-    f32 nearest_distance;
-    SIGNAL_s *signal;
-    i32 index;
-    signal = world->signals;
-    nearest_distance = 1000000000.0f;
-    for (index = 0; index < world->signal_count; ++index, ++signal) {
-        f32 signal_distance;
-        if (object != NULL) {
-            if (!signal->visible || !signal->active || signal->in_use || (u16)signal->suit->character_id != object->id)
-                continue;
-            signal_distance = NuVecDistSqr(position, &signal->target_position, NULL);
-        } else {
-            signal_distance = NuVecDistSqr(position, &signal->position, NULL);
-        }
-        if (signal_distance < nearest_distance) {
-            nearest_distance = signal_distance;
-            nearest = signal;
-        }
-    }
-    if (distance != NULL)
-        *distance = nearest_distance;
-    return nearest;
 }
 
 void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
@@ -517,6 +513,66 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (object->context_duration <= 0.0f)
                 object->context_duration = 1.0f;
             object->context_variant_flags &= ~0x40u;
+        }
+    }
+}
+
+void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
+    GIZMOBLOWUP_PC *candidates[256];
+    GIZMOBLOWUP_PC *blowup;
+    NUVEC minimum, maximum;
+    i32 count;
+    i32 index;
+    f32 remaining;
+    if (object->character_context == 0x54) {
+        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            return;
+        object->context_timer += FRAMETIME;
+        if ((f64)object->context_duration < (f64)0.2f && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0)
+            object->context_duration = 0.2f;
+        remaining = object->context_duration - FRAMETIME;
+        object->context_duration = remaining;
+        if (remaining <= 0.0f) {
+            object->character_context = -1;
+            return;
+        }
+        if (!(object->context_timer >= 0.5f))
+            return;
+        blowup = world->gizmo_blowups;
+        if (blowup == NULL)
+            return;
+        count = 0;
+        minimum.x = object->collision_position.x - 3.0;
+        minimum.y = object->collision_position.y - 3.0;
+        minimum.z = object->collision_position.z - 3.0;
+        maximum.x = object->collision_position.x + 3.0;
+        maximum.y = object->collision_position.y + 3.0;
+        maximum.z = object->collision_position.z + 3.0;
+        for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
+            const u32 status = blowup->status_flags;
+            u32 draw;
+            if ((status & 1) != 0 || (status & 0x800000) == 0 || (status & 0x4000) == 0)
+                continue;
+            draw = blowup->draw_flags;
+            if ((draw & 0x40) == 0 || ((draw & 0x20) != 0 && ShadowMode == 0))
+                continue;
+            if (blowup->mid_position.x < minimum.x || blowup->mid_position.x > maximum.x ||
+                blowup->mid_position.z < minimum.z || blowup->mid_position.z > maximum.z ||
+                blowup->mid_position.y < minimum.y || blowup->mid_position.y > maximum.y)
+                continue;
+            if (!(NuVecDistSqr(&blowup->mid_position, &object->collision_position, NULL) > 9.0f) && count < 256)
+                candidates[count++] = blowup;
+        }
+        if (count > 0 && ParticlesPerSecond(5.0f, FRAMETIME) > 0) {
+            GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, 6, 1, NULL, 1);
+        }
+    } else {
+        if (object->field_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+            object->character_context = 0x54;
+            object->context_timer = 0.0f;
+            object->field_7aa = 0x9c;
+            object->context_duration = 0.3f;
         }
     }
 }
