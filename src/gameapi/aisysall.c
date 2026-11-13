@@ -1920,7 +1920,7 @@ static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end) {
     if (text != NULL) {
         length = NuStrLen(text);
         if (length != 0) {
-            copy = (char *)AIScriptBufferAlloc(buffer, end, length + 1);
+            copy = (char *)AIScriptBufferAllocOrWarn(buffer, end, length + 1);
             /* Native copies even after failed allocation; the NULL destination hazard is retained. */
             NuStrCpy(copy, text);
         }
@@ -2181,17 +2181,16 @@ void __cdecl xDeriveFromScript(NUFPAR_PC *parser) {
     while (!done && NuFParGetLine(parser) != 0) {
         while (!done && NuFParGetWord(parser) != 0) {
             char *cursor;
-            if (NuStrICmp(parser->word_buffer, AIScriptKeywordEnd) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, AIScriptKeywordEnd) == 0) {
                 done = 1;
-            } else if ((cursor = NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordScript)) != NULL) {
-                char *copy;
-                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("Script"), copy, aiscript_load_buffer,
-                                            aiscript_load_end_buffer);
-                aiscript_load_script->derived_from = copy;
-            } else if (NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordSource) != NULL) {
-                if (NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordGlobal) != NULL) {
+            } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordScript)) != NULL) {
+                cursor += sizeof("Script");
+                aiscript_load_script->derived_from =
+                    AIScriptCopyStringPc(cursor, aiscript_load_buffer, aiscript_load_end_buffer);
+            } else if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordSource) != NULL) {
+                if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordGlobal) != NULL) {
                     aiscript_load_script->flags_3c &= ~4u;
-                } else if (NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordLevel) != NULL) {
+                } else if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordLevel) != NULL) {
                     aiscript_load_script->flags_3c |= 4u;
                 }
             }
