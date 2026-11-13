@@ -17,7 +17,7 @@ sudo apt-get update
 sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18 7zip
 python3 -m pip install capstone==5.0.9  # discovery tooling, tests and diff classes in matching.json
-python3 -m pip install libclang        # only for tools/permute.py
+python3 -m pip install libclang==18.1.1  # tools/layoutcheck.py (make lint), permute.py, declscan.py
 make setup                             # pinned MSVC 2005 SP1 (+ RTM for libvorbis), runtime update, objdiff-cli, DirectX SDK libs
 make check
 make -j"$(nproc)" build check-objects
@@ -176,7 +176,7 @@ Never commit original game files, assets, compiler binaries or extracted objects
 1. Map the function in [config/symbols.csv](config/symbols.csv) (address,
    linker name, size, type; see [config/symbols.md](config/symbols.md)).
 2. Implement it under `src/`; shared types, calling conventions and
-   `STATIC_ASSERT` layout checks go in [src/saga.h](src/saga.h). APIs missing
+   layout comments go in [src/saga.h](src/saga.h) (see [Layout comments](#layout-comments)). APIs missing
    from the bundled SDK go in `src/externals.h`.
 3. Compare: `make -j"$(nproc)" diff FUNC=NuRand` (C name, exact linker symbol
    or original address).
@@ -548,6 +548,37 @@ retail, maps them in `config/symbols.csv` and defines globals in
 `src/data.cpp` with their retail initial values. Callees it maps still need an
 implementation (port them the same way); ambiguous addresses are reported and
 left to you.
+
+## Layout comments
+
+A struct states its layout in trailing comments instead of `STATIC_ASSERT`
+lines: every member line carries its offset from the start of the outermost
+struct, the closing line its size. `make lint` runs `tools/layoutcheck.py`,
+which computes the layouts with the MSVC x86 ABI (libclang,
+`--target=i686-pc-windows-msvc`, the pinned SDK headers, C and C++, with and
+without `SAGA_DEBUG`) and fails on a wrong, missing or misformatted comment in
+any struct that has a size comment.
+
+```c
+typedef struct EXAMPLE_PC {
+    i32 id;          // 0x00
+    union {          // 0x04  anonymous and inline structs: on the line of `{`
+        f32 timer;   // 0x04
+        i32 counter; // 0x04  a note may follow the offset
+    };
+    u32 active : 1;  // 0x08:0  bitfields: storage unit and first bit
+    u32 mode : 3;    // 0x08:1
+} EXAMPLE_PC;        // size 0x0c
+```
+
+Offsets are lower-case hex, zero-padded to the digits of `size - 1`; a line
+with several members carries the first one's offset. `python3
+tools/layoutcheck.py --convert FILE[:FIRST-LAST]|STRUCT` writes these comments
+and deletes the size/offset asserts that agree with the computed layout;
+`--stats` shows what is covered by comments, by asserts, or by neither. Other
+asserts (member sizes, sums, relations) stay. The `assert-*` classes of
+`tools/oddscan.py` only go down: `make check-core` fails until their budget
+follows a decrease (`python3 tools/oddscan.py --write-budget`).
 
 ## Measures
 

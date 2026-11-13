@@ -162,6 +162,7 @@ check: lint check-core
 lint: dependencies
 	$(PYTHON) tools/check.py --format
 	$(PYTHON) tools/check.py --tidy
+	$(PYTHON) tools/layoutcheck.py
 
 # Apply .clang-format to src/ (the vendored sources keep their own style).
 format:
