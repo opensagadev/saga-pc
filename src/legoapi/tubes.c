@@ -1,5 +1,13 @@
 #include "saga.h"
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static __forceinline f32 TubesFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height) {
     TUBE_PC *tube = world->tubes;
     i32 index;
@@ -228,6 +236,12 @@ static void __cdecl Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         tube->bits.visible = visible != 0;
     }
 }
+/* Derived cylinder values; retail keeps an out-of-line copy before Tubes_Reset. */
+static void Tube_ResetDerivedPc(TUBE_CALLBACKS_PC *tube) {
+    tube->top = tube->position.y + tube->height;
+    tube->radius_squared = tube->radius * tube->radius;
+    tube->flags |= 3;
+}
 static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
@@ -238,9 +252,7 @@ static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr)
         return;
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
-        tube->top = tube->position.y + tube->height;
-        tube->radius_squared = tube->radius * tube->radius;
-        tube->flags |= 3;
+        Tube_ResetDerivedPc(tube);
         if (progress != NULL && i < 32) {
             i32 word = i / 32;
             u32 bit = 1u << (i & 31);
@@ -374,7 +386,7 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
             GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
             object = Obj;
             for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
-                f32 distance, tx, tz, inverse, normal_y, magnitude;
+                f32 distance, tx, tz, inverse;
                 u16 angle;
                 if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
                     !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100))
@@ -390,9 +402,7 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 if (Tube_IsObjBitSet(tube, object->hostility_group) != 0 || object->contact_count == 0 ||
                     !(distance < 0.1224999949336052))
                     continue;
-                normal_y = object->contact_normal.y;
-                *(u32 *)&magnitude = *(u32 *)&normal_y & 0x7fffffff;
-                if (magnitude < NuTrigTable[0x3c71]) {
+                if (TubesFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
                     inverse = 1.0f / NuFsqrt(distance);
                     tx *= inverse;
                     tz *= inverse;
