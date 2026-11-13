@@ -1063,58 +1063,6 @@ void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR
         }
     }
 }
-void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
-    char path[256];
-    (void)unused;
-    minikit->scene = NULL;
-    minikit->pieces = NULL;
-    minikit->piece_count = 0;
-    minikit->area_index = -1;
-    minikit->model_id = (i16)id;
-    if (id == -1)
-        return;
-    NuStrCpy(path, "chars\\minikits\\");
-    NuStrCat(path, CDataList[id].name);
-    NuStrCat(path, "\\");
-    NuStrCat(path, CDataList[id].name);
-    NuStrCat(path, ".gsc");
-    buffer->addr = (buffer->addr + 3) & ~3u;
-    minikit->scene = NuGScnRead(buffer, *end, path);
-}
-static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
-void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
-    i32 direction_counts[6];
-    i32 index, direction;
-    char name[64];
-    (void)end;
-    if (minikit->scene != NULL) {
-        for (direction = 0; direction < 6; ++direction)
-            direction_counts[direction] = 0;
-        buffer->addr = (buffer->addr + 3) & ~3u;
-        minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
-        minikit->piece_count = 0;
-        for (index = 0; index < count; ++index) {
-            for (direction = 0; direction < 6; ++direction) {
-                sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
-                if (NuSpecialFind(minikit->scene, &minikit->pieces[minikit->piece_count].special, name, 1) != 0) {
-                    minikit->pieces[minikit->piece_count].matrix =
-                        *NuSpecialGetInstanceMtx(&minikit->pieces[minikit->piece_count].special);
-                    minikit->pieces[minikit->piece_count].direction = (u8)direction;
-                    minikit->pieces[minikit->piece_count].direction_index = (u8)direction_counts[direction]++;
-                    ++minikit->piece_count;
-                }
-            }
-        }
-        sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
-        NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
-        if (minikit->piece_count > 0)
-            buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
-        else
-            minikit->pieces = NULL;
-    } else {
-        minikit->area_index = -1;
-    }
-}
 
 /* Original source name unknown. The native entry is exactly RET (0x559570, in this unit). */
 void __cdecl GizmoDiagnosticPc(char *format, ...) {

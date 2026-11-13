@@ -4399,7 +4399,6 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
 
 /* Five reviewed providers: append these four to existing hub.cpp. */
 extern "C" {
-    extern f32 KITPOS2YPc;
     /* Complete native0056e2a0..0056e2dc. */
     u32 __cdecl Cheat_MultiplyScore(u32 score) {
         u32 flags = CheatSystemPtr->flags;
@@ -4414,30 +4413,6 @@ extern "C" {
         if ((flags & 64) != 0)
             score *= 10;
         return score;
-    }
-
-    /* Complete native0059a1e0..0059a414. */
-    void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
-        i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
-        f32 factor, x, y;
-        WORLDINFO *world;
-        char text[32];
-        if (model == -1 || time <= 0.0f)
-            return;
-        factor = NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff];
-        x = (KITPOSX - KITPOS2X) * factor + KITPOS2X;
-        y = (KITPOSY - KITPOS2YPc) * factor + KITPOS2YPc;
-        world = WorldInfo_CurrentlyActive();
-        if (world->level_objects[model].active != 0) {
-            u16 angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-            u16 pitch = (u16)(i32)((f64)NU_SIN_LUT(angle * 2) * 1820.0);
-            f32 size = PANEL_MINIKITSCALE * scale;
-            DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY, 1.0f, size, size, size, pitch, angle, 0,
-                                     &world->level_objects[model].special, 2);
-        }
-        sprintf(text, "%i/%i", amount, total);
-        scale *= PANEL_MINIKITCOUNTSCALE;
-        Text3D(text, x, y + PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, 0, 255, 0, 127);
     }
 
     /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
