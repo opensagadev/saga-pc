@@ -3135,9 +3135,7 @@ extern "C" {
         quaternions = (NUQUAT *)(((u32)quaternions + 15u) & ~15u);
         rotation = quaternions;
         identity.w = 1.0f;
-        evaluated = buffer;
-        if (evaluated == NULL)
-            evaluated = (ANI3_BUFFER_PC *)globalbuffer;
+        evaluated = buffer != NULL ? buffer : (ANI3_BUFFER_PC *)globalbuffer;
         if (AnimBuffEvalData != NULL && AnimBuffEvalJoint != NULL) {
             memset(callback_data, 0, object->joint_count * sizeof(void *));
             for (index = 0; AnimBuffEvalData[index] != NULL; ++index) {
@@ -3155,13 +3153,13 @@ extern "C" {
             root_scale.x = root_scale.y = root_scale.z = 1.0f;
             quaternions[255] = identity;
         }
-        root_values.x = root_values.y = root_values.z = 0.0f;
-        joint = evaluated->joints;
         joint_flags = evaluated->joint_flags;
+        root_values.x = root_values.y = root_values.z = 0.0f;
         nodes = object->joints;
+        joint = evaluated->joints;
         matrix = matrices;
         scale = scales;
-        for (index = 0; index < count; ++index, ++matrix, ++scale, ++nodes, ++joint, ++rotation) {
+        for (index = 0; index < count; ++index, ++matrix, ++scale, ++rotation, ++nodes, ++joint) {
             parent = nodes->parent_index;
             flags = *joint_flags++;
             if ((flags & 1) != 0) {
