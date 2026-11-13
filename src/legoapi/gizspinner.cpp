@@ -1000,24 +1000,25 @@ extern "C" i32 *__cdecl GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC
                                                      NUVEC *result_velocity, void *, NUVEC *position, NUVEC *direction,
                                                      f32 radius, f32 range_squared, i32 directional, i32, i32) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
+    GIZMO_PC *result = NULL;
     NUVEC target_position = v000;
     NUVEC aim = *direction;
     if (world->spinners == NULL)
         return NULL;
     f32 best_alignment = 0.0f;
-    GIZMO_PC *result = NULL;
-    f32 min_x = position->x - radius;
-    f32 min_z = position->z - radius;
-    f32 max_x = position->x + radius;
-    f32 max_z = position->z + radius;
+    NUVEC minimum, maximum;
+    minimum.x = position->x - radius;
+    minimum.z = position->z - radius;
+    maximum.x = position->x + radius;
+    maximum.z = position->z + radius;
     GIZMOSET_PC *set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id];
     for (i32 index = 0; index < set->count;
          ++index, set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
         GIZMO_PC *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
         if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 ||
-            spinner->position.x < min_x || spinner->position.x > max_x || spinner->position.z < min_z ||
-            spinner->position.z > max_z)
+            spinner->position.x < minimum.x || spinner->position.x > maximum.x || spinner->position.z < minimum.z ||
+            spinner->position.z > maximum.z)
             continue;
         target_position.y = spinner->position.y + spinner->field_0x098;
         u16 step = spinner->type != 0 ? (u16)(0x10000 / spinner->type) : 0x4000;
@@ -1027,26 +1028,23 @@ extern "C" i32 *__cdecl GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC
             target_position.x = spinner->position.x + NuTrigTable[angle >> 1] * spinner->field_0x094;
             target_position.z =
                 spinner->position.z + NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * spinner->field_0x094;
-            f32 tangent_x = NuTrigTable[tangent_angle >> 1];
-            f32 tangent_z = NuTrigTable[((tangent_angle + 0x4000) >> 1) & 0x7fff];
+            NUVEC tangent;
+            tangent.x = NuTrigTable[tangent_angle >> 1];
+            tangent.z = NuTrigTable[((tangent_angle + 0x4000) >> 1) & 0x7fff];
             NUVEC facing;
-            union {
-                f32 value;
-                u32 bits;
-            } dot_value, absolute_dot;
+            f32 absolute_dot;
             if (directional == 0) {
                 NuVecRotateY(&facing, &v001,
                              NuAtan2D(spinner->position.x - position->x, spinner->position.z - position->z));
-                dot_value.value = facing.z * tangent_z + facing.x * tangent_x;
+                absolute_dot = SpinnerFabsPc(facing.z * tangent.z + facing.x * tangent.x);
             } else {
-                dot_value.value = direction->z * tangent_z + direction->x * tangent_x;
+                absolute_dot = SpinnerFabsPc(direction->z * tangent.z + direction->x * tangent.x);
             }
-            absolute_dot.bits = dot_value.bits & 0x7fffffff;
-            if (!(absolute_dot.value > NuTrigTable[0x3000]))
+            if (!(absolute_dot > NuTrigTable[0x3000]))
                 continue;
             NUVEC delta;
             f32 distance = NuVecDistSqr(&target_position, position, &delta);
-            if (range_squared <= distance)
+            if (!(distance < range_squared))
                 continue;
             if (directional == 0)
                 NuVecRotateY(&aim, &v001, NuAtan2D(target_position.x - position->x, target_position.z - position->z));
