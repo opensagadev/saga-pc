@@ -3230,17 +3230,18 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
     NUMTX scaled_matrix;
     NUMTX scaled_reflection;
     NUMTX output_matrices[256];
-    NUVEC half_scale;
-    i32 drag_bomb = 0;
-    i32 complex_shadow = 0;
+    i32 drag_bomb;
+    i32 complex_shadow;
     i32 result;
     i32 draw_shadow;
     i32 i;
+    drag_bomb = 0;
     if (object != NULL && object->id == id_DRAGBOMB && Cheat_IsOn(5) && WORLD->level_objects[0x135].active != 0) {
+        NUVEC half_scale;
         ResetShadowMapRendering();
         special_matrix = *matrix;
-        NuSpecialDrawAt(&WORLD->level_objects[0x135].special, &special_matrix);
         drag_bomb = 1;
+        NuSpecialDrawAt(&WORLD->level_objects[0x135].special, &special_matrix);
         if (reflection_matrix != NULL) {
             special_matrix = *reflection_matrix;
             NuRndrStartReflectionRender(1);
@@ -3249,14 +3250,15 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
         }
         half_scale.x = half_scale.y = half_scale.z = 0.5f;
         scaled_matrix = *matrix;
-        NuMtxPreScale(&scaled_matrix, &half_scale);
         matrix = &scaled_matrix;
+        NuMtxPreScale(matrix, &half_scale);
         if (reflection_matrix != NULL) {
             scaled_reflection = *reflection_matrix;
-            NuMtxPreScale(&scaled_reflection, &half_scale);
             reflection_matrix = &scaled_reflection;
+            NuMtxPreScale(reflection_matrix, &half_scale);
         }
     }
+    complex_shadow = 0;
     if (object != NULL && (object->character_data->model_flags & 0x10000) != 0 &&
         (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
         ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 0;
@@ -3275,7 +3277,6 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
                               object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_overrides : NULL,
                               object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_override_count : 0,
                               Paused, FRAMETIME, output_matrices, NULL, WORLD->game_debris_sys);
-    draw_shadow = 0;
     if (result == 0) {
         if (object != NULL && auxiliary_matrix != NULL) {
             for (i = 0; i < 16; ++i) {
@@ -3288,35 +3289,28 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
                 }
             }
         }
-    } else if (object == NULL ||
-               ((object->flags_ef0 & 0x4000000) == 0 && (object->character_data->model_flags & 0x10000) == 0)) {
-        draw_shadow = 1;
     }
+    draw_shadow = result != 0 && (object == NULL || ((object->flags_ef0 & 0x4000000) == 0 &&
+                                                     (object->character_data->model_flags & 0x10000) == 0));
     if (PcWindowOptions.shadowmethod == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
-        i32 level_alpha = WORLD->current_level->blob_shadow_alpha;
+        u8 level_alpha = WORLD->current_level->blob_shadow_alpha;
         if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
             (object->water_height == -1.0f || (TerLayer[object->field_283].flags & 1) == 0)) {
             if ((i16)object->id == id_MOUSEDROID && WORLD->level_objects[0xa2].active != 0) {
                 f32 opacity;
                 special_matrix = *secondary_matrix;
-                opacity = (f32)((f64)object->shadow_opacity * (f64)object->surface_normal.y);
+                opacity = object->shadow_opacity * object->surface_normal.y;
                 NuSpecialDrawAtAlpha(&WORLD->level_objects[0xa2].special, &special_matrix, opacity);
             } else if (CharacterBlobShadowsOnPc != 0) {
                 PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
-                i32 alpha = config->blob_shadow_alpha;
+                i32 alpha = config->blob_shadow_alpha < 255 ? config->blob_shadow_alpha : level_alpha;
                 f32 radius;
-                if (alpha == 255)
-                    alpha = level_alpha;
                 if (alpha > 0) {
                     radius = config->field_08c < 99.0f ? config->field_08c : object->character_data->collision_radius;
                     if (radius > 0.0f) {
-                        f32 scaled_radius;
-                        i32 shadow_alpha;
-                        f32 final_radius;
-                        scaled_radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
-                        shadow_alpha = (i32)((f64)alpha * (f64)object->shadow_opacity * (f64)object->surface_normal.y);
-                        final_radius = (f32)((f64)object->origin_scale * (f64)scaled_radius);
-                        NuRndrAddShadow((NUVEC *)&secondary_matrix->m30, final_radius, shadow_alpha, object->field_1052,
+                        radius = DropInOutScale(object) * radius;
+                        NuRndrAddShadow(&secondary_matrix->translation, object->origin_scale * radius,
+                                        alpha * object->shadow_opacity * object->surface_normal.y, object->field_1052,
                                         0, object->field_1054);
                     }
                 }
