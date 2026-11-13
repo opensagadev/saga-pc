@@ -128,26 +128,6 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
     return system;
 }
 
-/* MATCH-EXCEPTION: retail re-reads world->torpedo_machine_sys at each use; the casts stand in for its
- * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
-void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    world->torpedo_machine_sys = NULL;
-    if (world->current_level->max_torpmachines > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->torpedo_machine_sys = (TORPEDO_MACHINE_SYS_PC *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += sizeof(GIZTORPMACHINESYS_s);
-        memset(world->torpedo_machine_sys, 0, sizeof(GIZTORPMACHINESYS_s));
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = (GIZTORPMACHINE_s *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s);
-        memset(((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines, 0,
-               world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s));
-        world->torpedo_machine_sys->scale = 1.0f;
-    }
-    return world->torpedo_machine_sys;
-}
-
 void __cdecl GizmoPickups_PostLoad(void *world, void *system) {
     (void)world;
     (void)system;

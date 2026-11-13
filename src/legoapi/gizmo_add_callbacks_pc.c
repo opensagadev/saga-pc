@@ -121,20 +121,6 @@ void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *dat
     for (i = 0; i < ((ADD_AI_WORLD_PC *)WORLD)->count; ++i, ++item)
         AddGizmo(giz, type, NULL, item);
 }
-void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    ADD_TORP_SYS_PC *s;
-    i32 i;
-    (void)data;
-    if (w == NULL || w->torpedo_machine_sys == NULL)
-        return;
-    s = (ADD_TORP_SYS_PC *)w->torpedo_machine_sys;
-    for (i = 0; i < s->count; ++i) {
-        if (NuStrLen(s->items[i].name) != 0)
-            AddGizmo(giz, type, NULL, &((ADD_TORP_SYS_PC *)w->torpedo_machine_sys)->items[i]);
-        s = (ADD_TORP_SYS_PC *)w->torpedo_machine_sys;
-    }
-}
 void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     ADD_BOMB_RESET_SYS_PC *s = (ADD_BOMB_RESET_SYS_PC *)data;
@@ -144,22 +130,6 @@ void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progres
     else
         s->reset_saved = w->unknown_0114[1];
     s->progress = progress;
-}
-void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    ADD_TORP_SYS_PC *s;
-    i32 i;
-    (void)data;
-    (void)progress;
-    if (w == NULL || w->torpedo_machine_sys == NULL)
-        return;
-    s = (ADD_TORP_SYS_PC *)w->torpedo_machine_sys;
-    if (s->items == NULL)
-        return;
-    for (i = 0; i < s->count; ++i) {
-        ADD_TORP_PC *torp = &s->items[i];
-        torp->flags |= 3;
-    }
 }
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);

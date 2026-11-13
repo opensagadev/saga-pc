@@ -49,7 +49,6 @@ void __cdecl GizBombGens_StoreProgress(void *, void *, void *);
 void __cdecl GizBombGens_SetResetFlag(void *, void *, void *);
 void *__cdecl GizBombGens_ReserveBufferSpace(void *);
 i32 __cdecl GizBombGens_Load(void *, void *);
-i32 __cdecl GizTorp_Load(void *, void *);
 
 #pragma const_seg(".rdata$GizmoRegistryNewBlowupNamePc")
 const char GizmoRegistryNewBlowupNamePc[] = "blowup";
@@ -78,11 +77,6 @@ const char GizmoRegistryAINamePc[] = "AIProcessor";
 const char GizmoRegistryAIPrefixPc[] = "ai_";
 #pragma const_seg()
 #pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
-#pragma const_seg()
-static ADDGIZMOTYPE_PC GizmoRegistryGizTorpMachineAddTypePc = {0};
-i32 giztorpmachine_gizmotype_id = 0;
-#pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
-const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
 
 ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32 type_id) {
@@ -232,41 +226,6 @@ ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizTorpMachineAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->fns.options = 0x0;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.get_pos_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->fns.bolt_hit_plat_fn = NULL;
-    addtype->fns.get_best_bolt_target_fn = NULL;
-    addtype->fns.bolt_hit_fn = NULL;
-    addtype->fns.allocate_progress_data_fn = NULL;
-    addtype->fns.clear_progress_fn = NULL;
-    addtype->fns.store_progress_fn = NULL;
-    giztorpmachine_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistryGizTorpMachineNamePc;
-    addtype->prefix = "";
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizTorp_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizTorp_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizTorp_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizTorp_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizTorp_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizTorp_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizTorp_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizTorp_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizTorp_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizTorp_SetVisibility;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizTorps_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizTorps_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizTorp_Load;
-    return addtype;
-}
-
 i32 __cdecl Blowup_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world != NULL)
@@ -291,13 +250,6 @@ i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
 i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
     (void)world_ptr;
     return 32;
-}
-
-i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world != NULL)
-        return world->current_level->max_torpmachines;
-    return 0;
 }
 
 void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
