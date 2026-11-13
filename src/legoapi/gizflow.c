@@ -473,9 +473,8 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
         data = (FLOWBOXGIZMODATA_PC *)box->data;
         for (j = 0; j < data->gizmo_count; ++j) {
             if (data->gizmos[j]->gizmo != NULL) {
-                GIZMO_PC *gizmo = (GIZMO_PC *)data->gizmos[j]->gizmo;
-                void *found = GizmoFindByName(system->gizmo_sys, gizmo->type_id, data->gizmos[j]->name);
-                data->gizmos[j]->gizmo = found;
+                data->gizmos[j]->gizmo = GizmoFindByName(
+                    system->gizmo_sys, ((GIZMO_PC *)data->gizmos[j]->gizmo)->type_id, data->gizmos[j]->name);
             } else {
                 void *found = GizmoFindByName(system->gizmo_sys, -1, data->gizmos[j]->name);
                 data->gizmos[j]->gizmo = found;
