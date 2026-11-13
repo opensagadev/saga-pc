@@ -11801,9 +11801,9 @@ STATIC_ASSERT(offsetof(SHADOW_PRODUCER_MATERIAL_PC, alternate) == 0x268);
 /* The local helper's native compiler ABI uses ECX, EDX and three caller-clean stack words. */
 static __declspec(noinline) i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC *start,
                                                     f32 radius0, f32 radius1) {
-    NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
-    NUVEC delta = {point->x - start->x, point->y - start->y, point->z - start->z};
+    __declspec(align(16)) NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
     f32 length = (segment.x * segment.x + segment.y * segment.y) + segment.z * segment.z;
+    NUVEC delta = {point->x - start->x, point->y - start->y, point->z - start->z};
     f32 dot = (segment.x * delta.x + segment.y * delta.y) + segment.z * delta.z;
     f32 inverse = 1.0f / length;
     f32 projection = inverse * dot;
