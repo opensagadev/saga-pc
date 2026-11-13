@@ -827,15 +827,15 @@ void __cdecl edgraClumpPlace(i32 index, NUVEC *position) {
 }
 
 void __cdecl edgraInstancePlace(i32 index, NUVEC *position) {
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->position.x =
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->position.x =
         position->x - GrassClumps[edgra_nearest].position.x;
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->position.y =
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->position.y =
         position->y - GrassClumps[edgra_nearest].position.y;
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->position.z =
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->position.z =
         position->z - GrassClumps[edgra_nearest].position.z;
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->field_0c = 1.0f;
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->field_10 = (i16)edgra_rotz;
-    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, index)->field_12 = (i16)edgra_roty;
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->field_0c = 1.0f;
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->field_10 = (i16)edgra_rotz;
+    GetIndGrassClump(GrassClumps[edgra_nearest].individual_index, index)->field_12 = (i16)edgra_roty;
     edgraInitAllClumps();
 }
 
