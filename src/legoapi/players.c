@@ -3975,20 +3975,21 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 locator = config->thingy_locator;
-    i32 model = -1, reflection_model;
+    i32 model, reflection_model;
     NUMTX matrix, reflected;
-    NUVEC scaling;
+    NUVEC scaling, blend_scaling;
     if (locator == -1 || object->character_model->points_of_interest[locator] == NULL)
         return;
+    model = -1;
     if ((object->character_data->model_flags & 0x40) != 0) {
-        f32 scale = object->communicate_blend * object->origin_scale;
-        scaling.x = scaling.y = scaling.z = scale;
+        scaling.z = object->communicate_blend * object->origin_scale;
+        scaling.x = scaling.y = scaling.z;
         NuMtxSetScale(&matrix, &scaling);
         GameDrawMtxRotateYPc(&matrix, (NUANG)(object->field_0x276 + 0x8000));
         matrix.m30 = object->locator_matrices[locator].m30;
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
-        if (object->field_283 == 9 && object->water_height > matrix.m31)
+        if (object->field_283 == 9 && matrix.m31 < object->water_height)
             matrix.m31 = object->water_height;
         model = 0x19;
     } else {
@@ -3996,8 +3997,9 @@ void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
             model = 0xe;
         matrix = object->locator_matrices[locator];
         if (object->communicate_blend != 1.0f) {
-            scaling.x = scaling.y = scaling.z = object->communicate_blend;
-            NuMtxPreScale(&matrix, &scaling);
+            blend_scaling.z = object->communicate_blend;
+            blend_scaling.x = blend_scaling.y = blend_scaling.z;
+            NuMtxPreScale(&matrix, &blend_scaling);
         }
         if (model == -1)
             return;
