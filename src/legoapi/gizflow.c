@@ -367,7 +367,6 @@ parent_failed:
 }
 
 void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
-    GIZFLOW_BOX_LOADER_PREFIX_PC *state = (GIZFLOW_BOX_LOADER_PREFIX_PC *)box;
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
 
@@ -376,29 +375,29 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     if ((box->state_flags_low & 1) == 0 || !flowbox_callbacks[box->type].process(system, box, frame))
         return;
 
-    if ((state->state_flags & 0x400) != 0 && (state->state_flags & 0x800) != 0)
-        state->state_flags &= (u16)~0x400;
-    state->state_flags = (u16)((state->state_flags & (u16)~1) | 0x802);
+    if ((box->state_flags & 0x400) != 0 && (box->state_flags & 0x800) != 0)
+        box->state_flags &= (u16)~0x400;
+    box->state_flags = (u16)((box->state_flags & (u16)~1) | 0x802);
 
     if (box->type == 0) {
-        u16 set_visibility = (state->state_flags >> 3) & 1;
-        if (set_visibility || (state->state_flags & 0x10) != 0) {
+        u16 set_visibility = (box->state_flags >> 3) & 1;
+        if (set_visibility || (box->state_flags & 0x10) != 0) {
             if (box->child_count == 0) {
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
                 if (set_visibility) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
-                } else if ((state->state_flags & 0x10) != 0) {
+                } else if ((box->state_flags & 0x10) != 0) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 }
-                state->state_flags &= (u16)~0x20;
+                box->state_flags &= (u16)~0x20;
             } else {
-                state->state_flags |= 0x20;
+                box->state_flags |= 0x20;
             }
         }
-        if ((state->state_flags & 0xc0) != 0) {
-            state->state_flags |= 0x120;
+        if ((box->state_flags & 0xc0) != 0) {
+            box->state_flags |= 0x120;
             for (i = 0; i < box->parent_count; ++i) {
                 if (box->parents[i]->type == 1)
                     ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x200;
