@@ -13175,15 +13175,16 @@ i32 __cdecl Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     i32 i;
     char *value;
 
-    if (is_first_time && processor != NULL && param_count > 0) {
-        for (i = 0; i < param_count; i++) {
-            value = NuStrIStr(params[i], (char *)AIActionStateName);
-            if (value != NULL) {
-                state_name = value + 6;
+    if (is_first_time) {
+        if (processor != NULL) {
+            for (i = 0; i < param_count; i++) {
+                value = NuStrIStr(params[i], (char *)AIActionStateName);
+                if (value != NULL) {
+                    state_name = value + 6;
+                }
             }
-        }
-        if (state_name != NULL) {
-            if (processor->interrupt_state != NULL && NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
+            if (state_name != NULL && processor->interrupt_state != NULL &&
+                NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
                 processor->interrupt_timer = 0.0f;
                 processor->interrupt_priority = 0;
                 processor->interrupt_id = 0;
