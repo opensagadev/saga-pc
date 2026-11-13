@@ -1,15 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-// MATCH-EXCEPTION: retail reads the two state flag bytes as one u16 (word test at 0xa);
-// FLOWBOX_PC splits them, so read the pair through a u16 until the header has the union.
-#define FLOWBOX_FLAGS(box) (*(u16 *)&(box)->state_flags_low)
-#define FLOWBOX_SET_FLAGS(box, flags)                                                                                  \
-    do {                                                                                                               \
-        (box)->state_flags_low = (u8)(flags);                                                                          \
-        (box)->state_flags_high = (u8)((flags) >> 8);                                                                  \
-    } while (0)
-
 void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     typedef struct FlowStoreStatePc {
         u8 unknown_00[0xa];
@@ -47,7 +38,7 @@ void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     i32 i;
 
     data = (FLOWBOXGIZMODATA_PC *)box->data;
-    if ((FLOWBOX_FLAGS(box) & 0x1000) != 0)
+    if ((box->state_flags & 0x1000) != 0)
         return;
     for (i = 0; i < data->gizmo_count; ++i)
         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
@@ -59,10 +50,10 @@ i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 outp
     i32 i;
 
     data = (FLOWBOXGIZMODATA_PC *)box->data;
-    if (((FLOWBOX_FLAGS(box) & 0x4000) == 0 && FreePlay == 0) || ((FLOWBOX_FLAGS(box) & 0x2000) == 0 && FreePlay != 0))
+    if (((box->state_flags & 0x4000) == 0 && FreePlay == 0) || ((box->state_flags & 0x2000) == 0 && FreePlay != 0))
         return 1;
     for (i = 0; i < data->gizmo_count; ++i) {
-        if (!GizmoGetOutput(system->gizmo_sys, data->gizmos[i]->gizmo, output, (FLOWBOX_FLAGS(box) >> 12) & 1))
+        if (!GizmoGetOutput(system->gizmo_sys, data->gizmos[i]->gizmo, output, (box->state_flags >> 12) & 1))
             result = 0;
     }
     return result;
@@ -98,7 +89,7 @@ static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, 
     if (box == root || box->loop_checksum == checksum)
         return;
     box->loop_checksum = checksum;
-    if (box->type == 0 && (*(u16 *)&box->state_flags_low & 0x1000) == 0 && box->data != NULL) {
+    if (box->type == 0 && (box->state_flags & 0x1000) == 0 && box->data != NULL) {
         data = (FLOWBOXGIZMODATA_PC *)box->data;
         for (i = 0; i < data->gizmo_count; ++i)
             GizmoActivate(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
@@ -157,7 +148,7 @@ i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *flow, FLOWBOX_PC *box, u8 frame)
                 }
                 break;
             case 4: {
-                u16 looping = (*(u16 *)&box->state_flags_low >> 10) & 1;
+                u16 looping = (box->state_flags >> 10) & 1;
                 if (looping)
                     required = box->parent_count - box->loop_parent_count;
                 else
@@ -198,13 +189,10 @@ i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *flow, FLOWBOX_PC *box, u8 frame)
 }
 
 i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output) {
-    typedef union FlowCheckFlagsPc {
-        u16 value;
-        struct {
-            u16 unknown_00 : 10;
-            u16 output_state : 1;
-            u16 unknown_0b : 5;
-        } bits;
+    typedef struct FlowCheckFlagsPc {
+        u16 unknown_00 : 10;
+        u16 output_state : 1;
+        u16 unknown_0b : 5;
     } FlowCheckFlagsPc;
     typedef struct FlowCheckBoxPc {
         u8 unknown_00[0xa];
@@ -214,16 +202,16 @@ i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 
     STATIC_ASSERT(offsetof(FlowCheckBoxPc, flags) == 0xa);
     STATIC_ASSERT(sizeof(FlowCheckBoxPc) == 0xc);
     FlowCheckBoxPc *state = (FlowCheckBoxPc *)box;
-    u32 flags = state->flags.value;
+    u32 flags = box->state_flags;
     (void)output;
     if ((flags & 0x200) != 0) {
-        u32 saved = state->flags.bits.output_state;
-        state->flags.value = flags | 0x400;
+        u32 saved = state->flags.output_state;
+        box->state_flags = flags | 0x400;
         if (flowbox_callbacks[box->type].process(system, box, 0)) {
-            state->flags.bits.output_state = saved;
+            state->flags.output_state = saved;
             return 1;
         }
-        state->flags.bits.output_state = saved;
+        state->flags.output_state = saved;
         return 0;
     }
     return ((u8)flags >> 1) & 1;
@@ -443,7 +431,7 @@ void __cdecl ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time) {
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         if (box->last_process_frame != system->frame &&
-            ((FLOWBOX_FLAGS(box) & 1) != 0 || (FLOWBOX_FLAGS(box) & 0x100) != 0))
+            ((box->state_flags & 1) != 0 || (box->state_flags & 0x100) != 0))
             ProcessFlowBox(system, box, system->frame);
         box->last_process_frame = system->frame;
     }
@@ -491,17 +479,14 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
 }
 
 void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
-    typedef union FlowResetFlagsPc {
-        u16 value;
-        struct {
-            u16 active : 1;
-            u16 completed : 1;
-            u16 unknown_02 : 3;
-            u16 latched : 1;
-            u16 unknown_06 : 4;
-            u16 output_state : 1;
-            u16 unknown_0b : 5;
-        } bits;
+    typedef struct FlowResetFlagsPc {
+        u16 active : 1;
+        u16 completed : 1;
+        u16 unknown_02 : 3;
+        u16 latched : 1;
+        u16 unknown_06 : 4;
+        u16 output_state : 1;
+        u16 unknown_0b : 5;
     } FlowResetFlagsPc;
     typedef struct FlowResetBoxPc {
         u8 unknown_00[0xa];
@@ -519,19 +504,19 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     ResetGizFlowPointers(system);
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         FlowResetBoxPc *state = (FlowResetBoxPc *)box;
-        // MATCH-EXCEPTION: retail clears 0x20 and sets 0x400 in memory and then reloads the
-        // flags, which the u16 view next to the bitfield view reproduces; its later clear mask
-        // (0xfedd) repeats the already-clear 0x20 bit.
-        FLOWBOX_FLAGS(box) &= (u16)~0x20;
+        // MATCH-EXCEPTION: the progress bits are written through a local bitfield overlay of
+        // state_flags (FLOWBOX_PC has no bitfield view); retail's later clear mask (0xfedd)
+        // repeats the already-clear 0x20 bit.
+        box->state_flags &= (u16)~0x20;
         box->last_process_frame = 0;
 
         if (progress != NULL && progress->valid != 0) {
             i32 word = i / 32;
             u32 bit = 1u << (i & 31);
-            state->flags.bits.active = (progress->active[word] & bit) != 0;
-            state->flags.bits.completed = (progress->completed[word] & bit) != 0;
-            state->flags.bits.latched = (progress->latched[word] & bit) != 0;
-            state->flags.bits.output_state = (progress->output_state[word] & bit) != 0;
+            state->flags.active = (progress->active[word] & bit) != 0;
+            state->flags.completed = (progress->completed[word] & bit) != 0;
+            state->flags.latched = (progress->latched[word] & bit) != 0;
+            state->flags.output_state = (progress->output_state[word] & bit) != 0;
             if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
                 ++gizflow_loop_checksum;
                 box->loop_parent_count = (u8)LoopCountLoopingInputs(box, gizflow_loop_checksum);
@@ -539,30 +524,30 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             continue;
         }
 
-        state->flags.value &= (u16) ~(2 | 0x20 | 0x100);
+        box->state_flags &= (u16) ~(2 | 0x20 | 0x100);
         if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
             ++gizflow_loop_checksum;
             box->loop_parent_count = (u8)LoopCountLoopingInputs(box, gizflow_loop_checksum);
-            FLOWBOX_FLAGS(box) |= 0x400;
+            box->state_flags |= 0x400;
             if (box->parent_count == box->loop_parent_count)
-                state->flags.value |= 0x801;
+                box->state_flags |= 0x801;
             else
-                state->flags.value &= (u16)~1;
+                box->state_flags &= (u16)~1;
         } else if (box->parent_count != 0) {
-            state->flags.value &= (u16)~1;
+            box->state_flags &= (u16)~1;
         } else {
-            state->flags.value |= 1;
+            box->state_flags |= 1;
         }
 
-        if (flowbox_callbacks[box->type].reset != NULL && (state->flags.value & 0x1000) == 0)
+        if (flowbox_callbacks[box->type].reset != NULL && (box->state_flags & 0x1000) == 0)
             flowbox_callbacks[box->type].reset(system, box);
-        if (box->type == 0 && (((state->flags.value & 0x4000) == 0 && FreePlay == 0) ||
-                               ((state->flags.value & 0x2000) == 0 && FreePlay != 0))) {
+        if (box->type == 0 && (((box->state_flags & 0x4000) == 0 && FreePlay == 0) ||
+                               ((box->state_flags & 0x2000) == 0 && FreePlay != 0))) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
-        } else if ((FLOWBOX_FLAGS(box) & 1) == 0 && (FLOWBOX_FLAGS(box) & 4) != 0 && box->type == 0) {
+        } else if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
@@ -1212,8 +1197,7 @@ void __cdecl DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
             if ((box->state_flags_low & 1) == 0) {
                 if (flowbox_callbacks[box->type].reset != NULL)
                     flowbox_callbacks[box->type].reset(system, box);
-                if ((*(u16 *)&box->state_flags_low & 1) == 0 && (*(u16 *)&box->state_flags_low & 4) != 0 &&
-                    box->type == 0)
+                if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0)
                     GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
         }
