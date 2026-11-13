@@ -4079,9 +4079,10 @@ void __cdecl NuFreeFPar(NUFPAR_PC *parser) {
 
 NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle) {
     NUFPAR_PC *parser = NuAllocFPar();
-    u16 first_word;
 
     if (parser != NULL) {
+        u16 first_word;
+
         parser->file_handle = file_handle;
         parser->buffer_end = -1;
         parser->line_number = -1;
