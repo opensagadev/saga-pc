@@ -1832,12 +1832,6 @@ typedef struct coinpacket_pickup_pc_s {
 STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, multiplier) == 0xa);
 STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, timer) == 0xc);
 
-void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) {
-    i32 excluded_layer;
-    excluded_layer = object->id == (u16)id_BODYGUARD && object->current_hp <= 1 ? 4 : -1;
-    KillParts(object, -1, excluded_layer, mode, vertical_scale, 0, NULL);
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == offsetof(GAMEOBJECT, field_c8c) + sizeof(f32));
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == offsetof(GAMEOBJECT, field_c8c) + 2 * sizeof(f32));
