@@ -3,10 +3,8 @@
 #include <string.h>
 
 extern i32 EdAnimLocalFrameCountPc;
-extern i32 edanim_particle_mode, edanim_sound_mode, edanim_nearest_param_id;
 f32 __cdecl edanimPlayerAnimDistance(i32 parameter_index);
 void __cdecl edanimParticleDestroy(i32 parameter_index, i32 particle_index);
-extern NUVEC APIObjectZeroMomentumPC;
 
 /* Native 659860/172: flags are deliberately not compacted by this helper. */
 void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index) {

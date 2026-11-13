@@ -163,9 +163,6 @@ void __cdecl edppClearPage(i8 page) {
     }
 }
 
-extern NUGSCN *EdppPageScenesPc[8];
-void __cdecl DebrisSetFacing(i32, u8, i16, i16);
-void __cdecl DebrisSetRoomID(i32, NUGSCN *);
 void __cdecl edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id != -1)
         return;
@@ -204,13 +201,6 @@ void __cdecl edppStartPage(i32 page) {
     }
     edpp_page_on[(i8)page] = 1;
 }
-extern i32 DebrisProcessingEnabledPc, globalframes;
-extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
-extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;
-void __cdecl edppDeleteEffect(i32);
-extern i32 edpp_nearest;
-extern NUVEC edpp_cam_pos;
-void __cdecl edppDetermineNearest(f32);
 void __cdecl edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;

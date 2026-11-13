@@ -10,13 +10,6 @@ void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 hal
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 
-extern NUGSCN *edbits_base_scene;
-extern i32 edbits_anim_page;
-extern i32 edanim_particle_mode;
-extern i32 edanim_nearest;
-extern i32 edanim_nearest_param_id;
-extern NUVEC edanim_cam_pos;
-
 i32 __cdecl edanimLookupSpecial(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 index;
@@ -527,9 +520,6 @@ void edanimRender() {
 void __cdecl edcamMove(FRAME_PAD_PC *pad);
 void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 i32 __cdecl edanimParamCreate(i32 instance);
-extern i32 edanim_sound_mode;
-extern i32 edanim_nearest_particle;
-extern i32 edanim_nearest_sound;
 
 void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;

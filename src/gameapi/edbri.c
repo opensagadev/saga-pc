@@ -2,7 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-extern i32 edbri_page_on[8];
 extern struct eduimenu_s *edbri_plankinstance_menu;
 extern struct eduimenu_s *edbri_postinstance_menu;
 void EdFileWrite(void *data, i32 len);

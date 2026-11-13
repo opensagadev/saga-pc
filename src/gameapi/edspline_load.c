@@ -1,9 +1,5 @@
 #include "saga.h"
 
-extern NUGSPLINE *splineStore;
-extern i32 numSplinesLoaded;
-extern const char *EDSPLINE_FILECHECK;
-
 i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     i32 count, points, string_bytes, check_length, i, j, name_length;
     char *names, *name_end;

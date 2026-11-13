@@ -209,14 +209,6 @@ STATIC_ASSERT(offsetof(AILOCALMESSAGE_PC, next) == 0x2c);
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
 
-extern const char AIActionFalseName[6];
-
-extern const char AreaConfigKeyword_character[10];
-
-extern const char AIScriptFalse[6];
-
-extern const char GizmoDefaultOutputName[8];
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
@@ -235,16 +227,6 @@ STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_4) == 0x70);
 
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_timer) == 0x9c);
 
-extern const char AILocatorIndexedFormat[6];
-
-extern const char AIActionPersonalName[9];
-
-extern const char AIActionIndexedName[8];
-
-extern const char AILocatorPersonalFormat[6];
-
-extern const char AIPathLocatorName[9];
-
 STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
 
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_collision_priority_pc) == 0x292);
@@ -261,8 +243,6 @@ typedef struct INTERACTION_ANTINODE_VIEW_PC {
 STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_VIEW_PC, excluded_character_types) == 0x50);
 
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
-
-extern f32 antinode_time;
 
 typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 
@@ -284,8 +264,6 @@ STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_SHAPE_VIEW_PC, base_height) == 0x44)
 #define INTERACTION_SIN(a) NuTrigTable[((a) >> 1) & 0x7fff]
 
 #define INTERACTION_COS(a) NuTrigTable[(((a) + 0x4000) >> 1) & 0x7fff]
-
-extern f32 antinode_reverse_time;
 
 /* Forward declarations for functions used before their retail position. */
 
@@ -595,23 +573,11 @@ STATIC_ASSERT(offsetof(AIPATH_PC, flags) == 0x11);
 
 STATIC_ASSERT(offsetof(AIPATHSPECIALROUTE_PC, path_count) == 0x0);
 
-extern char *AiLevelPathName;
-
-extern i32 ai_usepackfile;
-
-extern u8 AiLoadActivationDifficultyPc;
-
-extern i8 AiLoadMinimumRespawnCountPc, AiLoadMaximumRespawnCountPc;
-
-extern f32 AiLoadMinimumRespawnTimePc, AiLoadMaximumRespawnTimePc;
-
 static f32 AiLoadStartStaggerPc = 0.0f;
 
 extern i32(__cdecl *GlobalCharacterTypeIDFn)(char *);
 
 extern void(__cdecl *GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
-
-void __cdecl AIPathCalcExtents(AIPATH_PC *path);
 
 typedef struct ai_path_system_load_pc_s {
     u8 path_count;
@@ -1089,8 +1055,6 @@ extern f32 AiEditorUpperHeightOverridePc;
 
 extern f32 AiEditorLowerHeightOverridePc;
 
-void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix);
-
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, radius) == 0x24);
 
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, lower_height) == 0x28);
@@ -1306,65 +1270,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad);
 
 extern const char Text_UnknownText[2];
 
-extern VARIPTR *aiscript_load_buffer;
-
-extern AISCRIPT_PC *aiscript_load_script;
-
-extern AISTATE_PC *aiscript_load_state;
-
-extern NULISTHDR *aiscript_load_conditions;
-
-extern NULISTHDR *aiscript_load_actions;
-
-extern NULISTHDR *aiscript_load_refs;
-
 extern NUFPCOMJMP AIScriptStateCommandsPc[5];
-
-extern i32 condition_has_no_goto;
-
-extern const char AIScriptListFilename[11];
-
-extern const char AIScriptListPathFormat[14];
-
-extern const char AIScriptFileExtension[5];
-
-extern const char AIScriptKeywordState[6];
-
-extern const char AIScriptKeywordParam[6];
-
-extern const char AIScriptKeywordConst[6];
-
-extern const char AIScriptKeywordConditionMacro[15];
-
-extern const char AIScriptKeywordActionMacro[12];
-
-extern const char AIScriptKeywordReferenceScript[16];
-
-extern const char AIScriptKeywordDeriveFromScript[17];
-
-extern const char AIScriptKeywordInclude[8];
-
-extern const char AIScriptKeywordEnd[2];
-
-extern const char AIScriptKeywordBase[5];
-
-extern const char AIScriptKeywordScript[7];
-
-extern const char AIScriptKeywordSource[7];
-
-extern const char AIScriptKeywordGlobal[7];
-
-extern const char AIScriptKeywordLevel[6];
-
-void __cdecl xConditions(NUFPAR_PC *parser);
-
-void __cdecl xActions(NUFPAR_PC *parser);
-
-void __cdecl xConditionMacro(NUFPAR_PC *parser);
-
-void __cdecl xActionMacro(NUFPAR_PC *parser);
-
-void __cdecl xRefScript(NUFPAR_PC *parser);
 
 typedef struct aiscript_const_record_pc_s {
     char name[32];
@@ -1397,9 +1303,6 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
 
 /* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
 i32 ai_onlyusepackfile = 0;
-
-void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer,
-                                      VARIPTR *end);
 
 void __cdecl xConst(NUFPAR_PC *parser);
 
@@ -1509,8 +1412,6 @@ enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
         }                                                                                                              \
     } while (0)
 
-extern IMAGE_DOS_HEADER __ImageBase;
-
 /* Game-side AI callback registration; retail keeps these in the AI script unit so
    GameAISysInit calls them out of line. */
 typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
@@ -1528,16 +1429,6 @@ typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
 typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 
 extern AI_CHARACTER_NAME_PC LevelCharacterNameFn, SpecialRouteCharacterNameFn;
-
-extern AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn;
-
-extern AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn;
-
-extern AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn;
-
-extern AI_CLEAR_CREATURES_PC ClearAICreaturesFn;
-
-extern AIACTIONDEF_PC api_aiactiondefs[], *game_aiactiondefs;
 
 typedef void(__cdecl *AI_LOAD_PC)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 

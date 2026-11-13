@@ -730,7 +730,6 @@ extern "C" void __cdecl cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 v
 extern "C" {
     extern f32 edui_font_scale_x;
     extern f32 edui_font_scale_y;
-    extern i32 EduiSelectionMaterialPc;
     i32 __cdecl EduiRenderItemPc(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32);
     u32 eduimenu_outline_colour = 0x80404040;
     u32 eduimenu_selected_outline_colour = 0x80ffffff;

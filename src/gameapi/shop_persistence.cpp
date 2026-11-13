@@ -24,8 +24,6 @@ STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, slot_caption) == 0x828);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, reserved_caption) == 0x1028);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, date_time) == 0x1828);
 
-extern const char *PcProductName;
-
 extern "C" {
     extern char SaveFolderPathPc[256];
     /* User-approved Debug save-location exception; the game requires the res cwd. */

@@ -428,9 +428,6 @@ void __cdecl edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
     edpart_leveltype_menu->y = menu->y + 40;
 }
 
-extern struct eduimenu_s *edpart_changegenrate_menu;
-extern struct eduimenu_s *edpart_maxlife_menu;
-
 void __cdecl edpartChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edui_slider_s *slider = (edui_slider_s *)item;
     if (edpart_nearest_type)
@@ -968,14 +965,9 @@ void edpartEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void edpartFileSaveEffects(eduimenu_s *menu, eduiitem_s *item, u32 value);
-void edpartFileSaveEffectsGeneral(eduimenu_s *menu, eduiitem_s *item, u32 value);
-void edpartFileSaveEffectsLevel(eduimenu_s *menu, eduiitem_s *item, u32 value);
-void edpartFileLoadEffects(eduimenu_s *menu, eduiitem_s *item, u32 value);
 void edpartCopyType(eduimenu_s *menu, eduiitem_s *item, u32 value);
 void edpartDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 value);
 void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
-extern struct eduimenu_s *edpart_data_menu;
 
 void edpartMoveList(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
@@ -1069,7 +1061,6 @@ void edpartInit(void) {
     edpart_emitrotx = 0;
 }
 
-extern struct eduimenu_s *edpart_opt_menu;
 extern struct eduimenu_s *edpart_sscale_menu;
 extern struct eduimenu_s *edpart_switch_menu;
 extern struct eduimenu_s *edpart_switchtype_menu;

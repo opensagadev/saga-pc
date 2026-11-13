@@ -47,8 +47,6 @@ i32 EduiUsingMenuFocusPc = 0;
 
 static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu);
 
-extern i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size);
-
 void __cdecl EdFileSetMedia(i32 media) {
     edfile_media = media;
 }
@@ -1273,7 +1271,6 @@ edui_gradient_node_s *__cdecl eduiGradStageAdd(edui_gradient_pick_s *item, f32 t
     return stage;
 }
 
-void __cdecl eduicbItemGradPickDestroy(eduimenu_s *menu, eduiitem_s *item);
 i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 
 eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
@@ -1536,7 +1533,6 @@ void __cdecl eduiFlushInteracts(void) {
     numInteracts = 0;
 }
 
-extern f32 edui_cursor_y;
 extern struct PC_SCENE_MTL_VIEW *uimtls[5];
 
 void __cdecl eduiRenderInteracts(void) {
@@ -1794,7 +1790,6 @@ void __cdecl eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
     }
 }
 
-extern struct PC_SCENE_MTL_VIEW *uimtls[5];
 extern i32 EduiSelectionMaterialPc;
 extern f32 EduiScaleXPc;
 extern f32 EduiScaleYPc;
@@ -2093,9 +2088,6 @@ eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *
 static char eduiPropTextStore[256] = {0};
 static char eduiPropTextEdit[256] = {0};
 f32 EduiPropLabelWidthPc = 50.0f;
-extern i32 eduiPropTextPos;
-extern i32 edui_camera_enabled;
-extern f32 edui_cursor_x;
 extern void __cdecl NuKeyFlush(void);
 extern void __cdecl EduiFntPrintScaledPc(void *font, f32 x, f32 y, i32 alignment, char *text);
 extern void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
@@ -2940,7 +2932,6 @@ eduiitem_s *__cdecl eduiItemColourSliderCreate(u32 data, void *colours, i32 grou
     return NULL;
 }
 
-void __cdecl eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item);
 extern char *edui_textrow_default[4];
 extern char *edui_textrow_lower[4];
 extern char EduiTextCopyBufferPc[64];
@@ -3306,8 +3297,6 @@ u32 __cdecl EdFileReadUnsignedInt(void) {
     return data.value;
 }
 
-extern struct PC_SCENE_MTL_VIEW *uimtls[5];
-
 void __cdecl eduiInitMaterials(void) {
     uimtls[0] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)uimtls[0])->attribs.cull_mode = 2;
@@ -3645,10 +3634,6 @@ char FileSelVolumeNamesPc[1024] = {0};
 const char FileSelParentNamePc[3] = "..";
 char FS_ParentEntry[8] = "D######";
 char *FS_FileListEnd = FS_FileList;
-extern char FileSelFilterBlocksPc[8][96];
-extern char FileSelFilterOutBlocksPc[8][12];
-extern i32 FileSelFilterBlockCountPc;
-extern i32 FileSelFilterOutBlockCountPc;
 
 char *__cdecl FS_GetFilterString(char *input, char *output) {
     char *end;
@@ -3949,9 +3934,7 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
-extern char FileSelVolumeNamesPc[1024];
 extern i32 __cdecl NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
-extern void __cdecl FS_SortStrings(char *start, char *end, i32 mode);
 
 typedef struct FS_PACKED_ENTRY_HEADER_PC {
     u8 kind;
@@ -4065,7 +4048,6 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     FS_FileListEnd = next;
 }
 
-extern i32 edmain_cursor_enabled;
 f32 edui_cursor_y = 50.0f;
 
 STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
@@ -4483,8 +4465,6 @@ i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 de
     }
     return 0;
 }
-
-extern u8 FS_RefreshDir;
 
 i32 __cdecl ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
     i32 buttons;

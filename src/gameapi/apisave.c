@@ -1,65 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
 
-extern i32 SAVESLOTS;
-extern f32 memcard_autosavecanceldelay;
-extern i32 saveload_cardtype;
-extern i32 saveload_cardformatted;
-extern i32 saveload_autosave;
-extern i32 MenuLoadOccurred;
-extern i32 MenuSaveOccurred;
-extern i32 memcard_slot;
 void __cdecl saveloadASFormat(void);
 void __cdecl saveloadASDelete(i32 slot);
-extern i32 memcard_loadneeded;
-extern i32 memcard_loadstarted;
-extern i32 memcard_loadfailed;
-extern i32 memcard_loadcorrupt;
-extern i32 memcard_saveneeded;
-extern i32 memcard_savestarted;
-extern i32 memcard_savefailed;
-extern i32 memcard_autosaveneeded;
-extern i32 memcard_autosavestarted;
-extern f32 memcard_autosavepredelay;
-extern f32 memcard_autosavepostdelay;
-extern i32 memcard_autosaveinprogress;
-extern i32 memcard_autosavedisabled;
-extern i32 memcard_deleteneeded;
-extern i32 memcard_deletestarted;
-extern i32 memcard_deletefailed;
-extern i32 memcard_formatme;
-extern i32 memcard_formatting;
-extern i32 memcard_formatfailed;
-extern i32 memcard_justformatted;
-extern f32 memcard_loadmessage_delay;
-extern f32 memcard_savemessage_delay;
-extern f32 memcard_formatmessage_delay;
-extern f32 memcard_createmessage_delay;
-extern f32 memcard_deletemessage_delay;
-extern f32 memcard_loadresult_delay;
-extern f32 memcard_saveresult_delay;
-extern f32 memcard_formatresult_delay;
-extern f32 memcard_createresult_delay;
-extern f32 memcard_deleteresult_delay;
-extern f32 memcard_message_delay;
-extern f32 memcard_result_delay;
-extern i32 memcard_cardchanged;
-extern void *memcard_savedata;
-extern void *memcard_savedatabuffer;
-extern i32 memcard_savedatasize;
-extern i32 memcard_autosave;
-extern SAVE_HASH_FN_PC memcard_hashfn;
-extern SAVE_VOID_FN_PC memcard_drawasiconfn;
-extern void *memcard_headerdata;
-extern void *memcard_headerdatabuffer;
-extern i32 memcard_headerdatasize;
-extern i32 memcard_slotsused;
-extern SAVE_VOID_FN_PC savesuccessfn;
-extern i32 saveload_status;
-extern i32 saveload_error;
-extern i32 saveload_cardchanged;
-extern i32 saveload_savepresent;
-extern i32 saveload_autosavedisabled;
 extern i32 saveload_slotused[];
 void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
@@ -300,26 +243,6 @@ void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_sca
 
 STATIC_ASSERT(offsetof(MENU, state) == 0xdc);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
-
-extern i32 Menu_DisableCancel;
-extern i32 Menu_InHeaderSave;
-extern i32 MenuKeyboardAlwaysPc;
-extern i32 MenuKeyboardSecondaryPc;
-extern i32 Menu_InWarningFlow;
-extern i32 MenuASCancelFinished;
-extern i32 MenuCardWarningState;
-extern i32 Menu_Overwriteflag;
-extern i32 MenuLoadStarted;
-extern i32 saveload_freespace;
-extern i32 SAVESIZE_ADDITIONAL;
-extern i32 MENUSFX_MENUSELECT;
-extern i32 MENUSFX_MENUNOENTRY;
-extern i32 memcard_autosaveenabled;
-void __cdecl BackupMenu(void);
-void __cdecl BackupMenuNoFn(void);
-
-void __cdecl MenuEnterSave(MENU *);
-void __cdecl MenuEnterLoad(MENU *);
 
 void __cdecl MenuEnterSaveConfirm(MENU *menu) {
     i32 slot = Menu_InHeaderSave != 0 ? SAVESLOTS : memcard_slot;
@@ -718,12 +641,6 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
 static i32 SaveMenuLastSlotPc = 0;
 static i32 SaveMenuSlideLeftPc = 0;
 static i32 SaveMenuSlideRightPc = 0;
-extern i32 Menu_LastFlow;
-extern i32 saveload_filecorrupt;
-extern i32 SAVESIZE;
-extern u8 MENUENTRYR, MENUENTRYG, MENUENTRYB;
-extern u8 MENUFLASH0R, MENUFLASH0G, MENUFLASH0B;
-extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
 
 void __cdecl MenuEnterLoad(MENU *menu) {
     i32 last_column = SAVESLOTS;
@@ -878,8 +795,6 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     }
 }
 
-extern f32 MENUBOTY;
-extern u8 MENUWARNR, MENUWARNG, MENUWARNB;
 void __cdecl MenuDrawSave(MENU *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;

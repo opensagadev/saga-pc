@@ -28,28 +28,6 @@ typedef struct GIZSPECIAL_PARTIAL_PC {
 
 STATIC_ASSERT(offsetof(GIZSPECIAL_PARTIAL_PC, anim_set) == 0x20);
 
-extern const char AITransferLiteral75782c[5];
-
-extern const char AITransferLiteral7583e4[12];
-
-extern const char AITransferLiteral7583f0[8];
-
-extern const char AIActionFalseName[6];
-
-extern const char AIScriptActionNameArgPrefix[6];
-
-extern const char AreaConfigKeyword_character[10];
-
-extern const char AITransferLiteral757a38[12];
-
-extern const char AIGameCharacterName[11];
-
-extern const char AIScriptFalse[6];
-
-extern const char AITransferLiteral757a70[11];
-
-extern const char GizmoDefaultOutputName[8];
-
 typedef struct AITURRET_PARTIAL_PC {
     u8 unknown_00[0xe8];
     GAMEOBJECT *controller;
@@ -65,14 +43,6 @@ STATIC_ASSERT(offsetof(AITURRET_PARTIAL_PC, controller) == 0xe8);
 STATIC_ASSERT(offsetof(AIOBSTACLE_PARTIAL_PC, runtime_flags) == 0x9c);
 
 extern i32 turret_gizmotype_id;
-
-extern i32 obstacle_gizmotype_id;
-
-extern i32 blowup_gizmotype_id;
-
-void __cdecl ReleaseTakeOver(GAMEOBJECT *, i32);
-
-void __cdecl PartKill_ForceThrow(PART_PC *, i32);
 
 void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
@@ -93,78 +63,6 @@ STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_3) == 0x6c);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_data_4) == 0x70);
 
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, action_timer) == 0x9c);
-
-extern const char AIGameSetName[5];
-
-extern const char AILocatorIndexedFormat[6];
-
-extern const char AIGameNearestName[8];
-
-extern const char AIActionPersonalName[9];
-
-extern const char AITransferLiteral7577dc[8];
-
-extern const char AIActionIndexedName[8];
-
-extern const char AILocatorPersonalFormat[6];
-
-extern const char ActionSnapDontCheckTerrainName[19];
-
-extern const char AITransferLiteral757824[7];
-
-extern const char AITransferLiteral75781c[8];
-
-extern const char AITransferLiteral757834[13];
-
-extern const char AITransferLiteral757884[12];
-
-extern const char AITransferLiteral757a68[6];
-
-extern const char AITransferLiteral757c10[13];
-
-extern const char AITransferLiteral757c20[12];
-
-extern const char AIPathLocatorName[9];
-
-extern const char AITransferLiteral758194[11];
-
-extern const char AITransferLiteral758188[11];
-
-extern const char AITransferLiteral7581a0[8];
-
-extern const char AITransferLiteral758174[19];
-
-extern const char AITransferLiteral7581d4[10];
-
-extern const char AITransferLiteral7581ec[9];
-
-extern const char AITransferLiteral7581e0[9];
-
-extern const char AITransferLiteral757cd0[6];
-
-extern const char AITransferLiteral757a8c[7];
-
-extern const char AITransferLiteral757a94[9];
-
-extern const char AITransferLiteral757a84[8];
-
-extern const char ZArgPrefix[3];
-
-extern const char YArgPrefix[3];
-
-extern const char AITransferLiteral757c5c[4];
-
-extern const char XArgPrefix[3];
-
-extern const char AITransferLiteral757c64[4];
-
-extern const char AITransferLiteral757c60[4];
-
-extern const char AITransferLiteral757f28[8];
-
-extern const char AIGameOpponentName[9];
-
-extern const char AITransferLiteral7583f8[8];
 
 extern const char RaceOpponentDistancePrefix[9];
 
@@ -223,14 +121,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
 
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
-void __cdecl GizObstacle_JumpToStart(GIZOBSTACLE *);
-
-void __cdecl GizObstacle_JumpToEnd(GIZOBSTACLE *);
-
-void __cdecl GizObstacle_PlayForwards(GIZOBSTACLE *);
-
-void __cdecl GizObstacle_PlayBackwards(GIZOBSTACLE *);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
 typedef struct ai_force_fields_pc_s {
@@ -257,8 +147,6 @@ STATIC_ASSERT(offsetof(AI_FORCE_OBJECT_PC, force) == 0x10cc);
 
 /* Original AISYS callback family; PC-native seven-argument callback ABI. */
 extern i32 __cdecl TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
-
-extern void __cdecl RegisterTakeOverObject(GAMEOBJECT *);
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, owner) == 0xd0);
 
@@ -334,8 +222,6 @@ void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i3
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
 
 STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
-
-void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix);
 
 i32 __cdecl NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
 
@@ -431,23 +317,9 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, last_path_
 
 STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
 
-i32 __cdecl Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-
 i32 __cdecl CanFightLikeAJedi(GAMEOBJECT *);
 
 i32 __cdecl CharCategory_FindByName(char *);
-
-extern const char AITransferLiteral7576c0[6];
-
-extern const char AITransferLiteral7576b8[7];
-
-extern const char AITransferLiteral7576b0[6];
-
-extern const char AITransferLiteral7576a8[7];
-
-extern const char AITransferLiteral75769c[11];
-
-extern const char AITransferLiteral75768c[13];
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, terrain_origin) == 0x14c);
 
@@ -669,8 +541,6 @@ void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
  * retain their separately reviewed original owner and extent policies. */
 extern const char ActionSnapPlayer1Name[8];
 
-extern const char ActionSnapPlayer2Name[8];
-
 extern const char ActionSnapRotationYName[5];
 
 extern const char ActionSnapPartyName[6];
@@ -815,14 +685,9 @@ STATIC_ASSERT(offsetof(BULK_AI_LEVER_PC, position) == 0x68);
 STATIC_ASSERT(offsetof(BULK_AI_LEVER_PC, flags) == 0x94);
 STATIC_ASSERT(offsetof(BULK_AI_TECHNO_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(BULK_AI_TECHNO_PC, flags) == 0x3c);
-i32 __cdecl GizmoGetTypeIDByName(void *system, char *name);
-SOCK_PC *__cdecl FindSock(SOCKSYS_PC *system, char *name);
-void __cdecl SockOn(SOCKSYS_PC *system, i32 index);
-void __cdecl SockOff(SOCKSYS_PC *system, i32 index);
 i32 turret_gizmotype_id;
 i32 obstacle_gizmotype_id;
 const char GizmoSnapOptionNamePc[5];
-GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *, char *);
 const char GizActionLiteral758274[];
 const char GizActionLiteral75827c[];
 const char GizActionLiteral758280[];

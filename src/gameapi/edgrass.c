@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count);
-void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count);
-
 void __cdecl edgraClumpsReset(void) {
     i32 i;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i)

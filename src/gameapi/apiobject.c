@@ -946,12 +946,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
-extern i32 drawcharactermodel_locatorsupdated, drawcharactermodel_nobsa, drawcharactermodel_noani,
-    drawcharactermodel_restpose, drawcharactermodel_keepmergeaction;
 extern void(__cdecl *APIObjResetShadowMapRenderingFn)(void), (__cdecl * APIObjEnableShadowMapRenderingFn)(void);
-void __cdecl RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-void __cdecl RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-void __cdecl BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
 i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *animation,
                           NUMTX *matrix, NUMTX *unused_matrix, NUMTX *reflection_matrix, NUVEC *locator_positions,
                           NUMTX *locator_matrices, GAMEOBJECT *object, u32 flags,
@@ -1677,7 +1672,6 @@ void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
 STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, bounds_half_height) == 0x1e0);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_visibility_extension) == 0x240);
-i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
 static f32 APIObjectSafeDividePc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f)
         return 0.0f;
@@ -2206,7 +2200,6 @@ APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARI
 
 STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_id) == 0);
-NUHGOBJ_EVAL_PC *__cdecl NuGHGRead(char *, VARIPTR *, VARIPTR);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 8);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
 typedef struct CHARACTER_PACK_ANIMATION_PC {
