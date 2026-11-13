@@ -625,14 +625,17 @@ void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_
         else
             angle_difference = RotDiff(object->field_0x276, GamePad_InputAngle(object, pad));
         if (object->movement_spline_position.spline == NULL && pad->input_magnitude > 0.0f) {
+            roll_request = 0;
             if ((u32)(angle_difference + 0x5fff) <= 0x58e2)
                 roll_request = 2;
             else if ((u32)(angle_difference - 0x71d) <= 0x58e2)
                 roll_request = 1;
-            else if (abs(angle_difference) >= 0x4000)
-                turn_request = 1;
-            else
-                loop_request = 1;
+            if (roll_request == 0) {
+                if (abs(angle_difference) >= 0x4000)
+                    turn_request = 1;
+                else
+                    loop_request = 1;
+            }
         } else
             loop_request = 1;
     }
@@ -648,14 +651,15 @@ void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_
             return;
         object->character_context = 0x36;
         object->field_7aa = 1;
-        object->context_duration = object->context_timer = VehicleLoopTimePc;
+        object->context_duration = VehicleLoopTimePc;
+        object->context_timer = VehicleLoopTimePc;
         PlaySfx((char *)TurnLoopSfx, &object->collision_position);
         Hint_SetComplete(0x287);
     } else if (roll_request != 0) {
         if (object->in_narrow_socket && other != NULL &&
             (other->character_context == 0x2a || other->character_context == 0x36))
             return;
-        object->context_duration = object->context_timer = .75f;
+        object->context_timer = object->context_duration = .75f;
         object->character_context = 0x3a;
         object->field_7aa = 1;
         object->field_7b3 = (u8)(roll_request - 1);
