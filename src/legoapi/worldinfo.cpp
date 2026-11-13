@@ -736,20 +736,6 @@ STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_connection_helper) == 0x4674);
 STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_trigger_set) == 0x4678);
 STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, climb_object_system) == 0x467c);
 
-extern "C" void __cdecl SetAreaPickupGravity(i32 area, i32 level) {
-    u16 flags;
-    AreaPickupGravity = -6.0f;
-    if (area < 0 || area >= AREACOUNT)
-        return;
-    flags = ADataList[area].flags;
-    if ((flags & 0x200) != 0 && (LDataList[level].flags & 0x400000) == 0) {
-        AreaPickupGravity = 0;
-        return;
-    }
-    if ((flags & 1) != 0)
-        AreaPickupGravity = -20.0f;
-}
-
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);

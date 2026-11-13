@@ -33,14 +33,6 @@ typedef struct coin_reset_packet_pc_s {
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, scale) == 4);
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, active) == 0xa);
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, double_score_timer) == 0xc);
-void __cdecl ResetCoinPacket(void *packet) {
-    COIN_RESET_PACKET_PC *view = (COIN_RESET_PACKET_PC *)packet;
-    if (packet != NULL) {
-        view->scale = 1.0f;
-        view->double_score_timer = 0.0f;
-        view->active = 1;
-    }
-}
 
 i32 __cdecl Collection_Got(i32 id) {
     i32 area;
@@ -55,43 +47,6 @@ i32 __cdecl Collection_Got(i32 id) {
     if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 1) == 0)
         return 0;
     return 1;
-}
-
-void __cdecl UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index) {
-    u32 decrement;
-    if (packet == NULL)
-        return;
-    if (active != 0) {
-        packet->scale = SeekLinearF(packet->scale, 1.0f, (f32)((f64)FRAMETIME * 3.0));
-        if ((DoubleScore & (1 << player_index)) != 0) {
-            if (packet->multiplier_time > 0.0f) {
-                packet->multiplier_time -= FRAMETIME;
-                if (packet->multiplier_time <= 0.0f)
-                    packet->active = 1;
-            }
-        } else {
-            packet->multiplier_time = 0.0f;
-            packet->active = 1;
-        }
-    } else {
-        packet->active = 1;
-        packet->scale = 1.0f;
-        packet->multiplier_time = 0.0f;
-        if (BonusArea != 0) {
-            if (packet->coins < 10) {
-                packet->coins = 0;
-                return;
-            }
-            decrement = (u32)((f64)FRAMETIME * 20000.0);
-            decrement = (decrement / 10) * 10;
-            if (decrement < 10)
-                decrement = 10;
-            if (decrement > packet->coins)
-                packet->coins = 0;
-            else
-                packet->coins -= decrement;
-        }
-    }
 }
 
 typedef struct collection_variant_reader_pc_s {

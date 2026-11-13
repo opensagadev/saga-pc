@@ -142,16 +142,6 @@ void __cdecl Blowup_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->completed, 0, 64);
 }
 
-void __cdecl GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
-    PICKUP_PROGRESS_PC *progress = (PICKUP_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress->visible, -1, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->collected, 0, 64);
-    memset(progress->reserved, 0, 64);
-}
-
 void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BLOWUP_PROGRESS_PC *progress = (BLOWUP_PROGRESS_PC *)progress_ptr;
     WORLDINFO *world = (WORLDINFO *)world_ptr;
@@ -182,38 +172,5 @@ void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_pt
             progress->enabled[word] &= ~bit;
         if (record->status_flags & 0x10000000)
             progress->completed[word] |= bit;
-    }
-}
-
-void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PICKUP_PROGRESS_PC *progress = (PICKUP_PROGRESS_PC *)progress_ptr;
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZMOPICKUP_PC *record;
-    i32 index;
-    i32 word;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    memset(progress->visible, -1, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->collected, 0, 64);
-    memset(progress->reserved, 0, 64);
-
-    if (world == NULL)
-        return;
-    record = world->pickup_runtime_sys->pickups;
-    if (record == NULL)
-        return;
-    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++record) {
-        if (index >= 512)
-            break;
-        word = index / 32;
-        bit = 1u << (index & 31);
-        if (!(record->flags & 4))
-            progress->visible[word] &= ~bit;
-        if (!(record->flags & 2))
-            progress->enabled[word] &= ~bit;
-        if (record->flags & 8)
-            progress->collected[word] |= bit;
     }
 }

@@ -17,7 +17,6 @@ STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
-extern char *PickupOutputNamePc;
 extern char SpinnerOutputBufferPc[14];
 extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
@@ -30,9 +29,6 @@ char *__cdecl Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
 i32 __cdecl Blowup_GetVisibility(GIZMO_PC *gizmo) {
     return gizmo != NULL && (((GIZMOBLOWUP_PC *)gizmo->object)->status_flags & 0x4000) != 0;
 }
-char *__cdecl GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return PickupOutputNamePc;
-}
 
 #pragma const_seg(".rdata$BlowupBlownupOutputTextPc")
 const char BlowupBlownupOutputTextPc[8] = "Blownup";
@@ -44,10 +40,6 @@ const char BlowupPunchedOutputTextPc[8] = "Punched";
 
 #pragma const_seg(".rdata$BlowupPluggingOutputTextPc")
 const char BlowupPluggingOutputTextPc[9] = "Plugging";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$PickupCollectedOutputTextPc")
-const char PickupCollectedOutputTextPc[10] = "Collected";
 #pragma const_seg()
 
 #pragma const_seg(".rdata$SpinnerCompleteSuffixPc")
@@ -73,10 +65,6 @@ const char TurretFiredShotsFormatPc[15] = "Fired %d Shots";
 #pragma data_seg(".data$BlowupOutputNamesPc")
 char *BlowupOutputNamesPc[3] = {(char *)BlowupBlownupOutputTextPc, (char *)BlowupPunchedOutputTextPc,
                                 (char *)BlowupPluggingOutputTextPc};
-#pragma data_seg()
-
-#pragma data_seg(".data$PickupOutputNamePc")
-char *PickupOutputNamePc = (char *)PickupCollectedOutputTextPc;
 #pragma data_seg()
 
 #pragma data_seg(".data$SpinnerOutputBufferPc")

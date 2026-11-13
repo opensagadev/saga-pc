@@ -91,24 +91,11 @@ void __cdecl Blowup_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void 
         if (NuStrLen(w->gizmo_blowups[i].name) != 0)
             AddGizmo(giz, type, NULL, &w->gizmo_blowups[i]);
 }
-void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    i32 i;
-    (void)data;
-    for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i) {
-        struct GIZMOPICKUP_PC *pickup = &w->pickup_runtime_sys->pickups[i];
-        if (pickup->unknown_14[1] & 2)
-            AddGizmo(giz, type, NULL, pickup);
-    }
-}
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, name) == 0x40);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
 
-char *__cdecl GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? (char *)gizmo->object : NULL;
-}
 char *__cdecl Blowup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZMOBLOWUP_PC *)gizmo->object)->name : NULL;
 }
@@ -135,11 +122,6 @@ NUVEC *__cdecl GizmoBlowup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL)
         return NULL;
     return &((FLOW_BLOWUP_POSITION_PC *)gizmo->object)->position;
-}
-NUVEC *__cdecl GizmoPickup_GetPos(GIZMO_PC *gizmo) {
-    if (gizmo == NULL)
-        return NULL;
-    return &((GIZMOPICKUP_PC *)gizmo->object)->position;
 }
 
 typedef struct ai_gizmo_name_process_pc_s {

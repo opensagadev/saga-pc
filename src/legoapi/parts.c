@@ -1785,13 +1785,6 @@ void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
     }
 }
 
-void __cdecl PartUpdate_Heart(PART_PC *part) {
-    NUVEC position = part->position;
-    part->rotation_y = (u16)(i32)((f64)part->rotation_y + (f64)FRAMETIME * 16384.0);
-    NuMtxSetRotationY(&part->transform, part->rotation_y);
-    NuMtxTranslate(&part->transform, &position);
-}
-
 void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
                                                NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
