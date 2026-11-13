@@ -3509,11 +3509,19 @@ extern "C" {
     }
 
     void *__cdecl NuAnimData2LoadBuffFromPAK(void *data, i32 file_size) {
+        i32 use_autoptr_load = 0;
+        void *result = data;
+        void *buff;
         if (file_size == 0)
             return NULL;
-        if (((ANIMATION_PACK_HEADER_PC *)data)->format_tag >= (i32)0x414e4935)
-            return NuPtrBlockFix(data);
-        return NuAnimData2Fixup(file_size, &data);
+        if (((ANIMATION_PACK_HEADER_PC *)data)->format_tag >= (i32)0x414e4935) {
+            use_autoptr_load = 1;
+            result = NuPtrBlockFix(data);
+        }
+        buff = result;
+        if (!use_autoptr_load)
+            result = NuAnimData2Fixup(file_size, &buff);
+        return result;
     }
 
 #undef NUANIM_REBASE_POINTER
