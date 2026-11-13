@@ -2878,16 +2878,15 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 f32 walking_speed;
                 u16 walking_angle;
                 if (object->character_context != 5) {
-                    f32 animation_speed;
-                    animation_speed = AnimSpeed(object->character_model, current_animation);
-                    if (animation_speed != 0.0f) {
-                        f32 speed;
+                    f32 speed;
+                    speed = AnimSpeed(object->character_model, current_animation);
+                    if (speed != 0.0f) {
                         f32 stop_frame;
                         f32 *frame;
                         i32 stopped;
                         if (CanStepBack(object) && StepBackFromTarget(object))
                             break;
-                        speed = object->animation_speed_multiplier * animation_speed;
+                        speed = object->animation_speed_multiplier * speed;
                         stop_frame = AnimStopFrame(object->character_model, current_animation);
                         frame = AnimPlaying(&object->anim_packet, current_animation, 1, 0);
                         stopped = stop_frame > 1.0f && frame != NULL && *frame >= stop_frame;
@@ -3036,27 +3035,25 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             ((object->context_variant_flags & 0x8000) == 0 &&
                              (object->action_movement_state == 6 || object->action_movement_state == 7 ||
                               object->action_movement_state == 9)))) {
-                    f32 speed;
                     if (object->action_movement_state == 6 &&
                         object->context_timer >= object->character_data->game_character->jump_duration) {
-                        speed = object->velocity.x = object->velocity.z = 0.0f;
+                        turn_rate = object->velocity.x = object->velocity.z = 0.0f;
                     } else if (object->action_movement_state == 6 || object->action_movement_state == 7 ||
                                object->action_movement_state == 9) {
-                        speed = object->airborne_action_timer;
+                        turn_rate = object->airborne_action_timer;
                     } else {
-                        speed = (object->context_variant_flags & 0x2000) != 0
-                                    ? -object->character_data->game_character->run_speed
-                                    : object->character_data->game_character->run_speed;
+                        turn_rate = (object->context_variant_flags & 0x2000) != 0
+                                        ? -object->character_data->game_character->run_speed
+                                        : object->character_data->game_character->run_speed;
                     }
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
                     object->target_velocity.z =
-                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
                 } else if (object->character_context == 0x15) {
-                    f32 speed;
-                    speed = AnimSpeed(object->character_model, object->field_7aa);
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                    turn_rate = AnimSpeed(object->character_model, object->field_7aa);
+                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
                     object->target_velocity.z =
-                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
                 } else if (object->character_context == 0x49) {
                     object->target_velocity.x = (object->launch_origin.x - object->position.x) * 8.0f;
                     object->target_velocity.z = (object->launch_origin.z - object->position.z) * 8.0f;
@@ -3159,14 +3156,13 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
                     } else if (object->water_intersects != 0 && object->id != (u16)id_YODA &&
                                object->id != (u16)id_YODAGHOST) {
-                        f32 depth;
-                        depth = (object->water_height - object->collision_min.y) / object->bounds_half_height;
-                        if (depth < 0.0f)
+                        turn_rate = (object->water_height - object->collision_min.y) / object->bounds_half_height;
+                        if (turn_rate < 0.0f)
                             water_speed_multiplier = 0.0f;
-                        else if (depth > 0.5f)
+                        else if (turn_rate > 0.5f)
                             water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
                         else
-                            water_speed_multiplier = 1.0f - depth * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
+                            water_speed_multiplier = 1.0f - turn_rate * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
                     } else {
                         water_speed_multiplier = 1.0f;
                     }
@@ -3273,19 +3269,17 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     }
 
     if (object->field_281 != 0 && (i8)(object->jump_animation_state) != -1) {
-        f32 scale;
-        scale = TerSurface[(i8)(object->jump_animation_state)].movement_scale;
-        if (scale != 1.0f) {
-            seek_rates.x *= scale;
-            seek_rates.z *= scale;
+        turn_rate = TerSurface[(i8)(object->jump_animation_state)].movement_scale;
+        if (turn_rate != 1.0f) {
+            seek_rates.x *= turn_rate;
+            seek_rates.z *= turn_rate;
         }
     }
     if (object->character_context == 0x2b) {
         if (object->turn_braking < 1.0f) {
-            f32 scale;
-            scale = 1.0f - object->turn_braking;
-            object->target_velocity.x = object->target_velocity.x * scale;
-            object->target_velocity.z *= scale;
+            turn_rate = 1.0f - object->turn_braking;
+            object->target_velocity.x = object->target_velocity.x * turn_rate;
+            object->target_velocity.z *= turn_rate;
             if (object->wall_run_state == 2 || object->wall_run_state == 4) {
                 object->target_velocity.x *= 0.5f;
                 object->target_velocity.z *= 0.5f;
@@ -3318,29 +3312,27 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         if ((object->flags_e20 & 8) != 0 && object->field_281 != 0) {
             f32 current_speed;
             f32 target_speed;
-            f32 multiplier;
             current_speed = NuVecMag(&object->velocity);
             target_speed = NuVecMag(&object->target_velocity);
             if (!(target_speed > 0.0f)) {
-                multiplier = 5.0f;
+                turn_rate = 5.0f;
             } else {
-                f32 ratio;
-                ratio = current_speed / target_speed;
-                if (ratio > 1.0f)
-                    ratio = 1.0f - (ratio - 1.0f);
-                if (ratio < 0.7f)
-                    multiplier = 5.0f;
-                else if (ratio < 0.8f)
-                    multiplier = 4.0f;
-                else if (ratio < 0.9f)
-                    multiplier = 3.0f;
-                else if (ratio < 1.0f)
-                    multiplier = 2.0f - (ratio - 0.9f) / 0.1f;
+                turn_rate = current_speed / target_speed;
+                if (turn_rate > 1.0f)
+                    turn_rate = 1.0f - (turn_rate - 1.0f);
+                if (turn_rate < 0.7f)
+                    turn_rate = 5.0f;
+                else if (turn_rate < 0.8f)
+                    turn_rate = 4.0f;
+                else if (turn_rate < 0.9f)
+                    turn_rate = 3.0f;
+                else if (turn_rate < 1.0f)
+                    turn_rate = 2.0f - (turn_rate - 0.9f) / 0.1f;
                 else
-                    multiplier = 1.0f;
+                    turn_rate = 1.0f;
             }
             object->directional_seek_multiplier =
-                SeekLinearF(object->directional_seek_multiplier, multiplier, 5.0f * FRAMETIME);
+                SeekLinearF(object->directional_seek_multiplier, turn_rate, 5.0f * FRAMETIME);
             if (object->directional_seek_multiplier > 1.0f) {
                 seek_rates.x *= object->directional_seek_multiplier;
                 seek_rates.z *= object->directional_seek_multiplier;
