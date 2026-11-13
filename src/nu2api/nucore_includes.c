@@ -7049,7 +7049,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     i32 file_index;
 
     if (buf_end.addr - buf->addr < 0x100000) {
-        NuFileError();
+        NuRDPIVariableErrorPc(path);
     }
     mem_buf = (void *)(buf_end.addr - 0x100000);
     bytes_read = NuFileLoadBuffer(path, mem_buf, 0x100000);
