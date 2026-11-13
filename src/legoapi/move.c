@@ -2818,28 +2818,25 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 break;
             } else if (object->character_context == 0x4a) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
-                    f32 rate;
                     target = ((DIRECTIONAL_LEVER_PC *)(object->grapple))->floor_position;
-                    rate = 10.0f * object->context_hover_target_y + 5.0f;
-                    object->target_velocity.x = (target.x - object->position.x) * rate;
-                    object->target_velocity.z = (target.z - object->position.z) * rate;
+                    turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
+                    object->target_velocity.x = (target.x - object->position.x) * turn_rate;
+                    object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 }
                 break;
             } else if (object->character_context == 0x0b) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
-                    f32 rate;
                     GizPanel_GetAbsTargetPos((void *)(object->grapple), &target, 1);
-                    rate = 10.0f * object->context_hover_target_y + 5.0f;
-                    object->target_velocity.x = (target.x - object->position.x) * rate;
-                    object->target_velocity.z = (target.z - object->position.z) * rate;
+                    turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
+                    object->target_velocity.x = (target.x - object->position.x) * turn_rate;
+                    object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 }
                 break;
             } else if (object->character_context == 0x61 && (object->flags_1f8 & 0x40000) == 0) {
-                f32 rate;
                 target = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
-                rate = 10.0f * object->context_hover_target_y + 5.0f;
-                object->target_velocity.x = (target.x - object->position.x) * rate;
-                object->target_velocity.z = (target.z - object->position.z) * rate;
+                turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
+                object->target_velocity.x = (target.x - object->position.x) * turn_rate;
+                object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 break;
             } else if (object->character_context == 0x51) {
                 DIRECTIONAL_TECHNO_PC *techno;
