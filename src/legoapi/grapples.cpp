@@ -967,11 +967,12 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         const u16 input_angle = GamePad_InputAngle(object, object->pad);
         if (object->pad->input_magnitude == 0.0f && (GRAPPLE_CURRENT->flags & 4) == 0) {
             if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-                if ((object->context_variant_flags & 0x100) == 0) {
+                if ((object->context_variant_flags & 0x100) != 0)
+                    object->context_variant_flags &= ~0x100;
+                else {
                     object->context_variant_flags |= 0x100;
                     object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
-                } else
-                    object->context_variant_flags &= ~0x100;
+                }
             }
         } else
             object->context_variant_flags &= ~0x100;
