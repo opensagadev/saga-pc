@@ -623,26 +623,25 @@ static __declspec(noinline) void JediBStartPhasePc(WORLDINFO *world) {
 }
 
 static __declspec(noinline) void JediBTickPhasePc(void) {
-    i32 wave_done, i, release;
+    i32 done, i, release;
     GAMEOBJECT *boss;
     jedi_b.timer += FRAMETIME;
+    done = 0;
     switch (jedi_b.phase) {
         case 1:
         case 2:
         case 3:
             jedi_b.msg_objectives_left->value = (f32)jedi_b.goody_count;
-            if (jedi_b.msg_phase_complete->value == 1.0f) {
-                jedi_b.state = 2;
-                jedi_b.timer = 0.0f;
-            }
+            if (jedi_b.msg_phase_complete->value == 1.0f)
+                done = 1;
             break;
         case 4:
         case 5:
         case 6:
-            wave_done = 1;
+            done = 1;
             for (i = 0; i < 6; i++) {
                 if (jedi_b.wave_spawned[i] == 0) {
-                    wave_done = 0;
+                    done = 0;
                     break;
                 }
             }
@@ -661,10 +660,6 @@ static __declspec(noinline) void JediBTickPhasePc(void) {
                     jedi_b.baddies[release].flags |= 0x10;
                 jedi_b.wave_timer = 0.0f;
             }
-            if (wave_done) {
-                jedi_b.state = 2;
-                jedi_b.timer = 0.0f;
-            }
             break;
         case 7:
             boss = jedi_b.boss;
@@ -674,11 +669,13 @@ static __declspec(noinline) void JediBTickPhasePc(void) {
                 if (boss == NULL)
                     break;
             }
-            if (boss->dead != 0 || boss->current_hp == 0) {
-                jedi_b.state = 2;
-                jedi_b.timer = 0.0f;
-            }
+            if (boss->dead != 0 || boss->current_hp == 0)
+                done = 1;
             break;
+    }
+    if (done) {
+        jedi_b.state = 2;
+        jedi_b.timer = 0.0f;
     }
 }
 
