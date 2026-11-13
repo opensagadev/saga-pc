@@ -2747,7 +2747,7 @@ extern "C" {
     void PC_EFFECT_SURFACE_PC::Reset() {
         if (texture != NULL && texture->surface != NULL)
             surface = NULL;
-        else if (surface != NULL) {
+        if (surface != NULL) {
             surface->methods->release(surface);
             surface = NULL;
         }
@@ -2757,7 +2757,7 @@ extern "C" {
         owns_texture = 0;
         level = 0;
         field_10 = 0;
-        width = height = 0;
+        height = width = 0;
     }
 
     void PC_EFFECT_SURFACE_PC::Attach(GRAPHICS_RENDER_TEXTURE_PC *new_texture, i32 new_level, bool own) {
@@ -5071,32 +5071,31 @@ extern "C" {
 
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void) {
         i32 index;
-        for (index = 0; index != 32; ++index)
-            if (PcFramebufferActive[index] == 0)
-                break;
-        if (index == 32) {
-            PCGraphicsRenderTextureAllocationError();
-            return NULL;
+        for (index = 0; index != 32; ++index) {
+            if (PcFramebufferActive[index] == 0) {
+                PcFramebufferActive[index] = 1;
+                PC_FRAMEBUFFER_PC *frame = &PcFramebufferPool[index];
+                if (frame == NULL) {
+                    PCGraphicsRenderTextureAllocationError();
+                    return NULL;
+                }
+                for (index = 0; index != 5; ++index) {
+                    frame->targets[index].Reset();
+                    frame->clear_colour[index] = 0xffffffff;
+                }
+                frame->changed = 1;
+                return frame;
+            }
         }
-        PcFramebufferActive[index] = 1;
-        PC_FRAMEBUFFER_PC *frame = &PcFramebufferPool[index];
-        if (frame == NULL) {
-            PCGraphicsRenderTextureAllocationError();
-            return NULL;
-        }
-        for (index = 0; index != 5; ++index) {
-            frame->targets[index].Reset();
-            frame->clear_colour[index] = 0xffffffff;
-        }
-        frame->changed = 1;
-        return frame;
+        PCGraphicsRenderTextureAllocationError();
+        return NULL;
     }
 
     void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *frame) {
         for (i32 index = 0; index != 5; ++index)
             frame->targets[index].Reset();
         for (i32 index = 0; index != 32; ++index)
-            if (frame == &PcFramebufferPool[index])
+            if (&PcFramebufferPool[index] == frame)
                 PcFramebufferActive[index] = 0;
     }
 
