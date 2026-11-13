@@ -10115,7 +10115,7 @@ i32 __cdecl routeEditor_AddToRoute(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) 
 
 static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor_path, VARIPTR *cursor, VARIPTR *end) {
     i32 route_indices[16] = {0};
-    u8 route_members[16][32] = {0};
+    u8 route_members[16][32] = {{0}};
     i32 slot;
     for (slot = 0; slot != 16; ++slot) {
         if (editor_path->routes[slot].flags & 1) {
@@ -10129,11 +10129,10 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
         i32 route_index;
         PATH_BUILD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE_PC));
         memset(path->routes, 0, path->route_count * sizeof(AIPATHROUTE_PC));
-        for (slot = 0; slot != 16; ++slot) {
+        for (slot = 0; slot < 16; ++slot) {
             AIPATHROUTE_PC *route;
             i32 name_length;
             u32 *user_mask;
-            u32 high_mask;
             if (!(editor_path->routes[slot].flags & 1)) {
                 continue;
             }
@@ -10145,9 +10144,8 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
             }
             user_mask = (u32 *)&editor_path->routes[slot].user_mask;
             route->character_mask[0] = user_mask[0];
-            high_mask = user_mask[1];
-            route->character_mask[1] = high_mask;
-            if (high_mask & 0x80000000u) {
+            route->character_mask[1] = user_mask[1];
+            if (editor_path->routes[slot].user_mask & (1ull << 63)) {
                 route->character_mask[0] = 0xffffffffu;
                 route->character_mask[1] = 0xffffffffu;
             }
@@ -10165,7 +10163,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
                     }
                 }
             }
-            for (slot = 0; slot != 8; ++slot) {
+            for (slot = 0; slot < 8; ++slot) {
                 EDAIPATHCNX_s *editor_connection = &editor_node->connections[slot];
                 i32 edge;
                 if (editor_connection->node == NULL || editor_connection->route_mask == 0) {
@@ -10198,7 +10196,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
             i32 node;
             i32 member_index;
             i32 exit_index;
-            u32 source;
+            i32 source;
             VARIPTR scratch;
             f32 **distances;
             u8 **next_hops;
