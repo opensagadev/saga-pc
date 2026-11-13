@@ -206,13 +206,6 @@ void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     }
 }
 
-/* TODO(saga.h): GAMEOBJECT.flags_e24 bits 16-18 are a 3-bit hit-side field (3 = behind, 4 = in front). */
-typedef struct GAMEOBJECT_HIT_SIDE_PC {
-    u32 low_flags : 16;
-    u32 hit_side : 3;
-    u32 high_flags : 13;
-} GAMEOBJECT_HIT_SIDE_PC;
-
 void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     WORLDINFO *world;
     NUVEC hit_direction;
@@ -310,7 +303,7 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 continue;
             }
             TakeHitRumble(player, 0.7f);
-            ((GAMEOBJECT_HIT_SIDE_PC *)&player->flags_e24)->hit_side = distance < 0.0f ? 3 : 4;
+            player->hit_side = distance < 0.0f ? 3 : 4;
             player->velocity.x = 0.0f;
             player->velocity.z = 0.0f;
             handle = -1;

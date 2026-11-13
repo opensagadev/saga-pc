@@ -1210,19 +1210,10 @@ void HothBattleC_Reset(WORLDINFO *world) {
     GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 1);
 }
 
-/* TODO(saga.h): GIZBOMBGEN_s flags at 0x2a are a u16 bitfield (active, visible) in retail. */
-typedef struct bombgen_flags_pc_s {
-    u16 active : 1;
-    u16 visible : 1;
-    u16 unknown : 14;
-} BOMBGEN_FLAGS_PC;
-STATIC_ASSERT(sizeof(BOMBGEN_FLAGS_PC) == 2);
-
 void HothBattleC_Update(WORLDINFO *world) {
-    if (netclient == 0 && HothBattleC_BombGenerator != NULL &&
-        !((BOMBGEN_FLAGS_PC *)&HothBattleC_BombGenerator->flags)->active && LevAIMessage[0] != NULL &&
-        LevAIMessage[0]->value > 0.0f) {
-        ((BOMBGEN_FLAGS_PC *)&HothBattleC_BombGenerator->flags)->active = 1;
+    if (netclient == 0 && HothBattleC_BombGenerator != NULL && !HothBattleC_BombGenerator->active &&
+        LevAIMessage[0] != NULL && LevAIMessage[0]->value > 0.0f) {
+        HothBattleC_BombGenerator->active = 1;
     }
     UpdateMiniSnowTroopers(world);
 }
@@ -1574,10 +1565,8 @@ void __cdecl HothBattleE_UpdateWave(void) {
                 if (melee.transition_phase == 1) {
                     object = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-                        // MATCH-EXCEPTION: field_280 (u8 in saga.h) is read as signed -1 so that it shares the
-                        // cached 0xff byte register with the transition_phase tests, as retail does.
                         if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                            object->id != (u16)id_ATAT && (i8)object->field_280 == -1 &&
+                            object->id != (u16)id_ATAT && object->player_index == -1 &&
                             (object->character_data->model_flags & 4) != 0)
                             KillGameObject(object, 4, 0);
                     }
