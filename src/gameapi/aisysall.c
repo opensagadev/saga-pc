@@ -2088,9 +2088,8 @@ void __cdecl xState(NUFPAR_PC *parser) {
     buffer = aiscript_load_buffer;
     state = NULL;
     if (buffer != NULL && end_buffer != NULL && buffer->addr + sizeof(AISTATE_PC) < end_buffer->addr) {
-        state_address = (buffer->addr + 15u) & ~15u;
-        state = (AISTATE_PC *)state_address;
-        buffer->addr = state_address + sizeof(AISTATE_PC);
+        state = (AISTATE_PC *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(AISTATE_PC);
         memset(state, 0, sizeof(AISTATE_PC));
     } else {
         AIScriptMissingStateDiagnostic();
