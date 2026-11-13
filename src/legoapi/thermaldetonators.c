@@ -113,7 +113,8 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
 void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
     f32 height, water;
     i32 surface, layer;
-    if ((part->active & 0x4002) == 2 && part->time_remaining > 0.0f && part->time_remaining < 1.0f) {
+    if ((part->active & 0x4000) == 0 && (part->active & 2) != 0 && part->time_remaining > 0.0f &&
+        part->time_remaining < 1.0f) {
         PlaySfx("ThermalDet_Beep", &part->position);
         part->active |= 0x4000;
         return;
@@ -138,7 +139,7 @@ void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
     layer = EShadowInfo();
     if ((u32)layer > 16)
         return;
-    if ((part->active & 0x8000) == 0 && water > part->position.y + part->field_e0 &&
+    if ((part->active & 0x8000) == 0 && part->position.y + part->field_e0 < water &&
         ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9))
         part->active |= 0x8000;
     if (WORLD->current_level == DEATHSTARRESCUEA_LDATA && GameCam->sock == 2) {
