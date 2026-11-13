@@ -168,6 +168,7 @@ check-core: dependencies
 	$(PYTHON) tools/check.py
 	$(PYTHON) tools/budget.py --guard
 	$(PYTHON) tools/oddscan.py --check
+	$(PYTHON) tools/declscan.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
 

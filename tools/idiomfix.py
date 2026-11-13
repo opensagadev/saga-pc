@@ -747,7 +747,7 @@ def rule_init_decl_order(source):
             a_decl, b_decl = initialised(first), initialised(second)
             if a_decl is None or b_decl is None:
                 continue
-            if a_decl in rw._initializer_refs(source, b_decl):
+            if a_decl.hash in rw._initializer_refs(source, b_decl):
                 continue
             (a_calls, a_writes), (b_calls, b_writes) = effects(a_decl), effects(b_decl)
             if (a_calls and b_calls) or a_writes or b_writes:

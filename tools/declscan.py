@@ -26,6 +26,8 @@ that differs from the definition only in a parameter type is not matched.
     python3 tools/declscan.py                       # per-file counts, build/declscan.json
     python3 tools/declscan.py src/legoapi --list    # one line per declaration
     python3 tools/declscan.py src/legoapi --fix     # delete removable A and unused E
+    python3 tools/declscan.py --check               # fail if a class grew (config/declscan-budget.json)
+    python3 tools/declscan.py --write-budget        # lower the budget after a cleanup
 
 `--fix` deletes only whole-line single declarations without a comment of their
 own (a comment line directly above, a trailing comment, or a `MATCH-EXCEPTION`
@@ -36,6 +38,7 @@ import difflib
 import hashlib
 import json
 import multiprocessing
+import os
 import re
 import sys
 from collections import Counter, defaultdict
@@ -44,6 +47,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools import budget  # noqa: E402
 from tools.lib import ROOT, dependency_files  # noqa: E402
 
 VERSION = 5
@@ -51,6 +55,7 @@ DEBUG_DEFINE = "-DSAGA_DEBUG"
 CLASSES = "ABCDE"
 CACHE = ROOT / "build/declscan/cache.json"
 OUTPUT = ROOT / "build/declscan.json"
+BUDGET = ROOT / "config/declscan-budget.json"
 COMMENT_END = re.compile(r"(^\s*//.*|\*/\s*)$")
 EXTERN_C = re.compile(r'^\s*extern\s+"C"\s*$')
 EMPTY_EXTERN_C = re.compile(r'^[ \t]*extern\s+"C"\s*\{\s*\}[ \t]*\n(?:[ \t]*\n)?', re.MULTILINE)
@@ -66,6 +71,32 @@ def cindex():
         import clang.cindex as ci  # noqa: PLC0415 (only the scan needs libclang)
         _ci = ci
     return _ci
+
+
+class MainFile:
+    """Tells whether a cursor's expansion location is in the unit itself, not in a header.
+
+    Same answer as `cursor.location.file.name == main`, without building a Python
+    File object for each of the header's cursors: the expansion location's file
+    handle is compared with the unit's handle through the C API."""
+    _function = None
+
+    def __init__(self, tu, main):
+        import ctypes  # noqa: PLC0415
+        ci = cindex()
+        if MainFile._function is None:
+            function = ci.conf.lib.clang_getExpansionLocation
+            function.argtypes = [ci.SourceLocation, ctypes.POINTER(ctypes.c_void_p), ctypes.c_void_p,
+                                 ctypes.c_void_p, ctypes.c_void_p]
+            function.restype = None
+            MainFile._function = function
+        self.handle = ctypes.c_void_p()
+        self.pointer = ctypes.byref(self.handle)
+        self.main = ctypes.cast(ci.conf.lib.clang_getFile(tu, str(main)), ctypes.c_void_p).value
+
+    def __call__(self, cursor):
+        MainFile._function(cursor.location, self.pointer, None, None, None)
+        return self.handle.value is not None and self.handle.value == self.main
 
 
 def unit_flags(unit, base_flags):
@@ -98,6 +129,7 @@ def references(tu, main, wanted):
     ci = cindex()
     K = ci.CursorKind
     main = str(main)
+    in_main_file = MainFile(tu, main)
     refs, users = Counter(), defaultdict(set)
     ref_kinds = (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR, K.OVERLOADED_DECL_REF)
 
@@ -105,7 +137,7 @@ def references(tu, main, wanted):
         for cursor in parent.get_children():
             if cursor.kind in (K.LINKAGE_SPEC, K.UNEXPOSED_DECL, K.NAMESPACE):
                 yield from roots(cursor)
-            elif cursor.location.file and cursor.location.file.name == main:
+            elif in_main_file(cursor):
                 yield cursor
 
     for root in roots(tu.cursor):
@@ -138,8 +170,16 @@ def collect(tu, main):
     K = ci.CursorKind
     main = str(main)
     decls, local, header, aux_header = [], defaultdict(list), defaultdict(list), set()
-    definitions, exports, errors = {}, [], []
+    definitions, exports, errors, pending = {}, [], [], []
+    in_main_file = MainFile(tu, main)
     seq = 0
+
+    def facts_of(cursor):
+        if cursor.kind == K.FUNCTION_DECL:
+            defining = cursor.is_definition()
+        else:  # a C tentative definition (`int x;`) is a definition too
+            defining = cursor.is_definition() or cursor.storage_class != ci.StorageClass.EXTERN
+        return defining, cursor.type.get_canonical().spelling
 
     def visit(parent):
         nonlocal seq
@@ -148,24 +188,18 @@ def collect(tu, main):
                 visit(cursor)
                 continue
             seq += 1
-            location = cursor.location
-            name = location.file.name if location.file else ""
-            in_main = name == main
             if cursor.kind not in (K.FUNCTION_DECL, K.VAR_DECL):
+                continue
+            if not in_main_file(cursor):
+                # Header declarations matter only for names the unit declares itself:
+                # look them up after the walk, which spares most header cursors.
+                pending.append((seq, cursor))
                 continue
             usr = cursor.get_usr()
             if not usr:
                 continue
-            if cursor.kind == K.FUNCTION_DECL:
-                defining = cursor.is_definition()
-            else:  # a C tentative definition (`int x;`) is a definition too
-                defining = cursor.is_definition() or cursor.storage_class != ci.StorageClass.EXTERN
-            ctype = cursor.type.get_canonical().spelling
-            if not in_main:
-                header[usr].append([seq, name, location.line, ctype, defining])
-                if "/src/" in name and not name.endswith("/saga.h"):
-                    aux_header.add(usr)
-                continue
+            defining, ctype = facts_of(cursor)
+            location = cursor.location
             local[usr].append([seq, location.line, ctype, defining])
             linkage = cursor.linkage == ci.LinkageKind.EXTERNAL
             if defining:
@@ -186,6 +220,19 @@ def collect(tu, main):
 
     visit(tu.cursor)
     wanted = {decl["usr"] for decl in decls}
+    names = {decl["name"] for decl in decls}
+    for seq, cursor in pending:
+        if cursor.spelling not in names:
+            continue
+        usr = cursor.get_usr()
+        if usr not in wanted:
+            continue
+        defining, ctype = facts_of(cursor)
+        location = cursor.location
+        name = location.file.name if location.file else ""
+        header[usr].append([seq, name, location.line, ctype, defining])
+        if "/src/" in name and not name.endswith("/saga.h"):
+            aux_header.add(usr)
     refs, users = references(tu, main, wanted)
     for diagnostic in tu.diagnostics:
         if diagnostic.severity >= 3:
@@ -198,10 +245,10 @@ def collect(tu, main):
 
 
 def _work(job):
-    unit, path, flags = job
+    unit, path, flags, debug = job
     try:
         facts = collect(parse(path, flags), path)
-        return unit, collect_debug(facts, parse(path, debug_flags(flags)), path)
+        return unit, collect_debug(facts, parse(path, debug_flags(flags)), path) if debug else facts
     except Exception as error:  # noqa: BLE001 (reported per unit, the scan continues)
         return unit, {"failed": f"{type(error).__name__}: {error}"}
 
@@ -353,8 +400,12 @@ def headers_hash():
     return digest.hexdigest()
 
 
-def scan(jobs=2, cache_path=CACHE):
-    """Facts for every unit (src/ and vendored), from the cache where unchanged."""
+def scan(jobs=2, cache_path=CACHE, debug=True):
+    """Facts for every unit (src/ and vendored), from the cache where unchanged.
+
+    `debug=False` skips the second (Debug) parse, which only decides whether a
+    declaration is used; the classes do not depend on it (`--check` needs only
+    the classes). Facts with the Debug references are used when cached."""
     src, vendored = all_units()
     common = headers_hash()
     try:
@@ -364,14 +415,18 @@ def scan(jobs=2, cache_path=CACHE):
     keys, todo, facts = {}, [], {}
     flags = None
     for unit in [*src, *vendored]:
-        key = hashlib.sha256(f"{VERSION}:{common}:{unit}:".encode() + (ROOT / unit).read_bytes()).hexdigest()
-        keys[unit] = key
-        if key in cache:
-            facts[unit] = cache[key]
+        text = (ROOT / unit).read_bytes()
+        full = hashlib.sha256(f"{VERSION}:{common}:{unit}:".encode() + text).hexdigest()
+        light = hashlib.sha256(f"{VERSION}:release-only:{common}:{unit}:".encode() + text).hexdigest()
+        for key in (full,) if debug else (full, light):
+            if key in cache:
+                keys[unit], facts[unit] = key, cache[key]
+                break
         else:
+            keys[unit] = full if debug else light
             if flags is None:
                 flags = base_flags()
-            todo.append((unit, str(ROOT / unit), unit_flags(unit, flags)))
+            todo.append((unit, str(ROOT / unit), unit_flags(unit, flags), debug))
     if todo:
         print(f"declscan: parsing {len(todo)} units", file=sys.stderr)
         with multiprocessing.Pool(max(1, jobs)) as pool:
@@ -417,10 +472,41 @@ def table(records):
     return "\n".join(rows)
 
 
+def class_counts(records):
+    counts = Counter(record["cls"] for record in records)
+    return {cls: counts[cls] for cls in CLASSES}
+
+
+def check_budget(args):
+    """Compare the class counts of all src/ units with the budget (budgets only go down)."""
+    src, facts = scan(args.jobs or os.cpu_count() or 2, debug=False)
+    records, failures = records_for(units_under([]), src, facts)
+    if failures:
+        for failure in failures:
+            print(f"declscan: {failure}", file=sys.stderr)
+        print("declscan: units failed to parse; the counts are incomplete", file=sys.stderr)
+        return 1
+    counts = class_counts(records)
+    if args.write_budget:
+        budget.write(args.budget, budget.lowered(budget.load(args.budget), counts) if args.budget.is_file()
+                     else counts)
+        print(f"declscan: budget {json.dumps(budget.load(args.budget))}")
+        return 0
+    over, under = budget.compare(counts, budget.load(args.budget))
+    status = budget.report("declscan", over, under, "python3 tools/declscan.py --write-budget")
+    if over:
+        classes = "".join(cls for cls, _, _ in over)
+        print(f"declscan: new file-scope declarations in units; list them with "
+              f"python3 tools/declscan.py --list --classes {classes} (docs/declarations.md)", file=sys.stderr)
+    else:
+        print(f"declscan: classes {' '.join(f'{c}={n}' for c, n in counts.items())} within budget")
+    return status
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("paths", nargs="*", help="units or directories (default: all of src/)")
-    parser.add_argument("--jobs", type=int, default=2)
+    parser.add_argument("--jobs", type=int, help="parallel parses (default 2; all CPUs with --check)")
     parser.add_argument("--json", type=Path, default=OUTPUT, help=f"record list (default {OUTPUT.relative_to(ROOT)})")
     parser.add_argument("--list", action="store_true", help="print one line per declaration")
     parser.add_argument("--classes", default=CLASSES, help="classes to list (default ABCDE)")
@@ -428,9 +514,15 @@ def main(argv=None):
     parser.add_argument("--dry-run", action="store_true", help="with --fix: print the diff, change nothing")
     parser.add_argument("--fix-classes", default="AE", help="classes --fix deletes (A, E; default both)")
     parser.add_argument("--top", type=int, default=40, help="rows of the per-file table (0: all)")
+    parser.add_argument("--check", action="store_true",
+                        help=f"fail when a class count of src/ exceeds {BUDGET.relative_to(ROOT)}")
+    parser.add_argument("--write-budget", action="store_true", help="lower the budget to the current counts")
+    parser.add_argument("--budget", type=Path, default=BUDGET)
     args = parser.parse_args(argv)
 
-    src, facts = scan(args.jobs)
+    if args.check or args.write_budget:
+        return check_budget(args)
+    src, facts = scan(args.jobs or 2)
     units = units_under(args.paths)
     records, failures = records_for(units, src, facts)
     for failure in failures:
