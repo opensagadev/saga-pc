@@ -15572,7 +15572,9 @@ void __cdecl routeEditor_cbCreateRoute(eduimenu_s *menu, eduiitem_s *item, u32 e
     (void)menu;
     (void)item;
     (void)event;
-    index = path->current_route != NULL ? path->current_route - path->routes : 0;
+    index = aieditor->current_path->current_route != NULL
+                ? aieditor->current_path->current_route - aieditor->current_path->routes
+                : 0;
     for (attempt = 0; attempt < 16; ++attempt) {
         if (++index >= 16)
             index = 0;
