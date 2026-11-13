@@ -96,13 +96,6 @@ f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     return 0.75f;
 }
 
-i32 __cdecl objInNetWaitContext(GAMEOBJECT *object, i32 context) {
-    if (LegoContextNetWaitPc != -1 && object != NULL && object->character_context == LegoContextNetWaitPc &&
-        object->field_7aa == context)
-        return 1;
-    return 0;
-}
-
 static i32 AtOnce_maxAttackers = 1;
 
 void __cdecl oneAtOnce_SetNumAttackers(i32 attackers) {
