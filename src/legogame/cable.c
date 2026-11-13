@@ -2,7 +2,6 @@
 #include <math.h>
 #include <string.h>
 
-/* Retail unit 0x4087a0-0x40a4a5: definitions in retail address order. */
 
 struct CABLE_RECORD_PC {
     GAMEOBJECT *source;

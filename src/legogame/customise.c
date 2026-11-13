@@ -2,7 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-/* Retail unit 0x423670-0x426b06: definitions in retail address order. */
 
 typedef struct customiser_names_pc_s {
     u8 unknown_00[0x6c];

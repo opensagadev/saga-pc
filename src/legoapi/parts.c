@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x571850-0x57233a: definitions in retail address order. */
 #pragma data_seg(".data$PartVectorSpreadDegrees_PC")
 static i32 PartVectorSpreadDegrees_PC = 30;
 #pragma data_seg()
@@ -812,13 +811,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
 }
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key);
-typedef struct coinpacket_pickup_pc_s {
-    u8 unknown0[0xa];
-    u8 multiplier, unknown_b;
-    f32 timer;
-} COINPACKET_PICKUP_PC;
-STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, multiplier) == 0xa);
-STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, timer) == 0xc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == offsetof(GAMEOBJECT, field_c8c) + sizeof(f32));
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == offsetof(GAMEOBJECT, field_c8c) + 2 * sizeof(f32));
@@ -826,25 +818,6 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_mode) == 0xb1);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, lighting_scale) == 0x160);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
-typedef struct debris_collision_effect_pc_s {
-    u8 unknown_000[0x2b0];
-    DEBRIS_FLOAT_KEY_PC collision_keys[8];
-    i8 process_spheres, time_group;
-    u8 collision_flags, use_explicit_clip_box;
-    f32 thinning;
-    NUVEC particle_box;
-    f32 torus_radius1, torus_radius2, torus_lifetime;
-    DEBRIS_FLOAT_KEY_PC torus_keys1[8], torus_keys2[8], torus_keys3[8];
-    u8 unknown_3d0[0x58];
-} DEBRIS_COLLISION_EFFECT_PC;
-STATIC_ASSERT(sizeof(DEBRIS_COLLISION_EFFECT_PC) == 0x428);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, collision_keys) == 0x2b0);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius1) == 0x304);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_radius2) == 0x308);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_lifetime) == 0x30c);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys1) == 0x310);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys2) == 0x350);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys3) == 0x390);
 typedef struct debris_material_flags_pc_s {
     u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
         z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 3, unknown_23_31 : 9;

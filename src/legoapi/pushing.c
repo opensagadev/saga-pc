@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x59baf0-0x59cb62: definitions in retail address order. */
 
 typedef struct PUSH_CONTEXT_INFO_PC {
     const char *name;

@@ -87,21 +87,6 @@ extern "C" {
         return 1;
     }
 }
-
-typedef struct bulk_ai_panel_pc_s {
-    u8 unknown_00[0x50];
-    NUVEC position;
-    u8 unknown_5c[5];
-    u8 model_variant;
-    u8 flags;
-    u8 unknown_63;
-    NUVEC floor_position;
-} BULK_AI_PANEL_PC;
-STATIC_ASSERT(offsetof(BULK_AI_PANEL_PC, position) == 0x50);
-STATIC_ASSERT(offsetof(BULK_AI_PANEL_PC, model_variant) == 0x61);
-STATIC_ASSERT(offsetof(BULK_AI_PANEL_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(BULK_AI_PANEL_PC, floor_position) == 0x64);
-
 STATIC_ASSERT(offsetof(ZIPUP_s, flags) == 0x68);
 STATIC_ASSERT(offsetof(ZIPUP_s, runtime_flags) == 0x69);
 STATIC_ASSERT(offsetof(ZIPUP_s, lower_position) == 0x10);

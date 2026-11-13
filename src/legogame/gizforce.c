@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4667f0-0x46a44b: definitions in retail address order. */
 
 typedef struct GIZFORCE_ANIMATION_DATA_PC {
     u8 unknown_00[2];

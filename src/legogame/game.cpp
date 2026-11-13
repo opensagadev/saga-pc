@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x428930-0x42f461: definitions in retail address order. */
 static NUVEC BuckSnowmobForwardPc = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDurationPc = 1.0f;
 static f32 BuckSnowmobJumpHeightPc = 1.0f;
@@ -306,11 +305,6 @@ typedef struct GAME_GIZMO_SFX_CAMERA_READER_PC {
 } GAME_GIZMO_SFX_CAMERA_READER_PC;
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock) == 1);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock_distance) == 0x2c);
-typedef struct PANEL_PRIM_VERTEX_PC {
-    f32 x, y, z;
-    u32 colour;
-} PANEL_PRIM_VERTEX_PC;
-STATIC_ASSERT(offsetof(PANEL_PRIM_VERTEX_PC, colour) == 0xc);
 // Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v8/tag-lsw.cppfrag
 typedef struct TAG_CHARACTER_DATA_READER_PC {
     u8 opaque_00[0x42];

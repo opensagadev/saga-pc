@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x5644c0-0x5665f9: definitions in retail address order. */
 #include <stdio.h>
 #pragma bss_seg(".bss$pause_rndr_mtl")
 static void *pause_rndr_mtl = 0;
@@ -53,11 +52,6 @@ typedef struct CUT_BORDER_RECORD_PC {
 } CUT_BORDER_RECORD_PC;
 STATIC_ASSERT(offsetof(CUT_BORDER_RECORD_PC, flags) == 0x50);
 extern "C" NUMTL *FadeMtl;
-typedef struct USEFUL_MATERIAL_PC {
-    u8 unknown_00[0x40];
-    u32 attributes;
-} USEFUL_MATERIAL_PC;
-STATIC_ASSERT(offsetof(USEFUL_MATERIAL_PC, attributes) == 0x40);
 extern "C" {
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
@@ -914,13 +908,6 @@ extern "C" {
         }
     }
 }
-
-typedef struct status_world_minikit_reader_pc_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
-} STATUS_WORLD_MINIKIT_READER_PC;
-STATIC_ASSERT(offsetof(STATUS_WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
-
 void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;

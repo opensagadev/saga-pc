@@ -2,22 +2,6 @@
 #pragma bss_seg(".bss$splcodes")
 #pragma bss_seg(".bss$splshelf")
 /* Integrate these declarations once. Keep all existing canonical data owners. */
-typedef struct SHOP_SAVE_VIEW_PC {
-    u8 unknown_0000[0x7bd4];
-    u32 hint_purchased_bits[3];
-    u32 character_purchased_bits[4];
-    u32 extra_unlocked_bits[2];
-    u32 gold_brick_purchased_bits[2];
-    u32 extra_purchased_bits[2];
-    u8 unknown_7c08[0x15];
-    u8 bolt_unlocked;
-} SHOP_SAVE_VIEW_PC;
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, hint_purchased_bits) == 0x7bd4);
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, character_purchased_bits) == 0x7be0);
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, extra_unlocked_bits) == 0x7bf0);
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, gold_brick_purchased_bits) == 0x7bf8);
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, extra_purchased_bits) == 0x7c00);
-STATIC_ASSERT(offsetof(SHOP_SAVE_VIEW_PC, bolt_unlocked) == 0x7c1d);
 STATIC_ASSERT(offsetof(shopitem_s, item_id) == 0x60);
 STATIC_ASSERT(offsetof(shopitem_s, type) == 0x62);
 STATIC_ASSERT(offsetof(shopitem_s, unlocked) == 0x63);
@@ -27,30 +11,6 @@ STATIC_ASSERT(offsetof(COLLECTID, cheat_code) == 0xc);
 STATIC_ASSERT(offsetof(COLLECTID, field3_0x4) == 4);
 
 /* The retail shop code clamps through nested min/max macros: the inner min is evaluated twice. */
-#define SHOP_FMIN(a, b) ((a) < (b) ? (a) : (b))
-#define SHOP_FMAX(a, b) ((a) > (b) ? (a) : (b))
-#define SHOP_CLAMP01(x) SHOP_FMAX(0.0f, SHOP_FMIN(x, 1.0f))
-
-typedef struct SHARD_LOST_OWNER_PC {
-    u8 unknown_00[0x3c];
-    u8 state_flags;
-    u8 unknown_3d[3];
-    f32 collection_time;
-    GAMEOBJECT *collector;
-    u8 unknown_48[0xc];
-} SHARD_LOST_OWNER_PC;
-STATIC_ASSERT(sizeof(SHARD_LOST_OWNER_PC) == 0x54);
-STATIC_ASSERT(offsetof(SHARD_LOST_OWNER_PC, state_flags) == 0x3c);
-STATIC_ASSERT(offsetof(SHARD_LOST_OWNER_PC, collection_time) == 0x40);
-STATIC_ASSERT(offsetof(SHARD_LOST_OWNER_PC, collector) == 0x44);
-typedef struct WORLD_SHARDS_READER_PC {
-    u8 unknown_0000[0x5090];
-    SHARD_LOST_OWNER_PC *shards;
-    i32 shard_count;
-} WORLD_SHARDS_READER_PC;
-STATIC_ASSERT(offsetof(WORLD_SHARDS_READER_PC, shards) == 0x5090);
-STATIC_ASSERT(offsetof(WORLD_SHARDS_READER_PC, shard_count) == 0x5094);
-
 /* Place before Shop_DrawCharacter in shard.c; static native same-TU helpers. */
 
 static i32 Signals_Load(void *world_info, void *unused1) {
@@ -144,15 +104,6 @@ static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
 
 /* Native PC shop state machine. Child callbacks remain real unresolved native
  * references until their complete functions are ported; menu ID 13 stays unwired. */
-typedef struct SHOP_INPUT_PC {
-    i32 left_pressed, right_pressed, up_pressed, down_pressed;
-    i32 left_held, right_held, up_held, down_held;
-    i32 confirm, cancel;
-} SHOP_INPUT_PC;
-STATIC_ASSERT(sizeof(SHOP_INPUT_PC) == 0x28);
-STATIC_ASSERT(offsetof(SHOP_INPUT_PC, confirm) == 0x20);
-STATIC_ASSERT(offsetof(SHOP_INPUT_PC, cancel) == 0x24);
-
 typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
 typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
 

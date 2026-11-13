@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4c0d50-0x4c7879: definitions in retail address order. */
 
 /* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {

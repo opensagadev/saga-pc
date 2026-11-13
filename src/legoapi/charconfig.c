@@ -1986,15 +1986,6 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         }
     }
 }
-
-typedef struct charconfig_variant_reader_pc_s {
-    u8 unknown_000[0x116];
-    i8 variant_type;
-    u8 unknown_117[9];
-} CHARCONFIG_VARIANT_READER_PC;
-STATIC_ASSERT(sizeof(CHARCONFIG_VARIANT_READER_PC) == 0x120);
-STATIC_ASSERT(offsetof(CHARCONFIG_VARIANT_READER_PC, variant_type) == 0x116);
-
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);

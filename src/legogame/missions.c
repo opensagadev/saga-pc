@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x496e20-0x497c05: definitions in retail address order. */
 
 typedef struct MISSION_END_DATA_VIEW_PC {
     i16 find_character;

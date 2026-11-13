@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x54a550-0x54b50c: definitions in retail address order. */
 #include <string.h>
 
 /* Definitions in retail address order: five project-file functions (0x4017b0-0x401860), then the

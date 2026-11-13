@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Retail unit 0x4b7080-0x4bc29b: definitions in retail address order. */
 
 extern "C" {
     extern f32 HudBossIconYPc;
@@ -60,7 +59,7 @@ extern "C" {
     void __cdecl Arcade_DrawPanel(i32 paused);
 }
 extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 count, i32 total);
-extern "C" __declspec(noinline) void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
+extern "C" void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
                                                  i32 red, i32 green, i32 blue, f32 max_width, i32 center);
 extern "C" i32 Text_ExpandButtonString(char *command, char *output);
 extern "C" NUMTL *FadeMtl2;

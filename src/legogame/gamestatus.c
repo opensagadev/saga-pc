@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-/* Retail unit 0x45e350-0x46433e: definitions in retail address order. */
 
 void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 void __cdecl Text_FillInExtendedSaveInfo(void);

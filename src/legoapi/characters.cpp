@@ -13,23 +13,6 @@ extern "C" {
     extern char AreaFixUpName_Jedi[8];
     extern const char PCContextName_Teleport[9];
 }
-typedef struct permanent_material_reader_pc_s {
-    u8 unknown_0000[0x40];
-    u32 attributes;
-    u32 shader_flags;
-    u8 unknown_0048[0xc];
-    f32 diffuse[3];
-    u8 unknown_0060[0x10];
-    f32 opacity;
-    i16 texture_id;
-    u16 sort_priority;
-} PERMANENT_MATERIAL_READER_PC;
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, attributes) == 0x40);
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, shader_flags) == 0x44);
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, diffuse) == 0x54);
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, opacity) == 0x70);
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, texture_id) == 0x74);
-STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, sort_priority) == 0x76);
 typedef struct CHARACTER_SCENE_WORLD_PC {
     u8 unknown_0000[0x2980];
     KILLPARTS_CHARSCENE_PC *character_scenes;
@@ -43,49 +26,12 @@ typedef struct CHARACTER_SCENE_CUTSYS_PC {
 STATIC_ASSERT(offsetof(CHARACTER_SCENE_CUTSYS_PC, character_flags) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
-typedef struct permanent_customiser_save_pc_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} PERMANENT_CUSTOMISER_SAVE_PC;
-STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_SAVE_PC, pieces) == 0);
-STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_SAVE_PC, secondary_pieces) == 0x38);
-STATIC_ASSERT(sizeof(PERMANENT_CUSTOMISER_SAVE_PC) == 0x70);
-typedef struct permanent_customiser_game_pc_s {
-    u8 unknown_0000[0x7c24];
-    PERMANENT_CUSTOMISER_SAVE_PC customiser;
-} PERMANENT_CUSTOMISER_GAME_PC;
-STATIC_ASSERT(offsetof(PERMANENT_CUSTOMISER_GAME_PC, customiser) == 0x7c24);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-typedef struct CHARACTER_IDLE_STATE_PC {
-    u8 unknown_000[0x2b8];
-    f32 idle_total_time;
-    f32 idle_animation_time;
-    f32 idle_animation_limit;
-    i16 idle_animation;
-    i16 previous_idle_animation;
-} CHARACTER_IDLE_STATE_PC;
-typedef struct CHARACTER_IDLE_POLICY_PC {
-    u8 unknown_000[0x116];
-    u8 use_standard_idle;
-} CHARACTER_IDLE_POLICY_PC;
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_total_time) == 0x2b8);
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation_time) == 0x2bc);
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation_limit) == 0x2c0);
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, idle_animation) == 0x2c4);
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_STATE_PC, previous_idle_animation) == 0x2c6);
-STATIC_ASSERT(offsetof(CHARACTER_IDLE_POLICY_PC, use_standard_idle) == 0x116);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_animation) == 0x38);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
-typedef struct CHARACTER_COMMUNICATE_READER_PC {
-    u8 unknown_000[0xd38];
-    f32 communicate_blend;
-} CHARACTER_COMMUNICATE_READER_PC;
-STATIC_ASSERT(offsetof(CHARACTER_COMMUNICATE_READER_PC, communicate_blend) == 0xd38);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_joint_ready) == 0x28c);

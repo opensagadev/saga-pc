@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x413b70-0x413efe: definitions in retail address order. */
 
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;

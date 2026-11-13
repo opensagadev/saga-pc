@@ -1,26 +1,7 @@
 #include "saga.h"
 
-/* Retail unit 0x5ab0a0-0x5ab274: definitions in retail address order. */
 
 #include <float.h>
-
-typedef struct ai_control_slot_pc_s {
-    NULISTLNK links;
-    u8 unknown_08[0xa0];
-} AI_CONTROL_SLOT_PC;
-typedef struct ai_control_system_pc_s {
-    i32 capacity;
-    AI_CONTROL_SLOT_PC *controllers;
-    NULISTHDR available;
-    NULISTHDR active;
-} AI_CONTROL_SYSTEM_PC;
-STATIC_ASSERT(sizeof(AI_CONTROL_SLOT_PC) == 0xa8);
-STATIC_ASSERT(offsetof(AI_CONTROL_SLOT_PC, links) == 0);
-STATIC_ASSERT(sizeof(AI_CONTROL_SYSTEM_PC) == 0x18);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, capacity) == 0);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, controllers) == 4);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, available) == 8);
-STATIC_ASSERT(offsetof(AI_CONTROL_SYSTEM_PC, active) == 0x10);
 STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
 STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, capacity) == 0);
@@ -102,33 +83,6 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
     }
     return NULL;
 }
-
-typedef struct ai_controller_scene_view_pc_s {
-    u8 unknown_0000[0x1394];
-    NUGSCN *scene;
-} AI_CONTROLLER_SCENE_VIEW_PC;
-STATIC_ASSERT(offsetof(AI_CONTROLLER_SCENE_VIEW_PC, scene) == 0x1394);
-
-typedef struct controller_animation_view_pc_s {
-    u8 unknown_00[0x5c];
-    u16 animation_index;
-} CONTROLLER_ANIMATION_VIEW_PC;
-typedef struct controller_cut_animation_pc_s {
-    u8 unknown_00[8];
-    f32 end_frame;
-} CONTROLLER_CUT_ANIMATION_PC;
-typedef struct controller_cut_view_pc_s {
-    u8 unknown_00[0x58];
-    CONTROLLER_CUT_ANIMATION_PC *animation;
-    u8 unknown_5c[0x34];
-    f32 current_frame;
-} CONTROLLER_CUT_VIEW_PC;
-STATIC_ASSERT(offsetof(CONTROLLER_ANIMATION_VIEW_PC, animation_index) == 0x5c);
-STATIC_ASSERT(offsetof(CONTROLLER_CUT_ANIMATION_PC, end_frame) == 8);
-STATIC_ASSERT(offsetof(CONTROLLER_CUT_VIEW_PC, animation) == 0x58);
-
-STATIC_ASSERT(offsetof(CONTROLLER_CUT_VIEW_PC, current_frame) == 0x90);
-
 /* Native 0x0043d0c0, 840-byte owner including its internal ten-case table. */
 STATIC_ASSERT(offsetof(AIPATHCNX_PC, traversal_flags) == 0);
 STATIC_ASSERT(offsetof(AIPATHCNX_PC, open) == 0x16);

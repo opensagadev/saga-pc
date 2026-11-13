@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x5af4f0-0x5af935: definitions in retail address order. */
 
 typedef struct shadow_world_view_pc_s {
     u8 reserved_0000[0x5110];

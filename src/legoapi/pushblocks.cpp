@@ -1,7 +1,6 @@
 #include "saga.h"
 static f32 PushBlockGapEpsilonPc = 0.00999999978f;
 
-/* Retail unit 0x5a4390-0x5a8070 (legoapi/actions/movement/pushblocks.cpp): definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, extra_terrain_info) == 0x14);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, supporting_block) == 0x1c);

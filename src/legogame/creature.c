@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-/* Retail unit 0x413f00-0x42009e: definitions in retail address order. */
 
 typedef struct PLAYER_PACKET_RESET_PC {
     u8 unknown_000[0x101];
@@ -179,38 +178,6 @@ void __cdecl Tag_Check(GAMEOBJECT *);
 void __cdecl GameObjectRotation(GAMEOBJECT *, i32);
 #define AIPATHCNX_FLAG_SET(connection, field, flag)                                                                    \
     ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
-typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
-    u8 unknown_000[0x24];
-    NUSPECIALHANDLE special;
-    GAMEOBJECT *pushing_object;
-    u8 unknown_034[0x58 - 0x34];
-    NUVEC *position;
-    u8 unknown_05c[0xb0 - 0x5c];
-    NUVEC bounds_min, bounds_max;
-    u32 packed_state_flags;
-    u8 unknown_0cc[4];
-    u8 completed_snap_positions;
-    u8 end_position_count;
-    u8 output_count;
-    u8 unknown_0d3;
-} PUSH_SUPPORT_BLOCK_VIEW_PC;
-typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
-    u8 unknown_000[0x46bc];
-    PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
-    i32 count;
-} PUSH_SUPPORT_WORLD_VIEW_PC;
-STATIC_ASSERT(sizeof(PUSH_SUPPORT_BLOCK_VIEW_PC) == 0xd4);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, special) == 0x24);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, pushing_object) == 0x30);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, position) == 0x58);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_min) == 0xb0);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_max) == 0xbc);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, end_position_count) == 0xd1);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
 typedef struct level_ai_progress_pc_s {
     u8 unknown_0000[0x2808];
     union {
@@ -384,16 +351,9 @@ typedef struct player_init_flags_pc_s {
     u32 flags_e20_bits_0_15 : 16;
     u32 stored_flag : 1;
 } PLAYER_INIT_FLAGS_PC;
-typedef struct player_position_record_pc_s {
-    NUVEC *position;
-    i32 sock_location;
-    f32 sock_ratio;
-    i16 angle;
-    u8 unknown_0e[2];
-} PLAYER_POSITION_RECORD_PC;
 void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id);
 NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object);
-__declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode);
+void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode);
 void __cdecl Player_ResetContexts(void *packet_ptr);
 extern i32 movegamecamera_forcesock;
 typedef union DRAW_ATTACHMENTS_PACKET_PC {

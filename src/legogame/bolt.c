@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x407e40-0x408760: definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);

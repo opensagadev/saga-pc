@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4c9a40-0x4cad84: definitions in retail address order. */
 extern "C" char *lsw_memcard_objname;
 extern "C" void __cdecl TextInputGlyphNamePc(i32, char *);
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);

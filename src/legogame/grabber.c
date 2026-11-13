@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x470050-0x47276c: definitions in retail address order. */
 
 typedef struct grabber_progress_source_pc_s {
     u8 unknown_0000[0x484];

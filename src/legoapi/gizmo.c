@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x559570-0x55b172: definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
@@ -69,13 +68,6 @@ typedef struct bolt_gizmo_type_pc_s {
 STATIC_ASSERT(sizeof(BOLT_GIZMO_TYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_platform) == 0x6c);
 STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_bolt) == 0x74);
-typedef struct GIZMO_VISIBILITY_TYPE_VIEW_PC {
-    u8 unknown_00[0x60];
-    i32(__cdecl *get_visibility)(void *);
-    u8 unknown_64[0x38];
-} GIZMO_VISIBILITY_TYPE_VIEW_PC;
-STATIC_ASSERT(sizeof(GIZMO_VISIBILITY_TYPE_VIEW_PC) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMO_VISIBILITY_TYPE_VIEW_PC, get_visibility) == 0x60);
 typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
@@ -1028,18 +1020,6 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
 // leaves a COMDAT in the object, so it is written as a macro.
 
 #include <stdio.h>
-
-typedef struct world_minikit_reader_pc_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
-    u8 unknown_2980[4];
-    MINIKIT_PC **pieces_by_id;
-    u8 unknown_2988[0x158];
-    u8 *hub_minikits;
-} WORLD_MINIKIT_READER_PC;
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);

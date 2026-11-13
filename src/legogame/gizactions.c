@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x464360-0x465dcc: definitions in retail address order. */
 
 void __cdecl FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);

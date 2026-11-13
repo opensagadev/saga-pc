@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Retail unit 0x5925c0-0x59420b: definitions in retail address order. */
 
 typedef struct customiser_anims_load_pc_s {
     u8 unknown_00[0x6c];

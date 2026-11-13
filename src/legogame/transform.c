@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4d4ce0-0x4d5593: definitions in retail address order. */
 
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);

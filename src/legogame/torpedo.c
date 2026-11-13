@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4d1e70-0x4d41b7: definitions in retail address order. */
 typedef struct torpedo_pickup_positions_pc_s {
     u8 count;
     u8 unknown_01[0x3b];

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Retail unit 0x474830-0x481a6f: definitions in retail address order. */
 
 extern "C" {
     extern i32 HubDoorNewLevelPc;             /* 8795a8, data.obj, existing genuine owner. */

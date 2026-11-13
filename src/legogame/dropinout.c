@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4277d0-0x428930: definitions in retail address order. */
 
 void __cdecl PcControlInitializePc(i32, i32, i32, u8);
 i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object);

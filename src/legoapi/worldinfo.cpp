@@ -4,18 +4,6 @@
    (legoapi/gizmo.c) before it and SetAreaPickupGravity (legoapi/gizmopickups.c) after it: definitions
    in retail address order. The PortalDoors functions (0x55f960-0x55fbe4) stay in gizportal.c, which
    relies on C conversions. */
-
-typedef struct world_minikit_reader_pc_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
-    u8 unknown_2980[4];
-    MINIKIT_PC **pieces_by_id;
-    u8 unknown_2988[0x158];
-    u8 *hub_minikits;
-} WORLD_MINIKIT_READER_PC;
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
-STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
@@ -796,42 +784,6 @@ extern "C" {
         LOG_INFO("WorldInfo_Activate complete: world=%p", (void *)WORLD);
     }
 }
-
-typedef struct world_minikit_load_pc_s {
-    NUGSCN *scene;
-    u8 unknown_04[0x14];
-} WORLD_MINIKIT_LOAD_PC;
-STATIC_ASSERT(sizeof(WORLD_MINIKIT_LOAD_PC) == 0x18);
-typedef struct world_load_reader_pc_s {
-    u8 unknown_0000[0x2964];
-    NUGSCN *icons_scene;
-    WORLD_MINIKIT_LOAD_PC minikit;
-    void *character_scenes;
-    u8 unknown_2984[0x2ab8 - 0x2984];
-    i32 light_index;
-    NUVEC *light_direction;
-    u8 unknown_2ac0[0xc];
-    GIZFLOW_PC *giz_flow;
-    u8 unknown_2ad0[0x14];
-    i32 ai_loaded;
-    u8 unknown_2ae8[0x4670 - 0x2ae8];
-    void *ai_connection_control;
-    void *ai_connection_helper;
-    void *ai_trigger_set;
-    void *climb_object_system;
-} WORLD_LOAD_READER_PC;
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, icons_scene) == 0x2964);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, minikit) == 0x2968);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, character_scenes) == 0x2980);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, light_index) == 0x2ab8);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, light_direction) == 0x2abc);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, giz_flow) == 0x2acc);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_loaded) == 0x2ae4);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_connection_control) == 0x4670);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_connection_helper) == 0x4674);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, ai_trigger_set) == 0x4678);
-STATIC_ASSERT(offsetof(WORLD_LOAD_READER_PC, climb_object_system) == 0x467c);
-
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);

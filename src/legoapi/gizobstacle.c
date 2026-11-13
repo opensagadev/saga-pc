@@ -3,24 +3,6 @@
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, position) == 0x10);
-
-typedef struct bombgen_activation_reader_pc_s {
-    u8 unknown_00[0x1c];
-    GAMEANIMSET *anim_set;
-    u8 unknown_20[0xa];
-    u16 flags;
-} BOMBGEN_ACTIVATION_READER_PC;
-STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, anim_set) == 0x1c);
-STATIC_ASSERT(offsetof(BOMBGEN_ACTIVATION_READER_PC, flags) == 0x2a);
-STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_READER_PC) == 0x2c);
-
-typedef struct bombgen_activation_flags_pc_s {
-    u16 active : 1;
-    u16 visible : 1;
-    u16 unknown : 14;
-} BOMBGEN_ACTIVATION_FLAGS_PC;
-STATIC_ASSERT(sizeof(BOMBGEN_ACTIVATION_FLAGS_PC) == 2);
-
 extern const char GizmoSnapOptionNamePc[5];
 
 void __cdecl GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
@@ -51,15 +33,6 @@ void __cdecl GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
 }
 
 STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
-
-typedef struct ACTIVATE_CHAR_BUILDIT_VIEW_PC {
-    u8 unknown_00[0x34];
-    NUVEC position;
-    u8 unknown_40[0x34];
-    u16 angle;
-} ACTIVATE_CHAR_BUILDIT_VIEW_PC;
-STATIC_ASSERT(offsetof(ACTIVATE_CHAR_BUILDIT_VIEW_PC, position) == 0x34);
-STATIC_ASSERT(offsetof(ACTIVATE_CHAR_BUILDIT_VIEW_PC, angle) == 0x74);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 STATIC_ASSERT(sizeof(AICREATURE_PC) == 0xa4);
 
@@ -1141,9 +1114,6 @@ typedef struct bomb_generator_system_runtime_pc_s {
     u16 unknown_0e;
     void *progress;
 } BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
-typedef struct bomb_generator_progress_pc_s {
-    u32 active[3], visible[3];
-} BOMB_GENERATOR_PROGRESS_PC;
 STATIC_ASSERT(sizeof(BOMB_GENERATOR_RUNTIME_PC) == 0x2c);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, anim_set) == 0x1c);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_RUNTIME_PC, generated_bomb) == 0x24);
@@ -1153,8 +1123,6 @@ STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, count) == 4);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
               sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, progress) == 0x10);
-STATIC_ASSERT(sizeof(BOMB_GENERATOR_PROGRESS_PC) == 0x18);
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_PROGRESS_PC, visible) == 0xc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
 STATIC_ASSERT(offsetof(CABLE_s, target) == 4);
 STATIC_ASSERT(offsetof(CABLE_s, max_length) == 0x1c4);

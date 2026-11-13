@@ -5,7 +5,6 @@
 #include <math.h>
 #include <float.h>
 
-/* Retail unit 0x430120-0x4398b4: definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
@@ -14,11 +13,6 @@ STATIC_ASSERT(offsetof(PART_PC, part_id) == 0x13e);
 STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
 STATIC_ASSERT(sizeof(PART_PC) == 0x220);
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
-typedef struct weapon_rate_pc_s {
-    u8 unknown_000[0xd40];
-    f32 weapon_scale_rate;
-} WEAPON_RATE_PC;
-STATIC_ASSERT(offsetof(WEAPON_RATE_PC, weapon_scale_rate) == 0xd40);
 typedef struct creature_crate_part_view_pc_s {
     u8 unknown_000[0x20c];
     f32 spawn_delay;
