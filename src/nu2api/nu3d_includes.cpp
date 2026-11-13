@@ -11250,12 +11250,12 @@ extern "C" {
         f32 pixel_height = (f32)PS2_REZ_H;
         f32 virtual_height = (f32)PS2_VREZ_H;
         f32 y_ratio = pixel_height != 0.0f && virtual_height != 0.0f ? (f32)((f64)pixel_height / virtual_height) : 0.0f;
-        f32 y_offset = (f32)((f64)y * 0.0625 - ((f64)PS2_VCNTR_Y - (PS2_REZ_H >> 1)));
+        f32 y_offset = (f32)((f64)y * 0.0625 - ((f32)PS2_VCNTR_Y - (PS2_REZ_H >> 1)));
         f32 new_y = y_offset != 0.0f && y_ratio != 0.0f ? (f32)((f64)y_offset / y_ratio) : 0.0f;
         f32 pixel_width = (f32)PS2_REZ_W;
         f32 virtual_width = (f32)PS2_VREZ_W;
         f32 x_ratio = pixel_width != 0.0f && virtual_width != 0.0f ? (f32)((f64)pixel_width / virtual_width) : 0.0f;
-        f32 x_offset = (f32)((f64)x * 0.0625 - ((f64)PS2_VCNTR_X - (PS2_REZ_W >> 1)));
+        f32 x_offset = (f32)((f64)x * 0.0625 - ((f32)PS2_VCNTR_X - (PS2_REZ_W >> 1)));
         f32 new_x = x_offset != 0.0f && x_ratio != 0.0f ? (f32)((f64)x_offset / x_ratio) : 0.0f;
         NuVpSetPosition2(new_x, new_y);
     }
