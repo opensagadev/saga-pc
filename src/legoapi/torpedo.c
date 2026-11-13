@@ -708,9 +708,8 @@ void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
     if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
         (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
         NUVEC offset, points;
-        offset.x = 0.0f;
-        offset.z = 0.0f;
-        offset.y = 2.0f * bolt->collision_radius;
+        offset.x = offset.y = 0.0f;
+        offset.z = 2.0f * bolt->collision_radius;
         NuVecMtxRotate(&offset, &offset, &bolt->orientation);
         NuVecSub(&points, &bolt->position, &offset);
         if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0)
