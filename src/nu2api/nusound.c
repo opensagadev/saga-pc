@@ -1548,12 +1548,12 @@ void PlayMusic(i32 track, i32 mode) {
         return;
     }
     if (track < 0 || track > SfxFileCount - 1) {
-        Music.transition = 0.0f;
         Music.primary_stream = (i16)(1 - Music.primary_stream);
-        Music.queued_track = Music.current_track;
-        Music.current_track = (i16)track;
         Music.restore_requested = 0;
         Music.state = mode == 3 ? 9 : 7;
+        Music.queued_track = Music.current_track;
+        Music.current_track = (i16)track;
+        Music.transition = 0.0f;
         return;
     }
     Music.queued_track = Music.current_track;
