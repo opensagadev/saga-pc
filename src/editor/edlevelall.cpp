@@ -6415,21 +6415,15 @@ void ClassObject::CopyObject(ClassObject &source) {
 /* Reads an attribute through the picked member first, then through the
  * first class member that carries it. */
 i32 ClassObject::GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size) {
-    EdMember member;
     if (reference != NULL && reference->GetAttributeData(object, attribute, requested_type, data, data_size))
         return 1;
-    if (ed_class->FindMember(&member, object, attribute, 1))
-        return member.reference->GetAttributeData(member.object, attribute, requested_type, data, data_size);
-    return 0;
+    return ed_class->GetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
 i32 ClassObject::SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size) {
-    EdMember member;
     if (reference != NULL && reference->SetAttributeData(object, attribute, requested_type, data, data_size))
         return 1;
-    if (ed_class->FindMember(&member, object, attribute, 1))
-        return member.reference->SetAttributeData(member.object, attribute, requested_type, data, data_size);
-    return 0;
+    return ed_class->SetAttributeData(object, attribute, requested_type, data, data_size);
 }
 
 inline ClassEditor::ClassEditor() : first_tool(NULL), last_tool(NULL), tool_count(0), selected_objects() {
