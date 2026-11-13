@@ -14909,7 +14909,6 @@ extern "C" {
                                            NUVEC *positions, i32 exclusion_mask) {
         i32 i;
         NUHGOBJ_EVAL_PC *object;
-        PC_HG_SHADOW_GROUP *groups;
         i32 total;
         PC_HG_SHADOW_GROUP *group;
         i16 counts[256];
@@ -14922,13 +14921,11 @@ extern "C" {
             return 0;
         if (NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
             return 0;
-        groups = object->shadow_groups;
-        if (groups != NULL && object->suppress_shadow_points == 0) {
+        group = object->shadow_groups;
+        if (group != NULL && object->suppress_shadow_points == 0) {
             total = 0;
 
-            for (group = groups; group->joint_index != 255; ++group) {
-                i32 i;
-
+            for (; group->joint_index != 255; ++group) {
                 for (i = 0; i < group->ellipse_count; ++i)
                     if ((group->ellipses[i].filter.flags & 1) == 0)
                         ++total;
@@ -14945,8 +14942,7 @@ extern "C" {
                 ++counts[((i32)NuWindRand() >> 8) % total];
             index = 0;
 
-            for (group = groups; group->joint_index != 255; ++group) {
-                i32 i;
+            for (group = object->shadow_groups; group->joint_index != 255; ++group) {
                 i32 matrix_ready;
 
                 if (count == 0)
@@ -14957,22 +14953,21 @@ extern "C" {
 
                     if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
                         continue;
-                    n = counts[index];
-                    if (n != 0) {
-                        if (matrix_ready == 0)
+                    if (counts[index] != 0) {
+                        if (matrix_ready == 0) {
                             NuMtxMulVU0(&combined, &joints[group->joint_index], world);
-                        if (n > 0) {
-                            i32 j;
-
-                            count -= n;
-                            for (j = n - 1; j >= 0; --j) {
-                                NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
-                                positions[count + j].x = point.x;
-                                positions[count + j].y = point.y;
-                                positions[count + j].z = point.z;
-                            }
+                            matrix_ready = 1;
                         }
-                        matrix_ready = 1;
+                        if (counts[index] > 0) {
+                            NUVEC *out = &positions[count];
+
+                            n = counts[index];
+                            count -= n;
+                            do {
+                                NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
+                                *--out = *(NUVEC *)&point;
+                            } while (--n != 0);
+                        }
                     }
                     ++index;
                 }
@@ -14981,22 +14976,21 @@ extern "C" {
 
                     if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
                         continue;
-                    n = counts[index];
-                    if (n != 0) {
-                        if (matrix_ready == 0)
+                    if (counts[index] != 0) {
+                        if (matrix_ready == 0) {
                             NuMtxMulVU0(&combined, &joints[group->joint_index], world);
-                        if (n > 0) {
-                            i32 j;
-
-                            count -= n;
-                            for (j = n - 1; j >= 0; --j) {
-                                NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
-                                positions[count + j].x = point.x;
-                                positions[count + j].y = point.y;
-                                positions[count + j].z = point.z;
-                            }
+                            matrix_ready = 1;
                         }
-                        matrix_ready = 1;
+                        if (counts[index] > 0) {
+                            NUVEC *out = &positions[count];
+
+                            n = counts[index];
+                            count -= n;
+                            do {
+                                NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
+                                *--out = *(NUVEC *)&point;
+                            } while (--n != 0);
+                        }
                     }
                     ++index;
                 }
