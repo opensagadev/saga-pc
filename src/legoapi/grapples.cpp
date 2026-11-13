@@ -766,7 +766,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
         attached = grapple->attached_object;
         if (attached == NULL || grapple->retain_attachment != 0)
             continue;
-        if ((attached->flags_1fc_word & 0x1001) == 0x1001 && attached->dead == 0) {
+        if ((attached->flags_1fc_word & 1) != 0 && (attached->flags_1fc_word & 0x1000) != 0 && attached->dead == 0) {
             linked = attached->takeover_source;
             if (linked != NULL && context != -1 && linked->character_context == context) {
                 grapple->position = attached->lower_position;
