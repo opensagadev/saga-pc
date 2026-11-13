@@ -503,7 +503,6 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     f32 jump_distance;
     i32 skip_ahead;
     GAMEOBJECT *other;
-    f32 tolerance;
     f32 clearance;
 
     owner = (GAMEOBJECT *)object->owner;
@@ -646,19 +645,17 @@ check:
                         other->dead != 0) {
                         continue;
                     }
-                    if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&
+                    if (other != player && other->ai_packet.path_info.connection == connection &&
                         other->ai_packet.special_move_node == NULL &&
                         other->ai_packet.path_update_flag < packet->path_connection_state) {
                         continue;
                     }
-                    destination->position.y = destination->position.y;
-                    tolerance = 0.5 * ai_moveradius;
-                    if (owner->collision_min.y > destination->position.y + tolerance) {
-                        if (other->collision_min.y > destination->position.y + tolerance) {
+                    if (owner->collision_min.y > destination->position.y + 0.5 * ai_moveradius) {
+                        if (other->collision_min.y > destination->position.y + 0.5 * ai_moveradius) {
                             continue;
                         }
-                    } else if (destination->position.y - tolerance > owner->collision_min.y &&
-                               destination->position.y - tolerance > other->collision_min.y) {
+                    } else if (destination->position.y - 0.5 * ai_moveradius > owner->collision_min.y &&
+                               destination->position.y - 0.5 * ai_moveradius > other->collision_min.y) {
                         continue;
                     }
                     clearance = other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
