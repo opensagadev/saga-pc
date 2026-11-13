@@ -1726,19 +1726,20 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
     NUVEC first = vertices[0].position;
     NUVEC second = vertices[1].position;
     NUMTX matrix_copy;
+    NUMTX *transform;
     if (matrix != NULL) {
-        if (((size_t)(matrix) & 15) != 0) {
-            matrix_copy = *matrix;
-            matrix = &matrix_copy;
+        transform = matrix;
+        if (((size_t)(transform) & 15) != 0) {
+            matrix_copy = *transform;
+            transform = &matrix_copy;
         }
-        AiVecMtxTransformPc(&first, &first, matrix);
-        AiVecMtxTransformPc(&second, &second, matrix);
+        AiVecMtxTransformPc(&first, &first, transform);
+        AiVecMtxTransformPc(&second, &second, transform);
     }
     if (AiRndrCullDistance > 0.0f) {
         __declspec(align(16)) NUVEC position;
         NUVEC delta;
         f32 start_distance;
-        f32 limit;
         if (aieditor && (aieditor->flags & 2))
             position = aieditor->camera_position;
         else
@@ -1746,8 +1747,8 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
         AiVecSubPc(&delta, &position, &first);
         start_distance = AiVecMagSqrPc(&delta);
         AiVecSubPc(&delta, &position, &second);
-        limit = AiRndrCullDistance * AiRndrCullDistance;
-        if (!(start_distance < limit) && !(AiVecMagSqrPc(&delta) < limit))
+        if (!(start_distance < AiRndrCullDistance * AiRndrCullDistance) &&
+            !(AiVecMagSqrPc(&delta) < AiRndrCullDistance * AiRndrCullDistance))
             return;
     }
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
