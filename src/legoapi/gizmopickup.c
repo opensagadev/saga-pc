@@ -994,8 +994,9 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
 
 void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    i32 remainder, remaining, type, score, i, j, base_model, model, main_total;
-    u8 counts[10] = {0};
+    i32 remainder, remaining, type, score, i, base_model, model, main_total;
+    u32 j;
+    u8 counts[10];
     NUVEC target;
     f32 target_scale;
     GIZMO_PICKUP_TYPE_PC *pickup;
@@ -1006,6 +1007,7 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
         return;
     if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
         coins = 0;
+    memset(counts, 0, sizeof(counts));
     remainder = coins % 10;
     if (remainder > 0)
         coins -= remainder;
@@ -1028,18 +1030,19 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
             type = CoinTab[i];
             score = GizmoPickupType[type].score;
             while (remaining - score >= 0) {
-                remaining -= score;
                 ++counts[type];
+                remaining -= score;
             }
         }
     if (player != 0 && player != 1)
         player = -1;
     target.x = player == 1 ? PANEL_COINX : -PANEL_COINX;
-    main_total = CoinsGoToMainTotal() != 0;
-    if (main_total) {
+    if (CoinsGoToMainTotal()) {
+        main_total = 1;
         target.y = STATSPOSY;
         target_scale = COINTOTAL_COINSIZE;
     } else {
+        main_total = 0;
         target.y = STATSPOSY + PANEL_COINY;
         target_scale = PANEL_COINSCALE_END;
     }
@@ -1048,16 +1051,17 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
     for (i = 0; i < 4; ++i) {
         pickup = &GizmoPickupType[CoinTab[i]];
         base_model = pickup->first_model_id;
-        for (j = 0; j < counts[CoinTab[i]]; ++j) {
+        for (j = counts[CoinTab[i]]; j > 0; --j) {
             model = base_model;
             if (pickup->random_model_count > 0)
                 model += qrand() / (65535 / pickup->random_model_count + 1);
             if (world->level_objects[model].active == 0 || player == -1)
                 continue;
             message = AddGameMsg_Default;
+            message.scale = 1.0f;
+            message.target_scale = target_scale;
             message.position = position;
             message.target_position = &target;
-            message.target_scale = target_scale;
             message.icon = (i16)model;
             message.special = &world->level_objects[message.icon];
             message.score = pickup->score;
@@ -1066,7 +1070,6 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
             message.allow_temporary = 1;
             message.delay = AddCoinDelay[player];
             message.flags = 0x12d;
-            message.scale = 1.0f;
             message.duration = COINMSGTIME;
             if (main_total) {
                 message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
