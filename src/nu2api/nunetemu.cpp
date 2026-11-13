@@ -77,10 +77,10 @@ i32 NuNetEmu::RecvFrom(void *data, i32 size, u32 &address) {
             i32 copy_size = payload_size < size ? payload_size : size;
             PCByteCopy_candidate(data, &unpacked_buffer[read_offset + 2], copy_size);
             read_offset += payload_size + 2;
-            return copy_size;
+            received = copy_size;
         }
     } else {
-        return theNetSessionManager->RecvFrom(data, size, &address);
+        received = theNetSessionManager->RecvFrom(data, size, &address);
     }
     return received;
 }
@@ -375,4 +375,3 @@ void NuNetEmu::Update() {
     }
     packet_stats.held_packets = packet_count;
 }
-
