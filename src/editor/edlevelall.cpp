@@ -821,6 +821,17 @@ class EdSpecialObjectControl : public EdControl {
 STATIC_ASSERT(offsetof(EdSpecialObjectControl, highlighted_object) == 0x10);
 STATIC_ASSERT(sizeof(EdSpecialObjectControl) == 0x14);
 
+/* The registered editor subsystems, in registration order. */
+struct EdSubSystemList {
+    EdSubSystem *first;
+    EdSubSystem *last;
+    i32 count;
+
+    EdSubSystemList();
+    EdSubSystem *First();
+    void InsertAfter(EdSubSystem *subsystem, EdSubSystem *after);
+};
+
 /* The editor subsystems; each one is initialised, processed and rendered
  * with the level editor. */
 class EdSystem {
@@ -831,13 +842,11 @@ class EdSystem {
     void Process(f32 delta_time);
     void Render();
 
-    EdSubSystem *first_subsystem;
-    EdSubSystem *last_subsystem;
-    i32 subsystem_count;
+    EdSubSystemList subsystems;
 };
 STATIC_ASSERT(sizeof(EdSystem) == 0xc);
 
-EdSystem theEdSystem = {NULL, NULL, 0};
+EdSystem theEdSystem;
 
 extern i32 MemoryManagerTraceFailures;
 
@@ -1280,6 +1289,7 @@ struct SplineObjectList {
 
     SplineObjectList();
     SplineObject *First();
+    void Clear();
     void InsertAfter(SplineObject *spline, SplineObject *after);
     void Remove(SplineObject *spline);
     i32 Count();
@@ -1292,9 +1302,7 @@ class SplineHelper : public EdClassInterface {
     }
     virtual void ClearLevel(i32 level);
     virtual void Flush() {
-        objects.last = NULL;
-        objects.first = NULL;
-        objects.count = 0;
+        objects.Clear();
     }
     virtual i32 GetNumObjects() {
         return objects.Count();
@@ -6046,6 +6054,13 @@ SplineObject *SplineObjectList::First() {
     return first;
 }
 
+/* Forgets the splines without unlinking them. */
+void SplineObjectList::Clear() {
+    last = NULL;
+    first = NULL;
+    count = 0;
+}
+
 /* A NULL position appends the spline. */
 void SplineObjectList::InsertAfter(SplineObject *spline, SplineObject *after) {
     if (after != NULL) {
@@ -6579,34 +6594,57 @@ void EdFileOutputStream::EndBlock() {
     NuFileSeek(file, end, 0);
 }
 
+EdSubSystemList::EdSubSystemList() : first(NULL), last(NULL), count(0) {
+}
+
+EdSubSystem *EdSubSystemList::First() {
+    return first;
+}
+
+/* A NULL position appends the subsystem. */
+void EdSubSystemList::InsertAfter(EdSubSystem *subsystem, EdSubSystem *after) {
+    if (after != NULL) {
+        subsystem->previous = after;
+        subsystem->next = after->next;
+        if (after->next != NULL)
+            after->next->previous = subsystem;
+        else
+            last = subsystem;
+        after->next = subsystem;
+        count++;
+    } else {
+        subsystem->next = NULL;
+        subsystem->previous = last;
+        if (last != NULL)
+            last->next = subsystem;
+        last = subsystem;
+        if (first == NULL)
+            first = subsystem;
+        count++;
+    }
+}
+
 void EdSystem::RegisterSubSystem(EdSubSystem *subsystem) {
-    subsystem->next = NULL;
-    subsystem->previous = last_subsystem;
-    if (last_subsystem != NULL)
-        last_subsystem->next = subsystem;
-    last_subsystem = subsystem;
-    if (first_subsystem == NULL)
-        first_subsystem = subsystem;
-    subsystem_count++;
+    subsystems.InsertAfter(subsystem, NULL);
 }
 
 void EdSystem::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
-    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next)
         subsystem->SubInitialise(buffer, buffer_end, from_front);
 }
 
 void EdSystem::Reset() {
-    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next)
         subsystem->SubReset();
 }
 
 void EdSystem::Process(f32 delta_time) {
-    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next)
         subsystem->SubProcess(delta_time);
 }
 
 void EdSystem::Render() {
-    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+    for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next)
         subsystem->SubRender();
 }
 
