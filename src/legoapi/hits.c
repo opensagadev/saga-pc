@@ -381,16 +381,13 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         }
     }
 attributed_hit:
-    if (attacker) {
+    if (attacker)
         target->last_attacker = attacker;
-        if ((attacker->flags_1fc_word & 0x80)) {
-            if (WORLD->current_level == HUB_LDATA &&
-                AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS_PC *)&target->ai_packet, "TakenHitFromPlayer")) {
-                AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
-                                &*(AISCRIPTPROCESS_PC *)&target->ai_packet, FRAMETIME);
-                goto impact;
-            }
-        }
+    if (WORLD->current_level == HUB_LDATA && attacker && (attacker->flags_1fc_word & 0x80) &&
+        AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS_PC *)&target->ai_packet, "TakenHitFromPlayer")) {
+        AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
+                        &*(AISCRIPTPROCESS_PC *)&target->ai_packet, FRAMETIME);
+        goto impact;
     }
     if (AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS_PC *)&target->ai_packet, "TakenHit"))
         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
