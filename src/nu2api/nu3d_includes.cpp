@@ -7138,7 +7138,7 @@ extern "C" {
         if (yPos == yTiles - 1.0f)
             height = (i32)(scale * h - (yTiles - 1.0f) * 0.75 * h);
         data = pixels + (u32)(xOffsetHack * 3 * w / PS2_VREZ_W * scale) - (u32)(params.width * -3.0 * 0.125 * h) -
-               (u32)(w * 0.125 * 3.0);
+               (u32)(w * -0.125 * 3.0);
         if (yPos == yTiles - 1.0f)
             data += (u32)((h * 0.75 - height) * w * 3.0);
         offset = (i64)(i32)((scale * h - yPos * 0.75 * h) * w * scale * 3.0) - (i32)(height * PS2_REZ_W * scale * 3.0) +
