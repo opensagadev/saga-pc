@@ -1384,7 +1384,12 @@ extern "C" {
         i32 shadow_sampled = 0;
         if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 && (character_data->model_flags & 0x10000) == 0 &&
             PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
-            i32 shadow_alpha = game_data->blob_shadow_alpha != 0xff ? game_data->blob_shadow_alpha : CutBlobShadowAlpha;
+            i32 shadow_alpha;
+            if (game_data->blob_shadow_alpha < 0xff) {
+                shadow_alpha = game_data->blob_shadow_alpha;
+            } else {
+                shadow_alpha = CutBlobShadowAlpha;
+            }
             if (shadow_alpha > 0) {
                 f32 shadow_radius;
                 if (game_data->shadow_locators != 0) {
@@ -1403,7 +1408,7 @@ extern "C" {
                                     shadow_position.x = locator_positions[i].x;
                                     f32 locator_ground = GameShadow(NULL, &locator_positions[i], 5.0f, -1);
                                     shadow_position.z = locator_positions[i].z;
-                                    if (locator_ground != 2000000.0f && 0.0f < ShadNorm.y) {
+                                    if (locator_ground != 2000000.0f && ShadNorm.y > 0.0f) {
                                         shadow_position.y = locator_ground + 0.005f;
                                         u16 x_rotation;
                                         u16 z_rotation;
