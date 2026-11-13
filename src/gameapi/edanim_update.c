@@ -25,8 +25,9 @@ void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
  * 12-entry switch table [686f8c,686fbc). Total mapped extent 1644 bytes. */
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
 static __forceinline f32 EdAnimFabsPc(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
+    f32 result;
+    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
+    return result;
 }
 
 void __cdecl edanimUpdateObjects(f32 elapsed) {
@@ -143,7 +144,7 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                             AnimParams[index].sound_values[sound_index] > AnimParams[index].field_17c)
                             play = AnimParams[index].sound_ids[sound_index];
                         if ((animation->flags & 0x10) != 0 &&
-                            AnimParams[index].sound_values[sound_index] >= animation->ltime &&
+                            animation->ltime <= AnimParams[index].sound_values[sound_index] &&
                             AnimParams[index].sound_values[sound_index] < EdAnimFabsPc(AnimParams[index].field_17c))
                             play = AnimParams[index].sound_ids[sound_index];
                     }
