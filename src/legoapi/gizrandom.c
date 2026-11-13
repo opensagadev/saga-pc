@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x5affa0-0x5b0335: definitions in retail address order. */
 typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 unknown_000[0xe9];
     u8 max_timers;
@@ -85,6 +87,43 @@ STATIC_ASSERT(sizeof(GIZFLOW_RANDOM_SYSTEM_PC) == 0xc);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
+i32 GizRandom_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    if (world == NULL || world->current_level == NULL) {
+        return 0;
+    }
+    return world->current_level->max_gizrandoms;
+}
+
+void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    i32 i;
+    for (i = 0; i < world->randoms->count; ++i) {
+        if (NuStrLen(world->randoms->randoms[i].name) != 0)
+            AddGizmo(gizmo_sys, type_id, NULL, &world->randoms->randoms[i]);
+    }
+}
+
+char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((GIZFLOW_RANDOM_PC *)gizmo->object)->name : NULL;
+}
+
+i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
+    GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
+    if ((random->flags & 1) == 0)
+        return 0;
+    return output_index == random->selected_output;
+}
+
+char *GizRandom_GetOutputName(GIZMO_PC *unused0, i32 unused1) {
+    return ((char *)("Random Output"));
+}
+
+i32 __cdecl GizRandom_GetNumOutputs(void *gizmo_pointer) {
+    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    return ((GIZFLOW_RANDOM_PC *)gizmo->object)->output_count;
+}
+
 void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
     i32 roll;
@@ -118,31 +157,6 @@ void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr) {
         world->randoms->capacity = world->level->max_randoms;
     }
     return world->randoms;
-}
-
-void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
-    i32 i;
-    for (i = 0; i < world->randoms->count; ++i) {
-        if (NuStrLen(world->randoms->randoms[i].name) != 0)
-            AddGizmo(gizmo_sys, type_id, NULL, &world->randoms->randoms[i]);
-    }
-}
-
-i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
-    GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
-    if ((random->flags & 1) == 0)
-        return 0;
-    return output_index == random->selected_output;
-}
-
-char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((GIZFLOW_RANDOM_PC *)gizmo->object)->name : NULL;
-}
-
-i32 __cdecl GizRandom_GetNumOutputs(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
-    return ((GIZFLOW_RANDOM_PC *)gizmo->object)->output_count;
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
