@@ -6849,11 +6849,12 @@ i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
     i32 selected = 0;
     ClassObjectListEntry *entry;
     if (mode == 1) {
+        ClassObjectList *list = &selected_objects;
         if (object.object == NULL)
             goto done;
-        for (entry = selected_objects.first; entry != NULL; entry = entry->next) {
+        for (entry = list->first; entry != NULL; entry = entry->next) {
             if (entry->object == object.object && entry->reference == object.reference) {
-                selected_objects.Remove(entry);
+                list->Remove(entry);
                 theMemoryManager.FreePool(entry, sizeof(ClassObjectListEntry));
                 goto done;
             }
@@ -6869,13 +6870,13 @@ i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
             entry->object = object.object;
             entry->reference = object.reference;
             entry->next = NULL;
-            entry->previous = selected_objects.last;
-            if (selected_objects.last != NULL)
-                selected_objects.last->next = entry;
-            selected_objects.last = entry;
-            if (selected_objects.first == NULL)
-                selected_objects.first = entry;
-            selected_objects.count++;
+            entry->previous = list->last;
+            if (list->last != NULL)
+                list->last->next = entry;
+            list->last = entry;
+            if (list->first == NULL)
+                list->first = entry;
+            list->count++;
         }
     } else {
         if (mode == 2) {
