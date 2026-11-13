@@ -886,8 +886,7 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
             break;
         case 2:
             RTL_OLD_FOG_PC(set)[0].radius = 10.0f;
-            RTL_OLD_FOG_PC(set)
-            [0].position.x = RTL_OLD_FOG_PC(set)[0].position.y = RTL_OLD_FOG_PC(set)[0].position.z = 0.0f;
+            NuVecClear(&RTL_OLD_FOG_PC(set)[0].position);
             RTL_OLD_FOG_PC(set)[0].type = 1;
             for (i = 1; i < 32; ++i)
                 RTL_OLD_FOG_PC(set)[i].type = 0;
