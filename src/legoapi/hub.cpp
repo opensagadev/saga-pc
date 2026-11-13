@@ -3628,19 +3628,18 @@ static void HubUpdateBonusModePc(void) {
                         ++hub_bonusmode;
                     }
                 } else {
-                    ARCADE_MENU_ENTRY_PC *item = &ArcadeItem.entries[hub_bonusmode];
-                    const i32 count = item->count;
+                    const i32 count = ArcadeItem.entries[hub_bonusmode].count;
                     if (count > 1) {
                         if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
                             return;
                         if (left) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                            if (--item->index < 0)
-                                item->index = (i8)(count - 1);
+                            if (--ArcadeItem.entries[hub_bonusmode].index < 0)
+                                ArcadeItem.entries[hub_bonusmode].index = (i8)(count - 1);
                         } else if (right) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                            if (++item->index >= count)
-                                item->index = 0;
+                            if (++ArcadeItem.entries[hub_bonusmode].index >= count)
+                                ArcadeItem.entries[hub_bonusmode].index = 0;
                         }
                     }
                 }
