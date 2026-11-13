@@ -111,34 +111,3 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
         py += dy;
     }
 }
-
-/* PC434930227bytes,cdecl(model,object,buffer). Native name trim scans fixed14..0. */
-extern "C" char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) {
-    if (object != NULL) {
-        if (object->rider != NULL && object->rider->character_data->name_id != -1)
-            model = static_cast<i16>(object->rider->id);
-        else
-            model = static_cast<i16>(object->id);
-    } else if (model == -1)
-        return TTab[tUNKNOWN];
-    if (buffer != NULL) {
-        i32 custom = -1;
-        if (model == PermanentWeirdo1IdPc) {
-            if (Game.customiser_start[0].use_saved_name != 0)
-                custom = 0;
-        } else if (model == PermanentWeirdo2IdPc) {
-            if (Game.customiser_start[1].use_saved_name != 0)
-                custom = 1;
-        }
-        if (custom != -1) {
-            NuStrCpy(buffer, Game.customiser_start[custom].name);
-            i32 i;
-            for (i = 14; i >= 0 && buffer[i] == ' '; --i)
-                buffer[i] = 0;
-            if (i < 0)
-                NuStrCpy(buffer, "?");
-            return buffer;
-        }
-    }
-    return TTab[CDataList[model].name_id];
-}
