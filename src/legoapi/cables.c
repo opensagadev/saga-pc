@@ -319,7 +319,7 @@ void __cdecl UpdateCables(void) {
                                 f32 line_distance;
                                 f32 squared;
                                 if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) ||
-                                    object->dead != 0 || (object->field_e20 & 0x20) || (i8)object->flags_1fc_low < 0)
+                                    object->dead != 0 || (object->field_e20 & 0x20) || (object->flags_1fc_low & 0x80))
                                     continue;
                                 if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA &&
                                     object->id != (u16)id_ATAT && object->id != id_DRAGBOMB &&
