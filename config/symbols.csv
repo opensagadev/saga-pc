@@ -4101,6 +4101,7 @@ address,symbol,size,ctype
 0x543e20,_saveloadASFormat,1,void __cdecl(void)
 0x543e30,_saveloadASDelete,66,void __cdecl(i32)
 0x543e80,_saveloadInit,26,"void __cdecl (VARIPTR *, VARIPTR, i32, const char *, const char *, const char *, i32)"
+0x543ef0,_NuBridgeFabsPc,18,static f32 __cdecl(f32)
 0x00543f10,_NuBridgeAlloc,30,i32 __cdecl (void)
 0x00543f30,_NuBridgeInit,149,void __cdecl (void)
 0x00543fd0,_NuBridgeRemove,144,void __cdecl (i32)
