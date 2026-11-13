@@ -2016,78 +2016,79 @@ extern "C" {
         PCFrameSetLoadingYieldEnabled(0);
         if (world->cutscene_sys == NULL)
             return;
-        i32 stop_index = -1;
-        for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
-            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
+        // MATCH-EXCEPTION: the search runs on stop_index itself and jumps past the not-found reset; retail keeps
+        // the loop counter as the stop index and skips the DebrisSetRenderGroup(1) test on the found path.
+        i32 stop_index;
+        for (stop_index = 0; stop_index < world->cutscene_sys->count; ++stop_index) {
+            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[stop_index]);
             CUT_CONTROLLER_INSTANCE_PC *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance);
             if (instance != NULL && (instance->flags_88 & 2) != 0) {
                 if ((cut->flags & 1) != 0) {
-                    stop_index = i;
                     CutSceneSetStopFlagsPrivatePc(cut);
                     CutFramePc = static_cast<i32>(static_cast<u32>(CutFramePc) + 1U);
-                    break;
+                    goto stopped;
                 }
                 if ((cut->flags & 0x20) != 0)
                     CUTCAMONLY = 1;
             }
         }
-        if (stop_index == -1)
-            DebrisSetRenderGroup(1);
+        stop_index = -1;
+        DebrisSetRenderGroup(1);
+    stopped:
         ACTIVECUTCOUNT = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
             CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(world->cutscene_sys->records[i]);
             CUT_CONTROLLER_INSTANCE_PC *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance);
             if (instance == NULL)
                 continue;
-            if ((instance->flags_88 & 2) == 0) {
-                active_before[i] = 0;
-                continue;
-            }
-            cut->previous_frame = instance->current_frame;
-            active_before[i] = 1;
-            f32 elapsed = cut->unknown_58 + FRAMETIME;
-            cut->unknown_58 = elapsed;
-            if (cutaudiopaused != 0 && elapsed >= 23.0f)
-                cutaudiopaused = 0;
-            if (stop_index != -1 && i != stop_index) {
-                instance->rate = 0.0f;
-                instNuGCutScenePause(cut->instance, 1);
-                ++ACTIVECUTCOUNT;
-                continue;
-            }
-            bool wait = false;
-            if (NOSOUND == 0 && NOMUSIC == 0 && i == stop_index && cut->music_handle != -1 && instance->rate == 0.0f &&
-                cutaudiopaused != 0 && music_man.GetStatus(16, NULL) != 4) {
-                reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
-                CutSceneWaiting = 1;
-                wait = true;
-            }
-            if (!wait) {
-                if (CutSceneMusicStartFramePc != -1) {
-                    if (static_cast<i32>(nuapi.frame_count) <
-                        static_cast<i32>(static_cast<u32>(CutSceneMusicStartFramePc) + 5U)) {
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
-                        CutSceneWaiting = 1;
-                        wait = true;
-                    } else {
-                        CutSceneMusicStartFramePc = -1;
-                        music_man.PlayTrack(16, 0);
-                    }
+            if ((instance->flags_88 & 2) != 0) {
+                cut->previous_frame = instance->current_frame;
+                active_before[i] = 1;
+                f32 elapsed = cut->unknown_58 + FRAMETIME;
+                cut->unknown_58 = elapsed;
+                if (cutaudiopaused != 0 && elapsed >= 23.0f)
+                    cutaudiopaused = 0;
+                if (stop_index != -1 && i != stop_index) {
+                    instance->rate = 0.0f;
+                    instNuGCutScenePause(cut->instance, 1);
+                    ++ACTIVECUTCOUNT;
+                    continue;
+                }
+                bool wait = false;
+                if (NOSOUND == 0 && NOMUSIC == 0 && i == stop_index && cut->music_handle != -1 &&
+                    instance->rate == 0.0f && cutaudiopaused != 0 && music_man.GetStatus(16, NULL) != 4) {
+                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
+                    CutSceneWaiting = 1;
+                    wait = true;
                 }
                 if (!wait) {
-                    f32 rate = cut->frames_per_second * FRAMETIME;
-                    reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
-                    if (i == stop_index && CutSceneWaiting != 0) {
-                        CutSceneWaiting = 0;
-                        cutaudiopaused = 0;
+                    if (CutSceneMusicStartFramePc != -1) {
+                        if (static_cast<i32>(nuapi.frame_count) <
+                            static_cast<i32>(static_cast<u32>(CutSceneMusicStartFramePc) + 5U)) {
+                            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
+                            CutSceneWaiting = 1;
+                            wait = true;
+                        } else {
+                            CutSceneMusicStartFramePc = -1;
+                            music_man.PlayTrack(16, 0);
+                        }
+                    }
+                    if (!wait) {
+                        f32 rate = cut->frames_per_second * FRAMETIME;
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = rate;
+                        if (i == stop_index && CutSceneWaiting != 0) {
+                            CutSceneWaiting = 0;
+                            cutaudiopaused = 0;
+                        }
                     }
                 }
-            }
-            instNuGCutScenePause(cut->instance, 0);
-            if (CutScene_PreUpdateFn != NULL)
-                CutScene_PreUpdateFn(reinterpret_cast<CUTINFO *>(cut));
-            CutSceneUpdateTextureAnimationsPrivatePc(cut);
-            ++ACTIVECUTCOUNT;
+                instNuGCutScenePause(cut->instance, 0);
+                if (CutScene_PreUpdateFn != NULL)
+                    CutScene_PreUpdateFn(reinterpret_cast<CUTINFO *>(cut));
+                CutSceneUpdateTextureAnimationsPrivatePc(cut);
+                ++ACTIVECUTCOUNT;
+            } else
+                active_before[i] = 0;
         }
         NuGCutSceneSysUpdate(paused, 0, 1.0f);
         if (CutScene_PostUpdateFn != NULL)
@@ -2102,7 +2103,7 @@ extern "C" {
                     for (i32 j = 0; j < 6; ++j) {
                         CUT_LOAD_SFX_PC *sfx = &cut->sfx[j];
                         if (sfx->id != -1 && cut->previous_frame < sfx->frame &&
-                            sfx->frame <= reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame)
+                            reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame >= sfx->frame)
                             PlaySfxById(sfx->id, (sfx->flags & 1) != 0 ? &sfx->position : NULL);
                     }
                 }
