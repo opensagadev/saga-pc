@@ -1197,7 +1197,12 @@ struct SplinePointList {
     SplinePointBlock *last;
     i32 block_count;
 
+    SplinePointList();
     ~SplinePointList();
+    SplinePointBlock *First();
+    void InsertAfter(SplinePointBlock *block, SplinePointBlock *after);
+    void Remove(SplinePointBlock *block);
+    i32 Count();
     i32 GetNumPoints();
     i32 GetPoint(i32 index, VuVec &point);
     void AddPoint(VuVec &point);
@@ -1212,9 +1217,6 @@ class SplineObject : public CSListLink<SplineObject> {
         theMemoryManager.FreePool(memory, sizeof(SplineObject));
     }
     SplineObject() {
-        points.first = NULL;
-        points.last = NULL;
-        points.block_count = 0;
         led_file = Placeable::CurrentLedFile;
     }
     virtual ~SplineObject();
@@ -4589,18 +4591,8 @@ Placeable::~Placeable() {
 
 SplinePointList::~SplinePointList() {
     SplinePointBlock *block;
-    while ((block = first) != NULL) {
-        if (block->next != NULL)
-            block->next->previous = block->previous;
-        else
-            last = block->previous;
-        if (block->previous != NULL)
-            block->previous->next = block->next;
-        else
-            first = block->next;
-        block->next = NULL;
-        block->previous = NULL;
-        block_count--;
+    while ((block = First()) != NULL) {
+        Remove(block);
         delete block;
     }
 }
@@ -5940,17 +5932,65 @@ SplinePointBlock::SplinePointBlock(i32 requested_capacity) {
     points = (VuVec *)theMemoryManager.AllocPool(requested_capacity * sizeof(VuVec), 1);
 }
 
+SplinePointList::SplinePointList() : first(NULL), last(NULL), block_count(0) {
+}
+
+SplinePointBlock *SplinePointList::First() {
+    return first;
+}
+
+/* A NULL position appends the block. */
+void SplinePointList::InsertAfter(SplinePointBlock *block, SplinePointBlock *after) {
+    if (after != NULL) {
+        block->previous = after;
+        block->next = after->next;
+        if (after->next != NULL)
+            after->next->previous = block;
+        else
+            last = block;
+        after->next = block;
+        block_count++;
+    } else {
+        block->next = NULL;
+        block->previous = last;
+        if (last != NULL)
+            last->next = block;
+        last = block;
+        if (first == NULL)
+            first = block;
+        block_count++;
+    }
+}
+
+void SplinePointList::Remove(SplinePointBlock *block) {
+    if (block->next != NULL)
+        block->next->previous = block->previous;
+    else
+        last = block->previous;
+    if (block->previous != NULL)
+        block->previous->next = block->next;
+    else
+        first = block->next;
+    block->next = NULL;
+    block->previous = NULL;
+    block_count--;
+}
+
+i32 SplinePointList::Count() {
+    return block_count;
+}
+
 /* The point count of the last block. */
 i32 SplinePointList::GetNumPoints() {
     i32 point_count = 0;
-    for (SplinePointBlock *block = first; block != NULL; block = block->next)
+    for (SplinePointBlock *block = First(); block != NULL; block = block->next)
         point_count = block->point_count;
     return point_count;
 }
 
 /* Copies a point of the first block that holds more than index points. */
 i32 SplinePointList::GetPoint(i32 index, VuVec &point) {
-    for (SplinePointBlock *block = first; block != NULL; block = block->next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
         if (index < block->point_count) {
             VuVecCopy(point, block->points[index]);
             return 1;
@@ -5963,7 +6003,7 @@ i32 SplinePointList::GetPoint(i32 index, VuVec &point) {
 void SplinePointList::AddPoint(VuVec &point) {
     SplinePointBlock *block;
     VuVec *slot;
-    for (block = first; block != NULL; block = block->next) {
+    for (block = First(); block != NULL; block = block->next) {
         if (block->point_count < block->capacity) {
             slot = &block->points[block->point_count++];
             slot->x = point.x;
@@ -5980,34 +6020,17 @@ void SplinePointList::AddPoint(VuVec &point) {
         slot->y = point.y;
         slot->z = point.z;
         slot->w = point.w;
-        block->next = NULL;
-        block->previous = last;
-        if (last != NULL)
-            last->next = block;
-        last = block;
-        if (first == NULL)
-            first = block;
-        block_count++;
+        InsertAfter(block, NULL);
     }
 }
 
 /* Frees the default-sized blocks and empties the others. */
 void SplinePointList::Clear() {
     SplinePointBlock *next;
-    for (SplinePointBlock *block = first; block != NULL; block = next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = next) {
         next = block->next;
         if (block->capacity == 16) {
-            if (block->next != NULL)
-                block->next->previous = block->previous;
-            else
-                last = block->previous;
-            if (block->previous != NULL)
-                block->previous->next = block->next;
-            else
-                first = block->next;
-            block->next = NULL;
-            block->previous = NULL;
-            block_count--;
+            Remove(block);
             delete block;
         } else {
             block->point_count = 0;
@@ -6016,7 +6039,7 @@ void SplinePointList::Clear() {
 }
 
 void SplinePointList::Draw() {
-    for (SplinePointBlock *block = first; block != NULL; block = block->next) {
+    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
         for (i32 index = 0; index < block->point_count; index++)
             EdDrawLineCross(&block->points[index].xyz, 0.5f, -1);
     }
