@@ -165,7 +165,7 @@ python3 tools/sibscan.py --all --names out.csv  # original-name candidates
 | joins | compare blocks reached by two forward edges, sibling and retail more than ours (I46) | 21 | 0 (15.4% without the retail filter) | 2 | 0 | 0 |
 | vararg | parameter-pointer walks in our variadic sources, sibling va_start (I47) | 0 | 0 | - | - | - |
 | stores | stores per field offset or global, sibling agrees with retail | 29 | 0 (9.7%) | 3 | 1 | 0 |
-| calls | call multiset or order, sibling agrees with retail | 17 | 0 (35.2%) | 6 | 3 | 4 |
+| calls | call multiset or order, sibling agrees with retail | 17 | 0 (35.2%) | 6 | 3 | 3 |
 | consts | constants, immediates, field offsets shared by sibling and retail but not ours (and the reverse) | 54 | 0 (40.7%) | 6 | 2 | 2 |
 | files | empty or tiny callee: sibling file vs our unit (I35) | 6 | 1 | 3 | 0 | 0 |
 | shape | loop count and counter direction, sibling agrees with retail | 15 | 0 (29.2%) | 4 | 2 | 0 |
@@ -184,11 +184,9 @@ shares one NuVecDist call), `NuStrFindPosU` (loop test at the head, range
 compare), `Tag_NewTransfer` (stores through a vector pointer),
 `Signals_StoreProgress` (loop bounded by both limits, indexed suit read),
 `GizSpinner_GetTargetPoints` (direction derived from the position angle, int
-step). Improved: `Hub_DrawPanel` 94.36 -> 97.37, `CastPart` 82.09 -> 84.54
-(impact recorded after each cast, position before normal),
-`ForcePushed_SetTargetMom` 92.91 -> 94.42, `PartImpact_ThermalDetonator`
-80.00 -> 81.79 (state set before the sound), `NuPortalVisibility` 97.96 ->
-99.85, `KillPartsByScene` 78.27 -> 79.19, `GizSpinner_Spin` 68.78 -> 69.15.
+step). Improved: `Hub_DrawPanel` 94.36 -> 97.02, `CastPart` 82.09 -> 84.46
+(impact position stored before the normal), `ForcePushed_SetTargetMom`
+92.91 -> 94.42, `NuPortalVisibility` 97.96 -> 99.85, `KillPartsByScene` 78.27 -> 79.19, `GizSpinner_Spin` 68.78 -> 69.15.
 
 Recurring lessons: where the sibling has one call reached from two branches,
 retail usually tail-merged two identical calls; the fix is to make the two
@@ -202,7 +200,10 @@ Tried without result: `ResetGizAIMessageSys` (constant CSE of zero),
 the sibling versions were rewritten), `instNuGCutSceneServiceLoad` (retail
 and sibling reload the instance pointer at every use), `StartDoorPositions`
 (data layout), `NuASin` (the sibling uses a sign function), `NuMtxMulnVU0`
-(retail does not tail-call).
+(retail does not tail-call). Copying the shared impact block into each
+`CastPart` branch and casting the stuck state in `PartImpact_ThermalDetonator`
+scored higher but added placeholder-field and magic-flag findings, so both were
+left out.
 
 `--all --names` aligns the call and global-access lists of every function
 with a counterpart (exact functions included) and keeps placeholder names
