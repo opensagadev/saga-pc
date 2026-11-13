@@ -514,11 +514,18 @@ def repeated_helper_markers(comps, functions):
     return result
 
 
+ADDRESS_NAMED = re.compile(r"_?fun_[0-9a-f]{8}")
+
+
 def lead_into_next(atoms):
-    """A REPEAT atom holding only header-static copies opens the compiland after it."""
+    """A REPEAT atom holding only header-static copies opens the compiland after it.
+
+    Address-named functions (bounded, no source evidence) between the copies and
+    the next compiland's first known function do not keep the atom apart."""
     out = []
     for i, atom in enumerate(atoms):
-        if atom.marker == REPEAT and atom.functions and all(f.get("helper_copy") for f in atom.functions) \
+        if atom.marker == REPEAT and any(f.get("helper_copy") for f in atom.functions) \
+                and all(f.get("helper_copy") or ADDRESS_NAMED.fullmatch(f["symbol"]) for f in atom.functions) \
                 and i + 1 < len(atoms):
             nxt = atoms[i + 1]
             nxt.key = getattr(nxt, "key", nxt.start)

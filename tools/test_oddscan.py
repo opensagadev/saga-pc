@@ -83,6 +83,22 @@ class OddScanTests(unittest.TestCase):
         self.assertEqual(self.scan.counts["comment-retail"], 1)
         self.assertEqual(self.scan.counts["comment-address"], 1)
 
+    def test_standard_address_names_are_their_own_class(self):
+        scan = oddscan.FileScan("src/legoapi/other.c", "i32 fun_0060a1b0(void);\nextern i32 dat_007facf0;\n"
+                                "i32 FUN_0060a1b0(void);\ni32 Thing67e8;\n")
+        self.assertEqual(scan.counts["address-name"], 2)
+        self.assertEqual(scan.counts["hex-name"], 2)
+
+    def test_map_rows_under_address_names_are_counted(self):
+        import pathlib
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            (pathlib.Path(tmp) / "config").mkdir()
+            (pathlib.Path(tmp) / "config/symbols.csv").write_text(
+                "address,symbol,size,ctype\n0x60a1b0,_fun_0060a1b0,12,\n0x60a1c0,_NuError,1,\n"
+                "0x7facf0,dat_007facf0,4,int\n")
+            self.assertEqual(oddscan.map_address_names(pathlib.Path(tmp)), 2)
+
     def test_layout_scaffolding(self):
         self.assertEqual(self.scan.counts["view-type"], 1)
         self.assertEqual(self.scan.counts["assert-offsetof-unit"], 1)

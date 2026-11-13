@@ -75,7 +75,9 @@ CLASSES = [
     ("assert-offsetof-unit", "c", "STATIC_ASSERT(offsetof ...) in a .c/.cpp (overlay scaffolding)"),
     ("assert-sizeof", "c", "STATIC_ASSERT(sizeof ...)"),
     ("placeholder-field", "c", "unk_/pad_/field_0xNN/padNN identifiers"),
-    ("hex-name", "c", "address-named symbols (FUN_/DAT_/sub_/data_0x.., Foo67e8)"),
+    ("hex-name", "c", "address-named symbols (FUN_/DAT_/sub_/data_0x.., Foo67e8), older forms"),
+    ("address-name", "c", "standard address names fun_XXXXXXXX/dat_XXXXXXXX in src/ and config/symbols.csv "
+                          "(config/symbols.md): shrinks by naming"),
     ("candidate-name", "c", "identifiers with a _candidate suffix"),
     ("pc-suffix", "c", "identifiers ending in Pc/_PC/_pc (accepted, count only)"),
     ("comment-draft", "c", "SOURCE DRAFT ONLY comments"),
@@ -156,8 +158,10 @@ CODE_PATTERNS = [
         r'\(\s*(?:const\s+)?(?:char|u8|i8|unsigned\s+char|signed\s+char|BYTE|uchar)\s*\*\s*\)\s*'
         r'[A-Za-z_][\w>.\-]*\s*\)?\s*\+\s*(?:0[xX][0-9a-fA-F]+|\d+)')),
     ("placeholder-field", re.compile(r'\b(?:unk_?[0-9a-fA-F]*\w*|pad_\w*|_?pad[0-9]+\w*|field_(?:0x)?[0-9a-fA-F]+\w*)\b')),
+    ("address-name", re.compile(r'\b_?(?:fun|dat)_[0-9a-f]{8}\b')),
     ("hex-name", re.compile(
-        r'\b(?:(?:FUN|DAT|LAB|PTR|sub|SUB|data|loc|off|byte|dword|word)_(?:0x)?[0-9a-fA-F]{4,8}'
+        r'\b(?!_?(?:fun|dat)_[0-9a-f]{8}\b)'
+        r'(?:(?:FUN|DAT|LAB|PTR|sub|SUB|data|loc|off|byte|dword|word)_(?:0x)?[0-9a-fA-F]{4,8}'
         r'|[A-Za-z]\w*?[a-z_](?=[0-9a-f]*[0-9][0-9a-f]*\b)(?=[0-9a-f]*[a-f])[0-9a-f]{4,8})\b')),
     ("candidate-name", re.compile(r'\b\w+_candidate\w*\b')),
 ]
@@ -928,6 +932,12 @@ def report(root=ROOT, magic_limit=40, hints=None):
     vendored = scan_files(vendored_paths, root) if vendored_paths else []
     totals, per_file = summarize(scans)
     vendored_totals, _ = summarize(vendored)
+    # Map rows under a standard address name are bounded but unnamed: the class
+    # counts them too, so naming them shows as shrinkage and new ones as growth.
+    mapped = map_address_names(root)
+    if mapped:
+        totals["address-name"] += mapped
+        per_file["address-name"]["config/symbols.csv"] = mapped
     pragmas = collections.Counter()
     for scan in scans:
         pragmas.update(scan.pragmas)
@@ -948,6 +958,15 @@ def report(root=ROOT, magic_limit=40, hints=None):
         "structure": structure(scans, root),
         "build_special_cases": build_special_cases(root),
     }
+
+
+ADDRESS_ROW = re.compile(r'^[^,]*,\s*_?(?:fun|dat)_[0-9a-f]{8}\s*,', re.M)
+
+
+def map_address_names(root=ROOT):
+    """Rows of config/symbols.csv whose symbol is a standard address name."""
+    path = root / "config/symbols.csv"
+    return len(ADDRESS_ROW.findall(path.read_text())) if path.is_file() else 0
 
 
 def load_budget(path=BUDGET):

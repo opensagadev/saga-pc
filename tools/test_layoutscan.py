@@ -56,6 +56,9 @@ class LayoutScanTests(unittest.TestCase):
         # A marker atom with code of its own stays a compiland.
         own = layoutscan.Atom(0x100, 0x120, [copy, fn(0x110)], "legoapi/a.c", layoutscan.REPEAT)
         self.assertEqual(len(layoutscan.lead_into_next([own, layoutscan.Atom(0x120, 0x200, [fn(0x120)], "", "")])), 2)
+        # Bounded, unnamed code after the copy carries no evidence against leading in.
+        bounded = layoutscan.Atom(0x100, 0x120, [copy, fn(0x11c, "_fun_0000011c")], "legoapi/a.c", layoutscan.REPEAT)
+        self.assertEqual(len(layoutscan.lead_into_next([bounded, layoutscan.Atom(0x120, 0x200, [fn(0x120)], "", "")])), 1)
 
     def test_inner_rows_one_range_per_file(self):
         fs = [fn(0x100 + 16 * i) for i in range(9)]

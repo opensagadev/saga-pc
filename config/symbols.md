@@ -91,11 +91,28 @@ digits or shortened addresses. The analogous form for data is `dat_` plus
 eight hex digits (`dat_007facf0`, linker name `_dat_007facf0`); no row uses it
 yet. Address names are counted separately from identified names
 (`matching.json` `mapping_code_address_named_bytes`; README) and by
-`tools/oddscan.py` (class `address-name`), as a class that shrinks through real
-names, not as a violation. Existing older forms (`FUN_`/`DAT_`/`sub_`/`data_0x`
-identifiers and address-suffixed names such as `_AlternateGame_callback_925180_PC`,
-counted by oddscan's `hex-name`) are left as they are; a later rename batch
-brings unnamed functions and data to these two forms.
+`tools/oddscan.py` (class `address-name`, over `src/` and the map rows), as a
+class that shrinks through real names, not as a violation: naming a row lowers
+the count, and a new address name (in the map or ported under that name) raises
+it above the budget on purpose.
+
+Older address-style names remain: about 1,900 data rows whose name ends in
+their address (`_PcInputText77066c`, `_TextIdPc880e54`,
+`_AITransferLiteral757ebc`), two code rows, and the `FUN_`/`DAT_`/`sub_`/
+`data_0x` identifiers and address-suffixed names in sources (oddscan
+`hex-name`). They are not renamed here. A later rename batch:
+
+1. renames each unnamed data row to `dat_XXXXXXXX` (its retail address; C
+   decoration `_dat_...`, or the C++ decoration its `ctype` needs) and each
+   remaining unnamed code row to `fun_XXXXXXXX`, keeping address, size and type;
+2. renames every reference in `src/` (declarations, `extern`s, `MAP_` macros,
+   `ALIAS` entries) in the same commit, so `check.py`, `relocmap.py` and the
+   object comparison keep resolving the same addresses;
+3. leaves rows with any source evidence (a string they hold, a Batman or Android
+   name) to be named from that evidence instead;
+4. reruns `tools/oddscan.py --write-budget` (hex-name falls, address-name rises
+   by the same amount) and `tools/match.py --update`, whose exact and fuzzy
+   numbers must not change.
 
 ## External symbols
 
