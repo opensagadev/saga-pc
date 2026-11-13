@@ -17,7 +17,7 @@ sudo apt-get update
 sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18 7zip
 python3 -m pip install capstone==5.0.9  # discovery tooling, tests and diff classes in matching.json
-python3 -m pip install libclang==18.1.1  # tools/layoutcheck.py (make lint), permute.py, declscan.py
+python3 -m pip install libclang==18.1.1  # tools/layoutcheck.py (make check-core), permute.py, declscan.py
 make setup                             # pinned MSVC 2005 SP1 (+ RTM for libvorbis), runtime update, objdiff-cli, DirectX SDK libs
 make check
 make -j"$(nproc)" build check-objects
@@ -553,7 +553,7 @@ left to you.
 
 A struct states its layout in trailing comments instead of `STATIC_ASSERT`
 lines: every member line carries its offset from the start of the outermost
-struct, the closing line its size. `make lint` runs `tools/layoutcheck.py`,
+struct, the closing line its size. `make check-core` runs `tools/layoutcheck.py`,
 which computes the layouts with the MSVC x86 ABI (libclang,
 `--target=i686-pc-windows-msvc`, the pinned SDK headers, C and C++, with and
 without `SAGA_DEBUG`) and fails on a wrong, missing or misformatted comment in

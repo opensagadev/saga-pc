@@ -706,7 +706,7 @@ def clang_format(path, ranges):
     subprocess.run([*args, str(path)], cwd=ROOT, check=True, timeout=120)
 
 
-def convert(target, jobs, dry_run=False, all_records=False, scope=None):
+def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=()):
     file, first, last, struct = parse_target(target)
     sources = all_sources()
     texts = {rel: (ROOT / rel).read_text(encoding="utf-8") for rel in sources}
@@ -725,6 +725,8 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None):
         if not (first <= record["first"] and close <= last):
             continue
         if struct is not None and struct not in record["names"]:
+            continue
+        if set(record["names"]) & set(skip):
             continue
         selected[close] = record
     names = {name for record in selected.values() for name in record["names"]}
@@ -885,13 +887,15 @@ def main(argv=None):
     parser.add_argument("--all-records", action="store_true", help="with --convert: also records without asserts")
     parser.add_argument("--only-here", action="store_true",
                         help="with --convert: remove asserts only in the file that defines the records")
+    parser.add_argument("--skip", action="append", default=[], metavar="STRUCT",
+                        help="with --convert: leave this struct and its asserts as they are (repeatable)")
     parser.add_argument("--stats", action="store_true", help="coverage by comments and asserts (parses all of src/)")
-    parser.add_argument("--jobs", type=int, default=min(4, multiprocessing.cpu_count()))
+    parser.add_argument("--jobs", type=int, default=min(2, multiprocessing.cpu_count()))
     args = parser.parse_args(argv)
     if args.convert:
         file, *_ = parse_target(args.convert)
         convert(args.convert, args.jobs, args.dry_run, args.all_records,
-                scope={file} if args.only_here and file else None)
+                scope={file} if args.only_here and file else None, skip=args.skip)
         return 0
     if args.stats:
         return stats(args.jobs)

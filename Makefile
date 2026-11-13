@@ -162,7 +162,6 @@ check: lint check-core
 lint: dependencies
 	$(PYTHON) tools/check.py --format
 	$(PYTHON) tools/check.py --tidy
-	$(PYTHON) tools/layoutcheck.py
 
 # Apply .clang-format to src/ (the vendored sources keep their own style).
 format:
@@ -175,6 +174,7 @@ check-core: dependencies
 	$(PYTHON) tools/oddscan.py --check
 	$(PYTHON) tools/declscan.py --check
 	$(PYTHON) tools/castscan.py --check
+	$(PYTHON) tools/layoutcheck.py
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 
 
