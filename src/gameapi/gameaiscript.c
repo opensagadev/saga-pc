@@ -997,9 +997,7 @@ AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32 count, f32
         if (nearest != -1) {
             result = locators[candidates[nearest]];
             locators[candidates[nearest]] = NULL;
-            return result;
         }
-        return NULL;
     }
     return result;
 }
