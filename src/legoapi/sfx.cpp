@@ -60,27 +60,3 @@ extern "C" i32 __cdecl IsSfxLooping(i32 id) {
 }
 
 #include <stdio.h>
-
-extern "C" i32 __cdecl InitSpecialSfx(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
-    if (!world)
-        return 0;
-    world->buffer.addr = (world->buffer.addr + 3) & ~3u;
-    world->entries = (SPECIAL_RESOURCE_ENTRY_PC *)world->buffer.addr;
-    world->buffer.addr += 0xf00;
-    world->entry_count = 0;
-    memset(world->entries, 0, 0xf00);
-    world->buffer.addr = (world->buffer.addr + 15) & ~15u;
-    world->events = (SPECIAL_RESOURCE_EVENT_PC *)world->buffer.addr;
-    world->buffer.addr = (world->buffer.addr + 0xc03) & ~3u;
-    world->event_count = 0;
-    memset(world->events, 0, 0xc00);
-    return 1;
-}
-extern "C" void __cdecl LoadSpecialSfxFile(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
-    char path[256];
-    sprintf(path, "%s.sfx", world->config_file);
-    if (NuFileExists(path))
-        SpecialSfxLoad(path, world);
-}

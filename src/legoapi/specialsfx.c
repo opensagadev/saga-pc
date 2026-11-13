@@ -1,8 +1,121 @@
 #include "saga.h"
 
+/* Retail unit 0x5b1770-0x5b1e97: definitions in retail address order. */
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, engine_level) == 0xd94);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);
+
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, special_sfx) == 0x46d0);
+STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 20);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
+
+i32 __cdecl InitSpecialSfx(void *world_ptr) {
+    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
+    if (!world)
+        return 0;
+    world->buffer.addr = (world->buffer.addr + 3) & ~3u;
+    world->entries = (SPECIAL_RESOURCE_ENTRY_PC *)world->buffer.addr;
+    world->buffer.addr += 0xf00;
+    world->entry_count = 0;
+    memset(world->entries, 0, 0xf00);
+    world->buffer.addr = (world->buffer.addr + 15) & ~15u;
+    world->events = (SPECIAL_RESOURCE_EVENT_PC *)world->buffer.addr;
+    world->buffer.addr = (world->buffer.addr + 0xc03) & ~3u;
+    world->event_count = 0;
+    memset(world->events, 0, 0xc00);
+    return 1;
+}
+
+i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    i32 version, count, i, j;
+    char name[64];
+    i32 length;
+    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    SPECIAL_RESOURCE_EVENT_PC *event, *previous;
+    if (!world)
+        return 0;
+    EdFileSetMedia(1);
+    if (!EdFileOpen(path, 0))
+        return 0;
+    version = EdFileReadInt();
+    if (version > 2) {
+        EdFileClose();
+        return 0;
+    }
+    count = EdFileReadInt();
+    if (count > 192)
+        count = 192;
+    EdFileReadInt();
+    world->special_sfx_count = 0;
+    for (i = 0; i < count; ++i) {
+        entry = &world->special_sfx[i];
+        length = EdFileReadShort();
+        EdFileRead(name, length);
+        name[length] = 0;
+        NuSpecialFind(world->current_gscn, &entry->special, name, 1);
+        entry->event_count = EdFileReadChar();
+        if (version >= 2) {
+            u8 type = EdFileReadChar();
+            entry->flags = (entry->flags & 0xf0) | (type & 0xf);
+        }
+        ++world->special_sfx_count;
+    }
+    event = world->special_sfx_events;
+    for (i = 0; i < count; ++i) {
+        entry = &world->special_sfx[i];
+        for (j = 0; j < entry->event_count; ++j, ++event) {
+            length = EdFileReadShort();
+            EdFileRead(name, length);
+            name[length] = 0;
+            event->sfx_id = (i16)GetSfxId(name);
+            event->flags = EdFileReadChar();
+            event->flags = (event->flags & ~2) | ((IsSfxLooping(event->sfx_id) & 1) << 1);
+            event->trigger_frame = EdFileReadFloat();
+            event->previous_frame = EdFileReadFloat();
+            ++world->special_sfx_event_count;
+        }
+    }
+    event = world->special_sfx_events;
+    for (i = 0; i < world->special_sfx_count; ++i) {
+        entry = &world->special_sfx[i];
+        entry->events = event;
+        previous = event;
+        if (event == world->special_sfx_events + world->special_sfx_event_count)
+            event = NULL;
+        else
+            ++event;
+        for (j = 0; j < entry->event_count - 1; ++j) {
+            previous->next = event;
+            previous = event;
+            ++event;
+        }
+        if (previous)
+            previous->next = NULL;
+    }
+    EdFileClose();
+    return 1;
+}
+
+i32 __cdecl SpecialSfxAdd(i32 special_index) {
+    NUSPECIALHANDLE special;
+    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    if (WORLD->special_sfx_count < 192) {
+        NuGScnGetSpecial(&special, WORLD->current_gscn, special_index);
+        if (NuSpecialExistsFn(&special) != 0) {
+            entry = &WORLD->special_sfx[WORLD->special_sfx_count];
+            entry->flags &= 0xf0;
+            entry->special = special;
+            entry->events = NULL;
+            entry->event_count = 0;
+            return ++WORLD->special_sfx_count;
+        }
+    }
+    return -1;
+}
 
 void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     WORLDINFO *world = world_info;
@@ -87,6 +200,14 @@ void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
         if (id != -1)
             ids[(*count)++] = id;
     }
+}
+
+void __cdecl LoadSpecialSfxFile(void *world_ptr) {
+    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
+    char path[256];
+    sprintf(path, "%s.sfx", world->config_file);
+    if (NuFileExists(path))
+        SpecialSfxLoad(path, world);
 }
 
 void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 category) {
@@ -471,99 +592,4 @@ void ParticleReset(void) {
         edpp_page_on[i] = 0;
     }
     edpp_instances_used = 0;
-}
-
-i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 version, count, i, j;
-    char name[64];
-    i32 length;
-    SPECIAL_RESOURCE_ENTRY_PC *entry;
-    SPECIAL_RESOURCE_EVENT_PC *event, *previous;
-    if (!world)
-        return 0;
-    EdFileSetMedia(1);
-    if (!EdFileOpen(path, 0))
-        return 0;
-    version = EdFileReadInt();
-    if (version > 2) {
-        EdFileClose();
-        return 0;
-    }
-    count = EdFileReadInt();
-    if (count > 192)
-        count = 192;
-    EdFileReadInt();
-    world->special_sfx_count = 0;
-    for (i = 0; i < count; ++i) {
-        entry = &world->special_sfx[i];
-        length = EdFileReadShort();
-        EdFileRead(name, length);
-        name[length] = 0;
-        NuSpecialFind(world->current_gscn, &entry->special, name, 1);
-        entry->event_count = EdFileReadChar();
-        if (version >= 2) {
-            u8 type = EdFileReadChar();
-            entry->flags = (entry->flags & 0xf0) | (type & 0xf);
-        }
-        ++world->special_sfx_count;
-    }
-    event = world->special_sfx_events;
-    for (i = 0; i < count; ++i) {
-        entry = &world->special_sfx[i];
-        for (j = 0; j < entry->event_count; ++j, ++event) {
-            length = EdFileReadShort();
-            EdFileRead(name, length);
-            name[length] = 0;
-            event->sfx_id = (i16)GetSfxId(name);
-            event->flags = EdFileReadChar();
-            event->flags = (event->flags & ~2) | ((IsSfxLooping(event->sfx_id) & 1) << 1);
-            event->trigger_frame = EdFileReadFloat();
-            event->previous_frame = EdFileReadFloat();
-            ++world->special_sfx_event_count;
-        }
-    }
-    event = world->special_sfx_events;
-    for (i = 0; i < world->special_sfx_count; ++i) {
-        entry = &world->special_sfx[i];
-        entry->events = event;
-        previous = event;
-        if (event == world->special_sfx_events + world->special_sfx_event_count)
-            event = NULL;
-        else
-            ++event;
-        for (j = 0; j < entry->event_count - 1; ++j) {
-            previous->next = event;
-            previous = event;
-            ++event;
-        }
-        if (previous)
-            previous->next = NULL;
-    }
-    EdFileClose();
-    return 1;
-}
-
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
-STATIC_ASSERT(offsetof(WORLDINFO, special_sfx) == 0x46d0);
-STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 20);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
-
-i32 __cdecl SpecialSfxAdd(i32 special_index) {
-    NUSPECIALHANDLE special;
-    SPECIAL_RESOURCE_ENTRY_PC *entry;
-    if (WORLD->special_sfx_count < 192) {
-        NuGScnGetSpecial(&special, WORLD->current_gscn, special_index);
-        if (NuSpecialExistsFn(&special) != 0) {
-            entry = &WORLD->special_sfx[WORLD->special_sfx_count];
-            entry->flags &= 0xf0;
-            entry->special = special;
-            entry->events = NULL;
-            entry->event_count = 0;
-            return ++WORLD->special_sfx_count;
-        }
-    }
-    return -1;
 }
