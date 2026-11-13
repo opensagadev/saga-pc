@@ -950,18 +950,17 @@ i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
 }
 
 i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
+    static f32 up_rept = 0;
+    static f32 down_rept = 0;
     u32 buttons;
-    u32 pressed;
     u32 up_button;
     u32 down_button;
     i32 up;
     i32 down;
     i32 to_first;
-    i32 page_up;
-    i32 page_down;
     i32 to_last;
-    static f32 up_rept = 0;
-    static f32 down_rept = 0;
+    u32 page_up;
+    u32 page_down;
     cbInteractMenuKeySelect(menu);
     if (item_result || !pad)
         return 0;
@@ -970,11 +969,15 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
             return 0;
     }
     buttons = pad->digital_buttons;
-    pressed = pad->digital_buttons_pressed;
-    up_button = (menu->flags & 2) ? 0x8000 : 0x1000;
-    down_button = (menu->flags & 2) ? 0x2000 : 0x4000;
+    if (menu->flags & 2) {
+        up_button = 0x8000;
+        down_button = 0x2000;
+    } else {
+        up_button = 0x1000;
+        down_button = 0x4000;
+    }
     up = 0;
-    if (pressed & up_button) {
+    if (pad->digital_buttons_pressed & up_button) {
         up_rept = 1.0f / 3.0f;
         up = 1;
     }
@@ -987,20 +990,20 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
     }
     if (!(menu->flags & 6)) {
         if ((buttons & 0x8000) && !(menu->flags & 1)) {
-            i32 distance = ((i32)(delta_time * 1500.0f));
+            i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1)
                 distance = 1;
             menu->x -= distance;
         }
         if ((buttons & 0x2000) && !(menu->flags & 1)) {
-            i32 distance = ((i32)(delta_time * 1500.0f));
+            i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1)
                 distance = 1;
             menu->x += distance;
         }
     }
     down = 0;
-    if (pressed & down_button) {
+    if (pad->digital_buttons_pressed & down_button) {
         down_rept = 1.0f / 3.0f;
         down = 1;
     }
@@ -1011,35 +1014,39 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
             down = 1;
         }
     }
-    to_first = up && (buttons & 1);
-    page_up = up && (buttons & 2);
-    page_down = down && (buttons & 2);
-    to_last = down && (buttons & 1);
+    to_first = up ? buttons & 1 : 0;
+    to_last = down ? buttons & 1 : 0;
+    page_up = up ? (buttons >> 1) & 1 : 0;
+    page_down = down ? (buttons >> 1) & 1 : 0;
     if (page_down && menu->field_10) {
-        struct eduiitem_s *item;
+        eduiitem_s *item;
         i32 count = 1;
         for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
             ++count;
-        while (menu->selected->next && count--) {
+        while (menu->selected->next != NULL) {
             menu->selected = menu->selected->next;
+            if (!--count)
+                break;
         }
         return 0;
     }
     if (page_up && menu->field_10) {
-        struct eduiitem_s *item;
+        eduiitem_s *item;
         i32 count = 1;
         for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
             ++count;
         menu->selected = menu->field_0c;
-        while (menu->selected->previous && count--) {
+        while (menu->selected->previous != NULL) {
             menu->selected = menu->selected->previous;
             menu->field_0c = menu->selected;
+            if (!--count)
+                break;
         }
         return 0;
     }
     if (up && menu->selected && menu->selected->previous) {
         do {
-            struct eduiitem_s *item;
+            eduiitem_s *item;
             if (menu->selected == menu->field_0c)
                 menu->field_0c = menu->selected->previous;
             item = menu->selected->previous;
@@ -1057,13 +1064,16 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
             menu->selected = item;
         } while (menu->selected->next && to_last);
         if (to_last) {
-            struct eduiitem_s *item;
+            eduiitem_s *item;
             i32 count = 1;
             for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
                 ++count;
             menu->field_0c = menu->selected;
-            while (menu->field_0c->previous && count--)
+            while (menu->field_0c->previous != NULL) {
                 menu->field_0c = menu->field_0c->previous;
+                if (!--count)
+                    break;
+            }
         }
         return 0;
     }
@@ -3329,9 +3339,11 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
     eduicbMenuOpenAllexpanders(menu);
     NuQFntPushCoordinateSystem(1);
     NuQFntSetScale((VUFNT *)edui_font, edui_font_scale_x, edui_font_scale_y);
-    item_text_width = menu->title != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, menu->title) >> 4 : 0;
-    if (item_text_width > width)
-        width = item_text_width;
+    if (menu->title != NULL) {
+        item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, menu->title) >> 4;
+        if (item_text_width > width)
+            width = item_text_width;
+    }
     for (item = first; item != NULL; item = item->next) {
         switch (item->type) {
             case 1:
@@ -3345,20 +3357,6 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
                     item_text_width = icon_width + text_width;
                 }
                 break;
-            case 17: {
-                edui_prop_s *property = (edui_prop_s *)item;
-                i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4 : 30;
-                i32 value_width;
-                if (label_width > property_label_width)
-                    property_label_width = label_width;
-                value_width = property->property_text != NULL
-                                  ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, property->property_text) >> 4
-                                  : 30;
-                if (value_width > property_value_width)
-                    property_value_width = value_width;
-                item_text_width = value_width;
-                break;
-            }
             case 6: {
                 edui_slider_s *slider = (edui_slider_s *)item;
                 char format[512];
@@ -3367,6 +3365,18 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
                 NuStrCat(format, slider->format);
                 NuSPrintf(text, format, -0.0);
                 item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, text) >> 4;
+                break;
+            }
+            case 17: {
+                edui_prop_s *property = (edui_prop_s *)item;
+                i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4 : 30;
+                if (label_width > property_label_width)
+                    property_label_width = label_width;
+                item_text_width = property->property_text != NULL
+                                      ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, property->property_text) >> 4
+                                      : 30;
+                if (item_text_width > property_value_width)
+                    property_value_width = item_text_width;
                 break;
             }
             default:
@@ -3378,7 +3388,7 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
             width = item_text_width;
     }
     property_width = property_label_width + property_value_width + ((i32)NuQFntHeight((VUFNT *)edui_font) >> 3);
-    if (property_width > width)
+    if (width < property_width)
         width = property_width;
     for (item = menu->first; item != NULL; item = item->next) {
         if (item->type == 17)
