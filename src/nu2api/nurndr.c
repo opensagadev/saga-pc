@@ -314,7 +314,7 @@ STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, y) == 4);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, z) == 8);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, colour) == 0xc);
 static void NuRndrPrimSetColourPrivate(i32 colour) {
-    u32 converted;
+    i32 converted;
     if (NuPrimNeedsOverbrightening != 0)
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
     else
