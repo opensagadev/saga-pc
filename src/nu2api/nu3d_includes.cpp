@@ -12077,13 +12077,17 @@ extern "C" {
     void __cdecl NuTexInitExPS(VARIPTR *buffer);
 
     void __cdecl NuTexInitEx(VARIPTR *buffer, i32 count) {
+        NUTEXDIM_PC **list;
+        i32 *order;
         NuTextureCapacityPC = count;
-        NuTextureDimensions = (NUTEXDIM_PC **)((buffer->addr + 3) & ~3u);
-        buffer->addr = (u32)NuTextureDimensions + count * sizeof(*NuTextureDimensions);
-        memset(NuTextureDimensions, 0, count * sizeof(*NuTextureDimensions));
-        NuTextureLoadOrderPC = (i32 *)((buffer->addr + 3) & ~3u);
-        buffer->addr = (u32)NuTextureLoadOrderPC + count * sizeof(*NuTextureLoadOrderPC);
-        memset(NuTextureLoadOrderPC, 0, count * sizeof(*NuTextureLoadOrderPC));
+        list = (NUTEXDIM_PC **)((buffer->addr + 3) & ~3u);
+        buffer->addr = ((buffer->addr + 3) & ~3u) + count * sizeof(*list);
+        NuTextureDimensions = list;
+        memset(list, 0, count * sizeof(*list));
+        order = (i32 *)((buffer->addr + 3) & ~3u);
+        buffer->addr = ((buffer->addr + 3) & ~3u) + count * sizeof(*order);
+        NuTextureLoadOrderPC = order;
+        memset(order, 0, count * sizeof(*order));
         NuTextureLoadCountPC = 0;
         NuTexInitExPS(buffer);
     }
