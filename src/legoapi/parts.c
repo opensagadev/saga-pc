@@ -3668,7 +3668,6 @@ void __cdecl PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 e
 void __cdecl UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
     i32 i, sound, axis, remaining, variant;
-    i8 next;
     PART_EMIT_PC *emitter;
     PART_RUNTIME_TYPE_PC *type;
     ADDPART_PC params;
@@ -3698,16 +3697,19 @@ void __cdecl UpdatePartEmits(f32 time) {
                     case 2:
                         last_switch_change = (last_switch_change + 1) & 31;
                         emitter->field_3d = 2;
-                        switch_changes[last_switch_change][0] = emitter->field_46;
                         switch_changes[last_switch_change][1] = 4;
+                        switch_changes[last_switch_change][0] = emitter->field_46;
                         break;
                     case 3:
                         emitter->field_3d = 2;
-                        /* fallthrough */
+                        last_switch_change = (last_switch_change + 1) & 31;
+                        switch_changes[last_switch_change][1] = 0;
+                        switch_changes[last_switch_change][0] = emitter->field_46;
+                        break;
                     case 4:
                         last_switch_change = (last_switch_change + 1) & 31;
-                        switch_changes[last_switch_change][0] = emitter->field_46;
                         switch_changes[last_switch_change][1] = 0;
+                        switch_changes[last_switch_change][0] = emitter->field_46;
                         break;
                 }
             }
@@ -3730,8 +3732,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                 }
             }
         }
+        remaining = 0;
         if ((type->flags & 0x400000) != 0) {
-            if (type->maximum_distance > emitter->camera_distance && previous_distance >= type->maximum_distance) {
+            if (emitter->camera_distance < type->maximum_distance && previous_distance >= type->maximum_distance) {
                 emitter->time_20 = partglobaltime - interval + 0.001f;
                 emitter->time_24 = partglobaltime;
                 emitter->time_28 = emitter->time_24 - 1.0f;
@@ -3742,7 +3745,6 @@ void __cdecl UpdatePartEmits(f32 time) {
             }
         }
         emission_time = emitter->time_20 + interval;
-        remaining = 0;
         while (partglobaltime + time > emission_time && remaining++ < 100) {
             while (emission_time >= emitter->time_28 && emission_time > emitter->time_24 &&
                    partglobaltime + time > emission_time) {
@@ -3811,16 +3813,16 @@ void __cdecl UpdatePartEmits(f32 time) {
                     if (type->variant_mode == 0)
                         variant = (i32)(NuRandFloatSeeded(&partseed) * 65535.0f) % type->variant_count;
                     else if (type->variant_mode == 1) {
-                        next = (i8)(emitter->field_33 + 1);
-                        if (type->variant_count > next)
-                            variant = next;
-                        emitter->field_33 = variant;
+                        // MATCH-EXCEPTION: retail treats field_33 as signed; saga.h declares it u8.
+                        if (++*(i8 *)&emitter->field_33 >= type->variant_count)
+                            emitter->field_33 = 0;
+                        variant = *(i8 *)&emitter->field_33;
                     }
                 }
                 params.part_id = type->effect_ids[variant];
-                if ((u16)(params.part_id - 9998) <= 1)
+                if (type->effect_ids[variant] == 9999 || type->effect_ids[variant] == 9998)
                     params.special = NULL;
-                else if (params.part_id != -1) {
+                else if (type->effect_ids[variant] != -1) {
                     params.special = &special;
                     NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
                 }
