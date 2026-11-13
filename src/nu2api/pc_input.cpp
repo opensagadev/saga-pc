@@ -556,8 +556,8 @@ const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
 }
 
 void NuKeyboardOwner_PC::RescanDevicesPc() {
+    PC_INPUT_DEVICE_PC *devices = ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices;
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-    PC_INPUT_DEVICE_PC *devices = runtime->devices;
     device_count = 0;
     PcXInputDeviceCount = 0;
     for (i32 port = 0; port < 4; ++port) {
