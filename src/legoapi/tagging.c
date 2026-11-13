@@ -1,10 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-void __cdecl ClearTakeOverObjectSys(void) {
-    memset(takeoverobjects, 0, sizeof(takeoverobjects));
-    num_takeoverobjects = 0;
-}
+/* Retail unit 0x59f970-0x5a043e: definitions in retail address order. */
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
@@ -19,6 +16,20 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_pro
 STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
+extern void *Door_Last;
+extern u64 CharacterMaskAllPc;
+i8 __cdecl Area_CharIDInCurrentList(i32 character_id);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+
+void __cdecl ClearTakeOverObjectSys(void) {
+    memset(takeoverobjects, 0, sizeof(takeoverobjects));
+    num_takeoverobjects = 0;
+}
 
 void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
     i32 index;
@@ -45,9 +56,6 @@ void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
     ++num_takeoverobjects;
 }
 
-extern void *Door_Last;
-extern u64 CharacterMaskAllPc;
-i8 __cdecl Area_CharIDInCurrentList(i32 character_id);
 void __cdecl StoreStatusTakeOverObjectSys(void) {
     i32 index;
     i32 level;
@@ -78,13 +86,6 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
     }
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
     i32 level, index, object_index;
     GAMEOBJECT *object, *controller, *candidate;
@@ -142,5 +143,152 @@ void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 TakeOverGameObject(controller, takeoverobjects[index].object, 0, 1);
             }
         }
+    }
+}
+
+void __cdecl Tag_ResetTransfers(void) {
+    TagTransfersPc[0].elapsed = 0.5f;
+    TagTransfersPc[1].elapsed = 0.5f;
+}
+
+void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
+    i32 particle;
+    f32 height;
+    f32 lower;
+    TAG_TRANSFER_PC *transfer;
+    if (target->field_280 == 0 || target->field_280 == 1) {
+        TagTransfersPc[(i8)target->field_280].source = source;
+        TagTransfersPc[(i8)target->field_280].elapsed = 0.0f;
+        for (particle = 0; particle < 3; ++particle) {
+            height = (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f + (f64)0.4f);
+            TagTransfersPc[(i8)target->field_280].height_fraction[particle] = height;
+            transfer = &TagTransfersPc[(i8)target->field_280];
+            height = transfer->height_fraction[particle];
+            transfer->previous[particle].x = source->collision_position.x;
+            transfer->previous[particle].z = source->collision_position.z;
+            lower = source->collision_min.y;
+            transfer->previous[particle].y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+        }
+    }
+    if ((target->flags_1fc_word & 0x80) != 0) {
+        if (Tag_DoneFirst == 0)
+            Tag_DoneFirst = 1;
+        else if (Tag_DoneFirst == 1)
+            Tag_DoneFirst = 2;
+        Tag_DoneAny = 1;
+    }
+}
+
+void __cdecl Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
+    i32 player;
+    i32 particle;
+    i32 angle;
+    f32 elapsed;
+    f32 phase;
+    f32 height;
+    f32 lower;
+    TAG_TRANSFER_PC *transfer;
+    GAMEOBJECT *source;
+    GAMEOBJECT *target;
+    NUVEC from;
+    NUVEC to;
+    NUVEC position;
+    for (player = 0; player < 2; ++player) {
+        transfer = &TagTransfersPc[player];
+        if (Player[player] == NULL) {
+            transfer->elapsed = 0.5f;
+            continue;
+        }
+        if (!(transfer->elapsed < 0.5f))
+            continue;
+        elapsed = transfer->elapsed + FRAMETIME;
+        transfer->elapsed = elapsed;
+        if (elapsed > 0.5f) {
+            transfer->elapsed = 0.5f;
+            continue;
+        }
+        phase = elapsed + elapsed;
+        for (particle = 0; particle < 3; ++particle) {
+            source = transfer->source;
+            from.x = source->collision_position.x;
+            from.z = source->collision_position.z;
+            lower = source->collision_min.y;
+            height = transfer->height_fraction[particle];
+            from.y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
+            target = Player[player];
+            to.x = target->collision_position.x;
+            to.z = target->collision_position.z;
+            lower = target->collision_min.y;
+            to.y = (f32)((f64)lower + ((f64)target->collision_max.y - lower) * height);
+            if (particle == 1) {
+                angle = (i32)((f64)phase * 16384.0);
+                phase = NuTrigTable[(angle >> 1) & 0x7fff];
+            } else if (particle == 2) {
+                angle = (i32)((f64)phase * 16384.0 + 16384.0);
+                phase = 1.0f - NuTrigTable[(angle >> 1) & 0x7fff];
+            }
+            position.x = (f32)((f64)from.x + ((f64)to.x - from.x) * phase);
+            position.y = (f32)((f64)from.y + ((f64)to.y - from.y) * phase);
+            position.z = (f32)((f64)from.z + ((f64)to.z - from.z) * phase);
+            if (particle == 1) {
+                angle = (i32)((f64)phase * 65536.0);
+                position.y = (f32)((f64)position.y + NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.005f);
+            } else if (particle == 2) {
+                angle = (i32)((f64)phase * 32768.0 + 16384.0);
+                position.y = (f32)((f64)position.y + NuTrigTable[(angle >> 1) & 0x7fff] * (f64)0.01f);
+            }
+            AddVariableShotDebrisEffectTimed1(player == 0 ? effect0 : effect1, &position, count, FRAMETIME, 0, 0, NULL);
+            transfer->previous[particle] = position;
+        }
+    }
+}
+
+void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
+    u16 angle = (u16)qrand();
+    f32 speed = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.09f + (f64)0.01f);
+    f32 clearance;
+    PLAYERCHARACTERCONFIG_PC *character;
+    rider->velocity.x = NuTrigTable[angle >> 1] * speed;
+    rider->velocity.z = speed * NuTrigTable[(((i32)angle + 0x4000) >> 1) & 0x7fff];
+    StartJump(rider, 0);
+    rider->airborne_collision_target = mount;
+    rider->tag_flags |= 1;
+    rider->velocity.x = 0.0f;
+    rider->velocity.z = 0.0f;
+    rider->pad->buttons_held = 0;
+    rider->pad->buttons_pressed = 0;
+    clearance = mount->upper_position.y;
+    if ((mount->character_data->game_character->flags_094 & 0x20000) != 0)
+        clearance += BUCK_RIDERJUMPCLEARANCE;
+    clearance -= rider->lower_position.y;
+    clearance = (f32)((f64)clearance + (f64)0.1f);
+    character = rider->character_data->game_character;
+    if (clearance > character->jump_height)
+        rider->velocity.y = NuFsqrt((f32)(-2.0 * (f64)character->gravity * clearance));
+}
+
+void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
+    CHARACTER_MODEL_LAYERS_PC *model;
+    if (LEGOCONTEXT_BUCK == -1 || LEGOACT_BUCK == -1)
+        return;
+    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    if (model->model_data_b[LEGOACT_BUCK] == NULL)
+        return;
+    if (rider != NULL)
+        NewRumble(rider->pad->bound_pad, 0.6f, 0);
+    object->character_context = (i8)LEGOCONTEXT_BUCK;
+    object->field_7aa = LEGOACT_BUCK;
+    object->context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
+    if (BuckStartExtraFn != NULL)
+        BuckStartExtraFn(object);
+}
+
+void __cdecl Buck_MoveCode(GAMEOBJECT *object, i32 start) {
+    if (LEGOCONTEXT_BUCK != -1 && object->character_context == LEGOCONTEXT_BUCK) {
+        object->context_timer -= FRAMETIME;
+        if (object->context_timer <= 0.0f)
+            object->character_context = -1;
+    } else if (object->character_context == -1 && start != 0) {
+        Buck_Start(object, object->takeover_source);
     }
 }
