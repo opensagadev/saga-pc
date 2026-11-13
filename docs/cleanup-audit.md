@@ -366,10 +366,22 @@ findings (Matching view):
 
 Step 2 and 3 of the table below remain. Game units are now also analysed with
 `-DSAGA_DEBUG`, so code inside `#ifdef SAGA_DEBUG` is linted;
-`tools/check.py --tidy --matching-only` skips that pass. `make lint` takes
-11 minutes on a four-core machine, against 3.5 minutes before: the new checks
-add about 1 minute (4.6 minutes with `--matching-only`) and the Debug pass
-about 6 minutes.
+`tools/check.py --tidy --matching-only` skips that pass. A full analysis is
+703 clang-tidy jobs (366 units, 337 of them again as Debug) of about 2.6 CPU
+seconds each, some 30 CPU minutes: 11 minutes on a four-core machine, against
+3.5 minutes before the new checks and the Debug pass. Parsing is about 15 % of
+a job; the checks that traverse every declaration and literal of the SDK and
+saga.h dominate (in a 39-job profile: `readability-identifier-naming` 18 %,
+`cert-dcl16-c` 14 %, `misc-confusable-identifiers` 9 %, `google-runtime-int`
+6 % of check time). No game unit preprocesses identically with and without
+`SAGA_DEBUG` (saga.h includes debug/diagnostics.h, whose Debug block adds
+support.h), so the Debug pass cannot be skipped by comparing preprocessor
+output. `make lint` therefore reuses passes (tools/lintcache.py,
+build/lint/): a job is analysed again only when the tool, policy, flags or a
+file it read changed. With a warm cache `make lint` takes about 2 seconds, a
+one-unit edit about 10 seconds, an edit of saga.h re-analyses nearly every job
+(the cold time); support.h re-analyses the 342 Debug jobs. CI splits the jobs
+over four runners beside the build (`--shard`), each with its own cache.
 
 The original measurements that chose step 1 (clang-tidy 18 on 15 units, all of
 `bugprone-*`, `readability-*`, `misc-*`, `cert-*`, `performance-*`,
