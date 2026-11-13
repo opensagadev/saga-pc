@@ -1,6 +1,7 @@
 """Verify downloaded tools and restored caches before they can be used."""
 
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -334,6 +335,107 @@ class SetupTests(unittest.TestCase):
         objdiff.assert_not_called()
         dxsdk.assert_not_called()
         self.assertTrue(self.compiler.is_file())
+
+    def runtime_package(self, libraries):
+        """A package nested like the runtime update: outer ZIP > patch ZIP > cabinet ZIP > libraries."""
+        def pack(members):
+            data = io.BytesIO()
+            with zipfile.ZipFile(data, "w") as package:
+                for name, body in members.items():
+                    package.writestr(name, body)
+            return data.getvalue()
+        cabinet = pack({"FL_" + name: body for name, body in libraries.items()} | {"FL_other": b"not installed"})
+        package = self.root / "update.exe"
+        package.write_bytes(pack({"update.msp": pack({"CAB_1": cabinet}), "setup.exe": b"never run"}))
+        return package
+
+    def write_runtime_pin(self, package, libraries):
+        self.pin["runtime"] = {
+            "name": "Synthetic runtime update", "version": "1", "url": "https://invalid.example/update.exe",
+            "sha256": digest(package.read_bytes()), "layers": ["update.msp", "CAB_1"],
+            "files": {name: {"member": "FL_" + name, "sha256": digest(body)} for name, body in libraries.items()}}
+        self.write_pin()
+
+    @staticmethod
+    def zip_extract(archive, member, directory):
+        directory.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(archive) as package:
+            (directory / member).write_bytes(package.read(member))
+        return directory / member
+
+    def test_runtime_update_installs_only_verified_libraries_and_warm_cache_needs_no_network(self):
+        libraries = {"libcmt.lib": b"synthetic C runtime", "libcpmt.lib": b"synthetic C++ runtime"}
+        package = self.runtime_package(libraries)
+        self.write_runtime_pin(package, libraries)
+        with patch.object(setup, "download", side_effect=lambda url, dest: shutil.copyfile(package, dest)), \
+                patch.object(setup, "extract_member", side_effect=self.zip_extract):
+            setup.install_runtime()
+        dest = self.root / "build/tools/msvc8-runtime/lib"
+        self.assertEqual({p.name: p.read_bytes() for p in dest.iterdir()}, libraries)
+        self.assertEqual([p.name for p in (self.root / "build/tools").iterdir()], ["msvc8-runtime"])
+        with patch.object(setup, "download") as download, patch.object(setup, "extract_member") as extract:
+            setup.install_runtime()
+        download.assert_not_called()
+        extract.assert_not_called()
+        (dest / "libcmt.lib").write_bytes(b"corrupt cache")
+        with patch.object(setup, "extract_member", side_effect=self.zip_extract):
+            setup.install_runtime(package)
+        self.assertEqual((dest / "libcmt.lib").read_bytes(), libraries["libcmt.lib"])
+        self.assertTrue(package.is_file())
+
+    def test_bad_runtime_package_or_library_installs_nothing(self):
+        libraries = {"libcmt.lib": b"good", "libcpmt.lib": b"expected"}
+        package = self.runtime_package(libraries)
+        self.write_runtime_pin(package, libraries)
+        tampered = self.runtime_package({**libraries, "libcpmt.lib": b"tampered"})
+        with patch.object(setup, "extract_member", side_effect=self.zip_extract) as extract:
+            with self.assertRaisesRegex(ValueError, "package SHA-256 mismatch"):
+                setup.install_runtime(tampered)
+            extract.assert_not_called()
+            self.pin["runtime"]["sha256"] = digest(tampered.read_bytes())
+            self.write_pin()
+            with self.assertRaisesRegex(ValueError, "Runtime library SHA-256 mismatch: libcpmt.lib"):
+                setup.install_runtime(tampered)
+        self.assertFalse((self.root / "build/tools/msvc8-runtime").exists())
+
+    def test_runtime_names_cannot_escape_the_cache(self):
+        libraries = {"libcmt.lib": b"x"}
+        package = self.runtime_package(libraries)
+        for change in ({"files": {"../libcmt.lib": {"member": "FL_libcmt.lib", "sha256": "0" * 64}}},
+                       {"files": {"libcmt.lib": {"member": "dir/FL_libcmt.lib", "sha256": "0" * 64}}},
+                       {"layers": ["..", "CAB_1"]}, {"layers": ["*.msp", "CAB_1"]}):
+            self.write_runtime_pin(package, libraries)
+            self.pin["runtime"].update(change)
+            self.write_pin()
+            with self.subTest(change=change), self.assertRaisesRegex(ValueError, "plain file names"):
+                setup.install_runtime(package)
+
+    def test_seven_zip_extracts_only_the_named_member(self):
+        if not (shutil.which("7zz") or shutil.which("7z")):
+            self.skipTest("7-Zip is required")
+        archive = self.root / "package.zip"
+        with zipfile.ZipFile(archive, "w") as package:
+            package.writestr("wanted", b"member")
+            package.writestr("other", b"not extracted")
+        path = setup.extract_member(archive, "wanted", self.root / "out")
+        self.assertEqual(path.read_bytes(), b"member")
+        self.assertEqual([p.name for p in (self.root / "out").iterdir()], ["wanted"])
+        with self.assertRaisesRegex(ValueError, "Could not extract missing"):
+            setup.extract_member(archive, "missing", self.root / "out2")
+
+    def test_seven_zip_is_required_for_the_runtime_update(self):
+        with patch.object(setup.shutil, "which", return_value=None), \
+                self.assertRaisesRegex(ValueError, "7-Zip"):
+            setup.extract_member(self.root / "package.exe", "member", self.root / "out")
+
+    def test_compiler_only_skips_the_runtime_update(self):
+        with patch("sys.argv", ["setup.py", "--compiler-only"]), \
+                patch.object(setup.platform, "system", return_value="Linux"), \
+                patch.object(setup.platform, "machine", return_value="x86_64"), \
+                patch.object(setup, "install_compiler"), \
+                patch.object(setup, "install_runtime") as runtime:
+            setup.main()
+        runtime.assert_not_called()
 
 
 

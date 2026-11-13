@@ -12,9 +12,9 @@ import urllib.request
 import zipfile
 
 if __package__:
-    from .lib import ROOT, changed_files, changed_trees, digest, load_json, sha256, toolchain_pin
+    from .lib import ROOT, changed_files, changed_trees, digest, load_json, runtime_pin, sha256, toolchain_pin
 else:
-    from lib import ROOT, changed_files, changed_trees, digest, load_json, sha256, toolchain_pin
+    from lib import ROOT, changed_files, changed_trees, digest, load_json, runtime_pin, sha256, toolchain_pin
 
 
 def download(url, destination):
@@ -113,6 +113,75 @@ def install_compiler(archive, name=None):
     print(f'Installed {pin["name"]} {pin["version"]} in {dest}')
 
 
+def plain_name(name):
+    """A bare file name: no directory part, drive, wildcard or traversal."""
+    return name not in ("", ".", "..") and Path(name).name == name and not any(c in name for c in "\\:*?")
+
+
+def extract_member(archive, member, directory):
+    """Extract one named member of a CAB, MSI/MSP or self-extracting archive with 7-Zip; nothing is run."""
+    seven = shutil.which("7zz") or shutil.which("7z")
+    if seven is None:
+        raise ValueError("7-Zip (7z or 7zz, e.g. the p7zip-full or 7zip package) is required "
+                         "to unpack the runtime update")
+    directory.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run([seven, "e", "-y", "-bd", "-o" + str(directory), "--", str(archive), member],
+                            capture_output=True, text=True)
+    path = directory / member
+    if result.returncode or path.is_symlink() or not path.is_file():
+        detail = (result.stderr or result.stdout).strip().splitlines()
+        raise ValueError(f"Could not extract {member} from {archive.name}: "
+                         f"{detail[-1] if detail else f'7-Zip exit status {result.returncode}'}")
+    return path
+
+
+def install_runtime(package=None):
+    """Install the pinned runtime update's static libraries (config/toolchain.json "runtime").
+
+    The update ships as a self-extracting cabinet holding a patch package holding a cabinet;
+    7-Zip opens each layer as data and only the pinned members are extracted and verified.
+    """
+    pin, dest = runtime_pin(ROOT)
+    if pin is None:
+        return
+    files = pin["files"]
+    if any(not plain_name(name) or not plain_name(item["member"]) for name, item in files.items()) \
+            or any(not plain_name(layer) for layer in pin["layers"]):
+        raise ValueError("Runtime library and archive member names must be plain file names")
+    checksums = {name: item["sha256"] for name, item in files.items()}
+    if not changed_files(dest, checksums):
+        print(f'{pin["name"]} {pin["version"]}: verified, already installed')
+        return
+    work = ROOT / "build/tools"
+    work.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="saga-pc-runtime-", dir=work) as temp:
+        temp = Path(temp)
+        downloaded = package is None
+        if downloaded:
+            package = temp / "package.exe"
+            download(pin["url"], package)
+        if sha256(package) != pin["sha256"]:
+            raise ValueError("Runtime update package SHA-256 mismatch; refusing extraction")
+        current = package
+        for depth, layer in enumerate(pin["layers"]):
+            extracted = extract_member(current, layer, temp / f"layer{depth}")
+            if downloaded or current != package:
+                current.unlink()  # layers are large; keep only the next one
+            current = extracted
+        staged = temp / "lib"
+        for name, item in files.items():
+            path = extract_member(current, item["member"], temp / "members")
+            if sha256(path) != item["sha256"]:
+                raise ValueError(f"Runtime library SHA-256 mismatch: {name}")
+            staged.mkdir(exist_ok=True)
+            path.replace(staged / name)
+        # Replace only after every library verified.
+        dest.mkdir(parents=True, exist_ok=True)
+        for name in files:
+            (staged / name).replace(dest / name)
+    print(f'Installed {pin["name"]} {pin["version"]} in {dest}')
+
+
 def install_objdiff():
     pin = load_json(ROOT / "config/tools.json")["objdiff"]
     dest = ROOT / "build/tools/bin/objdiff-cli"
@@ -163,8 +232,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path,
                         help="Use an already downloaded pinned primary compiler ZIP")
+    parser.add_argument("--runtime-package", type=Path,
+                        help="Use an already downloaded pinned runtime update package")
     parser.add_argument("--compiler-only", action="store_true",
-                        help="Skip objdiff-cli and the DirectX SDK libraries for compilation-only local work")
+                        help="Skip the runtime update, objdiff-cli and the DirectX SDK libraries "
+                             "for compilation-only local work")
     args = parser.parse_args()
     if sys.version_info < (3, 11):
         parser.error("Python 3.11 or newer is required")
@@ -176,6 +248,7 @@ def main():
         for name in load_json(ROOT / "config/toolchain.json").get("secondary", {}):
             install_compiler(None, name)
         if not args.compiler_only:
+            install_runtime(args.runtime_package)
             install_objdiff()
             install_dxsdk()
     except (OSError, ValueError, KeyError, zipfile.BadZipFile, urllib.error.URLError, subprocess.SubprocessError) as error:
