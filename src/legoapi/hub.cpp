@@ -4490,10 +4490,11 @@ extern "C" {
         i32 i;
         if ((WORLD->current_level->flags & 2) == 0)
             return;
-        target = 0.0f;
         if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && newgamecam == 0 &&
             !(HUB_ADATA != NULL && WORLD->area == HUB_ADATA && GameCam->mode == 4))
             target = 1.0f;
+        else
+            target = 0.0f;
         statstime = SeekLinearF(statstime, target, FRAMETIME);
         if (SuperStory != 0) {
             DrawMiniKitTime = 0.0f;
@@ -4509,10 +4510,11 @@ extern "C" {
                 DrawMiniKitTime = 2.0f;
             if (DrawMiniKitTime > 0.0f)
                 DrawMiniKitTime -= FRAMETIME;
-            target = 0.0f;
             if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawMiniKitTime > 0.0f) &&
                 screendump == 0)
                 target = 1.0f;
+            else
+                target = 0.0f;
             if (ChallengeMode != 0) {
                 f32 hint_alpha = CurrentHintAlpha();
                 if (hint_alpha > 0.0f)
@@ -4530,7 +4532,6 @@ extern "C" {
             } else {
                 if (DrawRedBrickTime > 0.0f)
                     DrawRedBrickTime -= FRAMETIME;
-                target = 0.0f;
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
                      (NetPaused != 0 &&
@@ -4539,14 +4540,17 @@ extern "C" {
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0)
                     target = 1.0f;
+                else
+                    target = 0.0f;
                 redbrickslidetime = SeekLinearF(redbrickslidetime, target, FRAMETIME);
                 RedBrickScale = SeekLinearF(RedBrickScale, 1.0f, (f32)(5.0 * (f64)FRAMETIME));
                 if (DrawBuildUpTime > 0.0f)
                     DrawBuildUpTime -= FRAMETIME;
-                target = 0.0f;
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 || NetPaused != 0 || DrawBuildUpTime > 0.0f || BuildUpTotal != 0) && screendump == 0)
                     target = 1.0f;
+                else
+                    target = 0.0f;
                 builduptime = SeekLinearF(builduptime, target, FRAMETIME);
                 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0) {
@@ -4581,10 +4585,11 @@ extern "C" {
             DrawCoinTotalTime = 1.0f;
         if (DrawCoinTotalTime > 0.0f)
             DrawCoinTotalTime -= FRAMETIME;
-        target = 0.0f;
         if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && (Paused != 0 || NetPaused != 0 || DrawCoinTotalTime > 0.0f) &&
             screendump == 0)
             target = 1.0f;
+        else
+            target = 0.0f;
         cointotaltime = SeekLinearF(cointotaltime, target, FRAMETIME);
         CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, (f32)(3.0 * (f64)FRAMETIME));
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA) {
