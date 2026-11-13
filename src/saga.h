@@ -17587,7 +17587,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     f32 __cdecl RenderPostLogPc(f32);
     f32 __cdecl RenderPostPowPc(f32, f32);
-    i32 __cdecl RenderPostASinPc(f32);
+    i16 __cdecl RenderPostASinPc(f32);
     void __cdecl DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
 
     i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene);

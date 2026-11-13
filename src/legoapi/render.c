@@ -241,7 +241,7 @@ STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
 extern i32 NuPrimCoordSystemStack[];
 f32 __cdecl RenderPostPowPc(f32, f32);
-i32 __cdecl RenderPostASinPc(f32);
+i16 __cdecl RenderPostASinPc(f32);
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
     (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
      NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])

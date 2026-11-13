@@ -962,7 +962,7 @@ u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 val
 #define POST_IMAGE_DIRECTIONAL(brightness)                                                                             \
     do {                                                                                                               \
         f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);                                               \
-        f32 angle = (i16)(0x4000 - (u16)RenderPostASinPc(dot)) * 0.0054931640625;                                      \
+        f32 angle = (i16)(0x4000 - RenderPostASinPc(dot)) * 0.0054931640625;                                           \
         if (angle < parameters->direction_near_angle) {                                                                \
             (brightness) += parameters->direction_far_scale * 128.0;                                                   \
         } else if (!(angle > parameters->direction_far_angle)) {                                                       \

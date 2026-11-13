@@ -11532,7 +11532,7 @@ extern "C" {
 #define POW4(x) (POW2(x) * POW2(x))
 #define POW5(x) (POW2(x) * POW3(x))
 
-    i32 __cdecl RenderPostASinPc(f32 sin) {
+    i16 __cdecl RenderPostASinPc(f32 sin) {
         f32 abs;
         f32 sqrt;
         f32 unknown_a;
