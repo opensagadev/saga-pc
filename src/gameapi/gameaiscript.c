@@ -7464,19 +7464,19 @@ i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC
     struct AIPATHCNXCONTROLLER_s *controller;
     (void)packet;
     (void)param_6;
-    path = NULL;
+    target_name = NULL;
     from = NULL;
     to = NULL;
-    target_name = NULL;
-    target_type = 0;
-    fake_animation_id = -1;
-    gizmo_output = 0;
+    check_visible = 0;
     on_flags = 0;
     off_flags = 0;
     both_ways = 0;
-    check_visible = 0;
     on_obstacle_open = 0;
     off_obstacle_open = 0;
+    fake_animation_id = -1;
+    gizmo_output = 0;
+    target_type = 0;
+    path = NULL;
     if (first_time == 0) {
         return 1;
     }
