@@ -33855,6 +33855,7 @@ address,symbol,size,ctype
 0x007fc03c,_PodFacingSeekRate,4,f32
 0x007fc040,_TURNTIME,4,f32
 0x7fc044,_VehicleLoopTimePc,4,f32
+0x7fc048,_TurnCamSafeDurationScalePc,4,f32
 0x7fc04c,_CombatReactionHorizontalScalePc,4,f32
 0x7fc050,_CombatReactionVerticalScalePc,4,f32
 0x7fc054,_test_ai_combo,4,i32
@@ -33900,6 +33901,7 @@ address,symbol,size,ctype
 0x007fc210,_VehicleCollisionDamageSpeedFraction,4,f32
 0x007fc214,_VehicleCollisionFrontAngle,4,i32
 0x007fc218,_VehicleCollisionRearAngle,4,i32
+0x7fc21c,?TURNROLL@?1??TurnCodeCamSafe@@9@9,2,
 0x7fc220,?TURNPITCH@?1??TurnCodeCamSafe@@9@9,4,
 0x007fc224,_rocket_lock_distance,4,f32
 0x7fc228,_PodCollisionThresholdPc,4,f32
