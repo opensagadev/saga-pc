@@ -621,8 +621,9 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
     NUMTX transposed[16];
     const f32 *submitted;
     if (uniform->field_c == 4) {
+        const NUMTX *source = (const NUMTX *)values;
         for (i32 i = 0; i < count; ++i)
-            NuMtxTranspose(&transposed[i], &((NUMTX *)values)[i]);
+            NuMtxTranspose(&transposed[i], (NUMTX *)source++);
         first_element *= 4;
         submitted = (const f32 *)transposed;
     } else {
