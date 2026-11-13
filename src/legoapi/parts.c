@@ -2062,8 +2062,10 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
                 NUVEC minimum, maximum;
                 if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0)
                     DebrisDrawCalculateClipBoxes(effect, key);
-                if (edbits_editmode == 0 && key->gscene != NULL && key->field_2f2 != -1)
-                    visible = NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->field_2f2) != 0;
+                if (edbits_editmode == 0 && key->gscene != NULL && key->field_2f2 != -1) {
+                    if (NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->field_2f2) == 0)
+                        visible = 0;
+                }
                 minimum = key->clip_min;
                 maximum = key->clip_max;
                 if (NuCameraClipTestExtents(&minimum, &maximum, &key->clip_matrix, 0.0f, 0) == 0)
