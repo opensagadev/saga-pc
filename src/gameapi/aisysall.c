@@ -16860,26 +16860,23 @@ void __cdecl AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object,
             packet->time_off_path = 0.0f;
         }
     } else {
-        AIPATH_PC *path = packet->path_info.path;
-        if (path != NULL && packet->path_info.connection != NULL) {
-            u8 node_index = packet->path_info.connection->node_indices[0];
-            AIPATHNODE_PC *first = &path->nodes[node_index];
-            AIPATHNODE_PC *second = &path->nodes[packet->path_info.connection->node_indices[1]];
-            if (first->has_special != 0 && (path->updated_node_bits[node_index / 8] & (1u << (node_index % 8))) == 0) {
-                AIPathNodeUpdatePos(system, path, first);
+        if (packet->path_info.path != NULL && packet->path_info.connection != NULL) {
+            AIPATHNODE_PC *first = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[0]];
+            AIPATHNODE_PC *second = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[1]];
+            if (first->has_special != 0 &&
+                (packet->path_info.path->updated_node_bits[packet->path_info.connection->node_indices[0] / 8] &
+                 (1 << (packet->path_info.connection->node_indices[0] % 8))) == 0) {
+                AIPathNodeUpdatePos(system, packet->path_info.path, first);
             }
-            if (second->has_special != 0) {
-                node_index = packet->path_info.connection->node_indices[1];
-                path = packet->path_info.path;
-                if ((path->updated_node_bits[node_index / 8] & (1u << (node_index % 8))) == 0) {
-                    AIPathNodeUpdatePos(system, path, second);
-                }
+            if (second->has_special != 0 &&
+                (packet->path_info.path->updated_node_bits[packet->path_info.connection->node_indices[1] / 8] &
+                 (1 << (packet->path_info.connection->node_indices[1] % 8))) == 0) {
+                AIPathNodeUpdatePos(system, packet->path_info.path, second);
             }
         }
-        path = packet->path_info.path;
-        if (packet->inside_path_node != -1 && path != NULL) {
-            i16 node_index = packet->inside_path_node;
-            path->inside_node_bits[node_index / 8] |= (u8)(1u << (node_index % 8));
+        if (packet->inside_path_node != -1 && packet->path_info.path != NULL) {
+            packet->path_info.path->inside_node_bits[packet->inside_path_node / 8] |= 1
+                                                                                      << (packet->inside_path_node % 8);
         }
         packet->flags &= ~0x02000000u;
         packet->time_off_path = 0.0f;
