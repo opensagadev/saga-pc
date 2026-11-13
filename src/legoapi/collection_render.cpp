@@ -18,7 +18,9 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
         size = (f32)(size * .875);
     }
     i32 found = 0;
-    i32 selected_x[2] = {-1, -1}, selected_y[2] = {-1, -1};
+    i32 selected_x[2], selected_y[2];
+    selected_x[0] = selected_x[1] = -1;
+    selected_y[0] = selected_y[1] = -1;
     if (models != NULL && Collection_GetSelectingPlayerIDsFn != NULL) {
         i16 ids[2] = {-1, -1};
         Collection_GetSelectingPlayerIDsFn(ids);
