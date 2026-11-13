@@ -1967,7 +1967,7 @@ i32 __cdecl MovePlayer_CIRCLE(GAMEOBJECT *object) {
                     if (object->target_velocity.x < -maximum)
                         object->target_velocity.x = -maximum;
                 } else {
-                    object->target_velocity.x = fraction * maximum + (f32)(object->target_velocity.x * 0.5);
+                    object->target_velocity.x = fraction * maximum + object->target_velocity.x * 0.5f;
                     if (object->target_velocity.x > maximum)
                         object->target_velocity.x = maximum;
                 }
