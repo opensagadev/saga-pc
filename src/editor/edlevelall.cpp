@@ -1380,6 +1380,8 @@ f32 EdManipulator::Scale = 2.0f;
 f32 KnotHelperRadius = 0.25f;
 
 static i32 bezierline_depth = 0;
+/* Nothing in the executable sets it; the name is not known. */
+static i32 edterr_shadow_disabled = 0;
 
 f32 BezierDrawTolerance = 0.001f;
 static i32 bezierdraw_depth = 0;
@@ -6686,6 +6688,22 @@ void EdSystem::Process(f32 delta_time) {
 void EdSystem::Render() {
     for (EdSubSystem *subsystem = subsystems.First(); subsystem != NULL; subsystem = subsystem->next)
         subsystem->SubRender();
+}
+
+/* Editor terrain hooks: the PC build only keeps the shadow query. */
+void EdTerrInit(void *, void *) {
+}
+
+/* The height is left unset while shadows are disabled, as in retail. */
+f32 EdTerrShadow(NUVEC *position, f32 height_above, f32 height_below, i32 terrain_mask) {
+    f32 height;
+    if (edterr_shadow_disabled == 0)
+        height = NewShadow(position, height_above, height_below, terrain_mask);
+    return height;
+}
+
+i32 EdTerrRay(VuVec &, VuVec &) {
+    return 0;
 }
 
 /* Attribute access through the first member of the class that carries it. */
