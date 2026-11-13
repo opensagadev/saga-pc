@@ -13891,7 +13891,6 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
     i32 check_adjacent_connections;
     AIPATHNODE_PC *first_node;
     AIPATHCNX_PC *candidate;
-    i32 other_direction;
     AIPATHNODE_PC *second_node;
     i32 remaining_checks;
     AIPATHNODE_PC *node;
@@ -13954,13 +13953,13 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
         }
 
         path = packet->path_info.path;
-        other_direction = current_direction == 0;
-        second_node = &path->nodes[current_connection->node_indices[other_direction]];
+        second_node = &path->nodes[current_connection->node_indices[current_direction == 0]];
         for (connection_index = 0; connection_index < second_node->connection_count; ++connection_index) {
             candidate = second_node->connections[connection_index];
             if (candidate != current_connection &&
                 CharacterTestPathCnx(system, object, packet, candidate,
-                                     candidate->node_indices[0] != current_connection->node_indices[other_direction],
+                                     candidate->node_indices[0] !=
+                                         current_connection->node_indices[current_direction == 0],
                                      &nearest_distance_squared) != 0)
                 return;
         }
