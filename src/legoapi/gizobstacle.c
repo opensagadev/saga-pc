@@ -1113,7 +1113,7 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
                 delta.y = 0.0f;
             NuVecNorm(&delta, &delta);
             dot = NuVecDot(&delta, &aim);
-            if (near_distance > distance && directional)
+            if (distance < near_distance && directional)
                 angle = near_angle;
             else if (mid_distance > distance)
                 angle = mid_angle;
