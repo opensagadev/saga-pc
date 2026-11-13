@@ -11832,7 +11832,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         i32 group;
-        i32 colour = creature == aieditor->selected_creature
+        i32 colour = aieditor->selected_creature == creature
                          ? (aieditor->selected_creature == aieditor->nearest_creature ? 0xff0000ff : 0x800000ff)
                          : (aieditor->nearest_creature == creature ? -1 : 0);
         for (group = 0; group < creature->group_count; ++group, colour = 0) {
@@ -11844,19 +11844,18 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             GlobalCharacterRenderFn(&position, creature->angle, creature->character_type, colour, creature);
             if (creature->locator != NULL) {
                 line[0].position = creature->position;
-                line[1].position = ((EDLOCATOR_s *)creature->locator)->position;
                 line[0].colour = colour;
                 line[1].colour = colour;
+                line[1].position = ((EDLOCATOR_s *)creature->locator)->position;
                 AiRndrLine3d(line, NULL, NULL);
             }
             if (creature->respawn_locator != NULL) {
                 line[0].position = creature->position;
+                line[0].colour = colour + 0x8000;
+                line[1].colour = colour + 0x8000;
                 line[1].position = ((EDLOCATOR_s *)creature->respawn_locator)->position;
                 line[0].position.y += (double)0.1f;
                 line[1].position.y += (double)0.1f;
-                colour += 0x8000;
-                line[0].colour = colour;
-                line[1].colour = colour;
                 AiRndrLine3d(line, NULL, NULL);
             }
         }
