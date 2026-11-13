@@ -3280,6 +3280,7 @@ i32 __cdecl Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     GAMEOBJECT *candidate;
     NUVEC difference;
     f32 distance;
+    f32 range;
     GAMEOBJECT *previous;
 
     nearest = 1000000000.0f;
@@ -3298,8 +3299,8 @@ i32 __cdecl Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
             else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL)
                 target = GetNamedGameObject(system, value + 9);
             else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7576e0)) != NULL) {
-                nearest = AIParamToFloat(processor, value + 9);
-                nearest *= nearest;
+                range = AIParamToFloat(processor, value + 9);
+                nearest = range * range;
             } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576d0) != 0)
                 check_takeover = 1;
         }
