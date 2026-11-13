@@ -60,7 +60,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
                 TechnoTargetDiagnosticPc(techno->target_name);
                 return NULL;
             }
-            break;
+            return techno->controlled_object;
         case 2:
             techno->controlled_object = techno->target_special_storage;
             if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
@@ -70,7 +70,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
                 TechnoTargetDiagnosticPc(techno->target_name);
                 return NULL;
             }
-            break;
+            return techno->controlled_object;
         case 3:
             techno->controlled_object = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
             if (techno->controlled_object == NULL) {
@@ -78,7 +78,7 @@ void *Technos_FindTgt(TECHNO_s *techno) {
                 TechnoTargetDiagnosticPc(techno->target_name);
                 return NULL;
             }
-            break;
+            return techno->controlled_object;
         case 0:
             target = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
             if (target == NULL) {
@@ -106,7 +106,6 @@ void *Technos_FindTgt(TECHNO_s *techno) {
             TechnoTargetDiagnosticPc(NULL);
             return NULL;
     }
-    return techno->controlled_object;
 }
 
 typedef struct techno_callback_pc_s {
