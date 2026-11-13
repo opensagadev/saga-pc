@@ -8375,18 +8375,14 @@ static void JediLightCode(GAMEOBJECT *object) {
     if (object->dynamic_light_id != -1) {
         NUVEC colour;
         NUVEC position;
-        i32 point_count;
-        i32 i;
-        f32 radius;
-        f32 brightness;
-        i32 blade;
+        NUVEC delta;
+        GAMEOBJECT *target;
         if (object->character_context == 0x1b && (object->flags_e20 & 0x100) != 0 && (object->flags_e20 & 0x400) == 0 &&
-            object->force_target != NULL) {
-            NUVEC delta;
-            f32 distance;
+            (target = object->force_target) != NULL) {
+            f32 radius;
             rtlDynamicEnable(object->dynamic_light_id, 1);
-            distance = NuVecDist(&object->force_target->collision_position, &object->collision_position, &delta);
-            rtlDynamicSetRadii(object->dynamic_light_id, distance * 0.5f, distance * 0.5f + 0.5f);
+            radius = NuVecDist(&target->collision_position, &object->collision_position, &delta) * 0.5f;
+            rtlDynamicSetRadii(object->dynamic_light_id, radius, radius + 0.5f);
             colour.x = 0.0f;
             colour.y = qrand() < 0x8000 ? 2.0f : 0.25f;
             colour.z = colour.y;
@@ -8395,67 +8391,70 @@ static void JediLightCode(GAMEOBJECT *object) {
             position.y = delta.y * 0.5f + object->collision_position.y;
             position.z = delta.z * 0.5f + object->collision_position.z;
             rtlDynamicSetPos(object->dynamic_light_id, &position);
-            return;
+        } else if (object->weapon_scale > 0.0f && object->sabre_flags != 0) {
+            i32 point_count;
+            i32 i;
+            f32 radius;
+            f32 brightness;
+            i32 blade;
+            position = v000;
+            point_count = 0;
+            for (i = 0; i < 4; ++i) {
+                PLAYERCHARACTERCONFIG_PC *data;
+                i32 first, second;
+                if (object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
+                    continue;
+                data = object->character_data->game_character;
+                first = data->streak_joints[i][0];
+                if (first == -1 || object->character_model->points_of_interest[first] == NULL)
+                    continue;
+                second = data->streak_joints[i][1];
+                if (second == -1 || object->character_model->points_of_interest[second] == NULL)
+                    continue;
+                NuVecAdd(&position, &position, (NUVEC *)&object->locator_matrices[first].m30);
+                NuVecAdd(&position, &position, (NUVEC *)&object->locator_matrices[second].m30);
+                point_count += 2;
+            }
+            if (point_count <= 0)
+                return;
+            NuVecScale(&position, &position, 1.0f / point_count);
+            rtlDynamicEnable(object->dynamic_light_id, 1);
+            radius = object->sabre_collision_radius * 3.0f * object->weapon_scale * object->origin_scale;
+            rtlDynamicSetRadii(object->dynamic_light_id, radius + 0.25f, radius + 0.5f);
+            brightness = qrand() < 0x8000 ? 0.003921569f : 0.007843138f;
+            blade = -1;
+            if (object->player_index != -1 && Cheat_IsOn(0x19))
+                blade = 0;
+            else if (object->player_index != -1 && Player_HasPurpleForce(object))
+                blade = 3;
+            else if (object->id == (u16)id_GRIEVOUS) {
+                NUVEC other;
+                f32 phase;
+                colour.x = BladeTab[1].colour[0];
+                colour.y = BladeTab[1].colour[1];
+                colour.z = BladeTab[1].colour[2];
+                other.x = BladeTab[2].colour[0];
+                other.y = BladeTab[2].colour[1];
+                other.z = BladeTab[2].colour[2];
+                phase = (NuTrigTable[(u16)(i32)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5f * 65536.0f) >> 1] + 1.0f) *
+                        0.5f;
+                colour.x += (other.x - colour.x) * phase;
+                colour.y += (other.y - colour.y) * phase;
+                colour.z += (other.z - colour.z) * phase;
+                colour.x *= brightness;
+                colour.y *= brightness;
+                colour.z *= brightness;
+            } else
+                blade = (i8)object->character_data->game_character->blade_colour;
+            if (blade != -1) {
+                colour.x = BladeTab[blade].colour[0] * brightness;
+                colour.y = BladeTab[blade].colour[1] * brightness;
+                colour.z = BladeTab[blade].colour[2] * brightness;
+            }
+            rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
+            rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
+            rtlDynamicSetPos(object->dynamic_light_id, &position);
         }
-        if (!(object->weapon_scale > 0.0f) || object->sabre_flags == 0)
-            return;
-        position = v000;
-        point_count = 0;
-        for (i = 0; i < 4; ++i) {
-            PLAYERCHARACTERCONFIG_PC *data;
-            i32 first, second;
-            if (object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
-                continue;
-            data = object->character_data->game_character;
-            first = data->streak_joints[i][0];
-            if (first == -1 || object->character_model->points_of_interest[first] == NULL)
-                continue;
-            second = data->streak_joints[i][1];
-            if (second == -1 || object->character_model->points_of_interest[second] == NULL)
-                continue;
-            NuVecAdd(&position, &position, (NUVEC *)&object->locator_matrices[first].m30);
-            NuVecAdd(&position, &position, (NUVEC *)&object->locator_matrices[second].m30);
-            point_count += 2;
-        }
-        if (point_count == 0)
-            return;
-        NuVecScale(&position, &position, 1.0f / point_count);
-        rtlDynamicEnable(object->dynamic_light_id, 1);
-        radius = object->sabre_collision_radius * 3.0f * object->weapon_scale * object->origin_scale;
-        rtlDynamicSetRadii(object->dynamic_light_id, radius + 0.25f, radius + 0.5f);
-        brightness = qrand() < 0x8000 ? 0.003921569f : 0.007843138f;
-        blade = -1;
-        if (object->player_index != -1 && Cheat_IsOn(0x19))
-            blade = 0;
-        else if (object->player_index != -1 && Player_HasPurpleForce(object))
-            blade = 3;
-        else if (object->id == (u16)id_GRIEVOUS) {
-            NUVEC other;
-            f32 phase;
-            colour.x = BladeTab[1].colour[0];
-            colour.y = BladeTab[1].colour[1];
-            colour.z = BladeTab[1].colour[2];
-            other.x = BladeTab[2].colour[0];
-            other.y = BladeTab[2].colour[1];
-            other.z = BladeTab[2].colour[2];
-            phase =
-                (NuTrigTable[(u16)(i32)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5f * 65536.0f) >> 1] + 1.0f) * 0.5f;
-            colour.x += (other.x - colour.x) * phase;
-            colour.y += (other.y - colour.y) * phase;
-            colour.z += (other.z - colour.z) * phase;
-            colour.x *= brightness;
-            colour.y *= brightness;
-            colour.z *= brightness;
-        } else
-            blade = (i8)object->character_data->game_character->blade_colour;
-        if (blade != -1) {
-            colour.x = BladeTab[blade].colour[0] * brightness;
-            colour.y = BladeTab[blade].colour[1] * brightness;
-            colour.z = BladeTab[blade].colour[2] * brightness;
-        }
-        rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
-        rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
-        rtlDynamicSetPos(object->dynamic_light_id, &position);
     }
 }
 
