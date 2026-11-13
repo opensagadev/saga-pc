@@ -27,12 +27,12 @@ STATIC_ASSERT(offsetof(NUMEMBLK, capacity) == 8);
 STATIC_ASSERT(offsetof(NUMEMBLK, flags) == 12);
 STATIC_ASSERT(offsetof(NUMEMBLK, free_count) == 14);
 
-static i32 decode_buffer_left = 0;
+i32 decode_buffer_left = 0;
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
 /* Preserve the existing canonical working view; this is not a PC capacity claim. */
 static u8 read_buffer[0x40000] = {0};
-static i32 read_buffer_size = 0;
+i32 read_buffer_size = 0;
 static i32 read_buffer_decoded_size = 0;
 
 extern i32 file_criticalsection;
