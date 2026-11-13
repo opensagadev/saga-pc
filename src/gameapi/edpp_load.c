@@ -410,9 +410,9 @@ extern i32 edbits_particle_char_page;
 i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 page, n, version, requested;
     i32 skipped = 0;
+    i8 original_flag = flag;
     i32 type_index = 1;
     DEBRIS_INFO_PC discarded;
-    i8 original_flag = flag;
     i32 page_index = -1;
     if (flag == 6) {
         flag = 1;
