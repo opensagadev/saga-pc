@@ -1022,10 +1022,10 @@ address,symbol,size,ctype
 0x45e430,_getFinishedStatusAlpha,171,f32 __cdecl(STATUSPACKET_s *)
 0x0045e4e0,_TrueHero_LSW_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045e4f0,_TrueHero_LSW_Update,528,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
-0x0045e700,_TrueHero_LSW_Draw,1710,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x0045e700,_TrueHero_LSW_Draw,1740,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045edd0,_MiniKit_LSW_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045ee30,_MiniKit_LSW_Update,896,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
-0x0045f1b0,_MiniKit_LSW_Draw,2417,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x0045f1b0,_MiniKit_LSW_Draw,2448,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045fb40,_AllMiniKits_LSW_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045fb60,_AllMiniKits_LSW_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045fc50,_AllMiniKits_LSW_Draw,1372,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -1457,7 +1457,7 @@ address,symbol,size,ctype
 0x00485030,_Status_DrawPlayerIconsPc,168,"void __cdecl(STATUSPACKET_s *, f32, f32)"
 0x004850e0,_StatusIconsOnOff,58,f32 __cdecl(f32)
 0x00485120,_UpdateNewMiniKits,135,"i32 __cdecl(STATUSPACKET_s *, STATUS_STAGE_s *)"
-0x4851b0,_DrawStatusMiniKit,1520,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"
+0x4851b0,_DrawStatusMiniKit,1568,"void __cdecl(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32)"
 0x4857d0,_AddStatusMiniKitParts,913,void __cdecl(void)
 0x485b70,_Status_DrawPromptMenu,1124,"void __cdecl(STATUSPACKET_s *, i32, f32)"
 0x485fe0,_DrawBonusTime,530,"void __cdecl(STATUSPACKET_s *, f32, i32)"
@@ -11447,7 +11447,7 @@ address,symbol,size,ctype
 0x6e27f0,?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1(void)
 0x006e2810,?SetColorWriteMaskPc@PC_DEVICE_BACKEND_PC@@QAEXEEH@Z,107,"void __thiscall(u8,u8,i32)"
 0x6e2880,?SetRenderTarget@PC_DEVICE_BACKEND_PC@@QAEXHPAUPC_TEXTURE_RESOURCE_PC@@@Z,87,"void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32,PC_TEXTURE_RESOURCE_PC*)"
-0x6e28e0,?CaptureScreenshotPc@PC_DEVICE_BACKEND_PC@@QAEIIIPAPAX@Z,501,
+0x6e28e0,?CaptureScreenshotPc@PC_DEVICE_BACKEND_PC@@QAEIIIPAPAX@Z,520,
 0x6e2b40,?HasRequestedModeChangedPc@PC_DEVICE_BACKEND_PC@@QAEEXZ,90,
 0x6e2ba0,?InitializeFactory@PC_DEVICE_BACKEND_PC@@QAEXXZ,187,void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory(void)
 0x6e2c60,?Shutdown@PC_DEVICE_BACKEND_PC@@QAEXXZ,123,void __thiscall PC_DEVICE_BACKEND_PC::Shutdown(void)
