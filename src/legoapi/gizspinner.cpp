@@ -1298,36 +1298,29 @@ extern "C" void __cdecl GizSpinners_Update(void *world_pointer, void *unused, f3
             }
         }
         if (spinner->output_pause_time > 0.0f) {
-            spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
             spinner->output_pause_time -= FRAMETIME;
-            if (0.0f >= spinner->output_pause_time) {
+            spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
+            if (spinner->output_pause_time <= 0.0f) {
                 spinner->output_pause_time = 0.0f;
                 spinner->state_flags &= ~0x20u;
             }
         }
         GizSpinner_Update(spinner);
         i32 output = SpinnerCurrentOutputPc(spinner);
-        if ((spinner->flags & 0x40) == 0) {
-            if (output == -1) {
-                spinner->flags &= ~0x40u;
-                continue;
-            }
-            if (spinner->field_0x2d8 > 0.0f) {
-                spinner->output_pause_time = spinner->field_0x2d8;
-                spinner->flags |= 0x40;
-                GAMEOBJECT *owner = SpinnerOwnerPc(spinner);
-                if (owner != NULL)
-                    NewRumble(owner->pad->bound_pad, 0.8f, 0);
-            }
+        if ((spinner->flags & 0x40) == 0 && output != -1 && spinner->field_0x2d8 > 0.0f) {
+            spinner->output_pause_time = spinner->field_0x2d8;
+            spinner->flags |= 0x40;
+            GAMEOBJECT *owner = SpinnerOwnerPc(spinner);
+            if (owner != NULL)
+                NewRumble(owner->pad->bound_pad, 0.8f, 0);
         }
-        if (output == -1) {
+        if (output != -1) {
+            if (spinner->spin_timer == 0.0f && (spinner->flags & 0x32) == 0 && (spinner->state_flags & 8) != 0 &&
+                ((spinner->state_flags & 0x400) == 0 || spinner->anim_set->state != 2))
+                SpinnerSeekOutputPc(spinner, output);
+        } else {
             spinner->flags &= ~0x40u;
-            continue;
         }
-        if (spinner->spin_timer != 0.0f || (spinner->flags & 0x32) != 0 || (spinner->state_flags & 8) == 0 ||
-            ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == 2))
-            continue;
-        SpinnerSeekOutputPc(spinner, output);
     }
 }
 
