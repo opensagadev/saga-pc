@@ -1135,12 +1135,12 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
     NUFILE file;
     NUFPAR_PC *parser;
 
+    flow = NULL;
     numRemaps = 0;
     remap = remaps;
     load_buff = buffer;
     load_endbuff = end;
     load_nflowboxes = 0;
-    flow = NULL;
     file = NuFileOpen(path, 0);
     if (file != 0) {
         parser = NuFParOpen(file);
