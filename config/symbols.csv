@@ -10750,6 +10750,8 @@ address,symbol,size,ctype
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
 0x6c1540,??0PropertyMenuList@@QAE@XZ,13,
+0x6c1550,?First@PropertyMenuList@@QAEPAVPropertyMenu@@XZ,3,
+0x6c1560,?Last@PropertyMenuList@@QAEPAVPropertyMenu@@XZ,4,
 0x6c1570,?InsertBefore@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,96,
 0x6c15d0,?InsertAfter@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,94,
 0x6c1630,?Remove@PropertyMenuList@@QAEXPAVPropertyMenu@@@Z,63,
