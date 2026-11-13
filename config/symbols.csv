@@ -10450,6 +10450,8 @@ address,symbol,size,ctype
 0x6b8ee0,?SubRender@EdSubSystem@@UAEXXZ,1,
 0x6b8ef0,??_EEdSubSystem@@UAEPAXI@Z,,COFF weak alias of ??_GEdSubSystem@@UAEPAXI@Z; no independent body
 0x6b8ef0,??_GEdSubSystem@@UAEPAXI@Z,11,native scalar-deleting dtor exactVTidentity
+0x6b8f90,?GetVal@EdSpecialObjectControl@@QAEXAAUnuspecial_handle_s@@@Z,35,
+0x6b8fc0,?SetVal@EdSpecialObjectControl@@QAEXAAUnuspecial_handle_s@@@Z,37,
 0x6b9050,?SetCameraPosition@LevelEditor@@QAEXAAUVuVec@@@Z,39,
 0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
 0x6b9110,?WriteBeginBlock@BaseEditor@@SAXHH@Z,73,
