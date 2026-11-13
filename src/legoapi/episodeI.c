@@ -2134,7 +2134,6 @@ void __cdecl PodSprintA_Panel(WORLDINFO *world) {
     char text[256];
     i32 count;
     f32 scale;
-    LEVEL_OBJECT_RUNTIME_PC *icon;
     PodSprint_UpdateAlphaPc();
     if (Paused == 0 && podstartracealpha != 0.0f && PODSPRINT->countdown > 0.0f) {
         count = (i32)PODSPRINT->countdown + 1;
@@ -2151,10 +2150,11 @@ void __cdecl PodSprintA_Panel(WORLDINFO *world) {
                  (u8)(podstartracealpha * 128.0));
     }
     if (podlapalpha > 0.0f) {
-        icon = &world->level_objects[0x135 + PODSPRINT->ai_state];
-        if (icon->active != 0)
+        i32 object_index = 0x135 + PODSPRINT->ai_state;
+        if (world->level_objects[object_index].active != 0)
             DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
-                              PodSprintLapIconScalePc, 0, 0, 0, &icon->special, 0, podlapalpha);
+                              PodSprintLapIconScalePc, 0, 0, 0, &world->level_objects[object_index].special, 0,
+                              podlapalpha);
     }
 }
 
@@ -2217,7 +2217,6 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 
 void __cdecl PodRacePanel(WORLDINFO *world) {
     char text[256];
-    LEVEL_OBJECT_RUNTIME_PC *icon;
     f32 scale;
     i32 count;
     if (netclient != 0)
@@ -2225,10 +2224,11 @@ void __cdecl PodRacePanel(WORLDINFO *world) {
     else
         ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha = podlapalpha;
     if (podlapalpha > 0.0f) {
-        icon = &world->level_objects[(i32)((u32)Lap + 0x135u)];
-        if (icon->active != 0)
+        i32 object_index = Lap + 0x135;
+        if (world->level_objects[object_index].active != 0)
             DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
-                              PodSprintLapIconScalePc, 0, 0, 0, &icon->special, 0, podlapalpha);
+                              PodSprintLapIconScalePc, 0, 0, 0, &world->level_objects[object_index].special, 0,
+                              podlapalpha);
     }
     if (podhurryalpha > 0.0f && PodRacePc->lap_display > 0.0f) {
         count = (i32)PodRacePc->lap_display + 1;
