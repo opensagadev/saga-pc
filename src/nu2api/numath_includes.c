@@ -4202,12 +4202,12 @@ f32 __cdecl NuAtan2(f32 x, f32 y) {
 }
 
 static u16 NuAngAtanQuadrant(f32 dx, f32 dy) {
-    i16 index;
+    i32 index;
     if (dx > dy) {
-        index = (i16)(dy * 512.0 / dx);
+        index = (i32)((dy * 512.0) / dx);
         return 0x4000 - ang[index];
     }
-    index = (i16)(dx * 512.0 / dy);
+    index = (i32)((dx * 512.0) / dy);
     return ang[index];
 }
 
