@@ -827,25 +827,24 @@ static void TorpedoRotateYPc(NUMTX *m, NUANG angle) {
     m->m32 = m->m32 * cos_y - m30 * sin_y;
 }
 
+#define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 void __cdecl DrawTorpedos(GAMEOBJECT *object) {
-    TORPEDO_RUNTIME_PC *packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
     NUMTX matrix;
     i32 index;
     u16 pitch;
     f32 blend;
     f64 machine_scale;
     f32 scale;
-    if (packet == NULL)
+    if (TORPEDO_PACKET_PC(object) == NULL)
         return;
-    for (index = 0; index < packet->count; ++index) {
-        packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
-        pitch = (u16)(0xc000 - (u16)packet->pickup_flags[index]);
-        if ((f64)packet->pickup_timer < (f64)0.8f && index == packet->count - 1) {
-            pitch = (u16)(i32)((f64)RotDiff(0, pitch) *
-                               NuTrigTable[(((i32)((f64)((TORPEDO_RUNTIME_PC *)object->torpedo)->pickup_timer /
-                                                   (f64)0.8f * 16384.0)) >>
-                                            1) &
-                                           0x7fff]);
+    for (index = 0; index < TORPEDO_PACKET_PC(object)->count; ++index) {
+        pitch = (u16)(0xc000 - (u16)TORPEDO_PACKET_PC(object)->pickup_flags[index]);
+        if ((f64)TORPEDO_PACKET_PC(object)->pickup_timer < (f64)0.8f && index == TORPEDO_PACKET_PC(object)->count - 1) {
+            pitch =
+                (u16)(i32)((f64)RotDiff(0, pitch) *
+                           NuTrigTable[(((i32)((f64)TORPEDO_PACKET_PC(object)->pickup_timer / (f64)0.8f * 16384.0)) >>
+                                        1) &
+                                       0x7fff]);
         }
         matrix.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
         matrix.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
@@ -864,17 +863,18 @@ void __cdecl DrawTorpedos(GAMEOBJECT *object) {
         matrix.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
         NuMtxPreRotateX(&matrix, pitch);
-        packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
-        TorpedoRotateYPc(&matrix, packet->pickup_data[index]);
-        NuMtxTranslate(&matrix, &packet->pickup_positions[index]);
-        packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
-        blend = 1.0f;
-        if (packet->pickup_state == 0 && index == packet->count - 1) {
+        TorpedoRotateYPc(&matrix, TORPEDO_PACKET_PC(object)->pickup_data[index]);
+        NuMtxTranslate(&matrix, &TORPEDO_PACKET_PC(object)->pickup_positions[index]);
+        if (TORPEDO_PACKET_PC(object)->pickup_state == 0 && index + 1 == TORPEDO_PACKET_PC(object)->count) {
             blend = (f32)(1.0 -
-                          ((f64)NuTrigTable[(((i32)((f64)packet->pickup_timer / (f64)0.8f * 32768.0 + 16384.0)) >> 1) &
+                          ((f64)NuTrigTable[(((i32)((f64)TORPEDO_PACKET_PC(object)->pickup_timer / (f64)0.8f * 32768.0 +
+                                                    16384.0)) >>
+                                             1) &
                                             0x7fff] +
                            1.0) *
                               0.5);
+        } else {
+            blend = 1.0f;
         }
         machine_scale = (f64)((GIZTORPMACHINESYS_s *)WORLD->torpedo_machine_sys)->scale * 4.0;
         scale = (f32)(((f64)object->bounds_radius * 2.0 - machine_scale) * blend + machine_scale);
@@ -883,6 +883,6 @@ void __cdecl DrawTorpedos(GAMEOBJECT *object) {
             NuSpecialDrawAt(&WORLD->level_objects[0x79].special, &matrix);
         if (WORLD->level_objects[0x7a].active)
             NuSpecialDrawAt(&WORLD->level_objects[0x7a].special, &matrix);
-        packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
     }
 }
+#undef TORPEDO_PACKET_PC
