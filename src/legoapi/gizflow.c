@@ -1203,11 +1203,10 @@ void __cdecl DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
         if (data == NULL)
             continue;
         for (j = 0; j < data->gizmo_count; ++j) {
-            char *name;
             if (data->gizmos[j]->gizmo != NULL)
                 continue;
-            name = ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo);
-            if (NuStrICmp(data->gizmos[j]->name, name) != 0)
+            if (NuStrICmp(data->gizmos[j]->name,
+                          ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo)) != 0)
                 continue;
             data->gizmos[j]->gizmo = gizmo;
             if ((box->state_flags_low & 1) == 0) {
