@@ -670,6 +670,7 @@ extern "C" {
         i32 duplicate;
         i32 level;
         i32 i;
+        i32 done;
         (void)end;
         CutList = NULL;
         CUTCOUNT = 0;
@@ -684,10 +685,12 @@ extern "C" {
             path[0] = '\0';
             file[0] = '\0';
             entries[CUTCOUNT].level = -1;
-            while (NuFParGetLine(fp) != 0 && NuFParGetWord(fp) != 0) {
+            done = 0;
+            while (done == 0 && NuFParGetLine(fp) != 0 && NuFParGetWord(fp) != 0) {
                 if (NuStrICmp(fp->word_buffer_ptr, "cutscene_end") == 0) {
+                    done = 1;
                     if (path[0] == '\0' || file[0] == '\0' || entries[CUTCOUNT].level == -1)
-                        break;
+                        continue;
                     duplicate = 0;
                     i = 0;
                     while (i < CUTCOUNT && duplicate == 0) {
@@ -711,9 +714,7 @@ extern "C" {
                         reinterpret_cast<void(__cdecl *)(char *, char *, char *)>(CutSceneConfigMissingPc)(
                             path, file, LDataList[entries[CUTCOUNT].level].name);
                     }
-                    break;
-                }
-                if (NuStrICmp(fp->word_buffer_ptr, "dir") == 0 || NuStrICmp(fp->word_buffer_ptr, "path") == 0) {
+                } else if (NuStrICmp(fp->word_buffer_ptr, "dir") == 0 || NuStrICmp(fp->word_buffer_ptr, "path") == 0) {
                     if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 0x80)
                         NuStrCpy(path, fp->word_buffer_ptr);
                 } else if (NuStrICmp(fp->word_buffer_ptr, "file") == 0 ||
