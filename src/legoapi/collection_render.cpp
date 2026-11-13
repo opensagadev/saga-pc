@@ -56,8 +56,6 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                     f32 opacity = 1.0f;
                     i32 model_index;
                     if (models != NULL && InModelList(models, id, &model_index) != 0) {
-                        if (hide_selected != 0)
-                            continue;
                         if (model_index == 0) {
                             frame = LEGOOBJ_ICON_FRAME_BLUE;
                             opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
@@ -72,6 +70,8 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                                             .375);
                         } else
                             opacity = .25f;
+                        if (hide_selected != 0)
+                            continue;
                     }
                     if (Collection_Got(id) == 0) {
                         opacity = (f32)(opacity * .25);
