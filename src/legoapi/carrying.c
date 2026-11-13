@@ -302,52 +302,34 @@ void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
     struct nuvec_s *translation;
     PLAYERCHARACTERCONFIG_PC *config;
     struct GIZMOBLOWUP_PC *blowup;
-    if (((i8)(object->field_e22)) >= 0) {
-        u8 state;
-        if (LEGOCONTEXT_SUPERCARRY == -1 || object->character_context != LEGOCONTEXT_SUPERCARRY)
-            return;
-        state = object->field_7b3;
-        if (state == 0) {
-            if ((object->context_variant_flags & 0x40) == 0)
-                return;
-        } else if (state == 1) {
-            if ((object->context_variant_flags & 0x40) != 0)
-                return;
-        } else if (state == 2) {
-        } else if (state == 3) {
-        } else if (state == 6) {
-        } else if (state == 7) {
-        } else if (state == 4) {
-            if ((object->context_variant_flags & 0x40) != 0)
-                return;
-        } else if (state == 5) {
-            if ((object->context_variant_flags & 0x40) != 0)
-                return;
+    if ((object->flags_e20 & 0x800000) != 0 ||
+        (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
+         ((object->field_7b3 == 0 && (object->context_variant_flags & 0x40) != 0) ||
+          (object->field_7b3 == 1 && (object->context_variant_flags & 0x40) == 0) || object->field_7b3 == 2 ||
+          object->field_7b3 == 3 || object->field_7b3 == 6 || object->field_7b3 == 7 ||
+          (object->field_7b3 == 4 && (object->context_variant_flags & 0x40) == 0) ||
+          (object->field_7b3 == 5 && (object->context_variant_flags & 0x40) == 0)))) {
+        translation = NULL;
+        if (SuperCarry_AlignObject != 0) {
+            NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
+            translation = &offset;
+            NuMtxSetRotationY(&matrix, object->takeover_start_angle);
         } else {
-            return;
+            matrix = NuMtxSetIdentityTemplate;
+            *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS_PC *)object)->basis[0];
+            *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS_PC *)object)->basis[1];
+            *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS_PC *)object)->basis[2];
         }
+        if (SuperCarry_KeepObjectLevel != 0) {
+            NuMtxRotateY(&matrix, object->field_0x276);
+            dco_locatorposonly = 1;
+        }
+        config = object->character_data->game_character;
+        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+        DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0],
+                              config->hand_locators[1], object->locator_matrices, ((u8)object->field_107c),
+                              object->layer_mask, &matrix, translation, 1.0f, 1.0f);
     }
-
-    translation = NULL;
-    if (SuperCarry_AlignObject != 0) {
-        NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
-        NuMtxSetRotationY(&matrix, object->takeover_start_angle);
-        translation = &offset;
-    } else {
-        matrix = numtx_identity;
-        *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS_PC *)object)->basis[0];
-        *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS_PC *)object)->basis[1];
-        *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS_PC *)object)->basis[2];
-    }
-    if (SuperCarry_KeepObjectLevel != 0) {
-        NuMtxRotateY(&matrix, object->field_0x276);
-        dco_locatorposonly = 1;
-    }
-    config = object->character_data->game_character;
-    blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
-    DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0],
-                          config->hand_locators[1], object->locator_matrices, ((u8)object->field_107c),
-                          object->layer_mask, &matrix, translation, 1.0f, 1.0f);
 }
 
 void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
