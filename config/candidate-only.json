@@ -382,7 +382,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/hub.cpp",
+   "unit": "src/legogame/hub.cpp",
    "symbol": "?HubFabsPc@@YAMM@Z",
    "kind": "function"
   },
