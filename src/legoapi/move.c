@@ -3939,7 +3939,7 @@ typedef struct zap_variant_view_pc_s {
 
 static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
     NUVEC forward, delta, position, direction, colour;
-    f32 nearest_distance, distance, hit_frame, animation_end, lightning_start, lightning_end, timer;
+    f32 nearest_distance, distance, temp, animation_end, lightning_start, lightning_end, timer;
     i32 index, deactivated;
     u16 angle;
     GAMEOBJECT *candidate, *target;
@@ -3953,8 +3953,8 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         target = object->force_target;
         origin = GetZapOrigin(object);
         if ((object->context_variant_flags & 0x40) == 0) {
-            hit_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
-            if (!(hit_frame >= 1.0f) || *frame >= hit_frame)
+            temp = AnimListFrame(object->character_model, object->field_7aa, 0);
+            if (!(temp >= 1.0f) || *frame >= temp)
                 object->context_variant_flags |= 0x40;
             if ((object->context_variant_flags & 0x40) != 0) {
                 AddGameDebris(WORLD->game_debris_sys, object->id == (u16)id_R2Q5 ? 1 : 3, origin);
@@ -4012,12 +4012,12 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                         object->flags_e20 |= 0x02000000;
                         PlaySfx("ForceLightningLp", &target->collision_position);
                         if (object->dynamic_light_id != -1) {
-                            f32 inner, outer;
+                            f32 outer;
                             rtlDynamicEnable(object->dynamic_light_id, 1);
                             distance = NuVecDist(&target->collision_position, &object->collision_position, &direction);
-                            inner = distance * 0.5;
-                            outer = inner + 0.5;
-                            rtlDynamicSetRadii(object->dynamic_light_id, inner, outer);
+                            temp = distance * 0.5;
+                            outer = temp + 0.5;
+                            rtlDynamicSetRadii(object->dynamic_light_id, temp, outer);
                             qrand();
                             if (object->id == (u16)id_R2Q5) {
                                 colour.x = qrand() < 0x8000 ? 2.0f : 0.25f;
