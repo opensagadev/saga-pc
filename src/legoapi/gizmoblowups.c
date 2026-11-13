@@ -556,7 +556,7 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
                                             i32 mode, u32 mask, u32 value, u32 secondary_mask) {
     GIZMOBLOWUP_PC *target = WORLD->gizmo_blowups;
     GIZMOBLOWUP_PC *nearest = NULL;
-    f32 nearest_distance, distance, radius, maximum, minimum;
+    f32 nearest_distance, distance, limit;
     u32 flags;
     NUVEC delta;
     i32 i, behind;
@@ -565,8 +565,10 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
     nearest_distance = range * range;
     GizmoBlowUpOpponent_Behind = 0;
     for (i = 0; i < WORLD->gizmo_blowup_count; ++i, ++target) {
-        if ((target->status_flags & 0x80c001) != 0x80c000 || ((object->flags_1fc & 0x80) && target->platform_id != -1 &&
-                                                              target->platform_id == object->supporting_platform_id))
+        if ((target->status_flags & 1) || !(target->status_flags & 0x4000) || !(target->status_flags & 0x800000) ||
+            !(target->status_flags & 0x8000) ||
+            ((object->flags_1fc & 0x80) && target->platform_id != -1 &&
+             target->platform_id == object->supporting_platform_id))
             continue;
         flags = target->draw_flags;
         if ((flags & 0x20) && ShadowMode == 0)
@@ -585,41 +587,40 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
         if (mode == 5) {
             if ((object->collision_max.y - object->collision_min.y) * 1.5 + object->collision_max.y <
                     target->bounds_min.y ||
-                target->bounds_max.y < object->collision_min.y)
+                object->collision_min.y > target->bounds_max.y)
                 continue;
             distance = NuVecXZDistSqr(&object->collision_position, &target->mid_position, &delta);
         } else {
-            if (target->bounds_min.y > object->collision_max.y)
+            if (object->collision_max.y < target->bounds_min.y)
                 continue;
             distance = NuVecDistSqr(&object->collision_position, &target->mid_position, &delta);
         }
         if (!(distance < nearest_distance))
             continue;
         if (mode == 2) {
-            GizmoBlowUpOpponent_Behind = 0;
             nearest = target;
+            GizmoBlowUpOpponent_Behind = 0;
             nearest_distance = distance;
             continue;
         }
         if (extra_radius > 0.0f) {
-            radius = object->bounds_radius + target->target_scale;
-            maximum = radius + extra_radius;
-            if (distance >= maximum * maximum)
+            limit = object->bounds_radius + target->target_scale + extra_radius;
+            if (distance >= limit * limit)
                 continue;
             if (minimum_radius > 0.0f) {
-                minimum = radius + minimum_radius;
-                if (distance < minimum * minimum)
+                limit = object->bounds_radius + target->target_scale + minimum_radius;
+                if (distance < limit * limit)
                     continue;
             }
         }
         NuVecRotateY(&delta, &delta, -(i32)object->movement_facing_angle);
-        behind = 0;
         if (delta.z >= 0.0f) {
+            behind = 1;
             if (mode != 4 || LegoActPunchBehindPc == -1 ||
                 object->character_model->model_data_b[LegoActPunchBehindPc] == NULL)
                 continue;
-            behind = 1;
-        }
+        } else
+            behind = 0;
         if (distance < nearest_distance) {
             nearest = target;
             nearest_distance = distance;
