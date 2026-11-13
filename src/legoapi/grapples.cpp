@@ -1174,10 +1174,11 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         Grapple_InitializeSwingAnglePc(object);
         f32 maximum_length;
         maximum_length = Grapple_MaximumLengthPc(object);
-        object->big_jump_animation = 0;
+        object->context_hover_target_y += 0.75f * FRAMETIME;
+        if (object->context_hover_target_y > maximum_length)
+            object->context_hover_target_y = maximum_length;
         object->field_7a8 = 0x2000;
-        const f32 depth = 0.75f * FRAMETIME + object->context_hover_target_y;
-        object->context_hover_target_y = (depth > maximum_length ? maximum_length : depth);
+        object->big_jump_animation = 0;
         if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & 0x80) != 0) {
             object->big_jump_animation = static_cast<u8>(static_cast<i32>(
                 (object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
