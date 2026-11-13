@@ -671,7 +671,8 @@ check:
                             other->collision_min.y > destination->position.y + owner->scaled_height) {
                             continue;
                         }
-                        if (!(offset.x * offset.x + offset.z * offset.z < clearance * clearance))
+                        distance = offset.x * offset.x + offset.z * offset.z;
+                        if (!(distance < clearance * clearance))
                             continue;
                         packet->path_connection_state = 1;
                         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
