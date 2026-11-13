@@ -64,7 +64,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 extern char TextInputKeyNameTextPc7516c0[1];
-extern char *SecurityDoorOutputNamePc;
+extern char *SecurityDoor_OutputName;
 
 static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
@@ -314,7 +314,7 @@ i32 __cdecl SecurityDoor_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 char *__cdecl SecurityDoor_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return SecurityDoorOutputNamePc;
+    return SecurityDoor_OutputName;
 }
 
 i32 __cdecl SecurityDoor_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -377,7 +377,7 @@ NUVEC *__cdecl SecurityDoor_GetPos(GIZMO_PC *gizmo) {
 const char PCSecurityDoorOutputTextPc[7] = "Opened";
 #pragma const_seg()
 #pragma data_seg(".data$SecurityDoorOutputNamePc")
-char *SecurityDoorOutputNamePc = (char *)PCSecurityDoorOutputTextPc;
+char *SecurityDoor_OutputName = (char *)PCSecurityDoorOutputTextPc;
 #pragma data_seg()
 
 #pragma const_seg(".rdata$PCContextName_SecurityDoor")

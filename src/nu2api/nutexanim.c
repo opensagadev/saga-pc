@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #pragma data_seg(".data$g_texAnimCriticalSection")
-static i32 g_texAnimCriticalSection = -1;
+static i32 nutexanm_critical_section = -1;
 #pragma data_seg()
 #pragma bss_seg(".bss$ntal_free")
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
@@ -12,7 +12,7 @@ void __cdecl NuTexAnimAddList(void *animation) {
     if (animation == NULL) {
         return;
     }
-    PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);
+    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
     if (ntal_free != NULL) {
         node = ntal_free;
         if (node->next == NULL) {
@@ -27,12 +27,12 @@ void __cdecl NuTexAnimAddList(void *animation) {
         }
         ntal_first = node;
     }
-    PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
 }
 
 void __cdecl NuTexAnimRemoveList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;
-    PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);
+    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
     for (node = ntal_first; node != NULL; node = node->next) {
         if (node->first == animation) {
             if (node->next != NULL) {
@@ -46,11 +46,11 @@ void __cdecl NuTexAnimRemoveList(void *animation) {
             node->next = ntal_free;
             ntal_free = node;
             NuThreadEnableThreadSwap();
-            PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+            PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
             return;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
 }
 
 PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *texture_ids, void *program) {
@@ -143,20 +143,20 @@ typedef struct TEXTURE_ANIM_MATERIAL_PC {
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, diffuse_texture_id) == 0xb8);
 
-static u32 TextureAnimationSignalsOffPc = 0, TextureAnimationSignalsOnPc = 0;
-static i32 TextureAnimationFrameTimePc = 0;
-static u16 TextureAnimationActiveMaskPc = 0;
-static u32 TextureAnimationPreviousSignalsPc = 0;
+static u32 nta_sig_off = 0, nta_sig_on = 0;
+static i32 nta_iframetime = 0;
+static u16 nta_script_mask = 0;
+static u32 nta_sig_old = 0;
 
 void __cdecl NuTexAnimSetSignals(u32 signals) {
-    u32 changed = TextureAnimationPreviousSignalsPc ^ signals;
-    TextureAnimationSignalsOnPc = changed & signals;
-    TextureAnimationSignalsOffPc = changed & ~signals;
-    TextureAnimationPreviousSignalsPc = signals;
+    u32 changed = nta_sig_old ^ signals;
+    nta_sig_on = changed & signals;
+    nta_sig_off = changed & ~signals;
+    nta_sig_old = signals;
 }
 
 void __cdecl NuTexAnimSetMask(i32 mask) {
-    TextureAnimationScriptMaskPc = (u16)mask;
+    script_mask = (u16)mask;
 }
 
 static i32 TextureAnimationConditionPrivatePc(i32 condition, i32 texture, i32 value) {
@@ -224,13 +224,13 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
     TEXTURE_ANIM_PROGRAM_PC *program = (TEXTURE_ANIM_PROGRAM_PC *)environment->program;
     TEXTURE_ANIM_MATERIAL_PC *material;
     i32 i;
-    if (program == NULL || (program->mask & TextureAnimationActiveMaskPc) == 0) {
+    if (program == NULL || (program->mask & nta_script_mask) == 0) {
         return;
     }
     material = (TEXTURE_ANIM_MATERIAL_PC *)environment->material;
-    if ((TextureAnimationSignalsOffPc & program->off_mask) != 0) {
+    if ((nta_sig_off & program->off_mask) != 0) {
         for (i = 0; i < 32; ++i) {
-            if ((TextureAnimationSignalsOffPc & (program->off_mask & (1U << i))) != 0) {
+            if ((nta_sig_off & (program->off_mask & (1U << i))) != 0) {
                 environment->instruction_index = program->off_signal[i];
                 environment->wait_remaining = 0;
                 environment->call_depth = 0;
@@ -239,9 +239,9 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             }
         }
     }
-    if ((TextureAnimationSignalsOnPc & program->on_mask) != 0) {
+    if ((nta_sig_on & program->on_mask) != 0) {
         for (i = 0; i < 32; ++i) {
-            if ((TextureAnimationSignalsOnPc & (program->on_mask & (1U << i))) != 0) {
+            if ((nta_sig_on & (program->on_mask & (1U << i))) != 0) {
                 environment->instruction_index = program->on_signal[i];
                 environment->wait_remaining = 0;
                 environment->call_depth = 0;
@@ -251,7 +251,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
         }
     }
     if (environment->wait_remaining != 0) {
-        environment->wait_remaining -= TextureAnimationFrameTimePc;
+        environment->wait_remaining -= nta_iframetime;
     }
     if (environment->wait_remaining > 0) {
         return;
@@ -296,7 +296,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                     program->instructions[environment->instruction_index + 1];
                 if (program->instructions[environment->instruction_index + 2] != 0) {
                     i32 *loop_count = &environment->loop_counts[environment->loop_depth];
-                    i32 random = NuRand(&TextureAnimationRandomPc);
+                    i32 random = NuRand(&texanim_rand);
                     *loop_count += random % program->instructions[environment->instruction_index + 2];
                 }
                 environment->instruction_index += 3;
@@ -341,21 +341,21 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 environment->instruction_index += 2;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
-                    environment->wait_remaining += NuRand(&TextureAnimationRandomPc) % environment->wait_random;
+                    environment->wait_remaining += NuRand(&texanim_rand) % environment->wait_random;
                 }
                 if (environment->wait_remaining < 0) {
                     environment->wait_remaining = 0;
                 }
                 return;
             case 1: {
-                i32 random = NuRand(&TextureAnimationRandomPc);
+                i32 random = NuRand(&texanim_rand);
                 environment->texture_index = random % program->instructions[environment->instruction_index + 1];
                 material->texture_id = environment->texture_ids[environment->texture_index];
                 material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
                 environment->instruction_index += 2;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
-                    environment->wait_remaining += NuRand(&TextureAnimationRandomPc) % environment->wait_random;
+                    environment->wait_remaining += NuRand(&texanim_rand) % environment->wait_random;
                 }
                 if (environment->wait_remaining < 0) {
                     environment->wait_remaining = 0;
@@ -372,7 +372,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 environment->instruction_index += 4;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
-                    environment->wait_remaining += NuRand(&TextureAnimationRandomPc) % environment->wait_random;
+                    environment->wait_remaining += NuRand(&texanim_rand) % environment->wait_random;
                 }
                 if (environment->wait_remaining < 0) {
                     environment->wait_remaining = 0;
@@ -381,8 +381,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             case 3: {
                 i32 range = program->instructions[environment->instruction_index + 2] -
                             program->instructions[environment->instruction_index + 1] + 1;
-                i32 texture = program->instructions[environment->instruction_index + 1] +
-                              NuRand(&TextureAnimationRandomPc) % range;
+                i32 texture = program->instructions[environment->instruction_index + 1] + NuRand(&texanim_rand) % range;
                 environment->texture_index = MIN(program->instructions[environment->instruction_index + 4],
                                                  MAX(program->instructions[environment->instruction_index + 3],
                                                      environment->texture_index + texture));
@@ -391,7 +390,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 environment->instruction_index += 5;
                 environment->wait_remaining += environment->wait_base;
                 if (environment->wait_random != 0) {
-                    environment->wait_remaining += NuRand(&TextureAnimationRandomPc) % environment->wait_random;
+                    environment->wait_remaining += NuRand(&texanim_rand) % environment->wait_random;
                 }
                 if (environment->wait_remaining < 0) {
                     environment->wait_remaining = 0;
@@ -402,7 +401,7 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                 environment->wait_remaining += program->instructions[environment->instruction_index + 1];
                 if (program->instructions[environment->instruction_index + 2] != 0) {
                     environment->wait_remaining +=
-                        NuRand(&TextureAnimationRandomPc) % program->instructions[environment->instruction_index + 2];
+                        NuRand(&texanim_rand) % program->instructions[environment->instruction_index + 2];
                 }
                 environment->instruction_index += 3;
                 if (environment->wait_remaining < 0) {
@@ -446,14 +445,14 @@ void __cdecl NuTexAnimResetList(TEXTURE_ANIMATION_PC *animation) {
 }
 
 void __cdecl NuTexAnimInitMutex(void) {
-    g_texAnimCriticalSection = PCThreadCriticalSectionCreate_candidate();
+    nutexanm_critical_section = PCThreadCriticalSectionCreate_candidate();
 }
 
 void __cdecl NuTexAnimProcess(f32 frame_time) {
     PC_TEXTURE_ANIM_LIST *list;
-    PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);
-    TextureAnimationFrameTimePc = (i32)(frame_time * 4096.0);
-    TextureAnimationActiveMaskPc = TextureAnimationScriptMaskPc;
+    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
+    nta_iframetime = (i32)(frame_time * 4096.0);
+    nta_script_mask = script_mask;
     for (list = ntal_first; list != NULL; list = list->next) {
         TEXTURE_ANIMATION_PC *animation = (TEXTURE_ANIMATION_PC *)list->first;
         while (animation != NULL) {
@@ -463,7 +462,7 @@ void __cdecl NuTexAnimProcess(f32 frame_time) {
             animation = animation->next;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
 }
 
 void __cdecl NuTexAnimRestart(void) {
@@ -496,7 +495,7 @@ static TEXTURE_ANIM_PROGRAM_PC *TextureAnimationParseProgramPrivatePc = 0;
 static char TextureAnimationLabelsPrivatePc[64][21] = {0};
 static i32 TextureAnimationLabelCountPrivatePc = 0;
 static char TextureAnimationExternalLabelsPrivatePc[256][21] = {0};
-static i32 TextureAnimationExternalLabelCountPrivatePc = 0;
+static i32 xdeflabtabcnt = 0;
 static i32 TextureAnimationLabelOffsetsPrivatePc[64] = {0};
 
 static PC_TEXTURE_ANIM_LIST TextureAnimationListBufferPc[64] = {0};
@@ -510,11 +509,11 @@ void __cdecl NuTexAnimProgSysInit(void) {
     TextureAnimationListBufferPc[63].next = NULL;
     ntal_free = TextureAnimationListBufferPc;
     ntal_first = NULL;
-    TextureAnimationExternalLabelCountPrivatePc = 0;
-    TextureAnimationPreviousSignalsPc = 0;
-    TextureAnimationSignalsOffPc = 0;
-    TextureAnimationSignalsOnPc = 0;
-    TextureAnimationRandomPc.value = 0;
+    xdeflabtabcnt = 0;
+    nta_sig_old = 0;
+    nta_sig_off = 0;
+    nta_sig_on = 0;
+    texanim_rand.value = 0;
 }
 
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name) {
@@ -567,16 +566,16 @@ static i32 __cdecl TextureAnimationExternalLabelIndexPrivatePc(char *name) {
     if (strlen(name) >= 21) {
         name[20] = 0;
     }
-    for (i = 0; i < TextureAnimationExternalLabelCountPrivatePc; ++i) {
+    for (i = 0; i < xdeflabtabcnt; ++i) {
         if (NuStrICmp(TextureAnimationExternalLabelsPrivatePc[i], name) == 0) {
             return i;
         }
     }
-    if (TextureAnimationExternalLabelCountPrivatePc >= 256) {
+    if (xdeflabtabcnt >= 256) {
         AnimationDiagnosticNoOpPc();
     }
-    NuStrCpy(TextureAnimationExternalLabelsPrivatePc[TextureAnimationExternalLabelCountPrivatePc++], name);
-    return TextureAnimationExternalLabelCountPrivatePc - 1;
+    NuStrCpy(TextureAnimationExternalLabelsPrivatePc[xdeflabtabcnt++], name);
+    return xdeflabtabcnt - 1;
 }
 
 static i32 __cdecl TextureAnimationReadComparisonPrivatePc(NUFPAR_PC *parser) {

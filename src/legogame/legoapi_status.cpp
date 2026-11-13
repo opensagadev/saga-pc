@@ -101,16 +101,16 @@ static void StatusMiniKitRotateZPc(NUMTX *m, i32 a) {
 }
 
 extern "C" {
-    i32 StatusGoldBrickStagePc = 0;
-    i32 StatusGoldBrickPhasePc = 0;
+    i32 DrawGoldBrick_Stage = 0;
+    i32 DrawGoldBrick_Phase = 0;
 
     __declspec(noinline) void __cdecl SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
         (void)unused;
         if (packet->gold_brick_enabled[index] != 0) {
             STATUS_STAGE_s *stage = packet->stage;
-            StatusGoldBrickStagePc = index;
-            StatusGoldBrickPhasePc = stage->field_0x14;
+            DrawGoldBrick_Stage = index;
+            DrawGoldBrick_Phase = stage->field_0x14;
         }
     }
 
@@ -390,7 +390,7 @@ extern "C" {
     }
 
     i32 StatusNewMinikitCountPc = 0;
-    i32 StatusCurrentMinikitPc = 0;
+    i32 currentminikit = 0;
     u32 StatusCollectedSuitBitsPc = 0;
 
     void __cdecl InitStatusScreen(WORLDINFO *world) {
@@ -407,7 +407,7 @@ extern "C" {
         StatusIconYPc = STATSPOSY;
         p->flags_word &= ~1u;
         StatusNewMinikitCountPc = 0;
-        StatusCurrentMinikitPc = 0;
+        currentminikit = 0;
         ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&p->player0_rumble_amount);
         ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&p->player1_rumble_amount);
         CoinTotalScale = 1.0f;
@@ -892,23 +892,22 @@ extern "C" {
         return position;
     }
 
-    f32 StatusMiniKitSlideTimePc = 0.25f;
-    f32 StatusMiniKitPopTimerPc = 0.0f;
+    f32 slidetime = 0.25f;
+    f32 pop_timer = 0.0f;
 }
 
 i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
     (void)packet;
     if (stage->field_0x18 > stage->field_0x1c) {
         stage->field_0x18 = 0.0f;
-        StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + 1u);
-        StatusMiniKitPopTimerPc = 0.5f;
-        StatusMiniKitProgressPc = 1.0f;
+        currentminikit = (i32)((u32)currentminikit + 1u);
+        pop_timer = 0.5f;
+        slideseek = 1.0f;
         return 1;
     }
-    if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc - StatusMiniKitSlideTimePc &&
-        stage->field_0x18 <= stage->field_0x1c - StatusMiniKitJibberLengthPc) {
-        StatusMiniKitProgressPc =
-            (stage->field_0x1c - stage->field_0x18 - StatusMiniKitJibberLengthPc) / StatusMiniKitSlideTimePc;
+    if (stage->field_0x18 > stage->field_0x1c - jibberlen - slidetime &&
+        stage->field_0x18 <= stage->field_0x1c - jibberlen) {
+        slideseek = (stage->field_0x1c - stage->field_0x18 - jibberlen) / slidetime;
     }
     return 0;
 }
@@ -929,7 +928,7 @@ void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_sca
     done.x = done.y = done.z = scale;
     NUVEC growing;
     growing.x = growing.y = growing.z = collected_scale;
-    switch ((i8)view->minikit.pieces[StatusCurrentMinikitPc].direction) {
+    switch ((i8)view->minikit.pieces[currentminikit].direction) {
         case 0:
             offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
             break;
@@ -955,9 +954,9 @@ void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_sca
             break;
         }
         NUMTX matrix = view->minikit.pieces[index].matrix;
-        if (index >= StatusCurrentMinikitPc) {
+        if (index >= currentminikit) {
             NuMtxScale(&matrix, &growing);
-            f32 reveal = index == StatusCurrentMinikitPc ? StatusMiniKitProgressPc : 1.0f;
+            f32 reveal = index == currentminikit ? slideseek : 1.0f;
             reveal = NuTrigTable[((i32)(reveal * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
             MINIKIT_PIECE_PC *piece = &((STATUS_WORLD_MINIKIT_READER_PC *)WORLD)->minikit.pieces[index];
             switch ((i8)piece->direction) {
@@ -983,7 +982,7 @@ void __cdecl DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_sca
         } else {
             NuMtxScale(&matrix, &done);
         }
-        if (index <= StatusCurrentMinikitPc) {
+        if (index <= currentminikit) {
             matrix.m30 += offset.x;
             matrix.m31 += offset.y;
             matrix.m32 += offset.z;
@@ -1288,11 +1287,11 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.draw_background_callback != NULL) {
             StatusPacket.draw_background_callback(&StatusPacket);
         }
-        if (StatusGoldBrickPhasePc != -1 && StatusGoldBrickStagePc != -1 &&
-            StatusPacket.stage->field_0x14 == StatusGoldBrickPhasePc &&
-            StatusPacket.current_gold_brick == StatusGoldBrickStagePc) {
+        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 &&
+            StatusPacket.stage->field_0x14 == DrawGoldBrick_Phase &&
+            StatusPacket.current_gold_brick == DrawGoldBrick_Stage) {
             f32 duration;
-            if (StatusGoldBrickPhasePc == 4) {
+            if (DrawGoldBrick_Phase == 4) {
                 duration = 5.5f;
                 if (StatusPacket.stage->field_0x18 >= duration) {
                     goto draw_stages;
@@ -1463,8 +1462,8 @@ extern "C" {
         i32 down = 0;
         (void)world;
         CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, seek_step);
-        StatusGoldBrickPhasePc = -1;
-        StatusGoldBrickStagePc = -1;
+        DrawGoldBrick_Phase = -1;
+        DrawGoldBrick_Stage = -1;
         switch (GAMEDEMO) {
             case 0:
                 break;

@@ -39,7 +39,7 @@ extern "C" {
     i32 Area_PlayerModelCount = 0;
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
     i32 Area_FreePlayModelCount = 0;
-    APICHARACTERMODELLIST AreaPlayerModelsPc[9] = {0};
+    APICHARACTERMODELLIST Area_PlayerModelList[9] = {0};
     i32 LevelLoadCount = 0;
     i32 Area_MissionModelCount = 0;
     i32 Area_StoryModelCount = 0;
@@ -316,8 +316,8 @@ extern "C" {
     f32 RenderBackdropBottomGPc = 0.0f;
     f32 RenderBackdropBottomBPc = 24.0f;
     i32 RenderBackdropBlackPc = 0;
-    f32 HubMiniKitViewerMoveWaitPc = 0.0f;
-    f32 HubMiniKitViewerMovePc = 0.0f;
+    f32 hub_minikitviewer_movewait = 0.0f;
+    f32 hub_minikitviewer_move = 0.0f;
     f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
     f32 HubHologramAlphaPc = 0.0f;
     i32 HubCompletionPointsPc = 0;
@@ -386,8 +386,8 @@ extern "C" {
     i32 MenuSuppressLeftHeldPc = 0;
     i32 MenuSuppressRightHeldPc = 0;
     i32 MENUSFX_MENUMOVE = -1;
-    i32 MenuKeyboardAlwaysPc = 0;
-    i32 MenuKeyboardSecondaryPc = 0;
+    i32 Menu_InSaveFlow = 0;
+    i32 Menu_InLoadFlow = 0;
     u8 MenuKeyboardOverrideActivePc = 0;
     i32 MenuKeyboardPendingPc = 0;
     i32 pause_i_pad = -1;
@@ -7607,7 +7607,7 @@ extern "C" {
     i32 DwaStreamCapacityPc = 0x2000;
 #pragma data_seg()
 #pragma data_seg(".data$FrameSleepMillisecondsPc")
-    i32 FrameSleepMillisecondsPc = 20;
+    i32 min_delay = 20;
 #pragma data_seg()
 #pragma data_seg(".data$FrameStartupDelayPc")
     f32 FrameStartupDelayPc = 6.0f;
@@ -7780,7 +7780,7 @@ extern "C" {
 }
 extern "C" {
 #pragma bss_seg(".bss$GizObstacleTriggerCountPc")
-    i32 GizObstacleTriggerCountPc = 0;
+    i32 ngizobstacletriggers = 0;
 #pragma bss_seg()
 }
 extern "C" {
@@ -7860,7 +7860,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Area_StoryModelListPc")
-    APICHARACTERMODELLIST Area_StoryModelListPc[49] = {0};
+    APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Game_AreaSave")
@@ -8455,16 +8455,16 @@ extern "C" {
 #pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer = 0;
 #pragma bss_seg(".bss$DdMaxJointsPc")
-    i32 DdMaxJointsPc = 0;
+    i32 ddmaxjoints = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$ModelAnimLayerListDispatchPc")
-    i32(__cdecl *ModelAnimLayerListDispatchPc)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
+    i32(__cdecl *MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
 #pragma data_seg()
 #pragma data_seg(".data$DwaWeightCursorPc")
-    i32 DwaWeightCursorPc = 61184;
+    i32 rndr_blend_shape_deformer_wt_cnt = 61184;
 #pragma data_seg()
 #pragma data_seg(".data$DwaPointerCursorPc")
-    i32 DwaPointerCursorPc = 2048;
+    i32 rndr_blend_shape_deformer_wt_ptrs_cnt = 2048;
 #pragma data_seg()
 #pragma bss_seg(".bss$DwaWeightPoolPc")
     DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669] = {0};
@@ -8474,7 +8474,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$AnimQuatDepthPc")
-    i32 AnimQuatDepthPc = 0;
+    i32 NumQuatPushes = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$AnimQuatSavedPc")
     u8 AnimQuatSavedPc[4] = {0};
@@ -10493,7 +10493,7 @@ extern "C" {
     i32 EdAnimLocalFrameCountPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$EdMainLocationVectorPc")
-    NUVEC *EdMainLocationVectorPc = 0;
+    NUVEC *ed_loc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$edanim_page_on")
     i32 edanim_page_on[8] = {0};
@@ -11862,7 +11862,7 @@ extern "C" {
     i32 AIActionDiagnosticMode = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ForceBackRadius2Pc")
-    f32 ForceBackRadius2Pc = 0;
+    f32 ForceBackRadius2 = 0;
 #pragma bss_seg()
 
 #pragma data_seg(".data$Tag_Mode")
@@ -12556,13 +12556,13 @@ extern "C" {
     TERRAIN_POLYGON_INFO_PC *ShadPoly = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$EShadowPolygonPc")
-    TERRAIN_POLYGON_INFO_PC *EShadowPolygonPc = 0;
+    TERRAIN_POLYGON_INFO_PC *EShadPoly = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ShadowRoofPolygonPc")
-    TERRAIN_POLYGON_INFO_PC *ShadowRoofPolygonPc = 0;
+    TERRAIN_POLYGON_INFO_PC *ShadRoofPoly = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
-    i16 TerrainShadowGroupIndexPc = 0;
+    i16 castnum = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$EShadY")
     f32 EShadY = 0;
@@ -12571,7 +12571,7 @@ extern "C" {
     f32 GetSurfaceInfoRoofHeightPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetSurfaceInfoSurfaceNormalPc")
-    NUVEC GetSurfaceInfoSurfaceNormalPc = {0};
+    NUVEC ShadNorm = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetSurfaceInfoWaterNormalPc")
     NUVEC GetSurfaceInfoWaterNormalPc = {0};
@@ -12591,7 +12591,7 @@ extern "C" {
     __declspec(align(4)) u8 NuScratchBackingAccessPc[0x4000] = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$NuScratchCurrentPc")
-    u8 *NuScratchCurrentPc = NuScratchBackingAccessPc;
+    u8 *ps2_scratch_free = NuScratchBackingAccessPc;
 #pragma data_seg()
 }
 
@@ -12616,10 +12616,10 @@ extern "C" {
     void *TerI = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainPlatformsOffPc")
-    u16 TerrainPlatformsOffPc = 0;
+    u16 NuTerrPlatsOff = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainScaledShapeCursorPc")
-    TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc = 0;
+    TERRAIN_POLYGON_INFO_PC *ScaleTerrain = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainShadowFloorIndexPc")
     i16 TerrainShadowFloorIndexPc = 0;
@@ -12655,25 +12655,25 @@ extern "C" {
     u16 TerrainSurfaceClassPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinInfoCountPc")
-    i32 TerrainSkinInfoCountPc = 0;
+    i32 PlatSkinCnt = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinInfosPc")
-    struct TERRAIN_SKIN_INFO_PC *TerrainSkinInfosPc = 0;
+    struct TERRAIN_SKIN_INFO_PC *PlatSkinInfo = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinUseEpochPc")
-    u32 TerrainSkinUseEpochPc = 0;
+    u32 TerrainUpadteCnt = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinUseRecordsPc")
-    struct TERRAIN_SKIN_USE_RECORD_PC *TerrainSkinUseRecordsPc = 0;
+    struct TERRAIN_SKIN_USE_RECORD_PC *SkinMemInfo = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinPoolSlotCountPc")
-    i32 TerrainSkinPoolSlotCountPc = 0;
+    i32 PlatSkinMaxStore = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinPoolSlotBytesPc")
-    i32 TerrainSkinPoolSlotBytesPc = 0;
+    i32 PlatSkinMaxSize = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinPoolBasePc")
-    u8 *TerrainSkinPoolBasePc = 0;
+    u8 *PlatSkinMem = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$TerrainScanRadiusEpsilon")
     extern const f64 TerrainScanRadiusEpsilon = 9.999999747378752e-06;
@@ -12688,10 +12688,10 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$TerrainShadowStatusPc")
-    i32 TerrainShadowStatusPc = 0;
+    i32 TerrPolyObj = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainScaleWorkBasePc")
-    TERRAIN_POLYGON_INFO_PC *TerrainScaleWorkBasePc = 0;
+    TERRAIN_POLYGON_INFO_PC *ScaleTerrainT1 = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$LAYER_HOVERIGNORE")
     u32 LAYER_HOVERIGNORE = 0xffffffffu;
@@ -12777,7 +12777,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$NuVpDirtyPc")
-    i32 NuVpDirtyPc = 0;
+    i32 vport_inval = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$PCDeviceLastResult")
@@ -14223,7 +14223,7 @@ extern "C" {
     i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
-    struct specialmove_pc_s *PlayerSpecialMoveDataPc = 0;
+    struct specialmove_pc_s *SpecialMove = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$EpisodeVI_ShowHearts")
     extern const char EpisodeVI_ShowHearts[11] = "ShowHearts";
@@ -15899,7 +15899,7 @@ extern "C" {
 }
 extern "C" {
 #pragma bss_seg(".bss$KillPartsBrickImpactWaitPc")
-    f32 KillPartsBrickImpactWaitPc = 0;
+    f32 brickimpactwait = 0;
 #pragma bss_seg()
 }
 extern "C" {
@@ -16197,7 +16197,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma data_seg(".data$DisorientAxisPc")
-    u8 DisorientAxisPc = 7;
+    u8 disorientAxis = 7;
 #pragma data_seg()
 
 #pragma bss_seg(".bss$WeaponInOut_NoAIJediSfx")
@@ -17431,7 +17431,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$PlayerSpecialMoveCountPc")
-    i32 PlayerSpecialMoveCountPc = 0;
+    i32 SpecialMoveCount = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$UsingExtraActionsFn")
@@ -17867,7 +17867,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$DrawCharIconPanelPc")
-    i32 DrawCharIconPanelPc = -1;
+    i32 drawcharicon_i_panel = -1;
 #pragma data_seg()
 
 #pragma data_seg(".data$LegoObjectIconQuestionPc")
@@ -17895,7 +17895,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$DrawCharIconFindPc")
-    i32 DrawCharIconFindPc = 0;
+    i32 drawcharicon_find = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderBackdropSpecialsPc")
@@ -17903,7 +17903,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderBackdropScenePc")
-    NUGSCN *RenderBackdropScenePc = 0;
+    NUGSCN *backdrop_scene = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderBackdropAlphaFnPc")
@@ -18022,11 +18022,11 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$MenuAcceptPromptTextPc")
-    char *MenuAcceptPromptTextPc = UiSelectPromptLiteralPc;
+    char *apitxt_SELECT = UiSelectPromptLiteralPc;
 #pragma data_seg()
 
 #pragma data_seg(".data$MenuCancelPromptTextPc")
-    char *MenuCancelPromptTextPc = UiBackPromptLiteralPc;
+    char *apitxt_BACK = UiBackPromptLiteralPc;
 #pragma data_seg()
 
 #pragma data_seg(".data$MenuPromptPositionScalePc")
@@ -18040,10 +18040,10 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$ScreenGrabNeededPc")
-    u8 ScreenGrabNeededPc = 0;
+    u8 ScreenGrabNeeded = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ScreenPauseFadePc")
-    f32 ScreenPauseFadePc = 0;
+    f32 pause_fade = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$EdppPageScenesPc")
     NUGSCN *EdppPageScenesPc[8] = {0};
@@ -18338,7 +18338,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma bss_seg(".bss$PlayerStartRecordInitPc")
-    PLAYER_START_INITIALIZER_RECORD_PC PlayerStartRecordInitPc[8] = {0};
+    PLAYER_START_INITIALIZER_RECORD_PC PlayerStart[8] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$PodPacemakerPc")
@@ -18624,7 +18624,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$FindAnglesXFullTempPc")
-    i32 FindAnglesXFullTempPc = 0;
+    i32 i_temp_xrot = 0;
 #pragma bss_seg()
 }
 
@@ -18882,7 +18882,7 @@ extern "C" {
     i32 VisibilityOcclusionEnabledPc = 1;
 #pragma data_seg()
 #pragma data_seg(".data$VisibilityInstanceTreeEnabledPc")
-    i32 VisibilityInstanceTreeEnabledPc = 1;
+    i32 do_InstTree = 1;
 #pragma data_seg()
 #pragma bss_seg(".bss$VisibilityCameraLockPc")
     i32 VisibilityCameraLockPc = 0;
@@ -18900,10 +18900,10 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$VisibilityTreeInitialisedPc")
-    i32 VisibilityTreeInitialisedPc = 0;
+    i32 TreeInitialised = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityCurrentResultPc")
-    VISIBILITY_RESULT_READER_PC *VisibilityCurrentResultPc = 0;
+    VISIBILITY_RESULT_READER_PC *myvisi = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityZeroMatrixTemplatePc")
     NUMTX VisibilityZeroMatrixTemplatePc = {0};
@@ -18933,7 +18933,7 @@ extern "C" {
     NUPLANE VisibilityAbsoluteDepthPlanePc = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAlternateWidthPc")
-    f32 VisibilityAlternateWidthPc = 0;
+    f32 zxs = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$cacheValues")
     u8 cacheValues[256] = {0};
@@ -18942,7 +18942,7 @@ extern "C" {
     u8 OcclusionBitArray[0x320] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAlternateHeightPc")
-    f32 VisibilityAlternateHeightPc = 0;
+    f32 zys = 0;
 #pragma bss_seg()
 }
 
@@ -18975,7 +18975,7 @@ extern "C" {
     i32 DisplaySceneRenderDisabledPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$DisplaySceneSpecialsDisabledPc")
-    i32 DisplaySceneSpecialsDisabledPc = 0;
+    i32 noscenespecials = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$VisibilityPortalFilterEnabledPc")
     i32 VisibilityPortalFilterEnabledPc = 1;
@@ -18984,7 +18984,7 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$PartLoadParticlePagePc")
-    i32 PartLoadParticlePagePc = -1;
+    i32 edpart_load_particle_page = -1;
 #pragma data_seg()
 #pragma data_seg(".data$PartNullInstanceNamePc")
     char PartNullInstanceNamePc[14] = "NULL instance";
@@ -19054,7 +19054,7 @@ extern "C" {
     i32 edpp_num_orphans = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$PartDebrisNameListPc")
-    char **PartDebrisNameListPc = NULL;
+    char **PDebNameList = NULL;
 #pragma data_seg()
 }
 
@@ -19141,10 +19141,10 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$TextureAnimationRandomPc")
-    NURAND TextureAnimationRandomPc = {0};
+    NURAND texanim_rand = {0};
 #pragma data_seg()
 #pragma data_seg(".data$TextureAnimationScriptMaskPc")
-    u16 TextureAnimationScriptMaskPc = 0xffff;
+    u16 script_mask = 0xffff;
 #pragma data_seg()
 #pragma data_seg(".data$NuTextureEnvironmentCubePc")
     PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc = NULL;
@@ -19213,7 +19213,7 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$CameraSavedStateCountPc")
-    i32 CameraSavedStateCountPc = 0;
+    i32 cam_state_count = 0;
 #pragma data_seg()
 #pragma data_seg(".data$CameraSavedStatesPc")
     CAMERA_SAVED_STATE_PC CameraSavedStatesPc[16] = {{0}};
@@ -19234,16 +19234,16 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$FramePadCorrectDeadZoningPc")
-    u8 FramePadCorrectDeadZoningPc = 0;
+    u8 UseCorrectDeadZoning = 0;
 #pragma data_seg()
 #pragma data_seg(".data$FramePadProfilePortPc")
     i32 FramePadProfilePortPc = -1;
 #pragma data_seg()
 #pragma data_seg(".data$FramePadMaxGamePadsPc")
-    i32 FramePadMaxGamePadsPc = 2;
+    i32 MaxGamePads = 2;
 #pragma data_seg()
 #pragma data_seg(".data$NuMtlAnimateMaskPc")
-    i32 NuMtlAnimateMaskPc = 0xffffff;
+    i32 mtl_animation_mask = 0xffffff;
 #pragma data_seg()
 #pragma data_seg(".data$FrameMaterialAnimationSpeedPc")
     f32 FrameMaterialAnimationSpeedPc = 1.0f;
@@ -19287,11 +19287,11 @@ extern "C" {
 }
 
 extern "C" {
-    CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc = NULL;
+    CUT_PLAYER_ACTIVE_PC *CutScenePlayer = NULL;
 }
 
 extern "C" {
-    void(__cdecl *CutSceneRigidRenderCallbackPc)(struct cut_load_rigid_s *, NUMTX *) = NULL;
+    void(__cdecl *NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *) = NULL;
 }
 
 extern "C" {
@@ -19305,7 +19305,7 @@ extern "C" {
     i32 CutSceneCameraDofModePc = 0;
     INSTNUGCUTSCENE *CutSceneLoadingInstancePc = NULL;
     void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
-    void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *) = NULL;
+    void(__cdecl *NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *) = NULL;
 }
 
 extern "C" {
@@ -19596,7 +19596,7 @@ extern "C" {
 extern "C" {
     const char *GizObstacleRegistrationNamePtrPc = GizObstacleTypeNamePc;
     const char *TubeGizmoNamePc = PCContextName_Tube;
-    const char *TubeOutputNamePc = "Active";
+    const char *Tube_OutputName = "Active";
     const char *PlugGizmoNamePc = "Plug";
     const char *PlugOutputNamePc = "Plugged";
     i32 plug_gizmotype_id = -1;
@@ -28312,10 +28312,10 @@ STATIC_ASSERT(sizeof(uberShader2) == 158576);
 /* Native pre-initialization state; original owning extents remain unknown. */
 extern "C" {
     f32 RenderFrameShaderTimePc = 0.0f;
-    i32 RenderFrameShaderArrayCountPc = 0;
-    f32 (*RenderFrameShaderArrayPc)[4] = NULL;
+    i32 nuspecial_vertex_noffsets = 0;
+    f32 (*nuspecial_vertex_offsets)[4] = NULL;
     u32 RenderFrameSceneFlagsPc = 0;
-    i32 RenderFramePausedPc = 0;
+    i32 global_frame_count_paused = 0;
     void(__cdecl *RenderFrameCallbackPc)(void) = NULL;
     u32 NuPostEffectInitialisedFlagsPc = 0;
     FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
@@ -28445,7 +28445,7 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
     NuDisplayListLegacyLightmapOffsetPc, /* index47,itemtype0xaf,native0x5fe050 */
     NuDisplayListLightmapPacketPc,       /* index48,itemtype0xb0,native0x5fde50 */
 };
-extern "C" PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
+extern "C" PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable = PCDisplayItemHandlerPrefixPc;
 #pragma bss_seg()
 #pragma data_seg()
 
@@ -28454,11 +28454,11 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC *PCDisplayItemHandlersPc = PCDisplayItemHa
 extern "C" {
     i32 NuPostEffectsRanPc = 0;
     u8 NuPostLastFrameEffectPc = 0;
-    NU_POST_MAIN_VIEW_PC *NuPostMainFilterPc = NULL;
-    NU_POST_DEFERRED_VIEW_PC *NuPostDeferredFilterPc = NULL;
-    NU_POST_MOTION_VIEW_PC *NuPostMotionFilterPc = NULL;
-    NU_POST_ACCUM_VIEW_PC *NuPostAccumFilterPc = NULL;
-    NU_POST_SPEED_VIEW_PC *NuPostSpeedFilterPc = NULL;
+    NU_POST_MAIN_VIEW_PC *mainFilter = NULL;
+    NU_POST_DEFERRED_VIEW_PC *deferredFilter = NULL;
+    NU_POST_MOTION_VIEW_PC *motionFilter = NULL;
+    NU_POST_ACCUM_VIEW_PC *motionAccumFilter = NULL;
+    NU_POST_SPEED_VIEW_PC *speedBlurFilter = NULL;
 }
 #pragma bss_seg()
 #pragma data_seg()
@@ -28505,7 +28505,7 @@ extern "C" {
 }
 
 extern "C" {
-    FRAME_PAD_PC *GamePadsActivePadPc = 0;
+    FRAME_PAD_PC *pActivePad = 0;
 }
 
 extern "C" {
@@ -28537,7 +28537,7 @@ extern "C" {
 extern "C" {
     extern const u8 PcInputPovBitsPc[8] = {1, 3, 2, 6, 4, 12, 8, 9};
     u8 PcMouseAxisModesPc[3] = {0};
-    u32 PcMouseButtonsMaskPc = 0;
+    u32 mbuttons = 0;
     PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2] = {0};
     f32 PcMouseAxisIdlePc[3] = {0};
     i32 PcMouseCurrentAnglePc = 0;
@@ -30386,7 +30386,7 @@ extern "C" {
         {-0.85f, 0.85f, 1.0f}, {0.85f, 0.85f, 1.0f}, {-0.85f, -0.85f, 1.0f}, {0.85f, -0.85f, 1.0f}};
 
 #pragma data_seg(".data$PlayPlaneDepthPc")
-    f32 PlayPlaneDepthPc = 5.0f;
+    f32 PP_dist = 5.0f;
 
 #pragma data_seg(".data$GameCamShakeRadiusPc")
     f32 GameCamShakeRadiusPc = 0.1f;
@@ -32768,7 +32768,7 @@ extern "C" {
 #pragma data_seg(".data$RopeCurveSubdivisionsPc")
     i32 RopeCurveSubdivisionsPc = 3;
 #pragma data_seg(".data$GrappleRopeColourPc")
-    u32 GrappleRopeColourPc = 0xffffffffu;
+    u32 GRAPPLE_RGBA = 0xffffffffu;
 #pragma data_seg(".data$GrappleCurvedRopeEnabledPc")
     i32 GrappleCurvedRopeEnabledPc = 1;
 #pragma data_seg()
@@ -33662,7 +33662,7 @@ extern "C" {
     i32 SaveloadPendingPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$SaveloadStartedTickPc")
-    u32 SaveloadStartedTickPc = 0;
+    u32 savetimer = 0;
 #pragma bss_seg()
 }
 
@@ -34671,15 +34671,15 @@ extern "C" {
 #pragma bss_seg(".bss$StreakNodesPc")
     STREAK_NODE_PC StreakNodesPc[128] = {0};
 #pragma bss_seg(".bss$StreakReflectionMaterialPc")
-    NUMTL *StreakReflectionMaterialPc = 0;
+    NUMTL *streakmtl_ref = 0;
 #pragma bss_seg(".bss$StreakNodesUsedPc")
     STREAK_NODE_PC *StreakNodesUsedPc = 0;
 #pragma bss_seg(".bss$StreakNodesFreePc")
-    STREAK_NODE_PC *StreakNodesFreePc = 0;
+    STREAK_NODE_PC *streaks_free = 0;
 #pragma bss_seg(".bss$StreakHeadersFreePc")
-    STREAK_HEADER_PC *StreakHeadersFreePc = 0;
+    STREAK_HEADER_PC *streakhdrs_free = 0;
 #pragma bss_seg(".bss$StreakMaterialPc")
-    NUMTL *StreakMaterialPc = 0;
+    NUMTL *streakmtl = 0;
 #pragma bss_seg(".bss$StreakHeadersPc")
     STREAK_HEADER_PC StreakHeadersPc[32] = {0};
 #pragma bss_seg()
@@ -34809,7 +34809,7 @@ extern "C" {
     };
 
 #pragma bss_seg(".bss$PushBlockMissingSpecialPositionPc")
-    NUVEC PushBlockMissingSpecialPositionPc = {0.0f, 0.0f, 0.0f};
+    NUVEC p000 = {0.0f, 0.0f, 0.0f};
 #pragma bss_seg(".bss$RunOutOfPosTabSpacePc")
     i32 RunOutOfPosTabSpacePc = 0;
 #pragma bss_seg(".bss$pushposincrease")

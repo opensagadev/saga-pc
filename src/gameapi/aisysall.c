@@ -1289,9 +1289,9 @@ STATIC_ASSERT(offsetof(AICONDITION_PC, next_state_name) == 0x20);
 
 STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
 
-static void *AIScriptLoadPakPc = 0;
+static void *load_pakfile = 0;
 
-static char *AIScriptLoadPathPc = 0;
+static char *load_path = 0;
 
 static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecordsPc[8] = {0};
 
@@ -12679,7 +12679,7 @@ void __cdecl xInclude(NUFPAR_PC *parser) {
     AISCRIPT_PC *saved_script = aiscript_load_script;
     NuFParGetWord(parser);
     NuFParSuspend(parser);
-    AIScriptOpenPakFileParse(&aiscript_load_script, AIScriptLoadPakPc, parser->word_buffer_ptr, AIScriptLoadPathPc,
+    AIScriptOpenPakFileParse(&aiscript_load_script, load_pakfile, parser->word_buffer_ptr, load_path,
                              aiscript_load_buffer, aiscript_load_end_buffer);
     NuFParResume(parser);
     aiscript_load_buffer = saved_buffer;
@@ -12748,11 +12748,11 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
     AISTATE_PC *state;
     AISTATE_PC *later;
     AICONDITION_PC *condition;
-    AIScriptLoadPathPc = path;
-    AIScriptLoadPakPc = pak;
+    load_path = path;
+    load_pakfile = pak;
     AIScriptOpenPakFileParse(&script, pak, filename, path, buffer, end);
-    AIScriptLoadPathPc = NULL;
-    AIScriptLoadPakPc = NULL;
+    load_path = NULL;
+    load_pakfile = NULL;
     if (script != NULL) {
         state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
         while (state != NULL) {

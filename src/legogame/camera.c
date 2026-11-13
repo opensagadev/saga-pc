@@ -504,7 +504,7 @@ mode_selected:
                (camera->previous_camera_mode == 2 || camera->previous_camera_mode == 4)) {
         MiniCutCam = 4;
     }
-    position = *PlayerStartRecordInitPc[0].position;
+    position = *PlayerStart[0].position;
 
     position_seek = ((u32)(((u8)(WORLD->current_level->cam_pos_seek))));
     angle_seek = ((u32)(((u8)(WORLD->current_level->cam_angle_seek))));

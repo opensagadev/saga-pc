@@ -215,10 +215,10 @@ i32 __cdecl AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     return 0;
 }
 
-static i32 AnimBlendModePc = 1;
+static i32 AnimBlendMode = 1;
 
 void __cdecl SetAnimBlendMode(i32 mode) {
-    AnimBlendModePc = mode;
+    AnimBlendMode = mode;
 }
 
 APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARIPTR *end) {
@@ -1676,7 +1676,7 @@ void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *pack
                            NUMTX *joint_matrices, DWA_WEIGHT_BLOCK_PC ***dwa_output, NUVEC *locator_positions,
                            NUMTX *locator_matrices, u32 layer_mask) {
     i16 render_indices[32];
-    i32 render_count = ModelAnimLayerListDispatchPc(model, render_indices, layer_mask);
+    i32 render_count = MakeLayerList(model, render_indices, layer_mask);
     if (render_count < 1) {
         return;
     }
@@ -1929,7 +1929,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, f
                 goto update_timers;
             }
 
-            if (AnimBlendModePc != 1 || packet->requested_animation == packet->blend_target_animation ||
+            if (AnimBlendMode != 1 || packet->requested_animation == packet->blend_target_animation ||
                 model->model_data_b[packet->requested_animation] == NULL) {
                 goto update_timers;
             }
@@ -2543,7 +2543,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
             NuHGobjRestrictEvaluation(model->hierarchy);
         }
 
-        render_count = ModelAnimLayerListDispatchPc(model, render_indices, flags);
+        render_count = MakeLayerList(model, render_indices, flags);
         if (render_count < 1) {
             goto cleanup;
         }

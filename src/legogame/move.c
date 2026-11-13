@@ -5697,7 +5697,7 @@ void __cdecl SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 t
     ForceBackObjPc = object;
     ForceBackPosPc = object != NULL ? &object->collision_position : position;
     ForceBackRadiusPc = radius;
-    ForceBackRadius2Pc = radius * radius;
+    ForceBackRadius2 = radius * radius;
     ForceBackTypePc = type;
 }
 
@@ -7195,26 +7195,26 @@ void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
     (void)unused;
     if ((elapsed_seconds % 2) == 0 && object->field_780 != (f32)elapsed_seconds) {
         object->field_780 = (f32)elapsed_seconds;
-        DisorientAxisPc = 0;
-        while ((DisorientAxisPc & 5) == 0) {
+        disorientAxis = 0;
+        while ((disorientAxis & 5) == 0) {
             if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
-                DisorientAxisPc |= 1;
+                disorientAxis |= 1;
             }
             if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
-                DisorientAxisPc |= 2;
+                disorientAxis |= 2;
             }
             if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
-                DisorientAxisPc |= 4;
+                disorientAxis |= 4;
             }
         }
     }
-    if (DisorientAxisPc & 1) {
+    if (disorientAxis & 1) {
         object->pitch_angle = SeekRot(object->pitch_angle, (u16)(object->pitch_angle + 0x4000), 3.0f);
     }
-    if (DisorientAxisPc & 2) {
+    if (disorientAxis & 2) {
         object->field_0x276 = SeekRot(object->field_0x276, (u16)(object->field_0x276 + 0x4000), 3.0f);
     }
-    if (DisorientAxisPc & 4) {
+    if (disorientAxis & 4) {
         object->roll_angle = SeekRot(object->roll_angle, (u16)(object->roll_angle + 0x4000), 3.0f);
     }
     speed = (f32)(75.0 / (NuVecDistSqr(&object->collision_position, &object->external_force, &delta) / 6.0 + 1.0));

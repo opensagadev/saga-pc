@@ -3,10 +3,10 @@
 #include <string.h>
 #include <stdio.h>
 #pragma data_seg(".data$RtlFileVersionPc")
-static i32 RtlFileVersionPc = 5;
+static i32 curr_version = 5;
 #pragma data_seg()
 #pragma data_seg(".data$RtlUidCounterPc")
-static u16 RtlUidCounterPc = 1;
+static u16 rtl_uid = 1;
 #pragma data_seg()
 #pragma bss_seg(".bss$rtl_dynamic_cnt")
 static i32 rtl_dynamic_cnt = 0;
@@ -603,9 +603,9 @@ i32 __cdecl rtlDynamicAlloc(void) {
         light->field_7c = NULL;
         NuVecRotateX(&light->direction, &light->direction, light->pitch);
         NuVecRotateY(&light->direction, &light->direction, light->yaw);
-        light->uid = (i16)RtlUidCounterPc++;
-        if (RtlUidCounterPc == 0) {
-            ++RtlUidCounterPc;
+        light->uid = (i16)rtl_uid++;
+        if (rtl_uid == 0) {
+            ++rtl_uid;
         }
         ++rtl_dynamic_cnt;
         return ((NULNKHDR *)light - 1)->id;
@@ -996,15 +996,15 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
             }
         default:
             for (i = 0; i < 128; ++i) {
-                set->lights[i].uid = RtlUidCounterPc++;
-                if (RtlUidCounterPc == 0) {
-                    RtlUidCounterPc = 1;
+                set->lights[i].uid = rtl_uid++;
+                if (rtl_uid == 0) {
+                    rtl_uid = 1;
                 }
                 set->lights[i].field_7c = set->lights;
             }
             break;
     }
-    set->header = RtlFileVersionPc;
+    set->header = curr_version;
     buffer->addr += sizeof(*set);
     IndexLights(set, buffer, buffer_end);
     return set;

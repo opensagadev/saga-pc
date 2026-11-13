@@ -371,8 +371,8 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         f32 reciprocal;
         zy = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         zx = zy / global_camera.aspect;
-        VisibilityAlternateWidthPc = zx * NuCameraScissorWidthPc / PS2_REZ_W;
-        VisibilityAlternateHeightPc = zy * NuCameraScissorHeightPc / PS2_REZ_H;
+        zxs = zx * NuCameraScissorWidthPc / PS2_REZ_W;
+        zys = zy * NuCameraScissorHeightPc / PS2_REZ_H;
         clip_planes.m02 = 0.0f;
         clip_planes.m12 = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         clip_planes.m22 = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -683,14 +683,10 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
     }
     memset(results, 0, sizeof(results));
     for (i = 0; i < 8; i += 4) {
-        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
-                              VisibilityAlternateHeightPc);
-        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
-                              VisibilityAlternateHeightPc);
-        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
-                              VisibilityAlternateHeightPc);
-        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
-                              VisibilityAlternateHeightPc);
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0 ||
         (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0) {
@@ -790,15 +786,15 @@ void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX 
 
 i32 __cdecl NuCameraSaveState(void) {
     i32 index = -1;
-    if (CameraSavedStateCountPc < 16) {
+    if (cam_state_count < 16) {
         CAMERA_SAVED_STATE_PC *state;
-        index = CameraSavedStateCountPc++;
+        index = cam_state_count++;
         state = &CameraSavedStatesPc[index];
         state->zx = zx;
         state->camera = global_camera;
         state->zy = zy;
         state->zxs = VISIBILITY_ALTERNATE_WIDTH_PC;
-        state->zys = VisibilityAlternateHeightPc;
+        state->zys = zys;
         state->view = vmtx;
         state->projection = pmtx;
         state->screen = smtx;
@@ -815,7 +811,7 @@ i32 __cdecl NuCameraSaveState(void) {
 }
 
 void __cdecl NuCameraClearStateBuffer(void) {
-    CameraSavedStateCountPc = 0;
+    cam_state_count = 0;
 }
 
 i32 __cdecl NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix);

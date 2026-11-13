@@ -296,12 +296,12 @@ void __cdecl MenuEnterStartNewGame(MENU *menu) {
 
 void __cdecl MenuExitSave(MENU *menu) {
     (void)menu;
-    MenuKeyboardAlwaysPc = 0;
+    Menu_InSaveFlow = 0;
 }
 
 void __cdecl MenuExitLoad(MENU *menu) {
     (void)menu;
-    MenuKeyboardSecondaryPc = 0;
+    Menu_InLoadFlow = 0;
 }
 
 void __cdecl MenuExitCardWarning(MENU *menu) {
@@ -659,9 +659,9 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
     }
 }
 
-static i32 SaveMenuLastSlotPc = 0;
-static i32 SaveMenuSlideLeftPc = 0;
-static i32 SaveMenuSlideRightPc = 0;
+static i32 lastslot = 0;
+static i32 slideleft = 0;
+static i32 slideright = 0;
 
 void __cdecl MenuEnterLoad(MENU *menu) {
     i32 last_column = SAVESLOTS;
@@ -672,8 +672,8 @@ void __cdecl MenuEnterLoad(MENU *menu) {
     menu->last_column = (i16)(last_column - 1);
     menu->state = 2;
     menu->last_row = 1;
-    SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
-    MenuKeyboardSecondaryPc = 1;
+    slideright = slideleft = lastslot = 0;
+    Menu_InLoadFlow = 1;
     Menu_LastFlow = 3;
     MenuLoadOccurred = 0;
     MenuLoadStarted = 0;
@@ -690,7 +690,7 @@ void __cdecl MenuEnterSave(MENU *menu) {
     MenuSaveOccurred = 0;
     memcard_cardchanged = 0;
     Menu_DisableCancel = 0;
-    MenuKeyboardAlwaysPc = 1;
+    Menu_InSaveFlow = 1;
     Menu_LastFlow = 2;
     if (SAVESLOTS <= 6) {
         menu->last_column = (i16)(SAVESLOTS - 1);
@@ -701,7 +701,7 @@ void __cdecl MenuEnterSave(MENU *menu) {
         }
     }
     menu->state = 2;
-    SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
+    slideright = slideleft = lastslot = 0;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     menu->last_row = 1;
     header_r = MENUHEADERR;
@@ -726,27 +726,27 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     i32 first, last, slot, highlight;
     i32 red, green, blue;
     f32 x, scale;
-    if (SaveMenuSlideRightPc > 0) {
-        --SaveMenuSlideRightPc;
+    if (slideright > 0) {
+        --slideright;
     }
-    if (SaveMenuSlideLeftPc > 0) {
-        --SaveMenuSlideLeftPc;
+    if (slideleft > 0) {
+        --slideleft;
     }
     if (SAVESLOTS > 3) {
-        if (menu->selected_column != SaveMenuLastSlotPc) {
-            if (SaveMenuLastSlotPc > menu->selected_column) {
-                SaveMenuSlideRightPc = 10;
+        if (menu->selected_column != lastslot) {
+            if (lastslot > menu->selected_column) {
+                slideright = 10;
             } else {
-                SaveMenuSlideLeftPc = 10;
+                slideleft = 10;
             }
-            SaveMenuLastSlotPc = menu->selected_column;
+            lastslot = menu->selected_column;
         }
         first = menu->selected_column - 1;
-        if (SaveMenuSlideLeftPc != 0) {
+        if (slideleft != 0) {
             --first;
         }
         last = menu->selected_column + 1;
-        if (SaveMenuSlideRightPc != 0) {
+        if (slideright != 0) {
             ++last;
         }
     } else {
@@ -762,12 +762,11 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     if (SAVESLOTS <= 3) {
         x = (SAVESLOTS - 1) * -0.25;
     } else {
-        x = 0.0 - (menu->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
-            SaveMenuSlideLeftPc * 0.5 / 10.0;
+        x = 0.0 - (menu->selected_column - first) * 0.5 - slideright * 0.5 / 10.0 + slideleft * 0.5 / 10.0;
     }
     for (; slot <= last; ++slot, x += 0.5) {
-        highlight = menu->selected_row == menu->first_row && menu->selected_column == slot &&
-                    SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0;
+        highlight =
+            menu->selected_row == menu->first_row && menu->selected_column == slot && slideleft == 0 && slideright == 0;
         if (slot < 0 || slot > menu->last_column) {
             continue;
         }
@@ -819,7 +818,7 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
         blue = MENUENTRYB;
     }
     scale = MenuTextScalePc + MenuTextScalePc;
-    if (SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0) {
+    if (slideleft == 0 && slideright == 0) {
         if (first > 0) {
             MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
         }

@@ -1061,7 +1061,7 @@ static i32 PartRaycastsEnabledPrivate = 1;
 void __cdecl InitPartTable(char **names) {
     i32 count = 0;
     part_debris_count = count;
-    PartDebrisNameListPc = names;
+    PDebNameList = names;
     if (names != NULL && *names != NULL) {
         while (*names != NULL) {
             names++;
@@ -1148,7 +1148,7 @@ __declspec(noinline) void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, N
 }
 
 void __cdecl PartImpact_Brick(PART_PC *part) {
-    if (KillPartsBrickImpactWaitPc <= 0.0f) {
+    if (brickimpactwait <= 0.0f) {
         f32 speed = NuVecMag(&part->velocity);
         if (speed > 0.0f) {
             i32 angle;
@@ -1161,7 +1161,7 @@ void __cdecl PartImpact_Brick(PART_PC *part) {
             volume = NuTrigTable[(angle >> 1) & 0x7fff];
             sound_id = GetSfxId(KillPartsLegoSingleTextPc);
             PlaySfxByIdAndSetVolume(sound_id, &part->position, volume);
-            KillPartsBrickImpactWaitPc = 0.1f;
+            brickimpactwait = 0.1f;
         }
     }
 }
@@ -3066,28 +3066,28 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     if (version >= 9) {
         EdFileRead(name, 16);
         type->trail_effects[0] =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         EdFileRead(name, 16);
         type->trail_effects[1] =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         EdFileRead(name, 16);
         type->attached_effect =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         type->trail_rates[0] = EdFileReadFloat();
         type->trail_rates[1] = EdFileReadFloat();
     } else if (version >= 5) {
         EdFileRead(name, 16);
         type->trail_effects[0] =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         type->trail_effects[1] = -1;
         EdFileRead(name, 16);
         type->attached_effect =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         type->trail_rates[0] = EdFileReadFloat();
         type->trail_rates[1] = 60.0f;
     } else if (version >= 3) {
@@ -3098,12 +3098,12 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         EdFileRead(name, 16);
         if (mode == 0) {
             type->trail_effects[0] =
-                (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                              : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+                (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                                 : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         } else if (mode == 1) {
             type->attached_effect =
-                (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                              : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+                (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                                 : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         }
         type->trail_rates[0] = EdFileReadFloat();
         type->trail_rates[1] = 60.0f;
@@ -3117,12 +3117,12 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     if (version >= 4) {
         EdFileRead(name, 16);
         type->kill_effect =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
         EdFileRead(name, 16);
         type->impact_effect =
-            (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
-                                          : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+            (edpart_load_particle_page == -1 ? LookupDebrisEffect(name)
+                                             : LookupDebrisEffectPageOnly(name, (i8)edpart_load_particle_page));
     } else {
         type->impact_effect = -1;
         type->kill_effect = -1;
@@ -4931,7 +4931,7 @@ void __cdecl NuPartEnableRayCasts(i32 enabled) {
 }
 
 void __cdecl edpartSetParticlePage(i32 page) {
-    PartLoadParticlePagePc = page;
+    edpart_load_particle_page = page;
 }
 
 i32 edpartLookupObject(char *name) {

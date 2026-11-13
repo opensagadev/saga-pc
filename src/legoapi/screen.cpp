@@ -61,8 +61,8 @@ extern "C" NUMTL *FadeMtl;
 extern "C" {
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
-extern "C" u8 ScreenGrabNeededPc;
-extern "C" f32 ScreenPauseFadePc;
+extern "C" u8 ScreenGrabNeeded;
+extern "C" f32 pause_fade;
 extern "C" NUVPCURRENT *__cdecl NuVpGetCurrentViewport(void);
 extern "C" i32 ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc;
 extern "C" f32 ScreenPauseFadeSpeedPc;
@@ -214,30 +214,30 @@ extern "C" {
     }
 
     void __cdecl BackDrop_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
-        NUGSCN *scene = RenderBackdropScenePc;
+        NUGSCN *scene = backdrop_scene;
         if (scene == NULL) {
             scene = NuGScnRead(buffer, *end, path);
-            RenderBackdropScenePc = scene;
+            backdrop_scene = scene;
         }
         memset(RenderBackdropSpecialsPc, 0, sizeof(RenderBackdropSpecialsPc));
         if (scene == NULL) {
             return;
         }
-        NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[0], "ball1", 1);
-        NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[1], "ball2", 1);
-        NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[2], "ball3", 1);
-        NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[3], "ball4", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[0], "ball1", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[1], "ball2", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[2], "ball3", 1);
+        NuSpecialFind(backdrop_scene, &RenderBackdropSpecialsPc[3], "ball4", 1);
     }
 
     void __cdecl BackDrop_Update(f32 dt) {
-        if (RenderBackdropScenePc != NULL) {
-            NuGScnUpdate(RenderBackdropScenePc, (f32)(dt * 60.0));
+        if (backdrop_scene != NULL) {
+            NuGScnUpdate(backdrop_scene, (f32)(dt * 60.0));
         }
     }
 
     void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
         i32 special_index;
-        if (RenderBackdropScenePc == NULL) {
+        if (backdrop_scene == NULL) {
             return;
         }
         if (flags == 0 && RenderBackdropAlphaFnPc != NULL) {
@@ -269,8 +269,8 @@ extern "C" {
     }
 
     void __cdecl BackDrop_Dump(void) {
-        if (RenderBackdropScenePc != NULL) {
-            NuGScnRemove(RenderBackdropScenePc);
+        if (backdrop_scene != NULL) {
+            NuGScnRemove(backdrop_scene);
         }
     }
 
@@ -636,21 +636,21 @@ extern "C" void __cdecl DrawPauseScreenWipe(void) {
 }
 
 extern "C" void __cdecl GrabStillScreen(void) {
-    if (ScreenGrabNeededPc != 0) {
-        ScreenGrabNeededPc = 0;
+    if (ScreenGrabNeeded != 0) {
+        ScreenGrabNeeded = 0;
         NuRndrBeginScene(1);
         NuBackbufferCopy(pause_rt);
         NuRndrEndScene();
-        ScreenPauseFadePc = 0.0f;
+        pause_fade = 0.0f;
     }
 }
 
 extern "C" __declspec(noinline) void NeedScreenGrab(i32 needed) {
-    ScreenGrabNeededPc = needed != 0;
+    ScreenGrabNeeded = needed != 0;
 }
 
 extern "C" u8 IsGrabbingScreen(void) {
-    return ScreenGrabNeededPc;
+    return ScreenGrabNeeded;
 }
 
 extern "C" void DrawStillScreen(i32 clear) {
@@ -676,9 +676,9 @@ extern "C" void __cdecl DrawPauseFade(void) {
         return;
     }
     if (Paused == 0 && NetPaused == 0) {
-        ScreenPauseFadePc = MAX(ScreenPauseFadePc - FRAMETIME * ScreenPauseFadeSpeedPc, 0.0f);
+        pause_fade = MAX(pause_fade - FRAMETIME * ScreenPauseFadeSpeedPc, 0.0f);
     } else {
-        ScreenPauseFadePc = MIN(FRAMETIME * ScreenPauseFadeSpeedPc + ScreenPauseFadePc, 1.0f);
+        pause_fade = MIN(FRAMETIME * ScreenPauseFadeSpeedPc + pause_fade, 1.0f);
     }
 }
 
@@ -703,7 +703,7 @@ extern "C" void __cdecl HandleStillRender(void) {
     }
     if (Paused != 0) {
         if (old_pause_state == 0 && FadeSys.pending_type == -1) {
-            ScreenGrabNeededPc = 1;
+            ScreenGrabNeeded = 1;
         }
     } else if (old_pause_state != 0) {
         pause_rndr_on = 0;
@@ -722,7 +722,7 @@ extern "C" void __cdecl HandleStillRender(void) {
         pause_rndr_on = 1;
     } else if (MainRenderTime > 0.0f && MainRenderTime < 1.0f) {
         pause_rndr_on = 1;
-    } else if (Paused != 0 && ScreenGrabNeededPc == 0) {
+    } else if (Paused != 0 && ScreenGrabNeeded == 0) {
         if (PauseRenderOffFn != NULL && PauseRenderOffFn() != 0) {
             pause_rndr_on = 0;
         } else {

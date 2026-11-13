@@ -254,15 +254,15 @@ static unsigned char ImplodeRingBufferPc[0x2000] = {0};
         ImplodeFillBuf((len)[(dst)]);                                                                                  \
     } while (0)
 
-static u32 ImplodeBlockRemainingPc = 0;
+static u32 blocksize = 0;
 
 static u16 ImplodeOffsetTablePc[0x100] = {0};
 static u8 ImplodeOffsetLengthsPc[0x13] = {0};
 
 static u16 ImplodeLiteralTablePc[0x1000] = {0};
 static u8 ImplodeLiteralLengthsPc[0x1fe] = {0};
-static u32 ImplodeSubBitsPc = 0;
-static u32 ImplodeAvailableBitsPc = 0;
+static u32 subbitbuf = 0;
+static u32 bitcount = 0;
 
 extern NUMTL *NuTimeBar_FrameOutMtl;
 
@@ -294,7 +294,7 @@ STATIC_ASSERT(offsetof(TimeBarSet, field_28) == 0x28);
  * below after clearing the real 0x90-byte API record. */
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 
-extern i32 FrameSleepMillisecondsPc;
+extern i32 min_delay;
 extern f32 FrameStartupDelayPc;
 extern i32 NuApiTextLinePc;
 extern f32 NuFrameAccumulatedTimePc;
@@ -7512,7 +7512,7 @@ i32 __cdecl NuFrameEndBgLoadPS(i32 minimum_delay) {
 }
 
 void __cdecl NuFrameSetMinDelay(i32 delay) {
-    FrameSleepMillisecondsPc = delay;
+    min_delay = delay;
 }
 
 void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
@@ -7680,9 +7680,9 @@ f32 __cdecl NuFrameEnd(void) {
     target_interval = 1.0f / refresh_rate;
     capped_rate = 85.0 < (f32)PcGetRefreshRatePc() ? 85.0f : (f32)PcGetRefreshRatePc();
     capped_interval = 1.0f / capped_rate;
-    FrameSleepMillisecondsPc = 20;
+    min_delay = 20;
     if (!(nuapi.frame_time / capped_interval < 1.1f)) {
-        FrameSleepMillisecondsPc = 1;
+        min_delay = 1;
     }
     if (target_interval > nuapi.frame_time) {
         Sleep((DWORD)((target_interval - nuapi.frame_time) * 1000.0));
@@ -7701,7 +7701,7 @@ f32 __cdecl NuFrameEnd(void) {
     if ((i32)nuapi.time2.high < 0) {
         NuFileError();
     }
-    bgprocFrameSleepPc(FrameSleepMillisecondsPc);
+    bgprocFrameSleepPc(min_delay);
     NuPadUpdatePads();
     ++nuapi.frame_count;
     if (nuapi.forced_frame_time != 0.0f) {
@@ -7841,7 +7841,7 @@ static void DeadZoneValueXY(i32 *x_value, i32 *y_value, i32 deadzone) {
     f32 deadzone_normal;
     f32 magnitude;
 
-    if (FramePadCorrectDeadZoningPc) {
+    if (UseCorrectDeadZoning) {
         DeadZoneValueXYProper(x_value, y_value, deadzone);
 
         return;
@@ -8019,7 +8019,7 @@ void NuPadProcessReadData(NUGENERICPAD *pad) {
 }
 
 void NuPadSetMaxGamePads(i32 count) {
-    FramePadMaxGamePadsPc = count;
+    MaxGamePads = count;
 }
 
 void __cdecl NuPadSetValid(i32 port, i32 valid) {
@@ -8036,7 +8036,7 @@ void NuPadUpdatePads(void) {
     i32 selected = -1;
 
     max_interface_devices = NuPad_Interface_GetMaxDevices();
-    max_game_pads = FramePadMaxGamePadsPc;
+    max_game_pads = MaxGamePads;
 
     for (i = 0; i < max_interface_devices; i++) {
         g_nupadScannedPads[i].is_valid = (u8)NuPadReadOutputsPc(
@@ -8722,21 +8722,21 @@ unsigned char ImplodeGetByteFromMem() {
 void ImplodeFillBuf(i32 count) {
     implode_bitbuf <<= count;
 
-    while (count > ImplodeAvailableBitsPc) {
-        implode_bitbuf |= ImplodeSubBitsPc << (count -= ImplodeAvailableBitsPc);
+    while (count > bitcount) {
+        implode_bitbuf |= subbitbuf << (count -= bitcount);
 
         if (implode_compsize != 0) {
             implode_compsize--;
 
-            ImplodeSubBitsPc = ImplodeGetByteFromMem() & 0xff;
+            subbitbuf = ImplodeGetByteFromMem() & 0xff;
         } else {
-            ImplodeSubBitsPc = 0;
+            subbitbuf = 0;
         }
 
-        ImplodeAvailableBitsPc = 8;
+        bitcount = 8;
     }
 
-    implode_bitbuf |= ImplodeSubBitsPc >> (ImplodeAvailableBitsPc -= count);
+    implode_bitbuf |= subbitbuf >> (bitcount -= count);
 }
 
 u32 ImplodeGetBits(i32 count) {
@@ -8755,8 +8755,8 @@ u32 ImplodeGetBits(i32 count) {
 
 void ImplodeInitGetBits() {
     implode_bitbuf = 0;
-    ImplodeSubBitsPc = 0;
-    ImplodeAvailableBitsPc = 0;
+    subbitbuf = 0;
+    bitcount = 0;
 
     ImplodeFillBuf(0x20);
 }
@@ -9003,15 +9003,15 @@ i32 __cdecl ExplodeCompressedSize(char *header) {
 u32 ImplodeDecodeC() {
     u32 value;
 
-    if (ImplodeBlockRemainingPc == 0) {
-        ImplodeBlockRemainingPc = ImplodeGetBits(0x10);
+    if (blocksize == 0) {
+        blocksize = ImplodeGetBits(0x10);
 
         ImplodeReadOffsetLengthsPrivatePc(0x13, 5, 3);
         ImplodeReadLiteralLengthsPrivatePc();
         ImplodeReadOffsetLengthsPrivatePc(0xe, 4, -1);
     }
 
-    ImplodeBlockRemainingPc--;
+    blocksize--;
 
     SELECT(value, ImplodeLiteralTablePc, 0x14, sizeof(ImplodeLiteralLengthsPc) - 1, 0x80000, ImplodeLiteralLengthsPc);
 
@@ -9033,7 +9033,7 @@ u32 ImplodeDecodeOffset() {
 void ImplodeHufDecodeStart() {
     ImplodeInitGetBits();
 
-    ImplodeBlockRemainingPc = 0;
+    blocksize = 0;
 }
 
 void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {

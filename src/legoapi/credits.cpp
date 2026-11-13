@@ -38,9 +38,9 @@ STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, default_colour) == 12);
 STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, colour) == 16);
 STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, type) == 23);
 
-static f32 CreditsDurationPc = 120.0f;
-static f32 CreditsSizePc = 0;
-static i32 CreditCountPc = 0;
+static f32 Credits_Duration = 120.0f;
+static f32 CreditsSize = 0;
+static i32 CreditCount = 0;
 static CREDIT_TYPE_PC CreditTypePc[5] = {
     {"heading", 0.4f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"company", 0.6f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
@@ -104,8 +104,8 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     CREDIT_TYPE_PC *type;
     f32 y;
     i32 index;
-    CreditsSizePc = 0.0f;
-    CreditsDurationPc = 120.0f;
+    CreditsSize = 0.0f;
+    Credits_Duration = 120.0f;
     for (index = 0; index < 5; ++index) {
         CreditTypePc[index].type = (i8)index;
         CreditTypePc[index].colour[0] = CreditTypePc[index].default_colour[0];
@@ -118,7 +118,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     NuStrCat(filename, "_credits.txt");
     CreditList = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
     credit = CreditList;
-    CreditCountPc = 0;
+    CreditCount = 0;
     previous = NULL;
     if (credit == NULL) {
         return;
@@ -131,10 +131,10 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     while (NuFParGetLine(parser)) {
         if (NuFParGetWord(parser)) {
             if (NuStrICmp(parser->word_buffer_ptr, "duration") == 0) {
-                if (NuFParGetWord(parser) && CreditsDurationPc == 120.0) {
+                if (NuFParGetWord(parser) && Credits_Duration == 120.0) {
                     f32 duration = NuAToF(parser->word_buffer_ptr);
                     if (duration > 0.0f) {
-                        CreditsDurationPc = duration;
+                        Credits_Duration = duration;
                     }
                 }
             } else {
@@ -145,7 +145,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                         CreditsReadColourPc(parser, &type->colour[1], 255);
                         CreditsReadColourPc(parser, &type->colour[2], 255);
                         CreditsReadColourPc(parser, &type->colour[3], 128);
-                    } else if (CreditCountPc < 1000) {
+                    } else if (CreditCount < 1000) {
                         credit->type = type->type;
                         switch (credit->type) {
                             case 0:
@@ -187,12 +187,12 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                         }
                         previous = credit;
                         ++credit;
-                        ++CreditCountPc;
+                        ++CreditCount;
                     }
                 }
             }
         }
-        CreditsSizePc = (f32)(y + (f64)2.2f);
+        CreditsSize = (f32)(y + (f64)2.2f);
     }
     NuFParDestroy(parser);
 }
@@ -209,7 +209,7 @@ void __cdecl Credits_Init(WORLDINFO *world) {
 
 void __cdecl Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
     if (duration != NULL) {
-        *duration = CreditsDurationPc;
+        *duration = Credits_Duration;
     }
     if (flag != NULL) {
         *flag = CreditsFlag;
@@ -235,7 +235,7 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
     i32 alpha;
     i32 points;
     if (CreditsFlag == 0) {
-        f32 offset = time / CreditsDurationPc * CreditsSizePc;
+        f32 offset = time / Credits_Duration * CreditsSize;
         while (credit->text != NULL) {
             if (offset >= credit->y && offset <= credit->y + (f64)2.2f) {
                 alpha = (i32)(credit->colour[3] * CreditsAlpha);
@@ -328,7 +328,7 @@ extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
                     CreditsAlpha = 0.0f;
                 }
             }
-        } else if ((menu->buttons_pressed & GAMEPAD_SKIP) != 0 || CreditsTime >= CreditsDurationPc) {
+        } else if ((menu->buttons_pressed & GAMEPAD_SKIP) != 0 || CreditsTime >= Credits_Duration) {
             CreditsFinishedTime = 0.001f;
         }
         legoSetMusicVolume((f32)((f64)CreditsAlpha * volume));

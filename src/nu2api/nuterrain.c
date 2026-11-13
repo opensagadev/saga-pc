@@ -145,20 +145,20 @@ i32 __cdecl ShadowInfo(void) {
 }
 
 i32 __cdecl EShadowInfo(void) {
-    return EShadowPolygonPc != NULL ? EShadowPolygonPc->material[1] : -1;
+    return EShadPoly != NULL ? EShadPoly->material[1] : -1;
 }
 
 i32 __cdecl ShadowRoofInfo(void) {
-    return ShadowRoofPolygonPc != NULL ? ShadowRoofPolygonPc->material[0] : -1;
+    return ShadRoofPoly != NULL ? ShadRoofPoly->material[0] : -1;
 }
 
 i32 __cdecl NewShadowOnPlatform(void) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     TERRAIN_GROUP_PC *group;
-    if (terrain == NULL || TerrainShadowGroupIndexPc == -1) {
+    if (terrain == NULL || castnum == -1) {
         return -1;
     }
-    group = &terrain->groups[TerrainShadowGroupIndexPc];
+    group = &terrain->groups[castnum];
     if (group->chunk_type != 1) {
         return -1;
     }
@@ -434,13 +434,13 @@ STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_PC, translation_amplitude) == 0x50);
 /* Insert after skin-info/use-record declarations; storage root-owned.
  * All seven new views retain BLANK original CSVsize and ctype / zero credit.
  */
-extern i32 TerrainSkinInfoCountPc;
-extern TERRAIN_SKIN_INFO_PC *TerrainSkinInfosPc;
-extern u32 TerrainSkinUseEpochPc;
-extern TERRAIN_SKIN_USE_RECORD_PC *TerrainSkinUseRecordsPc;
-extern i32 TerrainSkinPoolSlotCountPc;
-extern i32 TerrainSkinPoolSlotBytesPc;
-extern u8 *TerrainSkinPoolBasePc;
+extern i32 PlatSkinCnt;
+extern TERRAIN_SKIN_INFO_PC *PlatSkinInfo;
+extern u32 TerrainUpadteCnt;
+extern TERRAIN_SKIN_USE_RECORD_PC *SkinMemInfo;
+extern i32 PlatSkinMaxStore;
+extern i32 PlatSkinMaxSize;
+extern u8 *PlatSkinMem;
 
 /* Keep public CurrentTerrain/TerI as existing void* storage. Cast TerI locally
  * to TerrainQuery_s* (the 0x948-byte query packet). Keep existing
@@ -462,22 +462,21 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     TERRAIN_SKIN_USE_RECORD_PC *records;
     TERRAIN_SKIN_INFO_PC *infos;
 
-    if (-1 - original_scene_index >= TerrainSkinInfoCountPc) {
+    if (-1 - original_scene_index >= PlatSkinCnt) {
         return;
     }
 
-    ++TerrainSkinUseEpochPc;
+    ++TerrainUpadteCnt;
     if (group->data != NULL) {
-        TerrainSkinUseRecordsPc[TerrainSkinInfosPc[-1 - original_scene_index].pool_slot].last_use =
-            (i32)TerrainSkinUseEpochPc;
+        SkinMemInfo[PlatSkinInfo[-1 - original_scene_index].pool_slot].last_use = (i32)TerrainUpadteCnt;
         return;
     }
 
-    records = TerrainSkinUseRecordsPc;
+    records = SkinMemInfo;
     selected = 0;
     if (records[0].skin_index != -1) {
         oldest = records[0].last_use;
-        for (candidate = selected + 1; candidate < TerrainSkinPoolSlotCountPc; ++candidate) {
+        for (candidate = selected + 1; candidate < PlatSkinMaxStore; ++candidate) {
             if (records[candidate].skin_index == -1) {
                 selected = candidate;
                 break;
@@ -490,7 +489,7 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     }
 
     previous_skin = records[selected].skin_index;
-    infos = TerrainSkinInfosPc;
+    infos = PlatSkinInfo;
     if (previous_skin >= 0) {
         ((TERRAIN_SET_PC *)CurrentTerrain)->groups[infos[previous_skin].group_index].data = NULL;
         for (candidate = 0; candidate < 16; ++candidate) {
@@ -501,15 +500,15 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     group->data = infos[-1 - group->scene_index].original_shape;
     infos[-1 - group->scene_index].pool_slot = (i16)selected;
     records[selected].skin_index = -1 - group->scene_index;
-    SkinPlatform(group, (TERRAIN_SKIN_STREAM_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * selected),
+    SkinPlatform(group, (TERRAIN_SKIN_STREAM_PC *)(PlatSkinMem + PlatSkinMaxSize * selected),
                  &infos[-(group->scene_index + 1)]);
-    TerrainSkinUseRecordsPc[selected].last_use = (i32)TerrainSkinUseEpochPc;
+    SkinMemInfo[selected].last_use = (i32)TerrainUpadteCnt;
 }
 
 extern void *TerI;
-extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
-extern u16 TerrainPlatformsOffPc;
-extern i16 TerrainShadowGroupIndexPc, TerrainShadowFloorIndexPc;
+extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
+extern u16 NuTerrPlatsOff;
+extern i16 castnum, TerrainShadowFloorIndexPc;
 extern TERRAIN_POLYGON_INFO_PC *TerrainCastAuxPolygonPc;
 extern f32 TerrainShadowHeightPc;
 extern NUVEC TerrainCastAuxNormalPc;
@@ -521,8 +520,8 @@ extern NUVEC TerrainRoofNormalPc;
 extern const f64 TerrainScanRadiusEpsilon;
 extern const f32 TerrainScanTriangleSentinel, TerrainCastLowerSentinel;
 /* Existing canonical globals: CurrentTerrain(void*), ShadPoly,
- * EShadowPolygonPc, ShadowRoofPolygonPc, EShadY,
- * GetSurfaceInfoRoofHeightPc, GetSurfaceInfoSurfaceNormalPc,
+ * EShadPoly, ShadRoofPoly, EShadY,
+ * GetSurfaceInfoRoofHeightPc, ShadNorm,
  * GetSurfaceInfoWaterNormalPc, TerrainSurfaceClassPc.
  * Reuse existing BoltTargetRandomDenominator(f64)/LevelConfigFarDistance(f32).
  */
@@ -785,7 +784,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         }
     }
 
-    if (TerrainPlatformsOffPc == 0) {
+    if (NuTerrPlatsOff == 0) {
         const i16 *platform_groups;
         i32 platform_count;
 
@@ -924,7 +923,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                               local_max_z > vertices[2].z || local_max_z > vertices[3].z)) {
                             continue;
                         }
-                        transformed = &TerrainScaledShapeCursorPc[transformed_count];
+                        transformed = &ScaleTerrain[transformed_count];
                         transformed->packed_metadata = shape->packed_metadata;
                         transformed->vertices[0].x = vertices[0].x;
                         transformed->vertices[0].y = vertices[0].y;
@@ -951,7 +950,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                                              transformed->normals[1].z * transformed->normals[1].z;
                             length = NuFsqrt(length_squared);
                             inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                            transformed = &TerrainScaledShapeCursorPc[transformed_count];
+                            transformed = &ScaleTerrain[transformed_count];
                             transformed->normals[1].x *= inverse;
                             transformed->normals[1].y *= inverse;
                             transformed->normals[1].z *= inverse;
@@ -970,7 +969,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                                          transformed->normals[0].z * transformed->normals[0].z;
                         length = NuFsqrt(length_squared);
                         inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                        transformed = &TerrainScaledShapeCursorPc[transformed_count];
+                        transformed = &ScaleTerrain[transformed_count];
                         transformed->normals[0].x *= inverse;
                         transformed->normals[0].y *= inverse;
                         transformed->normals[0].z *= inverse;
@@ -1041,7 +1040,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     NUVEC floor_normal, efloor_normal, roof_normal, eroof_normal;
     TERRAIN_GROUP_PC *groups;
 
-    TerrainShadowGroupIndexPc = -1;
+    castnum = -1;
     TerrainShadowFloorIndexPc = -1;
     scan = ((TerrainQuery_s *)TerI)->scan_words;
     /* MATCH-EXCEPTION: retail loads the group table once, after the loop's
@@ -1087,7 +1086,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             floor_normal = surface->normals[n];                                                                        \
             floor_poly = surface;                                                                                      \
             floor_y = y;                                                                                               \
-            TerrainShadowGroupIndexPc = group_index;                                                                   \
+            castnum = group_index;                                                                                     \
         } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[n].y < roof_normal.y)) {         \
             roof_normal = surface->normals[n];                                                                         \
             roof_poly = surface;                                                                                       \
@@ -1171,13 +1170,13 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     if (eroof_y < 2000000.0 && eroof_normal.y > 0.0f && position->y + roof_range > eroof_y) {
         if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y && eroof_y > roof_y) {
             TerrainWaterCastIndexPc = 3;
-            EShadowPolygonPc = NULL;
+            EShadPoly = NULL;
             EShadY = 2000000.0f;
             GetSurfaceInfoWaterNormalPc.y = 1.0f;
         } else {
             TerrainWaterCastIndexPc = 1;
             EShadY = eroof_y;
-            EShadowPolygonPc = eroof_poly;
+            EShadPoly = eroof_poly;
             TerrainShadowFloorIndexPc = eroof_group;
             GetSurfaceInfoWaterNormalPc.x = eroof_normal.x;
             GetSurfaceInfoWaterNormalPc.y = eroof_normal.y;
@@ -1185,14 +1184,14 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
         }
     } else if (!(efloor_y > -2000000.0) || (floor_y > -2000000.0 && floor_y > efloor_y)) {
         TerrainWaterCastIndexPc = 3;
-        EShadowPolygonPc = NULL;
+        EShadPoly = NULL;
         EShadY = 2000000.0f;
         GetSurfaceInfoWaterNormalPc.y = 1.0f;
     } else {
         EShadY = efloor_y;
         TerrainWaterCastIndexPc = 2;
         GetSurfaceInfoWaterNormalPc.x = efloor_normal.x;
-        EShadowPolygonPc = efloor_poly;
+        EShadPoly = efloor_poly;
         GetSurfaceInfoWaterNormalPc.y = efloor_normal.y;
         GetSurfaceInfoWaterNormalPc.z = efloor_normal.z;
     }
@@ -1200,35 +1199,35 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y) {
         TerrainRoofValidPc = 1;
         GetSurfaceInfoRoofHeightPc = roof_y;
-        ShadowRoofPolygonPc = roof_poly;
+        ShadRoofPoly = roof_poly;
         TerrainRoofIndexPc = roof_group;
         TerrainRoofNormalPc.x = roof_normal.x;
         TerrainRoofNormalPc.y = roof_normal.y;
         TerrainRoofNormalPc.z = roof_normal.z;
     } else {
-        ShadowRoofPolygonPc = NULL;
+        ShadRoofPoly = NULL;
         GetSurfaceInfoRoofHeightPc = 2000000.0f;
     }
 
     if (roof_y < 2000000.0 && roof_normal.y > 0.0f && position->y + height_above > roof_y) {
         ShadPoly = roof_poly;
         position->y = roof_y;
-        TerrainShadowGroupIndexPc = roof_group;
-        GetSurfaceInfoSurfaceNormalPc.x = roof_normal.x;
+        castnum = roof_group;
+        ShadNorm.x = roof_normal.x;
         TerrainSurfaceClassPc = 1;
-        GetSurfaceInfoSurfaceNormalPc.y = roof_normal.y;
-        GetSurfaceInfoSurfaceNormalPc.z = roof_normal.z;
+        ShadNorm.y = roof_normal.y;
+        ShadNorm.z = roof_normal.z;
     } else if (floor_y > -2000000.0) {
-        GetSurfaceInfoSurfaceNormalPc.x = floor_normal.x;
-        GetSurfaceInfoSurfaceNormalPc.y = floor_normal.y;
+        ShadNorm.x = floor_normal.x;
+        ShadNorm.y = floor_normal.y;
         TerrainSurfaceClassPc = 2;
         ShadPoly = floor_poly;
-        GetSurfaceInfoSurfaceNormalPc.z = floor_normal.z;
+        ShadNorm.z = floor_normal.z;
         position->y = floor_y;
     } else {
         position->y = 2000000.0f;
         TerrainSurfaceClassPc = 3;
-        GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
+        ShadNorm.y = 1.0f;
         ShadPoly = NULL;
     }
     return 0.0f;
@@ -1245,15 +1244,15 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
     TerrainShadowHeightPc = LevelConfigFarDistance;
     EShadY = LevelConfigFarDistance;
     GetSurfaceInfoWaterNormalPc.y = 1.0f;
-    TerrainShadowStatusPc = -1;
+    TerrPolyObj = -1;
     GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
-    TerrainShadowGroupIndexPc = -1;
+    castnum = -1;
     TerrainShadowFloorIndexPc = -1;
-    GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
+    ShadNorm.y = 1.0f;
     TerrainCastAuxPolygonPc = NULL;
     TerrainWaterCastIndexPc = 0;
-    EShadowPolygonPc = NULL;
-    ShadowRoofPolygonPc = NULL;
+    EShadPoly = NULL;
+    ShadRoofPoly = NULL;
     TerrainSurfaceClassPc = 0;
     ShadPoly = NULL;
 
@@ -1262,12 +1261,12 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
     }
 
     TerI = (TerrainQuery_s *)NuScratchAlloc32(0x948);
-    TerrainScaledShapeCursorPc = TerrainScaleWorkBasePc;
+    ScaleTerrain = ScaleTerrainT1;
     local_position = *position;
     NewScanRot(&local_position, mask);
     (void)NewCast(&local_position, height_above, roof_range);
     NuScratchRelease();
-    TerrainPlatformsOffPc = 0;
+    NuTerrPlatsOff = 0;
     return local_position.y;
 }
 
@@ -1288,7 +1287,7 @@ void PlatOnOff(i32 platform_index, i32 enabled) {
 }
 
 void NewTerrPlatformsOff(void) {
-    TerrainPlatformsOffPc = 1;
+    NuTerrPlatsOff = 1;
 }
 
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
@@ -2173,7 +2172,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
-static TERRAIN_PICKUP_SET_PC *PickupTerrainPc = 0;
+static TERRAIN_PICKUP_SET_PC *PickupTerr = 0;
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
     char path[100];
@@ -2324,7 +2323,7 @@ void terrainpickupinit(char *path, void **buffer) {
         group[i].scene_index = (i16)i;
         terrain->platforms[i].scene_object = NULL;
     }
-    PickupTerrainPc = terrain;
+    PickupTerr = terrain;
 }
 
 void AddPickupTerr(i32 type, NUVEC *position) {
@@ -2334,7 +2333,7 @@ void AddPickupTerr(i32 type, NUVEC *position) {
     if (terrain == NULL) {
         return;
     }
-    source = PickupTerrainPc->group_for_type[type];
+    source = PickupTerr->group_for_type[type];
     if (source == -1) {
         return;
     }
@@ -2342,7 +2341,7 @@ void AddPickupTerr(i32 type, NUVEC *position) {
     if (count >= 128) {
         return;
     }
-    terrain->groups[terrain->max_groups + count] = PickupTerrainPc->groups[source];
+    terrain->groups[terrain->max_groups + count] = PickupTerr->groups[source];
     terrain = (TERRAIN_SET_PC *)CurrentTerrain;
     terrain->groups[terrain->max_groups + count].origin = *position;
     curPickInst = count + 1;
@@ -2375,7 +2374,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     if (previous == NULL && rotating != 0) {
         return -1;
     }
-    source = PickupTerrainPc->group_for_type[type];
+    source = PickupTerr->group_for_type[type];
     found = -1;
     if (source != -1 && TERRAIN_APTR_SET->removed_platform_count < 32) {
         for (index = 0; index < TERRAIN_APTR_SET->max_platforms; ++index) {
@@ -2389,7 +2388,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
         return -1;
     }
     group = &TERRAIN_APTR_SET->groups[TERRAIN_APTR_SET->group_count];
-    *group = PickupTerrainPc->groups[source];
+    *group = PickupTerr->groups[source];
     group->scene_index = (i16)found;
     group->chunk_type = 1;
     TERRAIN_APTR_SET->platforms[found].scene_object = matrix;
@@ -2455,7 +2454,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     if (object == NULL) {
         return -1;
     }
-    source = PickupTerrainPc->group_for_type[type];
+    source = PickupTerr->group_for_type[type];
     if (source == -1) {
         return -1;
     }
@@ -2470,7 +2469,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
         return -1;
     }
     group = &TERRAIN_NPPI_SET->groups[TERRAIN_NPPI_SET->group_count];
-    *group = PickupTerrainPc->groups[source];
+    *group = PickupTerr->groups[source];
     group->chunk_type = 1;
     group->scene_index = (i16)index;
     TERRAIN_NPPI_SET->platforms[index].scene_object = object;
@@ -2503,12 +2502,12 @@ void ReassignPickupInst(i32 index, i32 type) {
     if (terrain == NULL || index == -1) {
         return;
     }
-    source_index = PickupTerrainPc->group_for_type[type];
+    source_index = PickupTerr->group_for_type[type];
     if (source_index == -1) {
         return;
     }
     group = &terrain->groups[terrain->platforms[index].terrain_group_index];
-    source = &PickupTerrainPc->groups[source_index];
+    source = &PickupTerr->groups[source_index];
     group->data = source->data;
     group->bounds_min = source->bounds_min;
     group->bounds_max = source->bounds_max;
@@ -2808,7 +2807,7 @@ void TerrDrawImpactPol(void) {
         return;
     }
     surface = query->surface;
-    scaled = TerrainScaledShapeCursorPc;
+    scaled = ScaleTerrain;
     if ((u32)surface >= (u32)scaled && (u32)surface < (u32)scaled + 0xc800) {
         surface = ((TERRAIN_DEBUG_SOURCE_LINK_PC *)surface)->source_polygon;
     }
@@ -3042,8 +3041,8 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_PC *output, 
     group->bounds_max.y = max_y + (f64)0.1f + group->origin.y;
     group->bounds_max.z = max_z + (f64)0.1f + group->origin.z;
     group->radius = NuFsqrt(radius_squared);
-    if (bytes > TerrainSkinPoolSlotBytesPc) {
-        TerrainSkinPoolSlotBytesPc = bytes;
+    if (bytes > PlatSkinMaxSize) {
+        PlatSkinMaxSize = bytes;
     }
 }
 
@@ -3068,7 +3067,7 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
     if (matrix == NULL || blend == NULL) {
         return -4;
     }
-    skin_index = TerrainSkinInfoCountPc;
+    skin_index = PlatSkinCnt;
     if (skin_index >= TerrainSkinInfoCapacityPc) {
         return -5;
     }
@@ -3085,7 +3084,7 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
     }
     TERRAIN_SCI_SET->groups[count] = source_terrain->groups[source_terrain->platforms[found].terrain_group_index];
     TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].chunk_type = 0;
-    info = &TerrainSkinInfosPc[skin_index];
+    info = &PlatSkinInfo[skin_index];
     info->matrix = matrix;
     info->blend = blend;
     info->sample_rows = sample_rows;
@@ -3096,15 +3095,15 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
     } else {
         info->vertex_order = 0;
     }
-    TerrainSkinPrepareGroupPc(TERRAIN_SCI_SET->group_count, (TERRAIN_SKIN_STREAM_PC *)TerrainSkinPoolBasePc, info);
-    skin_index = TerrainSkinInfoCountPc;
-    info = &TerrainSkinInfosPc[skin_index];
+    TerrainSkinPrepareGroupPc(TERRAIN_SCI_SET->group_count, (TERRAIN_SKIN_STREAM_PC *)PlatSkinMem, info);
+    skin_index = PlatSkinCnt;
+    info = &PlatSkinInfo[skin_index];
     info->group_index = TERRAIN_SCI_SET->group_count;
     info->original_shape = TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].data;
     TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].scene_index = (i16)(-1 - skin_index);
     TERRAIN_SCI_SET->groups[TERRAIN_SCI_SET->group_count].data = NULL;
     ++TERRAIN_SCI_SET->group_count;
-    TerrainSkinInfoCountPc = skin_index + 1;
+    PlatSkinCnt = skin_index + 1;
     return TERRAIN_SCI_SET->group_count - 1;
 }
 
@@ -3113,11 +3112,11 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
 /* Native 6813e0: caller-owned arena start/end and explicit record capacity.
  * This partitions an existing arena; it does not establish its allocation. */
 void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity) {
-    TerrainSkinInfosPc = base;
-    TerrainSkinPoolBasePc = (u8 *)(base + capacity);
-    TerrainSkinPoolSlotBytesPc = 0;
+    PlatSkinInfo = base;
+    PlatSkinMem = (u8 *)(base + capacity);
+    PlatSkinMaxSize = 0;
     TerrainSkinInfoCapacityPc = capacity;
-    TerrainSkinInfoCountPc = 0;
+    PlatSkinCnt = 0;
     TerrainSkinArenaEndPc = end;
     TerrainSkinOriginalGroupCountPc = ((TERRAIN_SET_PC *)CurrentTerrain)->group_count;
 }
@@ -3278,13 +3277,13 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
             ++group; /* Native cursor advances only on the platform branch. */
         }
     }
-    use = (TERRAIN_SKIN_USE_RECORD_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * pool_slots);
-    TerrainSkinUseRecordsPc = use;
+    use = (TERRAIN_SKIN_USE_RECORD_PC *)(PlatSkinMem + PlatSkinMaxSize * pool_slots);
+    SkinMemInfo = use;
     for (i = 0; i < pool_slots; ++i) {
         use[i].last_use = 0;
         use[i].skin_index = -1;
     }
-    TerrainSkinPoolSlotCountPc = pool_slots;
+    PlatSkinMaxStore = pool_slots;
     return (u8 *)(use + pool_slots);
 }
 

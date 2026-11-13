@@ -233,8 +233,8 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     i32 first_pair;
     i32 index;
     for (index = 0; index < 8; ++index) {
-        PlayerStartRecordInitPc[index].position = &v000;
-        PlayerStartRecordInitPc[index].angle = 0;
+        PlayerStart[index].position = &v000;
+        PlayerStart[index].angle = 0;
     }
     if (world->start_door != NULL && !bonus) {
         spline = world->start_door->spline;
@@ -252,9 +252,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         for (index = 0; index < 8; ++index) {
             NUVEC direction;
             i32 point = pair * 2;
-            PlayerStartRecordInitPc[index].position = &spline->pts[point];
-            NuVecSub(&direction, &spline->pts[point + 1], PlayerStartRecordInitPc[index].position);
-            PlayerStartRecordInitPc[index].angle = NuAtan2D(direction.x, direction.z);
+            PlayerStart[index].position = &spline->pts[point];
+            NuVecSub(&direction, &spline->pts[point + 1], PlayerStart[index].position);
+            PlayerStart[index].angle = NuAtan2D(direction.x, direction.z);
             ++pair;
             if (pair * 2 + 2 > spline->length) {
                 pair = first_pair;
@@ -263,14 +263,12 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         if (bonus && spline->length >= 4) {
             i32 count = spline->length / 4;
             i32 start = qrand() / (65535 / count + 1) * 4;
-            PlayerStartRecordInitPc[0].position = &spline->pts[start];
-            PlayerStartRecordInitPc[0].angle =
-                NuAtan2D(spline->pts[start + 1].x - PlayerStartRecordInitPc[0].position->x,
-                         spline->pts[start + 1].z - PlayerStartRecordInitPc[0].position->z);
-            PlayerStartRecordInitPc[1].position = &spline->pts[start + 2];
-            PlayerStartRecordInitPc[1].angle =
-                NuAtan2D(spline->pts[start + 3].x - PlayerStartRecordInitPc[0].position->x,
-                         spline->pts[start + 3].z - PlayerStartRecordInitPc[1].position->z);
+            PlayerStart[0].position = &spline->pts[start];
+            PlayerStart[0].angle = NuAtan2D(spline->pts[start + 1].x - PlayerStart[0].position->x,
+                                            spline->pts[start + 1].z - PlayerStart[0].position->z);
+            PlayerStart[1].position = &spline->pts[start + 2];
+            PlayerStart[1].angle = NuAtan2D(spline->pts[start + 3].x - PlayerStart[0].position->x,
+                                            spline->pts[start + 3].z - PlayerStart[1].position->z);
         }
     }
     if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index &&
@@ -315,9 +313,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     DoorExitCameraSplineNamePc[0] = '\0';
     for (index = 0; index < 8; ++index) {
         PLAYER_POSITION_SOCK_PC position;
-        ComplexSockPosition(world->sock_sys, PlayerStartRecordInitPc[index].position, -1, -1, &position.sock);
-        PlayerStartRecordInitPc[index].sock_location = position.start.location;
-        PlayerStartRecordInitPc[index].sock_ratio = position.start.ratio;
+        ComplexSockPosition(world->sock_sys, PlayerStart[index].position, -1, -1, &position.sock);
+        PlayerStart[index].sock_location = position.start.location;
+        PlayerStart[index].sock_ratio = position.start.ratio;
     }
     if (HUB_ADATA != NULL && world->area == HUB_ADATA) {
         hub_from_superstory = -1;
@@ -361,8 +359,8 @@ NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
         index = (i8)object->field_280;
     }
     index %= 8;
-    position = PlayerStartRecordInitPc[index].position;
-    return position != NULL ? position : PlayerStartRecordInitPc[0].position;
+    position = PlayerStart[index].position;
+    return position != NULL ? position : PlayerStart[0].position;
 }
 
 i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
@@ -811,7 +809,7 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     i32 restore_hitpoints;
     i32 player_index;
     u16 facing;
-    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
+    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStart;
     if (object == NULL) {
         return;
     }

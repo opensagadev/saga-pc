@@ -4038,7 +4038,7 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
         ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 1;
     }
     drawcharactermodel_keepmergeaction = GameKeepMergeActionPc;
-    ModelAnimLayerListDispatchPc = GCDataList[model->model_id].make_layer_list;
+    MakeLayerList = GCDataList[model->model_id].make_layer_list;
     result =
         APIDrawCharacterModel(model, object != NULL ? (APICHARACTERDATA *)object->character_data : NULL, animation,
                               matrix, secondary_matrix, reflection_matrix, NULL, auxiliary_matrix, object, flags,
@@ -4957,8 +4957,8 @@ void __cdecl Players_Init(void) {
         }
         if (LevelChangesInArea == 0 && UsePlayerList != 0 && progress[0].active == 0 && progress[1].active != 0 &&
             FreePlay == 0 && (WORLD->area->flags & 5) == 1 && list[0] != -1 &&
-            list[0] == Area_StoryModelListPc[0].model_id && list[1] != -1 &&
-            list[1] == Area_StoryModelListPc[1].model_id && list[0] != list[1]) {
+            list[0] == Area_StoryModelList[0].model_id && list[1] != -1 && list[1] == Area_StoryModelList[1].model_id &&
+            list[0] != list[1]) {
             i16 first = list[0];
             list[0] = list[1];
             list[1] = first;

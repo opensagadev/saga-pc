@@ -2303,17 +2303,17 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
     return distance;
 }
 
-u32 SocksOnPreviousStatusPc[2] = {0};
+u32 SocksOnPreviousStatus[2] = {0};
 
 void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
     i32 word;
     i32 index;
     for (word = 0; word < 2; ++word) {
-        SocksOnPreviousStatusPc[word] = 0;
+        SocksOnPreviousStatus[word] = 0;
     }
     for (index = 0; index < 64; ++index) {
         if ((system->socks[index].flags & 0x100) == 0) {
-            SocksOnPreviousStatusPc[index / 32] |= 1 << (index & 31);
+            SocksOnPreviousStatus[index / 32] |= 1 << (index & 31);
         }
         system->socks[index].flags |= 0x100;
     }
@@ -2323,7 +2323,7 @@ void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
 void __cdecl RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        if (SocksOnPreviousStatusPc[index / 32] & (1 << (index & 31))) {
+        if (SocksOnPreviousStatus[index / 32] & (1 << (index & 31))) {
             system->socks[index].flags &= ~0x100;
         }
     }

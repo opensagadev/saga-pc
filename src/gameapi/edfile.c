@@ -412,7 +412,7 @@ static void eduiFilePickAllocDirListPc(void) {
 }
 
 extern NUCAMERA *EdMainCurrentCameraPc;
-extern NUVEC *EdMainLocationVectorPc;
+extern NUVEC *ed_loc;
 extern i32 edmain_cursor_enabled;
 void __cdecl PcEditorCursorEnablePc(i32 enabled);
 
@@ -546,13 +546,13 @@ eduimenu_s *__cdecl edGetMainMenu(void) {
 }
 
 void __cdecl edmainSetLocVec(NUVEC *location) {
-    EdMainLocationVectorPc = location;
+    ed_loc = location;
 }
 
 /* Native 617f80/6. The pointer is zero-initialized engine/editor storage.
  * The neighboring native setter 617f70 has no verified direct caller. */
 NUVEC *__cdecl edmainQueryLocVec(void) {
-    return EdMainLocationVectorPc;
+    return ed_loc;
 }
 
 eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {

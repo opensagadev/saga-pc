@@ -449,7 +449,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
-#define AREA_STORY_MODELS_PC Area_StoryModelListPc
+#define AREA_STORY_MODELS_PC Area_StoryModelList
 
 static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,
                                       i32 load_model, AREA_EXTRA_MODEL_PC *extras) {
@@ -459,7 +459,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
         ++*count;
         list[*count].model_id = -1;
     }
-    if (extras == NULL || list == AreaPlayerModelsPc || load_model == 0) {
+    if (extras == NULL || list == Area_PlayerModelList || load_model == 0) {
         return;
     }
     for (; extras->model_list != NULL; ++extras) {
@@ -480,7 +480,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
 extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
     i32 index;
     Area_PlayerModelCount = 0;
-    AreaPlayerModelsPc[0].model_id = -1;
+    Area_PlayerModelList[0].model_id = -1;
     Area_StoryModelCount = 0;
     AREA_STORY_MODELS_PC[0].model_id = -1;
     Area_FreePlayModelCount = 0;
@@ -521,8 +521,8 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 ++Area_MissionModelCount;
             }
             if (Area_PlayerModelCount < 8) {
-                AreaPlayerModelsPc[Area_PlayerModelCount].model_id = (i16)(mission_characters[index]);
-                AreaPlayerModelsPc[Area_PlayerModelCount].count = (i16)(1);
+                Area_PlayerModelList[Area_PlayerModelCount].model_id = (i16)(mission_characters[index]);
+                Area_PlayerModelList[Area_PlayerModelCount].count = (i16)(1);
                 ++Area_PlayerModelCount;
             }
         }
@@ -550,20 +550,20 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
 
     NUFPAR_PC *fp = NuFParCreate(path);
     if (fp == NULL) {
-        AreaPlayerModelsPc[0].model_id = s[0];
-        AreaPlayerModelsPc[0].count = 1;
-        AreaPlayerModelsPc[1].model_id = s[1];
-        AreaPlayerModelsPc[1].count = 1;
-        AreaPlayerModelsPc[2].model_id = -1;
+        Area_PlayerModelList[0].model_id = s[0];
+        Area_PlayerModelList[0].count = 1;
+        Area_PlayerModelList[1].model_id = s[1];
+        Area_PlayerModelList[1].count = 1;
+        Area_PlayerModelList[2].model_id = -1;
         Area_PlayerModelCount = 2;
-        AREA_STORY_MODELS_PC[0].model_id = AreaPlayerModelsPc[0].model_id;
+        AREA_STORY_MODELS_PC[0].model_id = Area_PlayerModelList[0].model_id;
         AREA_STORY_MODELS_PC[0].count = 1;
-        AREA_STORY_MODELS_PC[1].model_id = AreaPlayerModelsPc[1].model_id;
+        AREA_STORY_MODELS_PC[1].model_id = Area_PlayerModelList[1].model_id;
         AREA_STORY_MODELS_PC[1].count = 1;
         AREA_STORY_MODELS_PC[2].model_id = -1;
         Area_StoryModelCount = 2;
-        Area_PlayerIDList[0] = AreaPlayerModelsPc[0].model_id;
-        Area_PlayerIDList[1] = AreaPlayerModelsPc[1].model_id;
+        Area_PlayerIDList[0] = Area_PlayerModelList[0].model_id;
+        Area_PlayerIDList[1] = Area_PlayerModelList[1].model_id;
         Area_PlayerIDList[2] = -1;
         return;
     }
@@ -639,7 +639,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             }
             if (NuStrICmp(fp->word_buffer_ptr, "player") == 0) {
                 if (Area_MissionModelCount == 0) {
-                    AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(AreaPlayerModelsPc),
+                    AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList),
                                               &Area_PlayerModelCount, 8, character_id, 1, models);
                 }
                 AreaAddModelListPrivatePc(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
@@ -772,25 +772,25 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             player_id = s[0];
         }
         if (player_id != -1) {
-            AreaPlayerModelsPc[0].model_id = static_cast<i16>(player_id);
-            AreaPlayerModelsPc[0].count = 0;
-            AreaPlayerModelsPc[1].model_id = static_cast<i16>(player_id);
-            AreaPlayerModelsPc[1].count = 0;
-            AreaPlayerModelsPc[2].model_id = -1;
+            Area_PlayerModelList[0].model_id = static_cast<i16>(player_id);
+            Area_PlayerModelList[0].count = 0;
+            Area_PlayerModelList[1].model_id = static_cast<i16>(player_id);
+            Area_PlayerModelList[1].count = 0;
+            Area_PlayerModelList[2].model_id = -1;
             Area_PlayerModelCount = 2;
         }
     } else if (Area_PlayerModelCount == 1) {
-        AreaPlayerModelsPc[1].model_id = AreaPlayerModelsPc[0].model_id;
-        AreaPlayerModelsPc[1].count = 1;
+        Area_PlayerModelList[1].model_id = Area_PlayerModelList[0].model_id;
+        Area_PlayerModelList[1].count = 1;
         Area_PlayerModelCount = 2;
     }
 
     AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = -1;
     Area_FreePlayModelList[Area_FreePlayModelCount].model_id = -1;
     Area_MissionModelList[Area_MissionModelCount].model_id = -1;
-    AreaPlayerModelsPc[Area_PlayerModelCount].model_id = -1;
+    Area_PlayerModelList[Area_PlayerModelCount].model_id = -1;
     for (index = 0; index < Area_PlayerModelCount; ++index) {
-        Area_PlayerIDList[index] = AreaPlayerModelsPc[index].model_id;
+        Area_PlayerIDList[index] = Area_PlayerModelList[index].model_id;
     }
     Area_PlayerIDList[index] = -1;
     if (counter_count > 0) {

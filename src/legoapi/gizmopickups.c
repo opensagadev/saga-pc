@@ -3,7 +3,7 @@
 /* Retail unit 0x56ef00-0x571825: definitions in retail address order. */
 
 extern i32 NuMainSkipCutBordersPc;
-extern i32 AutoSaveIconPendingPc;
+extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
 STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
@@ -33,7 +33,7 @@ typedef struct coin_reset_packet_pc_s {
     f32 double_score_timer;
 } COIN_RESET_PACKET_PC;
 
-extern char *PickupOutputNamePc;
+extern char *GizmoPickup_OutputName;
 
 typedef struct {
     u32 collected[16], enabled[16], visible[16], reserved[16];
@@ -405,11 +405,11 @@ i32 __cdecl GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$PickupOutputNamePc")
-char *PickupOutputNamePc = (char *)PickupCollectedOutputTextPc;
+char *GizmoPickup_OutputName = (char *)PickupCollectedOutputTextPc;
 #pragma data_seg()
 
 char *__cdecl GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return PickupOutputNamePc;
+    return GizmoPickup_OutputName;
 }
 
 i32 __cdecl GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {

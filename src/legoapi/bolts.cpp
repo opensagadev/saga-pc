@@ -1209,7 +1209,7 @@ extern "C" {
 /* Private collision helpers and callers retain their original translation-unit group. */
 static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
 
-extern "C" i32 FindAnglesXFullTempPc;
+extern "C" i32 i_temp_xrot;
 
 typedef struct bolt_context_info_pc_s {
     const char *name;
@@ -1409,10 +1409,10 @@ extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NU
     NuVecNorm(&reflected, &reflected);
     FindAnglesXY(&reflected, NULL, NULL);
     if (bolt->field_104 < 0 || bolt->field_104 >= 32 || !(TerSurface[bolt->field_104].flags & 0x800)) {
-        FindAnglesXFullTempPc += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
+        i_temp_xrot += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
         temp_yrot = (u16)(temp_yrot + (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
     }
-    angles.x = FindAnglesXFullTempPc;
+    angles.x = i_temp_xrot;
     angles.y = temp_yrot;
     NuMtxSetRotationXYVU0(&matrix, &angles);
     if ((i8)type->field_3d < 0 || (i8)type->field_3d >= BoltSys->count) {
@@ -2024,13 +2024,13 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             }
         }
         temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 8192.0f);
-        FindAnglesXFullTempPc += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
-        if (FindAnglesXFullTempPc < -8192) {
-            FindAnglesXFullTempPc = -8192;
-        } else if (FindAnglesXFullTempPc > 8192) {
-            FindAnglesXFullTempPc = 8192;
+        i_temp_xrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
+        if (i_temp_xrot < -8192) {
+            i_temp_xrot = -8192;
+        } else if (i_temp_xrot > 8192) {
+            i_temp_xrot = 8192;
         }
-        temp_zrot = FindAnglesXFullTempPc;
+        temp_zrot = i_temp_xrot;
     reflected:
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
         NUMTX matrix;

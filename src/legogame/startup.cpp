@@ -375,7 +375,7 @@ extern "C" {
 
             LoadPerm1();
             LoadPerm2();
-            GameThingManagerPc->AddOnceOnlyThings();
+            theGameThings->AddOnceOnlyThings();
             RegisterHelpers();
 
             blocked_keys[0] = 0x3b;

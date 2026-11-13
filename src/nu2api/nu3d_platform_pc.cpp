@@ -205,12 +205,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_scale) == 0x60);
     STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_kind) == 0x99);
 
-    static VARIPTR RndrStreamFirstPc = {0};
-    static VARIPTR RndrStreamSecondPc = {0};
-    static i32 RndrStreamSizePc = 0;
-    static i32 RndrStreamIndexPc = 0;
-    static u32 RndrStreamUsedPc = 0;
-    static u32 RndrStreamMaxUsedPc = 0;
+    static VARIPTR rndrstream_b = {0};
+    static VARIPTR rndrstream_a = {0};
+    static i32 nurndr_maxstreamsize = 0;
+    static i32 rndrstream_buffid = 0;
+    static u32 rndrstream_used = 0;
+    static u32 rndrstream_max_used = 0;
 
     typedef struct SCENE_FILE_TEXTURE_HEADER_PC {
         i32 width;
@@ -1226,7 +1226,7 @@ extern "C" {
         NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                   \
     } while (0)
 
-    extern i32 FrameSleepMillisecondsPc;
+    extern i32 min_delay;
     extern f32 FrameStartupDelayPc;
     extern i32 NuApiTextLinePc;
     extern f32 NuFrameAccumulatedTimePc;
@@ -3321,58 +3321,56 @@ extern "C" {
     }
 
     static void __cdecl NuRndrResetStreamBufferPc(void) {
-        switch (RndrStreamIndexPc) {
+        switch (rndrstream_buffid) {
             case 0:
-                nudlist_stream_cursor = RndrStreamFirstPc;
-                nuprim_field_ba8 = RndrStreamFirstPc.addr + RndrStreamSizePc;
+                nudlist_stream_cursor = rndrstream_b;
+                nuprim_field_ba8 = rndrstream_b.addr + nurndr_maxstreamsize;
                 break;
             case 1:
-                nudlist_stream_cursor = RndrStreamSecondPc;
-                nuprim_field_ba8 = RndrStreamSecondPc.addr + RndrStreamSizePc;
+                nudlist_stream_cursor = rndrstream_a;
+                nuprim_field_ba8 = rndrstream_a.addr + nurndr_maxstreamsize;
                 break;
         }
         if (nudlist_stream_cursor.addr & 15) {
             nudlist_stream_cursor.addr = (nudlist_stream_cursor.addr + 15) & ~15u;
         }
-        SAGA_SKIN_CALL(skin_trace_stream, (unsigned)RndrStreamIndexPc, nudlist_stream_cursor.addr,
+        SAGA_SKIN_CALL(skin_trace_stream, (unsigned)rndrstream_buffid, nudlist_stream_cursor.addr,
                        nuprim_field_ba8 - nudlist_stream_cursor.addr);
     }
 
     void __cdecl NuRndrSwapStreamBuffers(void) {
-        switch (RndrStreamIndexPc) {
+        switch (rndrstream_buffid) {
             case 0:
-                RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamFirstPc.addr;
+                rndrstream_used = nudlist_stream_cursor.addr - rndrstream_b.addr;
                 break;
             case 1:
-                RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamSecondPc.addr;
+                rndrstream_used = nudlist_stream_cursor.addr - rndrstream_a.addr;
                 break;
         }
-        if (RndrStreamUsedPc > RndrStreamMaxUsedPc) {
-            RndrStreamMaxUsedPc = RndrStreamUsedPc;
+        if (rndrstream_used > rndrstream_max_used) {
+            rndrstream_max_used = rndrstream_used;
         }
-        if (RndrStreamUsedPc > (u32)RndrStreamSizePc) {
+        if (rndrstream_used > (u32)nurndr_maxstreamsize) {
             PCGraphicsRenderTextureAllocationError();
             DebugBreak();
         }
-        RndrStreamIndexPc = (RndrStreamIndexPc + 1) % 2;
+        rndrstream_buffid = (rndrstream_buffid + 1) % 2;
         NuRndrResetStreamBufferPc();
     }
 
     void __cdecl NuRndrStreamInit(i32 size, VARIPTR *buffer) {
         if (buffer == NULL) {
-            RndrStreamFirstPc.void_ptr =
-                NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 126);
-            RndrStreamSecondPc.void_ptr =
-                NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 127);
+            rndrstream_b.void_ptr = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 126);
+            rndrstream_a.void_ptr = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nustream.c", 127);
         } else {
-            RndrStreamFirstPc.addr = (buffer->addr + 31) & ~31u;
-            RndrStreamSecondPc.addr = (RndrStreamFirstPc.addr + size + 31) & ~31u;
-            buffer->addr = RndrStreamSecondPc.addr + size;
+            rndrstream_b.addr = (buffer->addr + 31) & ~31u;
+            rndrstream_a.addr = (rndrstream_b.addr + size + 31) & ~31u;
+            buffer->addr = rndrstream_a.addr + size;
         }
-        RndrStreamSizePc = size;
-        RndrStreamIndexPc = 0;
-        memset(RndrStreamFirstPc.void_ptr, 0, size);
-        memset(RndrStreamSecondPc.void_ptr, 0, size);
+        nurndr_maxstreamsize = size;
+        rndrstream_buffid = 0;
+        memset(rndrstream_b.void_ptr, 0, size);
+        memset(rndrstream_a.void_ptr, 0, size);
         NuRndrResetStreamBufferPc();
     }
 
@@ -3727,7 +3725,7 @@ extern "C" {
         f32 rounded_width;
         f32 rounded_height;
         f32 reciprocal;
-        if (NuVpDirtyPc == 0) {
+        if (vport_inval == 0) {
             return;
         }
         clipped_left = 0;
@@ -3787,7 +3785,7 @@ extern "C" {
         viewport.y = (u32)(y >> 4);
         viewport.width = (u32)(width >> 4);
         viewport.height = (u32)(height >> 4);
-        NuVpDirtyPc = 0;
+        vport_inval = 0;
         NuVpSubmitPc(&viewport);
         NuMtxSetIdentity(&NuVpIdentityMatrixPc);
         NuVpBuildScalingTemplatePc();
@@ -4836,7 +4834,7 @@ extern "C" {
     }
 
     void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *items) {
-        NuDisplayListExecute(items, PCDisplayItemHandlersPc);
+        NuDisplayListExecute(items, CurrentItemTable);
     }
 
     i32 __cdecl DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
@@ -5094,10 +5092,10 @@ extern "C" {
     void __cdecl PostShadowSelectHandlersPc(i32 mode) {
         switch (mode) {
             case 0:
-                PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
+                CurrentItemTable = PCDisplayItemHandlerPrefixPc;
                 break;
             case 1:
-                PCDisplayItemHandlersPc = PCDisplayShadowItemHandlersPc;
+                CurrentItemTable = PCDisplayShadowItemHandlersPc;
                 break;
             default:
                 PCGraphicsRenderTextureAllocationError();
@@ -5564,7 +5562,7 @@ extern "C" {
         vpDevice.x *= 16;
         vpDevice.y *= 16;
         vpCurrent = vpDevice;
-        NuVpDirtyPc = 1;
+        vport_inval = 1;
         NuVpUpdate();
     }
 
@@ -6874,8 +6872,8 @@ extern "C" {
         DwaBlockCapacityPc = 0x2000;
         DwaEnabledPc = 1;
         DwaBlockCountPc = 0;
-        DwaWeightCursorPc = 0xef00;
-        DwaPointerCursorPc = 0x800;
+        rndr_blend_shape_deformer_wt_cnt = 0xef00;
+        rndr_blend_shape_deformer_wt_ptrs_cnt = 0x800;
         memset(DwaBlockTablePc, 0, sizeof(DwaBlockTablePc));
         DwaStreamCapacityPc = 0x2000;
     }
@@ -6907,23 +6905,23 @@ extern "C" {
     DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
         i32 clear_bytes = count * 4 + 0x204;
         DWA_WEIGHT_BLOCK_PC *result;
-        DwaWeightCursorPc -= clear_bytes;
-        if (DwaWeightCursorPc < 0) {
+        rndr_blend_shape_deformer_wt_cnt -= clear_bytes;
+        if (rndr_blend_shape_deformer_wt_cnt < 0) {
             PCClipScreenUnsupported();
             return NULL;
         }
-        result = &DwaWeightPoolPc[DwaWeightCursorPc];
+        result = &DwaWeightPoolPc[rndr_blend_shape_deformer_wt_cnt];
         memset(result, 0, clear_bytes);
         return result;
     }
 
     DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
-        DwaPointerCursorPc -= count;
-        if (DwaWeightCursorPc < 0) {
+        rndr_blend_shape_deformer_wt_ptrs_cnt -= count;
+        if (rndr_blend_shape_deformer_wt_cnt < 0) {
             PCClipScreenUnsupported();
             return NULL;
         }
-        return &DwaPointerPoolPc[DwaPointerCursorPc];
+        return &DwaPointerPoolPc[rndr_blend_shape_deformer_wt_ptrs_cnt];
     }
 
     void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance) {

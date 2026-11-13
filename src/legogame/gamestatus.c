@@ -272,7 +272,7 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
 
 void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if ((packet->field_0xb0 & 2) == 0) {
-        StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + (u32)StatusNewMinikitCountPc);
+        currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCountPc);
         if ((packet->field_0xb0 & 0x10) != 0 && (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
             IncreaseScore(packet->score, 50000, 0);
         }
@@ -280,8 +280,8 @@ void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     NextStatusStage(packet);
 }
 
-f32 StatusMiniKitProgressPc = 0.0f;
-f32 StatusMiniKitJibberLengthPc = 0.1f;
+f32 slideseek = 0.0f;
+f32 jibberlen = 0.1f;
 static f32 StatusMiniKitPieceDurationPc = 0.4f;
 
 void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
@@ -289,9 +289,9 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
         case 0:
             StatusNewMinikitCountPc = packet->new_minikits;
             if (StatusNewMinikitCountPc <= 0) {
-                StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
+                currentminikit = Game.area_save[packet->area->index].minikit_count;
             } else {
-                StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
+                currentminikit = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
             }
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
@@ -308,7 +308,7 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
                 } else {
                     stage->field_0x14 = 2;
                     stage->field_0x1c = 0.5f;
-                    StatusMiniKitProgressPc = 1.0f;
+                    slideseek = 1.0f;
                 }
             }
             break;
@@ -328,13 +328,13 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
                 f32 sound_start;
                 f32 previous = stage->field_0x18;
                 stage->field_0x18 += elapsed;
-                sound_start = stage->field_0x1c - StatusMiniKitJibberLengthPc;
+                sound_start = stage->field_0x1c - jibberlen;
                 if (previous < sound_start && stage->field_0x18 >= sound_start) {
                     NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                     PlaySfx("MK-Panel", NULL);
                 }
                 if (UpdateNewMiniKits(packet, stage) == 1) {
-                    if (StatusCurrentMinikitPc >= packet->minikit_count) {
+                    if (currentminikit >= packet->minikit_count) {
                         stage->field_0x1c = 1.0f;
                         stage->field_0x18 = 0.0f;
                         stage->field_0x14 = 4;
@@ -431,15 +431,14 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                 }
                 blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (stage->field_0x18 <= stage->field_0x1c) {
-                    DrawStatusMiniKit(
-                        StatusMiniKitXPc, StatusLerpPc(StatusMiniKitYPc, StatusMiniKitEntranceHeightPc, blend),
-                        StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f, StatusCurrentMinikitPc, packet, 0.0f);
+                    DrawStatusMiniKit(StatusMiniKitXPc,
+                                      StatusLerpPc(StatusMiniKitYPc, StatusMiniKitEntranceHeightPc, blend),
+                                      StatusAllMiniKitsZPc, StatusMiniKitScalePc, 0.0f, currentminikit, packet, 0.0f);
                 } else {
                     DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
-                                      0.0f, StatusCurrentMinikitPc, packet, 0.0f);
+                                      0.0f, currentminikit, packet, 0.0f);
                 }
-                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                  : StatusCurrentMinikitPc;
+                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (count < 0) {
                     count = 0;
                 }
@@ -459,9 +458,8 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                     blend = StatusMiniKitScalePc;
                 }
                 DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, blend,
-                                  StatusCurrentMinikitPc + 1, packet, 0.0f);
-                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                  : StatusCurrentMinikitPc;
+                                  currentminikit + 1, packet, 0.0f);
+                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (count < 0) {
                     count = 0;
                 }
@@ -473,16 +471,14 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                 f32 pulse;
                 f32 inverse;
                 f32 size;
-                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc) {
-                    blend = (stage->field_0x18 - (stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
-                            StatusMiniKitJibberLengthPc;
+                if (stage->field_0x18 > stage->field_0x1c - jibberlen) {
+                    blend = (stage->field_0x18 - (stage->field_0x1c - jibberlen)) / jibberlen;
                 } else {
                     blend = 0.0f;
                 }
                 DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
-                                  StatusMiniKitScalePc, StatusCurrentMinikitPc + 1, packet, blend);
-                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                  : StatusCurrentMinikitPc;
+                                  StatusMiniKitScalePc, currentminikit + 1, packet, blend);
+                count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count : currentminikit;
                 if (blend >= 0.5f) {
                     count++;
                 }

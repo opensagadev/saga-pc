@@ -4,20 +4,20 @@
  * with four slots; the PC build registers no things in it. */
 
 extern "C" {
-    GameThingManager *GameThingManagerPc = NULL;
+    GameThingManager *theGameThings = NULL;
 }
 
 GameThingManager::GameThingManager(i32 max_things) : ThingManager(max_things) {
-    GameThingManagerPc = this;
+    theGameThings = this;
 }
 
 GameThingManager::~GameThingManager() {
-    GameThingManagerPc = NULL;
+    theGameThings = NULL;
 }
 
 void GameThingManager::AddOnceOnlyThings() {
 }
 
 void CreateThingManager() {
-    GameThingManagerPc = new GameThingManager(4);
+    theGameThings = new GameThingManager(4);
 }

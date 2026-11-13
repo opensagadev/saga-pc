@@ -322,7 +322,7 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
 
 /* Original ripples.cpp private erase worklist. Native allocation derives its
  * pointer-array working view from the serialized caller count, clamped to64. */
-static RIPPLE_NODE_PC **RippleEraseListPc = 0;
+static RIPPLE_NODE_PC **eraselist = 0;
 static i32 RippleEraseCountPc = 0;
 
 static void RippleLinkNodesPc(RIPPLE_NODE_PC *nodes, i32 count) {
@@ -360,7 +360,7 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
     RippleLinkNodesPc(nodes, node_count);
     erase_list = (RIPPLE_NODE_PC **)((buffer->addr + 3) & ~3u);
     buffer->addr = (u32)(erase_list + node_count);
-    RippleEraseListPc = erase_list;
+    eraselist = erase_list;
     (*result)->nodes = nodes;
     (*result)->free_head = (*result)->nodes;
     (*result)->newest = NULL;
@@ -416,7 +416,7 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
         return;
     }
     node = set->newest;
-    erase_list = RippleEraseListPc;
+    erase_list = eraselist;
     erase_count = RippleEraseCountPc;
     for (i = 0; i < set->active_count; ++i) {
         if (node == NULL) {

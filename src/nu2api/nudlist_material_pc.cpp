@@ -333,13 +333,13 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
                 NuShaderManagerSetElementfv(0x4f, i, &group.x);
             }
         }
-        i32 count = RenderFrameShaderArrayCountPc;
+        i32 count = nuspecial_vertex_noffsets;
         if (count != 0) {
             if (count >= 8) {
                 count = 8;
             }
             NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), 0x4e, 0, count,
-                                        &RenderFrameShaderArrayPc[0][0]);
+                                        &nuspecial_vertex_offsets[0][0]);
         }
     }
 }

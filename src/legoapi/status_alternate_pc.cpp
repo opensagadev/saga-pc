@@ -152,7 +152,7 @@ extern "C" {
     /* Stage type 4. */
     void __cdecl MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         if ((packet->field_0xb0 & 2) == 0) {
-            StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + (u32)StatusNewMinikitCountPc);
+            currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCountPc);
             if ((packet->field_0xb0 & 0x10) != 0 &&
                 (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
                 IncreaseScore(packet->score, 50000, 0);
@@ -792,7 +792,7 @@ extern "C" {
         switch (stage->field_0x14) {
             case 0:
                 StatusAltSpinPc = 0;
-                stage->field_0x18 = StatusMiniKitPopTimerPc = 0.0f;
+                stage->field_0x18 = pop_timer = 0.0f;
                 stage->field_0x14 = 1;
                 stage->field_0x1c = StatusAlt7f8220Pc;
                 break;
@@ -1183,17 +1183,16 @@ extern "C" {
 
     /* Stage type 4. */
     void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (StatusMiniKitPopTimerPc > 0.0f) {
-            StatusMiniKitPopTimerPc -= elapsed;
+        if (pop_timer > 0.0f) {
+            pop_timer -= elapsed;
         }
         switch (stage->field_0x14) {
             case 0:
                 StatusNewMinikitCountPc = packet->new_minikits;
                 if (StatusNewMinikitCountPc <= 0) {
-                    StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
+                    currentminikit = Game.area_save[packet->area->index].minikit_count;
                 } else {
-                    StatusCurrentMinikitPc =
-                        Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
+                    currentminikit = Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
                 }
                 stage->field_0x18 = 0.0f;
                 stage->field_0x14 = 1;
@@ -1215,7 +1214,7 @@ extern "C" {
                     } else {
                         stage->field_0x14 = 2;
                         stage->field_0x1c = 0.5f;
-                        StatusMiniKitProgressPc = 1.0f;
+                        slideseek = 1.0f;
                     }
                 }
                 break;
@@ -1238,13 +1237,13 @@ extern "C" {
                     f32 accumulated = elapsed + stage->field_0x18;
                     f32 sound_start;
                     stage->field_0x18 = accumulated;
-                    sound_start = stage->field_0x1c - StatusMiniKitJibberLengthPc;
+                    sound_start = stage->field_0x1c - jibberlen;
                     if (previous < sound_start && accumulated >= sound_start) {
                         NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                         PlaySfx(ScorePanelName, NULL);
                     }
                     if (UpdateNewMiniKits(packet, stage) == 1) {
-                        if (StatusCurrentMinikitPc >= packet->minikit_count + packet->new_minikits) {
+                        if (currentminikit >= packet->minikit_count + packet->new_minikits) {
                             stage->field_0x1c = 1.0f;
                             stage->field_0x18 = 0.0f;
                             StatusAlt876df4Pc = 0.0f;
@@ -1711,9 +1710,8 @@ extern "C" {
                 size = 1.0f;
                 count_alpha = 1.0f;
                 title_alpha = 1.0f;
-                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc) {
-                    StatusAlt7f8274Pc = (stage->field_0x18 - (stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
-                                        StatusMiniKitJibberLengthPc;
+                if (stage->field_0x18 > stage->field_0x1c - jibberlen) {
+                    StatusAlt7f8274Pc = (stage->field_0x18 - (stage->field_0x1c - jibberlen)) / jibberlen;
                 } else {
                     StatusAlt7f8274Pc = 0.0f;
                 }
@@ -1728,7 +1726,7 @@ extern "C" {
                 phase = stage->field_0x18 / (stage->field_0x1c * 0.5);
                 count_alpha = StatusAltFabsPc(phase - 1.0);
                 size = 1.0f;
-                if (StatusCurrentMinikitPc == 0) {
+                if (currentminikit == 0) {
                     StatusAlt7f8274Pc = 1.0f;
                 } else {
                     StatusAlt7f8274Pc =
@@ -1759,20 +1757,19 @@ extern "C" {
         colour = ((u8)(title_alpha * 255.0) << 24) | 0xffffff;
         DrawStatusText(TTab[TextIdPc8808d0], StatusAltSpinPc, 0.0f, size * StatusCoinsTitleYPc, StatusAltScalePc * size,
                        colour, 0);
-        if (StatusCurrentMinikitPc == 0) {
+        if (currentminikit == 0) {
             DrawStatusText((char *)Text_UnknownText, 0, 0.0f, 0.0f, StatusAlt7f8214Pc * size,
                            ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
         } else {
-            DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAlt7f8228Pc * StatusAlt7f8274Pc, 0.0f, StatusCurrentMinikitPc,
-                              packet, 0.0f);
+            DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAlt7f8228Pc * StatusAlt7f8274Pc, 0.0f, currentminikit, packet,
+                              0.0f);
         }
-        if (StatusMiniKitPopTimerPc <= 0.0f) {
-            DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
+        if (pop_timer <= 0.0f) {
+            DrawStatusTextFraction(currentminikit, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
                                    -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.0f, 0.0f);
         } else {
-            DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
-                                   -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.5 - StatusMiniKitPopTimerPc,
-                                   0.5f);
+            DrawStatusTextFraction(currentminikit, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
+                                   -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.5 - pop_timer, 0.5f);
         }
     }
 

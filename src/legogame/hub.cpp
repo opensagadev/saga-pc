@@ -2342,8 +2342,8 @@ static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     return 1;
 }
 
-static i32 HubMiniKitViewerAreaPc = 0;
-static NUVEC HubMiniKitViewerPositionPc = {-27.0f, 0.10000000149011612f, -22.125f};
+static i32 hub_minikitviewer_area = 0;
+static NUVEC hub_minikitviewer_pos = {-27.0f, 0.10000000149011612f, -22.125f};
 static f32 HubMiniKitViewerAlphaPc = 0.0f;
 
 extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
@@ -2351,7 +2351,7 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
     f32 speed = 0.0f;
     u16 angle = 0;
     const i32 viewer = GetMenuID() == 14;
-    if (viewer && HubMiniKitViewerMoveWaitPc <= 0.0f) {
+    if (viewer && hub_minikitviewer_movewait <= 0.0f) {
         if (Hub_PadSpeed[0] > 0.0f) {
             if (Hub_PadSpeed[1] > 0.0f) {
                 speed = (Hub_PadSpeed[0] + Hub_PadSpeed[1]) * 0.5;
@@ -2379,13 +2379,13 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
     } else {
         HubMiniKitViewerAlphaPc = 0.0f;
     }
-    if (HubMiniKitViewerMoveWaitPc > 0.0f) {
-        HubMiniKitViewerMoveWaitPc -= FRAMETIME;
-        if (HubMiniKitViewerMoveWaitPc <= 0.0f) {
-            HubMiniKitViewerMovePc = 0.0f;
+    if (hub_minikitviewer_movewait > 0.0f) {
+        hub_minikitviewer_movewait -= FRAMETIME;
+        if (hub_minikitviewer_movewait <= 0.0f) {
+            hub_minikitviewer_move = 0.0f;
         }
     }
-    PlaySfx("ui_hover_lp", &HubMiniKitViewerPositionPc);
+    PlaySfx("ui_hover_lp", &hub_minikitviewer_pos);
     HUB_MINIKIT_RUNTIME_PC *kit = w->minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
         HUB_MINIKIT_PIECES_PC *pieces = w->pieces[i];
@@ -2404,7 +2404,7 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         const u16 old_rotation = kit->rotation;
         kit->offset_x += kit->velocity_x * FRAMETIME;
         kit->offset_z += kit->velocity_z * FRAMETIME;
-        if (i == HubMiniKitViewerAreaPc) {
+        if (i == hub_minikitviewer_area) {
             if (speed > 0.0f) {
                 kit->target_rotation =
                     TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
@@ -2437,7 +2437,7 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         }
         kit->rotation_velocity = SeekRot(kit->rotation_velocity, rate, 8.0f);
         i32 tilt = 0;
-        if (i == HubMiniKitViewerAreaPc && speed > 0.0f) {
+        if (i == hub_minikitviewer_area && speed > 0.0f) {
             const f32 angular_speed = (f64)abs(RotDiff(old_rotation, kit->rotation)) / FRAMETIME;
             if (angular_speed < 32768.0f) {
                 tilt = (i32)((1.0 - (f64)angular_speed * (1.0 / 32768.0)) * 4551.0);
@@ -2508,7 +2508,7 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     i32 selected = -1;
     for (i32 area = 0; area < AREACOUNT; ++area) {
         if (ADataList[area].flags & 0x10) {
-            if (area == HubMiniKitViewerAreaPc) {
+            if (area == hub_minikitviewer_area) {
                 selected = count;
             }
             areas[count] = area;
@@ -2542,11 +2542,11 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
         } else {
             continue;
         }
-        f32 x = HubMiniKitViewerPositionPc.x + offset;
-        if (HubMiniKitViewerMoveWaitPc > 0.0f) {
+        f32 x = hub_minikitviewer_pos.x + offset;
+        if (hub_minikitviewer_movewait > 0.0f) {
             const f32 wait_ease =
-                (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(HubMiniKitViewerMoveWaitPc * 32768.0f + 16384.0f))) * 0.5);
-            x += (f64)wait_ease * 2.0 * (f64)HubMiniKitViewerMovePc;
+                (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
+            x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
         HUB_MINIKIT_PIECES_PC *pieces = ((HUB_WORLD_READER_PC *)world)->pieces[area];
         const f32 scale = kit->scale;
@@ -2564,8 +2564,8 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
         MiniKitRotateZ(&matrix, (i32)(RotDiff(0, phase_z) * scale));
         MiniKitRotateY(&matrix, rotation);
         matrix.m30 = x;
-        matrix.m31 = HubMiniKitViewerPositionPc.y;
-        matrix.m32 = HubMiniKitViewerPositionPc.z;
+        matrix.m31 = hub_minikitviewer_pos.y;
+        matrix.m32 = hub_minikitviewer_pos.z;
         matrix.m30 += kit->offset_x;
         matrix.m31 += lift + bob + (info ? info->panel_offset : 0.0f);
         matrix.m32 += kit->offset_z;
@@ -2590,7 +2590,7 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
             NuMtxSetRotationY(&base_matrix, rotation);
             base_matrix.m30 = x;
             base_matrix.m31 = HubMiniKitViewerBaseYPc;
-            base_matrix.m32 = HubMiniKitViewerPositionPc.z;
+            base_matrix.m32 = hub_minikitviewer_pos.z;
             NuSpecialDrawAtAlpha(&pieces->base, &base_matrix, 1.0f - 0.5f * kit->scale);
         }
     }
@@ -2753,7 +2753,7 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
 
 extern "C" void __cdecl Hub_UpdateKit(void) {
     i32 left = 0, right = 0, cancel = 0;
-    if (HubMiniKitViewerMoveWaitPc <= 0.0f) {
+    if (hub_minikitviewer_movewait <= 0.0f) {
         for (i32 player = 0; player < 2; ++player) {
             if (MissionMenuPacketPc.active_player[player] != 0) {
                 if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) != 0 &&
@@ -2769,9 +2769,9 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
             }
         }
     }
-    const i32 previous = HubMiniKitViewerAreaPc;
+    const i32 previous = hub_minikitviewer_area;
     if (left != 0 && right == 0) {
-        HubMiniKitViewerMovePc = -1.0f;
+        hub_minikitviewer_move = -1.0f;
         i32 index = previous;
         i32 attempts = 0;
         do {
@@ -2783,9 +2783,9 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
                 break;
             }
         } while ((ADataList[index].flags & 0x10) == 0);
-        HubMiniKitViewerAreaPc = index;
+        hub_minikitviewer_area = index;
     } else if (right != 0 && left == 0) {
-        HubMiniKitViewerMovePc = 1.0f;
+        hub_minikitviewer_move = 1.0f;
         i32 index = previous;
         i32 attempts = 0;
         do {
@@ -2797,12 +2797,12 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
                 break;
             }
         } while ((ADataList[index].flags & 0x10) == 0);
-        HubMiniKitViewerAreaPc = index;
+        hub_minikitviewer_area = index;
     }
-    if (HubMiniKitViewerAreaPc != previous) {
+    if (hub_minikitviewer_area != previous) {
         HubMiniKitViewerAlphaPc = 0.0f;
-        HubMiniKitViewerMoveWaitPc = 1.0f;
-        PlaySfx((char *)ForcePushSoundNamePc, &HubMiniKitViewerPositionPc);
+        hub_minikitviewer_movewait = 1.0f;
+        PlaySfx((char *)ForcePushSoundNamePc, &hub_minikitviewer_pos);
     }
     if (cancel != 0) {
         GameAudio_PlaySfx(0x31, NULL, 0, 0);
@@ -4011,7 +4011,7 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     }
     i32 candidate = -1;
     if (HubMiniKitViewerGizmoPc != NULL && GizmoGetOutput(world->gizmo_sys, HubMiniKitViewerGizmoPc, 1, 0) != 0) {
-        candidate = HubMiniKitViewerAreaPc;
+        candidate = hub_minikitviewer_area;
     }
     if (LevLock[4] != 0) {
         if (candidate == -1) {
@@ -4030,11 +4030,11 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
             candidate != -1) {
             GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
             if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
-                selected = HubMiniKitViewerAreaPc;
+                selected = hub_minikitviewer_area;
             } else {
                 player = (GAMEOBJECT *)Player[1];
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
-                    selected = HubMiniKitViewerAreaPc;
+                    selected = hub_minikitviewer_area;
                 }
             }
         }
@@ -4274,7 +4274,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
         }
     }
     if (GetMenuID() == 14) {
-        HubDrawMiniKitStatsPc(HubMiniKitViewerAreaPc, HubMiniKitViewerAlphaPc);
+        HubDrawMiniKitStatsPc(hub_minikitviewer_area, HubMiniKitViewerAlphaPc);
     }
 
     if (HubEpisodePc != -1) {

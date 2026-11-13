@@ -66,7 +66,7 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
             stop(part);
         }
     }
-    if (stuck != 2 && KillPartsBrickImpactWaitPc <= 0.0f) {
+    if (stuck != 2 && brickimpactwait <= 0.0f) {
         PartImpact_Brick(part);
         PlaySfx("ThermalDet_Bnce", &part->position);
     }

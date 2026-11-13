@@ -111,7 +111,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 extern "C" {
     extern i32 RopeCurveSubdivisionsPc;
-    extern u32 GrappleRopeColourPc;
+    extern u32 GRAPPLE_RGBA;
     extern i32 GrappleCurvedRopeEnabledPc;
 }
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
@@ -456,7 +456,7 @@ extern "C" {
                 if (GrappleCurvedRopeEnabledPc != 0) {
                     DrawRopeCurved(&vertices[0].position, grapple->rope_points, 6, 0, NULL);
                 } else {
-                    vertices[0].colour = GrappleRopeColourPc;
+                    vertices[0].colour = GRAPPLE_RGBA;
                     vertices[1].colour = vertices[0].colour;
                     for (i32 point = 0; point < 6; ++point) {
                         vertices[1].position = grapple->rope_points[point];
@@ -543,7 +543,7 @@ extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
     NURND_VERTEX3D_PC vertices[2];
     NUVEC *positions[2];
     grapple = (GRAPPLE_MOTION_PC *)object->grapple;
-    vertices[1].colour = vertices[0].colour = grapple->reversed ? 0xff003f5fu : GrappleRopeColourPc;
+    vertices[1].colour = vertices[0].colour = grapple->reversed ? 0xff003f5fu : GRAPPLE_RGBA;
     i32 count = GrappleAttachmentPositionsPc(object, positions);
     vertices[0].position = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position;
     vertices[1].position = *positions[0];
@@ -562,7 +562,7 @@ extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
             for (i32 point = 0; point < 6; ++point) {
                 vertices[0] = vertices[1];
                 vertices[1].position = ((GRAPPLE_MOTION_PC *)object->grapple)->rope_points[point];
-                vertices[1].colour = GrappleRopeColourPc;
+                vertices[1].colour = GRAPPLE_RGBA;
                 NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
             }
         }

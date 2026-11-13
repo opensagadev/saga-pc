@@ -71,7 +71,7 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
         if (object->floor_height == GameObjectNearFloorNoFloorHeight) {
             object->surface_normal = v010;
         } else {
-            object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
+            object->surface_normal = ShadNorm;
         }
     }
 

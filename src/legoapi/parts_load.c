@@ -11,6 +11,6 @@ void __cdecl LoadPartFile(WORLDINFO *world) {
             world->page_part = edpartLoadPage(path, 1, world->current_gscn);
         }
         world->part_debris_sys = InitPartDebris(&world->giz_buffer, &world->buffer_end, 64, part_debris_count,
-                                                PartDebrisNameListPc, world->page_part);
+                                                PDebNameList, world->page_part);
     }
 }

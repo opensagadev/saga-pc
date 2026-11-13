@@ -1,100 +1,49 @@
 our_name,original_name,kind,evidence
-AIScriptLoadPakPc,load_pakfile,global,high: accessed at the same position in xInclude
-AIScriptLoadPathPc,load_path,global,high: accessed at the same position in xInclude
 AdaptiveDifficultyAdjustPc,AdaptiveDifficultyChange,function,high: called at the same position in ObjHitObj
-AnimBlendModePc,AnimBlendMode,global,high: accessed at the same position in SetAnimBlendMode
-AnimQuatDepthPc,NumQuatPushes,global,high: accessed at the same position in NuHGobjEvalAnimBlend2Root_3
-AreaPlayerModelsPc,Area_PlayerModelList,global,high: accessed at the same position in Area_Configure
-Area_StoryModelListPc,Area_StoryModelList,global,high: accessed at the same position in Area_Configure
-AttractoOutputNamePc,Attracto_OutputName,global,high: accessed at the same position in Attracto_GetOutputName
-AutoSaveIconPendingPc,drawautosaveicon,global,high: accessed at the same position in DrawAutoSaveIcon
 BeastStartFallCodePc,FallLandCode,function,low: called at the same position in Move_JEDI
 BoltNoSfxPc,addbolt_nosfx,global,high: accessed at the same position in Bolt_AddDeflectedBolt
-CameraSavedStateCountPc,cam_state_count,global,high: accessed at the same position in NuCameraClearStateBuffer
 CharacterSceneLoadPrivatePc,CharScene_Load,function,high: called at the same position in CharScenes_AreaLoad CharScenes_LevelLoad
 ComboBlockStartPc,StartBlock,function,high: called at the same position in BlockCode
 ComboJumpStartPc,StartComboJump,function,high: called at the same position in BlockCode
-CreditCountPc,CENTREALLSPECIALTHANKS,global,low: accessed at the same position in Credits_Load
 CustomiserCompletionSavePc,Game_CompletionSave,global,high: accessed at the same position in AddToCompletionPoints Game_100PercentComplete
-CustomiserVariantCountPc,CHARVARIANTCOUNT,global,high: accessed at the same position in CharVariant_Find CharVariants_Init
-CustomiserVariantNamesPc,CharVariant,global,high: accessed at the same position in CharVariant_Find CharVariants_Init
 CutSceneConfigurePc,CutScene_Configure,function,high: called at the same position in CutScenes_Load
 CutSceneFindCharacterPrivatePc,CutScene_FindChar,function,high: called at the same position in CutScene_FindCharacters
 CutSceneFixPtrsPc,NuGCutSceneFixPtrs,function,high: called at the same position in RelocateCutScene
-CutSceneInstanceSfxRequestPc,NuCutSceneSFXFixUp,global,high: accessed at the same position in NuSetCutSceneSFXFixUpFn
 CutSceneInstanceUpdatePc,instNuGCutSceneUpdate,function,high: called at the same position in NuGCutSceneSysUpdate
-CutScenePlayerPc,CutScenePlayer,global,high: accessed at the same position in CutScenePlayer_Active CutScenePlayer_Available CutScenePlayer_Configure CutScenePlayer_Reset CutScenePlayer_SetObjects CutScenes_Update
 CutSceneRebindPlayerCharactersPrivatePc,CutScene_FindChar,function,high: called at the same position in CutScenes_Reset
 CutSceneReleaseInstanceCharactersPc,instNuGCutCharSysStop,function,low: called at the same position in instNuGCutSceneStop
-CutSceneRigidRenderCallbackPc,NuCutSceneRigidCollisionCheck,global,high: accessed at the same position in NuSetCutSceneRigidCollisionCheckFn
 CutSceneSetPrimitiveColourPc,NuPrim2DAddCLR,function,low: called at the same position in DisplayCutSceneMemory
 CutSceneStartPrivatePc,CutScene_Start,function,high: called at the same position in CutScenes_Start
-CutSceneSynchroCounterPc,cutscene_synchro_counter,global,high: accessed at the same position in NuGCutSceneSysUpdate
-DdMaxJointsPc,ddmaxjoints,global,high: accessed at the same position in NuHGobjEvalAnim2Root NuHGobjEvalAnimBlend
-DisorientAxisPc,disorientAxis,global,high: accessed at the same position in Disorientate
-DisplaySceneSpecialsDisabledPc,noscenespecials,global,high: accessed at the same position in DisplaySceneRndrSpecials NuDisplaySceneRndr
 DoorCutCameraPosition0Pc,Door_CutCamPos0,global,high: accessed at the same position in Door_SetCutCam
 DoorCutCameraPosition1Pc,Door_CutCamPos1,global,high: accessed at the same position in Door_SetCutCam
 DoorExitNamePc,Door_ExitName,global,high: accessed at the same position in Door_Reset StartDoorPositions
-DrawCharIconPanelPc,IconScene,global,low: accessed at the same position in DrawCharIcon
 DrawCharacterAttachmentModelPc,DrawExtraCharacterLayerBits,function,high: called at the same position in DrawCharacterAttachments
-DwaPointerCursorPc,rndr_blend_shape_deformer_wt_ptrs_cnt,global,low: accessed at the same position in NuRndrCreateBlendShapeDWAPointers
-DwaWeightCursorPc,rndr_blend_shape_deformer_wt_cnt,global,high: accessed at the same position in NuRndrCreateBlendShapeDWAPointers NuRndrCreateBlendShapeDeformerWeightsArray
-EShadowPolygonPc,EShadPoly,global,high: accessed at the same position in EShadowInfo
-EdMainLocationVectorPc,ed_loc,global,low: accessed at the same position in edmainQueryLocVec
 EdppUseMemcardPc,edpp_usememcard,global,high: accessed at the same position in edppLoadPage
 EpisodeSavePc,Game_EpisodeSave,global,high: accessed at the same position in Episode_CountOpenAreas
-FindAnglesXFullTempPc,i_temp_xrot,global,low: accessed at the same position in FindAnglesXY
 ForceBackObjPc,ForceBackObj,global,high: accessed at the same position in DrawForceBackEffect ResetForceBack SetForceBack
-ForceBackRadius2Pc,ForceBackRadius2,global,high: accessed at the same position in SetForceBack
 ForceBackTypePc,ForceBackType,global,high: accessed at the same position in DrawForceBackEffect SetForceBack
 ForceGlowTargetPc,HighlightForceObject,function,high: called at the same position in ForceThrowCode
 ForceGroupPushPc,GizForce_AddToStack,function,high: called at the same position in GizForces_Update
-FramePadCorrectDeadZoningPc,UseCorrectDeadZoning,global,high: accessed at the same position in DeadZoneValueXY
-FramePadMaxGamePadsPc,MaxGamePads,global,high: accessed at the same position in NuPadSetMaxGamePads
-FrameSleepMillisecondsPc,min_delay,global,low: accessed at the same position in NuFrameSetMinDelay
 GamePadReadBackendPc,NuPCReadPad,function,low: called at the same position in ReadPad
-GamePadsActivePadPc,pActivePad,global,high: accessed at the same position in ReadPad
-GameThingManagerPc,theGameThings,global,high: accessed at the same position in CreateThingManager
-GetSurfaceInfoSurfaceNormalPc,ShadNorm,global,high: accessed at the same position in NewRayCastSetMask PlatformChecks
 GizForce_PlayBackwardAnimationPc,GizForce_PlayBackwardsFn,function,high: called at the same position in GizForce_PlayBackwards GizForce_PlayForwards
 GizForce_PlayForwardAnimationPc,GizForce_PlayForwardsFn,function,high: called at the same position in GizForce_PlayBackwards GizForce_PlayForwards
-GizObstacleTriggerCountPc,ngizobstacletriggers,global,high: accessed at the same position in GizObstacles_AddTrigger GizObstacles_Reset GizObstacles_Update
 GizmoBlowupRestoreInitialStatePc,Blowup_Reset,function,high: called at the same position in Blowups_Reset GizBlowup_Respawn
-GrabCurrentPc,Grab_grabber,global,high: accessed at the same position in Grab_invert_x Grab_radius Grab_rotate Grab_scale Grab_shadow Grab_speed
-GrappleCurvedRopeEnabledPc,DRAWROPESWINGOBJECTS,global,low: accessed at the same position in Grapple_DrawLine
-GrappleRopeColourPc,GRAPPLE_RGBA,global,high: accessed at the same position in Grapple_DrawLine
 Grapple_InitializeSwingAnglePc,Grapple_Occupied_Allow2,function,high: called at the same position in Grapple_MoveCode
 Grapple_ResetSinglePc,Grapple_Reset,function,high: called at the same position in Grapples_Reset
 GrapplesDrawListPc,Grapples_DrawList,function,high: called at the same position in Grapples_Draw
-HubAreaInfoPc,hub_minikitarea,global,low: accessed at the same position in Hub_DrawMiniKits
 HubCompletionPointsPc,COMPLETIONPOINTS,global,high: accessed at the same position in AddToCompletionPoints
 HubDrawFreePlaySelectPc,Hub_DrawFreePlaySelect,function,high: called at the same position in MenuDrawFreePlay
 HubDrawMiniKitCountPc,Hub_DrawMiniKitCount,function,high: called at the same position in Hub_DrawPanel
-HubMiniKitViewerAreaPc,hub_minikitviewer_gizmo,global,high: accessed at the same position in Hub_DrawMiniKits
-HubMiniKitViewerMovePc,hub_drawminikits_ymid,global,high: accessed at the same position in Hub_DrawMiniKits
-HubMiniKitViewerMoveWaitPc,HUB_MINIKITSHADOWY,global,high: accessed at the same position in Hub_DrawMiniKits
-HubPromptOffColourPc,CUSTOMG1,global,low: accessed at the same position in DrawPlayerIconPrompts
-HubPromptOnColourPc,CUSTOMR1,global,low: accessed at the same position in DrawPlayerIconPrompts
 HubStatsTextMatrixPc,VuMtxInitRotY,function,low: called at the same position in Hub_Draw3D
 IconScenePc,IconScene,global,high: accessed at the same position in IconScene_FindById
-ImplodeAvailableBitsPc,bitcount,global,high: accessed at the same position in ImplodeHufDecodeStart ImplodeInitGetBits
-ImplodeBlockRemainingPc,blocksize,global,high: accessed at the same position in ImplodeHufDecodeStart
 ImplodeDecodeRingPrivatePc,decode,function,high: called at the same position in ExplodeBufferNoHeader
-ImplodeSubBitsPc,subbitbuf,global,high: accessed at the same position in ImplodeHufDecodeStart ImplodeInitGetBits
 JetPackBeginFlightPc,JetPackUp,function,high: called at the same position in JetPackCode
-KillPartsBrickImpactWaitPc,brickimpactwait,global,high: accessed at the same position in PartImpact_Brick
 KillPartsCharSceneAreaPc,CharScene_Area,global,high: accessed at the same position in CharScene_FindHSpecial CharScenes_AreaDump CharScenes_Init
 LastDoorPointerPc,setlastdoor_last,global,high: accessed at the same position in Doors_Init
-MenuAcceptPromptTextPc,apitxt_SELECT,global,low: accessed at the same position in MenuLoadTechnicalStrings
-MenuCancelPromptTextPc,apitxt_BACK,global,low: accessed at the same position in MenuLoadTechnicalStrings
 MenuDrawAutoSaveWarningMessagePc,Draw_AUTOSAVEWARNING,function,high: called at the same position in MenuDrawAutoSaveWarning
 MenuDrawNoDataMessagePc,Draw_NODATAAVAILABLE,function,high: called at the same position in MenuDrawNoData
-MenuKeyboardAlwaysPc,Menu_InSaveFlow,global,high: accessed at the same position in MenuEnterSave MenuExitSave
-MenuKeyboardSecondaryPc,Menu_InLoadFlow,global,low: accessed at the same position in MenuExitLoad
 MenuUpdateTitleFadePc,UpdateTitleSequence,function,high: called at the same position in MenuUpdateTitles
 MissionIconPositionsPc,UpdateMissionIconX,function,high: called at the same position in MenuInitMissions MenuUpdateMissions
-ModelAnimLayerListDispatchPc,MakeLayerList,global,high: accessed at the same position in APIDrawCharacterModel
 NuApiPrintLinePc,PrintStartupString,function,high: called at the same position in NuFrameEnd
 NuApiSetEndFrameCallbackPc,NuRegisterEndFrameCallBackFn,function,high: called at the same position in DebrisSetup2
 NuDebrisCreateVertexBuffersPc,debris_InitializeD3D,function,high: called at the same position in NuInitDebrisRenderer
@@ -102,27 +51,17 @@ NuDisplayListPurge_candidate,NuDisplayListCaptureBegin,function,high: called at 
 NuKeyboardApplyActionKeys_candidate,PcInput_EnableKeyboards,function,high: called at the same position in NuPadMapPlayerToPort
 NuKeyboardBasePortPc,PcInput_GetFirstKeyboardPort,function,high: called at the same position in PlayersDropInOut
 NuKeyboardClearActiveDevicesPc,PcInput_DisableAllKeyboards,function,high: called at the same position in NuPadMapPlayerToPort
-NuMtlAnimateMaskPc,mtl_animation_mask,global,high: accessed at the same position in NuMtlAnimateSetMask
 NuMtlInitShaderResourcesPc,Nu360MtlInit,function,high: called at the same position in NuMtlInitExPS
 NuMtxMulHArrayPc,NuMtxMulArrayVU0,function,high: called at the same position in NuHGobjRndrMtxDwa
-NuPostAccumFilterPc,motionAccumFilter,global,high: accessed at the same position in NuPostEffectAccumulationMotionBlur
-NuPostDeferredFilterPc,deferredFilter,global,high: accessed at the same position in NuPostEffectDeferredShading
-NuPostMainFilterPc,mainFilter,global,high: accessed at the same position in NuPostEffectAccumulationMotionBlur NuPostEffectBloom NuPostEffectDepthOfField NuPostEffectMotionBlur
-NuPostMotionFilterPc,motionFilter,global,high: accessed at the same position in NuPostEffectMotionBlur
-NuPostSpeedFilterPc,speedBlurFilter,global,high: accessed at the same position in NuPostEffectSpeedBlur
 NuQFntSetUVSizePc,NuQFntSetScale2d,function,high: called at the same position in NuQFntSetPointSize
 NuRndrEnableDeferredPc,NuDeferredShadingRender,function,high: called at the same position in BurnoutApply
 NuRndrInitConfigPc,NuRndrInit,function,high: called at the same position in NuRndrInitEx
 NuRndrSetBurnoutParametersPc,NuPostBloom,function,low: called at the same position in BurnoutApply
 NuRndrSetShadowCoefficientPc,NuDeferredShadingSetParameterf,function,low: called at the same position in BurnoutApply
-NuScratchCurrentPc,ps2_scratch_free,global,high: accessed at the same position in NuScratchAlloc128 NuScratchAlloc32 NuScratchAlloc64 NuScratchRelease
 NuSound3GetMusicStreamStatusPc,NuSoundGetStereoStreamStatus,function,high: called at the same position in PlayingCutMusic SoundUpdate
 NuTexRegisterRenderTargetPc,NuEffectTexMapNative,function,low: called at the same position in NuTexCreateFramebufferCopy
 NuVec4ScaleForwardPc,NuVec4ScaleXYZVU0,function,high: called at the same position in NuLgtArcLaserDraw NuLgtLaserDraw
-NuVpDirtyPc,vport_inval,global,low: accessed at the same position in NuVpSetZRange
 NuVpSetIdentityPc,NuVpGetClippingMtx,function,low: called at the same position in NuCameraSet
-OcclusionRenderOccludersPc,gRenderOccluders,global,high: accessed at the same position in OcclusionManager::RenderStats
-PCDisplayItemHandlersPc,CurrentItemTable,global,low: accessed at the same position in NuDisplayListDrawItems
 PCFrameCriticalSectionEnter_candidate,NudxFw_D3DBeginCriticalSection,function,high: called at the same position in NuGScnDestroyPS NuGScnFixupPS NuGScnUploadGfxDataFromFilePS NuTexCreatePS NuTexDestroyPS
 PCFrameCriticalSectionLeave_candidate,NudxFw_D3DEndCriticalSection,function,high: called at the same position in NuGScnDestroyPS NuGScnFixupPS NuGScnUploadGfxDataFromFilePS NuTexCreatePS NuTexDestroyPS
 PCGraphicsGetFramebufferAttachmentPc,NuFramebufferGetAttachedTex,function,high: called at the same position in NuMotionFilterGen::render
@@ -130,8 +69,6 @@ PCPresentationPlatformLeafPc,NudxInput_Clearflags,function,low: called at the sa
 PCThreadCriticalSectionEnter_candidate,NuThreadCriticalSectionBegin,function,high: called at the same position in NuDisplayListSwapBuffersEndFrame NuDisplaySceneDestroy OggReader::Open
 PCThreadCriticalSectionLeave_candidate,NuThreadCriticalSectionEnd,function,high: called at the same position in NuDisplayListAnimateMtls NuDisplaySceneAdd NuDisplaySceneClone NuTexAnimProcess OggReader::Open
 PCThreadMillisecondsPc,NuTimeGetTime,function,low: called at the same position in OggReader::Open
-PartDebrisNameListPc,PDebNameList,global,high: accessed at the same position in InitPartTable
-PartLoadParticlePagePc,edpart_load_particle_page,global,high: accessed at the same position in edpartSetParticlePage
 PcControlInitializePc,PC_StartCtrlConfig,function,low: called at the same position in PlayersDropInOut
 PcControlRegisterPc,PC_InitCtrlConfig,function,low: called at the same position in LoadPermData
 PcFrameDelayMessagePc,GetPCStartupMessage,function,high: called at the same position in NuFrameEnd
@@ -141,88 +78,30 @@ PcInputMapKeyboardPortPc,PcInput_RemapVirtualKeyboard,function,high: called at t
 PcInputSelectConfigurationPc,PcInput_SafeGetMapping,function,high: called at the same position in MenuUpdateTitles
 PcInputSelectPressedDevicePc,PcInput_ScanForAnyInput,function,high: called at the same position in GamePads_SkipMovie MenuUpdateTitles PlayersDropInOut
 PcInputSetCommandFilterPc,PcInput_SetIsUsedCallBack,function,high: called at the same position in LoadPermData
-PcMouseButtonsMaskPc,mbuttons,global,high: accessed at the same position in NuMouseReadButtons
-PickupOutputNamePc,GizmoPickup_OutputName,global,high: accessed at the same position in GizmoPickup_GetOutputName
-PickupTerrainPc,PickupTerr,global,high: accessed at the same position in AddPickupTerr AddPickupTerrRot NewPlatPickupInst ReassignPickupInst terrainpickupinit
-PlayPlanesUseRenderMtxPc,PP_pos,global,low: accessed at the same position in MakePlayPlanes
 PlayerDevicePortPc,PC_CtrlConfigGetPlayerPort,function,high: called at the same position in PlayersDropInOut
 PlayerSetCurrentHpPc,SetHitPoints,function,low: called at the same position in PlayersDropInOut
-PlayerSpecialMoveCountPc,SpecialMoveCount,global,high: accessed at the same position in SpecialMoves_Configure
-PlayerSpecialMoveDataPc,SpecialMove,global,high: accessed at the same position in SpecialMove_GetAttackerAction SpecialMove_GetDistanceApart SpecialMove_GetFlags SpecialMove_GetVictimAction SpecialMoves_Configure
-PlayerStartRecordInitPc,PlayerStart,global,high: accessed at the same position in Player_StartPos
 PlayerTakeHitReactionPc,canDoDieAir,function,low: called at the same position in ObjHitObj
 PortalInitialisePsPc,Initialise_PS,function,high: called at the same position in NuPortalVisibility
 PortalSetAllHiddenPc,SetAllInstancesHidden,function,high: called at the same position in NuPortalVisibility
 PortalSetAllVisiblePc,SetAllInstancesVisible,function,high: called at the same position in NuPortalVisibility
-PostResourcePortsPc,RenderingDOFFilter,global,low: accessed at the same position in NuMainFilterGen::render
 PostShaderProgramBindPc,NuShaderProgramMakeCurrent,function,high: called at the same position in NuMainFilterGen::preprocessDofMotionBlur
-PushBlockMissingSpecialPositionPc,p000,global,low: accessed at the same position in ResetSinglePushBlock
-RenderBackdropScenePc,backdrop_scene,global,high: accessed at the same position in BackDrop_Dump BackDrop_Update
-RenderFramePausedPc,global_frame_count_paused,global,high: accessed at the same position in NuRndrGlobalFrameCountPause
-RenderFrameShaderArrayCountPc,nuspecial_vertex_noffsets,global,low: accessed at the same position in NuSpecialVertexOffsets
-RenderFrameShaderArrayPc,nuspecial_vertex_offsets,global,low: accessed at the same position in NuSpecialVertexOffsets
 RenderPostClampBytePc,NuPrim2DAddCLR,function,high: called at the same position in DrawAlphaGrid DrawAlphaImage
 RenderPostPowPc,NuPowFast,function,high: called at the same position in DrawAlphaGrid DrawAlphaImage
 RenderPostViewportSetPc,NuVpSetRegions,function,low: called at the same position in NuRndrHighResScreenGrab
 RendererAlphaMaskMaterialPc,pAlphaMask,global,high: accessed at the same position in NuRndrInitGeneric RndrMaskScreen
 RendererZClearMaterialPc,pZClearMaterial,global,high: accessed at the same position in NuRndrInitGeneric RndrMaskScreen
-RippleEraseListPc,eraselist,global,high: accessed at the same position in InitRipples
 RippleLinkNodesPc,SetupMainPoolPtrs,function,high: called at the same position in InitRipples ResetRippleSet
-RndrStreamFirstPc,rndrstream_used,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RndrStreamIndexPc,rndrstream_buffid,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RndrStreamMaxUsedPc,rndrstream_max_used,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RndrStreamSecondPc,rndrstream_a,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RndrStreamSizePc,nurndr_maxstreamsize,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RndrStreamUsedPc,rndrstream_b,global,high: accessed at the same position in NuRndrSwapStreamBuffers
-RtlFileVersionPc,curr_version,global,high: accessed at the same position in rtlLoadSet
-RtlUidCounterPc,rtl_uid,global,high: accessed at the same position in rtlDynamicAlloc rtlLoadSet
 RunOutOfPosTabSpacePc,runoutofpostabspace,global,high: accessed at the same position in GizmoPushBlockInitAndReset ResetSinglePushBlock
-SaveMenuLastSlotPc,slideleft,global,low: accessed at the same position in MenuEnterSave
-SaveMenuSlideLeftPc,slideright,global,high: accessed at the same position in MenuEnterSave
-SaveloadStartedTickPc,savetimer,global,low: accessed at the same position in saveloadASLoad
-ScreenGrabNeededPc,ScreenGrabNeeded,global,high: accessed at the same position in IsGrabbingScreen NeedScreenGrab
-ScreenPauseFadePc,pause_fade,global,high: accessed at the same position in GrabStillScreen
-SecurityDoorOutputNamePc,SecurityDoor_OutputName,global,high: accessed at the same position in SecurityDoor_GetOutputName
 ShadowMapResetPc,NuSpecialClearShadowLights,function,high: called at the same position in RenderShadowLights ResetShadowMapRendering ResetShadowMapRenderingFn
 ShadowResetClipResultsPc,NuSpecialClearShadowClipTestResults,function,high: called at the same position in RenderShadowLights
-ShadowRoofPolygonPc,ShadRoofPoly,global,high: accessed at the same position in ShadowRoofInfo
 ShadowSetClipStatePc,NuSpecialSetClipping,function,high: called at the same position in RenderShadowLights
-ShardOutputNamePc,Shard_OutputName,global,high: accessed at the same position in Shard_GetOutputName
 Shop_DrawItemPc,DrawShelfItemWithScale,function,low: called at the same position in DrawTopShelf
 SignalSetVisiblePc,Signal_SetVisibility,function,high: called at the same position in Signal_SetGizmoVisibility
 SmartTextPc,SmartText,function,high: called at the same position in MenuDrawBonusComplete MenuDrawEndChallenge
-SocksOnPreviousStatusPc,SocksOnPreviousStatus,global,high: accessed at the same position in TurnOffAllSocksExcept
 SpecialMoveApplyDamagePc,SpecialMove_KillVictim,function,high: called at the same position in SpecialMove_ReleaseVictim
 SpinnerCurrentOutputPc,GizSpinner_WithinOutput,function,high: called at the same position in GizSpinner_GetOutput
 StartupDatsSelectPc,NuWin32SetDFS,function,high: called at the same position in LoadAreaData WorldInfo_Load
-StatusCurrentMinikitPc,currentminikit,global,high: accessed at the same position in UpdateNewMiniKits
-StatusGoldBrickPhasePc,DrawGoldBrick_Phase,global,high: accessed at the same position in SetDrawGoldBrick
-StatusGoldBrickStagePc,DrawGoldBrick_Stage,global,high: accessed at the same position in SetDrawGoldBrick
-StatusMiniKitPopTimerPc,pop_timer,global,high: accessed at the same position in UpdateNewMiniKits
-StatusMiniKitProgressPc,slideseek,global,low: accessed at the same position in UpdateNewMiniKits
-StreakHeadersFreePc,streaks_free,global,high: accessed at the same position in UpdateStreaks
-StreakHeadersUsedPc,streakhdrs_used,global,high: accessed at the same position in DrawStreaks UpdateStreaks
-StreakMaterialPc,streakmtl,global,high: accessed at the same position in DrawStreaks
-StreakNodesFreePc,streakhdrs_free,global,high: accessed at the same position in UpdateStreaks
-StreakReflectionMaterialPc,streakmtl_ref,global,high: accessed at the same position in DrawStreaks
 TeleportSetSegmentDurationPc,Teleport_SetCrawlTime,function,high: called at the same position in Teleport_MoveCode
-TerrainPlatformsOffPc,NuTerrPlatsOff,global,high: accessed at the same position in NewScanRot NewShadowEx NewShadowHandelEx NewTerrPlatformsOff
-TerrainScaleWorkBasePc,ScaleTerrainT1,global,high: accessed at the same position in NewShadowEx NewShadowHandelEx TerrainInitEx TerrainPlatformEmbedded
-TerrainScaledShapeCursorPc,ScaleTerrain,global,high: accessed at the same position in NewScanRot NewShadowEx NewShadowHandelEx TerrDrawImpactPol
-TerrainShadowGroupIndexPc,castnum,global,high: accessed at the same position in NewRayCastSetMask NewShadowOnPlatform PlatformConnect StorePlatImpact TerrainPlatformEmbedded
-TerrainShadowStatusPc,TerrPolyObj,global,high: accessed at the same position in NewRayCast NewRayCastMask NewRayCastPlatForm NewRayCastScaleYMask NewRayCastSet NewRayCastSetHandel NewRayCastSetMask NewTerrainScaleYMask TerrainMoveImpactData TerrainTrackBack
-TerrainSkinInfoCountPc,PlatSkinCnt,global,low: accessed at the same position in TerrainSkinAllocate
-TerrainSkinInfosPc,PlatSkinInfo,global,high: accessed at the same position in TerrainSkinAllocate
-TerrainSkinPoolBasePc,PlatSkinMem,global,low: accessed at the same position in TerrainSkinAllocate
-TerrainSkinPoolSlotBytesPc,PlatSkinMaxSize,global,low: accessed at the same position in TerrainSkinAllocate
-TerrainSkinPoolSlotCountPc,PlatSkinMaxStore,global,low: accessed at the same position in TerrainSkinAllocate
-TerrainSkinUseEpochPc,TerrainUpadteCnt,global,high: accessed at the same position in TerrainSkinAllocate
-TerrainSkinUseRecordsPc,SkinMemInfo,global,low: accessed at the same position in TerrainSkinAllocate
-TextCrawlBluePc,textcrawl_linescale,global,high: accessed at the same position in TextCrawl_Draw
-TextCrawlGreenPc,textcrawl_xscale,global,high: accessed at the same position in TextCrawl_Draw
-TextCrawlRedPc,textcrawl_yscale,global,high: accessed at the same position in TextCrawl_Draw
-TextIdPc880780,CUSTOMB1,global,low: accessed at the same position in DrawPlayerIconPrompts
-TextIdPc88098c,INDOUBLESCORESCALE,global,low: accessed at the same position in DrawInDoubleScoreZone
 TextInputButtonNamePc,PcInput_GetCtrlInputString,function,high: called at the same position in TextDecodeCodeword
 TextInputGetKeyNamesPc,PcInput_GetKeyNameTable,function,high: called at the same position in DrawMenuButtonPromptsEx
 TextInputIsKeyboardDevicePc,PcInput_PortIsKeyboard,function,high: called at the same position in DoInput DrawMenuButtonPromptsEx PlayersDropInOut
@@ -230,20 +109,5 @@ TextInputIsPrimaryDevicePc,PcInput_PortIsUC,function,high: called at the same po
 TextInputLastDevicePc,PcInput_GetCtrlStringPlayer,function,high: called at the same position in DrawMenuButtonPromptsEx TextDecodeCodeword
 TextInputSetLastDevicePc,PcInput_SetCtrlStringPlayer,function,high: called at the same position in MenuUpdateTitles
 TextInputSetNameCallbackPc,PcInput_SetStringUCGfxRemapFn,function,high: called at the same position in LoadPermData
-TextureAnimationActiveMaskPc,nta_script_mask,global,low: accessed at the same position in NuTexAnimProcess
-TextureAnimationExternalLabelCountPrivatePc,xdeflabtabcnt,global,low: accessed at the same position in NuTexAnimProgSysInit
-TextureAnimationFrameTimePc,script_mask,global,low: accessed at the same position in NuTexAnimProcess
-TextureAnimationPreviousSignalsPc,nta_sig_old,global,high: accessed at the same position in NuTexAnimProgSysInit NuTexAnimSetSignals
-TextureAnimationRandomPc,texanim_rand,global,low: accessed at the same position in NuTexAnimProgSysInit
-TextureAnimationSignalsOffPc,nta_sig_off,global,high: accessed at the same position in NuTexAnimProgSysInit NuTexAnimSetSignals
-TextureAnimationSignalsOnPc,nta_sig_on,global,high: accessed at the same position in NuTexAnimProgSysInit NuTexAnimSetSignals
-TickTockStatePc,ticktock,global,high: accessed at the same position in TickTockSfx
 TorpedoTargetPositionPc,GetTorpTargetPositionAndRadius,function,high: called at the same position in TorpedoHitTarget Torpedo_UpdateBolt
-TubeOutputNamePc,Tube_OutputName,global,high: accessed at the same position in Tube_GetOutputName
-VisibilityAlternateHeightPc,zys,global,high: accessed at the same position in NuCameraClipTestExtentsGeneric NuCameraSaveState
-VisibilityAlternateWidthPc,zxs,global,high: accessed at the same position in NuCameraClipTestExtentsGeneric NuCameraSaveState
-VisibilityCurrentResultPc,TreeInitialised,global,low: accessed at the same position in NuVisiInstTree
-VisibilityInstanceTreeEnabledPc,do_InstTree,global,low: accessed at the same position in NuVisiInstTree
-VisibilityTreeInitialisedPc,myvisi,global,low: accessed at the same position in NuVisiInstTree
 ZipUpDrawMarkerPc,ZipUp_DrawFloorTarget,function,high: called at the same position in ZipUps_Draw
-g_texAnimCriticalSection,nutexanm_critical_section,global,high: accessed at the same position in NuTexAnimAddList NuTexAnimProcess NuTexAnimRemoveList

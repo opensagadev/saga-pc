@@ -259,7 +259,7 @@ static i32 __cdecl Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 static const char *__cdecl Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
-    return TubeOutputNamePc;
+    return Tube_OutputName;
 }
 
 static i32 __cdecl Tube_GetNumOutputs(GIZMO_PC *gizmo) {

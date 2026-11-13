@@ -161,8 +161,7 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     }
     new_area = -1;
     for (index = 0; index < 10; ++index) {
-        if (CheckPosAIArea(HubAiMusicStatePc.areas[index], PlayerStartRecordInitPc[(i8)player->field_280].position,
-                           0.0f) != 0) {
+        if (CheckPosAIArea(HubAiMusicStatePc.areas[index], PlayerStart[(i8)player->field_280].position, 0.0f) != 0) {
             new_area = index;
             break;
         }

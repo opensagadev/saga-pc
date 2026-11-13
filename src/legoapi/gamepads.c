@@ -369,7 +369,7 @@ i32 __cdecl ReadPad(i32 port) {
     gamepad->input_ready = 1;
     gamepad->held = pad->digital_buttons;
     gamepad->pressed = pad->digital_buttons_pressed;
-    GamePadsActivePadPc = gamepad->bound_pad;
+    pActivePad = gamepad->bound_pad;
     return mode;
 }
 

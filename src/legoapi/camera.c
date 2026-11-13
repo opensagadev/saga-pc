@@ -113,7 +113,7 @@ void __cdecl GameCam_HitJudder(void) {
 static i32 GameCamLookRotXPc = 10;
 static i32 GameCamLookRotYPc = 15;
 extern NUVEC PlayPlaneCornersPc[4];
-extern f32 PlayPlaneDepthPc;
+extern f32 PP_dist;
 extern f32 GameCamShakeRadiusPc;
 extern f32 GameCamShakeRetargetPc;
 extern f32 GameCamShakeDirSeekPc;
@@ -234,9 +234,9 @@ void __cdecl MakePlayPlanes(GAMECAMERA *camera) {
         NuVecMtxRotate(&ray, &ray, PlayPlanesUseRenderMtxPc != 0 ? &camera->render_mtx : &camera->target_mtx);
         NuVecAdd(&corners[i].near_point, &ray, &camera->position);
         NuVecNorm(&ray, &ray);
-        corners[i].far_point.x = corners[i].near_point.x + PlayPlaneDepthPc * ray.x;
-        corners[i].far_point.y = (PlayPlaneDepthPc * ray.y) + corners[i].near_point.y;
-        corners[i].far_point.z = corners[i].near_point.z + PlayPlaneDepthPc * ray.z;
+        corners[i].far_point.x = corners[i].near_point.x + PP_dist * ray.x;
+        corners[i].far_point.y = (PP_dist * ray.y) + corners[i].near_point.y;
+        corners[i].far_point.z = corners[i].near_point.z + PP_dist * ray.z;
     }
     // Plane order is near, left, right, top, bottom, far.
     MakePlayPlane(&PlayPlanePc[1], &corners[0].near_point, &corners[0].far_point, &corners[2].far_point,

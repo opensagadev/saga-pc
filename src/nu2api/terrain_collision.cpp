@@ -6,7 +6,7 @@ extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern void *TerI, *TerrOverRideScan;
-    extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
+    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
@@ -846,7 +846,7 @@ extern "C" {
                     NewTerrStoreAnyInfo();
                     const i32 group_index = query->terrain_group_index;
                     TerrPoly = &TerrPolyInfo;
-                    TerrainShadowStatusPc = group_index;
+                    TerrPolyObj = group_index;
                 }
                 break;
         }
@@ -911,7 +911,7 @@ extern "C" {
             return;
         }
 
-        TerrainShadowGroupIndexPc = query->terrain_group_index;
+        castnum = query->terrain_group_index;
         NUVEC impact_normal = query->movement_normal;
 
         switch (hit_type) {
@@ -1258,7 +1258,7 @@ extern "C" {
             }
         }
 
-        TerrainShadowGroupIndexPc = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index].terrain_group_index;
+        castnum = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index].terrain_group_index;
     }
 
     i32 PlatformChecks(i32 count, NUVEC *movement) {
@@ -1464,7 +1464,7 @@ extern "C" {
 #define TERRAIN_TPE_MATRIX (static_cast<NUMTX *>(TERRAIN_TPE_PLATFORM.scene_object))
 #define TERRAIN_TPE_GROUP_MATRIX                                                                                       \
     (static_cast<NUMTX *>(((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].scene_object))
-#define TERRAIN_TPE_SURFACE (&TerrainScaledShapeCursorPc[transformed_count])
+#define TERRAIN_TPE_SURFACE (&ScaleTerrain[transformed_count])
 #define TERRAIN_TPE_LOAD_VERTEX(index)                                                                                 \
     vertices[index].x = source->vertices[index].x;                                                                     \
     vertices[index].y = source->vertices[index].y;                                                                     \
@@ -1521,7 +1521,7 @@ extern "C" {
         }
         i32 saved_sphere = curSphereter;
         curSphereter = 0;
-        TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT2);
+        ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT2);
         TerrainQuery_s *new_query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
         TerI = new_query;
         NUVEC4 *vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~15u);
@@ -1758,7 +1758,7 @@ extern "C" {
         if (TerrainImpactPlatform(flags) != 0) {
             NuScratchRelease();
             NuScratchRelease();
-            TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+            ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
             curSphereter = saved_sphere;
             TerI = old_query;
             return 1;
@@ -1802,17 +1802,17 @@ extern "C" {
             flags[0] = 0;
         }
         TERRAIN_TPE_QUERY->position = new_query->position;
-        if (flags[0] != 0 && ((TERRAIN_SET_PC *)CurrentTerrain)->groups[TerrainShadowGroupIndexPc].chunk_type == 1) {
+        if (flags[0] != 0 && ((TERRAIN_SET_PC *)CurrentTerrain)->groups[castnum].chunk_type == 1) {
             TERRAIN_TPE_QUERY->hit_flags[1] = 1;
             PlatformConnect(reinterpret_cast<char *>(old_query->hit_flags), &old_query->movement, movement_delta,
-                            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[TerrainShadowGroupIndexPc].scene_index);
+                            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[castnum].scene_index);
         } else if (CurTrackInfo != NULL) {
             CurTrackInfo->flags &= ~TERRAIN_TRACK_FLAG_CONNECTED;
         }
 #undef TERRAIN_TPE_QUERY
         NuScratchRelease();
         NuScratchRelease();
-        TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+        ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
         TerI = old_query;
         curSphereter = saved_sphere;
         return 0;
@@ -2101,12 +2101,12 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     TerrPolyInfo.normal_flags = 0;
     TerrImpact = 0;
     plathitid = -1;
-    TerrainShadowStatusPc = -1;
+    TerrPolyObj = -1;
     TerrPoly = 0;
     TerrWallInfo = 0;
     PlatCrush = 0;
     terrhitflags = 0;
-    TerrainShadowGroupIndexPc = -1;
+    castnum = -1;
 
     if (((TERRAIN_SET_PC *)CurrentTerrain) == NULL) {
         TerImpactData = 0;
@@ -2137,7 +2137,7 @@ found_track:
     inverse = collision_radius != 0.0f ? 1.0f / collision_radius : 0.0f;
     query->inverse_collision_radius = inverse;
     query->collision_radius_sq = collision_radius * collision_radius;
-    TerrainShadowGroupIndexPc = -1;
+    castnum = -1;
 
     TERRAIN_FLOAT_BITS_PC value;
     value.value = position->x;

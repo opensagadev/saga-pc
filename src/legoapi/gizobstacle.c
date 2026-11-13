@@ -504,7 +504,7 @@ void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr)
             ((OBSTACLE_RUNTIME_FLAGS_PC *)&obstacle->runtime_flags)->destroyed = (progress->destroyed[word] & bit) != 0;
         }
     }
-    GizObstacleTriggerCountPc = 0;
+    ngizobstacletriggers = 0;
 }
 
 typedef struct gizobstacle_object_data_pc_s {
@@ -598,7 +598,7 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 }
             }
             if (!(obstacle->config_flags & 1)) {
-                for (i = 0; i < GizObstacleTriggerCountPc; ++i) {
+                for (i = 0; i < ngizobstacletriggers; ++i) {
                     distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggersPc[i], NULL);
                     if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggersPc[i])) {
                         closest_position = GizObstacleTriggersPc[i];
@@ -838,7 +838,7 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
         obstacle->animation_speed = 1.0f;
         obstacle->progress_flags &= ~0xcu;
     }
-    GizObstacleTriggerCountPc = 0;
+    ngizobstacletriggers = 0;
 }
 
 void __cdecl GizObstacles_AddTrigger(NUVEC *position) {
@@ -846,8 +846,8 @@ void __cdecl GizObstacles_AddTrigger(NUVEC *position) {
     if (!position) {
         return;
     }
-    if (GizObstacleTriggerCountPc < 16) {
-        GizObstacleTriggersPc[GizObstacleTriggerCountPc++] = position;
+    if (ngizobstacletriggers < 16) {
+        GizObstacleTriggersPc[ngizobstacletriggers++] = position;
     } else {
         message_position = v001;
         AddGameMessage((char *)GizObstacleTriggerLimitMessagePc, &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,

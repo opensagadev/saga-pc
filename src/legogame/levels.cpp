@@ -1187,14 +1187,14 @@ extern "C" {
         } else if (Mission_Active(0) != 0) {
             *list = Area_MissionModelList;
         } else {
-            *list = Area_StoryModelListPc;
+            *list = Area_StoryModelList;
         }
         if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index) {
             *story = Hub_ModelList;
         } else if (Mission_Active(0) != 0) {
             *story = Area_MissionModelList;
         } else {
-            *story = Area_StoryModelListPc;
+            *story = Area_StoryModelList;
         }
     }
 
@@ -1240,13 +1240,15 @@ extern "C" {
         }
         if (makefreeplaymodellist != 0) {
             if ((ADataList[area].flags & 1) != 0) {
-                MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
+                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level,
+                                      0);
             } else if (Area_PlayerModelCount >= 2 && BonusArea == 0) {
-                MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
+                MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level,
+                                      0);
             } else {
                 MakeFreePlayModelList(id_DEFAULTCHARACTER[0], id_DEFAULTCHARACTER[1], area, level, 0);
             }
-            story = Area_StoryModelListPc;
+            story = Area_StoryModelList;
             list = FreePlayModelList;
             makefreeplaymodellist = 0;
         } else if (area != -1 && area == last_area) {
@@ -1527,7 +1529,7 @@ void __cdecl LoadAreaCharacters(void) {
                                         alpha = (f32)(1.0 - ((f64)phase - 3.0999999046325684) / 0.5999999046325684);
                                     }
                                 }
-                                DrawCharIconFindPc = 1;
+                                drawcharicon_find = 1;
                                 if (player == 0) {
                                     DrawCharIcon(PlayerID[0], -x, 0.16624999046325684f, 0.0f, icon_scale, 166, alpha,
                                                  (f32)((0.8500000238418579 + (f64)bob) * alpha), 1, NULL);
@@ -1577,7 +1579,7 @@ void __cdecl LoadAreaCharacters(void) {
             FadeSys.Draw();
             NuRndrBeginScene(1);
         }
-        GameThingManagerPc->DisplayThings(NULL);
+        theGameThings->DisplayThings(NULL);
         NuRndrEndScene();
         if (AreaDataLoaded != 0 && (f64)LoadWait < (f64)0.1f &&
             (FadeSys.pending_type == FADE_TYPE_NONE || FadeSys.pending_type == FADE_TYPE_STILL)) {

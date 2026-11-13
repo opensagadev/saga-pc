@@ -208,7 +208,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     packet.paused = Paused;
     packet.pads = pads;
     packet.pad_count = 2;
-    GameThingManagerPc->ProcessThings(&packet);
+    theGameThings->ProcessThings(&packet);
     SAGA_SOUND_CHECK("before sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
     if (NOSOUND == 0) {
@@ -339,8 +339,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             UpdateParts(FRAMETIME);
             SAGA_SOUND_CHECK("after UpdateParts");
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateParts world=%p", (void *)WORLD);
-            if (KillPartsBrickImpactWaitPc > 0.0f) {
-                KillPartsBrickImpactWaitPc -= FRAMETIME;
+            if (brickimpactwait > 0.0f) {
+                brickimpactwait -= FRAMETIME;
             }
             if (coinimpactwait > 0.0f) {
                 coinimpactwait -= FRAMETIME;
@@ -516,7 +516,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         NuWindDraw();
         NuFadeObjDraw();
     }
-    GameThingManagerPc->RenderThings(NULL);
+    theGameThings->RenderThings(NULL);
     CutScenes_Draw(world);
     NuRndrShadPolys(PermanentShadowMaterialPc);
     NuLgtLaserDraw(paused);

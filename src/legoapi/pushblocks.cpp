@@ -116,7 +116,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 extern "C" {
-    extern NUVEC PushBlockMissingSpecialPositionPc;
+    extern NUVEC p000;
     extern i32 RunOutOfPosTabSpacePc;
     extern f32 PushInitGroundOffsetPc, PushInitCornerInsetPc;
 }
@@ -153,9 +153,9 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
         }
     } else {
         // Retail uses this distinct mutable vector, not the canonical v000.
-        block->bounds_min = PushBlockMissingSpecialPositionPc;
-        block->bounds_max = PushBlockMissingSpecialPositionPc;
-        block->position = &PushBlockMissingSpecialPositionPc;
+        block->bounds_min = p000;
+        block->bounds_max = p000;
+        block->position = &p000;
     }
 }
 

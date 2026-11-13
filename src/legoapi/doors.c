@@ -180,7 +180,7 @@ i32 __cdecl StartDoorPositions(void) {
         if (door != NULL) {
             for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)WORLD)->door_count; ++index, ++door) {
                 if (door->spline != NULL && NuStrICmp(door->name, DoorExitNamePc) == 0) {
-                    start = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
+                    start = (PLAYER_POSITION_RECORD_PC *)PlayerStart;
                     for (point = 5; point < 21; point += 2, ++start) {
                         NUANG angle;
                         if (door->spline->length > point) {
@@ -190,7 +190,7 @@ i32 __cdecl StartDoorPositions(void) {
                             angle = NuAtan2D(direction.x, direction.z);
                         } else {
                             /* Retail reads start[-1] here, which in retail's data layout is PlayerList.
-                               The rebuild does not place PlayerList before PlayerStartRecordInitPc, so
+                               The rebuild does not place PlayerList before PlayerStart, so
                                name it explicitly (costs the byte match: ~94% -> ~70%). */
                             PLAYER_POSITION_RECORD_PC *previous =
                                 point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;

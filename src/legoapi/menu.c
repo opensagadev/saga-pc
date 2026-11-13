@@ -206,16 +206,16 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
         right = keys[205];
     }
     if (enabled) {
-        sprintf(accept_text, "%s ~0%s", MenuAcceptPromptTextPc, accept);
-        sprintf(cancel_text, "%s ~0%s", MenuCancelPromptTextPc, back);
+        sprintf(accept_text, "%s ~0%s", apitxt_SELECT, accept);
+        sprintf(cancel_text, "%s ~0%s", apitxt_BACK, back);
     } else {
-        sprintf(accept_text, "~0$s~~ %s", accept, MenuAcceptPromptTextPc);
-        sprintf(cancel_text, "~0%s~~ %s", back, MenuCancelPromptTextPc);
+        sprintf(accept_text, "~0$s~~ %s", accept, apitxt_SELECT);
+        sprintf(cancel_text, "~0%s~~ %s", back, apitxt_BACK);
     }
     if (!TextInputIsPrimaryDevicePc(device)) {
-        sprintf(axes_text, "%s ~0%s~~ / ~0$s", MenuAcceptPromptTextPc, left, right);
+        sprintf(axes_text, "%s ~0%s~~ / ~0$s", apitxt_SELECT, left, right);
     } else {
-        sprintf(axes_text, "~0$s~~ %s ~0$s", left, MenuAcceptPromptTextPc, right);
+        sprintf(axes_text, "~0$s~~ %s ~0$s", left, apitxt_SELECT, right);
     }
 
     row_delta = (f64)MENUDY * (f64)0.8f * MenuPromptPositionScalePc;
@@ -388,8 +388,8 @@ void __cdecl MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *b
     apitxt_NEWSAVE = (char *)NuStringTableGetByName("GEN_NEWSAVE");
     apitxt_CONTINUEWITHOUTLOADING = (char *)NuStringTableGetByName("GEN_CONTINUEWITHOUTLOADING");
     apitxt_COMPLETED = (char *)NuStringTableGetByName("GEN_COMPLETED");
-    MenuAcceptPromptTextPc = (char *)NuStringTableGetByName("GEN_SELECT");
-    MenuCancelPromptTextPc = (char *)NuStringTableGetByName("GEN_BACK");
+    apitxt_SELECT = (char *)NuStringTableGetByName("GEN_SELECT");
+    apitxt_BACK = (char *)NuStringTableGetByName("GEN_BACK");
     apitxt_VIBRATION = (char *)NuStringTableGetByName("GEN_VIBRATION");
     apitxt_CONFIRMDELETE = (char *)NuStringTableGetByName("GEN_CONFIRMDELETE");
     apitxt_PROGRESS = (char *)NuStringTableGetByName("GEN_PROGRESS");

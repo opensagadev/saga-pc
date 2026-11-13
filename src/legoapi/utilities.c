@@ -202,8 +202,8 @@ void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
         *y_rotation = temp_yrot;
     }
     horizontal_squared = direction->x * direction->x + direction->z * direction->z;
-    FindAnglesXFullTempPc = -NuAtan2D(direction->y, NuFsqrt(horizontal_squared));
-    temp_zrot = (u16)FindAnglesXFullTempPc;
+    i_temp_xrot = -NuAtan2D(direction->y, NuFsqrt(horizontal_squared));
+    temp_zrot = (u16)i_temp_xrot;
     if (x_rotation) {
         *x_rotation = temp_zrot;
     }

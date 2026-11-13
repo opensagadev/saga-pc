@@ -377,11 +377,11 @@ i32 __cdecl Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$AttractoOutputNamePc")
-char *AttractoOutputNamePc = (char *)PCAttractoOutputTextPc;
+char *Attracto_OutputName = (char *)PCAttractoOutputTextPc;
 #pragma data_seg()
 
 char *__cdecl Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return AttractoOutputNamePc;
+    return Attracto_OutputName;
 }
 
 i32 __cdecl Attracto_GetNumOutputs(GIZMO_PC *gizmo) {

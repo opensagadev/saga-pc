@@ -2173,7 +2173,7 @@ extern "C" {
         if (player.clip_count > 0) {
             buffer->void_ptr = player.clips + player.clip_count;
             PCByteCopy_candidate(buffer->void_ptr, &player, sizeof(player));
-            CutScenePlayerPc = (CUT_PLAYER_ACTIVE_PC *)buffer->void_ptr;
+            CutScenePlayer = (CUT_PLAYER_ACTIVE_PC *)buffer->void_ptr;
             buffer->addr += sizeof(player);
         } else {
             CutSceneConfigMissingPc(file);
@@ -2181,25 +2181,25 @@ extern "C" {
     }
 
     void __cdecl CutScenePlayer_Reset(void) {
-        if (CutScenePlayerPc != NULL) {
-            CutScenePlayerPc->active = NULL;
+        if (CutScenePlayer != NULL) {
+            CutScenePlayer->active = NULL;
         }
     }
 
     CUT_PLAYER_ACTIVE_PC *__cdecl CutScenePlayer_Available(void) {
-        return CutScenePlayerPc;
+        return CutScenePlayer;
     }
 
     void *__cdecl CutScenePlayer_Active(void) {
-        return CutScenePlayerPc != NULL ? CutScenePlayerPc->active : NULL;
+        return CutScenePlayer != NULL ? CutScenePlayer->active : NULL;
     }
 
     /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
     i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         i32 area_id, episode;
-        if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+        if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
+            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
             area_id = LDataList[clips[clip_id].level_id].area_index;
             if (area_id != -1) {
                 if ((ADataList[area_id].flags & 2) != 0) {
@@ -2219,10 +2219,10 @@ extern "C" {
      * native owner. PC accepts one argument and does not write return_door. */
     void __cdecl CutScenePlayer_Start(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
-        if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+        if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
+            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
             NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
-            CutScenePlayerPc->active = &((CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips)[clip_id];
+            CutScenePlayer->active = &((CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips)[clip_id];
             NextArea_FreePlay = 0;
             FreePlay = 0;
         }
@@ -2234,7 +2234,7 @@ extern "C" {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         LEVELDATA_PC *level;
         i32 area_id, episode;
-        if (CutScenePlayerPc == NULL) {
+        if (CutScenePlayer == NULL) {
             if (title != NULL) {
                 NuStrCpy(title, Text_UnknownText);
             }
@@ -2244,43 +2244,43 @@ extern "C" {
             return;
         }
         if (title != NULL) {
-            if (CutScenePlayerPc->clip_text != NULL) {
-                sprintf(title, TTab[*CutScenePlayerPc->clip_text], id + 1);
+            if (CutScenePlayer->clip_text != NULL) {
+                sprintf(title, TTab[*CutScenePlayer->clip_text], id + 1);
             } else {
                 sprintf(title, CutPlayerClipFormatPc, id + 1);
             }
             if (mode != 0) {
-                clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+                clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
                 switch (clips[id].type) {
                     case 0:
-                        if (CutScenePlayerPc->intro_text != NULL) {
+                        if (CutScenePlayer->intro_text != NULL) {
                             NuStrCat(title, CutPlayerTextSeparatorPc);
-                            NuStrCat(title, TTab[*CutScenePlayerPc->intro_text]);
+                            NuStrCat(title, TTab[*CutScenePlayer->intro_text]);
                         }
                         break;
                     case 1:
-                        if (CutScenePlayerPc->midtro_text != NULL) {
+                        if (CutScenePlayer->midtro_text != NULL) {
                             NuStrCat(title, CutPlayerTextSeparatorPc);
-                            NuStrCat(title, TTab[*CutScenePlayerPc->midtro_text]);
+                            NuStrCat(title, TTab[*CutScenePlayer->midtro_text]);
                         }
                         break;
                     case 2:
-                        if (CutScenePlayerPc->outro_text != NULL) {
+                        if (CutScenePlayer->outro_text != NULL) {
                             NuStrCat(title, CutPlayerTextSeparatorPc);
-                            NuStrCat(title, TTab[*CutScenePlayerPc->outro_text]);
+                            NuStrCat(title, TTab[*CutScenePlayer->outro_text]);
                         }
                         break;
                     case 3:
-                        if (CutScenePlayerPc->ending_text != NULL) {
+                        if (CutScenePlayer->ending_text != NULL) {
                             NuStrCat(title, CutPlayerTextSeparatorPc);
-                            NuStrCat(title, TTab[*CutScenePlayerPc->ending_text]);
+                            NuStrCat(title, TTab[*CutScenePlayer->ending_text]);
                         }
                         break;
                 }
             }
         }
         if (subtitle != NULL) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
+            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
             level = &LDataList[clips[id].level_id];
             area_id = level->area_index;
             if (area_id == -1) {
@@ -2304,7 +2304,7 @@ extern "C" {
         // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter
         // slot.
         i32 i;
-        if (CutScenePlayerPc == NULL || CutScenePlayerPc->active == NULL) {
+        if (CutScenePlayer == NULL || CutScenePlayer->active == NULL) {
             return;
         }
         if (((CUT_PLAYER_RECORD_PC *)owner)->states == NULL) {
@@ -2340,8 +2340,7 @@ extern "C" {
         if (CutScene_StartFn != NULL) {
             CutScene_StartFn(reinterpret_cast<CUTINFO *>(cut));
         }
-        if (CutScenePlayerPc != NULL &&
-            reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL) {
+        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL) {
             CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(cut));
         }
         f32 rate = cut->frames_per_second * FRAMETIME;
@@ -2438,9 +2437,9 @@ extern "C" {
              (reinterpret_cast<CUT_CONTROLLER_PROGRESS_PC *>(world->level_progress)->scene_flags & 2) == 0)) {
             CUTINFO *cut = NULL;
             CUTSYS_PC *system = world->cutscene_sys;
-            if (CutScenePlayerPc != NULL) {
+            if (CutScenePlayer != NULL) {
                 CUT_CONTROLLER_CLIP_PC *clip = reinterpret_cast<CUT_CONTROLLER_CLIP_PC *>(
-                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active);
+                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active);
                 if (clip != NULL && system->count > 0) {
                     if (clip->name[0] != 0) {
                         cut = CutScene_Find(system, clip->name);
@@ -2473,9 +2472,8 @@ extern "C" {
     static i32 CutInstEndStop = 0;
 
     void __cdecl CutScenes_End(void) {
-        if (CutScenePlayerPc != NULL &&
-            reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && NewLData != NULL &&
-            NewLData == HUB_LDATA) {
+        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&
+            NewLData != NULL && NewLData == HUB_LDATA) {
             PCFrameSetLoadingYieldEnabled(0);
             return;
         }
@@ -2495,8 +2493,8 @@ extern "C" {
 
     void __cdecl CutScenes_Update(WORLDINFO *world, i32 paused) {
         i32 active_before[32];
-        if (CutScenePlayerPc != NULL &&
-            reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && CutStopInfo != NULL) {
+        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&
+            CutStopInfo != NULL) {
             CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(CutStopInfo));
         }
         CutInstEnd[0] = NULL;
@@ -2647,15 +2645,15 @@ extern "C" {
         if (skip_level != -1) {
             NewLData = &LDataList[skip_level];
             if (HUB_LDATA != NULL && NewLData == HUB_LDATA) {
-                if (CutScenePlayerPc != NULL &&
-                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL) {
+                if (CutScenePlayer != NULL &&
+                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL) {
                     NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                     RenderHubFromCutscenePlayerPc = 1;
                 } else if (WORLD->area != NULL && (WORLD->area->flags & 2) != 0) {
                     NewLData = SuperStory != 0 ? STATUS_LDATA : CREDITS_LDATA;
                 }
-            } else if (CutScenePlayerPc != NULL &&
-                       reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL &&
+            } else if (CutScenePlayer != NULL &&
+                       reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL &&
                        (NewLData->flags & 0xe0) == 0 && (stop_cut->end_flags & 2) == 0) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayerPc = 1;
@@ -2669,8 +2667,8 @@ extern "C" {
             }
         } else {
             CUTINFO *next = NewCutScene(NULL, world->cutscene_sys, stop_cut->next_cutscene, 0);
-            if (CutScenePlayerPc != NULL &&
-                reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && next == NULL) {
+            if (CutScenePlayer != NULL &&
+                reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayer)->active != NULL && next == NULL) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayerPc = 1;
             } else if ((stop_cut->flags & 0x400) != 0) {

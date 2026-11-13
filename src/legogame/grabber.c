@@ -153,11 +153,11 @@ i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_pla
 #define GRABBER_FIND_SWITCH(field, name)                                                                               \
     gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                            \
     if (gizmo != NULL) {                                                                                               \
-        GrabCurrentPc->field = *gizmo;                                                                                 \
-        if (GrabCurrentPc->field != NULL && GrabCurrentPc->field->anim_set == NULL)                                    \
-            GrabCurrentPc->field = NULL;                                                                               \
+        Grab_grabber->field = *gizmo;                                                                                  \
+        if (Grab_grabber->field != NULL && Grab_grabber->field->anim_set == NULL)                                      \
+            Grab_grabber->field = NULL;                                                                                \
     } else                                                                                                             \
-        GrabCurrentPc->field = NULL
+        Grab_grabber->field = NULL
 #define GRABBER_SWITCH_ON(obstacle)                                                                                    \
     ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
 
@@ -210,32 +210,32 @@ static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
     m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
 
-GRABBER_PC *GrabCurrentPc = 0;
+GRABBER_PC *Grab_grabber = 0;
 
 static void __cdecl Grab_radius(NUFPAR_PC *parser) {
-    GrabCurrentPc->radius = NuFParGetFloat(parser);
+    Grab_grabber->radius = NuFParGetFloat(parser);
 }
 
 static void __cdecl Grab_speed(NUFPAR_PC *parser) {
-    GrabCurrentPc->speed = NuFParGetFloat(parser);
+    Grab_grabber->speed = NuFParGetFloat(parser);
 }
 
 static void __cdecl Grab_rotate(NUFPAR_PC *parser) {
-    GrabCurrentPc->bits.rotate = NuFParGetInt(parser);
+    Grab_grabber->bits.rotate = NuFParGetInt(parser);
 }
 
 static void __cdecl Grab_scale(NUFPAR_PC *parser) {
-    GrabCurrentPc->scale = NuFParGetFloat(parser);
+    Grab_grabber->scale = NuFParGetFloat(parser);
 }
 
 static void __cdecl Grab_move_xy(NUFPAR_PC *parser) {
     if (NuFParGetInt(parser) != 0) {
-        GrabCurrentPc->move_xy = 1;
+        Grab_grabber->move_xy = 1;
     }
 }
 
 static void __cdecl Grab_invert_x(NUFPAR_PC *parser) {
-    GrabCurrentPc->invert_x = 1;
+    Grab_grabber->invert_x = 1;
 }
 
 static void __cdecl Grab_type(NUFPAR_PC *parser) {
@@ -243,18 +243,18 @@ static void __cdecl Grab_type(NUFPAR_PC *parser) {
         return;
     }
     if (NuStrICmp(parser->word_buffer_ptr, "GRABMAGNET") == 0) {
-        GrabCurrentPc->character_id = GrabMagnetIdPc;
+        Grab_grabber->character_id = GrabMagnetIdPc;
     } else if (NuStrICmp(parser->word_buffer_ptr, "ROBOTBASE") == 0) {
-        GrabCurrentPc->character_id = RobotBaseIdPc;
+        Grab_grabber->character_id = RobotBaseIdPc;
     } else {
-        GrabCurrentPc->character_id = GrabMachineIdPc;
+        Grab_grabber->character_id = GrabMachineIdPc;
     }
 }
 
 static void __cdecl Grab_shadow(NUFPAR_PC *parser) {
-    GrabCurrentPc->flags |= 0x10;
+    Grab_grabber->flags |= 0x10;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        GrabCurrentPc->flags &= ~0x10;
+        Grab_grabber->flags &= ~0x10;
     }
 }
 
@@ -282,8 +282,8 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     }
     world->grabber = (GRABBER_PC *)(((u32)world->giz_buffer + 15) & ~15u);
     world->giz_buffer = world->grabber + 1;
-    GrabCurrentPc = world->grabber;
-    GrabCurrentPc->special = special;
+    Grab_grabber = world->grabber;
+    Grab_grabber->special = special;
     parser = NuFParCreateMem("grabbers", config, 0xffff);
     if (parser == NULL) {
         return;
@@ -293,14 +293,14 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "grabber_start") == 0) {
-                GrabCurrentPc->move_xy = 0;
-                GrabCurrentPc->radius = 0.5f;
-                GrabCurrentPc->speed = 1.0f;
-                GrabCurrentPc->flags &= ~8;
-                GrabCurrentPc->scale = 1.0f;
-                GrabCurrentPc->invert_x = 0;
-                GrabCurrentPc->flags |= 0x10;
-                GrabCurrentPc->character_id = GrabMachineIdPc;
+                Grab_grabber->move_xy = 0;
+                Grab_grabber->radius = 0.5f;
+                Grab_grabber->speed = 1.0f;
+                Grab_grabber->flags &= ~8;
+                Grab_grabber->scale = 1.0f;
+                Grab_grabber->invert_x = 0;
+                Grab_grabber->flags |= 0x10;
+                Grab_grabber->character_id = GrabMachineIdPc;
                 active = 1;
             } else if (NuStrICmp(parser->word_buffer_ptr, "grabber_end") == 0) {
                 break;
@@ -310,23 +310,23 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
         }
     }
     NuFParDestroy(parser);
-    if (GrabCurrentPc->character_id != -1) {
-        GrabCurrentPc->character_model = APICharacterLoaded(GrabCurrentPc->character_id);
+    if (Grab_grabber->character_id != -1) {
+        Grab_grabber->character_model = APICharacterLoaded(Grab_grabber->character_id);
     } else {
-        GrabCurrentPc->character_model = NULL;
+        Grab_grabber->character_model = NULL;
     }
-    if (GrabCurrentPc->character_model != NULL) {
-        NuSpecialSetVisibility(&GrabCurrentPc->special, 0);
+    if (Grab_grabber->character_model != NULL) {
+        NuSpecialSetVisibility(&Grab_grabber->special, 0);
     } else {
-        NuSpecialSetVisibility(&GrabCurrentPc->special, 1);
-        GrabCurrentPc->character_id = -1;
+        NuSpecialSetVisibility(&Grab_grabber->special, 1);
+        Grab_grabber->character_id = -1;
     }
-    GrabCurrentPc->matrix = *NuSpecialGetDrawMtx(&GrabCurrentPc->special);
+    Grab_grabber->matrix = *NuSpecialGetDrawMtx(&Grab_grabber->special);
     if (world->current_level == DEATHSTARRESCUEA_LDATA) {
-        GrabCurrentPc->matrix.m31 += GrabConfigDataPc.level_y_offset;
+        Grab_grabber->matrix.m31 += GrabConfigDataPc.level_y_offset;
     }
-    PCByteCopy_candidate(&GrabCurrentPc->initial_position, &GrabCurrentPc->matrix.m30, sizeof(NUVEC));
-    NuSpecialFind(world->scene, &GrabCurrentPc->shadow_special, "grabber_shadow", 1);
+    PCByteCopy_candidate(&Grab_grabber->initial_position, &Grab_grabber->matrix.m30, sizeof(NUVEC));
+    NuSpecialFind(world->scene, &Grab_grabber->shadow_special, "grabber_shadow", 1);
     world->grabber->platform_id = -1;
 }
 
@@ -468,7 +468,7 @@ void __cdecl Grabber_Draw(WORLDINFO *world) {
     }
     if (grabber->character_model != NULL) {
         grabber->flags &= ~1;
-        ModelAnimLayerListDispatchPc = GCDataList[grabber->character_model->model_id].make_layer_list;
+        MakeLayerList = GCDataList[grabber->character_model->model_id].make_layer_list;
         if ((grabber->flags & 0x10) != 0) {
             ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
             EnableShadowMapRendering(0);
@@ -697,17 +697,17 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
     if (control != NULL && (control->takeover_source != NULL || StartupGameFlag1 == 0) &&
         (control->flags_1fc & 0x80) != 0) {
         if (pad->input_magnitude > 0.0f) {
-            if (GrabCurrentPc->move_xy != 0) {
+            if (Grab_grabber->move_xy != 0) {
                 grabber->target_velocity.x = 0.0f;
                 grabber->target_velocity.y = pad->input_direction_x * grabber->speed;
-                if (GrabCurrentPc->invert_x != 0) {
+                if (Grab_grabber->invert_x != 0) {
                     grabber->target_velocity.z = pad->input_direction_z * grabber->speed * -1.0f;
                 } else {
                     grabber->target_velocity.z = pad->input_direction_z * grabber->speed;
                 }
             } else {
                 angle = GamePad_InputAngle(control, pad);
-                if (GrabCurrentPc->invert_x != 0) {
+                if (Grab_grabber->invert_x != 0) {
                     grabber->target_velocity.x = NU_SIN_LUT(angle) * grabber->speed * -1.0f;
                 } else {
                     grabber->target_velocity.x = NU_SIN_LUT(angle) * grabber->speed;

@@ -829,7 +829,7 @@ i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample
 }
 
 // Uncompiled drafts retaining native mouse accumulation and cursor behavior.
-extern u32 PcMouseButtonsMaskPc;
+extern u32 mbuttons;
 
 i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
     if (!(nu_keyboard_device_flags & 1) && !mouse_polled) {
@@ -881,15 +881,15 @@ i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
             } else if (mouse.position[1] > 1.0f) {
                 mouse.position[1] = 1.0f;
             }
-            u32 previous = PcMouseButtonsMaskPc;
-            PcMouseButtonsMaskPc = 0;
+            u32 previous = mbuttons;
+            mbuttons = 0;
             u32 mask = 0;
             for (i32 button = 0; button < button_count; ++button) {
                 if (mouse.buttons[button]) {
                     mask |= 1u << button;
                 }
             }
-            PcMouseButtonsMaskPc = mask;
+            mbuttons = mask;
             PcMousePressedMaskPc = (mask ^ previous) & mask;
             memset(mouse.buttons, 0, 8);
             PCByteCopy_candidate(mouse.buttons, state->buttons, button_count);

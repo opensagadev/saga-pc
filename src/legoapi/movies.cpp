@@ -84,8 +84,8 @@ extern "C" i32 __cdecl Movie_CallBack(void) {
     frame.paused = Paused;
     frame.pad_count = 2;
     frame.pads = pads;
-    if (GameThingManagerPc != NULL) {
-        GameThingManagerPc->ProcessThings(&frame);
+    if (theGameThings != NULL) {
+        theGameThings->ProcessThings(&frame);
     }
     MoviePlayTime = MovieFrameTime + MoviePlayTime;
     return skipped;

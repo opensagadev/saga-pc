@@ -67,8 +67,8 @@ void __cdecl CharShadows_Update(void) {
                         }
                     }
                     if ((f64)height != 2000000.0) {
-                        slot->opacity = GetSurfaceInfoSurfaceNormalPc.y;
-                        FindAnglesZX(&GetSurfaceInfoSurfaceNormalPc, NULL, NULL);
+                        slot->opacity = ShadNorm.y;
+                        FindAnglesZX(&ShadNorm, NULL, NULL);
                         slot->x_rotation = temp_zrot;
                         slot->z_rotation = temp_xrot;
                     }

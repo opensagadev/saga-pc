@@ -4,7 +4,7 @@ extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
     extern void *TerI, *TerrOverRideScan;
-    extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
+    extern TERRAIN_POLYGON_INFO_PC *ScaleTerrain;
 
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
@@ -40,7 +40,7 @@ extern "C" {
             ++group_shape_count;                                                                                       \
         } else {                                                                                                       \
             TERRAIN_SHAPE *source = (candidate_arg);                                                                   \
-            TERRAIN_SHAPE *scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                   \
+            TERRAIN_SHAPE *scaled = &ScaleTerrain[scaled_shape_count];                                                 \
             scaled->material[0] = source->material[0];                                                                 \
             scaled->material[1] = source->material[1];                                                                 \
             scaled->flags = source->flags;                                                                             \
@@ -67,7 +67,7 @@ extern "C" {
                                   source->normals[1].y * source->normals[1].y * query->object_scale_sq +               \
                                   source->normals[1].z * source->normals[1].z));                                       \
                 query = TERRAIN_QUERY_PC;                                                                              \
-                scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                              \
+                scaled = &ScaleTerrain[scaled_shape_count];                                                            \
                 scaled->normals[1].x = source->normals[1].x * inverse_length;                                          \
                 scaled->normals[1].y = query->object_scale * source->normals[1].y * inverse_length;                    \
                 scaled->normals[1].z = source->normals[1].z * inverse_length;                                          \
@@ -79,7 +79,7 @@ extern "C" {
                               source->normals[0].y * source->normals[0].y * query->object_scale_sq +                   \
                               source->normals[0].z * source->normals[0].z));                                           \
             query = TERRAIN_QUERY_PC;                                                                                  \
-            scaled = &TerrainScaledShapeCursorPc[scaled_shape_count];                                                  \
+            scaled = &ScaleTerrain[scaled_shape_count];                                                                \
             scaled->normals[0].x = source->normals[0].x * inverse_length;                                              \
             scaled->normals[0].y = query->object_scale * source->normals[0].y * inverse_length;                        \
             scaled->normals[0].z = source->normals[0].z * inverse_length;                                              \
@@ -139,7 +139,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
         return;
     }
 
-    TerrainScaledShapeCursorPc = ScaleTerrainT1;
+    ScaleTerrain = ScaleTerrainT1;
     platinrange = 0;
     TERRAIN_QUERY_PC->scan_group_index = -1;
 
@@ -416,7 +416,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             query = TERRAIN_QUERY_PC;
                             continue;
                         }
-                        TERRAIN_SHAPE *transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
+                        TERRAIN_SHAPE *transformed = &ScaleTerrain[scaled_shape_count];
                         transformed->material[0] = shape->material[0];
                         transformed->material[1] = shape->material[1];
                         transformed->flags = shape->flags;
@@ -451,7 +451,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                 1.0f, NuFsqrt(transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y +
                                               transformed->normals[1].z * transformed->normals[1].z));
-                            transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
+                            transformed = &ScaleTerrain[scaled_shape_count];
                             transformed->normals[1].x *= inverse;
                             transformed->normals[1].y *= inverse;
                             transformed->normals[1].z *= inverse;
@@ -470,7 +470,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                                                        transformed->normals[0].y * transformed->normals[0].y +
                                                        transformed->normals[0].z * transformed->normals[0].z);
                             const f32 inverse = length == 0.0f ? 0.0f : 1.0f / length;
-                            transformed = &TerrainScaledShapeCursorPc[scaled_shape_count];
+                            transformed = &ScaleTerrain[scaled_shape_count];
                             transformed->normals[0].x *= inverse;
                             transformed->normals[0].y *= inverse;
                             transformed->normals[0].z *= inverse;
@@ -598,7 +598,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TerrainQuery_s *query = TERRAIN_QUERY_PC;
     WallSplinesOnly = 0;
-    TerrainScaledShapeCursorPc = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
+    ScaleTerrain = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);
     platinrange = 0;
     query->scan_group_index = -1;

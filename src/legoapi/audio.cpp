@@ -551,15 +551,15 @@ extern "C" {
         }
     }
 }
-i32 TickTockStatePc = 0;
+i32 ticktock = 0;
 
 void __cdecl TickTockSfx(void) {
-    if (TickTockStatePc != 0) {
+    if (ticktock != 0) {
         PlaySfxById(GameAudio->sfx_ids[0x1d], NULL);
-        TickTockStatePc = 0;
+        ticktock = 0;
     } else {
         PlaySfxById(GameAudio->sfx_ids[0x1e], NULL);
-        TickTockStatePc = 1;
+        ticktock = 1;
     }
 }
 

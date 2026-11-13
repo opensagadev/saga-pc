@@ -20,8 +20,8 @@ inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
 extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     i32 last_effect_scene = -1;
     RenderFrameShaderTimePc += nuapi.frame_time;
-    DwaWeightCursorPc = 0xef00;
-    DwaPointerCursorPc = 0x800;
+    rndr_blend_shape_deformer_wt_cnt = 0xef00;
+    rndr_blend_shape_deformer_wt_ptrs_cnt = 0x800;
     PCFrameBeginScenePc(1);
     PCFrameCriticalSectionEnter_candidate();
     PCDeviceSetTexture(0, NULL);
@@ -39,8 +39,8 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     _NuTimeBarSlotEnd(-1, 0);
     NuDisplayListPurge_candidate();
     _NuTimeBarSlotBegin(-1, 4, "CPU_QUEUE_DRAW");
-    for (i32 i = 0; i < RenderFrameShaderArrayCountPc && i * 16 < 0x80; ++i) {
-        NuShaderManagerSetElementfv(0x4e, i, RenderFrameShaderArrayPc[i]);
+    for (i32 i = 0; i < nuspecial_vertex_noffsets && i * 16 < 0x80; ++i) {
+        NuShaderManagerSetElementfv(0x4e, i, nuspecial_vertex_offsets[i]);
     }
     NuShaderManagerSetfv(0x3f, &RenderFrameShaderTimePc);
     PCDeviceResetSamplerDefaultsPc();
@@ -174,7 +174,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuDisplayListBeginFrame();
     NuDisplayListStreamCursor = &nudlist_stream_cursor;
     nudlist_field_1598 = nuprim_field_ba8;
-    if (RenderFramePausedPc == 0) {
+    if (global_frame_count_paused == 0) {
         ++PCWindFrameCount;
     }
     if (RenderFrameCallbackPc != NULL) {

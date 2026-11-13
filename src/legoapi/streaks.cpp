@@ -1,6 +1,6 @@
 #include "saga.h"
 #pragma bss_seg(".bss$StreakHeadersUsedPc")
-static STREAK_HEADER_PC *StreakHeadersUsedPc = 0;
+static STREAK_HEADER_PC *streakhdrs_used = 0;
 
 // Retail uses EDI/ESI for the endpoint pointers and six stack arguments.
 // Keep the complete helper beside its sole caller for VC8's internal ABI.
@@ -39,17 +39,17 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     NUVEC incoming, outgoing, edge_a, edge_b;
     STREAK_HEADER_PC *header = static_cast<STREAK_HEADER_PC *>(*handle);
     if (header == NULL) {
-        header = StreakHeadersFreePc;
+        header = streakhdrs_free;
         if (header == NULL) {
             return;
         }
-        StreakHeadersFreePc = header->next;
-        header->next = StreakHeadersUsedPc;
-        if (StreakHeadersUsedPc != NULL) {
-            StreakHeadersUsedPc->prev = header;
+        streakhdrs_free = header->next;
+        header->next = streakhdrs_used;
+        if (streakhdrs_used != NULL) {
+            streakhdrs_used->prev = header;
         }
         header->prev = NULL;
-        StreakHeadersUsedPc = header;
+        streakhdrs_used = header;
         header->nodes = NULL;
         if (header == NULL) {
             return;
@@ -60,11 +60,11 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
         header->flags = static_cast<u8>(mode);
         header->owner = owner;
     }
-    STREAK_NODE_PC *node = StreakNodesFreePc;
+    STREAK_NODE_PC *node = streaks_free;
     header->has_new_node = 1;
     header->colour = colour;
     if (node != NULL) {
-        StreakNodesFreePc = node->next;
+        streaks_free = node->next;
         node->next = header->nodes;
         if (header->nodes != NULL) {
             header->nodes->prev = node;
@@ -145,11 +145,11 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
     if (elapsed == 0.0f) {
         return;
     }
-    STREAK_HEADER_PC *header = StreakHeadersUsedPc;
+    STREAK_HEADER_PC *header = streakhdrs_used;
     if (header == NULL) {
         return;
     }
-    STREAK_HEADER_PC *free_headers = StreakHeadersFreePc;
+    STREAK_HEADER_PC *free_headers = streakhdrs_free;
     do {
         STREAK_HEADER_PC *next_header = header->next;
         if (header->has_new_node == 0 && header->owner_slot != NULL && *header->owner_slot == header) {
@@ -168,8 +168,8 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
                 if (node->next != NULL) {
                     node->next->prev = node->prev;
                 }
-                node->next = StreakNodesFreePc;
-                StreakNodesFreePc = node;
+                node->next = streaks_free;
+                streaks_free = node;
                 break;
             }
         }
@@ -177,7 +177,7 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
             if (header->prev != NULL) {
                 header->prev->next = header->next;
             } else {
-                StreakHeadersUsedPc = header->next;
+                streakhdrs_used = header->next;
             }
             if (header->next != NULL) {
                 header->next->prev = header->prev;
@@ -187,7 +187,7 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
         }
         header = next_header;
     } while (header != NULL);
-    StreakHeadersFreePc = free_headers;
+    streakhdrs_free = free_headers;
 }
 
 extern "C" f32 StreakAlphaScalePc;
@@ -198,7 +198,7 @@ extern "C" f32 StreakAlphaScalePc;
     ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
 
 extern "C" void __cdecl DrawStreaks(void) {
-    for (STREAK_HEADER_PC *header = StreakHeadersUsedPc; header != NULL; header = header->next) {
+    for (STREAK_HEADER_PC *header = streakhdrs_used; header != NULL; header = header->next) {
         NURND_VERTEX3D_PC vertices[256];
         i32 vertex_count = 0;
         u32 colour;
@@ -231,8 +231,7 @@ extern "C" void __cdecl DrawStreaks(void) {
             vertices[index].v = v;
             vertices[index + 1].v = v;
         }
-        NuRndrTriStrip3dClip(vertices, vertex_count, NULL,
-                             header->flags != 0 ? StreakReflectionMaterialPc : StreakMaterialPc);
+        NuRndrTriStrip3dClip(vertices, vertex_count, NULL, header->flags != 0 ? streakmtl_ref : streakmtl);
     }
 }
 
@@ -241,12 +240,12 @@ extern "C" void __cdecl DrawStreaks(void) {
 #undef STREAK_FADE
 
 extern "C" void __cdecl ResetStreaks(void) {
-    STREAK_HEADER_PC *header = StreakHeadersUsedPc;
+    STREAK_HEADER_PC *header = streakhdrs_used;
     if (header == NULL) {
         return;
     }
-    STREAK_HEADER_PC *free_headers = StreakHeadersFreePc;
-    STREAK_NODE_PC *free_nodes = StreakNodesFreePc;
+    STREAK_HEADER_PC *free_headers = streakhdrs_free;
+    STREAK_NODE_PC *free_nodes = streaks_free;
     do {
         while (header->nodes != NULL) {
             STREAK_NODE_PC *node = header->nodes;
@@ -273,9 +272,9 @@ extern "C" void __cdecl ResetStreaks(void) {
         old_header->next = free_headers;
         free_headers = old_header;
     } while (header != NULL);
-    StreakNodesFreePc = free_nodes;
-    StreakHeadersFreePc = free_headers;
-    StreakHeadersUsedPc = NULL;
+    streaks_free = free_nodes;
+    streakhdrs_free = free_headers;
+    streakhdrs_used = NULL;
 }
 
 struct STREAK_MATERIAL_SCALE_PC {
@@ -296,8 +295,8 @@ extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     }
     StreakHeadersPc[i - 1].next = NULL;
     StreakHeadersPc[0].prev = NULL;
-    StreakHeadersFreePc = StreakHeadersPc;
-    StreakHeadersUsedPc = NULL;
+    streakhdrs_free = StreakHeadersPc;
+    streakhdrs_used = NULL;
     for (i = 0; i < 128; ++i) {
         StreakNodesPc[i].next = &StreakNodesPc[i + 1];
         StreakNodesPc[i].prev =
@@ -305,35 +304,35 @@ extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     }
     StreakNodesPc[i - 1].next = NULL;
     StreakNodesPc[0].prev = NULL;
-    StreakNodesFreePc = StreakNodesPc;
+    streaks_free = StreakNodesPc;
     StreakNodesUsedPc = NULL;
-    StreakMaterialPc = NuMtlCreate3D(1);
-    StreakMaterialPc->attribs.unknown_1_1_2 = 0;
-    StreakMaterialPc->attribs.unknown_1_4_8 = 0;
-    StreakMaterialPc->opacity = 1.0f;
-    StreakMaterialPc->attribs.z_mode = 1;
-    StreakMaterialPc->attribs.alpha_mode = 2;
-    StreakMaterialPc->attribs.filter_mode = 1;
-    reinterpret_cast<PC_SCENE_MTL_VIEW *>(StreakMaterialPc)->sort_pri = 500;
-    StreakMaterialPc->attribs.unknown_2_1_2 = 2;
-    StreakMaterialPc->attribs.unknown_2_4 = 1;
+    streakmtl = NuMtlCreate3D(1);
+    streakmtl->attribs.unknown_1_1_2 = 0;
+    streakmtl->attribs.unknown_1_4_8 = 0;
+    streakmtl->opacity = 1.0f;
+    streakmtl->attribs.z_mode = 1;
+    streakmtl->attribs.alpha_mode = 2;
+    streakmtl->attribs.filter_mode = 1;
+    reinterpret_cast<PC_SCENE_MTL_VIEW *>(streakmtl)->sort_pri = 500;
+    streakmtl->attribs.unknown_2_1_2 = 2;
+    streakmtl->attribs.unknown_2_4 = 1;
     buffer->addr = (buffer->addr + 15) & ~15u;
-    StreakMaterialPc->particle_type_tag = -112;
-    reinterpret_cast<STREAK_MATERIAL_SCALE_PC *>(StreakMaterialPc)->effect_scale = 5.0f;
-    StreakMaterialPc->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
-    NuMtlUpdate(StreakMaterialPc);
-    StreakReflectionMaterialPc = NuMtlCreate3D(1);
-    StreakReflectionMaterialPc->attribs.unknown_1_1_2 = 0;
-    StreakReflectionMaterialPc->attribs.unknown_1_4_8 = 0;
-    StreakReflectionMaterialPc->opacity = 1.0f;
-    StreakReflectionMaterialPc->attribs.z_mode = 0;
-    StreakReflectionMaterialPc->attribs.alpha_mode = 2;
-    StreakReflectionMaterialPc->attribs.filter_mode = 1;
-    StreakReflectionMaterialPc->attribs.unknown_2_1_2 = 2;
-    StreakReflectionMaterialPc->attribs.unknown_2_4 = 1;
-    StreakReflectionMaterialPc->particle_type_tag = -112;
-    reinterpret_cast<STREAK_MATERIAL_SCALE_PC *>(StreakReflectionMaterialPc)->effect_scale = 5.0f;
-    reinterpret_cast<PC_SCENE_MTL_VIEW *>(StreakReflectionMaterialPc)->sort_pri = 1;
-    StreakReflectionMaterialPc->texture_id = StreakMaterialPc->texture_id;
-    NuMtlUpdate(StreakReflectionMaterialPc);
+    streakmtl->particle_type_tag = -112;
+    reinterpret_cast<STREAK_MATERIAL_SCALE_PC *>(streakmtl)->effect_scale = 5.0f;
+    streakmtl->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
+    NuMtlUpdate(streakmtl);
+    streakmtl_ref = NuMtlCreate3D(1);
+    streakmtl_ref->attribs.unknown_1_1_2 = 0;
+    streakmtl_ref->attribs.unknown_1_4_8 = 0;
+    streakmtl_ref->opacity = 1.0f;
+    streakmtl_ref->attribs.z_mode = 0;
+    streakmtl_ref->attribs.alpha_mode = 2;
+    streakmtl_ref->attribs.filter_mode = 1;
+    streakmtl_ref->attribs.unknown_2_1_2 = 2;
+    streakmtl_ref->attribs.unknown_2_4 = 1;
+    streakmtl_ref->particle_type_tag = -112;
+    reinterpret_cast<STREAK_MATERIAL_SCALE_PC *>(streakmtl_ref)->effect_scale = 5.0f;
+    reinterpret_cast<PC_SCENE_MTL_VIEW *>(streakmtl_ref)->sort_pri = 1;
+    streakmtl_ref->texture_id = streakmtl->texture_id;
+    NuMtlUpdate(streakmtl_ref);
 }

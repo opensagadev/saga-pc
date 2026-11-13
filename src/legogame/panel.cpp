@@ -27,7 +27,7 @@ extern "C" {
         DrawCoinTotalYPc;
     extern f32 HudBossHeartYPc, HudBossHeartScalePc, HudBossIconYPc, HudBossIconScalePc;
     i32 __cdecl NuKeyboardBasePortPc(void);
-    extern i32 NuMainSkipCutBordersPc, AutoSaveIconPendingPc;
+    extern i32 NuMainSkipCutBordersPc, drawautosaveicon;
     extern f32 HudLevelTitleYPc;
     extern f32 HudLevelTitleScalePc;
     extern f32 HudLevelTitleScaleXPc;
@@ -98,10 +98,10 @@ extern "C" {
         return POWERUPYPOS1;
     }
 
-    i32 AutoSaveIconPendingPc = 0;
+    i32 drawautosaveicon = 0;
 
     void __cdecl DrawAutoSaveIcon(void) {
-        AutoSaveIconPendingPc = 1;
+        drawautosaveicon = 1;
     }
 
     /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
@@ -694,7 +694,7 @@ extern "C" {
             }
             alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlphaPc) * base_alpha;
             icon_alpha = (i32)((f64)alpha * 128.0);
-            DrawCharIconPanelPc = player;
+            drawcharicon_i_panel = player;
             if (WORLD->current_level == LevelFixupSlotPc0087b268 && object->takeover_source != NULL &&
                 object->takeover_source->id == static_cast<u16>(id_YODA)) {
                 visible = object->hud_icon_timer <= 0.0f ||
@@ -1343,7 +1343,7 @@ extern "C" {
             DrawMenu(paused);
         }
     finish:
-        if (AutoSaveIconPendingPc != 0 && WORLD->level_objects[0].active != 0) {
+        if (drawautosaveicon != 0 && WORLD->level_objects[0].active != 0) {
             DrawPanel3DObject(
                 (f32)((f64)NuTrigTable[(u16)(NuFmod(GlobalTimer.time_elapsed, 1.1f) / (f64)1.1f * 65536.0) >> 1] *
                       (f64)0.01f),
@@ -1355,7 +1355,7 @@ extern "C" {
                 1.0f, HudAutoSaveScalePc, HudAutoSaveScalePc, HudAutoSaveScalePc, 0, 0, 0,
                 &WORLD->level_objects[0].special, 0, 1.0f);
         }
-        AutoSaveIconPendingPc = 0;
+        drawautosaveicon = 0;
         if (GameCam != NULL) {
             pNuCam->mtx = GameCam->render_mtx;
         }
@@ -1372,7 +1372,7 @@ extern "C" void __cdecl PanelRender(WORLDINFO *world) {
     DrawPauseFade();
     DrawPanel();
     FadeSys.Update();
-    GameThingManagerPc->DisplayThings(NULL);
+    theGameThings->DisplayThings(NULL);
     NuRndrEndScene();
     FadeSys.Draw();
     if (WORLD != NULL && WORLD->current_level == TITLES_LDATA) {

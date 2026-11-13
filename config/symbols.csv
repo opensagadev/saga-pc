@@ -36962,7 +36962,7 @@ address,symbol,size,ctype
 0x007ef020,_CHARACTERBUFFERSIZE,4,i32
 0x007ef090,_StartupDatNames,28,const char *[7]
 0x7ef194,_AttractoBackPackCountPos,12,
-0x7ef1a0,_AttractoOutputNamePc,4,char *
+0x7ef1a0,_Attracto_OutputName,4,char *
 0x7ef210,_AttractoRegistryNamePc,4,char *
 0x7ef224,_BatarangCatwomanStunTimePc,4,f32
 0x7ef294,_BatmanJumpDistancePc,12,f32[3]
@@ -37510,7 +37510,7 @@ address,symbol,size,ctype
 0x7f9328,_HubTrueJediTypeAlphaPc,4,i32
 0x007f932c,_HubSelectMenuYPc,4,f32
 0x007f9330,_HubBonusMenuYPc,4,f32
-0x7f9334,_HubMiniKitViewerPositionPc,12,NUVEC
+0x7f9334,_hub_minikitviewer_pos,12,NUVEC
 0x7f9340,_HubMiniKitViewerBaseYPc,4,f32
 0x7f9344,_HubMiniKitViewerStepPc,4,f32
 0x7f9348,_HUB_MINIKITVIEWER_CAMDY,4,f32
@@ -37554,8 +37554,8 @@ address,symbol,size,ctype
 0x7fa378,_LedgePiece,192,LEDGEPIECE[6]
 0x7fa4a0,_LedgeRegistryNamePc,4,char *
 0x7fa4b4,_StatusCountdownLimitPc,4,f32
-0x7fa4b8,_StatusMiniKitJibberLengthPc,4,f32
-0x7fa4bc,_StatusMiniKitSlideTimePc,4,f32
+0x7fa4b8,_jibberlen,4,f32
+0x7fa4bc,_slidetime,4,f32
 0x7fa4c0,_StatusCoinsTitleYPc,4,f32
 0x7fa4c8,_StatusRedPc,4,i32
 0x7fa4cc,_StatusGreenPc,4,i32
@@ -37705,7 +37705,7 @@ address,symbol,size,ctype
 0x7fc090,_CableTargetScalePc,4,f32
 0x7fc094,_JumpAnimHoldTimePc,4,f32
 0x7fc098,_AwkwardShapeSpherePc,168,AWKWARD_SHAPE_SPHERE_PC[]
-0x7fc140,_DisorientAxisPc,1,u8
+0x7fc140,_disorientAxis,1,u8
 007fc144,_DefaultMotionSpiderFarSpeedPc,4,f32
 007fc148,_DefaultMotionSpiderNearSpeedPc,4,f32
 007fc14c,_DefaultMotionSpiderRangePc,4,f32
@@ -37829,11 +37829,11 @@ address,symbol,size,ctype
 0x7fc4c4,?RadioLifetimePc@@3MA,4,f32
 0x7fc4c8,?RadioPhasePeriodPc@@3MA,4,f32
 0x7fc4cc,?RadioScaleFactorPc@@3MA,4,f32
-0x7fc534,_SecurityDoorOutputNamePc,4,char *
+0x7fc534,_SecurityDoor_OutputName,4,char *
 0x7fc5a0,_SecurityDoorRegistryNamePc,4,char *
 0x7fc5b8,_GameAudioLswPc,512,GAMEAUDIO_PC
 0x7fc7b8,_GameAudioAlternatePc,512,GAMEAUDIO_PC
-0x7fca94,_ShardOutputNamePc,4,char *
+0x7fca94,_Shard_OutputName,4,char *
 0x7fcb00,_ShardRegistryNamePc,4,char *
 0x7fcb18,_ShopHintIdsPc,48,i16[24]
 0x7fcb48,_ShopHintTextIdsPc,30,i16[15]
@@ -38066,12 +38066,12 @@ address,symbol,size,ctype
 0x0080048c,_bad_equiv,32,u16[8][2]
 0x008004ac,_bad_fluff,52,const u16[26]
 0x8004e0,_NUAPI_PADREC_DEFAULT_BUFFERSIZE,4,i32
-0x008004e4,_FrameSleepMillisecondsPc,4,i32
+0x008004e4,_min_delay,4,i32
 0x008004e8,_FrameStartupDelayPc,4,f32
 0x8004ec,_FramePadRampRatePc,4,f32
 0x8004f0,_FramePadRampValuesPc,40,FRAME_PAD_RAMP_PC[5]
 0x800518,_FramePadProfilePortPc,4,i32
-0x80051c,_FramePadMaxGamePadsPc,4,i32
+0x80051c,_MaxGamePads,4,i32
 0x800520,_PlayerLastPort,16,i16[8]
 0x00800540,_PCImplodeWordMask,4,u32
 0x00800544,_gExplodeInitialised,4,i32
@@ -38160,8 +38160,8 @@ address,symbol,size,ctype
 0x800a3c,_apitxt_NEWSAVE,4,char *
 0x800a40,_apitxt_CONTINUEWITHOUTLOADING,4,char *
 0x800a44,_apitxt_COMPLETED,4,char *
-0x800a48,_MenuAcceptPromptTextPc,4,char *
-0x800a4c,_MenuCancelPromptTextPc,4,char *
+0x800a48,_apitxt_SELECT,4,char *
+0x800a4c,_apitxt_BACK,4,char *
 0x800a50,_apitxt_VIBRATION,4,char *
 0x800a54,_apitxt_CONFIRMDELETE,4,char *
 0x800a58,_apitxt_PROGRESS,4,char *
@@ -38277,7 +38277,7 @@ address,symbol,size,ctype
 0x8021c0,_GameCamLookRotXPc,4,i32
 0x8021c4,_GameCamLookRotYPc,4,i32
 0x8021c8,_PlayPlaneCornersPc,48,NUVEC[4]
-0x8021f8,_PlayPlaneDepthPc,4,f32
+0x8021f8,_PP_dist,4,f32
 0x8021fc,_GameCamShakeRadiusPc,4,f32
 0x802200,_GameCamShakeRetargetPc,4,f32
 0x802204,_GameCamShakeDirSeekPc,4,f32
@@ -38327,7 +38327,7 @@ address,symbol,size,ctype
 0x802450,_PlayerGrappleSwingModePc,4,i32
 0x802454,_Grapples_Available,4,i32
 0x802458,_Grapple_RopeSwingRotate,2,i16
-0x0080245c,_GrappleRopeColourPc,4,u32
+0x0080245c,_GRAPPLE_RGBA,4,u32
 0x00802460,_grapple_gizmotype_id,4,i32
 0x00802464,_GrappleCurvedRopeEnabledPc,4,i32
 0x00802468,_GrappleRopeSeekRatesPc,24,f32[6]
@@ -38393,7 +38393,7 @@ address,symbol,size,ctype
 0x008028a8,_LEGOCONTEXT_BUCK,4,i32
 0x008028ac,_LEGOCONTEXT_WHIP,4,i32
 0x8028b0,_LegoContextNetWaitPc,4,i32
-0x802924,_DrawCharIconPanelPc,4,i32
+0x802924,_drawcharicon_i_panel,4,i32
 0x802928,_AreaIconPathPrivate,64,char[64]
 0x802968,_GCDATA_DEFAULT,288,PLAYERCHARACTERCONFIG_PC
 0x802af4,_SuperStoryEpisode,4,i32
@@ -38445,7 +38445,7 @@ address,symbol,size,ctype
 0x8030e8,_LEDGETERRAINLOOKAHEAD,4,f32
 0x8030ec,_ClimbNormalProbeCountPc,4,i32
 0x008031c0,_GuideLineRegistryNamePc,4,char *
-0x8031d4,_TubeOutputNamePc,4,const char *
+0x8031d4,_Tube_OutputName,4,const char *
 0x803240,_TubeGizmoNamePc,4,const char *
 0x008032c4,_CheatSystemPtr,4,CHEATSYSTEM_PC *
 0x8032c8,_CHEAT_POWERUPTIME,4,f32
@@ -38455,7 +38455,7 @@ address,symbol,size,ctype
 0x8033a8,_COINMSGTIME,4,f32
 0x8033ac,_COINMAGNETSCALE,4,f32
 0x8033b0,_GizmoPickupSys,4,PICKUP_TYPE_SYSTEM_PC*
-0x008033cc,_PickupOutputNamePc,4,char *
+0x008033cc,_GizmoPickup_OutputName,4,char *
 0x803430,_GizmoRegistryGizmoPickupsNamePtrPc,4,char *
 0x803444,_PARTPAGE_GENERAL,4,i32
 0x8034b0,_PartVectorSpreadDegrees_PC,4,i32
@@ -38677,7 +38677,7 @@ address,symbol,size,ctype
 0x00805274,_PANEL_MINIKITCOUNTSCALE,4,f32
 0x00805278,_PANEL_MINIKITCOUNTY,4,f32
 0x8053c4,_PlayerPushSpinnerDegreesPc,4,i32
-0x805434,_CreditsDurationPc,4,f32
+0x805434,_Credits_Duration,4,f32
 0x805438,_CreditTypePc,120,CREDIT_TYPE_PC[5]
 0x00805514,_flowbox_callbacks,36,FLOWBOX_CALLBACKS_PC[3]
 0x00805538,_gizflow_condition_types_pc,84,
@@ -38773,10 +38773,10 @@ address,symbol,size,ctype
 0x0080b60c,_qfnt_height_scale,4,f32
 0x0080b610,_qfnt_justify_squash,4,f32
 0x0080b614,_qfnt_justify_stretch,4,f32
-0x80b618,_TextureAnimationScriptMaskPc,2,u16
+0x80b618,_script_mask,2,u16
 0x80b620,_TextureAnimationCommandsPrivatePc,176,NUFPCOMJMP[22]
 0x80b6d0,_nutexanim_usepakfile,4,i32
-0x80b6d4,_g_texAnimCriticalSection,4,i32
+0x80b6d4,_nutexanm_critical_section,4,i32
 0x80b6d8,_global_windscale,4,f32
 0x80b6dc,_global_windspeed,4,f32
 0x80b6e8,_NuLightSpeedBlurEnabledPc,4,writable i32 native initial1
@@ -38802,7 +38802,7 @@ address,symbol,size,ctype
 0x0080b9ec,_NuHtmlUnknownTextPc,8,char[8]
 0x0080b9f4,_NuTimeBarPeakResetInterval,4,i32
 0x0080b9f8,_NuTimeBar_EngineColours,28,const u32[7]
-0x80ba14,_VisibilityInstanceTreeEnabledPc,4,i32
+0x80ba14,_do_InstTree,4,i32
 0x0080ba18,_NuTimeBar_DefaultColours,64,const u32[16]
 0x80ba58,_PCPortalsEnabled,4,i32
 0x80ba5c,_NuPortalDebugDrawPc,4,i32
@@ -38813,7 +38813,7 @@ address,symbol,size,ctype
 0x80bab0,_PCMaterialLinkItemIndex,4,i32
 0x80bab4,_VisibilityPortalFilterEnabledPc,4,i32
 0x80babc,_PCShadowSubmissionEnabled,4,i32
-0x80bac0,_NuMtlAnimateMaskPc,4,i32
+0x80bac0,_mtl_animation_mask,4,i32
 0x80bac4,_FrameMaterialAnimationSpeedPc,4,f32
 0x80bb38,_PostProxyBuffersPc,60,PC_POST_BUFFER_PROXY_PC[5]
 0x80bbb0,_PostResourcePortsPc,48,PC_POST_DATA_PORT[6]
@@ -38857,8 +38857,8 @@ address,symbol,size,ctype
 0x0080e19c,_DwaWeightCapacityPc,4,i32
 0x0080e1a0,_DwaPointerCapacityPc,4,i32
 0x0080e1a4,_DwaBlockCapacityPc,4,i32
-0x0080e1a8,_DwaWeightCursorPc,4,
-0x0080e1ac,_DwaPointerCursorPc,4,
+0x0080e1a8,_rndr_blend_shape_deformer_wt_cnt,4,
+0x0080e1ac,_rndr_blend_shape_deformer_wt_ptrs_cnt,4,
 0x0080e1b0,_DwaEnabledPc,4,i32
 0x0080e1e4,_DwaStreamCapacityPc,4,i32
 0x0080e214,_NuRndrFxHeightPc,4,f32
@@ -38885,7 +38885,7 @@ address,symbol,size,ctype
 0x80e6c8,_NuLgtSeed,4,i32
 0x80e6cc,_SceneUploadBufferSizePC,4,i32
 0x80e6d0,_PCDisplayItemHandlerPrefixPc,196,PC_DISPLAY_ITEM_HANDLER_PC[49]
-0x80e794,_PCDisplayItemHandlersPc,4,PC_DISPLAY_ITEM_HANDLER_PC *
+0x80e794,_CurrentItemTable,4,PC_DISPLAY_ITEM_HANDLER_PC *
 0x80e798,_PCDisplayShadowItemHandlersPc,196,49 actual shadow dispatch entries
 0x0080e85c,_PCClipExtentsEnabled,4,i32
 0x0080e870,_ClipOutcodeMask32,16,const u32[4]
@@ -38986,8 +38986,8 @@ address,symbol,size,ctype
 0x80fb80,_EduiColourSliderRepeatTimerPc,4,i32; minimum4B view Native extent unknown
 0x80fb88,_MINFORCEAPART,4,f32
 0x80fb8c,_MAXFORCEAPART,4,f32
-0x80fb90,_AnimBlendModePc,4,i32
-0x0080fb94,_ModelAnimLayerListDispatchPc,4,
+0x80fb90,_AnimBlendMode,4,i32
+0x0080fb94,_MakeLayerList,4,
 0x0080fb98,_RedirectAnimDir,64,char[64]
 0x80fc60,_FmvCopyFlagsPc,4,i32
 0x80fc64,_FmvVolumePc,4,f32
@@ -38997,10 +38997,10 @@ address,symbol,size,ctype
 0x80fd98,_rtl_helper_type_items,72,EdEnumControl::Item[9]
 0x80fde0,_rtl_helper_radius,4,f32
 0x80fde4,_rtl_dynamic_lights_enabled,4,i32
-0x80fde8,_RtlFileVersionPc,4,i32
+0x80fde8,_curr_version,4,i32
 0x80fdec,_rtl_shadow_blend_rate,4,f32
 0x80fdf0,_rtl_shadow_flicker,12,NUVEC
-0x80fdfc,_RtlUidCounterPc,2,u16
+0x80fdfc,_rtl_uid,2,u16
 0x0080fe00,_edrtl_text_scale,4,f32
 0x80fe04,_RtlModifierIndexZeroPc,4,f32
 0x0080fe08,_default_modifier_names,4,char *[1]
@@ -39048,7 +39048,7 @@ address,symbol,size,ctype
 0x81019c,_edpart_scale_factor,4,f32
 0x8101a4,_edpart_which_scene,4,i32
 0x8101a8,_edpart_filter_string,16,char[16]
-0x8101b8,_PartLoadParticlePagePc,4,i32
+0x8101b8,_edpart_load_particle_page,4,i32
 0x8101bc,_edpart_superscale,4,i32
 0x8101c4,_PartNullInstanceNamePc,14,char[14]
 0x0081020c,_MAXPARTS,4,i32
@@ -39323,7 +39323,7 @@ address,symbol,size,ctype
 0x827644,_PcToggleKeys,8,TOGGLEKEYS
 0x82764c,_PcFilterKeys,24,FILTERKEYS
 0x827664,_PcArgc,4,i32
-0x00827730,_NuScratchCurrentPc,4,
+0x00827730,_ps2_scratch_free,4,
 0x827800,_MenuPcStringTable827800,320,MENU_PC_STRING_ENTRY[40]
 0x827940,_MenuPcStringTable827940,320,MENU_PC_STRING_ENTRY[40]
 0x827a80,_MenuPcStringTable827a80,320,MENU_PC_STRING_ENTRY[40]
@@ -39670,7 +39670,7 @@ address,symbol,size,ctype
 0x879390,_GizmoRegistryGizPanelAddTypePc,120,ADDGIZMOTYPE_PC
 0x879408,_giztorpmachine_gizmotype_id,4,i32
 0x879410,_GizmoRegistryGizTorpMachineAddTypePc,120,ADDGIZMOTYPE_PC
-0x879488,_GrabCurrentPc,4,
+0x879488,_Grab_grabber,4,
 0x879490,?HatMachineAddTypePc@?1??HatMachine_RegisterGizmo@@9@4Uaddgizmotype_pc_s@@A,120,ADD_GIZMO_CONFIG_TYPE_PC
 0x00879508,_Hub_PadAngle,4,u16[2]
 0x87950c,_hub_bonusepisode,4,i32
@@ -39718,11 +39718,11 @@ address,symbol,size,ctype
 0x879b48,_HubHologramTargetAlphaPc,4,f32
 0x879b4c,_HubForceShopSavePc,4,i32
 0x879b50,_HubPreventDropOutTimePc,4,f32
-0x879b54,_HubMiniKitViewerAreaPc,4,i32
+0x879b54,_hub_minikitviewer_area,4,i32
 0x879b58,_HubMiniKitViewerAlphaPc,4,f32
 0x879b5c,_HubMiniKitViewerSplinePc,4,NUGSPLINE *
-0x879b60,_HubMiniKitViewerMovePc,4,f32
-0x879b64,_HubMiniKitViewerMoveWaitPc,4,f32
+0x879b60,_hub_minikitviewer_move,4,f32
+0x879b64,_hub_minikitviewer_movewait,4,f32
 0x879b68,_HubInitAIFnPc,4,void (__cdecl *)(WORLDINFO *)
 0x879b6c,_HubResetAIFnPc,4,void (__cdecl *)(WORLDINFO *)
 0x879b70,_HubUpdateAIFnPc,4,void (__cdecl *)(WORLDINFO *)
@@ -39738,17 +39738,17 @@ address,symbol,size,ctype
 0x0087a1a8,_StatusIconYPc,4,f32
 0x0087a1ac,_StatusNewMinikitCountPc,4,i32
 0x0087a1b0,_StatusNewCharacterIdsPc,16,i16[8]
-0x0087a1c0,_StatusCurrentMinikitPc,4,i32
+0x0087a1c0,_currentminikit,4,i32
 0x0087a1c4,_StatusCollectedSuitBitsPc,4,u32
-0x87a1c8,_StatusMiniKitPopTimerPc,4,f32
-0x0087a1cc,_StatusMiniKitProgressPc,4,f32
+0x87a1c8,_pop_timer,4,f32
+0x0087a1cc,_slideseek,4,f32
 0x87a1f0,_iconalphaoverride,4,f32
 0x87a1f4,_goldbrickmsgcount,4,i32
 0x87a1f8,_StatusPlayerActivePc,8,u8[8]
-0x0087a200,_StatusGoldBrickStagePc,4,i32
+0x0087a200,_DrawGoldBrick_Stage,4,i32
 0x0087a204,_StatusDrawPlayerIconsPc,4,i32
 0x87a208,_StatusMiniKitPartLightingPc,204,PART_LIGHTING_DATA_PC
-0x0087a34c,_StatusGoldBrickPhasePc,4,i32
+0x0087a34c,_DrawGoldBrick_Phase,4,i32
 0x0087a350,_StatusMiniKitDrawCachePc,720,STATUS_MINIKIT_DRAW_CACHE_PC[10]
 0x87a620,_StatusStages,4,struct STATUS_STAGE_s *
 0x87a624,_status_prompt,4,i32
@@ -40085,7 +40085,7 @@ address,symbol,size,ctype
 0x0087b8a8,_avg_currentspeed_mul,4,f32
 0x87b8ac,_PlayerOpponent_Range2,4,f32
 0x0087b8b0,_ForceBackRadiusPc,4,f32
-0x0087b8b4,_ForceBackRadius2Pc,4,f32
+0x0087b8b4,_ForceBackRadius2,4,f32
 0x87b8b8,_ComboOpponent_Behind,4,i32
 0x87b8bc,_ComboOpponent_Range2,4,f32
 0x87b8c0,_PooPositionPc,24,NUVEC[2]
@@ -40137,7 +40137,7 @@ address,symbol,size,ctype
 0x87b9bc,_minikittime,4,f32
 0x87b9c0,_goldbricktime,4,f32
 0x87b9c4,_HudPausePromptBluePc,1,u8
-0x87b9c8,_AutoSaveIconPendingPc,4,i32
+0x87b9c8,_drawautosaveicon,4,i32
 0x87b9cc,_cointotal_x,8,f32[2]
 0x87b9d4,_DrawBossHitPointsTwoRowsPc,4,i32
 0x0087b9dc,_DrawBossHitPointsActorPc,,
@@ -41215,12 +41215,12 @@ address,symbol,size,ctype
 0x008cab70,_NuFParBuffers,16384,char[4][0x1000]
 0x008ceb70,_file_info,2112,FILEINFO[33]
 0x008cf3b0,_decode_buffer_pos,4,i32
-0x8cf3b4,_ImplodeSubBitsPc,4,u32
+0x8cf3b4,_subbitbuf,4,u32
 0x8cf3b8,_ImplodeOffsetTablePc,512,u16[256]
 0x8cf5b8,_decode_buffer,262144,u8[262144]
 0x90f5b8,_ImplodeLiteralLengthsPc,510,u8[510]
 0x0090f7b8,_implode_heapsize,4,i32
-0x90f7bc,_ImplodeAvailableBitsPc,4,u32
+0x90f7bc,_bitcount,4,u32
 0x0090f7c0,_implode_heap,1024,i16[0x200]
 0x0090fbc0,_implode_sortptr,4,u16 *
 0x0090fbc4,_decode_buffer_left,4,i32
@@ -41228,7 +41228,7 @@ address,symbol,size,ctype
 0x0090ffc8,_nufile_blkinfo,16384,PC_NUFILE_READBLOCK[1024]
 0x913fc8,_ImplodeLiteralTablePc,8192,u16[4096]
 0x00915fc8,_implode_n,4,i32
-0x915fcc,_ImplodeBlockRemainingPc,4,u32
+0x915fcc,_blocksize,4,u32
 0x00915fd0,_file_buff,4128,FILEBUFF[4]
 0x00916ff4,_implode_len,4,u8 *
 0x00916ff8,_implode_freq,4,u16 *
@@ -41264,7 +41264,7 @@ address,symbol,size,ctype
 0x0091eee8,_freep,4,NUMEMHIGHBLOCK_PC *
 0x0091eef0,_StringBank,36,NUSTRINGBANK[3]
 0x0091ef14,_CurrentStringBank,2,i16
-0x91ef16,_FramePadCorrectDeadZoningPc,1,u8
+0x91ef16,_UseCorrectDeadZoning,1,u8
 0x0091ef18,_BadWords,4,u16 **
 0x0091ef1c,_NumBadWords,4,i32
 0x91ef24,_NuApiEndFrameCallbackPc,4,void (__cdecl *)(void)
@@ -41326,7 +41326,7 @@ address,symbol,size,ctype
 0x921360,_DefragCutSceneList,4,CUT_MEMORY_ENTRY_PC *
 0x921364,_DefragInstDestroyedFn,4,void (__cdecl *)(void *)
 0x92136c,_CutSceneLookupAllDebrisPagesPc,4,i32
-0x921370,_CutSceneSynchroCounterPc,4,i32
+0x921370,_cutscene_synchro_counter,4,i32
 0x921378,_CutSceneCameraMatrixSetPc,1,u8
 0x921379,_CutSceneCameraCTRL,1,u8
 0x92137a,_CutSceneUseFocusLocationPc,1,u8
@@ -41351,11 +41351,11 @@ address,symbol,size,ctype
 0x9213c0,_NuCutSceneResetCharacters,4,void (__cdecl *)(INSTNUGCUTSCENE *)
 0x9213c4,_NuCutSceneCharacterCreateData,4,"void (__cdecl *)(CUT_LOAD_CHARACTER *,CUT_LOAD_CHARACTER_INSTANCE *,VARIPTR *)"
 0x9213c8,_NuCutSceneCharacterDestroyData,4,"void (__cdecl *)(void *, void *)"
-0x9213cc,_CutSceneRigidRenderCallbackPc,4,"void (__cdecl *)(struct cut_load_rigid_s *, NUMTX *)"
+0x9213cc,_NuCutSceneRigidCollisionCheck,4,"void (__cdecl *)(struct cut_load_rigid_s *, NUMTX *)"
 0x9213d0,_NuCutSceneRigidPostRender,4,"void (__cdecl *)(void *,NUSPECIALHANDLE *,NUMTX *)"
 0x9213d4,_NuCutSceneRequestSFX,4,i32 (__cdecl *)(char *)
 0x9213d8,_NuCutSceneSFXUpdate,4,"void (__cdecl *)(CUT_LOAD_LOCATOR_SYSTEM *,CUT_LOAD_LOCATOR_INSTANCE *,CUT_LOAD_LOCATOR *,f32,NUMTX *,i32)"
-0x9213dc,_CutSceneInstanceSfxRequestPc,4,void (__cdecl *)(INSTNUGCUTSCENE *)
+0x9213dc,_NuCutSceneSFXFixUp,4,void (__cdecl *)(INSTNUGCUTSCENE *)
 0x9213e0,_CutSceneLocatorFunctionsPc,4,CUT_LOCATOR_FUNCTION_ENTRY_PC *
 0x9213e8,_CutSceneStreamLoadGuardPc,4,i32
 0x9213ec,_CutSceneDebrisAxisSizePc,4,f32
@@ -41387,8 +41387,8 @@ address,symbol,size,ctype
 0x921d5c,_MenuCardWarningState,4,i32
 0x921d60,_MenuASCancelFinished,4,i32
 0x921d64,_MenuValidated,4,i32
-0x921d68,_MenuKeyboardAlwaysPc,4,i32
-0x921d6c,_MenuKeyboardSecondaryPc,4,i32
+0x921d68,_Menu_InSaveFlow,4,i32
+0x921d6c,_Menu_InLoadFlow,4,i32
 0x921d70,_Menu_InWarningFlow,4,i32
 0x921d74,_Menu_InHeaderSave,4,i32
 0x921d78,_Menu_LastFlow,4,i32
@@ -41401,9 +41401,9 @@ address,symbol,size,ctype
 0x921d94,_predrawfn,4,void (__cdecl *)(MENU*)
 0x00921d98,_MenuDrawDropShadows,4,i32
 0x921d9c,_Menu_DisableCancel,4,i32
-0x921da0,_SaveMenuLastSlotPc,4,i32
-0x921da4,_SaveMenuSlideLeftPc,4,i32
-0x921da8,_SaveMenuSlideRightPc,4,i32
+0x921da0,_lastslot,4,i32
+0x921da4,_slideleft,4,i32
+0x921da8,_slideright,4,i32
 0x00921dac,_MenuFadeMtl,4,NUMTL *
 0x921db0,_CurrentMenuId,4,i32
 0x921db4,_MenuSuppressUpHeldPc,4,i32
@@ -41499,8 +41499,8 @@ address,symbol,size,ctype
 0x00922250,_aiscript_load_conditions,4,NULISTHDR *
 0x00922254,_aiscript_load_actions,4,NULISTHDR *
 0x00922258,_condition_has_no_goto,4,i32
-0x92225c,_AIScriptLoadPathPc,4,char *
-0x922260,_AIScriptLoadPakPc,4,void *
+0x92225c,_load_path,4,char *
+0x922260,_load_pakfile,4,void *
 0x922264,_AIScriptConstCursorPc,4,i32
 0x00922268,_AIActionDiagnosticMode,4,i32
 0x0092226c,_ExpressionRequiredNameLookup,4,
@@ -41564,14 +41564,14 @@ address,symbol,size,ctype
 0x009242dc,_geom,4,i32
 0x9242e0,?sm_instance@AINet@@2PAV1@A,4,AINet *
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
-0x9242e8,_SocksOnPreviousStatusPc,8,u32[2]
+0x9242e8,_SocksOnPreviousStatus,8,u32[2]
 0x9242f0,_temp_sockmidpos,12,NUVEC
 0x009242fc,_sockpar_buffer_end,4,VARIPTR *
 0x924300,_temp_sockcampos,12,NUVEC
 0x924410,_SaveFolderPathPc,256,char[256]
 0x924510,_SaveCreateFolderPathPc,256,char[256]
 0x924610,_SaveFullSlotPathPc,256,char[256]
-0x924710,_SaveloadStartedTickPc,4,u32
+0x924710,_savetimer,4,u32
 0x924718,_SaveSlotNamePc,256,char[256]
 0x00924820,_saveload_status,4,i32
 0x924824,_saveload_error,4,i32
@@ -41641,7 +41641,7 @@ address,symbol,size,ctype
 0x924dfc,_TerrainChatterWaitPc,4,f32
 0x924e00,_ExtraHurtSfxFn,4,void (__cdecl *)(GAMEOBJECT *)
 0x924e04,_ExtraDieSfxFn,4,void (__cdecl *)(GAMEOBJECT *)
-0x924e08,_TickTockStatePc,4,i32
+0x924e08,_ticktock,4,i32
 0x00924e0c,_BeenAttacked,4,i32
 0x924e10,_MusicInside,4,i32
 0x924e14,_CheckMusicOtherFn,4,i32 (__cdecl *)(void)
@@ -41688,7 +41688,7 @@ address,symbol,size,ctype
 0x00926bd8,_PlayerPadPreviousSpeed,8,f32[]
 0x00926be0,_PlayerPadPreviousAngle,4,u16[]
 0x00926be4,_PlayerPadCurrentSpeed,8,f32[]
-0x926bec,_GamePadsActivePadPc,4,FRAME_PAD_PC *
+0x926bec,_pActivePad,4,FRAME_PAD_PC *
 0x00926bf0,_readpads_always,4,i32
 0x926bf4,_GamePads_IgnoreInputFn,4,i32 (__cdecl *)(void)
 0x926bf8,_TextCrawlMatrixPc,64,NUMTX
@@ -41712,7 +41712,7 @@ address,symbol,size,ctype
 0x927060,_GizmoRegistryGrapplesAddTypePc,120,ADDGIZMOTYPE_PC
 0x9270d8,_MiniBuffer,16384,char[16384]
 0x0092b0d8,_TexAnimScriptTablePc,4,char **
-0x92b0dc,_FindAnglesXFullTempPc,4,i32
+0x92b0dc,_i_temp_xrot,4,i32
 0x0092b0e0,_temp_xrot,2,u16
 0x0092b0e4,_temp_zrot,2,u16
 0x92b0e8,_ConfigBuffer,65536,CONFIG_BUFFER_PC
@@ -41735,7 +41735,7 @@ address,symbol,size,ctype
 0x93b138,_thingsSceneBase,12,nuhspecial_s
 0x93b148,_GizmoRegistrySpinnerAddTypePc,120,ADDGIZMOTYPE_PC
 0x93b1c0,_GizObstacleTriggersPc,64,NUVEC *[16]
-0x93b200,_GizObstacleTriggerCountPc,4,i32
+0x93b200,_ngizobstacletriggers,4,i32
 0x93b204,_GizObstacleExcludeFnPc,4,"i32 (__cdecl *)(GIZOBSTACLE *, GAMEOBJECT *)"
 0x0093b208,_GizObstacle_SetDefaultSFXFn,4,"void (__cdecl *)(void *, GIZOBSTACLE *)"
 0x93b210,?GizObstaclesAddTypePc@?1??GizObstacles_RegisterGizmo@@9@9,120,ADD_GIZMO_CONFIG_TYPE_PC
@@ -41748,9 +41748,9 @@ address,symbol,size,ctype
 0x93b2a0,_CharCategory,4,CHAR_CATEGORY_RECORD_PC *
 0x0093b2a4,_GCDataList,4,PLAYERCHARACTERCONFIG_PC *
 0x93b2a8,_Game_CharacterSave,4,u8 *
-0x93b2ac,_DrawCharIconFindPc,4,i32
-0x93b2b0,_CustomiserVariantNamesPc,4,char **
-0x93b2b4,_CustomiserVariantCountPc,4,i32
+0x93b2ac,_drawcharicon_find,4,i32
+0x93b2b0,_CharVariant,4,char **
+0x93b2b4,_CHARVARIANTCOUNT,4,i32
 0x93b2b8,_SuperStoryScore,4,u32
 0x0093b2bc,_NextArea_FreePlay,4,i32
 0x0093b2c0,_save_paused,4,i32
@@ -41795,7 +41795,7 @@ address,symbol,size,ctype
 0x0093d52c,_LastSafePosExtraFn,4,LAST_SAFE_POS_EXTRA_PC
 0x0093d530,_PlayerProgress,128,PLAYERPROGRESS[8]
 0x0093d5b0,_PlayerList,16,i16[8]
-0x93d5c0,_PlayerStartRecordInitPc,128,PLAYER_START_INITIALIZER_RECORD_PC[8]
+0x93d5c0,_PlayerStart,128,PLAYER_START_INITIALIZER_RECORD_PC[8]
 0x93d640,_plr_lastpos,12,NUVEC
 0x93d650,_OldPlrSPos,448,SOCKPOSITION_PC[8]
 0x0093d810,_Player,32,void *[8]
@@ -41850,7 +41850,7 @@ address,symbol,size,ctype
 0x950720,_FadeMtl2,4,NUMTL *
 0x950724,_ScreenFadeMtl,4,NUMTL *
 0x950728,_FadeLoop_ObjScene,4,struct NUGSCN_s *
-0x95072c,_RenderBackdropScenePc,4,NUGSCN *
+0x95072c,_backdrop_scene,4,NUGSCN *
 0x950730,_RenderBackdropTargetTopRPc,4,f32
 0x950734,_RenderBackdropTargetTopGPc,4,f32
 0x950738,_RenderBackdropTargetTopBPc,4,f32
@@ -41863,7 +41863,7 @@ address,symbol,size,ctype
 0x950754,_RenderBackdropBottomGPc,4,f32
 0x950758,_RenderBackdropWaitPc,4,f32
 0x95075c,_RenderBackdropBlackPc,4,i32
-0x950760,_ScreenGrabNeededPc,1,u8
+0x950760,_ScreenGrabNeeded,1,u8
 0x00950764,_screendump,4,i32
 0x00950768,_pause_rndr_on,4,i32
 0x95076c,_GrabScreenWhenFadingPc,4,i32
@@ -41873,7 +41873,7 @@ address,symbol,size,ctype
 0x950788,_old_pause_state,4,i32
 0x95078c,_pause_rt,4,i32
 0x950790,_LevelCompletionFallbackFlagPC,4,u32
-0x950794,_ScreenPauseFadePc,4,f32
+0x950794,_pause_fade,4,f32
 0x950798,_PauseRenderOffFn,4,i32 (__cdecl *)(void)
 0x0095079c,_FadeSys,44,FADEINFO_PC
 0x9507c8,_GizmoBlowupNameCountPc,4,i32
@@ -41921,8 +41921,8 @@ address,symbol,size,ctype
 0x950f98,_GizmoPickups_Collide2DFn,4,f32 (__cdecl *)(GAMEOBJECT *)
 0x950fa0,_GizmoRegistryGizmoPickupsAddTypePc,120,ADDGIZMOTYPE_PC
 0x00951018,_part_debris_count,4,i32
-0x95101c,_PartDebrisNameListPc,4,char **
-0x951020,_KillPartsBrickImpactWaitPc,4,f32
+0x95101c,_PDebNameList,4,char **
+0x951020,_brickimpactwait,4,f32
 0x00951024,_SURFACEBITS_DUST,2,u16
 0x00951028,_SURFACEBITS_NODUST,2,u16
 0x0095102c,_GetSurfaceInfoRuntimeMaskPc,4,PC_SURFACE_MASK_PC
@@ -41930,13 +41930,13 @@ address,symbol,size,ctype
 0x951038,_LevelLoad,96,AREA_LEVEL_LOAD_PC[12]
 0x951098,_Area_PlayerModelCount,4,i32
 0x95109c,_Area_PlayerIDList,18,i16[9]
-0x9510b0,_Area_StoryModelListPc,196,APICHARACTERMODELLIST[49]
+0x9510b0,_Area_StoryModelList,196,APICHARACTERMODELLIST[49]
 0x00951174,_BonusArea,4,i32
 0x951178,_Area_FreePlayModelList,196,APICHARACTERMODELLIST[49]
 0x0095123c,_last_area,4,i32
 0x951240,_Area_FreePlayModelCount,4,i32
 0x951244,_AreaGlobals_PC,52,AREA_GLOBALS_PC
-0x951278,_AreaPlayerModelsPc,36,APICHARACTERMODELLIST[9]
+0x951278,_Area_PlayerModelList,36,APICHARACTERMODELLIST[9]
 0x95129c,_LevelLoadCount,4,i32
 0x9512a0,_Area_MissionModelCount,4,i32
 0x9512a4,_Area_StoryModelCount,4,i32
@@ -42070,7 +42070,7 @@ address,symbol,size,ctype
 0x951cc4,_CutList,4,CUT_LOAD_LIST_ENTRY_PC *
 0x951cc8,_CUTCOUNT,4,i32
 0x951ccc,_stream_cut_issued,4,i32
-0x951cd0,_CutScenePlayerPc,4,CUT_PLAYER_ACTIVE_PC *
+0x951cd0,_CutScenePlayer,4,CUT_PLAYER_ACTIVE_PC *
 0x951cd4,_CutScenePlayer_AcceptFn,4,i32 (__cdecl *)(struct cut_player_clip_config_pc_s *)
 0x951cd8,_BT_scene,4,NUGSCN *
 0x00951cdc,_BoltShootIdScratch,4,i32
@@ -42094,8 +42094,8 @@ address,symbol,size,ctype
 0x9553f0,_SecondCharConfigure,4,i32
 0x009553f4,_MissionSys,4,MISSIONSYS_PC *
 0x9553f8,_Game_MissionSave,4,MISSION_SAVE_READER_PC *
-0x9553fc,_PlayerSpecialMoveDataPc,4,void *
-0x955400,_PlayerSpecialMoveCountPc,4,i32
+0x9553fc,_SpecialMove,4,void *
+0x955400,_SpecialMoveCount,4,i32
 0x955408,_ShoveSystemPc,388,SHOVE_SYSTEM_PC
 0x95558c,_objhitobj_bolt,4,BOLT*
 0x955590,_objhitobj_nohurtsfx,4,i32
@@ -42169,9 +42169,9 @@ address,symbol,size,ctype
 0x9562b8,_EpisodeSavePc,4,EPISODESAVE_s *
 0x9562bc,_CanPushObstaclesFn,4,u32 (__cdecl *)(GAMEOBJECT *)
 0x9562c0,_CreditList,4,CREDIT_RECORD_PC *
-0x9562c4,_CreditCountPc,4,i32
+0x9562c4,_CreditCount,4,i32
 0x9562c8,_CreditsTime,4,f32
-0x9562cc,_CreditsSizePc,4,f32
+0x9562cc,_CreditsSize,4,f32
 0x9562d0,_CreditsFinishedTime,4,f32
 0x9562d4,_CreditsFlag,4,i32
 0x9562d8,_CreditsAlpha,4,f32
@@ -42208,20 +42208,20 @@ address,symbol,size,ctype
 0x00956634,_gameanimsysprogress,12,GAMEANIMPROGRESS
 0x00956640,_RippleEffectsWorldInfoPc,4,
 0x956644,_RippleEffectsCurrentPc,4,
-0x956648,_RippleEraseListPc,4,RIPPLE_NODE_PC **
+0x956648,_eraselist,4,RIPPLE_NODE_PC **
 0x95664c,_RippleEraseCountPc,4,i32
 0x956650,_StreakNodesPc,29696,STREAK_NODE_PC[128]
-0x95da50,_StreakReflectionMaterialPc,4,NUMTL *
+0x95da50,_streakmtl_ref,4,NUMTL *
 0x95da54,_StreakNodesUsedPc,4,STREAK_NODE_PC *
-0x95da58,_StreakNodesFreePc,4,STREAK_NODE_PC *
-0x95da5c,_StreakHeadersFreePc,4,STREAK_HEADER_PC *
-0x95da60,_StreakHeadersUsedPc,4,STREAK_HEADER_PC *
-0x95da64,_StreakMaterialPc,4,NUMTL *
+0x95da58,_streaks_free,4,STREAK_NODE_PC *
+0x95da5c,_streakhdrs_free,4,STREAK_HEADER_PC *
+0x95da60,_streakhdrs_used,4,STREAK_HEADER_PC *
+0x95da64,_streakmtl,4,NUMTL *
 0x95da68,_StreakHeadersPc,1024,STREAK_HEADER_PC[32]
 0x95de68,_RenderHubFromCutscenePlayerPc,4,i32
 0x95de6c,_Hub_PanelBusyFn,4,i32 (__cdecl *)(void)
 0x95de8c,?pushblock_gizmotype_id@@3HA,4,
-0x95dea8,_PushBlockMissingSpecialPositionPc,12,NUVEC
+0x95dea8,_p000,12,NUVEC
 0x95deb4,_RunOutOfPosTabSpacePc,4,i32
 0x95deb8,_pushposincrease,4,i32
 0x95dec0,_CanPushBlocksFn,4,u32 (__cdecl *)(GAMEOBJECT *)
@@ -42255,7 +42255,7 @@ address,symbol,size,ctype
 0x95e3b8,?MiniCutAddTypePc@?1??MiniCut_RegisterGizmo@@9@9,120,
 0x95e430,_wait_till_next_frame,4,i32
 0x0095e434,?fade_draw_suppressed@@3HA,4,i32
-0x95e438,_GameThingManagerPc,4,GameThingManager *
+0x95e438,_theGameThings,4,GameThingManager *
 0x95e43c,_splineStore,4,NUGSPLINE *
 0x95e440,_numSplinesLoaded,4,i32
 0x95e444,_MoviePlayTime,4,f32
@@ -42278,19 +42278,19 @@ address,symbol,size,ctype
 0x95e660,_control,4,NUVEC *
 0x95e664,_NuPowCacheIndexPc,4,i32
 0x0095e690,_numtl_defaultmtl3d,4,NUMTL *
-0x95e694,_NuVpDirtyPc,4,
+0x95e694,_vport_inval,4,
 0x95e698,_TextureAnimationExternalLabelsPrivatePc,5376,char[256][21]
 0x95fb98,_NuPortalLocalViewPc,64,NUMTX
 0x0095fbd8,_sceneParametersCount,4,i32
-0x95fbdc,_TextureAnimationPreviousSignalsPc,4,u32
+0x95fbdc,_nta_sig_old,4,u32
 0x95fbe0,_CameraSavedStatesPc,16896,CAMERA_SAVED_STATE_PC[16]
 0x00963de0,_NuQFntCSModeStack,64,i32[16]
 0x963e20,_NuPortalFrustaPc,4,NUPORTAL_FRUSTUM_PC **
-0x963e24,_TextureAnimationExternalLabelCountPrivatePc,4,i32
+0x963e24,_xdeflabtabcnt,4,i32
 0x963e28,_NuPostEffectBackBufferTexturePc,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x963e30,_vpCurrent,64,NUVPCURRENT
 0x963e70,_TextureAnimationLabelOffsetsPrivatePc,256,i32[64]
-0x963f70,_TextureAnimationFrameTimePc,4,i32
+0x963f70,_nta_iframetime,4,i32
 0x963f74,_NuPortalRoomsVisitedPc,32,i16[16]
 0x963f98,_NuPortalCameraPlane,16,NUPLANE
 0x963fa8,_RendererArenaOffsetsPc,4,u32 *
@@ -42299,7 +42299,7 @@ address,symbol,size,ctype
 0x963fb8,_NuPortalFrustumCountPc,4,i32 *
 0x963fc0,_CameraClipPlanesPc,336,CAMERA_CLIP_PLANES_PC
 0x00964110,_sceneParameters,8576,NURNDRLIBSCENE[16]
-0x966290,_VisibilityAlternateWidthPc,4,f32
+0x966290,_zxs,4,f32
 0x966298,_cacheValues,256,u8[256]
 0x00966398,_zx,4,f32
 0x96639c,_dx,4,f32
@@ -42311,7 +42311,7 @@ address,symbol,size,ctype
 0x0096d890,_NuQFntModeStack,64,u32[16]
 0x96d8d0,_VisibilityPrimaryPlaneMatrixPc,64,NUMTX
 0x0096d910,_numtl_defaultmtl2d,4,NUMTL *
-0x96d914,_TextureAnimationSignalsOnPc,4,u32
+0x96d914,_nta_sig_on,4,u32
 0x96d918,_vpDevice,64,NUVPCURRENT
 0x0096d958,_nudlist_field_958,4,NUFILE
 0x96d95c,_TextureAnimationLabelCountPrivatePc,4,i32
@@ -42321,12 +42321,12 @@ address,symbol,size,ctype
 0x96d9e4,_NuRndrDebBase,12,NUVEC
 0x96d9f0,_PCSpecialShadowLights,16,struct PC_SPECIAL_SHADOW_LIGHT *[4]
 0x0096da00,_TextureAnimationListBufferPc,768,PC_TEXTURE_ANIM_LIST[64]
-0x96dd04,_VisibilityAlternateHeightPc,4,f32
+0x96dd04,_zys,4,f32
 0x96dd08,_NuPostFilterMemoryPc,2048,native BSS
 0x0096e508,_AnimQuatSavedPc,4,
 0x96e50c,_size,4,i32
 0x96e510,_VisibilityPrimaryWorldMatrixPc,64,NUMTX
-0x96e554,_TextureAnimationSignalsOffPc,4,u32
+0x96e554,_nta_sig_off,4,u32
 0x96e558,_curx,4,f32
 0x96e55c,_NuRndrStopUpdate,4,i32
 0x96e560,_VisibilityAbsoluteDepthPlanePc,16,NUPLANE
@@ -42334,7 +42334,7 @@ address,symbol,size,ctype
 0x96e580,_PCMaterialPoolPc,4,NUMTL*
 0x96e584,_NuPortalCameraPc,4,NUCAMERA *
 0x96e588,_RendererArenaTypesPc,4,i32 *
-0x96e58c,_TextureAnimationRandomPc,4,NURAND
+0x96e58c,_texanim_rand,4,NURAND
 0x0096e590,_NuTextureCapacityPC,4,i32
 0x0096e594,_PCDisplayCaptureCursorPc,4,char *
 0x0096e598,_fstackmem,12288,u8[0x3000]
@@ -42371,18 +42371,18 @@ address,symbol,size,ctype
 0x9730d8,_global_reflect,132,NUCAMERAREFLECT
 0x0097315c,_zy,4,f32
 0x00973700,_NuDisplayListStreamCursor,4,VARIPTR *
-0x973704,_TextureAnimationActiveMaskPc,2,u16
+0x973704,_nta_script_mask,2,u16
 0x00973708,_global_camera,120,NUCAMERA
 0x973780,_NuPortalDebugCameraPc,120,NUCAMERA
 0x9737f8,_NuPostEffectsRanPc,4,i32
 0x9737fc,_NuPostLastFrameEffectPc,1,u8
 0x009737fd,_ForcePlayEndFrame,1,u8
 0x009737fe,_ForceEulerToQuat,1,u8
-0x973800,_NuPostMainFilterPc,4,NU_POST_MAIN_VIEW_PC*
-0x973804,_NuPostDeferredFilterPc,4,NU_POST_DEFERRED_VIEW_PC*
-0x973808,_NuPostMotionFilterPc,4,NU_POST_MOTION_VIEW_PC*
-0x97380c,_NuPostAccumFilterPc,4,NU_POST_ACCUM_VIEW_PC*
-0x973810,_NuPostSpeedFilterPc,4,NU_POST_SPEED_VIEW_PC*
+0x973800,_mainFilter,4,NU_POST_MAIN_VIEW_PC*
+0x973804,_deferredFilter,4,NU_POST_DEFERRED_VIEW_PC*
+0x973808,_motionFilter,4,NU_POST_MOTION_VIEW_PC*
+0x97380c,_motionAccumFilter,4,NU_POST_ACCUM_VIEW_PC*
+0x973810,_speedBlurFilter,4,NU_POST_SPEED_VIEW_PC*
 0x973814,_NuPostCopyFilterPc,4,native BSS
 0x973818,_NuPostShaderEngineFlagsPc,4,native BSS
 0x97381c,_PostCopyTexProgramPc,4,POST_SHADER_PROGRAM_PC*
@@ -42394,7 +42394,7 @@ address,symbol,size,ctype
 0x97384c,_PCGraphicsPostEffectWorkTexturePc,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x973850,_PostBlurFramebufferPc,4,PC_FRAMEBUFFER_PC*
 0x973854,_PostCopyFramebufferPc,4,PC_FRAMEBUFFER_PC*
-0x973858,?OcclusionRenderOccludersPc@@3HA,4,i32
+0x973858,?gRenderOccluders@@3HA,4,i32
 0x0097385c,?ms_pZOnlyMtl3D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
 0x00973860,?ms_pZOnlyMtl2D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
 0x00973864,?ms_pAlphaMtl2D@OccluderSet@@2PAUnumtl_s@@A,4,NUMTL*; working scalar view; original owning extent unknown
@@ -42412,13 +42412,13 @@ address,symbol,size,ctype
 0x0097389c,_AnimBuffEvalJoint,4,i32 *
 0x009738a0,_globalbuffer,4,ANI3_GLOBALBUFFER_PC *
 0x009738a4,_JointProcAnimFn,4,NUJOINTPROCANIMFN_PC
-0x009738a8,_AnimQuatDepthPc,4,
+0x009738a8,_NumQuatPushes,4,
 0x009738ac,_special_debug,4,i32
 0x009738b0,_nuspecial_const_alpha_enabled,4,i32
 0x009738b4,_nuspecial_const_tint_enabled,4,i32
 0x009738b8,_nuspecial_draw_state,4,i32
-0x9738bc,_RenderFrameShaderArrayCountPc,4,i32
-0x9738c0,_RenderFrameShaderArrayPc,4,f32 (*)[4]
+0x9738bc,_nuspecial_vertex_noffsets,4,i32
+0x9738c0,_nuspecial_vertex_offsets,4,f32 (*)[4]
 0x009738c4,_NuPrimVertexGroupSource,4,NUPRIM_VERTEX_GROUP_SOURCE_PC *
 0x9738c8,_PCSpecialReflectionPass,4,i32
 0x009738cc,_qfnt_offscale_x,4,f32
@@ -42434,7 +42434,7 @@ address,symbol,size,ctype
 0x9738f8,_ntal_first,4,PC_TEXTURE_ANIM_LIST *
 0x9738fc,_ntal_free,4,PC_TEXTURE_ANIM_LIST *
 0x973900,_NuTexAnimMissingPakDiagnosticPc,4,i32
-0x00973904,_DdMaxJointsPc,4,
+0x00973904,_ddmaxjoints,4,
 0x97390c,_PCSpecialForcedLOD,4,i32
 0x973910,_PCSpecialForcedMaterial,4,NUMTL *
 0x973914,_PCSpecialForcedMaterialTable,4,NUMTL **
@@ -42443,7 +42443,7 @@ address,symbol,size,ctype
 0x973924,_PS2_REZ_H,4,i32
 0x973928,_PCShaderMaterialSamplerBiasOffsetPc,4,f32
 0x97392c,_PCWindFrameCount,4,u32
-0x973930,_RenderFramePausedPc,4,i32
+0x973930,_global_frame_count_paused,4,i32
 0x973944,_RendererZClearMaterialPc,4,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,4,NUMTL *
 0x97394c,_NuRndrDoingScreenGrab,4,i32
@@ -42451,7 +42451,7 @@ address,symbol,size,ctype
 0x97395c,_VisibilityLoadedOcclusionPc,4,i32
 0x973960,_VisibilityCameraLockPc,4,i32
 0x973964,_NuCameraMode,4,
-0x973968,_CameraSavedStateCountPc,4,i32
+0x973968,_cam_state_count,4,i32
 0x97396c,_NuPortalCameraSelectPc,4,i32
 0x973970,_NuCameraClipScissorToViewport,4,
 0x973974,_NuCameraPreviousClipScissorToViewport,4,
@@ -42464,8 +42464,8 @@ address,symbol,size,ctype
 0x00973994,_NuTimeBar_GpuFrameOutEnabled,4,i32
 0x00973998,_NuTimeBar_PeakReset,4,i32
 0x0097399c,_NuTimeBar_FrameOutMtl,4,NUMTL *
-0x9739a4,_VisibilityTreeInitialisedPc,4,i32
-0x9739a8,_VisibilityCurrentResultPc,4,VISIBILITY_RESULT_READER_PC*
+0x9739a4,_TreeInitialised,4,i32
+0x9739a8,_myvisi,4,VISIBILITY_RESULT_READER_PC*
 0x9739ac,_NuPortalDebugEnabledPc,4,i32
 0x9739b0,_NuPortalOverrideCameraPc,4,NUVEC *
 0x9739c8,_CutSceneBoundingBoxTrackRoot,1,u8
@@ -42497,7 +42497,7 @@ address,symbol,size,ctype
 0x00973fc8,_nudlist_field_fc8,4,u32
 0x00973fe4,_nudlist_field_fe4,4,u32
 0x973fec,_DisplaySceneRenderDisabledPc,4,i32
-0x973ff0,_DisplaySceneSpecialsDisabledPc,4,i32
+0x973ff0,_noscenespecials,4,i32
 0x973ffc,_PCShadowPacketSequence,4,i32
 0x974000,_PCShadowNearValue,4,f32
 0x974004,_PCShadowFarValue,4,f32
@@ -42572,12 +42572,12 @@ address,symbol,size,ctype
 0x991dc0,_NuQFntScanYPc,4,i32
 0x991dc4,_NuDisplayMaterialLastPc,4,void *
 0x991dd0,_NuLgtStateSlotsPc,1248,PC_LIGHT_STATE_SLOT_PC[8]
-0x9922b0,_RndrStreamFirstPc,4,VARIPTR
+0x9922b0,_rndrstream_b,4,VARIPTR
 0x9922b4,_NuCameraProjectionGlobalOffsetX,4,
 0x009922b8,_DwaWeightPoolPc,31547880,
 0x027e9ab8,_DwaBlockTablePc,1024,u8[0x400]
 0x280a2b8,_NuLgtArcMtl,80,NULGTARCMATERIAL_PC[4]
-0x280a30c,_RndrStreamUsedPc,4,u32
+0x280a30c,_rndrstream_used,4,u32
 0x280a310,_NuPortalVisibilityBitsPc,625,u8[625]
 0x0280c4a0,_clip_test_mtx,64,NUMTX
 0x280c760,_NuRndrShadPolDat,3072,PC_SHADOW_QUEUE_RECORD[128]
@@ -42595,9 +42595,9 @@ address,symbol,size,ctype
 0x2835ad0,_NuLgtLaserData,3584,NULGTLASER_PC[64]
 0x28490d0,_PcFramebufferActive,32,u8[32]
 0x28490f8,_PCStartupMaterial2Pc,4,NUMTL *
-0x28490fc,_RndrStreamMaxUsedPc,4,u32
+0x28490fc,_rndrstream_max_used,4,u32
 0x2849108,_NuQFntScanXPc,4,i32
-0x284910c,_RndrStreamSecondPc,4,VARIPTR
+0x284910c,_rndrstream_a,4,VARIPTR
 0x2849310,_PcBootFramebuffersPc,8,PC_BOOT_FRAMEBUFFER_VIEW_PC
 0x2849318,_NuCameraProjectionGlobalScaleX,4,
 0x2854b64,_NuLgtArcLaserFrame,4,i32
@@ -42629,8 +42629,8 @@ address,symbol,size,ctype
 0x2854c4c,_PCGraphicsPostEffectBackBufferTexturePc,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x2854c50,_PcSurfaceRegistryInitialized,1,u8
 0x02854c51,_NuPrimNeedsOverbrightening,1,u8
-0x2854c54,_RndrStreamSizePc,4,i32
-0x2854c58,_RndrStreamIndexPc,4,i32
+0x2854c54,_nurndr_maxstreamsize,4,i32
+0x2854c58,_rndrstream_buffid,4,i32
 0x02854c5c,_DwaBlockCountPc,4,i32
 0x2854c64,_RendererConfigEnabledPc,4,i32
 0x2854c68,_RendererConfigSecondEnabledPc,4,i32
@@ -42761,7 +42761,7 @@ address,symbol,size,ctype
 0x2912e90,_ed_cfg_menu,4,struct eduimenu_s *
 0x2912e94,_edinternalcam,4,NUCAMERA *
 0x2912e98,_EdMainCurrentCameraPc,4,genuine native data owner
-0x2912e9c,_EdMainLocationVectorPc,4,NUVEC *
+0x2912e9c,_ed_loc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
 0x2912ea8,_edmain_cursor_enabled,4,i32
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
@@ -43133,7 +43133,7 @@ address,symbol,size,ctype
 0x02921280,_NuSound3GroupSampleIds,1024,i16[512]
 0x2921680,_SphereData,256,TERRAIN_SPHERE_PC[16]
 0x02921780,_SfxBits,200,u16[100]
-0x0292184c,_ShadowRoofPolygonPc,4,
+0x0292184c,_ShadRoofPoly,4,
 0x2921850,_ptldatamenu,4,struct eduimenu_s *
 0x2921854,_PlatCrush,4,i32
 0x2921858,_TerrShape,4,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
@@ -43161,23 +43161,23 @@ address,symbol,size,ctype
 0x2924ae8,_edanim_particle_type,4,i32
 0x2924aec,_edpp_copy_source,32,i32[8]
 0x2924b10,_effectlistmenu,4,struct eduimenu_s *
-0x2924b14,_PickupTerrainPc,4,TERRAIN_PICKUP_SET_PC *
+0x2924b14,_PickupTerr,4,TERRAIN_PICKUP_SET_PC *
 0x2924b18,_edanim_sound_mode,4,i32
 0x2924b1c,_edanim_sound_type,4,i32
 0x02924b28,_TerrainShadowHeightPc,4,
 0x02924b2c,_TerrainRoofValidPc,2,
 0x02924b30,_edpp_page_used,32,i32[8]
 0x2924b50,_namemenu,4,struct eduimenu_s *
-0x02924b54,_TerrainScaledShapeCursorPc,4,
+0x02924b54,_ScaleTerrain,4,
 0x2924b58,_ptlcutoffmenu,4,struct eduimenu_s *
 0x2924b5c,_ptlvaremitmenu,4,struct eduimenu_s *
 0x2924b60,_TerrWallTab,4,u8[4]
 0x2924b64,_freeDmaDebType,4,i32
-0x02924b68,_TerrainSkinPoolSlotCountPc,4,
-0x02924b6c,_TerrainSkinPoolBasePc,4,
+0x02924b68,_PlatSkinMaxStore,4,
+0x02924b6c,_PlatSkinMem,4,
 0x2924b70,_edpp_ptls,45056,EDPP_PARTICLE_PC[512]
 0x292fb70,_WallSplList,4,void *
-0x0292fb74,_TerrainPlatformsOffPc,2,
+0x0292fb74,_NuTerrPlatsOff,2,
 0x292fb78,_edptl_damage_menu,4,struct eduimenu_s *
 0x292fb80,_edbri_cam_ay,4,i32
 0x292fb88,_plathitid,4,i32
@@ -43187,8 +43187,8 @@ address,symbol,size,ctype
 0x0292fc14,_TerrainShadowFloorIndexPc,2,
 0x292fc18,_edgra_cam_ax,4,i32
 0x292fc1c,_debris_chunk_control_stack,8,DEBRIS_CHUNK_CONTROL_PC *[2]
-0x0292fc24,_TerrainSkinUseEpochPc,4,
-0x0292fc28,_TerrainSkinPoolSlotBytesPc,4,
+0x0292fc24,_TerrainUpadteCnt,4,
+0x0292fc28,_PlatSkinMaxSize,4,
 0x292fc2c,_edgra_page_calculate_done,32,i32[8]
 0x292fc4c,_edpp_cam_ay,4,i32
 0x0292fc50,_TerrainRoofNormalPc,12,
@@ -43208,7 +43208,7 @@ address,symbol,size,ctype
 0x292fd2c,_numspherecolldata,4,i32
 0x292fd30,_edgra_page_vectors_valid,32,i32[8]
 0x0292fd50,_ParticleChunkRenderStack,20,DEBRIS_RENDER_CHUNK_PC *[5]
-0x0292fd64,_EShadowPolygonPc,4,
+0x0292fd64,_EShadPoly,4,
 0x292fd68,_ptltypemenu,4,struct eduimenu_s *
 0x292fd6c,_DebMat,36,NUMTL *[9]
 0x292fd94,_textureselectmenu,4,struct eduimenu_s *
@@ -43218,9 +43218,9 @@ address,symbol,size,ctype
 0x292fdc4,_SfxRevertInfoPc,4,SFX_RECORD_PC *
 0x292fdc8,_edanim_cam_pos,12,NUVEC
 0x292fdd4,_edbri_post_instance_type,4,i32
-0x292fdd8,_GetSurfaceInfoSurfaceNormalPc,12,NUVEC
+0x292fdd8,_ShadNorm,12,NUVEC
 0x292fde4,_spherecolldata,4,DEBRIS_COLLISION_ENTRY_PC *
-0x0292fde8,_TerrainShadowStatusPc,4,
+0x0292fde8,_TerrPolyObj,4,
 0x0292fdec,_TerrainWaterCastIndexPc,2,
 0x292fdf0,_tertempmat,64,NUMTX
 0x292fe30,_ptlvarstartmenu,4,struct eduimenu_s *
@@ -43237,7 +43237,7 @@ address,symbol,size,ctype
 0x02947b94,_SfxInfo,4,SFX_RECORD_PC *
 0x2947b98,_TerrPolyInfo,100,TERRAIN_POLYGON_INFO_PC
 0x2947bfc,_EdppPageScenesPc,32,NUGSCN *[8]
-0x02947c1c,_TerrainSkinInfoCountPc,4,
+0x02947c1c,_PlatSkinCnt,4,
 0x02947c20,_TerrWallDeflectYScale,4,f32
 0x2947c24,_edpp_boxmtl,4,struct PC_SCENE_MTL_VIEW *
 0x2947c28,_texturemenu,4,struct eduimenu_s *
@@ -43248,7 +43248,7 @@ address,symbol,size,ctype
 0x02947c3c,_TerrainCastAuxIndexPc,2,
 0x2947c40,_xzfacingmtx,64,NUMTX
 0x2947c80,_TerrShapeAdjCnt,4,i32
-0x02947c84,_TerrainSkinInfosPc,4,
+0x02947c84,_PlatSkinInfo,4,
 0x2947c88,_edpp_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x2947c8c,_edptl_damageflag_menu,4,struct eduimenu_s *
 0x2947c94,_CurTrackInfo,4,TERRAIN_TRACK_SLOT_PC *
@@ -43292,7 +43292,7 @@ address,symbol,size,ctype
 0x2961fd0,_ptloptmenu,4,struct eduimenu_s *
 0x02961fd4,_DebrisGlassU1,4,f32
 0x2961ff8,_ptlgcodemenu,4,struct eduimenu_s *
-0x02961ffc,_TerrainShadowGroupIndexPc,2,
+0x02961ffc,_castnum,2,
 0x2962000,_terraincnt,4,i32
 0x2962004,_toruscolldata,4,DEBRIS_COLLISION_ENTRY_PC *
 0x2962008,_edgra_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
@@ -43300,7 +43300,7 @@ address,symbol,size,ctype
 0x2962010,_edgra_cam_pos,12,NUVEC
 0x296201c,_edgra_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02962020,_GetSurfaceInfoWaterNormalPc,12,
-0x0296202c,_TerrainSkinUseRecordsPc,4,
+0x0296202c,_SkinMemInfo,4,
 0x2962030,_edanim_nearest_param_id,4,i32
 0x2962034,_NumSfx,4,i32
 0x2962038,_NumSfxNames,4,i32
@@ -43491,7 +43491,7 @@ address,symbol,size,ctype
 0x2962b44,_ptlrepeatbox_z_slider,4,edui_slider_s *
 0x2962b48,_IgnoreWallSplines,4,i32
 0x2962b4c,_WallSplinesOnly,4,i32
-0x02962b50,_TerrainScaleWorkBasePc,4,
+0x02962b50,_ScaleTerrainT1,4,
 0x2962b54,_ScaleTerrainT2,4,void *
 0x2962b58,_TerImpactData,4,void *
 0x2962b5c,_PCSoundListenerLoopPositionPc,12,NUVEC
@@ -43599,7 +43599,7 @@ address,symbol,size,ctype
 0x02975164,_nu_input_state,4,NuKeyboardState_PC *
 0x2975168,_PcInputActionOrder,20,i8[20]
 0x297518c,_TextInputDefaultLabelsPc,4,TEXT_INPUT_LABELS_PC*
-0x2975190,_PcMouseButtonsMaskPc,4,u32
+0x2975190,_mbuttons,4,u32
 0x2975194,_PcMouseSamplesPc,40,PC_DI_MOUSE_STATE_PC[2]
 0x29751bc,_PcMousePressedMaskPc,4,u32
 0x029751c0,_nu_keyboard_pages,512,u8[512]

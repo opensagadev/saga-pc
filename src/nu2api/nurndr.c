@@ -257,7 +257,7 @@ void NuRndrEndReflectionRender(void) {
 }
 
 void NuRndrGlobalFrameCountPause(i32 paused) {
-    RenderFramePausedPc = paused;
+    global_frame_count_paused = paused;
 }
 
 void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {

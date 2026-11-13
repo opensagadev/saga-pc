@@ -29,7 +29,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, shard_count) == 0x5094);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_shards) == 0xf1);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
-extern char *ShardOutputNamePc;
+extern char *Shard_OutputName;
 void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 
 typedef struct SHARD_LOST_OWNER_PC {
@@ -271,11 +271,11 @@ i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$ShardOutputNamePc")
-char *ShardOutputNamePc = (char *)PCShardOutputTextPc;
+char *Shard_OutputName = (char *)PCShardOutputTextPc;
 #pragma data_seg()
 
 char *__cdecl Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ShardOutputNamePc;
+    return Shard_OutputName;
 }
 
 i32 __cdecl Shard_GetNumOutputs(GIZMO_PC *gizmo) {

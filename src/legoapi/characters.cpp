@@ -384,7 +384,7 @@ extern "C" {
         if (ObjTabList == NULL || world == NULL) {
             return;
         }
-        if (DrawCharIconFindPc != 0) {
+        if (drawcharicon_find != 0) {
             NuSpecialFind(things_scene, &special, ObjTabList[frame_object_id].name, 1);
         } else {
             special = world->level_objects[frame_object_id].special;
@@ -408,7 +408,7 @@ extern "C" {
                     }
                 }
                 if (icon_object_id != -1) {
-                    if (DrawCharIconFindPc != 0) {
+                    if (drawcharicon_find != 0) {
                         NUGSCN *icon_scene = character_id == -1 ? NULL : IconScene_FindById(character_id);
                         if (icon_scene != NULL) {
                             NuSpecialFind(icon_scene, &special, ObjTabList[icon_object_id].name, 1);
@@ -425,8 +425,8 @@ extern "C" {
                 }
             }
         }
-        DrawCharIconFindPc = 0;
-        DrawCharIconPanelPc = -1;
+        drawcharicon_find = 0;
+        drawcharicon_i_panel = -1;
     }
 
     i32 __cdecl LayerFromName(PLAYERCHARACTERCONFIG_PC *character, const char *name) {
@@ -618,21 +618,21 @@ extern "C" {
         return -1;
     }
 
-    static char **CustomiserVariantNamesPc = 0;
-    static i32 CustomiserVariantCountPc = 0;
+    static char **CharVariant = 0;
+    static i32 CHARVARIANTCOUNT = 0;
 
     void __cdecl CharVariants_Init(char **variants, i32 count) {
         if (variants != NULL && count > 0) {
-            CustomiserVariantNamesPc = variants;
-            CustomiserVariantCountPc = count;
+            CharVariant = variants;
+            CHARVARIANTCOUNT = count;
         }
     }
 
     i32 __cdecl CharVariant_Find(char *name) {
         i32 index;
-        if (CustomiserVariantNamesPc != NULL) {
-            for (index = 0; index < CustomiserVariantCountPc; ++index) {
-                if (NuStrICmp(CustomiserVariantNamesPc[index], name) == 0) {
+        if (CharVariant != NULL) {
+            for (index = 0; index < CHARVARIANTCOUNT; ++index) {
+                if (NuStrICmp(CharVariant[index], name) == 0) {
                     return index;
                 }
             }

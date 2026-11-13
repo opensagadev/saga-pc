@@ -622,7 +622,7 @@ extern "C" {
         if (Hub_InMenu() != 0) {
             menu_active = 0;
         }
-        if (MenuKeyboardAlwaysPc != 0 || MenuKeyboardSecondaryPc != 0 || menu_active != 0) {
+        if (Menu_InSaveFlow != 0 || Menu_InLoadFlow != 0 || menu_active != 0) {
             if (MenuKeyboardOverrideActivePc == 0) {
                 active_players = 0;
                 device = NuPadGetPort(TextInputLastDevicePc());
@@ -1167,8 +1167,8 @@ extern "C" {
                   (f64)0.05f);
         colour = menu_flash == 0 ? 255 : 191;
         opacity = (i32)(MenuAlpha * 128.0);
-        if (HubMiniKitViewerMoveWaitPc > 0.0f) {
-            opacity = (i32)((1.0 - NuTrigTable[((i32)(HubMiniKitViewerMoveWaitPc * 32768.0) >> 1) & 0x7fff]) * opacity);
+        if (hub_minikitviewer_movewait > 0.0f) {
+            opacity = (i32)((1.0 - NuTrigTable[((i32)(hub_minikitviewer_movewait * 32768.0) >> 1) & 0x7fff]) * opacity);
         }
         if (MissionMenuPacketPc.active_player[0] != 0) {
             scale = (f32)(0.5 - pulse);

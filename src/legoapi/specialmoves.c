@@ -33,8 +33,8 @@ static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 
 void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser;
     SPECIALMOVE_PC *move;
-    PlayerSpecialMoveDataPc = NULL;
-    PlayerSpecialMoveCountPc = 0;
+    SpecialMove = NULL;
+    SpecialMoveCount = 0;
     parser = NuFParCreate(filename);
     if (parser == NULL) {
         SpecialMovesConfigMissingPc(filename);
@@ -42,12 +42,12 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     }
 
     buffer->addr = (buffer->addr + 3) & ~3u;
-    PlayerSpecialMoveDataPc = (SPECIALMOVE_PC *)buffer->addr;
+    SpecialMove = (SPECIALMOVE_PC *)buffer->addr;
     while (NuFParGetLine(parser)) {
         if (!NuFParGetWord(parser) || NuStrICmp(parser->word_buffer_ptr, "specialmove_start") != 0) {
             continue;
         }
-        move = &PlayerSpecialMoveDataPc[PlayerSpecialMoveCountPc];
+        move = &SpecialMove[SpecialMoveCount];
         move->attacker_action_type = -1;
         move->attacker_animation = -1;
         move->attacker_id = -1;
@@ -60,7 +60,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
             if (NuStrICmp(parser->word_buffer_ptr, "specialmove_end") == 0) {
                 if ((move->attacker_action_type != -1 || move->attacker_id != -1) && move->attacker_animation != -1 &&
                     (move->victim_action_type != -1 || move->victim_id != -1) && move->victim_animation != -1) {
-                    ++PlayerSpecialMoveCountPc;
+                    ++SpecialMoveCount;
                 }
                 break;
             }
@@ -86,30 +86,30 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
         }
     }
     NuFParDestroy(parser);
-    if (PlayerSpecialMoveCountPc > 0) {
-        buffer->addr = (u32)(PlayerSpecialMoveDataPc + PlayerSpecialMoveCountPc);
+    if (SpecialMoveCount > 0) {
+        buffer->addr = (u32)(SpecialMove + SpecialMoveCount);
     } else {
-        PlayerSpecialMoveDataPc = NULL;
+        SpecialMove = NULL;
     }
 }
 
 i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
     if (index != -1) {
-        return PlayerSpecialMoveDataPc[index].attacker_animation;
+        return SpecialMove[index].attacker_animation;
     }
     return -1;
 }
 
 i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
     if (index != -1) {
-        return PlayerSpecialMoveDataPc[index].victim_animation;
+        return SpecialMove[index].victim_animation;
     }
     return -1;
 }
 
 f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
     if (index != -1) {
-        return PlayerSpecialMoveDataPc[index].distance_apart;
+        return SpecialMove[index].distance_apart;
     }
     return 0.0f;
 }
@@ -117,15 +117,15 @@ f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
 u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
     if (index != -1) {
         if (mask != 0) {
-            return PlayerSpecialMoveDataPc[index].flags & mask;
+            return SpecialMove[index].flags & mask;
         }
-        return PlayerSpecialMoveDataPc[index].flags;
+        return SpecialMove[index].flags;
     }
     return 0;
 }
 
 i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
-    SPECIALMOVE_PC *moves = PlayerSpecialMoveDataPc;
+    SPECIALMOVE_PC *moves = SpecialMove;
     i32 i;
     if (moves == NULL) {
         return -1;
@@ -136,7 +136,7 @@ i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1) {
         return -1;
     }
-    for (i = 0; i < PlayerSpecialMoveCountPc; ++i) {
+    for (i = 0; i < SpecialMoveCount; ++i) {
         SPECIALMOVE_PC *move = &moves[i];
         if ((attacker->id == (u16)move->attacker_id ||
              (move->attacker_action_type != -1 &&
@@ -217,7 +217,7 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
 
 __declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
     i32 move = object->special_move_pc;
-    f32 distance = move != -1 ? PlayerSpecialMoveDataPc[move].distance_apart : 0.0f;
+    f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;
     target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
     target.z = object->force_target->position.z -

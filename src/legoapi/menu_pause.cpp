@@ -10,7 +10,7 @@ STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
 extern "C" {
     extern u8 MenuAutoSaveCancelFirstPc;
     extern i32 SaveloadPendingPc;
-    extern u32 SaveloadStartedTickPc;
+    extern u32 savetimer;
     i32 __cdecl saveload_getinfo(void);
 
     void __cdecl MenuDrawAutoSaveCancel(MENU *menu) {
@@ -49,7 +49,7 @@ extern "C" {
     }
 
     void __cdecl saveloadASCallEachFrame(void) {
-        if (SaveloadPendingPc && (i32)(GetTickCount() - SaveloadStartedTickPc) > 1000) {
+        if (SaveloadPendingPc && (i32)(GetTickCount() - savetimer) > 1000) {
             SaveloadPendingPc = 0;
             saveload_getinfo();
             saveload_status = 1;

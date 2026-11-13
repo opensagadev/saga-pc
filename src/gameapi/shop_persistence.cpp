@@ -36,7 +36,7 @@ extern "C" {
     u8 PcSaveHeaderMetadataPc[16] = {0};
     i32 saveload_slotid = 0;
     extern i32 SaveloadPendingPc;
-    extern u32 SaveloadStartedTickPc;
+    extern u32 savetimer;
     extern i32 saveload_slotused[6];
     extern char *__cdecl fullslotname(i32);
     extern char SaveSlotNamePc[256];
@@ -126,7 +126,7 @@ extern "C" {
 
     void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {
         SaveloadPendingPc = 1;
-        SaveloadStartedTickPc = GetTickCount();
+        savetimer = GetTickCount();
         saveload_status = 11;
         PCSaveSlot(slot, buffer, size, hash);
         saveload_autosave = slot;
@@ -140,7 +140,7 @@ extern "C" {
         u32 tick = GetTickCount();
         saveload_slotid = slot;
         saveload_autosave = slot;
-        SaveloadStartedTickPc = tick;
+        savetimer = tick;
     }
 
     /* PC has no memory card to format. */

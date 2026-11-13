@@ -5491,7 +5491,7 @@ extern "C" {
     extern i32 NuRndrDoingScreenGrab;
 }
 
-i32 OcclusionRenderOccludersPc = 0;
+i32 gRenderOccluders = 0;
 
 void OcclusionManager::RenderStats() const {
     if (!initialized || !enabled || NuRndrDoingScreenGrab != 0) {
@@ -5513,7 +5513,7 @@ void OcclusionManager::RenderStats() const {
     NuQFntPrint2dU(system_qfont, text);
     NuQFntPopCoordinateSystem();
     NuQFntPopPrintMode();
-    if (OcclusionRenderOccludersPc != 0) {
+    if (gRenderOccluders != 0) {
         current_set->RenderOccluders(false);
     }
 }
@@ -7187,7 +7187,7 @@ extern "C" {
         return NuMtlCreatePoolPC(count, plane, 1);
     }
 
-    extern i32 NuMtlAnimateMaskPc;
+    extern i32 mtl_animation_mask;
 
     void NuMtlAnimateSetSpeedScale(f32 scale) {
         FrameMaterialAnimationSpeedPc = scale;
@@ -7204,7 +7204,7 @@ extern "C" {
     }
 
     void NuMtlAnimateSetMask(i32 mask) {
-        NuMtlAnimateMaskPc = mask;
+        mtl_animation_mask = mask;
     }
 
     static __declspec(noinline) NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
@@ -10036,7 +10036,7 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     }
     handle.scene = gscene;
     portal_filter = VisibilityPortalFilterEnabledPc != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0;
-    if ((scene->instance_visibility_enabled & 1) != 0 || DisplaySceneSpecialsDisabledPc != 0) {
+    if ((scene->instance_visibility_enabled & 1) != 0 || noscenespecials != 0) {
         return;
     }
     for (i32 i = 0; i < scene->special_count; ++i) {
@@ -10218,7 +10218,7 @@ STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, sort_pris) == 4);
 STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
 
 extern "C" {
-    extern void(__cdecl **PCDisplayItemHandlersPc)(void *);
+    extern void(__cdecl **CurrentItemTable)(void *);
     void __cdecl NuHtmlHeading(char *text, ...);
     static void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
                                                 i32 file_handle);
@@ -10253,7 +10253,7 @@ extern "C" void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *scene, i32 u
     i32 portal_filter = visibility != NULL && VisibilityPortalFilterEnabledPc != 0 &&
                         visibility->portal_marker != NULL && PCPortalsEnabled != 0;
     i32 shadow_filter = currentScene.dyn_light_ptr != NULL;
-    if ((scene->instance_visibility_enabled & 1) != 0 || DisplaySceneSpecialsDisabledPc != 0) {
+    if ((scene->instance_visibility_enabled & 1) != 0 || noscenespecials != 0) {
         return;
     }
     NUGSCN *gscene = scene->gscene;
@@ -10416,14 +10416,14 @@ extern "C" void __cdecl PCGraphicsResizePostEffectTexturesPc(u32, u32);
 extern "C" void __cdecl NuPostEffectResizePc(void) {
     i32 width = PS2_REZ_W;
     i32 height = PS2_REZ_H;
-    if (NuPostMainFilterPc != NULL) {
-        ((NuMainFilter *)NuPostMainFilterPc)->ResizeTexturesPc(width, height);
+    if (mainFilter != NULL) {
+        ((NuMainFilter *)mainFilter)->ResizeTexturesPc(width, height);
     }
-    if (NuPostSpeedFilterPc != NULL) {
-        ((NuSpeedBlurFilter *)NuPostSpeedFilterPc)->ResizeTexturesPc(width, height);
+    if (speedBlurFilter != NULL) {
+        ((NuSpeedBlurFilter *)speedBlurFilter)->ResizeTexturesPc(width, height);
     }
-    if (NuPostDeferredFilterPc != NULL) {
-        ((NuDeferredFilter *)NuPostDeferredFilterPc)->ResizeTexturesPc(width, height);
+    if (deferredFilter != NULL) {
+        ((NuDeferredFilter *)deferredFilter)->ResizeTexturesPc(width, height);
     }
     PCGraphicsResizePostEffectTexturesPc(width, height);
 }
@@ -10442,30 +10442,30 @@ void __cdecl NuPostEffectEnable(i32 mask) {
     }
     switch (mask) {
         case 4:
-            flag = &NuPostMainFilterPc->bloom_enabled;
+            flag = &mainFilter->bloom_enabled;
             if (!*flag) {
-                ++NuPostMainFilterPc->active_filter_count;
+                ++mainFilter->active_filter_count;
                 *flag = 1;
             }
             break;
         case 8:
-            flag = &NuPostMainFilterPc->dof_enabled;
+            flag = &mainFilter->dof_enabled;
             if (!*flag) {
-                ++NuPostMainFilterPc->active_filter_count;
+                ++mainFilter->active_filter_count;
                 *flag = 1;
             }
             break;
         case 0x20:
-            NuPostDeferredFilterPc->enabled = 1;
+            deferredFilter->enabled = 1;
             break;
         case 0x10:
-            NuPostMotionFilterPc->enabled = 1;
+            motionFilter->enabled = 1;
             break;
         case 0x40:
-            NuPostAccumFilterPc->enabled = 1;
+            motionAccumFilter->enabled = 1;
             break;
         case 0x80:
-            NuPostSpeedFilterPc->enabled = 1;
+            speedBlurFilter->enabled = 1;
             break;
     }
 }
@@ -10474,47 +10474,47 @@ void __cdecl NuPostEffectDisable(u32 mask) {
     u8 *flag;
     switch (mask) {
         case 4:
-            flag = &NuPostMainFilterPc->bloom_enabled;
+            flag = &mainFilter->bloom_enabled;
             if (*flag) {
-                --NuPostMainFilterPc->active_filter_count;
+                --mainFilter->active_filter_count;
                 *flag = 0;
             }
             break;
         case 8:
-            flag = &NuPostMainFilterPc->dof_enabled;
+            flag = &mainFilter->dof_enabled;
             if (*flag) {
-                --NuPostMainFilterPc->active_filter_count;
+                --mainFilter->active_filter_count;
                 *flag = 0;
             }
             break;
         case 0x20:
-            NuPostDeferredFilterPc->enabled = 0;
+            deferredFilter->enabled = 0;
             break;
         case 0x10:
-            NuPostMotionFilterPc->enabled = 0;
+            motionFilter->enabled = 0;
             break;
         case 0x40:
-            NuPostMotionFilterPc->enabled = 0;
+            motionFilter->enabled = 0;
             break;
         case 0x80:
-            NuPostSpeedFilterPc->enabled = 0;
+            speedBlurFilter->enabled = 0;
             break;
     }
 }
 
 void __cdecl NuPostEffectAddDynamicLight(NuDynamicLight *light) {
-    if (NuPostDeferredFilterPc != NULL) {
-        i32 &count = NuPostDeferredFilterPc->dynamic_light_count;
-        NuPostDeferredFilterPc->dynamic_lights[count++] = light;
+    if (deferredFilter != NULL) {
+        i32 &count = deferredFilter->dynamic_light_count;
+        deferredFilter->dynamic_lights[count++] = light;
     }
 }
 
 i32 __cdecl NuPostEffectGetActiveDynamicLightCount(void) {
-    return NuPostDeferredFilterPc != NULL ? NuPostDeferredFilterPc->dynamic_light_count : 0;
+    return deferredFilter != NULL ? deferredFilter->dynamic_light_count : 0;
 }
 
 void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *parameters) {
-    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    NU_POST_MAIN_VIEW_PC *main = mainFilter;
     if (main == NULL) {
         return;
     }
@@ -10526,20 +10526,20 @@ void __cdecl NuPostEffectDepthOfField(const NU_POST_DOF_PARAMETERS_PC *parameter
 }
 
 void __cdecl NuPostEffectDeferredShading(const f32 *parameters) {
-    if (NuPostDeferredFilterPc == NULL) {
+    if (deferredFilter == NULL) {
         return;
     }
-    memcpy(NuPostDeferredFilterPc->parameters, parameters, sizeof(NuPostDeferredFilterPc->parameters));
+    memcpy(deferredFilter->parameters, parameters, sizeof(deferredFilter->parameters));
 }
 
 void __cdecl NuPostEffectBloom(const NU_POST_BLOOM_PARAMETERS_PC *parameters) {
-    if (NuPostMainFilterPc != NULL) {
-        NuPostMainFilterPc->bloom = parameters;
+    if (mainFilter != NULL) {
+        mainFilter->bloom = parameters;
     }
 }
 
 void __cdecl NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
-    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    NU_POST_MAIN_VIEW_PC *main = mainFilter;
     if (main == NULL) {
         return;
     }
@@ -10548,7 +10548,7 @@ void __cdecl NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current,
     main->motion_scale = scale;
     main->motion_maximum = maximum;
     main->motion_falloff = falloff;
-    NU_POST_MOTION_VIEW_PC *motion = NuPostMotionFilterPc;
+    NU_POST_MOTION_VIEW_PC *motion = motionFilter;
     motion->previous = *previous;
     motion->current = *current;
     motion->scale = scale;
@@ -10557,14 +10557,14 @@ void __cdecl NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current,
 }
 
 void __cdecl NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_pc) {
-    NU_POST_MAIN_VIEW_PC *main = NuPostMainFilterPc;
+    NU_POST_MAIN_VIEW_PC *main = mainFilter;
     if (main == NULL) {
         return;
     }
     main->accumulation_frames = frames;
     main->accumulation_blend = blend;
     main->accumulation_mode_pc = mode_pc;
-    NU_POST_ACCUM_VIEW_PC *accum = NuPostAccumFilterPc;
+    NU_POST_ACCUM_VIEW_PC *accum = motionAccumFilter;
     if (accum != NULL) {
         accum->mode_pc = mode_pc;
         accum->frames = frames;
@@ -10573,8 +10573,8 @@ void __cdecl NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_
 }
 
 void __cdecl NuPostEffectSpeedBlur(const NU_POST_SPEED_PARAMETERS_PC *parameters) {
-    if (NuPostSpeedFilterPc != NULL) {
-        NuPostSpeedFilterPc->parameters = parameters;
+    if (speedBlurFilter != NULL) {
+        speedBlurFilter->parameters = parameters;
     }
 }
 
@@ -10793,32 +10793,32 @@ extern "C" void __cdecl NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end
     if (main_mask) {
         object = NuPostFilterAllocatorPc.cursor;
         NuPostFilterAllocatorPc.cursor += sizeof(NuMainFilter);
-        NuPostMainFilterPc = object ? (NU_POST_MAIN_VIEW_PC *)new (object) NuMainFilter : NULL;
+        mainFilter = object ? (NU_POST_MAIN_VIEW_PC *)new (object) NuMainFilter : NULL;
     }
     motion_mask = flags & 0x10;
     if (motion_mask) {
         object = NuPostFilterAllocatorPc.cursor;
         NuPostFilterAllocatorPc.cursor += sizeof(NuMotionFilter);
-        NuPostMotionFilterPc = object ? (NU_POST_MOTION_VIEW_PC *)new (object) NuMotionFilter : NULL;
+        motionFilter = object ? (NU_POST_MOTION_VIEW_PC *)new (object) NuMotionFilter : NULL;
         NuPostShaderEngineFlagsPc |= 0x20;
     }
     accum_mask = flags & 0x40;
     if (accum_mask) {
         object = NuPostFilterAllocatorPc.cursor;
         NuPostFilterAllocatorPc.cursor += sizeof(NuMotionAccumFilter);
-        NuPostAccumFilterPc = object ? (NU_POST_ACCUM_VIEW_PC *)new (object) NuMotionAccumFilter : NULL;
+        motionAccumFilter = object ? (NU_POST_ACCUM_VIEW_PC *)new (object) NuMotionAccumFilter : NULL;
     }
     speed_mask = flags & 0x80;
     if (speed_mask) {
         object = NuPostFilterAllocatorPc.cursor;
         NuPostFilterAllocatorPc.cursor += sizeof(NuSpeedBlurFilter);
-        NuPostSpeedFilterPc = object ? (NU_POST_SPEED_VIEW_PC *)new (object) NuSpeedBlurFilter : NULL;
+        speedBlurFilter = object ? (NU_POST_SPEED_VIEW_PC *)new (object) NuSpeedBlurFilter : NULL;
     }
     deferred_mask = flags & 0x20;
     if (deferred_mask) {
         object = NuPostFilterAllocatorPc.cursor;
         NuPostFilterAllocatorPc.cursor += sizeof(NuDeferredFilter);
-        NuPostDeferredFilterPc = object ? (NU_POST_DEFERRED_VIEW_PC *)new (object) NuDeferredFilter : NULL;
+        deferredFilter = object ? (NU_POST_DEFERRED_VIEW_PC *)new (object) NuDeferredFilter : NULL;
         NuPostShaderEngineFlagsPc |= 0x10;
     }
     object = NuPostFilterAllocatorPc.cursor;
@@ -10827,19 +10827,19 @@ extern "C" void __cdecl NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end
     NuEffectTexLockVP(buffer, end);
     PCGraphicsCreatePostEffectTextures(width, height);
     if (main_mask) {
-        ((NuPostFilterGen *)NuPostMainFilterPc)->initTextureResources(width, height);
+        ((NuPostFilterGen *)mainFilter)->initTextureResources(width, height);
     }
     if (motion_mask) {
-        ((NuPostFilterGen *)NuPostMotionFilterPc)->initTextureResources(width, height);
+        ((NuPostFilterGen *)motionFilter)->initTextureResources(width, height);
     }
     if (accum_mask) {
-        ((NuPostFilterGen *)NuPostAccumFilterPc)->initTextureResources(width, height);
+        ((NuPostFilterGen *)motionAccumFilter)->initTextureResources(width, height);
     }
     if (speed_mask) {
-        ((NuPostFilterGen *)NuPostSpeedFilterPc)->initTextureResources(width, height);
+        ((NuPostFilterGen *)speedBlurFilter)->initTextureResources(width, height);
     }
     if (deferred_mask) {
-        ((NuPostFilterGen *)NuPostDeferredFilterPc)->initTextureResources(width, height);
+        ((NuPostFilterGen *)deferredFilter)->initTextureResources(width, height);
     }
     if (flags & 1) {
         NuPostEffectBackBufferTexturePc = PCGraphicsPostEffectBackBufferTexturePc;
@@ -10848,19 +10848,19 @@ extern "C" void __cdecl NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end
     NuEffectTexUnlockVP();
     PostFilterInitProgramsPc(width, height);
     if (main_mask) {
-        ((NuPostFilterGen *)NuPostMainFilterPc)->initResources();
+        ((NuPostFilterGen *)mainFilter)->initResources();
     }
     if (motion_mask) {
-        ((NuPostFilterGen *)NuPostMotionFilterPc)->initResources();
+        ((NuPostFilterGen *)motionFilter)->initResources();
     }
     if (accum_mask) {
-        ((NuPostFilterGen *)NuPostAccumFilterPc)->initResources();
+        ((NuPostFilterGen *)motionAccumFilter)->initResources();
     }
     if (speed_mask) {
-        ((NuPostFilterGen *)NuPostSpeedFilterPc)->initResources();
+        ((NuPostFilterGen *)speedBlurFilter)->initResources();
     }
     if (deferred_mask) {
-        ((NuPostFilterGen *)NuPostDeferredFilterPc)->initResources();
+        ((NuPostFilterGen *)deferredFilter)->initResources();
     }
     NuPostCopyFilterPc->initResources();
     NuPostEffectsRanPc = 0;
@@ -10874,17 +10874,17 @@ void NuMainFilterGen::reset() {
 }
 
 extern "C" void __cdecl NuPostEffectEnd(void) {
-    if (NuPostDeferredFilterPc != NULL) {
-        ((NuPostFilterGen *)NuPostDeferredFilterPc)->resetAll();
+    if (deferredFilter != NULL) {
+        ((NuPostFilterGen *)deferredFilter)->resetAll();
     }
-    if (NuPostMainFilterPc != NULL) {
-        ((NuPostFilterGen *)NuPostMainFilterPc)->resetAll();
+    if (mainFilter != NULL) {
+        ((NuPostFilterGen *)mainFilter)->resetAll();
     }
-    if (NuPostMotionFilterPc != NULL) {
-        ((NuPostFilterGen *)NuPostMotionFilterPc)->resetAll();
+    if (motionFilter != NULL) {
+        ((NuPostFilterGen *)motionFilter)->resetAll();
     }
-    if (NuPostAccumFilterPc != NULL) {
-        ((NuPostFilterGen *)NuPostAccumFilterPc)->resetAll();
+    if (motionAccumFilter != NULL) {
+        ((NuPostFilterGen *)motionAccumFilter)->resetAll();
     }
     PostProxyBuffersPc[0].texture = NULL;
     PostProxyBuffersPc[0].kind = 0;
@@ -11634,11 +11634,11 @@ extern "C" void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void);
 
 /* Tears every post filter down, frees the shared targets and rewinds the filter arena. */
 extern "C" void __cdecl NuPostEffectReleasePc(void) {
-    POST_FILTER_RELEASE(NuPostMainFilterPc);
-    POST_FILTER_RELEASE(NuPostMotionFilterPc);
-    POST_FILTER_RELEASE(NuPostAccumFilterPc);
-    POST_FILTER_RELEASE(NuPostSpeedFilterPc);
-    POST_FILTER_RELEASE(NuPostDeferredFilterPc);
+    POST_FILTER_RELEASE(mainFilter);
+    POST_FILTER_RELEASE(motionFilter);
+    POST_FILTER_RELEASE(motionAccumFilter);
+    POST_FILTER_RELEASE(speedBlurFilter);
+    POST_FILTER_RELEASE(deferredFilter);
     POST_FILTER_RELEASE(NuPostCopyFilterPc);
     PCGraphicsDestroyPostEffectTexturesPc();
     NuPostFilterAllocatorPc.cursor = NuPostFilterAllocatorPc.base;
@@ -11747,7 +11747,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
 
     void __cdecl NuVpSetZRange(f32 minimum, f32 maximum) {
-        NuVpDirtyPc = 1;
+        vport_inval = 1;
         vpCurrent.min_z = minimum;
         vpCurrent.max_z = maximum;
     }
@@ -11757,7 +11757,7 @@ extern "C" {
         y += RenderPostViewportPrefixPc.y_offset;
         vpCurrent.x = (i32)((PS2_REZ_W * x / PS2_VREZ_W + ((f32)PS2_VCNTR_X - (PS2_REZ_W >> 1))) * 16.0f);
         vpCurrent.y = (i32)((PS2_REZ_H * y / PS2_VREZ_H + ((f32)PS2_VCNTR_Y - (PS2_REZ_H >> 1))) * 16.0f);
-        NuVpDirtyPc = 1;
+        vport_inval = 1;
     }
 
     void __cdecl NuVpSetPosition(f32 x, f32 y) {
@@ -11779,7 +11779,7 @@ extern "C" {
         height *= RenderPostViewportPrefixPc.height_scale;
         vpCurrent.width = (i32)((f64)PS2_REZ_W * width / PS2_VREZ_W * 16.0);
         vpCurrent.height = (i32)((f64)PS2_REZ_H * height / PS2_VREZ_H * 16.0);
-        NuVpDirtyPc = 1;
+        vport_inval = 1;
     }
 } // extern "C"
 
@@ -12213,20 +12213,20 @@ extern "C" void __cdecl NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
     NuPostFilterGen *filters[10];
     i32 count = 0;
     filters[0] = NULL;
-    if (NuPostSpeedFilterPc != NULL && ((NuPostFilterGen *)NuPostSpeedFilterPc)->isEnabled()) {
-        filters[count++] = (NuPostFilterGen *)NuPostSpeedFilterPc;
+    if (speedBlurFilter != NULL && ((NuPostFilterGen *)speedBlurFilter)->isEnabled()) {
+        filters[count++] = (NuPostFilterGen *)speedBlurFilter;
     }
-    if (NuPostDeferredFilterPc != NULL && ((NuPostFilterGen *)NuPostDeferredFilterPc)->isEnabled()) {
-        filters[count++] = (NuPostFilterGen *)NuPostDeferredFilterPc;
+    if (deferredFilter != NULL && ((NuPostFilterGen *)deferredFilter)->isEnabled()) {
+        filters[count++] = (NuPostFilterGen *)deferredFilter;
     }
-    if (NuPostMainFilterPc != NULL && ((NuPostFilterGen *)NuPostMainFilterPc)->isEnabled()) {
-        filters[count++] = (NuPostFilterGen *)NuPostMainFilterPc;
+    if (mainFilter != NULL && ((NuPostFilterGen *)mainFilter)->isEnabled()) {
+        filters[count++] = (NuPostFilterGen *)mainFilter;
     }
-    if (NuPostMotionFilterPc != NULL && ((NuPostFilterGen *)NuPostMotionFilterPc)->isEnabled()) {
-        filters[count++] = (NuPostFilterGen *)NuPostMotionFilterPc;
+    if (motionFilter != NULL && ((NuPostFilterGen *)motionFilter)->isEnabled()) {
+        filters[count++] = (NuPostFilterGen *)motionFilter;
     }
-    if (NuPostAccumFilterPc != NULL && ((NuPostFilterGen *)NuPostAccumFilterPc)->isEnabled()) {
-        filters[count++] = (NuPostFilterGen *)NuPostAccumFilterPc;
+    if (motionAccumFilter != NULL && ((NuPostFilterGen *)motionAccumFilter)->isEnabled()) {
+        filters[count++] = (NuPostFilterGen *)motionAccumFilter;
     }
     NuDisplayHandlerVertexShaderCachePc = NULL;
     NuDisplayHandlerPixelShaderCachePc = NULL;
@@ -13576,7 +13576,7 @@ extern "C" {
         }
         if (result->portal_marker != NULL && PCPortalsEnabled != 0) {
             NuPortalVisibility(scene);
-        } else if (result->instance_tree != NULL && VisibilityInstanceTreeEnabledPc != 0) {
+        } else if (result->instance_tree != NULL && do_InstTree != 0) {
             result->context = context;
             NuVisiInstTree(result, scene);
             result->flags |= 1;
@@ -13672,7 +13672,7 @@ extern "C" {
     static void VisibilityTreeInitialisePc(void) {
         f32 near_distance = global_camera.near_clip;
         f32 near_squared;
-        VisibilityTreeInitialisedPc = 1;
+        TreeInitialised = 1;
         near_squared = near_distance * near_distance;
         {
             f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
@@ -13695,7 +13695,7 @@ extern "C" {
         {
             f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
             horizontal = VISIBILITY_ALTERNATE_WIDTH_PC * near_distance;
-            vertical = near_distance * VisibilityAlternateHeightPc;
+            vertical = near_distance * zys;
             squared = horizontal * horizontal + near_squared;
             inverse_horizontal = 1.0f / NuFsqrt(squared);
             squared = vertical * vertical + near_squared;
@@ -13792,7 +13792,7 @@ extern "C" {
 
         // Build the scissor planes.
         left_right = VISIBILITY_ALTERNATE_WIDTH_PC * near_dist;
-        top_bottom = VisibilityAlternateHeightPc * near_dist;
+        top_bottom = zys * near_dist;
 
         left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
         top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
@@ -13944,7 +13944,7 @@ extern "C" {
                 u16 *end = id + node->subtree_instance_count;
                 while (id != end) {
                     u16 index = *id++;
-                    ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |= (u8)(1 << ((index & 3) * 2));
+                    ((u8 *)myvisi->context)[index >> 2] |= (u8)(1 << ((index & 3) * 2));
                 }
             } else {
                 VISIBILITY_TREE_NODE_PC *child;
@@ -13967,8 +13967,7 @@ extern "C" {
                         u16 index = *id++;
                         i32 instance_clip = VisibilityTreeClipNodePc(&instance_bounds->center, &instance_bounds->extent,
                                                                      far_distance, 1);
-                        ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |=
-                            (u8)(instance_clip << ((index & 3) * 2));
+                        ((u8 *)myvisi->context)[index >> 2] |= (u8)(instance_clip << ((index & 3) * 2));
                         ++instance_bounds;
                     }
                 }
@@ -13977,7 +13976,7 @@ extern "C" {
     }
 
     void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *result, NUGSCN *scene) {
-        i32 enabled = result->instance_tree != NULL && VisibilityInstanceTreeEnabledPc != 0;
+        i32 enabled = result->instance_tree != NULL && do_InstTree != 0;
         i32 root;
         VISIBILITY_TREE_READER_PC *tree;
         (void)scene;
@@ -13985,8 +13984,8 @@ extern "C" {
         if ((result->flags & 0x10u) == 0) {
             return;
         }
-        VisibilityCurrentResultPc = result;
-        if (VisibilityTreeInitialisedPc == 0) {
+        myvisi = result;
+        if (TreeInitialised == 0) {
             VisibilityTreeInitialisePc();
         }
         VisibilityTreePreparePc();
@@ -14142,8 +14141,8 @@ extern "C" {
     }
 
     void __cdecl NuSpecialVertexOffsets(i32 count, f32 (*offsets)[4]) {
-        RenderFrameShaderArrayPc = offsets;
-        RenderFrameShaderArrayCountPc = count;
+        nuspecial_vertex_offsets = offsets;
+        nuspecial_vertex_noffsets = count;
     }
 
     i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special) {
@@ -15282,8 +15281,8 @@ extern "C" {
         buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
         root_translation.x = root_translation.y = root_translation.z = 0.0f;
         quaternion_mode = ForceEulerToQuat | ((animation_a->format_flags | animation_b->format_flags) & 1);
-        if (AnimQuatDepthPc < 4) {
-            AnimQuatSavedPc[AnimQuatDepthPc++] = ForceEulerToQuat;
+        if (NumQuatPushes < 4) {
+            AnimQuatSavedPc[NumQuatPushes++] = ForceEulerToQuat;
             ForceEulerToQuat = quaternion_mode;
         } else {
             AnimationDiagnosticNoOpPc();
@@ -15301,8 +15300,8 @@ extern "C" {
         NuAnimBuffEvaluate_3(&buffer, object, matrices, animation_a, root_fn, &root_translation, root_data);
         NuScratchRelease();
         NuScratchRelease();
-        if (AnimQuatDepthPc != 0) {
-            ForceEulerToQuat = AnimQuatSavedPc[--AnimQuatDepthPc];
+        if (NumQuatPushes != 0) {
+            ForceEulerToQuat = AnimQuatSavedPc[--NumQuatPushes];
         } else {
             AnimationDiagnosticNoOpPc();
         }
@@ -15477,8 +15476,8 @@ extern "C" {
             NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
             return;
         }
-        if (object->joint_count > DdMaxJointsPc) {
-            DdMaxJointsPc = object->joint_count;
+        if (object->joint_count > ddmaxjoints) {
+            ddmaxjoints = object->joint_count;
         }
         legacy = (NUANIMDATA2_SKELETAL_PC *)animation;
         scales[255].x = 1.0f;
@@ -15875,8 +15874,8 @@ extern "C" {
         NUANIM_TIME2_PC time_a, time_b;
         NUANIM_LEGACY_CHUNK_PC *chunk_a, *chunk_b;
         u8 index;
-        if (object->joint_count > DdMaxJointsPc) {
-            DdMaxJointsPc = object->joint_count;
+        if (object->joint_count > ddmaxjoints) {
+            ddmaxjoints = object->joint_count;
         }
         scales[255].x = 1.0f;
         scales[255].y = 1.0f;
