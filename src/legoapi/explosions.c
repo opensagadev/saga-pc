@@ -43,7 +43,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     f64 vertical_offset;
     f32 squared, normalized;
     u16 angle, hit_flags;
-    i32 i, count, hit_character, damage;
+    i32 i, count, hit_character = 0, damage;
     u32 hit_type;
     NUVEC position, maximum, minimum, points[3];
     GAMEOBJECT *target, *object, *source;
@@ -63,20 +63,20 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             angle += 0x3333;
         }
     }
-    maximum.x = explosion->position.x + radius;
-    maximum.z = explosion->position.z + radius;
-    maximum.y = explosion->position.y + radius;
     minimum.x = explosion->position.x - radius;
     minimum.z = explosion->position.z - radius;
+    maximum.x = radius + explosion->position.x;
+    maximum.z = radius + explosion->position.z;
     minimum.y = explosion->position.y - radius;
-    hit_character = 0;
+    maximum.y = radius + explosion->position.y;
     if ((explosion->flags & 0x100) == 0) {
         target = Obj;
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++target) {
             object = target;
-            if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
                 continue;
-            if ((U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x20008000) != 0)
+            if ((U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x8000) != 0 ||
+                (U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x20000000) != 0)
                 continue;
             if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
                 continue;
@@ -84,13 +84,13 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 continue;
             if ((explosion->flags & 0x4000) != 0 && object->field_280 != 0xff)
                 continue;
-            if ((explosion->flags & 8) == 0 && (((object->collision_identity_mask[0] & explosion->field_00) |
-                                                 (object->collision_identity_mask[1] & explosion->field_04)) != 0 ||
-                                                explosion->owner == target))
+            if ((explosion->flags & 8) == 0 &&
+                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 ||
+                 explosion->owner == target))
                 continue;
-            if (object->collision_min.x > maximum.x || minimum.x > object->collision_max.x ||
-                object->collision_min.y > maximum.y || minimum.y > object->collision_max.y ||
-                object->collision_min.z > maximum.z || minimum.z > object->collision_max.z)
+            if (object->collision_min.x > maximum.x || object->collision_max.x < minimum.x ||
+                object->collision_min.y > maximum.y || object->collision_max.y < minimum.y ||
+                object->collision_min.z > maximum.z || object->collision_max.z < minimum.z)
                 continue;
             if (!SphereSphereOverlapScaleY(&object->collision_position, object->bounds_radius,
                                            object->bounds_half_height, &explosion->position, radius, radius))
@@ -111,20 +111,19 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             }
             if (hit_character || (explosion->flags & 1) == 0)
                 continue;
-            if (((object->collision_identity_mask[0] & explosion->field_00) |
-                 (object->collision_identity_mask[1] & explosion->field_04)) != 0 ||
-                explosion->owner == target || target->spawn_protection_timer > 0.0f ||
+            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->field_00)) != 0 ||
+                target == explosion->owner || target->spawn_protection_timer > 0.0f ||
                 (target->flags_ef0 & 0x400000) != 0)
                 continue;
             if (object->field_280 != 0xff && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & 0x2000) == 0)
                 continue;
             if (explosion->owner != NULL && !(Arcade_GetMode(NULL) == 0 && (explosion->flags & 0x10010) != 0)) {
-                source = explosion->owner;
                 if (object->field_280 == 0xff) {
-                    if (source->field_280 == 0xff && ((object->flags_1f8 ^ source->flags_1f8) & 1) == 0)
+                    if (explosion->owner->field_280 == 0xff &&
+                        ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0)
                         continue;
-                } else if (source->field_280 != 0xff && target->origin_scale_override != 1.0f &&
-                           ((object->flags_1f8 ^ source->flags_1f8) & 1) == 0) {
+                } else if (explosion->owner->field_280 != 0xff && target->origin_scale_override != 1.0f &&
+                           ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                     continue;
                 }
             }

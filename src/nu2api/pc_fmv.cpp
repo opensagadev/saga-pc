@@ -32,8 +32,14 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
             case 12:
                 (void)*++args;
                 break;
+            case 14:
+                volume = *(f32 *)*++args;
+                break;
             case 7:
                 callback = (FMV_INPUT_CALLBACK_PC) * ++args;
+                break;
+            case 15:
+                FmvDrawCallbackPc = (FMV_DRAW_CALLBACK_PC) * ++args;
                 break;
             case 8:
                 (void)*++args;
@@ -41,12 +47,6 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
                 break;
             case 13:
                 stop_sound = 0;
-                break;
-            case 14:
-                volume = *(f32 *)*++args;
-                break;
-            case 15:
-                FmvDrawCallbackPc = (FMV_DRAW_CALLBACK_PC) * ++args;
                 break;
             default: {
                 const char *suffixes[10] = {"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"};
