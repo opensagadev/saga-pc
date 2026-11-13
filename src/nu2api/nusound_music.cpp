@@ -991,6 +991,14 @@ void NuMusic::xCutscene(NUFPAR_PC *parser) {
 void NuMusic::xNoMusicC(NUFPAR_PC *parser) {
     ParseTrack(32, parser);
 }
+/* The inverse of NuMusicDecibelsToGain; uncalled in retail (0x695540). */
+f32 NuMusicGainToDecibels(f32 gain) {
+    if (gain <= 0.0f)
+        return -100.0f;
+    if (gain >= 1.0f)
+        return 0.0f;
+    return RenderPostLogPc(gain) * 20.0;
+}
 /* Converts a decibel attenuation to a linear gain: -100 dB and below is silence. */
 static inline f32 NuMusicDecibelsToGain(f32 decibels) {
     if (decibels <= -100.0)
@@ -1340,6 +1348,18 @@ extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_pa
     }
     va_end(args);
     return PCSoundInitializePc(&config);
+}
+
+/* Original names unknown; retail keeps both uncalled wrappers after NuSound3InitV (0x695360, 0x695390). */
+extern "C" i32 __cdecl NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample_count, i32 device_parameter) {
+    VARIPTR end;
+    end.void_ptr = NULL;
+    return NuSound3InitV(NULL, end, device_parameter, 1, samples, 2, sample_count, 0);
+}
+extern "C" i32 __cdecl NuSound3InitDefaultPc(SFX_FILE_INFO_PC *samples) {
+    VARIPTR end;
+    end.void_ptr = NULL;
+    return NuSound3InitV(NULL, end, 3, 1, samples, 2, 400, 0);
 }
 
 i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
