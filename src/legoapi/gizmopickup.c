@@ -148,12 +148,14 @@ void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
     NUVEC target;
     ADD_GAME_MESSAGE_PC message;
     GAME_MESSAGE_PC *queued;
+    LEVEL_OBJECT_RUNTIME_PC *objects;
     (void)world;
     (void)type;
     (void)flags;
     NewBuzz(object->pad->bound_pad, 0.2f, 0);
     AddGameDebris(WORLD->game_debris_sys, 0x13, &pickup->position);
-    if (WORLD->level_objects[0xcf].active == 0)
+    objects = WORLD->level_objects;
+    if (objects[0xcf].active == 0)
         return;
     target.x = KITPOSX;
     target.y = KITPOSY + PANEL_MINIKITY;
@@ -166,7 +168,7 @@ void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
     message.flags = 0x2112d;
     message.duration = 1.0f;
     message.icon = 0xcf;
-    message.special = &WORLD->level_objects[0xcf].special;
+    message.special = &objects[0xcf].special;
     message.tick_fn = MiniKit_GameMsg_Update;
     message.end_fn = MiniKit_GameMsg_End;
     message.allow_temporary = 1;
