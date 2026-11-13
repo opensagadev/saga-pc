@@ -13,7 +13,7 @@ python3 tools/oddscan.py --list --class noinline  # file:line list of one class
 python3 tools/oddscan.py --magic [--hints DIR]   # enum and flag candidates, ranked by use
 python3 tools/oddscan.py --json > oddscan.json   # everything (about 20 s)
 python3 tools/oddscan.py --check                 # fails if a class grew; says which ones shrank
-python3 tools/oddscan.py --write-budget          # after a cleanup batch: store the lower counts
+python3 tools/oddscan.py --write-budget          # after a cleanup batch: lower the budget to the counts
 ```
 
 The scan is textual. Comments and string literals are separated first, and
@@ -74,7 +74,7 @@ dropping it is codegen-neutral cosmetics and low priority.
 |---|---:|---:|---|---|
 | `match-exception` | 89 | 50 | aisysall.c 9, shader_parser.cpp 9, parts.c 6 | stays (each reviewed again in batch 11) |
 | `nolint` (50 identifier-naming, 12 runtime-int) | 64 | 15 | saga.h 32, rtl.c 14 (vendored: 115) | ok |
-| `format-off` | 1 | 1 | data.cpp (initializer macro, LLVM version difference) | ok |
+| `format-off` | 0 | | (data.cpp's region removed, batch 2) | |
 | `do-while0` outside macros | 2 | 2 | gameobjects.c, move.c | sensitive |
 | `dummy` (dummy/sink names, `x = x;`) | 26 | 7 | dsplay_bink.cpp 7, edanim_load.c 6, move.c 6 | sensitive |
 | `void-cast` (`(void)name;`) | 1,254 | 121 | aisysall.c 301, gameaiscript.c 247 | block (unused-parameter noise; neutral) |
@@ -221,64 +221,160 @@ their owners are typed.
    of the real struct members.
 9. **Invented files**: 12 diagnostic stub units, 37 `*_pc` files, two blocks
    marked `SOURCE DRAFT ONLY`.
-10. **Weak enforcement**: clang-tidy runs two checks; the MSVC build runs at
-    the default warning level and prints 207 distinct warnings (158 C4133
-    incompatible pointer types, 21 C4700 uninitialised locals), none an error.
+10. **Weak enforcement** (fixed by batches 0 and 2, section 3): clang-tidy ran
+    two checks; the MSVC build runs at the default warning level and printed 207
+    distinct warnings that nothing tracked.
 
 ## 3. Formatting and lint enforcement
 
-**clang-format** (`.clang-format`: LLVM base, indent 4, 120 columns, no short
-functions, indented `extern "C"` and namespaces, includes not sorted). `make
-lint` runs `tools/check.py --format`: `--dry-run --Werror` over every `.c`,
-`.cpp`, `.h` and `.inc` under `src/` plus the 47 fetched Ogg Vorbis files, 402
-files in all. Nothing under `src/` is excluded. One `// clang-format off`
-region (data.cpp, an initializer macro that LLVM 18 and newer format
-differently). CI pins clang-format-18.
+Status (batches 0 and 2 done): every rule below runs in CI and fails on growth.
+CONTRIBUTING.md ("House rules enforced by CI") says how to run each check and
+how to lower a budget.
 
-**clang-tidy** (`.clang-tidy`): `Checks: -*, readability-identifier-naming,
-google-runtime-int`, `WarningsAsErrors: "*"`. Options: members `lower_case`,
-macros `UPPER_CASE`, integer types spelled `u`/`i` (forbids `int`, `long`
-outside the typedefs). `HeaderFilterRegex: (^|/)src/`. `tools/check.py
---tidy` analyses the 371 `.c`/`.cpp` units (349 game units and 22 vendored C
-files) against the pinned VC8 CRT and Platform SDK headers, C as `-std=c89`, C++
-as `-std=c++98`, MS extensions on. Headers are only checked through the units
-that include them. Gaps:
+| rule | where | budget / state |
+|---|---|---|
+| oddity classes (this page) | `make check-core`: `tools/oddscan.py --check` (about 20 s) | `config/oddscan-budget.json`, 65 classes |
+| unit declarations, classes A-E (docs/declarations.md) | `make check-core`: `tools/declscan.py --check` | `config/declscan-budget.json`: A 126, B 5, C 376, D 2,630, E 5 |
+| budgets only go down | `make check-core`: `tools/budget.py --guard` against the merge base with `origin/main` | raises need a line in `config/budget-raises.txt` |
+| MSVC warnings, distinct per code | `make check-warnings` after the Matching and the Debug build (CI) | `config/warning-budget.json` |
+| clang-format | `make lint` | `make format` applies it |
+| clang-tidy, Matching and Debug view of every game unit | `make lint` | warnings are errors |
 
-- `-*` also turns off every `clang-diagnostic-*` warning, so the Clang
-  counterparts of the MSVC warnings (incompatible pointer types, macro
-  redefinition, implicit declarations) are not enforced.
-- Game units are analysed in the Matching configuration only; code inside
-  `#ifdef SAGA_DEBUG` in game units is never linted (the 7 Debug units are
-  analysed with `-DSAGA_DEBUG`).
-- Suppressions: 64 `NOLINT` in `src/` (50 identifier-naming for SDK and retail
-  names, 12 runtime-int for the base typedefs), 115 in the vendored files.
+**Budgets.** `--write-budget` (oddscan, declscan) and `make lower-warning-budget`
+only lower a budget; `--check` names the budgets that can be lowered. The guard
+compares each budget file with the merge base of HEAD and `origin/main` (HEAD's
+first parent on main itself); CI fetches main's commits without trees for it.
+A budget file that is new since the base is not compared. declscan's check
+skips the Debug parse (it only decides whether a declaration is used) and walks
+only the unit's own cursors: a cold scan of all units takes about 85 s on four
+cores (225 s before), a warm one under a second; CI caches the facts.
 
-**MSVC warnings.** No `/W` flag (level 1) and no `/WX`. A full Matching build
-of 2026-11-13 (389 compiles) shows 207 distinct warnings: C4133 158
-(incompatible types; legoapi/shard.c 40, gameapi/aisysall.c 19, episodeV.c 17,
-episodeI.c 11), C4700 21 (uninitialised local used; edlevelall.cpp 9, move.c
-2), C4090 13 (const qualifiers), C4996 11 (deprecated CRT), C4005 8 (macro
-redefinition), C4530 4 (`<vector>`/`<xstring>` without `/EHsc`). An older
-full log (2026-11-11) had 545 C4996. Nothing parses or budgets these warnings.
+**MSVC warnings.** `tools/cc.py` writes the warnings of every compile next to the
+object (`<object>.warnings`); `tools/msvcwarn.py` counts each distinct warning
+once (a header warning is not multiplied by its includers) and writes
+`build/warnings.json` (Debug: `build/Debug/warnings.json`, uploaded by CI). On
+main after this batch: Matching and Debug 205 each (C4133 156, C4700 21, C4090
+12, C4996 11, C4530 4, D9025 1); C4005 went from 6 (Debug 8) to 0. `/W3` does
+not change object code (whole-object identity on zipup.c, rtl.c,
+nu3d_includes.cpp, game.cpp, edlevelall.cpp); on six sample units (those and
+camera.c) it adds C4244 121 and C4996 120 (CRT deprecations), C4700 19, C4099
+4, C4090 1, C4309 1 distinct warnings, so a full `/W3` build would print about
+2,000 to 3,000 distinct warnings. Proposal: add `/W3` with `/wd4244 /wd4996`
+first (no object change; budget the rest), then work C4244 down by unit; make
+C4005, C4133 and C4700 errors when they reach zero.
 
-**A stricter, realistic configuration.** Measured with clang-tidy 18 on 15
-units (creature.c, gizpanel.c, camera.c, bolts.cpp, oggreader.cpp, nurndr.c,
-apiobject.c, edfile.c, fighting.c, doors.c, pc_window.cpp, keyboard_init.c,
-zipup.c, nualloc.c, shard.c), all of `bugprone-*`, `readability-*`, `misc-*`,
-`cert-*`, `performance-*`, `clang-analyzer-core.*`/`deadcode.*` and
-`clang-diagnostic-*` enabled, units only:
+**clang-format.** `.clang-format` (LLVM base, indent 4, 120 columns) now also
+sets `SeparateDefinitionBlocks: Always`, `MaxEmptyLinesToKeep: 1`,
+`KeepEmptyLinesAtTheStartOfBlocks: false`, `InsertBraces: true`,
+`RemoveSemicolon: true`, `InsertNewlineAtEOF: true`, `LineEnding: LF`.
+`SortIncludes` stays `Never` and `IncludeBlocks` `Preserve`: include order
+steers VC8 code generation (moving `<string.h>`/`<stdio.h>` in game.cpp or
+`<new>` in nushadermanager.cpp changes code). `make format` reformats `src/`
+(`tools/check.py --format-fix`); the pinned Ogg Vorbis sources keep their style
+(`config/clang-format-vendored`) because their checksums are pinned. The single
+`clang-format off` region is gone (the identity-matrix macro in data.cpp holds
+only the values now; objects identical). Before and after:
+
+```c
+/* before (legogame/zipup.c) */
+} HINT_ZIPUP_PC;
+typedef struct zipup_transport_view_pc_s {
+    ...
+static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
+    ZIPUP_PC *zipup;
+
+    if (gizmo == NULL)
+        return 0;
+    zipup = (ZIPUP_PC *)gizmo->object;
+    if (query & 1)
+        return active != zipup->direction;
+
+/* after */
+} HINT_ZIPUP_PC;
+
+typedef struct zipup_transport_view_pc_s {
+    ...
+static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
+    ZIPUP_PC *zipup;
+
+    if (gizmo == NULL) {
+        return 0;
+    }
+    zipup = (ZIPUP_PC *)gizmo->object;
+    if (query & 1) {
+        return active != zipup->direction;
+    }
+```
+
+**What clang-format cannot do** is counted by oddscan group h, budgeted like the
+rest (numbers after the reformat): mid-file `#include` 5, function bodies of 40+
+lines without a blank line 1,196, functions over 400 lines 21, files over 5,000
+lines 12, data-like files (over 200 lines, under 2% blank) 6 (23 before the
+reformat added blank lines between definitions), several statements on a line
+0, commented-out code 0. Mid-file includes were moved to the top in 40 units
+and in saga.h (`<math.h>`), objects identical. Five stay: game.cpp (`<string.h>`,
+`<stdio.h>`: moving them swaps two loads in InitGameAfterConfig) and
+nushadermanager.cpp (`<new>`: its inline placement new changes the code of
+four shader-manager methods), and in saga.h `<vector>` (inside the
+`SAGA_SHADER_PARSER_TYPES` C++ block) and `debug/diagnostics.h` (needs the
+types above it); the saga.h split (section 7) resolves those two.
+
+**STATIC_ASSERT names.** The typedef of each assertion was named after
+`__LINE__`. VC8's code for a few fragile functions depends on the identifiers it
+has seen: inserting two blank lines near the top of saga.h changed
+InitGameAfterConfig (game.cpp), one or three did not. `STATIC_ASSERT` now uses
+`__COUNTER__`, so moving lines (formatting) keeps every name; with it, shifting
+saga.h lines leaves game.obj identical. The switch itself kept every object
+identical on the 2026-11-13 base; on the later base it changes only
+InitGameAfterConfig, which is not an exact match before or after (objdiff
+82.24% both).
+
+**clang-tidy** (`.clang-tidy`). Step 1 of the stricter configuration is in:
+`readability-identifier-naming`, `google-runtime-int`, 143 bugprone,
+readability, misc, cert and performance checks that have no finding in the tree
+(five of them have findings only in upstream Ogg Vorbis code and are exempted
+for it by `tools/check.py`: `bugprone-incorrect-roundings`,
+`misc-header-include-cycle`, `performance-type-promotion-in-math-fn`,
+`readability-avoid-unconditional-preprocessor-if`,
+`readability-redundant-control-flow`), and `clang-diagnostic-*` minus the
+classes that still have findings. Fixed for it: the conflicting
+`NU_SIN_LUT`/`NU_COS_LUT` copies (macro-redefined, C4005), nine units that
+called `sprintf` undeclared (implicit-function-declaration), the Debug-only
+`STUBBED` redefinition. Not enabled, with the whole-tree count of distinct
+findings (Matching view):
+
+| class | findings | note |
+|---|---:|---|
+| `clang-diagnostic-gnu-folding-constant` | 11,427 | STATIC_ASSERT array bounds with `offsetof` |
+| `clang-diagnostic-vla-cxx-extension` | 7,235 | same, in C++ units |
+| `clang-diagnostic-c++11-compat-deprecated-writable-strings` | about 900 | string literal to `char *` (C++98 allows it) |
+| `clang-diagnostic-deprecated-declarations` | 551 | CRT `_CRT_SECURE` deprecations (= C4996 at /W3) |
+| `clang-diagnostic-incompatible-pointer-types` (+ discards-qualifiers) | 154 + 13 | = C4133, C4090 |
+| `clang-diagnostic-microsoft-cast` | 111 | function pointer to data pointer casts |
+| `clang-diagnostic-format-security` | 34 | non-literal format strings |
+| `clang-diagnostic-tautological-undefined-compare` | 30 | `this == NULL` style checks |
+| `clang-diagnostic-warning` | 16 | tentative array definitions in gameaiscript.c |
+| `clang-diagnostic-deprecated-non-prototype` | 6 | the deliberate unprototyped calls (keep) |
+| 19 more classes (dangling-else, pointer-sign, shift-negative-value, format arguments, unsequenced, ...) | 1-5 each, 44 in all | |
+| `readability-duplicate-include` | 22 in src | clang-tidy 18 flags an include of a header that an earlier header already included; no file includes a header twice |
+
+Step 2 and 3 of the table below remain. Game units are now also analysed with
+`-DSAGA_DEBUG`, so code inside `#ifdef SAGA_DEBUG` is linted;
+`tools/check.py --tidy --matching-only` skips that pass. `make lint` takes
+11 minutes on a four-core machine, against 3.5 minutes before: the new checks
+add about 1 minute (4.6 minutes with `--matching-only`) and the Debug pass
+about 6 minutes.
+
+The original measurements that chose step 1 (clang-tidy 18 on 15 units, all of
+`bugprone-*`, `readability-*`, `misc-*`, `cert-*`, `performance-*`,
+`clang-analyzer-core.*`/`deadcode.*` and `clang-diagnostic-*`, units only):
 
 | step | checks | hits in the sample | note |
 |---|---|---:|---|
-| 1, enable now | every bugprone/readability/misc/cert check with 0 hits, among them `bugprone-macro-parentheses`, `bugprone-suspicious-semicolon`, `bugprone-sizeof-expression`, `bugprone-macro-repeated-side-effects`, `misc-redundant-expression`, `misc-misplaced-const`, `readability-misleading-indentation`, `readability-simplify-boolean-expr`, `readability-redundant-control-flow` | 0 | guard rails at no cost (run the whole tree first) |
-| 1 | `readability-duplicate-include` 2, `readability-inconsistent-declaration-parameter-name` 1, `clang-diagnostic-macro-redefined` 2, `clang-diagnostic-implicit-function-declaration` 1, `clang-diagnostic-deprecated-non-prototype` 5 | 11 | codegen-neutral fixes, except unprototyped calls (keep with NOLINT and a reason) |
+| 1, done | every bugprone/readability/misc/cert/performance check with 0 hits in the whole tree, the clean compiler warning classes, macro-redefined, implicit-function-declaration | 0 | |
 | 2 | `clang-diagnostic-incompatible-pointer-types` 42 (= C4133), `readability-redundant-declaration` 10 (= declscan class A), `readability-named-parameter` 11, `bugprone-multi-level-implicit-pointer-conversion` 11, `bugprone-switch-missing-default-case` 16 | 90 | casts and declarations; verify object identity |
 | 3, review | `clang-analyzer-core.NullDereference` 12, `bugprone-integer-division` 7, `bugprone-branch-clone` 12, `bugprone-signed-char-misuse` 24, `misc-unused-parameters` 77 | 132 | some are retail bugs; keep those with a reason |
-| not suitable | `readability-magic-numbers` 3,443 (also fires on array bounds; oddscan's budget does this job), `readability-uppercase-literal-suffix` 1,961, `readability-braces-around-statements` 1,280, `hicpp-signed-bitwise` 1,063, `bugprone-narrowing-conversions` 280, `clang-diagnostic-gnu-folding-constant` 506 | | style or codegen-sensitive at this size |
-
-For MSVC: add `/W3` (warning level does not change code) and a warning budget
-per class parsed from the build log, the same way as the oddscan budget; turn
-C4005, C4133 and C4700 into errors once they reach zero.
+| not suitable | `readability-magic-numbers` 3,443 (also fires on array bounds; oddscan's budget does this job), `readability-uppercase-literal-suffix` 1,961, `readability-braces-around-statements` 1,280 (clang-format's InsertBraces does it now), `hicpp-signed-bitwise` 1,063, `bugprone-narrowing-conversions` 280 | | style or codegen-sensitive at this size |
 
 ## 4. What is harmless and what blocks
 
@@ -536,9 +632,9 @@ intended). **Sensitive** batches: the exact set by address after `match.py
 
 | # | batch | size | codegen | verify |
 |---:|---|---|---|---|
-| 0 | Land `oddscan.py` + budget; add `oddscan.py --check` to `make check-core`; parse MSVC warnings into a budget too | tool only | none | unit tests |
+| 0, done | `oddscan.py --check`, `declscan.py --check` and the budget guard in `make check-core`; MSVC warning budget after each CI build | tool only | none | unit tests |
 | 1 | Comments: 2 `SOURCE DRAFT ONLY`, 813 address comments (to symbols.csv notes or removed), the matching-narration part of 459 `retail` comments | ~1,300 lines, ~200 files | neutral | object identity |
-| 2 | Lint step 1 (section 3) and the 16 conflicting macros (`NU_SIN_LUT`/`NU_COS_LUT`: C4005), 2 duplicate includes, 30 `push_macro` lines (undefine the A/W macros once in the header) | ~60 sites | neutral | object identity |
+| 2, done except `push_macro` | Lint step 1 (section 3), the conflicting `NU_SIN_LUT`/`NU_COS_LUT` copies (C4005), mid-file includes, stricter clang-format and the reformat; open: 30 `push_macro` lines (undefine the A/W macros once in the header) | ~60 sites + reformat | neutral | object identity |
 | 3 | Names: 439 `_candidate`, explicit `__thiscall` on members (214), `(void)x;` noise (1,254) | ~1,900 lines | neutral (`_candidate` renames change symbol names: update config/symbols.csv) | object identity + check-objects |
 | 4 | Pilot: section 7 step 1 (saga.h split into headers + include-all shim) and `decomp.h` | saga.h's 31k lines | neutral by construction | object identity, all units |
 | 5 | Pilot: enums/flags for the 20 fields of section 1g, named constants only (no field retyping except `i32`) | ~4,300 uses | neutral | object identity |

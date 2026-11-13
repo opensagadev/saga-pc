@@ -1,3 +1,8 @@
 # Reviewed budget raises (tools/budget.py --guard). Budgets only go down; a change that
 # raises one adds a line here in the same change: FILE KEY NEW-VALUE REASON
 # config/oddscan-budget.json goto 398 retail block order of NuFoo needs a second label
+config/oddscan-budget.json include-mid-file 5 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
+config/oddscan-budget.json dense-function 1196 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
+config/oddscan-budget.json long-function 21 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
+config/oddscan-budget.json long-file 12 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
+config/oddscan-budget.json data-file 23 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style

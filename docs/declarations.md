@@ -17,7 +17,13 @@ without a definition into one class:
 python3 tools/declscan.py                       # per-unit counts, records in build/declscan.json
 python3 tools/declscan.py src/legoapi --list --classes BD
 python3 tools/declscan.py src/legoapi --fix --dry-run
+python3 tools/declscan.py --check               # class counts against config/declscan-budget.json (CI)
+python3 tools/declscan.py --write-budget        # lower the budget after removing declarations
 ```
+
+`make check-core` runs `--check`: a unit that adds a file-scope prototype or
+`extern` raises a class count above its budget and fails. Declare it in the
+owner's header instead.
 
 `--fix` deletes only whole-line declarations without a comment of their own.
 A comment line directly above, a trailing comment or a nearby

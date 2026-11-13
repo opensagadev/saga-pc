@@ -207,6 +207,38 @@ compiled definition to have a mapping or to be listed in
 helpers with no known original address, which earn no credit). CI runs
 everything that needs no original files; matching runs locally only.
 
+### House rules enforced by CI
+
+| rule | checked by | run locally |
+|---|---|---|
+| Formatting follows [.clang-format](.clang-format) (blank line between definitions, braces on every body, at most one empty line, newline at end of file); the pinned Ogg Vorbis sources keep [their own style](config/clang-format-vendored) | `make lint` | `make format` rewrites `src/`; `python3 tools/check.py --format` checks |
+| No clang-tidy finding: the checks of [.clang-tidy](.clang-tidy) and every Clang compiler warning class that is clean today, on each unit as the Matching build compiles it and once more with `SAGA_DEBUG` | `make lint` | `python3 tools/check.py --tidy` (`--matching-only` for a quick pass) |
+| No new file-scope prototypes or `extern`s in units (classes A-E of [docs/declarations.md](docs/declarations.md)): declare in the owner's header | `make check-core` | `python3 tools/declscan.py --check`; `--list --classes D` shows them |
+| No new oddities ([docs/cleanup-audit.md](docs/cleanup-audit.md): section pragmas, `noinline`, address names, magic numbers, mid-file `#include`s, dense or very long functions, commented-out code, `NOLINT`, `clang-format off`, ...) | `make check-core` | `python3 tools/oddscan.py --check`; `--list --class NAME` |
+| No new MSVC warnings (distinct warnings per code, Matching and Debug) | `make check-warnings` after the build in CI | `make build check-warnings`, `make BUILD_KIND=Debug build check-warnings`; the report is `build/warnings.json` |
+
+Each count has a budget in `config/`: `oddscan-budget.json`, `declscan-budget.json`,
+`warning-budget.json`. A count above its budget fails; a count below it is
+reported with the command that lowers the budget. Lower it in the same change
+that removed the findings:
+
+```sh
+python3 tools/oddscan.py --write-budget
+python3 tools/declscan.py --write-budget
+make lower-warning-budget && make BUILD_KIND=Debug lower-warning-budget
+```
+
+Budgets only go down. `python3 tools/budget.py --guard` (in `make check-core`)
+compares the budget files with the merge base of `origin/main` and fails when a
+value went up, unless the same change adds a line `FILE KEY NEW-VALUE REASON`
+to [config/budget-raises.txt](config/budget-raises.txt). Use that only for a
+reviewed exception (a scanner change, a match that needs the construct).
+
+`STATIC_ASSERT` names its typedef with `__COUNTER__`, not `__LINE__`: VC8 code
+generation of a few units depends on the set of identifiers it sees, and
+line-numbered names made any line shift in `saga.h` (formatting included) a
+possible code change.
+
 ### Temporary artifacts
 
 Remove temporary files when their task or checkpoint no longer needs them. After
