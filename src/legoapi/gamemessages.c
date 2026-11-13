@@ -118,7 +118,7 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
 void __cdecl UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_CALLBACK_PC callback;
-    f32 rounded_time, progress;
+    f32 rounded_time, ratio, progress;
     u32 flags;
     i32 index, angle;
     for (index = 0; index < 128; ++index, ++message) {
@@ -133,8 +133,8 @@ void __cdecl UpdateGameMessages(void) {
         }
         if ((message->flags & 0x80) != 0) {
             message->expired = 1;
-            message->elapsed = 1.0f;
             message->duration = 1.0f;
+            message->elapsed = 1.0f;
         }
         if (message->delay > 0.0f) {
             rounded_time = message->delay - FRAMETIME;
@@ -146,7 +146,7 @@ void __cdecl UpdateGameMessages(void) {
             }
             continue;
         }
-        if (!(message->duration > message->elapsed))
+        if (!(message->elapsed < message->duration))
             continue;
         rounded_time = message->elapsed + FRAMETIME;
         message->elapsed = rounded_time;
@@ -159,19 +159,21 @@ void __cdecl UpdateGameMessages(void) {
         }
         flags = message->flags;
         if ((flags & 0x50) != 0) {
-            progress = (f32)((f64)message->elapsed / (f64)message->duration);
+            ratio = (f32)((f64)message->elapsed / (f64)message->duration);
             if ((flags & 0x100) != 0) {
-                angle = (i32)((f64)progress * 16384.0 + 16384.0);
+                angle = (i32)((f64)ratio * 16384.0 + 16384.0);
                 progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
             } else if ((flags & 0x200) != 0) {
-                angle = (i32)((f64)progress * 16384.0);
+                angle = (i32)((f64)ratio * 16384.0);
                 progress = NuTrigTable[(angle >> 1) & 0x7fff];
             } else if ((flags & 0x400) != 0) {
-                angle = (i32)((f64)progress * 32768.0);
+                angle = (i32)((f64)ratio * 32768.0);
                 progress = NuTrigTable[(angle >> 1) & 0x7fff];
             } else if ((flags & 0x800) != 0) {
-                angle = (i32)((f64)progress * 32768.0);
+                angle = (i32)((f64)ratio * 32768.0);
                 progress = (f32)(1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+            } else {
+                progress = ratio;
             }
             if ((flags & 0x10) != 0) {
                 message->position.x =
@@ -304,29 +306,26 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_PC *end = message + 128;
     for (; message != end; ++message) {
+        f32 difference, width;
         NUVEC target, transformed;
-        union {
-            f32 value;
-            u32 bits;
-        } difference;
         if (message->active == 0 || message->has_start_position != 0)
             continue;
         NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
-        if ((message->position.y - camera_position->y) * camera_direction->y +
-                (message->position.x - camera_position->x) * camera_direction->x +
+        if ((message->position.x - camera_position->x) * camera_direction->x +
+                (message->position.y - camera_position->y) * camera_direction->y +
                 (message->position.z - camera_position->z) * camera_direction->z <=
             0.0) {
             message->parameter_fb = 1;
         } else {
             message->parameter_fb = 0;
             if ((message->flags & 4) != 0) {
-                target.x = message->position.x + message->scale_initial * camera_right->x;
-                target.y = message->position.y + message->scale_initial * camera_right->y;
-                target.z = message->position.z + message->scale_initial * camera_right->z;
+                target.x = message->position.x + camera_right->x * message->scale_initial;
+                target.y = message->position.y + camera_right->y * message->scale_initial;
+                target.z = message->position.z + camera_right->z * message->scale_initial;
                 NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
-                difference.value = message->start_position.x - transformed.x;
-                difference.bits &= 0x7fffffff;
-                message->scale_current = (f32)(difference.value * 0.5249999761581421);
+                difference = message->start_position.x - transformed.x;
+                *(u32 *)&width = *(u32 *)&difference & 0x7fffffff;
+                message->scale_current = (f32)(width * 0.5249999761581421);
             }
         }
         if ((message->flags & 2) == 0)
