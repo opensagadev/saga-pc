@@ -334,8 +334,7 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
         }
         DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeMultisamplePc() ? 255 : 64) * MenuAlpha));
     }
-    if ((PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1) &&
-        MenuVideoOptionsPc.shadows_enabled) {
+    if (MenuCanChangeShadowsPc() && MenuVideoOptionsPc.shadows_enabled) {
         if (!MenuPcStringsInitialized)
             MenuPcStringsInit();
         value = MenuPcStrings[15];
@@ -347,9 +346,7 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
     if (!MenuPcStringsInitialized)
         MenuPcStringsInit();
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[32], value);
-    DrawMenuEntryEx(
-        menu, text,
-        (u8)((PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1 ? 255 : 64) * MenuAlpha));
+    DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeShadowsPc() ? 255 : 64) * MenuAlpha));
     if (MenuVideoOptionsPc.bloom_enabled) {
         if (!MenuPcStringsInitialized)
             MenuPcStringsInit();
