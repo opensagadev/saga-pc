@@ -134,8 +134,9 @@ void oneAtOnce_SetInitDistPerRow(float distance) {
 
 void __cdecl oneAtOnce_MaintainArray(void) {
     GAMEOBJECT *previous_attackers[8][4];
-    i32 attacker_count[8] = {0};
-    i32 previous_count[8] = {0};
+    /* Four explicit zeros: retail stores the first four counts from one register and zero-fills the rest. */
+    i32 attacker_count[8] = {0, 0, 0, 0};
+    i32 previous_count[8] = {0, 0, 0, 0};
     GAMEOBJECT *object, *opponent;
     APIOBJECT_PC *opponent_api;
     i32 index, player_index, slot, previous, sort_slot;
