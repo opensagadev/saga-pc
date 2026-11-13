@@ -53,7 +53,7 @@ extern "C" void __cdecl MenuExitVideoPc(MENU *) {
 }
 extern "C" void __cdecl MenuExitEffectsPc(MENU *) {
 }
-extern "C" void __cdecl MenuApplyVideoPc(MENU *) {
+extern "C" void __cdecl MenuApplyVideoPc(void) {
     if (PCDeviceBackend.HasRequestedModeChangedPc()) {
         MenuSFX = MENUSFX_MENUSELECT;
         MenuVideoOptionsPc.ApplyPc();
@@ -75,7 +75,7 @@ extern "C" void __cdecl MenuApplyVideoPc(MENU *) {
     }
     BackupMenu();
 }
-extern "C" void __cdecl MenuCancelVideoPc(MENU *) {
+extern "C" void __cdecl MenuCancelVideoPc(void) {
     PCDeviceBackend.ResetRequestedMode();
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
@@ -87,7 +87,7 @@ extern "C" void __cdecl MenuCancelVideoPc(MENU *) {
 }
 extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
     if (menu->cancel_pressed) {
-        MenuCancelVideoPc(menu);
+        MenuCancelVideoPc();
         return;
     }
     switch (menu->selected_row) {
@@ -132,13 +132,13 @@ extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
             break;
         case 4:
             if (menu->confirm_pressed)
-                MenuApplyVideoPc(menu);
+                MenuApplyVideoPc();
             break;
     }
 }
 extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
     if (menu->cancel_pressed) {
-        MenuCancelVideoPc(menu);
+        MenuCancelVideoPc();
         return;
     }
     switch (menu->selected_row) {
@@ -195,7 +195,7 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
             break;
         case 4:
             if (menu->confirm_pressed)
-                MenuApplyVideoPc(menu);
+                MenuApplyVideoPc();
             break;
     }
 }

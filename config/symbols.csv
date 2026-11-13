@@ -3335,8 +3335,8 @@ address,symbol,size,ctype
 0x50ea30,_MatrixText,517,
 0x0050ec40,_FixUpButtonsInFont,200,"void __cdecl (VUFNT *, VUFNT *)"
 0x0050ed50,_TextButtonStringPc,282,"char *(i32,const char *,const char *)"
-0x50ee70,_MenuApplyVideoPc,152,void __cdecl(MENU *)
-0x50ef10,_MenuCancelVideoPc,104,void __cdecl(MENU *)
+0x50ee70,_MenuApplyVideoPc,152,void __cdecl(void)
+0x50ef10,_MenuCancelVideoPc,104,void __cdecl(void)
 0x50ef80,_MenuUpdateVideoPc,328,void __cdecl(MENU *)
 0x50f0d0,_MenuUpdateEffectsPc,400,void __cdecl(MENU *)
 0x50f260,_MenuUpdateVideoConfirmPc,227,void __cdecl(MENU *)

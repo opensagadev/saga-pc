@@ -28591,8 +28591,8 @@ extern "C" {
     void __cdecl MenuDrawEffectsPc(MENU *);
     void __cdecl MenuUpdateEffectsPc(MENU *);
     void __cdecl MenuExitEffectsPc(MENU *);
-    void __cdecl MenuApplyVideoPc(MENU *);
-    void __cdecl MenuCancelVideoPc(MENU *);
+    void __cdecl MenuApplyVideoPc(void);
+    void __cdecl MenuCancelVideoPc(void);
     extern f32 MenuVideoConfirmDurationPc;
     extern i32 MenuVideoConfirmWaitPc;
     extern const char MenuVideoCountdownFormatPc[9];
