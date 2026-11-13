@@ -703,7 +703,7 @@ extern "C" {
         ObjTabList = table;
         LEVELSPLINECOUNT = 0;
         LEVELOBJECTMAX = maximum;
-        for (; table->kind != 0xff; ++table, ++LEVELOBJECTCOUNT) {
+        for (; table->kind != 0xff; ++table) {
             if (table->reflection == 1) {
                 LEVOBJREF_LASTOBJ = LEVELOBJECTCOUNT;
                 if (LEVOBJREF_FIRSTOBJ == -1)
@@ -714,6 +714,7 @@ extern "C" {
                 if (LEVOBJREF_FIRSTREFOBJ == -1)
                     LEVOBJREF_FIRSTREFOBJ = LEVELOBJECTCOUNT;
             }
+            LEVELOBJECTCOUNT++;
         }
         object_range = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ;
         reflection_range = LEVOBJREF_LASTREFOBJ - LEVOBJREF_FIRSTREFOBJ;
