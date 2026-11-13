@@ -9182,7 +9182,7 @@ extern "C" {
         f32 distance = NuVecDistSqr(&center, reinterpret_cast<NUVEC *>(&global_camera.mtx.m30), NULL);
         if (distance < 0.0f)
             distance = 0.0f;
-        PC_DISPLAY_CLIP_OBJECT_PC *object = special->clip_objects;
+        PC_DISPLAY_CLIP_OBJECT_PC *object;
         if (special->lod_ranges[0] != 0.0f) {
             i32 lod = 0;
             if (PCSpecialForcedLOD != 0) {
@@ -9192,7 +9192,9 @@ extern "C" {
                 while (distance < special->lod_ranges[lod])
                     ++lod;
             }
-            object += lod;
+            object = &special->clip_objects[lod];
+        } else {
+            object = special->clip_objects;
         }
         f32 alpha = 1.0f;
         PC_SPECIAL_RENDER_SCENE *scene_view = reinterpret_cast<PC_SPECIAL_RENDER_SCENE *>(scene);
