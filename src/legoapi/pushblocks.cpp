@@ -453,9 +453,7 @@ extern "C" {
             if (support != NULL && overlap_x && overlap_z) {
                 f32 gap = offset.y - maximum.y;
                 if (gap > 0.0f) {
-                    if (*support == NULL) {
-                        *support = (PUSH_BLOCK_PC *)other;
-                    } else {
+                    if (*support != NULL) {
                         PUSH_BLOCK_PC *previous = (PUSH_BLOCK_PC *)*support;
                         f32 previous_gap;
                         offset = *position;
@@ -469,6 +467,8 @@ extern "C" {
                             other->supporting_block = (PUSH_BLOCK_PC *)previous;
                             *support = (PUSH_BLOCK_PC *)other;
                         }
+                    } else {
+                        *support = (PUSH_BLOCK_PC *)other;
                     }
                 }
             }
