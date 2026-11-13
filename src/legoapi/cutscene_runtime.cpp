@@ -2133,8 +2133,9 @@ extern "C" {
         if (CutScene_StoppedFn != NULL)
             CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(stop_cut));
         CutSceneResetTextureAnimationsPrivatePc(stop_cut);
-        if (stop_cut->skip_level != -1) {
-            NewLData = &LDataList[stop_cut->skip_level];
+        i32 skip_level = stop_cut->skip_level;
+        if (skip_level != -1) {
+            NewLData = &LDataList[skip_level];
             if (HUB_LDATA != NULL && NewLData == HUB_LDATA) {
                 if (CutScenePlayerPc != NULL &&
                     reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL) {
