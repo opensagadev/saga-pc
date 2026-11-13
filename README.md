@@ -8,9 +8,9 @@
 | Metric / coverage | Meaning |
 | --- | --- |
 | ![exact code match](https://img.shields.io/badge/exact%20code%20match-60.288%25-orange) | Byte-identical code and the alignment padding after it. |
-| ![mapped code](https://img.shields.io/badge/mapped%20code-93.991%25-brightgreen) | Known code extents. |
-| ![mapped file-backed data](https://img.shields.io/badge/mapped%20file--backed%20data-50.357%25-orange) | Known data stored in the executable. |
-| ![mapped zero-fill/BSS](https://img.shields.io/badge/mapped%20zero--fill%2FBSS-97.704%25-brightgreen) | Known zero-initialized storage. |
+| ![mapped code](https://img.shields.io/badge/mapped%20code-96.388%25-brightgreen) | Known code extents and the alignment padding between them. |
+| ![mapped file-backed data](https://img.shields.io/badge/mapped%20file--backed%20data-95.636%25-brightgreen) | Known data stored in the executable and the zero padding between it. |
+| ![mapped zero-fill/BSS](https://img.shields.io/badge/mapped%20zero--fill%2FBSS-97.712%25-brightgreen) | Known zero-initialized storage. |
 
 <!-- /mapping-badge -->
 
