@@ -1,6 +1,6 @@
 #include "saga.h"
 
-/* Retail unit 0x4701d0-0x47276c (legogame/grabber.c): definitions in retail address order. */
+/* Retail unit 0x470050-0x47276c: definitions in retail address order. */
 
 typedef struct grabber_progress_source_pc_s {
     u8 unknown_0000[0x484];
@@ -13,13 +13,11 @@ typedef struct grabber_progress_source_pc_s {
 STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_tfactor) == 0x484);
 STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_frame) == 0x48c);
 STATIC_ASSERT(offsetof(GRABBER_PROGRESS_SOURCE_PC, stored_parameter) == 0x494);
-
 typedef struct world_grabber_progress_pc_s {
     u8 unknown_0000[0x46ec];
     GRABBER_PROGRESS_SOURCE_PC *grabber;
 } WORLD_GRABBER_PROGRESS_PC;
 STATIC_ASSERT(offsetof(WORLD_GRABBER_PROGRESS_PC, grabber) == 0x46ec);
-
 typedef struct level_grabber_progress_pc_s {
     u8 unknown_0000[0x2810];
     f32 stored_frame;
@@ -29,7 +27,6 @@ typedef struct level_grabber_progress_pc_s {
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_frame) == 0x2810);
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_tfactor) == 0x2814);
 STATIC_ASSERT(offsetof(LEVEL_GRABBER_PROGRESS_PC, stored_parameter) == 0x2818);
-
 typedef struct grabber_pc_s {
     NUMTX matrix;
     NUMTX grab_matrix;
@@ -147,9 +144,65 @@ i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_pla
         GrabCurrentPc->field = NULL
 #define GRABBER_SWITCH_ON(obstacle)                                                                                    \
     ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
-
 static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a);
 static void GrabberMtxRotateX(NUMTX *m, NUANG a);
+static void __cdecl Grab_invert_x(NUFPAR_PC *parser);
+static void __cdecl Grab_move_xy(NUFPAR_PC *parser);
+static void __cdecl Grab_radius(NUFPAR_PC *parser);
+static void __cdecl Grab_rotate(NUFPAR_PC *parser);
+static void __cdecl Grab_scale(NUFPAR_PC *parser);
+static void __cdecl Grab_shadow(NUFPAR_PC *parser);
+static void __cdecl Grab_speed(NUFPAR_PC *parser);
+static void __cdecl Grab_type(NUFPAR_PC *parser);
+
+static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
+    f32 cosz;
+    f32 sinz;
+
+    cosz = NU_COS_LUT(a);
+    sinz = NU_SIN_LUT(a);
+    m->m00 = cosz;
+    m->m01 = sinz;
+    m->m02 = 0.0f;
+    m->m03 = 0.0f;
+    m->m10 = -sinz;
+    m->m11 = cosz;
+    m->m12 = 0.0f;
+    m->m13 = 0.0f;
+    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m01;
+    f32 m11;
+    f32 m21;
+    f32 m31;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m01 = m->m01;
+    m11 = m->m11;
+    m21 = m->m21;
+    m31 = m->m31;
+
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
+}
 GRABBER_PC *GrabCurrentPc = 0;
 
 static void __cdecl Grab_radius(NUFPAR_PC *parser) {
@@ -915,53 +968,4 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
             }
         }
     }
-}
-
-static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
-    f32 cosz;
-    f32 sinz;
-
-    cosz = NU_COS_LUT(a);
-    sinz = NU_SIN_LUT(a);
-    m->m00 = cosz;
-    m->m01 = sinz;
-    m->m02 = 0.0f;
-    m->m03 = 0.0f;
-    m->m10 = -sinz;
-    m->m11 = cosz;
-    m->m12 = 0.0f;
-    m->m13 = 0.0f;
-    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
-}
-
-static void GrabberMtxRotateX(NUMTX *m, NUANG a) {
-    f32 cosx;
-    f32 sinx;
-    f32 m01;
-    f32 m11;
-    f32 m21;
-    f32 m31;
-
-    cosx = NU_COS_LUT(a);
-    sinx = NU_SIN_LUT(a);
-    m01 = m->m01;
-    m11 = m->m11;
-    m21 = m->m21;
-    m31 = m->m31;
-
-    m->m01 = (m01 * cosx) - (m->m02 * sinx);
-    m->m02 = (m01 * sinx) + (m->m02 * cosx);
-    m->m11 = (m11 * cosx) - (m->m12 * sinx);
-    m->m12 = (m11 * sinx) + (m->m12 * cosx);
-    m->m21 = (m21 * cosx) - (m->m22 * sinx);
-    m->m22 = (m21 * sinx) + (m->m22 * cosx);
-    m->m31 = (m31 * cosx) - (m->m32 * sinx);
-    m->m32 = (m31 * sinx) + (m->m32 * cosx);
 }
