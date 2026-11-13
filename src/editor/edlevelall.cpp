@@ -8126,35 +8126,41 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
     if (stream.BeginBlock("Class") == NULL)
         return;
     stream.SerialiseString(&name);
-    if (stream.version == 0)
-        stream.SerialiseBuffer(&count, sizeof(count), 1);
+    if (stream.version == 0) {
+        i32 version_count;
+        stream.SerialiseBuffer(&version_count, sizeof(version_count), 1);
+    }
     if (stream.mode == 2) {
         count = 0;
         for (EdRef *member = members; member != NULL; member = member->next) {
+            i32 keep = 1;
             if (stream.flags & 0x400000) {
                 if (member->attributes & 0x400000)
-                    continue;
+                    keep = 0;
             } else {
-                i32 keep = !(member->attributes & 0x10000000);
+                if (member->attributes & 0x10000000)
+                    keep = 0;
                 if ((member->attributes & 0x80000000) && class_mapping != NULL && class_mapping[member->type_id] == -1)
-                    continue;
-                if (!keep)
-                    continue;
+                    keep = 0;
             }
+            if (!keep)
+                continue;
             count++;
         }
         stream.SerialiseBuffer(&count, sizeof(count), 1);
         for (EdRef *member = members; member != NULL; member = member->next) {
+            i32 keep = 1;
             if (stream.flags & 0x400000) {
                 if (member->attributes & 0x400000)
-                    continue;
+                    keep = 0;
             } else {
-                i32 keep = !(member->attributes & 0x10000000);
+                if (member->attributes & 0x10000000)
+                    keep = 0;
                 if ((member->attributes & 0x80000000) && class_mapping != NULL && class_mapping[member->type_id] == -1)
-                    continue;
-                if (!keep)
-                    continue;
+                    keep = 0;
             }
+            if (!keep)
+                continue;
             member->Serialise(stream, class_mapping);
         }
     }
@@ -8174,7 +8180,7 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
                 member->Serialise(stream, NULL);
                 AddType(member);
             } else {
-                EdTrace("");
+                EdTrace();
             }
         }
     }
