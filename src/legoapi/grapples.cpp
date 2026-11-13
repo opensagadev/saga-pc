@@ -1162,7 +1162,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->context_duration = 0.0f;
         object->field_7b3 = 0;
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
-        object->context_hover_target_y = (f32)fabs((f64)grapple->shadow_probe_position.y - object->upper_position.y);
+        object->context_hover_target_y = GrappleFabsPc(grapple->shadow_probe_position.y - object->upper_position.y);
         if ((grapple->flags & 4) != 0) {
             object->context_variant_flags &= ~0x100;
             SetWeaponIn(object);
