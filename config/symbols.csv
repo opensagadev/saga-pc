@@ -10436,6 +10436,8 @@ address,symbol,size,ctype
 0x6b8cc0,??_GEditorSettings@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6b8d40,??0PlaceableInterface@@QAE@XZ,23,
 0x6b8d90,??1PlaceableInterface@@UAE@XZ,7,
+0x6b8de0,??2SplineKnot@@SAPAXI@Z,18,
+0x6b8e00,??3SplineKnot@@SAXPAX@Z,18,
 0x6b8e50,??1SplineHelper@@UAE@XZ,7,
 0x6b8e60,??0KnotHelper@@QAE@XZ,16,
 0x6b8e70,?Flush@KnotHelper@@UAEXXZ,1,
