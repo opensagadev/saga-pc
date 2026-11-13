@@ -12280,14 +12280,7 @@ void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char 
     AISCRIPT_PC *script;
     if (parser != NULL) {
         if (*script_ref == NULL) {
-            script = NULL;
-            if (buffer != NULL && end != NULL && buffer->addr + sizeof(AISCRIPT_PC) < end->addr) {
-                script = (AISCRIPT_PC *)((buffer->addr + 15) & ~15u);
-                buffer->addr = (u32)script + sizeof(AISCRIPT_PC);
-                memset(script, 0, sizeof(AISCRIPT_PC));
-            } else {
-                AIScriptMissingStateDiagnostic();
-            }
+            PATH_LOAD_ALLOCATE(AISCRIPT_PC *, script, buffer, end, sizeof(AISCRIPT_PC));
             *script_ref = script;
             if (script != NULL) {
                 memset(script, 0, sizeof(AISCRIPT_PC));
