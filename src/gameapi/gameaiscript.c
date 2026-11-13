@@ -10248,60 +10248,62 @@ i32 Action_ReleaseLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *unused1, AIPACKET_P
 
 i32 __cdecl Action_AssignLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                  i32 param_count, i32 first_time, float unused6) {
-    APIOBJECT_PC *named;
-    AILOCATOR_PC *locator;
-    AILOCATORSET_PC *locator_set;
-    i32 assignment;
-    i32 index;
     GAMEOBJECT *object;
+    AILOCATOR_PC *locator;
+    i32 assignment;
+    AILOCATORSET_PC *locator_set;
+    i32 index;
+    assignment = -1;
+    object = NULL;
+    locator = NULL;
+    locator_set = NULL;
     if (first_time == 0) {
         return 1;
     }
 
-    object = packet != NULL && packet->owner != NULL ? (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner : NULL;
-    locator = NULL;
-    locator_set = NULL;
-    assignment = packet != NULL && packet->owner != NULL ? ((APIOBJECT_PC *)object)->object_id : -1;
-
-    for (index = 0; index < param_count; ++index) {
-        char *value;
-        char *param = params[index];
-        if (NuStrICmp(param, GizActionLiteral758288) == 0) {
-            locator = object != NULL ? object->ai_packet.locator : NULL;
-            continue;
-        }
-        value = NuStrIStr(param, (char *)GizActionLiteral758280);
-        if (value != NULL) {
-            locator = AIPathFindLocator(sys, value + NuStrLen(GizActionLiteral758280) + 1);
-            continue;
-        }
-        value = NuStrIStr(param, "character");
-        if (value != NULL) {
-            object = (GetNamedGameObjectCallback != NULL &&
-                              (named = GetNamedGameObjectCallback(sys, value + NuStrLen("character") + 1)) != NULL
-                          ? (GAMEOBJECT *)named->owner
-                          : NULL);
-            assignment = ((APIOBJECT_PC *)object)->object_id;
-            continue;
-        }
-        value = NuStrIStr(param, (char *)GizActionLiteral75827c);
-        if (value != NULL) {
-            locator_set = AIPathFindLocatorSet(sys, value + NuStrLen(GizActionLiteral75827c) + 1);
-            continue;
-        }
-        if (NuStrICmp(param, GizActionLiteral758274) == 0) {
-            assignment = 0x80;
-        }
+    if (packet != NULL && packet->owner != NULL) {
+        object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+        assignment = ((APIOBJECT_PC *)object)->object_id;
     }
 
-    if (locator != NULL && locator_set != NULL) {
-        for (index = 0; index < locator_set->locator_count; ++index) {
-            if (&sys->locators[locator_set->locator_entries[index]] != locator) {
+    if (param_count > 0) {
+        for (index = 0; index < param_count; ++index) {
+            char *value;
+            if (NuStrICmp(params[index], GizActionLiteral758288) == 0) {
+                if (object != NULL) {
+                    locator = object->ai_packet.locator;
+                }
                 continue;
             }
-            break;
+            value = NuStrIStr(params[index], (char *)GizActionLiteral758280);
+            if (value != NULL) {
+                locator = AIPathFindLocator(sys, value + NuStrLen(GizActionLiteral758280) + 1);
+                continue;
+            }
+            value = NuStrIStr(params[index], "character");
+            if (value != NULL) {
+                object = GetNamedGameObject(sys, value + NuStrLen("character") + 1);
+                assignment = ((APIOBJECT_PC *)object)->object_id;
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)GizActionLiteral75827c);
+            if (value != NULL) {
+                locator_set = AIPathFindLocatorSet(sys, value + NuStrLen(GizActionLiteral75827c) + 1);
+                continue;
+            }
+            if (NuStrICmp(params[index], GizActionLiteral758274) == 0) {
+                assignment = 0x80;
+            }
         }
-        locator_set->assigned[index] = assignment;
+
+        if (locator_set != NULL && locator != NULL) {
+            for (index = 0; index < locator_set->locator_count; ++index) {
+                if (&sys->locators[locator_set->locator_entries[index]] == locator) {
+                    break;
+                }
+            }
+            locator_set->assigned[index] = assignment;
+        }
     }
     return 1;
 }
