@@ -19,10 +19,10 @@ WITNESSES = [
     ('x87-struct-global', 'src/legogame/gameaiscript.c', '_Condition_PlayerOnGround'),
     ('switch', 'src/legoapi/gameobjects.c', '_GetCharacterGoalSpeed'),
     ('struct-loop-call', 'src/legoapi/parts.c', '_Part_FindFromHSpecial'),
-    ('private-call', 'src/legoapi/move.c', '_DodgeCode'),
-    ('private-esi', 'src/legoapi/move.c', '_BlockFindAttackPc'),
-    ('private-esi', 'src/legoapi/move.c', '_BlockFindSpecialAttackPc'),
-    ('private-ecx-x87', 'src/legoapi/move.c', '_BlockFindIncomingPartPc'),
+    ('private-call', 'src/legogame/move.c', '_DodgeCode'),
+    ('private-esi', 'src/legogame/move.c', '_BlockFindAttackPc'),
+    ('private-esi', 'src/legogame/move.c', '_BlockFindSpecialAttackPc'),
+    ('private-ecx-x87', 'src/legogame/move.c', '_BlockFindIncomingPartPc'),
 ]
 
 
@@ -60,7 +60,7 @@ def mutated_object(obj, symbol, offset, value, path):
 
 
 def negative_controls(pe, objects, records, bindings, directory):
-    dodge = objects['src/legoapi/move.c']
+    dodge = objects['src/legogame/move.c']
     record = records['_DodgeCode']
     original = dodge.extract_function('_DodgeCode')['bytes']
     # cmp al,25h: change the actual immediate, leaving opcode/extent intact.
