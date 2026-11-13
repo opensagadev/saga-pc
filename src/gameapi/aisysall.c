@@ -7257,16 +7257,18 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
             NuVecSub(&difference, &packet->left_diversion, &object->position);
             angle = NuAtan2D(difference.x, difference.z);
             NuVecSub(&difference, &packet->movement_destination, &object->position);
-            if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
+            angle_2 = NuAtan2D(difference.x, difference.z);
+            if (NuAngSub(angle_2, angle) < 0) {
                 packet->movement_destination = packet->left_diversion;
                 return;
             }
         }
         if ((packet->flags & 0x00000020u) != 0) {
             NuVecSub(&difference, &packet->right_diversion, &object->position);
-            angle_2 = NuAtan2D(difference.x, difference.z);
+            angle = NuAtan2D(difference.x, difference.z);
             NuVecSub(&difference, &packet->movement_destination, &object->position);
-            if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
+            angle_2 = NuAtan2D(difference.x, difference.z);
+            if (NuAngSub(angle_2, angle) > 0) {
                 packet->movement_destination = packet->right_diversion;
             }
         }
