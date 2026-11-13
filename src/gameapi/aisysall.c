@@ -17483,36 +17483,38 @@ void __cdecl aieditor_cbSave(eduimenu_s *parent, eduiitem_s *item, u32 value) {
 
 eduimenu_s *__cdecl antinodeEditor_MainMenu(void) {
     eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
-    if (menu == NULL)
-        return NULL;
-    eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorAntinodeModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
-                                            AiEditorModeMenuPc, "Select Editor Mode"));
-    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
-    eduiMenuAddItem(
-        menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
-    eduiMenuAddItem(menu,
-                    eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
-    if (aieditor->selected_antinode != NULL)
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorAntinodeTypeMenuPc,
-                                                "Select Antinode Type"));
-    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
-                                               (i32)(aieditorsettings.display_options << 23) >> 31, 1,
-                                               AiEditorDisplayBit8Pc, "Solid Antinode Display"));
-    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
-                                               (i32)(aieditorsettings.display_options << 25) >> 31, 2,
-                                               AiEditorDisplayBit6Pc, "Stop Platforms"));
-    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
-                                               (i32)(aieditorsettings.display_options << 27) >> 31, 3,
-                                               AiEditorDisplayBit4Pc, "Snap Height"));
-    if (aieditor->selected_antinode != NULL) {
-        eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc,
-                                                   aieditor->selected_antinode->game_flags >> 7, 4,
-                                                   AiEditorAntinodeGameFlagsPc, "Never On A Platform"));
-        eduiMenuAddItem(menu, eduiItemToggleCreate(2, &AiEditorSaveMessageColoursPc,
-                                                   (aieditor->selected_antinode->game_flags >> 1) & 1, 5,
-                                                   AiEditorAntinodeGameFlagsPc, "Disbale direction memory"));
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorAntinodeModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorModeMenuPc, "Select Editor Mode"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        if (aieditor->selected_antinode != NULL)
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorAntinodeTypeMenuPc,
+                                                    "Select Antinode Type"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 23) >> 31, 1,
+                                                   AiEditorDisplayBit8Pc, "Solid Antinode Display"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 25) >> 31, 2,
+                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 27) >> 31, 3,
+                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        if (aieditor->selected_antinode != NULL) {
+            eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc,
+                                                       aieditor->selected_antinode->game_flags >> 7, 4,
+                                                       AiEditorAntinodeGameFlagsPc, "Never On A Platform"));
+            eduiMenuAddItem(menu, eduiItemToggleCreate(2, &AiEditorSaveMessageColoursPc,
+                                                       (aieditor->selected_antinode->game_flags >> 1) & 1, 5,
+                                                       AiEditorAntinodeGameFlagsPc, "Disbale direction memory"));
+        }
+        return menu;
     }
-    return menu;
+    return NULL;
 }
 
 eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
