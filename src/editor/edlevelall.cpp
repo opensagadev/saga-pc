@@ -939,6 +939,8 @@ class EdColourControl : public EdControl {
     virtual ~EdColourControl();
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
+    void GetVal(NUVEC &value);
+    void SetVal(NUVEC &value);
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags);
@@ -973,6 +975,8 @@ class EdVectorControl : public EdControl {
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
     void Destroy();
+    void GetVal(VuVec &value);
+    void SetVal(VuVec &value);
     /* Drags the row's value by the cursor and analogue pad. */
     static void Drag(eduiitem_s *item) {
         edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
@@ -1012,6 +1016,8 @@ class EdMatrixControl : public EdControl {
     virtual void Refresh();
     virtual void SetMenuItemAttr(i32 mask, eduiitem_s *menu_item, eduiiattr_s *selected, eduiiattr_s *unselected);
     void Destroy();
+    void GetVal(VuMtx &value);
+    void SetVal(VuMtx &value);
     /* Drags the row's value by the cursor and analogue pad. */
     static void Drag(eduiitem_s *item) {
         edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
@@ -1900,12 +1906,20 @@ void EdVectorControl::Destroy() {
         components[2]->data_ptr = NULL;
 }
 
+void EdVectorControl::GetVal(VuVec &value) {
+    reference->GetMemberData(object, EdType_VuVec, &value, 0);
+}
+
+void EdVectorControl::SetVal(VuVec &value) {
+    reference->SetMemberData(object, EdType_VuVec, &value, 0, NULL);
+}
+
 /* Stores the edited row back into the member; w is always 1. */
 void EdVectorControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     EdVectorControl *control = static_cast<EdVectorControl *>(item->data_ptr);
     __declspec(align(16)) VuVec vector;
     f32 value = 0.0f;
-    control->reference->GetMemberData(control->object, EdType_VuVec, &vector, 0);
+    control->GetVal(vector);
     if (item == control->components[0]) {
         value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
         vector.x = value;
@@ -1919,7 +1933,7 @@ void EdVectorControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
         vector.z = value;
     }
     vector.w = 1.0f;
-    control->reference->SetMemberData(control->object, EdType_VuVec, &vector, 0, NULL);
+    control->SetVal(vector);
     char text[128];
     NuSPrintf(text, "%.2f", value);
     eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), text);
@@ -1927,7 +1941,7 @@ void EdVectorControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
 
 void EdVectorControl::Refresh() {
     __declspec(align(16)) VuVec vector;
-    reference->GetMemberData(object, EdType_VuVec, &vector, 0);
+    GetVal(vector);
     char value[128];
     NuSPrintf(value, "%.2f", vector.x);
     eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(components[0]), value);
@@ -1961,10 +1975,18 @@ void EdMatrixControl::Destroy() {
         components[8]->data_ptr = NULL;
 }
 
+void EdMatrixControl::GetVal(VuMtx &value) {
+    reference->GetMemberData(object, EdType_VuMtx, &value, 0);
+}
+
+void EdMatrixControl::SetVal(VuMtx &value) {
+    reference->SetMemberData(object, EdType_VuMtx, &value, 0, NULL);
+}
+
 /* Rotation rows show degrees; scale rows show each axis row's length. */
 void EdMatrixControl::Refresh() {
     __declspec(align(16)) VuMtx matrix;
-    reference->GetMemberData(object, EdType_VuMtx, &matrix, 0);
+    GetVal(matrix);
     char value[128];
     if (components[0] != NULL) {
         NuSPrintf(value, "%.2f", matrix.matrix.m30);
@@ -2137,10 +2159,18 @@ EdColourControl::EdColourControl() {
 EdColourControl::~EdColourControl() {
 }
 
+void EdColourControl::GetVal(NUVEC &value) {
+    reference->GetMemberData(object, EdType_Colour3, &value, 0);
+}
+
+void EdColourControl::SetVal(NUVEC &value) {
+    reference->SetMemberData(object, EdType_Colour3, &value, 0, NULL);
+}
+
 void EdColourControl::Refresh() {
     edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
     NUVEC colour;
-    reference->GetMemberData(object, EdType_Colour3, &colour, 0);
+    GetVal(colour);
     char value[128];
     NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
     eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), value);
@@ -2157,9 +2187,9 @@ void EdColourControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
     EdColourControl *control = static_cast<EdColourControl *>(item->data_ptr);
     NUVEC colour;
-    control->reference->GetMemberData(control->object, EdType_Colour3, &colour, 0);
+    control->GetVal(colour);
     sscanf(property->property_text, "%f %f %f", &colour.x, &colour.y, &colour.z);
-    control->reference->SetMemberData(control->object, EdType_Colour3, &colour, 0, NULL);
+    control->SetVal(colour);
     char value[128];
     NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
     eduiItemPropSetText(property, value);
@@ -4935,7 +4965,7 @@ void EdVectorControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     EdMatrixControl *control = static_cast<EdMatrixControl *>(item->data_ptr);
     __declspec(align(16)) VuMtx matrix;
-    control->reference->GetMemberData(control->object, EdType_VuMtx, &matrix, 0);
+    control->GetVal(matrix);
     f32 value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
     if (item == control->components[0])
         matrix.matrix.m30 = value;
@@ -4978,7 +5008,7 @@ void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
         matrix.matrix.m23 = rebuilt.matrix.m23;
     }
     matrix.matrix.m33 = 1.0f;
-    control->reference->SetMemberData(control->object, EdType_VuMtx, &matrix, 0, NULL);
+    control->SetVal(matrix);
     char text[128];
     NuSPrintf(text, "%.2f", value);
     eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), text);
@@ -5048,7 +5078,7 @@ void EdColourControl::cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 f
     edui_prop_s *property = reinterpret_cast<edui_prop_s *>(edColourControl->item);
     colour.y = picker->green;
     colour.z = picker->blue;
-    edColourControl->reference->SetMemberData(edColourControl->object, EdType_Colour3, &colour, 0, NULL);
+    edColourControl->SetVal(colour);
     char value[128];
     NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
     eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(edColourControl->item), value);
@@ -5069,7 +5099,7 @@ void EdColourControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     if (picker_menu == NULL)
         return;
     NUVEC colour;
-    edColourControl->reference->GetMemberData(edColourControl->object, EdType_Colour3, &colour, 0);
+    edColourControl->GetVal(colour);
     eduiitem_s *picker = eduiItemColourPickCreate(0, item->colours, cbColourSelected, "Colour");
     eduiItemColourPickSetRGB(reinterpret_cast<edui_colour_pick_s *>(picker), colour.x, colour.y, colour.z);
     eduiMenuAddItem(picker_menu, picker);
