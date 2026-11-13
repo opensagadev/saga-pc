@@ -158,7 +158,7 @@ void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRES
         if (index < 32) {
             i32 word = index / 32;
             u32 bit = 1 << (index & 31);
-            progress->suit_letters[index] = world->signals[index].suit->letter;
+            progress->suit_letters[index] = signal->suit->letter;
             if (!signal->visible)
                 progress->visible_mask[word] &= ~bit;
             if (!signal->active)
