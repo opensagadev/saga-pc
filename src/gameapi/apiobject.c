@@ -676,34 +676,22 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
     }
 }
 
+/* Table sine and cosine of an angle in radians; the cosine negates the angle as retail does. */
+#define PC_WIND_SIN(radians) NuTrigTable[((i32)((radians) * 10430.3779296875) >> 1) & 0x7fff]
+#define PC_WIND_COS(radians) NuTrigTable[((0x4000 - (i32)((radians) * -10430.3779296875)) >> 1) & 0x7fff]
+
 static __declspec(noinline) void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale,
                                                                i32 wind_speed) {
-    f32 cos_z2, sin_x, sin_x2;
-    f64 sin_sum;
-    u32 seed = (u32)wind_speed;
     f32 amplitude = (f32)(((f64)wind_scale / 65535.0) * global_windscale);
     f32 speed = (f32)(((f64)wind_speed / 65535.0) * global_windspeed);
+    u32 seed = (u32)wind_speed;
     f32 random_phase = (f32)((f64)NuRandFloatSeeded(&seed) * (f64)3.142f * 2.0);
-    f32 phase = (f32)((f64)PCWindFrameCount * speed + random_phase);
-    f32 frequency = (f32)((f64)phase * (f64)2.3f);
-    i32 angle = (i32)((f64)frequency * -10430.3779296875);
-    f32 cos_z = NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff];
-    frequency = (f32)((f64)phase * (f64)4.4f);
-    angle = (i32)((f64)frequency * -10430.3779296875);
-    cos_z2 = NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff];
-    frequency = (f32)((f64)phase * (f64)2.1f);
-    angle = (i32)((f64)frequency * 10430.3779296875);
-    sin_x = NuTrigTable[(angle >> 1) & 0x7fff];
-    angle = (i32)((f64)phase * 10430.3779296875);
-    sin_sum = (f64)sin_x * 0.5 + NuTrigTable[(angle >> 1) & 0x7fff];
-    frequency = (f32)((f64)phase * (f64)4.2f);
-    angle = (i32)((f64)frequency * 10430.3779296875);
-    sin_x2 = (f32)(NuTrigTable[(angle >> 1) & 0x7fff] * 0.25);
-    *shear_x = (f32)((sin_sum + sin_x2) * amplitude);
-    frequency = (f32)((f64)phase * (f64)1.1f);
-    angle = (i32)((f64)frequency * -10430.3779296875);
-    *shear_z =
-        (f32)(((f64)NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] + (f64)cos_z * 0.5 + (f64)cos_z2 * 0.25) * amplitude);
+    f32 phase = (f32)PCWindFrameCount * speed + random_phase;
+    f32 cos_half = (f32)(PC_WIND_COS((f32)(phase * (f64)2.3f)) * 0.5);
+    f32 cos_quarter = (f32)(PC_WIND_COS((f32)(phase * (f64)4.4f)) * 0.25);
+    f64 sin_sum = (f32)(PC_WIND_SIN((f32)(phase * (f64)2.1f)) * 0.5) + PC_WIND_SIN(phase);
+    *shear_x = (f32)((sin_sum + (f32)(0.25 * PC_WIND_SIN((f32)(phase * (f64)4.2f)))) * amplitude);
+    *shear_z = (f32)(((f64)PC_WIND_COS((f32)(phase * (f64)1.1f)) + cos_half + cos_quarter) * amplitude);
 }
 
 void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
