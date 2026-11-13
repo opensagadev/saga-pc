@@ -9052,9 +9052,9 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             ReleaseForce(object, 0);
         return;
     }
-    if ((object->flags_1fc_word & 0x80) == 0 && (object->flags_ef0 & 0x100) != 0 && player != NULL)
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && (object->flags_ef0 & 0x100) != 0 && player != NULL)
         assist = player->force_part;
-    if ((object->flags_1fc_word & 0x80) == 0 && assist == NULL)
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && assist == NULL)
         return;
     if (object->field_281 == 0)
         return;
@@ -9087,7 +9087,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     object->blowup_target = NULL;
     object->character_context = 0x1d;
     {
-        u8 mask = (u8)(1u << (object->field_280 & 31));
+        i32 mask = 1 << object->field_280;
         if (object->force_part->field_206 == -1)
             object->force_part->field_206 = (i8)mask;
         else
