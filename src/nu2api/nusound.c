@@ -1129,11 +1129,12 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
                     }
                 }
                 if (i == NumSfx) {
-                    SfxFileInfoPc[NumSfx].filename = SfxFilenameSlotsPc[NumSfxNames];
-                    SfxFileInfoPc[NumSfx].pitch = 0x75a;
-                    SfxFileInfoPc[NumSfx].index = i - SfxFileCount + 0x1000;
-                    SfxFileInfoPc[NumSfx].static_sample = 0;
-                    NuStrNCpy(SfxFilenameSlotsPc[NumSfxNames++], fpar->word_buffer_ptr, 0x40);
+                    str = SfxFilenameSlotsPc[NumSfxNames++];
+                    SfxFileInfoPc[i].filename = str;
+                    SfxFileInfoPc[i].pitch = 0x75a;
+                    SfxFileInfoPc[i].index = i - SfxFileCount + 0x1000;
+                    SfxFileInfoPc[i].static_sample = 0;
+                    NuStrNCpy(str, fpar->word_buffer_ptr, 0x40);
                     SfxRefCountsPc[NumSfx] = 1;
                     SfxInfo[NumSfxInst].filename = SfxFileInfoPc[NumSfx].filename;
                     SfxInfo[NumSfxInst].sample_id_flags =
@@ -1161,7 +1162,11 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             SfxInfo[NumSfxInst].pitch = NuFParGetInt(fpar);
         } else if (NuStrICmp(fpar->word_buffer_ptr, "pan") == 0) {
             pan = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].pan = pan < -1.0f ? -1.0f : pan > 1.0f ? 1.0f : pan;
+            if (pan < -1.0f)
+                pan = -1.0f;
+            else if (pan > 1.0f)
+                pan = 1.0f;
+            SfxInfo[NumSfxInst].pan = pan;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "pri") == 0) {
             priority = NuFParGetInt(fpar);
             SfxInfo[NumSfxInst].priority = priority < -128 ? -128 : priority > 127 ? 127 : priority;
@@ -1169,7 +1174,11 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             SfxInfo[NumSfxInst].sample_id_flags |= 0x8000u;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "pitch_rnd") == 0) {
             pitch_rnd = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].pitch_rnd = pitch_rnd < 0.0f ? 0.0f : pitch_rnd > 1.0f ? 1.0f : pitch_rnd;
+            if (pitch_rnd < 0.0f)
+                pitch_rnd = 0.0f;
+            else if (pitch_rnd > 1.0f)
+                pitch_rnd = 1.0f;
+            SfxInfo[NumSfxInst].pitch_rnd = pitch_rnd;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "volume") == 0) {
             volume = NuFParGetInt(fpar);
             SfxInfo[NumSfxInst].volume = volume < 0 ? 0 : volume > 0x3fff ? 0x3fff : volume;
@@ -1177,32 +1186,50 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             SfxInfo[NumSfxInst].sample_id_flags |= 0x400000u;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "volume_rnd") == 0) {
             volume_rnd = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].volume_rnd = volume_rnd < -1.0f ? -1.0f : volume_rnd > 0.0f ? 0.0f : volume_rnd;
+            if (volume_rnd < -1.0f)
+                volume_rnd = -1.0f;
+            else if (volume_rnd > 0.0f)
+                volume_rnd = 0.0f;
+            SfxInfo[NumSfxInst].volume_rnd = volume_rnd;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "near") == 0) {
             falloff_near = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].falloff_near = falloff_near < 0.0f     ? 0.0f
-                                               : falloff_near > 250.0f ? 250.0f
-                                                                       : falloff_near;
+            if (falloff_near < 0.0f)
+                falloff_near = 0.0f;
+            else if (falloff_near > 250.0f)
+                falloff_near = 250.0f;
+            SfxInfo[NumSfxInst].falloff_near = falloff_near;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "far") == 0) {
             falloff_far = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].falloff_far = falloff_far < 0.0f ? 0.0f : falloff_far > 250.0f ? 250.0f : falloff_far;
+            if (falloff_far < 0.0f)
+                falloff_far = 0.0f;
+            else if (falloff_far > 250.0f)
+                falloff_far = 250.0f;
+            SfxInfo[NumSfxInst].falloff_far = falloff_far;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "global") == 0) {
             SfxInfo[NumSfxInst].sample_id_flags |= 0x20000u;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "rumble") == 0) {
             buzz_timer = NuFParGetFloat(fpar);
             rumble_strength = NuFParGetInt(fpar);
-            SfxInfo[NumSfxInst].buzz_timer = buzz_timer < 0.0f ? 0.0f : buzz_timer > 5.0f ? 5.0f : buzz_timer;
+            if (buzz_timer < 0.0f)
+                buzz_timer = 0.0f;
+            else if (buzz_timer > 5.0f)
+                buzz_timer = 5.0f;
+            SfxInfo[NumSfxInst].buzz_timer = buzz_timer;
             SfxInfo[NumSfxInst].rumble_strength = rumble_strength < 0      ? 0
                                                   : rumble_strength > 0xff ? 0xff
                                                                            : rumble_strength;
             rumble_sustain = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].rumble_sustain = rumble_sustain < 0.0f   ? 0.0f
-                                                 : rumble_sustain > 5.0f ? 5.0f
-                                                                         : rumble_sustain;
+            if (rumble_sustain < 0.0f)
+                rumble_sustain = 0.0f;
+            else if (rumble_sustain > 5.0f)
+                rumble_sustain = 5.0f;
+            SfxInfo[NumSfxInst].rumble_sustain = rumble_sustain;
             rumble_release = NuFParGetFloat(fpar);
-            SfxInfo[NumSfxInst].rumble_release = rumble_release < 0.0f   ? 0.0f
-                                                 : rumble_release > 5.0f ? 5.0f
-                                                                         : rumble_release;
+            if (rumble_release < 0.0f)
+                rumble_release = 0.0f;
+            else if (rumble_release > 5.0f)
+                rumble_release = 5.0f;
+            SfxInfo[NumSfxInst].rumble_release = rumble_release;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "fcat") == 0) {
             category = NuFParGetInt(fpar);
             SfxInfo[NumSfxInst].category = category < 0 ? 0 : category > 0xffff ? 0xffff : category;
