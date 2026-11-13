@@ -277,25 +277,28 @@ static void CutSceneEndLocatorsPC(CUT_LOCATOR_INSTANCE_SYSTEM_PC *instance, CUT_
     u32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOCATOR_INSTANCE_PC *state = &instance->locators[i];
-        CUT_LOCATOR_LIFECYCLE_PC *locator = &system->locators[i];
-        CUT_LOCATOR_TYPE_LIFECYCLE_PC *type = &system->types[locator->type_index];
+        CUT_LOCATOR_LIFECYCLE_PC *locator;
+        CUT_LOCATOR_TYPE_LIFECYCLE_PC *type;
         state->frame = 0.0f;
+        locator = &system->locators[i];
+        type = &system->types[locator->type_index];
         if ((type->flags & 8) != 0) {
             CUT_SOUND_HANDLE_LIFECYCLE_PC *sound = (CUT_SOUND_HANDLE_LIFECYCLE_PC *)(u32)state->effect_handle;
-            if (sound->active != 0 && sound->owner != NULL) {
+            CUT_SOUND_OWNER_LIFECYCLE_PC *owner;
+            if (sound->active != 0 && (owner = sound->owner) != NULL) {
                 CUT_SOUND_VOICE_LIFECYCLE_PC *voice;
                 if (sound->first_voice != 0) {
-                    voice = sound->owner->voices[sound->first_voice - 1];
+                    voice = owner->voices[sound->first_voice - 1];
                     voice->first = 0.0f;
                     voice->second = 0.0f;
                 }
                 if (sound->second_voice != 0) {
-                    voice = sound->owner->voices[sound->second_voice - 1];
+                    voice = owner->voices[sound->second_voice - 1];
                     voice->first = 0.0f;
                     voice->second = 0.0f;
                 }
                 if (sound->third_voice != 0) {
-                    voice = sound->owner->voices[sound->third_voice - 1];
+                    voice = owner->voices[sound->third_voice - 1];
                     voice->first = 0.0f;
                     voice->second = 0.0f;
                 }
