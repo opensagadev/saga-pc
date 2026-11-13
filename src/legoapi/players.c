@@ -3907,39 +3907,39 @@ void __cdecl InitAICreatures(AISYS_PC *system) {
 static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 locator = config->shield_locator;
-    f32 scale;
     NUVEC scaling;
     NUMTX matrix, reflected;
-    if (object->shield_hitpoints != 0 || config->shield_hitpoints == 0 || !(object->timer_d34 > 0.0f)) {
-        scale = object->origin_scale_override;
-        if (scale <= 0.0f)
+    if (object->shield_hitpoints == 0 && config->shield_hitpoints > 0 && object->timer_d34 > 0.0f) {
+        if ((GameTimer.update_count & 3u) >= 2)
             return;
+        scaling.x = 1.0f;
     } else {
-        if ((GameTimer.update_count & 3) >= 2)
+        if (object->origin_scale_override <= 0.0f)
             return;
-        scale = 1.0f;
+        scaling.x = object->origin_scale_override;
     }
-    scaling.x = scaling.y = scaling.z = scale;
+    scaling.y = scaling.z = scaling.x;
     NuMtxSetScale(&matrix, &scaling);
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL)
         NuMtxTranslate(&matrix, (NUVEC *)&object->locator_matrices[locator].m30);
     else
         NuMtxTranslate(&matrix, &object->collision_position);
-    Draw3DObjectMtx(NULL, 0x6f + (object->timer_d34 > 0.0f), &matrix);
+    Draw3DObjectMtx(NULL, object->timer_d34 > 0.0f ? 0x70 : 0x6f, &matrix);
     if (reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                                             WORLD->current_level->reflection_y, &reflected)) {
         NuRndrStartReflectionRender(0);
-        Draw3DObjectMtx(NULL, 0x92 + (object->timer_d34 > 0.0f), &reflected);
+        Draw3DObjectMtx(NULL, object->timer_d34 > 0.0f ? 0x93 : 0x92, &reflected);
         NuRndrEndReflectionRender();
     }
 }
 
 static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
-    i32 locator, effect_index = 0;
+    i32 locator, effect_index;
     if (WORLD->level_objects[0x77].active == 0 || WORLD->level_objects[0x78].active == 0)
         return;
+    effect_index = 0;
     for (locator = 0; locator < 16; ++locator) {
-        f32 ratio, scale;
+        f32 ratio;
         NUVEC scaling;
         NUMTX matrix, reflected;
         i32 first, second;
@@ -3947,10 +3947,10 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
             object->character_model->points_of_interest[locator] == NULL)
             continue;
         ratio = (f32)((f64)((u8 *)object)[0xe28 + effect_index++] / 255.0);
-        scale = (f32)((((f64)ratio - 0.5) * 0.5) * object->thrust_effect_scale + object->thrust_effect_scale);
-        if (scale <= 0.0f)
+        scaling.x = (f32)((((f64)ratio - 0.5) * 0.5) * object->thrust_effect_scale + object->thrust_effect_scale);
+        if (scaling.x <= 0.0f)
             continue;
-        scaling.x = scaling.y = scaling.z = scale;
+        scaling.y = scaling.z = scaling.x;
         matrix = object->locator_matrices[locator];
         NuMtxPreScale(&matrix, &scaling);
         Draw3DObjectMtx(NULL, 0x77, &matrix);
