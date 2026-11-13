@@ -471,9 +471,6 @@ STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet);
 extern "C" f32 PCMusicDuckOverride;
 
-extern "C" __declspec(noinline) void PCStereoUnknownToken(...) {
-}
-
 extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     va_list arguments;
     PC_STEREO_PLAY_PACKET packet;
@@ -482,8 +479,7 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     packet.stream_index = 0;
     packet.reserved = -1;
     packet.first_sample = packet.last_sample = -1;
-    packet.volume_left = 0x3fff;
-    packet.volume_right = 0x3fff;
+    packet.volume_left = packet.volume_right = 0x3fff;
     packet.option9_mode = -1;
     packet.start_offset = 0.0f;
     va_start(arguments, token);
@@ -536,6 +532,9 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     va_end(arguments);
     PCStereoStartPacket(&packet);
     return 1;
+}
+
+extern "C" __declspec(noinline) void PCStereoUnknownToken(...) {
 }
 
 i32 NuMusic::Voice::Unload(void) {
