@@ -122,15 +122,30 @@ template <class T> T *CreateObject(MemoryBuffer *buffer) {
 }
 
 /* Fixed-size stack of the open stream blocks. Like CSListLink, the
- * constructor tests this against NULL before clearing the count. Retail also
- * keeps out-of-line Count/Push/Pop/Top copies (0x6c1130-0x6c11ef); the stream
- * functions here use the fields directly. */
+ * constructor tests this against NULL before clearing the count. Retail keeps
+ * out-of-line Count/Push/Pop/Top copies (0x6c1130-0x6c11ef); only
+ * EdFileInputStream::BeginBlock goes through them, the other stream functions
+ * use the fields directly. */
 template <class T, i32 N> class EdStack {
   public:
     EdStack() {
         EdStack *stack = this;
         if (stack != NULL)
             stack->count = 0;
+    }
+
+    i32 Count() {
+        return count;
+    }
+    void Push(T item) {
+        if (count < N)
+            items[count++] = item;
+    }
+    T Pop() {
+        return items[--count];
+    }
+    T &Top() {
+        return items[count - 1];
     }
 
     T items[N];
@@ -6285,10 +6300,10 @@ void EdFileInputStream::Open(NUFILE handle, i32 stream_version) {
 char const *EdFileInputStream::BeginBlock(char const *name) {
     i32 position = (i32)NuFilePos(file);
     char *block_name;
-    if (blocks.count > 0) {
-        if (blocks.count < 1)
+    if (blocks.Count() > 0) {
+        if (blocks.Count() < 1)
             EdTrace();
-        Block &parent = blocks.items[blocks.count - 1];
+        Block &parent = blocks.Top();
         if (position >= parent.position + parent.size) {
             EdMessage(block_names + parent.name_offset);
             return NULL;
@@ -6309,8 +6324,8 @@ char const *EdFileInputStream::BeginBlock(char const *name) {
         EdMessage(name, block_name);
         return NULL;
     }
-    if (blocks.count < 8)
-        blocks.items[blocks.count++] = pending_block;
+    if (blocks.Count() < 8)
+        blocks.Push(pending_block);
     else
         EdTrace();
     pending = 0;
