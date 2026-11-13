@@ -5520,17 +5520,17 @@ extern "C" void __cdecl PostShadowComputeBoundingSpacePc(const NUVEC4 *points, N
     f32 min_y = 3.4028234663852886e+38f, max_y = -3.4028234663852886e+38f;
     f32 min_z = 3.4028234663852886e+38f, max_z = -3.4028234663852886e+38f;
     for (i32 i = 0; i < 8; i++) {
-        if (min_x > points[i].x)
+        if (points[i].x < min_x)
             min_x = points[i].x;
-        else if (max_x < points[i].x)
+        else if (points[i].x > max_x)
             max_x = points[i].x;
-        if (min_y > points[i].y)
+        if (points[i].y < min_y)
             min_y = points[i].y;
-        else if (max_y < points[i].y)
+        else if (points[i].y > max_y)
             max_y = points[i].y;
-        if (min_z > points[i].z)
+        if (points[i].z < min_z)
             min_z = points[i].z;
-        else if (max_z < points[i].z)
+        else if (points[i].z > max_z)
             max_z = points[i].z;
     }
     NuMtxSetOrthoBlend(matrix, min_x, max_x, min_y, max_y, min_z, max_z);
