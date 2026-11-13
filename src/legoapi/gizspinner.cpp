@@ -552,8 +552,8 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
         f32 rotation = (f64)duration * 30.0;
         rotation = rotation / length;
         rotation = rotation * (length / 100.0);
-        spinner->rotation = (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) +
-                                  spinner->initial_rotation);
+        spinner->rotation =
+            (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) + spinner->initial_rotation);
     } else if (spinner->field_70 > target) {
         GameAnimSet_Play(spinner->anim_set, -0.25f, 1);
         spinner->rotation -= (i32)(direction * ((f64)frequency * difference * 5461.0));
