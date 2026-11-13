@@ -290,8 +290,8 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             groups = TERRAIN_SET_CURRENT_PC->group_indices + cell.first_group;
             count = cell.group_count;
         }
-        for (i32 i = 0; i < count; ++i) {
-            const i32 platform_group_index = groups[i];
+        for (i32 i = 0; i < count; ++i, ++groups) {
+            const i32 platform_group_index = *groups;
             TERRAIN_GROUP &group = terrain_groups[platform_group_index];
             if (group.origin.x - group.radius > max_x || group.origin.x + group.radius < min_x ||
                 group.origin.z - group.radius > max_z || group.origin.z + group.radius < min_z) {
@@ -529,33 +529,39 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     i16 *terminator = reinterpret_cast<i16 *>(group_header);
     terminator[0] = 0;
     terminator[1] = 0;
-    WallSplCount = 0;
+    i32 wall_count = 0;
     min_x -= 0.02f;
     min_z -= 0.02f;
+    TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT_PC->spatial_nodes;
+    WallSplCount = wall_count;
     max_x += 0.02f;
     max_z += 0.02f;
     if (IgnoreWallSplines != 0) {
         IgnoreWallSplines = 0;
     } else {
-        i32 wall_count = 0;
-        for (TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT_PC->spatial_nodes; node != NULL;
-             node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) -
-                                                              offsetof(TERRAIN_SPATIAL_CHUNK, node))
-                        ->previous) {
-            const u8 mask = node->field_02 >> 8;
-            if (mask != 0 && (mask & terrain_mask) == 0) {
+        for (; node != NULL; node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) -
+                                                                              offsetof(TERRAIN_SPATIAL_CHUNK, node))
+                                        ->previous) {
+            const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->field_02);
+            if (material_bytes[1] != 0 && (material_bytes[1] & terrain_mask) == 0) {
                 continue;
             }
-            const u8 material_low = static_cast<u8>(node->field_02);
+            const u32 material_low = material_bytes[0];
+            const u32 mask = material_bytes[1];
             for (i32 first = 0; first < node->point_count; first += 16) {
                 NUVEC *points = node->points + first;
-                i32 end = node->point_count;
+                i32 end;
                 if (points[0].y != 2147483648.0f) {
                     if (points[1].y >= min_x && max_x >= points[0].y && points[3].y >= min_z && max_z >= points[2].y) {
-                        end = MIN(end, first + 16);
+                        end = first + 16;
+                        if (end > node->point_count) {
+                            end = node->point_count;
+                        }
                     } else {
                         end = 0;
                     }
+                } else {
+                    end = node->point_count;
                 }
                 TERRAIN_WALL_POINT *entry = static_cast<TERRAIN_WALL_POINT *>(WallSplList) + wall_count;
                 i32 i = first;
