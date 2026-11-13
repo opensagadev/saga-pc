@@ -359,17 +359,16 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
 
 static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
     __declspec(align(16)) NUVEC local;
-    __declspec(align(16)) NUVEC rotated_direction;
     __declspec(align(16)) NUVEC4 axis;
-    i32 yaw, pitch, direction_yaw, direction_pitch;
+    i16 yaw, pitch, direction_yaw, direction_pitch;
     f32 roll;
     f64 max_roll, min_roll;
     i32 angle;
     NuVecInvMtxRotate(&local, (NUVEC *)direction, &pod->matrix);
-    yaw = (i16)NuAtan2D(local.x, local.z);
+    yaw = NuAtan2D(local.x, local.z);
     pod->yaw = yaw;
     NuVecRotateY(&local, &local, -yaw);
-    pitch = (i16)NuAtan2D(local.y, local.z);
+    pitch = NuAtan2D(local.y, local.z);
     pod->pitch = pitch;
     NuMtxPreRotateY(&pod->matrix, yaw);
     NuMtxPreRotateX(&pod->matrix, -pitch);
@@ -377,11 +376,13 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
         NuMtxPreRotateZ(&pod->matrix, 0x200);
         return;
     }
-    direction_yaw = (i16)NuAtan2D(direction->x, direction->z);
-    NuVecRotateY(&rotated_direction, (NUVEC *)direction, -direction_yaw);
-    direction_pitch = (i16)NuAtan2D(rotated_direction.y, rotated_direction.z);
+    direction_yaw = NuAtan2D(direction->x, direction->z);
+    NuVecRotateY(&local, (NUVEC *)direction, -direction_yaw);
+    direction_pitch = NuAtan2D(local.y, local.z);
     axis.x = 1.0f;
-    axis.y = axis.z = axis.w = 0.0f;
+    axis.y = 0.0f;
+    axis.z = 0.0f;
+    axis.w = 0.0f;
     NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)pod->previous_position.w + 0x4000);
     NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -direction_pitch);
     NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, direction_yaw);
