@@ -146,59 +146,6 @@ typedef struct tightrope_movement_pc_s {
 STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, horizontal_length) == 0x40);
 STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, rotation) == 0x44);
 
-__declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
-    f32 speed = 0.0f;
-    object->target_velocity.x = 0.0f;
-    object->target_velocity.z = 0.0f;
-    if (input_speed > 0.0f) {
-        if ((object->field_7b3 == 3 || object->field_7b3 == 1) && object->field_7aa != -1 &&
-            object->character_model->model_data_b[object->field_7aa] != NULL) {
-            speed = AnimSpeed(object->character_model, object->field_7aa);
-        } else if (object->field_7b3 == 3 || object->field_7b3 == 6) {
-            if (object->field_7b3 == 6 && LEGOACT_SUPERCARRY_WALK != 0 &&
-                object->character_model->model_data_b[LEGOACT_SUPERCARRY_WALK] != NULL)
-                speed = AnimSpeed(object->character_model, LEGOACT_SUPERCARRY_WALK);
-            else
-                speed = NuQFntHalfScale * object->character_data->game_character->run_speed;
-        }
-        if (speed > 0.0f) {
-            object->target_velocity.x = NuTrigTable[object->facing_angle >> 1] * speed;
-            object->target_velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-        }
-    }
-    return 0;
-}
-
-__declspec(noinline) i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
-    if (object->field_7b3 == 0) {
-        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
-        object->field_0x276 = object->facing_angle;
-    } else if (object->field_7b3 == 5) {
-        if (object->force_target != NULL)
-            object->movement_facing_angle =
-                NuAtan2D(object->force_target->collision_position.x - object->collision_position.x,
-                         object->force_target->collision_position.z - object->collision_position.z);
-        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 8.0f);
-        object->field_0x276 = object->facing_angle;
-    } else if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6) {
-        if (object->pad->input_magnitude > 0.0f)
-            object->facing_angle = TurnRot(
-                object->facing_angle, input_angle,
-                (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * TerrainSkinSampleCountPc), NULL);
-        object->field_0x276 = SeekRot(object->field_0x276, object->facing_angle, 10.0f);
-        object->movement_facing_angle = object->facing_angle;
-    }
-    return 1;
-}
-
-__declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
-        if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)
-            return 1;
-    }
-    return 0;
-}
-
 extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
 
 typedef struct spinner_movement_pc_s {

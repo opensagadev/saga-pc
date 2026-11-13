@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x597c20-0x5999e0: definitions in retail address order. */
 typedef struct carry_plug_pc_s {
     char name[16];
     NUVEC position;
@@ -45,15 +47,56 @@ typedef struct carry_model_pc_s {
 } CARRY_MODEL_PC;
 STATIC_ASSERT(offsetof(CARRY_MODEL_PC, model_data_b) == 0xc);
 
-void __cdecl SuperCarry_PartImpact(PART_PC *part) {
-    f32 amount = NuVecMag(&part->velocity);
-    if (amount >= SuperCarryImpactSpeedPc)
-        amount = 1.0f;
-    else
-        amount /= SuperCarryImpactSpeedPc;
-    if (amount > 0.0f)
-        GameCam_Judder(NULL, (f32)(amount * 0.30000001192092896), qrand() < 0x8000 ? 0 : 2, &part->position);
-}
+typedef struct carry_basis_pc_s {
+    u8 unknown_000[0x4d8];
+    PART_LIGHTING_DATA_PC lighting;
+    u8 unknown_5a4[0x748 - 0x5a4];
+    NUVEC basis[3];
+} CARRY_BASIS_PC;
+typedef struct carry_part_pc_s {
+    u8 unknown_000[0x218];
+    GIZMOBLOWUP_PC *blowup;
+} CARRY_PART_PC;
+STATIC_ASSERT(offsetof(CARRY_BASIS_PC, lighting) == 0x4d8);
+STATIC_ASSERT(offsetof(CARRY_BASIS_PC, basis) == 0x748);
+STATIC_ASSERT(offsetof(CARRY_PART_PC, blowup) == 0x218);
+STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
+STATIC_ASSERT(offsetof(PART_PC, rotation_y) == 0x13a);
+STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
+typedef struct carry_drop_pc_s {
+    u8 unknown_000[0x76c];
+    NUVEC drop_position;
+} CARRY_DROP_PC;
+STATIC_ASSERT(offsetof(CARRY_DROP_PC, drop_position) == 0x76c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
+STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+STATIC_ASSERT(offsetof(GAMEOBJECT, action_movement_state) == 0x7b8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_bits_pc) == 0x7bd);
+STATIC_ASSERT(offsetof(GAMEOBJECT, layer_mask) == 0x1048);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1050) == 0x1050);
+STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
+extern i32 SuperCarry_PutDownDrop;
+extern f32 SUPERCARRY_JUMPSPEED;
+extern u8 SuperCarryPlayerRgbPc[2][3];
+#define SUPER_CARRY_IDLE_OR_WALK(object)                                                                               \
+    do {                                                                                                               \
+        if ((object)->pad->input_magnitude > 0.0f) {                                                                   \
+            (object)->field_7b3 = 3;                                                                                   \
+            (object)->field_7aa = LEGOACT_SUPERCARRY_WALK;                                                             \
+        } else {                                                                                                       \
+            (object)->field_7b3 = 2;                                                                                   \
+            (object)->field_7aa = LEGOACT_SUPERCARRY_IDLE;                                                             \
+        }                                                                                                              \
+    } while (0)
+
 i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
     CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
     CARRY_PLUG_PC *plug;
@@ -78,22 +121,16 @@ i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position,
     return 0;
 }
 
-typedef struct carry_basis_pc_s {
-    u8 unknown_000[0x4d8];
-    PART_LIGHTING_DATA_PC lighting;
-    u8 unknown_5a4[0x748 - 0x5a4];
-    NUVEC basis[3];
-} CARRY_BASIS_PC;
-typedef struct carry_part_pc_s {
-    u8 unknown_000[0x218];
-    GIZMOBLOWUP_PC *blowup;
-} CARRY_PART_PC;
-STATIC_ASSERT(offsetof(CARRY_BASIS_PC, lighting) == 0x4d8);
-STATIC_ASSERT(offsetof(CARRY_BASIS_PC, basis) == 0x748);
-STATIC_ASSERT(offsetof(CARRY_PART_PC, blowup) == 0x218);
-STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
-STATIC_ASSERT(offsetof(PART_PC, rotation_y) == 0x13a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
+void __cdecl SuperCarry_PartImpact(PART_PC *part) {
+    f32 amount = NuVecMag(&part->velocity);
+    if (amount >= SuperCarryImpactSpeedPc)
+        amount = 1.0f;
+    else
+        amount /= SuperCarryImpactSpeedPc;
+    if (amount > 0.0f)
+        GameCam_Judder(NULL, (f32)(amount * 0.30000001192092896), qrand() < 0x8000 ? 0 : 2, &part->position);
+}
+
 static void __cdecl SuperCarry_PartKill(PART_PC *part, i32 unused) {
     GIZMOBLOWUP_PC *blowup = ((CARRY_PART_PC *)part)->blowup;
     CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
@@ -103,6 +140,67 @@ static void __cdecl SuperCarry_PartKill(PART_PC *part, i32 unused) {
     else
         GizmoBlowUp_AddEffects(&part->position, blowup, 0, 15, NULL);
 }
+
+void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
+    NUMTX matrix;
+    NUVEC offset;
+    struct nuvec_s *translation;
+    PLAYERCHARACTERCONFIG_PC *config;
+    struct GIZMOBLOWUP_PC *blowup;
+    if ((object->flags_e20 & 0x800000) != 0 ||
+        (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
+         ((object->field_7b3 == 0 && (object->context_variant_flags & 0x40) != 0) ||
+          (object->field_7b3 == 1 && (object->context_variant_flags & 0x40) == 0) || object->field_7b3 == 2 ||
+          object->field_7b3 == 3 || object->field_7b3 == 6 || object->field_7b3 == 7 ||
+          (object->field_7b3 == 4 && (object->context_variant_flags & 0x40) == 0) ||
+          (object->field_7b3 == 5 && (object->context_variant_flags & 0x40) == 0)))) {
+        translation = NULL;
+        if (SuperCarry_AlignObject != 0) {
+            NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
+            translation = &offset;
+            NuMtxSetRotationY(&matrix, object->takeover_start_angle);
+        } else {
+            matrix = NuMtxSetIdentityTemplate;
+            *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS_PC *)object)->basis[0];
+            *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS_PC *)object)->basis[1];
+            *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS_PC *)object)->basis[2];
+        }
+        if (SuperCarry_KeepObjectLevel != 0) {
+            NuMtxRotateY(&matrix, object->field_0x276);
+            dco_locatorposonly = 1;
+        }
+        config = object->character_data->game_character;
+        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+        DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0],
+                              config->hand_locators[1], object->locator_matrices, ((u8)object->field_107c),
+                              object->layer_mask, &matrix, translation, 1.0f, 1.0f);
+    }
+}
+
+void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
+    i32 first, second;
+    NUVEC offset;
+    *position = object->collision_position;
+    first = object->character_data->game_character->hand_locators[0];
+    if (first != -1 && object->character_model->points_of_interest[first] != NULL) {
+        second = object->character_data->game_character->hand_locators[1];
+        if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
+            *position = *(NUVEC *)&object->locator_matrices[first].m30;
+            position->x += (object->locator_matrices[second].m30 - position->x) * 0.5f;
+            position->y += (object->locator_matrices[second].m31 - position->y) * 0.5f;
+            position->z += (object->locator_matrices[second].m32 - position->z) * 0.5f;
+        }
+    }
+    if (SuperCarry_AlignObject != 0) {
+        if (secondary_position != NULL) {
+            NuVecRotateY(&offset, &object->launch_origin, object->field_0x276);
+            NuVecAdd(secondary_position, position, &offset);
+        }
+        NuVecRotateY(&offset, &object->external_force, object->field_0x276);
+        NuVecAdd(position, position, &offset);
+    }
+}
+
 void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     CARRY_BASIS_PC *basis = (CARRY_BASIS_PC *)object;
@@ -184,63 +282,7 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
         part->rotation_y = object->takeover_start_angle + object->movement_facing_angle;
     }
 }
-void __cdecl SuperCarry_Release(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
-        (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)) {
-        SuperCarry_Throw(object, 1);
-        object->character_context = -1;
-    }
-}
 
-void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
-    i32 first, second;
-    NUVEC offset;
-    *position = object->collision_position;
-    first = object->character_data->game_character->hand_locators[0];
-    if (first != -1 && object->character_model->points_of_interest[first] != NULL) {
-        second = object->character_data->game_character->hand_locators[1];
-        if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
-            *position = *(NUVEC *)&object->locator_matrices[first].m30;
-            position->x += (object->locator_matrices[second].m30 - position->x) * 0.5f;
-            position->y += (object->locator_matrices[second].m31 - position->y) * 0.5f;
-            position->z += (object->locator_matrices[second].m32 - position->z) * 0.5f;
-        }
-    }
-    if (SuperCarry_AlignObject != 0) {
-        if (secondary_position != NULL) {
-            NuVecRotateY(&offset, &object->launch_origin, object->field_0x276);
-            NuVecAdd(secondary_position, position, &offset);
-        }
-        NuVecRotateY(&offset, &object->external_force, object->field_0x276);
-        NuVecAdd(position, position, &offset);
-    }
-}
-
-typedef struct carry_drop_pc_s {
-    u8 unknown_000[0x76c];
-    NUVEC drop_position;
-} CARRY_DROP_PC;
-STATIC_ASSERT(offsetof(CARRY_DROP_PC, drop_position) == 0x76c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, action_movement_state) == 0x7b8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_bits_pc) == 0x7bd);
-STATIC_ASSERT(offsetof(GAMEOBJECT, layer_mask) == 0x1048);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1050) == 0x1050);
-STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
-
-extern i32 SuperCarry_PutDownDrop;
-extern f32 SUPERCARRY_JUMPSPEED;
-extern u8 SuperCarryPlayerRgbPc[2][3];
 i32 __cdecl SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0)
         return 0;
@@ -249,43 +291,6 @@ i32 __cdecl SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     if (require_grounded != 0 && (object->field_281 == 0 || ObjLandReady(object) == 0))
         return 0;
     return 1;
-}
-
-void __cdecl SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
-void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
-    NUMTX matrix;
-    NUVEC offset;
-    struct nuvec_s *translation;
-    PLAYERCHARACTERCONFIG_PC *config;
-    struct GIZMOBLOWUP_PC *blowup;
-    if ((object->flags_e20 & 0x800000) != 0 ||
-        (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
-         ((object->field_7b3 == 0 && (object->context_variant_flags & 0x40) != 0) ||
-          (object->field_7b3 == 1 && (object->context_variant_flags & 0x40) == 0) || object->field_7b3 == 2 ||
-          object->field_7b3 == 3 || object->field_7b3 == 6 || object->field_7b3 == 7 ||
-          (object->field_7b3 == 4 && (object->context_variant_flags & 0x40) == 0) ||
-          (object->field_7b3 == 5 && (object->context_variant_flags & 0x40) == 0)))) {
-        translation = NULL;
-        if (SuperCarry_AlignObject != 0) {
-            NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
-            translation = &offset;
-            NuMtxSetRotationY(&matrix, object->takeover_start_angle);
-        } else {
-            matrix = NuMtxSetIdentityTemplate;
-            *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS_PC *)object)->basis[0];
-            *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS_PC *)object)->basis[1];
-            *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS_PC *)object)->basis[2];
-        }
-        if (SuperCarry_KeepObjectLevel != 0) {
-            NuMtxRotateY(&matrix, object->field_0x276);
-            dco_locatorposonly = 1;
-        }
-        config = object->character_data->game_character;
-        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
-        DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0],
-                              config->hand_locators[1], object->locator_matrices, ((u8)object->field_107c),
-                              object->layer_mask, &matrix, translation, 1.0f, 1.0f);
-    }
 }
 
 void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
@@ -354,17 +359,6 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
     }
     object->context_hover_target_y = 0.5f;
 }
-
-#define SUPER_CARRY_IDLE_OR_WALK(object)                                                                               \
-    do {                                                                                                               \
-        if ((object)->pad->input_magnitude > 0.0f) {                                                                   \
-            (object)->field_7b3 = 3;                                                                                   \
-            (object)->field_7aa = LEGOACT_SUPERCARRY_WALK;                                                             \
-        } else {                                                                                                       \
-            (object)->field_7b3 = 2;                                                                                   \
-            (object)->field_7aa = LEGOACT_SUPERCARRY_IDLE;                                                             \
-        }                                                                                                              \
-    } while (0)
 
 void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
     if (LEGOCONTEXT_SUPERCARRY == -1)
@@ -711,6 +705,67 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
         }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0)
             SuperCarry_Start(object, nearest, 0);
+    }
+}
+
+__declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
+    f32 speed = 0.0f;
+    object->target_velocity.x = 0.0f;
+    object->target_velocity.z = 0.0f;
+    if (input_speed > 0.0f) {
+        if ((object->field_7b3 == 3 || object->field_7b3 == 1) && object->field_7aa != -1 &&
+            object->character_model->model_data_b[object->field_7aa] != NULL) {
+            speed = AnimSpeed(object->character_model, object->field_7aa);
+        } else if (object->field_7b3 == 3 || object->field_7b3 == 6) {
+            if (object->field_7b3 == 6 && LEGOACT_SUPERCARRY_WALK != 0 &&
+                object->character_model->model_data_b[LEGOACT_SUPERCARRY_WALK] != NULL)
+                speed = AnimSpeed(object->character_model, LEGOACT_SUPERCARRY_WALK);
+            else
+                speed = NuQFntHalfScale * object->character_data->game_character->run_speed;
+        }
+        if (speed > 0.0f) {
+            object->target_velocity.x = NuTrigTable[object->facing_angle >> 1] * speed;
+            object->target_velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+        }
+    }
+    return 0;
+}
+
+__declspec(noinline) i32 __cdecl SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
+    if (object->field_7b3 == 0) {
+        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
+        object->field_0x276 = object->facing_angle;
+    } else if (object->field_7b3 == 5) {
+        if (object->force_target != NULL)
+            object->movement_facing_angle =
+                NuAtan2D(object->force_target->collision_position.x - object->collision_position.x,
+                         object->force_target->collision_position.z - object->collision_position.z);
+        object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 8.0f);
+        object->field_0x276 = object->facing_angle;
+    } else if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6) {
+        if (object->pad->input_magnitude > 0.0f)
+            object->facing_angle = TurnRot(
+                object->facing_angle, input_angle,
+                (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * TerrainSkinSampleCountPc), NULL);
+        object->field_0x276 = SeekRot(object->field_0x276, object->facing_angle, 10.0f);
+        object->movement_facing_angle = object->facing_angle;
+    }
+    return 1;
+}
+
+__declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
+        if (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)
+            return 1;
+    }
+    return 0;
+}
+
+void __cdecl SuperCarry_Release(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
+        (object->field_7b3 == 2 || object->field_7b3 == 3 || object->field_7b3 == 6)) {
+        SuperCarry_Throw(object, 1);
+        object->character_context = -1;
     }
 }
 
