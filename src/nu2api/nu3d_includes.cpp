@@ -4000,9 +4000,9 @@ extern "C" {
                     ++text;
                 line[length] = 0;
                 word_width = NuQFntPrintLenW(font, line);
-                if (words != 0 && !(width * qfnt_justify_squash >=
-                                    (f32)(words + punctuation_spaces + extra_spaces) * printed_space_width +
-                                        (word_width + words_width))) {
+                if (words != 0 && !((f32)(words + punctuation_spaces + extra_spaces) * printed_space_width +
+                                        (word_width + words_width) <=
+                                    width * qfnt_justify_squash)) {
                     text = word_start;
                     break;
                 }
@@ -4025,8 +4025,9 @@ extern "C" {
             }
             line[length] = 0;
             if (*text == 0) {
-                f32 ratio = width / ((f32)(words - 1 + punctuation_spaces) * printed_space_width + words_width);
-                scale = 1.0f < ratio ? 1.0f : ratio;
+                scale = width / ((f32)(words - 1 + punctuation_spaces) * printed_space_width + words_width);
+                if (1.0f < scale)
+                    scale = 1.0f;
             } else if (words == 1)
                 scale = width / words_width;
             else {
