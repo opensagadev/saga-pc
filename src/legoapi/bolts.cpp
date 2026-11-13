@@ -2686,6 +2686,7 @@ extern "C" {
         i32 bolts[5], bolt_count = 0;
         i32 used_locator = 0;
         BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
+        i32 sound_count = 0;
         u32 flags = type->flags_60;
         f32 speed = type->field_10;
         f32 duration = type->field_14;
@@ -2696,7 +2697,6 @@ extern "C" {
         f32 target_distance;
         i16 sounds[8];
         NUVEC sound_positions[8];
-        i32 sound_count = 0;
         i32 index;
         u16 heading;
 
