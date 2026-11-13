@@ -419,9 +419,9 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
     NuKeyboardApplyActionKeys_candidate(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
-    factory->methods->enum_devices(factory, 3, InputEnumDevicesPc, NULL, 1);
-    factory->methods->enum_devices(factory, 2, InputEnumDevicesPc, NULL, 1);
-    factory->methods->enum_devices(factory, 4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
     nu_keyboard_owner.unknown_0000 = 0.2f;
     nu_keyboard_owner.unknown_0008 = 0.2f;
     PcInputSelectedPort = -1;
