@@ -514,8 +514,7 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
         (instance = object->instance_animation) == NULL)
         return -1;
     f32 length = (f64)object->end_frame - object->start_frame + 1.0;
-    f32 rounded_margin = length / 40.0;
-    f32 margin = rounded_margin;
+    f32 margin = length / 40.0;
     i32 last = spinner->output_count - 1;
     for (i32 output = 0; output < last; ++output) {
         f32 point = spinner->animation_points[output + 1];
@@ -536,8 +535,7 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
     f32 rate = instance->fparam1;
     u32 flags = spinner->state_flags;
     i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
-    f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
-    f32 length = rounded_length;
+    f32 length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 target;
     if (spinner->output_count == 1)
         target = 1.0f;
