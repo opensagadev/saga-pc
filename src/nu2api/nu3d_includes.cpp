@@ -4946,7 +4946,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
     else
         NuAnimMtxCopyPrivatePc(&transform, &projection_matrix);
-    for (u32 i = 0; i < 8; ++i) {
+    for (i32 i = 0; i != 8; ++i) {
         NuVec4MtxTransform(&corners[i], reinterpret_cast<NUVEC *>(&corners[i]), &transform);
         if (corners[i].w <= 0.0f)
             return false;
@@ -4975,10 +4975,10 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         PC_OCCLUDER_RECORD &record = occluders[indices[i]];
         if (record.depth > min_depth - 2.0f)
             return false;
-        if (min_x > record.max_x || min_y > record.max_y || record.min_x > max_x || record.min_y > max_y)
+        if (min_x > record.max_x || min_y > record.max_y || max_x < record.min_x || max_y < record.min_y)
             continue;
         NUVEC4 *v = record.transformed;
-        NUVEC edge_a, edge_b, cross;
+        __declspec(align(16)) NUVEC edge_a, edge_b, cross;
         edge_a.x = v[1].x - v[0].x;
         edge_a.y = v[1].y - v[0].y;
         edge_a.z = v[1].z - v[0].z;
@@ -4990,7 +4990,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         NUVEC4 normal;
         normal.z = 0.0f;
         normal.w = 0.0f;
-        for (i32 edge = 0; edge < 4; ++edge) {
+        for (i32 edge = 0; edge != 4; ++edge) {
             i32 start = edge;
             i32 end = (edge + 1) % 4;
             if (!clockwise) {
