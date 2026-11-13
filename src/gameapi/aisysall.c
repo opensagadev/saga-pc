@@ -13205,12 +13205,11 @@ i32 __cdecl Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 
 i32 __cdecl Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 param_count, i32 is_first_time, f32 elapsed) {
-    char *state_name;
+    char *state_name = NULL;
     i32 i;
     char *value;
 
     if (is_first_time && processor != NULL && param_count > 0) {
-        state_name = NULL;
         for (i = 0; i < param_count; i++) {
             value = NuStrIStr(params[i], (char *)AIActionStateName);
             if (value != NULL) {
@@ -13219,9 +13218,9 @@ i32 __cdecl Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         }
         if (state_name != NULL) {
             if (processor->interrupt_state != NULL && NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
+                processor->interrupt_timer = 0.0f;
                 processor->interrupt_priority = 0;
                 processor->interrupt_id = 0;
-                processor->interrupt_timer = 0.0f;
                 processor->interrupt_state = NULL;
             }
         }
