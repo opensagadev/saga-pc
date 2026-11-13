@@ -1156,12 +1156,12 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
             return;
         }
-        object->grapple = grapple;
         object->character_context = static_cast<i8>(LEGOCONTEXT_GRAPPLE);
+        object->grapple = grapple;
         object->context_timer = 0.0f;
         object->context_duration = 0.0f;
-        object->field_7b3 = 0;
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
+        object->field_7b3 = 0;
         object->context_hover_target_y = GrappleFabsPc(grapple->shadow_probe_position.y - object->upper_position.y);
         if ((grapple->flags & 4) != 0) {
             object->context_variant_flags &= ~0x100;
