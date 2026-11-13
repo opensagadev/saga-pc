@@ -1246,51 +1246,41 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
     if (StatusPacket.status_flags != 0) {
         if (StatusPacket.draw_background_callback != NULL)
             StatusPacket.draw_background_callback(&StatusPacket);
-        STATUS_STAGE_s *current;
-        i32 phase = StatusGoldBrickPhasePc;
-        if (phase != -1 && StatusGoldBrickStagePc != -1) {
-            i32 gold_stage = StatusGoldBrickStagePc;
-            current = StatusPacket.stage;
-            if (current->field_0x14 == phase && (i32)StatusPacket.current_gold_brick == gold_stage) {
-                f32 duration;
-                i32 draw_gold = 1;
-                if (phase == 4) {
-                    duration = 5.5f;
-                    if (duration <= current->field_0x18)
-                        draw_gold = 0;
-                } else {
-                    duration = current->field_0x1c;
-                }
-                if (draw_gold != 0) {
-                    f64 cycle = NuFmod(GlobalTimer.time_elapsed, 4.0f);
-                    u16 rotation = (u16)(cycle * 0.25 * 65536.0);
-                    u16 tilt = (u16)((f64)NuTrigTable[((u32)rotation * 2u >> 1) & 0x7fff] * 1820.0);
-                    current = StatusPacket.stage;
-                    f32 quarter = (f32)((f64)duration * 0.25);
-                    f32 three_quarters = (f32)((f64)duration * 0.75);
-                    f32 alpha;
-                    if (current->field_0x18 < quarter) {
-                        f64 ratio = (f64)current->field_0x18 / (f64)quarter;
-                        alpha = NuTrigTable[((i32)(ratio * 16384.0) >> 1) & 0x7fff];
-                    } else if (current->field_0x18 < three_quarters) {
-                        alpha = 1.0f;
-                    } else {
-                        f64 ratio = 1.0 - ((f64)current->field_0x18 - (f64)three_quarters) /
-                                              ((f64)duration - (f64)three_quarters);
-                        alpha = NuTrigTable[((i32)(ratio * 16384.0) >> 1) & 0x7fff];
-                    }
-                    f32 scale = StatusGoldBrickScalePc * alpha;
-                    DrawPanel3DObjectNoAlpha(StatusGoldBrickXPc, StatusGoldBrickYPc, 1.0f, scale, scale, scale, tilt,
-                                             rotation, 0, &WORLD->level_objects[211].special, 2);
-                    if (Text_Language != 0) {
-                        u8 text_alpha = (u8)((f64)alpha * 128.0);
-                        f32 text_y = (f32)((f64)StatusGoldBrickYPc - (f64)0.15f);
-                        Text3DEx((char *)"+1", StatusGoldBrickXPc, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 0, 255,
-                                 text_alpha);
-                    }
-                }
+        if (StatusGoldBrickPhasePc != -1 && StatusGoldBrickStagePc != -1 &&
+            StatusPacket.stage->field_0x14 == StatusGoldBrickPhasePc &&
+            StatusPacket.current_gold_brick == StatusGoldBrickStagePc) {
+            f32 duration;
+            if (StatusGoldBrickPhasePc == 4) {
+                duration = 5.5f;
+                if (StatusPacket.stage->field_0x18 >= duration)
+                    goto draw_stages;
+            } else {
+                duration = StatusPacket.stage->field_0x1c;
             }
+            u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
+            u16 tilt = (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f);
+            f32 quarter = duration * 0.25f;
+            f32 three_quarters = duration * 0.75f;
+            f32 alpha;
+            if (StatusPacket.stage->field_0x18 < quarter)
+                alpha = NuTrigTable[((i32)(StatusPacket.stage->field_0x18 / quarter * 16384.0f) >> 1) & 0x7fff];
+            else if (StatusPacket.stage->field_0x18 < three_quarters)
+                alpha = 1.0f;
+            else
+                alpha = NuTrigTable[((i32)((1.0f - (StatusPacket.stage->field_0x18 - three_quarters) /
+                                                       (duration - three_quarters)) *
+                                           16384.0f) >>
+                                     1) &
+                                    0x7fff];
+            f32 scale = StatusGoldBrickScalePc * alpha;
+            DrawPanel3DObjectNoAlpha(StatusGoldBrickXPc, StatusGoldBrickYPc, 1.0f, scale, scale, scale, tilt, rotation,
+                                     0, &WORLD->level_objects[211].special, 2);
+            if (Text_Language != 0)
+                Text3DEx((char *)"+1", StatusGoldBrickXPc, StatusGoldBrickYPc - 0.15f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255,
+                         0, 255, (u8)(alpha * 128.0f));
         }
+    draw_stages:
+        STATUS_STAGE_s *current;
         current = StatusPacket.stage;
         u32 index = 0;
         STATUS_STAGE_s *stages = StatusStages;
