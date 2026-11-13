@@ -298,6 +298,7 @@ TEXT_CLASSES = (
     "unmapped code: address taken",
     "unmapped code: unreferenced",
     "unmapped code: unreferenced identical copy",
+    "unmapped code: static initializer/terminator (.CRT$X* table entry)",
 )
 
 
@@ -311,8 +312,16 @@ def _fill_end(data, offset, address):
     return end if end > offset else None
 
 
+def _crt_tables(ctx):
+    """[(start, end)] of the .CRT$XI*/XC*/XP*/XT* pointer tables, from their mapped bound symbols."""
+    at = {r["symbol"]: r["address"] for r in ctx.records if r["address"] is not None}
+    return [(at[f"___x{k}_a"], at[f"___x{k}_z"]) for k in "icpt"
+            if f"___x{k}_a" in at and f"___x{k}_z" in at]
+
+
 def classify_text(ctx):
     refs = ctx.references()
+    tables = _crt_tables(ctx)
     rows = []
     text_lo, text_hi = ctx.sections[".text"][:2]
     for a, b in ctx.gaps(".text"):
@@ -339,7 +348,9 @@ def classify_text(ctx):
                 cls = TEXT_CLASSES[3]
             else:
                 kinds = {kind for _, kind in refs.get(chunk_start, ())}
-                cls = (TEXT_CLASSES[4] if "call" in kinds else TEXT_CLASSES[5] if kinds & {"abs", "data"}
+                initializer = any(lo <= source < hi for source, kind in refs.get(chunk_start, ())
+                                  if kind == "data" for lo, hi in tables)
+                cls = (TEXT_CLASSES[8] if initializer else TEXT_CLASSES[4] if "call" in kinds else TEXT_CLASSES[5] if kinds & {"abs", "data"}
                        else TEXT_CLASSES[7] if ctx.text.count(chunk) > 1 else TEXT_CLASSES[6])
             rows.append((chunk_start, a + end, cls))
             offset = end
@@ -352,7 +363,7 @@ DATA_CLASSES = (
     "named __real constant, size in its name",
     "named library data (archive member)",
     "named, extent unknown",
-    "alignment padding (zero fill to 4-aligned item)",
+    "alignment padding (match.py rule)",
     "string (unnamed, referenced)",
     "string bytes (unnamed, unreferenced)",
     "x87 constant (unnamed, FPU operand in mapped code)",
@@ -363,6 +374,7 @@ DATA_CLASSES = (
     "unknown data, unreferenced",
     "zero-fill/BSS, referenced",
     "zero-fill/BSS, unreferenced",
+    "zero fill after an unnamed string, to 4-byte alignment",
 )
 
 
@@ -428,7 +440,8 @@ def classify_data(ctx, name, library=None):
             nul = len(data) - offset if not any(data[offset:]) else 0
             if nul:
                 pad = (-va) % 4
-                if 0 < nul < 4 and nul == pad and ctx.is_mapped(b) and not refd:
+                # tools/match.py data_padding_runs: a whole gap between two known extents.
+                if 0 < nul < 4 and nul == pad and ctx.is_mapped(b) and ctx.is_mapped(va - 1):
                     rows.append((va, b, DATA_CLASSES[5]))
                 else:
                     rows.append((va, b, DATA_CLASSES[11] if not refd else DATA_CLASSES[12]))
@@ -443,7 +456,7 @@ def classify_data(ctx, name, library=None):
                         pad += 1
                     rows.append((va, a + stop, DATA_CLASSES[6] if refd else DATA_CLASSES[7]))
                     if pad > stop:
-                        rows.append((a + stop, a + pad, DATA_CLASSES[5]))
+                        rows.append((a + stop, a + pad, DATA_CLASSES[16]))
                     offset = pad
                     continue
             if va % 4 == 0 and kinds & {"fpu32", "fpu64"} and offset + (8 if "fpu64" in kinds else 4) <= len(data):
@@ -735,41 +748,66 @@ def library_layout(ctx):
 
 
 def library_content_layout(ctx):
-    """Place relocation-free archive data sections by their unique bytes in retail.
+    """Place archive data sections by their unique bytes in retail.
 
-    A section of at least 16 nonzero-containing bytes without relocations that
-    occurs exactly once in the file-backed .rdata/.data of retail, at an address
-    its section alignment allows, and whose bytes no member with other symbol
-    names also offers, is that member's contribution (GUID tables of dxguid.lib,
-    runtime constant tables). Returns {(address, linker name): extent}.
+    A section of at least 16 bytes (some nonzero) that occurs exactly once in
+    the file-backed .rdata/.data of retail, at an address its section alignment
+    allows, and whose bytes no member with other symbol names also offers, is
+    that member's contribution (GUID tables of dxguid.lib, runtime constant
+    tables). Relocation fields are wildcards in the search and must cover at
+    most half of the section; a bound relocation target must then match.
+    Returns {(address, linker name): extent}.
     """
+    bindings = bindings_for(ctx.records)
     blobs = []
     for name in (".rdata", ".data"):
         start, _, file_end = ctx.sections[name]
         blobs.append((start, ctx.read(start, file_end - start)))
     offers = collections.defaultdict(set)
+    sources = {}
     for _, _, obj, symbols in archive_objects():
         for number, section, bss in _data_sections(obj):
-            if bss or section["raw_size"] < MIN_CONTENT or section["relocation_count"]:
+            if bss or section["raw_size"] < MIN_CONTENT:
                 continue
-            data = COFF_section_bytes(obj, section)
+            data = bytearray(COFF_section_bytes(obj, section))
+            masked = set()
+            for index in range(section["relocation_count"]):
+                offset, _, typ = struct.unpack_from("<IIH", obj.data, section["relocation_offset"] + 10 * index)
+                masked.update(range(offset, offset + 4) if typ else ())
+            if 2 * len(masked) > len(data):
+                continue
+            for i in masked:
+                data[i] = 0
+            key = (bytes(data), frozenset(masked))
             names = tuple(sorted((s["value"], s["name"]) for s in symbols if s["section"] == number))
             if any(data) and names:
                 alignment = 1 << max(0, ((section["characteristics"] >> 20) & 0xf) - 1)
-                offers[data].add((names, alignment, len(data)))
+                offers[key].add((names, alignment, len(data)))
+                sources[key] = (obj, section)
     layout = {}
-    for data, choices in offers.items():
+    for (data, masked), choices in offers.items():
         if len({names for names, _, _ in choices}) != 1:
             continue
         names, alignment, size = next(iter(choices))
         found = []
-        for start, blob in blobs:
-            offset = blob.find(data)
-            while offset >= 0 and len(found) < 2:
-                found.append(start + offset)
-                offset = blob.find(data, offset + 1)
+        if masked:
+            pattern = re.compile(b"".join(b"." if i in masked else re.escape(data[i:i + 1])
+                                          for i in range(len(data))), re.S)
+            for start, blob in blobs:
+                found.extend(start + m.start() for m in pattern.finditer(blob))
+        else:
+            for start, blob in blobs:
+                offset = blob.find(data)
+                while offset >= 0 and len(found) < 2:
+                    found.append(start + offset)
+                    offset = blob.find(data, offset + 1)
         if len(found) != 1 or found[0] % alignment:
             continue
+        if masked:
+            obj, section = sources[(data, masked)]
+            if not _relocated_equal(obj, section, bytearray(COFF_section_bytes(obj, section)),
+                                    ctx.read(found[0], size), bindings):
+                continue
         starts = sorted({value for value, _ in names})
         for value, name in names:
             following = [v for v in starts if v > value]
@@ -897,6 +935,54 @@ def member_ranges():
             if r.get("target_size")]
 
 
+WORK_CLASSES = {TEXT_CLASSES[8], TEXT_CLASSES[4], TEXT_CLASSES[5], TEXT_CLASSES[6], TEXT_CLASSES[7], TEXT_CLASSES[3],
+                 DATA_CLASSES[4], DATA_CLASSES[6], DATA_CLASSES[7], DATA_CLASSES[8], DATA_CLASSES[9],
+                 DATA_CLASSES[12], DATA_CLASSES[13], DATA_CLASSES[14], DATA_CLASSES[15]}
+
+
+def units():
+    """[(start, end, unit)] of the original compiland table (config/units.csv)."""
+    path = ROOT / "config/units.csv"
+    with path.open(newline="") as stream:
+        return sorted((int(r["start"], 16), int(r["end"], 16), r["unit"]) for r in csv.DictReader(stream))
+
+
+def worklist(ctx, classified):
+    """Unmapped code and data bytes per original compiland.
+
+    Code belongs to the compiland whose address range holds it. Data belongs to
+    the compiland whose mapped code references bytes of the range most often;
+    data that no mapped code references is listed as unattributed.
+    """
+    table = units()
+    starts = [a for a, _, _ in table]
+
+    def unit_of(va):
+        i = bisect.bisect_right(starts, va) - 1
+        return table[i][2] if i >= 0 and va < table[i][1] else "(code outside config/units.csv: runtime and SDK)"
+
+    refs = ctx.references()
+    targets = sorted(refs)
+    result = collections.defaultdict(lambda: collections.Counter())
+    for name, rows in classified.items():
+        for a, b, cls in rows:
+            if cls not in WORK_CLASSES:
+                continue
+            if name == ".text":
+                result[unit_of(a)]["code"] += b - a
+                result[unit_of(a)]["functions"] += 1
+                continue
+            owners = collections.Counter(
+                unit_of(source)
+                for target in targets[bisect.bisect_left(targets, a):bisect.bisect_left(targets, b)]
+                for source, kind in refs[target] if kind != "data" and ctx.is_mapped(source))
+            owner = owners.most_common(1)[0][0] if owners else "(no mapped-code reference)"
+            storage = "bss" if a >= ctx.sections[name][2] else "data"
+            result[owner][storage] += b - a
+            result[owner][storage + "_ranges"] += 1
+    return result
+
+
 def markdown(ctx, classified):
     table = summarize(ctx, classified)
     totals = section_totals(ctx)
@@ -914,6 +1000,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--markdown", action="store_true")
+    mode.add_argument("--worklist", action="store_true", help="unmapped code/data bytes per original compiland")
     mode.add_argument("--list", metavar="CLASS")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--write", choices=WRITE_KINDS, help="add the provable rows of one kind to symbols.csv")
@@ -950,6 +1037,14 @@ def main():
         return 0
     if args.markdown:
         print(markdown(ctx, classified))
+        return 0
+    if args.worklist:
+        result = worklist(ctx, classified)
+        print("| Compiland | Unmapped code bytes (chunks) | Unmapped data bytes (ranges) | Unmapped zero-fill bytes (ranges) |")
+        print("| --- | ---: | ---: | ---: |")
+        for unit, c in sorted(result.items(), key=lambda kv: -(kv[1]["code"] + kv[1]["data"] + kv[1]["bss"])):
+            print(f"| {unit} | {c['code']:,} ({c['functions']}) | {c['data']:,} ({c['data_ranges']}) "
+                  f"| {c['bss']:,} ({c['bss_ranges']}) |")
         return 0
     table = summarize(ctx, classified)
     for label, (size, mapped) in section_totals(ctx).items():

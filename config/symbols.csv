@@ -33033,8 +33033,11 @@ address,symbol,size,ctype
 0x7e7904,??_C@_0N@EKKJGCCF@?$CFs?5?$CI0x?$CF0?48x?$CJ?$AA@,13,
 0x7e7914,??_C@_08IHEMGHPP@?$CFs?$CI?$CFs?$CJ?3?5?$AA@,9,
 0x7e7920,??_C@_03JALODAI@?$CFld?$AA@,4,
+0x7e7928,dinput8#00007:_DiGenreDeviceOrder,492,
 0x7e7b14,?PcKeyboardDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,24,PC_DI_DATA_FORMAT_PC
+0x7e7b30,dinput8#00005:_DiGenreDeviceOrder,492,
 0x7e7d1c,?PcJoystickDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,24,PC_DI_DATA_FORMAT_PC
+0x7e7d38,dinput8#00004:_DiGenreDeviceOrder,492,
 0x7e7f24,?PcMouseDataFormat@@3UPC_DI_DATA_FORMAT_PC@@B,24,PC_DI_DATA_FORMAT_PC
 0x7e8abc,_PCSampleBufferAlgorithmPc,16,const GUID
 0x7e8acc,_PCSamplerBiasMaximum,4,const f32
