@@ -92,9 +92,10 @@ void __cdecl NewGame(void) {
     Game.customiser_start[0].use_saved_name = 1;
     Game.customiser_start[1].use_saved_name = 1;
     for (i = 0; i < 10; ++i) {
-        if (SuitRecordInitPc[i].group != previous_group)
+        if (SuitRecordInitPc[i].group != previous_group) {
             Game.initial_store_pack_flags |= 1u << i;
-        previous_group = SuitRecordInitPc[i].group;
+            previous_group = SuitRecordInitPc[i].group;
+        }
     }
 }
 
