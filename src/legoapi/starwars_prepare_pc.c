@@ -107,7 +107,6 @@ i32 __cdecl StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *pac
 
 i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
     GAMEOBJECT *owner;
-    AIPATHNODE_PC *nodes;
     AIPATHCNX_PC *connection;
     AIPATHNODE_PC *destination;
     AIPATHNODE_PC *source;
@@ -115,10 +114,9 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
     f32 radius;
 
     owner = (GAMEOBJECT *)object->owner;
-    nodes = packet->path_info.path->nodes;
     connection = packet->path_info.connection;
-    destination = &nodes[connection->node_indices[packet->path_info.direction == 0]];
-    source = &nodes[connection->node_indices[packet->path_info.direction]];
+    destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
+    source = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]];
 
     if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
         offset.x = destination->position.x - source->position.x;
@@ -135,8 +133,10 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
         return 1;
     }
+    // MATCH-EXCEPTION: retail rounds the distance through the radius local before the compare
+    // (store/reload of the call result); the value is not read afterwards.
     if (!(packet->terrain_origin.y >= destination->min_height) ||
-        !(NuVecXZDistSqr(&object->position, &destination->position, &offset) >= destination->radius_squared))
+        !((radius = NuVecXZDistSqr(&object->position, &destination->position, &offset)) >= destination->radius_squared))
         return 0;
     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
         return 0;
