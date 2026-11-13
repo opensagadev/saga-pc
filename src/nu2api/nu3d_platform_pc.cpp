@@ -2056,8 +2056,8 @@ extern "C" {
                 bitmap->height = height = info_header.height;
                 bitmap->mips = mips;
                 row_size = (NuTexPixelBitsPc(bitmap->type) * width + 7) / 8;
-                size = 0;
                 levels = mips + 1;
+                size = 0;
                 do {
                     size += NuTexPixelBitsPc(bitmap->type) * height * width / 8;
                     width >>= 1;
