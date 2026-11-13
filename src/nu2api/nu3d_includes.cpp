@@ -6380,7 +6380,7 @@ extern "C" {
         if (scene->rooms[room_id].priority < scene->rooms[next_room].priority) {
             f32 distance = portal->plane.a * NuPortalWorldCameraPc.x + portal->plane.b * NuPortalWorldCameraPc.y +
                            portal->plane.c * NuPortalWorldCameraPc.z + portal->plane.d;
-            if (portal->back_room == (u16)room_id && distance >= 0.0f)
+            if (portal->back_room == (u16)room_id && distance < 0.0f)
                 return 0;
             if (portal->front_room == (u16)room_id && distance > 0.0f)
                 return 0;
