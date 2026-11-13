@@ -282,31 +282,26 @@ i32 NuMusic::SelectTrack(u32 class_mask, const char *name) {
 }
 
 i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
-    i32 class_index;
-    i32 handle_album_index;
-    i32 track_index;
-    Album *selected_album;
-
-    if (this != NULL && the_music_player != NULL && (selected_album = album) != NULL) {
-        class_index = ClassToIX(class_mask);
+    if (this != NULL && the_music_player != NULL && album != NULL) {
+        i32 class_index = ClassToIX(class_mask);
         if (class_index >= 0 && class_index < 6) {
             if (handle != -1) {
-                track_index = handle & 0x7ff;
-                handle_album_index = handle >> 11;
-                if (handle_album_index == (i32)(selected_album - albums)) {
-                    if (track_index >= 0 && track_index < selected_album->tracks_count) {
-                        selected_album->tracks[class_index] = &selected_album->tracks_source[track_index];
+                i32 track_index = handle & 0x7ff;
+                i32 handle_album_index = handle >> 11;
+                if (handle_album_index == (i32)(album - albums)) {
+                    if (track_index >= 0 && track_index < album->tracks_count) {
+                        album->tracks[class_index] = &album->tracks_source[track_index];
                         return 1;
                     }
                 } else if (handle_album_index == album_count) {
                     if (track_index >= 0 && track_index < extra_track_count) {
-                        selected_album->tracks[class_index] = &extra_tracks[track_index];
+                        album->tracks[class_index] = &extra_tracks[track_index];
                         return 1;
                     }
                 }
             } else {
                 /* Retail clears the slot but still reports failure. */
-                selected_album->tracks[class_index] = NULL;
+                album->tracks[class_index] = NULL;
             }
         }
     }
