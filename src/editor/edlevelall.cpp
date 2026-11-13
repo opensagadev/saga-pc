@@ -4255,10 +4255,8 @@ i32 EdFileOutputStream::SerialiseBuffer(void *data, i32 size, i32 count) {
 f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *closest) {
     f32 length = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     f32 inverse_length = 1.0f / length;
-    VuVec normal;
+    __declspec(align(16)) VuVec normal;
     __declspec(align(16)) VuVec offset;
-    VuVec on_segment;
-    VuVec difference;
     f32 projection;
     f32 distance;
     normal.x = direction.x * inverse_length;
@@ -4281,22 +4279,26 @@ f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *cl
             offset.y = origin.y + direction.y;
             offset.z = origin.z + direction.z;
         }
-        on_segment.x = offset.x;
-        on_segment.y = offset.y;
-        on_segment.z = offset.z;
-        on_segment.w = offset.w;
+        normal.x = offset.x;
+        normal.y = offset.y;
+        normal.z = offset.z;
+        normal.w = offset.w;
     } else {
-        on_segment.x = origin.x;
-        on_segment.y = origin.y;
-        on_segment.z = origin.z;
-        on_segment.w = origin.w;
+        normal.x = origin.x;
+        normal.y = origin.y;
+        normal.z = origin.z;
+        normal.w = origin.w;
     }
-    difference.x = on_segment.x - point.x;
-    difference.y = on_segment.y - point.y;
-    difference.z = on_segment.z - point.z;
-    distance = NuFsqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
-    if (closest != NULL)
-        *closest = on_segment;
+    offset.x = normal.x - point.x;
+    offset.y = normal.y - point.y;
+    offset.z = normal.z - point.z;
+    distance = NuFsqrt(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z);
+    if (closest != NULL) {
+        closest->x = normal.x;
+        closest->y = normal.y;
+        closest->z = normal.z;
+        closest->w = normal.w;
+    }
     return distance;
 }
 
