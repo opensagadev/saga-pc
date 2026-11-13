@@ -7442,17 +7442,32 @@ i32 __cdecl AISysGetCharacterWaypoint(AIPACKET_PC *packet, NUVEC *position) {
 void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 upper_y, u32 colour, i32 unused5,
                                   i32 segments) {
     i32 i;
-    f32 previous_x = centre->x;
-    f32 previous_z = centre->z + radius;
+    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D_PC *first = &(vertices[0]);
+    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    (*second).position.x = centre->x;
+    (*second).position.y = centre->y;
+    (*second).position.z = centre->z + radius;
+    (*first).position = (*second).position;
     for (i = 1; i <= segments; ++i) {
-        i32 angle = (i * 65536) / segments;
-        f32 next_x = centre->x + radius * NU_SIN_LUT(angle);
-        f32 next_z = centre->z + NU_COS_LUT(angle) * radius;
-        AiRndrLine3dDbg(previous_x, lower_y, previous_z, next_x, lower_y, next_z, colour);
-        AiRndrLine3dDbg(previous_x, upper_y, previous_z, next_x, upper_y, next_z, colour);
-        AiRndrLine3dDbg(next_x, lower_y, next_z, next_x, upper_y, next_z, colour);
-        previous_x = next_x;
-        previous_z = next_z;
+        i32 angle = (i << 16) / segments;
+        (*second).position.x = centre->x;
+        (*second).position.y = centre->y;
+        (*second).position.z = centre->z;
+        (*second).position.x += NU_SIN_LUT(angle) * radius;
+        (*second).position.z += NU_COS_LUT(angle) * radius;
+        (*first).position.y = lower_y;
+        (*second).position.y = lower_y;
+        AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                        (*second).position.y, (*second).position.z, colour);
+        (*first).position.y = upper_y;
+        (*second).position.y = upper_y;
+        AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                        (*second).position.y, (*second).position.z, colour);
+        (*first).position = (*second).position;
+        (*first).position.y = lower_y;
+        AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                        (*second).position.y, (*second).position.z, colour);
     }
 }
 
