@@ -3599,30 +3599,6 @@ void __cdecl AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
     }
 }
 
-void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
-                           f32 maximum_delay) {
-    i32 random;
-    f32 fraction, delay;
-    if (position != NULL) {
-        if (object->head_target == NULL ||
-            (position != object->head_target && priority >= object->head_target_priority)) {
-            random = qrand();
-            object->head_target = position;
-            object->head_target_priority = priority;
-            fraction = (f32)((f64)random * (f64)(1.0f / 65535.0f));
-            delay = (1.0f - fraction) * minimum_delay + maximum_delay * fraction;
-            object->head_target_timer = time + delay;
-            object->head_target_delay = delay;
-        }
-        object->head_target_position = *object->head_target;
-    } else {
-        object->head_target_timer = 0.0f;
-        object->head_target = NULL;
-        object->head_target_delay = 0.0f;
-        object->head_target_priority = 0;
-    }
-}
-
 typedef struct DEACTIVATED_MOVE_VIEW_PC {
     u8 unknown_000[0x778];
     f32 action_delay;
@@ -6432,18 +6408,6 @@ void __cdecl Move_DEFAULT(GAMEOBJECT *object) {
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) == 0)
         ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
-}
-
-void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
-                                f32 unused_minimum_delay, f32 unused_maximum_delay) {
-    i32 joint;
-    if (object != NULL && target != NULL && target->character_data != NULL) {
-        joint = target->character_data->game_character->head_locator;
-        if (joint != -1)
-            SetHeadTarget(object, (NUVEC *)&target->locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
-        else
-            SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
-    }
 }
 
 i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {

@@ -1,4 +1,7 @@
 #include "saga.h"
+
+/* Retail unit 0x58bc60-0x58d311 (legoapi/animation.c): definitions in retail address order. */
+
 static f32 HairMovementFallAnglePc = -1.8325958251953125f;
 static f32 HairMovementFallRatePc = 2.0f;
 static f32 HairMovementRecoverRatePc = 2.0f;
@@ -12,6 +15,99 @@ typedef struct character_joint_movement_pc_s {
 STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, overrides) == 0xf3c);
 STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, count) == 0x107d);
 STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
+
+#define FOOTSTEP_CHECK(index)                                                                                          \
+    frame = config->event_frames[index];                                                                               \
+    if (frame >= 1.0f && valid_interval) {                                                                             \
+        if (frame <= current) {                                                                                        \
+            if (previous > current)                                                                                    \
+                crossed = 1;                                                                                           \
+            else if (frame > previous)                                                                                 \
+                crossed = 1;                                                                                           \
+        } else if (previous > current) {                                                                               \
+            if (frame > previous)                                                                                      \
+                crossed = 1;                                                                                           \
+        }                                                                                                              \
+    }
+
+void __cdecl AddFootSteps(GAMEOBJECT *object) {
+    ANIMPACKET_PC *packet = &object->anim_packet;
+    CHARACTERANIM_CONFIG_PC *config;
+    i32 valid_interval;
+    i32 crossed;
+    f32 frame;
+    f32 previous;
+    f32 current;
+    i32 index;
+    if (packet->blending != 0)
+        return;
+    index = packet->animation_index;
+    if (index == -1 || object->character_model->action_animations[index] == NULL)
+        return;
+    config = object->character_model->animation_configs[index];
+    if ((config->flags & 0x100) == 0)
+        return;
+    previous = packet->previous_time;
+    current = packet->current_time;
+    if (current == previous)
+        return;
+    crossed = 0;
+    valid_interval = 0;
+    if ((packet->flags & 2) != 0) {
+        if (previous > current)
+            valid_interval = 1;
+    } else if (previous < current) {
+        valid_interval = 1;
+    }
+    /* Retail tests the four-footstep flag again before each of the first two events. */
+    if ((config->flags & 0x10000) != 0) {
+        FOOTSTEP_CHECK(0)
+    }
+    if ((config->flags & 0x10000) != 0) {
+        FOOTSTEP_CHECK(1)
+    }
+    FOOTSTEP_CHECK(2)
+    FOOTSTEP_CHECK(3)
+    if (crossed)
+        PlayFootStepSfx(object);
+}
+#undef FOOTSTEP_CHECK
+
+void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
+                           f32 maximum_delay) {
+    i32 random;
+    f32 fraction, delay;
+    if (position != NULL) {
+        if (object->head_target == NULL ||
+            (position != object->head_target && priority >= object->head_target_priority)) {
+            random = qrand();
+            object->head_target = position;
+            object->head_target_priority = priority;
+            fraction = (f32)((f64)random * (f64)(1.0f / 65535.0f));
+            delay = (1.0f - fraction) * minimum_delay + maximum_delay * fraction;
+            object->head_target_timer = time + delay;
+            object->head_target_delay = delay;
+        }
+        object->head_target_position = *object->head_target;
+    } else {
+        object->head_target_timer = 0.0f;
+        object->head_target = NULL;
+        object->head_target_delay = 0.0f;
+        object->head_target_priority = 0;
+    }
+}
+
+void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priority, f32 unused_time,
+                                f32 unused_minimum_delay, f32 unused_maximum_delay) {
+    i32 joint;
+    if (object != NULL && target != NULL && target->character_data != NULL) {
+        joint = target->character_data->game_character->head_locator;
+        if (joint != -1)
+            SetHeadTarget(object, (NUVEC *)&target->locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
+        else
+            SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
+    }
+}
 
 static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
