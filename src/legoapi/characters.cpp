@@ -139,12 +139,12 @@ extern "C" {
 
     void __cdecl CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
-            KILLPARTS_CHARSCENE_PC *entry = &((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i];
-            entry->scene = NULL;
+            ((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i].scene = NULL;
             if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) &&
                 (CDataList[i].flags & 1) != 0 && world->cutscene_sys != NULL &&
-                ((((CHARACTER_SCENE_CUTSYS_PC *)world->cutscene_sys)->character_flags[i >> 5] & (1u << (i & 31))) != 0))
-                CharacterSceneLoadPrivatePc(entry, i, &world->giz_buffer, world->buffer_end);
+                ((((CHARACTER_SCENE_CUTSYS_PC *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) != 0))
+                CharacterSceneLoadPrivatePc(&((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i], i,
+                                            &world->giz_buffer, world->buffer_end);
         }
     }
     void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *list, VARIPTR *buffer, VARIPTR end) {
