@@ -932,13 +932,13 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 Grapple_JumpPc(object);
                 return;
             }
-            if (object->pad->input_magnitude == 0.0f || object->pad->input_angle < 0x6001 ||
+            if (object->pad->input_magnitude == 0.0f || object->pad->input_angle <= 0x6000 ||
                 object->pad->input_angle >= 40960)
                 return;
             object->field_7b3 = 0;
             object->context_duration = 0.0f;
-            object->context_variant_flags &= ~0x100;
             object->field_7aa = LEGOACT_GRAPPLE_IDLE;
+            object->context_variant_flags &= ~0x100;
             object->context_hover_target_y = (f64)0.1f;
             object->field_7a8 = 0x2000;
             object->big_jump_animation = 0;
