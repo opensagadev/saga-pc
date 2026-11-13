@@ -3682,7 +3682,7 @@ void __cdecl FS_BuildFilterOutBlocks(char *input) {
 i32 __cdecl FS_FileNameFilter(char *name) {
     char lower[256];
     i32 i, slot, dots;
-    char *retry, *match, *scan;
+    char *retry, *match;
     NuStrCpy(lower, name);
     NuStrToLower(lower);
     for (i = 0; i < FileSelFilterOutBlockCountPc; ++i)
@@ -3694,22 +3694,21 @@ i32 __cdecl FS_FileNameFilter(char *name) {
             match = retry;
             retry = NULL;
             for (slot = 0; slot < 7; ++slot) {
-                if (FileSelFilterBlocksPc[i][slot * 12] == 0)
+                if (FileSelFilterBlocksPc[i][slot * 12] == 0) {
+                    dots = 0;
+                    while (*match != 0) {
+                        if (*match++ == '.' && ++dots > 1)
+                            break;
+                    }
+                    if (dots <= 1)
+                        return 1;
                     break;
+                }
                 match = NuStrStr(match, &FileSelFilterBlocksPc[i][slot * 12]);
                 if (match == NULL)
                     break;
                 if (slot == 0)
                     retry = match + 1;
-            }
-            if (match != NULL && slot != 7) {
-                dots = 0;
-                for (scan = match; *scan != 0; ++scan) {
-                    if (*scan == '.' && ++dots > 1)
-                        break;
-                }
-                if (dots <= 1)
-                    return 1;
             }
         } while (retry != NULL);
     }
