@@ -17776,7 +17776,6 @@ eduimenu_s *__cdecl creatureEditorOptionsMenu(void) {
 
 eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
     EDAICREATURE_s *creature;
-    EDLOCATOR_s *locator;
     char base[16];
     char name[16];
     char *separator;
@@ -17848,25 +17847,23 @@ eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
             }
         }
     } else if (pad->digital_buttons_pressed & 0x10) {
-        if (aieditor->selected_creature != NULL) {
-            if (aieditor->selected_creature == aieditor->nearest_creature)
-                return creatureEditorDeleteMenu();
-            locator = aieditor->nearest_locator;
-            if (locator != NULL) {
-                if (aieditor->selected_creature->respawn_locator == locator)
-                    aieditor->selected_creature->respawn_locator = NULL;
-                else if (aieditor->selected_creature->check.path == locator->path_check.path)
-                    aieditor->selected_creature->respawn_locator = locator;
-                goto done;
-            }
+        if (aieditor->selected_creature != NULL && aieditor->selected_creature == aieditor->nearest_creature)
+            return creatureEditorDeleteMenu();
+        creature = aieditor->selected_creature;
+        if (creature != NULL && aieditor->nearest_locator != NULL) {
+            if (creature->respawn_locator == aieditor->nearest_locator)
+                creature->respawn_locator = NULL;
+            else if (creature->check.path == aieditor->nearest_locator->path_check.path)
+                creature->respawn_locator = aieditor->nearest_locator;
+        } else {
+            aieditor->selected_creature = NULL;
         }
-        aieditor->selected_creature = NULL;
     } else if (pad->digital_buttons_pressed & 0x20) {
-        if (aieditor->selected_creature != NULL && (locator = aieditor->nearest_locator) != NULL) {
-            if (aieditor->selected_creature->locator == locator)
+        if (aieditor->selected_creature != NULL && aieditor->nearest_locator != NULL) {
+            if (aieditor->selected_creature->locator == aieditor->nearest_locator)
                 aieditor->selected_creature->locator = NULL;
-            else if (aieditor->selected_creature->check.path == locator->path_check.path)
-                aieditor->selected_creature->locator = locator;
+            else if (aieditor->selected_creature->check.path == aieditor->nearest_locator->path_check.path)
+                aieditor->selected_creature->locator = aieditor->nearest_locator;
         }
     } else if ((pad->digital_buttons_pressed & 0x1000) ||
                ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))) {
