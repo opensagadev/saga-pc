@@ -9390,6 +9390,7 @@ static void pathEditorDrawRoute(void) {
 
 static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *visited, i32 previous, i32 current,
                                         f32 distance, i32 route_mask) {
+    AIPATHNODE_PC *previous_node;
     AIPATHNODE_PC *node;
     NUVEC difference;
     f32 new_distance;
@@ -9399,8 +9400,9 @@ static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *vis
     if (visited[current / 8] & (1 << (current % 8)))
         return;
     visited[current / 8] |= 1 << (current % 8);
+    previous_node = &path->nodes[previous];
     node = &path->nodes[current];
-    new_distance = NuVecDist(&path->nodes[previous].position, &node->position, &difference) + distance;
+    new_distance = NuVecDist(&previous_node->position, &node->position, &difference) + distance;
     if (new_distance <= distances[current]) {
         distances[current] = new_distance;
         for (index = 0; index < node->connection_count; ++index) {
