@@ -389,12 +389,15 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                                 lighting_data->field_134.z += light->direction.z * strength;
                                 lighting_data->specular_value += strength;
                                 if (light->intensity > 16.0f) {
-                                    lighting_data->field_134.x += NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
-                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.y += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
-                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
-                                    lighting_data->field_134.z += NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) *
-                                                                  strength * (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.x +=
+                                        NU_SIN_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.y +=
+                                        NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
+                                    lighting_data->field_134.z +=
+                                        NU_COS_LUT(rtltimer1 * ((i32)(light->intensity) >> 4)) * strength *
+                                        (f32)((i32)(light->intensity) & 15) * rtlwob;
                                 }
                             }
                             if (position != NULL && (light->flags & 2)) {
@@ -3318,7 +3321,7 @@ void __cdecl RefreshUI(void) {
     copy_item->disabled = 1;
     flicker_item->disabled = 1;
     paste_item->disabled = clipboard_light.type == 0;
-    pasteinto_item->disabled = clipboard_light.type == 0 || curr_rtl == NULL;
+    pasteinto_item->disabled = (u8)(clipboard_light.type == 0 || curr_rtl == NULL);
     if (curr_rtl == NULL)
         copytogroup_item->disabled = 1;
     else if (curr_rtl->group_id == 0)
@@ -3342,13 +3345,13 @@ void __cdecl RefreshUI(void) {
                 break;
             case 3:
                 eduiMenuHighlight(type_menu, pointflicker_item);
-                flicker_item->disabled = 0;
                 flicker_item->data_ptr = flicker_menu;
+                flicker_item->disabled = 0;
                 break;
             case 6:
                 eduiMenuHighlight(type_menu, pointblend_item);
-                flicker_item->disabled = 0;
                 flicker_item->data_ptr = flicker_menu;
+                flicker_item->disabled = 0;
                 break;
             case 4:
                 eduiMenuHighlight(type_menu, directional_item);
@@ -3361,8 +3364,8 @@ void __cdecl RefreshUI(void) {
                 break;
             case 8:
                 eduiMenuHighlight(type_menu, jonflicker_item);
-                flicker_item->disabled = 0;
                 flicker_item->data_ptr = jonflicker_menu;
+                flicker_item->disabled = 0;
                 break;
             default:
                 break;
@@ -3371,13 +3374,13 @@ void __cdecl RefreshUI(void) {
         hasspecular_item->highlighted = curr_rtl->flags >> 2;
         eduiMenuHighlight(
             modifier_menu,
-            modifier_items[curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b]);
+            modifier_items[modifier_cnt - 1 < curr_rtl->field_7b ? modifier_cnt - 1 : curr_rtl->field_7b]);
         for (i = 0; i < 16; i++) {
-            if (((curr_rtl->field_5e & (1 << i)) != 0) != associd_items[i]->highlighted)
+            if ((((u16)curr_rtl->field_5e & (1 << i)) != 0) ^ associd_items[i]->highlighted)
                 eduiMenuHighlight(associd_menu, associd_items[i]);
         }
         for (i = 0; i < 16; i++) {
-            if (((curr_rtl->field_60 & (1 << i)) != 0) != excludeid_items[i]->highlighted)
+            if ((((u16)curr_rtl->field_60 & (1 << i)) != 0) ^ excludeid_items[i]->highlighted)
                 eduiMenuHighlight(excludeid_menu, excludeid_items[i]);
         }
         for (i = 0; i < 16; i++) {
@@ -3395,17 +3398,21 @@ void __cdecl RefreshUI(void) {
         eduiItemSliderSetValEx((edui_slider_s *)jon_t_low_item, curr_rtl->parameters[2], 0, 0);
     }
     if (clipboard_light.type != 0) {
-        paste_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | 0x80000000) |
-                                 (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
-                                 ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
-        pasteinto_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | 0x80000000) |
-                                     (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
-                                     ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+        // MATCH-EXCEPTION: eduiitem_s.colours is u32 in saga.h but signed in the original; an unsigned
+        // destination turns the three float conversions into inline fistp qword instead of _ftol2 calls.
+        ((i32 *)paste_item->colours)[2] =
+            ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
+            (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+            ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+        ((i32 *)pasteinto_item->colours)[2] =
+            ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
+            (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+            ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
     }
 
     fog_copy_item->disabled = 1;
     fog_paste_item->disabled = clipboard_fog.type == 0;
-    fog_pasteinto_item->disabled = clipboard_fog.type == 0 || curr_fog == NULL;
+    fog_pasteinto_item->disabled = (u8)(clipboard_fog.type == 0 || curr_fog == NULL);
     fog_item->disabled = 1;
     if (curr_fog != NULL) {
         eduiItemSliderSetValEx((edui_slider_s *)fogalpha_item, (f32)(curr_fog->colour >> 24), 0, 0);
