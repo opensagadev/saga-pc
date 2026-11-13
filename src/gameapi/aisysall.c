@@ -4304,8 +4304,10 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                         if (route->path_count != 0) {
                             PATH_LOAD_ALLOCATE(AIPATH_PC **, route->paths, cursor, end,
                                                route->path_count * sizeof(AIPATH_PC *));
-                            for (row = 0; row < route->path_count; ++row)
-                                route->paths[row] = system->paths[(i8)EdFileReadChar()];
+                            for (row = 0; row < route->path_count; ++row) {
+                                i32 path_index = EdFileReadChar();
+                                route->paths[row] = system->paths[path_index];
+                            }
                         }
                     }
                 }
