@@ -155,31 +155,33 @@ i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GIZTORPMACHINESYS_s *system;
     i32 version, index, length;
-    i16 rotation;
     u8 value;
     (void)unused;
-    if (world == NULL)
-        return 0;
-    system = (GIZTORPMACHINESYS_s *)world->torpedo_machine_sys;
-    if (system == NULL || system->count != 0)
-        return 0;
-    version = EdFileReadInt();
-    system->count = EdFileReadInt();
-    system->scale = version >= 3 ? EdFileReadFloat() : 1.0f;
-    for (index = 0; index < system->count; ++index) {
-        length = EdFileReadInt();
-        EdFileRead(system->machines[index].name, length);
-        EdFileReadNuVec(&system->machines[index].position);
-        rotation = EdFileReadShort();
-        system->machines[index].y_rotation = (u16)rotation;
-        if (version >= 2) {
-            value = EdFileReadUnsignedChar();
-            system->machines[index].flags = (u8)((system->machines[index].flags & ~4u) | (value != 0 ? 4 : 0));
-        } else {
-            system->machines[index].flags &= ~4u;
+    if (world != NULL) {
+        system = (GIZTORPMACHINESYS_s *)world->torpedo_machine_sys;
+        if (system != NULL && system->count == 0) {
+            version = EdFileReadInt();
+            system->count = EdFileReadInt();
+            if (version >= 3)
+                system->scale = EdFileReadFloat();
+            else
+                system->scale = 1.0f;
+            for (index = 0; index < system->count; ++index) {
+                length = EdFileReadInt();
+                EdFileRead(system->machines[index].name, length);
+                EdFileReadNuVec(&system->machines[index].position);
+                system->machines[index].y_rotation = EdFileReadShort();
+                if (version >= 2) {
+                    value = EdFileReadUnsignedChar();
+                    system->machines[index].flags = (u8)((system->machines[index].flags & ~4u) | (value != 0 ? 4 : 0));
+                } else {
+                    system->machines[index].flags &= ~4u;
+                }
+            }
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 
 i32 __cdecl GizTorp_GetOutput(void *input, i32 output, i32 mode) {
