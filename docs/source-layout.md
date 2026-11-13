@@ -434,6 +434,14 @@ into a target file in retail order and rewrites `config/*.json` owners.
    strays (`nu2api/nusound.c` 6 audio functions, `gameapi/edspline_load.c` 1
    movies function). Functions in their target file: 5750 -> 6648 of 11496;
    compilands complete: 39 -> 64. The exact set gained `BoulderSpawnPc`.
+   Second pass (language-blocked pieces and boundaries, listed above):
+   functions in their target file 6648 -> 7094; compilands complete
+   64 -> 100. The exact set gained `DrawCharIcon` and `TieSpinZPart_Move`.
+   `SubItemMenu` (fragile) moved from 98.31% to 97.72%. Engine files lost
+   strays: `gameapi/gameaiactions.c` (6 GizAction functions, file removed).
+   `tools/declscan.py` then removed 81 class A/E declarations and 60 class C
+   forward declarations with no use before the definition. It also took out
+   typedef views that their file no longer used.
    Rules learnt:
    - A C `const` definition moved into C++ gets internal linkage; write it
      `extern const` so other objects still link (`MoviesListPathPc`).
