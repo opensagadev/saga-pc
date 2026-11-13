@@ -4390,21 +4390,6 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
 
 /* Five reviewed providers: append these four to existing hub.cpp. */
 extern "C" {
-    /* Complete native0056e2a0..0056e2dc. */
-    u32 __cdecl Cheat_MultiplyScore(u32 score) {
-        u32 flags = CheatSystemPtr->flags;
-        if ((flags & 4) != 0)
-            score *= 2;
-        if ((flags & 8) != 0)
-            score *= 4;
-        if ((flags & 16) != 0)
-            score *= 6;
-        if ((flags & 32) != 0)
-            score *= 8;
-        if ((flags & 64) != 0)
-            score *= 10;
-        return score;
-    }
 
     /* Append to src/legoapi/panel.c. Complete native 004b71a0..004b7943. */
     void __cdecl UpdateStats(void) {

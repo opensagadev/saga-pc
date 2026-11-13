@@ -100,32 +100,6 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
     return NULL;
 }
 
-void __cdecl Cheats_Init(CHEAT_PC *cheats) {
-    CHEATSYSTEM_PC *system;
-
-    system = CheatSystemPtr;
-    system->cheats = cheats;
-    system->count = 0;
-    if (cheats == NULL || cheats[0].name == NULL) {
-        return;
-    }
-
-    do {
-        ++system->count;
-    } while ((++cheats)->name != NULL);
-}
-
-i32 __cdecl Cheat_FindByName(char *name) {
-    i32 index;
-
-    for (index = 0; index < CheatSystemPtr->count; ++index) {
-        if (NuStrICmp(CheatSystemPtr->cheats[index].name, name) == 0) {
-            return index;
-        }
-    }
-    return -1;
-}
-
 AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
     i32 index;
 
