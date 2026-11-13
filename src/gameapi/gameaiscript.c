@@ -5431,9 +5431,10 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     }
     NuVecAdd(&destination, &object->position, &processor->action_pos);
     AIMoveInstruction(packet, &destination, 0.0f, NULL, 1, 0.0f);
-    opponent = (APIOBJECT_PC *)packet->opponent;
-    if (processor->action_data_4 > 0.0f && opponent != NULL && opponent->ai != NULL) {
-        distance_squared = NuVecDistSqr(&((APIOBJECT_PC *)packet->owner)->position, &opponent->position, &difference);
+    if (processor->action_data_4 > 0.0f && packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+        distance_squared = NuVecDistSqr(&((APIOBJECT_PC *)packet->owner)->position,
+                                        &((APIOBJECT_PC *)packet->opponent)->position, &difference);
+        opponent = (APIOBJECT_PC *)packet->opponent;
         if ((((u64)1 << opponent->object_id) & WORLD->object_sys->hostility_masks[object->hostility_group]) != 0 &&
             object->model_draw_result != 0 && distance_squared < processor->action_data_4 * processor->action_data_4) {
             target = (GAMEOBJECT *)opponent->owner;
