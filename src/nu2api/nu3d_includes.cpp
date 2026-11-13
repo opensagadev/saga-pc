@@ -5710,13 +5710,13 @@ extern "C" void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *direction, cons
     center->z = (f32)((f64)center->z * 0.125);
     *radius = 0.0f;
     f32 distance;
-    NUVEC4 delta;
+    __declspec(align(16)) NUVEC4 delta;
     for (i32 i = 0; i < 8; ++i) {
         delta.x = center->x - corners[i].x;
         delta.y = center->y - corners[i].y;
         delta.z = center->z - corners[i].z;
         distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
-        if (*radius < distance)
+        if (distance > *radius)
             *radius = distance;
     }
     /* Native passes the final vertex distance, after all maximum stores. */
@@ -5727,7 +5727,7 @@ extern "C" void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *direction, cons
     delta.y = center->y - scaled.y;
     delta.z = center->z - scaled.z;
     /* As in the retail stack scratch, the fourth component was not assigned. */
-    *endpoint = delta;
+    OccluderVertexSet(endpoint, delta.x, delta.y, delta.z, delta.w);
 }
 
 /* Original nugscn module; its PS backend is nugscn_pc.c. */
