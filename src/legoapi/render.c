@@ -888,8 +888,10 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
                     if (message_id == TextIdPc880f9c) {
                         NuStrCpy(text, TTab[message_id]);
                         if (HubBothTrueJediGoldBricksPc != 0) {
+                            i16 name_id;
                             NuStrCat(text, CutPlayerTextSeparatorPc);
-                            NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
+                            name_id = (packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4;
+                            NuStrCat(text, TTab[name_id]);
                         }
                         message = text;
                     } else
@@ -1277,13 +1279,12 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         f32 alpha, blend;
         i32 opacity;
         char *title;
-        i32 red, green;
+        u8 red, green;
         if (stage->field_0x18 < 0.5f) {
             alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
             coin_progress = 1.0f;
         } else if (stage->field_0x18 < 4.5f) {
-            alpha = 1.0f;
-            coin_progress = 1.0f;
+            alpha = coin_progress = 1.0f;
         } else {
             coin_progress = 1.0 - (((f64)stage->field_0x18 - 4.5) + ((f64)stage->field_0x18 - 4.5));
             alpha = coin_progress;
@@ -1298,15 +1299,14 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
             red = 255;
             green = 0;
         }
-        SmartTextEx(title, 0.0f, 0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0,
-                    (u32)opacity);
+        SmartTextEx(title, 0.0f, 0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, red, green, 0, 1.7f, 1, NULL, 0, (u32)opacity);
         if (stage->field_0x18 < 0.5f)
             blend = 0.0f;
         else if (stage->field_0x18 < 4.0f)
             blend = ((f64)stage->field_0x18 - 0.5) / 3.5;
         else
             blend = 1.0f;
-        Text_MakeScore((u32)((f64)packet->superstory_score * (f64)blend), text);
+        Text_MakeScore((u32)(packet->superstory_score * blend), text);
         Text3DEx(text, 0.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, opacity);
         Text_MakeScore(packet->previous_best_score, text);
         NuStrCpy(previous, "(");
