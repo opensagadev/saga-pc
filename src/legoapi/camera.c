@@ -352,27 +352,6 @@ typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
 STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, direction) == 0x110);
 STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, pitch) == 0x1f8);
 
-void __cdecl KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
-    if ((f64)position->x < (f64)-0.85f) {
-        position->x = -0.85f;
-        if (velocity != NULL)
-            velocity->x = 0.0f;
-    } else if ((f64)position->x > (f64)0.85f) {
-        position->x = 0.85f;
-        if (velocity != NULL)
-            velocity->x = 0.0f;
-    }
-    if ((f64)position->y < (f64)-0.85f) {
-        position->y = -0.85f;
-        if (velocity != NULL)
-            velocity->y = 0.0f;
-    } else if ((f64)position->y > (f64)0.85f) {
-        position->y = 0.85f;
-        if (velocity != NULL)
-            velocity->y = 0.0f;
-    }
-}
-
 void __cdecl GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL)
         camera = GameCam;
