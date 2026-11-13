@@ -1952,10 +1952,6 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     return 1;
 }
 
-i32 __cdecl NoLayerKill(GAMEOBJECT *object) {
-    return (object->character_data->game_character->flags_094 & 0x800000) != 0 && object->field_283 == 6;
-}
-
 void __cdecl GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     i32 locator = object->character_data->game_character->ride_locator;
     CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;

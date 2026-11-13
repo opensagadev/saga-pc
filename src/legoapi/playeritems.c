@@ -44,11 +44,3 @@ typedef struct weapon_rate_pc_s {
     f32 weapon_scale_rate;
 } WEAPON_RATE_PC;
 STATIC_ASSERT(offsetof(WEAPON_RATE_PC, weapon_scale_rate) == 0xd40);
-
-void __cdecl RegenerateHearts(GAMEOBJECT *object) {
-    if (object->current_hp > 0 && object->current_hp < object->field_107e && object->vehicle_hit_timer <= 0.0f &&
-        object->spawn_protection_timer <= 0.0f && ParticlesPerSecond(1.0f, FRAMETIME) > 0) {
-        ++object->current_hp;
-        GameAudio_PlaySfx(0x27, &object->collision_position, 0, 0);
-    }
-}

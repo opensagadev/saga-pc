@@ -1,14 +1,11 @@
-#include <stdlib.h>
 #include "saga.h"
+#include <stdlib.h>
+
+/* Retail unit 0x58b720-0x58b8aa (legoapi/hits.c): definitions in retail address order. */
+
 #pragma data_seg(".data$SHIELDFLICKERTIME")
 static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
 #pragma data_seg()
-
-i32 __cdecl CannotKill(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0)
-        return 1;
-    return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->field_280 == 0xff;
-}
 
 u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
     u16 flags = 0;
@@ -26,6 +23,33 @@ u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *object) {
         }
     }
     return flags;
+}
+
+void __cdecl RegenerateHearts(GAMEOBJECT *object) {
+    if (object->current_hp > 0 && object->current_hp < object->field_107e && object->vehicle_hit_timer <= 0.0f &&
+        object->spawn_protection_timer <= 0.0f && ParticlesPerSecond(1.0f, FRAMETIME) > 0) {
+        ++object->current_hp;
+        GameAudio_PlaySfx(0x27, &object->collision_position, 0, 0);
+    }
+}
+
+i32 __cdecl CannotKill(GAMEOBJECT *object) {
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0)
+        return 1;
+    return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->field_280 == 0xff;
+}
+
+i32 __cdecl NoLayerKill(GAMEOBJECT *object) {
+    return (object->character_data->game_character->flags_094 & 0x800000) != 0 && object->field_283 == 6;
+}
+
+GAMEOBJECT *__cdecl BossKilled(i32 character_id) {
+    GAMEOBJECT *object = FindGameObject(character_id, 1, 1, 1, 0);
+    if (object != NULL && (object->portal_flags & 0x08000000) != 0) {
+        if (object->dead != 0 || object->current_hp == 0)
+            return object;
+    }
+    return NULL;
 }
 
 void __cdecl KillRumble(GAMEOBJECT *object) {
