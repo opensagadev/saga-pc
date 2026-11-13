@@ -10962,9 +10962,10 @@ void NuMainFilterGen::render() {
                                                         direction_scale_range, direction_angle_start,
                                                         direction_angle_range};
             PCDeviceSetVertexShaderConstantsF(0x89, directional, 1);
-            f32 direction_y = bloom->direction.y;
-            f32 direction_z = bloom->direction.z;
-            __declspec(align(16)) NUVEC4 direction = {bloom->direction.x, direction_y, direction_z, 1.0f};
+            const NUVEC *source = &bloom->direction;
+            f32 direction_y = source->y;
+            f32 direction_z = source->z;
+            __declspec(align(16)) NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
             PostVec4NormalizeDirection(&direction);
             direction.w = bloom->direction_bias;
             PCDeviceSetVertexShaderConstantsF(0x8a, &direction.x, 1);
