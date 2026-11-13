@@ -18748,7 +18748,7 @@ eduimenu_s *__cdecl routeEditor_MainMenu(void) {
 eduimenu_s *__cdecl routeEditor_Process(FRAME_PAD_PC *pad) {
     EDAIPATHNODE_s *nearest;
     EDAIPATHNODE_s *node;
-    NUVEC position;
+    NUVEC *pos;
     i32 index;
     i32 i;
     i32 change;
@@ -18783,11 +18783,12 @@ eduimenu_s *__cdecl routeEditor_Process(FRAME_PAD_PC *pad) {
     }
     if (aieditor->current_path->current_route == NULL)
         return NULL;
-    if ((pad->digital_buttons & 0x40) && aieditor->current_path->nearest_node != NULL &&
+    if ((pad->digital_buttons & 0x40) && (nearest = aieditor->current_path->nearest_node) != NULL &&
         (pad->digital_buttons_pressed & 0x40)) {
-        aieditor->current_path->current_node = aieditor->current_path->nearest_node;
+        aieditor->current_path->current_node = nearest;
         node = aieditor->current_path->current_node;
         if (node != NULL) {
+            NUVEC position;
             position.x = node->position.x;
             position.y = aieditor->cursor_position.y;
             position.z = node->position.z;
@@ -18795,24 +18796,24 @@ eduimenu_s *__cdecl routeEditor_Process(FRAME_PAD_PC *pad) {
         }
     }
     if (pad->digital_buttons_pressed & 0x20) {
+        NUVEC position;
         node = aieditor->current_path->current_node;
-        nearest = aieditor->current_path->nearest_node;
-        if (node != NULL && nearest != NULL && nearest != node) {
+        if (node != NULL && (nearest = aieditor->current_path->nearest_node) != NULL && nearest != node) {
             change = routeEditor_AddToRoute(node, nearest);
             routeEditor_AddToRoute(nearest, aieditor->current_path->current_node);
             if (change == 1) {
                 aieditor->current_path->current_node = nearest;
-                node = aieditor->current_path->current_node;
-                position.x = node->position.x;
+                pos = &aieditor->current_path->current_node->position;
+                position.x = pos->x;
                 position.y = aieditor->cursor_position.y;
-                position.z = node->position.z;
+                position.z = pos->z;
                 edcamSetPos(&position);
             } else if (change == -1) {
                 aieditor->current_path->current_node = nearest;
-                node = aieditor->current_path->current_node;
-                position.x = node->position.x;
+                pos = &aieditor->current_path->current_node->position;
+                position.x = pos->x;
                 position.y = aieditor->cursor_position.y;
-                position.z = node->position.z;
+                position.z = pos->z;
                 edcamSetPos(&position);
             }
         }
