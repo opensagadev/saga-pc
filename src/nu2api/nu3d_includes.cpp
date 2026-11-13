@@ -2276,6 +2276,13 @@ extern "C" {
         u8 *joint_flags;
         i32 group;
         i32 i;
+        u32 value0;
+        u32 value1;
+        u32 blend_bits;
+        u32 v;
+        f32 start;
+        f32 next;
+        f32 blend0;
 
         if ((anim->format_flags & 1) != 0) {
             if ((anim->format_flags & 2) != 0)
@@ -2360,23 +2367,18 @@ extern "C" {
                         if (type != 6) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
-                            u32 value0;
-                            u32 blend_bits;
-                            u32 v;
-                            u32 value1;
-                            f32 blend0;
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
                             v = *(u32 *)(keys + key_stride);
                             value1 = v & 0xff;
                             blend0 = ANI_GetBlend2(blend_bits, quarter);
                             if (quarter < 3) {
-                                f32 start = (f32)value0;
+                                start = (f32)value0;
                                 blend0 = (ANI_GetBlend2(blend_bits, quarter + 1) - blend0) * fraction + blend0;
                                 value =
                                     (((f32)value1 - start) * blend0 + start) * scale_min->scale + scale_min->minimum;
                             } else {
-                                f32 next = (f32)value1;
-                                f32 start = (f32)value0;
+                                next = (f32)value1;
+                                start = (f32)value0;
                                 f32 a = (next - start) * blend0 + start;
                                 f32 b = ((f32)keys[key_stride * 2] - next) * ANI_GetBlend2(v >> 8, 0) + next;
                                 value = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
