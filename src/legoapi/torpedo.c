@@ -690,23 +690,24 @@ void __cdecl Torpedo_InitBolt(BOLT_PC *bolt) {
 }
 
 void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
-    NUVEC *target_position;
-    f32 target_radius;
-    NUVEC direction, offset, points;
     if (bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL)
         return;
     HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
     if (((GAMEOBJECT *)bolt->owner)->torpedo->target != NULL) {
+        NUVEC *target_position;
+        f32 target_radius;
         target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
                                                   ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
         if (target_position != NULL) {
+            NUVEC direction;
             NuVecSub(&direction, target_position, &bolt->position);
-            if ((f64)target_radius * target_radius > NuVecMagSqr(&direction))
+            if (NuVecMagSqr(&direction) < target_radius * target_radius)
                 Bolt_End(bolt, 1);
         }
     }
     if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
         (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
+        NUVEC offset, points;
         offset.x = 0.0f;
         offset.z = 0.0f;
         offset.y = 2.0f * bolt->collision_radius;
