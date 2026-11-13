@@ -2285,23 +2285,23 @@ void __cdecl Players_Init(void) {
             PostResetCode(object);
             extra = (PLAYER_INIT_EXTRA_PC *)object;
             api = (APIOBJECT_PC *)object;
-            object->previous_sock_position = &OldPlrSPos[PLAYERCOUNT];
             players[PLAYERCOUNT] = object;
-            object->field_280 = (u8)PLAYERCOUNT;
-            extra->batarang = &BatarangPacketsPc[PLAYERCOUNT];
-            object->torpedo = GetTorpedoPacket();
+            object->previous_sock_position = &OldPlrSPos[PLAYERCOUNT];
+            players[PLAYERCOUNT]->field_280 = (u8)PLAYERCOUNT;
+            ((PLAYER_INIT_EXTRA_PC *)players[PLAYERCOUNT])->batarang = &BatarangPacketsPc[PLAYERCOUNT];
+            players[PLAYERCOUNT]->torpedo = GetTorpedoPacket();
             ++PLAYERCOUNT;
             object->flags_1044 |= 1;
             object->field_107e = (u8)DEFAULT_PLAYERHITPOINTS;
             object->helmet = 0;
             if (UsePlayerList != 0) {
                 i32 slot = (i8)object->field_280;
-                object->flags_1fc_word = (object->flags_1fc_word & ~0x80u) | ((u32)(progress[slot].active & 1) << 7);
+                object->player_controlled = progress[slot].active;
                 if (Area != last_area) {
                     object->flags_e20 &= ~0x10000u;
                     extra->previous_state = 0;
                 } else if (UsePlayerList == 1) {
-                    object->flags_e20 = (object->flags_e20 & ~0x10000u) | ((u32)(progress[slot].stored_flag & 1) << 16);
+                    object->flags_e20 ^= ((u32)progress[slot].stored_flag << 16 ^ object->flags_e20) & 0x10000;
                     object->current_hp = progress[slot].hitpoints;
                     if (object->current_hp > object->field_107e)
                         object->current_hp = (i8)object->field_107e;
@@ -2313,9 +2313,11 @@ void __cdecl Players_Init(void) {
                         object->torpedo->count = PlayerTorpedoCount[slot];
                 }
             } else {
-                u8 slot = object->hostility_group;
-                object->flags_1fc_word = (object->flags_1fc_word & ~0x80u) | ((u32)(slot == 0) << 7);
-                progress[slot].hitpoints = object->current_hp;
+                if (object->hostility_group == 0)
+                    object->flags_1fc_word |= 0x80;
+                else
+                    object->flags_1fc_word &= ~0x80u;
+                progress[object->hostility_group].hitpoints = object->current_hp;
                 extra->previous_state = 0;
             }
             api->view_distance = apicharsys->char_data[(i16)object->id].game_character->viewdistance;
