@@ -1,5 +1,4 @@
 #include "saga.h"
-extern void *__cdecl NuFilePakLoad(char *, VARIPTR *, VARIPTR, i32);
 extern i32 configureallcharacters_perm;
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
@@ -1705,7 +1704,6 @@ static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
 i32 SecondCharConfigure = 0;
 i32 configureallcharacters_perm = 0;
 char MiniBuffer[0x4000] = {0};
-extern i32 CHARPAK;
 
 static f32 CharConfigFdivPc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f)
@@ -2149,49 +2147,6 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern APICHARACTERMODELLIST FreePlayModelList[49];
-    extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
-    extern COLLECTION_BUILD_PC MiniKitCollection;
-    extern i32 bonusmodearcade;
-    extern i32 FreePlayModelCount, FreePlayResidentCount, FreePlayBonusCount;
-    i32 __cdecl CanWearHatsInFreePlay(i32);
-    i32 __cdecl RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
-    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
-    i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
-    void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
-    void __cdecl Move_DEFAULT(GAMEOBJECT *);
-    extern i16 FreePlayId007f199cPc;
-    extern i16 id_THEEMPEROR;
-    extern i16 FreePlayId007f1a4cPc;
-    extern i16 FreePlayId007f1a48Pc;
-    extern i16 FreePlayId007f1a44Pc;
-    extern i16 VehicleBoltId7f17d0Pc;
-    extern i16 VehicleBoltId7f1aacPc;
-    extern i16 FreePlayId007f1ab0Pc;
-    extern i16 FreePlayId007f1ab4Pc;
-    extern i16 VehicleSpecialShooterIdPc;
-    extern i16 FreePlayId007f1abcPc;
-    extern i16 id_XWING;
-    extern i16 id_YWING;
-    extern i16 VehicleBoltId7f1a24Pc;
-    extern i16 VehicleBoltId7f19a4Pc;
-    extern i16 id_TIEFIGHTER;
-    extern i16 VehicleBoltId7f1a28Pc;
-    extern i16 VehicleBoltId7f196cPc;
-    extern i16 id_TIEBOMBER;
-    extern i16 VehicleBoltId7f1a2cPc;
-    extern i16 VehicleBoltId7f195cPc;
-    extern i16 id_ANAKINSNEWPOD;
-    extern i16 VehicleBoltId7f1a9cPc;
-    extern i16 VehicleBoltId7f1b34Pc;
-    extern i16 id_NEW_REPUBLIC_GUNSHIP;
-    extern i16 id_JEDISTARFIGHTERYELLOWEP3;
-    extern i16 id_ZAMSSPEEDER;
-    extern i16 VehicleBoltId7f19e8Pc;
-    extern i16 id_SEBULBASPOD;
-    extern i16 FreePlayId007f1b44Pc;
-    extern i16 FreePlayId007f1b40Pc;
-    extern i16 FreePlayId007f1a98Pc;
 #ifdef __cplusplus
 }
 #endif
@@ -2239,9 +2194,6 @@ i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, 
     return -1;
 }
 
-extern i16 id_SUPERBATTLEDROID, id_BARMAN;
-void __cdecl Move_GEONOSIAN(GAMEOBJECT *);
-void __cdecl Move_JAWA(GAMEOBJECT *);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);

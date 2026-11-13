@@ -1336,7 +1336,6 @@ STATIC_ASSERT(offsetof(KAMINO_E_PC, platform) == 0x76);
 STATIC_ASSERT(sizeof(KAMINO_E_PC) == 0x78);
 
 GAMEOBJECT *ObiWan = NULL;
-extern i16 CharacterFixupIdPc007f19d0;
 KAMINODISCO_PC kaminodisco = {0};
 KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
 NUSPECIALHANDLE disco_on_spin[3] = {0};
@@ -1854,7 +1853,6 @@ STATIC_ASSERT(offsetof(KAMINO_SHIP_ZERO_ANGLES_PC, pitch) == 0);
 STATIC_ASSERT(offsetof(KAMINO_SHIP_ZERO_ANGLES_PC, yaw) == 4);
 STATIC_ASSERT(sizeof(KAMINO_SHIP_ZERO_ANGLES_PC) == 8);
 KAMINO_SHIP_ZERO_ANGLES_PC KaminoShipZeroAnglesPc = {0};
-extern i32 BoltNoSfxPc;
 
 void __cdecl KaminoE_Update(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;

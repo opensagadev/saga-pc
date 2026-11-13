@@ -50,12 +50,6 @@ char *__cdecl GizmoBombGen_GetGizmoName(GIZMO_PC *gizmo) {
     return NULL;
 }
 
-extern i32 obstacle_gizmotype_id;
-extern const char GizObstacleActionNamePC[5];
-extern const char GizObstacleActionBackwardPC[9];
-extern const char GizObstacleActionForwardPC[8];
-extern const char GizObstacleActionStayOpenPC[9];
-extern const char GizObstacleActionStayShutPC[9];
 extern const char GizmoSnapOptionNamePc[5];
 
 void __cdecl GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
@@ -283,7 +277,6 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     return 1;
 }
 
-extern void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 typedef struct gizobstacle_system_pc_s {
     GIZOBSTACLE *obstacles;
     GIZMO_PC **active_gizmos;
@@ -690,11 +683,7 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, flags) == 0);
 STATIC_ASSERT(offsetof(GIZOBSTACLE_OBJECT_DATA_PC, platform_id) == 2);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
-extern NUVEC *GizObstacleTriggersPc[16];
 extern i32(__cdecl *GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
-extern LEVELDATA_PC *ObstacleReturnLevelPc;
-void __cdecl AddShoveObject(NUSPECIALHANDLE *, i16);
-void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
 
 void __cdecl GizObstacle_Stop(GIZOBSTACLE *obstacle) {
     if (obstacle)
@@ -970,7 +959,6 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     }
     GizObstacleTriggerCountPc = 0;
 }
-extern const char GizObstacleTriggerLimitMessagePc[59];
 void __cdecl GizObstacles_AddTrigger(NUVEC *position) {
     NUVEC message_position;
     if (!position)
@@ -1151,7 +1139,6 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
     }
     return NULL;
 }
-void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
 void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
@@ -1166,8 +1153,6 @@ void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
             GameAnimSet_DrawReflection(obstacle->anim_set, 2, obstacle->reflection_alpha, NULL);
     }
 }
-
-extern const char *GizObstacleRegistrationNamePtrPc;
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, obstacles) == 0);
 STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, active_gizmos) == 4);

@@ -70,8 +70,6 @@ static void *HubMiniKitViewerGizmoPc = NULL;
 static f32 HubMiniKitViewerAlphaPc = 0.0f;
 extern "C" f32 *HubAreaPanelXPc = HubAreaPanelTwoPc;
 
-extern "C" void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
-
 typedef struct hub_minikit_runtime_pc_s {
     NUVEC position;
     f32 scale, scalar_10;
@@ -1022,10 +1020,6 @@ STATIC_ASSERT(offsetof(HUB_AREA_INFO_PC, panel_scale) == 0x18);
 /* Research-only declarations of genuine original Hub state; native initializer
  * and canonical/private ownership verification pending sole writer. */
 
-extern f32 HubMiniKitViewerMovePc, HubMiniKitViewerMoveWaitPc;
-
-extern f32 HubMiniKitViewerReflectYPc;
-
 static void MiniKitSetRotationX(NUMTX *m, NUANG a) {
     const f32 cosine = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(a >> 1) & 0x7fff];
@@ -1203,8 +1197,6 @@ extern "C" void __cdecl Hub_LockUnlockDoors(WORLDINFO *world) {
 /* Additional source-private viewer state/native menu-reader view, genuine
  * original backing/ownership gate pending; no placeholder storage emitted. */
 
-extern i32 HubMiniKitAreaPc;
-extern u8 HubMiniKitActivePlayersPc[2];
 typedef struct hub_pad_reader_pc_s {
     void *pad;
     u32 held;
@@ -1398,8 +1390,6 @@ typedef struct hub_game_stats_reader_pc_s {
 } HUB_GAME_STATS_READER_PC;
 STATIC_ASSERT(offsetof(HUB_GAME_STATS_READER_PC, completion) == 0x7c18);
 STATIC_ASSERT(offsetof(HUB_GAME_STATS_READER_PC, elapsed) == 0x7c20);
-extern i32 HubCompletionPointsPc;
-extern f32 HubHologramAlphaPc;
 
 static NUMTX *HubStatsTextMatrixPc(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -1526,16 +1516,7 @@ static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
     {-1, 0, NULL, NULL, 0, 0, NULL, NULL, {NULL, NULL, 0}},
 };
 
-extern i32 HubBothTrueJediGoldBricksPc;
-extern f32 HubAreaPanelOnePc[];
-
-extern NUGSPLINE *HubMiniKitViewerSplinePc;
-extern f32 HubAreaTimePc, HubEpisodeTimePc, HubStatsTimePc;
-extern i32 HubAreaPc, HubEpisodePc, HubLastAreaPc;
-extern f32 HubHologramTargetAlphaPc;
 extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
-extern void *HubBuildItPc;
-extern "C" void *__cdecl GizBuildIt_Find(WORLDINFO *, char *);
 
 static void HubResolveAreaInfoPc(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
@@ -1625,11 +1606,7 @@ STATIC_ASSERT(offsetof(HUB_DOOR_OBJECT_READER_PC, flags) == 0x9c);
 STATIC_ASSERT(offsetof(HUB_DOOR_READER_PC, object) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
-extern u64 LevHSpecialExists;
 extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
-extern f32 HubJabbaAwakePc, HubPreventDropOutTimePc;
-extern i32 HubBuildItsResetPc;
-i32 Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
 
 extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
     Customiser_Reset(CharacterCustomiser);
@@ -2122,7 +2099,6 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
 }
 #undef HUB_PC_MENU_PLAYER
 
-extern "C" void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
 extern "C" void __cdecl Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
     Customiser_LoadAll(CharacterCustomiser, world);
 }
@@ -2139,7 +2115,6 @@ static void HubDrawBonusStatsPc(f32, i32, i32, i32);
 static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *, f32);
 static void HubDrawSelectModePc(void);
 static void HubDrawBonusModePc(void);
-void __cdecl DrawBuildUpBar(f32, f32, i32, i32, f32, f32, f32, i32);
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *, i32, f32, f32);
 static void HubDrawFreePlaySelectPc(void);
 
@@ -2441,7 +2416,6 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
 /* PC4763d0,1076 bytes. Full stack cdecl. PC has no Android hublevel flags guard. */
 extern "C" i32 bonusmodearcade, hub_bonusepisode, hub_bonusarea, hub_bonusmode;
 extern "C" f32 HubBonusMenuYPc;
-static void HubDrawArcadeMenuPc(i32 selected, f32 alpha);
 static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
     if (bonusmodearcade != 0) {
         HubDrawArcadeMenuPc(selected, alpha);
@@ -2873,8 +2847,6 @@ extern "C" i32 HubDoorAreaPc, selectmodemode, bonusmodemode, hub_selectmode, hub
     hub_bonusepisode, bonusmodearcade;
 extern "C" f32 selectmodetime, selectmodeduration, bonusmodetime, bonusmodeduration;
 extern "C" f32 BlipL[2], BlipR[2], BlipU[2], BlipD[2];
-void HubDrawAreaStatsPc(f32 phase, i32 area, i32 mode);
-static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode);
 static void HubDrawSelectModePc(void) {
     const i32 state = selectmodemode;
     if ((state == 2 || state == 1 || state == 3) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
@@ -3302,11 +3274,6 @@ static void HubDrawFreePlaySelectPc(void) {
  * No menu route activation; actual renderer/freeplay17 closure still separate.
  */
 extern i32 hub_selectmode, hub_bonusmode, hub_bonusarea, hub_bonusepisode;
-extern i32 bonusmodemode, hub_freeplaysource;
-extern f32 selectmodeduration;
-extern "C" void __cdecl WipeBackToHub(void);
-static void HubDrawSelectModePc(void);
-static void HubDrawBonusModePc(void);
 static void HubUpdateBonusModePc(void);
 void HubInitFreePlaySelectPc(i32, i32, i32);
 
@@ -3519,8 +3486,6 @@ extern "C" void __cdecl WipeBackToHub(void) {
 
 /* Whole PC 47ecb0/2344, private fragment for existing hub.cpp. */
 extern f32 bonusmodetime, bonusmodeduration;
-extern f32 BlipL[2], BlipR[2], BlipU[2], BlipD[2];
-extern AREA_DATA_PC **ArcadeLevelPc[12];
 
 static void HubUpdateBonusModePc(void) {
     if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0)
@@ -3774,7 +3739,6 @@ static void HubUpdateBonusModePc(void) {
 
 /* Full two native Hub freeplay initialization helpers, no menu17 activation. */
 extern f32 uprepeattime[2], downrepeattime[2], leftrepeattime[2], rightrepeattime[2];
-extern f32 HubIconWibbleTimePc[4];
 
 /* 476840/526; source-private ABI second_model in EDX, first on stack.
  * Actual emittedname must map existing476840 Hub_MakeFreePlayList owner.
@@ -3885,11 +3849,6 @@ void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
 
 /* Native full menu17 control owner, private sourcefragment. */
 extern i32 HubIconWibbleRatePc[4];
-extern i32 freeplay_i[2];
-extern u8 uprepeatcount[2], downrepeatcount[2], leftrepeatcount[2], rightrepeatcount[2];
-extern APICHARACTERMODELLIST NetFreePlayModelList[49];
-extern i8 net_FreePlayModelCount;
-extern u8 net_recievedFreePlayList;
 extern "C" TIMER ChallengeTimer;
 
 /* 476ba0/220. Native0 timer resets as well as negative timer. */
@@ -4441,7 +4400,6 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
 /* Five reviewed providers: append these four to existing hub.cpp. */
 extern "C" {
     extern f32 KITPOS2YPc;
-    f32 __cdecl CurrentHintAlpha(void);
     /* Complete native0056e2a0..0056e2dc. */
     u32 __cdecl Cheat_MultiplyScore(u32 score) {
         u32 flags = CheatSystemPtr->flags;
@@ -4620,7 +4578,6 @@ extern "C" {
     extern f32 PanelHeartSpacingPc, PanelHeartRowOffsetPc, PanelHeartWidescreenPc;
     extern f32 DoubleScoreTextYPc, DoubleScoreTextScalePc;
     extern i16 TextIdPc88098c;
-    i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *, NUMTX *, f32);
     STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
     STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
     STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
@@ -4848,19 +4805,10 @@ extern "C" {
     f32 HudAutoSaveScalePc = 0.07500000298023224f;
 #pragma data_seg()
     extern i32 NuMainSkipCutBordersPc, AutoSaveIconPendingPc;
-    extern f32 CoinTotalScoreSizePc;
-    extern f32 CoinTotalCoinOffsetPc;
-    extern f32 CoinTotalScoreOffsetYPc;
-    extern f32 CoinTotalTargetOffsetYPc;
-    extern f32 DrawCoinTotalYPc;
     extern f32 HudLevelTitleYPc;
     extern f32 HudLevelTitleScalePc;
     extern f32 HudLevelTitleScaleXPc;
     extern f32 HudLevelTitleWidthPc;
-    extern f32 HudBossHeartYPc;
-    extern f32 HudBossHeartScalePc;
-    extern f32 HudBossIconYPc;
-    extern f32 HudBossIconScalePc;
 
     void __cdecl Arcade_DrawPanel(i32 paused);
 
@@ -5084,14 +5032,9 @@ extern "C" {
     extern f32 HudPausePromptOffsetYPc;
     extern f32 HudDropInXPc;
     extern f32 HudDropInScalePc;
-    extern f32 HudCoinAdjustYPc;
-    extern f32 HudScoreXPc;
-    extern f32 HudScoreScalePc;
     extern f32 HudHeartXPc;
     extern f32 HudHeartYPc;
     extern f32 HudHeartScalePc;
-    extern f32 STATSPOS2YPc;
-    extern f32 KITPOS2YPc;
     extern i32 HudNameRedPc;
     extern i32 HudNameGreenPc;
     extern i32 HudNameBluePc;
@@ -5099,10 +5042,6 @@ extern "C" {
     extern i32 HudPausePromptRedPc;
     extern i32 HudPausePromptGreenPc;
     extern u8 HudPausePromptBluePc;
-    f32 __cdecl CurrentHintAlpha(void);
-    void __cdecl DrawMiniKitCount(f32, f32, i32, i32);
-    u32 __cdecl Cheat_MultiplyScore(u32);
-    i32 __cdecl GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
 
     /* Append in src/legoapi/panel.c after the static DrawHitPointsPc definition.
        Native bounded routine004b9110..004ba185 (4213 bytes), cdecl(i32 paused). */

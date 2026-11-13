@@ -2,9 +2,6 @@
 #pragma bss_seg(".bss$player_tag_from")
 static GAMEOBJECT *player_tag_from = 0;
 #pragma bss_seg()
-void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
-void __cdecl DestroyAIGroup(AIGROUP_PC *);
-void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);
 void __cdecl MovePlayer_NETWORK(GAMEOBJECT *);
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
@@ -76,8 +73,6 @@ void GameObjectToCameraDistances() {
     }
 }
 
-i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position);
-
 __declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room,
                                                    NUGSCN *scene) {
     if (enabled != 0) {
@@ -95,19 +90,7 @@ __declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabl
     }
 }
 
-extern u16 GameObjectRotationBuggyId;
-extern u16 GameObjectRotationRadioCarId;
-extern u16 GameObjectRotationPoliceCarId;
-extern u16 GameObjectRotationMowerId;
-extern u16 GameObjectRotationAtstId;
-extern i32 VehicleArea;
-extern u16 temp_xrot;
-extern u16 temp_zrot;
-extern i32 disable_narrow_socks;
 extern u8 SuperCarryPlayerRgbPc[2][3];
-
-extern const f64 VehicleHoverHeightSeparationScale;
-extern i32 getvehiclehoverheight_hothbattlehack;
 
 f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
     f32 height;
@@ -177,8 +160,6 @@ f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
     getvehiclehoverheight_hothbattlehack = 0;
     return height;
 }
-
-u16 __cdecl SeekRot(u16 current, u16 target, f32 speed);
 
 void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *game;
@@ -1597,13 +1578,9 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
     }
 }
 
-void __cdecl NuSound3ClearLoopHold(NUVEC *, i32);
-void __cdecl BlowUpSnakeBody(GAMEOBJECT *);
-void __cdecl ResetLevel(WORLDINFO *, char *, i32);
 void __cdecl DieRumble(GAMEOBJECT *);
 void __cdecl GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 extern i16 CharacterFixupIdPc007f18c4;
-extern i32 FalconDebKey[2];
 extern const char BeenKilledPc[11];
 extern const char EP3DogfightDiePc[17];
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
@@ -4131,7 +4108,6 @@ typedef struct gameobject_collision_reset_pc_s {
 } GAMEOBJECT_COLLISION_RESET_PC;
 STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_low) == 0x2b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_high) == 0x2b4);
-extern GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *);
 GAMEOBJECT *__cdecl AddGameObject(void) {
     GAMEOBJECT *object = APIObjectCreate(WORLD->object_sys);
     u64 identity;
@@ -4165,14 +4141,6 @@ GAMEOBJECT *__cdecl AddGameObject(void) {
 
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
-void __cdecl InitPlayerAI(GAMEOBJECT *object);
-void __cdecl ResetPlayerMoves(GAMEOBJECT *object);
-void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet);
-void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set);
-void __cdecl rtlResetEx(RTL_DATA_PC *packet, i32 clear_cache);
-void __cdecl rtlApplySetScale(void *set, RTL_DATA_PC *packet, NUVEC *position, NUMTX *rotation, i32 identity,
-                              f32 scale);
-extern i32 NOAICREATURES;
 extern i32 complexsockposition_forcesock;
 
 #include <string.h>
@@ -4419,7 +4387,6 @@ STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, rumble) == 0x40);
-extern u8 grapple_attach_frames;
 __declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
                                                       f32 parameter) {
     object->can_use_object = target;
@@ -4433,12 +4400,9 @@ __declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
     (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                       \
     (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
-extern f32 antinode_time;
 typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 /* The genuine callback definitions and initializer remain in the original aisys owner. */
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
-
-void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
 
 static void CreatureInteractionOrbitPc(APIOBJECT_PC *object, NUVEC *difference, APIOBJECT_PC *centre, f32 radius) {
     f32 squared_distance, fraction;
@@ -4615,9 +4579,6 @@ STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
 #define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 
-extern i16 id_UGNAUGHT;
-extern i32 nbaddies_can_see_players;
-extern f32 OpponentSelectionHysteresisPc;
 i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 distance, u64 awareness, f32 dx, f32 dz) {
     f32 facing_dot;
     if (party_under_cover != 0 && ((observer->motion_flags & 0x400) == 0 || (target->motion_flags & 0x400) == 0))
@@ -4950,14 +4911,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_frame_event) == 0x1072);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_start_index) == 0x1081);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_search_index) == 0x1089);
-extern f32 draw_attention_distance, GameAiPartyFollowSpacingPc, jump_stuck_time, DEFENDTIME, timetogetlos;
-extern i32 LEGOCONTEXT_GRAPPLE;
-extern i32 active_neutral_count, active_goody_count, active_baddy_count, test_new_interaction, debug_ignore_players,
-    WALKSTEALTH, GameAiLosDivisorPc, drop_in_teleport, teleport_all_freeplay_modes;
-extern i32 LEGO_AIPATHCNX_R2D2GLIDE, LEGO_AIPATHCNX_JUMP, LEGO_AIPATHCNX_DONTTOGGLE;
-extern LEVELDATA_PC *JEDI_B_LDATA;
-extern i16 id_JANGOFETT;
-void __cdecl oneAtOnce_MaintainArray(void);
 
 static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
     AIPATHNODE_PC *node;
@@ -5621,7 +5574,6 @@ void __cdecl GameAIProcess(void) {
     oneAtOnce_MaintainArray();
 }
 
-void *__cdecl CutScenePlayer_Active(void);
 void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
                                      i32 area_models, i32 area) {
     if (area_models != 0 && CutScenePlayer_Active() != NULL && area != -1 && &ADataList[area] != HUB_ADATA)

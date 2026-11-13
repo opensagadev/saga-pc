@@ -2,7 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-extern void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *special, i32 visible);
 void __cdecl GameAnimMissingAnimDiagnosticPc(char *name);
 
 void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
@@ -999,8 +998,6 @@ void __cdecl edanimRegisterBaseScene(NUGSCN *scene) {
     (void)scene;
 }
 
-extern struct eduimenu_s *edanim_switchtype_menu;
-
 void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_switchtype_menu = NULL;
     AnimParams[edanim_nearest_param_id].control_mode = item->data;
@@ -1457,7 +1454,6 @@ static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, 
 }
 
 i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code);
-extern struct eduimenu_s *edanim_mctb_menu;
 
 static void edanimcbMCTBCardCheckKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckKeyCode(id_test, code_test)) {
@@ -1515,10 +1511,6 @@ void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_current_animation) == 0x7ee);
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_previous_animation) == 0x7f0);
-extern f32 __cdecl GizBuildItMul(GAMEOBJECT *);
-extern void __cdecl UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, f32, f32, f32, f32);
-extern void __cdecl AutoWeaponOnOff(GAMEOBJECT *);
-extern void __cdecl AddFootSteps(GAMEOBJECT *);
 
 void __cdecl AnimatePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
@@ -1617,7 +1609,6 @@ STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
-i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
 void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
     GAMEANIMOBJ *object;

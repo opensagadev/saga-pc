@@ -78,9 +78,6 @@ extern "C" {
     extern char AIRegistryTextPc007575bc[7];
     extern char TextInputKeyNameTextPc7516c0[1];
 }
-extern "C" {
-    extern const f64 PlayerTightRopePhasePc, PlayerRandomScalePc;
-}
 typedef struct tightrope_movement_pc_s {
     u8 unknown_00[0x40];
     f32 horizontal_length;

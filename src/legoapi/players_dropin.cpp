@@ -5,7 +5,6 @@ extern "C" {
     i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object);
     u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index);
     void __cdecl StartDropIn(GAMEOBJECT *object);
-    void __cdecl DropOut(i32 player_index, i32 resume, i32 silent, i32 mode);
 
 #pragma data_seg(".data$DropInPendingPlayerPc")
     i8 DropInPendingPlayerPc = -1;

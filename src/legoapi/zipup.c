@@ -190,11 +190,6 @@ STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, start) == 0x754);
 STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, swing) == 0x760);
 STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
 
-extern u16 ZipUpSwingStartAnimationPc, ZipUpSwingSwingAnimationPc, ZipUpSwingJumpAnimationPc;
-extern i16 BigJumpLandFallbackPc;
-extern char GrapDetach_text[11], GrapAttach_text[11];
-extern i32 __cdecl ObjLandReady(GAMEOBJECT *);
-
 static __inline f32 ZipUpFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
@@ -568,9 +563,6 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     }
 }
 
-extern const NUVEC ZipUpHookOffsetPc;
-extern i32 CanDrawZipUpSwirls;
-
 typedef struct zipup_progress_pc_s {
     u32 active_mask[1], visible_mask[1];
 } ZIPUP_PROGRESS_PC;
@@ -655,14 +647,6 @@ enum ZIPUP_FLAGS {
     ZIPUP_FLAG_ACTIVE = 0x40,
     ZIPUP_FLAG_VISIBLE = 0x80
 };
-
-extern f32 ZipUpMarkerOffsetYPc, ZipUpMarkerOffsetZPc;
-extern NUMTL *ropemtl;
-extern f32 ZipUpRopeHalfWidthPc;
-extern u32 ZipUpRopeCheatColourPc;
-extern i32 ZipUpRopeModulationPc;
-extern i16 ZipUpLineCharacterIdPc;
-extern NUMTL *ZipUpLineMaterialPc;
 
 typedef struct zipup_rope_vertex_pc_s {
     NUVEC position, normal;
@@ -1188,7 +1172,6 @@ static i32 ZipUps_GetMaxGizmos(void *world_ptr) {
     world = ((WORLDINFO *)(world_ptr));
     return world ? world->current_level->max_zipups : 0;
 }
-extern GIZMO_PC *__cdecl AddGizmo(void *, i32, char *, void *);
 static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
     i32 index;
 
@@ -1199,7 +1182,6 @@ static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
 static char *ZipUp_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo ? ((ZIPUP_PC *)(gizmo->object))->name : NULL;
 }
-extern void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, sizeof(ZIPUP_PROGRESS_PC));
 }
@@ -1244,8 +1226,6 @@ static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
 static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
-extern char *ZipUpTypeNamePtrPc;
-extern i32 zipup_gizmotype_id;
 static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
 extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;

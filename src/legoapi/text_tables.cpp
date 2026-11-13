@@ -1,16 +1,5 @@
 #include "saga.h"
 extern "C" {
-    extern i16 TextCrawlChapterIdPc;
-    extern i16 TextCrawlVehicleBonusIdPc;
-    extern i16 TextCrawlCharacterBonusIdPc;
-    extern i16 tNULL;
-    extern i16 tUNKNOWN;
-    extern i16 tENGLISH;
-    extern i16 tFRENCH;
-    extern i16 tGERMAN;
-    extern i16 tITALIAN;
-    extern i16 tSPANISH;
-    extern i16 tDANISH;
     i16 TextIdPc8806dc = 0;
     i16 TextIdPc8806e0 = 0;
     i16 TextIdPc8806e4 = 0;
@@ -61,7 +50,6 @@ extern "C" {
     i16 TextIdPc88079c = 0;
     i16 TextIdPc8807a0 = 0;
     i16 TextIdPc8807a4 = 0;
-    extern i16 PermanentBountyTitleIdPc;
     extern i16 PCArcadeModeText0;
     extern i16 PCArcadeModeText1;
     extern i16 PCArcadeModeText2;
@@ -73,22 +61,13 @@ extern "C" {
     i16 TextIdPc8807cc = 0;
     i16 TextIdPc8807d0 = 0;
     i16 TextIdPc8807d4 = 0;
-    extern i16 PermanentAllTitleIdPc;
-    extern i16 PermanentBlasterTitleIdPc;
-    extern i16 PCArcadeModeText;
     i16 TextIdPc8807e4 = 0;
     i16 TextIdPc8807e8 = 0;
     i16 TextIdPc8807ec = 0;
     i16 TextIdPc8807f0 = 0;
     i16 TextIdPc8807f4 = 0;
-    extern i16 PCArcadePlayText;
     i16 TextIdPc8807fc = 0;
     i16 TextIdPc880800 = 0;
-    extern i16 tCLIPi;
-    extern i16 tINTRO;
-    extern i16 tMIDTRO;
-    extern i16 tOUTRO;
-    extern i16 tENDING;
     i16 TextIdPc880818 = 0;
     i16 TextIdPc88081c = 0;
     i16 TextIdPc880820 = 0;
@@ -113,12 +92,8 @@ extern "C" {
     i16 TextIdPc88086c = 0;
     i16 TextIdPc880870 = 0;
     i16 TextIdPc880874 = 0;
-    extern i16 tON;
-    extern i16 tOFF;
     i16 TextIdPc880880 = 0;
-    extern i16 tACCEPT;
     i16 TextIdPc880888 = 0;
-    extern i16 tBACK;
     i16 TextIdPc880890 = 0;
     i16 TextIdPc880894 = 0;
     i16 TextIdPc880898 = 0;
@@ -138,7 +113,6 @@ extern "C" {
     i16 TextIdPc8808d0 = 0;
     i16 TextIdPc8808d4 = 0;
     i16 TextIdPc8808d8 = 0;
-    extern i16 PCArcadeLevelText;
     i16 TextIdPc8808e0 = 0;
     i16 TextIdPc8808e4 = 0;
     i16 TextIdPc8808e8 = 0;
@@ -153,7 +127,6 @@ extern "C" {
     i16 TextIdPc88090c = 0;
     i16 TextIdPc880910 = 0;
     i16 TextIdPc880914 = 0;
-    extern i16 tAUDIOVOLUME;
     i16 TextIdPc88091c = 0;
     i16 TextIdPc880920 = 0;
     i16 TextIdPc880924 = 0;
@@ -162,7 +135,6 @@ extern "C" {
     i16 TextIdPc880930 = 0;
     i16 TextIdPc880934 = 0;
     i16 TextIdPc880938 = 0;
-    extern i16 tMUSIC;
     i16 TextIdPc880940 = 0;
     i16 TextIdPc880944 = 0;
     i16 TextIdPc880948 = 0;
@@ -172,16 +144,6 @@ extern "C" {
     i16 TextIdPc880958 = 0;
     i16 TextIdPc88095c = 0;
     i16 TextIdPc880960 = 0;
-    extern i16 tBATMANSUIT;
-    extern i16 tSHADOWSUIT;
-    extern i16 tGLIDESUIT;
-    extern i16 tDEMOLITIONSUIT;
-    extern i16 tSONARSUIT;
-    extern i16 tROBINSUIT;
-    extern i16 tWATERSUIT;
-    extern i16 tTECHNOLOGYSUIT;
-    extern i16 tMAGNETSUIT;
-    extern i16 tATTRACTSUIT;
     i16 TextIdPc88098c = 0;
     i16 TextIdPc880990 = 0;
     i16 TextIdPc880994 = 0;
@@ -370,7 +332,6 @@ extern "C" {
     i16 TextIdPc880c7c = 0;
     i16 TextIdPc880c80 = 0;
     i16 TextIdPc880c84 = 0;
-    extern i16 tTOUCHTOSTART;
     i16 TextIdPc880c8c = 0;
     i16 TextIdPc880c90 = 0;
     i16 TextIdPc880c94 = 0;
@@ -560,7 +521,6 @@ extern "C" {
     i16 TextIdPc880f84 = 0;
     i16 TextIdPc880f88 = 0;
     i16 TextIdPc880f8c = 0;
-    extern i16 tALONGTIMEAGO;
     i16 TextIdPc880f94 = 0;
     i16 TextIdPc880f98 = 0;
     i16 TextIdPc880f9c = 0;
@@ -592,7 +552,6 @@ extern "C" {
     i16 TextIdPc881004 = 0;
     i16 TextIdPc881008 = 0;
     i16 TextIdPc88100c = 0;
-    extern i16 MissionMenuInstructionTextPc;
     i16 TextIdPc881014 = 0;
     i16 TextIdPc881018 = 0;
     i16 TextIdPc88101c = 0;
@@ -635,7 +594,6 @@ extern "C" {
     i16 TextIdPc8810b0 = 0;
     i16 TextIdPc8810b4 = 0;
     i16 TextIdPc8810b8 = 0;
-    extern i16 tPOWERUP;
     i16 TextIdPc8810c0 = 0;
     i16 TextIdPc8810c4 = 0;
     i16 TextIdPc8810c8 = 0;
@@ -672,7 +630,6 @@ extern "C" {
     i16 TextIdPc881144 = 0;
     i16 TextIdPc881148 = 0;
     i16 TextIdPc88114c = 0;
-    extern i16 PermanentJediTitleIdPc;
     i16 TextIdPc881154 = 0;
     i16 TextIdPc881158 = 0;
     i16 TextIdPc88115c = 0;

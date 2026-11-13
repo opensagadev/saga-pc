@@ -102,7 +102,6 @@ extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colo
 }
 
 extern "C" f32 CutSceneCameraFocalLengthPc;
-extern "C" f32 __cdecl NuCameraFocalLenToFOV(f32 focal_length);
 extern "C" void __cdecl WidescreenCode(i32 widescreen) {
     f32 aspect = 0.5625f;
     if (PcWindowOptions.aspect_mode == 2)
@@ -349,8 +348,6 @@ extern "C" void __cdecl DrawPauseScreenWipe(void) {
     NuRndrEndScene();
 }
 
-extern "C" void __cdecl NuCameraSet(NUCAMERA *);
-extern "C" void __cdecl BackDrop_Draw(f32, i32);
 extern "C" void __cdecl NoRender(void) {
     pNuCam->mtx = NuMtxSetIdentityTemplate;
     NuCameraSet(pNuCam);
@@ -366,7 +363,6 @@ extern "C" void __cdecl NoRender(void) {
 
 extern "C" u8 ScreenGrabNeededPc;
 extern "C" f32 ScreenPauseFadePc;
-extern "C" void __cdecl NuBackbufferCopy(i32 texture_id);
 extern "C" void __cdecl GrabStillScreen(void) {
     if (ScreenGrabNeededPc != 0) {
         ScreenGrabNeededPc = 0;

@@ -60,7 +60,6 @@ extern const char HubAIServePlayerPc[12];
 extern const char HubAIBandDoorPc[14];
 extern const char HubAITableFormatPc[9];
 extern const char HubAITableAreaFormatPc[11];
-i32 __cdecl CheckPosAIArea(AIAREA_PC *, NUVEC *, f32);
 
 /* 0x491380/481 */
 void __cdecl LSW_Hub_InitAI(WORLDINFO *world) {

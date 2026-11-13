@@ -1773,8 +1773,6 @@ f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
     }
     return y;
 }
-void __cdecl PerspectMidPoint(NUVEC *, NUVEC *, NUVEC *, NUVEC *);
-i32 __cdecl SockSegmentsAhead(SOCK_PC *, i32, i32 *, i32 *);
 i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed,
                           NUVEC *player_camera_positions, NUVEC *player_positions, i32 player_count,
                           SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,

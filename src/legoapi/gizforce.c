@@ -357,11 +357,6 @@ typedef struct GIZFORCE_PLATFORM_BEST_PC {
     i16 platform_id;
 } GIZFORCE_PLATFORM_BEST_PC;
 STATIC_ASSERT(offsetof(GIZFORCE_PLATFORM_BEST_PC, platform_id) == 2);
-extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
-extern TIMER LevelTimer;
-i32 __cdecl SuperWeirdo(GAMEOBJECT *);
-i32 __cdecl TerrainPlatId(void);
-i32 __cdecl NewRayCastScaleYMask(NUVEC *, NUVEC *, f32, f32, i32, u32);
 i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     GIZFORCE_SYS_BEST_PC *system = (GIZFORCE_SYS_BEST_PC *)system_ptr;
     GIZFORCE_OBJECT_BEST_PC *target = (GIZFORCE_OBJECT_BEST_PC *)object;
@@ -995,7 +990,6 @@ void __cdecl GizForces_Draw(void *world_pointer, void *system_pointer, f32 unuse
 
 f32 ForceAnimationSeekRatePc = 5.0f;
 
-extern f32 ForceAnimationSeekRatePc;
 STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
 STATIC_ASSERT(sizeof(FORCE_RESET_GROUP_PC) == 0x28);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, combined_height) == 0x20);
@@ -1061,7 +1055,6 @@ i32 __cdecl ForceAnimationDonePc(GIZFORCE_PC *force) {
     return 1;
 }
 
-extern i32 force_gizmotype_id;
 STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, runtime_flags) == 0x24);
 STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);

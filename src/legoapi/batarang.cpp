@@ -96,13 +96,11 @@ extern "C" {
     i32 __cdecl Batman_PrepareGlidePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
     i32 __cdecl Batman_PrepareGrapple(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
     i32 __cdecl Batman_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 __cdecl Batman_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
     i32 __cdecl Batman_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
     i32 __cdecl Batman_PrepareSpecialUsePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
     i32 __cdecl Batman_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
 }
 extern "C" f32 __cdecl NuFdiv(f32 a, f32 b);
-extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator);
 
 static i32 __cdecl BatarangASinPc(f32 sin) {
     f32 abs;

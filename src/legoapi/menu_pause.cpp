@@ -4,12 +4,7 @@ STATIC_ASSERT(sizeof(FADETYPE) == 4);
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
 extern "C" {
-    void __cdecl ResumeGame(i32);
-}
-
-extern "C" {
     void __cdecl StartDropOut(GAMEOBJECT *);
-    void __cdecl AICreatureResumeScript(GAMEOBJECT *);
 }
 extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
     GAMEOBJECT *object = (GAMEOBJECT *)Player[player];

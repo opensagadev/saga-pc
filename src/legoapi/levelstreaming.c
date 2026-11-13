@@ -16,10 +16,6 @@ STATIC_ASSERT(sizeof(AREA_LEVEL_LOAD_PC) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
-extern i32 LEGOSPL_SPLIT, other_level_override;
-i32 __cdecl Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
-BGPROCINFO *__cdecl bgGetProcActive(void);
-
 static i32 LevelStreamingChooseSplitPc(WORLDINFO *world, NUVEC *position, i32 first, i32 second) {
     NUGSPLINE *split;
     NUVEC local;

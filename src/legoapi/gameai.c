@@ -18,8 +18,6 @@ void __cdecl AI_Activate(void *input, i32 active) {
 #include <string.h>
 #include <stdio.h>
 
-void *__cdecl AISysBufferAlloc(VARIPTR *, VARIPTR *, u32);
-
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
 typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
 typedef char *(__cdecl *AI_GLOBAL_CHARACTER_NAME_PC)(i32);
@@ -44,8 +42,6 @@ extern AIACTIONDEF_PC lego_aiactiondefs[], api_aiactiondefs[], *game_aiactiondef
 extern AICONDITIONDEF_PC lego_aiconditiondefs[], *game_aiconditiondefs;
 i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *);
 i32 __cdecl GameAIActionParseSpeed(char *, u8 *);
-APIOBJECT_PC *__cdecl GetNamedAPIObject(void *, char *);
-NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *, AIPACKET_PC *);
 void __cdecl RegisterAIScriptActions(AIACTIONDEF_PC *);
 void __cdecl RegisterAIScriptConditions(AICONDITIONDEF_PC *);
 void __cdecl SetScriptErrorLevel(i32);
@@ -75,9 +71,6 @@ void __cdecl InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJEC
 void __cdecl GameAILoad(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 i32 __cdecl EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
 void __cdecl ClearAICreatures(void);
-void __cdecl LSW_Hub_InitAI(WORLDINFO *);
-void __cdecl LSW_Hub_ResetAI(WORLDINFO *);
-void __cdecl LSW_Hub_UpdateAI(WORLDINFO *);
 
 u8 __cdecl LevelCharacterTypeID(char *name) {
     i32 index;
@@ -264,11 +257,8 @@ i32 __cdecl GameFindAlternativeSpecialObject(AISYS_PC *system, NUSPECIALHANDLE *
     (void)system;
     return EquivalentObject_Find(WorldInfo_CurrentlyActive(), special);
 }
-i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
-i32 __cdecl Indy_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
-void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *);
 void __cdecl StarWars_GameAISysInit(void);
 void __cdecl Indy_GameAISysInit(void) {
     LEGO_AIPATHCNX_JUMP = 0x1;
@@ -575,10 +565,6 @@ f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 am
     return difficulty->accumulator;
 }
 
-extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
-extern f32 VehicleLoopTimePc;
-i32 __cdecl TwistLevel(LEVELDATA_PC *);
-void __cdecl Hint_SetComplete(i32);
 void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
     GAMEOBJECT *other;
     i32 index, angle_difference, loop_request, roll_request, turn_request;

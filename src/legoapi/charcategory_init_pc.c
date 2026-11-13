@@ -6,7 +6,6 @@ STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, model_flags) == 4);
 STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, game_flags) == 8);
 extern char AreaFixUpName_Jedi[8];
 extern const char PCContextName_Teleport[9];
-extern const char PCContextName_ZipUp[6];
 
 #pragma const_seg(".rdata$StartupCharText_SuperJumpPc")
 const char StartupCharText_SuperJumpPc[10] = "SuperJump";

@@ -3,7 +3,6 @@
 STATIC_ASSERT(sizeof(REGISTER_GIZMO_CONFIG_TYPE_FN) == 4);
 extern "C" {
     void __cdecl RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
-    ADDGIZMOTYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32);
@@ -12,25 +11,16 @@ extern "C" {
     ADDGIZMOTYPE_PC *__cdecl Grapples_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl TightRopes_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl Ledges_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl Levers_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl Spinner_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl Technos_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl SecurityDoors_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl Attractos_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GuideLines_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl Tubes_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl ZipUps_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizTurrets_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizTimer_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizRandom_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl GizSpecial_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl Door_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl GizAIMessage_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl Portal_RegisterGizmo(i32);
-    ADDGIZMOTYPE_PC *__cdecl Plugs_RegisterGizmo(i32);
 }
 ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32);
 

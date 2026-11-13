@@ -1,5 +1,4 @@
 #include "saga.h"
-void __cdecl LetGoOfBalloon(GAMEOBJECT *);
 void __cdecl PopBalloon(GAMEOBJECT *object) {
     LetGoOfBalloon(object);
 }
@@ -7,7 +6,6 @@ void __cdecl PopBalloon(GAMEOBJECT *object) {
 STATIC_ASSERT(offsetof(GAMEOBJECT, engine_level) == 0xd94);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);
-void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32, NUVEC *, f32, f32);
 
 void __cdecl EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
     PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
@@ -42,8 +40,6 @@ void __cdecl EngineNoiseCode(GAMEOBJECT *object, i32 silent) {
     PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);
 }
 
-extern u8 DisorientAxisPc;
-void __cdecl StartTurn(GAMEOBJECT *);
 void __cdecl Disorientate(GAMEOBJECT *object, NUVEC *unused) {
     i32 elapsed_seconds = (i32)object->context_timer;
     NUVEC delta;

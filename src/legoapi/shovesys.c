@@ -37,8 +37,6 @@ void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
 void __cdecl ShoveObjectSysReset(void) {
     ShoveSystemPc.count = 0;
 }
-extern f32 ShoveMaximumSpeedPc, ShoveMaximumPenetrationPc;
-i32 __cdecl BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
 void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     f32 best_penetration = 0.0f;
     SHOVE_OBJECT_PC *shove;

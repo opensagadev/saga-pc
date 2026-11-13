@@ -1,9 +1,6 @@
 #include "saga.h"
 static f32 JumpAnimHoldTimePc = 0.100000001f;
 
-extern i16 id_JUMBOHOMINGDROID;
-void __cdecl UpdateCharacterIdle(GAMEOBJECT *);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
@@ -123,7 +120,6 @@ STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, ground_contact_grace) == 0xd
 STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, nearby_floor_distance) == 0xda0);
 STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, fall_animation_timer) == 0xdac);
 STATIC_ASSERT(sizeof(DEFAULT_ANIMATION_TIMERS_PC) == 0xdb0);
-i32 __cdecl UseFallAnim(GAMEOBJECT *);
 
 static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
@@ -732,8 +728,6 @@ typedef struct default_animation_mini_request_pc_s {
 } DEFAULT_ANIMATION_MINI_REQUEST_PC;
 STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_MINI_REQUEST_PC, packet.requested_animation) == 0x7f2);
 STATIC_ASSERT(sizeof(DEFAULT_ANIMATION_MINI_REQUEST_PC) == 0x7f4);
-extern i16 DefaultAnimationJabbaIdPc, DefaultAnimationLeiaSlaveIdPc;
-extern i16 DefaultAnimationLamaSuIdPc, DefaultAnimationTaunWeIdPc;
 
 void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
@@ -823,11 +817,6 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     }
 }
 
-extern i16 id_ANAKINSPOD, id_ANAKINSPODGREEN;
-extern f32 pod_animtime[2], podanimendframe;
-void __cdecl SetPodMergeAnims(ANIMPACKET_PC *, i32);
-i32 __cdecl PodRace_InStartCountdown(WORLDINFO *);
-extern AREA_DATA_PC *PODSPRINT_ADATA;
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 typedef struct pod_camera_reader_pc_s {
     u8 unknown_0[0x1038];

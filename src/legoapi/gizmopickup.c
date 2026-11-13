@@ -5,7 +5,6 @@
 
 /* Retail unit 0x46a8d0-0x46d7f0 (legoapi/gizmo/object/gizmopickup.cpp): definitions in retail address order. */
 
-void __cdecl ResetGameMessages(void);
 typedef struct coin_packet_pc_s {
     u32 coins;
     f32 scale;
@@ -20,19 +19,9 @@ typedef struct game_save_score_pc_s {
     u8 unknown_0000[0x7c14];
     u32 coins;
 } GAME_SAVE_SCORE_PC;
-void __cdecl ConstantRumble(GAMEOBJECT *, f32, f32);
 typedef struct lose_coins_packet_pc_s {
     u32 coins;
 } LOSE_COINS_PACKET_PC;
-void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message);
-void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message);
-extern const char PowerUpLoopSfx_PC[18];
-PART_PC *__cdecl AddPart(ADDPART_PC *parameters);
-void __cdecl PartStop_Flickerer(PART_PC *part);
-i32 __cdecl PartDraw_Flickerer(PART_PC *part);
-void __cdecl PartCollide_3D(PART_PC *part);
-i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
-void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, i16 z_rotation, i16 y_rotation);
 void __cdecl PartUpdate_Heart(PART_PC *part);
 typedef struct coinpacket_pickup_pc_s {
     u8 unknown0[0xa];

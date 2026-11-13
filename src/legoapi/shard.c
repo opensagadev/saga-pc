@@ -10,7 +10,6 @@ static struct nugspline_s *splcharshelf = NULL;
 static struct nugspline_s *splcodes = 0;
 #pragma bss_seg(".bss$splshelf")
 static struct nugspline_s *splshelf = 0;
-extern CHEAT_PC ExtrasCheatsPc[46];
 /* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {
     u8 unknown_0000[0x7bd4];
@@ -51,7 +50,6 @@ extern nuhspecial_s toolblank, codeblank, question, arrow1, arrow2, arrow3, arro
 extern struct nugspline_s *shopcamspline;
 extern NUVEC *shopcampos, *shopcamlookat;
 extern NUVEC CharCurPos[7], HintCurPos[7], ExtraCurPos[7], BrickCurPos[7], CutCurPos[7];
-extern i32 shop_from_cutsceneplayer;
 extern f32 pickedbing;
 static f32 scalenorm, scalepicked, scale2, scale3, scale4;
 extern f32 TopBigScale[6], TopShelfPush[6], TopBigPush[6];
@@ -59,7 +57,6 @@ static f32 SubBigCharPush, SubNormCharPush, subpush[3];
 static u16 shelfang;
 extern f32 codeshelfscale[6], codemenuscale[6], codebigscale[6];
 extern struct CUT_PLAYER_ACTIVE_PC *shopcutsceneplayer;
-extern i32 CutScenePlayCountPc;
 extern f32 ShopNativeScalePc[6], ShopNativeBigFactorPc[6], ShopNativePushPc[6];
 extern f32 ShopNativeSubInitAPc, ShopNativeSubInitBPc;
 extern f32 ShopSubInitAPc, ShopSubInitBPc;
@@ -67,7 +64,6 @@ void LoadShelfSplines(void);
 void InitExtraList(void);
 void InitAlphaList(void);
 void UpdateCharacterIDs(void);
-void InitShop(WORLDINFO *);
 extern f32 ShopCharTopOffsetPc;
 extern f32 ShopTopBrickOffsetPc;
 extern f32 ShopNativeSubNormCharPushPc, ShopCodeExitPushPc;
@@ -289,7 +285,6 @@ void DrawShop3D(WORLDINFO *world) {
 }
 
 extern i32(__cdecl *menuptr)(void *menu);
-extern NUVEC *shopcamlookat;
 i32 __cdecl ItemMenu(void *menu);
 
 void __cdecl GetShopCamLookPos(NUVEC *position) {
@@ -779,12 +774,9 @@ extern f32 ShopSlideTimerPc, ShopHintDrawWaitPc, ShopOldPickedScalePc, ShopOldPi
 extern f32 ShopScaleOverridePc[7], ShopInOutScalePc;
 extern char *ShopCheatNamePc;
 extern char ShopUserCodePc[6];
-extern u32 GAMEPAD_MENUCANCEL;
 i32 __cdecl SubItemMenu(void *menu);
 i32 __cdecl CodeMenu(void *menu);
-void __cdecl DrawItemMenu2D(void);
 void __cdecl DrawCodeMenu(void);
-void __cdecl DrawCodeMenu3D(void);
 void __cdecl DrawSubItemMenu2D(void);
 void __cdecl DrawSubItemMenu3D(void);
 
@@ -1050,9 +1042,6 @@ i32 __cdecl UpdateShop(void *menu) {
 /* The interaction batch shares SHOP_INPUT_PC and the existing Shop*Pc state
  * contract above. Native movement mode is 1=left, 2=right (not Android's sign). */
 extern i32 ShopMoveItemsPc, ShopSubMoveSfxLockPc, ShopScrollKeyHitPc;
-i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count);
-i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count);
-void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed);
 
 /* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
 void __cdecl SelectSubItem(void) {
@@ -1256,13 +1245,9 @@ finish:
     return 0;
 }
 
-i32 __cdecl AddToCollection(i32 id);
 void __cdecl AddToCompletionPoints(u32 points);
 extern f32 ShopPurchasePulsePc;
 extern i32 HubForceShopSavePc;
-i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge);
-i32 __cdecl CutScenePlayer_CanStart(i32 index);
-void __cdecl CutScenePlayer_Start(i32 index);
 
 /* 004c1050..004c1077: original same-TU EAX helper includes the vehicle exception. */
 static i32 Shop_CharacterUnlockedPc(i32 character_id) {
@@ -1537,7 +1522,6 @@ i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
 
 extern f32 ShopCheatTimerPc;
 extern const f64 ShopCheatBlinkCutoffPc;
-void __cdecl DrawSubItems(void);
 
 /* 004c6400..004c64e9. The PC top-level label follows all six native shelves. */
 void __cdecl DrawItemMenu2D(void) {
@@ -1647,8 +1631,6 @@ void __cdecl DrawSubItemMenu3D(void) {
     DrawSubItems();
 }
 
-extern f32 ShopCodePulseScalePc, ShopCodeArrowBingPc, ShopCodeArrowAmplitudePc;
-
 /* 004c5650..004c58dd. PC renders exactly six code slots, uses codeshelfscale,
  * and updates the original arrow phase owner without Android's extra slot. */
 void __cdecl DrawCodeMenu3D(void) {
@@ -1689,9 +1671,6 @@ void __cdecl DrawCodeMenu3D(void) {
     ShopCodeArrowBingPc = NuTrigTable[(angle >> 1) & 0x7fff] * ShopCodeArrowAmplitudePc;
 }
 
-extern i32 ShopBrickRotationDegreesPc;
-extern f32 ShopCharacterPeriodPc;
-extern const f64 ShopCharacterAmplitudePc;
 extern AREA_DATA_PC *ANEWHOPE_ADATA, *ANAKINSFLIGHT_ADATA;
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
@@ -2129,8 +2108,6 @@ i32 __cdecl CodeMenu(void *menu) {
 }
 
 extern i16 TextIdPc880708, TextIdPc88074c, TextIdPc880778;
-void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
-void __cdecl CoinTotal_Draw(i32, f32, f32, i32, f32, i32, i32, i32);
 STATIC_ASSERT(offsetof(GAMESAVE, game_time) == 0x7c20);
 STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
 STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);

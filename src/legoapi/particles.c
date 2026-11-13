@@ -1,7 +1,5 @@
 #include "saga.h"
 
-extern i32 DEBPAGE_CHARACTER, DEBPAGE_GENERAL, DEBPAGE_AREA;
-void __cdecl DebFreeAllCreatedEffects(void);
 void __cdecl Particles_Stop(WORLDINFO *world) {
     if (world->page_anim != -1)
         edanimStopPage(world->page_anim);
@@ -41,7 +39,6 @@ void __cdecl AddCameraRain(WORLDINFO *world, i32 mode) {
     }
 }
 
-void __cdecl edppStartPage(i32 page);
 void __cdecl Particles_Start(WORLDINFO *world) {
     if (DEBPAGE_AREA != -1)
         edppStartPage(DEBPAGE_AREA);
@@ -53,7 +50,6 @@ void __cdecl Particles_Start(WORLDINFO *world) {
 }
 
 #include <stdio.h>
-APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 void __cdecl Particles_Load(WORLDINFO *world, char **names, i32 count, i32 named_count) {
     char path[256];
     VARIPTR end;

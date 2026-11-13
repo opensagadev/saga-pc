@@ -149,13 +149,6 @@ STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, pitch) == 0x1f8);
 STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, yaw) == 0x1fc);
 STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, mode) == 0x22c);
 
-void __cdecl MiniCam_ChangeMode(i32 mode);
-void __cdecl Minicam_AddDeltas(f32 duration);
-void __cdecl Minicam_ClearDeltas(void);
-void __cdecl Minicam_ResetForNextCommand(void);
-void __cdecl Minicam_CalcCamPos(void);
-void __cdecl Minicam_Update(void);
-
 void MiniCam_ChangeMode(i32 mode) {
     if (mode == 0) {
         NUVEC delta;

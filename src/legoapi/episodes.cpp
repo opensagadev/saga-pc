@@ -22,12 +22,6 @@ STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, regular_areas) == 0x19);
-extern i32 EpCompleteTotal, EpCompleteCount, EpMiniKitTotal, EpMiniKitCount;
-extern i32 EpCharKitTotal, EpCharKitCount, EpBuildUpTotal, EpBuildUpCount;
-extern i32 EpStoryBuildUpTotal, EpStoryBuildUpCount, EpFreePlayBuildUpTotal, EpFreePlayBuildUpCount;
-extern i32 EpRedBrickTotal, EpRedBrickCount, EpGoldBrickTotal, EpGoldBrickCount;
-extern i32 EpisodeGoldBrickForSuperStoryPc, EpisodeGoldBrickForSuperBonusPc, EpisodeGoldBrickForChallengePc;
-extern i32 HubBothTrueJediGoldBricksPc;
 extern "C" {
     void __cdecl EpisodesConfigDiagnosticPc(char *path);
 

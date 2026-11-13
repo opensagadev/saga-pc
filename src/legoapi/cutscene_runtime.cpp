@@ -672,16 +672,7 @@ typedef struct CUT_LOAD_INSTANCE_RATE_PC {
 } CUT_LOAD_INSTANCE_RATE_PC;
 STATIC_ASSERT(offsetof(CUT_LOAD_INSTANCE_RATE_PC, rate) == 0x98);
 extern "C" {
-    extern CUT_LOAD_LIST_ENTRY_PC *CutList;
-    extern i32 CUTCOUNT;
-    extern CUT_LOAD_SYS_PC *CS_cutsys;
-    extern VARIPTR *CS_buffend;
     extern void(__cdecl *CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
-    void __cdecl CutSceneConfigMissingPc(char *);
-    void *__cdecl NuGCutSceneLoad(char *, VARIPTR *, VARIPTR *, i32);
-    void __cdecl NuGCutSceneFixUp(void *, NUGSCN *, void *, i32);
-    void __cdecl NuGCutSceneFixUpExtra(void *, NUGSCN *);
-    INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *, NUGSCN *, void *, char *, VARIPTR *, i32);
 }
 
 extern "C" {
@@ -1128,33 +1119,6 @@ typedef struct CUT_DRAW_CAMERA_PC {
 } CUT_DRAW_CAMERA_PC;
 STATIC_ASSERT(offsetof(CUT_DRAW_CAMERA_PC, render_matrix) == 0xb8);
 extern "C" {
-    extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
-    extern void *CutStopInfo;
-    extern i32 CutSceneWaiting;
-    extern i32 dco_id;
-    extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
-    extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
-    extern i32 dco_wearinghat;
-    extern i32 dco_reflectaxis;
-    extern f32 dco_reflectcoord;
-    f32 __cdecl AnimEndFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
-    void __cdecl EnableShadowMapRendering(i32);
-    void __cdecl ResetShadowMapRendering(void);
-    void __cdecl SetZeroLights(void);
-    void __cdecl FindAndSetLights(NUVEC *, f32, void *);
-    void __cdecl APITransparentCharDraw(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
-    i32 __cdecl NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
-    void __cdecl CharScene_Draw(WORLDINFO *, i32, NUMTX *, NUMTX *);
-    f32 __cdecl BlobShadowFade(NUVEC *, f32, f32, f32);
-    void __cdecl NuRndrAddShadow(NUVEC *, f32, i32, i32, i32, i32);
-    i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
-    void __cdecl NuRndrStartReflectionRender(i32);
-    void __cdecl NuRndrEndReflectionRender(void);
-    void __cdecl DrawObjectOnCharacter(WORLDINFO *, GAMEOBJECT *, i32, NUSPECIALHANDLE *, i32, i32, NUMTX *, i32, u32,
-                                       NUMTX *, NUVEC *, f32, f32);
-}
-
-extern "C" {
     static void __cdecl CutScene_DrawCharacter(INSTNUGCUTSCENE *cutscene_instance, CUT_DRAW_SCENE_PC *cutscene,
                                                CUT_DRAW_CHAR_INSTANCE_PC *instance, CUT_DRAW_CHARACTER_PC *character,
                                                f32 frame, i32 paused) {
@@ -1592,8 +1556,6 @@ typedef struct CUT_DRAW_LOCATOR_ENTRY_PC {
 STATIC_ASSERT(sizeof(CUT_DRAW_LOCATOR_ENTRY_PC) == 20);
 STATIC_ASSERT(offsetof(CUT_DRAW_LOCATOR_ENTRY_PC, update) == 0x10);
 extern "C" {
-    i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *, f32, NUANIM_TIME2_PC *, f32 *, f32 *);
-    i32 __cdecl Draw3DObjectMtx(WORLDINFO *, i32, NUMTX *);
     void *CutSceneFindModelPc(char *name, i32 model_only, i32 *character_id) {
         if (character_id != NULL)
             *character_id = -1;
@@ -1669,8 +1631,6 @@ extern "C" {
             object->position = *reinterpret_cast<NUVEC *>(&matrix.m30);
         }
     }
-    i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *);
-    i32 __cdecl LevelObject_GetReflection(i32);
     static void CutScene_RigidPostRender(CUT_DRAW_RIGID_PC *rigid, NUSPECIALHANDLE *instance, NUMTX *matrix) {
         if ((rigid->flags & 0x10) == 0)
             return;
@@ -1770,18 +1730,10 @@ typedef struct CUT_CONTROLLER_PROGRESS_PC {
 } CUT_CONTROLLER_PROGRESS_PC;
 STATIC_ASSERT(offsetof(CUT_CONTROLLER_PROGRESS_PC, scene_flags) == 0x2800);
 extern "C" {
-    extern i32 CutSceneMusicStartFramePc;
-    extern f32 LevelNameMul, LevelNameTime;
-    extern u32 texanimbits;
-    extern i32 CUTNOFOG, CUTDRAWWORLD, ACTIVECUTCOUNT, cut_waiting_for_new_level, CutInstEndCount;
     static INSTNUGCUTSCENE *CutInstEnd[4] = {0};
     static i32 CutInstEndStop = 0;
     static i32 cutaudiopaused = 0;
     static i32 CutFramePc = 0;
-    void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *, i32);
-    void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *);
-    void __cdecl CutScenePlayer_SetObjects(CUTINFO *);
-    void __cdecl PCFrameSetLoadingYieldEnabled(i32);
 
     static void CutSceneRebindPlayerCharactersPrivatePc(CUTSYS_PC *system) {
         if (system == NULL)
@@ -2011,9 +1963,7 @@ struct FADEINFO_s;
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 STATIC_ASSERT(sizeof(FADETYPE) == 4);
 extern "C" {
-    extern i32 CUTCAMONLY;
     static f32 CutReflectRange = 0;
-    i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *);
     void __cdecl GizmoSysDraw(void *, WORLDINFO *, f32);
     static void CutSceneUpdateTextureAnimationsPrivatePc(CUT_LOAD_RECORD_PC *cut) {
         u32 bits = texanimbits;

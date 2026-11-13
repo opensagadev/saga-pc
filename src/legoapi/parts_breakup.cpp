@@ -86,7 +86,6 @@ extern "C" {
         return -1;
     }
 
-    void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
                    i32 use_vehicle_velocity, u16 *angle_override) {
         i32 part_index = 0;

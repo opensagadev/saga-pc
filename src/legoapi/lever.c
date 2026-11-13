@@ -189,10 +189,6 @@ STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, animation_frame) == 0x8e);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_pitch) == 0x90);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_roll) == 0x92);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_variant) == 0x96);
-extern i32 lever_gizmotype_id;
-extern char *LeverTypeNamePtrPc;
-extern char *LeverOutputDownNamePtrPc;
-void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 static void __cdecl Levers_Draw(void *, void *, f32);
 static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
     if (lever->model_variant == 'r')
@@ -537,7 +533,6 @@ ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
     return &LeversAddTypePc;
 }
 
-u8 __cdecl FindNearestPlayerToVec(NUVEC *, GAMEOBJECT **, f32 *, u8, u32);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);

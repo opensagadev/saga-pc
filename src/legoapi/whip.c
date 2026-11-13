@@ -4,7 +4,6 @@ typedef struct whip_basis_pc_s {
     NUVEC basis[3];
 } WHIP_BASIS_PC;
 STATIC_ASSERT(offsetof(WHIP_BASIS_PC, basis) == 0x748);
-void __cdecl SuperCarry_Throw(GAMEOBJECT *, i32);
 i32 __cdecl SuperCarry_Possible(GAMEOBJECT *, i32);
 void __cdecl SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
 

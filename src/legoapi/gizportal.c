@@ -95,8 +95,6 @@ typedef struct portal_callback_pc_s {
 STATIC_ASSERT(sizeof(PORTAL_CALLBACK_PC) == 0x20);
 STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, id) == 0x1a);
 STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, flags) == 0x1c);
-extern const char *PortalRegistrationPrefixPc;
-extern i32 portal_gizmotype_id;
 static char portal_output_name_pc[64] = "Active";
 static char portal_gizmo_name_pc[16] = {0};
 

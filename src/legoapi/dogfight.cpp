@@ -477,13 +477,10 @@ extern "C" {
     DOGFIGHT_QUICK_BOLT_PC *__cdecl QuickBoltRecordAllocatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
     static __declspec(noinline) i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity,
                                                       f32 duration, i32 type, i32 model_id);
-    void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
-    void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
     static __declspec(noinline) void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
     static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
     static __declspec(noinline) f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline);
     static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index);
-    void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
     static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
     static __declspec(noinline) void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count);
     static __declspec(noinline) DOGFIGHT_FIGHTER_PC *QueuedFighterSelectorPc(DOGFIGHT_SPACE_PC *space);
@@ -501,7 +498,6 @@ extern "C" {
     static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer);
     void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
-    void SpaceResetAudioPoint(void);
     static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
     void SpaceRumbleProcess(void);
     static __declspec(noinline) void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space);
@@ -510,13 +506,11 @@ extern "C" {
     void ChrisAnakinBInit();
     void ChrisDogFightAReset(WORLDINFO *world);
     void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
-    __declspec(noinline) i32 __cdecl ShipDropCoins(starfighter_s *fighter);
     static __declspec(noinline) i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position,
                                                            NUVEC *velocity);
     i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     static __declspec(noinline) void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position,
                                                         i32 mode, i32 count);
-    void ChrisAnakinCReset();
     void ChrisAnakinCInit();
     static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
                                                           DOGFIGHT_FIGHTER_PC *record);

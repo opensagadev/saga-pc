@@ -23,10 +23,6 @@ void __cdecl SetBackgroundMusic(i32 track) {
     (void)track;
 }
 
-extern const char PermLegalDirectoryPc[];
-extern const char PermLegalPcPrefixPc[];
-extern const char NuFileExt_dds_PC[5];
-
 void __cdecl LoadPermLoadLegalTexture(void) {
     VARIPTR texture_base, texture_end;
     char path[128], name[64];

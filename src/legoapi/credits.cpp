@@ -36,11 +36,6 @@ STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, default_colour) == 12);
 STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, colour) == 16);
 STATIC_ASSERT(offsetof(CREDIT_TYPE_PC, type) == 23);
 
-extern CREDIT_RECORD_PC *CreditList;
-extern f32 CreditsAlpha;
-extern f32 CreditsTime;
-extern f32 CreditsFinishedTime;
-extern i32 CreditsFlag;
 static f32 CreditsDurationPc = 120.0f;
 static f32 CreditsSizePc = 0;
 static i32 CreditCountPc = 0;

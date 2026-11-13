@@ -22,11 +22,6 @@ typedef struct gizbuildit_world_reader_pc_s {
 } GIZBUILDIT_WORLD_READER_PC;
 STATIC_ASSERT(offsetof(GIZBUILDIT_WORLD_READER_PC, system) == 0x46a8);
 
-extern "C" {
-    void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *, NUVEC *, NUVEC *);
-    void __cdecl PushAway(NUVEC *, f32, NUVEC *, NUVEC *, GAMEOBJECT *, GAMEOBJECT *, f32, u32);
-    extern const f32 PlayerBuildItNegativeLimitPc;
-}
 typedef struct buildit_matrices_pc_s {
     NUMTX start_mtx;
     NUMTX end_mtx;

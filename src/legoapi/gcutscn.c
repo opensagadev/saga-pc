@@ -40,7 +40,6 @@ void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
 }
 
 STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
-extern CUT_PLAYER_ACTIVE_PC *CutScenePlayerPc;
 void *__cdecl CutScenePlayer_Active(void) {
     return CutScenePlayerPc != NULL ? CutScenePlayerPc->active : NULL;
 }
@@ -66,7 +65,6 @@ typedef struct CUT_PLAYER_INST_ANIM_PC {
 } CUT_PLAYER_INST_ANIM_PC;
 STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, time) == 0x4c);
 STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, flags) == 0x50);
-void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
 void __cdecl CutScenePlayer_SetObjects(CUTINFO *owner) {
     // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter slot.
     i32 i;

@@ -30,28 +30,8 @@ STATIC_ASSERT(offsetof(WORLDINFO, push_block_positions) == 0x46c4);
 STATIC_ASSERT(offsetof(WORLDINFO, push_block_position_count) == 0x46c8);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_pushblock_endpos) == 0x100);
 STATIC_ASSERT(offsetof(PUSHPROGRESS, end_positions) == 0xcc);
-extern "C" {
-    extern i32 LEGOCONTEXT_PUSH;
-    extern u16 PushBlockFacingTolerancePc;
-}
-extern "C" {
-    void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
-    PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
-    void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-    void __cdecl UpdatePushBlocks(void *, void *, f32);
-    extern f32 PushVelocitySeekRatePc;
-    extern f32 PushFallingSpeedPc;
-    extern f32 PushCornerInsetPc;
-    extern f32 PushGroundOffsetPc;
-    extern i32 PushBlockHintIdPc;
-    void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
-    char *__cdecl NuIToA(i32, char *, i32);
-    extern char *PushBlocksNamePc;
-}
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksNamePc;
-extern "C" void __cdecl ResetPushProgress(WORLDINFO *, void *);
-extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *, i32);
 typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
     u8 unknown_000[0x24];
     NUSPECIALHANDLE special;
@@ -72,11 +52,6 @@ typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
     PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
     i32 count;
 } PUSH_SUPPORT_WORLD_VIEW_PC;
-extern "C" {
-    void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-    extern f32 PushRumblePeriodPc;
-    extern f32 PushRumbleWindowPc;
-}
 typedef struct PUSH_RUNTIME_BOUNDS_PC {
     NUVEC min, max;
 } PUSH_RUNTIME_BOUNDS_PC;
@@ -126,10 +101,6 @@ typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
     PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
     i32 count;
 } PUSH_RUNTIME_WORLD_VIEW_PC;
-extern "C" {
-    extern f32 PushBlockOverlapShrinkPc;
-    PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
-}
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);

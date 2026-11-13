@@ -23,7 +23,6 @@ void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 
     result->z = movement->z + normal->z * correction;
 }
 
-extern u16 SURFACEBITS_NODUST;
 void __cdecl Surfaces_Reset(void) {
     i32 i;
     LAYER_HOVERIGNORE = 0x10;

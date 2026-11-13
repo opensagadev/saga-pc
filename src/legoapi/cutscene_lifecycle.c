@@ -1420,9 +1420,7 @@ INSTNUGCUTSCENE *__cdecl instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void
 typedef void(__cdecl *CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 typedef void(__cdecl *CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
 typedef void(__cdecl *CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
-extern CUT_DRAW_RENDER_CALLBACK_PC NuCutSceneCharacterRender;
 extern void(__cdecl *NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
-extern CUT_DRAW_RIGID_CALLBACK_PC NuCutSceneRigidPostRender;
 void __cdecl NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *functions) {
     CutSceneBackgroundInstancesPc = NULL;
     active_cutscene_instances = NULL;
@@ -1577,7 +1575,6 @@ void __cdecl instNuGCutSceneRotateY_candidate(INSTNUGCUTSCENE *owner, NUANG angl
 }
 
 extern void(__cdecl *CutSceneRigidRenderCallbackPc)(CUT_LOAD_RIGID *, NUMTX *);
-extern i32 CutSceneRenderRigidsPc, CutSceneRenderCharactersPc, CutSceneRenderLocatorsPc;
 
 static void CutSceneRigidSysRenderPc(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
@@ -1686,12 +1683,6 @@ void __cdecl NuGCutSceneSysRender(i32 paused) {
     for (owner = active_cutscene_instances; owner != NULL; owner = ((CUT_INSTANCE_LOAD_PC *)owner)->next)
         CutSceneInstanceRenderPc((CUT_INSTANCE_LOAD_PC *)owner, paused);
 }
-
-extern NUMTX CutSceneCameraMatrixPc;
-extern NUVEC CutSceneFocusLocationPc;
-extern u8 CutSceneUseFocusLocationPc, CutSceneCameraMatrixSetPc;
-extern f32 CutSceneFocusDistancePc, CutSceneFStopPc;
-extern i32 CutSceneCameraChangedPc, CutSceneCameraDofModePc;
 
 static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
@@ -2060,15 +2051,10 @@ void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *owner) {
         CutSceneCameraCTRL = 0;
 }
 
-f32 __cdecl NuCameraDistSqr(NUVEC *);
-void __cdecl CutSceneStreamDiagnosticPc(char *);
-
 i32 CutSceneRenderRigidsPc = 1;
 i32 CutSceneRenderCharactersPc = 1;
 i32 CutSceneRenderLocatorsPc = 1;
 i32 CutSceneUpdateCamerasPc = 1;
-
-extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
 
 static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
@@ -2275,7 +2261,6 @@ static i32 CutSceneQuitPromptPc = 0;
 static i32 CutSceneHasQuitPc = 0;
 static i32 CutSceneLockPlayerPc = 0;
 static i32 CutSceneTerminateStreamPc = 0;
-extern i32 CutSceneUpdateCamerasPc;
 extern void(__cdecl *CutSceneInstanceSfxRequestPc)(INSTNUGCUTSCENE *);
 extern void(__cdecl *NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 
@@ -2542,9 +2527,6 @@ STATIC_ASSERT(offsetof(CUT_INSTANCE_LOAD_PC, stream_buffer_1) == 0xc0);
 STATIC_ASSERT(offsetof(CUT_CHARACTER_SYSTEM_LIFECYCLE_PC, characters) == 0);
 STATIC_ASSERT(offsetof(CUT_CHARACTER_INSTANCE_SYSTEM_PC, characters) == 0);
 STATIC_ASSERT(offsetof(CUT_CHARACTER_INSTANCE_PC, model) == 0);
-
-char *__cdecl NuStrStr(char *text, const char *needle);
-extern i32 CutSceneStreamLoadGuardPc;
 
 static void CutSceneReleaseInstanceCharactersPc(CUT_INSTANCE_LIFECYCLE_PC *instance) {
     CUT_CHARACTER_SYSTEM_LIFECYCLE_PC *system = instance->scene->character_system;

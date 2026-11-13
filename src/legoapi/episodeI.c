@@ -678,7 +678,6 @@ typedef struct pod_race_countdown_reader_pc_s {
     f32 lap_countdown;
 } POD_RACE_COUNTDOWN_READER_PC;
 STATIC_ASSERT(offsetof(POD_RACE_COUNTDOWN_READER_PC, lap_countdown) == 0xb000);
-extern f32 pod_animtime[2];
 typedef struct pod_merge_packet_reader_pc_s {
     u8 unknown_00[0x10];
     f32 blend_source_time;
@@ -823,7 +822,6 @@ void __cdecl UpdatePacemakerDisplay(WORLDINFO *world);
 void __cdecl UpdatePodRaceLapDisplay(f32 dt);
 void __cdecl PodRaceAUpdate(void);
 void __cdecl PodRaceADraw(WORLDINFO *world);
-void __cdecl PodRaceSnipersUpdate(void);
 void __cdecl ChrisAllocLevelStuff(WORLDINFO *world);
 void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 

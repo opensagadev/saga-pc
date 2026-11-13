@@ -198,8 +198,6 @@ typedef struct tube_progress_pc_s {
 STATIC_ASSERT(sizeof(TUBE_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, visible_mask) == 0);
 STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, active_mask) == 4);
-extern const char *TubeGizmoNamePc;
-extern const char *TubeOutputNamePc;
 static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     world->tubes = NULL;

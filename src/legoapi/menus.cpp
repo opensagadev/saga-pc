@@ -24,8 +24,6 @@ extern "C" {
         MENUSFX_MENUBACK = back;
         MENUSFX_MENUNOENTRY = no_entry;
     }
-
-    extern u32 GAMEPAD_MENUSELECT, GAMEPAD_MENUCANCEL, GAMEPAD_SELECT;
 }
 
 typedef struct MISSION_SYSTEM_READER_PC {
@@ -68,11 +66,6 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 
-extern "C" {
-    extern MISSION_MENU_PACKET_PC MissionMenuPacketPc;
-    extern TIMER JoinInTimer;
-    extern f32 MissionIconGapPc, MissionIconStepPc;
-}
 static f32 MissionsAlphaPc = 0;
 static i32 MissionMenuSelectionPc = 0;
 static f32 MissionIconScalePc[20] = {0};
@@ -197,12 +190,7 @@ extern "C" {
 }
 
 extern "C" {
-    extern i16 MissionMenuInstructionTextPc;
-    extern f32 MissionIconBaseSizePc, MissionIconSelectedSizePc, MissionIconYPc;
-    extern f32 MissionNameYPc, MissionNameScalePc;
     f32 MissionBestBrickXPc = -0.15f;
-    extern f32 MissionBestTimeXPc, MissionBestTimeYPc, MissionBestTimeScalePc;
-    extern f32 MissionDropInAlphaPc, MissionPlayerIconSizePc, MissionEpisodeTitleYPc;
 }
 
 extern "C" void __cdecl MenuDrawMissions(MENU *menu) {

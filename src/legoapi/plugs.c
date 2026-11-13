@@ -68,9 +68,6 @@ STATIC_ASSERT(sizeof(PLUG_PROGRESS_PC) == 12);
 STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, visible_mask) == 0);
 STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, active_mask) == 4);
 STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, plugged_mask) == 8);
-extern const char *PlugGizmoNamePc;
-extern const char *PlugOutputNamePc;
-extern i32 plug_gizmotype_id;
 static void *__cdecl Plugs_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     PLUG_WORLD_CALLBACKS_PC *view = (PLUG_WORLD_CALLBACKS_PC *)world;

@@ -51,10 +51,6 @@ i32 __cdecl MakePlayerList(i32 count) {
     return player_count;
 }
 
-extern i16 LEGOACT_CLIMB_UP, LEGOACT_CLIMB_DOWN, LEGOACT_CLIMB_LEFT, LEGOACT_CLIMB_RIGHT;
-extern i16 LEGOACT_WALLSHUFFLE_IDLE, LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
-extern i16 LEGOACT_MAGNET_WALK_METAL;
-
 typedef struct grapple_movement_pc_s {
     u8 unknown_00[0x3c];
     NUVEC shadow_probe_position;
@@ -130,10 +126,6 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     }
     return 1;
 }
-
-extern i16 LEGOACT_SUPERCARRY_WALK;
-extern const f64 TerrainSkinSampleCountPc;
-extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 
 __declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
     i32 move = object->special_move_pc;
@@ -244,10 +236,7 @@ __declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 inpu
     return 0;
 }
 
-i32 __cdecl CanClimbSurface(GAMEOBJECT *, i32);
 extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
-extern i32 LEGOCONTEXT_PUSHSPINNER, PlayerPushSpinnerDegreesPc;
-extern i16 LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
 
 typedef struct spinner_movement_pc_s {
     u8 unknown_00[0x84];
@@ -1030,10 +1019,6 @@ STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_hover_height) == 0xdb8)
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, hold_timer) == 0xde4);
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, dynamic_light_id) == 0xe04);
 STATIC_ASSERT(offsetof(PLAYER_RESET_FIELDS_PC, pre_reset_state) == 0x107d);
-void __cdecl DrawOffsetCode(GAMEOBJECT *, i32);
-i32 __cdecl rtlDynamicEnable(i32, i32);
-f32 __cdecl GetHoverPosY(GAMEOBJECT *);
-i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *);
 static __declspec(noinline) i32 PreResetCanAccelerateFallPc(GAMEOBJECT *object) {
     NUVEC direction;
     f32 delta, threshold, delta_x, delta_z;
@@ -1156,8 +1141,6 @@ f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
     return LevelConfigFarDistance;
 }
 
-i32 __cdecl KillGameObject(GAMEOBJECT *, i32, i32);
-void __cdecl Arcade_PlayerKilled(i32, i32);
 i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
     i32 other, active;
     (void)unused;
@@ -1183,8 +1166,6 @@ i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protecti
     return KillGameObject(object, reason, 0);
 }
 
-extern f32 TerrainChatterWaitPc;
-extern i32 TerrainLastChatterSfxPc;
 void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
     if (TerrainChatterWaitPc <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
         object->character_context == -1) {
@@ -1267,7 +1248,6 @@ i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
     return item->ammo > 0;
 }
 
-void __cdecl Move_VEHICLE(GAMEOBJECT *);
 void __cdecl PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;
     object->attack_override = 0;
@@ -1301,15 +1281,6 @@ typedef struct player_idle_character_pc_s {
     u8 use_standard_idle;
 } PLAYER_IDLE_CHARACTER_PC;
 STATIC_ASSERT(offsetof(PLAYER_IDLE_CHARACTER_PC, use_standard_idle) == 0x116);
-extern void __cdecl ResetPlayerPacket(void *, CHARACTERDATA_PC *);
-extern void __cdecl ResetCoinPacket(void *);
-extern void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *);
-extern GAMEOBJECT *__cdecl AddGameObject(void);
-extern i32 __cdecl InitCreature(GAMEOBJECT *, i32, i32);
-extern void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *);
-extern void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *);
-extern void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
-extern i32 __cdecl CanPullLevers(i32);
 
 void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
     CHARACTERDATA_PC *data = object->character_data;
@@ -1596,24 +1567,9 @@ NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
 
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
-void __cdecl InitPlayerAI(GAMEOBJECT *object);
-void __cdecl ResetPlayerMoves(GAMEOBJECT *object);
-void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet);
-void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set);
-void __cdecl rtlResetEx(RTL_DATA_PC *packet, i32 clear_cache);
-void __cdecl rtlApplySetScale(void *set, RTL_DATA_PC *packet, NUVEC *position, NUMTX *rotation, i32 identity,
-                              f32 scale);
-extern i32 NOAICREATURES;
 extern i32 complexsockposition_forcesock;
 
 #include <string.h>
-
-extern i32 addcreature_override_id_check;
-extern f32 default_mover_extra;
-extern i16 id_MOSEISLEYCITIZEN, id_CANTINAALIEN, id_CLOUDCITYCITIZEN;
-extern NUVEC *__cdecl Player_StartPos(GAMEOBJECT *);
-extern GAMEPAD_PC *__cdecl GamePad_Allocate(void);
-extern SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32);
 
 typedef struct CREATURE_RESET_PACKET_VIEW_PC {
     u8 unknown_000[0x6c4];
@@ -2094,10 +2050,6 @@ void DrawGameObjects() {
     NuCameraSet(&global_camera);
 }
 
-void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
-void __cdecl DestroySnakeBody(GAMEOBJECT *);
-void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
-
 typedef struct new_player_flags_pc_s {
     u8 unknown_000[0xef0];
     u32 flags_ef0_bits_0_8 : 9;
@@ -2409,23 +2361,7 @@ STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 12);
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.location) == 0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.ratio) == 4);
-extern char DoorExitNamePc[];
-void *__cdecl Door_FindByName(WORLDINFO *, char *);
-void *__cdecl Door_FindByIndex(WORLDINFO *, i32, i32, NUVEC *);
-i32 __cdecl StartDoorPositions(void);
-u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
 
-extern i32 PlayerStartSplineIndexPc;
-extern i32 hub_from_superstory;
-extern i32 hub_from_mission;
-extern i32 hub_startoutsidebonusdoor_area;
-extern i32 shop_from_cutsceneplayer;
-extern char DoorExitCameraSplineNamePc[32];
-extern NUGSPLINE *DoorCutSplinePc;
-extern NUVEC DoorCutCameraPosition0Pc;
-extern NUVEC DoorCutCameraPosition1Pc;
-extern char PlayerMissionStartDoorPc[];
-extern char PlayerArcadeStartDoorPc[];
 void __cdecl Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
     NUGSPLINE *spline;
@@ -2559,12 +2495,6 @@ PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
     return NULL;
 }
 
-void __cdecl Move_DEFAULT(GAMEOBJECT *);
-extern i32 FULLDEBUGTOGGLE;
-extern u32 GAMEPAD_TOGGLELEFT;
-extern u32 GAMEPAD_TOGGLERIGHT;
-extern f32 TOGGLEREPEATTIME;
-extern i32 LEGOHINT_FREEPLAYTOGGLE;
 extern i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
 extern void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 
@@ -3094,8 +3024,6 @@ STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
 STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
-i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
-                                   GAMEOBJECT *, u32);
 
 void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET_PC *destination) {
     destination->current_time = source->current_time;
@@ -3590,18 +3518,12 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
 
 extern i32 DrawParaphernaliaEnabledPc;
 extern i16 CharacterFixupIdPc007f1820;
-void __cdecl DrawWeapons(GAMEOBJECT *, i32, f32);
-i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
-                                   GAMEOBJECT *, u32);
-void __cdecl DrawCharacterAttachments(GAMEOBJECT *, NUMTX *);
 void __cdecl CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *, GAMEOBJECT *, NUMTX *);
 static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
 static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
-void __cdecl DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 static void ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
 static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
-i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
 void __cdecl Grapple_DrawLine(GAMEOBJECT *);
 void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
 static void ParaphernaliaHandPc(GAMEOBJECT *, i32);

@@ -47,10 +47,6 @@ STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, scene) == 0x13c);
 STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, gizmo_system) == 0x2ac8);
 STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, teleports) == 0x4680);
 STATIC_ASSERT(offsetof(WORLD_TELEPORT_CONFIG_PC, teleport_count) == 0x4684);
-extern "C" {
-    i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
-    NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *, char *);
-}
 typedef struct TELEPORT_KEYWORDS_PC {
     char *name_prefix;
     NUFPCOMJMP keywords[12];

@@ -4,16 +4,12 @@
 
 /* Retail unit 0x58d340-0x58e360 (legoapi/climbing.c): definitions in retail address order. */
 
-extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
-extern i32 WeaponInOut_NoAIJediSfx;
 typedef struct weapon_rate_pc_s {
     u8 unknown_000[0xd40];
     f32 weapon_scale_rate;
 } WEAPON_RATE_PC;
 extern i32(__cdecl *Fighting_WeaponInActionFn)(GAMEOBJECT *);
 extern i32(__cdecl *Fighting_WeaponOutActionFn)(GAMEOBJECT *);
-extern i32 LEGOCONTEXT_COMBO;
-extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInnerPc, PlayerStepOuterPc;
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;

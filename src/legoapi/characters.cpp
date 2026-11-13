@@ -50,7 +50,6 @@ STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, diffuse) == 0x54);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, opacity) == 0x70);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, sort_priority) == 0x76);
-NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
 
 extern "C" NUMTL *FadeMtl, *FadeMtl2, *ScreenFadeMtl;
 
@@ -117,7 +116,6 @@ typedef struct CHARACTER_SCENE_CUTSYS_PC {
 STATIC_ASSERT(offsetof(CHARACTER_SCENE_CUTSYS_PC, character_flags) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
-extern "C" i32 __cdecl InModelList(APICHARACTERMODELLIST *, i32, i32 *);
 static void CharacterSceneLoadPrivatePc(KILLPARTS_CHARSCENE_PC *entry, i32 model_id, VARIPTR *buffer, VARIPTR end) {
     char path[128];
     sprintf(path, "chars\\%s\\%s.gsc", CDataList[model_id].dir, CDataList[model_id].name);
@@ -179,11 +177,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-extern "C" {
-    void __cdecl LoadPerm2(void);
-    extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
-}
-
 typedef struct CHARACTER_IDLE_STATE_PC {
     u8 unknown_000[0x2b8];
     f32 idle_total_time;

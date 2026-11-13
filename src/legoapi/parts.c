@@ -405,7 +405,6 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 extern i32 edpart_particle_list;
 extern i32 edpart_part_list;
-extern i32 edpart_set_part;
 extern struct eduimenu_s *edpart_debrisindex_menu;
 extern struct eduimenu_s *edpart_partindex_menu;
 
@@ -907,12 +906,6 @@ void __cdecl PartUpdate_Basketball(PART_PC *part) {
         GizmoBlowupBlowup(blowup, 1, -1, -1, NULL, 1);
     }
 }
-void __cdecl DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
-i32 __cdecl getMaxTorpedos(GAMEOBJECT *);
-void __cdecl ReleaseBuildIt(GAMEOBJECT *, i32);
-void __cdecl ReleasePush(GAMEOBJECT *);
-void __cdecl ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
-i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
 __declspec(noinline) static void PartCollidePC(PART_PC *part, i32 three_dimensional) {
     i32 i;
     i32 slot;
@@ -1399,7 +1392,6 @@ void AddRotatedDebrisEffect(i32 *handle, i32 effect, f32 x, f32 y, f32 z, i16 ro
     DebrisEmitterOrientation(*handle, rotation_x, rotation_y, 0);
 }
 
-i32 __cdecl DebrisNuASin(f32);
 DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
     i32 trail;
     DEBRISPARTICLE_PC *particle;
@@ -1478,11 +1470,6 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
 }
 
 extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
-extern LEVELDATA_PC *MAULA_LDATA;
-extern LEVELDATA_PC *MAULF_LDATA;
-extern LEVELDATA_PC *DOOKUC_LDATA;
-extern const char ForceThrowExplodeNamePc[9];
-i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
 void PartKill_ForceThrow(PART_PC *part, i32 reason) {
     LEVELDATA_PC *level;
     i32 debris = -1;
@@ -2525,9 +2512,6 @@ STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_lifetime) == 0x30c);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys1) == 0x310);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys2) == 0x350);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys3) == 0x390);
-extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata, *toruscolldata;
-extern i32 numspherecolldata, numtoruscolldata;
-extern NUVEC debris_collide_pt;
 typedef struct debris_material_flags_pc_s {
     u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
         z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 3, unknown_23_31 : 9;
@@ -2561,14 +2545,6 @@ STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, sort_priority) == 0x76);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, particle_type_tag) == 0x99);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
-i32 __cdecl NuTexRead(char *, VARIPTR *, VARIPTR);
-NUMTL *__cdecl CreateAlphaBlendTexture(VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);
-NUMTL *__cdecl CreateCopyMat(NUMTL *, i32, i32, i32, i32);
-extern i32 DebrisArenaInitializedPc;
-extern DEBRIS_INFO_PC DebrisNullEffectPc;
-extern NUMTX xzfacingmtx;
-extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX;
-void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *)(void));
 typedef struct debris_animation_effect_pc_s {
     u8 unknown_000[0xa8];
     i16 texture_frames;
@@ -2850,8 +2826,6 @@ STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, scale) == 0x170);
 STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, field_174) == 0x174);
 
-void __cdecl edpartScaleType(i32, f32);
-
 void __cdecl PartTimeSlip(void) {
     i32 i;
     PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
@@ -2980,10 +2954,6 @@ i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 
     return scaled;
 }
 
-extern char PartNullInstanceNamePc[14];
-extern i32 PartLoadParticlePagePc;
-u32 __cdecl EdFileReadUnsignedInt(void);
-i32 __cdecl GetSfxIdN(char *, i32);
 i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 count, i;
@@ -3230,10 +3200,6 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     type->field_174 = 0;
 }
 
-extern NUVEC PartEditorCameraPosPc;
-extern PARTTYPE_LOOKUP_PC *edpart_nearest_type;
-extern i32 PartGeneralPagePc;
-extern i32 PartLevelPagePc;
 void __cdecl edpartDetermineNearest(f32 distance) {
     NUVEC delta;
     f32 squared_distance;
@@ -3896,9 +3862,6 @@ STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, platform_id) == 0x200);
 STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, impact_material) == 0x209);
 static NUVEC PartImpactNormalPrivate = {0};
 #define PART_NORM PartImpactNormalPrivate
-extern i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
-extern f32 __cdecl NewRayCastGetEmbedDist(void);
-extern i32 __cdecl NewRayCastHitWallSpline(void);
 i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
     i32 hit = NewRayCast(position, movement, radius, flags);
     NewRayCastGetImpactNormal(&PART_NORM);
@@ -4028,11 +3991,9 @@ void edpartDestroyAllEffects(void) {
 }
 
 void edcamMove(FRAME_PAD_PC *pad);
-void edcamSetPos(NUVEC *position);
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw);
 void edpartOptMenu(void);
-extern struct eduimenu_s *edpart_opt_menu;
 
 void edpartDoInput(FRAME_PAD_PC *pad) {
     extern i32 edpart_copy_mode, edpart_copyroty, edpart_rotz, edpart_roty;
@@ -4621,11 +4582,6 @@ STATIC_ASSERT(offsetof(PART_PC, field_f4) == 0xf4);
 STATIC_ASSERT(offsetof(PART_PC, time_step) == 0xf8);
 
 static i32 PartRaycastsEnabledPrivate = 1;
-extern i16 PartPlatformImpactListPc[4];
-extern f32 PartCollisionIntervalPc, PartStopSpeedSquaredPc;
-extern void __cdecl DebrisStatusAlwaysOff(i32 *handle);
-extern i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
-                                                      NUMTX *orientation, f32 scale);
 
 static void PartRuntimeMatrixCopyPrivate(NUMTX *destination, NUMTX *source) {
     destination->m00 = source->m00;

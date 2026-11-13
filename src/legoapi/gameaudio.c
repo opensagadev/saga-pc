@@ -1,7 +1,5 @@
 #include "saga.h"
 
-extern i32 BeenAttacked;
-
 void __cdecl NewAreaMusicChanges(void) {
     BeenAttacked = 0;
 }
@@ -50,8 +48,6 @@ void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
     if (sfx != -1)
         PlaySfxById(sfx, &object->collision_position);
 }
-
-extern NUVEC nusound_special_positions[5];
 
 void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
     (void)volume;

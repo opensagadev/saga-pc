@@ -13,7 +13,6 @@ typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
 } CLOUDCITY_LEVEL_FLAG_VIEW_PC;
 STATIC_ASSERT(offsetof(CLOUDCITY_LEVEL_FLAG_VIEW_PC, started) == 0);
 
-extern LEVELDATA_PC *MOSEISLEYC_LDATA;
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA)
         return object->position.z > 5.85f;

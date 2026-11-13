@@ -51,7 +51,6 @@ STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, hit_direction_radius_origin) == 0x18)
 STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, debris_hit_player) == 0x1c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, radial_hit_direction) == 0x1e);
 STATIC_ASSERT(offsetof(PULSE_WORLD_VIEW_PC, pulses_sys) == 0x5050);
-void __cdecl AddLevelSfxFromId(i32, i32 *, i32 *, i32);
 void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
     if (system == NULL)
         return;
@@ -196,9 +195,6 @@ outer_lines:
     *((PULSE_WORLD_VIEW_PC *)world)->pulses_sys = pulse_sys;
     world->giz_buffer.addr = ((world->giz_buffer.addr + sizeof(LEVEL_SFX_PULSE_PC) + 3U) & ~3U);
 }
-
-void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
-i32 __cdecl GizmoGetVisibility(void *, void *);
 
 void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     i32 i;

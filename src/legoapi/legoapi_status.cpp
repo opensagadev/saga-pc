@@ -5,16 +5,6 @@ static i32 goldbrickmsgcount = 0;
 
 /* Retail unit 0x482c00-0x486f20 (legoapi/misc/legoapi_status.cpp): definitions in retail address order. */
 
-extern "C" {
-    extern f32 DrawStatusScaleXPc, DrawStatusScaleYPc;
-    void __cdecl NuQFntSetMtx(VUFNT *, NUMTX *);
-    void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id,
-                              f32 character_alpha, f32 frame_alpha, i32 draw_character,
-                              NUSPECIALHANDLE *override_special);
-    i32 __cdecl AddToCollection(i32);
-    extern f32 StatusIconYPc;
-    extern i32 StatusDrawPlayerIconsPc;
-}
 /* Native walks the two adjacent 0x14-byte rumble records. */
 typedef struct STATUS_RUMBLE_PAIR_PC {
     RUMBLE_PACKET_RESOURCE_PC players[2];
@@ -28,16 +18,10 @@ typedef struct StatusPlayerModelPairPc {
         (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                  \
         ++(packet_arg)->stage_count;                                                                                   \
     } while (0)
-extern "C" void __cdecl GrabStillScreen(void);
-extern "C" __declspec(noinline) void NeedScreenGrab(i32 needed);
 typedef struct status_world_minikit_reader_pc_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
 } STATUS_WORLD_MINIKIT_READER_PC;
-extern "C" {
-    extern f32 StatusMiniKitProgressPc;
-    extern f32 StatusMiniKitJibberLengthPc;
-}
 extern "C" i16 TextIdPc880bc0;
 extern "C" {
     extern i16 TextIdPc8806f8, TextIdPc880704, TextIdPc880744, TextIdPc88078c, TextIdPc880790, TextIdPc88083c;

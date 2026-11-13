@@ -139,12 +139,7 @@ typedef struct PUSH_OBJECT_LOCAL_PC {
 STATIC_ASSERT(offsetof(PUSH_OBJECT_LOCAL_PC, obstacle_timer) == 0x768);
 STATIC_ASSERT(offsetof(PUSH_OBJECT_LOCAL_PC, landing_followup) == 0x7b1);
 extern "C" {
-    extern i32 LEGOCONTEXT_PUSH, LEGOCONTEXT_WALLJUMPWAIT;
-    extern i16 LEGOACT_WALLSHUFFLE_IDLE;
-    extern i16 LEGOACT_PUSH, LEGOACT_SUPERPUSH_IDLE, LEGOACT_SUPERPUSH_PUSH, LEGOACT_SUPERPUSH_PULL,
-        LEGOACT_WALLJUMP_WAIT;
     extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
-    i32 __cdecl PushBlock(GAMEOBJECT *);
 }
 typedef struct PUSH_OBSTACLE_WORLD_PC {
     u8 unknown_000[0x46a4];

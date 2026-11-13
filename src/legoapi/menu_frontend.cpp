@@ -8,7 +8,6 @@
 
 extern "C" {
     void __cdecl GameDrawMenuEntry(MENU *, char *);
-    extern CHEAT_PC ExtrasCheatsPc[46];
     extern f32 ExtrasFadeStartPc, ExtrasFadeEndPc;
     extern i16 TextIdPc88074c, TextIdPc880708, TextIdPc880764;
     extern const char ExtrasNameFormatPc[], ExtrasLockedNumberFormatPc[];
@@ -30,7 +29,6 @@ STATIC_ASSERT(offsetof(EXTRAS_SAVE_READER_PC, unlocked) == 0x7c00);
 extern "C" {
     extern i32 HubForceShopSavePc;
     i32 __cdecl UpdateShop(void *);
-    void __cdecl MenuRememberCursor(MENU *);
     void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
     void __cdecl Text_FillInExtendedSaveInfo(void);
     void __cdecl Hub_ClearStats(void);
@@ -38,24 +36,11 @@ extern "C" {
 }
 extern "C" {
     extern f32 MenuTitlesPromptYPc, MenuTitlesWidePromptYPc;
-    void RestoreOptions(void);
-    extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
-    extern f32 MenuTopYPc, MenuTextScalePc;
-    extern char *apitxt_PCPRESSSTARTFE;
-    void __cdecl BackupMenu(void);
     void __cdecl Hub_UpdateKit(void);
     extern i16 TextIdPc880fc4;
-    i32 __cdecl Arcade_BothPlayersActive(void);
-    void __cdecl ResumeGame(i32);
-    void __cdecl DropOut(i32, i32, i32, i32);
-    extern i32 MenuKeyboardPendingPc;
-    extern i32 PauseSaveAndExitPc;
     extern i16 TextIdPc880838, TextIdPc880850, TextIdPc880bc4, TextIdPc88090c;
     extern i16 TextIdPc88089c, TextIdPc8808ec, TextIdPc8806f8, TextIdPc880860;
-    extern i32 MenuPcStringsInitialized;
-    void __cdecl MenuPcStringsInit(void);
 }
-extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32);
 extern "C" {
     extern i16 TextIdPc880840, TextIdPc880864, TextIdPc880874;
     extern i16 TextIdPc8806fc, TextIdPc880910, TextIdPc8808f0, TextIdPc8807d0, TextIdPc8807d4;
@@ -69,7 +54,6 @@ extern "C" {
     i32 __cdecl Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32(__cdecl *)(void), f32);
     extern char *Trailer[6];
 }
-extern "C" void __cdecl MenuPcStringsInit(void);
 extern "C" f32 MenuNewGameYPc;
 extern "C" {
     extern i32 MenuOptionsPlayerFlagPc, pause_i_pad;
@@ -92,17 +76,10 @@ typedef struct MENU_INPUT_PAD_PC {
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
 extern "C" {
-    i32 __cdecl NuKeyboard_db(i32);
-    extern i32 MenuKeyboardAlwaysPc, MenuKeyboardSecondaryPc;
-    extern u8 MenuKeyboardOverrideActivePc;
-    extern i32 MenuKeyboardPendingPc, pause_i_pad, editor_active;
-    extern u32 GAMEPAD_MENUSELECT, GAMEPAD_MENUCANCEL, GAMEPAD_SELECT;
-    i32 __cdecl UpdateMenu(u32, u32, u32, u32, f32, u32, u32, u32, u32);
     extern i8 DropInPendingPlayerPc, DropInConfigurationPlayerPc;
     void __cdecl PcControlInitializePc(i32, i32, i32, u8);
     i32 __cdecl PcControlUpdatePc(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
     void __cdecl PcControlDrawPc(void);
-    void __cdecl ResumeGame(i32 play_sound);
 }
 
 extern "C" {

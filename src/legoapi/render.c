@@ -15,11 +15,6 @@ static f32 GameFogTime = 0;
 static f32 dof_fstop = 0;
 #undef DrawStatusText
 
-i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
-
-extern NUGSCN *things_scene;
-extern i32 DrawCharIconFindPc, DrawCharIconPanelPc, LegoObjectIconQuestionPc;
-NUGSCN *__cdecl IconScene_FindById(i32);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
@@ -68,8 +63,6 @@ void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 
     DrawCharIconFindPc = 0;
     DrawCharIconPanelPc = -1;
 }
-extern NUGSCN *RenderBackdropScenePc;
-extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
 extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
 
 void __cdecl BackDrop_Dump(void) {
@@ -228,8 +221,6 @@ void __cdecl GameFog_Update(WORLDINFO *world) {
 
 STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 
-i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
-
 /* Source-first scratch candidate; unclosed real leaf declarations only. */
 
 typedef struct render_post_prim_vertex_pc_s {
@@ -239,9 +230,6 @@ typedef struct render_post_prim_vertex_pc_s {
 } RENDER_POST_PRIM_VERTEX_PC;
 STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
-extern i32 NuPrimCoordSystemStack[];
-f32 __cdecl RenderPostPowPc(f32, f32);
-i16 __cdecl RenderPostASinPc(f32);
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
     (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
      NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])
@@ -384,14 +372,7 @@ static f32 RenderBackdropTargetTopBPc = 0.0f;
 static f32 RenderBackdropTargetBottomRPc = 0.0f;
 static f32 RenderBackdropTargetBottomGPc = 0.0f;
 static f32 RenderBackdropTargetBottomBPc = 24.0f;
-extern f32 RenderBackdropTopRPc;
-extern f32 RenderBackdropTopGPc;
-extern f32 RenderBackdropTopBPc;
-extern f32 RenderBackdropBottomRPc;
-extern f32 RenderBackdropBottomGPc;
-extern f32 RenderBackdropBottomBPc;
 static f32 RenderBackdropWaitPc = 0.0f;
-extern i32 RenderBackdropBlackPc;
 void __cdecl BackDrop_ClearColourTargets(void) {
     RenderBackdropTargetTopRPc = 0.0f;
     RenderBackdropTargetTopGPc = 0.0f;
@@ -665,7 +646,6 @@ void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *packet) {
     }
 }
 
-i32 __cdecl AddToCollection(i32);
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
 

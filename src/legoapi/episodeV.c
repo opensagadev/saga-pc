@@ -27,9 +27,6 @@ void __cdecl BobaRocket_Kill(PART_PC *part, i32 reason) {
     }
 }
 
-u16 __cdecl SeekRot(u16 current, u16 target, f32 rate);
-f32 __cdecl SeekValF(f32 current, f32 target, f32 rate);
-
 void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
     NUVEC delta;
     NUVEC next;

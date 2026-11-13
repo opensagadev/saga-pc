@@ -35,7 +35,6 @@ typedef struct {
     i32 count;
     PANEL_PROGRESS_RECORD_PC *records;
 } PANEL_PROGRESS_SYSTEM_PC;
-extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 typedef struct panel_movement_pc_s {
     NUMTX matrix;
     char name[16];
@@ -63,7 +62,6 @@ extern const f32 PanelTrackEnterDistanceSquared, PanelTrackLeaveDistanceSquared;
 extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
 /* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
 extern f32 GizPanelPictureYPc, GizPanelPictureZPc, GizPanelFloorLiftPc;
-extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
 void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 /* Native PC hint updater records retain their original packed field offsets. */

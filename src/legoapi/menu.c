@@ -209,11 +209,6 @@ NUGSCN *__cdecl IconScene_FindById(i32 id) {
     return IconScenePc[id];
 }
 
-extern char *MenuAcceptPromptTextPc, *MenuCancelPromptTextPc;
-extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
-extern char **__cdecl TextInputGetKeyNamesPc(void);
-extern i32 __cdecl TextInputIsKeyboardDevicePc(i32);
-extern i32 __cdecl TextInputIsPrimaryDevicePc(i32);
 void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue,
                                      u32 alpha) {
     char accept_text[128], cancel_text[128], axes_text[128];
@@ -304,14 +299,9 @@ STATIC_ASSERT(offsetof(MENU_DRAW_STATE_PC, paused) == 0xac);
 STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
 STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
-extern i32 memcard_autosavestarted;
-extern f32 memcard_autosavepostdelay, memcard_autosavepredelay;
 extern void(__cdecl *memcard_drawasiconfn)(void);
 extern void(__cdecl *predrawfn)(MENU *);
 extern void(__cdecl *headerdrawfn)(void);
-extern f32 MENUDY;
-extern i32 g_enableButtonPrompts;
-extern u8 MENUNORMALR, MENUNORMALG, MENUNORMALB;
 void __cdecl DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE_PC *view;
@@ -361,66 +351,11 @@ void __cdecl DrawMenu(i32 paused) {
         QFont2DButtons->baseline = saved_button_baseline;
 }
 
-extern i32 MenuDisableHeaders;
-extern f32 MenuTopYPc, MenuTextScalePc;
 void __cdecl DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0)
         MenuSmartTextEx(MenuHeader, 0, MenuTopYPc, 1, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                         (u8)header_r, (u8)header_g, (u8)header_b, 1.2f, 1, NULL, 0, MenuA);
 }
-
-extern char *apiGameName;
-extern char *apiGameTitle;
-extern char *apiGameSubTitle;
-extern char *apitxt_YES;
-extern char *apitxt_NO;
-extern char *apitxt_OK;
-extern char *apitxt_CANCEL;
-extern char *apitxt_RETRY;
-extern char *apitxt_SLOT;
-extern char *apitxt_PRESENT;
-extern char *apitxt_EMPTY;
-extern char *apitxt_NOSPACE;
-extern char *apitxt_CONTINUE;
-extern char *apitxt_SAVEGAME;
-extern char *apitxt_LOADGAME;
-extern char *apitxt_DELETEGAME;
-extern char *apitxt_GAMESAVED;
-extern char *apitxt_GAMEOVERWRITTEN;
-extern char *apitxt_GAMELOADED;
-extern char *apitxt_DELETING;
-extern char *apitxt_FORMATTING;
-extern char *apitxt_CORRUPTLOAD;
-extern char *apitxt_CONFIRMLOAD;
-extern char *apitxt_CONFIRMSAVE;
-extern char *apitxt_CONFIRMOVERWRITE;
-extern char *apitxt_DOYOUWANTTOSTART;
-extern char *apitxt_DOYOUWANTTOABORT;
-extern char *apitxt_DOYOUWANTTOABORTLOAD;
-extern char *apitxt_DOYOUWANTTOABORTFORMAT;
-extern char *apitxt_CONTINUEWITHOUTSAVING;
-extern char *apitxt_GAMEOVERWRITING;
-extern char *apitxt_NEWSAVE;
-extern char *apitxt_CONTINUEWITHOUTLOADING;
-extern char *apitxt_COMPLETED;
-extern char *apitxt_VIBRATION;
-extern char *apitxt_CONFIRMDELETE;
-extern char *apitxt_PROGRESS;
-extern char *apitxt_TIMEPLAYED;
-extern char *apitxt_PCPRESSSTARTFE;
-extern char *apitxt_PCPRESSSTARTP1;
-extern char *apitxt_PCPRESSSTARTP2;
-extern char *apitxt_GAMESAVING;
-extern char *apitxt_GAMELOADING;
-extern char *apitxt_FAILEDTOLOAD;
-extern char *apitxt_FAILEDTOSAVE;
-extern char *apitxt_FAILEDTOOVERWRITE;
-extern char *apitxt_NODATAAVAILABLE;
-extern char *apitxt_AUTOSAVE_ENABLED;
-extern char *apitxt_FORMATTINGCOMPLETE;
-extern char *apitxt_DELETECOMPLETE;
-extern char *apitxt_NOTENOUGHSPACE;
-extern char *apitxt_CONTROLLERREMOVED;
 
 void __cdecl MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
     NuStringTableSetBank(2);
@@ -575,11 +510,6 @@ STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_04_pressed) == 0x84);
 STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, action_08_pressed) == 0x88);
 STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, input_disabled) == 0xd8);
 STATIC_ASSERT(offsetof(PC_MENU_UPDATE_VIEW, state) == 0xdc);
-
-extern i32 MenuResult, menu_pulsate_angle;
-extern f32 menu_pulsate_speed, menu_pulsate, sfx_wait;
-extern i32 MenuSuppressUpHeldPc, MenuSuppressDownHeldPc, MenuSuppressLeftHeldPc, MenuSuppressRightHeldPc;
-extern i32 MENUSFX_MENUMOVE;
 
 void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
     if (*held != 0) {
@@ -817,7 +747,6 @@ STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
-char *__cdecl LevelObject_FindNameFromIndex(i32);
 void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
     u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
     u32 addr = (buffer->addr + 3) & ~3u;
@@ -854,8 +783,6 @@ void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buf
             scene->display_list->render_flags |= 0x10;
     }
 }
-
-extern i32 MENUSFX_MENUBACK;
 
 void __cdecl MenuRememberCursor(MENU *menu) {
     if (menu->menu == -1)
@@ -965,13 +892,6 @@ STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offsets) == 0xc4);
 STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_offset_scale) == 0xc8);
 STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_scale_x) == 0xd0);
 STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_spacing) == 0xd4);
-extern f32 dme_sx;
-extern i32 dme_rgb, dme_align;
-extern u8 dme_r, dme_g, dme_b;
-extern f32 MENUENTRYEXWIDTH;
-extern u8 MENUENTRYR, MENUENTRYG, MENUENTRYB;
-extern u8 MENUFLASH0R, MENUFLASH0G, MENUFLASH0B;
-extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
 
 void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;

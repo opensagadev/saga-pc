@@ -6,7 +6,6 @@ typedef struct torpedo_pickup_positions_pc_s {
 } TORPEDO_PICKUP_POSITIONS_PC;
 STATIC_ASSERT(offsetof(TORPEDO_PICKUP_POSITIONS_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDO_PICKUP_POSITIONS_PC, pickup_positions) == 0x3c);
-void __cdecl AddPickups(i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32);
 void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *packet, i32 count) {
     TORPEDO_PICKUP_POSITIONS_PC *view = (TORPEDO_PICKUP_POSITIONS_PC *)packet;
     i32 index;
@@ -214,15 +213,6 @@ typedef struct torpedo_obstacle_reader_pc_s {
     NUVEC position;
 } TORPEDO_OBSTACLE_READER_PC;
 STATIC_ASSERT(offsetof(TORPEDO_OBSTACLE_READER_PC, position) == 0x28);
-extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
-extern u8 TorpedoFillEnabledPc;
-extern f32 TorpedoGrabRangeSquaredPc;
-extern const char TorpedoFireSfxPc[14];
-extern char TextInputKeyNameTextPc759770[2];
-
-void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *);
-extern f32 TorpedoStealTimerPc, TorpedoStealRangePc;
-void *__cdecl FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
 
 #define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {

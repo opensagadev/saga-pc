@@ -179,9 +179,6 @@ STATIC_ASSERT(offsetof(TECHNO_OBSTACLE_VIEW_PC, anim_set) == 0x34);
 STATIC_ASSERT(sizeof(TECHNO_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(TECHNO_PROGRESS_PC, active) == 0);
 STATIC_ASSERT(offsetof(TECHNO_PROGRESS_PC, visible) == 4);
-extern TECHNO_CONFIG_PC TechnoSysPc;
-extern const char *TechnoRegistrationNamePc;
-extern i32 techno_gizmotype_id;
 
 static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     f32 floor_height;

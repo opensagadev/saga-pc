@@ -39,11 +39,6 @@ STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, transform) == 0);
 STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, secondary_flags) == 0x9c);
 STATIC_ASSERT(offsetof(CARRY_BLOWUP_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(CARRY_WORLD_PC, plug_sys) == 0x516c);
-extern f32 SuperCarryImpactSpeedPc;
-extern i32 SuperCarry_KeepObjectLevel, SuperCarry_AlignObject;
-CARRY_PLUG_PC *__cdecl Plug_FindNearest(CARRY_PLUG_SYS_PC *, NUVEC *, f32 *, i32);
-void __cdecl Plug_MakeDrawMtx(CARRY_PLUG_PC *, NUMTX *);
-void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *);
 typedef struct carry_model_pc_s {
     u8 unknown_00[0xc];
     void **model_data_b;
@@ -99,8 +94,6 @@ STATIC_ASSERT(offsetof(CARRY_PART_PC, blowup) == 0x218);
 STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
 STATIC_ASSERT(offsetof(PART_PC, rotation_y) == 0x13a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
-void __cdecl GizmoBlowUp_AddEffects(NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *);
-void __cdecl QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
 static void __cdecl SuperCarry_PartKill(PART_PC *part, i32 unused) {
     GIZMOBLOWUP_PC *blowup = ((CARRY_PART_PC *)part)->blowup;
     CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;

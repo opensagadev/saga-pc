@@ -27,8 +27,6 @@ void __cdecl DestroyRippleMtls(WORLDINFO *world) {
     }
 }
 
-extern const char TerrainWaterJumpSoundNamePc[13];
-void __cdecl NewBuzzFrames(void *, i32, i32);
 void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
     AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
     PlaySfx((char *)TerrainWaterJumpSoundNamePc, &object->collision_position);
@@ -208,11 +206,7 @@ typedef struct ripple_contact_timer_view_pc_s {
     f32 timer;
 } RIPPLE_CONTACT_TIMER_VIEW_PC;
 STATIC_ASSERT(offsetof(RIPPLE_CONTACT_TIMER_VIEW_PC, timer) == 0xdc0);
-extern RIPPLE_SET_PC *RippleSetPc;
-extern f32 RipplePerturbationPc, RippleSfxCooldownPc, ForceFieldRippleRatePc;
-extern const char RippleForceFieldSoundNamePc[10];
 static f32 RippleRandomRadiusPc = 0.15f;
-void __cdecl VecRotateAxis(NUVEC *, u16, NUVEC *);
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
 void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;

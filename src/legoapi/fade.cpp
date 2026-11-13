@@ -43,7 +43,6 @@ class FadeStill : public FadeBase {
 };
 
 extern "C" {
-    void __cdecl NeedScreenGrab(i32 needed);
     void __cdecl DrawStillScreen(i32 clear);
     void __cdecl DrawPauseScreenWipe(void);
     void __cdecl DrawFadeScreenWipe(void);
@@ -232,7 +231,6 @@ i32 FadeSystem::AddFade(FadeBase *fade_object) {
 }
 
 extern i32 fade_draw_suppressed;
-extern f32 FRAMETIME;
 
 void FadeSystem::Init() {
     fades[0] = 0;

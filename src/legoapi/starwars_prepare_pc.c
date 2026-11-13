@@ -1,6 +1,5 @@
 #include "saga.h"
 
-extern LEVELDATA_PC *LevelFixupSlotPc0087b148;
 extern const char StarWarsStairsTopPc[11], StarWarsStairsTop2Pc[12];
 extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
@@ -26,9 +25,6 @@ extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AI
 void __cdecl ClearSpecialMove(GAMEOBJECT *);
 void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
 void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
-void __cdecl LSW_Hub_ResetAI(WORLDINFO *);
-void __cdecl LSW_Hub_UpdateAI(WORLDINFO *);
-i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
     u32 capabilities =

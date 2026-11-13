@@ -167,8 +167,6 @@ static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivatePc[9] = {
     {"body", 0, 1, {3, 0}, NULL},
     {"under_pants", 0, 6, {1, 0}, NULL},
     {"leg", 0, 5, {2, 0}, NULL}};
-i32 __cdecl CharVariant_Find(char *name);
-i32 __cdecl Game_100PercentComplete(void);
 void __cdecl CustomiserLoadTracePc(char *path);
 static i32 CustomiserFindSetFromNamePrivatePc(char *name) {
     if (NuStrICmp(name, "hathair") == 0)
@@ -424,7 +422,6 @@ static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {{"bountyh
                                                                        {"alreadygothat", 0, 0x10},
                                                                        {"stormtrooperhelmet", 0, 0x40000},
                                                                        {NULL, 0, 0}};
-i32 __cdecl Collection_GotAnyOfType(i32 type, u32 flags);
 void __cdecl PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_PC *parser) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
     CUSTOMISER_GAME_SETTING_PC *setting;
@@ -563,7 +560,6 @@ STATIC_ASSERT(offsetof(CUSTOM_ACCESSORY_MATERIAL_PC, material_tag) == 0x9a);
 STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
 STATIC_ASSERT(offsetof(APICHARSYS, playermodelids) == 0x1c);
 STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
-extern i32 Customiser_AccessoriesLoaded;
 void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 side, category, material_index, id;

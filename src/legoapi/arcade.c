@@ -161,7 +161,6 @@ void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
     }
 }
 
-extern const char ArcadeAiKilledSoundNamePc[];
 void __cdecl Arcade_AIKilled(i32 player_index) {
     GAMEOBJECT *object;
     if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0)

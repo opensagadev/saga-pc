@@ -219,8 +219,6 @@ i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     return count;
 }
 
-void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *, NUVEC *, u16, void *, f32, i32);
-
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, anti_node_data) == 0xb4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
@@ -374,10 +372,7 @@ STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_gravity) == 0x94);
 STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_speed) == 0x98);
 STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, particle_types) == 0xa0);
 STATIC_ASSERT(offsetof(BLOWUP_EFFECT_TYPE_PC, fragment_count) == 0xfa);
-extern i32 MAXBLOWUPRANDSPANG;
 extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
-i32 __cdecl ReleaseHearts(void);
-void __cdecl AddPickups(i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32);
 void __cdecl BlowupObjEmit_Stop(struct PART_PC *part) {
 }
 
@@ -554,9 +549,6 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, bounds_min) == 0x58);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, secondary_flags) == 0x9c);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 
-extern i32 GizmoBlowUpOpponent_Behind;
-extern f32 GizmoBlowUpOpponent_Range2;
-extern i16 LegoActPunchBehindPc;
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, f32 minimum_radius,
                                             i32 mode, u32 mask, u32 value, u32 secondary_mask) {
     GIZMOBLOWUP_PC *target = WORLD->gizmo_blowups;
@@ -733,7 +725,6 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, particle_types) == 0xa0);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, instance_count) == 0xb2);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_runtime_flags) == 0xfc);
 STATIC_ASSERT(sizeof(GIZMOBLOWUPTYPE_PC) == 0x100);
-extern NUVEC GizmoBlowupUnitScalePc;
 
 void __cdecl GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *blowup) {
     NUVEC position;
@@ -964,9 +955,6 @@ i32 __cdecl InitGizmoBlowupsMtxBuffer(WORLDINFO *world) {
     return world->gizmo_blowup_mtx_buffer != NULL;
 }
 
-void __cdecl GameAntiNodeData_Init(void *, NUSPECIALHANDLE *);
-void __cdecl GameAntiNodeData_Read(void *);
-i32 __cdecl LookupDebrisEffect(char *);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, alternate_specials) == 0);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, shadow_special) == 0x48);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_time_scale) == 0x78);
@@ -1614,8 +1602,6 @@ void *__cdecl gizmoblowup_reservebuffers(WORLDINFO *world) {
 }
 
 extern i32(__cdecl *BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
-i32 __cdecl SphereSphereOverlap(NUVEC *, f32, NUVEC *, f32);
-void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);

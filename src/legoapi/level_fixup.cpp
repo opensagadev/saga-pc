@@ -4,10 +4,6 @@ extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *);
 extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *);
 
 /* Original level.cpp FixUpLevels family; PC-specific startup gates verified. */
-extern "C" {
-    extern LEVELDATA_PC *UpdateSockets_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2dc;
-}
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);

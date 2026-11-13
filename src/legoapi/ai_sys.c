@@ -25,7 +25,6 @@ STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
 STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
-void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system);
 
 void *__cdecl AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_CONTROL_SYSTEM_PC *system = (AI_CONTROL_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));

@@ -158,7 +158,6 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
     (void)mode;
 }
 
-extern i32 gizmoerrorlogsize;
 /* Retail calls one empty diagnostic entry with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
 void __cdecl GizmoDiagnosticPc(char *format, ...);
@@ -468,14 +467,6 @@ void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     }
 }
 
-extern const char GizmoConfigPathFormat[7];
-extern void __cdecl EdFileSetMedia(i32 media);
-extern i32 __cdecl EdFileOpen(char *filepath, i32 mode);
-extern i32 __cdecl EdFileClose(void);
-extern void __cdecl EdFileRead(void *buffer, i32 length);
-extern i32 __cdecl EdFileReadInt(void);
-extern char __cdecl EdFileReadChar(void);
-
 static __declspec(noinline) void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -694,8 +685,6 @@ typedef struct bolt_gizmo_type_pc_s {
 STATIC_ASSERT(sizeof(BOLT_GIZMO_TYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_platform) == 0x6c);
 STATIC_ASSERT(offsetof(BOLT_GIZMO_TYPE_PC, hit_bolt) == 0x74);
-void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
-void __cdecl Bolt_End(BOLT_PC *, i32);
 
 i32 __cdecl GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, u8 *hit_flags) {
     BOLT_GIZMO_TYPE_PC *type;
@@ -802,7 +791,6 @@ void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
 extern GIZACTIONDEF_PC *gizactiondefs;
-extern i32 gizspecial_gizmotype_id;
 i32 GizmoInfoVersionPc = 4;
 
 i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
@@ -924,7 +912,6 @@ typedef struct GIZMO_NAME_TYPE_PC {
 STATIC_ASSERT(sizeof(GIZMO_NAME_TYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, prefix) == 0x20);
 STATIC_ASSERT(offsetof(GIZMO_NAME_TYPE_PC, get_gizmo_name) == 0x44);
-u8 __cdecl NuToUpper(u8);
 
 i32 __cdecl GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
     GIZMOTYPE_PC *type;
@@ -1041,10 +1028,6 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
-    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
-    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif

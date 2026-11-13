@@ -91,10 +91,8 @@ void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl PeriscodeCode(GAMEOBJECT *);
 void __cdecl KeepWeaponIn(GAMEOBJECT *);
-i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
 static void DodgeCode(GAMEOBJECT *, i32, i32);
 static void BlockCode(GAMEOBJECT *, i32, i32, i32, i32);
-BOLT *__cdecl FindIncomingBolt(GAMEOBJECT *, i32, i32);
 void __cdecl FindForcePushTarget(GAMEOBJECT *, i32, i32);
 void __cdecl Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
@@ -104,7 +102,6 @@ void __cdecl Detonator_MoveCode(GAMEOBJECT *);
 void __cdecl Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Whip_MoveCode(GAMEOBJECT *);
 
-void __cdecl Buck_MoveCode(GAMEOBJECT *, i32);
 void __cdecl TakeOverCode(GAMEOBJECT *, i32);
 
 typedef struct movement_suit_pc_s {
@@ -119,13 +116,6 @@ typedef struct movement_model_pc_s {
 STATIC_ASSERT(offsetof(MOVEMENT_MODEL_PC, model_data_b) == 0xc);
 
 TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
-
-extern AREA_DATA_PC *PODSPRINT_ADATA;
-extern const f64 VehicleTurnPhaseScale;
-extern const f64 VehicleTurnPhaseOffset;
-extern const f64 MoveSplineRunSpeedSentinel;
-extern const f32 MoveSplineTurnRate;
-extern f32 ForceBackRadius2Pc;
 
 void __cdecl ResetForceBack(void) {
     ForceBackObjPc = NULL;
@@ -182,8 +172,6 @@ void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
     object->roll_angle = SeekRot(object->roll_angle, 0, 10.0f);
 }
 
-extern f32 LEDGETERRAINLOOKAHEAD;
-extern i16 LEGOACT_HANG_MOVE;
 STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
@@ -2430,15 +2418,11 @@ typedef struct directional_buildit_pc_s {
 STATIC_ASSERT(offsetof(DIRECTIONAL_BUILDIT_PC, state_flags) == 0x72);
 #define NU_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
 #define NU_COS_LUT(a) (NuTrigTable[((((i32)(a)) + 0x4000) >> 1) & 0x7fff])
-extern i32 PlayerGrappleSwingModePc;
 typedef struct directional_world_pc_s {
     u8 unknown00[0x46ec];
     void *grabber;
 } DIRECTIONAL_WORLD_PC;
 STATIC_ASSERT(offsetof(DIRECTIONAL_WORLD_PC, grabber) == 0x46ec);
-extern i16 id_GRABCONTROL, id_GRABR2CONTROL, id_MINIATST, id_ATST_LOWRES, id_MINIATAT, id_MINIATTE, id_RANCOR, id_YODA,
-    id_YODAGHOST, id_C3PO, id_TC14, id_DROIDEKA;
-extern LEVELDATA_PC *CRUISERD_LDATA, *VADERA_LDATA;
 /* Retain with MovePlayer_DIRECTIONAL; retail physical ABI is ECX object plus caller-clean stack float. */
 static __declspec(noinline) f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     f32 speed = (object->character_data->game_character->run_speed * scale) / NuTimeBarColumnStep;
@@ -3409,9 +3393,6 @@ typedef struct terrain_parent_context_view_pc_s {
     u8 reset_context;
 } TERRAIN_PARENT_CONTEXT_VIEW_PC;
 STATIC_ASSERT(offsetof(TERRAIN_PARENT_CONTEXT_VIEW_PC, reset_context) == 0x6c4);
-void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
-void __cdecl Player_ResetContexts(void *);
-void __cdecl NewBuzzFrames(void *, i32, i32);
 void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     PLAYERCHARACTERCONFIG_PC *data;
     NUVEC direction;
@@ -3450,7 +3431,6 @@ void __cdecl StartFlatten(GAMEOBJECT *source, GAMEOBJECT *target) {
     NewBuzz(target->pad->bound_pad, 0.1f, 0);
 }
 
-extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
 f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *object) {
     f32 height = VehicleGunshipHoverBasePc;
     if (object->player_index >= 2)
@@ -3648,13 +3628,6 @@ typedef struct DEACTIVATED_MOVE_VIEW_PC {
     f32 action_delay;
 } DEACTIVATED_MOVE_VIEW_PC;
 STATIC_ASSERT(offsetof(DEACTIVATED_MOVE_VIEW_PC, action_delay) == 0x778);
-extern f32 DEACTIVATEDTIME;
-extern i32 ForcePush_SuperMindTrick;
-void __cdecl ActivatePlayer(GAMEOBJECT *);
-void __cdecl GameCam_HitJudder(void);
-i32 __cdecl ZapTarget(GAMEOBJECT *);
-
-extern i16 id_JAWA;
 
 typedef struct vehicle_shoot_state_pc_s {
     u8 unknown_00[0x28b];
@@ -3671,15 +3644,7 @@ STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, shoot_blocked) == 0x28b);
 STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, weapon) == 0x7f4);
 STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, shot_latched) == 0xe31);
 STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, action_suppressed) == 0xe3b);
-i32 __cdecl PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
-void __cdecl StartQuickShoot(GAMEOBJECT *, i32);
-void __cdecl SetWeaponOut(GAMEOBJECT *);
-void __cdecl FastWeaponOut(GAMEOBJECT *, i32);
-void __cdecl SlowWeaponOut(GAMEOBJECT *);
-void __cdecl SlowWeaponIn(GAMEOBJECT *);
-void __cdecl Move_CANNON(GAMEOBJECT *);
 extern f32 animduration_blendouttime;
-extern i16 id_SENTRYDROID, id_ATST_LOWRES, VehicleSpecialShooterIdPc, id_CATAPULT;
 
 STATIC_ASSERT(offsetof(VEHICLE_SHOOT_STATE_PC, bolt_fire_phase) == 0xe3a);
 
@@ -3932,19 +3897,6 @@ i32 __cdecl ZapTarget(GAMEOBJECT *object) {
     return 0;
 }
 
-void __cdecl SetWeaponIn(GAMEOBJECT *);
-i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *, i32);
-i32 __cdecl SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
-i32 __cdecl SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
-i32 __cdecl SetPartTarget(GAMEOBJECT *, PART_PC *);
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-PART_PC *__cdecl TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
-i32 __cdecl GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-extern f32 BOLT_OVERRIDE_PLAYERBOLTSPEED, BOLT_OVERRIDE_PLAYERBOLTDURATION;
-extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
-extern i16 id_REPUBLICGUNSHIP;
-extern i32 VehicleGunshipAngleADefaultPc, VehicleGunshipAngleAPlayer1Pc, VehicleGunshipAngleAPlayer2Pc;
-extern i32 VehicleGunshipAngleBDefaultPc, VehicleGunshipAngleBPlayer1Pc, VehicleGunshipAngleBPlayer2Pc;
 typedef struct zap_variant_view_pc_s {
     u8 unknown_000[0x7bc];
     u32 unknown_bits : 8;
@@ -4750,7 +4702,6 @@ typedef struct BEAST_FALL_VIEW_PC {
 } BEAST_FALL_VIEW_PC;
 STATIC_ASSERT(offsetof(BEAST_FALL_VIEW_PC, fall_animation_time) == 0xdac);
 
-i32 __cdecl StartFallLand(GAMEOBJECT *, i32);
 static __declspec(noinline) void ForcePushed_MoveCode(GAMEOBJECT *object) {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
@@ -4804,7 +4755,6 @@ typedef struct beast_ground_contact_view_pc_s {
     f32 ground_contact_grace_timer;
 } BEAST_GROUND_CONTACT_VIEW_PC;
 STATIC_ASSERT(offsetof(BEAST_GROUND_CONTACT_VIEW_PC, ground_contact_grace_timer) == 0xd24);
-i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *);
 void __cdecl ForcedBackCode(GAMEOBJECT *object) {
     f32 radius, distance;
     if (ForceBackPosPc != NULL && (object->flags_ef0 & 0x10000000) == 0)
@@ -4965,12 +4915,6 @@ typedef struct beast_poo_volume_view_pc_s {
     f32 force_use_volume;
 } BEAST_POO_VOLUME_VIEW_PC;
 STATIC_ASSERT(offsetof(BEAST_POO_VOLUME_VIEW_PC, force_use_volume) == 0xd94);
-extern NUVEC PooPositionPc[2];
-extern u8 CheatPooPartsEnabledPc;
-extern u8 CheatPooCoinsEnabledPc;
-PART_PC *__cdecl FindPart(NUVEC *, i32, GAMEOBJECT *);
-static void MovementMtxSetRotationXPc(NUMTX *, i32);
-static void MovementMtxRotateZPc(NUMTX *, i32);
 
 void __cdecl PooCode(GAMEOBJECT *object) {
     NUVEC position;
@@ -5069,18 +5013,6 @@ typedef struct punch_style_view_pc_s {
     u8 combo_style;
 } PUNCH_STYLE_VIEW_PC;
 STATIC_ASSERT(offsetof(PUNCH_STYLE_VIEW_PC, combo_style) == 0xe41);
-extern f32 PUNCHGAP, PUNCHCHARGAP;
-extern i16 PunchRangeCompanionIdPc, PunchRangeUnitIdPc, id_CAPTAINTARPALS;
-extern i32 ComboOpponent_Behind, GizmoBlowUpOpponent_Behind;
-void __cdecl StartHold(GAMEOBJECT *);
-void __cdecl Punch_Hit(GAMEOBJECT *, GAMEOBJECT *, f32, f32);
-u32 __cdecl SpecialMove_GetFlags(i32, u32);
-i32 __cdecl SpecialMove_Check(GAMEOBJECT *, GAMEOBJECT *);
-i32 __cdecl SpecialMove_GetAttackerAction(i32);
-i32 __cdecl SpecialMove_GetVictimAction(i32);
-i32 __cdecl objInNetWaitContext(GAMEOBJECT *, i32);
-GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *, f32, f32, i32, i32, i32);
-GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *, f32, f32, f32, i32, u32, u32, u32);
 static __declspec(noinline) void PunchRangesPc(GAMEOBJECT *object, f32 *gap, f32 *charge_gap) {
     CHARACTER_MODEL_LAYERS_PC *model;
     if (object->id == (u16)VehicleBoltId7f17d4Pc) {
@@ -5637,7 +5569,6 @@ typedef struct HOLD_RUNTIME_VIEW_PC {
 } HOLD_RUNTIME_VIEW_PC;
 STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
 extern i32(__cdecl *CanStartHoldFn)(GAMEOBJECT *);
-void __cdecl PlaySabreSfx(char *, GAMEOBJECT *, NUVEC *, i32);
 void __cdecl StartHold(GAMEOBJECT *object) {
     if (CanStartHoldFn == NULL)
         return;
@@ -5655,30 +5586,13 @@ void __cdecl StartHold(GAMEOBJECT *object) {
     object->character_context = -1;
 }
 
-extern f32 VehicleLaunchHoverOffsetPc, VehicleZamSmokeRatePc;
-extern i16 id_SNOWMOB, id_ZAMSSPEEDER, id_DODGEM;
-extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
 extern void(__cdecl *VehicleSlowdownCallbackPc)(GAMEOBJECT *);
 /* Source-only logical declarations: physical interfaces/real implementations remain explicit holds. */
 void __cdecl Move_POD(GAMEOBJECT *);
-void __cdecl KeepWeaponOut(GAMEOBJECT *);
-void __cdecl DropInOutCode(GAMEOBJECT *);
-f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *);
-void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
-void __cdecl DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
-
-void __cdecl CatchUpCode(GAMEOBJECT *, f32, f32, i32);
-void __cdecl CableCode(GAMEOBJECT *, i32, f32);
-void __cdecl TractorBeamCode(GAMEOBJECT *);
-void __cdecl FloatCode(GAMEOBJECT *);
-void __cdecl TorpedoCode(GAMEOBJECT *, i32, f32);
-void __cdecl AwkwardShapeCode(GAMEOBJECT *, i32);
-void __cdecl EngineNoiseCode(GAMEOBJECT *, i32);
 
 /* Private original-TU bodies are pending. No public register adapters are introduced. */
 
 extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA, *ANAKINSFLIGHT_ADATA, *BOUNTYHUNTERPURSUIT_ADATA;
-extern u8 TractorBeamEnabledPc;
 
 /* Four external logical-only private service declarations are research holds, not adapters or production interfaces. */
 
@@ -5789,10 +5703,6 @@ typedef struct VEHICLE_WEAPONS_STATE_PC {
 } VEHICLE_WEAPONS_STATE_PC;
 STATIC_ASSERT(offsetof(VEHICLE_WEAPONS_STATE_PC, smartbomb_timer) == 0xd4c);
 STATIC_ASSERT(offsetof(VEHICLE_WEAPONS_STATE_PC, ground_contact_grace_timer) == 0xd24);
-extern f32 VehicleShieldTargetPc;
-extern const char VehicleShieldOnNamePc[10];
-extern const char VehicleSmartBombChargeNamePc[10];
-extern const char ForceThrowExplodeNamePc[9];
 
 static __declspec(noinline) void ShieldCode(GAMEOBJECT *object) {
     f32 target = 0.0f, previous;
@@ -5882,11 +5792,6 @@ static __declspec(noinline) void DodgemCode(GAMEOBJECT *object) {
     }
 }
 
-extern f32 PodRaceMinimumSpeedPc, PodRaceBoostSpeedPc, PodSprintMinimumSpeedPc, PodSprintBoostSpeedPc;
-extern f32 PodBoostHeightPc, PodPitchHistoryPc[2], PodCollisionThresholdPc, PodCollisionMagnitudePc;
-extern i32 PodSprintDebrisIndexPc;
-extern NUVEC PodSprintLiftPositionsPc[3];
-extern const char PodBoosterSoundNamePc[13];
 typedef struct pod_boost_view_pc_s {
     u8 unknown_0000[0x1038];
     f32 boost_timer;
@@ -6019,15 +5924,6 @@ typedef struct WORLD_FORCE_PC {
     void *force_system;
 } WORLD_FORCE_PC;
 STATIC_ASSERT(offsetof(WORLD_FORCE_PC, force_system) == 0x46ac);
-extern LEVELDATA_PC *DAGOBAHC_LDATA;
-extern u32 LswForceUsedHintFlagsPc;
-i32 __cdecl GizForce_Complete(GIZFORCE_PC *);
-i32 __cdecl GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
-u16 __cdecl GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
-i32 __cdecl GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
-void __cdecl Hint_SetComplete(i32);
-void __cdecl PlayGruntSfx(GAMEOBJECT *);
-void __cdecl SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
 static __declspec(noinline) void ForceGlowTargetPc(GAMEOBJECT *object, GIZFORCE_PC *force,
                                                    FORCE_ANIMATION_OBJECT_PC *animation) {
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
@@ -6138,12 +6034,6 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
     }
 }
 
-void __cdecl Move_VEHICLE(GAMEOBJECT *);
-void __cdecl TakeHitCode(GAMEOBJECT *);
-void __cdecl LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
-
-f32 __cdecl FindPodHoverHeight(GAMEOBJECT *);
-void __cdecl PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
 void __cdecl Move_POD(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *vehicle;
     i32 sound, player_index;
@@ -6260,7 +6150,6 @@ typedef struct GLOW_ANIMATION_DATA_PC {
 } GLOW_ANIMATION_DATA_PC;
 STATIC_ASSERT(offsetof(GLOW_ANIMATION_DATA_PC, flags) == 0x4);
 
-extern f32 PCForceGlowRadiusMultiplier, PCForceGlowHoldDuration, FORCEGLOWTIME;
 static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
     GLOW_OBJECT_PC *glow = (GLOW_OBJECT_PC *)object;
     f32 target, previous;
@@ -6402,13 +6291,6 @@ typedef struct message_draw_view_pc_s {
 } MESSAGE_DRAW_VIEW_PC;
 STATIC_ASSERT(offsetof(MESSAGE_DRAW_VIEW_PC, draw) == 0x10c);
 
-extern f32 FORCEGLOWTIME, CableTargetScalePc;
-GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
-CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
-void __cdecl Hint_SetComplete(i32);
-
-void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
-i32 __cdecl VehicleRayCastPc(NUVEC *, NUVEC *, f32, f32, i32, u32);
 void __cdecl CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
     CABLE_VIEW_PC *view = (CABLE_VIEW_PC *)object;
     GAMEOBJECT *target;
@@ -6658,8 +6540,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_timer) == 0xd64);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
-extern i16 DefaultMotionSkeletonIdPc, DefaultMotionIndySnakeIdPc;
-extern i32 DefaultMotionLedgeTerrainEnabledPc;
 
 void __cdecl SuitBlowupCodePc(WORLDINFO *, GAMEOBJECT *);
 
@@ -6805,8 +6685,6 @@ after_gravity:
     (void)jump_held;
 }
 
-extern f32 speeder_smoke_rate;
-extern f32 speeder_offset_speed;
 typedef struct MOTION_PLATFORM_CONTACT_READER_PC {
     u8 unknown_000[0x27e];
     i16 contacted_platform;
@@ -7137,8 +7015,6 @@ void __cdecl Move_ATAT(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-extern i32 LEGOCONTEXT_JUMP;
-
 /* Native 49d6d0: genuine guard then fixed PC context/action and pointer member. */
 i32 __cdecl Glide_Start(GAMEOBJECT *object) {
     if (LEGOCONTEXT_GLIDE != -1) {
@@ -7152,8 +7028,6 @@ i32 __cdecl Glide_Start(GAMEOBJECT *object) {
     }
     return 0;
 }
-
-void __cdecl MakeJumpReachHeight(GAMEOBJECT *, f32, i32);
 
 typedef struct lunge_target_slots_pc_s {
     u8 unknown_000[0x790];
@@ -7247,15 +7121,6 @@ STATIC_ASSERT(offsetof(JUMP_AUXILIARY_FIELDS_PC, jump_chain_timer) == 0xd68);
 STATIC_ASSERT(offsetof(JUMP_AUXILIARY_FIELDS_PC, fall_animation_timer) == 0xdac);
 STATIC_ASSERT(offsetof(JUMP_AUXILIARY_FIELDS_PC, action_suppressed) == 0xe3b);
 STATIC_ASSERT(sizeof(JUMP_AUXILIARY_FIELDS_PC) == 0xe3c);
-
-void __cdecl ComboHitFrame(GAMEOBJECT *, i32);
-void __cdecl MakeJumpReachHeight(GAMEOBJECT *, f32, i32);
-
-extern i32 LEGOCONTEXT_DOOMED;
-extern i32 LEGOCONTEXT_JUMP;
-extern f32 SLAMJUMPSPEED;
-
-void __cdecl StartJetPackFall(GAMEOBJECT *, i32);
 
 void __cdecl Glide_MoveCode(GAMEOBJECT *object) {
     i32 can_glide;
@@ -7396,15 +7261,6 @@ void ComboRotateCode(GAMEOBJECT *object, i32 action_held) {
     object->facing_angle = object->movement_facing_angle = object->field_0x276;
 }
 
-extern i32 LEGOCONTEXT_CLIMB;
-extern i32 LEGOCONTEXT_HANG;
-extern i16 LEGOACT_IDLE;
-extern i16 LEGOACT_WALK;
-extern i16 LEGOACT_HANG_IDLE;
-extern i16 LEGOACT_CLIMB_IDLE;
-extern i16 LEGOACT_CLIMB_UP;
-extern i16 LEGOACT_CLIMB_DOWN;
-extern i16 LEGOACT_MAGNET_WALK_METAL;
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 
@@ -7583,13 +7439,6 @@ void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
     }
 }
 
-extern i32 LEGOCONTEXT_LEDGETERRAIN;
-extern i32 LEGOCONTEXT_CLIMB;
-extern i32 LedgeTerrain_CheckAnims;
-extern i16 LEGOACT_LEDGE_GRAB;
-extern i16 LEGOACT_LEDGE_IDLE;
-extern i16 LEGOACT_LEDGE_LEFT;
-extern i16 LEGOACT_LEDGE_RIGHT;
 STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
@@ -7806,19 +7655,6 @@ STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
 
-void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-void __cdecl UpdatePushBlocks(void *, void *, f32);
-extern f32 PushVelocitySeekRatePc;
-extern f32 PushFallingSpeedPc;
-extern f32 PushCornerInsetPc;
-extern f32 PushGroundOffsetPc;
-extern f32 PushBlockOverlapShrinkPc;
-extern i32 PushBlockHintIdPc;
-void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
-PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
-char *__cdecl NuIToA(i32, char *, i32);
-extern char *PushBlocksNamePc;
-
 typedef struct PUSH_RUNTIME_BOUNDS_PC {
     NUVEC min, max;
 } PUSH_RUNTIME_BOUNDS_PC;
@@ -8004,9 +7840,6 @@ void __cdecl Move_JAWA(GAMEOBJECT *object) {
     ChatterSfx(object, 0, 0.0f);
 }
 
-extern i16 id_BAT, id_BATTLEDROID, id_SUPERBATTLEDROID, id_NAFFDROID1, id_NAFFDROID2, id_NAFFDROID4, id_MOUSEDROID,
-    id_BUZZDROID;
-extern f32 CritterSnakeExtraHoverPc, CritterBatExtraHoverPc;
 extern u8 DroidCheat32EnabledPc;
 
 typedef struct critter_object_reader_pc_s {
@@ -8806,9 +8639,6 @@ static __declspec(noinline) void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJE
     }
 }
 
-extern f32 ForcePushDurationPc;
-extern f32 ForcePushStrongDurationPc;
-extern f32 ForcePushMindTrickDurationPc;
 extern i16 CharacterFixupIdPc007f1a78;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_bolt) == 0xd04);
@@ -9094,14 +8924,6 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         }
     }
 }
-
-extern LEVELDATA_PC *MAULF_LDATA;
-extern f32 MaulF_ForceThrowGravity;
-extern f32 MaulF_ForceThrowSpeed;
-extern f32 DookuC_ForceThrowGravity;
-extern f32 DookuC_ForceThrowSpeed;
-PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *);
-PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
 
 static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;

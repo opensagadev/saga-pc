@@ -37,9 +37,7 @@ STATIC_ASSERT(offsetof(SNAKE_BODY_PC, segment_count) == 0x10c);
 STATIC_ASSERT(sizeof(SNAKE_BODY_PC) == 0x110);
 STATIC_ASSERT(offsetof(SNAKE_OBJECT_READER_PC, lighting) == 0x4d8);
 STATIC_ASSERT(offsetof(SNAKE_OBJECT_READER_PC, snake_body) == 0x10ac);
-extern f32 SnakeSegmentHeightPc, SnakeDebrisUpwardSpeedPc;
 extern f32 SnakeSegmentSpacingPc, SnakeHeadHeightPc, SnakeYawSeekRatePc;
-void __cdecl NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))

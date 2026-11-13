@@ -39,8 +39,6 @@ void AICreatureResumeScript(GAMEOBJECT *object) {
     }
 }
 
-extern NUVEC alert_pos;
-extern f32 alert_time;
 void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
     if (object != NULL &&
         ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || (object->flags_1f8 & 5) != 0 ||
@@ -78,7 +76,6 @@ STATIC_ASSERT(offsetof(AILOCATOR_PC, rotation) == 0x1c);
 STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
 STATIC_ASSERT(offsetof(AIROW_PC, is_alive) == 0x2d);
 STATIC_ASSERT(offsetof(AIROW_PC, flags) == 0x30);
-extern NUVEC plr_lastpos;
 
 void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     AICREATURE_PC *creature;
@@ -191,7 +188,6 @@ typedef struct AI_CREATURE_RESET_FLAGS_PC {
     u16 reset_flags;
 } AI_CREATURE_RESET_FLAGS_PC;
 STATIC_ASSERT(offsetof(AI_CREATURE_RESET_FLAGS_PC, reset_flags) == 0x1386);
-extern const char GameObjectState_InActive[9];
 
 void __cdecl ResetAICreatures(AISYS_PC *system) {
     GAMEOBJECT *object;

@@ -33,7 +33,6 @@ STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
 extern "C" {
     i32 CompletionPointInfoRecalculatePc[7] = {0};
     i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
-    i32 __cdecl AddToCollection(i32);
     void __cdecl AddToCompletionPoints(u32);
 
     void __cdecl ReCalculateCompletionPoints(void) {

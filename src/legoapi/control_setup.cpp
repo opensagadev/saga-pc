@@ -33,14 +33,6 @@ void PC_CONTROL_SCREEN_PC::AdvanceSelection(PC_CONTROL_ROW_PC *row) {
 }
 
 /* UI helper names below are reconciled with the separate input API contract before integration. */
-extern "C" {
-    i32 __cdecl PcInputIsMouseDevicePc(i32);
-    i32 __cdecl PcInputIsJoystickDevicePc(i32);
-    i32 __cdecl PcInputBindingPresentPc(i32, i32, i32, i32);
-    PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8, i32, i32);
-    i32(__cdecl *__cdecl PcInputGetCommandFilterPc(void))(i32, i32);
-}
-
 u8 PC_CONTROL_SCREEN_PC::PortAllowed(i32 player, i32 port, i32 allow_keyboard_sharing) {
     i32 keyboard_used = 0;
     if (port == ports[player])
@@ -175,18 +167,6 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
 }
 
 extern "C" {
-    void __cdecl PcInputSetBlockedKeysPc(const char *);
-    void __cdecl PcInputCopyBindingsPc(i32, i32, i32);
-    void __cdecl PcInputResetMouseMotionPc(void);
-    void __cdecl PcInputSuppressKeyOnePc(i32);
-    i32 __cdecl PcInputAlternateDeadzonePc(i32);
-    i32 __cdecl PcInputHashAuxiliaryBindingsPc(void);
-    i32 __cdecl PcInputMixConfigurationHashPc(i32, i32);
-    void __cdecl PcInputSetDeadzonePc(i32, i32);
-    void __cdecl PcInputSetAlternateDeadzonePc(i32, i32);
-    void __cdecl PcInputStageAuxiliaryConfigPc(i32, i32, i32);
-    void __cdecl PcInputSaveConfigurationPc(void);
-    i32 __cdecl PcInputResolveAuxiliaryConflictsPc(i32, i32);
     i32 __cdecl NuMtlSetCurrentRenderPlane(i32);
 }
 
@@ -301,10 +281,6 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
 }
 
 extern "C" {
-    extern PC_CONTROL_SCREEN_PC PcControlScreenPc;
-    extern PC_CONTROL_ITEM_PC *PcControlRowsPc[2];
-    extern i16 *PcControlTextIdsPc[45];
-    extern char *PcControlTextPc[45];
     extern const char PcControlMissingTextPc[];
     extern NUMTL *FadeMtl;
 
@@ -361,12 +337,6 @@ extern "C" {
     extern u32 PcControlButtonsPc, PcControlHeldPc[2], PcControlPressedPc[2];
     extern i32 PcControlPulseAnglePc;
     extern f32 PcControlRepeatPc[2];
-    i32 __cdecl PcInputBindingAvailablePc(i32, i32, i32, i32);
-    void __cdecl PcInputAssignBindingPc(i32, i32, i32, i32, i32, i32, i32, u32);
-    void __cdecl PcInputClearOtherBankConflictsPc(i32, i32);
-    i32 __cdecl PcInputCapturedPortPc(void);
-    void __cdecl PcInputSetCapturedPortPc(i32);
-    void __cdecl PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *, i32, i32, i32, i32);
 }
 
 i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt) {
@@ -759,7 +729,6 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
 
 // Private source; sole integration owner installs.
 extern char *PcControlTextPc[45];
-extern f32 PcControlBaselineAdjustPc;
 struct PC_CONTROL_VERTEX_PC {
     f32 x, y, z;
     u32 colour;

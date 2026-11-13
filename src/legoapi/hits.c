@@ -60,11 +60,6 @@ typedef struct shield_state_pc_s {
 } SHIELD_STATE_PC;
 STATIC_ASSERT(offsetof(SHIELD_STATE_PC, shield_enabled) == 0xd30);
 STATIC_ASSERT(offsetof(SHIELD_STATE_PC, shield_timer) == 0xd34);
-void __cdecl AlertSurroundingCreatures(GAMEOBJECT *, NUVEC *);
-void __cdecl TakeHitRumble(GAMEOBJECT *, f32);
-i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
-i32 __cdecl GameAudio_GetPlrSfxBits(void *);
-extern const char ShieldHitSfxPc[9], ShieldFlickerSfxPc[13];
 void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE_PC *shield = (SHIELD_STATE_PC *)target;
     i32 health;
@@ -126,8 +121,6 @@ typedef struct reaction_fields_pc_s {
 STATIC_ASSERT(offsetof(REACTION_FIELDS_PC, reset_contexts) == 0x6c4);
 STATIC_ASSERT(offsetof(REACTION_FIELDS_PC, animation_speed) == 0x750);
 STATIC_ASSERT(offsetof(REACTION_FIELDS_PC, reaction_duration) == 0x778);
-void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
-void __cdecl Player_ResetContexts(void *);
 i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
     REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
     void **animations;
@@ -205,13 +198,11 @@ typedef struct combat_reaction_owner_pc_s {
     i8 attacker_slot;
 } COMBAT_REACTION_OWNER_PC;
 STATIC_ASSERT(offsetof(COMBAT_REACTION_OWNER_PC, attacker_slot) == 0x7bb);
-extern f32 CombatReactionHorizontalScalePc, CombatReactionVerticalScalePc;
 typedef struct combat_attack_counter_pc_s {
     u8 unknown_000[0x1083];
     u8 attack_count;
 } COMBAT_ATTACK_COUNTER_PC;
 STATIC_ASSERT(offsetof(COMBAT_ATTACK_COUNTER_PC, attack_count) == 0x1083);
-extern i32 CombatHitReactionIntervalPc;
 i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;
 
@@ -709,12 +700,6 @@ typedef struct collision_techno_view_pc_s {
     u8 flags;
 } COLLISION_TECHNO_VIEW_PC;
 STATIC_ASSERT(offsetof(COLLISION_TECHNO_VIEW_PC, flags) == 0x68);
-extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
-i32 __cdecl ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
-i32 __cdecl APIObjectCollision(APIOBJECT_PC *, APIOBJECT_PC *);
-i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *, APIOBJECT_PC *);
-void __cdecl APIObjectCollisions(i32, APIOBJECT_PC **, NUVEC *, NUVEC *,
-                                 i32(__cdecl *)(APIOBJECT_PC *, APIOBJECT_PC *));
 typedef struct collision_masks_view_pc_s {
     u8 unknown_0000[0x1e8];
     u64 collision_identity_mask;

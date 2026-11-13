@@ -5,11 +5,6 @@
 /* Retail unit 0x578890-0x57a810 (legoapi/levels.c): definitions in retail address order. */
 
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
-extern "C" {
-    extern i32 RenderHubFromCutscenePlayerPc;
-    extern const char RenderSplineBountyStartPc[13];
-    extern const char RenderSplineShopStartPc[11];
-}
 STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
 STATIC_ASSERT(offsetof(LEVELSPLINE_PC, max_points) == 0xa);
@@ -41,9 +36,6 @@ typedef struct startup_level_object_pc_s {
 STATIC_ASSERT(sizeof(STARTUP_LEVEL_OBJECT_PC) == 0x10);
 STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, special) == 0);
 STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, platform_id) == 0xc);
-extern "C" {
-    i32 __cdecl FindPlatInst(i32 instance);
-}
 typedef struct WORLD_OBJECT_SETUP_READER_PC {
     u8 unknown_0000[0x2964];
     NUGSCN *icons_gscn;
@@ -54,10 +46,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
-extern "C" {
-    extern NUGSCN *area_scene, *vehicle_scene, *big_icon_scene;
-    extern i32 KNOBS;
-}
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 typedef struct menu_mission_reader_pc_s {
@@ -65,12 +53,6 @@ typedef struct menu_mission_reader_pc_s {
     i8 active_count;
 } MENU_MISSION_READER_PC;
 STATIC_ASSERT(offsetof(MENU_MISSION_READER_PC, active_count) == 0x12);
-extern "C" {
-    extern i32 SuperStoryEpisode, hub_from_superstory, hub_from_mission;
-    extern i32 newlevelfrommenu_newmenuid, newlevelfrommenu_newmenuy;
-}
-__declspec(noinline) LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out);
-
 extern "C" {
 
     void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJMP *after_load) {

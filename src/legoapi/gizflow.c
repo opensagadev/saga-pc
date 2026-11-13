@@ -532,7 +532,6 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     }
 }
 
-void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 i32 __cdecl GizmoGetTypeIDByName(void *, char *);
 
 static VARIPTR *load_buff = 0;

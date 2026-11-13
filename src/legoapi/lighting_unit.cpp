@@ -11,10 +11,6 @@ typedef struct startup_object_light_pc_s {
     i32 dynamic_light_id;
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT_PC;
-extern "C" {
-    i32 __cdecl rtlDynamicAlloc(void);
-    i32 __cdecl rtlDynamicSetType(i32 id, i32 type);
-}
 typedef struct OBJECT_LIGHT_STATE_GAME_PC {
     NUVEC ambient;
     NUVEC intensity[3];
@@ -50,9 +46,7 @@ typedef struct LIGHTING_LOAD_WORLD_PC {
     RTL_SET_PC *rtl_set;
 } LIGHTING_LOAD_WORLD_PC;
 extern "C" {
-    BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32);
     void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
-    extern NUVEC APIObjectZeroMomentumPC;
     extern f32 ShadowLightSplitScalePc, ShadowLightWarpPc, ShadowLightNearOffsetPc;
     extern f32 ShadowLightBlendPowerPc, ShadowLightFallbackHeightPc, ShadowLightEyeDistancePc;
     extern f32 ShadowLightFocusHeightPc;

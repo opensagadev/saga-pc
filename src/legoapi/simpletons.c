@@ -96,7 +96,6 @@ f32 __cdecl oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     return 0.75f;
 }
 
-extern i32 LegoContextNetWaitPc;
 i32 __cdecl objInNetWaitContext(GAMEOBJECT *object, i32 context) {
     if (LegoContextNetWaitPc != -1 && object != NULL && object->character_context == LegoContextNetWaitPc &&
         object->field_7aa == context)

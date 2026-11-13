@@ -67,8 +67,6 @@ void __cdecl DebrisKillPlayers(void) {
     }
 }
 
-extern f32 GunshipDustEmissionRatePc;
-void __cdecl PodDust(WORLDINFO *, GAMEOBJECT *);
 void __cdecl AddSurfaceDebris(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i8 layer;

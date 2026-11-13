@@ -4,41 +4,19 @@
 
 /* Retail unit 0x488e90-0x48fc30 (legoapi/levels.cpp): definitions in retail address order. */
 
-extern "C" {
-    GAMEOBJECT *__cdecl BossKilled(i32);
-}
 extern "C" void __cdecl FmvPlatformUpdatePc(void);
 extern "C" void __cdecl Particles_LoadAreaPage(char *);
 extern "C" {
-    void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *, APICHARACTERMODELLIST *);
-    extern struct text_crawl_view_pc_s TextCrawlLswPc;
     void __cdecl NewAreaMusicChanges(void);
     void __cdecl ClearTakeOverObjectSys(void);
-    void __cdecl Door_Reset(void);
     extern void *Door_Last;
 }
-void __cdecl SuperCounters_Reset(i32 area_index);
 typedef struct player_progress_hp_pc_s {
     u8 unknown_0000[8];
     u8 hitpoints;
     u8 unknown_0009[7];
 } PLAYER_PROGRESS_HP_PC;
-extern AREA_DATA_PC *HOTHBATTLE_ADATA;
 extern "C" {
-    extern i32 Area_PlayerModelCount, Area_StoryModelCount, Area_FreePlayModelCount, Area_MissionModelCount,
-        LevelLoadCount, AreaMusic;
-    extern APICHARACTERMODELLIST AreaPlayerModelsPc[], Area_FreePlayModelList[], Area_MissionModelList[];
-}
-extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s);
-extern "C" {
-    extern APICHARACTERMODELLIST FreePlayModelList[];
-    extern APICHARACTERMODELLIST Area_MissionModelList[];
-    extern APICHARACTERMODELLIST *CurrentCList, *CurrentStoryCList;
-    extern i32 Area_PlayerModelCount;
-    extern i32 CharacterDataLoad, AreaDataLoaded, loadareadata_loadlevel;
-    extern i16 id_DEFAULTCHARACTER[2];
-    NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
-    void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
     extern AREA_DATA_PC *ANEWHOPE_ADATA;
 }
 typedef struct area_loading_clock_reader_pc_s {
@@ -51,24 +29,9 @@ typedef struct area_loading_pad_reader_pc_s {
     u8 unknown_000c[0x54];
 } AREA_LOADING_PAD_READER_PC;
 extern "C" {
-    extern i32 netnewgame, textcrawlactive;
-    extern f32 AreaCrawlMaximumTimePc, AreaCrawlSoundWaitTimePc;
-    extern i32 loadareacharacters_no_backdrop_reset;
-    extern i32 AreaCrawlMusicEnabledPc;
-    extern f32 RenderBackdropTopRPc, RenderBackdropTopGPc, RenderBackdropTopBPc;
-    extern f32 RenderBackdropBottomRPc, RenderBackdropBottomGPc, RenderBackdropBottomBPc;
-    extern i16 tTOUCHTOSTART;
-    extern f32 AreaCrawlPromptYPc, AreaCrawlPromptScalePc;
-    i32 __cdecl AreaGetKeyboardOverridePc(void);
-    i32 __cdecl NuSound3LoadingSfx(void);
-    i32 __cdecl NuKeyboard_db(i32);
-    void __cdecl ReadPads(void);
     void __cdecl MusicClearAll(void);
     void __cdecl SoundKillAll(void);
-    void __cdecl NeedScreenGrab(i32);
     void __cdecl GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
-    void __cdecl Area_Configure(i32, i32, AREA_EXTRA_MODEL_PC *, i16 *);
-    extern AREA_EXTRA_MODEL_PC ExtraModelList[];
 }
 void __cdecl legoSetMusicVolume(f32);
 extern "C" {
@@ -83,7 +46,6 @@ extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void __cdecl ParticleReset(void);
-extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
     u32 attributes;
@@ -95,13 +57,7 @@ typedef struct permanent_material_reader_pc_s {
     i16 texture_id;
     u16 sort_priority;
 } PERMANENT_MATERIAL_READER_PC;
-extern NUMTL *PermanentEffectsMaterialPc, *PermanentShadowMaterialPc, *PermanentGradientMaterialPc;
-extern void *things_scene_terrain;
-extern i32 PARTPAGE_GENERAL;
-extern char *debris_name[147];
-APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
-extern "C" void __cdecl CreateFadeMaterials(void);
 typedef struct permanent_customiser_save_pc_s {
     u16 pieces[9];
     u8 unknown_12[0x26];
@@ -114,12 +70,6 @@ typedef struct permanent_customiser_game_pc_s {
 } PERMANENT_CUSTOMISER_GAME_PC;
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
-    extern APICHARACTERMODELLIST PermModelListPc[1];
-    extern COLLECTION_BUILD_PC MasterCollectionPc, CharacterCollectionPc, VehicleCollectionPc;
-    extern COLLECTION_BUILD_PC ShopCollectionPc, JediCollectionPc, BlasterCollectionPc, BountyHunterCollectionPc;
-    extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
-    extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
-    extern i16 PermanentCustomiserActionsPc[5];
     extern f32 PermCollectionScalePc;
 }
 #define LEVEL_BYTE_CALLBACK(name, field)                                                                               \
@@ -130,10 +80,6 @@ extern "C" {
     void __cdecl name(NUFPAR_PC *parser) {                                                                             \
         levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                          \
     }
-extern "C" void __cdecl JediB_Init(WORLDINFO *);
-extern "C" void __cdecl JediB_Reset(WORLDINFO *);
-extern "C" void __cdecl JediB_Update(WORLDINFO *);
-extern "C" void __cdecl JediB_DrawPanelPc(WORLDINFO *);
 extern "C" void __cdecl KashyyykD_Init(WORLDINFO *);
 extern "C" void __cdecl KashyyykD_Reset(WORLDINFO *);
 extern "C" void __cdecl KashyyykD_Update(WORLDINFO *);
@@ -359,134 +305,8 @@ extern "C" void __cdecl FairgroundbadA_Init(WORLDINFO *);
 extern "C" void __cdecl FairgroundbadA_Update(WORLDINFO *);
 extern "C" void __cdecl FairgroundbadA_Draw(WORLDINFO *);
 extern "C" {
-    extern LEVELDATA_PC *WorldArchiveOneLevelsPc[11];
-    extern LEVELDATA_PC *WorldArchiveThreeLevelsPc[4];
-    extern LEVELDATA_PC *TITLES_LDATA;
-    extern LEVELDATA_PC *STATUS_LDATA;
-    extern LEVELDATA_PC *CREDITS_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2c4;
-    extern LEVELDATA_PC *UpdateSockets_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2dc;
-    extern LEVELDATA_PC *HUB_LDATA;
-    extern LEVELDATA_PC *SPEEDERCHASEA_LDATA;
-    extern LEVELDATA_PC *NEGOTIATIONSA_LDATA;
-    extern LEVELDATA_PC *NEGOTIATIONSB_LDATA;
-    extern LEVELDATA_PC *NEGOTIATIONSC_LDATA;
-    extern LEVELDATA_PC *GUNGAN_A_LDATA;
-    extern LEVELDATA_PC *RESCUEC_LDATA;
-    extern LEVELDATA_PC *PODRACEB_LDATA;
-    extern LEVELDATA_PC *PODRACEA_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b0b4;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b0b8;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b0bc;
-    extern LEVELDATA_PC *PODSPRINTA_LDATA;
-    extern LEVELDATA_PC *RETAKEB_LDATA;
-    extern LEVELDATA_PC *RETAKED_LDATA;
-    extern LEVELDATA_PC *RETAKEE_LDATA;
-    extern LEVELDATA_PC *MAULA_LDATA;
-    extern LEVELDATA_PC *MAULD_LDATA;
-    extern LEVELDATA_PC *MAULF_LDATA;
-    extern LEVELDATA_PC *JEDI_B_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b0f0;
-    extern LEVELDATA_PC *GUNSHIPA_LDATA;
-    extern LEVELDATA_PC *GUNSHIPB_LDATA;
-    extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
-    extern LEVELDATA_PC *BONUS_GUNSHIPB_LDATA;
-    extern LEVELDATA_PC *CollisionVehicleExcludedLevelPc;
-    extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
-    extern LEVELDATA_PC *DOGFIGHTA_LDATA;
-    extern LEVELDATA_PC *FACTORYB_LDATA;
-    extern LEVELDATA_PC *FACTORYD_LDATA;
-    extern LEVELDATA_PC *FACTORYF_LDATA;
-    extern LEVELDATA_PC *FACTORYG_LDATA;
-    extern LEVELDATA_PC *DOOKUC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b140;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b12c;
-    extern LEVELDATA_PC *KAMINOC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b138;
-    extern LEVELDATA_PC *KAMINOE_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b164;
-    extern LEVELDATA_PC *CRUISERC_LDATA;
-    extern LEVELDATA_PC *CRUISERD_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b170;
-    extern LEVELDATA_PC *CRUISERG_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b148;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b150;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b154;
-    extern LEVELDATA_PC *KASHYYYKD_LDATA;
-    extern LEVELDATA_PC *VADERA_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b17c;
-    extern LEVELDATA_PC *VADERC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b194;
-    extern LEVELDATA_PC *ObstacleReturnLevelPc;
-    extern LEVELDATA_PC *MOSEISLEYA_LDATA;
-    extern LEVELDATA_PC *MOSEISLEYB_LDATA;
-    extern LEVELDATA_PC *MOSEISLEYC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1bc;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1c0;
-    extern LEVELDATA_PC *TATOOINEA_LDATA;
-    extern LEVELDATA_PC *TATOOINEB_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1a8;
-    extern LEVELDATA_PC *TATOOINEE_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1d0;
-    extern LEVELDATA_PC *DEATHSTARRESCUEE_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEC_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPED_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEC_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
-    extern LEVELDATA_PC *HOTHBATTLEA_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b200;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b204;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b208;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b210;
-    extern LEVELDATA_PC *HOTHESCAPEA_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b218;
-    extern LEVELDATA_PC *HOTHESCAPEC_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b220;
-    extern LEVELDATA_PC *ASTEROIDCHASEA_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b228;
-    extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
-    extern LEVELDATA_PC *ASTEROIDCHASED_LDATA;
-    extern LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b258;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b264;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b268;
-    extern LEVELDATA_PC *DAGOBAHC_LDATA;
-    extern LEVELDATA_PC *CLOUDCITYTRAPA_LDATA;
     extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b250;
-    extern LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA;
-    extern LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEA_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEB_LDATA;
-    extern LEVELDATA_PC *JABBASPALACED_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEE_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2b0;
-    extern LEVELDATA_PC *ENDORBATTLEA_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEB_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLED_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b284;
-    extern LEVELDATA_PC *EMPERORFIGHTA_LDATA;
-    extern LEVELDATA_PC *SARLACCPITA_LDATA;
-    extern LEVELDATA_PC *SARLACCPITB_LDATA;
-    extern LEVELDATA_PC *SARLACCPITC_LDATA;
 }
-extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *world);
-extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world);
 extern "C" void __cdecl ChrisDogFightAInit(WORLDINFO *);
 extern "C" void __cdecl ChrisDogFightAReset(WORLDINFO *);
 extern "C" void __cdecl ChrisDogFightAUpdate(WORLDINFO *);
@@ -500,18 +320,8 @@ typedef struct ai_script_progress_view_pc_s {
     u8 unknown_0000[0x2824];
     LEVEL_SCRIPT_PROGRESS_PC scripts[32];
 } AI_SCRIPT_PROGRESS_VIEW_PC;
-extern "C" {
-    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
-    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
-    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
-    extern COLLECTION_BUILD_PC MiniKitCollection;
-    void __cdecl RippleEffects_Configure(WORLDINFO *, char *);
-    void __cdecl SetAreaPickupGravity(i32, i32);
-}
 #define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
-    void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index);
     __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene);
     typedef struct world_script_progress_pc_s {
         char name[16];
@@ -529,16 +339,11 @@ extern "C" {
         u8 unknown_0000[0x5170];
         u32 progress_flags;
     } WORLD_PERSISTENCE_FLAGS_PC;
-    extern i32 bonus_gunship_store_progress_flag;
-    void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress);
-    void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
     void __cdecl GizmoSysStoreProgress(void *system, void *world, i32 index);
     void __cdecl LoadGrassFile(WORLDINFO *world);
     void __cdecl LoadBridgeFile(WORLDINFO *world);
     void __cdecl LoadTerrainFile(WORLDINFO *world);
 }
-void __cdecl WorldInfo_Dump(WORLDINFO *world);
-i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index);
 typedef struct world_minikit_load_pc_s {
     NUGSCN *scene;
     u8 unknown_04[0x14];
@@ -562,80 +367,14 @@ typedef struct world_load_reader_pc_s {
     void *climb_object_system;
 } WORLD_LOAD_READER_PC;
 extern "C" {
-    extern i32 WorldLightUserIdPc;
-    extern NUFPCOMJMP WorldLoadAfterKeywordsPc[];
-    extern i32 numtl_force_mipmode;
-    i32 __cdecl rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
     void __cdecl Level_LoadConfigFile(WORLDINFO *);
-    NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
     void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
     void __cdecl LevelConfig_AfterLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
     void *__cdecl CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
-    AISYS_PC *__cdecl AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
-    void *__cdecl AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
-    void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
-    void *__cdecl AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
-    void *__cdecl CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
-    APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
-}
-extern "C" void __cdecl SetAreaPickupGravity(i32 area, i32 level);
-extern "C" {
-    extern APICHARACTERMODELLIST FreePlayModelList[49];
-    extern AREA_EXTRA_MODEL_PC ExtraModelList[6];
-    extern i32 bonusmodearcade;
-    extern i32 FreePlayModelCount, FreePlayResidentCount, FreePlayBonusCount;
-    i32 __cdecl RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
-    i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
-    i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
-    void __cdecl Move_DEFAULT(GAMEOBJECT *);
-    extern i16 FreePlayId007f199cPc;
-    extern i16 id_THEEMPEROR;
-    extern i16 FreePlayId007f1a4cPc;
-    extern i16 FreePlayId007f1a48Pc;
-    extern i16 FreePlayId007f1a44Pc;
-    extern i16 VehicleBoltId7f17d0Pc;
-    extern i16 VehicleBoltId7f1aacPc;
-    extern i16 FreePlayId007f1ab0Pc;
-    extern i16 FreePlayId007f1ab4Pc;
-    extern i16 VehicleSpecialShooterIdPc;
-    extern i16 FreePlayId007f1abcPc;
-    extern i16 id_XWING;
-    extern i16 id_YWING;
-    extern i16 VehicleBoltId7f1a24Pc;
-    extern i16 VehicleBoltId7f19a4Pc;
-    extern i16 id_TIEFIGHTER;
-    extern i16 VehicleBoltId7f1a28Pc;
-    extern i16 VehicleBoltId7f196cPc;
-    extern i16 id_TIEBOMBER;
-    extern i16 VehicleBoltId7f1a2cPc;
-    extern i16 VehicleBoltId7f195cPc;
-    extern i16 id_ANAKINSNEWPOD;
-    extern i16 VehicleBoltId7f1a9cPc;
-    extern i16 VehicleBoltId7f1b34Pc;
-    extern i16 id_NEW_REPUBLIC_GUNSHIP;
-    extern i16 id_JEDISTARFIGHTERYELLOWEP3;
-    extern i16 id_ZAMSSPEEDER;
-    extern i16 VehicleBoltId7f19e8Pc;
-    extern i16 id_SEBULBASPOD;
-    extern i16 FreePlayId007f1b44Pc;
-    extern i16 FreePlayId007f1b40Pc;
-    extern i16 FreePlayId007f1a98Pc;
-    extern NUMTX LevMtx;
-    extern f32 LevAlpha;
-    extern f32 TitlesAlpha;
-    extern f32 newgamealpha;
-    extern i32 newgamefade;
-    extern i32 newgame_menudrawoff;
-    void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
-    extern f32 CreditsTime;
-    void __cdecl Credits_Init(WORLDINFO *);
-    void __cdecl Credits_GetInfo(f32 *, i32 *, f32 *);
 }
 extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
-extern "C" void __cdecl InitClimbObjectSys(WORLDINFO *world);
-extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
 extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
 
 static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {

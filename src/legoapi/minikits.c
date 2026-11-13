@@ -98,10 +98,6 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void __cdecl MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
-    void __cdecl MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
-    void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif

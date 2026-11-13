@@ -70,10 +70,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, terrain_or
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
                   offsetof(AIPATHINFO_PC, connection) ==
               0x424);
-extern i32 spinner_gizmotype_id, LEGOCONTEXT_GRAPPLE, lever_gizmotype_id, grapple_gizmotype_id;
-i32 __cdecl Lever_BeingPulled(void *);
-i32 __cdecl GizForce_GameObjUsingForce(GAMEOBJECT *, GIZFORCE_PC *);
-GAMEOBJECT *__cdecl Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX_PC *);
 
 static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {

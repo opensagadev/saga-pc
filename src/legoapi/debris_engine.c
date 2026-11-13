@@ -1282,9 +1282,6 @@ STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_lifetime) == 0x30c);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys1) == 0x310);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys2) == 0x350);
 STATIC_ASSERT(offsetof(DEBRIS_COLLISION_EFFECT_PC, torus_keys3) == 0x390);
-extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata, *toruscolldata;
-extern i32 numspherecolldata, numtoruscolldata;
-extern NUVEC debris_collide_pt;
 
 i32 __cdecl DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
@@ -1590,13 +1587,6 @@ void __cdecl DebrisDrawGlass(void) {
     NuRndrEndScene();
     NuTexUnReserve();
 }
-extern i32 DebrisProcessingEnabledPc, globalframes;
-extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
-extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;
-void __cdecl edppDeleteEffect(i32);
-extern i32 edpp_nearest;
-extern NUVEC edpp_cam_pos;
-void __cdecl edppDetermineNearest(f32);
 void __cdecl SortDebrisRenderStack(void) {
     i32 stack_index, start;
     DEBRIS_RENDER_CHUNK_PC *chunk;

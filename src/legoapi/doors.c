@@ -1,9 +1,5 @@
 #include "saga.h"
 
-extern char DoorExitNamePc[];
-extern i32 Door_Start;
-extern i32 Door_NextSock;
-
 void __cdecl Door_Reset(void) {
     DoorExitNamePc[0] = '\0';
     Door_Start = 0;
@@ -53,7 +49,6 @@ STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, plane) == 0x110);
 STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, doors) == 0x4698);
 STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, door_count) == 0x469c);
 STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, start_door) == 0x46a0);
-extern void *LastDoorPointerPc;
 void __cdecl Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
     STARTUP_DOOR_PC *door;
@@ -145,11 +140,6 @@ STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, door_count) == 0x469c);
 STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, start_door) == 0x46a0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.location) == 0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.ratio) == 4);
-extern char DoorExitNamePc[];
-void *__cdecl Door_FindByName(WORLDINFO *, char *);
-void *__cdecl Door_FindByIndex(WORLDINFO *, i32, i32, NUVEC *);
-i32 __cdecl StartDoorPositions(void);
-u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
 
 void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
@@ -608,8 +598,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_9) == 9);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_b) == 11);
 extern void *Door_Last;
-extern char DoorExitNamePc[];
-extern i32 door_cutscenesnap;
 i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene);
 i32 __cdecl NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 
@@ -779,9 +767,7 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
-extern i32 HubDoorAreaPc;
 extern i32 HubDoorNewLevelPc;
-void __cdecl NeedScreenGrab(i32 needed);
 
 i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
     CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;

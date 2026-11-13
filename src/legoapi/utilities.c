@@ -7,9 +7,6 @@ extern char **TexAnimScriptTablePc;
 void __cdecl NuTexAnimScriptMissingPc(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern i32 VehicleArea;
-extern u16 temp_xrot;
-extern u16 temp_zrot;
 /* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
  * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
  */
@@ -23,14 +20,6 @@ struct shadow_platform_list_pc_s {
     u8 unknown_08_18[0x10];
     SHADOW_PLATFORM_ENTRY_PC entries[1];
 };
-i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);
-extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
-extern i32 dco_id, dco_wearinghat, dco_reflectaxis;
-extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
-extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;
-extern f32 dco_reflectcoord;
-extern i32 dco_locatorposonly;
-extern u16 dco_prerotatez;
 extern void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
 typedef struct USEFUL_MATERIAL_PC {
     u8 unknown_00[0x40];

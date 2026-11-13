@@ -11,9 +11,6 @@ STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
 STATIC_ASSERT(offsetof(TIMER, update_count) == 0xc);
 
-extern f32 FRAMETIME;
-extern f32 __cdecl NuFmod(f32 value, f32 divisor);
-
 void ResetFrameCounters(void) {
     MainFrameCounters.warmup_frame = 0;
     MainFrameCounters.every_frame = -1;

@@ -528,13 +528,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
-extern "C" {
-    extern i32 Area_PlayerModelCount, Area_StoryModelCount, Area_FreePlayModelCount, Area_MissionModelCount,
-        LevelLoadCount, AreaMusic;
-    extern APICHARACTERMODELLIST AreaPlayerModelsPc[], Area_FreePlayModelList[], Area_MissionModelList[];
-    extern AREA_LEVEL_LOAD_PC LevelLoad[];
-    i32 __cdecl CharIDFromName(const char *);
-}
 #define AREA_STORY_MODELS_PC Area_StoryModelListPc
 static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,
                                       i32 load_model, AREA_EXTRA_MODEL_PC *extras) {
@@ -891,13 +884,6 @@ extern "C" void DumpAreaData(i32 mode, i32) {
     Particles_DumpAreaPage();
 }
 
-extern "C" {
-    extern APICHARACTERMODELLIST Area_MissionModelList[];
-    extern APICHARACTERMODELLIST *CurrentCList, *CurrentStoryCList;
-    extern i32 Area_PlayerModelCount;
-    extern i16 Area_PlayerModelList[8];
-}
-
 typedef struct area_loading_clock_reader_pc_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;
@@ -911,11 +897,6 @@ typedef struct area_loading_pad_reader_pc_s {
 STATIC_ASSERT(sizeof(AREA_LOADING_PAD_READER_PC) == 0x60);
 STATIC_ASSERT(offsetof(AREA_LOADING_PAD_READER_PC, buttons_pressed) == 8);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
-extern "C" {
-
-    void __cdecl LoadAreaCharacters(void);
-}
-
 extern "C" u8 *Game_LevelSave;
 
 extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {

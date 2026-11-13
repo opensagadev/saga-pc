@@ -1,9 +1,5 @@
 #include "saga.h"
 
-struct nuvec_s *edmainQueryLocVec(void);
-extern void *debris_cutoff_camera_vec;
-extern i32 debris_render_group;
-
 PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names,
                                       i32 page) {
     PARTDEBRISSYS *system;

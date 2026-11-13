@@ -269,7 +269,6 @@ STATIC_ASSERT(offsetof(HATMACHINE_PC, hat_delay) == 0x84);
 STATIC_ASSERT(offsetof(HATMACHINE_PC, animation_time) == 0x94);
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
-extern "C" void *__cdecl GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 // Genuine Draw callback is retained as an unresolved source dependency until its full body is transferred.
 extern "C" {
     static void __cdecl HatMachine_Draw(void *, void *, f32);

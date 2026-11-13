@@ -26,7 +26,6 @@ STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
 STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
-void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system);
 
 void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     i32 index;
@@ -57,12 +56,7 @@ typedef struct ai_controller_scene_view_pc_s {
     NUGSCN *scene;
 } AI_CONTROLLER_SCENE_VIEW_PC;
 STATIC_ASSERT(offsetof(AI_CONTROLLER_SCENE_VIEW_PC, scene) == 0x1394);
-extern i32 blowup_gizmotype_id;
-extern i32 force_gizmotype_id;
-extern i32 zipup_gizmotype_id;
-extern f32 fakeanimendframe[1];
 void *__cdecl CutScene_FindInst(void *, char *);
-void *__cdecl GizBuildIt_Find(WORLDINFO *, char *);
 
 struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *system, AISYS_PC *ai,
                                                                 AIPATH_PC *path, char *from, char *to, i32 target_type,

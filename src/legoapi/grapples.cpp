@@ -18,7 +18,6 @@ typedef struct {
 extern "C" {
     extern const char PCContextName_Grapple[8];
 }
-extern i32 LEGOCONTEXT_GRAPPLE;
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
                   offsetof(AIPATHINFO_PC, connection) ==
@@ -65,16 +64,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
-extern "C" {
-    extern i32 Grapples_Available;
-    extern i32 Grapple_RopeSwingsAvailable;
-    extern i16 Grapple_RopeSwingRotate;
-    extern i32 LEGOHINT_GRAPPLE;
-    extern i16 LEGOACT_GRAPPLE_IDLE, LEGOACT_GRAPPLE_UP, LEGOACT_GRAPPLE_DOWN, LEGOACT_GRAPPLE_HANG;
-    extern i16 LEGOACT_LEDGE_IDLE;
-    extern i16 LEGOACT_GLIDE;
-}
-extern "C" i32 __cdecl AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 typedef struct grapple_load_extra_pc_s {
     char name[16];
@@ -129,7 +118,6 @@ typedef struct grapple_movement_pc_s {
 } GRAPPLE_MOVEMENT_PC;
 
 static inline f32 GrappleFabsPc(f32 value);
-extern "C" {}
 extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags,
                                        NUMTL *unused_material);
 

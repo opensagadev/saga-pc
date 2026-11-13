@@ -37,7 +37,6 @@ i32 __cdecl rtlResetDynamic(void) {
     return rtl_dynamic_max;
 }
 
-NULNKHDR *__cdecl NuLstGetByIdx(NULSTHDR *, i32);
 i32 __cdecl rtlDynamicEnable(i32 id, i32 enabled) {
     RTL_LIGHT_PC *light;
     i32 previous;
@@ -962,7 +961,6 @@ void __cdecl rtlSaveSet(char *path, RTL_SET_PC *set) {
     }
 }
 
-NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32);
 i32 __cdecl rtlInitDynamic(VARIPTR *buffer, VARIPTR end, i32 max_lights) {
     rtl_dynamic_pool = NuLstCreateBuff(max_lights, sizeof(RTL_LIGHT_PC), buffer, end, 0x10);
     rtl_dynamic_max = max_lights;
@@ -2381,7 +2379,6 @@ void __cdecl edrtlDrawCursor(void) {
 
 i32 numsegs = 16;
 
-extern RTL_LIGHT_PC *curr_rtl;
 extern i32 rtl_zoff;
 
 #define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
@@ -2566,9 +2563,6 @@ void __cdecl cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
  * Existing types: eduimenu_s, eduiitem_s, RTL_FOG_MIGRATION_PC, ctl_ix.
  */
 extern i32 hide_types[8];
-extern i32 rtl_zoff;
-extern RTL_FOG_MIGRATION_PC *curr_fog;
-extern RTL_FOG_MIGRATION_PC clipboard_fog;
 STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
@@ -2644,10 +2638,7 @@ __declspec(allocate(".bss$RtlUndoItemPc")) eduiitem_s *undo_item = NULL;
 #pragma section(".bss$RtlRedoItemPc", read, write)
 __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 
-extern RTL_LIGHT_PC clipboard_light;
 void __cdecl edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
-extern eduiitem_s *undo_item;
-extern eduiitem_s *redo_item;
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(u32) == 4);
 STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
@@ -2767,7 +2758,6 @@ void __cdecl cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-extern RTL_LIGHT_PC menu_undo;
 void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
 void __cdecl edrtlcbCancelDeleteMenu(eduimenu_s *menu, eduimenu_s *parent) {
@@ -2980,8 +2970,6 @@ __declspec(allocate(".bss$RtlUI_paste_item")) static eduiitem_s *paste_item = NU
 __declspec(allocate(".bss$RtlUI_pasteinto_item")) static eduiitem_s *pasteinto_item = NULL;
 #pragma section(".bss$RtlUI_copytogroup_item", read, write)
 __declspec(allocate(".bss$RtlUI_copytogroup_item")) static eduiitem_s *copytogroup_item = NULL;
-extern eduiitem_s *undo_item;
-extern eduiitem_s *redo_item;
 #pragma section(".bss$RtlUI_fog_menu", read, write)
 __declspec(allocate(".bss$RtlUI_fog_menu")) static eduimenu_s *fog_menu = NULL;
 #pragma section(".bss$RtlUI_fogcol_item", read, write)
@@ -3043,7 +3031,6 @@ STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(offsetof(edui_slider_s, granularity) == 0x68);
 
-void __cdecl RtlUiCreateFailedPc(void);
 void __cdecl InitUI(void) {
     i32 i;
     eduimenu_s *menu;
@@ -3562,8 +3549,6 @@ void __cdecl rtlScaleSetMultipliers(f32 scale, RTL_SET_PC *set_ptr) {
         set->lights[i].intensity = set->lights[i].intensity * scale;
 }
 
-void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
-
 void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     f32 range = ((edui_slider_s *)item)->value;
     edui_slider_s *target = (edui_slider_s *)fogstart_item;
@@ -3619,7 +3604,6 @@ void __cdecl cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
         fog->depth_of_field_fstop = (u8)(i32)(((edui_slider_s *)item)->value * 10.0);
 }
 
-void __cdecl RefreshUI(void);
 void __cdecl AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
 
 void __cdecl cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
@@ -3816,8 +3800,6 @@ void __cdecl edrtlRedo(void) {
 static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second);
 char *__cdecl rtlGetEnvPath(void);
 char *__cdecl rtlGetEnvSceneName(void);
-void __cdecl edrtlUndo(void);
-void __cdecl edrtlRedo(void);
 
 void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];

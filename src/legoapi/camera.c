@@ -492,11 +492,6 @@ typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
 } KEEP_SCREEN_CAMERA_FIELDS_PC;
 STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, direction) == 0x110);
 STATIC_ASSERT(offsetof(KEEP_SCREEN_CAMERA_FIELDS_PC, pitch) == 0x1f8);
-extern i32 newgamecam;
-extern i32 MiniCutCam;
-extern i32 VehicleArea;
-i32 __cdecl OnOrInsidePlane(NUVEC *, NUVEC *, NUVEC *, NUVEC *, f32, f32 *);
-void __cdecl SpecialMove_Cancel(GAMEOBJECT *);
 
 static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
     f32 push_speed = (f32)((f64)object->character_data->game_character->run_speed * 5.0);
@@ -676,13 +671,10 @@ void __cdecl GameCam_Reset(GAMECAMERA *camera) {
 
 extern NUMTX CutCamMtx;
 extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
-extern i32 SHOPACTIVE;
-extern f32 newgamecamtime;
 extern struct nuvec_s *shopcamlookat;
 extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
 extern NUVEC CustomisePos[2];
-extern f32 EShadY;
 extern NUVEC GunshipAOffset;
 extern f32 HUB_MINIKITVIEWER_CAMDY;
 extern f32 PodCamDist;
@@ -704,12 +696,8 @@ extern f32 CamWalkerRadiusPc;
 extern f32 CamWalkerLiftPc;
 extern f32 CamDewbackRadiusPc;
 extern f32 CamDewbackLiftPc;
-void __cdecl GameCam_ResetLookRot(struct gamecamera_s *camera);
 void __cdecl Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
-void __cdecl GameCam_UpdateLookRot(struct gamecamera_s *camera);
-void __cdecl GameCam_UpdateShake(struct gamecamera_s *camera, f32 ambient_amount);
 void __cdecl GetShopCamLookPos(struct nuvec_s *position);
-void __cdecl MakePlayPlanes(GAMECAMERA *camera);
 void __cdecl UpdatePlayerCameraOcclusionPc(void);
 i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
                           struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,

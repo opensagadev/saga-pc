@@ -1,8 +1,4 @@
 #include "saga.h"
-extern i32 objhitobj_throwkillpartsup;
-i32 __cdecl ObjHitObj(GAMEOBJECT *, GAMEOBJECT *, i32, u16, i32, i32);
-i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
-u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask);
 static __declspec(noinline) void SpecialMoveApplyDamagePc(GAMEOBJECT *victim) {
     if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0)
         objhitobj_throwkillpartsup = 1;
@@ -35,7 +31,6 @@ STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_id) == 6);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_animation) == 8);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, flags) == 0xa);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, distance_apart) == 0xc);
-extern i32 PlayerSpecialMoveCountPc;
 i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
     if (index != -1)
         return PlayerSpecialMoveDataPc[index].attacker_animation;

@@ -256,12 +256,6 @@ STATIC_ASSERT(offsetof(WORLD_INITIAL_RESET_PC, reset_flags) == 0x118);
 extern "C" {
     void __cdecl ResetSounds(void);
     i32 __cdecl AmbientFromQuiet(i32);
-    void __cdecl NuRndrInitWorld(void);
-    void __cdecl Players_InitPositions(WORLDINFO *);
-    void __cdecl PlayerItemTypes_Reset(WORLDINFO *);
-    extern u32 ResetBits;
-    extern i32 LevMusicAction, LevMusicAmbient, LevMusicOtherAction, LevMusicOtherAmbient;
-    extern i32 newlevelfrommenu_newmenuid, newlevelfrommenu_newmenuy;
     extern void(__cdecl *WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *);
     extern void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
 }
@@ -519,7 +513,6 @@ i32 __cdecl WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
     return 1;
 }
 
-extern "C" void __cdecl WorldInfo_StreamLevel(BGPROCINFO *);
 void __cdecl WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
     (void)bg_info;
     LOG_INFO("Stream level begin: next_level=%d", next_level);
@@ -596,8 +589,6 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 __cdecl CanWearHatsInFreePlay(i32);
-    void __cdecl MakeFreePlayModelList(i32, i32, i32, i32, i32);
 #ifdef __cplusplus
 }
 #endif

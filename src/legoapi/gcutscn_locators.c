@@ -401,8 +401,6 @@ extern i32(__cdecl *TriggerLocatorVfxFn)(i32, NUMTX *);
 extern void(__cdecl *UpdateLocatorVfxFn)(i32, NUMTX *);
 extern void(__cdecl *NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *,
                                           f32, NUMTX *, i32);
-extern i32 CutSceneDebrisProcessModePc;
-extern f32 CutSceneDebrisAxisSizePc;
 
 static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system,
                                           CUT_LOAD_LOCATOR_INSTANCE *instance, f32 frame, NUMTX *parent) {

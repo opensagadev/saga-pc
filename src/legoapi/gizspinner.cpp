@@ -110,7 +110,6 @@ extern "C" {
     nuhspecial_s thingsSceneArm = {0};
     static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc = {0};
 }
-extern const f32 LevelConfigFarDistance;
 
 extern "C" void __cdecl SpinnerMissingSpecialPc(char *format, ...) {
     (void)format;

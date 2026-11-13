@@ -5,16 +5,7 @@
    follow retail address order; C entry points keep C linkage via extern "C". */
 
 extern "C" {
-    extern i32 BoltNoSfxPc, BoltNoObjectMomentumPc;
     extern i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *);
-    void __cdecl FindAnglesXY(NUVEC *, u16 *, u16 *);
-    f32 __cdecl NewRayCastGetTOFI(void);
-    i32 __cdecl NewRayCastGetImpactTerrainType(void);
-    i32 __cdecl Bolt_HitGameObjects(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
-    PART_PC *__cdecl Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
-    i32 __cdecl Bolt_HitPartMode(BOLT_PC *);
-    void __cdecl Bolt_PlayHitSfx(BOLT_PC *);
-    i32 __cdecl GizmoSys_BoltHit(void *, WORLDINFO *, BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 }
 STATIC_ASSERT(offsetof(BOLTTYPE_PC, init_callback) == 0x44);
 STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
@@ -28,8 +19,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 
 extern "C" {
-    void __cdecl AddPartDebris(PARTDEBRISSYS *system, i32 debris_id, NUVEC *position);
-
     STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
     STATIC_ASSERT(offsetof(BOLT_PC, hit_debris) == 0xfc);
     STATIC_ASSERT(offsetof(BOLT_PC, hit_part_debris) == 0xfe);
@@ -94,10 +83,6 @@ extern "C" {
     static WORLDINFO *BT_worldinfo = 0;
     static NUGSCN *BT_scene = 0;
     static i32 BT_gdeb_moving_count = 0;
-    extern NUGSCN *area_scene, *vehicle_scene;
-    i32 __cdecl FindPartDebris(PARTDEBRISSYS *, char *);
-    void __cdecl BoltTypes_Configure(WORLDINFO *, char *);
-    void __cdecl BoltTypes_Init(WORLDINFO *);
 
     extern const char BoltAxeSwingSoundPc[14] = "wpn_axe_swing";
     extern const char BoltGunShotSoundPc[8] = "GunShot";
@@ -1219,26 +1204,12 @@ extern "C" {
                                  NULL,           NULL};
 }
 
-extern "C" {
-    u32 __cdecl GetLevelExBlowupFlags(void);
-    i32 __cdecl GizmoSys_BoltHitPlat(void *, WORLDINFO *, BOLT_PC *, u8 *);
-    void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
-    GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *);
-}
 /* Private collision helpers and callers retain their original translation-unit group. */
 static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
 static i32 Bolt_HitBlowupPrivate(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 
 extern "C" i32 FindAnglesXFullTempPc;
-extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *, NUVEC *, NUMTX *, i32, i32);
 
-extern "C" {
-    void __cdecl CalculateInterceptVector(NUVEC *, NUVEC *, NUVEC *, f32, NUVEC *, NUVEC *);
-    i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *);
-    i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *);
-    extern i32 BoltBlockContextPc;
-    extern i16 BoltDeactivatedActionPc;
-}
 typedef struct bolt_context_info_pc_s {
     const char *name;
     i32 action;
@@ -1250,12 +1221,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, scaled_radius) == 0xa4);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-
-extern "C" {
-    void __cdecl Bolt_Reflect(NUVEC *, NUVEC *, NUVEC *);
-    void __cdecl NewTerrHitInfo(u8 *);
-    void __cdecl NewRayCastGetImpactNormal(NUVEC *);
-}
 
 typedef struct BOLT_UPDATE_TYPE_PC_s {
     u8 unknown_000[0x98];

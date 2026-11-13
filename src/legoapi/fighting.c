@@ -77,11 +77,9 @@ STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, secondary_flags) == 0x9c);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, platform_id) == 0x102);
 
-extern i32 LEGOCONTEXT_PUNCH;
 extern i32(__cdecl *Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *);
 extern void(__cdecl *Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
 extern void(__cdecl *Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *);
-i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *, GAMEOBJECT *, f32);
 void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     NUVEC *hit_position = NULL;
     u64 flags;
@@ -168,8 +166,6 @@ extra:
     if (Punch_HitExtraCodeFn != NULL)
         Punch_HitExtraCodeFn(attacker, hit_position);
 }
-
-void __cdecl BlockSfx(GAMEOBJECT *);
 
 void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     object->context_variant_flags |= 0x40;

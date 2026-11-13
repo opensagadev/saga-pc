@@ -245,12 +245,6 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 
 /* Android speederchase.cpp:99 candidate adapted to the complete PC body. */
 extern i32 objopponent_ignoreaiopponent;
-extern i32 ComboOpponent_Behind;
-extern f32 ComboOpponent_Range2;
-extern i32 test_ai_combo;
-extern i32 CanPunchGirls;
-i32 __cdecl SpecialMove_Check(GAMEOBJECT *, GAMEOBJECT *);
-u32 __cdecl SpecialMove_GetFlags(i32, u32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
@@ -374,7 +368,6 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
     return nearest;
 }
 
-extern NUVEC PodSprintLiftPositionsPc[3];
 f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     f32 height = 0.15f;
     if (object == Player[1] && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
@@ -398,8 +391,6 @@ f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     return height;
 }
 
-extern i32 PodDustLocatorIndicesPc[2];
-extern f32 PodDustEmissionRatePc, PodDustHeightScalePc;
 i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC positions[2], previous[2], delta, position;

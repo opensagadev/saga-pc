@@ -53,7 +53,6 @@ STATIC_ASSERT(offsetof(TURRET_PROGRESS_PC, timers) == 0x30);
 extern "C" {
     extern const char GizmoRegistryGizTurretsNamePc[];
     extern char *GizmoRegistryGizTurretsNamePtrPc;
-    extern ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBufferPc[32];
     extern const char TurretDestroyedOutputTextPc[10];

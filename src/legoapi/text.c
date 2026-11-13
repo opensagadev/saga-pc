@@ -12,18 +12,6 @@ static u32 *Text_StringBits = 0;
 extern i32 __cdecl NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser);
 extern i32 __cdecl NuStrLenW(const NUWCHAR *str);
-extern const char TextPlatformXbox[5];
-extern const char TextPlatformPC[3];
-extern const char TextPlatformPSP[4];
-extern const char TextPlatformPS3[4];
-extern const char TextPlatformPS2[4];
-extern const char TextPlatformGameCube[3];
-extern const char TextPlatform360[4];
-extern const char TextPlatformWii[4];
-extern const char TextLoadPermTextDirectory[12];
-extern const char TextLoadPermAPIExtension[9];
-extern const char TextLoadPermTRCPath[19];
-extern i16 tALONGTIMEAGO;
 extern i16 TextIdPc880894, TextIdPc880898;
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
@@ -964,7 +952,6 @@ void __cdecl IntroText_Draw(f32 alpha) {
                           colour, NULL);
 }
 
-extern VUFNT *QFont2DLower;
 void __cdecl Text3DEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u32 red, u32 green,
                        u32 blue, u8 alpha) {
     if (QFont2DLower != NULL) {
@@ -984,10 +971,6 @@ void __cdecl MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 s
     Text3DEx(text, x, y, z, sx, sy, sz, alignment, red, green, blue, alpha);
 }
 
-extern f32 STCOORDSCALE, SmartTextDefaultWidthPc, SmartTextLongestWidthPc;
-i32 __cdecl FindNextBreak(u8 *, i32);
-i32 __cdecl FindNearestBreak(u8 *, i32);
-i32 __cdecl NuStrFindPosU(u8 *, i32);
 void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                  u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
     typedef struct box_geometry_pc_s {
@@ -1213,7 +1196,6 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     followon_line = 0;
     TextScaleY_candidate = saved_y_scale;
 }
-void __cdecl SmartTextEx(char *, f32, f32, f32, f32, f32, f32, u32, u8, u8, u8, f32, i32, void *, i32, i32);
 void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
                           u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, u32 alpha) {
     VUFNT *saved_font = SmartTextFont;
@@ -1271,11 +1253,6 @@ STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc = 0;
 static NUMTX TextCrawlMatrixPc = {0};
 static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
-extern u16 TextCrawlRotateXPc, TextCrawlRotateYPc, TextCrawlRotateZPc;
-extern f32 TextCrawlTimePc, TextCrawlScaleXPc, TextCrawlScaleYPc, TextCrawlLineWidthPc, TextCrawlLineSpacingPc;
-extern u32 TextCrawlRedPc, TextCrawlGreenPc;
-extern u8 TextCrawlBluePc;
-extern i32 Arcade_TextCrawlID, Arcade_TextCrawlParagraphs;
 void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL)
         return;
@@ -1440,13 +1417,6 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     NuQFntPopPrintMode();
 }
 
-extern i32 create_qfont2dlower, create_qfont2dz, create_qfont3d, create_qfont3dz;
-extern VUFNT *QFont2DZ, *QFont3D;
-void __cdecl NuQFntDestroy(VUFNT *);
-VUFNT *__cdecl NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
-VUFNT *__cdecl NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
-VUFNT *__cdecl LoadGameFont(char *, char *, VARIPTR *, VARIPTR *, i32);
-VUFNT *__cdecl LoadButtonFont(char *, char *, VARIPTR *, VARIPTR *, i32);
 VUFNT *__cdecl LoadGameFont(char *path, char *texture_path, VARIPTR *buffer, VARIPTR *end, i32 plane) {
     QFont2D = NuQFntLoadPtr(path, texture_path, 4, plane, buffer, end);
     if (QFont2D != NULL) {
@@ -1546,7 +1516,6 @@ void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f
 }
 
 extern void __cdecl GameDrawMenuEntry(MENU *menu, char *text);
-extern f32 MenuTextScalePc;
 
 void __cdecl MenuDrawViewTextStrings(MENU *menu) {
     char text[2048];
