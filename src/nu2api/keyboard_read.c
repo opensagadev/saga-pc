@@ -230,11 +230,11 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     else if (buttons == 2)
         offset.z = delta_time * camera->distance;
     NuVecMtxRotate(&offset, &offset, &rotation);
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X)
+    if (camera->allow_position_x)
         camera->position.x += offset.x;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y)
+    if (camera->allow_position_y)
         camera->position.y += offset.y;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z)
+    if (camera->allow_position_z)
         camera->position.z += offset.z;
 }
 
