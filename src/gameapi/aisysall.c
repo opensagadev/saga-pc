@@ -2721,15 +2721,11 @@ f32 __cdecl Condition_Random(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
 }
 
 void *Condition_AlwaysTrueInit(AISYS_PC *sys, char *arg, AISCRIPT_PC *script) {
-    f32 value;
+    f32 value = 1.0f;
 
     if (arg != NULL && NuStrLen(arg) != 0) {
         value = NuAToF(arg);
-
-        return *(void **)&value;
     }
-
-    value = 1.0f;
     return *(void **)&value;
 }
 
@@ -4331,14 +4327,14 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
 
 /* Native 0x00517fd0, 105 bytes. */
 AIGROUP_PC *__cdecl CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
-    AIGROUP_PC *group;
     i32 index;
+    AIGROUP_PC *group;
     if (system == NULL || count_across == 0)
         return NULL;
-    for (index = 0; index < 16; ++index) {
-        group = &system->groups[index];
+    group = system->groups;
+    for (index = 0; index < 16; ++index, ++group) {
         if ((group->flags & 1) == 0) {
-            group->flags |= 1;
+            system->groups[index].flags |= 1;
             group->flags &= ~8u;
             group->x_spacing = x_spacing;
             group->z_spacing = z_spacing;
