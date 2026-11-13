@@ -1210,12 +1210,12 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
         char *labels[2];
         labels[0] = TTab[TextIdPc8808a8];
         labels[1] = TTab[TextIdPc880bc0];
-        f32 y = (f32)(-0.75 - (f64)MENUDY * 0.5);
+        f32 y = -0.75 - MENUDY * 0.5;
         for (i32 option = 0; option < 2; ++option) {
             i32 red;
             i32 green;
             i32 blue;
-            if (StatusDemoOptionPc == option) {
+            if (option == StatusDemoOptionPc) {
                 if (menu_flash != 0) {
                     red = MENUFLASH0R;
                     green = MENUFLASH0G;
@@ -1225,12 +1225,10 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
                     green = MENUFLASH1G;
                     blue = MENUFLASH1B;
                 }
-                f64 pulse = menu_pulsate;
-                if (pulse > 0.0) {
-                    f64 inverse = 1.0 - pulse;
-                    red = (i32)((f64)(u32)MENUFLASH0R * pulse + (f64)(u32)MENUFLASH1R * inverse);
-                    green = (i32)((f64)(u32)MENUFLASH0G * pulse + (f64)(u32)MENUFLASH1G * inverse);
-                    blue = (i32)((f64)(u32)MENUFLASH0B * pulse + (f64)(u32)MENUFLASH1B * inverse);
+                if (menu_pulsate > 0.0f) {
+                    red = (i32)(MENUFLASH0R * menu_pulsate + MENUFLASH1R * (1.0f - menu_pulsate));
+                    green = (i32)(MENUFLASH0G * menu_pulsate + MENUFLASH1G * (1.0f - menu_pulsate));
+                    blue = (i32)(MENUFLASH0B * menu_pulsate + MENUFLASH1B * (1.0f - menu_pulsate));
                 }
             } else {
                 red = MENUENTRYR;
@@ -1239,7 +1237,7 @@ extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
             }
             Text3D(labels[option], 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green,
                    blue);
-            y = MENUDY + y;
+            y += MENUDY;
         }
         return;
     }
