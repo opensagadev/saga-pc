@@ -394,14 +394,14 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     state->state_flags = (u16)((state->state_flags & (u16)~1) | 0x802);
 
     if (box->type == 0) {
-        u16 set_visibility = (box->state_flags_low >> 3) & 1;
-        if (set_visibility || (box->state_flags_low & 0x10) != 0) {
+        u16 set_visibility = (state->state_flags >> 3) & 1;
+        if (set_visibility || (state->state_flags & 0x10) != 0) {
             if (box->child_count == 0) {
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
                 if (set_visibility) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
-                } else if ((box->state_flags_low & 0x10) != 0) {
+                } else if ((state->state_flags & 0x10) != 0) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 }
