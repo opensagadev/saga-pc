@@ -91,6 +91,12 @@ void __cdecl UpdateRepeatSfx(void) {
     for (index = 0; index < 32; ++index, ++entry) {
         switch (entry->state) {
             case 1:
+                if (entry->start_delay > 0.0f) {
+                    entry->start_delay -= FRAMETIME;
+                } else {
+                    entry->state = 2;
+                }
+                break;
             case 3:
                 if (entry->start_delay > 0.0f) {
                     entry->start_delay -= FRAMETIME;
