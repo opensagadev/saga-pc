@@ -362,9 +362,7 @@ extern "C" {
                       &view->light_data.ambient);
             return;
         }
-        red = 1.0f;
-        green = 1.0f;
-        blue = 1.0f;
+        red = green = blue = 1.0f;
         ambient = view->lighting_state.ambient;
         intensity[0] = view->lighting_state.intensity[0];
         direction[0] = view->lighting_state.direction[0];
@@ -408,14 +406,13 @@ extern "C" {
                 (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
         } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 &&
                    (u8)owner->field_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
-            i32 angle = (i32)((1.0 + owner->vehicle_hit_timer) * 2.0 * 65536.0 + 16384.0);
+            i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);
             red = (f32)(((f64)Lighting_RedFlashRedPc - 1.0) * flash + 1.0);
             green = (f32)(((f64)Lighting_RedFlashGreenPc - 1.0) * flash + 1.0);
             blue = (f32)(((f64)Lighting_RedFlashBluePc - 1.0) * flash + 1.0);
         } else if (owner->spawn_protection_timer > 0.0f && owner->field_280 != 0xff) {
-            f32 elapsed = (f32)(2.5 - owner->spawn_protection_timer);
-            u16 angle = (u16)(i32)((f64)NuFmod(elapsed, 0.5f) * 2.0 * 65536.0);
+            u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }
         if (owner->surface_flag8_scale_pc > 0.0f) {
@@ -427,12 +424,12 @@ extern "C" {
         character = owner->character_data->game_character;
         if (character->flags_090 & 0x8000) {
             red *= GhostLightMul;
-            green *= GhostLightMul;
-            blue *= GhostLightMul;
             if (red > 2.0f)
                 red = 2.0f;
+            green *= GhostLightMul;
             if (green > 2.0f)
                 green = 2.0f;
+            blue *= GhostLightMul;
             if (blue > 2.0f)
                 blue = 2.0f;
         }
