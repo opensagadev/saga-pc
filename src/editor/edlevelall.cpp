@@ -4266,28 +4266,28 @@ f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *cl
     offset.y = point.y - origin.y;
     offset.z = point.z - origin.z;
     projection = offset.x * normal.x + offset.y * normal.y + offset.z * normal.z;
-    if (projection > 0.0f) {
-        if (projection < length) {
+    if (projection <= 0.0f) {
+        normal.x = origin.x;
+        normal.y = origin.y;
+        normal.z = origin.z;
+        normal.w = origin.w;
+    } else {
+        if (projection >= length) {
+            offset.x = origin.x + direction.x;
+            offset.y = origin.y + direction.y;
+            offset.z = origin.z + direction.z;
+        } else {
             normal.x *= projection;
             normal.y *= projection;
             normal.z *= projection;
             offset.x = origin.x + normal.x;
             offset.y = origin.y + normal.y;
             offset.z = origin.z + normal.z;
-        } else {
-            offset.x = origin.x + direction.x;
-            offset.y = origin.y + direction.y;
-            offset.z = origin.z + direction.z;
         }
         normal.x = offset.x;
         normal.y = offset.y;
         normal.z = offset.z;
         normal.w = offset.w;
-    } else {
-        normal.x = origin.x;
-        normal.y = origin.y;
-        normal.z = origin.z;
-        normal.w = origin.w;
     }
     offset.x = normal.x - point.x;
     offset.y = normal.y - point.y;
