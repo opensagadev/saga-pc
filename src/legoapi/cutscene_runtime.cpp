@@ -827,8 +827,8 @@ extern "C" {
         buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
         sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
         CS_cutsys = sys;
-        buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
         CS_worldinfo = world;
+        buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
         for (i32 i = 0; i < CUTCOUNT; ++i) {
             if (CutList[i].level != level)
                 continue;
