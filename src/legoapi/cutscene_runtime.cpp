@@ -1794,16 +1794,15 @@ extern "C" {
     }
     static i32 CutScenePlayOncePrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
         CUTSYS_PC *system = world->cutscene_sys;
-        i32 index = -1;
+        i16 index = -1;
         if (system != NULL) {
             for (i32 i = 0; i < system->count; ++i) {
                 if (system->records[i] == reinterpret_cast<CUTINFO *>(cut))
-                    index = static_cast<u16>(i);
+                    index = i;
             }
             if (world->level_progress != NULL) {
-                u32 bit = 1U << (index & 31);
-                if (static_cast<i16>(index) != -1 && (cut->end_flags & 1) != 0 &&
-                    (world->level_progress->progress_state & bit) != 0)
+                u32 bit = 1 << index;
+                if (index != -1 && (cut->end_flags & 1) != 0 && (world->level_progress->progress_state & bit) != 0)
                     return 1;
                 world->level_progress->progress_state |= bit;
             }
