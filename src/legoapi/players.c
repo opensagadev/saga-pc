@@ -3394,22 +3394,31 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shadow_locators) == 0xf0);
 f32 __cdecl PodSprint_RollMul(GAMEOBJECT *);
 void __cdecl ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
 
+typedef struct draw_process_flags_pc_s {
+    u8 unknown_000[0xe20];
+    u32 flags_e20_bits_0_26 : 27;
+    u32 origin_joint_was_ready : 1;
+    u32 flags_e20_bits_28_31 : 4;
+    u8 unknown_e24[0xef4 - 0xe24];
+    u32 flags_ef4_bits_0_7 : 8;
+    u32 previous_model_draw_result : 1;
+} DRAW_PROCESS_FLAGS_PC;
+STATIC_ASSERT(offsetof(DRAW_PROCESS_FLAGS_PC, unknown_e24) == 0xe24);
+
 i32 __cdecl DrawGameObjectsProcess(void) {
     GAMEOBJECT *object = Obj;
     i32 index;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        u8 draw_pending;
-        NUVEC position, scale, displacement;
-        f32 drop_scale, distance, offset;
+        NUVEC position, scale;
+        f32 drop_scale;
         NUMTX matrix, orientation, reflected, shadow;
         i32 angle;
         object->flags_1f8 |= 0x800;
-        if ((object->flags_1fc_word & 0x1001) != 0x1001)
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0)
             continue;
-        draw_pending = object->origin_joint_ready;
         object->flags_e24 &= ~8u;
+        ((DRAW_PROCESS_FLAGS_PC *)object)->origin_joint_was_ready = object->origin_joint_ready;
         object->origin_joint_ready = 0;
-        object->flags_e20 ^= (((u32)draw_pending << 27) ^ object->flags_e20) & 0x8000000u;
         if (object->dead != 0 && (object->field_1010 > 0.0f || object->death_delay == 0.0f))
             continue;
         if ((object->flags_e20 & 0x20) != 0 && object->character_context != 0x23 && object->character_context != 0x24)
@@ -3423,14 +3432,14 @@ i32 __cdecl DrawGameObjectsProcess(void) {
         position.x = object->position.x;
         position.y = object->position.y;
         if ((object->flags_1f8 & 0x100) != 0)
-            position.y = (f32)((f64)object->character_bottom * object->origin_scale + position.y);
+            position.y = object->character_bottom * object->origin_scale + position.y;
         position.z = object->position.z;
         NuVecAdd(&position, &position, &object->render_offset);
-        object->flags_ef4 ^= (((u32)object->model_draw_result << 8) ^ object->flags_ef4) & 0x100u;
+        ((DRAW_PROCESS_FLAGS_PC *)object)->previous_model_draw_result = object->model_draw_result;
         object->model_draw_result = 1;
         scale.x = object->origin_scale;
         drop_scale = DropInOutScale(object);
-        scale.x = (f32)((f64)drop_scale * scale.x);
+        scale.x = drop_scale * scale.x;
         scale.y = scale.z = scale.x;
         NuMtxSetScale(&matrix, &scale);
         switch ((u8)object->movement_mode) {
@@ -3438,8 +3447,9 @@ i32 __cdecl DrawGameObjectsProcess(void) {
                 GameDrawMtxSetYRotationPc(&orientation, 0x8000);
                 if (object->pitch_angle != 0)
                     GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
-                if (object->field_0x276 != 0)
-                    GameDrawMtxRotateYPc(&orientation, object->field_0x276);
+                angle = object->field_0x276;
+                if (angle != 0)
+                    GameDrawMtxRotateYPc(&orientation, angle);
                 if (object->roll_angle != 0)
                     GameDrawMtxRotateZPc(&orientation, object->roll_angle);
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
@@ -3460,8 +3470,9 @@ i32 __cdecl DrawGameObjectsProcess(void) {
                     GameDrawMtxRotateZPc(&orientation, object->roll_angle);
                 if (object->pitch_angle != 0)
                     GameDrawMtxRotateXPc(&orientation, object->pitch_angle);
-                if (object->field_0x276 != 0)
-                    GameDrawMtxRotateYPc(&orientation, object->field_0x276);
+                angle = object->field_0x276;
+                if (angle != 0)
+                    GameDrawMtxRotateYPc(&orientation, angle);
                 NuMtxMulVU0(&matrix, &matrix, &orientation);
                 NuMtxTranslate(&matrix, &position);
                 break;
@@ -3500,11 +3511,13 @@ i32 __cdecl DrawGameObjectsProcess(void) {
         ApplyExtraRotation(object, &matrix);
         if ((u8)object->movement_mode != 4 &&
             (object->character_context == 0x23 || object->character_context == 0x24)) {
-            distance = (f32)((f64)object->character_data->collision_radius * object->character_data->model_scale * 7.5);
+            NUVEC displacement;
+            f32 offset;
+            offset = object->character_data->collision_radius * object->character_data->model_scale * 7.5;
             if (object->character_context == 0x23)
-                offset = (f32)((1.0 - (f64)drop_scale) * distance);
+                offset = (1.0f - drop_scale) * offset;
             else
-                offset = (f32)(-((1.0 - (f64)drop_scale) * distance));
+                offset = -((1.0f - drop_scale) * offset);
             NuVecMtxTransformVU0(&displacement, &v001, &orientation);
             NuVecScale(&displacement, &displacement, offset);
             NuVecAdd(NUMTX_GET_ROW_VEC(&matrix, 3), NUMTX_GET_ROW_VEC(&matrix, 3), &displacement);
@@ -3521,7 +3534,7 @@ i32 __cdecl DrawGameObjectsProcess(void) {
         object->flags_ef0 &= ~0x20000u;
         *(u8 *)&object->field_107c = 0;
         if (object->reflection_enabled != 0 && (f64)object->reflection_height != 2000000.0 &&
-            (f64)WORLD->current_level->reflection_range > object->ai_update_distance) {
+            object->ai_update_distance < WORLD->current_level->reflection_range) {
             *(u8 *)&object->field_107c =
                 (u8)MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                                      WORLD->current_level->reflection_y, &reflected);
