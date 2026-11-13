@@ -476,17 +476,15 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
         if (object->field_7b3 == 0) {
             i32 first_rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
             for (i32 i = 0; i < 2; ++i) {
-                teleport = (TELEPORT_MOTION_PC *)object->grapple;
-                if (!NuSpecialExistsFn(&(&teleport->flap1_special)[i]))
-                    continue;
-                teleport = (TELEPORT_MOTION_PC *)object->grapple;
-                NUVEC *position = &object->collision_position;
-                if (NuVecDistSqr(position, NuSpecialGetDrawPos(&(&teleport->flap1_special)[i]), NULL) < 0.36f) {
-                    i32 rotation = (u16)first_rotation;
-                    if (i != 0)
-                        rotation = -rotation;
-                    teleport = (TELEPORT_MOTION_PC *)object->grapple;
-                    teleport->flap_target[i] = (u16)rotation;
+                if (NuSpecialExistsFn(&(&((TELEPORT_MOTION_PC *)object->grapple)->flap1_special)[i])) {
+                    NUVEC *position = &object->collision_position;
+                    if (!(NuVecDistSqr(
+                              position,
+                              NuSpecialGetDrawPos(&(&((TELEPORT_MOTION_PC *)object->grapple)->flap1_special)[i]),
+                              NULL) < 0.36f))
+                        continue;
+                    ((TELEPORT_MOTION_PC *)object->grapple)->flap_target[i] =
+                        (u16)(i == 0 ? (u16)first_rotation : -(u16)first_rotation);
                     if ((object->field_7a4 & (1 << i)) == 0) {
                         object->field_7a4 |= (1 << i);
                         PlaySfx("env_door_flap", position);
