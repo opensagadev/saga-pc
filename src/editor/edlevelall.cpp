@@ -6766,10 +6766,10 @@ void ClassEditor::MakeUniqueName(char const *name, char *destination, i32 size) 
 
 /* Gives a new object a unique name and puts it at the manipulator cursor. */
 void ClassEditor::InitialiseObject(ClassObject &object) {
-    __declspec(align(16)) EdMember member;
-    char name[128];
-    char unique_name[128];
+    EdMember member;
     if (object.ed_class->FindMember(&member, object.object, 2, 1)) {
+        char name[128];
+        char unique_name[128];
         member.reference->GetAttributeData(member.object, 2, EdType_String, name, sizeof(name));
         MakeUniqueName(name, unique_name, sizeof(unique_name));
         member.reference->SetAttributeData(member.object, 2, EdType_String, unique_name, 0);
