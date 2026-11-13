@@ -493,10 +493,10 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     GAMEOBJECT *owner;
     u32 flags;
     i32 destination_index = 0;
+    AIPATHNODE_PC *source = NULL;
     AIPATHNODE_PC *destination = NULL;
     NUVEC offset;
     AIPATHCNX_PC *connection;
-    AIPATHNODE_PC *source = NULL;
     f32 distance;
     f32 radius;
     i32 ready = 0;
@@ -612,11 +612,11 @@ check:
                         if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
                             owner->ai_jump_destination_distance_pc = 0.0f;
                         }
-                        if (!(distance > owner->ai_jump_destination_distance_pc)) {
-                            owner->ai_jump_destination_distance_pc = distance;
-                        } else {
+                        if (distance > owner->ai_jump_destination_distance_pc) {
                             packet->path_connection_state = 4;
                             owner->ai_jump_destination_distance_pc = 0.0f;
+                        } else {
+                            owner->ai_jump_destination_distance_pc = distance;
                         }
                     }
                 }
