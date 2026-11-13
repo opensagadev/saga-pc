@@ -864,14 +864,16 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 UpdateBackgroundMusic();
                 NuFrameBegin();
                 if (SoundVoiceEnabledGate != 0) {
-                    if (pause_rndr_on == 0 || (FadeSys.pending_type == FADE_TYPE_WIPE && MainRenderTime != 0.0f)) {
-                        LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", (void *)WORLD);
-                        SAGA_SOUND_CHECK("before world render");
-                        NuMainRenderWorld(WORLD);
-                        SAGA_SOUND_CHECK("after world render");
-                        LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after render: world=%p", (void *)WORLD);
-                    } else {
-                        NoRender();
+                    if (pause_rndr_on == 0 || FadeSys.pending_type == FADE_TYPE_WIPE) {
+                        if (0.0f < MainRenderTime) {
+                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before render: world=%p", (void *)WORLD);
+                            SAGA_SOUND_CHECK("before world render");
+                            NuMainRenderWorld(WORLD);
+                            SAGA_SOUND_CHECK("after world render");
+                            LOG_INFO_IF(GameTimer.update_count < 2, "NuMain after render: world=%p", (void *)WORLD);
+                        } else {
+                            NoRender();
+                        }
                     }
                 }
                 if (NuMainSkipCutBordersPc == 0) {
