@@ -8608,7 +8608,7 @@ extern "C" {
     i32 NuPrimVertexCount = 0;
     i32 *NuPrimVertexCountPointer = 0;
     VARIPTR *NuPrimStreamBufferPointer = 0;
-    i32 NuPrimCurrentPrimitiveType = 0;
+    i32 NuPrimCurrentPrimitiveType = 10000;
     i32 NuPrimCSPos = 0;
     f32 NuPrimXBias = 0;
     f32 NuPrimYBias = 0;
@@ -8789,7 +8789,7 @@ extern "C" {
     u32 nudlist_alloc_base = 0;
     u32 nudlist_alloc_end = 0;
     u32 nudlist_item_base = 0;
-    i32 nudlist_frame_active = 0;
+    i32 nudlist_frame_active = 2;
     u32 nudlist_field_e80 = 0;
     u32 nudlist_field_fc8 = 0;
     i32 nudlist_field_fc4 = 0;
@@ -10709,11 +10709,11 @@ extern "C" {
 #pragma bss_seg(".bss$DebrisGlassV1")
     f32 DebrisGlassV1 = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PS2_VCNTR_X")
-    i32 PS2_VCNTR_X = 0;
-#pragma bss_seg(".bss$PS2_VCNTR_Y")
-    i32 PS2_VCNTR_Y = 0;
-#pragma bss_seg()
+#pragma data_seg(".data$PS2_VCNTR_X")
+    i32 PS2_VCNTR_X = 320;
+#pragma data_seg(".data$PS2_VCNTR_Y")
+    i32 PS2_VCNTR_Y = 240;
+#pragma data_seg()
 
     extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
