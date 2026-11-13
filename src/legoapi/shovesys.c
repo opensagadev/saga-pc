@@ -47,7 +47,8 @@ void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
         return;
     for (i = 0, shove = ShoveSystemPc.objects; i < ShoveSystemPc.count; ++i, ++shove) {
         f64 reach;
-        f32 delta, absolute_x, absolute_z, dx, dz, distance, penetration, speed;
+        f32 delta, absolute_x, absolute_z, distance, penetration, speed;
+        NUVEC offset;
         NUMTX *matrix;
         NUVEC minimum, maximum, point;
         if (shove->platform_id != -1 && shove->platform_id == object->supporting_platform_id &&
@@ -73,23 +74,23 @@ void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
             point = object->collision_position;
         else
             NuVecMtxTransform(&point, &point, matrix);
-        dx = point.x - shove->position.x;
-        dz = point.z - shove->position.z;
-        if (dx == 0.0f && dz == 0.0f) {
+        offset.x = point.x - shove->position.x;
+        offset.z = point.z - shove->position.z;
+        if (offset.x == 0.0f && offset.z == 0.0f) {
             object->movement_direction_x = ShoveMaximumSpeedPc;
             object->movement_direction_z = ShoveMaximumSpeedPc;
             object->field_106e = shove->platform_id;
             return;
         }
-        distance = NuFsqrt(dx * dx + dz * dz);
+        distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
         penetration = shove->radius + ShoveCollisionExpansionPc - distance;
         if (!(penetration > best_penetration))
             continue;
         best_penetration = penetration;
         speed = penetration > ShoveMaximumPenetrationPc ? ShoveMaximumPenetrationPc : penetration;
         speed = (speed * ShoveMaximumSpeedPc) / ShoveMaximumPenetrationPc;
-        object->movement_direction_x = (dx * speed) / distance;
-        object->movement_direction_z = (dz * speed) / distance;
+        object->movement_direction_x = (offset.x * speed) / distance;
+        object->movement_direction_z = (offset.z * speed) / distance;
         object->field_106e = shove->platform_id;
     }
 }
