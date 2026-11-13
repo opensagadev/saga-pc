@@ -12477,7 +12477,9 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
     char filepath[0x80];
     char message[0x40];
     char script_files[0x80][0x18];
+    AISCRIPT_PC *script;
 
+    file_count = 0;
     scripts = (sys != NULL) ? &sys->scripts : &global_aiscripts;
     file = 0;
     if (pak != NULL) {
@@ -12507,13 +12509,12 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         file = NuFileOpen(filepath, 0);
     }
 
-    file_count = 0;
     if (file != 0) {
         parser = NuFParOpen(file);
         if (parser != NULL) {
             while (NuFParGetLine(parser) != 0) {
                 NuFParGetWord(parser);
-                if (NuStrLen(parser->word_buffer_ptr) > 0x0f) {
+                if (NuStrLen(parser->word_buffer_ptr) > 15u) {
                     AIScriptMissingStateDiagnostic(message);
                 }
                 NuStrCpy(script_files[file_count], parser->word_buffer_ptr);
@@ -12525,7 +12526,7 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         NuFileClose(file);
 
         for (i = 0; i < file_count; i++) {
-            AISCRIPT_PC *script = AIScriptLoadPakFilePc(pak, script_files[i], path, buffer, end_buffer);
+            script = AIScriptLoadPakFilePc(pak, script_files[i], path, buffer, end_buffer);
             if (script != NULL) {
                 NuLinkedListAppend(scripts, &script->link);
                 if (sys != NULL) {
@@ -12535,21 +12536,19 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         }
     }
 
-    if (sys == NULL) {
-        return;
-    }
-
-    do {
-        AISCRIPT_PC *script;
-        done = 1;
-        script = (AISCRIPT_PC *)NuLinkedListGetHead(scripts);
-        while (script != NULL) {
-            if (AIScriptBuildDerivedScript(script, buffer, end_buffer, sys) == 0) {
-                done = 0;
+    if (sys != NULL) {
+        done = 0;
+        while (!done) {
+            done = 1;
+            script = (AISCRIPT_PC *)NuLinkedListGetHead(&sys->scripts);
+            while (script != NULL) {
+                if (AIScriptBuildDerivedScript(script, buffer, end_buffer, sys) == 0) {
+                    done = 0;
+                }
+                script = (AISCRIPT_PC *)NuLinkedListGetNext(&sys->scripts, &script->link);
             }
-            script = (AISCRIPT_PC *)NuLinkedListGetNext(scripts, &script->link);
         }
-    } while (done == 0);
+    }
 }
 
 void __cdecl AIScriptLoadAll(char *path, VARIPTR *buffer, VARIPTR *end, AISYS_PC *sys) {
