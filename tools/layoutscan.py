@@ -169,6 +169,10 @@ REVIEW = {
     0x56cdb0: dict(name="guidelines", conf="medium", why="marker at 0x56cd80; Android guidelines; Batman has none"),
     0x5925c0: dict(name="customiser", conf="medium", why="marker; TCS only; Android customiser.c"),
     0x5a86d0: dict(name="simpletons", conf="medium", why="marker; TCS only; Android simpletons.c"),
+    0x59cb90: dict(name="credits", conf="medium",
+                   why="CreditsFindTypePc, CreditsReadColourPc and CreditsInitCreditPc are called only by "
+                   "Credits_Load, so credits starts with them; pushing ends with ReleasePush"),
+    0x59cd50: dict(name="credits", join=True, why="continues 0x59cb90"),
     0x5ab2d0: dict(name="gizturret", conf="medium",
                    why="GizTurretClearPc and GizTurretReadAnimSetDataPc (no Batman counterpart) are called only "
                    "by GizTurrets_Load; no marker at 0x5ab2d0 or 0x5ab3d0, so gizturret starts here"),

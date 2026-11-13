@@ -140,8 +140,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x5999e0,0x59a595,src/legoapi/minikits.c,,legoapi,batman+marker,high,ret 28,11,2888,2888,2324,1,0,legoapi/minikits.c:2888
 0x59a5a0,0x59b32d,src/legoapi/gameantinode.c,,legoapi,batman+marker,high,fabs 54 28,9,2843,2843,2194,44,0,legoapi/gameantinode.c:2843
 0x59b330,0x59baf0,src/legoapi/episodes.c,,legoapi,batman+marker,high,ret 28,7,1793,1793,403,32,0,legoapi/episodes.cpp:1792 legoapi/episodes_diagnostic_pc.c:1
-0x59baf0,0x59cd41,src/legoapi/pushing.c,,legoapi,batman+marker,high,fabs 28,8,4468,4468,1341,276,0,legoapi/pushing.cpp:3225 legoapi/players.c:891 legoapi/credits.cpp:352
-0x59cd50,0x59d741,src/legoapi/credits.cpp,,legoapi,batman+code,medium,,6,2504,2504,2504,0,0,legoapi/credits.cpp:2504
+0x59baf0,0x59cb62,src/legoapi/pushing.c,,legoapi,batman+marker,high,fabs 28,5,4116,4116,989,276,0,legoapi/pushing.cpp:3225 legoapi/players.c:891
+0x59cb90,0x59d741,src/legoapi/credits.cpp,,legoapi,code+review,medium,,9,2856,2856,2856,0,0,legoapi/credits.cpp:2856
 0x59d750,0x59f942,src/legoapi/gizflow.c,,legoapi,batman+marker,high,ret ret ret 28,56,7875,7875,5235,351,0,legoapi/gizflow.c:7873 legoapi/gizflow_diagnostic.c:2
 0x59f970,0x5a043e,src/legoapi/tagging.c,,legoapi,batman,medium,,10,2611,2611,1504,153,0,legoapi/tagging.c:2611
 0x5a0440,0x5a1bcd,src/legoapi/gameanim.c,,legoapi,batman+marker,high,ret ret 28,41,5671,5671,4731,22,0,legoapi/gameanim.c:5670 legoapi/render.c:1
