@@ -358,16 +358,15 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
 }
 
 static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
-    __declspec(align(16)) NUVEC local;
     __declspec(align(16)) NUVEC4 axis;
+    __declspec(align(16)) NUVEC4 local;
     i16 yaw, pitch, direction_yaw, direction_pitch;
     f32 roll;
-    f64 max_roll, min_roll;
-    i32 angle;
-    NuVecInvMtxRotate(&local, (NUVEC *)direction, &pod->matrix);
+    i16 angle;
+    NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &pod->matrix);
     yaw = NuAtan2D(local.x, local.z);
     pod->yaw = yaw;
-    NuVecRotateY(&local, &local, -yaw);
+    NuVecRotateY((NUVEC *)&local, (NUVEC *)&local, -yaw);
     pitch = NuAtan2D(local.y, local.z);
     pod->pitch = pitch;
     NuMtxPreRotateY(&pod->matrix, yaw);
@@ -377,8 +376,8 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
         return;
     }
     direction_yaw = NuAtan2D(direction->x, direction->z);
-    NuVecRotateY(&local, (NUVEC *)direction, -direction_yaw);
-    direction_pitch = NuAtan2D(local.y, local.z);
+    NuVecRotateY((NUVEC *)&axis, (NUVEC *)direction, -direction_yaw);
+    direction_pitch = NuAtan2D(axis.y, axis.z);
     axis.x = 1.0f;
     axis.y = 0.0f;
     axis.z = 0.0f;
@@ -387,19 +386,17 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
     NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -direction_pitch);
     NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, direction_yaw);
     NuVecInvMtxRotate((NUVEC *)&axis, (NUVEC *)&axis, &pod->matrix);
-    roll = (f32)(i16)NuAtan2D(axis.x, axis.y);
-    max_roll = 24000.0 * FRAMETIME;
-    if (roll > max_roll)
-        roll = (f32)(i16)(i32)max_roll;
-    min_roll = -24000.0 * FRAMETIME;
-    if (roll < min_roll)
-        roll = (f32)(i16)(i32)min_roll;
+    angle = NuAtan2D(axis.x, axis.y);
+    if (angle > 24000.0 * FRAMETIME)
+        angle = (i16)(24000.0 * FRAMETIME);
+    if (angle < FRAMETIME * -24000.0)
+        angle = (i16)(FRAMETIME * -24000.0);
+    roll = angle;
     if (blend > 2.0f)
         roll = 0.0f;
     else if (blend > 1.0f)
         roll = (f32)((2.0 - blend) * roll);
-    angle = -(i16)(i32)roll;
-    NuMtxPreRotateZ(&pod->matrix, angle);
+    NuMtxPreRotateZ(&pod->matrix, -(i16)roll);
 }
 
 i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
