@@ -5029,28 +5029,32 @@ void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection)
         record.max_y = -1000000.0f;
         record.depth = -1000000.0f;
         bool valid = true;
-        for (u32 vertex = 0; vertex < 4; ++vertex) {
-            NUVEC4 &v = record.transformed[vertex];
-            NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&record.vertices[vertex]), &projection_matrix);
-            if (!(v.w > 0.0f)) {
+        for (u32 vertex = 0; vertex != 4; ++vertex) {
+            NuVec4MtxTransform(&record.transformed[vertex], reinterpret_cast<NUVEC *>(&record.vertices[vertex]),
+                               &projection_matrix);
+            if (!(record.transformed[vertex].w > 0.0f)) {
                 valid = false;
                 break;
             }
-            v.x /= v.w;
-            v.y /= v.w;
-            v.z /= v.w;
-            record.min_x = v.x < record.min_x ? v.x : record.min_x;
-            record.min_y = v.y < record.min_y ? v.y : record.min_y;
-            record.max_x = v.x > record.max_x ? v.x : record.max_x;
-            record.max_y = v.y > record.max_y ? v.y : record.max_y;
-            record.min_depth = v.w < record.min_depth ? v.w : record.min_depth;
-            record.depth = v.w > record.depth ? v.w : record.depth;
+            record.transformed[vertex].x /= record.transformed[vertex].w;
+            record.transformed[vertex].y /= record.transformed[vertex].w;
+            record.transformed[vertex].z /= record.transformed[vertex].w;
+            record.min_x = record.transformed[vertex].x < record.min_x ? record.transformed[vertex].x : record.min_x;
+            record.min_y = record.transformed[vertex].y < record.min_y ? record.transformed[vertex].y : record.min_y;
+            record.max_x = record.transformed[vertex].x > record.max_x ? record.transformed[vertex].x : record.max_x;
+            record.max_y = record.transformed[vertex].y > record.max_y ? record.transformed[vertex].y : record.max_y;
+            record.min_depth =
+                record.transformed[vertex].w < record.min_depth ? record.transformed[vertex].w : record.min_depth;
+            record.depth = record.transformed[vertex].w > record.depth ? record.transformed[vertex].w : record.depth;
         }
         if (valid && (record.depth < 0.0f || record.min_depth < 0.0f || record.max_x < -1.0f || record.min_x > 1.0f ||
                       record.max_y < -1.0f || record.min_y > 1.0f)) {
             valid = false;
         }
-        indices[index] = valid ? index : 0xffffffffu;
+        if (valid)
+            indices[index] = index;
+        else
+            indices[index] = 0xffffffffu;
     }
     qsort(indices, count, sizeof(*indices), SortByDepth);
     queries_prepared = true;
