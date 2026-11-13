@@ -1654,7 +1654,6 @@ void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_
                 RendererArenaCountPc++;
             }
             for (remaining = groups->count; remaining > 0; remaining--) {
-                RENDERER_ARENA_VERTEX_PC *arena;
                 RendererArenaIndexCountPc += 6;
                 v[0].xyz = point->v;
                 v[0].w = 1.0f;
@@ -1674,23 +1673,22 @@ void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_
                 v[3].y = v[1].y + offset->y;
                 v[3].z = v[1].z + offset->z;
                 v[3].w = 1.0f;
-                arena = RendererArenaDataPc;
-                arena[RendererArenaVertexCountPc].colour = 0xffffffff;
-                arena[RendererArenaVertexCountPc].position.x = v[0].x;
-                arena[RendererArenaVertexCountPc].position.y = v[0].y;
-                arena[RendererArenaVertexCountPc].position.z = v[0].z;
-                arena[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
-                arena[RendererArenaVertexCountPc + 1].position.x = v[2].x;
-                arena[RendererArenaVertexCountPc + 1].position.y = v[2].y;
-                arena[RendererArenaVertexCountPc + 1].position.z = v[2].z;
-                arena[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
-                arena[RendererArenaVertexCountPc + 2].position.x = v[3].x;
-                arena[RendererArenaVertexCountPc + 2].position.y = v[3].y;
-                arena[RendererArenaVertexCountPc + 2].position.z = v[3].z;
-                arena[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
-                arena[RendererArenaVertexCountPc + 3].position.x = v[1].x;
-                arena[RendererArenaVertexCountPc + 3].position.y = v[1].y;
-                arena[RendererArenaVertexCountPc + 3].position.z = v[1].z;
+                RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
+                RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
+                RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
+                RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
+                RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
                 RendererArenaVertexCountPc += 4;
                 point++;
             }
