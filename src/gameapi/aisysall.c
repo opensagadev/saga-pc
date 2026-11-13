@@ -12219,8 +12219,16 @@ void __cdecl xActions(NUFPAR_PC *parser) {
 
                 macro = (AIACTIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
             }
-            if (macro != NULL) {
-                continue;
+            if (macro == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                            aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                        : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+                }
             }
         } else {
             AIACTIONDEF_PC *definition;
@@ -12265,20 +12273,17 @@ void __cdecl xActions(NUFPAR_PC *parser) {
                         }
                     }
                 }
-                continue;
+            } else if (NuStrChr(parser->word_buffer_ptr, '{') == NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                            aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                        : (char *)Text_UnknownText);
+                } else {
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+                }
             }
-            if (NuStrChr(parser->word_buffer_ptr, '{') != NULL) {
-                continue;
-            }
-        }
-        if (AIActionDiagnosticMode != 1) {
-            AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                           aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                       : (char *)Text_UnknownText);
-        } else {
-            AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                    aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                : (char *)Text_UnknownText);
         }
     }
 }
