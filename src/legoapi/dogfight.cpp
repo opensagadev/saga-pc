@@ -2456,16 +2456,4 @@ extern "C" {
             DrawSelectedSockPc(world->sock_sys, 4, DogfightSelectedSockPc, 5, 8);
     }
 
-    void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale) {
-        matrix->m00 *= scale;
-        matrix->m01 *= scale;
-        matrix->m02 *= scale;
-        matrix->m10 *= scale;
-        matrix->m11 *= scale;
-        matrix->m12 *= scale;
-        matrix->m20 *= scale;
-        matrix->m21 *= scale;
-        matrix->m22 *= scale;
-    }
-
 } // extern "C"

@@ -92,6 +92,18 @@ void __cdecl NuMtxMulRVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     NuMtxMulR(result, left, right);
 }
 
+void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale) {
+    matrix->m00 *= scale;
+    matrix->m01 *= scale;
+    matrix->m02 *= scale;
+    matrix->m10 *= scale;
+    matrix->m11 *= scale;
+    matrix->m12 *= scale;
+    matrix->m20 *= scale;
+    matrix->m21 *= scale;
+    matrix->m22 *= scale;
+}
+
 void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
     f32 cx = NuTrigTable[((angles->x + 0x4000) >> 1) & 0x7fff];
     f32 sx = NuTrigTable[(angles->x >> 1) & 0x7fff];
