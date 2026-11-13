@@ -3002,8 +3002,10 @@ f32 __cdecl Condition_OriginRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
         origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(system, packet) : NULL;
         if (origin != NULL)
             return NuVecDist(&packet->terrain_origin, origin, NULL);
-        if (system != NULL && packet->creature_index != 0xff)
-            return NuVecDist(&packet->terrain_origin, &system->creatures[packet->creature_index].position, NULL);
+        if (system != NULL && packet->creature_index != 0xff) {
+            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            return NuVecDist(&packet->terrain_origin, &creature->position, NULL);
+        }
     }
     return 0.0f;
 }
@@ -3016,8 +3018,10 @@ f32 __cdecl Condition_OpponentToOrigin(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
             if (origin != NULL)
                 return NuVecDist(&packet->opponent->position, origin, NULL);
         }
-        if (system != NULL && packet->creature_index != 0xff)
-            return NuVecDist(&packet->opponent->position, &system->creatures[packet->creature_index].position, NULL);
+        if (system != NULL && packet->creature_index != 0xff) {
+            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            return NuVecDist(&packet->opponent->position, &creature->position, NULL);
+        }
     }
     return FLT_MAX;
 }
@@ -3028,8 +3032,10 @@ f32 __cdecl Condition_PlayerToOrigin(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
         NUVEC *origin;
         if (GetOriginPositionFn != NULL && (origin = GetOriginPositionFn(system, packet)) != NULL)
             return NuVecDist(&system->player_1->position, origin, NULL);
-        if (packet->creature_index != 0xff)
-            return NuVecDist(&system->player_1->position, &system->creatures[packet->creature_index].position, NULL);
+        if (packet->creature_index != 0xff) {
+            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+            return NuVecDist(&system->player_1->position, &creature->position, NULL);
+        }
     }
     return FLT_MAX;
 }
