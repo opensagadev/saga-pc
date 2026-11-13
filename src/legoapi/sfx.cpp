@@ -26,22 +26,6 @@ typedef struct level_sfx_gizmotype_s {
 STATIC_ASSERT(sizeof(LEVEL_SFX_GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_GIZMOTYPE_PC, add_level_sfx) == 0x94);
 
-extern "C" {
-
-    void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
-        LEVEL_SFX_GIZMOTYPE_PC *type;
-        GIZMOSET_PC *set;
-        i32 i;
-        if (gizmotypes == NULL || system == NULL)
-            return;
-        type = (LEVEL_SFX_GIZMOTYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-        set = system->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type)
-            if (type->add_level_sfx != NULL)
-                type->add_level_sfx(world, set->data, ids, count, capacity);
-    }
-}
-
 extern "C" void __cdecl PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
 }

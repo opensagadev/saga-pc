@@ -89,27 +89,6 @@ extern "C" {
     } WORLD_RESOURCE_ICONS_READER_PC;
     STATIC_ASSERT(offsetof(WORLD_RESOURCE_ICONS_READER_PC, icons_scene) == 0x2964);
 
-    /* MATCH-EXCEPTION: retail reads the typed gizmotypes global at each use (saga.h declares it void *). */
-    void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index) {
-        GIZMOTYPE_PC *type;
-        i32 i;
-
-        if (gizmotypes != NULL) {
-            type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-            for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type) {
-                if (type->fns.clear_progress_fn != NULL) {
-                    void *progress;
-                    if (type->progress != NULL && index >= 0 && index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
-                        progress = type->progress[index];
-                    } else {
-                        progress = NULL;
-                    }
-                    type->fns.clear_progress_fn(owner, progress);
-                }
-            }
-        }
-    }
-
     void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
         if (enabled != 0 && this->enabled == 0) {
             i32 index;
