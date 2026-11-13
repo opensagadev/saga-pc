@@ -16,11 +16,12 @@ void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTE
     flags = input_flags;
     parameter = input_parameter;
     variant = input_flags & 3;
-    first_path = variant == 0 && (input_flags & 0x10) != 0 && (desc->vertex_format & 0x40000) == 0 &&
+    /* Bit 18 of the vertex format is a one-bit field in retail (shr 18, test dl 1). */
+    first_path = variant == 0 && (input_flags & 0x10) != 0 && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
                  (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
-    second_path = (variant != 0 || (input_flags & 0x10) != 0) && (desc->vertex_format & 0x40000) == 0 &&
+    second_path = (variant != 0 || (input_flags & 0x10) != 0) && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
                   (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
-    deferred_path = variant == 0 && (input_flags & 0x20) != 0 && (desc->vertex_format & 0x40000) == 0 &&
+    deferred_path = variant == 0 && (input_flags & 0x20) != 0 && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
                     (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
     if ((mtl->blend_flags & 0xf) == 2) {
         first_path = 0;
