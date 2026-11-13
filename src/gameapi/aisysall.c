@@ -10077,31 +10077,31 @@ i32 __cdecl routeEditor_AddToRoute(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) 
     i32 index;
     i32 slot;
     i32 i;
-    u64 mask;
     EDAIPATHCNX_s *connection;
     if (node != NULL && other != NULL && aieditor->current_path->current_route != NULL &&
         (index = aieditor->current_path->current_route - aieditor->current_path->routes) < 16) {
         for (slot = 0; slot < 8; ++slot) {
             if (node->connections[slot].node == other) {
                 connection = &node->connections[slot];
-                mask = (u64)1 << index;
-                if ((connection->route_mask & mask) != 0) {
-                    connection->route_mask &= ~(u16)mask;
+                if (connection->route_mask & ((u64)1 << index)) {
+                    connection->route_mask &= ~(u16)((u64)1 << index);
                     for (i = 0; i < 8; ++i) {
-                        if (node->connections[slot].node != NULL && (node->connections[slot].route_mask & mask)) {
-                            node->route_mask &= ~(u16)mask;
+                        if (node->connections[slot].node != NULL &&
+                            (node->connections[slot].route_mask & ((u64)1 << index))) {
+                            node->route_mask &= ~(u16)((u64)1 << index);
                             break;
                         }
                     }
                     for (i = 0; i < 8; ++i) {
-                        if (other->connections[slot].node != NULL && (other->connections[slot].route_mask & mask)) {
-                            other->route_mask &= ~(u16)mask;
+                        if (other->connections[slot].node != NULL &&
+                            (other->connections[slot].route_mask & ((u64)1 << index))) {
+                            other->route_mask &= ~(u16)((u64)1 << index);
                             break;
                         }
                     }
                     return -1;
                 }
-                connection->route_mask |= (u16)mask;
+                connection->route_mask |= (u16)((u64)1 << index);
                 return 1;
             }
         }
