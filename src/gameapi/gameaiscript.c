@@ -2707,10 +2707,11 @@ f32 __cdecl Condition_TakenOver(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, 
                     object = opponent->objptr;
             } else if (NuStrICmp(name, AIConditionTakeoverTargetNamePc) == 0) {
                 object = packet->owner->objptr;
-                if (object != NULL)
-                    object = object->takeover_target;
+                if (object == NULL || object->takeover_target == NULL)
+                    return 0.0f;
+                object = object->takeover_target;
             }
-        } else if (packet != NULL && packet->owner != NULL)
+        } else if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
     }
     if (object != NULL && object->takeover_source != NULL && object->character_context != 0x3b)
