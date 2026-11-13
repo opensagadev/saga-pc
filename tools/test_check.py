@@ -534,12 +534,21 @@ class ClangChecksTests(unittest.TestCase):
         self.assertEqual(command[-3:], ["src/a.c", "src/b.cpp", "src/saga.h"])
         self.assertNotIn("-i", command)
 
+    def test_format_fix_rewrites_own_sources_only(self):
+        with patch.object(check_module, "clang_tool", return_value="clang-format-18"), \
+                patch.object(check_module.subprocess, "run") as run:
+            check_module.check_format(fix=True)
+        command = run.call_args.args[0]
+        self.assertIn("-i", command)
+        self.assertNotIn("--dry-run", command)
+        self.assertEqual(run.call_count, 1)
+
     def test_tidy_uses_original_case_insensitive_sdk_and_windows_language_modes(self):
         with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
                 patch.object(check_module.subprocess, "run") as run, \
                 patch.dict(os.environ, {"CPATH": "/untrusted/include", "CPLUS_INCLUDE_PATH": "/host/c++"}):
             run.return_value = subprocess.CompletedProcess([], 0, "", "")
-            check_module.check_tidy(jobs=1)
+            check_module.check_tidy(jobs=1, debug=False)
         self.assertEqual(run.call_count, 2)
         for call, standard in zip(run.call_args_list, ("-std=c89", "-std=c++98")):
             command = call.args[0]
@@ -560,6 +569,11 @@ class ClangChecksTests(unittest.TestCase):
             self.assertEqual(entry["name"], entry["external-contents"])
             self.assertTrue(Path(entry["name"]).is_relative_to(self.root / "build/tools/msvc8"))
 
+    def test_tidy_analyses_game_units_again_for_debug(self):
+        jobs = check_module.tidy_jobs(["lib/ogg.c", "src/a.c", "src/debug/log.c"])
+        self.assertEqual(jobs, [("lib/ogg.c", ()), ("src/a.c", ()), ("src/debug/log.c", ()),
+                                ("src/a.c", ("-DSAGA_DEBUG",))])
+
     def test_tidy_rejects_modified_sdk_before_analysis(self):
         (self.root / "build/tools/msvc8/PlatformSDK/Include/Windows.h").write_text("modified")
         with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
@@ -573,7 +587,7 @@ class ClangChecksTests(unittest.TestCase):
                 patch.object(check_module.subprocess, "run") as run:
             run.return_value = subprocess.CompletedProcess([], 1, "", "")
             with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp"):
-                check_module.check_tidy()
+                check_module.check_tidy(debug=False)
         self.assertEqual(run.call_count, 2)
 
     def test_tidy_reports_diagnostics_and_failures_in_source_order(self):
@@ -595,7 +609,7 @@ class ClangChecksTests(unittest.TestCase):
                 patch.object(check_module.os, "cpu_count", return_value=8), \
                 redirect_stdout(stdout), redirect_stderr(stderr):
             with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp"):
-                check_module.check_tidy(jobs=2)
+                check_module.check_tidy(jobs=2, debug=False)
         self.assertEqual(completion_order, ["src/b.cpp", "src/a.c"])
         self.assertEqual(stdout.getvalue(), "src/a.c out\nsrc/b.cpp out\n")
         self.assertEqual(stderr.getvalue(), "src/a.c err\nsrc/b.cpp err\n")
@@ -618,7 +632,7 @@ class ClangChecksTests(unittest.TestCase):
                 patch.object(check_module.subprocess, "run", side_effect=analyze), \
                 redirect_stdout(stdout), redirect_stderr(stderr):
             with self.assertRaises(subprocess.TimeoutExpired) as raised:
-                check_module.check_tidy(jobs=2)
+                check_module.check_tidy(jobs=2, debug=False)
         self.assertIs(raised.exception, timeout)
         self.assertCountEqual(called, ["src/a.c", "src/b.cpp"])
         self.assertEqual(stdout.getvalue(), "partial out\ncomplete out\n")
@@ -647,7 +661,7 @@ class ClangChecksTests(unittest.TestCase):
                 patch.object(check_module, "analysis_configuration", wraps=check_module.analysis_configuration) as config, \
                 patch.object(check_module.os, "cpu_count", return_value=16), \
                 patch.object(check_module.subprocess, "run", side_effect=analyze) as run:
-            check_module.check_tidy()
+            check_module.check_tidy(debug=False)
         config.assert_called_once_with()
         self.assertEqual(run.call_count, 24)
         self.assertEqual(peak, 8)
@@ -660,7 +674,7 @@ class ClangChecksTests(unittest.TestCase):
                     patch.object(check_module.os, "cpu_count", return_value=cpus), \
                     patch.object(check_module, "ThreadPoolExecutor", wraps=executor) as pool, \
                     patch.object(check_module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "", "")):
-                check_module.check_tidy(jobs=jobs)
+                check_module.check_tidy(jobs=jobs, debug=False)
                 pool.assert_called_once_with(max_workers=expected)
 
     def test_tidy_rejects_invalid_jobs_before_preparing_overlay(self):

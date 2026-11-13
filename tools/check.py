@@ -284,14 +284,26 @@ def source_files(headers=False):
                   if path.suffix in suffixes and (path.is_file() or path in dependency_files(ROOT)))
 
 
-def check_format():
+# The pinned vendored sources cannot change (config/ogg-vorbis.json holds their checksums): they keep the style
+# they were adapted in.
+VENDORED_FORMAT = "config/clang-format-vendored"
+
+
+def check_format(fix=False):
+    """Check (or, with `fix`, apply) .clang-format on src/; the vendored files are checked against their own style."""
     tool = clang_tool("clang-format")
     if not (ROOT / ".clang-format").is_file():
         raise ValueError("Missing .clang-format policy")
     files = source_files(headers=True)
-    subprocess.run([tool, "--style=file", "--fallback-style=none", "--dry-run", "--Werror", *files],
-                   cwd=ROOT, check=True, timeout=120)
-    print(f"Formatting checked for {len(files)} source/header files.")
+    own = [name for name in files if not name.startswith("lib/")]
+    vendored = [name for name in files if name.startswith("lib/")]
+    action = ["-i"] if fix else ["--dry-run", "--Werror"]
+    if vendored and not fix:
+        subprocess.run([tool, "--style=file:" + str(ROOT / VENDORED_FORMAT), "--dry-run", "--Werror", *vendored],
+                       cwd=ROOT, check=True, timeout=120)
+    subprocess.run([tool, "--style=file", "--fallback-style=none", *action, *own], cwd=ROOT, check=True, timeout=300)
+    print(f"Formatting {'applied to' if fix else 'checked for'} {len(own)} source/header files"
+          + ("" if fix else f" and {len(vendored)} vendored files") + ".")
 
 
 def analysis_configuration():
@@ -377,7 +389,23 @@ def prepare_editor():
     print(f"Prepared editor header aliases and {len(commands)} analysis commands in build/editor/.")
 
 
-def check_tidy(jobs=8):
+# Checks of .clang-tidy with findings only in the upstream Ogg Vorbis code (not edited here).
+VENDORED_TIDY_EXCLUDED = ("bugprone-incorrect-roundings", "misc-header-include-cycle",
+                          "performance-type-promotion-in-math-fn", "readability-avoid-unconditional-preprocessor-if",
+                          "readability-redundant-control-flow")
+
+
+def tidy_jobs(files, debug=True):
+    """(source, extra flags) to analyse: every unit as Matching builds it and, with `debug`, each game
+    unit once more with SAGA_DEBUG, so code that only the Debug build compiles is linted too."""
+    jobs = [(source, ()) for source in files]
+    if debug:
+        jobs += [(source, ("-DSAGA_DEBUG",)) for source in files
+                 if source.startswith("src/") and "-DSAGA_DEBUG" not in analysis_language(source)]
+    return jobs
+
+
+def check_tidy(jobs=8, debug=True):
     if jobs < 1:
         raise ValueError("clang-tidy jobs must be at least 1")
     tool = clang_tool("clang-tidy")
@@ -388,12 +416,15 @@ def check_tidy(jobs=8):
     for name in ("CPATH", "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJC_INCLUDE_PATH",
                  "INCLUDE", "CL", "_CL_"):
         env.pop(name, None)
-    files, failures = source_files(), []
+    files, failures = tidy_jobs(source_files(), debug), []
     workers = min(jobs, os.cpu_count() or 1, max(1, len(files)))
 
-    def analyze(source):
-        command = [tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"),
-                   "--vfsoverlay=" + str(overlay), source, "--", *flags, *analysis_language(source)]
+    def analyze(job):
+        source, extra = job
+        command = [tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"), "--vfsoverlay=" + str(overlay)]
+        if source.startswith("lib/"):
+            command.append("--checks=" + ",".join("-" + check for check in VENDORED_TIDY_EXCLUDED))
+        command += [source, "--", *flags, *analysis_language(source), *extra]
         try:
             result = subprocess.run(command, cwd=ROOT, env=env, timeout=120,
                                     capture_output=True, text=True)
@@ -406,7 +437,8 @@ def check_tidy(jobs=8):
     with ThreadPoolExecutor(max_workers=workers) as executor:
         results = list(executor.map(analyze, files))
     errors = []
-    for source, (result, error) in zip(files, results):
+    for (source, extra), (result, error) in zip(files, results):
+        source = source + (" (Debug)" if extra else "")
         if error is not None:
             # TimeoutExpired retains partial output as bytes even with text=True.
             for stream, text in ((sys.stdout, getattr(error, "stdout", None)),
@@ -426,7 +458,9 @@ def check_tidy(jobs=8):
         raise errors[0]
     if failures:
         raise ValueError("clang-tidy failed for: " + ", ".join(failures))
-    print(f"Clang-tidy checked {len(files)} units with the Windows x86 SDK and project policy.")
+    debug_units = sum(1 for _, extra in files if extra)
+    print(f"Clang-tidy checked {len(files) - debug_units} units, {debug_units} of them again as the Debug "
+          "build compiles them, with the Windows x86 SDK and project policy.")
 
 
 def check_unit_table():
@@ -449,15 +483,18 @@ def main():
     mode.add_argument("--inspect", action="store_true", help="Inspect the optional local retail executable")
     mode.add_argument("--objects", action="store_true", help="Check compiled symbols and relocations against the map")
     mode.add_argument("--format", action="store_true", help="Check C/C++ source and header formatting")
+    mode.add_argument("--format-fix", action="store_true", help="Format src/ in place (make format)")
     mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
     mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
     parser.add_argument("--jobs", type=int, default=8, help="Parallel clang-tidy workers (default: 8)")
+    parser.add_argument("--matching-only", action="store_true",
+                        help="With --tidy: skip the second analysis of game units with SAGA_DEBUG")
     args = parser.parse_args()
-    if args.format:
-        check_format()
+    if args.format or args.format_fix:
+        check_format(fix=args.format_fix)
         return
     if args.tidy:
-        check_tidy(jobs=args.jobs)
+        check_tidy(jobs=args.jobs, debug=not args.matching_only)
         return
     if args.editor:
         prepare_editor()

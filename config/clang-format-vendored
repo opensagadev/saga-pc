@@ -1,0 +1,11 @@
+# Style of the pinned Ogg Vorbis sources (lib/ogg-vorbis, checksummed in config/ogg-vorbis.json):
+# the style the project used when they were adapted. tools/check.py --format applies it to them.
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+
+AllowShortFunctionsOnASingleLine: None
+NamespaceIndentation: All
+IndentExternBlock: Indent
+IndentCaseLabels: true
+SortIncludes: Never
