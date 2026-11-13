@@ -31,6 +31,54 @@ extern "C" {
     void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
 }
 
+/* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps
+ * out-of-line copies at retail 0x633fc0..0x6340dd; the Rtl names keep them apart from edlevelall's. */
+static inline void RtlVuVecCopy(VuVec &destination, const VuVec &source) {
+    destination.x = source.x;
+    destination.y = source.y;
+    destination.z = source.z;
+    destination.w = source.w;
+}
+
+static inline VuVec RtlVuVecAdd(const VuVec &a, const VuVec &b) {
+    VuVec sum;
+    sum.x = a.x + b.x;
+    sum.y = a.y + b.y;
+    sum.z = a.z + b.z;
+    return sum;
+}
+
+static inline VuVec RtlVuVecSub(const VuVec &a, const VuVec &b) {
+    VuVec difference;
+    difference.x = a.x - b.x;
+    difference.y = a.y - b.y;
+    difference.z = a.z - b.z;
+    return difference;
+}
+
+static inline VuVec RtlVuVecScale(const VuVec &a, f32 scale) {
+    VuVec product;
+    product.x = a.x * scale;
+    product.y = a.y * scale;
+    product.z = a.z * scale;
+    return product;
+}
+
+/* Unit-length copy of a direction, as a point (w = 1). */
+static inline void RtlVuVecNormalise(VuVec &destination, VuVec &source) {
+    NuVecNorm(&destination.xyz, &source.xyz);
+    destination.w = 1.0f;
+}
+
+static inline f32 RtlVuVecLengthSq(const VuVec &v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+static inline f32 RtlVuVecLength(const VuVec &v) {
+    f32 length_squared = RtlVuVecLengthSq(v);
+    return NuFsqrt(length_squared);
+}
+
 /* Property controls of the editor unit that the light registration creates;
  * their constructors live there. */
 class EdStringControl : public EdControl {
@@ -346,8 +394,7 @@ void RTLHelper::AddMenuItems(eduimenu_s *menu) {
 }
 
 f32 VuVec::Length() {
-    f32 length_squared = x * x + y * y + z * z;
-    return NuFsqrt(length_squared);
+    return RtlVuVecLength(*this);
 }
 
 /* Screen-space distance below which a radius ring can be grabbed. */
@@ -359,8 +406,6 @@ static f32 rtl_helper_grab_distance = 0.5f;
 void RTLHelper::Process(void *object, EdInputContext &input) {
     RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
     if (input.GetHold(22) != 0.0f) {
-        __declspec(align(16)) VuVec difference;
-        __declspec(align(16)) VuVec offset;
         __declspec(align(16)) VuVec position;
         __declspec(align(16)) VuVec direction;
         __declspec(align(16)) VuVec plane;
@@ -375,56 +420,21 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
         plane.xyz = *reinterpret_cast<NUVEC *>(&global_camera.mtx.m20);
         plane.w = -(plane.x * position.x + plane.y * position.y + plane.z * position.z);
         if (LineToPlaneIntersecion(input.ray_start, input.ray_direction, plane, &intersection)) {
-            difference.x = intersection.x - position.x;
-            difference.y = intersection.y - position.y;
-            difference.z = intersection.z - position.z;
-            delta.x = difference.x;
-            delta.y = difference.y;
-            delta.z = difference.z;
-            delta.w = difference.w;
+            VuVec difference = RtlVuVecSub(intersection, position);
+            RtlVuVecCopy(delta, difference);
             if (input.GetPress(25) != 0.0f || input.GetHold(25) == 0.0f) {
-                direction.x = difference.x;
-                direction.y = difference.y;
-                direction.z = difference.z;
-                direction.w = difference.w;
-                NuVecNorm(&direction.xyz, &direction.xyz);
-                direction.w = 1.0f;
-                f32 radius = light->inner_radius;
-                offset.x = direction.x * radius;
-                offset.y = direction.y * radius;
-                offset.z = direction.z * radius;
-                difference.x = position.x + offset.x;
-                difference.y = position.y + offset.y;
-                difference.z = position.z + offset.z;
-                inner_point.x = difference.x;
-                inner_point.y = difference.y;
-                inner_point.z = difference.z;
-                inner_point.w = difference.w;
-                radius = light->outer_radius;
-                offset.x = direction.x * radius;
-                offset.y = direction.y * radius;
-                offset.z = direction.z * radius;
-                difference.x = position.x + offset.x;
-                difference.y = position.y + offset.y;
-                difference.z = position.z + offset.z;
-                outer_point.x = difference.x;
-                outer_point.y = difference.y;
-                outer_point.z = difference.z;
-                outer_point.w = difference.w;
+                RtlVuVecCopy(direction, difference);
+                RtlVuVecNormalise(direction, direction);
+                RtlVuVecCopy(inner_point, RtlVuVecAdd(position, RtlVuVecScale(direction, light->inner_radius)));
+                RtlVuVecCopy(outer_point, RtlVuVecAdd(position, RtlVuVecScale(direction, light->outer_radius)));
                 NuCameraTransformScreenClip(&screen_cursor.xyz, &intersection.xyz, 1, NULL);
                 NuCameraTransformScreenClip(&screen_inner.xyz, &inner_point.xyz, 1, NULL);
                 NuCameraTransformScreenClip(&screen_outer.xyz, &outer_point.xyz, 1, NULL);
                 screen_outer.z = 0.0f;
                 screen_inner.z = 0.0f;
                 screen_cursor.z = 0.0f;
-                offset.x = screen_cursor.x - screen_inner.x;
-                offset.y = screen_cursor.y - screen_inner.y;
-                offset.z = screen_cursor.z - screen_inner.z;
-                f32 inner_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-                offset.x = screen_cursor.x - screen_outer.x;
-                offset.y = screen_cursor.y - screen_outer.y;
-                offset.z = screen_cursor.z - screen_outer.z;
-                f32 outer_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                f32 inner_distance = RtlVuVecLengthSq(RtlVuVecSub(screen_cursor, screen_inner));
+                f32 outer_distance = RtlVuVecLengthSq(RtlVuVecSub(screen_cursor, screen_outer));
                 f32 nearest_distance;
                 i32 nearest_mode;
                 if (outer_distance > inner_distance) {
