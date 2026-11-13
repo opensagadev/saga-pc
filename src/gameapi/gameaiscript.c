@@ -7870,29 +7870,26 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
             return 0;
         }
         node = original_path->nodes;
-        node_index = 0;
-        while (node_index < original_path->node_count && (node->runtime_flags & 1) == 0) {
-            ++node_index;
-            ++node;
+        for (node_index = 0; node_index < original_path->node_count; ++node_index, ++node) {
+            if (node->runtime_flags & 1) {
+                processor->action_data_3 = node;
+                AISysCharacterSetPath(packet, current_path);
+                connection = &sys->path_sys->active_path->connections[(u16)node->path_flags];
+                processor->path_info.on_path = 1;
+                processor->path_info.connection = connection;
+                processor->path_info.direction = 0;
+                target_node = &processor->path_info.path->nodes[connection->node_indices[0]];
+                difference.x = node->position.x - target_node->position.x;
+                difference.z = node->position.z - target_node->position.z;
+                NuVecRotateY(&difference, &difference, -connection->rotation);
+                processor->path_info.distance = difference.z / processor->path_info.connection->horizontal_distance;
+                processor->path_info.width = difference.x;
+                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
+                                  packet->movement_instruction_parameter);
+                return 0;
+            }
         }
-        if (node_index >= original_path->node_count) {
-            return 1;
-        }
-        processor->action_data_3 = node;
-        AISysCharacterSetPath(packet, current_path);
-        connection = &sys->path_sys->active_path->connections[(u16)node->path_flags];
-        move_path = &processor->path_info;
-        target_node = &move_path->path->nodes[connection->node_indices[0]];
-        move_path->connection = connection;
-        move_path->direction = 0;
-        move_path->on_path = 1;
-        difference.x = node->position.x - target_node->position.x;
-        difference.z = node->position.z - target_node->position.z;
-        NuVecRotateY(&difference, &difference, -connection->rotation);
-        move_path->distance = difference.z / connection->horizontal_distance;
-        move_path->width = difference.x;
-        AIMoveInstruction(packet, &node->position, 0.0f, move_path, 1, packet->movement_instruction_parameter);
-        return 0;
+        return 1;
     }
     node = (AIPATHNODE_PC *)processor->action_data_3;
     if (node == NULL) {
