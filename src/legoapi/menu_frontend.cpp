@@ -331,7 +331,10 @@ extern "C" void __cdecl MenuUpdateExtras(MENU *menu) {
     EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
-        if (!(save->unlocked[index / 32] & (1u << (index & 31))) || (BonusArea && Cheat_CheckFlags(index, 0x200000))) {
+        i32 locked = 1;
+        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, 0x200000)))
+            locked = 0;
+        if (locked) {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             return;
         }
