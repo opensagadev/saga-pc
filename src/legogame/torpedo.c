@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x4d1e70-0x4d41b7: definitions in retail address order. */
 typedef struct torpedo_pickup_positions_pc_s {
     u8 count;
     u8 unknown_01[0x3b];
@@ -6,29 +8,6 @@ typedef struct torpedo_pickup_positions_pc_s {
 } TORPEDO_PICKUP_POSITIONS_PC;
 STATIC_ASSERT(offsetof(TORPEDO_PICKUP_POSITIONS_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDO_PICKUP_POSITIONS_PC, pickup_positions) == 0x3c);
-void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *packet, i32 count) {
-    TORPEDO_PICKUP_POSITIONS_PC *view = (TORPEDO_PICKUP_POSITIONS_PC *)packet;
-    i32 index;
-    if (packet == NULL || count == 0)
-        return;
-    if (count > packet->count)
-        count = packet->count;
-    else if (count < 0)
-        return;
-    for (index = 1; index <= count; ++index)
-        AddPickups(0, 0, 1, 0, &view->pickup_positions[packet->count - index], &v010, 5.0f, -1, 1.0f, 2000000.0f, NULL,
-                   1, 0);
-    packet->count = (u8)(packet->count - count);
-}
-
-i32 __cdecl getMaxTorpedos(GAMEOBJECT *object) {
-    if (object != NULL &&
-        (object->id == (u16)id_YWING || object->id == (u16)id_MINIYWING || object->id == (u16)id_TIEBOMBER ||
-         object->id == (u16)id_MINITIEBOMBER || object->id == (u16)id_MINISTARDESTROYER))
-        return 5;
-    return 3;
-}
-
 typedef struct torpedo_turret_query_pc_s {
     u8 unknown_00[0x1c];
     GAMEANIMOBJ *primary_anim_obj;
@@ -79,90 +58,6 @@ typedef struct torpedo_target_world_query_pc_s {
 } TORPEDO_TARGET_WORLD_QUERY_PC;
 STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, obstacles) == 0x46a4);
 STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, turrets) == 0x46b8);
-void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squared, u8 *target_type) {
-    TORPEDO_TARGET_WORLD_QUERY_PC *view = (TORPEDO_TARGET_WORLD_QUERY_PC *)world;
-    void *nearest;
-    u8 type;
-    f32 best;
-    NUVEC delta;
-    i32 index;
-    if (world->gizmo_blowup_count == 0)
-        return NULL;
-    best = distance_squared;
-    nearest = NULL;
-    type = 0;
-    for (index = 0; index < world->gizmo_blowup_count; ++index) {
-        GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
-        f32 distance;
-        if ((blowup->status_flags & 0x4000) == 0 || (blowup->status_flags & 0x8000) == 0 ||
-            (blowup->status_flags & 1) != 0 || (blowup->status_flags & 0x800000) == 0 ||
-            (blowup->draw_flags & 0x1000000) == 0)
-            continue;
-        distance = NuVecDistSqr(&blowup->mid_position, position, &delta);
-        if (distance < best) {
-            best = distance;
-            nearest = blowup;
-            type = 0;
-        }
-    }
-    if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->turrets != NULL) {
-        TORPEDO_TURRET_QUERY_PC *turret = view->turrets->turrets;
-        for (index = 0; index < view->turrets->count; ++index, ++turret) {
-            if ((turret->flags & 4) != 0 && (turret->flags & 2) != 0 && (turret->flags & 0x30) == 0 &&
-                turret->primary_anim_obj != NULL) {
-                NUVEC *draw_position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
-                if (draw_position != NULL) {
-                    f32 distance = NuVecDistSqr(draw_position, position, &delta);
-                    if (distance < best) {
-                        best = distance;
-                        nearest = turret;
-                        type = 1;
-                    }
-                }
-            }
-        }
-    }
-    if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->obstacles != NULL) {
-        for (index = 0; index < view->obstacles->active_gizmo_count; ++index) {
-            TORPEDO_OBSTACLE_QUERY_PC *obstacle = view->obstacles->active_gizmos[index]->object;
-            if ((obstacle->progress_flags & 2) != 0 && (obstacle->progress_flags & 1) != 0 &&
-                (obstacle->runtime_flags & 0x80) == 0) {
-                f32 distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
-                if (distance < best) {
-                    best = distance;
-                    nearest = obstacle;
-                    type = 2;
-                }
-            }
-        }
-    }
-    if (nearest != NULL) {
-        if (target_type != NULL)
-            *target_type = type;
-        return nearest;
-    }
-    return NULL;
-}
-
-void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
-    u32 phase = (u16)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.25f) * 4.0 * 65536.0);
-    i32 alpha = (i32)(((f64)NuTrigTable[phase >> 1] * (f64)0.2f + (f64)0.8f) * message->alpha);
-    char vertical[3];
-    vertical[0] = (char)0xc2;
-    vertical[1] = (char)0xa3;
-    vertical[2] = 0;
-    Text3DEx(vertical, position->x, position->y + scale * 0.3f, position->z, scale, scale, scale, 0, message->red,
-             message->green, message->blue, alpha);
-    vertical[1] = (char)0xac;
-    Text3DEx(vertical, position->x, position->y - scale * 0.3f, position->z, scale, scale, scale, 0, message->red,
-             message->green, message->blue, alpha);
-    Text3DEx(">", position->x - scale * 0.25f, position->y, position->z, scale, scale, scale, 0, message->red,
-             message->green, message->blue, alpha);
-    Text3DEx("<", position->x + scale * 0.25f, position->y, position->z, scale, scale, scale, 0, message->red,
-             message->green, message->blue, alpha);
-}
-
-#include <string.h>
 typedef struct torpedo_runtime_pc_s {
     u8 count, flags, fire_index, pickup_state, target_type;
     u8 unknown_05[3];
@@ -213,8 +108,193 @@ typedef struct torpedo_obstacle_reader_pc_s {
     NUVEC position;
 } TORPEDO_OBSTACLE_READER_PC;
 STATIC_ASSERT(offsetof(TORPEDO_OBSTACLE_READER_PC, position) == 0x28);
-
 #define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
+typedef struct torpedo_packet_alloc_pc_s {
+    u8 count, flags;
+    u8 unknown_02[0x86];
+} TORPEDO_PACKET_ALLOC_PC;
+STATIC_ASSERT(sizeof(TORPEDO_PACKET_ALLOC_PC) == 0x88);
+STATIC_ASSERT(offsetof(TORPEDO_PACKET_ALLOC_PC, flags) == 1);
+#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define ASIN_POW2(x) ((x) * (x))
+#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
+#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
+#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
+STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
+STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
+STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
+STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
+
+f32 __cdecl TorpedoRatioPc(f32 numerator, f32 denominator) {
+    if (numerator != 0.0f && denominator != 0.0f)
+        return numerator / denominator;
+    return 0.0f;
+}
+
+/* NuASin polynomial; this unit carries its own instance. */
+i16 __cdecl TorpedoArcSinePc(f32 sin) {
+    f32 abs;
+    f32 sqrt;
+    f32 unknown_a;
+    f32 unknown_b;
+    f32 unknown_c;
+    f32 unknown_d;
+
+    union {
+        f32 value;
+        u32 bits;
+    } magnitude;
+    magnitude.value = sin;
+    magnitude.bits &= 0x7fffffff;
+    abs = magnitude.value;
+    sqrt = NuFsqrt(1.0f - sin * sin);
+
+    unknown_a = MIN(sqrt, abs);
+
+    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+
+    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
+    unknown_c = MAX(unknown_c, -1.0f);
+
+    unknown_d = unknown_b * unknown_c + unknown_c;
+
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
+             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+           10430.4f;
+}
+
+static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    matrix->m00 = cosine;
+    matrix->m01 = 0.0f;
+    matrix->m02 = -sine;
+    matrix->m03 = 0.0f;
+    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+    matrix->m20 = sine;
+    matrix->m21 = 0.0f;
+    matrix->m22 = cosine;
+    matrix->m23 = 0.0f;
+    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+static void TorpedoRotateYPc(NUMTX *m, NUANG angle) {
+    f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 m00 = m->m00;
+    f32 m10 = m->m10;
+    f32 m20 = m->m20;
+    f32 m30 = m->m30;
+
+    m->m00 = m00 * cos_y + m->m02 * sin_y;
+    m->m02 = m->m02 * cos_y - m00 * sin_y;
+    m->m10 = m10 * cos_y + m->m12 * sin_y;
+    m->m12 = m->m12 * cos_y - m10 * sin_y;
+    m->m20 = m20 * cos_y + m->m22 * sin_y;
+    m->m22 = m->m22 * cos_y - m20 * sin_y;
+    m->m30 = m30 * cos_y + m->m32 * sin_y;
+    m->m32 = m->m32 * cos_y - m30 * sin_y;
+}
+static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
+
+TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
+    i32 index;
+    for (index = 0; index < 16; ++index) {
+        if ((TorpedoPackets[index].flags & 1) == 0) {
+            TorpedoPackets[index].flags |= 1;
+            return (TORPEDOPACKET_PC *)&TorpedoPackets[index];
+        }
+    }
+    return NULL;
+}
+
+void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **packet) {
+    i32 index;
+    if (packet == NULL || *packet == NULL)
+        return;
+    for (index = 0; index < 16; ++index) {
+        if (*packet == (TORPEDOPACKET_PC *)&TorpedoPackets[index] && (TorpedoPackets[index].flags & 1) != 0) {
+            memset(&TorpedoPackets[index], 0, sizeof(TorpedoPackets[index]));
+            *packet = NULL;
+            return;
+        }
+    }
+}
+
+void __cdecl DropTorpedoPickups(TORPEDOPACKET_PC *packet, i32 count) {
+    TORPEDO_PICKUP_POSITIONS_PC *view = (TORPEDO_PICKUP_POSITIONS_PC *)packet;
+    i32 index;
+    if (packet == NULL || count == 0)
+        return;
+    if (count > packet->count)
+        count = packet->count;
+    else if (count < 0)
+        return;
+    for (index = 1; index <= count; ++index)
+        AddPickups(0, 0, 1, 0, &view->pickup_positions[packet->count - index], &v010, 5.0f, -1, 1.0f, 2000000.0f, NULL,
+                   1, 0);
+    packet->count = (u8)(packet->count - count);
+}
+
+i32 __cdecl getMaxTorpedos(GAMEOBJECT *object) {
+    if (object != NULL &&
+        (object->id == (u16)id_YWING || object->id == (u16)id_MINIYWING || object->id == (u16)id_TIEBOMBER ||
+         object->id == (u16)id_MINITIEBOMBER || object->id == (u16)id_MINISTARDESTROYER))
+        return 5;
+    return 3;
+}
+
+static NUVEC *TorpedoTargetPositionPc(void *target, u8 target_type, f32 *radius) {
+    if (target != NULL) {
+        switch (target_type) {
+            case 0:
+                if (radius != NULL)
+                    *radius = ((GIZMOBLOWUP_PC *)target)->target_scale;
+                return &((GIZMOBLOWUP_PC *)target)->mid_position;
+            case 1:
+                if (radius != NULL)
+                    *radius = NuSpecialGetOriginRadius(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
+                return NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
+            case 2:
+                if (radius != NULL)
+                    *radius = ((TORPEDO_OBSTACLE_QUERY_PC *)target)->target_radius;
+                return &((TORPEDO_OBSTACLE_QUERY_PC *)target)->evaluated_position;
+        }
+    }
+    return NULL;
+}
+
+static __declspec(noinline) void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
+    if (target == NULL)
+        return;
+    switch (target_type) {
+        case 0:
+            GizmoBlowupBlowup((GIZMOBLOWUP_PC *)target, 1, 11, 1, NULL, 1);
+            break;
+        case 1:
+            GizTurrets_Hit(WORLD, (GIZTURRET_s *)target, position, player, -1);
+            break;
+        case 2:
+            GizObstacles_Hit(WORLD, (GIZOBSTACLE *)target, position, player, -1);
+            break;
+    }
+}
+
 void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     GAMEOBJECT *player;
     NUVEC position, direction;
@@ -301,9 +381,289 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
         }
     }
 }
-#undef TORPEDO_PACKET_PC
 
-#define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
+void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squared, u8 *target_type) {
+    TORPEDO_TARGET_WORLD_QUERY_PC *view = (TORPEDO_TARGET_WORLD_QUERY_PC *)world;
+    void *nearest;
+    u8 type;
+    f32 best;
+    NUVEC delta;
+    i32 index;
+    if (world->gizmo_blowup_count == 0)
+        return NULL;
+    best = distance_squared;
+    nearest = NULL;
+    type = 0;
+    for (index = 0; index < world->gizmo_blowup_count; ++index) {
+        GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
+        f32 distance;
+        if ((blowup->status_flags & 0x4000) == 0 || (blowup->status_flags & 0x8000) == 0 ||
+            (blowup->status_flags & 1) != 0 || (blowup->status_flags & 0x800000) == 0 ||
+            (blowup->draw_flags & 0x1000000) == 0)
+            continue;
+        distance = NuVecDistSqr(&blowup->mid_position, position, &delta);
+        if (distance < best) {
+            best = distance;
+            nearest = blowup;
+            type = 0;
+        }
+    }
+    if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->turrets != NULL) {
+        TORPEDO_TURRET_QUERY_PC *turret = view->turrets->turrets;
+        for (index = 0; index < view->turrets->count; ++index, ++turret) {
+            if ((turret->flags & 4) != 0 && (turret->flags & 2) != 0 && (turret->flags & 0x30) == 0 &&
+                turret->primary_anim_obj != NULL) {
+                NUVEC *draw_position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
+                if (draw_position != NULL) {
+                    f32 distance = NuVecDistSqr(draw_position, position, &delta);
+                    if (distance < best) {
+                        best = distance;
+                        nearest = turret;
+                        type = 1;
+                    }
+                }
+            }
+        }
+    }
+    if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->obstacles != NULL) {
+        for (index = 0; index < view->obstacles->active_gizmo_count; ++index) {
+            TORPEDO_OBSTACLE_QUERY_PC *obstacle = view->obstacles->active_gizmos[index]->object;
+            if ((obstacle->progress_flags & 2) != 0 && (obstacle->progress_flags & 1) != 0 &&
+                (obstacle->runtime_flags & 0x80) == 0) {
+                f32 distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
+                if (distance < best) {
+                    best = distance;
+                    nearest = obstacle;
+                    type = 2;
+                }
+            }
+        }
+    }
+    if (nearest != NULL) {
+        if (target_type != NULL)
+            *target_type = type;
+        return nearest;
+    }
+    return NULL;
+}
+
+void __cdecl HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
+    BOLTTYPE_PC *type = BoltType_FindByID(15, WORLD);
+    void *target;
+    u8 target_type;
+    f32 range, height, travel_time, seek;
+    f64 lifetime;
+    NUVEC delta;
+    NUVEC *target_position = NULL;
+    u16 current_x, current_y, target_x, target_y;
+    NUMTX matrix;
+    NUANGVEC angles;
+    if (bolt == NULL || packet == NULL || (packet->flags & 8) != 0)
+        return;
+    range = (bolt->lifetime - bolt->time) * bolt->speed;
+    if (packet->target != NULL) {
+        target = packet->target;
+        target_type = packet->target_type;
+    } else {
+        target = FindNearestTorpTarget(WORLD, &bolt->position, range * range, &target_type);
+    }
+    if (target != NULL) {
+        switch (target_type) {
+            case 0:
+                target_position = &((GIZMOBLOWUP_PC *)target)->mid_position;
+                break;
+            case 1:
+                target_position = NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
+                break;
+            case 2:
+                target_position = &((TORPEDO_OBSTACLE_QUERY_PC *)target)->evaluated_position;
+                break;
+        }
+        if (target_position != NULL)
+            NuVecSub(&delta, target_position, &bolt->position);
+        height = (f32)(delta.y + (f64)0.1f);
+        delta.y = 0.0f;
+        travel_time = (f32)(NuVecMag(&delta) / bolt->speed + (f64)0.05f);
+        if (bolt->time == 0.0f) {
+            bolt->velocity.y = (f32)(bolt->velocity.y + 6.0);
+        } else if ((packet->flags & 0x10) == 0) {
+            FindAnglesXY(&bolt->velocity, &current_x, &current_y);
+            bolt->velocity.x = 0.0f;
+            bolt->velocity.y = 0.0f;
+            bolt->velocity.z = bolt->speed;
+            delta.y = height;
+            NuVecNorm(&delta, &delta);
+            FindAnglesXY(&delta, &target_x, &target_y);
+            seek =
+                (f32)((NuTrigTable[((i32)((bolt->time / type->field_14) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                       1.0) *
+                      15.0);
+            target_x = SeekRot(current_x, target_x, seek);
+            target_y = SeekRot(current_y, target_y, seek);
+            NuMtxSetIdentity(&matrix);
+            angles.x = target_x;
+            angles.y = target_y;
+            NuMtxSetRotationXYVU0(&matrix, &angles);
+            NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
+            NuVecNorm(&bolt->direction, &bolt->velocity);
+            lifetime = (f64)bolt->time + travel_time;
+            if (bolt->lifetime < lifetime && (packet->flags & 8) == 0)
+                bolt->lifetime = (f32)lifetime;
+        }
+        packet->flags |= 4;
+        packet->target = target;
+    } else if (bolt->time == 0.0f) {
+        bolt->velocity.y = (f32)(bolt->velocity.y + 6.0);
+    }
+}
+
+void __cdecl Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
+    NUVEC axis;
+    NUMTX matrix;
+    f32 lengths, dot, ratio;
+    f64 velocity_length;
+    i32 angle;
+    u8 flags;
+    if (bolt == NULL || packet == NULL)
+        return;
+    flags = packet->flags;
+    if ((flags & 8) != 0 && packet->ricochet_time == 0.0f) {
+        NuVecCross(&axis, &packet->ricochet_position, &bolt->velocity);
+        NuVecNorm(&axis, &axis);
+        NuMtxSetIdentity(&matrix);
+        velocity_length = NuVecMag(&bolt->velocity);
+        lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
+        dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
+        ratio = TorpedoRatioPc(dot, lengths);
+        angle = 0x4000 - TorpedoArcSinePc(ratio);
+        NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
+        NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
+        NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);
+        bolt->speed = (f32)(bolt->speed * (f64)0.8f);
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[71].effect, &bolt->position, 60, FRAMETIME, 0,
+                                          0, NULL);
+        packet->ricochet_time += FRAMETIME;
+        packet->flags |= 0x10;
+    } else if ((flags & 8) != 0 && packet->ricochet_time < (f64)0.2f) {
+        packet->ricochet_time += FRAMETIME;
+    } else if ((flags & 8) != 0) {
+        packet->flags = flags & ~0x18;
+        packet->ricochet_position = v000;
+    }
+    bolt->lifetime = (f32)(bolt->time + (f64)0.0001f);
+}
+
+void __cdecl TorpedoHitTarget(BOLT_PC *bolt) {
+    TORPEDOPACKET_PC *packet;
+    NUVEC *target_position;
+    NUVEC delta;
+    f32 radius;
+    i32 player;
+    if (bolt == NULL || bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL)
+        return;
+    packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
+    if (packet->target != NULL) {
+        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
+                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &radius);
+        if (target_position != NULL) {
+            NuVecSub(&delta, target_position, &bolt->position);
+            if (NuVecMagSqr(&delta) < radius * radius) {
+                player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+                TorpedoHitDispatchPc(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
+                                     ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
+            }
+        }
+    }
+    packet->flags = 1;
+}
+
+void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+    u32 phase = (u16)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.25f) * 4.0 * 65536.0);
+    i32 alpha = (i32)(((f64)NuTrigTable[phase >> 1] * (f64)0.2f + (f64)0.8f) * message->alpha);
+    char vertical[3];
+    vertical[0] = (char)0xc2;
+    vertical[1] = (char)0xa3;
+    vertical[2] = 0;
+    Text3DEx(vertical, position->x, position->y + scale * 0.3f, position->z, scale, scale, scale, 0, message->red,
+             message->green, message->blue, alpha);
+    vertical[1] = (char)0xac;
+    Text3DEx(vertical, position->x, position->y - scale * 0.3f, position->z, scale, scale, scale, 0, message->red,
+             message->green, message->blue, alpha);
+    Text3DEx(">", position->x - scale * 0.25f, position->y, position->z, scale, scale, scale, 0, message->red,
+             message->green, message->blue, alpha);
+    Text3DEx("<", position->x + scale * 0.25f, position->y, position->z, scale, scale, scale, 0, message->red,
+             message->green, message->blue, alpha);
+}
+
+void __cdecl Torpedo_InitBolt(BOLT_PC *bolt) {
+    if (bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
+        HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
+        bolt->flags &= ~4U;
+    }
+}
+
+void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
+    if (bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL)
+        return;
+    HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
+    if (((GAMEOBJECT *)bolt->owner)->torpedo->target != NULL) {
+        NUVEC *target_position;
+        f32 target_radius;
+        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
+                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
+        if (target_position != NULL) {
+            NUVEC direction;
+            NuVecSub(&direction, target_position, &bolt->position);
+            if (NuVecMagSqr(&direction) < target_radius * target_radius)
+                Bolt_End(bolt, 1);
+        }
+    }
+    if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
+        (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
+        NUVEC offset, points;
+        offset.x = offset.y = 0.0f;
+        offset.z = 2.0f * bolt->collision_radius;
+        NuVecMtxRotate(&offset, &offset, &bolt->orientation);
+        NuVecSub(&points, &bolt->position, &offset);
+        if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0)
+            Torpedo_Ricochet(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
+    }
+}
+
+void __cdecl Torpedo_EndBolt(BOLT_PC *bolt) {
+    f32 judder;
+    TorpedoHitTarget(bolt);
+    judder = qrand() < 0x8000 ? 0.4f : -0.4f;
+    GameCam_Judder(GameCam, judder, 2, NULL);
+    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
+}
+
+void __cdecl Torpedo_Shoot(GAMEOBJECT *object) {
+    NUVEC position = object->torpedo->pickup_positions[object->torpedo->count - 1];
+    NUVEC direction;
+    u16 angle = BoltSys->shoot_direction(object, &direction);
+    NUMTX matrix;
+    TorpedoSetRotationYPc(&matrix, angle);
+    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0)
+        Bolt_Add(object, &position, &matrix, 16, 0);
+    else
+        Bolt_Add(object, &position, &matrix, 15, 0);
+    --object->torpedo->count;
+    object->torpedo->flags |= 2;
+    if ((object->flags_1fc & 0x80) != 0)
+        Hint_SetComplete(0x289);
+}
+
+i32 __cdecl PartDraw_Torp(PART_PC *part) {
+    i32 draw = PartDraw_Flickerer(part);
+    if (draw != 0 && WORLD->level_objects[0x7b].active != 0) {
+        NUMTX matrix = part->transform;
+        NuMtxPreScaleU(&matrix, (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0));
+        NuSpecialDrawAt(&WORLD->level_objects[0x7b].special, &matrix);
+    }
+    return draw;
+}
+
 void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME_PC *packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
     TORPEDO_TIMERS_PC *timers = (TORPEDO_TIMERS_PC *)object;
@@ -453,369 +813,7 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         }
     }
 }
-#undef TORPEDO_PACKET_PC
 
-typedef struct torpedo_packet_alloc_pc_s {
-    u8 count, flags;
-    u8 unknown_02[0x86];
-} TORPEDO_PACKET_ALLOC_PC;
-STATIC_ASSERT(sizeof(TORPEDO_PACKET_ALLOC_PC) == 0x88);
-STATIC_ASSERT(offsetof(TORPEDO_PACKET_ALLOC_PC, flags) == 1);
-static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
-TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
-    i32 index;
-    for (index = 0; index < 16; ++index) {
-        if ((TorpedoPackets[index].flags & 1) == 0) {
-            TorpedoPackets[index].flags |= 1;
-            return (TORPEDOPACKET_PC *)&TorpedoPackets[index];
-        }
-    }
-    return NULL;
-}
-
-void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **packet) {
-    i32 index;
-    if (packet == NULL || *packet == NULL)
-        return;
-    for (index = 0; index < 16; ++index) {
-        if (*packet == (TORPEDOPACKET_PC *)&TorpedoPackets[index] && (TorpedoPackets[index].flags & 1) != 0) {
-            memset(&TorpedoPackets[index], 0, sizeof(TorpedoPackets[index]));
-            *packet = NULL;
-            return;
-        }
-    }
-}
-
-static NUVEC *TorpedoTargetPositionPc(void *target, u8 target_type, f32 *radius) {
-    if (target != NULL) {
-        switch (target_type) {
-            case 0:
-                if (radius != NULL)
-                    *radius = ((GIZMOBLOWUP_PC *)target)->target_scale;
-                return &((GIZMOBLOWUP_PC *)target)->mid_position;
-            case 1:
-                if (radius != NULL)
-                    *radius = NuSpecialGetOriginRadius(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
-                return NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
-            case 2:
-                if (radius != NULL)
-                    *radius = ((TORPEDO_OBSTACLE_QUERY_PC *)target)->target_radius;
-                return &((TORPEDO_OBSTACLE_QUERY_PC *)target)->evaluated_position;
-        }
-    }
-    return NULL;
-}
-
-f32 __cdecl TorpedoRatioPc(f32 numerator, f32 denominator) {
-    if (numerator != 0.0f && denominator != 0.0f)
-        return numerator / denominator;
-    return 0.0f;
-}
-
-#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define ASIN_POW2(x) ((x) * (x))
-#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
-#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
-#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-/* NuASin polynomial; this unit carries its own instance. */
-i16 __cdecl TorpedoArcSinePc(f32 sin) {
-    f32 abs;
-    f32 sqrt;
-    f32 unknown_a;
-    f32 unknown_b;
-    f32 unknown_c;
-    f32 unknown_d;
-
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude;
-    magnitude.value = sin;
-    magnitude.bits &= 0x7fffffff;
-    abs = magnitude.value;
-    sqrt = NuFsqrt(1.0f - sin * sin);
-
-    unknown_a = MIN(sqrt, abs);
-
-    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
-
-    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
-
-    unknown_d = unknown_b * unknown_c + unknown_c;
-
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
-             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
-           10430.4f;
-}
-#undef ASIN_NEG_1_OVER_6
-#undef ASIN_NEG_3_OVER_40
-#undef ASIN_NEG_5_OVER_112
-#undef ASIN_NEG_35_OVER_1152
-#undef ASIN_POW2
-#undef ASIN_POW3
-#undef ASIN_POW4
-#undef ASIN_POW5
-
-void __cdecl HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
-    BOLTTYPE_PC *type = BoltType_FindByID(15, WORLD);
-    void *target;
-    u8 target_type;
-    f32 range, height, travel_time, seek;
-    f64 lifetime;
-    NUVEC delta;
-    NUVEC *target_position = NULL;
-    u16 current_x, current_y, target_x, target_y;
-    NUMTX matrix;
-    NUANGVEC angles;
-    if (bolt == NULL || packet == NULL || (packet->flags & 8) != 0)
-        return;
-    range = (bolt->lifetime - bolt->time) * bolt->speed;
-    if (packet->target != NULL) {
-        target = packet->target;
-        target_type = packet->target_type;
-    } else {
-        target = FindNearestTorpTarget(WORLD, &bolt->position, range * range, &target_type);
-    }
-    if (target != NULL) {
-        switch (target_type) {
-            case 0:
-                target_position = &((GIZMOBLOWUP_PC *)target)->mid_position;
-                break;
-            case 1:
-                target_position = NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY_PC *)target)->primary_anim_obj->special);
-                break;
-            case 2:
-                target_position = &((TORPEDO_OBSTACLE_QUERY_PC *)target)->evaluated_position;
-                break;
-        }
-        if (target_position != NULL)
-            NuVecSub(&delta, target_position, &bolt->position);
-        height = (f32)(delta.y + (f64)0.1f);
-        delta.y = 0.0f;
-        travel_time = (f32)(NuVecMag(&delta) / bolt->speed + (f64)0.05f);
-        if (bolt->time == 0.0f) {
-            bolt->velocity.y = (f32)(bolt->velocity.y + 6.0);
-        } else if ((packet->flags & 0x10) == 0) {
-            FindAnglesXY(&bolt->velocity, &current_x, &current_y);
-            bolt->velocity.x = 0.0f;
-            bolt->velocity.y = 0.0f;
-            bolt->velocity.z = bolt->speed;
-            delta.y = height;
-            NuVecNorm(&delta, &delta);
-            FindAnglesXY(&delta, &target_x, &target_y);
-            seek =
-                (f32)((NuTrigTable[((i32)((bolt->time / type->field_14) * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] +
-                       1.0) *
-                      15.0);
-            target_x = SeekRot(current_x, target_x, seek);
-            target_y = SeekRot(current_y, target_y, seek);
-            NuMtxSetIdentity(&matrix);
-            angles.x = target_x;
-            angles.y = target_y;
-            NuMtxSetRotationXYVU0(&matrix, &angles);
-            NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
-            NuVecNorm(&bolt->direction, &bolt->velocity);
-            lifetime = (f64)bolt->time + travel_time;
-            if (bolt->lifetime < lifetime && (packet->flags & 8) == 0)
-                bolt->lifetime = (f32)lifetime;
-        }
-        packet->flags |= 4;
-        packet->target = target;
-    } else if (bolt->time == 0.0f) {
-        bolt->velocity.y = (f32)(bolt->velocity.y + 6.0);
-    }
-}
-
-void __cdecl Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
-    NUVEC axis;
-    NUMTX matrix;
-    f32 lengths, dot, ratio;
-    f64 velocity_length;
-    i32 angle;
-    u8 flags;
-    if (bolt == NULL || packet == NULL)
-        return;
-    flags = packet->flags;
-    if ((flags & 8) != 0 && packet->ricochet_time == 0.0f) {
-        NuVecCross(&axis, &packet->ricochet_position, &bolt->velocity);
-        NuVecNorm(&axis, &axis);
-        NuMtxSetIdentity(&matrix);
-        velocity_length = NuVecMag(&bolt->velocity);
-        lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
-        dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
-        ratio = TorpedoRatioPc(dot, lengths);
-        angle = 0x4000 - TorpedoArcSinePc(ratio);
-        NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
-        NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
-        NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);
-        bolt->speed = (f32)(bolt->speed * (f64)0.8f);
-        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[71].effect, &bolt->position, 60, FRAMETIME, 0,
-                                          0, NULL);
-        packet->ricochet_time += FRAMETIME;
-        packet->flags |= 0x10;
-    } else if ((flags & 8) != 0 && packet->ricochet_time < (f64)0.2f) {
-        packet->ricochet_time += FRAMETIME;
-    } else if ((flags & 8) != 0) {
-        packet->flags = flags & ~0x18;
-        packet->ricochet_position = v000;
-    }
-    bolt->lifetime = (f32)(bolt->time + (f64)0.0001f);
-}
-
-void __cdecl Torpedo_InitBolt(BOLT_PC *bolt) {
-    if (bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
-        HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
-        bolt->flags &= ~4U;
-    }
-}
-
-void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
-    if (bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL)
-        return;
-    HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
-    if (((GAMEOBJECT *)bolt->owner)->torpedo->target != NULL) {
-        NUVEC *target_position;
-        f32 target_radius;
-        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
-        if (target_position != NULL) {
-            NUVEC direction;
-            NuVecSub(&direction, target_position, &bolt->position);
-            if (NuVecMagSqr(&direction) < target_radius * target_radius)
-                Bolt_End(bolt, 1);
-        }
-    }
-    if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
-        (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
-        NUVEC offset, points;
-        offset.x = offset.y = 0.0f;
-        offset.z = 2.0f * bolt->collision_radius;
-        NuVecMtxRotate(&offset, &offset, &bolt->orientation);
-        NuVecSub(&points, &bolt->position, &offset);
-        if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0)
-            Torpedo_Ricochet(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
-    }
-}
-
-static __declspec(noinline) void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
-    if (target == NULL)
-        return;
-    switch (target_type) {
-        case 0:
-            GizmoBlowupBlowup((GIZMOBLOWUP_PC *)target, 1, 11, 1, NULL, 1);
-            break;
-        case 1:
-            GizTurrets_Hit(WORLD, (GIZTURRET_s *)target, position, player, -1);
-            break;
-        case 2:
-            GizObstacles_Hit(WORLD, (GIZOBSTACLE *)target, position, player, -1);
-            break;
-    }
-}
-
-void __cdecl TorpedoHitTarget(BOLT_PC *bolt) {
-    TORPEDOPACKET_PC *packet;
-    NUVEC *target_position;
-    NUVEC delta;
-    f32 radius;
-    i32 player;
-    if (bolt == NULL || bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL)
-        return;
-    packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
-    if (packet->target != NULL) {
-        target_position = TorpedoTargetPositionPc(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                  ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &radius);
-        if (target_position != NULL) {
-            NuVecSub(&delta, target_position, &bolt->position);
-            if (NuVecMagSqr(&delta) < radius * radius) {
-                player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
-                TorpedoHitDispatchPc(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
-                                     ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
-            }
-        }
-    }
-    packet->flags = 1;
-}
-
-void __cdecl Torpedo_EndBolt(BOLT_PC *bolt) {
-    f32 judder;
-    TorpedoHitTarget(bolt);
-    judder = qrand() < 0x8000 ? 0.4f : -0.4f;
-    GameCam_Judder(GameCam, judder, 2, NULL);
-    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
-}
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
-STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-
-static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
-    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    matrix->m00 = cosine;
-    matrix->m01 = 0.0f;
-    matrix->m02 = -sine;
-    matrix->m03 = 0.0f;
-    matrix->m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
-    matrix->m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
-    matrix->m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
-    matrix->m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
-    matrix->m20 = sine;
-    matrix->m21 = 0.0f;
-    matrix->m22 = cosine;
-    matrix->m23 = 0.0f;
-    matrix->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    matrix->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
-}
-
-void __cdecl Torpedo_Shoot(GAMEOBJECT *object) {
-    NUVEC position = object->torpedo->pickup_positions[object->torpedo->count - 1];
-    NUVEC direction;
-    u16 angle = BoltSys->shoot_direction(object, &direction);
-    NUMTX matrix;
-    TorpedoSetRotationYPc(&matrix, angle);
-    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0)
-        Bolt_Add(object, &position, &matrix, 16, 0);
-    else
-        Bolt_Add(object, &position, &matrix, 15, 0);
-    --object->torpedo->count;
-    object->torpedo->flags |= 2;
-    if ((object->flags_1fc & 0x80) != 0)
-        Hint_SetComplete(0x289);
-}
-
-static void TorpedoRotateYPc(NUMTX *m, NUANG angle) {
-    f32 cos_y = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-    f32 sin_y = NuTrigTable[(angle >> 1) & 0x7fff];
-    f32 m00 = m->m00;
-    f32 m10 = m->m10;
-    f32 m20 = m->m20;
-    f32 m30 = m->m30;
-
-    m->m00 = m00 * cos_y + m->m02 * sin_y;
-    m->m02 = m->m02 * cos_y - m00 * sin_y;
-    m->m10 = m10 * cos_y + m->m12 * sin_y;
-    m->m12 = m->m12 * cos_y - m10 * sin_y;
-    m->m20 = m20 * cos_y + m->m22 * sin_y;
-    m->m22 = m->m22 * cos_y - m20 * sin_y;
-    m->m30 = m30 * cos_y + m->m32 * sin_y;
-    m->m32 = m->m32 * cos_y - m30 * sin_y;
-}
-
-#define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 void __cdecl DrawTorpedos(GAMEOBJECT *object) {
     NUMTX matrix;
     i32 index;
@@ -873,4 +871,7 @@ void __cdecl DrawTorpedos(GAMEOBJECT *object) {
             NuSpecialDrawAt(&WORLD->level_objects[0x7a].special, &matrix);
     }
 }
+
+#include <string.h>
+
 #undef TORPEDO_PACKET_PC
