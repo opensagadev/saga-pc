@@ -1084,16 +1084,7 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
     f32 buzz_timer, rumble_sustain, rumble_release;
     i32 priority, volume, rumble_strength, category;
     InitSoundInfo(NumSfxInst);
-    while (1) {
-        if (NuFParGetWord(fpar) == 0) {
-            SFX_RECORD_PC *sinfo = &SfxInfo[NumSfxInst];
-            sinfo->sample_id_flags &= ~0x100000u;
-            sinfo->sample_id_flags |= 0x200000u;
-            PCByteCopy_candidate(&SfxRevertInfoPc[NumSfxInst], sinfo, sizeof(SFX_RECORD_PC));
-            NumSfxInst++;
-            return;
-        }
-
+    while (NuFParGetWord(fpar) != 0) {
         if (NuStrICmp(fpar->word_buffer_ptr, "disable") == 0) {
             SfxInfo[NumSfxInst].sample_id_flags |= 0x40000u;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "comment") == 0) {
@@ -1195,14 +1186,14 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             falloff_near = NuFParGetFloat(fpar);
             if (falloff_near < 0.0f)
                 falloff_near = 0.0f;
-            else if (falloff_near > 250.0f)
+            if (falloff_near > 250.0)
                 falloff_near = 250.0f;
             SfxInfo[NumSfxInst].falloff_near = falloff_near;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "far") == 0) {
             falloff_far = NuFParGetFloat(fpar);
             if (falloff_far < 0.0f)
                 falloff_far = 0.0f;
-            else if (falloff_far > 250.0f)
+            if (falloff_far > 250.0)
                 falloff_far = 250.0f;
             SfxInfo[NumSfxInst].falloff_far = falloff_far;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "global") == 0) {
@@ -1235,6 +1226,10 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             SfxInfo[NumSfxInst].category = category < 0 ? 0 : category > 0xffff ? 0xffff : category;
         }
     }
+    SfxInfo[NumSfxInst].sample_id_flags &= ~0x100000u;
+    SfxInfo[NumSfxInst].sample_id_flags |= 0x200000u;
+    PCByteCopy_candidate(&SfxRevertInfoPc[NumSfxInst], &SfxInfo[NumSfxInst], sizeof(SFX_RECORD_PC));
+    NumSfxInst++;
 }
 
 static void __cdecl fnAudioAudio(NUFPAR_PC *parser) {
