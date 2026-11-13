@@ -32,6 +32,7 @@ void __cdecl NewGame(void) {
     TempOptions = saved_options;
     memset(&Game, 0, sizeof(Game));
     Game.options_save = saved_options;
+    memset(&adaptivedifficulty, 0, sizeof(adaptivedifficulty));
     adaptivedifficulty.level = 0;
     adaptivedifficulty.accumulator = 0.5f;
     adaptivedifficulty.time_elapsed = 0.0f;
