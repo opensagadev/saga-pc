@@ -605,9 +605,9 @@ extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) 
                 return 1;
             break;
         case 2:
-            if (Grapple_Occupied(grapple, NULL, NULL))
-                return 1;
-            break;
+            if (!Grapple_Occupied(grapple, NULL, NULL))
+                return 0;
+            // fallthrough
         default:
             return 1;
     }
