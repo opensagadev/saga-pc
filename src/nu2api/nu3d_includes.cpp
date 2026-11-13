@@ -4990,6 +4990,9 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         edge_b.z = v[2].z - v[0].z;
         NuVecCross(&cross, &edge_b, &edge_a);
         bool clockwise = cross.z > 0.0f;
+        NUVEC4 normal;
+        normal.z = 0.0f;
+        normal.w = 0.0f;
         for (i32 edge = 0; edge < 4; ++edge) {
             i32 start = edge;
             i32 end = (edge + 1) % 4;
@@ -4997,7 +5000,6 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
                 end = 3 - end;
                 start = 3 - edge;
             }
-            NUVEC4 normal;
             normal.x = v[end].y - v[start].y;
             normal.y = -(v[end].x - v[start].x);
             NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
