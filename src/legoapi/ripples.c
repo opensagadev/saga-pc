@@ -27,37 +27,6 @@ void __cdecl DestroyRippleMtls(WORLDINFO *world) {
     }
 }
 
-void __cdecl AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
-    AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
-    PlaySfx((char *)TerrainWaterJumpSoundNamePc, &object->collision_position);
-    NewRumble(object->pad->bound_pad, 0.5f, 0);
-    NewBuzzFrames(object->pad->bound_pad, 1, 0);
-}
-
-void AddSlamDebris(GAMEOBJECT *object) {
-    f32 radius;
-    f32 strength;
-    i32 damage;
-    i32 flags;
-    struct EXPLOSION *explosion;
-    NUVEC position;
-    FindSlamOrigin(object, &position, NULL);
-    flags = 0x17;
-    if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x16)) {
-        radius = 1.0f;
-        flags = 0x37;
-        damage = 2;
-        strength = 0.5f;
-    } else {
-        radius = 0.6f;
-        damage = 1;
-        strength = 0.3f;
-    }
-    explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
-    if (explosion != NULL)
-        explosion->field_0x32 = damage;
-}
-
 typedef struct ripple_node_pc_s RIPPLE_NODE_PC;
 struct ripple_set_pc_s {
     u16 capacity, active_count;
@@ -156,14 +125,6 @@ void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, 
             node->velocity = v000;
     }
 }
-void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
-    (void)unused_x;
-    (void)unused_y;
-    FindAnglesXY(normal, NULL, NULL);
-    NuMtxSetRotationX(matrix, temp_zrot);
-    NuMtxRotateY(matrix, temp_yrot);
-    NuMtxTranslate(matrix, position);
-}
 
 typedef struct ripple_effect_pc_s {
     union {
@@ -206,85 +167,7 @@ typedef struct ripple_contact_timer_view_pc_s {
     f32 timer;
 } RIPPLE_CONTACT_TIMER_VIEW_PC;
 STATIC_ASSERT(offsetof(RIPPLE_CONTACT_TIMER_VIEW_PC, timer) == 0xdc0);
-static f32 RippleRandomRadiusPc = 0.15f;
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
-void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
-    RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
-    NUVEC position, normal, seed, velocity;
-    NUMTX matrix;
-    f32 rate, size, swap_y, swap_x;
-    i32 count, i;
-    if (RIPPLE_WORLD->effects == NULL || object->dead != 0)
-        return;
-    if (object->contact_count == 1) {
-        if (object->contact_material[0] == 13 || object->contact_material[0] == 12) {
-            rate = object->pad->input_magnitude / object->character_data->game_character->run_speed *
-                   ForceFieldRippleRatePc;
-            if (rate < .5f)
-                rate = .5f;
-            count = ParticlesPerSecond(rate, FRAMETIME);
-            if (count > 0) {
-                position = object->contact_position;
-                normal = object->contact_normal;
-                BuildRippleMtx(&matrix, &normal, &position, 0, 0);
-                seed = normal;
-                seed.x = FRAMETIME * seed.x;
-                seed.y = FRAMETIME * seed.y;
-                seed.z = FRAMETIME * seed.z;
-                swap_y = seed.y;
-                seed.y = -seed.z;
-                swap_x = seed.x;
-                seed.x = swap_y;
-                seed.z = -swap_x;
-                for (i = 0; i < count; ++i) {
-                    u16 angle = (u16)qrand();
-                    velocity = seed;
-                    VecRotateAxis(&velocity, angle, &normal);
-                    AddRipple(RippleSetPc, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].lifetime, 0.0f,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].start_color,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_color, 15,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].material, &velocity);
-                }
-            }
-            /* The native sound position remains unwritten when no particles are emitted. */
-            if (contact_timer->timer <= 0) {
-                PlaySfx((char *)RippleForceFieldSoundNamePc, &position);
-                contact_timer->timer = RippleSfxCooldownPc;
-            }
-        }
-        if (contact_timer->timer > 0)
-            contact_timer->timer -= FRAMETIME;
-    } else {
-        if (object->water_intersects == 0 || object->model_draw_result == 0)
-            return;
-        rate = (f32)(object->pad->input_magnitude / object->character_data->game_character->run_speed * 20.0);
-        if (rate < 1.0f)
-            rate = 1.0f;
-        count = ParticlesPerSecond(rate, FRAMETIME);
-        if (count <= 0)
-            return;
-        position.x = 0.0f;
-        position.y = 0.0f;
-        position.z = 0.0f;
-        BuildRippleMtx(&matrix, &v010, &position, 0, 0);
-        size = (f32)(object->bounds_radius * .5);
-        for (i = 0; i < count; ++i) {
-            matrix.m30 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
-                               object->collision_position.x);
-            matrix.m31 = (f32)(object->water_height + (f64).001f);
-            matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbationPc +
-                               object->collision_position.z);
-            RippleRandomRadiusPc = object->bounds_radius + object->bounds_radius + object->bounds_radius;
-            AddRipple(RippleSetPc, &matrix, size, RippleRandomRadiusPc,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);
-        }
-    }
-}
 #undef RIPPLE_WORLD
 
 typedef struct ripple_material_reader_pc_s {
@@ -292,30 +175,6 @@ typedef struct ripple_material_reader_pc_s {
     f32 opacity;
 } RIPPLE_MATERIAL_READER_PC;
 STATIC_ASSERT(offsetof(RIPPLE_MATERIAL_READER_PC, opacity) == 0x70);
-void __cdecl InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
-    char filename[64] = "stuff\\";
-    i32 texture;
-    if (name != NULL) {
-        NuStrCat(filename, name);
-        buffer->addr = (buffer->addr + 15) & ~15u;
-        NuStrCat(filename, ".tex");
-        texture = NuTexRead(filename, buffer, *end);
-        if (texture != 0) {
-            *result = NuMtlCreateEx3D(1, 1);
-            (*result)->attribs.unknown_1_1_2 = 0;
-            (*result)->attribs.unknown_1_4_8 = 0;
-            ((RIPPLE_MATERIAL_READER_PC *)*result)->opacity = 1.0f;
-            (*result)->attribs.z_mode = 1;
-            (*result)->attribs.alpha_mode = 2;
-            (*result)->attribs.filter_mode = 1;
-            (*result)->attribs.unknown_2_1_2 = 2;
-            (*result)->texture_id = (i16)texture;
-            NuMtlUpdate(*result);
-            return;
-        }
-    }
-    *result = NULL;
-}
 static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};
