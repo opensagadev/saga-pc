@@ -3389,7 +3389,7 @@ extern "C" {
     }
 
     void __cdecl NuAnimCurve2SetApplyToMatrix_3(ANI3_HEADER_PC *animation, i32 node, f32 frame, NUMTX *matrix) {
-        u8 node_flags = animation->node_flags[node];
+        i32 node_flags = animation->node_flags[node];
         f32 *values = NuAnimCurveExtractAllNodeCurves_3(animation, node, frame, NULL);
         if ((node_flags & 1) != 0) {
             NUANGVEC rotation;
