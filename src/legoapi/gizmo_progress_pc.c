@@ -205,13 +205,15 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
         if (record->destroyed)
             progress->destroyed[word] |= bit;
     }
-    for (group = 0, force_group = system->groups; group < 8; ++group, ++force_group)
+    for (group = 0; group < 8; ++group) {
+        force_group = &system->groups[group];
         for (slot = 0; slot < 8; ++slot) {
             if (slot < force_group->member_count)
                 progress->group_members[group][slot] = (u8)(force_group->members[slot] - system->records);
             else
                 progress->group_members[group][slot] = 0xff;
         }
+    }
 }
 
 void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
