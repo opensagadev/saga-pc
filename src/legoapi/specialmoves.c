@@ -1,27 +1,6 @@
 #include "saga.h"
-static __declspec(noinline) void SpecialMoveApplyDamagePc(GAMEOBJECT *victim) {
-    if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0)
-        objhitobj_throwkillpartsup = 1;
-    ObjHitObj(victim->force_target, victim,
-              (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1,
-              0x1000, 0, 1);
-}
-i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
-    GAMEOBJECT *victim;
-    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
-        object->special_move_pc == -1 || object->force_target == NULL)
-        return 0;
-    victim = object->force_target;
-    if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM)
-        return 0;
-    if (SpecialMove_GetFlags(object->special_move_pc, 4) != 0)
-        SpecialMoveApplyDamagePc(victim);
-    victim = object->force_target;
-    if (victim != NULL)
-        victim->character_context = -1;
-    return 1;
-}
 
+/* Retail unit 0x58aae0-0x58b34c: definitions in retail address order. */
 STATIC_ASSERT(sizeof(SPECIALMOVE_PC) == 0x10);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_animation) == 0);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_id) == 2);
@@ -31,71 +10,8 @@ STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_id) == 6);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_animation) == 8);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, flags) == 0xa);
 STATIC_ASSERT(offsetof(SPECIALMOVE_PC, distance_apart) == 0xc);
-i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
-    if (index != -1)
-        return PlayerSpecialMoveDataPc[index].attacker_animation;
-    return -1;
-}
-i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
-    if (index != -1)
-        return PlayerSpecialMoveDataPc[index].victim_animation;
-    return -1;
-}
-f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
-    if (index != -1)
-        return PlayerSpecialMoveDataPc[index].distance_apart;
-    return 0.0f;
-}
-u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
-    if (index != -1) {
-        if (mask != 0)
-            return PlayerSpecialMoveDataPc[index].flags & mask;
-        return PlayerSpecialMoveDataPc[index].flags;
-    }
-    return 0;
-}
-i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
-    SPECIALMOVE_PC *moves = PlayerSpecialMoveDataPc;
-    i32 i;
-    if (moves == NULL)
-        return -1;
-    if ((attacker->flags_1fc & 0x80) && attacker->field_da8 > 0.0f)
-        return -1;
-    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1)
-        return -1;
-    for (i = 0; i < PlayerSpecialMoveCountPc; ++i) {
-        SPECIALMOVE_PC *move = &moves[i];
-        if ((attacker->id == (u16)move->attacker_id ||
-             (move->attacker_action_type != -1 &&
-              attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
-            attacker->character_model->model_data_b[move->attacker_animation] != NULL &&
-            (victim->id == (u16)move->victim_id ||
-             (move->victim_action_type != -1 &&
-              victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
-            victim->character_model->model_data_b[move->victim_animation] != NULL &&
-            (!(victim->flags_1fc & 0x80) ||
-             (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000))))
-            return i;
-    }
-    return -1;
-}
-
-void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
-    GAMEOBJECT *other;
-    if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-         object->special_move_pc != -1) ||
-        (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
-        object->character_context = -1;
-        other = object->force_target;
-        if (other != NULL &&
-            ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-              other->special_move_pc != -1) ||
-             (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)))
-            other->character_context = -1;
-    }
-}
-
 void __cdecl SpecialMovesConfigMissingPc(char *filename);
+
 static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
         if (NuStrICmp(parser->word_buffer_ptr, "character") == 0) {
@@ -170,6 +86,98 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
         PlayerSpecialMoveDataPc = NULL;
 }
 
+i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
+    if (index != -1)
+        return PlayerSpecialMoveDataPc[index].attacker_animation;
+    return -1;
+}
+
+i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
+    if (index != -1)
+        return PlayerSpecialMoveDataPc[index].victim_animation;
+    return -1;
+}
+
+f32 __cdecl SpecialMove_GetDistanceApart(i32 index) {
+    if (index != -1)
+        return PlayerSpecialMoveDataPc[index].distance_apart;
+    return 0.0f;
+}
+
+u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
+    if (index != -1) {
+        if (mask != 0)
+            return PlayerSpecialMoveDataPc[index].flags & mask;
+        return PlayerSpecialMoveDataPc[index].flags;
+    }
+    return 0;
+}
+
+i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
+    SPECIALMOVE_PC *moves = PlayerSpecialMoveDataPc;
+    i32 i;
+    if (moves == NULL)
+        return -1;
+    if ((attacker->flags_1fc & 0x80) && attacker->field_da8 > 0.0f)
+        return -1;
+    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1)
+        return -1;
+    for (i = 0; i < PlayerSpecialMoveCountPc; ++i) {
+        SPECIALMOVE_PC *move = &moves[i];
+        if ((attacker->id == (u16)move->attacker_id ||
+             (move->attacker_action_type != -1 &&
+              attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
+            attacker->character_model->model_data_b[move->attacker_animation] != NULL &&
+            (victim->id == (u16)move->victim_id ||
+             (move->victim_action_type != -1 &&
+              victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
+            victim->character_model->model_data_b[move->victim_animation] != NULL &&
+            (!(victim->flags_1fc & 0x80) ||
+             (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000))))
+            return i;
+    }
+    return -1;
+}
+
+static __declspec(noinline) void SpecialMoveApplyDamagePc(GAMEOBJECT *victim) {
+    if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0)
+        objhitobj_throwkillpartsup = 1;
+    ObjHitObj(victim->force_target, victim,
+              (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1,
+              0x1000, 0, 1);
+}
+
+i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
+    GAMEOBJECT *victim;
+    if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
+        object->special_move_pc == -1 || object->force_target == NULL)
+        return 0;
+    victim = object->force_target;
+    if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM)
+        return 0;
+    if (SpecialMove_GetFlags(object->special_move_pc, 4) != 0)
+        SpecialMoveApplyDamagePc(victim);
+    victim = object->force_target;
+    if (victim != NULL)
+        victim->character_context = -1;
+    return 1;
+}
+
+void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
+    GAMEOBJECT *other;
+    if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
+         object->special_move_pc != -1) ||
+        (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
+        object->character_context = -1;
+        other = object->force_target;
+        if (other != NULL &&
+            ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
+              other->special_move_pc != -1) ||
+             (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)))
+            other->character_context = -1;
+    }
+}
+
 void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         if (object->force_target == NULL) {
@@ -183,4 +191,15 @@ void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
                 SpecialMoveApplyDamagePc(object);
         }
     }
+}
+
+__declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
+    i32 move = object->special_move_pc;
+    f32 distance = move != -1 ? PlayerSpecialMoveDataPc[move].distance_apart : 0.0f;
+    NUVEC target;
+    target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
+    target.z = object->force_target->position.z -
+               NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
+    object->velocity.x = object->target_velocity.x = (target.x - object->position.x) * 10.0;
+    object->velocity.z = object->target_velocity.z = (target.z - object->position.z) * 10.0;
 }

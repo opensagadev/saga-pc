@@ -129,17 +129,6 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     return 1;
 }
 
-__declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
-    i32 move = object->special_move_pc;
-    f32 distance = move != -1 ? PlayerSpecialMoveDataPc[move].distance_apart : 0.0f;
-    NUVEC target;
-    target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;
-    target.z = object->force_target->position.z -
-               NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * distance;
-    object->velocity.x = object->target_velocity.x = (target.x - object->position.x) * 10.0;
-    object->velocity.z = object->target_velocity.z = (target.z - object->position.z) * 10.0;
-}
-
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
