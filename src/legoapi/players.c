@@ -3114,33 +3114,28 @@ void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET
 i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
     CHARACTER_MODEL_LAYERS_PC *source, *target;
     i32 source_model, target_model;
-    i32 source_animation, target_animation;
-    if (source_id == -1)
-        return 0;
-    source_model = apicharsys->playermodelids[source_id];
-    if (source_model == -1)
-        return 0;
-    source = &apicharsys->models[source_model];
-    if (target_id == -1)
-        return 0;
-    target_model = apicharsys->playermodelids[target_id];
-    if (target_model == -1)
-        return 0;
-    target = &apicharsys->models[target_model];
-    if (packet->blending != 0) {
-        source_animation = packet->blend_source_animation;
-        if (source->model_data_b[source_animation] == NULL)
-            return 0;
-        target_animation = packet->blend_target_animation;
-        if (source->model_data_b[target_animation] == NULL || target->model_data_b[source_animation] == NULL ||
-            target->model_data_b[target_animation] == NULL)
-            return 0;
-    } else {
-        source_animation = packet->animation_index;
-        if (source->model_data_b[source_animation] == NULL || target->model_data_b[source_animation] == NULL)
-            return 0;
+    if (source_id != -1) {
+        source_model = apicharsys->playermodelids[source_id];
+        if (source_model != -1) {
+            source = &apicharsys->models[source_model];
+            if (target_id != -1) {
+                target_model = apicharsys->playermodelids[target_id];
+                if (target_model != -1) {
+                    target = &apicharsys->models[target_model];
+                    if (packet->blending != 0) {
+                        if (source->model_data_b[packet->blend_source_animation] != NULL &&
+                            source->model_data_b[packet->blend_target_animation] != NULL &&
+                            target->model_data_b[packet->blend_source_animation] != NULL &&
+                            target->model_data_b[packet->blend_target_animation] != NULL)
+                            return 1;
+                    } else if (source->model_data_b[packet->animation_index] != NULL &&
+                               target->model_data_b[packet->animation_index] != NULL)
+                        return 1;
+                }
+            }
+        }
     }
-    return 1;
+    return 0;
 }
 
 static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
