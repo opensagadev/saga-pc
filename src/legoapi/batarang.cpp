@@ -1620,20 +1620,22 @@ extern "C" {
 
     i32 __cdecl Batman_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
-        u32 flags, capabilities;
+        u32 capabilities;
         BATMAN_PREPARE_PC *entry;
         if (owner->character_context == 0x5b)
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-        flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
-        if (flags != 0 && (flags & 0x40000000) == 0) {
-            capabilities = flags & packet->capabilities;
-            if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & 0x40) == 0 &&
-                owner->takeover_target == NULL && owner->character_context != 0x3c &&
-                (capabilities & 0xffff7fff) == 0) {
+        if (packet->path_info.connection->traversal_flags[packet->path_info.direction] != 0 &&
+            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
+            capabilities =
+                packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
+                (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
+                owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
                 AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, (char *)StarWarsTakeOverJumpPc);
                 return 1;
             }
-            if (capabilities != 0 && (flags & 0x98000000) == 0) {
+            if (capabilities != 0 &&
+                (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x98000000) == 0) {
                 for (entry = batman_prepareforspecialmove; entry->prepare != NULL; ++entry) {
                     if ((entry->capabilities & capabilities) != 0) {
                         if (entry->prepare(packet, apiobject, checks) != 0)
