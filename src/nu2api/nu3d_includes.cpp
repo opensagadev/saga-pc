@@ -4902,10 +4902,8 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             projected.x + screen_radius < record.min_x || projected.y + screen_radius < record.min_y)
             continue;
         NUVEC4 *v = record.transformed;
-        NUVEC edge_a = v[1] - v[0];
-        NUVEC edge_b = v[2] - v[0];
         NUVEC cross;
-        NuVecCross(&cross, &edge_b, &edge_a);
+        NuVecCross(&cross, &(v[2] - v[0]), &(v[1] - v[0]));
         bool clockwise = cross.z > 0.0f;
         __declspec(align(16)) NUVEC4 normal;
         normal.z = normal.w = 0.0f;
