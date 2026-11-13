@@ -490,7 +490,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                     case 4: {
                         limited = sample->scale < GrassClumps[clump_index].size ? sample->scale
                                                                                 : GrassClumps[clump_index].size;
-                        angle = (i32)((limited / GrassClumps[clump_index].size) * 16384.0);
+                        angle = (i32)(-(limited / GrassClumps[clump_index].size) * 16384.0);
                         sample->scale = (GrassClumps[clump_index].field_30 - GrassClumps[clump_index].field_2c) *
                                             NuTrigTable[((0x4000 - angle) >> 1) & 0x7fff] +
                                         GrassClumps[clump_index].field_2c;
