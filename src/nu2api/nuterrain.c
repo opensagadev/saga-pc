@@ -35,7 +35,6 @@ void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
 #define TERRAIN_NPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 i32 __cdecl NewPlatInst(void *object, i32 instance) {
     TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-    i32 group_count;
     i32 new_index;
     i32 source_index;
     i32 i;
@@ -44,8 +43,9 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
         return -1;
     if (terrain->group_index_count >= terrain->max_group_indices)
         return -1;
-    group_count = terrain->group_count;
-    if (group_count >= terrain->max_groups || object == NULL)
+    if (terrain->group_count >= terrain->max_groups)
+        return -1;
+    if (object == NULL)
         return -1;
 
     new_index = -1;
@@ -68,7 +68,7 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
     if (source_index == -1)
         return -1;
 
-    TERRAIN_NPI_SET->groups[group_count] =
+    TERRAIN_NPI_SET->groups[terrain->group_count] =
         TERRAIN_NPI_SET->groups[terrain->platforms[source_index].terrain_group_index];
     TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].scene_index = (i16)new_index;
     TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].chunk_type = 1;
