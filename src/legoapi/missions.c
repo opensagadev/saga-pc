@@ -146,17 +146,17 @@ i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC 
     i32 index, total = 0;
     if (system == NULL)
         system = MissionSys;
-    if (system == NULL)
-        return 0;
-    reader = (MISSION_SYSTEM_READER_PC *)system;
-    for (index = 0; index < reader->count; ++index) {
-        if (complete != 0) {
-            save->completed[index] = 1;
-            if (save->best_times[index] == 0.0f)
-                save->best_times[index] = (f32)reader->missions[index].time - 1.0f;
+    if (system != NULL) {
+        reader = (MISSION_SYSTEM_READER_PC *)system;
+        for (index = 0; index < reader->count; ++index) {
+            if (complete != 0) {
+                save->completed[index] = 1;
+                if (save->best_times[index] == 0.0f)
+                    save->best_times[index] = (f32)reader->missions[index].time - 1.0f;
+            }
+            if (save->completed[index] != 0)
+                ++total;
         }
-        if (save->completed[index] != 0)
-            ++total;
     }
     return total;
 }
@@ -170,10 +170,7 @@ GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
         reader = (MISSION_SYSTEM_READER_PC *)system;
         target = FindGameObject(reader->active_mission->find_character, 0, 0, 1, 0);
         if (identity != NULL) {
-            if (target != NULL)
-                *identity = U64_PAIR(target->collision_identity_mask);
-            else
-                *identity = 0;
+            *identity = target != NULL ? U64_PAIR(target->collision_identity_mask) : 0;
         }
         return target;
     }
