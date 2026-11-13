@@ -2752,9 +2752,11 @@ void __cdecl PartCleanupTypes(void) {
     }
 }
 i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
-    i32 closest_index, i;
+    i32 closest_index;
+    i32 i;
     i32 result = 0;
-    f32 ratio, closest_distance;
+    f32 ratio;
+    f32 closest_distance;
     // Retail uses this inclusive upper check; loaded type IDs are 0..127.
     if (effect_index < 1)
         return -1;
@@ -2777,9 +2779,12 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     }
 
     if (result == 0) {
-        closest_index = effect_index;
         ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale;
-        ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
+        if (ratio <= 1.0f)
+            ratio = 1.0f - ratio;
+        else
+            ratio = ratio - 1.0f;
+        closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
             if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1 &&
