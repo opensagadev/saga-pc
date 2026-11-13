@@ -15612,6 +15612,7 @@ void __cdecl routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32
     EDAIPATHNODE_s *node;
     i32 index;
     i32 i;
+    EDAIPATH_s *path;
     (void)event;
     if (item == NULL)
         return;
@@ -15627,12 +15628,10 @@ void __cdecl routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32
             }
             break;
         case 1:
-            // MATCH-EXCEPTION: index computed before the NULL check, as retail schedules it.
-            index = aieditor->current_path->current_route != NULL
-                        ? aieditor->current_path->current_route - aieditor->current_path->routes
-                        : 0;
             if (aieditor->current_path->current_route == NULL)
                 return;
+            path = aieditor->current_path;
+            index = path->current_route - path->routes;
             aieditor->current_path->current_route->flags &= ~1;
             aieditor->current_path->current_route = NULL;
             for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes); node != NULL;
