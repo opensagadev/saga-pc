@@ -1159,20 +1159,6 @@ i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protecti
     return KillGameObject(object, reason, 0);
 }
 
-void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
-    if (TerrainChatterWaitPc <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
-        object->character_context == -1) {
-        if (sound != TerrainLastChatterSfxPc || !(interval > 0.0f)) {
-            PlaySfxById(sound, &object->collision_position);
-            TerrainChatterWaitPc = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);
-            TerrainLastChatterSfxPc = sound;
-        } else {
-            TerrainChatterWaitPc = interval;
-            TerrainLastChatterSfxPc = -1;
-        }
-    }
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);

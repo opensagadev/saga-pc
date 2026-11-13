@@ -37,47 +37,6 @@ void __cdecl PlaySfxByIdAndSetVolume(i32 sfx_id, NUVEC *position, f32 volume) {
     PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
 }
 
-void __cdecl AddLevSfx(WORLDINFO *world, NUVEC *position, char *name, i32 sfx_id) {
-    i32 index;
-
-    if (sfx_id == -1 && name != NULL) {
-        sfx_id = GetSfxId(name);
-    }
-    if (sfx_id == -1) {
-        return;
-    }
-
-    for (index = 0; index < world->level_sfx_count; index++) {
-        if (world->level_sfx[index].id == sfx_id)
-            break;
-    }
-    if (index < world->level_sfx_count) {
-        if (world->level_sfx[index].references < 0xff)
-            world->level_sfx[index].references++;
-        return;
-    }
-    if (world->level_sfx_count >= 64)
-        return;
-    if (position != NULL)
-        world->level_sfx[world->level_sfx_count].position = *position;
-    else
-        world->level_sfx[world->level_sfx_count].position = APIObjectZeroMomentumPC;
-    world->level_sfx[world->level_sfx_count].id = (i16)sfx_id;
-    world->level_sfx[world->level_sfx_count].references = 1;
-    world->level_sfx_count++;
-}
-
-void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
-    i32(__cdecl * check_reverb)(void);
-    SfxBitsRestore(&CurrentSFXTAB);
-    if (paused == 0 && (check_reverb = GameAudio->check_reverb_fn) != NULL && check_reverb() != 0)
-        NuSound3SetReverb(1);
-    else
-        NuSound3SetReverb(0);
-    if (paused == 0 && CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1)
-        PlaySfxById(world->current_level->sfx_ambient, NULL);
-}
-
 void __cdecl GroupBuffer_MoveToEnd(i32 group_id) {
     i32 buffer_length = NuSound3GroupSampleCount;
     i32 first_sample = NuSound3Groups[group_id].first_sample;
@@ -615,22 +574,6 @@ i32 __cdecl SfxBitTab(const SoundTable *table, i32 sound_id) {
     return 0;
 }
 
-i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
-    i32 pair_index;
-    i16 id;
-
-    if (quiet_index == -1) {
-        return -1;
-    }
-
-    for (pair_index = 0; (id = AmbientPairTab[pair_index * 2]) != -1; pair_index++) {
-        if (id == quiet_index) {
-            return AmbientPairTab[pair_index * 2 + 1];
-        }
-    }
-    return -1;
-}
-
 void __cdecl SfxBitsSetAll(u16 *bits) {
     memset(bits, -1, 200);
 }
@@ -879,14 +822,6 @@ void __cdecl SoundKillAll(void) {
     NuSound3Update();
 }
 
-void __cdecl ResetLevSfx(WORLDINFO *world) {
-    i32 index;
-    for (index = 0; index < 64; ++index) {
-        world->level_sfx[index].id = -1;
-    }
-    world->level_sfx_count = 0;
-}
-
 void __cdecl ClearLinkedCutSceneMusic(void *context) {
     if (context == NULL || context == Music.track_data) {
         Music.track_data = NULL;
@@ -924,13 +859,6 @@ void RestoreGameCut(void) {
 
 void __cdecl ResetSounds(void) {
     PCByteCopy_candidate(SfxBits, GlobalSfxBits, 0xc8);
-}
-
-i32 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
-    (void)name;
-    (void)table;
-    (void)fallback;
-    return -1;
 }
 
 void __cdecl UpdateBackgroundMusic(void) {
@@ -1022,25 +950,6 @@ void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
         for (i = 0; i < samples; ++i)
             set_bit(NuSound3GroupSampleIds[NuSound3Groups[group].first_sample + i]);
     }
-}
-
-struct PC_MUSIC_ACTION_PAIR_PC {
-    i16 quiet_id;
-    i16 action_id;
-    u8 unknown_004[0x18];
-};
-STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, quiet_id) == 0);
-STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, action_id) == 2);
-STATIC_ASSERT(sizeof(PC_MUSIC_ACTION_PAIR_PC) == 0x1c);
-i32 __cdecl ActionFromQuiet(i32 quiet_index) {
-    i32 index;
-    if (quiet_index == -1)
-        return -1;
-    for (index = 0; ActionPairTab[index].quiet_id != -1; ++index) {
-        if (ActionPairTab[index].quiet_id == quiet_index)
-            return ActionPairTab[index].action_id;
-    }
-    return -1;
 }
 
 i32 __cdecl GetSfxIdN(char *name, i32 length) {

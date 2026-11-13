@@ -2,38 +2,6 @@
 
 extern "C" f32 AUDIOFADELEVEL;
 
-f32 GameGetMusicVolume(OPTIONSSAVE *options) {
-    f32 volume = (f32)options->music_volume / 10.0;
-    return (f32)(volume * ((f64)options->master_volume / 10.0));
-}
-
-f32 GameSetMusicVolume(OPTIONSSAVE *options) {
-    f32 volume = GameGetMusicVolume(options);
-    if (options->music_enabled == 0 && WORLD->current_level == TITLES_LDATA) {
-        volume = 0.0f;
-    }
-    music_man.SetClassVolume(0x23, volume);
-    return volume;
-}
-
-f32 GameSetSoundVolume(OPTIONSSAVE *options) {
-    f32 volume = (f32)options->sound_volume / 10.0;
-    f32 cut_volume;
-    volume = (f32)(volume * ((f64)options->master_volume / 10.0));
-    SetSoundVolume(volume);
-    cut_volume = (f32)((f64)0.85f * (f64)options->master_volume / 10.0);
-    music_man.SetClassVolume(0x10, cut_volume);
-    return volume;
-}
-
-void legoSetMusicVolume(f32 volume) {
-    music_man.SetClassVolume(0x23, volume);
-}
-
-void legoSetCutVolume(f32 volume) {
-    music_man.SetClassVolume(0x10, volume);
-}
-
 void SetAudioFadeLevel(f32 level) {
     AUDIOFADELEVEL = level;
 }
@@ -44,195 +12,6 @@ f32 GetAudioFadeLevel(void) {
 
 void SfxCheckMusicOnOff(OPTIONSSAVE *options) {
     (void)options;
-}
-
-extern "C" void __cdecl ResetRepeatSfx(void) {
-    i32 i;
-    memset(RepeatSfxQueue, 0, sizeof(RepeatSfxQueue));
-    RepeatSfxQueueHead = 0;
-    for (i = 0; i < 32; ++i)
-        RepeatSfxQueue[0].sfx_id = -1;
-}
-
-void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32 repeat_delay,
-                           NUVEC *position) {
-    if (play_count == 1 && start_delay == 0.0f) {
-        if (sfx_id != -1) {
-            PlaySfxById(sfx_id, position);
-        } else {
-            PlaySfx(name, position);
-        }
-        return;
-    }
-
-    if (start_delay > 0.0f) {
-        RepeatSfxQueue[RepeatSfxQueueHead].state = 1;
-    } else {
-        RepeatSfxQueue[RepeatSfxQueueHead].state = 2;
-    }
-
-    if (sfx_id == -1) {
-        sfx_id = GetSfxId(name);
-    }
-    RepeatSfxQueue[RepeatSfxQueueHead].sfx_id = (i16)sfx_id;
-    RepeatSfxQueue[RepeatSfxQueueHead].start_delay = start_delay;
-    RepeatSfxQueue[RepeatSfxQueueHead].play_count = play_count;
-    RepeatSfxQueue[RepeatSfxQueueHead].repeat_delay = repeat_delay;
-    RepeatSfxQueue[RepeatSfxQueueHead].position = position;
-    RepeatSfxQueueHead = (RepeatSfxQueueHead + 1) & 0x1f;
-}
-
-void __cdecl UpdateRepeatSfx(void) {
-    REPEAT_SFX_ENTRY_PC *entry = RepeatSfxQueue;
-    i32 index;
-    for (index = 0; index < 32; ++index, ++entry) {
-        switch (entry->state) {
-            case 1:
-                if (entry->start_delay > 0.0f) {
-                    entry->start_delay -= FRAMETIME;
-                } else {
-                    entry->state = 2;
-                }
-                break;
-            case 3:
-                if (entry->start_delay > 0.0f) {
-                    entry->start_delay -= FRAMETIME;
-                } else {
-                    entry->state = 2;
-                }
-                break;
-            case 2:
-                PlaySfxById(entry->sfx_id, entry->position);
-                --entry->play_count;
-                if (entry->play_count > 0) {
-                    entry->start_delay = entry->repeat_delay;
-                    entry->state = 3;
-                } else {
-                    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY_PC));
-                    entry->state = 0;
-                }
-                break;
-        }
-    }
-}
-
-void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
-    i32 sfx;
-    u32 flags = object->character_data->model_flags;
-    if ((flags & 0x40) != 0)
-        sfx = GameAudio->sfx_ids[1];
-    else if ((flags & 8) != 0) {
-        switch (type) {
-            case 0:
-                sfx = GameAudio->sfx_ids[2];
-                break;
-            case 1:
-                sfx = GameAudio->sfx_ids[3];
-                break;
-            case 3:
-                sfx = GameAudio->sfx_ids[4];
-                break;
-            case 4:
-                sfx = GameAudio->sfx_ids[5];
-                break;
-            case 2:
-                sfx = GameAudio->sfx_ids[6];
-                break;
-            default:
-                return;
-        }
-    } else
-        sfx = GameAudio->sfx_ids[0];
-    if (sfx != -1) {
-        if ((object->flags_1fc & 0x80) == 0 && (object->portal_flags & 0x08000000) == 0)
-            PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
-        else
-            PlaySfxById(sfx, &object->lower_position);
-    }
-}
-
-extern "C" void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options) {
-    options->sound_volume = 8;
-    options->music_volume = 6;
-    if (SetSoundFadeDistCallBackFn == NULL || SetSoundFadeDistCallBackFn(world) == 0) {
-        if (VehicleArea != 0) {
-            nusound_fade_start = 10.0f;
-            nusound_fade_end = 80.0f;
-        } else {
-            nusound_fade_start = 2.0f;
-            nusound_fade_end = 15.0f;
-        }
-    }
-    GameSetSoundVolume(options);
-    GameSetMusicVolume(options);
-}
-
-extern "C" void(__cdecl *ExtraDieSfxFn)(GAMEOBJECT *);
-
-extern "C" void __cdecl PlayDieSfx(GAMEOBJECT *object) {
-    i32 sfx;
-    if (object->character_data->game_character->sfx_die != -1)
-        sfx = object->character_data->game_character->sfx_die;
-    else if ((object->character_data->game_character->flags_090 & 0x800) != 0)
-        sfx = GameAudio->sfx_ids[0x18];
-    else if ((object->character_data->model_flags & 0x2000) != 0)
-        sfx = GameAudio->sfx_ids[0x18];
-    else if ((object->character_data->model_flags & 0x04000000) != 0)
-        sfx = GameAudio->sfx_ids[0x19];
-    else if ((object->character_data->model_flags & 0x10) != 0)
-        sfx = GameAudio->sfx_ids[0x1a];
-    else if ((object->character_data->model_flags & 0x40000000) != 0)
-        sfx = -1;
-    else if ((object->flags_ef4 & 0x800) != 0)
-        sfx = GameAudio->sfx_ids[0x1b];
-    else
-        sfx = GameAudio->sfx_ids[0x1c];
-    if (sfx != -1)
-        PlaySfxById(sfx, &object->collision_position);
-    if (ExtraDieSfxFn != NULL)
-        ExtraDieSfxFn(object);
-}
-
-extern "C" {
-    void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
-        i32 sfx;
-        i32 alternate;
-        (void)ignored;
-        if (type == 1) {
-            if ((object->character_data->model_flags & 8) == 0)
-                return;
-            sfx = GameAudio->sfx_ids[11];
-        } else if (type == 2) {
-            sfx = GameAudio->sfx_ids[12];
-        } else if (type == 3) {
-            sfx = GameAudio->sfx_ids[13];
-        } else if (type == 4) {
-            sfx = GameAudio->sfx_ids[14];
-        } else {
-            if (object->is_underwater != 0 || object->water_intersects != 0)
-                return;
-            alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
-            if ((object->character_data->model_flags & 0x10) != 0) {
-                if (alternate)
-                    sfx = GameAudio->sfx_ids[10];
-                else
-                    sfx = GameAudio->sfx_ids[9];
-            } else {
-                if (type != 0)
-                    return;
-                if (alternate)
-                    sfx = GameAudio->sfx_ids[8];
-                else
-                    sfx = GameAudio->sfx_ids[7];
-            }
-        }
-        if (sfx != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
-                PlaySfxById(sfx, &object->lower_position);
-            else
-                PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
-        }
-    }
 }
 
 extern "C" void __cdecl PlaySfxByIdAndSetVolumeAndPitch(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
@@ -248,30 +27,6 @@ STATIC_ASSERT(sizeof(LEVEL_SFX_GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_GIZMOTYPE_PC, add_level_sfx) == 0x94);
 
 extern "C" {
-    void __cdecl AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
-        i32 id, i;
-        if (ids == NULL || count == NULL || *count >= capacity)
-            return;
-        id = GetSfxId(name);
-        if (id == -1)
-            return;
-        for (i = 0; i < *count; ++i)
-            if (ids[i] == id)
-                return;
-        ids[*count] = id;
-        ++*count;
-    }
-
-    void __cdecl AddLevelSfxFromId(i32 id, i32 *ids, i32 *count, i32 capacity) {
-        i32 i;
-        if (ids == NULL || count == NULL || *count >= capacity || id == -1)
-            return;
-        for (i = 0; i < *count; ++i)
-            if (ids[i] == id)
-                return;
-        ids[*count] = id;
-        ++*count;
-    }
 
     void __cdecl AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
         LEVEL_SFX_GIZMOTYPE_PC *type;
@@ -287,28 +42,6 @@ extern "C" {
     }
 }
 
-extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
-    u8 player = object->field_280;
-    i32 bits = 0;
-    (void)unused;
-    if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0)
-        return;
-    if (object->flags_1fc & 0x80)
-        bits = 1 << player;
-    if (name != NULL) {
-        i32 sfx = GetSfxId(name);
-        if (position == NULL)
-            position = &object->collision_position;
-        PlaySfxById(sfx, position);
-    } else {
-        i16 sfx = object->character_data->game_character->sfx_sabre;
-        if (sfx != -1)
-            GameAudio_PlaySfxById(sfx, &object->collision_position, bits, 1);
-        else
-            PlaySfxById(GameAudio->sfx_ids[0x40], &object->collision_position);
-    }
-}
-
 extern "C" void __cdecl PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
 }
@@ -318,60 +51,6 @@ extern "C" {
         i32(__cdecl *override_footstep)(GAMEOBJECT *, i32);
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
     STATIC_ASSERT(offsetof(FOOTSTEP_AUDIO_CALLBACKS_PC, override_footstep) == 0);
-    void __cdecl PlayFootStepSfx(GAMEOBJECT *object) {
-        i32 on_platform;
-        i8 surface;
-        i32 sound;
-        i32 alternate;
-        CHARACTERANIM_CONFIG_PC *config;
-        ANIMPACKET_PC *packet = &object->anim_packet;
-        if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
-            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0))
-            on_platform = 1;
-        else
-            on_platform = 0;
-        if (object->character_data->game_character->sfx_footstep != -1)
-            sound = object->character_data->game_character->sfx_footstep;
-        else {
-            i32(__cdecl * override_footstep)(GAMEOBJECT *, i32) =
-                ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
-            if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
-                if (object->is_underwater == 0 && object->water_intersects == 0) {
-                    alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
-                    if ((object->character_data->model_flags & 0x10) != 0) {
-                        if (alternate)
-                            sound = GameAudio->sfx_ids[0x12];
-                        else
-                            sound = GameAudio->sfx_ids[0x11];
-                    } else {
-                        if (alternate)
-                            sound = GameAudio->sfx_ids[0x10];
-                        else
-                            sound = GameAudio->sfx_ids[0x0f];
-                    }
-                } else
-                    sound = GameAudio->sfx_ids[0x13];
-            }
-        }
-        if (sound != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
-                PlaySfxById(sound, &object->lower_position);
-            else
-                PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
-        }
-        if (packet->blending == 0 && packet->animation_index != -1) {
-            config = object->character_model->animation_configs[packet->animation_index];
-            if (config != NULL) {
-                if ((config->flags & 0x20000) != 0) {
-                    GameCam_Judder(GameCam, -0.25f, 0, &object->collision_position);
-                    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
-                } else if ((config->flags & 0x40000) != 0 && VehicleArea == 0) {
-                    GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
-                    NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
-                }
-            }
-        }
-    }
 }
 
 extern "C" i32 __cdecl IsSfxLooping(i32 id) {
@@ -404,16 +83,4 @@ extern "C" void __cdecl LoadSpecialSfxFile(void *world_ptr) {
     sprintf(path, "%s.sfx", world->config_file);
     if (NuFileExists(path))
         SpecialSfxLoad(path, world);
-}
-
-i32 TickTockStatePc = 0;
-
-void __cdecl TickTockSfx(void) {
-    if (TickTockStatePc != 0) {
-        PlaySfxById(GameAudio->sfx_ids[0x1d], NULL);
-        TickTockStatePc = 0;
-    } else {
-        PlaySfxById(GameAudio->sfx_ids[0x1e], NULL);
-        TickTockStatePc = 1;
-    }
 }
