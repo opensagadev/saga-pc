@@ -4983,15 +4983,9 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
             return false;
         if (min_x > record.max_x || min_y > record.max_y || max_x < record.min_x || max_y < record.min_y)
             continue;
-        NUVEC4 *v = record.transformed;
-        __declspec(align(16)) NUVEC edge_a, edge_b, cross;
-        edge_a.x = v[1].x - v[0].x;
-        edge_a.y = v[1].y - v[0].y;
-        edge_a.z = v[1].z - v[0].z;
-        edge_b.x = v[2].x - v[0].x;
-        edge_b.y = v[2].y - v[0].y;
-        edge_b.z = v[2].z - v[0].z;
-        NuVecCross(&cross, &edge_b, &edge_a);
+        NUVEC cross;
+        OccluderCross(&cross, record.transformed[2] - record.transformed[0],
+                      record.transformed[1] - record.transformed[0]);
         bool clockwise = cross.z > 0.0f;
         NUVEC4 normal;
         normal.z = 0.0f;
@@ -5003,14 +4997,16 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
                 end = 3 - end;
                 start = 3 - edge;
             }
-            normal.x = v[end].y - v[start].y;
-            normal.y = -(v[end].x - v[start].x);
+            const NUVEC4 &first = record.transformed[start];
+            const NUVEC4 &second = record.transformed[end];
+            normal.x = second.y - first.y;
+            normal.y = -(second.x - first.x);
             NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
             normal.z = normal.w = 0.0f;
             for (u32 corner = 0; corner < 8; ++corner) {
                 NUVEC delta;
-                delta.x = corners[corner].x - v[start].x;
-                delta.y = corners[corner].y - v[start].y;
+                delta.x = corners[corner].x - first.x;
+                delta.y = corners[corner].y - first.y;
                 delta.z = 0.0f;
                 f32 distance = delta.y * normal.y + normal.x * delta.x + delta.z * normal.z;
                 if (distance < 0.01f)
