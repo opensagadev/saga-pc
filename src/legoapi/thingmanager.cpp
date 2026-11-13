@@ -258,9 +258,10 @@ void ThingManager::cbEdTimingSelect(eduimenu_s *menu, eduiitem_s *item, u32) {
                     entry->highlighted = 0;
             }
         }
-        NuTimeBarEnable(item->data != 0);
+        NuTimeBarEnable((u32)item->data > 0);
     } else {
-        theThingManager->things[item->data - 4]->profiling ^= 1;
+        BaseThing *thing = theThingManager->things[item->data - 4];
+        thing->profiling ^= 1;
     }
 }
 
