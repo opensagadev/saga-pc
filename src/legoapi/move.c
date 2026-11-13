@@ -168,13 +168,11 @@ void DrawForceBackEffect(nuhspecial_s *special) {
 i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     i32 difference;
-    if (pad->operator_data == NULL || pad->input_magnitude == 0.0f)
-        return 0;
-    difference = RotDiff((u16)(pad->input_angle + (u16)GameCam->input_yaw), object->field_0x276);
-    if (difference < -0x4000)
-        return 1;
-    if (difference > 0x4000)
-        return 1;
+    if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
+        difference = RotDiff(pad->input_angle + GameCam->input_yaw, object->field_0x276);
+        if (difference < -0x4000 || difference > 0x4000)
+            return 1;
+    }
     return 0;
 }
 
