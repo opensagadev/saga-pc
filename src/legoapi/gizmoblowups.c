@@ -679,24 +679,23 @@ i32 __cdecl GizmoBlowupTypeGetCount(WORLDINFO *world) {
 }
 
 char *__cdecl GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
-    char *name;
+    GIZMOBLOWUPTYPE_PC *type;
     if (world == NULL || index == -1 || index > world->gizmo_blowup_type_count)
         return NULL;
-    name = world->gizmo_blowup_types[index].name;
-    return NuStrLen(name) != 0 ? name : NULL;
+    type = &world->gizmo_blowup_types[index];
+    return NuStrLen(type->name) != 0 ? type->name : NULL;
 }
 
 void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
-    char *name;
     GIZMOBLOWUPTYPE_PC *type;
     GIZMOBLOWUP_PC temporary;
     i32 flags;
     if (!world || index == -1 || index > world->gizmo_blowup_type_count)
         return;
-    name = world->gizmo_blowup_types[index].name;
-    if (!NuStrLen(name) || !name)
+    type = &world->gizmo_blowup_types[index];
+    if (!NuStrLen(type->name) || !type->name)
         return;
-    type = GizmoBlowup_FindType(name, world);
+    type = GizmoBlowup_FindType(type->name, world);
     if (!type)
         return;
     memset(&temporary, 0, sizeof(temporary));
