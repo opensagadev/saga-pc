@@ -1,87 +1,5 @@
 #include "saga.h"
 #include <string.h>
-typedef struct PORTAL_DOOR_PC {
-    NUSPECIALHANDLE special;
-    u16 flags;
-    u8 portal_id;
-    u8 unknown_0f;
-} PORTAL_DOOR_PC;
-typedef struct PORTAL_DOOR_WORLD_PC {
-    u8 unknown_0000[0x5048];
-    PORTAL_DOOR_PC *portal_doors;
-    i32 portal_door_count;
-} PORTAL_DOOR_WORLD_PC;
-STATIC_ASSERT(sizeof(PORTAL_DOOR_PC) == 0x10);
-STATIC_ASSERT(offsetof(PORTAL_DOOR_PC, flags) == 0xc);
-STATIC_ASSERT(offsetof(PORTAL_DOOR_PC, portal_id) == 0xe);
-STATIC_ASSERT(offsetof(PORTAL_DOOR_WORLD_PC, portal_doors) == 0x5048);
-STATIC_ASSERT(offsetof(PORTAL_DOOR_WORLD_PC, portal_door_count) == 0x504c);
-void __cdecl PortalDoors_Configure(WORLDINFO *world, char *config) {
-    PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
-    PORTAL_DOOR_PC *cursor;
-    NUFPAR_PC *parser;
-    view->portal_doors = NULL;
-    view->portal_door_count = 0;
-    if (world->current_gscn == NULL)
-        return;
-    parser = NuFParCreateMem("portaldoors", config, 0xffff);
-    if (parser == NULL)
-        return;
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    cursor = (PORTAL_DOOR_PC *)world->giz_buffer.addr;
-    view->portal_doors = cursor;
-    while (NuFParGetLine(parser) != 0) {
-        NuFParGetWord(parser);
-        if (NuStrICmp(parser->word_buffer_ptr, "portaldoor") != 0)
-            continue;
-        memset(cursor, 0, sizeof(*cursor));
-        if (NuFParGetWord(parser) == 0 ||
-            NuSpecialFind(world->current_gscn, &cursor->special, parser->word_buffer_ptr, 1) == 0)
-            continue;
-        cursor->portal_id = (u8)NuFParGetInt(parser);
-        while (NuFParGetWord(parser) != 0) {
-            if (NuStrICmp(parser->word_buffer_ptr, "trigger_at_end") == 0)
-                cursor->flags |= 1;
-        }
-        ++view->portal_door_count;
-        ++cursor;
-    }
-    NuFParDestroy(parser);
-    if (view->portal_door_count > 0)
-        world->giz_buffer.addr = ((u32)cursor + 15U) & ~15U;
-    else
-        view->portal_doors = NULL;
-}
-
-void PortalDoors_Update(WORLDINFO *world) {
-    i32 index;
-    PORTALDOOR_s *door = world->portal_doors;
-    if (door == NULL) {
-        return;
-    }
-    for (index = 0; index < world->portal_door_count; ++index, ++door) {
-        NUINSTANIM *animation = NuSpecialGetInstAnim(&door->special);
-        if (animation != NULL) {
-            const f32 end_frame =
-                NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);
-            const u16 flags = door->flags;
-            i32 closed;
-            if ((flags & PORTALDOOR_TRIGGER_AT_END) != 0)
-                closed = !(animation->ltime >= end_frame);
-            else
-                closed = !(animation->ltime > 1.0f);
-            if (!closed) {
-                if ((flags & PORTALDOOR_OPENED) == 0) {
-                    NuPortalSetActive(world->current_gscn, door->portal_id, 1);
-                    door->flags = ((u16)((door->flags & ~PORTALDOOR_CLOSED) | PORTALDOOR_OPENED));
-                }
-            } else if ((flags & PORTALDOOR_OPENED) != 0 || (flags & PORTALDOOR_CLOSED) == 0) {
-                NuPortalSetActive(world->current_gscn, door->portal_id, 0);
-                door->flags = ((u16)((door->flags & ~PORTALDOOR_OPENED) | PORTALDOOR_CLOSED));
-            }
-        }
-    }
-}
 
 #include <stdio.h>
 
@@ -98,15 +16,6 @@ STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, flags) == 0x1c);
 static char portal_output_name_pc[64] = "Active";
 static char portal_gizmo_name_pc[16] = {0};
 
-void __cdecl PortalDoors_Reset(WORLDINFO *world) {
-    PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
-    i32 index;
-    PORTAL_DOOR_PC *door = view->portal_doors;
-    if (door != NULL) {
-        for (index = 0; index < view->portal_door_count; ++index, ++door)
-            door->flags &= ~6;
-    }
-}
 static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL || world->current_gscn == NULL)
