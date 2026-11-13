@@ -581,10 +581,10 @@ extern "C" {
     }
 
     i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
-        PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
         i32 i, j;
         if (points == NULL || heights == NULL)
             return 0;
+        PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
         heights[0] = -10000.0f;
         heights[1] = -10000.0f;
         heights[2] = -10000.0f;
@@ -594,8 +594,7 @@ extern "C" {
             NUVEC min, max;
             if ((PUSH_BLOCK_PC *)other == block)
                 continue;
-            min = *other->position;
-            max = *other->position;
+            max = min = *other->position;
             min.x -= GizPushFabsPc(other->bounds_min.x);
             min.z -= GizPushFabsPc(other->bounds_min.z);
             max.x += GizPushFabsPc(other->bounds_max.x);
