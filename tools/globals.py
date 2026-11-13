@@ -12,7 +12,7 @@ After tools/port.py inserts Android drafts into a unit, this:
   4. maps them in config/symbols.csv and defines them in src/data.cpp with the
      retail initial value.
 
-  python3 tools/globals.py src/legogame/panel.c --android ../saga
+  python3 tools/globals.py src/legogame/panel.cpp --android ../saga
 """
 import argparse
 import collections
