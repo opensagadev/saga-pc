@@ -112,6 +112,7 @@ void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
 void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
+    NUMTX matrix;
     i32 index;
     (void)unused;
     (void)elapsed;
@@ -124,17 +125,14 @@ void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     EnableShadowMapRendering(0);
     for (index = 0; index < system->count; ++index) {
         TORPEDO_MACHINE_QUERY_PC *machine = &system->machines[index];
-        NUMTX matrix;
-        u8 alternate;
         if (!machine->visible && editor_active == 0)
             continue;
         NuMtxSetRotationY(&matrix, machine->y_rotation);
         NuMtxTranslate(&matrix, &machine->position);
         NuMtxPreScaleU(&matrix, system->scale);
-        alternate = machine->alternate;
-        if (alternate == 0 && world->level_objects[0x122].active != 0)
+        if (machine->alternate == 0 && world->level_objects[0x122].active != 0)
             NuSpecialDrawAt(&world->level_objects[0x122].special, &matrix);
-        else if (alternate == 1 && world->level_objects[0x123].active != 0)
+        else if (machine->alternate == 1 && world->level_objects[0x123].active != 0)
             NuSpecialDrawAt(&world->level_objects[0x123].special, &matrix);
         if (machine->active && machine->activation_time > 0.0f) {
             f32 phase = machine->activation_time + machine->activation_time;
