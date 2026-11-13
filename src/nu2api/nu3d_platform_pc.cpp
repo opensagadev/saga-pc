@@ -3857,9 +3857,12 @@ extern "C" {
     }
 
     DEBRIS_PART_HEADER_PC *__cdecl CreateDmaPartEffectList(void *memory, i32 *size) {
-        u32 address = ((u32)memory + 0xf) & ~0xf;
-        *size = sizeof(DEBRIS_PART_HEADER_PC);
-        return (DEBRIS_PART_HEADER_PC *)address;
+        u8 *cursor = (u8 *)(((u32)memory + 0xf) & ~0xf);
+        u8 *start = cursor;
+        DEBRIS_PART_HEADER_PC *header = (DEBRIS_PART_HEADER_PC *)cursor;
+        cursor = (u8 *)&header->frames[64];
+        *size = (i32)(cursor - start);
+        return (DEBRIS_PART_HEADER_PC *)start;
     }
 
     void __cdecl LinkDmaParticalSets(DEBRIS_PARTICLE_CHUNK_PC **chunks, i32 count) {
@@ -4609,7 +4612,7 @@ extern "C" {
         PC_GSCN_NATIVE_VIEW *native = (PC_GSCN_NATIVE_VIEW *)scene->native_scene;
         PC_SCENE_MTL_VIEW *material;
         i32 i, j;
-        u8 released = 0;
+        u8 released;
         for (i = 0; i != native->vertex_buffer_count; ++i) {
             PCFrameCriticalSectionEnter_candidate();
             PCDeviceReleaseTexture(&native->vertex_buffers[i]);
@@ -4625,6 +4628,7 @@ extern "C" {
             PCDeviceReleaseTexture(&scene->textures[i]->resource);
             PCFrameCriticalSectionLeave_candidate();
         }
+        released = 0;
         for (i = 0; i != native->geometry_count; ++i) {
             PC_GSCN_GEOMETRY_VIEW *geometry = native->geometries[i];
             if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
@@ -4637,7 +4641,7 @@ extern "C" {
             }
         }
         if (released) {
-            for (i = 0; i < 100; ++i) {
+            for (i = 0; i != 100; ++i) {
                 if (PCRegisteredNativeScenes[i] == scene) {
                     PCRegisteredNativeScenes[i] = NULL;
                     break;
@@ -4647,8 +4651,10 @@ extern "C" {
         material = (PC_SCENE_MTL_VIEW *)scene->materials[0];
         for (i = 0; i < scene->material_count; ++i, ++material) {
             for (j = 0; j < 2; ++j) {
-                if (material->shader_handles[j] > 0)
-                    --PCShaderRecordFromHandle(material->shader_handles[j])->ref_count;
+                if (material->shader_handles[j] > 0) {
+                    PC_SHADER_RECORD_VIEW *record = PCShaderRecordFromHandle(material->shader_handles[j]);
+                    record->ref_count--;
+                }
             }
         }
     }
