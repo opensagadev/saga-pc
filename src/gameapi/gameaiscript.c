@@ -5574,20 +5574,20 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
             for (type_index = 0; type_index < type_count; ++type_index) {
                 if ((i16)candidate->id == types[type_index]) {
                     if (enabled) {
-                        candidate->flags_ef0 =
-                            (candidate->flags_ef0 & ~0x1000u) | 0x400000u | ((still_take_hit & 1) << 12);
+                        candidate->invulnerable = 1;
+                        candidate->still_take_hit = still_take_hit;
                     } else {
-                        candidate->flags_ef0 &= ~0x400000u;
+                        candidate->invulnerable = 0;
                     }
                 }
             }
         }
     } else if (object != NULL && (object->flags_1f8 & 0x400) != 0) {
         if (enabled) {
-
-            object->flags_ef0 = (object->flags_ef0 & ~0x1000u) | 0x400000u | ((still_take_hit & 1) << 12);
+            object->invulnerable = 1;
+            object->still_take_hit = still_take_hit;
         } else {
-            object->flags_ef0 &= ~0x400000u;
+            object->invulnerable = 0;
         }
     }
     return 1;

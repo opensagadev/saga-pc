@@ -6306,10 +6306,10 @@ typedef struct gameobject_s {
         struct {
             u32 : 11;
             u32 doomed_escape_take_damage : 1;
-            u32 invulnerable : 1;
+            u32 still_take_hit : 1;
             u32 : 8;
             u32 character_toggled : 1;
-            u32 still_take_hit : 1;
+            u32 invulnerable : 1;
             u32 : 9;
         };
     };
