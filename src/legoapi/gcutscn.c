@@ -1232,8 +1232,18 @@ i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos,
     return 0;
 }
 
+/* Empty on PC (a bare RET at the start of this unit in retail). It lives in this
+   unit and takes variable arguments: once a call passes a pointer through the
+   ellipsis (CutScriptExecutePc), VC8 keeps every later call and knows the body
+   preserves eax/ecx/edx, which CutTriggerFirePc and CutTriggerUpdatePc rely on.
+   Calls compiled before the definition stay ordinary external calls
+   (CutScriptParseBlockPc), so it is defined here rather than at the top.
+   saga.h still declares the fixed (char *) form. */
+void __cdecl CutSceneMissingObjectDiagnosticPc(char *format, ...) {
+}
+
 #define CUT_SCRIPT_DIAG0() ((void(__cdecl *)(void))CutSceneMissingObjectDiagnosticPc)()
-#define CUT_SCRIPT_DIAG2(a, b) ((void(__cdecl *)(i32, i32))CutSceneMissingObjectDiagnosticPc)((i32)(a), (i32)(b))
+#define CUT_SCRIPT_DIAG2(a, b) CutSceneMissingObjectDiagnosticPc((char *)(a), (b))
 
 void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
     INSTNUGCUTSCENE *instance;
