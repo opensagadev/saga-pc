@@ -3821,34 +3821,28 @@ i32 __cdecl Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     i32 index;
     u64 flag;
     char *value;
-    f32 result;
-    f64 previous;
     if (packet != NULL && processor != NULL && processor->script != NULL) {
         creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
         for (i = 0; i < count - 1; i++) {
             for (index = 0; index < 4; index++) {
-                if (NuStrICmp(params[i], processor->script->params[index].name) == 0)
+                if (NuStrICmp(params[i], processor->script->params[index].name) == 0) {
+                    flag = (u64)2 << index;
+                    if (NuStrICmp(params[i + 1], GizmoDefaultOutputName) == 0) {
+                        if (creature != NULL && ((u64)(i64)creature->flags & flag) != 0)
+                            processor->params[index] = creature->script_params[index];
+                        else
+                            processor->params[index] = processor->script->params[index].default_value;
+                    } else if ((value = NuStrIStr(params[i + 1], (char *)AIActionIncrementName)) != NULL) {
+                        value += NuStrLen(AIActionIncrementName);
+                        processor->params[index] += AIParamToFloatEx(packet, &packet->script_processor, value);
+                    } else if ((value = NuStrIStr(params[i + 1], (char *)AIActionDecrementName)) != NULL) {
+                        value += NuStrLen(AIActionDecrementName);
+                        processor->params[index] -= AIParamToFloatEx(packet, &packet->script_processor, value);
+                    } else
+                        processor->params[index] = AIParamToFloatEx(packet, &packet->script_processor, params[i + 1]);
+                    i++;
                     break;
-            }
-            if (index < 4) {
-                flag = (u64)2 << index;
-                i++;
-                if (NuStrICmp(params[i], GizmoDefaultOutputName) == 0) {
-                    if (creature != NULL && ((u64)(i64)creature->flags & flag) != 0)
-                        processor->params[index] = creature->script_params[index];
-                    else
-                        processor->params[index] = processor->script->params[index].default_value;
-                } else if ((value = NuStrIStr(params[i], (char *)AIActionIncrementName)) != NULL) {
-                    result =
-                        AIParamToFloatEx(packet, &packet->script_processor, value + NuStrLen(AIActionIncrementName));
-                    processor->params[index] += result;
-                } else if ((value = NuStrIStr(params[i], (char *)AIActionDecrementName)) != NULL) {
-                    previous = processor->params[index];
-                    result =
-                        AIParamToFloatEx(packet, &packet->script_processor, value + NuStrLen(AIActionDecrementName));
-                    processor->params[index] = (f32)(previous - result);
-                } else
-                    processor->params[index] = AIParamToFloatEx(packet, &packet->script_processor, params[i]);
+                }
             }
         }
     }
