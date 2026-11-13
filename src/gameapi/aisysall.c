@@ -15554,6 +15554,7 @@ void __cdecl routeEditor_cbCreateRoute(eduimenu_s *menu, eduiitem_s *item, u32 e
     i32 attempt;
     i32 number;
     i32 i;
+    i32 taken;
     char name[16];
     (void)menu;
     (void)item;
@@ -15574,12 +15575,15 @@ found:
     number = 0;
     do {
         sprintf(name, "route%d", ++number);
+        taken = 0;
         for (i = 0; i < 16; ++i) {
-            if ((aieditor->current_path->routes[i].flags & 1) &&
-                NuStrICmp(name, aieditor->current_path->routes[i].name) == 0)
+            route = &aieditor->current_path->routes[i];
+            if ((route->flags & 1) && NuStrICmp(name, route->name) == 0) {
+                taken = 1;
                 break;
+            }
         }
-    } while (i < 16);
+    } while (taken);
     strcpy(aieditor->current_path->current_route->name, name);
     AiEditorClearMainMenuPc();
 }
