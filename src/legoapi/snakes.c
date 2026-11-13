@@ -76,7 +76,7 @@ i32 __cdecl SnakeASinPc(f32 sin) {
     unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
 
     unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
+    unknown_c = -1.0f < unknown_c ? unknown_c : -1.0f;
 
     unknown_d = unknown_b * unknown_c + unknown_c;
 
