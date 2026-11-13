@@ -726,7 +726,7 @@ extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
     }
     spinner->state_flags = flags;
 
-    u16 step = static_cast<u16>(0x10000 / spinner->type);
+    i32 step = 0x10000 / spinner->type;
     if ((spinner->state_flags & 1) != 0) {
         spinner->target_rotation = spinner->rotation + step;
     } else {
