@@ -8216,13 +8216,16 @@ i32 __cdecl Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
 
     (void)processor;
     (void)param_6;
+    object = NULL;
+    keep_out = -1;
+    enabled = 1;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    enabled = 1;
-    keep_out = -1;
+    if (packet != NULL && packet->owner != NULL) {
+        object = packet->owner->objptr;
+    }
     if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIGameCharacterName);
@@ -8241,7 +8244,7 @@ i32 __cdecl Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
             object->flags_e20 |= 0x10000u;
             object->weapon_scale = 1.0f;
             if (keep_out != -1) {
-                object->portal_flags = (u32)((object->portal_flags & ~0x10u) | (keep_out ? 0x10u : 0));
+                object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out << 4) & 0x10u);
             }
         } else {
             object->weapon_scale = 0.0f;
