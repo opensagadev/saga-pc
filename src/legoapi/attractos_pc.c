@@ -380,13 +380,13 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC position;
     if ((object->flags_1fc_word & 0x80) != 0 && object->suit != NULL && (object->suit->flags & 0x80) != 0) {
         GAME_MESSAGE_PC *message;
+        available = 1;
         sprintf(text, "%i", object->field_1062);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
         message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
         if (message != NULL)
             message->alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
-        available = 1;
     }
     if (object->character_context == 0x53) {
         if (object->character_model->action_animations[object->field_7aa] != NULL &&
@@ -445,16 +445,13 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->external_force.y = (f64)object->external_force.y + (f64)object->launch_origin.y * (f64)FRAMETIME;
             nearest = AttractoSelectShardPc(world, object);
             if (nearest != NULL) {
-                f32 dx = (f64)nearest->position.x - (f64)object->collision_position.x;
-                f32 dz = (f64)nearest->position.z - (f64)object->collision_position.z;
-                object->movement_facing_angle = NuAtan2D(dx, dz);
+                object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
+                                                         (f64)nearest->position.z - (f64)object->collision_position.z);
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0)
                     Shard_Collect((SHARD_s *)nearest, object);
                 else {
-                    f32 strength;
                     nearest->flags |= 0x20;
-                    strength = (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f;
-                    NewRumble(object->pad->bound_pad, strength, 0);
+                    NewRumble(object->pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
                 }
             }
         }
@@ -470,7 +467,7 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             (ATTRACTO_RECORD_PC *)Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (radius > distance && object->field_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+            if (distance < radius && object->field_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
                 object->character_context = 0x53;
                 object->context_timer = 0.0f;
                 object->grapple = attracto;
