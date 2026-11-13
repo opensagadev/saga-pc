@@ -12832,13 +12832,13 @@ extern "C" {
         size = (i32)y;
     }
 
-    static i32 getnextdatapoint(f32 *value, i32 *delta) {
-        f32 old_x = curx;
-        *value = old_x;
-        --size;
+    static i32 getnextdatapoint(f32 *x, i32 *xsize) {
+        f32 cx;
+        *x = cx = curx;
+        size--;
         cury = cury + 1.0;
-        curx = old_x + dx;
-        *delta = (i32)curx - (i32)old_x;
+        curx += dx;
+        *xsize = (i32)curx - (i32)cx;
         if (size != 0)
             return 0;
         curx = nextx;
