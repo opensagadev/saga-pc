@@ -1,6 +1,14 @@
 #include "saga.h"
 void __cdecl ClearSpecialMove(GAMEOBJECT *);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
+/* Original name unknown; retail keeps it uncalled at the head of the unit (0x47f620). */
+i32 __cdecl IndyConnectionHelperIsTypePc(GAMEOBJECT *owner, u8 type) {
+    AI_HELPER_SLOT_PC *helper = owner->indy_connection_helper;
+    if (helper != NULL && owner->ai_packet.path_info.connection == helper->connection &&
+        (helper->direction == 0xff || owner->ai_packet.path_info.direction == helper->direction))
+        return type == helper->type;
+    return 0;
+}
 i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
     AIPATHNODE_PC *destination =
