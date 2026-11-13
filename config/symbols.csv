@@ -10984,6 +10984,7 @@ address,symbol,size,ctype
 0x6c9e80,?IsSelectedClass@ClassEditor@@QAEHPAUEdClass@@@Z,40,
 0x6c9eb0,?cbEdClassSetMode@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,35,
 0x6c9ee0,?cbEdClassModeMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,363,
+0x6ca050,?cbCEDeleteConfirmed@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,65,
 0x6ca0a0,?cbEdClassDeleteObject@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,10,
 0x6ca110,?Set@ClassObject@@QAEXPAD@Z,314,
 0x6ca250,?GetName@ClassObject@@QAEXPADH@Z,158,
