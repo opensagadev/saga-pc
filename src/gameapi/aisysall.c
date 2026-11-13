@@ -3333,18 +3333,21 @@ i32 __cdecl Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
     i32 frames;
     i32 i;
     char *value;
-    minimum = maximum = 0.0f;
+    maximum = minimum = 0.0f;
     frames = 0;
     if (first_time != 0) {
         for (i = 0; i < count; i++) {
             value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
-            if (value != NULL)
-                minimum = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
-            else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL)
-                maximum = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
-            else if ((value = NuStrIStr(params[i], (char *)AIActionFramesName)) != NULL)
-                frames = (i32)AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionFramesName) + 1);
-            else
+            if (value != NULL) {
+                value += NuStrLen(AIActionMinTimeName) + 1;
+                minimum = AIParamToFloatEx(packet, processor, value);
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL) {
+                value += NuStrLen(AIActionMaxTimeName) + 1;
+                maximum = AIParamToFloatEx(packet, processor, value);
+            } else if ((value = NuStrIStr(params[i], (char *)AIActionFramesName)) != NULL) {
+                value += NuStrLen(AIActionFramesName) + 1;
+                frames = (i32)AIParamToFloatEx(packet, processor, value);
+            } else
                 processor->action_timer = AIParamToFloatEx(packet, processor, params[i]);
         }
         if (frames != 0) {
@@ -3356,9 +3359,9 @@ i32 __cdecl Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
     }
     if (processor->action_data_1 != 0) {
         processor->action_data_1--;
-        return processor->action_data_1 == 0;
-    }
-    if (processor->action_timer > 0.0f) {
+        if (processor->action_data_1 == 0)
+            return 1;
+    } else if (processor->action_timer > 0.0f) {
         processor->action_timer -= elapsed;
         if (processor->action_timer <= 0.0f) {
             processor->action_timer = 0.0f;
