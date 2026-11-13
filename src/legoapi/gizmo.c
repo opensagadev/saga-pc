@@ -159,7 +159,8 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
 }
 
 extern i32 gizmoerrorlogsize;
-/* Retail calls one empty diagnostic entry with varying arguments. */
+/* Retail calls one empty diagnostic entry with varying arguments (none, or the clashing prefix names); it is
+ * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
 void __cdecl GizmoDiagnosticPc();
 void __cdecl GizmoNameDiagnosticPc(char *name);
 
@@ -1128,4 +1129,9 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
     } else {
         minikit->area_index = -1;
     }
+}
+
+/* Original source name unknown. The native entry is exactly RET (0x559570, in this unit). */
+void __cdecl GizmoDiagnosticPc(char *format, ...) {
+    (void)format;
 }
