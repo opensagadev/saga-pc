@@ -7833,7 +7833,7 @@ void __cdecl InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
 i32 __cdecl aieditor_Register(char *name, void(__cdecl *enter)(void), eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *),
                               void(__cdecl *draw)(i32, i32, f32, f32), void(__cdecl *leave)(void)) {
     AI_EDITOR_MODE_ENTRY_PC *entry;
-    i32 index;
+    i32 index = -1;
     if (aieditorsettings.modes.count < 8) {
         index = aieditorsettings.modes.count++;
         entry = &aieditorsettings.modes.entries[index];
@@ -7842,10 +7842,10 @@ i32 __cdecl aieditor_Register(char *name, void(__cdecl *enter)(void), eduimenu_s
         entry->process = process;
         entry->draw = draw;
         entry->leave = leave;
-        return index;
+    } else {
+        AIScriptMissingStateDiagnostic();
     }
-    AIScriptMissingStateDiagnostic();
-    return -1;
+    return index;
 }
 
 void __cdecl AiEditorChangeModePc(i32 mode) {
