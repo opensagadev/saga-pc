@@ -52,25 +52,6 @@ GAMEOBJECT *__cdecl BossKilled(i32 character_id) {
     return NULL;
 }
 
-void __cdecl KillRumble(GAMEOBJECT *object) {
-    FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        NewRumble(object->pad->bound_pad, 0.7f, 0);
-        pad = object->pad->bound_pad;
-        if (pad != NULL)
-            NuSound3AddRumble(pad, 0.1f, 0, 0.0f, 0.0f);
-    }
-}
-void __cdecl HitRumble(GAMEOBJECT *object) {
-    FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        NewRumble(object->pad->bound_pad, 0.5f, 0);
-        pad = object->pad->bound_pad;
-        if (pad != NULL)
-            NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
-    }
-}
-
 #include <stdio.h>
 typedef struct combat_coinpacket_pc_s {
     u32 coins;
@@ -681,29 +662,6 @@ refill:
     Player_ClearContext(target, 1);
     target->current_hp = target->field_107e;
     goto hurt;
-}
-
-/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
-static __forceinline f32 HitsFabsPc(f32 f) {
-    f32 rv;
-
-    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
-    return rv;
-}
-
-void __cdecl FloatRumble(GAMEOBJECT *object) {
-    f32 strength;
-    FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        strength = HitsFabsPc(object->velocity.y);
-        strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
-        if (strength > 1.0f)
-            strength = 1.0f;
-        NewRumble(object->pad->bound_pad, strength, 0);
-        pad = object->pad->bound_pad;
-        if (pad != NULL)
-            NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
-    }
 }
 
 typedef struct collision_exclusion_view_pc_s {
