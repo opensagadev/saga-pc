@@ -10156,17 +10156,19 @@ i32 __cdecl Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     if (panel == NULL || (panel->flags & 2) != 0)
         return 1;
     AIMoveInstruction(packet, &processor->action_pos, 0.0f, &processor->path_info, 1, 0.0f);
-    if (GizPanel_CanUsePanel(object, panel) != 0) {
+    if (GizPanel_CanUsePanel(object, panel) == 0) {
+        if (FreePlay != 0) {
+            processor->action_timer -= elapsed;
+            if (processor->action_timer < 0.0f) {
+                processor->action_timer = 0.5f;
+                object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
+            }
+        }
+    } else {
         f32 distance = NuVecDistSqr(&packet->terrain_origin, &processor->action_pos, NULL);
         if (distance < ai_moveradius * ai_moveradius) {
             packet->movement_look_target = &panel->position;
             object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
-        }
-    } else if (FreePlay != 0) {
-        processor->action_timer -= elapsed;
-        if (processor->action_timer < 0.0f) {
-            processor->action_timer = 0.5f;
-            object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
         }
     }
     return object->character_context == 0x0b && object->grapple == panel;
