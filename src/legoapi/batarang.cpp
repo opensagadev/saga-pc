@@ -810,7 +810,7 @@ extern "C" void __cdecl Batarangs_Update(void) {
         if (batarang->flight_state.in_flight == 0)
             continue;
         batarang->flight_state.flight_time += FRAMETIME;
-        if (!(batarang->flight_state.flight_time < 2.0f) && batarang->flight_state.flight_time > 4.0f)
+        if (batarang->flight_state.flight_time >= 2.0f && batarang->flight_state.flight_time > 4.0f)
             batarang->flight_state.flight_time = 4.0f;
         while (batarang->targets[batarang->flight_state.current_target].lost != 0 &&
                batarang->flight_state.current_target < batarang->active)
