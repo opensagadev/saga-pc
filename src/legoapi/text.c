@@ -1024,7 +1024,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     u16 encoded[512];
     unsigned char candidate[512];
     unsigned char lines[8][512];
-    if ((SmartTextFont == NULL && QFont2D == NULL) || text == NULL || text[0] == '\0' || MenuStopDraw != 0)
+    if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0)
         return;
 
     x_scale = TextScaleX_candidate * x_scale;
