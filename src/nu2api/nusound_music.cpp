@@ -775,12 +775,9 @@ char *NuMusic::AllocString(const char *str) {
 }
 void NuMusic::SubstituteString(char *dst, char *src, char *find, char *subst) {
     char *hit;
-    i32 offset;
-
     while ((hit = NuStrIStr(src, find)) != NULL) {
-        offset = (i32)(hit - src);
-        NuStrNCpy(dst, src, offset + 1);
-        dst += offset;
+        NuStrNCpy(dst, src, hit - src + 1);
+        dst += hit - src;
         NuStrCpy(dst, subst);
         src = hit + NuStrLen(find);
         dst += NuStrLen(subst);
