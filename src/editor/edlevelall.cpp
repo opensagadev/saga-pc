@@ -5967,7 +5967,7 @@ void SplineObject::GenBezierPoints() {
     if (start == NULL)
         return;
     SplineKnot *end = start->next;
-    while (end != NULL) {
+    while (start != NULL && end != NULL) {
         f32 length = BezierLineLength(start->position, start->out_tangent, end->position, end->in_tangent);
         for (; distance < length; distance += step) {
             __declspec(align(16)) VuVec point;
@@ -5985,8 +5985,6 @@ void SplineObject::GenBezierPoints() {
             end = knots.first;
             closing = 1;
         }
-        if (start == NULL)
-            return;
     }
 }
 
