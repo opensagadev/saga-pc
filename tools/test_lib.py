@@ -706,6 +706,18 @@ class ObjectOrderPlacementTests(unittest.TestCase):
         result = place_between([[first, tail, twin, getter, last]], placed, bytes(code), self.TEXT)
         self.assertNotIn(id(getter), result)
 
+    def test_trailing_functions_of_a_member_tile_up_to_the_next_mapped_start(self):
+        from tools.libmatch import place_between
+        # 0x1000: placed 2-byte function; 0x1002: lone `ret`; 0x1003: other mapped code.
+        code = b"\xff\xd0\xc3\x55"
+
+        def item(raw):
+            return {"size": len(raw), "region": {"bytes": raw, "relocations": []}}
+        call, ret = item(b"\xff\xd0"), item(b"\xc3")
+        self.assertEqual(place_between([[call, ret]], {id(call): 0x1000}, code, self.TEXT, [0x1003]),
+                         {id(ret): 0x1002})
+        self.assertEqual(place_between([[call, ret]], {id(call): 0x1000}, code, self.TEXT), {})
+
     def test_short_function_is_placed_where_its_relocations_point_at_bound_names(self):
         from tools.libmatch import place_by_references
         # mov eax, [__crtheap]; ret at 0x1000 and at 0x1010 (another global).

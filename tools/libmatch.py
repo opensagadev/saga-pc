@@ -171,7 +171,7 @@ def masked_match(item, code, text_va, va):
     return all(i in masked or code[offset + i] == byte for i, byte in enumerate(raw))
 
 
-def place_between(sequences, placed, code, text_va, mapped_end=None):
+def place_between(sequences, placed, code, text_va, mapped_starts=None):
     """Place the unplaced functions between two placed neighbours of one member by tiling.
 
     The linker keeps a member's functions in object order, so the code between
@@ -181,18 +181,26 @@ def place_between(sequences, placed, code, text_va, mapped_end=None):
     one-instruction setters) have too many masked hits to place by themselves;
     here each is tried at one address only. A tiling is accepted only when it
     ends exactly where the next placed function starts and is the only one
-    (tried greedily, then checked by backtracking). Returns {id(item): va} of
-    the newly placed functions.
+    (tried greedily, then checked by backtracking). With `mapped_starts` (sorted
+    starts of mapped code), the functions after a member's last placed one tile
+    up to the next mapped start the same way. Returns {id(item): va} of the
+    newly placed functions.
     """
     result = {}
     for sequence in sequences:
         indices = [i for i, item in enumerate(sequence) if id(item) in placed]
-        for i, k in zip(indices, indices[1:]):
+        spans = [(i, k, placed[id(sequence[k])]) for i, k in zip(indices, indices[1:])]
+        if indices and mapped_starts and indices[-1] + 1 < len(sequence):
+            last = indices[-1]
+            end = placed[id(sequence[last])] + sequence[last]["size"]
+            following = bisect.bisect_left(mapped_starts, end)
+            if following < len(mapped_starts):
+                spans.append((last, len(sequence), mapped_starts[following]))
+        for i, k, stop in spans:
             between = sequence[i + 1:k]
             if not between or k - i - 1 > MAX_BETWEEN:
                 continue
             start = placed[id(sequence[i])] + sequence[i]["size"]
-            stop = placed[id(sequence[k])]
             if stop <= start:
                 continue
             tilings = []
@@ -402,10 +410,15 @@ def main():
                 comdat = bool(obj.sections[symbol["section"] - 1]["characteristics"] & 0x1000) \
                     if symbol["section"] > 0 else True
                 defined.setdefault(symbol["name"], set()).add((archive, index, comdat))
-            sequence = []
+            sequence, starts = [], set()
             for symbol in sorted(symbols, key=lambda s: (s["section"], s["value"])):
                 if not symbol["type"] & 0x20:
                     continue
+                # An assembler alias (__NLG_Dispatch2/__NLG_Dispatch) is one function: the
+                # first label in symbol-table order names it.
+                if (symbol["section"], symbol["value"]) in starts:
+                    continue
+                starts.add((symbol["section"], symbol["value"]))
                 try:
                     region = obj.extract_function(symbol["name"])
                 except BinaryError:
@@ -439,7 +452,7 @@ def main():
         for item in sequence:
             item["shared"] = len({(a, i) for a, i, _ in defined.get(item["symbol"], ())}) > 1
     placed = place_by_order(sequences, code, text_va, bindings)
-    placed.update(place_between(sequences, placed, code, text_va))
+    placed.update(place_between(sequences, placed, code, text_va, sorted(a for a, _ in mapped)))
     placed.update(place_by_references(sequences, placed, code, text_va, bindings, decoded_extents()))
     for sequence in sequences:
         for item in sequence:
