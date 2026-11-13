@@ -9293,7 +9293,7 @@ void __cdecl DrawForceGlowSpritePc(NUVEC *position, f32 radius, i32 model, f32 a
     NUVEC direction, draw_position, scale;
     NUMTX matrix;
     f32 distance, offset;
-    u16 angle;
+    NUANG angle;
     (void)object;
     world = WorldInfo_CurrentlyActive();
     if (model == -1 || world->level_objects[model].active == 0)
