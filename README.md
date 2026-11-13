@@ -14,6 +14,9 @@
 
 <!-- /mapping-badge -->
 
+What the mapping numbers count, and every byte they do not yet cover, is in
+[docs/mapping-status.md](docs/mapping-status.md).
+
 **saga-pc** is a matching decompilation of the GOG PC release of
 *LEGO Star Wars: The Complete Saga*: C/C++ source that compiles with the original
 compiler (MSVC 2005) into the same x86 code as the retail executable. Most game
