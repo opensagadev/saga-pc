@@ -7987,8 +7987,8 @@ void __cdecl Move_CRITTER(GAMEOBJECT *object) {
 
 void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
-    u32 zap_pressed = object->pad->buttons_pressed & (GAMEPAD_SPECIAL | GAMEPAD_ACTION);
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 zap_pressed = object->pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL);
     if ((object->character_data->model_flags & 0x40) != 0) {
         if (DroidCheat32EnabledPc != 0)
             zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
@@ -8010,7 +8010,7 @@ void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
     }
     if ((object->character_data->model_flags & 0x40) != 0) {
         JumpCode(object, jump_pressed, jump_held, 4, 0, 0, -1);
-        GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
+        GizPanel_MoveCode(WORLD, object, (GAMEPAD_SPECIAL | GAMEPAD_ACTION) & object->pad->buttons_pressed);
     } else {
         Glide_MoveCode(object);
         if (object->id == (u16)id_SUPERBATTLEDROID) {
@@ -8058,7 +8058,7 @@ zap:
     if ((object->character_data->game_character->flags_094 & 0x80) != 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     if ((object->character_data->model_flags & 0x20) != 0) {
-        GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
+        GizPanel_MoveCode(WORLD, object, (GAMEPAD_SPECIAL | GAMEPAD_ACTION) & object->pad->buttons_pressed);
         if (WORLD->current_level == LevelFixupSlotPc0087b218)
             BigJumpCode(object);
     }
