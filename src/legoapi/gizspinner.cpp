@@ -1076,6 +1076,28 @@ extern "C" GIZSPINNER_s *__cdecl GizSpinner_Find(WORLDINFO *world, NUVEC *positi
     return nearest;
 }
 
+/* The nearest usable spinner; its squared distance goes to distance_out when given. */
+extern "C" GIZSPINNER_s *__cdecl GizSpinner_FindNearest(NUVEC *position, WORLDINFO *world, f32 *distance_out) {
+    f32 nearest_distance = 1000000000.0f;
+    GIZSPINNER_s *nearest = NULL;
+    if (world->spinners == NULL)
+        return NULL;
+    for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
+        GIZSPINNER_s *spinner = &world->spinners[index];
+        if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0)
+            continue;
+        NUVEC spinner_position = spinner->position;
+        f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
+        if (distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = spinner;
+        }
+    }
+    if (distance_out != NULL)
+        *distance_out = nearest_distance;
+    return nearest;
+}
+
 extern "C" i32 __cdecl GizSpinner_GetOutput(void *gizmo_pointer, i32 output_index, i32 unused) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
     (void)unused;
