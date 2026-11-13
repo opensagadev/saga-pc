@@ -16693,27 +16693,24 @@ i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
                            : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
     reach_distance = packet->movement_instruction_parameter + ai_moveradius;
     reach_distance = elapsed * packet->owner->horizontal_velocity_magnitude + reach_distance;
-    if (reach_distance * reach_distance > distance_squared) {
+    if (distance_squared < reach_distance * reach_distance) {
         if ((processor->action_data_1 & 4u) == 0 || packet->opponent == NULL) {
             packet->movement_look_target = &processor->action_pos;
         }
-        if (!(processor->action_timer > 0.0f)) {
+        if (processor->action_timer > 0.0f) {
+            processor->action_timer -= elapsed;
+            if (processor->action_timer < 0.0f) {
+                processor->action_timer = 0.0f;
+            }
+        } else {
             return 1;
         }
-        processor->action_timer -= elapsed;
-        if (processor->action_timer < 0.0f) {
-            processor->action_timer = 0.0f;
-        }
-        return 0;
-    } else {
-        if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 &&
-            AIBigJumpToDestinationFn != NULL) {
-            if (AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0) {
-                return 1;
-            }
-        }
-        return 0;
+    } else if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 &&
+               AIBigJumpToDestinationFn != NULL &&
+               AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0) {
+        return 1;
     }
+    return 0;
 }
 
 i32 __cdecl Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
