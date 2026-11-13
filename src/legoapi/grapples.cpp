@@ -1006,13 +1006,14 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         object->field_7aa = LEGOACT_GRAPPLE_IDLE;
         if ((object->context_variant_flags & 0x100) != 0 || (object->big_jump_animation <= 15 && up)) {
             if (object->context_hover_target_y > 0.0f) {
-                f32 speed = 1.0f;
+                f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_UP && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
                     object->field_7aa = LEGOACT_GRAPPLE_UP;
                     speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_UP);
                     if (speed < 0.5f)
                         speed = 0.5f;
-                }
+                } else
+                    speed = 1.0f;
                 object->context_hover_target_y -= speed * FRAMETIME;
                 if (object->context_hover_target_y < 0.0f)
                     object->context_hover_target_y = 0.0f;
