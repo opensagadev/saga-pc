@@ -262,6 +262,7 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
 
 void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
     i32 room;
+    NUMTX matrix;
     if (system == NULL)
         return;
 
@@ -290,7 +291,6 @@ void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
                 }
 
                 if (animation_rooms == 0xffffffff || (visible_rooms & animation_rooms) != 0) {
-                    NUMTX matrix;
                     EvalAnim(&animation->special, instance->frame, &matrix, 1);
                     matrix.m31 += instance->animation->y_offset;
                     NuSpecialDrawAt(&system->vehicles[instance->vehicle_index], &matrix);
@@ -304,7 +304,6 @@ void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
         while (instance != NULL) {
             TRAFFICANIM_s *animation = instance->animation;
             if (animation->disabled == 0) {
-                NUMTX matrix;
                 EvalAnim(&animation->special, instance->frame, &matrix, 1);
                 matrix.m31 += instance->animation->y_offset;
                 NuSpecialDrawAt(&system->vehicles[instance->vehicle_index], &matrix);
