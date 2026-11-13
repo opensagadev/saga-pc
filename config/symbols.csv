@@ -5809,6 +5809,7 @@ address,symbol,size,ctype
 0x5a2990,_DrawRippleSet,53,void __cdecl DrawRippleSet(RIPPLE_SET_PC *)
 0x005a29d0,_DestroyRippleMtls,80,void __cdecl (WORLDINFO *)
 0x5a2a20,_RippleEffectTypePc,59,
+0x5a2a60,_PulsesFabsPc,18,static f32 __cdecl(f32)
 0x5a2aa0,_Pulses_Configure,1327,"void __cdecl(WORLDINFO *,char *)"
 0x5a2fd0,_Pulses_Reset,121,void __cdecl(LEVEL_SFX_PULSE_PC *)
 0x5a3050,_Pulses_Update,1024,void __cdecl(LEVEL_SFX_PULSE_PC *)
