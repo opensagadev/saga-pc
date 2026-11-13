@@ -13252,6 +13252,7 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
     i32 version;
     i32 index;
     i32 search;
+    u16 connection_index;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
     PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD_PC *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD_PC));
     if (system != NULL) {
@@ -13316,8 +13317,8 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                             locator->rotation = (i16)EdFileReadShort();
                             locator->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
                             locator->path_info.direction = (u8)EdFileReadChar();
-                            locator->path_info.connection =
-                                &locator->path_info.path->connections[(u16)EdFileReadShort()];
+                            connection_index = EdFileReadShort();
+                            locator->path_info.connection = &locator->path_info.path->connections[connection_index];
                             locator->path_info.distance = EdFileReadFloat();
                             locator->path_info.width = EdFileReadFloat();
                             if (version > 14)
@@ -13377,7 +13378,8 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                         creature->flags = EdFileReadInt();
                         creature->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
                         creature->path_info.direction = (u8)EdFileReadChar();
-                        creature->path_info.connection = &creature->path_info.path->connections[(u16)EdFileReadShort()];
+                        connection_index = EdFileReadShort();
+                        creature->path_info.connection = &creature->path_info.path->connections[connection_index];
                         if (version > 2) {
                             creature->script_params[0] = EdFileReadFloat();
                             creature->script_params[1] = EdFileReadFloat();
