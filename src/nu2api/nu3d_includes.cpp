@@ -3224,6 +3224,7 @@ extern "C" {
         ANI3_JOINT_PC *joint;
         NUHGOBJ_EVAL_JOINT_PC *hierarchy_joint;
         NUVEC *scale;
+        NUVEC *parent_scale;
         NUVEC inverse;
         NUVEC translation;
         NUVEC root_values;
@@ -3253,14 +3254,14 @@ extern "C" {
             }
         }
         ANI3_EVAL_SCALE_ARRAY[255].x = ANI3_EVAL_SCALE_ARRAY[255].y = ANI3_EVAL_SCALE_ARRAY[255].z = 1.0f;
+        matrix = matrices;
         count = object->joint_count;
         if ((i32)(u16)animation->node_count < count)
             count = (u16)animation->node_count;
-        root_values.x = root_values.y = root_values.z = 0.0f;
-        joint_flags = buffer->joint_flags;
-        joint = buffer->joints;
         hierarchy_joint = object->joints;
-        matrix = matrices;
+        joint_flags = buffer->joint_flags;
+        root_values.x = root_values.y = root_values.z = 0.0f;
+        joint = buffer->joints;
         scale = ANI3_EVAL_SCALE_ARRAY;
         for (index = 0; index < count; ++index, ++matrix, ++joint, ++scale, ++hierarchy_joint) {
             parent = hierarchy_joint->parent_index;
@@ -3284,18 +3285,19 @@ extern "C" {
                 scale->y = joint->scale.y;
                 scale->z = joint->scale.z;
                 NuMtxPreScaleVU0(matrix, scale);
-                scale->x *= ANI3_EVAL_SCALE_ARRAY[parent].x;
-                scale->y *= ANI3_EVAL_SCALE_ARRAY[parent].y;
-                scale->z *= ANI3_EVAL_SCALE_ARRAY[parent].z;
+                parent_scale = &ANI3_EVAL_SCALE_ARRAY[parent];
+                scale->x = parent_scale->x * scale->x;
+                scale->y = parent_scale->y * scale->y;
+                scale->z = parent_scale->z * scale->z;
             } else {
                 *scale = ANI3_EVAL_SCALE_ARRAY[object->joints[index].parent_index];
             }
             if ((flags & 0x10) != 0) {
-                if (ANI3_EVAL_SCALE_ARRAY[parent].x != 0.0f && ANI3_EVAL_SCALE_ARRAY[parent].y != 0.0f &&
-                    ANI3_EVAL_SCALE_ARRAY[parent].z != 0.0f) {
-                    inverse.x = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].x;
-                    inverse.y = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].y;
-                    inverse.z = 1.0f / ANI3_EVAL_SCALE_ARRAY[parent].z;
+                parent_scale = &ANI3_EVAL_SCALE_ARRAY[parent];
+                if (parent_scale->x != 0.0f && parent_scale->y != 0.0f && parent_scale->z != 0.0f) {
+                    inverse.x = 1.0f / parent_scale->x;
+                    inverse.y = 1.0f / parent_scale->y;
+                    inverse.z = 1.0f / parent_scale->z;
                     scale->x *= inverse.x;
                     scale->y *= inverse.y;
                     scale->z *= inverse.z;
@@ -3324,10 +3326,11 @@ extern "C" {
                 root_fn(matrix, root_data, &root_values, &root_values, root_translation, 0.0f);
                 root_fn = NULL;
             }
-            if (parent != 255) {
+            if (parent == 255) {
+                if ((flags & 0x40) != 0)
+                    scale->x = scale->y = scale->z = 1.0f;
+            } else {
                 NuMtxMulVU0(matrix, matrix, &matrices[parent]);
-            } else if ((flags & 0x40) != 0) {
-                scale->x = scale->y = scale->z = 1.0f;
             }
             if (AnimBuffEvalCB != NULL && callback_data[index] != NULL)
                 AnimBuffEvalCB(matrix, callback_data[index], NULL);
