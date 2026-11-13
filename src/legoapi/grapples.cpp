@@ -336,6 +336,7 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
         f32 distance;
         if (object != NULL) {
             u8 hooked;
+            f32 side_distance;
             if (!(grapple->flags & 2) || !(grapple->flags & 1) ||
                 (grapple->has_terrain_platform != 0 && grapple->attached_object == NULL)) {
                 continue;
@@ -367,7 +368,8 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
             }
             NuVecSub(&local, &object->upper_position, &grapple->hook_position);
             NuVecRotateY(&local, &local, -GameCam->input_yaw);
-            if (!(GrappleFabsPc(local.z) < 0.5f)) {
+            side_distance = GrappleFabsPc(local.z);
+            if (!(side_distance < 0.5f)) {
                 continue;
             }
             distance = local.x * local.x;
