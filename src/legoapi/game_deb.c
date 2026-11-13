@@ -11,9 +11,9 @@ PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacit
     system = (PARTDEBRISSYS *)((buffer->addr + 15) & ~(u32)15);
     buffer->addr = ((buffer->addr + 15) & ~(u32)15) + sizeof(PARTDEBRISSYS);
     if (system != NULL) {
-        system->entries = NULL;
-        system->named_count = named_count;
+        memset(system, 0, sizeof(*system));
         system->capacity = capacity;
+        system->named_count = named_count;
         system->entries = (PARTDEBRISENTRY *)((buffer->addr + 15) & ~(u32)15);
         buffer->addr = ((buffer->addr + 15) & ~(u32)15) + capacity * sizeof(PARTDEBRISENTRY);
         if (system->entries != NULL) {

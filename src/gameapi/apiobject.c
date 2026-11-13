@@ -171,9 +171,9 @@ APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count,
     system = (APIDEBRISSYS_PC *)((cursor->addr + 15) & ~15u);
     cursor->addr = ((cursor->addr + 15) & ~15u) + sizeof(*system);
     if (system != NULL) {
-        system->entries = NULL;
-        system->named_count = named_count;
+        memset(system, 0, sizeof(*system));
         system->capacity = count;
+        system->named_count = named_count;
         system->entries = (GAMEDEBRISENTRY_PC *)((cursor->addr + 15) & ~15u);
         cursor->addr = ((cursor->addr + 15) & ~15u) + count * sizeof(*system->entries);
         if (system->entries != NULL) {
