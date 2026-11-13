@@ -18,7 +18,7 @@ i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     if (EdFileOpen(path, 0)) {
         check_length = NuStrLen(EDSPLINE_FILECHECK);
         for (i = 0; i < check_length; ++i) {
-            if (EdFileReadChar() != EDSPLINE_FILECHECK[i]) {
+            if (EDSPLINE_FILECHECK[i] != EdFileReadChar()) {
                 EdFileClose();
                 splineStore = NULL;
                 return 0;
