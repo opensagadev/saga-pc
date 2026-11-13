@@ -14018,16 +14018,15 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
                     return;
                 }
             }
-
-            ++packet->path_info.next_check;
-            path = packet->path_info.path;
-            if (packet->path_info.next_check < path->node_count) {
-                continue;
-            }
         }
 
-        packet->path_info.next_check = 0;
+        ++packet->path_info.next_check;
+        if (packet->path_info.next_check < packet->path_info.path->node_count && position_inside_path_bounds) {
+            continue;
+        }
+
         ++packet->path_info.path_index;
+        packet->path_info.next_check = 0;
         if (packet->path_info.path_index >= system->path_sys->path_count) {
             packet->path_info.path_index = 0;
         }
