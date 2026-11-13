@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x5b0340-0x5b0769: definitions in retail address order. */
 typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 unknown_000[0xe9];
     u8 max_timers;
@@ -79,16 +81,14 @@ STATIC_ASSERT(offsetof(GIZFLOW_RANDOM_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
-void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
-    world->timers = NULL;
-    world->timer_count = 0;
-    if (world->level->max_timers > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->timers = (GIZFLOW_TIMER_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->level->max_timers * sizeof(GIZFLOW_TIMER_PC);
+i32 GizTimer_GetMaxGizmos(void *world_info) {
+    WORLDINFO *world = (WORLDINFO *)world_info;
+
+    if (world == NULL || world->current_level == NULL) {
+        return 0;
     }
-    return world->timers;
+
+    return world->current_level->max_timers;
 }
 
 void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
@@ -98,6 +98,35 @@ void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, vo
         if (NuStrLen(world->timers[i].name) != 0)
             AddGizmo(gizmo_sys, type_id, NULL, &world->timers[i]);
     }
+}
+
+void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
+    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    i32 i;
+    for (i = 0; i < world->timer_count; ++i) {
+        GIZFLOW_TIMER_PC *timer = &world->timers[i];
+        if (timer->time_remaining >= 0.0f)
+            timer->time_remaining -= delta_time;
+    }
+}
+
+char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((GIZFLOW_TIMER_PC *)gizmo->object)->name : NULL;
+}
+
+i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
+    if (timer->flags & 1)
+        return timer->time_remaining <= 0.0f;
+    return 0;
+}
+
+char *GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+    return "Ping";
+}
+
+i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
 }
 
 void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
@@ -112,25 +141,16 @@ void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
         timer->flags &= (u8)~1;
 }
 
-void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
+void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
-    i32 i;
-    for (i = 0; i < world->timer_count; ++i) {
-        GIZFLOW_TIMER_PC *timer = &world->timers[i];
-        if (timer->time_remaining >= 0.0f)
-            timer->time_remaining -= delta_time;
+    world->timers = NULL;
+    world->timer_count = 0;
+    if (world->level->max_timers > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        world->timers = (GIZFLOW_TIMER_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->level->max_timers * sizeof(GIZFLOW_TIMER_PC);
     }
-}
-
-i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
-    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
-    if (timer->flags & 1)
-        return timer->time_remaining <= 0.0f;
-    return 0;
-}
-
-char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((GIZFLOW_TIMER_PC *)gizmo->object)->name : NULL;
+    return world->timers;
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
