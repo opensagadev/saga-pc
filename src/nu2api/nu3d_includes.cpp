@@ -5623,30 +5623,25 @@ extern "C" void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *camera, N
                  NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
     f32 width = height / camera->aspect;
     f32 far_scale = camera->far_clip / camera->near_clip;
-    corners[0].x = -width;
-    corners[0].y = -height;
-    corners[0].z = camera->near_clip;
-    corners[0].w = 1.0f;
-    corners[1].x = -width;
-    corners[1].y = height;
-    corners[1].z = camera->near_clip;
-    corners[1].w = 1.0f;
-    corners[2].x = width;
-    corners[2].y = height;
-    corners[2].z = camera->near_clip;
-    corners[2].w = 1.0f;
-    corners[3].x = width;
-    corners[3].y = -height;
-    corners[3].z = camera->near_clip;
-    corners[3].w = 1.0f;
-    __declspec(align(16)) NUVEC4 scaled;
-    for (i32 i = 0; i < 4; ++i) {
-        scaled.x = corners[i].x * far_scale;
-        scaled.y = corners[i].y * far_scale;
-        scaled.z = corners[i].z * far_scale;
-        /* Original copies the unwritten fourth word of this XYZ scratch. */
-        corners[i + 4] = scaled;
-    }
+    OccluderVertexSet(&corners[0], -width, -height, camera->near_clip, 1.0f);
+    OccluderVertexSet(&corners[1], -width, height, camera->near_clip, 1.0f);
+    OccluderVertexSet(&corners[2], width, height, camera->near_clip, 1.0f);
+    OccluderVertexSet(&corners[3], width, -height, camera->near_clip, 1.0f);
+    /* Each far corner goes through its own XYZ scratch (retail reloads every unwritten fourth word, so the four
+       copies do not share one loop variable); the original copies that unwritten word. */
+#define POST_SHADOW_FAR_CORNER(i)                                                                                      \
+    do {                                                                                                               \
+        __declspec(align(16)) NUVEC4 scaled;                                                                           \
+        scaled.x = corners[i].x * far_scale;                                                                           \
+        scaled.y = corners[i].y * far_scale;                                                                           \
+        scaled.z = corners[i].z * far_scale;                                                                           \
+        OccluderVertexSet(&corners[(i) + 4], scaled.x, scaled.y, scaled.z, scaled.w);                                  \
+    } while (0)
+    POST_SHADOW_FAR_CORNER(0);
+    POST_SHADOW_FAR_CORNER(1);
+    POST_SHADOW_FAR_CORNER(2);
+    POST_SHADOW_FAR_CORNER(3);
+#undef POST_SHADOW_FAR_CORNER
     NUMTX matrix;
     NuAnimMtxCopyPrivatePc(&matrix, &camera->mtx);
     for (i32 i = 0; i < 8; ++i)
