@@ -121,6 +121,37 @@ __declspec(noinline) i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
     return -1;
 }
 
+i32 __cdecl GetPartCount(void) {
+    i32 n, used = 0;
+    for (n = 0; n < 40; ++n) {
+        if (part_emits[n].effect_id != -1)
+            ++used;
+    }
+    return used;
+}
+
+i32 __cdecl GetMaxPartTypes(void) {
+    return 128;
+}
+
+char *__cdecl GetPartName(i32 type) {
+    if (part_types[type].name[0] == 0)
+        return NULL;
+    return part_types[type].name;
+}
+
+f32 __cdecl PARTGetTotalOnTime(i32 type) {
+    if (type >= 0)
+        return part_types[type].emission_period + part_types[type].emission_period_random;
+    return 0.0f;
+}
+
+f32 __cdecl PARTGetTotalOffTime(i32 type) {
+    if (type >= 0)
+        return part_types[type].emission_pause + part_types[type].emission_pause_random;
+    return 0.0f;
+}
+
 #include <string.h>
 
 void __cdecl KillPart(PART_PC *part, i32 reason) {
@@ -3505,14 +3536,14 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
     return -1;
 }
 
-void __cdecl KillPARTEffect(i32 index) {
+void __cdecl RemovePARTEffect(i32 index) {
     if (index != -1 && part_emits[index].effect_id != -1) {
         --part_emits_used;
         part_emits[index].effect_id = -1;
     }
 }
 
-void __cdecl SetPARTEffectPos(i32 index, f32 x, f32 y, f32 z) {
+void __cdecl PARTEmitterPos(i32 index, f32 x, f32 y, f32 z) {
     if (index != -1 && part_emits[index].effect_id != -1) {
         part_emits[index].position.x = x;
         part_emits[index].position.y = y;
@@ -3520,11 +3551,11 @@ void __cdecl SetPARTEffectPos(i32 index, f32 x, f32 y, f32 z) {
     }
 }
 
-void __cdecl SetPARTEffectRot(i32 index, i16 x, i16 y, i16 z) {
+void __cdecl PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 emitrotx) {
     if (index != -1 && part_emits[index].effect_id != -1) {
-        part_emits[index].rotation_30 = z;
-        part_emits[index].rotation_2e = y;
-        part_emits[index].rotation_2c = x;
+        part_emits[index].rotation_30 = emitrotx;
+        part_emits[index].rotation_2e = emitroty;
+        part_emits[index].rotation_2c = emitrotz;
     }
 }
 
@@ -3619,7 +3650,7 @@ void __cdecl UpdatePartEmits(f32 time) {
                         }
                     }
                     if (emitter->shots_remaining != 0 && --emitter->shots_remaining == 0) {
-                        KillPARTEffect(i);
+                        RemovePARTEffect(i);
                         emission_time = partglobaltime + 99999.9f;
                     }
                 } else {
