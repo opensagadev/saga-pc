@@ -1,6 +1,15 @@
 #include "saga.h"
 
 #include <string.h>
+
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. Retail keeps this
+ * TU's out-of-line copy at 0x5a2a60. */
+static __forceinline f32 PulsesFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
 typedef struct PULSE_PC {
     NUSPECIALHANDLE special;
     f32 on_time, off_time, timer, start_wait;
@@ -210,6 +219,7 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     WORLDINFO *world;
     NUVEC hit_direction;
     i32 i;
+    i32 handle;
     if (system == NULL)
         return;
     world = WorldInfo_CurrentlyActive();
@@ -268,11 +278,6 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
             GAMEOBJECT *player = Player[player_index];
             NUVEC offset;
             f32 distance;
-            union {
-                f32 value;
-                u32 bits;
-            } signed_distance, absolute_distance;
-            i32 handle;
             if (player == NULL || (player->flags_1fc & 0x80) == 0 || player->dead != 0 ||
                 (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) ||
                 !(player->vehicle_hit_timer <= 0.0f) || player->spawn_protection_timer > 0.0f ||
@@ -286,11 +291,7 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 NuVecRotateY(&offset, &offset, 0x4000);
                 distance = direction.x * offset.x + direction.z * offset.z;
             }
-            // MATCH-EXCEPTION: NuFabs expanded by hand (argument copy, masked result); a static helper leaves an
-            // out-of-line copy that retail's pulses unit does not have.
-            signed_distance.value = distance;
-            absolute_distance.bits = signed_distance.bits & 0x7fffffffU;
-            if (!(absolute_distance.value < collide_radius))
+            if (!(PulsesFabsPc(distance) < collide_radius))
                 continue;
             if (system->radial_hit_direction == 0) {
                 f32 side = offset.x * system->hit_direction_line + offset.z * system->hit_direction_radius_origin;
