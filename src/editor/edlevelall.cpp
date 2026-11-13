@@ -7263,6 +7263,24 @@ void ClassEditor::cbEdClassDeleteObject(eduimenu_s *, eduiitem_s *, u32) {
     theClassEditor.DestroySelectedObjects();
 }
 
+/* Steps the manipulator through move, rotate and scale (modes 3, 4, 5); any
+ * other mode is just re-applied. Retail keeps it unreferenced; the name is
+ * not known. */
+void cbEdClassCycleMode(eduimenu_s *, eduiitem_s *, u32) {
+    switch (theClassEditor.mode) {
+    case 3:
+        theClassEditor.mode = 4;
+        break;
+    case 4:
+        theClassEditor.mode = 5;
+        break;
+    case 5:
+        theClassEditor.mode = 3;
+        break;
+    }
+    theClassEditor.SetMode(theClassEditor.mode);
+}
+
 /* Average position of the objects that have one; returns how many had. */
 /* Looks up "Class.Object": the class by name, then its first object whose
  * name member matches. */
