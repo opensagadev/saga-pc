@@ -9026,9 +9026,9 @@ i32 LevelEditor::Save() {
         sprintf(save_filename, "%s/%s.led", scenes[i].directory, scenes[i].name);
         if (scenes[i].editable && save_filename) {
             VARIPTR buffer = editor_buffer_begin;
-            NUFILE memory_file;
             editor_buffer_cursor = buffer;
-            memory_file = NuMemFileOpen(buffer.void_ptr, editor_buffer_end.addr - buffer.addr, 1);
+            u32 buffer_size = editor_buffer_end.addr - buffer.addr;
+            NUFILE memory_file = NuMemFileOpen(buffer.void_ptr, buffer_size, 1);
             if (memory_file) {
                 EdFileOutputStream stream;
                 i32 size;
