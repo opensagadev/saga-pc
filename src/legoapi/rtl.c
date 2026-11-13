@@ -3121,7 +3121,8 @@ void __cdecl InitUI(void) {
     eduiMenuFitWidth(global_confirm_menu, 5);
     menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Global Adjustments");
     global_menu = menu;
-    if (menu == NULL)
+    // The original tests prop_menu here (copy of the check above), not the menu just created.
+    if (prop_menu == NULL)
         RtlUiCreateFailedPc();
     created = eduiItemSliderCreate(0, colours, 0, 0, 2.0f, 8.0f, 2.0f, "Scale Amount");
     global_scale_item = eduiMenuAddItem(global_menu, created);
