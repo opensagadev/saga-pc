@@ -10121,8 +10121,8 @@ i32 __cdecl routeEditor_AddToRoute(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) 
 static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor_path, VARIPTR *cursor, VARIPTR *end) {
     i32 route_indices[16] = {0};
     u8 route_members[16][32] = {0};
-    u8 slot;
-    for (slot = 0; slot < 16; ++slot) {
+    i32 slot;
+    for (slot = 0; slot != 16; ++slot) {
         if (editor_path->routes[slot].flags & 1) {
             route_indices[slot] = path->route_count;
             path->route_count++;
@@ -10134,7 +10134,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
         i32 route_index;
         PATH_BUILD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE_PC));
         memset(path->routes, 0, path->route_count * sizeof(AIPATHROUTE_PC));
-        for (slot = 0; slot < 16; ++slot) {
+        for (slot = 0; slot != 16; ++slot) {
             AIPATHROUTE_PC *route;
             i32 name_length;
             u32 *user_mask;
@@ -10164,25 +10164,25 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
              editor_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &editor_node->link)) {
             AIPATHNODE_PC *runtime_node = &path->nodes[editor_node->index];
             if (editor_node->route_mask != 0) {
-                for (slot = 0; slot < 16; ++slot) {
+                for (slot = 0; slot != 16; ++slot) {
                     if (editor_node->route_mask & (((u64)1) << slot)) {
                         runtime_node->route_boundary_mask |= ((u64)1) << route_indices[slot];
                     }
                 }
             }
-            for (slot = 0; slot < 8; ++slot) {
+            for (slot = 0; slot != 8; ++slot) {
                 EDAIPATHCNX_s *editor_connection = &editor_node->connections[slot];
                 i32 edge;
                 if (editor_connection->node == NULL || editor_connection->route_mask == 0) {
                     continue;
                 }
                 for (edge = 0; edge < runtime_node->connection_count; ++edge) {
-                    u8 route_slot;
+                    i32 route_slot;
                     if (runtime_node->connections[edge]->node_indices[0] != editor_connection->node->index &&
                         runtime_node->connections[edge]->node_indices[1] != editor_connection->node->index) {
                         continue;
                     }
-                    for (route_slot = 0; route_slot < 16; ++route_slot) {
+                    for (route_slot = 0; route_slot != 16; ++route_slot) {
                         if (editor_connection->route_mask & (((u64)1) << route_slot)) {
                             i32 member_route = route_indices[route_slot];
                             if ((runtime_node->connections[edge]->route_mask & (((u64)1) << member_route)) == 0) {
