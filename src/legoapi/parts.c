@@ -1244,6 +1244,40 @@ void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
     }
 }
 
+void __cdecl DebrisSetGroupID(i32 handle, i16 group) {
+    if (handle != -1)
+        debkeydata[handle].render_group = group;
+}
+
+void __cdecl DebrisSetPriority(i32 handle, i16 priority, u8 automatic) {
+    if (handle != -1) {
+        debkeydata[handle].timed_flags = automatic;
+        if (automatic == 0)
+            debkeydata[handle].render_priority = priority;
+    }
+}
+
+u16 DebrisQueryPriority(i32 effect_index) {
+    if (effect_index >= 0 && effect_index < debinf_count && debtab[effect_index] != NULL) {
+        switch (debtab[effect_index]->particle_type) {
+            case 0:
+                return 20000;
+            case 2:
+                return 40000;
+            case 3:
+                return 30000;
+            case 7:
+                return 10000;
+        }
+    }
+    return 0;
+}
+
+void DebrisSetDrawFlag(i32 handle, i8 draw_flag) {
+    if (handle != -1)
+        debkeydata[handle].field_2f7 = draw_flag;
+}
+
 void DebrisStartOffset(i32 handle, f32 offset) {
 
     DebrisStartOffsetEx(debkeydata + handle, offset);
@@ -2384,8 +2418,8 @@ void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     }
 }
 
-void DebrisSetDrawFlag(i32 handle, i8 draw_flag) {
-    debkeydata[handle].orientation_flags = draw_flag;
+void __cdecl DebrisSetDetailLevels(i32 handle, i32 detail_levels) {
+    debkeydata[handle].orientation_flags = (u8)detail_levels;
 }
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
@@ -2432,6 +2466,26 @@ i32 AddScaledVariableShotDebrisEffect3(i32 effect, NUVEC *position, NUVEC *momen
     if (scaled != -1)
         AddVariableShotDebrisEffectTimed3(scaled, position, momentum, count, time, emitter_orientation,
                                           particle_orientation);
+    return scaled;
+}
+
+i32 AddScaledVariableShotDebrisEffect4(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, i32 time,
+                                       NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 priority, i8 flags,
+                                       f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed5(scaled, position, momentum, NULL, count, time, emitter_orientation,
+                                          particle_orientation, priority, flags);
+    return scaled;
+}
+
+i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momentum, NUVEC *position_delta, i32 count,
+                                       f32 time, NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 priority,
+                                       i8 flags, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddVariableShotDebrisEffectTimed5(scaled, position, momentum, position_delta, count, time, emitter_orientation,
+                                          particle_orientation, priority, flags);
     return scaled;
 }
 
