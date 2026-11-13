@@ -9483,8 +9483,7 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
     AIPATHROUTE_PC *route;
     AIPATHNODELINK_PC *link;
     AIPATHSPECIALROUTE_PC *group;
-    u32 count_mask_low;
-    u64 bit;
+    u64 character_mask;
 
     EdFileWriteInt(system->path_count);
     for (path_index = 0; path_index < system->path_count; ++path_index) {
@@ -9493,24 +9492,26 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
         EdFileWriteChar(path->node_count);
         EdFileWriteChar(path->flags);
         EdFileWriteShort((u16)path->connection_count);
-        for (index = 0; index < path->connection_count; ++index) {
-            connection = &path->connections[index];
-            EdFileWriteChar(connection->node_indices[0]);
-            EdFileWriteChar(connection->node_indices[1]);
-            if (aidata_version > 11) {
-                EdFileWriteInt((i32)connection->traversal_flags[0]);
-                EdFileWriteInt((i32)connection->traversal_flags[1]);
-            } else if (aidata_version > 8) {
-                EdFileWriteShort((u16)connection->traversal_flags[0]);
-                EdFileWriteShort((u16)connection->traversal_flags[1]);
-            } else {
-                EdFileWriteChar((u8)connection->traversal_flags[0]);
-                EdFileWriteChar((u8)connection->traversal_flags[1]);
+        if (path->connection_count != 0) {
+            for (index = 0; index < path->connection_count; ++index) {
+                connection = &path->connections[index];
+                EdFileWriteChar(connection->node_indices[0]);
+                EdFileWriteChar(connection->node_indices[1]);
+                if (aidata_version > 11) {
+                    EdFileWriteInt((i32)connection->traversal_flags[0]);
+                    EdFileWriteInt((i32)connection->traversal_flags[1]);
+                } else if (aidata_version > 8) {
+                    EdFileWriteShort((u16)connection->traversal_flags[0]);
+                    EdFileWriteShort((u16)connection->traversal_flags[1]);
+                } else {
+                    EdFileWriteChar((u8)connection->traversal_flags[0]);
+                    EdFileWriteChar((u8)connection->traversal_flags[1]);
+                }
+                EdFileWriteShort((u16)connection->rotation);
+                EdFileWriteShort((u16)connection->route_mask);
+                EdFileWriteFloat(connection->distance);
+                EdFileWriteFloat(connection->horizontal_distance);
             }
-            EdFileWriteShort((u16)connection->rotation);
-            EdFileWriteShort((u16)connection->route_mask);
-            EdFileWriteFloat(connection->distance);
-            EdFileWriteFloat(connection->horizontal_distance);
         }
         for (index = 0; index < path->node_count; ++index) {
             node = &path->nodes[index];
@@ -9556,69 +9557,73 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
         for (row = 0; row < path->node_count; ++row)
             EdFileWrite(path->route_matrix[row], path->node_count);
         EdFileWriteChar(path->route_count);
-        for (index = 0; index < path->route_count; ++index) {
-            route = &path->routes[index];
-            length = strlen(route->name) + 1;
-            EdFileWriteChar(length);
-            EdFileWrite(route->name, (i32)length);
-            EdFileWriteChar(route->route_count);
-            EdFileWriteChar(route->exit_node_count);
-            EdFileWriteChar(0);
-            EdFileWriteChar(0);
-            if (route->route_count != 0) {
-                EdFileWrite(route->node_routes, path->node_count);
-                EdFileWrite(route->node_directions, route->route_count);
-                for (row = 0; row < route->route_count; ++row)
-                    EdFileWrite(route->route_nodes[row], route->route_count);
-                if (route->exit_node_count != 0)
-                    EdFileWrite(route->exit_nodes, route->exit_node_count);
-            }
-            if (SpecialRouteCharacterNameFn != NULL) {
-                count_mask_low = route->character_mask[2];
-                character_count = 0;
-                for (character = 0; character < 64; ++character) {
-                    bit = (u64)1 << character;
-                    if ((((u32)bit & count_mask_low) | ((u32)(bit >> 32) & route->character_mask[3])) != 0)
-                        ++character_count;
+        if (path->route_count != 0) {
+            for (index = 0; index < path->route_count; ++index) {
+                route = &path->routes[index];
+                length = strlen(route->name) + 1;
+                EdFileWriteChar(length);
+                EdFileWrite(route->name, (i32)length);
+                EdFileWriteChar(route->route_count);
+                EdFileWriteChar(route->exit_node_count);
+                EdFileWriteChar(0);
+                EdFileWriteChar(0);
+                if (route->route_count != 0) {
+                    EdFileWrite(route->node_routes, path->node_count);
+                    EdFileWrite(route->node_directions, route->route_count);
+                    for (row = 0; row < route->route_count; ++row)
+                        EdFileWrite(route->route_nodes[row], route->route_count);
+                    if (route->exit_node_count != 0)
+                        EdFileWrite(route->exit_nodes, route->exit_node_count);
                 }
-                EdFileWriteChar(character_count);
-                for (character = 0; character < 63; ++character) {
-                    bit = (u64)1 << character;
-                    if ((((u32)bit & route->character_mask[2]) | ((u32)(bit >> 32) & route->character_mask[3])) != 0) {
-                        text = SpecialRouteCharacterNameFn((u8)character);
-                        if (text != NULL) {
-                            length = strlen(text) + 1;
-                            EdFileWriteChar(length);
-                            EdFileWrite(text, (i32)length);
-                        } else {
-                            EdFileWriteChar(0);
+                if (SpecialRouteCharacterNameFn != NULL) {
+                    character_mask = *(u64 *)&route->character_mask[2];
+                    character_count = 0;
+                    for (character = 0; character < 64; ++character) {
+                        if ((((u64)1 << character) & character_mask) != 0)
+                            ++character_count;
+                    }
+                    EdFileWriteChar(character_count);
+                    for (character = 0; character < 63; ++character) {
+                        if ((((u64)1 << character) & *(u64 *)&route->character_mask[2]) != 0) {
+                            text = SpecialRouteCharacterNameFn((u8)character);
+                            if (text != NULL) {
+                                length = strlen(text) + 1;
+                                EdFileWriteChar(length);
+                                EdFileWrite(text, (i32)length);
+                            } else {
+                                EdFileWriteChar(0);
+                            }
                         }
                     }
+                    if ((*(u64 *)&route->character_mask[2] & 0x8000000000000000ull) != 0) {
+                        EdFileWriteChar(9);
+                        EdFileWrite((void *)GameAIEveryonePc, 9);
+                    }
+                } else {
+                    EdFileWriteChar(0);
                 }
-                if ((route->character_mask[3] & 0x80000000u) != 0) {
-                    EdFileWriteChar(9);
-                    EdFileWrite((void *)GameAIEveryonePc, 9);
-                }
-            } else {
-                EdFileWriteChar(0);
             }
         }
         if (aidata_version >= 19) {
             EdFileWriteChar(path->special_route_count);
-            link = path->special_routes;
-            for (index = 0; index < path->special_route_count; ++index, ++link) {
-                EdFileWriteUnsignedChar(link->node_index);
-                EdFileWriteShort((u16)link->special_route_index);
+            if (path->special_route_count != 0) {
+                link = path->special_routes;
+                for (index = 0; index < path->special_route_count; ++index, ++link) {
+                    EdFileWriteUnsignedChar(link->node_index);
+                    EdFileWriteShort((u16)link->special_route_index);
+                }
             }
         }
     }
     if (aidata_version >= 19) {
         EdFileWriteShort((u16)system->special_route_count);
-        group = system->special_routes;
-        for (index = 0; index < system->special_route_count; ++index, ++group) {
-            EdFileWriteChar(group->path_count);
-            for (row = 0; row < group->path_count; ++row)
-                EdFileWriteChar(group->paths[row]->index);
+        if (system->special_route_count != 0) {
+            group = system->special_routes;
+            for (index = 0; index < system->special_route_count; ++index, ++group) {
+                EdFileWriteChar(group->path_count);
+                for (row = 0; row < group->path_count; ++row)
+                    EdFileWriteChar(group->paths[row]->index);
+            }
         }
     }
 }
