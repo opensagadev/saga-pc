@@ -21,7 +21,7 @@ python3 tools/unmapped.py --write KIND    # add the provable rows of one kind (s
 
 | Badge | Numerator | Denominator |
 | --- | --- | --- |
-| fuzzy code match | objdiff similarity of compiled functions, weighted by original size | original `.text` |
+| fuzzy code match | objdiff's fuzzy match of each original function, weighted by its original size; unported and unidentified code count as 0 (the same definition as the Android decompilation's whole-binary objdiff fuzzy match) | all original code: `.text` without alignment padding and without the data stored in it |
 | exact code match | byte-identical functions after relocation, plus the alignment padding that follows an exact function | original `.text` |
 | mapped code | union of sized map rows in `.text`, plus proven alignment padding between known extents (the padding is about 3.3 % of the section; the README row says so) | original `.text` (VirtualSize) |
 | mapped file-backed data | union of sized map rows and typed data members in the raw-data part of `.rdata` and `.data`, plus proven zero padding between known extents | file-backed `.rdata` + `.data` |

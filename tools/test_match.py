@@ -6,6 +6,7 @@ import io
 import json
 import math
 import os
+import re
 import shutil
 import struct
 import subprocess
@@ -98,15 +99,21 @@ class ProgressTests(unittest.TestCase):
                           "?style=for-the-badge)<!-- /matching-badge -->", updated)
             self.assertEqual(updated.count("https://img.shields.io/badge/"), 6)
             self.assertEqual(updated.count("?style=for-the-badge)"), 6)
-            self.assertIn("| &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match of each original function", updated)
+            self.assertIn("| &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match over all original code, by "
+                          "size ([details](docs/mapping-status.md#what-the-readme-numbers-measure)). | ", updated)
             self.assertIn(build_badge, updated)
-            self.assertIn("| Metric | Coverage |", updated)
+            self.assertIn("| Metric | Coverage" + "&nbsp;" * 10 + " |" + "\n| --- | --- |\n", updated)
+            # Short meanings keep the table narrow enough that GitHub does not shrink the badges.
+            for line in updated.splitlines():
+                if line.startswith("| &nbsp;"):
+                    meaning = line.split(" | ")[0][2:].replace("&nbsp;", " ").replace("**", "")
+                    self.assertLessEqual(len(re.sub(r"\[([^]]*)\]\([^)]*\)", r"\1", meaning)), 85, line)
             self.assertIn("| **Code** | |\n| &nbsp;&nbsp;↳ **Fuzzy match**", updated)
             self.assertIn("| &nbsp;&nbsp;↳ **Exact match**: byte-identical code. | "
                           f"![0.013%](https://img.shields.io/badge/-0.013%25-{match.badge_color(0.013)}?style=for-the-badge) |", updated)
             self.assertIn("| &nbsp;&nbsp;↳ **Mapped**: known code extents. | "
                           f"![25.000%](https://img.shields.io/badge/-25.000%25-{match.badge_color(25.000)}?style=for-the-badge) |", updated)
-            self.assertIn("| **Data** | |\n| &nbsp;&nbsp;↳ **Mapped file-backed**: known data stored in the "
+            self.assertIn("| **Data** | |\n| &nbsp;&nbsp;↳ **Mapped file-backed**: known data in the "
                           f"executable. | ![25.000%](https://img.shields.io/badge/-25.000%25-{match.badge_color(25.000)}?style=for-the-badge) |",
                           updated)
             self.assertIn("| &nbsp;&nbsp;↳ **Mapped zero-fill/BSS**: known zero-initialized storage. | "
@@ -164,13 +171,23 @@ class ProgressTests(unittest.TestCase):
         self.assertGreater(distance(99.9, 100), 80)
         self.assertGreater(distance(60, 95), 80)
 
-    def test_badge_colors_keep_dark_text_readable(self):
-        # Every colour sits clearly above shields' switch to #333 text, so no badge flips to white.
+    def test_badge_text_colour_switches_once_and_stays_readable(self):
+        # Every colour keeps clear of shields' switch at 0.69: orange with white text below
+        # BADGE_DARK_TEXT_FROM, bright with #333 text from there on.
         for step in range(1001):
-            with self.subTest(value=step / 10):
-                rgb = bytes.fromhex(match.badge_color(step / 10))
-                self.assertGreaterEqual(match.shields_brightness(rgb), match.SHIELDS_DARK_TEXT_ABOVE + 0.05)
-                self.assertGreaterEqual(match.contrast(rgb, match.SHIELDS_DARK_TEXT), 4.5)
+            value = step / 10
+            with self.subTest(value=value):
+                rgb = bytes.fromhex(match.badge_color(value))
+                brightness = match.shields_brightness(rgb)
+                if value < match.BADGE_DARK_TEXT_FROM:
+                    self.assertLessEqual(brightness, match.SHIELDS_DARK_TEXT_ABOVE - 0.05)
+                    self.assertGreaterEqual(match.contrast(rgb, match.WHITE), 3.0)
+                else:
+                    self.assertGreaterEqual(brightness, match.SHIELDS_DARK_TEXT_ABOVE + 0.05)
+                    self.assertGreaterEqual(match.contrast(rgb, match.SHIELDS_DARK_TEXT), 4.5)
+        self.assertLess(match.BADGE_DARK_TEXT_FROM, 90)
+        self.assertNotEqual(match.badge_color(match.BADGE_DARK_TEXT_FROM - 0.001),
+                            match.badge_color(match.BADGE_DARK_TEXT_FROM))
 
     def test_shields_brightness_matches_badge_maker(self):
         # badge-maker 6.0.0: (r * 299 + g * 587 + b * 114) / 255000, toFixed(2); #333 text above 0.69.
@@ -317,7 +334,7 @@ class PaddingTests(unittest.TestCase):
                                 "matching_with_padding_percent": 31.5, "mapping_code_percent": 90,
                                 "mapping_file_backed_data_percent": 40, "mapping_zero_fill_data_percent": 5})
             text = path.read_text()
-            self.assertIn("**Exact match**: byte-identical code and the alignment padding after it. | "
+            self.assertIn("**Exact match**: byte-identical code, with the padding after it. | "
                           f"![31.500%](https://img.shields.io/badge/-31.500%25-{match.badge_color(31.500)}?style=for-the-badge) |", text)
             self.assertNotIn("30.000", text)
 
@@ -362,11 +379,10 @@ class DataPaddingTests(unittest.TestCase):
                                 "mapping_file_backed_data_with_padding_percent": 41,
                                 "mapping_zero_fill_data_percent": 5, "mapping_zero_fill_data_with_padding_percent": 5})
             text = path.read_text()
-            self.assertIn("**Mapped**: known code extents, including the alignment padding between functions "
-                          "(2.5% of the section). | "
+            self.assertIn("**Mapped**: known code, with the padding between functions (2.5%). | "
                           f"![92.500%](https://img.shields.io/badge/-92.500%25-{match.badge_color(92.500)}?style=for-the-badge) |", text)
-            self.assertIn("**Mapped file-backed**: known data stored in the executable and the zero padding "
-                          f"between it. | ![41.000%](https://img.shields.io/badge/-41.000%25-{match.badge_color(41.000)}"
+            self.assertIn("**Mapped file-backed**: known data in the executable, with its padding. "
+                          f"| ![41.000%](https://img.shields.io/badge/-41.000%25-{match.badge_color(41.000)}"
                           "?style=for-the-badge) |", text)
             self.assertNotIn("90.000", text)
 
@@ -381,14 +397,13 @@ class DataPaddingTests(unittest.TestCase):
                                 "mapping_file_backed_data_percent": 40, "reproduced_file_backed_data_percent": 20,
                                 "mapping_zero_fill_data_percent": 5})
             lines = path.read_text().splitlines()
-            start = lines.index("| Metric | Coverage |")
+            start = lines.index("| Metric | Coverage" + "&nbsp;" * 10 + " |")
             self.assertEqual([line.split("**")[1] for line in lines[start + 2:start + 11]],
                              ["Code", "Fuzzy match", "Exact match", "Mapped", "Named", "Data",
                               "Mapped file-backed", "Reproduced", "Mapped zero-fill/BSS"])
             # Named is a share of the mapped function bytes: 85.5 / (85.5 + 4.5), padding left out.
-            self.assertIn("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: share of mapped function bytes (without "
-                          "the padding) under identified names; the other 5.0% carry address names "
-                          "(`fun_XXXXXXXX`). | "
+            self.assertIn("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: mapped functions with real names; 5.0% "
+                          "are `fun_XXXXXXXX`. | "
                           f"![95.000%](https://img.shields.io/badge/-95.000%25-{match.badge_color(95.000)}?style=for-the-badge) |", lines)
             self.assertNotIn("85.500", "\n".join(lines))
             self.assertTrue(lines[start + 9].startswith("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: "))

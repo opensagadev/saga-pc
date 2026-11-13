@@ -469,31 +469,44 @@ def oklch_to_srgb(lightness, chroma, hue):
 
 # shields' badge-maker (colorsForBackground in lib/badge-renderers.js) draws the message
 # text #333 instead of white when the background's brightness is above 0.69, in every
-# style. The badge colours stay well above that so all of them get the same dark text.
+# style. The badge colours keep clear of that switch: saturated orange with white text
+# below BADGE_DARK_TEXT_FROM, bright colours with #333 text from there on.
 SHIELDS_DARK_TEXT_ABOVE = 0.69
 SHIELDS_DARK_TEXT = (0x33, 0x33, 0x33)
-BADGE_MIN_BRIGHTNESS = 0.74
-BADGE_HUES = (25, 136, 150)  # OKLCH hues: coral at 0 %, lime just below 100 %, green at 100 %
+WHITE = (0xff, 0xff, 0xff)
+BADGE_DARK_TEXT_FROM = 88  # percent; the one value where the text turns from white to #333
+BADGE_MIN_BRIGHTNESS = 0.74  # bright colours, #333 text
+BADGE_MIN_WHITE_CONTRAST = 3.0  # orange colours, white text (shields' own orange fe7d37 has 2.56)
+BADGE_ORANGE_HUES = (34, 56)  # OKLCH hues: orange-red at 0 %, orange just below BADGE_DARK_TEXT_FROM
+BADGE_HUES = (25, 136, 150)  # OKLCH hue scale of the bright colours (orange-amber at 88 %, lime below 100 %), green at 100 %
+
+
+def badge_hue(shown):
+    """OKLCH hue of a badge for a displayed percentage."""
+    if shown < BADGE_DARK_TEXT_FROM:
+        low, high = BADGE_ORANGE_HUES
+        return low + (high - low) * shown / BADGE_DARK_TEXT_FROM
+    red, top, green = BADGE_HUES
+    if shown >= 100:
+        return green
+    return red + (top - red) * (1 - math.log10(101 - shown) / math.log10(101)) ** 1.2
 
 
 @functools.lru_cache(maxsize=None)
 def badge_color(value):
     """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
 
-    Only a displayed 100.000 gets the full green. Below it the OKLCH hue runs from coral
-    through orange, amber and yellow to lime along (1 - log(101 - v) / log(101)) ** 1.2,
-    a logarithmic scale of the shortfall that gives 90..99.9 more than half of the hue range,
-    so 90, 94, 97, 99 and 99.9 are different hues while 60 and 95 still differ plainly.
-    Each hue takes the OKLCH lightness with the most chroma inside the sRGB gamut among
-    those whose shields brightness (unrounded) is at least BADGE_MIN_BRIGHTNESS, so the
-    colours are as vivid as dark (#333) text allows.
+    Below BADGE_DARK_TEXT_FROM the hue runs from orange-red to orange, as saturated as
+    white text at BADGE_MIN_WHITE_CONTRAST allows. From there the OKLCH hue runs on
+    through amber and yellow to lime along (1 - log(101 - v) / log(101)) ** 1.2, a
+    logarithmic scale of the shortfall that gives 90..99.9 more than half of the hue
+    range, so 90, 94, 97, 99 and 99.9 are different hues. Only a displayed 100.000 gets
+    the full green. These bright colours take the most chroma inside the sRGB gamut whose
+    shields brightness (unrounded) is at least BADGE_MIN_BRIGHTNESS, so shields gives
+    them #333 text.
     """
     shown = min(max(float(f"{value:.3f}"), 0), 100)
-    red, top, green = BADGE_HUES
-    if shown >= 100:
-        hue = green
-    else:
-        hue = red + (top - red) * (1 - math.log10(101 - shown) / math.log10(101)) ** 1.2
+    hue = badge_hue(shown)
 
     def widest(lightness):
         low, high = 0.0, 0.4  # chroma; 0.4 lies outside the sRGB gamut at every hue
@@ -501,20 +514,27 @@ def badge_color(value):
             middle = (low + high) / 2
             low, high = (middle, high) if oklch_to_srgb(lightness, middle, hue) else (low, middle)
         return low, oklch_to_srgb(lightness, low, hue)
-    # The widest chroma rises with lightness up to the hue's cusp and falls after it, while
-    # the brightness keeps rising: take the cusp, or the lowest lightness bright enough.
+    # The widest chroma rises with lightness up to the hue's cusp and falls after it,
+    # while the brightness keeps rising and the contrast with white keeps falling.
     low, high = 0.4, 1.0
     for _ in range(40):
         left, right = low + (high - low) / 3, high - (high - low) / 3
         low, high = (left, high) if widest(left)[0] < widest(right)[0] else (low, right)
     cusp = low
+    dark_text = shown >= BADGE_DARK_TEXT_FROM
     low, high = 0.4, 1.0
     for _ in range(30):
         middle = (low + high) / 2
         rgb = widest(middle)[1]
-        bright = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000 >= BADGE_MIN_BRIGHTNESS
-        low, high = (low, middle) if bright else (middle, high)
-    return bytes(widest(max(cusp, high))[1]).hex()
+        if dark_text:
+            enough = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000 >= BADGE_MIN_BRIGHTNESS
+        else:
+            enough = contrast(rgb, WHITE) < BADGE_MIN_WHITE_CONTRAST  # too light for white text
+        low, high = (low, middle) if enough else (middle, high)
+    # Dark text: the cusp or the lowest lightness bright enough. White text: the cusp or the
+    # highest lightness still dark enough.
+    lightness = max(cusp, high) if dark_text else min(cusp, low)
+    return bytes(widest(lightness)[1]).hex()
 
 
 def update_badge(stats):
@@ -531,7 +551,7 @@ def update_badge(stats):
              + "<!-- /matching-badge -->")
     # The exact row counts alignment padding after exact functions when the report has it;
     # matching_percent stays the strict function-only number.
-    exact = ("matching_with_padding_percent", "byte-identical code and the alignment padding after it.") \
+    exact = ("matching_with_padding_percent", "byte-identical code, with the padding after it.") \
         if "matching_with_padding_percent" in stats else ("matching_percent", "byte-identical code.")
     # The mapped rows count proven alignment padding between known extents when the
     # report has it; mapping_<kind>_percent stays the symbol-only number.
@@ -543,30 +563,29 @@ def update_badge(stats):
         named, address_named = stats["mapping_code_named_percent"], stats["mapping_code_address_named_percent"]
         stats = {**stats, "mapping_code_named_share_percent": 100 * named / (named + address_named)
                  if named + address_named else 0}
-    # (depth, name, field, meaning); a row without a field is a group heading.
+    # (depth, name, field, meaning); a row without a field is a group heading. The meanings
+    # stay short: GitHub squeezes the badge column when the first column's text is long,
+    # which scales the badges down. docs/mapping-status.md has the full definitions.
     rows = [(0, "Code", None, None),
             (1, "Fuzzy match", "fuzzy_coverage_percent",
-             "objdiff's fuzzy match of each original function, weighted by its size, over all original code "
-             "(.text without alignment padding and the data stored in it; unported and unidentified code "
-             "count as 0). Same definition as the Android decompilation's whole-binary objdiff fuzzy match."),
+             "objdiff's fuzzy match over all original code, by size "
+             "([details](docs/mapping-status.md#what-the-readme-numbers-measure))."),
             (1, "Exact match", *exact),
             (1, "Mapped", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
-             f"known code extents, including the alignment padding between functions "
-             f"({padding:.1f}% of the section)." if padded
+             f"known code, with the padding between functions ({padding:.1f}%)." if padded
              else "known code extents.")]
     if "mapping_code_named_percent" in stats:
         share = stats["mapping_code_named_share_percent"]
         rows.append((2, "Named", "mapping_code_named_share_percent",
-                     f"share of mapped function bytes (without the padding) under identified names; the "
-                     f"other {100 - share:.1f}% carry address names (`fun_XXXXXXXX`)."))
+                     f"mapped functions with real names; {100 - share:.1f}% are `fun_XXXXXXXX`."))
     rows += [(0, "Data", None, None),
              (1, "Mapped file-backed", "mapping_file_backed_data_with_padding_percent" if padded
               else "mapping_file_backed_data_percent",
-              "known data stored in the executable and the zero padding between it." if padded
-              else "known data stored in the executable.")]
+              "known data in the executable, with its padding." if padded
+              else "known data in the executable.")]
     if "reproduced_file_backed_data_percent" in stats:
         rows.append((2, "Reproduced", "reproduced_file_backed_data_percent",
-                     "file-backed data that our objects or pinned library members define byte-exactly "
+                     "file-backed data we define byte-exactly "
                      "([details](docs/mapping-status.md#reproduced-data))."))
     rows.append((1, "Mapped zero-fill/BSS", "mapping_zero_fill_data_percent", "known zero-initialized storage."))
 
@@ -576,7 +595,9 @@ def update_badge(stats):
         indent = "&nbsp;" * (4 * depth - 2) + "↳ "
         return f"| {indent}**{name}**: {meaning} | {image(field)} |"
 
-    table = ("<!-- mapping-badge -->\n\n| Metric | Coverage |\n"
+    # The non-breaking spaces give the badge column a minimum width that GitHub's table
+    # layout keeps; the images alone can shrink to nothing.
+    table = ("<!-- mapping-badge -->\n\n| Metric | Coverage" + "&nbsp;" * 10 + " |\n"
              "| --- | --- |\n"
              + "\n".join(row(*entry) for entry in rows)
              + "\n\n<!-- /mapping-badge -->")

@@ -5,16 +5,16 @@
 
 <!-- mapping-badge -->
 
-| Metric | Coverage |
+| Metric | Coverage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
 | --- | --- |
 | **Code** | |
-| &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match of each original function, weighted by its size, over all original code (.text without alignment padding and the data stored in it; unported and unidentified code count as 0). Same definition as the Android decompilation's whole-binary objdiff fuzzy match. | ![94.207%](https://img.shields.io/badge/-94.207%25-ffbe09?style=for-the-badge) |
-| &nbsp;&nbsp;↳ **Exact match**: byte-identical code and the alignment padding after it. | ![60.545%](https://img.shields.io/badge/-60.545%25-ffa685?style=for-the-badge) |
-| &nbsp;&nbsp;↳ **Mapped**: known code extents, including the alignment padding between functions (3.3% of the section). | ![100.000%](https://img.shields.io/badge/-100.000%25-4fff88?style=for-the-badge) |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: share of mapped function bytes (without the padding) under identified names; the other 2.5% carry address names (`fun_XXXXXXXX`). | ![97.500%](https://img.shields.io/badge/-97.500%25-ffe500?style=for-the-badge) |
+| &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match over all original code, by size ([details](docs/mapping-status.md#what-the-readme-numbers-measure)). | ![94.207%](https://img.shields.io/badge/-94.207%25-ffbe09?style=for-the-badge) |
+| &nbsp;&nbsp;↳ **Exact match**: byte-identical code, with the padding after it. | ![60.545%](https://img.shields.io/badge/-60.545%25-f06f00?style=for-the-badge) |
+| &nbsp;&nbsp;↳ **Mapped**: known code, with the padding between functions (3.3%). | ![100.000%](https://img.shields.io/badge/-100.000%25-4fff88?style=for-the-badge) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: mapped functions with real names; 2.5% are `fun_XXXXXXXX`. | ![97.500%](https://img.shields.io/badge/-97.500%25-ffe500?style=for-the-badge) |
 | **Data** | |
-| &nbsp;&nbsp;↳ **Mapped file-backed**: known data stored in the executable and the zero padding between it. | ![95.639%](https://img.shields.io/badge/-95.639%25-ffca00?style=for-the-badge) |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: file-backed data that our objects or pinned library members define byte-exactly ([details](docs/mapping-status.md#reproduced-data)). | ![90.511%](https://img.shields.io/badge/-90.511%25-ffb344?style=for-the-badge) |
+| &nbsp;&nbsp;↳ **Mapped file-backed**: known data in the executable, with its padding. | ![95.639%](https://img.shields.io/badge/-95.639%25-ffca00?style=for-the-badge) |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: file-backed data we define byte-exactly ([details](docs/mapping-status.md#reproduced-data)). | ![90.511%](https://img.shields.io/badge/-90.511%25-ffb344?style=for-the-badge) |
 | &nbsp;&nbsp;↳ **Mapped zero-fill/BSS**: known zero-initialized storage. | ![97.712%](https://img.shields.io/badge/-97.712%25-ffe900?style=for-the-badge) |
 
 <!-- /mapping-badge -->
