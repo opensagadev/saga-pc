@@ -2472,6 +2472,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     i32 seek_vertical;
     i32 secondary_lean;
     f32 turn_rate;
+    f32 stop_frame;
     u16 pitch;
     u16 roll;
     NUVEC position;
@@ -2881,7 +2882,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     f32 speed;
                     speed = AnimSpeed(object->character_model, current_animation);
                     if (speed != 0.0f) {
-                        f32 stop_frame;
                         f32 *frame;
                         i32 stopped;
                         if (CanStepBack(object) && StepBackFromTarget(object))
@@ -3113,7 +3113,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                                         NuAnimEndFrame(
                                             object->character_model
                                                 ->model_data_b[object->anim_packet.blend_source_animation])) {
-                                    f32 stop_frame;
                                     if ((object->anim_packet.blend_source_animation >= 0x2e &&
                                          object->anim_packet.blend_source_animation <= 0x3b) ||
                                         ((stop_frame = AnimStopFrame(object->character_model,
