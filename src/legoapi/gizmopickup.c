@@ -936,25 +936,29 @@ static void __cdecl PartStolen_Coin(PART_PC *part) {
 }
 
 static void __cdecl PartStop_Coin(PART_PC *part) {
-    if (netclient == 0) {
-        GIZMOPICKUPRUNTIMESYS_s *system = WORLD->pickup_runtime_sys;
-        GIZMOPICKUP_PC *pickup = &system->temporary_pickups[system->temporary_cursor];
-        ++system->temporary_cursor;
-        if (WORLD->pickup_runtime_sys->temporary_cursor >= 64)
-            WORLD->pickup_runtime_sys->temporary_cursor = 0;
-        if ((pickup->flags & 1) != 0)
-            GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
-        SetCoinType(part->part_id, pickup);
-        pickup->flags = (pickup->flags & 0xf7) | 0x17;
-        pickup->position = part->position;
-        pickup->rotation = 0;
-        pickup->room = WORLD->current_gscn != NULL ? (i8)NuPortalWhichRoom(WORLD->current_gscn, &pickup->position) : -1;
-        pickup->floor = 2000000.0f;
-        pickup->timer = 5.0f;
-        pickup->shadow_x = 0;
-        pickup->shadow_z = 0;
-        pickup->flags = (pickup->flags | 0x20) & ~0x40;
+    GIZMOPICKUPRUNTIMESYS_s *system;
+    GIZMOPICKUP_PC *pickup;
+    if (netclient != 0) {
+        part->active &= ~1;
+        return;
     }
+    system = WORLD->pickup_runtime_sys;
+    pickup = &system->temporary_pickups[system->temporary_cursor];
+    ++system->temporary_cursor;
+    if (WORLD->pickup_runtime_sys->temporary_cursor >= 64)
+        WORLD->pickup_runtime_sys->temporary_cursor = 0;
+    if ((pickup->flags & 1) != 0)
+        GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
+    SetCoinType(part->part_id, pickup);
+    pickup->flags = (pickup->flags & 0xf7) | 0x17;
+    pickup->position = part->position;
+    pickup->rotation = 0;
+    pickup->room = WORLD->current_gscn != NULL ? NuPortalWhichRoom(WORLD->current_gscn, &pickup->position) : -1;
+    pickup->floor = 2000000.0f;
+    pickup->timer = 5.0f;
+    pickup->shadow_x = 0;
+    pickup->shadow_z = 0;
+    pickup->flags = (pickup->flags | 0x20) & ~0x40;
     part->active &= ~1;
 }
 
