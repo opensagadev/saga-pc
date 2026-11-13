@@ -1763,17 +1763,6 @@ void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
     }
 }
 
-ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name) {
-    i32 i;
-    for (i = 0; i < 100; ++i) {
-        if ((ShaderUniformRecordsPc[i].fragment_name != NULL &&
-             strcmp(ShaderUniformRecordsPc[i].fragment_name, name) == 0) ||
-            (ShaderUniformRecordsPc[i].vertex_name != NULL && strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0))
-            return &ShaderUniformRecordsPc[i];
-    }
-    return NULL;
-}
-
 /* PC 601a30. Minimum reader for this initialization cohort, not a NUMTL extent. */
 
 void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
