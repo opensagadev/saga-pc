@@ -939,7 +939,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
             return;
         }
-        if (3 != ((GRAPPLE_CURRENT->flags & 3)) ||
+        if (!GRAPPLE_CURRENT->active || !GRAPPLE_CURRENT->visible ||
             (0 != GRAPPLE_CURRENT->has_terrain_platform &&
              (GRAPPLE_CURRENT->attached_object == NULL || GRAPPLE_CURRENT->ground_position.y == 2000000.0f))) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
