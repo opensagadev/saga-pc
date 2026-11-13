@@ -6706,9 +6706,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     AIPATHCNX_PC *next;
     i32 flags;
     AIPATHCNX_PC *current_2;
-    u32 flags_2;
     AIPATHNODE_PC *shared;
-    AIPATHCNX_PC *next_2;
     NUVEC target_2;
     i32 use_left;
     i32 angle;
@@ -6921,9 +6919,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     next = GetNextConnection(packet, &direction);
                 } while (next != NULL);
             } else {
+                // MATCH-EXCEPTION: retail tests the signed flags as a 64-bit value (cdq) here and below.
                 flags = (destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1]) &
                         0xdfffffff;
-                if ((flags & 0xd8000000) == 0 && (flags == 0 || (packet->capabilities & flags) != 0) &&
+                if (((u64)flags & 0xd8000000) == 0 && (flags == 0 || (packet->capabilities & flags) != 0) &&
                     WithinConnection(system, &packet->terrain_origin, packet->path_info.path, destination_connection,
                                      checks, packet->path_info.connection, packet->current_route, object->object_id,
                                      NULL, object->collision_radius, 0) != 0) {
@@ -6943,8 +6942,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         }
     }
     current_2 = packet->path_info.connection;
-    flags_2 = current_2->traversal_flags[packet->path_info.direction];
-    if ((flags_2 & 0xd8000000) != 0) {
+    flags = current_2->traversal_flags[packet->path_info.direction];
+    if ((flags & 0xd8000000) != 0) {
         packet->movement_destination = path->nodes[current_2->node_indices[packet->path_info.direction]].position;
         packet->flags |= 0x00400000u;
         packet->movement_stopping_distance = 0.0f;
@@ -7004,34 +7003,34 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     if (shared != NULL && (packet->current_route == 0xff ||
                            (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0 ||
                            (((u64)1 << packet->current_route) & (shared->route_boundary_mask)) != 0)) {
-        next_2 = destination_connection;
+        next = destination_connection;
     } else {
-        next_2 = GetNextConnection(packet, &direction);
+        next = GetNextConnection(packet, &direction);
     }
-    if (next_2 != NULL) {
-        flags_2 = next_2->traversal_flags[direction];
-        if ((flags_2 & 0xdfffffff) != 0) {
-            if ((flags_2 & 0xd8000000) != 0) {
+    if (next != NULL) {
+        flags = next->traversal_flags[direction];
+        if (((u64)flags & 0xdfffffff) != 0) {
+            if ((flags & 0xd8000000) != 0) {
                 packet->movement_destination = object->position;
                 packet->flags |= 0x00400000u;
                 packet->movement_stopping_distance = 0.0f;
-                packet->frame_state = next_2->traversal_flags[direction];
+                packet->frame_state = next->traversal_flags[direction];
                 return;
             }
-            if ((packet->capabilities & flags_2) == 0) {
+            if ((packet->capabilities & flags) == 0) {
                 packet->flags |= 0x00600000u;
-                packet->frame_state = next_2->traversal_flags[direction];
-                next_2 = NULL;
+                packet->frame_state = next->traversal_flags[direction];
+                next = NULL;
             } else {
                 packet->navigation_flags |= 1;
             }
         }
-        if (next_2 != NULL) {
+        if (next != NULL) {
 
-            if (next_2 == destination_connection) {
+            if (next == destination_connection) {
                 target_2 = packet->fallback_destination;
             } else {
-                target_2 = path->nodes[next_2->node_indices[direction]].position;
+                target_2 = path->nodes[next->node_indices[direction]].position;
                 packet->flags |= 0x00080000u;
             }
             if (WithinConnection(system, &target_2, packet->path_info.path, current_2, checks,
@@ -7041,7 +7040,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 packet->movement_stopping_distance = 0.0f;
                 return;
             }
-            if (CalculateIntersection(system, packet, object, current_2, next_2) != 0) {
+            if (CalculateIntersection(system, packet, object, current_2, next) != 0) {
                 use_left = 0;
 
                 if ((packet->flags & 0x00000040u) != 0) {
@@ -7066,7 +7065,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     }
                 }
             } else {
-                target_2 = path->nodes[next_2->node_indices[direction]].position;
+                target_2 = path->nodes[next->node_indices[direction]].position;
             }
             packet->movement_stopping_distance = 0.0f;
             packet->movement_destination = target_2;
