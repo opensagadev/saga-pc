@@ -17120,8 +17120,8 @@ void __cdecl AISYSRebuildFromEditorData(void) {
             if (aieditor->ai_system->locator_sets != NULL) {
                 index = 0;
                 for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
-                     set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
-                    AILOCATORSET_PC *runtime = &aieditor->ai_system->locator_sets[index++];
+                     ++index, set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link)) {
+                    AILOCATORSET_PC *runtime = &aieditor->ai_system->locator_sets[index];
                     i32 member;
                     strcpy(runtime->name, set->name);
                     runtime->locator_count = 0;
