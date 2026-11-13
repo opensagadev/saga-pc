@@ -540,12 +540,12 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
 #include <stdio.h>
 #include <stdlib.h>
 struct ShaderParserIncludePc {
-    char *name;
+    const char *name;
     ShaderCompilerBufferAllocatorPc buffer;
 
   private:
     friend class ShaderCompilerParserPc;
-    ShaderParserIncludePc(const char *path, i32 size) : name(_strdup(path)), buffer(size, true) {
+    ShaderParserIncludePc(const char *name, i32 size) : name(name), buffer(size, true) {
     }
     ~ShaderParserIncludePc() {
         if (name != NULL) {
@@ -613,7 +613,7 @@ ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char 
     i32 size = (i32)NuFileOpenSize(file);
     if (size <= 0)
         return NULL;
-    ShaderParserIncludePc *include = new ShaderParserIncludePc(name, size);
+    ShaderParserIncludePc *include = new ShaderParserIncludePc(_strdup(name), size);
     if (include->buffer.capacity < size)
         include->buffer.Resize(size);
     include->buffer.length = size;
