@@ -635,10 +635,10 @@ extern "C" void __cdecl SetShadowLight(void) {
         camera_position = *(NUVEC *)&GameCam->render_mtx.m30;
         camera = pNuCam;
     } else if (editor_active != 0) {
-        NUCAMERA *current = NuCameraGetCam();
-        f32 forward_y = current->mtx.m21;
-        f32 forward_z = current->mtx.m22;
-        view_direction.x = current->mtx.m20;
+        NUVEC *forward = (NUVEC *)&NuCameraGetCam()->mtx.m20;
+        f32 forward_y = forward->y;
+        f32 forward_z = forward->z;
+        view_direction.x = forward->x;
         view_direction.y = forward_y;
         view_direction.z = forward_z;
         view_direction.w = 1.0f;
