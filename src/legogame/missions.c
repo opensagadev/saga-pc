@@ -87,7 +87,7 @@ void __cdecl MenuDrawMissions(MENU *menu) {
                 MissionNameScalePc, MissionNameScalePc, 0, 255, 191, 0, 1.7f, 1, NULL, 0,
                 (u32)(i32)(128.0f * MissionsAlphaPc * alpha));
     SmartTextEx(TTab[MissionMenuInstructionTextPc], 0.0f, 0.525f, 1.0f, MissionNameScalePc, MissionNameScalePc,
-                MissionNameScalePc, 0, 255, 255, 255, 1.25f, 1, 0, NULL, (u32)(i32)(96.0f * alpha));
+                MissionNameScalePc, 0, 255, 255, 255, 1.25f, 1, NULL, 0, (u32)(i32)(96.0f * alpha));
     if (Game.mission_save.completed[MissionMenuSelectionPc] != 0) {
         opacity = alpha * MissionsAlphaPc;
         if (opacity > 0.0f) {
