@@ -667,10 +667,10 @@ check:
                     // Retail tests offset.x against -clearance again here, not offset.z.
                     if (!(offset.z < clearance && offset.x > -clearance) ||
                         !(other->collision_max.y >= destination->position.y) ||
-                        !(destination->position.y + owner->scaled_height >= other->collision_min.y)) {
+                        other->collision_min.y > destination->position.y + owner->scaled_height) {
                         continue;
                     }
-                    if (!(clearance * clearance > offset.x * offset.x + offset.z * offset.z))
+                    if (!(offset.x * offset.x + offset.z * offset.z < clearance * clearance))
                         continue;
                     packet->path_connection_state = 1;
                     ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
