@@ -3651,17 +3651,23 @@ extern "C" {
     void __cdecl NuVpUpdate(void) {
         PC_VIEWPORT_PC viewport;
         i32 x, y, width, height, right, bottom, limit_x, limit_y;
-        i32 clipped_left = 0;
-        i32 clipped_top = 0;
+        i32 clipped_left;
+        i32 clipped_top;
         f32 rounded_width;
         f32 rounded_height;
         f32 reciprocal;
         if (NuVpDirtyPc == 0)
             return;
+        clipped_left = 0;
+        clipped_top = 0;
         NuCameraProjectionGlobalScaleX = 1.0f;
         NuCameraProjectionGlobalOffsetX = 0.0f;
         NuCameraProjectionGlobalOffsetY = 0.0f;
         NuCameraProjectionGlobalScaleY = 1.0f;
+        // MATCH-EXCEPTION: retail copies the leading x/y/width/height/min_z/max_z block of vpCurrent into the
+        // viewport as one integer struct copy (x..height are overwritten before submit); NUVPCURRENT probably
+        // began with an embedded viewport struct in the original header.
+        viewport = *(PC_VIEWPORT_PC *)&vpCurrent;
         x = vpCurrent.x;
         y = vpCurrent.y;
         width = vpCurrent.width;
@@ -3670,8 +3676,6 @@ extern "C" {
         bottom = (i32)((u32)y + (u32)height);
         limit_x = (i32)((u32)PS2_REZ_W << 4);
         limit_y = (i32)((u32)PS2_REZ_H << 4);
-        viewport.min_z = vpCurrent.min_z;
-        viewport.max_z = vpCurrent.max_z;
         if (right < 0 || x >= limit_x || bottom < 0 || y >= limit_y)
             goto empty;
         if (x < 0) {
