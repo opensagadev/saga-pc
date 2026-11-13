@@ -736,17 +736,16 @@ typedef struct AI_EDITOR_FILE_INFO_PC {
     i8 month;
     u8 unknown_15;
     i16 year;
-    u8 unknown_18;
-    u8 unknown_19[3];
+    char name[256]; /* NuFileGetInfo (PC) only clears name[0] */
 } AI_EDITOR_FILE_INFO_PC;
 
-STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
+STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x118);
 
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
 
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
 
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, name) == 0x18);
 
 typedef struct AI_EDITOR_MODE_ENTRY_PC {
     char name[32];
@@ -17307,16 +17306,17 @@ i32 __cdecl aieditor_Save(void) {
     char backup[128];
     char *basename;
     char *separator;
+    i32 result = 1;
 
     cursor.char_ptr = (char *)aieditor->save_scratch;
-    end.char_ptr = cursor.char_ptr + sizeof(aieditor->save_scratch);
+    end.char_ptr = (char *)aieditor->save_scratch + sizeof(aieditor->save_scratch);
     memset(cursor.char_ptr, 0, sizeof(aieditor->save_scratch));
     paths =
         pathEditorCreateData(&cursor, &end, &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
     if (paths == NULL)
-        return 1;
+        return result;
     if (aieditor->level_file == NULL)
-        return 1;
+        return result;
     sprintf(filename, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, aieditor->level_directory,
             aieditor->level_subdirectory, aieditor->level_file);
     if (NuFileExists(filename)) {
@@ -17336,17 +17336,19 @@ i32 __cdecl aieditor_Save(void) {
     }
     EdFileSetMedia(1);
     if (EdFileOpen(filename, 1) == 0)
-        return 0;
-    EdFileWriteInt(aidata_version);
-    pathEditorSaveData(paths);
-    areaEditorSaveData();
-    locatorEditorSaveData(paths);
-    creatureEditorSaveData(paths);
-    antinodeEditorSaveData();
-    if (GameAISaveFn != NULL)
-        GameAISaveFn(paths);
-    EdFileClose();
-    return 1;
+        result = 0;
+    else {
+        EdFileWriteInt(aidata_version);
+        pathEditorSaveData(paths);
+        areaEditorSaveData();
+        locatorEditorSaveData(paths);
+        creatureEditorSaveData(paths);
+        antinodeEditorSaveData();
+        if (GameAISaveFn != NULL)
+            GameAISaveFn(paths);
+        EdFileClose();
+    }
+    return result;
 }
 
 void __cdecl aieditor_Leave(void) {
