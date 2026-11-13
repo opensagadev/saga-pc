@@ -582,15 +582,11 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     EdFileClose();
     edppDetermineNearest(1.0f);
 
-    if (original_flag == 0) {
+    if (original_flag == 0)
         edbits_particle_general_page = page_index;
-        return page_index;
-    }
-    if (original_flag == 5) {
+    else if (original_flag == 5)
         edbits_particle_char_page = page_index;
-        return page_index;
-    }
-    if (original_flag == 1)
+    else if (original_flag == 1)
         edbits_particle_level_page = page_index;
     return page_index;
 }
