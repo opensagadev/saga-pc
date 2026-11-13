@@ -371,12 +371,16 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
                 continue;
             }
             distance = local.x * local.x;
+            if (distance < *nearest_distance) {
+                *nearest_distance = distance;
+                *nearest = grapple;
+            }
         } else {
             distance = NuVecDistSqr(position, &grapple->hook_position, NULL);
-        }
-        if (distance < *nearest_distance) {
-            *nearest_distance = distance;
-            *nearest = grapple;
+            if (distance < *nearest_distance) {
+                *nearest_distance = distance;
+                *nearest = grapple;
+            }
         }
     }
 }
