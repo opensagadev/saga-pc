@@ -154,15 +154,14 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     NetPrimSetColour(0x80000080);
     NetPrimPosition(x, y - height, 0.0f);
     NetPrimSetColour(0x80000080);
-    f32 right = x + half_width;
-    NetPrimPosition(right, y - height, 0.0f);
+    NetPrimPosition(x + half_width, y - height, 0.0f);
     NuPrim2DEnd();
 
     NuPrim2DBegin(0xf, 5, NULL);
     NetPrimSetColour(0x80000080);
     NetPrimPosition(x, y - height + byte_scale * 4352.0, 0.0f);
     NetPrimSetColour(0x80000080);
-    NetPrimPosition(right, y - height + byte_scale * 4352.0, 0.0f);
+    NetPrimPosition(x + half_width, y - height + byte_scale * 4352.0, 0.0f);
     NuPrim2DEnd();
 
     f32 sample_y;
@@ -214,31 +213,32 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     NuQFntPushPrintMode(2);
     VUFNT *font = system_qfont;
     f32 font_height = NuQFntHeight(font);
+    f32 right = x + half_width;
     NuQFntSetColour(font, 0x80808080);
     NuQFntSetScale(font, 0.75f, 0.75f);
 
-    y += font_height;
-    NuQFntMove(font, right, y, 0.0f);
+    f32 text_y = y + font_height;
+    NuQFntMove(font, right, text_y, 0.0f);
     NuQFntPrintU(font, (char *)name);
 
     char text[128];
-    y += font_height;
-    NuQFntMove(font, right, y, 0.0f);
+    text_y += font_height;
+    NuQFntMove(font, right, text_y, 0.0f);
     NuSPrintf(text, "bps %d : %d", history[history_index].values[0], history[history_index].values[1]);
     NuQFntPrintU(font, text);
 
-    y += font_height;
-    NuQFntMove(font, right, y, 0.0f);
+    text_y += font_height;
+    NuQFntMove(font, right, text_y, 0.0f);
     NuSPrintf(text, "pps %d : %d", history[history_index].values[2], history[history_index].values[3]);
     NuQFntPrintU(font, text);
 
-    y += font_height;
-    NuQFntMove(font, right, y, 0.0f);
+    text_y += font_height;
+    NuQFntMove(font, right, text_y, 0.0f);
     NuSPrintf(text, "max bps %d : %d", peak.values[0], peak.values[1]);
     NuQFntPrintU(font, text);
 
-    y += font_height;
-    NuQFntMove(font, right, y, 0.0f);
+    text_y += font_height;
+    NuQFntMove(font, right, text_y, 0.0f);
     NuSPrintf(text, "max pps %d : %d", peak.values[2], peak.values[3]);
     NuQFntPrintU(font, text);
 
