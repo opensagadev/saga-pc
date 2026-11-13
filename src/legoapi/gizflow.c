@@ -202,11 +202,10 @@ i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 
     STATIC_ASSERT(offsetof(FlowCheckBoxPc, flags) == 0xa);
     STATIC_ASSERT(sizeof(FlowCheckBoxPc) == 0xc);
     FlowCheckBoxPc *state = (FlowCheckBoxPc *)box;
-    u32 flags = box->state_flags;
     (void)output;
-    if ((flags & 0x200) != 0) {
+    if ((box->state_flags & 0x200) != 0) {
         u32 saved = state->flags.output_state;
-        box->state_flags = flags | 0x400;
+        box->state_flags |= 0x400;
         if (flowbox_callbacks[box->type].process(system, box, 0)) {
             state->flags.output_state = saved;
             return 1;
@@ -214,7 +213,7 @@ i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 
         state->flags.output_state = saved;
         return 0;
     }
-    return ((u8)flags >> 1) & 1;
+    return (box->state_flags_low >> 1) & 1;
 }
 
 void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
