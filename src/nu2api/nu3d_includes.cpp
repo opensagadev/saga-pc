@@ -7130,8 +7130,8 @@ extern "C" {
             }
         }
         w = (f32)PS2_REZ_W;
-        h = (f32)PS2_REZ_H;
         width = (i32)(w * 0.75);
+        h = (f32)PS2_REZ_H;
         height = (i32)(h * 0.75);
         if (xPos == xTiles - 1.0f)
             width = (i32)(scale * w - (xTiles - 1.0f) * 0.75 * w);
