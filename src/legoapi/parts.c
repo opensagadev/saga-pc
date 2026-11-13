@@ -3357,17 +3357,20 @@ void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
-    i32 page = 0;
+    i32 page;
     i32 scene_slot, i, version, type_count, skipped_types, type_slot, emitter_count, emitter_slot, sound;
-    PART_RUNTIME_TYPE_PC *type;
-    PART_EMIT_PC *emitter;
     PART_RUNTIME_TYPE_PC discarded_type;
-    if (mode != 0) {
-        for (page = 1; page < 8; ++page) {
-            if (part_page_used[page] == 0)
+    if (mode == 0) {
+        page = 0;
+    } else {
+        page = -1;
+        for (i = 1; i < 8; ++i) {
+            if (part_page_used[i] == 0) {
+                page = i;
                 break;
+            }
         }
-        if (page == 8)
+        if (page == -1)
             return -1;
     }
     scene_slot = 0;
@@ -3385,68 +3388,69 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
     if (EdFileOpen(path, 0) != 0) {
         EdFileSetReadWrongEndianess(1);
         version = EdFileReadInt();
-        if (version >= 1 && version <= 16) {
+        // MATCH-EXCEPTION: retail tests the low and high version bounds separately; one && folds them
+        // into a single unsigned range compare.
+        if (version < 1) {
+            EdFileClose();
+            return -1;
+        }
+        if (version <= 16) {
             type_count = EdFileReadInt();
+            type_slot = 0;
             skipped_types = 0;
             if (type_count + part_types_used > 128) {
                 skipped_types = type_count + part_types_used - 128;
                 type_count -= skipped_types;
             }
-            type_slot = 0;
-            while (type_count > 0) {
+            for (i = 0; i < type_count; ++i) {
                 while (part_types[type_slot].name[0] != 0)
                     ++type_slot;
-                type = &((PART_RUNTIME_TYPE_PC *)part_types)[type_slot];
-                edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)type, version, page);
-                if (type->name[0] != 0) {
-                    type->page = page;
-                    type->field_b3 = mode;
+                edpartLoadSingleType(&part_types[type_slot], version, page);
+                if (part_types[type_slot].name[0] != 0) {
+                    ((PART_RUNTIME_TYPE_PC *)part_types)[type_slot].page = page;
+                    ((PART_RUNTIME_TYPE_PC *)part_types)[type_slot].field_b3 = mode;
                     ++part_types_used;
                 }
-                --type_count;
             }
-            while (skipped_types > 0) {
+            for (i = 0; i < skipped_types; ++i)
                 edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)&discarded_type, version, page);
-                --skipped_types;
-            }
             emitter_count = EdFileReadInt();
+            emitter_slot = 0;
             if (emitter_count + part_emits_used > 40)
                 emitter_count = 40 - part_emits_used;
-            emitter_slot = 0;
-            while (emitter_count > 0) {
+            for (i = 0; i < emitter_count; ++i) {
                 while (part_emits[emitter_slot].effect_id != -1)
                     ++emitter_slot;
-                emitter = &part_emits[emitter_slot];
-                emitter->position.x = EdFileReadFloat();
-                emitter->position.y = EdFileReadFloat();
-                emitter->position.z = EdFileReadFloat();
-                EdFileRead(emitter->name, 16);
-                emitter->effect_id = PARTLookupTypePageOnly(emitter->name, page);
-                emitter->rotation_30 = EdFileReadShort();
-                emitter->rotation_2e = EdFileReadShort();
-                emitter->rotation_2c = EdFileReadShort();
+                part_emits[emitter_slot].position.x = EdFileReadFloat();
+                part_emits[emitter_slot].position.y = EdFileReadFloat();
+                part_emits[emitter_slot].position.z = EdFileReadFloat();
+                EdFileRead(part_emits[emitter_slot].name, 16);
+                part_emits[emitter_slot].effect_id = PARTLookupTypePageOnly(part_emits[emitter_slot].name, page);
+                part_emits[emitter_slot].rotation_30 = EdFileReadShort();
+                part_emits[emitter_slot].rotation_2e = EdFileReadShort();
+                part_emits[emitter_slot].rotation_2c = EdFileReadShort();
                 if (version >= 11) {
-                    emitter->field_44 = EdFileReadShort();
-                    emitter->field_46 = EdFileReadShort();
+                    part_emits[emitter_slot].field_44 = EdFileReadShort();
+                    part_emits[emitter_slot].field_46 = EdFileReadShort();
                 } else {
-                    emitter->field_44 = 0;
-                    emitter->field_46 = 0;
+                    part_emits[emitter_slot].field_44 = 0;
+                    part_emits[emitter_slot].field_46 = 0;
                 }
-                emitter->page = page;
-                emitter->field_3c = 0;
-                type = &((PART_RUNTIME_TYPE_PC *)part_types)[emitter->effect_id];
+                part_emits[emitter_slot].page = page;
+                part_emits[emitter_slot].field_3c = 0;
                 for (sound = 0; sound < 4; ++sound) {
-                    if (type->sounds[sound] != -1 && type->sound_modes[sound] != 0) {
-                        emitter->field_3c = 1;
+                    if (((PART_RUNTIME_TYPE_PC *)part_types)[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
+                        ((PART_RUNTIME_TYPE_PC *)part_types)[part_emits[emitter_slot].effect_id].sound_modes[sound] !=
+                            0) {
+                        part_emits[emitter_slot].field_3c = 1;
                         break;
                     }
                 }
-                if (emitter->effect_id != -1) {
+                if (part_emits[emitter_slot].effect_id != -1) {
                     ++part_emits_used;
                     PARTStartOffset(emitter_slot, 0.0f);
-                    emitter->field_3d = 1;
+                    part_emits[emitter_slot].field_3d = 1;
                 }
-                --emitter_count;
             }
             EdFileSetReadWrongEndianess(0);
             EdFileClose();
