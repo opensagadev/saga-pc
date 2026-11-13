@@ -3697,65 +3697,64 @@ i32 __cdecl Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
                     object->field_ec4 = 0.0f;
                 }
             }
-            return 1;
-        }
-
-        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-            candidate = &Obj[index];
-            type_matches = 0;
-            if ((candidate->flags_1fc_word & 1u) == 0 || (candidate->flags_1fc_word & 0x1000u) == 0 ||
-                (candidate->flags_1f8 & 0x400u) == 0) {
-                continue;
-            }
-
-            for (type_index = 0; type_index < type_count; ++type_index) {
-                if ((i16)candidate->id == type_ids[type_index]) {
-                    type_matches = 1;
+        } else {
+            for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+                candidate = &Obj[index];
+                type_matches = 0;
+                if ((candidate->flags_1fc_word & 1u) == 0 || (candidate->flags_1fc_word & 0x1000u) == 0 ||
+                    (candidate->flags_1f8 & 0x400u) == 0) {
+                    continue;
                 }
-            }
-            if (range_squared > 0.0f && object != NULL) {
-                NuVecSub(&offset, &object->position, &candidate->position);
-                distance_squared = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-            }
-            if ((type_matches == 1 && (distance_squared < range_squared || range_squared == 0.0f)) ||
-                (type_count == 0 && distance_squared < range_squared)) {
-                old_side = candidate->flags_1f8 & 0x10005;
-                candidate->flags_1f8 &= 0xfffefffau;
-                switch (side) {
-                    case 0:
-                        candidate->flags_1f8 |= 4;
-                        break;
-                    case 1:
-                        candidate->flags_1f8 |= 1;
-                        break;
-                    case 2:
-                        candidate->flags_1f8 |= 0x10000;
-                        break;
-                    case 3:
-                        if ((candidate->flags_1f8 & 0x400u) != 0 && candidate->ai_packet.creature_index != 0xff) {
-                            creature = sys->creatures + candidate->ai_packet.creature_index;
-                            model_flags = apicharsys->char_data[creature->type].model_flags;
-                            if ((model_flags & 0x200) != 0) {
-                                candidate->flags_1f8 |= 4;
-                            } else if ((model_flags & 4) != 0) {
-                                candidate->flags_1f8 |= 1;
+
+                for (type_index = 0; type_index < type_count; ++type_index) {
+                    if ((i16)candidate->id == type_ids[type_index]) {
+                        type_matches = 1;
+                    }
+                }
+                if (range_squared > 0.0f && object != NULL) {
+                    NuVecSub(&offset, &object->position, &candidate->position);
+                    distance_squared = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                }
+                if ((type_matches == 1 && (distance_squared < range_squared || range_squared == 0.0f)) ||
+                    (type_count == 0 && distance_squared < range_squared)) {
+                    old_side = candidate->flags_1f8 & 0x10005;
+                    candidate->flags_1f8 &= 0xfffefffau;
+                    switch (side) {
+                        case 0:
+                            candidate->flags_1f8 |= 4;
+                            break;
+                        case 1:
+                            candidate->flags_1f8 |= 1;
+                            break;
+                        case 2:
+                            candidate->flags_1f8 |= 0x10000;
+                            break;
+                        case 3:
+                            if ((candidate->flags_1f8 & 0x400u) != 0 && candidate->ai_packet.creature_index != 0xff) {
+                                creature = sys->creatures + candidate->ai_packet.creature_index;
+                                model_flags = apicharsys->char_data[creature->type].model_flags;
+                                if ((model_flags & 0x200) != 0) {
+                                    candidate->flags_1f8 |= 4;
+                                } else if ((model_flags & 4) != 0) {
+                                    candidate->flags_1f8 |= 1;
+                                }
                             }
-                        }
-                        break;
-                }
+                            break;
+                    }
 
-                candidate->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
-                if ((candidate->flags_1f8 & 1) != 0) {
-                    candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
-                } else if ((candidate->flags_1f8 & 4) == 0) {
-                    candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
-                }
+                    candidate->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
+                    if ((candidate->flags_1f8 & 1) != 0) {
+                        candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
+                    } else if ((candidate->flags_1f8 & 4) == 0) {
+                        candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
+                    }
 
-                if ((old_side & candidate->flags_1f8) == 0) {
-                    candidate->ai_packet.flags &= ~0x800u;
-                    candidate->ai_packet.opponent = NULL;
-                    candidate->alert_target = NULL;
-                    candidate->field_ec4 = 0.0f;
+                    if ((old_side & candidate->flags_1f8) == 0) {
+                        candidate->ai_packet.flags &= ~0x800u;
+                        candidate->ai_packet.opponent = NULL;
+                        candidate->alert_target = NULL;
+                        candidate->field_ec4 = 0.0f;
+                    }
                 }
             }
         }
