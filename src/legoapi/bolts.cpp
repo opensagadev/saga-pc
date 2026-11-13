@@ -2849,7 +2849,11 @@ extern "C" {
             for (index = 0; index < bolt_count; ++index) {
                 BOLT_PC *bolt = &Bolt[bolts[index]];
                 f32 distance = bolt->speed * bolt->lifetime;
-                f32 factor = target_distance == 0.0f || distance == 0.0f ? 0.0f : target_distance / distance;
+                f32 factor;
+                if (target_distance != 0.0f && distance != 0.0f)
+                    factor = target_distance / distance;
+                else
+                    factor = 0.0f;
                 f32 lifetime = factor * type->field_14;
                 if (bolt->lifetime > lifetime)
                     bolt->lifetime = lifetime;
