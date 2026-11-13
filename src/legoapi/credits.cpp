@@ -99,7 +99,7 @@ static void CreditsInitCreditPc(CREDIT_RECORD_PC *credit, char *text, f32 x, f32
 void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     char filename[256];
     CREDIT_RECORD_PC *credit;
-    CREDIT_RECORD_PC *previous = NULL;
+    CREDIT_RECORD_PC *previous;
     NUFPAR_PC *parser;
     CREDIT_TYPE_PC *type;
     f32 y;
@@ -118,6 +118,7 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     credit = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
     CreditList = credit;
     CreditCountPc = 0;
+    previous = NULL;
     if (credit == NULL)
         return;
     parser = NuFParCreate(filename);
