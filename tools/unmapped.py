@@ -19,10 +19,14 @@ Write kinds (each one is a separate, reviewable change to symbols.csv):
   pe              PE structures: import descriptors, lookup tables, hint/name
                   tables, IAT terminators, the debug directory and CodeView record,
                   the load configuration and the SafeSEH handler table
-  library-data    data of linked runtime/SDK archive members: a member's
-                  section is contributed whole, so one mapped symbol places it;
-                  initialized bytes must equal the member (relocation fields:
-                  bound targets compared, others masked), zero-fill must be zero
+  library-data    data of runtime/SDK archive members: a member's section is
+                  contributed whole, so one mapped symbol places it (initialized
+                  bytes must equal the member, relocation fields bound-and-equal
+                  or masked; zero-fill must be zero); a relocation-free section
+                  whose bytes occur once in retail places itself
+
+  eh-sizes        blank sizes of C++ EH tables (__ehfuncinfo$, __unwindtable$,
+                  __tryblocktable$, __catchsym$) from the FuncInfo they belong to
 
 `--dry-run literals` lists unnamed strings that mapped code references, with
 the name MSVC would give a literal of those bytes. They are not written: the
@@ -547,7 +551,7 @@ def section_totals(ctx):
 
 # ---------------------------------------------------------------- derivations
 
-WRITE_KINDS = ("literal-sizes", "real-sizes", "pe", "library-data")
+WRITE_KINDS = ("literal-sizes", "real-sizes", "pe", "library-data", "eh-sizes")
 
 
 def derive(ctx, kind, library=None):
@@ -578,6 +582,13 @@ def derive(ctx, kind, library=None):
             if any(ctx.is_mapped(v) for v in range(address, address + size)):
                 continue
             out.append((address, symbol, size, "", symbol in by_name))
+        return out
+    if kind == "eh-sizes":
+        sizes = {(r["address"], r["symbol"]): r for r in records if r["address"] is not None}
+        for (address, symbol), size in sorted(eh_layout(ctx).items()):
+            row = sizes.get((address, symbol))
+            if row is not None and row["size"] is None:
+                out.append((address, symbol, size, row["ctype"], True))
         return out
     if kind == "library-data":
         return derive_library_data(ctx, by_name)
@@ -639,6 +650,43 @@ def _data_sections(obj):
                 or bool(section["raw_offset"]) == bss or section["name"].startswith((".debug", ".drectve")):
             continue
         yield number, section, bss
+
+
+FUNCINFO_SIZES = {0x19930520: 28, 0x19930521: 32, 0x19930522: 36}
+
+
+def eh_layout(ctx):
+    """{(address, name): size} of the C++ EH tables that mapped __ehfuncinfo$ rows describe.
+
+    FuncInfo (28/32/36 bytes by magic number) points at the unwind map
+    (maxState x 8 bytes, __unwindtable$), the try block map (nTryBlocks x 20,
+    __tryblocktable$) and per try block a handler array (nCatches x 16,
+    __catchsym$<function>$<n>, whichever row the map holds at that address).
+    """
+    names_at = collections.defaultdict(set)
+    for r in ctx.records:
+        if r["address"] is not None:
+            names_at[r["address"]].add(r["symbol"])
+    layout = {}
+    for r in ctx.records:
+        if r["address"] is None or not r["symbol"].startswith("__ehfuncinfo$"):
+            continue
+        owner = r["symbol"].removeprefix("__ehfuncinfo$")
+        fields = struct.unpack("<5I", ctx.read(r["address"], 20))
+        magic, states, unwind, tries, trymap = fields
+        if magic not in FUNCINFO_SIZES:
+            continue
+        layout[(r["address"], r["symbol"])] = FUNCINFO_SIZES[magic]
+        if unwind and states:
+            layout[(unwind, "__unwindtable$" + owner)] = 8 * states
+        if trymap and tries:
+            layout[(trymap, "__tryblocktable$" + owner)] = 20 * tries
+            for block in range(tries):
+                catches, handlers = struct.unpack("<II", ctx.read(trymap + 20 * block + 12, 8))
+                for name in names_at.get(handlers, ()):
+                    if name.startswith(f"__catchsym${owner}$"):
+                        layout[(handlers, name)] = 16 * catches
+    return layout
 
 
 def library_layout(ctx):
@@ -776,6 +824,9 @@ def verify(ctx):
     for r in ctx.records:
         names_at[r["address"]].add(r["symbol"])
     sizes = {(r["address"], r["symbol"]): r["size"] for r in ctx.records}
+    for key, size in eh_layout(ctx).items():
+        if sizes.get(key, size) not in (None, size):
+            errors.append(f"{key[1]} at {key[0]:#x}: size {sizes[key]} but its FuncInfo gives {size}")
     for key, extent in library_layout(ctx).items():
         if sizes.get(key) not in (None, extent):
             errors.append(f"{key[1]} at {key[0]:#x}: size {sizes[key]} but its archive member section gives {extent}")

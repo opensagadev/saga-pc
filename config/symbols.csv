@@ -33923,10 +33923,10 @@ address,symbol,size,ctype
 0x7ecad4,__unwindtable$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,16,native EH unwindtable
 0x7ecae4,__tryblocktable$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,20,native EH trytable
 0x7ecaf8,__ehfuncinfo$??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,36,native EH funcinfo
-0x7ecb1c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$5,,
-0x7ecb2c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$4,,
-0x7ecb3c,__unwindtable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,,
-0x7ecb5c,__ehfuncinfo$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,,
+0x7ecb1c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$5,16,
+0x7ecb2c,__catchsym$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$4,16,
+0x7ecb3c,__unwindtable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,32,
+0x7ecb5c,__ehfuncinfo$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,36,
 0x7ecb80,__tryblocktable$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,40,
 0x7ecba8,__catchsym$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2,16,native EH catchrecord
 0x7ecbb8,__unwindtable$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,16,native EH unwindtable
@@ -34046,10 +34046,10 @@ address,symbol,size,ctype
 0x7ed9f8,libcmt#00358:__sehtable$_getenv,28,
 0x7eda18,libcmt#00358:__sehtable$_getenv_s,28,
 0x7eda38,libcmt#00358:__sehtable$__dupenv_s,28,
-0x7eda54,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$5,,
-0x7eda64,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$4,,
-0x7eda74,__unwindtable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
-0x7eda94,__ehfuncinfo$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
+0x7eda54,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$5,16,
+0x7eda64,__catchsym$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$4,16,
+0x7eda74,__unwindtable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,32,
+0x7eda94,__ehfuncinfo$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,36,
 0x7edab8,__tryblocktable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,40,
 0x7edae0,libcmt#00486:__sehtable$_fputwc,28,
 0x7edafc,__IMPORT_DESCRIPTOR_USER32,20,
