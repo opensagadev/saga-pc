@@ -4878,7 +4878,8 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
         bool clockwise = cross.z > 0.0f;
         __declspec(align(16)) NUVEC4 normal;
         normal.z = normal.w = 0.0f;
-        for (i32 edge = 0; edge != 4; ++edge) {
+        i32 edge;
+        for (edge = 0; edge != 4; ++edge) {
             i32 start = edge;
             i32 end = (edge + 1) % 4;
             if (!clockwise) {
@@ -4895,10 +4896,10 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             delta.z = 0.0f;
             f32 distance = normal.x * delta.x + normal.y * delta.y + normal.z * delta.z;
             if (distance - screen_radius < 0.0)
-                goto next_occluder;
+                break;
         }
-        return true;
-    next_occluder:;
+        if (edge == 4)
+            return true;
     }
     return false;
 }
