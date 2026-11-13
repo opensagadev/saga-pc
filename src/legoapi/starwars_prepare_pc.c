@@ -567,7 +567,6 @@ check:
         packet->flags |= 0x800000;
         packet->path_connection_state = 1;
     }
-    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
     switch (packet->path_connection_state) {
         case 1:
             if (ready != 0) {
@@ -592,41 +591,42 @@ check:
             }
             break;
         case 2:
-            if ((flags & 0x400) != 0) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
                 packet->path_connection_state = 4;
             } else {
                 distance = NuVecDist(&object->position, &destination->position, &offset);
                 if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                     distance - destination->radius > jump_distance) {
                     packet->path_connection_state = 3;
-                    if ((destination->runtime_flags & 2) != 0)
-                        owner->ai_jump_destination_distance_pc = 0.0f;
-                    else
+                    if ((destination->runtime_flags & 2) == 0)
                         owner->ai_jump_destination_distance_pc = distance;
+                    else
+                        owner->ai_jump_destination_distance_pc = 0.0f;
                 }
             }
             break;
         case 3:
-            if ((flags & 0x400) != 0) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
                 packet->path_connection_state = 4;
             } else {
                 distance = NuVecDist(&object->position, &destination->position, &offset);
-                if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
-                    owner->ai_jump_destination_distance_pc = 0.0f;
-                } else if (!(distance - destination->radius < jump_distance)) {
-                    break;
-                }
-                if (!(distance > owner->ai_jump_destination_distance_pc)) {
-                    owner->ai_jump_destination_distance_pc = distance;
-                } else {
-                    packet->path_connection_state = 4;
-                    owner->ai_jump_destination_distance_pc = 0.0f;
+                if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
+                    distance - destination->radius < jump_distance) {
+                    if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
+                        owner->ai_jump_destination_distance_pc = 0.0f;
+                    }
+                    if (!(distance > owner->ai_jump_destination_distance_pc)) {
+                        owner->ai_jump_destination_distance_pc = distance;
+                    } else {
+                        packet->path_connection_state = 4;
+                        owner->ai_jump_destination_distance_pc = 0.0f;
+                    }
                 }
             }
             break;
         case 4:
-            if ((flags & 0x22) != 0) {
-                if (0.0f >= owner->jump_reentry_timer) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x22) != 0) {
+                if (owner->jump_reentry_timer <= 0.0f) {
                     packet->path_connection_state = 5;
                     owner->portal_flags |= 0x1000;
                 }
