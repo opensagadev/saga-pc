@@ -90,6 +90,38 @@ typedef struct collision_masks_view_pc_s {
 } COLLISION_MASKS_VIEW_PC;
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
+typedef struct KILLPARTS_MINIKIT_PIECE_PC {
+    NUSPECIALHANDLE special;
+    NUMTX matrix;
+    u8 unknown_4c[0x1c];
+} KILLPARTS_MINIKIT_PIECE_PC;
+typedef struct KILLPARTS_MINIKIT_PIECES_PC {
+    u8 unknown_0[4];
+    KILLPARTS_MINIKIT_PIECE_PC *pieces;
+    u8 piece_count;
+} KILLPARTS_MINIKIT_PIECES_PC;
+typedef struct KILLPARTS_RENDER_PC {
+    const char *name;
+    NUSPECIALHANDLE **rigid_specials;
+    u8 unknown_8[0xc];
+} KILLPARTS_RENDER_PC;
+typedef struct KILLPARTS_OBJECT_LIGHT_PC {
+    u8 unknown_0[0x4d8];
+    PART_LIGHTING_DATA_PC lighting;
+} KILLPARTS_OBJECT_LIGHT_PC;
+typedef struct KILLPARTS_PART_PC {
+    u8 unknown_0[0x20c];
+    f32 speeder_index;
+} KILLPARTS_PART_PC;
+typedef struct KILLPARTS_RIDER_LIGHT_PC {
+    u8 unknown_0[0x628];
+    NUVEC intensity[2];
+} KILLPARTS_RIDER_LIGHT_PC;
+void __cdecl PartImpact_Brick(PART_PC *part);
+
+void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
+               i32 use_vehicle_velocity, u16 *angle_override);
+
 static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;
     u16 debris;
@@ -1029,6 +1061,319 @@ void __cdecl GameObjectToCameraCode(GAMEOBJECT *object) {
     }
 }
 
+void __cdecl SetKillPartMom(NUVEC *momentum) {
+    momentum->x = 0.0f;
+    momentum->y = 1.0f;
+    momentum->z = 0.0f;
+    NuVecRotateZ(momentum, momentum, qrand());
+    NuVecRotateX(momentum, momentum, qrand());
+}
+
+void __cdecl TiePart_Kill(PART_PC *part, i32 unused) {
+    AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
+}
+
+void __cdecl TiePart_KillExplode(PART_PC *part, i32 unused) {
+    AddGameDebris(WORLD->game_debris_sys, 0x6b, &part->position);
+    AddPartDebris(WORLD->part_debris_sys, 3, &part->position);
+}
+
+void __cdecl TiePart_Impact(PART_PC *part) {
+    AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
+}
+
+/* Native local helper takes the particle in ESI and time on the stack. This
+ * logical signature is private to the coherent compiler-generated caller group. */
+static void __cdecl TiePart_MoveCorePC(PART_PC *part, f32 time) {
+    NUVEC position;
+    position.x = part->position.x + part->velocity.x * time;
+    position.y = part->position.y + part->velocity.y * time;
+    position.z = part->position.z + part->velocity.z * time;
+    NuMtxRotateZ(&part->transform, part->rotation_z);
+    part->position.x = position.x;
+    part->position.y = position.y;
+    part->position.z = position.z;
+    AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[100].effect, &position, 10, FRAMETIME, 0, 0,
+                                      NULL);
+}
+
+void __cdecl AtatPart_Stop(PART_PC *part) {
+    PlaySfx(KillPartsAtatExplodeTextPc, &part->position);
+    PartStop_Flickerer(part);
+}
+
+void AtatPart_Update(PART_PC *part) {
+    f32 choice = NuFloatRand(((NURAND *)(&GAMERAND))) * 100.0f + 1.0f;
+    if (part->scale_time < 1.0f) {
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[118].effect, &part->position,
+                                          ((i32)(part->scale_time * 20.0f)), FRAMETIME, 0, 0, NULL);
+    } else if (part->scale_time < 2.0f) {
+        if (choice < 10.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position,
+                                              ((i32)(part->scale_time * 3.0f)), FRAMETIME, qrand(), qrand(),
+                                              NULL);
+        } else if (choice > 90.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position,
+                                              ((i32)(part->scale_time * 15.0f)), FRAMETIME, qrand(), qrand(),
+                                              NULL);
+        }
+    } else if (part->scale_time < 5.0f) {
+        if (choice < 10.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position, 15,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        } else if (choice > 70.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[120].effect, &part->position, 30,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        }
+        if (choice < 30.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 1,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        } else if (choice < 70.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 3,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        } else {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 20,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        }
+    } else if (part->scale_time < 10.0f) {
+        if (choice < 30.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 1,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        } else if (choice < 70.0f) {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 3,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        } else {
+            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[119].effect, &part->position, 20,
+                                              FRAMETIME, qrand(), qrand(), NULL);
+        }
+    }
+}
+static i32 KillPartsTieSpinRatePc = 200000;
+
+void __cdecl TieSpinZPart_Move(PART_PC *part, f32 time) {
+    NUVEC trail;
+    part->field_124[3] = KillPartsTieSpinRatePc;
+    part->rotation_z = ((u16)(((i32)(((f64)KillPartsTieSpinRatePc) * FRAMETIME))));
+    NuMtxPreTranslate(&part->transform, &KillPartsTieSpinTranslationPc);
+    TiePart_MoveCorePC(part, time);
+    trail.x = part->velocity.x * KillPartsTieTrailScalePc;
+    trail.y = part->velocity.y * KillPartsTieTrailScalePc;
+    trail.z = part->velocity.z * KillPartsTieTrailScalePc;
+    AddVariableShotDebrisEffectTimed3(WORLD->game_debris_sys->entries[96].effect, &part->position, &trail, 10,
+                                      FRAMETIME, NULL, NULL);
+}
+
+void __cdecl TiePart_Move(PART_PC *part, f32 time) {
+    part->field_124[3] = -32768;
+    part->rotation_z = ((u16)(((i32)(-32768.0 * FRAMETIME))));
+    TiePart_MoveCorePC(part, time);
+}
+
+void __cdecl KillParts_TIEFIGHTER(ADDPART_PC *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode,
+                                  u16 xrot, u16 yrot, NUVEC *velocity) {
+    if (variant != 0)
+        params->flags = 0x10;
+    else
+        params->flags = 0x400;
+    if (((f64)object->horizontal_velocity_magnitude) / object->character_data->game_character->run_speed <=
+        0.25) {
+        params->flags = 0x90;
+        params->stop_fn = PartStop_Flickerer;
+        params->draw_fn = PartDraw_Flickerer;
+        params->impact_fn = PartImpact_Brick;
+        params->gravity = -8.0f;
+        params->velocity = velocity;
+        AddPart(params);
+        return;
+    }
+    switch (mode) {
+        default: {
+            params->field_20 = 0.5f;
+            params->flags = 0x91;
+            params->kill_fn = TiePart_Kill;
+            params->draw_fn = PartDraw_Flickerer;
+            params->impact_fn = TiePart_Impact;
+            params->velocity = velocity;
+            break;
+        }
+        case 1: {
+            NUVEC spin_velocity;
+            params->flags = 0x111;
+            spin_velocity.x = object->velocity.x * 0.75f;
+            spin_velocity.y = object->velocity.x * 0.75f;
+            spin_velocity.z = object->velocity.z * 0.75f;
+            if (part_index == 5) {
+                NuVecRotateX(&spin_velocity, &spin_velocity, -((i32)yrot));
+                NuVecRotateY(&spin_velocity, &spin_velocity, -((i32)xrot));
+                params->move_fn = TiePart_Move;
+            } else {
+                NuVecRotateX(&spin_velocity, &spin_velocity, yrot);
+                NuVecRotateY(&spin_velocity, &spin_velocity, xrot);
+                params->move_fn = TieSpinZPart_Move;
+            }
+            params->field_a4 = 2.0f;
+            params->kill_fn = TiePart_Kill;
+            params->impact_fn = TiePart_Impact;
+            params->velocity = &spin_velocity;
+            PlaySfx(KillPartsTieSpinsTextPc, &object->collision_position);
+            break;
+        }
+        case 0: {
+            params->flags = 0x111;
+            params->kill_fn = TiePart_KillExplode;
+            params->field_a4 = FRAMETIME;
+            params->velocity = &v000;
+            break;
+        }
+    }
+    AddPart(params);
+}
+
+void __cdecl InitBikeParts(void) {
+    memset(KillPartsBikesPc, 0, sizeof(KillPartsBikesPc));
+}
+
+static i32 FindFreeBikePart(void) {
+    i32 index;
+    for (index = 0; index < 4; ++index) {
+        if (KillPartsBikesPc[index].active == 0)
+            return index;
+    }
+    return -1;
+}
+
+void SpeederPart_Update(PART_PC *part) {
+    f32 distance =
+        ((GAMEOBJECT *)(Player[0]))->horizontal_velocity_magnitude * FRAMETIME * ((f64)(1.1f));
+    f32 time = part->time_remaining / part->initial_time;
+    KILLPARTS_BIKE_PC *bike =
+        &KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))];
+    NUVEC *camera = ((NUVEC *)(&GameCam->mtx.m30));
+    NUVEC previous_position;
+    NUVEC position;
+    NUVEC velocity;
+    NUMTX matrix;
+    if (bike->spline_position.spline != NULL) {
+        u16 tilt_angle;
+        f32 tilt;
+        f32 tilt_magnitude;
+        u16 spin;
+        u16 yaw, pitch;
+        previous_position = bike->spline_position.position;
+        MoveSplinePosition(&bike->spline_position, distance);
+        PointAlongSpline(bike->spline_position.spline, bike->spline_position.along, &position, &yaw, &pitch, 1);
+        yaw -= 0x8000;
+        if (distance < 0.0f) {
+            yaw += 0x8000;
+            pitch = -pitch;
+        }
+        tilt_angle = ((u16)(((i32)(
+            -((1.0f - (NU_SIN_LUT(((i32)(time * 32768.0f + 16384.0f))) + 1.0f) * 0.5f) * 5461.0f)))));
+        tilt = NU_SIN_LUT(((i32)(time * 32768.0f + 16384.0f)));
+        *((u32 *)(&tilt_magnitude)) = *((u32 *)(&tilt)) & 0x7fffffff;
+        spin = ((u16)(
+            ((i32)((NU_SIN_LUT(((i32)(time * 16384.0f + 32768.0f + 16384.0f))) + 1.0f) * 196608.0f))));
+        part->rotation_x = SeekRot(part->rotation_x, tilt_angle - pitch, 10.0f);
+        part->rotation_y =
+            SeekRot(part->rotation_y, yaw + ((i32)(2730.0f - (1.0f - tilt_magnitude) * 5461.0f)), 10.0f);
+        part->rotation_z = SeekRot(part->rotation_z, spin + yaw, 10.0f);
+        GameShadow(NULL, &bike->spline_position.position, 3.0f, 0);
+        NuMtxSetIdentity(&matrix);
+        NuMtxPreRotateX(&matrix, part->rotation_x);
+        NuMtxPreRotateY(&matrix, part->rotation_y);
+        NuMtxPreRotateZ(&matrix, part->rotation_z);
+        NuMtxTranslate(&matrix, &bike->spline_position.position);
+        part->transform = matrix;
+        NuVecSub(&velocity, &bike->spline_position.position, &previous_position);
+        NuVecScale(&velocity, &velocity, 1.0f / FRAMETIME);
+        part->velocity = velocity;
+        AddVariableShotDebrisEffectTimed1(
+            WORLD->game_debris_sys->entries[96].effect,
+            &KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))]
+                 .spline_position.position,
+            5, FRAMETIME, pitch, yaw, NULL);
+    } else {
+        u16 spin;
+        u16 turn;
+        union {
+            u32 bits;
+            f32 value;
+        } tilt;
+        previous_position.x = part->position.x;
+        previous_position.y = part->position.y;
+        previous_position.z = part->position.z;
+        tilt.value = NU_SIN_LUT(((i32)(time * 32768.0f + 16384.0f)));
+        tilt.bits &= 0x7fffffff;
+        spin = ((u16)(
+            ((i32)((NU_SIN_LUT(((i32)(time * 16384.0f + 32768.0f + 16384.0f))) + 1.0f) * 196608.0f))));
+        part->rotation_x = SeekRot(part->rotation_x, 0xd556, 10.0f);
+        part->rotation_y =
+            SeekRot(part->rotation_y, ((GAMEOBJECT *)(Player[0]))->field_0x276 + 0x4000, 10.0f);
+        part->rotation_z = SeekRot(part->rotation_z, spin, 10.0f);
+        GameShadow(NULL, &previous_position, 3.0f, 0);
+        velocity = v001;
+        turn = ((u16)(((i32)(2730.0f - (1.0f - tilt.value) * 5461.0f))));
+        NuVecRotateY(&velocity, &velocity, turn);
+        NuVecScale(&velocity, &velocity,
+                   ((GAMEOBJECT *)(Player[0]))->horizontal_velocity_magnitude / FRAMETIME);
+        velocity.y = 1.0f / NU_COS_LUT(part->rotation_x);
+        position.x = SeekLinearF(previous_position.x, camera->x, FRAMETIME * ((f64)(1.8f)));
+        position.y = SeekLinearF(previous_position.y, camera->y, FRAMETIME * ((f64)(1.8f)));
+        position.z = SeekLinearF(previous_position.z, camera->z, FRAMETIME * ((f64)(1.8f)));
+        NuVecAdd(&position, &position, &velocity);
+        NuMtxSetIdentity(&matrix);
+        NuMtxPreRotateX(&matrix, part->rotation_x);
+        NuMtxPreRotateY(&matrix, part->rotation_y);
+        NuMtxPreRotateZ(&matrix, part->rotation_z);
+        NuMtxTranslate(&matrix, &position);
+        part->transform = matrix;
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[96].effect, &position, 5, FRAMETIME,
+                                          part->rotation_z, part->rotation_x, NULL);
+    }
+    if (bike->rider != NULL) {
+        if ((bike->rider->flags_1fc_word & 1) != 0 && (bike->rider->flags_1fc_word & 0x1000) != 0) {
+            bike->rider->flags_ef0 |= 0x400000;
+            bike->rider->flags_1fc_word |= 0x20;
+            bike->rider->flags_ef4 |= 0x20;
+            bike->rider_position.x = SeekLinearF(bike->rider_position.x, camera->x, FRAMETIME);
+            bike->rider_position.y = SeekLinearF(bike->rider_position.y, camera->y - 2.0f, FRAMETIME * 1.5f);
+            bike->rider_position.z = SeekLinearF(bike->rider_position.z, camera->z, FRAMETIME);
+            bike->rider->position = bike->rider_position;
+            bike->rider->ai_update_position = bike->rider_position;
+            bike->rider->velocity = velocity;
+            bike->rider->pitch_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
+            bike->rider->field_0x276 += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
+            bike->rider->roll_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].x = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].y = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].z = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].x = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].y = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].z = 1.0f;
+        } else {
+            bike->rider = NULL;
+        }
+    }
+}
+
+i32 SpeederPart_Draw(PART_PC *part) {
+    return 1;
+}
+
+void __cdecl KillParts_ATAT(ADDPART_PC *params, i32 unused, i32 variant, GAMEOBJECT *object) {
+    PART_PC *part;
+    params->flags = variant == 0 ? 0x500 : 0x110;
+    params->velocity->z = 0.0f;
+    params->velocity->y = 0.0f;
+    params->velocity->x = 0.0f;
+    params->update_fn = AtatPart_Update;
+    params->stop_fn = AtatPart_Stop;
+    params->draw_fn = PartDraw_Flickerer;
+    part = AddPart(params);
+    if (part != NULL)
+        part->time_remaining = 10.0f;
+}
+
 void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     i32 locator;
     NUVEC velocity;
@@ -1432,9 +1777,6 @@ i32 __cdecl Tag_UpdateHint(HINT_PC *hint) {
     }
     return 0;
 }
-#pragma bss_seg(".bss$player_tag_from")
-GAMEOBJECT *player_tag_from = 0;
-#pragma bss_seg()
 
 /* PC434930227bytes,cdecl(model,object,buffer). Native name trim scans fixed14..0. */
 char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) {
@@ -1466,6 +1808,9 @@ char *GameObj_GetNamePc(i32 model, GAMEOBJECT *object, char *buffer) {
     }
     return TTab[CDataList[model].name_id];
 }
+#pragma bss_seg(".bss$player_tag_from")
+GAMEOBJECT *player_tag_from = 0;
+#pragma bss_seg()
 
 void __cdecl UpdateGameObjects(WORLDINFO *world) {
     i32 i;
@@ -2400,6 +2745,288 @@ i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protecti
         }
     }
     return KillGameObject(object, reason, 0);
+}
+
+void SpeederPart_Kill(PART_PC *part, i32 unused) {
+    AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
+    if (((KILLPARTS_PART_PC *)part)->speeder_index != -1.0f) {
+        GAMEOBJECT *rider =
+            KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider;
+        if (rider != NULL && (rider->flags_1fc_word & 1) != 0 && (rider->flags_1fc_word & 0x1000) != 0) {
+            KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))]
+                .rider->flags_ef0 &= ~0x400000;
+            KillParts(
+                KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider,
+                -1, -1, 1, 0.0f, 0, NULL);
+            KillGameObject(
+                KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider, 2,
+                0);
+        }
+        memset(&KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))], 0,
+               sizeof(KILLPARTS_BIKE_PC));
+    }
+}
+
+void __cdecl KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2, GAMEOBJECT *object) {
+    PART_PC *part;
+    KILLPARTS_PART_PC *bike_part;
+    f32 distance;
+    NUVEC position;
+    NUVEC velocity;
+    u16 yaw, pitch;
+    params->flags = 0x400;
+    velocity.x = object->velocity.x * 1.5f;
+    velocity.y = 0.0f;
+    velocity.z = object->velocity.z * 1.5f;
+    params->kill_fn = SpeederPart_Kill;
+    params->update_fn = SpeederPart_Update;
+    params->draw_fn = SpeederPart_Draw;
+    params->velocity = &velocity;
+    part = AddPart(params);
+    if (part == NULL)
+        return;
+    part->time_remaining = 1.5f;
+    part->initial_time = 1.5f;
+    bike_part = ((KILLPARTS_PART_PC *)part);
+    bike_part->speeder_index = ((f32)(FindFreeBikePart()));
+    if (bike_part->speeder_index == -1.0f || object->movement_spline_position.spline == NULL) {
+        KillPart(part, 0);
+        return;
+    }
+    distance = NuVecMag(&part->velocity) * FRAMETIME;
+    KillPartsBikesPc[((i32)bike_part->speeder_index)].active = 1;
+    KillPartsBikesPc[((i32)bike_part->speeder_index)].spline_position = object->movement_spline_position;
+    if (object->rider != NULL) {
+        KillPartsBikesPc[((i32)bike_part->speeder_index)].rider = object->rider;
+        KillPartsBikesPc[((i32)bike_part->speeder_index)].rider->velocity = velocity;
+        KillPartsBikesPc[((i32)bike_part->speeder_index)].rider->velocity.y += 1.5f;
+        KillPartsBikesPc[((i32)bike_part->speeder_index)].rider_position = object->position;
+    } else {
+        KillPartsBikesPc[((i32)bike_part->speeder_index)].rider = NULL;
+    }
+    PointAlongSpline(KillPartsBikesPc[((i32)bike_part->speeder_index)].spline_position.spline,
+                     KillPartsBikesPc[((i32)bike_part->speeder_index)].spline_position.along, &position,
+                     &yaw, &pitch, 1);
+    yaw -= 0x8000;
+    if (distance < 0.0f) {
+        yaw += 0x8000;
+        pitch = -pitch;
+    }
+    part->rotation_y = yaw;
+    part->rotation_x = -pitch;
+    part->rotation_z = 0;
+}
+
+void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
+               i32 use_vehicle_velocity, u16 *angle_override) {
+    u16 random_rotation_a;
+    u16 random_rotation_b;
+    i32 random_variant;
+    CHARACTERDATA_PC *layer_character;
+    u32 layers;
+    NUMTX joint_matrices[256];
+    i16 render_indices[32];
+    i32 render_count;
+    i32 render_index;
+    i32 part_index = 0;
+    i32 retry = 0;
+    if ((object->character_data->model_flags & 0x02000000) != 0 ||
+        (object->character_data->game_character->flags_090 & 0x8000) != 0)
+        return;
+    if (((i16)object->id) == id_BOBAFETT && WORLD->current_level == SARLACCPITA_LDATA && FreePlay == 0 &&
+        ((u8)object->field_280) == 0xff)
+        return;
+
+    GameAudio_PlaySfx(0x4f, &object->collision_position, 0, 0);
+
+    if ((object->character_data->model_flags & 0x04000000) != 0 && ((i16)object->id) != id_MINIDROIDEKA) {
+        i32 i;
+        KILLPARTS_MINIKIT_PIECES_PC *pieces =
+            ((KILLPARTS_MINIKIT_PIECES_PC **)Char_MiniKit)[((i16)object->id)];
+        if (pieces == NULL)
+            return;
+        for (i = 0; i < pieces->piece_count; ++i) {
+            ADDPART_PC params;
+            PART_PC *part;
+            NUMTX matrix;
+            NUVEC momentum;
+            if (!NuSpecialExistsFn(&pieces->pieces[i].special))
+                continue;
+            matrix = pieces->pieces[i].matrix;
+            NuMtxMul(&matrix, &matrix, &object->transform);
+            SetKillPartMom(&momentum);
+            NuVecScale(&momentum, &momentum, 3.0f);
+            momentum.y += 5.0f;
+            params = Default_ADDPART;
+            momentum.x += object->velocity.x * 0.75f;
+            momentum.y += object->velocity.y * 0.75f;
+            momentum.z += object->velocity.z * 0.75f;
+            params.matrix = &matrix;
+            params.velocity = &momentum;
+            params.field_14 = 0.2f;
+            params.field_18 = 0.2f;
+            params.gravity = -10.0f;
+            params.special = &pieces->pieces[i].special;
+            params.lighting_data = Cheats_CheckFlags(1)
+                                       ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
+                                       : ((PART_LIGHTING_DATA_PC *)(
+                                             &((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting));
+            params.time_step = FRAMETIME;
+            params.flags = mode == 0 ? 0x480 : 0x90;
+            params.field_c4 = 1;
+            params.stop_fn = PartStop_Flickerer;
+            params.draw_fn = PartDraw_Flickerer;
+            params.impact_fn = PartImpact_Brick;
+            part = AddPart(&params);
+            if (part != NULL)
+                part->time_remaining = ((f64)(qrand())) * PlayerRandomScalePc * 2.0f + 7.0f;
+        }
+        return;
+    }
+
+    random_rotation_a =
+        ((u16)(((i32)(((f64)(qrand())) * PlayerRandomScalePc * 25486.0f - 12743.0f))));
+    random_rotation_b =
+        ((u16)(((i32)(((f64)(qrand())) * PlayerRandomScalePc * 16384.0f - 8192.0f))));
+
+    do {
+        random_variant = qrand() / 21846;
+    } while (random_variant == KillPartsPreviousVariantPc && retry++ < 8);
+    layer_character = object->character_data;
+    KillPartsPreviousVariantPc = random_variant;
+
+    layers = (layer_character->game_character->flags_094 & 0x40000) != 0
+                     ? object->layer_mask
+                     : AdjustLayerBits(layer_character->game_character->layer_mask_dead, object);
+    if (animation != -1)
+        layers = 1u << animation;
+    else if (excluded_layer != -1)
+        layers &= ~(1u << excluded_layer);
+
+    EvalModelAnim(object->character_model, &object->anim_packet, &object->transform, joint_matrices, NULL, NULL, NULL,
+                  layers);
+    render_count =
+        object->character_data->game_character->make_layer_list(object->character_model, render_indices, layers);
+    for (render_index = 0; render_index < render_count; ++render_index) {
+        KILLPARTS_RENDER_PC *render;
+        i32 joint;
+        const i16 layer = render_indices[render_index];
+        if (layer == -1 || (animation != -1 && layer != animation) || (excluded_layer != -1 && layer == excluded_layer))
+            continue;
+        render =
+            ((KILLPARTS_RENDER_PC *)(&object->character_model->hierarchy->render_parts[layer]));
+        if (render->rigid_specials == NULL)
+            continue;
+        for (joint = 0; joint < object->character_model->hierarchy->joint_count; ++joint, ++part_index) {
+            ADDPART_PC params;
+            NUMTX matrix;
+            NUVEC momentum;
+            if (render->rigid_specials[joint] == NULL)
+                continue;
+            if (VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
+                object->character_data->game_character->field_028 > 0.0f) {
+                NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
+                SetKillPartMom(&momentum);
+                NuVecScale(&momentum, &momentum, 4.0f);
+                momentum.y += 6.0f;
+                params = Default_ADDPART;
+                momentum.x += object->velocity.x * 0.75f;
+                momentum.y += object->velocity.y * 0.75f;
+                momentum.z += object->velocity.z * 0.75f;
+                params.field_14 = 0.4f;
+                params.field_18 = 0.4f;
+                params.gravity = -10.0f;
+            } else {
+                SetKillPartMom(&momentum);
+                momentum.y += vertical_scale;
+                if (animation != -1)
+                    momentum.y += 1.0f;
+                if ((object->character_data->model_flags & 0x2000) != 0) {
+                    momentum.x += object->velocity.x * 0.75f;
+                    momentum.y += object->velocity.y * 0.75f;
+                    momentum.z += object->velocity.z * 0.75f;
+                } else if (use_vehicle_velocity != 0) {
+                    momentum.x += object->reset_velocity.x * 0.75f;
+                    momentum.y += object->reset_velocity.y * 0.75f;
+                    momentum.z += object->reset_velocity.z * 0.75f;
+                } else if (angle_override != NULL) {
+                    momentum.x += NuTrigTable[(*angle_override >> 1) & 0x7fff] * 2.0f;
+                    momentum.z += NuTrigTable[((((u16)(*angle_override + 0x4000))) >> 1) & 0x7fff] * 2.0f;
+                }
+                NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
+                params = Default_ADDPART;
+                params.field_14 = 0.1f;
+                params.field_18 = 0.1f;
+                params.gravity = -5.0f;
+            }
+            params.matrix = &matrix;
+            params.velocity = &momentum;
+            params.special = ((NUSPECIALHANDLE *)(render->rigid_specials[joint]));
+            params.lighting_data = Cheats_CheckFlags(1)
+                                       ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
+                                       : ((PART_LIGHTING_DATA_PC *)(
+                                             &((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting));
+            if (((i16)object->id) == id_TIEFIGHTER) {
+                KillParts_TIEFIGHTER(&params, part_index, mode, object, random_variant, random_rotation_a,
+                                     random_rotation_b, &momentum);
+            } else if (((i16)object->id) == id_ATAT) {
+                KillParts_ATAT(&params, part_index, mode, object);
+            } else if (((i16)object->id) == id_SPEEDERBIKE) {
+                KillParts_SpeederBike(&params, part_index, mode, object);
+            } else {
+                PART_PC *part;
+                params.flags = mode == 0 ? 0x480 : 0x90;
+                params.impact_fn = PartImpact_Brick;
+                params.stop_fn = PartStop_Flickerer;
+                params.draw_fn = PartDraw_Flickerer;
+                params.time_step = FRAMETIME;
+                params.field_c4 = 1;
+                part = AddPart(&params);
+                if (part != NULL)
+                    part->time_remaining = ((f64)(qrand())) * PlayerRandomScalePc * 2.0f + 7.0f;
+            }
+        }
+    }
+
+    if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 &&
+        (object->character_data->model_flags & 0x2000) != 0 &&
+        object->character_data->game_character->field_028 > 0.0f) {
+        NUSPECIALHANDLE *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
+        if (special != NULL) {
+            ADDPART_PC params;
+            PART_PC *part;
+            NUMTX matrix = object->transform;
+            NUVEC momentum;
+            SetKillPartMom(&momentum);
+            NuVecScale(&momentum, &momentum, 4.0f);
+            momentum.y += 6.0f;
+            params = Default_ADDPART;
+            momentum.x += object->velocity.x * 0.75f;
+            momentum.y += object->velocity.y * 0.75f;
+            momentum.z += object->velocity.z * 0.75f;
+            params.matrix = &matrix;
+            params.velocity = &momentum;
+            params.field_14 = 0.8f;
+            params.field_18 = 0.4f;
+            params.gravity = -10.0f;
+            params.special = special;
+            params.lighting_data = Cheats_CheckFlags(1)
+                                       ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
+                                       : ((PART_LIGHTING_DATA_PC *)(
+                                             &((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting));
+            params.time_step = FRAMETIME;
+            params.flags = mode == 0 ? 0x480 : 0x90;
+            params.field_c4 = 1;
+            params.stop_fn = PartStop_Flickerer;
+            params.draw_fn = PartDraw_Flickerer;
+            params.impact_fn = PartImpact_Brick;
+            part = AddPart(&params);
+            if (part != NULL)
+                part->time_remaining = ((f64)(qrand())) * PlayerRandomScalePc * 2.0f + 3.0f;
+        }
+    }
+    if (object->character_data->game_character->weapon_action == 0)
+        Customiser_AddPartAccessories(CharacterCustomiser, object, animation, mode, vertical_scale);
 }
 
 void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) {
