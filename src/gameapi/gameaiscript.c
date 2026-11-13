@@ -7869,11 +7869,11 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
             (original_path->flags & 2) == 0) {
             return 0;
         }
-        node = original_path->nodes;
-        for (node_index = 0; node_index < original_path->node_count; ++node_index, ++node) {
+        for (node_index = 0; node_index < original_path->node_count; ++node_index) {
+            node = &original_path->nodes[node_index];
             if (node->runtime_flags & 1) {
                 processor->action_data_3 = node;
-                AISysCharacterSetPath(packet, current_path);
+                AISysCharacterSetPath(packet, packet->path_info.path);
                 connection = &sys->path_sys->active_path->connections[(u16)node->path_flags];
                 processor->path_info.on_path = 1;
                 processor->path_info.connection = connection;
