@@ -181,8 +181,13 @@ i32 __cdecl rtlDynamicMasterEnable(i32 enabled) {
     return old;
 }
 
+/* Inline nu2 helper (no out-of-line copy in retail); the shared pointer it leaves keeps ambient in EBX. */
+static __inline void NuVecClear(NUVEC *v) {
+    v->x = v->y = v->z = 0.0f;
+}
 static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_PC *lighting_data) {
     i32 slot;
+    f32 strength;
     NUVEC zero;
     zero.z = zero.y = zero.x = 0.0f;
     for (slot = 0; slot < 3; ++slot) {
@@ -228,9 +233,9 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
             if (invalid)
                 lighting_data->intensity_vectors[slot] = zero;
             else {
-                f32 strength = ApplyAntilights(lighting_data->directional_lights[slot], lighting_data,
-                                               lighting_data->directional_strengths[slot] *
-                                                   lighting_data->directional_lights[slot]->intensity);
+                strength = ApplyAntilights(lighting_data->directional_lights[slot], lighting_data,
+                                           lighting_data->directional_strengths[slot] *
+                                               lighting_data->directional_lights[slot]->intensity);
                 // Re-read selected lights after service callbacks, as in the reference.
                 lighting_data->intensity_vectors[slot].x =
                     lighting_data->directional_lights[slot]->ambient.x * strength;
@@ -251,10 +256,10 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
         NuVecScale(&lighting_data->intensity_vectors[1], &lighting_data->intensity_vectors[1], scale);
         NuVecScale(&lighting_data->intensity_vectors[2], &lighting_data->intensity_vectors[2], scale);
     }
-    lighting_data->ambient.x = lighting_data->ambient.y = lighting_data->ambient.z = 0;
+    NuVecClear(&lighting_data->ambient);
     for (slot = 0; slot < 3; ++slot) {
         if (lighting_data->ambient_lights[slot] != NULL) {
-            f32 strength = ApplyAntilights(lighting_data->ambient_lights[slot], lighting_data,
+            strength = ApplyAntilights(lighting_data->ambient_lights[slot], lighting_data,
                                            lighting_data->ambient_lights[slot]->intensity *
                                                lighting_data->ambient_strengths[slot]);
 #define RTL_AMBIENT_COMPONENT(component)                                                                               \
