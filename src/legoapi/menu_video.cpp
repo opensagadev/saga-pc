@@ -281,14 +281,17 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
             if (!MenuPcStringsInitialized)
                 MenuPcStringsInit();
             value = MenuPcStrings[31];
+            if (!MenuPcStringsInitialized)
+                MenuPcStringsInit();
+            NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
         } else {
             if (!MenuPcStringsInitialized)
                 MenuPcStringsInit();
             value = MenuPcStrings[16];
+            if (!MenuPcStringsInitialized)
+                MenuPcStringsInit();
+            NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
         }
-        if (!MenuPcStringsInitialized)
-            MenuPcStringsInit();
-        NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
         DrawMenuEntryEx(menu, text, (u8)(MenuAlpha * 64.0));
     } else {
         switch (PCDeviceBackend.requested_multisample) {
