@@ -391,14 +391,14 @@ i32 NetworkObjectManager::GetNextGuid() {
                 next_guid = 1;
             next_guid--;
         }
-        i32 group_start = group << 10;
-        i32 group_end = group_start + 0x400;
+        group <<= 10; // first guid of the group
+        i32 group_end = group + 0x400;
         do {
             next_guid++;
             attempts++;
             if (next_guid >= group_end) {
-                next_guid = group_start;
-                if (group_start == 0)
+                next_guid = group;
+                if (group == 0)
                     next_guid = 1;
             }
         } while (objects[next_guid].object != NULL && attempts < 0x400);
