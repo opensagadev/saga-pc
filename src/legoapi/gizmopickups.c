@@ -50,7 +50,7 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
     SPECIAL_MINIKIT_PC *items, *cursor;
     SPECIAL_MINIKIT_SYSTEM_PC *system;
-    i32 count = 0;
+    i32 count;
     NUFPAR_PC *parser;
     view->special_minikits = NULL;
     if (world->current_gscn == NULL)
@@ -59,17 +59,17 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     if (parser == NULL)
         return;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    items = cursor = (SPECIAL_MINIKIT_PC *)world->giz_buffer.addr;
-    while (NuFParGetLine(parser) != 0) {
-        if (NuFParGetWord(parser) == 0)
-            break;
+    items = (SPECIAL_MINIKIT_PC *)world->giz_buffer.addr;
+    cursor = items;
+    count = 0;
+    while (NuFParGetLine(parser) != 0 && NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "specialminikit") != 0)
             continue;
         memset(cursor, 0, sizeof(*cursor));
         cursor->flags |= 1;
         while (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "pickup") == 0) {
-                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < sizeof(cursor->pickup_name))
+                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < (i32)sizeof(cursor->pickup_name))
                     NuStrCpy(cursor->pickup_name, parser->word_buffer_ptr);
             } else if (NuStrICmp(parser->word_buffer_ptr, "at_object") == 0) {
                 if (NuFParGetWord(parser) != 0) {
@@ -77,7 +77,8 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
                     cursor->flags &= ~0x20U;
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "at_gizmo") == 0) {
-                if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < sizeof(cursor->special_name)) {
+                if (NuFParGetWord(parser) != 0 &&
+                    NuStrLen(parser->word_buffer_ptr) < (i32)sizeof(cursor->special_name)) {
                     NuStrCpy(cursor->special_name, parser->word_buffer_ptr);
                     cursor->flags |= 0x20;
                 }
@@ -93,11 +94,10 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         }
         if (cursor->pickup_name[0] == '\0')
             continue;
-        if ((cursor->flags & 0x20) != 0) {
-            if (cursor->special_name[0] == '\0')
-                continue;
-        } else if (NuSpecialExistsFn(&cursor->special) == 0)
+        if ((cursor->flags & 0x20) == 0 && NuSpecialExistsFn(&cursor->special) != 0) {
+        } else if ((cursor->flags & 0x20) == 0 || cursor->special_name[0] == '\0') {
             continue;
+        }
         if (NuSpecialExistsFn(&cursor->special) != 0) {
             cursor->instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(&cursor->special);
             if (cursor->instance_animation != NULL) {
