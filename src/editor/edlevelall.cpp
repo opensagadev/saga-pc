@@ -5426,17 +5426,16 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
 void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
     f64 border = 0.0;
     eduimenu_s *menu = property_menu->menu;
-    i32 use_stored_metrics = 1;
+    bool use_stored_metrics = true;
     i32 placed;
     menu->x = 20;
     menu->y = 5;
     do {
         placed = 1;
         for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
-            eduimenu_s *other_menu = other->menu;
-            if (other_menu != menu) {
-                use_stored_metrics = 0;
-                if (menu->x + menu->width >= other_menu->x && menu->x <= other_menu->x + other_menu->width) {
+            if (other->menu != menu) {
+                use_stored_metrics = false;
+                if (menu->x + menu->width >= other->menu->x && menu->x <= other->menu->x + other->menu->width) {
                     placed = 0;
                     menu->x += 10;
                     break;
