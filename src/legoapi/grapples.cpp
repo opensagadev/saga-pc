@@ -1092,7 +1092,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         const f32 period = ((f64)object->context_hover_target_y / 1.5) * 2.0 + 1.0;
         const u16 old_phase = object->field_7a8;
         object->field_7a4 = 0;
-        object->field_7a8 -= static_cast<i32>((65536.0 * FRAMETIME) * (1.0 / period));
+        object->field_7a8 = old_phase - static_cast<i32>((-65536.0 * FRAMETIME) * (1.0 / period));
         if (object->pad->input_magnitude > 0.0f && 0 == object->big_jump_animation &&
             (PlayerGrappleSwingModePc == 0 || (swing_positive != 0 || swing_negative != 0))) {
             Grapple_InitializeSwingAnglePc(object);
