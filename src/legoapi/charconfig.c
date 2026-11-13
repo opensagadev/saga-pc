@@ -2063,18 +2063,6 @@ extern "C" {
 }
 #endif
 
-i32 __cdecl CanWearHatsInFreePlay(i32 id) {
-    u32 flags;
-    if ((GCDataList[id].flags_090 & 0x10) != 0)
-        return 0;
-    flags = CDataList[id].model_flags;
-    if ((flags & 0x1000010) == 0x1000010)
-        return 0;
-    if ((flags & 0x40000) == 0 && (flags & 0x88) == 0)
-        return 0;
-    return 1;
-}
-
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
