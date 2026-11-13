@@ -5698,40 +5698,34 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
 }
 
 void __cdecl AISysFindRoute(AIPACKET_PC *packet) {
-    AIPACKET_PC *path_packet = packet;
-    AIPATH_PC *path = (AIPATH_PC *)path_packet->path_info.path;
-    AIPATHCNX_PC *connection = (AIPATHCNX_PC *)path_packet->path_info.connection;
-    u8 route_count = path->route_count;
-    u16 valid_routes;
-    u8 route;
-    u8 first_route;
+    u8 route_count = ((AIPATH_PC *)packet->path_info.path)->route_count;
+    i32 start_route;
+    i32 route;
 
-    if (route_count == 0 || connection == NULL) {
+    if (route_count == 0 || packet->path_info.connection == NULL) {
+        return;
+    }
+    if ((u16)(((AIPATHCNX_PC *)packet->path_info.connection)->route_mask & packet->available_routes) == 0) {
         return;
     }
 
-    valid_routes = (u16)(path_packet->available_routes & connection->route_mask);
-    if (valid_routes == 0) {
-        return;
+    start_route = packet->next_route;
+    if (start_route < 0 || start_route >= route_count) {
+        start_route = 0;
     }
-
-    route = path_packet->next_route;
-    if (route >= route_count) {
-        route = 0;
-    }
-    first_route = route;
+    route = start_route;
     do {
-        u64 route_mask = (u64)1 << route;
-        if ((valid_routes & (u16)route_mask) != 0) {
-            path_packet->current_route = route;
-            path_packet->next_route = (u8)(route + 1);
+        if ((((u64)1 << route) &
+             (u16)(((AIPATHCNX_PC *)packet->path_info.connection)->route_mask & packet->available_routes)) != 0) {
+            packet->current_route = (u8)route;
+            packet->next_route = (u8)(route + 1);
             return;
         }
         ++route;
         if (route >= route_count) {
             route = 0;
         }
-    } while (route != first_route);
+    } while (route != start_route);
 }
 
 __declspec(noinline) void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, NUVEC *position,
