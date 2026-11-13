@@ -5859,7 +5859,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
         AIPATHCNX_PC *saved_connection = info->connection;
         i32 saved_direction = info->direction;
         u8 start_path;
-        i32 start_node;
+        u16 start_node;
         i32 inside_extents;
         // MATCH-EXCEPTION: retail tests the u8 index against both -1 (never true) and 0xff.
         if (info->path_index == -1 || info->path_index == 0xff) {
@@ -5902,7 +5902,7 @@ void __cdecl AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC 
                 }
                 ++info->next_check;
             }
-            if (inside_extents == 0 || info->next_check >= info->path->node_count) {
+            if (info->next_check >= info->path->node_count || inside_extents == 0) {
                 info->next_check = 0;
                 ++info->path_index;
                 if (info->path_index >= system->path_sys->path_count) {
