@@ -13296,7 +13296,7 @@ extern "C" {
     }
 
     static void VisibilityTreeWalkPc(i32 root_index, VISIBILITY_TREE_READER_PC *tree) {
-        VISIBILITY_TREE_NODE_PC *work[96];
+        VISIBILITY_TREE_NODE_PC *work[100];
         VISIBILITY_TREE_NODE_PC **cursor = work + 1;
         f32 far_distance;
         work[0] = &tree->nodes[tree->root_indices[root_index]];
