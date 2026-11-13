@@ -163,6 +163,9 @@ REVIEW = {
     0x56cdb0: dict(name="guidelines", conf="medium", why="marker at 0x56cd80; Android guidelines; Batman has none"),
     0x5925c0: dict(name="customiser", conf="medium", why="marker; TCS only; Android customiser.c"),
     0x5a86d0: dict(name="simpletons", conf="medium", why="marker; TCS only; Android simpletons.c"),
+    0x5ab2d0: dict(name="gizturret", conf="medium",
+                   why="GizTurretClearPc and GizTurretReadAnimSetDataPc (no Batman counterpart) are called only "
+                   "by GizTurrets_Load; no marker at 0x5ab2d0 or 0x5ab3d0, so gizturret starts here"),
     0x5b2da0: dict(name="numath_includes", conf="high", why="marker; Batman numath_includes; retail nugraph.c, nutrig.c"),
     0x5c1360: dict(name="nu3d_includes", conf="high", why="marker; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
     0x5e4600: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
