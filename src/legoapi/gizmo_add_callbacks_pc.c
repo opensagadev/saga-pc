@@ -101,15 +101,6 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
             AddGizmo(giz, type, NULL, pickup);
     }
 }
-void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD_PC *)world_ptr)->items;
-    i32 i;
-    (void)data;
-    if (item == NULL)
-        return;
-    for (i = 0; i < ((ADD_AI_WORLD_PC *)WORLD)->count; ++i, ++item)
-        AddGizmo(giz, type, NULL, item);
-}
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, name) == 0x40);
@@ -151,8 +142,6 @@ NUVEC *__cdecl GizmoPickup_GetPos(GIZMO_PC *gizmo) {
     return &((GIZMOPICKUP_PC *)gizmo->object)->position;
 }
 
-extern char AIGizmoNameBufferPc[16];
-
 typedef struct ai_gizmo_name_process_pc_s {
     char name[16];
     u8 unknown_10[4];
@@ -171,45 +160,3 @@ STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, locator_name) == 0xb4);
 STATIC_ASSERT(offsetof(AI_GIZMO_NAME_PROCESS_PC, locator_set_name) == 0xb8);
 STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-
-char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
-    AI_GIZMO_NAME_PROCESS_PC *process;
-    i8 length;
-    if (gizmo == NULL || gizmo->object == NULL)
-        return NULL;
-    process = (AI_GIZMO_NAME_PROCESS_PC *)gizmo->object;
-    if (NuStrLen(process->name) != 0)
-        return process->name;
-    if (process->script != NULL && process->script->name != NULL)
-        NuStrNCpy(AIGizmoNameBufferPc, process->script->name, 16);
-    else
-        NuStrCpy(AIGizmoNameBufferPc, "");
-    length = (i8)NuStrLen(AIGizmoNameBufferPc);
-    if (process->locator_set_name != NULL) {
-        length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->locator_set_name);
-        if (length < 16) {
-            NuStrCat(AIGizmoNameBufferPc, "(");
-            NuStrCat(AIGizmoNameBufferPc, process->locator_set_name);
-            NuStrCat(AIGizmoNameBufferPc, ")");
-        }
-    } else if (process->locator_name != NULL) {
-        length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->locator_name);
-        if (length < 16) {
-            NuStrCat(AIGizmoNameBufferPc, "(");
-            NuStrCat(AIGizmoNameBufferPc, process->locator_name);
-            NuStrCat(AIGizmoNameBufferPc, ")");
-        }
-    } else if (process->context_name != NULL) {
-        length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->context_name);
-        if (length < 16) {
-            NuStrCat(AIGizmoNameBufferPc, "(");
-            NuStrCat(AIGizmoNameBufferPc, process->context_name);
-            NuStrCat(AIGizmoNameBufferPc, ")");
-        }
-    }
-    return AIGizmoNameBufferPc;
-}

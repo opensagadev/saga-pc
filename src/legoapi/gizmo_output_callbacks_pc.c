@@ -19,7 +19,6 @@ extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
 extern char *PickupOutputNamePc;
 extern char SpinnerOutputBufferPc[14];
-extern char AIProcessingOutputTextPc[11];
 extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
 
@@ -33,12 +32,6 @@ i32 __cdecl Blowup_GetVisibility(GIZMO_PC *gizmo) {
 }
 char *__cdecl GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return PickupOutputNamePc;
-}
-char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
-    return AIProcessingOutputTextPc;
-}
-i32 __cdecl AI_GetNumOutputs(void *gizmo) {
-    return 1;
 }
 
 #pragma const_seg(".rdata$BlowupBlownupOutputTextPc")
@@ -92,8 +85,4 @@ char SpinnerOutputBufferPc[14] = "100% Complete";
 
 #pragma data_seg(".data$TurretOutputBufferPc")
 char TurretOutputBufferPc[32] = {0};
-#pragma data_seg()
-
-#pragma data_seg(".data$AIProcessingOutputTextPc")
-char AIProcessingOutputTextPc[11] = "Processing";
 #pragma data_seg()

@@ -26,20 +26,6 @@ STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 
-void *__cdecl AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    AI_CONTROL_SYSTEM_PC *system = (AI_CONTROL_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
-    if (system != NULL) {
-        memset(system, 0, sizeof(*system));
-        system->controllers =
-            (AI_CONTROL_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT_PC));
-        if (system->controllers != NULL) {
-            system->capacity = count;
-            AIPathCnxControlSysReset(system);
-        }
-    }
-    return system;
-}
-
 i16 GetGenericGoon(i32 armed) {
     if (armed) {
         if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN))
