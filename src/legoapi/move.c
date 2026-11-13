@@ -9320,13 +9320,14 @@ void __cdecl DrawForceGlowSpritePc(NUVEC *position, f32 radius, i32 model, f32 a
     NuMtxMulR(&matrix, &matrix, &GameCam->render_mtx);
     NuMtxTranslate(&matrix, &draw_position);
     NuSpecialDrawAtAlpha(&WORLD->level_objects[model].special, &matrix, alpha);
-    if (WORLD->level_objects[model + 1].active != 0) {
+    model++;
+    if (WORLD->level_objects[model].active != 0) {
         NuMtxSetScale(&matrix, &scale);
         angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 16.777000427246094f) / 16.777000427246094 * 65536.0);
         MovementMtxRotateZPc(&matrix, (i32)angle);
         NuMtxMulR(&matrix, &matrix, &GameCam->render_mtx);
         NuMtxTranslate(&matrix, &draw_position);
-        NuSpecialDrawAtAlpha(&WORLD->level_objects[model + 1].special, &matrix, alpha);
+        NuSpecialDrawAtAlpha(&WORLD->level_objects[model].special, &matrix, alpha);
     }
     EnableShadowMapRendering(0);
 }
