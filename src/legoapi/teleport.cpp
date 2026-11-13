@@ -277,8 +277,8 @@ extern "C" {
                         ++world->teleport_count;
                     }
                 } else {
-                    NuFParInterpretWord(parser);
                     active = 1;
+                    NuFParInterpretWord(parser);
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "teleport_start") == 0) {
                 Tel_worldinfo = world;
