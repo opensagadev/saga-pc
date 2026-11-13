@@ -1397,12 +1397,12 @@ extern "C" {
         }
         out = &buffer->joints->translation.x;
         whole = (i32)frame;
-        key_stride = anim->key_stride;
-        scale_min = anim->scale_min;
-        curve_types = anim->curve_types;
-        constants = (const u16 *)anim->constants - 16;
         fraction = frame - (f32)whole;
+        scale_min = anim->scale_min;
         quarter = whole & 3;
+        constants = (const u16 *)anim->constants - 16;
+        curve_types = anim->curve_types;
+        key_stride = anim->key_stride;
         keys = anim->keys + (whole / 4) * key_stride;
         count = joint_count;
         if (anim->node_count < count)
