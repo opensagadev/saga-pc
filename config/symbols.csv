@@ -2224,7 +2224,7 @@ address,symbol,size,ctype
 0x4d4dc0,_Transform_MoveCode,1102,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x4d5210,_TransformDrawTargetPc,685,"void __cdecl(NUVEC *, f32, f32)"
 0x4d54c0,_Transform_TargettedByObj,131,GAMEOBJECT *__cdecl(void *)
-0x004d5550,?GizmoBlowup_TransformDraw_Game@@YAXPAUGIZMOBLOWUP_PC@@@Z,67,
+0x004d5550,_GizmoBlowup_TransformDraw_Game,67,
 0x4d55d0,_ZipUpArcSinePc,320,
 0x4d5770,_RopeMtxSetRotationZ,160,
 0x4d5810,_RopeMtxRotateX,217,

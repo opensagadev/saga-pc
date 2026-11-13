@@ -20,7 +20,6 @@ extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
 extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
-extern "C" void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha);
 extern "C" void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
 extern "C" u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
                                            u32 *obstacles, u32 *turrets, u32 *characters);
@@ -373,7 +372,7 @@ STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 static i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object);
-void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
+extern "C" void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
 static void __cdecl LEGO_AllGoldBricksFn(void);
 extern "C" {
 
@@ -3230,11 +3229,6 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
 
 // Source lease:
 // build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v10/transform-and-allgold.cppfrag
-
-void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
-    if (Transform_TargettedByObj(target) == NULL)
-        TransformDrawTargetPc(&target->mid_position, target->target_scale * 1.4f, 0.4f);
-}
 
 static void __cdecl LEGO_AllGoldBricksFn(void) {
 }

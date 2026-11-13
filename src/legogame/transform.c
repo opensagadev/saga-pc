@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x4d4ce0-0x4d5593: definitions in retail address order. */
+
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
@@ -10,19 +12,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target) == 0xd14);
 
-GAMEOBJECT *__cdecl Transform_TargettedByObj(void *target) {
-    GAMEOBJECT *object = Obj;
-    i32 count = HIGHGAMEOBJECT;
-    i32 index;
-    for (index = 0; index < count; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
-            (object->character_data->game_character->flags_090 & 0x01000000) != 0 && object->transform_alpha > 0.0f &&
-            object->transform_target_scale > 0.0f && object->transform_target == target)
-            return object;
-    }
-    return NULL;
-}
-
 typedef struct transform_glow_pc_s {
     u8 unused_0000[0xc68];
     NUVEC glow_position;
@@ -31,6 +20,24 @@ typedef struct transform_glow_pc_s {
 } TRANSFORM_GLOW_PC;
 STATIC_ASSERT(offsetof(TRANSFORM_GLOW_PC, glow_position) == 0xc68);
 STATIC_ASSERT(offsetof(TRANSFORM_GLOW_PC, glow_kind) == 0xe2c);
+
+// The retail target draw keeps a private copy of this numtx-style Z rotation.
+static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
+    f32 x0 = matrix->m00;
+    f32 x1 = matrix->m10;
+    f32 x2 = matrix->m20;
+    f32 x3 = matrix->m30;
+    matrix->m00 = (x0 * cosine) - (sine * matrix->m01);
+    matrix->m01 = (x0 * sine) + (cosine * matrix->m01);
+    matrix->m10 = x1 * cosine - sine * matrix->m11;
+    matrix->m11 = x1 * sine + cosine * matrix->m11;
+    matrix->m20 = x2 * cosine - sine * matrix->m21;
+    matrix->m21 = x2 * sine + cosine * matrix->m21;
+    matrix->m30 = (x3 * cosine) - (sine * matrix->m31);
+    matrix->m31 = x3 * sine + cosine * matrix->m31;
+}
 
 void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     TRANSFORM_GLOW_PC *glow = (TRANSFORM_GLOW_PC *)object;
@@ -123,24 +130,6 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-// The retail target draw keeps a private copy of this numtx-style Z rotation.
-static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
-    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-    f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    f32 x0 = matrix->m00;
-    f32 x1 = matrix->m10;
-    f32 x2 = matrix->m20;
-    f32 x3 = matrix->m30;
-    matrix->m00 = (x0 * cosine) - (sine * matrix->m01);
-    matrix->m01 = (x0 * sine) + (cosine * matrix->m01);
-    matrix->m10 = x1 * cosine - sine * matrix->m11;
-    matrix->m11 = x1 * sine + cosine * matrix->m11;
-    matrix->m20 = x2 * cosine - sine * matrix->m21;
-    matrix->m21 = x2 * sine + cosine * matrix->m21;
-    matrix->m30 = (x3 * cosine) - (sine * matrix->m31);
-    matrix->m31 = x3 * sine + cosine * matrix->m31;
-}
-
 void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
     NUVEC direction;
     NUVEC draw_position;
@@ -180,4 +169,22 @@ void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha) {
         NuMtxTranslate(&matrix, &draw_position);
         NuSpecialDrawAtAlpha(&WORLD->level_objects[0x4a].special, &matrix, alpha);
     }
+}
+
+GAMEOBJECT *__cdecl Transform_TargettedByObj(void *target) {
+    GAMEOBJECT *object = Obj;
+    i32 count = HIGHGAMEOBJECT;
+    i32 index;
+    for (index = 0; index < count; ++index, ++object) {
+        if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
+            (object->character_data->game_character->flags_090 & 0x01000000) != 0 && object->transform_alpha > 0.0f &&
+            object->transform_target_scale > 0.0f && object->transform_target == target)
+            return object;
+    }
+    return NULL;
+}
+
+void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
+    if (Transform_TargettedByObj(target) == NULL)
+        TransformDrawTargetPc(&target->mid_position, target->target_scale * 1.4f, 0.4f);
 }
