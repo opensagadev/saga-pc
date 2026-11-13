@@ -96,39 +96,6 @@ i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     return 0;
 }
 
-i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
-    union {
-        f32 value;
-        u32 bits;
-    } raw_speed, speed;
-    i16 animation = object->field_7aa;
-    u16 angle, side_angle;
-    f32 lateral;
-    speed.value = 0.0f;
-    if (animation != -1 &&
-        (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
-         animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
-        if (((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[animation] != NULL) {
-            raw_speed.value = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, animation);
-            speed.bits = raw_speed.bits & 0x7fffffff;
-        }
-    }
-    if (speed.value == 0.0f)
-        speed.value = 0.5f;
-    angle = object->movement_facing_angle;
-    object->target_velocity.x = NuTrigTable[angle >> 1] * speed.value;
-    object->target_velocity.y = 0.0f;
-    object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed.value;
-    if (object->pad->input_magnitude > 0.0f) {
-        side_angle = angle + 0x4000;
-        lateral = PushingTowardsAngle(input_angle, side_angle);
-        object->target_velocity.x += NuTrigTable[side_angle >> 1] * lateral * speed.value;
-        object->target_velocity.z += lateral * NuTrigTable[((side_angle + 0x4000) >> 1) & 0x7fff] * speed.value;
-        object->target_velocity.y += PushingTowardsAngle(input_angle, object->movement_facing_angle) * speed.value;
-    }
-    return 1;
-}
-
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
@@ -146,8 +113,6 @@ typedef struct tightrope_movement_pc_s {
 STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, horizontal_length) == 0x40);
 STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, rotation) == 0x44);
 
-extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
-
 typedef struct spinner_movement_pc_s {
     u8 unknown_00[0x84];
     u32 state_flags;
@@ -162,14 +127,6 @@ typedef struct world_conveyor_pc_s {
 } WORLD_CONVEYOR_PC;
 STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLD_CONVEYOR_PC, conveyor) == 0x5170);
-
-__declspec(noinline) i32 __cdecl CanClimbSurface(GAMEOBJECT *object, i32 surface) {
-    if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0)
-        return 0;
-    if (surface == 5 && (CanMagnetClimbFn == NULL || CanMagnetClimbFn(object) == 0))
-        return 0;
-    return 1;
-}
 
 static __inline f32 PlayersFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;

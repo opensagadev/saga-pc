@@ -58,14 +58,3 @@ i16 GetGenericGoon(i32 armed) {
     }
     return -1;
 }
-void *__cdecl CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    CLIMB_SYSTEM_PC *system = NULL;
-    if (count != 0) {
-        system = (CLIMB_SYSTEM_PC *)GameBufferAlloc(buffer, end, sizeof(*system));
-        if (system != NULL) {
-            system->capacity = (u16)count;
-            system->objects = (CLIMB_SLOT_PC *)GameBufferAlloc(buffer, end, system->capacity * sizeof(CLIMB_SLOT_PC));
-        }
-    }
-    return system;
-}

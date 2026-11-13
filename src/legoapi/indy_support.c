@@ -1,50 +1,4 @@
 #include "saga.h"
-i32 ClimbNormalProbeCountPc = 8;
-void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
-    AIPATHNODE_PC *first = &object->path->nodes[object->connection->node_indices[0]];
-    AIPATHNODE_PC *second = &object->path->nodes[object->connection->node_indices[1]];
-    AIPATHNODE_PC *node = first->position.y < second->position.y ? first : second;
-    NUVEC displacement, origin;
-    i32 index;
-    for (index = 0; index < ClimbNormalProbeCountPc; ++index) {
-        displacement.x = (f32)(node->radius + 0.5);
-        displacement.y = 0;
-        displacement.z = 0;
-        NuVecRotateY(&displacement, &displacement, (index * 65536) / 4);
-        origin.x = node->position.x;
-        origin.y = (f32)((node->max_height + node->min_height) * 0.5);
-        origin.z = node->position.z;
-        if (NewRayCastScaleYMask(&origin, &displacement, 0.0f, 1.0f, 0,
-                                 GetSurfaceInfoDefaultMaskPc.word | GetSurfaceInfoRuntimeMaskPc.word | 0x5f) != 0 &&
-            (TerSurface[(i8)NewRayCastGetImpactTerrainType()].flags & 0x10000) != 0) {
-            object->flags |= 1;
-            object->normal = ShadNorm;
-            object->impact_x = origin.x + displacement.x;
-            object->impact_z = origin.z + displacement.z;
-            return;
-        }
-    }
-}
-CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection) {
-    i32 index;
-    CLIMB_SLOT_PC *object;
-    if (system != NULL) {
-        object = system->objects;
-        for (index = 0; index < system->count; ++index, ++object) {
-            if (object->connection != connection)
-                continue;
-            if (object->flags & 2)
-                return NULL;
-            if (object->flags & 1)
-                return object;
-            ClimbObject_FindNormalPc(object);
-            if (object->flags & 1)
-                return object;
-            object->flags |= 2;
-        }
-    }
-    return NULL;
-}
 INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
     INDY_GUIDELINE_PC *nearest = NULL, *guide = (INDY_GUIDELINE_PC *)world->guidelines;
     i32 nearest_endpoint = -1, index, side;
@@ -69,30 +23,3 @@ INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *wor
 STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
 STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
-void __cdecl InitClimbObjectSys(WORLDINFO *world) {
-    i32 index, connection_index;
-    AIPATH_PC *path;
-    AIPATHCNX_PC *connection;
-    CLIMB_SLOT_PC *object;
-    if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL || world->climb_objects == NULL)
-        return;
-    world->climb_objects->count = 0;
-    memset(world->climb_objects->objects, 0, world->climb_objects->capacity * sizeof(CLIMB_SLOT_PC));
-    for (index = 0; index < world->ai_sys->path_sys->path_count; ++index) {
-        path = world->ai_sys->path_sys->paths[index];
-        if (path == NULL)
-            continue;
-        connection = path->connections;
-        for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
-            if (world->climb_objects->count < world->climb_objects->capacity &&
-                (connection->traversal_flags[0] &
-                 (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
-                object = &world->climb_objects->objects[world->climb_objects->count++];
-                object->connection = connection;
-                object->path = path;
-                ClimbObject_FindNormalPc(object);
-            }
-        }
-    }
-}
