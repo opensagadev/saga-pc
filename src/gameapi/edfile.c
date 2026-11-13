@@ -2483,11 +2483,11 @@ eduiitem_s *__cdecl eduiItemPropCreateEx(u32 data, void *colours, void *selected
         eduiItemSetText(&item->base, text);
         eduiItemPropSetText(item, value);
         item->label_width = EduiPropLabelWidthPc;
-        item->selected = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))selected;
         item->button_type = button_type;
-        item->extra_data = extra_data;
+        item->selected = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))selected;
         item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))changed;
         item->button = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))button;
+        item->extra_data = extra_data;
         return &item->base;
     }
     return NULL;
@@ -3954,9 +3954,27 @@ extern char FileSelVolumeNamesPc[1024];
 extern i32 __cdecl NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
 extern void __cdecl FS_SortStrings(char *start, char *end, i32 mode);
 
+typedef struct FS_PACKED_ENTRY_HEADER_PC {
+    u8 kind;
+    u8 encoded_second;
+    u8 encoded_minute;
+    u8 encoded_hour;
+    u8 encoded_day;
+    u8 encoded_month;
+    u8 encoded_year;
+} FS_PACKED_ENTRY_HEADER_PC;
+STATIC_ASSERT(sizeof(FS_PACKED_ENTRY_HEADER_PC) == 7);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, kind) == 0);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_second) == 1);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_minute) == 2);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_hour) == 3);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_day) == 4);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_month) == 5);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_year) == 6);
+
 void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     FILE_DIRECTORY_ENTRY_PC entry;
-    char header[7];
+    FS_PACKED_ENTRY_HEADER_PC header;
     char *next = FS_FileList;
     char *drive;
     char *file_begin;
@@ -3972,10 +3990,14 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
         GetLogicalDriveStringsA(1024, FileSelVolumeNamesPc);
         for (drive = FileSelVolumeNamesPc; *drive != 0; drive += length + 1) {
             length = NuStrLen(drive);
-            header[0] = 'V';
-            header[1] = header[2] = header[3] = header[4] = header[5] = 'A';
-            header[6] = '#';
-            PCByteCopy_candidate(next, header, 7);
+            header.kind = 'V';
+            header.encoded_second = 'A';
+            header.encoded_minute = 'A';
+            header.encoded_hour = 'A';
+            header.encoded_day = 'A';
+            header.encoded_month = 'A';
+            header.encoded_year = '#';
+            PCByteCopy_candidate(next, &header, 7);
             next += 7;
             NuStrCpy(next, drive);
             next += length;
@@ -3996,14 +4018,14 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
                     continue;
                 if (next + length + 8 >= FS_FileList + sizeof(FS_FileList))
                     break;
-                header[0] = 'D';
-                header[4] = entry.created.day + 'A';
-                header[3] = entry.created.hour + 'A';
-                header[2] = entry.created.minute + 'A';
-                header[1] = entry.created.second + 'A';
-                header[5] = entry.created.month + 'A';
-                header[6] = (u8)(entry.created.year - 123);
-                PCByteCopy_candidate(next, header, 7);
+                header.kind = 'D';
+                header.encoded_day = entry.created.day + 'A';
+                header.encoded_hour = entry.created.hour + 'A';
+                header.encoded_minute = entry.created.minute + 'A';
+                header.encoded_second = entry.created.second + 'A';
+                header.encoded_month = entry.created.month + 'A';
+                header.encoded_year = (u8)(entry.created.year - 123);
+                PCByteCopy_candidate(next, &header, 7);
                 next += 7;
                 NuStrCpy(next, entry.name);
                 next += length;
@@ -4022,14 +4044,14 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
                     continue;
                 if (next + length + 8 >= FS_FileList + sizeof(FS_FileList))
                     break;
-                header[0] = 'F';
-                header[4] = entry.modified.day + 'A';
-                header[3] = entry.modified.hour + 'A';
-                header[2] = entry.modified.minute + 'A';
-                header[1] = entry.modified.second + 'A';
-                header[5] = entry.modified.month + 'A';
-                header[6] = (u8)(entry.modified.year - 123);
-                PCByteCopy_candidate(next, header, 7);
+                header.kind = 'F';
+                header.encoded_day = entry.modified.day + 'A';
+                header.encoded_hour = entry.modified.hour + 'A';
+                header.encoded_minute = entry.modified.minute + 'A';
+                header.encoded_second = entry.modified.second + 'A';
+                header.encoded_month = entry.modified.month + 'A';
+                header.encoded_year = (u8)(entry.modified.year - 123);
+                PCByteCopy_candidate(next, &header, 7);
                 next += 7;
                 NuStrCpy(next, entry.name);
                 next += length;
@@ -4149,24 +4171,6 @@ i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
 }
 
 /* SOURCE ONLY: independent file-selector helpers appended to src/gameapi/edfile.c. */
-
-typedef struct FS_PACKED_ENTRY_HEADER_PC {
-    u8 kind;
-    u8 encoded_second;
-    u8 encoded_minute;
-    u8 encoded_hour;
-    u8 encoded_day;
-    u8 encoded_month;
-    u8 encoded_year;
-} FS_PACKED_ENTRY_HEADER_PC;
-STATIC_ASSERT(sizeof(FS_PACKED_ENTRY_HEADER_PC) == 7);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, kind) == 0);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_second) == 1);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_minute) == 2);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_hour) == 3);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_day) == 4);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_month) == 5);
-STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_year) == 6);
 
 void __cdecl FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
     NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A',
