@@ -1066,7 +1066,9 @@ STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 typedef struct force_runtime_bits_pc_s {
     u32 active : 1;
     u32 visible : 1;
-    u32 other_02 : 19;
+    u32 other_02 : 14;
+    u32 destroyed : 1;
+    u32 other_17 : 4;
     u32 being_used : 1;
     u32 other_22 : 10;
 } FORCE_RUNTIME_BITS_PC;
@@ -1223,7 +1225,8 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 } else if (force->anim_set->state != 4 && force->stop_sfx_id != -1) {
                     GameAudio_PlaySfxById(force->stop_sfx_id, &force->position, 0, 0);
                 }
-            } else if ((force->anim_set->flags & 5) != 0 && force->field_50 == 0.0f && playing_forwards) {
+            } else if (((force->anim_set->flags & 1) != 0 || (force->anim_set->flags & 4) != 0) && force->field_50 == 0.0f &&
+                       playing_forwards) {
                 if (force->start_sfx_id != -1) {
                     if (force->anim_set->state == 0 || IsSfxLooping(force->start_sfx_id))
                         GameAudio_PlaySfxById(force->start_sfx_id, &force->position, 0, 0);
@@ -1250,10 +1253,12 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                        (force->runtime_flags & 0x4000) == 0) {
                 if (force->blowup_type != -1) {
                     if ((force->config_flags & 0x20) != 0) {
-                        for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                            NUVEC *position = NuSpecialGetDrawPos(&object->special);
-                            if (position != NULL)
-                                GizmoBlowUpTypeBlowUp(world, force->blowup_type, position);
+                        if (force->anim_set != NULL) {
+                            for (object = force->anim_set->objects; object != NULL; object = object->next) {
+                                NUVEC *position = NuSpecialGetDrawPos(&object->special);
+                                if (position != NULL)
+                                    GizmoBlowUpTypeBlowUp(world, force->blowup_type, position);
+                            }
                         }
                     } else {
                         GizmoBlowUpTypeBlowUp(world, force->blowup_type, &force->position);
@@ -1283,7 +1288,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                     group->runtime_flags |= 2;
                     force->group->runtime_flags |= 4;
                     group = force->group;
-                    for (group_index = 0; group_index < group->configured_count; ++group_index) {
+                    for (group_index = 0; group_index < force->group->configured_count; ++group_index) {
                         const i8 mask = (i8)group->forces[group_index]->collision_mask;
                         if (mask != 0 && (mask & (1 << group_index)) == 0) {
                             group->runtime_flags &= ~4u;
@@ -1298,7 +1303,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
         }
         if ((force->runtime_flags & 0x8000) != 0 && GizForce_Complete(force))
             force->runtime_flags &= ~0x8000u;
-        if ((force->runtime_flags & 0x10000) == 0 && (force->config_flags & 0x300) != 0)
+        if (!((FORCE_RUNTIME_BITS_PC *)&force->runtime_flags)->destroyed && (force->config_flags & 0x300) != 0)
             system->hit_test_gizmos[system->hit_test_gizmo_count++] = gizmo;
         if ((i8)force->runtime_flags < 0 && !GizForce_Complete(force)) {
             if ((force->config_flags & 0x400) != 0) {
@@ -1311,7 +1316,10 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                     radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                     NuVecMtxTransformVU0(&centre, &centre, NuSpecialGetDrawMtx(&object->special));
                     particle_offset.x = 0.0f;
-                    particle_offset.y = radius != 0.0f ? (f64)qrand() / (65535.0 / ((f64)radius * 0.5) + 1.0) : 0.0f;
+                    if (radius == 0.0f)
+                        particle_offset.y = 0.0f;
+                    else
+                        particle_offset.y = (f64)qrand() / (65535.0 / ((f64)radius * 0.5) + 1.0);
                     particle_offset.z = 0.0f;
                     NuVecRotateZ(&particle_offset, &particle_offset, qrand());
                     NuVecRotateY(&particle_offset, &particle_offset, (u16)qrand());
@@ -1330,14 +1338,20 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 GameAnimSet_GetCentreAndRadius(force->anim_set, &centre, (f32 *)&radius, 2, 1, 1);
                 radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                 particle_offset.x = 0.0f;
-                particle_offset.y = radius != 0.0f ? (f64)qrand() / (65535.0 / ((f64)radius * 0.5) + 1.0) : 0.0f;
+                if (radius == 0.0f)
+                    particle_offset.y = 0.0f;
+                else
+                    particle_offset.y = (f64)qrand() / (65535.0 / ((f64)radius * 0.5) + 1.0);
                 particle_offset.z = 0.0f;
                 NuVecRotateZ(&particle_offset, &particle_offset, qrand());
                 NuVecRotateY(&particle_offset, &particle_offset, (u16)qrand());
                 NuVecAdd(&centre, &centre, &particle_offset);
-                AddVariableShotDebrisEffectTimed1(
-                    WORLD->game_debris_sys->entries[(force->config_flags & 0x10) != 0 ? 110 : 109].effect, &centre,
-                    (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
+                if ((force->config_flags & 0x10) != 0)
+                    AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[110].effect, &centre,
+                                                      (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
+                else
+                    AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[109].effect, &centre,
+                                                      (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
             }
         }
         force->runtime_flags &= ~0x20000u;
