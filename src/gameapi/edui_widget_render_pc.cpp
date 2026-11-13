@@ -1457,7 +1457,11 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
         point_v[corner] = (picker->uv_y[corner] - origin_v) / span_v;
         point_v[corner] = MIN(1.0f, MAX(0.0f, point_v[corner]));
     }
-    u32 colours[2] = {0x807f7f7f, 0x807f7f7f};
+    u32 colours[2];
+    // MATCH-EXCEPTION: retail stores the second default colour first; an initializer or a chained
+    // assignment either reverses the stores or reshuffles the x87 code above.
+    colours[1] = 0x807f7f7f;
+    colours[0] = 0x807f7f7f;
     colours[picker->selected_corner] = 0x80ffffff;
     if (edui_donotdraw == 0)
         NuRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + span_u,
