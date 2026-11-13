@@ -741,14 +741,13 @@ extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
 extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *positions, NUVEC *directions) {
     if (spinner == NULL)
         return 0;
+    u32 flags = spinner->state_flags & 6;
     if (spinner->type == 0)
         return 0;
-    u32 flags = spinner->state_flags & 6;
-    u16 step = static_cast<u16>(65536 / spinner->type);
+    i32 step = 65536 / spinner->type;
     f32 y = spinner->position.y + spinner->field_0x098;
-    u16 base = spinner->rotation + spinner->initial_rotation + spinner->field_0x08c;
-    u16 position_angle = base - 0x8000;
-    u16 direction_angle = base + ((flags == 0 || flags == 6) ? -0x4000 : 0x4000);
+    u16 position_angle = spinner->field_0x08c + spinner->initial_rotation + spinner->rotation + 0x8000;
+    u16 direction_angle = (flags == 0 || flags == 6) ? position_angle + 0x4000 : position_angle - 0x4000;
     i32 count = 0;
     for (; count < spinner->type; ++count) {
         if (directions != NULL) {
