@@ -7018,9 +7018,7 @@ extern "C" {
         BITMAPFILEHEADER file_header;
         BITMAPINFOHEADER info_header;
         void *tile = NULL;
-        u8 padding = 0;
         f32 remainder;
-        f32 tiles;
         f32 w, h;
         u8 *pixels;
         u8 *data;
@@ -7035,19 +7033,21 @@ extern "C" {
             scale = 0.5f;
         else if (scale > 4.0f)
             scale = 4.0f;
-        tiles = (f32)(scale / 0.75);
-        yTiles = (f32)(i32)tiles;
-        if (tiles > yTiles)
-            yTiles += 1.0;
+        {
+            f32 n = scale / 0.75;
+            f32 whole = (f32)(i32)n;
+            yTiles = n > whole ? whole + 1.0 : whole;
+        }
         xTiles = yTiles;
         if (dump_state == -1) {
             NuRndrDoingScreenGrab = 1;
-            NuRndrScreenGrabTileInit(&params, (i32)(yTiles * xTiles), b, a, c);
+            NuRndrScreenGrabTileInit(&params, (i32)(xTiles * xTiles), b, a, c);
             if (number >= 0) {
                 sprintf(path, "%s%d.bmp", prefix, number);
             } else {
-                i32 index = 0;
+                i32 index;
                 sprintf(path, "%s.bmp", prefix);
+                index = 0;
                 while (NuFileSize(path) > 0)
                     sprintf(path, "%s%03d.bmp", prefix, index++);
             }
@@ -7078,6 +7078,7 @@ extern "C" {
             NuFileWrite(fh, &file_header, sizeof(file_header));
             NuFileWrite(fh, &info_header, sizeof(info_header));
             NuFileSeek(fh, info_header.biSizeImage - 1, 1);
+            u8 padding = 0;
             NuFileWrite(fh, &padding, 1);
             yPos = xPos = 0.0f;
             header_size = file_header.bfOffBits;
@@ -7087,10 +7088,10 @@ extern "C" {
             h = (f32)PS2_VREZ_H;
             w = (f32)PS2_VREZ_W;
             {
-                f32 sy = h * yPos * 0.75;
-                f32 border_y = -0.125 * h;
-                f32 sx = w * xPos * 0.75;
-                f32 border_x = -0.125 * w;
+                f64 sy = h * yPos * 0.75;
+                f64 border_y = -0.125 * h;
+                f64 sx = w * xPos * 0.75;
+                f64 border_x = -0.125 * w;
                 RenderPostViewportSetPc((sx + border_x) / scale, (sy + border_y) / scale, (w + sx + border_x) / scale,
                                         (h + sy + border_y) / scale, 0.0f, 0.0f, w, h);
             }
@@ -7122,10 +7123,9 @@ extern "C" {
                     rgba[1] = in[1];
                     rgba[2] = in[2];
                     rgba[3] = in[3];
-                    out[0] = rgba[params.channels[0]];
-                    out[1] = rgba[params.channels[1]];
-                    out[2] = rgba[params.channels[2]];
-                    out += 3;
+                    *out++ = rgba[params.channels[0]];
+                    *out++ = rgba[params.channels[1]];
+                    *out++ = rgba[params.channels[2]];
                 }
             }
         }
