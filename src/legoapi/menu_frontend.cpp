@@ -647,25 +647,25 @@ extern "C" {
             if (WORLD->current_level == CREDITS_LDATA) {
                 first_active = PlayerProgress[0].active;
                 second_active = PlayerProgress[1].active;
-                if (second_active != 0 && first_active == 0)
-                    pad = (GAMEPAD_PC *)&GamePadStorage[1];
                 if (first_active == 0 && second_active == 0) {
                     both_pads = 1;
                     readpads_always = 1;
                 }
+                if (second_active != 0 && first_active == 0)
+                    pad = (GAMEPAD_PC *)&GamePadStorage[1];
             } else if (Player[0] != NULL && Player[1] != NULL) {
-                first_active = ((GAMEOBJECT *)Player[0])->player_controlled;
                 second_active = ((GAMEOBJECT *)Player[1])->player_controlled;
+                first_active = ((GAMEOBJECT *)Player[0])->player_controlled;
                 if (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000)
                     first_active = 0;
                 if (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000)
                     second_active = 0;
-                if (second_active != 0 && first_active == 0)
-                    pad = ((GAMEOBJECT *)Player[1])->pad;
                 if (first_active == 0 && second_active == 0) {
                     both_pads = 1;
                     readpads_always = 1;
                 }
+                if (second_active != 0 && first_active == 0)
+                    pad = ((GAMEOBJECT *)Player[1])->pad;
             } else {
                 first_active = 0;
                 both_pads = 1;
