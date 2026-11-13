@@ -964,8 +964,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 roll_override;
     u16 roll_hint;
     i32 roll_hint_valid;
-    f32 roll_seek_override;
-    f32 stop_blend_rate;
+    f32 magnitude;
     f32 blend;
     f32 angle_blend;
     NUVEC position_snapshot;
@@ -983,8 +982,10 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 player_roll[2], vehicle_player[2];
     u16 player_yaw[2];
     f32 walker_distance_sq = 0.0f;
+    f32 roll_seek_override = 0.0f;
     f32 blend_duration = 0.5f;
     f32 camera_shake = 0.0f;
+    f32 landspeeder_lookahead = 0.0f, landspeeder_yaw = -1.0f, landspeeder_speed = 0.0f;
     MiniCutCam = 0;
     NuCameraProjectionFarClipBias = WORLD->current_level->display.farclip_hack;
     menu_id = GetMenuID();
@@ -1020,9 +1021,9 @@ void MoveGameCamera(GAMECAMERA *camera) {
         return;
     }
     previous_mode = camera->mode;
-    camera->mode = -1;
-    camera->previous_mode = previous_mode;
+    camera->previous_mode = camera->mode;
     previous_sock_position = camera->sock_position;
+    camera->mode = -1;
     if (ViewCam.gamepad != NULL)
         camera->mode = 5;
     if (newgamecam) {
@@ -1104,7 +1105,7 @@ mode_selected:
             GameCam_Blend(camera, Door_CutCamBlendTime, Door_CutLookAtPlayers ? 0.0f : Door_CutCamWait, 1);
             Door_UseCutCam = 0;
         } else if (previous_mode != -1) {
-            f32 duration = blend_duration;
+            f32 duration;
             if (camera->mode == 2)
                 duration = ObstacleCamBlendInTime;
             else if (camera->mode == 9 || previous_mode == 9 || camera->mode == 6 || previous_mode == 6)
@@ -1113,6 +1114,8 @@ mode_selected:
                 duration = CamShopBlendTimePc;
             else if (camera->mode == 7 || previous_mode == 7)
                 duration = GAMEDEMO ? 3.0f : 1.5f;
+            else
+                duration = blend_duration;
             if (camera->previous_mode != -1 && duration != 0.0f)
                 GameCam_Blend(camera, duration, 0.0f, 1);
         }
@@ -1130,34 +1133,29 @@ mode_selected:
     pitch_override = -1, yaw_override = -1, roll_override = 0;
     roll_hint = 0;
     roll_hint_valid = 0;
-    roll_seek_override = 0.0f, stop_blend_rate = 0.1f;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
     selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    {
-        f32 magnitude;
-        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_y);
-        left_y = magnitude < 34.0f ? 0.0f : left_y / 127.5f;
-    }
+    GAME_CAMERA_ABSOLUTE_PC(magnitude, left_y);
+    if (magnitude < 34.0f)
+        left_y = 0.0f;
+    left_y /= 127.5f;
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    {
-        f32 magnitude;
-        GAME_CAMERA_ABSOLUTE_PC(magnitude, left_x);
-        left_x = magnitude < 34.0f ? 0.0f : left_x / 127.5f;
-    }
+    GAME_CAMERA_ABSOLUTE_PC(magnitude, left_x);
+    if (magnitude < 34.0f)
+        left_x = 0.0f;
+    left_x /= 127.5f;
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    {
-        f32 magnitude;
-        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_y);
-        right_y = magnitude < 34.0f ? 0.0f : right_y / 127.5f;
-    }
+    GAME_CAMERA_ABSOLUTE_PC(magnitude, right_y);
+    if (magnitude < 34.0f)
+        right_y = 0.0f;
+    right_y /= 127.5f;
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    {
-        f32 magnitude;
-        GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
-        right_x = magnitude < 34.0f ? 0.0f : right_x / 127.5f;
-    }
+    GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
+    if (magnitude < 34.0f)
+        right_x = 0.0f;
+    right_x /= 127.5f;
     switch (camera->mode) {
         i32 index;
 
@@ -1166,17 +1164,17 @@ mode_selected:
             // Case 1 prefix. Original 0x111314..0x1129bf and its child branches.
 
             i32 player_count = 0, vehicle_count = 0;
-            f32 landspeeder_speed = 0.0f, landspeeder_yaw = -1.0f, landspeeder_lookahead = 0.0f;
             for (i = 0; i < 2; i++) {
                 struct nuvec_s *source_position;
+                i32 counts_as_vehicle;
                 GAMEOBJECT *object = Player[i];
                 if (object == NULL || ((object->flags_1fc & 0x80) == 0 && !LookAtBoth) ||
                     (netcamera && (object->flags_1f8 & 0x40000) != 0) || (BonusWinner != -1 && BonusWinner != i))
                     continue;
                 vehicle_player[i] = object->character_data->model_flags & 0x2000;
-                if (!(SPEEDERCHASEA_LDATA != NULL && WORLD->current_level == SPEEDERCHASEA_LDATA &&
-                      (i16)object->id == id_SPEEDERBIKE && disable_narrow_socks) &&
-                    vehicle_player[i]) {
+                counts_as_vehicle = !(SPEEDERCHASEA_LDATA != NULL && WORLD->current_level == SPEEDERCHASEA_LDATA &&
+                                      (i16)object->id == id_SPEEDERBIKE && disable_narrow_socks);
+                if (vehicle_player[i] && counts_as_vehicle) {
                     vehicle_count++;
                     if ((i16)object->id == id_LANDSPEEDER) {
                         if (landspeeder_lookahead != 0.0f) {
@@ -1199,7 +1197,7 @@ mode_selected:
                     (*pod_offset).y = 0.0f;
                     (*pod_offset).z = 2.0f;
                     NuVecRotateY(&(*pod_offset), &(*pod_offset),
-                                 ((i32)(((u16)(object->facing_angle)) + getPodRoll(i) * 5461.0f)));
+                                 ((i32)(((u16)(((GAMEOBJECT *)Player[i])->facing_angle)) + getPodRoll(i) * 5461.0f)));
                     NuVecAdd(&player_focus[player_count], &player_focus[player_count], &(*pod_offset));
                 } else
                     PlayerCamPos(object, &player_focus[player_count], &camera->position);
@@ -1397,14 +1395,14 @@ mode_selected:
                     NuVecScale(&(*offset), &(*offset), landspeeder_lookahead);
                     position.y += landspeeder_lookahead;
                     if (landspeeder_yaw > opposite - 4096.0f && landspeeder_yaw < opposite + 4096.0f) {
-                        position.x += NU_SIN_LUT(((i32)(opposite))) * (landspeeder_speed * 0.5f) + (*offset).x;
-                        position.z +=
-                            NU_SIN_LUT(((i32)(opposite + 16384.0f))) * (landspeeder_speed * 0.5f) + (*offset).z;
+                        landspeeder_speed *= 0.5f;
+                        position.x += NU_SIN_LUT(((i32)(opposite))) * landspeeder_speed + (*offset).x;
+                        position.z += NU_SIN_LUT(((i32)(opposite + 16384.0f))) * landspeeder_speed + (*offset).z;
                     } else if (landspeeder_yaw > ((f32)(camera->input_yaw - 0x1000)) &&
                                landspeeder_yaw < ((f32)(camera->input_yaw + 0x1000))) {
-                        position.x += NU_SIN_LUT(camera->input_yaw) * (landspeeder_speed * 0.75f) + (*offset).x;
-                        position.z +=
-                            NU_SIN_LUT(camera->input_yaw + 0x4000) * (landspeeder_speed * 0.75f) + (*offset).z;
+                        landspeeder_speed *= 0.75f;
+                        position.x += NU_SIN_LUT(camera->input_yaw) * landspeeder_speed + (*offset).x;
+                        position.z += NU_SIN_LUT(camera->input_yaw + 0x4000) * landspeeder_speed + (*offset).z;
                     } else {
                         position.x += (*offset).x;
                         position.z += (*offset).z;
@@ -1482,13 +1480,8 @@ mode_selected:
                     (*offset).y = 0.0f;
                     NuVecSub(&position, &position, &(*offset));
                 }
-                stop_blend_rate = 0.1f;
                 if (WORLD->area != NULL && WORLD->area == HUB_ADATA && camera->sock_position.sock_index != -1)
                     position.y = WORLD->sock_sys->socks[camera->sock_position.sock_index].camera_height_above_ground;
-                roll_hint_valid = 0;
-                roll_hint = 0;
-                roll_override = 0;
-                roll_seek_override = 0.0f;
                 if (WORLD->current_level->cam_tilt != 0.0f && camera->mode == camera->previous_mode) {
                     i32 total;
                     f32 scale;
@@ -1518,15 +1511,7 @@ mode_selected:
                     NuVecScale(&(*offset), &(*offset), distance * 0.666f);
                     NuVecAdd(&position, &target, &(*offset));
                 }
-            } else {
-                roll_hint_valid = 0;
-                roll_hint = 0;
-                roll_override = 0;
-                roll_seek_override = 0.0f;
-                stop_blend_rate = 0.1f;
             }
-            pitch_override = -1;
-            yaw_override = -1;
             movegamecamera_forcesock = -1;
 
             break;
@@ -1545,38 +1530,26 @@ mode_selected:
                 position_seek = 10.0f;
                 angle_seek = 10.0f;
             }
-            roll_override = ObstacleCamRotZ != 0 ? ((u16)(ObstacleCamRotZ)) : 0;
+            if (ObstacleCamRotZ != 0)
+                roll_override = (u16)ObstacleCamRotZ;
             Hint_CancelCurrent();
-            roll_hint_valid = 0;
-            roll_hint = 0;
-            roll_seek_override = 0.0f;
-            yaw_override = -1;
-            pitch_override = -1;
-            stop_blend_rate = 0.1f;
             break;
         }
 
-        case 3:
-            position = WORLD->camera_splines[2]->pts[0];
-            target = WORLD->camera_splines[2]->pts[1];
-            if (StartupGameFlag0 != 0)
-                yaw_override = 0;
-            break;
         case 4: {
             position = DoorCutCameraPosition0Pc;
             target = DoorCutCameraPosition1Pc;
             if (Door_CutLookAtPlayers != 0)
                 PlayersCamLookPos(&target, &position);
             ComplexSockPosition(WORLD->sock_sys, &position, -1, -1, &camera->sock_position);
-            roll_hint_valid = 0;
-            roll_hint = 0;
-            roll_seek_override = 0.0f;
-            roll_override = 0;
-            yaw_override = -1;
-            pitch_override = -1;
-            stop_blend_rate = 0.1f;
             break;
         }
+        case 3:
+            position = WORLD->camera_splines[2]->pts[0];
+            target = WORLD->camera_splines[2]->pts[1];
+            if (StartupGameFlag0 != 0)
+                yaw_override = 0;
+            break;
 
         // Case 5 in MoveGameCamera. Inputs have already undergone the original
         // signed-stick conversion and deadzone handling in the common prologue.
@@ -1604,7 +1577,6 @@ mode_selected:
                         ViewCam.distance = 0.1f;
                 }
             }
-            stop_blend_rate = 0.1f;
             position = ViewCam.target;
             target = ViewCam.target;
             target.y += ViewCam.height;
@@ -1638,13 +1610,6 @@ mode_selected:
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
             position.z +=
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
-        customiser_camera_setup:
-            roll_hint_valid = 0;
-            roll_hint = 0;
-            roll_seek_override = 0.0f;
-            pitch_override = yaw_override = -1;
-            roll_override = 0;
-            stop_blend_rate = 0.1f;
             break;
         }
         case 8:
@@ -1663,12 +1628,6 @@ mode_selected:
             target.y += HUB_MINIKITVIEWER_CAMDY;
             position_seek = 10.0f;
             angle_seek = 10.0f;
-            roll_hint_valid = 0;
-            roll_hint = 0;
-            roll_seek_override = 0.0f;
-            pitch_override = yaw_override = -1;
-            roll_override = 0;
-            stop_blend_rate = 0.1f;
             break;
         case 6: {
             NUVEC *points = WORLD->camera_splines[24]->pts;
@@ -1680,7 +1639,7 @@ mode_selected:
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))) * 0.025f;
             position.z +=
                 NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
-            goto customiser_camera_setup;
+            break;
         }
 
         case 11: {
@@ -1734,11 +1693,6 @@ mode_selected:
             pitch_override = -NuAtan2D((*offset).y, NuFsqrt((*offset).x * (*offset).x + (*offset).z * (*offset).z));
             yaw_override = NuAtan2D((*offset).x, (*offset).z);
             position_seek = 8.0f;
-            roll_hint_valid = 0;
-            roll_hint = 0;
-            roll_seek_override = 0.0f;
-            roll_override = 0;
-            stop_blend_rate = 0.1f;
             break;
         }
 
@@ -1746,15 +1700,10 @@ mode_selected:
             break;
     }
     if (WORLD->current_level == SARLACCPITA_LDATA || WORLD->current_level == SARLACCPITC_LDATA) {
-        position.x +=
-            stop_blend_rate * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))));
+        position.x += 0.1f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))));
         position.y += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))));
         position.z += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))));
     }
-    // Entry locals: position, target and the previous sock position,
-    // blend_duration=.5f, position_seek, angle_seek, pitch_override/yaw_override=-1,
-    // roll_override=0, roll_hint_valid=0, roll_hint=0, roll_seek_override=0,
-    // stop_blend_rate=.1f. Caller has already copied old mode to previous_mode.
     if (camera->mode == previous_mode) {
         if (previous_sock_position.sock_index == -1 || camera->sock_position.sock_index == -1) {
             if (previous_sock_position.sock_index != camera->sock_position.sock_index &&
@@ -1873,7 +1822,7 @@ mode_selected:
         pitch = camera->pitch;
         yaw = camera->input_yaw;
     }
-    CamStopBlend += stop_blend_rate * FRAMETIME;
+    CamStopBlend += 0.1f * FRAMETIME;
     // Preserve NaNs on the quiet unordered path before clamping.
     if (CamStopBlend > 1.0f)
         CamStopBlend = 1.0f;
