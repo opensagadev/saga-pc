@@ -2026,11 +2026,13 @@ static void EduiRenderTextCursorPc(char *value, i32 position, i32 x, i32 y, u32 
         EduiTextCursorCountdownPc = EduiTextCursorPeriodPc;
     if (EduiTextCursorCountdownPc >= (EduiTextCursorPeriodPc >> 1)) {
         i32 length = NuStrLen(value);
-        i32 offset = 0;
+        i32 offset;
         if (position) {
             char prefix[256];
             NuStrNCpy(prefix, value, position + 1);
             offset = (i32)NuQFntPrintLenU((VUFNT *)edui_font, prefix);
+        } else {
+            offset = 0;
         }
         at_cursor[0] = position < length ? value[position] : 'A';
         i32 width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, at_cursor);
