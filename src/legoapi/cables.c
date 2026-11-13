@@ -578,11 +578,12 @@ GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f
     f32 radius_squared = radius * radius;
     GAMEOBJECT *nearest = NULL, *candidate = Obj;
     f32 nearest_distance = 100000000.0f;
-    f32 minimum_x = position->x - radius;
-    f32 minimum_z = position->z - radius;
-    f32 maximum_x = position->x + radius;
-    f32 maximum_z = position->z + radius;
+    NUVEC minimum, maximum;
     i32 i;
+    minimum.x = position->x - radius;
+    minimum.z = position->z - radius;
+    maximum.x = position->x + radius;
+    maximum.z = position->z + radius;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         i8 context;
         NUVEC delta;
@@ -597,8 +598,8 @@ GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f
         if (candidate->id != id_DRAGBOMB && candidate->id != (u16)id_ATAT &&
             candidate->id != GameObjectRotationAtstId && candidate->id != (u16)id_ATST_LOWRES)
             continue;
-        if (candidate->collision_position.x < minimum_x || candidate->collision_position.x > maximum_x ||
-            candidate->collision_position.z < minimum_z || candidate->collision_position.z > maximum_z)
+        if (candidate->collision_position.x < minimum.x || candidate->collision_position.x > maximum.x ||
+            candidate->collision_position.z < minimum.z || candidate->collision_position.z > maximum.z)
             continue;
         distance = NuVecDistSqr(&candidate->collision_position, position, &delta);
         if (candidate->id == id_DRAGBOMB)
