@@ -113,11 +113,11 @@ extern "C" {
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_episode_start) == 0 &&
                        episode_count < max_count) {
+                in_episode = 1;
                 episode->name_id = -1;
                 episode->text_id = -1;
                 episode->area_count = 0;
                 episode->index = (u8)episode_count;
-                in_episode = 1;
             }
         }
 
