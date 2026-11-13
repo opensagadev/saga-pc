@@ -426,10 +426,12 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
         return;
     }
     NUMTX transposed;
-    const f32 *submitted = values;
+    const f32 *submitted;
     if (uniform->field_c == 4) {
         NuMtxTranspose(&transposed, (NUMTX *)values);
         submitted = (const f32 *)&transposed;
+    } else {
+        submitted = values;
     }
     switch (uniform->stage_mask & 3) {
         case 3:
@@ -546,10 +548,12 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
         return;
     }
     NUMTX transposed;
-    const f32 *submitted = values;
+    const f32 *submitted;
     if (uniform->field_c == 4) {
         NuMtxTranspose(&transposed, (NUMTX *)values);
         submitted = (const f32 *)&transposed;
+    } else {
+        submitted = values;
     }
     switch (uniform->stage_mask & 3) {
         case 3:
@@ -615,12 +619,14 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
         return;
     }
     NUMTX transposed[16];
-    const f32 *submitted = values;
+    const f32 *submitted;
     if (uniform->field_c == 4) {
         for (i32 i = 0; i < count; ++i)
             NuMtxTranspose(&transposed[i], &((NUMTX *)values)[i]);
         first_element *= 4;
         submitted = (const f32 *)transposed;
+    } else {
+        submitted = values;
     }
     switch (uniform->stage_mask & 3) {
         case 3:
