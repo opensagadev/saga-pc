@@ -13432,15 +13432,17 @@ static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, V
                             creature->start_stagger = EdFileReadFloat();
                         else
                             creature->start_stagger = AiLoadStartStaggerPc;
-                        if (creature->activation_type == 1) {
-                            EdFileRead(reference_name, 16);
-                            for (search = 0; search < system->area_count; ++search) {
-                                AI_AREA_LOAD_PC *entry = &system->areas[search];
-                                if (NuStrICmp(reference_name, entry->name) == 0) {
-                                    creature->activate_area = (AIAREA_PC *)entry;
-                                    break;
+                        switch (creature->activation_type) {
+                            case 1:
+                                EdFileRead(reference_name, 16);
+                                for (search = 0; search < system->area_count; ++search) {
+                                    AI_AREA_LOAD_PC *entry = &system->areas[search];
+                                    if (NuStrICmp(reference_name, entry->name) == 0) {
+                                        creature->activate_area = (AIAREA_PC *)entry;
+                                        break;
+                                    }
                                 }
-                            }
+                                break;
                         }
                         if (version > 10) {
                             creature->view_distance = EdFileReadFloat();
