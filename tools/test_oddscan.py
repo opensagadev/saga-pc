@@ -166,6 +166,48 @@ class OddScanTests(unittest.TestCase):
         self.assertEqual(scan.counts["commented-code"], 2)
         self.assertEqual(scan.counts["long-function"], 0)
 
+    def test_multi_declaration(self):
+        text = (
+            "#define PAIR(a, b) int a, b\n"
+            "typedef struct FLAGS {\n"
+            "    u32 alpha_fail : 2, disable_depth_write : 1,\n"
+            "        unknown_03_31 : 29; // flags\n"
+            "    int *a, b[4], (*f)(void);\n"
+            "    int single;\n"
+            "    struct { f32 x; } pos, vel;\n"
+            "} FLAGS, *PFLAGS;\n"
+            "static const char *names = \"a, b\", *other;\n"
+            "int table[] = {1, 2}, count;\n"
+            "extern \"C\" i32 e1, e2;\n"
+            "int f1(void), f2(int);\n"
+            "int Call(int x, int y);\n"
+            "class Derived : public Base, public Other {\n"
+            "public:\n"
+            "    int m1, m2;\n"
+            "    Derived() : m1(0), m2(0) {}\n"
+            "};\n"
+            "PAIR(m3, m4);\n"
+            "void Body(void) {\n"
+            "    struct __declspec(align(16)) BOX { f32 x; } box1, box2;\n"
+            "    for (i = 0, j = 1; i < j; i++, j--) {\n"
+            "    }\n"
+            "    i = 1, j = 2;\n"
+            "    Call(i, j);\n"
+            "    p->x = 1, q.y = 2;\n"
+            "    return i, j;\n"
+            "label:\n"
+            "    unsigned u, v;\n"
+            "}\n")
+        scan = oddscan.FileScan("src/legoapi/decls.cpp", text)
+        self.assertEqual([line for line, _ in scan.findings["multi-declaration"]],
+                         [3, 5, 7, 2, 9, 10, 11, 12, 16, 21, 29])
+        self.assertFalse(oddscan.multi_declaration("for (int i = 0, n = 2"))
+        self.assertTrue(oddscan.multi_declaration("NUVEC4 first, last", "block"))
+        self.assertFalse(oddscan.multi_declaration("a = 1, b = 2", "block"))
+        self.assertFalse(oddscan.multi_declaration("delete a, b", "block"))
+        self.assertTrue(oddscan.multi_declaration("u32 a : 2, b : 1", "aggregate"))
+        self.assertTrue(oddscan.multi_declaration("void (__cdecl *f)(void), (*g)(void)"))
+
     def test_int_value_and_bits(self):
         self.assertEqual(oddscan.int_value("-0x10"), -16)
         self.assertEqual(oddscan.int_value("12u"), 12)

@@ -7,3 +7,13 @@ config/oddscan-budget.json long-function 21 new layout class (tools/oddscan.py g
 config/oddscan-budget.json long-file 12 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json data-file 6 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors fun_006d4e20/40/50 replace address- and offset-named provisional names
+config/oddscan-budget.json data-file 7 one declarator per declaration (tools/onedecl.py) grows one file of declarations over 200 lines
+config/oddscan-budget.json dense-function 1216 one declarator per declaration (tools/onedecl.py): split local declarations lengthen 20 functions past 40 lines without a blank line
+config/oddscan-budget.json local-extern 51 one declarator per declaration (tools/onedecl.py): the class counts lines, split extern declarations in function bodies are 30 more lines
+config/oddscan-budget.json long-file 13 one declarator per declaration (tools/onedecl.py) grows one file past 5000 lines
+config/oddscan-budget.json long-function 22 one declarator per declaration (tools/onedecl.py) grows one function past 400 lines
+config/oddscan-budget.json magic-state 8624 one declarator per declaration (tools/onedecl.py): initialised locals split out of a list (i32 a = 3, b;) now read as assignments
+config/oddscan-budget.json pc-suffix 49861 one declarator per declaration (tools/onedecl.py) repeats Pc-suffixed type names in the specifiers
+config/oddscan-budget.json view-use 1335 one declarator per declaration (tools/onedecl.py) repeats view type names in the specifiers
+config/oddscan-budget.json volatile-other 40 one declarator per declaration (tools/onedecl.py) repeats volatile in the specifiers
+config/oddscan-budget.json multi-declaration 19 new layout class (tools/oddscan.py group h) after tools/onedecl.py split every other declaration: 19 locals of an anonymous float/bits union type that two or three variables share

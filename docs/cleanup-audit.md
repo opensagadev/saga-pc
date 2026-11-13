@@ -325,6 +325,15 @@ four shader-manager methods), and in saga.h `<vector>` (inside the
 `SAGA_SHADER_PARSER_TYPES` C++ block) and `debug/diagnostics.h` (needs the
 types above it); the saga.h split (section 7) resolves those two.
 
+**One declarator per declaration** (`multi-declaration`, group h, and clang-tidy's
+`readability-isolate-declaration` for locals). `python3 tools/onedecl.py --fix`
+split 2,660 declarations (fields 844, bitfields 9, globals and `extern`s 296,
+locals 1,510, typedefs 1) and seven macro bodies were split by hand; every
+object is identical (code, data and relocations; only the debug sections
+differ). 19 remain, all locals of an anonymous `union { f32 value; u32 bits; }`
+shared by two or three variables: splitting them needs a named union type,
+which is a change of the code, not of the layout.
+
 **STATIC_ASSERT names.** The typedef of each assertion was named after
 `__LINE__`. VC8's code for a few fragile functions depends on the identifiers it
 has seen: inserting two blank lines near the top of saga.h changed

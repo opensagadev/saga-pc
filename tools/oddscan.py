@@ -120,6 +120,9 @@ CLASSES = [
     ("multi-statement-line", "h", "line with more than one statement (outside for headers and macros)"),
     ("data-file", "h", f"file of more than {DATA_FILE_LINES} lines with under 2% blank lines (tables, generated look)"),
     ("commented-code", "h", "comment line that reads as code (commented-out code)"),
+    ("multi-declaration", "h", "declaration with more than one declarator (`u32 a : 2, b : 1;`, `int *p, n;`, "
+                               "`typedef struct X {...} X, *PX;`): fields, globals, locals, typedefs; "
+                               "tools/onedecl.py splits them"),
     ("enum-anonymous", "g", "anonymous enum"),
     ("enum-value-name", "g", "enum member named by its value (FOO_0x10, STATE_3)"),
 ]
@@ -324,6 +327,7 @@ class FileScan:
         self.first_code_line = None                      # first ; { } outside extern "C"/namespace braces
         self.scan(text)
         self.layout(text)
+        self.declarations(text)
 
     def add(self, cls, line, text=""):
         self.counts[cls] += 1
@@ -487,6 +491,66 @@ class FileScan:
                 if body and COMMENTED_CODE.match(body):
                     self.add("commented-code", index + 1, part)
                     break
+
+    def declarations(self, text):
+        """multi-declaration: statements of a declaration with a top-level comma.
+
+        Preprocessor lines (macro bodies too) are blanked, so a declaration a macro expands to is not counted;
+        a `for` header is never a statement here (its `;` are inside parentheses). Brace initialisers and
+        struct/union/enum bodies collapse to `{}`, so `struct {...} a, b;` and `int x[] = {1, 2}, y;` are
+        one statement each."""
+        code, _ = lex(text)
+        lines, raw_lines, in_macro = code.split("\n"), text.split("\n"), False
+        for index, line in enumerate(lines):
+            directive = in_macro or line.lstrip().startswith("#")
+            in_macro = directive and raw_lines[index].rstrip().endswith("\\")
+            if directive:
+                lines[index] = ""
+        frames = [{"kind": "file", "buf": [], "line": None, "paren": 0}]
+        def append(frame, piece, number):
+            if frame["line"] is None and piece.strip():
+                frame["line"] = number
+            frame["buf"].append(piece)
+
+        for number, line in enumerate(lines, 1):
+            position = 0
+            for match in re.finditer(r'[{}()\[\];]', line):
+                frame = frames[-1]
+                append(frame, line[position:match.start()], number)
+                position = match.end()
+                char = match.group()
+                if char == "{":
+                    head = "".join(frame["buf"])
+                    if frame["kind"] == "init" or frame["paren"] or re.search(r'=\s*$', head):
+                        kind = "init"
+                    elif re.search(r'\b(?:struct|union|class|enum)\b[^;()=]*$',
+                                   re.sub(r'__declspec\s*\((?:[^()]|\([^()]*\))*\)', ' ', head)):
+                        kind = "aggregate"
+                    else:
+                        kind = "block"
+                    frames.append({"kind": kind, "buf": [], "line": None, "paren": 0})
+                elif char == "}":
+                    if len(frames) > 1:
+                        closed = frames.pop()
+                        parent = frames[-1]
+                        if closed["kind"] in ("init", "aggregate"):
+                            parent["buf"].append("{}")
+                        else:
+                            parent["buf"], parent["line"] = [], None
+                elif char == ";" and not frame["paren"]:
+                    statement = "".join(frame["buf"]).strip()
+                    if frame["kind"] != "init" and multi_declaration(statement, frame["kind"]):
+                        rest = strip_labels(statement, frame["kind"])
+                        line_number = (frame["line"] or number) + statement[:len(statement) - len(rest)].count("\n")
+                        self.add("multi-declaration", line_number, " ".join(rest.split()))
+                    frame["buf"], frame["line"] = [], None
+                else:
+                    if char in "([":
+                        frame["paren"] += 1
+                    elif char in ")]":
+                        frame["paren"] = max(0, frame["paren"] - 1)
+                    append(frame, char, number)
+            append(frames[-1], line[position:] + "\n", number)
 
     @staticmethod
     def brace_kind(head, stack):
@@ -687,6 +751,65 @@ class FileScan:
                            -1 - match.start())
                 for match in CASE_NAMED.finditer(line):
                     record(subject_match.group(1), "case", match.group(1), -100000 - match.start())
+
+
+NOT_DECLARATION = {"return", "goto", "case", "default", "if", "else", "for", "while", "do", "switch", "break",
+                   "continue", "throw", "delete", "new", "sizeof", "using", "namespace", "operator", "template"}
+LABEL = re.compile(r'^\s*(?:(?:public|private|protected)\s*:(?!:)|case\b[^:]*:(?!:)|default\s*:|[A-Za-z_]\w*\s*:(?![:\d]))')
+
+
+def split_top_commas(text):
+    """Parts of `text` between commas outside (), [] and {}."""
+    depth, part, parts = 0, [], []
+    for char in text:
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        if char == "," and depth == 0:
+            parts.append("".join(part))
+            part = []
+        else:
+            part.append(char)
+    parts.append("".join(part))
+    return parts
+
+
+def strip_labels(statement, frame_kind):
+    """The statement without its leading labels (a block) or access specifiers (a class), stripped."""
+    statement = statement.strip()
+    while frame_kind in ("block", "aggregate"):
+        label = LABEL.match(statement)
+        # In a block a `name :` is a label; in a struct only an access specifier is stripped (bitfields stay).
+        if not label or (frame_kind == "aggregate" and not re.match(r'\s*(?:public|private|protected)\b',
+                                                                     label.group())):
+            break
+        statement = statement[label.end():].strip()
+    return statement
+
+
+def multi_declaration(statement, frame_kind="file"):
+    """Whether the statement (comments and string contents blanked, no `;`) declares several declarators."""
+    statement = strip_labels(statement, frame_kind)
+    # A base-class list is not a declarator list: `class X : A, B {}`.
+    statement = re.sub(r'\b((?:struct|class|union)\s+[A-Za-z_]\w*)\s*:(?!:)[^{};]*\{\}', r'\1 {}', statement)
+    parts = split_top_commas(statement)
+    if len(parts) < 2:
+        return False
+    first = re.sub(r'__declspec\s*\((?:[^()]|\([^()]*\))*\)|"\s*"', " ", parts[0])
+    first = re.split(r'(?<![=!<>])=(?!=)', first, maxsplit=1)[0]    # initialiser
+    first = re.sub(r'(?<!:):(?!:)[^:]*$', "", first).strip()         # bitfield width
+    words = re.match(r'([A-Za-z_]\w*)', first)
+    if not words or words.group(1) in NOT_DECLARATION:
+        return False
+    if re.search(r'->|\.|[-+/%!<>?^|~=]', first):
+        return False
+    before_paren = re.split(r'\(', first, maxsplit=1)
+    names = re.findall(r'[A-Za-z_]\w*(?:::\w+)*', before_paren[0])
+    if len(names) >= 2:
+        return True
+    # `type (*name)(...)`: a function pointer declarator.
+    return len(names) == 1 and re.match(r'\s*(?:(?:__\w+|WINAPI|CALLBACK|APIENTRY)\s*)*[*&]', before_paren[1] if len(before_paren) > 1 else "") is not None
 
 
 def source_paths(root=ROOT):
