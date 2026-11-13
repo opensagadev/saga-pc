@@ -25,6 +25,9 @@ static void EduiPrintAlignedTextPc(void *font, i32 x, i32 y, i32 alignment, char
             case 64:
                 left = x - width / 2;
                 break;
+            default:
+                left = x;
+                break;
         }
         NuQFntMove((VUFNT *)font, (f32)left, (f32)y, 0.0f);
         NuQFntPrintU((VUFNT *)font, text);
