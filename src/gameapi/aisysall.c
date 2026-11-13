@@ -6530,15 +6530,12 @@ static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination
 
 static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC *packet, NUVEC *destination) {
     AIPATHNODELINK_PC *links;
-    f32 nearest;
-    u8 initial_index;
-    i32 index;
+    f32 nearest = FLT_MAX;
+    i32 count = 4;
+    i32 initial_index;
     f32 distance;
-    f32 nearest_2;
-    i32 index_2;
-    f32 distance_2;
 
-    if (path->special_route_count != 0 && (packet->navigation_flags & 4u) != 0) {
+    if (path->special_route_count > 0 && (packet->navigation_flags & 4u) != 0) {
         links = path->special_routes;
         if (packet->divert_node_index >= path->node_count) {
             packet->divert_node_index = 0xff;
@@ -6546,13 +6543,12 @@ static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC 
         if (packet->divert_search_index >= path->special_route_count) {
             packet->divert_search_index = 0;
         }
-        nearest = FLT_MAX;
         if (packet->divert_node_index < path->node_count) {
             nearest = NuVecDistSqr(&path->nodes[packet->divert_node_index].position, destination, NULL);
         }
         initial_index = packet->divert_search_index;
-        for (index = 0; index < 4; ++index) {
-            if (packet->divert_search_index != packet->divert_node_index) {
+        do {
+            if (packet->divert_node_index != packet->divert_search_index) {
                 distance = NuVecDistSqr(&path->nodes[links[packet->divert_search_index].node_index].position,
                                         destination, NULL);
                 if (distance < nearest) {
@@ -6564,10 +6560,7 @@ static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC 
             if (packet->divert_search_index > path->special_route_count) {
                 packet->divert_search_index = 0;
             }
-            if (packet->divert_search_index == initial_index) {
-                break;
-            }
-        }
+        } while (--count > 0 && packet->divert_search_index != initial_index);
     } else {
         if (packet->divert_node_index >= path->node_count) {
             packet->divert_node_index = 0xff;
@@ -6575,21 +6568,20 @@ static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC 
         if (packet->divert_search_index >= path->node_count) {
             packet->divert_search_index = 0;
         }
-        nearest_2 = FLT_MAX;
         if (packet->divert_node_index < path->node_count) {
-            nearest_2 = NuVecDistSqr(&path->nodes[packet->divert_node_index].position, destination, NULL);
+            nearest = NuVecDistSqr(&path->nodes[packet->divert_node_index].position, destination, NULL);
         }
-        for (index_2 = 0; index_2 < 4; ++index_2) {
-            distance_2 = NuVecDistSqr(&path->nodes[packet->divert_search_index].position, destination, NULL);
-            if (distance_2 < nearest_2) {
-                nearest_2 = distance_2;
+        do {
+            distance = NuVecDistSqr(&path->nodes[packet->divert_search_index].position, destination, NULL);
+            if (distance < nearest) {
+                nearest = distance;
                 packet->divert_node_index = packet->divert_search_index;
             }
             ++packet->divert_search_index;
             if (packet->divert_search_index > path->node_count) {
                 packet->divert_search_index = 0;
             }
-        }
+        } while (--count > 0);
     }
 }
 
