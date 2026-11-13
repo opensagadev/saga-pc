@@ -361,22 +361,24 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             zipup->flags_word |= 0x200;
             if ((zipup->flags_word & 0x200) != 0) {
                 NUVEC offset;
-                u16 start_angle;
+                u16 axis;
                 u16 end_angle;
                 i32 difference;
                 u16 half;
-                u16 axis;
                 f32 normalized_time;
                 f64 phase;
                 i32 swing_pitch;
 
-                start_angle = NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z);
+                axis = NuAtan2D(zipup->rider_start_offset.x, zipup->rider_start_offset.z);
                 NuVecSub(&end_offset, destination, hook);
                 end_offset.y += ZipUpRiderHeightPc;
                 end_angle = NuAtan2D(end_offset.x, end_offset.z);
-                difference = abs(0x8000 - (u16)RotDiff(start_angle, end_angle));
+                difference = abs(0x8000 - (u16)RotDiff(axis, end_angle));
                 half = (u16)(difference * 0.5);
-                axis = start_angle > 0x8000 ? start_angle + half : start_angle - half;
+                if (axis > 0x8000)
+                    axis += half;
+                else
+                    axis -= half;
                 offset = zipup->rider_start_offset;
                 NuVecRotateY(&offset, &offset, (u16)-axis);
                 normalized_time = object->context_timer / ZipUpSwingDurationPc;
