@@ -675,7 +675,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
     }
 }
 
-void *vadera_netpacket = NULL;
+VADERA_NETPACKET_PC *vadera_netpacket = NULL;
 
 void __cdecl VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));
@@ -771,13 +771,13 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
         ResetLevel(NULL, NULL, 1);
     }
     if (netclient == 0) {
-        ((VADERA_NETPACKET_PC *)vadera_netpacket)->count = vader_a.count;
-        ((VADERA_NETPACKET_PC *)vadera_netpacket)->timer = vader_a.timer;
-        ((VADERA_NETPACKET_PC *)vadera_netpacket)->subtitle = vader_a.subtitle;
+        vadera_netpacket->count = vader_a.count;
+        vadera_netpacket->timer = vader_a.timer;
+        vadera_netpacket->subtitle = vader_a.subtitle;
     } else {
-        vader_a.count = ((VADERA_NETPACKET_PC *)vadera_netpacket)->count;
-        vader_a.timer = ((VADERA_NETPACKET_PC *)vadera_netpacket)->timer;
-        vader_a.subtitle = ((VADERA_NETPACKET_PC *)vadera_netpacket)->subtitle;
+        vader_a.count = vadera_netpacket->count;
+        vader_a.timer = vadera_netpacket->timer;
+        vader_a.subtitle = vadera_netpacket->subtitle;
     }
 }
 

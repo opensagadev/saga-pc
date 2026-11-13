@@ -128,13 +128,13 @@ void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *spli
 i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
 void __cdecl PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
 
-typedef struct podrace_netpacket_reader_pc_s {
+typedef struct podrace_netpacket_pc_s {
     f32 start_countdown;
     f32 remaining_time;
     f32 available_time;
-    u32 unknown_0c;
+    f32 lap_alpha;
     i32 lap;
-} PODRACE_NETPACKET_READER_PC;
+} PODRACE_NETPACKET_PC;
 
 i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
 
@@ -183,14 +183,6 @@ typedef struct PODSPRINT_NETPACKET_PC {
 static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;
 i32 __cdecl XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
-
-typedef struct pod_race_panel_netpacket_pc_s {
-    f32 start_countdown;
-    f32 remaining_time;
-    f32 available_time;
-    f32 lap_alpha;
-    i32 lap;
-} POD_RACE_PANEL_NETPACKET_PC;
 
 static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
@@ -883,7 +875,7 @@ void __cdecl PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }
 
-void *podrace_netpacket = NULL;
+PODRACE_NETPACKET_PC *podrace_netpacket = NULL;
 
 void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
     char reason[128];
@@ -893,10 +885,10 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
     // later mushroom_timer add (fld dt; fadd timer), which no other rewrite reproduced.
     PODRACE_RESOURCE_PC *race = PodRacePc;
     if (netclient != 0) {
-        PodRacePc->lap_countdown = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->start_countdown;
-        PodRacePc->lap_display = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->remaining_time;
-        PodRacePc->previous_lap_display = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->available_time;
-        Lap = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->lap;
+        PodRacePc->lap_countdown = podrace_netpacket->start_countdown;
+        PodRacePc->lap_display = podrace_netpacket->remaining_time;
+        PodRacePc->previous_lap_display = podrace_netpacket->available_time;
+        Lap = podrace_netpacket->lap;
     }
     if (race->lap_countdown > 0.0f) {
         old = PodRacePc->lap_countdown;
@@ -964,10 +956,10 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
         ResetLevel(world, reason, 1);
     }
     if (netclient == 0) {
-        ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->start_countdown = PodRacePc->lap_countdown;
-        ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->lap = Lap;
-        ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->remaining_time = PodRacePc->lap_display;
-        ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->available_time = PodRacePc->previous_lap_display;
+        podrace_netpacket->start_countdown = PodRacePc->lap_countdown;
+        podrace_netpacket->lap = Lap;
+        podrace_netpacket->remaining_time = PodRacePc->lap_display;
+        podrace_netpacket->available_time = PodRacePc->previous_lap_display;
     }
 }
 
@@ -984,9 +976,9 @@ void __cdecl PodRacePanel(WORLDINFO *world) {
     f32 scale;
     i32 count;
     if (netclient != 0) {
-        podlapalpha = ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha;
+        podlapalpha = podrace_netpacket->lap_alpha;
     } else {
-        ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha = podlapalpha;
+        podrace_netpacket->lap_alpha = podlapalpha;
     }
     if (podlapalpha > 0.0f) {
         i32 object_index = Lap + 0x135;
