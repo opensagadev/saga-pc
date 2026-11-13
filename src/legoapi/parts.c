@@ -1794,26 +1794,30 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         }
         key->emission_time = emission_time;
         generated = key->generator(key, effect, emission_time);
-        if (effect->process_spheres != 0 && generated != NULL && i == 1)
+        if (effect->process_spheres != 0 && i == 1 && generated != NULL)
             DebrisProcessSpheres(generated, emission_time, effect, key, 1);
-        emission_time = key->emission_epoch + emission_interval;
+        emission_time = emission_interval + key->emission_epoch;
     }
     DebrisGetControlStackLock();
-    for (chunk_index = key->controlled_chunk_count; chunk_index < key->allocated_chunk_count; ++chunk_index) {
-        if (freechunkcontrolsptr < (debrischunks + debrischunksglass) * 2) {
-            control = freechunkcontrols[freechunkcontrolsptr];
-            control->particle_chunk = key->particle_chunks[chunk_index];
-            control->active = 1;
-            control->owner = key;
-            control->expiry_time = now + effect->particle_lifetime + effect->trail_time * ((f32)effect->trail_count);
-            AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time ? 1 : 0]);
-            ++freechunkcontrolsptr;
-            ++key->controlled_chunk_count;
+    // MATCH-EXCEPTION: retail tests the 16-bit counts once before entering the loop.
+    if (key->controlled_chunk_count < key->allocated_chunk_count) {
+        for (chunk_index = key->controlled_chunk_count; chunk_index < key->allocated_chunk_count; ++chunk_index) {
+            if (freechunkcontrolsptr < (debrischunks + debrischunksglass) * 2) {
+                freechunkcontrols[freechunkcontrolsptr]->particle_chunk = key->particle_chunks[chunk_index];
+                freechunkcontrols[freechunkcontrolsptr]->expiry_time =
+                    now + effect->particle_lifetime + (f32)effect->trail_count * effect->trail_time;
+                freechunkcontrols[freechunkcontrolsptr]->active = 1;
+                freechunkcontrols[freechunkcontrolsptr]->owner = key;
+                AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr],
+                                       &debris_chunk_control_stack[panel_time]);
+                ++freechunkcontrolsptr;
+                ++key->controlled_chunk_count;
+            }
         }
     }
     if (key->allocated_chunk_count == key->controlled_chunk_count) {
         last_chunk = key->particle_chunks[key->controlled_chunk_count - 1];
-        stack = &debris_chunk_control_stack[panel_time ? 1 : 0];
+        stack = &debris_chunk_control_stack[panel_time];
         for (control = *stack; control != NULL; control = control->next) {
             if (control->particle_chunk == last_chunk) {
                 RemoveChunkControlFromStack(control, stack);
