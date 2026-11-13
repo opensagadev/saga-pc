@@ -87,8 +87,8 @@ extern "C" void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     if (Paused)
         return;
     i32 menu = GetMenuID();
-    GAMEPAD_RUNTIME_INPUT_PC *pad = &((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index];
-    if (!pad->input_ready || (pad->bound_pad->flags & 4))
+    if (!((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready ||
+        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4))
         return;
     if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS))
         return;
