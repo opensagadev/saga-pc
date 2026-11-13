@@ -1050,10 +1050,9 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 }
             } else if (down) {
                 f32 speed;
-                const i16 animation = LEGOACT_GRAPPLE_DOWN;
-                if (animation != -1 && object->character_model->model_data_b[animation] != NULL) {
-                    object->field_7aa = animation;
-                    speed = AnimSpeed(object->character_model, animation);
+                if (-1 != LEGOACT_GRAPPLE_DOWN && object->character_model->model_data_b[LEGOACT_GRAPPLE_DOWN] != NULL) {
+                    object->field_7aa = LEGOACT_GRAPPLE_DOWN;
+                    speed = AnimSpeed(object->character_model, LEGOACT_GRAPPLE_DOWN);
                     if (speed < 0.5f)
                         speed = 0.5f;
                 } else
