@@ -10655,9 +10655,21 @@ extern "C" {
     i32 opts_sfx_i = 0;
     LEVELDATA_PC *TITLES_LDATA = 0;
 
-    // STUBBED: Remaining PC callbacks, including Menu1 activation, are not reconstructed; NULL slots keep them
-    // inactive. IDs, remembered cursors, and prompt flags use the 23-record PC table.
+    // The 23-record PC table: IDs, callbacks, remembered cursors, and prompt flags.
     void __cdecl MenuUpdatePauseRestart(MENU *);
+    void __cdecl MenuDrawEndMission(MENU *);
+    void __cdecl MenuUpdateEndMission(MENU *);
+    void __cdecl MenuDrawEndChallenge(MENU *);
+    void __cdecl MenuUpdateEndChallenge(MENU *);
+    void __cdecl Arcade_DrawEndMenu(MENU *);
+    void __cdecl Arcade_UpdateEndMenu(MENU *);
+    void __cdecl MenuDrawMiniKit(MENU *);
+    void __cdecl MenuUpdateMiniKit(MENU *);
+    void __cdecl Credits_UpdateMenu(MENU *);
+    void __cdecl MenuDrawBonusWin(MENU *);
+    void __cdecl MenuUpdateBonusWin(MENU *);
+    void __cdecl MenuDrawBonusComplete(MENU *);
+    void __cdecl MenuUpdateBonusComplete(MENU *);
     MENUFNINFO GameMenuInfo[23] = {
         {0, MenuEnterTitles, MenuDrawTitles, MenuUpdateTitles, NULL, -1, -1, 0, 0, 0, 0},
         {1, MenuEnterNewGame, MenuDrawNewGame, MenuUpdateNewGame, NULL, -1, -1, 0, 1, 0, 0},
@@ -10667,19 +10679,19 @@ extern "C" {
         {5, NULL, MenuDrawExtras, MenuUpdateExtras, NULL, 0, 0, 0, 0, 0, 0},
         {6, NULL, MenuDrawPauseExit, MenuUpdatePauseExit, NULL, -1, -1, 0, 0, 0, 0},
         {7, NULL, MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL, 0, 0, 0, 0, 0, 0},
-        {8, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {9, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {10, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {11, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {8, MenuInitMissions, MenuDrawMissions, MenuUpdateMissions, NULL, -1, -1, 0, 0, 0, 0},
+        {9, NULL, MenuDrawEndMission, MenuUpdateEndMission, NULL, -1, -1, 0, 0, 0, 0},
+        {10, NULL, MenuDrawEndChallenge, MenuUpdateEndChallenge, NULL, -1, -1, 0, 0, 0, 0},
+        {11, NULL, Arcade_DrawEndMenu, Arcade_UpdateEndMenu, NULL, -1, -1, 0, 0, 0, 0},
         {12, NULL, MenuDrawCustomiserPc, MenuUpdateCustomiserPc, NULL, -1, -1, 0, 0, 0, 0},
         {13, NULL, MenuDrawShop, MenuUpdateShop, NULL, -1, -1, 0, 0, 0, 0},
-        {14, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {14, NULL, MenuDrawMiniKit, MenuUpdateMiniKit, NULL, -1, -1, 0, 0, 0, 0},
         {15, MenuInitSelectMode, MenuDrawSelectMode, MenuUpdateSelectMode, NULL, -1, -1, 0, 0, 0, 0},
         {16, MenuInitBonusMode, MenuDrawBonusMode, MenuUpdateBonusMode, NULL, -1, -1, 0, 0, 0, 0},
         {17, MenuInitFreePlay, MenuDrawFreePlay, MenuUpdateFreePlay, NULL, -1, -1, 0, 0, 0, 0},
-        {18, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {19, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
-        {20, NULL, NULL, NULL, NULL, -1, -1, 0, 0, 0, 0},
+        {18, NULL, NULL, Credits_UpdateMenu, NULL, -1, -1, 0, 0, 0, 0},
+        {19, NULL, MenuDrawBonusWin, MenuUpdateBonusWin, NULL, -1, -1, 0, 0, 0, 0},
+        {20, NULL, MenuDrawBonusComplete, MenuUpdateBonusComplete, NULL, -1, -1, 0, 0, 0, 0},
         {21, MenuEnterControlSetupPc, MenuDrawControlSetupPc, MenuUpdateControlSetupPc, NULL, -1, -1, 0, 0, 0, 0},
         {22, MenuEnterSelectControlsPc, MenuDrawControlSetupPc, MenuUpdateSelectControlsPc, MenuExitSelectControlsPc, 0,
          0, 0, 0, 0, 0},
