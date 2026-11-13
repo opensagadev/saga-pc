@@ -1417,9 +1417,9 @@ extern "C" {
     }
 
     static __declspec(noinline) void NuLgtSetVertexColor(i32 colour) {
-        u32 converted;
+        i32 converted;
         if (NuPrimNeedsOverbrightening)
-            converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff000000) + (colour & 0xff00);
+            converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
         else
             converted =
                 ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
