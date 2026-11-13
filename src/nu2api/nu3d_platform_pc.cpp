@@ -6329,7 +6329,11 @@ extern "C" {
     void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_HEADER_PC *header, NUMTL *material,
                                      f32 time, NUMTX *matrix, i32 particle_type, f32 a, f32 b, f32 c, f32 near_clip) {
         DEBRIS_PARTICLE_CHUNK_PC *chunk;
-        i32 done, count;
+        DEBRIS_PARTICLE_CHUNK_PC *data;
+        i32 count;
+        i32 done;
+        i32 command;
+        DEBRIS_PARTICLE_CHUNK_PC *next;
         if (header == NULL) {
             NuDebrisLastHeader = NULL;
             return;
@@ -6372,23 +6376,28 @@ extern "C" {
             AddParticleGroupToDisplayList(NuDebrisCurrentPacket);
             NuDebrisLastHeader = header;
         }
+        done = 0;
+        count = 0;
         chunk = chunks;
-        done = count = 0;
-        while (!done) {
-            DEBRIS_PARTICLE_CHUNK_PC *next = chunk->next;
-            switch ((i8)chunk->command) {
+        data = chunks;
+        while (done == 0) {
+            command = (i8)chunk->command;
+            next = chunk->next;
+            switch (command) {
                 case 0x4e:
                     if (next != NULL) {
-                        BuildDebrisVerts(header, chunk, material, time, matrix, particle_type, a, b, c, near_clip);
+                        BuildDebrisVerts(header, data, material, time, matrix, particle_type, a, b, c, near_clip);
+                        data = next;
                         chunk = next;
                     }
                     break;
                 case 0x52:
-                    BuildDebrisVerts(header, chunk, material, time, matrix, particle_type, a, b, c, near_clip);
+                    BuildDebrisVerts(header, data, material, time, matrix, particle_type, a, b, c, near_clip);
                     done = 1;
                     break;
             }
-            if (++count > 0x100)
+            count++;
+            if (count > 0x100)
                 break;
         }
     }
