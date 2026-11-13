@@ -13304,6 +13304,7 @@ address,symbol,size,ctype
 0x0074b870,??G?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV01@@Z,37,
 0x0074b8a0,??8?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z,41,
 0x0074b8d0,??Y?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z,54,
+0x74b910,??$SafeDeleteArray@$$CBD@@YAXAAPBD@Z,28,void __cdecl SafeDeleteArray<const char>(const char *&)
 0x74b930,??$_Allocate@PAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@IPAPAU1@@Z,91,
 0x0074b990,??$_Iter_random@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@0@Z,5,
 0x0074b9a0,??$_Ptr_cat@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AU_Scalar_ptr_iterator_tag@0@AAPAPAUShaderParserIncludePc@@0@Z,7,
