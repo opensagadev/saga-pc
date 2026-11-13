@@ -11833,7 +11833,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         i32 group;
         i32 colour = creature == aieditor->selected_creature
-                         ? (creature == aieditor->nearest_creature ? 0xff0000ff : 0x800000ff)
+                         ? (aieditor->selected_creature == aieditor->nearest_creature ? 0xff0000ff : 0x800000ff)
                          : (aieditor->nearest_creature == creature ? -1 : 0);
         for (group = 0; group < creature->group_count; ++group, colour = 0) {
             NUVEC position;
