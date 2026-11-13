@@ -9293,7 +9293,6 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
     char object_name[256];
     i32 count;
     i32 object_count;
-    i32 object_flags;
 
     if (stream.mode == 2) {
         count = 0;
@@ -9340,7 +9339,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                  object = object_class->object_interface->GetNextObject(object)) {
                 if (!IsStreamObject(stream, object_class, object))
                     continue;
-                object_flags = 0;
+                i32 object_flags = 0;
                 object_class->GetAttributeData(object, 1, EdType_Int, &object_flags, 0);
                 stream.SerialiseBuffer(&object_flags, sizeof(object_flags), 1);
                 if ((object_flags & 0x2000000) || (object_class->flags & 0x4000000)) {
@@ -9366,6 +9365,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                         stream.SerialiseBuffer(&object_count, sizeof(object_count), 1);
                         for (i32 object_index = 0; object_index < object_count; object_index++) {
                             void *object;
+                            i32 object_flags;
                             stream.SerialiseBuffer(&object_flags, sizeof(object_flags), 1);
                             if (object_flags & 0x2000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
@@ -9395,6 +9395,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                         stream.SerialiseBuffer(&object_count, sizeof(object_count), 1);
                         for (i32 object_index = 0; object_index < object_count; object_index++) {
                             void *object;
+                            i32 object_flags;
                             stream.SerialiseBuffer(&object_flags, sizeof(object_flags), 1);
                             if (object_flags & 0x2000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
