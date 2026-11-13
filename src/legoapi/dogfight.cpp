@@ -1108,7 +1108,9 @@ extern "C" {
         space->draw_scale.y = DogfightOriginEndYPc;
         space->draw_scale.z = DogfightOriginEndZPc;
         space->draw_scale.w = 1.0f;
-        space->actions = world->current_level == DOGFIGHTA_LDATA ? NULL : DogfightAnakinActionsPc;
+        space->actions = NULL;
+        if (world->current_level != DOGFIGHTA_LDATA)
+            space->actions = DogfightAnakinActionsPc;
         buffer = &space->reset_buffer;
         if (buffer != NULL && buffer->capacity != 0) {
             memset(buffer->records, 0, buffer->capacity * 96u);
