@@ -6,7 +6,7 @@ struct PC_OGG_CACHE_RECORD_PC {
     u8 *data;
     i32 bytes;
     u32 last_used;
-    i32 references;
+    volatile i32 references; // shared with the streaming thread: every update is a separate load and store
 };
 STATIC_ASSERT(sizeof(PC_OGG_CACHE_RECORD_PC) == 0x114);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, data) == 0x104);
@@ -228,7 +228,7 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     compressed = 1;
     cache = NULL;
-    for (i32 i = 0; i <= 4; ++i) {
+    for (i32 i = 0; i != 5; ++i) {
         if (NuStrICmp(PCOggCachePoolPc[i].path, path) == 0 && PCOggCachePoolPc[i].references <= 0) {
             cache = &PCOggCachePoolPc[i];
             break;
@@ -236,7 +236,7 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     }
     if (cache == NULL) {
         i32 index = -1;
-        for (i32 i = 0; i < 5; ++i) {
+        for (i32 i = 0; i != 5; ++i) {
             if (PCOggCachePoolPc[i].references <= 0) {
                 if (PCOggCachePoolPc[i].bytes == 0) {
                     index = i;
