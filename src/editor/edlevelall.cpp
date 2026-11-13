@@ -9373,8 +9373,8 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                             } else if (object_class->flags & 0x4000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
-                                if (object != NULL)
-                                    object = theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2);
+                                object = object != NULL ? theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2)
+                                                        : NULL;
                             } else {
                                 object = theRegistry.CreateObject(object_class->object_interface, NULL, 4, 0, 2);
                             }
@@ -9402,8 +9402,8 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                             } else if (object_class->flags & 0x4000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
-                                if (object != NULL)
-                                    object = theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2);
+                                object = object != NULL ? theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2)
+                                                        : NULL;
                             } else {
                                 object = theRegistry.CreateObject(object_class->object_interface, NULL, 4, 0, 2);
                             }
