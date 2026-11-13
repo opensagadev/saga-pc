@@ -1118,14 +1118,17 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             const i32 swing_mode = PlayerGrappleSwingModePc;
             if ((swing_mode == 0 && abs(RotDiff(angle, input_angle)) < 0x4000) ||
                 (swing_mode != 0 && (swing_positive != 0 || swing_negative != 0))) {
-                const u8 increased_degrees = static_cast<u8>(object->big_jump_animation + 10);
-                object->big_jump_animation = 60 >= increased_degrees ? increased_degrees : 60;
+                object->big_jump_animation += 10;
+                if (object->big_jump_animation > 60)
+                    object->big_jump_animation = 60;
                 return;
             }
             change = -20;
         }
-        object->big_jump_animation =
-            (0 > object->big_jump_animation + change ? 0 : object->big_jump_animation + change);
+        if (object->big_jump_animation + change < 0)
+            object->big_jump_animation = 0;
+        else
+            object->big_jump_animation += change;
     } else {
         if (Grapples_Available == 0)
             return;
