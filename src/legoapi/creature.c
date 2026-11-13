@@ -80,16 +80,11 @@ STATIC_ASSERT(offsetof(AIROW_PC, flags) == 0x30);
 extern NUVEC plr_lastpos;
 
 void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
-    AIPACKET_PC *packet;
     AICREATURE_PC *creature;
-    AI_CREATURE_RESET_VIEW_PC *details;
     AIPATHINFO_PC *path_info;
-    AIGROUP_PC *group;
     AIROW_PC *row;
-    APIOBJECT_PC *api;
     NUVEC offset;
-    i32 angle, column;
-    u64 alive;
+    i32 angle;
     if (object == NULL)
         return;
     PreResetCode(object);
@@ -100,35 +95,31 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     ResetPlayerMoves(object);
     Player_ClearContext(object, 1);
     Player_ResetContexts(object->unknown_06c4);
-    api = (APIOBJECT_PC *)object;
-    packet = &object->ai_packet;
-    object->field_107e = object->character_data->game_character->hitpoints;
-    object->current_hp = (i8)object->character_data->game_character->hitpoints;
+    object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
-    creature = &system->creatures[packet->creature_index];
-    details = (AI_CREATURE_RESET_VIEW_PC *)creature;
-    packet->creature_set = details->creature_set;
+    creature = &system->creatures[object->ai_packet.creature_index];
+    object->ai_packet.creature_set = ((AI_CREATURE_RESET_VIEW_PC *)creature)->creature_set;
     if ((creature->flags & 1) != 0)
-        packet->flags |= 0x80;
+        object->ai_packet.flags |= 0x80;
     else
-        packet->flags &= ~0x80u;
-    packet->flags &= ~0x40000u;
-    api->view_distance = creature->view_distance;
-    api->hear_distance = creature->hear_distance;
-    api->max_view_height = creature->max_view_height;
-    api->min_view_height = creature->min_view_height;
-    offset.x = (f32)((packet->group_column + 1) / 2) * creature->x_spacing;
-    if ((packet->group_column & 1) != 0)
+        object->ai_packet.flags &= ~0x80u;
+    object->ai_packet.flags &= ~0x40000u;
+    object->view_distance = creature->view_distance;
+    object->hear_distance = creature->hear_distance;
+    object->max_view_height = creature->max_view_height;
+    object->min_view_height = creature->min_view_height;
+    offset.x = (f32)((object->ai_packet.group_column + 1) / 2) * creature->x_spacing;
+    if ((object->ai_packet.group_column & 1) != 0)
         offset.x = -offset.x;
     offset.y = 0.0f;
-    offset.z = -(f32)packet->group_row * creature->z_spacing;
-    if (packet->respawn_count != 0 && packet->respawn_locator != NULL) {
-        angle = packet->respawn_locator->rotation;
+    offset.z = -creature->z_spacing * (f32)object->ai_packet.group_row;
+    if (object->ai_packet.respawn_count != 0 && object->ai_packet.respawn_locator != NULL) {
+        angle = object->ai_packet.respawn_locator->rotation;
         NuVecRotateY(&offset, &offset, angle);
-        NuVecAdd(&object->position, &offset, &packet->respawn_locator->position);
-        path_info = &packet->respawn_locator->path_info;
-        packet->respawn_locator = NULL;
+        NuVecAdd(&object->position, &offset, &object->ai_packet.respawn_locator->position);
+        path_info = &object->ai_packet.respawn_locator->path_info;
+        object->ai_packet.respawn_locator = NULL;
     } else {
         angle = creature->y_rotation;
         NuVecRotateY(&offset, &offset, angle);
@@ -147,39 +138,37 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     object->facing_angle = (u16)angle;
     object->movement_facing_angle = (u16)angle;
     NuVecRotateYValZ(&object->facing_direction, 1.0f, (u16)angle);
-    AISysCharacterSetPath(packet, path_info->path);
-    AISysCharacterSetPathCnx(packet, &object->position, path_info->connection, path_info->direction);
+    AISysCharacterSetPath(&object->ai_packet, path_info->path);
+    AISysCharacterSetPathCnx(&object->ai_packet, &object->position, path_info->connection, path_info->direction);
     object->dead = 0;
-    AIScriptProcessorInit(WORLD->ai_sys, packet, &packet->script_processor, creature, details->script_name, NULL, 1,
-                          NULL, NULL);
-    packet->inside_path_node = -1;
-    packet->current_route = 0xff;
-    packet->next_route = 0;
-    AISysGetCharacterPathPos(WORLD->ai_sys, api, packet, 0xff, (i8)object->field_281);
+    AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
+                          ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, NULL, 1, NULL, NULL);
+    object->ai_packet.inside_path_node = -1;
+    object->ai_packet.current_route = 0xff;
+    object->ai_packet.next_route = 0;
+    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, (i8)object->field_281);
     ResetAnimPacket(&object->anim_packet, 1);
     SetAnimTimeRandom(object->character_model, &object->anim_packet);
-    packet->movement_stopping_distance = 0.0f;
+    object->ai_packet.movement_stopping_distance = 0.0f;
     ((AI_RESET_EXTRA_PC *)object)->reset_timer = 0.0f;
-    packet->flags &= ~0x1000000u;
-    packet->movement_destination = object->position;
-    packet->movement_target = NULL;
+    object->ai_packet.flags &= ~0x1000000u;
+    object->ai_packet.movement_destination = object->position;
+    object->ai_packet.movement_target = NULL;
     ((AI_RESET_EXTRA_PC *)object)->search_state = 0;
     ((AI_RESET_EXTRA_PC *)object)->avoidance_state = 0;
     PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
     object->flags_1fc_word |= 0x1000;
-    ++packet->respawn_count;
-    packet->reset_mode = 2;
-    group = packet->group;
-    if (group != NULL) {
-        alive = (u64)1 << packet->group_member_index;
-        group->member_is_alive |= (i32)alive;
-        row = &group->rows[packet->group_row];
-        column = packet->group_member_index - details->count_across * packet->group_row;
-        alive = (u64)1 << (u8)column;
-        row->is_alive |= (u8)alive;
-        if (packet->group_column == 0) {
+    ++object->ai_packet.respawn_count;
+    object->ai_packet.reset_mode = 2;
+    if (object->ai_packet.group != NULL) {
+        object->ai_packet.group->member_is_alive |= (u32)((u64)1 << object->ai_packet.group_member_index);
+        row = &object->ai_packet.group->rows[object->ai_packet.group_row];
+        row->is_alive |=
+            (u8)((u64)1 << (object->ai_packet.group_member_index -
+                            ((AI_CREATURE_RESET_VIEW_PC *)creature)->count_across * object->ai_packet.group_row));
+        if (object->ai_packet.group_column == 0) {
             row->position = object->position;
-            row->path_info = packet->path_info;
+            row->path_info = object->ai_packet.path_info;
             row->rotation = object->field_0x276;
             row->flags &= ~2u;
             row->next_connection = NULL;
