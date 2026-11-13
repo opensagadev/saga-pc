@@ -1455,11 +1455,14 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
                         origin_v + span_v, 0x80808080, picker->material);
     for (i32 corner = 0; corner < 2; ++corner) {
         if (edui_donotdraw == 0) {
-            NuRndrLine2di(x << 4, (i32)((f32)y + (i32)(f32)width * point_v[corner]) << 3, ((x + width) << 4) - 16,
-                          (i32)((f32)y + (f32)width * point_v[corner]) << 3, colours[corner], (NUMTL *)uimtls[0]);
+            u32 colour = colours[corner];
+            f32 line_width = (f32)width;
+            f32 line_y = (f32)y;
+            NuRndrLine2di(x << 4, (i32)(line_y + (i32)line_width * point_v[corner]) << 3, ((x + width) << 4) - 16,
+                          (i32)(line_y + line_width * point_v[corner]) << 3, colour, (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
-                i32 marker_x = (i32)(x + (f32)width * point_u[corner]) << 4;
-                NuRndrLine2di(marker_x, y << 3, marker_x, ((y + width) << 3) - 8, colours[corner], (NUMTL *)uimtls[0]);
+                i32 marker_x = (i32)(x + line_width * point_u[corner]) << 4;
+                NuRndrLine2di(marker_x, y << 3, marker_x, ((y + width) << 3) - 8, colour, (NUMTL *)uimtls[0]);
             }
         }
     }
