@@ -1360,6 +1360,8 @@ extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct push
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
     WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
     NUMTX evaluated;
+    NUVEC centre;
+    NUVEC corners[4];
     world->push_block_position_count = 0;
     RunOutOfPosTabSpacePc = 0;
     pushposincrease = 0;
@@ -1404,7 +1406,7 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
     }
     block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
-        NUVEC centre = *block->position;
+        centre = *block->position;
         block->velocity = v000;
         block->target_velocity = v000;
         block->snap_origin = centre;
@@ -1412,7 +1414,6 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         f32 right = GizPushFabsPc(block->bounds_max.x) + PushInitCornerInsetPc;
         f32 back = GizPushFabsPc(block->bounds_min.z) + PushInitCornerInsetPc;
         f32 front = GizPushFabsPc(block->bounds_max.z) + PushInitCornerInsetPc;
-        NUVEC corners[4];
         corners[1] = corners[2] = corners[3] = corners[0] = centre;
         corners[0].y = (corners[0].y - GizPushFabsPc(block->bounds_min.y)) - PushInitGroundOffsetPc;
         corners[1].y = corners[2].y = corners[3].y = corners[0].y;
