@@ -4402,9 +4402,7 @@ extern "C" {
 
     i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
         i32 section_size, bytes_read, i;
-        u32 size;
-        void *data, *locked_data;
-        u8 padding;
+        void *data;
         i32 skip_texture;
         SCENE_FILE_TEXTURE_HEADER_PC texture;
         (void)cursor;
@@ -4473,7 +4471,7 @@ extern "C" {
         SceneVideoResourcesPC.vertex_buffers = (PC_BUFFER_RESOURCE_PC **)SceneUploadBufferCursorPC.void_ptr;
         SceneUploadBufferCursorPC.addr += SceneVideoResourcesPC.vertex_buffer_count * sizeof(PC_BUFFER_RESOURCE_PC *);
         for (i = 0; i != SceneVideoResourcesPC.vertex_buffer_count; ++i) {
-            size = 0;
+            u32 size = 0;
             bytes_read += NuFileRead(file, &size, sizeof(size));
             if (size == 0) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -4482,6 +4480,7 @@ extern "C" {
                 data = SceneUploadBufferCursorPC.void_ptr;
                 SceneUploadBufferCursorPC.addr += size;
                 bytes_read += NuFileRead(file, data, size);
+                void *locked_data;
                 PCFrameCriticalSectionEnter_candidate();
                 PCDeviceCreateVertexBuffer(size, 0, 0, 1, &SceneVideoResourcesPC.vertex_buffers[i]);
                 SceneVideoResourcesPC.vertex_buffers[i]->methods->lock(SceneVideoResourcesPC.vertex_buffers[i], 0, 0,
@@ -4497,7 +4496,7 @@ extern "C" {
         SceneVideoResourcesPC.index_buffers = (PC_BUFFER_RESOURCE_PC **)SceneUploadBufferCursorPC.void_ptr;
         SceneUploadBufferCursorPC.addr += SceneVideoResourcesPC.index_buffer_count * sizeof(PC_BUFFER_RESOURCE_PC *);
         for (i = 0; i != SceneVideoResourcesPC.index_buffer_count; ++i) {
-            size = 0;
+            u32 size = 0;
             bytes_read += NuFileRead(file, &size, sizeof(size));
             if (size == 0) {
                 NuPtlDmaSlotsExhaustedPc();
@@ -4506,6 +4505,7 @@ extern "C" {
                 data = SceneUploadBufferCursorPC.void_ptr;
                 SceneUploadBufferCursorPC.addr += size;
                 bytes_read += NuFileRead(file, data, size);
+                void *locked_data;
                 PCFrameCriticalSectionEnter_candidate();
                 PCDeviceCreateIndexBuffer(size, 0, 0x65, 1, &SceneVideoResourcesPC.index_buffers[i], NULL);
                 SceneVideoResourcesPC.index_buffers[i]->methods->lock(SceneVideoResourcesPC.index_buffers[i], 0, 0,
@@ -4517,8 +4517,10 @@ extern "C" {
             }
         }
         section_size += 4;
-        for (; bytes_read < section_size; ++bytes_read)
+        for (; bytes_read < section_size; ++bytes_read) {
+            u8 padding;
             NuFileRead(file, &padding, 1);
+        }
         return section_size;
     }
 
