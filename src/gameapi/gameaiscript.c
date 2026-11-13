@@ -9037,17 +9037,16 @@ i32 __cdecl Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
 
     (void)packet;
     (void)delta_time;
-    if (first_time == 0 || param_count <= 0)
-        return 1;
-
+    start_delay = 0.0f;
+    repeat_delay = 0.0f;
+    position_ptr = NULL;
     position.x = 1.0e9f;
     position.y = 1.0e9f;
     position.z = 1.0e9f;
-    position_ptr = NULL;
-    name = NULL;
     play_count = 1;
-    repeat_delay = 0.0f;
-    start_delay = 0.0f;
+    name = NULL;
+    if (first_time == 0)
+        return 1;
 
     for (index = 0; index < param_count; ++index) {
         char *value;
