@@ -1,14 +1,53 @@
 #include "saga.h"
 
-MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
-    if (system == NULL) {
-        system = MissionSys;
-        if (system == NULL)
-            return NULL;
+void __cdecl MenuUpdateEndMission(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        CompleteLevel(WORLD);
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
     }
-    if (system->state != 0 && system->active_mission != NULL)
-        return system->active_mission;
-    return NULL;
+}
+
+STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+
+void __cdecl MenuDrawEndMission(MENU *menu) {
+    char text[32];
+    i32 index;
+    f32 remaining;
+    (void)menu;
+    if (MenuStopDraw != 0)
+        return;
+    if (MissionSys->state == 2) {
+        if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
+            index = (i8)MissionSys->active_mission->index;
+            remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
+            if (remaining < 0.0f)
+                remaining = 0.0f;
+            Text_MakeTime(remaining, 0, 1, 1, text);
+            Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+        }
+    } else {
+        i32 colour_a = 255, colour_b = 63;
+        if (menu_flash != 0) {
+            colour_a = 191;
+            colour_b = 31;
+        }
+        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
+    }
+}
+
+void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {
+    system->active_mission = &system->missions[index];
+    system->state = 1;
+    ResetTimer(&system->timer, 0.0f);
+    Cheats_TurnOff(0);
 }
 
 void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
@@ -84,7 +123,13 @@ typedef struct MISSION_SYSTEM_READER_PC {
     MISSION_SAVE_READER_PC *save;
     u8 count;
     u8 state;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 pickups : 1;
+            u8 unknown_flags : 7;
+        };
+    };
     u8 character_count;
     i16 character_ids[8];
 } MISSION_SYSTEM_READER_PC;
@@ -111,6 +156,113 @@ STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, flags) == 0x1e);
 STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_count) == 0x1f);
 STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_ids) == 0x20);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+
+/* Original name unknown. Empty on PC (a bare RET at 0x58a510); called when the file cannot be
+   opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
+   (see SpecialMovesConfigMissingPc). */
+void __cdecl MissionsConfigMissingPc(char *filename);
+
+MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
+                                          MISSION_SAVE_READER_PC *save) {
+    NUFPAR_PC *parser;
+    MISSION_SYSTEM_READER_PC temporary, *destination;
+    MISSIONDATA_PC *mission;
+    i32 character;
+    parser = NuFParCreate(file);
+    if (parser == NULL) {
+        MissionsConfigMissingPc(file);
+        return NULL;
+    }
+    memset(&temporary, 0, sizeof(temporary));
+    temporary.pickups = 1;
+    buffer_start->addr = (buffer_start->addr + 3) & ~3u;
+    mission = buffer_start->void_ptr;
+    temporary.missions = mission;
+    temporary.save = save;
+    while (temporary.count < 20 && NuFParGetLine(parser) != 0) {
+        NuFParGetWord(parser);
+        if (NuStrICmp(parser->word_buffer_ptr, "party") == 0) {
+            while (temporary.character_count < 8 && NuFParGetWord(parser) != 0) {
+                character = CharIDFromName(parser->word_buffer_ptr);
+                if (character != -1) {
+                    temporary.character_ids[temporary.character_count] = (i16)character;
+                    ++temporary.character_count;
+                }
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "pickups") == 0) {
+            if (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0)
+                    temporary.pickups = 1;
+                else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0)
+                    temporary.pickups = 0;
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "mission") == 0) {
+            mission->find_character = -1;
+            mission->level = -1;
+            mission->name_id = -1;
+            mission->bounty = 100000;
+            mission->alternate_bounty = 100000;
+            mission->text_id = -1;
+            mission->time = 180;
+            mission->index = temporary.count;
+            while (NuFParGetWord(parser) != 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "find") == 0) {
+                    if (NuFParGetWord(parser) != 0)
+                        mission->find_character = (i16)CharIDFromName(parser->word_buffer_ptr);
+                } else if (NuStrICmp(parser->word_buffer_ptr, "in_level") == 0) {
+                    if (NuFParGetWord(parser) != 0 && Level_FindByName(parser->word_buffer_ptr, &character) != NULL)
+                        mission->level = (i16)character;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "time") == 0) {
+                    mission->time = (u16)NuFParGetInt(parser);
+                    if (mission->time < 3)
+                        mission->time = 3;
+                } else if (NuStrICmp(parser->word_buffer_ptr, "bounty") == 0) {
+                    mission->bounty = NuFParGetInt(parser);
+                    mission->alternate_bounty = NuFParGetInt(parser);
+                } else if (NuStrICmp(parser->word_buffer_ptr, "name_id") == 0)
+                    mission->name_id = (i16)NuFParGetInt(parser);
+                else if (NuStrICmp(parser->word_buffer_ptr, "text_id") == 0)
+                    mission->text_id = (i16)NuFParGetInt(parser);
+            }
+            if (mission->find_character != -1 && mission->level != -1) {
+                ++temporary.count;
+                ++mission;
+                buffer_start->addr += sizeof(MISSIONDATA_PC);
+            }
+        }
+    }
+    NuFParDestroy(parser);
+    if (temporary.count <= 0)
+        return NULL;
+    buffer_start->addr = (buffer_start->addr + 3) & ~3u;
+    destination = buffer_start->void_ptr;
+    PCByteCopy_candidate(destination, &temporary, sizeof(temporary));
+    buffer_start->addr = (buffer_start->addr + sizeof(temporary) + 3) & ~3u;
+    return (MISSIONSYS_PC *)destination;
+}
+
+void Mission_Clear(MISSIONSYS_s *ms) {
+    if (ms == NULL) {
+        ms = MissionSys;
+        if (ms == NULL) {
+            return;
+        }
+    }
+    ms->mission = NULL;
+    ms->field8_0x1d = 0;
+    ResetTimer(&ms->timer, 0.0f);
+}
+
+MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
+    if (system == NULL) {
+        system = MissionSys;
+        if (system == NULL)
+            return NULL;
+    }
+    if (system->state != 0 && system->active_mission != NULL)
+        return system->active_mission;
+    return NULL;
+}
 
 i32 __cdecl Mission_CurrentState(MISSIONSYS_PC *system) {
     MISSION_SYSTEM_READER_PC *reader;
@@ -187,54 +339,4 @@ i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *system) {
     if (reader->state == 0 || reader->active_mission == NULL || (reader->flags & 1) != 0)
         return 0;
     return 1;
-}
-
-void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {
-    system->active_mission = &system->missions[index];
-    system->state = 1;
-    ResetTimer(&system->timer, 0.0f);
-    Cheats_TurnOff(0);
-}
-
-STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
-
-void __cdecl MenuDrawEndMission(MENU *menu) {
-    char text[32];
-    i32 index;
-    f32 remaining;
-    (void)menu;
-    if (MenuStopDraw != 0)
-        return;
-    if (MissionSys->state == 2) {
-        if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
-            index = (i8)MissionSys->active_mission->index;
-            remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
-            if (remaining < 0.0f)
-                remaining = 0.0f;
-            Text_MakeTime(remaining, 0, 1, 1, text);
-            Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
-        }
-    } else {
-        i32 colour_a = 255, colour_b = 63;
-        if (menu_flash != 0) {
-            colour_a = 191;
-            colour_b = 31;
-        }
-        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, colour_a, colour_b, 0, 1.7f, 1);
-    }
-}
-
-void __cdecl MenuUpdateEndMission(MENU *menu) {
-    if (menu->menu_time >= 5.0f) {
-        CompleteLevel(WORLD);
-    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
-        PlaySfx("Victory", NULL);
-        BonusWinFlag = 1;
-    }
 }
