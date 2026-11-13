@@ -1205,7 +1205,7 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
             spinner->state_flags &= ~0x40u;
             goto animation_updated;
         }
-        if (spinner->spin_timer < 0.0f) {
+        if (spinner->spin_timer > -0.0f) { // never true here: the test above already ruled out > 0
             spinner->spin_timer -= FRAMETIME;
             GameAnimSet_Stop(spinner->anim_set);
             goto animation_updated;
