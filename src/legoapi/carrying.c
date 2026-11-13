@@ -337,40 +337,32 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
     object->context_variant_flags &= ~0x40u;
     object->action_movement_state = 0;
     object->grapple = blowup;
-    if (immediate == 0) {
-        if (LEGOACT_SUPERCARRY_PICKUP != -1 &&
-            object->character_model->model_data_b[LEGOACT_SUPERCARRY_PICKUP] != NULL) {
-            f32 duration;
-            object->field_7aa = LEGOACT_SUPERCARRY_PICKUP;
-            object->field_7b3 = 0;
-            duration = AnimDuration((i16)object->id, LEGOACT_SUPERCARRY_PICKUP, 0.0f, 0.0f, 1);
-            if (duration <= 0.0f)
-                duration = 0.5f;
-            object->context_timer = duration;
-            object->movement_facing_angle = NuAtan2D(blowup->mid_position.x - object->collision_position.x,
-                                                     blowup->mid_position.z - object->collision_position.z);
-        } else {
-            object->context_timer = 0.0f;
-            object->field_7aa = LEGOACT_SUPERCARRY_IDLE;
-            object->field_7b3 = 2;
-            GizmoBlowupBlowup(blowup, 0, 7, -1, NULL, 1);
-        }
+    if (immediate == 0 && LEGOACT_SUPERCARRY_PICKUP != -1 &&
+        object->character_model->model_data_b[LEGOACT_SUPERCARRY_PICKUP] != NULL) {
+        object->field_7b3 = 0;
+        object->field_7aa = LEGOACT_SUPERCARRY_PICKUP;
+        object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+        if (object->context_timer <= 0.0f)
+            object->context_timer = 0.5f;
+        object->movement_facing_angle = NuAtan2D(blowup->mid_position.x - object->collision_position.x,
+                                                 blowup->mid_position.z - object->collision_position.z);
     } else {
-        object->context_timer = 0.0f;
-        object->field_7aa = LEGOACT_SUPERCARRY_IDLE;
         object->field_7b3 = 2;
+        object->field_7aa = LEGOACT_SUPERCARRY_IDLE;
+        object->context_timer = 0.0f;
+        if (immediate == 0)
+            GizmoBlowupBlowup(blowup, 0, 7, -1, NULL, 1);
     }
-    blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
     if (SuperCarry_AlignObject != 0) {
         u16 angle;
         i32 difference;
         i32 magnitude;
         NUVEC minimum, maximum;
-        NuSpecialGetBounds(&blowup->type->animated_special, &minimum, &maximum);
+        NuSpecialGetBounds(&((GIZMOBLOWUP_PC *)object->grapple)->type->animated_special, &minimum, &maximum);
         blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
         angle = NuAtan2D(blowup->transform.m20, blowup->transform.m22);
         difference = RotDiff(object->movement_facing_angle, angle);
-        magnitude = difference < 0 ? -difference : difference;
+        magnitude = abs(difference);
         if (magnitude < 0x2000) {
             object->takeover_start_angle = 0;
             ((CARRY_BASIS_PC *)object)->basis[0].x = 0.0f;
@@ -398,7 +390,7 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
         ((CARRY_BASIS_PC *)object)->basis[1].z = ((CARRY_BASIS_PC *)object)->basis[0].z;
         object->movement_facing_angle = angle - object->takeover_start_angle;
     } else {
-        NUMTX matrix = blowup->transform;
+        NUMTX matrix = ((GIZMOBLOWUP_PC *)object->grapple)->transform;
         NuMtxRotateY(&matrix, 0x8000 - object->movement_facing_angle);
         ((CARRY_BASIS_PC *)object)->basis[0] = *NUMTX_GET_ROW_VEC(&matrix, 0);
         ((CARRY_BASIS_PC *)object)->basis[1] = *NUMTX_GET_ROW_VEC(&matrix, 1);
