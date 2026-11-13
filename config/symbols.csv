@@ -8929,6 +8929,7 @@ address,symbol,size,ctype
 0x64a440,_NuPartEnableRayCasts,10,void __cdecl NuPartEnableRayCasts(i32 enabled)
 0x0064a450,_NuPartSetSeed,10,void __cdecl (i32)
 0x0064a460,_NuPartGetSeed,6,u32 __cdecl (void)
+0x64a470,_NuPartResetGlobalTime,9,"void __cdecl (void)"
 0x64a480,_ResetParts,44,void __cdecl (void)
 0x64a4b0,_InitParts,643,"void __cdecl (i32, VARIPTR *, VARIPTR)"
 0x0064a740,_NewPartRotation,127,void __cdecl (PART_PC *)
@@ -9622,6 +9623,7 @@ address,symbol,size,ctype
 0x683f50,_DebFree,1197,void __cdecl (i32 *)
 0x684400,_DebFreeInstantly,350,void __cdecl (i32 *)
 0x00684580,_DebFreeAllCreatedEffects,84,void __cdecl (void)
+0x6845e0,_DebFreeAllPanelEffects,93,"void __cdecl (void)"
 0x684640,_DebrisOrientation,91,"void __cdecl (i32, i16, i16)"
 0x6846a0,_DebrisEmitterOrientation,122,"void __cdecl (i32, i16, i16, i16)"
 0x684720,_DebrisSetFacing,103,"void __cdecl (i32,u8,i16,i16)"
