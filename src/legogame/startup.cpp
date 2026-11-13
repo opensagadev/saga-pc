@@ -223,12 +223,15 @@ extern "C" {
                 if (legal_alpha > 0.0f) {
                     switch (PcWindowOptions.aspect_mode) {
                         case 0:
-                            aspect = 1.7777778f;
+                            aspect = 1.3333334f;
                             break;
                         case 1:
-                            aspect = 1.6f;
+                            aspect = 1.7777778f;
                             break;
                         case 2:
+                            aspect = 1.6f;
+                            break;
+                        case 3:
                             aspect = PCDeviceBackend.active_aspect;
                             break;
                         default:
