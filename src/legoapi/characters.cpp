@@ -798,57 +798,6 @@ void __cdecl FinishWeirdoNames(i32 which) {
     name[15] = '\0';
 }
 
-void __cdecl LSW_SetIndy(i32 area_index) {
-    if (area_index != -1 && (&ADataList[area_index] == LOSTTEMPLE_ADATA || &ADataList[area_index] == JIMTEST_ADATA)) {
-        LEDGETERRAINLOOKAHEAD = 0.075f;
-        PUNCHGAP = 0.3f;
-        PUNCHCHARGAP = 0.3f;
-        LedgeTerrain_CheckAnims = 0;
-        StartupGameFlag0 = 1;
-        DefaultMotionLedgeTerrainEnabledPc = 1;
-        Grapples_Available = 1;
-        Grapple_RopeSwingsAvailable = 1;
-        SuperCarryEnablePc = 1;
-        CombatRollEnablePc = 1;
-        LEGOHINT_PUNCH = 0;
-        TechnoSysPc.interaction_time = -0.2f;
-        TechnoSysPc.idle_offsets[0] = v000;
-        TechnoSysPc.idle_offsets[1] = v000;
-        TechnoSysPc.idle_object_ids[1] = 0x2f;
-        TechnoSysPc.idle_object_ids[2] = 0x30;
-        TechnoSysPc.idle_object_ids[3] = 0x31;
-        TechnoSysPc.idle_offsets[2].x = 0.0f;
-        TechnoSysPc.idle_offsets[2].y = 0.0f;
-        TechnoSysPc.idle_offsets[2].z = -0.1295f;
-        TechnoSysPc.idle_object_ids[0] = 0x56;
-        TechnoSysPc.hand_object_ids[0] = -1;
-        TechnoSysPc.hand_object_ids[1] = -1;
-        TechnoDefaultObjectPc = 0x56;
-        GameAudio_SetActionMusicTimes(0.1f, 3.0f);
-    } else {
-        PUNCHGAP = 0.3f;
-        PUNCHCHARGAP = 0.3f;
-        StartupGameFlag0 = 0;
-        DefaultMotionLedgeTerrainEnabledPc = 0;
-        Grapples_Available = 0;
-        SuperCarryEnablePc = 0;
-        CombatRollEnablePc = 0;
-        LEGOHINT_PUNCH = 1;
-        TechnoSysPc.interaction_time = 0.2f;
-        TechnoSysPc.idle_offsets[0] = v000;
-        TechnoSysPc.idle_offsets[1] = v000;
-        TechnoSysPc.idle_object_ids[1] = 0x2c;
-        TechnoSysPc.idle_object_ids[2] = -1;
-        TechnoSysPc.idle_object_ids[3] = -1;
-        TechnoSysPc.idle_offsets[2] = v000;
-        TechnoSysPc.idle_object_ids[0] = 0x55;
-        TechnoSysPc.hand_object_ids[0] = 0x2d;
-        TechnoSysPc.hand_object_ids[1] = 0x2e;
-        TechnoDefaultObjectPc = 0x55;
-        GameAudio_SetActionMusicTimes(1.0f, 6.0f);
-    }
-}
-
 // Append to src/legoapi/characters.cpp. Retail 00419e90/284 and 00419fb0/808.
 extern "C" i32 CharacterLoadAreaModelsPc;
 extern "C" i16 CharacterFixupIdPc007f18c4;

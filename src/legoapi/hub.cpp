@@ -3941,15 +3941,6 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
     return index;
 }
 
-/* 42b4c0/47. Originalargument unused, retainABI/call. */
-extern "C" void __cdecl InitChallenge(i32 area) {
-    (void)area;
-    ChallengeMode = 1;
-    ResetTimer(&ChallengeTimer, 0);
-    Cheats_TurnOff(0);
-    AreaGlobals_PC.field_1c = 0;
-}
-
 typedef struct hub_freeplay_pad_reader_pc_s {
     u8 unknown_00[0x78];
     u32 digital_buttons_pressed;

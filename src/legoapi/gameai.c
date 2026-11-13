@@ -1,7 +1,4 @@
 #include "saga.h"
-#pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
-static f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
-#pragma data_seg()
 
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS_PC, flags) == 0x60);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -493,52 +490,6 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
             system->game_sys = AISysBufferAlloc(&cursor, &system->storage_end, 4);
         }
     }
-}
-
-f32 __cdecl AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *difficulty) {
-    f32 threshold;
-    f32 elapsed;
-    i32 increase;
-    if (difficulty != NULL && Cheat_IsOn(44) != 0 && BonusArea == 0 && GAMEDEMO == 0) {
-        threshold = AdaptiveDifficultyRecoveryThresholdPc;
-        if (difficulty->accumulator < 1.0f && (f64)difficulty->accumulator > 1.0 - (f64)threshold) {
-            increase = 1;
-        } else {
-            increase = 0;
-            if (!(difficulty->accumulator > 0.0f) || !((f64)difficulty->accumulator < (f64)threshold + 0.0))
-                return difficulty->accumulator;
-        }
-        elapsed = difficulty->time_elapsed + FRAMETIME;
-        difficulty->time_elapsed = elapsed;
-        if (difficulty->time_elapsed >= AdaptiveDifficultyRecoveryTimePc) {
-            difficulty->accumulator = 0.5f;
-            if (increase != 0)
-                ++difficulty->level;
-            else
-                --difficulty->level;
-            difficulty->time_elapsed = 0.0f;
-        }
-    }
-    return difficulty->accumulator;
-}
-
-f32 __cdecl AdaptiveDifficultyAdjustPc(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount) {
-    if (difficulty != NULL && Cheat_IsOn(44) && !BonusArea && !GAMEDEMO) {
-        f32 sum = amount + difficulty->accumulator;
-        difficulty->accumulator = sum;
-        if (sum >= 1.0f) {
-            if (difficulty->level < 4) {
-                ++difficulty->level;
-                difficulty->accumulator = 0.5f;
-                difficulty->time_elapsed = 0.0f;
-            }
-        } else if (sum <= 0.0f && difficulty->level > -4) {
-            --difficulty->level;
-            difficulty->accumulator = 0.5f;
-            difficulty->time_elapsed = 0.0f;
-        }
-    }
-    return difficulty->accumulator;
 }
 
 void __cdecl LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {

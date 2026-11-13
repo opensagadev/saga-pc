@@ -967,31 +967,6 @@ void __cdecl IconScenes_Dump(void) {
     }
 }
 
-void __cdecl MenuDrawEndChallenge(MENU *menu) {
-    (void)menu;
-    if (MenuStopDraw == 0) {
-        if (ChallengeMode == 2) {
-            if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
-                char text[64];
-                f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
-                if (remaining < 0.0f)
-                    remaining = 0.0f;
-                Text_MakeTime(remaining, 0, 1, 1, text);
-                Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
-            }
-        } else {
-            i32 red = 255;
-            i32 green = 63;
-            if (menu_flash != 0) {
-                red = 191;
-                green = 31;
-            }
-            SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
-        }
-        DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals_PC.field_20, 10);
-    }
-}
-
 void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
                             u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g,
                             u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b) {
