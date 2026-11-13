@@ -2033,6 +2033,12 @@ STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, draw_reflection) == 0x107c);
 void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 void __cdecl DrawSnakeBody(GAMEOBJECT *);
 
+typedef struct draw_objects_flags_pc_s {
+    u8 unknown_000[0xe24];
+    u32 flags_e24_bits_0_2 : 3;
+    u32 locators_updated : 1;
+} DRAW_OBJECTS_FLAGS_PC;
+
 void DrawGameObjectsDraw(i32 pass) {
     GAMEOBJECT *object;
     i32 index;
@@ -2052,7 +2058,7 @@ void DrawGameObjectsDraw(i32 pass) {
                                            (u8)object->field_107c != 0 ? &object->draw_tertiary_mtx : NULL,
                                            object->locator_matrices, object, object->layer_mask);
         object->model_draw_result = drawn;
-        object->flags_e24 ^= ((drawcharactermodel_locatorsupdated << 3) ^ object->flags_e24) & 8;
+        ((DRAW_OBJECTS_FLAGS_PC *)object)->locators_updated = drawcharactermodel_locatorsupdated;
         if (drawn != 0) {
             DrawParaphernaliaPc(object);
         } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) &&
