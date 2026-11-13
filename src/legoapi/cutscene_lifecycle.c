@@ -1035,7 +1035,10 @@ static __declspec(noinline) void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, 
             if (NuSpecialFind(gscene, &handle, rigid->name, 1) != 0) {
                 rigid->flags |= 4;
                 rigid->scene = handle.scene;
-                rigid->special = handle.display_special ? (void *)handle.display_special : (void *)handle.special;
+                if (handle.display_special != NULL)
+                    rigid->special = handle.display_special;
+                else
+                    rigid->special = handle.special;
             } else
                 CutSceneMissingObjectDiagnosticPc(rigid->name);
             if (rigid->uses_locator != 0 && rigid->locator.index < 255) {
@@ -1136,7 +1139,10 @@ static __declspec(noinline) void CutSceneRigidFixUpExtraPc(CUT_SCENE_LOAD_PC *sc
                 if (NuSpecialFind(gscene, &handle, rigid->name, 1) != 0) {
                     rigid->flags |= 4;
                     rigid->scene = handle.scene;
-                    rigid->special = handle.display_special ? (void *)handle.display_special : (void *)handle.special;
+                    if (handle.display_special != NULL)
+                        rigid->special = handle.display_special;
+                    else
+                        rigid->special = handle.special;
                 } else
                     CutSceneMissingObjectDiagnosticPc(rigid->name);
             }
