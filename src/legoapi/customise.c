@@ -988,7 +988,8 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         model = APICharacterLoaded(customiser->character_ids[side]);
         if (model == NULL)
             continue;
-        saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
+        saber_colour = LightSabre_ColourFromObj(
+            customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
         if (runtime->animation_state[side] > 0)
             --runtime->animation_state[side];
         packet = &runtime->animation_packets[side].packet;
