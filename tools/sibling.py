@@ -88,7 +88,7 @@ class MachO:
                 dysymtab = struct.unpack_from("<18I", data, offset + 8)
             offset += size
         symoff, nsyms, stroff, _ = symtab
-        self.functions, self.names = [], {}
+        self.functions, self.names, self.external = [], {}, set()
         nlist = []
         for i in range(nsyms):
             strx, ntype, nsect, _, value = struct.unpack_from("<IBBhI", data, symoff + i * 12)
@@ -98,6 +98,8 @@ class MachO:
             if ntype & 0xe0 or (ntype & 0x0e) != 0x0e:
                 continue  # stabs and undefined symbols
             self.names.setdefault(value, name)
+            if ntype & 0x01:
+                self.external.add(value)  # N_EXT: a global symbol, not a file static
             if nsect == 1:
                 self.functions.append(value)
         self.functions = sorted(set(self.functions))
