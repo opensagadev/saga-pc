@@ -61,7 +61,11 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
     f32 water;
     PART_ACTION_PC stop;
     NUVEC trail;
-    if ((part->active & 0x8000) != 0 || part->unknown_209 == 0x1c) {
+    if ((part->active & 0x8000) != 0) {
+        KillPart(part, 0);
+        return;
+    }
+    if (part->unknown_209 == 0x1c) {
         KillPart(part, 0);
         return;
     }
