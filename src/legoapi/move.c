@@ -290,6 +290,7 @@ void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
 }
 
 void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
+    GAMEPAD_PC *pad = object->pad;
     f32 speed;
     f32 distance;
     f32 hover;
@@ -305,8 +306,8 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     object->start_position = object->position;
     object->initial_position = object->collision_position;
     object->field_282 = object->field_281;
-    object->pad->previous_input_angle = object->pad->input_angle;
-    object->pad->previous_input_magnitude = object->pad->input_magnitude;
+    pad->previous_input_angle = pad->input_angle;
+    pad->previous_input_magnitude = pad->input_magnitude;
     object->previous_movement_angle = object->field_0x276;
     object->flags_ef0 &= ~0x4000;
 
@@ -356,7 +357,7 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
         } else {
             hover += object->floor_height;
             position.y = SeekValF(object->position.y, hover, 5.0f);
-            if (object->floor_height > position.y)
+            if (position.y < object->floor_height)
                 position.y = object->floor_height;
         }
         if (WORLD->current_level == PODSPRINTA_LDATA)
@@ -374,6 +375,7 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     object->flags_107a = 0;
 
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
+        roll = 0;
         if (object->character_context != 0x2a && object->character_context != 0x36 &&
             object->character_context != 0x3a) {
             diff = RotDiff(object->previous_movement_angle, object->field_0x276);
@@ -383,8 +385,6 @@ void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
                 roll = -0x10000;
             else if (roll > 0x10000)
                 roll = 0x10000;
-        } else {
-            roll = 0;
         }
         target_roll = roll / 4;
         if (target_roll < -0x2000)
