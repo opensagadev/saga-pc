@@ -1388,7 +1388,7 @@ void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
             iconalphaoverride = (f64)stage->field_0x18 + (f64)stage->field_0x18;
         if (stage->field_0x18 < 2.0f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
             i32 second = (packet->flags_word >> 5) & 1;
-            f32 winner_x = second != 0 ? 0.675f : -0.675f;
+            f32 winner_x = second == 0 ? -0.675f : 0.675f;
             i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
             SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second != 0 ? 8 : 2, 0, 255,
                         0, 0.35f, 1, NULL, 0, (u32)opacity);
