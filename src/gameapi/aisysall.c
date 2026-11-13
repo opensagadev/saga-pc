@@ -15605,7 +15605,6 @@ void __cdecl routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32
     EDAIPATHNODE_s *node;
     i32 index;
     i32 i;
-    u16 mask;
     (void)event;
     if (item == NULL)
         return;
@@ -15626,15 +15625,11 @@ void __cdecl routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32
             index = aieditor->current_path->current_route - aieditor->current_path->routes;
             aieditor->current_path->current_route->flags &= ~1;
             aieditor->current_path->current_route = NULL;
-            node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
-            if (node != NULL) {
-                mask = ~(u16)((u64)1 << index);
-                do {
-                    for (i = 0; i < 8; ++i)
-                        node->connections[i].route_mask &= mask;
-                    node->route_mask &= mask;
-                    node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link);
-                } while (node != NULL);
+            for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes); node != NULL;
+                 node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link)) {
+                for (i = 0; i < 8; ++i)
+                    node->connections[i].route_mask &= ~(u16)((u64)1 << index);
+                node->route_mask &= ~(u16)((u64)1 << index);
             }
             for (i = 0; i < 16; ++i) {
                 struct EDAIPATHROUTE_s *route;
