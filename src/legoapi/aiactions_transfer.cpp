@@ -3,29 +3,6 @@
 extern "C" i32 special_debug;
 extern "C" void __cdecl PCSpecialEmptyHandler_candidate(...);
 extern "C" {
-    AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
-                                                            u8 direction, void *target, u8 type) {
-        AI_HELPER_SLOT_PC *helper = NULL;
-        if (system != NULL) {
-            if (system->count < system->capacity && connection != NULL && target != NULL) {
-                AI_HELPER_SLOT_PC *existing = system->helpers;
-                for (i32 index = 0; index < system->count; ++index, ++existing) {
-                    if (existing->connection == connection && type == existing->type && target == existing->target) {
-                        if (existing->direction != direction)
-                            existing->direction = 0xff;
-                        return existing;
-                    }
-                }
-                helper = &system->helpers[system->count];
-                system->count++;
-                helper->connection = connection;
-                helper->direction = direction;
-                helper->target = target;
-                helper->type = type;
-            }
-        }
-        return helper;
-    }
     SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
             SOCK_PC *sock = sys->socks;

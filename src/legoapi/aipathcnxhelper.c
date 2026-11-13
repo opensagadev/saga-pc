@@ -1,6 +1,7 @@
 #include "saga.h"
 
-/* Retail unit 0x5ab0a0-0x5ab2d0: definitions in retail address order. */
+/* Retail unit 0x5ab0a0-0x5ab274: definitions in retail address order. */
+
 #include <float.h>
 
 typedef struct ai_control_slot_pc_s {
@@ -55,6 +56,31 @@ void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *syst
         if (AIPathCnxHelperSysInitFn != NULL)
             AIPathCnxHelperSysInitFn(world);
     }
+}
+
+AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
+                                                        u8 direction, void *target, u8 type) {
+    AI_HELPER_SLOT_PC *helper = NULL;
+    if (system != NULL) {
+        if (system->count < system->capacity && connection != NULL && target != NULL) {
+            AI_HELPER_SLOT_PC *existing = system->helpers;
+            i32 index;
+            for (index = 0; index < system->count; ++index, ++existing) {
+                if (existing->connection == connection && type == existing->type && target == existing->target) {
+                    if (existing->direction != direction)
+                        existing->direction = 0xff;
+                    return existing;
+                }
+            }
+            helper = &system->helpers[system->count];
+            system->count++;
+            helper->connection = connection;
+            helper->direction = direction;
+            helper->target = target;
+            helper->type = type;
+        }
+    }
+    return helper;
 }
 
 AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
