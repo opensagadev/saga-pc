@@ -8189,9 +8189,9 @@ static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, 
         }
         if (before != NULL) {
             for (index = 0; index < 64; ++index) {
-                if (set->locators[index] == before) {
-                    for (move = 62; move >= index; --move)
-                        set->locators[move + 1] = set->locators[move];
+                if (before == set->locators[index]) {
+                    for (move = 63; move > index; --move)
+                        set->locators[move] = set->locators[move - 1];
                     set->locators[index + 1] = locator;
                     return 1;
                 }
