@@ -7461,7 +7461,6 @@ i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC
     i32 on_obstacle_open;
     i32 off_obstacle_open;
     i32 index;
-    WORLDINFO *world;
     struct AIPATHCNXCONTROLLER_s *controller;
     (void)packet;
     (void)param_6;
@@ -7515,81 +7514,81 @@ i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC
         }
 
         match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757e10);
-        if (match != NULL) {
-            flag_target = &on_flags;
-            is_on = 1;
-            value = match + 8;
-        } else {
+        if (match == NULL)
             match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757e04);
-            if (match == NULL) {
-                if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dfc)) != NULL) {
-                    target_name = match + 4;
-                    target_type = 0;
-                    continue;
-                }
-                if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757df0)) != NULL) {
-                    target_name = match + 9;
-                    target_type = 1;
-                    continue;
-                }
-                if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757de4)) != NULL) {
-                    target_name = match + 8;
-                    target_type = 2;
-                    continue;
-                }
-                match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dd8);
-                if (match != NULL) {
-                    fake_animation_id = (i32)(AIParamToFloat(processor, match + 11));
-                    target_type = 5;
-                    continue;
-                }
-                match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dc8);
-                if (match != NULL) {
-                    gizmo_output = (i32)(AIParamToFloat(processor, match + 13));
-                    continue;
-                }
-                if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dc0)) != NULL) {
-                    target_name = match + 6;
-                    target_type = 3;
-                } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757db4)) != NULL) {
-                    target_name = match + NuStrLen(AIControllerLiteralPc00757db4);
-                    target_type = 6;
-                } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dac)) != NULL) {
-                    target_name = match + 7;
-                    target_type = 4;
-                } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757da4)) != NULL) {
-                    target_name = match + 6;
-                    target_type = 7;
-                } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d98)) != NULL) {
-                    target_name = match + 9;
-                    target_type = 8;
-                } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d90)) != NULL) {
-                    target_name = match + 6;
-                    target_type = 9;
-                }
+        if (match == NULL) {
+            if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dfc)) != NULL) {
+                target_name = match + 4;
+                target_type = 0;
                 continue;
             }
-            flag_target = &off_flags;
-            is_on = 0;
-            value = match + 9;
-        }
-        if (NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d80) != NULL) {
-            if (is_on)
-                on_obstacle_open = 1;
-            else
-                off_obstacle_open = 1;
-        } else if (NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d70) != NULL) {
-            if (is_on)
-                on_obstacle_open = 0;
-            else
-                off_obstacle_open = 0;
+            if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757df0)) != NULL) {
+                target_name = match + 9;
+                target_type = 1;
+                continue;
+            }
+            if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757de4)) != NULL) {
+                target_name = match + 8;
+                target_type = 2;
+                continue;
+            }
+            match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dd8);
+            if (match != NULL) {
+                fake_animation_id = (i32)(AIParamToFloat(processor, match + 11));
+                target_type = 5;
+                continue;
+            }
+            match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dc8);
+            if (match != NULL) {
+                gizmo_output = (i32)(AIParamToFloat(processor, match + 13));
+                continue;
+            }
+            if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dc0)) != NULL) {
+                target_name = match + 6;
+                target_type = 3;
+            } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757db4)) != NULL) {
+                target_name = match + NuStrLen(AIControllerLiteralPc00757db4);
+                target_type = 6;
+            } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757dac)) != NULL) {
+                target_name = match + 7;
+                target_type = 4;
+            } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757da4)) != NULL) {
+                target_name = match + 6;
+                target_type = 7;
+            } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d98)) != NULL) {
+                target_name = match + 9;
+                target_type = 8;
+            } else if ((match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d90)) != NULL) {
+                target_name = match + 6;
+                target_type = 9;
+            }
         } else {
-            *flag_target |= ParseAIPathCnxFlagPc(value);
+            if (NuStrIStr(params[index], (char *)AIControllerLiteralPc00757e10) != NULL) {
+                flag_target = &on_flags;
+                is_on = 1;
+                value = match + 8;
+            } else {
+                flag_target = &off_flags;
+                is_on = 0;
+                value = match + 9;
+            }
+            if (NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d80) != NULL) {
+                if (is_on)
+                    on_obstacle_open = 1;
+                else
+                    off_obstacle_open = 1;
+            } else if (NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d70) != NULL) {
+                if (is_on)
+                    on_obstacle_open = 0;
+                else
+                    off_obstacle_open = 0;
+            } else {
+                *flag_target |= ParseAIPathCnxFlagPc(value);
+            }
         }
     }
 
-    world = WORLD;
-    controller = AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD_PC *)world)->control_system, world->ai_sys,
+    controller = AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD_PC *)WORLD)->control_system, WORLD->ai_sys,
                                            path, from, to, target_type, target_name, fake_animation_id, gizmo_output);
     if (controller == NULL) {
         return 1;
@@ -7605,7 +7604,6 @@ i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC
     for (index = 0; index < param_count; ++index) {
         char range[64];
         char *separator;
-        char *end_text;
         i32 start_frame;
         i32 end_frame;
         char *match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757e40);
@@ -7618,18 +7616,16 @@ i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS_PC
             continue;
         }
         *separator = '\0';
-        end_text = separator + 2;
+        separator += 2;
         start_frame = NuStrICmp(range, AIControllerLiteralPc00757d60) == 0   ? -2
                       : NuStrICmp(range, AIControllerLiteralPc00757d54) == 0 ? -1
                                                                              : (i32)(AIParamToFloat(processor, range));
-        end_frame = NuStrICmp(end_text, AIControllerLiteralPc00757d60) == 0 ? -2
-                    : NuStrICmp(end_text, AIControllerLiteralPc00757d54) == 0
+        end_frame = NuStrICmp(separator, AIControllerLiteralPc00757d60) == 0 ? -2
+                    : NuStrICmp(separator, AIControllerLiteralPc00757d54) == 0
                         ? -1
-                        : (i32)(AIParamToFloat(processor, end_text));
-        if (end_frame != -1 && end_frame != -2 && end_frame < start_frame) {
-            continue;
-        }
-        AIPathCnxControllerSetOnRange(controller, start_frame, end_frame);
+                        : (i32)(AIParamToFloat(processor, separator));
+        if (end_frame >= start_frame || end_frame == -1 || end_frame == -2)
+            AIPathCnxControllerSetOnRange(controller, start_frame, end_frame);
     }
     return 1;
 }
