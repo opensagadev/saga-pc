@@ -752,8 +752,8 @@ extern "C" {
         CS_buffptr = buf;
         for (i32 i = 0; i < 6; ++i)
             cut->sfx[i].id = -1;
-        cut->end_flags &= 0xfc;
         cut->frames_per_second = 30.0f;
+        cut->end_flags &= 0xfc;
         cut->legacy_music_index = -1;
         cut->music_handle = -1;
         cut->burnout_threshold = 1.0f;
@@ -775,14 +775,12 @@ extern "C" {
         cut->reflection_range = 0xff;
         for (i32 i = 0; i < 4; ++i)
             cut->texture_animations[i].index = -1;
-        cut->fade_fog[0].value = 0.0f;
-        cut->fade_fog[0].far_distance = 0.0f;
-        cut->fade_fog[0].near_distance = 0.0f;
-        cut->fade_fog[0].frame = 0.0f;
-        cut->fade_fog[1].value = 0.0f;
-        cut->fade_fog[1].far_distance = 0.0f;
-        cut->fade_fog[1].near_distance = 0.0f;
-        cut->fade_fog[1].frame = 0.0f;
+        for (i32 i = 0; i < 2; ++i) {
+            cut->fade_fog[i].value = 0.0f;
+            cut->fade_fog[i].far_distance = 0.0f;
+            cut->fade_fog[i].near_distance = 0.0f;
+            cut->fade_fog[i].frame = 0.0f;
+        }
         cut->subtitle_data = NULL;
         cut->subtitle_count = 0;
         cut->unknown_18b = 0;
@@ -802,7 +800,7 @@ extern "C" {
         CUT_LOAD_RECORD_PC *current = CS_CutInfo;
         if (current->blob_shadow_fade_near > current->blob_shadow_fade_far)
             current->blob_shadow_fade_near = current->blob_shadow_fade_far;
-        if (current->subtitle_data != NULL && current->subtitle_count == 0)
+        if (current->subtitle_data != NULL && current->subtitle_count <= 0)
             current->subtitle_data = NULL;
         if (current->state_count > 0) {
             buf->addr = (buf->addr + 3) & ~3U;
