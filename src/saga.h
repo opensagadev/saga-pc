@@ -6216,7 +6216,9 @@ typedef struct gameobject_s {
         u32 flags_e24;
         u8 field_e24;
         struct {
-            u32 : 16;
+            u32 : 3;
+            u32 origin_hold : 1; /* tightrope: hold position taken from the model origin */
+            u32 : 12;
             u32 hit_side : 3; /* 3 = hit from behind, 4 = from the front */
             u32 : 13;
         };
@@ -12411,7 +12413,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern PC_BUFFER_RESOURCE_PC *NuDebrisVertexBuffers[4];
     extern void *NuDebrisSystemBuffers[8];
     extern i32 NuDebrisUseSystemMemory;
-    extern u32 NuDebrisCurrentBufferIndex;
     extern u32 NuDebrisMaxVertexCount;
     extern void *NuDebrisVertexData;
     extern DEBRIS_PART_HEADER_PC *NuDebrisLastHeader;
@@ -19418,6 +19419,14 @@ struct PC_INPUT_RUNTIME_PC {
     void AutoConfigurePadsPc(i32 count);
     void ServicePendingCapturePc();
     void AdvanceCaptureRecordsPc();
+    void EndFramePc() {
+        ServicePendingCapturePc();
+        AdvanceCaptureRecordsPc();
+        read_mask = 0;
+        keyboard_polled = 0;
+        mouse_polled = 0;
+        capture_available = 0;
+    }
     i32 ReadSamplePc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
     i32 SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample);
     i32 UpdateMousePc();
@@ -29019,7 +29028,6 @@ extern "C" {
     void __cdecl PCGraphicsFramebufferActionPc(i32);
     void __cdecl PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
     void __cdecl PCGraphicsSetSamplerTuplePc(u32, const u32 *);
-    void __cdecl PCGraphicsBindEffectTexturePc(u32, GRAPHICS_RENDER_TEXTURE_PC *);
     void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
     void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
     void __cdecl PCGraphicsDrawPostEffectIndexedPc(void);

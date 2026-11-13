@@ -511,10 +511,6 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     return 0;
 }
 
-struct TIGHTROPE_OBJECT_FLAGS_PC {
-    u32 unknown_bits : 3;
-    u32 origin_hold : 1;
-};
 extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
     object->lower_position = *position;
     object->upper_position = *position;
@@ -533,9 +529,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
         u32 origin_flag = (object->flags_e24 >> 3) & 1;
         object->flags_e24 &= ~8;
         GameObjectOrigin(object);
-        // MATCH-EXCEPTION: bit 3 of flags_e24 is a 1-bit field that GAMEOBJECT does not declare; a local
-        // bitfield view gives retail's insert.
-        ((TIGHTROPE_OBJECT_FLAGS_PC *)&object->flags_e24)->origin_hold = origin_flag;
+        object->origin_hold = origin_flag;
         return 1;
     }
     return 0;

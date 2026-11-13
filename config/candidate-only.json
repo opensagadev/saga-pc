@@ -590,6 +590,11 @@
    "unit": "src/legoapi/lighting_unit.cpp",
    "symbol": "_EnableShadowLight",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/input_runtime.cpp",
+   "symbol": "?EndFramePc@PC_INPUT_RUNTIME_PC@@QAEXXZ",
+   "kind": "function"
   }
  ]
 }

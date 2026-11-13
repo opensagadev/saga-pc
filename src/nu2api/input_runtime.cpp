@@ -1218,13 +1218,7 @@ void PC_INPUT_RUNTIME_PC::AdvanceCaptureRecordsPc() {
     completed_mask = 0;
 }
 extern "C" void __cdecl PcInputEndFramePc(void) {
-    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-    runtime->ServicePendingCapturePc();
-    runtime->AdvanceCaptureRecordsPc();
-    runtime->read_mask = 0;
-    runtime->keyboard_polled = 0;
-    runtime->mouse_polled = 0;
-    runtime->capture_available = 0;
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->EndFramePc();
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.

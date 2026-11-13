@@ -3773,6 +3773,8 @@ extern "C" {
         return result;
     }
 
+    static u32 NuDebrisCurrentBufferIndex;
+
     /* PC implementation of the NuInitDebrisRenderer family. */
     void __cdecl NuDebrisCreateVertexBuffersPc(void) {
         i32 index;
@@ -5083,18 +5085,6 @@ extern "C" {
         PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
         texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
         return texture;
-    }
-
-    void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
-        if (texture != NULL) {
-            const u32 *tuple = &texture->flags;
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
-                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])
-                PCGraphicsSetSamplerTuplePc(stage, tuple);
-            PCDeviceSetTexture(stage, texture->resource);
-        } else {
-            PCDeviceSetTexture(stage, NULL);
-        }
     }
 
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void) {

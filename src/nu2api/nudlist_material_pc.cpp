@@ -198,6 +198,18 @@ extern "C" {
     void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *);
     void __cdecl NuMtlSetRenderStatesPS(NUMTL *);
     GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32);
+
+    static void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        if (texture != NULL) {
+            const u32 *tuple = &texture->flags;
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
+                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])
+                PCGraphicsSetSamplerTuplePc(stage, tuple);
+            PCDeviceSetTexture(stage, texture->resource);
+        } else {
+            PCDeviceSetTexture(stage, NULL);
+        }
+    }
 }
 
 /* Genuine separate provider remains held until the full4472 dispatcher closes.

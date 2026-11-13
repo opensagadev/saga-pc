@@ -15224,9 +15224,6 @@ extern "C" {
 #pragma bss_seg(".bss$NuDebrisUseSystemMemory")
     i32 NuDebrisUseSystemMemory = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisCurrentBufferIndex")
-    u32 NuDebrisCurrentBufferIndex = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$NuDebrisMaxVertexCount")
     u32 NuDebrisMaxVertexCount = 0;
 #pragma bss_seg()

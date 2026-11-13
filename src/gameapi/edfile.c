@@ -1920,9 +1920,10 @@ static eduimenu_s *EduiMenuChainActivePc(eduimenu_s *menu) {
 
 static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu) {
     if (menu != NULL) {
-        if (menu->child == NULL)
+        eduimenu_s *child = menu->child;
+        if (child == NULL)
             return menu;
-        return EduiDeepestChildPc(menu->child);
+        return EduiDeepestChildPc(child);
     }
     return NULL;
 }

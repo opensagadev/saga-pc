@@ -394,6 +394,14 @@ f32 __cdecl NuVecDot(NUVEC *left, NUVEC *right) {
     return left->x * right->x + left->y * right->y + left->z * right->z;
 }
 
+/* Smallest power of two that is at least value (1 for value <= 1). */
+i32 __cdecl NuMiscNextPow2(i32 value) {
+    i32 shift;
+    for (shift = 0; (1 << shift) < value; shift++) {
+    }
+    return 1 << shift;
+}
+
 f32 __cdecl NuVecMag(NUVEC *v0) {
     return NuFsqrt(NuVecMagSqr(v0));
 }
