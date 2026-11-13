@@ -9371,7 +9371,9 @@ void __cdecl Move_JEDI(GAMEOBJECT *object) {
     if (object->id != (u16)id_GRIEVOUS && object->id != (u16)id_BODYGUARD)
         TakeOverCode(object, object->pad->buttons_pressed & GAMEPAD_TAG);
     Glide_MoveCode(object);
-    jump_animations = object->id == (u16)id_IMPERIALGUARD || object->id == (u16)id_BODYGUARD ? 0x10 : 0x1b;
+    jump_animations = 0x10;
+    if (object->id != (u16)id_IMPERIALGUARD && object->id != (u16)id_BODYGUARD)
+        jump_animations = 0x1b;
     if ((object->character_data->game_character->flags_090 & 0x400000) != 0)
         jump_animations |= 0x100;
     JumpCode(object, jump_pressed, jump_held, jump_animations, action_pressed, action_held, hit_effect);
