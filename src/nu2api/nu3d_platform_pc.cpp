@@ -5362,9 +5362,6 @@ extern "C" {
         PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
         u32 primitive_count;
         const void *vertices;
-        void *locked;
-        u32 point_size;
-        f32 point_size_float;
         if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
             return;
         primitive_count = packet->primitive_count;
@@ -5374,6 +5371,7 @@ extern "C" {
         switch (packet->kind) {
             case 6:
                 if (packet->dynamic_count != 0 && packet->dynamic_vertices != NULL) {
+                    void *locked;
                     PCDeviceLockVertexBuffer(0, 0, &locked, 0x2000, packet->dynamic_buffer);
                     PCByteCopy_candidate(locked, packet->dynamic_vertices,
                                          packet->vertex_stride * packet->vertex_count);
@@ -5411,7 +5409,9 @@ extern "C" {
                 if (packet->vertex_count >= 3u)
                     PCDeviceDrawPrimitiveUPPc(6, packet->vertex_count - 2u, vertices, 24);
                 break;
-            case 18:
+            case 18: {
+                u32 point_size;
+                f32 point_size_float;
                 point_size_float = 32.0f;
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
                 PCDeviceSetRenderState(0x9a, point_size);
@@ -5420,6 +5420,7 @@ extern "C" {
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
                 PCDeviceSetRenderState(0x9a, point_size);
                 break;
+            }
         }
     }
 
