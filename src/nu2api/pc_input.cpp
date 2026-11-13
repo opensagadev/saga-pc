@@ -126,64 +126,53 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
 }
 
 void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
-    {
-        PC_INPUT_DEVICE_PC *record = &devices[10];
-        NuStrCpy(record->name, PCKeyboardMouse1Name_candidate);
-        record->kind = 1;
-        record->product.Data1 = 1;
-        record->config_dirty = 1;
-        record->capabilities_valid = 1;
-        record->button_count = 255;
-        PC_INPUT_CONFIG_PC *config = FindConfig(3, 10, preferred_key);
-        if (!config)
-            config = FindConfig(3, 10, -1);
-        if (config)
-            InstallConfig(config, 10, config->key, 0, 0);
-    }
-    {
-        PC_INPUT_DEVICE_PC *record = &devices[11];
-        record->device = nu_keyboard_owner.device;
-        NuStrCpy(record->name, PCKeyboard1Name_candidate);
-        record->kind = 3;
-        record->product.Data1 = 3;
-        record->config_dirty = 1;
-        record->capabilities_valid = 1;
-        record->button_count = 255;
-        PC_INPUT_CONFIG_PC *config = FindConfig(3, 11, preferred_key);
-        if (!config)
-            config = FindConfig(3, 11, -1);
-        if (config)
-            InstallConfig(config, 11, config->key, 0, 0);
-    }
-    {
-        PC_INPUT_DEVICE_PC *record = &devices[12];
-        NuStrCpy(record->name, PCKeyboardMouse2Name_candidate);
-        record->kind = 2;
-        record->product.Data1 = 2;
-        record->config_dirty = 1;
-        record->capabilities_valid = 1;
-        record->button_count = 255;
-        PC_INPUT_CONFIG_PC *config = FindConfig(3, 12, preferred_key);
-        if (!config)
-            config = FindConfig(3, 12, -1);
-        if (config)
-            InstallConfig(config, 12, config->key, 0, 0);
-    }
-    {
-        PC_INPUT_DEVICE_PC *record = &devices[13];
-        record->device = nu_keyboard_owner.device;
-        NuStrCpy(record->name, PCKeyboard2Name_candidate);
-        record->kind = 4;
-        record->product.Data1 = 4;
-        record->config_dirty = 1;
-        record->capabilities_valid = 1;
-        record->button_count = 255;
-        PC_INPUT_CONFIG_PC *config = FindConfig(3, 13, preferred_key);
-        if (!config)
-            config = FindConfig(3, 13, -1);
-        if (config)
-            InstallConfig(config, 13, config->key, 0, 0);
-    }
+    PC_INPUT_CONFIG_PC *config;
+    NuStrCpy(devices[10].name, PCKeyboardMouse1Name_candidate);
+    devices[10].kind = 1;
+    devices[10].product.Data1 = 1;
+    devices[10].config_dirty = 1;
+    devices[10].capabilities_valid = 1;
+    devices[10].button_count = 255;
+    config = FindConfig(3, 10, preferred_key);
+    if (!config)
+        config = FindConfig(3, 10, -1);
+    if (config)
+        InstallConfig(config, 10, config->key, 0, 0);
+    devices[11].device = nu_keyboard_owner.device;
+    NuStrCpy(devices[11].name, PCKeyboard1Name_candidate);
+    devices[11].kind = 3;
+    devices[11].product.Data1 = 3;
+    devices[11].config_dirty = 1;
+    devices[11].capabilities_valid = 1;
+    devices[11].button_count = 255;
+    config = FindConfig(3, 11, preferred_key);
+    if (!config)
+        config = FindConfig(3, 11, -1);
+    if (config)
+        InstallConfig(config, 11, config->key, 0, 0);
+    NuStrCpy(devices[12].name, PCKeyboardMouse2Name_candidate);
+    devices[12].kind = 2;
+    devices[12].product.Data1 = 2;
+    devices[12].config_dirty = 1;
+    devices[12].capabilities_valid = 1;
+    devices[12].button_count = 255;
+    config = FindConfig(3, 12, preferred_key);
+    if (!config)
+        config = FindConfig(3, 12, -1);
+    if (config)
+        InstallConfig(config, 12, config->key, 0, 0);
+    devices[13].device = nu_keyboard_owner.device;
+    NuStrCpy(devices[13].name, PCKeyboard2Name_candidate);
+    devices[13].kind = 4;
+    devices[13].product.Data1 = 4;
+    devices[13].config_dirty = 1;
+    devices[13].capabilities_valid = 1;
+    devices[13].button_count = 255;
+    config = FindConfig(3, 13, preferred_key);
+    if (!config)
+        config = FindConfig(3, 13, -1);
+    if (config)
+        InstallConfig(config, 13, config->key, 0, 0);
 }
 
 struct PC_DI_RANGE_PC {
