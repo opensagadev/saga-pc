@@ -2216,8 +2216,8 @@ void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf
             dst_cond->link.prev = NULL;
             dst_cond->link.next = NULL;
 
-            AISCRIPT_COPY_NATIVE_STRING(src_cond->argument, dst_cond->argument, buf, buf_end);
-            AISCRIPT_COPY_NATIVE_STRING(src_cond->next_state_name, dst_cond->next_state_name, buf, buf_end);
+            dst_cond->argument = AIScriptCopyStringPc(src_cond->argument, buf, buf_end);
+            dst_cond->next_state_name = AIScriptCopyStringPc(src_cond->next_state_name, buf, buf_end);
 
             NuLinkedListAppend(dst, &dst_cond->link);
         }
@@ -2241,18 +2241,7 @@ void __cdecl AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, V
             dst_action->param_count = src_action->param_count;
 
             for (i = 0; i < dst_action->param_count; i++) {
-                char *text = src_action->params[i];
-                char *copy = NULL;
-                u32 length;
-
-                if (text != NULL) {
-                    length = NuStrLen(text);
-                    if (length != 0) {
-                        copy = (char *)AIScriptBufferAllocOrWarn(buf, buf_end, length + 1);
-                        NuStrCpy(copy, text);
-                    }
-                }
-                dst_action->params[i] = copy;
+                dst_action->params[i] = AIScriptCopyStringPc(src_action->params[i], buf, buf_end);
             }
 
             dst_action->definition = src_action->definition;
@@ -2279,11 +2268,9 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
         AIREFSCRIPT_PC *reference_copy;
         reference_copy = (AIREFSCRIPT_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
         if (reference_copy != NULL) {
-            char *reference_string;
-            AISCRIPT_COPY_NATIVE_STRING(source_reference->name, reference_string, buffer, end_buffer);
-            reference_copy->name = reference_string;
-            AISCRIPT_COPY_NATIVE_STRING(source_reference->return_state_name, reference_string, buffer, end_buffer);
-            reference_copy->return_state_name = reference_string;
+            reference_copy->name = AIScriptCopyStringPc(source_reference->name, buffer, end_buffer);
+            reference_copy->return_state_name =
+                AIScriptCopyStringPc(source_reference->return_state_name, buffer, end_buffer);
             reference_copy->check_global_scripts = source_reference->check_global_scripts;
             reference_copy->check_level_scripts = source_reference->check_level_scripts;
             AIScriptCopyConditions(&source_reference->conditions, &reference_copy->conditions, buffer, end_buffer);
