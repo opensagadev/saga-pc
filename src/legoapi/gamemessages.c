@@ -1,12 +1,28 @@
 #include <stdio.h>
 #include "saga.h"
 #include <string.h>
+
+/* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
+static __forceinline f32 GameMessagesFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+static f32 GameMessagesFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     GAME_MESSAGE_PC *slot;
     GAME_MESSAGE_PC fallback;
     i32 temporary = 0;
     f32 best = 1000000.0f;
-    f32 value, duration;
+    f32 value;
     i32 index = GameMessageIndex;
     i32 slot_index = -1;
     i32 count, text_index, length;
@@ -20,12 +36,7 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
             if (slot->expired != 0) {
                 value = 1.0f;
             } else {
-                value = slot->elapsed;
-                duration = slot->duration;
-                if (value == 0.0f || duration == 0.0f)
-                    value = 0.0f;
-                else
-                    value = value / duration;
+                value = GameMessagesFdivPc(slot->elapsed, slot->duration);
             }
             if (slot_index == -1 || value > best) {
                 best = value;
@@ -326,7 +337,7 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_PC *end = message + 128;
     for (; message != end; ++message) {
-        f32 difference, width;
+        f32 width;
         NUVEC target, transformed;
         if (message->active == 0 || message->has_start_position != 0)
             continue;
@@ -343,8 +354,7 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
                 target.y = message->position.y + camera_right->y * message->scale_initial;
                 target.z = message->position.z + camera_right->z * message->scale_initial;
                 NuCameraTransformScreenClip(&transformed, &target, 1, NULL);
-                difference = message->start_position.x - transformed.x;
-                *(u32 *)&width = *(u32 *)&difference & 0x7fffffff;
+                width = GameMessagesFabsPc(message->start_position.x - transformed.x);
                 message->scale_current = (f32)(width * 0.5249999761581421);
             }
         }
