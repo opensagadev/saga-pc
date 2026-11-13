@@ -1619,22 +1619,26 @@ static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
 
 /* A scaling matrix with the vector's components on the diagonal. */
 static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
+    f32 value;
     matrix.matrix.m00 = scale.x;
     matrix.matrix.m01 = 0.0f;
     matrix.matrix.m02 = 0.0f;
     matrix.matrix.m03 = 0.0f;
+    value = scale.y;
     matrix.matrix.m10 = 0.0f;
-    matrix.matrix.m11 = scale.y;
+    matrix.matrix.m11 = value;
     matrix.matrix.m12 = 0.0f;
     matrix.matrix.m13 = 0.0f;
+    value = scale.z;
     matrix.matrix.m20 = 0.0f;
     matrix.matrix.m21 = 0.0f;
-    matrix.matrix.m22 = scale.z;
+    matrix.matrix.m22 = value;
     matrix.matrix.m23 = 0.0f;
+    value = scale.w;
     matrix.matrix.m30 = 0.0f;
     matrix.matrix.m31 = 0.0f;
     matrix.matrix.m32 = 0.0f;
-    matrix.matrix.m33 = scale.w;
+    matrix.matrix.m33 = value;
 }
 
 EdTool::~EdTool() {
