@@ -1269,6 +1269,9 @@ class SplineObject : public CSListLink<SplineObject> {
         led_file = Placeable::CurrentLedFile;
     }
     virtual ~SplineObject();
+    char *GetName() {
+        return name;
+    }
 
     char name[32];
     SplineKnotList knots;
@@ -6441,7 +6444,7 @@ void EdRefKnot::GetMemberData(void *object, i32 requested_type, void *data, i32 
     CheckType(requested_type);
     switch (member_offset) {
         case 0x80000001:
-            NuStrNCpy(static_cast<char *>(data), knot->spline->name, data_size);
+            NuStrNCpy(static_cast<char *>(data), knot->spline->GetName(), data_size);
             break;
         case 0x80000002:
             *static_cast<f32 *>(data) = KnotHelperRadius * EdManipulator::Scale;
