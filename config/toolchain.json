@@ -39,6 +39,24 @@
             }
         }
     },
+    "runtime": {
+        "name": "Visual Studio 2005 SP1 security update KB971090 static runtime",
+        "version": "8.0.50727.4053",
+        "purpose": "The retail executable links this update's libcmt.lib and libcpmt.lib; linking and libmatch use them in place of the compiler package's SP1 copies.",
+        "url": "https://download.microsoft.com/download/D/2/3/D23F9F62-3DEE-4EC0-B3B9-D64E9F573D1F/VS80sp1-KB971090-X86-INTL.exe",
+        "sha256": "38494dccecaa3fec1fd7b1cd9b93df5f77bee7305971513364e8fcf9339d3618",
+        "layers": ["VS80sp1-KB971090-X86-INTL.msp", "PCW_CAB_VS_10837"],
+        "files": {
+            "libcmt.lib": {
+                "member": "FL_libcmt_lib_____X86.3643236F_FC70_11D3_A536_0090278A1BB8",
+                "sha256": "cbc9a9f5f706aa63deda800a01386dd0b46c121f60bb7ea28bd74e5d9399c581"
+            },
+            "libcpmt.lib": {
+                "member": "FL_libcpmt_lib_____X86.3643236F_FC70_11D3_A536_0090278A1BB8",
+                "sha256": "fe8597decade589a232c45aed8c52d939d9a26f64069cfccb3a77caf9abe4138"
+            }
+        }
+    },
     "secondary": {
         "rtm": {
             "name": "Microsoft Visual C++ 2005 RTM x86",

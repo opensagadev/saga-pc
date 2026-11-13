@@ -8,16 +8,17 @@ against the retail binary. Most game code is ported from the
 ## Setup
 
 Linux x86-64 with Python 3.11+, GNU Make, Git, Wine (32-bit), LLVM's
-`llvm-dlltool`, and clang-format/clang-tidy 18. On Ubuntu 24.04:
+`llvm-dlltool`, 7-Zip (`7zz` or `7z`, for the runtime update's libraries) and
+clang-format/clang-tidy 18. On Ubuntu 24.04:
 
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
-    ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
+    ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18 7zip
 python3 -m pip install capstone==5.0.9  # discovery tooling, tests and diff classes in matching.json
 python3 -m pip install libclang        # only for tools/permute.py
-make setup                             # pinned MSVC 2005 SP1 (+ RTM for libvorbis), objdiff-cli, DirectX SDK libs
+make setup                             # pinned MSVC 2005 SP1 (+ RTM for libvorbis), runtime update, objdiff-cli, DirectX SDK libs
 make check
 make -j"$(nproc)" build check-objects
 ```
@@ -33,6 +34,14 @@ secondary compiler listed under `"secondary"` in `config/toolchain.json` (curren
 `rtm`, see [Compiler and layout](#compiler-and-layout)) is fetched by commit into
 `build/tools/msvc8-<name>/` with only its compiler binaries and headers, and verified
 the same way.
+
+The retail runtime libraries come from a later security update than the compiler
+package (see [Runtime library](#runtime-library)). `make setup` downloads the pinned
+update package from Microsoft (about 250 MB), checks its SHA-256, and uses 7-Zip to
+read three nested archive layers as data and extract only `libcmt.lib` and
+`libcpmt.lib`, which must match their pinned hashes, into `build/tools/msvc8-runtime/lib/`.
+Nothing from the package is executed. An already downloaded package can be passed
+with `--runtime-package`; `--compiler-only` skips it.
 
 ## Build kinds and logging
 
@@ -395,8 +404,13 @@ not establish native allocation, waive aliases/padding reuse or change scores.
 
 ## Runtime library
 
-The original links the VC8 SP1 runtime statically (`/MT`), and the pinned toolchain
-ships the same SP1 `libcmt.lib`/`libcpmt.lib`. `python3 tools/libmatch.py --write`
+The original links the VC8 runtime statically (`/MT`) from the Visual Studio 2005 SP1
+security update KB971090 (CRT 8.0.50727.4053), not the SP1 `libcmt.lib`/`libcpmt.lib`
+the compiler package ships: the update changed, among others, the size of `ioinfo`, so
+the low-level I/O functions only match its copies. `config/toolchain.json` pins the
+update under `"runtime"`; linking (`tools/cc.py` searches its directory first) and all
+archive identification use its libraries. Its archives keep the SP1 member order, so
+`libcmt#NNNNN:` member ids are unchanged. `python3 tools/libmatch.py --write`
 finds archive functions that occur once in unmapped retail code, derives their
 relocation targets from the retail bytes, and keeps only functions that then
 compare byte-exact. A function with several masked occurrences is placed at the
@@ -545,7 +559,7 @@ each mapped function with the current object, without touching `build/obj`.
 
 ## Compiler and layout
 
-The pinned compiler is VC8 SP1 14.00.50727.762 (the retail CRT and code generation both match SP1, not RTM) with `/O2 /Gy /GS /MT`.
+The pinned compiler is VC8 SP1 14.00.50727.762 (the retail code generation matches SP1, not RTM; the CRT is the KB971090 update of SP1) with `/O2 /Gy /GS /MT`.
 The one exception is the prebuilt libvorbis the game links (every `lib/ogg-vorbis/vorbis/*.c`
 unit and `vorbis_smallft.c`): it was compiled by VC8 RTM 14.00.50727.42, so those objects use
 the secondary `rtm` compiler from `config/toolchain.json` (`tools/cc.py --toolchain rtm`, with
