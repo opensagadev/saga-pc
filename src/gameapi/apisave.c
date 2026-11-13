@@ -427,7 +427,8 @@ void __cdecl MenuUpdateFormatting(MENU *menu) {
             memcard_formatme = 0;
             memcard_formatfailed = 1;
         }
-    } else if (memcard_formatresult_delay <= 0.0f) {
+    }
+    if (memcard_formatresult_delay <= 0.0f) {
         BackupMenu();
     }
 }
@@ -459,7 +460,8 @@ void __cdecl MenuUpdateDeleting(MENU *menu) {
             memcard_deleteneeded = 0;
             memcard_deletefailed = 1;
         }
-    } else if (memcard_deleteresult_delay <= 0.0f) {
+    }
+    if (memcard_deleteresult_delay <= 0.0f) {
         BackupMenu();
     }
 }
@@ -492,7 +494,8 @@ void __cdecl MenuUpdateSaving(MENU *menu) {
             memcard_saveneeded = 0;
             memcard_savefailed = 1;
         }
-    } else if (memcard_saveresult_delay <= 0.0f) {
+    }
+    if (memcard_saveresult_delay <= 0.0f) {
         if (memcard_savefailed != 0) {
             BackupMenu();
         } else if (memcard_autosave != 0 && saveload_autosave != -1) {
@@ -567,7 +570,8 @@ void __cdecl MenuUpdateLoading(MENU *menu) {
             memcard_loadneeded = 0;
             memcard_loadfailed = 1;
         }
-    } else if (memcard_loadresult_delay <= 0.0f) {
+    }
+    if (memcard_loadresult_delay <= 0.0f) {
         if (memcard_loadfailed == 0 && memcard_loadcorrupt == 0) {
             if (memcard_autosave != 0 && saveload_autosave != -1) {
                 BackupMenuNoFn();
