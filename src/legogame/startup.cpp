@@ -74,6 +74,74 @@ extern "C" {
         }
     }
 
+    typedef struct nuprimvertex_pc_s {
+        f32 x;
+        f32 y;
+        f32 z;
+        u32 colour;
+        f32 u;
+        f32 v;
+    } NUPRIMVERTEX_PC;
+    STATIC_ASSERT(sizeof(NUPRIMVERTEX_PC) == 0x18);
+    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, colour) == 0x0c);
+    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, u) == 0x10);
+    STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, v) == 0x14);
+
+    static void __cdecl NuPrim2DSetColor(i32 colour) {
+        u32 converted;
+        if (NuPrimNeedsOverbrightening != 0) {
+            converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
+        } else {
+            converted =
+                ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
+        }
+        ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    }
+
+    static void __cdecl NuPrim2DSetUV(f32 u, f32 v) {
+        NUPRIMVERTEX_PC *vertex = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        vertex->u = u;
+        vertex->v = v;
+    }
+
+    typedef struct LEGAL_MATERIAL_PC {
+        u8 reserved00[0x40];
+        u32 attributes;
+        u8 reserved44[0x10];
+        NUVEC diffuse;
+        u8 reserved60[0x10];
+        f32 opacity;
+        i16 texture_id;
+        u8 reserved76[0x3e];
+        u32 shader_flags;
+    } LEGAL_MATERIAL_PC;
+    STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, attributes) == 0x40);
+    STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, diffuse) == 0x54);
+    STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, opacity) == 0x70);
+    STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, texture_id) == 0x74);
+    STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, shader_flags) == 0xb4);
+
+    static i32 __cdecl LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
+        NUMTL *material;
+        LEGAL_MATERIAL_PC *view;
+        if (*output != NULL)
+            return 1;
+        material = NuMtlCreate(1);
+        if (material == NULL)
+            return 0;
+        view = (LEGAL_MATERIAL_PC *)material;
+        view->diffuse.x = 1.0f;
+        view->diffuse.y = 1.0f;
+        view->diffuse.z = 1.0f;
+        view->opacity = 1.0f;
+        view->shader_flags = 0x1000;
+        view->attributes = (view->attributes & 0xffffefe2u) | 0xe022;
+        view->texture_id = (i16)texture_id;
+        NuMtlUpdate(material);
+        *output = material;
+        return 1;
+    }
+
     void __cdecl LoadPerm(void) {
         WORLDINFO *saved_world;
         f32 language_timer;

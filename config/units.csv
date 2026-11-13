@@ -62,7 +62,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x4c0100,0x4c11ba,src/legoapi/shard.c,legoapi,marker,high,ret 28,26,3654,3654,1387,213,16,legoapi/shards_pc.c:2445 legoapi/shard.c:1086 legoapi/shadow.c:123
 0x4c11c0,0x4c7879,src/legoapi/shop.c,legoapi,android,low,,32,25792,25792,2875,2216,0,legoapi/shard.c:25792
 0x4c7880,0x4c8bad,src/legoapi/signal.c,legoapi,marker,high,ret 28,25,4660,4660,864,388,1,legoapi/signal_reset_pc.c:3911 legoapi/move.c:749
-0x4c8bd0,0x4c9fa7,src/legoapi/speederchase.cpp,legoapi,file,medium,,20,4669,4669,1236,349,109,legoapi/speederchase.c:1977 legoapi/speederchase_pc.c:1231 legoapi/perm.c:575 legogame/startup.cpp:437 legoapi/shard.c:266 nu2api/nuprim.c:130 legoapi/control_setup.cpp:53
+0x4c8bd0,0x4c9fa7,src/legoapi/speederchase.cpp,legoapi,file,medium,,20,4669,4669,1236,349,109,legoapi/speederchase.c:1977 legoapi/speederchase_pc.c:1231 legoapi/perm.c:478 legogame/startup.cpp:664 legoapi/shard.c:266 legoapi/control_setup.cpp:53
 0x4c9fb0,0x4cad84,src/legogame/startup.c,legogame,android,low,,2,3536,3536,0,447,0,legogame/startup.cpp:3536
 0x4cadb0,0x4cc8bc,src/legoapi/starwars_gameai.c,legoapi,file,medium,,16,6822,6822,1967,844,78,legoapi/starwars_prepare_pc.c:6054 legoapi/aiactions_transfer.cpp:485 legoapi/aicapabilities_pc.c:283
 0x4cc8e0,0x4cca34,src/legoapi/suit.c,legoapi,file,medium,,5,279,279,279,0,0,legoapi/suit.c:279
@@ -109,7 +109,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x548fb0,0x549041,src/legoapi/hub.c,legoapi,file,medium,,2,143,143,143,0,0,legoapi/timing.c:143
 0x549050,0x5494c7,src/legoapi/timing.c,legoapi,android,low,,3,1136,1136,0,154,0,legoapi/timing.c:1136
 0x5494d0,0x54a54c,src/legoapi/camera.c,legoapi,marker,high,fabs,18,3888,3888,2249,199,72,legoapi/camera.c:3558 legoapi/simpletons.c:286 nu2api/nuvideo.c:44
-0x54a550,0x54b50c,src/legoapi/gamepads.c,legoapi,marker,high,ret fabs 28,22,3637,3637,215,557,148,legoapi/gamepads.c:1761 legoapi/input.cpp:786 legoapi/hits.c:384 legoapi/menu_pause.cpp:249 nu2api/nuvideo.c:236 legoapi/legoapi_misc.c:221
+0x54a550,0x54b50c,src/legoapi/gamepads.c,legoapi,marker,high,ret fabs 28,22,3637,3637,215,557,148,legoapi/gamepads.c:1997 legoapi/input.cpp:786 legoapi/hits.c:384 legoapi/menu_pause.cpp:249 legoapi/legoapi_misc.c:221
 0x54b510,0x54cd2d,src/legoapi/text.c,legoapi,marker,high,ret 28,21,5990,5990,2100,262,0,legoapi/text.c:5990
 0x54cd30,0x54f957,src/legoapi/grapples.cpp,legoapi,marker,high,ret fabs 28,39,10952,10952,1329,1548,0,legoapi/grapples.cpp:10952
 0x54f960,0x5536fe,src/legoapi/utilities.c,legoapi,marker,high,ret ret fabs 54 28 95,59,13763,13763,6926,941,0,legoapi/utilities.c:13762 legoapi/texanim_scripts.c:1
@@ -308,7 +308,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x6de9a0,0x6dea61,src/nu2api/screengrab_android.c,nu2api,file,medium,,2,2,2,2,0,0,nu2api/nudebug.c:2
 0x6dec10,0x6dedd1,src/legoapi/nuapi_android.c,legoapi,file,medium,,2,241,241,0,12,1,legoapi/menu_titles.cpp:177 nu2api/nupad_pc.c:64
 0x6dee30,0x6df004,src/nu2api/numc.cpp,nu2api,file,medium,,10,141,141,141,0,0,nu2api/d3d_api_lifetime.cpp:116 nu2api/nufile_mc.c:25
-0x6df010,0x6dfea0,src/nu2api/d3d_api_lifetime.cpp,nu2api,marker,high,ret ret 28,22,1132,1132,976,45,45,nu2api/d3d_api_lifetime.cpp:580 nu2api/nuvideo.c:220 nu2api/hardware_dispatch.cpp:127 nu2api/pc_device.cpp:108 nu2api/nurndr_swap.cpp:36 nu2api/nuthread.c:35 nu2api/nuframe.c:14 gameapi/shop_persistence.cpp:12
+0x6df010,0x6dfea0,src/nu2api/d3d_api_lifetime.cpp,nu2api,marker,high,ret ret 28,22,1132,1132,976,45,45,nu2api/d3d_api_lifetime.cpp:616 nu2api/nuvideo.c:220 nu2api/hardware_dispatch.cpp:127 nu2api/pc_device.cpp:108 nu2api/nuthread.c:35 nu2api/nuframe.c:14 gameapi/shop_persistence.cpp:12
 0x6dff30,0x6e1703,src/nu2api/network.cpp,nu2api,marker,high,ret ret 28,5,5390,5390,207,1267,0,nu2api/nudebug_pc.cpp:5390
 0x6e1750,0x6e17fc,src/nu2api/NuRenderDevice_gles2.cpp,nu2api,android,low,,1,172,172,172,0,0,nu2api/nudebug_pc.cpp:172
 0x6e1820,0x6e4a53,src/nu2api/network.cpp,nu2api,marker,high,ret 28,61,10681,10681,3444,836,0,nu2api/pc_device.cpp:10445 legoapi/menu_video.cpp:236

@@ -13646,12 +13646,6 @@ extern "C" {
 #pragma bss_seg(".bss$NuFadeObjCurGrp")
     PC_NUFADEGROUP *NuFadeObjCurGrp = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeMaxGroupsPC")
-    i32 NuFadeMaxGroupsPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeMaxDataPC")
-    i32 NuFadeMaxDataPC = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$NuFadeData")
     i16 *NuFadeData = 0;
 #pragma bss_seg()

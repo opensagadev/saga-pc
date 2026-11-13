@@ -43,6 +43,17 @@ i32 NuMusic::GetAlbumHandle(const char *name) {
     return 0;
 }
 
+i32 NuMusic::SetAlbum(i32 handle) {
+    if (this != NULL && the_music_player != NULL && handle >= 0x12345678) {
+        i32 index = handle - 0x12345678;
+        if (index < album_count) {
+            album = &albums[index];
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void NuMusic::SetClassVolume(u32 class_mask, f32 volume) {
     if (this == NULL || the_music_player == NULL) {
         return;
@@ -96,6 +107,21 @@ i32 NuMusic::ClassToIX(u32 class_mask) {
         }
     }
     return -1;
+}
+
+const char *NuMusic::ClassToName(u32 class_mask) {
+    return "UNKNOWN";
+}
+
+void NuMusic::Voice::SetStatusFn(i32 new_status, i32 tag) {
+    if (new_status != status) {
+        status = new_status;
+        play_time = 0.0f;
+    }
+}
+
+void NuMusic::Track::SetEntryTime(f32 time) {
+    start_offset = time;
 }
 
 NuMusic::Track *NuMusic::Album::GetTrack(u32 class_mask) {
@@ -1023,6 +1049,18 @@ void NuMusic::xGlobalAttenuation(NUFPAR_PC *parser) {
     global_attenuation = NuFParGetFloatRDP(parser);
     if (global_attenuation < 0.0f)
         global_attenuation = NuMusicDecibelsToGain(global_attenuation);
+}
+
+i32 NuMusic::SetAlbum(const char *name) {
+    i32 handle;
+    if (this == NULL)
+        return 0;
+    if (the_music_player == NULL)
+        return 0;
+    handle = GetAlbumHandle(name);
+    if (handle != 0)
+        SetAlbum(handle);
+    return handle;
 }
 
 void NuMusic::xsAlbum(NUFPAR_PC *p, void *ctx) {

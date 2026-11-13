@@ -128,6 +128,13 @@ extern "C" i32 __cdecl PCFrameBeginScenePc(i32 begin) {
     return 0;
 }
 
+extern "C" i32 __cdecl PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
+    PCFramePresentationStatePc = 0;
+    PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
+    PCPresentationPlatformLeafPc();
+    return 0;
+}
+
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX {
     FLOAT m11, m12, m13, m14;

@@ -7757,13 +7757,27 @@ typedef struct NuTime_s {
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
 
-typedef struct nuvpcurrent_s {
-    i32 x;
-    i32 y;
-    i32 width;
-    i32 height;
+typedef struct PC_VIEWPORT_PC {
+    u32 x;
+    u32 y;
+    u32 width;
+    u32 height;
     f32 min_z;
     f32 max_z;
+} PC_VIEWPORT_PC;
+
+typedef struct nuvpcurrent_s {
+    union {
+        PC_VIEWPORT_PC viewport;
+        struct {
+            i32 x;
+            i32 y;
+            i32 width;
+            i32 height;
+            f32 min_z;
+            f32 max_z;
+        };
+    };
     f32 center_x;
     f32 center_y;
     f32 clip_min_x;
@@ -8550,15 +8564,6 @@ STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
 STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
 STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
-
-typedef struct PC_VIEWPORT_PC {
-    u32 x;
-    u32 y;
-    u32 width;
-    u32 height;
-    f32 min_z;
-    f32 max_z;
-} PC_VIEWPORT_PC;
 
 #include <math.h>
 
@@ -11684,8 +11689,6 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const f32 NuPrimMinusTwo;
     void __cdecl NuPrimSetCoordinateSystem(i32 scale_mode);
     void __cdecl NuPrim2DEnd(void);
-    void __cdecl NuPrim2DSetColor(i32 colour);
-    void __cdecl NuPrim2DSetUV(f32 u, f32 v);
     void __cdecl NuPrim3DEnd(void);
     void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material);
     void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *matrix);
@@ -13010,7 +13013,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern const char PermLegalDirectoryPc[];
     extern const char PermLegalPcPrefixPc[];
     void __cdecl LoadPermLoadLegalTexture(void);
-    i32 __cdecl LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id);
     extern i32 debinf_count;
     extern DEBRIS_INFO_PC **debtab;
     extern i32 edpp_page_used[8];
@@ -14322,8 +14324,6 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern PC_NUFADEGROUP *NuFadeObjGroup;
     extern PC_NUFADEGROUP *NuFadeObjCurGrp;
     extern i32 NuFadeObjEnabledPc;
-    extern i32 NuFadeMaxGroupsPC;
-    extern i32 NuFadeMaxDataPC;
     extern i16 *NuFadeData;
     extern i32 NuFadeObjDataIndex;
     extern i32 NuFadeObjWave;
@@ -17808,6 +17808,7 @@ class NuMusic {
         f32 attenuation;
         u32 flags;
         void ManageEntryTime(void);
+        void SetEntryTime(f32 time);
     };
     class Voice {
       public:
@@ -17828,6 +17829,7 @@ class NuMusic {
             };
             u32 flags_word;
         };
+        void SetStatusFn(i32 new_status, i32 tag);
         i32 Load(Track *track, i32 subtrack);
         i32 Cue(void);
         i32 Play(void);
@@ -17926,7 +17928,10 @@ class NuMusic {
     void SetFader(f32 target, f32 fade_seconds);
     void SetMasterVolume(f32 volume);
     i32 GetAlbumHandle(const char *name);
+    i32 SetAlbum(i32 handle);
+    i32 SetAlbum(const char *name);
     static i32 ClassToIX(u32 class_mask);
+    const char *ClassToName(u32 class_mask);
     void SetClassVolume(u32 class_mask, f32 volume);
     void Debug(i32 unused, i32 y);
     void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
@@ -26291,7 +26296,8 @@ struct eduimenu_s {
             u32 unknown_flags : 29;
         };
         struct {
-            u32 : 2;
+            u32 : 1;
+            i32 horizontal : 1;
             u32 pinned : 1;
             u32 : 29;
         };

@@ -9839,11 +9839,14 @@ address,symbol,size,ctype
 0x00693ce0,?FindVoiceByClass@NuMusic@@QAEPAVVoice@1@I@Z,75,"NuMusic::Voice *__thiscall (NuMusic *, u32)"
 0x00693d30,?FindVoiceByClassAndStatus@NuMusic@@QAEPAVVoice@1@II@Z,97,"NuMusic::Voice *__thiscall (NuMusic *, u32, u32)"
 0x00693da0,?FindIdleVoice@NuMusic@@QAEPAVVoice@1@XZ,66,NuMusic::Voice *__thiscall (NuMusic *)
+0x693df0,?SetStatusFn@Voice@NuMusic@@QAEXHH@Z,20,"void __thiscall (NuMusic::Voice *, i32, i32)"
 0x00693e10,?ManageEntryTime@Track@NuMusic@@QAEXXZ,38,void __thiscall (NuMusic::Track *)
+0x693e40,?SetEntryTime@Track@NuMusic@@QAEXM@Z,10,"void __thiscall (NuMusic::Track *, f32)"
 0x00693e50,?ClassToIX@NuMusic@@SAHI@Z,33,i32 __cdecl (u32)
 0x00693e80,?GetTrack@Album@NuMusic@@QAEPAVTrack@2@I@Z,54,"NuMusic::Track *__thiscall (NuMusic::Album *, u32)"
 0x00693ec0,?GetTracks@Album@NuMusic@@QAEHIPAPAVTrack@2@@Z,138,"i32 __thiscall (NuMusic::Album *, u32, NuMusic::Track **)"
 0x00693f50,?Initialise@Album@NuMusic@@QAEXXZ,98,void __thiscall (NuMusic::Album *)
+0x693fc0,?ClassToName@NuMusic@@QAEPBDI@Z,8,"const char *__thiscall (NuMusic *, u32)"
 0x00693fd0,?StopAll@NuMusic@@QAEHH@Z,90,"i32 __thiscall (NuMusic *, i32)"
 0x694030,?StopTrack@NuMusic@@QAEHIH@Z,194,"i32 __thiscall (NuMusic *, u32, i32)"
 0x00694100,?PauseTrack@NuMusic@@QAEHI@Z,157,"i32 __thiscall (NuMusic *, u32)"
@@ -9867,6 +9870,7 @@ address,symbol,size,ctype
 0x694840,?BuildSoundTable@NuMusic@@QAEXPATvariptr_u@@T2@@Z,239,"void  __thiscall NuMusic::BuildSoundTable(VARIPTR *,VARIPTR)"
 0x694930,?InitData@NuMusic@@QAEXPBDPATvariptr_u@@T2@@Z,577,"void  __thiscall NuMusic::InitData(const char *,VARIPTR *,VARIPTR)"
 0x00694b80,?GetAlbumHandle@NuMusic@@QAEHPBD@Z,90,"i32 __thiscall (NuMusic *, const char *)"
+0x694be0,?SetAlbum@NuMusic@@QAEHH@Z,61,"i32 __thiscall (NuMusic *, i32)"
 0x00694c20,?Initialise@NuMusic@@QAEHPBDPADPATVARIPTR@@T2@@Z,154,"i32 __thiscall (NuMusic *, const char *, char *, VARIPTR *, VARIPTR)"
 0x694c20,?Initialise@NuMusic@@QAEHPBDPADPATvariptr_u@@T2@@Z,154,"i32  __thiscall NuMusic::Initialise(const char *,char *,VARIPTR *,VARIPTR)"
 0x00694cc0,?SetMasterVolume@NuMusic@@QAEXM@Z,139,"void __thiscall (NuMusic *, f32)"
@@ -9909,6 +9913,7 @@ address,symbol,size,ctype
 0x696810,?xCutscene@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,15,void  __thiscall NuMusic::xCutscene(NUFPAR_PC *)
 0x696820,?xNoMusicC@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,15,void  __thiscall NuMusic::xNoMusicC(NUFPAR_PC *)
 0x696830,?xGlobalAttenuation@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,138,void  __thiscall NuMusic::xGlobalAttenuation(NUFPAR_PC *)
+0x6968c0,?SetAlbum@NuMusic@@QAEHPBD@Z,54,"i32 __thiscall (NuMusic *, const char *)"
 0x696900,?PlayTrack@NuMusic@@QAEHII@Z,5,"i32 __thiscall (NuMusic *, u32, u32)"
 0x696910,?xsIdent@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsIdent(NUFPAR_PC *,void *)"
 0x696920,?xsNoMusic@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,15,"static void  __cdecl NuMusic::xsNoMusic(NUFPAR_PC *,void *)"
@@ -10408,11 +10413,11 @@ address,symbol,size,ctype
 0x6b7dc0,?VuVecLength@@YAMABUVuVec@@@Z,46,
 0x6b7df0,?VuMtxCopy@@YAXAAUVuMtx@@ABU1@@Z,95,
 0x6b7e60,?VuMtxRotateVec@@YAXABUVuMtx@@ABUVuVec@@AAU2@@Z,91,
+0x6b7ed0,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,81,
 0x6b7f50,?VuMtxMul@@YAXABUVuMtx@@0AAU1@@Z,444,
 0x6b8110,?VuMtxRotateX@@YAXAAUVuMtx@@H@Z,217,
 0x6b81f0,?VuMtxRotateY@@YAXAAUVuMtx@@H@Z,219,
 0x6b82d0,?VuMtxRotateZ@@YAXAAUVuMtx@@H@Z,215,
-0x6b8470,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,91,
 0x6b8510,_EdDrawSetVertexColour,108,
 0x6b8580,_EdDrawAddXYZ,51,
 0x6b8610,?Set@MemoryBuffer@@QAEXPATvariptr_u@@0@Z,30,
@@ -11049,7 +11054,7 @@ address,symbol,size,ctype
 0x6cb920,?cbEdLevelEditorList@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,21,
 0x6cb940,?Process@EdManipulator@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,692,
 0x6cbc00,?Render@EdManipulator@@UAEXAAUClassObjectList@@@Z,45,
-0x6cbc30,?Process@EdManMove@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,886,
+0x6cbc30,?Process@EdManMove@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,916,
 0x6cbfd0,?Render@EdManMove@@UAEXAAUClassObjectList@@@Z,66,
 0x6cc020,?RotateItem@EdManRotate@@QAEHAAUEdInputContext@@AAUClassObjectList@@HH@Z,472,
 0x6cc200,?Process@EdManRotate@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,278,

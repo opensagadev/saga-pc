@@ -9370,7 +9370,8 @@ i32 LevelEditor::LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *
     i32 result;
     loading = 1;
     MemoryBuffer source;
-    MemoryBuffer scratch(scratch_begin, scratch_end);
+    MemoryBuffer scratch;
+    scratch.Set(scratch_begin, scratch_end);
     result = 0;
     if (!multi_load_active)
         theClassEditor.PreLoadInitialisation(&source, &scratch);

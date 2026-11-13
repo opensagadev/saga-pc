@@ -969,81 +969,82 @@ i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
 i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
     static f32 up_rept = 0;
     static f32 down_rept = 0;
-    u32 buttons;
     u32 up_button;
     u32 down_button;
     i32 up;
     i32 down;
     i32 to_first;
     i32 to_last;
-    u32 page_up;
-    u32 page_down;
+    i32 page_up;
     cbInteractMenuKeySelect(menu);
-    if (item_result || !pad)
+    if (!pad || item_result)
         return 0;
+    to_last = 0;
+    to_first = 0;
+    down = 0;
+    up = 0;
+    page_up = 0;
     if (menu && menu->selected && menu->selected->input && !menu->selected->disabled && pad->digital_buttons) {
         if (menu->selected->input(menu, menu->selected, pad->digital_buttons, pad->digital_buttons_pressed))
             return 0;
     }
-    buttons = pad->digital_buttons;
-    if (menu->flags & 2) {
-        up_button = 0x8000;
+    if (menu->horizontal) {
         down_button = 0x2000;
+        up_button = 0x8000;
     } else {
-        up_button = 0x1000;
         down_button = 0x4000;
+        up_button = 0x1000;
     }
-    up = 0;
     if (pad->digital_buttons_pressed & up_button) {
         up_rept = 1.0f / 3.0f;
         up = 1;
     }
-    if ((buttons & up_button) && up_rept > 0.0f) {
+    if ((pad->digital_buttons & up_button) && up_rept > 0.0f) {
         up_rept -= delta_time;
         if (up_rept <= 0.0f) {
             up_rept = 1.0f / 6.0f;
             up = 1;
         }
     }
-    if (!(menu->flags & 6)) {
-        if ((buttons & 0x8000) && !(menu->flags & 1)) {
+    if (!menu->pinned && !menu->horizontal) {
+        if ((pad->digital_buttons & 0x8000) && !(menu->flags & 1)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1)
                 distance = 1;
             menu->x -= distance;
         }
-        if ((buttons & 0x2000) && !(menu->flags & 1)) {
+        if ((pad->digital_buttons & 0x2000) && !(menu->flags & 1)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1)
                 distance = 1;
             menu->x += distance;
         }
     }
-    down = 0;
     if (pad->digital_buttons_pressed & down_button) {
         down_rept = 1.0f / 3.0f;
         down = 1;
     }
-    if ((buttons & down_button) && down_rept > 0.0f) {
+    if ((pad->digital_buttons & down_button) && down_rept > 0.0f) {
         down_rept -= delta_time;
         if (down_rept <= 0.0f) {
             down_rept = 1.0f / 6.0f;
             down = 1;
         }
     }
-    to_first = up ? buttons & 1 : 0;
-    to_last = down ? buttons & 1 : 0;
-    page_up = up ? (buttons >> 1) & 1 : 0;
-    page_down = down ? (buttons >> 1) & 1 : 0;
-    if (page_down && menu->field_10) {
+    if (up && (pad->digital_buttons & 1))
+        to_first = 1;
+    if (down && (pad->digital_buttons & 1))
+        to_last = 1;
+    if (up && (pad->digital_buttons & 2))
+        page_up = 1;
+    if (down && (pad->digital_buttons & 2) && menu->field_10) {
         eduiitem_s *item;
         i32 count = 1;
         for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
             ++count;
-        while (menu->selected->next != NULL) {
+        while (count && menu->selected->next) {
+            --count;
             menu->selected = menu->selected->next;
-            if (!--count)
-                break;
         }
         return 0;
     }
@@ -1053,11 +1054,10 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
         for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
             ++count;
         menu->selected = menu->field_0c;
-        while (menu->selected->previous != NULL) {
+        while (count && menu->selected->previous) {
+            --count;
             menu->selected = menu->selected->previous;
             menu->field_0c = menu->selected;
-            if (!--count)
-                break;
         }
         return 0;
     }
@@ -1086,10 +1086,9 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
             for (item = menu->field_0c; item && item != menu->field_10; item = item->next)
                 ++count;
             menu->field_0c = menu->selected;
-            while (menu->field_0c->previous != NULL) {
+            while (count && menu->field_0c->previous) {
+                --count;
                 menu->field_0c = menu->field_0c->previous;
-                if (!--count)
-                    break;
             }
         }
         return 0;

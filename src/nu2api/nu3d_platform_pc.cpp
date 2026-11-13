@@ -3666,10 +3666,7 @@ extern "C" {
         NuCameraProjectionGlobalOffsetX = 0.0f;
         NuCameraProjectionGlobalOffsetY = 0.0f;
         NuCameraProjectionGlobalScaleY = 1.0f;
-        // MATCH-EXCEPTION: retail copies the leading x/y/width/height/min_z/max_z block of vpCurrent into the
-        // viewport as one integer struct copy (x..height are overwritten before submit); NUVPCURRENT probably
-        // began with an embedded viewport struct in the original header.
-        viewport = *(PC_VIEWPORT_PC *)&vpCurrent;
+        viewport = vpCurrent.viewport;
         x = vpCurrent.x;
         y = vpCurrent.y;
         width = vpCurrent.width;

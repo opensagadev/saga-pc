@@ -182,16 +182,3 @@ extern "C" i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void
         callback();
     return NuRndrSwapScreen(mode);
 }
-
-extern "C" {
-    extern i32 PCFramePresentationStatePc;
-    void __cdecl PCPresentationPlatformLeafPc(void);
-}
-STATIC_ASSERT(sizeof(PCFramePresentationStatePc) == 4);
-
-extern "C" i32 __cdecl PCFramePresentNativePc(i32 mode_unused, i32 flag_unused) {
-    PCFramePresentationStatePc = 0;
-    PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
-    PCPresentationPlatformLeafPc();
-    return 0;
-}

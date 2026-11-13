@@ -83,6 +83,32 @@ void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
         NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0.0f, 0.0f);
 }
 
+void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
+    i32 index;
+    GAMEOBJECT *object;
+    (void)player_index;
+
+    if (frames > 0) {
+        f32 rounded_duration = (f64)frames / DEFAULTFPS;
+        if (rounded_duration > duration) {
+            duration = rounded_duration;
+        }
+    }
+    for (index = 0; index < 8; index++) {
+        object = (GAMEOBJECT *)Player[index];
+        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
+            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
+        }
+    }
+}
+
+void DieRumble(GAMEOBJECT *object) {
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+        NewRumble(object->pad->bound_pad, 1.0f, 0);
+        NewBuzz(object->pad->bound_pad, 0.3f, 0);
+    }
+}
+
 void __cdecl TakeHitRumble(GAMEOBJECT *object, f32 strength) {
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, strength, 0);

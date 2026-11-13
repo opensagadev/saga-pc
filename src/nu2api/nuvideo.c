@@ -178,32 +178,6 @@ i32 part_debris_count = 0;
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 
-void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
-    i32 index;
-    GAMEOBJECT *object;
-    (void)player_index;
-
-    if (frames > 0) {
-        f32 rounded_duration = (f64)frames / DEFAULTFPS;
-        if (rounded_duration > duration) {
-            duration = rounded_duration;
-        }
-    }
-    for (index = 0; index < 8; index++) {
-        object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
-            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
-        }
-    }
-}
-
-void DieRumble(GAMEOBJECT *object) {
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        NewRumble(object->pad->bound_pad, 1.0f, 0);
-        NewBuzz(object->pad->bound_pad, 0.3f, 0);
-    }
-}
-
 void __cdecl GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
     if (camera == NULL) {
         camera = GameCam;
