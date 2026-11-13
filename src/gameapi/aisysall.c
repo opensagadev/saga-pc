@@ -15747,11 +15747,11 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderAdjustLowerPc);
             }
         }
+    } else if (nearest != NULL) {
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderSelectPc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
     } else {
-        if (nearest != NULL)
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderSelectPc);
-        else
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderCreatePc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderCreatePc);
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
     }
     antinodeEditorDrawAntinodes();
