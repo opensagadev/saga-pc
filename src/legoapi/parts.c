@@ -3505,6 +3505,13 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
     return -1;
 }
 
+void __cdecl KillPARTEffect(i32 index) {
+    if (index != -1 && part_emits[index].effect_id != -1) {
+        --part_emits_used;
+        part_emits[index].effect_id = -1;
+    }
+}
+
 void __cdecl UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
     i32 i, sound, axis, remaining, variant;
@@ -3596,10 +3603,7 @@ void __cdecl UpdatePartEmits(f32 time) {
                         }
                     }
                     if (emitter->shots_remaining != 0 && --emitter->shots_remaining == 0) {
-                        if (part_emits[i].effect_id != -1) {
-                            part_emits[i].effect_id = -1;
-                            --part_emits_used;
-                        }
+                        KillPARTEffect(i);
                         emission_time = partglobaltime + 99999.9f;
                     }
                 } else {
