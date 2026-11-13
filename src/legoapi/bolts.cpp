@@ -2494,6 +2494,7 @@ extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *
 }
 
 extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
+    NUVEC offset;
     NUVEC points[3];
     NUVEC normal = v010;
     u8 processed[32] = {};
@@ -2510,14 +2511,14 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
         if ((bolt->flags & 4) == 0) {
             bolt->ray_time -= FRAMETIME;
             if (bolt->ray_time <= 0.0f) {
-                NUVEC movement, end;
+                NUVEC movement;
                 NuVecScale(&movement, &bolt->direction, (f32)((f64)0.2f * bolt->speed));
                 bolt->ray_time = 0.2f;
                 if (bolt->acceleration_y != 0.0f)
                     movement.y = (f32)((f64)0.2f * bolt->velocity.y +
                                        (f64)bolt->acceleration_y * .5 * BoltRayAccelerationTimeSquared);
-                NuVecAdd(&end, &bolt->position, &movement);
-                NuVecSub(&movement, &end, &bolt->ray_end);
+                NuVecAdd(&offset, &bolt->position, &movement);
+                NuVecSub(&movement, &offset, &bolt->ray_end);
                 if (Bolt_RayCastPrivate(bolt, &bolt->ray_end, &movement)) {
                     u8 info[4];
                     NewRayCastGetImpactNormal(&normal);
@@ -2557,7 +2558,8 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
         bolt->position.z += bolt->velocity.z * FRAMETIME;
         points[1] = bolt->position;
         if ((bolt->flags & 0x200) == 0) {
-            NUVEC offset = {0.0f, 0.0f, bolt->collision_radius + bolt->collision_radius};
+            offset.x = offset.y = 0.0f;
+            offset.z = bolt->collision_radius + bolt->collision_radius;
             NuVecMtxRotate(&offset, &offset, &bolt->orientation);
             NuVecSub(&points[0], &bolt->position, &offset);
             NuVecAdd(&points[2], &bolt->position, &offset);
