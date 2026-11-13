@@ -111,27 +111,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinneranim_objs) == 0x105);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_turrets) == 0x106);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_bombgens) == 0x107);
 
-void *__cdecl GizForces_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    REGISTRY_FORCE_SYSTEM_PC *system;
-    i32 i;
-    system = (REGISTRY_FORCE_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
-    system->capacity = world->current_level->max_force;
-    system->forces = (REGISTRY_FORCE_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                 system->capacity * sizeof(*system->forces));
-    system->hit_test_gizmos =
-        (GIZMO_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(void *));
-    system->visible_forces = (REGISTRY_FORCE_RECORD_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                          system->capacity * sizeof(void *));
-    system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8,
-                                                     (u16)world->current_level->max_force_objects);
-    for (i = 0; i < system->capacity; ++i)
-        system->forces[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
-    world->giz_force_sys = (GIZFORCESYS_s *)system;
-    return system;
-}
-
 void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = (WORLDINFO *)pointer;
     GIZBOMBGENSYS_s *system;
@@ -167,22 +146,6 @@ void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
         world->torpedo_machine_sys->scale = 1.0f;
     }
     return world->torpedo_machine_sys;
-}
-
-void __cdecl GizForces_PostLoad(void *world, void *pointer) {
-    REGISTRY_FORCE_SYSTEM_PC *system = (REGISTRY_FORCE_SYSTEM_PC *)pointer;
-    REGISTRY_FORCE_RECORD_PC *force;
-    i32 i;
-    if (system == NULL)
-        return;
-    force = system->forces;
-    for (i = 0; i < system->count; ++i, ++force) {
-        if (force->runtime_flags & 0x400) {
-            i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, force->blowup_type);
-            force->runtime_flags &= ~0x400u;
-            force->blowup_type = (i16)type_id;
-        }
-    }
 }
 
 void __cdecl GizmoPickups_PostLoad(void *world, void *system) {

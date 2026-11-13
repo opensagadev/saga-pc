@@ -1,30 +1,5 @@
 #include "saga.h"
 
-i32 __cdecl GizForces_GetMaxGizmos(void *);
-void __cdecl GizForces_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl GizForces_Update(void *, void *, f32);
-void __cdecl GizForces_Draw(void *, void *, f32);
-char *__cdecl GizmoForce_GetGizmoName(GIZMO_PC *);
-i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl GizmoForce_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl GizmoForce_GetNumOutputs(GIZMO_PC *);
-void __cdecl GizmoForce_Activate(GIZMO_PC *, i32);
-i32 __cdecl GizmoForce_ActivateRev(GIZMO_PC *, i32, i32);
-void __cdecl GizmoForce_SetVisibility(GIZMO_PC *, i32);
-NUVEC *__cdecl GizmoForce_GetPos(GIZMO_PC *);
-i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *, void *, BOLT_PC *, u8 *);
-GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32,
-                                              f32, i32, i32, i32);
-i32 __cdecl GizForces_BoltHit(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
-                              u8 *);
-void *__cdecl GizForces_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl GizForces_ClearProgress(void *, void *);
-void __cdecl GizForces_StoreProgress(void *, void *, void *);
-void __cdecl GizForces_Reset(void *, void *, void *);
-void *__cdecl GizForces_ReserveBufferSpace(void *);
-i32 __cdecl GizForces_Load(void *, void *);
-void __cdecl GizForces_PostLoad(void *, void *);
-void __cdecl GizForces_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
 i32 __cdecl Blowup_GetMaxGizmos(void *);
 void __cdecl Blowup_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
 void __cdecl GizmoBlowupBurstDraw(void *, void *, f32);
@@ -76,11 +51,6 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *);
 i32 __cdecl GizBombGens_Load(void *, void *);
 i32 __cdecl GizTorp_Load(void *, void *);
 
-#pragma const_seg(".rdata$GizmoRegistryGizForceNamePc")
-const char GizmoRegistryGizForceNamePc[] = "GizForce";
-#pragma const_seg()
-char *GizmoRegistryGizForceNamePtrPc = (char *)GizmoRegistryGizForceNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryNewBlowupNamePc")
 const char GizmoRegistryNewBlowupNamePc[] = "blowup";
 #pragma const_seg()
@@ -114,45 +84,6 @@ i32 giztorpmachine_gizmotype_id = 0;
 #pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
 const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
-
-ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizForceAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizForceNamePtrPc;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->prefix = "";
-    addtype->fns.options = 0xb0;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizForces_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizForces_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizForces_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizForces_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoForce_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoForce_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoForce_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizmoForce_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoForce_Activate;
-    addtype->fns.activate_rev_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoForce_ActivateRev;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoForce_SetVisibility;
-    addtype->fns.get_pos_fn = (void *)GizmoForce_GetPos;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizForces_BoltHitPlatPc;
-    addtype->fns.get_best_bolt_target_fn =
-        (GIZMO_PC * (__cdecl *)(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
-                                i32)) GizForces_GetBestBoltTarget;
-    addtype->fns.bolt_hit_fn = (void *)GizForces_BoltHit;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizForces_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizForces_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizForces_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizForces_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizForces_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizForces_Load;
-    addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizForces_PostLoad;
-    addtype->fns.add_level_sfx_fn = (void *)GizForces_AddLevelSfx;
-    force_gizmotype_id = type_id;
-    return addtype;
-}
 
 ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryNewBlowupAddTypePc;
@@ -336,13 +267,6 @@ ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-i32 __cdecl GizForces_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world != NULL)
-        return world->current_level->max_force;
-    return 0;
-}
-
 i32 __cdecl Blowup_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world != NULL)
@@ -374,10 +298,6 @@ i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
     if (world != NULL)
         return world->current_level->max_torpmachines;
     return 0;
-}
-
-void *__cdecl GizForces_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, 0xb0);
 }
 
 void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

@@ -132,20 +132,6 @@ STATIC_ASSERT(offsetof(GIZSPINNER_s, anim_set) == 0x68);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
 
-void __cdecl GizForces_ClearProgress(void *owner, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-    memset(progress->reward, 0, sizeof(progress->reward));
-    memset(progress->socket, 0, sizeof(progress->socket));
-    memset(progress->released, 0, sizeof(progress->released));
-    memset(progress->pending, 0, sizeof(progress->pending));
-    memset(progress->destroyed, 0, sizeof(progress->destroyed));
-    memset(progress->group_members, -1, 64);
-}
-
 void __cdecl Blowup_ClearProgress(void *owner, void *progress_ptr) {
     BLOWUP_PROGRESS_PC *progress = (BLOWUP_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
@@ -172,48 +158,6 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
         return;
     memset(progress->enabled, -1, sizeof(progress->enabled));
     memset(progress->visible, -1, sizeof(progress->visible));
-}
-
-void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
-    FORCE_PROGRESS_SYSTEM_PC *system = (FORCE_PROGRESS_SYSTEM_PC *)data;
-    FORCE_PROGRESS_RECORD_PC *record;
-    FORCE_PROGRESS_GROUP_PC *force_group;
-    i32 index, group, slot, word;
-    u32 bit;
-    GizForces_ClearProgress(world_ptr, progress);
-    if (progress == NULL)
-        return;
-    record = system->records;
-    for (index = 0; index < system->count; ++index, ++record) {
-        if (index >= 128)
-            break;
-        word = index / 32;
-        bit = 1u << (index & 31);
-        if (!record->visible)
-            progress->visible[word] &= ~bit;
-        if (!record->enabled)
-            progress->enabled[word] &= ~bit;
-        if (record->reward_released)
-            progress->reward[word] |= bit;
-        if (record->socket_hidden)
-            progress->socket[word] |= bit;
-        if (record->completion_released)
-            progress->released[word] |= bit;
-        if (record->completion_pending)
-            progress->pending[word] |= bit;
-        if (record->destroyed)
-            progress->destroyed[word] |= bit;
-    }
-    for (group = 0; group < 8; ++group) {
-        force_group = &system->groups[group];
-        for (slot = 0; slot < 8; ++slot) {
-            if (slot < force_group->member_count)
-                progress->group_members[group][slot] = (u8)(force_group->members[slot] - system->records);
-            else
-                progress->group_members[group][slot] = 0xff;
-        }
-    }
 }
 
 void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {

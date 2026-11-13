@@ -258,20 +258,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 
 NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
-i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
-    i32 index;
-    (void)hint;
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    for (index = 0; index < 2; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->transform_alpha > 0.0f &&
-            object->transform_target != NULL && object->unknown_0e28[4] == 0)
-            return 1;
-    }
-    return 0;
-}
-
 i32 __cdecl Percent_UpdateHint(HINT_PC *hint) {
     if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
         CustomiserCompletionSavePc != NULL &&
