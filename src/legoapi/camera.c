@@ -540,12 +540,10 @@ static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
 
 void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     f32 previous_keep_time = object->field_da8;
-    i32 controlled = 0, index, two_players, constrained = 0;
-    GAMEOBJECT *other_player;
+    i32 controlled = 0, index, two_players, constrained;
     PLAYERCHARACTERCONFIG_PC *character;
     f32 push_distance;
     NUVEC movement;
-    KEEP_SCREEN_PLANE_PC *plane;
     object->field_da8 = 0.0f;
     if (newgamecam != 0 || (object->flags_ef4 & 0x10000000) != 0)
         return;
@@ -571,8 +569,11 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
         return;
     }
     if (VehicleArea == 0) {
-        other_player = object == Player[0] ? Player[1] : object == Player[1] ? Player[0] : NULL;
-        if (other_player != NULL && (!(other_player->flags_1fc & 0x80) || other_player->character_context == 0x2b))
+        if (object == Player[0] && Player[1] != NULL &&
+            (!(((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) || ((GAMEOBJECT *)Player[1])->character_context == 0x2b))
+            return;
+        if (object == Player[1] && Player[0] != NULL &&
+            (!(((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) || ((GAMEOBJECT *)Player[0])->character_context == 0x2b))
             return;
     }
     two_players = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
@@ -580,6 +581,7 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     character = object->character_data->game_character;
     push_distance = VehicleArea != 0 ? character->walk_speed : character->run_speed;
     movement = object->velocity;
+    constrained = 0;
     if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[0].point, &PlayPlanePc[0].normal, NULL, 0.0f, NULL)) {
         Surface_Deflect(&PlayPlanePc[0].normal, &movement, &movement, 0);
         movement.x += PlayPlanePc[0].normal.x * push_distance;
@@ -601,20 +603,18 @@ void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     }
     if ((VehicleArea != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) || KEEPONSCREEN_SIDESONLY == 0 ||
         (two_players && abs(RotDiff(0, ((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->pitch)) > 0x2000)) {
-        plane = NULL;
         if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL,
-                            -object->bounds_half_height, NULL)) {
-            plane =
-                !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? &PlayPlanePc[5] : &PlayPlanePc[0];
-        } else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL,
-                                   -object->bounds_half_height, NULL)) {
-            plane =
-                !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? &PlayPlanePc[0] : &PlayPlanePc[5];
-        }
-        if (plane != NULL) {
-            Surface_Deflect(&plane->normal, &object->velocity, &movement, 0);
-            movement.x += plane->normal.x * push_distance;
-            movement.z += plane->normal.z * push_distance;
+                            -object->bounds_half_height, NULL))
+            index = !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? 5 : 0;
+        else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL,
+                                 -object->bounds_half_height, NULL))
+            index = !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? 0 : 5;
+        else
+            index = -1;
+        if (index != -1) {
+            Surface_Deflect(&PlayPlanePc[index].normal, &object->velocity, &movement, 0);
+            movement.x += PlayPlanePc[index].normal.x * push_distance;
+            movement.z += PlayPlanePc[index].normal.z * push_distance;
             constrained = 1;
         }
     }
