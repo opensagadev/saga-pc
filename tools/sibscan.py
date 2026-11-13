@@ -5,6 +5,7 @@
     python3 tools/sibscan.py --exact-sample 400   # noise: the same detectors on exact functions
     python3 tools/sibscan.py --detector stores    # one detector only
     python3 tools/sibscan.py --names names.csv    # write original-name candidates (calls and globals)
+    python3 tools/sibscan.py --all --names n.csv  # name candidates from every function with a counterpart
     python3 tools/sibscan.py --reference DIR ...  # reference in another directory
 
 For every function it disassembles three versions (the sibling build's, retail's
@@ -525,7 +526,7 @@ def make_context(reference, ours):
             "sibling_static": sibling_static, "variadic": variadic_sources()}
 
 
-def select(rows, ours, reference, exact_sample, names, seed):
+def select(rows, ours, reference, exact_sample, names, seed, everything=False):
     by_symbol = {}
     for r in ours.records:
         by_symbol.setdefault(r["symbol"], r)
@@ -541,7 +542,7 @@ def select(rows, ours, reference, exact_sample, names, seed):
         if exact_sample:
             if row.get("exact_match"):
                 chosen.append((row, record))
-        elif row.get("status") == "different" or names:
+        elif row.get("status") == "different" or names or everything:
             chosen.append((row, record))
     if exact_sample:
         random.Random(seed).shuffle(chosen)
@@ -567,6 +568,40 @@ def collect_names(tri, ours, names):
             names[(ours_name, sibling_name, kind)].add(tri.name)
 
 
+def similar(left, right):
+    """Names that share a word: a common run of five letters, ignoring case and underscores."""
+    a, b = (re.sub(r"[^a-z0-9]", "", n.lower()) for n in (left, right))
+    match = difflib.SequenceMatcher(a=a, b=b, autojunk=False).find_longest_match(0, len(a), 0, len(b))
+    return match.size >= 5
+
+
+def name_candidates(names, our_names):
+    """Keep pairs whose placeholder has one sibling name that is still free in ours. Confidence is high
+    when the pair is seen in two functions or the names share a word. Returns sorted rows."""
+    by_ours = collections.defaultdict(list)
+    for (ours_name, sibling_name, kind), where in names.items():
+        by_ours[(ours_name, kind)].append((sibling_name, where))
+    rows = []
+    for (ours_name, kind), candidates in by_ours.items():
+        if len(candidates) != 1:
+            continue  # folded helpers or misaligned lists
+        sibling_name, where = candidates[0]
+        if sibling_name in our_names:
+            continue  # the original name already belongs to another of our symbols
+        confidence = "high" if len(where) >= 2 or similar(ours_name, sibling_name) else "low"
+        evidence = (f"{confidence}: {'called' if kind == 'function' else 'accessed'} at the same position in "
+                    + " ".join(sorted(where)))
+        rows.append((ours_name, sibling_name, kind, evidence))
+    return sorted(rows)
+
+
+def write_names(path, names, our_names):
+    with open(path, "w", newline="") as stream:
+        writer = csv.writer(stream, lineterminator="\n")
+        writer.writerow(["our_name", "original_name", "kind", "evidence"])
+        writer.writerows(name_candidates(names, our_names))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("functions", nargs="*", help="limit to these functions")
@@ -574,6 +609,8 @@ def main():
     parser.add_argument("--detector", choices=DETECTORS, action="append", help="run only these detectors")
     parser.add_argument("--exact-sample", type=int, metavar="N", help="measure noise on N exact functions")
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--all", action="store_true",
+                        help="scan exact functions too (for --names; detectors cannot fire on them)")
     parser.add_argument("--names", metavar="CSV", help="write original-name candidates to CSV")
     parser.add_argument("--tsv", metavar="FILE", help="also write all hits as TSV")
     args = parser.parse_args()
@@ -588,7 +625,8 @@ def main():
     ours = Ours()
     context = make_context(reference, ours)
     detectors = args.detector or list(DETECTORS)
-    chosen = select(context["rows"], ours, reference, args.exact_sample, set(args.functions), args.seed)
+    chosen = select(context["rows"], ours, reference, args.exact_sample, set(args.functions), args.seed,
+                    args.all)
     hits = collections.defaultdict(list)
     loose_hits = collections.Counter()
     names = collections.defaultdict(set)
@@ -623,11 +661,7 @@ def main():
             if out:
                 out.write(f"{detector}\t{score:.3f}\t{tri.name}\t{tri.percent:.2f}\t{tri.size}\t{tri.unit}\t{text}\n")
     if args.names:
-        with open(args.names, "w", newline="") as stream:
-            writer = csv.writer(stream)
-            writer.writerow(["our_name", "original_name", "kind", "functions"])
-            for (ours_name, sibling_name, kind), where in sorted(names.items()):
-                writer.writerow([ours_name, sibling_name, kind, " ".join(sorted(where))])
+        write_names(args.names, names, {sib.base_name(r["symbol"]) for r in ours.records})
     return 0
 
 
