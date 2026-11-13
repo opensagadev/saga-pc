@@ -156,6 +156,7 @@ void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
 
 i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     i32 page, version, count, slot, index, item, extra, interval, instance;
+    f32 impulse, spring, damping;
     char name[20], discarded_name[16];
     NUVEC discarded_position;
     NUSPECIALHANDLE special;
@@ -282,17 +283,22 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
             AnimParams[slot].bounce_spring = 0;
             AnimParams[slot].bounce_damping = 0;
         }
-        item = AnimParams[slot].platform_id;
-        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
-        if (item >= 0 && item < terrain->max_platforms) {
-            platform = &terrain->platforms[item];
-            if (platform->bounce_54 == 0.0f) {
-                platform->bounce_58 = 0.0f;
-                platform->bounce_5c = 0.0f;
+        /* PlatInstBounce(platform_id, impulse, spring, damping), expanded in place as retail inlines it:
+           the arguments are copied first and CurrentTerrain is re-read for every store. */
+        if (AnimParams[slot].platform_id != -1) {
+            item = AnimParams[slot].platform_id;
+            impulse = AnimParams[slot].bounce_impulse;
+            spring = AnimParams[slot].bounce_spring;
+            damping = AnimParams[slot].bounce_damping;
+            if (item >= 0 && item < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms) {
+                if (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_54 == 0.0f) {
+                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_58 = 0.0f;
+                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_5c = 0.0f;
+                }
+                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_54 = impulse;
+                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_60 = spring;
+                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_64 = damping;
             }
-            platform->bounce_54 = AnimParams[slot].bounce_impulse;
-            platform->bounce_60 = AnimParams[slot].bounce_spring;
-            platform->bounce_64 = AnimParams[slot].bounce_damping;
         }
         AnimParams[slot].page = (i8)page;
         ++edanim_params_used;
