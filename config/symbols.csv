@@ -6395,7 +6395,7 @@ address,symbol,size,ctype
 0x005c1300,_PCSpecialEmptyHandler_candidate,1,"void __cdecl (const char *, ...)"
 0x5c13c0,_RenderPostASinPc,320,i32 __cdecl(f32)
 0x5c1600,_VisibilityAbsoluteFourPc,90,
-0x5c1680,?OccluderVertexSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void __cdecl(NUVEC4 *, f32, f32, f32, f32)"
+0x5c1680,?OccluderVertexSet@@YAXPAUNUVEC4@@MMMM@Z,28,"void private (NUVEC4 *vertex EAX, f32 x, f32 y, f32 z, f32 w)"
 0x5c1880,@NuQuatMulAlignedPc@12,118,"void private (const NUQUAT *parent ECX, const NUQUAT *rotation EDX, NUQUAT *out stack; caller cleanup)"
 0x5c1950,_NuVec4AbsPrivatePc,90,"void private (NUVEC4 *out, const NUVEC4 *in); native source EAX, destination ECX"
 0x5c19d0,_NuAnimMtxCopyPrivatePc,95,
@@ -6535,6 +6535,8 @@ address,symbol,size,ctype
 0x5ca550,_findrange,73,
 0x005ca5a0,_CalcValue1648Get2Values,648,"void __cdecl (char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *)"
 0x005ca830,_CalcValue1648,560,"f32 __cdecl (char *, i32, i32, f32, ANI3_SCALEMIN_PC *)"
+0x5caa60,_ANI_GetKeyParts2,13,"u32 private (u8 *keys EAX, u32 *blend_bits EDX)"
+0x5caa70,_ANI_GetBlend2,41,"f32 private (u32 bits EAX, i32 sub_key ECX)"
 0x005caaa0,_ANI_SimpleAni3PlayerV4Joint_Quat3,1990,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"
 0x005cb270,_ANI_SimpleAni3PlayerV4Joint_Quat3W,1807,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"
 0x005cb980,_ANI_SimpleAni3PlayerV4Joint_EulerQuat,1865,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"
