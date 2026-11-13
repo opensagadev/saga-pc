@@ -288,7 +288,7 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     for (index = 0; index < 2; ++index) {
         player = Player[index];
         if (player == NULL || (player->flags_1fc_word & 0x1000) == 0 || player->dead != 0 ||
-            (i8)player->flags_1fc_word >= 0 || (player->flags_e20 & 0x20) != 0)
+            (player->flags_1fc_word & 0x80) == 0 || (player->flags_e20 & 0x20) != 0)
             continue;
         if (TORPEDO_PACKET_PC(player)->count >= 5 || TORPEDO_PACKET_PC(player)->steal_timer != 0.0f)
             continue;
