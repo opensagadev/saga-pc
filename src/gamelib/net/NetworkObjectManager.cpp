@@ -66,9 +66,10 @@ class NetInputStream : public EdInputStream {
     virtual ~NetInputStream() {
     }
     virtual i32 Eat(i32 size, i32 count) {
+        NETMESSAGE_PC *source = message;
         i32 bytes = size * count;
-        if (message->data != NULL)
-            message->read_offset += bytes;
+        if (source->data != NULL)
+            source->read_offset += bytes;
         return bytes;
     }
     virtual i32 SerialiseBuffer(void *data, i32 size, i32 count) {
