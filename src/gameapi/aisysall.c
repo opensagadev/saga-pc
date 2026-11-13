@@ -6253,8 +6253,9 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
             }
         } else {
             nodes = row->path_info.path->nodes;
-            distance = NuInfiniteLineToPointDistSqr(&nodes[row->next_connection->node_indices[0]].position,
-                                                    &nodes[row->next_connection->node_indices[1]].position, &centre);
+            node = &nodes[row->next_connection->node_indices[0]];
+            other = &nodes[row->next_connection->node_indices[1]];
+            distance = NuInfiniteLineToPointDistSqr(&node->position, &other->position, &centre);
             if (distance <= group->radius * group->radius)
                 row->flags |= 2u;
         }
