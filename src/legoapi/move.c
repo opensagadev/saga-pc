@@ -255,28 +255,6 @@ f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     return 0.0f;
 }
 
-void __cdecl APIObjectVelocities(GAMEOBJECT *object) {
-    f32 horizontal_squared;
-    f32 absolute_velocity;
-    u32 bits;
-
-    if (object->velocity.x == 0.0f && object->velocity.z == 0.0f) {
-        object->horizontal_velocity_magnitude = 0.0f;
-        absolute_velocity = object->velocity.y;
-        bits = *(u32 *)&absolute_velocity & 0x7fffffff;
-        object->velocity_magnitude = *(f32 *)&bits;
-        return;
-    }
-
-    horizontal_squared = object->velocity.x * object->velocity.x + object->velocity.z * object->velocity.z;
-    object->horizontal_velocity_magnitude = NuFsqrt(horizontal_squared);
-    if (object->velocity.y == 0.0f) {
-        object->velocity_magnitude = object->horizontal_velocity_magnitude;
-    } else {
-        object->velocity_magnitude = NuFsqrt(object->velocity.y * object->velocity.y + horizontal_squared);
-    }
-}
-
 void __cdecl MovePlayerSpline(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     f32 speed;

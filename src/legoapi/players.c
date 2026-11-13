@@ -1,5 +1,7 @@
 #include "saga.h"
 
+i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 
@@ -3024,53 +3026,6 @@ STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
 STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
-
-void __cdecl AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *source, ANIMPACKET_PC *destination) {
-    destination->current_time = source->current_time;
-    destination->previous_time = source->previous_time;
-    destination->blend_elapsed_pc = source->blend_elapsed;
-    destination->blend_duration_pc = source->blend_duration;
-    destination->blend_source_time = source->source_time;
-    destination->blend_target_time = source->target_time;
-    destination->flags = source->flags;
-    destination->blending = source->blending;
-    destination->blend_source_animation = source->source_animation;
-    destination->blend_target_animation = source->target_animation;
-    destination->animation_index = source->animation;
-    destination->previous_animation = source->previous_animation;
-    destination->requested_animation = source->requested_animation;
-    destination->reversed_3c = 0;
-    destination->reversed_3d = 0;
-    destination->reversed_3e = 0;
-    destination->overlay_animation = -1;
-}
-
-i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
-    CHARACTER_MODEL_LAYERS_PC *source, *target;
-    i32 source_model, target_model;
-    if (source_id != -1) {
-        source_model = apicharsys->playermodelids[source_id];
-        if (source_model != -1) {
-            source = &apicharsys->models[source_model];
-            if (target_id != -1) {
-                target_model = apicharsys->playermodelids[target_id];
-                if (target_model != -1) {
-                    target = &apicharsys->models[target_model];
-                    if (packet->blending != 0) {
-                        if (source->model_data_b[packet->blend_source_animation] != NULL &&
-                            source->model_data_b[packet->blend_target_animation] != NULL &&
-                            target->model_data_b[packet->blend_source_animation] != NULL &&
-                            target->model_data_b[packet->blend_target_animation] != NULL)
-                            return 1;
-                    } else if (source->model_data_b[packet->animation_index] != NULL &&
-                               target->model_data_b[packet->animation_index] != NULL)
-                        return 1;
-                }
-            }
-        }
-    }
-    return 0;
-}
 
 static void __cdecl DrawCharacterAttachmentModelPc(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices,
                                                    ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
