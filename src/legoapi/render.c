@@ -21,48 +21,6 @@ STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
-void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id, f32 character_alpha,
-                          f32 frame_alpha, i32 draw_character, NUSPECIALHANDLE *override_special) {
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
-    NUSPECIALHANDLE special;
-    if (ObjTabList == NULL || world == NULL)
-        return;
-    if (DrawCharIconFindPc != 0)
-        NuSpecialFind(things_scene, &special, ObjTabList[frame_object_id].name, 1);
-    else
-        special = world->level_objects[frame_object_id].special;
-    if (NuSpecialExistsFn(&special) != 0)
-        DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, &special, 0, frame_alpha);
-    if (draw_character != 0) {
-        if (override_special != NULL && NuSpecialExistsFn(override_special) != 0)
-            DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, override_special, 0, character_alpha);
-        else {
-            i32 icon_object_id;
-            if (character_id == -1)
-                icon_object_id = LegoObjectIconQuestionPc;
-            else {
-                icon_object_id = CDataList[character_id].icon_model;
-                if (icon_object_id != -1 && GCDataList[character_id].hover_fall_mode == 0 &&
-                    icon_object_id != PCArcadeUnpairedIconModel)
-                    ++icon_object_id;
-            }
-            if (icon_object_id != -1) {
-                if (DrawCharIconFindPc != 0) {
-                    NUGSCN *icon_scene = character_id == -1 ? NULL : IconScene_FindById(character_id);
-                    if (icon_scene != NULL)
-                        NuSpecialFind(icon_scene, &special, ObjTabList[icon_object_id].name, 1);
-                    else
-                        NuSpecialFind(things_scene, &special, ObjTabList[icon_object_id].name, 1);
-                } else
-                    special = world->level_objects[icon_object_id].special;
-                if (NuSpecialExistsFn(&special) != 0)
-                    DrawPanel3DObject(x, y, (f32)(z + 1.0), scale, scale, scale, 0, 0, 0, &special, 0, character_alpha);
-            }
-        }
-    }
-    DrawCharIconFindPc = 0;
-    DrawCharIconPanelPc = -1;
-}
 extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
 
 void __cdecl BackDrop_Dump(void) {

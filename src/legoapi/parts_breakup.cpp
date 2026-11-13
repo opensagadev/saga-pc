@@ -307,19 +307,6 @@ extern "C" {
         }
     }
 
-    NUSPECIALHANDLE *__cdecl CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
-        KILLPARTS_WORLD_SCENES_PC *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES_PC *>(world);
-        NUSPECIALHANDLE *special;
-        if (KillPartsCharSceneAreaPc != NULL && KillPartsCharSceneAreaPc[character_id].scene != NULL)
-            special = &KillPartsCharSceneAreaPc[character_id].special_scene;
-        else if (scenes->character_scenes[character_id].scene != NULL)
-            special = &scenes->character_scenes[character_id].special_scene;
-        else
-            special = NULL;
-        if (special != NULL && NuSpecialExistsFn(special) == 0)
-            special = NULL;
-        return special;
-    }
     void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAMEOBJECT *object, i32 animation,
                                                i32 mode, f32 scale) {
         const i32 joint = object->character_data->game_character->helmet_locator;

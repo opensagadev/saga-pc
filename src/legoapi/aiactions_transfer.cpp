@@ -26,14 +26,6 @@ extern "C" {
         }
         return helper;
     }
-    i32 __cdecl CharCategory_FindByName(char *name) {
-        if (CharCategory == NULL)
-            return -1;
-        for (i32 index = 0; index < CHARCATEGORYCOUNT; ++index)
-            if (NuStrICmp(CharCategory[index].name, name) == 0)
-                return index;
-        return -1;
-    }
     SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
             SOCK_PC *sock = sys->socks;

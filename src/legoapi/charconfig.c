@@ -1987,94 +1987,6 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
     }
 }
 
-i32 __cdecl LayerFromName(PLAYERCHARACTERCONFIG_PC *character, const char *name) {
-    i32 i;
-    for (i = 0; i < character->layer_count; ++i) {
-        if (NuStrICmp(name, character->layers[i].name) == 0) {
-            return character->layers[i].mask_bit;
-        }
-    }
-    return -1;
-}
-
-i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u32 mask) {
-    PLAYERCHARACTERCONFIG_PC *character;
-    i32 count;
-    i32 bit;
-    u32 flag;
-    if (model == NULL || output == NULL) {
-        return 0;
-    }
-    character = &GCDataList[model->model_id];
-    count = 0;
-    flag = 1;
-    for (bit = 0; bit < 32; ++bit, flag <<= 1) {
-        i32 layer;
-        i16 hierarchy_layer;
-        if ((mask & flag) == 0 || bit >= character->layer_count) {
-            continue;
-        }
-        if (character->layer_lookup != NULL) {
-            layer = character->layer_lookup[bit];
-        } else {
-            for (layer = 0; layer < character->layer_count; ++layer) {
-                if (character->layers[layer].mask_bit == bit) {
-                    break;
-                }
-            }
-            if (layer == character->layer_count) {
-                continue;
-            }
-        }
-        if (layer == -1) {
-            continue;
-        }
-        hierarchy_layer = character->layers[layer].hierarchy_layer_index;
-        if (hierarchy_layer != -1) {
-            *output++ = hierarchy_layer;
-            ++count;
-        }
-    }
-    return count;
-}
-
-i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
-    CHAR_CATEGORY_RECORD_PC *category;
-    if (index < 0 || index >= CHARCATEGORYCOUNT)
-        return 0;
-    category = &CharCategory[index];
-    if (category->model_flags != 0) {
-        if ((category->model_flags & 8) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0)
-            return 0;
-        if ((object->character_data->model_flags & category->model_flags) != category->model_flags)
-            return 0;
-    }
-    if (category->game_flags != 0 &&
-        (object->character_data->game_character->flags_090 & category->game_flags) != category->game_flags)
-        return 0;
-    return 1;
-}
-
-static char **CustomiserVariantNamesPc = 0;
-static i32 CustomiserVariantCountPc = 0;
-i32 __cdecl CharVariant_Find(char *name) {
-    i32 index;
-    if (CustomiserVariantNamesPc != NULL) {
-        for (index = 0; index < CustomiserVariantCountPc; ++index) {
-            if (NuStrICmp(CustomiserVariantNamesPc[index], name) == 0)
-                return index;
-        }
-    }
-    return -1;
-}
-
-void __cdecl CharVariants_Init(char **variants, i32 count) {
-    if (variants != NULL && count > 0) {
-        CustomiserVariantNamesPc = variants;
-        CustomiserVariantCountPc = count;
-    }
-}
-
 typedef struct charconfig_variant_reader_pc_s {
     u8 unknown_000[0x116];
     i8 variant_type;
@@ -2161,37 +2073,6 @@ i32 __cdecl CanWearHatsInFreePlay(i32 id) {
     if ((flags & 0x40000) == 0 && (flags & 0x88) == 0)
         return 0;
     return 1;
-}
-
-i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded,
-                              i32 exclude_hidden) {
-    i16 candidates[500];
-    i32 count = 0;
-    i32 id;
-    CHARACTERDATA_PC *character = CDataList;
-    for (id = 0; id < CHARCOUNT; ++id, ++character) {
-        PLAYERCHARACTERCONFIG_PC *runtime;
-        if (excluded != NULL && InModelList(excluded, id, NULL) != 0)
-            continue;
-        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
-                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1]))
-            continue;
-        runtime = character->game_character;
-        if (character->move_fn == Move_DEFAULT || (runtime->flags_090 & game_flags) != game_flags ||
-            (character->model_flags & model_flags) != model_flags ||
-            (exclude_hidden != 0 && (runtime->flags_094 & 0x4000) != 0) ||
-            ((model_flags & 8) != 0 && (runtime->flags_094 & 0x8000) != 0) || Collection_Got(id) == 0 ||
-            (require_hat != 0 && CanWearHatsInFreePlay(id) == 0))
-            continue;
-        if (count < 500)
-            candidates[count++] = (i16)id;
-    }
-    if (count > 0) {
-        if (count > 1)
-            return candidates[qrand() / (0xffff / count + 1)];
-        return candidates[0];
-    }
-    return -1;
 }
 
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);

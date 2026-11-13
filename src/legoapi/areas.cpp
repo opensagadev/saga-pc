@@ -115,17 +115,6 @@ void __cdecl Cheats_Init(CHEAT_PC *cheats) {
     } while ((++cheats)->name != NULL);
 }
 
-i32 __cdecl CharIDFromName(const char *name) {
-    i32 index;
-
-    for (index = 0; index < CHARCOUNT; ++index) {
-        if (NuStrICmp(CDataList[index].name, name) == 0) {
-            return index;
-        }
-    }
-    return -1;
-}
-
 i32 __cdecl Cheat_FindByName(char *name) {
     i32 index;
 

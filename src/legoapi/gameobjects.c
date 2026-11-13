@@ -5574,13 +5574,6 @@ void __cdecl GameAIProcess(void) {
     oneAtOnce_MaintainArray();
 }
 
-void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
-                                     i32 area_models, i32 area) {
-    if (area_models != 0 && CutScenePlayer_Active() != NULL && area != -1 && &ADataList[area] != HUB_ADATA)
-        area_models = 0;
-    APILoadCharacterModels(list, append_models, buffer, *end, area_models);
-}
-
 i32 AutoSaveIconPendingPc = 0;
 
 void __cdecl DrawAutoSaveIcon(void) {

@@ -6448,26 +6448,6 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-void __cdecl SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value,
-                                        i32 movement_type, CHARACTER_UPDATE_CALLBACK_PC move,
-                                        CHARACTER_UPDATE_CALLBACK_PC animate,
-                                        CHARACTER_UPDATE_CALLBACK_PC post_animate) {
-    i32 index;
-    for (index = 0; index < CHARCOUNT; ++index) {
-        if (model_mask != 0 && (CDataList[index].model_flags & model_mask) != model_value)
-            continue;
-        if (game_mask != 0 && (GCDataList[index].flags_090 & game_mask) != game_value)
-            continue;
-        if (movement_type != -1 && (i32)(i8)GCDataList[index].weapon_action != movement_type)
-            continue;
-        if (move != NULL)
-            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->move = move;
-        if (animate != NULL)
-            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->animate = animate;
-        if (post_animate != NULL)
-            ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->post_animate = post_animate;
-    }
-}
 typedef struct default_motion_batarang_pointer_pc_s {
     u8 unknown_0000[0xcc0];
     void *batarang;

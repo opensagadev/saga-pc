@@ -1,5 +1,25 @@
 #include "saga.h"
 
+void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
+    i32 i;
+    for (i = 0; i < CHARCOUNT; ++i) {
+        GCDataList[i] = GCDATA_DEFAULT;
+        if (CDataList[i].name_id == -1)
+            CDataList[i].name_id = tUNKNOWN;
+        if (CDataList[i].move_fn == NULL)
+            CDataList[i].move_fn = Move_CHARACTER;
+        if (CDataList[i].animate_fn == NULL)
+            CDataList[i].animate_fn = Animate_CHARACTER;
+    }
+    if (fixup != NULL) {
+        while (fixup->name != NULL) {
+            if (fixup->id != NULL)
+                *fixup->id = (i16)CharIDFromName(fixup->name);
+            ++fixup;
+        }
+    }
+}
+
 typedef struct level_ai_progress_pc_s {
     u8 unknown_0000[0x2808];
     union {
