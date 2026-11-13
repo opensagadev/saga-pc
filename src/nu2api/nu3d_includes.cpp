@@ -12864,7 +12864,7 @@ extern "C" {
 
     static i32 getnextdatapoint(f32 *x, i32 *xsize) {
         f32 cx;
-        *x = cx = curx;
+        cx = *x = curx;
         size--;
         cury = cury + 1.0;
         curx += dx;
