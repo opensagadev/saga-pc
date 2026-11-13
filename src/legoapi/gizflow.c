@@ -2,12 +2,6 @@
 #include <string.h>
 
 void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
-    typedef struct FlowStoreStatePc {
-        u8 unknown_00[0xa];
-        u16 flags;
-    } FlowStoreStatePc;
-    STATIC_ASSERT(offsetof(FlowStoreStatePc, flags) == 0xa);
-    STATIC_ASSERT(sizeof(FlowStoreStatePc) == 0xc);
     FLOWBOX_PC *box;
     i32 i;
 
@@ -28,7 +22,7 @@ void __cdecl GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progre
             progress->completed[word] |= bit;
         if ((box->state_flags_low & 0x20) != 0)
             progress->latched[word] |= bit;
-        if ((((FlowStoreStatePc *)box)->flags & 0x400) != 0)
+        if ((box->state_flags & 0x400) != 0)
             progress->output_state[word] |= bit;
     }
 }
@@ -217,17 +211,10 @@ i32 __cdecl CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 
 }
 
 void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
-    typedef struct FlowParentStatePc {
-        u8 unknown_00[0xa];
-        u16 flags;
-    } FlowParentStatePc;
-    STATIC_ASSERT(offsetof(FlowParentStatePc, flags) == 0xa);
-    STATIC_ASSERT(sizeof(FlowParentStatePc) == 0xc);
     i32 i;
     for (i = 0; i < box->parent_count; ++i) {
         FLOWBOX_PC *parent = box->parents[i];
-        FlowParentStatePc *state = (FlowParentStatePc *)parent;
-        u32 flags = state->flags;
+        u32 flags = parent->state_flags;
         i32 child_index;
         i32 finished;
         if ((flags & 0x20) == 0)
@@ -237,7 +224,7 @@ void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
             u32 child_flags;
             if (!finished)
                 break;
-            child_flags = ((FlowParentStatePc *)parent->children[child_index])->flags;
+            child_flags = parent->children[child_index]->state_flags;
             if ((child_flags & 0xc0) == 0) {
                 if ((child_flags & 1) != 0 && parent->children[child_index] != box)
                     finished = 0;
@@ -258,12 +245,12 @@ void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
             for (j = 0; j < data->gizmo_count; ++j)
                 GizmoActivate(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
         }
-        flags = state->flags;
+        flags = parent->state_flags;
         if ((flags & 0x40) != 0) {
-            state->flags = flags & 0xfeff;
+            parent->state_flags = flags & 0xfeff;
             CheckIfParentsFinished(system, parent);
         }
-        state->flags &= 0xffdf;
+        parent->state_flags &= 0xffdf;
     }
 }
 
@@ -288,12 +275,6 @@ i32 __cdecl CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 out
 }
 
 i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
-    typedef struct FlowProcessGizmoStatePc {
-        u8 unknown_00[0xa];
-        u16 flags;
-    } FlowProcessGizmoStatePc;
-    STATIC_ASSERT(offsetof(FlowProcessGizmoStatePc, flags) == 0xa);
-    STATIC_ASSERT(sizeof(FlowProcessGizmoStatePc) == 0xc);
     FLOWBOXGIZMODATA_PC *data;
     u32 flags;
     i32 i;
@@ -307,7 +288,7 @@ i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
         }
     }
     CheckIfParentsFinished(system, box);
-    flags = ((FlowProcessGizmoStatePc *)box)->flags;
+    flags = box->state_flags;
     if ((flags & 0x1000) != 0 || ((flags & 0x4000) == 0 && FreePlay == 0) || ((flags & 0x2000) == 0 && FreePlay != 0))
         return 1;
     data = (FLOWBOXGIZMODATA_PC *)box->data;
