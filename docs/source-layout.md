@@ -5,7 +5,7 @@ keeps every object's code together, in source order. The retail .text is
 therefore a sequence of contiguous blocks, one per original source file (or per
 unity file that `#include`s several). This page records which block is which
 file, how that was derived, how sure each row is, and how our `src/` should be
-moved to that layout. Batches 1 and 2 of the plan below are partly done.
+moved to that layout. Batches 1 to 3 of the plan below are partly done.
 
 - Table: [`config/layout-target.csv`](../config/layout-target.csv), one row per
   compiland, and one row per included file inside a unity compiland.
@@ -348,13 +348,46 @@ into a target file in retail order and rewrites `config/*.json` owners.
    - `characters`: `IconScenes_Init/_FindById/_Load/_Dump` (`menu.c`): the
      creature stray `LoadSingleCharacter` in `characters.cpp` would inline
      `IconScene_FindById` (exact -> 81%). Merge after it moves to `creature`
-     (`DrawCharIcon` then becomes exact: 99.45% -> 100%).
+     (`DrawCharIcon` then becomes exact: 99.45% -> 100%). The four creature
+     strays of `characters.cpp` (`LoadSingleCharacter`, `UpdateCharacterLoad`,
+     `UpdateCharacterIdle`, `NewCharacterIdle`) are C++ (mid-block
+     declarations, an unnamed parameter, a local static), so they cannot join
+     `legogame/creature.c` unchanged.
    - `hub`: `indy_special.c` and `gizmo.c` pieces need `void *` casts as C++,
      and the pieces declare the hub mode globals differently.
    - `gamepads`: `PadOutPause` (`menu_pause.cpp`) and `DoInput`
      (`input.cpp`) are C++ (`reinterpret_cast`, mid-block declarations).
    - `parts`: `parts.c` is mostly `objectsall`/`gameliball` code; merge after
      its split. `PartImpact_Brick` (`parts_breakup.cpp`) is C++.
+   - `pushing`: `Pushing` (`players.c`) is the only out-of-line user of the
+     header-static `PlayersFabsPc` copy mapped at the start of `creature`
+     (0x413f00); moving it drops that copy from exact. Three C++ functions of
+     `credits.cpp` sit at the end of the `pushing` row (likely a boundary).
+   - `customise` (game side): the moved code is the only out-of-line user of
+     the static `CustomiserMtx*Pc` helpers mapped in `customiser`.
+   - `config`: `CC_variant` is a static keyword handler of `charconfig.c`'s
+     parser table; it cannot move alone.
+   - `players`: `CanPullLevers` (`aicapabilities_pc.c`): `InitPlayerAI`, still
+     in `players.c`, would inline it (99.88% -> 91.78%); move after the real
+     `players.c` -> `creature` split (49 functions).
+   - `hub`: `Arcade_GetMode` (`arcade.c`): `DrawPlayerHudPc` (`panel`, still
+     in `hub.cpp`) would inline it (94.05% -> 91.70%).
+   - `jumping` (Fade COMDAT members), `gizactions`, `bolts`, `fade` (pieces
+     in engine files), `startup_dats.c` and `player_device_port_pc.c`
+     (undetermined targets): not attempted.
+   - Language only (C pieces cannot take the C++ pieces unchanged, or the
+     reverse): `creature` 5 (`characters.cpp` 4, `game.cpp` 1),
+     `gamestatus` 21 (`screen.cpp`), `game` 2 (`cutscene_hooks.c`: a
+     `const char[]` passed as `char *`, a local static), `gizforce` 3
+     (`gizmo_*_registration_pc.cpp`), `move` 7 (`bolt_foundation_callbacks.cpp`
+     3, `characters.cpp` 2, `pushing.cpp` 1, `game.cpp` 1), `transform` 1
+     (`game.cpp`), `pulses` 1 (`streaks.cpp`), `aipathcnxhelper` 1 and
+     `gameai` 1 (`aiactions_transfer.cpp`), game `missions` 5 (`menus.cpp`),
+     `torpedo` 2 (`bolt_foundation_callbacks.cpp`), `panel` 15 (`hub.cpp` 13,
+     `game.cpp` 2), `game_obj` 19 (`parts_breakup.cpp` 18,
+     `collection_render.cpp` 1), `collection` 4 (`lighting_unit.cpp` 3,
+     `collection_render.cpp` 1); 87 functions in 14 compilands, plus the
+     `dropinout`, `worldinfo`, `gamepads` and `parts` ones above.
 
    Deferred merges, engine side (`src/nu2api`, `src/gameapi` targets):
    - `dsplay_bink`: with `pc_fmv_player.cpp` and `pc_fmv_control.cpp` merged,
@@ -372,6 +405,28 @@ into a target file in retail order and rewrites `config/*.json` owners.
    `creature`, `parts.c` -> objects/gamelib, `gameobjects.c`, `render.c`,
    `pc_device.cpp` -> `d3dCore`/`d3dCalls`). Risk: highest; prefer
    `tools/unitize.py` and move one target compiland per commit.
+   Game side (`src/legoapi`, `src/legogame` targets): 57 compilands
+   gathered, one commit each, functions in retail order (C pieces only where
+   the compiland mixes languages; see the deferred list above), with forward
+   declarations and `saga.h` duplicates dropped from the merged files
+   afterwards (`tools/declscan.py`; objects unchanged). Two engine files lost
+   strays (`nu2api/nusound.c` 6 audio functions, `gameapi/edspline_load.c` 1
+   movies function). Functions in their target file: 5750 -> 6648 of 11496;
+   compilands complete: 39 -> 64. The exact set gained `BoulderSpawnPc`.
+   Rules learnt:
+   - A C `const` definition moved into C++ gets internal linkage; write it
+     `extern const` so other objects still link (`MoviesListPathPc`).
+   - A static helper mapped in another compiland (header-static copies such as
+     `PlayersFabsPc`, `CustomiserMtx*Pc`, `LoadPerm*`) must stay with its last
+     out-of-line user; moving that user drops the mapped copy.
+   - `tools/unitize.py` does not copy struct definitions used by the moved
+     code; copy or move them by hand. Rebuild (or delete the new objects)
+     before each apply, or stale objects make functions look duplicated.
+   - Boundaries found while moving: `shop` starts at 0x4c0d50
+     (`ShopMtxCopyPc`), `grabber` at 0x470050 (`GrabberMtx*` helpers),
+     `startup` owns the `LoadPerm*` statics from 0x4c9a40, `gizturret` likely
+     starts at 0x5ab2d0, `edgizshadow` at 0x5af4f0 (`Shadow_*`), and `cable`
+     at 0x4087a0 (`CableFdiv`).
 4. **Unity files**: turn `nu3d_includes.cpp`, `nucore_includes.c`, ... into a
    unity file that `#include`s the inner files of the table, in table order,
    only where inner files are `file`/`high` (numath: `nugraph.c`, `nutrig.c`;
