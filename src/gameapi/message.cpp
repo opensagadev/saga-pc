@@ -15,7 +15,7 @@ typedef i32 (*AINETFILTERFN)(void);
 AINETFILTERFN AINetSendFilter = 0;
 AINETFILTERFN AINetReceiveFilter = 0;
 
-class AINet : public NetListenerInterface {
+class AINet : NetListenerInterface {
   public:
     AINet();
     virtual ~AINet();

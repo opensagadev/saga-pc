@@ -20409,8 +20409,8 @@ address,symbol,size,ctype
 0x76b640,??_7EdBitControl@@6B@,24,native exactVT binding; unimplemented extent unclaimed
 0x76b65c,??_7RTLHelper@@6B@,120,native exactVT binding; unimplemented extent unclaimed
 0x76b6dc,??_7FogHelper@@6B@,120,native exactVT binding; unimplemented extent unclaimed
-0x76b758,??_7EdRefRTL@@6B@,16,
-0x76b768,??_7EdRefFog@@6B@,16,
+0x76b758,??_7EdRefRTL@@6B@,12,
+0x76b768,??_7EdRefFog@@6B@,12,
 0x76b774,??_C@_05BFLILCKD@Fog?$CFd?$AA@,6,char []
 0x76b77c,__real@3ff33333,4,
 0x76b780,__real@3f13b646,4,
@@ -33476,6 +33476,7 @@ address,symbol,size,ctype
 0x7ea4f0,??_R3AINet@@8,16,
 0x7ea500,??_R2AINet@@8,9,
 0x7ea50c,??_R1A@?0A@EA@AINet@@8,28,
+0x7ea528,??_R1A@?0A@EN@NetListenerInterface@@8,28,
 0x7ea544,??_R4FadeBase@@6B@,20,
 0x7ea558,??_R3FadeBase@@8,16,
 0x7ea568,??_R2FadeBase@@8,5,
