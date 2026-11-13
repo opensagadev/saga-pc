@@ -5313,6 +5313,10 @@ void OcclusionManager::RenderStats() const {
         current_set->RenderOccluders(false);
 }
 
+static inline void OccluderCross(NUVEC *dst, const NUVEC &a, const NUVEC &b) {
+    NuVecCross(dst, const_cast<NUVEC *>(&a), const_cast<NUVEC *>(&b));
+}
+
 void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
     if (!initialized || !enabled || building_set->count >= building_set->capacity)
         return;
@@ -5322,10 +5326,8 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
         NuVec4MtxTransform(&projected[1], const_cast<NUVEC *>(b), &vpmtx);
         NuVec4MtxTransform(&projected[2], const_cast<NUVEC *>(c), &vpmtx);
         if (unknown_158 > 0.0f) {
-            NUVEC ab = projected[1] - projected[0];
-            NUVEC ac = projected[2] - projected[0];
             NUVEC normal;
-            NuVecCross(&normal, &ab, &ac);
+            OccluderCross(&normal, projected[1] - projected[0], projected[2] - projected[0]);
             NuVecNorm(&normal, &normal);
             f32 z = normal.z;
             u32 bits = *reinterpret_cast<u32 *>(&z) & 0x7fffffff;
@@ -5335,25 +5337,22 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
         NuVec4MtxTransform(&projected[3], const_cast<NUVEC *>(d), &vpmtx);
         f32 min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
         f32 max_x = -1000000.0f, max_y = -1000000.0f;
-        for (u32 i = 0; i < 4; ++i) {
-            NUVEC4 &v = projected[i];
-            if (v.w < 0.001f)
+        for (u32 i = 0; i != 4; ++i) {
+            if (projected[i].w < 0.001f)
                 return;
-            f32 x = v.x / v.w;
-            v.x = x;
-            f32 y = v.y / v.w;
-            v.y = y;
-            v.z /= v.w;
-            if (min_x > x)
-                min_x = x;
-            if (min_y > y)
-                min_y = y;
-            if (max_x < x)
-                max_x = x;
-            if (max_y < y)
-                max_y = y;
-            if (v.w < min_depth)
-                min_depth = v.w;
+            projected[i].x /= projected[i].w;
+            projected[i].y /= projected[i].w;
+            projected[i].z /= projected[i].w;
+            if (min_x > projected[i].x)
+                min_x = projected[i].x;
+            if (min_y > projected[i].y)
+                min_y = projected[i].y;
+            if (max_x < projected[i].x)
+                max_x = projected[i].x;
+            if (max_y < projected[i].y)
+                max_y = projected[i].y;
+            if (projected[i].w < min_depth)
+                min_depth = projected[i].w;
         }
         if (unknown_15c > 0.0f) {
             f32 area = (max_y - min_y) * (max_x - min_x);
