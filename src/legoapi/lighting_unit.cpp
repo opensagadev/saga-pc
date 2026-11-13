@@ -194,22 +194,22 @@ extern "C" {
     }
 
     void __cdecl SetPanelLights(f32 intensity) {
-        f32 scale = (f32)((f64)intensity * 0.5);
         NUVEC colours[3], ambient;
         NUVEC *selected_colours, *selected_ambient;
-        if (scale != 1.0f) {
-            colours[0].x = PanelLightingColoursPc[0].x * scale;
-            colours[0].y = PanelLightingColoursPc[0].y * scale;
-            colours[0].z = PanelLightingColoursPc[0].z * scale;
-            colours[1].x = PanelLightingColoursPc[1].x * scale;
-            colours[1].y = PanelLightingColoursPc[1].y * scale;
-            colours[1].z = PanelLightingColoursPc[1].z * scale;
-            colours[2].x = PanelLightingColoursPc[2].x * scale;
-            colours[2].y = PanelLightingColoursPc[2].y * scale;
-            colours[2].z = PanelLightingColoursPc[2].z * scale;
-            ambient.x = PanelLightingAmbientPc.x * scale;
-            ambient.y = PanelLightingAmbientPc.y * scale;
-            ambient.z = PanelLightingAmbientPc.z * scale;
+        intensity *= 0.5;
+        if (intensity != 1.0f) {
+            colours[0].x = PanelLightingColoursPc[0].x * intensity;
+            colours[0].y = PanelLightingColoursPc[0].y * intensity;
+            colours[0].z = PanelLightingColoursPc[0].z * intensity;
+            colours[1].x = PanelLightingColoursPc[1].x * intensity;
+            colours[1].y = PanelLightingColoursPc[1].y * intensity;
+            colours[1].z = PanelLightingColoursPc[1].z * intensity;
+            colours[2].x = PanelLightingColoursPc[2].x * intensity;
+            colours[2].y = PanelLightingColoursPc[2].y * intensity;
+            colours[2].z = PanelLightingColoursPc[2].z * intensity;
+            ambient.x = PanelLightingAmbientPc.x * intensity;
+            ambient.y = PanelLightingAmbientPc.y * intensity;
+            ambient.z = PanelLightingAmbientPc.z * intensity;
             selected_colours = colours;
             selected_ambient = &ambient;
         } else {
