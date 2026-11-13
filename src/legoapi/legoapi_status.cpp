@@ -146,23 +146,16 @@ extern "C" {
         NuQFntSetScale(QFont3DZ, scale, scale);
         Text3DStringEncode(text, encoded);
         switch (alignment) {
-            case 2: {
-                f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
-                NuQFntMove(QFont3DZ, 0.0f, move_y, 0.0f);
+            case 2:
+                NuQFntMove(QFont3DZ, 0.0f, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
-            }
-            case 8: {
-                f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
-                f32 move_x = -NuQFntPrintLenW(QFont3DZ, encoded);
-                NuQFntMove(QFont3DZ, move_x, move_y, 0.0f);
+            case 8:
+                NuQFntMove(QFont3DZ, -NuQFntPrintLenW(QFont3DZ, encoded), (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
-            }
-            default: {
-                f32 move_y = (f32)(-NuQFntHeight(QFont3DZ) * 0.5);
-                f32 move_x = (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5);
-                NuQFntMove(QFont3DZ, move_x, move_y, 0.0f);
+            default:
+                NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenW(QFont3DZ, encoded) * 0.5),
+                           (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
-            }
         }
         NuQFntPrintW(QFont3DZ, encoded);
         NuQFntPopPrintMode();
