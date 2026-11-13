@@ -47,8 +47,8 @@ void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
                 NuSpecialFind(world->current_gscn, &fader->while_animating, parser->word_buffer_ptr, 1);
             }
         }
-        ++view->fader_count;
         ++fader;
+        ++view->fader_count;
     }
     NuFParDestroy(parser);
     if (view->fader_count > 0) {
