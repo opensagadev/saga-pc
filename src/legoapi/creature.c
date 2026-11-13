@@ -208,31 +208,31 @@ void __cdecl ResetAICreatures(AISYS_PC *system) {
         if (WORLD->level_progress != NULL &&
             (((u64)1 << index) & ((LEVEL_AI_PROGRESS_PC *)WORLD->level_progress)->disabled_ai_objects) != 0) {
             object->dead = 1;
-            object->ai_packet.reset_mode = 4;
-            continue;
+        } else {
+            creature = &system->creatures[object->ai_packet.creature_index];
+            object->ai_packet.respawn_count = 0;
+            object->ai_packet.reset_mode = 0;
+            AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
+                                  ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name,
+                                  (char *)GameObjectState_InActive, 1, NULL, NULL);
+            if (object->ai_packet.script_processor.state != NULL &&
+                object->ai_packet.script_processor.state->name != NULL &&
+                NuStrICmp(object->ai_packet.script_processor.state->name, GameObjectState_InActive) == 0)
+                creature->activation_type = 2;
+            if (creature->activation_type != 0)
+                continue;
+            if (Game.difficulty >= creature->activation_difficulty) {
+                if (creature->count > 1 && creature->start_stagger > 0.0f &&
+                    object->ai_packet.group_member_index != 0) {
+                    object->ai_packet.spawn_delay = (f32)object->ai_packet.group_member_index * creature->start_stagger;
+                    object->ai_packet.reset_mode = 1;
+                } else {
+                    ResetAICreature(object, system);
+                }
+                continue;
+            }
         }
-        creature = &system->creatures[object->ai_packet.creature_index];
-        object->ai_packet.respawn_count = 0;
-        object->ai_packet.reset_mode = 0;
-        AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                              ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, (char *)GameObjectState_InActive, 1,
-                              NULL, NULL);
-        if (object->ai_packet.script_processor.state != NULL &&
-            object->ai_packet.script_processor.state->name != NULL &&
-            NuStrICmp(object->ai_packet.script_processor.state->name, GameObjectState_InActive) == 0)
-            creature->activation_type = 2;
-        if (creature->activation_type != 0)
-            continue;
-        if (Game.difficulty < creature->activation_difficulty) {
-            object->ai_packet.reset_mode = 4;
-            continue;
-        }
-        if (creature->count > 1 && creature->start_stagger > 0.0f && object->ai_packet.group_member_index != 0) {
-            object->ai_packet.spawn_delay = (f32)object->ai_packet.group_member_index * creature->start_stagger;
-            object->ai_packet.reset_mode = 1;
-            continue;
-        }
-        ResetAICreature(object, system);
+        object->ai_packet.reset_mode = 4;
     }
 }
 
