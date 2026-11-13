@@ -1252,7 +1252,7 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
 }
 i32 pushblock_gizmotype_id = 0;
 
-ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32 type_id) {
+extern "C" ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     char *name = PushBlocksNamePc;
     addtype = Default_ADDGIZMOTYPE;

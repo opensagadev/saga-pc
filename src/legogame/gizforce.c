@@ -142,6 +142,37 @@ typedef struct {
     FORCE_PROGRESS_GROUP_PC groups[8];
 } FORCE_PROGRESS_SYSTEM_PC;
 
+STATIC_ASSERT(sizeof(REGISTER_GIZMO_CONFIG_TYPE_FN) == 4);
+void __cdecl RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
+ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl NewBlowup_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Signals_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Grapples_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl TightRopes_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Ledges_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Spinner_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl SecurityDoors_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Attractos_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GuideLines_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizTurrets_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizTimer_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizRandom_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Door_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizAIMessage_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizBombGen_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizPanel_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl Teleport_RegisterGizmo(i32);
+ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32);
+static void __cdecl GizForceSFX_completesfx(NUFPAR_PC *parser);
+static void __cdecl GizForceSFX_forcename(NUFPAR_PC *parser);
+static void __cdecl GizForceSFX_processsfx(NUFPAR_PC *parser);
+static void __cdecl GizForceSFX_returnsfx(NUFPAR_PC *parser);
+
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *object) {
     if (object->gizforce_los_info != NULL)
         memset(object->gizforce_los_info, 0, 0x630);
@@ -1713,4 +1744,102 @@ ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = (void *)GizForces_AddLevelSfx;
     force_gizmotype_id = type_id;
     return addtype;
+}
+
+/* Gizmo set registered by LoadPermData when StartupGameFlag0 is set. */
+void __cdecl RegisterDefaultGizmoTypesPc(VARIPTR *buffer, VARIPTR *end) {
+    REGISTER_GIZMO_CONFIG_TYPE_FN functions[24];
+    functions[0] = GizObstacles_RegisterGizmo;
+    functions[1] = GizBuildIts_RegisterGizmo;
+    functions[2] = NewBlowup_RegisterGizmo;
+    functions[3] = GizmoPickups_RegisterGizmo;
+    functions[4] = Grapples_RegisterGizmo;
+    functions[5] = TightRopes_RegisterGizmo;
+    functions[6] = Levers_RegisterGizmo;
+    functions[7] = Spinner_RegisterGizmo;
+    functions[8] = Technos_RegisterGizmo;
+    functions[9] = MiniCut_RegisterGizmo;
+    functions[10] = Tubes_RegisterGizmo;
+    functions[11] = ZipUps_RegisterGizmo;
+    functions[12] = GizTurrets_RegisterGizmo;
+    functions[13] = AI_RegisterGizmo;
+    functions[14] = GizTimer_RegisterGizmo;
+    functions[15] = GizRandom_RegisterGizmo;
+    functions[16] = GizSpecial_RegisterGizmo;
+    functions[17] = Door_RegisterGizmo;
+    functions[18] = Plugs_RegisterGizmo;
+    functions[19] = GizAIMessage_RegisterGizmo;
+    functions[20] = Push_RegisterGizmo;
+    functions[21] = EdGizShadowMachine_RegisterGizmo;
+    functions[22] = Portal_RegisterGizmo;
+    functions[23] = NULL;
+    RegisterGizmoTypes(buffer, end, functions, 12);
+}
+
+void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *buffer, VARIPTR *end) {
+    REGISTER_GIZMO_CONFIG_TYPE_FN functions[29];
+    functions[0] = GizObstacles_RegisterGizmo;
+    functions[1] = GizBuildIts_RegisterGizmo;
+    functions[2] = NewBlowup_RegisterGizmo;
+    functions[3] = GizmoPickups_RegisterGizmo;
+    functions[4] = Shards_RegisterGizmo;
+    functions[5] = Signals_RegisterGizmo;
+    functions[6] = Grapples_RegisterGizmo;
+    functions[7] = TightRopes_RegisterGizmo;
+    functions[8] = Ledges_RegisterGizmo;
+    functions[9] = Levers_RegisterGizmo;
+    functions[10] = Spinner_RegisterGizmo;
+    functions[11] = Technos_RegisterGizmo;
+    functions[12] = SecurityDoors_RegisterGizmo;
+    functions[13] = Attractos_RegisterGizmo;
+    functions[14] = MiniCut_RegisterGizmo;
+    functions[15] = GuideLines_RegisterGizmo;
+    functions[16] = Tubes_RegisterGizmo;
+    functions[17] = ZipUps_RegisterGizmo;
+    functions[18] = GizTurrets_RegisterGizmo;
+    functions[19] = AI_RegisterGizmo;
+    functions[20] = GizTimer_RegisterGizmo;
+    functions[21] = GizRandom_RegisterGizmo;
+    functions[22] = GizSpecial_RegisterGizmo;
+    functions[23] = Door_RegisterGizmo;
+    functions[24] = GizAIMessage_RegisterGizmo;
+    functions[25] = Push_RegisterGizmo;
+    functions[26] = EdGizShadowMachine_RegisterGizmo;
+    functions[27] = Portal_RegisterGizmo;
+    functions[28] = NULL;
+    RegisterGizmoTypes(buffer, end, functions, 12);
+}
+
+void __cdecl RegisterLswGizmoTypesPc(VARIPTR *buffer, VARIPTR *end) {
+    REGISTER_GIZMO_CONFIG_TYPE_FN functions[29];
+    functions[0] = GizObstacles_RegisterGizmo;
+    functions[1] = GizBuildIts_RegisterGizmo;
+    functions[2] = GizForce_RegisterGizmo;
+    functions[3] = NewBlowup_RegisterGizmo;
+    functions[4] = GizmoPickups_RegisterGizmo;
+    functions[5] = Levers_RegisterGizmo;
+    functions[6] = Spinner_RegisterGizmo;
+    functions[7] = MiniCut_RegisterGizmo;
+    functions[8] = Tubes_RegisterGizmo;
+    functions[9] = ZipUps_RegisterGizmo;
+    functions[10] = GizTurrets_RegisterGizmo;
+    functions[11] = GizBombGen_RegisterGizmo;
+    functions[12] = AI_RegisterGizmo;
+    functions[13] = GizSpecial_RegisterGizmo;
+    functions[14] = GizAIMessage_RegisterGizmo;
+    functions[15] = GizTimer_RegisterGizmo;
+    functions[16] = GizRandom_RegisterGizmo;
+    functions[17] = GizPanel_RegisterGizmo;
+    functions[18] = HatMachine_RegisterGizmo;
+    functions[19] = Push_RegisterGizmo;
+    functions[20] = Door_RegisterGizmo;
+    functions[21] = Teleport_RegisterGizmo;
+    functions[22] = GizTorpMachine_RegisterGizmo;
+    functions[23] = EdGizShadowMachine_RegisterGizmo;
+    functions[24] = Portal_RegisterGizmo;
+    functions[25] = Grapples_RegisterGizmo;
+    functions[26] = Plugs_RegisterGizmo;
+    functions[27] = Technos_RegisterGizmo;
+    functions[28] = NULL;
+    RegisterGizmoTypes(buffer, end, functions, 12);
 }
