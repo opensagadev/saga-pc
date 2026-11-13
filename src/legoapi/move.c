@@ -2323,7 +2323,7 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
                 Hub_PadAngle[index] = pad->input_angle;
                 pad->input_mode = 1;
                 pad->input_magnitude = 0.0f;
-                pad->input_direction_z = pad->input_direction_x = 0.0f;
+                pad->input_direction_x = pad->input_direction_z = 0.0f;
             }
             if (pad->input_magnitude > 0.0f)
                 pad->animation_input_magnitude = pad->input_magnitude;
