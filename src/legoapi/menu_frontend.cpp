@@ -994,9 +994,10 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
             i32 alpha_base = (i32)(AlternateHudColourBytesPc[4] +
                                    (AlternateHudColourBytesPc[7] - AlternateHudColourBytesPc[4]) * blend);
             i32 alpha = (i32)(alpha_base * (MenuA * 0.0078125));
-            SmartTextEx(warning, PauseMenus_X, menu->draw_y + (save_level ? 2.0f : 1.0f) * MENUDY + spacing * MENUDY,
-                        1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, PauseMenus_Align, red, blue, green,
-                        1.7f, 1, NULL, 0, alpha);
+            f32 draw_y = menu->draw_y;
+            SmartTextEx(warning, PauseMenus_X, draw_y + (save_level ? 2.0f : 1.0f) * MENUDY + spacing * MENUDY, 1.0f,
+                        MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, PauseMenus_Align, red, blue, green, 1.7f, 1,
+                        NULL, 0, alpha);
         }
     }
     if (save_level) {
