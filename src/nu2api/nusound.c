@@ -1272,17 +1272,14 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     cursor->addr = (cursor->addr + 3) & ~3u;
     SfxHashHeads = (i16 *)cursor->void_ptr;
     cursor->addr += 0x200;
-    cursor->addr = (cursor->addr + 3) & ~3u;
-    SfxFileInfoPc = (SFX_FILE_INFO_PC *)cursor->void_ptr;
-    cursor->addr += 1600 * sizeof(SFX_FILE_INFO_PC);
+    SfxFileInfoPc = (SFX_FILE_INFO_PC *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_FILE_INFO_PC);
     memset(SfxFileInfoPc, 0, 1600 * sizeof(SFX_FILE_INFO_PC));
-    cursor->addr = (cursor->addr + 3) & ~3u;
-    SfxInfo = (SFX_RECORD_PC *)cursor->void_ptr;
-    cursor->addr += 1600 * sizeof(SFX_RECORD_PC);
+    SfxInfo = (SFX_RECORD_PC *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD_PC);
     memset(SfxInfo, 0, 1600 * sizeof(SFX_RECORD_PC));
-    cursor->addr = (cursor->addr + 3) & ~3u;
-    SfxRevertInfoPc = (SFX_RECORD_PC *)cursor->void_ptr;
-    cursor->addr += 1600 * sizeof(SFX_RECORD_PC);
+    SfxRevertInfoPc = (SFX_RECORD_PC *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD_PC);
     memset(SfxRevertInfoPc, 0, 1600 * sizeof(SFX_RECORD_PC));
     SfxBuildCRCTable(cursor, end);
     for (i = 0; i < 256; ++i)
@@ -1293,9 +1290,9 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
         SfxFileInfoPc[i] = SfxFileTable[i];
         SfxFileInfoPc[i].index = i;
         NuStrCpy(SfxFilenameSlotsPc[i], SfxFileInfoPc[i].filename);
-        SfxFileInfoPc[i].filename = SfxFilenameSlotsPc[i];
         ++NumSfx;
         ++NumSfxNames;
+        SfxFileInfoPc[i].filename = SfxFilenameSlotsPc[i];
     }
     SfxFileInfoPc[i].filename = NULL;
     SfxFileInfoPc[i].pitch = 0;
