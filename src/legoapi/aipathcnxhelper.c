@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x5ab0a0-0x5ab2d0: definitions in retail address order. */
 #include <float.h>
 
 typedef struct ai_control_slot_pc_s {
@@ -40,6 +42,21 @@ void __cdecl AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
 
 /* Native 0x005ab0f0, 66 bytes. */
 extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
+
+void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
+    AI_HELPER_SYSTEM_PC *system = NULL;
+    if (count != 0) {
+        system = (AI_HELPER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
+        if (system != NULL) {
+            system->helpers =
+                (AI_HELPER_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
+            if (system->helpers != NULL)
+                system->capacity = (i16)count;
+        }
+    }
+    return system;
+}
+
 void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
     if (system != NULL) {
         if (system->count != 0) {
@@ -49,6 +66,26 @@ void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *syst
         if (AIPathCnxHelperSysInitFn != NULL)
             AIPathCnxHelperSysInitFn(world);
     }
+}
+
+AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
+                                                   AIPATHCNX_PC *connection, u8 direction, u8 type,
+                                                   AI_HELPER_FILTER_PC filter) {
+    AI_HELPER_SLOT_PC *helper;
+    i32 index;
+    if (connection == NULL && object != NULL) {
+        connection = object->ai_packet.path_info.connection;
+        direction = object->ai_packet.path_info.direction;
+    }
+    if (system != NULL && connection != NULL) {
+        helper = system->helpers;
+        for (index = 0; index < system->count; ++index, ++helper) {
+            if (helper->connection == connection && (helper->direction == 0xff || helper->direction == direction) &&
+                type == helper->type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
+                return helper;
+        }
+    }
+    return NULL;
 }
 
 typedef struct ai_controller_scene_view_pc_s {

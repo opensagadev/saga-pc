@@ -58,19 +58,6 @@ i16 GetGenericGoon(i32 armed) {
     }
     return -1;
 }
-void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    AI_HELPER_SYSTEM_PC *system = NULL;
-    if (count != 0) {
-        system = (AI_HELPER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
-        if (system != NULL) {
-            system->helpers =
-                (AI_HELPER_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
-            if (system->helpers != NULL)
-                system->capacity = (i16)count;
-        }
-    }
-    return system;
-}
 void *__cdecl CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
     CLIMB_SYSTEM_PC *system = NULL;
     if (count != 0) {
