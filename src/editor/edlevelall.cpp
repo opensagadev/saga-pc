@@ -7043,15 +7043,12 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
         average.z *= scale;
         radius = 0.0f;
         for (i32 i = 0; i < count; i++) {
-            NUVEC difference;
-            difference.x = average.x - positions[i].x;
-            difference.y = average.y - positions[i].y;
-            difference.z = average.z - positions[i].z;
-            f32 extent =
-                NuFsqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z) +
-                radii[i];
-            if (radius < extent)
-                radius = extent;
+            VuVec difference;
+            VuVecCopy(difference, average - positions[i]);
+            f32 length =
+                NuFsqrt(difference.y * difference.y + difference.x * difference.x + difference.z * difference.z);
+            if (radii[i] + length > radius)
+                radius = radii[i] + length;
         }
     }
     return count;
