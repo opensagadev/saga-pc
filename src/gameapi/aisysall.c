@@ -18495,7 +18495,6 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
     EDAIPATHNODE_s *nearest;
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *start;
-    NUVEC position;
     f32 step;
     i32 named;
     if (pad->digital_buttons_pressed & 0x80)
@@ -18522,6 +18521,7 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
             return NULL;
         }
         if (pad->digital_buttons & 0x40) {
+            NUVEC position;
             nearest = aieditor->current_path->nearest_node;
             if (nearest != NULL) {
                 if (pad->digital_buttons_pressed & 0x40) {
@@ -18579,13 +18579,16 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
             if (node != NULL) {
                 nearest = aieditor->current_path->nearest_node;
                 if (nearest != NULL && nearest != node) {
-                    if (pathEditor_FindConnection(node, nearest) != NULL)
+                    if (pathEditor_FindConnection(node, nearest) != NULL) {
                         return pathEditor_DisconnectNodeMenu();
-                    pathEditor_ConnectNodes(node, nearest);
-                    position.x = nearest->position.x;
-                    position.y = aieditor->cursor_position.y;
-                    position.z = nearest->position.z;
-                    edcamSetPos(&position);
+                    } else {
+                        NUVEC position;
+                        pathEditor_ConnectNodes(node, nearest);
+                        position.x = nearest->position.x;
+                        position.y = aieditor->cursor_position.y;
+                        position.z = nearest->position.z;
+                        edcamSetPos(&position);
+                    }
                 }
             }
         }
