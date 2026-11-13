@@ -1537,11 +1537,12 @@ void __thiscall PC_DEVICE_BACKEND_PC::NextResolution() {
             index = 0;
         ++visited;
     }
+    u32 first = index;
     u32 selected = index;
     u32 reference = index;
     i32 closest = 1000;
-    while (index < mode_count && modes[index].width == modes[reference].width &&
-           modes[index].height == modes[reference].height) {
+    while (index < mode_count && modes[index].width == modes[first].width &&
+           modes[index].height == modes[first].height) {
         if (modes[index].refresh_rate == modes[original].refresh_rate) {
             requested_mode = index;
             return;
@@ -1568,11 +1569,11 @@ void __thiscall PC_DEVICE_BACKEND_PC::PreviousResolution() {
             index = (i32)mode_count - 1;
         ++visited;
     }
+    i32 first = index;
     i32 selected = index;
     i32 reference = index;
     i32 closest = 1000;
-    while (index >= 0 && modes[index].width == modes[reference].width &&
-           modes[index].height == modes[reference].height) {
+    while (index >= 0 && modes[index].width == modes[first].width && modes[index].height == modes[first].height) {
         if (modes[index].refresh_rate == modes[original].refresh_rate) {
             requested_mode = (u32)index;
             return;
