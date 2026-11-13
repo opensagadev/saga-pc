@@ -368,7 +368,12 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         return 1;
     }
     object->character_context = 0x2e;
-    object->field_7aa = object->jump_variant_state == 1 ? 0x6f : (object->flags_e20 & 0x10000) != 0 ? 0x6e : 0x65;
+    if (object->jump_variant_state == 1)
+        object->field_7aa = 0x6f;
+    else if ((object->flags_e20 & 0x10000) != 0)
+        object->field_7aa = 0x6e;
+    else
+        object->field_7aa = 0x65;
     if (object->character_model->action_animations[object->field_7aa] == NULL)
         object->field_7aa = 0x65;
     if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL)
