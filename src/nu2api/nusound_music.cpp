@@ -773,7 +773,7 @@ char *NuMusic::AllocString(const char *str) {
     }
     return p;
 }
-void NuMusic::SubstituteString(char *src, char *dst, char *find, char *subst) {
+void NuMusic::SubstituteString(char *dst, char *src, char *find, char *subst) {
     char *hit;
     i32 offset;
 
@@ -925,7 +925,7 @@ void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     NuStrCpy(path, current_path);
     NuStrCat(path, parser->word_buffer_ptr);
-    SubstituteString(path, substituted, NuMusicLanguageTokenPc, language);
+    SubstituteString(substituted, path, NuMusicLanguageTokenPc, language);
     current_track->filenames[0] = AllocString(substituted);
     current_track->ident = RemovePath(current_track->filenames[0]);
     if (strict_mode != 0)
@@ -964,7 +964,7 @@ void NuMusic::xIndex(NUFPAR_PC *parser) {
 void NuMusic::xNoMusic(NUFPAR_PC *parser) {
     char substituted[256];
     NuFParGetWord(parser);
-    SubstituteString(parser->word_buffer_ptr, substituted, NuMusicLanguageTokenPc, language);
+    SubstituteString(substituted, parser->word_buffer_ptr, NuMusicLanguageTokenPc, language);
     current_track->filenames[1] = AllocString(substituted);
 }
 void NuMusic::xNoDuck(NUFPAR_PC *parser) {
