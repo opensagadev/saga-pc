@@ -4946,7 +4946,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
     else
         NuAnimMtxCopyPrivatePc(&transform, &projection_matrix);
-    for (i32 i = 0; i != 8; ++i) {
+    for (u32 i = 0; i < 8; ++i) {
         NuVec4MtxTransform(&corners[i], reinterpret_cast<NUVEC *>(&corners[i]), &transform);
         if (corners[i].w <= 0.0f)
             return false;
