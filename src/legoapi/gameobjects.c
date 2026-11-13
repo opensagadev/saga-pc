@@ -3684,12 +3684,6 @@ void __cdecl GameAIProcess(void) {
     oneAtOnce_MaintainArray();
 }
 
-i32 AutoSaveIconPendingPc = 0;
-
-void __cdecl DrawAutoSaveIcon(void) {
-    AutoSaveIconPendingPc = 1;
-}
-
 /* Native 0x0043fda0, 390 bytes. */
 STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
 STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);

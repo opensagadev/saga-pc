@@ -252,12 +252,6 @@ void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
-f32 MeleeRowsScalePc = 0.8f;
-f32 MeleeRowsYPc = 0.475f;
-f32 MeleeRowsSpacingPc = 0.15f;
-f32 MeleeRowsYOffsetPc = -0.175f;
-extern f32 HudBossIconScalePc;
-
 /* PC level-script and antinode views retain the surrounding canonical layouts.
  */
 typedef struct HOTH_WORLD_SCRIPT_PC {
@@ -275,58 +269,3 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.locator) == 0x36c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.creature_set) == 0x378);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-
-void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
-    i32 row_counts[3];
-    i32 row, i;
-    f32 size, spacing, offset, x, y;
-    if (FadeSys.fade != 0.0f || count <= 0)
-        return;
-    memset(row_counts, 0, sizeof(row_counts));
-    row = 0;
-    for (i = 0; i < count; ++i) {
-        if (targets[i] == -1)
-            ++row;
-        else
-            ++row_counts[row];
-    }
-    size = HudBossIconScalePc * MeleeRowsScalePc;
-    spacing = MeleeRowsSpacingPc * MeleeRowsScalePc;
-    offset = MeleeRowsScalePc * MeleeRowsYOffsetPc;
-    x = (f32) - ((row_counts[0] - 1) * (f64)spacing * 0.5);
-    y = MeleeRowsYPc - offset;
-    row = 0;
-    for (i = 0; i < count; ++i) {
-        if (targets[i] == -1) {
-            ++row;
-            ++i;
-            y += offset;
-            x = (f32) - (row_counts[row] * (f64)spacing * 0.5);
-            if ((((row_counts[row] - row_counts[row - 1] % 2) + row) & 1) == 0)
-                x = (f32)((f64)spacing * 0.5 + x);
-        }
-        DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
-        x += spacing;
-    }
-}
-
-void __cdecl DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
-    f32 size, spacing, offset, x;
-    i32 i;
-    if (FadeSys.fade != 0.0f || count <= 0)
-        return;
-    size = HudBossIconScalePc * MeleeRowsScalePc;
-    spacing = (f32)((f64)MeleeRowsSpacingPc * 0.5 * (f64)MeleeRowsScalePc);
-    offset = (f32)((f64)MeleeRowsYOffsetPc * 0.5 * (f64)MeleeRowsScalePc);
-    x = (f32)((f64)(1 - count) * (f64)spacing * 0.5);
-    for (i = 0; i < count; ++i) {
-        f32 y = (i & 1) != 0 ? offset + MeleeRowsYPc : MeleeRowsYPc - offset;
-        if (values != NULL) {
-            DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
-        } else {
-            f32 alpha = dimmed[i] != 0 ? 0.25f : 1.0f;
-            DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, alpha, alpha, 1, NULL);
-        }
-        x += spacing;
-    }
-}
