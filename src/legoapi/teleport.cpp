@@ -77,7 +77,8 @@ typedef struct TELEPORT_MOTION_PC {
     u16 flags;
     u8 enabled, active;
     NUSPECIALHANDLE blocking_special, flap1_special, flap2_special;
-    u16 flap1_angle, flap2_angle, flap1_target, flap2_target;
+    u16 flap_angle[2];
+    u16 flap_target[2];
     NUMTX flap1_matrix, flap2_matrix;
 } TELEPORT_MOTION_PC;
 typedef struct TELEPORT_WORLD_PC {
@@ -104,8 +105,7 @@ STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, active) == 0x4f);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, blocking_special) == 0x50);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_special) == 0x5c);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_special) == 0x68);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_target) == 0x78);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_target) == 0x7a);
+STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap_target) == 0x78);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_matrix) == 0x7c);
 STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_matrix) == 0xbc);
 STATIC_ASSERT(offsetof(TELEPORT_WORLD_PC, teleports) == 0x4680);
@@ -120,10 +120,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap1_angle) == 0x74);
-STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap2_angle) == 0x76);
-STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap1_angle) == 2);
-STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap2_angle) == 2);
+STATIC_ASSERT(offsetof(TELEPORT_MOTION_PC, flap_angle) == 0x74);
+STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap_angle) == 4);
 typedef struct {
     char name[16];
     u8 opaque[0xfc - 16];
@@ -416,8 +414,8 @@ extern "C" void __cdecl Teleports_Reset(WORLDINFO *world) {
         teleport->active = 0;
         teleport->enabled = 1;
         for (i32 flap = 0; flap < 2; ++flap) {
-            (&teleport->flap1_target)[flap] = 0;
-            (&teleport->flap1_angle)[flap] = 0;
+            teleport->flap_target[flap] = 0;
+            teleport->flap_angle[flap] = 0;
         }
     }
 }
@@ -427,7 +425,7 @@ extern "C" void __cdecl Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
     if (teleport == NULL)
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
-        teleport->flap1_target = teleport->flap2_target = 0;
+        memset(teleport->flap_target, 0, sizeof(teleport->flap_target));
     }
 }
 
@@ -437,12 +435,11 @@ extern "C" void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
         for (i32 flap = 0; flap < 2; ++flap) {
-            (&teleport->flap1_angle)[flap] =
-                SeekRot((&teleport->flap1_angle)[flap], (&teleport->flap1_target)[flap], 5.0f);
+            teleport->flap_angle[flap] = SeekRot(teleport->flap_angle[flap], teleport->flap_target[flap], 5.0f);
             if (NuSpecialExistsFn(&(&teleport->flap1_special)[flap])) {
                 NUMTX matrix = (&teleport->flap1_matrix)[flap];
-                NuMtxPreRotateX(&matrix, (teleport->flags & 8) != 0 ? -(&teleport->flap1_angle)[flap]
-                                                                    : (&teleport->flap1_angle)[flap]);
+                NuMtxPreRotateX(&matrix,
+                                (teleport->flags & 8) != 0 ? -teleport->flap_angle[flap] : teleport->flap_angle[flap]);
                 NuSpecialSetDrawMtx(&(&teleport->flap1_special)[flap], &matrix);
                 NuSpecialUpdate(&(&teleport->flap1_special)[flap]);
             }
@@ -460,7 +457,7 @@ extern "C" void __cdecl Teleport_NetMoveCode(GAMEOBJECT *object) {
                                NuSpecialGetDrawPos(&(&((TELEPORT_MOTION_PC *)object->grapple)->flap1_special)[flap]),
                                NULL) < 0.36f))
                 continue;
-            (&((TELEPORT_MOTION_PC *)object->grapple)->flap1_target)[flap] = (u16)(flap == 0 ? rotation : -rotation);
+            ((TELEPORT_MOTION_PC *)object->grapple)->flap_target[flap] = (u16)(flap == 0 ? rotation : -rotation);
             if ((object->field_7a4 & (1 << flap)) == 0) {
                 object->field_7a4 |= (u16)(1 << flap);
                 PlaySfx("env_door_flap", &object->collision_position);
@@ -489,7 +486,7 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
                     if (i != 0)
                         rotation = -rotation;
                     teleport = (TELEPORT_MOTION_PC *)object->grapple;
-                    (&teleport->flap1_target)[i] = (u16)rotation;
+                    teleport->flap_target[i] = (u16)rotation;
                     if ((object->field_7a4 & (1 << i)) == 0) {
                         object->field_7a4 |= (1 << i);
                         PlaySfx("env_door_flap", position);
