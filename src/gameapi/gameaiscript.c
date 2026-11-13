@@ -1665,22 +1665,22 @@ f32 __cdecl Condition_IsAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
     (void)process;
     (void)packet;
     (void)name;
-    if (object == NULL)
-        return 0.0f;
-    group = object->ai->group;
-    if (group != NULL) {
-        count = group->member_count;
-        for (index = 0; index < count; ++index) {
-            member = (GAMEOBJECT *)group->members[index];
-            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0 &&
-                member->dead == 0)
+    if (object != NULL) {
+        group = object->ai->group;
+        if (group != NULL) {
+            count = group->member_count;
+            for (index = 0; index < count; ++index) {
+                member = (GAMEOBJECT *)group->members[index];
+                if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0 &&
+                    member->dead == 0)
+                    return 1.0f;
+            }
+        } else {
+            member = (GAMEOBJECT *)object;
+            if ((member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0)
                 return 1.0f;
         }
-        return 0.0f;
     }
-    member = (GAMEOBJECT *)object;
-    if ((member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0)
-        return 1.0f;
     return 0.0f;
 }
 
