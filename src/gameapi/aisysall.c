@@ -6702,7 +6702,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     AIPATHNODE_PC *node;
     f32 candidate;
     AIPATHCNX_PC *next;
-    u32 flags;
+    i32 flags;
     AIPATHCNX_PC *current_2;
     u32 flags_2;
     AIPATHNODE_PC *shared;
@@ -6803,7 +6803,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                 if ((connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
                     {
                         if (destination_distance_0 != FLT_MAX &&
-                            endpoint_distances[0 == packet->path_info.direction] != FLT_MAX) {
+                            endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
                             candidate = AIPathNodeDistanceToPathNode(
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction == 0],
                                 destination_connection->node_indices[0], packet->current_route, 0);
@@ -6816,8 +6816,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         }
                         if (candidate < best_distance) {
                             best_distance = candidate;
-                            direction = packet->path_info.direction;
                             goal_index = destination_connection->node_indices[0];
+                            direction = packet->path_info.direction;
                             packet->flags &= ~0x00100000u;
                         }
                     }
@@ -6890,7 +6890,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     attempted_routes |= 1u << packet->current_route;
                 }
                 AISysFindRoute(packet);
-                if (((attempted_routes >> packet->current_route) & 1) != 0) {
+                if ((attempted_routes & (1u << packet->current_route)) != 0) {
                     return;
                 }
                 destination_distance_0 =
@@ -6920,9 +6920,9 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     next = GetNextConnection(packet, &direction);
                 } while (next != NULL);
             } else {
-                flags = destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1];
-                if ((flags & 0xd8000000) == 0 &&
-                    ((flags & 0xdfffffff) == 0 || (packet->capabilities & (flags & 0xdfffffff)) != 0) &&
+                flags = (destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1]) &
+                        0xdfffffff;
+                if ((flags & 0xd8000000) == 0 && (flags == 0 || (packet->capabilities & flags) != 0) &&
                     WithinConnection(system, &packet->terrain_origin, packet->path_info.path, destination_connection,
                                      checks, packet->path_info.connection, packet->current_route, object->object_id,
                                      NULL, object->collision_radius, 0) != 0) {
@@ -7035,34 +7035,37 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
             }
             if (WithinConnection(system, &target_2, packet->path_info.path, current_2, checks,
                                  packet->path_info.connection, packet->current_route, object->object_id, NULL,
-                                 object->collision_radius, 0) == 0) {
-                if (CalculateIntersection(system, packet, object, current_2, next_2) != 0) {
-                    use_left = 0;
+                                 object->collision_radius, 0) != 0) {
+                packet->movement_destination = target_2;
+                packet->movement_stopping_distance = 0.0f;
+                return;
+            }
+            if (CalculateIntersection(system, packet, object, current_2, next_2) != 0) {
+                use_left = 0;
 
-                    if ((packet->flags & 0x00000040u) != 0) {
-                        NuVecSub(&offset, &packet->left_diversion, &object->position);
-                        angle = NuAtan2D(offset.x, offset.z);
-                        NuVecSub(&offset, &target_2, &object->position);
-                        angle_2 = NuAtan2D(offset.x, offset.z);
-                        if (NuAngSub(angle_2, angle) < 0) {
-                            target_2 = packet->left_diversion;
-                            packet->flags |= 0x00080000u;
-                            use_left = 1;
-                        }
+                if ((packet->flags & 0x00000040u) != 0) {
+                    NuVecSub(&offset, &packet->left_diversion, &object->position);
+                    angle = NuAtan2D(offset.x, offset.z);
+                    NuVecSub(&offset, &target_2, &object->position);
+                    angle_2 = NuAtan2D(offset.x, offset.z);
+                    if (NuAngSub(angle_2, angle) < 0) {
+                        target_2 = packet->left_diversion;
+                        packet->flags |= 0x00080000u;
+                        use_left = 1;
                     }
-                    if (!use_left && (packet->flags & 0x00000020u) != 0) {
-                        NuVecSub(&offset, &packet->right_diversion, &object->position);
-                        angle = NuAtan2D(offset.x, offset.z);
-                        NuVecSub(&offset, &target_2, &object->position);
-                        angle_2 = NuAtan2D(offset.x, offset.z);
-                        if (NuAngSub(angle_2, angle) > 0) {
-                            target_2 = packet->right_diversion;
-                            packet->flags |= 0x00080000u;
-                        }
-                    }
-                } else {
-                    target_2 = path->nodes[next_2->node_indices[direction]].position;
                 }
+                if (!use_left && (packet->flags & 0x00000020u) != 0) {
+                    NuVecSub(&offset, &packet->right_diversion, &object->position);
+                    angle = NuAtan2D(offset.x, offset.z);
+                    NuVecSub(&offset, &target_2, &object->position);
+                    angle_2 = NuAtan2D(offset.x, offset.z);
+                    if (NuAngSub(angle_2, angle) > 0) {
+                        target_2 = packet->right_diversion;
+                        packet->flags |= 0x00080000u;
+                    }
+                }
+            } else {
+                target_2 = path->nodes[next_2->node_indices[direction]].position;
             }
             packet->movement_stopping_distance = 0.0f;
             packet->movement_destination = target_2;
