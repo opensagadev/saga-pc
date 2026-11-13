@@ -317,7 +317,7 @@ void __cdecl UpdateCables(void) {
                             for (i = 0; i < HIGHGAMEOBJECT; ++i) {
                                 GAMEOBJECT *object = &Obj[i];
                                 f32 line_distance;
-                                f32 combined;
+                                f32 squared;
                                 if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) ||
                                     object->dead != 0 || (object->field_e20 & 0x20) || (i8)object->flags_1fc_low < 0)
                                     continue;
@@ -333,13 +333,15 @@ void __cdecl UpdateCables(void) {
                                     continue;
                                 line_distance =
                                     NuLineToPointDistSqrEx(&path[0], &path[1], &object->collision_position, &closest);
-                                combined = object->bounds_half_height + object->bounds_radius;
-                                if (line_distance < combined * combined &&
+                                squared = object->bounds_half_height + object->bounds_radius;
+                                squared *= squared;
+                                if (line_distance < squared &&
                                     closest.y < object->collision_position.y + object->bounds_half_height &&
                                     closest.y > object->collision_position.y - object->bounds_half_height) {
                                     f32 dx = object->collision_position.x - closest.x;
                                     f32 dz = object->collision_position.z - closest.z;
-                                    if (object->bounds_radius * object->bounds_radius > (dx * dx) + (dz * dz)) {
+                                    squared = (dx * dx) + (dz * dz);
+                                    if (squared < object->bounds_radius * object->bounds_radius) {
                                         obstruction = 1;
                                         break;
                                     }
