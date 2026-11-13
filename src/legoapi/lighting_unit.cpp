@@ -82,14 +82,15 @@ extern "C" {
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
+    NUVEC4 *direction = &light_direction4_pc;
     f32 direction_y = target->y - eye->y;
     f32 direction_z = target->z - eye->z;
-    shadow_direction_pc.x = target->x - eye->x;
-    shadow_direction_pc.y = direction_y;
-    shadow_direction_pc.z = direction_z;
-    light_direction_w_pc = 0.0f;
-    NuVecNorm(&shadow_direction_pc, &shadow_direction_pc);
-    light_direction_w_pc = 1.0f;
+    direction->x = target->x - eye->x;
+    direction->y = direction_y;
+    direction->z = direction_z;
+    direction->w = 0.0f;
+    NuVecNorm((NUVEC *)direction, (NUVEC *)direction);
+    direction->w = 1.0f;
     f32 position_y = eye->y;
     f32 position_z = eye->z;
     light_position_pc.x = eye->x;
