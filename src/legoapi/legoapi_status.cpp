@@ -203,13 +203,12 @@ extern "C" {
             f64 half_wave = wave * 0.5;
             f32 large_scale = (f32)(((f64)scale + 0.5) - half_wave);
             f32 small_scale = (f32)(((f64)scale - 0.5) + half_wave);
-            f64 full_width_snapshot, half_full_width, current_center;
+            f64 half_full_width, current_center;
             f32 suffix_x, current_width, large_x, small_x;
             sprintf(text, "/%i", total);
             Text3DStringEncode(text, encoded);
-            full_width_snapshot = (f64)full_width;
-            half_full_width = full_width_snapshot * 0.5;
-            suffix_x = (f32)((full_width_snapshot - (f64)NuQFntPrintLenW(QFont3DZ, encoded)) - half_full_width);
+            half_full_width = full_width * 0.5;
+            suffix_x = (f32)((full_width - NuQFntPrintLenW(QFont3DZ, encoded)) - half_full_width);
             NuQFntMove(QFont3DZ, suffix_x, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
             NuQFntPrintW(QFont3DZ, encoded);
             sprintf(text, "%i", current);
