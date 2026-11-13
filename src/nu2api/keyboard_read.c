@@ -89,10 +89,9 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
 }
 
 void __cdecl NuKeyboardRead(void) {
-    NuKeyboardState_PC *state;
+    NuKeyboardState_PC *state = nu_input_state;
 
-    state = nu_input_state;
-    if (!state->keyboard_polled) {
+    if (!nu_input_state->keyboard_polled) {
         state->keyboard_polled = 1;
         state->keyboard_state = NuKeyboardPoll(&nu_keyboard_owner);
     }
