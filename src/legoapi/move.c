@@ -3154,7 +3154,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         walking_speed = desired_speed;
                         if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
                             i32 forced_movement;
-                            forced_movement = object->weapon_scale != 1.0f || object->field_e33 == 1;
+                            forced_movement = object->weapon_scale == 1.0f || object->field_e33 == 1;
                             if (object->character_context == 0 && object->action_movement_state == 0) {
                                 walking_speed = 1.2f;
                             } else if (forced_movement && pad->input_magnitude > 0.0f) {
