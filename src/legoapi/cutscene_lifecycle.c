@@ -954,15 +954,17 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
     } else {
         void *first_animation;
         i32 relocation_delta;
+        i32 version;
         if (scene->version > 2)
             CutSceneLoadDiagnosticPc(path, scene->version);
+        version = scene->version;
         scene->string_delta = (i32)scene - scene->string_delta;
         relocation_delta = scene->string_delta;
-        if (scene->version >= 2) {
+        if (version >= 2) {
             scene->relocation_delta = (i32)scene - scene->relocation_delta;
             relocation_delta = scene->relocation_delta;
         }
-        if (scene->version >= 2 && (scene->flags & 8) != 0) {
+        if (version >= 2 && (scene->flags & 8) != 0) {
             CutSceneFixPtrsPc(scene, 0, 0);
             buffer->addr += size;
         } else {
