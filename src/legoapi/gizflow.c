@@ -1125,8 +1125,8 @@ static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
         load_flowbox->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, strlen(load_name) + 1));
         NuStrCpy(load_flowbox->name, load_name);
     }
-    ++load_flowbox;
     --load_nflowboxes;
+    ++load_flowbox;
 }
 
 static NUFPCOMJMP cfgtab_gitcount_pc[] = {{"FlowBox", GizFlowConfigFlowBoxCountPc}, {NULL, NULL}};
