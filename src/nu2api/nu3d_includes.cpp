@@ -4949,16 +4949,15 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
     else
         NuAnimMtxCopyPrivatePc(&transform, &projection_matrix);
-    for (i32 i = 0; i < 8; ++i) {
-        NUVEC4 &v = corners[i];
-        NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&v), &transform);
-        if (!(0.0f < v.w))
+    for (u32 i = 0; i < 8; ++i) {
+        NuVec4MtxTransform(&corners[i], reinterpret_cast<NUVEC *>(&corners[i]), &transform);
+        if (corners[i].w <= 0.0f)
             return false;
-        float x = v.x / v.w;
-        v.x = x;
-        float y = v.y / v.w;
-        v.y = y;
-        v.z /= v.w;
+        float x = corners[i].x / corners[i].w;
+        corners[i].x = x;
+        float y = corners[i].y / corners[i].w;
+        corners[i].y = y;
+        corners[i].z /= corners[i].w;
         if (min_x > x)
             min_x = x;
         if (min_y > y)
@@ -4967,8 +4966,8 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
             max_x = x;
         if (max_y < y)
             max_y = y;
-        if (min_depth > v.w)
-            min_depth = v.w;
+        if (min_depth > corners[i].w)
+            min_depth = corners[i].w;
     }
     i32 limit = 100;
     if (static_cast<i32>(count) <= 100)
