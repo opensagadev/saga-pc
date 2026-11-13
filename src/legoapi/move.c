@@ -3218,11 +3218,12 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         walking_speed *= object->character_data->game_character->jump_move_speed_scale;
                     if ((object->flags_ef0 & 0x4000) != 0)
                         walking_speed *= object->character_data->game_character->backwards_factor;
-                    walking_angle = input_angle;
                     if (direct_turn == 0 &&
                         ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000000ULL) != 0 ||
                          (object->character_data->game_character->flags_090 & 0x100) != 0))
                         walking_angle = object->facing_angle;
+                    else
+                        walking_angle = input_angle;
                     if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
                         GameCam->sock_position.sock_index == 0)
                         walking_speed *= 1.0416666269302368f;
