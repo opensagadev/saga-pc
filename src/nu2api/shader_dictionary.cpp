@@ -202,12 +202,12 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
     ShaderMacroDefinitionPc *definition = FindDefinition(token);
     const char *value;
     if (definition != NULL) {
-        for (;;) {
-            ShaderMacroDefinitionPc *next = FindDefinition(definition->value);
-            if (next == NULL)
-                break;
-            definition = next;
-        }
+        ShaderMacroDefinitionPc *next;
+        do {
+            next = FindDefinition(definition->value);
+            if (next != NULL)
+                definition = next;
+        } while (next != NULL);
         value = definition->value;
     } else {
         // The native path reloads this input after the definition lookup.
