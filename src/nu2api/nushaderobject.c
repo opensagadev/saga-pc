@@ -53,12 +53,11 @@ void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3D
         }
         if (handle == NULL)
             continue;
-
+        description_count = 1;
         if (PCDeviceHardwareVertexProcessingPC == 4 && uniform->register_index >= 0)
             continue;
         parameter = PCShaderAllocateParameter(shader, i);
         parameter->metadata = (parameter->metadata & 0x0fffffff) | ((u32)stage << 28);
-        description_count = 1;
         table->methods->get_constant_description(table, handle, &description, &description_count);
         if (description.type_kind == 3) {
             if (description.class_kind == 0)
