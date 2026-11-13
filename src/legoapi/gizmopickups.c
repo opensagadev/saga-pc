@@ -985,7 +985,7 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
                 type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
             else
                 type = &GizmoPickupSys->types[pickup->type_index];
-            if (((ChallengeMode && (type->flags & 0x20)) || (!ChallengeMode && !(type->flags & 0x20))) &&
+            if (!(ChallengeMode && !(type->flags & 0x20)) && !(!ChallengeMode && (type->flags & 0x20)) &&
                 Mission_Active(NULL) == NULL) {
                 if (type->activation_sfx_name != NULL)
                     PlaySfx(type->activation_sfx_name, &pickup->position);
