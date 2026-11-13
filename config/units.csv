@@ -5,8 +5,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x4028c0,0x403c83,src/legogame/attracto.c,,legogame,batman+marker,high,ret fabs 28,27,4804,4804,3002,21,0,legogame/attracto.c:4804
 0x403c90,0x405d4b,src/legogame/batarang.c,,legogame,batman+marker,high,fabs 54,20,8125,8125,2859,219,0,legoapi/batarang.cpp:8071 gameapi/aisysall.c:54
 0x405d70,0x407e1d,src/legogame/batman_gameai.c,,legogame,review,low,,22,8255,8255,5922,258,0,legoapi/batarang.cpp:8255
-0x407e40,0x4087d6,src/legogame/bolt.c,,legogame,batman,medium,,7,2354,2354,1037,28,0,legoapi/bolt_foundation_callbacks.cpp:2300 legoapi/cables.c:54
-0x408800,0x40a4a5,src/legogame/cable.c,,legogame,batman,medium,,7,7230,7230,1179,190,0,legoapi/cables.c:7230
+0x407e40,0x408760,src/legogame/bolt.c,,legogame,batman,medium,,6,2300,2300,983,28,0,legoapi/bolt_foundation_callbacks.cpp:2300
+0x4087a0,0x40a4a5,src/legogame/cable.c,,legogame,review,medium,,8,7284,7284,1233,190,0,legoapi/cables.c:7284
 0x40a4b0,0x40e6fa,src/legogame/camera.c,,legogame,batman+marker,high,fabs 22 28,11,16626,16626,268,2114,0,legogame/camera.c:16625 legoapi/camera.c:1
 0x40e700,0x413b50,src/legogame/chris.cpp,,legogame,code+marker+review,medium,ret fabs 28,53,19457,19457,6604,1297,0,legogame/chris.cpp:19456 legoapi/flightspline_diagnostic_pc.c:1
 0x413b70,0x413efe,src/legogame/config.c,,legogame,batman,medium,,1,910,910,910,0,0,legoapi/charconfig.c:910
@@ -29,8 +29,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x46a450,0x46a868,src/legogame/gizgame.c,,legogame,batman,medium,,4,1026,1026,957,14,0,legogame/gizgame.c:1026
 0x46a8d0,0x46d7e2,src/legogame/gizmopickup.c,,legogame,review,high,,47,11658,11658,7956,154,0,legogame/gizmopickup.c:11658
 0x46d7f0,0x46f88a,src/legogame/gizpanel.c,,legogame,batman+marker,high,ret 28,28,7987,7987,2630,267,0,legogame/gizpanel.c:7987
-0x46f890,0x4701c9,src/legogame/giztorpedo.c,,legogame,batman+marker,high,ret 28,17,2126,2126,2126,0,0,legogame/giztorpedo.c:1749 legoapi/grabber.c:377
-0x4701d0,0x47276c,src/legogame/grabber.c,,legogame,batman,medium,,20,9499,9499,5119,8,0,legoapi/grabber.c:9499
+0x46f890,0x47000e,src/legogame/giztorpedo.c,,legogame,batman+marker,high,ret 28,15,1749,1749,1749,0,0,legogame/giztorpedo.c:1749
+0x470050,0x47276c,src/legogame/grabber.c,,legogame,review,medium,,22,9876,9876,5496,8,0,legoapi/grabber.c:9876
 0x472770,0x47482a,src/legogame/hatmachine.c,,legogame,marker+review,medium,ret fabs 54 28,24,8086,8086,4030,481,0,legogame/hatmachine.cpp:8086
 0x474830,0x481a6f,src/legogame/hub.cpp,,legogame,batman+code+marker,high,ret fabs 23 28,106,52624,52624,23388,2542,112,legoapi/hub.cpp:46994 legoapi/indy_special.c:5299 legoapi/gizmo.c:269 legoapi/arcade.c:62
 0x481a70,0x482bf1,src/legogame/ledge.c,,legogame,batman+marker,high,ret fabs 28,20,4075,4075,2748,38,0,legogame/ledge.cpp:4075
@@ -48,11 +48,11 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x4bcaf0,0x4bce21,src/legogame/radio.c,,legogame,batman,medium,,3,805,805,805,0,0,legogame/radio.cpp:805
 0x4bce30,0x4bdca4,src/legogame/securitydoor.c,,legogame,batman+marker,high,ret 28,24,3444,3444,3339,0,0,legogame/securitydoor.c:3444
 0x4bdcd0,0x4c00fc,src/legogame/sfx.c,,legogame,batman+review,medium,,4,9203,9203,358,343,0,legogame/sfx.c:9203
-0x4c0100,0x4c11ba,src/legogame/shard.c,,legogame,batman+marker,high,ret 28,27,3749,3749,2802,11,0,legogame/shard.c:2650 legoapi/shard.c:1099
-0x4c11c0,0x4c7879,src/legogame/shop.c,,legogame,batman,medium,,36,26083,26083,8968,1204,0,legoapi/shard.c:26083
+0x4c0100,0x4c0cd2,src/legogame/shard.c,,legogame,batman+marker,high,ret 28,21,2650,2650,2017,11,0,legogame/shard.c:2650
+0x4c0d50,0x4c7879,src/legogame/shop.c,,legogame,review,medium,,42,27182,27182,9753,1204,0,legoapi/shard.c:27182
 0x4c7880,0x4c8bad,src/legogame/signal.c,,legogame,batman+marker,high,ret 28,25,4660,4660,2915,49,0,legogame/signal.c:4660
-0x4c8bd0,0x4c9fa7,src/legogame/speederchase.cpp,,legogame,review,medium,,20,4669,4669,4238,41,19,legogame/speederchase.c:3474 legogame/startup.cpp:664 legoapi/perm.c:478 legoapi/control_setup.cpp:53
-0x4c9fb0,0x4cad84,src/legogame/startup.cpp,,legogame,batman+code,medium,,2,3536,3536,1532,173,0,legogame/startup.cpp:3536
+0x4c8bd0,0x4c9a05,src/legogame/speederchase.c,,legogame,review,medium,,9,3474,3474,3151,22,0,legogame/speederchase.c:3474
+0x4c9a40,0x4cad84,src/legogame/startup.cpp,,legogame,code+review,medium,,13,4731,4731,2619,192,0,legogame/startup.cpp:4200 legoapi/perm.c:478 legoapi/control_setup.cpp:53
 0x4cadb0,0x4cc8bc,src/legogame/starwars_gameai.c,,legogame,review,medium,,16,6822,6822,5956,65,0,legogame/starwars_gameai.c:6822
 0x4cc8e0,0x4cca34,src/legogame/suit.c,,legogame,batman,medium,,5,279,279,279,0,0,legogame/suit.c:279
 0x4cca50,0x4cdd0c,src/legogame/techno.c,,legogame,batman+marker,high,ret ret 28,30,4485,4485,3961,17,0,legogame/techno.c:4484 legoapi/techno_diagnostic_pc.c:1
@@ -159,8 +159,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x5ab2d0,0x5ae0fe,src/legoapi/gizturret.c,,legoapi,batman+review,medium,,34,11265,11265,5006,787,0,legoapi/gizturret.cpp:11265
 0x5ae100,0x5ae9f7,src/legoapi/gizspecial.c,,legoapi,batman+marker,high,ret 28,20,2108,2108,2108,0,0,legoapi/gizspecial.c:2108
 0x5aea20,0x5af0ad,src/legoapi/edbobs.c,,legoapi,batman,medium,,5,1641,1641,1641,0,0,legoapi/gizspecial.c:1641
-0x5af0b0,0x5af850,src/legoapi/gizportal.c,,legoapi,batman+marker,high,ret 28,22,1688,1688,1688,0,0,legoapi/gizportal.c:898 legoapi/edgizshadowmachine.c:790
-0x5af850,0x5af935,src/legoapi/edgizshadow.c,,legoapi,batman,medium,,1,229,229,229,0,0,legoapi/edgizshadowmachine.c:229
+0x5af0b0,0x5af4c4,src/legoapi/gizportal.c,,legoapi,batman+marker,high,ret 28,13,898,898,898,0,0,legoapi/gizportal.c:898
+0x5af4f0,0x5af935,src/legoapi/edgizshadow.c,,legoapi,review,medium,,10,1019,1019,1019,0,0,legoapi/edgizshadowmachine.c:1019
 0x5af940,0x5affa0,src/legoapi/plugs.c,,legoapi,batman+marker,high,ret 28,20,1431,1431,1143,30,0,legoapi/plugs.c:1431
 0x5affa0,0x5b0335,src/legoapi/gizrandom.c,,legoapi,batman+marker,high,ret 28,10,809,809,809,0,0,legoapi/gizrandom.c:809
 0x5b0340,0x5b0769,src/legoapi/giztimers.c,,legoapi,batman+marker,high,ret 28,12,927,927,927,0,0,legoapi/giztimers.c:927

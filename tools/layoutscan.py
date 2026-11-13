@@ -109,6 +109,9 @@ REVIEW = {
     0x405d70: dict(name="batman_gameai", conf="low",
                    why="Batman batman_gameai block after batarang, no marker between; fits the alphabetical "
                    "order (batarang < batman_gameai < bolt)"),
+    0x4087a0: dict(name="cable", conf="medium",
+                   why="CableFdiv is called only by the cable code (UpdateCables, DrawCables), so cable starts with it"),
+    0x408800: dict(name="cable", join=True, why="continues 0x4087a0"),
     0x40e700: dict(name="chris", conf="medium",
                    why="TCS only (no Batman counterpart); marker; Android chris.c fits between camera and config"),
     0x4200c0: dict(name=None, lang="cpp", why="PC control screen (C++ PC_CONTROL_SCREEN_PC thiscall methods) after "
@@ -124,6 +127,10 @@ REVIEW = {
     0x45e350: dict(name="gamestatus", conf="medium",
                    why="marker; Batman gamestatus_batman (1 vote); TCS name assumed without the _batman suffix"),
     0x46a8d0: dict(name="gizmopickup", conf="high", why="Batman legogame/gizmopickup"),
+    0x470050: dict(name="grabber", conf="medium",
+                   why="GrabberMtxSetRotationZ and GrabberMtxRotateX are called only by Grabber_Draw, so grabber starts "
+                   "with them"),
+    0x4701d0: dict(name="grabber", join=True, why="continues 0x470050"),
     0x472770: dict(name="hatmachine", conf="medium",
                    why="marker; no Batman counterpart; Android hatmachine; grabber < hatmachine < hub"),
     0x491380: dict(name="lsw_hub_ai", conf="low",
@@ -138,7 +145,15 @@ REVIEW = {
                    "that of a static compiled with its only caller (exact only when it shares PanelRender's file)"),
     0x4bc2f0: dict(name="pursuit", conf="medium", why="TCS only; Android pursuit.c fits panel < pursuit < radio"),
     0x4c00c0: dict(name=None, join=True, why="one function between sfx and shard"),
+    0x4c0d50: dict(name="shop", conf="medium",
+                   why="ShopMtxCopyPc, the NuMtxRotate*Inline copies, Shop_CharacterUnlockedPc and Shop_GetInput are "
+                   "called only by shop code, so shop starts with them; shard ends with Shards_HandleLostObj"),
+    0x4c11c0: dict(name="shop", join=True, why="continues 0x4c0d50"),
     0x4c8bd0: dict(name="speederchase", conf="medium", why="TCS only; Android speederchase; signal < sp < startup"),
+    0x4c9a40: dict(name="startup", conf="medium",
+                   why="the NuPrim2D copies, the LoadPerm* helpers and the memorymanager_s::Init copy are called only "
+                   "by LoadPermData, so startup starts with them"),
+    0x4c9fb0: dict(name="startup", join=True, why="continues 0x4c9a40"),
     0x4cadb0: dict(name="starwars_gameai", conf="medium",
                    why="TCS only; Android starwars_gameai.c (Batman's analogue is batman_gameai); startup < st < suit"),
     0x4d8190: dict(name="episodeI", conf="high", why="marker; TCS episode files follow the alphabetical block"),
@@ -176,6 +191,10 @@ REVIEW = {
     0x5ab2d0: dict(name="gizturret", conf="medium",
                    why="GizTurretClearPc and GizTurretReadAnimSetDataPc (no Batman counterpart) are called only "
                    "by GizTurrets_Load; no marker at 0x5ab2d0 or 0x5ab3d0, so gizturret starts here"),
+    0x5af4f0: dict(name="edgizshadow", conf="medium",
+                   why="the Shadow_* gizmo callbacks are referenced only by EdGizShadowMachine_RegisterGizmo, so "
+                   "edgizshadow starts with them"),
+    0x5af850: dict(name="edgizshadow", join=True, why="continues 0x5af4f0"),
     0x5b2da0: dict(name="numath_includes", conf="high", why="marker; Batman numath_includes; retail nugraph.c, nutrig.c"),
     0x5c1360: dict(name="nu3d_includes", conf="high", why="marker; Batman nu3d_includes; retail nuanim.c, nutexanm.c ..."),
     0x5e4600: dict(name="nu3d_includes", join=True, why="inside nu3d_includes, no marker"),
