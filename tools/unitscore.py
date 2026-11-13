@@ -10,6 +10,7 @@ before and after the move:
   ... move code, make -j4 build/obj/legoapi/unit.obj ...
   python3 tools/unitscore.py snapshot after.json src/legoapi/unit.c src/legoapi/b.c
   python3 tools/unitscore.py compare before.json after.json --range 0x553700-0x557090
+  python3 tools/unitscore.py compare before.json after.json --range 0x553700   # config/units.csv row
 
 Totals are exact bytes and fuzzy bytes (sum of size x objdiff% / 100). The
 comparison lists every function that left or entered exact and ignores the
@@ -164,8 +165,16 @@ def compare(before, after, address_range=None, quiet=False):
 
 
 def parse_range(text):
-    lo, hi = text.split("-")
-    return int(lo, 16), int(hi, 16)
+    """START-END, or one address: the config/units.csv compiland containing it."""
+    if "-" in text:
+        lo, hi = text.split("-")
+        return int(lo, 16), int(hi, 16)
+    from tools.unitmap import read_csv
+    address = int(text, 16)
+    for row in read_csv(ROOT / "config/units.csv"):
+        if int(row["start"], 16) <= address < int(row["end"], 16):
+            return int(row["start"], 16), int(row["end"], 16)
+    raise argparse.ArgumentTypeError(f"0x{address:06x} is in no row of config/units.csv")
 
 
 def main(argv=None):
@@ -177,7 +186,7 @@ def main(argv=None):
     cmp_ = sub.add_parser("compare", help="compare two snapshots")
     cmp_.add_argument("before")
     cmp_.add_argument("after")
-    cmp_.add_argument("--range", type=parse_range, help="unit address range START-END (hex)")
+    cmp_.add_argument("--range", type=parse_range, help="unit address range START-END (hex), or an address in a config/units.csv row")
     args = parser.parse_args(argv)
     if args.command == "snapshot":
         snapshot(args.units, args.out)

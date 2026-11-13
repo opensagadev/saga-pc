@@ -22,7 +22,12 @@ declarations, C++ code moved into C, ...). Build and fix those by hand.
 
   python3 tools/unitize.py plan  0x553700-0x557090 src/legoapi/gizspinner.cpp
   python3 tools/unitize.py apply 0x553700-0x557090 src/legoapi/gizspinner.cpp
+  python3 tools/unitize.py plan  0x553700        # range and target from config/units.csv
   make -j4 build check-objects; python3 tools/unitize.py fixconfig
+
+With a single address and no target, the range and target file are the
+config/units.csv row (the target compiland of config/layout-target.csv) that
+contains it; undetermined compilands have no target and are refused.
 
 `fixconfig` re-keys config/*.json "unit"/"owner_unit" fields whose unit no
 longer defines the named symbol to the one unit that now does.
@@ -535,7 +540,7 @@ def render_items(entries, target_cxx):
     return "".join(out)
 
 
-def apply_plan(plan, android=None, write=True):
+def apply_plan(plan, note=None, write=True):
     target = plan.target
     target_cxx = target.endswith(".cpp")
     for path, source in plan.sources.items():
@@ -710,7 +715,7 @@ def apply_plan(plan, android=None, write=True):
             if item.kind == "include" and item.text.strip() not in includes:
                 if path == target or any(i.source is source for _, i in plan.moved):
                     includes.append(item.text.strip())
-    header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({android})" if android else "") + \
+    header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({note})" if note else "") + \
         ": definitions in retail address order. */\n"
     section = (render_items(preamble, target_cxx) + render_items(copies, target_cxx) + ("\n" if copies else "")
                + render_items(helper_entries, target_cxx)
@@ -991,8 +996,24 @@ def fix_config():
 # ---------------------------------------------------------------- CLI
 
 def parse_range(text):
+    """START-END, or one address (the range then comes from the unit table)."""
+    if "-" not in text:
+        return int(text, 16), None
     lo, hi = text.split("-")
     return int(lo, 16), int(hi, 16)
+
+
+def unit_for(address, units=ROOT / "config/units.csv"):
+    """(start, end, unit, inner files) of the unit-table row containing address."""
+    from tools.unitmap import is_placeholder, read_csv
+    for row in read_csv(units):
+        start, end = int(row["start"], 16), int(row["end"], 16)
+        if start <= address < end:
+            if is_placeholder(row["unit"]):
+                raise ValueError(f"0x{address:06x} is in an undetermined compiland ({row['unit']}); "
+                                 "give START-END and a target")
+            return start, end, row["unit"], row["inner_files"]
+    raise ValueError(f"0x{address:06x} is in no row of {Path(units).name}")
 
 
 def report(plan):
@@ -1041,8 +1062,9 @@ def main(argv=None):
     for name in ("plan", "apply"):
         p = sub.add_parser(name)
         p.add_argument("range", type=parse_range, help="retail range START-END (hex, end exclusive)")
-        p.add_argument("target", help="target source path, e.g. src/legoapi/gizspinner.cpp")
-        p.add_argument("--android", help="Android file name for the unit comment")
+        p.add_argument("target", nargs="?",
+                       help="target source path, e.g. src/legoapi/gizspinner.cpp (default: from config/units.csv)")
+        p.add_argument("--note", help="text for the unit comment, e.g. the original file name")
         p.add_argument("--sources", action="store_true", help="only print the source files involved")
     sub.add_parser("fixconfig")
     sub.add_parser("casts", help="read MSVC output on stdin and add C++ casts for void* conversions")
@@ -1054,11 +1076,22 @@ def main(argv=None):
         fix_config()
         return 0
     lo, hi = args.range
-    plan = build_plan(lo, hi, args.target)
+    target = args.target
+    if hi is None or target is None:
+        try:
+            start, end, unit, inner = unit_for(lo)
+        except ValueError as error:
+            parser.error(str(error))
+        if hi is None:
+            lo, hi = start, end
+        target = target or unit
+        if inner:
+            print(f"note: {unit} is a unity compiland (includes {inner}); its code goes into one file")
+    plan = build_plan(lo, hi, target)
     if args.sources:
         print(" ".join(sorted(plan.sources)))
         return 0
-    apply_plan(plan, args.android, write=args.command == "apply")
+    apply_plan(plan, args.note, write=args.command == "apply")
     report(plan)
     return 0
 

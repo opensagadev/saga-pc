@@ -128,8 +128,14 @@ class CommandTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             Path(directory, refsyms.FUNCTIONS).write_text(FUNCTIONS)
             reference = refsyms.Reference(directory)
-            matching = {"Demo": {"units": ["src/nu2api/other.c"]}, "Helper": {"units": ["src/nu2api/demo.c"]}}
-            self.assertEqual(refsyms.file_disagreements(reference, matching), [("Demo", "demo.c", "src/nu2api/other.c")])
+            matching = {"Demo": {"units": ["src/nu2api/other.c"], "address": "0x500010"},
+                        "Helper": {"units": ["src/nu2api/demo.c"], "address": "0x500100"}}
+            self.assertEqual(refsyms.file_disagreements(reference, matching),
+                             [("Demo", "demo.c", "src/nu2api/other.c", "")])
+            targets = [(0x500000, 0x500080, "demo.c"), (0x500080, 0x500200, "nu3d_includes.cpp")]
+            self.assertEqual(refsyms.file_disagreements(reference, matching, targets),
+                             [("Demo", "demo.c", "src/nu2api/other.c", "demo.c")])
+            self.assertEqual(refsyms.target_file(targets, 0x500200), "")
 
 
 if __name__ == "__main__":

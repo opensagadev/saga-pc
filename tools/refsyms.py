@@ -15,7 +15,7 @@ repeated inside the caller; nested scopes are flattened.
 
     python3 tools/refsyms.py NuLstAlloc              # reference next to ours, with hints
     python3 tools/refsyms.py --overlap               # names in both, non-exact first
-    python3 tools/refsyms.py --files                 # source-file assignment vs config/units.csv
+    python3 tools/refsyms.py --files                 # source files vs ours and the target layout
     python3 tools/refsyms.py --structs               # same-named structs: codegen-relevant type changes
     python3 tools/refsyms.py --structs NUSPLINE      # one struct, every field
 
@@ -480,8 +480,32 @@ def unit_stem(path):
     return re.split(r"[\\/]", path)[-1].rsplit(".", 1)[0].lower()
 
 
-def file_disagreements(reference, matching):
-    """[(function, reference file, our unit)] where the file names differ."""
+def layout_targets(path=ROOT / "config/layout-target.csv"):
+    """[(start, end, file)] of the target layout (docs/source-layout.md): the
+    included file inside a unity compiland, else the compiland's file name
+    ('' when undetermined)."""
+    import csv
+    if not Path(path).is_file():
+        return []
+    with open(path, newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    out = []
+    for row in rows:
+        inner = row["inner_file"] if row["inner_file"] not in ("", "?") else ""
+        out.append((int(row["start"], 16), int(row["end"], 16), inner or row["compiland"].rsplit("/", 1)[-1]))
+    return sorted(out)
+
+
+def target_file(targets, address):
+    import bisect
+    i = bisect.bisect_right(targets, (address, float("inf"), "")) - 1
+    return targets[i][2] if i >= 0 and address < targets[i][1] else ""
+
+
+def file_disagreements(reference, matching, targets=()):
+    """[(function, reference file, our unit, target file)] where the reference
+    file name differs from our current file; the target file is the layout
+    table's file for the function's address ('' when unknown)."""
     rows = []
     for name, entries in sorted(reference.by_name.items()):
         ours = matching.get(name)
@@ -489,7 +513,9 @@ def file_disagreements(reference, matching):
             continue
         ref_stem, our_stem = unit_stem(entries[0].file), unit_stem(ours["units"][0])
         if ref_stem != our_stem:
-            rows.append((name, entries[0].file.split("\\")[-1], ours["units"][0]))
+            address = ours.get("address")
+            target = target_file(targets, int(address, 16)) if targets and address else ""
+            rows.append((name, entries[0].file.split("\\")[-1], ours["units"][0], target))
     return rows
 
 
@@ -528,7 +554,8 @@ def main(argv=None):
     parser.add_argument("names", nargs="*", help="functions (C names) to show, or structs with --structs")
     parser.add_argument("--reference", default=str(REFERENCE), help="directory holding the dump (default build/reference)")
     parser.add_argument("--overlap", action="store_true", help="list functions in both, non-exact first")
-    parser.add_argument("--files", action="store_true", help="compare source-file assignment with our units")
+    parser.add_argument("--files", action="store_true",
+                        help="compare source files with ours and with config/layout-target.csv")
     parser.add_argument("--structs", action="store_true", help="compare same-named structs with src/saga.h")
     parser.add_argument("--hints", metavar="JSON", help="write hints for every non-exact function in both")
     parser.add_argument("--no-ours", action="store_true", help="do not parse our source (no libclang)")
@@ -568,10 +595,12 @@ def main(argv=None):
         print(f"{len(result)} functions, hint kinds: {dict(kinds)}", file=sys.stderr)
         return 0
     if args.files:
-        rows = file_disagreements(reference, matching)
-        for name, ref_file, unit in rows:
-            print(f"{name:<40} {ref_file:<28} {unit}")
-        print(f"{len(rows)} functions whose reference file name differs from our unit", file=sys.stderr)
+        rows = file_disagreements(reference, matching, layout_targets())
+        for name, ref_file, unit, target in rows:
+            print(f"{name:<40} {ref_file:<28} {unit:<44} {target}")
+        agree = sum(1 for _, ref_file, _, target in rows if target and unit_stem(ref_file) == unit_stem(target))
+        print(f"{len(rows)} functions whose reference file name differs from our unit; "
+              f"the target layout names the reference file for {agree} of them", file=sys.stderr)
         return 0
     if args.structs:
         ours = our_structs()

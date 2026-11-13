@@ -16,20 +16,26 @@ from the evidence below, strongest first:
   review   a decision recorded in REVIEW below, with its reason (alphabetical
            order of the game library, the PS2 sibling-game dump of
            docs/reference-symbols.md, C++-only constructs, ...)
-  android  the unit name in config/units.csv (taken from the Android port)
+  android  the unit name of the Android port, frozen in
+           config/layout-android-units.csv (a hint only)
 
 Each compiland gets a proposed source path, a language (C or C++) with the
 evidence for it, a confidence, and the source files it currently lives in.
 Unity compilands (a .cpp that #includes .c/.cpp files) get one row per included
 file. `--write` replaces config/layout-target.csv; without it the summary is
-printed only.
+printed only. config/units.csv is derived from this table (tools/unitmap.py), so
+it is not an input here.
 
     python3 tools/layoutscan.py --batman build/reference/batman-mac --write
     python3 tools/layoutscan.py --show 0x497c10      # one compiland with its functions
 
-Without the retail EXE the unit-start markers fall back to the `marker` rows of
-config/units.csv; without the Batman map only `review` and `android` names are
-used and most rows come out undetermined. Both inputs only add evidence.
+Candidate compiland starts are the unit-start markers, the REVIEW keys and the
+rows of config/layout-android-units.csv: a frozen snapshot of the unit table
+that tools/unitmap.py once derived from the Android port's file tree (start,
+end, Android file name). Without the retail EXE the unit-start markers fall
+back to its `marker` rows; without the Batman map only `review` and `android`
+names are used and most rows come out undetermined. Both inputs only add
+evidence.
 """
 import argparse
 import bisect
@@ -49,8 +55,9 @@ if not __package__:
     sys.path.insert(0, str(ROOT))
 
 TABLE = ROOT / "config/layout-target.csv"
+ANDROID_UNITS = ROOT / "config/layout-android-units.csv"
 COLUMNS = ("start", "end", "compiland", "inner_file", "language", "evidence", "confidence",
-           "functions", "bytes", "current_unit_name", "current_source_files", "note")
+           "functions", "bytes", "android_unit", "current_source_files", "note")
 
 # ------------------------------------------------------------------ reviewed knowledge
 
@@ -227,7 +234,8 @@ def load_functions(symbols, matching, text_start, text_end):
         score = scores.get(va, {})
         units = [u.removeprefix("src/") for u in score.get("units") or []]
         out.append({"va": va, "size": int(row["size"]), "symbol": row["symbol"], "ours": units,
-                    "status": score.get("status") or "", "library": bool(units) and all(
+                    "status": score.get("status") or "", "exact": bool(score.get("exact_match")),
+                    "percent": score.get("objdiff_percent"), "library": bool(units) and all(
                         u.startswith("lib/") for u in units), "funclet": is_funclet(row["symbol"])})
     out.sort(key=lambda f: f["va"])
     # Import thunks (`jmp [iat]`) and unmapped pieces after library code are library code too.
@@ -349,7 +357,8 @@ def retail_files(exe, functions):
 
 
 def unit_markers(functions, units, use_exe=True):
-    """Unit-start marker VAs: recomputed from the EXE when present, else units.csv."""
+    """Unit-start marker VAs: recomputed from the EXE when present, else the
+    `marker` rows of config/layout-android-units.csv."""
     try:
         if not use_exe:
             raise OSError("retail EXE not used")
@@ -383,7 +392,8 @@ def label_of(f, batman):
     hits = batman.get(name_key(f["symbol"]))
     if not hits or len({(t, s) for t, s, _, _ in hits}) != 1:
         return None
-    top, stem, ext, inner = next(iter(hits))
+    # One file, several inner (SOL) files or extensions: pick one stably, not by set order.
+    top, stem, ext, inner = max(hits)
     if stem.startswith("game-"):
         stem = "game"
     stem = RENAMES.get(stem, stem)
@@ -426,9 +436,9 @@ class Atom:
 
 
 def atoms_of(functions, units, markers):
-    """Cut .text at units.csv rows and unit-start markers."""
+    """Cut .text at the Android unit rows and unit-start markers."""
     starts = sorted({int(u["start"], 16) for u in units} | set(markers) | set(REVIEW))
-    names = {int(u["start"], 16): u["unit"].removeprefix("src/") for u in units}
+    names = {int(u["start"], 16): u["android_unit"].removeprefix("src/") for u in units}
     out = []
     vas = [f["va"] for f in functions]
     for i, start in enumerate(starts):
@@ -696,7 +706,7 @@ def rows(comps, retail):
     out = []
     for c in comps:
         path = target_path(c)
-        base = {"compiland": path, "language": c["lang"], "current_unit_name": " ".join(c["units"]),
+        base = {"compiland": path, "language": c["lang"], "android_unit": " ".join(c["units"]),
                 "note": "; ".join(c["notes"] + [f"language: {c['lang_why']}"])}
         blocks = inner_rows(c, retail) if c["unity"] and c["name"] else [[None, c["functions"], set()]]
         for lab, fs, kinds in blocks:
@@ -742,7 +752,7 @@ def same_stem(a, b):
 
 
 def units_status(comps, units):
-    """Classify each config/units.csv row against the target compilands:
+    """Classify each Android unit row against the target compilands:
     ok, name (wrong file name), boundary (right name, wrong start or end),
     inside (the row is part of a unity or larger compiland of another name),
     undetermined (the target compiland has no name yet)."""
@@ -757,7 +767,7 @@ def units_status(comps, units):
             out[u["start"]] = "library"
         elif not comp["name"]:
             out[u["start"]] = "undetermined"
-        elif not same_stem(Path(u["unit"]).stem, comp["name"]):
+        elif not same_stem(Path(u["android_unit"]).stem, comp["name"]):
             out[u["start"]] = "inside" if comp["start"] != s else "name"
         elif comp["start"] != s or comp["end"] > e + 16:
             out[u["start"]] = "boundary"
@@ -842,7 +852,7 @@ def summary(comps, units):
         "functions": total, "in_target_file": placed, "in_carrier_needs_rename": renamed,
         "need_move": moved, "in_undetermined": und,
         "bytes": dict(fb),
-        "units_rows": len(units), "units_rows_by_status": dict(collections.Counter(rows_status.values())),
+        "android_rows": len(units), "android_rows_by_status": dict(collections.Counter(rows_status.values())),
         "current_files": len(targets), "current_files_by_action": dict(files),
     }
 
@@ -851,7 +861,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--batman", help="directory with the private LEGO Batman Mac debug map")
     parser.add_argument("--symbols", default=str(ROOT / "config/symbols.csv"))
-    parser.add_argument("--units", default=str(ROOT / "config/units.csv"))
+    parser.add_argument("--android-units", default=str(ANDROID_UNITS),
+                        help="frozen Android unit rows (candidate starts and name hints)")
     parser.add_argument("--matching", default=str(ROOT / "matching.json"))
     parser.add_argument("--exe", default=str(ROOT / "res/orig/LEGOStarWarsSaga.exe"))
     parser.add_argument("--write", action="store_true", help=f"write {TABLE.relative_to(ROOT)}")
@@ -865,7 +876,7 @@ def main(argv=None):
     text_start = number(target["text_va"])
     text_end = text_start + number(target["text_size"])
     functions = load_functions(args.symbols, args.matching, text_start, text_end)
-    units = read_csv(args.units)
+    units = read_csv(args.android_units)
     markers, from_exe = unit_markers(functions, units, Path(args.exe).is_file())
     batman = load_batman(args.batman) if args.batman else None
     retail = retail_files(args.exe, functions) if Path(args.exe).is_file() else {}
@@ -897,7 +908,7 @@ def main(argv=None):
             "start": f"0x{tail[0]['va']:06x}", "end": f"0x{tail[-1]['va'] + tail[-1]['size']:06x}",
             "compiland": "", "inner_file": "", "language": "cpp", "evidence": "section",
             "confidence": "high", "functions": len(tail), "bytes": sum(f["size"] for f in tail),
-            "current_unit_name": "", "current_source_files": " ".join(f"{k}:{v}" for k, v in ours.most_common()),
+            "android_unit": "", "current_source_files": " ".join(f"{k}:{v}" for k, v in ours.most_common()),
             "note": "EH handlers (.text$x) and dynamic initializers/atexit thunks (.text$di/$yd), grouped by "
                     "section after all code; each belongs to the C++ compiland that defines the object, in "
                     "link order, so their order is a second link-order witness"})

@@ -429,6 +429,20 @@ def check_tidy(jobs=8):
     print(f"Clang-tidy checked {len(files)} units with the Windows x86 SDK and project policy.")
 
 
+def check_unit_table():
+    """config/units.csv names and boundaries follow config/layout-target.csv."""
+    if __package__:
+        from .unitmap import LAYOUT, check
+    else:
+        from tools.unitmap import LAYOUT, check
+    if not LAYOUT.is_file():
+        return  # synthetic trees without the layout table
+    errors = check()
+    if errors:
+        raise ValueError("config/units.csv is stale against config/layout-target.csv "
+                         "(run python3 tools/unitmap.py):\n  - " + "\n  - ".join(errors[:20]))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
@@ -459,6 +473,7 @@ def main():
         raise ValueError("Symbol/map checks failed:\n  - " + "\n  - ".join(errors))
     check_headers()
     check_diagnostic_boundaries()
+    check_unit_table()
     files = subprocess.check_output(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT).decode().split("\0")
     forbidden = {".exe", ".dll", ".obj", ".o", ".pdb", ".lib", ".zip", ".7z", ".dat", ".obb", ".apk"}
@@ -477,7 +492,7 @@ def main():
                     raise ValueError(f"Windows executable in source files: {name}")
     inlined = sum(row["address"] is None for row in records)
     print(f"Checked {len(records) - inlined} address mappings and {inlined} inlined symbols, "
-          "source-header layout and Git input boundaries.")
+          "source-header layout, the unit table and Git input boundaries.")
     if args.objects:
         objects = compiled_objects()
         from tools.candidate_only import load as load_candidate_only

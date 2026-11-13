@@ -62,10 +62,10 @@ class LayoutScanTests(unittest.TestCase):
         comps = [{"start": 0x100, "end": 0x200, "name": "levels"},
                  {"start": 0x200, "end": 0x300, "name": None},
                  {"start": 0x300, "end": 0x400, "name": "techno"}]
-        units = [{"start": "0x100", "end": "0x180", "unit": "src/legoapi/levels.cpp"},
-                 {"start": "0x180", "end": "0x200", "unit": "src/legoapi/game.c"},
-                 {"start": "0x200", "end": "0x300", "unit": "src/legoapi/chris.c"},
-                 {"start": "0x300", "end": "0x400", "unit": "src/legoapi/technos.c"}]
+        units = [{"start": "0x100", "end": "0x180", "android_unit": "src/legoapi/levels.cpp"},
+                 {"start": "0x180", "end": "0x200", "android_unit": "src/legoapi/game.c"},
+                 {"start": "0x200", "end": "0x300", "android_unit": "src/legoapi/chris.c"},
+                 {"start": "0x300", "end": "0x400", "android_unit": "src/legoapi/technos.c"}]
         self.assertEqual(layoutscan.units_status(comps, units),
                          {"0x100": "boundary", "0x180": "inside", "0x200": "undetermined", "0x300": "ok"})
 

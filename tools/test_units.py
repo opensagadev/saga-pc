@@ -50,15 +50,68 @@ class UnitMapTests(unittest.TestCase):
                 "int table[] = { f(1) };\n")
         self.assertEqual(unitmap.definitions_in(text), ["helper", "Foo::Bar"])
 
-    def test_segment_markers_file_changes_and_folding(self):
-        def f(va, android, our="src/a.c"):
-            return {"va": va, "android": [android] if android else [], "our": our}
-        rows = [f(1, "x.cpp"), f(2, None), f(3, "y.cpp"), f(4, "x.cpp"), f(5, "x.cpp"),
-                f(6, "z.cpp", "src/b.c"), f(7, "z.cpp", "src/b.c")]
-        units = unitmap.segment(rows, markers={7})
-        self.assertEqual([[r["va"] for r in u["functions"]] for u in units], [[1, 2, 3, 4, 5], [6], [7]])
-        self.assertEqual([u["evidence"] for u in units], ["android", "file", "marker"])
-        self.assertEqual([unitmap.CONFIDENCE[u["evidence"]] for u in units], ["low", "medium", "high"])
+    def layout(self):
+        def row(start, end, compiland="", inner="", evidence="batman", confidence="medium"):
+            return {"start": start, "end": end, "compiland": compiland, "inner_file": inner,
+                    "evidence": evidence, "confidence": confidence}
+        return [row("0x401000", "0x401800", "legogame/pcbatman.cpp", evidence="file", confidence="high"),
+                row("0x401810", "0x401860", evidence="marker+android", confidence="none"),
+                # unity: rows start at the first function, the REVIEW key (marker) before it
+                row("0x5b2e20", "0x5b3000", "nu2api/numath_includes.cpp", "nuvec_gen.cpp", "batman-sol", "low"),
+                row("0x5b3000", "0x5b4000", "nu2api/numath_includes.cpp", "?", "none", "none"),
+                row("0x5b4000", "0x5b5000", "nu2api/numath_includes.cpp", "nugraph.c", "file", "high"),
+                row("0x74fbf0", "0x75076a", evidence="section", confidence="high")]
+
+    def test_compilands_one_row_per_compiland(self):
+        comps = unitmap.compilands(self.layout())
+        self.assertEqual([unitmap.identity(c) for c in comps], [
+            {"start": "0x401000", "end": "0x401800", "unit": "src/legogame/pcbatman.cpp", "inner_files": "",
+             "area": "legogame", "evidence": "file", "confidence": "high"},
+            {"start": "0x401810", "end": "0x401860", "unit": "src/legogame/?0x401810", "inner_files": "",
+             "area": "legogame", "evidence": "marker+android", "confidence": "none"},
+            {"start": "0x5b2da0", "end": "0x5b5000", "unit": "src/nu2api/numath_includes.cpp",
+             "inner_files": "nuvec_gen.cpp ? nugraph.c", "area": "nu2api", "evidence": "review",
+             "confidence": "high"}])
+        self.assertTrue(unitmap.is_placeholder(comps[1]["unit"]))
+        self.assertFalse(unitmap.is_placeholder(comps[0]["unit"]))
+
+    def test_measure_and_placement(self):
+        def f(va, ours, size=16, percent=100.0, library=False):
+            return {"va": va, "size": size, "symbol": "_F", "ours": [ours] if ours else [], "exact": percent == 100.0,
+                    "percent": percent, "library": library, "funclet": False}
+        comps = unitmap.assign(unitmap.compilands(self.layout()), [
+            f(0x401000, "legogame/pcbatman.cpp"), f(0x401100, "legoapi/hub.cpp", percent=50.0),
+            f(0x401810, "legoapi/gamepads.c"), f(0x5b2e20, "nu2api/numath_includes.c"),
+            f(0x5b4000, None, percent=None), f(0x74fbf0, "data.cpp", library=True)])
+        row = unitmap.measure(comps[0], {0x401000: "ret 28"})
+        self.assertEqual((row["marker"], row["functions"], row["exact_bytes"], row["lost"], row["foreign"],
+                          row["our_files"]), ("ret 28", 2, 16, 8, 8, "legogame/pcbatman.cpp:16 legoapi/hub.cpp:16"))
+        self.assertEqual([unitmap.placement(c) for c in comps], ["split", "undetermined", "target-ext"])
+        stats = unitmap.progress(comps)
+        self.assertEqual(stats["by_placement"]["target-ext"]["compilands"], 1)
+        self.assertEqual(stats["functions_in_target_file"], {"functions": 2, "bytes": 32})
+        self.assertEqual(stats["implemented"], {"functions": 4, "bytes": 64})
+
+    def test_check_reports_stale_names(self):
+        import csv
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as directory:
+            layout, units = Path(directory, "layout.csv"), Path(directory, "units.csv")
+            rows = self.layout()
+            with layout.open("w", newline="") as stream:
+                writer = csv.DictWriter(stream, list(rows[0]), lineterminator="\n")
+                writer.writeheader()
+                writer.writerows(rows)
+            fresh = [{**unitmap.identity(c), "marker": "", "functions": 0, "bytes": 0, "implemented": 0,
+                      "exact_bytes": 0, "lost": 0, "foreign": 0, "our_files": ""}
+                     for c in unitmap.compilands(rows)]
+            for table, expected in ((fresh, 0), ([{**fresh[0], "unit": "src/legoapi/androidbatman.cpp"}] + fresh[1:], 1)):
+                with units.open("w", newline="") as stream:
+                    writer = csv.DictWriter(stream, unitmap.CSV_FIELDS, lineterminator="\n")
+                    writer.writeheader()
+                    writer.writerows(table)
+                self.assertEqual(len(unitmap.check(layout, units)), expected)
 
 
 class UnitizeTextTests(unittest.TestCase):
@@ -114,7 +167,27 @@ class UnitizeTextTests(unittest.TestCase):
         self.assertEqual(unitize.tidy('a\nextern "C" {\n}\n\n\n\nb\n'), "a\n\nb\n")
 
 
+class UnitizeRangeTests(unittest.TestCase):
+    def test_range_or_address_from_unit_table(self):
+        import tempfile
+        from pathlib import Path
+        self.assertEqual(unitize.parse_range("0x100-0x200"), (0x100, 0x200))
+        self.assertEqual(unitize.parse_range("0x180"), (0x180, None))
+        with tempfile.TemporaryDirectory() as directory:
+            units = Path(directory, "units.csv")
+            units.write_text("start,end,unit,inner_files\n0x100,0x200,src/legogame/a.c,\n"
+                             "0x200,0x300,src/legogame/?0x200,\n")
+            self.assertEqual(unitize.unit_for(0x180, units), (0x100, 0x200, "src/legogame/a.c", ""))
+            with self.assertRaises(ValueError):
+                unitize.unit_for(0x280, units)
+
+
 class UnitScoreTests(unittest.TestCase):
+    def test_range_from_text_or_unit_table(self):
+        self.assertEqual(unitscore.parse_range("0x553700-0x557090"), (0x553700, 0x557090))
+        lo, hi = unitscore.parse_range("0x401100")  # the config/units.csv row around it
+        self.assertTrue(lo <= 0x401100 < hi)
+
     def test_compare_totals_and_exact_changes(self):
         before = {"_A": {"va": 0x10, "size": 100, "exact": True, "percent": 100.0},
                   "_B": {"va": 0x80, "size": 50, "exact": False, "percent": 50.0},
