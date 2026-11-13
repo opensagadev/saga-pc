@@ -15044,7 +15044,7 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                                      node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &node->link)) {
                                     AIPATHNODE_PC *runtime = &path->nodes[node->index];
                                     i32 length = strlen(node->name);
-                                    i32 slot;
+                                    u8 slot;
                                     if (length != 0) {
                                         runtime->name = (char *)AISysBufferAlloc(cursor, end, length + 1);
                                         strcpy(runtime->name, node->name);
