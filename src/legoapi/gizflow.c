@@ -355,15 +355,13 @@ static __declspec(noinline) void FlowBoxActivationFeedback(GIZFLOW_PC *system, F
     }
     data = (FLOWBOXGIZMODATA_PC *)box->data;
     for (i = 0; i < data->gizmo_count; ++i)
-        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 0,
-                             (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags >> 7) & 1, 1);
+        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 0, (box->state_flags >> 7) & 1, 1);
     return;
 
 parent_failed:
     data = (FLOWBOXGIZMODATA_PC *)box->data;
     for (i = 0; i < data->gizmo_count; ++i)
-        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 1,
-                             (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags >> 7) & 1, 1);
+        GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 1, (box->state_flags >> 7) & 1, 1);
 }
 
 void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
@@ -400,10 +398,10 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
             box->state_flags |= 0x120;
             for (i = 0; i < box->parent_count; ++i) {
                 if (box->parents[i]->type == 1)
-                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x200;
+                    box->parents[i]->state_flags |= 0x200;
                 if (box->parents[i]->type == 0 && (box->parents[i]->state_flags_low & 0x40) != 0) {
-                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x100;
-                    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->parents[i])->state_flags |= 0x20;
+                    box->parents[i]->state_flags |= 0x100;
+                    box->parents[i]->state_flags |= 0x20;
                 }
             }
         }
@@ -411,7 +409,7 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     if (box->type != 0)
         CheckIfParentsFinished(system, box);
     for (i = 0; i < box->child_count; ++i) {
-        ((GIZFLOW_BOX_LOADER_PREFIX_PC *)box->children[i])->state_flags |= 1;
+        box->children[i]->state_flags |= 1;
         if (box->children[i]->last_process_frame != frame || box->type == 1) {
             box->children[i]->last_process_frame = frame;
             ProcessFlowBox(system, box->children[i], frame);
@@ -467,8 +465,7 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
                 if (data->gizmos[j]->gizmo != NULL && (box->state_flags_low & 1) == 0) {
                     if (flowbox_callbacks[box->type].reset != NULL)
                         flowbox_callbacks[box->type].reset(system, box);
-                    if ((((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags & 1) == 0 &&
-                        (((GIZFLOW_BOX_LOADER_PREFIX_PC *)box)->state_flags & 4) != 0 && box->type == 0)
+                    if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0)
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
                 }
             }
@@ -732,9 +729,8 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
         } FlowGizmoFlagsPc;
         STATIC_ASSERT(sizeof(FlowGizmoFlagsPc) == 2);
         u32 flags = (i16)load_g_flags;
-        GIZFLOW_BOX_LOADER_PREFIX_PC *state = (GIZFLOW_BOX_LOADER_PREFIX_PC *)load_flowbox;
         FlowGizmoFlagsPc packed;
-        packed.value = state->state_flags;
+        packed.value = load_flowbox->state_flags;
         packed.bits.start_invisible = load_g_flags & 1;
         packed.bits.end_invisible = (flags >> 1) & 1;
         packed.bits.end_deactivated = (flags >> 3) & 1;
@@ -743,7 +739,7 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
         packed.bits.output_only = (flags >> 4) & 1;
         packed.bits.freeplay_enabled = ((flags >> 6) ^ 1) & 1;
         packed.bits.story_enabled = ((flags >> 5) ^ 1) & 1;
-        state->state_flags = packed.value;
+        load_flowbox->state_flags = packed.value;
     }
 }
 
@@ -921,7 +917,7 @@ static void GizFlowConfigConditionTypePc(NUFPAR_PC *parser) {
 
 static void GizFlowConfigMonitorInputsPc(NUFPAR_PC *parser) {
 
-    ((GIZFLOW_BOX_LOADER_PREFIX_PC *)load_flowbox)->state_flags |= 0x200;
+    load_flowbox->state_flags |= 0x200;
 }
 
 static NUFPCOMJMP cfgtab_condition_pc[] = {
