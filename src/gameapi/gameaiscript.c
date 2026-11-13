@@ -11853,32 +11853,43 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 param_count, i32 first_time, f32 unused_delta) {
     NUVEC position;
-    AIPATHINFO_PC *path = NULL;
-    i32 yaw = 0;
     i32 index;
+    i32 minimum = -1, maximum = -1;
+    i32 model_count = 0;
+    i32 grouped = 1;
+    i32 count = 1;
     i32 offset_applied = 0;
-    i32 minimum = -1, maximum = -1, count = 1;
-    i32 start_locator = 0, inherit = 1;
-    i32 offscreen = 0, nearest = 0, onscreen = 0;
-    i32 surface = 1, creature_set = 0;
-    i32 no_gun = 0, cheap = 0, ballooning = 0;
+    i32 surface = 1;
+    i32 onscreen = 0;
+    i32 cheap = 0;
+    i32 no_gun = 0;
+    i32 ballooning = 0;
+    i32 start_locator = 0;
     AILOCATOR_PC *locators[64] = {NULL};
+    i32 locator_count = 0;
+    i32 creature_set = 0;
     ZIPUP_s *zipups[32];
     i16 models[10];
     char script[64] = "default";
     f32 xspacing = 0.8f, zspacing = 0.8f;
     NUVEC offset = {0.0f, 0.0f, 0.0f};
-    AILOCATORSET_PC *locator_set = NULL;
-    i32 zipdown = 0;
-    i32 across = 2;
-    i32 locator_count = 0, zipup_count = 0, model_count = 0;
-    f32 fall_chance = 0.0f;
-    f32 crate_height = 0.0f, crate_delay = 0.0f;
-    f32 delay = 0.0f;
-    GAMEOBJECT *rider = NULL;
     char *state = NULL;
-    f32 max_range = 1000000000.0f, min_dy = 1000000000.0f, max_dy = 1000000000.0f;
-    i32 grouped = 1;
+    GAMEOBJECT *rider = NULL;
+    i32 across = 2;
+    AIPATHINFO_PC *path = NULL;
+    i32 yaw = 0;
+    f32 crate_height = 0.0f, crate_delay = 0.0f;
+    i32 zipup_count = 0;
+    f32 delay = 0.0f;
+    i32 zipdown = 0;
+    f32 fall_chance = 0.0f;
+    i32 nearest = 0;
+    i32 offscreen = 0;
+    f32 max_range = 1000000000.0f;
+    i32 inherit = 1;
+    f32 min_dy = 1000000000.0f;
+    AILOCATORSET_PC *locator_set = NULL;
+    f32 max_dy = 1000000000.0f;
     i64 add_capabilities = 0, remove_capabilities = 0;
     if (first_time == 0)
         return 1;
@@ -11959,14 +11970,7 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
         } else if ((value = NuStrIStr(params[index], "type")) != NULL) {
             value += 5;
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                if (WORLD->current_level != HUB_LDATA) {
-                    u8 type = LevelCharacterTypeIDFn(value);
-                    if (type != 0xff) {
-                        i16 model = LevelCharacterGlobalIDFn(type);
-                        if (model != -1 && model_count < 10)
-                            models[model_count++] = model;
-                    }
-                } else {
+                if (WORLD->current_level == HUB_LDATA) {
                     i16 model;
                     if (NuStrICmp("Barman", value) == 0)
                         model = id_BARMAN;
@@ -11978,6 +11982,13 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
                         continue;
                     if (apicharsys->playermodelids[model] != -1 && model_count < 10)
                         models[model_count++] = model;
+                } else {
+                    u16 type = LevelCharacterTypeIDFn(value);
+                    if (type != 0xff) {
+                        i16 model = LevelCharacterGlobalIDFn(type);
+                        if (model != -1 && model_count < 10)
+                            models[model_count++] = model;
+                    }
                 }
             }
         } else if ((value = NuStrIStr(params[index], "state=")) != NULL)
