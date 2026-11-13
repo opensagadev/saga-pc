@@ -40,8 +40,10 @@ this change, two things made the numbers look odd:
   coverage topped out at 97.6 % (83,191 bytes of int3/nop fill) and data below
   100 % (about 24,000 zero bytes after odd-sized items). The mapped badges now
   count fill that a rule proves, the way the exact badge already does: in
-  `.text`, fewer than 16 filler bytes between two known extents ending on a
-  16-byte boundary (`match.padding_runs`); in file-backed data, fewer than 4
+  `.text`, int3/nop filler between two known extents that is shorter than the
+  alignment of the start it ends on, at most 16 (`match.pads_to`: functions
+  start on 16-byte boundaries, runtime assembler and import thunks on smaller
+  ones; `match.padding_runs`); in file-backed data, fewer than 4
   zero bytes between two known extents ending where the next one starts on a
   4-byte boundary (`match.data_padding_runs`). The symbol-only numbers stay
   in the report as `mapping_<kind>_percent`; the badges use

@@ -216,12 +216,19 @@ class PaddingTests(unittest.TestCase):
         cases = [
             [self.row(0x401000, 12), self.row(0x401010, 16)],         # code inside the fill
             [self.row(0x401020, 4), self.row(0x401040, 16)],          # 28 bytes: longer than alignment
-            [self.row(0x401050, 4), self.row(0x401058, 16)],          # next start not aligned
+            [self.row(0x401050, 4), self.row(0x401057, 16)],          # next start not aligned
+            [self.row(0x401050, 4), self.row(0x40105c, 16)],          # 8 bytes: not shorter than 4-alignment
             [self.row(0x401070, 4)],                                  # no following extent
         ]
         for rows in cases:
             with self.subTest(rows=rows):
                 self.assertEqual(match.padding_runs(rows, self.target, self.reader(image)), [])
+
+    def test_fill_before_a_less_aligned_start_is_padding_shorter_than_its_alignment(self):
+        image = bytearray(b"\xcc" * 0x100)
+        rows = [self.row(0x401000, 0x51), self.row(0x401054, 16)]  # 3 bytes before a 4-aligned start
+        self.assertEqual(match.padding_runs(rows, self.target, self.reader(image)),
+                         [{"address": 0x401051, "size": 3, "exact": True}])
 
     def test_padding_after_import_glue_or_mixed_aliases_is_not_exact(self):
         image = bytearray(b"\xcc" * 0x1000)

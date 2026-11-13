@@ -59,13 +59,13 @@ import zlib
 
 if __package__:
     from .binary import COFF, BinaryError
-    from .match import PADDING_ALIGNMENT, is_padding
+    from .match import PADDING_ALIGNMENT, is_padding, pads_to
     from .lib import (ROOT, archive_members, archive_path, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
                       prepare_member, project, retail)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import COFF, BinaryError
-    from tools.match import PADDING_ALIGNMENT, is_padding
+    from tools.match import PADDING_ALIGNMENT, is_padding, pads_to
     from tools.lib import (ROOT, archive_members, archive_path, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
                            prepare_member, project, retail)
 
@@ -334,7 +334,7 @@ def classify_text(ctx):
     text_lo, text_hi = ctx.sections[".text"][:2]
     for a, b in ctx.gaps(".text"):
         data = ctx.read(a, b - a)
-        if b - a < PADDING_ALIGNMENT and b % PADDING_ALIGNMENT == 0 and is_padding(data) \
+        if pads_to(b, b - a) and is_padding(data) \
                 and ctx.is_mapped(b) and ctx.is_mapped(a - 1):
             rows.append((a, b, TEXT_CLASSES[0]))
             continue

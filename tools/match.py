@@ -47,6 +47,14 @@ PADDING_FILLERS = (b"\x8d\xa4\x24\x00\x00\x00\x00", b"\x8d\x9b\x00\x00\x00\x00",
 PADDING_ALIGNMENT = 16
 
 
+def pads_to(address, gap):
+    """True when `gap` filler bytes can align the extent starting at `address`.
+
+    Functions start on 16-byte boundaries; runtime assembler sections and import
+    thunks on smaller ones (the start's own alignment, at most 16)."""
+    return 0 < gap < min(PADDING_ALIGNMENT, address & -address if address else PADDING_ALIGNMENT)
+
+
 def is_padding(data):
     """True when `data` is a sequence of whole alignment fillers."""
     offset = 0
@@ -80,7 +88,7 @@ def padding_runs(functions, target, read, externals=()):
     runs, end, before = [], None, []
     for address, size, exact in sorted(extents):
         gap = address - end if end is not None else 0
-        if 0 < gap < PADDING_ALIGNMENT and address % PADDING_ALIGNMENT == 0 \
+        if pads_to(address, gap) \
                 and start <= end and address <= start + total and is_padding(read(end, gap)):
             runs.append({"address": end, "size": gap, "exact": bool(before) and all(before)})
         if end is None or address + size > end:
@@ -186,7 +194,8 @@ def text_coverage(functions, target, externals=(), padding=(), data=()):
         "exact_with_padding_bytes": exact + exact_padding,
         "exact_with_padding_percent": 100 * (exact + exact_padding) / total if total else 0.0,
         "padding_qualification": f"Padding is int3/nop alignment fill shorter than {PADDING_ALIGNMENT} bytes "
-                                 "between mapped extents, ending on an aligned extent start; it is exact "
+                                 "between mapped extents, shorter than the alignment of the extent start it "
+                                 "ends on; it is exact "
                                  "only after an exact function.",
     }
 
