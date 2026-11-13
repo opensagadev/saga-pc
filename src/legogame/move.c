@@ -1881,9 +1881,7 @@ void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
 
         if (object->context_timer >= three_quarter_duration) {
             phase = object->context_timer - three_quarter_duration;
-            /* MATCH-EXCEPTION: retail's secondary_lean_angle is signed (stores go through _ftol2 and
-               the field is compared as i16); saga.h declares it u16, so store through an i16 view. */
-            *(i16 *)&object->secondary_lean_angle = (i32)((1.0f - (1.0f / quarter_duration) * phase) * 16384.0f);
+            object->secondary_lean_angle = (i32)((1.0f - (1.0f / quarter_duration) * phase) * 16384.0f);
             return;
         }
         if (!(object->context_timer >= half_duration)) {
@@ -1891,8 +1889,7 @@ void __cdecl TurnCode(GAMEOBJECT *object, i32 mode, GAMEPAD_PC *pad) {
         }
         phase = object->context_timer - half_duration;
         index = ((i32)((1.0f - (1.0f / quarter_duration) * phase) * 16384.0f + 49152.0f + 16384.0f) >> 1) & 0x7fff;
-        /* MATCH-EXCEPTION: signed secondary_lean_angle store, see above. */
-        *(i16 *)&object->secondary_lean_angle = (i32)(20024.0f * NuTrigTable[index] + 16384.0f);
+        object->secondary_lean_angle = (i32)(20024.0f * NuTrigTable[index] + 16384.0f);
     } else {
         GAMEOBJECT *other;
         i32 finish_turn;

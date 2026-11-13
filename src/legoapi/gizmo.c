@@ -1090,12 +1090,6 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
     (void)mode;
 }
 
-/* MATCH-EXCEPTION: the argument-less calls go through a type without a prototype, as C allows no other way. */
-
-/* Aligned, cleared allocation from the gizmo buffer that reports an exhausted or missing buffer. */
-// MATCH-EXCEPTION: retail inlines this checked allocator with no out-of-line copy; a static inline function
-// leaves a COMDAT in the object, so it is written as a macro.
-
 STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);

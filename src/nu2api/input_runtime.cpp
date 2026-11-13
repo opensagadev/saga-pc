@@ -1402,11 +1402,8 @@ extern "C" void __cdecl PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 p
 }
 
 extern "C" i32 __cdecl PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank) {
-    // MATCH-EXCEPTION: parameters copied to locals, as an inlined member call would (U20)
-    i32 port_local = port;
-    i32 bank_local = bank;
-    return auxiliary ? ((PC_INPUT_RUNTIME_PC *)nu_input_state)->auxiliary_bindings[bank_local][action].kind != 0
-                     : ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port_local].bindings[action].kind != 0;
+    return auxiliary ? ((PC_INPUT_RUNTIME_PC *)nu_input_state)->auxiliary_bindings[bank][action].kind != 0
+                     : ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].bindings[action].kind != 0;
 }
 
 extern "C" PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8 mask, i32 port, i32 key) {

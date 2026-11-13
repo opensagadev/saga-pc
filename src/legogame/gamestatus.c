@@ -622,7 +622,7 @@ void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
     i32 opacity;
     f32 timer;
     f32 pulse;
-    volatile f32 inverse_pulse;
+    f32 inverse_pulse;
     volatile f32 pulse_scale;
     u8 collected;
     u8 total;

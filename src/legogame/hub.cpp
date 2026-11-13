@@ -2172,8 +2172,7 @@ static f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
 
 /* PC477630668bytes, fullstackargs(collection,active_cursors,alpha,scale). */
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
-    // MATCH-EXCEPTION: retail compares scale against a -0.0f constant (same result as 0.0f).
-    if (alpha <= 0.0f || scale < -0.0f) {
+    if (alpha <= 0.0f || scale < 0.0f) {
         return;
     }
     f32 z = 0.0f;

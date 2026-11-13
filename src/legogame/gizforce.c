@@ -619,8 +619,6 @@ static void GizForce_PlayBackwardsFn(GIZFORCE_PC *force) {
     }
 }
 
-// MATCH-EXCEPTION: retail calls this wrapper out of line from GizForces_Update; VC8 would
-// otherwise inline it there (it already stays out of line in GizmoForce_ActivateRev).
 void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force) {
     if (force != NULL) {
         if (force->runtime_flags & 0x40) {
