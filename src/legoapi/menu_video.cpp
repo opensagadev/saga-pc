@@ -153,7 +153,11 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
     switch (menu->selected_row) {
         case 0:
             if (menu->right_pressed || menu->left_pressed) {
-                if (PcWindowOptions.usehires || !MenuCanChangeMultisamplePc()) {
+                if (PcWindowOptions.usehires) {
+                    MenuSFX = MENUSFX_MENUNOENTRY;
+                    return;
+                }
+                if (!MenuCanChangeMultisamplePc()) {
                     MenuSFX = MENUSFX_MENUNOENTRY;
                     return;
                 }
