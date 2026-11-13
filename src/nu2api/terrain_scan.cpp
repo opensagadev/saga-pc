@@ -442,14 +442,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             transformed->vertices[3].z = vertices[3].z;
                             transformed->vertices[3].y =
                                 (vertices[3].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
-                            NUVEC a, b;
-                            a.x = transformed->vertices[1].x - transformed->vertices[3].x;
-                            a.y = transformed->vertices[1].y - transformed->vertices[3].y;
-                            a.z = transformed->vertices[1].z - transformed->vertices[3].z;
-                            b.x = transformed->vertices[2].x - transformed->vertices[3].x;
-                            b.y = transformed->vertices[2].y - transformed->vertices[3].y;
-                            b.z = transformed->vertices[2].z - transformed->vertices[3].z;
-                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[1], a, b);
+                            vertices[0].x = transformed->vertices[1].x - transformed->vertices[3].x;
+                            vertices[0].y = transformed->vertices[1].y - transformed->vertices[3].y;
+                            vertices[0].z = transformed->vertices[1].z - transformed->vertices[3].z;
+                            vertices[1].x = transformed->vertices[2].x - transformed->vertices[3].x;
+                            vertices[1].y = transformed->vertices[2].y - transformed->vertices[3].y;
+                            vertices[1].z = transformed->vertices[2].z - transformed->vertices[3].z;
+                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[1], vertices[0], vertices[1]);
                             const f32 inverse = TerrainDivideNonzeroPC(
                                 1.0f, NuFsqrt(transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y +
@@ -462,14 +461,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             transformed->normals[1].y = 65536.0f;
                         }
                         {
-                            NUVEC a, b;
-                            a.x = transformed->vertices[2].x - transformed->vertices[0].x;
-                            a.y = transformed->vertices[2].y - transformed->vertices[0].y;
-                            a.z = transformed->vertices[2].z - transformed->vertices[0].z;
-                            b.x = transformed->vertices[1].x - transformed->vertices[0].x;
-                            b.y = transformed->vertices[1].y - transformed->vertices[0].y;
-                            b.z = transformed->vertices[1].z - transformed->vertices[0].z;
-                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[0], a, b);
+                            vertices[0].x = transformed->vertices[2].x - transformed->vertices[0].x;
+                            vertices[0].y = transformed->vertices[2].y - transformed->vertices[0].y;
+                            vertices[0].z = transformed->vertices[2].z - transformed->vertices[0].z;
+                            vertices[1].x = transformed->vertices[1].x - transformed->vertices[0].x;
+                            vertices[1].y = transformed->vertices[1].y - transformed->vertices[0].y;
+                            vertices[1].z = transformed->vertices[1].z - transformed->vertices[0].z;
+                            TERRAIN_CROSS_PRODUCT_PC(transformed->normals[0], vertices[0], vertices[1]);
                             const f32 length = NuFsqrt(transformed->normals[0].x * transformed->normals[0].x +
                                                        transformed->normals[0].y * transformed->normals[0].y +
                                                        transformed->normals[0].z * transformed->normals[0].z);
