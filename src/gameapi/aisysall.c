@@ -6191,7 +6191,10 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
                 row->next_connection = row->path_info.connection;
         }
         next = row->next_connection;
-        if (next != NULL && next->traversal_flags[next->node_indices[0] != node_index] == 0) {
+        if (next != NULL) {
+            direction = next->node_indices[0] != node_index;
+        }
+        if (next != NULL && next->traversal_flags[direction] == 0) {
             if (row->path_info.direction != 0)
                 current_angle = NuAngAdd(0x8000, row->path_info.connection->rotation);
             else
