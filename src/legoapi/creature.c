@@ -246,12 +246,13 @@ STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
 
 static void __cdecl CreatureCrate_StopPc(PART_PC *part) {
     GAMEOBJECT *object = part->owner;
-    i32 debris, type;
+    u16 debris;
+    i32 type;
     if (object == NULL)
         return;
-    debris = (i16)FindGameDebris(WORLD->game_debris_sys, "CRATE_POP");
-    if (debris != -1)
-        AddGameDebris(WORLD->game_debris_sys, debris, &part->position);
+    debris = (u16)FindGameDebris(WORLD->game_debris_sys, "CRATE_POP");
+    if (debris != 0xffff)
+        AddGameDebris(WORLD->game_debris_sys, (i16)debris, &part->position);
     type = PARTLookupType("CRATE_PART");
     if (type != -1)
         AddFiniteShotPART(type, &part->position, 1);
