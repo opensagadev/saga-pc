@@ -19454,17 +19454,18 @@ struct SoundQueue {
     i32 SetFormatPc(const WAVEFORMATEX *);
     i32 FillBufferPc(i32, u32);
     i32 SendCommand(i32 command, i32 argument);
+    // noinline: the original calls these out of line from the NuSound3*StereoStream wrappers; VC8 would inline them.
     __declspec(noinline) i32 Stop();
     __declspec(noinline) i32 Pause();
     __declspec(noinline) i32 Resume();
     __declspec(noinline) i32 SetVolume(i32 volume);
-    __declspec(noinline) bool HasCommand(i32 command);
-    __declspec(noinline) i32 IsStreamIdle();
+    bool HasCommand(i32 command);
+    i32 IsStreamIdle();
     __declspec(noinline) i32 GetStatus();
     void StartTimer();
     void StopTimer();
-    __declspec(noinline) i32 SetStreamFile(const char *path, f32 offset);
-    __declspec(noinline) i32 SetStreamFlags(i32 flags);
+    i32 SetStreamFile(const char *path, f32 offset);
+    i32 SetStreamFlags(i32 flags);
 };
 
 STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
@@ -20563,7 +20564,7 @@ struct PC_INPUT_RUNTIME_PC {
 
     void InitConfiguration();
     void ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *);
-    __declspec(noinline) PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
+    PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
     void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
     void BindPreferredConfig(i32 mask, i32 port);
     i32 ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count);
