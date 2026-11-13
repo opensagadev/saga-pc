@@ -1162,6 +1162,13 @@ f32 SplineMinStep = 0.1f;
 
 /* One spline control point: its position and the two tangent handles. */
 struct SplineKnot : public CSListLink<SplineKnot> {
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(SplineKnot));
+    }
+
     __declspec(align(16)) VuVec position;
     VuVec in_tangent;
     VuVec out_tangent;
@@ -4668,7 +4675,7 @@ SplineKnotList::~SplineKnotList() {
     SplineKnot *knot;
     while ((knot = first) != NULL) {
         Remove(knot);
-        theMemoryManager.FreePool(knot, sizeof(SplineKnot));
+        delete knot;
     }
 }
 
@@ -6359,7 +6366,7 @@ void SplineHelper::SerialiseObject(EdStream &stream, void *object) {
     if (stream.mode == 1) {
         stream.SerialiseBuffer(&knot_count, sizeof(knot_count), 1);
         for (i32 index = 0; index < knot_count; index++) {
-            SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
+            SplineKnot *knot = new SplineKnot;
             theKnotHelper.object_class->SerialiseObject(stream, knot);
             if (knot != NULL) {
                 knot->spline = spline;
@@ -6444,7 +6451,7 @@ void KnotHelper::DestroyObject(void *object, i32) {
     theLevelEditor.destroying_objects = 1;
     SplineObject *spline = knot->spline;
     spline->knots.Remove(knot);
-    theMemoryManager.FreePool(knot, sizeof(SplineKnot));
+    delete knot;
     if (spline->knots.Count() == 0) {
         theSplineHelper.objects.Remove(spline);
         delete spline;
@@ -8649,7 +8656,7 @@ SplineObject *SplineObject::Clone() {
     NuStrCpy(clone->name, name);
     SplineKnot *source = knots.first;
     for (i32 index = 0; index < knots.count; index++) {
-        SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
+        SplineKnot *knot = new SplineKnot;
         knot->spline = clone;
         knot->next = NULL;
         knot->previous = clone->knots.last;
@@ -8861,7 +8868,7 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
         theClassEditor.MakeUniqueName("NewSpline", spline->name, sizeof(spline->name));
         theSplineHelper.objects.InsertAfter(spline, NULL);
     }
-    SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
+    SplineKnot *knot = new SplineKnot;
     if (knot == NULL)
         return NULL;
     knot->spline = spline;
