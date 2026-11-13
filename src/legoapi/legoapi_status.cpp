@@ -66,7 +66,7 @@ static void StatusMiniKitRotateXPc(NUMTX *m, i32 a) {
     f32 m21 = m->m21;
     f32 m31 = m->m31;
 
-    m->m01 = m01 * cosx - m->m02 * sinx;
+    m->m01 = (m01 * cosx) - m->m02 * sinx;
     m->m02 = m01 * sinx + m->m02 * cosx;
     m->m11 = m11 * cosx - m->m12 * sinx;
     m->m12 = m11 * sinx + m->m12 * cosx;
