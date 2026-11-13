@@ -48,13 +48,13 @@ import zlib
 if __package__:
     from .binary import COFF, BinaryError
     from .match import PADDING_ALIGNMENT, is_padding
-    from .lib import (ROOT, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
+    from .lib import (ROOT, archive_members, archive_path, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
                       prepare_member, project, retail)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import COFF, BinaryError
     from tools.match import PADDING_ALIGNMENT, is_padding
-    from tools.lib import (ROOT, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
+    from tools.lib import (ROOT, archive_members, archive_path, bindings_for, derived_size, parse_literal_name, library_entries, library_member_path, load_symbols,
                            prepare_member, project, retail)
 
 
@@ -648,6 +648,72 @@ def library_layout(ctx):
             for s in members:
                 following = [v for v in starts if v > s["value"]]
                 layout.setdefault((base + s["value"], s["name"]), (following[0] if following else size) - s["value"])
+    for key, extent in library_content_layout(ctx).items():
+        layout.setdefault(key, extent)
+    return layout
+
+
+# Pinned archives whose data members may be linked without a mapped anchor.
+CONTENT_ARCHIVES = ("libcmt.lib", "libcpmt.lib", "dxsdk/DxErr9.lib", "dxsdk/dxguid.lib", "dxsdk/dinput8.lib",
+                    "dxsdk/dsound.lib", "dxsdk/d3d9.lib", "dxsdk/d3dx9.lib", "dxsdk/XInput.lib")
+MIN_CONTENT = 16
+
+
+def library_content_layout(ctx):
+    """Place relocation-free archive data sections by their unique bytes in retail.
+
+    A section of at least 16 nonzero-containing bytes without relocations that
+    occurs exactly once in the file-backed .rdata/.data of retail, at an address
+    its section alignment allows, and whose bytes no member with other symbol
+    names also offers, is that member's contribution (GUID tables of dxguid.lib,
+    runtime constant tables). Returns {(address, linker name): extent}.
+    """
+    blobs = []
+    for name in (".rdata", ".data"):
+        start, _, file_end = ctx.sections[name]
+        blobs.append((start, ctx.read(start, file_end - start)))
+    offers = collections.defaultdict(set)
+    for archive in CONTENT_ARCHIVES:
+        try:
+            members = list(archive_members(archive_path(archive)))
+        except (OSError, ValueError):
+            continue
+        for index, _, body in members:
+            if body[:4] == b"\0\0\xff\xff":
+                continue  # short import record
+            try:
+                obj = prepare_member(COFF(library_member_path(archive, index, body)), archive, index)
+                symbols = obj.defined_symbols()
+            except (BinaryError, OSError, ValueError):
+                continue
+            for number, section in enumerate(obj.sections, 1):
+                flags = section["characteristics"]
+                if flags & 0xa0 or not flags & 0x40 or section["raw_size"] < MIN_CONTENT \
+                        or not section["raw_offset"] or section["relocation_count"] \
+                        or section["name"].startswith((".debug", ".drectve")):
+                    continue
+                data = COFF_section_bytes(obj, section)
+                names = tuple(sorted((s["value"], s["name"]) for s in symbols if s["section"] == number))
+                if any(data) and names:
+                    alignment = 1 << max(0, ((flags >> 20) & 0xf) - 1)
+                    offers[data].add((names, alignment, len(data)))
+    layout = {}
+    for data, choices in offers.items():
+        if len({names for names, _, _ in choices}) != 1:
+            continue
+        names, alignment, size = next(iter(choices))
+        found = []
+        for start, blob in blobs:
+            offset = blob.find(data)
+            while offset >= 0 and len(found) < 2:
+                found.append(start + offset)
+                offset = blob.find(data, offset + 1)
+        if len(found) != 1 or found[0] % alignment:
+            continue
+        starts = sorted({value for value, _ in names})
+        for value, name in names:
+            following = [v for v in starts if v > value]
+            layout[(found[0] + value, name)] = (following[0] if following else size) - value
     return layout
 
 
