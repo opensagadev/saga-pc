@@ -152,16 +152,15 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     NetPrimSetColour(0x80000080);
     NetPrimPosition(x, y, 0.0f);
     NetPrimSetColour(0x80000080);
-    f32 bottom = y - height;
-    NetPrimPosition(x, bottom, 0.0f);
+    NetPrimPosition(x, y - height, 0.0f);
     NetPrimSetColour(0x80000080);
     f32 right = x + half_width;
-    NetPrimPosition(right, bottom, 0.0f);
+    NetPrimPosition(right, y - height, 0.0f);
     NuPrim2DEnd();
 
     NuPrim2DBegin(0xf, 5, NULL);
     NetPrimSetColour(0x80000080);
-    f32 limit = bottom + byte_scale * 4352.0;
+    f32 limit = y - height + byte_scale * 4352.0;
     NetPrimPosition(x, limit, 0.0f);
     NetPrimSetColour(0x80000080);
     NetPrimPosition(right, limit, 0.0f);
@@ -177,10 +176,10 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
         f32 sample_x = x + (f32)i * x_step;
         switch (info) {
             case INFO_BYTES:
-                sample_y = bottom + (f32)history[sample].values[0] * byte_scale;
+                sample_y = y - height + (f32)history[sample].values[0] * byte_scale;
                 break;
             case INFO_PACKETS:
-                sample_y = bottom + (f32)history[sample].values[2] * packet_scale;
+                sample_y = y - height + (f32)history[sample].values[2] * packet_scale;
                 break;
         }
         NetPrimSetColour(0x80008000);
@@ -198,10 +197,10 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
         f32 sample_x = x + (f32)i * x_step;
         switch (info) {
             case INFO_BYTES:
-                sample_y = bottom + (f32)history[sample].values[1] * byte_scale;
+                sample_y = y - height + (f32)history[sample].values[1] * byte_scale;
                 break;
             case INFO_PACKETS:
-                sample_y = bottom + (f32)history[sample].values[3] * packet_scale;
+                sample_y = y - height + (f32)history[sample].values[3] * packet_scale;
                 break;
         }
         NetPrimSetColour(0x80008080);
