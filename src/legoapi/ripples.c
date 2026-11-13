@@ -378,7 +378,7 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
     NUFPAR_PC *parser;
     RIPPLE_EFFECT_PC *effect;
-    i32 active = 0, i;
+    i32 active, i;
     view->effects = NULL;
     view->count = 0;
     parser = NuFParCreateMem("rippleeffects", config, 0xffff);
@@ -387,6 +387,7 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     effect = view->effects = (RIPPLE_EFFECT_PC *)world->giz_buffer.void_ptr;
     NuFParPushCom(parser, RippleEffectConfigKeywordsPc);
+    active = 0;
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
         if (parser->word_buffer_ptr[0] == 0)
@@ -401,27 +402,32 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
             } else
                 NuFParInterpretWord(parser);
         } else if (view->count < 2 && NuStrICmp(parser->word_buffer_ptr, "rippleeffects_start") == 0) {
+            active = 1;
             RippleEffectsWorldInfoPc = world;
+            RippleEffectsCurrentPc = effect;
             effect->lifetime = 2.0f;
             effect->initial_size = 0;
-            effect->end_size = 1.0f;
             effect->texture_name[0] = 0;
-            effect->start_color = 0xff404040u;
-            effect->end_color = 0;
+            effect->end_size = 1.0f;
+            effect->start_rgba[0] = 0x40;
+            effect->start_rgba[1] = 0x40;
+            effect->start_rgba[2] = 0x40;
+            effect->start_rgba[3] = 0xff;
+            effect->end_rgba[0] = 0;
+            effect->end_rgba[1] = 0;
+            effect->end_rgba[2] = 0;
+            effect->end_rgba[3] = 0;
             effect->material = NULL;
-            RippleEffectsCurrentPc = effect;
-            active = 1;
         }
     }
     NuFParDestroy(parser);
-    if (view->count <= 0) {
+    if (view->count > 0) {
+        world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
+        for (i = 0; i < view->count; ++i)
+            InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
+                          &world->buffer_end);
+    } else
         view->effects = NULL;
-        return;
-    }
-    world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
-    for (i = 0; i < view->count; ++i)
-        InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
-                      &world->buffer_end);
 }
 
 /* Original ripples.cpp private erase worklist. Native allocation derives its
@@ -522,8 +528,10 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
         if (node == NULL)
             continue;
         next = node->next;
-        if (node->lifetime >= node->age) {
-            if (!(node->delay > 0.0f)) {
+        if (node->age <= node->lifetime) {
+            if (node->delay > 0.0f) {
+                node->delay -= FRAMETIME;
+            } else {
                 f32 ratio = node->age / node->lifetime;
                 /* Existing original reader labels: +50 is animated size,
                  * +54 base size, +5c current colour, +60 initial colour. */
@@ -546,8 +554,6 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
                     node->matrix.m31 += node->velocity.y;
                     node->matrix.m32 += node->velocity.z;
                 }
-            } else {
-                node->delay -= FRAMETIME;
             }
             node->age += FRAMETIME;
         } else {
