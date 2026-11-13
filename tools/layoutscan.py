@@ -130,6 +130,9 @@ REVIEW = {
     0x4ab910: dict(name="move", join=True, why="single functions between the two move halves, no marker"),
     0x4abaa0: dict(name="move", join=True, why="single functions between the two move halves, no marker"),
     0x4abab0: dict(name="move", join=True, why="single functions between the two move halves, no marker"),
+    0x4b7080: dict(name="panel", conf="medium",
+                   why="NuRndrPrimSetColour opens panel: PanelRender calls it, and its retail register use is "
+                   "that of a static compiled with its only caller (exact only when it shares PanelRender's file)"),
     0x4bc2f0: dict(name="pursuit", conf="medium", why="TCS only; Android pursuit.c fits panel < pursuit < radio"),
     0x4c00c0: dict(name=None, join=True, why="one function between sfx and shard"),
     0x4c8bd0: dict(name="speederchase", conf="medium", why="TCS only; Android speederchase; signal < sp < startup"),

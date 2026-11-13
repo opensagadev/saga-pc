@@ -42,8 +42,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x491b90,0x493c2c,src/legogame/?0x491b90,,legogame,code+marker+review+android,none,ret ret 28,4,8219,8219,1172,828,0,batman.cpp:8219
 0x493c30,0x496e11,src/legogame/menu.cpp,,legogame,batman+code+marker,high,fabs 28,42,12200,12200,7594,271,0,legogame/menu.cpp:12200
 0x496e20,0x497c05,src/legogame/missions.c,,legogame,batman+marker,high,fabs 28,10,3415,3415,1030,45,20,legoapi/menus.cpp:2425 legogame/missions.c:990
-0x497c10,0x4b70ec,src/legogame/move.c,,legogame,batman+marker+review,high,ret fabs,219,125954,125954,53800,3581,8,legogame/move.c:123052 legoapi/pushing.cpp:1057 legoapi/characters.cpp:957 legoapi/bolt_foundation_callbacks.cpp:780 legogame/game.cpp:108
-0x4b7120,0x4bc29b,src/legogame/panel.cpp,,legogame,batman+code,medium,,27,20613,20613,3772,1222,121,legoapi/hub.cpp:15697 legogame/panel.c:3212 legogame/game.cpp:1704
+0x497c10,0x4b7051,src/legogame/move.c,,legogame,batman+marker+review,high,ret fabs,218,125846,125846,53692,3581,8,legogame/move.c:123052 legoapi/pushing.cpp:1057 legoapi/characters.cpp:957 legoapi/bolt_foundation_callbacks.cpp:780
+0x4b7080,0x4bc29b,src/legogame/panel.cpp,,legogame,batman+code+review,medium,,28,20721,20721,3880,1222,121,legoapi/hub.cpp:15697 legogame/panel.c:3212 legogame/game.cpp:1812
 0x4bc2f0,0x4bcac6,src/legogame/pursuit.c,,legogame,review,medium,,13,1893,1893,1893,0,0,legogame/pursuit.c:1893
 0x4bcaf0,0x4bce21,src/legogame/radio.c,,legogame,batman,medium,,3,805,805,805,0,0,legogame/radio.cpp:805
 0x4bce30,0x4bdca4,src/legogame/securitydoor.c,,legogame,batman+marker,high,ret 28,24,3444,3444,3339,0,0,legogame/securitydoor.c:3444
