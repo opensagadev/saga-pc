@@ -1496,43 +1496,60 @@ void __cdecl FindGameCutScenes(void) {
     game_cutscenes_podsprint_sebulba = CutScene_Find(WORLD->cutscene_sys, "ep1_podsprint_sebulba");
 }
 
+extern AREA_DATA_PC *ROOFTOPS_ADATA;
+extern i16 CharacterFixupIdPc007f1828; /* character id fixed up from "PenguinBomb" */
+
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *blowup) {
     i32 coins;
     NUVEC direction;
     char script[32] = "GoonBox";
     i32 model = GetGenericGoon(0);
-    f32 choice = qrand() * (1.0f / 65535.0f) * 100.0f;
-    if (!(choice < 50.0f)) {
-        choice -= 50.0f;
-        if (choice < 50.0f) {
-            i32 i;
-            i32 count = (i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 3.0f);
-            for (i = 0; i <= count; ++i) {
-                i32 angle = (u16)(NuFloatRand((NURAND *)(&GAMERAND)) * 65536.0f);
-                GAMEOBJECT *object =
-                    AddDynamicCreature(model, &blowup->mid_position, angle, script, NULL, NULL, 1, NULL, NULL, 0, -1);
-                if (object != NULL) {
-                    object->collision_scale_override = 0.0f;
-                    object->collision_scale = 0.0f;
-                    object->origin_scale = 0.0f * object->character_data->model_scale;
-                } else {
-                    NUVEC direction;
-                    i32 coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
-                    if (coins < 100)
-                        coins = 100;
-                    direction = v010;
-                    NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
-                    NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
-                    AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f,
-                               2000000.0f, NULL, 1, 1);
-                }
-            }
-            return;
-        }
-        choice -= 50.0f;
-        if (choice < 0.0f)
-            return;
+    f32 choice;
+    i32 i;
+    i32 count;
+    if (WORLD->area == ROOFTOPS_ADATA) {
+        NuStrCpy(script, "PenguinBox");
+        model = CharacterFixupIdPc007f1828;
     }
+    choice = qrand() * (1.0f / 65535.0f) * 100.0f;
+    if (choice < 50.0f) {
+        coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
+        if (coins < 100)
+            coins = 100;
+        direction = v010;
+        NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
+        NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
+        AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1,
+                   1);
+        return;
+    }
+    choice -= 50.0f;
+    if (choice < 50.0f) {
+        count = 1 - (i32)(NuFloatRand((NURAND *)(&GAMERAND)) * -3.0f);
+        for (i = 0; i < count; ++i) {
+            u16 angle = (u16)(NuFloatRand((NURAND *)(&GAMERAND)) * 65536.0f);
+            GAMEOBJECT *object =
+                AddDynamicCreature(model, &blowup->mid_position, angle, script, NULL, NULL, 1, NULL, NULL, 0, -1);
+            if (object != NULL) {
+                object->collision_scale_override = 0.0f;
+                object->collision_scale = 0.0f;
+                object->origin_scale = 0.0f * object->character_data->model_scale;
+            } else {
+                coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
+                if (coins < 100)
+                    coins = 100;
+                direction = v010;
+                NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
+                NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
+                AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f,
+                           NULL, 1, 1);
+            }
+        }
+        return;
+    }
+    choice -= 50.0f;
+    if (choice < 0.0f)
+        return;
     coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
     if (coins < 100)
         coins = 100;
