@@ -5,10 +5,6 @@
 
 static i32 PcArgc = 1; // not address-exposed: retail keeps it in a register across the tokenizer
 
-/* TODO(saga.h): PC_WINDOW_CALLBACK_PC returns LRESULT; WindowProcPc returns the callback's result
-   when the callback marks the message handled. Drop this typedef and the cast once it does. */
-typedef LRESULT(__cdecl *PC_WINDOW_RESULT_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
-
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
@@ -23,8 +19,7 @@ extern "C" i32 PublishWindowPc(HWND window, i32 show) {
 extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     for (i32 index = 0; index < PcWindowCallbackCount; ++index) {
         i32 handled = 0;
-        LRESULT result =
-            ((PC_WINDOW_RESULT_CALLBACK_PC)PcWindowCallbacks[index])(window, message, wparam, lparam, &handled);
+        LRESULT result = PcWindowCallbacks[index](window, message, wparam, lparam, &handled);
         if (handled != 0)
             return result;
     }

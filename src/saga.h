@@ -19617,7 +19617,7 @@ extern char *PcInputKeyNames824be0[238];
 extern char *PcInputKeyNames821558[238];
 #endif
 
-typedef void(__cdecl *PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
+typedef LRESULT(__cdecl *PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
 #ifdef __cplusplus
 
 extern "C" void __cdecl PcShutdown(void);
