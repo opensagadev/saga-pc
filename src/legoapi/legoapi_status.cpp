@@ -102,7 +102,7 @@ static void StatusMiniKitRotateZPc(NUMTX *m, i32 a) {
     f32 m20 = m->m20;
     f32 m30 = m->m30;
 
-    m->m00 = m00 * cosx - m->m01 * sinx;
+    m->m00 = (m00 * cosx) - m->m01 * sinx;
     m->m01 = m00 * sinx + m->m01 * cosx;
     m->m10 = m10 * cosx - m->m11 * sinx;
     m->m11 = m10 * sinx + m->m11 * cosx;
