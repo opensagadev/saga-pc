@@ -2724,7 +2724,8 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
         case 0x12345678:
             break;
         default:
-            NuFileRetry();
+            // MATCH-EXCEPTION: retail passes the unknown pak type to the folded no-op diagnostic at 0x4ef7b0.
+            ((void(__cdecl *)(i32))NuFileRetry)(header->type);
             fpk_err = 4;
             return NULL;
     }
