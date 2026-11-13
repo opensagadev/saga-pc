@@ -10910,9 +10910,9 @@ void NuMainFilterGen::render() {
         preprocessBlurTextures(color_texture, normal_texture);
     if (dof_enabled || motion_blur_enabled)
         preprocessDofMotionBlur(depth_texture);
+    POST_SHADER_PROGRAM_PC *program = NULL;
     i32 selection = (bloom_enabled && bloom->directional ? 1 : 0) | (bloom_enabled && !bloom->directional ? 2 : 0) |
                     (dof_enabled ? 4 : 0);
-    POST_SHADER_PROGRAM_PC *program = NULL;
     switch (selection) {
         case 1:
             program = (POST_SHADER_PROGRAM_PC *)programs[8];
