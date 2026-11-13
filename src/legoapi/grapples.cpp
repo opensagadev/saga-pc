@@ -1104,8 +1104,10 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         }
         if (!((old_phase < 0x8000 && object->field_7a8 >= 0x8000) || object->field_7a8 < old_phase))
             return;
-        i32 change = -10;
-        if (object->pad->input_magnitude != 0.0f) {
+        i32 change;
+        if (object->pad->input_magnitude == 0.0f)
+            change = -10;
+        else {
             u16 angle;
             if (object->big_jump_animation == 0 || (object->velocity.x == 0.0f && object->velocity.z == 0.0f))
                 angle = object->movement_facing_angle;
