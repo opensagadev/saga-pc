@@ -18,15 +18,15 @@ void __cdecl MoviesListNoOpPc(char *path);
 
 void __cdecl Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
     NUFPAR_PC *parser;
-    u32 destination;
+    char *destination;
     (void)buffer_end;
     parser = NuFParCreate(path);
     if (parser == NULL) {
         MoviesListNoOpPc(path);
         return;
     }
-    destination = (buffer->addr + 3U) & ~3U;
-    buffer->addr = destination;
+    buffer->addr = (buffer->addr + 3U) & ~3U;
+    destination = buffer->char_ptr;
     MovieListPc = (char(*)[32])destination;
     MovieCountPc = 0;
     while (NuFParGetLine(parser) != 0) {
@@ -37,13 +37,13 @@ void __cdecl Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
             continue;
         if (NuStrLen(parser->word_buffer_ptr) >= 32)
             continue;
-        NuStrCpy((char *)destination, parser->word_buffer_ptr);
-        destination += 32U;
+        NuStrCpy(destination, parser->word_buffer_ptr);
+        destination += 32;
         MovieCountPc = (i32)((u32)MovieCountPc + 1U);
     }
     NuFParDestroy(parser);
     if (MovieCountPc > 0) {
-        buffer->addr = destination;
+        buffer->char_ptr = destination;
     } else {
         MovieListPc = NULL;
         MoviesListNoOpPc(path);
