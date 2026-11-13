@@ -394,6 +394,9 @@ class PropertyTool : public EdTool {
 
     void AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent);
     void AutoLocateMenu(PropertyMenu *property_menu);
+    PropertyMenuMetrics ediGetMenuStartMetrics();
+    void ediMenuStoreMetrics(eduimenu_s *menu);
+    void ediMenuRetrieveMetrics(eduimenu_s *menu);
     PropertyMenu *CreatePropertyMenu(ClassObject &object);
     PropertyMenu *FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry);
     void BringToFront(PropertyMenu *menu);
@@ -5633,6 +5636,25 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
     }
 }
 
+PropertyMenuMetrics PropertyTool::ediGetMenuStartMetrics() {
+    return menu_startmetrics;
+}
+
+/* Remembers where the menu is, falling back to 20, 5 off screen. */
+void PropertyTool::ediMenuStoreMetrics(eduimenu_s *menu) {
+    menu_startmetrics.x = menu->x > 0 ? menu->x : 20;
+    menu_startmetrics.y = menu->y > 0 ? menu->y : 5;
+    menu_startmetrics.width = menu->width;
+    menu_startmetrics.height = menu->height;
+}
+
+void PropertyTool::ediMenuRetrieveMetrics(eduimenu_s *menu) {
+    menu->x = menu_startmetrics.x;
+    menu->y = menu_startmetrics.y;
+    menu->width = menu_startmetrics.width;
+    menu->height = menu_startmetrics.height;
+}
+
 /* Places a new menu right of the others, wrapping back to the left edge. */
 void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
     f64 border = 0.0;
@@ -5653,12 +5675,8 @@ void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
                 }
             }
         }
-        if (use_stored_metrics) {
-            menu->x = menu_startmetrics.x;
-            menu->y = menu_startmetrics.y;
-            menu->width = menu_startmetrics.width;
-            menu->height = menu_startmetrics.height;
-        }
+        if (use_stored_metrics)
+            ediMenuRetrieveMetrics(menu);
         if (menu->x + menu->width > 640.0 - border) {
             menu->x = 20;
             menu->y = 5;
@@ -8304,7 +8322,7 @@ void EdRefPlaceable::SetMemberData(void *object, i32 requested_type, void *data,
 PropertyMenu *PropertyTool::CreatePropertyMenu(ClassObject &object) {
     PropertyMenu *property_menu = new PropertyMenu;
     if (property_menu != NULL) {
-        PropertyMenuMetrics metrics = menu_startmetrics;
+        PropertyMenuMetrics metrics = ediGetMenuStartMetrics();
         char name[64];
         char title[128];
         if (!object.GetAttributeData(2, EdType_String, name, sizeof(name)))
@@ -9542,19 +9560,10 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
             if (menu != NULL) {
                 menu->AddObject(object);
             } else {
-                for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
-                    eduimenu_s *other_menu = other->menu;
-                    menu_startmetrics.x = other_menu->x > 0 ? other_menu->x : 20;
-                    menu_startmetrics.y = other_menu->y > 0 ? other_menu->y : 5;
-                    menu_startmetrics.width = other_menu->width;
-                    menu_startmetrics.height = other_menu->height;
-                }
+                for (PropertyMenu *other = menus.first; other != NULL; other = other->next)
+                    ediMenuStoreMetrics(other->menu);
                 menu = CreatePropertyMenu(object);
-                eduimenu_s *new_menu = menu->menu;
-                new_menu->x = menu_startmetrics.x;
-                new_menu->y = menu_startmetrics.y;
-                new_menu->width = menu_startmetrics.width;
-                new_menu->height = menu_startmetrics.height;
+                ediMenuRetrieveMetrics(menu->menu);
                 menu->order = -1;
                 list.InsertSorted(menu);
             }
