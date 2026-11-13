@@ -925,11 +925,11 @@ STATIC_ASSERT(offsetof(edui_colour_pick_s, blue) == 0x68);
 
 extern "C" {
     static eduimenu_s *colourmenu = NULL;
-    edui_colour_pick_s *cp_item = NULL;
+    static edui_colour_pick_s *cp_item = NULL;
     static eduiitem_s *cp_info = NULL;
     static eduiitem_s *cp_copy = NULL;
     static eduiitem_s *cp_paste = NULL;
-    i32(__cdecl *cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
+    static i32(__cdecl *cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
     static f32 *EduiColourTargetRedPc = NULL;
     static f32 *EduiColourTargetGreenPc = NULL;
     static f32 *EduiColourTargetBluePc = NULL;
