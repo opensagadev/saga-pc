@@ -503,7 +503,6 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     f32 jump_distance;
     i32 skip_ahead;
     GAMEOBJECT *other;
-    f32 height;
     f32 tolerance;
     f32 clearance;
 
@@ -652,24 +651,26 @@ check:
                         other->ai_packet.path_update_flag < packet->path_connection_state) {
                         continue;
                     }
-                    height = destination->position.y;
+                    destination->position.y = destination->position.y;
                     tolerance = 0.5 * ai_moveradius;
-                    if (owner->collision_min.y > height + tolerance) {
-                        if (other->collision_min.y > height + tolerance) {
+                    if (owner->collision_min.y > destination->position.y + tolerance) {
+                        if (other->collision_min.y > destination->position.y + tolerance) {
                             continue;
                         }
-                    } else if (height - tolerance > owner->collision_min.y &&
-                               height - tolerance > other->collision_min.y) {
+                    } else if (destination->position.y - tolerance > owner->collision_min.y &&
+                               destination->position.y - tolerance > other->collision_min.y) {
                         continue;
                     }
                     clearance = other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
                     offset.x = other->position.x - destination->position.x;
-                    if (!(clearance > offset.x && offset.x > -clearance)) {
+                    if (!(offset.x < clearance && offset.x > -clearance)) {
                         continue;
                     }
                     offset.z = other->position.z - destination->position.z;
-                    if (!(clearance > offset.z) || !(other->collision_max.y >= height) ||
-                        !(height + owner->scaled_height >= other->collision_min.y)) {
+                    // Retail tests offset.x against -clearance again here, not offset.z.
+                    if (!(offset.z < clearance && offset.x > -clearance) ||
+                        !(other->collision_max.y >= destination->position.y) ||
+                        !(destination->position.y + owner->scaled_height >= other->collision_min.y)) {
                         continue;
                     }
                     if (!(clearance * clearance > offset.x * offset.x + offset.z * offset.z))
