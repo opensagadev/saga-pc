@@ -18352,17 +18352,16 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                     break;
             }
         }
-        if (!in_set) {
-            if (aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator)
-                added = AiEditorAddLocatorToSetPc(set, nearest, aieditor->current_locator);
-            else
-                added = AiEditorAddLocatorToSetPc(set, nearest, NULL);
-        } else {
+        if (!in_set && aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator) {
+            added = AiEditorAddLocatorToSetPc(set, nearest, aieditor->current_locator);
+        } else if (in_set) {
             AiEditorRemoveLocatorFromSetPc(set, nearest);
             if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator)
                 goto refresh_hover;
             added = AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator,
                                               aieditor->current_locator);
+        } else {
+            added = AiEditorAddLocatorToSetPc(set, nearest, NULL);
         }
         if (added != 0) {
             aieditor->current_locator = aieditor->nearest_locator;
