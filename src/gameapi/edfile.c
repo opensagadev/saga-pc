@@ -866,26 +866,43 @@ static void eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item) {
     gpcfg = eduiMenuCreate(menu->x + 10, menu->y + 40, 180, 250, menu->font, eduicbPickCFGCancel, "GradPick Adjust");
     if (!gpcfg)
         return;
-    if (item->type == 9) {
-        pick = eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgCPPress, "Edit");
-    } else {
-        pick = eduiItemColourPickCreate((u32)item, &ed_attr, cbgpcfgCPPress, "Colourpick");
-        if (item->type == 8 && pick) {
-            pick->type = 11;
-            pick->process = eduicbProcessGreyPick;
-            pick->render = eduicbRenderGreyPick;
-        }
-        if (gradient->selected_stage) {
-            f32 hue = gradient->selected_stage->hue;
-            f32 saturation = gradient->selected_stage->saturation;
-            f32 value = gradient->selected_stage->value;
-            edui_colour_pick_s *colour = (edui_colour_pick_s *)pick;
-            colour->hue = hue;
-            colour->saturation = saturation;
-            colour->value = value;
-            colour->cursor_x = (f32)(hue / 360.0);
-            colour->cursor_y = value;
-        }
+    switch (item->type) {
+        case 8:
+            pick = eduiItemColourPickCreate((u32)item, &ed_attr, cbgpcfgCPPress, "Colourpick");
+            if (pick) {
+                pick->type = 11;
+                pick->process = eduicbProcessGreyPick;
+                pick->render = eduicbRenderGreyPick;
+            }
+            if (gradient->selected_stage) {
+                f32 hue = gradient->selected_stage->hue;
+                f32 saturation = gradient->selected_stage->saturation;
+                f32 value = gradient->selected_stage->value;
+                edui_colour_pick_s *colour = (edui_colour_pick_s *)pick;
+                colour->hue = hue;
+                colour->saturation = saturation;
+                colour->value = value;
+                colour->cursor_x = (f32)(hue / 360.0);
+                colour->cursor_y = value;
+            }
+            break;
+        case 9:
+            pick = eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgCPPress, "Edit");
+            break;
+        default:
+            pick = eduiItemColourPickCreate((u32)item, &ed_attr, cbgpcfgCPPress, "Colourpick");
+            if (gradient->selected_stage) {
+                f32 hue = gradient->selected_stage->hue;
+                f32 saturation = gradient->selected_stage->saturation;
+                f32 value = gradient->selected_stage->value;
+                edui_colour_pick_s *colour = (edui_colour_pick_s *)pick;
+                colour->hue = hue;
+                colour->saturation = saturation;
+                colour->value = value;
+                colour->cursor_x = (f32)(hue / 360.0);
+                colour->cursor_y = value;
+            }
+            break;
     }
     eduiMenuAddItem(gpcfg, pick);
     eduiMenuAddItem(gpcfg, eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgAdd, "Add"));
@@ -4427,16 +4444,24 @@ i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 de
         return 1;
     }
     if (pad->digital_buttons_pressed & 0x2000) {
-        if (stage->next)
-            gradient->selected_stage = stage->next;
+        if (stage->next != NULL)
+            gradient->selected_stage = gradient->selected_stage->next;
         return 1;
     }
     if (pad->digital_buttons & 0xa000)
         return 1;
-    lower = stage->previous ? stage->previous->time : 0.0f;
-    upper = stage->next ? stage->next->time : 1.0f;
-    decrease = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
-    increase = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;
+    lower = 0.0f;
+    upper = 1.0f;
+    if (stage->previous)
+        lower = stage->previous->time;
+    if (stage->next != NULL)
+        upper = gradient->selected_stage->next->time;
+    decrease = pad->analog_l2;
+    increase = pad->analog_r2;
+    if (pad->analog_l1)
+        decrease = pad->analog_l1;
+    if (pad->analog_r1)
+        increase = pad->analog_r1;
     if (decrease) {
         f32 step = (f32)(decrease / 15360.0);
         f64 time = (f64)stage->time - step;
