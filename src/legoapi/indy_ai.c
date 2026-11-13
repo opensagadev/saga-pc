@@ -215,11 +215,12 @@ i32 __cdecl Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packe
 
 i32 __cdecl Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
     GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
-    AIPATHCNX_PC *connection = packet->path_info.connection;
-    AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
-    AIPATHNODE_PC *destination = &nodes[connection->node_indices[packet->path_info.direction == 0]];
-    if ((connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
-        packet->movement_destination = nodes[connection->node_indices[packet->path_info.direction]].position;
+    AIPATHNODE_PC *destination =
+        &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
+        packet->movement_destination =
+            packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]]
+                .position;
         packet->flags |= 0x800000;
         packet->movement_stopping_distance = 0.0f;
         ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
@@ -288,6 +289,7 @@ void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world) {
     i16 direction;
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
+    AIPATHNODE_PC *first, *second;
     NUVEC midpoint;
     GRAPPLE_DYNAMIC_PC *grapple;
     if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL)
@@ -302,15 +304,11 @@ void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world) {
                 if ((8 & connection->traversal_flags[direction]) != 0) {
                     if ((connection->traversal_flags[direction == 0] & 8) != 0)
                         direction = 0xff;
-                    midpoint.x = (path->nodes[connection->node_indices[0]].position.x +
-                                  path->nodes[connection->node_indices[1]].position.x) *
-                                 0.5;
-                    midpoint.y = (path->nodes[connection->node_indices[0]].position.y +
-                                  path->nodes[connection->node_indices[1]].position.y) *
-                                 0.5;
-                    midpoint.z = (path->nodes[connection->node_indices[0]].position.z +
-                                  path->nodes[connection->node_indices[1]].position.z) *
-                                 0.5;
+                    first = &path->nodes[connection->node_indices[0]];
+                    second = &path->nodes[connection->node_indices[1]];
+                    midpoint.x = (second->position.x + first->position.x) * 0.5;
+                    midpoint.y = (second->position.y + first->position.y) * 0.5;
+                    midpoint.z = (second->position.z + first->position.z) * 0.5;
                     grapple = Grapple_FindNearestToPos(world, &midpoint);
                     if (grapple != NULL)
                         AIPathCnxHelperSys_AddHelper(world->ai_connection_helpers, connection, direction, grapple, 1);
