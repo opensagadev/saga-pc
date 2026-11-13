@@ -702,7 +702,10 @@ extern "C" {
                         else
                             ++i;
                     }
-                    if (duplicate == 0) {
+                    if (duplicate != 0) {
+                        reinterpret_cast<void(__cdecl *)(char *, char *, char *)>(CutSceneConfigMissingPc)(
+                            path, file, LDataList[entries[CUTCOUNT].level].name);
+                    } else {
                         entries[CUTCOUNT].directory = cursor;
                         NuStrCpy(cursor, path);
                         cursor += NuStrLen(path);
@@ -712,9 +715,6 @@ extern "C" {
                         cursor += NuStrLen(file);
                         *cursor++ = '\0';
                         ++CUTCOUNT;
-                    } else {
-                        reinterpret_cast<void(__cdecl *)(char *, char *, char *)>(CutSceneConfigMissingPc)(
-                            path, file, LDataList[entries[CUTCOUNT].level].name);
                     }
                 } else if (NuStrICmp(fp->word_buffer_ptr, "dir") == 0 || NuStrICmp(fp->word_buffer_ptr, "path") == 0) {
                     if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 0x80)
