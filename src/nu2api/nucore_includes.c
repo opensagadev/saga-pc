@@ -2591,12 +2591,14 @@ i32 __cdecl NuFileExtConvert(char *dest, char *path) {
     path_len = (i32)(out - dest);
     source = NuFileExtGetInfoPC(path, path_len);
     if (source != NULL) {
+        i32 type = source->type;
+
         if (source->platform == 4) {
             return 1;
         }
         /* Retail uses the same pointer termination here. */
         for (target = extensions; target != NULL; ++target) {
-            if (target->platform == 4 && target->type == source->type) {
+            if (target->platform == 4 && target->type == type) {
                 char *extension;
                 out = dest + path_len - source->len + target->len;
                 *out = '\0';
