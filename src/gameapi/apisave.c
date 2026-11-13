@@ -236,9 +236,9 @@ void UpdateSaveSlots(void) {
         } else {
             memcard_savefailed = 1;
             if (saveload_autosave != -1) {
-                saveload_autosave = -1;
-                memcard_saveresult_delay = 1.5f;
                 saveload_autosavedisabled = 1;
+                memcard_saveresult_delay = 1.5f;
+                saveload_autosave = -1;
                 memcard_autosavedisabled = 1;
             }
             memcard_autosavestarted = 0;
