@@ -70,13 +70,14 @@ i32 __cdecl CoinsGoToMainTotal(void) {
 }
 
 f32 __cdecl PowerUp_GetPanelY(i32 player_index) {
-    f32 y = POWERUPYPOS1;
+    if (player_index == -1)
+        return POWERUPYPOS1;
     if (player_index == 0 || player_index == 1) {
         i32 angle = (i32)((f64)PowerUp_PanelPosMul[player_index] * 32768.0 + 16384.0);
         f64 position = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
-        y = (f32)(position * ((f64)POWERUPYPOS2 - (f64)POWERUPYPOS1) + (f64)POWERUPYPOS1);
+        return (f32)(position * ((f64)POWERUPYPOS2 - (f64)POWERUPYPOS1) + (f64)POWERUPYPOS1);
     }
-    return y;
+    return POWERUPYPOS1;
 }
 
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
