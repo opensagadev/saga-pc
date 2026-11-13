@@ -3716,8 +3716,6 @@ extern "C" {
 
     void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
                                          f32 dest_y, f32 dest_right, f32 dest_bottom) {
-        f32 width = (f32)PS2_VREZ_W;
-        f32 height = (f32)PS2_VREZ_H;
         RenderPostViewportPrefixPc.source_x = source_x;
         RenderPostViewportPrefixPc.source_y = source_y;
         RenderPostViewportPrefixPc.source_right = source_right;
@@ -3728,7 +3726,9 @@ extern "C" {
         RenderPostViewportPrefixPc.dest_bottom = dest_bottom;
         RenderPostViewportPrefixPc.x_offset = dest_x;
         RenderPostViewportPrefixPc.y_offset = dest_y;
+        f32 width = (f32)PS2_VREZ_W;
         RenderPostViewportPrefixPc.width_scale = (dest_right - dest_x) / width;
+        f32 height = (f32)PS2_VREZ_H;
         RenderPostViewportPrefixPc.height_scale = (dest_bottom - dest_y) / height;
         PCSpecialProjectionAdjust.x_scale = width / (source_right - source_x);
         PCSpecialProjectionAdjust.y_scale = height / (source_bottom - source_y);
@@ -6955,9 +6955,8 @@ extern "C" {
     }
 #undef QUAD_VERTEX
     void __cdecl NuRndrGeometryBuffersInitPc(void) {
-        void *data;
         u16 *indices;
-        i32 remaining;
+        i32 i;
         u32 base;
         if (RendererGeometryVertexBufferPc != NULL) {
             RendererGeometryVertexBufferPc->methods->release(RendererGeometryVertexBufferPc);
@@ -6971,12 +6970,10 @@ extern "C" {
         PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
         NuRndrQuadBufferInitPc();
         PCDeviceCreateIndexBuffer(0xc000, 0, 0x65, 1, &RendererGeometryIndexBufferPc, NULL);
-        if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, &data, 0) < 0)
+        if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, (void **)&indices, 0) < 0)
             return;
-        indices = (u16 *)data;
-        remaining = 0x1000;
         base = 0;
-        do {
+        for (i = 0; i < 0x1000; ++i) {
             *indices++ = (u16)base;
             *indices++ = (u16)(base + 1);
             *indices++ = (u16)(base + 2);
@@ -6984,7 +6981,7 @@ extern "C" {
             *indices++ = (u16)(base + 2);
             *indices++ = (u16)(base + 3);
             base += 4;
-        } while (--remaining != 0);
+        }
         RendererGeometryIndexBufferPc->methods->unlock(RendererGeometryIndexBufferPc);
     }
     void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
