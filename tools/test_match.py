@@ -146,6 +146,8 @@ class ProgressTests(unittest.TestCase):
         values = [step / 10 for step in range(1001)] + [99.95, 99.99, 99.999, 99.9994]
         hues = [self.hue(value) for value in sorted(values)]
         self.assertEqual(hues, sorted(hues))
+        key = [self.hue(value) for value in (0, 60, 90, 94, 97, 99, 99.9, 100)]
+        self.assertEqual(key, sorted(set(key)))
         full = match.badge_color(100)
         self.assertEqual(match.badge_color(99.9996), full)  # displayed as 100.000
         self.assertEqual([value for value in values if match.badge_color(value) == full], [100.0])
@@ -158,15 +160,24 @@ class ProgressTests(unittest.TestCase):
         values = (60, 90, 94, 97, 99, 99.9, 100)
         for low, high in zip(values, values[1:]):
             with self.subTest(low=low, high=high):
-                self.assertGreater(distance(low, high), 12)
+                self.assertGreater(distance(low, high), 30)
         self.assertGreater(distance(99.9, 100), 80)
-        self.assertGreater(distance(60, 95), 60)
+        self.assertGreater(distance(60, 95), 80)
 
-    def test_badge_colors_keep_white_text_readable(self):
+    def test_badge_colors_keep_dark_text_readable(self):
+        # Every colour sits clearly above shields' switch to #333 text, so no badge flips to white.
         for step in range(1001):
             with self.subTest(value=step / 10):
                 rgb = bytes.fromhex(match.badge_color(step / 10))
-                self.assertGreaterEqual(match.white_text_contrast(rgb), match.BADGE_MIN_CONTRAST)
+                self.assertGreaterEqual(match.shields_brightness(rgb), match.SHIELDS_DARK_TEXT_ABOVE + 0.05)
+                self.assertGreaterEqual(match.contrast(rgb, match.SHIELDS_DARK_TEXT), 4.5)
+
+    def test_shields_brightness_matches_badge_maker(self):
+        # badge-maker 6.0.0: (r * 299 + g * 587 + b * 114) / 255000, toFixed(2); #333 text above 0.69.
+        self.assertEqual(match.shields_brightness((0x44, 0xcc, 0x11)), 0.56)  # shields brightgreen
+        self.assertEqual(match.shields_brightness((0xdf, 0xb3, 0x17)), 0.68)  # shields yellow, still white text
+        self.assertEqual(match.shields_brightness((0xff, 0xff, 0x00)), 0.89)
+        self.assertEqual(match.contrast((255, 255, 255), (0, 0, 0)), 21)
 
 
 class TextCoverageTests(unittest.TestCase):

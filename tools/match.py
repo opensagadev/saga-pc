@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Compare the symbol inventory to retail, using exact bytes and objdiff-cli."""
 import argparse
+import functools
 import json
 import math
 from pathlib import Path
@@ -437,10 +438,18 @@ def srgb_linear(channel):
     return channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
 
 
-def white_text_contrast(rgb):
-    """WCAG contrast ratio of white text on an (r, g, b) background of 0..255 channels."""
-    r, g, b = (srgb_linear(channel) for channel in rgb)
-    return 1.05 / (0.2126 * r + 0.7152 * g + 0.0722 * b + 0.05)
+def contrast(background, text):
+    """WCAG contrast ratio between two (r, g, b) colours of 0..255 channels."""
+    def luminance(rgb):
+        r, g, b = (srgb_linear(channel) for channel in rgb)
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    lighter, darker = sorted((luminance(background), luminance(text)), reverse=True)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def shields_brightness(rgb):
+    """Brightness as shields' badge-maker computes it (lib/color.js brightness(), YIQ luma to 2 places)."""
+    return round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000, 2)
 
 
 def oklch_to_srgb(lightness, chroma, hue):
@@ -458,39 +467,54 @@ def oklch_to_srgb(lightness, chroma, hue):
                  for c in linear)
 
 
-BADGE_MIN_CONTRAST = 4.0  # WCAG contrast of the badge's white bold text, between AA-large (3) and AA (4.5)
-BADGE_HUES = (29, 135, 150)  # OKLCH hues: red at 0 %, yellow-green just below 100 %, green at 100 %
+# shields' badge-maker (colorsForBackground in lib/badge-renderers.js) draws the message
+# text #333 instead of white when the background's brightness is above 0.69, in every
+# style. The badge colours stay well above that so all of them get the same dark text.
+SHIELDS_DARK_TEXT_ABOVE = 0.69
+SHIELDS_DARK_TEXT = (0x33, 0x33, 0x33)
+BADGE_MIN_BRIGHTNESS = 0.74
+BADGE_HUES = (25, 136, 150)  # OKLCH hues: coral at 0 %, lime just below 100 %, green at 100 %
 
 
+@functools.lru_cache(maxsize=None)
 def badge_color(value):
     """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
 
-    Only a displayed 100.000 gets the full green. Below it the OKLCH hue runs from red
-    through orange and amber to yellow-green along (1 - log(101 - v) / log(101)) ** 1.25,
-    a logarithmic scale of the shortfall: 0..90 takes about 40 % of the hue range, 90..99
-    another 40 % and 99..99.9 most of the rest, so 90, 94, 97, 99 and 99.9 stay apart
-    while 60 and 95 still differ plainly. Each hue takes the most chroma the sRGB gamut
-    allows at the lightest OKLCH lightness that keeps white text at BADGE_MIN_CONTRAST.
+    Only a displayed 100.000 gets the full green. Below it the OKLCH hue runs from coral
+    through orange, amber and yellow to lime along (1 - log(101 - v) / log(101)) ** 1.2,
+    a logarithmic scale of the shortfall that gives 90..99.9 more than half of the hue range,
+    so 90, 94, 97, 99 and 99.9 are different hues while 60 and 95 still differ plainly.
+    Each hue takes the OKLCH lightness with the most chroma inside the sRGB gamut among
+    those whose shields brightness (unrounded) is at least BADGE_MIN_BRIGHTNESS, so the
+    colours are as vivid as dark (#333) text allows.
     """
     shown = min(max(float(f"{value:.3f}"), 0), 100)
     red, top, green = BADGE_HUES
     if shown >= 100:
         hue = green
     else:
-        position = (1 - math.log10(101 - shown) / math.log10(101)) ** 1.25
-        hue = red + (top - red) * position
+        hue = red + (top - red) * (1 - math.log10(101 - shown) / math.log10(101)) ** 1.2
 
-    def color(lightness):
-        low, high = 0.0, 0.17  # widest chroma inside the gamut, capped
-        for _ in range(20):
+    def widest(lightness):
+        low, high = 0.0, 0.4  # chroma; 0.4 lies outside the sRGB gamut at every hue
+        for _ in range(25):
             middle = (low + high) / 2
             low, high = (middle, high) if oklch_to_srgb(lightness, middle, hue) else (low, middle)
-        return oklch_to_srgb(lightness, low, hue)
-    low, high = 0.3, 0.75
-    for _ in range(20):
+        return low, oklch_to_srgb(lightness, low, hue)
+    # The widest chroma rises with lightness up to the hue's cusp and falls after it, while
+    # the brightness keeps rising: take the cusp, or the lowest lightness bright enough.
+    low, high = 0.4, 1.0
+    for _ in range(40):
+        left, right = low + (high - low) / 3, high - (high - low) / 3
+        low, high = (left, high) if widest(left)[0] < widest(right)[0] else (low, right)
+    cusp = low
+    low, high = 0.4, 1.0
+    for _ in range(30):
         middle = (low + high) / 2
-        low, high = (middle, high) if white_text_contrast(color(middle)) >= BADGE_MIN_CONTRAST else (low, middle)
-    return bytes(color(low)).hex()
+        rgb = widest(middle)[1]
+        bright = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 255000 >= BADGE_MIN_BRIGHTNESS
+        low, high = (low, middle) if bright else (middle, high)
+    return bytes(widest(max(cusp, high))[1]).hex()
 
 
 def update_badge(stats):
