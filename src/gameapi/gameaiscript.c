@@ -6823,34 +6823,36 @@ i32 __cdecl Action_SetGravityHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     char *value;
     f32 random;
 
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL || first_time == 0) {
-        return 1;
-    }
-    object->portal_flags &= 0x7fffffffu;
-    object->hover_height_override = 1.0e9f;
-
     minimum = 1.0e9f;
     maximum = 1.0e9f;
-    for (index = 0; index < param_count; ++index) {
-        if (NuStrICmp(params[index], (char *)AIScaleOverrideResetName) == 0) {
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIControlMinimumName);
-        if (value != NULL) {
-            minimum = AIParamToFloat(processor, value + 4);
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIControlMaximumName);
-        if (value != NULL) {
-            maximum = AIParamToFloat(processor, value + 4);
-        } else {
-            object->hover_height_override = AIParamToFloat(processor, params[index]);
-        }
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
+        return 1;
     }
-    if (minimum != 1.0e9 && maximum != 1.0e9) {
-        random = NuRandFloat();
-        object->hover_height_override = maximum * random + (1.0f - random) * minimum;
+    object = packet->owner->objptr;
+    if (first_time != 0) {
+        object->portal_flags &= 0x7fffffffu;
+        object->hover_height_override = 1.0e9f;
+
+        for (index = 0; index < param_count; ++index) {
+            if (NuStrICmp(params[index], (char *)AIScaleOverrideResetName) == 0) {
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIControlMinimumName);
+            if (value != NULL) {
+                minimum = AIParamToFloat(processor, value + 4);
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIControlMaximumName);
+            if (value != NULL) {
+                maximum = AIParamToFloat(processor, value + 4);
+            } else {
+                object->hover_height_override = AIParamToFloat(processor, params[index]);
+            }
+        }
+        if (minimum != 1.0e9 && maximum != 1.0e9) {
+            random = NuRandFloat();
+            object->hover_height_override = maximum * random + (1.0f - random) * minimum;
+        }
     }
     return 1;
 }
