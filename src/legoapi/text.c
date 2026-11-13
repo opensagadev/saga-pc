@@ -769,11 +769,8 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
     return width;
 }
 #define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
-void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
-                      u32 red_slot, u32 green_slot, u32 blue_slot, u8 alpha) {
-    u8 red = (u8)red_slot;
-    u8 green = (u8)green_slot;
-    u8 blue = (u8)blue_slot;
+void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                      u8 green, u8 blue, u8 alpha) {
     u8 alpha_byte = (u8)alpha;
     f32 width, height, baseline_y, button_scale, button_width, normal_width, ratio, scaled_width;
     f64 half_height;

@@ -10346,10 +10346,10 @@ extern "C" {
     void __cdecl TextDecode(char *source, u8 *destination);
     f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, i32 colour,
                                    i32 button_font);
-    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment,
-                          u32 red, u32 green, u32 blue, u8 alpha);
-    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u32 red,
-                u32 green, u32 blue);
+    void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
+                          u8 green, u8 blue, u8 alpha);
+    void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green,
+                u8 blue);
     void FadeLoop_DrawObj(f32 alpha);
     void EdFileWriteFloat(f32 value);
     void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
