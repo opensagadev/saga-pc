@@ -539,6 +539,13 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
 
 #include <stdio.h>
 #include <stdlib.h>
+template <class T> inline void SafeDeleteArray(T *&pointer) {
+    if (pointer != NULL) {
+        delete[] pointer;
+        pointer = NULL;
+    }
+}
+
 struct ShaderParserIncludePc {
     const char *name;
     ShaderCompilerBufferAllocatorPc buffer;
@@ -548,10 +555,7 @@ struct ShaderParserIncludePc {
     ShaderParserIncludePc(const char *name, i32 size) : name(name), buffer(size, true) {
     }
     ~ShaderParserIncludePc() {
-        if (name != NULL) {
-            delete[] name;
-            name = NULL;
-        }
+        SafeDeleteArray(name);
     }
 };
 STATIC_ASSERT(sizeof(ShaderParserIncludePc) == 20);
