@@ -8,7 +8,6 @@ void __cdecl DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravi
     NUSPECIALHANDLE *special = part->source_special;
     f32 radius = part->field_e4;
     NUVEC velocity;
-    i32 facing;
     ADDPART_PC params;
     PART_PC *deflected;
     KillPart(part, 0);
@@ -20,8 +19,9 @@ void __cdecl DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravi
             velocity.x = velocity.y = 0.0f;
             velocity.z = 2.0f;
             NuVecRotateX(&velocity, &velocity, (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * -5461.0));
-            facing = (i32)object->movement_facing_angle - 0x1555;
-            NuVecRotateY(&velocity, &velocity, (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + facing));
+            NuVecRotateY(
+                &velocity, &velocity,
+                (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + ((i32)object->movement_facing_angle - 0x1555)));
         }
         params = Default_ADDPART;
         params.matrix = &matrix;
