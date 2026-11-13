@@ -13001,25 +13001,27 @@ __declspec(noinline) void __cdecl AIPathCnxSetTemporaryBlock(AIPATH_PC *path, ch
     i32 to_index;
     i32 index;
     i32 direction;
-    if (from_name == NULL || path == NULL || to_name == NULL)
+    if (path == NULL || from_name == NULL || to_name == NULL)
         return;
     from = AIPathFindNode(NULL, path, from_name);
     to = AIPathFindNode(NULL, path, to_name);
-    if (to == NULL || from == NULL)
+    if (from == NULL || to == NULL)
         return;
     to_index = to - path->nodes;
     for (index = 0; index < from->connection_count; index++) {
-        connection = from->connections[index];
-        if (connection->node_indices[0] == to_index)
+        if (from->connections[index]->node_indices[0] == to_index)
             direction = 1;
-        else if (connection->node_indices[1] == to_index)
+        else if (from->connections[index]->node_indices[1] == to_index)
             direction = 0;
         else
             continue;
-        if (blocked != 0)
-            connection->traversal_flags[direction] |= 0x80000000u;
-        else
-            connection->traversal_flags[direction] &= 0x7fffffffu;
+        connection = from->connections[index];
+        if (connection != NULL) {
+            if (blocked != 0)
+                connection->traversal_flags[direction] |= 0x80000000u;
+            else
+                connection->traversal_flags[direction] &= 0x7fffffffu;
+        }
         return;
     }
 }
