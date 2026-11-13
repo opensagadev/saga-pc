@@ -2141,6 +2141,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
 }
 
 extern f32 DirectionalGrappleSeekScalePc;
+extern f32 DirectionalZipUpSeekRatePc;
 void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
 typedef struct moveplayer_pad_bits_pc_s {
@@ -3037,7 +3038,8 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             DIRECTIONAL_ZIPUP_PC *zipup;
                             zipup = (DIRECTIONAL_ZIPUP_PC *)(object->grapple);
                             if ((zipup->flags & 1) != 0) {
-                                SeekVec(&object->position, &object->position, &zipup->rider_target_position, 8.0f);
+                                SeekVec(&object->position, &object->position, &zipup->rider_target_position,
+                                        DirectionalZipUpSeekRatePc);
                             } else {
                                 NuVecSub(&object->target_velocity, &zipup->hook_origin, &object->position);
                                 NuVecNorm(&object->target_velocity, &object->target_velocity);
