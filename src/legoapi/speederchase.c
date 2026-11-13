@@ -378,7 +378,8 @@ extern NUVEC PodSprintLiftPositionsPc[3];
 f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     f32 height = 0.15f;
     if (object == Player[1] && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
-        f32 distance_squared = NuVecDistSqr(&((GAMEOBJECT *)Player[0])->position, &object->position, NULL);
+        f32 distance_squared =
+            NuVecDistSqr(&((GAMEOBJECT *)Player[0])->position, &((GAMEOBJECT *)Player[1])->position, NULL);
         if (distance_squared < 4.0f) {
             f32 distance = NuFsqrt(distance_squared);
             i32 angle = (i32)((1.0 - (f64)distance * 0.5) * 16384.0);
