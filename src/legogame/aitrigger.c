@@ -1,4 +1,8 @@
 #include "saga.h"
+#include <string.h>
+
+/* Retail unit 0x401870-0x4028b4 (legogame/aitrigger.c): definitions in retail address order. */
+
 typedef struct trigger_lever_pc_s {
     u8 unknown000[0x94];
     u16 flags;
@@ -71,6 +75,151 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info)
                   offsetof(AIPATHINFO_PC, connection) ==
               0x424);
 
+STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, type) == 3);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, ai_trigger_group) == 4);
+STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
+STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
+STATIC_ASSERT(offsetof(AITRIGGERSET_s, flags_word) == 0x210);
+STATIC_ASSERT(sizeof(AITRIGGERSET_s) == 0x214);
+i32 __cdecl AITriggerSetAddTrigger(AISYS_PC *, AITRIGGERSET_s *, GIZMO_PC *);
+#define AITRIGGER_RELEASE(system, set, index)                                                                          \
+    if ((set)->trigger_indices[index] != -1) {                                                                         \
+        (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                    \
+        (system)->assigned_trigger[(set)->trigger_indices[index]] = -1;                                                \
+        (set)->trigger_indices[index] = -1;                                                                            \
+    }
+
+void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
+    i32 index;
+    if (system == NULL)
+        return;
+    memset(system, 0, sizeof(*system));
+    for (index = 0; index < 64; ++index) {
+        system->assigned_set[index] = -1;
+        system->assigned_trigger[index] = -1;
+    }
+    for (index = 0; index < 32; ++index)
+        memset(system->sets[index].trigger_indices, 0xff, sizeof(system->sets[index].trigger_indices));
+}
+
+AITRIGGERSET_s *__cdecl AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
+    i32 index;
+    if (system != NULL) {
+        for (index = 0; index < 32; ++index) {
+            if (!(system->sets[index].flags & 1)) {
+                system->sets[index].flags_word |= 1;
+                system->sets[index].flowbox = box;
+                return &system->sets[index];
+            }
+        }
+    }
+    return NULL;
+}
+
+i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizmo) {
+    char *name;
+    struct AILOCATOR_PC *locator = NULL;
+    if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL)
+        return 0;
+
+    name = GizmoGetName(gizmo);
+    if (name != NULL)
+        locator = AIPathFindLocator(system, name);
+    if (gizmo->type_id == lever_gizmotype_id) {
+        GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)gizmo->object;
+        set->gizmos[set->trigger_count] = gizmo;
+        if (locator != NULL) {
+            set->locators[set->trigger_count] = *locator;
+        } else {
+            set->locators[set->trigger_count].position = lever->floor_position;
+            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
+                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
+                             NULL, 0xff);
+            set->locators[set->trigger_count].flags =
+                NuAtan2D(lever->position.x - lever->floor_position.x, lever->position.z - lever->floor_position.z);
+        }
+        if (set->locators[set->trigger_count].path_info.connection == NULL)
+            return 0;
+        ++set->trigger_count;
+        return 1;
+    } else if (gizmo->type_id == obstacle_gizmotype_id) {
+        GIZOBSTACLE *obstacle = ((GIZOBSTACLE *)(gizmo->object));
+        if (obstacle->mode != 1 && obstacle->mode != 2 && obstacle->mode != 5 && obstacle->mode != 6 &&
+            obstacle->mode != 7)
+            return 0;
+        set->gizmos[set->trigger_count] = gizmo;
+        if (locator != NULL) {
+            set->locators[set->trigger_count] = *locator;
+        } else {
+            set->locators[set->trigger_count].position = obstacle->secondary_position;
+            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
+                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
+                             NULL, 0xff);
+        }
+        if (set->locators[set->trigger_count].path_info.connection == NULL)
+            return 0;
+        ++set->trigger_count;
+        return 1;
+    } else if (gizmo->type_id == spinner_gizmotype_id) {
+        GIZSPINNER_s *spinner = ((GIZSPINNER_s *)(gizmo->object));
+        set->gizmos[set->trigger_count] = gizmo;
+        if (locator != NULL) {
+            set->locators[set->trigger_count] = *locator;
+        } else {
+            set->locators[set->trigger_count].position = spinner->position;
+            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
+                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
+                             NULL, 0xff);
+        }
+        if (set->locators[set->trigger_count].path_info.connection == NULL)
+            return 0;
+        ++set->trigger_count;
+        return 1;
+    } else if (gizmo->type_id == force_gizmotype_id) {
+        GIZFORCE_s *force = ((GIZFORCE_s *)(gizmo->object));
+        set->gizmos[set->trigger_count] = gizmo;
+        if (locator != NULL) {
+            set->locators[set->trigger_count] = *locator;
+        } else {
+            f32 height;
+            set->locators[set->trigger_count].position = force->file_position;
+            height = GameShadow(NULL, &set->locators[set->trigger_count].position, 5.0f, -1);
+            if (height != 2000000.0f && height > set->locators[set->trigger_count].position.y)
+                set->locators[set->trigger_count].position.y = height;
+            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
+                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
+                             NULL, 0xff);
+        }
+        if (set->locators[set->trigger_count].path_info.connection == NULL)
+            return 0;
+        ++set->trigger_count;
+        return 1;
+    } else if (gizmo->type_id == grapple_gizmotype_id) {
+        GRAPPLE_DYNAMIC_PC *grapple = ((GRAPPLE_DYNAMIC_PC *)(gizmo->object));
+        set->gizmos[set->trigger_count] = gizmo;
+        if (locator != NULL) {
+            set->locators[set->trigger_count] = *locator;
+        } else {
+            f32 height;
+            set->locators[set->trigger_count].position = grapple->ground_position;
+            height = GameShadow(NULL, &set->locators[set->trigger_count].position, 5.0f, -1);
+            if (height != 2000000.0f && height > set->locators[set->trigger_count].position.y)
+                set->locators[set->trigger_count].position.y = height;
+            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
+                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
+                             NULL, 0xff);
+            set->gizmos[set->trigger_count] = gizmo;
+        }
+        if (set->locators[set->trigger_count].path_info.connection == NULL)
+            return 0;
+        ++set->trigger_count;
+        return 1;
+    }
+    return 0;
+}
+
 static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
         TRIGGER_LEVER_PC *lever = (TRIGGER_LEVER_PC *)gizmo->object;
@@ -94,15 +243,10 @@ static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
     }
     return 0;
 }
+
 i32 __cdecl GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
     return object->character_context == 0x4a && object->grapple == lever;
 }
-#define AITRIGGER_RELEASE(system, set, index)                                                                          \
-    if ((set)->trigger_indices[index] != -1) {                                                                         \
-        (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                    \
-        (system)->assigned_trigger[(set)->trigger_indices[index]] = -1;                                                \
-        (set)->trigger_indices[index] = -1;                                                                            \
-    }
 
 void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     u64 character_mask = 0;
@@ -290,120 +434,32 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     }
 }
 
-void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
-    i32 index;
-    if (system == NULL)
-        return;
-    memset(system, 0, sizeof(*system));
-    for (index = 0; index < 64; ++index) {
-        system->assigned_set[index] = -1;
-        system->assigned_trigger[index] = -1;
+void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
+    AITRIGGERSET_s *groups[32] = {0};
+    GIZFLOW_PC *flow;
+    FLOWBOX_PC *box;
+    FLOWBOXGIZMODATA_PC *data;
+    AITRIGGERSET_s *set;
+    i32 index, group_index, gizmo_index;
+    if (world != NULL && world->giz_flow != NULL) {
+        flow = world->giz_flow;
+        box = flow->flowboxes;
+        for (index = 0; index < flow->flowbox_count; ++index, ++box) {
+            if (box->type == 0 && box->ai_trigger_group != 0 && box->ai_trigger_group <= 32) {
+                group_index = box->ai_trigger_group - 1;
+                data = (FLOWBOXGIZMODATA_PC *)box->data;
+                if (groups[group_index] == NULL)
+                    groups[group_index] = AITriggerSetCreate(system, NULL);
+                set = groups[group_index];
+                if (set != NULL) {
+                    for (gizmo_index = 0; gizmo_index < data->gizmo_count; ++gizmo_index)
+                        AITriggerSetAddTrigger(world->ai_sys, set, (GIZMO_PC *)data->gizmos[gizmo_index]->gizmo);
+                }
+            }
+        }
     }
-    for (index = 0; index < 32; ++index)
-        memset(system->sets[index].trigger_indices, 0xff, sizeof(system->sets[index].trigger_indices));
 }
 
-i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizmo) {
-    char *name;
-    struct AILOCATOR_PC *locator = NULL;
-    if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL)
-        return 0;
-
-    name = GizmoGetName(gizmo);
-    if (name != NULL)
-        locator = AIPathFindLocator(system, name);
-    if (gizmo->type_id == lever_gizmotype_id) {
-        GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)gizmo->object;
-        set->gizmos[set->trigger_count] = gizmo;
-        if (locator != NULL) {
-            set->locators[set->trigger_count] = *locator;
-        } else {
-            set->locators[set->trigger_count].position = lever->floor_position;
-            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
-                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
-                             NULL, 0xff);
-            set->locators[set->trigger_count].flags =
-                NuAtan2D(lever->position.x - lever->floor_position.x, lever->position.z - lever->floor_position.z);
-        }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
-    } else if (gizmo->type_id == obstacle_gizmotype_id) {
-        GIZOBSTACLE *obstacle = ((GIZOBSTACLE *)(gizmo->object));
-        if (obstacle->mode != 1 && obstacle->mode != 2 && obstacle->mode != 5 && obstacle->mode != 6 &&
-            obstacle->mode != 7)
-            return 0;
-        set->gizmos[set->trigger_count] = gizmo;
-        if (locator != NULL) {
-            set->locators[set->trigger_count] = *locator;
-        } else {
-            set->locators[set->trigger_count].position = obstacle->secondary_position;
-            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
-                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
-                             NULL, 0xff);
-        }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
-    } else if (gizmo->type_id == spinner_gizmotype_id) {
-        GIZSPINNER_s *spinner = ((GIZSPINNER_s *)(gizmo->object));
-        set->gizmos[set->trigger_count] = gizmo;
-        if (locator != NULL) {
-            set->locators[set->trigger_count] = *locator;
-        } else {
-            set->locators[set->trigger_count].position = spinner->position;
-            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
-                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
-                             NULL, 0xff);
-        }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
-    } else if (gizmo->type_id == force_gizmotype_id) {
-        GIZFORCE_s *force = ((GIZFORCE_s *)(gizmo->object));
-        set->gizmos[set->trigger_count] = gizmo;
-        if (locator != NULL) {
-            set->locators[set->trigger_count] = *locator;
-        } else {
-            f32 height;
-            set->locators[set->trigger_count].position = force->file_position;
-            height = GameShadow(NULL, &set->locators[set->trigger_count].position, 5.0f, -1);
-            if (height != 2000000.0f && height > set->locators[set->trigger_count].position.y)
-                set->locators[set->trigger_count].position.y = height;
-            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
-                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
-                             NULL, 0xff);
-        }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
-    } else if (gizmo->type_id == grapple_gizmotype_id) {
-        GRAPPLE_DYNAMIC_PC *grapple = ((GRAPPLE_DYNAMIC_PC *)(gizmo->object));
-        set->gizmos[set->trigger_count] = gizmo;
-        if (locator != NULL) {
-            set->locators[set->trigger_count] = *locator;
-        } else {
-            f32 height;
-            set->locators[set->trigger_count].position = grapple->ground_position;
-            height = GameShadow(NULL, &set->locators[set->trigger_count].position, 5.0f, -1);
-            if (height != 2000000.0f && height > set->locators[set->trigger_count].position.y)
-                set->locators[set->trigger_count].position.y = height;
-            AISysGetPathPos2(system, &set->locators[set->trigger_count].position,
-                             &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
-                             NULL, 0xff);
-            set->gizmos[set->trigger_count] = gizmo;
-        }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
-    }
-    return 0;
-}
 void *__cdecl AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
     TRIGGER_SYSTEM_PC *system = (TRIGGER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
     AITriggerSetSysReset(system);
