@@ -1114,16 +1114,17 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
     i32 initial_positive_offset = flags & 0x100;
     i32 initial_negative_offset = flags & 0x200;
     flags &= ~0x300u;
-    i32 stopped = 0;
     spinner->state_flags = flags;
+    i32 stopped = 0;
     if ((flags & 0x20) != 0) {
         GameAnimSet_Stop(spinner->anim_set);
         stopped = 1;
     }
-    f32 minimum_x = (f64)spinner->position.x - spinner->field_0x09c;
-    f32 maximum_x = (f64)spinner->field_0x09c + spinner->position.x;
-    f32 minimum_z = (f64)spinner->position.z - spinner->field_0x09c;
-    f32 maximum_z = (f64)spinner->field_0x09c + spinner->position.z;
+    NUVEC minimum, maximum;
+    minimum.x = spinner->position.x - spinner->field_0x09c;
+    maximum.x = spinner->field_0x09c + spinner->position.x;
+    minimum.z = spinner->position.z - spinner->field_0x09c;
+    maximum.z = spinner->field_0x09c + spinner->position.z;
     if ((spinner->state_flags & 0x0c) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -1131,14 +1132,13 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
                 (object->flags_e20 & 0x20) != 0 ||
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 ||
-                minimum_x > object->collision_max.x || maximum_x < object->collision_min.x ||
-                minimum_z > object->collision_max.z || maximum_z < object->collision_min.z)
+                minimum.x > object->collision_max.x || maximum.x < object->collision_min.x ||
+                minimum.z > object->collision_max.z || maximum.z < object->collision_min.z)
                 continue;
             f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
             f32 dx = (f64)object->position.x - spinner->position.x;
             f32 dz = (f64)object->position.z - spinner->position.z;
-            f32 radius_squared = (f64)radius * radius;
-            if (!(radius_squared > (f64)dz * dz + (f64)dx * dx))
+            if (!(dx * dx + dz * dz < radius * radius))
                 continue;
             u16 radial = dx != 0.0f || dz != 0.0f ? NuAtan2D(dx, dz) : qrand();
             u16 movement;
@@ -1151,23 +1151,21 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
                 f32 length_squared =
                     (f64)object->velocity.x * object->velocity.x + (f64)object->velocity.z * object->velocity.z;
                 speed = NuFsqrt(length_squared);
-                if (object->character_data->game_character->tiptoe_speed > speed)
+                if (speed < object->character_data->game_character->tiptoe_speed)
                     speed = object->character_data->game_character->tiptoe_speed;
-                else if (object->character_data->game_character->run_speed > speed)
+                else if (speed < object->character_data->game_character->run_speed)
                     speed = object->character_data->game_character->run_speed;
             }
-            u16 tangent = radial;
-            if (RotDiff(radial, movement) < 0) {
-                tangent += 0xcaab;
-            } else {
-                tangent += 0x3555;
-            }
-            object->velocity.x = (f64)NuTrigTable[tangent >> 1] * speed;
-            object->velocity.z = (f64)speed * NuTrigTable[((tangent + 0x4000) >> 1) & 0x7fff];
+            if (RotDiff(radial, movement) < 0)
+                radial += 0xcaab;
+            else
+                radial += 0x3555;
+            object->velocity.x = NuTrigTable[radial >> 1] * speed;
+            object->velocity.z = speed * NuTrigTable[((radial + 0x4000) >> 1) & 0x7fff];
         }
     }
     if (!stopped) {
-        u8 previous_state = spinner->state;
+        i32 previous_state = spinner->state;
         f32 play_speed;
         if (spinner->spin_timer > 0.0f) {
             f32 remaining = (f64)spinner->spin_timer - FRAMETIME;
@@ -1180,12 +1178,10 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
                 f32 phase = 1.0 - (f64)remaining * 4.0;
                 f32 blend = NuTrigTable[((i32)((f64)phase * 16384.0) >> 1) & 0x7fff];
                 i32 difference = RotDiff(spinner->previous_rotation, spinner->target_rotation);
-                if ((spinner->state_flags & 1) != 0) {
-                    if (difference < 0)
-                        difference += 0x10000;
-                } else if (difference > 0) {
+                if ((spinner->state_flags & 1) != 0 && difference < 0)
+                    difference += 0x10000;
+                else if ((spinner->state_flags & 1) == 0 && difference > 0)
                     difference -= 0x10000;
-                }
                 spinner->rotation = (u16)(i32)((f64)difference * blend + spinner->previous_rotation);
             }
             goto animation_updated;
