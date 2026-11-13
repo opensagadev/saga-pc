@@ -46,9 +46,9 @@ void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
 
+    data = (FLOWBOXGIZMODATA_PC *)box->data;
     if ((FLOWBOX_FLAGS(box) & 0x1000) != 0)
         return;
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
     for (i = 0; i < data->gizmo_count; ++i)
         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
 }
