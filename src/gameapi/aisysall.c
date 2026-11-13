@@ -9012,16 +9012,15 @@ void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *ot
 
 static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
     u8 drawn_connections[255][32] = {{0}};
-    i16 mode;
     i32 solid;
     u32 active_route = 0;
     i32 route_index = 0;
     u32 colour;
     EDAIPATHNODE_s *node;
-    mode = aieditorsettings.modes.current;
-    solid = (aieditorsettings.display_options & 0x80) &&
-            (mode == AiEditorPathsModeIdPc || mode == AiEditorCreaturesModeIdPc || mode == AiEditorLocatorsModeIdPc);
-    if (mode == AiEditorRouteModeIdPc) {
+    solid = (aieditorsettings.display_options & 0x80) && (aieditorsettings.modes.current == AiEditorPathsModeIdPc ||
+                                                          aieditorsettings.modes.current == AiEditorCreaturesModeIdPc ||
+                                                          aieditorsettings.modes.current == AiEditorLocatorsModeIdPc);
+    if (aieditorsettings.modes.current == AiEditorRouteModeIdPc) {
         if (aieditor->current_path->current_route != NULL)
             route_index = aieditor->current_path->current_route - aieditor->current_path->routes;
         active_route = (u32)((u64)1 << route_index);
