@@ -7885,18 +7885,14 @@ i32 __cdecl NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result
     i32 instance_index;
     i32 index;
     NUSPECIALHANDLE candidate;
-    result->scene = NULL;
-    result->special = NULL;
-    result->display_special = NULL;
+    memset(result, 0, sizeof(*result));
     if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
         count = NuGScnNumSpecials(scene);
         instance_index = ((AI_EDITOR_SPECIAL_TERRAIN_PC *)CurrentTerrain)->platforms[platform_id].instance_index;
         for (index = 0; index < count; ++index) {
             NuGScnGetSpecial(&candidate, scene, index);
             if (NuSpecialGetInstanceix(&candidate) == instance_index) {
-                result->scene = (NUGSCN *)candidate.scene;
-                result->special = candidate.special;
-                result->display_special = (struct nudisplay_special_pc_s *)candidate.display_special;
+                *result = *(struct nuhspecial_s *)&candidate;
                 return 1;
             }
         }
