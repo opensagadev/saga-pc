@@ -6,6 +6,9 @@ that the pinned toolchain ships, and with the August 2007 DirectX SDK's dxerr9.l
 scans every function in those archives, finds the ones that occur exactly once in
 unmapped retail code (relocation fields masked), or whose several occurrences are
 told apart by the linker keeping a member's functions in object order,
+or that tile the code between two placed functions of their member, or whose
+relocations point exactly at names the map binds (short runtime functions with
+many masked twins, at a decoded unmapped extent of their length),
 derives each relocation target's address from the retail bytes, and accepts a
 function only if it then compares byte-exact through the matcher's relocation
 code. Accepted functions and derived symbols are added to config/symbols.csv;
@@ -155,6 +158,108 @@ def place_by_order(sequences, code, text_va, anchors=None):
                     placed[id(item)] = fits.pop()
                     changed = True
     return placed
+
+
+def masked_match(item, code, text_va, va):
+    """True when `item`'s bytes, relocation fields masked, are the retail bytes at `va`."""
+    raw = item["region"]["bytes"]
+    offset = va - text_va
+    if offset < 0 or offset + len(raw) > len(code):
+        return False
+    masked = item.setdefault("_masked", {i for r in item["region"]["relocations"]
+                                         for i in range(r["offset"], r["offset"] + 4)})
+    return all(i in masked or code[offset + i] == byte for i, byte in enumerate(raw))
+
+
+def place_between(sequences, placed, code, text_va, mapped_end=None):
+    """Place the unplaced functions between two placed neighbours of one member by tiling.
+
+    The linker keeps a member's functions in object order, so the code between
+    two placed functions of a member is the functions between them in the
+    member, each either present (its masked bytes at the cursor, after int3
+    fill) or absent (removed as unreferenced). Short functions (`jmp` tails,
+    one-instruction setters) have too many masked hits to place by themselves;
+    here each is tried at one address only. A tiling is accepted only when it
+    ends exactly where the next placed function starts and is the only one
+    (tried greedily, then checked by backtracking). Returns {id(item): va} of
+    the newly placed functions.
+    """
+    result = {}
+    for sequence in sequences:
+        indices = [i for i, item in enumerate(sequence) if id(item) in placed]
+        for i, k in zip(indices, indices[1:]):
+            between = sequence[i + 1:k]
+            if not between or k - i - 1 > MAX_BETWEEN:
+                continue
+            start = placed[id(sequence[i])] + sequence[i]["size"]
+            stop = placed[id(sequence[k])]
+            if stop <= start:
+                continue
+            tilings = []
+
+            def tile(j, cursor, chosen):
+                if len(tilings) > 1:
+                    return
+                if j == len(between):
+                    if adjacent(code, text_va, cursor, stop):
+                        tilings.append(list(chosen))
+                    return
+                item = between[j]
+                for fill in range(16):
+                    va = cursor + fill
+                    if fill and code[va - 1 - text_va] != 0xcc:
+                        break
+                    if va + item["size"] <= stop and masked_match(item, code, text_va, va):
+                        chosen.append((item, va))
+                        tile(j + 1, va + item["size"], chosen)
+                        chosen.pop()
+                        break
+                tile(j + 1, cursor, chosen)
+            tile(0, start, [])
+            if len(tilings) == 1:
+                for item, va in tilings[0]:
+                    if id(item) not in placed:
+                        result[id(item)] = va
+    return result
+
+
+def decoded_extents():
+    """(start, end) of the unmapped functions tools/unmapped.py decodes."""
+    from tools.unmapped import Context, function_extents, member_ranges
+    config = project()
+    ctx = Context(retail(config["target"]), load_symbols(), member_ranges())
+    return [(e.start, e.end) for e in function_extents(ctx) if e.kind == "function"]
+
+
+def place_by_references(sequences, placed, code, text_va, bindings, extents):
+    """Place a function at a decoded unmapped extent its relocations prove.
+
+    Short runtime functions (`mov eax, [__crtheap]; ret`) have masked twins in
+    many members. At a decoded extent of exactly the function's length whose
+    masked bytes match, every relocation target read from retail must be the
+    address the map binds that name to (at least one), and the function's own
+    name must be unbound. Accepted only when exactly one function of all
+    members satisfies this at that extent. Returns {id(item): va}.
+    """
+    by_size = {}
+    for sequence in sequences:
+        for item in sequence:
+            if id(item) not in placed and item["symbol"] not in bindings:
+                by_size.setdefault(item["size"], []).append(item)
+    result = {}
+    for start, end in extents:
+        fits = []
+        for item in by_size.get(end - start, ()):
+            relocations = item["region"]["relocations"]
+            if not relocations or not masked_match(item, code, text_va, start):
+                continue
+            c = {"region": item["region"], "obj": item["obj"], "va": start}
+            targets = [(relocation["symbol"], address) for relocation, address in reference_fields(c, code, text_va)]
+            if len(targets) == len(relocations) and all(bindings.get(name) == address for name, address in targets):
+                fits.append(item)
+        if len({item["symbol"] for item in fits}) == 1:
+            result[id(fits[0])] = start
+    return result
 
 
 def near_miss(raw, masked, code, offset):
@@ -334,6 +439,8 @@ def main():
         for item in sequence:
             item["shared"] = len({(a, i) for a, i, _ in defined.get(item["symbol"], ())}) > 1
     placed = place_by_order(sequences, code, text_va, bindings)
+    placed.update(place_between(sequences, placed, code, text_va))
+    placed.update(place_by_references(sequences, placed, code, text_va, bindings, decoded_extents()))
     for sequence in sequences:
         for item in sequence:
             va = placed.get(id(item))
@@ -430,6 +537,8 @@ def main():
     print(f"Accepted {len(accepted)} runtime functions ({total} bytes); "
           f"{len(needed) - len(accepted)} derived references")
     if not args.write:
+        for c in accepted:
+            print(f"  {c['va']:#x} {len(c['region']['bytes']):>5} {c['member']} {c['symbol']}")
         return 0
 
     members = {(e["archive"], e["index"]): e for e in library_entries()}

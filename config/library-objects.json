@@ -42,7 +42,9 @@
     "_atol",
     "__atol_l",
     "__atoi64",
-    "__atoi64_l"
+    "__atoi64_l",
+    "_atoi",
+    "__atoi_l"
    ]
   },
   {
@@ -151,7 +153,8 @@
    "member": "build\\intel\\mt_obj\\cpp_obj\\iswctype.obj",
    "symbols": [
     "__iswctype_l",
-    "_iswctype"
+    "_iswctype",
+    "_is_wctype"
    ]
   },
   {
@@ -213,7 +216,8 @@
    "symbols": [
     "__toupper",
     "__toupper_l",
-    "_toupper"
+    "_toupper",
+    "?GetLocaleT@_LocaleUpdate@@QAEPAUlocaleinfo_struct@@XZ"
    ]
   },
   {
@@ -268,7 +272,8 @@
    "index": 66,
    "member": "build\\intel\\mt_obj\\unlink.obj",
    "symbols": [
-    "_remove"
+    "_remove",
+    "__unlink"
    ]
   },
   {
@@ -306,7 +311,8 @@
     "??0bad_exception@std@@QAE@ABV01@@Z",
     "___CxxUnregisterExceptionObject",
     "libcmt#00085:?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z",
-    "libcmt#00085:__ehhandler$?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z"
+    "libcmt#00085:__ehhandler$?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z",
+    "___CxxQueryExceptionSize"
    ]
   },
   {
@@ -536,7 +542,14 @@
     "?getCallIndex@UnDecorator@@CA?AVDName@@XZ",
     "?getGuardNumber@UnDecorator@@CA?AVDName@@XZ",
     "??0DName@@QAE@_J@Z",
-    "?getBasicDataType@UnDecorator@@CA?AVDName@@ABV2@@Z"
+    "?getBasicDataType@UnDecorator@@CA?AVDName@@ABV2@@Z",
+    "?clearStatus@DName@@QAEXXZ",
+    "?setPtrRef@DName@@QAEAAV1@XZ",
+    "?nextNode@DNameNode@@QBEPAV1@XZ",
+    "?length@charNode@@UBEHXZ",
+    "?getLastChar@charNode@@UBEDXZ",
+    "?length@pcharNode@@UBEHXZ",
+    "?length@DNameStatusNode@@UBEHXZ"
    ]
   },
   {
@@ -652,7 +665,8 @@
    "symbols": [
     "___heap_select",
     "__heap_init",
-    "__heap_term"
+    "__heap_term",
+    "__get_heap_handle"
    ]
   },
   {
@@ -1161,7 +1175,8 @@
    "index": 348,
    "member": "build\\intel\\mt_obj\\ctype.obj",
    "symbols": [
-    "___pctype_func"
+    "___pctype_func",
+    "___pwctype_func"
    ]
   },
   {
@@ -1178,7 +1193,9 @@
    "index": 357,
    "member": "build\\intel\\mt_obj\\errmode.obj",
    "symbols": [
-    "__set_error_mode"
+    "__set_error_mode",
+    "___set_app_type",
+    "___get_app_type"
    ]
   },
   {
@@ -1434,7 +1451,8 @@
     "___free_locale",
     "___get_current_locale",
     "libcmt#00400:__setlocale_set_cat",
-    "libcmt#00400:__setlocale_nolock"
+    "libcmt#00400:__setlocale_nolock",
+    "___init_dummy"
    ]
   },
   {
@@ -1519,6 +1537,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 444,
+   "member": "build\\intel\\mt_obj\\_setargv.obj",
+   "symbols": [
+    "__set_pgmptr"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 446,
    "member": "build\\intel\\mt_obj\\chkstk.obj",
    "symbols": [
@@ -1531,6 +1557,18 @@
    "member": "build\\intel\\mt_obj\\alloca16.obj",
    "symbols": [
     "__alloca_probe_16"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 448,
+   "member": "build\\intel\\mt_obj\\crt0.obj",
+   "symbols": [
+    "__set_osplatform",
+    "__set_osver",
+    "__set_winver",
+    "__set_winmajor",
+    "__set_winminor"
    ]
   },
   {
@@ -1628,7 +1666,8 @@
     "__decode_pointer",
     "___set_flsgetvalue",
     "__initptd",
-    "__getptd_noexit"
+    "__getptd_noexit",
+    "___get_flsindex"
    ]
   },
   {
@@ -1646,7 +1685,8 @@
    "symbols": [
     "libcmt#00467:_fast_error_exit",
     "libcmt#00467:_check_managed_app",
-    "libcmt#00467:___tmainCRTStartup"
+    "libcmt#00467:___tmainCRTStartup",
+    "_WinMainCRTStartup"
    ]
   },
   {
@@ -1867,7 +1907,8 @@
    "index": 520,
    "member": "build\\intel\\mt_obj\\outputformat.obj",
    "symbols": [
-    "__set_output_format"
+    "__set_output_format",
+    "__get_output_format"
    ]
   },
   {
@@ -2108,7 +2149,8 @@
     "libcmt#00584:__whiteout",
     "__winput_l",
     "libcmt#00584:___check_float_string",
-    "libcmt#00584:__hextodec"
+    "libcmt#00584:__hextodec",
+    "libcmt#00584:__inc"
    ]
   },
   {
@@ -2120,7 +2162,8 @@
     "libcmt#00585:__whiteout",
     "__winput_s_l",
     "libcmt#00585:___check_float_string",
-    "libcmt#00585:__hextodec"
+    "libcmt#00585:__hextodec",
+    "libcmt#00585:__inc"
    ]
   },
   {
@@ -2566,7 +2609,14 @@
     "__rttospop",
     "__rtzeronpop",
     "__rtonepop",
-    "__rtindfpop"
+    "__rtindfpop",
+    "__rttospopde",
+    "__rtnospop",
+    "__rttosnpop",
+    "__rtnospopde",
+    "__rtzeropop",
+    "__rtonenpop",
+    "__nosnan2"
    ]
   },
   {
@@ -2586,7 +2636,9 @@
     "__rtinfnpopse",
     "__fFLN",
     "__rtinfnpop",
-    "__ffexpm1"
+    "__ffexpm1",
+    "__rtinfpopse",
+    "__rtinfpop"
    ]
   },
   {

@@ -684,6 +684,50 @@ class ObjectOrderPlacementTests(unittest.TestCase):
         # An anchor that is not one of the masked hits proves nothing.
         self.assertEqual(place_by_order([[tiny]], code, self.TEXT, {"_tiny": 0x1000}), {})
 
+    def test_short_functions_between_placed_neighbours_are_tiled(self):
+        from tools.libmatch import place_between
+        # 0x1000: 8-byte placed function; 0x1008: `jmp` tail (masked rel32), absent
+        # setter, 4-byte getter after int3 fill; 0x1010: placed function.
+        code = bytearray(b"\x90" * 8 + b"\xe9\x01\x02\x03\x04\xcc\xcc\xcc" + b"\x8b\x41\x04\xc3" + bytes(12))
+        code[0x0d:0x10] = b"\xcc\xcc\xcc"
+        code[0x10:0x14] = b"\x8b\x41\x04\xc3"
+
+        def item(raw, relocations=()):
+            return {"size": len(raw), "region": {"bytes": raw, "relocations": [{"offset": o} for o in relocations]}}
+        first, tail, absent, getter, last = (item(b"\x90" * 8), item(b"\xe9\0\0\0\0", [1]),
+                                             item(b"\xa1\0\0\0\0\xc3", [1]), item(b"\x8b\x41\x04\xc3"),
+                                             item(b"\0" * 4))
+        placed = {id(first): 0x1000, id(last): 0x1014}
+        result = place_between([[first, tail, absent, getter, last]], placed, bytes(code), self.TEXT)
+        self.assertEqual((result.get(id(tail)), result.get(id(absent)), result.get(id(getter))),
+                         (0x1008, None, 0x1010))
+        # Two ways to tile the same bytes prove nothing.
+        twin = item(b"\x8b\x41\x04\xc3")
+        result = place_between([[first, tail, twin, getter, last]], placed, bytes(code), self.TEXT)
+        self.assertNotIn(id(getter), result)
+
+    def test_short_function_is_placed_where_its_relocations_point_at_bound_names(self):
+        from tools.libmatch import place_by_references
+        # mov eax, [__crtheap]; ret at 0x1000 and at 0x1010 (another global).
+        code = b"\xa1\x00\x90\x00\x00\xc3" + b"\xcc" * 10 + b"\xa1\x04\x90\x00\x00\xc3"
+
+        class Obj:
+            symbol_by_index = {0: {"section": 3}}
+
+        def item(symbol, target):
+            relocation = {"symbol": target, "symbol_index": 0, "type": 6, "offset": 1}
+            return {"symbol": symbol, "size": 6, "obj": Obj(),
+                    "region": {"bytes": b"\xa1\0\0\0\0\xc3", "relocations": [relocation],
+                               "symbol": {"section": 1}}}
+        heap, app = item("__get_heap_handle", "__crtheap"), item("___get_app_type", "___app_type")
+        bindings = {"__crtheap": 0x9000}
+        result = place_by_references([[heap], [app]], {}, code, self.TEXT, bindings, [(0x1000, 0x1006), (0x1010, 0x1016)])
+        self.assertEqual(result, {id(heap): 0x1000})
+        # A target the map does not bind proves nothing; a bound name is never placed again.
+        self.assertEqual(place_by_references([[app]], {}, code, self.TEXT, bindings, [(0x1010, 0x1016)]), {})
+        self.assertEqual(place_by_references([[heap]], {}, code, self.TEXT, {**bindings, "__get_heap_handle": 0x2000},
+                                             [(0x1000, 0x1006)]), {})
+
     def test_alternative_definitions_bind_only_through_one_linked_member(self):
         from tools.libmatch import linked_owners
         defined = {"___app_type": {("libcmt.lib", 448, False), ("libcmt.lib", 467, False)},
