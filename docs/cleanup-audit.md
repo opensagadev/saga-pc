@@ -661,10 +661,18 @@ intended). **Sensitive** batches: the exact set by address after `match.py
 | 8 | Placeholder and address names (9,785 fields, 12,063 symbols) from data tables, Android and sibling-build names | ~22,000 sites | neutral (symbol renames update config) | object identity + check-objects |
 | 9 | Data to owning compilands, drop section pragmas (9,731) as each compiland's data reproduces retail order; empty data.cpp | after the layout migration | sensitive (data order) | data-section comparison + exact set |
 | 10 | Views and overlays: 198 `*_VIEW` types, 6,609 unit offset asserts, 11 raw-offset and 55 pointer-integer casts become real members | ~2,000 sites | sensitive | exact set |
-| 11 | Steering: 367 `noinline`, 36 `forceinline`, 11 optimizer pragmas, 16 `__fastcall`/6 dummy-EDX (become C++ members), 4 `volatile` locals, the 89 MATCH-EXCEPTIONs: retry each once its function sits in its retail compiland | ~500 sites | sensitive | exact set per function; what still needs it stays, marked |
+| 11, first pass done | Steering: 367 `noinline`, 36 `forceinline`, 11 optimizer pragmas, 16 `__fastcall`/6 dummy-EDX (become C++ members), 4 `volatile` locals, the 89 MATCH-EXCEPTIONs: retry each once its function sits in its retail compiland | ~500 sites | sensitive | exact set per function; what still needs it stays, marked |
 | 12 | Narrow units to their headers, delete the saga.h shim; fold the 12 diagnostic stub units and the `*_pc` files into their compilands | 349 units | sensitive | exact set per batch |
 
 Batches 1-3 and 5 can start now and run beside the layout migration (they do
 not move code). 4 must precede 7 and 12; 9, 11 and 12 follow the layout
 migration of docs/source-layout.md. What cannot be removed without losing a
 match stays, with a `MATCH-EXCEPTION` comment, and is counted by the budget.
+
+Batch 11, first pass (2026-11-14): each device was removed on its own, its unit
+recompiled and every mapped function of the unit compared with retail; a removal
+stayed only when no exact function was lost, no fuzzy score dropped and the
+object gained no function retail lacks. Left: 63 `noinline` (each with a
+comment naming the caller that would inline it), 2 `forceinline`, the
+`auto_inline` pair in terrain_collision.cpp, 81 MATCH-EXCEPTIONs and 3
+`volatile` locals. The `__fastcall`/dummy-EDX members are not done yet.
