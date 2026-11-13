@@ -193,6 +193,13 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall EnumObjects(void *, void *, DWORD) = 0;
     virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY_PC *) = 0;
     virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY_PC *) = 0;
+    virtual HRESULT __stdcall Acquire(void) = 0;
+    virtual HRESULT __stdcall Unacquire(void) = 0;
+    virtual HRESULT __stdcall GetDeviceState(DWORD, void *) = 0;
+    virtual HRESULT __stdcall GetDeviceData(DWORD, void *, DWORD *, DWORD) = 0;
+    virtual HRESULT __stdcall SetDataFormat(const PC_DI_DATA_FORMAT_PC *) = 0;
+    virtual HRESULT __stdcall SetEventNotification(HANDLE) = 0;
+    virtual HRESULT __stdcall SetCooperativeLevel(HWND, DWORD) = 0;
 };
 struct PC_DI_FACTORY_INTERFACE_PC {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
@@ -312,22 +319,22 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         if (type - 20 > 1)
             return TRUE;
         NuKeyboardDevice_PC *device;
-        if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, instance->instance, &device,
-                                                              NULL) < 0)
+        if (((PC_DI_FACTORY_INTERFACE_PC *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) <
+            0)
             return TRUE;
-        i32 port = 4;
-        PC_INPUT_DEVICE_PC *record = &devices[port];
-        while (record->kind != 0) {
-            ++port;
-            ++record;
-            if (port >= 10)
-                return TRUE;
+        i32 port;
+        for (port = 4; port < 10; ++port) {
+            if (devices[port].kind == 0)
+                break;
         }
+        if (port >= 10)
+            return TRUE;
+        PC_INPUT_DEVICE_PC *record = &devices[port];
         if (PcInputSelectedPort == -1)
             PcInputSelectedPort = port;
         PC_DI_CAPS_PC caps;
         caps.size = sizeof(caps);
-        HRESULT result = device->methods->get_caps(device, &caps);
+        HRESULT result = ((PC_DI_DEVICE_INTERFACE_PC *)device)->GetCapabilities(&caps);
         record->button_count = (i8)caps.buttons;
         record->capabilities_valid = result == 0;
         record->pov_count = (u8)caps.povs;
@@ -346,9 +353,9 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             (NuStrIStr((char *)instance->product_name, "P2600") != NULL ||
              NuStrIStr((char *)instance->product_name, "P2900") != NULL))
             record->button_count -= 2;
-        device->methods->set_format(device, &PcJoystickDataFormat);
-        device->methods->set_cooperative_level(device, (HWND)PCInputInstance_candidate, 9);
-        device->methods->acquire(device);
+        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetDataFormat(&PcJoystickDataFormat);
+        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel((HWND)PCInputInstance_candidate, 9);
+        ((PC_DI_DEVICE_INTERFACE_PC *)device)->Acquire();
         ConfigureJoystickRangesPc(device);
         state->BindPreferredConfig(7, port);
         ++nu_keyboard_owner.device_count;
