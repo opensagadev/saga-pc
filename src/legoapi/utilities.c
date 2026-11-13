@@ -1359,7 +1359,7 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     rotate_z = dco_prerotatez;
     dco_prerotatez = 0;
     if (object != NULL) {
-        id = object->id;
+        id = (i16)object->id;
         plane = object->reflection_height;
         model = object->character_model;
         hat = object->helmet;
