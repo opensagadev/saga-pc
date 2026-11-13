@@ -1012,7 +1012,7 @@ static __inline f32 MovePlayerFabs(f32 value) {
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 /* NuASin polynomial; this unit carries its own instance. */
-static i32 MovementArcSine(f32 sin) {
+static i16 MovementArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
     f32 unknown_a;
@@ -1095,7 +1095,7 @@ void __cdecl VehicleCollisionCode(GAMEOBJECT *object) {
         AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[effect].effect, &debris_position, 52,
                                           FRAMETIME, 0, 0, NULL);
     }
-    if (object->contact_normal.y > 0.574f || !(object->contact_normal.y >= -0.574f))
+    if (!(object->contact_normal.y <= 0.574f) || !(object->contact_normal.y >= -0.574f))
         return;
     if (!(object->horizontal_velocity_magnitude > object->character_data->game_character->idle_speed))
         return;
