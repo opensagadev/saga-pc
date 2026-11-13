@@ -514,7 +514,7 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     NuShaderObjectPathsPc *paths = reinterpret_cast<NuShaderObjectPathsPc *>(&shader->unknown_4d4);
     paths->base = filter->variant == 0;
     paths->first = filter->first_path != 0;
-    paths->layer = filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000) != 0;
+    paths->layer = filter->variant != 0 ? false : (bool)((filter->descriptor->layer_flags >> 16) & 1);
     paths->second = filter->second_path != 0;
     return true;
 }
