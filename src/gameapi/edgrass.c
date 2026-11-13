@@ -702,9 +702,9 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
                 clump->field_43 = 0;
                 clump->field_44 = 0.0f;
             }
-            skipped_individuals = 0;
             if (version >= 6 && clump->kind == 3) {
                 individual = 0;
+                skipped_individuals = 0;
                 if (edgra_ind_clumps_used == EDGRA_MAX_INDIVIDUAL_CLUMPS) {
                     skipped_individuals = clump->element_count;
                     clump->element_count = 0;
@@ -755,8 +755,8 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
                 clump->element_count = (edgra_elementthin + clump->element_count - 1) / edgra_elementthin;
             }
             if (clump->element_count > 0) {
-                vector_cursor += clump->element_count * sizeof(NUVEC);
                 ++edgra_clumps_used;
+                vector_cursor += clump->element_count * sizeof(NUVEC);
                 edgra_last_clump_in_buffer = slot;
                 edgra_free_vecbuffer = (void *)vector_cursor;
             }
