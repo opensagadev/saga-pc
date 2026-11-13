@@ -5212,7 +5212,7 @@ extern "C" {
                 }
             }
             if (raised_hearts == 0) {
-                PLAYER_COIN_PACKET_PC *packet = (PLAYER_COIN_PACKET_PC *)object->coin_packet;
+                PLAYER_COIN_PACKET_PC *packet;
                 i32 model;
                 f32 coin_x, score_x, y, scale;
                 if ((arcade_flags & 2) != 0) {
@@ -5231,12 +5231,12 @@ extern "C" {
                                           &WORLD->level_objects[model].special, 0, alpha);
                     }
                 } else {
-                    if (packet == NULL)
+                    if (object->coin_packet == NULL)
                         continue;
-                    Text_MakeScore(packet->coins, text);
+                    Text_MakeScore(((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins, text);
                     score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = packet->scale * HudScoreScalePc;
+                    scale = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->scale * HudScoreScalePc;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustYPc, 1.0f, scale, scale, scale, alignment, 255, 191, 0,
                              (u8)icon_alpha);
