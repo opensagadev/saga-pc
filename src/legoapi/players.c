@@ -2092,15 +2092,22 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
 void __cdecl DestroySnakeBody(GAMEOBJECT *);
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
 
+typedef struct new_player_flags_pc_s {
+    u8 unknown_000[0xef0];
+    u32 flags_ef0_bits_0_8 : 9;
+    u32 geonosian_variant : 1;
+    u32 flags_ef0_bits_10_20 : 11;
+    u32 flags_ef0_bit_21 : 1;
+} NEW_PLAYER_FLAGS_PC;
+
 i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     PLAYERCHARACTERCONFIG_PC *config;
     NUVEC velocity;
     AIPATHINFO_PC path;
     AILOCATOR_PC *saved_locator;
-    u32 saved_f08, saved_frame_state, saved_ai_flag, lean_enabled, saved_flag;
-    i16 lean;
-    i8 context;
-    u8 health, hitpoints, route, next_route;
+    u32 saved_f08, saved_frame_state, saved_ai_flag, lean_enabled;
+    i32 saved_flag, lean, context, health, hitpoints;
+    u8 route, next_route;
     i32 on_surface;
     if (id == old_id || id < 0 || id >= CHARCOUNT || apicharsys->playermodelids[id] == -1)
         return 0;
@@ -2116,30 +2123,29 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
     object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
     velocity = object->velocity;
-    health = (u8)object->current_hp;
+    health = object->current_hp;
     hitpoints = object->field_107e;
-    saved_flag = object->flags_1fc_word & 0x2000;
+    saved_flag = object->flags_1fc_bit_13;
     object->takeover_owner = NULL;
     object->suit = Suit_GetDefault(id);
     saved_locator = object->doomed_escape_locator;
-    saved_f08 = object->route_frame_state;
-    saved_ai_flag = object->flags_ef0 & 0x200000;
+    saved_ai_flag = ((NEW_PLAYER_FLAGS_PC *)object)->flags_ef0_bit_21;
     route = object->ai_packet.current_route;
     next_route = object->ai_packet.next_route;
     path = object->ai_packet.path_info;
-    saved_frame_state = object->ai_packet.navigation_flags;
+    saved_f08 = object->route_frame_state;
+    saved_frame_state = object->ai_packet.frame_state;
     InitPlayerAI(object);
-    object->flags_ef0 = (object->flags_ef0 & ~0x200000u) | saved_ai_flag;
     object->doomed_escape_locator = saved_locator;
-    object->route_frame_state = saved_f08;
+    ((NEW_PLAYER_FLAGS_PC *)object)->flags_ef0_bit_21 = saved_ai_flag;
     object->ai_packet.current_route = route;
     object->ai_packet.next_route = next_route;
     object->ai_packet.path_info = path;
-    object->ai_packet.navigation_flags = saved_frame_state;
+    object->route_frame_state = saved_f08;
+    object->ai_packet.frame_state = saved_frame_state;
     object->collision_scale = 1.0f;
-    config = object->character_data->game_character;
-    object->layer_mask = config->layer_mask;
-    object->shield_hitpoints = config->shield_hitpoints;
+    object->layer_mask = object->character_data->game_character->layer_mask;
+    object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
     Player_ClearContext(object, 1);
     ResetPlayerMoves(object);
@@ -2157,16 +2163,16 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     object->tag_reset_timer = 0.0f;
     object->pause_context_state = 0.0f;
     object->flags_ef0 &= ~0x80000u;
-    object->current_hp = (i8)health;
+    object->current_hp = health;
     object->field_107e = hitpoints;
-    object->flags_1fc_word = (object->flags_1fc_word & ~0x2000u) | saved_flag;
+    object->flags_1fc_bit_13 = saved_flag;
     ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
-    object->weapon_scale = (object->flags_e20 & 0x10000) != 0 ? 1.0f : 0.0f;
+    object->weapon_scale = ((object->flags_e20 >> 16) & 1) != 0 ? 1.0 : 0.0;
     object->field_e33 = 0;
-    if (on_surface != 0)
-        ((PLAYER_RESET_FIELDS_PC *)object)->ground_contact_grace_timer = 0.2f;
-    else
+    if (on_surface == 0)
         object->velocity.y = velocity.y;
+    else
+        ((PLAYER_RESET_FIELDS_PC *)object)->ground_contact_grace_timer = 0.2f;
     if (context == 0x33 && StartSlide(object, 0)) {
         object->velocity.x = velocity.x;
         object->velocity.z = velocity.z;
@@ -2175,11 +2181,10 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
         object->velocity.y = -0.1f;
     if (lean_enabled != 0 && (object->character_data->model_flags & 0x2000) != 0)
         object->movement_lean_angle = (u16)lean;
-    config = apicharsys->char_data[(i16)object->id].game_character;
-    object->view_distance = config->viewdistance;
-    object->hear_distance = config->heardistance;
-    object->max_view_height = config->maxviewheight;
-    object->min_view_height = config->minviewheight;
+    object->view_distance = apicharsys->char_data[(i16)object->id].game_character->viewdistance;
+    object->hear_distance = apicharsys->char_data[(i16)object->id].game_character->heardistance;
+    object->max_view_height = apicharsys->char_data[(i16)object->id].game_character->maxviewheight;
+    object->min_view_height = apicharsys->char_data[(i16)object->id].game_character->minviewheight;
     config = object->character_data->game_character;
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((config->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN)
@@ -2191,7 +2196,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     else if (object->id == (u16)id_BOB)
         SetLayersBobPc(object);
     else if (object->id == (u16)id_GEONOSIAN)
-        object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+        ((NEW_PLAYER_FLAGS_PC *)object)->geonosian_variant = qrand() < 0x8000;
     InitCreatureModelFlagsPc(object);
     return 1;
 }
