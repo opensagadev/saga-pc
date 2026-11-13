@@ -314,12 +314,14 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
     for (u32 row = 0; row < image->full_rows; ++row) {
         px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
-            image->device->methods->set_texture(image->device, 0, *texture++);
+            image->device->methods->set_texture(image->device, 0, *texture);
+            ++texture;
             RadFmvDrawQuadPc(image->device, px, py, xs, ys, image->maximum_texture, image->maximum_texture, alpha);
             px += x_step;
         }
         if (image->remainder_width) {
-            image->device->methods->set_texture(image->device, 0, *texture++);
+            image->device->methods->set_texture(image->device, 0, *texture);
+            ++texture;
             RadFmvDrawQuadPc(image->device, px, py, xs, ys, image->remainder_width, image->maximum_texture, alpha);
         }
         py += y_step;
@@ -327,7 +329,8 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
     if (image->remainder_height) {
         px = x;
         for (u32 col = 0; col < image->full_columns; ++col) {
-            image->device->methods->set_texture(image->device, 0, *texture++);
+            image->device->methods->set_texture(image->device, 0, *texture);
+            ++texture;
             RadFmvDrawQuadPc(image->device, px, py, xs, ys, image->maximum_texture, image->remainder_height, alpha);
             px += x_step;
         }
