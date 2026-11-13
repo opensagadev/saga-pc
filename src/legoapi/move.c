@@ -4095,8 +4095,8 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         nearest_distance = 0.36f;
         object->force_target = NULL;
         NuVecRotateY(&forward, &v001, object->movement_facing_angle);
-        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-            candidate = &Obj[index];
+        candidate = Obj;
+        for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if (candidate == object)
                 continue;
             if (ZapTarget(candidate) == 0 &&
@@ -4108,7 +4108,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                    (Cheat_IsOn(0x26) != 0 && candidate->character_model->model_data_b[0x41] != NULL))))
                 continue;
             distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &delta);
-            if (nearest_distance > distance && delta.z * forward.z + delta.x * forward.x > 0.0) {
+            if (distance < nearest_distance && delta.x * forward.x + delta.z * forward.z > 0.0) {
                 nearest_distance = distance;
                 object->force_target = candidate;
             }
