@@ -1,4 +1,8 @@
 #include "saga.h"
+#include <string.h>
+#include <stdio.h>
+
+/* Retail unit 0x4bdcd0-0x4c00fc: definitions in retail address order. */
 
 typedef struct level_sfx_world_view_s {
     u8 unknown_00[0x4684];
@@ -33,6 +37,43 @@ typedef struct level_sfx_cut_s {
     LEVEL_SFX_CUT_SLOT_PC sfx[6];
 } LEVEL_SFX_CUT_PC;
 STATIC_ASSERT(offsetof(LEVEL_SFX_CUT_PC, sfx) == 0x70);
+// Genuine original static configuration definitions.
+/* Original static game.cpp settings/items. Proposal only, no production data. */
+AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
+
+i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    AREA_DATA_PC *area = world->area;
+    if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0)
+        return GetSfxId("fs_ice");
+    if (area == DAGOBAH_ADATA && on_platform == 0) {
+        if (world->current_level != LevelFixupSlotPc0087b258 || object->jump_animation_state != 0x14) {
+            if (world->current_level != LevelFixupSlotPc0087b264) {
+                if (world->current_level != LevelFixupSlotPc0087b268 ||
+                    (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4))
+                    return GetSfxId("fs_swamp");
+            }
+        }
+    }
+    if (world->current_level == JABBASPALACEA_LDATA &&
+        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9))
+        return GetSfxId("fs_ice");
+    if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
+        object->jump_animation_state == 0x14)
+        return GetSfxId((char *)GameAudioName0075c478Pc);
+    return -1;
+}
+
+i32 __cdecl GameAudio_CheckReverb_LSW(void) {
+    LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
+    if (level == LevelFixupSlotPc0087b200)
+        return 1;
+    if (level == LevelFixupSlotPc0087b264)
+        return 1;
+    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4)
+        return 1;
+    return 0;
+}
 
 void __cdecl SetLevelSfxBits(WORLDINFO *world) {
     LEVEL_SFX_WORLD_VIEW_PC *view = (LEVEL_SFX_WORLD_VIEW_PC *)world;
@@ -546,4 +587,16 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
 
 #undef ADD_GAME_SFX
 #undef ADD_SFX
+}
+
+void __cdecl Shadow_SetMode(void) {
+    i32 i;
+    ShadowMode = 0;
+    for (i = 0; i < 8; ++i) {
+        GAMEOBJECT *player = Player[i];
+        if (player != NULL && player->suit != NULL && (player->suit->flags & 1) != 0) {
+            ShadowMode = 1;
+            return;
+        }
+    }
 }

@@ -355,9 +355,6 @@ typedef struct GAME_CUSTOMISER_REWARD_READER_PC {
     u16 *save_pieces;
 } GAME_CUSTOMISER_REWARD_READER_PC;
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER_PC, save_pieces) == 0x174);
-// Genuine original static configuration definitions.
-/* Original static game.cpp settings/items. Proposal only, no production data. */
-extern "C" AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 struct MUSIC_PAIR_ARENA_PC {
     i32 prefix_word;
     u8 unknown_004[0x18];
@@ -3247,38 +3244,4 @@ void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
 }
 
 static void __cdecl LEGO_AllGoldBricksFn(void) {
-}
-
-i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
-    AREA_DATA_PC *area = world->area;
-    if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0)
-        return GetSfxId("fs_ice");
-    if (area == DAGOBAH_ADATA && on_platform == 0) {
-        if (world->current_level != LevelFixupSlotPc0087b258 || object->jump_animation_state != 0x14) {
-            if (world->current_level != LevelFixupSlotPc0087b264) {
-                if (world->current_level != LevelFixupSlotPc0087b268 ||
-                    (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4))
-                    return GetSfxId("fs_swamp");
-            }
-        }
-    }
-    if (world->current_level == JABBASPALACEA_LDATA &&
-        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9))
-        return GetSfxId("fs_ice");
-    if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
-        object->jump_animation_state == 0x14)
-        return GetSfxId((char *)GameAudioName0075c478Pc);
-    return -1;
-}
-
-i32 __cdecl GameAudio_CheckReverb_LSW(void) {
-    LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
-    if (level == LevelFixupSlotPc0087b200)
-        return 1;
-    if (level == LevelFixupSlotPc0087b264)
-        return 1;
-    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4)
-        return 1;
-    return 0;
 }

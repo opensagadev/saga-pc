@@ -8,17 +8,6 @@ f32 __cdecl NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
-void __cdecl Shadow_SetMode(void) {
-    i32 i;
-    ShadowMode = 0;
-    for (i = 0; i < 8; ++i) {
-        GAMEOBJECT *player = Player[i];
-        if (player != NULL && player->suit != NULL && (player->suit->flags & 1) != 0) {
-            ShadowMode = 1;
-            return;
-        }
-    }
-}
 
 static void Shards_Draw(void *context, void *unused1, float unused2) {
     i32 i;
