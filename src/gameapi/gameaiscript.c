@@ -6730,13 +6730,14 @@ i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     i32 index;
 
     snap = 0;
+    index = 0;
     if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
         object = ((APIOBJECT_PC *)packet->owner)->owner;
         if (!first_time)
             return 1;
         object->flags_ef4 |= 0x200000u;
         object->movement_speed_scale_pc = 1.0f;
-        for (index = 0; index < num_params; index++) {
+        for (; index < num_params; index++) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
                 object->flags_ef4 &= ~0x200000u;
             else if ((value = NuStrIStr(params[index], (char *)AIUseCurrentSpeedMultiplierName)) != NULL)
