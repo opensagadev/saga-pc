@@ -167,6 +167,7 @@ address,symbol,size,ctype
 0x413aa0,_ChrisDogFightAUpdate,107,void __cdecl (WORLDINFO *)
 0x413b10,_ChrisDogFightADraw,64,void __cdecl (WORLDINFO *)
 0x413b70,_CC_variant,910,
+0x413f00,_PlayersFabsPc,18,static f32 __cdecl(f32)
 0x413f80,_GameDrawMtxCopyPc,95,
 0x413fe0,_GameDrawMtxSetYRotationPc,162,
 0x414090,_GameDrawMtxRotateXPc,217,
