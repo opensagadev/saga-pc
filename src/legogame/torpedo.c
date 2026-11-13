@@ -517,6 +517,22 @@ void __cdecl HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
     }
 }
 
+void __cdecl Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
+    if (bolt != NULL && bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
+        TORPEDOPACKET_PC *packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
+        if (packet->target != NULL) {
+            if (packet->ricochet_count > 4) {
+                packet->flags |= 0x10;
+            } else {
+                packet->flags |= 8;
+                packet->ricochet_position = *position;
+                packet->ricochet_time = 0.0f;
+                ++packet->ricochet_count;
+            }
+        }
+    }
+}
+
 void __cdecl Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
     NUVEC axis;
     NUMTX matrix;
@@ -628,6 +644,14 @@ void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
         if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0)
             Torpedo_Ricochet(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
     }
+}
+
+f32 __cdecl Torpedo_Scale(BOLT_PC *bolt) {
+    if (bolt != NULL && bolt->owner != NULL) {
+        f32 scale = 2.0f * ((GAMEOBJECT *)bolt->owner)->bounds_radius;
+        return scale;
+    }
+    return 3.0f;
 }
 
 void __cdecl Torpedo_EndBolt(BOLT_PC *bolt) {

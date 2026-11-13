@@ -191,30 +191,6 @@ extern "C" void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
         AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
 }
 
-extern "C" void __cdecl Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
-    if (bolt != NULL && bolt->owner != NULL && static_cast<GAMEOBJECT *>(bolt->owner)->torpedo != NULL) {
-        TORPEDOPACKET_PC *packet = static_cast<GAMEOBJECT *>(bolt->owner)->torpedo;
-        if (packet->target != NULL) {
-            if (packet->ricochet_count > 4) {
-                packet->flags |= 0x10;
-            } else {
-                packet->flags |= 8;
-                packet->ricochet_position = *position;
-                packet->ricochet_time = 0.0f;
-                ++packet->ricochet_count;
-            }
-        }
-    }
-}
-
-extern "C" f32 __cdecl Torpedo_Scale(BOLT_PC *bolt) {
-    if (bolt != NULL && bolt->owner != NULL) {
-        f32 scale = 2.0f * static_cast<GAMEOBJECT *>(bolt->owner)->bounds_radius;
-        return scale;
-    }
-    return 3.0f;
-}
-
 extern "C" u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *direction) {
     NUVEC temporary;
     if (direction == NULL)
