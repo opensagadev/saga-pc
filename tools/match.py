@@ -432,15 +432,75 @@ def repository_paths(value):
     return value
 
 
+def srgb_linear(channel):
+    channel /= 255
+    return channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+
+
+def white_text_contrast(rgb):
+    """WCAG contrast ratio of white text on an (r, g, b) background of 0..255 channels."""
+    r, g, b = (srgb_linear(channel) for channel in rgb)
+    return 1.05 / (0.2126 * r + 0.7152 * g + 0.0722 * b + 0.05)
+
+
+def oklch_to_srgb(lightness, chroma, hue):
+    """(r, g, b) of 0..255 channels for an OKLCH colour, or None outside the sRGB gamut."""
+    a, b = chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
+    l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    s = (lightness - 0.0894841775 * a - 1.2914855480 * b) ** 3
+    linear = (4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+              -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+              -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)
+    if min(linear) < -1e-9 or max(linear) > 1 + 1e-9:
+        return None
+    return tuple(round(255 * (12.92 * c if c <= 0.0031308 else 1.055 * max(c, 0) ** (1 / 2.4) - 0.055))
+                 for c in linear)
+
+
+BADGE_MIN_CONTRAST = 4.0  # WCAG contrast of the badge's white bold text, between AA-large (3) and AA (4.5)
+BADGE_HUES = (29, 135, 150)  # OKLCH hues: red at 0 %, yellow-green just below 100 %, green at 100 %
+
+
+def badge_color(value):
+    """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
+
+    Only a displayed 100.000 gets the full green. Below it the OKLCH hue runs from red
+    through orange and amber to yellow-green along (1 - log(101 - v) / log(101)) ** 1.25,
+    a logarithmic scale of the shortfall: 0..90 takes about 40 % of the hue range, 90..99
+    another 40 % and 99..99.9 most of the rest, so 90, 94, 97, 99 and 99.9 stay apart
+    while 60 and 95 still differ plainly. Each hue takes the most chroma the sRGB gamut
+    allows at the lightest OKLCH lightness that keeps white text at BADGE_MIN_CONTRAST.
+    """
+    shown = min(max(float(f"{value:.3f}"), 0), 100)
+    red, top, green = BADGE_HUES
+    if shown >= 100:
+        hue = green
+    else:
+        position = (1 - math.log10(101 - shown) / math.log10(101)) ** 1.25
+        hue = red + (top - red) * position
+
+    def color(lightness):
+        low, high = 0.0, 0.17  # widest chroma inside the gamut, capped
+        for _ in range(20):
+            middle = (low + high) / 2
+            low, high = (middle, high) if oklch_to_srgb(lightness, middle, hue) else (low, middle)
+        return oklch_to_srgb(lightness, low, hue)
+    low, high = 0.3, 0.75
+    for _ in range(20):
+        middle = (low + high) / 2
+        low, high = (middle, high) if white_text_contrast(color(middle)) >= BADGE_MIN_CONTRAST else (low, middle)
+    return bytes(color(low)).hex()
+
+
 def update_badge(stats):
     path = ROOT / "README.md"
     content = path.read_text()
     def image(field, label="", alt=None):
         # for-the-badge style; table cells carry no label text, only the percentage.
         value = stats[field]
-        color = "red" if value < 25 else "orange" if value < 75 else "brightgreen"
-        return (f"![{alt or f'{value:.3f}%'}](https://img.shields.io/badge/{label}-{value:.3f}%25-{color}"
-                "?style=for-the-badge)")
+        return (f"![{alt or f'{value:.3f}%'}](https://img.shields.io/badge/{label}-{value:.3f}%25-"
+                f"{badge_color(value)}?style=for-the-badge)")
 
     badge = ("<!-- matching-badge -->\n"
              + image("fuzzy_coverage_percent", "fuzzy%20code%20match", "fuzzy code match")
