@@ -16536,9 +16536,9 @@ i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     NUVEC distance_vector;
     f32 distance_squared;
     f32 reach_distance;
-    i32 random_locator_count = 0;
     i32 use_personal_name = 0;
     i32 use_indexed_name = 0;
+    i32 random_locator_count = 0;
     f32 minimum_time = 0.0f;
     f32 maximum_time = 0.0f;
     char locator_name[64];
