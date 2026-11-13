@@ -327,6 +327,7 @@ extern "C" {
         return 1;
     }
 
+    // noinline: the original calls AddStatusStage out of line from InitStatusScreen; VC8 would inline it there.
     __declspec(noinline) void AddStatusStage(STATUSPACKET_s *packet, i32 type, i32 gold_brick_enabled) {
         packet->stage_types[packet->stage_count] = (i8)(type);
         packet->gold_brick_enabled[packet->stage_count] = (u8)(gold_brick_enabled);

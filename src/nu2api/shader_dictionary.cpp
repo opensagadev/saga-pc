@@ -125,6 +125,8 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
         }                                                                                                              \
     } while (0)
 
+// noinline: the original calls AddDefinition out of line from ShaderCompilerDictionaryPc::EmitVertexInput; VC8 would
+// inline it there.
 __declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
     SHADER_ADD_DEFINITION_PC(this, name, value, emit);
 }

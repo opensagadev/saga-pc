@@ -782,6 +782,8 @@ eduimenu_s *eduiClearActiveMenu(void) {
     return NULL;
 }
 
+// noinline: the original calls cbInteractMenuKeySelect out of line from eduiMenuProcessInput; VC8 would inline it
+// there.
 __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
     u32 modifiers;
     char text[2];

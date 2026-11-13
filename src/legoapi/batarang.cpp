@@ -142,6 +142,8 @@ static i32 __cdecl BatarangASinPc(f32 sin) {
            MAX_SHORT_OVER_PI;
 }
 
+// noinline: the original calls BatarangContainsTargetPc out of line from Batarang_FindTarget; VC8 would inline it
+// there.
 static __declspec(noinline) i32 BatarangContainsTargetPc(BATARANG_NATIVE_PC *batarang, void *target) {
     i32 index = 0;
     for (; index < batarang->active; ++index) {

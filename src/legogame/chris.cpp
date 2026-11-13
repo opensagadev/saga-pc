@@ -1145,6 +1145,8 @@ extern "C" {
     }
 
     /* Native private helpers stay in the same translation unit as their caller. */
+    // noinline: the original calls DogfightResetGroupPc out of line from DogfightResetSpacePc; VC8 would inline it
+    // there.
     static __declspec(noinline) void DogfightResetGroupPc(DOGFIGHT_GROUP_PC *group) {
 #define RESET_FIGHTER(index)                                                                                           \
     group->fighters[index].fields.active = 0;                                                                          \

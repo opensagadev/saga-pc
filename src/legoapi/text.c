@@ -530,6 +530,7 @@ void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
     *destination = 0;
 }
 
+// noinline: the original calls Text3DStringEncode out of line from IntroText_Draw; VC8 would inline it there.
 __declspec(noinline) void __cdecl Text3DStringEncode(char *source, u16 *destination) {
     Text3DStringEncodeFont((u8 *)source, destination, SmartTextFont != NULL ? SmartTextFont : QFont2D);
 }
@@ -872,6 +873,7 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     NuQFntPopPrintMode();
 }
 
+// noinline: the original calls SetQFont2D out of line from IntroText_Draw; VC8 would inline it there.
 __declspec(noinline) void __cdecl SetQFont2D(void) {
     NuQFntSetCoordinateSystem(3);
     NuQFntSet(QFont2D);

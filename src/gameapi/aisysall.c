@@ -4029,6 +4029,7 @@ void __cdecl AIScriptClearInterrupt(AISCRIPTPROCESS_PC *processor, char *state_n
     }
 }
 
+// noinline: the original calls AISysBufferAlloc out of line from pathEditorCreateData; VC8 would inline it there.
 __declspec(noinline) void *__cdecl AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size) {
     void *result = NULL;
 
@@ -5582,6 +5583,7 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
     }
 }
 
+// noinline: the original calls WithinConnection out of line from AISysGetPathPosEx; VC8 would inline it there.
 __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position, AIPATH_PC *path,
                                                   AIPATHCNX_PC *connection, i32 reserved_check,
                                                   AIPATHCNX_PC *previous_connection, i32 route_index,
@@ -8092,6 +8094,8 @@ static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotati
 }
 
 /* Native 520ea0..520ed6: private area argument ESI. */
+// noinline: the original calls areaEditorDestroyArea out of line from areaEditor_cbDeleteArea; VC8 would inline it
+// there.
 static __declspec(noinline) void areaEditorDestroyArea(EDAIAREA_s *area) {
     if (area != NULL) {
         NuLinkedListRemove(&aieditor->areas, &area->link);
@@ -8860,6 +8864,8 @@ static i32 pathEditor_GetNearestRuntimeNode(AIPATH_PC *runtime) {
     return nearest;
 }
 
+// noinline: the original calls pathEditor_FindConnection out of line from pathEditor_cbCnxFlagsToggle; VC8 would inline
+// it there.
 static __declspec(noinline) EDAIPATHCNX_s *pathEditor_FindConnection(EDAIPATHNODE_s *from, EDAIPATHNODE_s *to) {
     i32 index;
     if (from != NULL && to != NULL) {
@@ -10009,6 +10015,8 @@ static void pathEditor_DestroySharedNode(EDAISHAREDPATHNODE_s *shared) {
     NuLinkedListAppend(&aieditor->free_shared_nodes, &shared->link);
 }
 
+// noinline: the original calls pathEditor_ReleaseSharedNode out of line from pathEditor_cbSetShareNode; VC8 would
+// inline it there.
 static __declspec(noinline) void pathEditor_ReleaseSharedNode(EDAIPATHNODE_s *node) {
     if (node != NULL && node->shared_node != NULL) {
         --node->shared_node->reference_count;
@@ -10019,6 +10027,8 @@ static __declspec(noinline) void pathEditor_ReleaseSharedNode(EDAIPATHNODE_s *no
     }
 }
 
+// noinline: the original calls pathEditor_SetSharedNode out of line from pathEditor_cbSetShareNode; VC8 would inline it
+// there.
 static __declspec(noinline) void pathEditor_SetSharedNode(EDAIPATHNODE_s *node, EDAISHAREDPATHNODE_s *shared) {
     if (shared == NULL || node == NULL) {
         return;

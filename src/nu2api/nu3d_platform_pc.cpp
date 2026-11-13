@@ -1133,6 +1133,7 @@ extern "C" {
     extern "C" i32 NuStrLenW(const NUWCHAR *str);
 
     /* Nonzero when any texel of the 32-bit column at (x, y) has a nonzero alpha. */
+    // forceinline: the original inlines this into NuQFntColumnOpaque32Pc, which VC8's own heuristics do not.
     static __forceinline i32 NuQFntColumnOpaque32Inline(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
         i32 width = bitmap->width;
         u8 *alpha = bitmap->data + (width * y + x) * 4 + 3;
@@ -1682,6 +1683,8 @@ extern "C" {
     }
 
     /* Retail calls this from PCGraphicsCreatePostEffectTextures rather than inlining it. */
+    // noinline: the original calls PCGraphicsInitRenderTexture out of line from PCGraphicsCreatePostEffectTextures; VC8
+    // would inline it there.
     __declspec(noinline) void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
                                                                   i32 height, i32 levels, i32 usage, i32 pool,
                                                                   i32 format) {

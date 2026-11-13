@@ -2459,6 +2459,7 @@ extern RTL_FOG_MIGRATION_PC *curr_fog;
 __declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
 f32 cursor_size = 1.0f;
 
+// forceinline: the original inlines this into edrtlDrawLightEx, which VC8's own heuristics do not.
 static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;

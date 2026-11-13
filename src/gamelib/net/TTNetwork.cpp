@@ -211,6 +211,7 @@ void TTNetwork::NosAdopted(NetworkObject *object, const V2Peer &peer) {
     }
 }
 
+// noinline: the original calls UpdateClientStats out of line from TTNetwork::Update; VC8 would inline it there.
 __declspec(noinline) void TTNetwork::UpdateClientStats() {
     TT_FOR_EACH_CLIENT(entry) {
         entry->stats.Update();

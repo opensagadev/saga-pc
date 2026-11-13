@@ -915,6 +915,7 @@ void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
     ScaleGameObject(object);
 }
 
+// noinline: the original calls InitCreatureModelFlagsPc out of line from InitCreature; VC8 would inline it there.
 static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
         object->flags_1f8 |= 0x20000;

@@ -28,6 +28,8 @@ void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewpo
     memcpy(&requested_viewport.max_z, &viewport->max_z, sizeof(f32));
 }
 
+// noinline: the original calls NuVpSubmitPc out of line from PC_DEVICE_BACKEND_PC::ResetViewport; VC8 would inline it
+// there.
 extern "C" __declspec(noinline) void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport) {
     if (viewport != NULL) {
         PCDeviceBackend.ApplyViewport(viewport);
@@ -40,6 +42,8 @@ extern "C" HRESULT __cdecl PCDeviceSetTransform(i32 state, const NUMTX *matrix) 
     return result;
 }
 
+// noinline: the original calls PCDeviceSetRenderState out of line from PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc; VC8
+// would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetRenderState(i32 state, u32 value) {
     i16 cache_index;
 
@@ -95,6 +99,8 @@ submit:
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_render_state(PCDeviceBackend.device, state, value);
 }
 
+// noinline: the original calls PCDeviceSetSamplerState out of line from PC_DEVICE_BACKEND_PC::CreateOrResetDevice; VC8
+// would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetSamplerState(u32 stage, i32 state, u32 value) {
     PCDeviceSamplerInvalidation[stage][0] = -1;
     PCDeviceSamplerInvalidation[stage][1] = -1;
@@ -174,6 +180,8 @@ extern "C" void __cdecl PCDeviceCreateTextureFromFileInMemoryPc(const void *data
                                                            data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
 
+// noinline: the original calls PCDeviceCreateVertexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format,
                                                                         i32 pool, PC_BUFFER_RESOURCE_PC **resource) {
     if (PCDeviceHardwareVertexProcessingPC == 0) {
@@ -183,6 +191,8 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceCreateVertexBuffer(u32 size
                                                                                vertex_format, pool, resource, NULL);
 }
 
+// noinline: the original calls PCDeviceCreateIndexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool,
                                                                        PC_BUFFER_RESOURCE_PC **resource,
                                                                        HANDLE *shared_handle) {
@@ -241,11 +251,15 @@ extern "C" void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_
     PCDeviceLastResult = device->methods->create_vertex_declaration(device, elements, out);
 }
 
+// noinline: the original calls PCDeviceLockVertexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceLockVertexBuffer(u32 offset, u32 size, void **data, u32 flags,
                                                                       PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
 
+// noinline: the original calls PCDeviceUnlockVertexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
@@ -277,6 +291,8 @@ extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const voi
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
 }
 
+// noinline: the original calls PCDeviceDrawIndexedPrimitiveUPPc out of line from PCGraphicsDrawUnitBoxPc; VC8 would
+// inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceDrawIndexedPrimitiveUPPc(i32 type, u32 minimum_vertex,
                                                                               u32 vertex_count, u32 primitive_count,
                                                                               const void *indices, i32 index_format,
@@ -289,6 +305,7 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceDrawIndexedPrimitiveUPPc(i3
         device, type, minimum_vertex, vertex_count, primitive_count, indices, index_format, vertices, stride);
 }
 
+// noinline: the original calls PCDeviceSetFVFPc out of line from PCGraphicsDrawUnitBoxPc; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetFVFPc(u32 fvf) {
     PCDeviceStateCachePc.vertex_declaration = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
@@ -546,17 +563,22 @@ STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, end_scene) == 0xa8);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, clear) == 0xac);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, set_software_vertex_processing) == 0x134);
 
+// noinline: the original calls EndScene out of line from PCDeviceEndScenePc; VC8 would inline it there.
 __declspec(noinline) HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->end_scene(view);
 }
 
+// noinline: the original calls PCDeviceClear out of line from PC_DEVICE_BACKEND_PC::CreateOrResetDevice; VC8 would
+// inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour,
                                                            f32 depth, u32 stencil) {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->clear(device, count, rectangles, flags, colour, depth, stencil);
 }
 
+// noinline: the original calls PCDeviceTestCooperativeLevel out of line from PC_DEVICE_BACKEND_PC::CreateOrResetDevice;
+// VC8 would inline it there.
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceTestCooperativeLevel() {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     return device->methods->test_cooperative_level(device);
@@ -939,11 +961,15 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     NudxFw_D3DEndCriticalSection();
 }
 
+// noinline: the original calls PCDeviceEvictManagedResources out of line from
+// PC_DEVICE_BACKEND_PC::CreateOrResetDevice; VC8 would inline it there.
 __declspec(noinline) void __cdecl PCDeviceEvictManagedResources() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->evict_managed_resources(view);
 }
 
+// noinline: the original calls PCDeviceSetSoftwareVertexProcessing out of line from
+// PC_DEVICE_BACKEND_PC::CreateOrResetDevice; VC8 would inline it there.
 __declspec(noinline) void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled) {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->set_software_vertex_processing(view, enabled);
@@ -970,6 +996,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
     }
 }
 
+// noinline: the original calls BeginScene out of line from PCDeviceBeginScenePc; VC8 would inline it there.
 __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::BeginScene() {
     PCGraphicsFrameScratchCount.reset_word = 0;
     PCGraphicsBoundShader = -1;
@@ -1295,11 +1322,15 @@ struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_VIEW_PC, methods) == 0);
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_METHODS_PC, get_surface_level) == 0x48);
 
+// noinline: the original calls PCDeviceLockIndexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags,
                                                                      PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
 
+// noinline: the original calls PCDeviceUnlockIndexBuffer out of line from
+// PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
@@ -1860,11 +1891,15 @@ extern "C" void __cdecl PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE
         PCDeviceBackend.device->methods->set_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
 }
 
+// noinline: the original calls PCDeviceDrawPrimitivePc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc; VC8
+// would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
     ++PCDevicePrimitiveCallCountPc;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_primitive(PCDeviceBackend.device, type, start, count);
 }
 
+// noinline: the original calls PCDeviceSetIndicesPc out of line from PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc; VC8
+// would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.index_buffer == buffer) {
@@ -1875,6 +1910,8 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESO
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_indices(PCDeviceBackend.device, buffer);
 }
 
+// noinline: the original calls PCDeviceDrawIndexedPrimitivePc out of line from
+// PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex,
                                                                             u32 minimum_vertex, u32 vertex_count,
                                                                             u32 start_index, u32 primitive_count) {
@@ -1888,6 +1925,8 @@ extern "C" void __cdecl PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
         PCDeviceBackend.device->methods->set_stream_source_freq(PCDeviceBackend.device, stream, setting);
 }
 
+// noinline: the original calls PCDeviceSetVertexDeclarationPc out of line from
+// PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc; VC8 would inline it there.
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_declaration == declaration) {
@@ -2295,12 +2334,16 @@ extern "C" void __cdecl PCDeviceBeginScenePc(void) {
     PCDeviceBackend.BeginScene();
 }
 
+// noinline: the original calls DrawPostEffectQuadPc out of line from PCGraphicsDrawPostEffectQuadPc; VC8 would inline
+// it there.
 __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer690, 0, 20);
     PCDeviceDrawPrimitivePc(5, 0, 2);
 }
 
+// noinline: the original calls DrawPostEffectIndexedPc out of line from PCGraphicsDrawPostEffectIndexedPc; VC8 would
+// inline it there.
 __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer694, 0, 20);

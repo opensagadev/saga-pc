@@ -807,6 +807,7 @@ extern "C" {
     }
 
 #undef TERRAIN_HT_DISTANCE
+// auto_inline(off): keeps VC8 from inlining the helpers below into NewTerrainScaleYMask, as the original does not.
 #pragma auto_inline(off)
 
     void NewTerrStoreAnyInfo() {

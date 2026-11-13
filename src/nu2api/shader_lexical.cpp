@@ -137,6 +137,8 @@ char *ShaderLexicalSlicePc::HeapCopy() {
     return result;
 }
 
+// noinline: the original calls ArenaCopy out of line from ShaderCompilerParserPc::ParseExpression; VC8 would inline it
+// there.
 __declspec(noinline) char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator *arena) {
     char *result = reinterpret_cast<char *>(arena->cursor);
     arena->cursor += length + 1;
@@ -264,6 +266,8 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
     return false;
 }
 
+// noinline: the original calls AppendOperand out of line from ShaderCompilerParserPc::ParseExpression; VC8 would inline
+// it there.
 __declspec(noinline) ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
     if (left != NULL) {
         if (right != NULL) {

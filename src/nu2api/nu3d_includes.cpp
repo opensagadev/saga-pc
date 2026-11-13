@@ -326,6 +326,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map_count) == 0x178);
     STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map) == 0x17c);
 
+    // noinline: the original calls NuAnimMtxCopyPrivatePc out of line from NuAnimBuffEvaluate_3; VC8 would inline it
+    // there.
     static __declspec(noinline) void NuAnimMtxCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
         destination->m00 = source->m00;
         destination->m01 = source->m01;
@@ -3908,6 +3910,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, u) == 0x10);
     STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, v) == 0x14);
 
+    // noinline: the original calls NuRndrPrimSetColourPrivate out of line from NuQFntPrintCharW; VC8 would inline it
+    // there.
     static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
         i32 converted;
         if (NuPrimNeedsOverbrightening != 0) {
@@ -7207,6 +7211,8 @@ extern "C" {
         mtl_animation_mask = mask;
     }
 
+    // noinline: the original calls NuMtlLookupVariantPC out of line from NuMtlRegisterForOverride; VC8 would inline it
+    // there.
     static __declspec(noinline) NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
         NULNKHDR *node;
         for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
@@ -13652,6 +13658,8 @@ extern "C" {
         (destination) = storage.value;                                                                                 \
     } while (0)
 
+    // noinline: the original calls VisibilityAbsoluteFourPc out of line from NuCameraBuildClipPlanes; VC8 would inline
+    // it there.
     static __declspec(noinline) void VisibilityAbsoluteFourPc(NUVEC4 *destination, NUVEC4 *source) {
         VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->x, source->x);
         VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->y, source->y);
@@ -14553,6 +14561,8 @@ extern "C" {
     }
 
     /* Shared private helper (native EAX source, ECX destination): component-wise |v|. */
+    // noinline: the original calls NuVec4AbsPrivatePc out of line from NuDisplayListUpdateSpecial; VC8 would inline it
+    // there.
     static __declspec(noinline) void NuVec4AbsPrivatePc(NUVEC4 *out, const NUVEC4 *in) {
         f32 value;
         u32 bits;
@@ -15724,6 +15734,7 @@ extern "C" {
         return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
     }
 
+    // noinline: the original calls NuMtxMulArrayVU0 out of line from NuHGobjRndrMtxDwa; VC8 would inline it there.
     __declspec(noinline) void NuMtxMulArrayVU0(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
         while (count-- != 0) {
             D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));

@@ -17,12 +17,16 @@ i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
     return 0;
 }
 
+// noinline: the original calls NuThreadCriticalSectionBegin out of line from
+// PCDisplayListCriticalSectionEnterPc; VC8 would inline it there.
 __declspec(noinline) void __cdecl NuThreadCriticalSectionBegin(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         EnterCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
 }
 
+// noinline: the original calls NuThreadCriticalSectionEnd out of line from
+// PCDisplayListCriticalSectionLeavePc; VC8 would inline it there.
 __declspec(noinline) void __cdecl NuThreadCriticalSectionEnd(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
         LeaveCriticalSection(&PCThreadCriticalSections[section_index - 1]);

@@ -415,6 +415,7 @@ void edpartStartPage(u8 page) {
     part_page_on[signed_page] = 1;
 }
 
+// noinline: the original calls edpartStopPage out of line from Parts_Stop; VC8 would inline it there.
 __declspec(noinline) void edpartStopPage(u8 page) {
     part_page_on[(i8)page] = 0;
 }

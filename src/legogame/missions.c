@@ -27,6 +27,7 @@ typedef struct MISSION_SYSTEM_READER_PC {
     i16 character_ids[8];
 } MISSION_SYSTEM_READER_PC;
 
+// noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
 __declspec(noinline) void __cdecl EndMissionsMenu(void) {
     LevLock[3] = 1;
     LevTime[3] = 0.6f;
