@@ -2091,14 +2091,23 @@ i32 __cdecl SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
 
 PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
                             i32 directional, i32 bolt_id) {
-    NUVEC aim = *direction, delta;
+    NUVEC aim = *direction;
+    NUVEC delta;
+    NUVEC minimum;
+    NUVEC maximum;
+    PART_PC *best = NULL;
     BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, WORLD);
-    PART_PC *part = Part, *best = NULL, *previous = NULL;
-    f32 min_x = position->x - radius, max_x = position->x + radius;
-    f32 min_z = position->z - radius, max_z = position->z + radius;
-    f32 nearest_distance = range_squared, distance, dot;
+    PART_PC *part = Part;
+    PART_PC *previous = NULL;
+    f32 nearest_distance = range_squared;
+    f32 distance;
+    f32 dot;
     u16 angle;
     i32 i;
+    minimum.x = position->x - radius;
+    minimum.z = position->z - radius;
+    maximum.x = position->x + radius;
+    maximum.z = position->z + radius;
     if (directional != 0) {
         aim = *direction;
         if ((bolt->flags_60 & 0x20000) != 0) {
@@ -2109,11 +2118,11 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         if ((part->active & 1) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa))
             continue;
-        if (part->position.x < min_x || part->position.x > max_x || part->position.z < min_z ||
-            part->position.z > max_z)
+        if (part->position.x < minimum.x || part->position.x > maximum.x || part->position.z < minimum.z ||
+            part->position.z > maximum.z)
             continue;
         distance = NuVecDistSqr(&part->position, position, &delta);
-        if (!(range_squared > distance))
+        if (!(distance < range_squared))
             continue;
         if (directional == 0)
             NuVecRotateY(&aim, &v001, NuAtan2D(part->position.x - position->x, part->position.z - position->z));
@@ -2121,7 +2130,7 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
             delta.y = 0.0f;
         NuVecNorm(&delta, &delta);
         dot = NuVecDot(&delta, &aim);
-        if (TargetDist_Near2 > distance && directional != 0)
+        if (distance < TargetDist_Near2 && directional != 0)
             angle = TargetDeg_Near;
         else if (TargetDist_Mid2 > distance)
             angle = TargetDeg_Mid;
@@ -2136,7 +2145,11 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
             best = part;
         }
     }
-    return best != NULL ? best : previous;
+    if (best != NULL)
+        return best;
+    if (previous != NULL)
+        return previous;
+    return NULL;
 }
 
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_mode) == 0xb1);
