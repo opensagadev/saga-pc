@@ -300,8 +300,8 @@ void __cdecl UpdateCables(void) {
                                 *NUMTX_GET_ROW_VEC(&cable->target->locator_matrices[atat_locators[locator]], 3);
                     }
                 } else {
-                    count = 2;
                     path[1] = cable->target->collision_position;
+                    count = 2;
                 }
                 if (release == 0) {
                     if (!(cable->source->character_data->game_character->flags_090 & 0x400)) {
