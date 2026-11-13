@@ -2141,7 +2141,6 @@ void __cdecl DrawSubItemMenu2D(void) {
     char title[128], subtitle[128];
     char *name;
     i32 buyable = 0, show_name = 0, id, available, price;
-    i8 area;
     f32 scale, y;
     if (picked == 0) {
         items = HintItems;
@@ -2190,8 +2189,8 @@ void __cdecl DrawSubItemMenu2D(void) {
             show_name = 1;
             buyable = 0;
         } else {
-            area = ExtrasCheatsPc[id].area_index;
-            if (id < 8 || area == -1 || Game.area_save[area].red_brick_collected != 0)
+            if (id < 8 || ExtrasCheatsPc[id].area_index == -1 ||
+                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0)
                 buyable = show_name = 1;
             else {
                 sprintf(title, "%s %i", TTab[TextIdPc88074c], id - 7);
