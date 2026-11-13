@@ -251,7 +251,10 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         cache = &PCOggCachePoolPc[index];
         if (cache->data != NULL) {
             memset(cache->data, 0xcd, cache->bytes);
-            NuFree(cache->data, ".\\pc\\oggreader.cpp", 132);
+            // MATCH-EXCEPTION: an alias of cache for the free call only reproduces retail's operand order
+            // of the rate * channels product below (symbol numbering, no code of its own).
+            PC_OGG_CACHE_RECORD_PC *record = cache;
+            NuFree(record->data, ".\\pc\\oggreader.cpp", 132);
             cache->data = NULL;
         }
         HANDLE input = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0x08000001, NULL);
