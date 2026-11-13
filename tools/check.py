@@ -9,12 +9,16 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
+import time
 
 if __package__:
+    from . import lintcache
     from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
     from .lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools import lintcache
     from tools.binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
     from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
 
@@ -289,21 +293,101 @@ def source_files(headers=False):
 VENDORED_FORMAT = "config/clang-format-vendored"
 
 
-def check_format(fix=False):
-    """Check (or, with `fix`, apply) .clang-format on src/; the vendored files are checked against their own style."""
+FORMAT_CACHE = "build/lint/format-cache.json"
+
+
+def style_files(name):
+    """The .clang-format files clang-format may consult for `name` (from its directory up to ROOT)."""
+    found = []
+    directory = (ROOT / name).parent
+    while directory.is_relative_to(ROOT):
+        found += [directory / spelling for spelling in (".clang-format", "_clang-format")
+                  if (directory / spelling).is_file()]
+        if directory == ROOT:
+            break
+        directory = directory.parent
+    return found
+
+
+def check_format(fix=False, jobs=8, cache=True):
+    """Check (or, with `fix`, apply) .clang-format on src/; the vendored files are checked against their own style.
+
+    The check runs in parallel batches; a file whose content, style and tool are unchanged since it
+    last passed (build/lint/format-cache.json) is not checked again."""
     tool = clang_tool("clang-format")
     if not (ROOT / ".clang-format").is_file():
         raise ValueError("Missing .clang-format policy")
     files = source_files(headers=True)
     own = [name for name in files if not name.startswith("lib/")]
     vendored = [name for name in files if name.startswith("lib/")]
-    action = ["-i"] if fix else ["--dry-run", "--Werror"]
-    if vendored and not fix:
-        subprocess.run([tool, "--style=file:" + str(ROOT / VENDORED_FORMAT), "--dry-run", "--Werror", *vendored],
-                       cwd=ROOT, check=True, timeout=120)
-    subprocess.run([tool, "--style=file", "--fallback-style=none", *action, *own], cwd=ROOT, check=True, timeout=300)
-    print(f"Formatting {'applied to' if fix else 'checked for'} {len(own)} source/header files"
-          + ("" if fix else f" and {len(vendored)} vendored files") + ".")
+    own_style, vendored_style = ["--style=file", "--fallback-style=none"], ["--style=file:" + str(ROOT / VENDORED_FORMAT)]
+    if fix:
+        subprocess.run([tool, *own_style, "-i", *own], cwd=ROOT, check=True, timeout=300)
+        print(f"Formatting applied to {len(own)} source/header files.")
+        return
+    digests = lintcache.Digests()
+    fingerprint = lintcache.tool_fingerprint(tool) if cache else None
+    store = None
+    if fingerprint:
+        style = {name: digests.get(ROOT / name) for name in (".clang-format", VENDORED_FORMAT)}
+        store = lintcache.FormatCache(ROOT / FORMAT_CACHE, lintcache.text_digest(fingerprint, style))
+
+    def format_key(name, started=None):
+        """Cache key of a file's current content and style files; with `started`, None unless all of
+        them were last written well before that time (so a batch started then read this content)."""
+        read = digests.get if started is None else (lambda path: digests.settled(path, started))
+        content = read(ROOT / name)
+        styles = [] if name.startswith("lib/") else [
+            (path.relative_to(ROOT).as_posix(), read(path)) for path in style_files(name)]
+        if content is None or any(value is None for _, value in styles):
+            return None
+        return store.key(name, [content, styles])
+
+    pending, keys, reused = [], {}, 0
+    for names, style in ((vendored, vendored_style), (own, own_style)):
+        for name in names:
+            if store is not None:
+                keys[name] = format_key(name)
+                if keys[name] is not None and store.hit(keys[name]):
+                    reused += 1
+                    continue
+            pending.append((style, name))
+    workers = max(1, min(jobs, os.cpu_count() or 1))
+    batches = []
+    for style in (vendored_style, own_style):
+        names = [name for chosen, name in pending if chosen is style]
+        size = max(16, -(-len(names) // workers))
+        batches += [(style, names[start:start + size]) for start in range(0, len(names), size)]
+
+    def run(batch):
+        style, names = batch
+        started = time.time_ns()
+        try:
+            subprocess.run([tool, *style, "--dry-run", "--Werror", *names], cwd=ROOT, check=True,
+                           timeout=300, capture_output=True, text=True)
+            return started, None
+        except subprocess.CalledProcessError as error:
+            return started, error
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        results = list(executor.map(run, batches))
+    failure = None
+    for (_, names), (started, error) in zip(batches, results):
+        if error is not None:
+            sys.stdout.write(error.stdout or "")
+            sys.stderr.write(error.stderr or "")
+            failure = failure or error
+        elif store is not None:
+            # Record only content that was on disk, unchanged, before the batch started.
+            for name in names:
+                if keys.get(name) is not None and format_key(name, started) == keys[name]:
+                    store.add(keys[name])
+    if store is not None:
+        store.save()
+    if failure is not None:
+        raise failure
+    print(f"Formatting checked for {len(own)} source/header files and {len(vendored)} vendored files"
+          + (f" ({reused} unchanged since they passed)." if reused else "."))
 
 
 def analysis_configuration():
@@ -405,40 +489,107 @@ def tidy_jobs(files, debug=True):
     return jobs
 
 
-def check_tidy(jobs=8, debug=True):
+TIDY_CACHE = "build/lint/tidy-cache"
+
+
+def tidy_job_name(job):
+    """Stable name of a (source, extra flags) job, which --shard splits by."""
+    return " ".join([job[0], *job[1]])
+
+
+def tidy_cache_common(tool, overlay, include_dirs, env):
+    """Key parts shared by every unit: tool binaries, policy, SDK pin and overlay, the environment
+    Clang reads, and the names of every file a unit could include. A new or removed header can change
+    which file an #include finds without changing any file a unit read before, so the names are part
+    of the key; translation units (.c/.cpp) are not (lintcache refuses a unit that includes one)."""
+    fingerprint = lintcache.tool_fingerprint(tool)
+    if fingerprint is None:
+        return None
+    includable = sorted(path.relative_to(ROOT).as_posix()
+                        for top in ("src", "lib/ogg-vorbis") for path in (ROOT / top).rglob("*")
+                        if path.suffix not in {".c", ".cpp"} and not path.is_dir())
+    return lintcache.text_digest(
+        fingerprint, lintcache.Digests().get(ROOT / ".clang-tidy"), overlay.read_text(),
+        load_json(ROOT / "config/toolchain.json")["trees"], [str(path) for path in include_dirs],
+        sorted((name, value) for name, value in env.items() if name.startswith(("CCC_", "CLANG", "LLVM"))),
+        includable)
+
+
+def check_tidy(jobs=8, debug=True, shard=None, cache=True):
+    """Analyse every unit (and its Debug view) with clang-tidy; warnings are errors.
+
+    `shard` = (index, count), 1-based: analyse only that stable part of the jobs (CI splits the work
+    over several runners). With `cache`, a unit whose previous pass read exactly the same files
+    (build/lint/tidy-cache, see tools/lintcache.py) is not analysed again; failures are never stored."""
     if jobs < 1:
         raise ValueError("clang-tidy jobs must be at least 1")
+    if shard is not None and not 1 <= shard[0] <= shard[1]:
+        raise ValueError("clang-tidy shard must be INDEX/COUNT with 1 <= INDEX <= COUNT")
     tool = clang_tool("clang-tidy")
     if not (ROOT / ".clang-tidy").is_file():
         raise ValueError("Missing .clang-tidy policy")
-    _, overlay, flags = analysis_configuration()
+    include_dirs, overlay, flags = analysis_configuration()
     env = dict(os.environ)
     for name in ("CPATH", "C_INCLUDE_PATH", "CPLUS_INCLUDE_PATH", "OBJC_INCLUDE_PATH",
                  "INCLUDE", "CL", "_CL_"):
         env.pop(name, None)
     files, failures = tidy_jobs(source_files(), debug), []
+    if shard is not None:
+        files = [job for job in files if lintcache.shard_of(tidy_job_name(job), shard[1]) == shard[0] - 1]
+    common = tidy_cache_common(tool, overlay, include_dirs, env) if cache else None
+    store = digests = None
+    if common is not None:
+        store, digests = lintcache.TidyCache(ROOT / TIDY_CACHE, ROOT, common), lintcache.Digests()
     workers = min(jobs, os.cpu_count() or 1, max(1, len(files)))
 
-    def analyze(job):
+    def command_for(job):
         source, extra = job
         command = [tool, "--quiet", "--config-file=" + str(ROOT / ".clang-tidy"), "--vfsoverlay=" + str(overlay)]
         if source.startswith("lib/"):
             command.append("--checks=" + ",".join("-" + check for check in VENDORED_TIDY_EXCLUDED))
-        command += [source, "--", *flags, *analysis_language(source), *extra]
+        return command + [source, "--", *flags, *analysis_language(source), *extra]
+
+    keys = [store.key(command_for(job)) if store else None for job in files]
+    cached = [store.lookup(key, digests) if store else None for key in keys]
+    (ROOT / "build/lint").mkdir(parents=True, exist_ok=True)
+    scratch = tempfile.TemporaryDirectory(dir=ROOT / "build/lint", prefix="tidy-")
+
+    def analyze(index):
+        command = command_for(files[index])
+        headers = Path(scratch.name) / f"{index}.headers"
+        if store is not None:
+            # Clang appends every header it enters (system ones too) to this file: the unit's inputs.
+            command += ["-Xclang", "-header-include-file", "-Xclang", str(headers), "-Xclang", "-sys-header-deps"]
+        started = time.time_ns()
         try:
             result = subprocess.run(command, cwd=ROOT, env=env, timeout=120,
                                     capture_output=True, text=True)
-            return result, None
         except (OSError, subprocess.SubprocessError) as error:
             return None, error
+        # Only a clean exit is a pass; anything else is analysed again next time. Each pass is
+        # stored as soon as it ends (one manifest per job), so an interrupted run keeps its work.
+        if store is not None and result.returncode == 0:
+            try:
+                read = headers.read_text().splitlines()
+            except OSError:
+                read = None
+            store.store(keys[index], files[index][0], read, digests, started, result.stdout, result.stderr,
+                        exempt=include_dirs, job=tidy_job_name(files[index]))
+        return result, None
 
     # Workers only read the one prepared SDK overlay. Capture every result before
     # reporting diagnostics in source order, regardless of completion order.
-    with ThreadPoolExecutor(max_workers=workers) as executor:
-        results = list(executor.map(analyze, files))
+    pending = [index for index, entry in enumerate(cached) if entry is None]
+    with scratch, ThreadPoolExecutor(max_workers=workers) as executor:
+        results = dict(zip(pending, executor.map(analyze, pending)))
     errors = []
-    for (source, extra), (result, error) in zip(files, results):
+    for index, (source, extra) in enumerate(files):
         source = source + (" (Debug)" if extra else "")
+        if cached[index] is not None:
+            sys.stdout.write(cached[index].get("stdout", ""))
+            sys.stderr.write(cached[index].get("stderr", ""))
+            continue
+        result, error = results[index]
         if error is not None:
             # TimeoutExpired retains partial output as bytes even with text=True.
             for stream, text in ((sys.stdout, getattr(error, "stdout", None)),
@@ -453,14 +604,24 @@ def check_tidy(jobs=8, debug=True):
         sys.stderr.write(result.stderr)
         if result.returncode:
             failures.append(source)
+    if store is not None and debug:
+        store.prune(None if shard is None else
+                    lambda name: lintcache.shard_of(name, shard[1]) == shard[0] - 1)
     if errors:
         print("clang-tidy failed for: " + ", ".join(failures), file=sys.stderr)
         raise errors[0]
     if failures:
         raise ValueError("clang-tidy failed for: " + ", ".join(failures))
     debug_units = sum(1 for _, extra in files if extra)
-    print(f"Clang-tidy checked {len(files) - debug_units} units, {debug_units} of them again as the Debug "
-          "build compiles them, with the Windows x86 SDK and project policy.")
+    reused = sum(entry is not None for entry in cached)
+    if shard:
+        summary = (f"Clang-tidy shard {shard[0]}/{shard[1]} checked {len(files) - debug_units} units as Matching "
+                   f"and {debug_units} as Debug compiles them")
+    else:
+        summary = (f"Clang-tidy checked {len(files) - debug_units} units, {debug_units} of them again as the Debug "
+                   "build compiles them")
+    print(summary + ", with the Windows x86 SDK and project policy"
+          + (f"; {reused} unchanged since they passed (build/lint/tidy-cache)." if reused else "."))
 
 
 def check_unit_table():
@@ -509,12 +670,22 @@ def main():
     parser.add_argument("--jobs", type=int, default=8, help="Parallel clang-tidy workers (default: 8)")
     parser.add_argument("--matching-only", action="store_true",
                         help="With --tidy: skip the second analysis of game units with SAGA_DEBUG")
+    parser.add_argument("--shard", metavar="INDEX/COUNT",
+                        help="With --tidy: analyse only this stable part of the units (CI runners)")
+    parser.add_argument("--no-cache", action="store_true",
+                        help="With --tidy/--format: analyse everything, ignoring and not updating build/lint caches")
     args = parser.parse_args()
     if args.format or args.format_fix:
-        check_format(fix=args.format_fix)
+        check_format(fix=args.format_fix, jobs=args.jobs, cache=not args.no_cache)
         return
     if args.tidy:
-        check_tidy(jobs=args.jobs, debug=not args.matching_only)
+        shard = None
+        if args.shard:
+            match = re.fullmatch(r"(\d+)/(\d+)", args.shard)
+            if not match:
+                parser.error("--shard must be INDEX/COUNT, e.g. 1/4")
+            shard = int(match[1]), int(match[2])
+        check_tidy(jobs=args.jobs, debug=not args.matching_only, shard=shard, cache=not args.no_cache)
         return
     if args.editor:
         prepare_editor()

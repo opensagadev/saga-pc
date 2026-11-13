@@ -8,6 +8,7 @@ import struct
 import subprocess
 import tempfile
 import threading
+import time
 import unittest
 from unittest.mock import patch
 
@@ -437,7 +438,9 @@ class HeaderLayoutTests(unittest.TestCase):
             self.assertNotIn("lib/ogg-vorbis/vorbis/lookup.inc", check_module.source_files())
 
 
-class ClangChecksTests(unittest.TestCase):
+class ClangFixture(unittest.TestCase):
+    """A tree with two units, saga.h and a pinned SDK fixture under a temporary ROOT."""
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
@@ -464,6 +467,8 @@ class ClangChecksTests(unittest.TestCase):
             trees[tree] = tree_digest(directory)
         (self.root / "config/toolchain.json").write_text(json.dumps({"trees": trees}))
 
+
+class ClangChecksTests(ClangFixture):
     def test_prepare_editor_builds_case_aliases_and_windows_compile_database(self):
         compiler = self.root / "build/tools/msvc8"
         original_trees = {
@@ -684,6 +689,183 @@ class ClangChecksTests(unittest.TestCase):
                 check_module.check_tidy(jobs=0)
         config.assert_not_called()
         run.assert_not_called()
+
+
+
+class LintCacheTests(ClangFixture):
+    """Cached clang-tidy and clang-format results (tools/lintcache.py) through check.py."""
+
+    def setUp(self):
+        super().setUp()
+        (self.root / "src/a.c").write_text('#include "saga.h"\n')
+        (self.root / "src/b.cpp").write_text('#include "saga.h"\n')
+        (self.root / "src/saga.h").write_text("// clean\n")
+        fingerprint = patch.object(check_module.lintcache, "tool_fingerprint", return_value="tool-1")
+        self.fingerprint = fingerprint.start()
+        self.addCleanup(fingerprint.stop)
+        self.calls = []
+        self.settle()
+
+    def settle(self):
+        """Date every fixture file well before the next run (files written during a job are not cached)."""
+        old = time.time_ns() - 60 * 10**9
+        for path in self.root.rglob("*"):
+            if path.is_file():
+                os.utime(path, ns=(old, old))
+
+    def fake_tidy(self, command, **kwargs):
+        """A unit fails while saga.h says BAD; Clang's header list names saga.h and an SDK header."""
+        source = command[4]
+        self.calls.append(source + (" (Debug)" if "-DSAGA_DEBUG" in command else ""))
+        if "-header-include-file" in command:
+            sdk = self.root / "build/tools/msvc8/PlatformSDK/Include/Windows.h"
+            with Path(command[command.index("-header-include-file") + 2]).open("a") as stream:
+                stream.write(f"src/saga.h\n{sdk}\n")
+        if "BAD" in (self.root / "src/saga.h").read_text():
+            return subprocess.CompletedProcess(command, 1, f"{source}: warning: BAD [x]\n", "1 warning generated.\n")
+        return subprocess.CompletedProcess(command, 0, "", "2 warnings generated.\n")
+
+    def tidy(self, **kwargs):
+        stdout, stderr = io.StringIO(), io.StringIO()
+        self.calls = []
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", side_effect=self.fake_tidy), \
+                redirect_stdout(stdout), redirect_stderr(stderr):
+            check_module.check_tidy(jobs=2, **kwargs)
+        return stdout.getvalue(), stderr.getvalue()
+
+    def test_tidy_reuses_a_pass_and_replays_its_output(self):
+        self.tidy()
+        self.assertEqual(sorted(self.calls), ["src/a.c", "src/a.c (Debug)", "src/b.cpp", "src/b.cpp (Debug)"])
+        stdout, stderr = self.tidy()
+        self.assertEqual(self.calls, [])
+        self.assertEqual(stderr, "2 warnings generated.\n" * 4)
+        self.assertIn("4 unchanged since they passed", stdout)
+        manifest = json.loads(next((self.root / check_module.TIDY_CACHE).glob("*.json")).read_text())
+        self.assertEqual(set(manifest["entries"][0]["deps"]), {"src/saga.h", manifest["unit"]})
+
+    def test_tidy_reports_a_header_finding_again_after_the_header_changes(self):
+        self.tidy()
+        (self.root / "src/saga.h").write_text("// BAD\n")
+        self.settle()
+        for _ in range(2):  # a failure is never stored, so it is found on every run
+            with self.assertRaisesRegex(ValueError, "clang-tidy failed for: src/a.c, src/b.cpp, src/a.c \\(Debug\\)"):
+                self.tidy()
+            self.assertEqual(len(self.calls), 4)
+        (self.root / "src/saga.h").write_text("// clean\n")
+        self.settle()
+        self.tidy()
+        self.assertEqual(self.calls, [], "the earlier pass of the same content is reused")
+
+    def test_tidy_never_reads_a_failure_as_a_pass(self):
+        (self.root / "src/saga.h").write_text("// BAD\n")
+        self.settle()
+        with self.assertRaises(ValueError):
+            self.tidy(debug=False)
+        self.assertFalse(list((self.root / check_module.TIDY_CACHE).glob("*.json")))
+        # A stored entry that is not a pass, or has no recorded inputs, is ignored.
+        store = check_module.lintcache.TidyCache(self.root / "cache", self.root, "common")
+        key = store.key(["x"])
+        (self.root / "cache").mkdir()
+        (self.root / "cache" / (key + ".json")).write_text(json.dumps({"entries": [
+            {"pass": False, "deps": {"src/saga.h": "0"}}, {"pass": "yes", "deps": {}}, {"pass": True, "deps": {}}]}))
+        self.assertIsNone(store.lookup(key, check_module.lintcache.Digests()))
+
+    def test_tidy_key_covers_policy_flags_tool_and_new_headers(self):
+        self.tidy(debug=False)
+        changes = {
+            "policy": lambda: (self.root / ".clang-tidy").write_text("Checks: -*,google-runtime-int\n"),
+            "tool": lambda: setattr(self.fingerprint, "return_value", "tool-2"),
+            "new header": lambda: (self.root / "src/extra.h").write_text("// may shadow an include\n"),
+            "unit": lambda: (self.root / "src/a.c").write_text('#include "saga.h"\nint x;\n'),
+        }
+        for name, change in changes.items():
+            with self.subTest(name):
+                change()
+                self.settle()
+                self.tidy(debug=False)
+                self.assertEqual(sorted(self.calls), ["src/a.c"] if name == "unit" else ["src/a.c", "src/b.cpp"])
+        language = check_module.analysis_language
+        with patch.object(check_module, "analysis_language", side_effect=lambda source: [*language(source), "-DX"]):
+            self.tidy(debug=False)
+        self.assertEqual(len(self.calls), 2)
+
+    def test_tidy_does_not_store_a_pass_whose_inputs_changed_while_it_ran(self):
+        def editing(command, **kwargs):
+            result = self.fake_tidy(command, **kwargs)
+            (self.root / "src/saga.h").write_text("// clean, edited during the run\n")
+            return result
+
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", side_effect=editing), redirect_stderr(io.StringIO()):
+            check_module.check_tidy(jobs=1, debug=False)
+        self.assertFalse(list((self.root / check_module.TIDY_CACHE).glob("*.json")))
+
+    def test_tidy_without_a_header_list_or_cache_stores_nothing(self):
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "", "")):
+            check_module.check_tidy(debug=False)
+        self.assertFalse(list((self.root / check_module.TIDY_CACHE).glob("*.json")))
+        with patch.object(check_module, "clang_tool", return_value="clang-tidy-18"), \
+                patch.object(check_module.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, "", "")) as run:
+            check_module.check_tidy(debug=False, cache=False)
+        self.assertFalse(any("-header-include-file" in call.args[0] for call in run.call_args_list))
+
+    def test_tidy_shards_split_every_job_exactly_once(self):
+        for index in range(5):
+            (self.root / f"src/unit{index}.cpp").write_text('#include "saga.h"\n')
+        everything = []
+        for shard in range(1, 4):
+            self.tidy(shard=(shard, 3), cache=False)
+            everything += self.calls
+        self.tidy(cache=False)
+        self.assertEqual(sorted(everything), sorted(self.calls))
+        with self.assertRaisesRegex(ValueError, "INDEX/COUNT"):
+            check_module.check_tidy(shard=(4, 3))
+
+    def test_tidy_shard_prunes_only_its_own_stale_manifests(self):
+        self.tidy()
+        manifests = lambda: {json.loads(path.read_text())["job"] for path in
+                             (self.root / check_module.TIDY_CACHE).glob("*.json")}
+        self.assertEqual(manifests(), {"src/a.c", "src/b.cpp", "src/a.c -DSAGA_DEBUG", "src/b.cpp -DSAGA_DEBUG"})
+        (self.root / ".clang-tidy").write_text("Checks: -*,google-runtime-int\n")  # every key changes
+        self.settle()
+        owned = {name for name in manifests() if check_module.lintcache.shard_of(name, 2) == 0}
+        self.tidy(shard=(1, 2))
+        self.assertEqual(len(self.calls), len(owned))
+        self.assertEqual(len(list((self.root / check_module.TIDY_CACHE).glob("*.json"))), 4,
+                         "shard 1 replaced its own manifests and kept the other shard's")
+        self.tidy()
+        self.assertEqual(len(self.calls), 4 - len(owned))
+        self.assertEqual(len(list((self.root / check_module.TIDY_CACHE).glob("*.json"))), 4)
+
+    def test_format_skips_unchanged_passes_and_checks_edits(self):
+        def checked(**kwargs):
+            with patch.object(check_module, "clang_tool", return_value="clang-format-18"), \
+                    patch.object(check_module.subprocess, "run") as run, redirect_stdout(io.StringIO()):
+                check_module.check_format(**kwargs)
+            return [name for call in run.call_args_list for name in call.args[0] if name.startswith("src/")]
+
+        self.assertEqual(checked(), ["src/a.c", "src/b.cpp", "src/saga.h"])
+        self.assertEqual(checked(), [])
+        (self.root / "src/b.cpp").write_text("int y;\n")
+        self.settle()
+        self.assertEqual(checked(), ["src/b.cpp"])
+        (self.root / ".clang-format").write_text("BasedOnStyle: Google\n")
+        self.settle()
+        self.assertEqual(checked(), ["src/a.c", "src/b.cpp", "src/saga.h"])
+        self.assertEqual(checked(cache=False), ["src/a.c", "src/b.cpp", "src/saga.h"])
+
+    def test_format_failure_is_checked_again(self):
+        failure = subprocess.CalledProcessError(1, ["clang-format-18"], "", "src/a.c:1:1: error: code should be clang-formatted\n")
+        for _ in range(2):
+            with patch.object(check_module, "clang_tool", return_value="clang-format-18"), \
+                    patch.object(check_module.subprocess, "run", side_effect=failure) as run, \
+                    redirect_stderr(io.StringIO()) as stderr:
+                with self.assertRaises(subprocess.CalledProcessError):
+                    check_module.check_format()
+            run.assert_called_once()
+            self.assertIn("clang-formatted", stderr.getvalue())
 
 
 if __name__ == "__main__":
