@@ -416,21 +416,21 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                 distance = NuVecDistSqr(draw_position, &object->collision_position, &delta);
                 if (delta.x * facing_x + delta.z * facing_z < 0.0f)
                     continue;
-                record = &PossibleForceTargetsPc[count++];
-                record->force = force;
-                record->animation = animation;
-                record->distance = distance;
-                record->index = animation - system->anim_pool->objects;
+                PossibleForceTargetsPc[count].force = force;
+                PossibleForceTargetsPc[count].animation = animation;
+                PossibleForceTargetsPc[count].distance = distance;
+                PossibleForceTargetsPc[count].index = animation - system->anim_pool->objects;
+                ++count;
             }
         } else {
             if (delta.x * facing_x + delta.z * facing_z < 0.0f)
                 continue;
-            record = &PossibleForceTargetsPc[count++];
-            record->force = force;
-            record->animation = NULL;
-            record->distance = distance;
-            record->index =
+            PossibleForceTargetsPc[count].force = force;
+            PossibleForceTargetsPc[count].animation = NULL;
+            PossibleForceTargetsPc[count].distance = distance;
+            PossibleForceTargetsPc[count].index =
                 fields->anim_set->objects != NULL ? fields->anim_set->objects - system->anim_pool->objects : -1;
+            ++count;
         }
     }
     los = (GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info;
