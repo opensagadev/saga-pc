@@ -10735,8 +10735,9 @@ void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, 
     (void)normal;
     i32 width = PCGraphicsEffectTextureWidth(color);
     i32 height = PCGraphicsEffectTextureHeight(color);
-    if (!dof_enabled && !bloom_enabled)
+    if (!dof_enabled && !bloom_enabled) {
         return;
+    }
     i32 levels;
     if (dof_enabled) {
         i32 smaller = width < height ? width : height;
@@ -10759,12 +10760,14 @@ void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, 
         PostFilterCopyTexturePc(downsample_texture, 0, color, downsample_lod, (POST_SHADER_PROGRAM_PC *)programs[17],
                                 NULL);
         i32 passes = (i32)bloom->blur_iterations;
-        if (passes >= 1)
+        if (passes >= 1) {
             PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, passes, 1, true, 1.0f,
                                   PostBlur5x5ProgramPc);
-        if (bloom->blur_iterations - passes > 0.0f)
+        }
+        if (bloom->blur_iterations - passes > 0.0f) {
             PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, 1, 1, true,
                                   bloom->blur_iterations - passes, PostBlur5x5ProgramPc);
+        }
     }
 }
 

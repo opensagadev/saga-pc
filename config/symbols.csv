@@ -38820,7 +38820,7 @@ address,symbol,size,ctype
 0x0080bbe0,_g_OcclusionManager,368,OcclusionManager; same canonical C-visible OCCLUSIONMANAGER layout
 0x80be74,??_R0?AVNuPostFilterGen@@@8,30,native exactVT binding; unimplemented extent unclaimed
 0x80be94,??_R0?AVNuPostFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
-0x80beb0,?scaleBias@?M@??preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z@4PAMA,16,f32[4]
+0x80beb0,?scaleBias@?N@??preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z@4PAMA,16,f32[4]
 0x80bec0,_NuMainFilterDofBlurScalePc,4,f32
 0x80bec4,??_R0?AVNuMotionFilterGen@@@8,32,native exactVT binding; unimplemented extent unclaimed
 0x80bee4,??_R0?AVNuMotionFilter@@@8,29,native exactVT binding; unimplemented extent unclaimed
