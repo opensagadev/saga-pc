@@ -2887,10 +2887,9 @@ static void HubDrawSelectModePc(void) {
         if (!(alpha > 0.0f))
             return;
     }
-    AREA_DATA_PC *area = &ADataList[HubDoorAreaPc];
-    if ((area->flags & 0x100) != 0)
-        HubDrawSuperBonusStatsPc(area, alpha);
-    else if ((area->flags & 4) != 0)
+    if ((ADataList[HubDoorAreaPc].flags & 0x100) != 0)
+        HubDrawSuperBonusStatsPc(&ADataList[HubDoorAreaPc], alpha);
+    else if ((ADataList[HubDoorAreaPc].flags & 4) != 0)
         HubDrawBonusStatsPc(alpha, -1, hub_bonusepisode, -1);
     else
         HubDrawAreaStatsPc(alpha, HubDoorAreaPc, hub_selectmode);
