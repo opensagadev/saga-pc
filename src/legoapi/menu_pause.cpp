@@ -72,11 +72,10 @@ extern "C" void __cdecl PauseGame(i32 pad) {
     pause_i_pad = pad;
     TextInputSetLastDevicePc(pad);
     for (i32 i = 0; i < 8; ++i) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
-        if (object) {
-            object->hud_icon_timer = 0.0f;
-            object->input_toggle_hold_time = TOGGLEHOLDTIME;
-            object->pause_context_state = 0.0f;
+        if (Player[i]) {
+            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
+            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
+            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
         }
     }
     if (PauseGame_ExtraCodeFn)
