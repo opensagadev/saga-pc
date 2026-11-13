@@ -484,10 +484,9 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     PC_STEREO_PLAY_PACKET packet;
     if (NuSound3Initialized == 0)
         return 0;
-    packet.reserved = -1;
     packet.stream_index = 0;
-    packet.first_sample = -1;
-    packet.last_sample = -1;
+    packet.reserved = -1;
+    packet.first_sample = packet.last_sample = -1;
     packet.volume_left = 0x3fff;
     packet.volume_right = 0x3fff;
     packet.option9_mode = -1;
