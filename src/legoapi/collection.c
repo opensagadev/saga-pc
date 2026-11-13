@@ -342,6 +342,7 @@ void __cdecl CollectionConfigDiagnosticPc(char *file, ...) {
 void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser = NuFParCreate(file);
     COLLECTION_CONFIG_ENTRY_PC *entry;
+    i32 area;
     (void)end;
     if (parser == NULL) {
         CollectionConfigDiagnosticPc(file);
@@ -378,7 +379,6 @@ void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
             if (NuStrICmp(parser->word_buffer_ptr, "story") == 0) {
                 entry->type = 1;
             } else if (NuStrICmp(parser->word_buffer_ptr, "area_complete") == 0) {
-                i32 area;
                 if (NuFParGetWord(parser) != 0 && Area_FindByName(parser->word_buffer_ptr, &area) != NULL) {
                     entry->type = 2;
                     entry->area_index = (u8)area;
