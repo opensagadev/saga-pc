@@ -4531,9 +4531,7 @@ void ClassEditor::SnapPoint(VuVec &) {
 /* Number keys 1-0 toggle the first ten classes' visibility (with the modifier
  * held, show only that class); the invert key inverts or resets the filter. */
 void ClassEditor::UpdateClassFilter(EdInputContext &input) {
-    i32 count = theRegistry.class_count;
-    if (count > 10)
-        count = 10;
+    i32 count = theRegistry.class_count < 10 ? theRegistry.class_count : 10;
     for (i32 index = 0; index < count; index++) {
         if (input.GetPress(index + 26) != 0.0f) {
             if (input.GetHold(22) != 0.0f)
