@@ -159,10 +159,8 @@ struct PC_NATIVE_DEBUG_POSITION_PC {
         position.y = (py);                                                                                             \
         position.z = 0.5f;                                                                                             \
         position.w = 1.0f;                                                                                             \
-        *(PC_NATIVE_DEBUG_POSITION_PC *)&vertices[index].x = position;                                                 \
+        *(PC_NATIVE_DEBUG_POSITION_PC *)&vertex[index].x = position;                                                   \
     } while (0)
-// Retail rereads each edge for every vertex.
-#define DEBUG_EDGE_PC(edge) (*(volatile f32 *)&(edge))
 #define DEBUG_RECT_PC(start, l, t, r, b)                                                                               \
     DEBUG_POINT_PC(start, l, t);                                                                                       \
     DEBUG_POINT_PC(start + 1, r, t);                                                                                   \
@@ -173,34 +171,28 @@ struct PC_NATIVE_DEBUG_POSITION_PC {
 
 void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
     PC_NATIVE_DEBUG_POSITION_PC position;
-    DEBUG_RECT_PC(0, DEBUG_EDGE_PC(left) + 1, DEBUG_EDGE_PC(top) + 1, DEBUG_EDGE_PC(right), DEBUG_EDGE_PC(bottom));
-    DEBUG_RECT_PC(6, DEBUG_EDGE_PC(left), DEBUG_EDGE_PC(top), DEBUG_EDGE_PC(right) - 1, DEBUG_EDGE_PC(bottom) - 1);
-    DEBUG_RECT_PC(12, DEBUG_EDGE_PC(left) + 1, DEBUG_EDGE_PC(top) + 1, DEBUG_EDGE_PC(right) - 1,
-                  DEBUG_EDGE_PC(bottom) - 1);
+    PC_NATIVE_DEBUG_VERTEX_PC *vertex = vertices;
+    DEBUG_RECT_PC(0, left + 1, top + 1, right, bottom);
+    DEBUG_RECT_PC(6, left, top, right - 1, bottom - 1);
+    DEBUG_RECT_PC(12, left + 1, top + 1, right - 1, bottom - 1);
     for (i32 i = 0; i < 6; i++)
         vertices[i].colour = current_header->low_colour;
     for (i32 i = 6; i < 12; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 12; i < 18; i++)
         vertices[i].colour = current_header->face_colour;
-    DEBUG_RECT_PC(18, DEBUG_EDGE_PC(left) + 5, DEBUG_EDGE_PC(top) + 15, (DEBUG_EDGE_PC(right) - 5) - 1,
-                  (DEBUG_EDGE_PC(bottom) - 40) - 1);
-    DEBUG_RECT_PC(24, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(top) + 15) + 1, DEBUG_EDGE_PC(right) - 5,
-                  DEBUG_EDGE_PC(bottom) - 40);
-    DEBUG_RECT_PC(30, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(top) + 15) + 1, (DEBUG_EDGE_PC(right) - 5) - 1,
-                  (DEBUG_EDGE_PC(bottom) - 40) - 1);
+    DEBUG_RECT_PC(18, left + 5, top + 15, (right - 5) - 1, (bottom - 40) - 1);
+    DEBUG_RECT_PC(24, (left + 5) + 1, (top + 15) + 1, right - 5, bottom - 40);
+    DEBUG_RECT_PC(30, (left + 5) + 1, (top + 15) + 1, (right - 5) - 1, (bottom - 40) - 1);
     for (i32 i = 18; i < 24; i++)
         vertices[i].colour = current_header->low_colour;
     for (i32 i = 24; i < 30; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 30; i < 36; i++)
         vertices[i].colour = current_header->inner_colour;
-    DEBUG_RECT_PC(36, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(bottom) - 35) + 1, DEBUG_EDGE_PC(right) - 5,
-                  DEBUG_EDGE_PC(bottom) - 5);
-    DEBUG_RECT_PC(42, DEBUG_EDGE_PC(left) + 5, DEBUG_EDGE_PC(bottom) - 35, (DEBUG_EDGE_PC(right) - 5) - 1,
-                  (DEBUG_EDGE_PC(bottom) - 5) - 1);
-    DEBUG_RECT_PC(48, (DEBUG_EDGE_PC(left) + 5) + 1, (DEBUG_EDGE_PC(bottom) - 35) + 1, (DEBUG_EDGE_PC(right) - 5) - 1,
-                  (DEBUG_EDGE_PC(bottom) - 5) - 1);
+    DEBUG_RECT_PC(36, (left + 5) + 1, (bottom - 35) + 1, right - 5, bottom - 5);
+    DEBUG_RECT_PC(42, left + 5, bottom - 35, (right - 5) - 1, (bottom - 5) - 1);
+    DEBUG_RECT_PC(48, (left + 5) + 1, (bottom - 35) + 1, (right - 5) - 1, (bottom - 5) - 1);
     for (i32 i = 36; i < 42; i++)
         vertices[i].colour = current_header->high_colour;
     for (i32 i = 42; i < 48; i++)
@@ -210,7 +202,6 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
 }
 #undef DEBUG_RECT_PC
 #undef DEBUG_POINT_PC
-#undef DEBUG_EDGE_PC
 void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     unknown_0 = 1;
     left = top = 100.0f;
