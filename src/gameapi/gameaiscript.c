@@ -9095,7 +9095,8 @@ i32 __cdecl Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
         }
     }
 
-    if (position_ptr == NULL && (position.x != 1.0e9f || position.y != 1.0e9f || position.z != 1.0e9f)) {
+    if (position_ptr == NULL && position.x != 1000000000.0 && position.y != 1000000000.0 &&
+        position.z != 1000000000.0) {
         position_ptr = &position;
     }
     if (name != NULL) {
