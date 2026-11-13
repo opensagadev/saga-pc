@@ -10895,7 +10895,7 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         char *character_name = GlobalCharacterNameFn(creature->character_type);
         AIPATH_PC *path;
-        i32 index, connection_index = 0, direction = 0;
+        i32 index, connection_index, direction;
         f64 saved;
         if (creature->check.path == NULL || character_name == NULL)
             continue;
@@ -10919,11 +10919,13 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
         EdFileWriteInt(creature->flags);
         EdFileWriteChar((u8)creature->check.path->draw_index);
         path = system->paths[creature->check.path->draw_index];
+        connection_index = 0;
+        direction = 0;
         for (index = 0; index < path->connection_count; index++) {
             AIPATHCNX_PC *connection = &path->connections[index];
             i32 first_index = creature->check.first->index;
             if (connection->node_indices[0] == first_index &&
-                (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
+                (u16)connection->node_indices[1] == creature->check.second->index) {
                 connection_index = index;
                 direction = abs(creature->check.angle) >= 0x4000;
                 break;
@@ -10963,15 +10965,18 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
         }
         if (aidata_version > 7) {
             EdFileWriteChar(creature->difficulty);
-            EdFileWriteChar(creature->min_respawns);
-            EdFileWriteChar(creature->max_respawns);
+            EdFileWriteChar((u8)creature->min_respawns);
+            EdFileWriteChar((u8)creature->max_respawns);
             EdFileWriteChar(creature->activation);
             EdFileWriteFloat(creature->min_respawn_time);
             EdFileWriteFloat(creature->max_respawn_time);
             if (aidata_version > 9)
                 EdFileWriteFloat(creature->stagger_start);
-            if (creature->activation == 1)
-                EdFileWrite((u8 *)creature->activation_area + 8, 16);
+            switch (creature->activation) {
+                case 1:
+                    EdFileWrite((u8 *)creature->activation_area + 8, 16);
+                    break;
+            }
         }
         if (aidata_version > 10) {
             if (GetViewRangeFn != NULL &&
