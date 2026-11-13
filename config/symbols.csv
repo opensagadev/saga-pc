@@ -10392,6 +10392,8 @@ address,symbol,size,ctype
 0x6b82d0,?VuMtxRotateZ@@YAXAAUVuMtx@@H@Z,215,
 0x6b8470,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,91,
 0x6b8510,_EdDrawSetVertexColour,108,
+0x6b8610,?Set@MemoryBuffer@@QAEXPATvariptr_u@@0@Z,30,
+0x6b8630,?Allocate@MemoryBuffer@@QAEPAXIIH@Z,82,
 0x6b8690,??0EdString@@QAE@XZ,9,
 0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
 0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
