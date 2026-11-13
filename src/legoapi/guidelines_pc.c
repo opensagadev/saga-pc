@@ -45,16 +45,17 @@ void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
 
 i32 __cdecl GuideLines_Load(WORLDINFO *world, void *unused) {
     i32 index;
-    if (world->guideline_count != 0)
-        return 0;
-    EdFileReadInt();
-    world->guideline_count = EdFileReadInt();
-    for (index = 0; index < world->guideline_count; ++index) {
-        EdFileRead(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name, 8);
-        EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].start_position);
-        EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].end_position);
+    if (world->guideline_count == 0) {
+        EdFileReadInt();
+        world->guideline_count = EdFileReadInt();
+        for (index = 0; index < world->guideline_count; ++index) {
+            EdFileRead(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name, 8);
+            EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].start_position);
+            EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].end_position);
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
