@@ -8219,10 +8219,7 @@ void *EdClass::FindObject(char *object_name) {
     for (void *object = object_interface->GetNextObject(NULL); object != NULL;
          object = object_interface->GetNextObject(object)) {
         char name[256];
-        EdMember member;
-        if (FindMember(&member, object, 2, 1) &&
-            member.reference->GetAttributeData(member.object, 2, EdType_String, name, sizeof(name)) &&
-            NuStrICmp(object_name, name) == 0)
+        if (GetAttributeData(object, 2, EdType_String, name, sizeof(name)) && NuStrICmp(object_name, name) == 0)
             return object;
     }
     return NULL;
