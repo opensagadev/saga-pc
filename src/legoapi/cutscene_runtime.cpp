@@ -895,7 +895,8 @@ extern "C" {
 
         initial = buf->void_ptr;
         sys = (CUT_LOAD_SYS_PC *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
-        sys->character_bits = reinterpret_cast<u32 *>((reinterpret_cast<u32>(sys) + 15) & ~3U);
+        buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
+        sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
         CS_area = param2;
         CS_worldinfo = world;
         CS_cutsys = sys;
@@ -907,9 +908,9 @@ extern "C" {
                 continue;
             }
 
-            cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
-            entries[sys->count] = cut;
+            entries[sys->count] = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
             buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
+            cut = entries[sys->count];
             NuStrLwr(name, fp->word_buffer_ptr);
             i32 len = NuStrLen(name);
             while (len > 0 && name[len - 1] != '.') {
