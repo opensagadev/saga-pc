@@ -152,11 +152,10 @@ extern "C" {
             return;
         for (i32 i = 0; i < apicharsys->loaded_model_count; ++i) {
             const i32 model_id = apicharsys->models[i].model_id;
-            KILLPARTS_CHARSCENE_PC *entry = &KillPartsCharSceneAreaPc[model_id];
-            if (entry->scene == NULL && (CDataList[model_id].flags & 1) != 0) {
-                i32 index;
-                if (InModelList(list, model_id, &index) != 0 && list[index].count != 0)
-                    CharacterSceneLoadPrivatePc(entry, model_id, buffer, end);
+            if (KillPartsCharSceneAreaPc[model_id].scene == NULL && (CDataList[model_id].flags & 1) != 0) {
+                /* Retail reuses the loop counter as InModelList's output index. */
+                if (InModelList(list, model_id, &i) != 0 && list[i].count != 0)
+                    CharacterSceneLoadPrivatePc(&KillPartsCharSceneAreaPc[model_id], model_id, buffer, end);
             }
         }
     }
