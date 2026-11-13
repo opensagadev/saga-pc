@@ -545,23 +545,23 @@ extern "C" void __cdecl UpdateCharacterLoad(void) {
     i32 count = 0;
     if (VehicleBoltId7f17d4Pc != -1 && APICharacterLoaded(VehicleBoltId7f17d4Pc) != NULL &&
         PunchRangeCompanionIdPc != -1 && APICharacterLoaded(PunchRangeCompanionIdPc) == NULL) {
-        candidates[0] = PunchRangeCompanionIdPc;
+        candidates[count++] = PunchRangeCompanionIdPc;
     } else if (id_BARMAN != -1 && APICharacterLoaded(id_BARMAN) == NULL) {
-        candidates[0] = id_BARMAN;
+        candidates[count++] = id_BARMAN;
     } else if (id_CANTINABAND != -1 && APICharacterLoaded(id_CANTINABAND) == NULL) {
-        candidates[0] = id_CANTINABAND;
+        candidates[count++] = id_CANTINABAND;
     } else if (PermanentWeirdo1IdPc != -1 && APICharacterLoaded(PermanentWeirdo1IdPc) == NULL) {
-        candidates[0] = PermanentWeirdo1IdPc;
+        candidates[count++] = PermanentWeirdo1IdPc;
     } else if (PermanentWeirdo2IdPc != -1 && APICharacterLoaded(PermanentWeirdo2IdPc) == NULL) {
-        candidates[0] = PermanentWeirdo2IdPc;
+        candidates[count++] = PermanentWeirdo2IdPc;
     } else if (DefaultAnimationJabbaIdPc != -1 && APICharacterLoaded(DefaultAnimationJabbaIdPc) == NULL) {
-        candidates[0] = DefaultAnimationJabbaIdPc;
+        candidates[count++] = DefaultAnimationJabbaIdPc;
     } else if (id_MOSEISLEYCITIZEN != -1 && APICharacterLoaded(id_MOSEISLEYCITIZEN) == NULL) {
-        candidates[0] = id_MOSEISLEYCITIZEN;
+        candidates[count++] = id_MOSEISLEYCITIZEN;
     } else if (id_CANTINAALIEN != -1 && APICharacterLoaded(id_CANTINAALIEN) == NULL) {
-        candidates[0] = id_CANTINAALIEN;
+        candidates[count++] = id_CANTINAALIEN;
     } else if (CharacterFixupIdPc007f18c4 != -1 && APICharacterLoaded(CharacterFixupIdPc007f18c4) == NULL) {
-        candidates[0] = CharacterFixupIdPc007f18c4;
+        candidates[count++] = CharacterFixupIdPc007f18c4;
     } else {
         for (i32 id = 0; id < CHARCOUNT; ++id) {
             if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL)
@@ -573,15 +573,13 @@ extern "C" void __cdecl UpdateCharacterLoad(void) {
                 continue;
             candidates[count++] = id;
         }
-        if (count <= 0)
-            return;
-        if (count > 1) {
-            candidate = qrand() / ((0xffff / count) + 1);
-            goto queue;
-        }
     }
-    candidate = 0;
-queue:
+    if (count <= 0)
+        return;
+    if (count > 1)
+        candidate = qrand() / ((0xffff / count) + 1);
+    else
+        candidate = 0;
     waiting_for_character = candidates[candidate];
     WaitingForCharacterTime = 0.0f;
     bgPostRequest(LoadSingleCharacter, NULL, NULL, 0);
