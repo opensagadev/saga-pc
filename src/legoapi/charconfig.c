@@ -1749,22 +1749,27 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     CHARACTER_EFFECT_CONFIG_PC effects[33];
     PLAYERCHARACTERCONFIG_PC *data;
     NUFPAR_PC *parser;
+    char *buffer;
+    i32 length;
     i32 size;
     i32 i;
     i32 bit;
     i32 layer;
-    if (text == NULL) {
+    if (text != NULL) {
+        buffer = text;
+        length = text_length;
+    } else {
         if (directory == NULL)
             goto done;
         NuStrCpy(path, directory);
         NuStrCat(path, filename);
-        text = MiniBuffer;
-        text_length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
-        if (text_length <= 0)
+        buffer = MiniBuffer;
+        size = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+        if (size <= 0)
             goto done;
-        MiniBuffer[text_length] = 0;
-        text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
-        if (text_length <= 0)
+        MiniBuffer[size] = 0;
+        length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+        if (length <= 0)
             goto done;
         if (redirect != 0) {
             redirected = RedirectTextFile(MiniBuffer, redirected_name, sizeof(redirected_name));
@@ -1772,16 +1777,16 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
                 NuStrCpy(path, directory);
                 NuStrCat(path, redirected_name);
                 NuStrCat(path, ".txt");
-                text_length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
-                if (text_length > 0) {
-                    MiniBuffer[text_length] = 0;
-                    text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+                length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+                if (length > 0) {
+                    MiniBuffer[length] = 0;
+                    length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
                 } else
                     redirected = 0;
             }
         }
     }
-    if (text_length <= 0)
+    if (length <= 0)
         goto done;
 
     memset(&charconfig, 0, sizeof(charconfig));
@@ -1807,7 +1812,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         charconfig.character->animations = (CHARACTERANIM_CONFIG_PC *)charconfig.arena->void_ptr;
         charconfig.flags |= 0x20;
     }
-    parser = NuFParCreateMem("character", text, 0xffff);
+    parser = NuFParCreateMem("character", buffer, 0xffff);
     if (parser != NULL) {
         NuFParPushCom2(parser, ConfigChar_Keywords, game_keywords);
         while (NuFParGetLine(parser) != 0) {
@@ -1849,7 +1854,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         }
     }
     if ((charconfig.flags & 2) != 0) {
-        if (charconfig.runtime->layer_count == 0) {
+        if (charconfig.runtime->layer_count <= 0) {
             charconfig.runtime->layers = NULL;
             charconfig.runtime->layer_count = 0;
         } else {
