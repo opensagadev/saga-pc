@@ -357,13 +357,11 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
     i32 angle;
     f32 distance, radius, random, computed_scale, limited, height_offset;
     NUVEC offset, scale, position;
-    const i32 page_index = page;
     i32 clump_index;
     i32 element;
-    if (!edgra_page_used[page_index] || !edgra_page_scene[page_index] || !edgra_page_matrix_stack[page_index] ||
-        edgra_page_on[page_index])
+    if (!edgra_page_used[page] || !edgra_page_scene[page] || !edgra_page_matrix_stack[page] || edgra_page_on[page])
         return;
-    matrix = edgra_page_matrix_stack[page_index];
+    matrix = edgra_page_matrix_stack[page];
     for (clump_index = 0; clump_index < EDGRA_MAX_CLUMPS; ++clump_index) {
         if (GrassClumps[clump_index].element_count == 0 || (i8)GrassClumps[clump_index].page != page)
             continue;
