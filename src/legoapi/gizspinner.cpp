@@ -108,9 +108,8 @@ extern "C" {
 }
 extern const f32 LevelConfigFarDistance;
 
-extern "C" __declspec(noinline) void __cdecl SpinnerMissingSpecialPc(char *name, char *special_name) {
-    (void)name;
-    (void)special_name;
+extern "C" void __cdecl SpinnerMissingSpecialPc(char *format, ...) {
+    (void)format;
 }
 
 static __declspec(noinline) void SpinnerMatrixSetRotationYPc(NUMTX *matrix, i32 angle) {
@@ -202,144 +201,139 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
     f32 longest_duration = 0.0f;
     f32 animation_speed, initial_animation_point, spinner_field_98;
     f32 start_frame, end_frame, frame_duration, rounded_point;
-    f64 interval;
     (void)unused;
-    if (world->spinners == NULL)
-        return 0;
-    NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, (char *)LevelObjectNamePc00754378, 0);
-    NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneArm, (char *)LevelObjectNamePc00754364, 0);
-    if (world->spinner_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->spinner_count = EdFileReadInt();
-    for (index = 0; index < world->spinner_count; ++index) {
-        animation_speed = 1.0f;
-        spinner_state_flags = 0;
-        spinner_flags = 0;
-        special_missing = 0;
-        spinner_type = 4;
-        anim_set = world->spinners[index].anim_set;
-        memset(&world->spinners[index], 0, sizeof(GIZSPINNER_s));
-        world->spinners[index].anim_set = anim_set;
-        name_length = (i8)EdFileReadChar();
-        EdFileRead(world->spinners[index].name, name_length);
-        EdFileReadNuVec(&world->spinners[index].position);
-        world->spinners[index].initial_rotation = EdFileReadShort();
-        name_length = (i8)EdFileReadChar();
-        EdFileRead(special_name, name_length);
-        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
-        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
-            NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
-            if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0)
-                special_missing = 1;
-        }
-        world->spinners[index].special = special;
-        output_points = (i8)EdFileReadChar();
-        if (version >= 2) {
-            spinner_type = (i8)EdFileReadChar();
-            if (version >= 3) {
-                spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
-                world->spinners[index].field_0x2d8 = EdFileReadFloat();
-                if (version >= 4) {
-                    animation_speed = EdFileReadFloat();
-                    if (version >= 6)
-                        spinner_flags = (i8)EdFileReadChar();
-                }
-            }
-        }
-        GameAnimSet_RemoveAllObjects(world->spinners[index].anim_set);
-        if (version >= 5) {
-            GizmoFileReadGameAnimSet(world->spinners[index].anim_set, world, NULL, (u8)version,
-                                     (char *)GizmoRegistrySpinnerNamePc, world->spinners[index].name);
-            for (object = world->spinners[index].anim_set->objects; object != NULL; object = object->next) {
-                if (world->spinners[index].primary_anim_obj == NULL) {
-                    if (object->animation != NULL) {
-                        world->spinners[index].primary_anim_obj = object;
-                        longest_duration = SpinnerFabsPc(object->end_frame - object->start_frame);
-                    }
-                } else if (object->animation != NULL) {
-                    f32 duration = SpinnerFabsPc(object->end_frame - object->start_frame);
-                    if (duration > longest_duration) {
-                        longest_duration = duration;
-                        world->spinners[index].primary_anim_obj = object;
-                    }
-                }
-            }
-        } else {
-            object_count = (i8)EdFileReadChar();
-            for (object_index = 0; object_index < object_count; ++object_index) {
-                start_frame = 1.0f;
-                end_frame = AIPositionUnsetPc;
+    if (world->spinners != NULL) {
+        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, (char *)LevelObjectNamePc00754378, 0);
+        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneArm, (char *)LevelObjectNamePc00754364, 0);
+        if (world->spinner_count == 0) {
+            version = EdFileReadInt();
+            world->spinner_count = EdFileReadInt();
+            for (index = 0; index < world->spinner_count; ++index) {
+                animation_speed = 1.0f;
+                special_missing = 0;
+                spinner_state_flags = 0;
+                spinner_flags = 0;
+                spinner_type = 4;
+                anim_set = world->spinners[index].anim_set;
+                memset(&world->spinners[index], 0, sizeof(GIZSPINNER_s));
+                world->spinners[index].anim_set = anim_set;
+                name_length = (i8)EdFileReadChar();
+                EdFileRead(world->spinners[index].name, name_length);
+                EdFileReadNuVec(&world->spinners[index].position);
+                world->spinners[index].initial_rotation = EdFileReadShort();
                 name_length = (i8)EdFileReadChar();
                 EdFileRead(special_name, name_length);
                 NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
                 if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
                     NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
-                    NuSpecialExistsFn((NUSPECIALHANDLE *)&special);
+                    if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0)
+                        special_missing = 1;
                 }
-                if (version >= 3) {
-                    start_frame = EdFileReadFloat();
-                    end_frame = EdFileReadFloat();
-                }
-                object = GameAnimSet_AddObject(world->spinners[index].anim_set, (NUSPECIALHANDLE *)&special,
-                                               start_frame, end_frame, 0);
-                if (world->spinners[index].primary_anim_obj == NULL) {
-                    if (object != NULL && object->animation != NULL) {
-                        world->spinners[index].primary_anim_obj = object;
-                        longest_duration = SpinnerFabsPc(object->end_frame - object->start_frame);
-                    }
-                } else if (object != NULL && object->animation != NULL) {
-                    f32 duration = SpinnerFabsPc(object->end_frame - object->start_frame);
-                    if (duration > longest_duration) {
-                        longest_duration = duration;
-                        world->spinners[index].primary_anim_obj = object;
+                world->spinners[index].special = special;
+                output_points = (i8)EdFileReadChar();
+                if (version >= 2) {
+                    spinner_type = (i8)EdFileReadChar();
+                    if (version >= 3) {
+                        spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
+                        world->spinners[index].field_0x2d8 = EdFileReadFloat();
+                        if (version >= 4) {
+                            animation_speed = EdFileReadFloat();
+                            if (version >= 6)
+                                spinner_flags = (i8)EdFileReadChar();
+                        }
                     }
                 }
-            }
-        }
-        if (version >= 7) {
-            for (point = 1; point <= output_points; ++point) {
-                f32 value = EdFileReadFloat();
-                world->spinners[index].animation_points[point] = value;
-            }
-            for (point = output_points + 1; point < 9; ++point)
-                world->spinners[index].animation_points[point] = -1.0f;
-        } else if (world->spinners[index].anim_set != NULL && world->spinners[index].primary_anim_obj != NULL) {
-            object = world->spinners[index].primary_anim_obj;
-            frame_duration = object->end_frame - object->start_frame;
-            if (output_points > 0) {
-                interval = (f64)frame_duration / (output_points - 1);
-                for (point = 0; point < output_points; ++point) {
-                    i32 frame_offset = (i32)((f64)point * interval);
-                    rounded_point = (f32)((f64)frame_offset + object->start_frame);
-                    world->spinners[index].animation_points[point + 1] = rounded_point;
+                GameAnimSet_RemoveAllObjects(world->spinners[index].anim_set);
+                if (version >= 5) {
+                    GizmoFileReadGameAnimSet(world->spinners[index].anim_set, world, NULL, (u8)version,
+                                             (char *)GizmoRegistrySpinnerNamePc, world->spinners[index].name);
+                    for (object = world->spinners[index].anim_set->objects; object != NULL; object = object->next) {
+                        if (world->spinners[index].primary_anim_obj == NULL) {
+                            if (object != NULL && object->animation != NULL) {
+                                world->spinners[index].primary_anim_obj = object;
+                                longest_duration = SpinnerFabsPc(object->end_frame - object->start_frame);
+                            }
+                        } else if (object != NULL && object->animation != NULL) {
+                            f32 duration = SpinnerFabsPc(object->end_frame - object->start_frame);
+                            if (duration > longest_duration) {
+                                longest_duration = duration;
+                                world->spinners[index].primary_anim_obj = object;
+                            }
+                        }
+                    }
+                } else {
+                    object_count = (i8)EdFileReadChar();
+                    for (object_index = 0; object_index < object_count; ++object_index) {
+                        start_frame = 1.0f;
+                        end_frame = AIPositionUnsetPc;
+                        name_length = (i8)EdFileReadChar();
+                        EdFileRead(special_name, name_length);
+                        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
+                        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
+                            NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
+                            NuSpecialExistsFn((NUSPECIALHANDLE *)&special);
+                        }
+                        if (version >= 3) {
+                            start_frame = EdFileReadFloat();
+                            end_frame = EdFileReadFloat();
+                        }
+                        object = GameAnimSet_AddObject(world->spinners[index].anim_set, (NUSPECIALHANDLE *)&special,
+                                                       start_frame, end_frame, 0);
+                        if (world->spinners[index].primary_anim_obj == NULL) {
+                            if (object != NULL && object->animation != NULL) {
+                                world->spinners[index].primary_anim_obj = object;
+                                longest_duration = SpinnerFabsPc(object->end_frame - object->start_frame);
+                            }
+                        } else if (object != NULL && object->animation != NULL) {
+                            f32 duration = SpinnerFabsPc(object->end_frame - object->start_frame);
+                            if (duration > longest_duration) {
+                                longest_duration = duration;
+                                world->spinners[index].primary_anim_obj = object;
+                            }
+                        }
+                    }
                 }
+                if (version >= 7) {
+                    for (point = 0; point < output_points; ++point)
+                        world->spinners[index].animation_points[point + 1] = EdFileReadFloat();
+                    for (point = output_points; point < 8; ++point)
+                        world->spinners[index].animation_points[point + 1] = -1.0f;
+                } else if (world->spinners[index].anim_set != NULL && world->spinners[index].primary_anim_obj != NULL) {
+                    object = world->spinners[index].primary_anim_obj;
+                    start_frame = object->start_frame;
+                    frame_duration = object->end_frame - start_frame;
+                    for (point = 0; point < output_points; ++point) {
+                        rounded_point = (i32)(point * (frame_duration / (output_points - 1))) + object->start_frame;
+                        world->spinners[index].animation_points[point + 1] = rounded_point;
+                    }
+                    for (point = output_points; point < 8; ++point)
+                        world->spinners[index].animation_points[point + 1] = -1.0f;
+                }
+                spinner_field_98 = version >= 8 ? EdFileReadFloat() : 0.0f;
+                initial_animation_point = version >= 9 ? EdFileReadFloat() : animation_speed;
+                if (special_missing) {
+                    world->spinners[index].flags &= ~1u;
+                    SpinnerMissingSpecialPc(world->spinners[index].name, special_name);
+                    --world->spinner_count;
+                    --index;
+                    continue;
+                }
+                spinner = &world->spinners[index];
+                SpinnerBoundsResetPc(spinner);
+                world->spinners[index].type = (u8)spinner_type;
+                world->spinners[index].animation_speed = animation_speed;
+                world->spinners[index].animation_points[0] = initial_animation_point;
+                world->spinners[index].output_count = (u8)output_points;
+                world->spinners[index].state_flags = spinner_state_flags;
+                world->spinners[index].flags = spinner_flags;
+                world->spinners[index].field_0x098 = spinner_field_98;
+                world->spinners[index].flags |= 1;
+                world->spinners[index].flags &= 0xddu;
             }
-            for (point = output_points + 1; point < 9; ++point)
-                world->spinners[index].animation_points[point] = -1.0f;
+            return 1;
         }
-        spinner_field_98 = version >= 8 ? EdFileReadFloat() : 0.0f;
-        initial_animation_point = version >= 9 ? EdFileReadFloat() : animation_speed;
-        if (special_missing) {
-            world->spinners[index].flags &= ~1u;
-            SpinnerMissingSpecialPc(world->spinners[index].name, special_name);
-            --world->spinner_count;
-            --index;
-            continue;
-        }
-        spinner = &world->spinners[index];
-        SpinnerBoundsResetPc(spinner);
-        world->spinners[index].type = (u8)spinner_type;
-        world->spinners[index].animation_speed = animation_speed;
-        world->spinners[index].animation_points[0] = initial_animation_point;
-        world->spinners[index].output_count = (u8)output_points;
-        world->spinners[index].state_flags = spinner_state_flags;
-        world->spinners[index].flags = spinner_flags;
-        world->spinners[index].field_0x098 = spinner_field_98;
-        world->spinners[index].flags |= 1;
-        world->spinners[index].flags &= 0xddu;
     }
-    return 1;
+    return 0;
 }
 
 extern "C" void *__cdecl GizSpinner_ReserveBufferSpace(void *pointer) {
