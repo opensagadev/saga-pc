@@ -11784,14 +11784,14 @@ void creatureEditor_RenderAllCreatures(void) {
 
 void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     char set_name[16];
-    NUVEC displacement;
     EDAICREATURE_s *display, *creature;
     i32 text_x;
+    i32 count;
     if (GlobalCharacterRenderFn == NULL)
         return;
+    count = NuLinkedListCheck(&aieditor->creatures);
     text_x = (x + 10) * 16;
-    NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Creature Editor  (%d placed)",
-                  NuLinkedListCheck(&aieditor->creatures));
+    NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Creature Editor  (%d placed)", count);
     NuQFntSetColour(system_qfont, 0x80000000);
     NuQFntSetScale(system_qfont, xscale, yscale);
     if (aieditor->selected_creature != NULL)
@@ -11801,6 +11801,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     else
         display = NULL;
     if (display != NULL) {
+        NUVEC displacement;
         f32 distance = NuVecXZDist(&display->position, &aieditor->camera_position, &displacement);
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, "\"%s\", xzrng=%.2f", display->name, distance);
         if (display->set)
