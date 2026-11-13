@@ -4,6 +4,7 @@
 /* Retail unit 0x572360-0x572aba: definitions in retail address order. */
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
+
 typedef struct world_conveyor_pc_s {
     u8 unknown_00[0x128];
     LEVELDATA_PC *current_level;
@@ -26,10 +27,11 @@ void __cdecl Surfaces_Reset(void) {
     SURFACEBITS_NODUST = 0;
     for (i = 0; i < 32; ++i) {
         u16 surface_bit = (u16)(1 << i);
-        if (TerSurface[i].flags & 4)
+        if (TerSurface[i].flags & 4) {
             SURFACEBITS_DUST |= surface_bit;
-        else
+        } else {
             SURFACEBITS_NODUST |= surface_bit;
+        }
     }
 }
 
@@ -44,14 +46,16 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
     if (floor_height != GameObjectNearFloorNoFloorHeight) {
         raw_surface = ShadowInfo();
         surface_index = raw_surface;
-        if (surface_index < 0 || surface_index >= 32)
+        if (surface_index < 0 || surface_index >= 32) {
             surface_index = 0;
+        }
         object->reflection_enabled = 2;
         if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 &&
-            (TerSurface[surface_index].flags & 2u) != 0)
+            (TerSurface[surface_index].flags & 2u) != 0) {
             object->reflection_height = floor_height;
-        else
+        } else {
             object->reflection_height = 2000000.0f;
+        }
         object->terrain_platform_id = (i16)NewShadowOnPlatform();
     } else {
         raw_surface = 0;
@@ -64,10 +68,11 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
     if (update_fields != 0) {
         object->raw_surface_id_pc = (u8)raw_surface;
         object->jump_animation_state = (u8)surface_index;
-        if (object->floor_height == GameObjectNearFloorNoFloorHeight)
+        if (object->floor_height == GameObjectNearFloorNoFloorHeight) {
             object->surface_normal = v010;
-        else
+        } else {
             object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
+        }
     }
 
     object->water_height = EShadY;
@@ -80,8 +85,9 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
             object->field_105c = 0;
             object->field_283 = -1;
         } else {
-            if (material < 0 || material >= 17)
+            if (material < 0 || material >= 17) {
                 object->field_283 = 0;
+            }
             material_mask = GetSurfaceInfoDefaultMaskPc.low | GetSurfaceInfoRuntimeMaskPc.low | 0x40u;
             object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
             FindAnglesZX(&GetSurfaceInfoWaterNormalPc, NULL, NULL);
@@ -98,14 +104,17 @@ void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_hei
     if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
         roof_surface = (i8)ShadowRoofInfo();
         object->roof_surface_id_pc = (u8)roof_surface;
-        if (roof_surface < 0 || roof_surface >= 32)
+        if (roof_surface < 0 || roof_surface >= 32) {
             object->roof_surface_id_pc = 0;
-    } else
+        }
+    } else {
         object->roof_surface_id_pc = 0xff;
+    }
 
     extra_reflect = SurfaceInfo_ExtraReflectFn;
-    if (extra_reflect != NULL)
+    if (extra_reflect != NULL) {
         extra_reflect(object);
+    }
 }
 
 __declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
@@ -149,22 +158,26 @@ i32 __cdecl UnderWater(GAMEOBJECT *object) {
 }
 
 i32 __cdecl IntersectWater(GAMEOBJECT *object) {
-    if (object->field_283 != 1 && object->field_283 != 9)
+    if (object->field_283 != 1 && object->field_283 != 9) {
         return 0;
-    if (object->collision_max.y < object->water_height)
+    }
+    if (object->collision_max.y < object->water_height) {
         return 0;
-    if (object->collision_min.y > object->water_height)
+    }
+    if (object->collision_min.y > object->water_height) {
         return 0;
+    }
     return 1;
 }
 
 void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode) {
     f32 correction;
     correction = (-movement->x) * normal->x + (-movement->y) * normal->y + (-movement->z) * normal->z;
-    if (mode == 2)
+    if (mode == 2) {
         correction = correction + FRAMETIME * (f64)0.015f;
-    else if (mode == 1)
+    } else if (mode == 1) {
         correction = correction - FRAMETIME * (f64)0.006f;
+    }
     result->x = movement->x + normal->x * correction;
     result->y = movement->y + normal->y * correction;
     result->z = movement->z + normal->z * correction;
@@ -176,10 +189,11 @@ void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
     object->floor_height = GameShadow(object, &object->position, 5.0f, -1);
     if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
         GetSurfaceInfo(object, 1, object->floor_height);
-        if (TerSurface[(i8)object->jump_animation_state].flags & 8)
+        if (TerSurface[(i8)object->jump_animation_state].flags & 8) {
             object->surface_flag8_scale_pc = 1.0f;
-        else
+        } else {
             object->surface_flag8_scale_pc = 0.0f;
+        }
         FindAnglesZX(&object->surface_normal, NULL, NULL);
         object->field_1056 = temp_zrot;
         object->field_1052 = temp_zrot;
@@ -215,6 +229,7 @@ void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
     }
 
     extra_reflect = SurfaceInfo_ExtraReflectFn;
-    if (extra_reflect != NULL)
+    if (extra_reflect != NULL) {
         extra_reflect(object);
+    }
 }

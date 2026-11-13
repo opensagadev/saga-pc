@@ -12,6 +12,7 @@ typedef struct SHOP_SAVE_VIEW_PC {
     u8 unknown_7c08[0x15];
     u8 bolt_unlocked;
 } SHOP_SAVE_VIEW_PC;
+
 #define SHOP_FMIN(a, b) ((a) < (b) ? (a) : (b))
 #define SHOP_FMAX(a, b) ((a) > (b) ? (a) : (b))
 #define SHOP_CLAMP01(x) SHOP_FMAX(0.0f, SHOP_FMIN(x, 1.0f))
@@ -44,6 +45,7 @@ extern i32(__cdecl *menuptr)(void *menu);
 /* PC4c6c50/21, append to shard.c (or retain C linkage in C++).
  * 880100 native callback BSS0, single owner; SHOPACTIVE existing880494. */
 extern void(__cdecl *ShopDrawPanelFnPc)(void);
+
 /* Native PC shop state machine. Child callbacks remain real unresolved native
  * references until their complete functions are ported; menu ID 13 stays unwired. */
 typedef struct SHOP_INPUT_PC {
@@ -51,6 +53,7 @@ typedef struct SHOP_INPUT_PC {
     i32 left_held, right_held, up_held, down_held;
     i32 confirm, cancel;
 } SHOP_INPUT_PC;
+
 typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
 typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
 extern SHOP_MENU_CALLBACK_PC ShopMenuParentPc[3], ShopOldMenuParentPc[3], ShopOldMenuFnPc;
@@ -168,8 +171,9 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 
 /* 004c1050..004c1077: original same-TU EAX helper includes the vehicle exception. */
 static i32 Shop_CharacterUnlockedPc(i32 character_id) {
-    if (character_id == VehicleBoltId7f17d4Pc)
+    if (character_id == VehicleBoltId7f17d4Pc) {
         return ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0;
+    }
     return CollectIDUnlocked(character_id) != 0;
 }
 
@@ -180,8 +184,9 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
     u32 held, pressed;
     memset(input, 0, sizeof(*input));
     for (player = 0; player < 2; ++player) {
-        if (MissionMenuPacketPc.active_player[player] == 0)
+        if (MissionMenuPacketPc.active_player[player] == 0) {
             continue;
+        }
         pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
         if ((pad->pressed & GAMEPAD_MENUSELECT) != 0 && netclient == 0) {
             input->confirm = 1;
@@ -191,36 +196,50 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
             input->cancel = 1;
             return;
         }
-        if (netclient != 0)
+        if (netclient != 0) {
             continue;
+        }
         held = pad->held | pad->left_held;
         pressed = pad->pressed | pad->left_pressed;
-        if ((held & GAMEPAD_DLEFT) != 0)
+        if ((held & GAMEPAD_DLEFT) != 0) {
             input->left_held = 1;
-        if ((held & GAMEPAD_DRIGHT) != 0)
+        }
+        if ((held & GAMEPAD_DRIGHT) != 0) {
             input->right_held = 1;
-        if (input->left_held != 0 && input->right_held != 0)
+        }
+        if (input->left_held != 0 && input->right_held != 0) {
             input->left_held = input->right_held = 0;
-        if ((held & GAMEPAD_DUP) != 0)
+        }
+        if ((held & GAMEPAD_DUP) != 0) {
             input->up_held = 1;
-        if ((held & GAMEPAD_DDOWN) != 0)
+        }
+        if ((held & GAMEPAD_DDOWN) != 0) {
             input->down_held = 1;
-        if (input->up_held != 0 && input->down_held != 0)
+        }
+        if (input->up_held != 0 && input->down_held != 0) {
             input->up_held = input->down_held = 0;
-        if ((pressed & GAMEPAD_DLEFT) != 0)
+        }
+        if ((pressed & GAMEPAD_DLEFT) != 0) {
             input->left_pressed = 1;
-        if ((pressed & GAMEPAD_DRIGHT) != 0)
+        }
+        if ((pressed & GAMEPAD_DRIGHT) != 0) {
             input->right_pressed = 1;
-        if (input->left_pressed != 0 && input->right_pressed != 0)
+        }
+        if (input->left_pressed != 0 && input->right_pressed != 0) {
             input->left_pressed = input->right_pressed = 0;
-        if ((pressed & GAMEPAD_DUP) != 0)
+        }
+        if ((pressed & GAMEPAD_DUP) != 0) {
             input->up_pressed = 1;
-        if ((pressed & GAMEPAD_DDOWN) != 0)
+        }
+        if ((pressed & GAMEPAD_DDOWN) != 0) {
             input->down_pressed = 1;
-        if (input->up_pressed != 0 && input->down_pressed != 0)
+        }
+        if (input->up_pressed != 0 && input->down_pressed != 0) {
             input->up_pressed = input->down_pressed = 0;
+        }
     }
 }
+
 #pragma bss_seg(".bss$CodePos")
 static NUVEC CodePos[6] = {0};
 #pragma bss_seg(".bss$ShelfPos")
@@ -237,20 +256,24 @@ void LoadShelfSplines(void) {
     splshelf = NuSplineFind(WORLD->current_gscn, "shelf_top1");
     splcharshelf = NuSplineFind(WORLD->current_gscn, "shelf_bottom");
     splcodes = NuSplineFind(WORLD->current_gscn, "shelf_6");
-    if (splshelf == NULL || splcharshelf == NULL || splcodes == NULL)
+    if (splshelf == NULL || splcharshelf == NULL || splcodes == NULL) {
         return;
+    }
     shelf_count = (i16)splshelf->length;
     character_count = (i16)splcharshelf->length;
     code_count = (i16)splcodes->length;
     memset(SubShelfPos, 0, sizeof(SubShelfPos));
     memset(ShelfPos, 0, sizeof(ShelfPos));
     memset(CodePos, 0, 6 * sizeof(*CodePos));
-    for (i = 0; i < shelf_count; ++i)
+    for (i = 0; i < shelf_count; ++i) {
         ShelfPos[i] = splshelf->pts[i];
-    for (i = 0; i < character_count; ++i)
+    }
+    for (i = 0; i < character_count; ++i) {
         SubShelfPos[i] = splcharshelf->pts[i];
-    for (i = 0; i < code_count; ++i)
+    }
+    for (i = 0; i < code_count; ++i) {
         CodePos[i] = splcodes->pts[i];
+    }
     start = splshelf->pts[0];
     end = splshelf->pts[shelf_count];
     NuVecSub(&diff, &end, &start);
@@ -318,8 +341,9 @@ void InitShop(WORLDINFO *world) {
     ExtraItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
     CodeItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
     BrickItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 14 * sizeof(shopitem_s));
-    if (CharItems == NULL || HintItems == NULL || ExtraItems == NULL || CodeItems == NULL || BrickItems == NULL)
+    if (CharItems == NULL || HintItems == NULL || ExtraItems == NULL || CodeItems == NULL || BrickItems == NULL) {
         return;
+    }
     TopShelf[0].type = 0;
     NuStrCpy(TopShelf[0].name, "Hint");
     NuStrCpy(TopShelf[0].special_name, "info");
@@ -356,24 +380,29 @@ void InitShop(WORLDINFO *world) {
             shopitem_s *item;
             CharItems[SHOPCHARCOUNT].type = 1;
             CharItems[SHOPCHARCOUNT].unlocked = 0;
-            if (((u64)save->character_purchased_bits[SHOPCHARCOUNT / 32] & ((u64)1 << (SHOPCHARCOUNT % 32))) != 0)
+            if (((u64)save->character_purchased_bits[SHOPCHARCOUNT / 32] & ((u64)1 << (SHOPCHARCOUNT % 32))) != 0) {
                 CharItems[SHOPCHARCOUNT].unlocked = 1;
+            }
             item = &CharItems[SHOPCHARCOUNT];
-            if (CDataList[character_id].name_id != -1)
+            if (CDataList[character_id].name_id != -1) {
                 NuStrCpy(item->name, TTab[CDataList[character_id].name_id]);
-            else
+            } else {
                 NuStrCpy(item->name, CDataList[character_id].name);
+            }
             memset(&CharItems[SHOPCHARCOUNT].special, 0, sizeof(CharItems[SHOPCHARCOUNT].special));
-            if (code_count < 144)
+            if (code_count < 144) {
                 codelist[code_count++] = SfxNameHash(collect->cheat_code);
+            }
             ++SHOPCHARCOUNT;
         }
     }
     UpdateCharacterIDs();
     charcheatix = code_count;
-    for (i = 0; i < 44; ++i)
-        if (code_count < 144)
+    for (i = 0; i < 44; ++i) {
+        if (code_count < 144) {
             codelist[code_count++] = SfxNameHash(ExtrasCheatsPc[i].code);
+        }
+    }
     extracheatix = code_count;
     NuSpecialFind(things_scene, &iconback, "icon_back_neutral", 1);
     NuSpecialFind(WORLD->current_gscn, &infoblank, "info_blank", 1);
@@ -399,10 +428,12 @@ void InitShop(WORLDINFO *world) {
         HintItems[i].item_id = (i16)i;
         HintItems[i].price = hint != NULL ? hint->price : 0;
         HintItems[i].unlocked = 0;
-        if (((u64)save->hint_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0)
+        if (((u64)save->hint_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0) {
             HintItems[i].unlocked = 1;
-        if (HintItems[i].price == 0)
+        }
+        if (HintItems[i].price == 0) {
             HintItems[i].unlocked = 1;
+        }
         HintItems[i].special = atoz0to9icon[i];
     }
     shopcamspline = NuSplineFind(WORLD->current_gscn, "shop_cam");
@@ -414,21 +445,27 @@ void InitShop(WORLDINFO *world) {
         shopcamlookat = NULL;
     }
     LoadShelfSplines();
-    for (i = 0; i < 7; ++i)
+    for (i = 0; i < 7; ++i) {
         CharCurPos[i] = SubShelfPos[i];
-    for (i = 0; i < 7; ++i)
+    }
+    for (i = 0; i < 7; ++i) {
         CharShelfIds[i] = (SHOPCHARCOUNT + i - 3) % SHOPCHARCOUNT;
+    }
     if (SHOPHINTCOUNT > 0) {
-        for (i = 0; i < 7; ++i)
+        for (i = 0; i < 7; ++i) {
             HintCurPos[i] = SubShelfPos[i];
-        for (i = 0; i < 7; ++i)
+        }
+        for (i = 0; i < 7; ++i) {
             HintShelfIds[i] = (SHOPHINTCOUNT + i - 3) % SHOPHINTCOUNT;
+        }
     }
     if (SHOPEXTRACOUNT > 0) {
-        for (i = 0; i < 7; ++i)
+        for (i = 0; i < 7; ++i) {
             ExtraCurPos[i] = SubShelfPos[i];
-        for (i = 0; i < 7; ++i)
+        }
+        for (i = 0; i < 7; ++i) {
             ExtraShelfIds[i] = (SHOPEXTRACOUNT + i - 3) % SHOPEXTRACOUNT;
+        }
     }
     price = 10000;
     for (i = 0; i < SHOPGOLDBRICKS; ++i) {
@@ -437,14 +474,17 @@ void InitShop(WORLDINFO *world) {
         BrickItems[i].price = price;
         BrickItems[i].special = TopShelf[4].special;
         BrickItems[i].unlocked = 0;
-        if (((u64)save->gold_brick_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0)
+        if (((u64)save->gold_brick_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0) {
             BrickItems[i].unlocked = 1;
+        }
         price += 5000;
     }
-    for (i = 0; i < 7; ++i)
+    for (i = 0; i < 7; ++i) {
         BrickCurPos[i] = SubShelfPos[i];
-    for (i = 0; i < 7; ++i)
+    }
+    for (i = 0; i < 7; ++i) {
         BrickShelfIds[i] = (i + 11) % 14;
+    }
     SHOPCUTCOUNT = CutScenePlayCountPc;
     for (i = 0; i < SHOPCUTCOUNT && i < 128; ++i) {
         shopitem_s *item = &CutItems[i];
@@ -456,10 +496,12 @@ void InitShop(WORLDINFO *world) {
     }
     if (shop_from_cutsceneplayer == 0) {
         if (SHOPCUTCOUNT > 0) {
-            for (i = 0; i < 7; ++i)
+            for (i = 0; i < 7; ++i) {
                 CutCurPos[i] = SubShelfPos[i];
-            for (i = 0; i < 7; ++i)
+            }
+            for (i = 0; i < 7; ++i) {
                 CutShelfIds[i] = (SHOPCUTCOUNT + i - 3) % SHOPCUTCOUNT;
+            }
         }
         picked = 0;
     } else {
@@ -477,8 +519,9 @@ void InitShop(WORLDINFO *world) {
     TopShelfScale[3] = ShopNativeScalePc[3];
     TopShelfScale[4] = ShopNativeScalePc[4];
     TopShelfScale[5] = ShopNativeScalePc[5];
-    for (i = 0; i < 6; ++i)
+    for (i = 0; i < 6; ++i) {
         topscale[i] = TopShelfScale[i];
+    }
     TopBigScale[0] = TopShelfScale[0] * ShopNativeBigFactorPc[0];
     TopBigScale[1] = TopShelfScale[1] * ShopNativeBigFactorPc[1];
     TopBigScale[2] = TopShelfScale[2] * ShopNativeBigFactorPc[2];
@@ -497,8 +540,9 @@ void InitShop(WORLDINFO *world) {
     TopBigPush[3] = 0.0f;
     TopBigPush[4] = -0.01f;
     TopBigPush[5] = 0.0f;
-    for (i = 0; i < 6; ++i)
+    for (i = 0; i < 6; ++i) {
         toppush[i] = TopBigPush[i];
+    }
     ShopSubInitAPc = ShopNativeSubInitAPc;
     ShopSubInitBPc = ShopNativeSubInitBPc;
     SubBigCharPush = 0.05f;
@@ -521,26 +565,29 @@ i32 CheckCash(shopitem_s *items, i32 item) {
 i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     u32 *bits = NULL;
-    if (items[index].type == 0)
+    if (items[index].type == 0) {
         bits = save->hint_purchased_bits;
-    else if (items[index].type == 1)
+    } else if (items[index].type == 1) {
         bits = save->character_purchased_bits;
-    else if (items[index].type == 2)
+    } else if (items[index].type == 2) {
         bits = save->extra_unlocked_bits;
-    else if (items[index].type == 4)
+    } else if (items[index].type == 4) {
         bits = save->gold_brick_purchased_bits;
-    else if (items[index].type == 5) {
+    } else if (items[index].type == 5) {
         PlaySfx((char *)GameAudioName0075c36cPc, NULL);
         return 1;
     }
-    if (bits != NULL)
+    if (bits != NULL) {
         bits[index / 32] |= (u32)((u64)1 << (index % 32));
-    if (charge != 0)
+    }
+    if (charge != 0) {
         Game.coins -= items[index].price;
+    }
     ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
     items[index].unlocked = 1;
-    if (charge != 0)
+    if (charge != 0) {
         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
+    }
     return 1;
 }
 
@@ -551,11 +598,13 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
     i32 id, i;
     switch (items[index].type) {
         case 1:
-            if (items[index].unlocked == 1)
+            if (items[index].unlocked == 1) {
                 return 0;
+            }
             id = (u16)items[index].item_id;
-            if (id < 0 || id >= CHARCOUNT)
+            if (id < 0 || id >= CHARCOUNT) {
                 return 0;
+            }
             if (Shop_CharacterUnlockedPc(id) == 0) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 ShopLockedScalePc = 1.5f;
@@ -573,21 +622,24 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
             return 1;
         case 0:
             id = (u16)items[index].item_id;
-            if (items[index].unlocked == 1 || items[index].price == 0)
+            if (items[index].unlocked == 1 || items[index].price == 0) {
                 return 1;
+            }
             if (Game.coins < (u32)items[index].price) {
                 CoinTotalScale = 1.5f;
                 return -1;
             }
             AddToCompletionPoints(POINTS_PER_HINT);
             hint = Hint_FindHint(ShopHintIdsPc[id]);
-            if (hint != NULL)
+            if (hint != NULL) {
                 hint->flags |= 2;
+            }
             goto buy;
         case 2:
             id = (u16)items[index].item_id;
-            if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0)
+            if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0) {
                 return 0;
+            }
             if (ExtrasCheatsPc[id].area_index != -1 &&
                 Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
@@ -602,8 +654,9 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
             AddToCompletionPoints(POINTS_PER_CHEAT);
             goto buy;
         case 4:
-            if (items[index].unlocked == 1 || items[index].price == 0)
+            if (items[index].unlocked == 1 || items[index].price == 0) {
                 return 0;
+            }
             if (Game.game_time < index * 3600) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 ShopLockedScalePc = 1.5f;
@@ -645,8 +698,9 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
             BuyShopItem(items, index, 0);
             ShopPurchasePulsePc = 0.0f;
             TempGame.game_time = Game.game_time;
-            if (memcmp(&TempGame, &Game, sizeof(Game)) != 0)
+            if (memcmp(&TempGame, &Game, sizeof(Game)) != 0) {
                 HubForceShopSavePc = 1;
+            }
             CutScenePlayer_Start(index);
             return 1;
         default:
@@ -660,11 +714,13 @@ i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle, i;
     f32 phase, reverse_phase, t;
     if (ShopSlideTimerPc <= 0.0f) {
-        for (i = 0; i < 6; ++i)
+        for (i = 0; i < 6; ++i) {
             ids[i] = ids[i + 1];
+        }
         ++ids[6];
-        if (ids[6] >= count)
+        if (ids[6] >= count) {
             ids[6] = 0;
+        }
         ShopSlideTimerPc = 0.0f;
         scale4 = scalenorm;
         scale3 = scalepicked;
@@ -712,11 +768,13 @@ i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     i32 angle, i;
     f32 phase, reverse_phase, t;
     if (ShopSlideTimerPc <= 0.0f) {
-        for (i = 6; i > 0; --i)
+        for (i = 6; i > 0; --i) {
             ids[i] = ids[i - 1];
+        }
         --ids[0];
-        if (ids[0] < 0)
+        if (ids[0] < 0) {
             ids[0] = count - 1;
+        }
         ShopSlideTimerPc = 0.0f;
         scale4 = scalenorm;
         scale3 = scalepicked;
@@ -786,13 +844,15 @@ void __cdecl SelectSubItem(void) {
         default:
             return;
     }
-    if (items == NULL || index == -1)
+    if (items == NULL || index == -1) {
         return;
+    }
     result = SelectShopItem(items, index);
-    if (result == -1)
+    if (result == -1) {
         PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
-    else if (result == 1)
+    } else if (result == 1) {
         ShopNameAlpha = 0.0f;
+    }
 }
 
 /* 004c39a0..004c410a. The PC callback uses direct shop-pad input, buys on one
@@ -812,8 +872,9 @@ i32 __cdecl SubItemMenu(void *menu) {
         ShopHintDrawWaitPc -= FRAMETIME;
         ShopNameAlpha = 0.0f;
     }
-    if (ShopExitPc != 0)
+    if (ShopExitPc != 0) {
         ShopNameAlpha = 0.0f;
+    }
     if (picked == 0) {
         items = HintItems;
         ids = HintShelfIds;
@@ -857,8 +918,9 @@ i32 __cdecl SubItemMenu(void *menu) {
     }
     if (ShopSlideTimerPc >= 0.0f) {
         ShopSlideTimerPc -= FRAMETIME;
-        if (ShopSlideTimerPc < 0.0f)
+        if (ShopSlideTimerPc < 0.0f) {
             ShopNameAlpha = 0.0f;
+        }
     }
     if (ShopEaseSubInPc != 0) {
         phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
@@ -879,13 +941,15 @@ i32 __cdecl SubItemMenu(void *menu) {
         }
         if (ShopMoveItemsPc == 1) {
             if (MoveSubItemsLeft(ids, positions, *count) != 0 && items != NULL) {
-                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1)
+                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1) {
                     SelectSubItem();
+                }
             }
         } else if (ShopMoveItemsPc == 2) {
             if (MoveSubItemsRight(ids, positions, *count) != 0 && items != NULL) {
-                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1)
+                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1) {
                     SelectSubItem();
+                }
             }
         }
     } else {
@@ -893,15 +957,16 @@ i32 __cdecl SubItemMenu(void *menu) {
     }
     if (ShopSlideTimerPc < 0.0f) {
         ShopEaseSubInPc = 0;
-        if (input.left_held != 0)
+        if (input.left_held != 0) {
             left = 1;
-        else if (input.right_held != 0)
+        } else if (input.right_held != 0) {
             right = 1;
-        else if (input.confirm != 0 && ShopExitPc == 0) {
+        } else if (input.confirm != 0 && ShopExitPc == 0) {
             SelectSubItem();
             goto finish;
-        } else if (input.cancel != 0)
+        } else if (input.cancel != 0) {
             cancel = 1;
+        }
     }
     if (ShopExitPc == 0) {
         if (left != 0) {
@@ -972,14 +1037,16 @@ i32 __cdecl DoShopMenu(void *menu) {
                 menuptr = ShopMenuParentPc[ShopMenuLevelPc];
                 ShopMenuParentPc[ShopMenuLevelPc] = NULL;
                 --ShopMenuLevelPc;
-                if (ShopMenuLevelPc < 0)
+                if (ShopMenuLevelPc < 0) {
                     ShopMenuLevelPc = 0;
+                }
                 ShopDrawPanelFnPc = ShopDrawParentPc[ShopDrawLevelPc];
                 ShopDrawParentPc[ShopDrawLevelPc] = NULL;
                 drawptr = NULL;
                 --ShopDrawLevelPc;
-                if (ShopDrawLevelPc < 0)
+                if (ShopDrawLevelPc < 0) {
                     ShopDrawLevelPc = 0;
+                }
                 break;
         }
     }
@@ -998,10 +1065,12 @@ i32 __cdecl CodeMenu(void *menu) {
     u32 crc;
     (void)menu;
     Shop_GetInput(&input);
-    if (ShopSlideTimerPc >= 0.0f)
+    if (ShopSlideTimerPc >= 0.0f) {
         ShopSlideTimerPc -= FRAMETIME;
-    if (ShopCodeRepeatTimerPc >= 0.0f)
+    }
+    if (ShopCodeRepeatTimerPc >= 0.0f) {
         ShopCodeRepeatTimerPc -= FRAMETIME;
+    }
     ShopCodeItemChangedPc = 0;
     if (ShopEaseSubInPc) {
         phase = (f32)(1.0 - (f64)ShopSlideTimerPc * 8.0);
@@ -1018,26 +1087,30 @@ i32 __cdecl CodeMenu(void *menu) {
     if (ShopSlideTimerPc <= 0.0f) {
         ShopCodeValidPc = 0;
         ShopEaseSubInPc = 0;
-        if (input.left_held)
+        if (input.left_held) {
             left = 1;
-        else if (input.right_held)
+        } else if (input.right_held) {
             right = 1;
-        else if (input.down_held) {
-            if (ShopCodeRepeatTimerPc <= 0.0f || input.down_pressed)
+        } else if (input.down_held) {
+            if (ShopCodeRepeatTimerPc <= 0.0f || input.down_pressed) {
                 down = 1;
+            }
         } else if (input.up_held) {
-            if (ShopCodeRepeatTimerPc <= 0.0f || input.up_pressed)
+            if (ShopCodeRepeatTimerPc <= 0.0f || input.up_pressed) {
                 up = 1;
+            }
         }
-        if (input.confirm)
+        if (input.confirm) {
             confirm = 1;
-        else if (input.cancel)
+        } else if (input.cancel) {
             cancel = 1;
+        }
         if (down) {
             ShopCodeRepeatTimerPc = ShopCodeRepeatIntervalPc;
             --ShopCodeCharacterPc;
-            if (ShopCodeCharacterPc < 0)
+            if (ShopCodeCharacterPc < 0) {
                 ShopCodeCharacterPc = 35;
+            }
             ShopCodeValidPc = 0;
             ShopUserCodePc[ShopColumnPc] = ShopCodeCharactersPc[ShopCodeCharacterPc];
             ShopCodeMoveSfxLockPc = 1;
@@ -1046,8 +1119,9 @@ i32 __cdecl CodeMenu(void *menu) {
         if (up) {
             ShopCodeRepeatTimerPc = ShopCodeRepeatIntervalPc;
             ++ShopCodeCharacterPc;
-            if (ShopCodeCharacterPc >= 36)
+            if (ShopCodeCharacterPc >= 36) {
                 ShopCodeCharacterPc = 0;
+            }
             ShopCodeValidPc = 0;
             ShopUserCodePc[ShopColumnPc] = ShopCodeCharactersPc[ShopCodeCharacterPc];
             ShopCodeMoveSfxLockPc = 1;
@@ -1056,18 +1130,20 @@ i32 __cdecl CodeMenu(void *menu) {
         if (left) {
             ShopLastItemPc = ShopColumnPc;
             --ShopColumnPc;
-            if (ShopColumnPc < 0)
+            if (ShopColumnPc < 0) {
                 ShopColumnPc = 0;
+            }
             ShopCodeValidPc = 0;
-            if (!ShopUserCodePc[ShopColumnPc])
+            if (!ShopUserCodePc[ShopColumnPc]) {
                 ShopCodeCharacterPc = 0;
-            else
+            } else {
                 for (i = 0; i < 36; ++i) {
                     if (ShopUserCodePc[ShopColumnPc] == ShopCodeCharactersPc[i]) {
                         ShopCodeCharacterPc = i;
                         break;
                     }
                 }
+            }
             if (ShopLastItemPc != ShopColumnPc) {
                 ShopSlideTimerPc = 0.125f;
                 if (!ShopCodeMoveSfxLockPc) {
@@ -1079,18 +1155,20 @@ i32 __cdecl CodeMenu(void *menu) {
         if (right) {
             ShopLastItemPc = ShopColumnPc;
             ++ShopColumnPc;
-            if (ShopColumnPc >= 6)
+            if (ShopColumnPc >= 6) {
                 ShopColumnPc = 5;
+            }
             ShopCodeValidPc = 0;
-            if (!ShopUserCodePc[ShopColumnPc])
+            if (!ShopUserCodePc[ShopColumnPc]) {
                 ShopCodeCharacterPc = 0;
-            else
+            } else {
                 for (i = 0; i < 36; ++i) {
                     if (ShopUserCodePc[ShopColumnPc] == ShopCodeCharactersPc[i]) {
                         ShopCodeCharacterPc = i;
                         break;
                     }
                 }
+            }
             if (ShopLastItemPc != ShopColumnPc) {
                 ShopSlideTimerPc = 0.125f;
                 if (!ShopCodeMoveSfxLockPc) {
@@ -1109,8 +1187,9 @@ i32 __cdecl CodeMenu(void *menu) {
         }
         if (confirm) {
             ShopUserCodePc[ShopColumnPc] = ShopCodeCharactersPc[ShopCodeCharacterPc];
-            for (i = 0; i < 6; ++i)
+            for (i = 0; i < 6; ++i) {
                 code[i] = ShopUserCodePc[i];
+            }
             code[6] = 0;
             crc = SfxNameHash(code);
             for (i = 0; i < 144; ++i) {
@@ -1129,8 +1208,9 @@ i32 __cdecl CodeMenu(void *menu) {
                         Game_CharacterSave[(u16)CharItems[i].item_id] |= SAVE_CHARACTER_UNLOCKED;
                         AddToCompletionPoints(POINTS_PER_CHARACTER);
                         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
-                    } else
+                    } else {
                         PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
+                    }
                     ShopCheatNamePc = TTab[CDataList[(u16)CharItems[i].item_id].name_id];
                 } else if (i < extracheatix) {
                     i -= charcheatix;
@@ -1145,16 +1225,18 @@ i32 __cdecl CodeMenu(void *menu) {
                         }
                         save->extra_unlocked_bits[i / 32] |= (u32)(1ULL << (i % 32));
                         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
-                    } else
+                    } else {
                         PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
+                    }
                     ShopCheatNamePc = ExtrasCheatsPc[i].text_id ? TTab[*ExtrasCheatsPc[i].text_id] : TTab[tUNKNOWN];
                 }
                 ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
                 ShopCheatTimerPc = ShopCodeCheatDisplayTimePc;
             }
         }
-    } else
+    } else {
         ShopCodeMoveSfxLockPc = 0;
+    }
 
     if (ShopSlideTimerPc >= 0.0f) {
         phase = (f32)(1.0 - (f32)((f64)ShopSlideTimerPc * 8.0));
@@ -1202,8 +1284,9 @@ i32 __cdecl CodeMenu(void *menu) {
                 subpush[1] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
             }
         }
-    } else
+    } else {
         ShopLastItemPc = -1;
+    }
     if (ShopExitPc && ShopSlideTimerPc < 0.0f) {
         ShopExitPc = 0;
         ShopEaseSubInPc = -1;
@@ -1253,8 +1336,9 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
         unavailable = 1;
         if ((character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
                                                    : CollectIDUnlocked(character_id) != NULL) &&
-            item->unlocked == 1)
+            item->unlocked == 1) {
             unavailable = 0;
+        }
         alpha = (character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
                                                        : CollectIDUnlocked(character_id) != NULL)
                     ? 1.0f
@@ -1272,8 +1356,9 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         icon_object_id = CDataList[character_id].icon_model;
         if (icon_object_id != -1) {
-            if (unavailable != 0)
+            if (unavailable != 0) {
                 ++icon_object_id;
+            }
             if (WORLD->level_objects[icon_object_id].active != 0) {
                 NuSpecialDrawAtAlpha(&WORLD->level_objects[icon_object_id].special, &matrix, alpha);
             }
@@ -1317,10 +1402,12 @@ static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, 
     NUVEC scale;
     NUANGVEC rotation;
     NUMTX matrix;
-    if (item == NULL || position == NULL)
+    if (item == NULL || position == NULL) {
         return;
-    if (NuSpecialExistsFn(&item->special) == 0)
+    }
+    if (NuSpecialExistsFn(&item->special) == 0) {
         return;
+    }
     rotation.x = xrot;
     rotation.y = yrot;
     rotation.z = zrot;
@@ -1329,10 +1416,11 @@ static void Shop_DrawItemPc(shopitem_s *item, NUVEC *position, f32 scale_value, 
     NuMtxScaleVU0(&matrix, &scale);
     *(NUVEC *)&matrix.m30 = *position;
     matrix.m31 += ypush;
-    if (opaque != 0)
+    if (opaque != 0) {
         NuSpecialDrawAt(&item->special, &matrix);
-    else
+    } else {
         NuSpecialDrawAtAlpha(&item->special, &matrix, alpha);
+    }
 }
 
 static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value, f32 ypush, u16 xrot, u16 yrot,
@@ -1372,10 +1460,11 @@ void __cdecl DrawCodeMenu3D(void) {
 
     f32 bing = 0.0f, scale, push;
     for (i = 0; i < 6; ++i) {
-        if (ShopUserCodePc[i] <= 'Z' && ShopUserCodePc[i] >= 'A')
+        if (ShopUserCodePc[i] <= 'Z' && ShopUserCodePc[i] >= 'A') {
             letters[i] = ShopUserCodePc[i] - 'A';
-        else if (ShopUserCodePc[i] <= '9' && ShopUserCodePc[i] >= '0')
+        } else if (ShopUserCodePc[i] <= '9' && ShopUserCodePc[i] >= '0') {
             letters[i] = ShopUserCodePc[i] - '0' + 26;
+        }
     }
     if (ShopPurchasePulsePc > 0.0f) {
         bing = ShopPurchasePulsePc;
@@ -1460,8 +1549,9 @@ void __cdecl DrawSubItems(void) {
     }
     normal_push = SubNormCharPush;
     for (slot = 0; slot < 7; ++slot) {
-        if ((ShopMoveItemsPc == 1 && slot == 6) || (ShopMoveItemsPc == 2 && slot == 0))
+        if ((ShopMoveItemsPc == 1 && slot == 6) || (ShopMoveItemsPc == 2 && slot == 0)) {
             continue;
+        }
         rotation = 0;
         if (slot == 0) {
             scale = item_scale * ShopInOutScalePc * ShopScaleOverridePc[0];
@@ -1479,8 +1569,9 @@ void __cdecl DrawSubItems(void) {
             scale = item_scale * scale4 * ShopInOutScalePc;
             ypush = subpush[0];
         } else if (slot == 3) {
-            if (ShopPurchasePulsePc >= 0.0f)
+            if (ShopPurchasePulsePc >= 0.0f) {
                 rotation = (u16)(i32)((f64)(-bing) * 65536.0);
+            }
             scale = item_scale * scale3 * ShopInOutScalePc + ShopCodePulseScalePc * bing_scale;
             ypush = subpush[1];
         } else if (slot == 4) {
@@ -1495,10 +1586,11 @@ void __cdecl DrawSubItems(void) {
             case 0:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulsePc > 0.0f) {
-                        if (slot == 3)
+                        if (slot == 3) {
                             rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                        else
+                        } else {
                             rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        }
                     } else {
                         rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
                     }
@@ -1520,18 +1612,20 @@ void __cdecl DrawSubItems(void) {
                                                 1) &
                                                0x7fff] *
                                ShopCharacterAmplitudePc);
-                if (item->unlocked != 1)
+                if (item->unlocked != 1) {
                     rotation = 0;
+                }
                 angle = shelfang + rotation;
                 Shop_DrawCharacter(&items[shelf_ids[slot]], &positions[slot], scale, ypush, 0, angle, 0);
                 break;
             case 2:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulsePc > 0.0f) {
-                        if (slot == 3)
+                        if (slot == 3) {
                             rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                        else
+                        } else {
                             rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        }
                     } else {
                         rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
                     }
@@ -1555,10 +1649,11 @@ void __cdecl DrawSubItems(void) {
             case 4:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulsePc > 0.0f) {
-                        if (slot == 3)
+                        if (slot == 3) {
                             rotation += (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-                        else
+                        } else {
                             rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+                        }
                     } else {
                         rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
                     }
@@ -1578,13 +1673,15 @@ void __cdecl DrawSubItems(void) {
                     area = level->area_index;
                     episode = (i8)level->episode;
                     if (episode != -1) {
-                        if (episode & 1)
+                        if (episode & 1) {
                             blank = &codeblank;
+                        }
                     } else if (area != -1) {
-                        if (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index)
+                        if (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index) {
                             blank = &codeblank;
-                        else if (ANAKINSFLIGHT_ADATA != NULL && area == ANAKINSFLIGHT_ADATA->index)
+                        } else if (ANAKINSFLIGHT_ADATA != NULL && area == ANAKINSFLIGHT_ADATA->index) {
                             blank = &toolblank;
+                        }
                     }
                     rotation =
                         (u16)(id * 0x1555 - (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * -65536.0));
@@ -1602,18 +1699,19 @@ void __cdecl DrawSubItems(void) {
 void __cdecl DrawItemMenu2D(void) {
     i32 text_id;
     if (ShopNameAlpha > 0.0f) {
-        if (picked == 0)
+        if (picked == 0) {
             text_id = TextIdPc880904;
-        else if (picked == 1)
+        } else if (picked == 1) {
             text_id = TextIdPc88070c;
-        else if (picked == 2)
+        } else if (picked == 2) {
             text_id = TextIdPc88090c;
-        else if (picked == 4)
+        } else if (picked == 4) {
             text_id = TextIdPc88077c;
-        else if (picked == 5)
+        } else if (picked == 5) {
             text_id = TextIdPc880800;
-        else
+        } else {
             text_id = TextIdPc880908;
+        }
         SmartTextEx(TTab[text_id], 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f, 0.8f,
                     0.8f, 0.8f, 0, 255, 255, 255, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
     }
@@ -1642,10 +1740,12 @@ void __cdecl DrawSubItemMenu2D(void) {
     } else if (picked == 5) {
         items = CutItems;
         ids = CutShelfIds;
-    } else
+    } else {
         return;
-    if (items == NULL)
+    }
+    if (items == NULL) {
         return;
+    }
     name = items[ids[3]].name;
     if (items[ids[3]].type == 1) {
         if (items[ids[3]].unlocked == 1) {
@@ -1653,9 +1753,9 @@ void __cdecl DrawSubItemMenu2D(void) {
             buyable = 0;
         } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4Pc
                        ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
-                       : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0)
+                       : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
-        else {
+        } else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
             SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleYPc + (f64)HubEpisodeSubtitleYPc) * 0.5),
                         1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
@@ -1675,9 +1775,9 @@ void __cdecl DrawSubItemMenu2D(void) {
             buyable = 0;
         } else {
             if (id < 8 || ExtrasCheatsPc[id].area_index == -1 ||
-                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0)
+                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected != 0) {
                 buyable = show_name = 1;
-            else {
+            } else {
                 sprintf(title, "%s %i", TTab[TextIdPc88074c], id - 7);
                 scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
                 SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
@@ -1701,18 +1801,19 @@ void __cdecl DrawSubItemMenu2D(void) {
             SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
                         1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
             buyable = show_name = 0;
-        } else
+        } else {
             buyable = show_name = 1;
+        }
     } else if (items[ids[3]].type == 5) {
         id = (u16)items[ids[3]].item_id;
         available = CutScenePlayer_CanStart(id);
         CutScenePlayer_GetText(id, title, subtitle, available);
         SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
                     (i32)((f64)ShopNameAlpha * 128.0));
-        if (available != 0 && shopcutsceneplayer != NULL)
+        if (available != 0 && shopcutsceneplayer != NULL) {
             SmartTextEx(subtitle, 0.0f, HubEpisodeSubtitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0, 1.7f, 1, NULL, 0,
                         (i32)((f64)ShopNameAlpha * 128.0));
-        else {
+        } else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
             SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
                         1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
@@ -1765,8 +1866,9 @@ void DrawShop3D(WORLDINFO *world) {
 }
 
 void __cdecl DrawShopPanel(void) {
-    if (SHOPACTIVE != 0 && ShopDrawPanelFnPc != NULL)
+    if (SHOPACTIVE != 0 && ShopDrawPanelFnPc != NULL) {
         ShopDrawPanelFnPc();
+    }
 }
 
 /* 004c6c70..004c6dd8 instructions;004c6dd8..004c6df0 six-entry table.
@@ -1777,21 +1879,24 @@ static i32 Shop_CanSelectPc(void) {
     i32 id, index;
     switch (picked) {
         case 1:
-            if (Game.coins < (u32)CharItems[CharShelfIds[3]].price)
+            if (Game.coins < (u32)CharItems[CharShelfIds[3]].price) {
                 return 0;
+            }
             item = &CharItems[CharShelfIds[3]];
             return Shop_CharacterUnlockedPc((u16)item->item_id) != 0 && item->unlocked != 1;
         case 0:
             index = HintShelfIds[3];
             return Game.coins >= (u32)HintItems[index].price && HintItems[index].unlocked != 1;
         case 2:
-            if (Game.coins < (u32)ExtraItems[ExtraShelfIds[3]].price)
+            if (Game.coins < (u32)ExtraItems[ExtraShelfIds[3]].price) {
                 return 0;
+            }
             item = &ExtraItems[ExtraShelfIds[3]];
             id = (u16)item->item_id;
             if (id >= 8 && ExtrasCheatsPc[id].area_index != -1 &&
-                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0)
+                Game.area_save[ExtrasCheatsPc[id].area_index].red_brick_collected == 0) {
                 return 0;
+            }
             return (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && item->unlocked != 1;
         case 4:
             index = BrickShelfIds[3];
@@ -1805,12 +1910,14 @@ static i32 Shop_CanSelectPc(void) {
 void Shop_CollectAllCharacters(i32 mode) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     i32 i;
-    if (mode != 0)
+    if (mode != 0) {
         return;
+    }
     for (i = 0; i < ShopCollectionPc.count && i < 100; ++i) {
         save->character_purchased_bits[i / 32] |= (u32)((u64)1 << (i % 32));
-        if (WORLD->current_level == HUB_LDATA)
+        if (WORLD->current_level == HUB_LDATA) {
             CharItems[i].unlocked = 1;
+        }
     }
 }
 
@@ -1834,30 +1941,33 @@ i32 __cdecl ItemMenu(void *menu) {
         ShopSlideTimerPc -= FRAMETIME;
         ShopNameAlpha = 0.0f;
     }
-    if (ShopExitPc != 0)
+    if (ShopExitPc != 0) {
         ShopNameAlpha = 0.0f;
+    }
     ShopItemChangedPc = 0;
     Hint_CancelCurrent();
     ShopHintDrawWaitPc = 0.2f;
     if (ShopSlideTimerPc < 0.0f) {
         ShopMoveSfxLockPc = 0;
-        if (input.left_pressed != 0 && picked > 0)
+        if (input.left_pressed != 0 && picked > 0) {
             candidate = picked - 1;
-        else if (input.right_pressed != 0 && picked < 5)
+        } else if (input.right_pressed != 0 && picked < 5) {
             candidate = picked + 1;
-        else if (input.confirm != 0)
+        } else if (input.confirm != 0) {
             selection = picked;
-        else if (input.cancel != 0)
+        } else if (input.cancel != 0) {
             cancel = 1;
+        }
     }
     if (candidate != entry_picked) {
         ShopSubMenuPc = 0;
         ShopLastItemPc = picked;
         picked = candidate;
-        if (candidate < 0)
+        if (candidate < 0) {
             picked = 0;
-        else if (candidate > 5)
+        } else if (candidate > 5) {
             picked = 5;
+        }
         ShopSlideTimerPc = 0.125f;
         if (ShopMoveSfxLockPc == 0) {
             ShopMoveSfxLockPc = 1;
@@ -1964,8 +2074,9 @@ i32 __cdecl UpdateShop(void *menu) {
     ShopScaleOverridePc[6] = 0.0f;
     if (ShopNameAlpha < 1.0f) {
         ShopNameAlpha += FRAMETIME * 2.0f;
-        if (ShopNameAlpha > 1.0f)
+        if (ShopNameAlpha > 1.0f) {
             ShopNameAlpha = 1.0f;
+        }
     }
     ShopLockedScalePc = SeekLinearF(ShopLockedScalePc, 1.0f, (f32)((f64)FRAMETIME * 3.0));
     SubNormCharPush = ShopNativeSubNormCharPushPc;
@@ -2025,23 +2136,27 @@ void __cdecl DrawShopPrompts(void) {
         select = TextIdPc880888;
     } else if (menuptr == SubItemMenu) {
         select = picked == 5 ? TextIdPc8808c0 : TextIdPc8808c4;
-        if (Shop_CanSelectPc() == 0)
+        if (Shop_CanSelectPc() == 0) {
             alpha = 0.25f;
+        }
         back = tBACK;
     } else if (menuptr == CodeMenu) {
         back = tBACK;
         select = TextIdPc880888;
     }
-    if (netclient != 0)
+    if (netclient != 0) {
         select = -1;
-    if (select != -1 || back != -1)
+    }
+    if (select != -1 || back != -1) {
         DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], select, alpha, -1, back, -1, TextIdPc880eac,
                               MissionMenuPacketPc.active_player[1], select, alpha, -1, back, -1, TextIdPc880eac);
+    }
 }
 
 void __cdecl GetShopCamLookPos(NUVEC *position) {
-    if (menuptr == ItemMenu && splshelf != NULL && picked != -1)
+    if (menuptr == ItemMenu && splshelf != NULL && picked != -1) {
         *position = splshelf->pts[picked];
-    else
+    } else {
         *position = *shopcamlookat;
+    }
 }

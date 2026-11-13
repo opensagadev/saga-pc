@@ -26,8 +26,9 @@ void __cdecl PcInitializeStartupCriticalSection(void) {
 void __cdecl PcInitializePerformanceTiming(void) {
     DWORD_PTR process_mask = 1;
     DWORD_PTR system_mask = 1;
-    if (!GetProcessAffinityMask(GetCurrentProcess(), &process_mask, &system_mask))
+    if (!GetProcessAffinityMask(GetCurrentProcess(), &process_mask, &system_mask)) {
         process_mask = 1;
+    }
     SetProcessAffinityMask(GetCurrentProcess(), 1);
     QueryPerformanceCounter((LARGE_INTEGER *)&NuTime_TickBase);
     QueryPerformanceFrequency((LARGE_INTEGER *)&NuTime_PerformanceFrequency);

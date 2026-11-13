@@ -15,20 +15,24 @@
  * animated specular variation alone does not establish a rendering defect.
  */
 typedef unsigned int TraceWord;
+
 struct TraceSaved {
     unsigned long error; // NOLINT(google-runtime-int): Win32 DWORD ABI; portable fixture backing.
     int crt_errno;
 };
+
 struct TraceParameter {
     int stage, first, count;
     TraceWord metadata;
 };
+
 struct TraceDraw {
     TraceWord geometry, material, shader_slot, shader_key, profile;
     TraceWord expected_vertex_shader, expected_pixel_shader;
     TraceWord vertex_buffer, index_buffer, base_vertex, start_index;
     TraceParameter parameter[14]; /* world11, lights6/7/8, specular49, palette18, ambient1 */
 };
+
 extern "C" {
     extern int skin_trace_gate;
     TraceSaved skin_trace_lock(void);

@@ -7,6 +7,7 @@ typedef struct PC_DL_MATERIAL_READER {
     u8 unknown_0000[0x40];
     u32 reflection_flags;
 } PC_DL_MATERIAL_READER;
+
 STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
@@ -57,8 +58,9 @@ extern "C" void __cdecl NuDisplayListTransformPc(void *arg) {
             PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
             NuShaderManagerSetfv(0x38, &tint.x);
         }
-        if (PCDeviceHardwareVertexProcessingPC == 4)
+        if (PCDeviceHardwareVertexProcessingPC == 4) {
             NuDisplayHandlerOpacityPc = opacity;
+        }
     }
     if ((f64)shadow != (f64)PCGraphicsFrameState) {
         NuDisplayHandlerShadowPc = shadow;
@@ -92,8 +94,9 @@ extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
                 NuShaderManagerSetfv(0x38, &tint.x);
             }
         }
-        if (PCDeviceHardwareVertexProcessingPC == 4)
+        if (PCDeviceHardwareVertexProcessingPC == 4) {
             NuDisplayHandlerOpacityPc = opacity;
+        }
     }
     if ((f64)shadow != (f64)PCGraphicsFrameState) {
         NuDisplayHandlerShadowPc = shadow;
@@ -163,6 +166,7 @@ typedef struct PC_DL_E_MATERIAL_READER {
     u8 unknown_0269[0x53];
     PC_TEXTURE_RESOURCE_PC *vertex_declaration;
 } PC_DL_E_MATERIAL_READER;
+
 STATIC_ASSERT(sizeof(NUMTL) == 0x9c);
 STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, common) == 0);
 STATIC_ASSERT(offsetof(PC_DL_E_MATERIAL_READER, texture_id) == 0xb8);
@@ -177,6 +181,7 @@ STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(P
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {
     PC_TEXTURE_RESOURCE_PC *vertex_shader, *pixel_shader;
 };
+
 STATIC_ASSERT(sizeof(PC_DL_SHADER_PROGRAM_PAIR_PC) == 8);
 STATIC_ASSERT(offsetof(PC_DL_SHADER_PROGRAM_PAIR_PC, vertex_shader) == 0);
 STATIC_ASSERT(offsetof(PC_DL_SHADER_PROGRAM_PAIR_PC, pixel_shader) == 4);
@@ -189,8 +194,9 @@ extern "C" {
         if (texture != NULL) {
             const u32 *tuple = &texture->flags;
             if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
-                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])
+                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1]) {
                 PCGraphicsSetSamplerTuplePc(stage, tuple);
+            }
             PCDeviceSetTexture(stage, texture->resource);
         } else {
             PCDeviceSetTexture(stage, NULL);
@@ -250,10 +256,11 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecordsPc[68].values, 1);
         if ((u8)material->common.particle_type_tag == 0x97) {
             GRAPHICS_RENDER_TEXTURE_PC *target = NuPostEffectGetBackBuffer(-1);
-            if (target != NULL)
+            if (target != NULL) {
                 PCDeviceSetTexture(0, target->resource);
-            else
+            } else {
                 PCDeviceSetTexture(0, NULL);
+            }
             PCDeviceSetSamplerState(0, 1, 3);
             PCDeviceSetSamplerState(0, 2, 3);
             PCDeviceSetSamplerState(0, 7, 0);
@@ -280,15 +287,17 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
             PCDeviceSetVertexShaderConstantsF(0x30, ShaderUniformRecordsPc[69].values, 1);
         }
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecordsPc[68].values, 1);
-        if (material->texture_id != 0)
+        if (material->texture_id != 0) {
             PCDeviceSetTexture(0, NuTextureGetDimensions(material->texture_id)->resource);
+        }
     } else if (material->common.display_list != NULL) {
         if (shader != NULL) {
             PCShaderSetMaterialParametersPc(shader, &material->common);
             NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
-            if (RenderFrameSceneFlagsPc != 0)
+            if (RenderFrameSceneFlagsPc != 0) {
                 PCDeviceSetPixelShaderPc(NULL);
+            }
         } else {
             PCGraphicsRenderTextureAllocationError();
             NuShaderManagerBindShader(NULL);
@@ -304,10 +313,11 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
     }
     NuDisplayHandlerReflectionPc = 0;
     NuMtlSetRenderStatesPS(&material->common);
-    if ((shader->unknown_4d4 & 6) == 0)
+    if ((shader->unknown_4d4 & 6) == 0) {
         PCDeviceBackend.SetColorWriteMaskPc(1, 1, 1);
-    else
+    } else {
         PCDeviceBackend.SetColorWriteMaskPc(0, 0, 1);
+    }
     u32 write_mask = ~shader->unknown_4d4 & 8;
     write_mask >>= 3;
     PCDeviceBackend.SetColorWriteMaskPc(write_mask, write_mask, 3);
@@ -325,8 +335,9 @@ extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {
         }
         i32 count = RenderFrameShaderArrayCountPc;
         if (count != 0) {
-            if (count >= 8)
+            if (count >= 8) {
                 count = 8;
+            }
             NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), 0x4e, 0, count,
                                         &RenderFrameShaderArrayPc[0][0]);
         }
@@ -339,6 +350,7 @@ typedef struct PC_DL_MATERIAL_STATES_READER {
     u8 unknown_0044[0x1ac];
     u32 variant_flags;
 } PC_DL_MATERIAL_STATES_READER;
+
 STATIC_ASSERT(offsetof(PC_DL_MATERIAL_STATES_READER, attributes) == 0x40);
 STATIC_ASSERT(offsetof(PC_DL_MATERIAL_STATES_READER, variant_flags) == 0x1f0);
 
@@ -405,23 +417,26 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
     }
     switch ((material->attributes >> 12) & 3) {
         case 0:
-            if (NuDisplayHandlerReflectionPc != 0)
+            if (NuDisplayHandlerReflectionPc != 0) {
                 PCDeviceSetRenderState(22, 2);
-            else
+            } else {
                 PCDeviceSetRenderState(22, 3);
+            }
             break;
         case 1:
-            if (NuDisplayHandlerReflectionPc != 0)
+            if (NuDisplayHandlerReflectionPc != 0) {
                 PCDeviceSetRenderState(22, 3);
-            else
+            } else {
                 PCDeviceSetRenderState(22, 2);
+            }
             break;
         case 2:
             PCDeviceSetRenderState(22, 1);
             break;
     }
-    if (!(material->attributes & 0x80000))
+    if (!(material->attributes & 0x80000)) {
         write_alpha = 0;
+    }
     if (RenderFrameSceneFlagsPc != 0) {
         PCDeviceBackend.SetColorWriteMaskPc(1, 1, 0);
         NuDisplayHandlerZModePc = 0;
@@ -502,6 +517,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
 struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
     f32 x, y, z, w;
 };
+
 #define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                           \
     do {                                                                                                               \
         f32 set_x = (f32)(offset_x);                                                                                   \
@@ -650,11 +666,12 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
 extern "C" void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
                                               GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                               i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
-    if (PCDeviceHardwareVertexProcessingPC >= 2)
+    if (PCDeviceHardwareVertexProcessingPC >= 2) {
         PostBlur7x7HighPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius, program);
-    else
+    } else {
         PostBlur7x7LowPc(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius,
                          PostCopyAuxProgramPc);
+    }
 }
 
 extern "C" {
@@ -681,6 +698,7 @@ inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
     Reset();
     PcSurfaceRegistry[registry_index] = NULL;
 }
+
 inline NuPostFilterGen::~NuPostFilterGen() {
 }
 
@@ -710,11 +728,13 @@ void NuMainFilter::RenderBloomPc() {
         (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
     PC_POST_BUFFER_PROXY_PC *normal =
         (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
-    if (!color->resolved)
+    if (!color->resolved) {
         color->resolved = true;
+    }
     GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
-    if (normal_texture != NULL && !normal->resolved)
+    if (normal_texture != NULL && !normal->resolved) {
         normal->resolved = true;
+    }
     GRAPHICS_RENDER_TEXTURE_PC *output_texture = output->targets[0].texture;
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     PCDeviceBackend.CopySurfaceTargetPc(&texture_surface, 2, 0);
@@ -735,8 +755,9 @@ void NuMainFilter::RenderBloomPc() {
         viewport.max_z = 1.0f;
         NuVpSubmitPc(&viewport);
         u32 *tuple = &normal_texture->flags;
-        if ((u32)PCDeviceSamplerInvalidation[0][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[0][1] != tuple[1])
+        if ((u32)PCDeviceSamplerInvalidation[0][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[0][1] != tuple[1]) {
             PCGraphicsSetSamplerTuplePc(0, tuple);
+        }
         PCDeviceSetTexture(0, normal_texture->resource);
         PCDisplayHandlerBindProgramsPc((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgramPc);
         PCDeviceBackend.SetColorWriteMaskPc(1, 0, 0);
@@ -878,27 +899,32 @@ extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
 }
 
 extern "C" void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
+
 void NuMainFilter::destroyResources() {
     NuMainFilterGen::destroyResources();
     PCGraphicsDestroyFramebuffer(platform_fbo);
 }
+
 void NuMainFilter::initTextureResources(i32, i32) {
     texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
 }
+
 void NuMainFilter::destroyTextureResources() {
     texture_surface.Reset();
 }
 
 extern "C" f32 NuSpeedBlurVertexScalePc;
 f32 NuSpeedBlurVertexScalePc = 40000.0f;
+
 void NuSpeedBlurFilter::render() {
     extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
     PC_FRAMEBUFFER_PC *output =
         (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
     PC_POST_BUFFER_PROXY_PC *color =
         (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
-    if (!color->resolved)
+    if (!color->resolved) {
         color->resolved = true;
+    }
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     __declspec(align(16)) f32 constants[8];
     constants[0] = 0.0f;

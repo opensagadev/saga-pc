@@ -6,42 +6,55 @@
 void __thiscall PC_WINDOW_OPTIONS_PC::SetWidth(i32 value) {
     client_width = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetHeight(i32 value) {
     client_height = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceWidth(i32 value) {
     device_width = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceHeight(i32 value) {
     device_height = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetRefresh(i32 value) {
     refresh_rate = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMultisample(i32 value) {
     multisample = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetAspectModePc(i32 value) {
     aspect_mode = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetWindowX(i32 value) {
     window_x = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetWindowY(i32 value) {
     window_y = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMouseSensitivity(i32 value) {
     mousesensitivity = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetInvertY(u8 value) {
     inverty = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetVibration(u8 value) {
     vibration = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetForceShaderModel(i32 value) {
     forceshadermodel = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::Save() {
     FILE *file = fopen(file_name, "w");
     if (file != NULL) {
@@ -80,17 +93,20 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Save() {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomMethod(i32 value) {
     bloommethod = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetShadowMethod(i32 value) {
     shadowmethod = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8 value) {
     speedblursupported = value;
 }
 
 extern "C" void __cdecl PCOptionsBuildFolder(char *destination) {
     i32 folder = CSIDL_LOCAL_APPDATA;
-    if (PcUsePersonalFolder != 0)
+    if (PcUsePersonalFolder != 0) {
         folder = CSIDL_PERSONAL;
+    }
     HRESULT result = SHGetFolderPathA(NULL, folder, NULL, 0, PcUserFolder);
     const char *source = result < 0 ? NULL : PcUserFolder;
     // MATCH-EXCEPTION: copied by hand; retail walks both pointers, which the strcpy intrinsic never emits
@@ -106,9 +122,11 @@ extern "C" void __cdecl PCOptionsBuildFolder(char *destination) {
     strcat(destination, PcProductName);
     DWORD attributes = GetFileAttributesA(destination);
     strcat(destination, "\\");
-    if (attributes == INVALID_FILE_ATTRIBUTES)
+    if (attributes == INVALID_FILE_ATTRIBUTES) {
         SHCreateDirectoryExA(NULL, destination, NULL);
+    }
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::Defaults() {
     context = -1;
     device_width = PCDeviceBackend.desktop_mode.width <= 1024u ? PCDeviceBackend.desktop_mode.width : 1024u;
@@ -140,38 +158,55 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Defaults() {
     option459 = 1;
     forceshadermodel = 0;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::Validate() {
-    if (device_width <= 0)
+    if (device_width <= 0) {
         device_width = PCDeviceBackend.desktop_mode.width;
-    if (device_height <= 0)
+    }
+    if (device_height <= 0) {
         device_height = PCDeviceBackend.desktop_mode.height;
-    if (client_width <= 0)
+    }
+    if (client_width <= 0) {
         client_width = device_width;
-    if (client_height <= 0)
+    }
+    if (client_height <= 0) {
         client_height = device_height;
-    if (refresh_rate < 0)
+    }
+    if (refresh_rate < 0) {
         refresh_rate = PCDeviceBackend.desktop_mode.refresh_rate;
-    if (multisample < 0 || multisample >= 5)
+    }
+    if (multisample < 0 || multisample >= 5) {
         multisample = 0;
-    if (aspect_mode < 0 || aspect_mode > 3)
+    }
+    if (aspect_mode < 0 || aspect_mode > 3) {
         aspect_mode = 3;
-    if (sfxvolume < 0 || sfxvolume > 10)
+    }
+    if (sfxvolume < 0 || sfxvolume > 10) {
         sfxvolume = 10;
-    if (musicvolume < 0 || musicvolume > 10)
+    }
+    if (musicvolume < 0 || musicvolume > 10) {
         musicvolume = 8;
-    if (mastervolume < 0 || mastervolume > 10)
+    }
+    if (mastervolume < 0 || mastervolume > 10) {
         mastervolume = 8;
-    if (bloommethod < 0 || bloommethod >= 3)
+    }
+    if (bloommethod < 0 || bloommethod >= 3) {
         bloommethod = 2;
-    if (desiredbloommethod < 0 || desiredbloommethod >= 3)
+    }
+    if (desiredbloommethod < 0 || desiredbloommethod >= 3) {
         desiredbloommethod = 2;
-    if (shadowmethod < 0 || shadowmethod >= 3)
+    }
+    if (shadowmethod < 0 || shadowmethod >= 3) {
         shadowmethod = 2;
-    if (desiredshadowmethod < 0 || desiredshadowmethod >= 3)
+    }
+    if (desiredshadowmethod < 0 || desiredshadowmethod >= 3) {
         desiredshadowmethod = 2;
-    if (forceshadermodel < 0 || forceshadermodel > 3)
+    }
+    if (forceshadermodel < 0 || forceshadermodel > 3) {
         forceshadermodel = 0;
+    }
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::InitializePath() {
     PCOptionsBuildFolder(file_name);
     strcat(file_name, "pcconfig.txt");
@@ -336,33 +371,41 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Load() {
         NuFParGetLine(parser);
     }
     NuFParDestroy(parser);
-    if (usehirespending != usehires)
+    if (usehirespending != usehires) {
         usehires = usehirespending;
+    }
     Validate();
 }
 
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomEnabledPc(u8 value) {
     bloomenabled = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32 value) {
     desiredshadowmethod = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetShadowsEnabledPc(u8 value) {
     shadowsenabled = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurEnabled(u8 value) {
     speedblurenabled = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHires(u8 value) {
     usehires = value;
     usehirespending = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHiresPendingPc(u8 value) {
     usehirespending = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetOption459(u8 value) {
     option459 = value;
 }
@@ -370,12 +413,15 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetOption459(u8 value) {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetSfxVolume(i32 value) {
     sfxvolume = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMusicVolume(i32 value) {
     musicvolume = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMasterVolume(i32 value) {
     mastervolume = value;
 }
+
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMusicEnabled(u8 value) {
     musicenabled = value;
 }

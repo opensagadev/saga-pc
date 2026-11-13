@@ -98,10 +98,12 @@ static void edbricbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
         edbri_options_menu = NULL;
     }
 }
+
 static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_plankcount_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankCountMenu, "Plank Count");
-    if (!edbri_plankcount_menu)
+    if (!edbri_plankcount_menu) {
         return;
+    }
     eduiMenuAddItem(edbri_plankcount_menu,
                     eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPlankCount, 1, 23, edbri_planks, "Plank Count"));
     eduiMenuAddItem(edbri_plankcount_menu, eduiItemSliderCreateInt(0, edblack, 0, edbricbSetPostInterval, 1, 23,
@@ -110,10 +112,12 @@ static void edbricbPlankCountMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 u
     edbri_plankcount_menu->x = parent->x + 10;
     edbri_plankcount_menu->y = parent->y + 40;
 }
+
 static void edbricbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_dpadmode_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelDpadModeMenu, "Dpad Mode");
-    if (!edbri_dpadmode_menu)
+    if (!edbri_dpadmode_menu) {
         return;
+    }
     eduiMenuAddItem(edbri_dpadmode_menu,
                     eduiItemCheckCreate(0, edblack, edbri_mode == 0, 1, edbricbSetDpadMode, "Bridge Orient"));
     eduiMenuAddItem(edbri_dpadmode_menu,
@@ -130,14 +134,16 @@ void __cdecl edbriDetermineNearest(f32 distance) {
         f32 length_squared;
         NuVecSub(&delta, &edbri_cam_pos, &edBridges[edbri_nearest].position);
         length_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        if (length_squared == 0.0f)
+        if (length_squared == 0.0f) {
             return;
+        }
     }
     edbri_nearest = -1;
     for (index = 0; index < 64; ++index) {
         f32 candidate;
-        if (edBridges[index].instance_id == -1)
+        if (edBridges[index].instance_id == -1) {
             continue;
+        }
         NuVecSub(&delta, &edbri_cam_pos, &edBridges[index].position);
         candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance < 0.0f || candidate < distance) {
@@ -157,23 +163,27 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
             break;
         }
     }
-    if (page == -1)
+    if (page == -1) {
         return -1;
+    }
     EdFileSetMedia(1);
-    if (!EdFileOpen(path, 0))
+    if (!EdFileOpen(path, 0)) {
         return -1;
+    }
     if (EdFileReadInt() > 1) {
         EdFileClose();
         return -1;
     }
     count = EdFileReadInt();
-    if (edbri_bridges_used + count > 64)
+    if (edbri_bridges_used + count > 64) {
         count = 64 - edbri_bridges_used;
+    }
     index = 0;
     for (i = 0; i < count; i++) {
         /* Retail tests the record before checking the index limit. */
-        while (edBridges[index].connection_index != -1 && index < 64)
+        while (edBridges[index].connection_index != -1 && index < 64) {
             ++index;
+        }
         if (index < 64) {
             edBridges[index].instance_id = -1;
             EdFileReadNuVec(&edBridges[index].position);
@@ -185,15 +195,17 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
             edBridges[index].field_1d = EdFileReadChar();
             edBridges[index].field_1e = EdFileReadChar();
             EdFileRead(name, sizeof(name));
-            if (name[0] == '\0')
+            if (name[0] == '\0') {
                 edBridges[index].special_20 = -1;
-            else
+            } else {
                 edBridges[index].special_20 = edbitsLookupInstance(name, (NUGSCN *)scene);
+            }
             EdFileRead(name, sizeof(name));
-            if (name[0] == '\0')
+            if (name[0] == '\0') {
                 edBridges[index].special_24 = -1;
-            else
+            } else {
                 edBridges[index].special_24 = edbitsLookupInstance(name, (NUGSCN *)scene);
+            }
             edBridges[index].field_28 = EdFileReadFloat();
             edBridges[index].field_2c = EdFileReadFloat();
             edBridges[index].field_30 = EdFileReadFloat();
@@ -240,11 +252,13 @@ void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     // MATCH-EXCEPTION: alpha 0x80 folded into the blue term; retail subtracts 0x8000 before the shifts.
     colour = edBridges[index].red + ((edBridges[index].green << 8) + ((edBridges[index].blue - 0x8000) << 16));
     memset(&first, 0, sizeof(first));
-    if (edBridges[index].special_20 != -1)
+    if (edBridges[index].special_20 != -1) {
         NuGScnGetSpecial(&first, edbits_base_scene, edBridges[index].special_20);
+    }
     memset(&second, 0, sizeof(second));
-    if (edBridges[index].special_24 != -1)
+    if (edBridges[index].special_24 != -1) {
         NuGScnGetSpecial(&second, edbits_base_scene, edBridges[index].special_24);
+    }
     edBridges[index].instance_id =
         NuBridgeCreate(scene, &first, &second, &edBridges[index].position, &end, edBridges[index].field_3c,
                        edBridges[index].rotation_y, edBridges[index].field_28, edBridges[index].field_2c,
@@ -272,8 +286,9 @@ void edbriRender() {
         edbitsDrawDiagonalCross(edBridges[edbri_nearest].position.x, edBridges[edbri_nearest].position.y,
                                 edBridges[edbri_nearest].position.z, 0.125f, 0xff80ffff, edbri_mtl_zoff);
     }
-    if (edbri_active_menu)
+    if (edbri_active_menu) {
         eduiMenuRender(edbri_active_menu);
+    }
 }
 
 void edbriInit(void) {
@@ -305,16 +320,18 @@ void __cdecl edbriStartPage(i32 page_number) {
     i32 index;
     if (edbri_page_used[page] && edbri_page_scene[page]) {
         for (index = 0; index < 64; ++index) {
-            if (edBridges[index].connection_index == page)
+            if (edBridges[index].connection_index == page) {
                 edbriBridgeUpdate(index, edbri_page_scene[page]);
+            }
         }
     }
 }
 
 static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_ropecolour_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelRopeColourMenu, "Rope Colour");
-    if (!edbri_ropecolour_menu)
+    if (!edbri_ropecolour_menu) {
         return;
+    }
     eduiMenuAddItem(edbri_ropecolour_menu, eduiItemColourPickCreate(0, edblack, edbricbSetRopeColour, "Rope Colour"));
     eduiItemColourPickSetRGB(((edui_colour_pick_s *)(edui_last_item)), edBridges[edbri_nearest].red / 255.0f,
                              edBridges[edbri_nearest].green / 255.0f, edBridges[edbri_nearest].blue / 255.0f);
@@ -352,13 +369,16 @@ void edbricbSetBridgeStability(eduimenu_s *unused0, eduiitem_s *item, u32 unused
     edBridges[edbri_nearest].field_3c = ((edui_slider_s *)(item))->value;
     edbriBridgeUpdate(edbri_nearest, edbits_base_scene);
 }
+
 static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    if (edbri_nearest == -1)
+    if (edbri_nearest == -1) {
         return;
+    }
     edbri_bridgeproperties_menu =
         eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelBridgePropertiesMenu, "Bridge Properties");
-    if (!edbri_bridgeproperties_menu)
+    if (!edbri_bridgeproperties_menu) {
         return;
+    }
     eduiMenuAddItem(edbri_bridgeproperties_menu,
                     eduiItemSliderCreate(0, edblack, 0, edbricbSetBridgeTension, 0.0f, 1.0f,
                                          edBridges[edbri_nearest].field_28, "Tension"));
@@ -389,16 +409,18 @@ i32 __cdecl edbriFileSave(char *path) {
     i32 count = 0;
     i32 i;
     for (i = 0; i < 64; ++i) {
-        if (edBridges[i].connection_index != -1)
+        if (edBridges[i].connection_index != -1) {
             ++count;
+        }
     }
     EdFileSetMedia(1);
     if (EdFileOpen(path, 1)) {
         EdFileWriteInt(1);
         EdFileWriteInt(count);
         for (i = 0; i < 64; ++i) {
-            if (edBridges[i].connection_index == -1)
+            if (edBridges[i].connection_index == -1) {
                 continue;
+            }
             EdFileWriteNuVec(&edBridges[i].position);
             EdFileWriteFloat(edBridges[i].length);
             EdFileWriteFloat(edBridges[i].field_14);
@@ -444,23 +466,27 @@ void __cdecl edbricbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     char directory[256];
     char extension[256];
     char path[256];
-    if (edbits_level_save_directory[0] == 0)
+    if (edbits_level_save_directory[0] == 0) {
         sprintf(directory, ".");
-    else
+    } else {
         strcpy(directory, edbits_level_save_directory);
-    if (edbits_level_save_name[0] == 0)
+    }
+    if (edbits_level_save_name[0] == 0) {
         sprintf(name, "bridge");
-    else
+    } else {
         strcpy(name, edbits_level_save_name);
-    if (edbits_level_save_extension[0] == 0)
+    }
+    if (edbits_level_save_extension[0] == 0) {
         sprintf(extension, "bri");
-    else
+    } else {
         strcpy(extension, edbits_level_save_extension);
+    }
     sprintf(path, "%s\\%s.%s", directory, name, extension);
-    if (edbriFileSave(path))
+    if (edbriFileSave(path)) {
         eduiCreateMessageMenu(menu, "Saved OK", 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, "File Save Error", 0);
+    }
 }
 
 static void edbricbSetPostInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -475,8 +501,9 @@ static void edbricbCancelPostInstanceMenu(eduimenu_s *unused0, eduimenu_s *unuse
 void __cdecl edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count, i, selected;
     edbri_postinstance_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPostInstanceMenu, "Post Select");
-    if (!edbri_postinstance_menu || !edbits_base_scene)
+    if (!edbri_postinstance_menu || !edbits_base_scene) {
         return;
+    }
     eduiMenuAddItem(edbri_postinstance_menu, eduiItemCheckCreate((size_t)(-1), edblack, edbri_post_instance_type == -1,
                                                                  1, edbricbSetPostInstanceType, "None"));
     count = NuSpecialGetNumSpecials(edbits_base_scene);
@@ -487,8 +514,9 @@ void __cdecl edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u3
         eduiMenuAddItem(
             edbri_postinstance_menu,
             eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPostInstanceType, NuSpecialGetName(&special)));
-        if (selected == 1)
+        if (selected == 1) {
             edbri_postinstance_menu->selected = edui_last_item;
+        }
     }
     eduiMenuAttach(parent, edbri_postinstance_menu);
     edbri_postinstance_menu->x = parent->x + 10;
@@ -507,8 +535,9 @@ static void edbricbCancelPlankInstanceMenu(eduimenu_s *unused0, eduimenu_s *unus
 void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count, i, selected;
     edbri_plankinstance_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankInstanceMenu, "Plank Select");
-    if (!edbri_plankinstance_menu || !edbits_base_scene)
+    if (!edbri_plankinstance_menu || !edbits_base_scene) {
         return;
+    }
     eduiMenuAddItem(edbri_plankinstance_menu,
                     eduiItemCheckCreate((size_t)(-1), edblack, edbri_plank_instance_type == -1, 1,
                                         edbricbSetPlankInstanceType, "None"));
@@ -520,8 +549,9 @@ void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u
         eduiMenuAddItem(
             edbri_plankinstance_menu,
             eduiItemCheckCreate(i, edblack, selected, 1, edbricbSetPlankInstanceType, NuSpecialGetName(&special)));
-        if (selected == 1)
+        if (selected == 1) {
             edbri_plankinstance_menu->selected = edui_last_item;
+        }
     }
     eduiMenuAttach(parent, edbri_plankinstance_menu);
     edbri_plankinstance_menu->x = parent->x + 10;
@@ -530,10 +560,12 @@ void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u
 
 i32 __cdecl edbriBridgeCreate(NUVEC *position) {
     i32 index = 0;
-    if (edbri_bridges_used == 64)
+    if (edbri_bridges_used == 64) {
         return -1;
-    while (edBridges[index].connection_index != -1)
+    }
+    while (edBridges[index].connection_index != -1) {
         ++index;
+    }
     edBridges[index].connection_index = edbri_pageid;
     ++edbri_bridges_used;
     edBridges[index].field_28 = 0.18f;
@@ -561,43 +593,48 @@ void __cdecl edbriBridgeDestroy(i32 index) {
 
 void __cdecl edbriCreateOptionsMenu(void) {
     edbri_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edbricbCancelOptMenu, "Options");
-    if (!edbri_options_menu)
+    if (!edbri_options_menu) {
         return;
+    }
     eduiMenuAddItem(edbri_options_menu,
                     eduiItemSelCreate(1, edblack, 0, 0, edbricbPlankInstanceMenu, "Plank Instance..."));
     eduiMenuAddItem(edbri_options_menu,
                     eduiItemSelCreate(1, edblack, 0, 0, edbricbPostInstanceMenu, "Post Instance..."));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbPlankCountMenu, "Plank Counts..."));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbDpadModeMenu, "Dpad Mode..."));
-    if (edbri_nearest == -1)
+    if (edbri_nearest == -1) {
         eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Bridge Properties..."));
-    else
+    } else {
         eduiMenuAddItem(edbri_options_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edbricbBridgePropertiesMenu, "Bridge Properties..."));
+    }
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileSave, "Save Bridges"));
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileLoad, "Load Bridges"));
 }
 
 void __cdecl edbriDoInput(FRAME_PAD_PC *pad) {
     i32 index;
-    if ((pad->digital_buttons & 0x100) == 0)
+    if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
+    }
     if (pad->digital_buttons & 0x100) {
         if (edbri_nearest != -1) {
             index = edbri_nearest;
             if (pad->digital_buttons_pressed & 8) {
                 do {
                     ++index;
-                    if (index == 64)
+                    if (index == 64) {
                         index = 0;
+                    }
                 } while (edBridges[index].instance_id == -1);
                 edbri_nearest = index;
             }
             if (pad->digital_buttons_pressed & 2) {
                 do {
                     --index;
-                    if (index == -1)
+                    if (index == -1) {
                         index = 63;
+                    }
                 } while (edBridges[index].instance_id == -1);
                 edbri_nearest = index;
             }
@@ -622,13 +659,16 @@ void __cdecl edbriDoInput(FRAME_PAD_PC *pad) {
             edbriCreateOptionsMenu();
             edbri_active_menu = edbri_options_menu;
         }
-        if ((pad->digital_buttons_pressed & 0x40) && edbri_plank_instance_type != -1)
+        if ((pad->digital_buttons_pressed & 0x40) && edbri_plank_instance_type != -1) {
             edbriBridgeCreate(&edbri_cam_pos);
-        if ((pad->digital_buttons & 0x20) && edbri_nearest != -1)
+        }
+        if ((pad->digital_buttons & 0x20) && edbri_nearest != -1) {
             edbriBridgePlace(edbri_nearest, &edbri_cam_pos);
+        }
         if (pad->digital_buttons_pressed & 0x10) {
-            if (edbri_nearest != -1)
+            if (edbri_nearest != -1) {
                 edbriBridgeDestroy(edbri_nearest);
+            }
             edbri_nearest = -1;
         }
     }
@@ -636,24 +676,30 @@ void __cdecl edbriDoInput(FRAME_PAD_PC *pad) {
         edbri_roty += pad->analog_left_pad_right;
         edbri_roty -= pad->analog_left_pad_left;
         edbri_rotz += pad->analog_left_pad_up;
-        if (edbri_rotz > 0x4000)
+        if (edbri_rotz > 0x4000) {
             edbri_rotz = 0x2000;
+        }
         edbri_rotz -= pad->analog_left_pad_down;
-        if (edbri_rotz < -0x4000)
+        if (edbri_rotz < -0x4000) {
             edbri_rotz = -0x2000;
+        }
     } else if (edbri_mode == 1) {
         edbri_length += pad->analog_left_pad_up / 2500.0;
         edbri_length -= pad->analog_left_pad_down / 2500.0;
-        if (edbri_length < 0.1f)
+        if (edbri_length < 0.1f) {
             edbri_length = 0.1f;
-        if (edbri_length > 20.0f)
+        }
+        if (edbri_length > 20.0f) {
             edbri_length = 20.0f;
+        }
         edbri_width += pad->analog_left_pad_right / 5000.0;
         edbri_width -= pad->analog_left_pad_left / 5000.0;
-        if (edbri_width < 0.1f)
+        if (edbri_width < 0.1f) {
             edbri_width = 0.1f;
-        if (edbri_width > 20.0f)
+        }
+        if (edbri_width > 20.0f) {
             edbri_width = 5.0f;
+        }
     }
 }
 
@@ -673,8 +719,9 @@ void __cdecl edbricbSetRopeColour(eduimenu_s *menu, eduiitem_s *item, u32 unused
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback)
+    if (menu->callback) {
         menu->callback(menu, parent);
+    }
 }
 
 void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
@@ -683,25 +730,30 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char extension[256];
     char path[256];
     i32 page;
-    if (edbits_level_save_directory[0] == 0)
+    if (edbits_level_save_directory[0] == 0) {
         sprintf(directory, ".");
-    else
+    } else {
         strcpy(directory, edbits_level_save_directory);
-    if (edbits_level_save_name[0] == 0)
+    }
+    if (edbits_level_save_name[0] == 0) {
         sprintf(name, "bridge");
-    else
+    } else {
         strcpy(name, edbits_level_save_name);
-    if (edbits_level_save_extension[0] == 0)
+    }
+    if (edbits_level_save_extension[0] == 0) {
         sprintf(extension, "bri");
-    else
+    } else {
         strcpy(extension, edbits_level_save_extension);
+    }
     sprintf(path, "%s\\%s.%s", directory, name, extension);
     edbriBridgesReset();
-    if (NuFileExists(path))
+    if (NuFileExists(path)) {
         edbriLoadPage(path, edbits_base_scene);
+    }
     for (page = 0; page < 8; ++page) {
-        if (edbri_page_used[page])
+        if (edbri_page_used[page]) {
             edbriStartPage(page);
+        }
     }
     edbriDetermineNearest(1.0f);
     eduiCreateMessageMenu(menu, "Loaded OK", 1);

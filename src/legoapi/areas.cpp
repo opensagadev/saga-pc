@@ -11,6 +11,7 @@ typedef struct area_gizmotype_pc_s {
     char *(__cdecl *get_gizmo_name)(void *gizmo);
     u8 unknown_0048[0x54];
 } AREA_GIZMOTYPE_PC;
+
 STATIC_ASSERT(sizeof(AREA_GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_GIZMOTYPE_PC, get_gizmo_name) == 0x44);
 
@@ -19,6 +20,7 @@ typedef struct area_gizmotypes_pc_s {
     i32 unknown_0004;
     AREA_GIZMOTYPE_PC *types;
 } AREA_GIZMOTYPES_PC;
+
 STATIC_ASSERT(sizeof(AREA_GIZMOTYPES_PC) == 0x0c);
 STATIC_ASSERT(offsetof(AREA_GIZMOTYPES_PC, types) == 0x08);
 
@@ -29,6 +31,7 @@ typedef struct area_gizmoset_pc_s {
     void *gizmos;
     void *unknown_0010;
 } AREA_GIZMOSET_PC;
+
 STATIC_ASSERT(sizeof(AREA_GIZMOSET_PC) == 0x14);
 STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, count) == 0x04);
 STATIC_ASSERT(offsetof(AREA_GIZMOSET_PC, gizmos) == 0x0c);
@@ -39,12 +42,14 @@ typedef struct area_gizmo_pc_s {
     u8 type_id;
     u8 unknown_0007;
 } AREA_GIZMO_PC;
+
 STATIC_ASSERT(sizeof(AREA_GIZMO_PC) == 8);
 STATIC_ASSERT(offsetof(AREA_GIZMO_PC, type_id) == 0x06);
 
 typedef struct area_gizmosys_prefix_pc_s {
     AREA_GIZMOSET_PC *sets;
 } AREA_GIZMOSYS_PREFIX_PC;
+
 STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
 
 AREA_DATA_PC *__cdecl Area_FindByName(char *name, i32 *index_out) {
@@ -278,8 +283,9 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
                     i32 slot;
 
                     for (slot = 0; slot < area->level_count; ++slot) {
-                        if (area->levels[slot] == index)
+                        if (area->levels[slot] == index) {
                             break;
+                        }
                     }
                     if (slot == area->level_count) {
                         area->levels[area->level_count] = (i16)index;
@@ -396,14 +402,16 @@ typedef struct player_progress_hp_pc_s {
     u8 hitpoints;
     u8 unknown_0009[7];
 } PLAYER_PROGRESS_HP_PC;
+
 STATIC_ASSERT(sizeof(PLAYER_PROGRESS_HP_PC) == 0x10);
 STATIC_ASSERT(offsetof(PLAYER_PROGRESS_HP_PC, hitpoints) == 8);
 
 i32 __cdecl AreaFromMiniKitID(i32 id) {
     i32 index;
     for (index = 0; index < AREACOUNT; ++index) {
-        if (ADataList[index].minikit_id == id)
+        if (ADataList[index].minikit_id == id) {
             return index;
+        }
     }
     return -1;
 }
@@ -412,10 +420,12 @@ extern "C" i8 __cdecl Area_CharIDInCurrentList(i32 character_id) {
     i32 index;
     if (CurrentCList != NULL) {
         for (index = 0; CurrentStoryCList[index].model_id != -1; ++index) {
-            if (index >= 64)
+            if (index >= 64) {
                 break;
-            if (CurrentStoryCList[index].model_id == character_id)
+            }
+            if (CurrentStoryCList[index].model_id == character_id) {
                 return (i8)index;
+            }
         }
     }
     return -1;
@@ -426,17 +436,21 @@ typedef struct AREA_MISSION_READER_PC {
     u8 character_count;
     i16 character_ids[8];
 } AREA_MISSION_READER_PC;
+
 STATIC_ASSERT(offsetof(AREA_MISSION_READER_PC, character_count) == 0x1f);
 STATIC_ASSERT(offsetof(AREA_MISSION_READER_PC, character_ids) == 0x20);
+
 typedef struct AREA_MISSION_DATA_READER_PC {
     i16 find_char;
 } AREA_MISSION_DATA_READER_PC;
+
 STATIC_ASSERT(offsetof(AREA_MISSION_DATA_READER_PC, find_char) == 0);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
 #define AREA_STORY_MODELS_PC Area_StoryModelListPc
+
 static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,
                                       i32 load_model, AREA_EXTRA_MODEL_PC *extras) {
     if (*count < capacity && InModelList(list, character_id, NULL) == 0) {
@@ -445,11 +459,13 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
         ++*count;
         list[*count].model_id = -1;
     }
-    if (extras == NULL || list == AreaPlayerModelsPc || load_model == 0)
+    if (extras == NULL || list == AreaPlayerModelsPc || load_model == 0) {
         return;
+    }
     for (; extras->model_list != NULL; ++extras) {
-        if (character_id != *extras->model_list)
+        if (character_id != *extras->model_list) {
             continue;
+        }
         const i32 extra_id = *extras->extra_id;
         if (extra_id != -1 && *count < capacity && InModelList(list, extra_id, NULL) == 0) {
             list[*count].model_id = (i16)extra_id;
@@ -460,6 +476,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
         return;
     }
 }
+
 extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC *models, i16 *s) {
     i32 index;
     Area_PlayerModelCount = 0;
@@ -558,8 +575,9 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
     i32 level_index;
     while (NuFParGetLine(fp) != 0) {
         NuFParGetWord(fp);
-        if (fp->word_buffer_ptr[0] == '\0')
+        if (fp->word_buffer_ptr[0] == '\0') {
             continue;
+        }
         if (in_counter != 0) {
             if (NuStrICmp(fp->word_buffer_ptr, "supercounter_end") == 0) {
                 if (counter->pickup_count > 0) {
@@ -567,16 +585,18 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                     in_counter = 0;
                 }
             } else if (NuStrICmp(fp->word_buffer_ptr, "pickup") == 0) {
-                if (NuFParGetWord(fp) == 0 || NuStrLen(fp->word_buffer_ptr) >= 8)
+                if (NuFParGetWord(fp) == 0 || NuStrLen(fp->word_buffer_ptr) >= 8) {
                     continue;
+                }
                 NuStrCpy(counter->pickups[counter->pickup_count].name, fp->word_buffer_ptr);
                 counter->pickups[counter->pickup_count].level_index = -1;
                 counter->pickups[counter->pickup_count].position_name[0] = '\0';
                 counter->pickups[counter->pickup_count].use_special = 1;
                 while (NuFParGetWord(fp) != 0) {
                     if (NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
-                        if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &index) != NULL)
+                        if (NuFParGetWord(fp) != 0 && Level_FindByName(fp->word_buffer_ptr, &index) != NULL) {
                             counter->pickups[counter->pickup_count].level_index = static_cast<i16>(index);
+                        }
                     } else if (NuStrICmp(fp->word_buffer_ptr, "draw_at_gizmo") == 0) {
                         if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
                             NuStrCpy(counter->pickups[counter->pickup_count].position_name, fp->word_buffer_ptr);
@@ -589,8 +609,9 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                         }
                     }
                 }
-                if (counter->pickups[counter->pickup_count].level_index != -1)
+                if (counter->pickups[counter->pickup_count].level_index != -1) {
                     ++counter->pickup_count;
+                }
             } else if (NuStrICmp(fp->word_buffer_ptr, "colour") == 0) {
                 counter->red = static_cast<u8>(NuFParGetInt(fp));
                 counter->green = static_cast<u8>(NuFParGetInt(fp));
@@ -609,11 +630,13 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 in_counter = 1;
             }
         } else if (NuStrICmp(fp->word_buffer_ptr, "character") == 0) {
-            if (NuFParGetWord(fp) == 0)
+            if (NuFParGetWord(fp) == 0) {
                 continue;
+            }
             const i32 character_id = CharIDFromName(fp->word_buffer_ptr);
-            if (character_id == -1 || NuFParGetWord(fp) == 0)
+            if (character_id == -1 || NuFParGetWord(fp) == 0) {
                 continue;
+            }
             if (NuStrICmp(fp->word_buffer_ptr, "player") == 0) {
                 if (Area_MissionModelCount == 0) {
                     AreaAddModelListPrivatePc(reinterpret_cast<APICHARACTERMODELLIST *>(AreaPlayerModelsPc),
@@ -636,13 +659,15 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
             }
         } else if (NuStrICmp(fp->word_buffer_ptr, "streaming") == 0) {
             i32 story_token;
-            if (LevelLoadCount >= 12 || NuFParGetWord(fp) == 0)
+            if (LevelLoadCount >= 12 || NuFParGetWord(fp) == 0) {
                 continue;
+            }
             story_token = 0;
             if (NuStrICmp(fp->word_buffer_ptr, "story_only") == 0) {
                 LevelLoad[LevelLoadCount].flags = (LevelLoad[LevelLoadCount].flags & ~2) | 1;
-                if (NuFParGetWord(fp) != 0)
+                if (NuFParGetWord(fp) != 0) {
                     story_token = 1;
+                }
             }
             if (NuStrICmp(fp->word_buffer_ptr, "freeplay_only") != 0) {
                 // The reference applies both bits after a lone story_only
@@ -650,33 +675,41 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                 LevelLoad[LevelLoadCount].flags |= 3;
             } else {
                 LevelLoad[LevelLoadCount].flags = (LevelLoad[LevelLoadCount].flags & ~1) | 2;
-                if (NuFParGetWord(fp) == 0 && story_token == 0)
+                if (NuFParGetWord(fp) == 0 && story_token == 0) {
                     continue;
+                }
             }
             Level_FindByName(fp->word_buffer_ptr, &level_index);
-            if (level_index == -1 || LDataList[level_index].area_index != area)
+            if (level_index == -1 || LDataList[level_index].area_index != area) {
                 continue;
+            }
             for (index = 0; index < LevelLoadCount; ++index) {
-                if (LevelLoad[index].level == level_index)
+                if (LevelLoad[index].level == level_index) {
                     break;
+                }
             }
-            if (index != LevelLoadCount)
+            if (index != LevelLoadCount) {
                 continue;
+            }
             LevelLoad[LevelLoadCount].level = static_cast<i16>(level_index);
-            if (NuFParGetWord(fp) == 0)
+            if (NuFParGetWord(fp) == 0) {
                 continue;
+            }
             Level_FindByName(fp->word_buffer_ptr, &level_index);
-            if (level_index == -1 || LDataList[level_index].area_index != area)
+            if (level_index == -1 || LDataList[level_index].area_index != area) {
                 continue;
+            }
             LevelLoad[LevelLoadCount].first_level = static_cast<i16>(level_index);
             LevelLoad[LevelLoadCount].second_level = -1;
             if (NuFParGetWord(fp) != 0) {
                 Level_FindByName(fp->word_buffer_ptr, &level_index);
-                if (level_index != -1 && LDataList[level_index].area_index == area)
+                if (level_index != -1 && LDataList[level_index].area_index == area) {
                     LevelLoad[LevelLoadCount].second_level = static_cast<i16>(level_index);
+                }
             }
-            if (LevelLoad[LevelLoadCount].second_level == -1)
+            if (LevelLoad[LevelLoadCount].second_level == -1) {
                 LevelLoad[LevelLoadCount].second_level = LevelLoad[LevelLoadCount].first_level;
+            }
             ++LevelLoadCount;
         } else if (area != -1 && NuStrICmp(fp->word_buffer_ptr, "music") == 0) {
             if (NuFParGetWord(fp) != 0) {
@@ -709,8 +742,9 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
                             i32 slot = NuAToI(output + 6);
                             if (NuFParGetWord(fp) != 0 && static_cast<u32>(slot) <= 7) {
                                 message->output_values[slot] = static_cast<i8>(NuAToI(fp->word_buffer_ptr));
-                                if (slot + 1 > message->output_count)
+                                if (slot + 1 > message->output_count) {
                                     message->output_count = static_cast<i8>(slot + 1);
+                                }
                             }
                         }
                     }
@@ -730,12 +764,13 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
 
     if (Area_PlayerModelCount == 0) {
         i32 player_id;
-        if (AREA_STORY_MODELS_PC[0].model_id != -1)
+        if (AREA_STORY_MODELS_PC[0].model_id != -1) {
             player_id = AREA_STORY_MODELS_PC[0].model_id;
-        else if (Area_FreePlayModelList[0].model_id != -1)
+        } else if (Area_FreePlayModelList[0].model_id != -1) {
             player_id = Area_FreePlayModelList[0].model_id;
-        else
+        } else {
             player_id = s[0];
+        }
         if (player_id != -1) {
             AreaPlayerModelsPc[0].model_id = static_cast<i16>(player_id);
             AreaPlayerModelsPc[0].count = 0;
@@ -796,12 +831,15 @@ typedef struct area_loading_clock_reader_pc_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;
 } AREA_LOADING_CLOCK_READER_PC;
+
 STATIC_ASSERT(offsetof(AREA_LOADING_CLOCK_READER_PC, elapsed_time) == 0x7c20);
+
 typedef struct area_loading_pad_reader_pc_s {
     u8 unknown_0000[8];
     u32 buttons_pressed;
     u8 unknown_000c[0x54];
 } AREA_LOADING_PAD_READER_PC;
+
 STATIC_ASSERT(sizeof(AREA_LOADING_PAD_READER_PC) == 0x60);
 STATIC_ASSERT(offsetof(AREA_LOADING_PAD_READER_PC, buttons_pressed) == 8);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
@@ -813,16 +851,20 @@ extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, 
     LEVELSAVE_s *save;
     for (index = 0; index < counter->pickup_count; ++index, ++pickup) {
         if (world->area_index != -1) {
-            for (saved = 0; saved < AreaGlobals_PC.new_minikit_count; ++saved)
+            for (saved = 0; saved < AreaGlobals_PC.new_minikit_count; ++saved) {
                 if (NewMiniPiece[saved].level == pickup->level_index &&
-                    NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0)
+                    NuStrICmp(NewMiniPiece[saved].name, pickup->name) == 0) {
                     return 1;
+                }
+            }
         }
         if (Game_LevelSave != NULL) {
             save = &((LEVELSAVE_s *)Game_LevelSave)[pickup->level_index];
-            for (saved = 0; saved < save->minikit_count; ++saved)
-                if (NuStrICmp(save->minikit_names[saved], pickup->name) == 0)
+            for (saved = 0; saved < save->minikit_count; ++saved) {
+                if (NuStrICmp(save->minikit_names[saved], pickup->name) == 0) {
                     return 1;
+                }
+            }
         }
     }
     return 0;
@@ -843,6 +885,7 @@ STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
+
 extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
                                                                   void *output_pointer) {
     AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
@@ -856,8 +899,9 @@ extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *wor
             for (i32 index = 0; index < counter->pickup_count; ++index, ++pickup) {
                 if (pickup->level_index == world->level_idx && pickup->gizmo == gizmo) {
                     if (pickup->position_gizmo == NULL) {
-                        if (output != NULL)
+                        if (output != NULL) {
                             *output = pickup;
+                        }
                         return counter;
                     }
                     NUVEC *draw_position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, pickup->position_gizmo);
@@ -872,33 +916,39 @@ extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *wor
                 }
             }
         }
-        if (output != NULL)
+        if (output != NULL) {
             *output = found_pickup;
+        }
         return found_counter;
     }
-    if (output != NULL)
+    if (output != NULL) {
         *output = NULL;
+    }
     return NULL;
 }
+
 extern "C" void __cdecl SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC *gizmo_pickup) {
     NUVEC position;
-    if (Players_AveragePos(&position, NULL) == 0)
+    if (Players_AveragePos(&position, NULL) == 0) {
         position = GameCam->position;
+    }
     AREA_SUPERCOUNTER_PICKUP_PC *pickup;
     AREA_SUPERCOUNTER_PC *counter = SuperCounters_FindPickup(WORLD, gizmo, &position, &pickup);
     if (counter != NULL) {
         gizmo_pickup->flags &= (u8)~6;
         if (counter->collected_count < counter->pickup_count) {
             ++counter->collected_count;
-            if (counter->collected_count == counter->pickup_count)
+            if (counter->collected_count == counter->pickup_count) {
                 gizmo_pickup->flags |= 6;
+            }
             NUVEC *message_position;
-            if (pickup->position_gizmo != NULL)
+            if (pickup->position_gizmo != NULL) {
                 message_position = GizmoGetPos((GIZMOSYS_PC *)WORLD->gizmo_sys, pickup->position_gizmo);
-            else if (NuSpecialExistsFn((NUSPECIALHANDLE *)&pickup->position_special) != 0)
+            } else if (NuSpecialExistsFn((NUSPECIALHANDLE *)&pickup->position_special) != 0) {
                 message_position = NuSpecialGetDrawPos((NUSPECIALHANDLE *)&pickup->position_special);
-            else
+            } else {
                 message_position = &gizmo_pickup->position;
+            }
             AddGameMsgCount(message_position, counter->collected_count, counter->pickup_count, counter->red,
                             counter->green, counter->blue, 0.75f);
             GameAudio_PlaySfx(0x53, NULL, 0, 0);
@@ -910,9 +960,11 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counter_count) == 0x7f);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
 STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
 STATIC_ASSERT(sizeof(((AREA_SUPERCOUNTER_PICKUP_PC *)0)->position_special) == 12);
+
 extern "C" void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world) {
-    if (world->area == NULL || world->area->super_counters == NULL)
+    if (world->area == NULL || world->area->super_counters == NULL) {
         return;
+    }
     for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index) {
         AREA_SUPERCOUNTER_PICKUP_PC *pickup = world->area->super_counters[counter_index].pickups;
         for (i32 index = 0; index < world->area->super_counters[counter_index].pickup_count; ++index, ++pickup) {
@@ -920,11 +972,12 @@ extern "C" void __cdecl SuperCounters_FixUpGizmos(WORLDINFO *world) {
             pickup->position_gizmo = NULL;
             memset(pickup->position_special, 0, sizeof(pickup->position_special));
             if (pickup->position_name[0] != '\0') {
-                if (pickup->use_special == 0)
+                if (pickup->use_special == 0) {
                     pickup->position_gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->position_name);
-                else
+                } else {
                     NuSpecialFind(world->current_gscn, reinterpret_cast<NUSPECIALHANDLE *>(pickup->position_special),
                                   pickup->position_name, 1);
+                }
             }
         }
     }

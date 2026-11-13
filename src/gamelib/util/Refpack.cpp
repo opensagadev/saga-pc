@@ -38,8 +38,9 @@ extern "C" {
 extern "C" u32 __cdecl RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
     u32 length;
     for (length = 0; length < maximum; ++length) {
-        if (*first++ != *second++)
+        if (*first++ != *second++) {
             break;
+        }
     }
     return length;
 }

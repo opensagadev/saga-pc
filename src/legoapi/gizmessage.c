@@ -83,8 +83,9 @@ void __cdecl GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, voi
     (void)type;
     (void)world;
     (void)data;
-    if (gizaimessagesys == NULL)
+    if (gizaimessagesys == NULL) {
         return;
+    }
     message = (GIZAIMESSAGE *)NuLinkedListGetHead(&gizaimessagesys->active_list);
     while (message != NULL) {
         if (message->flags & 1) {

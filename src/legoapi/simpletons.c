@@ -3,18 +3,22 @@
 static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 level_index) {
     NARROWSOCKEXCEPTION_PC *exception;
     NARROWSOCKEXCEPTION_PC *list;
-    if (system == NULL || position->sock_index == -1)
+    if (system == NULL || position->sock_index == -1) {
         return 0;
-    if ((system->socks[position->sock_index].flags & 0x800) == 0)
+    }
+    if ((system->socks[position->sock_index].flags & 0x800) == 0) {
         return 0;
+    }
     list = NarrowSockException;
     if (list != NULL) {
         for (exception = list; exception->level_name != NULL; ++exception) {
             if (exception->level_index == -1 || exception->level_index != level_index ||
-                position->sock_index != exception->sock_index)
+                position->sock_index != exception->sock_index) {
                 continue;
-            if (position->distance >= exception->start_distance && position->distance <= exception->end_distance)
+            }
+            if (position->distance >= exception->start_distance && position->distance <= exception->end_distance) {
                 return 0;
+            }
         }
     }
     return 1;
@@ -22,22 +26,27 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
 
 i32 __cdecl ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     GAMEOBJECT *other = NULL;
-    if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0)
+    if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0) {
         return 0;
-    if (disable_narrow_socks != 0)
+    }
+    if (disable_narrow_socks != 0) {
         return 0;
+    }
     if (object->field_280 != 0xff) {
         if ((object->flags_1fc_word & 0x80) != 0) {
-            if (object == Player[0])
+            if (object == Player[0]) {
                 other = Player[1];
-            else if (object == Player[1])
+            } else if (object == Player[1]) {
                 other = Player[0];
+            }
             if (other != NULL && (other->flags_1fc_word & 0x80) != 0 &&
-                !NarrowSockPositionAllowed(system, &other->sock_position, level_index))
+                !NarrowSockPositionAllowed(system, &other->sock_position, level_index)) {
                 return 0;
+            }
         }
-        if (NarrowSockPositionAllowed(system, &object->sock_position, level_index))
+        if (NarrowSockPositionAllowed(system, &object->sock_position, level_index)) {
             return 1;
+        }
     }
     return 0;
 }
@@ -46,5 +55,6 @@ typedef struct AIONCEATTACKER_PC {
     GAMEOBJECT *object;
     f32 distance;
 } AIONCEATTACKER_PC;
+
 STATIC_ASSERT(sizeof(AIONCEATTACKER_PC) == 8);
 STATIC_ASSERT(offsetof(AIONCEATTACKER_PC, distance) == 4);

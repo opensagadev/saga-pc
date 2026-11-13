@@ -22,15 +22,18 @@ static volatile LONG sound_ready_reported = 0;
 static int SoundTryLock(void) {
     return InterlockedCompareExchange(&sound_lock, 1, 0) == 0;
 }
+
 static void SoundUnlock(void) {
     InterlockedExchange(&sound_lock, 0);
 }
+
 static void SoundSkip(int reason, const char *stage, DWORD thread) {
     static const char *const names[5] = {"concurrent-setters-disabled", "no-published-baseline", "setter-active",
                                          "observer-busy", "setter-generation-changed"};
-    if (InterlockedExchange(&sound_skip_reported[reason], 1) == 0)
+    if (InterlockedExchange(&sound_skip_reported[reason], 1) == 0) {
         LOG_INFO("Sound observer unavailable: reason=%s checkpoint=%s thread=%lu; tuple not certified", names[reason],
                  stage, thread);
+    }
 }
 
 void __cdecl SagaDebugSoundSetterBeginPc(void) {
@@ -39,8 +42,9 @@ void __cdecl SagaDebugSoundSetterBeginPc(void) {
     LONG active = InterlockedIncrement(&sound_active_setters);
     InterlockedExchange(&sound_baseline_valid, 0);
     InterlockedIncrement(&sound_generation);
-    if (active != 1)
+    if (active != 1) {
         InterlockedExchange(&sound_disabled, 1);
+    }
     errno = saved_errno;
     SetLastError(saved_error);
 }
@@ -119,9 +123,9 @@ void __cdecl SagaDebugSoundCheckpointPc(const char *stage, void *volatile const 
     }
     diverged = observed.source != expected.source || observed.count != expected.count ||
                observed.destination != expected.destination;
-    if (diverged)
+    if (diverged) {
         diverged = InterlockedExchange(&sound_reported, 1) == 0;
-    else {
+    } else {
         sound_last_stage = stage;
         sound_last_thread = thread;
         ready = InterlockedExchange(&sound_ready_reported, 1) == 0;
@@ -129,9 +133,9 @@ void __cdecl SagaDebugSoundCheckpointPc(const char *stage, void *volatile const 
 unlock:
     SoundUnlock();
 done:
-    if (skip >= 0)
+    if (skip >= 0) {
         SoundSkip(skip, stage, thread);
-    else if (diverged)
+    } else if (diverged) {
         LOG_WARN("Sound request first observed divergence: previous-check=%s previous-thread=%lu checkpoint=%s "
                  "thread=%lu setter-thread=%lu setter-caller=%p generation=%ld "
                  "expected source=%p count=%d (0x%08x) destination=%p; observed source=%p count=%d (0x%08x) "
@@ -139,9 +143,10 @@ done:
                  previous, previous_thread, stage, thread, setter_thread, caller, generation, expected.source,
                  expected.count, (unsigned)expected.count, expected.destination, observed.source, observed.count,
                  (unsigned)observed.count, observed.destination);
-    else if (ready)
+    } else if (ready) {
         LOG_INFO("Sound observer first accepted checkpoint: checkpoint=%s thread=%lu setter-thread=%lu generation=%ld",
                  stage, thread, setter_thread, generation);
+    }
     errno = saved_errno;
     SetLastError(saved_error);
 }

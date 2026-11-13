@@ -15,11 +15,14 @@ extern "C" {
     extern char *StartupCharVariantNamesPc[23];
 }
 extern "C" void __cdecl TextInputSetNameCallbackPc(void(__cdecl *)(i32, char *));
+
 static i32 __cdecl PcInputCommandAllowedPc(i32 port, i32 command) {
-    if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3))
+    if (TextInputIsKeyboardDevicePc(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
         return 0;
+    }
     return 1;
 }
+
 extern "C" void __cdecl Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
 class Fade;
 class FadeWipe;
@@ -49,6 +52,7 @@ extern "C" {
 
     extern "C" {
         extern NUMTL *FadeMtl;
+
         typedef struct nuprimvertex_pc_s {
             f32 x;
             f32 y;
@@ -57,10 +61,12 @@ extern "C" {
             f32 u;
             f32 v;
         } NUPRIMVERTEX_PC;
+
         STATIC_ASSERT(sizeof(NUPRIMVERTEX_PC) == 0x18);
         STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, colour) == 0x0c);
         STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, u) == 0x10);
         STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, v) == 0x14);
+
         typedef struct LEGAL_MATERIAL_PC {
             u8 reserved00[0x40];
             u32 attributes;
@@ -72,6 +78,7 @@ extern "C" {
             u8 reserved76[0x3e];
             u32 shader_flags;
         } LEGAL_MATERIAL_PC;
+
         STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, attributes) == 0x40);
         STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, diffuse) == 0x54);
         STATIC_ASSERT(offsetof(LEGAL_MATERIAL_PC, opacity) == 0x70);
@@ -121,8 +128,9 @@ extern "C" {
         void __cdecl LoadPermLoadLegalTexture(void) {
             VARIPTR texture_base, texture_end;
             char path[128], name[64];
-            if (legal_tid != 0 || loadlegal_done != 0)
+            if (legal_tid != 0 || loadlegal_done != 0) {
                 return;
+            }
             texture_end = superbuffer_end;
             texture_base.addr = texture_end.addr - 0x400000;
             Text_Language = NuLanguageGet();
@@ -147,11 +155,13 @@ extern "C" {
         static i32 __cdecl LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
             NUMTL *material;
             LEGAL_MATERIAL_PC *view;
-            if (*output != NULL)
+            if (*output != NULL) {
                 return 1;
+            }
             material = NuMtlCreate(1);
-            if (material == NULL)
+            if (material == NULL) {
                 return 0;
+            }
             view = (LEGAL_MATERIAL_PC *)material;
             view->diffuse.x = 1.0f;
             view->diffuse.y = 1.0f;
@@ -176,10 +186,11 @@ extern "C" {
             if (StartupGameFlag0 != 0) {
                 Text_LoadFont("stuff\\text\\pc_font", &permbuffer_ptr, &permbuffer_end);
             } else if (StartupGameFlag1 != 0) {
-                if (Text_Language == 0)
+                if (Text_Language == 0) {
                     Text_LoadFont("stuff\\text\\starwars_font_j", &permbuffer_ptr, &permbuffer_end);
-                else
+                } else {
                     Text_LoadFont("stuff\\text\\starwars_font", &permbuffer_ptr, &permbuffer_end);
+                }
             } else {
                 Text_LoadFont("stuff\\text\\batman_font", &permbuffer_ptr, &permbuffer_end);
             }
@@ -491,8 +502,9 @@ extern "C" {
                         if (legal_tid == 0) {
                             legal_timer = 5.8f;
                         } else {
-                            if (LoadPermCreateLegalMtl(&legal_mtl, legal_tid) == 0)
+                            if (LoadPermCreateLegalMtl(&legal_mtl, legal_tid) == 0) {
                                 legal_timer = 5.8f;
+                            }
                         }
                     } else {
                         legal_timer += FRAMETIME;

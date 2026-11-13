@@ -13,8 +13,9 @@ typedef struct CopyStream {
 static BOOL write_all(HANDLE output, const char *bytes, DWORD length) {
     while (length != 0) {
         DWORD written;
-        if (!WriteFile(output, bytes, length, &written, NULL) || written == 0)
+        if (!WriteFile(output, bytes, length, &written, NULL) || written == 0) {
             return FALSE;
+        }
         bytes += written;
         length -= written;
     }
@@ -27,19 +28,23 @@ static DWORD WINAPI copy_stream(void *argument) {
     DWORD count;
     for (;;) {
         if (!ReadFile(stream->input, buffer, sizeof(buffer), &count, NULL)) {
-            if (GetLastError() != ERROR_BROKEN_PIPE)
+            if (GetLastError() != ERROR_BROKEN_PIPE) {
                 stream->failures |= 1;
+            }
             break;
         }
-        if (count == 0)
+        if (count == 0) {
             break;
+        }
         stream->bytes += count;
         EnterCriticalSection(stream->file_lock);
-        if (!write_all(stream->file, buffer, count))
+        if (!write_all(stream->file, buffer, count)) {
             stream->failures |= 2;
+        }
         LeaveCriticalSection(stream->file_lock);
-        if (!write_all(stream->terminal, buffer, count))
+        if (!write_all(stream->terminal, buffer, count)) {
             stream->failures |= 4;
+        }
     }
     CloseHandle(stream->input);
     return 0;
@@ -56,8 +61,9 @@ int main(int argc, char **argv) {
 
     int index;
     /* Invoked only with the parent's explicit inherited handle list. */
-    if (argc != 8 || strcmp(argv[7], "saga-debug-capture-v1") != 0)
+    if (argc != 8 || strcmp(argv[7], "saga-debug-capture-v1") != 0) {
         return 10;
+    }
     InitializeCriticalSection(&file_lock);
     streams[0].input = handle_argument(argv[1]);
     streams[1].input = handle_argument(argv[2]);
@@ -66,21 +72,25 @@ int main(int argc, char **argv) {
     streams[0].file = streams[1].file = handle_argument(argv[5]);
     ready = handle_argument(argv[6]);
     if (GetFileType(streams[0].input) != FILE_TYPE_PIPE || GetFileType(streams[1].input) != FILE_TYPE_PIPE ||
-        GetFileType(streams[0].file) != FILE_TYPE_DISK)
+        GetFileType(streams[0].file) != FILE_TYPE_DISK) {
         return 12;
+    }
     for (index = 0; index != 2; ++index) {
         streams[index].bytes = streams[index].failures = 0;
         streams[index].file_lock = &file_lock;
         threads[index] = CreateThread(NULL, 0, copy_stream, &streams[index], 0, NULL);
-        if (threads[index] == NULL)
+        if (threads[index] == NULL) {
             return 13;
+        }
     }
-    if (!SetEvent(ready))
+    if (!SetEvent(ready)) {
         return 14;
+    }
     CloseHandle(ready);
     /* No parent-death timer: drain independently until every real writer closes. */
-    if (WaitForMultipleObjects(2, threads, TRUE, INFINITE) != WAIT_OBJECT_0)
+    if (WaitForMultipleObjects(2, threads, TRUE, INFINITE) != WAIT_OBJECT_0) {
         return 15;
+    }
     FlushFileBuffers(streams[0].file);
     CloseHandle(streams[0].file);
     CloseHandle(streams[0].terminal);

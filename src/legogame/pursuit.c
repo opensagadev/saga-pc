@@ -12,6 +12,7 @@ typedef struct PURSUIT_TRAFFIC_ENTRY_PC {
     i8 direction;
     u8 unknown_13b[5];
 } PURSUIT_TRAFFIC_ENTRY_PC;
+
 STATIC_ASSERT(sizeof(PURSUIT_TRAFFIC_ENTRY_PC) == 0x140);
 STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_ENTRY_PC, end_frame) == 0x10);
 STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_ENTRY_PC, direction) == 0x13a);
@@ -23,6 +24,7 @@ typedef struct PURSUIT_TRAFFIC_PC {
     u8 unknown_77e1[2];
     i8 side;
 } PURSUIT_TRAFFIC_PC;
+
 STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_PC, count) == 0x77e0);
 STATIC_ASSERT(offsetof(PURSUIT_TRAFFIC_PC, side) == 0x77e3);
 
@@ -50,15 +52,17 @@ static i32 pursuit_laser_type;
 static void UpdateZamArrow(WORLDINFO *world) {
     NUVEC position;
     GAME_MESSAGE_PC *message;
-    if (zamarrow.object == NULL || (zamarrow.object->flags_1fc_word & 0x1000) == 0 || zamarrow.object->dead != 0)
+    if (zamarrow.object == NULL || (zamarrow.object->flags_1fc_word & 0x1000) == 0 || zamarrow.object->dead != 0) {
         return;
+    }
     if (FadeSys.fade != 0.0f || pause_rndr_on != 0) {
         zamarrow.timer = 0.0f;
         return;
     }
     zamarrow.timer = (FRAMETIME + FRAMETIME) + zamarrow.timer;
-    if (zamarrow.timer > 1.0f)
+    if (zamarrow.timer > 1.0f) {
         zamarrow.timer = 1.0f;
+    }
     if (NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
         position = zamarrow.object->upper_position;
         position.y += zamarrow_height;
@@ -66,8 +70,9 @@ static void UpdateZamArrow(WORLDINFO *world) {
         if (message != NULL) {
             message->alpha = (u8)(i32)(NU_SIN_LUT(zamarrow.timer * 16384.0) * 128.0);
             message->icon = 0x134;
-            if (world->level_objects[0x134].active != 0)
+            if (world->level_objects[0x134].active != 0) {
                 message->special = world->level_objects[0x134].special;
+            }
         }
     }
 }
@@ -101,8 +106,9 @@ void __cdecl BountyHunterPursuitB_Reset(WORLDINFO *world) {
 }
 
 void __cdecl BountyHunterPursuitB_Update(WORLDINFO *world) {
-    if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f)
+    if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
         UpdateZamArrow(world);
+    }
 }
 
 void __cdecl BountyHunterPursuitC_Init(WORLDINFO *world) {
@@ -117,8 +123,9 @@ void __cdecl BountyHunterPursuitC_Reset(WORLDINFO *world) {
     memset(&zamarrow, 0, sizeof(zamarrow));
     zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
     traffic = (PURSUIT_TRAFFIC_PC *)world->trafficanim_sys;
-    if (traffic == NULL)
+    if (traffic == NULL) {
         return;
+    }
     traffic->side = 0;
     entry = traffic->entries;
     for (i = 0; i < traffic->count; i++, entry++) {
@@ -145,23 +152,27 @@ void __cdecl BountyHunterPursuitC_Update(WORLDINFO *world) {
     i32 i;
     UpdateZamArrow(world);
     traffic = (PURSUIT_TRAFFIC_PC *)world->trafficanim_sys;
-    if (traffic == NULL || player == NULL)
+    if (traffic == NULL || player == NULL) {
         return;
+    }
     if (player->position.z < traffic_test_z) {
-        if (traffic->side == -1)
+        if (traffic->side == -1) {
             return;
+        }
         traffic->side = -1;
     } else {
-        if (traffic->side == 1)
+        if (traffic->side == 1) {
             return;
+        }
         traffic->side = 1;
     }
     entry = traffic->entries;
     for (i = 0; i < traffic->count; i++, entry++) {
-        if (player->position.z < traffic_test_z)
+        if (player->position.z < traffic_test_z) {
             entry->active = entry->direction == 1;
-        else
+        } else {
             entry->active = entry->direction == -1;
+        }
     }
 }
 
@@ -192,8 +203,9 @@ void __cdecl BountyHunterPursuitD_Update(WORLDINFO *world) {
     GIZMOBLOWUP_PC *generator;
     i32 i;
     NUVEC delta;
-    if (LevGameObject[0] == NULL || LevGameObject[0]->shield_hitpoints == 0)
+    if (LevGameObject[0] == NULL || LevGameObject[0]->shield_hitpoints == 0) {
         return;
+    }
     nearest_distance_sq = 1000000000.0f;
     nearest = NULL;
     for (i = 0; i < 12; i++) {

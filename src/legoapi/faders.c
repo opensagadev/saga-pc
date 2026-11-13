@@ -1,16 +1,21 @@
 #include "saga.h"
+
 typedef struct FADER_PC {
     NUSPECIALHANDLE special, while_animating;
 } FADER_PC;
+
 STATIC_ASSERT(sizeof(FADER_PC) == 0x18);
 STATIC_ASSERT(offsetof(FADER_PC, while_animating) == 0xc);
+
 typedef struct FADERS_WORLD_VIEW_PC {
     u8 unknown_000[0x5034];
     FADER_PC *faders;
     i32 fader_count;
 } FADERS_WORLD_VIEW_PC;
+
 STATIC_ASSERT(offsetof(FADERS_WORLD_VIEW_PC, faders) == 0x5034);
 STATIC_ASSERT(offsetof(FADERS_WORLD_VIEW_PC, fader_count) == 0x5038);
+
 void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
     FADERS_WORLD_VIEW_PC *view = (FADERS_WORLD_VIEW_PC *)world;
     NUFPAR_PC *parser;
@@ -70,8 +75,9 @@ void Faders_Reset(WORLDINFO *world) {
 void Faders_Draw(WORLDINFO *world) {
     FADER_s *fader = world->faders;
     i32 i;
-    if (fader == NULL)
+    if (fader == NULL) {
         return;
+    }
     for (i = 0; i < world->fader_count; ++i, ++fader) {
         NUMTX matrix = *NuSpecialGetDrawMtx(&fader->special);
         f32 alpha;
@@ -79,14 +85,17 @@ void Faders_Draw(WORLDINFO *world) {
             alpha = 1.0f - NuSpecialGetAnimPos(&fader->while_animating);
         } else {
             f32 distance = NuVecDist((NUVEC *)&matrix.m30, (NUVEC *)&pNuCam->mtx.m30, NULL);
-            if (distance < 0.5f)
+            if (distance < 0.5f) {
                 continue;
-            if (distance < 2.0f)
+            }
+            if (distance < 2.0f) {
                 alpha = (f32)((distance - 0.5) / 1.5);
-            else
+            } else {
                 alpha = 1.0f;
+            }
         }
-        if (alpha > 0.0f)
+        if (alpha > 0.0f) {
             NuSpecialDrawAtAlpha(&fader->special, &matrix, alpha);
+        }
     }
 }

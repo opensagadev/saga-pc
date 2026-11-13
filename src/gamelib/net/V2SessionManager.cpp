@@ -38,10 +38,12 @@ V2SessionManager *V2SessionManager::mpSessionManager = 0;
 
 void V2SessionManager::SetHostGameData(const i32 *data, i32 count) {
     i32 i;
-    if (count >= 8)
+    if (count >= 8) {
         count = 8;
-    for (i = 0; i < count; ++i)
+    }
+    for (i = 0; i < count; ++i) {
         player_slots[i] = data[i];
+    }
 }
 
 void V2SessionManager::Log(const char *format, ...) {
@@ -58,8 +60,9 @@ void V2SessionManager::Log(const char *format, ...) {
 i32 V2SessionManager::VerifyStrings(u8 **source, u8 **destination, i32 count, u8 *replacement) {
     i32 result = 0;
     i32 i;
-    for (i = 0; i < count; ++i)
+    for (i = 0; i < count; ++i) {
         result |= NuStringFilterBadWords(source[i], destination[i], replacement);
+    }
     return result;
 }
 
@@ -80,14 +83,16 @@ V2PeerList::V2PeerList() {
 }
 
 void V2PeerList::Remove(V2Peer *peer) {
-    if (peer->next != NULL)
+    if (peer->next != NULL) {
         peer->next->prev = peer->prev;
-    else
+    } else {
         tail = peer->prev;
-    if (peer->prev != NULL)
+    }
+    if (peer->prev != NULL) {
         peer->prev->next = peer->next;
-    else
+    } else {
         head = peer->next;
+    }
     peer->next = NULL;
     peer->prev = NULL;
     --count;
@@ -111,25 +116,29 @@ V2ClosingList::V2ClosingList() {
 
 void V2SessionManager::Reset() {
     i32 i;
-    if (host_list.count != 0)
+    if (host_list.count != 0) {
         printf("mHostList\n");
-    if (peer_list.count != 0)
+    }
+    if (peer_list.count != 0) {
         printf("mPeerList\n");
+    }
     timer_6c = 0.0f;
     state = 0;
     timer_68 = 0.0f;
     error = 0;
     timer_74 = 0.0f;
     local_slot = -1;
-    for (i = 0; i < 8; ++i)
+    for (i = 0; i < 8; ++i) {
         player_slots[i] = -1;
+    }
 }
 
 void V2SessionManager::Update() {
     V2Peer *peer;
     stats.totals.Clear();
-    for (peer = peer_list.head; peer != NULL; peer = peer->next)
+    for (peer = peer_list.head; peer != NULL; peer = peer->next) {
         stats.totals += peer->stats.totals;
+    }
     stats.Update();
 }
 
@@ -141,8 +150,9 @@ void V2SessionManager::RemoveAllPeers(i32 reason) {
         next = peer->next;
         RemovePeer(peer, reason);
     }
-    if (local_peer != NULL)
+    if (local_peer != NULL) {
         RemovePeer(local_peer, reason);
+    }
 }
 
 void V2SessionManager::RemovePeer(V2Peer *peer, i32 reason) {

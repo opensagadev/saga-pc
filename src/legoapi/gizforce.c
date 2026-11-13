@@ -5,10 +5,12 @@ typedef struct force_glow_reader_pc_s {
     GAMEOBJECT *force_glow_object;
     GAMEOBJECT *force_glow_candidate;
 } FORCE_GLOW_READER_PC;
+
 STATIC_ASSERT(offsetof(FORCE_GLOW_READER_PC, force_glow_object) == 0xd14);
 STATIC_ASSERT(offsetof(FORCE_GLOW_READER_PC, force_glow_candidate) == 0xd18);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 STATIC_ASSERT(offsetof(PART_PC, gravity) == 0xe8);
+
 static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
     f32 height;
     f32 distance;
@@ -39,8 +41,9 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
             reflected_origin = primary;
             reflected_target = target_position;
             plane = WORLD->current_level->reflection_y;
-            if (plane == 2000000.0f)
+            if (plane == 2000000.0f) {
                 plane = object->shadow_opacity;
+            }
             reflected_origin.y = plane - (reflected_origin.y - plane);
             reflected_target.y = plane - (reflected_target.y - plane);
             distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
@@ -67,8 +70,9 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
         NUVEC reflected_origin = secondary;
         NUVEC reflected_target = target_position;
         f32 plane = WORLD->current_level->reflection_y;
-        if (plane == 2000000.0f)
+        if (plane == 2000000.0f) {
             plane = object->shadow_opacity;
+        }
         reflected_origin.y = plane - (reflected_origin.y - plane);
         reflected_target.y = plane - (reflected_target.y - plane);
         distance = NuVecDist(&reflected_target, &reflected_origin, &delta);
@@ -84,6 +88,7 @@ typedef struct force_glow_packet_pc_s {
     u8 unknown658[0x6bc - 0x658];
     f32 alpha, target, recovery, unknown6c8, hold;
 } FORCE_GLOW_PACKET_PC;
+
 STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, object) == 0x650);
 STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, candidate) == 0x654);
 STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, alpha) == 0x6bc);
@@ -145,6 +150,7 @@ typedef struct GIZFORCE_ANIMATION_DATA_PC {
     u8 unknown_00[2];
     i16 platform_id;
 } GIZFORCE_ANIMATION_DATA_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_ANIMATION_DATA_PC, platform_id) == 2);
 
 typedef struct GIZFORCE_GROUP_BEST_PC {
@@ -153,8 +159,10 @@ typedef struct GIZFORCE_GROUP_BEST_PC {
     u8 unknown_25;
     u8 count;
 } GIZFORCE_GROUP_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_GROUP_BEST_PC, flags) == 0x24);
 STATIC_ASSERT(offsetof(GIZFORCE_GROUP_BEST_PC, count) == 0x26);
+
 typedef struct GIZFORCE_BEST_PC {
     u8 unknown_000[0x1c];
     NUVEC position;
@@ -170,6 +178,7 @@ typedef struct GIZFORCE_BEST_PC {
     u8 unknown_078[0x28];
     u32 runtime_flags;
 } GIZFORCE_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, position) == 0x1c);
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, using_object) == 0x38);
@@ -178,6 +187,7 @@ STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, group) == 0x40);
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, interaction_radius) == 0x54);
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, config_flags) == 0x74);
 STATIC_ASSERT(offsetof(GIZFORCE_BEST_PC, runtime_flags) == 0xa0);
+
 typedef struct GIZFORCE_SYS_BEST_PC {
     u8 unknown_000[4];
     GIZFORCE_PC **visible_forces;
@@ -186,6 +196,7 @@ typedef struct GIZFORCE_SYS_BEST_PC {
     u8 unknown_012[2];
     GAMEANIMOBJPOOL *anim_pool;
 } GIZFORCE_SYS_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_SYS_BEST_PC, visible_forces) == 4);
 STATIC_ASSERT(offsetof(GIZFORCE_SYS_BEST_PC, visible_count) == 0x10);
 STATIC_ASSERT(offsetof(GIZFORCE_SYS_BEST_PC, anim_pool) == 0x14);
@@ -194,18 +205,23 @@ typedef struct GIZFORCE_LOS_BEST_PC {
     u32 clear_bits[12];
     u32 queried_at[1];
 } GIZFORCE_LOS_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_LOS_BEST_PC, queried_at) == 0x30);
+
 typedef struct GIZFORCE_OBJECT_BEST_PC {
     u8 unknown_000[0x10cc];
     GIZFORCE_PC *target;
     GAMEANIMOBJ *animation;
 } GIZFORCE_OBJECT_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_OBJECT_BEST_PC, target) == 0x10cc);
 STATIC_ASSERT(offsetof(GIZFORCE_OBJECT_BEST_PC, animation) == 0x10d0);
+
 typedef struct GIZFORCE_PLATFORM_BEST_PC {
     u8 unknown_000[2];
     i16 platform_id;
 } GIZFORCE_PLATFORM_BEST_PC;
+
 STATIC_ASSERT(offsetof(GIZFORCE_PLATFORM_BEST_PC, platform_id) == 2);
 
 typedef struct force_sfx_config_pc_s {
@@ -215,22 +231,27 @@ typedef struct force_sfx_config_pc_s {
     i16 process_sfx, complete_sfx, return_sfx;
     u8 unknown_88[0xa4 - 0x88];
 } FORCE_SFX_CONFIG_PC;
+
 STATIC_ASSERT(sizeof(FORCE_SFX_CONFIG_PC) == 0xa4);
 STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, process_sfx) == 0x82);
 STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, complete_sfx) == 0x84);
 STATIC_ASSERT(offsetof(FORCE_SFX_CONFIG_PC, return_sfx) == 0x86);
+
 typedef struct force_sfx_system_pc_s {
     FORCE_SFX_CONFIG_PC *forces;
     u8 unknown_04[0xe - 4];
     u16 count;
 } FORCE_SFX_SYSTEM_PC;
+
 STATIC_ASSERT(offsetof(FORCE_SFX_SYSTEM_PC, forces) == 0);
 STATIC_ASSERT(offsetof(FORCE_SFX_SYSTEM_PC, count) == 0xe);
+
 typedef struct world_force_sfx_pc_s {
     u8 unknown_0000[0x46ac];
     FORCE_SFX_SYSTEM_PC *force_system;
 } WORLD_FORCE_SFX_PC;
+
 STATIC_ASSERT(offsetof(WORLD_FORCE_SFX_PC, force_system) == 0x46ac);
 
 static void *GizForces_ReserveBufferSpace(void *world_ptr) {
@@ -261,6 +282,7 @@ typedef struct trigger_force_object_pc_s {
     u8 unknown000[0x10cc];
     GIZFORCE_PC *force;
 } TRIGGER_FORCE_OBJECT_PC;
+
 STATIC_ASSERT(offsetof(TRIGGER_FORCE_OBJECT_PC, force) == 0x10cc);
 
 typedef struct FORCE_RESET_PROGRESS_PC {
@@ -268,6 +290,7 @@ typedef struct FORCE_RESET_PROGRESS_PC {
     u32 completion_released[4], completion_pending[4], destroyed[4];
     u8 group_members[8][8];
 } FORCE_RESET_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(FORCE_RESET_PROGRESS_PC) == 0xb0);
 STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, visible) == 0x10);
 STATIC_ASSERT(offsetof(FORCE_RESET_PROGRESS_PC, reward_released) == 0x20);

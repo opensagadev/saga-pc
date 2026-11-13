@@ -5,6 +5,7 @@ typedef struct ripple_effect_cleanup_pc_s {
     u8 unknown_00[0x24];
     NUMTL *material;
 } RIPPLE_EFFECT_CLEANUP_PC;
+
 STATIC_ASSERT(offsetof(RIPPLE_EFFECT_CLEANUP_PC, material) == 0x24);
 STATIC_ASSERT(sizeof(RIPPLE_EFFECT_CLEANUP_PC) == 0x28);
 
@@ -13,6 +14,7 @@ typedef struct world_ripple_cleanup_pc_s {
     RIPPLE_EFFECT_CLEANUP_PC *effects;
     i32 count;
 } WORLD_RIPPLE_CLEANUP_PC;
+
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, effects) == 0x46f4);
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, count) == 0x46f8);
 
@@ -28,10 +30,12 @@ void __cdecl DestroyRippleMtls(WORLDINFO *world) {
 }
 
 typedef struct ripple_node_pc_s RIPPLE_NODE_PC;
+
 struct ripple_set_pc_s {
     u16 capacity, active_count;
     RIPPLE_NODE_PC *nodes, *free_head, *newest, *oldest;
 };
+
 struct ripple_node_pc_s {
     NUMTX matrix;
     NUVEC velocity;
@@ -43,6 +47,7 @@ struct ripple_node_pc_s {
     u8 unknown_76[2];
     RIPPLE_NODE_PC *next, *previous;
 };
+
 STATIC_ASSERT(sizeof(RIPPLE_SET_PC) == 0x14);
 STATIC_ASSERT(offsetof(RIPPLE_SET_PC, nodes) == 4);
 STATIC_ASSERT(offsetof(RIPPLE_SET_PC, free_head) == 8);
@@ -70,9 +75,9 @@ STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, previous) == 0x7c);
 static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node = set->free_head, *newest = set->newest, *next_free;
     if (set->active_count < set->capacity) {
-        if (node->next == node)
+        if (node->next == node) {
             next_free = NULL;
-        else {
+        } else {
             node->next->previous = node->previous;
             node->previous->next = node->next;
             next_free = node->next;
@@ -89,24 +94,28 @@ static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
         ++set->active_count;
         set->free_head = next_free;
         set->newest = node;
-        if (set->active_count == set->capacity)
+        if (set->active_count == set->capacity) {
             set->free_head = NULL;
+        }
         return node;
     }
     return NULL;
 }
+
 void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay,
                        u32 start_color, u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity) {
     RIPPLE_NODE_PC *node;
-    if (material == NULL || set == NULL)
+    if (material == NULL || set == NULL) {
         return;
+    }
     node = RippleAllocPc(set);
     if (node == NULL) {
         node = set->oldest;
         set->newest = set->oldest;
         set->oldest = set->oldest->next;
-    } else if (set->oldest == NULL)
+    } else if (set->oldest == NULL) {
         set->oldest = node;
+    }
     if (node != NULL) {
         node->matrix = *matrix;
         node->size = size;
@@ -119,10 +128,11 @@ void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, 
         node->start_color = node->color = start_color;
         node->material = material;
         node->end_color = end_color;
-        if (velocity != NULL)
+        if (velocity != NULL) {
             node->velocity = *velocity;
-        else
+        } else {
             node->velocity = v000;
+        }
     }
 }
 
@@ -131,14 +141,17 @@ typedef struct ripple_effect_pc_s {
         u32 start_color;
         u8 start_rgba[4];
     };
+
     union {
         u32 end_color;
         u8 end_rgba[4];
     };
+
     f32 lifetime, initial_size, end_size;
     char texture_name[16];
     NUMTL *material;
 } RIPPLE_EFFECT_PC;
+
 STATIC_ASSERT(sizeof(RIPPLE_EFFECT_PC) == 0x28);
 STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, lifetime) == 8);
 STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, initial_size) == 0xc);
@@ -152,20 +165,25 @@ typedef struct world_ripple_view_pc_s {
     u8 unknown_0000[0x46f4];
     RIPPLE_EFFECT_PC *effects;
     i32 count;
+
     union {
         struct {
             i32 water_effect, sabre_effect;
         };
+
         i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
     };
 } WORLD_RIPPLE_VIEW_PC;
+
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, effects) == 0x46f4);
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, water_effect) == 0x46fc);
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, sabre_effect) == 0x4700);
+
 typedef struct ripple_contact_timer_view_pc_s {
     u8 unknown_0000[0xdc0];
     f32 timer;
 } RIPPLE_CONTACT_TIMER_VIEW_PC;
+
 STATIC_ASSERT(offsetof(RIPPLE_CONTACT_TIMER_VIEW_PC, timer) == 0xdc0);
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
 #undef RIPPLE_WORLD
@@ -174,42 +192,54 @@ typedef struct ripple_material_reader_pc_s {
     u8 unknown_0000[0x70];
     f32 opacity;
 } RIPPLE_MATERIAL_READER_PC;
+
 STATIC_ASSERT(offsetof(RIPPLE_MATERIAL_READER_PC, opacity) == 0x70);
 static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};
+
 i32 __cdecl LookupRippleEffectIndex(char *name) {
     i32 i;
-    for (i = 0; i < 2; ++i)
-        if (NuStrICmp(RippleEffectNamesPc[i], name) == 0)
+    for (i = 0; i < 2; ++i) {
+        if (NuStrICmp(RippleEffectNamesPc[i], name) == 0) {
             return i;
+        }
+    }
     return -1;
 }
+
 static void RippleEndRadiusPc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->end_size = NuFParGetFloat(parser);
 }
+
 static void RippleStartRadiusPc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->initial_size = NuFParGetFloat(parser);
 }
+
 static void RippleLifePc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->lifetime = NuFParGetFloat(parser);
 }
+
 static void RippleStartColourPc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->start_rgba[0] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->start_rgba[1] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->start_rgba[2] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->start_rgba[3] = (u8)NuFParGetInt(parser);
 }
+
 static void RippleEndColourPc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->end_rgba[0] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->end_rgba[1] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->end_rgba[2] = (u8)NuFParGetInt(parser);
     RippleEffectsCurrentPc->end_rgba[3] = (u8)NuFParGetInt(parser);
 }
+
 static void RippleTextureNamePc(NUFPAR_PC *parser) {
-    if (NuFParGetWord(parser) && NuStrLen(parser->word_buffer_ptr) < 16)
+    if (NuFParGetWord(parser) && NuStrLen(parser->word_buffer_ptr) < 16) {
         NuStrCpy(RippleEffectsCurrentPc->texture_name, parser->word_buffer_ptr);
+    }
 }
+
 static void RippleEffectTypePc(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser)) {
         i32 index = LookupRippleEffectIndex(parser->word_buffer_ptr);
@@ -219,6 +249,7 @@ static void RippleEffectTypePc(NUFPAR_PC *parser) {
         }
     }
 }
+
 static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {{"texture_name", RippleTextureNamePc},
                                                      {"effect_type", RippleEffectTypePc},
                                                      {"start_colour", RippleStartColourPc},
@@ -227,6 +258,7 @@ static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {{"texture_name", RippleText
                                                      {"start_radius", RippleStartRadiusPc},
                                                      {"end_radius", RippleEndRadiusPc},
                                                      {NULL, NULL}};
+
 void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
     NUFPAR_PC *parser;
@@ -235,16 +267,18 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     view->effects = NULL;
     view->count = 0;
     parser = NuFParCreateMem("rippleeffects", config, 0xffff);
-    if (parser == NULL)
+    if (parser == NULL) {
         return;
+    }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     effect = view->effects = (RIPPLE_EFFECT_PC *)world->giz_buffer.void_ptr;
     NuFParPushCom(parser, RippleEffectConfigKeywordsPc);
     active = 0;
     while (NuFParGetLine(parser)) {
         NuFParGetWord(parser);
-        if (parser->word_buffer_ptr[0] == 0)
+        if (parser->word_buffer_ptr[0] == 0) {
             continue;
+        }
         if (active) {
             if (NuStrICmp(parser->word_buffer_ptr, "rippleeffects_end") == 0) {
                 active = 0;
@@ -252,8 +286,9 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
                     ++effect;
                     ++view->count;
                 }
-            } else
+            } else {
                 NuFParInterpretWord(parser);
+            }
         } else if (view->count < 2 && NuStrICmp(parser->word_buffer_ptr, "rippleeffects_start") == 0) {
             active = 1;
             RippleEffectsWorldInfoPc = world;
@@ -276,11 +311,13 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
     NuFParDestroy(parser);
     if (view->count > 0) {
         world->giz_buffer.addr = ((u32)(view->effects + view->count) + 15) & ~15u;
-        for (i = 0; i < view->count; ++i)
+        for (i = 0; i < view->count; ++i) {
             InitRippleMtl(view->effects[i].texture_name, &view->effects[i].material, &world->giz_buffer,
                           &world->buffer_end);
-    } else
+        }
+    } else {
         view->effects = NULL;
+    }
 }
 
 /* Original ripples.cpp private erase worklist. Native allocation derives its
@@ -312,8 +349,9 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
     buffer->addr = (u32)(set + 1);
     *result = set;
     node_count = count <= 0 ? 0 : count;
-    if (node_count >= 64)
+    if (node_count >= 64) {
         node_count = 64;
+    }
     (*result)->capacity = (u16)node_count;
     (*result)->active_count = 0;
     node_count = (*result)->capacity;
@@ -343,12 +381,14 @@ void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
 static void RippleFreeNodePc(RIPPLE_SET_PC *set, RIPPLE_NODE_PC *node) {
     RIPPLE_NODE_PC *free_head = set->free_head, *newest = set->newest;
     if (set->active_count > 0) {
-        if (node->previous != NULL)
+        if (node->previous != NULL) {
             node->previous->next = node->next;
-        else
+        } else {
             newest = node->next;
-        if (node->next != NULL)
+        }
+        if (node->next != NULL) {
             node->next->previous = node->previous;
+        }
         if (free_head == NULL) {
             node->previous = node;
             node->next = node;
@@ -372,14 +412,16 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node, *next;
     i32 i, erase_count;
     RIPPLE_NODE_PC **erase_list;
-    if (set == NULL)
+    if (set == NULL) {
         return;
+    }
     node = set->newest;
     erase_list = RippleEraseListPc;
     erase_count = RippleEraseCountPc;
     for (i = 0; i < set->active_count; ++i) {
-        if (node == NULL)
+        if (node == NULL) {
             continue;
+        }
         next = node->next;
         if (node->age <= node->lifetime) {
             if (node->delay > 0.0f) {
@@ -388,8 +430,9 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
                 f32 ratio = node->age / node->lifetime;
                 /* Existing original reader labels: +50 is animated size,
                  * +54 base size, +5c current colour, +60 initial colour. */
-                if ((node->flags & 1) != 0)
+                if ((node->flags & 1) != 0) {
                     node->initial_size = (f32)((f64)node->size + ((f64)node->growth - node->size) * ratio);
+                }
                 if ((node->flags & 2) != 0) {
                     u8 *current = (u8 *)&node->start_color;
                     const u8 *initial = (const u8 *)&node->color, *end = (const u8 *)&node->end_color;
@@ -417,8 +460,9 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
     for (i = 0; i < erase_count; ++i) {
         node = erase_list[i];
         if (node != NULL) {
-            if (node == set->oldest)
+            if (node == set->oldest) {
                 set->oldest = node->next;
+            }
             RippleFreeNodePc(set, node);
         }
         erase_list[i] = NULL;
@@ -459,8 +503,9 @@ void __cdecl DrawRipple(RIPPLE_NODE_PC *node) {
 void __cdecl DrawRippleSet(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node;
     i32 i;
-    if (set == NULL)
+    if (set == NULL) {
         return;
+    }
     node = set->newest;
     for (i = 0; i < set->active_count; ++i) {
         if (node != NULL) {

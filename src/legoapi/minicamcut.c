@@ -2,6 +2,7 @@
 
 /* Retail unit 0x576bc0-0x578718: definitions in retail address order. */
 #include <string.h>
+
 typedef struct MINICAM_CAMERA_PC {
     u8 unknown000[0xe8];
     NUVEC render_position;
@@ -14,6 +15,7 @@ typedef struct MINICAM_CAMERA_PC {
     u8 unknown1fe[0x2e];
     i8 mode;
 } MINICAM_CAMERA_PC;
+
 #define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
 STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, render_position) == 0xe8);
 STATIC_ASSERT(offsetof(MINICAM_CAMERA_PC, position) == 0x11c);
@@ -30,14 +32,16 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
         i32 i;
         for (i = MiniCam.command_count; i >= 0; --i) {
             if (MiniCam.duplicate_search[i].type == type) {
-                if (MiniCam.duplicate_search[i].argument == argument)
+                if (MiniCam.duplicate_search[i].argument == argument) {
                     return;
+                }
                 i = -1;
             }
         }
     }
-    if (MiniCam.command_count == 32)
+    if (MiniCam.command_count == 32) {
         return;
+    }
     switch (type) {
         case 1:
             MiniCam.commands[MiniCam.command_count].type = 1;
@@ -172,14 +176,16 @@ void MiniCam_ChangeMode(i32 mode) {
 
 void Minicam_AddDeltas(float duration) {
     f32 fraction;
-    if (MiniCam.delta_time == 0.0f || duration == 0.0f)
+    if (MiniCam.delta_time == 0.0f || duration == 0.0f) {
         fraction = 0.0f;
-    else
+    } else {
         fraction = MiniCam.delta_time / duration;
-    if (fraction < 0.0f)
+    }
+    if (fraction < 0.0f) {
         fraction = 0.0f;
-    else if (fraction > 1.0f)
+    } else if (fraction > 1.0f) {
         fraction = 1.0f;
+    }
     switch (MiniCam.easing) {
         case 1:
             fraction = 1.0f + NuTrigTable[(((i32)(fraction * 16384.0f + 32768.0f + 16384.0f)) >> 1) & 0x7fff];
@@ -206,20 +212,23 @@ void Minicam_AddDeltas(float duration) {
     if (MiniCam.mode == 0) {
         i32 pitch_delta, yaw_delta, roll_delta;
         pitch_delta = MiniCam.target_pitch - MiniCam.start_pitch;
-        if (pitch_delta > 32768)
+        if (pitch_delta > 32768) {
             pitch_delta -= 65536;
-        else if (pitch_delta < -65536)
+        } else if (pitch_delta < -65536) {
             pitch_delta += 65536;
+        }
         yaw_delta = MiniCam.target_yaw - MiniCam.start_yaw;
-        if (yaw_delta > 32768)
+        if (yaw_delta > 32768) {
             yaw_delta -= 65536;
-        else if (yaw_delta < -65536)
+        } else if (yaw_delta < -65536) {
             yaw_delta += 65536;
+        }
         roll_delta = MiniCam.target_roll - MiniCam.start_roll;
-        if (roll_delta > 32768)
+        if (roll_delta > 32768) {
             roll_delta -= 65536;
-        else if (roll_delta < -65536)
+        } else if (roll_delta < -65536) {
             roll_delta += 65536;
+        }
         MiniCam.pitch = SeekRot(MiniCam.pitch, (u16)(i32)(MiniCam.start_pitch + pitch_delta * fraction), 10.0f);
         MiniCam.yaw = SeekRot(MiniCam.yaw, (u16)(i32)(MiniCam.start_yaw + yaw_delta * fraction), 10.0f);
         MiniCam.roll = SeekRot(MiniCam.roll, (u16)(i32)(MiniCam.start_roll + roll_delta * fraction), 10.0f);
@@ -276,8 +285,9 @@ void Minicam_CalcCamPos(void) {
 
 void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders,
                            i32 hold_until_players_move) {
-    if (spline == NULL)
+    if (spline == NULL) {
         return;
+    }
     ObstacleCamSpl = spline;
     ObstacleCamStart = start;
     ObstacleCamEnd = end;
@@ -290,8 +300,9 @@ void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, 
     ObstacleCamBorders = borders;
     ObstacleCamHoldUntilPlayersMove = VehicleArea == 0 ? hold_until_players_move : 0;
     if (borders != 0) {
-        if (start == 0.0f && blend_in <= 0.0f)
+        if (start == 0.0f && blend_in <= 0.0f) {
             CutBorderScale = 1.0f;
+        }
     }
     if (start <= 0.0f && blend_in <= 0.0f) {
         GameCam->mode = -1;
@@ -364,14 +375,18 @@ void Minicam_Update(void) {
                 MiniCam.target_pitch = target_pitch;
                 MiniCam.start_pitch = MiniCam.pitch;
                 Minicam_ClearDeltas();
-                if (target_pitch == pitch)
+                if (target_pitch == pitch) {
                     pitch = MiniCam.target_pitch;
-                if (old_yaw == yaw)
+                }
+                if (old_yaw == yaw) {
                     yaw = MiniCam.target_yaw;
-                if (old_roll == roll)
+                }
+                if (old_roll == roll) {
                     roll = MiniCam.target_roll;
-                if (old_distance == distance)
+                }
+                if (old_distance == distance) {
                     distance = MiniCam.target_distance;
+                }
                 break;
             }
             case 7:
@@ -411,8 +426,9 @@ void Minicam_Update(void) {
                 ++MiniCam.current_command;
                 return;
         }
-        if (!done)
+        if (!done) {
             ++MiniCam.current_command;
+        }
     }
 
     MiniCam.elapsed_time += FRAMETIME;
@@ -424,8 +440,9 @@ void Minicam_Update(void) {
             MINI_CAM_CAMERA.mode = -1;
             Minicam_ResetForNextCommand();
         }
-        if (MiniCutCam == 0)
+        if (MiniCutCam == 0) {
             Minicam_ResetForNextCommand();
+        }
         return;
     }
     if (MiniCam.current_command >= MiniCam.command_count) {
@@ -464,8 +481,9 @@ void Minicam_Update(void) {
             MINI_CAM_CAMERA.mode = -1;
             Minicam_ResetForNextCommand();
         }
-        if (MiniCutCam == 0)
+        if (MiniCutCam == 0) {
             Minicam_ResetForNextCommand();
+        }
         return;
     }
     if (type == 4 && MiniCam.delta_time == 0.0f) {
@@ -480,20 +498,23 @@ void Minicam_Update(void) {
             Minicam_ClearDeltas();
             MINI_CAM_CAMERA.mode = -1;
         } else {
-            if (pitch_rate == 0)
+            if (pitch_rate == 0) {
                 MiniCam.target_pitch = pitch;
-            else
+            } else {
                 MiniCam.target_pitch = (i32)(pitch_rate * command_duration);
+            }
             MiniCam.start_pitch = MiniCam.pitch;
-            if (yaw_rate == 0)
+            if (yaw_rate == 0) {
                 MiniCam.target_yaw = yaw;
-            else
+            } else {
                 MiniCam.target_yaw = (i32)(yaw_rate * command_duration);
+            }
             MiniCam.start_yaw = MiniCam.yaw;
-            if (roll_rate == 0)
+            if (roll_rate == 0) {
                 MiniCam.target_roll = roll;
-            else
+            } else {
                 MiniCam.target_roll = (i32)(roll_rate * command_duration);
+            }
             MiniCam.target_distance = distance;
             MiniCam.start_roll = MiniCam.roll;
             MiniCam.start_distance = MiniCam.distance;
@@ -551,33 +572,42 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         flags |= 0x800;
     }
     command_origin = v000;
-    if (flags & 0x80)
+    if (flags & 0x80) {
         Minicam_AddCommand(8, 0.0f, 0, focus, command_origin);
-    if (flags & 0x100)
+    }
+    if (flags & 0x100) {
         Minicam_AddCommand(16, 0.0f, 0, NULL, *position);
-    else if (flags & 0x2000)
+    } else if (flags & 0x2000) {
         Minicam_AddCommand(17, 0.0f, 0, spline, command_origin);
-    else if (flags & 1)
+    } else if (flags & 1) {
         Minicam_AddCommand(9, distance, 0, NULL, command_origin);
-    if (flags & 0x10)
+    }
+    if (flags & 0x10) {
         Minicam_AddCommand(13, 0.0f, pitch, NULL, command_origin);
-    else if (flags & 2)
+    } else if (flags & 2) {
         Minicam_AddCommand(10, 0.0f, pitch, NULL, command_origin);
-    if (flags & 0x20)
+    }
+    if (flags & 0x20) {
         Minicam_AddCommand(14, 0.0f, yaw, NULL, command_origin);
-    else if (flags & 4)
+    } else if (flags & 4) {
         Minicam_AddCommand(11, 0.0f, yaw, NULL, command_origin);
-    if (flags & 0x40)
+    }
+    if (flags & 0x40) {
         Minicam_AddCommand(15, 0.0f, roll, NULL, command_origin);
-    if (flags & 8)
+    }
+    if (flags & 8) {
         Minicam_AddCommand(12, 0.0f, roll, NULL, command_origin);
-    if (mode != -1)
+    }
+    if (mode != -1) {
         Minicam_AddCommand(6, 0.0f, mode, NULL, command_origin);
-    if (easing != -1)
+    }
+    if (easing != -1) {
         Minicam_AddCommand(7, 0.0f, easing, NULL, command_origin);
+    }
 
-    if ((flags & 1) && (flags & 4) && blend_in_time > 0.0f && blend_time == 0.0f)
+    if ((flags & 1) && (flags & 4) && blend_in_time > 0.0f && blend_time == 0.0f) {
         blend_time = 0.01f;
+    }
     if ((flags & 0x800) && (flags & 0x1000)) {
         if (hold_time > blend_time) {
             Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
@@ -593,10 +623,11 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
     if (flags & 0x400) {
         remaining_duration = end_time;
         if ((flags & 0x800) && (flags & 0x1000)) {
-            if (hold_time > blend_time)
+            if (hold_time > blend_time) {
                 remaining_duration = end_time - hold_time;
-            else
+            } else {
                 remaining_duration = end_time - blend_time;
+            }
         } else if (flags & 0x800) {
             remaining_duration = end_time - blend_time;
         } else if (flags & 0x1000) {
@@ -605,6 +636,7 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         Minicam_AddCommand(3, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
         ObstacleCamBlendOutTime = blend_out_time;
     }
-    if (borders != 0)
+    if (borders != 0) {
         MiniCam.borders = 1;
+    }
 }

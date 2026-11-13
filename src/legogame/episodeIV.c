@@ -2,27 +2,33 @@
 #include <string.h>
 #include <stdio.h>
 struct panel_movement_pc_s;
+
 typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
     u8 unknown_00[0x62];
     u8 flags;
 } CLOUDCITY_PANEL_FLAGS_VIEW_PC;
+
 STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
+
 typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
     u8 started;
 } CLOUDCITY_LEVEL_FLAG_VIEW_PC;
+
 STATIC_ASSERT(offsetof(CLOUDCITY_LEVEL_FLAG_VIEW_PC, started) == 0);
 
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
-    if (WORLD->current_level == MOSEISLEYC_LDATA)
+    if (WORLD->current_level == MOSEISLEYC_LDATA) {
         return object->position.z > 5.85f;
+    }
     return 0;
 }
 
 void MosEisleyE_Update(WORLDINFO *unused0) {
     if ((texanimbits & 2) == 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
-        GizForce_Complete(((GIZFORCE_s *)(LevGizmo[0]->object))))
+        GizForce_Complete(((GIZFORCE_s *)(LevGizmo[0]->object)))) {
         texanimbits |= 2;
+    }
 }
 
 void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
@@ -32,6 +38,7 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
 typedef struct TORPEDO_MUSIC_FLAGS_VIEW_PC {
     u8 count, flags;
 } TORPEDO_MUSIC_FLAGS_VIEW_PC;
+
 STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, count) == 0);
 STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, flags) == 1);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -45,30 +52,36 @@ i32 __cdecl DeathStarShieldDown(void) {
     GIZMOBLOWUP_PC *blowup;
     GAMEOBJECT *player;
     TORPEDO_MUSIC_FLAGS_VIEW_PC *packet;
-    if (LevGizmo[0] == NULL)
+    if (LevGizmo[0] == NULL) {
         LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
-    if (LevGizmo[0] == NULL || LevGizmo[0]->object == NULL)
+    }
+    if (LevGizmo[0] == NULL || LevGizmo[0]->object == NULL) {
         return 0;
+    }
     blowup = (GIZMOBLOWUP_PC *)LevGizmo[0]->object;
-    if ((blowup->status_flags & 1) != 0)
+    if ((blowup->status_flags & 1) != 0) {
         return 1;
-    if ((blowup->status_flags & 0x800000) == 0)
+    }
+    if ((blowup->status_flags & 0x800000) == 0) {
         return 0;
+    }
     player = Player[0];
     if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
                            ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
         packet = (TORPEDO_MUSIC_FLAGS_VIEW_PC *)player->torpedo;
-        if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0))
+        if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
+        }
     }
     player = Player[1];
     if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
                            ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
         packet = (TORPEDO_MUSIC_FLAGS_VIEW_PC *)player->torpedo;
-        if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0))
+        if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
+        }
     }
     return 0;
 }
@@ -89,8 +102,9 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
         if (animation[index] != NULL) {
             data[index] =
                 ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
-            if (data[index] != NULL)
+            if (data[index] != NULL) {
                 fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data[index]) + (f64)fakeanimendframe[0]);
+            }
         }
     }
 }
@@ -100,17 +114,21 @@ void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
     NUINSTANIM *animation[2] = {NULL, NULL};
     void *data[2] = {NULL, NULL};
     i32 index;
-    if (netclient == 0)
+    if (netclient == 0) {
         DeathStarEscapeBNetPacketPc[0] = (i8)LevAIMessage[0]->value;
-    if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacketPc[0] == 0)
+    }
+    if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
         LevGameObject[0] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher1Pc);
-    if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0)
+    }
+    if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
         LevGameObject[1] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher2Pc);
+    }
     for (index = 0; index < 2; ++index) {
         animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
-        if (animation[index] != NULL)
+        if (animation[index] != NULL) {
             data[index] =
                 ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+        }
     }
     if (data[0] != NULL && data[1] != NULL) {
         if (NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
@@ -149,8 +167,9 @@ void __cdecl BlockadeRunnerB_Init(WORLDINFO *world) {
 }
 
 void __cdecl BlockadeRunnerB_Update(WORLDINFO *world) {
-    if (LevBlowUp[0] != NULL && InStory() != 0)
+    if (LevBlowUp[0] != NULL && InStory() != 0) {
         LevBlowUp[0]->status_flags &= ~0x800000;
+    }
 }
 
 void __cdecl BlockadeRunnerC_Init(WORLDINFO *world) {
@@ -187,11 +206,13 @@ static void BlockadeRunnerDEjectCreaturePc(i32 eject_index) {
     models[1] = CharacterFixupIdPc007f1a40;
     models[2] = CharacterFixupIdPc007f1a3c;
     models[3] = FreePlayId007f1a44Pc;
-    if ((u32)eject_index > 1)
+    if ((u32)eject_index > 1) {
         return;
+    }
     for (i = 0; i < 8; i++) {
-        if (LevGamePart[i] != NULL)
+        if (LevGamePart[i] != NULL) {
             continue;
+        }
         NuMtxSetTranslation(&matrix, &BlockadeRunnerDEjectVecPc[eject_index]);
         model = models[qrand() / 0x4000];
         LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVecPc[eject_index], 0, "default", NULL, NULL,
@@ -234,11 +255,13 @@ void __cdecl BlockadeRunnerD_Reset(WORLDINFO *world) {
 
 void __cdecl BlockadeRunnerD_Update(WORLDINFO *world) {
     i32 i;
-    if (netclient != 0)
+    if (netclient != 0) {
         return;
+    }
     for (i = 0; i < 8; i++) {
-        if (LevGameObject[i] == NULL || LevGamePart[i] == NULL)
+        if (LevGameObject[i] == NULL || LevGamePart[i] == NULL) {
             continue;
+        }
         if ((LevGamePart[i]->active & 1) != 0) {
             LevGameObject[i]->flags_107a = 5;
             LevGameObject[i]->vehicle_orientation = LevGamePart[i]->transform;
@@ -331,14 +354,16 @@ void __cdecl DeathStarEscapeC_Init(WORLDINFO *world) {
 
 void __cdecl DeathStarEscapeC_Update(WORLDINFO *world) {
     NUVEC *position;
-    if (LevPathCnx[0] == NULL)
+    if (LevPathCnx[0] == NULL) {
         return;
+    }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[2]) != 0 && (position = NuSpecialGetDrawPos(&LevHSpecial[2])) != NULL &&
         position->x < 77.25f) {
         ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] &= ~0x80000000;
         ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] &= ~0x80000000;
-        if (LevAIMessage[0] != NULL)
+        if (LevAIMessage[0] != NULL) {
             LevAIMessage[0]->value = 1.0f;
+        }
     } else {
         ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[0] |= 0x80000000;
         ((AIPATHCNX_PC *)LevPathCnx[0])->traversal_flags[1] |= 0x80000000;
@@ -371,10 +396,11 @@ void __cdecl DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     if (Players_AveragePos(&position, &socket_position) && socket_position.sock_index != -1) {
-        if (DEATHSTARESCAPEA_LDATA != NULL && socket_position.sock_index < 6)
+        if (DEATHSTARESCAPEA_LDATA != NULL && socket_position.sock_index < 6) {
             other_level_override = DEATHSTARESCAPEA_LDATA->index;
-        else if (DEATHSTARESCAPEC_LDATA != NULL && socket_position.sock_index > 6)
+        } else if (DEATHSTARESCAPEC_LDATA != NULL && socket_position.sock_index > 6) {
             other_level_override = DEATHSTARESCAPEC_LDATA->index;
+        }
     }
 }
 
@@ -383,11 +409,13 @@ LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
 
 void __cdecl DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0) {
-        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL)
+        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL) {
             other_level_override = DEATHSTARBATTLEMIDTRO_LDATA->index;
+        }
     } else {
-        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL)
+        if (DEATHSTARBATTLEMIDTRO_LDATA != NULL) {
             other_level_override = DEATHSTARBATTLEMIDTRO_LDATA->index;
+        }
     }
 }
 
@@ -397,6 +425,7 @@ typedef struct trenchrun_pc_s {
     i32 midtro_played;
     f32 spawn_timer;
 } TRENCHRUN_PC;
+
 STATIC_ASSERT(sizeof(TRENCHRUN_PC) == 0x20);
 
 /* PC 0x00889638: Death Star trench run state. */
@@ -419,6 +448,7 @@ typedef struct ASTEROID_PC {
     i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
     u8 activated;
 } ASTEROID_PC;
+
 STATIC_ASSERT(sizeof(ASTEROID_PC) == 0x18);
 STATIC_ASSERT(offsetof(ASTEROID_PC, activated) == 0x16);
 
@@ -430,6 +460,7 @@ typedef struct FINAL_ASTEROID_PC {
     i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
     i16 rotation_x, rotation_y, rotation_z;
 } FINAL_ASTEROID_PC;
+
 STATIC_ASSERT(sizeof(FINAL_ASTEROID_PC) == 0x3c);
 STATIC_ASSERT(offsetof(FINAL_ASTEROID_PC, rotation_x) == 0x34);
 
@@ -475,12 +506,14 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     object->previous_movement_angle = object->field_0x276;
     object->flags_ef0 &= ~0x4000;
     object->flags_107a = 0;
-    if (object->model_draw_result != 0)
+    if (object->model_draw_result != 0) {
         object->field_f10 = 0.0f;
-    else
+    } else {
         object->field_f10 = FRAMETIME + object->field_f10;
-    if (object->character_context == 0x2b)
+    }
+    if (object->character_context == 0x2b) {
         object->turn_braking += FRAMETIME;
+    }
     if (object->character_context != 0x2a) {
         if ((object->movement_facing_angle > 0x8000) != (player->movement_facing_angle > 0x8000)) {
             StartTurn(object);
@@ -496,10 +529,11 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     }
     if (object->character_context == 0x2a) {
         phase = object->context_timer / TURNTIME;
-        if (object->movement_facing_angle <= 0x8000)
+        if (object->movement_facing_angle <= 0x8000) {
             target.x = (1.0f - phase) * TrenchLaneOffsetPc + phase * -TrenchLaneOffsetPc;
-        else
+        } else {
             target.x = (1.0f - phase) * -TrenchLaneOffsetPc + phase * TrenchLaneOffsetPc;
+        }
         target.x = trenchrun.position.x + target.x;
     } else if (object->movement_facing_angle > 0x8000) {
         target.x = trenchrun.position.x + TrenchLaneOffsetPc;
@@ -509,29 +543,35 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     object->position.x = SeekValF(object->position.x, target.x, TrenchSeekXPc);
     target.y = VehicleTurnOrLoopOffset(object) + (object->movement_spline_offset.y + trenchrun.position.y);
     height_difference = target.y - object->position.y;
-    if (height_difference > TrenchMaxHeightMovePc)
+    if (height_difference > TrenchMaxHeightMovePc) {
         target.y = TrenchMaxHeightMovePc + object->position.y;
+    }
     object->position.y = SeekValF(object->position.y, target.y, TrenchSeekYPc);
     target.z = object->movement_spline_offset.z + trenchrun.position.z;
     object->position.z = SeekValF(object->position.z, target.z, TrenchSeekZPc);
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
-        if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a)
+        if (object->character_context != 0x2a && object->character_context != 0x36 &&
+            object->character_context != 0x3a) {
             roll = (i32)(object->velocity.z * TrenchRollScalePc);
-        else
+        } else {
             roll = 0;
-        if (player->movement_facing_angle < 0x8000)
+        }
+        if (player->movement_facing_angle < 0x8000) {
             roll = (i32)(0u - (u32)roll);
-        if (roll < -0x10000)
+        }
+        if (roll < -0x10000) {
             roll = -0x10000;
-        else if (roll > 0x10000)
+        } else if (roll > 0x10000) {
             roll = 0x10000;
+        }
         target_roll = roll / 4;
-        if (target_roll < -0x2000)
+        if (target_roll < -0x2000) {
             target_roll = -0x2000;
-        else if (target_roll > 0x2000)
+        } else if (target_roll > 0x2000) {
             target_roll = 0x2000;
+        }
         object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, 8.0f);
     }
     APIObjectVelocities(object);
@@ -600,10 +640,11 @@ void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
         trenchrun.position.z = trench_player->collision_position.z;
         lower = left_present ? 62.0f : 60.0f;
         upper = trenchrun.objects[2] != NULL ? 70.0f : 72.0f;
-        if (trenchrun.position.z < lower)
+        if (trenchrun.position.z < lower) {
             trenchrun.position.z = lower;
-        else if (upper < trenchrun.position.z)
+        } else if (upper < trenchrun.position.z) {
             trenchrun.position.z = upper;
+        }
         if (aicreature_sets_alive[0] == 0) {
             trenchrun.spawn_timer -= FRAMETIME;
             if (trenchrun.spawn_timer <= 0.0f) {
@@ -627,10 +668,11 @@ void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
                             break;
                     }
                     NuVecAdd(&spawn, &spawn, &offset);
-                    if (trenchrun.midtro_played == 0 && index == 1)
+                    if (trenchrun.midtro_played == 0 && index == 1) {
                         model = VehicleBoltId7f196cPc;
-                    else
+                    } else {
                         model = id_TIEFIGHTER;
+                    }
                     ship = AddDynamicCreature(model, &spawn, 0xc000, "TrenchBaddie", &player->ai_packet.path_info, NULL,
                                               0, NULL, NULL, 0, 1);
                     if (ship != NULL) {
@@ -644,8 +686,9 @@ void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
             }
         }
     }
-    if (((u8 *)LevFlag)[4] != 0)
+    if (((u8 *)LevFlag)[4] != 0) {
         return;
+    }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
         PlaySfx((char *)EpisodeVI_ffield, NuSpecialGetDrawPos(&LevHSpecial[0]));
     } else {

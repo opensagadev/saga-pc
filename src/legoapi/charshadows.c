@@ -25,21 +25,25 @@ void __cdecl CharShadows_Update(void) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             (object->character_data->model_flags & 0x10000) != 0 || object->use_model_origin == 0 ||
             object->character_data->game_character->shadow_locators == 0 || object->model_draw_result == 0 ||
-            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0 || object->shadow_opacity <= 0.0f)
+            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0 || object->shadow_opacity <= 0.0f) {
             continue;
+        }
         object->shadow_joint_mask = object->character_data->game_character->shadow_locators;
-        if (object->character_data->game_character->field_08c < 99.0f)
+        if (object->character_data->game_character->field_08c < 99.0f) {
             object->shadow_radius = object->character_data->game_character->field_08c;
-        else
+        } else {
             object->shadow_radius = object->character_data->collision_radius;
+        }
         packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
-            if (count >= 5)
+            if (count >= 5) {
                 break;
+            }
             if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
-                object->character_model->points_of_interest[locator] == NULL)
+                object->character_model->points_of_interest[locator] == NULL) {
                 continue;
+            }
             slot = &packet->shadows[count];
             locator_position = (NUVEC *)&object->locator_matrices[locator].m30;
             slot->position.x = locator_position->x;
@@ -72,8 +76,9 @@ void __cdecl CharShadows_Update(void) {
             }
             ++count;
         }
-        for (; count < 5; ++count)
+        for (; count < 5; ++count) {
             packet->shadows[count].position.y = 2000000.0f;
+        }
     }
 }
 
@@ -84,27 +89,34 @@ void __cdecl CharShadows_Draw(void) {
     NUVEC position;
     f32 alpha, radius;
     i32 index, locator, count, level_alpha;
-    if (CharacterBlobShadowsOnPc == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0)
+    if (CharacterBlobShadowsOnPc == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0) {
         return;
+    }
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
+        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
             continue;
-        if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x40000) == 0)
+        }
+        if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x40000) == 0) {
             continue;
+        }
         if ((object->character_data->model_flags & 0x10000) != 0 || !(object->shadow_opacity > 0.0f) ||
             object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
-            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0)
+            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0) {
             continue;
-        if (object->character_data->game_character->blob_shadow_alpha < 255)
+        }
+        if (object->character_data->game_character->blob_shadow_alpha < 255) {
             level_alpha = object->character_data->game_character->blob_shadow_alpha;
-        else
+        } else {
             level_alpha = WORLD->current_level->blob_shadow_alpha;
-        if (level_alpha <= 0)
+        }
+        if (level_alpha <= 0) {
             continue;
+        }
         radius = object->shadow_radius;
-        if (!(radius > 0.0f))
+        if (!(radius > 0.0f)) {
             continue;
+        }
         alpha = (f32)level_alpha * object->shadow_opacity;
         radius *= object->origin_scale;
         radius *= DropInOutScale(object);
@@ -112,11 +124,13 @@ void __cdecl CharShadows_Draw(void) {
         slot = packet->shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
-            if (count >= 5)
+            if (count >= 5) {
                 break;
+            }
             if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
-                object->character_model->points_of_interest[locator] == NULL)
+                object->character_model->points_of_interest[locator] == NULL) {
                 continue;
+            }
             if ((f64)slot->position.y != 2000000.0 && slot->opacity > 0.0f &&
                 (f64)slot->position.y <= (f64)object->locator_matrices[locator].m31 + (f64)0.025f) {
                 position.x = slot->position.x;

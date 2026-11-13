@@ -6,11 +6,11 @@ PC_VERTEX_DECL_ENTRY_PC *__cdecl PCVertexDeclarationFindSlot(const PC_VERTEX_DEC
     PC_VERTEX_DECL_ENTRY_PC *middle;
     while (first <= last) {
         middle = first + (last - first) / 2;
-        if (middle->key < key->key)
+        if (middle->key < key->key) {
             first = middle + 1;
-        else if (middle->key > key->key)
+        } else if (middle->key > key->key) {
             last = middle - 1;
-        else {
+        } else {
             *found = 1;
             return middle;
         }
@@ -33,28 +33,33 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
         i32 offset;
         PCByteCopy_candidate(record + 1, record, (count - (record - PCVertexDeclarationCachePC)) * sizeof(*record));
         ++PCVertexDeclarationCountPC;
-        if ((descriptor & 8) != 0 || (descriptor & 0x880000) != 0)
+        if ((descriptor & 8) != 0 || (descriptor & 0x880000) != 0) {
             normal = 2;
-        else
+        } else {
             normal = (descriptor >> 2) & 1;
-        if ((descriptor & 0x20) != 0 || (descriptor & 0x1000000) != 0)
+        }
+        if ((descriptor & 0x20) != 0 || (descriptor & 0x1000000) != 0) {
             tangent = 2;
-        else
+        } else {
             tangent = (descriptor >> 4) & 1;
-        if ((descriptor & 0x80) != 0 || (descriptor & 0x2000000) != 0)
+        }
+        if ((descriptor & 0x80) != 0 || (descriptor & 0x2000000) != 0) {
             binormal = 2;
-        else
+        } else {
             binormal = (descriptor >> 6) & 1;
+        }
         diffuse = (descriptor >> 8) & 1;
         specular = (descriptor & 0x600) != 0;
-        if ((descriptor >> 27) & 1)
+        if ((descriptor >> 27) & 1) {
             texture_mode = 0;
-        else
+        } else {
             texture_mode = (descriptor >> 11) & 7;
-        if ((descriptor >> 27) & 1)
+        }
+        if ((descriptor >> 27) & 1) {
             half_texture_mode = (descriptor >> 11) & 7;
-        else
+        } else {
             half_texture_mode = 0;
+        }
         weights = (descriptor & 0x8000) ? 2 : (descriptor >> 14) & 1;
         colour2 = (descriptor & 0x20000) ? 2 : (descriptor >> 16) & 1;
         skinned = (descriptor >> 26) & 1;
@@ -77,8 +82,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 break;
             case 2:
                 VERTEX_ELEMENT(8, 3, 0, 4);
-                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = 4;
+                }
                 break;
         }
         switch (tangent) {
@@ -87,8 +93,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 break;
             case 2:
                 VERTEX_ELEMENT(8, 6, 0, 4);
-                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = 4;
+                }
                 break;
         }
         switch (binormal) {
@@ -97,8 +104,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 break;
             case 2:
                 VERTEX_ELEMENT(8, 6, 1, 4);
-                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = 4;
+                }
                 break;
         }
         if (diffuse) {
@@ -145,8 +153,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 break;
             case 2:
                 VERTEX_ELEMENT(8, 1, 0, 4);
-                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = 4;
+                }
                 break;
         }
         switch (colour2) {
@@ -155,14 +164,16 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 break;
             case 2:
                 VERTEX_ELEMENT(5, 2, 0, 4);
-                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                if (PCDeviceHardwareVertexProcessingPC <= 1) {
                     elements[element_count - 1].type = 4;
+                }
                 break;
         }
         if (skinned) {
             VERTEX_ELEMENT(8, 5, 6, 4);
-            if (PCDeviceHardwareVertexProcessingPC <= 1)
+            if (PCDeviceHardwareVertexProcessingPC <= 1) {
                 elements[element_count - 1].type = 4;
+            }
             VERTEX_ELEMENT(4, 5, 7, 0);
         }
         if (instanced) {

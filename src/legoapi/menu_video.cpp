@@ -1,20 +1,24 @@
 #include "saga.h"
 
 u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
-    if (aspect_mode != PcWindowOptions.aspect_mode)
+    if (aspect_mode != PcWindowOptions.aspect_mode) {
         return 1;
+    }
     if ((shadows_enabled == 1) != PcWindowOptions.shadowsenabled ||
         (bloom_enabled == 1) != PcWindowOptions.bloomenabled ||
-        (speed_blur_enabled == 1) != PcWindowOptions.speedblurenabled)
+        (speed_blur_enabled == 1) != PcWindowOptions.speedblurenabled) {
         return 1;
+    }
     return (hires_enabled == 1) != PcWindowOptions.usehirespending;
 }
+
 void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetAspectModePc(aspect_mode);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3)
+    if (aspect == 3) {
         aspect = PCDeviceBackend.active_aspect_mode;
+    }
     MenuAppliedAspectPc = aspect;
     PcWindowOptions.SetShadowsEnabledPc(shadows_enabled == 1);
     PcWindowOptions.SetBloomEnabledPc(bloom_enabled == 1);
@@ -22,19 +26,23 @@ void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetUseHiresPendingPc(hires_enabled == 1);
     PcWindowOptions.Save();
 }
+
 extern "C" bool __cdecl MenuCanChangeMultisamplePc(void) {
     for (i32 i = 0; i != 5; ++i) {
         if (i != 0 && PCDeviceBackend.multisample_tested != 0 && PCDeviceBackend.quality[i] != -1) {
-            if (PCDeviceBackend.multisample_index == 6)
+            if (PCDeviceBackend.multisample_index == 6) {
                 break;
+            }
             return true;
         }
     }
     return false;
 }
+
 extern "C" bool __cdecl MenuCanChangeShadowsPc(void) {
     return PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1;
 }
+
 extern "C" void __cdecl MenuEnterVideoPc(MENU *) {
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
@@ -42,6 +50,7 @@ extern "C" void __cdecl MenuEnterVideoPc(MENU *) {
     MenuVideoOptionsPc.speed_blur_enabled = PcWindowOptions.speedblurenabled != 0;
     MenuVideoOptionsPc.hires_enabled = PcWindowOptions.usehirespending != 0;
 }
+
 extern "C" void __cdecl MenuEnterEffectsPc(MENU *) {
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptionsPc.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
@@ -49,10 +58,13 @@ extern "C" void __cdecl MenuEnterEffectsPc(MENU *) {
     MenuVideoOptionsPc.speed_blur_enabled = PcWindowOptions.speedblurenabled != 0;
     MenuVideoOptionsPc.hires_enabled = PcWindowOptions.usehirespending != 0;
 }
+
 extern "C" void __cdecl MenuExitVideoPc(MENU *) {
 }
+
 extern "C" void __cdecl MenuExitEffectsPc(MENU *) {
 }
+
 extern "C" void __cdecl MenuApplyVideoPc(void) {
     if (PCDeviceBackend.HasRequestedModeChangedPc()) {
         MenuSFX = MENUSFX_MENUSELECT;
@@ -75,6 +87,7 @@ extern "C" void __cdecl MenuApplyVideoPc(void) {
     }
     BackupMenu();
 }
+
 extern "C" void __cdecl MenuCancelVideoPc(void) {
     PCDeviceBackend.ResetRequestedMode();
     MenuVideoOptionsPc.aspect_mode = PcWindowOptions.aspect_mode;
@@ -85,6 +98,7 @@ extern "C" void __cdecl MenuCancelVideoPc(void) {
     MenuSFX = MENUSFX_MENUBACK;
     BackupMenu();
 }
+
 extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
     if (menu->cancel_pressed) {
         MenuCancelVideoPc();
@@ -112,30 +126,34 @@ extern "C" void __cdecl MenuUpdateVideoPc(MENU *menu) {
         case 2:
             if (menu->right_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
-                if (++MenuVideoOptionsPc.aspect_mode > 3)
+                if (++MenuVideoOptionsPc.aspect_mode > 3) {
                     MenuVideoOptionsPc.aspect_mode = 0;
+                }
             } else if (menu->left_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
-                if (--MenuVideoOptionsPc.aspect_mode < 0)
+                if (--MenuVideoOptionsPc.aspect_mode < 0) {
                     MenuVideoOptionsPc.aspect_mode = 3;
+                }
             }
             break;
         case 3:
             if (menu->right_pressed || menu->left_pressed || menu->confirm_pressed) {
-                if (!PcWindowOptions.option459)
+                if (!PcWindowOptions.option459) {
                     MenuSFX = MENUSFX_MENUNOENTRY;
-                else {
+                } else {
                     MenuSFX = MENUSFX_MENUMOVE;
                     MenuVideoOptionsPc.hires_enabled = 1 - MenuVideoOptionsPc.hires_enabled;
                 }
             }
             break;
         case 4:
-            if (menu->confirm_pressed)
+            if (menu->confirm_pressed) {
                 MenuApplyVideoPc();
+            }
             break;
     }
 }
+
 extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
     if (menu->cancel_pressed) {
         MenuCancelVideoPc();
@@ -154,18 +172,21 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
                 }
                 MenuSFX = MENUSFX_MENUMOVE;
                 i32 index = PCDeviceBackend.requested_multisample;
-                if (menu->left_pressed)
+                if (menu->left_pressed) {
                     --index;
-                else
+                } else {
                     ++index;
-                if (index < 0)
+                }
+                if (index < 0) {
                     index = 4;
-                else if (index >= 5)
+                } else if (index >= 5) {
                     index = 0;
+                }
                 if (!PCDeviceBackend.SupportsMultisamplePc(index)) {
                     do {
-                        if (++index >= 5)
+                        if (++index >= 5) {
                             index = 0;
+                        }
                     } while (!PCDeviceBackend.SupportsMultisamplePc(index));
                 }
                 PCDeviceBackend.requested_multisample = index;
@@ -194,188 +215,227 @@ extern "C" void __cdecl MenuUpdateEffectsPc(MENU *menu) {
             }
             break;
         case 4:
-            if (menu->confirm_pressed)
+            if (menu->confirm_pressed) {
                 MenuApplyVideoPc();
+            }
             break;
     }
 }
+
 extern "C" void __cdecl MenuDrawVideoPc(MENU *menu) {
     char text[256];
     GRAPHICS_DISPLAY_MODE_PC *mode = &PCDeviceBackend.modes[PCDeviceBackend.requested_mode];
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, MenuVideoResolutionFormatPc, MenuPcStrings[19], mode->width, mode->height);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, MenuVideoRefreshFormatPc, MenuPcStrings[20], mode->refresh_rate);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     switch (MenuVideoOptionsPc.aspect_mode) {
         case 0:
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, MenuVideoAspect43FormatPc, MenuPcStrings[22]);
             break;
         case 1:
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, MenuVideoAspect169FormatPc, MenuPcStrings[22]);
             break;
         case 2:
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, MenuVideoAspect1610FormatPc, MenuPcStrings[22]);
             break;
         case 3: {
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             const char *automatic = MenuPcStrings[24];
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[22], automatic);
             break;
         }
         default:
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, MenuVideoAspectErrorFormatPc, MenuPcStrings[22]);
             break;
     }
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     const char *value;
     if (MenuVideoOptionsPc.hires_enabled) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[15];
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[16];
     }
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[23], value);
     DrawMenuEntryEx(menu, text, (u8)((PcWindowOptions.option459 ? 255 : 64) * MenuAlpha));
     if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptionsPc.ChangedPc()) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         NuSPrintf(text, "%s", MenuPcStrings[10]);
         DrawMenuEntryEx(menu, text, (u8)MenuA);
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         NuSPrintf(text, "%s", MenuPcStrings[8]);
         DrawMenuEntryEx(menu, text, (u8)((menu_flash ? 255 : 0) * MenuAlpha));
     }
 }
+
 extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
     char text[256];
     const char *value;
     if (PcWindowOptions.usehires) {
         if (PCDeviceBackend.requested_multisample == 6) {
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             value = MenuPcStrings[31];
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
         } else {
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             value = MenuPcStrings[16];
-            if (!MenuPcStringsInitialized)
+            if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
+            }
             NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
         }
         DrawMenuEntryEx(menu, text, (u8)(MenuAlpha * 64.0));
     } else {
         switch (PCDeviceBackend.requested_multisample) {
             case 1:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, MenuEffects2xFormatPc, MenuPcStrings[30]);
                 break;
             case 2:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, MenuEffects4xFormatPc, MenuPcStrings[30]);
                 break;
             case 3:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, MenuEffects8xFormatPc, MenuPcStrings[30]);
                 break;
             case 4:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, MenuEffects16xFormatPc, MenuPcStrings[30]);
                 break;
             case 6:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 value = MenuPcStrings[31];
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
                 break;
             default:
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 value = MenuPcStrings[16];
-                if (!MenuPcStringsInitialized)
+                if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
+                }
                 NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
                 break;
         }
         DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeMultisamplePc() ? 255 : 64) * MenuAlpha));
     }
     if (MenuCanChangeShadowsPc() && MenuVideoOptionsPc.shadows_enabled) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[15];
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[16];
     }
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[32], value);
     DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeShadowsPc() ? 255 : 64) * MenuAlpha));
     if (MenuVideoOptionsPc.bloom_enabled) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[15];
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[16];
     }
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[33], value);
     DrawMenuEntryEx(menu, text, 255);
     if (MenuVideoOptionsPc.speed_blur_enabled) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[15];
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         value = MenuPcStrings[16];
     }
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[35], value);
     DrawMenuEntryEx(menu, text, 255);
     if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptionsPc.ChangedPc()) {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         NuSPrintf(text, "%s", MenuPcStrings[10]);
         DrawMenuEntryEx(menu, text, (u8)MenuA);
     } else {
-        if (!MenuPcStringsInitialized)
+        if (!MenuPcStringsInitialized) {
             MenuPcStringsInit();
+        }
         NuSPrintf(text, "%s", MenuPcStrings[8]);
         DrawMenuEntryEx(menu, text, (u8)((menu_flash ? 255 : 0) * MenuAlpha));
     }
@@ -383,37 +443,44 @@ extern "C" void __cdecl MenuDrawEffectsPc(MENU *menu) {
 
 void __thiscall PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
     requested_windowed = saved_windowed;
-    if (saved_mode < mode_count)
+    if (saved_mode < mode_count) {
         requested_mode = saved_mode;
-    else
+    } else {
         requested_mode = active_mode;
+    }
     requested_feature = saved_feature;
     requested_multisample = saved_multisample;
     requested_target_count = saved_target_count;
     PcWindowOptions.SetAspectModePc(saved_aspect);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3)
+    if (aspect == 3) {
         aspect = active_aspect_mode;
+    }
     MenuAppliedAspectPc = aspect;
     CreateOrResetDevice(1);
 }
+
 extern "C" void __cdecl MenuEnterVideoConfirmPc(MENU *menu) {
     MenuVideoConfirmDurationPc = 15.0f;
     MenuVideoConfirmWaitPc = 3;
     menu->selected_row = 1;
 }
+
 extern "C" void __cdecl MenuDrawVideoConfirmPc(MENU *menu) {
     char text[256];
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[25], (u8)MenuA);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     NuSPrintf(text, MenuVideoCountdownFormatPc, MenuPcStrings[27],
               (i32)(MenuVideoConfirmDurationPc - menu->menu_time) + 1);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
 }
+
 extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
     if (MenuVideoConfirmWaitPc != 0) {
         --MenuVideoConfirmWaitPc;
@@ -423,8 +490,9 @@ extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
     if (menu->selected_row == 0 && menu->confirm_pressed) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();
-        if (PcWindowOptions.usehirespending != PcWindowOptions.usehires)
+        if (PcWindowOptions.usehirespending != PcWindowOptions.usehires) {
             NewMenu(1028, 0, -1);
+        }
         return;
     }
     if ((menu->selected_row == 1 && menu->confirm_pressed) || menu->menu_time >= MenuVideoConfirmDurationPc) {
@@ -438,51 +506,65 @@ extern "C" void __cdecl MenuUpdateVideoConfirmPc(MENU *menu) {
         BackupMenu();
     }
 }
+
 extern "C" void __cdecl MenuExitVideoConfirmPc(MENU *) {
 }
+
 extern "C" void __cdecl MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
                     1.5f, 4, NULL, 0, MenuA);
 }
+
 extern "C" void __cdecl MenuEnterHiresNoticePc(MENU *menu) {
     menu->selected_row = 0;
 }
+
 extern "C" void __cdecl MenuDrawHiresNoticePc(MENU *menu) {
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     MenuDrawNoticePc((char *)MenuPcStrings[28], 255, 255, 255);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[13], (u8)MenuA);
 }
+
 extern "C" void __cdecl MenuUpdateHiresNoticePc(MENU *menu) {
     if (menu->confirm_pressed || menu->cancel_pressed) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();
     }
 }
+
 extern "C" void __cdecl MenuExitHiresNoticePc(MENU *) {
 }
 
 extern "C" void __cdecl MenuEnterQuitPc(MENU *menu) {
     menu->selected_row = 0;
 }
+
 extern "C" void __cdecl MenuExitQuitPc(MENU *) {
 }
+
 extern "C" void __cdecl MenuDrawQuitPc(MENU *menu) {
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[3], (u8)MenuA);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], (u8)MenuA);
 }
+
 extern "C" void __cdecl MenuUpdateQuitPc(MENU *menu) {
     if ((menu->selected_row == 0 && menu->confirm_pressed != 0) || menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();
         return;
     }
-    if (menu->selected_row == 1 && menu->confirm_pressed != 0)
+    if (menu->selected_row == 1 && menu->confirm_pressed != 0) {
         PcQuitToWindows();
+    }
 }

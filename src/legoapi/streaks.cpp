@@ -40,17 +40,20 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     STREAK_HEADER_PC *header = static_cast<STREAK_HEADER_PC *>(*handle);
     if (header == NULL) {
         header = StreakHeadersFreePc;
-        if (header == NULL)
+        if (header == NULL) {
             return;
+        }
         StreakHeadersFreePc = header->next;
         header->next = StreakHeadersUsedPc;
-        if (StreakHeadersUsedPc != NULL)
+        if (StreakHeadersUsedPc != NULL) {
             StreakHeadersUsedPc->prev = header;
+        }
         header->prev = NULL;
         StreakHeadersUsedPc = header;
         header->nodes = NULL;
-        if (header == NULL)
+        if (header == NULL) {
             return;
+        }
         header->owner_slot = handle;
         *handle = header;
         header->colour = colour;
@@ -63,18 +66,21 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     if (node != NULL) {
         StreakNodesFreePc = node->next;
         node->next = header->nodes;
-        if (header->nodes != NULL)
+        if (header->nodes != NULL) {
             header->nodes->prev = node;
+        }
         node->prev = NULL;
         header->nodes = node;
     }
-    if (header->nodes == NULL)
+    if (header->nodes == NULL) {
         return;
+    }
     header->nodes->position = points[0];
     header->nodes->previous_position = points[1];
     header->nodes->remaining_time = duration;
-    if (header->nodes->next == NULL)
+    if (header->nodes->next == NULL) {
         return;
+    }
     node = header->nodes;
     STREAK_NODE_PC *older = node->next;
     NuVecSub(&node->start_tangent, &older->position, &node->position);
@@ -136,11 +142,13 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
 }
 
 extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
-    if (elapsed == 0.0f)
+    if (elapsed == 0.0f) {
         return;
+    }
     STREAK_HEADER_PC *header = StreakHeadersUsedPc;
-    if (header == NULL)
+    if (header == NULL) {
         return;
+    }
     STREAK_HEADER_PC *free_headers = StreakHeadersFreePc;
     do {
         STREAK_HEADER_PC *next_header = header->next;
@@ -152,24 +160,28 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
         for (STREAK_NODE_PC *node = header->nodes; node != NULL; node = node->next) {
             node->remaining_time -= elapsed;
             if (node->remaining_time <= 0.0f && node->next == NULL) {
-                if (node->prev != NULL)
+                if (node->prev != NULL) {
                     node->prev->next = node->next;
-                else
+                } else {
                     header->nodes = node->next;
-                if (node->next != NULL)
+                }
+                if (node->next != NULL) {
                     node->next->prev = node->prev;
+                }
                 node->next = StreakNodesFreePc;
                 StreakNodesFreePc = node;
                 break;
             }
         }
         if (header->nodes == NULL) {
-            if (header->prev != NULL)
+            if (header->prev != NULL) {
                 header->prev->next = header->next;
-            else
+            } else {
                 StreakHeadersUsedPc = header->next;
-            if (header->next != NULL)
+            }
+            if (header->next != NULL) {
                 header->next->prev = header->prev;
+            }
             header->next = free_headers;
             free_headers = header;
         }
@@ -184,6 +196,7 @@ extern "C" f32 StreakAlphaScalePc;
 #define STREAK_SET_ALPHA(colour, header, node)                                                                         \
     (colour) = (header)->colour;                                                                                       \
     ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
+
 extern "C" void __cdecl DrawStreaks(void) {
     for (STREAK_HEADER_PC *header = StreakHeadersUsedPc; header != NULL; header = header->next) {
         NURND_VERTEX3D_PC vertices[256];
@@ -222,35 +235,41 @@ extern "C" void __cdecl DrawStreaks(void) {
                              header->flags != 0 ? StreakReflectionMaterialPc : StreakMaterialPc);
     }
 }
+
 #undef STREAK_SET_ALPHA
 #undef STREAK_ALPHA
 #undef STREAK_FADE
 
 extern "C" void __cdecl ResetStreaks(void) {
     STREAK_HEADER_PC *header = StreakHeadersUsedPc;
-    if (header == NULL)
+    if (header == NULL) {
         return;
+    }
     STREAK_HEADER_PC *free_headers = StreakHeadersFreePc;
     STREAK_NODE_PC *free_nodes = StreakNodesFreePc;
     do {
         while (header->nodes != NULL) {
             STREAK_NODE_PC *node = header->nodes;
-            if (node->prev != NULL)
+            if (node->prev != NULL) {
                 node->prev->next = node->next;
-            else
+            } else {
                 header->nodes = node->next;
-            if (node->next != NULL)
+            }
+            if (node->next != NULL) {
                 node->next->prev = node->prev;
+            }
             node->next = free_nodes;
             free_nodes = node;
         }
         STREAK_HEADER_PC *old_header = header;
-        if (old_header->prev != NULL)
+        if (old_header->prev != NULL) {
             old_header->prev->next = old_header->next;
-        else
+        } else {
             header = old_header->next;
-        if (old_header->next != NULL)
+        }
+        if (old_header->next != NULL) {
             old_header->next->prev = old_header->prev;
+        }
         old_header->next = free_headers;
         free_headers = old_header;
     } while (header != NULL);
@@ -263,6 +282,7 @@ struct STREAK_MATERIAL_SCALE_PC {
     u8 unknown_00[0x64];
     f32 effect_scale;
 };
+
 STATIC_ASSERT(offsetof(STREAK_MATERIAL_SCALE_PC, effect_scale) == 0x64);
 STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
 

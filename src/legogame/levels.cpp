@@ -11,23 +11,28 @@ extern "C" {
     void __cdecl ClearTakeOverObjectSys(void);
     extern void *Door_Last;
 }
+
 typedef struct player_progress_hp_pc_s {
     u8 unknown_0000[8];
     u8 hitpoints;
     u8 unknown_0009[7];
 } PLAYER_PROGRESS_HP_PC;
+
 extern "C" {
     extern AREA_DATA_PC *ANEWHOPE_ADATA;
 }
+
 typedef struct area_loading_clock_reader_pc_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;
 } AREA_LOADING_CLOCK_READER_PC;
+
 typedef struct area_loading_pad_reader_pc_s {
     u8 unknown_0000[8];
     u32 buttons_pressed;
     u8 unknown_000c[0x54];
 } AREA_LOADING_PAD_READER_PC;
+
 extern "C" {
     void __cdecl MusicClearAll(void);
     void __cdecl SoundKillAll(void);
@@ -46,6 +51,7 @@ extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void __cdecl ParticleReset(void);
+
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
     u32 attributes;
@@ -57,17 +63,21 @@ typedef struct permanent_material_reader_pc_s {
     i16 texture_id;
     u16 sort_priority;
 } PERMANENT_MATERIAL_READER_PC;
+
 extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
+
 typedef struct permanent_customiser_save_pc_s {
     u16 pieces[9];
     u8 unknown_12[0x26];
     u16 secondary_pieces[9];
     u8 unknown_4a[0x26];
 } PERMANENT_CUSTOMISER_SAVE_PC;
+
 typedef struct permanent_customiser_game_pc_s {
     u8 unknown_0000[0x7c24];
     PERMANENT_CUSTOMISER_SAVE_PC customiser;
 } PERMANENT_CUSTOMISER_GAME_PC;
+
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
     extern f32 PermCollectionScalePc;
@@ -311,22 +321,27 @@ extern "C" void __cdecl ChrisDogFightAInit(WORLDINFO *);
 extern "C" void __cdecl ChrisDogFightAReset(WORLDINFO *);
 extern "C" void __cdecl ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void __cdecl ChrisDogFightADraw(WORLDINFO *);
+
 /* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
     char name[16];
     f32 params[4];
 } LEVEL_SCRIPT_PROGRESS_PC;
+
 typedef struct ai_script_progress_view_pc_s {
     u8 unknown_0000[0x2824];
     LEVEL_SCRIPT_PROGRESS_PC scripts[32];
 } AI_SCRIPT_PROGRESS_VIEW_PC;
+
 #define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
     __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene);
+
     typedef struct world_script_progress_pc_s {
         char name[16];
         f32 params[4];
     } WORLD_SCRIPT_PROGRESS_PC;
+
     typedef struct level_progress_transfer_pc_s {
         SCENEPROGRESS scene_progress;
         u32 flags;
@@ -335,19 +350,23 @@ extern "C" {
         GIZFLOWPROGRESS_PC giz_flow_progress;
         char disabled_effect_names[12][16];
     } LEVEL_PROGRESS_TRANSFER_PC;
+
     typedef struct world_persistence_flags_pc_s {
         u8 unknown_0000[0x5170];
         u32 progress_flags;
     } WORLD_PERSISTENCE_FLAGS_PC;
+
     void __cdecl GizmoSysStoreProgress(void *system, void *world, i32 index);
     void __cdecl LoadGrassFile(WORLDINFO *world);
     void __cdecl LoadBridgeFile(WORLDINFO *world);
     void __cdecl LoadTerrainFile(WORLDINFO *world);
 }
+
 typedef struct world_minikit_load_pc_s {
     NUGSCN *scene;
     u8 unknown_04[0x14];
 } WORLD_MINIKIT_LOAD_PC;
+
 typedef struct world_load_reader_pc_s {
     u8 unknown_0000[0x2964];
     NUGSCN *icons_scene;
@@ -366,6 +385,7 @@ typedef struct world_load_reader_pc_s {
     void *ai_trigger_set;
     void *climb_object_system;
 } WORLD_LOAD_READER_PC;
+
 extern "C" {
     void __cdecl Level_LoadConfigFile(WORLDINFO *);
     void __cdecl LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
@@ -378,15 +398,17 @@ extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
 
 static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
-    if (list == NULL)
+    if (list == NULL) {
         return 0;
+    }
     for (; list->model_id != -1; ++list) {
         if (Collection_Got(list->model_id) != 0) {
             i16 id = list->model_id;
             i8 action = GCDataList[id].weapon_action;
             if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
-                id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc)
+                id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) {
                 return 1;
+            }
         }
     }
     return 0;
@@ -398,22 +420,27 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
     i32 id;
     for (id = 0; id < CHARCOUNT; ++id) {
         i8 action;
-        if (excluded != NULL && InModelList(excluded, id, NULL) != 0)
+        if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
             continue;
+        }
         if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
-                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1]))
+                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1])) {
             continue;
-        if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0)
+        }
+        if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0) {
             continue;
+        }
         action = GCDataList[id].weapon_action;
         if ((action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
              id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc) &&
-            count < 500)
+            count < 500) {
             candidates[count++] = (i16)id;
+        }
     }
     if (count > 0) {
-        if (count > 1)
+        if (count > 1) {
             return candidates[qrand() / (0xffff / count + 1)];
+        }
         return candidates[0];
     }
     return -1;
@@ -421,13 +448,16 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
 
 static i32 World_AppendFreePlayPrivate(i32 model) {
     i32 index;
-    if (model == -1 || FreePlayModelCount >= 48)
+    if (model == -1 || FreePlayModelCount >= 48) {
         return 0;
-    if (FreePlayModelCount < 2)
+    }
+    if (FreePlayModelCount < 2) {
         PlayerList[FreePlayModelCount] = (i16)model;
+    }
     for (index = 0; index < FreePlayModelCount; ++index) {
-        if (FreePlayModelList[index].model_id == model)
+        if (FreePlayModelList[index].model_id == model) {
             return 0;
+        }
     }
     FreePlayModelList[FreePlayModelCount].model_id = (i16)model;
     FreePlayModelList[FreePlayModelCount].count = 1;
@@ -442,10 +472,11 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
     i32 index;
     u32 flags;
     AREA_DATA_PC *lost_temple;
-    if (WORLD != NULL && WORLD->area != NULL && WORLD->area == HUB_ADATA && bonusmodearcade != 0)
+    if (WORLD != NULL && WORLD->area != NULL && WORLD->area == HUB_ADATA && bonusmodearcade != 0) {
         flags = Arcade_Mode[ArcadeItem.mode].flags;
-    else
+    } else {
         flags = 0;
+    }
     FreePlayModelCount = 0;
     FreePlayResidentCount = 0;
     FreePlayBonusCount = 0;
@@ -465,25 +496,30 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
         World_AppendFreePlayPrivate(FreePlayId007f1abcPc);
     } else if ((ADataList[area].flags & 5) == 5) {
         for (index = 0; index < 2; ++index) {
-            if (models[index] != -1)
+            if (models[index] != -1) {
                 World_AppendFreePlayPrivate(models[index]);
+            }
         }
-        if (makefreeplaymodellist != 0)
+        if (makefreeplaymodellist != 0) {
             Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 1);
-        else
+        } else {
             Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 0);
-        for (index = 0; ids[index] != -1; ++index)
+        }
+        for (index = 0; ids[index] != -1; ++index) {
             World_AppendFreePlayPrivate(ids[index]);
-        if (FreePlayModelCount == 1)
+        }
+        if (FreePlayModelCount == 1) {
             PlayerList[1] = PlayerList[0];
+        }
         lost_temple = LOSTTEMPLE_ADATA;
         PlayerList[2] = -1;
     } else {
         for (index = 0; index < 2; ++index) {
-            if (models[index] != -1)
+            if (models[index] != -1) {
                 World_AppendFreePlayPrivate(models[index]);
-            else if (Player[index] != NULL)
+            } else if (Player[index] != NULL) {
                 World_AppendFreePlayPrivate((i16)((GAMEOBJECT *)Player[index])->id);
+            }
         }
         if (FreePlayModelCount == 1) {
             PlayerList[1] = PlayerList[0];
@@ -498,16 +534,19 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
             ++FreePlayResidentCount;
         }
     }
-    if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index)
+    if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index) {
         goto extras;
+    }
     if ((ADataList[area].flags & 1) != 0) {
         i16 second = PlayerList[1];
         if ((ADataList[area].flags & 4) != 0) {
-            if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0)
+            if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0) {
                 PlayerList[1] = PlayerList[0];
+            }
         } else {
-            if (second == -1 || (CDataList[second].model_flags & 0x2000) == 0 || Collection_Got(second) == 0)
+            if (second == -1 || (CDataList[second].model_flags & 0x2000) == 0 || Collection_Got(second) == 0) {
                 PlayerList[1] = PlayerList[0];
+            }
             index = 0;
             if (StartupGameFlag1 != 0) {
                 ids[0] = id_XWING;
@@ -536,24 +575,28 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
             ids[index] = -1;
             i32 model;
             for (index = 0; (model = ids[index]) != -1; ++index) {
-                if (World_AppendFreePlayPrivate(model) != 0)
+                if (World_AppendFreePlayPrivate(model) != 0) {
                     ++FreePlayBonusCount;
+                }
             }
         }
     } else {
         i32 hats = InModelListDataFlags(FreePlayModelList, 0, 0, 1, 0);
         if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0) {
-            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_A) != 0)
+            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_A) != 0) {
                 ++FreePlayBonusCount;
-            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_B) != 0)
+            }
+            if (World_AppendFreePlayPrivate(ID_DEFAULTCHARACTER_B) != 0) {
                 ++FreePlayBonusCount;
+            }
         }
         if (CharCategory != NULL) {
             for (index = 0; index < CHARCATEGORYCOUNT; ++index) {
                 i32 model;
                 if (InModelListDataFlags(FreePlayModelList, CharCategory[index].model_flags,
-                                         CharCategory[index].game_flags, 0, 1) != 0)
+                                         CharCategory[index].game_flags, 0, 1) != 0) {
                     continue;
+                }
                 if (hats == 0 || (StartupGameFlag1 != 0 && (CharCategory[index].model_flags & 0x80) != 0)) {
                     model =
                         RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 1, NULL, 1);
@@ -567,13 +610,15 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
                     model =
                         RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 0, NULL, 1);
                 }
-                if (model != -1 && World_AppendFreePlayPrivate(model) != 0)
+                if (model != -1 && World_AppendFreePlayPrivate(model) != 0) {
                     ++FreePlayBonusCount;
+                }
             }
             if (World_HasImperialPrivate(FreePlayModelList) == 0) {
                 i32 model = World_RandomImperialPrivate(FreePlayModelList);
-                if (model != -1 && World_AppendFreePlayPrivate(model) != 0)
+                if (model != -1 && World_AppendFreePlayPrivate(model) != 0) {
                     ++FreePlayBonusCount;
+                }
             }
         }
     }
@@ -583,30 +628,35 @@ extras:
         if (source != -1) {
             for (index = 0; index < FreePlayModelCount; ++index) {
                 if (FreePlayModelList[index].model_id == source) {
-                    if (extra->extra_id != NULL && *extra->extra_id != -1)
+                    if (extra->extra_id != NULL && *extra->extra_id != -1) {
                         World_AppendFreePlayPrivate(*extra->extra_id);
+                    }
                     break;
                 }
             }
         }
     }
 }
+
 extern "C" {
 
     i32 __cdecl KillBoss(i32 character_id, i32 flag_index, f32 delay) {
         u8 *flags = (u8 *)LevFlag;
         switch (flags[flag_index]) {
             case 0:
-                if (BossKilled(character_id) == NULL)
+                if (BossKilled(character_id) == NULL) {
                     return 0;
-                if (delay <= 0.0f)
+                }
+                if (delay <= 0.0f) {
                     break;
+                }
                 flags[flag_index] = 1;
                 return 0;
             case 1:
                 LevTime[0] += FRAMETIME;
-                if (LevTime[0] >= delay)
+                if (LevTime[0] >= delay) {
                     break;
+                }
                 return 0;
             default:
                 return 0;
@@ -616,8 +666,9 @@ extern "C" {
     }
 
     void __cdecl KillBossCompleteLevel(i32 character_id, i32 flag_index, f32 delay) {
-        if (KillBoss(character_id, flag_index, delay) != 0)
+        if (KillBoss(character_id, flag_index, delay) != 0) {
             CompleteLevel(WORLD);
+        }
     }
 
     void KillBossNewLevel(i32 a, i32 b, float c, i32 d) {
@@ -686,15 +737,18 @@ static void WorldGetTitlesNamePrivatePc(char *titles) {
             break;
         default:
             if (StartupGameFlag1 != 0) {
-                if (Text_Language == 18)
+                if (Text_Language == 18) {
                     NuStrCpy(titles, "titles_us");
-                else
+                } else {
                     NuStrCpy(titles, "titles_uk");
-            } else
+                }
+            } else {
                 NuStrCpy(titles, "titles");
+            }
             break;
     }
 }
+
 static NUVEC TitlesStartPositionPc = {0};
 
 extern "C" void __cdecl Titles_Init(WORLDINFO *world) {
@@ -741,6 +795,7 @@ extern "C" void __cdecl Titles_Update(WORLDINFO *world) {
     LevTime[1] = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
     LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], FRAMETIME + FRAMETIME);
 }
+
 extern "C" {
     f32 TitleScalePc = 0.825f;
     f32 TitlePictureYPc = -0.15f;
@@ -796,6 +851,7 @@ extern "C" void __cdecl Titles_Draw(WORLDINFO *world) {
         }
     }
 }
+
 extern "C" {
 
     i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 visible) {
@@ -871,14 +927,16 @@ extern "C" {
         for (index = 0; index < 32; ++index) {
             if (NuStrLen(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name) == 0) {
                 NuStrCpy(((LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress)->scripts[index].name, processor->name);
-                for (parameter = 0; parameter < 4; ++parameter)
+                for (parameter = 0; parameter < 4; ++parameter) {
                     ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
                         processor->processor.params[parameter];
+                }
                 break;
             } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) == 0) {
-                for (parameter = 0; parameter < 4; ++parameter)
+                for (parameter = 0; parameter < 4; ++parameter) {
                     ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
                         processor->processor.params[parameter];
+                }
                 break;
             }
         }
@@ -887,16 +945,19 @@ extern "C" {
     /* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
     void __cdecl LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
         i32 index, parameter;
-        if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0)
+        if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0) {
             return;
+        }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name) == 0)
+            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name) == 0) {
                 break;
+            }
             if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name, process->name) ==
                 0) {
-                for (parameter = 0; parameter < 4; ++parameter)
+                for (parameter = 0; parameter < 4; ++parameter) {
                     process->processor.params[parameter] =
                         ((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].params[parameter];
+                }
                 break;
             }
         }
@@ -932,6 +993,7 @@ void __cdecl NewArea_ResetGlobalsPC(void) {
         ResetMinikitCounter();
     }
 }
+
 extern "C" {
 
     void __cdecl ClearLevData(void) {
@@ -977,8 +1039,9 @@ void __cdecl LoadPerm1(void) {
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     DebrisSetup(&permbuffer_ptr, permbuffer_end, (char *)"stuff\\particle", 0x100, 0x200, 0x200);
     DebrisRegisterCutoffCameraVec(&global_camera.mtx.m30);
-    if (Grass_Available != 0)
+    if (Grass_Available != 0) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
+    }
     PermanentEffectsMaterialPc = NuMtlCreateEx(1, 10);
     material = (PERMANENT_MATERIAL_READER_PC *)PermanentEffectsMaterialPc;
     material->diffuse[2] = 1.0f;
@@ -1001,11 +1064,13 @@ void __cdecl LoadPerm1(void) {
     InitParts(0x40, &permbuffer_ptr, native_end_address);
     ParticleReset();
     NuStrCpy(path, "stuff\\general.ptl");
-    if (NuFileExists(path) != 0)
+    if (NuFileExists(path) != 0) {
         DEBPAGE_GENERAL = edppLoadPage(path, 0, 0);
+    }
     NuStrCpy(path, "stuff\\char.ptl");
-    if (NuFileExists(path) != 0)
+    if (NuFileExists(path) != 0) {
         DEBPAGE_CHARACTER = edppLoadPage(path, 5, 0);
+    }
     perm_debrissys = InitGameDebris(&permbuffer_ptr, native_end_address, 0x190, 0x93, debris_name, 0);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitStreaks(&permbuffer_ptr, permbuffer_end, (char *)StreakTextureNamePc);
@@ -1028,8 +1093,9 @@ void __cdecl LoadPerm1(void) {
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
     ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc)->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterialPc);
-    for (index = 0; index < 0x800; ++index)
+    for (index = 0; index < 0x800; ++index) {
         shadow_random[index] = (u8)(qrand() >> 8);
+    }
     NuRndrShadowInit(shadow_random);
     CreateFadeMaterials();   /* Native 48aa7a. */
     CreateUsefulMaterials(); /* Native 48aa7f. */
@@ -1045,8 +1111,9 @@ void __cdecl LoadPerm1(void) {
     things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
     if (things_scene != NULL) {
         edbitsRegisterThingsScene(things_scene);
-        if (things_scene->display_list != NULL)
+        if (things_scene->display_list != NULL) {
             things_scene->display_list->render_flags |= 0x10;
+        }
     }
     terrain_scene = things_scene;
     things_scene_terrain = TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things",
@@ -1058,11 +1125,13 @@ void __cdecl LoadPerm1(void) {
     NuMtlSetCurrentRenderPlane(15);
     edpartSetParticlePage(DEBPAGE_GENERAL);
     NuStrCpy(path, "stuff\\general.par");
-    if (NuFileExists(path) != 0)
+    if (NuFileExists(path) != 0) {
         PARTPAGE_GENERAL = edpartLoadPage(path, 0, things_scene);
+    }
     NuMtlSetCurrentRenderPlane(0);
     AIScriptLoadAll("scripts", &permbuffer_ptr, &permbuffer_end, NULL);
 }
+
 extern "C" {
 
     void __cdecl LoadPerm2(void) {
@@ -1111,20 +1180,22 @@ extern "C" {
     /* Original area.cpp helper: native EDI area, ESI list output, one stack story
      * output. */
     static void AreaSelectModelListsPrivatePc(i32 area, APICHARACTERMODELLIST **list, APICHARACTERMODELLIST **story) {
-        if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index)
+        if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index) {
             *list = Hub_ModelList;
-        else if (FreePlay != 0)
+        } else if (FreePlay != 0) {
             *list = FreePlayModelList;
-        else if (Mission_Active(0) != 0)
+        } else if (Mission_Active(0) != 0) {
             *list = Area_MissionModelList;
-        else
+        } else {
             *list = Area_StoryModelListPc;
-        if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index)
+        }
+        if (StartupGameFlag1 != 0 && HUB_ADATA != NULL && area == HUB_ADATA->index) {
             *story = Hub_ModelList;
-        else if (Mission_Active(0) != 0)
+        } else if (Mission_Active(0) != 0) {
             *story = Area_MissionModelList;
-        else
+        } else {
             *story = Area_StoryModelListPc;
+        }
     }
 
     static void __cdecl LoadAreaData(BGPROCINFO *bg_info) {
@@ -1146,31 +1217,35 @@ extern "C" {
                 StartupDatsSelectPc((i32)(i8)ADataList[area].episode_index + 1);
                 area_scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
                 StartupDatsSelectPc(0);
-                if (area_scene != NULL && area_scene->display_list != NULL)
+                if (area_scene != NULL && area_scene->display_list != NULL) {
                     area_scene->display_list->render_flags |= 0x10;
+                }
             }
             if ((ADataList[area].flags & 5) != 0 && area != last_area) {
                 characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
                 scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, "stuff\\vehicle_things.gsc");
                 vehicle_scene = scene;
-                if (scene != NULL && scene->display_list != NULL)
+                if (scene != NULL && scene->display_list != NULL) {
                     scene->display_list->render_flags |= 0x10;
+                }
             }
         }
         if (HUB_ADATA != NULL && area == HUB_ADATA->index && area != last_area) {
             characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 0x3f) & ~0x3fu;
             scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, "stuff\\icons\\starwars_icons_all.gsc");
             big_icon_scene = scene;
-            if (scene != NULL && scene->display_list != NULL)
+            if (scene != NULL && scene->display_list != NULL) {
                 scene->display_list->render_flags |= 0x10;
+            }
         }
         if (makefreeplaymodellist != 0) {
-            if ((ADataList[area].flags & 1) != 0)
+            if ((ADataList[area].flags & 1) != 0) {
                 MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
-            else if (Area_PlayerModelCount >= 2 && BonusArea == 0)
+            } else if (Area_PlayerModelCount >= 2 && BonusArea == 0) {
                 MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
-            else
+            } else {
                 MakeFreePlayModelList(id_DEFAULTCHARACTER[0], id_DEFAULTCHARACTER[1], area, level, 0);
+            }
             story = Area_StoryModelListPc;
             list = FreePlayModelList;
             makefreeplaymodellist = 0;
@@ -1208,8 +1283,9 @@ extern "C" {
         }
         Customiser_ResetModelTextureIDs(CharacterCustomiser);
     done:
-        if (story != NULL)
+        if (story != NULL) {
             CurrentStoryCList = story;
+        }
         if (loadareadata_loadlevel != 0) {
             next_level = Level;
             abort_load = 0;
@@ -1254,6 +1330,7 @@ extern "C" void ClearUpAreaData() {
     vehicle_scene = NULL;
     Particles_DumpAreaPage();
 }
+
 extern "C" {
     static f32 LoadTime = 0;
     static f32 LOADWAITTIME = 0;
@@ -1272,8 +1349,9 @@ void __cdecl LoadAreaCharacters(void) {
     f32 icon_time;
     f32 touch_prompt_time;
     f32 music_volume;
-    if (Area == -1 || Area != last_area)
+    if (Area == -1 || Area != last_area) {
         Area_Configure(Area, Level, ExtraModelList, id_DEFAULTCHARACTER);
+    }
     saved_override = AreaGetKeyboardOverridePc();
     VehicleArea = Area != -1 && (ADataList[Area].flags & 1) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & 4) != 0;
@@ -1286,13 +1364,14 @@ void __cdecl LoadAreaCharacters(void) {
     if (!(Area != -1 && Area != last_area && (ADataList[Area].flags & 2) == 0 && new_level_from_menu == 0 &&
           ((HUB_ADATA != NULL && last_area == HUB_ADATA->index) || netnewgame != 0 ||
            (GAMEDEMO != 0 && (LastLData == TITLES_LDATA || LastLData == STATUS_LDATA))))) {
-        if (0 != SuperStory && (ADataList[Area].flags & 2) != 0)
+        if (0 != SuperStory && (ADataList[Area].flags & 2) != 0) {
             load_type = 1;
-        else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 &&
-                 ADataList[Area].flags != 2 && HUB_ADATA != NULL && Area != HUB_ADATA->index)
+        } else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 &&
+                   ADataList[Area].flags != 2 && HUB_ADATA != NULL && Area != HUB_ADATA->index) {
             load_type = 2;
-        else
+        } else {
             load_type = 0;
+        }
         reload_same_area = Area != -1 && Area == last_area;
     }
     netnewgame = 0;
@@ -1326,8 +1405,9 @@ void __cdecl LoadAreaCharacters(void) {
         if (Arcade == 0 && Area != -1 && -1 != ((i8)ADataList[Area].episode_index)) {
             i32 handle = music_man.GetTrackHandle(1, crawl_music[(i8)ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
-            if (music_man.GetTrackHandle(1, NULL) != -1)
+            if (music_man.GetTrackHandle(1, NULL) != -1) {
                 music_man.PlayTrack(1);
+            }
         } else {
             GamePlayMusic(TITLES_LDATA, 0, &Game.options_save);
         }
@@ -1344,16 +1424,18 @@ void __cdecl LoadAreaCharacters(void) {
         readpads_always = 1;
         ReadPads();
         if (load_type != 2) {
-            if (AreaDataLoaded != 0)
+            if (AreaDataLoaded != 0) {
                 skip_text_scroll = 1;
+            }
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTimePc &&
                    skip_text_scroll == 0 && (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTimePc))) {
             AREA_LOADING_PAD_READER_PC *pads = (AREA_LOADING_PAD_READER_PC *)GamePadStorage;
             if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 ||
-                NuKeyboard_db(1) != 0)
+                NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
-            else
+            } else {
                 draw_touch_prompt = 1;
+            }
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
@@ -1362,12 +1444,14 @@ void __cdecl LoadAreaCharacters(void) {
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 || (CharacterDataLoad != 0 && NULL != APICharacterLoaded(PlayerID[0]) &&
-                                           APICharacterLoaded(PlayerID[1]) != NULL))
+                                           APICharacterLoaded(PlayerID[1]) != NULL)) {
                 icon_stage = 1;
+            }
         } else if (icon_stage == 1) {
             icon_time += FRAMETIME;
-            if (0.6f < icon_time && 2 != CharacterDataLoad)
+            if (0.6f < icon_time && 2 != CharacterDataLoad) {
                 icon_time = 0.6f;
+            }
             if ((f64)icon_time >= (f64)3.9499998092651367f) {
                 icon_stage = 2;
                 icon_time = 3.9499998092651367f;
@@ -1376,15 +1460,17 @@ void __cdecl LoadAreaCharacters(void) {
         if (load_type != 2) {
             if (0 != AreaDataLoaded && icon_stage == 2 && LoadWait > 0.0f) {
                 LoadWait -= FRAMETIME;
-                if (LoadWait < 0.0f)
+                if (LoadWait < 0.0f) {
                     LoadWait = 0.0f;
+                }
             }
         } else {
             if (AreaDataLoaded != 0 && LoadWait > 0.0f &&
                 (LoadTime >= AreaCrawlMaximumTimePc || skip_text_scroll != 0)) {
                 LoadWait -= FRAMETIME;
-                if (LoadWait < 0.0f)
+                if (LoadWait < 0.0f) {
                     LoadWait = 0.0f;
+                }
             }
             legoSetMusicVolume(music_volume * ((LoadWait / LOADWAITTIME)));
             BackDrop_Update((AreaDataLoaded != 0 ? LoadWait / LOADWAITTIME : 1.0f) * FRAMETIME);
@@ -1398,8 +1484,9 @@ void __cdecl LoadAreaCharacters(void) {
         NuRndrBeginScene(1);
         if (load_type != 2) {
             NuRndrGradClear(0xf00, (i32)0x80000000u, (i32)0x80000000u, 1.0f);
-            if (load_type == 1)
+            if (load_type == 1) {
                 BackDrop_Draw(1.0f, 1);
+            }
             if (LoadWait == LOADWAITTIME) {
                 i32 bob_angle = (i32)((f64)NuFmod(LoadTime, 1.0f) * 65536.0);
                 f32 bob = (f32)((f64)NuTrigTable[(bob_angle >> 1) & 0x7fff] * 0.15000000596046448);
@@ -1414,12 +1501,14 @@ void __cdecl LoadAreaCharacters(void) {
                         for (i32 player = 0; player < 2; ++player) {
                             f32 phase = icon_time;
                             if (player == 0) {
-                                if (!((f64)phase < 3.6999998092651367))
+                                if (!((f64)phase < 3.6999998092651367)) {
                                     continue;
+                                }
                             } else {
                                 phase = (f32)((f64)icon_time - 0.25);
-                                if (!((f64)phase > 0.0))
+                                if (!((f64)phase > 0.0)) {
                                     continue;
+                                }
                             }
                             {
                                 f32 x;
@@ -1432,18 +1521,20 @@ void __cdecl LoadAreaCharacters(void) {
                                               ((f64)base_x - start_x) * NuTrigTable[(angle >> 1) & 0x7fff]);
                                 } else {
                                     x = base_x;
-                                    if (phase < 3.1f)
+                                    if (phase < 3.1f) {
                                         alpha = 1.0f;
-                                    else
+                                    } else {
                                         alpha = (f32)(1.0 - ((f64)phase - 3.0999999046325684) / 0.5999999046325684);
+                                    }
                                 }
                                 DrawCharIconFindPc = 1;
-                                if (player == 0)
+                                if (player == 0) {
                                     DrawCharIcon(PlayerID[0], -x, 0.16624999046325684f, 0.0f, icon_scale, 166, alpha,
                                                  (f32)((0.8500000238418579 + (f64)bob) * alpha), 1, NULL);
-                                else
+                                } else {
                                     DrawCharIcon(PlayerID[1], x, -0.16624999046325684f, 0.0f, icon_scale, 165, alpha,
                                                  (f32)((0.8500000238418579 - (f64)bob) * alpha), 1, NULL);
+                                }
                             }
                         }
                     }
@@ -1512,6 +1603,7 @@ void __cdecl LoadAreaCharacters(void) {
     }
     TextInputSetKeyboardOverridePc(saved_override);
 }
+
 extern "C" {
 
     /* SCENESPECIALPROGRESS_PC.flags as the bitfields retail stores through. */
@@ -1524,6 +1616,7 @@ extern "C" {
         u32 unused : 17;
         f32 tfactor;
     } SCENE_SPECIAL_STATE_PC;
+
     STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE_PC) == sizeof(SCENESPECIALPROGRESS_PC));
     /* progress->specials[i] read through the bitfield view (stands in for the header field). */
 #define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE_PC *)(progress)->specials)[i])
@@ -1577,29 +1670,35 @@ void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     ANI3_HEADER_PC *data;
     NUMTX *base;
     u32 packed;
-    if (scene == NULL || progress == NULL)
+    if (scene == NULL || progress == NULL) {
         return;
+    }
     count = NuSpecialGetNumSpecials(scene);
-    if (count == 0)
+    if (count == 0) {
         return;
+    }
     for (i = 0; i < count; ++i) {
-        if (i != 0)
+        if (i != 0) {
             NuSpecialGetNext(&special);
-        else
+        } else {
             NuSpecialGetFirst(scene, &special, 1);
+        }
         packed = progress->specials[i].flags;
         NuSpecialSetVisibility(&special, (packed >> 11) & 1);
         base = NuSpecialGetMtx(&special);
         NuSpecialSetDrawMtx(&special, base);
         NuSpecialUpdate(&special);
-        if (scene->instance_animation_data == NULL)
+        if (scene->instance_animation_data == NULL) {
             continue;
+        }
         animation = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
-        if (animation == NULL)
+        if (animation == NULL) {
             continue;
+        }
         data = (ANI3_HEADER_PC *)scene->instance_animation_data[animation->animation_index];
-        if (data == NULL)
+        if (data == NULL) {
             continue;
+        }
         animation->ltime = (f32)(u32)(progress->specials[i].flags & 0x7ff);
         packed = progress->specials[i].flags;
         animation->flags = (animation->flags & ~1u) | ((packed >> 12) & 1);
@@ -1623,19 +1722,23 @@ extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCE
     NUSPECIALHANDLE special;
     if (scene != NULL && progress != NULL && target != NULL) {
         count = NuSpecialGetNumSpecials(scene);
-        if (count == 0)
+        if (count == 0) {
             return NULL;
+        }
         for (i = 0; i < count; ++i) {
-            if (i != 0)
+            if (i != 0) {
                 NuSpecialGetNext(&special);
-            else
+            } else {
                 NuSpecialGetFirst(scene, &special, 1);
-            if (NuSpecialCompare(&special, target))
+            }
+            if (NuSpecialCompare(&special, target)) {
                 return &progress->specials[i];
+            }
         }
     }
     return NULL;
 }
+
 extern "C" {
 
     void __cdecl CalculateWorldSize(WORLDINFO *world) {
@@ -1672,18 +1775,24 @@ extern "C" {
                 box_maximum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
                 box_maximum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
             }
-            if (box_minimum.x < minimum.x)
+            if (box_minimum.x < minimum.x) {
                 minimum.x = box_minimum.x;
-            if (box_maximum.x > maximum.x)
+            }
+            if (box_maximum.x > maximum.x) {
                 maximum.x = box_maximum.x;
-            if (box_minimum.y < minimum.y)
+            }
+            if (box_minimum.y < minimum.y) {
                 minimum.y = box_minimum.y;
-            if (box_maximum.y > maximum.y)
+            }
+            if (box_maximum.y > maximum.y) {
                 maximum.y = box_maximum.y;
-            if (box_minimum.z < minimum.z)
+            }
+            if (box_minimum.z < minimum.z) {
                 minimum.z = box_minimum.z;
-            if (box_maximum.z > maximum.z)
+            }
+            if (box_maximum.z > maximum.z) {
                 maximum.z = box_maximum.z;
+            }
         }
         world->level_max = maximum;
         world->level_min = minimum;
@@ -1818,12 +1927,14 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index,
              world->level_idx, world->config_file);
     Level_LoadConfigFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     if (world->config_count > 0) {
         LevelConfig_BeforeLoad(world->current_level, ConfigBuffer.bytes, Level_ConfigBeforeLoad_GameKeywords);
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     if ((world->current_level->flags & 4) != 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
@@ -1851,35 +1962,42 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         }
         StartupDatsSelectPc((i32)(i8)world->current_level->unknown_00a2 + 1);
     archive_selected:
-        if (PcWindowOptions.shadowmethod == 2)
+        if (PcWindowOptions.shadowmethod == 2) {
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
-        else
+        } else {
             world->current_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
+        }
         LOG_INFO("Scene load returned: path=%s scene=%p", path, (void *)world->current_gscn);
         StartupDatsSelectPc(0);
         numtl_force_mipmode = 0;
         StoreSceneProgress(world->current_gscn, &world->scene_progress, 1);
         SaveSceneObjectAnimTFactors(world->current_gscn);
-        if (world->current_gscn != NULL)
+        if (world->current_gscn != NULL) {
             CalculateWorldSize(world);
-        if (abort_load != 0)
+        }
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     if (world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA) {
         numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
         world->secondary_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, "levels\\titles\\pictures.gsc");
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     world->game_anim_sys = GameAnimSys_Create(&world->giz_buffer, &world->buffer_end);
     Particles_Load(world, debris_name, 400, 0x93);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     LoadPartFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
-    if (world->config_count > 0)
+    }
+    if (world->config_count > 0) {
         BoltTypes_Configure(world, ConfigBuffer.bytes);
+    }
     world->game_antinode_sys = GameAntnode_CreateSys(world, &world->giz_buffer, &world->buffer_end,
                                                      (i32)(u16)world->current_level->max_gameantinodes);
     world->gizmo_sys = CreateGizmoSys(world, &world->giz_buffer, &world->buffer_end);
@@ -1887,38 +2005,46 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
     LoadEditorSplines(path, &world->giz_buffer, &world->buffer_end);
     GizmoBlowupResetNameTable();
     LoadGizmoSys(world->gizmo_sys, world, world->config_file);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     if (world->area != NULL && world->area == HUB_ADATA && GAMEDEMO == 0) {
         Hub_LoadAndFixUpMiniKits(world, &world->giz_buffer, &world->buffer_end); /* Native 48d160. */
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
         MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end,
                      NULL); /* Native 48d1a5. */
-        if (resource->minikit.scene != NULL)
+        if (resource->minikit.scene != NULL) {
             MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer,
                                &world->buffer_end); /* Native 48d1b7. */
-        if (abort_load != 0)
+        }
+        if (abort_load != 0) {
             goto abort;
+        }
     }
-    if ((world->current_level == HUB_LDATA || (world->current_level->flags & 0x400) != 0) && big_icon_scene == NULL)
+    if ((world->current_level == HUB_LDATA || (world->current_level->flags & 0x400) != 0) && big_icon_scene == NULL) {
         resource->icons_scene =
             NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
+    }
     cutscene_scene = area_scene;
-    if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & 0x400) == 0)
+    if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & 0x400) == 0) {
         cutscene_scene = things_scene;
+    }
     world->cutscene_sys =
         (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
                                     &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     resource->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
     CharScenes_LevelLoad(world); /* Native 48d282: actual ordinary cdecl1. */
-    if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0)
+    if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0) {
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
+    }
     LOG_INFO("WorldInfo_Load after SockSysInit: world=%p", (void *)world);
     LevelSplines_InitForLevel(world);
     LevelObjects_InitForLevel(world);
@@ -1937,29 +2063,35 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         GizForceSFX_Configure(world, ConfigBuffer.bytes);
     }
     if (world->sock_sys != NULL) {
-        if (world->config_count > 0)
+        if (world->config_count > 0) {
             SockSys_Configure(world->sock_sys, ConfigBuffer.bytes, 0, &world->giz_buffer, &world->buffer_end,
                               world->current_gscn);
+        }
         SockSys_GenerateData(world->sock_sys, &world->giz_buffer, world->buffer_end);
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     if (world->area != NULL && (world->area->flags & 5) == 5 && (world->current_level->flags & 0x4e0) == 0) {
         CharacterMiniKits_Load(&MiniKitCollection, world, &world->giz_buffer, &world->buffer_end); /* Native 48d3d6. */
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     /* Native always performs these calls after the optional character-minikit
      * branch. */
     LoadTerrainFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     LoadGrassFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     LoadBridgeFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     resource->ai_loaded = (world->current_level->flags & 2) == 0 || (world->current_level->flags & 0xe0) != 0;
     if (resource->ai_loaded == 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
@@ -1974,46 +2106,55 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         resource->climb_object_system = CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end,
                                                              (i32)(u8)world->current_level->max_climb_objects);
     }
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     world->object_sys = APIObjectSysInit(0x10d8, &world->giz_buffer, &world->buffer_end);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     if ((world->current_level->flags & 4) != 0) {
         LoadLights(world, world->current_level == TITLES_LDATA ? title_light_path : world->config_file);
         resource->light_index = rtlFindByUserId((RTL_SET_PC *)world->rtl_set, WorldLightUserIdPc);
-        if (resource->light_index == -1)
+        if (resource->light_index == -1) {
             resource->light_direction = NULL;
-        else
+        } else {
             rtlGetDirection((RTL_SET_PC *)world->rtl_set, resource->light_index, &resource->light_direction);
+        }
     } else {
         resource->light_index = -1;
         resource->light_direction = NULL;
     }
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     if (world->config_count > 0) {
         RippleEffects_Configure(world, ConfigBuffer.bytes); /* Native 48d5b7. */
         PortalDoors_Configure(world, ConfigBuffer.bytes);
-        if (abort_load != 0)
+        if (abort_load != 0) {
             goto abort;
+        }
     }
     GizmoSysAddGizmos(world->gizmo_sys, resource->giz_flow, world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     NuStrCpy(path, world->config_file);
     NuStrCat(path, ".git");
     resource->giz_flow =
         (GIZFLOW_PC *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
+    }
     InitSpecialSfx(world);
     LoadSpecialSfxFile(world);
-    if (abort_load != 0)
+    if (abort_load != 0) {
         goto abort;
-    if (world->current_level->callbacks[0] != NULL)
+    }
+    if (world->current_level->callbacks[0] != NULL) {
         ((void(__cdecl *)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(
             world, &world->giz_buffer, &world->buffer_end);
+    }
     SetAreaPickupGravity(world->area_index, world->level_idx); /* Native 48d683: cdecl(area,level). */
     world->loaded = 1;
     LOG_INFO("World load complete: world=%p area=%d level=%d scene=%p", (void *)world, world->area_index,
@@ -2025,6 +2166,7 @@ abort:
     WorldInfo_Dump(world);
     WorldInfo_Reset(world, -1);
 }
+
 extern "C" {
     f32 CreditsPictureScalePc = 2.5f;
     f32 CreditsPictureBaseYPc = 0.0f;
@@ -2064,6 +2206,7 @@ extern "C" void __cdecl Credits_Update_Game(WORLDINFO *world) {
     f32 step = FRAMETIME + FRAMETIME;
     LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], step);
 }
+
 extern "C" {
     f32 CreditsPictureAlphaPc = 0.5f;
 }
@@ -2109,6 +2252,7 @@ extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
         }
     }
 }
+
 extern "C" {
     static LEVELDATA_PC *LevelFixupSlotPc0087b2cc = NULL;
     static LEVELDATA_PC *LevelFixupSlotPc0087b2d0 = NULL;
@@ -3159,6 +3303,7 @@ extern "C" void __cdecl FixUpLevels(struct level_fixup_pc_s *fixup) {
         }
     }
 }
+
 extern "C" {
 
     void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
@@ -3225,10 +3370,11 @@ extern "C" {
 }
 
 extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y) {
-    if (world->current_level == TITLES_LDATA)
+    if (world->current_level == TITLES_LDATA) {
         *menu_id = 0;
-    else if (world->current_level == CREDITS_LDATA)
+    } else if (world->current_level == CREDITS_LDATA) {
         *menu_id = 18;
+    }
 }
 
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
@@ -3243,6 +3389,7 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
     InitClimbObjectSys(world);
     GizmoPushBlockInitAndReset(world, NULL);
 }
+
 extern "C" {
 
     void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
@@ -3328,10 +3475,11 @@ void __cdecl NewArea(void) {
     LSW1 = 0;
     LSW2 = 0;
     if (StartupGameFlag1 != 0 && WORLD != NULL && WORLD->area != NULL && WORLD->area->episode_index >= 0) {
-        if (WORLD->area->episode_index < 3)
+        if (WORLD->area->episode_index < 3) {
             LSW1 = 1;
-        else
+        } else {
             LSW2 = 1;
+        }
     }
     HIGHJUMPHEIGHT = LSW1 != 0 || Arcade != 0 ? 1.14f : 0.75f;
     ClearAreaProgress(Area, 0);

@@ -8,6 +8,7 @@ typedef struct registry_buildit_record_pc_s {
     i16 blowup_type;
     u16 flags;
 } REGISTRY_BUILDIT_RECORD_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_BUILDIT_RECORD_PC) == 0x7c);
 STATIC_ASSERT(offsetof(REGISTRY_BUILDIT_RECORD_PC, anim_set) == 0x10);
 STATIC_ASSERT(offsetof(REGISTRY_BUILDIT_RECORD_PC, blowup_type) == 0x78);
@@ -21,6 +22,7 @@ typedef struct registry_force_record_pc_s {
     u8 unknown_8a[0x16];
     u32 runtime_flags;
 } REGISTRY_FORCE_RECORD_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_FORCE_RECORD_PC) == 0xa4);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, blowup_type) == 0x88);
@@ -29,6 +31,7 @@ STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, runtime_flags) == 0xa0);
 typedef struct registry_panel_record_pc_s {
     u8 storage[0x90];
 } REGISTRY_PANEL_RECORD_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_PANEL_RECORD_PC) == 0x90);
 
 typedef struct registry_buildit_system_pc_s {
@@ -40,6 +43,7 @@ typedef struct registry_buildit_system_pc_s {
     GAMEANIMOBJPOOL *anim_pool;
     GAMEANIMOBJ **anim_objects;
 } REGISTRY_BUILDIT_SYSTEM_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_BUILDIT_SYSTEM_PC) == 0x14);
 STATIC_ASSERT(offsetof(REGISTRY_BUILDIT_SYSTEM_PC, count) == 4);
 STATIC_ASSERT(offsetof(REGISTRY_BUILDIT_SYSTEM_PC, capacity) == 6);
@@ -58,6 +62,7 @@ typedef struct registry_force_system_pc_s {
     GAMEANIMOBJPOOL *anim_pool;
     GIZFORCEGROUP_s groups[8];
 } REGISTRY_FORCE_SYSTEM_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_FORCE_SYSTEM_PC) == 0x158);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_SYSTEM_PC, visible_forces) == 4);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_SYSTEM_PC, hit_test_gizmos) == 8);
@@ -69,6 +74,7 @@ typedef struct registry_panel_system_pc_s {
     i32 count;
     REGISTRY_PANEL_RECORD_PC *panels;
 } REGISTRY_PANEL_SYSTEM_PC;
+
 STATIC_ASSERT(sizeof(REGISTRY_PANEL_SYSTEM_PC) == 8);
 STATIC_ASSERT(offsetof(REGISTRY_PANEL_SYSTEM_PC, panels) == 4);
 STATIC_ASSERT(sizeof(GIZSPINNER_s) == 0x304);

@@ -16,6 +16,7 @@ typedef struct PC_SAVE_HEADER_PC {
     WCHAR reserved_caption[1024];
     WCHAR date_time[1024];
 } PC_SAVE_HEADER_PC;
+
 STATIC_ASSERT(sizeof(PC_SAVE_HEADER_PC) == 0x2028);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, api_data_size) == 0x14);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, metadata) == 0x18);
@@ -42,10 +43,13 @@ extern "C" {
     extern const char SaveSlotCaptionFormatPc[13] = "Save Slot %d";
 
     void __cdecl PcRegisterSaveMetadataPc(const void *metadata) {
-        if (metadata != NULL)
+        if (metadata != NULL) {
             PCByteCopy_candidate(PcSaveHeaderMetadataPc, metadata, 16);
+        }
     }
+
     i32 __cdecl SaveCreateDirectoryPc(char *path);
+
     void __cdecl createslotfolder(i32) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
@@ -57,12 +61,14 @@ extern "C" {
 #endif
         SaveCreateDirectoryPc(SaveCreateFolderPathPc);
     }
+
     i32 __cdecl PCSaveSlot(i32 slot, void *buffer, i32 size, u32 hash) {
         PC_SAVE_HEADER_PC header;
         char date_time[1024];
         char time[64];
-        if (saveload_slotused[slot] == 0)
+        if (saveload_slotused[slot] == 0) {
             createslotfolder(slot);
+        }
         char *name = fullslotname(slot);
         FILE *file = fopen(name, "wb");
         memset(&header, 0, sizeof(header));
@@ -83,35 +89,41 @@ extern "C" {
         sprintf(date_time, SaveSlotCaptionFormatPc, slot);
         MultiByteToWideChar(0, 0, date_time, 1024, header.slot_caption, 1024);
         fwrite(&header, sizeof(header), 1, file);
-        if (PcApiGetCallBuffer() != NULL)
+        if (PcApiGetCallBuffer() != NULL) {
             fwrite(PcApiGetCallBuffer(), PcApiGetCallBufferCount(), 1, file);
+        }
         fwrite(buffer, size, 1, file);
         fwrite(&hash, 4, 1, file);
         fclose(file);
         return 1;
     }
+
     i32 __cdecl saveloadSaveSlot(i32 slot, void *buffer, i32 size) {
         return PCSaveSlot(slot, buffer, size, (u32)-1);
     }
+
     i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size) {
         PC_SAVE_HEADER_PC header;
         char *name = fullslotname(slot);
         FILE *file = fopen(name, "rb");
         if (file != NULL) {
             fread(&header, sizeof(header), 1, file);
-            if (header.api_data_size != 0)
+            if (header.api_data_size != 0) {
                 fseek(file, header.api_data_size, SEEK_CUR);
+            }
             fread(buffer, size, 1, file);
             fclose(file);
             return 1;
         }
         return 0;
     }
+
     i32 __cdecl saveloadDeleteSlot(i32 slot) {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         remove(SaveSlotNamePc);
         return 1;
     }
+
     void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {
         SaveloadPendingPc = 1;
         SaveloadStartedTickPc = GetTickCount();
@@ -120,6 +132,7 @@ extern "C" {
         saveload_autosave = slot;
         saveload_slotid = slot;
     }
+
     void __cdecl saveloadASLoad(i32 slot, void *buffer, i32 size) {
         saveload_status = 7;
         saveloadLoadSlot(slot, buffer, size);
@@ -129,14 +142,17 @@ extern "C" {
         saveload_autosave = slot;
         SaveloadStartedTickPc = tick;
     }
+
     /* PC has no memory card to format. */
     void __cdecl saveloadASFormat(void) {
     }
+
     void __cdecl saveloadASDelete(i32 slot) {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         remove(SaveSlotNamePc);
         saveload_slotid = slot;
-        if (saveload_autosave == slot)
+        if (saveload_autosave == slot) {
             saveload_autosave = -1;
+        }
     }
 }

@@ -21,10 +21,12 @@ void __cdecl PcEditorCursorEnablePc(i32 enabled) {
 }
 
 void __cdecl PcGetMousePositionPc(f32 *x, f32 *y) {
-    if (x != NULL)
+    if (x != NULL) {
         *x = PcMouseX;
-    if (y != NULL)
+    }
+    if (y != NULL) {
         *y = PcMouseY;
+    }
 }
 
 /* Moves the OS cursor to a normalised client position. */

@@ -24,6 +24,7 @@ typedef struct level_sfx_gizmotype_s {
     void(__cdecl *add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
     u8 unknown_98[4];
 } LEVEL_SFX_GIZMOTYPE_PC;
+
 STATIC_ASSERT(sizeof(LEVEL_SFX_GIZMOTYPE_PC) == 0x9c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_GIZMOTYPE_PC, add_level_sfx) == 0x94);
 
@@ -35,11 +36,13 @@ extern "C" {
     typedef struct footstep_audio_callbacks_pc_s {
         i32(__cdecl *override_footstep)(GAMEOBJECT *, i32);
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
+
     STATIC_ASSERT(offsetof(FOOTSTEP_AUDIO_CALLBACKS_PC, override_footstep) == 0);
 }
 
 extern "C" i32 __cdecl IsSfxLooping(i32 id) {
-    if (id != -1)
+    if (id != -1) {
         return (SfxInfo[id].sample_id_flags >> 15) & 1;
+    }
     return -1;
 }

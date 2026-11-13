@@ -5,16 +5,19 @@ struct POST_VERTEX_SHADER_CACHE_ENTRY_PC {
     PC_TEXTURE_RESOURCE_PC *shader;
     const DWORD *tokens;
 };
+
 struct POST_PIXEL_SHADER_CACHE_ENTRY_PC {
     PC_TEXTURE_RESOURCE_PC *shader;
     const DWORD *tokens;
 };
+
 struct POST_SHADER_PROGRAM_POOL_PC {
     POST_SHADER_PROGRAM_PC programs[64];
     u8 occupied[8];
     i32 cursor;
     POST_SHADER_PROGRAM_PC *__thiscall Allocate(void);
 };
+
 STATIC_ASSERT(sizeof(POST_VERTEX_SHADER_CACHE_ENTRY_PC) == 8);
 STATIC_ASSERT(offsetof(POST_VERTEX_SHADER_CACHE_ENTRY_PC, tokens) == 4);
 STATIC_ASSERT(sizeof(POST_PIXEL_SHADER_CACHE_ENTRY_PC) == 8);
@@ -38,12 +41,14 @@ extern "C" {
 POST_SHADER_PROGRAM_PC *__thiscall POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {
     i32 index = cursor;
     for (; index < 64; ++index) {
-        if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0)
+        if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0) {
             goto found;
+        }
     }
     for (index = 0; index < cursor; ++index) {
-        if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0)
+        if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0) {
             goto found;
+        }
     }
     return NULL;
 found:

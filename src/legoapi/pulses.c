@@ -10,6 +10,7 @@ static __forceinline f32 PulsesFabsPc(f32 f) {
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
+
 typedef struct PULSE_PC {
     NUSPECIALHANDLE special;
     f32 on_time, off_time, timer, start_wait;
@@ -17,6 +18,7 @@ typedef struct PULSE_PC {
     char gizmo_name[16];
     void *gizmo;
 } PULSE_PC;
+
 struct level_sfx_pulse_prefix_s {
     PULSE_PC *pulses;
     u16 pulse_count;
@@ -25,10 +27,12 @@ struct level_sfx_pulse_prefix_s {
     i16 debris_hit_player;
     u8 radial_hit_direction, unknown_1f;
 };
+
 typedef struct PULSE_WORLD_VIEW_PC {
     u8 unknown_0[0x5050];
     LEVEL_SFX_PULSE_PC *pulses_sys;
 } PULSE_WORLD_VIEW_PC;
+
 STATIC_ASSERT(sizeof(PULSE_PC) == 0x34);
 STATIC_ASSERT(offsetof(PULSE_PC, on_time) == 0xc);
 STATIC_ASSERT(offsetof(PULSE_PC, off_time) == 0x10);
@@ -51,19 +55,26 @@ STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, hit_direction_radius_origin) == 0x18)
 STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, debris_hit_player) == 0x1c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_PULSE_PC, radial_hit_direction) == 0x1e);
 STATIC_ASSERT(offsetof(PULSE_WORLD_VIEW_PC, pulses_sys) == 0x5050);
+
 void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
-    if (system == NULL)
+    if (system == NULL) {
         return;
-    if (system->sfx_on_loop != -1)
+    }
+    if (system->sfx_on_loop != -1) {
         AddLevelSfxFromId(system->sfx_on_loop, ids, count, capacity);
-    if (system->sfx_off_loop != -1)
+    }
+    if (system->sfx_off_loop != -1) {
         AddLevelSfxFromId(system->sfx_off_loop, ids, count, capacity);
-    if (system->sfx_turn_on != -1)
+    }
+    if (system->sfx_turn_on != -1) {
         AddLevelSfxFromId(system->sfx_turn_on, ids, count, capacity);
-    if (system->sfx_turn_off != -1)
+    }
+    if (system->sfx_turn_off != -1) {
         AddLevelSfxFromId(system->sfx_turn_off, ids, count, capacity);
-    if (system->sfx_hit_player != -1)
+    }
+    if (system->sfx_hit_player != -1) {
         AddLevelSfxFromId(system->sfx_hit_player, ids, count, capacity);
+    }
 }
 
 void __cdecl Pulses_Configure(WORLDINFO *world, char *config) {
@@ -96,12 +107,14 @@ void __cdecl Pulses_Configure(WORLDINFO *world, char *config) {
 
 outer_lines:
     while (NuFParGetLine(parser) != 0) {
-        if (NuFParGetWord(parser) == 0)
+        if (NuFParGetWord(parser) == 0) {
             break;
+        }
         if (NuStrICmp(parser->word_buffer_ptr, "pulses_start") == 0) {
             for (;;) {
-                if (NuFParGetLine(parser) == 0)
+                if (NuFParGetLine(parser) == 0) {
                     goto outer_lines;
+                }
                 memset(pulse, 0, sizeof(*pulse));
                 if (NuFParGetWord(parser) == 0) {
                     continue;
@@ -198,16 +211,18 @@ outer_lines:
 
 void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     i32 i;
-    if (system == NULL)
+    if (system == NULL) {
         return;
+    }
     for (i = 0; i < system->pulse_count; ++i) {
         NuSpecialSetVisibility(&system->pulses[i].special, 0);
         system->pulses[i].disabled = 0;
         system->pulses[i].active = 0;
         system->pulses[i].timer = system->pulses[i].start_wait;
-        if (system->pulses[i].gizmo_name[0] != '\0')
+        if (system->pulses[i].gizmo_name[0] != '\0') {
             system->pulses[i].gizmo =
                 GizmoFindByName(WorldInfo_CurrentlyActive()->gizmo_sys, -1, system->pulses[i].gizmo_name);
+        }
     }
 }
 
@@ -216,11 +231,13 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
     NUVEC hit_direction;
     i32 i;
     i32 handle;
-    if (system == NULL)
+    if (system == NULL) {
         return;
+    }
     world = WorldInfo_CurrentlyActive();
-    if (system->pulse_count == 0)
+    if (system->pulse_count == 0) {
         return;
+    }
     hit_direction.x = system->hit_direction_line;
     hit_direction.y = 0.0f;
     hit_direction.z = system->hit_direction_radius_origin;
@@ -237,8 +254,9 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 NuSpecialSetVisibility(&system->pulses[i].special, 0);
             }
         }
-        if (system->pulses[i].disabled != 0)
+        if (system->pulses[i].disabled != 0) {
             continue;
+        }
         position = NuSpecialGetDrawPos(&system->pulses[i].special);
         system->pulses[i].timer -= FRAMETIME;
         if (system->pulses[i].timer <= 0.0f && netclient == 0) {
@@ -252,13 +270,15 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
                 GameAudio_PlaySfxById(system->sfx_turn_on, position, 0, 0);
             }
             NuSpecialSetVisibility(&system->pulses[i].special, system->pulses[i].active);
-            if (system->pulses[i].active != 0)
+            if (system->pulses[i].active != 0) {
                 GameAudio_PlaySfxById(system->sfx_on_loop, position, 0, 0);
-            else
+            } else {
                 GameAudio_PlaySfxById(system->sfx_off_loop, position, 0, 0);
+            }
         }
-        if (system->pulses[i].active == 0)
+        if (system->pulses[i].active == 0) {
             continue;
+        }
         collide_radius = system->collide_radius;
         if (system->radial_hit_direction == 0) {
             direction.x = hit_direction.x;
@@ -277,22 +297,26 @@ void __cdecl Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
             if (player == NULL || (player->flags_1fc & 0x80) == 0 || player->dead != 0 ||
                 (LEGOCONTEXT_DOOMED != -1 && player->character_context == LEGOCONTEXT_DOOMED) ||
                 !(player->vehicle_hit_timer <= 0.0f) || player->spawn_protection_timer > 0.0f ||
-                (player->flags_ef0 & 0x400000) != 0)
+                (player->flags_ef0 & 0x400000) != 0) {
                 continue;
+            }
             NuVecSub(&offset, &player->collision_position, position);
             distance = direction.x * offset.x + direction.z * offset.z;
             if (system->radial_hit_direction == 1) {
-                if (distance < 0.0f)
+                if (distance < 0.0f) {
                     continue;
+                }
                 NuVecRotateY(&offset, &offset, 0x4000);
                 distance = direction.x * offset.x + direction.z * offset.z;
             }
-            if (!(PulsesFabsPc(distance) < collide_radius))
+            if (!(PulsesFabsPc(distance) < collide_radius)) {
                 continue;
+            }
             if (system->radial_hit_direction == 0) {
                 f32 side = offset.x * system->hit_direction_line + offset.z * system->hit_direction_radius_origin;
-                if (side < 0.0f)
+                if (side < 0.0f) {
                     continue;
+                }
             }
             GameAudio_PlaySfxById(system->sfx_hit_player, &player->collision_position, 0, 0);
             if (ObjHitObj(NULL, player, 1, 0, 0, 1) == 2) {

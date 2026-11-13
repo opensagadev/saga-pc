@@ -84,20 +84,25 @@ extern "C" __declspec(noinline) void SmartTextPc(char *text, f32 x, f32 y, f32 z
                                                  i32 red, i32 green, i32 blue, f32 max_width, i32 center) {
     SmartTextEx(text, x, y, z, sx, sy, sz, align, red, green, blue, max_width, center, NULL, 0, 128);
 }
+
 extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char *player1) {
     char first[32] = "", second[32] = "";
     const i32 device0 = NuPadGetPort(0);
     const i32 device1 = NuPadGetPort(1);
-    if (player0 != NULL && device0 >= 0)
+    if (player0 != NULL && device0 >= 0) {
         NuStrCpy(first, TextInputActionLabelPc(device0, action, 0, 0));
-    if (player1 != NULL && device1 >= 0)
+    }
+    if (player1 != NULL && device1 >= 0) {
         NuStrCpy(second, TextInputActionLabelPc(device1, action, 0, 0));
-    if (first[0] != 0 && second[0] != 0)
+    }
+    if (first[0] != 0 && second[0] != 0) {
         NuSPrintf(HubButtonStringBufferPc, "~0%s~~ \\ ~0%s~~", first, second);
-    else
+    } else {
         NuSPrintf(HubButtonStringBufferPc, "~0%s%s~~", first, second);
+    }
     return HubButtonStringBufferPc;
 }
+
 /* PC4015e0 462 bytes. Exact command family, no prefix/default substitution. */
 extern "C" i32 Text_ExpandButtonString(char *command, char *output) {
     if (NuStrICmp(command, "[TAG]") == 0 || NuStrICmp(command, "[TRIANGLE]") == 0 || NuStrICmp(command, "[T]") == 0) {

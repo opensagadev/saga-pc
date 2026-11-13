@@ -28,13 +28,15 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
         type = (GIZMOTYPE_PC *)registry->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
         for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
-            if (type->fns.get_best_bolt_target_fn == NULL)
+            if (type->fns.get_best_bolt_target_fn == NULL) {
                 continue;
+            }
             target =
                 type->fns.get_best_bolt_target_fn(set, &distance, &target_position, &target_velocity, object, position,
                                                   direction, radius, range_squared, directional, planar, bolt_id);
-            if (target == NULL)
+            if (target == NULL) {
                 continue;
+            }
             if (target == object->collision_target) {
                 previous = target;
                 previous_position = target_position;
@@ -84,8 +86,9 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
             if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
                                                          radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
-                if (bolt->owner != NULL)
+                if (bolt->owner != NULL) {
                     NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .6f, 0);
+                }
                 Bolt_End(bolt, 1);
                 Bolt_PlayHitSfx(bolt);
                 return 1;

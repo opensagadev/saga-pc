@@ -11,6 +11,7 @@ struct credit_record_pc_s {
     i8 type;
     u8 reserved[2];
 };
+
 typedef struct credit_type_pc_s {
     char *name;
     f32 scale;
@@ -20,6 +21,7 @@ typedef struct credit_type_pc_s {
     u8 reserved[3];
     i8 type;
 } CREDIT_TYPE_PC;
+
 STATIC_ASSERT(sizeof(CREDIT_RECORD_PC) == 24);
 STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, text) == 0);
 STATIC_ASSERT(offsetof(CREDIT_RECORD_PC, x) == 4);
@@ -50,8 +52,9 @@ static CREDIT_TYPE_PC CreditTypePc[5] = {
 static __declspec(noinline) CREDIT_TYPE_PC *CreditsFindTypePc(char *word) {
     i32 index;
     for (index = 0; index < 5; ++index) {
-        if (NuStrICmp(CreditTypePc[index].name, word) == 0)
+        if (NuStrICmp(CreditTypePc[index].name, word) == 0) {
             return &CreditTypePc[index];
+        }
     }
     return NULL;
 }
@@ -60,14 +63,16 @@ static void CreditsReadColourPc(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
     f32 value;
     if (NuFParGetWord(parser)) {
         value = NuAToF(parser->word_buffer_ptr);
-        if (value > 1.0f)
+        if (value > 1.0f) {
             value = 1.0f;
-        else if (value < 0.0f)
+        } else if (value < 0.0f) {
             value = 0.0f;
-        if (maximum > 255)
+        }
+        if (maximum > 255) {
             maximum = 255;
-        else if (maximum < 0)
+        } else if (maximum < 0) {
             maximum = 0;
+        }
         *colour = (u8)(i32)(value * maximum);
     }
 }
@@ -115,19 +120,22 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     credit = CreditList;
     CreditCountPc = 0;
     previous = NULL;
-    if (credit == NULL)
+    if (credit == NULL) {
         return;
+    }
     parser = NuFParCreate(filename);
-    if (parser == NULL)
+    if (parser == NULL) {
         return;
+    }
     y = 0.0f;
     while (NuFParGetLine(parser)) {
         if (NuFParGetWord(parser)) {
             if (NuStrICmp(parser->word_buffer_ptr, "duration") == 0) {
                 if (NuFParGetWord(parser) && CreditsDurationPc == 120.0) {
                     f32 duration = NuAToF(parser->word_buffer_ptr);
-                    if (duration > 0.0f)
+                    if (duration > 0.0f) {
                         CreditsDurationPc = duration;
+                    }
                 }
             } else {
                 type = CreditsFindTypePc(parser->word_buffer_ptr);
@@ -141,8 +149,9 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                         credit->type = type->type;
                         switch (credit->type) {
                             case 0:
-                                if (previous == NULL || previous->type != 1)
+                                if (previous == NULL || previous->type != 1) {
                                     y = (f32)(y + CreditTypePc[0].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                }
                                 CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale,
                                                     type->colour[0], type->colour[1], type->colour[2], type->colour[3],
                                                     1, buffer, end);
@@ -150,8 +159,9 @@ void __cdecl Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
                                 y = (f32)(y + (f64)0.1f);
                                 break;
                             case 1:
-                                if (previous != NULL && previous->type != 0)
+                                if (previous != NULL && previous->type != 0) {
                                     y = (f32)(y + CreditTypePc[1].scale / CreditTypePc[1].scale * (f64)0.2f);
+                                }
                                 CreditsInitCreditPc(credit, parser->word_buffer_ptr, 0.0f, y, type->scale,
                                                     type->colour[0], type->colour[1], type->colour[2], type->colour[3],
                                                     1, buffer, end);
@@ -192,17 +202,21 @@ void __cdecl Credits_Init(WORLDINFO *world) {
     CreditsTime = 0.0f;
     CreditsFinishedTime = 0.0f;
     CreditsFlag = 0;
-    if (LastLData != STATUS_LDATA)
+    if (LastLData != STATUS_LDATA) {
         BackDrop_ResetColours();
+    }
 }
 
 void __cdecl Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
-    if (duration != NULL)
+    if (duration != NULL) {
         *duration = CreditsDurationPc;
-    if (flag != NULL)
+    }
+    if (flag != NULL) {
         *flag = CreditsFlag;
-    if (alpha != NULL)
+    }
+    if (alpha != NULL) {
         *alpha = CreditsAlpha;
+    }
 }
 
 typedef struct credits_completion_reader_pc_s {
@@ -210,6 +224,7 @@ typedef struct credits_completion_reader_pc_s {
     u8 unknown_02;
     u8 flags;
 } CREDITS_COMPLETION_READER_PC;
+
 STATIC_ASSERT(sizeof(CREDITS_COMPLETION_READER_PC) == 4);
 STATIC_ASSERT(offsetof(CREDITS_COMPLETION_READER_PC, points) == 0);
 STATIC_ASSERT(offsetof(CREDITS_COMPLETION_READER_PC, flags) == 3);
@@ -235,10 +250,11 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
         points = completion != NULL ? completion->points : 0;
         sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPointsPc);
         x = 0.0f;
-        if (CreditsFlag == 1)
+        if (CreditsFlag == 1) {
             x = (f32)((f64)0.1f + (x - (f64)0.1f) * CreditsAlpha);
-        else if (CreditsFlag == 3)
+        } else if (CreditsFlag == 3) {
             x = (f32)(x - (1.0 - CreditsAlpha) * (f64)0.1f);
+        }
         alpha = (i32)((i32)(CreditsAlpha * 128.0) * 0.25);
         SmartTextEx(percentage, x, 0.0f, 1.0f, 1.75f, 1.75f, 1.75f, 0, 255, 191, 0, 1.7f, 1, NULL, 0, (u32)alpha);
     }
@@ -289,14 +305,16 @@ extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
                     FadeSys.SetFade(fade_type, 0);
                 }
                 progress = 1.0f - CreditsTime;
-                if (progress < 0.0f)
+                if (progress < 0.0f) {
                     progress = 0.0f;
+                }
                 break;
         }
         CreditsAlpha = NuTrigTable[((i32)((f64)progress * 16384.0) >> 1) & 0x7fff];
     } else {
-        if (FadeSys.fade == 0.0f)
+        if (FadeSys.fade == 0.0f) {
             CreditsTime += FRAMETIME;
+        }
         if (CreditsFinishedTime > 0.0f) {
             CreditsFinishedTime += FRAMETIME;
             if (CreditsFinishedTime >= 1.1f) {
@@ -306,8 +324,9 @@ extern "C" void __cdecl Credits_UpdateMenu(MENU *menu) {
             }
             if (CreditsAlpha > 0.0f) {
                 CreditsAlpha -= FRAMETIME;
-                if (CreditsAlpha < 0.0f)
+                if (CreditsAlpha < 0.0f) {
                     CreditsAlpha = 0.0f;
+                }
             }
         } else if ((menu->buttons_pressed & GAMEPAD_SKIP) != 0 || CreditsTime >= CreditsDurationPc) {
             CreditsFinishedTime = 0.001f;

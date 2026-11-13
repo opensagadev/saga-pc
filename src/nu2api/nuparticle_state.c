@@ -8,8 +8,9 @@ void __cdecl NuRndrSetDebBox(NUVEC *range) {
     NUVEC size;
     NUVEC corners[8], minimum, maximum, base;
     i32 i;
-    if (NuRndrStopUpdate == 0)
+    if (NuRndrStopUpdate == 0) {
         debris_box_camera_cache = global_camera.mtx;
+    }
     size = *range;
     minimum.x =
         (f32)(((debris_box_corners[0].x * ((f64)size.x * debris_box_camera_cache.m00) + debris_box_camera_cache.m30) +
@@ -39,18 +40,24 @@ void __cdecl NuRndrSetDebBox(NUVEC *range) {
                                debris_box_camera_cache.m32) +
                               debris_box_corners[i].y * ((f64)size.y * debris_box_camera_cache.m12)) +
                              debris_box_corners[i].z * ((f64)size.z * debris_box_camera_cache.m22));
-        if (corners[i].x < minimum.x)
+        if (corners[i].x < minimum.x) {
             minimum.x = corners[i].x;
-        if (corners[i].y < minimum.y)
+        }
+        if (corners[i].y < minimum.y) {
             minimum.y = corners[i].y;
-        if (corners[i].z < minimum.z)
+        }
+        if (corners[i].z < minimum.z) {
             minimum.z = corners[i].z;
-        if (corners[i].x > maximum.x)
+        }
+        if (corners[i].x > maximum.x) {
             maximum.x = corners[i].x;
-        if (corners[i].y > maximum.y)
+        }
+        if (corners[i].y > maximum.y) {
             maximum.y = corners[i].y;
-        if (corners[i].z > maximum.z)
+        }
+        if (corners[i].z > maximum.z) {
             maximum.z = corners[i].z;
+        }
     }
     base.x = (f32)((maximum.x + minimum.x) * 0.5 - size.x * 0.5);
     base.y = (f32)((maximum.y + minimum.y) * 0.5 - size.y * 0.5);

@@ -9,6 +9,7 @@ typedef struct minicut_part_pc_s {
     u16 pitch, yaw, roll, padding;
     f32 duration, field_of_view;
 } MINICUT_PART_PC;
+
 typedef struct minicut_pc_s {
     char name[16];
     MINICUT_PART_PC *parts;
@@ -16,12 +17,14 @@ typedef struct minicut_pc_s {
     u8 played, padding[3];
     f32 blend_in, tracking_speed, blend_out, hold_time, end_time;
 } MINICUT_PC;
+
 typedef struct minicut_world_pc_s {
     u8 unknown[0x50ec];
     MINICUT_PC *minicuts;
     MINICUT_PART_PC *parts;
     i32 count;
 } MINICUT_WORLD_PC;
+
 STATIC_ASSERT(sizeof(MINICUT_PART_PC) == 0x44);
 STATIC_ASSERT(offsetof(MINICUT_PART_PC, name) == 0);
 STATIC_ASSERT(offsetof(MINICUT_PART_PC, resolved_position) == 0x20);
@@ -45,37 +48,46 @@ STATIC_ASSERT(offsetof(MINICUT_PC, end_time) == 0x2c);
 STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, minicuts) == 0x50ec);
 STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, parts) == 0x50f0);
 STATIC_ASSERT(offsetof(MINICUT_WORLD_PC, count) == 0x50f4);
+
 static i32 __cdecl GizMiniCut_GetMaxGizmos(void *world) {
     return ((WORLDINFO *)world)->current_level->max_minicuts;
 }
+
 static void __cdecl GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     MINICUT_WORLD_PC *world = (MINICUT_WORLD_PC *)world_ptr;
     i32 i;
     (void)data;
-    if (world->minicuts == NULL)
+    if (world->minicuts == NULL) {
         return;
-    for (i = 0; i < world->count; ++i)
+    }
+    for (i = 0; i < world->count; ++i) {
         AddGizmo(system, type_id, NULL, &world->minicuts[i]);
+    }
 }
+
 static char *__cdecl GizMiniCut_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((MINICUT_PC *)gizmo->object)->name : NULL;
 }
+
 static i32 __cdecl GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     MINICUT_PC *cut;
     (void)mode;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
+    }
     cut = (MINICUT_PC *)gizmo->object;
     switch (output) {
         case 0:
-            if (MiniCutCam == 0)
+            if (MiniCutCam == 0) {
                 return cut->played;
+            }
             break;
         case 1:
             return cut->played;
     }
     return 0;
 }
+
 static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
@@ -86,10 +98,12 @@ static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output)
     }
     return "Unknown!";
 }
+
 static i32 __cdecl GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;
     return 2;
 }
+
 static void GizMiniCut_Play(MINICUT_PC *cut) {
     i32 i;
     for (i = 0; i < cut->part_count; ++i) {
@@ -103,48 +117,62 @@ static void GizMiniCut_Play(MINICUT_PC *cut) {
         NuVecRotateY(&position, &position, part->yaw);
         NuVecAdd(&position, &position, part->resolved_position);
         flags = 0x8f;
-        if (i == 0)
+        if (i == 0) {
             flags = 0x28f;
-        if (i == cut->part_count - 1)
+        }
+        if (i == cut->part_count - 1) {
             flags |= 0x400;
-        if (part->duration >= 0.0f)
+        }
+        if (part->duration >= 0.0f) {
             flags |= 0x800;
-        if (part->field_of_view > 0.0f)
+        }
+        if (part->field_of_view > 0.0f) {
             flags |= 0x1000;
+        }
         GameCameraMakeMiniCut3(flags, part->distance, part->pitch, part->yaw, part->roll, part->resolved_position, 0,
                                &position, cut->blend_in, cut->blend_out, cut->tracking_speed, cut->hold_time,
                                part->duration, part->field_of_view, cut->end_time, 0, NULL, -1, 2);
-        if (editor_active == 0)
+        if (editor_active == 0) {
             cut->played = 1;
+        }
     }
 }
+
 void __cdecl GizMiniCut_Activate(GIZMO_PC *gizmo, i32 active) {
-    if (active != 0)
+    if (active != 0) {
         GizMiniCut_Play((MINICUT_PC *)gizmo->object);
+    }
 }
+
 static NUVEC *__cdecl GizMiniCut_GetPos(GIZMO_PC *gizmo) {
     MINICUT_PC *cut;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
+    }
     cut = (MINICUT_PC *)gizmo->object;
     return cut->part_count != 0 ? cut->parts[0].resolved_position : NULL;
 }
+
 static i32 __cdecl GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
     MINICUT_WORLD_PC *world = (MINICUT_WORLD_PC *)world_ptr;
     i32 i, j, count = 0;
-    if (world == NULL)
+    if (world == NULL) {
         return 0;
+    }
     for (i = 0; i < world->count; ++i) {
         MINICUT_PC *cut = &world->minicuts[i];
-        for (j = 0; j < cut->part_count; ++j)
+        for (j = 0; j < cut->part_count; ++j) {
             if (NuStrICmp(cut->parts[j].name, name) == 0) {
                 results[count++] = (GIZMO_PC *)GizmoFindByName(((WORLDINFO *)world)->gizmo_sys, -1, cut->name);
-                if (count >= capacity)
+                if (count >= capacity) {
                     return -1;
+                }
             }
+        }
     }
     return count;
 }
+
 void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
@@ -162,17 +190,22 @@ void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
                 NuSpecialFind(world->current_gscn, &special, part->name, 0);
                 if (NuSpecialExistsFn(&special) == 0) {
                     locator = AIPathFindLocator(world->ai_sys, part->name);
-                    if (locator != NULL)
+                    if (locator != NULL) {
                         part->resolved_position = &locator->position;
-                } else
+                    }
+                } else {
                     part->resolved_position = NuSpecialGetDrawPos(&special);
-            } else
+                }
+            } else {
                 part->resolved_position = &object->collision_position;
-            if (part->resolved_position == NULL)
+            }
+            if (part->resolved_position == NULL) {
                 part->resolved_position = &part->position;
+            }
         }
     }
 }
+
 static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
     i32 i;
@@ -202,6 +235,7 @@ static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
     }
     return view->minicuts;
 }
+
 i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
@@ -209,8 +243,9 @@ i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
     (void)data;
     EdFileReadInt();
     view->count = EdFileReadInt();
-    if (view->count > world->current_level->max_minicuts)
+    if (view->count > world->current_level->max_minicuts) {
         view->count = world->current_level->max_minicuts;
+    }
     for (i = 0; i < view->count; ++i) {
         MINICUT_PC *cut = &view->minicuts[i];
         EdFileRead(cut->name, (i8)EdFileReadChar());

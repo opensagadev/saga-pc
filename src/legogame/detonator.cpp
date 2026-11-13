@@ -9,6 +9,7 @@ struct BATARANG_DETONATOR_HIT_VIEW_PC {
     u8 unknown10[0x10];
     f32 delay;
 };
+
 STATIC_ASSERT(offsetof(BATARANG_DETONATOR_HIT_VIEW_PC, scale) == 0xc);
 STATIC_ASSERT(offsetof(BATARANG_DETONATOR_HIT_VIEW_PC, delay) == 0x20);
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
@@ -24,14 +25,16 @@ extern "C" {
         i32 available = -1;
         for (i32 index = 0; index < 10; ++index) {
             if (Detonator[index].active != 0 && Detonator[index].object == object) {
-                if (++count == 3)
+                if (++count == 3) {
                     return NULL;
+                }
             } else if (available == -1) {
                 available = index;
             }
         }
-        if (available == -1)
+        if (available == -1) {
             return NULL;
+        }
         return &Detonator[available];
     }
 }
@@ -41,10 +44,12 @@ extern "C" DETONATOR_s *__cdecl Detonator_FindNearest(NUVEC *position, f32 radiu
     DETONATOR_s *nearest = NULL;
     f32 nearest_distance = radius != 0.0f ? radius * radius : 1000000000.0;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
-        if (detonator->active == 0)
+        if (detonator->active == 0) {
             continue;
-        if (owner != NULL && detonator->object != owner)
+        }
+        if (owner != NULL && detonator->object != owner) {
             continue;
+        }
         f32 distance = NuVecDistSqr(position, &detonator->position, NULL);
         if (distance < nearest_distance) {
             nearest_distance = distance;
@@ -122,8 +127,9 @@ extern "C" void __cdecl Detonators_Update(void) {
     DETONATOR_s *detonator = Detonator;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
         f32 timer;
-        if (detonator->active == 0)
+        if (detonator->active == 0) {
             continue;
+        }
         detonator->timer += FRAMETIME;
         NuCameraTransformScreenClip(&detonator->field_0x18, &detonator->field_0x0c, 1, NULL);
         timer = detonator->timer;
@@ -143,14 +149,16 @@ extern "C" void __cdecl Detonators_Update(void) {
 }
 
 extern "C" void __cdecl Detonators_Draw(void) {
-    if (!WORLD->level_objects[0xec].active)
+    if (!WORLD->level_objects[0xec].active) {
         return;
+    }
     DETONATOR_s *detonator = Detonator;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
         NUMTX matrix;
         detonator->draw_result = 0;
-        if (!detonator->active)
+        if (!detonator->active) {
             continue;
+        }
         NuMtxSetRotationY(&matrix, detonator->rotation_y);
         NuMtxRotateZ(&matrix, detonator->rotation_z);
         NuMtxRotateX(&matrix, detonator->rotation_x);
@@ -159,11 +167,13 @@ extern "C" void __cdecl Detonators_Draw(void) {
         if ((u32)GameTimer.update_count % 6 < 3 &&
             (detonator->timer >= 10.0f ||
              (detonator->object != NULL && detonator->object->dead == 0 && detonator->object->field_de0 >= 0.3f))) {
-            if (WORLD->level_objects[0xef].active)
+            if (WORLD->level_objects[0xef].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xef].special, &matrix);
+            }
         } else {
-            if (WORLD->level_objects[0xee].active)
+            if (WORLD->level_objects[0xee].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xee].special, &matrix);
+            }
         }
     }
 }
@@ -178,8 +188,9 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            if (!(object->field_de0 > 0.0f) && (object->flags_e20 & 0x8000) != 0)
+            if (!(object->field_de0 > 0.0f) && (object->flags_e20 & 0x8000) != 0) {
                 return;
+            }
             object->flags_e20 |= 0x8000;
             object->field_de0 += FRAMETIME;
             if (object->field_de0 >= 0.3f && object->field_de0 >= 1.0f) {
@@ -232,12 +243,14 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
             if (object->character_context == 0x48 || object->character_context == 0x49) {
                 object->velocity.z = 0.0f;
                 object->velocity.x = 0.0f;
-                if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL)
+                if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL) {
                     ResetAnimPacket(&object->anim_packet, -1);
-                if (object->character_model->model_data_b[object->field_7aa] != NULL)
+                }
+                if (object->character_model->model_data_b[object->field_7aa] != NULL) {
                     object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-                else
+                } else {
                     object->context_timer = 1.0f;
+                }
             }
         }
         object->flags_e20 &= ~0x8000;
@@ -250,24 +263,29 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
     f32 *frame = NULL;
     if (object->character_model->model_data_b[object->field_7aa] != NULL) {
         frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
-        if (frame == NULL)
+        if (frame == NULL) {
             return;
+        }
     }
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = -1;
-        if (object->field_7b3 != 0)
+        if (object->field_7b3 != 0) {
             return;
+        }
     } else {
-        if (object->field_7b3 != 0)
+        if (object->field_7b3 != 0) {
             return;
+        }
         if (object->character_model->model_data_b[object->field_7aa] != NULL) {
             f32 marker =
                 AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
-            if (frame == NULL || !(*frame > 0.0f))
+            if (frame == NULL || !(*frame > 0.0f)) {
                 return;
-            if (!(*frame >= marker))
+            }
+            if (!(*frame >= marker)) {
                 return;
+            }
         } else if (!(object->context_timer < 0.5f)) {
             return;
         }

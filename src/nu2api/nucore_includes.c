@@ -57,6 +57,7 @@ struct NUPPHEADER_PC {
     u32 unpacked_size;
     u32 packed_size;
 };
+
 STATIC_ASSERT(sizeof(struct NUPPHEADER_PC) == 12);
 #define NUPP_SWAP32(value)                                                                                             \
     (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
@@ -160,6 +161,7 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context);
 typedef struct nualloc_manager_block_pc_s {
     union {
         u32 size_flags;
+
         struct {
             u32 size : 31;
             u32 used : 1;
@@ -197,6 +199,7 @@ STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
 #define NUPAD_NORM 0
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 typedef struct FRAME_PAD_RAMP_PC {
     f32 threshold, value;
 } FRAME_PAD_RAMP_PC;
@@ -206,6 +209,7 @@ static f32 FramePadRampRatePc = 0.1f;
 static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
     {0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
 static i32 FramePadDirectMappingPc = 0, FramePadActivatedPc = 0;
+
 enum {
     PAD_BUTTON_JUMP_SELECT = 1 << 0x6,
     PAD_BUTTON_START = 1 << 0xb,
@@ -542,8 +546,9 @@ i32 __cdecl NuFileEnumerateDevices(NUFILE_DEVICE **result) {
     i32 count = 0;
     i32 index;
     for (index = 0; index < numdevices; ++index) {
-        if ((devices[index].interrogate_fn(&devices[index]) & 2) != 0)
+        if ((devices[index].interrogate_fn(&devices[index]) & 2) != 0) {
             continue;
+        }
         enum_devices[count] = devices[index];
         ++count;
     }
@@ -553,8 +558,9 @@ i32 __cdecl NuFileEnumerateDevices(NUFILE_DEVICE **result) {
 }
 
 i32 __cdecl NuFileGetDevices(NUFILE_DEVICE **result) {
-    if (result != NULL)
+    if (result != NULL) {
         *result = enum_devices;
+    }
     return enum_numdevices;
 }
 
@@ -569,8 +575,9 @@ i32 __cdecl NuFileRefreshDevices(NUFILE_DEVICE **result) {
             i32 port = devices[index].params[0];
             i32 slot = devices[index].params[1];
             if (NuMcCheckCardPresent(port, slot) != 0) {
-                if (NuMcCheckCardFormatted(port, slot) != 0)
+                if (NuMcCheckCardFormatted(port, slot) != 0) {
                     devices[index].attr |= 8;
+                }
                 devices[index].free_space = NuMcCheckCardFreeSpace(port, slot);
             } else {
                 devices[index].id = -1;
@@ -862,27 +869,31 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
     if (device == NULL) {
         if (header != NULL && mode != 1 && mode != 2) {
             NUFILE file = NuDatFileOpen(header, (char *)filepath, mode);
-            if (file != 0)
+            if (file != 0) {
                 return file;
+            }
         }
         device = default_device;
     }
 
     device->format_name_fn(device, path, (char *)filepath, sizeof(path));
-    if (device->id == 2)
+    if (device->id == 2) {
         NuStrCat(path, nufile_disc_suffix);
+    }
     if (device->id == 1) {
         mc_port = path[2] - '0';
         mc_slot = path[3] - '0';
         file_index = NuMcOpen(mc_port, mc_slot, path + device->name_len, mode, 0);
-        if (file_index >= 0)
+        if (file_index >= 0) {
             return file_index + 0x1000;
+        }
         return 0;
     }
 
     file_index = NuPSFileOpen(path, mode);
-    if (file_index < 0)
+    if (file_index < 0) {
         return 0;
+    }
 
     ps_index = file_index;
     memset(&file_info[ps_index], 0, sizeof(FILEINFO));
@@ -893,8 +904,9 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
         if (file_index <= 16) {
             do {
                 length = NuFileSeek(ps_index + 1, 0, 2);
-                if (length < 0 && quiet == 0)
+                if (length < 0 && quiet == 0) {
                     NuFileRetry();
+                }
             } while (length < 0);
             file_info[ps_index].file_len = length;
 
@@ -905,8 +917,9 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
 
             do {
                 length = NuFileSeek(ps_index + 1, 0, 0);
-                if (length < 0 && quiet == 0)
+                if (length < 0 && quiet == 0) {
                     NuFileRetry();
+                }
             } while (length < 0);
 
             if (mode == 3) {
@@ -918,8 +931,9 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
         file_info[ps_index].file_len = 0;
     }
 
-    if (mode == 0)
+    if (mode == 0) {
         file_info[ps_index].use_buf = nufile_buffering_enabled;
+    }
     return ps_index + 1;
 }
 
@@ -934,8 +948,9 @@ static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 ke
     while (length != 0) {
         --length;
         *bytes -= key[index++];
-        if (index >= key_length)
+        if (index >= key_length) {
             index = 0;
+        }
         ++bytes;
     }
     header->flags &= ~1u;
@@ -954,19 +969,22 @@ void __cdecl NuFileClose(NUFILE file) {
     }
 
     file--;
-    while (NuPSFileClose(file) < 0)
+    while (NuPSFileClose(file) < 0) {
         NuFileError();
+    }
     info = &file_info[file];
-    if (info->buf != NULL)
+    if (info->buf != NULL) {
         info->buf->file_info = NULL;
+    }
     memset(info, 0, sizeof(FILEINFO));
 }
 
 i32 __cdecl NuFileStatus(NUFILE file) {
     PC_NUDATFILEINFO *info;
 
-    if (file >= 0x400)
+    if (file >= 0x400) {
         return 0;
+    }
     if (file >= 0x800) {
         info = &pc_dat_file_infos[file - 0x800];
         return NuFileStatus(info->header->open_files[info->open_file_index].dat_file);
@@ -988,8 +1006,9 @@ static void AquireFileBuffer(FILEINFO *info) {
     }
 
     buffer = &file_buff[selected];
-    if (buffer->file_info != NULL)
+    if (buffer->file_info != NULL) {
         buffer->file_info->buf = NULL;
+    }
     buffer->file_info = info;
     buffer->time = file_time_count++;
     info->buf = buffer;
@@ -1365,14 +1384,16 @@ i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
     file--;
     info = &file_info[file];
     if (info->use_buf != 0) {
-        if (info->buf == NULL)
+        if (info->buf == NULL) {
             AquireFileBuffer(info);
+        }
         bytes_read = 0;
         output = (char *)destination;
 
         while (size > 0) {
-            if (info->read_pos >= info->file_len)
+            if (info->read_pos >= info->file_len) {
                 return bytes_read;
+            }
 
             if (info->read_pos < info->buf_start || info->read_pos >= info->buf_start + info->buf_len) {
                 if (info->read_pos != info->file_pos) {
@@ -1386,10 +1407,12 @@ i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
             }
 
             available = info->buf_len + (i32)(info->buf_start - info->read_pos);
-            if (available >= size)
+            if (available >= size) {
                 available = size;
-            if (available != 0)
+            }
+            if (available != 0) {
                 memcpy(output, info->buf->data + (i32)(info->read_pos - info->buf_start), available);
+            }
             output += available;
             bytes_read += available;
             size -= available;
@@ -1620,6 +1643,7 @@ typedef struct NUFILE_WRITEBLOCK_PC {
     i32 size_sign;
     i64 position;
 } NUFILE_WRITEBLOCK_PC;
+
 STATIC_ASSERT(sizeof(NUFILE_WRITEBLOCK_PC) == 0x10);
 STATIC_ASSERT(offsetof(NUFILE_WRITEBLOCK_PC, position) == 8);
 
@@ -1628,6 +1652,7 @@ typedef struct NUFILE_ADDRESS_PC {
     i32 reserved;
     i64 position;
 } NUFILE_ADDRESS_PC;
+
 STATIC_ASSERT(sizeof(NUFILE_ADDRESS_PC) == 0x10);
 STATIC_ASSERT(offsetof(NUFILE_ADDRESS_PC, position) == 8);
 
@@ -1732,14 +1757,16 @@ void __cdecl NuFileSetAddress(NUFILE file, void *address) {
 
     if (address != NULL) {
         for (index = 0; index < pos_count; ++index) {
-            if (addr_pos[index].address == address)
+            if (addr_pos[index].address == address) {
                 break;
+            }
         }
         if (index >= MAX_FILE_ADDRESS) {
             NuFileError();
         }
-        if (index == pos_count)
+        if (index == pos_count) {
             ++pos_count;
+        }
         addr_pos[index].address = address;
         addr_pos[index].position = NuFilePos(file);
     }
@@ -1777,10 +1804,12 @@ i32 __cdecl NuFileAlign(NUFILE file, i32 mask) {
 
 void __cdecl NuFileInitAddress(i32 capacity) {
     if (capacity != MAX_FILE_ADDRESS) {
-        if (addr_ref != NULL)
+        if (addr_ref != NULL) {
             NuFree(addr_ref, NuFileSourcePathPC, 0xa58);
-        if (addr_pos != NULL)
+        }
+        if (addr_pos != NULL) {
             NuFree(addr_pos, NuFileSourcePathPC, 0xa59);
+        }
         MAX_FILE_ADDRESS = capacity;
         addr_ref =
             (NUFILE_ADDRESS_PC *)NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5d);
@@ -1804,30 +1833,42 @@ void __cdecl NuFileTidyAddress(void) {
 }
 
 i32 __cdecl NuFileIsNewer(nufile_info_s *first, nufile_info_s *second) {
-    if (second->year > first->year)
+    if (second->year > first->year) {
         return 1;
-    if (second->year < first->year)
+    }
+    if (second->year < first->year) {
         return 0;
-    if (second->month > first->month)
+    }
+    if (second->month > first->month) {
         return 1;
-    if (second->month < first->month)
+    }
+    if (second->month < first->month) {
         return 0;
-    if (second->day > first->day)
+    }
+    if (second->day > first->day) {
         return 1;
-    if (second->day < first->day)
+    }
+    if (second->day < first->day) {
         return 0;
-    if (second->hour > first->hour)
+    }
+    if (second->hour > first->hour) {
         return 1;
-    if (second->hour < first->hour)
+    }
+    if (second->hour < first->hour) {
         return 0;
-    if (second->minute > first->minute)
+    }
+    if (second->minute > first->minute) {
         return 1;
-    if (second->minute < first->minute)
+    }
+    if (second->minute < first->minute) {
         return 0;
-    if (second->second > first->second)
+    }
+    if (second->second > first->second) {
         return 1;
-    if (second->second < first->second)
+    }
+    if (second->second < first->second) {
         return 0;
+    }
     return 0;
 }
 
@@ -2216,8 +2257,9 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
             }
         }
 
-        if (datsys_offset != 0)
+        if (datsys_offset != 0) {
             NuFileSeek(file, datsys_offset, 0);
+        }
         while (NuFileRead(file, locator, sizeof(locator)) < 0) {
             do {
                 NuFileRetry();
@@ -2229,8 +2271,9 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         }
 
         metadata_pos = locator[0];
-        if (metadata_pos < 0)
+        if (metadata_pos < 0) {
             metadata_pos *= -256;
+        }
         metadata_pos += datsys_offset;
         while (NuFileSeek(file, metadata_pos, 0) < 0) {
             NuFileRetry();
@@ -2248,8 +2291,9 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         if (arena != NULL) {
             header = (NUDATHDR *)arena->void_ptr;
             arena->char_ptr += allocation_size;
-            if (size_out != NULL)
+            if (size_out != NULL) {
                 *size_out = allocation_size;
+            }
             header->unknown_b0 = 0;
             header->name = (char *)(header + 1);
             metadata = (u8 *)(header + 1) + name_storage;
@@ -2578,8 +2622,9 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
         fpk_err = 5;
         return NULL;
     }
-    if (alignment <= 4)
+    if (alignment <= 4) {
         alignment = 4;
+    }
     buffer->addr = (buffer->addr + alignment - 1) & ~(alignment - 1);
     header = (PC_FILEPAKHDR *)buffer->void_ptr;
     length = NuFileLoadBufferVP(filepath, buffer, &end);
@@ -3624,10 +3669,12 @@ i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    if (buffer[0] == '\0')
+    if (buffer[0] == '\0') {
         return 0;
-    if (buffer[0] == ';')
+    }
+    if (buffer[0] == ';') {
         return 0;
+    }
 
     if (parser->command_position >= 0) {
         commands = parser->command_stack[parser->command_position];
@@ -3664,10 +3711,12 @@ i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    if (buffer[0] == '\0')
+    if (buffer[0] == '\0') {
         return 0;
-    if (buffer[0] == ';')
+    }
+    if (buffer[0] == ';') {
         return 0;
+    }
 
     if (parser->command_position >= 0) {
         commands = parser->command_stack_ctx[parser->command_position];
@@ -4202,8 +4251,9 @@ NUMEMBLK *__cdecl NuMemBlkCreate(i32 element_size, i32 count, u32 alignment_mask
     NUMEMBLK *pool;
     u32 data;
     u32 stride_words;
-    if (element_size < sizeof(NUMEMBLKLINK))
+    if (element_size < sizeof(NUMEMBLKLINK)) {
         element_size = sizeof(NUMEMBLKLINK);
+    }
     header_size = (sizeof(NUMEMBLK) + alignment_mask) & ~alignment_mask;
     stride = (element_size + alignment_mask) & ~alignment_mask;
     pool = (NUMEMBLK *)NuAlloc(header_size + stride * count, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\numemblk.c",
@@ -4234,8 +4284,9 @@ NUMEMBLK *__cdecl NuMemBlkCreateEx(i32 element_size, i32 count, u32 alignment_ma
     NUMEMBLK *pool;
     u32 data;
     u32 stride_words;
-    if (element_size < sizeof(NUMEMBLKLINK))
+    if (element_size < sizeof(NUMEMBLKLINK)) {
         element_size = sizeof(NUMEMBLKLINK);
+    }
     header_size = (sizeof(NUMEMBLK) + alignment_mask) & ~alignment_mask;
     stride = (element_size + alignment_mask) & ~alignment_mask;
     pool = (NUMEMBLK *)storage;
@@ -4268,8 +4319,9 @@ i32 __cdecl NuMemBlkSize(i32 element_size, i32 count, i32 alignment_mask) {
 }
 
 void __cdecl NuMemBlkDestroy(NUMEMBLK *pool) {
-    if (!(pool->flags & 1))
+    if (!(pool->flags & 1)) {
         NuFree(pool, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\numemblk.c", 221);
+    }
 }
 
 void __cdecl NuMemBlkCheckFreeList(NUMEMBLK *pool) {
@@ -4304,6 +4356,7 @@ typedef struct NUMEMHIGHBLOCK_PC {
     u32 units;
     u32 reserved[2];
 } NUMEMHIGHBLOCK_PC;
+
 STATIC_ASSERT(sizeof(NUMEMHIGHBLOCK_PC) == 0x10);
 STATIC_ASSERT(offsetof(NUMEMHIGHBLOCK_PC, units) == 4);
 
@@ -4379,16 +4432,19 @@ typedef struct NUQTDIM_PC {
     f32 y0;
     f32 y1;
 } NUQTDIM_PC;
+
 STATIC_ASSERT(sizeof(NUQTDIM_PC) == 0x10);
 
 typedef struct NUQTENTRY_PC {
     i16 count;
     i16 parent;
+
     union {
         u8 *data;
         u16 children[4];
     } u;
 } NUQTENTRY_PC;
+
 STATIC_ASSERT(sizeof(NUQTENTRY_PC) == 0xc);
 STATIC_ASSERT(offsetof(NUQTENTRY_PC, u) == 4);
 
@@ -4408,6 +4464,7 @@ typedef struct NUQTHDR_PC {
     i32 split_count;
     i32 max_depth;
 } NUQTHDR_PC;
+
 STATIC_ASSERT(sizeof(NUQTHDR_PC) == 0x38);
 STATIC_ASSERT(offsetof(NUQTHDR_PC, entries) == 0x14);
 STATIC_ASSERT(offsetof(NUQTHDR_PC, data) == 0x20);
@@ -4415,8 +4472,9 @@ STATIC_ASSERT(offsetof(NUQTHDR_PC, element_size) == 0x2c);
 STATIC_ASSERT(offsetof(NUQTHDR_PC, max_depth) == 0x34);
 
 static i32 ElOverlaps(NUQTDIM_PC *a, NUQTDIM_PC *b) {
-    if (b->x0 < a->x1 && b->x1 > a->x0 && b->y1 < a->y0 && b->y0 > a->y1)
+    if (b->x0 < a->x1 && b->x1 > a->x0 && b->y1 < a->y0 && b->y0 > a->y1) {
         return 1;
+    }
     return 0;
 }
 
@@ -4508,14 +4566,18 @@ static i32 AddElementR(NUQTHDR_PC *header, i32 index, NUQTDIM_PC *bounds, NUQTDI
         }
         old_item = old_data;
         for (i = 0; i < header->entries[index].count; ++i) {
-            if (ElOverlaps(&q0, item_bounds))
+            if (ElOverlaps(&q0, item_bounds)) {
                 result = AddElementR(header, header->entries[index].u.children[0], &q0, item_bounds, old_item, depth);
-            if (ElOverlaps(&q1, item_bounds))
+            }
+            if (ElOverlaps(&q1, item_bounds)) {
                 result = AddElementR(header, header->entries[index].u.children[1], &q1, item_bounds, old_item, depth);
-            if (ElOverlaps(&q2, item_bounds))
+            }
+            if (ElOverlaps(&q2, item_bounds)) {
                 result = AddElementR(header, header->entries[index].u.children[2], &q2, item_bounds, old_item, depth);
-            if (ElOverlaps(&q3, item_bounds))
+            }
+            if (ElOverlaps(&q3, item_bounds)) {
                 result = AddElementR(header, header->entries[index].u.children[3], &q3, item_bounds, old_item, depth);
+            }
             old_item += header->element_size;
         }
         RemoveData(header, old_data, header->entries[index].count);
@@ -4523,20 +4585,24 @@ static i32 AddElementR(NUQTHDR_PC *header, i32 index, NUQTDIM_PC *bounds, NUQTDI
     }
     if (header->entries[index].count < 0) {
         if (ElOverlaps(&q0, item_bounds)) {
-            if (header->entries[index].u.children[0] != 0)
+            if (header->entries[index].u.children[0] != 0) {
                 result = AddElementR(header, header->entries[index].u.children[0], &q0, item_bounds, item, depth);
+            }
         }
         if (ElOverlaps(&q1, item_bounds)) {
-            if (header->entries[index].u.children[1] != 0)
+            if (header->entries[index].u.children[1] != 0) {
                 result = AddElementR(header, header->entries[index].u.children[1], &q1, item_bounds, item, depth);
+            }
         }
         if (ElOverlaps(&q2, item_bounds)) {
-            if (header->entries[index].u.children[2] != 0)
+            if (header->entries[index].u.children[2] != 0) {
                 result = AddElementR(header, header->entries[index].u.children[2], &q2, item_bounds, item, depth);
+            }
         }
         if (ElOverlaps(&q3, item_bounds)) {
-            if (header->entries[index].u.children[3] != 0)
+            if (header->entries[index].u.children[3] != 0) {
                 result = AddElementR(header, header->entries[index].u.children[3], &q3, item_bounds, item, depth);
+            }
         }
     }
     return result;
@@ -4590,8 +4656,9 @@ static void NuQTUnfixAddress(NUQTHDR_PC *header) {
     i32 index;
 
     for (index = 0; index < header->entry_count; ++index) {
-        if (header->entries[index].count > 0)
+        if (header->entries[index].count > 0) {
             header->entries[index].u.data = header->entries[index].u.data + base;
+        }
     }
     header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
     header->data = header->data + base;
@@ -4604,8 +4671,9 @@ static void NuQTFixAddress(NUQTHDR_PC *header) {
     header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
     header->data = header->data + base;
     for (index = 0; index < header->entry_count; ++index) {
-        if (header->entries[index].count > 0)
+        if (header->entries[index].count > 0) {
             header->entries[index].u.data = header->entries[index].u.data + base;
+        }
     }
 }
 
@@ -4724,10 +4792,12 @@ static void NuAllocManagerSetTrailerPc(NUALLOC_MANAGER_BLOCK_PC *block) {
 }
 
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
-    if (block->previous != NULL)
+    if (block->previous != NULL) {
         block->previous->next = block->next;
-    if (block->next != NULL)
+    }
+    if (block->next != NULL) {
         block->next->previous = block->previous;
+    }
 }
 
 /* Consistency check hook; empty in retail. */
@@ -4774,8 +4844,9 @@ NUALLOC_MANAGER_PREFIX_PC *__cdecl NuAllocManagerCreatePc(VARIPTR *buffer, VARIP
     NUALLOC_MANAGER_BLOCK_PC *last;
     NUALLOC_MANAGER_BLOCK_PC *free_block;
 
-    if (size < 0x50)
+    if (size < 0x50) {
         return NULL;
+    }
     manager = (NUALLOC_MANAGER_PREFIX_PC *)buffer->void_ptr;
     buffer->addr += size;
     list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x10);
@@ -4821,19 +4892,23 @@ void *__cdecl NuAllocManagerAllocatePc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 s
     NUALLOC_MANAGER_BLOCK_PC *remainder;
     (void)unused;
     NuAllocManagerCheckPc(manager);
-    if (size == 0)
+    if (size == 0) {
         return NULL;
+    }
     size += alignment;
     for (block = list; block != NULL; block = NuAllocManagerGetNextPc(block)) {
-        if (NuAllocManagerGetSizePc(block) > size + 16)
+        if (NuAllocManagerGetSizePc(block) > size + 16) {
             break;
+        }
     }
-    if (block == NULL)
+    if (block == NULL) {
         return NULL;
+    }
     NuAllocManagerUnlinkPc(block);
     NuAllocManagerSplitPc(&allocated, &remainder, block, &size, alignment);
-    if (NuAllocManagerGetNextPc(list) != NULL)
+    if (NuAllocManagerGetNextPc(list) != NULL) {
         NuAllocManagerSetPreviousPc(NuAllocManagerGetNextPc(list), remainder);
+    }
     NuAllocManagerSetNextPc(remainder, NuAllocManagerGetNextPc(list));
     NuAllocManagerSetPreviousPc(remainder, list);
     NuAllocManagerSetNextPc(list, remainder);
@@ -4848,14 +4923,16 @@ void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payl
     NUALLOC_MANAGER_BLOCK_PC *block;
     NUALLOC_MANAGER_BLOCK_PC *next;
     NUALLOC_MANAGER_BLOCK_PC *previous;
-    if (payload == NULL || (u32)payload < (u32)base || (u32)payload > (u32)base + manager->size)
+    if (payload == NULL || (u32)payload < (u32)base || (u32)payload > (u32)base + manager->size) {
         return;
+    }
     block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
     block->size_flags &= 0x7fffffffU;
     manager->block_count -= 1;
     manager->used_bytes -= (block->size_flags & 0x7fffffffU) + 16;
-    if (sentinel->next != NULL)
+    if (sentinel->next != NULL) {
         sentinel->next->previous = block;
+    }
     block->next = sentinel->next;
     block->previous = sentinel;
     sentinel->next = block;
@@ -4921,19 +4998,22 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     u32 size, next_size;
     i32 i;
 
-    if (payload == NULL)
+    if (payload == NULL) {
         return NULL;
+    }
     block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
     size = NuAllocManagerGetSizePc(block);
     next = NuAllocManagerNextBlockPc(block);
-    if (NuAllocManagerIsUsedPc(next))
+    if (NuAllocManagerIsUsedPc(next)) {
         return payload;
+    }
     next_size = NuAllocManagerGetSizePc(next);
     NuAllocManagerUnlinkPc(next);
     src = (u8 *)payload;
     dst = (u8 *)payload + next_size + 0x1c;
-    for (i = size - 1; i >= 0; i--)
+    for (i = size - 1; i >= 0; i--) {
         dst[i] = src[i];
+    }
     moved = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload + next_size + 0x10);
     NuAllocManagerSetNextPc(moved, NULL);
     NuAllocManagerSetPreviousPc(moved, NULL);
@@ -4947,8 +5027,9 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     NuAllocManagerSetPreviousPc(free_block, NULL);
     NuAllocManagerSetTrailerPc(free_block);
     list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
-    if (NuAllocManagerGetNextPc(list) != NULL)
+    if (NuAllocManagerGetNextPc(list) != NULL) {
         NuAllocManagerSetPreviousPc(NuAllocManagerGetNextPc(list), free_block);
+    }
     NuAllocManagerSetNextPc(free_block, NuAllocManagerGetNextPc(list));
     NuAllocManagerSetPreviousPc(free_block, list);
     NuAllocManagerSetNextPc(list, free_block);
@@ -5014,17 +5095,21 @@ i32 __cdecl NuStrICmpWC(char *pattern, char *text, char *wildcard) {
     i32 index;
     char a, b;
     i32 suffix_length, text_length, wildcard_length;
-    if (pattern == NULL)
+    if (pattern == NULL) {
         return -1;
-    if (text == NULL)
+    }
+    if (text == NULL) {
         return 1;
+    }
     while (*pattern != '\0' && *pattern != '*') {
         a = NuToUpper((u8)*pattern);
         b = NuToUpper((u8)*text);
-        if (a > b)
+        if (a > b) {
             return 1;
-        if (a < b)
+        }
+        if (a < b) {
             return -1;
+        }
         ++pattern;
         ++text;
     }
@@ -5033,11 +5118,13 @@ i32 __cdecl NuStrICmpWC(char *pattern, char *text, char *wildcard) {
         suffix_length = NuStrLen(pattern);
         text_length = NuStrLen(text);
         wildcard_length = text_length - suffix_length;
-        if (wildcard_length < 0)
+        if (wildcard_length < 0) {
             return 1;
+        }
         if (wildcard != NULL) {
-            for (index = 0; index < wildcard_length; ++index)
+            for (index = 0; index < wildcard_length; ++index) {
                 wildcard[index] = text[index];
+            }
             wildcard[index] = '\0';
         }
         text += text_length - suffix_length;
@@ -5047,10 +5134,12 @@ i32 __cdecl NuStrICmpWC(char *pattern, char *text, char *wildcard) {
     while (*pattern != '\0') {
         a = NuToUpper((u8)*pattern);
         b = NuToUpper((u8)*text);
-        if (a > b)
+        if (a > b) {
             return 1;
-        if (a < b)
+        }
+        if (a < b) {
             return -1;
+        }
         ++pattern;
         ++text;
     }
@@ -5183,15 +5272,18 @@ i32 __cdecl NuStrLenU(u8 *str) {
 
 i32 __cdecl NuStrFindPosU(u8 *text, i32 character_index) {
     i32 index = 0, count = 0;
-    if (character_index == 0)
+    if (character_index == 0) {
         return 0;
+    }
     while (text[index] != 0) {
         index++;
         count++;
-        while (text[index] >= 0x80 && text[index] <= 0xbf)
+        while (text[index] >= 0x80 && text[index] <= 0xbf) {
             index++;
-        if (character_index == count)
+        }
+        if (character_index == count) {
             break;
+        }
     }
     return index;
 }
@@ -5461,24 +5553,27 @@ i32 __cdecl NuHexStringToI(char *string) {
  * return value; incidental high EAX bits are not a 32-bit integer contract.
  */
 NUWCHAR __cdecl NuToUpperW(NUWCHAR character) {
-    if (character >= 0x61 && character <= 0x7a)
+    if (character >= 0x61 && character <= 0x7a) {
         character -= 0x20;
-    else if (character >= 0xe0 && character <= 0xff)
+    } else if (character >= 0xe0 && character <= 0xff) {
         character -= 0x20;
+    }
     return character;
 }
 
 NUWCHAR __cdecl NuToLowerW(NUWCHAR character) {
-    if (character >= 0x41 && character <= 0x5a)
+    if (character >= 0x41 && character <= 0x5a) {
         character += 0x20;
-    else if (character >= 0xc0 && character <= 0xdf)
+    } else if (character >= 0xc0 && character <= 0xdf) {
         character += 0x20;
+    }
     return character;
 }
 
 void __cdecl NuStrCatW(NUWCHAR *str, const NUWCHAR *ext) {
-    while (*str != 0)
+    while (*str != 0) {
         ++str;
+    }
     if (ext != NULL) {
         do {
             *str = *ext;
@@ -5494,13 +5589,15 @@ void __cdecl NuStrCatW(NUWCHAR *str, const NUWCHAR *ext) {
  */
 i32 __cdecl NuStrNCatW(NUWCHAR *str, const NUWCHAR *ext, i32 n) {
     i32 copied;
-    while (*str != 0)
+    while (*str != 0) {
         ++str;
+    }
     copied = 0;
     if (ext != NULL) {
         do {
-            if (n == 0)
+            if (n == 0) {
                 break;
+            }
             *str = *ext;
             ++str;
             ++copied;
@@ -5544,8 +5641,9 @@ i32 __cdecl NuStrNCpyW(NUWCHAR *dst, const NUWCHAR *src, i32 n) {
 
 NUWCHAR *__cdecl NuStrChrW(NUWCHAR *str, NUWCHAR character) {
     while (*str != 0) {
-        if (*str == character)
+        if (*str == character) {
             return str;
+        }
         ++str;
     }
     return NULL;
@@ -5553,11 +5651,13 @@ NUWCHAR *__cdecl NuStrChrW(NUWCHAR *str, NUWCHAR character) {
 
 NUWCHAR *__cdecl NuStrRChrW(NUWCHAR *str, NUWCHAR character) {
     NUWCHAR *cursor = str;
-    while (*cursor != 0)
+    while (*cursor != 0) {
         ++cursor;
+    }
     while (cursor >= str) {
-        if (*cursor == character)
+        if (*cursor == character) {
             return cursor;
+        }
         --cursor;
     }
     return NULL;
@@ -5579,15 +5679,18 @@ NUWCHAR *__cdecl NuStrStrW(NUWCHAR *str, const NUWCHAR *sub) {
         NUWCHAR *cursor = str;
         const NUWCHAR *match = sub;
         while (*match != 0) {
-            if (*cursor == 0)
+            if (*cursor == 0) {
                 break;
-            if (*cursor != *match)
+            }
+            if (*cursor != *match) {
                 break;
+            }
             ++cursor;
             ++match;
         }
-        if (*match == 0)
+        if (*match == 0) {
             return str;
+        }
         ++str;
     }
     return NULL;
@@ -5600,17 +5703,20 @@ NUWCHAR *__cdecl NuStrIStrW(NUWCHAR *str, const NUWCHAR *sub) {
         while (*match != 0) {
             NUWCHAR ca;
             NUWCHAR cb;
-            if (*cursor == 0)
+            if (*cursor == 0) {
                 break;
+            }
             ca = NuToUpperW(*cursor);
             cb = NuToUpperW(*match);
-            if (ca != cb)
+            if (ca != cb) {
                 break;
+            }
             ++cursor;
             ++match;
         }
-        if (*match == 0)
+        if (*match == 0) {
             return str;
+        }
         ++str;
     }
     return NULL;
@@ -5619,17 +5725,21 @@ NUWCHAR *__cdecl NuStrIStrW(NUWCHAR *str, const NUWCHAR *sub) {
 i32 __cdecl NuStrCmpW(const NUWCHAR *a, const NUWCHAR *b) {
     NUWCHAR ca;
     NUWCHAR cb;
-    if (a == NULL)
+    if (a == NULL) {
         return -1;
-    if (b == NULL)
+    }
+    if (b == NULL) {
         return 1;
+    }
     do {
         ca = *a;
         cb = *b;
-        if (ca > cb)
+        if (ca > cb) {
             return 1;
-        if (ca < cb)
+        }
+        if (ca < cb) {
             return -1;
+        }
         ++a;
         ++b;
     } while (ca != 0 && cb != 0);
@@ -5639,21 +5749,27 @@ i32 __cdecl NuStrCmpW(const NUWCHAR *a, const NUWCHAR *b) {
 i32 __cdecl NuStrICmpW(NUWCHAR *a, NUWCHAR *b) {
     NUWCHAR a_cursor;
     NUWCHAR b_cursor;
-    if (a == NULL)
+    if (a == NULL) {
         return -1;
-    if (b == NULL)
+    }
+    if (b == NULL) {
         return 1;
+    }
     do {
         a_cursor = *a;
-        if ((u16)(a_cursor - 'a') <= 'z' - 'a' || (u16)(a_cursor - 0xe0) <= 0x1f)
+        if ((u16)(a_cursor - 'a') <= 'z' - 'a' || (u16)(a_cursor - 0xe0) <= 0x1f) {
             a_cursor -= 0x20;
+        }
         b_cursor = *b;
-        if ((u16)(b_cursor - 'a') <= 'z' - 'a' || (u16)(b_cursor - 0xe0) <= 0x1f)
+        if ((u16)(b_cursor - 'a') <= 'z' - 'a' || (u16)(b_cursor - 0xe0) <= 0x1f) {
             b_cursor -= 0x20;
-        if (a_cursor > b_cursor)
+        }
+        if (a_cursor > b_cursor) {
             return 1;
-        if (a_cursor < b_cursor)
+        }
+        if (a_cursor < b_cursor) {
             return -1;
+        }
         ++a;
         ++b;
     } while (a_cursor != 0 && b_cursor != 0);
@@ -5663,23 +5779,29 @@ i32 __cdecl NuStrICmpW(NUWCHAR *a, NUWCHAR *b) {
 i32 __cdecl NuStrNCmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
     NUWCHAR ca;
     NUWCHAR cb;
-    if (a == NULL)
+    if (a == NULL) {
         return -1;
-    if (b == NULL)
+    }
+    if (b == NULL) {
         return 1;
-    if (n == 0)
+    }
+    if (n == 0) {
         return 0;
-    if (n == -1)
+    }
+    if (n == -1) {
         n = NuStrLenW(a);
-    else if (n == -2)
+    } else if (n == -2) {
         n = NuStrLenW(b);
+    }
     do {
         ca = *a;
         cb = *b;
-        if (ca > cb)
+        if (ca > cb) {
             return 1;
-        if (ca < cb)
+        }
+        if (ca < cb) {
             return -1;
+        }
         ++a;
         ++b;
         n = (i32)((u32)n - 1u);
@@ -5690,23 +5812,29 @@ i32 __cdecl NuStrNCmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
 i32 __cdecl NuStrNICmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
     NUWCHAR ca;
     NUWCHAR cb;
-    if (a == NULL)
+    if (a == NULL) {
         return -1;
-    if (b == NULL)
+    }
+    if (b == NULL) {
         return 1;
-    if (n == 0)
+    }
+    if (n == 0) {
         return 0;
-    if (n == -1)
+    }
+    if (n == -1) {
         n = NuStrLenW(a);
-    else if (n == -2)
+    } else if (n == -2) {
         n = NuStrLenW(b);
+    }
     do {
         ca = NuToUpperW(*a);
         cb = NuToUpperW(*b);
-        if (ca > cb)
+        if (ca > cb) {
             return 1;
-        if (ca < cb)
+        }
+        if (ca < cb) {
             return -1;
+        }
         ++a;
         ++b;
         n = (i32)((u32)n - 1u);
@@ -5746,8 +5874,9 @@ i32 __cdecl NuSPrintf(char *dest, const char *format, ...) {
     vsprintf(dest, format, args);
     va_end(args);
     length = 0;
-    while (dest[length] != '\0')
+    while (dest[length] != '\0') {
         length++;
+    }
     return length;
 }
 
@@ -5774,8 +5903,9 @@ i32 __cdecl NuStringTok(char *str, ...) {
         token = va_arg(args, char *);
         value = va_arg(args, i32);
         if (token != NULL) {
-            if (NuStrICmp(str, token) == 0)
+            if (NuStrICmp(str, token) == 0) {
                 break;
+            }
         }
     } while (token != NULL);
     va_end(args);
@@ -5925,8 +6055,9 @@ char *__cdecl NuIToA(i32 value, char *buffer, i32 radix) {
         *digit++ = (char)(value % radix + '0');
         value /= radix;
     } while (value != 0);
-    while (digit != reversed)
+    while (digit != reversed) {
         *out++ = *--digit;
+    }
     *out = '\0';
     return buffer;
 }
@@ -5986,13 +6117,15 @@ i32 __cdecl NuStrToL(char *str, char **end, i32 radix) {
     i32 value = 0;
     i32 sign = 0;
     char c = *str++;
-    while (c == ' ' || c == '\t')
+    while (c == ' ' || c == '\t') {
         c = *str++;
+    }
     if (c == '-') {
         sign = -1;
         c = *str++;
-    } else if (c == '+')
+    } else if (c == '+') {
         c = *str++;
+    }
     if (radix == 0) {
         radix = 10;
         if (c == '0' && (*str == 'x' || *str == 'X')) {
@@ -6002,23 +6135,27 @@ i32 __cdecl NuStrToL(char *str, char **end, i32 radix) {
         }
     }
     while (1) {
-        if (c >= '0' && c <= '9')
+        if (c >= '0' && c <= '9') {
             c -= '0';
-        else if (c >= 'A' && c <= 'Z')
+        } else if (c >= 'A' && c <= 'Z') {
             c -= 'A' - 10;
-        else if (c >= 'a' && c <= 'z')
+        } else if (c >= 'a' && c <= 'z') {
             c -= 'a' - 10;
-        else
+        } else {
             break;
-        if (c >= radix)
+        }
+        if (c >= radix) {
             break;
+        }
         value = (i32)((u32)value * (u32)radix + (u32)c);
         c = *str++;
     }
-    if (end != NULL)
+    if (end != NULL) {
         *end = str - 1;
-    if (sign != 0)
+    }
+    if (sign != 0) {
         return (i32)((u32)value * (u32)sign);
+    }
     return value;
 }
 
@@ -6095,8 +6232,9 @@ NUWCHAR *__cdecl NuIToAW(i32 value, NUWCHAR *buffer, i32 radix) {
         *digit++ = value % radix + '0';
         value /= radix;
     } while (value != 0);
-    while (digit != reversed)
+    while (digit != reversed) {
         *out++ = *--digit;
+    }
     *out++ = 0;
     return buffer;
 }
@@ -6138,8 +6276,9 @@ i32 __cdecl NuAToIW(const NUWCHAR *str) {
         value = (i32)((u32)value * 10u + (u32)c - (u32)'0');
         c = *str++;
     }
-    if (sign != 0)
+    if (sign != 0) {
         return (i32)((u32)value * (u32)sign);
+    }
     return value;
 }
 
@@ -6147,13 +6286,15 @@ i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
     i32 value = 0;
     i32 sign = 0;
     NUWCHAR c = *str++;
-    while (c == ' ' || c == '\t')
+    while (c == ' ' || c == '\t') {
         c = *str++;
+    }
     if (c == '-') {
         sign = -1;
         c = *str++;
-    } else if (c == '+')
+    } else if (c == '+') {
         c = *str++;
+    }
     if (radix == 0) {
         radix = 10;
         if (c == '0' && (*str == 'x' || *str == 'X')) {
@@ -6163,23 +6304,27 @@ i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
         }
     }
     while (1) {
-        if (c >= '0' && c <= '9')
+        if (c >= '0' && c <= '9') {
             c -= '0';
-        else if (c >= 'A' && c <= 'Z')
+        } else if (c >= 'A' && c <= 'Z') {
             c -= 'A' - 10;
-        else if (c >= 'a' && c <= 'z')
+        } else if (c >= 'a' && c <= 'z') {
             c -= 'a' - 10;
-        else
+        } else {
             break;
-        if (c >= radix)
+        }
+        if (c >= radix) {
             break;
+        }
         value = (i32)((u32)value * (u32)radix + (u32)c);
         c = *str++;
     }
-    if (end != NULL)
+    if (end != NULL) {
         *end = str - 1;
-    if (sign != 0)
+    }
+    if (sign != 0) {
         return (i32)((u32)value * (u32)sign);
+    }
     return value;
 }
 
@@ -6187,15 +6332,17 @@ void __cdecl NuStrToLower(char *text) {
     u8 value;
     while (*text != 0) {
         value = (u8)*text;
-        if ((u8)(value - 0x41) <= 0x19 || (u8)(value + 0x40) <= 0x1f)
+        if ((u8)(value - 0x41) <= 0x19 || (u8)(value + 0x40) <= 0x1f) {
             value = (u8)(value + 0x20);
+        }
         *text++ = (char)value;
     }
 }
 
 u8 __cdecl NuToUpper(u8 character) {
-    if ((u8)(character - 'a') <= 'z' - 'a' || character >= 0xe0)
+    if ((u8)(character - 'a') <= 'z' - 'a' || character >= 0xe0) {
         character = (u8)(character - 0x20);
+    }
     return character;
 }
 
@@ -6207,8 +6354,9 @@ char *__cdecl NuStrStr(char *text, const char *needle) {
             ++scan;
             ++part;
         }
-        if (*part == '\0')
+        if (*part == '\0') {
             return text;
+        }
         ++text;
     }
     return NULL;
@@ -6780,8 +6928,9 @@ u16 *__cdecl NuStringTableGetById(i32 id) {
         bank = (u32)id >> 24;
         id &= 0xffffff;
     }
-    if (bank < 3 && id >= 0 && id < StringBank[bank].string_count)
+    if (bank < 3 && id >= 0 && id < StringBank[bank].string_count) {
         return StringBank[bank].strings[id].str_utf16;
+    }
     return NULL;
 }
 
@@ -6865,14 +7014,17 @@ void __cdecl NuStrGetFilenameNoExt(char *dst, char *src) {
     char *backslash;
     i32 length;
     char *extension = NuStrRChr(src, '.');
-    if (extension == NULL)
+    if (extension == NULL) {
         extension = src + (NuStrLen(src) - 1);
+    }
     separator = NuStrRChr(src, '/');
     backslash = NuStrRChr(src, '\\');
-    if (backslash > separator)
+    if (backslash > separator) {
         separator = backslash;
-    if (separator == NULL)
+    }
+    if (separator == NULL) {
         separator = src;
+    }
     // Preserve the original's unconditional advance, even for a bare filename.
     ++separator;
     length = extension - separator + 1;
@@ -6882,8 +7034,9 @@ void __cdecl NuStrGetFilenameNoExt(char *dst, char *src) {
 void __cdecl NuStrGetPath(char *dst, char *src) {
     char *separator = NuStrRChr(src, '/');
     char *backslash = NuStrRChr(src, '\\');
-    if (backslash > separator)
+    if (backslash > separator) {
         separator = backslash;
+    }
     if (separator == NULL) {
         *dst = 0;
     } else {
@@ -6898,17 +7051,19 @@ void __cdecl NuStrGetExt(char *dst, char *src) {
     char *extension = NuStrRChr(src, '.');
     separator = NuStrRChr(src, '/');
     backslash = NuStrRChr(src, '\\');
-    if (backslash > separator)
+    if (backslash > separator) {
         separator = backslash;
+    }
     if (extension == NULL || separator > extension) {
         *dst = 0;
     } else {
         char *end = src + NuStrLen(src);
         i32 length = end - extension;
-        if (length == 0)
+        if (length == 0) {
             *dst = 0;
-        else
+        } else {
             NuStrNCpy(dst, extension + 1, length);
+        }
     }
 }
 
@@ -6918,10 +7073,12 @@ void __cdecl NuStrSubstituteString(char *dst, char *src, char *search, char *rep
         while (search[matched] != 0) {
             u8 source_character = (u8)src[matched];
             u8 search_character = (u8)search[matched];
-            if ((u8)(source_character - 'A') <= 0x19 || (u8)(source_character + 0x40) <= 0x1f)
+            if ((u8)(source_character - 'A') <= 0x19 || (u8)(source_character + 0x40) <= 0x1f) {
                 source_character = (u8)(source_character + 0x20);
-            if ((u8)(search_character - 'A') <= 0x19 || (u8)(search_character + 0x40) <= 0x1f)
+            }
+            if ((u8)(search_character - 'A') <= 0x19 || (u8)(search_character + 0x40) <= 0x1f) {
                 search_character = (u8)(search_character + 0x20);
+            }
             if (source_character != search_character) {
                 matched = 0;
                 break;
@@ -7048,11 +7205,13 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
 
 static i32 NuStringCharEquivalentPc(u16 a, u16 b) {
     i32 i = 0;
-    if (a == b)
+    if (a == b) {
         return 1;
+    }
     while (bad_equiv[i][0] != 0) {
-        if ((bad_equiv[i][1] == a && bad_equiv[i][0] == b) || (bad_equiv[i][1] == b && bad_equiv[i][0] == a))
+        if ((bad_equiv[i][1] == a && bad_equiv[i][0] == b) || (bad_equiv[i][1] == b && bad_equiv[i][0] == a)) {
             return 1;
+        }
         ++i;
     }
     return 0;
@@ -7061,8 +7220,9 @@ static i32 NuStringCharEquivalentPc(u16 a, u16 b) {
 static i32 NuStringIsFluffPc(u16 character) {
     i32 i = 0;
     while (bad_fluff[i] != 0) {
-        if (bad_fluff[i] == character)
+        if (bad_fluff[i] == character) {
             return 1;
+        }
         ++i;
     }
     return 0;
@@ -7447,8 +7607,9 @@ void __cdecl NuErrorSleep(void) {
         NuQFntPopPrintMode();
         NuRndrEndScene();
         NuPadRead(&pad);
-        if ((pad.digital_buttons & 0x40) != 0 && milliseconds > 1000.0f)
+        if ((pad.digital_buttons & 0x40) != 0 && milliseconds > 1000.0f) {
             waiting = 0;
+        }
         NuFrameEnd();
     }
 }
@@ -7617,20 +7778,23 @@ void ParseCommandLine() {
     if (argument_count > 0) {
         char **argument = argv;
         do {
-            if (*argument == NULL)
+            if (*argument == NULL) {
                 break;
+            }
             if (NuStrICmp(*argument, "PADRECORD") == 0) {
                 ++argument;
                 --argument_count;
-                if (argument_count == 0)
+                if (argument_count == 0) {
                     NuFileError();
+                }
                 nuapi.pad_record.filepath = *argument;
                 nuapi.pad_record.mode = NUPAD_RECORD;
             } else if (NuStrICmp(*argument, "PADPLAY") == 0) {
                 ++argument;
                 --argument_count;
-                if (argument_count == 0)
+                if (argument_count == 0) {
                     NuFileError();
+                }
                 nuapi.pad_record.filepath = *argument;
                 nuapi.pad_record.mode = NUPAD_PLAY;
             }
@@ -7727,8 +7891,9 @@ FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
 
 static f32 CalcRamp(f32 ramp) {
     i32 i;
-    if (!(ramp < 1.0f))
+    if (!(ramp < 1.0f)) {
         ramp = 1.0f;
+    }
     for (i = 0; ramp > FramePadRampValuesPc[i].threshold; ++i) {
     }
     return FramePadRampValuesPc[i].value;
@@ -8184,8 +8349,9 @@ void NuPadSetStatus(i32 pad, i32 status) {
         }
     }
     if (status == 1) {
-        if (FramePadActivatedPc == 0)
+        if (FramePadActivatedPc == 0) {
             FramePadProfilePortPc = device;
+        }
         FramePadActivatedPc = 1;
     }
     g_nupadMapping[pad].is_active = status;
@@ -8284,8 +8450,9 @@ void *__cdecl NuPtrBlockFix(void *block) {
     table.addr += 4;
     for (index = 0; index < count; ++index) {
         entry.addr = *(u32 *)table.void_ptr + table.addr;
-        if (*(u32 *)entry.void_ptr != 0)
+        if (*(u32 *)entry.void_ptr != 0) {
             *(u32 *)entry.void_ptr += entry.addr;
+        }
         table.addr += 4;
     }
     return return_pointer.void_ptr;
@@ -8535,8 +8702,9 @@ void ImplodeError(char *msg, ...) {
 i32 __cdecl ExplodeBuffer(char *in_buf, char *out_buf) {
     i32 original_size;
     i32 compressed_size;
-    if (gExplodeInitialised == 0)
+    if (gExplodeInitialised == 0) {
         return 0;
+    }
     original_size = ExplodeBufferSize(in_buf);
     if (original_size != 0) {
         compressed_size = (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) |
@@ -8986,12 +9154,14 @@ static void make_len(i32 root) {
     u32 count;
     u32 total;
 
-    for (i = 0; i <= 16; ++i)
+    for (i = 0; i <= 16; ++i) {
         implode_len_cnt[i] = 0;
+    }
     count_len(root);
     total = 0;
-    for (i = 0; i < 16; ++i)
+    for (i = 0; i < 16; ++i) {
         total += (u32)implode_len_cnt[16 - i] << i;
+    }
     while (total != 65536) {
         --implode_len_cnt[16];
         for (i = 15; i > 0; --i) {
@@ -9005,8 +9175,9 @@ static void make_len(i32 root) {
     }
     for (i = 16; i > 0; --i) {
         count = implode_len_cnt[i];
-        while ((i32)--count >= 0)
+        while ((i32)--count >= 0) {
             implode_len[*implode_sortptr++] = (u8)i;
+        }
     }
 }
 
@@ -9015,10 +9186,12 @@ static void downheap(i32 parent) {
     i32 node = implode_heap[parent];
 
     while ((child = parent * 2) <= implode_heapsize) {
-        if (child < implode_heapsize && implode_freq[implode_heap[child]] > implode_freq[implode_heap[child + 1]])
+        if (child < implode_heapsize && implode_freq[implode_heap[child]] > implode_freq[implode_heap[child + 1]]) {
             ++child;
-        if (implode_freq[node] <= implode_freq[implode_heap[child]])
+        }
+        if (implode_freq[node] <= implode_freq[implode_heap[child]]) {
             break;
+        }
         implode_heap[parent] = implode_heap[child];
         parent = child;
     }
@@ -9030,10 +9203,12 @@ static void make_code(i32 symbols, u8 *lengths, u16 *codes) {
     i32 i;
 
     start[1] = 0;
-    for (i = 1; i <= 16; ++i)
+    for (i = 1; i <= 16; ++i) {
         start[i + 1] = (start[i] + implode_len_cnt[i]) << 1;
-    for (i = 0; i < symbols; ++i)
+    }
+    for (i = 0; i < symbols; ++i) {
         codes[i] = start[lengths[i]]++;
+    }
 }
 
 i32 __cdecl ImplodeMakeTree(i32 symbols, u16 *frequencies, u8 *lengths, u16 *codes) {
@@ -9050,25 +9225,29 @@ i32 __cdecl ImplodeMakeTree(i32 symbols, u16 *frequencies, u8 *lengths, u16 *cod
     implode_heap[1] = 0;
     for (i = 0; i < implode_n; ++i) {
         implode_len[i] = 0;
-        if (implode_freq[i] != 0)
+        if (implode_freq[i] != 0) {
             implode_heap[++implode_heapsize] = (i16)i;
+        }
     }
     if (implode_heapsize < 2) {
         codes[implode_heap[1]] = 0;
         return implode_heap[1];
     }
-    for (i = implode_heapsize / 2; i >= 1; --i)
+    for (i = implode_heapsize / 2; i >= 1; --i) {
         downheap(i);
+    }
     implode_sortptr = codes;
     do {
         i = implode_heap[1];
-        if (i < implode_n)
+        if (i < implode_n) {
             *implode_sortptr++ = (u16)i;
+        }
         implode_heap[1] = implode_heap[implode_heapsize--];
         downheap(1);
         j = implode_heap[1];
-        if (j < implode_n)
+        if (j < implode_n) {
             *implode_sortptr++ = (u16)j;
+        }
         root = next_node++;
         implode_freq[root] = implode_freq[i] + implode_freq[j];
         implode_heap[1] = (i16)root;

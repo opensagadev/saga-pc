@@ -15,16 +15,20 @@ STATIC_ASSERT(sizeof(Player) == 32);
     ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \
      (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \
      ((target)->tag_flags & 2) == 0)
+
 /* A copy of the actual 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE_PC {
     u32 words[0x33];
+
     struct {
         u32 unknown000[0x2c];
         u8 creature_set;
     } fields;
 } TAGSCRIPTSTATE_PC;
+
 #define TAG_SCRIPT_STATE(object) (*(TAGSCRIPTSTATE_PC *)&(object)->ai_packet.script_processor)
+
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 typedef struct TAGFLAGS1FC_PC {
     u32 bits_0_6 : 7;
@@ -32,6 +36,7 @@ typedef struct TAGFLAGS1FC_PC {
     u32 ai : 1;
     u32 bits_9_31 : 23;
 } TAGFLAGS1FC_PC;
+
 #define TAG_FLAGS(object) ((TAGFLAGS1FC_PC *)&(object)->flags_1fc_word)
 /* Defined in render.c, the TU that owns 0x486f20; an in-TU empty body lets the call be dropped. */
 void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
@@ -128,10 +133,11 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     } else if (StartupGameFlag1 == 0) {
         goto no_action;
     } else if (vehicle->character_data->game_character->weapon_action == 12) {
-        if (CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17)
+        if (CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17) {
             action = 0xc4;
-        else
+        } else {
             action = 0xc3;
+        }
     } else if (vehicle->id == (u16)id_BANTHA || vehicle->id == (u16)id_BOMARRMONK) {
         action = 0x70;
     } else if (vehicle->id == (u16)id_DEWBACK) {
@@ -146,8 +152,9 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         action = 0xc1;
     } else if (vehicle->id == (u16)id_TROOPERCANNON) {
         action = 0xc2;
-        if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[0xc2] == NULL)
+        if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[0xc2] == NULL) {
             action = 0xc1;
+        }
     } else if (vehicle->id == (u16)id_STAP2) {
         action = 0xc1;
     } else if (vehicle->id == (u16)id_CLONEWALKER) {
@@ -314,8 +321,9 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
             if (source->field_280 != 0xff) {
                 Player[(i8)source->field_280] = source;
                 if (source->rider == NULL) {
-                    if (WORLD->current_level != VADERC_LDATA)
+                    if (WORLD->current_level != VADERC_LDATA) {
                         source->field_107e = DEFAULT_PLAYERHITPOINTS;
+                    }
                 } else {
                     source->field_107e = source->character_data->game_character->hitpoints;
                 }
@@ -325,8 +333,9 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
             if (destination->field_280 != 0xff) {
                 Player[(i8)destination->field_280] = destination;
                 if (destination->rider == NULL) {
-                    if (WORLD->current_level != VADERC_LDATA)
+                    if (WORLD->current_level != VADERC_LDATA) {
                         destination->field_107e = DEFAULT_PLAYERHITPOINTS;
+                    }
                 } else {
                     destination->field_107e = destination->character_data->game_character->hitpoints;
                 }
@@ -406,8 +415,9 @@ i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     if (!TAG_CAN_TARGET(source, target)) {
         for (index = 0; index < 8; ++index) {
             target = (GAMEOBJECT *)Player[index];
-            if (TAG_CAN_TARGET(source, target))
+            if (TAG_CAN_TARGET(source, target)) {
                 goto found;
+            }
         }
         return 0;
     }
@@ -421,8 +431,9 @@ found:
         source->tag_cooldown = 3.0f;
         return 0;
     }
-    if (result == 0)
+    if (result == 0) {
         return 0;
+    }
     target->player_controlled = source_active;
     source->player_controlled = target_active;
     return 1;
@@ -708,24 +719,27 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 if (target->id == (u16)id_GRABCONTROL || target->id == (u16)id_GRABR2CONTROL) {
                     Hint_SetComplete(0x28a);
                 } else if (target->character_data->move_fn == Move_BEAST) {
-                    if (StartupGameFlag1 != 0)
+                    if (StartupGameFlag1 != 0) {
                         Hint_SetComplete(0x263);
-                    else
+                    } else {
                         Hint_SetComplete(8);
+                    }
                 } else if (StartupGameFlag1 != 0) {
-                    if (object->id == (u16)id_ATAT)
+                    if (object->id == (u16)id_ATAT) {
                         Hint_SetComplete(0x28d);
-                    else
+                    } else {
                         Hint_SetComplete(0x25d);
+                    }
                 } else {
                     Hint_SetComplete(8);
                 }
             }
-            if (WORLD->grabber != NULL &&
-                (object->force_target->id == (u16)id_GRABCONTROL || object->force_target->id == (u16)id_GRABR2CONTROL))
+            if (WORLD->grabber != NULL && (object->force_target->id == (u16)id_GRABCONTROL ||
+                                           object->force_target->id == (u16)id_GRABR2CONTROL)) {
                 PlaySfx("env_crane_in", &object->collision_position);
-            else
+            } else {
                 PlayLandSfx(object, 0, 0);
+            }
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             TakeOverGameObject2(object, object->force_target, 1);
             return;
@@ -764,10 +778,11 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 if (target->character_context != 0x2a && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
                     ReleaseTakeOver(object, 1);
                     if ((object->flags_1fc_word & 0x80) != 0) {
-                        if (StartupGameFlag1 != 0)
+                        if (StartupGameFlag1 != 0) {
                             Hint_SetComplete(0x25e);
-                        else
+                        } else {
                             Hint_SetComplete(5);
+                        }
                     }
                     return;
                 }
@@ -802,8 +817,9 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         GAMEOBJECT *candidate;
         i32 index;
         f32 dx, dz, range, range_squared, distance;
-        if (object->field_281 == 0)
+        if (object->field_281 == 0) {
             return;
+        }
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||

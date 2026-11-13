@@ -4,24 +4,36 @@
 extern "C" const char PCKeyboardMouse1Name_candidate[15], PCKeyboardMouse2Name_candidate[16],
     PCKeyboard1Name_candidate[10], PCKeyboard2Name_candidate[10];
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
+
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
-    if (port < 0)
+    if (port < 0) {
         return NULL;
-    if (mask & 4)
-        for (i32 i = 0; i < 64; ++i)
-            if (secondary[i].product_id == devices[port].product.Data1 && (key < 0 || secondary[i].key == key))
+    }
+    if (mask & 4) {
+        for (i32 i = 0; i < 64; ++i) {
+            if (secondary[i].product_id == devices[port].product.Data1 && (key < 0 || secondary[i].key == key)) {
                 return &secondary[i];
-    if (mask & 2)
-        for (i32 i = 0; i < 64; ++i)
-            if (primary[i].product_id == devices[port].product.Data1 && (key < 0 || primary[i].key == key))
+            }
+        }
+    }
+    if (mask & 2) {
+        for (i32 i = 0; i < 64; ++i) {
+            if (primary[i].product_id == devices[port].product.Data1 && (key < 0 || primary[i].key == key)) {
                 return &primary[i];
-    if (mask & 1)
-        for (u32 i = 0; i < sizeof(PcStaticInputConfigs) / sizeof(PcStaticInputConfigs[0]); ++i)
+            }
+        }
+    }
+    if (mask & 1) {
+        for (u32 i = 0; i < sizeof(PcStaticInputConfigs) / sizeof(PcStaticInputConfigs[0]); ++i) {
             if (PcStaticInputConfigs[i].product_id == devices[port].product.Data1 &&
-                (key < 0 || PcStaticInputConfigs[i].key == key))
+                (key < 0 || PcStaticInputConfigs[i].key == key)) {
                 return &PcStaticInputConfigs[i];
+            }
+        }
+    }
     return NULL;
 }
+
 void PC_INPUT_RUNTIME_PC::InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *caps, PC_INPUT_DEVICE_PC *record) {
     record->pov_count = 0;
     record->button_count = 0;
@@ -34,30 +46,37 @@ void PC_INPUT_RUNTIME_PC::InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *caps, 
     } else {
         record->left_trigger = caps->motor_left;
         record->right_trigger = caps->motor_right;
-        for (i32 bit = 0; bit < 32; ++bit)
-            if (caps->gamepad.buttons & (1 << bit))
+        for (i32 bit = 0; bit < 32; ++bit) {
+            if (caps->gamepad.buttons & (1 << bit)) {
                 ++record->button_count;
+            }
+        }
         if ((caps->gamepad.buttons & 15) == 15) {
             record->button_count -= 4;
             record->pov_count = 1;
         }
     }
 }
+
 void PC_INPUT_RUNTIME_PC::BindPreferredConfig(i32 mask, i32 port) {
     PC_INPUT_CONFIG_PC *config = FindConfig((u8)mask, port, preferred_key);
-    if (!config)
+    if (!config) {
         config = FindConfig((u8)mask, port, -1);
-    if (config)
+    }
+    if (config) {
         InstallConfig(config, port, config->key, 0, 0);
+    }
 }
+
 void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i32 key, i32 auxiliary,
                                         i32 auxiliary_port) {
     PC_INPUT_BINDING_PC *bindings;
     if (auxiliary) {
         auxiliary_ports[auxiliary_port] = port;
         bindings = auxiliary_bindings[auxiliary_port];
-    } else
+    } else {
         bindings = devices[port].bindings;
+    }
     devices[port].config_present = config != NULL;
     devices[port].config_dirty = 0;
     for (i32 i = 0; i < 32; ++i) {
@@ -82,17 +101,19 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
                     switch (kind) {
                         case 10:
                             binding->kind = 7;
-                            if (commands[i].active == 2)
+                            if (commands[i].active == 2) {
                                 binding->value = secondary;
-                            else
+                            } else {
                                 binding->value = primary;
+                            }
                             break;
                         case 11:
                             binding->kind = 1;
-                            if (commands[i].active == 2)
+                            if (commands[i].active == 2) {
                                 binding->value = secondary;
-                            else
+                            } else {
                                 binding->value = primary;
+                            }
                             break;
                         case 2:
                         case 3:
@@ -135,10 +156,12 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     devices[10].capabilities_valid = 1;
     devices[10].button_count = 255;
     config = FindConfig(3, 10, preferred_key);
-    if (!config)
+    if (!config) {
         config = FindConfig(3, 10, -1);
-    if (config)
+    }
+    if (config) {
         InstallConfig(config, 10, config->key, 0, 0);
+    }
     devices[11].device = nu_keyboard_owner.device;
     NuStrCpy(devices[11].name, PCKeyboard1Name_candidate);
     devices[11].kind = 3;
@@ -147,10 +170,12 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     devices[11].capabilities_valid = 1;
     devices[11].button_count = 255;
     config = FindConfig(3, 11, preferred_key);
-    if (!config)
+    if (!config) {
         config = FindConfig(3, 11, -1);
-    if (config)
+    }
+    if (config) {
         InstallConfig(config, 11, config->key, 0, 0);
+    }
     NuStrCpy(devices[12].name, PCKeyboardMouse2Name_candidate);
     devices[12].kind = 2;
     devices[12].product.Data1 = 2;
@@ -158,10 +183,12 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     devices[12].capabilities_valid = 1;
     devices[12].button_count = 255;
     config = FindConfig(3, 12, preferred_key);
-    if (!config)
+    if (!config) {
         config = FindConfig(3, 12, -1);
-    if (config)
+    }
+    if (config) {
         InstallConfig(config, 12, config->key, 0, 0);
+    }
     devices[13].device = nu_keyboard_owner.device;
     NuStrCpy(devices[13].name, PCKeyboard2Name_candidate);
     devices[13].kind = 4;
@@ -170,21 +197,25 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     devices[13].capabilities_valid = 1;
     devices[13].button_count = 255;
     config = FindConfig(3, 13, preferred_key);
-    if (!config)
+    if (!config) {
         config = FindConfig(3, 13, -1);
-    if (config)
+    }
+    if (config) {
         InstallConfig(config, 13, config->key, 0, 0);
+    }
 }
 
 struct PC_DI_RANGE_PC {
     DWORD size, header_size, object, how;
     LONG minimum, maximum;
 };
+
 STATIC_ASSERT(sizeof(PC_DI_RANGE_PC) == 24);
 STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, object) == 8);
 STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, how) == 12);
 STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, minimum) == 16);
 STATIC_ASSERT(offsetof(PC_DI_RANGE_PC, maximum) == 20);
+
 /* TODO(saga.h): the DirectInput device is called through its C++ interface in retail. */
 struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
@@ -202,6 +233,7 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall SetEventNotification(HANDLE) = 0;
     virtual HRESULT __stdcall SetCooperativeLevel(HWND, DWORD) = 0;
 };
+
 struct PC_DI_FACTORY_INTERFACE_PC {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
     virtual ULONG __stdcall AddRef(void) = 0;
@@ -210,9 +242,11 @@ struct PC_DI_FACTORY_INTERFACE_PC {
     virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *,
                                           DWORD) = 0;
 };
+
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
-    if (device == NULL)
+    if (device == NULL) {
         return;
+    }
     PC_DI_RANGE_PC range;
     PC_DI_DEVICE_INTERFACE_PC *input = (PC_DI_DEVICE_INTERFACE_PC *)device;
     range.size = 24;
@@ -294,8 +328,9 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         PcInputSelectedPort = port;
         devices[port].product = instance->product;
         i32 length = (i32)strlen(instance->product_name);
-        if (length > 63)
+        if (length > 63) {
             length = 63;
+        }
         memset(devices[port].name, 0, 63);
         PCByteCopy_candidate(devices[port].name, instance->product_name, length);
         devices[port].kind = 6;
@@ -304,35 +339,43 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         PC_XINPUT_CAPABILITIES_PC capabilities;
         if (XInputGetCapabilities(port, 1, (XINPUT_CAPABILITIES *)&capabilities) == 0) {
             state->InitXInputCaps(&capabilities, &devices[port]);
-            if (devices[port].button_count == 10 && devices[port].axis_count == 5 && devices[port].pov_count == 1)
+            if (devices[port].button_count == 10 && devices[port].axis_count == 5 && devices[port].pov_count == 1) {
                 devices[port].product.Data1 = 0x028e045e;
+            }
         }
         PC_INPUT_CONFIG_PC *config = state->FindConfig(7, port, state->preferred_key);
-        if (!config)
+        if (!config) {
             config = state->FindConfig(7, port, -1);
-        if (config)
+        }
+        if (config) {
             state->InstallConfig(config, port, config->key, 0, 0);
+        }
         ++PcXInputDeviceCount;
         return TRUE;
     }
     u32 type = (u8)instance->device_type;
     if (type != 19) {
-        if (type - 20 > 1)
+        if (type - 20 > 1) {
             return TRUE;
+        }
         NuKeyboardDevice_PC *device;
         if (((PC_DI_FACTORY_INTERFACE_PC *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) <
-            0)
+            0) {
             return TRUE;
+        }
         i32 port;
         for (port = 4; port < 10; ++port) {
-            if (devices[port].kind == 0)
+            if (devices[port].kind == 0) {
                 break;
+            }
         }
-        if (port >= 10)
+        if (port >= 10) {
             return TRUE;
+        }
         PC_INPUT_DEVICE_PC *record = &devices[port];
-        if (PcInputSelectedPort == -1)
+        if (PcInputSelectedPort == -1) {
             PcInputSelectedPort = port;
+        }
         PC_DI_CAPS_PC caps;
         caps.size = sizeof(caps);
         HRESULT result = ((PC_DI_DEVICE_INTERFACE_PC *)device)->GetCapabilities(&caps);
@@ -346,14 +389,16 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         record->config_dirty = 1;
         record->product = instance->product;
         i32 length = (i32)strlen(instance->product_name);
-        if (length > 63)
+        if (length > 63) {
             length = 63;
+        }
         memset(record->name, 0, 63);
         PCByteCopy_candidate(record->name, instance->product_name, length);
         if (NuStrIStr((char *)instance->product_name, "Saitek") != NULL &&
             (NuStrIStr((char *)instance->product_name, "P2600") != NULL ||
-             NuStrIStr((char *)instance->product_name, "P2900") != NULL))
+             NuStrIStr((char *)instance->product_name, "P2900") != NULL)) {
             record->button_count -= 2;
+        }
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetDataFormat(&PcJoystickDataFormat);
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel((HWND)PCInputInstance_candidate, 9);
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->Acquire();
@@ -363,8 +408,9 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         return TRUE;
     }
     if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, PcSystemKeyboardId,
-                                                          &nu_keyboard_owner.device, NULL) != 0)
+                                                          &nu_keyboard_owner.device, NULL) != 0) {
         return TRUE;
+    }
     PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);
     nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, (HWND)PCInputInstance_candidate,
                                                              22);
@@ -427,8 +473,9 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
 }
 
 void NuKeyboardOwner_PC::Shutdown() {
-    if (nu_input_state == NULL)
+    if (nu_input_state == NULL) {
         return;
+    }
     PC_INPUT_DEVICE_PC *devices = ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices;
     if (device != NULL) {
         device->methods->unacquire(device);
@@ -437,8 +484,9 @@ void NuKeyboardOwner_PC::Shutdown() {
             device = NULL;
         }
     }
-    for (u16 index = 10; index < 14; ++index)
+    for (u16 index = 10; index < 14; ++index) {
         devices[index].device = NULL;
+    }
     for (i32 index = 4; index < 14; ++index) {
         if (devices[index].device != NULL) {
             devices[index].device->methods->unacquire(devices[index].device);
@@ -475,8 +523,9 @@ STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
 
 extern "C" void __cdecl NuKeyboardClearActiveDevicesPc(void) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-    for (i32 device = 10; device < 14; ++device)
+    for (i32 device = 10; device < 14; ++device) {
         state->devices[device].action_keys_active = 0;
+    }
 }
 
 void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
@@ -489,10 +538,12 @@ void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
                     NuPadMapPlayerToPort(pad, device);
                     NuPadSetValid(device, 1);
                     PC_INPUT_CONFIG_PC *config = FindConfig(7, device, preferred_key);
-                    if (!config)
+                    if (!config) {
                         config = FindConfig(7, device, -1);
-                    if (config)
+                    }
+                    if (config) {
                         InstallConfig(config, device, config->key, 0, 0);
+                    }
                 }
                 ++device;
                 break;
@@ -513,23 +564,26 @@ extern "C" i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
 // Native NuKeyboardOwner_PC cohort, append to pc_input.cpp.
 i32 NuKeyboardOwner_PC::SetMouseCooperativePc(i32 value) {
     i32 previous = mouse_cooperative;
-    if (previous == value)
+    if (previous == value) {
         return value;
+    }
     mouse_cooperative = value;
     if (mouse != NULL) {
         mouse->methods->unacquire(mouse);
-        if (value)
+        if (value) {
             mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 5);
-        else
+        } else {
             mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 6);
+        }
         mouse->methods->acquire(mouse);
     }
     return previous;
 }
 
 const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
-    if ((nu_keyboard_device_flags & 1) || mouse == NULL || !mouse_enabled)
+    if ((nu_keyboard_device_flags & 1) || mouse == NULL || !mouse_enabled) {
         return NULL;
+    }
     if (mouse->methods->poll(mouse) < 0) {
         mouse->methods->acquire(mouse);
         i32 old = mouse_cooperative;
@@ -613,12 +667,14 @@ NuKeyboardOwner_PC::NuKeyboardOwner_PC() {
     memset(nu_keyboard_pages, 0, 256);
     memset(nu_keyboard_pages + 256, 0, 256);
 }
+
 NuKeyboardOwner_PC::~NuKeyboardOwner_PC() {
     unknown_0000 = 0.0f;
     unknown_0004 = 0;
     unknown_0008 = 0.0f;
     device_count = 0;
 }
+
 void __thiscall NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
     mouse_enabled = enabled;
 }

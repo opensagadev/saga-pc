@@ -82,10 +82,12 @@ void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
 
     buffer->addr = ((u32)string_buffer + 3U) & ~3U;
 
-    if (TTab[TextIdPc880894] != NULL)
+    if (TTab[TextIdPc880894] != NULL) {
         NuStrCpy(Game.customiser_start[0].name, TTab[TextIdPc880894]);
-    if (TTab[TextIdPc880898] != NULL)
+    }
+    if (TTab[TextIdPc880898] != NULL) {
         NuStrCpy(Game.customiser_start[1].name, TTab[TextIdPc880898]);
+    }
     FinishWeirdoNames(-1);
     Customiser_InitNames(CharacterCustomiser);
     MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);

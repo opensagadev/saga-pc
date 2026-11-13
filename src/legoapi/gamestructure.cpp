@@ -19,10 +19,11 @@ extern "C" void __cdecl PauseGame(i32 pad) {
     music_man.SetFader(0.0f, 0.5f);
     music_man.PauseTrack(0x10);
     NuSound3StopRumble();
-    if (memcard_autosaveenabled && memcard_autosavedisabled)
+    if (memcard_autosaveenabled && memcard_autosavedisabled) {
         NewMenu(1011, 0, -1);
-    else
+    } else {
         NewMenu(LEGOMENU_PAUSEMAIN, 0, -1);
+    }
     ResetTimer(&PauseTimer, 0.0f);
     GameAudio_PlaySfx(0x36, NULL, 0, 0);
     DoubleScoreTime = 0.0f;
@@ -36,9 +37,11 @@ extern "C" void __cdecl PauseGame(i32 pad) {
             ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
         }
     }
-    if (PauseGame_ExtraCodeFn)
+    if (PauseGame_ExtraCodeFn) {
         PauseGame_ExtraCodeFn();
+    }
 }
+
 extern "C" {
 
     void __cdecl ResumeGame(i32 play_sound) {
@@ -49,10 +52,12 @@ extern "C" {
         MenuReset();
         music_man.SetFader(1.0f, 0.5f);
         music_man.ResumeTrack(0x10);
-        if (play_sound != 0)
+        if (play_sound != 0) {
             GameAudio_PlaySfx(0x37, NULL, 0, 0);
-        if (ResumeGame_ExtraCodeFn != NULL)
+        }
+        if (ResumeGame_ExtraCodeFn != NULL) {
             ResumeGame_ExtraCodeFn();
+        }
     }
 }
 
@@ -65,6 +70,7 @@ extern "C" void NewGameMode() {
     NewMode = 1;
     reset_load = 1;
 }
+
 extern "C" {
 
     void RestoreOptions(void) {
@@ -95,21 +101,28 @@ extern "C" i32 __cdecl InStory(void) {
 
 i32 __cdecl Game_Exit(i32 last_area) {
     if (PcWindowQuit != 0) {
-        if (WorldInfo[0].loaded != 0)
+        if (WorldInfo[0].loaded != 0) {
             WorldInfo_Dump(&WorldInfo[0]);
-        if (WorldInfo[1].loaded != 0)
+        }
+        if (WorldInfo[1].loaded != 0) {
             WorldInfo_Dump(&WorldInfo[1]);
+        }
         DumpAreaData(1, last_area);
-        if (save_icon_scene != NULL)
+        if (save_icon_scene != NULL) {
             NuGScnRemove(save_icon_scene);
-        if (big_icon_scene != NULL)
+        }
+        if (big_icon_scene != NULL) {
             NuGScnRemove(big_icon_scene);
-        if (area_scene != NULL)
+        }
+        if (area_scene != NULL) {
             NuGScnRemove(area_scene);
-        if (things_scene != NULL)
+        }
+        if (things_scene != NULL) {
             NuGScnRemove(things_scene);
-        if (vehicle_scene != NULL)
+        }
+        if (vehicle_scene != NULL) {
             NuGScnRemove(vehicle_scene);
+        }
         BackDrop_Dump();
         return last_area;
     }
@@ -134,18 +147,21 @@ extern "C" void __cdecl AddToCompletionPoints(u32 points) {
         if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points >= HubCompletionPointsPc) {
             ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points = (u16)HubCompletionPointsPc;
             if ((((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_100_PERCENT) == 0) {
-                if (Game_100PercentFn != NULL)
+                if (Game_100PercentFn != NULL) {
                     Game_100PercentFn();
+                }
                 ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_100_PERCENT;
             }
         }
     }
 }
+
 extern "C" {
 
     i32 __cdecl Game_100PercentComplete(void) {
-        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0)
+        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0) {
             return 1;
+        }
         return 0;
     }
 }
@@ -156,8 +172,9 @@ extern "C" void AddToGoldBricks() {
         ++((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks;
         if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks == GOLDBRICKPOINTS &&
             (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
-            if (Game_AllGoldBricksFn != NULL)
+            if (Game_AllGoldBricksFn != NULL) {
                 Game_AllGoldBricksFn();
+            }
             ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
         }
     }

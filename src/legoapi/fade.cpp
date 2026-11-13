@@ -244,39 +244,46 @@ void FadeSystem::Init() {
 void FadeSystem::Update() {
     f32 old_fade = fade;
     FADETYPE_VALUE type = pending_type;
-    if (type == FADE_TYPE_NONE)
+    if (type == FADE_TYPE_NONE) {
         return;
+    }
 
     fade = fade + rate * FRAMETIME;
-    if (fade > 1.0f)
+    if (fade > 1.0f) {
         fade = 1.0f;
-    else if (fade < 0.0f)
+    } else if (fade < 0.0f) {
         fade = 0.0f;
+    }
 
-    if (old_fade < 1.0f && fade == 1.0f)
+    if (old_fade < 1.0f && fade == 1.0f) {
         busy = 1;
-    else if (busy != 0)
+    } else if (busy != 0) {
         --busy;
+    }
 
-    if (fades[type] != 0)
+    if (fades[type] != 0) {
         fades[type]->UpdateFade();
+    }
     if (fade == 0.0f || fade == 1.0f) {
-        if (fade == 0.0f)
+        if (fade == 0.0f) {
             pending_type = FADE_TYPE_NONE;
+        }
         rate = 0.0f;
     }
 }
 
 void FadeSystem::Draw() {
-    if (pending_type != FADE_TYPE_NONE && fade_draw_suppressed == 0 && fades[pending_type] != 0)
+    if (pending_type != FADE_TYPE_NONE && fade_draw_suppressed == 0 && fades[pending_type] != 0) {
         fades[pending_type]->DrawFade();
+    }
 }
 
 void FadeSystem::SetStage(char new_stage) {
     stage = new_stage;
     busy = 0;
-    if (pending_type != FADE_TYPE_NONE && fades[pending_type] != 0)
+    if (pending_type != FADE_TYPE_NONE && fades[pending_type] != 0) {
         fades[pending_type]->InitFade();
+    }
 }
 
 i32 FadeSystem::SetFade(FADETYPE const &type, u32 frames) {

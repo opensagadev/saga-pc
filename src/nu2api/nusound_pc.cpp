@@ -83,19 +83,23 @@ extern "C" {
         f32 distance;
         f32 scale;
 
-        if (NuSound3Listener == NULL)
+        if (NuSound3Listener == NULL) {
             NuSound3Listener = &global_camera.mtx;
-        if (nusound_fade_start >= nusound_fade_end)
+        }
+        if (nusound_fade_start >= nusound_fade_end) {
             nusound_fade_end = nusound_fade_start;
+        }
         NuVecInvMtxTransform(relative, position, NuSound3Listener);
         distance_squared = NuVecMagSqr(relative);
-        if (distance_squared > nusound_fade_end * nusound_fade_end)
+        if (distance_squared > nusound_fade_end * nusound_fade_end) {
             return 0;
+        }
         distance = NuFsqrt(distance_squared);
-        if (distance > nusound_fade_start)
+        if (distance > nusound_fade_start) {
             scale = (nusound_fade_end - distance) / (nusound_fade_end - nusound_fade_start);
-        else
+        } else {
             scale = 1.0f;
+        }
         return (i32)(volume * scale);
     }
 }
@@ -109,28 +113,35 @@ extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i3
     i32 table_index;
     i32 voice_id;
 
-    if (SoundVoiceManager.samples == NULL)
+    if (SoundVoiceManager.samples == NULL) {
         return;
-    if (SoundVoiceManager.samples[sample_id].valid_byte == 0)
+    }
+    if (SoundVoiceManager.samples[sample_id].valid_byte == 0) {
         return;
+    }
     if (position >= &nusound_special_positions[1] && position <= &nusound_special_positions[4] &&
         position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
-        position->z == nusound_special_positions[0].z)
+        position->z == nusound_special_positions[0].z) {
         return;
-    if (PCSoundVolumeMultiplier != 0x4000)
+    }
+    if (PCSoundVolumeMultiplier != 0x4000) {
         scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
-    else
+    } else {
         scaled_volume = volume_left;
+    }
     attenuated_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
-    if (attenuated_volume == 0)
+    if (attenuated_volume == 0) {
         return;
+    }
     voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
-    if (voice_id <= -1)
+    if (voice_id <= -1) {
         return;
+    }
     SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
     table_index = attenuated_volume;
-    if (table_index > 0x3fff)
+    if (table_index > 0x3fff) {
         table_index = 0;
+    }
     SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[table_index], pitch);
     ++PCSoundStartedOneShotCountPc;
     (void)volume_right;
@@ -177,24 +188,30 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
     bool reused;
     SoundVoiceSlotPC *slot;
 
-    if (SoundVoiceManager.samples == NULL)
+    if (SoundVoiceManager.samples == NULL) {
         return;
-    if (SoundVoiceManager.samples[sample_id].valid_byte == 0)
+    }
+    if (SoundVoiceManager.samples[sample_id].valid_byte == 0) {
         return;
+    }
     if (position >= &nusound_special_positions[1] && position <= &nusound_special_positions[4] &&
         position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
-        position->z == nusound_special_positions[0].z)
+        position->z == nusound_special_positions[0].z) {
         return;
-    if (PCSoundVolumeMultiplier != 0x4000)
+    }
+    if (PCSoundVolumeMultiplier != 0x4000) {
         scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
-    else
+    } else {
         scaled_volume = volume_left;
+    }
     attenuated_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
-    if (attenuated_volume == 0)
+    if (attenuated_volume == 0) {
         return;
+    }
     reused = SoundVoiceManager.FindLoopVoicePc(position, sample_id, &voice_id);
-    if (voice_id <= -1)
+    if (voice_id <= -1) {
         return;
+    }
     slot = &SoundVoiceManager.voices[voice_id];
     slot->field_28 = PCSoundUpdateClock;
     slot->field_1c = nusound_fade_start;
@@ -206,8 +223,9 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
     if (!reused) {
         SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
         table_index = attenuated_volume;
-        if (table_index > 0x3fff)
+        if (table_index > 0x3fff) {
             table_index = 0;
+        }
         SoundVoiceManager.SetVoice(voice_id, 1, NuSound3VolumeTable[table_index], pitch);
         ++PCSoundStartedLoopCountPc;
     } else {
@@ -498,12 +516,14 @@ struct PC_STEREO_PLAY_PACKET {
     i32 option9_mode;
     f32 start_offset;
 };
+
 STATIC_ASSERT(sizeof(PC_STEREO_PLAY_PACKET) == 36);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, stream_index) == 8);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
+
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
     i32 channel_a;
     i32 channel_b;
@@ -514,14 +534,17 @@ extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
         channel_a = PCStereoChannel0A;
         channel_b = PCStereoChannel0B;
     }
-    if (packet->last_sample == -1)
+    if (packet->last_sample == -1) {
         packet->last_sample = packet->first_sample + 1;
+    }
     if (channel_a != -1 && channel_b != -1) {
         i32 flags = 0;
-        if (packet->option9_mode == 0)
+        if (packet->option9_mode == 0) {
             flags = 2;
-        if (PCStereoSampleMetadata != NULL && PCStereoSampleMetadata[packet->first_sample].static_sample == 0)
+        }
+        if (PCStereoSampleMetadata != NULL && PCStereoSampleMetadata[packet->first_sample].static_sample == 0) {
             flags |= 1;
+        }
         NuSound3StereoStreams[packet->stream_index]->Stop();
         NuSound3StereoStreams[packet->stream_index]->SetStreamFile(
             SoundVoiceManager.samples[packet->first_sample].file_name, packet->start_offset);
@@ -537,6 +560,7 @@ SoundVoiceManagerPC *SoundVoiceManagerPC::ResetStoragePc(void) {
     }
     return this;
 }
+
 void SoundVoiceManagerPC::UnloadSample(i32 index) {
     EnterCriticalSection(&SoundVoiceCriticalSection);
     if (samples[index].buffer != NULL) {
@@ -547,9 +571,11 @@ void SoundVoiceManagerPC::UnloadSample(i32 index) {
     samples[index].valid_byte = 0;
     LeaveCriticalSection(&SoundVoiceCriticalSection);
 }
+
 void SoundVoiceManagerPC::SetOptionD14Pc(u8 mode) {
     option_d14 = mode;
 }
+
 IDirectSound8 *SoundVoiceManagerPC::GetFactory(void) {
     return factory;
 }
@@ -558,8 +584,9 @@ void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
     (void)unused;
     option5 = option5_value;
     option6 = option6_value;
-    if (FAILED(DirectSoundCreate8(NULL, &factory, NULL)))
+    if (FAILED(DirectSoundCreate8(NULL, &factory, NULL))) {
         return;
+    }
     factory->vtable->set_cooperative_level(factory, (HWND)PCInputInstance_candidate, 2);
     caps.size = sizeof(caps);
     factory->vtable->get_caps(factory, &caps);
@@ -691,15 +718,17 @@ void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
     state_000 = 0;
     LeaveCriticalSection(&SoundSampleCriticalSectionPc);
 }
+
 void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
     char directory[0x800];
     char filename[0x800];
     i32 i;
     f32 value;
-    if (PCStereoSampleMetadata == NULL)
+    if (PCStereoSampleMetadata == NULL) {
         SoundVoiceManager.Init(0, 0, 1);
-    else
+    } else {
         SoundVoiceManager.ClearSamplesPc();
+    }
     PCStereoSampleMetadata = info;
     for (SoundSampleCountPc = 0; info[SoundSampleCountPc].index != -1; ++SoundSampleCountPc) {
         if (SoundSampleCountPc >= PCSoundSampleLimitPc) {
@@ -708,9 +737,9 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
         }
     }
     for (i = 0; i <= 0x3fff; ++i) {
-        if (i == 0)
+        if (i == 0) {
             NuSound3VolumeTable[i] = -10000.0f;
-        else {
+        } else {
             value = (f32)(i / 16383.0);
             value = (f32)log10((f64)value);
             NuSound3VolumeTable[i] = (f32)(value * 2000.0);
@@ -720,15 +749,18 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
         NuStrLen(PCStereoSampleMetadata[i].filename);
         NuFileGetCurrentDirectory(directory);
         sprintf(filename, "%s%s", directory, PCStereoSampleMetadata[i].filename);
-        if (PCStereoSampleMetadata[i].index < 0x1000)
+        if (PCStereoSampleMetadata[i].index < 0x1000) {
             SoundVoiceManager.SetSampleName(filename, i);
+        }
     }
 }
+
 void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     SAGA_SOUND_SETTER_BEGIN();
     if (PCSoundMixSampleCount != short_count) {
-        if (PCSoundMixDestination != NULL)
+        if (PCSoundMixDestination != NULL) {
             PCSoundAlreadyPlayingHook();
+        }
         PCSoundMixDestination = (u16 *)NuAlloc(short_count * 2, ".\\pc\\nusound.cpp", 0x8c4);
         memset(PCSoundMixDestination, 0, short_count * 2);
     }
@@ -746,31 +778,38 @@ extern "C" {
         const char *name;
         do {
             WaitForSingleObject(PCSoundMixEvent, INFINITE);
-            if (PCSoundSampleWorkerStopPc != 0)
+            if (PCSoundSampleWorkerStopPc != 0) {
                 break;
+            }
             if (PCSoundMixDestination != NULL) {
                 EnterCriticalSection(&SoundSampleCriticalSectionPc);
                 for (i = 0; i < SoundSampleCountPc; ++i) {
-                    if (PCSoundSampleWorkerStopPc != 0)
+                    if (PCSoundSampleWorkerStopPc != 0) {
                         break;
+                    }
                     requested = (((u16 *)PCSoundMixDestination)[i / 16] & (1 << (i & 15))) != 0;
                     loaded = SoundVoiceManager.samples != NULL ? SoundVoiceManager.samples[i].valid_byte : 0;
-                    if (requested == loaded)
+                    if (requested == loaded) {
                         continue;
+                    }
                     if (requested != 0) {
-                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
+                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0) {
                             continue;
+                        }
                         NuFileGetCurrentDirectory(directory);
                         sprintf(filename, "%s%s", directory, PCStereoSampleMetadata[i].filename);
-                        if (PCStereoSampleMetadata[i].index < 0x1000)
+                        if (PCStereoSampleMetadata[i].index < 0x1000) {
                             continue;
+                        }
                         name = PCStereoSampleMetadata[i].filename;
-                        if (NuStrICmp(NuFileExt_wav_PC, PCSampleFilenameExtensionPc) == 0)
+                        if (NuStrICmp(NuFileExt_wav_PC, PCSampleFilenameExtensionPc) == 0) {
                             SoundVoiceManager.LoadWavSamplePc(name, i);
-                        else
+                        } else {
                             PCSoundAlreadyPlayingHook(PCSampleFilenameExtensionPc);
-                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
+                        }
+                        if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0) {
                             PCSoundFailure(i);
+                        }
                     } else if (PCStereoSampleMetadata[i].index >= 0x1000) {
                         SoundVoiceManager.UnloadSample(i);
                     }
@@ -781,18 +820,21 @@ extern "C" {
         PCSoundSampleWorkerHandlePc = NULL;
         return 0;
     }
+
     i32 __cdecl PCSoundInitializePc(PC_SOUND_INIT_CONFIG *config) {
         VARIPTR zero;
         SoundVoiceManager.samples = (SoundSamplePC *)((config->cursor->addr + 3) & ~3u);
         config->cursor->addr = (config->cursor->addr + 3) & ~3u;
         config->cursor->addr += config->sample_capacity * sizeof(SoundSamplePC);
-        if (config->cursor->addr > config->end.addr)
+        if (config->cursor->addr > config->end.addr) {
             PCSoundAlreadyPlayingHook();
+        }
         memset(SoundVoiceManager.samples, 0, config->sample_capacity * sizeof(SoundSamplePC));
         PCSoundSampleLimitPc = config->sample_capacity;
         zero.addr = 0;
-        if (config->sample_table != NULL)
+        if (config->sample_table != NULL) {
             NuSound3SetSampleTable(config->sample_table, NULL, zero);
+        }
         InitializeCriticalSection(&SoundVoiceCriticalSection);
         InitializeCriticalSection(&SoundSampleCriticalSectionPc);
         PCSoundMixEvent = CreateEventA(NULL, FALSE, FALSE, "SpotManager Event");

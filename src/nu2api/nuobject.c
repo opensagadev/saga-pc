@@ -37,8 +37,9 @@ void __cdecl NuFadeObjInit(void) {
             TerrainSetCur(NuFadeObjGroup[group].terrain);
             platform = NuFadeObjGroup[group].platforms;
             for (i = 0; i < NuFadeObjGroup[group].count; ++i, ++platform) {
-                if (*platform != -1)
+                if (*platform != -1) {
                     DeletePlatinst(*platform);
+                }
             }
             NuFadeObjGroup[group].active = 0;
         }
@@ -88,18 +89,24 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
         max_x = max_y = max_z = -10000000.0f;
         for (i = 0; i < count; ++i, ++matrix, ++platform) {
             *platform = -1;
-            if (matrix->m30 < min_x)
+            if (matrix->m30 < min_x) {
                 min_x = matrix->m30;
-            if (matrix->m31 < min_y)
+            }
+            if (matrix->m31 < min_y) {
                 min_y = matrix->m31;
-            if (matrix->m32 < min_z)
+            }
+            if (matrix->m32 < min_z) {
                 min_z = matrix->m32;
-            if (matrix->m30 > max_x)
+            }
+            if (matrix->m30 > max_x) {
                 max_x = matrix->m30;
-            if (matrix->m31 > max_y && matrix->m31 < 2000000.0)
+            }
+            if (matrix->m31 > max_y && matrix->m31 < 2000000.0) {
                 max_y = matrix->m31;
-            if (matrix->m32 > max_z)
+            }
+            if (matrix->m32 > max_z) {
                 max_z = matrix->m32;
+            }
         }
         group->centre.x = (max_x + min_x) * 0.5;
         group->centre.y = (max_y + min_y) * 0.5;
@@ -140,8 +147,9 @@ void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
     NuFadeObjWave += 501;
     NuFadeObjDir += 133;
     NuFadeObjDir2 += 377;
-    if (NuFadeObjEnabledPc == 0)
+    if (NuFadeObjEnabledPc == 0) {
         return;
+    }
     terrain = TerrainGetCur();
     for (g = 0; g < NuFadeMaxGroupsPC; ++g, ++group) {
         if (group->active) {
@@ -189,8 +197,9 @@ void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
 void __cdecl NuFadeObjUpdate(NUVEC *position) {
     i32 i;
     NUVEC *positions[8];
-    for (i = 1; i < 8; ++i)
+    for (i = 1; i < 8; ++i) {
         positions[i] = NULL;
+    }
     positions[0] = position;
     NuFadeObjUpdateArray(positions);
 }
@@ -202,8 +211,9 @@ void __cdecl NuFadeObjDraw(void) {
     f32 near_squared, far_squared, distance_squared;
     NUSPECIALHANDLE special;
     special.special = NULL;
-    if (NuFadeObjEnabledPc == 0)
+    if (NuFadeObjEnabledPc == 0) {
         return;
+    }
     group = NuFadeObjGroup;
     for (g = 0; g < NuFadeMaxGroupsPC; ++g, ++group) {
         if (group->active && group->in_range) {
@@ -212,21 +222,24 @@ void __cdecl NuFadeObjDraw(void) {
             matrix = group->matrices;
             near_squared = group->near_distance * group->near_distance;
             far_squared = group->far_distance * group->far_distance;
-            if (matrix == NULL)
+            if (matrix == NULL) {
                 continue;
+            }
             for (i = 0; i < group->count; ++i, ++matrix) {
                 distance_squared = (matrix->m30 - global_camera.mtx.m30) * (matrix->m30 - global_camera.mtx.m30) +
                                    (matrix->m31 - global_camera.mtx.m31) * (matrix->m31 - global_camera.mtx.m31) +
                                    (matrix->m32 - global_camera.mtx.m32) * (matrix->m32 - global_camera.mtx.m32);
                 if (distance_squared < far_squared) {
-                    if (distance_squared < near_squared)
+                    if (distance_squared < near_squared) {
                         matrix->m23 = 0.0f;
-                    else
+                    } else {
                         matrix->m23 = 1.0e-11f;
+                    }
                     special.scene = group->scene;
                     special.display_special = (NUMTX *)group->special;
-                    if (NuSpecialDrawAt(&special, matrix))
+                    if (NuSpecialDrawAt(&special, matrix)) {
                         group->drawn = 1;
+                    }
                 }
             }
         }

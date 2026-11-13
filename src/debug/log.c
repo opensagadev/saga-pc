@@ -55,8 +55,9 @@ static void save_original_streams(void) {
 
 /* Private Debug support; setup owns readiness, restricted inheritance and rollback. */
 static void capture_standard_streams(void) {
-    if (log_file != INVALID_HANDLE_VALUE && log_capture_eligible && log_original_out >= 0 && log_original_err >= 0)
+    if (log_file != INVALID_HANDLE_VALUE && log_capture_eligible && log_original_out >= 0 && log_original_err >= 0) {
         log_capture = SagaDebugCaptureStreamsPc(log_file, log_original_out, log_original_err);
+    }
 }
 
 /* CREATE_NEW prevents overwriting a previous run, even after PID reuse. */
@@ -68,26 +69,32 @@ static void open_log_file(const SYSTEMTIME *time) {
     SECURITY_ATTRIBUTES security = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
 
     length = GetModuleFileNameA(NULL, directory, sizeof(directory));
-    if (length == 0 || length >= sizeof(directory))
+    if (length == 0 || length >= sizeof(directory)) {
         return;
+    }
     slash = strrchr(directory, '\\');
-    if (slash == NULL)
+    if (slash == NULL) {
         slash = strrchr(directory, '/');
-    if (slash == NULL || slash - directory > MAX_PATH - 8)
+    }
+    if (slash == NULL || slash - directory > MAX_PATH - 8) {
         return;
+    }
     strcpy(slash + 1, "log");
-    if (!CreateDirectoryA(directory, NULL) && GetLastError() != ERROR_ALREADY_EXISTS)
+    if (!CreateDirectoryA(directory, NULL) && GetLastError() != ERROR_ALREADY_EXISTS) {
         return;
+    }
     for (attempt = 0; attempt < 100; attempt++) {
         int count = _snprintf(log_filename, sizeof(log_filename), "%s\\%04u%02u%02u-%02u%02u%02u-%03u-%s-%lu-%u.log",
                               directory, time->wYear, time->wMonth, time->wDay, time->wHour, time->wMinute,
                               time->wSecond, time->wMilliseconds, SAGA_BUILD_ID, GetCurrentProcessId(), attempt);
-        if (count < 0 || count >= sizeof(log_filename))
+        if (count < 0 || count >= sizeof(log_filename)) {
             return;
+        }
         log_file = CreateFileA(log_filename, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &security, CREATE_NEW,
                                FILE_ATTRIBUTE_NORMAL, NULL);
-        if (log_file != INVALID_HANDLE_VALUE || GetLastError() != ERROR_FILE_EXISTS)
+        if (log_file != INVALID_HANDLE_VALUE || GetLastError() != ERROR_FILE_EXISTS) {
             return;
+        }
     }
 }
 
@@ -100,12 +107,15 @@ static void write_record(enum log_level level, const char *record) {
     DWORD written;
     DWORD length = (DWORD)strlen(record);
     /* Console attributes give saga's severity colors without adding escapes to files or pipes. */
-    if (GetConsoleScreenBufferInfo(output, &console))
+    if (GetConsoleScreenBufferInfo(output, &console)) {
         colored = SetConsoleTextAttribute(output, (console.wAttributes & 0xfff0) | colors[level]);
-    if (log_original_out >= 0)
+    }
+    if (log_original_out >= 0) {
         WriteFile(output, record, length, &written, NULL);
-    if (colored)
+    }
+    if (colored) {
         SetConsoleTextAttribute(output, console.wAttributes);
+    }
     /* Normal records bypass the raw-stream pipes. They reach each destination
      * once without waiting for the independent copier. */
     if (log_file != INVALID_HANDLE_VALUE) {
@@ -129,12 +139,14 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     va_list arguments;
     int count;
 
-    if (level > LOG_LEVEL_INFO || level < LOG_LEVEL_ERROR)
+    if (level > LOG_LEVEL_INFO || level < LOG_LEVEL_ERROR) {
         return;
+    }
     saved_error = GetLastError();
     saved_errno = errno;
-    while (InterlockedCompareExchange(&log_lock, 1, 0) != 0)
+    while (InterlockedCompareExchange(&log_lock, 1, 0) != 0) {
         Sleep(0);
+    }
     GetLocalTime(&time);
     if (!log_initialized) {
         log_initialized = 1;
@@ -155,15 +167,18 @@ void __cdecl _saga_log(enum log_level level, const char *file, int line, const c
     }
     slash = strrchr(file, '/');
     backslash = strrchr(file, '\\');
-    if (backslash != NULL && (slash == NULL || backslash > slash))
+    if (backslash != NULL && (slash == NULL || backslash > slash)) {
         slash = backslash;
-    if (slash != NULL)
+    }
+    if (slash != NULL) {
         file = slash + 1;
+    }
     va_start(arguments, format);
     count = _vsnprintf(message, sizeof(message), format, arguments);
     va_end(arguments);
-    if (count < 0 || count >= sizeof(message))
+    if (count < 0 || count >= sizeof(message)) {
         strcpy(message + sizeof(message) - sizeof(" [truncated]"), " [truncated]");
+    }
     _snprintf(record, sizeof(record), "%02u:%02u:%02u.%06u [%s] %s:%d: %s: %s\n", time.wHour, time.wMinute,
               time.wSecond, time.wMilliseconds * 1000u, names[level], file, line, function, message);
     record[sizeof(record) - 1] = 0;

@@ -11,6 +11,7 @@ struct FAULT_MODULE_PC {
     DWORD base, size;
     char name[64];
 };
+
 static volatile LONG fault_active = 0;
 static volatile LONG fault_initialized = 0;
 static HANDLE fault_file = INVALID_HANDLE_VALUE;
@@ -39,33 +40,41 @@ static void fault_copy(char *to, unsigned capacity, const char *from) {
     }
     to[i] = 0;
 }
+
 static void fault_append(const char *text) {
-    while (*text != 0 && fault_used + 1 < sizeof(fault_text))
+    while (*text != 0 && fault_used + 1 < sizeof(fault_text)) {
         fault_text[fault_used++] = *text++;
+    }
     fault_text[fault_used] = 0;
 }
+
 static void fault_hex(DWORD value) {
     static const char digits[] = "0123456789ABCDEF";
     int shift;
     fault_append("0x");
-    for (shift = 28; shift >= 0 && fault_used + 1 < sizeof(fault_text); shift -= 4)
+    for (shift = 28; shift >= 0 && fault_used + 1 < sizeof(fault_text); shift -= 4) {
         fault_text[fault_used++] = digits[(value >> shift) & 15];
+    }
     fault_text[fault_used] = 0;
 }
+
 static void fault_value(const char *label, DWORD value) {
     fault_append(label);
     fault_hex(value);
 }
+
 static BOOL fault_read(const void *address, void *target, SIZE_T size) {
     SIZE_T copied = 0;
     return ReadProcessMemory(GetCurrentProcess(), address, target, size, &copied) && copied == size;
 }
+
 static BOOL fault_selected(DWORD code) {
     return code == EXCEPTION_ACCESS_VIOLATION || code == EXCEPTION_IN_PAGE_ERROR ||
            code == EXCEPTION_ILLEGAL_INSTRUCTION || code == EXCEPTION_PRIV_INSTRUCTION ||
            code == EXCEPTION_INT_DIVIDE_BY_ZERO || code == EXCEPTION_INT_OVERFLOW ||
            code == EXCEPTION_FLT_DIVIDE_BY_ZERO || code == EXCEPTION_FLT_INVALID_OPERATION;
 }
+
 static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     DWORD saved_error = GetLastError();
     DWORD written;
@@ -79,11 +88,13 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     }
     if (!fault_read(pointers, &fault_pointers, sizeof(fault_pointers)) ||
         !fault_read(fault_pointers.ExceptionRecord, &fault_record, sizeof(fault_record)) ||
-        !fault_selected(fault_record.ExceptionCode))
+        !fault_selected(fault_record.ExceptionCode)) {
         goto finished;
+    }
     have_context = fault_read(fault_pointers.ContextRecord, &fault_context, sizeof(fault_context));
-    if (fault_count != 0xffffffffu)
+    if (fault_count != 0xffffffffu) {
         ++fault_count;
+    }
     fault_used = 0;
     fault_append("\r\n[FAULT-DIAGNOSTIC FIRST-CHANCE handled-status=unknown] build=");
     fault_append(fault_build);
@@ -95,8 +106,9 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     fault_value("\r\nexception=", fault_record.ExceptionCode);
     fault_value(" address=", (DWORD)fault_record.ExceptionAddress);
     fault_value(" flags=", fault_record.ExceptionFlags);
-    for (i = 0; i < fault_record.NumberParameters && i < 3; ++i)
+    for (i = 0; i < fault_record.NumberParameters && i < 3; ++i) {
         fault_value(" info=", (DWORD)fault_record.ExceptionInformation[i]);
+    }
     fault_append("\r\nmodule-at-init=");
     for (i = 0; i < fault_module_count; ++i) {
         DWORD ip = (DWORD)fault_record.ExceptionAddress;
@@ -107,8 +119,9 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
             break;
         }
     }
-    if (i == fault_module_count)
+    if (i == fault_module_count) {
         fault_append("unknown");
+    }
     if (VirtualQuery(fault_record.ExceptionAddress, &memory, sizeof(memory)) == sizeof(memory)) {
         fault_value(" allocation=", (DWORD)memory.AllocationBase);
         fault_value(" protect=", memory.Protect);
@@ -156,19 +169,22 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     fault_append(fault_latest == INVALID_HANDLE_VALUE ? "unavailable" : fault_path);
     fault_append("\r\nThis is first-chance evidence, not proof the exception was unhandled.\r\n");
     if (fault_count == 8) {
-        if (fault_latest != INVALID_HANDLE_VALUE)
+        if (fault_latest != INVALID_HANDLE_VALUE) {
             fault_append("Normal-log capture limit reached; bounded fault log remains active.\r\n");
-        else
+        } else {
             fault_append("Normal-log capture limit reached; fault log is unavailable.\r\n");
+        }
     }
-    if (fault_file != INVALID_HANDLE_VALUE && fault_count <= 8)
+    if (fault_file != INVALID_HANDLE_VALUE && fault_count <= 8) {
         WriteFile(fault_file, fault_text, fault_used, &written, NULL);
+    }
     if (fault_latest != INVALID_HANDLE_VALUE) {
         SetLastError(NO_ERROR);
         if (SetFilePointer(fault_latest, 0, NULL, FILE_BEGIN) != INVALID_SET_FILE_POINTER ||
             GetLastError() == NO_ERROR) {
-            if (WriteFile(fault_latest, fault_text, fault_used, &written, NULL) && written == fault_used)
+            if (WriteFile(fault_latest, fault_text, fault_used, &written, NULL) && written == fault_used) {
                 SetEndOfFile(fault_latest);
+            }
         }
     }
 finished:
@@ -190,9 +206,10 @@ extern "C" void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const cha
     fault_copy(fault_build, sizeof(fault_build), build_id);
     GetModuleFileNameA(NULL, fault_image, sizeof(fault_image));
     fault_image[sizeof(fault_image) - 1] = 0;
-    if (existing_log_file != NULL && existing_log_file != INVALID_HANDLE_VALUE)
+    if (existing_log_file != NULL && existing_log_file != INVALID_HANDLE_VALUE) {
         DuplicateHandle(GetCurrentProcess(), existing_log_file, GetCurrentProcess(), &fault_file, 0, FALSE,
                         DUPLICATE_SAME_ACCESS);
+    }
     modules = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
     if (modules != INVALID_HANDLE_VALUE) {
         entry.dwSize = sizeof(entry);
@@ -211,13 +228,15 @@ extern "C" void __cdecl SagaDebugCrashInitPc(HANDLE existing_log_file, const cha
      * an existing file or invent a second naming scheme when the path is absent. */
     length = 0;
     if (log_path != NULL) {
-        while (length < sizeof(fault_path) && log_path[length] != 0)
+        while (length < sizeof(fault_path) && log_path[length] != 0) {
             ++length;
+        }
         if (length >= 4 && length - 4 + sizeof(suffix) <= sizeof(fault_path) && log_path[length - 4] == '.' &&
             log_path[length - 3] == 'l' && log_path[length - 2] == 'o' && log_path[length - 1] == 'g') {
             unsigned i;
-            for (i = 0; i < length - 4; ++i)
+            for (i = 0; i < length - 4; ++i) {
                 fault_path[i] = log_path[i];
+            }
             fault_copy(fault_path + length - 4, sizeof(fault_path) - length + 4, suffix);
             fault_latest = CreateFileA(fault_path, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, CREATE_NEW,
                                        FILE_ATTRIBUTE_NORMAL, NULL);

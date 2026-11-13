@@ -24,6 +24,7 @@ typedef struct PUNCH_BLOWUP_VIEW_PC {
     i16 platform_id;
     u8 unknown_104[0x10];
 } PUNCH_BLOWUP_VIEW_PC;
+
 STATIC_ASSERT(sizeof(PUNCH_BLOWUP_VIEW_PC) == 0x114);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, mid_position) == 0x4c);
 STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, draw_flags) == 0x98);
@@ -39,23 +40,27 @@ typedef struct weapon_rate_pc_s {
     u8 unknown_000[0xd40];
     f32 weapon_scale_rate;
 } WEAPON_RATE_PC;
+
 typedef struct blowup_movement_pc_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
     u8 unknown_58[0x50];
     f32 target_radius;
 } BLOWUP_MOVEMENT_PC;
+
 typedef struct HOLD_RUNTIME_VIEW_PC {
     u8 unknown_000[0xde4];
     f32 hold_timer;
 } HOLD_RUNTIME_VIEW_PC;
+
 STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
 
 i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward, difference;
     f32 distance, dot, radius, radius_squared;
-    if (object->force_target == NULL)
+    if (object->force_target == NULL) {
         return 0;
+    }
     NuVecRotateY(&forward, &v001, object->field_0x276);
     distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
     dot = forward.x * difference.x + forward.z * difference.z;
@@ -64,16 +69,18 @@ i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 
         radius = object->bounds_radius + opponent->bounds_radius;
         radius += gap;
         radius_squared = radius * radius;
-        if (distance < radius_squared)
+        if (distance < radius_squared) {
             return 1;
+        }
     }
     return 0;
 }
 
 void __cdecl SetWeaponOut(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
+    }
     object->weapon_scale = 1.0f;
     object->flags_e20 |= 0x10000;
     object->field_e33 = 0;
@@ -82,17 +89,20 @@ void __cdecl SetWeaponOut(GAMEOBJECT *object) {
 void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
+    }
     if (force_sound != 0 && object->weapon_scale == 0.0f && object->field_e33 != 1) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & 0x400) == 0) {
             if (object->character_data->model_flags & 8) {
-                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
-            } else if (object->character_data->model_flags & 0x80)
+                }
+            } else if (object->character_data->model_flags & 0x80) {
                 GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+            }
         }
     }
     ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
@@ -107,12 +117,14 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
         if (action != -1 && object->character_model->model_data_b[action] != NULL) {
             end = NuAnimEndFrame(object->character_model->model_data_b[action]);
             start = AnimListFrame(object->character_model, action, 0);
-            if (start < 1.0f)
+            if (start < 1.0f) {
                 start = 1.0f;
+            }
             if (start >= 1.0f && start < end) {
                 finish = AnimListFrame(object->character_model, action, 1);
-                if (end > finish)
+                if (end > finish) {
                     end = finish;
+                }
                 if (end > start) {
                     object->character_context = (i8)LEGOCONTEXT_WEAPONOUT;
                     object->field_7aa = (i16)action;
@@ -128,11 +140,13 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
 
 void __cdecl WeaponOutCode(GAMEOBJECT *object) {
     f32 start, end, *time;
-    if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT)
+    if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT) {
         return;
+    }
     if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
-        if (object->weapon_scale == 0.0f && object->field_e33 != 1)
+        if (object->weapon_scale == 0.0f && object->field_e33 != 1) {
             FastWeaponOut(object, 0);
+        }
         object->character_context = -1;
         return;
     }
@@ -145,26 +159,31 @@ void __cdecl WeaponOutCode(GAMEOBJECT *object) {
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = -1;
-        if (object->weapon_scale != 0.0f)
+        if (object->weapon_scale != 0.0f) {
             return;
+        }
     } else {
         if (object->weapon_scale != 0.0f || object->field_e33 == 1 ||
-            object->anim_packet.requested_animation != object->field_7aa)
+            object->anim_packet.requested_animation != object->field_7aa) {
             return;
+        }
         time =
             object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
-        if (!(*time >= start))
+        if (!(*time >= start)) {
             return;
+        }
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 1;
     ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
         1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
-        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
-    } else
+        }
+    } else {
         GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
+    }
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
@@ -177,8 +196,9 @@ void __cdecl KeepWeaponOut(GAMEOBJECT *object) {
 
 void __cdecl SetWeaponIn(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
+    }
     object->weapon_scale = 0.0f;
     object->flags_e20 &= ~0x10000u;
     object->field_e33 = 0;
@@ -187,17 +207,20 @@ void __cdecl SetWeaponIn(GAMEOBJECT *object) {
 void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = -1;
+    }
     if (force_sound != 0 && object->weapon_scale == 1.0f && object->field_e33 != 2) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & 0x800) == 0) {
             if (object->character_data->model_flags & 8) {
-                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+                if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
-            } else if (object->character_data->model_flags & 0x80)
+                }
+            } else if (object->character_data->model_flags & 0x80) {
                 GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+            }
         }
     }
     ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
@@ -208,18 +231,21 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
     i32 action = -1;
     f32 end, start, finish;
     if (LEGOCONTEXT_WEAPONIN != -1) {
-        if (Fighting_WeaponInActionFn != NULL)
+        if (Fighting_WeaponInActionFn != NULL) {
             action = Fighting_WeaponInActionFn(object);
+        }
         /* Native indexes model_data_b with -1 when the callback is absent or returns -1. */
         if (object->character_model->model_data_b[action] != NULL) {
             end = NuAnimEndFrame(object->character_model->model_data_b[action]);
             start = AnimListFrame(object->character_model, action, 0);
-            if (start < 1.0f)
+            if (start < 1.0f) {
                 start = 1.0f;
+            }
             if (start >= 1.0f && start < end) {
                 finish = AnimListFrame(object->character_model, action, 1);
-                if (end > finish)
+                if (end > finish) {
                     end = finish;
+                }
                 if (end > start) {
                     object->character_context = (i8)LEGOCONTEXT_WEAPONIN;
                     object->field_7aa = (i16)action;
@@ -235,11 +261,13 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
 
 void __cdecl WeaponInCode(GAMEOBJECT *object) {
     f32 start, end, *time;
-    if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN)
+    if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN) {
         return;
+    }
     if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
-        if (object->weapon_scale == 1.0f && object->field_e33 != 2)
+        if (object->weapon_scale == 1.0f && object->field_e33 != 2) {
             FastWeaponIn(object, 0);
+        }
         object->character_context = -1;
         return;
     }
@@ -252,26 +280,31 @@ void __cdecl WeaponInCode(GAMEOBJECT *object) {
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = -1;
-        if (object->weapon_scale != 1.0f)
+        if (object->weapon_scale != 1.0f) {
             return;
+        }
     } else {
         if (object->weapon_scale != 1.0f || object->field_e33 == 2 ||
-            object->anim_packet.requested_animation != object->field_7aa)
+            object->anim_packet.requested_animation != object->field_7aa) {
             return;
+        }
         time =
             object->anim_packet.blending ? &object->anim_packet.blend_target_time : &object->anim_packet.current_time;
-        if (!(*time >= start))
+        if (!(*time >= start)) {
             return;
+        }
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 2;
     ((WEAPON_RATE_PC *)object)->weapon_scale_rate =
         1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
-        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
+        if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
-    } else
+        }
+    } else {
         GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
+    }
     ResetCharacterIdle(object, 1, GetDefaultIdle(object));
 }
 
@@ -286,30 +319,36 @@ void __cdecl AutoWeaponOnOff(GAMEOBJECT *object) {
     i32 animation;
     u32 flags;
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN))
+    if (context != -1 && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN)) {
         return;
+    }
     animation = CurrentAnim(&object->anim_packet);
-    if (animation == -1)
+    if (animation == -1) {
         return;
+    }
     flags = object->character_model->animation_configs[animation]->flags;
     if ((flags & 0x400) != 0) {
         if (object->weapon_scale > 0.0f) {
             if ((object->anim_packet.flags & 4) != 0) {
-                if (object->anim_packet.blending != 0)
+                if (object->anim_packet.blending != 0) {
                     FastWeaponIn(object, 0);
-                else
+                } else {
                     SetWeaponIn(object);
-            } else if (object->field_e33 != 2)
+                }
+            } else if (object->field_e33 != 2) {
                 SetWeaponIn(object);
+            }
         }
     } else if ((flags & 0x800) != 0 && object->weapon_scale < 1.0f) {
         if ((object->anim_packet.flags & 4) != 0) {
-            if (object->anim_packet.blending != 0)
+            if (object->anim_packet.blending != 0) {
                 FastWeaponOut(object, 0);
-            else
+            } else {
                 SetWeaponOut(object);
-        } else if (object->field_e33 != 1)
+            }
+        } else if (object->field_e33 != 1) {
             SetWeaponOut(object);
+        }
     }
 }
 
@@ -338,18 +377,22 @@ i32 __cdecl NewBlockAction(GAMEOBJECT *object) {
     i32 actions[3];
     i32 count = 0;
     i32 action;
-    for (action = 0; count < 3 && action < apicharsys->model_id_capacity; ++action)
+    for (action = 0; count < 3 && action < apicharsys->model_id_capacity; ++action) {
         if ((((API_ACTION_INFO_PC *)PlayerBlockActionInfoPc)[action].flags & 8) != 0 &&
-            object->character_model->model_data_b[action] != NULL)
+            object->character_model->model_data_b[action] != NULL) {
             actions[count++] = action;
-    if (count == 0)
+        }
+    }
+    if (count == 0) {
         return 0;
+    }
     if (count > 1) {
         do {
             action = actions[qrand() / (0xffff / count + 1)];
         } while (action == object->previous_block_animation);
-    } else
+    } else {
         action = actions[0];
+    }
     object->previous_block_animation = (i16)action;
     object->field_7aa = (i16)action;
     return 1;
@@ -368,13 +411,16 @@ void __cdecl BlockSfx(GAMEOBJECT *object) {
 
 __declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0)
+    if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
         return 1;
-    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)
+    }
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3) {
         return 1;
+    }
     if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 &&
-        context == LEGOCONTEXT_COMBO)
+        context == LEGOCONTEXT_COMBO) {
         return 1;
+    }
     return 0;
 }
 
@@ -394,28 +440,34 @@ __declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
             outer_distance = object->collision_radius * PlayerStepOuterPc + blowup->target_radius;
         }
     } else {
-        if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL)
+        if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL) {
             return 0;
+        }
         if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&
             (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
-             object->action_movement_state != 3))
+             object->action_movement_state != 3)) {
             return 0;
+        }
         target_position = &object->force_target->collision_position;
         inner_distance = object->bounds_radius * PlayerStepInnerActionPc + object->force_target->bounds_radius;
         outer_distance = object->bounds_radius * PlayerStepOuterActionPc + object->force_target->bounds_radius;
     }
-    if (target_position == NULL)
+    if (target_position == NULL) {
         return 0;
+    }
     speed = AnimSpeed(object->character_model, object->field_7aa);
-    if (speed == 0.0f)
+    if (speed == 0.0f) {
         return 0;
+    }
     distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
-    if (distance_squared >= outer_distance * outer_distance)
+    if (distance_squared >= outer_distance * outer_distance) {
         return 0;
-    if (inner_distance * inner_distance >= distance_squared)
+    }
+    if (inner_distance * inner_distance >= distance_squared) {
         blend = 1.0f;
-    else
+    } else {
         blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
+    }
     speed = (-speed - speed) * blend + speed;
     object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
     object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
@@ -426,14 +478,16 @@ void __cdecl ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     object->context_variant_flags |= 0x40;
     object->sabre_flags |= 5;
     object->sabre_damage = (u8)damage;
-    if ((object->flags_1fc & 0x80) != 0 && Player_HasDoubleWeaponDamage(object))
+    if ((object->flags_1fc & 0x80) != 0 && Player_HasDoubleWeaponDamage(object)) {
         object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);
+    }
     BlockSfx(object);
 }
 
 void __cdecl StartHold(GAMEOBJECT *object) {
-    if (CanStartHoldFn == NULL)
+    if (CanStartHoldFn == NULL) {
         return;
+    }
     if (CanStartHoldFn(object) == 2) {
         ((HOLD_RUNTIME_VIEW_PC *)object)->hold_timer = 0.0f;
         object->character_context = -1;
@@ -450,10 +504,11 @@ void __cdecl StartHold(GAMEOBJECT *object) {
 
 void __cdecl HoldCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
-        if (object->context_timer > 0.0f)
+        if (object->context_timer > 0.0f) {
             object->context_timer -= FRAMETIME;
-        else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0)
+        } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
             object->character_context = -1;
+        }
     }
 }
 
@@ -467,43 +522,53 @@ void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32
     (void)unused;
     attacker->context_variant_flags |= 0x40;
     if (LEGOCONTEXT_PUNCH != -1 && attacker->character_context == LEGOCONTEXT_PUNCH) {
-        if (attacker->character_model->animations[attacker->field_7aa] != NULL)
+        if (attacker->character_model->animations[attacker->field_7aa] != NULL) {
             attacker->debris_joint = attacker->character_model->animations[attacker->field_7aa]->locator;
+        }
     }
     if (target != NULL) {
         if (!(target->flags_1fc_word & 1) || !(target->flags_1fc_word & 0x1000) || target->dead != 0 ||
-            attacker->collision_max.y < target->collision_min.y || attacker->collision_min.y > target->collision_max.y)
+            attacker->collision_max.y < target->collision_min.y ||
+            attacker->collision_min.y > target->collision_max.y) {
             goto finish;
+        }
         if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
             NewBlockAction(target);
             hit_position = &target->collision_position;
-            if (Punch_HitHoldFn != NULL)
+            if (Punch_HitHoldFn != NULL) {
                 Punch_HitHoldFn(attacker, target);
+            }
         } else {
             if (target->player_controlled) {
-                if (LEGOCONTEXT_PUNCH != -1 && target->character_context == LEGOCONTEXT_PUNCH)
+                if (LEGOCONTEXT_PUNCH != -1 && target->character_context == LEGOCONTEXT_PUNCH) {
                     goto finish;
+                }
                 if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP &&
-                    attacker->action_movement_state == 3)
+                    attacker->action_movement_state == 3) {
                     goto finish;
+                }
             }
-            if (!ObjOpponentStillThere(attacker, target, gap))
+            if (!ObjOpponentStillThere(attacker, target, gap)) {
                 goto finish;
+            }
             damage = 1;
-            if (Punch_GetDamageFn != NULL)
+            if (Punch_GetDamageFn != NULL) {
                 damage = Punch_GetDamageFn(attacker, target);
-            if (damage != -1 && Cheats_CheckFlags(0x800))
+            }
+            if (damage != -1 && Cheats_CheckFlags(0x800)) {
                 damage *= 2;
+            }
             flags = U64_PAIR(&CInfo[target->character_context].flags);
             if (!(flags & 0x80)) {
                 if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & 0x20000)) ||
                     CannotKill(target)) {
                     NewRumble(attacker->pad->bound_pad, 0.5f, 0);
                     NewRumble(target->pad->bound_pad, 0.5f, 0);
-                    if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000))
+                    if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000)) {
                         target->movement_facing_angle =
                             NuAtan2D(attacker->collision_position.x - target->collision_position.x,
                                      attacker->collision_position.z - target->collision_position.z);
+                    }
                 } else {
                     ObjHitObj(attacker, target, damage, (u16)(ObjHitObj_Flags(attacker) | 0x40), 0, 1);
                 }
@@ -511,11 +576,13 @@ void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32
             }
             if (!(target->flags_1fc & 2)) {
                 impulse = target->character_data->game_character->run_speed;
-                if (attacker->scaled_radius > 1.0f)
+                if (attacker->scaled_radius > 1.0f) {
                     impulse /= attacker->scaled_radius;
+                }
                 angle = attacker->movement_facing_angle;
-                if (attacker->context_flags_pc & 0x80)
+                if (attacker->context_flags_pc & 0x80) {
                     angle += 0x8000;
+                }
                 target->velocity.x += NuTrigTable[angle >> 1] * impulse;
                 target->velocity.z += NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff] * impulse;
             }
@@ -524,22 +591,27 @@ void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32
         blowup = (PUNCH_BLOWUP_VIEW_PC *)attacker->blowup_target;
         if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) ||
             !(blowup->status_flags & 0x800000) || attacker->collision_max.y < blowup->bounds_min.y ||
-            attacker->collision_min.y > blowup->bounds_max.y)
+            attacker->collision_min.y > blowup->bounds_max.y) {
             goto finish;
+        }
         hit_position = &blowup->mid_position;
-        if (GizmoBlowupBlowup((GIZMOBLOWUP_PC *)blowup, 1, 1, 1, NULL, 1))
+        if (GizmoBlowupBlowup((GIZMOBLOWUP_PC *)blowup, 1, 1, 1, NULL, 1)) {
             NewBuzz(attacker->pad->bound_pad, 0.1f, 0);
+        }
         NewRumble(attacker->pad->bound_pad, 0.5f, 0);
     }
-    if (hit_position == NULL)
+    if (hit_position == NULL) {
         goto finish;
+    }
     attacker->flags_e24 |= 0x100;
-    if (attacker->player_controlled)
+    if (attacker->player_controlled) {
         GameCam_HitJudder();
+    }
     goto extra;
 finish:
     attacker->flags_e24 &= ~0x100;
 extra:
-    if (Punch_HitExtraCodeFn != NULL)
+    if (Punch_HitExtraCodeFn != NULL) {
         Punch_HitExtraCodeFn(attacker, hit_position);
+    }
 }

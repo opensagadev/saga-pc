@@ -37,6 +37,7 @@ typedef struct main_controller_world_view_pc_s {
     u8 unknown_0000[0x4670];
     AI_CONTROL_SYSTEM_PC *control_system;
 } MAIN_CONTROLLER_WORLD_VIEW_PC;
+
 STATIC_ASSERT(offsetof(MAIN_CONTROLLER_WORLD_VIEW_PC, control_system) == 0x4670);
 
 extern "C" void __cdecl DrawSaveSlots(MENU *, f32);
@@ -233,10 +234,11 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     SAGA_SOUND_CHECK("after sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
     for (i = 0; i < 8; ++i) {
-        if (Player[i] != NULL)
+        if (Player[i] != NULL) {
             wind_objects[i] = &((GAMEOBJECT *)Player[i])->lower_position;
-        else
+        } else {
             wind_objects[i] = NULL;
+        }
     }
     if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {
         NuMtlAnimateSetSpeedScale(0.0f);
@@ -272,8 +274,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         SAGA_SOUND_CHECK("after ProcessGizFlow");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
-        if (((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system != NULL)
+        if (((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system != NULL) {
             AIPathCnxControlSysUpdate(((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system);
+        }
         if (world->current_gscn != NULL) {
             NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);
         }
@@ -395,10 +398,11 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     }
     LevelStreaming_Update(world);
     UpdateCutBorders();
-    if (Paused != 0 && editor_active == 0)
+    if (Paused != 0 && editor_active == 0) {
         NuWaterSpeed(0.0f);
-    else
+    } else {
         NuWaterSpeed((f32)((f64)FRAMETIME / (f64)(f32)(1.0f / 60.0f)));
+    }
     NuWaterReset();
     GameTiming(world, &Game.game_time);
     UpdateStats();
@@ -534,8 +538,9 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrBeginScene(1);
     SetDepthOfField();
     NuMainRenderLeafPc();
-    if (BURNOUTON != 0)
+    if (BURNOUTON != 0) {
         BurnoutApply(paused);
+    }
     if (NuMainSplineDebugModePc != 0) {
         NuMainDrawSplinesPc(world->current_gscn);
     }
@@ -561,6 +566,7 @@ typedef struct NU_MAIN_STATUS_PACKET_PC {
     u8 unknown_a6[0xe];
     u8 status_flags;
 } NU_MAIN_STATUS_PACKET_PC;
+
 STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, player_models) == 0x9c);
 STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, player_active) == 0xa4);
 STATIC_ASSERT(offsetof(NU_MAIN_STATUS_PACKET_PC, status_flags) == 0xb4);

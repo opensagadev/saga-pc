@@ -13,10 +13,12 @@ i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 f
     i32 cursor = *index;
     i32 old_value;
     i32 new_value;
-    if (cursor >= state->count)
+    if (cursor >= state->count) {
         cursor = state->count - 1;
-    if (cursor < 0)
+    }
+    if (cursor < 0) {
         cursor = 0;
+    }
     old_value = state->values[cursor];
     if (frame >= state->times[cursor]) {
         while (cursor < state->count - 1) {
@@ -29,8 +31,9 @@ i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 f
     } else {
         while (cursor > 0) {
             --cursor;
-            if (state->times[cursor] <= frame)
+            if (state->times[cursor] <= frame) {
                 break;
+            }
         }
     }
     new_value = state->values[cursor];

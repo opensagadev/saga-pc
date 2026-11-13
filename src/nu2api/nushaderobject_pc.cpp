@@ -47,8 +47,9 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
             break;
     }
     flags = 0x200;
-    if (version < 2)
+    if (version < 2) {
         flags = 0x10200;
+    }
     result = D3DXCompileShader(vertex_source, vertex_length, NULL, NULL, "vertexProgram", vertex_profile, flags,
                                &vertex_code, &errors, &vertex_constants);
     if (result != 0) {
@@ -61,8 +62,9 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
             errors->methods->release(errors);
             errors = NULL;
         }
-        if (vertex_constants != NULL)
+        if (vertex_constants != NULL) {
             vertex_constants->methods->release(vertex_constants);
+        }
         return;
     }
     if (pixel_source != NULL) {
@@ -82,8 +84,9 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
                 errors->methods->release(errors);
                 errors = NULL;
             }
-            if (pixel_constants != NULL)
+            if (pixel_constants != NULL) {
                 pixel_constants->methods->release(pixel_constants);
+            }
             /* Native failure tail skips releasing vertex_constants. */
             return;
         }
@@ -91,8 +94,9 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
     PCDeviceCreateVertexShader((const DWORD *)vertex_code->methods->get_buffer_pointer(vertex_code),
                                &shader->vertex_shader);
     if (pixel_source != NULL) {
-        if (bgProcIsBgThread() && PCFrameLoadingYieldEnabled())
+        if (bgProcIsBgThread() && PCFrameLoadingYieldEnabled()) {
             Sleep(10);
+        }
         PCDeviceCreatePixelShader((const DWORD *)pixel_code->methods->get_buffer_pointer(pixel_code),
                                   &shader->pixel_shader);
     }
@@ -120,34 +124,43 @@ void __cdecl PCShaderObjectInitHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader, const 
 }
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index + first_element, values, count);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32 first_element, i32 count, const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index + first_element, values, count);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count, const f32 *values) {
     NUMTX transposed[32];
-    for (i32 i = 0; i < count; ++i)
+    for (i32 i = 0; i < count; ++i) {
         NuMtxTranspose(&transposed[i], (NUMTX *)(values + i * 16));
+    }
     i32 vector_count = (i8)register_count - first_element * 4;
-    if (count * 4 < vector_count)
+    if (count * 4 < vector_count) {
         vector_count = count * 4;
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    }
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, (const f32 *)transposed, vector_count);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index + first_element * 4, (const f32 *)transposed, vector_count);
+    }
 }
+
 extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
                                                     i32 count, const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
-    if (parameter->register_index < 0)
+    if (parameter->register_index < 0) {
         return;
+    }
     switch ((i32)(parameter->metadata << 4) >> 28) {
         case 1:
             parameter->SetScalarValues(first_element, count, values);
@@ -166,8 +179,9 @@ extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *
 extern "C" void __cdecl NuShaderObjectSetElementsfv_transpose(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic,
                                                               i32 first_element, i32 count, const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
-    if (parameter->register_index < 0)
+    if (parameter->register_index < 0) {
         return;
+    }
     switch ((i32)(parameter->metadata << 4) >> 28) {
         case 1:
             parameter->SetScalarValues(first_element, count, values);
@@ -262,6 +276,7 @@ typedef struct PC_SHADER_MATERIAL_DISPATCH_VIEW {
     i32 point_texture_id;
     i32 unfiltered_texture_id;
 } PC_SHADER_MATERIAL_DISPATCH_VIEW;
+
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, sampler_address_modes) == 0x40);
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_speed) == 0x60);
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, phase_scale) == 0x64);
@@ -331,35 +346,45 @@ STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_DISPATCH_VIEW, unfiltered_texture_id) 
 STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_DISPATCH_VIEW) == 0x2a0);
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetScalar(f32 value) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, &value, 1);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index, &value, 1);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetVector(const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index, values, 1);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorElement(i32 index, const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + index, values, 1);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index + index, values, 1);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat2(const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index, values, 1);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat3(const f32 *values) {
-    if ((metadata & 0xf0000000U) == 0x10000000U)
+    if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index, values, 1);
+    }
 }
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
@@ -379,6 +404,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const
 extern "C" const f32 PCSamplerBiasMinimum;
 extern "C" const f32 PCSamplerBiasMaximum;
 extern "C" const f64 PCSamplerBiasMaximumComparison;
+
 extern "C" u32 __cdecl PCShaderSamplerBiasBitsPc(f32 bias) {
     f32 value = PCSamplerBiasMinimum > bias             ? PCSamplerBiasMinimum
                 : bias > PCSamplerBiasMaximumComparison ? PCSamplerBiasMaximum
@@ -393,6 +419,7 @@ typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
     u8 unknown_0064[8];
     f32 amplitude;
 } PC_SHADER_WATER_MATERIAL_VIEW;
+
 STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, phase_speed) == 0x60);
 STATIC_ASSERT(offsetof(PC_SHADER_WATER_MATERIAL_VIEW, amplitude) == 0x6c);
 
@@ -404,10 +431,12 @@ static void *PCShaderMaterialTextureNativePc(PC_SHADER_MATERIAL_DISPATCH_VIEW *m
     /* Requires the proposed named diffuse_texture_ids[4] member @b8, reviewed
      * callers slot0/1/2/3; original zero-ID case returnsNULL, else genuine lookup. */
     i32 id = material->diffuse_texture_ids[slot];
-    if (id != 0)
+    if (id != 0) {
         return NuTextureGetDimensions(id)->resource;
+    }
     return NULL;
 }
+
 static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
     output[0] = (colour & 255) / 255.0f;
     output[1] = ((colour >> 8) & 255) / 255.0f;
@@ -415,6 +444,7 @@ static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
     output[3] = ((colour >> 24) & 255) / 255.0f;
     return output;
 }
+
 static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
     switch (u_mode) {
         case 1:
@@ -533,10 +563,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
                     const f32 *unpacked = PCShaderUnpackColourPc(&vector_84.x, material->palette_colours[i]);
                     palette[i] = *reinterpret_cast<const NUVEC4 *>(unpacked);
                 }
-                if ((parameter->metadata & 0xf0000000u) == 0x10000000u)
+                if ((parameter->metadata & 0xf0000000u) == 0x10000000u) {
                     PCDeviceSetVertexShaderConstantsF(parameter->register_index, &palette[0].x, 4);
-                else
+                } else {
                     PCDeviceSetPixelShaderConstantsF(parameter->register_index, &palette[0].x, 4);
+                }
                 break;
             }
             case 91: {
@@ -637,10 +668,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 40: {
                 const i32 id = material->specular_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -651,10 +683,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 41: {
                 const i32 id = material->height_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -665,10 +698,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 42: {
                 const i32 id = material->bump_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -682,10 +716,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 43: {
                 const i32 id = material->normal_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -696,10 +731,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 45: {
                 const i32 id = material->depth_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -711,10 +747,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 49: {
                 const i32 id = material->lighting_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -725,10 +762,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 82: {
                 const i32 id = material->clamp_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
@@ -738,14 +776,15 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 46: {
                 PC_TEXTURE_RESOURCE_PC *texture;
                 if (PCDeviceHardwareVertexProcessingPC == 1 &&
-                    ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0))
+                    ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0)) {
                     texture = NuTexturePhongCubePc;
-                else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0)
+                } else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0) {
                     texture = NuTextureEnvironmentCubePc;
-                else
+                } else {
                     texture = material->cube_texture_id > 0
                                   ? NuTextureGetDimensions(material->cube_texture_id)->resource
                                   : NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
@@ -755,10 +794,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 48: {
                 const i32 id = material->reflection_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 3);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 3);
@@ -870,10 +910,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 97: {
                 const i32 id = material->point_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
@@ -885,10 +926,11 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
             case 98: {
                 const i32 id = material->unfiltered_texture_id;
                 void *texture;
-                if (id != 0)
+                if (id != 0) {
                     texture = NuTextureGetDimensions(id)->resource;
-                else
+                } else {
                     texture = NULL;
+                }
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);

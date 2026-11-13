@@ -50,6 +50,7 @@ typedef struct PC_DS_BUFFER_DESC_VIEW {
 struct IDirectSound8 {
     const IDirectSound8Vtbl *vtable;
 };
+
 struct IDirectSound8Vtbl {
     HRESULT(__stdcall *query_interface)(IDirectSound8 *, REFIID, void **);
     ULONG(__stdcall *add_ref)(IDirectSound8 *);
@@ -66,6 +67,7 @@ struct IDirectSound8Vtbl {
 struct IDirectSoundBuffer {
     const IDirectSoundBufferVtbl *vtable;
 };
+
 struct IDirectSoundBufferVtbl {
     HRESULT(__stdcall *query_interface)(IDirectSoundBuffer *, REFIID, void **);
     ULONG(__stdcall *add_ref)(IDirectSoundBuffer *);
@@ -93,6 +95,7 @@ struct IDirectSoundBufferVtbl {
 struct IDirectSound3DBuffer {
     const IDirectSound3DBufferVtbl *vtable;
 };
+
 struct IDirectSound3DBufferVtbl {
     HRESULT(__stdcall *query_interface)(IDirectSound3DBuffer *, REFIID, void **);
     ULONG(__stdcall *add_ref)(IDirectSound3DBuffer *);
@@ -122,6 +125,7 @@ typedef struct _XINPUT_CAPABILITIES XINPUT_CAPABILITIES;
 
 // The enum tags and widths are fixed; add named values as source needs them.
 typedef enum _D3DFORMAT { D3DFMT_UNKNOWN = 0, D3DFMT_FORCE_DWORD = 0x7fffffff } D3DFORMAT;
+
 typedef enum _D3DPOOL {
     D3DPOOL_DEFAULT = 0,
     D3DPOOL_MANAGED = 1,
@@ -129,6 +133,7 @@ typedef enum _D3DPOOL {
     D3DPOOL_SCRATCH = 3,
     D3DPOOL_FORCE_DWORD = 0x7fffffff
 } D3DPOOL;
+
 typedef enum _D3DXIMAGE_FILEFORMAT { D3DXIFF_BMP = 0, D3DXIFF_FORCE_DWORD = 0x7fffffff } D3DXIMAGE_FILEFORMAT;
 
 #ifdef __cplusplus

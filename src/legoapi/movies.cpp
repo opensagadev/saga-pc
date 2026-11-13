@@ -47,12 +47,15 @@ extern "C" {
         MovieCountPc = 0;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
-            if (NuStrICmp(parser->word_buffer_ptr, (char *)MoviesListKeywordPc) != 0)
+            if (NuStrICmp(parser->word_buffer_ptr, (char *)MoviesListKeywordPc) != 0) {
                 continue;
-            if (NuFParGetWord(parser) == 0)
+            }
+            if (NuFParGetWord(parser) == 0) {
                 continue;
-            if (NuStrLen(parser->word_buffer_ptr) >= 32)
+            }
+            if (NuStrLen(parser->word_buffer_ptr) >= 32) {
                 continue;
+            }
             NuStrCpy(destination, parser->word_buffer_ptr);
             destination += 32;
             MovieCountPc = (i32)((u32)MovieCountPc + 1U);
@@ -81,11 +84,13 @@ extern "C" i32 __cdecl Movie_CallBack(void) {
     frame.paused = Paused;
     frame.pad_count = 2;
     frame.pads = pads;
-    if (GameThingManagerPc != NULL)
+    if (GameThingManagerPc != NULL) {
         GameThingManagerPc->ProcessThings(&frame);
+    }
     MoviePlayTime = MovieFrameTime + MoviePlayTime;
     return skipped;
 }
+
 extern "C" {
 
     i32 __cdecl Movie_Play(char *name, VARIPTR *buffer, VARIPTR *buffer_end, f32 frame_time,

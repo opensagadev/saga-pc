@@ -6,7 +6,8 @@ extern i32 PlayerDevicePortsPc[2];
    from the drop-in code, and PlayersDropInOut calls it rather than inlining
    it, so the definition lives in its own unit. */
 i32 __cdecl PlayerDevicePortPc(i32 player_index) {
-    if (player_index < 0)
+    if (player_index < 0) {
         return -1;
+    }
     return PlayerDevicePortsPc[player_index];
 }

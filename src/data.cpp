@@ -8,6 +8,7 @@ struct text_crawl_view_pc_s {
     i8 area;
     u8 unknown_0e[2];
 };
+
 STATIC_ASSERT(sizeof(struct text_crawl_view_pc_s) == 0x10);
 STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, heading_text) == 0);
 STATIC_ASSERT(offsetof(struct text_crawl_view_pc_s, vehicle_bonus_text) == 4);
@@ -34958,6 +34959,7 @@ typedef struct AI_PATH_CONNECTION_TYPE_PC {
     char name[64];
     u32 flags;
 } AI_PATH_CONNECTION_TYPE_PC;
+
 STATIC_ASSERT(sizeof(AI_PATH_CONNECTION_TYPE_PC) == 0x4c);
 STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, draw) == 4);
 STATIC_ASSERT(offsetof(AI_PATH_CONNECTION_TYPE_PC, name) == 8);

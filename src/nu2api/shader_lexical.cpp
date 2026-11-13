@@ -1,9 +1,11 @@
 #define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 static u8 ShaderLexicalClassesPc[256] = {0};
+
 extern "C" void __cdecl ShaderLexicalClassesInitPc(void) {
-    if (ShaderLexicalClassesPc['A'] != 0)
+    if (ShaderLexicalClassesPc['A'] != 0) {
         return;
+    }
     ShaderLexicalClassesPc['_'] = 1;
     ShaderLexicalClassesPc['Z'] = 1;
     ShaderLexicalClassesPc['z'] = 1;
@@ -82,20 +84,25 @@ extern "C" void __cdecl ShaderLexicalClassesInitPc(void) {
     ShaderLexicalClassesPc['\n'] = 16;
     ShaderLexicalClassesPc['\r'] = 16;
 }
+
 // This method never reads its receiver. No receiver storage or extent is inferred here.
 struct ShaderLexicalTokenPredicatePc {
     i32 IsSpecialToken(const char *);
 };
+
 i32 ShaderLexicalTokenPredicatePc::IsSpecialToken(const char *token) {
     return (ShaderLexicalClassesPc[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0;
 }
 
 bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
-    if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0)
+    if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0) {
         return false;
-    while (*++text != 0)
-        if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0)
+    }
+    while (*++text != 0) {
+        if ((ShaderLexicalClassesPc[(u8)*text] & 2) == 0) {
             return false;
+        }
+    }
     return true;
 }
 
@@ -104,26 +111,32 @@ bool ShaderCompilerDictionaryPc::IsNumericToken(const char *text) {
 __declspec(noinline) bool ShaderLexicalSlicePc::Equals(const char *text) {
     const char *source = begin;
     for (i32 i = 0; i < length; ++i) {
-        if (*source != *text)
+        if (*source != *text) {
             return false;
+        }
         ++source;
         ++text;
     }
     return *text == 0;
 }
+
 bool ShaderLexicalSlicePc::StartsWith(const char *text) {
     const char *source = begin;
-    while (*text != 0)
-        if (*text++ != *source++)
+    while (*text != 0) {
+        if (*text++ != *source++) {
             return false;
+        }
+    }
     return true;
 }
+
 char *ShaderLexicalSlicePc::HeapCopy() {
     char *result = reinterpret_cast<char *>(::operator new(length + 1));
     memcpy(result, begin, length);
     result[length] = 0;
     return result;
 }
+
 __declspec(noinline) char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator *arena) {
     char *result = reinterpret_cast<char *>(arena->cursor);
     arena->cursor += length + 1;
@@ -131,6 +144,7 @@ __declspec(noinline) char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator
     result[length] = 0;
     return result;
 }
+
 i32 ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix) {
     i32 result = 0;
     const char *p = begin + length - 1;
@@ -141,14 +155,16 @@ i32 ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix) {
     }
     return result;
 }
+
 bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice) {
     const char *p = reinterpret_cast<const char *>(input->data) + *cursor;
     while (*cursor < input->length && ShaderLexicalClassesPc[(u8)*p] == 8) {
         ++*cursor;
         ++p;
     }
-    if (*cursor >= input->length)
+    if (*cursor >= input->length) {
         return false;
+    }
     slice->begin = p;
     slice->length = 0;
     i32 first = *cursor;
@@ -181,36 +197,41 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
     }
     if (token == '&') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == token)
+        if (*cursor < input->length && (u8)p[1] == token) {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
     if (token == '|') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == token)
+        if (*cursor < input->length && (u8)p[1] == token) {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
     if (token == '<') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == '=')
+        if (*cursor < input->length && (u8)p[1] == '=') {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
     if (token == '>') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == '=')
+        if (*cursor < input->length && (u8)p[1] == '=') {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
     if (token == '=') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == '=')
+        if (*cursor < input->length && (u8)p[1] == '=') {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
@@ -221,8 +242,9 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
     }
     if (token == '!') {
         *cursor = first + 1;
-        if (*cursor < input->length && (u8)p[1] == '=')
+        if (*cursor < input->length && (u8)p[1] == '=') {
             ++*cursor;
+        }
         slice->length = *cursor - first;
         return true;
     }
@@ -244,8 +266,9 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
 
 __declspec(noinline) ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
     if (left != NULL) {
-        if (right != NULL)
+        if (right != NULL) {
             return NULL;
+        }
         right = operand;
         return operand;
     }
@@ -254,28 +277,39 @@ __declspec(noinline) ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand
 }
 
 i32 ShaderConditionPrecedencePc(const char *token) {
-    if (strcmp(token, "&&") == 0)
+    if (strcmp(token, "&&") == 0) {
         return 1;
-    if (strcmp(token, "||") == 0)
+    }
+    if (strcmp(token, "||") == 0) {
         return 1;
-    if (strcmp(token, "==") == 0)
+    }
+    if (strcmp(token, "==") == 0) {
         return 2;
-    if (strcmp(token, "<=") == 0)
+    }
+    if (strcmp(token, "<=") == 0) {
         return 2;
-    if (strcmp(token, ">=") == 0)
+    }
+    if (strcmp(token, ">=") == 0) {
         return 2;
-    if (strcmp(token, "<") == 0)
+    }
+    if (strcmp(token, "<") == 0) {
         return 2;
-    if (strcmp(token, ">") == 0)
+    }
+    if (strcmp(token, ">") == 0) {
         return 2;
-    if (strcmp(token, "!=") == 0)
+    }
+    if (strcmp(token, "!=") == 0) {
         return 2;
-    if (strcmp(token, "!") == 0)
+    }
+    if (strcmp(token, "!") == 0) {
         return 3;
-    if (strcmp(token, "defined") == 0)
+    }
+    if (strcmp(token, "defined") == 0) {
         return 4;
-    if (strcmp(token, "\x80") == 0)
+    }
+    if (strcmp(token, "\x80") == 0) {
         return 10;
+    }
     return 1000;
 }
 
@@ -307,8 +341,9 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
             append = true;
         } else if (strcmp(token, ")") == 0) {
             do {
-                if (strcmp(current->token, "(") == 0)
+                if (strcmp(current->token, "(") == 0) {
                     break;
+                }
                 if (count == 0) {
                     current = NULL;
                     break;
@@ -370,60 +405,87 @@ extern "C" u32 __cdecl ShaderDeclarationFlagsPc(u8 shared, u8 vertex, u8 pixel) 
 }
 
 extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) {
-    if (slice->Equals("default"))
+    if (slice->Equals("default")) {
         return 1;
-    if (slice->Equals("strict"))
+    }
+    if (slice->Equals("strict")) {
         return 13;
-    if (slice->Equals("semantic_default"))
+    }
+    if (slice->Equals("semantic_default")) {
         return 1;
-    if (slice->Equals("semantic_position"))
+    }
+    if (slice->Equals("semantic_position")) {
         return 2;
-    if (slice->Equals("semantic_position1"))
+    }
+    if (slice->Equals("semantic_position1")) {
         return 3;
-    if (slice->Equals("semantic_vpos"))
+    }
+    if (slice->Equals("semantic_vpos")) {
         return 4;
-    if (slice->Equals("semantic_normal"))
+    }
+    if (slice->Equals("semantic_normal")) {
         return 5;
-    if (slice->Equals("semantic_tangent"))
+    }
+    if (slice->Equals("semantic_tangent")) {
         return 6;
-    if (slice->Equals("semantic_binormal"))
+    }
+    if (slice->Equals("semantic_binormal")) {
         return 7;
-    if (slice->Equals("semantic_bitangent"))
+    }
+    if (slice->Equals("semantic_bitangent")) {
         return 7;
-    if (slice->Equals("semantic_tangent1"))
+    }
+    if (slice->Equals("semantic_tangent1")) {
         return 8;
-    if (slice->Equals("semantic_colorx"))
+    }
+    if (slice->Equals("semantic_colorx")) {
         return 9;
-    if (slice->Equals("semantic_color0"))
+    }
+    if (slice->Equals("semantic_color0")) {
         return 10;
-    if (slice->Equals("semantic_color1"))
+    }
+    if (slice->Equals("semantic_color1")) {
         return 11;
-    if (slice->Equals("semantic_fog"))
+    }
+    if (slice->Equals("semantic_fog")) {
         return 12;
-    if (slice->Equals("semantic_texcoordx"))
+    }
+    if (slice->Equals("semantic_texcoordx")) {
         return 13;
-    if (slice->Equals("semantic_texcoord0"))
+    }
+    if (slice->Equals("semantic_texcoord0")) {
         return 14;
-    if (slice->Equals("semantic_texcoord1"))
+    }
+    if (slice->Equals("semantic_texcoord1")) {
         return 15;
-    if (slice->Equals("semantic_texcoord2"))
+    }
+    if (slice->Equals("semantic_texcoord2")) {
         return 16;
-    if (slice->Equals("semantic_texcoord3"))
+    }
+    if (slice->Equals("semantic_texcoord3")) {
         return 17;
-    if (slice->Equals("semantic_texcoord4"))
+    }
+    if (slice->Equals("semantic_texcoord4")) {
         return 18;
-    if (slice->Equals("semantic_texcoord5"))
+    }
+    if (slice->Equals("semantic_texcoord5")) {
         return 19;
-    if (slice->Equals("semantic_texcoord6"))
+    }
+    if (slice->Equals("semantic_texcoord6")) {
         return 20;
-    if (slice->Equals("semantic_texcoord7"))
+    }
+    if (slice->Equals("semantic_texcoord7")) {
         return 21;
-    if (slice->Equals("semantic_blendIndices0"))
+    }
+    if (slice->Equals("semantic_blendIndices0")) {
         return 22;
-    if (slice->Equals("semantic_blendWeight0"))
+    }
+    if (slice->Equals("semantic_blendWeight0")) {
         return 23;
-    if (slice->Equals("semantic_index"))
+    }
+    if (slice->Equals("semantic_index")) {
         return 24;
+    }
     return 0;
 }
 

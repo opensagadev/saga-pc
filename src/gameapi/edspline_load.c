@@ -41,11 +41,13 @@ i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
             spline = &splineStore[i];
             spline->length = (i16)EdFileReadInt();
             spline->pts = point_cursor;
-            for (j = 0; j < name_length; ++j)
+            for (j = 0; j < name_length; ++j) {
                 splineStore[i].name[j] = EdFileReadChar();
+            }
             names += name_length;
-            if (names > name_end)
+            if (names > name_end) {
                 goto failed_load;
+            }
             for (j = 0; j < splineStore[i].length; ++j) {
                 point = &splineStore[i].pts[j];
                 point->x = EdFileReadFloat();
@@ -74,8 +76,9 @@ NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *scene, char *name) {
     i32 index;
     if (splineStore != NULL) {
         for (index = 0; index < numSplinesLoaded; ++index) {
-            if (NuStrICmp(splineStore[index].name, name) == 0)
+            if (NuStrICmp(splineStore[index].name, name) == 0) {
                 return &splineStore[index];
+            }
         }
     }
     return NuSplineFind(scene, name);

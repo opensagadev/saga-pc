@@ -14,12 +14,14 @@ void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *,
 template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::AllocateSlot(i32 *index) {
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
-        if (slots[i].ref_count <= 0)
+        if (slots[i].ref_count <= 0) {
             goto found;
+        }
     }
     for (i = 0; i < last_allocated; ++i) {
-        if (slots[i].ref_count <= 0)
+        if (slots[i].ref_count <= 0) {
             goto found;
+        }
     }
     return NULL;
 found:
@@ -36,8 +38,9 @@ template <> void PC_SHADER_MANAGER_VIEW::ReleaseShader(PC_SHADER_OBJECT_FULL_VIE
 template <> void PC_SHADER_MANAGER_VIEW::DestroyShaders() {
     PC_SHADER_OBJECT_FULL_VIEW *slot = slots;
     for (i32 i = 0; i < 400; ++i, ++slot) {
-        if (slot->marker >= 0)
+        if (slot->marker >= 0) {
             PCShaderNativeUnInit(slot);
+        }
     }
 }
 
@@ -51,14 +54,16 @@ template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::GetCurrentShader
 
 /* Lets index 400 through, one past the last slot. */
 template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::GetShader(u32 index) {
-    if (index <= 400)
+    if (index <= 400) {
         return &slots[index];
+    }
     return NULL;
 }
 
 template <> void PC_SHADER_MANAGER_VIEW::BindShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
-    if (bound_slot == slot)
+    if (bound_slot == slot) {
         return;
+    }
     bound_slot = slot;
     if (slot != NULL) {
         PCDeviceSetVertexShaderPc(slot->vertex_shader);
@@ -76,8 +81,9 @@ template <> f32 PC_SHADER_MANAGER_VIEW::GetShininessFactor() {
 
 template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
     for (i32 i = 0; i < 400; ++i) {
-        if (*key == slots[i].key)
+        if (*key == slots[i].key) {
             return &slots[i];
+        }
     }
     return NULL;
 }
@@ -111,10 +117,12 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
     }
     return NULL;
 }
+
 extern "C" PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShader(
     const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
+
 extern "C" PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVariant(
     const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 variant) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
@@ -151,7 +159,9 @@ extern "C" void __cdecl NuShaderManagerBindShader(PC_SHADER_OBJECT_FULL_VIEW *sh
         }
     }
 }
+
 extern "C" f32 PCShaderShininessFactorStorage;
+
 extern "C" f32 __cdecl NuShaderManagerGetShininessFactor(void) {
     return PCShaderShininessFactorStorage;
 }

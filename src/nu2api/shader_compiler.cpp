@@ -9,6 +9,7 @@ void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
+
 void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *definitions) {
     u8 used_uvs[4] = {0, 0, 0, 0};
     const PC_SHADER_FILTER_DESC_VIEW *descriptor = filter->descriptor;
@@ -43,8 +44,9 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         definitions->AddDefinition("VTF_NORMAL_UVSET", uv_names[descriptor->sampler_indices[5] - 1], 1);
         definitions->AddDefinition("FUNC_fs_computeVTFNormal", "VTF_SURFACE_NORMAL_MAP", 0);
     }
-    if (0 == filter->variant && (filter->descriptor->layer_flags & 0x40000000))
+    if (0 == filter->variant && (filter->descriptor->layer_flags & 0x40000000)) {
         definitions->AddDefinition("LEGO", NULL, 0);
+    }
     if (nvidia_profile) {
         if ((filter->descriptor->layer_flags & 0x400000) && (filter->descriptor->vertex_format & 0x2000000)) {
             definitions->AddDefinition("FUNC_pipePosition",
@@ -58,8 +60,9 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_PLANT2", 0);
             definitions->AddDefinition("WIND", NULL, 0);
         }
-        if ((filter->descriptor->selectors & 2) && (filter->descriptor->vertex_format & 0x2000000))
+        if ((filter->descriptor->selectors & 2) && (filter->descriptor->vertex_format & 0x2000000)) {
             definitions->AddDefinition("WIND", NULL, 0);
+        }
         if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x2000)) {
             used_uvs[descriptor->sampler_indices[5] - 1] = 1;
             definitions->AddDefinition(uv_functions[descriptor->sampler_indices[5] - 1], "UVSET_ANIMATION", 0);
@@ -85,10 +88,12 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("FUNC_computeTangent", "VERTEX_TRANSFORM_SKINNING", 0);
         }
     }
-    if (filter->descriptor->vertex_format & 0x80000)
+    if (filter->descriptor->vertex_format & 0x80000) {
         definitions->AddDefinition("VERTEX_GROUP", NULL, 0);
-    if (filter->descriptor->vertex_format & 0x1000000)
+    }
+    if (filter->descriptor->vertex_format & 0x1000000) {
         definitions->AddDefinition("FUNC_WATERCOEF", "WATERCOEF_AMPLITUDE", 1);
+    }
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 2)) {
         used_uvs[descriptor->sampler_indices[0] - 1] = 1;
         definitions->AddDefinition("SURFACE_UVSET", uv_names[descriptor->sampler_indices[0] - 1], 1);
@@ -108,15 +113,18 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     } else {
         definitions->AddDefinition("SURFACE_TYPE2", "SURFACE_SMOOTH", 0);
     }
-    if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && (filter->descriptor->vertex_format & 0x100))
+    if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
+        (filter->descriptor->vertex_format & 0x100)) {
         definitions->AddDefinition("LAYER0_COLORSET", "0", 0);
+    }
     if (filter->HasLayer(0)) {
         definitions->AddDefinition("COMBINE_OP_0", "COMBINE_BASE", 0);
         if (filter->HasDiffuse(0)) {
             definitions->AddDefinition("LAYER0_UVSET", "varying_uvSet0", 1);
             used_uvs[0] = 1;
-            if (filter->descriptor->extra_texture > 0 && filter->descriptor->environment_texture > 0)
+            if (filter->descriptor->extra_texture > 0 && filter->descriptor->environment_texture > 0) {
                 definitions->AddDefinition("TEXTURE_ANIMATION_MAP", NULL, 0);
+            }
         } else {
             definitions->AddDefinition("LAYER0_DIFFUSEENABLE", NULL, 0);
         }
@@ -132,8 +140,9 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         if (filter->HasDiffuse(1)) {
             definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
             used_uvs[descriptor->sampler_indices[2] - 1] = 1;
-        } else
+        } else {
             definitions->AddDefinition("LAYER1_DIFFUSEENABLE", NULL, 0);
+        }
     }
     if (filter->HasLayer(2) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_2", combine[descriptor->blend_ops[1]], 1);
@@ -145,8 +154,9 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         if (filter->HasDiffuse(2)) {
             definitions->AddDefinition("LAYER2_UVSET", uv_names[descriptor->sampler_indices[3] - 1], 1);
             used_uvs[descriptor->sampler_indices[3] - 1] = 1;
-        } else
+        } else {
             definitions->AddDefinition("LAYER2_DIFFUSEENABLE", NULL, 0);
+        }
     }
     if (filter->HasLayer(3) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_3", combine[descriptor->blend_ops[2]], 1);
@@ -158,31 +168,35 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         if (filter->HasDiffuse(3)) {
             definitions->AddDefinition("LAYER3_UVSET", uv_names[descriptor->sampler_indices[4] - 1], 1);
             used_uvs[descriptor->sampler_indices[4] - 1] = 1;
-        } else
+        } else {
             definitions->AddDefinition("LAYER3_DIFFUSEENABLE", NULL, 0);
+        }
     }
     if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0x1000)) {
-        if (filter->descriptor->layer_flags & 0x20000)
+        if (filter->descriptor->layer_flags & 0x20000) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_GOOCH", 0);
-        else if (filter->descriptor->layer_flags & 0x80000)
+        } else if (filter->descriptor->layer_flags & 0x80000) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ENVMAP", 0);
-        else if (filter->descriptor->layer_flags & 0x10) {
+        } else if (filter->descriptor->layer_flags & 0x10) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
-            if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x2000000))
+            if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x2000000)) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
+            }
         } else {
             definitions->AddDefinition("LIGHTING_STAGE",
                                        filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
         }
     } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x80000000)) {
         definitions->AddDefinition("PRELIGHT_FX", NULL, 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x18))
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x18)) {
             definitions->AddDefinition("PRELIGHT_FX_LIVE_SPECULAR", NULL, 0);
+        }
         if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0xa0000) &&
             (filter->descriptor->layer_flags & 0x10)) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
-            if (filter->HasAnisoFlip())
+            if (filter->HasAnisoFlip()) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
+            }
         } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0xa0000)) {
             definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
         } else {
@@ -194,8 +208,9 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) &&
         !(filter->descriptor->layer_flags & 0x400000) &&
-        ((i32)filter->descriptor->flags >= 0 || !(filter->descriptor->flags & 0x800000)))
+        ((i32)filter->descriptor->flags >= 0 || !(filter->descriptor->flags & 0x800000))) {
         definitions->AddDefinition("CAR_PAINT", NULL, 0);
+    }
     definitions->AddDefinition("LIGHTING_LIGHTS_COUNT", "3", 0);
     if (filter->variant == 0 && ((i32)filter->descriptor->flags < 0) && descriptor->texture_units > 0) {
         if (profile == 1) {
@@ -225,38 +240,44 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
                                  ((filter->descriptor->layer_flags & 0x60000000) && profile != 1))) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "ENVMAP_CUBE", 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000) && profile != 1)
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000) && profile != 1) {
             definitions->AddDefinition("SPECULAR_STAGE", "SPECULAR_PHONG", 0);
+        }
     } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000)) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "PS2_SHINEMAP", 0);
     }
     const bool lighting = filter->variant == 0 && (filter->descriptor->layer_flags & 0x18) != 0;
     if (environment || lighting) {
-        if (profile != 1)
+        if (profile != 1) {
             definitions->AddDefinition("REFLECTIVITY_STAGE", NULL, 0);
+        }
         if (filter->variant == 0 && filter->descriptor->specular_threshold > filter->parameter) {
             definitions->AddDefinition("SPECULAR_UVSET", uv_names[descriptor->sampler_indices[1] - 1], 1);
             used_uvs[0] = 1;
-        } else
+        } else {
             definitions->AddDefinition("SPECULAR_SPECULARENABLE", NULL, 0);
+        }
         if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x100000)) {
             definitions->AddDefinition("REFLECTIVITY_STAGE2", NULL, 0);
-            if (filter->descriptor->surface_threshold > filter->parameter)
+            if (filter->descriptor->surface_threshold > filter->parameter) {
                 definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
-            else
+            } else {
                 definitions->AddDefinition("SPECULAR_SPECULARENABLE2", NULL, 0);
+            }
         }
     }
     if (filter->variant == 0 && (environment || lighting || (filter->descriptor->layer_flags & 0x400))) {
-        if (filter->descriptor->layer_flags & 4)
+        if (filter->descriptor->layer_flags & 4) {
             definitions->AddDefinition("FRESNEL_STAGE", NULL, 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x400))
+        }
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x400)) {
             definitions->AddDefinition("REFRACTION_STAGE",
                                        filter->descriptor->layer_flags & 0x200        ? "REFRACTION_WATER"
                                        : filter->descriptor->layer_flags & 0x20000000 ? "REFRACTION_GLASS"
                                                                                       : "REFRACTION_DEFAULT",
                                        0);
+        }
     }
     i32 uv_count = 0;
     for (i32 i = 1; i <= 4; ++i) {
@@ -271,42 +292,54 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         definitions->AddDefinition("NORMAL_OUTPUT", "1", 1);
         if ((filter->descriptor->vertex_format & 0xc) &&
             !(filter->variant == 0 &&
-              ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & 0x80000000))))
+              ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & 0x80000000)))) {
             definitions->AddDefinition("NORMAL_OUTPUT_NOT_NULL", NULL, 0);
+        }
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000))
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000)) {
         definitions->AddDefinition("GLOW_OUTPUT", "1", 1);
-    if (filter->deferred_path)
+    }
+    if (filter->deferred_path) {
         definitions->AddDefinition("MOTION_OUTPUT", "2", 1);
-    if (filter->second_path)
+    }
+    if (filter->second_path) {
         definitions->AddDefinition("DEPTHRT_OUTPUT", filter->variant ? "0" : filter->deferred_path ? "3" : "2", 1);
-    if (filter->variant)
+    }
+    if (filter->variant) {
         definitions->AddDefinition("RENDER_FOR_SHADOW", NULL, 0);
+    }
     definitions->AddDefinition("RENDER_TARGET_COUNT", numbers[filter->layer_count < 1 ? 1 : filter->layer_count], 1);
-    if (filter->deferred_path && (filter->descriptor->vertex_format & 0x30000))
+    if (filter->deferred_path && (filter->descriptor->vertex_format & 0x30000)) {
         definitions->AddDefinition("HACK_MOTION_VECTOR_NULL", NULL, 0);
+    }
     definitions->AddDefinition("COLOR_FACTOR", "1.0", 1);
-    if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != 1)
+    if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != 1) {
         definitions->AddDefinition("FOG_STAGE", "FOG_VERTEX_CLAMP_EXPONENTIAL2", 0);
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x200000) && profile != 1)
+    }
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x200000) && profile != 1) {
         definitions->AddDefinition("DAPPLE", NULL, 0);
-    if (filter->variant == 0 && (0x10000000 & filter->descriptor->layer_flags))
+    }
+    if (filter->variant == 0 && (0x10000000 & filter->descriptor->layer_flags)) {
         definitions->AddDefinition("FRACTAL", NULL, 0);
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000000))
+    }
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000000)) {
         definitions->AddDefinition("EDGE_LIGHTING", NULL, 0);
+    }
     bool swizzle = true;
     if (filter->material != NULL && filter->material->texture_id != 0) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
         if (texture != NULL && texture->resource != NULL) {
             PC_TEXTURE_LEVEL_DESC_PC dimensions;
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
-            if (dimensions.format == 0x31545844)
+            if (dimensions.format == 0x31545844) {
                 swizzle = false;
+            }
         }
     }
     definitions->AddDefinition("_WINPC", NULL, 0);
-    if (swizzle)
+    if (swizzle) {
         definitions->AddDefinition("SWIZZLE_NORMAL_MAPS", NULL, 0);
+    }
     definitions->AddDefinition("SWIZZLE_PARALLAX_MAPS", NULL, 0);
     definitions->AddDefinition("PACKED_NORMAL", NULL, 0);
     definitions->AddDefinition("PACKED_TANGENT", NULL, 0);
@@ -321,6 +354,7 @@ void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
+
 void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *dictionary) {
     ShaderCompilerBasePc::Configure(filter, dictionary);
     dictionary->AddDefinition("BUILD_VERTEX_SHADER", NULL, 0);
@@ -334,6 +368,7 @@ ShaderBuilderGen::ShaderBuilderGen(VirtualStackAllocator &parent, i32 mode)
       parser_memory(parent, 0x32000) {
     save_directory[0] = 0;
 }
+
 ShaderBuilderGen::~ShaderBuilderGen() {
     parsed_source = NULL;
 }
@@ -344,42 +379,51 @@ HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderC
 void ShaderCompilerBasePc::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
+
 void ShaderCompilerBasePc::SetSaveDirectory(const char *path) {
     strcpy(save_directory, path);
 }
+
 void ShaderCompilerBasePc::SetProfile(i32 profile, i32 first, i32 second) {
     dictionary.SetProfile(profile, first, second);
 }
+
 void ShaderCompilerBasePc::SetForceMode(bool force) {
     dictionary.force_mode = force;
 }
 
 void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer,
                                         i32 prefix, VirtualStackAllocator *memory) {
-    if (length < 0)
+    if (length < 0) {
         length = (i32)strlen(source);
+    }
     i32 size = prefix + length;
     buffer->length = 0;
-    if (buffer->capacity < size)
+    if (buffer->capacity < size) {
         buffer->Resize(size);
+    }
     buffer->length = size;
     strncpy(reinterpret_cast<char *>(buffer->data + prefix), source, length);
     memset(buffer->data, ' ', prefix);
-    for (i32 i = 0; i < prefix; i += 100)
+    for (i32 i = 0; i < prefix; i += 100) {
         buffer->data[i] = '\n';
+    }
     ShaderCompilerParserPc parser;
     parser.SetIncludeDirectories(include_directories);
     return parser.Parse(buffer, prefix, 1, memory);
 }
+
 bool ShaderCompilerBasePc::LoadSource(const char *source, i32 length) {
     parsed_source = ParseSource(source, length, &source_buffer, 0x5000, &parser_memory);
     return parsed_source != NULL;
 }
+
 void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocatorPc *vertex,
                                     ShaderCompilerBufferAllocatorPc *pixel) {
     ShaderCompilerDictionaryPc *dict = &dictionary;
-    for (i32 i = 0; i < dict->definition_count; ++i)
+    for (i32 i = 0; i < dict->definition_count; ++i) {
         dict->definitions[i]->expansion_state = 0;
+    }
     dict->scratch.cursor = dict->scratch.base;
     dict->program_count = 0;
     Configure(filter, dict);
@@ -392,8 +436,9 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
         dict->BindOutputBuffer(vertex);
         dict->Expand(parsed_source, vertex);
         if (vertex->length > 0 && vertex->data[vertex->length - 1] != 0) {
-            if (vertex->length + 1 > vertex->capacity)
+            if (vertex->length + 1 > vertex->capacity) {
                 vertex->Resize((3 * (vertex->length + 1)) / 2);
+            }
             vertex->data[vertex->length] = 0;
             ++vertex->length;
         }
@@ -404,8 +449,9 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
         dict->BindOutputBuffer(pixel);
         dict->Expand(parsed_source, pixel);
         if (pixel->length > 0 && pixel->data[pixel->length - 1] != 0) {
-            if (pixel->length + 1 > pixel->capacity)
+            if (pixel->length + 1 > pixel->capacity) {
                 pixel->Resize((3 * (pixel->length + 1)) / 2);
+            }
             pixel->data[pixel->length] = 0;
             ++pixel->length;
         }
@@ -426,16 +472,18 @@ void ShaderCompilerBasePc::SaveFile(const char *suffix, const char *name, const 
 
 /* Copies the next ';'-separated entry of list from *position into entry. */
 bool ShaderNextDirectoryPc(const char *list, i32 *position, char *entry) {
-    if (*position >= (i32)strlen(list))
+    if (*position >= (i32)strlen(list)) {
         return false;
+    }
     list += *position;
     while (*list != 0 && *list != ';') {
         *entry++ = *list++;
         ++*position;
     }
     *entry = 0;
-    if (*list == ';')
+    if (*list == ';') {
         ++*position;
+    }
     return true;
 }
 
@@ -453,28 +501,32 @@ void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllo
     i32 size;
     NuDatSet(NULL);
     do {
-        if (!ShaderNextDirectoryPc(include_directories, &position, directory))
+        if (!ShaderNextDirectoryPc(include_directories, &position, directory)) {
             break;
+        }
         sprintf(path, "%s\\%s", directory, name);
         file = NuFileOpen(path, 0);
     } while (file == 0);
     NuDatSet(dat);
-    if (file == 0)
+    if (file == 0) {
         ShaderBuilderTracePc(path, include_directories);
+    }
     size = (i32)NuFileOpenSize(file);
     if (size <= 0) {
         ShaderBuilderTracePc();
         return NULL;
     }
     buffer->length = 0;
-    if (buffer->capacity < prefix + size)
+    if (buffer->capacity < prefix + size) {
         buffer->Resize(prefix + size);
+    }
     buffer->length = prefix + size;
     NuFileRead(file, buffer->data + prefix, size);
     NuFileClose(file);
     memset(buffer->data, ' ', prefix);
-    for (i32 i = 0; i < prefix; i += 100)
+    for (i32 i = 0; i < prefix; i += 100) {
         buffer->data[i] = '\n';
+    }
     ShaderCompilerParserPc parser;
     parser.SetIncludeDirectories(directory);
     return parser.Parse(buffer, prefix, 1, memory);
@@ -493,6 +545,7 @@ typedef struct D3DX_EFFECT_COMPILER_METHODS_PC {
     void *unknown_0c[56];
     HRESULT(__stdcall *compile_effect)(ID3DXEffectCompiler *, DWORD, ID3DXBuffer **, ID3DXBuffer **);
 } D3DX_EFFECT_COMPILER_METHODS_PC;
+
 struct ID3DXEffectCompiler {
     const D3DX_EFFECT_COMPILER_METHODS_PC *methods;
 };
@@ -508,10 +561,12 @@ i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *ou
     size = effect->methods->get_buffer_size(effect);
     PCByteCopy_candidate(output, effect->methods->get_buffer_pointer(effect), size);
     effect->methods->release(effect);
-    if (compiler != NULL)
+    if (compiler != NULL) {
         compiler->methods->release(compiler);
+    }
     return size;
 }
+
 /* The material fields from its texture flags on (PC_SHADER_MATERIAL_DISPATCH_VIEW + 0xb4), as the shader
  * builder's parameter defaults read them. */
 typedef struct PC_SHADER_DEFAULTS_VIEW_PC {
@@ -551,6 +606,7 @@ typedef struct PC_SHADER_DEFAULTS_VIEW_PC {
     u8 unknown_1c0[0x10];
     f32 uv_upload_lanes[8];
 } PC_SHADER_DEFAULTS_VIEW_PC;
+
 STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, channel_colours) == 0xc8 - 0xb4);
 STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, texture_lerp) == 0xf0 - 0xb4);
 STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, flip_sign) == 0xfb - 0xb4);

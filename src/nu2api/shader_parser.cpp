@@ -24,6 +24,7 @@
             tail = &node->next;                                                                                        \
         }                                                                                                              \
     } while (0)
+
 void ShaderCompilerParserPc::FlushText() {
     i32 count = text.length;
     if (count > 0) {
@@ -46,15 +47,17 @@ void ShaderCompilerParserPc::FlushText() {
         text.length = 0;
     }
 }
+
 void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     FlushText();
     char *copy_name;
     ARENA_COPY_STRING(copy_name, name);
     char *copy_value;
-    if (value != NULL)
+    if (value != NULL) {
         ARENA_COPY_STRING(copy_value, value);
-    else
+    } else {
         copy_value = NULL;
+    }
     ShaderParserMacroNodePc *node = reinterpret_cast<ShaderParserMacroNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserMacroNodePc);
     if (node != NULL) {
@@ -69,6 +72,7 @@ void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     }
     APPEND_NODE(node);
 }
+
 void ShaderCompilerParserPc::UndefineMacro(const char *name) {
     FlushText();
     char *copy;
@@ -86,6 +90,7 @@ void ShaderCompilerParserPc::UndefineMacro(const char *name) {
     }
     APPEND_NODE(node);
 }
+
 void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
     FlushText();
     ShaderParserBranchNodePc *node = reinterpret_cast<ShaderParserBranchNodePc *>(arena->cursor);
@@ -106,10 +111,12 @@ void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
     scopes[scope_count++] = node;
     tail = &node->if_true;
 }
+
 void ShaderCompilerParserPc::BeginElse() {
     FlushText();
     tail = &branches[branch_count - 1]->if_false;
 }
+
 void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
     FlushText();
     tail = &branches[branch_count - 1]->if_false;
@@ -130,10 +137,12 @@ void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
     branches[branch_count++] = node;
     tail = &node->if_true;
 }
+
 void ShaderCompilerParserPc::EndIf() {
     FlushText();
-    while (branches[branch_count - 1] != scopes[scope_count - 1])
+    while (branches[branch_count - 1] != scopes[scope_count - 1]) {
         --branch_count;
+    }
     --branch_count;
     tail = &branches[branch_count]->next;
     --scope_count;
@@ -143,11 +152,13 @@ struct ShaderParserTogglePc : ShaderParserNodePc {
     u8 enabled;
     u8 unknown_9[3];
 };
+
 struct ShaderParserReferencePc : ShaderParserNodePc {
     u32 flags;
     i32 alias_depth;
     char *name;
 };
+
 struct ShaderParserDeclarationPc : ShaderParserNodePc {
     u32 flags;
     i32 type;
@@ -158,9 +169,11 @@ struct ShaderParserDeclarationPc : ShaderParserNodePc {
     i32 vertex_register;
     i32 pixel_register;
 };
+
 struct ShaderParserEmitPc : ShaderParserNodePc {
     u32 flags;
 };
+
 STATIC_ASSERT(sizeof(ShaderParserTogglePc) == 12);
 STATIC_ASSERT(offsetof(ShaderParserTogglePc, enabled) == 8);
 STATIC_ASSERT(sizeof(ShaderParserReferencePc) == 20);
@@ -195,6 +208,7 @@ void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
     }
     APPEND_NODE(node);
 }
+
 void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *name) {
     FlushText();
     char *copy;
@@ -214,16 +228,18 @@ void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *na
     }
     APPEND_NODE(node);
 }
+
 void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic,
                                             const char *custom, i32 vertex, i32 pixel) {
     FlushText();
     char *copy;
     ARENA_COPY_STRING(copy, name);
     char *custom_copy;
-    if (custom != NULL)
+    if (custom != NULL) {
         ARENA_COPY_STRING(custom_copy, custom);
-    else
+    } else {
         custom_copy = NULL;
+    }
     ShaderParserDeclarationPc *node = reinterpret_cast<ShaderParserDeclarationPc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserDeclarationPc);
     if (node != NULL) {
@@ -244,6 +260,7 @@ void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, cons
     }
     APPEND_NODE(node);
 }
+
 void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
     FlushText();
     ShaderParserEmitPc *node = reinterpret_cast<ShaderParserEmitPc *>(arena->cursor);
@@ -279,47 +296,49 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
     while (state != 26 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
-                if (token.Equals("nu2_use"))
+                if (token.Equals("nu2_use")) {
                     state = 2;
-                else if (token.Equals("nu2_declare"))
+                } else if (token.Equals("nu2_declare")) {
                     state = 7;
-                else if (token.Equals("nu2_anchorPoint"))
+                } else if (token.Equals("nu2_anchorPoint")) {
                     state = 22;
-                else if (token.Equals("nu2_showDefine"))
+                } else if (token.Equals("nu2_showDefine")) {
                     state = 1;
-                else {
+                } else {
                     token.Equals("nu2_debug");
                     state = 26;
                 }
                 break;
             case 1:
-                if (token.Equals("true"))
+                if (token.Equals("true")) {
                     SetShowDefinitions(1);
-                else {
-                    if (token.Equals("false"))
+                } else {
+                    if (token.Equals("false")) {
                         count = (count & ~255);
+                    }
                     SetShowDefinitions((u8)count);
                 }
                 state = 26;
                 break;
             case 2:
-                if (token.Equals("("))
+                if (token.Equals("(")) {
                     state = 3;
-                else
+                } else {
                     state = 26;
+                }
                 break;
             case 3:
-                if (token.Equals("vs_local"))
+                if (token.Equals("vs_local")) {
                     flags = 0x2002;
-                else if (token.Equals("fs_local"))
+                } else if (token.Equals("fs_local")) {
                     flags = 0x1004;
-                else if (token.Equals("varying"))
+                } else if (token.Equals("varying")) {
                     flags = 0x3008;
-                else if (token.Equals("attribute"))
+                } else if (token.Equals("attribute")) {
                     flags = 0x2010;
-                else if (token.Equals("uniform"))
+                } else if (token.Equals("uniform")) {
                     flags = 0x3020;
-                else {
+                } else {
                     state = 26;
                     break;
                 }
@@ -330,16 +349,17 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 state = 5;
                 break;
             case 5:
-                if (token.Equals("*"))
+                if (token.Equals("*")) {
                     ++depth;
-                else {
+                } else {
                     name = token.ArenaCopy(&memory);
                     state = 6;
                 }
                 break;
             case 6:
-                if (token.Equals(")"))
+                if (token.Equals(")")) {
                     UseDeclaration(flags, depth, name);
+                }
                 state = 26;
                 break;
             case 7:
@@ -365,25 +385,28 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 } else if (token.Equals("shared")) {
                     state = 9;
                     shared = 1;
-                } else
+                } else {
                     state = 26;
+                }
                 break;
             case 9:
                 if (token.Equals("uniform")) {
                     flags = 0x3020;
                     state = 10;
-                } else
+                } else {
                     state = 26;
+                }
                 break;
             case 10:
                 if (token.Equals(",")) {
                     flags |= shared ? 0x4000 : 0;
                     state = 13;
                 } else {
-                    if (token.StartsWith("vreg"))
+                    if (token.StartsWith("vreg")) {
                         vertex = token.AsInteger(4);
-                    else if (token.StartsWith("freg"))
+                    } else if (token.StartsWith("freg")) {
                         pixel = token.AsInteger(4);
+                    }
                     state = 11;
                 }
                 break;
@@ -392,81 +415,85 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     flags = ShaderDeclarationFlagsPc(shared, vertex >= 0, pixel >= 0);
                     state = 13;
                 } else {
-                    if (token.StartsWith("vreg"))
+                    if (token.StartsWith("vreg")) {
                         vertex = token.AsInteger(4);
-                    else if (token.StartsWith("freg"))
+                    } else if (token.StartsWith("freg")) {
                         pixel = token.AsInteger(4);
+                    }
                     state = 12;
                 }
                 break;
             case 12:
                 token.Equals(",");
-                if ((flags & 0x20) != 0)
+                if ((flags & 0x20) != 0) {
                     flags = ShaderDeclarationFlagsPc(shared, vertex >= 0, pixel >= 0);
+                }
                 state = 13;
                 break;
             case 13:
-                if (token.Equals("1"))
+                if (token.Equals("1")) {
                     type = 1;
-                else if (token.Equals("2"))
+                } else if (token.Equals("2")) {
                     type = 3;
-                else if (token.Equals("3"))
+                } else if (token.Equals("3")) {
                     type = 4;
-                else if (token.Equals("4"))
+                } else if (token.Equals("4")) {
                     type = 5;
-                else if (token.Equals("float"))
+                } else if (token.Equals("float")) {
                     type = 1;
-                else if (token.Equals("float1"))
+                } else if (token.Equals("float1")) {
                     type = 2;
-                else if (token.Equals("float2"))
+                } else if (token.Equals("float2")) {
                     type = 3;
-                else if (token.Equals("float3"))
+                } else if (token.Equals("float3")) {
                     type = 4;
-                else if (token.Equals("float4"))
+                } else if (token.Equals("float4")) {
                     type = 5;
-                else if (token.Equals("float3x3"))
+                } else if (token.Equals("float3x3")) {
                     type = 6;
-                else if (token.Equals("float4x4"))
+                } else if (token.Equals("float4x4")) {
                     type = 7;
-                else if (token.Equals("half"))
+                } else if (token.Equals("half")) {
                     type = 8;
-                else if (token.Equals("half1"))
+                } else if (token.Equals("half1")) {
                     type = 9;
-                else if (token.Equals("half2"))
+                } else if (token.Equals("half2")) {
                     type = 10;
-                else if (token.Equals("half3"))
+                } else if (token.Equals("half3")) {
                     type = 11;
-                else if (token.Equals("half4"))
+                } else if (token.Equals("half4")) {
                     type = 12;
-                else if (token.Equals("half3x3"))
+                } else if (token.Equals("half3x3")) {
                     type = 13;
-                else if (token.Equals("half4x4"))
+                } else if (token.Equals("half4x4")) {
                     type = 14;
-                else if (token.Equals("bool"))
+                } else if (token.Equals("bool")) {
                     type = 15;
-                else if (token.Equals("hook"))
+                } else if (token.Equals("hook")) {
                     type = 21;
-                else if (token.Equals("int"))
+                } else if (token.Equals("int")) {
                     type = 16;
-                else if (token.Equals("sampler"))
+                } else if (token.Equals("sampler")) {
                     type = 18;
-                else if (token.Equals("sampler1D"))
+                } else if (token.Equals("sampler1D")) {
                     type = 17;
-                else if (token.Equals("sampler2D"))
+                } else if (token.Equals("sampler2D")) {
                     type = 18;
-                else if (token.Equals("sampler3D"))
+                } else if (token.Equals("sampler3D")) {
                     type = 19;
-                else if (token.Equals("samplerCUBE"))
+                } else if (token.Equals("samplerCUBE")) {
                     type = 20;
+                }
                 state = type != 0 ? 14 : 26;
                 break;
             case 14:
-                if (token.Equals("["))
+                if (token.Equals("[")) {
                     state = 15;
-                else if (token.Equals(","))
+                } else if (token.Equals(",")) {
                     state = 18;
-                else
+                } else {
                     state = 26;
+                }
                 break;
             case 15:
                 if (token.Equals("]")) {
@@ -478,16 +505,18 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 }
                 break;
             case 16:
-                if (token.Equals("]"))
+                if (token.Equals("]")) {
                     state = 17;
-                else
+                } else {
                     state = 26;
+                }
                 break;
             case 17:
-                if (token.Equals(","))
+                if (token.Equals(",")) {
                     state = 18;
-                else
+                } else {
                     state = 26;
+                }
                 break;
             case 18:
                 name = token.ArenaCopy(&memory);
@@ -499,13 +528,15 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 20:
                 semantic = ShaderDeclarationSemanticPc(&token);
-                if (semantic == 0)
+                if (semantic == 0) {
                     custom = token.ArenaCopy(&memory);
+                }
                 state = 21;
                 break;
             case 21:
-                if (token.Equals(")"))
+                if (token.Equals(")")) {
                     AddDeclaration(flags, type, count, name, semantic, custom, vertex, pixel);
+                }
                 state = 26;
                 break;
             case 22:
@@ -513,25 +544,26 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 state = 23;
                 break;
             case 23:
-                if (token.Equals("uniform"))
+                if (token.Equals("uniform")) {
                     flags = 0x3020;
-                else if (token.Equals("attribute"))
+                } else if (token.Equals("attribute")) {
                     flags = 0x2010;
-                else if (token.Equals("varying"))
+                } else if (token.Equals("varying")) {
                     flags = 0x3008;
-                else if (token.Equals("vs_local"))
+                } else if (token.Equals("vs_local")) {
                     flags = 0x2002;
-                else if (token.Equals("fs_local"))
+                } else if (token.Equals("fs_local")) {
                     flags = 0x1004;
-                else {
+                } else {
                     state = 26;
                     break;
                 }
                 state = 24;
                 break;
             case 24:
-                if (token.Equals(")"))
+                if (token.Equals(")")) {
                     EmitDeclarations(flags);
+                }
                 state = 26;
                 break;
             default:
@@ -553,12 +585,15 @@ struct ShaderParserIncludePc {
 
   private:
     friend class ShaderCompilerParserPc;
+
     ShaderParserIncludePc(const char *name, i32 size) : name(name), buffer(size, true) {
     }
+
     ~ShaderParserIncludePc() {
         SafeDeleteArray(name);
     }
 };
+
 STATIC_ASSERT(sizeof(ShaderParserIncludePc) == 20);
 STATIC_ASSERT(offsetof(ShaderParserIncludePc, name) == 0);
 STATIC_ASSERT(offsetof(ShaderParserIncludePc, buffer) == 4);
@@ -574,53 +609,65 @@ ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesIni
     memset(scopes, 0, sizeof(scopes));
     scope_count = 0;
 }
+
 void ShaderCompilerParserPc::ClearIncludes() {
-    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i)
+    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i) {
         delete *i;
+    }
     includes.erase(includes.begin(), includes.end());
 }
+
 ShaderCompilerParserPc::~ShaderCompilerParserPc() {
     ClearIncludes();
 }
+
 void ShaderCompilerParserPc::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
 bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
-    if (*cursor >= (i32)strlen(paths))
+    if (*cursor >= (i32)strlen(paths)) {
         return false;
+    }
     paths += *cursor;
     while (*paths != 0 && *paths != ';') {
         *directory++ = *paths++;
         ++*cursor;
     }
     *directory = 0;
-    if (*paths == ';')
+    if (*paths == ';') {
         ++*cursor;
+    }
     return true;
 }
+
 ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char *name) {
-    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i)
-        if (strcmp((*i)->name, name) == 0)
+    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i) {
+        if (strcmp((*i)->name, name) == 0) {
             return &(*i)->buffer;
+        }
+    }
     char directory[256], path[256];
     i32 cursor = 0;
     NUFILE file = 0;
 
     bool more = NextIncludeDirectory(include_directories, &cursor, directory);
     while (more) {
-        if (file != 0)
+        if (file != 0) {
             break;
+        }
         sprintf(path, "%s\\%s", directory, name);
         file = NuFileOpen(path, 0);
         more = NextIncludeDirectory(include_directories, &cursor, directory);
     }
     i32 size = (i32)NuFileOpenSize(file);
-    if (size <= 0)
+    if (size <= 0) {
         return NULL;
+    }
     ShaderParserIncludePc *include = new ShaderParserIncludePc(_strdup(name), size);
-    if (include->buffer.capacity < size)
+    if (include->buffer.capacity < size) {
         include->buffer.Resize(size);
+    }
     include->buffer.length = size;
     includes.push_back(include);
     NuFileRead(file, include->buffer.data, include->buffer.length);
@@ -638,17 +685,17 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
     while (state != 5 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
-                if (token.Equals("define"))
+                if (token.Equals("define")) {
                     state = 1;
-                else if (token.Equals("ifdef")) {
+                } else if (token.Equals("ifdef")) {
                     // Not handled; the following tokens are still scanned.
                 } else if (token.Equals("ifndef")) {
                     // Not handled; the following tokens are still scanned.
-                } else if (token.Equals("undef"))
+                } else if (token.Equals("undef")) {
                     state = 3;
-                else if (token.Equals("include"))
+                } else if (token.Equals("include")) {
                     state = 4;
-                else if (token.Equals("pragma")) {
+                } else if (token.Equals("pragma")) {
                     ParseDeclaration(input, cursor);
                     state = 5;
                 } else if (token.Equals("if")) {
@@ -663,8 +710,9 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
                 } else if (token.Equals("endif")) {
                     EndIf();
                     state = 5;
-                } else
+                } else {
                     state = 5;
+                }
                 break;
             case 1:
                 name = token.ArenaCopy(&memory);
@@ -681,17 +729,20 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
             case 4: {
                 char *path = token.HeapCopy();
                 ShaderCompilerBufferAllocatorPc *included = LoadInclude(path + 1);
-                if (included != NULL)
+                if (included != NULL) {
                     LoadSourceLines(included, 0);
+                }
                 delete path;
                 state = 5;
                 break;
             }
         }
     }
-    if (state == 2)
+    if (state == 2) {
         DefineMacro(name, NULL);
+    }
 }
+
 void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *input, i32 offset) {
     char line_memory[512];
     VirtualStackAllocator memory(line_memory, sizeof(line_memory));
@@ -703,24 +754,28 @@ void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *in
         i32 count = 0;
         while (p < end) {
             ++count;
-            if (*p == '\n')
+            if (*p == '\n') {
                 break;
+            }
             ++p;
         }
         line.AppendBytes(first, count);
         offset += count;
         i32 cursor = 0;
         i32 position = 0;
-        while (position < line.length && (line.data[position] == ' ' || line.data[position] == '\t'))
+        while (position < line.length && (line.data[position] == ' ' || line.data[position] == '\t')) {
             ++position;
+        }
         if (position < line.length && line.data[position] == '#') {
             cursor = position + 1;
             ProcessDirective(&line, &cursor);
-        } else if (emit_text != 0)
+        } else if (emit_text != 0) {
             text.AppendBytes(reinterpret_cast<const char *>(line.data), line.length);
+        }
         line.length = 0;
     }
 }
+
 ShaderParserNodePc *ShaderCompilerParserPc::Parse(ShaderCompilerBufferAllocatorPc *input, i32 offset, u8 emit,
                                                   VirtualStackAllocator *memory) {
     arena = memory;

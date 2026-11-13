@@ -28,12 +28,14 @@ void __cdecl SockOff(SOCKSYS_PC *system, i32 index);
 void __cdecl GizForce_PlayForwards(GIZFORCE_PC *force);
 void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force);
 i32 turret_gizmotype_id;
+
 typedef struct GIZACTION_FORCE_ANIMATION_PC {
     u8 unknown_000[0x28];
     GAMEANIMSET *anim_set;
     u8 unknown_02c[0x74];
     u32 flags;
 } GIZACTION_FORCE_ANIMATION_PC;
+
 STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZACTION_FORCE_ANIMATION_PC, flags) == 0xa0);
 STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
@@ -78,12 +80,14 @@ extern const char GizActionNamePlayCutscenePc[13];
 extern const char GizActionNameHitBlowupPc[10];
 extern const char GizActionNameActivateBeltPc[13];
 extern const char GizActionNameEnableSockPc[11];
+
 typedef struct ACTIVATE_CHAR_BUILDIT_VIEW_PC {
     u8 unknown_00[0x34];
     NUVEC position;
     u8 unknown_40[0x34];
     u16 angle;
 } ACTIVATE_CHAR_BUILDIT_VIEW_PC;
+
 extern i32 gizbuildit_gizmotype_id;
 GAMEOBJECT *__cdecl ActivateCharacter(char *, NUVEC *, i32);
 void __cdecl DeactivateCharacter(char *);
@@ -110,6 +114,7 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
         EffectOffProgress_Update(WorldInfo_CurrentlyActive()->level_progress, name, visible);
     }
 }
+
 static const char GizActionPartEffectPrefixPc[12] = "part_effect";
 
 void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
@@ -117,10 +122,11 @@ void __cdecl GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unuse
     char *name = NULL;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)GizActionPartEffectPrefixPc);
-        if (value != NULL)
+        if (value != NULL) {
             name = value + NuStrLen(GizActionPartEffectPrefixPc) + 1;
-        else
+        } else {
             NuStrICmp(params[i], AIActionFalseName);
+        }
     }
     if (name != NULL) {
         i32 type_id = PARTLookupType(name);
@@ -135,13 +141,15 @@ void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1
     memset(&special, 0, sizeof(special));
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
-        if (value != NULL)
+        if (value != NULL) {
             NuSpecialFind(WORLD->current_gscn, &special, value + 5, 1);
-        else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+        } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
             visible = 0;
+        }
     }
-    if (NuSpecialExistsFn(&special) != 0)
+    if (NuSpecialExistsFn(&special) != 0) {
         NuSpecialSetVisibility(&special, visible);
+    }
 }
 
 void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
@@ -155,16 +163,18 @@ void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unuse
             name = value + 5;
         } else {
             value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
-            if (value != NULL)
+            if (value != NULL) {
                 type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
-            else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+            } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
                 visible = 0;
+            }
         }
     }
     if (name != NULL) {
         void *gizmo = GizmoFindByName(flow->gizmo_sys, type_id, name);
-        if (gizmo != NULL)
+        if (gizmo != NULL) {
             GizmoSetVisibility(flow->gizmo_sys, gizmo, visible, 1);
+        }
     }
 }
 
@@ -191,8 +201,9 @@ void __cdecl GizActions_SetPickupVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *box,
         pickup->state_activated = visible;
         return;
     }
-    if (id < 0)
+    if (id < 0) {
         return;
+    }
     pickup = WORLD->pickup_runtime_sys->pickups;
     for (i = 0; pickup != NULL && i < WORLD->pickup_runtime_sys->pickup_count; ++i, ++pickup) {
         if (pickup->state_collected == 0 && pickup->activation_group == id) {
@@ -209,15 +220,17 @@ void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, ch
     i32 i;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
-        if (value != NULL)
+        if (value != NULL) {
             name = value + 5;
-        else if (NuStrICmp(params[i], AIActionFalseName) == 0)
+        } else if (NuStrICmp(params[i], AIActionFalseName) == 0) {
             enabled = 0;
+        }
     }
     if (flow != NULL && name != NULL) {
         for (i = 0; i < flow->flowbox_count; ++i) {
-            if (flow->flowboxes[i].name != NULL && NuStrICmp(flow->flowboxes[i].name, name) == 0)
+            if (flow->flowboxes[i].name != NULL && NuStrICmp(flow->flowboxes[i].name, name) == 0) {
                 flow->flowboxes[i].enabled = enabled;
+            }
         }
     }
 }
@@ -233,16 +246,18 @@ void __cdecl GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, ch
             name = value + 5;
         } else {
             value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
-            if (value != NULL)
+            if (value != NULL) {
                 type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
-            else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL)
+            } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
                 active = 0;
+            }
         }
     }
     if (name != NULL) {
         void *gizmo = GizmoFindByName(flow->gizmo_sys, type_id, name);
-        if (gizmo != NULL)
+        if (gizmo != NULL) {
             GizmoActivate(flow->gizmo_sys, gizmo, active, 1);
+        }
     }
 }
 
@@ -257,16 +272,17 @@ void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, cha
     (void)unused;
     for (; index < count; ++index) {
         char *value = NuStrIStr(params[index], "name=");
-        if (value != NULL)
+        if (value != NULL) {
             name = value + 5;
-        else if (NuStrICmp(params[index], "TRUE") == 0)
+        } else if (NuStrICmp(params[index], "TRUE") == 0) {
             active = 1;
-        else if (NuStrICmp(params[index], "FALSE") == 0)
+        } else if (NuStrICmp(params[index], "FALSE") == 0) {
             active = 0;
-        else if ((value = NuStrIStr(params[index], "buildit=")) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "buildit=")) != NULL) {
             GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, gizbuildit_gizmotype_id, value + 8);
-            if (gizmo != NULL && gizmo->object != NULL)
+            if (gizmo != NULL && gizmo->object != NULL) {
                 buildit = (ACTIVATE_CHAR_BUILDIT_VIEW_PC *)gizmo->object;
+            }
         }
     }
     if (active != 0 && name != NULL) {
@@ -276,22 +292,25 @@ void __cdecl GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, cha
             position = &buildit->position;
             angle = buildit->angle;
         }
-        if (ActivateCharacter(name, position, angle) == NULL && buildit != NULL)
+        if (ActivateCharacter(name, position, angle) == NULL && buildit != NULL) {
             GizBuildIt_KillParts((GIZBUILDIT_s *)buildit);
+        }
     } else if (active == 0 && name != NULL) {
         player = (GAMEOBJECT *)Player[0];
         if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
             player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[player->ai_packet.creature_index];
-            if (creature != NULL && NuStrICmp(creature->name, name) == 0)
+            if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver((GAMEOBJECT *)Player[0], 0);
+            }
         }
         player = (GAMEOBJECT *)Player[1];
         if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
             player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[((GAMEOBJECT *)Player[0])->ai_packet.creature_index];
-            if (creature != NULL && NuStrICmp(creature->name, name) == 0)
+            if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver((GAMEOBJECT *)Player[1], 0);
+            }
         }
         DeactivateCharacter(name);
     }
@@ -418,11 +437,11 @@ void GizAction_SetAIMessage(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **par
     char *name = NULL;
     for (index = 0; index < count; ++index) {
         char *argument = NuStrIStr(params[index], "Name");
-        if (argument != NULL)
+        if (argument != NULL) {
             name = argument + NuStrLen("Name") + 1;
-        else if ((argument = NuStrIStr(params[index], "Val")) != NULL)
+        } else if ((argument = NuStrIStr(params[index], "Val")) != NULL) {
             value = NuAToF(argument + NuStrLen("Val") + 1);
-        else if ((argument = NuStrIStr(params[index], "increment=")) != NULL) {
+        } else if ((argument = NuStrIStr(params[index], "increment=")) != NULL) {
             value = NuAToF(argument + 10);
             mode = 1;
         } else if ((argument = NuStrIStr(params[index], "decrement=")) != NULL) {
@@ -540,6 +559,7 @@ void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
         CompleteLevel(WORLD);
     }
 }
+
 static const char GizActionLevelPrefixPc[7] = "level=";
 
 void __cdecl GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
@@ -553,16 +573,19 @@ void __cdecl GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, c
             level = Level_FindByName(value, NULL);
         } else {
             value = NuStrIStr(params[i], (char *)"cutscene=");
-            if (value != NULL)
+            if (value != NULL) {
                 cutscene_name = value + NuStrLen("cutscene=");
+            }
         }
     }
     if (FreePlay == 0 && cutscene_name != NULL) {
-        if (NewCutScene(NULL, (CUTSYS_PC *)WORLD->cutscene_sys, cutscene_name, 0) != NULL)
+        if (NewCutScene(NULL, (CUTSYS_PC *)WORLD->cutscene_sys, cutscene_name, 0) != NULL) {
             return;
+        }
     }
-    if (level != NULL && netclient == 0)
+    if (level != NULL && netclient == 0) {
         GoToNewLevel(level->index);
+    }
 }
 
 void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int param_count) {
@@ -592,34 +615,39 @@ void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **p
     u32 flags;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
-        if (value)
+        if (value) {
             name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        else if (!NuStrICmp(params[i], GizObstacleActionBackwardPC))
+        } else if (!NuStrICmp(params[i], GizObstacleActionBackwardPC)) {
             forwards = 0;
-        else if (!NuStrICmp(params[i], GizObstacleActionForwardPC))
+        } else if (!NuStrICmp(params[i], GizObstacleActionForwardPC)) {
             forwards = 1;
-        else if (!NuStrICmp(params[i], GizmoSnapOptionNamePc))
+        } else if (!NuStrICmp(params[i], GizmoSnapOptionNamePc)) {
             snap = 1;
-        else if (!NuStrICmp(params[i], GizObstacleActionStayOpenPC))
+        } else if (!NuStrICmp(params[i], GizObstacleActionStayOpenPC)) {
             stay_open = 1;
-        else if (!NuStrICmp(params[i], GizObstacleActionStayShutPC))
+        } else if (!NuStrICmp(params[i], GizObstacleActionStayShutPC)) {
             stay_shut = 1;
+        }
     }
-    if (!name)
+    if (!name) {
         return;
+    }
     gizmo = (GIZMO_PC *)GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
     obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
-    if (!obstacle)
+    if (!obstacle) {
         return;
+    }
     if (forwards) {
-        if (snap)
+        if (snap) {
             GizObstacle_JumpToEnd(obstacle);
-        else
+        } else {
             GizObstacle_PlayForwards(obstacle);
-    } else if (snap)
+        }
+    } else if (snap) {
         GizObstacle_JumpToStart(obstacle);
-    else
+    } else {
         GizObstacle_PlayBackwards(obstacle);
+    }
     flags = obstacle->runtime_flags;
     flags &= ~0xcu;
     flags |= (stay_shut & 1) << 3;
@@ -634,14 +662,15 @@ void __cdecl GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char *
     i32 snap = 0;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
-        if (value != NULL)
+        if (value != NULL) {
             name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0)
+        } else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0) {
             forward = 0;
-        else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0)
+        } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
             forward = 1;
-        else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0)
+        } else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0) {
             snap = 1;
+        }
     }
     if (name != NULL) {
         GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(flow->gizmo_sys, gizspecial_gizmotype_id, name);
@@ -649,10 +678,11 @@ void __cdecl GizActions_PlaySpecial(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char *
             GIZSPECIAL_s *special = (GIZSPECIAL_s *)gizmo->object;
             if (special != NULL) {
                 if (forward != 0) {
-                    if (snap != 0)
+                    if (snap != 0) {
                         GameAnimSet_JumpToEnd(special->anim_set);
-                    else
+                    } else {
                         GameAnimSet_Play(special->anim_set, 1.0f, 0);
+                    }
                 } else if (snap != 0) {
                     GameAnimSet_JumpToStart(special->anim_set);
                 } else {
@@ -670,14 +700,15 @@ void __cdecl GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **p
     i32 snap = 0;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
-        if (value != NULL)
+        if (value != NULL) {
             name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0)
+        } else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0) {
             forward = 0;
-        else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0)
+        } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
             forward = 1;
-        else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0)
+        } else if (NuStrICmp(params[i], GizmoSnapOptionNamePc) == 0) {
             snap = 1;
+        }
     }
     if (name != NULL) {
         GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
@@ -730,8 +761,9 @@ void __cdecl GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, c
     char *name = NULL;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
-        if (value != NULL)
+        if (value != NULL) {
             name = value + NuStrLen(AIScriptActionNameArgPrefix);
+        }
     }
     NewCutScene(NULL, (CUTSYS_PC *)WorldInfo_CurrentlyActive()->cutscene_sys, name, 0);
 }
@@ -743,34 +775,38 @@ void __cdecl GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char
     i32 damage = 0;
     (void)unused0;
     (void)unused1;
-    if (0 >= count)
+    if (0 >= count) {
         return;
+    }
     for (index = 0; index < count; ++index) {
         char *value = NuStrIStr(params[index], (char *)"name=");
-        if (value != NULL)
+        if (value != NULL) {
             name = value + NuStrLen("name=");
-        else if (NuStrICmp(params[index], "BLOWUP") == 0)
+        } else if (NuStrICmp(params[index], "BLOWUP") == 0) {
             gizmo_type = 0;
-        else if (NuStrICmp(params[index], "TURRET") == 0)
+        } else if (NuStrICmp(params[index], "TURRET") == 0) {
             gizmo_type = 1;
-        else if ((value = NuStrIStr(params[index], (char *)"damage=")) != NULL) {
+        } else if ((value = NuStrIStr(params[index], (char *)"damage=")) != NULL) {
             value += NuStrLen("damage=");
             damage = (i32)NuAToF(value);
         }
     }
-    if (name == NULL || damage == 0)
+    if (name == NULL || damage == 0) {
         return;
+    }
     switch (gizmo_type) {
         case 0: {
             GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
-            if (gizmo != NULL && gizmo->object != NULL)
+            if (gizmo != NULL && gizmo->object != NULL) {
                 GizmoBlowupBlowup((GIZMOBLOWUP_PC *)gizmo->object, 1, -1, damage, NULL, 1);
+            }
             break;
         }
         case 1: {
             GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
-            if (gizmo != NULL && gizmo->object != NULL)
+            if (gizmo != NULL && gizmo->object != NULL) {
                 GizTurrets_Hit(WORLD, (GIZTURRET_s *)gizmo->object, NULL, -1, damage);
+            }
             break;
         }
     }
@@ -801,18 +837,21 @@ void __cdecl GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, cha
             value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
             if (value != NULL) {
                 SOCK_PC *sock = FindSock(WORLD->sock_sys, value + 5);
-                if (sock != NULL)
+                if (sock != NULL) {
                     index = sock - WORLD->sock_sys->socks;
+                }
             } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
                 enabled = 0;
             }
         }
     }
-    if (enabled != 0)
+    if (enabled != 0) {
         SockOn(WORLD->sock_sys, index);
-    else
+    } else {
         SockOff(WORLD->sock_sys, index);
+    }
 }
+
 GIZACTIONDEF_PC game_gizactiondefs[24] = {
     {GizActionNameSetVisibilityPc, GizActions_SetVisibilityPc},
     {GizActionNameSetGizmoVisibilityPc, GizActions_SetGizmoVisibilityPc},

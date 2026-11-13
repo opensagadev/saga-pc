@@ -6,6 +6,7 @@
 STATIC_ASSERT(sizeof(VARIPTR) == 4);
 STATIC_ASSERT(sizeof(*Char_MiniKit) == 4);
 extern f32 KITPOS2YPc;
+
 typedef struct world_minikit_reader_pc_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
@@ -14,6 +15,7 @@ typedef struct world_minikit_reader_pc_s {
     u8 unknown_2988[0x158];
     u8 *hub_minikits;
 } WORLD_MINIKIT_READER_PC;
+
 STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, minikit) == 0x2968);
 STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, pieces_by_id) == 0x2984);
 STATIC_ASSERT(offsetof(WORLD_MINIKIT_READER_PC, hub_minikits) == 0x2ae0);
@@ -38,8 +40,9 @@ void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR 
     minikit->piece_count = 0;
     minikit->area_index = -1;
     minikit->model_id = (i16)id;
-    if (id == -1)
+    if (id == -1) {
         return;
+    }
     NuStrCpy(path, "chars\\minikits\\");
     NuStrCat(path, CDataList[id].name);
     NuStrCat(path, "\\");
@@ -48,6 +51,7 @@ void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR 
     buffer->addr = (buffer->addr + 3) & ~3u;
     minikit->scene = NuGScnRead(buffer, *end, path);
 }
+
 static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
 
 void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
@@ -56,8 +60,9 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
     char name[64];
     (void)end;
     if (minikit->scene != NULL) {
-        for (direction = 0; direction < 6; ++direction)
+        for (direction = 0; direction < 6; ++direction) {
             direction_counts[direction] = 0;
+        }
         buffer->addr = (buffer->addr + 3) & ~3u;
         minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
         minikit->piece_count = 0;
@@ -75,10 +80,11 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
         }
         sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
         NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
-        if (minikit->piece_count > 0)
+        if (minikit->piece_count > 0) {
             buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
-        else
+        } else {
             minikit->pieces = NULL;
+        }
     } else {
         minikit->area_index = -1;
     }
@@ -87,15 +93,18 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
 void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection_plane, f32 reflection_height) {
     MINIKIT_PC *kit;
     i32 i;
-    if (Char_MiniKit == NULL)
+    if (Char_MiniKit == NULL) {
         return;
+    }
     kit = (MINIKIT_PC *)Char_MiniKit[id];
-    if (kit == NULL)
+    if (kit == NULL) {
         return;
+    }
     for (i = 0; i < kit->piece_count; ++i) {
         NUMTX draw_matrix, reflected;
-        if (NuSpecialExistsFn(&kit->pieces[i].special) == 0)
+        if (NuSpecialExistsFn(&kit->pieces[i].special) == 0) {
             continue;
+        }
         draw_matrix = kit->pieces[i].matrix;
         NuMtxMul(&draw_matrix, &draw_matrix, matrix);
         NuSpecialDrawAt(&kit->pieces[i].special, &draw_matrix);
@@ -113,11 +122,13 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
     i32 i, character_id;
     u32 table_size;
     char path[256];
-    if (Char_MiniKit == NULL)
+    if (Char_MiniKit == NULL) {
         return;
+    }
     minikits_savecharacterbufferptr = characterbuffer_ptr;
-    for (i = 0; i < CHARCOUNT; ++i)
+    for (i = 0; i < CHARCOUNT; ++i) {
         Char_MiniKit[i] = 0;
+    }
     buffer->addr = (buffer->addr + 3) & ~3u;
     view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
     table_size = CHARCOUNT * sizeof(MINIKIT_PC *);
@@ -125,8 +136,9 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
     buffer->addr += table_size;
     for (i = 0; i < collection->count; ++i) {
         character_id = collection->list[i].id;
-        if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL)
+        if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL) {
             continue;
+        }
         view->pieces_by_id[character_id] = (MINIKIT_PC *)buffer->void_ptr;
         buffer->addr += 0x18;
         NuStrCpy(path, "chars\\minikits\\");
@@ -135,10 +147,11 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         NuStrCat(path, CDataList[character_id].name);
         NuStrCat(path, ".gsc");
         buffer->addr = (buffer->addr + 3) & ~3u;
-        if (i >= 18)
+        if (i >= 18) {
             view->pieces_by_id[character_id]->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
-        else
+        } else {
             view->pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
+        }
         view->pieces_by_id[character_id]->model_id = (i16)character_id;
         if (view->pieces_by_id[character_id]->scene != NULL) {
             MiniKit_InitPieces(view->pieces_by_id[character_id], 10, buffer, end);
@@ -159,11 +172,13 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
         view->minikit.pieces = NULL;
         view->minikit.piece_count = 0;
     }
-    if (view->pieces_by_id == NULL)
+    if (view->pieces_by_id == NULL) {
         return;
+    }
     if (world->area != NULL && (world->area->flags & 5) == 5) {
-        if (Char_MiniKit == NULL)
+        if (Char_MiniKit == NULL) {
             return;
+        }
         for (i = 0; i < CHARCOUNT; ++i) {
             if (view->pieces_by_id[i] != NULL && view->pieces_by_id[i]->scene != NULL) {
                 NuGScnRemove(view->pieces_by_id[i]->scene);
@@ -184,8 +199,9 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
 
 void CollectAllMiniKits(AREASAVE_s *save) {
     i32 i;
-    if (save == NULL)
+    if (save == NULL) {
         return;
+    }
     for (i = 0; i < AREACOUNT; ++i) {
         save[i].minikit_count = (ADataList[i].flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
         save[i].minikit_complete = 1;
@@ -212,8 +228,9 @@ void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     f32 factor, x, y;
     WORLDINFO *world;
     char text[32];
-    if (model == -1 || time <= 0.0f)
+    if (model == -1 || time <= 0.0f) {
         return;
+    }
     factor = NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff];
     x = (KITPOSX - KITPOS2X) * factor + KITPOS2X;
     y = (KITPOSY - KITPOS2YPc) * factor + KITPOS2YPc;
@@ -240,12 +257,14 @@ void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     if (WorldInfo_CurrentlyActive()->area != NULL && (i16)message->icon != -1) {
         if ((i16)message->icon == MiniKitModelId_PC) {
             ++AreaGlobals_PC.progress_flags;
-            if (AreaGlobals_PC.progress_flags > AreaGlobals_PC.area_phase)
+            if (AreaGlobals_PC.progress_flags > AreaGlobals_PC.area_phase) {
                 AreaGlobals_PC.progress_flags = AreaGlobals_PC.area_phase;
+            }
         } else if ((i16)message->icon == CharKitModelId_PC && AreaGlobals_PC.field_20 < AreaGlobals_PC.field_1c) {
             ++AreaGlobals_PC.field_20;
-            if (AreaGlobals_PC.field_20 == AreaGlobals_PC.field_1c && AreaGlobals_PC.field_1c >= 10)
+            if (AreaGlobals_PC.field_20 == AreaGlobals_PC.field_1c && AreaGlobals_PC.field_1c >= 10) {
                 EndChallenge(2, 1);
+            }
         }
     }
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
@@ -259,10 +278,12 @@ typedef struct HOTH_WORLD_SCRIPT_PC {
     u8 reserved[0x2b00];
     AISCRIPTPROCESS_PC processor;
 } HOTH_WORLD_SCRIPT_PC;
+
 typedef struct HOTH_ANTINODE_PC {
     u8 reserved[0x50];
     i64 excluded_character_types;
 } HOTH_ANTINODE_PC;
+
 STATIC_ASSERT(offsetof(HOTH_WORLD_SCRIPT_PC, processor) == 0x2b00);
 STATIC_ASSERT(offsetof(HOTH_ANTINODE_PC, excluded_character_types) == 0x50);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);

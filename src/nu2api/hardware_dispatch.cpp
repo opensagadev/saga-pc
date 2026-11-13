@@ -301,13 +301,16 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     PcWindowOptions.SetSpeedBlurEnabled(1);
     NuFileInitEx(hostfs, file_mode, eject);
     if (supplied_window == NULL) {
-        if (show == 0)
+        if (show == 0) {
             NuHwShowCommandPc = 0;
-        if (!CreateWindowPc(PCInputWindow_candidate, NuHwShowCommandPc, (u16)icon))
+        }
+        if (!CreateWindowPc(PCInputWindow_candidate, NuHwShowCommandPc, (u16)icon)) {
             exit(1);
+        }
     } else {
-        if (!PublishWindowPc(supplied_window, NuHwShowCommandPc))
+        if (!PublishWindowPc(supplied_window, NuHwShowCommandPc)) {
             exit(1);
+        }
     }
     NuPrimInit(buffer, *end);
     PCGraphicsInitRenderTexturePool(buffer, *end);
@@ -326,15 +329,19 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuShaderManagerInit(buffer, *end);
     if ((NuHwDfsNamePc && *NuHwDfsNamePc) || (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc)) {
         i32 count = dat_count;
-        if (NuHwDfsNamePc && *NuHwDfsNamePc)
+        if (NuHwDfsNamePc && *NuHwDfsNamePc) {
             ++count;
-        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc)
+        }
+        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
             ++count;
+        }
         const char **names = (const char **)NuAlloc(count * 4, NuHwAllocSourcePc, 0x2a0);
-        if (NuHwDfsNamePc && *NuHwDfsNamePc)
+        if (NuHwDfsNamePc && *NuHwDfsNamePc) {
             PCByteCopy_candidate(names, &NuHwDfsNamePc, 4);
-        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc)
+        }
+        if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
             PCByteCopy_candidate(names + 1, &NuHwSoundDfsNamePc, 4);
+        }
         dat_names = names;
         dat_count = count;
         /* Native does not copy original dat_names into the expanded allocation. */
@@ -367,14 +374,18 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     NuPrimSetCoordinateSystem(0);
     NuQFntSetCoordinateSystem(1);
     NuPadInit();
-    if (pads[0])
+    if (pads[0]) {
         *pads[0] = NuPadOpen(0, 0);
-    if (pads[1])
+    }
+    if (pads[1]) {
         *pads[1] = NuPadOpen(1, 0);
-    if (pads[2])
+    }
+    if (pads[2]) {
         *pads[2] = NuPadOpen(2, 0);
-    if (pads[3])
+    }
+    if (pads[3]) {
         *pads[3] = NuPadOpen(3, 0);
+    }
     NuMtlInitOverride(512, buffer, end);
     NuPadAutoConfigurePc(1);
     NuOcclusionManagerInit(occlusion_capacity, buffer, *end);
@@ -401,8 +412,9 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
     } else {
         language = GetUserDefaultLangID();
     }
-    if (NuHwParameter4fPc == 0 && language == 0x409)
+    if (NuHwParameter4fPc == 0 && language == 0x409) {
         language = 0x809;
+    }
     NuRegionSet(3);
     switch (language) {
         case 0x409:

@@ -16,8 +16,9 @@ i32 unref(u8 *source, u8 *destination) {
         if ((first & 0x80) == 0) {
             second = *source++;
             run = first & 3;
-            while (run--)
+            while (run--) {
                 *output++ = *source++;
+            }
             match = output - 1 - (((first & 0x60) << 3) + second);
             run = ((first & 0x1c) >> 2) + 3 - 1;
             do {
@@ -27,8 +28,9 @@ i32 unref(u8 *source, u8 *destination) {
             second = *source++;
             third = *source++;
             run = second >> 6;
-            while (run--)
+            while (run--) {
                 *output++ = *source++;
+            }
             match = output - 1 - (((second & 0x3f) << 8) + third);
             run = (first & 0x3f) + 4 - 1;
             do {
@@ -39,8 +41,9 @@ i32 unref(u8 *source, u8 *destination) {
             third = *source++;
             fourth = *source++;
             run = first & 3;
-            while (run--)
+            while (run--) {
                 *output++ = *source++;
+            }
             match = output - 1 - (((first & 0x10) << 12) + (second << 8) + third);
             run = ((first & 0x0c) << 6) + fourth + 5 - 1;
             do {
@@ -49,15 +52,17 @@ i32 unref(u8 *source, u8 *destination) {
         } else {
             run = ((first & 0x1f) << 2) + 4;
             if (run <= 0x70) {
-                while (run--)
+                while (run--) {
                     *output++ = *source++;
+                }
                 continue;
             }
             break;
         }
     }
     run = first & 3;
-    while (run--)
+    while (run--) {
         *output++ = *source++;
+    }
     return output - destination;
 }

@@ -7,14 +7,17 @@ i32 PC_CONTROL_SCREEN_PC::ItemAllowsBinding(PC_CONTROL_ROW_PC *row, i32 index, i
     if (!(flags & 0x10) && (kind == 0 || kind == 2)) {
         i32 blocked = 0;
         if (player == 0) {
-            if (flags & 0x20)
+            if (flags & 0x20) {
                 blocked = 1;
+            }
         } else if (player == 1) {
-            if (flags & 0x40)
+            if (flags & 0x40) {
                 blocked = 1;
+            }
         }
-        if (blocked)
+        if (blocked) {
             return 0;
+        }
         return 1;
     }
     return 0;
@@ -25,55 +28,69 @@ void PC_CONTROL_SCREEN_PC::AdvanceSelection(PC_CONTROL_ROW_PC *row) {
     for (;;) {
         if (!(drop_in && items[row->selected].label != 0) &&
             !(selected_player == 0 && (items[row->selected].flags & 0x20)) &&
-            !(selected_player == 1 && (items[row->selected].flags & 0x40)) && !(items[row->selected].flags & 0x80))
+            !(selected_player == 1 && (items[row->selected].flags & 0x40)) && !(items[row->selected].flags & 0x80)) {
             return;
-        if (++row->selected >= row->count)
+        }
+        if (++row->selected >= row->count) {
             row->selected = 0;
+        }
     }
 }
 
 /* UI helper names below are reconciled with the separate input API contract before integration. */
 u8 PC_CONTROL_SCREEN_PC::PortAllowed(i32 player, i32 port, i32 allow_keyboard_sharing) {
     i32 keyboard_used = 0;
-    if (port == ports[player])
+    if (port == ports[player]) {
         return 1;
+    }
     for (i32 i = 0; i < player_count; ++i) {
         if (i != player) {
-            if (TextInputIsKeyboardDevicePc(ports[i]))
+            if (TextInputIsKeyboardDevicePc(ports[i])) {
                 keyboard_used = 1;
-            if (port == ports[i])
+            }
+            if (port == ports[i]) {
                 return 0;
+            }
         }
     }
-    if (!allow_keyboard_sharing && keyboard_used && TextInputIsKeyboardDevicePc(port))
+    if (!allow_keyboard_sharing && keyboard_used && TextInputIsKeyboardDevicePc(port)) {
         return 0;
+    }
     return 1;
 }
 
 u8 PC_CONTROL_SCREEN_PC::HasMissingBindings(void) {
     for (i32 player = 0; player < player_count; ++player) {
-        if (ports[player] < 0 || original_ports[player] < 0)
+        if (ports[player] < 0 || original_ports[player] < 0) {
             continue;
+        }
         for (i32 row = 0; row < row_count; ++row) {
             PC_CONTROL_ITEM_PC *item = rows[row].items;
             for (i32 index = 0; index < rows[row].count; ++index, ++item) {
-                if (item->kind != 0)
+                if (item->kind != 0) {
                     continue;
+                }
                 i32 blocked = 0;
                 if (player == 0) {
-                    if (item->flags & 0x20)
+                    if (item->flags & 0x20) {
                         blocked = 1;
+                    }
                 } else if (player == 1) {
-                    if (item->flags & 0x40)
+                    if (item->flags & 0x40) {
                         blocked = 1;
-                } else
+                    }
+                } else {
                     blocked = 1;
-                if (blocked)
+                }
+                if (blocked) {
                     continue;
-                if (item->flags & 8)
+                }
+                if (item->flags & 8) {
                     continue;
-                if (!PcInputBindingPresentPc(0, item->command, 1, player))
+                }
+                if (!PcInputBindingPresentPc(0, item->command, 1, player)) {
                     return 1;
+                }
             }
         }
     }
@@ -84,8 +101,9 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
     PC_INPUT_CONFIG_PC *configuration = NULL;
     for (i32 i = 0; i < 2; ++i) {
         configuration = PcInputFindConfigPc(1, ports[selected_player], i);
-        if (configuration)
+        if (configuration) {
             break;
+        }
     }
     PC_CONTROL_ROW_PC *row;
     for (i32 r = 0; r < row_count; ++r) {
@@ -94,73 +112,94 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
         for (i32 i = 0; i < row->count; ++i, ++item) {
             item->flags &= 0x1f;
             if (item->kind == 4) {
-                if (ports[selected_player] < 0 && (item->label == 0x28 || item->label == 0x2b))
+                if (ports[selected_player] < 0 && (item->label == 0x28 || item->label == 0x2b)) {
                     item->flags |= 0x80;
-                if (item->label == 0x28 && !configuration)
+                }
+                if (item->label == 0x28 && !configuration) {
                     item->flags |= 0x80;
-                if (item->label == 0x2b && !TextInputIsKeyboardDevicePc(ports[selected_player]))
+                }
+                if (item->label == 0x2b && !TextInputIsKeyboardDevicePc(ports[selected_player])) {
                     item->flags |= 0x80;
+                }
             }
-            if (drop_in && item->kind == 4 && item->label != 0)
+            if (drop_in && item->kind == 4 && item->label != 0) {
                 item->flags |= 0xe0;
+            }
             if (item->kind == 2) {
-                if (!PcInputIsJoystickDevicePc(ports[0]))
+                if (!PcInputIsJoystickDevicePc(ports[0])) {
                     item->flags |= 0x20;
-                if (!PcInputIsJoystickDevicePc(ports[1]))
+                }
+                if (!PcInputIsJoystickDevicePc(ports[1])) {
                     item->flags |= 0x40;
+                }
             }
             if (item->kind == 0) {
                 item->flags = (item->flags & ~0x20) | (ports[0] < 0 ? 0x20 : 0);
                 item->flags = (item->flags & ~0x40) | (ports[1] < 0 ? 0x40 : 0);
                 item->flags = (item->flags & ~0x80) | (ports[selected_player] < 0 ? 0x80 : 0);
-                if ((item->flags & 7) == 1)
+                if ((item->flags & 7) == 1) {
                     item->label = 7;
-                if ((item->flags & 7) == 2)
+                }
+                if ((item->flags & 7) == 2) {
                     item->label = 8;
-                if ((item->flags & 7) == 3)
+                }
+                if ((item->flags & 7) == 3) {
                     item->label = 9;
-                if ((item->flags & 7) == 4)
+                }
+                if ((item->flags & 7) == 4) {
                     item->label = 10;
+                }
                 if ((item->flags & 7) == 1 || (item->flags & 7) == 2) {
-                    if (PcInputIsMouseDevicePc(ports[0]))
+                    if (PcInputIsMouseDevicePc(ports[0])) {
                         item->flags |= 0x20;
-                    if (PcInputIsMouseDevicePc(ports[1]))
+                    }
+                    if (PcInputIsMouseDevicePc(ports[1])) {
                         item->flags |= 0x40;
+                    }
                 }
                 if (PcInputIsMouseDevicePc(ports[selected_player])) {
-                    if ((item->flags & 7) == 3)
+                    if ((item->flags & 7) == 3) {
                         item->label = 0x29;
-                    if ((item->flags & 7) == 4)
+                    }
+                    if ((item->flags & 7) == 4) {
                         item->label = 0x2a;
+                    }
                 }
                 i32(__cdecl * filter)(i32, i32) = PcInputGetCommandFilterPc();
                 if (filter) {
-                    if (!filter(ports[0], item->command))
+                    if (!filter(ports[0], item->command)) {
                         item->flags |= 0x20;
-                    if (!filter(ports[1], item->command))
+                    }
+                    if (!filter(ports[1], item->command)) {
                         item->flags |= 0x40;
+                    }
                 }
                 if (item->flags & 8) {
-                    if (TextInputIsKeyboardDevicePc(ports[0]))
+                    if (TextInputIsKeyboardDevicePc(ports[0])) {
                         item->flags |= 0x20;
-                    if (TextInputIsKeyboardDevicePc(ports[1]))
+                    }
+                    if (TextInputIsKeyboardDevicePc(ports[1])) {
                         item->flags |= 0x40;
+                    }
                 }
             }
             if (item->kind == 2) {
                 i32 player = selected_player;
                 if (!player) {
-                    if (item->flags & 0x20)
+                    if (item->flags & 0x20) {
                         player = 1;
+                    }
                 } else if (item->flags & 0x40) {
                     --player;
                 }
                 item->label = 0x22;
-                if (TextInputIsKeyboardDevicePc(ports[player]))
+                if (TextInputIsKeyboardDevicePc(ports[player])) {
                     item->label = 0x23;
+                }
             }
-            if (((item->flags & 0x20) && selected_player == 0) || ((item->flags & 0x40) && selected_player != 0))
+            if (((item->flags & 0x20) && selected_player == 0) || ((item->flags & 0x40) && selected_player != 0)) {
                 item->flags |= 0x80;
+            }
         }
     }
     AdvanceSelection(row);
@@ -202,8 +241,9 @@ void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VAR
 i32 PC_CONTROL_SCREEN_PC::HashConfiguration(void) {
     i32 hash = PcInputHashAuxiliaryBindingsPc();
     hash = PcInputMixConfigurationHashPc(hash, (u32)keyboard_deadzone);
-    for (i32 i = 0; i < 4; ++i)
+    for (i32 i = 0; i < 4; ++i) {
         hash = PcInputMixConfigurationHashPc(hash, (u32)deadzone[i]);
+    }
     return hash;
 }
 
@@ -211,43 +251,52 @@ void PC_CONTROL_SCREEN_PC::SaveConfiguration(void) {
     i32 changed = 0;
     for (i32 i = 0; i < player_count; ++i) {
         i32 port = ports[i];
-        if (port < 0)
+        if (port < 0) {
             continue;
+        }
         changed = 1;
         PcInputSetDeadzonePc(port, (i32)deadzone[i]);
-        if (TextInputIsKeyboardDevicePc(port))
+        if (TextInputIsKeyboardDevicePc(port)) {
             PcInputSetAlternateDeadzonePc(port, (i32)keyboard_deadzone);
+        }
         PcInputCopyBindingsPc(port, 0, i);
         PcInputStageAuxiliaryConfigPc(port, i, i);
     }
-    if (changed)
+    if (changed) {
         PcInputSaveConfigurationPc();
+    }
 }
 
 i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
-    if (release_frames == 0)
+    if (release_frames == 0) {
         return 1;
+    }
     PcInputResetMouseMotionPc();
     i32 kind, value;
-    if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 0) < 0)
+    if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 0) < 0) {
         release_frames -= 1;
-    else
+    } else {
         release_frames = release_reset;
+    }
     return release_frames == 0;
 }
 
 void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u8 is_drop_in) {
-    if (!initialized || active)
+    if (!initialized || active) {
         return;
-    if (count <= 0)
+    }
+    if (count <= 0) {
         player_count = 2;
-    else
+    } else {
         player_count = count;
-    if (player >= 0)
+    }
+    if (player >= 0) {
         selected_player = player;
+    }
     drop_in = is_drop_in;
-    if (drop_in && player_count == 1 && saved_ports[1] >= 0)
+    if (drop_in && player_count == 1 && saved_ports[1] >= 0) {
         player_count = 2;
+    }
     active = 1;
     missing_binding = 0;
     phase = 1;
@@ -263,17 +312,20 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
         } else {
             PcInputCopyBindingsPc(ports[i], 1, i);
             deadzone[i] = (f32)PcInputDeadzonePc(ports[i]);
-            if (TextInputIsKeyboardDevicePc(ports[i]))
+            if (TextInputIsKeyboardDevicePc(ports[i])) {
                 keyboard_deadzone = (f32)PcInputAlternateDeadzonePc(ports[i]);
+            }
         }
     }
     config_hash = HashConfiguration();
     RefreshItems();
-    for (i32 i = 0; i < 12; ++i)
+    for (i32 i = 0; i < 12; ++i) {
         text[i].key = 0;
+    }
     PcInputSuppressKeyOnePc(1);
-    if (resolve_bank >= 0)
+    if (resolve_bank >= 0) {
         PcInputResolveAuxiliaryConflictsPc(resolve_bank, player_count);
+    }
     missing_binding = HasMissingBindings();
     release_reset = 3;
     release_frames = 3;
@@ -284,12 +336,14 @@ extern "C" {
     extern const char PcControlMissingTextPc[];
 
     void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
-        if (!config->rows)
+        if (!config->rows) {
             config->rows = PcControlRowsPc;
+        }
         for (i32 i = 0; i < 45; ++i) {
             PcControlTextPc[i] = TTab[*PcControlTextIdsPc[i]];
-            if (!PcControlTextPc[i])
+            if (!PcControlTextPc[i]) {
                 PcControlTextPc[i] = (char *)PcControlMissingTextPc;
+            }
         }
         PcControlScreenPc.Register(config, buffer, end);
     }
@@ -336,8 +390,9 @@ extern "C" {
 
 i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt) {
     i32 device = TextInputLastDevicePc();
-    if (device < 0)
+    if (device < 0) {
         device = 0;
+    }
     elapsed = dt;
     active = 1;
     switch (phase) {
@@ -362,14 +417,18 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                 fade = 0.0f;
                 phase = 0;
                 active = 0;
-                for (i32 i = 0; i < player_count; ++i)
+                for (i32 i = 0; i < player_count; ++i) {
                     saved_ports[i] = ports[i];
+                }
                 if (result == 3) {
-                    if (config_hash != (u32)HashConfiguration())
+                    if (config_hash != (u32)HashConfiguration()) {
                         SaveConfiguration();
-                    for (i32 i = 0; i < player_count; ++i)
-                        if (original_ports[i] >= 0)
+                    }
+                    for (i32 i = 0; i < player_count; ++i) {
+                        if (original_ports[i] >= 0) {
                             NuPadMapPlayerToPort(i, ports[i]);
+                        }
+                    }
                 }
                 return result;
             }
@@ -380,17 +439,22 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
             i32 escape = NuKeyboard(1);
             for (i32 i = 0; i < player_count; ++i) {
                 PcControlPressedPc[i] = 0;
-                if (!pads[i])
+                if (!pads[i]) {
                     continue;
+                }
                 u32 buttons = pads[i]->digital_buttons;
-                if (pads[i]->analog_left_y > 0xe0)
+                if (pads[i]->analog_left_y > 0xe0) {
                     buttons |= 0x4000;
-                if (pads[i]->analog_left_y < 0x20)
+                }
+                if (pads[i]->analog_left_y < 0x20) {
                     buttons |= 0x1000;
-                if (pads[i]->analog_left_x > 0xe0)
+                }
+                if (pads[i]->analog_left_x > 0xe0) {
                     buttons |= 0x2000;
-                if (pads[i]->analog_left_x < 0x20)
+                }
+                if (pads[i]->analog_left_x < 0x20) {
                     buttons |= 0x8000;
+                }
                 if (buttons == PcControlHeldPc[i] && buttons) {
                     PcControlRepeatPc[i] = (f32)(PcControlRepeatPc[i] - elapsed);
                     if (PcControlRepeatPc[i] <= 0.0f) {
@@ -406,14 +470,16 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
             PcControlPulseAnglePc += (i32)(elapsed * 65535.0);
             unknown10 = (f32)((f32)(NuTrigTable[(PcControlPulseAnglePc >> 1) & 0x7fff] + 1.0) * 0.5);
             PcControlButtonsPc = PcControlPressedPc[device];
-            if (!WaitForRelease())
+            if (!WaitForRelease()) {
                 return active;
+            }
             PC_CONTROL_ROW_PC *row = &rows[selected_row];
             switch (capture_state) {
                 case 2:
                     if (escape) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(0);
+                        }
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
@@ -425,18 +491,22 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             release_reset = release_frames = 3;
                             PcInputResetMouseMotionPc();
                             if (PortAllowed(selected_player, port, 1)) {
-                                if (play_sound)
+                                if (play_sound) {
                                     play_sound(2);
+                                }
                                 ports[selected_player] = port;
                                 PcInputSelectConfigurationPc(port, selected_player, selected_player);
-                                if (TextInputIsKeyboardDevicePc(port))
+                                if (TextInputIsKeyboardDevicePc(port)) {
                                     PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
+                                }
                                 capture_state = 0;
-                                if (!HasMissingBindings())
+                                if (!HasMissingBindings()) {
                                     missing_binding = 0;
+                                }
                                 deadzone[selected_player] = (f32)PcInputDeadzonePc(port);
-                                if (TextInputIsKeyboardDevicePc(port))
+                                if (TextInputIsKeyboardDevicePc(port)) {
                                     keyboard_deadzone = (f32)PcInputAlternateDeadzonePc(port);
+                                }
                                 RefreshItems();
                             } else if (play_sound) {
                                 play_sound(6);
@@ -446,8 +516,9 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                     break;
                 case 1:
                     if (escape) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(0);
+                        }
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
@@ -465,8 +536,9 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             capture_state = 0;
                             release_reset = release_frames = 3;
                             PcInputResetMouseMotionPc();
-                            if (!HasMissingBindings())
+                            if (!HasMissingBindings()) {
                                 missing_binding = 0;
+                            }
                         }
                     }
                     break;
@@ -478,8 +550,9 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             keyboard_deadzone = 10.0f;
                             sound = 6;
                         }
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(sound);
+                        }
                     }
                     if (PcControlButtonsPc & 0xc000) {
                         keyboard_deadzone = (f32)(keyboard_deadzone - 1.0);
@@ -488,20 +561,23 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             keyboard_deadzone = 1.0f;
                             sound = 6;
                         }
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(sound);
+                        }
                     }
                     if (escape) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(0);
+                        }
                         keyboard_deadzone = saved_keyboard_deadzone;
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
                     }
                     if (PcControlButtonsPc & 0x40) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(1);
+                        }
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
@@ -515,8 +591,9 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             deadzone[selected_player] = 100.0f;
                             sound = 6;
                         }
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(sound);
+                        }
                     }
                     if (PcControlButtonsPc & 0xc000) {
                         deadzone[selected_player] = (f32)(deadzone[selected_player] - 5.0);
@@ -525,20 +602,23 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                             deadzone[selected_player] = 16.0f;
                             sound = 6;
                         }
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(sound);
+                        }
                     }
                     if (escape || (PcControlButtonsPc & 0x20)) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(0);
+                        }
                         deadzone[selected_player] = saved_deadzone[selected_player];
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
                     }
                     if (PcControlButtonsPc & 0x40) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(1);
+                        }
                         capture_state = 0;
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
@@ -547,50 +627,60 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                 case 0: {
                     if (!drop_in) {
                         if (PcControlButtonsPc & 0x2000) {
-                            if (play_sound)
+                            if (play_sound) {
                                 play_sound(3);
-                            if (++selected_player >= player_count)
+                            }
+                            if (++selected_player >= player_count) {
                                 selected_player = 0;
+                            }
                             RefreshItems();
                             AdvanceSelection(row);
                         }
                         if (PcControlButtonsPc & 0x8000) {
-                            if (play_sound)
+                            if (play_sound) {
                                 play_sound(3);
-                            if (--selected_player < 0)
+                            }
+                            if (--selected_player < 0) {
                                 selected_player = player_count - 1;
+                            }
                             RefreshItems();
                             AdvanceSelection(row);
                         }
                         if (PcControlButtonsPc & 0x4000) {
-                            if (play_sound)
+                            if (play_sound) {
                                 play_sound(3);
-                            if (++row->selected >= row->count)
+                            }
+                            if (++row->selected >= row->count) {
                                 row->selected = 0;
+                            }
                             AdvanceSelection(row);
                         }
                         if (PcControlButtonsPc & 0x1000) {
-                            if (play_sound)
+                            if (play_sound) {
                                 play_sound(3);
+                            }
                             do {
-                                if (--row->selected < 0)
+                                if (--row->selected < 0) {
                                     row->selected = row->count - 1;
+                                }
                             } while ((selected_player == 0 && (row->items[row->selected].flags & 0x20)) ||
                                      (selected_player == 1 && (row->items[row->selected].flags & 0x40)) ||
                                      (row->items[row->selected].flags & 0x80));
                         }
                     }
                     if ((PcControlButtonsPc & 0x20) || escape) {
-                        if (play_sound)
+                        if (play_sound) {
                             play_sound(0);
+                        }
                         phase = 3;
                         result = 2;
                     } else if (PcControlButtonsPc & 0x40) {
                         PC_CONTROL_ITEM_PC *item = &row->items[row->selected];
                         switch (item->kind) {
                             case 4:
-                                if (play_sound)
+                                if (play_sound) {
                                     play_sound(2);
+                                }
                                 switch (item->label) {
                                     case 43: {
                                         i32 player = PcInputCapturedPortPc();
@@ -608,11 +698,13 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                                     player = -1;
                                                     goto set_captured_port;
                                                 }
-                                                if (!TextInputIsKeyboardDevicePc(ports[player]))
+                                                if (!TextInputIsKeyboardDevicePc(ports[player])) {
                                                     goto set_captured_port;
+                                                }
                                             }
-                                            if (!PcInputIsMouseDevicePc(ports[player]))
+                                            if (!PcInputIsMouseDevicePc(ports[player])) {
                                                 --ports[player];
+                                            }
                                             PcInputSelectConfigurationPc(ports[player], player, player);
                                         }
                                     set_captured_port:
@@ -633,8 +725,9 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                                     (f32)PcInputDeadzonePc(ports[selected_player]);
                                                 break;
                                             }
-                                            if (++key == 2)
+                                            if (++key == 2) {
                                                 key = 0;
+                                            }
                                         }
                                         break;
                                     }
@@ -644,23 +737,26 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                         capture_state = 2;
                                         break;
                                     case 1:
-                                        if (play_sound)
+                                        if (play_sound) {
                                             play_sound(0);
+                                        }
                                         phase = 3;
                                         result = 2;
                                         break;
                                     case 0:
                                         if (ports[selected_player] == -1) {
-                                            if (play_sound)
+                                            if (play_sound) {
                                                 play_sound(1);
+                                            }
                                             phase = 3;
                                         }
                                         missing_binding = HasMissingBindings();
                                         if (!missing_binding) {
                                             result = 3;
                                             phase = 3;
-                                            if (play_sound)
+                                            if (play_sound) {
                                                 play_sound(1);
+                                            }
                                         } else if (play_sound) {
                                             play_sound(6);
                                         }
@@ -669,12 +765,14 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                 break;
                             case 2:
                                 if (!ItemAllowsBinding(row, row->selected, selected_player)) {
-                                    if (play_sound)
+                                    if (play_sound) {
                                         play_sound(6);
+                                    }
                                     break;
                                 }
-                                if (play_sound)
+                                if (play_sound) {
                                     play_sound(2);
+                                }
                                 release_reset = release_frames = 3;
                                 PcInputResetMouseMotionPc();
                                 if (TextInputIsKeyboardDevicePc(ports[selected_player])) {
@@ -687,12 +785,14 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                                 break;
                             case 0:
                                 if (!ItemAllowsBinding(row, row->selected, selected_player)) {
-                                    if (play_sound)
+                                    if (play_sound) {
                                         play_sound(6);
+                                    }
                                     break;
                                 }
-                                if (play_sound)
+                                if (play_sound) {
                                     play_sound(2);
+                                }
                                 release_reset = release_frames = 3;
                                 PcInputResetMouseMotionPc();
                                 capture_state = 1;
@@ -710,12 +810,14 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
             PC_CONTROL_ITEM_PC *item = &rows[r].items[i];
             if (r == selected_row && i == rows[r].selected) {
                 item->pulse = (f32)(item->pulse + elapsed * 8.0);
-                if (item->pulse > 1.0f)
+                if (item->pulse > 1.0f) {
                     item->pulse = 1.0f;
+                }
             } else if (item->pulse > 0.0f) {
                 item->pulse = (f32)(item->pulse - elapsed * 8.0);
-                if (item->pulse < 0.0f)
+                if (item->pulse < 0.0f) {
                     item->pulse = 0.0f;
+                }
             }
         }
     }
@@ -724,11 +826,13 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
 
 // Private source; sole integration owner installs.
 extern char *PcControlTextPc[45];
+
 struct PC_CONTROL_VERTEX_PC {
     f32 x, y, z;
     u32 colour;
     f32 u, v;
 };
+
 STATIC_ASSERT(offsetof(PC_CONTROL_VERTEX_PC, colour) == 0xc);
 STATIC_ASSERT(sizeof(PC_CONTROL_VERTEX_PC) == 0x18);
 extern "C" i32 __cdecl PcControlWrapTextPc(char *, f32);
@@ -744,49 +848,59 @@ static void PcControlPrimColourPc(u32 colour) {
     }
     ((PC_CONTROL_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
+
 i32 PC_CONTROL_SCREEN_PC::CountPlayerRows(PC_CONTROL_ROW_PC *row) {
     i32 result = 0;
     PC_CONTROL_ITEM_PC *item = row->items;
     for (i32 i = 0; i < row->count; ++i, ++item) {
-        if ((item->kind == 2 || item->kind == 0) && (!(item->flags & 0x20) || !(item->flags & 0x40)))
+        if ((item->kind == 2 || item->kind == 0) && (!(item->flags & 0x20) || !(item->flags & 0x40))) {
             ++result;
+        }
     }
     return result;
 }
 
 u32 PC_CONTROL_SCREEN_PC::ScaleAlpha(f32 alpha, u32 colour) {
     f32 scaled = (colour >> 24) * alpha;
-    if (scaled > 255.0)
+    if (scaled > 255.0) {
         scaled = 255.0f;
+    }
     return ((u32)scaled << 24) | (colour & 0xffffff);
 }
 
 u32 PC_CONTROL_SCREEN_PC::ScaleColour(f32 brightness, f32 alpha, u32 colour) {
     f32 a = (colour >> 24) * alpha;
-    if (a > 255.0)
+    if (a > 255.0) {
         a = 255.0f;
+    }
     f32 r = (colour & 0xff) * brightness;
-    if (r > 255.0)
+    if (r > 255.0) {
         r = 255.0f;
+    }
     f32 g = ((colour >> 8) & 0xff) * brightness;
-    if (g > 255.0)
+    if (g > 255.0) {
         g = 255.0f;
+    }
     f32 b = ((colour >> 16) & 0xff) * brightness;
-    if (b > 255.0)
+    if (b > 255.0) {
         b = 255.0f;
+    }
     return (((i32)b & 0xff) << 16) | ((i32)a << 24) | (((i32)g & 0xff) << 8) | ((i32)r & 0xff);
 }
 
 u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     i32 count = NuStrLen(string);
-    if (!count)
+    if (!count) {
         return 0;
+    }
     i32 prefix = (u32)string & 3;
-    if (prefix > count)
+    if (prefix > count) {
         prefix = count;
+    }
     u32 hash = 0;
-    for (i32 i = 0; i < prefix; ++i)
+    for (i32 i = 0; i < prefix; ++i) {
         hash = (hash << 8) | (i32)(i8)*string++;
+    }
     count -= prefix;
     i32 tail = count & 3;
     count -= tail;
@@ -797,18 +911,21 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     }
     if (tail) {
         u32 value = 0;
-        for (i32 i = 0; i < tail; ++i)
+        for (i32 i = 0; i < tail; ++i) {
             value = (value << 8) | (i32)(i8)*string++;
+        }
         hash = ((hash & 0x80000000) ? (hash << 1) | 1 : hash << 1) ^ value;
     }
     return hash;
 }
 
 extern "C" void __cdecl PcControlFontScalePc(VUFNT *font, f32 width, f32 height, f32 *sx, f32 *sy) {
-    if (!font)
+    if (!font) {
         font = system_qfont;
-    if (!font)
+    }
+    if (!font) {
         return;
+    }
     u16 glyph = NuQFntEncodeUnicodeChar(font, 'M');
     if (glyph != 0xffff) {
         *sx = (f32)(width * 7.0 / font->glyphs[glyph].width);
@@ -823,8 +940,9 @@ extern "C" void __cdecl PcControlFontScalePc(VUFNT *font, f32 width, f32 height,
 void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour,
                                      f32 brightness, f32 wrap, u32 key) {
     char decoded[0x400];
-    if (!string || !*string)
+    if (!string || !*string) {
         return;
+    }
     TextDecode(string, (u8 *)decoded);
     if (!key) {
         key = HashString(decoded);
@@ -832,9 +950,11 @@ void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alig
         key = PcInputMixConfigurationHashPc(key, *(i32 *)&y);
     }
     i32 index;
-    for (index = 0; index < 12; ++index)
-        if (text[index].key == key)
+    for (index = 0; index < 12; ++index) {
+        if (text[index].key == key) {
             break;
+        }
+    }
     if (index == 12) {
         for (index = 0; index < 12; ++index) {
             if (!text[index].key) {
@@ -843,8 +963,9 @@ void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alig
                 break;
             }
         }
-        if (index == 12)
+        if (index == 12) {
             return;
+        }
     }
     NuStrCpy(text[index].text, decoded);
     text[index].colour = ScaleColour(brightness, 1.0f, colour);
@@ -870,8 +991,9 @@ f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignm
     y -= PcControlBaselineAdjustPc * height;
     if (wrap != 0.0f) {
         f32 length = NuQFntPrintLenU(font, string);
-        if (length > wrap)
+        if (length > wrap) {
             sx = wrap * sx / length;
+        }
     }
     colour = ScaleAlpha(opacity, colour);
     Text3DEx(string, x, y, z, sx, sy, 1.0f, alignment, colour, colour >> 8, colour >> 16, colour >> 24);
@@ -882,8 +1004,9 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
     delta += delta;
     PC_CONTROL_TEXT_PC *entry = text;
     for (i32 i = 0; i < 12; ++i, ++entry) {
-        if (!entry->key)
+        if (!entry->key) {
             continue;
+        }
         f32 x = entry->x, y = entry->y;
         u32 colour = entry->colour;
         f32 sx = entry->x_scale, sy = entry->y_scale;
@@ -897,8 +1020,9 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
         } else {
             entry->refreshed = 0;
             entry->fade += delta;
-            if (entry->fade > 1.0f)
+            if (entry->fade > 1.0f) {
                 entry->fade = 1.0f;
+            }
         }
         colour = ScaleAlpha(entry->fade, colour);
         if (entry->wrap_width > 0.0f) {
@@ -909,8 +1033,9 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
             char *line = entry->text;
             for (i32 j = 0; j < lines; ++j) {
                 char *end = NuStrChr(line, '\n');
-                if (end)
+                if (end) {
                     *end = 0;
+                }
                 DrawText(line, x, line_y, 0.0f, alignment, sx, sy, colour, 1, 0.0f);
                 if (end) {
                     *end = ' ';
@@ -918,8 +1043,9 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
                     line = end + 1;
                 }
             }
-        } else
+        } else {
             DrawText(entry->text, x, y, 0.0f, alignment, sx, sy, colour, 1, 0.0f);
+        }
     }
 }
 
@@ -982,14 +1108,16 @@ void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 heig
 
 void PC_CONTROL_SCREEN_PC::Draw(void) {
     u32 missing_colour = 0;
-    if (!active)
+    if (!active) {
         return;
+    }
     f32 left = 0.0f, right = 0.0f;
     f32 old_x = TextScaleX_candidate, old_y = TextScaleY_candidate;
     TextScaleX_candidate = TextScaleY_candidate = 1.0f;
     SmartTextSetFWNMode(2);
-    if (draw_background)
+    if (draw_background) {
         draw_background(0.0f, 0.0f, fade);
+    }
     f32 label_x = 0.0f;
     if (player_count > 1) {
         left = (f32)(label_x - 0.6499999761581421);
@@ -1008,12 +1136,14 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     i32 port0 = ports[0], port1 = ports[1];
-    if (player_count == 1)
+    if (player_count == 1) {
         label_x = 0.3f;
+    }
     DrawText(PcControlTextPc[2], 0.0f, 0.9f, 0.0f, 0x40, 2.0f, 2.0f, 0x80ff2080, 2, 0.0f);
     f32 pulse = (f32)(unknown10 + unknown10 * 0.5);
-    if (missing_binding)
+    if (missing_binding) {
         missing_colour = ScaleColour(pulse, pulse, 0x800000ff);
+    }
     u32 selected_colour = ScaleColour(pulse, pulse, 0x80c0c0c0);
     u32 capture_colour = ScaleColour(pulse, pulse, 0x80c0c000);
     for (i32 r = 0; r < row_count; ++r) {
@@ -1028,20 +1158,23 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
             player0_colour = 0x80303030;
             player1_colour = 0x80a0a0a0;
         }
-        if (drop_in)
+        if (drop_in) {
             player0_colour = player1_colour = 0x80a0a0a0;
+        }
         if (capture_state == 2) {
-            if (selected_player == 0)
+            if (selected_player == 0) {
                 player0_colour = capture_colour;
-            else
+            } else {
                 player1_colour = capture_colour;
+            }
         }
         u32 heading0 = 0x80808020, heading1 = 0x80808020;
         if (!drop_in) {
-            if (selected_player == 0)
+            if (selected_player == 0) {
                 heading0 = ScaleColour(pulse, pulse, heading0);
-            else
+            } else {
                 heading1 = ScaleColour(pulse, pulse, heading1);
+            }
         }
         f32 sx, sy;
         PcControlFontScalePc(font, x_scale, y_scale, &sx, &sy);
@@ -1051,12 +1184,14 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         f32 y = (f32)(0.05999999865889549 - CountPlayerRows(row) * line_height * 0.5);
         f32 device_y = (f32)(y - line_height * 1.100000023841858);
         if (port0 >= 0 || port1 >= 0) {
-            if (port0 >= 0)
+            if (port0 >= 0) {
                 QueueText(PcInputDeviceNamePc(port0), left, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020, 1.0f, 0.6f,
                           0);
-            if (port1 >= 0 && player_count > 1)
+            }
+            if (port1 >= 0 && player_count > 1) {
                 QueueText(PcInputDeviceNamePc(port1), label_x + 0.6499999761581421f, device_y, 0.0f, 0x40, 1.4f, 0.8f,
                           0x80208020, 1.0f, 0.6f, 0);
+            }
             device_y -= line_height * 2.0f;
         }
         if (player_count > 1) {
@@ -1067,8 +1202,9 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         PcInputSetMouseFieldPc(1);
         i32 show_empty0 = 1, show_empty1 = 1;
         for (i32 index = 0; index < row->count; ++index, ++item) {
-            if ((((item->flags >> 6) & 1) & ((item->flags >> 5) & 1)) != 0)
+            if ((((item->flags >> 6) & 1) & ((item->flags >> 5) & 1)) != 0) {
                 continue;
+            }
             u32 binding0 = player0_colour, binding1 = player1_colour;
             u32 label_colour = item->kind == 4 ? 0x80408040 : 0x80408080;
             i32 capturing = 0;
@@ -1076,47 +1212,56 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
             if (capture_state != 2) {
                 brightness = (f32)(1.0 + item->pulse * 0.5);
                 if (r == selected_row && index == row->selected) {
-                    if (selected_player == 0)
+                    if (selected_player == 0) {
                         binding0 = selected_colour;
-                    else
+                    } else {
                         binding1 = selected_colour;
+                    }
                     label_colour = selected_colour;
                     if (capture_state == 1) {
                         binding0 = player0_colour;
                         binding1 = player1_colour;
-                        if (selected_player == 0)
+                        if (selected_player == 0) {
                             binding0 = capture_colour;
-                        else
+                        } else {
                             binding1 = capture_colour;
+                        }
                         label_colour = capture_colour;
                         capturing = 1;
                     }
                 }
             }
             if (item->kind == 2) {
-                if (capture_state == 3 || capture_state == 4)
+                if (capture_state == 3 || capture_state == 4) {
                     label_colour = capture_colour;
+                }
                 for (i32 p = 0; p < player_count; ++p) {
                     i32 excluded = p == 0 ? (item->flags >> 5) & 1 : (item->flags >> 6) & 1;
-                    if (ports[p] < 0 || excluded)
+                    if (ports[p] < 0 || excluded) {
                         continue;
+                    }
                     f32 intensity = 1.0f;
-                    if (p == selected_player && r == selected_row && index == row->selected)
+                    if (p == selected_player && r == selected_row && index == row->selected) {
                         intensity = brightness;
-                    if ((item->flags & 0x80) || p != selected_player)
+                    }
+                    if ((item->flags & 0x80) || p != selected_player) {
                         intensity = (f32)(intensity * 0.4000000059604645);
+                    }
                     f32 x = player_count == 2 ? (p == 0 ? left : right) : (f32)(label_x - 0.6499999761581421);
-                    if (!TextInputIsKeyboardDevicePc(ports[p]))
+                    if (!TextInputIsKeyboardDevicePc(ports[p])) {
                         DrawDeadzone(x, (f32)(y + line_height * 0.699999988079071 * brightness), 0.0f, 0.25f,
                                      (f32)(brightness * 0.019999999552965164), intensity, intensity, deadzone[p]);
+                    }
                 }
             }
             if (item->kind == 0) {
                 if (missing_binding && !capturing) {
-                    if (!PcInputBindingPresentPc(0, item->command, 1, 0) && !(item->flags & 8))
+                    if (!PcInputBindingPresentPc(0, item->command, 1, 0) && !(item->flags & 8)) {
                         binding0 = missing_colour;
-                    if (!PcInputBindingPresentPc(0, item->command, 1, 1) && (item->flags & 8))
+                    }
+                    if (!PcInputBindingPresentPc(0, item->command, 1, 1) && (item->flags & 8)) {
                         binding1 = missing_colour;
+                    }
                 }
                 char button[0x40];
                 if (port0 >= 0) {
@@ -1154,16 +1299,18 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
             if (item->label == 43) {
                 i32 player = PcInputCapturedPortPc();
                 char *who = PcControlTextPc[44];
-                if (player == 0)
+                if (player == 0) {
                     who = PcControlTextPc[23];
-                else if (player == 1)
+                } else if (player == 1) {
                     who = PcControlTextPc[24];
+                }
                 NuSPrintf(formatted, "%s (%s)", label, who);
                 label = formatted;
                 width = 0.6f;
             }
-            if (item->flags & 0x80)
+            if (item->flags & 0x80) {
                 label_colour = ScaleAlpha(0.4f, label_colour);
+            }
             y += DrawText(label, label_x, y, 0.0f, 0x40, 2.5f, brightness, label_colour, 1, width);
             previous_kind = item->kind;
         }
@@ -1171,17 +1318,20 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         char *prompt_left = 0, *prompt_right = 0;
         switch (capture_state) {
             case 0:
-                if (!drop_in)
+                if (!drop_in) {
                     prompt_right = PcControlTextPc[33];
+                }
                 if (ports[selected_player] >= 0) {
                     PC_CONTROL_ITEM_PC *item = &row->items[row->selected];
                     if (item->kind == 0) {
-                        if (ItemAllowsBinding(row, row->selected, selected_player))
+                        if (ItemAllowsBinding(row, row->selected, selected_player)) {
                             prompt_left = PcControlTextPc[25];
-                    } else if (item->kind == 2)
+                        }
+                    } else if (item->kind == 2) {
                         prompt_left = PcControlTextPc[32];
-                    else
+                    } else {
                         prompt_left = PcControlTextPc[26];
+                    }
                 }
                 break;
             case 1:
@@ -1199,10 +1349,12 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                 prompt_right = PcControlTextPc[31];
                 break;
         }
-        if (prompt_left)
+        if (prompt_left) {
             QueueText(prompt_left, primary, -0.8f, 0.0f, 0x40, 2.0f, 1.0f, 0x80c0c0c0, 1.0f, 0.54f, 0);
-        if (prompt_right)
+        }
+        if (prompt_right) {
             QueueText(prompt_right, secondary, -0.8f, 0.0f, 0x40, 2.0f, 1.0f, 0x80c0c0c0, 1.0f, 0.54f, 0);
+        }
     }
     DrawQueuedText(elapsed);
     SmartTextSetFWNMode(0);
@@ -1221,8 +1373,9 @@ extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
     u8 substring[512], decoded[512];
     u16 encoded[512];
     f32 width;
-    if (max_width <= 0.0f)
+    if (max_width <= 0.0f) {
         return -1;
+    }
     for (;;) {
         i32 stop = 0;
         width = 0.0f;
@@ -1230,28 +1383,34 @@ extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
             previous_break = position;
             position = SplitTextFindNextWS(text, position);
             i32 length = position - line_start;
-            if (length > 511)
+            if (length > 511) {
                 length = 511;
+            }
             PCByteCopy_candidate(substring, text + line_start, length);
             substring[length] = 0;
             TextDecode((char *)substring, decoded);
             Text3DStringEncodeFont(decoded, encoded, SmartTextFont ? SmartTextFont : QFont2D);
             width = NuQFntPrintLenW(QFont2D, encoded);
-            while (text[position] == ' ')
+            while (text[position] == ' ') {
                 ++position;
-            if (!text[position])
+            }
+            if (!text[position]) {
                 stop = 1;
-            if (text[position] == '\\' && text[position + 1] == 'n')
+            }
+            if (text[position] == '\\' && text[position + 1] == 'n') {
                 stop = 1;
+            }
         }
-        if (!text[position])
+        if (!text[position]) {
             break;
+        }
         if (text[position] == '\\' && text[position + 1] == 'n') {
             text[position + 1] = ' ';
             previous_break = position + 1;
         }
-        if (previous_break == line_start)
+        if (previous_break == line_start) {
             previous_break = position;
+        }
         ++line_count;
         text[previous_break - 1] = '\n';
         line_start = previous_break;

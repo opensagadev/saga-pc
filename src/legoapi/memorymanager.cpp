@@ -26,8 +26,9 @@ void *memorymanager_s::AllocPool(u32 size, i32 clear) {
         return fresh;
     }
     free_lists[size_class] = *static_cast<void **>(item);
-    if (clear != 0)
+    if (clear != 0) {
         memset(item, 0, size);
+    }
     return item;
 }
 

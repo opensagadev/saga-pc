@@ -97,6 +97,7 @@ class EdVectorControl : public EdControl {
 
     eduiitem_s *components[3];
 };
+
 STATIC_ASSERT(sizeof(EdVectorControl) == 0x1c);
 
 class EdMatrixControl : public EdControl {
@@ -105,6 +106,7 @@ class EdMatrixControl : public EdControl {
 
     eduiitem_s *components[9];
 };
+
 STATIC_ASSERT(sizeof(EdMatrixControl) == 0x34);
 
 /* Numeric property row clamped to [minimum, maximum]; the button drags the
@@ -114,30 +116,39 @@ template <class T> class EdValueControl : public EdControl {
     static void *operator new(size_t size) {
         return theMemoryManager.AllocPool(size, 1);
     }
+
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdValueControl));
     }
+
     EdValueControl() : minimum(0), maximum(0) {
     }
+
     EdValueControl(T minimum, T maximum) : minimum(minimum), maximum(maximum) {
     }
+
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *member, void *target);
     virtual void Refresh();
+
     void GetVal(T *value) {
         reference->GetMemberData(object, value_type, value, 0);
     }
+
     void SetVal(T *value) {
         reference->SetMemberData(object, value_type, value, 0, NULL);
     }
+
     /* Drag step per unit of stick or cursor travel; finer for narrow ranges. */
     static f32 GetSensitivity(eduiitem_s *item) {
         EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
         f32 sensitivity = 0.01f;
         T range = control->maximum - control->minimum;
-        if (range < 5)
+        if (range < 5) {
             sensitivity = 0.001f;
+        }
         return sensitivity;
     }
+
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32 flags);
 
@@ -148,6 +159,7 @@ template <class T> class EdValueControl : public EdControl {
     T minimum;
     T maximum;
 };
+
 STATIC_ASSERT(sizeof(EdValueControl<i32>) == 0x20);
 STATIC_ASSERT(offsetof(EdValueControl<f32>, value_type) == 0x10);
 STATIC_ASSERT(offsetof(EdValueControl<f32>, minimum) == 0x18);
@@ -167,10 +179,12 @@ template <class T> void EdValueControl<T>::cbChanged(eduimenu_s *, eduiitem_s *i
     edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
     EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
     T value = (T)NuAToF(property->property_text);
-    if (value < control->minimum)
+    if (value < control->minimum) {
         value = control->minimum;
-    if (value > control->maximum)
+    }
+    if (value > control->maximum) {
         value = control->maximum;
+    }
     control->SetVal(&value);
     char text[128];
     NuSPrintf(text, control->format, value);
@@ -187,14 +201,18 @@ template <class T> void EdValueControl<T>::cbButton(eduimenu_s *menu, eduiitem_s
     f32 dx = 0.0f;
     f32 change = 0.0f;
     if (pad != NULL && (pad->digital_buttons & 0x40)) {
-        if (pad->analog_left_y > 128.0)
+        if (pad->analog_left_y > 128.0) {
             change = sensitivity * 10.0 * (pad->analog_left_y - 128.0);
-        if (pad->analog_left_y < 0x80)
+        }
+        if (pad->analog_left_y < 0x80) {
             change = sensitivity * -10.0 * (128.0 - pad->analog_left_y);
-        if (pad->analog_right_y > 128.0)
+        }
+        if (pad->analog_right_y > 128.0) {
             change = sensitivity * 0.1f * (pad->analog_right_y - 128.0);
-        if (pad->analog_right_y < 0x80)
+        }
+        if (pad->analog_right_y < 0x80) {
             change = sensitivity * -0.1f * (128.0 - pad->analog_right_y);
+        }
         value -= (T)change;
     } else {
         eduiGetCursorDelta(&dx, &change);
@@ -230,6 +248,7 @@ class EdIntControl : public EdValueControl<i32> {
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdIntControl));
     }
+
     EdIntControl(i32 minimum, i32 maximum) : EdValueControl<i32>(minimum, maximum) {
         value_type = EdType_Int;
         format = "%d";
@@ -241,10 +260,12 @@ class EdFloatControl : public EdValueControl<f32> {
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdFloatControl));
     }
+
     EdFloatControl() : EdValueControl<f32>(-1000000000.0f, 1000000000.0f) {
         value_type = EdType_Float;
         format = "%.2f";
     }
+
     EdFloatControl(f32 minimum, f32 maximum) : EdValueControl<f32>(minimum, maximum) {
         value_type = EdType_Float;
         format = "%.2f";
@@ -262,34 +283,43 @@ STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
 class RTLHelper : public EdClassInterface {
   public:
     RTLHelper();
+
     virtual void Flush() {
         set = NULL;
     }
+
     virtual i32 GetNumObjects();
     virtual void *GetNextObject(void *object);
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
+
     virtual void DestroyObject(void *object, i32) {
         rtlFree(static_cast<RTL_LIGHT_PC *>(object));
     }
+
     virtual void Process(void *object, EdInputContext &input);
     virtual void Render(void *object, i32 selected);
     virtual void EnterEditor();
     virtual void PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *);
+
     virtual void PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
         curr_set = NULL;
     }
+
     virtual void PreSaveInitialisation() {
         curr_set = set;
     }
+
     virtual void PostSaveInitialisation() {
         curr_set = NULL;
     }
+
     virtual void AddMenuItems(eduimenu_s *menu);
     RTL_SET_PC *GetIndexedSet();
     void Initialise();
 
     RTL_SET_PC *set;
 };
+
 STATIC_ASSERT(sizeof(RTLHelper) == 0xc);
 STATIC_ASSERT(offsetof(RTLHelper, set) == 0x8);
 
@@ -300,8 +330,9 @@ i32 RTLHelper::GetNumObjects() {
     i32 count = 0;
     i32 i;
     for (i = 0; i < 128; i++) {
-        if (curr_set->lights[i].type != 0)
+        if (curr_set->lights[i].type != 0) {
             count++;
+        }
     }
     return count;
 }
@@ -310,11 +341,13 @@ void *RTLHelper::GetNextObject(void *object) {
     RTL_SET_PC *rtl_set = curr_set;
     i32 i;
     if (rtl_set != NULL) {
-        if (object == NULL)
+        if (object == NULL) {
             return &rtl_set->lights[0];
+        }
         for (i = static_cast<RTL_LIGHT_PC *>(object) - rtl_set->lights + 1; i < 128; i++) {
-            if (rtl_set->lights[i].type != 0)
+            if (rtl_set->lights[i].type != 0) {
                 return &rtl_set->lights[i];
+            }
         }
     }
     return NULL;
@@ -328,8 +361,9 @@ void *RTLHelper::CreateObject(void *, i32, i32) {
     /* rtlAlloc, inlined here in retail's single C++ rtl unit. */
     if (curr_set != NULL) {
         for (i = 0; i < 128; i++) {
-            if (curr_set->lights[i].type == 0)
+            if (curr_set->lights[i].type == 0) {
                 goto found;
+            }
         }
     }
     return NULL;
@@ -375,8 +409,9 @@ void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
         eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (void *)EdLevelFnt, cbEdLevelDestroy, NULL);
     i32 i;
-    if (menu == NULL)
+    if (menu == NULL) {
         return;
+    }
     for (i = 0; i < modifier_cnt; i++) {
         edui_slider_s *slider =
             (edui_slider_s *)eduiMenuAddItem(menu, eduiItemSliderCreate(i, item->colours, 0, cbModifierAdjust, 0.0f,
@@ -445,20 +480,23 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
                     nearest_mode = 2;
                 }
                 rtl_helper_radius_mode = 0;
-                if (nearest_distance < rtl_helper_grab_distance * rtl_helper_grab_distance)
+                if (nearest_distance < rtl_helper_grab_distance * rtl_helper_grab_distance) {
                     rtl_helper_radius_mode = nearest_mode;
+                }
                 if (input.GetHold(25) != 0.0f) {
                     if (rtl_helper_radius_mode == 1) {
                         f32 radius = delta.Length();
                         light->inner_radius = radius;
-                        if (light->outer_radius < radius)
+                        if (light->outer_radius < radius) {
                             light->outer_radius = radius;
+                        }
                     }
                     if (rtl_helper_radius_mode == 2) {
                         f32 radius = delta.Length();
                         light->outer_radius = radius;
-                        if (light->inner_radius > radius)
+                        if (light->inner_radius > radius) {
                             light->inner_radius = radius;
+                        }
                     }
                 }
             } else {
@@ -467,14 +505,16 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
                     if (rtl_helper_radius_mode == 1) {
                         f32 radius = delta.Length();
                         light->inner_radius = radius;
-                        if (light->outer_radius < radius)
+                        if (light->outer_radius < radius) {
                             light->outer_radius = radius;
+                        }
                     }
                     if (rtl_helper_radius_mode == 2) {
                         f32 radius = delta.Length();
                         light->outer_radius = radius;
-                        if (light->inner_radius > radius)
+                        if (light->inner_radius > radius) {
                             light->inner_radius = radius;
+                        }
                     }
                 }
             }
@@ -486,8 +526,9 @@ void RTLHelper::Process(void *object, EdInputContext &input) {
 
 void RTLHelper::EnterEditor() {
     curr_set = rtlGetEnvSet();
-    if (curr_set == NULL)
+    if (curr_set == NULL) {
         curr_set = set;
+    }
     RTL_SET_INDEX_PC(curr_set)->enabled = 0;
 }
 
@@ -603,17 +644,22 @@ RTL_SET_PC *RTLHelper::GetIndexedSet() {
 class FogHelper : public EdClassInterface {
   public:
     FogHelper();
+
     virtual void Flush() {
     }
+
     virtual i32 GetNumObjects();
     virtual void *GetNextObject(void *object);
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
+
     virtual void DestroyObject(void *object, i32) {
         fogFree(static_cast<RTL_FOG_MIGRATION_PC *>(object));
     }
+
     virtual void Render(void *object, i32 selected);
     void Initialise();
 };
+
 STATIC_ASSERT(sizeof(FogHelper) == 0x8);
 
 FogHelper::FogHelper() {
@@ -623,8 +669,9 @@ i32 FogHelper::GetNumObjects() {
     i32 count = 0;
     i32 i;
     for (i = 0; i < 32; i++) {
-        if (RTLHELPER_FOGS(curr_set)[i].type != 0)
+        if (RTLHELPER_FOGS(curr_set)[i].type != 0) {
             count++;
+        }
     }
     return count;
 }
@@ -633,11 +680,13 @@ void *FogHelper::GetNextObject(void *object) {
     RTL_SET_PC *rtl_set = curr_set;
     i32 i;
     if (rtl_set != NULL) {
-        if (object == NULL)
+        if (object == NULL) {
             return &RTLHELPER_FOGS(rtl_set)[0];
+        }
         for (i = static_cast<RTL_FOG_MIGRATION_PC *>(object) - RTLHELPER_FOGS(rtl_set) + 1; i < 32; i++) {
-            if (RTLHELPER_FOGS(rtl_set)[i].type != 0)
+            if (RTLHELPER_FOGS(rtl_set)[i].type != 0) {
                 return &RTLHELPER_FOGS(rtl_set)[i];
+            }
         }
     }
     return NULL;
@@ -652,8 +701,9 @@ void FogHelper::Render(void *object, i32 selected) {
     switch (fog->type) {
         case 1:
             RndrOSphere(&fog->position, fog->radius, (fog->colour & 0xffffff) | 0x80000000, 16, NULL);
-            if (selected)
+            if (selected) {
                 RndrOSquare(&fog->position, fog->radius, -1, NULL);
+            }
             break;
     }
 }
@@ -665,8 +715,9 @@ void *FogHelper::CreateObject(void *, i32, i32) {
     /* fogAlloc, inlined here in retail's single C++ rtl unit. */
     if (curr_set != NULL) {
         for (i = 0; i < 32; i++) {
-            if (RTLHELPER_FOGS(curr_set)[i].type == 0)
+            if (RTLHELPER_FOGS(curr_set)[i].type == 0) {
                 goto found;
+            }
         }
     }
     return NULL;
@@ -699,6 +750,7 @@ class EdRefRTL : public EdRef {
              EdControl *member_control)
         : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
     }
+
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
@@ -777,20 +829,24 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             light->has_specular = *static_cast<u8 *>(data);
             break;
         case 0x80000008:
-            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f))
+            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f)) {
                 *static_cast<f32 *>(data) = 0.1f;
+            }
             radius = *static_cast<f32 *>(data);
             light->inner_radius = radius;
-            if (light->outer_radius < radius)
+            if (light->outer_radius < radius) {
                 light->outer_radius = radius;
+            }
             break;
         case 0x80000009:
-            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f))
+            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f)) {
                 *static_cast<f32 *>(data) = 0.1f;
+            }
             radius = *static_cast<f32 *>(data);
             light->outer_radius = radius;
-            if (light->inner_radius > radius)
+            if (light->inner_radius > radius) {
                 light->inner_radius = radius;
+            }
             break;
         case 0x8000000a:
             light->field_5e = *static_cast<i16 *>(data);
@@ -874,6 +930,7 @@ class EdRefFog : public EdRef {
              EdControl *member_control)
         : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
     }
+
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
@@ -996,5 +1053,6 @@ void FogHelper::Initialise() {
     object_class->AddType(
         RTLHELPER_REF(EdRefFog, "VuVec", "Position", 0x80000009, 0, 8, RTLHELPER_NEW(EdVectorControl)));
 }
+
 #undef RTLHELPER_NEW
 #undef RTLHELPER_REF

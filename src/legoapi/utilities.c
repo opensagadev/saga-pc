@@ -7,6 +7,7 @@ extern char **TexAnimScriptTablePc;
 void __cdecl NuTexAnimScriptMissingPc(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
+
 /* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
  * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
  */
@@ -14,17 +15,21 @@ typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;
     u8 unknown_04_14[0x10];
 } SHADOW_PLATFORM_ENTRY_PC;
+
 struct shadow_platform_list_pc_s {
     u8 unknown_00_04[4];
     i32 count;
     u8 unknown_08_18[0x10];
     SHADOW_PLATFORM_ENTRY_PC entries[1];
 };
+
 extern void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
+
 typedef struct USEFUL_MATERIAL_PC {
     u8 unknown_00[0x40];
     u32 attributes;
 } USEFUL_MATERIAL_PC;
+
 extern NUMTL *SolidMtl;
 extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
 
@@ -48,6 +53,7 @@ static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *so
     result->m32 = source->m32;
     result->m33 = source->m33;
 }
+
 i32 qseed = 0x3039;
 
 i32 qrand(void) {
@@ -74,12 +80,14 @@ void ResetSeeds(void) {
 f32 __cdecl SeekLinearF(f32 current, f32 target, f32 step) {
     if (current > target) {
         current -= step;
-        if (current < target)
+        if (current < target) {
             current = target;
+        }
     } else if (current < target) {
         current += step;
-        if (current > target)
+        if (current > target) {
             current = target;
+        }
     }
     return current;
 }
@@ -88,8 +96,9 @@ f32 __cdecl SeekValF(f32 current, f32 target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
-    if (blend > 1.0f)
+    if (blend > 1.0f) {
         blend = 1.0f;
+    }
     return current + (target - current) * blend;
 }
 
@@ -97,8 +106,9 @@ void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     f32 blend;
 
     blend = rate * FRAMETIME;
-    if (blend > 1.0f)
+    if (blend > 1.0f) {
         blend = 1.0f;
+    }
     result->x = current->x + (target->x - current->x) * blend;
     result->y = current->y + (target->y - current->y) * blend;
     result->z = current->z + (target->z - current->z) * blend;
@@ -139,17 +149,18 @@ i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_norma
                             f32 normal_offset, f32 *distance_out) {
     NUVEC test_point;
     f32 distance, correction;
-    if (normal_offset == 0.0f)
+    if (normal_offset == 0.0f) {
         test_point = *point;
-    else {
+    } else {
         NuVecScale(&test_point, plane_normal, normal_offset);
         NuVecAdd(&test_point, &test_point, point);
     }
     distance = (f32)(((f64)test_point.x - (f64)plane_point->x) * (f64)plane_normal->x +
                      ((f64)test_point.y - (f64)plane_point->y) * (f64)plane_normal->y +
                      ((f64)test_point.z - (f64)plane_point->z) * (f64)plane_normal->z);
-    if (distance_out != NULL)
+    if (distance_out != NULL) {
         *distance_out = distance;
+    }
     if (distance <= 0.0f) {
         if (corrected_point != NULL) {
             correction = (f32)(-((f64)distance - 0.5));
@@ -187,13 +198,15 @@ __declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u
 void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     f32 horizontal_squared;
     temp_yrot = (u16)NuAtan2D(direction->x, direction->z);
-    if (y_rotation)
+    if (y_rotation) {
         *y_rotation = temp_yrot;
+    }
     horizontal_squared = direction->x * direction->x + direction->z * direction->z;
     FindAnglesXFullTempPc = -NuAtan2D(direction->y, NuFsqrt(horizontal_squared));
     temp_zrot = (u16)FindAnglesXFullTempPc;
-    if (x_rotation)
+    if (x_rotation) {
         *x_rotation = temp_zrot;
+    }
 }
 
 void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
@@ -221,13 +234,15 @@ u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     i32 angle;
 
     blend = rate * FRAMETIME;
-    if (blend > 1.0f)
+    if (blend > 1.0f) {
         blend = 1.0f;
+    }
     difference = (i32)target - (i32)current;
-    if (difference > 0x8000)
+    if (difference > 0x8000) {
         difference -= 0x10000;
-    else if (difference < -0x8000)
+    } else if (difference < -0x8000) {
         difference += 0x10000;
+    }
     angle = (i32)((f32)current + (f32)difference * blend);
     return (u16)angle;
 }
@@ -235,23 +250,28 @@ u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
 u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
     i32 step;
     i32 difference;
-    if (target == current)
+    if (target == current) {
         return target;
+    }
     step = (i32)(speed * FRAMETIME);
     difference = (i32)target - (i32)current;
-    if (difference > 0x8000)
+    if (difference > 0x8000) {
         difference -= 0x10000;
-    else if (difference < -0x8000)
+    } else if (difference < -0x8000) {
         difference += 0x10000;
-    if (difference_out != NULL)
+    }
+    if (difference_out != NULL) {
         *difference_out = difference;
+    }
     if (difference > 0) {
-        if (difference <= step)
+        if (difference <= step) {
             return target;
+        }
         return (u16)(current + step);
     }
-    if (difference >= -step)
+    if (difference >= -step) {
         return target;
+    }
     return (u16)(current - step);
 }
 
@@ -278,15 +298,17 @@ void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *veloc
         f32 distance, time;
         NuVecSub(direction, &prediction, origin);
         distance = NuVecMag(direction);
-        if (distance == 0.0f || speed == 0.0f)
+        if (distance == 0.0f || speed == 0.0f) {
             time = 0.0f;
-        else
+        } else {
             time = distance / speed;
+        }
         NuVecAddScale(&prediction, target, velocity, time);
     }
     NuVecSub(direction, &prediction, origin);
-    if (intercept != NULL)
+    if (intercept != NULL) {
         *intercept = prediction;
+    }
 }
 
 void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
@@ -349,8 +371,9 @@ i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_pl
             return 1;
         case 2:
             if ((f64)override_plane != 2000000.0 &&
-                (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0))
+                (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
                 plane = override_plane;
+            }
             *result = *matrix;
             result->m01 = -result->m01;
             result->m11 = -result->m11;
@@ -371,8 +394,9 @@ i32 __cdecl MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_pl
 
 i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result) {
     if ((f64)override_plane != 2000000.0 &&
-        (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0))
+        (MatrixReflection_CanOverrideFn == NULL || MatrixReflection_CanOverrideFn() != 0)) {
         plane = override_plane;
+    }
     ReflectionCopyMatrixPc(result, matrix);
     result->m01 = -result->m01;
     result->m11 = -result->m11;
@@ -406,40 +430,48 @@ __declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position,
 
     if (object != NULL) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
-        if (object->level_object_index != -1)
+        if (object->level_object_index != -1) {
             handles[handle_count++] = object->level_object_index;
+        }
         if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 &&
             (object->flags_1fc & 0x80u) == 0) {
             struct shadow_platform_list_pc_s *list = world->shadow_platform_list_pc;
             for (i = 0; i < list->count; ++i) {
-                if (list->entries[i].object != NULL)
+                if (list->entries[i].object != NULL) {
                     handles[handle_count++] = list->entries[i].object->level_object_index;
+                }
             }
         }
-        for (i = 0; i < handle_count; ++i)
+        for (i = 0; i < handle_count; ++i) {
             PlatOnOff(handles[i], 0);
-        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->field_028 == 0.0f)
+        }
+        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->field_028 == 0.0f) {
             mask &= (i32)~LAYER_HOVERIGNORE;
+        }
     }
 
     height = NewShadowEx(position, 0.0f, probe, probe, mask);
-    if (object != NULL && object->level_object_index != -1)
+    if (object != NULL && object->level_object_index != -1) {
         PlatOnOff(object->level_object_index, 1);
-    for (i = 0; i < handle_count; ++i)
+    }
+    for (i = 0; i < handle_count; ++i) {
         PlatOnOff(handles[i], 1);
+    }
     return height;
 }
 
 f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
     NUVEC delta;
     f32 distance_squared;
-    if (alpha <= 0.0f)
+    if (alpha <= 0.0f) {
         return 0.0f;
+    }
     NuVecSub(&delta, position, (NUVEC *)&pNuCam->mtx.m30);
     distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
     if (distance_squared < fade_end * fade_end) {
-        if (distance_squared > fade_start * fade_start)
+        if (distance_squared > fade_start * fade_start) {
             return (1.0f - (NuFsqrt(distance_squared) - fade_start) / (fade_end - fade_start)) * alpha;
+        }
         return alpha;
     }
     return 0.0f;
@@ -562,10 +594,12 @@ f32 __cdecl SplineLength(NUGSPLINE *spline, i32 closed) {
     i32 segment;
     f32 length;
     NUVEC *previous;
-    if (spline == NULL)
+    if (spline == NULL) {
         return 0.0f;
-    if (spline->length < 2)
+    }
+    if (spline->length < 2) {
         return 0.0f;
+    }
     segment_count = closed ? spline->length : spline->length - 1;
     length = 0.0f;
     previous = spline->pts;
@@ -604,20 +638,24 @@ f32 __cdecl RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 along = (point->z - start->z) * cosine - (point->x - start->x) * sine;
     f32 length;
-    if (along <= 0.0f)
+    if (along <= 0.0f) {
         return 0.0f;
+    }
     length = dz * cosine - dx * sine;
-    if (along >= length)
+    if (along >= length) {
         return 1.0f;
+    }
     return along / length;
 }
 
 f32 __cdecl DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
     u16 angle;
+
     union {
         f32 value;
         u32 bits;
     } result, absolute;
+
     angle = (u16)-NuAtan2D(second->x - first->x, second->z - first->z);
     result.value = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (position->x - first->x) +
                    NuTrigTable[angle >> 1] * (position->z - first->z);
@@ -639,10 +677,12 @@ i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first
     f32 t;
     f32 u;
 
-    if (t_numerator == 0.0f && t_denominator == 0.0f && u_numerator == 0.0f && u_denominator == 0.0f)
+    if (t_numerator == 0.0f && t_denominator == 0.0f && u_numerator == 0.0f && u_denominator == 0.0f) {
         return 0;
-    if (t_denominator == 0.0f || u_denominator == 0.0f)
+    }
+    if (t_denominator == 0.0f || u_denominator == 0.0f) {
         return 0;
+    }
     t = t_numerator / t_denominator;
     u = u_numerator / u_denominator;
     if (first != NULL) {
@@ -677,10 +717,12 @@ i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float
         NuVecSub(&bc, b, c);
         NuVecRotateY(&bc, &bc, -angle);
         if (NuFsign(ac.x) != NuFsign(bc.x)) {
-            if (first != NULL)
+            if (first != NULL) {
                 *first = UtilitiesFabsPc(ac.x) / (UtilitiesFabsPc(ac.x) + UtilitiesFabsPc(bc.x));
-            if (second != NULL)
+            }
+            if (second != NULL) {
                 *second = UtilitiesFabsPc(ca.x) / (UtilitiesFabsPc(ca.x) + UtilitiesFabsPc(da.x));
+            }
             return 1;
         }
     }
@@ -776,14 +818,16 @@ i32 __cdecl LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, 
     delta.y = center->y - origin->y;
     delta.z = center->z - origin->z;
     projection = direction->x * delta.x + direction->y * delta.y + direction->z * delta.z;
-    if (projection < 0.0f)
+    if (projection < 0.0f) {
         return 0;
+    }
     point_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
     projection_squared = projection * projection;
     distance = point_squared - projection_squared;
     if (distance <= radius_squared) {
-        if (distance_squared != NULL)
+        if (distance_squared != NULL) {
             *distance_squared = distance;
+        }
         return 1;
     }
     return 0;
@@ -798,13 +842,15 @@ i32 __cdecl LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, 
     delta.x = center->x - origin->x;
     delta.z = center->z - origin->z;
     projection = direction->x * delta.x + direction->z * delta.z;
-    if (projection < 0.0f)
+    if (projection < 0.0f) {
         return 0;
+    }
     point_squared = delta.x * delta.x + delta.z * delta.z;
     projection_squared = projection * projection;
     distance = point_squared - projection_squared;
-    if (distance <= radius_squared)
+    if (distance <= radius_squared) {
         return 1;
+    }
     return 0;
 }
 
@@ -814,17 +860,20 @@ void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     NUVEC *current, *next;
     f32 fraction;
 
-    if (position == NULL || position->spline == NULL || position->spline->length <= 1)
+    if (position == NULL || position->spline == NULL || position->spline->length <= 1) {
         return;
-    if (position->looping)
+    }
+    if (position->looping) {
         points = position->spline->length + 1;
-    else
+    } else {
         points = position->spline->length;
-    if (position->segment >= points - 1)
+    }
+    if (position->segment >= points - 1) {
         return;
+    }
 
     if (distance >= 0.0f) {
-        if (distance > 0.0f)
+        if (distance > 0.0f) {
             do {
                 position->segment_distance += distance;
                 if (!(position->segment_distance >= position->segment_length)) {
@@ -854,9 +903,11 @@ void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                 next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
                 position->segment_distance = 0.0f;
                 position->segment_length = NuVecDist(next, current, &offset);
-                if (distance == 0.0f)
+                if (distance == 0.0f) {
                     position->position = *current;
+                }
             } while (distance > 0.0f);
+        }
     } else if (position->segment >= 0 && distance < 0.0f) {
         do {
             position->segment_distance += distance;
@@ -887,8 +938,9 @@ void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
             next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
             position->segment_length = NuVecDist(next, current, &offset);
             position->segment_distance = position->segment_length;
-            if (distance == 0.0f)
+            if (distance == 0.0f) {
                 position->position = *next;
+            }
         } while (distance < 0.0f);
     }
     fraction = position->segment_distance / position->segment_length;
@@ -903,23 +955,28 @@ void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *sp
     NUVEC *point, *current, *next;
     NUVEC offset;
 
-    if (result == NULL)
+    if (result == NULL) {
         return;
+    }
     memset(result, 0, sizeof(*result));
-    if (origin == NULL || spline == NULL || spline->length <= 1)
+    if (origin == NULL || spline == NULL || spline->length <= 1) {
         return;
+    }
     result->spline = spline;
     result->looping = (i8)looping;
     logical_count = result->looping ? spline->length + 1 : spline->length;
     point_count = spline->length;
     if (first_point >= 0) {
         index = first_point;
-        if (index >= logical_count)
+        if (index >= logical_count) {
             return;
-    } else
+        }
+    } else {
         index = 0;
-    if (last_point < 0 || last_point > point_count)
+    }
+    if (last_point < 0 || last_point > point_count) {
         last_point = point_count;
+    }
     point = SPLINE_POINT(spline, index);
     do {
         f32 distance = NuVecDistSqr(origin, point, &offset);
@@ -955,14 +1012,17 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
     first_position->looping = (i8)first_looping;
     second_position->spline = second;
     second_position->looping = (i8)second_looping;
-    if (first == NULL || second == NULL || first->length == 0 || second->length == 0)
+    if (first == NULL || second == NULL || first->length == 0 || second->length == 0) {
         return;
+    }
     first_count = first->length;
-    if (first_looping)
+    if (first_looping) {
         first_count++;
+    }
     second_count = second->length;
-    if (second_looping)
+    if (second_looping) {
         second_count++;
+    }
     for (i = 0; i < first_count - 1; ++i) {
         first_segment = i % first->length;
         first_start = &first->pts[first_segment];
@@ -979,8 +1039,9 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
                 first_position->segment_distance = first_fraction;
                 second_position->segment = (i16)second_segment;
                 second_position->segment_distance = second_fraction;
-                if (distance == 0.0f)
+                if (distance == 0.0f) {
                     break;
+                }
             }
         }
     }
@@ -999,8 +1060,9 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
     i32 closest_index, count, i;
     NUVEC closest;
 
-    if (position == NULL || spline == NULL)
+    if (position == NULL || spline == NULL) {
         return 0;
+    }
     {
         NUVEC ray_start, ray_end, end;
         f32 end_y;
@@ -1027,10 +1089,12 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
         }
         odd = intersections & 1;
         if (inside == 0) {
-            if (odd != 0)
+            if (odd != 0) {
                 return 0;
-        } else if (odd == 0)
+            }
+        } else if (odd == 0) {
             return 0;
+        }
     }
     closest_index = 0;
     closest = spline->pts[0];
@@ -1077,10 +1141,12 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
             end_point = next_point;
             start_point = closest;
         }
-        if (edge_end != NULL)
+        if (edge_end != NULL) {
             *edge_end = end_point;
-        if (edge_start != NULL)
+        }
+        if (edge_start != NULL) {
             *edge_start = start_point;
+        }
     }
     return 1;
 }
@@ -1197,10 +1263,11 @@ f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     if (animation != NULL && special->scene->instance_animation_data[animation->animation_index] != NULL) {
         end_frame = NuSpecialGetAnimEndFrame(special);
         position = (animation->ltime - 1.0f) / (end_frame - 1.0f);
-        if (position < 0.0f)
+        if (position < 0.0f) {
             position = 0.0f;
-        else if (position > 1.0f)
+        } else if (position > 1.0f) {
             position = 1.0f;
+        }
     }
     return position;
 }
@@ -1222,8 +1289,9 @@ __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
         --instance;
         --count;
         animation = instance->animation;
-        if (animation != NULL)
+        if (animation != NULL) {
             animation->fparam1 = animation->tfactor;
+        }
     } while (count != 0);
 }
 
@@ -1273,15 +1341,18 @@ i32 __cdecl Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u1
 }
 
 i32 __cdecl Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
-    if (object_id == -1)
+    if (object_id == -1) {
         return 1;
+    }
     if (world == NULL) {
         world = WorldInfo_CurrentlyActive();
-        if (world == NULL)
+        if (world == NULL) {
             return 1;
+        }
     }
-    if (world->level_objects[object_id].active != 0)
+    if (world->level_objects[object_id].active != 0) {
         return NuSpecialDrawAt(&world->level_objects[object_id].special, matrix);
+    }
     return 0;
 }
 
@@ -1329,8 +1400,9 @@ i32 __cdecl DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 al
 }
 
 i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *special, NUMTX *matrix) {
-    if (special == NULL || NuSpecialExistsFn(special) == 0)
+    if (special == NULL || NuSpecialExistsFn(special) == 0) {
         return 0;
+    }
     NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
     return NuSpecialDrawAt(special, matrix);
 }
@@ -1355,8 +1427,9 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
         axis = object->reflection_enabled;
     } else {
         id = dco_id;
-        if (id == -1 || dco_gcdata == NULL || dco_cmodel == NULL)
+        if (id == -1 || dco_gcdata == NULL || dco_cmodel == NULL) {
             return;
+        }
         model = dco_cmodel;
         hat = dco_wearinghat;
         plane = dco_reflectcoord;
@@ -1368,20 +1441,24 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
     dco_cmodel = NULL;
     dco_wearinghat = 0;
     dco_reflectaxis = 0;
-    if (world == NULL)
+    if (world == NULL) {
         world = WorldInfo_CurrentlyActive();
+    }
     if (object_id != -1) {
-        if (!world->level_objects[object_id].active)
+        if (!world->level_objects[object_id].active) {
             return;
+        }
     } else if (special == NULL || !NuSpecialExistsFn(special)) {
         return;
     }
-    if (locator == -1 || model->points_of_interest[locator] == NULL)
+    if (locator == -1 || model->points_of_interest[locator] == NULL) {
         return;
-    if (position_only)
+    }
+    if (position_only) {
         NuMtxSetTranslation(&matrix, (NUVEC *)&joints[locator].m30);
-    else
+    } else {
         matrix = joints[locator];
+    }
     if (second_locator != -1 && model->points_of_interest[second_locator] != NULL) {
         NUVEC position = matrix.translation;
         if (!position_only) {
@@ -1395,41 +1472,49 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
         matrix.m31 = (f64)(position.y + joints[second_locator].m31) * 0.5;
         matrix.m32 = (f64)(position.z + joints[second_locator].m32) * 0.5;
     }
-    if (rotate_z != 0)
+    if (rotate_z != 0) {
         NuMtxPreRotateZ(&matrix, rotate_z);
+    }
     if (object_id != -1 && CutSceneSys->object_id == object_id && DisguiseAdjustFn != NULL) {
         NUVEC adjustment, offset;
         DisguiseAdjustFn(id, hat, &adjustment, &offset);
-        if (adjustment.x != 1.0f || adjustment.y != 1.0f || adjustment.z != 1.0f)
+        if (adjustment.x != 1.0f || adjustment.y != 1.0f || adjustment.z != 1.0f) {
             NuMtxPreScale(&matrix, &adjustment);
-        if (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f)
+        }
+        if (offset.x != 0.0f || offset.y != 0.0f || offset.z != 0.0f) {
             NuMtxPreTranslate(&matrix, &offset);
+        }
     }
     if (rotation != NULL) {
         NUVEC position = matrix.translation;
         NuMtxMulR(&matrix, rotation, &matrix);
         matrix.translation = position;
     }
-    if (translation != NULL)
+    if (translation != NULL) {
         NuMtxTranslate(&matrix, translation);
+    }
     use_alpha = 0;
     if (object_id != -1) {
         special = &world->level_objects[object_id].special;
-        if (ObjTabList != NULL)
+        if (ObjTabList != NULL) {
             use_alpha = ObjTabList[object_id].unknown_01;
+        }
     }
-    if (scale != 1.0f)
+    if (scale != 1.0f) {
         NuMtxPreScaleU(&matrix, scale);
-    if (use_alpha)
+    }
+    if (use_alpha) {
         NuSpecialDrawAtAlpha(special, &matrix, alpha);
-    else
+    } else {
         NuSpecialDrawAt(special, &matrix);
+    }
     if (reflect && MatrixReflection(&matrix, axis, plane, world->current_level->reflection_y, &reflected)) {
         NuRndrStartReflectionRender(0);
-        if (use_alpha)
+        if (use_alpha) {
             NuSpecialDrawAtAlpha(special, &reflected, alpha);
-        else
+        } else {
             NuSpecialDrawAt(special, &reflected);
+        }
         NuRndrEndReflectionRender();
     }
 }
@@ -1450,21 +1535,27 @@ void __cdecl CreateUsefulMaterials(void) {
 void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
     u64 score;
     if (apply_multiplier != 0 && BonusArea == 0) {
-        if (Cheats_CheckFlags(4) != 0)
+        if (Cheats_CheckFlags(4) != 0) {
             amount *= 2;
-        if (Cheats_CheckFlags(8) != 0)
+        }
+        if (Cheats_CheckFlags(8) != 0) {
             amount *= 4;
-        if (Cheats_CheckFlags(0x10) != 0)
+        }
+        if (Cheats_CheckFlags(0x10) != 0) {
             amount *= 6;
-        if (Cheats_CheckFlags(0x20) != 0)
+        }
+        if (Cheats_CheckFlags(0x20) != 0) {
             amount *= 8;
-        if (Cheats_CheckFlags(0x40) != 0)
+        }
+        if (Cheats_CheckFlags(0x40) != 0) {
             amount *= 10;
+        }
     }
     score = *total;
     score += amount;
-    if (score > 4000000000ULL)
+    if (score > 4000000000ULL) {
         score = 4000000000ULL;
+    }
     *total = (u32)score;
 }
 
@@ -1475,8 +1566,9 @@ f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
     height = NewShadowEx(position, 0.0f, 5.0f, 5.0f, -1);
     if (height != GameObjectNearFloorNoFloorHeight) {
         material = ShadowInfo();
-        if ((u32)material <= 31u && (TerSurface[material].flags & 2u) != 0)
+        if ((u32)material <= 31u && (TerSurface[material].flags & 2u) != 0) {
             return height;
+        }
     }
     return LevelConfigFarDistance;
 }
@@ -1512,22 +1604,28 @@ void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     f32 **animation;
     NUMTX *instance_matrix;
     f32 end_frame;
-    if (NuSpecialExistsFn((NUSPECIALHANDLE *)special) == 0)
+    if (NuSpecialExistsFn((NUSPECIALHANDLE *)special) == 0) {
         return;
+    }
     ReflectionCopyMatrixPc(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
     instance_animation = NuSpecialGetInstAnim((NUSPECIALHANDLE *)special);
-    if (instance_animation == NULL)
+    if (instance_animation == NULL) {
         return;
-    if (special->scene->instance_animation_data[instance_animation->animation_index] == NULL)
+    }
+    if (special->scene->instance_animation_data[instance_animation->animation_index] == NULL) {
         return;
+    }
     animation = (f32 **)&special->scene->instance_animation_data[instance_animation->animation_index];
     end_frame = **animation;
-    if ((f64)frame == 1000000000.0)
+    if ((f64)frame == 1000000000.0) {
         frame = end_frame;
-    if (!(frame >= 1.0f && frame <= end_frame))
+    }
+    if (!(frame >= 1.0f && frame <= end_frame)) {
         return;
-    if (*animation != NULL)
+    }
+    if (*animation != NULL) {
         NuAnimData2CalcMatrix((ANI3_HEADER_PC *)*animation, 0, frame, &matrix);
+    }
     instance_animation->matrix = matrix;
     instance_matrix = NuSpecialGetInstanceMtx((NUSPECIALHANDLE *)special);
     instance_animation->matrix.m30 = instance_matrix->m30;

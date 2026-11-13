@@ -16,8 +16,9 @@ i32 __cdecl edanimLookupSpecial(char *name, NUGSCN *scene) {
     if (scene != NULL) {
         for (index = 0; index < NuGScnNumSpecials(scene); ++index) {
             NuGScnGetSpecial(&special, scene, index);
-            if (NuStrNICmp(NuSpecialGetName(&special), name, 19) == 0)
+            if (NuStrNICmp(NuSpecialGetName(&special), name, 19) == 0) {
                 return index;
+            }
         }
     }
     return -1;
@@ -28,14 +29,16 @@ void __cdecl edanimDetermineNearestAnim(f32 distance) {
     NUVEC delta;
     f32 candidate;
     i32 i;
-    if (edbits_base_scene == NULL)
+    if (edbits_base_scene == NULL) {
         return;
+    }
     if (edanim_nearest != -1) {
         NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
         NuVecSub(&delta, &edanim_cam_pos, NuSpecialGetPos(&special));
         candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        if (candidate == 0.0f)
+        if (candidate == 0.0f) {
             return;
+        }
     }
     edanim_nearest = -1;
     edanim_nearest_param_id = -1;
@@ -162,11 +165,13 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
             break;
         }
     }
-    if (page == -1)
+    if (page == -1) {
         return -1;
+    }
     EdFileSetMedia(1);
-    if (!EdFileOpen(path, 0))
+    if (!EdFileOpen(path, 0)) {
         return -1;
+    }
     EdFileSetReadWrongEndianess(1);
     version = EdFileReadInt();
     if (version > 6) {
@@ -175,21 +180,25 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
         return -1;
     }
     count = EdFileReadInt();
-    if (count + edanim_params_used > 64)
+    if (count + edanim_params_used > 64) {
         count = 64 - edanim_params_used;
+    }
     slot = 0;
     for (index = 0; index < count; ++index) {
-        while (AnimParams[slot].instance_id != -1 && slot < 64)
+        while (AnimParams[slot].instance_id != -1 && slot < 64) {
             ++slot;
-        if (slot >= 64)
+        }
+        if (slot >= 64) {
             continue;
+        }
         EdFileRead(name, 20);
         AnimParams[slot].instance_id = edanimLookupSpecial(name, scene);
         AnimParams[slot].effect_count = EdFileReadInt();
-        if (version >= 2)
+        if (version >= 2) {
             AnimParams[slot].sound_count = EdFileReadInt();
-        else
+        } else {
             AnimParams[slot].sound_count = 0;
+        }
         AnimParams[slot].control_mode = EdFileReadInt();
         AnimParams[slot].control_switch = EdFileReadInt();
         AnimParams[slot].control_distance = EdFileReadFloat();
@@ -204,12 +213,13 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
             AnimParams[slot].effect_ids[item] = -1;
             if (version < 5) {
                 interval = EdFileReadInt();
-                if (interval > 0)
+                if (interval > 0) {
                     AnimParams[slot].effect_intervals[item] = interval * 60;
-                else if (interval < 0)
+                } else if (interval < 0) {
                     AnimParams[slot].effect_intervals[item] = -60 / interval;
-                else
+                } else {
                     AnimParams[slot].effect_intervals[item] = 0;
+                }
             } else {
                 AnimParams[slot].effect_intervals[item] = version == 5 ? (i32)EdFileReadFloat() : EdFileReadInt();
             }
@@ -403,14 +413,16 @@ static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, 
         eduiMenuAddItem(
             edanim_localsoundtype_menu,
             eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetLocalSoundType, EDANIM_SOUND_NAME_PC(index)));
-        if (selected == 1)
+        if (selected == 1) {
             edanim_localsoundtype_menu->selected = edui_last_item;
+        }
     }
 
     eduiMenuAttach(parent, edanim_localsoundtype_menu);
     edanim_localsoundtype_menu->x = parent->x + 10;
     edanim_localsoundtype_menu->y = parent->y + 40;
 }
+
 void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index, selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -426,8 +438,9 @@ void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
         selected = edanim_sound_type == index;
         eduiMenuAddItem(edanim_soundtype_menu, eduiItemCheckCreate(index, colours, selected, 1, edanimcbSetSoundType,
                                                                    EDANIM_SOUND_NAME_PC(index)));
-        if (selected == 1)
+        if (selected == 1) {
             edanim_soundtype_menu->selected = edui_last_item;
+        }
     }
 
     eduiMenuAttach(parent, edanim_soundtype_menu);
@@ -437,16 +450,19 @@ void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
 
 void edanimcbSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    if (edanim_nearest_param_id == -1)
+    if (edanim_nearest_param_id == -1) {
         return;
+    }
     edanim_sound_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelSoundMenu, (char *)("Attached Sounds"));
-    if (!edanim_sound_menu)
+    if (!edanim_sound_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_sound_menu,
                     eduiItemSelCreate(1, colours, 0, 0, edanimcbSoundTypeMenu, (char *)("Sound Type...")));
-    if (edanim_nearest_sound != -1)
+    if (edanim_nearest_sound != -1) {
         eduiMenuAddItem(edanim_sound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundMenu,
                                                              (char *)("Highlighted Snd Settings...")));
+    }
     eduiMenuAttach(parent, edanim_sound_menu);
     edanim_sound_menu->x = parent->x + 10;
     edanim_sound_menu->y = parent->y + 40;
@@ -459,28 +475,34 @@ void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char path[256];
     i32 page;
     page = -1;
-    if (edbits_level_save_directory[0] == 0)
+    if (edbits_level_save_directory[0] == 0) {
         sprintf(directory, ".");
-    else
+    } else {
         strcpy(directory, edbits_level_save_directory);
-    if (edbits_level_save_name[0] == 0)
+    }
+    if (edbits_level_save_name[0] == 0) {
         sprintf(name, "anims");
-    else
+    } else {
         strcpy(name, edbits_level_save_name);
-    if (edbits_level_save_extension[0] == 0)
+    }
+    if (edbits_level_save_extension[0] == 0) {
         sprintf(extension, "anm");
-    else
+    } else {
         strcpy(extension, edbits_level_save_extension);
+    }
     sprintf(path, "%s\\%s.%s", directory, name, extension);
     edanimParamReset();
-    if (NuFileExists(path))
+    if (NuFileExists(path)) {
         page = edanimLoadPage(path, edbits_base_scene);
+    }
     edanimStartAllPages();
-    if (page > -1)
+    if (page > -1) {
         eduiCreateMessageMenu(menu, (char *)("Loaded OK"), 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, (char *)("File Load Error"), 0);
+    }
 }
+
 void edanimRender() {
     if (edbitsProcessCubemapDump()) {
         return;
@@ -528,8 +550,9 @@ void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
     NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
     base_position = NuSpecialGetPos(&special);
     for (particle = 0; particle < AnimParams[parameter_index].effect_count; ++particle) {
-        if (AnimParams[parameter_index].effect_ids[particle] == -1)
+        if (AnimParams[parameter_index].effect_ids[particle] == -1) {
             continue;
+        }
         if (edanim_particle_mode && edanim_nearest_particle == particle) {
             DEBRIS_INFO_PC *definition = debtab[AnimParams[parameter_index].effect_ids[particle]];
             if (definition->generator_type == 0) {
@@ -558,8 +581,9 @@ void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
     NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
     base_position = NuSpecialGetPos(&special);
     for (sound = 0; sound < AnimParams[parameter_index].sound_count; ++sound) {
-        if (AnimParams[parameter_index].sound_flags[sound] == -1)
+        if (AnimParams[parameter_index].sound_flags[sound] == -1) {
             continue;
+        }
         colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
                                 base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
@@ -613,8 +637,9 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
     NUVEC position;
     NUVEC *origin;
     i32 index, effect;
-    if ((pad->digital_buttons & 0x100) == 0)
+    if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
+    }
     if (pad->digital_buttons & 0x100) {
         if (edanim_sound_mode == 0 && (pad->digital_buttons_pressed & 0x80)) {
             if (edanim_particle_mode) {
@@ -629,12 +654,14 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
                 edanimDetermineNearestParticle(-1.0f);
             } else {
                 if (pad->digital_buttons_pressed & 8) {
-                    if (++edanim_nearest_particle == AnimParams[edanim_nearest_param_id].effect_count)
+                    if (++edanim_nearest_particle == AnimParams[edanim_nearest_param_id].effect_count) {
                         edanim_nearest_particle = 0;
+                    }
                 }
                 if (pad->digital_buttons_pressed & 2) {
-                    if (--edanim_nearest_particle == -1)
+                    if (--edanim_nearest_particle == -1) {
                         edanim_nearest_particle = AnimParams[edanim_nearest_param_id].effect_count - 1;
+                    }
                 }
             }
             if (edanim_nearest_particle != -1) {
@@ -659,12 +686,14 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
             if (edanim_sound_mode) {
                 if (edanim_nearest_sound != -1) {
                     if (pad->digital_buttons_pressed & 8) {
-                        if (++edanim_nearest_sound == AnimParams[edanim_nearest_param_id].sound_count)
+                        if (++edanim_nearest_sound == AnimParams[edanim_nearest_param_id].sound_count) {
                             edanim_nearest_sound = 0;
+                        }
                     }
                     if (pad->digital_buttons_pressed & 2) {
-                        if (--edanim_nearest_sound == -1)
+                        if (--edanim_nearest_sound == -1) {
                             edanim_nearest_sound = AnimParams[edanim_nearest_param_id].sound_count - 1;
+                        }
                     }
                 } else {
                     edanimDetermineNearestSound(-1.0f);
@@ -680,12 +709,14 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
             } else {
                 if (edanim_nearest != -1) {
                     if (pad->digital_buttons_pressed & 8) {
-                        if (++edanim_nearest == NuGScnNumSpecials(edbits_base_scene))
+                        if (++edanim_nearest == NuGScnNumSpecials(edbits_base_scene)) {
                             edanim_nearest = 0;
+                        }
                     }
                     if (pad->digital_buttons_pressed & 2) {
-                        if (--edanim_nearest == -1)
+                        if (--edanim_nearest == -1) {
                             edanim_nearest = NuGScnNumSpecials(edbits_base_scene) - 1;
+                        }
                     }
                 } else {
                     edanimDetermineNearestAnim(-1.0f);
@@ -720,20 +751,23 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
     }
     edcamGetPosAng(&edanim_cam_pos, &edanim_cam_ax, &edanim_cam_ay);
     if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80)
+        if (pad->digital_buttons_pressed & 0x80) {
             edanim_active_menu = edanim_options_menu;
+        }
         if (pad->digital_buttons_pressed & 0x40) {
-            if (edanim_particle_mode)
+            if (edanim_particle_mode) {
                 edanimParticleCreate(&edanim_cam_pos);
-            else if (edanim_sound_mode)
+            } else if (edanim_sound_mode) {
                 edanimSoundCreate(&edanim_cam_pos);
-            else if (edanim_nearest != -1 && edanim_nearest_param_id == -1)
+            } else if (edanim_nearest != -1 && edanim_nearest_param_id == -1) {
                 edanim_nearest_param_id = edanimParamCreate(edanim_nearest);
+            }
         }
         if (pad->digital_buttons & 0x20) {
             if (edanim_particle_mode) {
-                if (edanim_nearest_particle != -1)
+                if (edanim_nearest_particle != -1) {
                     edanimParticlePlace(edanim_nearest_particle, &edanim_cam_pos);
+                }
             } else if (edanim_sound_mode && edanim_nearest_sound != -1) {
                 edanimSoundPlace(edanim_nearest_sound, &edanim_cam_pos);
             }
@@ -751,8 +785,9 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
                 }
             } else {
                 if (edanim_nearest_param_id != -1) {
-                    if (AnimParams[edanim_nearest_param_id].instance_id != -1)
+                    if (AnimParams[edanim_nearest_param_id].instance_id != -1) {
                         AnimParams[edanim_nearest_param_id].instance_id = -1;
+                    }
                     --edanim_params_used;
                 }
                 edanim_nearest_param_id = -1;
@@ -765,11 +800,13 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
         edanim_emitroty += pad->analog_left_pad_right;
         edanim_emitroty -= pad->analog_left_pad_left;
         edanim_emitrotz += pad->analog_left_pad_up;
-        if (edanim_emitrotz > 0)
+        if (edanim_emitrotz > 0) {
             edanim_emitrotz = 0;
+        }
         edanim_emitrotz -= pad->analog_left_pad_down;
-        if (edanim_emitrotz < -0x8000)
+        if (edanim_emitrotz < -0x8000) {
             edanim_emitrotz = -0x8000;
+        }
     }
 }
 
@@ -844,18 +881,20 @@ void __cdecl edanimDrawCursor(void) {
         if (edanim_particle_mode) {
             NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Particles: %d (Max %d)",
                           AnimParams[edanim_nearest_param_id].effect_count, 8);
-            if (edanim_particle_type == -1)
+            if (edanim_particle_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
-            else
+            } else {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s", debtab[edanim_particle_type]->name);
+            }
         } else if (edanim_sound_mode) {
             NuQFntPrintEx(system_qfont, 0x1810, 0xc30, 0x10, "Sounds: %d (Max %d)",
                           AnimParams[edanim_nearest_param_id].sound_count, 8);
-            if (edanim_sound_type == -1)
+            if (edanim_sound_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: <none>");
-            else
+            } else {
                 NuQFntPrintEx(system_qfont, 0x1810, 0xcd0, 0x10, "Select Type: %s",
                               EDANIM_SOUND_NAME_PC(edanim_sound_type));
+            }
         }
     }
     NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "%5.2f", edanim_cam_pos.x);
@@ -873,12 +912,14 @@ void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     NUSPECIALHANDLE special;
-    if (edanim_nearest_sound == -1)
+    if (edanim_nearest_sound == -1) {
         return;
+    }
     edanim_localsound_menu =
         eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelLocalSoundMenu, (char *)("Highlighted Sound Settings"));
-    if (!edanim_localsound_menu)
+    if (!edanim_localsound_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_localsound_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalSoundTypeMenu,
                                                               (char *)("Highlighted Sound Type...")));
     eduiMenuAddItem(edanim_localsound_menu,
@@ -950,8 +991,9 @@ void edanimInit(void) {
     ((NUMTL *)edanim_mtl_zoff)->attribs.alpha_mode = 0;
     NuMtlUpdate((NUMTL *)edanim_mtl_zoff);
     edanim_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edanimcbCancelOptMenu, (char *)("Options"));
-    if (!edanim_options_menu)
+    if (!edanim_options_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_options_menu,
                     eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleMenu, (char *)("Attached Particles...")));
     eduiMenuAddItem(edanim_options_menu,
@@ -976,12 +1018,13 @@ i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad) {
         return 0;
     }
     edanimDoInput(pad);
-    if (edanim_particle_mode)
+    if (edanim_particle_mode) {
         edanimDetermineNearestParticle(1.0f);
-    else if (edanim_sound_mode)
+    } else if (edanim_sound_mode) {
         edanimDetermineNearestSound(1.0f);
-    else
+    } else {
         edanimDetermineNearestAnim(1.0f);
+    }
     if (pad->digital_buttons_pressed & 0x800) {
         edanim_particle_mode = 0;
         return 1;

@@ -15,27 +15,35 @@
 
 i32 __cdecl FindNextBreak(u8 *text, i32 index) {
     i32 japanese = 0, ascii_start, length, count;
-    if (NuLanguageGet() == 0)
+    if (NuLanguageGet() == 0) {
         japanese = 1;
+    }
     count = 0;
     length = NuStrLen((char *)text);
-    while (text[index] >= 0x80 && text[index] <= 0xbf)
+    while (text[index] >= 0x80 && text[index] <= 0xbf) {
         --index;
-    if (IS_BREAK_POINT(text, index))
+    }
+    if (IS_BREAK_POINT(text, index)) {
         return index;
+    }
     ascii_start = text[index] <= 0x7f;
     for (;;) {
         ++count;
-        if ((japanese && count > 10 && !ascii_start) || count > 20)
+        if ((japanese && count > 10 && !ascii_start) || count > 20) {
             break;
-        if (++index >= length)
+        }
+        if (++index >= length) {
             return length;
-        while (text[index] >= 0x80 && text[index] <= 0xbf)
+        }
+        while (text[index] >= 0x80 && text[index] <= 0xbf) {
             ++index;
-        if (IS_BREAK_POINT(text, index))
+        }
+        if (IS_BREAK_POINT(text, index)) {
             return index;
-        if (japanese && ((text[index] <= 0x7f && !ascii_start) || (text[index] >= 0x80 && ascii_start)))
+        }
+        if (japanese && ((text[index] <= 0x7f && !ascii_start) || (text[index] >= 0x80 && ascii_start))) {
             break;
+        }
     }
     KEEP_TILDE_PAIR(text, index);
     return index;
@@ -43,36 +51,46 @@ i32 __cdecl FindNextBreak(u8 *text, i32 index) {
 
 i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
     i32 japanese = 0, ascii_start, length, forward, backward, count;
-    if (NuLanguageGet() == 0)
+    if (NuLanguageGet() == 0) {
         japanese = 1;
-    while (text[index] >= 0x80 && text[index] <= 0xbf)
+    }
+    while (text[index] >= 0x80 && text[index] <= 0xbf) {
         --index;
-    if (IS_BREAK_POINT(text, index))
+    }
+    if (IS_BREAK_POINT(text, index)) {
         return index;
+    }
     ascii_start = text[index] <= 0x7f;
     forward = backward = index;
     count = 0;
     length = NuStrLen((char *)text);
     for (;;) {
         ++count;
-        if ((japanese && count > 10 && !ascii_start) || count > 20)
+        if ((japanese && count > 10 && !ascii_start) || count > 20) {
             break;
-        if (forward < length - 1)
+        }
+        if (forward < length - 1) {
             ++forward;
-        while (text[forward] >= 0x80 && text[forward] <= 0xbf)
+        }
+        while (text[forward] >= 0x80 && text[forward] <= 0xbf) {
             ++forward;
-        if (backward > 0)
+        }
+        if (backward > 0) {
             --backward;
-        while (text[backward] >= 0x80 && text[backward] <= 0xbf)
+        }
+        while (text[backward] >= 0x80 && text[backward] <= 0xbf) {
             --backward;
-        if (IS_BREAK_POINT(text, forward))
+        }
+        if (IS_BREAK_POINT(text, forward)) {
             return forward;
+        }
         if (japanese && ((text[forward] <= 0x7f && !ascii_start) || (text[forward] >= 0x80 && ascii_start))) {
             KEEP_TILDE_PAIR(text, forward);
             return forward;
         }
-        if (IS_BREAK_POINT(text, backward))
+        if (IS_BREAK_POINT(text, backward)) {
             return backward;
+        }
         if (japanese && ((text[backward] <= 0x7f && !ascii_start) || (text[backward] >= 0x80 && ascii_start))) {
             ++backward;
             KEEP_TILDE_PAIR(text, backward);
@@ -88,6 +106,7 @@ typedef struct EQUIVALENT_GROUP_PC {
     i16 byte_size;
     NUSPECIALHANDLE objects[1];
 } EQUIVALENT_GROUP_PC;
+
 STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, object_count) == 0);
 STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, byte_size) == 2);
 STATIC_ASSERT(offsetof(EQUIVALENT_GROUP_PC, objects) == 4);

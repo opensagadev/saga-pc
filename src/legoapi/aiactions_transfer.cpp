@@ -6,12 +6,15 @@ extern "C" {
     SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
             SOCK_PC *sock = sys->socks;
-            for (i32 index = 0; index < 64; ++index, ++sock)
-                if (sock->valid && NuStrICmp(name, sock->name) == 0)
+            for (i32 index = 0; index < 64; ++index, ++sock) {
+                if (sock->valid && NuStrICmp(name, sock->name) == 0) {
                     return sock;
+                }
+            }
         }
         return NULL;
     }
+
     void __cdecl SockOn(SOCKSYS_PC *sys, i32 index);
     void __cdecl SockOff(SOCKSYS_PC *sys, i32 index);
 }
@@ -25,20 +28,24 @@ static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, cha
             dest->display_special = (NUMTX *)special;
             dest->special = NULL;
             ++dest;
-            if (++count >= capacity)
+            if (++count >= capacity) {
                 return count;
+            }
         }
     }
-    if (flags != 0 && special_debug != 0)
+    if (flags != 0 && special_debug != 0) {
         PCSpecialEmptyHandler_candidate(name);
+    }
     return count;
 }
+
 extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
     NUDISPLAY_SPECIAL_PC *display_special = NULL;
     i32 count = 0;
     if (scene != NULL) {
-        if (scene->display_list != NULL)
+        if (scene->display_list != NULL) {
             return NuSpecialFindMultiDisplayPc(scene, dest, name, capacity, flags);
+        }
         NUSPECIAL_LEGACY_PC *special = scene->specials;
         for (i32 index = 0; index < scene->special_count; ++index, ++special, ++display_special) {
             if (NuStrIStr(special->name, name) != NULL) {
@@ -46,12 +53,14 @@ extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, 
                 dest->special = (NUMTX *)special;
                 dest->display_special = scene->display_list != NULL ? (NUMTX *)display_special : NULL;
                 ++dest;
-                if (++count >= capacity)
+                if (++count >= capacity) {
                     return count;
+                }
             }
         }
-        if (flags != 0 && special_debug != 0)
+        if (flags != 0 && special_debug != 0) {
             PCSpecialEmptyHandler_candidate(name);
+        }
         return count;
     }
     PCSpecialEmptyHandler_candidate();
@@ -61,8 +70,9 @@ extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, 
 extern "C" {
     static i32 Ledges_Load(void *world_info, void *) {
         WORLDINFO *world = static_cast<WORLDINFO *>(world_info);
-        if (world->ledge_count != 0)
+        if (world->ledge_count != 0) {
             return 0;
+        }
         i32 version = EdFileReadInt();
         world->ledge_count = EdFileReadInt();
         for (i32 i = 0; i < world->ledge_count; ++i) {
@@ -74,10 +84,11 @@ extern "C" {
             if (version > 1) {
                 ledge->field_0x1c = EdFileReadShort();
                 ledge->field_0x1e = EdFileReadShort();
-                if (version == 2)
+                if (version == 2) {
                     ledge->flags = 0;
-                else
+                } else {
                     ledge->flags = EdFileReadUnsignedChar();
+                }
             } else {
                 ledge->field_0x1c = -1;
                 ledge->field_0x1e = -1;

@@ -1,6 +1,7 @@
 #include "saga.h"
 #include "vorbis/vorbisfile.h"
 #include <stdio.h>
+
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];
     u8 *data;
@@ -8,12 +9,14 @@ struct PC_OGG_CACHE_RECORD_PC {
     u32 last_used;
     i32 references;
 };
+
 STATIC_ASSERT(sizeof(PC_OGG_CACHE_RECORD_PC) == 0x114);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, data) == 0x104);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, bytes) == 0x108);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, last_used) == 0x10c);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, references) == 0x110);
 #pragma pack(push, 4)
+
 class OggReader : public WavReader {
   public:
     OggReader(void);
@@ -39,6 +42,7 @@ class OggReader : public WavReader {
     WAVEFORMATEX compressed_format;
     u8 unknown_332[6];
 };
+
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(OggReader) == 0x338);
 STATIC_ASSERT(offsetof(OggReader, compressed) == 0x40);
@@ -253,24 +257,30 @@ extern "C" i32 __cdecl NuSound3GetMusicStreamStatusPc(i32 stream) {
 }
 
 void SoundQueue::CancelPausePc(void) {
-    if (this == NULL || unknown_03f4 == 0)
+    if (this == NULL || unknown_03f4 == 0) {
         return;
+    }
     EnterCriticalSection(&volume_lock);
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (stream_state == 2 && buffer != NULL)
+    if (stream_state == 2 && buffer != NULL) {
         buffer->vtable->play(buffer, 0, 0, 1);
+    }
     LeaveCriticalSection(&volume_lock);
     unknown_03f4 = 0;
     LeaveCriticalSection(&operation_lock);
 }
+
 SoundQueue::~SoundQueue(void) {
-    if (this == NULL)
+    if (this == NULL) {
         return;
+    }
     if (active != 0) {
-        if (unknown_03f4 != 0)
+        if (unknown_03f4 != 0) {
             CancelPausePc();
-        if (active != 0)
+        }
+        if (active != 0) {
             SendCommand(3, 0);
+        }
         SendCommand(6, 0);
         if (thread != NULL) {
             do {
@@ -278,27 +288,33 @@ SoundQueue::~SoundQueue(void) {
             } while (thread != NULL);
         }
     }
-    if (decoder != NULL)
+    if (decoder != NULL) {
         decoder->vtable->destroy(decoder, 1);
+    }
     decoder = NULL;
     DeleteCriticalSection(&volume_lock);
     DeleteCriticalSection(&operation_lock);
     DeleteCriticalSection(&lock);
-    if (event != INVALID_HANDLE_VALUE)
+    if (event != INVALID_HANDLE_VALUE) {
         CloseHandle(event);
-    if ((HANDLE)timer_callback != INVALID_HANDLE_VALUE)
+    }
+    if ((HANDLE)timer_callback != INVALID_HANDLE_VALUE) {
         CloseHandle((HANDLE)timer_callback);
+    }
     event = INVALID_HANDLE_VALUE;
     timer_callback = (LPTIMECALLBACK)INVALID_HANDLE_VALUE;
-    if (timer_id != 0)
+    if (timer_id != 0) {
         timeKillEvent(timer_id);
+    }
     timer_id = 0;
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (buffer != NULL)
+    if (buffer != NULL) {
         buffer->vtable->release(buffer);
+    }
     volume_sink = NULL;
     active = 0;
 }
+
 i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
     if (volume_sink != NULL) {
         EnterCriticalSection(&volume_lock);
@@ -330,37 +346,45 @@ i32 SoundQueue::SetFormatPc(const WAVEFORMATEX *format) {
     }
     return 0;
 }
+
 i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
-    if (stream_state != 1 && stream_state != 2)
+    if (stream_state != 1 && stream_state != 2) {
         return 0;
+    }
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (buffer == NULL)
+    if (buffer == NULL) {
         return 0;
+    }
     DWORD play_cursor;
     HRESULT result = buffer->vtable->get_current_position(buffer, &play_cursor, NULL);
     i32 requested = bytes;
     i32 total = buffer_seconds * wave_format.nAvgBytesPerSec;
     if (SUCCEEDED(result)) {
         i32 available = (i32)play_cursor - buffer_write_position;
-        if (available < 0)
+        if (available < 0) {
             available += total;
+        }
         if ((flags & 2) == 0) {
             requested = 2 * wave_format.nAvgBytesPerSec;
-            if (available < requested)
+            if (available < requested) {
                 requested = available;
-            if (buffer_write_position + requested > total)
+            }
+            if (buffer_write_position + requested > total) {
                 requested = total - buffer_write_position;
+            }
         }
     }
     if ((flags & 2) == 0 && (i32)play_cursor >= buffer_write_position &&
-        (i32)play_cursor < buffer_write_position + requested)
+        (i32)play_cursor < buffer_write_position + requested) {
         return 0;
+    }
     i32 amount = decoder->vtable->get_size(decoder) - decoded_bytes;
     i32 decoded;
-    if (requested < amount)
+    if (requested < amount) {
         decoded = requested;
-    else
+    } else {
         decoded = decoder->vtable->get_size(decoder) - decoded_bytes;
+    }
     void *data, *second;
     DWORD data_bytes, second_bytes;
     buffer = (IDirectSoundBuffer *)volume_sink;
@@ -368,28 +392,31 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
         buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);
     if (result == (HRESULT)0x88780096) {
         buffer = (IDirectSoundBuffer *)volume_sink;
-        if (FAILED(buffer->vtable->restore(buffer)))
+        if (FAILED(buffer->vtable->restore(buffer))) {
             return 0;
+        }
         buffer = (IDirectSoundBuffer *)volume_sink;
         result = buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second,
                                       &second_bytes, 0);
     }
-    if (FAILED(result))
+    if (FAILED(result)) {
         return 0;
+    }
     if (data_bytes < (u32)requested) {
         buffer = (IDirectSoundBuffer *)volume_sink;
         buffer->vtable->unlock(buffer, data, 0, second, 0);
     } else {
-        if ((flags & 1) != 0)
+        if ((flags & 1) != 0) {
             decoded = 0;
-        else if (decoded != 0) {
+        } else if (decoded != 0) {
             u32 read_count;
             if (FAILED(decoder->vtable->read(decoder, data, decoded, &read_count)) || read_count != (u32)decoded) {
                 decoded_bytes = decoder->vtable->get_size(decoder);
                 decoded = 0;
                 buffer = (IDirectSoundBuffer *)volume_sink;
-                if (SUCCEEDED(buffer->vtable->stop(buffer)))
+                if (SUCCEEDED(buffer->vtable->stop(buffer))) {
                     stream_state = 0;
+                }
             }
         }
         if ((loop_flags & 1) != 0) {
@@ -400,16 +427,18 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
                     i32 remaining = requested - decoded;
                     i32 available = decoder->vtable->get_size(decoder) - decoded_bytes;
                     i32 block = remaining;
-                    if (available < remaining)
+                    if (available < remaining) {
                         block = decoder->vtable->get_size(decoder) - decoded_bytes;
+                    }
                     u32 read_count;
                     if (FAILED(decoder->vtable->read(decoder, (u8 *)data + decoded, block, &read_count)) ||
                         read_count != (u32)block) {
                         decoded_bytes = decoder->vtable->get_size(decoder);
                         memset(data, 0, requested);
                         buffer = (IDirectSoundBuffer *)volume_sink;
-                        if (SUCCEEDED(buffer->vtable->stop(buffer)))
+                        if (SUCCEEDED(buffer->vtable->stop(buffer))) {
                             stream_state = 0;
+                        }
                         decoded = block;
                         break;
                     }
@@ -428,14 +457,16 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
                 PCSoundDrainStartPc = play_cursor;
             } else {
                 i32 elapsed;
-                if ((i32)play_cursor >= PCSoundDrainStartPc)
+                if ((i32)play_cursor >= PCSoundDrainStartPc) {
                     elapsed = (i32)play_cursor - PCSoundDrainStartPc;
-                else
+                } else {
                     elapsed = total - PCSoundDrainStartPc + play_cursor;
+                }
                 PCSoundDrainRemainingPc -= elapsed;
                 PCSoundDrainStartPc = play_cursor;
-                if (PCSoundDrainRemainingPc <= 0)
+                if (PCSoundDrainRemainingPc <= 0) {
                     ++pending_bytes;
+                }
             }
         }
         buffer = (IDirectSoundBuffer *)volume_sink;
@@ -446,6 +477,7 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
     }
     return 1;
 }
+
 DWORD SoundQueue::Run(void) {
     i32 quitting = 0;
     i32 command_arg;
@@ -470,12 +502,14 @@ DWORD SoundQueue::Run(void) {
                         NuStrNCpy(current_path, stream_path, 0x104);
                         current_offset = start_offset;
                         if (stream_state == 2) {
-                            if (timer_id != 0)
+                            if (timer_id != 0) {
                                 timeKillEvent(timer_id);
+                            }
                             timer_id = 0;
                             buffer = (IDirectSoundBuffer *)volume_sink;
-                            if (buffer != NULL)
+                            if (buffer != NULL) {
                                 buffer->vtable->stop(buffer);
+                            }
                         }
                         stream_flags = 0;
                         stream_state = 0;
@@ -487,16 +521,18 @@ DWORD SoundQueue::Run(void) {
                         WAVEFORMATEX format;
                         if (SUCCEEDED(decoder->vtable->open(decoder, NULL, current_path, &format))) {
                             if (wave_format.nSamplesPerSec != format.nSamplesPerSec ||
-                                wave_format.nChannels != format.nChannels)
+                                wave_format.nChannels != format.nChannels) {
                                 SetFormatPc(&format);
+                            }
                             unknown_0004 = 1;
                         }
                         break;
                     }
                     case 2:
                         if ((i32)unknown_0004 < 0) {
-                            if (timer_id != 0)
+                            if (timer_id != 0) {
                                 timeKillEvent(timer_id);
+                            }
                             timer_id = 0;
                         } else if (stream_state != 2) {
                             pending_bytes = 0;
@@ -506,14 +542,16 @@ DWORD SoundQueue::Run(void) {
                             loop_flags = 0;
                             decoder->vtable->reset(decoder);
                             i32 duration = buffer_seconds * 1000;
-                            if (duration < 2000)
+                            if (duration < 2000) {
                                 duration = 2000;
+                            }
                             u32 preload = (u32)(wave_format.nAvgBytesPerSec * duration) / 1000;
                             stream_state = 1;
                             decoded_bytes = decoder->vtable->seek_time(decoder, current_offset);
                             buffer = (IDirectSoundBuffer *)volume_sink;
-                            if (buffer != NULL)
+                            if (buffer != NULL) {
                                 buffer->vtable->set_current_position(buffer, 0);
+                            }
                             FillBufferPc(preload, 2);
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL && SUCCEEDED(buffer->vtable->set_current_position(buffer, 0))) {
@@ -532,14 +570,16 @@ DWORD SoundQueue::Run(void) {
                                     break;
                                 }
                             }
-                            if (timer_id != 0)
+                            if (timer_id != 0) {
                                 timeKillEvent(timer_id);
+                            }
                             timer_id = 0;
                         }
                         break;
                     case 3:
-                        if (timer_id != 0)
+                        if (timer_id != 0) {
                             timeKillEvent(timer_id);
+                        }
                         timer_id = 0;
                         buffer = (IDirectSoundBuffer *)volume_sink;
                         if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer))) {
@@ -550,20 +590,23 @@ DWORD SoundQueue::Run(void) {
                         break;
                     case 4:
                         if (stream_state == 2) {
-                            if (timer_id != 0)
+                            if (timer_id != 0) {
                                 timeKillEvent(timer_id);
+                            }
                             timer_id = 0;
                             buffer = (IDirectSoundBuffer *)volume_sink;
-                            if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer)))
+                            if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer))) {
                                 stream_state = 3;
+                            }
                         }
                         break;
                     case 5:
                         if (stream_state == 3 && buffer != NULL && SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
                             stream_state = 2;
                             stream_flags = 1;
-                            if (timer_id != 0)
+                            if (timer_id != 0) {
                                 timeKillEvent(timer_id);
+                            }
                             timer_id = timeSetEvent(500, 100, timer_callback, 0, 0x21);
                         }
                         break;
@@ -596,11 +639,13 @@ DWORD SoundQueue::Run(void) {
             FillBufferPc((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
             if (pending_bytes > 0 && stream_state == 2) {
                 IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-                if (buffer != NULL)
+                if (buffer != NULL) {
                     buffer->vtable->stop(buffer);
+                }
                 stream_state = 0;
-                if (timer_id != 0)
+                if (timer_id != 0) {
                     timeKillEvent(timer_id);
+                }
                 timer_id = 0;
             }
         }
@@ -616,6 +661,7 @@ DWORD SoundQueue::Run(void) {
     } while (quitting == 0);
     return 0;
 }
+
 extern "C" DWORD __stdcall PCSoundStreamWorkerPc(void *context) {
     return ((SoundQueue *)context)->Run();
 }
@@ -727,16 +773,19 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
 }
 
 void SoundQueue::SuspendForFocusPc(void) {
-    if (this == NULL)
+    if (this == NULL) {
         return;
+    }
     EnterCriticalSection(&operation_lock);
     EnterCriticalSection(&volume_lock);
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (stream_state == 2 && buffer != NULL)
+    if (stream_state == 2 && buffer != NULL) {
         buffer->vtable->stop(buffer);
+    }
     LeaveCriticalSection(&volume_lock);
     unknown_03f4 = 1;
 }
+
 extern "C" void __cdecl NuSound3SuspendForFocusPc(void) {
     if (NuSound3Initialized != 0) {
         SoundVoiceManager.StopAllVoices();
@@ -744,6 +793,7 @@ extern "C" void __cdecl NuSound3SuspendForFocusPc(void) {
         NuSound3StereoStreams[1]->SuspendForFocusPc();
     }
 }
+
 extern "C" void __cdecl NuSound3ResumeAfterFocusPc(void) {
     if (NuSound3Initialized != 0) {
         NuSound3StereoStreams[0]->CancelPausePc();
@@ -755,8 +805,9 @@ extern "C" void __cdecl PCSoundStopStereoChannelPc(i32 channel) {
     char message[64];
     sprintf(message, ">>> NuSoundStopStereo %d", channel);
     SoundQueue *stream = NuSound3StereoStreams[0];
-    if (channel != PCStereoChannel0A)
+    if (channel != PCStereoChannel0A) {
         stream = NuSound3StereoStreams[1];
+    }
     stream->Stop();
 }
 
@@ -766,8 +817,9 @@ extern "C" void __cdecl NuFmvStopSoundPc(i32 wait) {
         PCSoundStopStereoChannelPc(PCStereoChannel0A);
         PCSoundStopStereoChannelPc(PCStereoChannel1A);
         while (NuSound3GetStereoStreamStatus(PCStereoChannel0A) != 0 ||
-               NuSound3GetStereoStreamStatus(PCStereoChannel1A) != 0)
+               NuSound3GetStereoStreamStatus(PCStereoChannel1A) != 0) {
             Sleep(10);
+        }
     }
 }
 

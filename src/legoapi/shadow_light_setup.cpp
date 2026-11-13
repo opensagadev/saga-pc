@@ -4,11 +4,13 @@ extern "C" {
     extern NUMTX PostShadowProjectionPc, PostShadowViewPc;
     extern NUCAMERA *EdMainCurrentCameraPc;
 }
+
 struct SHADOW_PLAYER_BOUNDS_PC {
     u8 unknown_000[0x5fc];
     NUVEC center;
     f32 radius;
 };
+
 STATIC_ASSERT(offsetof(SHADOW_PLAYER_BOUNDS_PC, center) == 0x5fc);
 STATIC_ASSERT(offsetof(SHADOW_PLAYER_BOUNDS_PC, radius) == 0x608);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m20) == 0xd8);
@@ -39,8 +41,9 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
     i32 set_count = split_count - 1;
     active_render_set_count = set_count;
     camera_forward_pc.w = 0.0f;
-    for (i32 i = 0; i < split_count; ++i)
+    for (i32 i = 0; i < split_count; ++i) {
         split_distances_pc[i] = splits[i];
+    }
     f32 near_clip = camera->near_clip;
     f32 far_clip = camera->far_clip;
     for (i32 i = 0; i < set_count; ++i) {

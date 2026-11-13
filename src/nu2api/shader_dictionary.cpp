@@ -3,6 +3,7 @@
 #include <new>
 // Repeats saga.h, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).
 extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
+
 ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &parent, i32 input_mode)
     : scratch(parent, 0x3000), output_memory(parent, 0x4000), register_buffer(parent, 0x100) {
     unknown_99c = 0;
@@ -35,46 +36,58 @@ ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &pa
             break;
     }
 }
+
 ShaderCompilerDictionaryPc::~ShaderCompilerDictionaryPc() {
 }
+
 void ShaderCompilerDictionaryPc::SetProfile(i32 input_profile, i32 first, i32 second) {
     profile = input_profile;
     first_version = first;
     second_version = second;
     if (mode == 0) {
-        if (profile == 2 || profile == 3 || profile == 4)
+        if (profile == 2 || profile == 3 || profile == 4) {
             profile_name = "_centroid";
-        else
+        } else {
             profile_name = "";
+        }
     }
 }
+
 bool ShaderCompilerDictionaryPc::GetForceMode() const {
     return force_mode;
 }
+
 i32 ShaderCompilerDictionaryPc::GetProfile() const {
     return profile;
 }
+
 void ShaderCompilerDictionaryPc::AddRegisterBlock(const char *name, i32 count) {
     ShaderRegisterBlockPc *block = &register_blocks[register_block_count++];
     PCByteCopy_candidate(block->name, name, NuStrLen(name) + 1);
     block->register_count = count;
 }
+
 i32 ShaderCompilerDictionaryPc::FindRegisterBlock(const char *name) {
     ShaderRegisterBlockPc *cursor = register_blocks;
     ShaderRegisterBlockPc *end = register_blocks + register_block_count;
-    for (; cursor < end; ++cursor)
-        if (strcmp(name, cursor->name) == 0)
+    for (; cursor < end; ++cursor) {
+        if (strcmp(name, cursor->name) == 0) {
             return cursor->register_count;
+        }
+    }
     return 0;
 }
 
 ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *name) {
     i32 count = program_count;
-    for (i32 i = 0; i < count; ++i)
-        if (strcmp(programs[i]->name, name) == 0)
+    for (i32 i = 0; i < count; ++i) {
+        if (strcmp(programs[i]->name, name) == 0) {
             return programs[i];
+        }
+    }
     return NULL;
 }
+
 // AddDefinition body; retail inlines it into EmitProgram only.
 char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
 #define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                        \
@@ -111,9 +124,11 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
             (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                        \
         }                                                                                                              \
     } while (0)
+
 __declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
     SHADER_ADD_DEFINITION_PC(this, name, value, emit);
 }
+
 void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
     ShaderMacroDefinitionPc **cursor = programs;
     ShaderMacroDefinitionPc **end = programs + program_count;
@@ -136,21 +151,24 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
             *result = FindDefinition(node->left->left->token) != NULL;
             return true;
         }
-        if (strcmp(node->token, "\x80") != 0)
+        if (strcmp(node->token, "\x80") != 0) {
             break;
+        }
         node = node->left;
     }
     const char *token = node->token;
     if (strcmp(token, "!") == 0) {
-        if (!EvaluateCondition(node->left, result))
+        if (!EvaluateCondition(node->left, result)) {
             return false;
+        }
         *result = *result == 0;
         return true;
     }
     i32 left, right;
     if (strcmp(token, "&&") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left != 0 && right != 0;
         return true;
     }
@@ -159,44 +177,51 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
             *result = left;
             return true;
         }
-        if (!EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = right;
         return true;
     }
     if (strcmp(token, "==") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left == right;
         return true;
     }
     if (strcmp(token, "<=") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left <= right;
         return true;
     }
     if (strcmp(token, ">=") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left >= right;
         return true;
     }
     if (strcmp(token, "<") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left < right;
         return true;
     }
     if (strcmp(token, ">") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left > right;
         return true;
     }
     if (strcmp(token, "!=") == 0) {
-        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right))
+        if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;
+        }
         *result = left != right;
         return true;
     }
@@ -206,16 +231,18 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         ShaderMacroDefinitionPc *next;
         do {
             next = FindDefinition(definition->value);
-            if (next != NULL)
+            if (next != NULL) {
                 definition = next;
+            }
         } while (next != NULL);
         value = definition->value;
     } else {
         // The native path reloads this input after the definition lookup.
         value = reinterpret_cast<const volatile ShaderConditionNodePc *>(node)->token;
     }
-    if (value == NULL || !IsNumericToken(value))
+    if (value == NULL || !IsNumericToken(value)) {
         return false;
+    }
     *result = NuAToI(const_cast<char *>(value));
     return true;
 }
@@ -238,6 +265,7 @@ ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 inpu
     pixel_register = input_pixel_register;
     expansion_state = 0;
 }
+
 const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) {
     register_buffer.length = 0;
     switch ((i32)node->flags) {
@@ -269,27 +297,32 @@ const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) 
     }
     ShaderCompilerBufferAllocatorPc *buffer = &register_buffer;
     if (buffer->length > 0 && buffer->data[buffer->length - 1] != 0) {
-        if (buffer->length + 1 > buffer->capacity)
+        if (buffer->length + 1 > buffer->capacity) {
             buffer->Resize((3 * (buffer->length + 1)) / 2);
+        }
         buffer->data[buffer->length++] = 0;
     }
     return reinterpret_cast<const char *>(buffer->data);
 }
+
 ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTExact(const char *name, u32 flags) {
     i32 count = definition_count;
     for (i32 i = 0; i < count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        if (node->flags == flags && strcmp(node->name, name) == 0)
+        if (node->flags == flags && strcmp(node->name, name) == 0) {
             return node;
+        }
     }
     return NULL;
 }
+
 ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTUniform(const char *name) {
     i32 count = definition_count;
     for (i32 i = 0; i < count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        if ((node->flags & 0x4020) == 0x4020 && strcmp(node->name, name) == 0)
+        if ((node->flags & 0x4020) == 0x4020 && strcmp(node->name, name) == 0) {
             return node;
+        }
     }
     return NULL;
 }
@@ -299,6 +332,7 @@ static const char *ShaderCompilerTypeNamesPc[22] = {
     "undefined", "float",     "float",     "float2",    "float3",      "float4",  "float3x3", "float4x4",
     "half",      "half",      "half2",     "half3",     "half4",       "half3x3", "half4x4",  "bool",
     "int",       "sampler1D", "sampler2D", "sampler3D", "samplerCUBE", "hook"};
+
 const char *ShaderSourceNodePc::SemanticName() {
     switch (semantic) {
         case 0:
@@ -351,6 +385,7 @@ const char *ShaderSourceNodePc::SemanticName() {
             return "INVALID";
     }
 }
+
 void ShaderCompilerDictionaryPc::EmitType(ShaderCompilerBufferAllocatorPc *output) {
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
@@ -367,6 +402,7 @@ void ShaderCompilerDictionaryPc::EmitType(ShaderCompilerBufferAllocatorPc *outpu
         }
     }
 }
+
 void ShaderCompilerDictionaryPc::EmitRegister(ShaderCompilerBufferAllocatorPc *output) {
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
@@ -387,16 +423,18 @@ void ShaderCompilerDictionaryPc::EmitRegister(ShaderCompilerBufferAllocatorPc *o
         }
     }
 }
+
 void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc *output) {
     output->AppendText("struct VertexInput { \r\n");
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
         if (node->flags == 0x2010 && node->expansion_state > 0) {
             char array_suffix[64];
-            if (node->array_count >= 0)
+            if (node->array_count >= 0) {
                 sprintf(array_suffix, "[%d] ", node->array_count);
-            else
+            } else {
                 array_suffix[0] = 0;
+            }
             const char *alias = RenderASTName(node);
             output->AppendText("\t#define ");
             output->AppendText(alias);
@@ -418,40 +456,52 @@ void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc
 
 static const i32 ShaderCompilerTypeComponentsPc[22] = {-1, 1, 1, 2,  3, 4, 9,  16, 1,  1,  2,
                                                        3,  4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
+
 const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
     switch (first) {
         case 0:
-            if (count == 1)
+            if (count == 1) {
                 return ".x";
-            if (count == 2)
+            }
+            if (count == 2) {
                 return ".xy";
-            if (count == 3)
+            }
+            if (count == 3) {
                 return ".xyz";
-            if (count == 4)
+            }
+            if (count == 4) {
                 return ".xyzw";
+            }
             return "????";
         case 1:
-            if (count == 1)
+            if (count == 1) {
                 return ".y";
-            if (count == 2)
+            }
+            if (count == 2) {
                 return ".yz";
-            if (count == 3)
+            }
+            if (count == 3) {
                 return ".yzw";
+            }
             return "????";
         case 2:
-            if (count == 1)
+            if (count == 1) {
                 return ".z";
-            if (count == 2)
+            }
+            if (count == 2) {
                 return ".zw";
+            }
             return "????";
         case 3:
-            if (count == 1)
+            if (count == 1) {
                 return ".w";
+            }
             return "????";
         default:
             return "??????";
     }
 }
+
 void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *output) {
     i32 allocated = 0;
     i32 colors = 0;
@@ -463,8 +513,9 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     output->AppendText("struct VertexOutput { \r\n");
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        if (node->flags != 0x3008 || node->expansion_state <= 0)
+        if (node->flags != 0x3008 || node->expansion_state <= 0) {
             continue;
+        }
         const char *alias = RenderASTName(node);
         output->AppendText("\t#define ");
         output->AppendText(alias);
@@ -565,8 +616,9 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     }
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        if (node->flags != 0x3008 || node->expansion_state <= 0 || node->semantic != 1)
+        if (node->flags != 0x3008 || node->expansion_state <= 0 || node->semantic != 1) {
             continue;
+        }
         i32 slot = -1;
         if (!overflow) {
             for (i32 j = 0; j < first_version; ++j) {
@@ -615,12 +667,14 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     }
     output->AppendText("};\r\n");
 }
+
 void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
     i32 i;
     for (i = 0; i < definition_count; ++i) {
         if (ShaderCompilerTypeComponentsPc[definitions[i]->type] < ShaderCompilerTypeComponentsPc[node->type]) {
-            for (i32 j = definition_count; j > i; --j)
+            for (i32 j = definition_count; j > i; --j) {
                 definitions[j] = definitions[j - 1];
+            }
             definitions[i] = node;
             ++definition_count;
             return;
@@ -635,8 +689,9 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         ShaderSourceNodePc *node = definitions[i];
         if (!(emit_centroid != 0 && (node->flags & 0x4020) == 0x4020)) {
             bool uniform = (node->flags >> 5) & 1;
-            if (!uniform || node->expansion_state <= 0 || FindDefinition(node->name) != NULL)
+            if (!uniform || node->expansion_state <= 0 || FindDefinition(node->name) != NULL) {
                 continue;
+            }
         }
         bool unavailable = output_stage == 0 ? (node->flags & 0x2000) == 0 : (node->flags & 0x1000) == 0;
         const char *alias = RenderASTName(node);
@@ -644,16 +699,18 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         output->AppendText(alias);
         output->AppendText("\r\n");
         SHADER_ADD_DEFINITION_PC(this, alias, NULL, 0);
-        if (node->type == 21)
+        if (node->type == 21) {
             continue;
+        }
         const char *shared = !unavailable && emit_semantics != 0 && (node->flags & 0x4020) == 0x4020 ? "shared " : "";
         char array_suffix[64];
-        if (node->array_count >= 0)
+        if (node->array_count >= 0) {
             sprintf(array_suffix, "[%d] ", node->array_count);
-        else if (node->array_count == -2)
+        } else if (node->array_count == -2) {
             sprintf(array_suffix, "[%d] ", FindRegisterBlock(node->name));
-        else
+        } else {
             array_suffix[0] = 0;
+        }
         const char *semantic_separator;
         const char *semantic_name;
         if (emit_registers != 0) {
@@ -668,12 +725,14 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         if (!unavailable && uniform) {
             i32 index = output_stage == 0 ? node->vertex_register : node->pixel_register;
             ShaderUniformRecordPc *record = NuShaderUniformGetByString(node->name);
-            if (record != NULL)
+            if (record != NULL) {
                 index = record->register_index;
-            if (index >= 0 && (profile == 4 || profile == 5))
+            }
+            if (index >= 0 && (profile == 4 || profile == 5)) {
                 sprintf(register_suffix, register_format, index);
-            else
+            } else {
                 register_suffix[0] = 0;
+            }
         } else {
             register_suffix[0] = 0;
         }
@@ -703,6 +762,7 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
     memcpy(result, source, length + 1);
     return result;
 }
+
 void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocatorPc *output) {
     ShaderCompilerBufferAllocatorPc *saved_output = active_output;
     active_output = output;
@@ -712,10 +772,11 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
             case 0: {
                 i32 value;
                 ShaderConditionNodePc *condition = node->data.branch.condition;
-                if (EvaluateCondition(condition, &value) && value != 0)
+                if (EvaluateCondition(condition, &value) && value != 0) {
                     Expand(node->data.branch.if_true, output);
-                else if (node->data.branch.if_false != NULL)
+                } else if (node->data.branch.if_false != NULL) {
                     Expand(node->data.branch.if_false, output);
+                }
                 break;
             }
             case 1:
@@ -753,12 +814,14 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 break;
             case 4: {
                 const char *name = node->data.reference.name;
-                for (i32 i = 0; i < node->data.reference.alias_depth; ++i)
+                for (i32 i = 0; i < node->data.reference.alias_depth; ++i) {
                     name = FindDefinition(name)->value;
+                }
                 ShaderSourceNodePc *definition = FindASTExact(name, node->data.reference.flags);
                 bool uniform = (node->data.reference.flags >> 5) & 1;
-                if (definition == NULL && uniform)
+                if (definition == NULL && uniform) {
                     definition = FindASTUniform(name);
+                }
                 if (definition != NULL) {
                     ++definition->expansion_state;
                     const char *rendered = RenderASTName(definition);
@@ -773,21 +836,23 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 if (output != NULL) {
                     u32 flags = node->data.emit.flags;
                     bool program = (flags >> 5) & 1;
-                    if (program)
+                    if (program) {
                         EmitProgram(output);
-                    else if (flags == 0x2010)
+                    } else if (flags == 0x2010) {
                         EmitVertexInput(output);
-                    else if (flags == 0x3008)
+                    } else if (flags == 0x3008) {
                         EmitAttribute(output);
-                    else if (flags == 0x2002)
+                    } else if (flags == 0x2002) {
                         EmitType(output);
-                    else if (flags == 0x1004)
+                    } else if (flags == 0x1004) {
                         EmitRegister(output);
+                    }
                 }
                 break;
             case 7:
-                if (output != NULL)
+                if (output != NULL) {
                     output->AppendBytes(node->data.text.bytes, node->data.text.count);
+                }
                 break;
         }
         node = node->next;

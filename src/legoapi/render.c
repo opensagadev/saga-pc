@@ -24,6 +24,7 @@ typedef struct render_post_prim_vertex_pc_s {
     u32 colour;
     f32 u, v;
 } RENDER_POST_PRIM_VERTEX_PC;
+
 STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(RENDER_POST_PRIM_VERTEX_PC, colour) == 0xc);
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
@@ -158,6 +159,7 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
+
 #undef ALPHA_GRID_VERTEX
 #undef ALPHA_GRID_INLINE_COLOUR
 #undef ALPHA_GRID_CLAMP_COLOUR
@@ -171,6 +173,7 @@ void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
 typedef struct STATUS_RUMBLE_PAIR_PC {
     RUMBLE_PACKET_RESOURCE_PC players[2];
 } STATUS_RUMBLE_PAIR_PC;
+
 STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_rumble_amount) - offsetof(STATUSPACKET_s, player0_rumble_amount) ==
               sizeof(RUMBLE_PACKET_RESOURCE_PC));
@@ -180,6 +183,7 @@ STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==
 typedef struct StatusPlayerModelPairPc {
     u16 model[2];
 } StatusPlayerModelPairPc;
+
 STATIC_ASSERT(sizeof(StatusPlayerModelPairPc) == 4);
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==

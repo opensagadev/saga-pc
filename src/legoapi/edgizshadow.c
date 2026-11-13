@@ -5,6 +5,7 @@ typedef struct shadow_world_view_pc_s {
     u8 reserved_0000[0x5110];
     EDGIZSHADOW_PC *shadow_editor;
 } SHADOW_WORLD_VIEW_PC;
+
 STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, direction) == 0);
 STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_0c) == 0xc);
@@ -106,8 +107,9 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
     EDGIZSHADOW_PC *shadow;
     i32 version, count, record;
-    if (world == NULL || view->shadow_editor == NULL)
+    if (world == NULL || view->shadow_editor == NULL) {
         return 0;
+    }
     shadow = view->shadow_editor;
     version = (i8)EdFileReadChar();
     count = (i8)EdFileReadChar();
@@ -128,10 +130,11 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
             shadow->field_18 = 0.0005f;
             shadow->field_1c = 0.01f;
         }
-        if (version >= 4)
+        if (version >= 4) {
             shadow->field_20 = EdFileReadFloat();
-        else
+        } else {
             shadow->field_20 = 22.0f;
+        }
         if (version >= 5) {
             (void)EdFileReadFloat();
             (void)EdFileReadFloat();
@@ -141,16 +144,19 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
             shadow->field_28 = EdFileReadFloat();
             shadow->field_2c = EdFileReadFloat();
         }
-        if (version >= 7)
+        if (version >= 7) {
             shadow->field_30 = EdFileReadFloat();
-        if (version >= 8)
+        }
+        if (version >= 8) {
             shadow->preset = EdFileReadInt();
-        else if (world->area != NULL)
+        } else if (world->area != NULL) {
             shadow->preset = (world->area->flags & 1) ? 2 : 1;
+        }
         Shadow_ApplyPreset(shadow, shadow->preset);
     }
     return 1;
 }
+
 i32 edGizShadow_gizmotype_id = 0;
 
 ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32 type_id) {

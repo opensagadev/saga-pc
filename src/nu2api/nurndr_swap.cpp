@@ -47,20 +47,25 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuPostEffectReset();
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
-        if (!PcWindowOptions.bloomenabled)
+        if (!PcWindowOptions.bloomenabled) {
             scene->unknown_58 = 0;
-        if (!PcWindowOptions.shadowsenabled)
+        }
+        if (!PcWindowOptions.shadowsenabled) {
             scene->unknown_48 = 0;
-        if (!PcWindowOptions.speedblurenabled)
+        }
+        if (!PcWindowOptions.speedblurenabled) {
             scene->unknown_188 = 0;
+        }
         if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) ||
             (scene->unknown_ac != 0 && NuPostEffectIsInitialised(8)) ||
             (scene->unknown_48 != 0 && NuPostEffectIsInitialised(0x20)) ||
-            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(0x80)))
+            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(0x80))) {
             last_effect_scene = i;
+        }
     }
-    if (last_effect_scene != -1)
+    if (last_effect_scene != -1) {
         PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
+    }
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
         i32 rendered_effect = 0;
@@ -74,16 +79,18 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         if (scene->dyn_light_count != 0) {
             NURNDRLIGHTRECORD *light = static_cast<NURNDRLIGHTRECORD *>(scene->dyn_light_ptr);
             if (NuDynamicLightIsEnabled(light)) {
-                if (scene->scene_id != -1)
+                if (scene->scene_id != -1) {
                     NuDynamicLightAddRenderScene(light, scene->unknown_40, scene->scene_id);
+                }
                 if (scene->unknown_40 == 0) {
                     NuPostEffectAddDynamicLight(reinterpret_cast<NuDynamicLight *>(light));
                 }
             }
             scene->scene_id = -1;
         }
-        if (scene->unknown_ac != 0)
+        if (scene->unknown_ac != 0) {
             NuPostEffectIsInitialised(8); /* Native60b270 result unused. */
+        }
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
             NuPostEffectEnable(4);
             NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS_PC *>(&scene->burnout_parameters_pc));
@@ -113,12 +120,15 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             PCDeviceSetRenderState(7, 1);
             PCDeviceSetRenderState(14, 1);
             PCDeviceSetRenderState(52, 1);
-            if (flags & 0x100)
+            if (flags & 0x100) {
                 clear = 1;
-            if (flags & 0x200)
+            }
+            if (flags & 0x200) {
                 clear |= 2;
-            if (flags & 0x1800)
+            }
+            if (flags & 0x1800) {
                 clear |= 4;
+            }
             i32 colour = scene->bg_colour | 0xff000000;
             scene->bg_colour = colour;
             const u8 *rgba = reinterpret_cast<const u8 *>(&colour);
@@ -164,10 +174,12 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuDisplayListBeginFrame();
     NuDisplayListStreamCursor = &nudlist_stream_cursor;
     nudlist_field_1598 = nuprim_field_ba8;
-    if (RenderFramePausedPc == 0)
+    if (RenderFramePausedPc == 0) {
         ++PCWindFrameCount;
-    if (RenderFrameCallbackPc != NULL)
+    }
+    if (RenderFrameCallbackPc != NULL) {
         RenderFrameCallbackPc();
+    }
     NuRndrEndSceneEx(0);
     PCDeviceEndScenePc(); /* Genuine native10-byte wrapper6e4a10; result unused. */
     PcInputEndFramePc();
@@ -177,8 +189,10 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     _NuTimeBarSlotBegin(-1, 0, "CPU");
     return 1;
 }
+
 extern "C" i32 __cdecl NuRndrSwapScreenEx(i32 mode, void(__cdecl *callback)(void)) {
-    if (callback != NULL)
+    if (callback != NULL) {
         callback();
+    }
     return NuRndrSwapScreen(mode);
 }

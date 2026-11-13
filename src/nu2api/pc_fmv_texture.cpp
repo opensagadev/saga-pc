@@ -8,6 +8,7 @@ struct NU_FMV_TEXTURE_PC {
     PC_FMV_MOVIE_PC movie;
     i32 open;
 };
+
 STATIC_ASSERT(sizeof(NU_FMV_TEXTURE_PC) == 0x60);
 STATIC_ASSERT(offsetof(NU_FMV_TEXTURE_PC, movie) == 0x14);
 STATIC_ASSERT(offsetof(NU_FMV_TEXTURE_PC, open) == 0x5c);
@@ -18,11 +19,13 @@ extern "C" {
 }
 
 extern "C" void __cdecl NuFmvTextureReleasePc(void) {
-    if (NuFmvTextureActivePc != 0)
+    if (NuFmvTextureActivePc != 0) {
         FmvReleaseImagePc(&NuFmvTexturePc.movie);
+    }
 }
 
 extern "C" void __cdecl NuFmvTextureRestorePc(void) {
-    if (NuFmvTextureActivePc != 0)
+    if (NuFmvTextureActivePc != 0) {
         FmvRestoreImagePc(&NuFmvTexturePc.movie);
+    }
 }

@@ -1,7 +1,9 @@
 #include "saga.h"
+
 void NuPadInitPS(FRAME_SCANNED_PAD_PC *pad) {
     (void)pad;
 }
+
 i32 NuPad_Interface_GetMaxDevices(void) {
     return 14;
 }

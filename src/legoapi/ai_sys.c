@@ -4,12 +4,14 @@ typedef struct ai_control_slot_pc_s {
     NULISTLNK links;
     u8 unknown_08[0xa0];
 } AI_CONTROL_SLOT_PC;
+
 typedef struct ai_control_system_pc_s {
     i32 capacity;
     AI_CONTROL_SLOT_PC *controllers;
     NULISTHDR available;
     NULISTHDR active;
 } AI_CONTROL_SYSTEM_PC;
+
 STATIC_ASSERT(sizeof(AI_CONTROL_SLOT_PC) == 0xa8);
 STATIC_ASSERT(offsetof(AI_CONTROL_SLOT_PC, links) == 0);
 STATIC_ASSERT(sizeof(AI_CONTROL_SYSTEM_PC) == 0x18);
@@ -28,19 +30,25 @@ STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 
 i16 GetGenericGoon(i32 armed) {
     if (armed) {
-        if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN))
+        if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN)) {
             return id_PENGUIN_GOON_GUN;
-        if (id_JOKER_GOON_GUN != -1 && APICharacterLoaded(id_JOKER_GOON_GUN))
+        }
+        if (id_JOKER_GOON_GUN != -1 && APICharacterLoaded(id_JOKER_GOON_GUN)) {
             return id_JOKER_GOON_GUN;
-        if (id_RIDDLER_GOON_GUN != -1 && APICharacterLoaded(id_RIDDLER_GOON_GUN))
+        }
+        if (id_RIDDLER_GOON_GUN != -1 && APICharacterLoaded(id_RIDDLER_GOON_GUN)) {
             return id_RIDDLER_GOON_GUN;
+        }
     } else {
-        if (id_PENGUIN_GOON != -1 && APICharacterLoaded(id_PENGUIN_GOON))
+        if (id_PENGUIN_GOON != -1 && APICharacterLoaded(id_PENGUIN_GOON)) {
             return id_PENGUIN_GOON;
-        if (id_JOKER_GOON != -1 && APICharacterLoaded(id_JOKER_GOON))
+        }
+        if (id_JOKER_GOON != -1 && APICharacterLoaded(id_JOKER_GOON)) {
             return id_JOKER_GOON;
-        if (id_RIDDLER_GOON != -1 && APICharacterLoaded(id_RIDDLER_GOON))
+        }
+        if (id_RIDDLER_GOON != -1 && APICharacterLoaded(id_RIDDLER_GOON)) {
             return id_RIDDLER_GOON;
+        }
     }
     return -1;
 }

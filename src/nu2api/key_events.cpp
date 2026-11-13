@@ -26,15 +26,19 @@ extern "C" i32 QueueKeyPressPc(i32 scan_code, i32 modifiers) {
     }
     return 0;
 }
+
 extern "C" void PcKeyDown(i32 scan_code) {
     PcPressedScanCodes[scan_code] = 1;
     i32 modifiers = 0;
-    if (PcPressedScanCodes[42] || PcPressedScanCodes[54])
+    if (PcPressedScanCodes[42] || PcPressedScanCodes[54]) {
         modifiers = 1;
-    if (PcPressedScanCodes[29] || PcPressedScanCodes[157])
+    }
+    if (PcPressedScanCodes[29] || PcPressedScanCodes[157]) {
         modifiers |= 2;
-    if (PcPressedScanCodes[184])
+    }
+    if (PcPressedScanCodes[184]) {
         modifiers |= 4;
+    }
     switch (scan_code) {
         case 29:
         case 42:
@@ -48,6 +52,7 @@ extern "C" void PcKeyDown(i32 scan_code) {
             break;
     }
 }
+
 extern "C" void PcKeyUp(i32 scan_code) {
     PcPressedScanCodes[scan_code] = 0;
 }

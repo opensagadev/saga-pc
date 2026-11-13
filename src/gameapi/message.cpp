@@ -29,6 +29,7 @@ class AINet : NetListenerInterface {
 
     static AINet *sm_instance;
 };
+
 STATIC_ASSERT(sizeof(AINet) == 4);
 
 AINet *AINet::sm_instance = NULL;
@@ -90,8 +91,9 @@ void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
                     }
                     definitions = is_game_action != 0 ? game_aiactiondefs : api_aiactiondefs;
                     if (system != NULL &&
-                        definitions[(u16)index].eval_fn(system, NULL, packet, params, param_count, 1, 0.0f) != 1)
+                        definitions[(u16)index].eval_fn(system, NULL, packet, params, param_count, 1, 0.0f) != 1) {
                         AINetTrace(definitions->name);
+                    }
                 }
                 break;
         }
@@ -134,6 +136,7 @@ void AINet::ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
 }
 
 extern "C" void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
-    if (AINet::sm_instance != NULL)
+    if (AINet::sm_instance != NULL) {
         AINet::sm_instance->ReplicateAction(action, packet);
+    }
 }

@@ -1,6 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #include "vorbis/vorbisfile.h"
+
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];
     u8 *data;
@@ -8,12 +9,14 @@ struct PC_OGG_CACHE_RECORD_PC {
     u32 last_used;
     volatile i32 references; // shared with the streaming thread: every update is a separate load and store
 };
+
 STATIC_ASSERT(sizeof(PC_OGG_CACHE_RECORD_PC) == 0x114);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, data) == 0x104);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, bytes) == 0x108);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, last_used) == 0x10c);
 STATIC_ASSERT(offsetof(PC_OGG_CACHE_RECORD_PC, references) == 0x110);
 #pragma pack(push, 4)
+
 class OggReader : public WavReader {
   public:
     OggReader(void);
@@ -39,6 +42,7 @@ class OggReader : public WavReader {
     WAVEFORMATEX compressed_format;
     u8 unknown_332[6];
 };
+
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(OggReader) == 0x338);
 STATIC_ASSERT(offsetof(OggReader, compressed) == 0x40);
@@ -58,13 +62,15 @@ OggReader::OggReader(void) {
         PCOggCriticalSectionPc = PCThreadCriticalSectionCreate_candidate();
         PCOggCachePoolPc = (PC_OGG_CACHE_RECORD_PC *)NuAlloc(0x564, ".\\pc\\oggreader.cpp", 36);
     }
-    for (i32 i = 0; i != 5; ++i)
+    for (i32 i = 0; i != 5; ++i) {
         memset(&PCOggCachePoolPc[i], 0, sizeof(PC_OGG_CACHE_RECORD_PC));
+    }
 }
+
 OggReader::~OggReader(void) {
-    if (!compressed)
+    if (!compressed) {
         WavReader::Close();
-    else {
+    } else {
         if (PCOggCriticalSectionPc != 0) {
             PCThreadCriticalSectionDeleteNoOpPc(PCOggCriticalSectionPc);
             PCOggCriticalSectionPc = 0;
@@ -72,33 +78,44 @@ OggReader::~OggReader(void) {
         Close();
     }
 }
+
 HRESULT OggReader::Unknown08Pc(u32 a, u32 b) {
     (void)a;
     (void)b;
     return E_FAIL;
 }
+
 WAVEFORMATEX *OggReader::GetFormat(void) {
-    if (!compressed)
+    if (!compressed) {
         return &format;
+    }
     return &compressed_format;
 }
+
 i32 OggReader::GetSize(void) {
-    if (!compressed)
+    if (!compressed) {
         return WavReader::GetSize();
-    if (cache != NULL)
+    }
+    if (cache != NULL) {
         return (i32)ov_pcm_total(&vorbis_state, -1) * compressed_format.nBlockAlign;
+    }
     return 0;
 }
+
 HRESULT OggReader::Reset(void) {
-    if (!compressed)
+    if (!compressed) {
         return WavReader::Reset();
-    if (cache != NULL)
+    }
+    if (cache != NULL) {
         return ov_raw_seek(&vorbis_state, 0) >= 0 ? S_OK : E_FAIL;
+    }
     return E_FAIL;
 }
+
 HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
-    if (!compressed)
+    if (!compressed) {
         return WavReader::Read(output, requested, read_count);
+    }
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     if (cache == NULL) {
         *read_count = 0;
@@ -108,8 +125,9 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
     i32 bitstream = 0;
     i32 got = ov_read(&vorbis_state, (char *)output, requested, 0, 2, 1, &bitstream);
     if (got < 0) {
-        if (read_count != NULL)
+        if (read_count != NULL) {
             *read_count = 0;
+        }
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return E_FAIL;
     }
@@ -118,39 +136,47 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
     while (got > 0 && (u32)total < requested) {
         got = ov_read(&vorbis_state, (char *)output, requested - total, 0, 2, 1, &bitstream);
         if (got < 0) {
-            if (read_count != NULL)
+            if (read_count != NULL) {
                 *read_count = 0;
+            }
             PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
             return E_FAIL;
         }
         total += got;
         output = (char *)output + got;
     }
-    if ((u32)total < requested)
+    if ((u32)total < requested) {
         memset(output, 0, requested - total);
-    if (read_count != NULL)
+    }
+    if (read_count != NULL) {
         *read_count = total;
+    }
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return S_OK;
 }
+
 HRESULT OggReader::Close(void) {
-    if (!compressed)
+    if (!compressed) {
         return WavReader::Close();
+    }
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     if (cache == NULL) {
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return E_FAIL;
     }
     ov_clear(&vorbis_state);
-    if (cache != NULL)
+    if (cache != NULL) {
         --cache->references;
+    }
     cache = NULL;
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return S_OK;
 }
+
 i32 OggReader::SeekTime(f32 seconds) {
-    if (!compressed)
+    if (!compressed) {
         return WavReader::SeekTime(seconds);
+    }
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     if (cache == NULL) {
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
@@ -161,6 +187,7 @@ i32 OggReader::SeekTime(f32 seconds) {
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return result;
 }
+
 u32 __cdecl OggReader::ReadCallbackPc(void *output, u32 element_size, u32 element_count, void *source) {
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
@@ -170,8 +197,9 @@ u32 __cdecl OggReader::ReadCallbackPc(void *output, u32 element_size, u32 elemen
     }
     i32 bytes = reader->cache->bytes - reader->position;
     i32 wanted = element_size * element_count;
-    if (wanted < bytes)
+    if (wanted < bytes) {
         bytes = wanted;
+    }
     if (bytes < 0) {
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return 0;
@@ -181,6 +209,7 @@ u32 __cdecl OggReader::ReadCallbackPc(void *output, u32 element_size, u32 elemen
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return (u32)bytes / element_size;
 }
+
 i32 __cdecl OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
@@ -189,13 +218,13 @@ i32 __cdecl OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
         return 0;
     }
     i32 result;
-    if (origin == 0)
+    if (origin == 0) {
         result = (i32)offset;
-    else if (origin == 1)
+    } else if (origin == 1) {
         result = reader->position + (i32)offset;
-    else if (origin == 2)
+    } else if (origin == 2) {
         result = reader->cache->bytes + (i32)offset;
-    else {
+    } else {
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return 0;
     }
@@ -203,22 +232,27 @@ i32 __cdecl OggReader::SeekCallbackPc(void *source, i64 offset, i32 origin) {
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return result;
 }
+
 i32 __cdecl OggReader::CloseCallbackPc(void *source) {
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     OggReader *reader = (OggReader *)source;
-    if (reader->cache != NULL)
+    if (reader->cache != NULL) {
         --reader->cache->references;
+    }
     reader->cache = NULL;
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
     return 1;
 }
+
 // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
 long __cdecl OggReader::TellCallbackPc(void *source) {
     OggReader *reader = (OggReader *)source;
-    if (reader->cache == NULL)
+    if (reader->cache == NULL) {
         return 0;
+    }
     return reader->position;
 }
+
 HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     PCThreadMillisecondsPc();
     if (NuStrIStr(path, ".ogg") == NULL) {
@@ -242,12 +276,14 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
                     index = i;
                     break;
                 }
-                if (index == -1 || PCOggCachePoolPc[i].last_used < PCOggCachePoolPc[index].last_used)
+                if (index == -1 || PCOggCachePoolPc[i].last_used < PCOggCachePoolPc[index].last_used) {
                     index = i;
+                }
             }
         }
-        if (index == -1)
+        if (index == -1) {
             index = 0;
+        }
         cache = &PCOggCachePoolPc[index];
         if (cache->data != NULL) {
             memset(cache->data, 0xcd, cache->bytes);
@@ -292,8 +328,9 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     PCThreadMillisecondsPc();
     ov_callbacks callbacks = {ReadCallbackPc, SeekCallbackPc, CloseCallbackPc, TellCallbackPc};
     if (ov_open_callbacks(this, &vorbis_state, NULL, 0, callbacks) < 0) {
-        if (cache != NULL)
+        if (cache != NULL) {
             --cache->references;
+        }
         cache = NULL;
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return E_FAIL;

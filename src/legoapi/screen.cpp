@@ -15,6 +15,7 @@ typedef struct STILL_RENDER_MATERIAL_PC {
     u8 unknown_78[0x3c];
     PC_MATERIAL_SHADER_DESC_VIEW shader;
 } STILL_RENDER_MATERIAL_PC;
+
 STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, attributes) == 0x40);
 STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, opacity) == 0x70);
 STATIC_ASSERT(offsetof(STILL_RENDER_MATERIAL_PC, texture_id) == 0x74);
@@ -32,24 +33,29 @@ typedef struct permanent_material_reader_pc_s {
     i16 texture_id;
     u16 sort_priority;
 } PERMANENT_MATERIAL_READER_PC;
+
 extern "C" NUMTL *FadeMtl, *FadeMtl2, *ScreenFadeMtl;
 extern "C" {
     extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
 }
 extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32);
+
 typedef struct CUT_DISPLAY_VIEW_PC {
     u8 unknown_00[0x6c];
     f32 camera_near_clip;
     u8 unknown_70[0x78];
     u16 camera_far_clip;
 } CUT_DISPLAY_VIEW_PC;
+
 STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_near_clip) == 0x6c);
 STATIC_ASSERT(offsetof(CUT_DISPLAY_VIEW_PC, camera_far_clip) == 0xe8);
 extern "C" f32 CutSceneCameraFocalLengthPc;
+
 typedef struct CUT_BORDER_RECORD_PC {
     u8 unknown_00[0x50];
     u32 flags;
 } CUT_BORDER_RECORD_PC;
+
 STATIC_ASSERT(offsetof(CUT_BORDER_RECORD_PC, flags) == 0x50);
 extern "C" NUMTL *FadeMtl;
 extern "C" {
@@ -130,6 +136,7 @@ extern "C" void __cdecl CreateFadeMaterials(void) {
     ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->sort_priority = 0x7ffe;
     NuMtlUpdate(ScreenFadeMtl);
 }
+
 extern "C" {
     static f32 RenderBackdropTargetTopRPc = 0.0f;
     static f32 RenderBackdropTargetTopGPc = 0.0f;
@@ -146,6 +153,7 @@ extern "C" {
         RenderBackdropTargetBottomGPc = 0.0f;
         RenderBackdropTargetBottomBPc = 0.0f;
     }
+
     static f32 RenderBackdropWaitPc = 0.0f;
 
     void __cdecl BackDrop_ResetColours(void) {
@@ -171,8 +179,9 @@ extern "C" {
         }
         if (RenderBackdropWaitPc > 0.0f) {
             RenderBackdropWaitPc -= FRAMETIME;
-            if (!(RenderBackdropWaitPc <= 0.0f))
+            if (!(RenderBackdropWaitPc <= 0.0f)) {
                 return;
+            }
             if (instant) {
                 RenderBackdropTargetTopBPc = 0.0f;
                 RenderBackdropTargetTopGPc = 0.0f;
@@ -180,8 +189,9 @@ extern "C" {
                 RenderBackdropTargetBottomBPc = 0.0f;
                 RenderBackdropTargetBottomGPc = 0.0f;
                 RenderBackdropTargetBottomRPc = 0.0f;
-            } else
+            } else {
                 BackDrop_ClearColourTargets();
+            }
             return;
         }
         if (RenderBackdropTopRPc == RenderBackdropTargetTopRPc && RenderBackdropTopGPc == RenderBackdropTargetTopGPc &&
@@ -210,8 +220,9 @@ extern "C" {
             RenderBackdropScenePc = scene;
         }
         memset(RenderBackdropSpecialsPc, 0, sizeof(RenderBackdropSpecialsPc));
-        if (scene == NULL)
+        if (scene == NULL) {
             return;
+        }
         NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[0], "ball1", 1);
         NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[1], "ball2", 1);
         NuSpecialFind(RenderBackdropScenePc, &RenderBackdropSpecialsPc[2], "ball3", 1);
@@ -219,18 +230,22 @@ extern "C" {
     }
 
     void __cdecl BackDrop_Update(f32 dt) {
-        if (RenderBackdropScenePc != NULL)
+        if (RenderBackdropScenePc != NULL) {
             NuGScnUpdate(RenderBackdropScenePc, (f32)(dt * 60.0));
+        }
     }
 
     void __cdecl BackDrop_Draw(f32 alpha, i32 flags) {
         i32 special_index;
-        if (RenderBackdropScenePc == NULL)
+        if (RenderBackdropScenePc == NULL) {
             return;
-        if (flags == 0 && RenderBackdropAlphaFnPc != NULL)
+        }
+        if (flags == 0 && RenderBackdropAlphaFnPc != NULL) {
             RenderBackdropAlphaFnPc(&alpha);
-        if (!(alpha > 0.0f))
+        }
+        if (!(alpha > 0.0f)) {
             return;
+        }
         for (special_index = 0; special_index < 4; ++special_index) {
             NUSPECIALHANDLE *special = &RenderBackdropSpecialsPc[special_index];
             if (NuSpecialExistsFn(special) != 0) {
@@ -254,8 +269,9 @@ extern "C" {
     }
 
     void __cdecl BackDrop_Dump(void) {
-        if (RenderBackdropScenePc != NULL)
+        if (RenderBackdropScenePc != NULL) {
             NuGScnRemove(RenderBackdropScenePc);
+        }
     }
 
     void __cdecl DrawParallax(NUSPECIALHANDLE *special) {
@@ -268,6 +284,7 @@ extern "C" {
         matrix.m32 = pNuCam->mtx.m32;
         NuSpecialDrawAt(special, &matrix);
     }
+
     static f32 GameFogDuration = 0;
     static void *GameFogSet = 0;
     static i32 GameFogSnap = 0;
@@ -279,6 +296,7 @@ extern "C" {
         GameFogSet = 0;
         GameFogTime = 0.0f;
     }
+
     static f32 GameFogDefaultFStopPc = 22.0f;
     static GAMEFOG_STATE_PC GameFogNew = {{0}};
     static f32 dof_fstop = 0;
@@ -288,10 +306,11 @@ extern "C" {
         RTL_FOG_MIGRATION_PC *fog;
         f32 blend;
         if (world->rtl_set != NULL &&
-            !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0))
+            !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
             fog = rtlGetFogSet((RTL_SET_PC *)world->rtl_set, &pNuCam->mtx.translation);
-        else
+        } else {
             fog = NULL;
+        }
         GameFogSet = fog;
         if (GameFogSnap == 0 && fog != previous) {
             GameFogTime = 0.0f;
@@ -325,8 +344,9 @@ extern "C" {
         }
         if (fog != NULL) {
             dof_fstop = (f32)((f64)fog->depth_of_field_fstop / 10.0);
-            if (dof_fstop == 0.0f)
+            if (dof_fstop == 0.0f) {
                 dof_fstop = GameFogDefaultFStopPc;
+            }
         } else {
             dof_fstop = GameFogDefaultFStopPc;
         }
@@ -337,8 +357,9 @@ extern "C" {
         } else {
             if (GameFogTime < GameFogDuration) {
                 GameFogTime += FRAMETIME;
-                if (GameFogTime > GameFogDuration)
+                if (GameFogTime > GameFogDuration) {
                     GameFogTime = GameFogDuration;
+                }
             }
             if (GameFogTime >= GameFogDuration) {
                 GameFog = GameFogNew;
@@ -433,48 +454,56 @@ extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colo
 
 extern "C" void __cdecl WidescreenCode(i32 widescreen) {
     f32 aspect = 0.5625f;
-    if (PcWindowOptions.aspect_mode == 2)
+    if (PcWindowOptions.aspect_mode == 2) {
         aspect = 0.625f;
+    }
     if (widescreen != 0) {
         pNuCam->aspect = aspect;
-        if (!CutSceneCameraCTRL)
+        if (!CutSceneCameraCTRL) {
             pNuCam->fov = (f32)((aspect + 0.75) * 0.5);
-        else if (CutSceneCameraFocalLengthPc == 0.0f)
+        } else if (CutSceneCameraFocalLengthPc == 0.0f) {
             pNuCam->fov = aspect;
-        else
+        } else {
             pNuCam->fov = (f32)(NuCameraFocalLenToFOV(CutSceneCameraFocalLengthPc) * (aspect / 0.75));
+        }
         SmartTextSetWidescreen(0.75f, 1.0f);
     } else {
         pNuCam->aspect = 0.75f;
-        if (!CutSceneCameraCTRL)
+        if (!CutSceneCameraCTRL) {
             pNuCam->fov = 0.75f;
-        else if (CutSceneCameraFocalLengthPc == 0.0f)
+        } else if (CutSceneCameraFocalLengthPc == 0.0f) {
             pNuCam->fov = 0.75f;
-        else
+        } else {
             pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLengthPc);
+        }
         SmartTextSetWidescreen(1.0f, 1.0f);
     }
 }
+
 extern "C" {
 
     void __cdecl KeepPointOnScreen(NUVEC *position, NUVEC *velocity) {
         if ((f64)position->x < (f64)-0.85f) {
             position->x = -0.85f;
-            if (velocity != NULL)
+            if (velocity != NULL) {
                 velocity->x = 0.0f;
+            }
         } else if ((f64)position->x > (f64)0.85f) {
             position->x = 0.85f;
-            if (velocity != NULL)
+            if (velocity != NULL) {
                 velocity->x = 0.0f;
+            }
         }
         if ((f64)position->y < (f64)-0.85f) {
             position->y = -0.85f;
-            if (velocity != NULL)
+            if (velocity != NULL) {
                 velocity->y = 0.0f;
+            }
         } else if ((f64)position->y > (f64)0.85f) {
             position->y = 0.85f;
-            if (velocity != NULL)
+            if (velocity != NULL) {
                 velocity->y = 0.0f;
+            }
         }
     }
 }
@@ -482,29 +511,34 @@ extern "C" {
 extern "C" void __cdecl UpdateCutBorders(void) {
     f32 target_scale;
     if (CUTSTOPGAME != 0 || (LEGOCAMMODE_DOORCUT != -1 && GameCam->mode == LEGOCAMMODE_DOORCUT) ||
-        (LEGOCAMMODE_OBSTACLE != -1 && GameCam->mode == LEGOCAMMODE_OBSTACLE && ObstacleCamBorders != 0))
+        (LEGOCAMMODE_OBSTACLE != -1 && GameCam->mode == LEGOCAMMODE_OBSTACLE && ObstacleCamBorders != 0)) {
         target_scale = 1.0f;
-    else
+    } else {
         target_scale = 0.0f;
+    }
     CutBorderScale = SeekLinearF(CutBorderScale, target_scale, FRAMETIME + FRAMETIME);
 }
 
 extern "C" void __cdecl DrawCutBorders(i32 widescreen) {
     f32 border_scale;
     i32 height;
-    if (!(CutBorderScale > 0.0f))
+    if (!(CutBorderScale > 0.0f)) {
         return;
+    }
     NuRndrBeginScene(1);
     if ((CutStopInfo != NULL && (((CUT_BORDER_RECORD_PC *)CutStopInfo)->flags & 0x4000) != 0) ||
         (WORLD->cutscene_sys != NULL && WORLD->cutscene_sys->count == 1 &&
-         (((CUT_BORDER_RECORD_PC *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0))
+         (((CUT_BORDER_RECORD_PC *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0)) {
         border_scale = 0.21276596188545227f;
-    else
+    } else {
         border_scale = 0.1f;
-    if (widescreen != 0)
+    }
+    if (widescreen != 0) {
         border_scale = (f32)((border_scale * 4.0 - 0.5) / 3.0);
-    if (border_scale < 0.02f)
+    }
+    if (border_scale < 0.02f) {
         border_scale = 0.02f;
+    }
     height = (i32)(NuTrigTable[((i32)(CutBorderScale * 16384.0) >> 1) & 0x7fff] * (border_scale * 3616.0));
     NuRndrRect2di(0, 0, 0x2800, height, 0x80ffffff, FadeMtl);
     NuRndrRect2di(0, 0xe20 - height, 0x2800, height, 0x80ffffff, FadeMtl);
@@ -638,12 +672,14 @@ extern "C" void DrawStillScreen(i32 clear) {
 }
 
 extern "C" void __cdecl DrawPauseFade(void) {
-    if (editor_active != 0 || screendump != 0)
+    if (editor_active != 0 || screendump != 0) {
         return;
-    if (Paused == 0 && NetPaused == 0)
+    }
+    if (Paused == 0 && NetPaused == 0) {
         ScreenPauseFadePc = MAX(ScreenPauseFadePc - FRAMETIME * ScreenPauseFadeSpeedPc, 0.0f);
-    else
+    } else {
         ScreenPauseFadePc = MIN(FRAMETIME * ScreenPauseFadeSpeedPc + ScreenPauseFadePc, 1.0f);
+    }
 }
 
 extern "C" void __cdecl HandleStillRender(void) {
@@ -651,52 +687,59 @@ extern "C" void __cdecl HandleStillRender(void) {
     if (pause_rndr_on != 0 && FadeSys.pending_type == -1) {
         NuRndrBeginScene(1);
         if (MainRenderTime < 1.0f) {
-            if (back_rgba[0] == back_rgba[1])
+            if (back_rgba[0] == back_rgba[1]) {
                 NuRndrClear(0xf00, back_rgba[0], 1.0f);
-            else
+            } else {
                 NuRndrGradClear(0xf00, back_rgba[0], back_rgba[1], 1.0f);
+            }
             BackDrop_Draw(1.0f - MainRenderTime, 0);
         } else {
             NuRndrClear(0x300, 0, 1.0f);
         }
         NuRndrEndScene();
     }
-    if (LevelCompletionFallbackFlagPC != 2 && pause_rndr_on != 0 && pause_rt != 0 && FadeSys.pending_type == -1)
+    if (LevelCompletionFallbackFlagPC != 2 && pause_rndr_on != 0 && pause_rt != 0 && FadeSys.pending_type == -1) {
         DrawStillScreen(clear_screen_onstill);
+    }
     if (Paused != 0) {
-        if (old_pause_state == 0 && FadeSys.pending_type == -1)
+        if (old_pause_state == 0 && FadeSys.pending_type == -1) {
             ScreenGrabNeededPc = 1;
+        }
     } else if (old_pause_state != 0) {
         pause_rndr_on = 0;
     }
     old_pause_state = Paused;
     if (waiting_for_level != -1 &&
-        (gone_through_door_to_new_level != 0 || cut_waiting_for_new_level != 0 || waiting_for_new_level != 0))
+        (gone_through_door_to_new_level != 0 || cut_waiting_for_new_level != 0 || waiting_for_new_level != 0)) {
         pause_rndr_on = 1;
-    else if (NewLData == CREDITS_LDATA && LastLData == STATUS_LDATA)
+    } else if (NewLData == CREDITS_LDATA && LastLData == STATUS_LDATA) {
         pause_rndr_on = 1;
-    else if (NewLData == STATUS_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0)
+    } else if (NewLData == STATUS_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0) {
         pause_rndr_on = 1;
-    else if ((NewLData == STATUS_LDATA && GAMEDEMO != 0) || NewLData == CREDITS_LDATA)
+    } else if ((NewLData == STATUS_LDATA && GAMEDEMO != 0) || NewLData == CREDITS_LDATA) {
         pause_rndr_on = 1;
-    else if (NewLData == HUB_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0)
+    } else if (NewLData == HUB_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0) {
         pause_rndr_on = 1;
-    else if (MainRenderTime > 0.0f && MainRenderTime < 1.0f)
+    } else if (MainRenderTime > 0.0f && MainRenderTime < 1.0f) {
         pause_rndr_on = 1;
-    else if (Paused != 0 && ScreenGrabNeededPc == 0) {
-        if (PauseRenderOffFn != NULL && PauseRenderOffFn() != 0)
+    } else if (Paused != 0 && ScreenGrabNeededPc == 0) {
+        if (PauseRenderOffFn != NULL && PauseRenderOffFn() != 0) {
             pause_rndr_on = 0;
-        else
+        } else {
             pause_rndr_on = 1;
-    } else if (LevelCompletionFallbackFlagPC == 0 || LevelCompletionFallbackFlagPC == 1)
+        }
+    } else if (LevelCompletionFallbackFlagPC == 0 || LevelCompletionFallbackFlagPC == 1) {
         pause_rndr_on = 0;
-    else
+    } else {
         pause_rndr_on = 1;
-    if (screendump != 0)
+    }
+    if (screendump != 0) {
         pause_rndr_on = 0;
+    }
     LevelCompletionFallbackFlagPC = 0;
     clear_screen_onstill = 1;
 }
+
 extern "C" {
     NUMTL *SolidMtl = 0;
 }
@@ -802,8 +845,9 @@ extern "C" void __cdecl DrawFadeScreenWipe(void) {
         }
         NuRndrGradRect2di(-0x10, gradient_position - 0x10, 0x2810, 0x176, colours, FadeMtl2);
     }
-    if (skip_solid == 0)
+    if (skip_solid == 0) {
         NuRndrRect2di(x - 0x10, y - 0x10, width + 0x10, height + 0x10, 0, SolidMtl);
+    }
     NuRndrEndScene();
 }
 
@@ -811,14 +855,17 @@ extern "C" void __cdecl NoRender(void) {
     pNuCam->mtx = NuMtxSetIdentityTemplate;
     NuCameraSet(pNuCam);
     NuRndrBeginScene(1);
-    if (back_rgba[0] == back_rgba[1])
+    if (back_rgba[0] == back_rgba[1]) {
         NuRndrClear(0xf00, back_rgba[0], 1.0f);
-    else
+    } else {
         NuRndrGradClear(0xf00, back_rgba[0], back_rgba[1], 1.0f);
-    if (MainRenderTime != 1.0f)
+    }
+    if (MainRenderTime != 1.0f) {
         BackDrop_Draw((f32)(1.0f - MainRenderTime), 0);
+    }
     NuRndrEndScene();
 }
+
 extern "C" {
 
     void __cdecl FinishLoop(i32 frames) {
@@ -908,6 +955,7 @@ extern "C" {
         }
     }
 }
+
 void __cdecl ChallangeCash_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     (void)packet;

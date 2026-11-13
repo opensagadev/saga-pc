@@ -20,6 +20,7 @@ extern f32 sebulba_catchup_lerpf;
 extern f32 sebulba_catchup_speed_mul;
 extern f32 sebulba_catchup_dist;
 extern f32 sebulba_fallback_speed_mul;
+
 typedef struct racepod_resource_pc_s {
     NUMTX matrix;
     NUVEC4 previous_axis;
@@ -36,6 +37,7 @@ typedef struct racepod_resource_pc_s {
     void *next;
     u8 unknown_0098[8];
 } RACEPOD_RESOURCE_PC;
+
 typedef struct podrace_resource_pc_s {
     FLIGHT_SPLINE_RESOURCE_PC splines[32];
     RACEPOD_RESOURCE_PC lap_entries[16];
@@ -49,19 +51,23 @@ typedef struct podrace_resource_pc_s {
     u8 flags;
     u8 unknown_b021[15];
 } PODRACE_RESOURCE_PC;
+
 extern NUSPECIALHANDLE SebulbaMineSpecialPc;
 extern f32 SebulbaDistanceBiasPc, SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc;
+
 typedef struct pod_race_countdown_reader_pc_s {
     u8 unknown_0000[0xb000];
     f32 lap_countdown;
 } POD_RACE_COUNTDOWN_READER_PC;
+
 /* Episode I level callbacks installed by FixUpLevels (retail 0x4d82f0 .. 0x4dd770). */
 typedef struct podrace_levflag_pc_s {
     u8 podrace_state;
     u8 mushroom_state;
     u8 remaining[14];
 } PODRACE_LEVFLAG_PC;
+
 typedef struct gungan_a_pc_s {
     i16 unknown_000;
     i16 count;
@@ -72,6 +78,7 @@ typedef struct gungan_a_pc_s {
     i16 unknown_10a;
     i16 models[4];
 } GUNGAN_A_PC;
+
 typedef struct mine_entry_pc_s {
     u32 active;
     NUVEC pos;
@@ -80,6 +87,7 @@ typedef struct mine_entry_pc_s {
     u16 rotx;
     u16 roty;
 } MINE_ENTRY_PC;
+
 typedef struct minesys_pc_s {
     NUSPECIALHANDLE mine_special;
     MINE_ENTRY_PC mines[64];
@@ -91,22 +99,26 @@ typedef struct minesys_pc_s {
     i32 mine_part;
     f32 update_timer;
 } MINESYS_PC;
+
 typedef struct client_mines_pc_s {
     NUVEC positions[64];
     u32 present_words[2];
     u32 exploded_words[2];
     u32 unknown_310[2];
 } CLIENT_MINES_PC;
+
 typedef struct retakeg_netpacket_pc_s {
     i16 guard_a;
     i16 guard_b;
 } RETAKEG_NETPACKET_PC;
+
 typedef struct cut_instance_reader_pc_s {
     u8 opaque_00_88[0x88];
     u32 flags_88;
     u32 unknown_8c;
     f32 current_frame;
 } CUT_INSTANCE_READER_PC;
+
 extern i16 CharacterFixupIdPc007f19ac;
 extern i16 CharacterFixupIdPc007f19b0;
 extern i16 CharacterFixupIdPc007f19b4;
@@ -115,6 +127,7 @@ void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *spli
 /* PodRace_A mine spawner and renderer. */
 i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
 void __cdecl PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
+
 typedef struct podrace_netpacket_reader_pc_s {
     f32 start_countdown;
     f32 remaining_time;
@@ -122,7 +135,9 @@ typedef struct podrace_netpacket_reader_pc_s {
     u32 unknown_0c;
     i32 lap;
 } PODRACE_NETPACKET_READER_PC;
+
 i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
+
 /* Pod sprint (Episode I bonus) level callbacks. */
 typedef struct PODSPRINT_VIEW_PC {
     NUGSPLINE *finish_line;
@@ -141,8 +156,10 @@ typedef struct PODSPRINT_VIEW_PC {
     i8 ai_state;
     i8 ai_index;
     u8 unknown_90[2];
+
     union {
         u16 flags;
+
         struct {
             i16 halfway : 1;
             i16 unknown_1 : 1;
@@ -152,18 +169,21 @@ typedef struct PODSPRINT_VIEW_PC {
         } bits;
     };
 } PODSPRINT_VIEW_PC;
+
 typedef struct PODSPRINT_NETPACKET_PC {
     i16 ai_state;
     u8 unknown_02[4];
     i16 countdown;
     i16 lap_time;
 } PODSPRINT_NETPACKET_PC;
+
 #define PODSPRINT ((PODSPRINT_VIEW_PC *)&podsprint)
 #define PODSPRINT_NET ((PODSPRINT_NETPACKET_PC *)podsprint_netpacket)
 /* PC 0x008824cc: last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;
 i32 __cdecl XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
+
 typedef struct pod_race_panel_netpacket_pc_s {
     f32 start_countdown;
     f32 remaining_time;
@@ -190,6 +210,7 @@ static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m32 = source->m32;
     destination->m33 = source->m33;
 }
+
 GUNGAN_A_PC gungan_a = {0};
 
 void __cdecl GunganA_Init(WORLDINFO *world) {
@@ -206,19 +227,22 @@ void __cdecl GunganA_Init(WORLDINFO *world) {
             gungan_a.origins[i] = AIPathFindLocator(world->ai_sys, name);
             sprintf(name, "target_%d", i);
             gungan_a.targets[i] = AIPathFindLocator(world->ai_sys, name);
-            if (gungan_a.origins[i] == NULL || gungan_a.targets[i] == NULL)
+            if (gungan_a.origins[i] == NULL || gungan_a.targets[i] == NULL) {
                 break;
+            }
             gungan_a.count++;
         }
     }
 }
+
 f32 gungan_a_time = 0.5f;
 
 void __cdecl GunganA_Update(WORLDINFO *world) {
     GAMEOBJECT *object;
     i32 r;
-    if (netclient != 0)
+    if (netclient != 0) {
         return;
+    }
     gungan_a.spawn_timer += FRAMETIME;
     if (gungan_a.count != 0 && gungan_a.spawn_timer > gungan_a_time) {
         r = NuRand(NULL) % gungan_a.count;
@@ -242,8 +266,9 @@ void __cdecl GunganA_Update(WORLDINFO *world) {
                                             &origin->path_info, NULL, 0, NULL, NULL, 0, 0);
             }
         }
-        if (object != NULL)
+        if (object != NULL) {
             object->ai_packet.locator = gungan_a.targets[r];
+        }
         gungan_a.spawn_timer = 0.0f;
     }
 }
@@ -291,8 +316,9 @@ void PodRaceSnipersUpdate(void) {
             dist2 = dx * dx + dz * dz;
             if (dist2 < PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius) {
                 in_range = 1;
-                if (dist2 < PodRace_sniper_fire_radius * PodRace_sniper_fire_radius)
+                if (dist2 < PodRace_sniper_fire_radius * PodRace_sniper_fire_radius) {
                     PodRace_snipers[i].state = PodRace_sniper_fire_range_time;
+                }
             }
         }
         PodRace_snipers[i].fire_timer += FRAMETIME;
@@ -309,14 +335,16 @@ void PodRaceSnipersUpdate(void) {
                     } else {
                         player_ix = 0;
                     }
-                    if (player_ix == 0)
+                    if (player_ix == 0) {
                         target = player;
+                    }
                     CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity,
                                              type->field_10, &aim, NULL);
                     NuVecAdd(&aim, &aim, &PodRace_snipers[i].prev);
                     PodRace_snipers[i].state -= FRAMETIME;
-                    if (PodRace_snipers[i].state < 0.0f)
+                    if (PodRace_snipers[i].state < 0.0f) {
                         PodRace_snipers[i].state = 0.0f;
+                    }
                 } else {
                     aim.x = 0.0f;
                     aim.y = 0.0f;
@@ -336,6 +364,7 @@ void PodRaceSnipersUpdate(void) {
         }
     }
 }
+
 MINESYS_PC minesys = {0};
 CLIENT_MINES_PC client_mines = {0};
 
@@ -355,6 +384,7 @@ static void InitPodRaceMines(void) {
         minesys.mine_part = PARTLookupType("POD_MINE_PART");
     }
 }
+
 i32 pod_mines_bitfield[2] = {0};
 i32 clients_mines_bitfield[2] = {0};
 i32 mine_count = 0;
@@ -370,6 +400,7 @@ static void PodRaceResetMinesPc(void) {
     mine_count = 0;
     minesys.update_timer = 0.0f;
 }
+
 static f32 PodMineAreaScalePc = 1.0f;
 static f32 PodMineHeightScalePc = 0.5f;
 static u32 mine_max_tile = 0x2000;
@@ -384,22 +415,26 @@ static void *CreatePodRaceMinePc(NUVEC *pos) {
     i32 i;
     i32 bit;
     y = GameShadow(NULL, pos, 5.0f, -1);
-    if (y == 2000000.0)
+    if (y == 2000000.0) {
         y = pos->y;
+    }
     mine_pos.x = pos->x;
     mine_pos.y = PodMineHeightScalePc * minesys.mine_radius + y;
     mine_pos.z = pos->z;
     for (i = 0; i < minesys.nomine_count; i++) {
-        if (CheckPosAIArea(minesys.nomine_areas[i], &mine_pos, PodMineAreaScalePc * minesys.mine_radius) != 0)
+        if (CheckPosAIArea(minesys.nomine_areas[i], &mine_pos, PodMineAreaScalePc * minesys.mine_radius) != 0) {
             return NULL;
+        }
     }
     distance = NuVecXZDist(&mine_pos, &player->collision_position, &delta);
     if (distance > 0.0f) {
         NuVecScale(&delta, &delta, 1.0f / distance);
         ray_pos = player->collision_position;
         ray_pos.y = (f32)(ray_pos.y + 100.0);
-        if (QuickNewRayCast(&ray_pos, &delta, 0.0f, 0, PodMineAreaScalePc * minesys.mine_radius + distance, 5.0f) != 0)
+        if (QuickNewRayCast(&ray_pos, &delta, 0.0f, 0, PodMineAreaScalePc * minesys.mine_radius + distance, 5.0f) !=
+            0) {
             return NULL;
+        }
     }
     entry = minesys.mines;
     for (i = 0; i < 64; i++, entry++) {
@@ -407,8 +442,9 @@ static void *CreatePodRaceMinePc(NUVEC *pos) {
             entry->active = 1;
             entry->pos = mine_pos;
             entry->grow_alpha = 0.0f;
-            if (mine_max_tile != 0)
+            if (mine_max_tile != 0) {
                 entry->rotx = (u16)(NuRandInt() % mine_max_tile);
+            }
             entry->roty = (u16)NuRandInt();
             bit = 1 << i;
             *(u64 *)pod_mines_bitfield |= (u64)(i64)bit;
@@ -422,10 +458,12 @@ static void *CreatePodRaceMinePc(NUVEC *pos) {
 
 static void PodRaceExplodeMinePc(MINE_ENTRY_PC *entry, GAMEOBJECT *object) {
     u64 mask;
-    if (minesys.mine_debris != -1)
+    if (minesys.mine_debris != -1) {
         AddGameDebris(WORLD->game_debris_sys, minesys.mine_debris, &entry->pos);
-    if (minesys.mine_part != -1)
+    }
+    if (minesys.mine_part != -1) {
         AddFiniteShotPART(minesys.mine_part, &entry->pos, 1);
+    }
     GameCam_HitJudder();
     GameCam_NewShake(NULL, 0.75f, 1.0f, 1.0f);
     PlaySfx("Explode1", &object->collision_position);
@@ -437,14 +475,17 @@ static void PodRaceExplodeMinePc(MINE_ENTRY_PC *entry, GAMEOBJECT *object) {
 }
 
 static void PodRaceExplodeClientMinePc(NUVEC *position, GAMEOBJECT *object) {
-    if (minesys.mine_debris != -1)
+    if (minesys.mine_debris != -1) {
         AddGameDebris(WORLD->game_debris_sys, minesys.mine_debris, position);
-    if (minesys.mine_part != -1)
+    }
+    if (minesys.mine_part != -1) {
         AddFiniteShotPART(minesys.mine_part, position, 1);
+    }
     GameCam_HitJudder();
     GameCam_NewShake(NULL, 0.75f, 1.0f, 1.0f);
     PlaySfx("Explode1", &object->collision_position);
 }
+
 static f32 PodMineGrowTimePc = 1.0f;
 
 void __cdecl UpdatePodRaceMines(void) {
@@ -462,14 +503,16 @@ void __cdecl UpdatePodRaceMines(void) {
     object = Obj;
     for (i = 0; i < 64; i++, object++) {
         if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            object != PodPacemakerPc)
+            object != PodPacemakerPc) {
             objects[count++] = object;
+        }
     }
     if (netclient == 0) {
         entry = minesys.mines;
         for (i = 0; i < 64; i++, entry++) {
-            if (entry->active == 0)
+            if (entry->active == 0) {
                 continue;
+            }
             NuVecSub(&delta, &entry->pos, &GameCam->position);
             if (GameCam->dir.x * delta.x + GameCam->dir.y * delta.y + GameCam->dir.z * delta.z < 0.0) {
                 *(u64 *)pod_mines_bitfield &= (u64)(i64) ~(1 << (i32)(entry - minesys.mines));
@@ -478,13 +521,15 @@ void __cdecl UpdatePodRaceMines(void) {
                 continue;
             }
             entry->grow_alpha = (entry->grow += FRAMETIME) * PodMineAreaScalePc / PodMineGrowTimePc;
-            if (entry->grow_alpha > PodMineAreaScalePc)
+            if (entry->grow_alpha > PodMineAreaScalePc) {
                 entry->grow_alpha = PodMineAreaScalePc;
+            }
             radius = entry->grow_alpha * minesys.mine_radius;
             for (j = 0; j < count; j++) {
                 object = objects[j];
-                if (object == NULL)
+                if (object == NULL) {
                     continue;
+                }
                 delta.x = object->collision_position.x - entry->pos.x;
                 delta.z = object->collision_position.z - entry->pos.z;
                 reach = object->bounds_radius + radius;
@@ -495,8 +540,9 @@ void __cdecl UpdatePodRaceMines(void) {
                         objects[j] = NULL;
                     } else {
                         PodRaceExplodeMinePc(entry, object);
-                        if (object->dead != 0)
+                        if (object->dead != 0) {
                             objects[j] = NULL;
+                        }
                     }
                 }
             }
@@ -504,13 +550,15 @@ void __cdecl UpdatePodRaceMines(void) {
     } else {
         for (i = 0; i < 64; i++) {
             if (((u64)(i64)(1 << i) & *(u64 *)client_mines.present_words) == 0 ||
-                ((u64)(i64)(1 << i) & *(u64 *)client_mines.exploded_words) != 0)
+                ((u64)(i64)(1 << i) & *(u64 *)client_mines.exploded_words) != 0) {
                 continue;
+            }
             radius = minesys.mine_radius * PodMineAreaScalePc;
             for (j = 0; j < count; j++) {
                 object = objects[j];
-                if (object == NULL)
+                if (object == NULL) {
                     continue;
+                }
                 delta.x = object->collision_position.x - client_mines.positions[i].x;
                 delta.z = object->collision_position.z - client_mines.positions[i].z;
                 reach = object->bounds_radius + radius;
@@ -552,6 +600,7 @@ void __cdecl PodRaceADraw(WORLDINFO *world) {
         }
     }
 }
+
 static f32 PodMineSockAlongPc[4] = {0.0f, 1.5f, 0.75f, 1.5f};
 static f32 PodMineSpreadPc = 30.0f;
 static f32 PodMineAheadPc = 100.0f;
@@ -562,8 +611,9 @@ void __cdecl PodRaceAUpdate(void) {
     if (Lap < 4 && MiniCutCam == 0) {
         minesys.update_timer += FRAMETIME;
         if (minesys.update_timer > 1.0f) {
-            if (minesys.spawn_timer == 1000000000.0)
+            if (minesys.spawn_timer == 1000000000.0) {
                 minesys.spawn_timer = GameCam->sock_position.distance;
+            }
             if (GameCam->sock_position.distance < PodMineMaxSockPc &&
                 GameCam->sock_position.distance >= minesys.spawn_timer) {
                 vec.x = (f32)((0.5 - NuRandFloat()) * (PodMineSpreadPc * 2.0f));
@@ -571,12 +621,14 @@ void __cdecl PodRaceAUpdate(void) {
                 vec.z = PodMineAheadPc;
                 NuVecRotateY(&vec, &vec, player->sock_heading);
                 NuVecAdd(&vec, &vec, &player->collision_position);
-                if (CreatePodRaceMinePc(&vec) != NULL)
+                if (CreatePodRaceMinePc(&vec) != NULL) {
                     minesys.spawn_timer = PodMineSockAlongPc[Lap] + GameCam->sock_position.distance;
+                }
             }
         }
     }
 }
+
 /* Original episodeI.cpp private owner of the active PodRace block (PC 0x00882a8c). */
 static PODRACE_RESOURCE_PC *PodRacePc = NULL;
 
@@ -584,8 +636,9 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
     PODRACE_RESOURCE_PC *race = (PODRACE_RESOURCE_PC *)PodRacePc;
     i32 slot;
     for (slot = 0; slot < 16; ++slot) {
-        if (race->lap_entries[slot].next == NULL)
+        if (race->lap_entries[slot].next == NULL) {
             return &race->lap_entries[slot];
+        }
     }
     return NULL;
 }
@@ -620,24 +673,30 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
     NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, direction_yaw);
     NuVecInvMtxRotate((NUVEC *)&axis, (NUVEC *)&axis, &pod->matrix);
     angle = NuAtan2D(axis.x, axis.y);
-    if (angle > 24000.0 * FRAMETIME)
+    if (angle > 24000.0 * FRAMETIME) {
         angle = (i16)(24000.0 * FRAMETIME);
-    if (angle < FRAMETIME * -24000.0)
+    }
+    if (angle < FRAMETIME * -24000.0) {
         angle = (i16)(FRAMETIME * -24000.0);
+    }
     roll = angle;
-    if (blend > 2.0f)
+    if (blend > 2.0f) {
         roll = 0.0f;
-    else if (blend > 1.0f)
+    } else if (blend > 1.0f) {
         roll = (f32)((2.0 - blend) * roll);
+    }
     NuMtxPreRotateZ(&pod->matrix, -(i16)roll);
 }
 
 static void PodRaceMineKillPc(PART_PC *part, i32 reason) {
-    if (minesys.mine_debris != -1)
+    if (minesys.mine_debris != -1) {
         AddGameDebris(WORLD->game_debris_sys, minesys.mine_debris, &part->position);
-    if (minesys.mine_part != -1)
+    }
+    if (minesys.mine_part != -1) {
         AddFiniteShotPART(minesys.mine_part, &part->position, 1);
+    }
 }
+
 static f32 PodSebulbaThrowTimePc = 2.0f;
 static f32 PodSebulbaThrowJitterPc = 1.0f;
 static f32 PodSebulbaThrowSpeedPc = 20.0f;
@@ -663,8 +722,9 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
     f32 speed;
     f32 distance_sq;
     NUVEC *point;
-    if (pod->spline == NULL)
+    if (pod->spline == NULL) {
         return 0;
+    }
     object = pod->object;
     if (object == NULL || (object->flags_1fc & 1) == 0 || object->dead != 0) {
         memset(pod, 0, sizeof(*pod));
@@ -705,14 +765,16 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
         } else if (length != 0.0f) {
             ratio = PodRacePc->mushroom_timer / PodRacePc->previous_lap_display;
             speed = pod->speed;
-            if (ratio > 1.0f)
+            if (ratio > 1.0f) {
                 ratio = 1.0f;
+            }
             if (WORLD->current_level == PODRACEB_LDATA && Lap == 1) {
                 speed = (f32)(speed / (f64)0.995f);
-                if (ratio < 0.01f)
+                if (ratio < 0.01f) {
                     speed = (f32)(speed * ratio / (f64)0.01f);
-                else
+                } else {
                     speed = (f32)(speed * 1.5 - (ratio - (f64)0.01f) * speed);
+                }
             } else {
                 speed = (f32)(speed * 1.5 - ratio * speed);
             }
@@ -802,22 +864,25 @@ void __cdecl ResetPodStuff(void) {
     f32 duration;
     i32 i;
     i32 id = apicharsys->playermodelids[id_ANAKINSPOD];
-    if (id != -1 && apicharsys->models[id].model_data_b[1] != NULL)
+    if (id != -1 && apicharsys->models[id].model_data_b[1] != NULL) {
         duration = *(f32 *)apicharsys->models[id].model_data_b[1];
-    else
+    } else {
         duration = 0.0f;
+    }
     for (i = 0; i < 2; i++) {
         pod_roll_target[i] = 0.0f;
         pod_roll[i] = 0.0f;
         pod_animtime[i] = 1.0f;
-        if (duration > 0.0f)
+        if (duration > 0.0f) {
             pod_animtime[i] = (f32)(qrand() * PlayerRandomScalePc * (duration - 1.0) + pod_animtime[i]);
+        }
     }
 }
 
 void __cdecl PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }
+
 void *podrace_netpacket = NULL;
 
 void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
@@ -837,30 +902,38 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
         old = PodRacePc->lap_countdown;
         PodRacePc->lap_display = PodRacePc->previous_lap_display;
         avg_currentspeed_mul = 0.0f;
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
             ((GAMEOBJECT *)Player[0])->current_speed_mul = 0.0f;
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+        }
+        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
             ((GAMEOBJECT *)Player[1])->current_speed_mul = 0.0f;
-        if (netclient == 0 && FadeSys.fade == 0.0f)
+        }
+        if (netclient == 0 && FadeSys.fade == 0.0f) {
             PodRacePc->lap_countdown -= dt;
-        if (PodRacePc->lap_countdown < 2.9f && old >= 2.9f)
+        }
+        if (PodRacePc->lap_countdown < 2.9f && old >= 2.9f) {
             PlaySfx("PodX_EngStartup1", NULL);
-        if (PodRacePc->lap_countdown < 1.5f && old >= 1.5f)
+        }
+        if (PodRacePc->lap_countdown < 1.5f && old >= 1.5f) {
             PlaySfx("PodX_EngStartup2", NULL);
-        if (PodRacePc->lap_countdown <= 0.0f)
+        }
+        if (PodRacePc->lap_countdown <= 0.0f) {
             PlaySfx("Pod_Race_Go", NULL);
-        else if ((i32)PodRacePc->lap_countdown != (i32)old)
+        } else if ((i32)PodRacePc->lap_countdown != (i32)old) {
             PlaySfx("Pod_Race_Light", NULL);
+        }
     } else if (netclient == 0) {
         PodRacePc->mushroom_timer = dt + PodRacePc->mushroom_timer;
         if (PodRacePc->previous_lap_display > 0.0f) {
             PodRacePc->lap_display = PodRacePc->previous_lap_display - PodRacePc->mushroom_timer;
             if (PodRacePc->lap_display < 0.0f && FadeSys.fade == 0.0f) {
                 PodRacePc->lap_display = 0.0f;
-                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
                     LoseCoins((GAMEOBJECT *)Player[0], 1);
-                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+                }
+                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                     LoseCoins((GAMEOBJECT *)Player[1], 1);
+                }
                 PodRacePc->flags |= 2;
                 KillPlayer(player, 2, 1, NULL);
                 PodRacePc->attempts++;
@@ -868,23 +941,26 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
                     PodRacePc->attempts_per_increment != 0 &&
                     PodRacePc->attempts % PodRacePc->attempts_per_increment == 0) {
                     PodRacePc->previous_lap_display = PodRacePc->lap_time_increment + PodRacePc->previous_lap_display;
-                    if (PodRacePc->previous_lap_display > PodRacePc->max_lap_time)
+                    if (PodRacePc->previous_lap_display > PodRacePc->max_lap_time) {
                         PodRacePc->previous_lap_display = PodRacePc->max_lap_time;
+                    }
                 }
             }
         }
     }
     for (i = 0; i < 16; i++) {
-        if (PodRacePc->lap_entries[i].next != NULL)
+        if (PodRacePc->lap_entries[i].next != NULL) {
             PodRaceUpdatePodPc(&PodRacePc->lap_entries[i], world);
+        }
     }
     if ((PodRacePc->flags & 1) == 0 && ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) ||
                                         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
         PodRacePc->flags |= 1;
-        if ((PodRacePc->flags & 2) != 0)
+        if ((PodRacePc->flags & 2) != 0) {
             NuStrCpy(reason, "Ep1_PodRace_OutOfTime");
-        else
+        } else {
             NuStrCpy(reason, "EP1_PODRACE_PODEXPLODE");
+        }
         ResetLevel(world, reason, 1);
     }
     if (netclient == 0) {
@@ -894,6 +970,7 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
         ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->available_time = PodRacePc->previous_lap_display;
     }
 }
+
 static f32 podhurryalpha = 0.0f;
 static f32 podstartracealpha = 0.0f;
 static f32 podlapalpha = 0.0f;
@@ -906,25 +983,28 @@ void __cdecl PodRacePanel(WORLDINFO *world) {
     char text[256];
     f32 scale;
     i32 count;
-    if (netclient != 0)
+    if (netclient != 0) {
         podlapalpha = ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha;
-    else
+    } else {
         ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha = podlapalpha;
+    }
     if (podlapalpha > 0.0f) {
         i32 object_index = Lap + 0x135;
-        if (world->level_objects[object_index].active != 0)
+        if (world->level_objects[object_index].active != 0) {
             DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
                               PodSprintLapIconScalePc, 0, 0, 0, &world->level_objects[object_index].special, 0,
                               podlapalpha);
+        }
     }
     if (podhurryalpha > 0.0f && PodRacePc->lap_display > 0.0f) {
         count = (i32)PodRacePc->lap_display + 1;
         sprintf(text, Text_TimeS, count);
         scale = NuFmod(PodRacePc->lap_display, 1.0f);
-        if (scale >= 0.7f)
+        if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
-        else
+        } else {
             scale = 1.0f;
+        }
         scale = PodSprintCountdownScalePc * scale;
         Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 255, 63, 0,
                  (u8)(i32)(podhurryalpha * 128.0));
@@ -933,15 +1013,17 @@ void __cdecl PodRacePanel(WORLDINFO *world) {
         count = (i32)PodRacePc->lap_countdown + 1;
         sprintf(text, Text_TimeS, count);
         scale = NuFmod(PodRacePc->lap_countdown, 1.0f);
-        if (scale >= 0.7f)
+        if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
-        else
+        } else {
             scale = 1.0f;
+        }
         scale = PodSprintCountdownScalePc * scale;
         Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 0, 255, 0,
                  (u8)(i32)(podstartracealpha * 128.0));
     }
 }
+
 static i32 podhurry_i = 0;
 
 void __cdecl UpdatePodRaceLapDisplay(f32 dt) {
@@ -963,34 +1045,41 @@ void __cdecl UpdatePodRaceLapDisplay(f32 dt) {
         podhurry_i = (i32)PodRacePc->lap_display;
         if (podhurryalpha < 1.0f) {
             podhurryalpha += dt + dt;
-            if (podhurryalpha > 1.0f)
+            if (podhurryalpha > 1.0f) {
                 podhurryalpha = 1.0f;
+            }
         }
     } else {
         podhurryalpha = 0.0f;
     }
-    if (podhurry_i > 0 && podhurry_i != -1 && podhurry_i != oldhurry)
+    if (podhurry_i > 0 && podhurry_i != -1 && podhurry_i != oldhurry) {
         TickTockSfx();
-    if (Paused != 0)
+    }
+    if (Paused != 0) {
         return;
+    }
     if (PodRacePc != NULL && PodRacePc->lap_countdown > 0.0f && podstartracealpha < 1.0f) {
         podstartracealpha += dt + dt;
-        if (podstartracealpha > 1.0f)
+        if (podstartracealpha > 1.0f) {
             podstartracealpha = 1.0f;
+        }
     }
 }
+
 static f32 pod_pacemaker_alpha = 0.0f;
 static f32 PodPacemakerTextScalePc = 0.08f;
 
 void __cdecl UpdatePacemakerDisplay(WORLDINFO *world) {
     NUVEC position;
     GAME_MESSAGE_PC *message;
-    if (PodPacemakerPc == NULL)
+    if (PodPacemakerPc == NULL) {
         return;
+    }
     if (FadeSys.fade == 0.0f && pause_rndr_on == 0) {
         pod_pacemaker_alpha += FRAMETIME + FRAMETIME;
-        if (pod_pacemaker_alpha > 1.0f)
+        if (pod_pacemaker_alpha > 1.0f) {
             pod_pacemaker_alpha = 1.0f;
+        }
         if ((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
             position.x = PodPacemakerPc->upper_position.x;
             position.y = (f32)(PodPacemakerPc->upper_position.y + 0.75);
@@ -1000,8 +1089,9 @@ void __cdecl UpdatePacemakerDisplay(WORLDINFO *world) {
             if (message != NULL) {
                 message->alpha = (u8)(NuTrigTable[(i32)(pod_pacemaker_alpha * 16384.0) >> 1 & 0x7fff] * 128.0);
                 message->icon = 0x134;
-                if (world->level_objects[0x134].active != 0)
+                if (world->level_objects[0x134].active != 0) {
                     message->special = world->level_objects[0x134].special;
+                }
             }
         }
     } else {
@@ -1017,8 +1107,9 @@ i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
 void __cdecl PodRaceAUpdatePc(WORLDINFO *world) {
     UpdatePacemakerDisplay(world);
     PodRaceUpdate(world, FRAMETIME);
-    if (netclient == 0)
+    if (netclient == 0) {
         PodRaceAUpdate();
+    }
     UpdatePodRaceMines();
 }
 
@@ -1031,14 +1122,16 @@ void __cdecl PodRaceA_AlwaysUpdate(WORLDINFO *world) {
                 return;
             }
         }
-        if (LevelFixupSlotPc0087b0bc != NULL)
+        if (LevelFixupSlotPc0087b0bc != NULL) {
             other_level_override = LevelFixupSlotPc0087b0bc->index;
+        }
     }
 }
 
 void __cdecl PodRaceADrawPc(WORLDINFO *world) {
     PodRaceADraw(world);
 }
+
 /* PC 0x007ffd34/0x007ffd38/0x007ffd3c: mushroom collapse retry window. */
 f32 mushroom_time_available = 15.0f;
 f32 mushroom_max_time_available = 15.0f;
@@ -1050,20 +1143,22 @@ i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         char *value;
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], "trigger_crash=");
-            if (value != NULL)
+            if (value != NULL) {
                 mushroom0_along = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 14);
-            else if ((value = NuStrIStr(params[index], "trigger_collapse=")) != NULL)
+            } else if ((value = NuStrIStr(params[index], "trigger_collapse=")) != NULL) {
                 mushroom2_along = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 17);
-            else if ((value = NuStrIStr(params[index], "max_time_available=")) != NULL)
+            } else if ((value = NuStrIStr(params[index], "max_time_available=")) != NULL) {
                 mushroom_max_time_available = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 19);
-            else if ((value = NuStrIStr(params[index], "time_available=")) != NULL)
+            } else if ((value = NuStrIStr(params[index], "time_available=")) != NULL) {
                 mushroom_time_available = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 15);
-            else if ((value = NuStrIStr(params[index], "time_increment=")) != NULL)
+            } else if ((value = NuStrIStr(params[index], "time_increment=")) != NULL) {
                 mushroom_time_increment = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 15);
-            else if ((value = NuStrIStr(params[index], "nattempts_per_increment=")) != NULL)
+            } else if ((value = NuStrIStr(params[index], "nattempts_per_increment=")) != NULL) {
                 mushroom_nattempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 24);
-            if (mushroom_max_time_available < mushroom_time_available)
+            }
+            if (mushroom_max_time_available < mushroom_time_available) {
                 mushroom_max_time_available = mushroom_time_available;
+            }
         }
         mushroom_collapse = 1;
     }
@@ -1074,11 +1169,13 @@ i32 PodSeekMushCutSound(void) {
     if (WORLD->current_level == PODRACEB_LDATA && Lap == 2 && PodRacePc->mushroom_timer > 1.0f &&
         mushroom_collapse != 0) {
         if (GameCam->sock_position.distance > mushroom0_along - 15.0 &&
-            GameCam->sock_position.distance <= mushroom0_along + 5.0)
+            GameCam->sock_position.distance <= mushroom0_along + 5.0) {
             return 1;
+        }
     }
     return 0;
 }
+
 static i32 mushroom_n_attempts = 0;
 static CUTINFO *mushroom0_cut = NULL;
 static f32 mushroom_countdown = 15.0f;
@@ -1108,8 +1205,9 @@ void __cdecl PodRaceBUpdate(WORLDINFO *world) {
                     if (mushroom_nattempts_per_increment > 0 &&
                         mushroom_n_attempts % mushroom_nattempts_per_increment == 0) {
                         mushroom_time_available += mushroom_time_increment;
-                        if (mushroom_time_available > mushroom_max_time_available)
+                        if (mushroom_time_available > mushroom_max_time_available) {
                             mushroom_time_available = mushroom_max_time_available;
+                        }
                     }
                     ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
                 } else if (GameCam->sock_position.distance > mushroom2_along) {
@@ -1118,8 +1216,9 @@ void __cdecl PodRaceBUpdate(WORLDINFO *world) {
                 break;
             case 3:
                 if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 &&
-                    NuSpecialClipTestExtents(&LevHSpecial[0], NuSpecialGetDrawMtx(&LevHSpecial[0])) == 0)
+                    NuSpecialClipTestExtents(&LevHSpecial[0], NuSpecialGetDrawMtx(&LevHSpecial[0])) == 0) {
                     ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
+                }
                 break;
         }
     }
@@ -1141,13 +1240,15 @@ void __cdecl PodRaceCUpdate(WORLDINFO *world) {
     PodRaceSnipersUpdate();
     if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
-        if (cutscene != NULL && (((CUT_INSTANCE_READER_PC *)cutscene->instance)->flags_88 & 0x1000) != 0)
+        if (cutscene != NULL && (((CUT_INSTANCE_READER_PC *)cutscene->instance)->flags_88 & 0x1000) != 0) {
             ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
+        }
     }
     if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 1) {
         for (i = 0; i < 10; i++) {
-            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
+            }
         }
         ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
     }
@@ -1162,17 +1263,19 @@ i32 __cdecl Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIP
     if (first_time != 0 && PodRacePc->previous_lap_display == 0.0f) {
         for (i = 0; i < param_count; ++i) {
             char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeywordPc);
-            if (value != NULL)
+            if (value != NULL) {
                 PodRacePc->max_lap_time = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 11);
-            else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeywordPc)) != NULL)
+            } else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeywordPc)) != NULL) {
                 PodRacePc->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 8);
-            else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeywordPc)) != NULL)
+            } else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeywordPc)) != NULL) {
                 PodRacePc->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 24);
-            else if ((value = NuStrIStr(params[i], PodRaceIncrementKeywordPc)) != NULL)
+            } else if ((value = NuStrIStr(params[i], PodRaceIncrementKeywordPc)) != NULL) {
                 PodRacePc->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
+            }
         }
-        if (PodRacePc->max_lap_time == 0.0f)
+        if (PodRacePc->max_lap_time == 0.0f) {
             PodRacePc->max_lap_time = PodRacePc->previous_lap_display;
+        }
     }
     return 1;
 }
@@ -1189,8 +1292,9 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
     SOCKSYS_PC *sock;
     SOCKPOSITION_PC ahead;
     NUVEC goal;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
+    }
 
     object = packet->owner->objptr;
 
@@ -1213,8 +1317,9 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
             x = object->position.x - target->position.x;
             z = object->position.z - target->position.z;
             distance2 = x * x + z * z;
-            if (distance1 < distance2)
+            if (distance1 < distance2) {
                 target = player;
+            }
         }
     }
 
@@ -1234,10 +1339,11 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
         wanted = (difference / test_factor + 1.0f) * avg_currentspeed_mul;
         speed = SeekLinearF(object->movement_speed_scale_pc, wanted, test_seek_rate);
         object->movement_speed_scale_pc = speed;
-        if (speed > max_speed_mul)
+        if (speed > max_speed_mul) {
             object->movement_speed_scale_pc = max_speed_mul;
-        else if (speed < min_speed_mul)
+        } else if (speed < min_speed_mul) {
             object->movement_speed_scale_pc = min_speed_mul;
+        }
 
         NuVecSub(&target_offset, &target->position, &target->sock_position.midpoint);
         NuVecRotateY(&target_offset, &target_offset, -target->sock_heading);
@@ -1251,8 +1357,9 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
         process->action_timer += FRAMETIME;
         if (process->action_timer > SebulbaThrowIntervalPc) {
             if (do_mine != 0) {
-                if (CreatePodRaceMinePc(&object->lower_position) != NULL)
+                if (CreatePodRaceMinePc(&object->lower_position) != NULL) {
                     process->action_timer = 0.0f;
+                }
             } else if (NuSpecialExistsFn(&SebulbaMineSpecialPc) != 0) {
                 NUVEC target_delta;
                 NUVEC throw_velocity;
@@ -1289,6 +1396,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
     AIMoveInstruction(packet, &goal, 0.0f, NULL, 1, 0.0f);
     return 0;
 }
+
 i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
@@ -1296,23 +1404,28 @@ void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     NUMTX matrix;
     f32 rate, fraction;
     i32 count, i, locator, key, particles;
-    if (object->floor_height == 2000000.0f)
+    if (object->floor_height == 2000000.0f) {
         return;
-    if (world->game_debris_sys->entries[25].effect == -1)
+    }
+    if (world->game_debris_sys->entries[25].effect == -1) {
         return;
+    }
     count = 0;
     for (i = 0; i < 2; ++i) {
         locator = PodDustLocatorIndicesPc[i];
-        if (object->origin_joint_ready == 0 || object->character_model->points_of_interest[locator] == NULL)
+        if (object->origin_joint_ready == 0 || object->character_model->points_of_interest[locator] == NULL) {
             continue;
+        }
         positions[count].x = object->locator_matrices[locator].m30;
         positions[count].y = (f32)((f64)object->floor_height + (f64).1f);
         positions[count].z = object->locator_matrices[locator].m32;
         ++count;
-        if (!(object->flags_1fc_word & 0x80))
+        if (!(object->flags_1fc_word & 0x80)) {
             continue;
-        if (object != (GAMEOBJECT *)Player[0] && object != (GAMEOBJECT *)Player[1])
+        }
+        if (object != (GAMEOBJECT *)Player[0] && object != (GAMEOBJECT *)Player[1]) {
             continue;
+        }
         key = object == (GAMEOBJECT *)Player[0] ? i : i + 4;
         matrix.m00 = object->locator_matrices[locator].m00;
         matrix.m01 = object->locator_matrices[locator].m01;
@@ -1330,13 +1443,14 @@ void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
         matrix.m33 = object->locator_matrices[locator].m33;
-        if (PodRaceKeyPc[key] == -1)
+        if (PodRaceKeyPc[key] == -1) {
             AddDebrisEffect(&PodRaceKeyPc[key], world->game_debris_sys->entries[53].effect, 0, 0, 0);
-        else
+        } else {
             DebrisPosOrientationMtx(PodRaceKeyPc[key], &matrix);
-        if (PodRaceKeyPc[key + 2] == -1)
+        }
+        if (PodRaceKeyPc[key + 2] == -1) {
             AddDebrisEffect(&PodRaceKeyPc[key + 2], world->game_debris_sys->entries[54].effect, 0, 0, 0);
-        else {
+        } else {
             matrix.m00 = -NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff];
             matrix.m01 = 0;
             matrix.m02 = NuTrigTable[object->field_0x276 >> 1];
@@ -1373,17 +1487,20 @@ void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
-    if (world->current_level == PODSPRINTA_LDATA)
+    if (world->current_level == PODSPRINTA_LDATA) {
         return podsprint.speed;
+    }
     return 0.0f;
 }
 
 float PodSprint_RollMul(GAMEOBJECT *object) {
     i16 id = ((i16)(object->id));
-    if (id == FreePlayId007f1a98Pc || id == VehicleBoltId7f1a2cPc || id == VehicleBoltId7f1a9cPc)
+    if (id == FreePlayId007f1a98Pc || id == VehicleBoltId7f1a2cPc || id == VehicleBoltId7f1a9cPc) {
         return 0.6f;
-    if (id == id_XWING || id == VehicleBoltId7f1a24Pc || id == VehicleBoltId7f19a4Pc || id == id_NEW_REPUBLIC_GUNSHIP)
+    }
+    if (id == id_XWING || id == VehicleBoltId7f1a24Pc || id == VehicleBoltId7f19a4Pc || id == id_NEW_REPUBLIC_GUNSHIP) {
         return 0.8f;
+    }
     return 1.0f;
 }
 
@@ -1393,39 +1510,46 @@ static void PodSprint_InitAISplinePc(WORLDINFO *world, PODSPRINT_AI_PC *ai, char
     i16 *vals;
     i32 count;
     i32 i = 0;
-    if (world == NULL || ai == NULL || name == NULL)
+    if (world == NULL || ai == NULL || name == NULL) {
         return;
+    }
     memset(ai, 0, sizeof(*ai));
     ai->spline = NuSplineFind(world->current_gscn, name);
-    if (ai->spline == NULL || PODSPRINT->finish_line == NULL || PODSPRINT->halfway == NULL)
+    if (ai->spline == NULL || PODSPRINT->finish_line == NULL || PODSPRINT->halfway == NULL) {
         return;
+    }
     count = 0;
     vals = ai->vals;
     for (; i < ai->spline->length - 1; i++) {
-        if (count >= 6)
+        if (count >= 6) {
             break;
+        }
         pts = &ai->spline->pts[i];
         line = PODSPRINT->finish_line;
-        if ((count & 1) == 0)
+        if ((count & 1) == 0) {
             line = PODSPRINT->halfway;
+        }
         if (XZLinesIntersect(&pts[0], &pts[1], &line->pts[0], &line->pts[1], NULL, NULL) != 0) {
             count++;
             *vals++ = (i16)i;
         }
     }
-    if (ai->vals[5] == 0)
+    if (ai->vals[5] == 0) {
         ai->vals[5] = ai->spline->length;
+    }
 }
 
 void __cdecl PodSprintA_Init(WORLDINFO *world) {
     memset(&podsprint, 0, sizeof(podsprint));
     podsprint_netpacket = SetLevelHack(10);
     PODSPRINT->finish_line = NuSplineFind(world->current_gscn, "finish_line");
-    if (PODSPRINT->finish_line != NULL && PODSPRINT->finish_line->length < 2)
+    if (PODSPRINT->finish_line != NULL && PODSPRINT->finish_line->length < 2) {
         PODSPRINT->finish_line = NULL;
+    }
     PODSPRINT->halfway = NuSplineFind(world->current_gscn, "halfway");
-    if (PODSPRINT->halfway != NULL && PODSPRINT->halfway->length < 2)
+    if (PODSPRINT->halfway != NULL && PODSPRINT->halfway->length < 2) {
         PODSPRINT->halfway = NULL;
+    }
     PODSPRINT->lap_msg = CheckGizAIMessage(gizaimessagesys, "Lap", NULL);
     PODSPRINT->lap_msg->value = 0.0f;
     PODSPRINT->max_speed_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_max_speed", NULL);
@@ -1476,6 +1600,7 @@ void __cdecl PodSprintA_Reset(WORLDINFO *world) {
     PodRaceSnipersReset();
     PODSPRINT->boulders = AISysFindArea(world->ai_sys, "Boulders");
 }
+
 static f32 PodSprintArrowSizePc = 0.05f;
 static f32 PodSprintArrowHeightPc = 0.75f;
 
@@ -1484,18 +1609,21 @@ static void PodSprint_UpdatePacemakerPc(WORLDINFO *world) {
     GAME_MESSAGE_PC *message;
     if (PODSPRINT->pacemaker == NULL) {
         PODSPRINT->pacemaker = GetNamedGameObject(world->ai_sys, "SebulbasPod");
-        if (PODSPRINT->pacemaker == NULL)
+        if (PODSPRINT->pacemaker == NULL) {
             return;
+        }
     }
-    if ((PODSPRINT->pacemaker->flags_1fc_word & 0x1000) == 0 || PODSPRINT->pacemaker->dead != 0)
+    if ((PODSPRINT->pacemaker->flags_1fc_word & 0x1000) == 0 || PODSPRINT->pacemaker->dead != 0) {
         return;
+    }
     if (FadeSys.fade != 0.0f || pause_rndr_on != 0) {
         PODSPRINT->arrow_timer = 0.0f;
         return;
     }
     PODSPRINT->arrow_timer = (FRAMETIME + FRAMETIME) + PODSPRINT->arrow_timer;
-    if (PODSPRINT->arrow_timer > 1.0f)
+    if (PODSPRINT->arrow_timer > 1.0f) {
         PODSPRINT->arrow_timer = 1.0f;
+    }
     if ((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
         position = PODSPRINT->pacemaker->upper_position;
         position.y += PodSprintArrowHeightPc;
@@ -1503,8 +1631,9 @@ static void PodSprint_UpdatePacemakerPc(WORLDINFO *world) {
         if (message != NULL) {
             message->alpha = (u8)(NuTrigTable[(i32)(PODSPRINT->arrow_timer * 16384.0) >> 1 & 0x7fff] * 128.0);
             message->icon = 0x134;
-            if (world->level_objects[0x134].active != 0)
+            if (world->level_objects[0x134].active != 0) {
                 message->special = world->level_objects[0x134].special;
+            }
         }
     }
 }
@@ -1513,8 +1642,9 @@ static i32 PodSprint_UpdateCountdownPc(void) {
     f32 previous;
     if (PODSPRINT->countdown > 0.0f) {
         previous = PODSPRINT->countdown;
-        if (FadeSys.fade == 0.0f)
+        if (FadeSys.fade == 0.0f) {
             PODSPRINT->countdown -= FRAMETIME;
+        }
         if (Player[0] != NULL) {
             if (PODSPRINT->countdown > 0.0f) {
                 ((GAMEOBJECT *)Player[0])->field_dc8 = 0.0f;
@@ -1535,16 +1665,19 @@ static i32 PodSprint_UpdateCountdownPc(void) {
                 ((GAMEOBJECT *)Player[1])->run_speed_override = 1000000000.0f;
             }
         }
-        if (PODSPRINT->countdown < 2.9f && previous >= 2.9f)
+        if (PODSPRINT->countdown < 2.9f && previous >= 2.9f) {
             PlaySfx("PodX_EngStartup1", NULL);
-        if (PODSPRINT->countdown < 1.5f && previous >= 1.5f)
+        }
+        if (PODSPRINT->countdown < 1.5f && previous >= 1.5f) {
             PlaySfx("PodX_EngStartup2", NULL);
+        }
         if (PODSPRINT->countdown <= 0.0f) {
             PlaySfx("Pod_Race_Go", NULL);
             return 1;
         }
-        if ((i32)PODSPRINT->countdown != (i32)previous)
+        if ((i32)PODSPRINT->countdown != (i32)previous) {
             PlaySfx("Pod_Race_Light", NULL);
+        }
         return 1;
     }
     return 0;
@@ -1572,11 +1705,12 @@ static void PodSprint_UpdateLapsPc(WORLDINFO *world) {
                         StoreLevelProgress(world);
                         ResetLevel(world, "ep1_podsprint_sebulba", 1);
                     } else if (PODSPRINT->ai_state > 3) {
-                        if (FreePlay != 0)
+                        if (FreePlay != 0) {
                             CompleteLevel(world);
-                        else if (NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podrace_Outro1", 1) == 0 &&
-                                 NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podsprint_Outro1", 1) == 0)
+                        } else if (NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podrace_Outro1", 1) == 0 &&
+                                   NewCutScene(NULL, WORLD->cutscene_sys, "Ep1_Podsprint_Outro1", 1) == 0) {
                             CompleteLevel(world);
+                        }
                     }
                     break;
                 }
@@ -1594,10 +1728,12 @@ static void PodSprint_UpdateLapsPc(WORLDINFO *world) {
             }
         }
     }
-    if (Player[0] != NULL)
+    if (Player[0] != NULL) {
         pod_old_pos[0] = ((GAMEOBJECT *)Player[0])->position;
-    if (Player[1] != NULL)
+    }
+    if (Player[1] != NULL) {
         pod_old_pos[1] = ((GAMEOBJECT *)Player[1])->position;
+    }
     PODSPRINT->lap_msg->value = (f32)PODSPRINT->ai_state;
 }
 
@@ -1606,8 +1742,9 @@ static void PodSprint_UpdateAlphaPc(void) {
         if (PODSPRINT->countdown > 0.0f) {
             if (Paused == 0 && podstartracealpha < 1.0f) {
                 podstartracealpha += FRAMETIME + FRAMETIME;
-                if (podstartracealpha > 1.0f)
+                if (podstartracealpha > 1.0f) {
                     podstartracealpha = 1.0f;
+                }
             }
             podlapalpha = 0.0f;
         } else {
@@ -1620,6 +1757,7 @@ static void PodSprint_UpdateAlphaPc(void) {
         podstartracealpha = 0.0f;
     }
 }
+
 static f32 boulder_offset_y = 1.0f;
 static f32 boulder_offset_y_seek = 1.0f;
 
@@ -1638,8 +1776,9 @@ void __cdecl PodSprintA_Update(WORLDINFO *world) {
         PODSPRINT->lap_time = (f32)PODSPRINT_NET->lap_time;
     }
     if (netclient == 0) {
-        if (CutScene_PlayingOrRequested(NULL) != 0)
+        if (CutScene_PlayingOrRequested(NULL) != 0) {
             return;
+        }
         if ((PODSPRINT->flags & 0xc) != 0) {
             if ((PODSPRINT->flags & 0x10) == 0) {
                 PODSPRINT->flags |= 0x10;
@@ -1650,8 +1789,9 @@ void __cdecl PodSprintA_Update(WORLDINFO *world) {
     }
     if (PodSprint_UpdateCountdownPc() == 0) {
         PodSprint_UpdatePacemakerPc(world);
-        if (netclient == 0)
+        if (netclient == 0) {
             PodSprint_UpdateLapsPc(world);
+        }
         PodRaceSnipersUpdate();
     }
     object = Obj;
@@ -1659,8 +1799,9 @@ void __cdecl PodSprintA_Update(WORLDINFO *world) {
         if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->field_280 == 0xff) {
             seek = 0.0f;
             if (PODSPRINT->boulders != NULL && WORLD->ai_sys != NULL && PODSPRINT->ai_state > 1 &&
-                (*(u64 *)object->ai_area_mask & (u64)(i64)(1 << (PODSPRINT->boulders - WORLD->ai_sys->areas))) != 0)
+                (*(u64 *)object->ai_area_mask & (u64)(i64)(1 << (PODSPRINT->boulders - WORLD->ai_sys->areas))) != 0) {
                 seek = boulder_offset_y;
+            }
             object->movement_spline_offset.y = SeekValF(object->movement_spline_offset.y, seek, boulder_offset_y_seek);
         }
     }
@@ -1673,24 +1814,27 @@ void __cdecl PodSprintA_Panel(WORLDINFO *world) {
     PodSprint_UpdateAlphaPc();
     if (Paused == 0 && podstartracealpha != 0.0f && PODSPRINT->countdown > 0.0f) {
         count = (i32)PODSPRINT->countdown + 1;
-        if (count > 3)
+        if (count > 3) {
             count = 3;
+        }
         sprintf(text, "%i", count);
         scale = NuFmod(PODSPRINT->countdown, 1.0f);
-        if (scale >= 0.7f)
+        if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
-        else
+        } else {
             scale = 1.0f;
+        }
         scale = PodSprintCountdownScalePc * scale;
         Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 0, 0xff, 0,
                  (u8)(podstartracealpha * 128.0));
     }
     if (podlapalpha > 0.0f) {
         i32 object_index = 0x135 + PODSPRINT->ai_state;
-        if (world->level_objects[object_index].active != 0)
+        if (world->level_objects[object_index].active != 0) {
             DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
                               PodSprintLapIconScalePc, 0, 0, 0, &world->level_objects[object_index].special, 0,
                               podlapalpha);
+        }
     }
 }
 
@@ -1703,8 +1847,9 @@ void PodSprint_GetIAlongVals(NUGSPLINE *spline, i16 *out1, i16 *out2) {
                 *out2 = podsprint.ai[i].vals[0];
             } else {
                 i32 n = podsprint.ai_index;
-                if (n >= 5)
+                if (n >= 5) {
                     n = 5;
+                }
                 *out1 = podsprint.ai[i].vals[n - 1];
                 *out2 = podsprint.ai[i].vals[n];
             }
@@ -1721,8 +1866,9 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
     f32 distance;
     f32 ratio;
     f32 lerp;
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL) {
         return 1;
+    }
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
     if (first_time != 0) {
         object->run_speed_override = object->character_data->game_character->run_speed;
@@ -1741,24 +1887,27 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
                 GAMEOBJECT *lead;
                 distance = MidDistanceFromSockStart(sock_sys, &player2->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
-                if (distance > sock->unknown_98 * 0.5)
+                if (distance > sock->unknown_98 * 0.5) {
                     distance -= sock->unknown_98;
-                else if (distance < sock->unknown_98 * -0.5)
+                } else if (distance < sock->unknown_98 * -0.5) {
                     distance += sock->unknown_98;
-                if (goal < 0.0f)
+                }
+                if (goal < 0.0f) {
                     lead = distance > 0.0f ? player : player2;
-                else
+                } else {
                     lead = distance > 0.0f ? player2 : player;
+                }
                 distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &lead->sock_position);
             } else {
                 distance = MidDistanceFromSockStart(sock_sys, &object->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
             }
-            if (distance > sock->unknown_98 * 0.5)
+            if (distance > sock->unknown_98 * 0.5) {
                 distance -= sock->unknown_98;
-            else if (distance < sock->unknown_98 * -0.5)
+            } else if (distance < sock->unknown_98 * -0.5) {
                 distance += sock->unknown_98;
+            }
             ratio = distance - goal;
         } else {
             ratio = 0.0f;
@@ -1766,14 +1915,16 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
         if (ratio > 0.0f) {
             distance = sebulba_fallback_dist - goal;
             ratio = ratio / distance;
-            if (ratio > 1.0f)
+            if (ratio > 1.0f) {
                 ratio = 1.0f;
+            }
             ratio = sebulba_fallback_speed_mul * ratio + (1.0f - ratio);
             lerp = sebulba_fallback_lerpf;
         } else {
             ratio = ratio / sebulba_catchup_dist;
-            if (ratio > 1.0f)
+            if (ratio > 1.0f) {
                 ratio = 1.0f;
+            }
             ratio = sebulba_catchup_speed_mul * ratio + (1.0f - ratio);
             lerp = sebulba_catchup_lerpf;
         }
@@ -1783,22 +1934,26 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
         if (podsprint.max_speed_msg != NULL && podsprint.min_speed_msg != NULL && podsprint.speed_step_msg != NULL) {
             base_speed =
                 podsprint.max_speed_msg->value - (f32)(*(i16 *)podsprint.unknown_8c) * podsprint.speed_step_msg->value;
-            if (base_speed < podsprint.min_speed_msg->value)
+            if (base_speed < podsprint.min_speed_msg->value) {
                 base_speed = podsprint.min_speed_msg->value;
+            }
         }
         object->run_speed_override = SeekValF(object->run_speed_override, base_speed, 5.0f);
     }
     if (object->movement_spline_position.reached_end != 0 && (podsprint.flags & 4) == 0) {
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
             LoseCoins((GAMEOBJECT *)Player[0], 1);
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+        }
+        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
             LoseCoins((GAMEOBJECT *)Player[1], 1);
+        }
         *(u16 *)&podsprint.flags |= 4;
         ResetLevel(WORLD, "Ep1_Podsprint_OutOfTime", 1);
         ++*(i16 *)podsprint.unknown_8c;
     }
     return 0;
 }
+
 RETAKEG_NETPACKET_PC *retakeg_netpacket = NULL;
 static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
 static GIZAIMESSAGE *RetakeG_GuardsToRescue_msg = NULL;
@@ -1825,14 +1980,17 @@ void __cdecl RetakeG_Panel(WORLDINFO *world) {
     i32 i;
     if (RetakeG_TotalGuards_msg != NULL && RetakeG_TotalGuards_msg->value > 0.0f) {
         i32 total = (i32)RetakeG_TotalGuards_msg->value;
-        if (total > 6)
+        if (total > 6) {
             total = 6;
+        }
         if (RetakeG_GuardsToRescue_msg != NULL && RetakeG_GuardsToRescue_msg->value > 0.0f) {
             i32 rescue = (i32)RetakeG_GuardsToRescue_msg->value;
-            if (rescue > 6)
+            if (rescue > 6) {
                 rescue = 6;
-            for (i = 0; i < rescue; i++)
+            }
+            for (i = 0; i < rescue; i++) {
                 alive[i] = 0;
+            }
             DrawMeleeTargetsAlphaPc(ids, alive, NULL, total);
         }
     }
@@ -1891,10 +2049,11 @@ void __cdecl MaulF_Reset(WORLDINFO *world) {
 
 void __cdecl MaulF_Panel(WORLDINFO *world) {
     if (netclient == 0) {
-        if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 1.0f)
+        if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 1.0f) {
             DrawBossHitPoints(Maul_obj);
-        else
+        } else {
             DrawBossHitPoints(NULL);
+        }
     }
 }
 
@@ -1907,8 +2066,9 @@ void __cdecl AnakinsFlightB_Init(WORLDINFO *world) {
     count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], "minifig_1_1", 1);
     count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], "minifig_1_2", 1);
     count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], "minifig_1_3", 1);
-    if (count == 3)
+    if (count == 3) {
         hothtroopers = LevHSpecial;
+    }
 }
 
 void __cdecl PodRaceInit(WORLDINFO *world) {
@@ -1916,22 +2076,26 @@ void __cdecl PodRaceInit(WORLDINFO *world) {
     i32 id;
     i32 i;
     podrace_netpacket = SetLevelHack(0x14);
-    if (world->level_specific_data == NULL)
+    if (world->level_specific_data == NULL) {
         ChrisAllocLevelStuff(world);
+    }
     podrace = (PODRACE_RESOURCE_PC *)world->level_specific_data;
     PodRacePc = podrace;
     memset(podrace, 0, sizeof(*podrace));
-    if (netclient == 0)
+    if (netclient == 0) {
         FlightSpline_Init(world, podrace->splines, 32);
+    }
     InitPodRaceMines();
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 8; i++) {
         PodRaceKeyPc[i] = -1;
+    }
     ResetPodStuff();
     id = apicharsys->playermodelids[id_ANAKINSPOD];
     if (id != -1) {
         CHARACTER_MODEL_LAYERS_PC *entry = &apicharsys->models[id];
-        if (entry->model_data_b[1] != NULL)
+        if (entry->model_data_b[1] != NULL) {
             podanimendframe = AnimEndFrame(entry, 1);
+        }
     }
 }
 
@@ -1942,8 +2106,9 @@ void __cdecl PodRaceReset(void) {
     memset(podrace->lap_entries, 0, sizeof(podrace->lap_entries));
     podrace->flags &= 0xfc;
     podhurry_i = -1;
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 8; i++) {
         PodRaceKeyPc[i] = -1;
+    }
 }
 
 void __cdecl PodRaceAInit(WORLDINFO *world) {
@@ -1967,8 +2132,9 @@ void __cdecl PodRaceAReset(WORLDINFO *world) {
     }
     PodPacemakerPc = NULL;
     PodRaceResetMinesPc();
-    if (Lap == 3 && nethost == 0 && netclient == 0)
+    if (Lap == 3 && nethost == 0 && netclient == 0) {
         NewCutScene(NULL, world->cutscene_sys, "ep1_podrace_sebulba", 1);
+    }
 }
 
 void __cdecl PodRaceBInit(WORLDINFO *world) {
@@ -1976,8 +2142,9 @@ void __cdecl PodRaceBInit(WORLDINFO *world) {
     mushroom_collapse = 0;
     mushroom_nattempts_per_increment = 1;
     mushroom_n_attempts = 0;
-    if (Lap <= 1)
+    if (Lap <= 1) {
         PodRacePc->lap_countdown = 3.0f;
+    }
 }
 
 void __cdecl PodRaceBReset(WORLDINFO *world) {
@@ -2013,14 +2180,16 @@ void __cdecl PodRaceCInit(WORLDINFO *world) {
     }
     if (FreePlay != 0 || (LevelProgressData[world->current_level->index].unknown_2800[0] & 1) != 0) {
         for (i = 0; i < 10; i++) {
-            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
+            }
         }
         ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
     } else {
         for (i = 0; i < 17; i++) {
-            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0)
+            if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 0);
+            }
         }
     }
 }
@@ -2071,31 +2240,35 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     (void)system;
     (void)process;
     (void)ignored;
-    if (first_time == 0 || param_count <= 0)
+    if (first_time == 0 || param_count <= 0) {
         return 1;
+    }
     for (i = 0; i < param_count; ++i) {
         char *value = NuStrIStr(params[i], PodCreateSplineKeywordPc);
-        if (value != NULL)
+        if (value != NULL) {
             spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
-        else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8)) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                 model_id = LevelCharacterTypeIDFn(value + 5);
-                if (model_id != 0xff)
+                if (model_id != 0xff) {
                     model_id = LevelCharacterGlobalIDFn(model_id);
+                }
             }
-        } else if ((value = NuStrIStr(params[i], PodCreateStartKeywordPc)) != NULL)
+        } else if ((value = NuStrIStr(params[i], PodCreateStartKeywordPc)) != NULL) {
             start = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 13);
-        else if ((value = NuStrIStr(params[i], PodCreateEndKeywordPc)) != NULL)
+        } else if ((value = NuStrIStr(params[i], PodCreateEndKeywordPc)) != NULL) {
             end = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 11);
-        else if ((value = NuStrIStr(params[i], PodCreateTimeKeywordPc)) != NULL)
+        } else if ((value = NuStrIStr(params[i], PodCreateTimeKeywordPc)) != NULL) {
             time_factor = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 12);
-        else if (NuStrICmp(params[i], PodCreatePacemakerKeywordPc) == 0)
+        } else if (NuStrICmp(params[i], PodCreatePacemakerKeywordPc) == 0) {
             pacemaker = 1;
-        else if (NuStrICmp(params[i], PodCreateDamagedKeywordPc) == 0)
+        } else if (NuStrICmp(params[i], PodCreateDamagedKeywordPc) == 0) {
             damaged = 1;
+        }
     }
-    if ((u32)spline_id > 31 || model_id == 0xffff)
+    if ((u32)spline_id > 31 || model_id == 0xffff) {
         return 1;
+    }
     race = (PODRACE_RESOURCE_PC *)PodRacePc;
     for (spline_index = 0; spline_index < 32; ++spline_index) {
         spline = &race->splines[spline_index];
@@ -2104,29 +2277,34 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
             break;
         }
     }
-    if (start < 0.0f)
+    if (start < 0.0f) {
         start = 0.0f;
-    else if (start > 1.0f)
+    } else if (start > 1.0f) {
         start = 1.0f;
-    if (end < 0.0f)
+    }
+    if (end < 0.0f) {
         end = 0.0f;
-    else if (end > 1.0f)
+    } else if (end > 1.0f) {
         end = 1.0f;
-    if (spline == NULL || spline->point_count == 0 || start == end)
+    }
+    if (spline == NULL || spline->point_count == 0 || start == end) {
         return 1;
+    }
     pod = RacePodAllocatePrivatePc();
-    if (pod == NULL)
+    if (pod == NULL) {
         return 1;
+    }
     pod->start = start;
     pod->model_id = model_id;
     pod->next = (void *)1;
     pod->spline = spline;
     duration = (f64)time_factor * race->previous_lap_display;
     difference = end - start;
-    if (duration > 0.0)
+    if (duration > 0.0) {
         pod->speed = (difference * (f64)spline->length) / duration;
-    else
+    } else {
         pod->speed = 1.0f;
+    }
     CalcSplinePointFromDist(spline, &position, start * spline->length);
     CalcSplinePointFromDist(spline, &next_position, (start + PodRaceSplineIncrementPc) * spline->length);
     PodMatrixCopyPrivatePc(&pod->matrix, &ANI3_EVAL_IDENTITY_MATRIX);
@@ -2142,15 +2320,17 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     pod->previous_position = position;
     pod->distance = start;
     pod->object = AddDynamicCreature((i32)pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
-    if (pod->object == NULL)
+    if (pod->object == NULL) {
         return 1;
+    }
     pod->object->flags_ef4 |= 0x04000000;
     pod->object->movement_mode = 5;
     if (pacemaker != 0) {
         PodPacemakerPc = pod->object;
         PodPacemakerPc->flags_ef4 |= 0x20;
     }
-    if (damaged != 0)
+    if (damaged != 0) {
         pod->object->flags_ef4 |= 0x08000000;
+    }
     return 1;
 }

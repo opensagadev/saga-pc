@@ -20,6 +20,7 @@ typedef struct level_sfx_world_view_s {
     u8 unknown_5070[4];
     i32 *hat_machine_sys;
 } LEVEL_SFX_WORLD_VIEW_PC;
+
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, teleport_count) == 0x4684);
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, push_block_count) == 0x46c0);
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, spinner_count) == 0x46e4);
@@ -27,15 +28,19 @@ STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, grabber) == 0x46ec);
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, pulses_sys) == 0x5050);
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, nlevers) == 0x506c);
 STATIC_ASSERT(offsetof(LEVEL_SFX_WORLD_VIEW_PC, hat_machine_sys) == 0x5074);
+
 typedef struct level_sfx_cut_slot_s {
     i16 id;
     u8 unknown_02[0x12];
 } LEVEL_SFX_CUT_SLOT_PC;
+
 STATIC_ASSERT(sizeof(LEVEL_SFX_CUT_SLOT_PC) == 0x14);
+
 typedef struct level_sfx_cut_s {
     u8 unknown_00[0x70];
     LEVEL_SFX_CUT_SLOT_PC sfx[6];
 } LEVEL_SFX_CUT_PC;
+
 STATIC_ASSERT(offsetof(LEVEL_SFX_CUT_PC, sfx) == 0x70);
 // Genuine original static configuration definitions.
 /* Original static game.cpp settings/items. Proposal only, no production data. */
@@ -44,34 +49,41 @@ AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     AREA_DATA_PC *area = world->area;
-    if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0)
+    if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0) {
         return GetSfxId("fs_ice");
+    }
     if (area == DAGOBAH_ADATA && on_platform == 0) {
         if (world->current_level != LevelFixupSlotPc0087b258 || object->jump_animation_state != 0x14) {
             if (world->current_level != LevelFixupSlotPc0087b264) {
                 if (world->current_level != LevelFixupSlotPc0087b268 ||
-                    (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4))
+                    (GameCam->sock_position.sock_index != 1 && GameCam->sock_position.sock_index != 4)) {
                     return GetSfxId("fs_swamp");
+                }
             }
         }
     }
     if (world->current_level == JABBASPALACEA_LDATA &&
-        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9))
+        (object->jump_animation_state == 0x18 || object->jump_animation_state == 9)) {
         return GetSfxId("fs_ice");
+    }
     if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
-        object->jump_animation_state == 0x14)
+        object->jump_animation_state == 0x14) {
         return GetSfxId((char *)GameAudioName0075c478Pc);
+    }
     return -1;
 }
 
 i32 __cdecl GameAudio_CheckReverb_LSW(void) {
     LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
-    if (level == LevelFixupSlotPc0087b200)
+    if (level == LevelFixupSlotPc0087b200) {
         return 1;
-    if (level == LevelFixupSlotPc0087b264)
+    }
+    if (level == LevelFixupSlotPc0087b264) {
         return 1;
-    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4)
+    }
+    if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4) {
         return 1;
+    }
     return 0;
 }
 
@@ -132,8 +144,9 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
             for (j = 0; j < 6; ++j) {
                 LEVEL_SFX_CUT_PC *cut = (LEVEL_SFX_CUT_PC *)world->cutscene_sys->records[i];
                 i32 id = cut->sfx[j].id;
-                if (id != -1)
+                if (id != -1) {
                     sfx_ids[sfx_count++] = id;
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ struct RADIO_ENTRY_PC {
     NUSPECIALHANDLE special;
     f32 time;
 };
+
 STATIC_ASSERT(sizeof(RADIO_ENTRY_PC) == 20);
 STATIC_ASSERT(offsetof(RADIO_ENTRY_PC, blowup) == 0);
 STATIC_ASSERT(offsetof(RADIO_ENTRY_PC, special) == 4);
@@ -22,22 +23,25 @@ f32 RadioPhasePeriodPc = 0.5f;
 f32 RadioScaleFactorPc = 0.1f;
 
 extern "C" void __cdecl UpdateRadios(void) {
-    if (radios_playing == 0)
+    if (radios_playing == 0) {
         return;
+    }
     radios_playing = 0;
     RADIO_ENTRY_PC *pool = reinterpret_cast<RADIO_ENTRY_PC *>(RadioEntriesPc);
     RADIO_ENTRY_PC *radio;
     i32 index;
     NUVEC scale;
     for (index = 0, radio = pool; index < 8; ++index, ++radio) {
-        if (!(radio->time > 0.0f))
+        if (!(radio->time > 0.0f)) {
             continue;
+        }
         f32 remaining = radio->time - FRAMETIME;
         radio->time = remaining;
-        if (remaining < 0.0f)
+        if (remaining < 0.0f) {
             radio->time = 0.0f;
-        else
+        } else {
             radios_playing = 1;
+        }
         f32 phase = NuFmod(radio->time, RadioPhasePeriodPc);
         i32 angle = (i32)((f64)phase * 65536.0);
         if (radio->blowup != NULL) {
@@ -48,8 +52,9 @@ extern "C" void __cdecl UpdateRadios(void) {
             radio->blowup->status_flags |= 0x10000;
             PlaySfx("swdisco", &radio->blowup->position);
         } else {
-            if (NuSpecialExistsFn(&radio->special) == 0)
+            if (NuSpecialExistsFn(&radio->special) == 0) {
                 continue;
+            }
             NUMTX *source = NuSpecialGetMtx(&radio->special);
             NUMTX *matrix = NuSpecialGetDrawMtx(&radio->special);
             *matrix = *source;
@@ -75,8 +80,9 @@ void __cdecl PlayRadio(char *special_name, char *blowup_name, i32 play) {
                     if (blowup_name != NULL) {
                         GIZMO_PC *gizmo =
                             (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
-                        if (gizmo == NULL)
+                        if (gizmo == NULL) {
                             return;
+                        }
                         radio->blowup = (GIZMOBLOWUP_PC *)gizmo->object;
                     } else if (special_name == NULL ||
                                NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {

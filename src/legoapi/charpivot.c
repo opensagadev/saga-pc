@@ -12,8 +12,9 @@ static CHARPIVOT_PC *CharPivot = 0;
 void __cdecl CharPivot_Init(CHARPIVOT_PC *table) {
     CharPivot = table;
     if (table != NULL) {
-        for (; table->name != NULL; ++table)
+        for (; table->name != NULL; ++table) {
             table->character_id = (u16)CharIDFromName(table->name);
+        }
     }
 }
 
@@ -26,15 +27,18 @@ void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
     NUVEC offset;
     NUVEC previous_point;
 
-    if (object->field_0x276 == object->previous_movement_angle || CharPivot == NULL)
+    if (object->field_0x276 == object->previous_movement_angle || CharPivot == NULL) {
         return;
+    }
     for (pivot = CharPivot; pivot->name != NULL; ++pivot) {
-        if (object->id != pivot->character_id)
+        if (object->id != pivot->character_id) {
             continue;
+        }
         if (pivot->animation != -1) {
             frame = AnimPlaying(&object->anim_packet, pivot->animation, 1, 1);
-            if (frame == NULL || !(*frame >= pivot->start_frame) || !(*frame <= pivot->end_frame))
+            if (frame == NULL || !(*frame >= pivot->start_frame) || !(*frame <= pivot->end_frame)) {
                 continue;
+            }
         }
         if (pivot->point_of_interest == -1) {
             object->field_0x276 = object->previous_movement_angle;

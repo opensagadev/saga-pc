@@ -9,6 +9,7 @@ typedef struct grapple_rotation_pc_s {
     u8 unknown_00[0x30];
     NUVEC hook_position;
 } GRAPPLE_ROTATION_PC;
+
 STATIC_ASSERT(offsetof(GRAPPLE_ROTATION_PC, hook_position) == 0x30);
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
@@ -19,23 +20,29 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * size
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
 STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+
 typedef struct kill_zipup_pc_s {
     u8 unknown_00[0x68];
     u16 runtime_flags;
 } KILL_ZIPUP_PC;
+
 STATIC_ASSERT(offsetof(KILL_ZIPUP_PC, runtime_flags) == 0x68);
+
 /* A copy of the actual 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE_PC {
     u32 words[0x33];
+
     struct {
         u32 unknown000[0x2c];
         u8 creature_set;
     } fields;
 } TAGSCRIPTSTATE_PC;
+
 STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
 STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) - offsetof(AIPACKET_PC, script_processor) == 0xc8);
 STATIC_ASSERT(sizeof(TAGSCRIPTSTATE_PC) == 0xcc);
+
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 typedef struct TAGFLAGS1FC_PC {
     u32 bits_0_6 : 7;
@@ -43,6 +50,7 @@ typedef struct TAGFLAGS1FC_PC {
     u32 ai : 1;
     u32 bits_9_31 : 23;
 } TAGFLAGS1FC_PC;
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
@@ -61,6 +69,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
 STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
+
 /* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
  * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
  */
@@ -68,29 +77,35 @@ typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;
     u8 unknown_04_14[0x10];
 } SHADOW_PLATFORM_ENTRY_PC;
+
 struct shadow_platform_list_pc_s {
     u8 unknown_00_04[4];
     i32 count;
     u8 unknown_08_18[0x10];
     SHADOW_PLATFORM_ENTRY_PC entries[1];
 };
+
 STATIC_ASSERT(sizeof(SHADOW_PLATFORM_ENTRY_PC) == 0x14);
 STATIC_ASSERT(offsetof(SHADOW_PLATFORM_ENTRY_PC, object) == 0);
 STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, count) == 4);
 STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, entries) == 0x18);
+
 typedef struct gameobject_collision_reset_pc_s {
     u8 unknown_000[0x2b0];
     u32 collision_overlap_low;
     u32 collision_overlap_high;
 } GAMEOBJECT_COLLISION_RESET_PC;
+
 STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_low) == 0x2b0);
 STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_high) == 0x2b4);
+
 typedef struct GAME_ANTI_NODE_DATA_PC {
     NUVEC position;
     f32 radius, min_y, max_y, extent_x, extent_z;
     u16 angle;
     u8 shape, mode;
 } GAME_ANTI_NODE_DATA_PC;
+
 STATIC_ASSERT(sizeof(GAME_ANTI_NODE_DATA_PC) == 0x24);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, position) == 0);
 STATIC_ASSERT(offsetof(GAME_ANTI_NODE_DATA_PC, radius) == 0xc);
@@ -160,8 +175,9 @@ void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     GAMEOBJECT *other;
     i32 i;
     (void)unused;
-    if (object == NULL)
+    if (object == NULL) {
         return;
+    }
     other = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
         // Retail shifts through __allshl, which yields 0 for groups >= 64.
@@ -170,14 +186,16 @@ void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused) {
         U64_PAIR(&other->field_eb0) &= ~((u64)1 << object->hostility_group);
         U64_PAIR(other->ai_opponent_exclusion_mask) &= ~((u64)1 << object->hostility_group);
     }
-    if (object->pad != NULL)
+    if (object->pad != NULL) {
         object->pad->runtime_flags &= ~1u;
+    }
     DestroySnakeBody(object);
     APIObjectDestroy(WORLD->object_sys, object);
     RecomputeHighGameObject();
     for (i = 0; i < 8; ++i) {
-        if (LevGameObject[i] == object)
+        if (LevGameObject[i] == object) {
             LevGameObject[i] = NULL;
+        }
     }
 }
 
@@ -198,8 +216,9 @@ void __cdecl GameObjectDimensions(GAMEOBJECT *object) {
     object->bounds_radius = object->collision_radius;
     object->bounds_half_height = object->field_b0;
 extra:
-    if (GameObjectDimensionsExtraFn != NULL)
+    if (GameObjectDimensionsExtraFn != NULL) {
         GameObjectDimensionsExtraFn(object);
+    }
 }
 
 __declspec(noinline) void __cdecl ScaleGameObject(GAMEOBJECT *object) {
@@ -229,10 +248,12 @@ void __cdecl SetToLastSafePos(GAMEOBJECT *object) {
 }
 
 i32 __cdecl UnderPlayerControl(GAMEOBJECT *object) {
-    if ((object->flags_1fc_word & 0x80) != 0)
+    if ((object->flags_1fc_word & 0x80) != 0) {
         return 1;
-    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & 0x80) != 0)
+    }
+    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & 0x80) != 0) {
         return 1;
+    }
     return 0;
 }
 
@@ -276,30 +297,39 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         f32 x, y, z, distance;
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-            (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000))
+            (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000)) {
             continue;
-        if (character_id != -1 && (i16)object->id != character_id)
+        }
+        if (character_id != -1 && (i16)object->id != character_id) {
             continue;
+        }
         if (player_index >= 0) {
             if (player_index < 2) {
-                if (((i8)object->field_280) != player_index)
+                if (((i8)object->field_280) != player_index) {
                     continue;
+                }
             } else if (player_index == 99) {
-                if (((i8)object->field_280) == -1)
+                if (((i8)object->field_280) == -1) {
                     continue;
+                }
             } else if (player_index == 100) {
-                if (((i8)object->field_280) != -1)
+                if (((i8)object->field_280) != -1) {
                     continue;
+                }
             }
         }
-        if (exclude && object == exclude)
+        if (exclude && object == exclude) {
             continue;
-        if (required_flags && (object->character_data->model_flags & required_flags) != required_flags)
+        }
+        if (required_flags && (object->character_data->model_flags & required_flags) != required_flags) {
             continue;
-        if (animation != -1 && object->character_model->model_data_b[animation] == NULL)
+        }
+        if (animation != -1 && object->character_model->model_data_b[animation] == NULL) {
             continue;
-        if (filter && !filter(object))
+        }
+        if (filter && !filter(object)) {
             continue;
+        }
         x = object->collision_position.x - position->x;
         y = object->collision_position.y - position->y;
         z = object->collision_position.z - position->z;
@@ -317,8 +347,9 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
             nearest = object;
         }
     }
-    if (nearest && distance_squared)
+    if (nearest && distance_squared) {
         *distance_squared = nearest_distance;
+    }
     return nearest;
 }
 
@@ -356,10 +387,12 @@ void GameObjectToCameraDistances() {
         f32 dx;
         f32 dy;
         f32 dz;
-        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0)
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0) {
             continue;
-        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0)
+        }
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
             continue;
+        }
 
         dx = camera_position.x - object->position.x;
         dy = camera_position.y - object->position.y;
@@ -447,10 +480,11 @@ __declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabl
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
         object->portal_flags |= 0x00400000;
         if (room == -1) {
-            if (scene != NULL)
+            if (scene != NULL) {
                 room = NuPortalWhichRoom(scene, &object->collision_position);
-            else
+            } else {
                 room = -1;
+            }
         }
         object->portal_room = room;
     } else {
@@ -503,35 +537,43 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
             ((layer = terrain_object->field_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
-            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->field_028 > 0.0f)
+            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->field_028 > 0.0f) {
                 unsafe = 0;
-        } else
+            }
+        } else {
             unsafe = 0;
+        }
         do {
-            if ((object->flags_ef4 & 4) != 0)
+            if ((object->flags_ef4 & 4) != 0) {
                 break;
+            }
             context = object->character_context;
-            if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0)
+            if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
                 break;
+            }
             if (object->field_281 == 0 &&
                 (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN &&
                                    context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
                 if (((model_flags & 0x2000) == 0 || !(object->character_data->game_character->field_028 > 0.0f)) &&
-                    ((model_flags & 0x8000) == 0 || object->jump_variant_state != 1))
+                    ((model_flags & 0x8000) == 0 || object->jump_variant_state != 1)) {
                     break;
+                }
             }
-            if (object->floor_height == 2000000.0f)
+            if (object->floor_height == 2000000.0f) {
                 break;
+            }
             platform = object->terrain_platform_id;
             if (!((platform == -1 || platform == LevSafePlatID[0] || platform == LevSafePlatID[1]) &&
                   ((shadow_platform = object->supporting_platform_id) == -1 || shadow_platform == LevSafePlatID[0] ||
                    shadow_platform == LevSafePlatID[1])) &&
-                (LastSafePosExtraFn == NULL || !LastSafePosExtraFn(object)))
+                (LastSafePosExtraFn == NULL || !LastSafePosExtraFn(object))) {
                 break;
-            if (!(object->lower_position.y > object->floor_height - (f64)0.1f) || unsafe)
+            }
+            if (!(object->lower_position.y > object->floor_height - (f64)0.1f) || unsafe) {
                 break;
+            }
             object->flags_ef4 |= 0x400000;
             object->last_safe_position = object->position;
             object->fall_recovery_timer = 0.0f;
@@ -540,8 +582,9 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
                  object->ai_packet.path_info.connection->traversal_flags[0]) == 0) {
                 if (object->takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
                     object->takeover_owner = NULL;
+                }
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
@@ -549,21 +592,25 @@ void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                    (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
                     object->takeover_owner = NULL;
+                }
                 object->camera_saved_position = object->last_safe_position;
             }
             goto safe_position_done;
         } while (0);
         if ((object->flags_1fc & 0x80) != 0 && (layer = object->field_283) != -1 && (TerLayer[layer].flags & 1) != 0 &&
             !NoLayerKill(object)) {
-            if (object->fall_recovery_timer <= 0.0f)
+            if (object->fall_recovery_timer <= 0.0f) {
                 object->fall_hover_height = object->position.y;
+            }
             object->fall_recovery_timer = FRAMETIME + object->fall_recovery_timer;
-        } else
+        } else {
             object->fall_recovery_timer = 0.0f;
-        if ((WORLD->current_level->flags & 0x40000) != 0)
+        }
+        if ((WORLD->current_level->flags & 0x40000) != 0) {
             object->last_safe_position = object->position;
+        }
     }
 safe_position_done:
     if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc_word & 0x80) == 0 &&
@@ -572,8 +619,9 @@ safe_position_done:
         if ((object->ai_packet.path_info.flags & 1) != 0) {
             if (object->takeover_owner != NULL &&
                 (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
-                (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER))
+                (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
                 object->takeover_owner = NULL;
+            }
         }
         object->last_safe_position = object->respawn_position;
     }
@@ -616,11 +664,13 @@ typedef struct OPPONENT_PACKET_PC {
     u8 unknown0f4[0xf4];
     u32 flags;
 } OPPONENT_PACKET_PC;
+
 STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, nearest_opponent_object) == 0xd4);
 STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, pending_nearest_opponent) == 0xdc);
 STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, opponent_object) == 0xe4);
 STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, pending_opponent) == 0xec);
 STATIC_ASSERT(offsetof(OPPONENT_PACKET_PC, flags) == 0x1e8);
+
 typedef struct OPPONENT_OBJECT_PC {
     u8 unknown000[0x230];
     f32 view_distance;
@@ -629,8 +679,10 @@ typedef struct OPPONENT_OBJECT_PC {
     u8 unknown244[0x64];
     u64 awareness;
 } OPPONENT_OBJECT_PC;
+
 STATIC_ASSERT(offsetof(OPPONENT_OBJECT_PC, visibility_range_extension) == 0x240);
 STATIC_ASSERT(offsetof(OPPONENT_OBJECT_PC, awareness) == 0x2a8);
+
 typedef struct OPPONENT_GAME_PC {
     u8 unknown000[0xeb0];
     u64 seen;
@@ -638,22 +690,27 @@ typedef struct OPPONENT_GAME_PC {
     APIOBJECT_PC *alert_target;
     f32 alert_timer;
 } OPPONENT_GAME_PC;
+
 STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, seen) == 0xeb0);
 STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, exclusion) == 0xeb8);
 STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, alert_target) == 0xec0);
 STATIC_ASSERT(offsetof(OPPONENT_GAME_PC, alert_timer) == 0xec4);
+
 typedef struct OPPONENT_SYS_PC {
     u8 unknown000[0x1385];
     u8 goody_cursor;
     u16 assignment_flags;
 } OPPONENT_SYS_PC;
+
 STATIC_ASSERT(offsetof(OPPONENT_SYS_PC, goody_cursor) == 0x1385);
 STATIC_ASSERT(offsetof(OPPONENT_SYS_PC, assignment_flags) == 0x1386);
+
 typedef struct OPPONENT_LOS_PC {
     u32 object_size;
     GAMEOBJECT *objects;
     u64 line_of_sight[64];
 } OPPONENT_LOS_PC;
+
 STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_visibility_extension) == 0x240);
@@ -690,5 +747,6 @@ typedef struct ai_frame_world_pc_s {
     i32 processor_count;
     LEVEL_SCRIPT_PROCESS_PC processors[32];
 } AI_FRAME_WORLD_PC;
+
 STATIC_ASSERT(offsetof(AI_FRAME_WORLD_PC, processor_count) == 0x2aec);
 STATIC_ASSERT(offsetof(AI_FRAME_WORLD_PC, processors) == 0x2af0);

@@ -2,10 +2,12 @@
 #define PC_FMV_NATIVE_H
 #include "saga.h"
 struct RADFMV_TEXTURE_PC;
+
 struct RADFMV_LOCK_PC {
     i32 pitch;
     void *bits;
 };
+
 struct RADFMV_TEXTURE_METHODS_PC {
     void *unknown_00[2];
     ULONG(__stdcall *release)(RADFMV_TEXTURE_PC *);
@@ -13,9 +15,11 @@ struct RADFMV_TEXTURE_METHODS_PC {
     HRESULT(__stdcall *lock)(RADFMV_TEXTURE_PC *, u32, RADFMV_LOCK_PC *, const RECT *, u32);
     HRESULT(__stdcall *unlock)(RADFMV_TEXTURE_PC *, u32);
 };
+
 struct RADFMV_TEXTURE_PC {
     const RADFMV_TEXTURE_METHODS_PC *methods;
 };
+
 struct RADFMV_CONTEXT_PC {
     GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
@@ -25,6 +29,7 @@ struct RADFMV_CONTEXT_PC {
     u32 alpha_bink_format, opaque_bink_format;
     u32 permits_nonpow2;
 };
+
 struct RADFMV_IMAGE_PC {
     PC_D3D9_DEVICE_PC *device;
     u32 format, bink_format, alpha, bytes_per_pixel;
@@ -34,6 +39,7 @@ struct RADFMV_IMAGE_PC {
     RADFMV_TEXTURE_PC **textures;
     RADFMV_TEXTURE_PC *texture;
 };
+
 STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, texture_caps) == 0x3c);
 STATIC_ASSERT(sizeof(RADFMV_CONTEXT_PC) == 0x28);
 STATIC_ASSERT(offsetof(RADFMV_CONTEXT_PC, device) == 4);
@@ -66,6 +72,7 @@ struct PC_FMV_BINK_PC {
     u8 unknown_0d4[0x250 - 0xd4];
     u32 *track_ids;
 };
+
 struct PC_FMV_MOVIE_PC {
     PC_FMV_BINK_PC *bink;
     u32 unknown_04;
@@ -81,6 +88,7 @@ struct PC_FMV_MOVIE_PC {
     i32 option;
     f32 x, y, x_scale, y_scale;
 };
+
 STATIC_ASSERT(sizeof(PC_FMV_MOVIE_PC) == 0x48);
 STATIC_ASSERT(offsetof(PC_FMV_MOVIE_PC, playing) == 0x10);
 STATIC_ASSERT(offsetof(PC_FMV_MOVIE_PC, target) == 0x18);

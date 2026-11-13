@@ -39,13 +39,16 @@ extern "C" void __cdecl NuShaderObjectBaseSetWaterSpeed(f32 speed) {
 
 extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *shader,
                                                            PC_SHADER_WATER_MATERIAL_VIEW *material) {
-    if (shader->parameters[23].register_index < 0)
+    if (shader->parameters[23].register_index < 0) {
         return;
+    }
     NUVEC scale = {0.5f, 0.5f, 0.5f};
-    if (!(PCShaderWaterInitializationBits & 1))
+    if (!(PCShaderWaterInitializationBits & 1)) {
         PCShaderWaterInitializationBits |= 1;
-    if (PCShaderWaterLastFrame != nuapi.frame_count)
+    }
+    if (PCShaderWaterLastFrame != nuapi.frame_count) {
         PCShaderWaterTheta = material->phase_speed * PCShaderWaterThetaStep + PCShaderWaterTheta;
+    }
     if (PCShaderWaterPreviousMaterial != material || PCShaderWaterLastFrame != nuapi.frame_count) {
         NUMTX inverse;
         NuMtxInvR(&inverse, &global_camera.mtx);
@@ -79,12 +82,14 @@ extern "C" void __cdecl NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL
 
 void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
     i32 vector_count = (i8)register_count - first_element * 4;
-    if (count * 4 < vector_count)
+    if (count * 4 < vector_count) {
         vector_count = count * 4;
-    if ((metadata & 0xf0000000u) == 0x10000000u)
+    }
+    if ((metadata & 0xf0000000u) == 0x10000000u) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element * 4, values, vector_count);
-    else
+    } else {
         PCDeviceSetPixelShaderConstantsF(register_index + first_element * 4, values, vector_count);
+    }
 }
 
 void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
@@ -92,8 +97,9 @@ void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     NuShaderObjectCreate(shader);
     shader->vertex_shader = NULL;
     shader->pixel_shader = NULL;
-    for (i = 0; i < 100; ++i)
+    for (i = 0; i < 100; ++i) {
         shader->parameters[i].semantic = (u8)i;
+    }
 }
 
 void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {

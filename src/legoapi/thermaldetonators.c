@@ -62,8 +62,9 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
     if (stuck != 0) {
         stop = part->stop_fn;
         part->active |= 2;
-        if (stop != NULL)
+        if (stop != NULL) {
             stop(part);
+        }
     }
     if (stuck != 2 && KillPartsBrickImpactWaitPc <= 0.0f) {
         PartImpact_Brick(part);
@@ -86,13 +87,15 @@ void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
         part->active |= 0x4000;
         return;
     }
-    if ((part->active & 2) != 0)
+    if ((part->active & 2) != 0) {
         return;
+    }
     part->active &= ~0x20000;
     NewTerrPlatformsOff();
     height = GameShadow(NULL, &part->position, 5.0f, -1);
-    if ((f64)height == 2000000.0)
+    if ((f64)height == 2000000.0) {
         return;
+    }
     if (part->position.y > height) {
         surface = ShadowInfo();
         if ((u32)surface + 1 <= 17 && (TerSurface[surface].flags & 2) != 0) {
@@ -101,14 +104,17 @@ void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
         }
     }
     water = EShadY;
-    if ((f64)water == 2000000.0)
+    if ((f64)water == 2000000.0) {
         return;
+    }
     layer = EShadowInfo();
-    if ((u32)layer > 16)
+    if ((u32)layer > 16) {
         return;
+    }
     if ((part->active & 0x8000) == 0 && part->position.y + part->field_e0 < water &&
-        ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9))
+        ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9)) {
         part->active |= 0x8000;
+    }
     if (WORLD->current_level == DEATHSTARRESCUEA_LDATA && GameCam->sock == 2) {
         part->velocity.x = SeekValF(part->velocity.x, 0.0f, 3.0f);
         part->velocity.z = SeekValF(part->velocity.z, 0.0f, 3.0f);
@@ -123,19 +129,23 @@ i32 __cdecl PartDraw_ThermalDetonator(PART_PC *part) {
     i32 level_index;
     matrix = part->transform;
     if ((part->active & 0x20000) != 0 && (f64)part->reflection_height != 2000000.0 &&
-        MatrixReflection(&matrix, 2, part->reflection_height, WORLD->current_level->reflection_y, &reflection) != 0)
+        MatrixReflection(&matrix, 2, part->reflection_height, WORLD->current_level->reflection_y, &reflection) != 0) {
         reflected = 1;
+    }
     if (WORLD->level_objects[0xea].active != 0 && WORLD->level_objects[0xeb].active != 0) {
         level_index = draw != 0 ? 0xea : 0xeb;
         NuSpecialDrawAt(&WORLD->level_objects[level_index].special, &matrix);
-    } else
+    } else {
         level_index = -1;
+    }
     if (reflected != 0) {
         NuRndrStartReflectionRender(1);
-        if (part->source_special != NULL)
+        if (part->source_special != NULL) {
             NuSpecialDrawAt(&part->special, &reflection);
-        if (level_index != -1)
+        }
+        if (level_index != -1) {
             NuSpecialDrawAt(&WORLD->level_objects[level_index].special, &reflection);
+        }
         NuRndrEndReflectionRender();
     }
     return 1;
@@ -172,10 +182,12 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     i32 locator;
     u16 angle;
     PART_PC *part;
-    if (WORLD->level_objects[0xe9].active == 0)
+    if (WORLD->level_objects[0xe9].active == 0) {
         return;
-    if ((object->flags_1fc & 0x80) != 0)
+    }
+    if ((object->flags_1fc & 0x80) != 0) {
         Hint_SetComplete(0x2b8);
+    }
     locator = object->character_data->game_character->throw_locator;
     blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
@@ -194,8 +206,9 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
         origin.y = (object->collision_max.y - object->collision_min.y) * 0.75 + object->collision_min.y;
         origin.z = object->collision_position.z;
         NuVecSub(&movement, &matrix.translation, &origin);
-        if (NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0)
+        if (NewRayCastScaleYMask(&origin, &movement, 0.0f, 1.0f, 0, GetSurfaceInfoDefaultMaskPc.word | 0x1f) != 0) {
             blocked = 1;
+        }
     } else {
         NuMtxSetTranslation(&matrix, &object->collision_position);
     }
@@ -244,8 +257,9 @@ void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     NUMTX matrix;
     i32 locator;
     PART_PC *part;
-    if (WORLD->level_objects[0xe9].active == 0)
+    if (WORLD->level_objects[0xe9].active == 0) {
         return;
+    }
     locator = object->character_data->game_character->throw_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
         if (object->id == (u16)id_JANGOFETT && object->field_7aa == 0x6e) {
@@ -303,54 +317,65 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     if (object->character_context == 0x2e) {
         if (object->character_model->action_animations[object->field_7aa] != NULL) {
             frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
-            if (frame == NULL)
+            if (frame == NULL) {
                 return 0;
+            }
         }
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
             object->character_context = -1;
-            if ((object->context_variant_flags & 0x40) == 0)
+            if ((object->context_variant_flags & 0x40) == 0) {
                 object->flags_e24 |= 0x4000;
+            }
         } else if ((object->context_variant_flags & 0x40) == 0) {
             if (object->character_model->action_animations[object->field_7aa] != NULL) {
                 release_frame = AnimListFrame(object->character_model, object->field_7aa, 2);
-                if (frame != NULL && *frame > 0.0f && *frame >= release_frame)
+                if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
                     object->flags_e24 |= 0x4000;
+                }
             } else if (object->context_timer < 0.5f) {
                 object->flags_e24 |= 0x4000;
             }
         }
-        if ((object->flags_e24 & 0x4000) != 0)
+        if ((object->flags_e24 & 0x4000) != 0) {
             object->context_variant_flags |= 0x40;
+        }
         return 0;
     }
     if (WORLD->level_objects[0xe9].active == 0 || (object->flags_1fc & 0x80) == 0 ||
-        (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0)
+        (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
         return 0;
+    }
     if (((object->character_data->model_flags & 0x1000000) == 0 && object->helmet != 6 && !SuperWeirdo(object)) ||
-        (object->field_281 == 0 && object->jump_variant_state != 1))
+        (object->field_281 == 0 && object->jump_variant_state != 1)) {
         return 0;
+    }
     if (object->character_context != -1 && object->character_context != 6 && object->character_context != 7 &&
-        (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0)
+        (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0) {
         return 0;
+    }
     part = FindPart(NULL, 0, object);
     if (part != NULL) {
-        if ((part->active & 2) != 0 && !(part->time_remaining > 1.0f))
+        if ((part->active & 2) != 0 && !(part->time_remaining > 1.0f)) {
             return 0;
+        }
         KillPart(part, 0);
         return 1;
     }
     object->character_context = 0x2e;
-    if (object->jump_variant_state == 1)
+    if (object->jump_variant_state == 1) {
         object->field_7aa = 0x6f;
-    else if ((object->flags_e20 & 0x10000) != 0)
+    } else if ((object->flags_e20 & 0x10000) != 0) {
         object->field_7aa = 0x6e;
-    else
+    } else {
         object->field_7aa = 0x65;
-    if (object->character_model->action_animations[object->field_7aa] == NULL)
+    }
+    if (object->character_model->action_animations[object->field_7aa] == NULL) {
         object->field_7aa = 0x65;
-    if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL)
+    }
+    if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);
+    }
     object->context_variant_flags &= ~0x40;
     object->context_timer = object->character_model->action_animations[object->field_7aa] != NULL
                                 ? AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1)
@@ -361,15 +386,20 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
 i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
     (void)hint;
     if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
-        Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL)
+        Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL) {
         return 0;
-    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == 0)
+    }
+    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == 0) {
         return 0;
-    if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & 1) != 0)
+    }
+    if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & 1) != 0) {
         return 0;
+    }
     if ((player != NULL && (f64)NuVecDistSqr(&player->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0) ||
-        (player2 != NULL && (f64)NuVecDistSqr(&player2->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0))
+        (player2 != NULL &&
+         (f64)NuVecDistSqr(&player2->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0)) {
         return 1;
+    }
     return 0;
 }
 
@@ -377,8 +407,9 @@ static i32 TightRopes_Load(void *world_info, void *unused1) {
     i32 version;
     i32 i;
     WORLDINFO *world = ((WORLDINFO *)(world_info));
-    if (world->tightrope_count != 0)
+    if (world->tightrope_count != 0) {
         return 0;
+    }
     version = EdFileReadInt();
     world->tightrope_count = EdFileReadInt();
     for (i = 0; i < world->tightrope_count; ++i) {
@@ -392,8 +423,9 @@ static i32 TightRopes_Load(void *world_info, void *unused1) {
             world->tightropes[i].field_0x2e = EdFileReadUnsignedShort();
             world->tightropes[i].field_0x30 = EdFileReadUnsignedChar();
             world->tightropes[i].field_0x31 = EdFileReadUnsignedChar();
-            if (version != 2)
+            if (version != 2) {
                 world->tightropes[i].field_0x32 = EdFileReadChar();
+            }
         }
     }
     return 1;

@@ -13,10 +13,12 @@ extern "C" void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture)
 
 void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewport) {
     PC_VIEWPORT_PC applied = *viewport;
-    if (applied.width >= (u32)PS2_REZ_W)
+    if (applied.width >= (u32)PS2_REZ_W) {
         applied.width = (u32)PS2_REZ_W;
-    if (applied.height >= (u32)PS2_REZ_H)
+    }
+    if (applied.height >= (u32)PS2_REZ_H) {
         applied.height = (u32)PS2_REZ_H;
+    }
     device->methods->set_viewport(device, &applied);
     requested_viewport.x = viewport->x;
     requested_viewport.y = viewport->y;
@@ -27,8 +29,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewpo
 }
 
 extern "C" __declspec(noinline) void __cdecl NuVpSubmitPc(const PC_VIEWPORT_PC *viewport) {
-    if (viewport != NULL)
+    if (viewport != NULL) {
         PCDeviceBackend.ApplyViewport(viewport);
+    }
 }
 
 extern "C" HRESULT __cdecl PCDeviceSetTransform(i32 state, const NUMTX *matrix) {
@@ -173,8 +176,9 @@ extern "C" void __cdecl PCDeviceCreateTextureFromFileInMemoryPc(const void *data
 
 extern "C" __declspec(noinline) void __cdecl PCDeviceCreateVertexBuffer(u32 size, u32 usage, u32 vertex_format,
                                                                         i32 pool, PC_BUFFER_RESOURCE_PC **resource) {
-    if (PCDeviceHardwareVertexProcessingPC == 0)
+    if (PCDeviceHardwareVertexProcessingPC == 0) {
         usage |= 0x10;
+    }
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_vertex_buffer(PCDeviceBackend.device, size, usage,
                                                                                vertex_format, pool, resource, NULL);
 }
@@ -182,8 +186,9 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceCreateVertexBuffer(u32 size
 extern "C" __declspec(noinline) void __cdecl PCDeviceCreateIndexBuffer(u32 size, u32 usage, i32 format, i32 pool,
                                                                        PC_BUFFER_RESOURCE_PC **resource,
                                                                        HANDLE *shared_handle) {
-    if (PCDeviceHardwareVertexProcessingPC == 0)
+    if (PCDeviceHardwareVertexProcessingPC == 0) {
         usage |= 0x10;
+    }
     PCDeviceLastResult = PCDeviceBackend.device->methods->create_index_buffer(PCDeviceBackend.device, size, usage,
                                                                               format, pool, resource, shared_handle);
 }
@@ -211,19 +216,25 @@ struct PC_MATERIAL_DEVICE_CAPS_VIEW {
     i32 __thiscall ShaderVariant16();
     i32 __thiscall ShaderVariant1();
 };
+
 STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
+
 i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
     i32 variant = 0;
-    if (shader_caps & 0x20)
+    if (shader_caps & 0x20) {
         variant = 16;
+    }
     return variant;
 }
+
 i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1() {
     i32 variant = 0;
-    if (shader_caps & 0x20)
+    if (shader_caps & 0x20) {
         variant = 1;
+    }
     return variant;
 }
+
 extern "C" void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *elements,
                                                         PC_TEXTURE_RESOURCE_PC **out) {
     PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
@@ -234,11 +245,13 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceLockVertexBuffer(u32 offset
                                                                       PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
+
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
 
 struct PRIMITIVE_D3D_DEVICE_VIEW;
+
 struct PRIMITIVE_D3D_VTABLE_VIEW {
     void *unknown_000[83];
     HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32);
@@ -247,12 +260,15 @@ struct PRIMITIVE_D3D_VTABLE_VIEW {
     void *unknown_154[4];
     HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32);
 };
+
 STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_primitive_up) == 0x14c);
 STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_indexed_primitive_up) == 0x150);
 STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, set_fvf) == 0x164);
+
 struct PRIMITIVE_D3D_DEVICE_VIEW {
     PRIMITIVE_D3D_VTABLE_VIEW *methods;
 };
+
 extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const void *vertices, u32 stride) {
     ++PCDevicePrimitiveUPCallCountPc;
     PCDeviceStateCachePc.vertex_buffer = NULL;
@@ -284,8 +300,9 @@ extern "C" void __cdecl PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
     NUVEC4 corners[8] = {{-1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, 1.0f, -1.0f, 1.0f},
                          {1.0f, -1.0f, -1.0f, 1.0f},  {-1.0f, -1.0f, 1.0f, 1.0f}, {-1.0f, 1.0f, 1.0f, 1.0f},
                          {1.0f, 1.0f, 1.0f, 1.0f},    {1.0f, -1.0f, 1.0f, 1.0f}};
-    for (i32 i = 0; i < 8; ++i)
+    for (i32 i = 0; i < 8; ++i) {
         NuVec4MtxTransformH(&corners[i], &corners[i], matrix);
+    }
     u16 indices[36] = {0, 1, 3, 3, 1, 2, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6,
                        6, 2, 5, 5, 2, 1, 5, 1, 4, 4, 1, 0, 4, 7, 5, 5, 7, 6};
     PCDeviceSetFVFPc(0x4002);
@@ -377,10 +394,12 @@ PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC() {
         target_cache[i] = NULL;
     }
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory() {
     factory = reinterpret_cast<GRAPHICS_FACTORY_PC *>(Direct3DCreate9(32));
-    if (factory == NULL)
+    if (factory == NULL) {
         PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState, "Failed to initialize DirectX");
+    }
     factory->methods->get_device_caps(factory, 0, 1, &caps);
     factory->methods->get_adapter_identifier(factory, 0, 0, &identifier);
     factory->methods->get_adapter_display_mode(factory, 0, &desktop_mode);
@@ -389,6 +408,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory() {
     active_aspect_mode = aspect_mode;
     active_aspect = aspect;
 }
+
 i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32 width, u32 height) {
     i32 selected = 0;
     f32 ratio = (f32)width / (f32)height;
@@ -414,6 +434,7 @@ i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32 width, u32 height) {
     }
     return selected;
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources() {
     if (back_buffer != NULL) {
         back_buffer->methods->release(back_buffer);
@@ -449,6 +470,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources() {
         target_cache[i] = NULL;
     }
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::Shutdown() {
     if (modes != NULL) {
         delete modes;
@@ -473,11 +495,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::Shutdown() {
         factory = NULL;
     }
 }
+
 PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC() {
     Shutdown();
 }
 
 struct GRAPHICS_DEVICE_PC;
+
 struct GRAPHICS_DEVICE_METHODS_PC {
     void *unknown_0000[3];
     HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE_PC *);
@@ -503,9 +527,11 @@ struct GRAPHICS_DEVICE_METHODS_PC {
     void *unknown_00b0[33];
     HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);
 };
+
 struct GRAPHICS_DEVICE_PC {
     const GRAPHICS_DEVICE_METHODS_PC *methods;
 };
+
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, test_cooperative_level) == 0xc);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, evict_managed_resources) == 0x14);
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, get_device_caps) == 0x1c);
@@ -524,27 +550,34 @@ __declspec(noinline) HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->end_scene(view);
 }
+
 extern "C" __declspec(noinline) void __cdecl PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour,
                                                            f32 depth, u32 stencil) {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->clear(device, count, rectangles, flags, colour, depth, stencil);
 }
+
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceTestCooperativeLevel() {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     return device->methods->test_cooperative_level(device);
 }
+
 PC_VIEWPORT_PC *__thiscall PC_DEVICE_BACKEND_PC::GetRequestedViewportPc() {
     return &requested_viewport;
 }
+
 extern "C" i32 __cdecl PCDeviceGetHardwareVertexProcessingPc(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
+
 extern "C" i32 __cdecl PCDeviceIsAbsent() {
     return PCDeviceBackend.device == NULL;
 }
+
 extern "C" PC_D3D9_DEVICE_PC *__cdecl PCDeviceGetDevice() {
     return PCDeviceBackend.device;
 }
+
 extern "C" GRAPHICS_FACTORY_PC *__cdecl PCDeviceGetFactoryPc(void) {
     return PCDeviceBackend.factory;
 }
@@ -552,10 +585,12 @@ extern "C" GRAPHICS_FACTORY_PC *__cdecl PCDeviceGetFactoryPc(void) {
 extern "C" {
     static u32 PCGraphicsMultisampleTypes[5] = {0, 2, 4, 8, 16};
 }
+
 u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType() {
     return PCGraphicsMultisampleTypes[multisample_index];
 }
 struct PC_TEXTURE_CREATE_DEVICE_PC;
+
 struct PC_TEXTURE_CREATE_METHODS_PC {
     void *reserved_00[23];
     HRESULT(__stdcall *create_texture)
@@ -564,12 +599,15 @@ struct PC_TEXTURE_CREATE_METHODS_PC {
     HRESULT(__stdcall *create_depth_surface)
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
 };
+
 struct PC_TEXTURE_CREATE_DEVICE_PC {
     const PC_TEXTURE_CREATE_METHODS_PC *methods;
 };
+
 STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_texture) == 0x5c);
 STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_METHODS_PC, create_depth_surface) == 0x74);
 STATIC_ASSERT(offsetof(PC_TEXTURE_CREATE_DEVICE_PC, methods) == 0);
+
 extern "C" void __cdecl PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality,
                                                    BOOL discard, PC_TEXTURE_RESOURCE_PC **surface,
                                                    HANDLE *shared_handle) {
@@ -577,6 +615,7 @@ extern "C" void __cdecl PCDeviceCreateDepthSurface(u32 width, u32 height, i32 fo
     PCDeviceLastResult = device->methods->create_depth_surface(device, width, height, format, multisample, quality,
                                                                discard, surface, shared_handle);
 }
+
 extern "C" void __cdecl PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usage, i32 format, i32 pool,
                                               PC_TEXTURE_RESOURCE_PC **texture) {
     PC_TEXTURE_CREATE_DEVICE_PC *device = reinterpret_cast<PC_TEXTURE_CREATE_DEVICE_PC *>(PCDeviceBackend.device);
@@ -592,22 +631,30 @@ extern "C" {
 static i32 __cdecl PCGraphicsModeCompare(const void *left_ptr, const void *right_ptr) {
     const GRAPHICS_DISPLAY_MODE_PC *left = static_cast<const GRAPHICS_DISPLAY_MODE_PC *>(left_ptr);
     const GRAPHICS_DISPLAY_MODE_PC *right = static_cast<const GRAPHICS_DISPLAY_MODE_PC *>(right_ptr);
-    if (left->width == 0 && left->height == 0 && left->refresh_rate == 0)
+    if (left->width == 0 && left->height == 0 && left->refresh_rate == 0) {
         return 1;
-    if (right->width == 0 && right->height == 0 && right->refresh_rate == 0)
+    }
+    if (right->width == 0 && right->height == 0 && right->refresh_rate == 0) {
         return -1;
-    if (left->width < right->width)
+    }
+    if (left->width < right->width) {
         return -1;
-    if (left->width > right->width)
+    }
+    if (left->width > right->width) {
         return 1;
-    if (left->height < right->height)
+    }
+    if (left->height < right->height) {
         return -1;
-    if (left->height > right->height)
+    }
+    if (left->height > right->height) {
         return 1;
-    if (left->refresh_rate < right->refresh_rate)
+    }
+    if (left->refresh_rate < right->refresh_rate) {
         return -1;
+    }
     return left->refresh_rate > right->refresh_rate;
 }
+
 u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh) {
     u32 closest_width = 10000;
     u32 closest_height = 10000;
@@ -636,10 +683,12 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh
         }
     }
     if (requested_windowed != 0) {
-        if (modes[selected].width != width)
+        if (modes[selected].width != width) {
             modes[selected].width = width;
-        if (modes[selected].height != height)
+        }
+        if (modes[selected].height != height) {
             modes[selected].height = height;
+        }
     }
     return selected;
 }
@@ -649,6 +698,7 @@ extern "C" {
     void __cdecl PCGraphicsRecreateResources(i32 reset_available);
     extern void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *);
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
     PCFrameCriticalSectionEnter_candidate();
     saved_windowed = parameters.windowed == 1;
@@ -665,8 +715,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     parameters.flags = 2;
     parameters.swap_effect = 1;
     parameters.depth_format = 75;
-    if (requested_feature != 0 && (caps.caps2 & 1) == 0)
+    if (requested_feature != 0 && (caps.caps2 & 1) == 0) {
         requested_feature = 0;
+    }
     feature634 = requested_feature;
     parameters.count = 2;
     parameters.interval = 1;
@@ -675,34 +726,41 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         i32 width = PcWindowOptions.client_width;
         i32 height = PcWindowOptions.client_height;
         i32 y = PcWindowOptions.window_y;
-        if (x < 0)
+        if (x < 0) {
             x = (PCDeviceBackend.desktop_mode.width - width) >> 1;
-        if (y < 0)
+        }
+        if (y < 0) {
             y = (PCDeviceBackend.desktop_mode.height - height) >> 1;
+        }
         MoveWindow(reinterpret_cast<HWND>(PCInputInstance_candidate), x, y, width, height, TRUE);
     }
     if (PCDeviceBackend.factory->methods->check_device_type(PCDeviceBackend.factory, 0, 1, modes[requested_mode].format,
-                                                            21, parameters.windowed) < 0)
+                                                            21, parameters.windowed) < 0) {
         parameters.format = modes[requested_mode].format;
-    else
+    } else {
         parameters.format = 21;
+    }
     parameters.width = modes[requested_mode].width;
     parameters.height = modes[requested_mode].height;
     parameters.refresh_rate = modes[requested_mode].refresh_rate;
-    if (parameters.windowed != 0)
+    if (parameters.windowed != 0) {
         parameters.refresh_rate = 0;
+    }
     creation_flags = 0;
-    if (force_software == 0)
-        creation_flags = 0x10;
-    if (multithreaded != 0)
-        creation_flags |= 4;
     if (force_software == 0) {
-        if (caps.vertex_shader_version >= 0xfffe0101)
+        creation_flags = 0x10;
+    }
+    if (multithreaded != 0) {
+        creation_flags |= 4;
+    }
+    if (force_software == 0) {
+        if (caps.vertex_shader_version >= 0xfffe0101) {
             creation_flags |= 0x40;
-        else if ((caps.device_caps & 0x10000) != 0)
+        } else if ((caps.device_caps & 0x10000) != 0) {
             creation_flags |= 0x80;
-        else
+        } else {
             creation_flags |= 0x20;
+        }
     } else {
         creation_flags |= 0x20;
     }
@@ -717,12 +775,13 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
             bool supported = true;
             if (factory->methods->check_multisample(factory, adapter, device_type, parameters.format,
                                                     parameters.windowed, PCGraphicsMultisampleTypes[i],
-                                                    &colour_quality) < 0)
+                                                    &colour_quality) < 0) {
                 supported = false;
-            else if (factory->methods->check_multisample(factory, adapter, device_type, parameters.depth_format,
-                                                         parameters.windowed, PCGraphicsMultisampleTypes[i],
-                                                         &depth_quality) < 0)
+            } else if (factory->methods->check_multisample(factory, adapter, device_type, parameters.depth_format,
+                                                           parameters.windowed, PCGraphicsMultisampleTypes[i],
+                                                           &depth_quality) < 0) {
                 supported = false;
+            }
             u32 maximum = colour_quality > depth_quality ? colour_quality : depth_quality;
             quality[i] = maximum != 0 && supported != 0 ? maximum - 1 : -1;
         }
@@ -730,10 +789,11 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         render_target_flags = 0;
         multisample_tested = 1;
     }
-    if (multisample_tested != 0 && quality[requested_multisample] != -1)
+    if (multisample_tested != 0 && quality[requested_multisample] != -1) {
         multisample_index = requested_multisample;
-    else if (multisample_tested == 0 || quality[multisample_index] == -1)
+    } else if (multisample_tested == 0 || quality[multisample_index] == -1) {
         multisample_index = 0;
+    }
     parameters.multisample_type = PCGraphicsMultisampleTypes[multisample_index];
     parameters.multisample_quality = quality[multisample_index] < 0 ? 0 : quality[multisample_index];
     if (device == NULL) {
@@ -805,8 +865,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
                     }
                     break;
                 case static_cast<HRESULT>(0x88760868):
-                    if (PCGraphicsDeviceLostCallback != NULL)
+                    if (PCGraphicsDeviceLostCallback != NULL) {
                         PCGraphicsDeviceLostCallback(&parameters);
+                    }
                     break;
             }
         } else {
@@ -838,8 +899,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     active_mode = FindMode(parameters.width, parameters.height, refresh);
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->get_device_caps(view, &caps);
-    if (rebuild_resources)
+    if (rebuild_resources) {
         BuildDefaultPoolResources();
+    }
     ResetTargets();
     PCDeviceClear(0, NULL, 1, 0, 1.0f, 0);
     view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
@@ -849,15 +911,18 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         PCDeviceSetSamplerState(i, 6, 2);
         PCDeviceSetSamplerState(i, 7, 2);
     }
-    if (PCDeviceHardwareVertexProcessingPC == 0)
+    if (PCDeviceHardwareVertexProcessingPC == 0) {
         PCDeviceSetSoftwareVertexProcessing(0);
+    }
     PCDeviceSetRenderState(161, multisample_index != 0);
-    for (i32 i = 0; i != 4; ++i)
+    for (i32 i = 0; i != 4; ++i) {
         target_cache[i] = NULL;
+    }
     PcWindowOptions.SetDeviceWidth(PS2_REZ_W);
     PcWindowOptions.SetDeviceHeight(PS2_REZ_H);
-    if (parameters.windowed == 0)
+    if (parameters.windowed == 0) {
         PcWindowOptions.SetRefresh(parameters.refresh_rate);
+    }
     PcWindowOptions.SetMultisample(multisample_index);
     PcWindowOptions.Save();
     full_viewport.x = 0;
@@ -878,18 +943,21 @@ __declspec(noinline) void __cdecl PCDeviceEvictManagedResources() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->evict_managed_resources(view);
 }
+
 __declspec(noinline) void __cdecl PCDeviceSetSoftwareVertexProcessing(BOOL enabled) {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     PCDeviceLastResult = view->methods->set_software_vertex_processing(view, enabled);
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *destination, HWND window,
                                               const RGNDATA *region) {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     present_result = view->methods->present(view, source, destination, window, region);
     if (present_result < 0) {
         if (present_result == static_cast<HRESULT>(0x88760868)) {
-            if (PCDeviceTestCooperativeLevel() == static_cast<HRESULT>(0x88760869))
+            if (PCDeviceTestCooperativeLevel() == static_cast<HRESULT>(0x88760869)) {
                 CreateOrResetDevice(1);
+            }
         } else if (present_result != static_cast<HRESULT>(0x88760827)) {
             /* Retail closes the window through separate branches for an internal driver error and the rest. */
             SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
@@ -897,9 +965,11 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
             SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
         }
     }
-    for (i32 i = 0; i != 4; ++i)
+    for (i32 i = 0; i != 4; ++i) {
         target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
+    }
 }
+
 __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::BeginScene() {
     PCGraphicsFrameScratchCount.reset_word = 0;
     PCGraphicsBoundShader = -1;
@@ -919,6 +989,7 @@ static PC_VERTEX_ELEMENT_PC PCGraphicsScreenUvDeclaration[3] = {
     {0, 0, 1, 0, 9, 0}, {0, 8, 1, 0, 5, 0}, {255, 0, 17, 0, 0, 0}};
 static PC_VERTEX_ELEMENT_PC PCGraphicsScreenColourUvDeclaration[4] = {
     {0, 0, 3, 0, 9, 0}, {0, 16, 4, 0, 10, 0}, {0, 20, 1, 0, 5, 0}, {255, 0, 17, 0, 0, 0}};
+
 void __thiscall PC_DEVICE_BACKEND_PC::InitializeAdapter() {
     u32 total = PCDeviceBackend.factory->methods->get_adapter_mode_count(PCDeviceBackend.factory, 0, 22);
     GRAPHICS_DISPLAY_MODE_PC *all_modes = new GRAPHICS_DISPLAY_MODE_PC[total];
@@ -932,17 +1003,19 @@ void __thiscall PC_DEVICE_BACKEND_PC::InitializeAdapter() {
     for (u32 i = 0; i != total; ++i) {
         factory->methods->enum_adapter_modes(factory, 0, 22, i, &all_modes[i]);
         if (all_modes[i].width >= minimum_width && all_modes[i].height >= minimum_height &&
-            all_modes[i].refresh_rate >= 40 && all_modes[i].refresh_rate <= 85)
+            all_modes[i].refresh_rate >= 40 && all_modes[i].refresh_rate <= 85) {
             ++mode_count;
-        else
+        } else {
             memset(&all_modes[i], 0, sizeof(GRAPHICS_DISPLAY_MODE_PC));
+        }
     }
     qsort(all_modes, total, sizeof(GRAPHICS_DISPLAY_MODE_PC), PCGraphicsModeCompare);
     modes = new GRAPHICS_DISPLAY_MODE_PC[mode_count];
     memcpy(modes, all_modes, mode_count * sizeof(GRAPHICS_DISPLAY_MODE_PC));
     delete all_modes;
-    if (PcWindowOptions.usehires != 0 && PcWindowOptions.multisample != 6)
+    if (PcWindowOptions.usehires != 0 && PcWindowOptions.multisample != 6) {
         PcWindowOptions.SetMultisample(0);
+    }
     u32 selected = FindMode(PcWindowOptions.device_width, PcWindowOptions.device_height, PcWindowOptions.refresh_rate);
     requested_mode = selected < mode_count ? selected : active_mode;
     requested_multisample = PcWindowOptions.multisample;
@@ -959,6 +1032,7 @@ extern "C" {
     void __cdecl NuVpSetPosition(f32, f32);
     void __cdecl NuVpSetSize2(f32, f32);
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface) {
     u16 limit =
         multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
@@ -975,8 +1049,9 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, 
     PC_TEXTURE_RESOURCE_PC *copy;
     ID3DXBuffer *buffer;
     u32 size = 0;
-    if (width == 0)
+    if (width == 0) {
         width = parameters.width;
+    }
     if (height == 0) {
         f32 aspect;
         switch (PcWindowOptions.aspect_mode) {
@@ -1030,19 +1105,22 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, 
         copy->methods->release(copy);
         copy = NULL;
     }
-    if (buffer != NULL)
+    if (buffer != NULL) {
         buffer->methods->release(buffer);
+    }
     return size;
 }
 
 u8 __thiscall PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }
+
 u8 __thiscall PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
     return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode ||
            requested_feature != feature634 || requested_multisample != multisample_index ||
            requested_target_count != target_count;
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.x = 0;
     requested_viewport.y = 0;
@@ -1064,6 +1142,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.max_z = 1.0f;
     NuVpSubmitPc(&requested_viewport);
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::ResetTargets() {
     SetRenderTarget(0, back_buffer);
     current_surface = back_buffer;
@@ -1085,6 +1164,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetTargets() {
     PS2_VCNTR_Y = PS2_REZ_H / 2;
     ResetViewport();
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets() {
     GRAPHICS_DEVICE_PC *view;
     if (multisample_index != 0) {
@@ -1097,12 +1177,14 @@ void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets() {
             if (i != 0) {
                 if (i > 0) {
                     if (i <= 2 && ((PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod == 2) ||
-                                   (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)))
+                                   (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2))) {
                         SetRenderTarget(i, target_surfaces[i]);
-                    else
+                    } else {
                         SetRenderTarget(i, NULL);
-                } else
+                    }
+                } else {
                     SetRenderTarget(i, NULL);
+                }
             } else if (target_surfaces[0] != NULL) {
                 SetRenderTarget(0, target_surfaces[0]);
                 current_surface = target_surfaces[0];
@@ -1120,6 +1202,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets() {
     PS2_VCNTR_Y = PS2_REZ_H / 2;
     ResetViewport();
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
     GRAPHICS_DEVICE_PC *view;
     if (multisample_index != 0) {
@@ -1135,17 +1218,19 @@ void __thiscall PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
     view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->set_depth_stencil_surface(view, depth_surface);
     view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    if (depth_surface != NULL)
+    if (depth_surface != NULL) {
         view->methods->clear(view, 0, NULL, 7, 0, 1.0f, 0xc0);
-    else
+    } else {
         view->methods->clear(view, 0, NULL, 1, 0, 1.0f, 0);
+    }
     for (i32 i = 0; i != 4; ++i) {
         switch (i) {
             case 0:
-                if (target_surfaces[0] != NULL)
+                if (target_surfaces[0] != NULL) {
                     SetRenderTarget(0, target_surfaces[0]);
-                else
+                } else {
                     SetRenderTarget(0, back_buffer);
+                }
                 view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
                 view->methods->set_depth_stencil_surface(view, depth_surface);
                 view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
@@ -1176,12 +1261,15 @@ extern "C" {
     void __cdecl PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE_PC *);
     HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *);
 }
+
 struct PC_GRAPHICS_CLIP_VERTEX_PC {
     f32 x, y, z, u, v;
 };
+
 struct PC_GRAPHICS_SCREEN_VERTEX_PC {
     f32 x, y, u, v;
 };
+
 STATIC_ASSERT(sizeof(PC_GRAPHICS_CLIP_VERTEX_PC) == 20);
 STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, x) == 0);
 STATIC_ASSERT(offsetof(PC_GRAPHICS_CLIP_VERTEX_PC, y) == 4);
@@ -1194,19 +1282,24 @@ STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, y) == 4);
 STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, u) == 8);
 STATIC_ASSERT(offsetof(PC_GRAPHICS_SCREEN_VERTEX_PC, v) == 12);
 struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC;
+
 struct GRAPHICS_TEXTURE_SURFACE_METHODS_PC {
     void *unknown_000[18];
     HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
 };
+
 struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {
     const GRAPHICS_TEXTURE_SURFACE_METHODS_PC *methods;
 };
+
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_VIEW_PC, methods) == 0);
 STATIC_ASSERT(offsetof(GRAPHICS_TEXTURE_SURFACE_METHODS_PC, get_surface_level) == 0x48);
+
 extern "C" __declspec(noinline) void __cdecl PCDeviceLockIndexBuffer(u32 offset, u32 size, void **data, u32 flags,
                                                                      PC_BUFFER_RESOURCE_PC *resource) {
     PCDeviceLastResult = resource->methods->lock(resource, offset, size, data, flags);
 }
+
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
@@ -1241,6 +1334,7 @@ extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 
 /* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
 typedef struct PC_SURFACE_PC PC_SURFACE_PC;
+
 typedef struct PC_SURFACE_METHODS_PC {
     void *unknown_0000[2];
     ULONG(__stdcall *release)(PC_SURFACE_PC *);
@@ -1249,9 +1343,11 @@ typedef struct PC_SURFACE_METHODS_PC {
     HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32);
     HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);
 } PC_SURFACE_METHODS_PC;
+
 struct PC_SURFACE_PC {
     const PC_SURFACE_METHODS_PC *methods;
 };
+
 STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, get_desc) == 0x30);
 STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, unlock_rect) == 0x38);
 
@@ -1285,8 +1381,9 @@ extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_
     texture->methods->get_surface_level(texture, 0, reinterpret_cast<PC_TEXTURE_RESOURCE_PC **>(&copy));
     index = 0;
     sprintf(path, "%s_pc%03d.bmp", prefix, index++);
-    while (NuFileSize(path) > 0)
+    while (NuFileSize(path) > 0) {
         sprintf(path, "%s_pc%03d.bmp", prefix, index++);
+    }
     device = PCDeviceBackend.device;
     DXGetErrorString9A(device->methods->get_render_target_data(
         device, reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(surface), reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(copy)));
@@ -1328,6 +1425,7 @@ extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_
     }
     PCFrameCriticalSectionLeave_candidate();
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     if (back_buffer != NULL) {
         back_buffer->methods->release(back_buffer);
@@ -1368,8 +1466,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
         target_cache[i] = NULL;
     }
     target_count = requested_target_count;
-    if (target_count > 4)
+    if (target_count > 4) {
         target_count = 4;
+    }
     for (u32 i = 0; i != target_count; ++i) {
         switch (target_kinds[i]) {
             case -1:
@@ -1445,24 +1544,30 @@ void __thiscall PC_DEVICE_BACKEND_PC::ConfigureTargetKinds() {
     PcWindowOptions.SetShadowMethod(PcWindowOptions.desiredshadowmethod);
     PcWindowOptions.SetBloomMethod(PcWindowOptions.desiredbloommethod);
     PcWindowOptions.SetSpeedBlurSupported(1);
-    if (PcWindowOptions.usehires != 0)
+    if (PcWindowOptions.usehires != 0) {
         PcWindowOptions.SetShadowMethod(2);
-    else
+    } else {
         PcWindowOptions.SetShadowMethod(1);
+    }
     if (PCDeviceHardwareVertexProcessingPC < 2) {
-        if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod > 1)
+        if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod > 1) {
             PcWindowOptions.SetShadowMethod(1);
-        if (PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod > 1)
+        }
+        if (PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod > 1) {
             PcWindowOptions.SetBloomMethod(1);
+        }
     }
     if (PCDeviceHardwareVertexProcessingPC <= 2 && PcWindowOptions.shadowsenabled != 0 &&
-        PcWindowOptions.shadowmethod > 1)
+        PcWindowOptions.shadowmethod > 1) {
         PcWindowOptions.SetShadowMethod(1);
+    }
     if (multisample_index != 0) {
-        if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod > 1)
+        if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod > 1) {
             PcWindowOptions.SetShadowMethod(0);
-        if (PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod > 1)
+        }
+        if (PcWindowOptions.bloomenabled != 0 && PcWindowOptions.bloommethod > 1) {
             PcWindowOptions.SetBloomMethod(1);
+        }
     }
     shader_flags = 1;
     render_target_flags = 1;
@@ -1470,21 +1575,28 @@ void __thiscall PC_DEVICE_BACKEND_PC::ConfigureTargetKinds() {
         shader_flags = 0x21;
         render_target_flags = 0x13;
     }
-    if (PcWindowOptions.bloommethod != 0)
+    if (PcWindowOptions.bloommethod != 0) {
         shader_flags |= 4;
-    if (PcWindowOptions.bloommethod == 2)
+    }
+    if (PcWindowOptions.bloommethod == 2) {
         render_target_flags |= 2;
-    if (PcWindowOptions.speedblursupported != 0)
+    }
+    if (PcWindowOptions.speedblursupported != 0) {
         shader_flags |= 0x80;
+    }
     i32 count = 0;
-    if (multisample_index == 0)
+    if (multisample_index == 0) {
         target_kinds[count++] = 0;
-    if ((render_target_flags & 2) != 0)
+    }
+    if ((render_target_flags & 2) != 0) {
         target_kinds[count++] = 1;
-    if ((render_target_flags & 4) != 0)
+    }
+    if ((render_target_flags & 4) != 0) {
         target_kinds[count++] = 2;
-    if ((render_target_flags & 0x10) != 0)
+    }
+    if ((render_target_flags & 0x10) != 0) {
         target_kinds[count++] = 3;
+    }
     requested_target_count = (u16)count;
     PcWindowOptions.Save();
 }
@@ -1498,13 +1610,16 @@ extern "C" i32 __cdecl PCGraphicsPrepareVendor() {
     PCGraphicsQueriedGpu.device_id = device_id;
     if (vendor == 0x10de && device_id != 0xffffffffu) {
         for (i32 i = 0; PCGraphicsGpuRecords[i].device_id != 0xffffffffu; ++i) {
-            if (selected != NULL)
+            if (selected != NULL) {
                 break;
-            if (PCGraphicsGpuRecords[i].device_id == device_id)
+            }
+            if (PCGraphicsGpuRecords[i].device_id == device_id) {
                 selected = &PCGraphicsGpuRecords[i];
+            }
         }
-        if (selected == NULL)
+        if (selected == NULL) {
             selected = &PCGraphicsGpuFallback;
+        }
     }
     PCGraphicsSelectedGpuRecord = selected;
     return 0;
@@ -1515,6 +1630,7 @@ extern "C" HRESULT __cdecl PCDeviceCreateVertexShader(const DWORD *tokens, PC_TE
     PCDeviceLastResult = result;
     return result;
 }
+
 extern "C" HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
     HRESULT result = PCDeviceBackend.device->methods->create_pixel_shader(PCDeviceBackend.device, tokens, shader);
     PCDeviceLastResult = result;
@@ -1532,8 +1648,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::NextResolution() {
     while (visited != mode_count && modes[index].width == modes[original].width &&
            modes[index].height == modes[original].height) {
         ++index;
-        if (index == mode_count)
+        if (index == mode_count) {
             index = 0;
+        }
         ++visited;
     }
     u32 first = index;
@@ -1564,8 +1681,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::PreviousResolution() {
     while (visited < mode_count && modes[index].width == modes[original].width &&
            modes[index].height == modes[original].height) {
         --index;
-        if (index < 0)
+        if (index < 0) {
             index = (i32)mode_count - 1;
+        }
         ++visited;
     }
     i32 first = index;
@@ -1598,8 +1716,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::NextRefresh() {
             return;
         }
         ++index;
-        if (index >= mode_count)
+        if (index >= mode_count) {
             index = 0;
+        }
     }
 }
 
@@ -1613,8 +1732,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::PreviousRefresh() {
             return;
         }
         --index;
-        if (index < 0)
+        if (index < 0) {
             index = (i32)mode_count - 1;
+        }
     }
 }
 
@@ -1640,13 +1760,16 @@ void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) 
         view->methods->set_depth_stencil_surface(view, depth_surface);
     }
 }
+
 void PC_DEVICE_BACKEND_PC::ClearDepthStencilSurface() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->set_depth_stencil_surface(view, NULL);
 }
+
 void PC_DEVICE_BACKEND_PC::RestoreDefaultPoolResources() {
     BuildDefaultPoolResources();
 }
+
 void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, u32 index) {
     if (target == NULL || target->surface == NULL) {
         if (index != 0) {
@@ -1677,17 +1800,20 @@ void PC_DEVICE_BACKEND_PC::SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *target, 
         }
     }
 }
+
 void PC_DEVICE_BACKEND_PC::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     PC_EFFECT_SURFACE_PC target;
     target.Attach(texture, 0, false);
     bool resize =
         PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
     PC_TEXTURE_RESOURCE_PC *source = target_surfaces[0];
-    if (multisample_index != 0 || source == NULL)
+    if (multisample_index != 0 || source == NULL) {
         source = back_buffer;
+    }
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     view->methods->stretch_rect(view, source, NULL, target.surface, NULL, resize ? 2 : 1);
 }
+
 void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *texture) {
     PC_EFFECT_SURFACE_PC target;
     target.Attach(texture, 0, false);
@@ -1702,6 +1828,7 @@ extern "C" void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 
         PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, values, count);
     SAGA_SKIN_CALL(skin_trace_upload, 0, start, count, values, (long)PCDeviceLastResult);
 }
+
 extern "C" void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_pixel_shader_constant_f(PCDeviceBackend.device, start, values, count);
@@ -1713,6 +1840,7 @@ HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_P
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
     return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
 }
+
 extern "C" HRESULT __cdecl PCDeviceEndScenePc(void) {
     return PCDeviceBackend.EndScene();
 }
@@ -1721,8 +1849,9 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceSetStreamSourcePc(u32 strea
                                                                        u32 offset, u32 stride) {
     if (PCDeviceStateCacheEnabled != 0) {
         if (PCDeviceStateCachePc.vertex_buffer == buffer && PCDeviceStateCachePc.stream_stride == stride &&
-            PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset)
+            PCDeviceStateCachePc.stream_number == stream && PCDeviceStateCachePc.stream_offset == offset) {
             return;
+        }
         PCDeviceStateCachePc.vertex_buffer = buffer;
         PCDeviceStateCachePc.stream_number = stream;
         PCDeviceStateCachePc.stream_stride = stride;
@@ -1739,8 +1868,9 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceDrawPrimitivePc(i32 type, u
 
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *buffer) {
     if (PCDeviceStateCacheEnabled != 0) {
-        if (PCDeviceStateCachePc.index_buffer == buffer)
+        if (PCDeviceStateCachePc.index_buffer == buffer) {
             return;
+        }
         PCDeviceStateCachePc.index_buffer = buffer;
     }
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_indices(PCDeviceBackend.device, buffer);
@@ -1761,8 +1891,9 @@ extern "C" void __cdecl PCDeviceSetStreamSourceFreqPc(u32 stream, u32 setting) {
 
 extern "C" __declspec(noinline) void __cdecl PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC *declaration) {
     if (PCDeviceStateCacheEnabled != 0) {
-        if (PCDeviceStateCachePc.vertex_declaration == declaration)
+        if (PCDeviceStateCachePc.vertex_declaration == declaration) {
             return;
+        }
         PCDeviceStateCachePc.vertex_declaration = declaration;
     }
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_declaration(PCDeviceBackend.device, declaration);
@@ -1780,13 +1911,16 @@ extern "C" void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader)
 
 void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target) {
     u32 disabled;
-    if (target != 0 && target_count == 1)
+    if (target != 0 && target_count == 1) {
         return;
+    }
     disabled = 0;
-    if (colour_enabled == 0)
+    if (colour_enabled == 0) {
         disabled = 7;
-    if (alpha_enabled == 0)
+    }
+    if (alpha_enabled == 0) {
         disabled |= 8u;
+    }
     switch (target) {
         case 0:
             PCDeviceSetRenderState(168, disabled);
@@ -2136,10 +2270,12 @@ void __thiscall PC_DEVICE_STATE_CACHE_PC::Invalidate() {
     stream_stride = (u32)-1;
     stream_number = (u32)-1;
     stream_offset = (u32)-1;
-    for (i32 stage = 0; stage < 5; ++stage)
+    for (i32 stage = 0; stage < 5; ++stage) {
         textures[stage] = reinterpret_cast<void *>(-1);
-    for (i32 index = 0; index < 8 * 14; ++index)
+    }
+    for (i32 index = 0; index < 8 * 14; ++index) {
         sampler_states[0][index] = -1;
+    }
     state_key = -1;
     render_states[0] = -1;
     render_states[1] = -1;
@@ -2165,20 +2301,25 @@ __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectQuadPc(
     PCDeviceSetStreamSourcePc(0, buffer690, 0, 20);
     PCDeviceDrawPrimitivePc(5, 0, 2);
 }
+
 __declspec(noinline) void __thiscall PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
     PCDeviceSetVertexDeclarationPc(declaration68c);
     PCDeviceSetStreamSourcePc(0, buffer694, 0, 20);
     PCDeviceSetIndicesPc(buffer698);
     PCDeviceDrawIndexedPrimitivePc(4, 0, 0, state6a4, 0, state6a8);
 }
+
 void __thiscall PC_DEVICE_BACKEND_PC::PostEffectBarrierPc() {
 }
+
 extern "C" void __cdecl PCGraphicsDrawPostEffectQuadPc(void) {
     PCDeviceBackend.DrawPostEffectQuadPc();
 }
+
 extern "C" void __cdecl PCGraphicsDrawPostEffectIndexedPc(void) {
     PCDeviceBackend.DrawPostEffectIndexedPc();
 }
+
 extern "C" void __cdecl NuRndrEndFrameActionPc(void) {
 }
 
@@ -2190,6 +2331,7 @@ extern "C" i32 __cdecl PCDeviceShowCursorPc(i32 show) {
     }
     return 0;
 }
+
 extern "C" void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *source, const RECT *source_rect,
                                               PC_TEXTURE_RESOURCE_PC *destination, const RECT *destination_rect,
                                               i32 filter) {

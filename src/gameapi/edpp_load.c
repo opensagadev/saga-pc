@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
+
 typedef struct edpp_file_particle_pc_s {
     NUVEC position;
     i32 effect_index;
@@ -20,6 +21,7 @@ typedef struct edpp_file_particle_pc_s {
     u8 facing_mode;
     i16 facing_rotation_x, facing_rotation_y;
 } EDPP_FILE_PARTICLE_PC;
+
 STATIC_ASSERT(sizeof(EDPP_FILE_PARTICLE_PC) == 0x58);
 STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, render_priority) == 0x4e);
 STATIC_ASSERT(offsetof(EDPP_FILE_PARTICLE_PC, dynamic_priority) == 0x50);
@@ -102,23 +104,26 @@ static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
                 elapsed += emission;
             }
             remaining = effect->particle_lifetime - elapsed;
-            if (remaining < effect->emission_pause)
+            if (remaining < effect->emission_pause) {
                 elapsed += remaining;
-            else
+            } else {
                 elapsed += effect->emission_pause;
+            }
         } while (elapsed < effect->particle_lifetime);
     }
     /* Native68d080 spills the ratio to DWORD before multiplying frequency. */
     ratio = active / elapsed;
     effect->max_particles = (i16)(i32)(effect->frequency * ratio * effect->particle_lifetime);
-    if (effect->max_particles < 1)
+    if (effect->max_particles < 1) {
         effect->max_particles = 1;
+    }
     effect->max_particles = (i16)(effect->max_particles * (effect->trail_count + 1));
     for (i = 0; i < 512; ++i) {
         i32 id = edpp_ptls[i].instance_id;
         if (id != -1 && id != 99999) {
-            if (debtab[debkeydata[id].effect_index] == effect)
+            if (debtab[debkeydata[id].effect_index] == effect) {
                 DebReAlloc(&debkeydata[id], effect->max_particles);
+            }
         }
     }
 }
@@ -145,8 +150,9 @@ static __inline void edppLoadDebrisSetTrigger(i32 handle, i32 first, i32 second,
 }
 
 static __inline void edppLoadDebrisSetGroupID(i32 handle, i16 group) {
-    if (handle != -1)
+    if (handle != -1) {
         debkeydata[handle].render_group = group;
+    }
 }
 
 void cbPtlChangePriority(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -178,13 +184,15 @@ void cbPtlCancelTextureMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
+    }
 
     edptl_instancesettings_menu =
         eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelInstanceSettingsMenu, "Instance Settings");
-    if (edptl_instancesettings_menu == NULL)
+    if (edptl_instancesettings_menu == NULL) {
         return;
+    }
 
     eduiMenuAddItem(edptl_instancesettings_menu,
                     eduiItemSliderCreateInt(0, edblack, 0, cbPtlChangePriority, 0, 0xffff,
@@ -207,19 +215,22 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         i32 type = debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index;
         DEBRIS_INFO_PC *effect = debtab[type];
         if ((i8)effect->particle_type != item->data) {
-            if (item->data == 2)
+            if (item->data == 2) {
                 edpp_ptls[edpp_nearest].render_priority = 40000;
-            else if (item->data == 3)
+            } else if (item->data == 3) {
                 edpp_ptls[edpp_nearest].render_priority = 30000;
-            else if (item->data == 0)
+            } else if (item->data == 0) {
                 edpp_ptls[edpp_nearest].render_priority = 20000;
-            else if (item->data == 7)
+            } else if (item->data == 7) {
                 edpp_ptls[edpp_nearest].render_priority = 10000;
+            }
         }
-        if (item->data != 7 && effect->particle_type == 7)
+        if (item->data != 7 && effect->particle_type == 7) {
             effect->time_group = 0;
-        if (item->data == 7)
+        }
+        if (item->data == 7) {
             effect->time_group = 2;
+        }
         if (item->data == 7 ||
             debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == 7) {
             i32 index;
@@ -280,8 +291,9 @@ static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unu
     DEBRIS_INFO_PC *effect;
     edui_texture_pick_s *texture;
     eduimenu_s *parent = NULL;
-    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     texture = (edui_texture_pick_s *)item;
     effect->texture_u0 = texture->uv_x[0] * 256.0 + 524288.0;
@@ -292,8 +304,9 @@ static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unu
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback)
+    if (menu->callback) {
         menu->callback(menu, parent);
+    }
     GenericDebinfoDmaTypeUpdate(effect);
 }
 
@@ -304,8 +317,9 @@ void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
         if (textureselectmenu == NULL) {
             edui_texture_pick_s *texture;
             textureselectmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, NULL, "Texture Select");
-            if (textureselectmenu == NULL)
+            if (textureselectmenu == NULL) {
                 return;
+            }
             eduiMenuAddItem(textureselectmenu,
                             eduiItemTexturePickCreate(0, colours, cbPtlChangeTextureSelect, "Texture Select"));
             texture = (edui_texture_pick_s *)edui_last_item;
@@ -429,14 +443,16 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 break;
             }
         }
-        if (page_index == -1)
+        if (page_index == -1) {
             return -1;
+        }
     }
 
-    if (EdppUseMemcardPc)
+    if (EdppUseMemcardPc) {
         EdFileSetMedia(2);
-    else
+    } else {
         EdFileSetMedia(1);
+    }
     if (EdFileOpen(path, 0) == 0) {
         return -1;
     }
@@ -472,20 +488,23 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         edpp_types_used++;
     }
 
-    for (n = 0; n < skipped; ++n)
+    for (n = 0; n < skipped; ++n) {
         FileLoadSingleEffectType(&discarded, version, flag);
+    }
 
     if (original_flag == 1 || original_flag == 2) {
         i32 instance_index;
         i32 instances = EdFileReadInt();
-        if (instances + edpp_instances_used > 512)
+        if (instances + edpp_instances_used > 512) {
             instances = 512 - edpp_instances_used;
+        }
         edpp_num_orphans = 0;
         instance_index = 0;
         for (n = 0; n < instances; ++n) {
             i32 index;
-            while (edpp_ptls[instance_index].instance_id != -1)
+            while (edpp_ptls[instance_index].instance_id != -1) {
                 ++instance_index;
+            }
             index = instance_index;
             edpp_ptls[index].page = (i8)(page_index);
             edpp_ptls[index].position.x = EdFileReadFloat();
@@ -502,21 +521,24 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].emitter_rotation_z = EdFileReadShort();
                 edpp_ptls[index].emitter_rotation_y = EdFileReadShort();
             }
-            if (version >= 22)
+            if (version >= 22) {
                 edpp_ptls[index].emitter_rotation_x = EdFileReadShort();
-            else
+            } else {
                 edpp_ptls[index].emitter_rotation_x = 0;
-            if (version >= 34)
+            }
+            if (version >= 34) {
                 edpp_ptls[index].start_offset = EdFileReadFloat();
-            else if (version >= 8)
+            } else if (version >= 8) {
                 edpp_ptls[index].start_offset = (f32)(EdFileReadInt()) / 60.0f;
-            else
+            } else {
                 edpp_ptls[index].start_offset = 0.0f;
+            }
             EdFileRead(edpp_ptls[index].name, 16);
             edpp_ptls[index].instance_id = 99999;
             edpp_ptls[index].effect_index = LookupDebrisEffectPageOnly(edpp_ptls[index].name, (char)(page_index));
-            if (edpp_ptls[index].effect_index == -1)
+            if (edpp_ptls[index].effect_index == -1) {
                 ++edpp_num_orphans;
+            }
 
             if (version >= 9) {
                 edpp_ptls[index].switch_type = EdFileReadInt();
@@ -536,14 +558,16 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].reflection_rotation_y = 0;
                 edpp_ptls[index].reflection_offset = 0.0f;
             }
-            if (version >= 13)
+            if (version >= 13) {
                 edpp_ptls[index].reflection_bounce = EdFileReadFloat();
-            else
+            } else {
                 edpp_ptls[index].reflection_bounce = 0.9f;
-            if (version >= 15)
+            }
+            if (version >= 15) {
                 edpp_ptls[index].render_group = EdFileReadShort();
-            else
+            } else {
                 edpp_ptls[index].render_group = 0;
+            }
             if (version >= 27) {
                 edpp_ptls[index].render_priority = EdFileReadUnsignedShort();
                 edpp_ptls[index].dynamic_priority = EdFileReadChar();
@@ -551,21 +575,23 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].render_priority = 20000;
                 if (edpp_ptls[index].effect_index != -1) {
                     u8 particle_type = debtab[edpp_ptls[index].effect_index]->particle_type;
-                    if (particle_type == 2)
+                    if (particle_type == 2) {
                         edpp_ptls[index].render_priority = 40000;
-                    else if (particle_type == 3)
+                    } else if (particle_type == 3) {
                         edpp_ptls[index].render_priority = 30000;
-                    else if (particle_type == 0)
+                    } else if (particle_type == 0) {
                         edpp_ptls[index].render_priority = 20000;
-                    else if (particle_type == 7)
+                    } else if (particle_type == 7) {
                         edpp_ptls[index].render_priority = 10000;
+                    }
                 }
                 edpp_ptls[index].dynamic_priority = 0;
             }
-            if (version >= 36)
+            if (version >= 36) {
                 edpp_ptls[index].detail_levels = EdFileReadChar();
-            else
+            } else {
                 edpp_ptls[index].detail_levels = 7;
+            }
             if (version >= 38) {
                 edpp_ptls[index].facing_mode = EdFileReadChar();
                 edpp_ptls[index].facing_rotation_x = EdFileReadShort();
@@ -583,12 +609,13 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     EdFileClose();
     edppDetermineNearest(1.0f);
 
-    if (original_flag == 0)
+    if (original_flag == 0) {
         edbits_particle_general_page = page_index;
-    else if (original_flag == 5)
+    } else if (original_flag == 5) {
         edbits_particle_char_page = page_index;
-    else if (original_flag == 1)
+    } else if (original_flag == 1) {
         edbits_particle_level_page = page_index;
+    }
     return page_index;
 }
 
@@ -626,8 +653,9 @@ void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback != NULL)
+    if (menu->callback != NULL) {
         menu->callback(menu, parent);
+    }
 }
 
 extern struct eduimenu_s *changegenratemenu;
@@ -652,11 +680,13 @@ static void cbPtlCancelEmitTimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 static void cbPtlChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->frequency = (i16)(i32)((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -665,11 +695,13 @@ static void cbPtlChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused
 static void cbPtlChangeETime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->particle_lifetime = ((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -678,11 +710,13 @@ static void cbPtlChangeETime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
 static void cbPtlChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->emission_period = ((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -691,11 +725,13 @@ static void cbPtlChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
 static void cbPtlChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->emission_period_random = ((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -704,11 +740,13 @@ static void cbPtlChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unus
 static void cbPtlChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->emission_pause = ((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -717,11 +755,13 @@ static void cbPtlChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused
 static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->emission_pause_random = ((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -730,11 +770,13 @@ static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unu
 void __cdecl edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
-    if (edpp_nearest == -1)
+    if (edpp_nearest == -1) {
         return;
+    }
     instance_id = edpp_ptls[edpp_nearest].instance_id;
-    if (instance_id == -1)
+    if (instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[instance_id].effect_index];
     effect->trail_count = (i8)(i32)((edui_slider_s *)item)->value;
     UpdateTotalPtls(effect);
@@ -745,8 +787,9 @@ void __cdecl cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         changegenratemenu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbCancelChangeGenRateMenu, "Particles per Second");
-        if (changegenratemenu == NULL)
+        if (changegenratemenu == NULL) {
             return;
+        }
         eduiMenuAddItem(changegenratemenu,
                         eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeGenRate, 0, 1200 * edptl_superscale,
                                                 effect->frequency, "Particles per Second"));
@@ -761,8 +804,9 @@ void __cdecl cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         etimemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelChangeETimeMenu, "Particle Life");
-        if (etimemenu == NULL)
+        if (etimemenu == NULL) {
             return;
+        }
         eduiMenuAddItem(etimemenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeETime, 0.0f, 10.0f,
                                                         effect->particle_lifetime, "Particle Life"));
         eduiMenuAttach(parent, etimemenu);
@@ -774,8 +818,9 @@ void __cdecl cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
 void __cdecl cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
-    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
+    }
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     emittimemenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelEmitTimeMenu, "Emitter Timing");
     if (emittimemenu != NULL) {
@@ -829,8 +874,9 @@ void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 but
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback != NULL)
+    if (menu->callback != NULL) {
         menu->callback(menu, parent);
+    }
 }
 
 void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent) {
@@ -839,11 +885,13 @@ void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent) 
 }
 
 void __cdecl edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons) {
-    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
+    }
     edptl_scaleeffect_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelScaleEffectMenu, "Scale Effect");
-    if (edptl_scaleeffect_menu == NULL)
+    if (edptl_scaleeffect_menu == NULL) {
         return;
+    }
     eduiMenuAddItem(edptl_scaleeffect_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetScaleFactor, 0.1f, 9.9f,
                                                                  edpp_scale_factor, "Scale Factor"));
     eduiMenuAddItem(edptl_scaleeffect_menu,
@@ -867,8 +915,9 @@ void cbPtlCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     sscalemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelSScaleMenu, "Super Scale");
-    if (sscalemenu == NULL)
+    if (sscalemenu == NULL) {
         return;
+    }
     eduiMenuAddItem(sscalemenu,
                     eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeSScale, 1, 99, edptl_superscale, "Super Scale"));
     eduiMenuAttach(parent, sscalemenu);

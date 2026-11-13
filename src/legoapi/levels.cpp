@@ -13,33 +13,40 @@ typedef void(__cdecl *LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 extern "C" {
     void __cdecl LevelsConfigDiagnosticPc(char *message);
 }
+
 /* Native 0x0048a310, 217 bytes. */
 typedef struct level_script_progress_pc_s {
     char name[16];
     f32 params[4];
 } LEVEL_SCRIPT_PROGRESS_PC;
+
 typedef struct ai_script_progress_view_pc_s {
     u8 unknown_0000[0x2824];
     LEVEL_SCRIPT_PROGRESS_PC scripts[32];
 } AI_SCRIPT_PROGRESS_VIEW_PC;
+
 STATIC_ASSERT(offsetof(AI_SCRIPT_PROGRESS_VIEW_PC, scripts) == 0x2824);
 STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROGRESS_PC) == 0x20);
 extern "C" {
     void __cdecl LevelObjectsArenaDiagnosticPc(i32 size);
 }
+
 typedef struct startup_level_object_pc_s {
     NUSPECIALHANDLE special;
     i16 platform_id;
     u8 active;
     u8 unknown_f;
 } STARTUP_LEVEL_OBJECT_PC;
+
 STATIC_ASSERT(sizeof(STARTUP_LEVEL_OBJECT_PC) == 0x10);
 STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, special) == 0);
 STATIC_ASSERT(offsetof(STARTUP_LEVEL_OBJECT_PC, platform_id) == 0xc);
+
 typedef struct WORLD_OBJECT_SETUP_READER_PC {
     u8 unknown_0000[0x2964];
     NUGSCN *icons_gscn;
 } WORLD_OBJECT_SETUP_READER_PC;
+
 STATIC_ASSERT(offsetof(WORLD_OBJECT_SETUP_READER_PC, icons_gscn) == 0x2964);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
@@ -48,10 +55,12 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
+
 typedef struct menu_mission_reader_pc_s {
     u8 unknown_00[0x12];
     i8 active_count;
 } MENU_MISSION_READER_PC;
+
 STATIC_ASSERT(offsetof(MENU_MISSION_READER_PC, active_count) == 0x12);
 extern "C" {
 
@@ -69,8 +78,9 @@ extern "C" {
         i32 level_count;
 
         parser = NuFParCreate(path);
-        if (parser == NULL)
+        if (parser == NULL) {
             LevelsConfigDiagnosticPc(path);
+        }
         MAXLDATA = max_count;
         level_data = (LEVELDATA_PC *)((buffer->addr + 3) & ~3u);
         buffer->void_ptr = level_data;
@@ -216,8 +226,9 @@ extern "C" {
         NuFParDestroy(parser);
         if (level_count > 0) {
             buffer->void_ptr = current_level;
-            if (count_out != NULL)
+            if (count_out != NULL) {
                 *count_out = level_count;
+            }
             return level_data;
         }
         LevelsConfigDiagnosticPc(path);
@@ -250,20 +261,27 @@ extern "C" {
                     level = Level_FindByName(fixup->name, NULL);
                     *fixup->level = level;
                     if (level != NULL) {
-                        if (fixup->load != NULL)
+                        if (fixup->load != NULL) {
                             level->callbacks[0] = fixup->load;
-                        if (fixup->init != NULL)
+                        }
+                        if (fixup->init != NULL) {
                             level->callbacks[1] = fixup->init;
-                        if (fixup->reset != NULL)
+                        }
+                        if (fixup->reset != NULL) {
                             level->callbacks[2] = fixup->reset;
-                        if (fixup->update != NULL)
+                        }
+                        if (fixup->update != NULL) {
                             level->callbacks[3] = fixup->update;
-                        if (fixup->always_update != NULL)
+                        }
+                        if (fixup->always_update != NULL) {
                             level->callbacks[4] = fixup->always_update;
-                        if (fixup->draw != NULL)
+                        }
+                        if (fixup->draw != NULL) {
                             level->callbacks[5] = fixup->draw;
-                        if (fixup->draw_status != NULL)
+                        }
+                        if (fixup->draw_status != NULL) {
                             level->callbacks[6] = fixup->draw_status;
+                        }
                     }
                 }
             }
@@ -560,6 +578,7 @@ extern "C" void __cdecl LC_AL_music_other(NUFPAR_PC *parser) {
     levelconfig_ldata->music_tracks[3] = music_man.GetTrackHandle(2, parser->word_buffer_ptr);
     levelconfig_ldata->music_tracks[5] = music_man.GetTrackHandle(0x20, parser->word_buffer_ptr);
 }
+
 extern "C" {
 
     void __cdecl LC_AL_sfx_ambient(NUFPAR_PC *parser) {
@@ -627,43 +646,49 @@ extern "C" {
         size = LEVELSPLINECOUNT * sizeof(*world->camera_splines);
         world->giz_buffer.addr += size;
         memset(world->camera_splines, 0, size);
-        if (LevSplList == NULL)
+        if (LevSplList == NULL) {
             return;
+        }
         for (i = 0; i < LEVELSPLINECOUNT; ++i) {
             NUGSCN *scene;
             NUGSPLINE *spline;
             if ((LevSplList[i].area != -1 && world->area_index != LevSplList[i].area) ||
-                (LevSplList[i].level != -1 && world->level_idx != LevSplList[i].level))
+                (LevSplList[i].level != -1 && world->level_idx != LevSplList[i].level)) {
                 continue;
+            }
             scene = *(LevSplList[i].scene != NULL ? LevSplList[i].scene : &world->current_gscn);
             if (scene != NULL) {
                 world->camera_splines[i] = NuSplineFind(scene, (char *)LevSplList[i].name);
                 if (world->camera_splines[i] != NULL) {
-                    if (LevSplList[i].min_points > 0 && world->camera_splines[i]->length < LevSplList[i].min_points)
+                    if (LevSplList[i].min_points > 0 && world->camera_splines[i]->length < LevSplList[i].min_points) {
                         world->camera_splines[i] = NULL;
-                    else if (LevSplList[i].max_points > 0 && LevSplList[i].max_points >= LevSplList[i].min_points &&
-                             world->camera_splines[i]->length > LevSplList[i].max_points)
+                    } else if (LevSplList[i].max_points > 0 && LevSplList[i].max_points >= LevSplList[i].min_points &&
+                               world->camera_splines[i]->length > LevSplList[i].max_points) {
                         world->camera_splines[i] = NULL;
+                    }
                 }
             }
             if (levspl_i_start != -1) {
                 name[0] = '\0';
-                if (Mission_Active(NULL) != NULL)
+                if (Mission_Active(NULL) != NULL) {
                     NuStrCpy(name, RenderSplineBountyStartPc);
-                else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) &&
-                         RenderHubFromCutscenePlayerPc != 0)
+                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) &&
+                           RenderHubFromCutscenePlayerPc != 0) {
                     NuStrCpy(name, RenderSplineShopStartPc);
+                }
                 if (name[0] != '\0') {
                     spline = NuSplineFind(scene, name);
                     if (spline != NULL && spline->length >= 2) {
                         world->camera_splines[levspl_i_start] = spline;
-                        if (levspl_i_startcam != -1)
+                        if (levspl_i_startcam != -1) {
                             world->camera_splines[levspl_i_startcam] = NULL;
+                        }
                     }
                 }
             }
         }
     }
+
     LEVEL_OBJECT_CONFIG_PC *ObjTabList = 0;
     i32 LEVELOBJECTCOUNT = 0;
     static i32 LEVELOBJECTMAX = 0;
@@ -688,43 +713,51 @@ extern "C" {
         for (; table->kind != 0xff; ++table) {
             if (table->reflection == 1) {
                 LEVOBJREF_LASTOBJ = LEVELOBJECTCOUNT;
-                if (LEVOBJREF_FIRSTOBJ == -1)
+                if (LEVOBJREF_FIRSTOBJ == -1) {
                     LEVOBJREF_FIRSTOBJ = LEVELOBJECTCOUNT;
+                }
             }
             if (table->reflection == 2) {
                 LEVOBJREF_LASTREFOBJ = LEVELOBJECTCOUNT;
-                if (LEVOBJREF_FIRSTREFOBJ == -1)
+                if (LEVOBJREF_FIRSTREFOBJ == -1) {
                     LEVOBJREF_FIRSTREFOBJ = LEVELOBJECTCOUNT;
+                }
             }
             LEVELOBJECTCOUNT++;
         }
         object_range = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ;
         reflection_range = LEVOBJREF_LASTREFOBJ - LEVOBJREF_FIRSTREFOBJ;
-        if (reflection_range < object_range)
+        if (reflection_range < object_range) {
             LEVOBJREF_LASTOBJ = LEVOBJREF_FIRSTOBJ + reflection_range;
-        else if (reflection_range > object_range)
+        } else if (reflection_range > object_range) {
             LEVOBJREF_LASTREFOBJ = LEVOBJREF_FIRSTREFOBJ + object_range;
+        }
         if (name_table_size > 0) {
             ExtraLevelObject_NameTable = (char *)buffer->void_ptr;
             ExtraLevelObject_NameTableSize = name_table_size;
             buffer->addr += name_table_size;
-            if (buffer->addr >= buffer_end->addr)
+            if (buffer->addr >= buffer_end->addr) {
                 LevelObjectsArenaDiagnosticPc(name_table_size);
+            }
         }
     }
+
     i32 EXTRALEVELOBJECTCOUNT = 0;
     static i32 ExtraLevelObject_NameTableIndex = 0;
 
     i32 __cdecl LevelObject_AddExtra(char *name, i32 kind) {
         i32 length;
         char *destination;
-        if (LEVELOBJECTCOUNT >= LEVELOBJECTMAX)
+        if (LEVELOBJECTCOUNT >= LEVELOBJECTMAX) {
             return 0;
-        if (ExtraLevelObject_NameTable == NULL)
+        }
+        if (ExtraLevelObject_NameTable == NULL) {
             return 0;
+        }
         length = NuStrLen(name);
-        if (length + ExtraLevelObject_NameTableIndex + 1 >= ExtraLevelObject_NameTableSize)
+        if (length + ExtraLevelObject_NameTableIndex + 1 >= ExtraLevelObject_NameTableSize) {
             return 0;
+        }
         ObjTabList[LEVELOBJECTCOUNT].kind = (u8)kind;
         destination = ExtraLevelObject_NameTable + ExtraLevelObject_NameTableIndex;
         ObjTabList[LEVELOBJECTCOUNT].name = destination;
@@ -743,14 +776,16 @@ extern "C" {
         size = LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME_PC);
         world->giz_buffer.addr += size;
         memset(world->level_objects, 0, size);
-        if (ObjTabList == NULL)
+        if (ObjTabList == NULL) {
             return;
+        }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
             NUGSCN *scene;
             i32 found;
             i32 area_override;
-            if (NuStrICmp(ObjTabList[index].name, "power_up") == 0)
+            if (NuStrICmp(ObjTabList[index].name, "power_up") == 0) {
                 KNOBS = index;
+            }
             found = 0;
             area_override = 0;
             switch ((i8)ObjTabList[index].kind) {
@@ -764,12 +799,14 @@ extern "C" {
                     i32 character;
                     for (character = 0; !found && character < CHARCOUNT; ++character) {
                         scene = IconScene_FindById(character);
-                        if (scene != NULL &&
-                            NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) != 0)
+                        if (scene != NULL && NuSpecialFind(scene, &world->level_objects[index].special,
+                                                           ObjTabList[index].name, 1) != 0) {
                             found = 1;
+                        }
                     }
-                    if (found)
+                    if (found) {
                         goto resolved;
+                    }
                     scene =
                         big_icon_scene != NULL ? big_icon_scene : ((WORLD_OBJECT_SETUP_READER_PC *)world)->icons_gscn;
                     break;
@@ -782,28 +819,33 @@ extern "C" {
                     break;
                 default:
                     scene = area_scene;
-                    if (scene != NULL && world->area != NULL && (world->area->flags & 0x400) != 0)
+                    if (scene != NULL && world->area != NULL && (world->area->flags & 0x400) != 0) {
                         area_override = 1;
-                    else
+                    } else {
                         scene = things_scene;
+                    }
                     break;
             }
-            if (scene == NULL)
+            if (scene == NULL) {
                 continue;
+            }
             if (NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) == 0 &&
-                area_override != 0)
+                area_override != 0) {
                 NuSpecialFind(things_scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
+            }
         resolved:
             world->level_objects[index].active = (u8)NuSpecialExistsFn(&world->level_objects[index].special);
-            if (world->level_objects[index].active != 0)
+            if (world->level_objects[index].active != 0) {
                 NuSpecialSetVisibility(&world->level_objects[index].special, 0);
+            }
         }
     }
 
     i32 __cdecl LevelObject_FindIndexFromName(char *name) {
         i32 i;
-        if (ObjTabList == NULL)
+        if (ObjTabList == NULL) {
             return -1;
+        }
         for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
             if (NuStrICmp(ObjTabList[i].name, name) == 0) {
                 return i;
@@ -814,15 +856,17 @@ extern "C" {
 
     void __cdecl LevObj_FixUpPlatIDs(WORLDINFO *world) {
         i32 index;
-        if (ObjTabList == NULL)
+        if (ObjTabList == NULL) {
             return;
+        }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
             ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = -1;
             if (world->terrain != NULL &&
                 NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special) &&
-                ObjTabList[index].kind == 1)
+                ObjTabList[index].kind == 1) {
                 ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = (i16)FindPlatInst(
                     NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special));
+            }
         }
     }
 
@@ -830,36 +874,43 @@ extern "C" {
         STARTUP_LEVEL_OBJECT_PC *object = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
         i32 i;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
-            if (object->platform_id == platform_id)
+            if (object->platform_id == platform_id) {
                 return object;
+            }
         }
         return NULL;
     }
 
     char *__cdecl LevelObject_FindNameFromIndex(i32 index) {
         char *name = "";
-        if (ObjTabList == NULL || index < 0 || index >= LEVELOBJECTCOUNT)
+        if (ObjTabList == NULL || index < 0 || index >= LEVELOBJECTCOUNT) {
             return name;
+        }
         name = ObjTabList[index].name;
         return name;
     }
 
     i32 __cdecl LevelObject_GetReflection(i32 index) {
-        if (index != -1 && index >= LEVOBJREF_FIRSTOBJ && index <= LEVOBJREF_LASTOBJ)
+        if (index != -1 && index >= LEVOBJREF_FIRSTOBJ && index <= LEVOBJREF_LASTOBJ) {
             return LEVOBJREF_FIRSTREFOBJ - LEVOBJREF_FIRSTOBJ + index;
+        }
         return index;
     }
 
     i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *name) {
         i32 end, i;
-        if (ObjTabList == NULL)
+        if (ObjTabList == NULL) {
             return -1;
-        if (LEVOBJREF_FIRSTOBJ == -1)
+        }
+        if (LEVOBJREF_FIRSTOBJ == -1) {
             return -1;
+        }
         end = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ + 1;
-        for (i = LEVOBJREF_FIRSTOBJ; i < end; ++i)
-            if (NuStrICmp(ObjTabList[i].name, name) == 0)
+        for (i = LEVOBJREF_FIRSTOBJ; i < end; ++i) {
+            if (NuStrICmp(ObjTabList[i].name, name) == 0) {
                 return i;
+            }
+        }
         return -1;
     }
 
@@ -881,26 +932,31 @@ extern "C" {
 
     void __cdecl Level_Update(WORLDINFO *world) {
         void(__cdecl * update)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[3];
-        if (update != NULL)
+        if (update != NULL) {
             update(world);
+        }
         if (DoubleScoreTime > 0.0f &&
-            (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0))
+            (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
-        if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0)
+        }
+        if (AreaGlobals_PC.field_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
             AreaGlobals_PC.field_00 = 1;
+        }
     }
 
     void __cdecl Level_Draw(WORLDINFO *world) {
         void(__cdecl * draw)(WORLDINFO *) = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[5];
-        if (draw != NULL)
+        if (draw != NULL) {
             draw(world);
+        }
     }
 }
 
 void __cdecl GoToNewLevel(i32 level_index) {
     NewLData = &LDataList[level_index];
-    if (waiting_for_level != -1)
+    if (waiting_for_level != -1) {
         waiting_for_new_level = 1;
+    }
 }
 
 void __cdecl CompleteLevel(WORLDINFO *world) {
@@ -912,21 +968,25 @@ void __cdecl CompleteLevel(WORLDINFO *world) {
         level = Area_FindStatusLevel(world->area, NULL);
         NewLData = level;
     }
-    if (level == NULL)
+    if (level == NULL) {
         NewLData = HUB_LDATA;
-    if (waiting_for_level != -1)
+    }
+    if (waiting_for_level != -1) {
         waiting_for_new_level = 1;
+    }
 }
+
 extern "C" {
 
     void __cdecl ResetLevel(WORLDINFO *world, char *cutscene, i32 unused) {
         CutDeadVehiclePlayer = NULL;
         if (world != NULL && NewCutScene(NULL, world->cutscene_sys, cutscene, 0) != NULL) {
             ResetBits |= 7;
-            if (player != NULL && player->dead != 0)
+            if (player != NULL && player->dead != 0) {
                 CutDeadVehiclePlayer = player;
-            else if (player2 != NULL && player2->dead != 0)
+            } else if (player2 != NULL && player2->dead != 0) {
                 CutDeadVehiclePlayer = player2;
+            }
             reset_reimport = 1;
         } else {
             NewGameMode();
@@ -951,15 +1011,17 @@ extern "C" {
         new_level_from_menu = 1;
         newlevelfrommenu_newmenuid = menu_id;
         newlevelfrommenu_newmenuy = menu_y;
-        if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA)
+        if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA) {
             return;
+        }
         if (SuperStory != 0) {
             hub_from_superstory = SuperStoryEpisode;
             return;
         }
         mission = Mission_Active(NULL);
-        if (mission != NULL && NewLData != NULL && NewLData == HUB_LDATA)
+        if (mission != NULL && NewLData != NULL && NewLData == HUB_LDATA) {
             hub_from_mission = ((MENU_MISSION_READER_PC *)mission)->active_count;
+        }
     }
 
     void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance) {

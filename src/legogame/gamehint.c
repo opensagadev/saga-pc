@@ -8,20 +8,23 @@ void __cdecl Text_ExpandAllButtonStrings(char *, char *);
 f32 __cdecl CurrentHintAlpha(void) {
     f32 alpha;
     f32 fade_start;
-    if (hintsys.active_hint == NULL)
+    if (hintsys.active_hint == NULL) {
         return 0.0f;
+    }
     alpha = 1.0f;
     if (hintsys.active_hint->display_duration > 0.0f) {
         fade_start = (f32)((f64)hintsys.active_hint->display_duration - 0.5);
         if (hintsys.display_elapsed >= fade_start) {
             alpha =
                 1.0f - (hintsys.display_elapsed - fade_start) / (hintsys.active_hint->display_duration - fade_start);
-            if (alpha <= 0.0f)
+            if (alpha <= 0.0f) {
                 alpha = 0.0f;
+            }
         }
     }
     return alpha * hintsys.alpha;
 }
+
 const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
 
 void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
@@ -31,11 +34,13 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     i32 red, green, blue;
     char expanded[1024];
     LEVEL_OBJECT_RUNTIME_PC *icon;
-    if (hint == NULL || FadeSys.fade != 0.0f)
+    if (hint == NULL || FadeSys.fade != 0.0f) {
         return;
+    }
     alpha = CurrentHintAlpha();
-    if (!(alpha > 0.0f))
+    if (!(alpha > 0.0f)) {
         return;
+    }
     text_y = (WORLD->current_level->flags & 0x400) != 0 ? 0.0f : -0.7f;
     if ((hint->flags & 4) != 0) {
         alignment = 0;
@@ -50,8 +55,9 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
         pulse_angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
         pulse = (f32)((f64)NU_SIN_LUT(pulse_angle) * 0.5 + 0.5);
         colour_index = hint->colour_index;
-        if (colour_index == -1)
+        if (colour_index == -1) {
             colour_index = hintsys.state;
+        }
         base = (f32)HintRGB[colour_index][0];
         red = (i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
         base = (f32)HintRGB[colour_index][1];
@@ -68,8 +74,9 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
                         (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, (u8)(i32)((f64)alpha * 128.0));
         }
     }
-    if (WORLD->level_objects[0xd4].active == 0)
+    if (WORLD->level_objects[0xd4].active == 0) {
         return;
+    }
     icon = &WORLD->level_objects[0xd4];
     wave_x = (f32)(((f64)icon_x - (f64)-1.1f) * (f64)NU_SIN_LUT((i32)((f64)alpha * 16384.0)) - (f64)1.1f);
     rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.5f) / 2.5 * 65536.0);

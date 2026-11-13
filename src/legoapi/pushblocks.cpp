@@ -30,6 +30,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_pushblock_endpos) == 0x100);
 STATIC_ASSERT(offsetof(PUSHPROGRESS, end_positions) == 0xcc);
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksNamePc;
+
 typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
     u8 unknown_000[0x24];
     NUSPECIALHANDLE special;
@@ -45,21 +46,26 @@ typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
     u8 output_count;
     u8 unknown_0d3;
 } PUSH_SUPPORT_BLOCK_VIEW_PC;
+
 typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
     u8 unknown_000[0x46bc];
     PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
     i32 count;
 } PUSH_SUPPORT_WORLD_VIEW_PC;
+
 typedef struct PUSH_RUNTIME_BOUNDS_PC {
     NUVEC min, max;
 } PUSH_RUNTIME_BOUNDS_PC;
+
 typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     f32 ground_offset, ground_height, snap_timer, settled_height;
     i8 terrain_info[4];
+
     union {
         i8 bytes[4];
         i32 word;
     } extra_terrain_info;
+
     i32 previous_extra_terrain_info;
     PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
     NUSPECIALHANDLE special;
@@ -72,20 +78,25 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
     NUVEC velocity, target_velocity, snap_origin;
+
     union {
         struct {
             NUVEC bounds_min, bounds_max;
         };
+
         PUSH_RUNTIME_BOUNDS_PC bounds;
     };
+
     u32 packed_state_flags;
     u8 unknown_0cc[4];
     u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
 } PUSH_RUNTIME_BLOCK_VIEW_PC;
+
 typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
     u8 unknown_000[0xff];
     u8 max_push_blocks;
 } PUSH_RUNTIME_LEVEL_VIEW_PC;
+
 typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
     u8 unknown_000[0x104];
     VARIPTR giz_buffer;
@@ -99,6 +110,7 @@ typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
     PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
     i32 count;
 } PUSH_RUNTIME_WORLD_VIEW_PC;
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
@@ -136,8 +148,9 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
     if (NuSpecialExistsFn(&block->special) != 0) {
         NuSpecialGetBounds(&block->special, &block->bounds_min, &block->bounds_max);
         block->position = reinterpret_cast<NUVEC *>(&NuSpecialGetInstanceMtx(&block->special)->m30);
-        if (block->animation_positions > 0 && RunOutOfPosTabSpacePc == 0)
+        if (block->animation_positions > 0 && RunOutOfPosTabSpacePc == 0) {
             *block->position = block->snap_positions[0];
+        }
     } else {
         // Retail uses this distinct mutable vector, not the canonical v000.
         block->bounds_min = PushBlockMissingSpecialPositionPc;
@@ -149,8 +162,9 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
 extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
     WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
     PUSH_BLOCK_PC *block = world->push_blocks;
-    if (block == NULL)
+    if (block == NULL) {
         return;
+    }
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_data);
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if (progress != NULL && index < 16) {
@@ -161,11 +175,13 @@ extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data
             if (block->push_visible == 0) {
                 NuSpecialSetVisibility(&block->special, 0);
                 block->push_visible = 0;
-                for (i32 output = 0; output < block->end_position_count; ++output)
+                for (i32 output = 0; output < block->end_position_count; ++output) {
                     NuSpecialSetVisibility(&block->end_position_specials[output], 0);
+                }
             }
-            if ((progress->position_mask[word] & bit) == 0)
+            if ((progress->position_mask[word] & bit) == 0) {
                 continue;
+            }
             void *animation = NuSpecialGetInstAnim(&block->special);
             if (block->push_visible == 0 && animation != NULL) {
                 NUMTX evaluated;
@@ -202,8 +218,9 @@ extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data
 extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
     WORLDINFO *push_world = (WORLDINFO *)world;
     if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 ||
-        LEGOCONTEXT_PUSH == -1 || object->character_context != LEGOCONTEXT_PUSH)
+        LEGOCONTEXT_PUSH == -1 || object->character_context != LEGOCONTEXT_PUSH) {
         return NULL;
+    }
     f32 max_y = object->upper_position.y;
     u16 facing = object->movement_facing_angle;
     f32 min_y = object->lower_position.y;
@@ -214,40 +231,46 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
     i32 mode;
     PUSH_BLOCK_PC *nearest = NULL;
     if (facing == 0 || facing > 0x10000 - PushBlockFacingTolerancePc ||
-        (facing > 0 && facing < PushBlockFacingTolerancePc))
+        (facing > 0 && facing < PushBlockFacingTolerancePc)) {
         mode = 2;
-    else if (facing == 0x4000 ||
-             (facing > 0x4000 - PushBlockFacingTolerancePc && facing < 0x4000 + PushBlockFacingTolerancePc))
+    } else if (facing == 0x4000 ||
+               (facing > 0x4000 - PushBlockFacingTolerancePc && facing < 0x4000 + PushBlockFacingTolerancePc)) {
         mode = 0;
-    else if (facing == 0x8000 ||
-             (facing > 0x8000 - PushBlockFacingTolerancePc && facing < 0x8000 + PushBlockFacingTolerancePc))
+    } else if (facing == 0x8000 ||
+               (facing > 0x8000 - PushBlockFacingTolerancePc && facing < 0x8000 + PushBlockFacingTolerancePc)) {
         mode = 3;
-    else if (facing == 0xc000 ||
-             (facing > 0xc000 - PushBlockFacingTolerancePc && facing < 0xc000 + PushBlockFacingTolerancePc))
+    } else if (facing == 0xc000 ||
+               (facing > 0xc000 - PushBlockFacingTolerancePc && facing < 0xc000 + PushBlockFacingTolerancePc)) {
         mode = 1;
-    else
+    } else {
         return NULL;
+    }
     f32 nearest_dist = 1000000000.0f;
     nearest = NULL;
     f32 gap = 0.0f;
     for (i32 i = 0; i < push_world->push_block_count; ++i) {
         PUSH_BLOCK_PC *block = &push_world->push_blocks[i];
         if (NuSpecialExistsFn(&block->special) != 0) {
-            if (NuSpecialGetOnScreenFn(&block->special) == 0)
+            if (NuSpecialGetOnScreenFn(&block->special) == 0) {
                 continue;
-            if (NuSpecialGetVisibilityFn(&block->special) == 0)
+            }
+            if (NuSpecialGetVisibilityFn(&block->special) == 0) {
                 continue;
+            }
         }
-        if ((block->packed_state_flags & 0x6000100) != 0)
+        if ((block->packed_state_flags & 0x6000100) != 0) {
             continue;
+        }
         NUVEC bmin = block->bounds_min;
         NUVEC bmax = block->bounds_max;
         f32 top = block->position->y + GizPushFabsPc(bmax.y);
         f32 bottom = block->position->y - GizPushFabsPc(bmin.y);
-        if (top > max_y && bottom > max_y)
+        if (top > max_y && bottom > max_y) {
             continue;
-        if (min_y > top && min_y > bottom)
+        }
+        if (min_y > top && min_y > bottom) {
             continue;
+        }
         NUVEC pos = *block->position;
         f32 dx = pos.x - object->collision_position.x;
         NUVEC delta;
@@ -260,65 +283,82 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
                 f32 bound;
                 gap = dx - GizPushFabsPc(bmin.x);
                 bound = bmin.z + pos.z - PushBlockGapEpsilonPc;
-                if (object->collision_position.z <= bound)
+                if (object->collision_position.z <= bound) {
                     continue;
+                }
                 bound = pos.z + bmax.z - PushBlockGapEpsilonPc;
-                if (object->collision_position.z >= bound)
+                if (object->collision_position.z >= bound) {
                     continue;
-                if ((block->packed_state_flags & 0x200000) != 0)
+                }
+                if ((block->packed_state_flags & 0x200000) != 0) {
                     continue;
-                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x800000) != 0)
+                }
+                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x800000) != 0) {
                     continue;
+                }
                 break;
             }
             case 1: {
                 f32 bound;
                 gap = GizPushFabsPc(dx) - bmax.x;
                 bound = bmax.z + pos.z - PushBlockGapEpsilonPc;
-                if (object->collision_position.z >= bound)
+                if (object->collision_position.z >= bound) {
                     continue;
+                }
                 bound = pos.z + bmin.z - PushBlockGapEpsilonPc;
-                if (object->collision_position.z <= bound)
+                if (object->collision_position.z <= bound) {
                     continue;
-                if ((block->packed_state_flags & 0x200000) != 0)
+                }
+                if ((block->packed_state_flags & 0x200000) != 0) {
                     continue;
-                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x400000) != 0)
+                }
+                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x400000) != 0) {
                     continue;
+                }
                 break;
             }
             case 2: {
                 f32 bound;
                 gap = dz - GizPushFabsPc(bmin.z);
                 bound = bmax.x + pos.x - PushBlockGapEpsilonPc;
-                if (object->collision_position.x >= bound)
+                if (object->collision_position.x >= bound) {
                     continue;
+                }
                 bound = pos.x + bmin.x - PushBlockGapEpsilonPc;
-                if (object->collision_position.x <= bound)
+                if (object->collision_position.x <= bound) {
                     continue;
-                if ((block->packed_state_flags & 0x100000) != 0)
+                }
+                if ((block->packed_state_flags & 0x100000) != 0) {
                     continue;
-                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x800000) != 0)
+                }
+                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x800000) != 0) {
                     continue;
+                }
                 break;
             }
             case 3: {
                 f32 bound;
                 gap = GizPushFabsPc(dz) - bmax.z;
                 bound = bmin.x + pos.x - PushBlockGapEpsilonPc;
-                if (object->collision_position.x <= bound)
+                if (object->collision_position.x <= bound) {
                     continue;
+                }
                 bound = pos.x + bmax.x - PushBlockGapEpsilonPc;
-                if (object->collision_position.x >= bound)
+                if (object->collision_position.x >= bound) {
                     continue;
-                if ((block->packed_state_flags & 0x100000) != 0)
+                }
+                if ((block->packed_state_flags & 0x100000) != 0) {
                     continue;
-                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x400000) != 0)
+                }
+                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x400000) != 0) {
                     continue;
+                }
                 break;
             }
         }
-        if (gap > (object->bounds_radius + PushBlockGapEpsilonPc) * 2.0f)
+        if (gap > (object->bounds_radius + PushBlockGapEpsilonPc) * 2.0f) {
             continue;
+        }
         u16 yaw = NuAtan2D(dx, dz);
         NuVecRotateY(&delta, &delta, 0x4000 - yaw);
         u16 pitch = NuAtan2D(delta.x, delta.y);
@@ -326,10 +366,12 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
         u16 pitch_abs = (u16)abs(pitch_diff);
         i32 yaw_diff = (i16)(yaw - object->movement_facing_angle);
         u16 yaw_abs = (u16)abs(yaw_diff);
-        if (yaw_abs > 0x2000)
+        if (yaw_abs > 0x2000) {
             continue;
-        if (pitch_abs > 0x4000)
+        }
+        if (pitch_abs > 0x4000) {
             continue;
+        }
         gap = dx * dx + dz * dz;
         if (gap < range && gap < nearest_dist) {
             nearest_dist = gap;
@@ -350,6 +392,7 @@ extern "C" i32 __cdecl PushBlock(GAMEOBJECT *object) {
     object->character_context = -1;
     return 0;
 }
+
 extern "C" {
 
     PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded,
@@ -358,20 +401,24 @@ extern "C" {
         PUSH_BLOCK_PC *block = (PUSH_BLOCK_PC *)opaque_block;
         NUVEC *position = block->position;
         i32 i;
-        if (support != NULL)
+        if (support != NULL) {
             *support = NULL;
+        }
         for (i = 0; i < world->push_block_count; ++i) {
             PUSH_BLOCK_PC *other;
             NUVEC offset, minimum, maximum;
             i32 overlap_x, overlap_y, overlap_z;
             f32 shrink, epsilon;
-            if (i == excluded)
+            if (i == excluded) {
                 continue;
+            }
             other = &world->push_blocks[i];
-            if ((other->packed_state_flags & 0x02000000u) != 0)
+            if ((other->packed_state_flags & 0x02000000u) != 0) {
                 continue;
-            if (NuSpecialGetVisibilityFn(&other->special) == 0)
+            }
+            if (NuSpecialGetVisibilityFn(&other->special) == 0) {
                 continue;
+            }
             offset = *position;
             offset.x -= other->position->x;
             offset.y -= other->position->y;
@@ -407,8 +454,9 @@ extern "C" {
                         offset.y -= previous->position->y;
                         maximum = previous->bounds_max;
                         maximum.y -= block->bounds_min.y;
-                        if (shrink > 0.0f)
+                        if (shrink > 0.0f) {
                             maximum.y -= shrink;
+                        }
                         previous_gap = offset.y - maximum.y;
                         if (previous_gap > gap) {
                             other->supporting_block = (PUSH_BLOCK_PC *)previous;
@@ -419,8 +467,9 @@ extern "C" {
                     }
                 }
             }
-            if (overlap_x && overlap_y && overlap_z)
+            if (overlap_x && overlap_y && overlap_z) {
                 return (PUSH_BLOCK_PC *)other;
+            }
         }
         return NULL;
     }
@@ -431,8 +480,9 @@ extern "C" {
         NUVEC *position;
         PUSH_RUNTIME_BOUNDS_PC box;
         i32 index;
-        if ((block->packed_state_flags & 0x400u) != 0)
+        if ((block->packed_state_flags & 0x400u) != 0) {
             return;
+        }
         position = block->position;
         box = block->bounds;
         box.min.x = position->x + box.min.x;
@@ -445,14 +495,17 @@ extern "C" {
             PUSH_RUNTIME_BLOCK_VIEW_PC *other;
             NUVEC *other_position;
             PUSH_RUNTIME_BOUNDS_PC other_box, test;
-            if (index == excluded)
+            if (index == excluded) {
                 continue;
+            }
             other = &world->blocks[index];
-            if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0)
+            if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0) {
                 continue;
+            }
             other_position = other->position;
-            if (other_position->y <= position->y)
+            if (other_position->y <= position->y) {
                 continue;
+            }
             other_box = other->bounds;
             test = box;
             test.min.x -= other_box.max.x;
@@ -466,16 +519,18 @@ extern "C" {
                 test.max.z = test.max.z - PushBlockGapEpsilonPc;
             }
             if (!(other_position->x >= test.min.x) || !(other_position->x <= test.max.x) ||
-                !(other_position->z >= test.min.z) || !(other_position->z <= test.max.z))
+                !(other_position->z >= test.min.z) || !(other_position->z <= test.max.z)) {
                 continue;
+            }
             other->snap_origin = *other_position;
             other_position->x += delta->x;
             other_position->y -= delta->y;
             other->ground_offset -= delta->y;
             other_position->z = delta->z + other_position->z;
             other->packed_state_flags |= 4u;
-            if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL)
+            if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL) {
                 other->packed_state_flags |= 0x400u;
+            }
             NuSpecialUpdate(&other->special);
         }
     }
@@ -529,8 +584,9 @@ extern "C" {
 
     i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
         i32 i, j;
-        if (points == NULL || heights == NULL)
+        if (points == NULL || heights == NULL) {
             return 0;
+        }
         PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
         heights[0] = -10000.0f;
         heights[1] = -10000.0f;
@@ -539,8 +595,9 @@ extern "C" {
         for (i = 0; i < world->count; ++i) {
             PUSH_SUPPORT_BLOCK_VIEW_PC *other = &world->blocks[i];
             NUVEC min, max;
-            if ((PUSH_BLOCK_PC *)other == block)
+            if ((PUSH_BLOCK_PC *)other == block) {
                 continue;
+            }
             max = min = *other->position;
             min.x -= GizPushFabsPc(other->bounds_min.x);
             min.z -= GizPushFabsPc(other->bounds_min.z);
@@ -548,8 +605,9 @@ extern "C" {
             max.y += GizPushFabsPc(other->bounds_max.y);
             max.z += GizPushFabsPc(other->bounds_max.z);
             for (j = 0; j < 4; ++j) {
-                if (points[j].x > min.x && points[j].x < max.x && points[j].z > min.z && points[j].z < max.z)
+                if (points[j].x > min.x && points[j].x < max.x && points[j].z > min.z && points[j].z < max.z) {
                     heights[j] = max.y;
+                }
             }
         }
         return 1;
@@ -568,14 +626,17 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
         PUSH_BLOCK_PC *other;
         NUVEC minimum, maximum;
         f32 other_radius, x, z, sum, distance;
-        if (i == excluded)
+        if (i == excluded) {
             continue;
+        }
         other = &world->push_blocks[i];
         if ((other->packed_state_flags & 0x00040000u) == 0 || (other->packed_state_flags & 0x01000000u) == 0 ||
-            (other->packed_state_flags & 0x04000000u) != 0)
+            (other->packed_state_flags & 0x04000000u) != 0) {
             continue;
-        if (NuSpecialGetVisibilityFn(&other->special) == 0)
+        }
+        if (NuSpecialGetVisibilityFn(&other->special) == 0) {
             continue;
+        }
         NuSpecialGetBounds(&other->special, &minimum, &maximum);
         NuSpecialGetRadius(&other->special, &centre, &other_radius);
         centre = *other->position;
@@ -583,11 +644,13 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
         z = centre.z - position->z;
         sum = x * x + z * z;
         distance = sum - other_radius * other_radius;
-        if (distance <= radius || distance <= 0.0f)
+        if (distance <= radius || distance <= 0.0f) {
             return 1;
+        }
     }
     return 0;
 }
+
 extern "C" {
 
     i32 __cdecl SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *position, i32 excluded) {
@@ -597,16 +660,19 @@ extern "C" {
         for (i = 0; i < count; ++i) {
             PUSH_SUPPORT_BLOCK_VIEW_PC *other;
             f32 x, y, z;
-            if (i == excluded)
+            if (i == excluded) {
                 continue;
+            }
             other = &world->blocks[i];
-            if ((other->packed_state_flags & 0x02000300u) == 0)
+            if ((other->packed_state_flags & 0x02000300u) == 0) {
                 continue;
+            }
             x = other->position->x - position->x;
             y = other->position->y - position->y;
             z = other->position->z - position->z;
-            if (x * x + y * y + z * z <= (f64)0.002500000176951289f)
+            if (x * x + y * y + z * z <= (f64)0.002500000176951289f) {
                 return 1;
+            }
         }
         return 0;
     }
@@ -616,33 +682,39 @@ extern "C" void __cdecl PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index)
     PUSH_BLOCK_PC *block = opaque_block;
     block->completed_snap_positions |= (u8)(1 << index);
     block->packed_state_flags &= ~0x200u;
-    if ((block->packed_state_flags & 0x20000000u) == 0)
+    if ((block->packed_state_flags & 0x20000000u) == 0) {
         block->packed_state_flags |= 0x02000100u;
-    if (block->pushing_object != NULL)
+    }
+    if (block->pushing_object != NULL) {
         NewBuzz(block->pushing_object->pad->bound_pad, 0.1f, 0);
+    }
 }
 
 extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
     static f32 snap_time = 0.5f;
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
     i32 target_seen = 0;
-    if (world == NULL || world->push_block_count == 0 || world->push_blocks == NULL)
+    if (world == NULL || world->push_block_count == 0 || world->push_blocks == NULL) {
         return;
+    }
     snap_time = 0.25f;
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
         p->push_visible = NuSpecialGetVisibilityFn(&p->special);
-        if (p->push_visible == 0)
+        if (p->push_visible == 0) {
             continue;
+        }
         GizObstacles_AddTrigger(p->position);
         if (p->flag_000 != 0 && p->flag_007 != 0) {
             p->flag_006 = 0;
             p->flag_007 = 0;
         }
-        if (p->flag_007 != 0)
+        if (p->flag_007 != 0) {
             p->flag_006 = 1;
-        if ((p->packed_state_flags & 0x02000100u) != 0)
+        }
+        if ((p->packed_state_flags & 0x02000100u) != 0) {
             continue;
+        }
         if (p->snap_positions != NULL) {
             if ((p->packed_state_flags & 0x200u) != 0) {
                 if (p->snap_timer <= snap_time) {
@@ -683,32 +755,39 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                     f32 y_squared = y * y;
 
                     if (!(static_cast<f64>(x) * x + y_squared + static_cast<f64>(z) * z <
-                          static_cast<f64>(p->snap_distance) * p->snap_distance))
+                          static_cast<f64>(p->snap_distance) * p->snap_distance)) {
                         continue;
+                    }
                     if (SnapPosTaken(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), target,
-                                     index) != 0)
+                                     index) != 0) {
                         continue;
+                    }
                     target_seen = 1;
                     if ((p->packed_state_flags & 0x10000000u) != 0 ||
                         OtherBlockInRange(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p),
-                                          target, index) != 0)
+                                          target, index) != 0) {
                         continue;
+                    }
                     p->packed_state_flags |= 0x200u;
-                    if ((p->packed_state_flags & 0x20000000u) != 0)
+                    if ((p->packed_state_flags & 0x20000000u) != 0) {
                         p->packed_state_flags |= 0x10000000u;
+                    }
                     p->snap_origin.x = position->x;
                     p->snap_origin.z = position->z;
-                    for (i32 k = 0; k < p->end_position_count; ++k)
+                    for (i32 k = 0; k < p->end_position_count; ++k) {
                         p->end_position_origins[k] = *NuSpecialGetDrawPos(&p->end_position_specials[k]);
+                    }
                     p->packed_state_flags = (p->packed_state_flags & ~0x38000u) | ((j & 7) << 15);
                     p->snap_timer = FRAMETIME;
                     break;
                 }
                 if (target_seen == 0) {
-                    if ((p->packed_state_flags & 0x20000000u) != 0)
+                    if ((p->packed_state_flags & 0x20000000u) != 0) {
                         p->packed_state_flags &= ~0x10038000u;
-                    if ((p->packed_state_flags & 0x40000000u) == 0)
+                    }
+                    if ((p->packed_state_flags & 0x40000000u) == 0) {
                         p->completed_snap_positions = 0;
+                    }
                 }
             }
         }
@@ -716,19 +795,22 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                                  p->snap_origin.x != p->position->x || p->snap_origin.z != p->position->z)) {
             p->velocity.x = p->velocity.z = p->target_velocity.x = p->target_velocity.z = 0.0f;
         }
-        if (p->flag_000 == 0 && (p->packed_state_flags & 8u) == 0 && p->flag_006 == 0)
+        if (p->flag_000 == 0 && (p->packed_state_flags & 8u) == 0 && p->flag_006 == 0) {
             continue;
+        }
         if (p->flag_000 != 0 || p->flag_006 != 0) {
             i32 surface = p->terrain_info[0];
             if (p->terrain_info[1] == surface && p->terrain_info[2] == surface && p->terrain_info[3] == surface) {
-                if (static_cast<u32>(surface) <= 31u && (TerSurface[surface].flags & 0x20000u) != 0)
+                if (static_cast<u32>(surface) <= 31u && (TerSurface[surface].flags & 0x20000u) != 0) {
                     p->packed_state_flags |= 0x40u;
-                else
+                } else {
                     p->packed_state_flags &= ~0x40u;
+                }
             }
             if (p->pushing_object != NULL) {
-                if ((p->packed_state_flags & 0x40u) == 0)
+                if ((p->packed_state_flags & 0x40u) == 0) {
                     p->target_velocity.x = p->target_velocity.z = 0.0f;
+                }
                 if (GizPushFabsPc(p->pushing_object->target_velocity.x) >
                     GizPushFabsPc(p->pushing_object->target_velocity.z)) {
                     p->target_velocity.x = FRAMETIME * p->pushing_object->target_velocity.x;
@@ -773,15 +855,18 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 &&
-            (p->packed_state_flags & 0x69u) != 0)
+            (p->packed_state_flags & 0x69u) != 0) {
             MoveBlocks(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index, &p->velocity);
+        }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000000u) != 0)
+        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000000u) != 0) {
             continue;
-        if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0)
+        }
+        if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0) {
             continue;
+        }
         f32 left = GizPushFabsPc(p->bounds_min.x) + PushCornerInsetPc;
         f32 right = GizPushFabsPc(p->bounds_max.x) + PushCornerInsetPc;
         f32 back = GizPushFabsPc(p->bounds_min.z) + PushCornerInsetPc;
@@ -790,8 +875,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         corners[1] = corners[2] = corners[3] = corners[0] = *p->position;
         corners[0].y = (corners[0].y - GizPushFabsPc(p->bounds_min.y)) - PushGroundOffsetPc;
         corners[1].y = corners[2].y = corners[3].y = corners[0].y;
-        for (i32 j = 0; j < 4; ++j)
+        for (i32 j = 0; j < 4; ++j) {
             corners[j].y += 0.025f;
+        }
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
@@ -841,9 +927,11 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             f32 support[4];
             TerrainBlockOnBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), corners,
                                 support);
-            for (i32 j = 0; j < 4; ++j)
-                if (support[j] != -10000.0f)
+            for (i32 j = 0; j < 4; ++j) {
+                if (support[j] != -10000.0f) {
                     heights[j] = support[j];
+                }
+            }
         } else {
             p->previous_supporting_block = NULL;
         }
@@ -869,18 +957,23 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->packed_state_flags = (p->packed_state_flags & ~8u) | 0x800u;
         }
         i32 safe = 0;
-        for (i32 j = 0; j < 4; ++j)
-            if (p->extra_terrain_info.bytes[j] == 8 || p->terrain_info[j] == 14)
+        for (i32 j = 0; j < 4; ++j) {
+            if (p->extra_terrain_info.bytes[j] == 8 || p->terrain_info[j] == 14) {
                 ++safe;
-        if (safe < 4)
+            }
+        }
+        if (safe < 4) {
             p->packed_state_flags |= 0x400u;
+        }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000100u) != 0)
+        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000100u) != 0) {
             continue;
-        if ((p->packed_state_flags & 0x400u) == 0 && (p->packed_state_flags & 1u) != 0)
+        }
+        if ((p->packed_state_flags & 0x400u) == 0 && (p->packed_state_flags & 1u) != 0) {
             GameAudio_PlaySfx(72, p->position, GameAudio_GetPlrSfxBits(p->pushing_object), 0);
+        }
         const u32 snapped = (p->packed_state_flags >> 10) & 1;
         if (snapped != 0 || (p->packed_state_flags & 0x800u) != 0) {
             NUVEC *position = p->position;
@@ -914,18 +1007,21 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 NuSpecialUpdate(&p->special);
             }
         } else if ((p->packed_state_flags & 1u) != 0) {
-            if ((p->packed_state_flags & 2u) == 0 && p->pushing_object != NULL)
+            if ((p->packed_state_flags & 2u) == 0 && p->pushing_object != NULL) {
                 GameAudio_PlaySfx(71, &p->pushing_object->collision_position,
                                   GameAudio_GetPlrSfxBits(p->pushing_object), 0);
+            }
             if (PushBlockHintIdPc != -1 && p->pushing_object != NULL && (p->pushing_object->flags_1fc_word & 1u) != 0 &&
-                (p->pushing_object->flags_1fc_word & 0x80u) != 0)
+                (p->pushing_object->flags_1fc_word & 0x80u) != 0) {
                 Hint_SetComplete(PushBlockHintIdPc);
+            }
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0)
+        if ((p->packed_state_flags & 0x40000u) == 0) {
             continue;
+        }
         if (p->pushing_object != NULL) {
             if (p->platform_id != -1 && (p->packed_state_flags & 9u) != 0) {
                 p->pushing_object->flags_ef0 |= 1u;
@@ -936,9 +1032,11 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         }
         if ((p->packed_state_flags & 0x20u) == 0 && (p->packed_state_flags & 0x200u) == 0) {
             i32 safe = 0;
-            for (i32 j = 0; j < 4; ++j)
-                if (p->extra_terrain_info.bytes[j] == 8 || p->terrain_info[j] == 14)
+            for (i32 j = 0; j < 4; ++j) {
+                if (p->extra_terrain_info.bytes[j] == 8 || p->terrain_info[j] == 14) {
                     ++safe;
+                }
+            }
             if (safe == 4) {
                 p->previous_extra_terrain_info = p->extra_terrain_info.word;
                 p->snap_origin = *p->position;
@@ -952,8 +1050,9 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
 
 extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
     WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque_world);
-    if (world == NULL || position == NULL)
+    if (world == NULL || position == NULL) {
         return NULL;
+    }
     NUVEC minimum = {position->x - range, position->y - range, position->z - range};
     NUVEC maximum = {position->x + range, position->y + range, position->z + range};
     PUSH_BLOCK_PC *nearest = NULL;
@@ -961,12 +1060,14 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
     PUSH_BLOCK_PC *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if ((block->packed_state_flags & 0x00040000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
-            (block->packed_state_flags & 0x100u) != 0)
+            (block->packed_state_flags & 0x100u) != 0) {
             continue;
+        }
         NUVEC *candidate = block->position;
         if (candidate->x < minimum.x || candidate->x > maximum.x || candidate->z < minimum.z ||
-            candidate->z > maximum.z || candidate->y < minimum.y || candidate->y > maximum.y)
+            candidate->z > maximum.z || candidate->y < minimum.y || candidate->y > maximum.y) {
             continue;
+        }
         f32 distance = NuVecDistSqr(position, candidate, NULL);
         if (distance < nearest_distance) {
             nearest_distance = distance;
@@ -975,21 +1076,25 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
     }
     return reinterpret_cast<PUSH_BLOCK_PC *>(nearest);
 }
+
 extern "C" {
 
     i32 __cdecl Push_UpdateHints(HINT_PC *hint) {
         i32 index;
         (void)hint;
-        if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
+        if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
-        if (LEGOACT_PUSH == -1)
+        }
+        if (LEGOACT_PUSH == -1) {
             return 0;
+        }
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
             if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
                 object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
-                NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL)
+                NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL) {
                 return 1;
+            }
         }
         return 0;
     }
@@ -1022,11 +1127,13 @@ static void __cdecl Push_Activate(GIZMO_PC *gizmo, i32 active) {
         if (active != 0) {
             world = WORLD;
             for (index = 0; index < world->push_block_count; ++index) {
-                if (block == &world->push_blocks[index])
+                if (block == &world->push_blocks[index]) {
                     break;
+                }
             }
-            if (index < world->push_block_count)
+            if (index < world->push_block_count) {
                 ResetSinglePushBlock(world, block, index);
+            }
             block->push_visible = 1;
         }
     }
@@ -1036,8 +1143,9 @@ static void __cdecl Push_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
     block->push_visible = visible != 0;
     NuSpecialSetVisibility(&block->special, visible);
-    for (i32 index = 0; index < block->end_position_count; ++index)
+    for (i32 index = 0; index < block->end_position_count; ++index) {
         NuSpecialSetVisibility(&block->end_position_specials[index], block->push_visible);
+    }
 }
 
 static i32 __cdecl Push_GetMaxGizmos(void *world_ptr) {
@@ -1048,14 +1156,16 @@ static i32 __cdecl Push_GetMaxGizmos(void *world_ptr) {
 static void __cdecl Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        if (NuStrLen(world->push_blocks[index].name) != 0)
+        if (NuStrLen(world->push_blocks[index].name) != 0) {
             AddGizmo(system, type_id, NULL, &world->push_blocks[index]);
+        }
     }
 }
 
 static char *__cdecl GizPush_GetGizmoName(GIZMO_PC *gizmo) {
-    if (gizmo != NULL)
+    if (gizmo != NULL) {
         return static_cast<PUSH_BLOCK_PC *>(gizmo->object)->name;
+    }
     return NULL;
 }
 
@@ -1063,8 +1173,9 @@ static i32 __cdecl GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
     PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
     if (block != NULL) {
         if (output_index == 0) {
-            if (block->completed_snap_positions == 0)
+            if (block->completed_snap_positions == 0) {
                 return 0;
+            }
         } else if ((block->completed_snap_positions & (1 << output_index)) == 0) {
             return 0;
         }
@@ -1072,14 +1183,17 @@ static i32 __cdecl GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
     }
     return 0;
 }
+
 static char outputName[13] = "Any Complete";
 
 static char *__cdecl GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
-    if (output_index < 0 || output_index > block->output_count)
+    if (output_index < 0 || output_index > block->output_count) {
         return NULL;
-    if (output_index == 0)
+    }
+    if (output_index == 0) {
         return const_cast<char *>("Any Complete");
+    }
     NuIToA(output_index, outputName, 10);
     NuStrCat(outputName, " Complete");
     return outputName;
@@ -1097,32 +1211,39 @@ static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
     if (progress != NULL) {
         // Each mask is a bit array of one word (16 blocks).
-        for (i32 i = 0; i < 1; ++i)
+        for (i32 i = 0; i < 1; ++i) {
             progress->state_mask[i] = 0;
-        for (i32 i = 0; i < 1; ++i)
+        }
+        for (i32 i = 0; i < 1; ++i) {
             progress->visible_mask[i] = ~0u;
-        for (i32 i = 0; i < 1; ++i)
+        }
+        for (i32 i = 0; i < 1; ++i) {
             progress->position_mask[i] = 0;
+        }
         NuMemSet128(progress->positions, 0, 0);
     }
 }
 
 static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     Push_ClearProgress(world_ptr, progress);
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
-    if (world == NULL || world->push_blocks == NULL)
+    if (world == NULL || world->push_blocks == NULL) {
         return;
+    }
     PUSH_BLOCK_PC *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count && index < 16; ++index, ++block) {
         const i32 word = index / 32;
         const u32 mask = 1u << (index & 31);
-        if ((block->packed_state_flags & 0x40000u) == 0)
+        if ((block->packed_state_flags & 0x40000u) == 0) {
             progress->visible_mask[word] &= ~mask;
-        if ((block->packed_state_flags & 0x02000000u) != 0)
+        }
+        if ((block->packed_state_flags & 0x02000000u) != 0) {
             progress->state_mask[word] |= mask;
+        }
         if (NuSpecialExistsFn(&block->special) != 0) {
             progress->positions[index] = NuSpecialGetInstanceMtx(&block->special)->translation;
         } else {
@@ -1163,32 +1284,40 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
             }
             block->snap_distance = EdFileReadFloat();
             block->packed_state_flags &= ~0x04000000u;
-            if (EdFileReadChar() != 0)
+            if (EdFileReadChar() != 0) {
                 block->packed_state_flags |= 0x04000000u;
+            }
             block->packed_state_flags &= ~0x08000000u;
-            if (EdFileReadChar() != 0)
+            if (EdFileReadChar() != 0) {
                 block->packed_state_flags |= 0x08000000u;
+            }
             block->packed_state_flags &= ~0x00100000u;
-            if (EdFileReadChar() != 0)
+            if (EdFileReadChar() != 0) {
                 block->packed_state_flags |= 0x00100000u;
+            }
             block->packed_state_flags &= ~0x00200000u;
-            if (EdFileReadChar() != 0)
+            if (EdFileReadChar() != 0) {
                 block->packed_state_flags |= 0x00200000u;
+            }
             if (version >= 4) {
                 block->packed_state_flags &= ~0x20000000u;
-                if (EdFileReadChar() != 0)
+                if (EdFileReadChar() != 0) {
                     block->packed_state_flags |= 0x20000000u;
+                }
                 block->packed_state_flags &= ~0x40000000u;
-                if (EdFileReadChar() != 0)
+                if (EdFileReadChar() != 0) {
                     block->packed_state_flags |= 0x40000000u;
+                }
             }
             if (version >= 5) {
                 block->packed_state_flags &= ~0x00400000u;
-                if (EdFileReadChar() != 0)
+                if (EdFileReadChar() != 0) {
                     block->packed_state_flags |= 0x00400000u;
+                }
                 block->packed_state_flags &= ~0x00800000u;
-                if (EdFileReadChar() != 0)
+                if (EdFileReadChar() != 0) {
                     block->packed_state_flags |= 0x00800000u;
+                }
             }
             block->end_position_count = 0;
             if (version >= 3) {
@@ -1200,12 +1329,14 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
                     special_name[16] = '\0';
                     void *gizmo_sys = world->gizmo_sys;
                     if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
-                                            gizmo_sys, const_cast<char *>("PushBlockLinkObject"), block->name) == 0)
+                                            gizmo_sys, const_cast<char *>("PushBlockLinkObject"), block->name) == 0) {
                         --block->end_position_count;
+                    }
                 }
             }
-            if (missing == 0)
+            if (missing == 0) {
                 ++valid_count;
+            }
         }
         world->push_block_count = valid_count;
         return 1;
@@ -1219,11 +1350,13 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
     if (block != NULL) {
         for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
             if ((block->packed_state_flags & 0x40000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
-                (block->packed_state_flags & 0x02000000u) != 0)
+                (block->packed_state_flags & 0x02000000u) != 0) {
                 continue;
+            }
             i32 platform = FindPlatInst(NuSpecialGetInstanceix(&block->special));
-            if (platform == -1 || platform != bolt->hit_platform)
+            if (platform == -1 || platform != bolt->hit_platform) {
                 continue;
+            }
             if (bolt->owner != NULL) {
                 NUVEC direction;
                 NuVecSub(&direction, &static_cast<GAMEOBJECT *>(bolt->owner)->collision_position, block->position);
@@ -1236,10 +1369,11 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
                         direction.z = static_cast<f64>(qrand()) * 0.000015259021893143654;
                     }
                 }
-                if (GizPushFabsPc(direction.x) > GizPushFabsPc(direction.z))
+                if (GizPushFabsPc(direction.x) > GizPushFabsPc(direction.z)) {
                     direction.z = 0.0f;
-                else
+                } else {
                     direction.x = 0.0f;
+                }
                 NuVecNorm(&direction, &direction);
                 KnockPushBlock(reinterpret_cast<PUSH_BLOCK_PC *>(block), &direction);
             }
@@ -1248,6 +1382,7 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
     }
     return 0;
 }
+
 i32 pushblock_gizmotype_id = 0;
 
 extern "C" ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32 type_id) {
@@ -1327,9 +1462,9 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
             block->output_count = static_cast<u8>(block->animation_positions);
             i32 required = world->push_block_position_count + block->animation_positions;
             if (required > world->current_level->max_pushblock_endpos) {
-                if (RunOutOfPosTabSpacePc != 0)
+                if (RunOutOfPosTabSpacePc != 0) {
                     pushposincrease += block->animation_positions;
-                else {
+                } else {
                     RunOutOfPosTabSpacePc = 1;
                     pushposincrease += required - world->current_level->max_pushblock_endpos;
                 }
@@ -1364,8 +1499,9 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         corners[1] = corners[2] = corners[3] = corners[0] = centre;
         corners[0].y = (corners[0].y - GizPushFabsPc(block->bounds_min.y)) - PushInitGroundOffsetPc;
         corners[1].y = corners[2].y = corners[3].y = corners[0].y;
-        for (i32 corner = 0; corner < 4; ++corner)
+        for (i32 corner = 0; corner < 4; ++corner) {
             corners[corner].y += 0.025f;
+        }
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
@@ -1395,14 +1531,17 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         if (height1 == height0 && height0 == height3 && height3 == height2) {
             NewTerrPlatformsOff();
             centre.y = GameShadow(NULL, &centre, 5.0f, -1);
-            if (centre.y == 2000000.0)
+            if (centre.y == 2000000.0) {
                 centre.y = 0.0f;
+            }
             block->ground_height = centre.y;
-        } else
+        } else {
             block->ground_height = (height3 + (height1 + height0 + height2)) * 0.25;
+        }
         // PC has no Android TerrainBlockOnBlock call here.
         block->previous_extra_terrain_info = block->extra_terrain_info.word;
     }
-    for (i32 index = 0; index < world->push_block_count; ++index)
+    for (i32 index = 0; index < world->push_block_count; ++index) {
         ResetSinglePushBlockHeight(opaque, reinterpret_cast<struct pushblock_s *>(&world->push_blocks[index]), index);
+    }
 }

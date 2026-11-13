@@ -13,8 +13,9 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     buffer->addr = (buffer->addr + 15) & ~(u32)15;
     Part = (PART_PC *)buffer->void_ptr;
     buffer->addr += MAXPARTS * sizeof(PART_PC);
-    if (Part != NULL)
+    if (Part != NULL) {
         memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+    }
     part_slot_cursor = 0;
     memset(part_types, 0, sizeof(part_types));
     for (i = 0; i < 128; ++i) {
@@ -25,17 +26,20 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     }
     part_types_used = 0;
     memset(part_emits, 0, sizeof(part_emits));
-    for (i = 0; i < 40; ++i)
+    for (i = 0; i < 40; ++i) {
         part_emits[i].effect_id = -1;
-    for (i = 0; i < 32; ++i)
+    }
+    for (i = 0; i < 32; ++i) {
         part_scene_pageid[i] = -1;
+    }
     part_emits_used = 0;
     for (i = 0; i < 8; ++i) {
         part_page_used[i] = 0;
         part_page_on[i] = 0;
     }
-    for (i = 0; i < 32; ++i)
+    for (i = 0; i < 32; ++i) {
         part_scene[i] = NULL;
+    }
     part_platimpactcnt = 0;
 }
 
@@ -53,6 +57,7 @@ __declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
         }
     }
 }
+
 void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 emitter;
@@ -76,16 +81,18 @@ void edpartDeleteType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback)
+    if (menu->callback) {
         menu->callback(menu, parent);
+    }
     edpart_create_type = -1;
 }
 
 void __cdecl edpartClearPage(i8 page) {
     i32 index;
     NuThreadDisableThreadSwap();
-    if (part_page_on[page] != 0)
+    if (part_page_on[page] != 0) {
         part_page_on[page] = 0;
+    }
     for (index = 0; index < 128; ++index) {
         if (part_types[index].page == page && part_types[index].name[0] != 0) {
             part_types[index].name[0] = 0;
@@ -112,17 +119,20 @@ void __cdecl edpartClearPage(i8 page) {
 
 __declspec(noinline) i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
     i32 i;
-    if (name == NULL || name[0] == 0)
+    if (name == NULL || name[0] == 0) {
         return -1;
+    }
     if ((u32)(page - 1) <= 6) {
         for (i = 0; i < 128; ++i) {
-            if (part_types[i].page == page && NuStrNICmp(name, part_types[i].name, 16) == 0)
+            if (part_types[i].page == page && NuStrNICmp(name, part_types[i].name, 16) == 0) {
                 return i;
+            }
         }
     }
     for (i = 0; i < 128; ++i) {
-        if (part_types[i].page == 0 && NuStrNCmp(name, part_types[i].name, 16) == 0)
+        if (part_types[i].page == 0 && NuStrNCmp(name, part_types[i].name, 16) == 0) {
             return i;
+        }
     }
     return -1;
 }
@@ -130,8 +140,9 @@ __declspec(noinline) i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
 i32 __cdecl GetPartCount(void) {
     i32 n, used = 0;
     for (n = 0; n < 40; ++n) {
-        if (part_emits[n].effect_id != -1)
+        if (part_emits[n].effect_id != -1) {
             ++used;
+        }
     }
     return used;
 }
@@ -141,20 +152,23 @@ i32 __cdecl GetMaxPartTypes(void) {
 }
 
 char *__cdecl GetPartName(i32 type) {
-    if (part_types[type].name[0] == 0)
+    if (part_types[type].name[0] == 0) {
         return NULL;
+    }
     return part_types[type].name;
 }
 
 f32 __cdecl PARTGetTotalOnTime(i32 type) {
-    if (type >= 0)
+    if (type >= 0) {
         return part_types[type].emission_period + part_types[type].emission_period_random;
+    }
     return 0.0f;
 }
 
 f32 __cdecl PARTGetTotalOffTime(i32 type) {
-    if (type >= 0)
+    if (type >= 0) {
         return part_types[type].emission_pause + part_types[type].emission_pause_random;
+    }
     return 0.0f;
 }
 
@@ -206,10 +220,12 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     i32 index;
     u8 hostility_group;
 
-    if (parameters->special == NULL && parameters->part_id != -1 && parameters->part_id != 9999)
+    if (parameters->special == NULL && parameters->part_id != -1 && parameters->part_id != 9999) {
         return NULL;
-    if (parameters->special != NULL && NuSpecialExistsFn(parameters->special) == 0)
+    }
+    if (parameters->special != NULL && NuSpecialExistsFn(parameters->special) == 0) {
         return NULL;
+    }
     scanned = 0;
     while ((Part[part_slot_cursor].active & 1) != 0 && (Part[part_slot_cursor].flags & 0x200) != 0 &&
            scanned < MAXPARTS) {
@@ -321,10 +337,11 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         i32 effect;
         part->inline_debris_handle = -1;
         part->debris_handle = &part->inline_debris_handle;
-        if (parameters->effect_scale != 1.0f)
+        if (parameters->effect_scale != 1.0f) {
             effect = CreateScaledEffect(parameters->effect_id_58, parameters->effect_scale);
-        else
+        } else {
             effect = parameters->effect_id_58;
+        }
         AddDebrisEffect(part->debris_handle, effect, part->position.x, part->position.y, part->position.z);
         DebrisPopulateInstance(*part->debris_handle, 0.0f);
     } else {
@@ -414,16 +431,17 @@ extern struct eduimenu_s *edpart_partindex_menu;
 
 void edpartChangeDebrisIndex(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
-        if (edpart_set_debris == 0)
+        if (edpart_set_debris == 0) {
             edpart_nearest_type->trail_effects[0] = item->data;
-        else if (edpart_set_debris == 1)
+        } else if (edpart_set_debris == 1) {
             edpart_nearest_type->trail_effects[1] = item->data;
-        else if (edpart_set_debris == 2)
+        } else if (edpart_set_debris == 2) {
             edpart_nearest_type->attached_effect = item->data;
-        else if (edpart_set_debris == 3)
+        } else if (edpart_set_debris == 3) {
             edpart_nearest_type->impact_effect = item->data;
-        else if (edpart_set_debris == 4)
+        } else if (edpart_set_debris == 4) {
             edpart_nearest_type->kill_effect = item->data;
+        }
     }
 }
 
@@ -437,19 +455,21 @@ void edpartDebrisIndexMenu(eduimenu_s *menu) {
     i32 found;
     i32 index;
     edpart_debrisindex_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelDebrisIndexMenu, "Debris Type");
-    if (edpart_debrisindex_menu == NULL || edpart_nearest_type == NULL)
+    if (edpart_debrisindex_menu == NULL || edpart_nearest_type == NULL) {
         return;
+    }
     chosen = -1;
-    if (edpart_set_debris == 0)
+    if (edpart_set_debris == 0) {
         chosen = edpart_nearest_type->trail_effects[0];
-    else if (edpart_set_debris == 1)
+    } else if (edpart_set_debris == 1) {
         chosen = edpart_nearest_type->trail_effects[1];
-    else if (edpart_set_debris == 2)
+    } else if (edpart_set_debris == 2) {
         chosen = edpart_nearest_type->attached_effect;
-    else if (edpart_set_debris == 3)
+    } else if (edpart_set_debris == 3) {
         chosen = edpart_nearest_type->impact_effect;
-    else if (edpart_set_debris == 4)
+    } else if (edpart_set_debris == 4) {
         chosen = edpart_nearest_type->kill_effect;
+    }
     found = 0;
     for (index = 1; index < debinf_count; ++index) {
         if (debtab[index] != NULL && (i8)debtab[index]->category == edpart_particle_list) {
@@ -468,13 +488,15 @@ void edpartDebrisIndexMenu(eduimenu_s *menu) {
     eduiMenuAttach(menu, edpart_debrisindex_menu);
     edpart_debrisindex_menu->x = menu->x + 10;
     edpart_debrisindex_menu->y = menu->y + 40;
-    if (found)
+    if (found) {
         edpart_debrisindex_menu->field_0c = edpart_debrisindex_menu->selected;
+    }
 }
 
 void edpartChangePartIndex(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type != NULL && edpart_set_part == 5)
+    if (edpart_nearest_type != NULL && edpart_set_part == 5) {
         edpart_nearest_type->impact_part = item->data;
+    }
 }
 
 void edpartCancelPartIndexMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -486,25 +508,29 @@ void edpartPartIndexMenu(eduimenu_s *menu) {
     i32 chosen;
     i32 index;
     edpart_partindex_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelPartIndexMenu, "Part Type");
-    if (edpart_partindex_menu == NULL || edpart_nearest_type == NULL)
+    if (edpart_partindex_menu == NULL || edpart_nearest_type == NULL) {
         return;
+    }
     chosen = -1;
-    if (edpart_set_part == 3)
+    if (edpart_set_part == 3) {
         chosen = edpart_nearest_type->impact_part;
+    }
     eduiMenuAddItem(edpart_partindex_menu,
                     eduiItemCheckCreate(-1, edblack, chosen == -1, 1, edpartChangePartIndex, "None"));
     for (index = 0; index < 128; ++index) {
         if (part_types[index].name[0] != '\0' && (i8)part_types[index].field_b3 == edpart_part_list) {
             i32 selected = chosen == index;
-            if (index == edpart_nearest_emit->effect_id)
+            if (index == edpart_nearest_emit->effect_id) {
                 eduiMenuAddItem(edpart_partindex_menu,
                                 eduiItemCheckCreate(index, edgrey, 0, 0, NULL, part_types[index].name));
-            else
+            } else {
                 eduiMenuAddItem(
                     edpart_partindex_menu,
                     eduiItemCheckCreate(index, edblack, selected, 1, edpartChangePartIndex, part_types[index].name));
-            if (selected == 1)
+            }
+            if (selected == 1) {
                 edpart_partindex_menu->selected = edui_last_item;
+            }
         }
     }
     eduiMenuAttach(menu, edpart_partindex_menu);
@@ -534,10 +560,11 @@ void edpartLevelPartIndexMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
 
 void edpartChangeDebrisPerSec(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
-        if (edpart_set_debris == 0)
+        if (edpart_set_debris == 0) {
             edpart_nearest_type->trail_rates[0] = (f32)(i32)((edui_slider_s *)item)->value;
-        else if (edpart_set_debris == 1)
+        } else if (edpart_set_debris == 1) {
             edpart_nearest_type->trail_rates[1] = (f32)(i32)((edui_slider_s *)item)->value;
+        }
     }
 }
 
@@ -572,18 +599,20 @@ void edpartCancelDieDebrisMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 0;
     edpart_trail1debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail1DebrisMenu, "Trail 1 Debris");
     if (edpart_trail1debris_menu != NULL) {
         eduiMenuAddItem(edpart_trail1debris_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_trail1debris_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
         eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartChangeDebrisPerSec, 0,
                                                                           ((i32)(edpart_superscale * 1200.0f)),
                                                                           ((i32)(edpart_nearest_type->trail_rates[0])),
@@ -595,18 +624,20 @@ void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
 }
 
 void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 1;
     edpart_trail2debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail2DebrisMenu, "Trail 2 Debris");
     if (edpart_trail2debris_menu != NULL) {
         eduiMenuAddItem(edpart_trail2debris_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_trail2debris_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
         eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSliderCreateInt(0, edblack, 0, edpartChangeDebrisPerSec, 0,
                                                                           ((i32)(edpart_superscale * 1200.0f)),
                                                                           ((i32)(edpart_nearest_type->trail_rates[1])),
@@ -618,19 +649,21 @@ void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
 }
 
 void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 2;
     edpart_emitterdebris_menu =
         eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelEmitterDebrisMenu, "Emitter Debris");
     if (edpart_emitterdebris_menu != NULL) {
         eduiMenuAddItem(edpart_emitterdebris_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_emitterdebris_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_emitterdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
     }
     eduiMenuAttach(menu, edpart_emitterdebris_menu);
     edpart_emitterdebris_menu->x = menu->x + 10;
@@ -638,18 +671,20 @@ void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
 }
 
 void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 3;
     edpart_impactdebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactDebrisMenu, "Impact Debris");
     if (edpart_impactdebris_menu != NULL) {
         eduiMenuAddItem(edpart_impactdebris_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_impactdebris_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_impactdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
     }
     eduiMenuAttach(menu, edpart_impactdebris_menu);
     edpart_impactdebris_menu->x = menu->x + 10;
@@ -657,18 +692,20 @@ void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
 }
 
 void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 5;
     edpart_impactpart_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactPartMenu, "Impact Part");
     if (edpart_impactpart_menu != NULL) {
         eduiMenuAddItem(edpart_impactpart_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralPartIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_impactpart_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelPartIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_impactpart_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
     }
     eduiMenuAttach(menu, edpart_impactpart_menu);
     edpart_impactpart_menu->x = menu->x + 10;
@@ -676,18 +713,20 @@ void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_set_debris = 4;
     edpart_diedebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelDieDebrisMenu, "Die Debris");
     if (edpart_diedebris_menu != NULL) {
         eduiMenuAddItem(edpart_diedebris_menu,
                         eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->field_b3 == 1)
+        if (edpart_nearest_type->field_b3 == 1) {
             eduiMenuAddItem(edpart_diedebris_menu,
                             eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
-        else
+        } else {
             eduiMenuAddItem(edpart_diedebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
+        }
     }
     eduiMenuAttach(menu, edpart_diedebris_menu);
     edpart_diedebris_menu->x = menu->x + 10;
@@ -695,8 +734,9 @@ void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 void edpartChangeDebrisScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->effect_scale = ((edui_slider_s *)(item))->value;
+    }
 }
 
 void edpartCancelDebrisScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -711,8 +751,9 @@ void edpartCancelDebrisSettingsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     i32 group = 1;
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_instanceflags_menu =
         eduiMenuCreate(70, 70, 300, 250, ed_fnt, edpartCancelInstanceFlagsMenu, "Instance Flags");
     if (edpart_instanceflags_menu != NULL) {
@@ -728,10 +769,11 @@ void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
         eduiMenuAddItem(edpart_instanceflags_menu,
                         eduiItemToggleCreate(8, edblack, (edpart_nearest_type->flags & 8) != 0, group++,
                                              edpartChangeInstanceFlag, "Damage Characters"));
-        if (edpart_nearest_type->effect_ids[0] != 9999)
+        if (edpart_nearest_type->effect_ids[0] != 9999) {
             eduiMenuAddItem(edpart_instanceflags_menu,
                             eduiItemToggleCreate(0x10, edblack, (edpart_nearest_type->flags & 0x10) != 0, group++,
                                                  edpartChangeInstanceFlag, "Don't die when off-screen"));
+        }
         eduiMenuAddItem(edpart_instanceflags_menu,
                         eduiItemToggleCreate(0x40, edblack, (edpart_nearest_type->flags & 0x40) != 0, group++,
                                              edpartChangeInstanceFlag, "Is a Collectible"));
@@ -773,6 +815,7 @@ void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     edpart_instanceflags_menu->x = menu->x + 10;
     edpart_instanceflags_menu->y = menu->y + 40;
 }
+
 void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_debrisscale_menu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, edpartCancelDebrisScaleMenu, "Debris Scale");
     if (edpart_debrisscale_menu != NULL && edpart_nearest_type != NULL) {
@@ -784,6 +827,7 @@ void edpartDebrisScaleMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_debrisscale_menu->y = menu->y + 40;
     }
 }
+
 void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_debrissettings_menu =
@@ -821,13 +865,16 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_mode) == 0xb1);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, lighting_scale) == 0x160);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
+
 typedef struct debris_material_flags_pc_s {
     u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
         z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 3, unknown_23_31 : 9;
 } DEBRIS_MATERIAL_FLAGS_PC;
+
 typedef struct debris_material_secondary_pc_s {
     u32 alpha_fail : 2, disable_depth_write : 1, unknown_03_31 : 29;
 } DEBRIS_MATERIAL_SECONDARY_PC;
+
 typedef struct debris_material_pc_s {
     u8 unknown_000[0x40];
     DEBRIS_MATERIAL_FLAGS_PC attribs;
@@ -843,6 +890,7 @@ typedef struct debris_material_pc_s {
     u8 unknown_09a[0x156];
     u32 vertex_flags;
 } DEBRIS_MATERIAL_PC;
+
 STATIC_ASSERT(sizeof(DEBRIS_MATERIAL_FLAGS_PC) == 4);
 STATIC_ASSERT(sizeof(DEBRIS_MATERIAL_SECONDARY_PC) == 4);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, attribs) == 0x40);
@@ -854,19 +902,23 @@ STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, sort_priority) == 0x76);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, particle_type_tag) == 0x99);
 STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
+
 typedef struct debris_animation_effect_pc_s {
     u8 unknown_000[0xa8];
     i16 texture_frames;
     i8 texture_rows, frame_divisor;
+
     union {
         f32 rate;
         u32 packed_rate;
     } animation_rate;
 } DEBRIS_ANIMATION_EFFECT_PC;
+
 STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, texture_frames) == 0xa8);
 STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, texture_rows) == 0xaa);
 STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, frame_divisor) == 0xab);
 STATIC_ASSERT(offsetof(DEBRIS_ANIMATION_EFFECT_PC, animation_rate) == 0xac);
+
 typedef struct part_runtime_type_pc_s {
     char name[16];
     char object_names[8][16];
@@ -909,6 +961,7 @@ typedef struct part_runtime_type_pc_s {
     f32 scale;
     u32 field_174;
 } PART_RUNTIME_TYPE_PC;
+
 STATIC_ASSERT(sizeof(PART_RUNTIME_TYPE_PC) == 0x178);
 STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, name) == 0x0);
 STATIC_ASSERT(offsetof(PART_RUNTIME_TYPE_PC, object_names) == 0x10);
@@ -960,12 +1013,14 @@ extern NUVEC edpart_copy_source_vec;
 extern i32 edpart_copy_source_count;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                     i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+
 typedef struct PART_TERRAIN_STATE_PC {
     u8 unknown_000[0x200];
     u32 platform_id;
     u8 unknown_204[5];
     i8 impact_material;
 } PART_TERRAIN_STATE_PC;
+
 STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, platform_id) == 0x200);
 STATIC_ASSERT(offsetof(PART_TERRAIN_STATE_PC, impact_material) == 0x209);
 #define PART_NORM PartImpactNormalPrivate
@@ -1046,8 +1101,9 @@ PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacit
                     ++i;
                 }
             }
-            for (; i < system->capacity; ++i)
+            for (; i < system->capacity; ++i) {
                 system->entries[i].id = -1;
+            }
             return system;
         }
     }
@@ -1058,8 +1114,9 @@ i32 __cdecl FindPartDebris(PARTDEBRISSYS *system, char *name) {
     i32 index;
     if (system != NULL) {
         for (index = system->named_count; index < system->capacity; ++index) {
-            if (NuStrICmp(name, system->entries[index].name) == 0)
+            if (NuStrICmp(name, system->entries[index].name) == 0) {
                 return system->entries[index].id;
+            }
         }
     }
     return -1;
@@ -1097,8 +1154,9 @@ void __cdecl PartImpact_Brick(PART_PC *part) {
             i32 angle;
             f32 volume;
             i32 sound_id;
-            if (speed > 1.0f)
+            if (speed > 1.0f) {
                 speed = 1.0f;
+            }
             angle = ((i32)((1.0 - speed) * 16384.0 + 16384.0));
             volume = NuTrigTable[(angle >> 1) & 0x7fff];
             sound_id = GetSfxId(KillPartsLegoSingleTextPc);
@@ -1110,18 +1168,21 @@ void __cdecl PartImpact_Brick(PART_PC *part) {
 
 void __cdecl PartStop_Flickerer(PART_PC *part) {
     part->time_remaining = 5.0f;
-    if ((part->flicker_flags & 1) != 0)
+    if ((part->flicker_flags & 1) != 0) {
         part->time_remaining = 2.5f;
+    }
 }
 
 i32 __cdecl PartDraw_Flickerer(PART_PC *part) {
     i32 draw = 1;
     if (part->time_remaining > 0.0f && (u32)GameTimer.update_count % 6 >= 3) {
         f32 threshold = 2.0f;
-        if ((part->flicker_flags & 1) != 0)
+        if ((part->flicker_flags & 1) != 0) {
             threshold = 1.0f;
-        if (part->time_remaining < threshold)
+        }
+        if (part->time_remaining < threshold) {
             draw = 0;
+        }
     }
     return draw;
 }
@@ -1134,8 +1195,9 @@ PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 
     f32 distance;
     i32 i;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || part->owner == owner || (part->flags & flags) != flags)
+        if ((part->active & 1) == 0 || part->owner == owner || (part->flags & flags) != flags) {
             continue;
+        }
         if (range > 0.0f) {
             distance = NuVecDistSqr(&part->position, position, NULL);
             if (distance < nearest_distance) {
@@ -1213,51 +1275,62 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
         }
     }
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa))
+        if ((part->active & 1) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa)) {
             continue;
+        }
         if (part->position.x < minimum.x || part->position.x > maximum.x || part->position.z < minimum.z ||
-            part->position.z > maximum.z)
+            part->position.z > maximum.z) {
             continue;
+        }
         distance = NuVecDistSqr(&part->position, position, &delta);
-        if (!(distance < range_squared))
+        if (!(distance < range_squared)) {
             continue;
-        if (directional == 0)
+        }
+        if (directional == 0) {
             NuVecRotateY(&aim, &v001, NuAtan2D(part->position.x - position->x, part->position.z - position->z));
-        if ((bolt->flags_60 & 0x20000) != 0)
+        }
+        if ((bolt->flags_60 & 0x20000) != 0) {
             delta.y = 0.0f;
+        }
         NuVecNorm(&delta, &delta);
         dot = NuVecDot(&delta, &aim);
-        if (distance < TargetDist_Near2 && directional != 0)
+        if (distance < TargetDist_Near2 && directional != 0) {
             angle = TargetDeg_Near;
-        else if (TargetDist_Mid2 > distance)
+        } else if (TargetDist_Mid2 > distance) {
             angle = TargetDeg_Mid;
-        else
+        } else {
             angle = TargetDeg_Far;
-        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
+        }
+        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance)) {
             continue;
-        if ((PART_PC *)part == object->collision_target)
+        }
+        if ((PART_PC *)part == object->collision_target) {
             previous = part;
-        else {
+        } else {
             nearest_distance = distance;
             best = part;
         }
     }
-    if (best != NULL)
+    if (best != NULL) {
         return best;
-    if (previous != NULL)
+    }
+    if (previous != NULL) {
         return previous;
+    }
     return NULL;
 }
 
 PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
     PART_PC *part;
     i32 index;
-    if (special == NULL)
+    if (special == NULL) {
         return NULL;
+    }
     part = Part;
     for (index = 0; index < MAXPARTS; index++, part++) {
-        if ((part->active & 1) != 0 && NuSpecialCompare(&part->special, special))
+        if ((part->active & 1) != 0 && NuSpecialCompare(&part->special, special)) {
             return part;
+        }
     }
     return NULL;
 }
@@ -1283,15 +1356,17 @@ void __cdecl KillAllParts(void) {
     i32 i;
     if (part != NULL) {
         for (i = 0; i < MAXPARTS; ++i, ++part) {
-            if ((part->active & 1) != 0)
+            if ((part->active & 1) != 0) {
                 KillPart(part, 0);
+            }
         }
     }
 }
 
 void __cdecl ResetParts(void) {
-    if (Part != NULL)
+    if (Part != NULL) {
         memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+    }
     part_slot_cursor = 0;
 }
 
@@ -1323,11 +1398,13 @@ __declspec(noinline) void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 
 
 i32 __cdecl PARTLookupType(char *name) {
     i32 index;
-    if (name == NULL || name[0] == 0)
+    if (name == NULL || name[0] == 0) {
         return -1;
+    }
     for (index = 0; index < 128; ++index) {
-        if (NuStrNICmp(name, part_types[index].name, 16) == 0)
+        if (NuStrNICmp(name, part_types[index].name, 16) == 0) {
             return index;
+        }
     }
     return -1;
 }
@@ -1435,16 +1512,19 @@ void DebFreeAllPanelEffects(void) {
 }
 
 void __cdecl DebrisOrientation(i32 handle, i16 z, i16 y) {
-    if (handle == -1)
+    if (handle == -1) {
         return;
+    }
     DebrisMtxCopyPrivate(&debkeydata[handle].effect_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
     DebrisMtxRotateZPrivate(&debkeydata[handle].effect_orientation, z);
     DebrisMtxRotateYPrivate(&debkeydata[handle].effect_orientation, y);
     debkeydata[handle].orientation_dirty = 0.0f;
 }
+
 void __cdecl DebrisEmitterOrientation(i32 handle, i16 z, i16 y, i16 x) {
-    if (handle == -1)
+    if (handle == -1) {
         return;
+    }
     DebrisMtxCopyPrivate(&debkeydata[handle].emitter_orientation, &ANI3_EVAL_IDENTITY_MATRIX);
     DebrisMtxRotateZPrivate(&debkeydata[handle].emitter_orientation, z);
     DebrisMtxRotateYPrivate(&debkeydata[handle].emitter_orientation, y);
@@ -1462,8 +1542,9 @@ __declspec(noinline) void DebrisReflectionOrientation(i32 handle, i16 x, i16 y, 
 }
 
 i32 DebrisGetParticleCount(i32 handle) {
-    if (handle == -1)
+    if (handle == -1) {
         return 0;
+    }
     return debkeydata[handle].allocated_chunk_count;
 }
 
@@ -1476,15 +1557,17 @@ void DebrisSetTrigger(i32 handle, i32 first, i32 second, f32 third) {
 }
 
 void __cdecl DebrisSetGroupID(i32 handle, i16 group) {
-    if (handle != -1)
+    if (handle != -1) {
         debkeydata[handle].render_group = group;
+    }
 }
 
 void __cdecl DebrisSetPriority(i32 handle, i16 priority, u8 automatic) {
     if (handle != -1) {
         debkeydata[handle].timed_flags = automatic;
-        if (automatic == 0)
+        if (automatic == 0) {
             debkeydata[handle].render_priority = priority;
+        }
     }
 }
 
@@ -1505,12 +1588,12 @@ u16 DebrisQueryPriority(i32 effect_index) {
 }
 
 void DebrisSetDrawFlag(i32 handle, i8 draw_flag) {
-    if (handle != -1)
+    if (handle != -1) {
         debkeydata[handle].field_2f7 = draw_flag;
+    }
 }
 
 void DebrisStartOffset(i32 handle, f32 offset) {
-
     DebrisStartOffsetEx(debkeydata + handle, offset);
 }
 
@@ -1525,8 +1608,9 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
         return;
     }
     effect = debtab[effect_index];
-    if (effect == NULL)
+    if (effect == NULL) {
         return;
+    }
     if (effect->disabled != 0) {
         return;
     }
@@ -1573,10 +1657,11 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].field_2f9 = 1;
     debkeydata[key_index].user_data = NULL;
     debkeydata[key_index].field_2fa = 0;
-    if (debkeydata[key_index].emission_end_time < now)
+    if (debkeydata[key_index].emission_end_time < now) {
         debkeydata[key_index].emission_epoch = debkeydata[key_index].emission_end_time;
-    else
+    } else {
         debkeydata[key_index].emission_epoch = now;
+    }
     debkeydata[key_index].emission_disabled = 0;
 
     switch (effect->particle_type) {
@@ -1596,8 +1681,9 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     for (i = 0; i < 4; ++i) {
         debkeydata[key_index].collision_timers[i] = 9999;
         if (effect->sound_data[i * 3] != -1) {
-            if (effect->sound_data[i * 3 + 1] == 4 || effect->sound_data[i * 3 + 1] == 3)
+            if (effect->sound_data[i * 3 + 1] == 4 || effect->sound_data[i * 3 + 1] == 3) {
                 debkeydata[key_index].collision_timers[i] = 1;
+            }
             debkeydata[key_index].process_collision_sound = 1;
         }
     }
@@ -1606,8 +1692,9 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     DebrisOrientation(key_index, 0, 0);
     DebrisReflectionOrientation(key_index, 0, 0, 0, 0.9f);
     DebrisSetTrigger(key_index, 0, -1, 0);
-    if (newly_allocated)
+    if (newly_allocated) {
         AddDebrisEffectToStack(debkeydata + key_index);
+    }
 }
 
 void AddRotatedDebrisEffect(i32 *handle, i32 effect, f32 x, f32 y, f32 z, i16 rotation_x, i16 rotation_y) {
@@ -1625,12 +1712,14 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     i32 angle_z;
     NUMTX scale;
     DEBRISPARTICLE_PC *trail_particle;
-    if (key->particle_cursor >= key->particle_count)
+    if (key->particle_cursor >= key->particle_count) {
         key->particle_cursor = 0;
-    if (effect->particle_type == 7)
+    }
+    if (effect->particle_type == 7) {
         particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
-    else
+    } else {
         particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
+    }
     ++key->particle_cursor;
     particle->start_time = time;
     key->emission_epoch = time;
@@ -1675,12 +1764,14 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     particle->momentum.z = key->momentum.z + particle->momentum.z;
 
     for (trail = 0; trail < (i8)(effect->trail_count); ++trail) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             trail_particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
-        else
+        } else {
             trail_particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
+        }
         ++key->particle_cursor;
         *trail_particle = *particle;
         trail_particle->start_time += (f32)(trail + 1) * effect->trail_time;
@@ -1700,8 +1791,9 @@ static f32 DebrisFabs(f32 f) {
 }
 
 static __declspec(noinline) f32 DebrisDivide(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f)
+    if (a == 0.0f || b == 0.0f) {
         return 0.0f;
+    }
     return a / b;
 }
 
@@ -1751,29 +1843,34 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     DEBRIS_PARTICLE_CHUNK_PC *last_chunk;
 
     if (debris_suspended != 0 || update_debris_enabled == 0 || effect_index == -1 || effect_index == 0 ||
-        effect_index >= debinf_count)
+        effect_index >= debinf_count) {
         return;
+    }
     effect = debtab[effect_index];
-    if (effect == NULL || effect->disabled != 0 || count <= 0)
+    if (effect == NULL || effect->disabled != 0 || count <= 0) {
         return;
+    }
     if (4 != effect->time_group) {
         NUVEC extent;
         clipped_position.x = position->x;
         clipped_position.y = position->y;
         clipped_position.z = position->z;
         extent.x = extent.y = extent.z = 1.0f;
-        if (NuCameraClipTestExtentsAxisAligned(&clipped_position, &extent, effect->clip_extent) == 0)
+        if (NuCameraClipTestExtentsAxisAligned(&clipped_position, &extent, effect->clip_extent) == 0) {
             return;
+        }
     }
     thinning = 0 != forced_debris_thinning
                    ? debris_thinning_level
                    : (effect->thinning < debris_thinning_level ? effect->thinning : debris_thinning_level);
     rate = DebrisDivide((f32)count, thinning);
     emission_interval = DebrisDivide(1.0f, rate);
-    if (emitter_orientation == NULL)
+    if (emitter_orientation == NULL) {
         emitter_orientation = &NuMtxSetIdentityTemplate;
-    if (particle_orientation == NULL)
+    }
+    if (particle_orientation == NULL) {
         particle_orientation = &NuMtxSetIdentityTemplate;
+    }
     if (effect->time_group == 4) {
         now = panelglobaltime;
         panel_time = 1;
@@ -1788,13 +1885,15 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     next_emission_time = emission_time;
     i = 0;
     while (next_emission_time <= end_time) {
-        if (++i >= 100)
+        if (++i >= 100) {
             break;
+        }
         ++emission_count;
         next_emission_time += emission_interval;
     }
-    if (emission_count == 0)
+    if (emission_count == 0) {
         return;
+    }
     particle_count = emission_count * ((i32)effect->trail_count + 1);
     particle_key_slot = -1;
     key = NULL;
@@ -1829,8 +1928,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             break;
         }
     }
-    if (key == NULL)
+    if (key == NULL) {
         return;
+    }
     required_particles = particle_count + key->particle_count;
     if (effect->particle_type == 7) {
         if (required_particles > key->allocated_chunk_count * 12) {
@@ -1839,8 +1939,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             }
             required_chunks = (required_particles + 12 - 1) / 12;
             new_chunk_count = required_chunks - key->allocated_chunk_count;
-            if (freedebchkptrg + new_chunk_count >= debrischunksglass || required_chunks > 32)
+            if (freedebchkptrg + new_chunk_count >= debrischunksglass || required_chunks > 32) {
                 return;
+            }
             for (i = 0; i < new_chunk_count; ++i) {
                 key->particle_chunks[key->allocated_chunk_count] = freedebchunksglass[freedebchkptrg++];
                 for (particle = 0; particle < 12; ++particle) {
@@ -1872,8 +1973,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             }
             required_chunks = (required_particles + 32 - 1) / 32;
             new_chunk_count = required_chunks - key->allocated_chunk_count;
-            if (freedebchkptr + new_chunk_count >= debrischunks || required_chunks > 32)
+            if (freedebchkptr + new_chunk_count >= debrischunks || required_chunks > 32) {
                 return;
+            }
             for (i = 0; i < new_chunk_count; ++i) {
                 key->particle_chunks[key->allocated_chunk_count] = freedebchunks[freedebchkptr++];
                 for (particle = 0; particle < 32; ++particle) {
@@ -1913,8 +2015,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     key->emission_epoch = emission_epoch;
     i = 0;
     while (emission_time <= end_time) {
-        if (++i >= 100)
+        if (++i >= 100) {
             break;
+        }
         if (position_delta != NULL) {
             NuVecAddScale(&key->emission_position, position, position_delta, emission_time - end_time);
         } else {
@@ -1924,8 +2027,9 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         }
         key->emission_time = emission_time;
         generated = key->generator(key, effect, emission_time);
-        if (effect->process_spheres != 0 && i == 1 && generated != NULL)
+        if (effect->process_spheres != 0 && i == 1 && generated != NULL) {
             DebrisProcessSpheres(generated, emission_time, effect, key, 1);
+        }
         emission_time = emission_interval + key->emission_epoch;
     }
     DebrisGetControlStackLock();
@@ -1971,8 +2075,9 @@ void AddVariableShotDebrisEffectMtx4(i32 effect, NUVEC *position, NUVEC *momentu
 void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
                                              NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
-    if (effect < 0 || debtab[effect] == NULL)
+    if (effect < 0 || debtab[effect] == NULL) {
         return;
+    }
     switch (debtab[effect]->particle_type) {
         case 2:
             priority = 40000;
@@ -2008,8 +2113,9 @@ void __cdecl AddVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count,
 i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation, i16 y_rotation,
                                       f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, NULL);
+    }
     return scaled;
 }
 
@@ -2029,12 +2135,15 @@ void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *
                 effect->rotor_speed_y * effect->particle_lifetime) +
                effect->emitter_random_extent.z;
     NuVecMtxRotate(&extent, &extent, &key->emitter_orientation);
-    if (extent.x < 0.0f)
+    if (extent.x < 0.0f) {
         extent.x = -extent.x;
-    if (extent.y < 0.0f)
+    }
+    if (extent.y < 0.0f) {
         extent.y = -extent.y;
-    if (extent.z < 0.0f)
+    }
+    if (extent.z < 0.0f) {
         extent.z = -extent.z;
+    }
     padding = (f32)((f64)0.0001f * effect->max_size);
     /* Retail rounds after each padding pass. */
     extent.x += padding;
@@ -2046,10 +2155,11 @@ void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *
     minimum.x = -extent.x;
     minimum.y = -extent.y;
     minimum.z = -extent.z;
-    if (effect->gravity > 0.0f)
+    if (effect->gravity > 0.0f) {
         extent.y += (effect->gravity * effect->particle_lifetime) * effect->particle_lifetime;
-    else if (effect->gravity < 0.0f)
+    } else if (effect->gravity < 0.0f) {
         minimum.y += (effect->gravity * effect->particle_lifetime) * effect->particle_lifetime;
+    }
     radius = MAX(MAX(extent.x, extent.z), MAX(extent.y, -minimum.y));
     key->clip_radius = radius;
     key->clip_min = minimum;
@@ -2061,8 +2171,9 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
     DEBRIS_RENDER_CHUNK_PC *chunk;
     i32 drawn = 0;
     (void)unused;
-    if (debris_suspended != 0)
+    if (debris_suspended != 0) {
         return;
+    }
     _NuTimeBarSlotBegin(0, 12, DebrisTimeBarName);
     DebMat[7]->texture_id = (i16)debris_rt;
     for (chunk = ParticleChunkRenderStack[pass]; chunk != NULL; chunk = chunk->next) {
@@ -2071,20 +2182,26 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
         NUMTX matrix;
         NUVEC position;
         f32 render_time;
-        if (chunk->particle_chunk == NULL)
+        if (chunk->particle_chunk == NULL) {
             continue;
+        }
         effect = chunk->effect;
         key = chunk->key;
-        if (DebrisCutSceneMode != 0 && effect->cutscene_only != 0)
+        if (DebrisCutSceneMode != 0 && effect->cutscene_only != 0) {
             continue;
-        if (DebrisSuspendDrawObjectSwitch != -1 && key != NULL && key->trigger_second == DebrisSuspendDrawObjectSwitch)
+        }
+        if (DebrisSuspendDrawObjectSwitch != -1 && key != NULL &&
+            key->trigger_second == DebrisSuspendDrawObjectSwitch) {
             continue;
+        }
         if (effect->native_data == NULL) {
-            if (freeDmaDebType == EDPP_MAX_DMADEBTYPES)
+            if (freeDmaDebType == EDPP_MAX_DMADEBTYPES) {
                 DebrisFreeOldestDmaDebTypeTable();
+            }
             GenericDebinfoDmaTypeUpdate(effect);
-            if (effect->native_data == NULL)
+            if (effect->native_data == NULL) {
                 continue;
+            }
         }
         if (key != NULL) {
             i32 assigned = 0;
@@ -2097,34 +2214,41 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
                 }
             }
             if (!assigned && effect->sound_range > 0.0f && effect->use_explicit_clip_box == 0 &&
-                key->cutoff_distance > effect->sound_range)
+                key->cutoff_distance > effect->sound_range) {
                 visible = 0;
-            if (key->field_2f7 == 0)
+            }
+            if (key->field_2f7 == 0) {
                 visible = 0;
+            }
             if (pass != 4 && visible && effect->generator_type == 0 && effect->use_explicit_clip_box == 0 &&
                 !assigned) {
                 NUVEC minimum, maximum;
-                if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0)
+                if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0) {
                     DebrisDrawCalculateClipBoxes(effect, key);
+                }
                 if (edbits_editmode == 0 && key->gscene != NULL && key->field_2f2 != -1) {
-                    if (NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->field_2f2) == 0)
+                    if (NuPortalClipTest(key->gscene, &key->position, key->clip_radius, key->field_2f2) == 0) {
                         visible = 0;
+                    }
                 }
                 minimum = key->clip_min;
                 maximum = key->clip_max;
-                if (NuCameraClipTestExtents(&minimum, &maximum, &key->clip_matrix, 0.0f, 0) == 0)
+                if (NuCameraClipTestExtents(&minimum, &maximum, &key->clip_matrix, 0.0f, 0) == 0) {
                     continue;
+                }
             }
-            if (!visible)
+            if (!visible) {
                 continue;
+            }
             DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
             position.x = key->position.x;
             position.y = key->position.y;
             position.z = key->position.z;
         } else {
             if (effect->sound_range > 0.0f && effect->use_explicit_clip_box == 0 &&
-                CameraEmitterDistance(&chunk->position) > effect->sound_range)
+                CameraEmitterDistance(&chunk->position) > effect->sound_range) {
                 continue;
+            }
             matrix = chunk->effect_orientation;
             position.x = chunk->position.x;
             position.y = chunk->position.y;
@@ -2140,12 +2264,13 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
             render_time = debris_render_global_time;
             effect->last_render_time = globaltime;
         }
-        if (key != NULL && key->field_2fa != 0)
+        if (key != NULL && key->field_2fa != 0) {
             NuRndrSetParticleRotation(&key->particle_orientation);
-        else if (effect->camera_facing != 0)
+        } else if (effect->camera_facing != 0) {
             NuRndrSetParticleRotation(&xzfacingmtx);
-        else
+        } else {
             NuRndrSetParticleRotation(NULL);
+        }
         NuMtxPreScaleX(&matrix, debris_render_scale);
         if (effect->particle_type == 7) {
             NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
@@ -2165,16 +2290,18 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
                                 effect->field_044);
         }
     }
-    if (drawn != 0)
+    if (drawn != 0) {
         g_renderingDebris = g_renderingDebris == 0;
+    }
     _NuTimeBarSlotEnd(0, 12);
 }
 
 void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
                                                NUMTX *emitter_orientation, NUMTX *particle_orientation) {
     u16 priority;
-    if (effect < 0 || debtab[effect] == NULL)
+    if (effect < 0 || debtab[effect] == NULL) {
         return;
+    }
     switch (debtab[effect]->particle_type) {
         case 2:
             priority = 40000;
@@ -2192,6 +2319,7 @@ void __cdecl AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVE
     AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count, time, emitter_orientation,
                                       particle_orientation, priority, 0);
 }
+
 void __cdecl AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation,
                                                i16 y_rotation, NUMTX *particle_orientation) {
     NUMTX orientation;
@@ -2209,21 +2337,26 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
     f32 emission_time;
     f32 end_time;
     i32 count;
-    if (type->name[0] == 0 || type->emission_rate <= 0.0f)
+    if (type->name[0] == 0 || type->emission_rate <= 0.0f) {
         return;
-    if (rate <= 0.0f)
+    }
+    if (rate <= 0.0f) {
         rate = type->emission_rate;
-    if (orientation == NULL)
+    }
+    if (orientation == NULL) {
         orientation = &NuMtxSetIdentityTemplate;
-    if (rate != 0.0f)
+    }
+    if (rate != 0.0f) {
         interval = 1.0f / rate;
-    else
+    } else {
         interval = 0.0f;
+    }
     end_time = partglobaltime + duration;
-    if (partglobaltime == 0.0f || interval == 0.0f)
+    if (partglobaltime == 0.0f || interval == 0.0f) {
         emission_time = 0.0f;
-    else
+    } else {
         emission_time = partglobaltime / interval;
+    }
     aligned_time = (i32)emission_time * interval;
     emission_time = aligned_time + interval;
     for (count = 0; end_time >= emission_time && ++count < 100;) {
@@ -2249,16 +2382,17 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         params.position = &part_position;
         params.velocity = &velocity;
         params.field_20 = type->bounce;
-        if (type->variant_count == 0)
+        if (type->variant_count == 0) {
             variant = 0;
-        else if (type->variant_mode == 0 || type->variant_mode == 1)
+        } else if (type->variant_mode == 0 || type->variant_mode == 1) {
             variant = (i32)((f64)NuRandFloatSeeded(&partseed) * 65535.0) % type->variant_count;
-        else
+        } else {
             variant = 0;
+        }
         params.part_id = type->effect_ids[variant];
-        if (type->effect_ids[variant] == 9999)
+        if (type->effect_ids[variant] == 9999) {
             params.special = NULL;
-        else if (type->effect_ids[variant] != -1) {
+        } else if (type->effect_ids[variant] != -1) {
             params.special = &special;
             NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
         }
@@ -2297,8 +2431,9 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         params.field_68 = type->trail_rates[0];
         params.field_6c = type->trail_rates[1];
         params.effect_id_70 = type->impact_effect;
-        if (type->impact_part == -1 && type->impact_part_name[0] != 0)
+        if (type->impact_part == -1 && type->impact_part_name[0] != 0) {
             type->impact_part = PARTLookupType(type->impact_part_name);
+        }
         params.effect_id_74 = type->impact_part;
         params.effect_id_78 = type->kill_effect;
         params.lighting_scale_x = type->lighting_scale.x;
@@ -2306,8 +2441,9 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         params.lighting_scale_z = type->lighting_scale.z;
         AddPart(&params);
         for (sound = 0; sound < 4; ++sound) {
-            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3)
+            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3) {
                 PlaySfxById(type->sounds[sound], &part_position);
+            }
         }
         type->last_used_time = emission_time;
         emission_time += interval;
@@ -2319,8 +2455,9 @@ PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     f32 nearest;
     PART_PC *result;
     i32 i;
-    if (Part == NULL)
+    if (Part == NULL) {
         return NULL;
+    }
     part = Part;
     nearest = 1000000.0f;
     result = NULL;
@@ -2349,6 +2486,7 @@ void __cdecl DebrisSetFacing(i32 handle, u8 enabled, i16 x_angle, i16 y_angle) {
         DebrisMtxRotateYPrivate(&debkeydata[handle].particle_orientation, y_angle);
     }
 }
+
 void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     if (scene != NULL) {
         debkeydata[handle].field_2f2 = NuPortalWhichRoom(scene, &debkeydata[handle].position);
@@ -2364,8 +2502,9 @@ void __cdecl DebrisSetDetailLevels(i32 handle, i32 detail_levels) {
 }
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
-    if (debris_keystack != NULL)
+    if (debris_keystack != NULL) {
         debris_keystack->next = key;
+    }
     key->previous = debris_keystack;
     debris_keystack = key;
 }
@@ -2380,6 +2519,7 @@ __declspec(noinline) void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source
         debkeydata[handle].orientation_dirty = 0.0f;
     }
 }
+
 void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].effect_orientation = *source;
@@ -2396,17 +2536,19 @@ void __cdecl DebrisPosOrientationMtx(i32 handle, NUMTX *source) {
 i32 __cdecl AddScaledVariableShotDebrisEffect2(i32 effect, NUVEC *position, i32 count, f32 time, NUMTX *emitter,
                                                NUMTX *particle, f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed3(scaled, position, &APIObjectZeroMomentumPC, count, time, emitter, particle);
+    }
     return scaled;
 }
 
 i32 AddScaledVariableShotDebrisEffect3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count, f32 time,
                                        NUMTX *emitter_orientation, NUMTX *particle_orientation, f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed3(scaled, position, momentum, count, time, emitter_orientation,
                                           particle_orientation);
+    }
     return scaled;
 }
 
@@ -2414,9 +2556,10 @@ i32 AddScaledVariableShotDebrisEffect4(i32 effect, NUVEC *position, NUVEC *momen
                                        NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 priority, i8 flags,
                                        f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed5(scaled, position, momentum, NULL, count, time, emitter_orientation,
                                           particle_orientation, priority, flags);
+    }
     return scaled;
 }
 
@@ -2424,16 +2567,18 @@ i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momen
                                        f32 time, NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 priority,
                                        i8 flags, f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed5(scaled, position, momentum, position_delta, count, time, emitter_orientation,
                                           particle_orientation, priority, flags);
+    }
     return scaled;
 }
 
 NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
     DEBRIS_MATERIAL_PC *material, *original = (DEBRIS_MATERIAL_PC *)source;
-    if (source == NULL)
+    if (source == NULL) {
         return NULL;
+    }
     material = (DEBRIS_MATERIAL_PC *)NuMtlCreate3D(1);
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
@@ -2443,8 +2588,9 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.filter_mode = (u32)filter_mode & 3;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;
-    if (enable_uv_mode != 0)
+    if (enable_uv_mode != 0) {
         material->secondary.disable_depth_write = 1;
+    }
     material->attribs.unknown_1_1_2 = 1;
     material->attribs.unknown_1_4_8 = 1;
     material->texture_id = original->texture_id;
@@ -2453,6 +2599,7 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
     NuMtlUpdate((NUMTL *)material);
     return (NUMTL *)material;
 }
+
 void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end,
                           char *texture_name, i32 chunk_count, i32 glass_chunk_count, i32 key_count, i32 effect_count) {
     i32 i;
@@ -2557,8 +2704,9 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     NuMtlUpdate(DebMat[7]);
     DebMat[8] = CreateCopyMat(DebMat[0], 0, 6, 0, 1);
     for (i = 0; debtab[i] != NULL; ++i) {
-        if (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor == 0)
+        if (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor == 0) {
             ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor = 1;
+        }
         ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.rate =
             (f32)((((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_frames * 60) /
                   ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor);
@@ -2573,17 +2721,20 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
         debtab[i]->texture_v0 += 524288.0;
         debtab[i]->texture_v1 += 524288.0;
     }
-    for (i = 0; i < debinf_count; ++i)
+    for (i = 0; i < debinf_count; ++i) {
         effecttypes[i].native_data = NULL;
+    }
     freeDmaDebType = 0;
     if (debris_suspended == 0) {
-        if (trash_buffer != NULL)
+        if (trash_buffer != NULL) {
             DebrisTrashableSetup(trash_buffer, &trash_end);
-        else
+        } else {
             DebrisTrashableSetup(buffer, &buffer_end);
+        }
     }
-    for (i = 0; i < maxdebkeys; ++i)
+    for (i = 0; i < maxdebkeys; ++i) {
         freedebkeys[i] = (i16)i;
+    }
     for (i = 0; i < maxdebkeys; ++i) {
         debkeydata[i].finite = 0;
         debkeydata[i].particle_cursor = 0;
@@ -2623,8 +2774,9 @@ void __cdecl PartTimeSlip(void) {
         }
     }
     for (i = 0; i < 128; ++i) {
-        if (types[i].effect_ids[0] != -1)
+        if (types[i].effect_ids[0] != -1) {
             types[i].last_used_time -= 800.0f;
+        }
     }
     partglobaltime -= 800.0f;
 }
@@ -2648,10 +2800,12 @@ void __cdecl PartCleanupTypes(void) {
             part_types[PartCleanupCursorPrivate].effect_ids[0] = -1;
             --part_types_used;
         }
-        if (++PartCleanupCursorPrivate >= 128)
+        if (++PartCleanupCursorPrivate >= 128) {
             PartCleanupCursorPrivate = 0;
+        }
     }
 }
+
 i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     i32 closest_index;
     i32 i;
@@ -2659,12 +2813,15 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     f32 ratio;
     f32 closest_distance;
     // Retail uses this inclusive upper check; loaded type IDs are 0..127.
-    if (effect_index < 1)
+    if (effect_index < 1) {
         return -1;
-    if (effect_index > 128)
+    }
+    if (effect_index > 128) {
         return -1;
-    if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1)
+    }
+    if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1) {
         return -1;
+    }
     if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale != 1.0f) {
         // The final word identifies the original, unscaled type.
         effect_index = ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].field_174;
@@ -2681,10 +2838,11 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
 
     if (result == 0) {
         ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale;
-        if (ratio <= 1.0f)
+        if (ratio <= 1.0f) {
             ratio = 1.0f - ratio;
-        else
+        } else {
             ratio = ratio - 1.0f;
+        }
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
@@ -2698,8 +2856,9 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
                 }
             }
         }
-        if (closest_index != 0 && closest_distance < 1.1f)
+        if (closest_index != 0 && closest_distance < 1.1f) {
             return closest_index;
+        }
         for (i = 0; i < 128; ++i) {
             PART_RUNTIME_TYPE_PC *scaled;
             PART_RUNTIME_TYPE_PC *source;
@@ -2725,16 +2884,18 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
             result = i;
             break;
         }
-        if (result == 0)
+        if (result == 0) {
             result = closest_index;
+        }
     }
     return result;
 }
 
 i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 scale) {
     i32 scaled = CreateScaledPARTEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddFiniteShotPART(scaled, position, count);
+    }
     return scaled;
 }
 
@@ -2742,19 +2903,23 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 count, i;
     char *special_name;
-    if (name[0] == 0)
+    if (name[0] == 0) {
         return -1;
-    if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0)
+    }
+    if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0) {
         return 9999;
-    if (scene == NULL)
+    }
+    if (scene == NULL) {
         return -1;
+    }
     count = NuGScnNumSpecials(scene);
     for (i = 0; i < count; ++i) {
         NuGScnGetSpecial(&special, scene, i);
         if (NuSpecialExistsFn(&special)) {
             special_name = NuSpecialGetName(&special);
-            if (NuStrNCmp(name, special_name, 16) == 0)
+            if (NuStrNCmp(name, special_name, 16) == 0) {
                 return i;
+            }
         }
     }
     return -1;
@@ -2767,15 +2932,18 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
     char mode;
     EdFileRead(type->name, 16);
     if (version >= 6) {
-        for (i = 0; i < 8; ++i)
+        for (i = 0; i < 8; ++i) {
             type->effect_pages[i] = EdFileReadChar();
+        }
     } else {
-        if (version >= 2)
+        if (version >= 2) {
             type->effect_pages[0] = EdFileReadChar();
-        else
+        } else {
             type->effect_pages[0] = 0;
-        for (i = 1; i < 8; ++i)
+        }
+        for (i = 1; i < 8; ++i) {
             type->effect_pages[i] = -1;
+        }
     }
     if (version >= 6) {
         for (i = 0; i < 8; ++i) {
@@ -2783,8 +2951,9 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
             type->effect_ids[i] = -1;
             if (type->effect_pages[i] == 0) {
                 for (scene = 0; scene < 32; ++scene) {
-                    if (part_scene_pageid[scene] == page)
+                    if (part_scene_pageid[scene] == page) {
                         type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+                    }
                     if (type->effect_ids[i] != -1) {
                         type->scene_indices[i] = scene;
                         break;
@@ -2792,24 +2961,27 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
                 }
             } else if (type->effect_pages[i] == 1) {
                 for (scene = 0; scene < 32; ++scene) {
-                    if (part_scene_pageid[scene] == 0)
+                    if (part_scene_pageid[scene] == 0) {
                         type->effect_ids[i] = edpartLookupObjectInScene(type->object_names[i], part_scene[scene]);
+                    }
                     if (type->effect_ids[i] != -1) {
                         type->scene_indices[i] = scene;
                         break;
                     }
                 }
             }
-            if (type->effect_ids[i] == -1 && type->object_names[i][0] != 0)
+            if (type->effect_ids[i] == -1 && type->object_names[i][0] != 0) {
                 type->effect_ids[i] = 9998;
+            }
         }
     } else {
         EdFileRead(type->object_names[0], 16);
         type->effect_ids[0] = -1;
         if (type->effect_pages[0] == 0) {
             for (scene = 0; scene < 32; ++scene) {
-                if (part_scene_pageid[scene] == page)
+                if (part_scene_pageid[scene] == page) {
                     type->effect_ids[0] = edpartLookupObjectInScene(type->object_names[0], part_scene[scene]);
+                }
                 if (type->effect_ids[0] != -1) {
                     type->scene_indices[0] = scene;
                     break;
@@ -2817,26 +2989,30 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
             }
         } else if (type->effect_pages[0] == 1) {
             for (scene = 0; scene < 32; ++scene) {
-                if (part_scene_pageid[scene] == 0)
+                if (part_scene_pageid[scene] == 0) {
                     type->effect_ids[0] = edpartLookupObjectInScene(type->object_names[0], part_scene[scene]);
+                }
                 if (type->effect_ids[0] != -1) {
                     type->scene_indices[0] = scene;
                     break;
                 }
             }
         }
-        if (type->effect_ids[0] == -1 && type->object_names[0][0] != 0)
+        if (type->effect_ids[0] == -1 && type->object_names[0][0] != 0) {
             type->effect_ids[0] = 9998;
+        }
     }
     type->variant_count = 0;
     for (i = 0; i < 8; ++i) {
-        if (type->effect_ids[i] != -1 && type->effect_ids[i] != 9999)
+        if (type->effect_ids[i] != -1 && type->effect_ids[i] != 9999) {
             ++type->variant_count;
+        }
     }
-    if (version >= 6)
+    if (version >= 6) {
         type->variant_mode = EdFileReadChar();
-    else
+    } else {
         type->variant_mode = 0;
+    }
     if (version >= 16) {
         type->particle_scale = EdFileReadFloat();
         type->effect_scale = EdFileReadFloat();
@@ -2845,17 +3021,19 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         type->effect_scale = 1.0f;
     }
     type->lifetime = EdFileReadFloat();
-    if (version >= 14)
+    if (version >= 14) {
         type->lifetime_random = EdFileReadFloat();
-    else
+    } else {
         type->lifetime_random = 0.0f;
+    }
     type->speed = EdFileReadFloat();
     type->gravity = EdFileReadFloat();
     type->emission_rate = EdFileReadFloat();
-    if (version >= 8)
+    if (version >= 8) {
         type->bounce = EdFileReadFloat();
-    else
+    } else {
         type->bounce = 0.75f;
+    }
     type->position_random.x = EdFileReadFloat();
     type->position_random.y = EdFileReadFloat();
     type->position_random.z = EdFileReadFloat();
@@ -2882,8 +3060,9 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         type->rotation_random[2] = EdFileReadShort();
     }
     type->flags = EdFileReadUnsignedInt();
-    if (type->effect_ids[0] == 9999)
+    if (type->effect_ids[0] == 9999) {
         type->flags |= 0x10;
+    }
     if (version >= 9) {
         EdFileRead(name, 16);
         type->trail_effects[0] =
@@ -2917,14 +3096,15 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         type->attached_effect = -1;
         mode = EdFileReadChar();
         EdFileRead(name, 16);
-        if (mode == 0)
+        if (mode == 0) {
             type->trail_effects[0] =
                 (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
                                               : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
-        else if (mode == 1)
+        } else if (mode == 1) {
             type->attached_effect =
                 (PartLoadParticlePagePc == -1 ? LookupDebrisEffect(name)
                                               : LookupDebrisEffectPageOnly(name, (i8)PartLoadParticlePagePc));
+        }
         type->trail_rates[0] = EdFileReadFloat();
         type->trail_rates[1] = 60.0f;
     } else {
@@ -2959,18 +3139,20 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
             EdFileRead(name, 16);
             type->sounds[i] = GetSfxIdN(name, 16);
         }
-        for (i = 0; i < 4; ++i)
+        for (i = 0; i < 4; ++i) {
             type->sound_modes[i] = EdFileReadChar();
+        }
     } else {
         for (i = 0; i < 4; ++i) {
             type->sounds[i] = -1;
             type->sound_modes[i] = 0;
         }
     }
-    if (version >= 10)
+    if (version >= 10) {
         type->maximum_distance = EdFileReadFloat();
-    else
+    } else {
         type->maximum_distance = 25.0f;
+    }
     if (version >= 15) {
         type->field_160 = EdFileReadFloat();
         type->field_164 = EdFileReadFloat();
@@ -2991,8 +3173,9 @@ void __cdecl edpartDetermineNearest(f32 distance) {
     if (edpart_nearest != -1 && part_emits[edpart_nearest].effect_id != -1) {
         NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[edpart_nearest].position);
         squared_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        if (squared_distance == 0.0f)
+        if (squared_distance == 0.0f) {
             return;
+        }
     }
     edpart_nearest = -1;
     for (i = 0; i < 40; ++i) {
@@ -3009,8 +3192,9 @@ void __cdecl edpartDetermineNearest(f32 distance) {
     edpart_nearest_type = NULL;
     if (edpart_nearest != -1) {
         edpart_nearest_emit = &part_emits[edpart_nearest];
-        if (edpart_nearest_emit->effect_id != -1)
+        if (edpart_nearest_emit->effect_id != -1) {
             edpart_nearest_type = &part_types[edpart_nearest_emit->effect_id];
+        }
     }
 }
 
@@ -3028,14 +3212,17 @@ void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         }
     }
 }
+
 void edpartChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->maximum_distance = ((edui_slider_s *)(item))->value;
+    }
 }
 
 void edpartSetScaleFactor(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edpart_scale_factor = ((edui_slider_s *)(item))->value;
 }
+
 void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 index;
@@ -3067,23 +3254,27 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         parent = menu->parent;
         eduiMenuDetach(menu);
     }
-    if (menu->callback)
+    if (menu->callback) {
         menu->callback(menu, parent);
+    }
 }
 
 void __cdecl edpartChangeTintR(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->field_160 = ((edui_slider_s *)item)->value;
+    }
 }
 
 void __cdecl edpartChangeTintG(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->field_164 = ((edui_slider_s *)item)->value;
+    }
 }
 
 void __cdecl edpartChangeTintB(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->field_168 = ((edui_slider_s *)item)->value;
+    }
 }
 
 void __cdecl edpartCancelTintMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -3092,8 +3283,9 @@ void __cdecl edpartCancelTintMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 void __cdecl edpartChangeInstanceScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edpart_nearest_type)
+    if (edpart_nearest_type) {
         edpart_nearest_type->particle_scale = ((edui_slider_s *)item)->value;
+    }
 }
 
 void __cdecl edpartCancelInstanceScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -3137,8 +3329,9 @@ void __cdecl edpartCancelInstanceSettingsMenu(eduimenu_s *unused0, eduimenu_s *u
 }
 
 void __cdecl edpartInstanceSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (edpart_nearest_type == NULL)
+    if (edpart_nearest_type == NULL) {
         return;
+    }
     edpart_instancesettings_menu =
         eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelInstanceSettingsMenu, "Instance Settings");
     if (edpart_instancesettings_menu != NULL) {
@@ -3163,34 +3356,42 @@ void edpartMultipleCopyCopy(void) {
     extern f32 edpart_copy_size;
     i32 index;
     NUVEC delta;
+
     union {
         f32 value;
         u32 bits;
     } temp;
+
     union {
         f32 value[3];
         u32 bits[3];
     } abs_delta;
+
     edpart_copy_source_count = 0;
     for (index = 0; index < 512; ++index) {
-        if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999)
+        if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999) {
             continue;
+        }
         NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
         temp.value = delta.x;
         abs_delta.bits[0] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[0] <= edpart_copy_size))
+        if (!(abs_delta.value[0] <= edpart_copy_size)) {
             continue;
+        }
         temp.value = delta.y;
         abs_delta.bits[1] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[1] <= edpart_copy_size))
+        if (!(abs_delta.value[1] <= edpart_copy_size)) {
             continue;
+        }
         temp.value = delta.z;
         abs_delta.bits[2] = temp.bits & 0x7fffffff;
-        if (!(abs_delta.value[2] <= edpart_copy_size))
+        if (!(abs_delta.value[2] <= edpart_copy_size)) {
             continue;
+        }
         edpart_copy_source[edpart_copy_source_count++] = index;
-        if (edpart_copy_source_count == 8)
+        if (edpart_copy_source_count == 8) {
             break;
+        }
     }
     edpart_copy_source_vec = PartEditorCameraPosPc;
     edpart_copyroty = 0;
@@ -3203,32 +3404,39 @@ void edpartHighlightNearest(void) {
     NUVEC delta;
     NUVEC offset;
     NUVEC destination;
+
     union {
         f32 value;
         u32 bits;
     } temp;
+
     union {
         f32 value[3];
         u32 bits[3];
     } abs_delta;
+
     if (edpart_copy_mode != 0) {
         edpart_copy_enclosed = 0;
         for (index = 0; index < 512; ++index) {
-            if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999)
+            if (part_emits[index].instance_id == -1 || part_emits[index].instance_id == 99999) {
                 continue;
+            }
             NuVecSub(&delta, &PartEditorCameraPosPc, &part_emits[index].position);
             temp.value = delta.x;
             abs_delta.bits[0] = temp.bits & 0x7fffffff;
-            if (!(abs_delta.value[0] <= edpart_copy_size))
+            if (!(abs_delta.value[0] <= edpart_copy_size)) {
                 continue;
+            }
             temp.value = delta.y;
             abs_delta.bits[1] = temp.bits & 0x7fffffff;
-            if (!(abs_delta.value[1] <= edpart_copy_size))
+            if (!(abs_delta.value[1] <= edpart_copy_size)) {
                 continue;
+            }
             temp.value = delta.z;
             abs_delta.bits[2] = temp.bits & 0x7fffffff;
-            if (!(abs_delta.value[2] <= edpart_copy_size))
+            if (!(abs_delta.value[2] <= edpart_copy_size)) {
                 continue;
+            }
             ++edpart_copy_enclosed;
             edbitsDrawDiagonalCross(part_emits[index].position.x, part_emits[index].position.y,
                                     part_emits[index].position.z, 0.05f, -1, (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
@@ -3253,8 +3461,9 @@ void edpartRender() {
     edcamSet();
     edpartDrawCursor();
     edpartHighlightNearest();
-    if (edpart_active_menu)
+    if (edpart_active_menu) {
         eduiMenuRender(edpart_active_menu);
+    }
 }
 
 void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -3263,8 +3472,9 @@ void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
         char *name = ((edui_textpicker_s *)(item))->value;
         NuStrNCpy(part_types[edpart_create_type].name, name, 16);
         for (index = 0; index < 40; ++index) {
-            if (part_emits[index].effect_id == edpart_create_type)
+            if (part_emits[index].effect_id == edpart_create_type) {
                 NuStrNCpy(part_emits[index].name, name, 16);
+            }
         }
     }
 }
@@ -3288,14 +3498,16 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
                 break;
             }
         }
-        if (page == -1)
+        if (page == -1) {
             return -1;
+        }
     }
     scene_slot = 0;
     for (i = 0; i < scene_count; ++i) {
         if (scenes[i] != NULL) {
-            while (part_scene[scene_slot] != NULL && scene_slot < 32)
+            while (part_scene[scene_slot] != NULL && scene_slot < 32) {
                 ++scene_slot;
+            }
             if (scene_slot < 32) {
                 part_scene[scene_slot] = scenes[i];
                 part_scene_pageid[scene_slot] = page;
@@ -3321,8 +3533,9 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
                 type_count -= skipped_types;
             }
             for (i = 0; i < type_count; ++i) {
-                while (part_types[type_slot].name[0] != 0)
+                while (part_types[type_slot].name[0] != 0) {
                     ++type_slot;
+                }
                 edpartLoadSingleType(&part_types[type_slot], version, page);
                 if (part_types[type_slot].name[0] != 0) {
                     ((PART_RUNTIME_TYPE_PC *)part_types)[type_slot].page = page;
@@ -3330,15 +3543,18 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
                     ++part_types_used;
                 }
             }
-            for (i = 0; i < skipped_types; ++i)
+            for (i = 0; i < skipped_types; ++i) {
                 edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)&discarded_type, version, page);
+            }
             emitter_count = EdFileReadInt();
             emitter_slot = 0;
-            if (emitter_count + part_emits_used > 40)
+            if (emitter_count + part_emits_used > 40) {
                 emitter_count = 40 - part_emits_used;
+            }
             for (i = 0; i < emitter_count; ++i) {
-                while (part_emits[emitter_slot].effect_id != -1)
+                while (part_emits[emitter_slot].effect_id != -1) {
                     ++emitter_slot;
+                }
                 part_emits[emitter_slot].position.x = EdFileReadFloat();
                 part_emits[emitter_slot].position.y = EdFileReadFloat();
                 part_emits[emitter_slot].position.z = EdFileReadFloat();
@@ -3374,12 +3590,14 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
             EdFileClose();
             edpartDetermineNearest(1.0f);
             part_page_used[page] = 1;
-            if (page == 0)
+            if (page == 0) {
                 part_page_on[0] = 1;
-            if (mode == 0)
+            }
+            if (mode == 0) {
                 PartGeneralPagePc = page;
-            else if (mode == 1)
+            } else if (mode == 1) {
                 PartLevelPagePc = page;
+            }
             return page;
         }
         EdFileClose();
@@ -3424,11 +3642,13 @@ void __cdecl UpdatePartEmits(f32 time) {
     i32 last_switch_change = -1;
     for (i = 0; i < 40; ++i) {
         emitter = &part_emits[i];
-        if (part_page_on[emitter->page] == 0 || emitter->effect_id == -1)
+        if (part_page_on[emitter->page] == 0 || emitter->effect_id == -1) {
             continue;
+        }
         type = &((PART_RUNTIME_TYPE_PC *)part_types)[emitter->effect_id];
-        if (type->effect_ids[0] == -1)
+        if (type->effect_ids[0] == -1) {
             continue;
+        }
         interval = 1.0f / type->emission_rate;
         if (emitter->field_44 == 1 && emitter->field_3d != 2) {
             if (emitter->field_46 != -1) {
@@ -3472,8 +3692,9 @@ void __cdecl UpdatePartEmits(f32 time) {
             for (sound = 0; sound < 4; ++sound) {
                 if (type->sounds[sound] != -1) {
                     SetSfxBit_On(type->sounds[sound]);
-                    if (type->sound_modes[sound] == 4)
+                    if (type->sound_modes[sound] == 4) {
                         PlaySfxById(type->sounds[sound], &emitter->position);
+                    }
                 }
             }
         }
@@ -3498,8 +3719,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                                        (type->emission_period + emitter->time_24);
                     if (emitter->field_3c != 0 && emitter->field_3d != 0) {
                         for (sound = 0; sound < 4; ++sound) {
-                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 1)
+                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 1) {
                                 PlaySfxById(type->sounds[sound], &emitter->position);
+                            }
                         }
                     }
                     if (emitter->shots_remaining != 0 && --emitter->shots_remaining == 0) {
@@ -3511,18 +3733,21 @@ void __cdecl UpdatePartEmits(f32 time) {
                     emitter->time_24 = emitter->time_28 + pause;
                     emission_time = emitter->time_24 + 0.001f;
                     emitter->time_20 = emission_time - interval + 0.001f;
-                    if (emitter->field_3d == 2)
+                    if (emitter->field_3d == 2) {
                         emitter->field_3d = 0;
+                    }
                     if (emitter->field_3c != 0 && emitter->field_3d != 0) {
                         for (sound = 0; sound < 4; ++sound) {
-                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 2)
+                            if (type->sounds[sound] != -1 && type->sound_modes[sound] == 2) {
                                 PlaySfxById(type->sounds[sound], &emitter->position);
+                            }
                         }
                     }
                 }
             }
-            if (partglobaltime + time <= emission_time)
+            if (partglobaltime + time <= emission_time) {
                 continue;
+            }
             if (emitter->field_3d != 0 &&
                 (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
                 params = Default_ADDPART;
@@ -3549,19 +3774,20 @@ void __cdecl UpdatePartEmits(f32 time) {
                 params.field_20 = type->bounce;
                 variant = 0;
                 if (type->variant_count != 0) {
-                    if (type->variant_mode == 0)
+                    if (type->variant_mode == 0) {
                         variant = (i32)(NuRandFloatSeeded(&partseed) * 65535.0f) % type->variant_count;
-                    else if (type->variant_mode == 1) {
+                    } else if (type->variant_mode == 1) {
                         // MATCH-EXCEPTION: retail treats field_33 as signed; saga.h declares it u8.
-                        if (++*(i8 *)&emitter->field_33 >= type->variant_count)
+                        if (++*(i8 *)&emitter->field_33 >= type->variant_count) {
                             emitter->field_33 = 0;
+                        }
                         variant = *(i8 *)&emitter->field_33;
                     }
                 }
                 params.part_id = type->effect_ids[variant];
-                if (type->effect_ids[variant] == 9999 || type->effect_ids[variant] == 9998)
+                if (type->effect_ids[variant] == 9999 || type->effect_ids[variant] == 9998) {
                     params.special = NULL;
-                else if (type->effect_ids[variant] != -1) {
+                } else if (type->effect_ids[variant] != -1) {
                     params.special = &special;
                     NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
                 }
@@ -3600,8 +3826,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                 params.field_68 = type->trail_rates[0];
                 params.field_6c = type->trail_rates[1];
                 params.effect_id_70 = type->impact_effect;
-                if (type->impact_part == -1 && type->impact_part_name[0] != 0)
+                if (type->impact_part == -1 && type->impact_part_name[0] != 0) {
                     type->impact_part = PARTLookupType(type->impact_part_name);
+                }
                 params.effect_id_74 = type->impact_part;
                 params.effect_scale = type->effect_scale;
                 params.lighting_scale_x = type->field_160;
@@ -3611,8 +3838,9 @@ void __cdecl UpdatePartEmits(f32 time) {
                 AddPart(&params);
                 if (emitter->field_3c != 0) {
                     for (sound = 0; sound < 4; ++sound) {
-                        if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3)
+                        if (type->sounds[sound] != -1 && type->sound_modes[sound] == 3) {
                             PlaySfxById(type->sounds[sound], &emitter->position);
+                        }
                     }
                 }
                 type->last_used_time = emission_time;
@@ -3621,8 +3849,9 @@ void __cdecl UpdatePartEmits(f32 time) {
             emission_time += interval;
         }
     }
-    for (i = 0; i <= last_switch_change; ++i)
+    for (i = 0; i <= last_switch_change; ++i) {
         debris_object_switches[switch_changes[i][0]] = switch_changes[i][1];
+    }
 }
 
 i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
@@ -3660,8 +3889,9 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
     }
     if ((part->active & 0x60) == 0x20) {
         radius = (part->time_step + time) / PARTSCALEUPTIME * part->radius;
-        if (radius > part->radius)
+        if (radius > part->radius) {
             radius = part->radius;
+        }
         cast_movement = movement;
         hit = PartRayCast(&part->position, &cast_movement, radius, 0);
         if (hit == 0) {
@@ -3670,8 +3900,9 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
         }
         state->impact_material = NewRayCastGetImpactTerrainType();
         if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
-            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
+            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
             goto impact;
+        }
         if (hit > 0x10) {
             part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
             part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
@@ -3687,8 +3918,9 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
     }
     state->impact_material = NewRayCastGetImpactTerrainType();
     if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) &&
-        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4))
+        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
         goto impact;
+    }
     if (hit > 0x10) {
         part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
         part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
@@ -3696,8 +3928,9 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
     }
     {
         radius = (part->time_step - time) / PARTSCALEUPTIME * part->radius;
-        if (!(radius > 0.0f))
+        if (!(radius > 0.0f)) {
             return;
+        }
         part->active = (part->active & ~0x60) | 0x40;
         cast_movement = movement;
         if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
@@ -3705,8 +3938,9 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
             return;
         }
         state->impact_material = NewRayCastGetImpactTerrainType();
-        if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4)
+        if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4) {
             return;
+        }
     }
 impact:
     part->active |= 4;
@@ -3761,24 +3995,27 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
     i32 nearest;
     i32 variant;
     i32 previous;
-    if ((pad->digital_buttons & 0x100) == 0)
+    if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
+    }
     if (pad->digital_buttons & 0x100) {
         nearest = edpart_nearest;
         if (nearest != -1) {
             if (pad->digital_buttons_pressed & 8) {
                 do {
                     ++nearest;
-                    if (nearest == 40)
+                    if (nearest == 40) {
                         nearest = 0;
+                    }
                 } while (part_emits[nearest].effect_id == -1);
                 edpart_nearest = nearest;
             }
             if (pad->digital_buttons_pressed & 2) {
                 do {
                     --nearest;
-                    if (nearest == -1)
+                    if (nearest == -1) {
                         nearest = 39;
+                    }
                 } while (part_emits[nearest].effect_id == -1);
                 edpart_nearest = nearest;
             }
@@ -3798,32 +4035,37 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
             edpart_effect_list = part_types[edpart_create_type].field_b3;
         }
     }
-    if (edpart_snap_enabled)
+    if (edpart_snap_enabled) {
         edcamGetPosAngSnap(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
-    else
+    } else {
         edcamGetPosAng(&PartEditorCameraPosPc, &edpart_cam_ax, &edpart_cam_ay);
+    }
     if ((pad->digital_buttons & 0x100) == 0) {
         if (pad->digital_buttons_pressed & 0x80) {
             edpartOptMenu();
             edpart_active_menu = edpart_opt_menu;
         }
-        if ((pad->digital_buttons_pressed & 0x40) && edpart_copy_mode == 0 && edpart_create_type != -1)
+        if ((pad->digital_buttons_pressed & 0x40) && edpart_copy_mode == 0 && edpart_create_type != -1) {
             AddPARTEffect(edpart_create_type, &PartEditorCameraPosPc);
-        if (pad->digital_buttons & 0x20) {
-            if (edpart_copy_mode != 0)
-                edpartMultipleCopyCopy();
-            else if (edpart_nearest != -1)
-                edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
         }
-        if ((pad->digital_buttons & 0x400) && edpart_copy_mode == 0 && edpart_nearest != -1)
+        if (pad->digital_buttons & 0x20) {
+            if (edpart_copy_mode != 0) {
+                edpartMultipleCopyCopy();
+            } else if (edpart_nearest != -1) {
+                edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+            }
+        }
+        if ((pad->digital_buttons & 0x400) && edpart_copy_mode == 0 && edpart_nearest != -1) {
             edpartPlace(edpart_nearest, &PartEditorCameraPosPc);
+        }
         if (pad->digital_buttons_pressed & 0x10) {
             if (edpart_copy_mode != 0) {
                 edpart_copy_source_count = 0;
                 edpart_copyroty = 0;
             } else {
-                if (edpart_nearest != -1)
+                if (edpart_nearest != -1) {
                     edpartDestroy(edpart_nearest);
+                }
                 edpart_nearest = -1;
             }
         }
@@ -3831,10 +4073,11 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
     if (edpart_copy_mode != 0) {
         edpart_copy_size += pad->analog_left_pad_up / 5000.0f;
         edpart_copy_size -= pad->analog_left_pad_down / 5000.0f;
-        if (edpart_copy_size < 0.05f)
+        if (edpart_copy_size < 0.05f) {
             edpart_copy_size = 0.05f;
-        else if (edpart_copy_size > 2.0f)
+        } else if (edpart_copy_size > 2.0f) {
             edpart_copy_size = 2.0f;
+        }
         edpart_copyroty += pad->analog_left_pad_right;
         edpart_copyroty -= pad->analog_left_pad_left;
     } else {
@@ -3846,11 +4089,13 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
             edpart_roty += pad->analog_left_pad_right;
             edpart_roty -= pad->analog_left_pad_left;
             edpart_rotz += pad->analog_left_pad_up;
-            if (edpart_rotz > 0)
+            if (edpart_rotz > 0) {
                 edpart_rotz = 0;
+            }
             edpart_rotz -= pad->analog_left_pad_down;
-            if (edpart_rotz < -0x8000)
+            if (edpart_rotz < -0x8000) {
                 edpart_rotz = -0x8000;
+            }
         } else if (edpart_dpad_mode == 0) {
             if (pad->digital_buttons & 0x200) {
                 edpart_emitrotz = 0;
@@ -3864,41 +4109,51 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
                 edpart_emitroty += pad->analog_left_pad_right;
                 edpart_emitroty -= pad->analog_left_pad_left;
                 edpart_emitrotz += pad->analog_left_pad_up;
-                if (edpart_emitrotz > 0x8000)
+                if (edpart_emitrotz > 0x8000) {
                     edpart_emitrotz = 0x8000;
+                }
                 edpart_emitrotz -= pad->analog_left_pad_down;
-                if (edpart_emitrotz < -0x8000)
+                if (edpart_emitrotz < -0x8000) {
                     edpart_emitrotz = -0x8000;
+                }
             }
         } else if (edpart_dpad_mode == 3) {
             edpart_refroty += pad->analog_left_pad_right;
             edpart_refroty -= pad->analog_left_pad_left;
             edpart_refrotz += pad->analog_left_pad_up;
-            if (edpart_refrotz > 0)
+            if (edpart_refrotz > 0) {
                 edpart_refrotz = 0;
+            }
             edpart_refrotz -= pad->analog_left_pad_down;
-            if (edpart_refrotz < -0x8000)
+            if (edpart_refrotz < -0x8000) {
                 edpart_refrotz = -0x8000;
+            }
         } else if (edpart_dpad_mode == 2) {
-            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & 0x1000))
+            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & 0x1000)) {
                 edpart_offset += 0.01f;
-            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & 0x4000))
+            }
+            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & 0x4000)) {
                 edpart_offset -= 0.01f;
-            if (edpart_offset < 0.0f)
+            }
+            if (edpart_offset < 0.0f) {
                 edpart_offset = 0.0f;
+            }
         }
     }
-    if (edpart_nearest == -1)
+    if (edpart_nearest == -1) {
         return;
+    }
     edpart_nearest_emit = &part_emits[edpart_nearest];
-    if (edpart_nearest_emit->effect_id != -1)
+    if (edpart_nearest_emit->effect_id != -1) {
         edpart_nearest_type = &part_types[edpart_nearest_emit->effect_id];
+    }
     edpart_nearest_duplicates = 0;
     edpart_nearest_orphans = 0;
     for (variant = 0; variant < 8; ++variant) {
         i16 effect = edpart_nearest_type->effect_ids[variant];
-        if (effect == -1 || effect == 9999)
+        if (effect == -1 || effect == 9999) {
             continue;
+        }
         if (effect == 9998) {
             ++edpart_nearest_orphans;
             continue;
@@ -4269,21 +4524,24 @@ void edpartDrawCursor(void) {
     NuQFntSetColour(system_qfont, 0x80000000);
     if (edpart_readout == 0) {
         if (edpart_copy_mode == 0) {
-            if (edpart_create_type == -1)
+            if (edpart_create_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Current Type: <none>");
-            else
+            } else {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Current Type: %s",
                               part_types[edpart_create_type].name);
-            if (edpart_create_type == -1)
+            }
+            if (edpart_create_type == -1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Current List: <none>");
-            else if (edpart_effect_list == 1)
+            } else if (edpart_effect_list == 1) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Current List: Level");
-            else if (edpart_effect_list == 0)
+            } else if (edpart_effect_list == 0) {
                 NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Current List: General");
+            }
         }
         if (edpart_copy_mode != 0) {
-            if (edpart_copy_enclosed > 8)
+            if (edpart_copy_enclosed > 8) {
                 NuQFntSetColour(system_qfont, 0x80000080);
+            }
             NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Enclosed: %d", edpart_copy_enclosed);
             NuQFntSetColour(system_qfont, 0x80000000);
         } else {
@@ -4348,6 +4606,7 @@ static void PartRuntimeMatrixCopyPrivate(NUMTX *destination, NUMTX *source) {
     destination->m32 = source->m32;
     destination->m33 = source->m33;
 }
+
 static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1,
                                                 NUVEC *direction2, NUVEC *colour2) {
     PCGlobalLightingState.direction[0] = *direction0;
@@ -4358,16 +4617,19 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
     PCGlobalLightingState.intensity[2] = *colour2;
     NuRndrSetDirectionalLightsPS(direction0, colour0, direction1, colour1, direction2, colour2);
 }
+
 void __cdecl DrawParts(i32 keep_offscreen) {
     PART_PC *part = Part;
     i32 i;
     NUMTX scaled, *matrix;
     NUVEC scale;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || (part->flags & 0x1000) != 0)
+        if ((part->active & 1) == 0 || (part->flags & 0x1000) != 0) {
             continue;
-        if (part->draw_fn != NULL && part->draw_fn(part) == 0)
+        }
+        if (part->draw_fn != NULL && part->draw_fn(part) == 0) {
             continue;
+        }
         if ((part->active & 8) != 0) {
             PartRuntimeDirectionalLightsPrivate(&part->lighting[3], &part->lighting[0], &part->lighting[4],
                                                 &part->lighting[1], &part->lighting[5], &part->lighting[2]);
@@ -4386,24 +4648,27 @@ void __cdecl DrawParts(i32 keep_offscreen) {
             scale.x = scale.y = scale.z;
             NuMtxPreScale(matrix, &scale);
         }
-        if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0)
+        if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0) {
             part->active |= 0x600;
-        else if (keep_offscreen == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0))
+        } else if (keep_offscreen == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0)) {
             KillPart(part, 0);
+        }
     }
 }
 
 void AddScaledVariableShotPARTEffect(i32 effect, NUVEC *position, f32 rate, f32 time, NUMTX *orientation, f32 scale) {
     i32 scaled = CreateScaledPARTEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotPARTEffect(scaled, position, rate, time, orientation);
+    }
 }
 
 void edpartDestroyAllPages(void) {
     i32 i;
     for (i = 0; i < 8; ++i) {
-        if (part_page_used[i] != 0)
+        if (part_page_used[i] != 0) {
             edpartClearPage(i);
+        }
     }
 }
 
@@ -4426,46 +4691,53 @@ void UpdateParts(f32 time) {
     NUVEC direction;
     NUMTX mtx;
     partglobaltime += time;
-    if (partglobaltime > 900.0f)
+    if (partglobaltime > 900.0f) {
         PartTimeSlip();
+    }
     PartCleanupTypes();
     part_platimpactcnt = 0;
     UpdatePartEmits(time);
     part = Part;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         state = (PART_TERRAIN_STATE_PC *)part;
-        if ((part->active & 1) == 0)
+        if ((part->active & 1) == 0) {
             continue;
+        }
         PartRuntimeMatrixCopyPrivate(&part->previous_transform, &part->transform);
         part->scale_time += time;
         if ((part->active & 2) == 0) {
             f32 movement_time = time;
             if ((part->flags & 0x400) == 0) {
                 if (time >= part->field_f4) {
-                    if (part->field_e0 < part->radius)
+                    if (part->field_e0 < part->radius) {
                         part->active = (part->active & ~0x40) | 0x20;
-                    else
+                    } else {
                         part->active &= ~0x60;
+                    }
                     if ((part->active & 4) != 0) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
                             PartPlatformImpactListPc[part_platimpactcnt++] = state->platform_id;
                         }
                         if ((part->flags & 0x100) != 0) {
                             part->active |= 2;
-                            if (part->stop_fn != NULL)
+                            if (part->stop_fn != NULL) {
                                 part->stop_fn(part);
-                            if ((part->flags & 1) != 0 || (part->active & 0x10) != 0)
+                            }
+                            if ((part->flags & 1) != 0 || (part->active & 0x10) != 0) {
                                 KillPart(part, 0);
+                            }
                         } else {
                             movement_time -= part->field_f4;
                             part->position.x = part->impact_position.x;
                             part->position.y = part->impact_position.y;
                             part->position.z = part->impact_position.z;
                             FullReflect(&part->impact_normal, &part->velocity, &part->velocity);
-                            if ((part->flags & 0x80) != 0)
+                            if ((part->flags & 0x80) != 0) {
                                 NewPartRotation(part);
-                            if ((part->flags & 0x100000) != 0)
+                            }
+                            if ((part->flags & 0x100000) != 0) {
                                 NewPartOrderedRotation(part);
+                            }
                             part->velocity.x *= part->field_ec;
                             part->velocity.z *= part->field_ec;
                             if (part->impact_normal.y > 0.5f) {
@@ -4474,11 +4746,13 @@ void UpdateParts(f32 time) {
                                         part->velocity.z * part->velocity.z <
                                     PartStopSpeedSquaredPc) {
                                     part->active |= 2;
-                                    if (part->stop_fn != NULL)
+                                    if (part->stop_fn != NULL) {
                                         part->stop_fn(part);
+                                    }
                                     if ((part->flags & 1) != 0 || (part->active & 0x10) != 0 ||
-                                        (part->active & 0x100) != 0)
+                                        (part->active & 0x100) != 0) {
                                         KillPart(part, 0);
+                                    }
                                 } else if ((part->active & 0x100) != 0) {
                                     KillPart(part, 0);
                                 }
@@ -4492,15 +4766,19 @@ void UpdateParts(f32 time) {
                                                             NULL, 1, part->effect_scale);
                             DebrisOrientationMtx(key, &mtx);
                         }
-                        if (part->effect_id_1f8 != -1)
+                        if (part->effect_id_1f8 != -1) {
                             AddFiniteShotPART(part->effect_id_1f8, &part->impact_position, 1);
-                        if (part->impact_fn != NULL)
+                        }
+                        if (part->impact_fn != NULL) {
                             part->impact_fn(part);
+                        }
                     }
-                    if (PartRaycastsEnabledPrivate != 0)
+                    if (PartRaycastsEnabledPrivate != 0) {
                         CastPart(part, PartCollisionIntervalPc);
-                    if ((part->active & 4) != 0 && part->field_f4 <= movement_time)
+                    }
+                    if ((part->active & 4) != 0 && part->field_f4 <= movement_time) {
                         movement_time = 0.0f;
+                    }
                 }
                 part->field_f4 -= movement_time;
             }
@@ -4514,8 +4792,9 @@ void UpdateParts(f32 time) {
                     part->position.z += part->velocity.z * movement_time;
                 }
             }
-            if ((part->active & 0x100) == 0 && part->field_f0 != 2000000.0f && part->position.y < part->field_f0)
+            if ((part->active & 0x100) == 0 && part->field_f0 != 2000000.0f && part->position.y < part->field_f0) {
                 part->active |= 0x100;
+            }
             part->collision_min.x = part->position.x - part->radius;
             part->collision_max.x = part->position.x + part->radius;
             part->collision_min.y = part->position.y - part->radius;
@@ -4531,10 +4810,11 @@ void UpdateParts(f32 time) {
                 }
             } else if (((part->active >> 5) & 3) == 2) {
                 part->time_step -= time;
-                if (part->time_step <= 0.0f)
+                if (part->time_step <= 0.0f) {
                     KillPart(part, 0);
-                else
+                } else {
                     part->field_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
+                }
             }
             if ((part->flags & 0x80) != 0) {
                 for (axis = 0; axis < 2; ++axis) {
@@ -4553,12 +4833,15 @@ void UpdateParts(f32 time) {
                 }
             }
             if ((part->flags & 0x100000) != 0) {
-                if (part->field_124[0] != 0)
+                if (part->field_124[0] != 0) {
                     NuMtxPreRotateX(&part->transform, (i32)((f64)part->field_124[0] * time));
-                if (part->field_124[1] != 0)
+                }
+                if (part->field_124[1] != 0) {
                     NuMtxPreRotateY(&part->transform, (i32)((f64)part->field_124[1] * time));
-                if (part->field_124[2] != 0)
+                }
+                if (part->field_124[2] != 0) {
                     NuMtxPreRotateZ(&part->transform, (i32)((f64)part->field_124[2] * time));
+                }
             }
             if ((part->flags & 0x800) != 0) {
                 direction.x = -part->velocity.x;
@@ -4570,15 +4853,18 @@ void UpdateParts(f32 time) {
             }
         }
         if ((part->active & 1) != 0) {
-            if ((part->flags & 2) != 0 && part->collision_fn != NULL)
+            if ((part->flags & 2) != 0 && part->collision_fn != NULL) {
                 part->collision_fn(part);
+            }
             if ((part->active & 1) != 0) {
-                if (part->update_fn != NULL)
+                if (part->update_fn != NULL) {
                     part->update_fn(part);
+                }
                 if (part->time_remaining > 0.0f) {
                     part->time_remaining -= time;
-                    if (part->time_remaining <= 0.0f)
+                    if (part->time_remaining <= 0.0f) {
                         KillPart(part, 0);
+                    }
                 }
             }
         }
@@ -4591,18 +4877,21 @@ void UpdateParts(f32 time) {
             NuMtxLookAtY(&mtx, &velocity);
             DebrisOrientationMtx(*part->debris_handle, &mtx);
             DebrisEmitterPos(*part->debris_handle, part->position.x, part->position.y, part->position.z);
-            if (((part->flags & 0x200000) != 0 && (part->active & 2) != 0) || (part->flags & 0x1000) != 0)
+            if (((part->flags & 0x200000) != 0 && (part->active & 2) != 0) || (part->flags & 0x1000) != 0) {
                 DebrisStatusAlwaysOff(part->debris_handle);
+            }
         }
         if (time != 0.0f) {
             if ((part->flags & 0x40000) != 0 && part->effect_id_1e0 != -1 &&
-                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0)
+                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e0, &part->position, (i32)(part->field_1e8), time,
                                                    0, 0, NULL, part->effect_scale);
+            }
             if ((part->flags & 0x40000) != 0 && part->effect_id_1e4 != -1 &&
-                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0)
+                !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) && (part->flags & 0x1000) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e4, &part->position, (i32)(part->field_1ec), time,
                                                    0, 0, NULL, part->effect_scale);
+            }
         }
         if (part->lighting_handle != NULL) {
             if ((part->flags & 0x1000) == 0) {
@@ -4615,8 +4904,9 @@ void UpdateParts(f32 time) {
                 rtlDynamicSetPos(*part->lighting_handle, &offscreen);
             }
         }
-        if (part->callback_1ac != NULL)
+        if (part->callback_1ac != NULL) {
             part->callback_1ac(part);
+        }
         part->field_208 = 0;
         if ((part->active & 1) == 0) {
             KillPart(part, 0);
@@ -4630,8 +4920,9 @@ __declspec(noinline) i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, 
                                                                     i16 z_rotation, i16 y_rotation, NUMTX *orientation,
                                                                     f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
-    if (scaled != -1)
+    if (scaled != -1) {
         AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, orientation);
+    }
     return scaled;
 }
 
@@ -4644,10 +4935,12 @@ void __cdecl edpartSetParticlePage(i32 page) {
 }
 
 i32 edpartLookupObject(char *name) {
-    if (edbits_base_scene == NULL)
+    if (edbits_base_scene == NULL) {
         return -1;
+    }
     return edpartLookupObjectInScene(name, edbits_base_scene);
 }
+
 i32 __cdecl edpartLoadPage(char *path, i8 mode, NUGSCN *scene) {
     return edpartLoadPageEx(path, mode, &scene, 1);
 }

@@ -1,8 +1,9 @@
 #include "saga.h"
 
 extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
-    if (descriptor == NULL)
+    if (descriptor == NULL) {
         return;
+    }
     PC_INPUT_CONFIG_PC *config = NULL;
     /* Retail scans 24 table slots although the static table holds 15 configs. */
     for (u32 index = 0; index < 24; ++index) {
@@ -11,8 +12,9 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
             break;
         }
     }
-    if (config == NULL)
+    if (config == NULL) {
         return;
+    }
     for (i32 index = 0; index < 4; ++index) {
         config->axes[index][0] = 10;
         config->axes[index][1] = (u8)descriptor[0];

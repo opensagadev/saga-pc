@@ -33,9 +33,11 @@ STATIC_ASSERT(offsetof(NUMTX, m03) == 0x0c);
 STATIC_ASSERT(offsetof(NUMTX, m13) == 0x1c);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
 typedef struct NuMtxIndexedViewPc {
     f32 elements[4][4];
 } NuMtxIndexedViewPc;
+
 STATIC_ASSERT(sizeof(NuMtxIndexedViewPc) == sizeof(NUMTX));
 STATIC_ASSERT(offsetof(NuMtxIndexedViewPc, elements) == 0);
 STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) == 0x10);
@@ -43,18 +45,21 @@ STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + sizeof(f32) == of
 STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
+
 static __forceinline f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
+
 static __forceinline f32 NuFabs(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
     return rv;
 }
+
 #define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 static i32 curve_points;
@@ -127,6 +132,7 @@ i16 __cdecl NuASin(f32 sin) {
         f32 value;
         u32 bits;
     } magnitude, absolute;
+
     magnitude.value = sin;
     absolute.bits = magnitude.bits & 0x7fffffff;
     abs = absolute.value;
@@ -602,63 +608,73 @@ i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUV
     hi.z = maximum->z + expansion;
     NuVecInvMtxTransform(&a, start, matrix);
     ca = NuPointRelToBoundingBox(&a, &hi, &lo);
-    if (!ca && !intersection)
-        return 1;
-    NuVecInvMtxTransform(&b, end, matrix);
-    cb = NuPointRelToBoundingBox(&b, &hi, &lo);
-    if (!cb && !intersection)
-        return 1;
-    if (!ca && !cb) {
-        if (intersection)
-            intersection->z = intersection->y = intersection->x = 0.0f;
+    if (!ca && !intersection) {
         return 1;
     }
-    if (ca & cb)
+    NuVecInvMtxTransform(&b, end, matrix);
+    cb = NuPointRelToBoundingBox(&b, &hi, &lo);
+    if (!cb && !intersection) {
+        return 1;
+    }
+    if (!ca && !cb) {
+        if (intersection) {
+            intersection->z = intersection->y = intersection->x = 0.0f;
+        }
+        return 1;
+    }
+    if (ca & cb) {
         return 0;
+    }
     NuVecSub(&direction, &b, &a);
     NuVecNorm(&direction, &direction);
     if (ca & 1) {
         NuClipXPlane(&hit, &a, &direction, &hi.x);
         if (hit.y < hi.y && hit.y > lo.y && hit.z < hi.z && hit.z > lo.z) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     } else if (ca & 8) {
         NuClipXPlane(&hit, &a, &direction, &lo.x);
         if (hit.y < hi.y && hit.y > lo.y && hit.z < hi.z && hit.z > lo.z) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     }
     if (ca & 2) {
         NuClipYPlane(&hit, &a, &direction, &hi.y);
         if (hit.x < hi.x && hit.x > lo.x && hit.z < hi.z && hit.z > lo.z) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     } else if (ca & 16) {
         NuClipYPlane(&hit, &a, &direction, &lo.y);
         if (hit.x < hi.x && hit.x > lo.x && hit.z < hi.z && hit.z > lo.z) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     }
     if (ca & 4) {
         NuClipZPlane(&hit, &a, &direction, &hi.z);
         if (hit.x < hi.x && hit.x > lo.x && hit.y < hi.y && hit.y > lo.y) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     } else if (ca & 32) {
         NuClipZPlane(&hit, &a, &direction, &lo.z);
         if (hit.x < hi.x && hit.x > lo.x && hit.y < hi.y && hit.y > lo.y) {
-            if (intersection)
+            if (intersection) {
                 *intersection = hit;
+            }
             return 1;
         }
     }
@@ -718,41 +734,49 @@ void __cdecl NuVec4MtxTransformH(NUVEC4 *out, NUVEC4 *input, NUMTX *matrix) {
 }
 
 void __cdecl NuVec4Max(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
-    if (a->x > b->x)
+    if (a->x > b->x) {
         out->x = a->x;
-    else
+    } else {
         out->x = b->x;
-    if (a->y > b->y)
+    }
+    if (a->y > b->y) {
         out->y = a->y;
-    else
+    } else {
         out->y = b->y;
-    if (a->z > b->z)
+    }
+    if (a->z > b->z) {
         out->z = a->z;
-    else
+    } else {
         out->z = b->z;
-    if (a->w > b->w)
+    }
+    if (a->w > b->w) {
         out->w = a->w;
-    else
+    } else {
         out->w = b->w;
+    }
 }
 
 void __cdecl NuVec4Min(NUVEC4 *out, NUVEC4 *a, NUVEC4 *b) {
-    if (a->x < b->x)
+    if (a->x < b->x) {
         out->x = a->x;
-    else
+    } else {
         out->x = b->x;
-    if (a->y < b->y)
+    }
+    if (a->y < b->y) {
         out->y = a->y;
-    else
+    } else {
         out->y = b->y;
-    if (a->z < b->z)
+    }
+    if (a->z < b->z) {
         out->z = a->z;
-    else
+    } else {
         out->z = b->z;
-    if (a->w < b->w)
+    }
+    if (a->w < b->w) {
         out->w = a->w;
-    else
+    } else {
         out->w = b->w;
+    }
 }
 
 f32 __cdecl NuVec4Mag(NUVEC4 *v) {
@@ -775,27 +799,33 @@ i16 __cdecl NuFloatToHalf(f32 value) {
         f32 value;
         u32 bits;
     } packed;
+
     i32 exponent, mantissa, sign;
     memcpy(&packed.bits, &value, 4);
     sign = packed.bits >> 31;
     exponent = (packed.bits >> 23) & 0xff;
     mantissa = packed.bits & 0x7fffff;
     exponent -= 112;
-    if (exponent < 0)
+    if (exponent < 0) {
         exponent = 0;
-    if (exponent > 31)
+    }
+    if (exponent > 31) {
         exponent = 31;
+    }
     return (i16)((sign << 15) | ((exponent & 31) << 10) | (mantissa >> 13));
 }
 
 f32 __cdecl NuHalfToFloat(i16 value) {
     u16 bits = (u16)value;
+
     union {
         u32 bits;
         f32 value;
     } packed;
-    if (bits == 0)
+
+    if (bits == 0) {
         return 0.0f;
+    }
     packed.bits = ((u32)(bits >> 15) << 31) | ((u32)(((bits >> 10) & 31) + 112) << 23) | ((u32)(bits & 0x3ff) << 13);
     return packed.value;
 }
@@ -1840,6 +1870,7 @@ void __cdecl NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
         f32 value;
         u32 bits;
     } packed;
+
     memcpy(&packed.bits, &input->m00, 4);
     packed.bits &= 0xffffff00u;
     memcpy(&out->m00, &packed.bits, 4);
@@ -1904,27 +1935,30 @@ void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
             f32 previous;
             f32 error;
             f32 *value;
-            if (element % 4 == 3)
+            if (element % 4 == 3) {
                 continue;
+            }
             value = &correction->m00 + element;
             previous = *value;
             *value += step;
             ((u8 *)value)[0] = 0;
             NuMtxMulH(&product, correction, &truncated);
             error = NuMtxSSE(&product, matrix);
-            if (error >= best_error)
+            if (error >= best_error) {
                 *value = previous;
-            else
+            } else {
                 best_error = error;
+            }
             previous = *value;
             *value -= step;
             ((u8 *)value)[0] = 0;
             NuMtxMulH(&product, correction, &truncated);
             error = NuMtxSSE(&product, matrix);
-            if (error >= best_error)
+            if (error >= best_error) {
                 *value = previous;
-            else
+            } else {
                 best_error = error;
+            }
         }
         step *= 0.9f;
     }
@@ -2745,6 +2779,7 @@ i32 __cdecl NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *pla
         f32 value;
         u32 bits;
     } magnitude;
+
     f32 abs_a, abs_b, abs_c;
     magnitude.value = plane->a;
     magnitude.bits &= 0x7fffffff;
@@ -2757,21 +2792,25 @@ i32 __cdecl NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *pla
     abs_c = magnitude.value;
     if (abs_a > abs_b) {
         if (abs_a > abs_c) {
-            if (plane->a <= 0.0f)
+            if (plane->a <= 0.0f) {
                 return NuPtInPolyYZ(pnt, t0, t1, t2);
+            }
             return NuPtInPolyZY(pnt, t0, t1, t2);
         }
-        if (plane->c <= 0.0f)
+        if (plane->c <= 0.0f) {
             return NuPtInPolyXY(pnt, t0, t1, t2);
+        }
         return NuPtInPolyYX(pnt, t0, t1, t2);
     }
     if (abs_b > abs_c) {
-        if (plane->b <= 0.0f)
+        if (plane->b <= 0.0f) {
             return NuPtInPolyZX(pnt, t0, t1, t2);
+        }
         return NuPtInPolyXZ(pnt, t0, t1, t2);
     }
-    if (plane->c <= 0.0f)
+    if (plane->c <= 0.0f) {
         return NuPtInPolyXY(pnt, t0, t1, t2);
+    }
     return NuPtInPolyYX(pnt, t0, t1, t2);
 }
 
@@ -2958,8 +2997,9 @@ f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *poin
     NuVecScale(&projected, &direction, projection);
     NuVecAdd(&projected, &projected, start);
     distance = NuVecDistSqr(&projected, point, &delta);
-    if (closest != NULL)
+    if (closest != NULL) {
         *closest = projected;
+    }
     return distance;
 }
 
@@ -2986,18 +3026,21 @@ f32 NuLineToLineDist(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
 
 i32 __cdecl NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum) {
     i32 result = 0;
-    if (point->x >= maximum->x)
+    if (point->x >= maximum->x) {
         result |= 1;
-    else if (point->x <= minimum->x)
+    } else if (point->x <= minimum->x) {
         result |= 8;
-    if (point->y >= maximum->y)
+    }
+    if (point->y >= maximum->y) {
         result |= 2;
-    else if (point->y <= minimum->y)
+    } else if (point->y <= minimum->y) {
         result |= 16;
-    if (point->z >= maximum->z)
+    }
+    if (point->z >= maximum->z) {
         result |= 4;
-    else if (point->z <= minimum->z)
+    } else if (point->z <= minimum->z) {
         result |= 32;
+    }
     return result;
 }
 
@@ -3661,16 +3704,18 @@ void nugraph_compute_catmull_point(i32 segment_count, f32 parameter, NUVEC *cont
     start = (f32)(segment - 1) / (f32)segment_count;
     fraction = parameter - start;
     fraction *= (f32)segment_count;
-    if (segment == 1)
+    if (segment == 1) {
         p0 = &first;
-    else
+    } else {
         p0 = &control_points[segment - 2];
+    }
     p1 = &control_points[segment - 1];
     p2 = &control_points[segment];
-    if (segment >= segment_count)
+    if (segment >= segment_count) {
         p3 = &last;
-    else
+    } else {
         p3 = &control_points[segment + 1];
+    }
     point->x = 0.5f * (2.0f * p1->x + (p2->x - p0->x) * fraction +
                        (2.0f * p0->x - 5.0f * p1->x + 4.0f * p2->x - p3->x) * (fraction * fraction) +
                        (3.0f * p1->x - p0->x - 3.0f * p2->x + p3->x) * (fraction * fraction * fraction));
@@ -3860,12 +3905,15 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
     NUVEC p3;
     x = x / (graph->x_extent * graph->x_scale);
     x -= graph->x_offset;
-    if (x > 1.0f)
+    if (x > 1.0f) {
         x = 1.0f;
-    if (x < 0.0f)
+    }
+    if (x < 0.0f) {
         x = 0.0f;
-    if (iterations <= 0)
+    }
+    if (iterations <= 0) {
         iterations = 3;
+    }
     for (segment = 1; segment < graph->point_count; ++segment) {
         if (x <= graph->x[segment]) {
             switch (graph->interpolation) {
@@ -4025,6 +4073,7 @@ struct legacy_nugraph_s {
     f32 x_offset;
     f32 y_offset;
 };
+
 STATIC_ASSERT(sizeof(struct legacy_nugraph_s) == 0x154);
 
 i32 nugraphFileLoadGraphOnlyToFile(nugraph_s *graph, NUFILE file) {
@@ -4363,16 +4412,19 @@ void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NU
 f32 __cdecl NuPow(f32 base, f32 exponent) {
     i32 i;
     f32 result;
-    if (base == 0.0f)
+    if (base == 0.0f) {
         return 0.0f;
+    }
     if (NuPowFirstTimePc != 0) {
         NuPowFirstTimePc = 0;
-        for (i = 0; i < 32; ++i)
+        for (i = 0; i < 32; ++i) {
             NuPowBasesPc[i] = FLT_MAX;
+        }
     }
     for (i = 0; i < 32; ++i) {
-        if (NuPowBasesPc[i] == base && NuPowExponentsPc[i] == exponent)
+        if (NuPowBasesPc[i] == base && NuPowExponentsPc[i] == exponent) {
             return NuPowResultsPc[i];
+        }
     }
     result = (f32)exp((double)exponent * log((double)base));
     NuPowBasesPc[NuPowCacheIndexPc] = base;
@@ -4384,8 +4436,9 @@ f32 __cdecl NuPow(f32 base, f32 exponent) {
 
 f32 __cdecl RenderPostPowPc(f32 base, f32 exponent) {
     f32 result;
-    if (base == 0.0)
+    if (base == 0.0) {
         return 0.0;
+    }
     result = NuExp10(RenderPostLogPc(base) * exponent);
     return result;
 }
@@ -4455,14 +4508,17 @@ f32 __cdecl RenderPostLogPc(f32 value) {
     i32 index;
     if (RenderPostLogFirstPc) {
         RenderPostLogTablePc = (f32 *)NuAlloc(36000, NuExp10SourcePathPc, 805);
-        if (RenderPostLogTablePc == NULL)
+        if (RenderPostLogTablePc == NULL) {
             return 0.0f;
-        for (counter = 1000.0f; counter <= 9999.0f; counter += 1.0f)
+        }
+        for (counter = 1000.0f; counter <= 9999.0f; counter += 1.0f) {
             RenderPostLogTablePc[(i32)counter - 1000] = (f32)log10(counter / 1000.0);
+        }
         RenderPostLogFirstPc = 0;
     }
-    if (value <= 0.0f)
+    if (value <= 0.0f) {
         return FLT_MAX;
+    }
     exponent = 3.0f;
     if (value >= 10000.0f) {
         while (value > 10000.0f) {
@@ -4478,8 +4534,9 @@ f32 __cdecl RenderPostLogPc(f32 value) {
     position = value - 1000.0f;
     index = (i32)position;
     fraction = position - index;
-    if (index < 8999)
+    if (index < 8999) {
         return RenderPostLogTablePc[index + 1] * fraction + RenderPostLogTablePc[index] * (1.0f - fraction) + exponent;
+    }
     return RenderPostLogTablePc[index] + exponent;
 }
 
@@ -4488,14 +4545,17 @@ f32 __cdecl NuExp10(f32 value) {
     i32 exponent, index;
     if (NuExp10FirstTimePc) {
         NuExp10TablePc = (f32 *)NuAlloc(40000, NuExp10SourcePathPc, 866);
-        if (NuExp10TablePc == NULL)
+        if (NuExp10TablePc == NULL) {
             return 0.0f;
-        for (counter = 0.0f; counter <= 9999.0f; counter += 1.0f)
+        }
+        for (counter = 0.0f; counter <= 9999.0f; counter += 1.0f) {
             NuExp10TablePc[(i32)counter] = (f32)pow(10.0, counter / 10000.0);
+        }
         NuExp10FirstTimePc = 0;
     }
-    if (value == FLT_MAX)
+    if (value == FLT_MAX) {
         return FLT_MAX;
+    }
     exponent = (i32)value;
     value -= exponent;
     if (value < 0.0f) {
@@ -4505,10 +4565,11 @@ f32 __cdecl NuExp10(f32 value) {
     position = (f32)(value * 10000.0);
     index = (i32)position;
     fraction = position - index;
-    if (index < 9999)
+    if (index < 9999) {
         result = NuExp10TablePc[index + 1] * fraction + NuExp10TablePc[index] * (1.0f - fraction);
-    else
+    } else {
         result = NuExp10TablePc[index];
+    }
     if (exponent > 0) {
         while (exponent > 0) {
             result *= 10.0f;

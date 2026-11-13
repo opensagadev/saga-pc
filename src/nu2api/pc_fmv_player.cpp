@@ -54,15 +54,18 @@ extern "C" void __cdecl FmvSleepPc(i32 duration) {
 extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     f32 opacity = 1.0f;
     NUMTX world, view, projection;
-    if (SoundVoiceEnabledGate == 0)
+    if (SoundVoiceEnabledGate == 0) {
         return;
+    }
     PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
-    if (movie->target != NULL)
+    if (movie->target != NULL) {
         PCDeviceBackend.SetSurfaceRenderTarget(&FmvSurfacePc, 0);
-    else
+    } else {
         PCDeviceBackend.ResetTargets();
-    if (movie->fading != 0)
+    }
+    if (movie->fading != 0) {
         opacity = movie->fade_remaining / movie->fade_duration;
+    }
     RadFmvBeginScenePc(FmvContextPc);
     SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
@@ -99,10 +102,11 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     view.m00 = view.m11 = view.m22 = view.m33 = 1.0f;
     device->methods->set_transform(device, 2, &view);
     RadFmvBlitImagePc(movie->image, movie->x, movie->y, movie->x_scale, movie->y_scale, opacity);
-    if (movie->target == NULL)
+    if (movie->target == NULL) {
         RadFmvEndScenePc(FmvContextPc);
-    else
+    } else {
         device->methods->end_scene(device);
+    }
     if (movie->fading != 0) {
         movie->fade_remaining = (f32)(movie->fade_remaining - (f64)33.333335876464844);
         if (movie->fade_remaining < 0.0f) {
@@ -132,8 +136,9 @@ extern "C" i32 __cdecl FmvInitializePc(HWND window, GRAPHICS_FACTORY_PC *factory
     FmvInitializeFormatsPc();
     factory->methods->get_adapter_display_mode(factory, 0, &mode);
     FmvContextPc = (RADFMV_CONTEXT_PC *)NuAlloc(sizeof(RADFMV_CONTEXT_PC), ".\\pc\\Bink\\dsplay_bink.cpp", 0x173);
-    if (FmvContextPc == NULL)
+    if (FmvContextPc == NULL) {
         return 0;
+    }
     RadFmvInitializeFormatsPc(factory, mode.format, FmvContextPc);
     // GRAPHICS_CAPS_PC.texture_caps is being exposed at its verified PC offset by
     // integration.
@@ -236,12 +241,14 @@ extern "C" void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *movie) {
         if (BinkWait(movie->bink) == 0) {
             FmvDecodePc(movie, movie->image, 3);
             FmvDrawPc(movie);
-            if (movie->bink->frame_number == movie->bink->frames)
+            if (movie->bink->frame_number == movie->bink->frames) {
                 movie->playing = 0;
-            else
+            } else {
                 BinkNextFrame(movie->bink);
-        } else
+            }
+        } else {
             FmvSleepPc(500);
+        }
     } else {
         BinkSetVolume(movie->bink, 0, 0);
         FmvMutedPc = 1;
@@ -251,8 +258,9 @@ extern "C" void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *movie) {
 extern "C" void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *movie) {
     if (FmvContextPc != NULL) {
         PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
-        if (device != NULL)
+        if (device != NULL) {
             ((HRESULT(__stdcall *)(PC_D3D9_DEVICE_PC *, u32, void *))device->methods->set_texture)(device, 0, NULL);
+        }
         PCDeviceBackend.ResetTargets();
     }
     if (movie->image != NULL) {
@@ -275,8 +283,9 @@ extern "C" void __cdecl FmvReleaseImagePc(PC_FMV_MOVIE_PC *movie) {
     if (movie->bink != NULL && movie->image != NULL) {
         if (FmvContextPc != NULL) {
             PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
-            if (device != NULL)
+            if (device != NULL) {
                 device->methods->set_texture(device, 0, NULL);
+            }
         }
         RadFmvDestroyImagePc(movie->image);
         movie->image = NULL;
@@ -287,8 +296,9 @@ extern "C" void __cdecl FmvReleaseImagePc(PC_FMV_MOVIE_PC *movie) {
 /* Recreates the movie image released by FmvReleaseImagePc. */
 extern "C" void __cdecl FmvRestoreImagePc(PC_FMV_MOVIE_PC *movie) {
     if (movie->bink != NULL && FmvContextPc != NULL && movie->restore_image != 0) {
-        if (movie->restore_image & 1)
+        if (movie->restore_image & 1) {
             movie->image = RadFmvCreateImagePc(FmvContextPc, movie->bink->width, movie->bink->height, 0, 256);
+        }
         movie->restore_image = 0;
     }
 }

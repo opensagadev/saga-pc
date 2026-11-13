@@ -3,6 +3,7 @@
 typedef struct MISSION_END_DATA_VIEW_PC {
     i16 find_character;
 } MISSION_END_DATA_VIEW_PC;
+
 typedef struct MISSION_END_SYSTEM_VIEW_PC {
     u8 unknown_00[8];
     f32 elapsed_time;
@@ -13,6 +14,7 @@ typedef struct MENU_INPUT_PAD_PC {
     u32 held, pressed, alternate_held, alternate_pressed;
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
+
 typedef struct MISSION_SYSTEM_READER_PC {
     MISSIONDATA_PC *missions;
     MISSIONDATA_PC *active_mission;
@@ -32,6 +34,7 @@ __declspec(noinline) void __cdecl EndMissionsMenu(void) {
     MenuReset();
     ResetTimer(&JoinInTimer, 0.0f);
 }
+
 static i32 MissionMenuSelectionPc = 0;
 static f32 MissionIconTargetXPc[20] = {0};
 static f32 MissionIconXPc[20] = {0};
@@ -42,19 +45,22 @@ static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initial
     for (index = 0; index < system->count; ++index) {
         // MATCH-EXCEPTION: explicit 0.0f centre term; retail keeps the addition of a 0.0f centre (likely a named
         // constant in the original), which cannot be folded under strict float semantics.
-        if (index < MissionMenuSelectionPc)
+        if (index < MissionMenuSelectionPc) {
             x = 0.0f - MissionIconGapPc - (MissionMenuSelectionPc - index) * MissionIconStepPc;
-        else if (index == MissionMenuSelectionPc)
+        } else if (index == MissionMenuSelectionPc) {
             x = 0.0f;
-        else
+        } else {
             x = 0.0f + MissionIconGapPc + (index - MissionMenuSelectionPc) * MissionIconStepPc;
+        }
         MissionIconTargetXPc[index] = x;
-        if (initialize != 0)
+        if (initialize != 0) {
             MissionIconXPc[index] = x;
-        else
+        } else {
             MissionIconXPc[index] = SeekValF(MissionIconXPc[index], x, 5.0f);
+        }
     }
 }
+
 static f32 MissionsAlphaPc = 0;
 static f32 MissionIconScalePc[20] = {0};
 
@@ -62,12 +68,15 @@ void __cdecl MenuInitMissions(MENU *menu) {
     MISSION_SYSTEM_READER_PC *system = (MISSION_SYSTEM_READER_PC *)MissionSys;
     i32 index;
     MissionsAlphaPc = 0.0f;
-    if (system == NULL)
+    if (system == NULL) {
         return;
-    for (index = 0; index < system->count; ++index)
+    }
+    for (index = 0; index < system->count; ++index) {
         MissionIconScalePc[index] = index == MissionMenuSelectionPc ? 1.0f : 0.0f;
+    }
     MissionIconPositionsPc(system, 1);
 }
+
 f32 MissionBestBrickXPc = -0.15f;
 
 void __cdecl MenuDrawMissions(MENU *menu) {
@@ -77,8 +86,9 @@ void __cdecl MenuDrawMissions(MENU *menu) {
     char time[64], text[64];
     i32 select0, back0, status0, select1, back1, status1;
     (void)menu;
-    if (MenuStopDraw)
+    if (MenuStopDraw) {
         return;
+    }
     alpha = MenuAlpha;
     system = (MISSION_SYSTEM_READER_PC *)MissionSys;
     SmartTextEx(TTab[system->missions[MissionMenuSelectionPc].name_id], 0.0f, MissionNameYPc, 1.0f, MissionNameScalePc,
@@ -102,8 +112,9 @@ void __cdecl MenuDrawMissions(MENU *menu) {
         x = MissionIconXPc[i] - 0.0f;
         *(i32 *)&absolute_x = *(i32 *)&x & 0x7fffffff; /* NuFabs */
         if (!(absolute_x > 1.0f)) {
-            if (absolute_x > 0.5f)
+            if (absolute_x > 0.5f) {
                 opacity *= 1.0f - (absolute_x - 0.5f) * 2.0f;
+            }
             if (opacity > 0.0f) {
                 highlight = i == MissionMenuSelectionPc && menu_flash ? 0.7f : 1.0f;
                 icon_size =
@@ -166,14 +177,16 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
     i32 index;
     f32 remaining;
     (void)menu;
-    if (MenuStopDraw != 0)
+    if (MenuStopDraw != 0) {
         return;
+    }
     if (MissionSys->state == 2) {
         if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
             index = (i8)MissionSys->active_mission->index;
             remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
-            if (remaining < 0.0f)
+            if (remaining < 0.0f) {
                 remaining = 0.0f;
+            }
             Text_MakeTime(remaining, 0, 1, 1, text);
             Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
         }
@@ -198,13 +211,15 @@ void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
     if (netclient == 0 || show_message == 0) {
         system->state = (u8)state;
         SetBonusWinner(qrand() / 0x8000);
-        if (Player[BonusWinner] == NULL || ((((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80) == 0))
+        if (Player[BonusWinner] == NULL || ((((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80) == 0)) {
             BonusWinner = BonusWinner == 0;
+        }
         BonusWinFlag = 0;
         NewMenu(9, -1, -1);
         ResetGameMessages();
-        if (state == 3)
+        if (state == 3) {
             PlaySfx(ScorePanelName, NULL);
+        }
     }
 }
 
@@ -213,10 +228,12 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
     u64 mask;
     i32 index;
     target = FindGameObject(((MISSION_END_DATA_VIEW_PC *)system->active_mission)->find_character, 0, 0, 1, 0);
-    if (((MISSION_END_SYSTEM_VIEW_PC *)system)->elapsed_time < 3.0f)
+    if (((MISSION_END_SYSTEM_VIEW_PC *)system)->elapsed_time < 3.0f) {
         return;
-    if (GetMenuID() == 9)
+    }
+    if (GetMenuID() == 9) {
         return;
+    }
     if (target != NULL) {
         mask = U64_PAIR(target->collision_identity_mask);
     } else {
@@ -233,12 +250,14 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
         candidate = Player[index];
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0 &&
             (U64_PAIR(candidate->collision_contact_mask) & mask) != 0) {
-            if (netclient != 0)
+            if (netclient != 0) {
                 return;
+            }
             system->state = 2;
             SetBonusWinner(qrand() / 0x8000);
-            if (Player[BonusWinner] == NULL || ((((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80) == 0))
+            if (Player[BonusWinner] == NULL || ((((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80) == 0)) {
                 BonusWinner = BonusWinner == 0;
+            }
             BonusWinFlag = 0;
             NewMenu(9, -1, -1);
             ResetGameMessages();
@@ -252,40 +271,45 @@ void __cdecl MenuUpdateMissions(MENU *menu) {
     i32 start = 0, cancel = 0, left = 0, right = 0;
     i32 player, index;
     MISSION_SYSTEM_READER_PC *system;
-    if (MissionSys == NULL)
+    if (MissionSys == NULL) {
         cancel = 1;
+    }
     for (player = 0; player < 2; ++player) {
         MENU_INPUT_PAD_PC *pad;
         u32 pressed, directions;
-        if (start != 0 || cancel != 0)
+        if (start != 0 || cancel != 0) {
             break;
-        if (MissionMenuPacketPc.active_player[player] == 0)
+        }
+        if (MissionMenuPacketPc.active_player[player] == 0) {
             continue;
+        }
         pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[player];
         pressed = pad->pressed;
         if ((pressed & GAMEPAD_MENUSELECT) != 0) {
-            if (MissionMenuPacketPc.active_player[0] == 0 || MissionMenuPacketPc.active_player[1] == 0)
+            if (MissionMenuPacketPc.active_player[0] == 0 || MissionMenuPacketPc.active_player[1] == 0) {
                 start = 1;
-            else if (MissionMenuPacketPc.selected[player] == 0) {
+            } else if (MissionMenuPacketPc.selected[player] == 0) {
                 MissionMenuPacketPc.selected[player] = 1;
-                if (MissionMenuPacketPc.selected[0] != 0 && MissionMenuPacketPc.selected[1] != 0)
+                if (MissionMenuPacketPc.selected[0] != 0 && MissionMenuPacketPc.selected[1] != 0) {
                     start = 1;
-                else
+                } else {
                     GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                }
             }
         } else if ((pressed & GAMEPAD_MENUCANCEL) != 0) {
             if (MissionMenuPacketPc.active_player[0] == 0 || MissionMenuPacketPc.active_player[1] == 0 ||
-                MissionMenuPacketPc.selected[player] == 0)
+                MissionMenuPacketPc.selected[player] == 0) {
                 cancel = 1;
-            else {
+            } else {
                 MissionMenuPacketPc.selected[player] = 0;
                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
             }
         } else if (MissionMenuPacketPc.selected[0] == 0 && MissionMenuPacketPc.selected[1] == 0) {
-            if ((pad->alternate_pressed & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0)
+            if ((pad->alternate_pressed & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0) {
                 left = 1;
-            else if ((pad->alternate_pressed & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0)
+            } else if ((pad->alternate_pressed & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0) {
                 right = 1;
+            }
         }
     }
     if (start != 0) {
@@ -303,22 +327,26 @@ void __cdecl MenuUpdateMissions(MENU *menu) {
         GameAudio_PlaySfx(0x31, NULL, 0, 0);
         EndMissionsMenu();
     } else if (left != 0) {
-        if (MissionMenuSelectionPc > 0)
+        if (MissionMenuSelectionPc > 0) {
             --MissionMenuSelectionPc;
-    } else if (right != 0 && MissionMenuSelectionPc < ((MISSION_SYSTEM_READER_PC *)MissionSys)->count - 1)
+        }
+    } else if (right != 0 && MissionMenuSelectionPc < ((MISSION_SYSTEM_READER_PC *)MissionSys)->count - 1) {
         ++MissionMenuSelectionPc;
+    }
     if (MissionMenuSelectionPc != previous) {
         GameAudio_PlaySfx(0x2f, NULL, 0, 0);
         MissionsAlphaPc = 0.0f;
     } else {
         MissionsAlphaPc += FRAMETIME * 2.0f;
-        if (MissionsAlphaPc > 1.0f)
+        if (MissionsAlphaPc > 1.0f) {
             MissionsAlphaPc = 1.0f;
+        }
     }
     if (MissionSys != NULL) {
-        for (index = 0; index < MissionSys->count; ++index)
+        for (index = 0; index < MissionSys->count; ++index) {
             MissionIconScalePc[index] =
                 SeekValF(MissionIconScalePc[index], index == MissionMenuSelectionPc ? 1.0f : 0.0f, 5.0f);
+        }
         MissionIconPositionsPc((MISSION_SYSTEM_READER_PC *)MissionSys, 0);
     }
 }

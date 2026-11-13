@@ -2,13 +2,17 @@
 
 NULSTHDR *bgproc_procinfo_pool = 0;
 volatile u32 nu_current_thread_id = 0;
+
 /* The PC build has no debug-print lock; both halves are empty. */
 void __cdecl PcDebugPrintUnlock(void) {
 }
+
 void __cdecl PcDebugPrintLock(void) {
 }
+
 void __cdecl PcEnableThreadSwap(void) {
 }
+
 void __cdecl PcDisableThreadSwap(void) {
 }
 
@@ -182,14 +186,16 @@ i32 __cdecl bgprocIsFreezing(void) {
 
 i32 __cdecl bgProcIsBgThread(void) {
     i32 result = 0;
-    if (GetCurrentThreadId() == bgproc_thread_id)
+    if (GetCurrentThreadId() == bgproc_thread_id) {
         result = 1;
+    }
     return result;
 }
 
 BGPROCINFO *__cdecl bgGetProcActive(void) {
-    if (bgproc_active != NULL)
+    if (bgproc_active != NULL) {
         return bgproc_active;
+    }
     return (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);
 }
 

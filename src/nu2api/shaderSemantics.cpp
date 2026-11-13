@@ -11,8 +11,9 @@ extern "C" {
             if ((ShaderUniformRecordsPc[i].fragment_name != NULL &&
                  strcmp(ShaderUniformRecordsPc[i].fragment_name, name) == 0) ||
                 (ShaderUniformRecordsPc[i].vertex_name != NULL &&
-                 strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0))
+                 strcmp(ShaderUniformRecordsPc[i].vertex_name, name) == 0)) {
                 return &ShaderUniformRecordsPc[i];
+            }
         }
         return NULL;
     }

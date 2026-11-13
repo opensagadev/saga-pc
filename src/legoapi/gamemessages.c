@@ -10,14 +10,17 @@ typedef struct coin_packet_pc_s {
     i16 last_coin;
     u8 unknown_0a[2];
 } COIN_PACKET_PC;
+
 typedef struct object_coin_packet_pc_s {
     u8 unknown_000[0x7fc];
     COIN_PACKET_PC *coin_packet;
 } OBJECT_COIN_PACKET_PC;
+
 typedef struct game_save_score_pc_s {
     u8 unknown_0000[0x7c14];
     u32 coins;
 } GAME_SAVE_SCORE_PC;
+
 STATIC_ASSERT(offsetof(COIN_PACKET_PC, coins) == 0);
 STATIC_ASSERT(offsetof(COIN_PACKET_PC, scale) == 4);
 STATIC_ASSERT(offsetof(COIN_PACKET_PC, last_coin) == 8);
@@ -41,8 +44,9 @@ static f32 GameMessagesFdivPc(f32 a, f32 b) {
 
 void __cdecl ResetGameMessages(void) {
     i32 i;
-    for (i = 0; i < 128; ++i)
+    for (i = 0; i < 128; ++i) {
         GameMessage[i].active = 0;
+    }
 }
 
 GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
@@ -72,40 +76,48 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
             }
         }
         ++index;
-        if (index == 128)
+        if (index == 128) {
             index = 0;
+        }
     }
     if (slot_index == -1 && message->allow_temporary != 0) {
         slot = &fallback;
         memset(slot, 0, sizeof(GAME_MESSAGE_PC));
         temporary = 1;
     } else {
-        if (slot_index != -1)
+        if (slot_index != -1) {
             GameMessageIndex = slot_index;
+        }
         slot = &GameMessage[GameMessageIndex];
     }
 found:
     if (slot->active != 0 && slot->score > 0 && (slot->player_index == 0 || slot->player_index == 1) &&
-        slot->end_fn != NULL)
+        slot->end_fn != NULL) {
         slot->end_fn(slot);
+    }
     slot->text = NULL;
     text_index = 0;
     if (message->special != NULL) {
-        if (!NuSpecialExistsFn((NUSPECIALHANDLE *)message->special))
+        if (!NuSpecialExistsFn((NUSPECIALHANDLE *)message->special)) {
             return NULL;
+        }
     } else {
-        if (message->text == NULL)
+        if (message->text == NULL) {
             return NULL;
+        }
         length = NuStrLen(message->text);
         if (message->flags & 0x2000) {
-            if (length < 1)
+            if (length < 1) {
                 return NULL;
+            }
             slot->text = message->text;
         } else {
-            for (; text_index < 0x77 && text_index < length; ++text_index)
+            for (; text_index < 0x77 && text_index < length; ++text_index) {
                 slot->text_buffer[text_index] = message->text[text_index];
-            if (text_index == 0)
+            }
+            if (text_index == 0) {
                 return NULL;
+            }
         }
     }
     slot->text_buffer[text_index] = 0;
@@ -114,19 +126,21 @@ found:
     slot->position_a = slot->position;
     slot->scale_start = slot->scale_initial = message->scale;
     slot->elapsed = 0.0f;
-    if (message->flags & 0x80)
+    if (message->flags & 0x80) {
         slot->duration = 0.0f;
-    else
+    } else {
         slot->duration = message->duration;
+    }
     slot->red = message->red;
     slot->green = message->green;
     slot->blue = message->blue;
     slot->alpha = message->alpha;
     slot->flags = message->flags;
-    if (message->target_position != NULL)
+    if (message->target_position != NULL) {
         slot->target_position = *message->target_position;
-    else
+    } else {
         slot->target_position = *message->position;
+    }
     slot->target_scale = message->target_scale;
     if (slot->flags & 1) {
         slot->has_start_position = 0;
@@ -140,10 +154,11 @@ found:
     slot->active = 1;
     slot->parameter_fc = message->unknown_4f;
     slot->icon = (u16)message->icon;
-    if (message->special != NULL)
+    if (message->special != NULL) {
         slot->special = *(NUSPECIALHANDLE *)message->special;
-    else
+    } else {
         memset(&slot->special, 0, sizeof(slot->special));
+    }
     slot->player_index = message->player_index;
     slot->score = message->score;
     slot->parameter_c4 = message->unknown_30;
@@ -161,8 +176,9 @@ found:
     slot->delay = message->delay;
     slot->scale_multiplier = 1.0f;
     if (temporary) {
-        if (slot->end_fn != NULL)
+        if (slot->end_fn != NULL) {
             slot->end_fn(slot);
+        }
         return NULL;
     }
     return slot;
@@ -191,13 +207,15 @@ void __cdecl UpdateGameMessages(void) {
     u32 flags;
     i32 index, angle;
     for (index = 0; index < 128; ++index, ++message) {
-        if (message->active == 0)
+        if (message->active == 0) {
             continue;
+        }
         if (message->expired != 0) {
             callback = message->end_fn;
             message->active = 0;
-            if (callback != NULL && message->allow_temporary == 0)
+            if (callback != NULL && message->allow_temporary == 0) {
                 callback(message);
+            }
             continue;
         }
         if ((message->flags & 0x80) != 0) {
@@ -210,21 +228,24 @@ void __cdecl UpdateGameMessages(void) {
             message->delay = rounded_time;
             if (rounded_time <= 0.0f) {
                 callback = message->delay_fn;
-                if (callback != NULL)
+                if (callback != NULL) {
                     callback(message);
+                }
             }
             continue;
         }
-        if (!(message->elapsed < message->duration))
+        if (!(message->elapsed < message->duration)) {
             continue;
+        }
         rounded_time = message->elapsed + FRAMETIME;
         message->elapsed = rounded_time;
         if (message->elapsed >= message->duration) {
             callback = message->end_fn;
             message->elapsed = message->duration;
             message->expired = 1;
-            if (callback != NULL && message->allow_temporary != 0)
+            if (callback != NULL && message->allow_temporary != 0) {
                 callback(message);
+            }
         }
         flags = message->flags;
         if ((flags & 0x50) != 0) {
@@ -255,10 +276,11 @@ void __cdecl UpdateGameMessages(void) {
                     (f32)(((f64)message->target_position.z - (f64)message->position_a.z) * (f64)progress +
                           (f64)message->position_a.z);
             }
-            if ((flags & 0x40) != 0)
+            if ((flags & 0x40) != 0) {
                 message->scale_initial =
                     (f32)(((f64)message->target_scale - (f64)message->scale_start) * (f64)progress +
                           (f64)message->scale_start);
+            }
         }
         if ((flags & 0x8000) != 0) {
             angle = (i32)(((f64)message->elapsed / (f64)message->duration) * 16384.0 + 16384.0);
@@ -267,8 +289,9 @@ void __cdecl UpdateGameMessages(void) {
             message->alpha = (u8)(i32)((1.0 - (f64)message->elapsed / (f64)message->duration) * 128.0);
         }
         callback = message->tick_fn;
-        if (callback != NULL)
+        if (callback != NULL) {
             callback(message);
+        }
     }
 }
 
@@ -279,8 +302,9 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
     for (; message != end; ++message) {
         f32 width;
         NUVEC target, transformed;
-        if (message->active == 0 || message->has_start_position != 0)
+        if (message->active == 0 || message->has_start_position != 0) {
             continue;
+        }
         NuCameraTransformScreenClip(&message->start_position, &message->position, 1, NULL);
         if ((message->position.x - camera_position->x) * camera_direction->x +
                 (message->position.y - camera_position->y) * camera_direction->y +
@@ -298,15 +322,15 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
                 message->scale_current = (f32)(width * 0.5249999761581421);
             }
         }
-        if ((message->flags & 2) == 0)
+        if ((message->flags & 2) == 0) {
             message->has_start_position = 1;
+        }
         message->start_position.z = 1.0f;
     }
 }
 
 /* PC561400/1235. Append to render.c (body valid C99), existing native globals. */
 void __cdecl DrawGameMessages(void) {
-
     GAME_MESSAGE_PC *message;
     i32 index;
     for (index = 0; index < 128; ++index) {
@@ -416,8 +440,9 @@ i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *
         if (message->active != 0 && (i8)message->target_is_coin_total == id && message != exclude &&
             (player == -1 || message->player_index == player)) {
             ++count;
-            if (remove != 0)
+            if (remove != 0) {
                 message->active = 0;
+            }
         }
     }
     return count;

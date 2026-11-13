@@ -42,6 +42,7 @@ i64 __cdecl PCThreadMillisecondsPc(void) {
     NuTimeGet(&time);
     return (((i64)time.high << 32) | time.low) / 1000;
 }
+
 void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index) {
     (void)index;
 }

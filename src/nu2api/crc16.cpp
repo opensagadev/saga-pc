@@ -16,16 +16,20 @@ CRC16::CRC16() {
         CRC16TablePC[i] = value;
     }
 }
+
 u32 CRC16::hash(const unsigned char *data, i32 length) {
     i32 crc = 0xffff;
-    for (i32 i = 0; i < length; ++i)
+    for (i32 i = 0; i < length; ++i) {
         crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *data++) & 0xff]) & 0xffff;
+    }
     return crc;
 }
+
 u32 CRC16::hashInverse(const unsigned char *data, i32 length) {
     data += length;
     i32 crc = 0xffff;
-    for (i32 i = 0; i < length; ++i)
+    for (i32 i = 0; i < length; ++i) {
         crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *--data) & 0xff]) & 0xffff;
+    }
     return crc;
 }

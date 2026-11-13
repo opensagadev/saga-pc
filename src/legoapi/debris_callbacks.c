@@ -16,6 +16,7 @@ void __cdecl NuVecMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
 #define ASIN_POW3(x) ((x) * ASIN_POW2(x))
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
+
 /* NuASin polynomial; this unit carries its own instance. */
 i32 __cdecl DebrisNuASin(f32 sin) {
     f32 abs;
@@ -29,6 +30,7 @@ i32 __cdecl DebrisNuASin(f32 sin) {
         f32 value;
         u32 bits;
     } magnitude;
+
     magnitude.value = sin;
     magnitude.bits &= 0x7fffffff;
     abs = magnitude.value;
@@ -53,6 +55,7 @@ i32 __cdecl DebrisNuASin(f32 sin) {
                 ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
            10430.4f;
 }
+
 #undef ASIN_NEG_1_OVER_6
 #undef ASIN_NEG_3_OVER_40
 #undef ASIN_NEG_5_OVER_112

@@ -9,6 +9,7 @@ typedef struct GIZFLOW_LOAD_LEVEL_PC {
     u8 unknown_0f6[0xd];
     u8 max_randoms;
 } GIZFLOW_LOAD_LEVEL_PC;
+
 typedef struct GIZFLOW_TIMER_PC {
     u8 unknown_000[4];
     f32 start_time;
@@ -17,6 +18,7 @@ typedef struct GIZFLOW_TIMER_PC {
     u8 unknown_00b;
     char name[16];
 } GIZFLOW_TIMER_PC;
+
 typedef struct GIZFLOW_RANDOM_PC {
     char name[16];
     i32 output_count;
@@ -25,20 +27,24 @@ typedef struct GIZFLOW_RANDOM_PC {
     u8 flags;
     u8 unknown_039[3];
 } GIZFLOW_RANDOM_PC;
+
 typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
     GIZFLOW_RANDOM_PC *randoms;
     i32 count;
     i32 capacity;
 } GIZFLOW_RANDOM_SYSTEM_PC;
+
 typedef struct GIZFLOW_SPECIAL_PC {
     char name[32];
     GAMEANIMSET *anim_set;
     u8 unknown_024[4];
 } GIZFLOW_SPECIAL_PC;
+
 typedef struct GIZFLOW_SPECIAL_SYSTEM_PC {
     GIZFLOW_SPECIAL_PC *specials;
     i32 count;
 } GIZFLOW_SPECIAL_SYSTEM_PC;
+
 typedef struct GIZFLOW_LOAD_WORLD_PC {
     u8 unknown_000[0x104];
     VARIPTR giz_buffer;
@@ -55,6 +61,7 @@ typedef struct GIZFLOW_LOAD_WORLD_PC {
     GIZFLOW_RANDOM_SYSTEM_PC *randoms;
     GIZFLOW_SPECIAL_SYSTEM_PC *specials;
 } GIZFLOW_LOAD_WORLD_PC;
+
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_timers) == 0xe9);
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_specials) == 0xf5);
 STATIC_ASSERT(offsetof(GIZFLOW_LOAD_LEVEL_PC, max_randoms) == 0x103);
@@ -99,8 +106,9 @@ void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, v
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
     i32 i;
     for (i = 0; i < world->randoms->count; ++i) {
-        if (NuStrLen(world->randoms->randoms[i].name) != 0)
+        if (NuStrLen(world->randoms->randoms[i].name) != 0) {
             AddGizmo(gizmo_sys, type_id, NULL, &world->randoms->randoms[i]);
+        }
     }
 }
 
@@ -110,8 +118,9 @@ char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
 
 i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
     GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
-    if ((random->flags & 1) == 0)
+    if ((random->flags & 1) == 0) {
         return 0;
+    }
     return output_index == random->selected_output;
 }
 
@@ -164,14 +173,17 @@ GIZMO_PC *__cdecl createGizRandom(void *unused, i32 output_count, i32 *weights, 
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
     GIZFLOW_RANDOM_PC *random;
     i32 i;
-    if (world == NULL)
+    if (world == NULL) {
         return NULL;
-    if (world->randoms->count == world->level->max_randoms)
+    }
+    if (world->randoms->count == world->level->max_randoms) {
         return NULL;
+    }
     random = &world->randoms->randoms[world->randoms->count];
     random->output_count = output_count;
-    for (i = 0; i < output_count; ++i)
+    for (i = 0; i < output_count; ++i) {
         random->output_weights[i] = weights[i];
+    }
     NuStrNCpy(random->name, name, 16);
     ++world->randoms->count;
     return AddGizmo(world->gizmo_sys, gizrandom_gizmotype_id, NULL, random);

@@ -11,11 +11,13 @@ typedef struct startup_object_light_pc_s {
     i32 dynamic_light_id;
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT_PC;
+
 typedef struct OBJECT_LIGHT_STATE_GAME_PC {
     NUVEC ambient;
     NUVEC intensity[3];
     NUVEC direction[3];
 } OBJECT_LIGHT_STATE_GAME_PC;
+
 typedef struct GAME_LIGHT_VIEW_PC {
     u8 unknown000[0x285];
     i8 floor_surface;
@@ -23,11 +25,13 @@ typedef struct GAME_LIGHT_VIEW_PC {
     RTL_DATA_PC light_data;
     OBJECT_LIGHT_STATE_GAME_PC lighting_state;
 } GAME_LIGHT_VIEW_PC;
+
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
     f32 field_10, field_14, field_18, field_1c, field_20;
 } BURN_OUT_PC;
+
 typedef struct BURN_SET_PC {
     BURN_PARAMETERS_PC parameters, parameters_copy;
     i32 field_a8, field_ac, field_b0, field_b4;
@@ -37,6 +41,7 @@ typedef struct BURN_SET_PC {
     f32 field_558, field_55c;
     i32 field_560;
 } BURN_SET_PC;
+
 typedef struct LIGHTING_LOAD_WORLD_PC {
     u8 unknown_000[0x104];
     VARIPTR buffer, end_buffer;
@@ -45,6 +50,7 @@ typedef struct LIGHTING_LOAD_WORLD_PC {
     u8 unknown_2ab0[4];
     RTL_SET_PC *rtl_set;
 } LIGHTING_LOAD_WORLD_PC;
+
 extern "C" {
     void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
     extern f32 ShadowLightSplitScalePc, ShadowLightWarpPc, ShadowLightNearOffsetPc;
@@ -53,11 +59,13 @@ extern "C" {
     extern NUVEC ShadowLightUpPc;
     extern i32 ShadowLightSplitCountPc;
 }
+
 struct SHADOW_PLAYER_BOUNDS_PC {
     u8 unknown_000[0x5fc];
     NUVEC center;
     f32 radius;
 };
+
 extern "C" NUCAMERA *__cdecl edmainGetCameraPc(void);
 extern "C" void __cdecl NuLightSpotFadeSet(u32 fade);
 
@@ -141,6 +149,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32 parameter, f32 value) {
             break;
     }
 }
+
 extern "C" {
 
     void __cdecl SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2,
@@ -177,8 +186,9 @@ extern "C" {
         NUVEC4 ambient;
         rtlResetEx(&LevelLightingDataPc, 1);
         rtlApplySetScale(set, &LevelLightingDataPc, (NUVEC *)&global_camera.mtx.m30, NULL, 0x10, 1.0f);
-        if (rtlSpecularValue(&LevelLightingDataPc) == 0.0f)
+        if (rtlSpecularValue(&LevelLightingDataPc) == 0.0f) {
             rtlSetSpecularValue(&LevelLightingDataPc, old_specular);
+        }
         SetLights_RTLDATA(&LevelLightingDataPc, scale);
         rtlSetSpecularLight(&LevelLightingDataPc);
         ambient.x = LevelLightingDataPc.ambient.x;
@@ -219,8 +229,9 @@ extern "C" {
 
     void __cdecl ResetLights(NUVEC *position, RTL_DATA_PC *packet, void *set) {
         rtlResetEx(packet, 1);
-        if (position != NULL)
+        if (position != NULL) {
             rtlApplySetScale(set, packet, position, NULL, -1, 1.0f);
+        }
     }
 
     char *__cdecl rtlGetEnvPath(void) {
@@ -267,8 +278,9 @@ extern "C" {
     void __cdecl InitGameObjectLights(void) {
         STARTUP_OBJECT_LIGHT_PC *objects;
         i32 index;
-        for (index = 0; index < 64; ++index)
+        for (index = 0; index < 64; ++index) {
             ((STARTUP_OBJECT_LIGHT_PC *)Obj)[index].dynamic_light_id = -1;
+        }
         objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             if ((objects[index].flags & 1) && (objects[index].flags & 0x1000)) {
@@ -300,14 +312,15 @@ extern "C" {
         rtlApplySetScale(set, &view->light_data, &object->collision_position, NULL, -1, 1.0f);
         surface_fade =
             object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
-        if (object->flags_ef0 & 0x80)
+        if (object->flags_ef0 & 0x80) {
             object->surface_flag8_scale_pc = surface_fade;
-        else
+        } else {
             object->surface_flag8_scale_pc =
                 SeekLinearF(object->surface_flag8_scale_pc, surface_fade, (f32)((f64)FRAMETIME * 3.0));
-        if (object->flags_ef0 & 0x80)
+        }
+        if (object->flags_ef0 & 0x80) {
             view->lighting_state.ambient = view->light_data.ambient;
-        else {
+        } else {
             view->lighting_state.ambient.x = SeekValF(view->lighting_state.ambient.x, view->light_data.ambient.x, 5.0f);
             view->lighting_state.ambient.y = SeekValF(view->lighting_state.ambient.y, view->light_data.ambient.y, 5.0f);
             view->lighting_state.ambient.z = SeekValF(view->lighting_state.ambient.z, view->light_data.ambient.z, 5.0f);
@@ -331,10 +344,11 @@ extern "C" {
                     SeekValF(view->lighting_state.direction[index].z, view->light_data.direction[index].z, 5.0f);
             }
             if (view->lighting_state.direction[index].x != 0.0f || view->lighting_state.direction[index].y != 0.0f ||
-                view->lighting_state.direction[index].z != 0.0f)
+                view->lighting_state.direction[index].z != 0.0f) {
                 NuVecNorm(&view->lighting_state.direction[index], &view->lighting_state.direction[index]);
-            else
+            } else {
                 view->lighting_state.direction[index] = view->light_data.direction[index];
+            }
         }
         object->flags_ef0 &= ~0x80u;
     }
@@ -420,29 +434,35 @@ extern "C" {
         character = owner->character_data->game_character;
         if (character->flags_090 & 0x8000) {
             red *= GhostLightMul;
-            if (red > 2.0f)
+            if (red > 2.0f) {
                 red = 2.0f;
+            }
             green *= GhostLightMul;
-            if (green > 2.0f)
+            if (green > 2.0f) {
                 green = 2.0f;
+            }
             blue *= GhostLightMul;
-            if (blue > 2.0f)
+            if (blue > 2.0f) {
                 blue = 2.0f;
+            }
         }
         if (red != 1.0f) {
             ambient.x *= red;
-            for (index = 0; index < 3; ++index)
+            for (index = 0; index < 3; ++index) {
                 intensity[index].x *= red;
+            }
         }
         if (green != 1.0f) {
             ambient.y *= green;
-            for (index = 0; index < 3; ++index)
+            for (index = 0; index < 3; ++index) {
                 intensity[index].y *= green;
+            }
         }
         if (blue != 1.0f) {
             ambient.z *= blue;
-            for (index = 0; index < 3; ++index)
+            for (index = 0; index < 3; ++index) {
                 intensity[index].z *= blue;
+            }
         }
         SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
     }
@@ -505,8 +525,9 @@ extern "C" {
                 ++count;
             }
         }
-        if (count > 0)
+        if (count > 0) {
             NuVecScale(center, center, 1.0f / count);
+        }
         return count;
     }
 }
@@ -522,8 +543,9 @@ extern "C" void __cdecl RenderShadowLights(i32 paused) {
         currentScene.dyn_light_count = 1;
         currentScene.dyn_light_ptr = PCShadowCurrentLight;
         currentScene.unknown_40 = 0;
-        if (WORLD->current_gscn != NULL)
+        if (WORLD->current_gscn != NULL) {
             PCShadowCurrentLight->RenderSceneShadowPc(WORLD->current_gscn);
+        }
         ShadowSetClipStatePc(0, previous);
         NuRndrEndScene();
         ShadowMapResetPc();
@@ -531,8 +553,9 @@ extern "C" void __cdecl RenderShadowLights(i32 paused) {
 }
 
 void __cdecl EnableShadowMapRendering(i32 unused) {
-    if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)
+    if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2) {
         ShadowMapEnablePc(PCShadowCurrentLight);
+    }
 }
 
 void __cdecl ResetShadowMapRendering(void) {
@@ -551,6 +574,7 @@ void __cdecl ResetShadowMapRenderingFn(void) {
 void __cdecl EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
 }
+
 extern "C" {
 #pragma data_seg(".data$ShadowLightParametersPc")
     f32 ShadowLightSplitScalePc = 0.9f, ShadowLightWarpPc = 5.0f;
@@ -577,12 +601,14 @@ extern "C" void __cdecl SetShadowLight(void) {
         center.z = (f64)current->mtx.m22 * 2.0 + current->mtx.m32;
         ShadowLightFocusHeightPc = -2.0f;
     } else {
-        if (Players_AveragePos(&center, NULL) == 0)
+        if (Players_AveragePos(&center, NULL) == 0) {
             return;
+        }
         ShadowLightFocusHeightPc = WORLD->shadow_editor->field_30;
     }
-    if (WORLD->shadow_editor == NULL)
+    if (WORLD->shadow_editor == NULL) {
         return;
+    }
     target.x = center.x;
     target.y = ShadowLightFocusHeightPc + center.y;
     target.z = center.z;
@@ -617,8 +643,9 @@ extern "C" void __cdecl SetShadowLight(void) {
         eye.z = (f64)eye.z - 1.5;
         secondary_eye = eye;
     }
-    if (alternate)
+    if (alternate) {
         secondary_strength = 0.5f;
+    }
     if (CutStopInfo != NULL) {
         f32 forward_y = GameCam->render_mtx.m21;
         f32 forward_z = GameCam->render_mtx.m22;
@@ -650,8 +677,9 @@ extern "C" void __cdecl SetShadowLight(void) {
     f32 range = WORLD->shadow_editor->field_20;
     f32 weight32 = weight;
     f32 interpolation = NuPow(weight32, ShadowLightBlendPowerPc);
-    if (alternate)
+    if (alternate) {
         range = 16.0f;
+    }
     f32 splits[3];
     i32 split_count;
     if (CutStopInfo != NULL) {
@@ -667,8 +695,9 @@ extern "C" void __cdecl SetShadowLight(void) {
         splits[1] = distance + (range - distance) * interpolation;
     }
     f32 parameter = WORLD->shadow_editor->field_0c;
-    if (alternate)
+    if (alternate) {
         parameter = secondary_strength;
+    }
     PCShadowCurrentLight->SetParameterfPc(0, parameter);
     PCShadowCurrentLight->SetParameterfPc(1, WORLD->shadow_editor->field_10);
     PCShadowCurrentLight->SetParameterfPc(2, WORLD->shadow_editor->field_14);

@@ -50,19 +50,22 @@ NULNKHDR *__cdecl NuLstAllocFree(NULSTHDR *list) {
     NULNKHDR *node;
     if (list->free != NULL) {
         current_thread = nu_current_thread_id;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadDisableThreadSwap();
+        }
         node = list->free;
         list->free = list->free->next;
-        if (list->free == NULL)
+        if (list->free == NULL) {
             list->free_tail = NULL;
-        else
+        } else {
             list->free->prev = NULL;
+        }
         node->is_used = 1;
         node->prev = NULL;
         ++list->used_count;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadEnableThreadSwap();
+        }
         return node + 1;
     }
     return NULL;
@@ -70,32 +73,38 @@ NULNKHDR *__cdecl NuLstAllocFree(NULSTHDR *list) {
 
 void __cdecl NuLstAtachHead(NULSTHDR *list, NULNKHDR *node) {
     u32 current_thread = nu_current_thread_id;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
+    }
     node->next = list->head;
     node->prev = NULL;
-    if (list->head != NULL)
+    if (list->head != NULL) {
         list->head->prev = node;
-    else
+    } else {
         list->tail = node;
+    }
     list->head = node;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadEnableThreadSwap();
+    }
 }
 
 void __cdecl NuLstAttachTail(NULSTHDR *list, NULNKHDR *node) {
     u32 current_thread = nu_current_thread_id;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
+    }
     node->prev = list->tail;
     node->next = NULL;
-    if (list->tail != NULL)
+    if (list->tail != NULL) {
         list->tail->next = node;
-    else
+    } else {
         list->head = node;
+    }
     list->tail = node;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadEnableThreadSwap();
+    }
 }
 
 NULNKHDR *__cdecl NuLstAllocBefore(NULNKHDR *anchor) {
@@ -105,30 +114,35 @@ NULNKHDR *__cdecl NuLstAllocBefore(NULNKHDR *anchor) {
     --anchor;
     list = anchor->owner;
     current_thread = nu_current_thread_id;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
+    }
     if (list->free != NULL) {
         node = list->free;
         list->free = list->free->next;
-        if (list->free == NULL)
+        if (list->free == NULL) {
             list->free_tail = NULL;
-        else
+        } else {
             list->free->prev = NULL;
+        }
         node->next = anchor;
         node->prev = anchor->prev;
         anchor->prev = node;
-        if (node->prev != NULL)
+        if (node->prev != NULL) {
             node->prev->next = node;
-        else
+        } else {
             list->head = node;
+        }
         node->is_used = 1;
         ++list->used_count;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadEnableThreadSwap();
+        }
         return node + 1;
     }
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadEnableThreadSwap();
+    }
     return NULL;
 }
 
@@ -140,29 +154,34 @@ NULNKHDR *__cdecl NuLstAllocAfter(NULNKHDR *anchor) {
     --anchor;
     list = anchor->owner;
     current_thread = nu_current_thread_id;
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadDisableThreadSwap();
+    }
     if (list->free != NULL) {
         node = list->free;
         list->free = list->free->next;
-        if (list->free == NULL)
+        if (list->free == NULL) {
             list->free_tail = NULL;
-        else
+        } else {
             list->free->prev = NULL;
+        }
         node->prev = anchor;
         node->next = anchor->next;
-        if (node->next != NULL)
+        if (node->next != NULL) {
             node->next->prev = node;
-        else
+        } else {
             list->tail = node;
+        }
         node->is_used = 1;
         ++list->used_count;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadEnableThreadSwap();
+        }
         return node + 1;
     }
-    if (list->safe_thread != current_thread)
+    if (list->safe_thread != current_thread) {
         NuThreadEnableThreadSwap();
+    }
     return NULL;
 }
 
@@ -268,8 +287,9 @@ NULNKHDR *NuLstGetNext(NULSTHDR *list, NULNKHDR *node) {
 NULNKHDR *__cdecl NuLstGetPrev(NULSTHDR *list, NULNKHDR *node) {
     if (node != NULL) {
         --node;
-        if (node->prev != NULL)
+        if (node->prev != NULL) {
             return node->prev + 1;
+        }
     } else if (list->tail != NULL) {
         return list->tail + 1;
     }
@@ -280,15 +300,17 @@ i32 __cdecl NuLstMoveNext(NULSTHDR *list, NULNKHDR *node) {
     NULNKHDR *next;
     --node;
     if (node->next != NULL) {
-        if (node->prev != NULL)
+        if (node->prev != NULL) {
             node->prev->next = node->next;
-        else
+        } else {
             list->head = node->next;
+        }
         node->next->prev = node->prev;
-        if (node->next->next != NULL)
+        if (node->next->next != NULL) {
             node->next->next->prev = node;
-        else
+        } else {
             list->tail = node;
+        }
         next = node->next;
         node->prev = next;
         node->next = next->next;
@@ -302,15 +324,17 @@ i32 __cdecl NuLstMovePrev(NULSTHDR *list, NULNKHDR *node) {
     NULNKHDR *prev;
     --node;
     if (node->prev != NULL) {
-        if (node->next != NULL)
+        if (node->next != NULL) {
             node->next->prev = node->prev;
-        else
+        } else {
             list->tail = node->prev;
+        }
         node->prev->next = node->next;
-        if (node->prev->prev != NULL)
+        if (node->prev->prev != NULL) {
             node->prev->prev->next = node;
-        else
+        } else {
             list->head = node;
+        }
         prev = node->prev;
         node->prev = prev->prev;
         node->next = prev;
@@ -329,25 +353,29 @@ NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
     NULNKHDR *node;
     if (list->free != NULL) {
         current_thread = nu_current_thread_id;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadDisableThreadSwap();
+        }
         node = list->free;
         list->free = node->next;
-        if (list->free == NULL)
+        if (list->free == NULL) {
             list->free_tail = NULL;
-        else
+        } else {
             list->free->prev = NULL;
+        }
         node->next = list->head;
-        if (list->head != NULL)
+        if (list->head != NULL) {
             list->head->prev = node;
-        else
+        } else {
             list->tail = node;
+        }
         node->prev = NULL;
         ++list->used_count;
         list->head = node;
         node->is_used = 1;
-        if (list->safe_thread != current_thread)
+        if (list->safe_thread != current_thread) {
             NuThreadEnableThreadSwap();
+        }
         return node + 1;
     }
     return NULL;
@@ -370,6 +398,7 @@ STATIC_ASSERT(offsetof(NULNKHDR, owner) == 0x0);
 STATIC_ASSERT(offsetof(NULNKHDR, next) == 0x4);
 STATIC_ASSERT(offsetof(NULNKHDR, prev) == 0x8);
 STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
+
 NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
     NULSTHDR *list = NULL;
     u32 stride, bytes;

@@ -15,8 +15,9 @@ extern "C" {
     }
 
     DEBRISPARTICLE_PC *GenDebIndex(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
+        }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
@@ -53,8 +54,9 @@ extern "C" {
         particle->momentum.z += key->momentum.z;
 
         for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
-            if (key->particle_cursor >= key->particle_count)
+            if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
+            }
             DEBRISPARTICLE_PC *trail_particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
             key->particle_cursor++;
             *trail_particle = *particle;
@@ -68,10 +70,12 @@ extern "C" {
     }
 
     DEBRISPARTICLE_PC *GenDebIndexRadial(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
@@ -100,8 +104,9 @@ extern "C" {
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;
         particle->momentum.z = vector.z;
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
         particle->position.z += key->emission_position.z;
@@ -109,23 +114,27 @@ extern "C" {
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
         for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
-            if (key->particle_cursor >= key->particle_count)
+            if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
+            }
             DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
         }
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
+        }
         return particle;
     }
 
     DEBRISPARTICLE_PC *GenDebIndexRadialRotor(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
@@ -155,8 +164,9 @@ extern "C" {
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;
         particle->momentum.z = vector.z;
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
         particle->position.z += key->emission_position.z;
@@ -164,31 +174,37 @@ extern "C" {
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
         for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
-            if (key->particle_cursor >= key->particle_count)
+            if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
+            }
             DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
         }
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
-        if (effect->rotor_speed_x == 0.0f)
+        }
+        if (effect->rotor_speed_x == 0.0f) {
             key->emitter_rotation_x = 0;
-        else
+        } else {
             key->emitter_rotation_x += static_cast<i16>(static_cast<i32>(effect->rotor_speed_x));
-        if (effect->rotor_speed_y == 0.0f)
+        }
+        if (effect->rotor_speed_y == 0.0f) {
             key->emitter_rotation_y = 0;
-        else
+        } else {
             key->emitter_rotation_y += static_cast<i16>(static_cast<i32>(effect->rotor_speed_y));
+        }
         return particle;
     }
 
     DEBRISPARTICLE_PC *GenDebIndexImprovedRadial(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
@@ -223,8 +239,9 @@ extern "C" {
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;
         particle->momentum.z = vector.z;
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
         particle->position.z += key->emission_position.z;
@@ -232,23 +249,27 @@ extern "C" {
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
         for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
-            if (key->particle_cursor >= key->particle_count)
+            if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
+            }
             DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
         }
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
+        }
         return particle;
     }
 
     DEBRISPARTICLE_PC *GenDebIndexRadialStar(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
@@ -257,10 +278,11 @@ extern "C" {
         NUVEC vector;
         i32 angle_y = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->emitter_random_extent.y);
         i32 angle_z = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y) + effect->emitter_random_extent.z);
-        if (effect->scale_in_time != 0.0f && effect->scale_in_time > globaltime - key->last_update_time)
+        if (effect->scale_in_time != 0.0f && effect->scale_in_time > globaltime - key->last_update_time) {
             vector.y = (globaltime - key->last_update_time) / effect->scale_in_time * effect->emitter_random_extent.x;
-        else
+        } else {
             vector.y = effect->emitter_random_extent.x;
+        }
         i32 segment_angle = 0x10000 / static_cast<i8>(effect->radial_segments);
         f32 fraction = static_cast<f32>((angle_y + 0x10000) % segment_angle) / segment_angle;
         i32 phase = static_cast<i32>(fraction * 32768.0);
@@ -284,8 +306,9 @@ extern "C" {
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;
         particle->momentum.z = vector.z;
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
         particle->position.z += key->emission_position.z;
@@ -293,23 +316,27 @@ extern "C" {
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
         for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
-            if (key->particle_cursor >= key->particle_count)
+            if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
+            }
             DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
         }
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
+        }
         return particle;
     }
 
     DEBRISPARTICLE_PC *GenDebIndexBounceY(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];
         DEBRISPARTICLE_PC *particle = &chunk->particles[key->particle_cursor % 32];
         particle->start_time = time;
@@ -356,8 +383,9 @@ extern "C" {
                 debris_control_stack_lock = 0;
             }
         }
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         ++key->particle_cursor;
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
@@ -365,17 +393,20 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
+        }
         return particle;
     }
 
     DEBRISPARTICLE_PC *GenDebIndexBounceXZ(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
         NUVEC normal = {1.0f, 0.0f, 0.0f};
-        if (key->particle_cursor >= key->particle_count)
+        if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
-        if (effect->particle_type == 7)
+        }
+        if (effect->particle_type == 7) {
             return NULL;
+        }
         DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];
         DEBRISPARTICLE_PC *particle = &chunk->particles[key->particle_cursor % 32];
         particle->start_time = time;
@@ -434,8 +465,9 @@ extern "C" {
             /* Retail inlines DebrisReleaseControlStackLock here. */
             debris_control_stack_lock = 0;
         }
-        if (key->momentum_adjuster != NULL)
+        if (key->momentum_adjuster != NULL) {
             key->momentum_adjuster(key, effect, particle);
+        }
         ++key->particle_cursor;
         particle->position.x += key->emission_position.x;
         particle->position.y += key->emission_position.y;
@@ -443,8 +475,9 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        if (effect->native_data == NULL)
+        if (effect->native_data == NULL) {
             GenericDebinfoDmaTypeUpdate(effect);
+        }
         return particle;
     }
 }

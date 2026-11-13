@@ -1,17 +1,21 @@
 #include "saga.h"
 extern i32 configureallcharacters_perm;
+
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *runtime;
     GAMECHARACTERLAYER_PC *layer_scratch;
+
     union {
         u32 flags;
+
         struct {
             u32 flags_low : 6;
             u32 permanent : 1;
             u32 flags_high : 25;
         };
     };
+
     u8 named_layers;
     u8 unknown_11[3];
     i32 effect_count;
@@ -22,6 +26,7 @@ typedef struct CHARCONFIG_PC {
     VARIPTR *arena_end;
     char animation_names[100][40];
 } CHARCONFIG_PC;
+
 STATIC_ASSERT(sizeof(CHARCONFIG_PC) == 0xfc8);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, character) == 0);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, runtime) == 4);
@@ -74,7 +79,9 @@ typedef struct CHARCONFIG_FLAGS094_PC {
     u32 atatheadmovement : 1;
     u32 can_poo : 1;
 } CHARCONFIG_FLAGS094_PC;
+
 STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS094_PC) == 4);
+
 typedef struct CHARCONFIG_FLAGS098_PC {
     u32 can_zap : 1;
     u32 put_weapon_away_on_shoot : 1;
@@ -85,6 +92,7 @@ typedef struct CHARCONFIG_FLAGS098_PC {
     u32 dont_draw_rider : 1;
     u32 unknown_7 : 1;
 } CHARCONFIG_FLAGS098_PC;
+
 STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS098_PC) == 4);
 #define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
@@ -216,17 +224,21 @@ static void CC_scale(NUFPAR_PC *parser) {
 static void CC_layer(NUFPAR_PC *parser) {
     u32 bit;
     i32 i;
-    if ((charconfig.flags & 2) == 0 || charconfig.runtime->layer_count >= 32)
+    if ((charconfig.flags & 2) == 0 || charconfig.runtime->layer_count >= 32) {
         return;
-    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 24)
+    }
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 24) {
         return;
+    }
     NuStrCpy(charconfig.runtime->layers[charconfig.runtime->layer_count].name, parser->word_buffer_ptr);
     bit = NuFParGetInt(parser);
-    if (bit > 31)
+    if (bit > 31) {
         return;
+    }
     for (i = 0; i < charconfig.runtime->layer_count; ++i) {
-        if (charconfig.runtime->layers[i].mask_bit == (i32)bit)
+        if (charconfig.runtime->layers[i].mask_bit == (i32)bit) {
             return;
+        }
     }
     charconfig.runtime->layers[charconfig.runtime->layer_count].mask_bit = (i16)bit;
     charconfig.runtime->layers[charconfig.runtime->layer_count].hierarchy_layer_index = -1;
@@ -321,18 +333,21 @@ static __declspec(noinline) void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANI
         animation->flags &= ~flags;
     }
 }
+
 static __declspec(noinline) void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags) {
     animation->misc_flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->misc_flags &= ~flags;
     }
 }
+
 static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation,
                                                    i32 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
                                                    i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG_PC *effect;
-    if (animation->action_id == -1)
+    if (animation->action_id == -1) {
         return;
+    }
     effect = &effects[*effect_count];
     effect->character_id = character_id;
     effect->debris_id = -1;
@@ -353,33 +368,36 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
     effect->minimum = 0.0f;
     effect->maximum = 0.0f;
     while (NuFParGetLine(parser) != 0) {
-        if (NuFParGetWord(parser) == 0)
+        if (NuFParGetWord(parser) == 0) {
             continue;
+        }
         if (NuStrICmp(parser->word_buffer_ptr, "deb_name") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (perm_debrissys != NULL)
+                if (perm_debrissys != NULL) {
                     effect->debris_id = (i16)FindGameDebris((APIDEBRISSYS_PC *)perm_debrissys, parser->word_buffer_ptr);
-                else
+                } else {
                     effect->debris_id = -1;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "condition") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "on_ground") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "on_ground") == 0) {
                     effect->flags |= 0x10;
-                else if (NuStrICmp(parser->word_buffer_ptr, "under_water") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "under_water") == 0) {
                     effect->flags |= 0x20;
-                else if (NuStrICmp(parser->word_buffer_ptr, "above_water") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "above_water") == 0) {
                     effect->flags |= 0x40;
-                else if (NuStrICmp(parser->word_buffer_ptr, "intersect_water") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "intersect_water") == 0) {
                     effect->flags |= 0x80;
+                }
             }
-        } else if (NuStrICmp(parser->word_buffer_ptr, "in_only") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "in_only") == 0) {
             effect->flags |= 0x100;
-        else if (NuStrICmp(parser->word_buffer_ptr, "not_in") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "not_in") == 0) {
             effect->flags |= 0x200;
-        else if (NuStrICmp(parser->word_buffer_ptr, "player_only") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "player_only") == 0) {
             effect->flags |= 0x400;
-        else if (NuStrICmp(parser->word_buffer_ptr, "num_particles") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "num_particles") == 0) {
             const i32 count = NuFParGetInt(parser);
             if (count > 0) {
                 effect->particle_count = (u8)(count);
@@ -388,22 +406,23 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 ||
                    NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
             effect->frame[0] = NuFParGetFloat(parser);
-        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0) {
             effect->frame[1] = NuFParGetFloat(parser);
-        else if (NuStrICmp(parser->word_buffer_ptr, "random") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "random") == 0) {
             effect->random = (u8)(NuFParGetFloat(parser) * 255.0f);
-        else if (NuStrICmp(parser->word_buffer_ptr, "rumble") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "rumble") == 0) {
             effect->rumble = CharConfigAbsFloat(NuFParGetFloat(parser));
-        else if (NuStrICmp(parser->word_buffer_ptr, "buzz") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "buzz") == 0) {
             effect->shake = CharConfigAbsFloat(NuFParGetFloat(parser));
-        else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0) {
             effect->judder = NuFParGetFloat(parser);
-        else if (NuStrICmp(parser->word_buffer_ptr, "timing") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "timing") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "constant") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "constant") == 0) {
                     effect->flags |= 4;
-                else if (NuStrICmp(parser->word_buffer_ptr, "between") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "between") == 0) {
                     effect->flags |= 8;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_frame") == 0) {
             const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
@@ -416,65 +435,72 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
         } else if (NuStrICmp(parser->word_buffer_ptr, "locators") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 locator = NuAToI(parser->word_buffer_ptr);
-                if (locator <= 15)
+                if (locator <= 15) {
                     effect->locators |= 1u << locator;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "sfx") == 0) {
-            if (NuFParGetWord(parser) != 0)
+            if (NuFParGetWord(parser) != 0) {
                 effect->sound_id = (i16)(GetSfxId(parser->word_buffer_ptr));
-        } else if (NuStrICmp(parser->word_buffer_ptr, "sfx_2d") == 0)
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "sfx_2d") == 0) {
             effect->flags &= ~0x8000u;
-        else if (NuStrICmp(parser->word_buffer_ptr, "volume") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "volume") == 0) {
             effect->minimum = CharConfigAbsFloat(NuFParGetFloat(parser));
             effect->flags |= 0x10000;
         } else if (NuStrICmp(parser->word_buffer_ptr, "surfaces") == 0) {
-            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "non_solid") == 0)
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "non_solid") == 0) {
                 effect->surfaces = ~SURFACEBITS_DUST;
-        } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_surface") == 0)
+            }
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_surface") == 0) {
             effect->flags |= 0x2000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_bottom") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_bottom") == 0) {
             effect->flags |= 0x1000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "at_locator_average") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_locator_average") == 0) {
             effect->flags |= 0x800;
-        else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_layer") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_layer") == 0) {
             effect->flags |= 0x4000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "min_mode") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "min_mode") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
                     effect->flags |= 0x40000;
-                else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
                     effect->flags |= 0x100000;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "max_mode") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
                     effect->flags |= 0x80000;
-                else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
                     effect->flags |= 0x200000;
+                }
             }
-        } else if (NuStrICmp(parser->word_buffer_ptr, "min_val") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "min_val") == 0) {
             effect->minimum = NuFParGetFloat(parser);
-        else if (NuStrICmp(parser->word_buffer_ptr, "max_val") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "max_val") == 0) {
             effect->maximum = NuFParGetFloat(parser);
-        else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_speed") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_speed") == 0) {
             effect->flags |= 0x400000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "left_footprint") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "left_footprint") == 0) {
             effect->flags |= 0x1000000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "right_footprint") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "right_footprint") == 0) {
             effect->flags |= 0x2000000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "use_locator_matrix") == 0)
+        } else if (NuStrICmp(parser->word_buffer_ptr, "use_locator_matrix") == 0) {
             effect->flags |= 0x4000000;
-        else if (NuStrICmp(parser->word_buffer_ptr, "bits_on") == 0) {
+        } else if (NuStrICmp(parser->word_buffer_ptr, "bits_on") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 bit = NuAToI(parser->word_buffer_ptr);
-                if (bit <= 7)
+                if (bit <= 7) {
                     effect->bits_on |= 1u << bit;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "bits_off") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 bit = NuAToI(parser->word_buffer_ptr);
-                if (bit <= 7)
+                if (bit <= 7) {
                     effect->bits_off |= 1u << bit;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0) {
             ++*effect_count;
@@ -488,54 +514,63 @@ static void CC_anim_start(NUFPAR_PC *parser) {
     CHARACTERANIM_CONFIG_PC animation;
     if (charconfig.animation_count >= 100) {
         while (NuFParGetLine(parser) != 0) {
-            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0)
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
                 return;
+            }
         }
         CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED(100, charconfig.character->name);
         return;
     }
-    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 40)
+    if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 40) {
         return;
+    }
 
     NuStrCpy(name, parser->word_buffer_ptr);
 
     memset(&animation, 0, sizeof(animation));
     animation.action_id = -1;
     animation.flags = 6;
-    if ((charconfig.flags & 1) != 0)
+    if ((charconfig.flags & 1) != 0) {
         animation.flags = 14;
+    }
     animation.blend_in_time = 0.2f;
     animation.blend_out_time = 0.2f;
     animation.playback_rate = 30.0f;
     animation.locator = 0xff;
     while (NuFParGetLine(parser) != 0) {
-        if (NuFParGetWord(parser) == 0)
+        if (NuFParGetWord(parser) == 0) {
             continue;
+        }
         if (NuStrICmp(parser->word_buffer_ptr, "action") == 0) {
-            if (NuFParGetWord(parser) != 0)
+            if (NuFParGetWord(parser) != 0) {
                 animation.action_id = (i16)(ActionFromName(parser->word_buffer_ptr));
-            if (animation.action_id == -1)
+            }
+            if (animation.action_id == -1) {
                 return;
+            }
         } else if (NuStrICmp(parser->word_buffer_ptr, "bsa") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
                     animation.flags |= 8;
-                else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                     animation.flags &= ~8u;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "cycle") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
                     animation.flags |= 2;
-                else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                     animation.flags &= ~2u;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "type") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "idle") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "idle") == 0) {
                     animation.flags |= 0x10;
-                else
+                } else {
                     animation.flags &= ~0x10u;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "fpsec") == 0) {
             animation.playback_rate = NuFParGetFloat(parser);
@@ -557,21 +592,23 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                 if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                     animation.flags &= ~0x70100u;
                     break;
-                } else if (NuStrICmp(parser->word_buffer_ptr, "4frames") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "4frames") == 0) {
                     animation.flags |= 0x10000;
-                else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0) {
                     animation.flags |= 0x20000;
-                else if (NuStrICmp(parser->word_buffer_ptr, "shake") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "shake") == 0) {
                     animation.flags |= 0x40000;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "no_headturn") == 0 ||
                    NuStrICmp(parser->word_buffer_ptr, "headturn_off") == 0) {
             animation.flags |= 0x40;
         } else if (NuStrICmp(parser->word_buffer_ptr, "headturn") == 0) {
-            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0)
+            if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                 animation.flags |= 0x40;
-            else
+            } else {
                 animation.flags &= ~0x40u;
+            }
         } else if (NuStrICmp(parser->word_buffer_ptr, "minreps") == 0) {
             animation.minimum_repetitions = (u8)(abs(NuFParGetInt(parser)));
         } else if (NuStrICmp(parser->word_buffer_ptr, "maxreps") == 0) {
@@ -599,16 +636,18 @@ static void CC_anim_start(NUFPAR_PC *parser) {
             animation.flags |= 0x800;
         } else if (NuStrICmp(parser->word_buffer_ptr, "gun") == 0) {
             if (NuFParGetWord(parser) != 0) {
-                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0)
+                if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
                     animation.flags |= 0x800;
-                else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0)
+                } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                     animation.flags |= 0x400;
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "locator") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 const u32 locator = NuAToI(parser->word_buffer_ptr);
-                if (locator <= 15)
+                if (locator <= 15) {
                     animation.locator = (u8)(locator);
+                }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "is_punch") == 0) {
             CC_SetAnimMiscFlags(parser, &animation, 1);
@@ -620,31 +659,36 @@ static void CC_anim_start(NUFPAR_PC *parser) {
             CC_SetAnimMiscFlags(parser, &animation, 8);
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
             if ((charconfig.flags & 0x40) != 0 && (charconfig.flags & 0x20) != 0) {
-                if (charconfig.effect_count < 32)
+                if (charconfig.effect_count < 32) {
                     CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch,
                                       &charconfig.effect_count);
+                }
             } else {
                 while (NuFParGetLine(parser) != 0) {
-                    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0)
+                    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0) {
                         break;
+                    }
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
-            if (animation.action_id == -1)
+            if (animation.action_id == -1) {
                 return;
+            }
             if ((charconfig.flags & 0x20) != 0) {
                 NuStrCpy(charconfig.animation_names[charconfig.animation_count], name);
                 charconfig.character->animations[charconfig.animation_count++] = animation;
                 charconfig.arena->addr += sizeof(animation);
                 return;
             }
-            if (charconfig.character->animations == NULL)
+            if (charconfig.character->animations == NULL) {
                 return;
+            }
             {
                 i32 index = 0;
                 while (charconfig.character->animations[index].name != NULL &&
-                       NuStrICmp(charconfig.character->animations[index].name, name) != 0)
+                       NuStrICmp(charconfig.character->animations[index].name, name) != 0) {
                     ++index;
+                }
                 if (index < charconfig.character->animation_count &&
                     charconfig.character->animations[index].name != NULL) {
                     CHARACTERANIM_CONFIG_PC *existing = &charconfig.character->animations[index];
@@ -855,14 +899,16 @@ static void CC_sfx_sabre(NUFPAR_PC *parser) {
 
 static void CC_sfx_misc(NUFPAR_PC *parser) {
     i32 index = 0;
-    while (index < 6 && charconfig.runtime->sfx_misc[index] != -1)
+    while (index < 6 && charconfig.runtime->sfx_misc[index] != -1) {
         ++index;
+    }
     if (index < 6 && NuFParGetWord(parser) != 0) {
         charconfig.runtime->sfx_misc[index] = (i16)(GetSfxId(parser->word_buffer_ptr));
     }
     index++;
-    if (index < 6)
+    if (index < 6) {
         charconfig.runtime->sfx_misc[index] = -1;
+    }
 }
 
 static void CC_clear_sfx_misc(NUFPAR_PC *parser) {
@@ -1469,10 +1515,11 @@ static void CC_headrotrate(NUFPAR_PC *parser) {
 
 static void CC_coin_value(NUFPAR_PC *parser) {
     i32 value = NuFParGetInt(parser);
-    if (value > 10000)
+    if (value > 10000) {
         value = 10000;
-    else if (value < 0)
+    } else if (value < 0) {
         value = 0;
+    }
     charconfig.runtime->coin_value = (i16)(value / 10) * 10;
 }
 
@@ -1706,8 +1753,9 @@ i32 configureallcharacters_perm = 0;
 char MiniBuffer[0x4000] = {0};
 
 static f32 CharConfigFdivPc(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f)
+    if (a == 0.0f || b == 0.0f) {
         return 0.0f;
+    }
     return a / b;
 }
 
@@ -1716,10 +1764,12 @@ static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
     NUFPAR_PC *parser = NuFParCreateMem("redirect", text, 0xffff);
     if (parser != NULL) {
         while (NuFParGetLine(parser) != 0) {
-            if (Text_StripComments(parser->line_buffer_ptr, parser->line_buffer_ptr, 1) == 0)
+            if (Text_StripComments(parser->line_buffer_ptr, parser->line_buffer_ptr, 1) == 0) {
                 continue;
-            if (NuFParGetWord(parser) == 0)
+            }
+            if (NuFParGetWord(parser) == 0) {
                 continue;
+            }
             if (NuStrICmp(parser->word_buffer_ptr, "txt_file") == 0) {
                 if (result == 0 && NuFParGetWord(parser) != 0 &&
                     NuStrLen(parser->word_buffer_ptr) < filename_capacity) {
@@ -1766,18 +1816,21 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         buffer = text;
         length = text_length;
     } else {
-        if (directory == NULL)
+        if (directory == NULL) {
             goto done;
+        }
         NuStrCpy(path, directory);
         NuStrCat(path, filename);
         buffer = MiniBuffer;
         size = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
-        if (size <= 0)
+        if (size <= 0) {
             goto done;
+        }
         MiniBuffer[size] = 0;
         length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
-        if (length <= 0)
+        if (length <= 0) {
             goto done;
+        }
         if (redirect != 0) {
             redirected = RedirectTextFile(MiniBuffer, redirected_name, sizeof(redirected_name));
             if (redirected != 0) {
@@ -1788,13 +1841,15 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
                 if (length > 0) {
                     MiniBuffer[length] = 0;
                     length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
-                } else
+                } else {
                     redirected = 0;
+                }
             }
         }
     }
-    if (length <= 0)
+    if (length <= 0) {
         goto done;
+    }
 
     memset(&charconfig, 0, sizeof(charconfig));
     charconfig.character_id = (i16)(character_id);
@@ -1812,8 +1867,9 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         data->layers = layers;
         charconfig.runtime->layer_count = 0;
         charconfig.flags |= 2;
-    } else
+    } else {
         charconfig.named_layers = data->layer_count > 0;
+    }
     if (charconfig.character->animations == NULL && charconfig.arena != NULL && charconfig.arena_end != NULL) {
         charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
         charconfig.character->animations = (CHARACTERANIM_CONFIG_PC *)charconfig.arena->void_ptr;
@@ -1823,14 +1879,16 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     if (parser != NULL) {
         NuFParPushCom2(parser, ConfigChar_Keywords, game_keywords);
         while (NuFParGetLine(parser) != 0) {
-            if (NuFParGetWord(parser) != 0)
+            if (NuFParGetWord(parser) != 0) {
                 NuFParInterpretWord(parser);
+            }
         }
         NuFParDestroy(parser);
     }
     charconfig.character->model_flags |= 1;
-    if ((charconfig.flags & 4) != 0 && (charconfig.flags & 8) == 0)
+    if ((charconfig.flags & 4) != 0 && (charconfig.flags & 8) == 0) {
         charconfig.runtime->turn_rate_2 = charconfig.runtime->turn_rate;
+    }
     if ((charconfig.flags & 0x10) == 0 && (charconfig.character->model_flags & 0x2000) != 0) {
         for (i = 0; i < 4; ++i) {
             charconfig.runtime->ai_update_distances[i] = vehicle_timebase_dist[i];
@@ -1874,8 +1932,9 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             charconfig.arena->addr += 32;
             for (bit = 0; bit < 32; ++bit) {
                 for (layer = 0; layer < charconfig.runtime->layer_count; ++layer) {
-                    if (charconfig.runtime->layers[layer].mask_bit == bit)
+                    if (charconfig.runtime->layers[layer].mask_bit == bit) {
                         charconfig.runtime->layer_lookup[bit] = (i8)layer;
+                    }
                 }
             }
         }
@@ -1900,15 +1959,17 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         VARIPTR cursor;
         cursor.addr = superbuffer_end.addr - 0x100000;
         pak = NuFilePakLoad("chars\\charstxt.fpk", &cursor, superbuffer_end, 4);
-    } else
+    } else {
         pak = NULL;
+    }
     for (id = 0, character = CDataList; id < CHARCOUNT; ++id, ++character) {
         i32 item;
         i32 result;
         i32 end;
         char saved;
-        if (permanent == 0 && apicharsys->playermodelids[id] == -1)
+        if (permanent == 0 && apicharsys->playermodelids[id] == -1) {
             continue;
+        }
         NuStrCpy(path, "chars\\");
         NuStrCat(path, character->dir);
         NuStrCat(path, "\\");
@@ -1929,29 +1990,32 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                     ((char *)address)[end] = 0;
                     size = Text_StripComments(address, ConfigBuffer.bytes, 1);
                     ((char *)address)[end] = saved;
-                    if (size <= 0)
+                    if (size <= 0) {
                         continue;
+                    }
                     result = RedirectTextFile(address, filename, 64);
                     if (result != 0) {
                         NuStrCat(filename, ".txt");
                         NuStrCpy(path, directory);
                         NuStrCat(path, filename);
                         item = NuFilePakGetItem(pak, path);
-                        if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0)
+                        if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0) {
                             result = 0;
-                        else {
+                        } else {
                             end = size;
                             saved = ((char *)address)[end];
                             ((char *)address)[end] = 0;
                             size = Text_StripComments(address, ConfigBuffer.bytes, 1);
                             ((char *)address)[end] = saved;
-                            if (size <= 0)
+                            if (size <= 0) {
                                 result = 0;
+                            }
                         }
                     }
-                    if (size > 0)
+                    if (size > 0) {
                         CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0,
                                    game_keywords);
+                    }
                 } else {
                     CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED();
                     continue;
@@ -1964,19 +2028,22 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             result = CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL,
                                 permanent != 0 ? &permbuffer_end : NULL, permanent != 0, NULL, 0, 1, game_keywords);
         }
-        if (result != 2)
+        if (result != 2) {
             continue;
+        }
         if (pak != NULL) {
             item = NuFilePakGetItem(pak, original_path);
-            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0)
+            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0) {
                 continue;
+            }
             end = size;
             saved = ((char *)address)[end];
             ((char *)address)[end] = 0;
             size = Text_StripComments(address, ConfigBuffer.bytes, 1);
             ((char *)address)[end] = saved;
-            if (size <= 0)
+            if (size <= 0) {
                 continue;
+            }
             SecondCharConfigure = 1;
             CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, size, 0, game_keywords);
         } else {
@@ -1986,6 +2053,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         }
     }
 }
+
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);

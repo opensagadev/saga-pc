@@ -85,30 +85,35 @@ void __cdecl GamePads_Init(void) {
 f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
     i32 index, current_delta, previous_delta;
-    if (object == Player[0])
+    if (object == Player[0]) {
         index = 0;
-    else if (object == Player[1])
+    } else if (object == Player[1]) {
         index = 1;
-    else
+    } else {
         return 0.0f;
+    }
     pad = object->pad;
     if (pad->input_magnitude != 0.0f && PlayerPadCurrentSpeed[index] != 0.0f && PlayerPadPreviousSpeed[index] != 0.0f) {
         current_delta = RotDiff(PlayerPadCurrentAngle[index], pad->input_angle);
         previous_delta = RotDiff(PlayerPadPreviousAngle[index], PlayerPadCurrentAngle[index]);
         if ((current_delta < 0 && previous_delta < 0 && current_delta > -0x2000 && previous_delta > -0x2000) ||
-            (current_delta > 0 && previous_delta > 0 && current_delta < 0x2000 && previous_delta < 0x2000))
+            (current_delta > 0 && previous_delta > 0 && current_delta < 0x2000 && previous_delta < 0x2000)) {
             return (f32)(((f64)current_delta * (1.0 / 65536.0)) / FRAMETIME);
+        }
     }
     return 0.0f;
 }
 
 i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
-    if (pad->input_magnitude != 0.0f && abs(RotDiff(pad->previous_input_angle, pad->input_angle)) > 0x2000)
+    if (pad->input_magnitude != 0.0f && abs(RotDiff(pad->previous_input_angle, pad->input_angle)) > 0x2000) {
         return 1;
-    if (pad->input_magnitude != 0.0f && pad->previous_input_magnitude == 0.0f)
+    }
+    if (pad->input_magnitude != 0.0f && pad->previous_input_magnitude == 0.0f) {
         return 1;
-    if (pad->input_magnitude == 0.0f && pad->previous_input_magnitude != 0.0f)
+    }
+    if (pad->input_magnitude == 0.0f && pad->previous_input_magnitude != 0.0f) {
         return 1;
+    }
     return 0;
 }
 
@@ -119,12 +124,15 @@ void __cdecl ResetRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
 }
 
 void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
-    if (packet->duration > 0.0f)
+    if (packet->duration > 0.0f) {
         packet->duration -= FRAMETIME;
-    if (packet->amount > 0.0f)
+    }
+    if (packet->amount > 0.0f) {
         packet->amount -= FRAMETIME;
-    if (packet->active > 0)
+    }
+    if (packet->active > 0) {
         --packet->active;
+    }
 }
 
 void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
@@ -132,22 +140,25 @@ void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
     (void)ignored;
     if (pad != NULL) {
         amount = (i32)(strength * 255.0);
-        if (amount > 255)
+        if (amount > 255) {
             amount = 255;
+        }
         NuSound3AddRumble(pad, 0.0f, amount, 0.0f, strength);
     }
 }
 
 void __cdecl NewBuzz(void *pad, f32 duration, i32 ignored) {
     (void)ignored;
-    if (pad != NULL)
+    if (pad != NULL) {
         NuSound3AddRumble(pad, duration, 0, 0.0f, 0.0f);
+    }
 }
 
 void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
     (void)ignored;
-    if (pad != NULL)
+    if (pad != NULL) {
         NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0.0f, 0.0f);
+    }
 }
 
 void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
@@ -181,8 +192,9 @@ void __cdecl KillRumble(GAMEOBJECT *object) {
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         pad = object->pad->bound_pad;
-        if (pad != NULL)
+        if (pad != NULL) {
             NuSound3AddRumble(pad, 0.1f, 0, 0.0f, 0.0f);
+        }
     }
 }
 
@@ -191,8 +203,9 @@ void __cdecl HitRumble(GAMEOBJECT *object) {
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         pad = object->pad->bound_pad;
-        if (pad != NULL)
+        if (pad != NULL) {
             NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
+        }
     }
 }
 
@@ -209,12 +222,14 @@ void __cdecl FloatRumble(GAMEOBJECT *object) {
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         strength = HitsFabsPc(object->velocity.y);
         strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
-        if (strength > 1.0f)
+        if (strength > 1.0f) {
             strength = 1.0f;
+        }
         NewRumble(object->pad->bound_pad, strength, 0);
         pad = object->pad->bound_pad;
-        if (pad != NULL)
+        if (pad != NULL) {
             NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
+        }
     }
 }
 
@@ -233,38 +248,51 @@ void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     }
     strength = scale * strength;
     if (object != NULL) {
-        if (object->flags_1fc_word & 0x80)
+        if (object->flags_1fc_word & 0x80) {
             NewRumble(object->pad->bound_pad, strength, 0);
-    } else
+        }
+    } else {
         NewRumbleAllPlayers(strength, 0.0f, 0, 0);
+    }
 }
 
 void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     i32 menu;
-    if (Paused)
+    if (Paused) {
         return;
+    }
     menu = GetMenuID();
     if (!((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready ||
-        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4))
+        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4)) {
         return;
-    if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS))
+    }
+    if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
         return;
-    if (NewMode || NewLData || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f)
+    }
+    if (NewMode || NewLData || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f) {
         return;
-    if (GamePads_IgnoreInputFn && GamePads_IgnoreInputFn())
+    }
+    if (GamePads_IgnoreInputFn && GamePads_IgnoreInputFn()) {
         return;
-    if (MiniCutCam)
+    }
+    if (MiniCutCam) {
         return;
-    if (world->area && (world->area->flags & 2))
+    }
+    if (world->area && (world->area->flags & 2)) {
         return;
-    if (world->current_level->flags & 0xe0)
+    }
+    if (world->current_level->flags & 0xe0) {
         return;
-    if (GetMenuID() != -1)
+    }
+    if (GetMenuID() != -1) {
         return;
-    if (CUTSTOPGAME && !CutScene_IsSkippable((CUTINFO *)CutStopInfo))
+    }
+    if (CUTSTOPGAME && !CutScene_IsSkippable((CUTINFO *)CutStopInfo)) {
         return;
-    if (!CutSceneWaiting)
+    }
+    if (!CutSceneWaiting) {
         PauseGame(index);
+    }
 }
 
 i32 __cdecl ReadPad(i32 port) {
@@ -283,8 +311,9 @@ i32 __cdecl ReadPad(i32 port) {
         mode = 1;
         if (port < PLAYERCOUNT && Player[port] != NULL) {
             mode = 2;
-            if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) == 0)
+            if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) == 0) {
                 mode = 3;
+            }
         }
     }
     gamepad->left_held = 0;
@@ -294,12 +323,14 @@ i32 __cdecl ReadPad(i32 port) {
     gamepad->held = 0;
     gamepad->pressed = 0;
     if (pad == NULL || GamePadReadBackendPc(pad, 0) == 0) {
-        if (mode != 1)
+        if (mode != 1) {
             mode = 0;
+        }
         return mode;
     }
-    if (mode == 1)
+    if (mode == 1) {
         return mode;
+    }
     if (mode == 3) {
         gamepad->pressed |= pad->digital_buttons_pressed & GAMEPAD_START;
         return mode;
@@ -307,28 +338,32 @@ i32 __cdecl ReadPad(i32 port) {
 
     gamepad->left_held = 0;
     axis_x = pad->analog_left_x - 127.5;
-    if (axis_x < -85.0f)
+    if (axis_x < -85.0f) {
         gamepad->left_held = GAMEPAD_DLEFT;
-    else if (axis_x > 85.0f)
+    } else if (axis_x > 85.0f) {
         gamepad->left_held = GAMEPAD_DRIGHT;
+    }
     axis_y = pad->analog_left_y - 127.5;
-    if (axis_y < -85.0f)
+    if (axis_y < -85.0f) {
         gamepad->left_held |= GAMEPAD_DUP;
-    else if (axis_y > 85.0f)
+    } else if (axis_y > 85.0f) {
         gamepad->left_held |= GAMEPAD_DDOWN;
+    }
     gamepad->left_pressed = (gamepad->left_previous ^ gamepad->left_held) & gamepad->left_held;
     gamepad->left_previous = gamepad->left_held;
     gamepad->right_held = 0;
     axis_x = pad->analog_right_x - 127.5;
-    if (axis_x < -85.0f)
+    if (axis_x < -85.0f) {
         gamepad->right_held = GAMEPAD_DLEFT;
-    else if (axis_x > 85.0f)
+    } else if (axis_x > 85.0f) {
         gamepad->right_held = GAMEPAD_DRIGHT;
+    }
     axis_y = pad->analog_right_y - 127.5;
-    if (axis_y < -85.0f)
+    if (axis_y < -85.0f) {
         gamepad->right_held |= GAMEPAD_DUP;
-    else if (axis_y > 85.0f)
+    } else if (axis_y > 85.0f) {
         gamepad->right_held |= GAMEPAD_DDOWN;
+    }
     gamepad->right_pressed = (gamepad->right_previous ^ gamepad->right_held) & gamepad->right_held;
     gamepad->right_previous = gamepad->right_held;
     gamepad->input_ready = 1;
@@ -340,8 +375,9 @@ i32 __cdecl ReadPad(i32 port) {
 
 void __cdecl ReadPads(void) {
     i32 port;
-    for (port = 0; port < 2; ++port)
+    for (port = 0; port < 2; ++port) {
         ReadPad(port);
+    }
     readpads_always = 0;
 }
 
@@ -353,57 +389,71 @@ void __cdecl DoInput(WORLDINFO *world) {
     FRAME_PAD_PC *pad;
     GAMEOBJECT *player;
     i32 escape;
-    if (world == NULL)
+    if (world == NULL) {
         world = WorldInfo_CurrentlyActive();
-    for (index = 0; index < 2; ++index)
+    }
+    for (index = 0; index < 2; ++index) {
         input[index] = ReadPad(index);
+    }
     keyboard_mask = 0;
-    if (TextInputIsKeyboardDevicePc(NuPadGetPort(0)))
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(0))) {
         keyboard_mask = 1;
-    if (TextInputIsKeyboardDevicePc(NuPadGetPort(1)))
+    }
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(1))) {
         keyboard_mask |= 2;
+    }
     changed = PlayersDropInOut();
     for (index = 0; index < 2; ++index) {
         pad = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[index])->bound_pad;
         player = (GAMEOBJECT *)Player[index];
-        if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn())
+        if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn()) {
             continue;
+        }
         if (input[index] == 0 || input[index] == 1) {
             if (player != NULL && (player->flags_1fc_word & 0x80) && MiniCutCam == 0) {
                 PadOutPause(index, world);
             }
             continue;
         }
-        if (changed)
+        if (changed) {
             continue;
+        }
         if (player != NULL) {
-            if (!(player->flags_1fc_word & 0x80))
+            if (!(player->flags_1fc_word & 0x80)) {
                 continue;
-            if (LEGOCONTEXT_DROPIN != -1 && (i8)player->character_context == LEGOCONTEXT_DROPIN)
+            }
+            if (LEGOCONTEXT_DROPIN != -1 && (i8)player->character_context == LEGOCONTEXT_DROPIN) {
                 continue;
+            }
         }
         if (!(pad->digital_buttons_pressed & GAMEPAD_START)) {
-            if (GetMenuID() != -1)
+            if (GetMenuID() != -1) {
                 continue;
+            }
             escape = NuKeyboard_db(1);
             if (keyboard_mask != 0) {
-                if (!escape)
+                if (!escape) {
                     continue;
-                if (keyboard_mask == 3)
+                }
+                if (keyboard_mask == 3) {
                     MenuKeyboardPendingPc = 1;
-                else if (!(keyboard_mask & (1 << index)))
+                } else if (!(keyboard_mask & (1 << index))) {
                     continue;
+                }
             } else {
-                if (!escape && !NuKeyboard_db(14) && !NuKeyboard_db(197))
+                if (!escape && !NuKeyboard_db(14) && !NuKeyboard_db(197)) {
                     continue;
-                if (Player[index] == NULL || !(((GAMEOBJECT *)Player[index])->flags_1fc_word & 0x80))
+                }
+                if (Player[index] == NULL || !(((GAMEOBJECT *)Player[index])->flags_1fc_word & 0x80)) {
                     continue;
+                }
             }
         }
         if (player == NULL || NewMode != 0 || NewLData != NULL || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f ||
             editor_active != 0 || !(GameTimer.time_elapsed > 0.0f) || world == NULL ||
-            world->current_level == TITLES_LDATA)
+            world->current_level == TITLES_LDATA) {
             continue;
+        }
         if (Paused == 0) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
                 if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo)) && MiniCutCam == 0 &&
@@ -413,11 +463,13 @@ void __cdecl DoInput(WORLDINFO *world) {
                     changed = 1;
                     continue;
                 }
-                if (Paused != 0)
+                if (Paused != 0) {
                     goto resume;
+                }
             }
-            if (NetPaused == 0)
+            if (NetPaused == 0) {
                 continue;
+            }
         }
     resume:
         if (pause_i_pad == -1 || index == pause_i_pad) {
@@ -429,9 +481,10 @@ void __cdecl DoInput(WORLDINFO *world) {
 
 u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
-        if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 0x40) != 0)
+        if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 0x40) != 0) {
             return (u16)(pad->input_angle + object->sock_heading +
                          WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);
+        }
     }
     return (u16)(pad->input_angle + GameCam->input_yaw);
 }
@@ -441,18 +494,22 @@ i32 __cdecl GamePads_SkipMovie(void) {
     i32 skipped = 0;
     i32 pressed_device = 0;
     i32 kind, value, port;
-    for (port = 0; port < 2; ++port)
+    for (port = 0; port < 2; ++port) {
         ReadPad(port);
+    }
     readpads_always = 0;
     if ((world == NULL && GAMEDEMO != 0) || (world != NULL && world->current_level == TITLES_LDATA)) {
-        if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 1) >= 0)
+        if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 1) >= 0) {
             pressed_device = 1;
+        }
     }
     if ((GamePadStorage[0].menu_buttons_held & GAMEPAD_SKIP) != 0 || pressed_device != 0 ||
-        (GamePadStorage[1].menu_buttons_held & GAMEPAD_SKIP) != 0)
+        (GamePadStorage[1].menu_buttons_held & GAMEPAD_SKIP) != 0) {
         skipped = 1;
+    }
     PCPresentationPlatformLeafPc();
-    if (NuKeyboard_db(0x1c) != 0 || NuKeyboard_db(0x39) != 0 || 0 != NuKeyboard_db(1))
+    if (NuKeyboard_db(0x1c) != 0 || NuKeyboard_db(0x39) != 0 || 0 != NuKeyboard_db(1)) {
         skipped = 1;
+    }
     return skipped;
 }

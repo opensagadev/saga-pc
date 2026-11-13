@@ -33,8 +33,9 @@ extern "C" {
                 g_enableButtonPrompts = 0;
                 return;
             }
-            if (memcard_autosavecanceldelay > 0.0f)
+            if (memcard_autosavecanceldelay > 0.0f) {
                 return;
+            }
             g_enableButtonPrompts = 1;
             NewMenu(1000, -1, -1);
             memcard_autosavecanceldelay = 5.0f;

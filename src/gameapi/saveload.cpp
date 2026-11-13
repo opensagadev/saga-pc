@@ -7,6 +7,7 @@ extern "C" {
     extern char SaveFullSlotPathPc[256];
     extern char SaveSlotNamePc[256];
     extern i32 saveload_slotcode[6];
+
     char *__cdecl fullslotname(i32 slot) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
@@ -21,6 +22,7 @@ extern "C" {
         strcat(SaveFullSlotPathPc, SaveSlotNamePc);
         return SaveFullSlotPathPc;
     }
+
     i32 __cdecl saveload_getinfo(void) {
         saveload_savepresent = 0;
         i32 count = 0;
@@ -40,12 +42,14 @@ extern "C" {
         }
         return count;
     }
+
     void __cdecl saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon,
                               const char *title, i32 flags) {
         saveload_getinfo();
         saveload_status = 1;
         saveload_autosave = -1;
     }
+
     i32 __cdecl saveloadCheckSlotsUsed(void) {
         i32 used = 0;
         for (i32 slot = 0; slot < 6; ++slot) {
@@ -58,27 +62,35 @@ extern "C" {
         }
         return used;
     }
+
     i32 __cdecl saveloadCheckCardPresent(void) {
         return 1;
     }
+
     i32 __cdecl saveloadCheckCardType(void) {
         return 1;
     }
+
     i32 __cdecl saveloadCheckCardFormatted(void) {
         return 1;
     }
+
     i32 __cdecl saveloadCheckCardFreeSpace(i32 slot) {
         return 1;
     }
+
     i32 __cdecl saveloadFormatCard(void) {
         return 1;
     }
+
     i32 __cdecl saveloadUnFormatCard(void) {
         return 1;
     }
+
     i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code) {
         return 0;
     }
+
     i32 __cdecl saveloadWriteKeyCode(char *id, u8 *code) {
         return 0;
     }

@@ -130,8 +130,9 @@ extern "C" {
     }
 
     f32 __cdecl StatusCoinsRatioAltPc(f32 numerator, f32 denominator) {
-        if (numerator == 0.0f || denominator == 0.0f)
+        if (numerator == 0.0f || denominator == 0.0f) {
             return 0.0f;
+        }
         {
             f32 result = numerator / denominator;
             return result;
@@ -153,8 +154,9 @@ extern "C" {
         if ((packet->field_0xb0 & 2) == 0) {
             StatusCurrentMinikitPc = (i32)((u32)StatusCurrentMinikitPc + (u32)StatusNewMinikitCountPc);
             if ((packet->field_0xb0 & 0x10) != 0 &&
-                (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c)))
+                (stage->field_0x14 != 6 || !(stage->field_0x18 >= stage->field_0x1c))) {
                 IncreaseScore(packet->score, 50000, 0);
+            }
         }
         NextStatusStage(packet);
     }
@@ -176,13 +178,14 @@ extern "C" {
             case 1: {
                 f32 previous = stage->field_0x18;
                 stage->field_0x18 = stage->field_0x18 + elapsed;
-                if (stage->field_0x18 >= stage->field_0x1c)
+                if (stage->field_0x18 >= stage->field_0x1c) {
                     NextStatusStage(packet);
-                else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+                } else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
                     PlaySfx("StatusAward", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
+                } else if (previous < 4.0f && stage->field_0x18 >= 4.0f) {
                     PlaySfx("Char_Icon_App", NULL);
+                }
                 break;
             }
         }
@@ -197,8 +200,9 @@ extern "C" {
     /* Stage type 19. */
     void __cdecl GoldBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         (void)stage;
-        if (Game.gold_bricks <= 60)
+        if (Game.gold_bricks <= 60) {
             NextStatusStage(packet);
+        }
     }
 
     /* Stage type 9. */
@@ -213,10 +217,12 @@ extern "C" {
                 i32 moved_down = 0;
                 GAMEPAD_INIT_RECORD *pad = &GamePadStorage[0];
                 do {
-                    if (selected != 0)
+                    if (selected != 0) {
                         break;
-                    if (moved_up != 0 || moved_down != 0)
+                    }
+                    if (moved_up != 0 || moved_down != 0) {
                         break;
+                    }
                     if (packet->player_active[player] != 0) {
                         u32 buttons = pad->menu_buttons_pressed;
                         if ((buttons & GAMEPAD_MENUSELECT) != 0) {
@@ -244,10 +250,11 @@ extern "C" {
                 } while (player < 2);
                 if (selected != 0) {
                     if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & 2u) == 0 &&
-                        Game.area_save[packet->next_area].complete == 0)
+                        Game.area_save[packet->next_area].complete == 0) {
                         packet->prompt_choice = 1;
-                    else
+                    } else {
                         packet->prompt_choice = (u8)status_prompt;
+                    }
                     GameAudio_PlaySfx(0x30, NULL, 0, 0);
                     stage->field_0x18 = 0.0f;
                     stage->field_0x14 = 1;
@@ -257,8 +264,9 @@ extern "C" {
         } else if (stage->field_0x14 == 1) {
             f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
             stage->field_0x18 = accumulated;
-            if (stage->field_0x18 > stage->field_0x1c)
+            if (stage->field_0x18 > stage->field_0x1c) {
                 NextStatusStage(packet);
+            }
         }
     }
 
@@ -270,10 +278,12 @@ extern "C" {
 
     /* Stage types 8, 13, 14, 23 and 26. */
     void __cdecl LevelComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if (stage->type == 26 && packet->mission_state == 2)
+        if (stage->type == 26 && packet->mission_state == 2) {
             *packet->score = packet->reward_score;
-        if (stage->type == 23 && packet->challenge_state == 2)
+        }
+        if (stage->type == 23 && packet->challenge_state == 2) {
             *packet->score = packet->reward_score;
+        }
         NextStatusStage(packet);
     }
 
@@ -285,24 +295,28 @@ extern "C" {
 
     /* Stage type 10. */
     void __cdecl Exit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (stage->field_0x14 >= 0)
+        if (stage->field_0x14 >= 0) {
             stage->field_0x18 = (f64)elapsed + (f64)stage->field_0x18;
+        }
         if (stage->field_0x18 >= stage->field_0x1c) {
             NextStatusStage(packet);
-            if ((i32)packet->current_gold_brick < (i32)packet->stage_count - 1)
+            if ((i32)packet->current_gold_brick < (i32)packet->stage_count - 1) {
                 stage->field_0x1c = 0.1f;
-            else
+            } else {
                 FinishStatusPacket(packet->prompt_choice);
+            }
         }
     }
 
     /* Stage type 6. */
     void __cdecl Stage6_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if (stage->field_0x14 == 0)
+        if (stage->field_0x14 == 0) {
             stage->field_0x14 = 1;
+        }
         NextStatusStage(packet);
-        if (packet->stage->type == 7)
+        if (packet->stage->type == 7) {
             NextStatusStage(packet);
+        }
     }
 
     void __cdecl Stage6_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
@@ -326,10 +340,11 @@ extern "C" {
             if (stage->field_0x18 >= stage->field_0x1c) {
                 u32 flags = packet->flags_word;
                 if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 &&
-                    packet->mission_state == 0 && packet->challenge_state == 0)
+                    packet->mission_state == 0 && packet->challenge_state == 0) {
                     FinishStatusPacket(0);
-                else
+                } else {
                     NextStatusStage(packet);
+                }
             }
         } else if (packet->save_state == 0) {
             packet->save_state = 1;
@@ -338,8 +353,9 @@ extern "C" {
                 packet->save_state = 3;
                 NewMenu(1000, -1, -1);
             }
-        } else if (memcard_autosaveinprogress == 0)
+        } else if (memcard_autosaveinprogress == 0) {
             packet->save_state = 3;
+        }
     }
 
     /* Stage type 12. */
@@ -354,8 +370,9 @@ extern "C" {
                 f32 accumulated = stage->field_0x18;
                 accumulated += elapsed;
                 stage->field_0x18 = accumulated;
-                if (stage->field_0x18 >= stage->field_0x1c)
+                if (stage->field_0x18 >= stage->field_0x1c) {
                     FinishStatusPacket(packet->prompt_choice);
+                }
                 break;
             }
         }
@@ -386,9 +403,9 @@ extern "C" {
                 f32 previous = stage->field_0x18;
                 f32 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated)
+                if (stage->field_0x1c <= accumulated) {
                     NextStatusStage(packet);
-                else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
+                } else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
                     PlaySfx("StatusAward", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 }
@@ -433,16 +450,18 @@ extern "C" {
     }
 
     void __cdecl BonusComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         if (stage->field_0x14 > 0 && packet->newly_completed != 0) {
             f32 alpha;
-            if (stage->field_0x18 < 0.5f)
+            if (stage->field_0x18 < 0.5f) {
                 alpha = (f64)stage->field_0x18 * 2.0;
-            else if (stage->field_0x18 < 3.5)
+            } else if (stage->field_0x18 < 3.5) {
                 alpha = 1.0f;
-            else
+            } else {
                 alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
+            }
             if (alpha > 0.0f) {
                 i32 opacity = (i32)((f64)alpha * 128.0);
                 SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusAltTitleYPc, 1.0f, StatusAltTextScalePc,
@@ -473,16 +492,17 @@ extern "C" {
         f32 previous_x;
         f32 previous_2_x;
         NuMtxSetIdentity(&mtx);
-        if (packet == NULL || packet->stage == NULL)
+        if (packet == NULL || packet->stage == NULL) {
             return;
+        }
         if (packet->stage->field_0x14 == -1) {
             packet->stage->field_0x18 += FRAMETIME;
             stage = packet->stage;
             if (stage->field_0x18 < 1.0f) {
                 x = StatusAltGridStepXPc;
-                if (StatusAltZoomPc == 1.5f)
+                if (StatusAltZoomPc == 1.5f) {
                     stage->field_0x18 = 1.0f;
-                else {
+                } else {
                     speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                                    1.0) *
                                       0.5;
@@ -502,9 +522,9 @@ extern "C" {
                 } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
                     speed = (f64)stage->field_0x18 - (f64)2.1f;
                     x = 0.0f;
-                    if (StatusAltZoomPc == 1.1f)
+                    if (StatusAltZoomPc == 1.1f) {
                         stage->field_0x18 = 3.1f;
-                    else {
+                    } else {
                         speed =
                             1.0 - ((f64)NuTrigTable[((i32)((f64)speed * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                         speed = (f64)speed * 0.25;
@@ -522,30 +542,35 @@ extern "C" {
             previous_2_x = previous_x - StatusAltGridStepXPc;
             DrawPanel3DObjectNoAlpha(x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                      &WORLD->level_objects[(i16)stage->field_0x10].special, 0);
-            if (packet->previous_stage_2 != NULL)
+            if (packet->previous_stage_2 != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_2_x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0,
                                          0, &WORLD->level_objects[(i16)packet->previous_stage_2->field_0x10].special,
                                          0);
-            if (packet->previous_stage != NULL)
+            }
+            if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
+            }
             if (packet->next_stage != NULL) {
                 x = StatusAltGridStepXPc + x;
                 DrawPanel3DObjectNoAlpha(x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
             }
         } else {
-            if (packet->previous_stage != NULL)
+            if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(-StatusAltGridStepXPc, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f,
                                          0xc000, 0, 0,
                                          &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
-            if (packet->stage != NULL)
+            }
+            if (packet->stage != NULL) {
                 DrawPanel3DObjectNoAlpha(0.0f, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                          &WORLD->level_objects[(i16)packet->stage->field_0x10].special, 0);
-            if (packet->next_stage != NULL)
+            }
+            if (packet->next_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(StatusAltGridStepXPc, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f,
                                          0xc000, 0, 0,
                                          &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
+            }
         }
     }
 
@@ -555,22 +580,24 @@ extern "C" {
         i32 i = 0;
         STATUS_STAGE_s *stage;
         for (; StatusStagesAltPc[i].type != -1; i++) {
-            if (StatusStagesAltPc[i].type == packet->stage_types[packet->current_gold_brick])
+            if (StatusStagesAltPc[i].type == packet->stage_types[packet->current_gold_brick]) {
                 selected = i;
+            }
             DrawPanel3DObjectNoAlpha((f32)(i % StatusAltColumnsPc) * StatusAltGridStepXPc + StatusAltBgPosPc.x,
                                      (f32) - (i / StatusAltColumnsPc) * StatusAltGridStepYPc - StatusAltBgPosPc.y,
                                      1.5 - StatusAltBgPosPc.z, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
                                      &WORLD->level_objects[(i16)StatusStagesAltPc[i].field_0x10].special, 0);
         }
         stage = packet->stage;
-        if (stage->field_0x14 != -1)
+        if (stage->field_0x14 != -1) {
             return;
+        }
         stage->field_0x18 += FRAMETIME;
         stage = packet->stage;
         if (stage->field_0x18 < 1.0f) {
-            if (StatusAltBgPosPc.z == 1.5f)
+            if (StatusAltBgPosPc.z == 1.5f) {
                 stage->field_0x18 = 1.0f;
-            else {
+            } else {
                 f32 speed =
                     1.0 -
                     ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
@@ -594,9 +621,9 @@ extern "C" {
                 ((f32) - (selected / StatusAltColumnsPc) * StatusAltGridStepYPc - StatusAltBgPosPc.y) * w;
         } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
             f32 u = (f64)stage->field_0x18 - (f64)2.1f;
-            if (StatusAltZoomPc == 1.1f)
+            if (StatusAltZoomPc == 1.1f) {
                 stage->field_0x18 = 3.1f;
-            else {
+            } else {
                 f32 speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)u * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
                 speed = (f64)speed * 0.25;
                 StatusAltBgPosPc.z = SeekLinearF(StatusAltBgPosPc.z, 0.5f, speed);
@@ -629,8 +656,9 @@ extern "C" {
         f32 title_alpha, count_alpha, title_scale, brick_scale, count_scale;
         u16 title_angle, count_angle, rotation;
         i32 displayed;
-        if (current == 0 || stage->field_0x14 <= 0)
+        if (current == 0 || stage->field_0x14 <= 0) {
             return;
+        }
         brick_scale = 0.0f;
         count_scale = 0.0f;
         title_scale = 0.0f;
@@ -704,13 +732,14 @@ extern "C" {
                 title_angle = 0;
                 count_alpha = 1.0f;
                 count_scale = 1.0f;
-                if (stage->field_0x18 < StatusAlt7f8224Pc)
+                if (stage->field_0x18 < StatusAlt7f8224Pc) {
                     brick_scale =
                         NuTrigTable[((i32)((f64)(stage->field_0x18 / StatusAlt7f8224Pc) * 32768.0) >> 1) & 0x7fff] *
                             0.25 +
                         1.0;
-                else
+                } else {
                     brick_scale = 1.0f;
+                }
                 break;
             case 8:
                 count_alpha =
@@ -728,26 +757,29 @@ extern "C" {
                 break;
         }
         displayed = packet->displayed_gold_bricks;
-        if (displayed > 1)
+        if (displayed > 1) {
             DrawStatusText(TTab[TextIdPc88077c], title_angle, 0.0f, title_scale * StatusCoinsTitleYPc,
                            StatusAltScalePc * title_scale, ((u32)(title_alpha * 255.0) << 24) | 0xc8ff, 0);
-        else
+        } else {
             DrawStatusText(TTab[TextIdPc880778], title_angle, 0.0f, title_scale * StatusCoinsTitleYPc,
                            StatusAltScalePc * title_scale, ((u32)(title_alpha * 255.0) << 24) | 0xc8ff, 0);
+        }
         rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
         DrawPanel3DObjectNoAlpha(0.0f, 0.0f, 1.0f, brick_scale, brick_scale, brick_scale,
                                  (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
                                  &WORLD->level_objects[211].special, 2);
-        if (stage->field_0x14 == 6 && stage->field_0x18 < 1.0f)
+        if (stage->field_0x14 == 6 && stage->field_0x18 < 1.0f) {
             DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleYPc * count_scale, count_angle,
                                    StatusAltScalePc * count_scale, 0xbf00c8ff, stage->field_0x18, 1.0f);
-        else
+        } else {
             DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleYPc * count_scale, count_angle,
                                    StatusAltScalePc * count_scale, ((u32)(count_alpha * 255.0) << 24) | 0xc8ff, 0.0f,
                                    0.0f);
-        if (Game.gold_bricks > 60)
+        }
+        if (Game.gold_bricks > 60) {
             CoinTotal_Draw(*packet->score, (STATSPOSY - STATSPOS2YPc) * title_alpha + STATSPOS2YPc, CoinTotalScale, 1,
                            1.0f, 0xff, 0xbf, 0);
+        }
     }
 
     /* Stage type 19. Awards the level's gold bricks one at a time. */
@@ -832,8 +864,9 @@ extern "C" {
                         NuStrCat(text, CutPlayerTextSeparatorPc);
                         NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
                         message = text;
-                    } else
+                    } else {
                         message = TTab[message_id];
+                    }
                     AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
                     if (packet->displayed_gold_bricks > 60) {
                         IncreaseScore(packet->score, 100000, 0);
@@ -853,8 +886,9 @@ extern "C" {
                 }
             case 8:
                 StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c)
+                if (stage->field_0x18 >= stage->field_0x1c) {
                     NextStatusStage(packet);
+                }
                 break;
         }
     }
@@ -872,8 +906,9 @@ extern "C" {
             case 1: {
                 f32 accumulated = elapsed + stage->field_0x18;
                 stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated)
+                if (stage->field_0x1c <= accumulated) {
                     stage->field_0x14 = 2;
+                }
                 StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 8.0);
                 break;
             }
@@ -892,26 +927,30 @@ extern "C" {
                             rate *= 10;
                         }
                         amount = (i32)((f32)rate * elapsed);
-                        if ((u32)amount > remaining)
+                        if ((u32)amount > remaining) {
                             amount = remaining;
-                        else if (amount < 1)
+                        } else if (amount < 1) {
                             amount = 1;
+                        }
                         packet->coins_remaining[player] = remaining - amount;
                         IncreaseScore(packet->score, (i64)amount, 0);
-                        if (packet->coins_remaining[player] == 0)
+                        if (packet->coins_remaining[player] == 0) {
                             StatusAltCoinsDonePc++;
-                    } else
+                        }
+                    } else {
                         StatusAltCoinsDonePc++;
+                    }
                 }
                 PlaySfx((char *)PickupCoinSfx_PC, NULL);
                 if (StatusAltCoinsDonePc == 2) {
                     stage->field_0x14 = 3;
                     stage->field_0x18 = 0.0f;
                     stage->field_0x1c = 1.0f;
-                    if (packet->coins_collected[0] + packet->coins_collected[1] == 0)
+                    if (packet->coins_collected[0] + packet->coins_collected[1] == 0) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    else
+                    } else {
                         PlaySfx("Shop_BuyCheat", NULL);
+                    }
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 }
                 break;
@@ -930,8 +969,9 @@ extern "C" {
                 f32 accumulated = elapsed + stage->field_0x18;
                 stage->field_0x18 = accumulated;
                 StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated)
+                if (stage->field_0x1c <= accumulated) {
                     NextStatusStage(packet);
+                }
                 break;
             }
         }
@@ -939,8 +979,9 @@ extern "C" {
 
     /* Stage type 18. */
     void __cdecl RedBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (stage->field_0x14 >= 0)
+        if (stage->field_0x14 >= 0) {
             stage->field_0x18 = elapsed + stage->field_0x18;
+        }
         switch (stage->field_0x14) {
             case 0:
                 StatusAltSpinPc = 0;
@@ -1002,8 +1043,9 @@ extern "C" {
                 break;
             case 7:
                 StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x18 >= stage->field_0x1c)
+                if (stage->field_0x18 >= stage->field_0x1c) {
                     NextStatusStage(packet);
+                }
                 break;
         }
     }
@@ -1073,16 +1115,18 @@ extern "C" {
                 SetDrawGoldBrick(packet, 3);
                 if ((packet->field_0xb0 & 4) == 0) {
                     target = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
-                    if (target > 99.0f)
+                    if (target > 99.0f) {
                         target = 99.0f;
-                } else
+                    }
+                } else {
                     target = 100.0f;
+                }
                 stage->field_0x18 += elapsed;
                 packet->true_hero_percent =
                     (f64)elapsed * (100.0 / (f64)stage->field_0x1c) + (f64)packet->true_hero_percent;
-                if (packet->true_hero_percent > target)
+                if (packet->true_hero_percent > target) {
                     packet->true_hero_percent = target;
-                else if (packet->true_hero_percent >= StatusAlt7f8268Pc) {
+                } else if (packet->true_hero_percent >= StatusAlt7f8268Pc) {
                     PlaySfx("Status_GoldBarDec", NULL);
                     StatusAlt7f8268Pc = (f64)StatusAlt7f8268Pc + 10.0;
                 }
@@ -1101,8 +1145,9 @@ extern "C" {
             }
             case 6: {
                 f32 accumulated;
-                if (stage->field_0x18 == 0.0f)
+                if (stage->field_0x18 == 0.0f) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                }
                 StatusAltSpinPc = 0;
                 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
@@ -1128,8 +1173,9 @@ extern "C" {
                 f32 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
                 StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                if (stage->field_0x1c <= accumulated)
+                if (stage->field_0x1c <= accumulated) {
                     NextStatusStage(packet);
+                }
                 return;
             }
         }
@@ -1137,16 +1183,18 @@ extern "C" {
 
     /* Stage type 4. */
     void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        if (StatusMiniKitPopTimerPc > 0.0f)
+        if (StatusMiniKitPopTimerPc > 0.0f) {
             StatusMiniKitPopTimerPc -= elapsed;
+        }
         switch (stage->field_0x14) {
             case 0:
                 StatusNewMinikitCountPc = packet->new_minikits;
-                if (StatusNewMinikitCountPc <= 0)
+                if (StatusNewMinikitCountPc <= 0) {
                     StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
-                else
+                } else {
                     StatusCurrentMinikitPc =
                         Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
+                }
                 stage->field_0x18 = 0.0f;
                 stage->field_0x14 = 1;
                 stage->field_0x1c = 1.0f;
@@ -1217,8 +1265,9 @@ extern "C" {
                     if ((packet->field_0xb0 & 0x10) != 0) {
                         stage->field_0x1c = 1.0f;
                         stage->field_0x14 = 5;
-                    } else
+                    } else {
                         PlaySfx("TrueJedi_NOT", NULL);
+                    }
                 }
                 break;
             case 4: {
@@ -1226,8 +1275,9 @@ extern "C" {
                 StatusAltSpinPc = 0;
                 accumulated = elapsed + stage->field_0x18;
                 stage->field_0x18 = accumulated;
-                if (stage->field_0x1c <= accumulated)
+                if (stage->field_0x1c <= accumulated) {
                     NextStatusStage(packet);
+                }
                 break;
             }
             case 5: {
@@ -1248,8 +1298,9 @@ extern "C" {
                     }
                 } else {
                     u32 frame = (u32)GameTimer.update_count;
-                    if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u)
+                    if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u) {
                         NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 2);
+                    }
                 }
                 break;
             }
@@ -1266,8 +1317,9 @@ extern "C" {
         u16 title_angle, mode_angle;
         i32 percent_angle;
         u32 colour;
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         title_alpha = 0.0f;
         bar_alpha = 0.0f;
         percent_alpha = 0.0f;
@@ -1356,8 +1408,9 @@ extern "C" {
                 mode_scale = 1.0f;
                 title_scale = 1.0f;
                 full_fade = stage->field_0x18;
-                if (full_fade > 1.0f)
+                if (full_fade > 1.0f) {
                     full_fade = 1.0f;
+                }
                 full_fade = 1.0 - (NuTrigTable[((i32)((f64)full_fade * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 break;
             case 6:
@@ -1369,10 +1422,11 @@ extern "C" {
                 percent_scale = 1.0f;
                 mode_scale = 1.0f;
                 title_scale = 1.0f;
-                if (stage->field_0x18 < 1.0f)
+                if (stage->field_0x18 < 1.0f) {
                     full_fade = stage->field_0x18;
-                else
+                } else {
                     full_fade = stage->field_0x18 < stage->field_0x1c ? 1.0f : 1.0f;
+                }
                 full_fade = 1.0 - (NuTrigTable[((i32)((f64)full_fade * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (full_fade < 1.0f) {
                     full_scale_in = 1.0f + full_fade * 0.5;
@@ -1396,10 +1450,11 @@ extern "C" {
                                0.5);
                 break;
             case 8:
-                if (stage->field_0x18 < 1.0f)
+                if (stage->field_0x18 < 1.0f) {
                     full_fade = 1.0f - stage->field_0x18;
-                else
+                } else {
                     full_fade = 0.0f;
+                }
                 percent_angle = StatusAltSpinPc;
                 title_angle = StatusAltSpinPc;
                 mode_angle = (u16)-StatusAltSpinPc;
@@ -1411,8 +1466,9 @@ extern "C" {
                 title_scale = full_fade;
                 break;
         }
-        if (stage->field_0x14 <= 0)
+        if (stage->field_0x14 <= 0) {
             return;
+        }
         title_scale = StatusAltScalePc * title_scale;
         mode_scale = StatusAltScalePc * mode_scale;
         percent_scale = StatusAltScalePc * percent_scale;
@@ -1455,8 +1511,9 @@ extern "C" {
         f32 players_y;
         f32 coin_x;
         i32 player;
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         switch (stage->field_0x14) {
             case 0:
                 title_alpha = 0.0f;
@@ -1533,8 +1590,9 @@ extern "C" {
                 y_offset = -StatusCoinsTitleYPc;
                 break;
         }
-        if (stage->field_0x14 <= 0)
+        if (stage->field_0x14 <= 0) {
             return;
+        }
         players_y = y_offset * players_scale;
         for (player = 0; player < 2; player++) {
             char text[40];
@@ -1573,21 +1631,24 @@ extern "C" {
             coin_scale = StatusAltScalePc * total_scale * 1.5;
             coin_size =
                 COINTOTAL_COINSIZE * coin_scale * NuTrigTable[((i32)((f64)title_alpha * 16384.0) >> 1) & 0x7fff];
-            if (WORLD->level_objects[cointotal_i_obj[0]].active != 0)
+            if (WORLD->level_objects[cointotal_i_obj[0]].active != 0) {
                 DrawPanel3DObject(-(text3d_width * 0.5) - coin_scale * CoinTotalCoinOffsetPc, 0.0f, 1.0f, coin_size,
                                   coin_size, coin_size, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[0]].special, 0,
                                   1.0f);
-            if (WORLD->level_objects[cointotal_i_obj[1]].active != 0)
+            }
+            if (WORLD->level_objects[cointotal_i_obj[1]].active != 0) {
                 DrawPanel3DObject(coin_scale * CoinTotalCoinOffsetPc + text3d_width * 0.5, 0.0f, 1.0f, coin_size,
                                   coin_size, coin_size, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[1]].special, 0,
                                   1.0f);
+            }
         } else {
             CoinTotal_Draw(*packet->score, 0.0f, StatusAltScalePc * total_scale * 1.5, 1, title_alpha, 0xff, 0xbf, 0);
         }
-        if (title_alpha < 0.0f)
+        if (title_alpha < 0.0f) {
             title_alpha = 0.0f;
-        else if (title_alpha > 1.0f)
+        } else if (title_alpha > 1.0f) {
             title_alpha = 1.0f;
+        }
         DrawStatusText(TTab[TextIdPc8808d4], title_angle, 0.0f, total_scale * StatusCoinsTitleYPc,
                        StatusAltScalePc * total_scale, ((u32)(title_alpha * 255.0) << 24) | 0xffffff, 0);
     }
@@ -1598,8 +1659,9 @@ extern "C" {
         f32 count_alpha = 1.0f;
         f32 size = 0.0f;
         u32 colour;
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         switch (stage->field_0x14) {
             case -1:
                 return;
@@ -1649,11 +1711,12 @@ extern "C" {
                 size = 1.0f;
                 count_alpha = 1.0f;
                 title_alpha = 1.0f;
-                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc)
+                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc) {
                     StatusAlt7f8274Pc = (stage->field_0x18 - (stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
                                         StatusMiniKitJibberLengthPc;
-                else
+                } else {
                     StatusAlt7f8274Pc = 0.0f;
+                }
                 pulse = StatusAltFabsPc(NuTrigTable[((i32)((f64)StatusAlt7f8274Pc * 32768.0 + 16384.0) >> 1) & 0x7fff]);
                 inverse = 1.0f - pulse;
                 StatusAlt7f8274Pc = inverse * 0.25 + 1.0f;
@@ -1665,9 +1728,9 @@ extern "C" {
                 phase = stage->field_0x18 / (stage->field_0x1c * 0.5);
                 count_alpha = StatusAltFabsPc(phase - 1.0);
                 size = 1.0f;
-                if (StatusCurrentMinikitPc == 0)
+                if (StatusCurrentMinikitPc == 0) {
                     StatusAlt7f8274Pc = 1.0f;
-                else
+                } else {
                     StatusAlt7f8274Pc =
                         1.0 -
                         (NuTrigTable[((i32)(StatusCoinsRatioAltPc(stage->field_0x18, stage->field_0x1c) * 32768.0 +
@@ -1676,6 +1739,7 @@ extern "C" {
                                      0x7fff] +
                          1.0f) *
                             0.5;
+                }
                 break;
             }
             case 5:
@@ -1683,29 +1747,33 @@ extern "C" {
                 size = 1.0f;
                 title_alpha = 1.0f - stage->field_0x18 / stage->field_0x1c;
                 StatusAlt7f8274Pc = 1.0f;
-                if (stage->field_0x18 < stage->field_0x1c)
+                if (stage->field_0x18 < stage->field_0x1c) {
                     DrawStatusMiniKit(StatusAltMiniKitXPc, StatusAltMiniKitYPc, StatusAlt7f8234Pc, StatusAlt7f8228Pc,
                                       1.0f, Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+                }
                 break;
         }
-        if (stage->field_0x14 <= 0)
+        if (stage->field_0x14 <= 0) {
             return;
+        }
         colour = ((u8)(title_alpha * 255.0) << 24) | 0xffffff;
         DrawStatusText(TTab[TextIdPc8808d0], StatusAltSpinPc, 0.0f, size * StatusCoinsTitleYPc, StatusAltScalePc * size,
                        colour, 0);
-        if (StatusCurrentMinikitPc == 0)
+        if (StatusCurrentMinikitPc == 0) {
             DrawStatusText((char *)Text_UnknownText, 0, 0.0f, 0.0f, StatusAlt7f8214Pc * size,
                            ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
-        else
+        } else {
             DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAlt7f8228Pc * StatusAlt7f8274Pc, 0.0f, StatusCurrentMinikitPc,
                               packet, 0.0f);
-        if (StatusMiniKitPopTimerPc <= 0.0f)
+        }
+        if (StatusMiniKitPopTimerPc <= 0.0f) {
             DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
                                    -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.0f, 0.0f);
-        else
+        } else {
             DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
                                    -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.5 - StatusMiniKitPopTimerPc,
                                    0.5f);
+        }
     }
 
     /* Stage type 5. Draws the suit icons on a ring and brings the newest one to the centre. */
@@ -1714,8 +1782,9 @@ extern "C" {
         f64 angle;
         i32 i;
         (void)packet;
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         switch (stage->field_0x14) {
             case -1:
             case 0:
@@ -1747,8 +1816,9 @@ extern "C" {
                     angle = (f64)i / 10.0 * 65536.0;
                     x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * radius;
                     y = NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius;
-                    if (i != StatusAltSuitIndexPc || stage->field_0x18 < 1.0f)
+                    if (i != StatusAltSuitIndexPc || stage->field_0x18 < 1.0f) {
                         DrawCharIcon(shown ? i : -1, x, y, 0.0f, 0.3f, 0xa7, 1.0f, 1.0f, 1, NULL);
+                    }
                 }
                 if (stage->field_0x18 < 0.5f) {
                     blend = stage->field_0x18 + stage->field_0x18;
@@ -1757,8 +1827,9 @@ extern "C" {
                     DrawCharIcon(StatusAltSuitIndexPc, 0.0f, 0.0f, 0.0f, (f64)y * 0.3f, 0xa7, blend, blend, 1, NULL);
                     title_alpha = stage->field_0x18 / (f64)0.833333373f;
                     title_alpha = 1.0f - title_alpha;
-                    if (title_alpha < 0.0f)
+                    if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
+                    }
                     SmartTextEx(TTab[*SuitRecordInitPc[StatusAltSuitIndexPc].text_id], 0.0f, StatusAlt7f8238Pc, 1.0f,
                                 StatusAlt7f823cPc, StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc,
                                 (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u16)(title_alpha * 128.0));
@@ -1773,8 +1844,9 @@ extern "C" {
                                  1.0f, 1, NULL);
                     title_alpha = stage->field_0x18 / (f64)0.833333373f;
                     title_alpha = 1.0f - title_alpha;
-                    if (title_alpha < 0.0f)
+                    if (title_alpha < 0.0f) {
                         title_alpha = 0.0f;
+                    }
                     SmartTextEx(TTab[*SuitRecordInitPc[StatusAltSuitIndexPc].text_id], 0.0f, StatusAlt7f8238Pc, 1.0f,
                                 StatusAlt7f823cPc, StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc,
                                 (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u16)(title_alpha * 128.0));
@@ -1815,8 +1887,9 @@ extern "C" {
     /* Stage type 5. Reveals the suits unlocked in this area one by one. */
     void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         f32 previous = stage->field_0x18;
-        if (stage->field_0x14 >= 0)
+        if (stage->field_0x14 >= 0) {
             stage->field_0x18 = elapsed + stage->field_0x18;
+        }
         switch (stage->field_0x14) {
             case 0:
                 stage->field_0x1c = 0.15f;
@@ -1844,9 +1917,9 @@ extern "C" {
                 }
                 break;
             case 2:
-                if (previous < 1.0f && stage->field_0x18 >= 1.0f)
+                if (previous < 1.0f && stage->field_0x18 >= 1.0f) {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                else if (stage->field_0x18 > stage->field_0x1c) {
+                } else if (stage->field_0x18 > stage->field_0x1c) {
                     StatusAltSuitsShownPc |= 1 << StatusAltSuitIndexPc;
                     for (StatusAltSuitIndexPc++; StatusAltSuitIndexPc < 10; StatusAltSuitIndexPc++) {
                         if ((StatusAltSuitsShownPc & (1 << StatusAltSuitIndexPc)) == 0 &&
@@ -1865,8 +1938,9 @@ extern "C" {
                 }
                 break;
             case 3:
-                if (stage->field_0x18 > stage->field_0x1c)
+                if (stage->field_0x18 > stage->field_0x1c) {
                     NextStatusStage(packet);
+                }
                 break;
         }
     }
@@ -1874,8 +1948,9 @@ extern "C" {
     /* Stage types 8, 13, 23 and 26. Draws the level-complete titles, then the score and time bonus. */
     void __cdecl LevelComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         char text[256];
-        if (current == 0)
+        if (current == 0) {
             return;
+        }
         if (stage->field_0x14 > 0) {
             f32 alpha1, scale1, alpha2, scale2;
             u16 angle1, angle2;
@@ -1981,8 +2056,9 @@ extern "C" {
                     }
                 }
                 coin_slide = slide;
-                if (stage->field_0x18 >= 0.75f)
+                if (stage->field_0x18 >= 0.75f) {
                     coin_slide = 1.0f;
+                }
                 score = packet->original_score;
                 IncreaseScore(&score, (i64)((u32)(packet->reward_score - packet->original_score) * progress), 0);
                 CoinTotal_Draw((i32)score,
@@ -1991,8 +2067,9 @@ extern "C" {
                                CoinTotalScale, 1, 1.0f, 255, 191, 0);
                 if (stage->type == 26) {
                     f32 remaining = (u16)packet->mission->time - packet->elapsed_time;
-                    if (remaining < 0.0f)
+                    if (remaining < 0.0f) {
                         remaining = 0.0f;
+                    }
                     Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
                     Text3D(text, 0.0f,
                            -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] +
@@ -2001,8 +2078,9 @@ extern "C" {
                 }
                 if (stage->type == 23) {
                     f32 remaining = (u16)ADataList[packet->area_id].challenge_trial_time - packet->elapsed_time;
-                    if (remaining < 0.0f)
+                    if (remaining < 0.0f) {
                         remaining = 0.0f;
+                    }
                     Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
                     Text3D(text, 0.0f,
                            -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] +
@@ -2029,22 +2107,26 @@ extern "C" {
                 previous = stage->field_0x18;
                 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
-                if (accumulated < StatusAlt7f8220Pc)
+                if (accumulated < StatusAlt7f8220Pc) {
                     StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                else if (accumulated >= StatusAlt7f8220Pc + StatusAlt7f8224Pc) {
-                    if (stage->field_0x18 < (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc)
+                } else if (accumulated >= StatusAlt7f8220Pc + StatusAlt7f8224Pc) {
+                    if (stage->field_0x18 < (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc) {
                         StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                    else if (stage->field_0x18 > stage->field_0x1c - StatusAlt7f8224Pc)
+                    } else if (stage->field_0x18 > stage->field_0x1c - StatusAlt7f8224Pc) {
                         StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
-                    else
+                    } else {
                         StatusAltSpinPc = 0;
-                } else
+                    }
+                } else {
                     StatusAltSpinPc = 0;
+                }
                 if (stage->field_0x18 >= stage->field_0x1c) {
-                    if (packet->stage->type == 26 && packet->mission_state == 2)
+                    if (packet->stage->type == 26 && packet->mission_state == 2) {
                         *packet->score = packet->reward_score;
-                    if (packet->stage->type == 23 && packet->challenge_state == 2)
+                    }
+                    if (packet->stage->type == 23 && packet->challenge_state == 2) {
                         *packet->score = packet->reward_score;
+                    }
                     NextStatusStage(packet);
                     return;
                 }
@@ -2052,10 +2134,11 @@ extern "C" {
                     (previous < (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc &&
                      stage->field_0x18 >= (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc)) {
                     if ((packet->stage->type == 23 && packet->challenge_state == 3) ||
-                        (packet->stage->type == 26 && packet->mission_state == 3))
+                        (packet->stage->type == 26 && packet->mission_state == 3)) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    else
+                    } else {
                         PlaySfx("StatusAward", NULL);
+                    }
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     return;
                 }
@@ -2066,8 +2149,9 @@ extern "C" {
                         CoinTotalScale = 1.5f;
                         NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
                         PlaySfx("Shop_BuyCheat", NULL);
-                    } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end)
+                    } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end) {
                         PlaySfx((char *)PickupCoinSfx_PC, NULL);
+                    }
                 }
                 break;
             }
@@ -2080,8 +2164,9 @@ extern "C" {
         f32 title_alpha;
         i32 sliding;
         (void)packet;
-        if (current == 0 || stage->field_0x14 <= 0)
+        if (current == 0 || stage->field_0x14 <= 0) {
             return;
+        }
         sliding = 1;
         if (stage->field_0x18 < 0.5f) {
             title_alpha = stage->field_0x18 * 2.0f;
@@ -2110,19 +2195,21 @@ extern "C" {
                         StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc,
                         1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
         }
-        if (title_alpha > 0.0f)
+        if (title_alpha > 0.0f) {
             DrawStatusText(TTab[TextIdPc880740], StatusAltSpinPc, 0.0f, 0.225f, StatusAlt7f8278Pc,
                            ((u32)(title_alpha * 255.0) << 24) | ((u8)StatusBluePc << 16) | ((u8)StatusGreenPc << 8) |
                                (u8)StatusRedPc,
                            0);
+        }
     }
 
     /* Stage type 18. Shows the red brick's cheat name, the spinning brick and the title. */
     void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 cheat_alpha, cheat_scale, title_alpha, title_scale, brick_scale;
         u16 cheat_angle, title_angle, rotation;
-        if (current == 0 || stage->field_0x14 <= 0)
+        if (current == 0 || stage->field_0x14 <= 0) {
             return;
+        }
         cheat_scale = 0.0f;
         title_alpha = 0.0f;
         title_scale = 0.0f;

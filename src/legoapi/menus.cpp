@@ -36,7 +36,8 @@ STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
 /* 50b310/71. Existing menu globals and types, no new owner data. */
 extern "C" i32 __cdecl MenuInMemoryCard(void) {
     if (GameMenuLevel != -1 && MenuValidated != 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id >= 1000 &&
-        MenuInfo[GameMenu[GameMenuLevel].menu].id < 1031)
+        MenuInfo[GameMenu[GameMenuLevel].menu].id < 1031) {
         return 1;
+    }
     return 0;
 }

@@ -9,8 +9,9 @@ void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 void __cdecl SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave,
                                   SAVE_VOID_FN_PC draw_save_icon) {
     SAVESLOTS = slots;
-    if (slots >= 6)
+    if (slots >= 6) {
         SAVESLOTS = 6;
+    }
     memcard_hashfn = hashfn;
     memcard_savedata = save;
     memcard_savedatasize = save_size;
@@ -48,15 +49,17 @@ i32 __cdecl ChecksumSaveData(void *buffer, i32 size) {
     u32 sum;
     i32 i;
     sum = 0x5c0999;
-    for (i = 0; i < size / 4; i++)
+    for (i = 0; i < size / 4; i++) {
         sum += ((u32 *)buffer)[i];
+    }
     return (i32)sum;
 }
 
 void UpdateSaveSlots(void) {
     const f32 elapsed = NuTimeGetFrameTime();
-    if (memcard_autosavecanceldelay > 0.0f)
+    if (memcard_autosavecanceldelay > 0.0f) {
         memcard_autosavecanceldelay -= elapsed;
+    }
 #define ADVANCE_SAVE_DELAY(message, result)                                                                            \
     if (message > 0.0f) {                                                                                              \
         message -= elapsed;                                                                                            \
@@ -69,8 +72,9 @@ void UpdateSaveSlots(void) {
         memcard_autosavepredelay -= elapsed;
     } else if (memcard_autosavepostdelay > 0.0f) {
         memcard_autosavepostdelay -= elapsed;
-        if (memcard_autosavepostdelay <= 0.0f)
+        if (memcard_autosavepostdelay <= 0.0f) {
             memcard_autosaveinprogress = 0;
+        }
     }
     ADVANCE_SAVE_DELAY(memcard_formatmessage_delay, memcard_formatresult_delay);
     ADVANCE_SAVE_DELAY(memcard_createmessage_delay, memcard_createresult_delay);
@@ -78,8 +82,9 @@ void UpdateSaveSlots(void) {
     ADVANCE_SAVE_DELAY(memcard_message_delay, memcard_result_delay);
 #undef ADVANCE_SAVE_DELAY
 
-    if (saveload_cardtype != 2)
+    if (saveload_cardtype != 2) {
         memcard_justformatted = 0;
+    }
     if (saveload_autosavedisabled != 0) {
         if (memcard_autosavestarted != 0) {
             memcard_savefailed = 1;
@@ -170,8 +175,9 @@ void UpdateSaveSlots(void) {
         memcard_savestarted = 0;
         if (saveload_error == 0) {
             MenuSaveOccurred = 1;
-            if (savesuccessfn != NULL)
+            if (savesuccessfn != NULL) {
                 savesuccessfn();
+            }
             if (memcard_autosavestarted != 0) {
                 memcard_autosavestarted = 0;
                 memcard_autosavepostdelay = 1.0f;
@@ -200,8 +206,9 @@ void UpdateSaveSlots(void) {
     } else if (memcard_deletestarted != 0 && saveload_status == 1) {
         memcard_deletestarted = 0;
         memcard_deletefailed = 0;
-        if (saveload_error != 0)
+        if (saveload_error != 0) {
             memcard_deletefailed = 1;
+        }
     }
     if (memcard_formatme != 0) {
         if (saveload_status == 1 && saveload_cardtype == 2) {
@@ -214,24 +221,27 @@ void UpdateSaveSlots(void) {
         }
     } else if (memcard_formatting != 0 && saveload_status == 3) {
         memcard_formatting = 0;
-        if (saveload_error == 0)
+        if (saveload_error == 0) {
             memcard_justformatted = 1;
-        else
+        } else {
             memcard_formatfailed = 1;
+        }
     }
 }
 
 void __cdecl loadsaveCallEachFrame(void) {
     saveloadASCallEachFrame();
-    if (saveload_cardchanged != 0)
+    if (saveload_cardchanged != 0) {
         memcard_cardchanged = 1;
+    }
     UpdateSaveSlots();
     memcard_slotsused = 0;
     if (saveload_savepresent != 0) {
         i32 i;
         for (i = 0; i < SAVESLOTS; ++i) {
-            if (saveload_slotused[i] != 0)
+            if (saveload_slotused[i] != 0) {
                 ++memcard_slotsused;
+            }
         }
     }
 }
@@ -301,10 +311,11 @@ void __cdecl MenuExitCardWarning(MENU *menu) {
 
 void __cdecl MenuUpdateSave(MENU *menu) {
     i32 slot;
-    if (Menu_DisableCancel != 0)
+    if (Menu_DisableCancel != 0) {
         MenuInfo[menu->menu].cancel_prompt = 0;
-    else
+    } else {
         MenuInfo[menu->menu].cancel_prompt = 1;
+    }
     if (memcard_cardchanged != 0 || saveload_cardtype != 2) {
         MenuEnterSave(menu);
     }
@@ -390,10 +401,11 @@ void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
 
 void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
     i32 cancel;
-    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019)
+    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019) {
         MenuInfo[menu->menu].cancel_prompt = 0;
-    else
+    } else {
         MenuInfo[menu->menu].cancel_prompt = 1;
+    }
     cancel = 0;
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
@@ -419,8 +431,9 @@ void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
 
 void __cdecl MenuUpdateFormatting(MENU *menu) {
     (void)menu;
-    if (memcard_formatme != 0)
+    if (memcard_formatme != 0) {
         memcard_formatmessage_delay = 1.5f;
+    }
     if (memcard_formatme != 0 || memcard_formatting != 0 || memcard_formatmessage_delay > 0.0f) {
         memcard_formatresult_delay = 1.5f;
         if (memcard_formatme != 0 && memcard_cardchanged != 0) {
@@ -486,8 +499,9 @@ void __cdecl MenuUpdateSaveConfirm(MENU *menu) {
 
 void __cdecl MenuUpdateSaving(MENU *menu) {
     (void)menu;
-    if (memcard_saveneeded != 0)
+    if (memcard_saveneeded != 0) {
         memcard_savemessage_delay = 1.5f;
+    }
     if (memcard_saveneeded != 0 || memcard_savestarted != 0 || memcard_savemessage_delay > 0.0f) {
         memcard_saveresult_delay = 1.5f;
         if (memcard_saveneeded != 0 && (memcard_cardchanged != 0 || saveload_cardtype == -1)) {
@@ -510,8 +524,9 @@ void __cdecl MenuUpdateSaving(MENU *menu) {
 }
 
 void __cdecl MenuUpdateAutoSaveWarning(MENU *menu) {
-    if (memcard_cardchanged != 0)
+    if (memcard_cardchanged != 0) {
         BackupMenu();
+    }
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenu();
@@ -527,10 +542,11 @@ void __cdecl MenuUpdateLoad(MENU *menu) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 0) {
             memcard_slot = menu->selected_column - menu->first_column;
-            if (saveload_slotused[memcard_slot] != 0)
+            if (saveload_slotused[memcard_slot] != 0) {
                 NewMenu(1013, 1, -1);
-            else
+            } else {
                 MenuSFX = MENUSFX_MENUNOENTRY;
+            }
         } else if (menu->selected_row == menu->last_row) {
             NewMenu(1017, 1, -1);
         }
@@ -562,8 +578,9 @@ void __cdecl MenuUpdateLoadConfirm(MENU *menu) {
 
 void __cdecl MenuUpdateLoading(MENU *menu) {
     (void)menu;
-    if (memcard_loadneeded != 0)
+    if (memcard_loadneeded != 0) {
         memcard_loadmessage_delay = 1.5f;
+    }
     if (memcard_loadneeded != 0 || memcard_loadstarted != 0 || memcard_loadmessage_delay > 0.0f) {
         memcard_loadresult_delay = 1.5f;
         if (memcard_loadneeded != 0 && (memcard_cardchanged != 0 || saveload_cardtype == -1)) {
@@ -649,8 +666,9 @@ static i32 SaveMenuSlideRightPc = 0;
 void __cdecl MenuEnterLoad(MENU *menu) {
     i32 last_column = SAVESLOTS;
     memcard_cardchanged = 0;
-    if (last_column > 6)
+    if (last_column > 6) {
         last_column = memcard_slotsused;
+    }
     menu->last_column = (i16)(last_column - 1);
     menu->state = 2;
     menu->last_row = 1;
@@ -659,12 +677,13 @@ void __cdecl MenuEnterLoad(MENU *menu) {
     Menu_LastFlow = 3;
     MenuLoadOccurred = 0;
     MenuLoadStarted = 0;
-    if (saveload_filecorrupt != 0)
+    if (saveload_filecorrupt != 0) {
         NewMenu(1020, -1, -1);
-    else if (saveload_cardtype != 2)
+    } else if (saveload_cardtype != 2) {
         NewMenu(1004, -1, -1);
-    else if (saveload_savepresent == 0 || saveload_cardformatted == 0)
+    } else if (saveload_savepresent == 0 || saveload_cardformatted == 0) {
         NewMenu(1005, -1, -1);
+    }
 }
 
 void __cdecl MenuEnterSave(MENU *menu) {
@@ -677,8 +696,9 @@ void __cdecl MenuEnterSave(MENU *menu) {
         menu->last_column = (i16)(SAVESLOTS - 1);
     } else {
         menu->last_column = (i16)memcard_slotsused;
-        if (memcard_slotsused == SAVESLOTS || saveload_freespace < SAVESIZE_ADDITIONAL)
+        if (memcard_slotsused == SAVESLOTS || saveload_freespace < SAVESIZE_ADDITIONAL) {
             --menu->last_column;
+        }
     }
     menu->state = 2;
     SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
@@ -687,15 +707,15 @@ void __cdecl MenuEnterSave(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    if (saveload_cardtype != 2)
+    if (saveload_cardtype != 2) {
         NewMenu(1002, -1, -1);
-    else if (saveload_filecorrupt != 0)
+    } else if (saveload_filecorrupt != 0) {
         NewMenu(1020, -1, -1);
-    else if (saveload_cardformatted == 0)
+    } else if (saveload_cardformatted == 0) {
         NewMenu(1006, 1, -1);
-    else if (saveload_savepresent == 0 && saveload_freespace < SAVESIZE)
+    } else if (saveload_savepresent == 0 && saveload_freespace < SAVESIZE) {
         NewMenu(1003, -1, -1);
-    else if (Menu_InHeaderSave != 0) {
+    } else if (Menu_InHeaderSave != 0) {
         memcard_slot = -1;
         NewMenu(1008, 1, -1);
     }
@@ -706,43 +726,51 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     i32 first, last, slot, highlight;
     i32 red, green, blue;
     f32 x, scale;
-    if (SaveMenuSlideRightPc > 0)
+    if (SaveMenuSlideRightPc > 0) {
         --SaveMenuSlideRightPc;
-    if (SaveMenuSlideLeftPc > 0)
+    }
+    if (SaveMenuSlideLeftPc > 0) {
         --SaveMenuSlideLeftPc;
+    }
     if (SAVESLOTS > 3) {
         if (menu->selected_column != SaveMenuLastSlotPc) {
-            if (SaveMenuLastSlotPc > menu->selected_column)
+            if (SaveMenuLastSlotPc > menu->selected_column) {
                 SaveMenuSlideRightPc = 10;
-            else
+            } else {
                 SaveMenuSlideLeftPc = 10;
+            }
             SaveMenuLastSlotPc = menu->selected_column;
         }
         first = menu->selected_column - 1;
-        if (SaveMenuSlideLeftPc != 0)
+        if (SaveMenuSlideLeftPc != 0) {
             --first;
+        }
         last = menu->selected_column + 1;
-        if (SaveMenuSlideRightPc != 0)
+        if (SaveMenuSlideRightPc != 0) {
             ++last;
+        }
     } else {
         first = 0;
         last = SAVESLOTS - 1;
     }
-    if (SAVESLOTS <= 6)
+    if (SAVESLOTS <= 6) {
         count = SAVESLOTS;
-    else
+    } else {
         count = memcard_slotsused;
+    }
     slot = first;
-    if (SAVESLOTS <= 3)
+    if (SAVESLOTS <= 3) {
         x = (SAVESLOTS - 1) * -0.25;
-    else
+    } else {
         x = 0.0 - (menu->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
             SaveMenuSlideLeftPc * 0.5 / 10.0;
+    }
     for (; slot <= last; ++slot, x += 0.5) {
         highlight = menu->selected_row == menu->first_row && menu->selected_column == slot &&
                     SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0;
-        if (slot < 0 || slot > menu->last_column)
+        if (slot < 0 || slot > menu->last_column) {
             continue;
+        }
         if (slot < count) {
             drawslotinfofn(x, y, highlight, slot);
         } else {
@@ -792,10 +820,12 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     }
     scale = MenuTextScalePc + MenuTextScalePc;
     if (SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0) {
-        if (first > 0)
+        if (first > 0) {
             MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
-        if (last < menu->last_column)
+        }
+        if (last < menu->last_column) {
             MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
+        }
     }
 }
 
@@ -804,8 +834,9 @@ void __cdecl MenuDrawSave(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0)
+    if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0) {
         drawslotsfn(menu, -0.3f);
+    }
     ++menu->draw_item;
     if (Menu_DisableCancel == 0) {
         menu->draw_y = MENUBOTY;
@@ -818,8 +849,9 @@ void __cdecl MenuDrawLoad(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0)
+    if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0) {
         drawslotsfn(menu, -0.2f);
+    }
     ++menu->draw_item;
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
@@ -844,12 +876,13 @@ void __cdecl MenuDrawSaveConfirm(MENU *menu) {
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    if (Menu_Overwriteflag != 0)
+    if (Menu_Overwriteflag != 0) {
         MenuSmartTextEx(apitxt_CONFIRMOVERWRITE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
                         0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
-    else
+    } else {
         MenuSmartTextEx(apitxt_CONFIRMSAVE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                         MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
+    }
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
@@ -967,22 +1000,27 @@ static void MenuDrawLoadingMessagePc(void) {
     MenuSmartTextEx(apitxt_GAMELOADING, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
                     MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
 }
+
 static void MenuDrawLoadedMessagePc(void) {
     f32 scale = MenuTextScalePc;
     MenuSmartTextEx(apitxt_GAMELOADED, 0.0f, -0.4f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
                     1.5f, 2, NULL, 0, MenuA);
 }
+
 static void MenuDrawLoadFailedMessagePc(void) {
     f32 scale = MenuTextScalePc;
     MenuSmartTextEx(apitxt_FAILEDTOLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
                     MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
 }
+
 static void MenuDrawLoadCorruptMessagePc(void) {
     f32 scale = MenuTextScalePc;
     MenuSmartTextEx(apitxt_CORRUPTLOAD, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB,
                     1.5f, 3, NULL, 0, MenuA);
 }
+
 static i32 MenuLoadResultShownPc = 0;
+
 void __cdecl MenuDrawLoading(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
@@ -1023,8 +1061,9 @@ void __cdecl MenuEnterInsertCard(MENU *menu) {
 void __cdecl MenuDrawInsertCard(MENU *menu) {
     char message[1024];
     (void)menu;
-    if (0)
+    if (0) {
         sprintf(message, "");
+    }
 }
 
 void __cdecl MenuDrawFormatConfirm(MENU *menu) {
@@ -1063,19 +1102,21 @@ static void MenuDrawDeletedMessagePc(void) {
 
 static void MenuDrawSaveFailedMessagePc(void) {
     f32 scale = MenuTextScalePc;
-    if (Menu_Overwriteflag != 0)
+    if (Menu_Overwriteflag != 0) {
         MenuSmartTextEx(apitxt_FAILEDTOOVERWRITE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
                         MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
-    else
+    } else {
         MenuSmartTextEx(apitxt_FAILEDTOSAVE, 0.0f, 0.0f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG,
                         MENUNORMALB, 1.5f, 3, NULL, 0, MenuA);
+    }
 }
 
 static void MenuDrawAutoSaveWarningMessagePc(void) {
     char message[1024];
     f32 scale = MenuTextScalePc;
-    if (memcard_drawasiconfn != NULL)
+    if (memcard_drawasiconfn != NULL) {
         memcard_drawasiconfn();
+    }
     sprintf(message, apitxt_AUTOSAVE_ENABLED, saveload_autosave + 1);
     MenuSmartTextEx(message, 0.0f, 0.45f, 1.0f, scale, scale, scale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 3,
                     NULL, 0, MenuA);
@@ -1084,12 +1125,14 @@ static void MenuDrawAutoSaveWarningMessagePc(void) {
 void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
     char message[1024];
     (void)menu;
-    if (0)
+    if (0) {
         sprintf(message, "");
+    }
     MenuDrawNotEnoughSpaceMessagePc();
 }
 
 static i32 MenuSaveResultShownPc = 0;
+
 void __cdecl MenuDrawSaving(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
@@ -1117,6 +1160,7 @@ void __cdecl MenuDrawSaving(MENU *menu) {
 }
 
 static i32 MenuDeleteResultShownPc = 0;
+
 void __cdecl MenuDrawDeleting(MENU *menu) {
     (void)menu;
     NuStrCpy(MenuHeader, apitxt_DELETEGAME);

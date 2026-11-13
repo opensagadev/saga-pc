@@ -8,17 +8,19 @@ typedef struct NET_PRIM_VERTEX_PC {
     u32 colour;
     f32 u, v;
 } NET_PRIM_VERTEX_PC;
+
 STATIC_ASSERT(sizeof(NET_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(NET_PRIM_VERTEX_PC, colour) == 0xc);
 
 static void NetPrimSetColour(i32 colour) {
-    if (NuPrimNeedsOverbrightening != 0)
+    if (NuPrimNeedsOverbrightening != 0) {
         ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
             ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00u);
-    else
+    } else {
         ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
             (((colour & 0xff) >> 1) << 16) + ((((colour >> 8) & 0xff) >> 1) << 8) + (((colour >> 16) & 0xff) >> 1) +
             (colour & 0xff000000);
+    }
 }
 
 static void NetPrimPosition(f32 x, f32 y, f32 z) {
@@ -80,8 +82,9 @@ void NetStats::Update() {
     i32 index;
     if (UtilGetFrameStartTime() - last_time > 1000) {
         index = history_index + 1;
-        if (index >= 30)
+        if (index >= 30) {
             index = 0;
+        }
         history[index] = totals;
         history[index] -= previous;
         peak.KeepMax(history[index]);

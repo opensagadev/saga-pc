@@ -46,6 +46,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
 STATIC_ASSERT(offsetof(EXPLOSION_PC, owner) == 8);
 STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+
 struct minianimpacket_pc_s {
     f32 current_time;
     f32 previous_time;
@@ -58,6 +59,7 @@ struct minianimpacket_pc_s {
     i16 previous_animation_id;
     i16 requested_animation_id;
 };
+
 STATIC_ASSERT(sizeof(MINIANIMPACKET_PC) == 0x24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
@@ -86,6 +88,7 @@ STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+
 typedef struct player_reset_packet_pc_s {
     u8 unknown_000[0xe8];
     i16 context_animation;
@@ -142,6 +145,7 @@ typedef struct player_reset_packet_pc_s {
     u8 unknown_770[0xd];
     i8 random_context;
 } PLAYER_RESET_PACKET_PC;
+
 STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_animation) == 0xe8);
 STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, context_mode) == 0xee);
 STATIC_ASSERT(offsetof(PLAYER_RESET_PACKET_PC, build_context) == 0xf1);
@@ -178,13 +182,16 @@ STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
 /* Two-DWORD consumer view of the existing genuine mutable default mask. */
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
+
 typedef struct CREATURE_RESET_PACKET_VIEW_PC {
     u8 unknown_000[0x6c4];
     u8 packet[0x788];
 } CREATURE_RESET_PACKET_VIEW_PC;
+
 STATIC_ASSERT(offsetof(CREATURE_RESET_PACKET_VIEW_PC, packet) == 0x6c4);
 STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW_PC *)0)->packet) == 0x788);
 STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_model_override_pc) == 0x7f4);
+
 typedef struct player_position_record_pc_s {
     NUVEC *position;
     i32 sock_location;
@@ -192,13 +199,16 @@ typedef struct player_position_record_pc_s {
     i16 angle;
     u8 unknown_0e[2];
 } PLAYER_POSITION_RECORD_PC;
+
 typedef union player_position_sock_pc_u {
     SOCKPOSITION_PC sock;
+
     struct {
         i32 location;
         f32 ratio;
     } start;
 } PLAYER_POSITION_SOCK_PC;
+
 STATIC_ASSERT(sizeof(PLAYER_POSITION_RECORD_PC) == 16);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, position) == 0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_location) == 4);
@@ -230,10 +240,11 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         spline = world->start_door->spline;
         first_pair = 2;
     } else {
-        if (PlayerStartSplineIndexPc != -1)
+        if (PlayerStartSplineIndexPc != -1) {
             spline = world->camera_splines[PlayerStartSplineIndexPc];
-        else
+        } else {
             spline = NULL;
+        }
         first_pair = 0;
     }
     if (spline != NULL) {
@@ -245,8 +256,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             NuVecSub(&direction, &spline->pts[point + 1], PlayerStartRecordInitPc[index].position);
             PlayerStartRecordInitPc[index].angle = NuAtan2D(direction.x, direction.z);
             ++pair;
-            if (pair * 2 + 2 > spline->length)
+            if (pair * 2 + 2 > spline->length) {
                 pair = first_pair;
+            }
         }
         if (bonus && spline->length >= 4) {
             i32 count = spline->length / 4;
@@ -278,13 +290,15 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             i32 episode;
             if ((ADataList[area].flags & 4) != 0 && (episode = ADataList[area].episode_index) != -1) {
                 area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
-                if (area == -1)
+                if (area == -1) {
                     area = last_area;
+                }
             }
             door = Door_FindByIndex(world, area, -1, NULL);
         }
-        if (door != NULL)
+        if (door != NULL) {
             NuStrCpy(DoorExitNamePc, (char *)door);
+        }
     }
     StartDoorPositions();
     DoorCutSplinePc = NULL;
@@ -316,17 +330,20 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
 
 void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2], index;
-    if (VehicleArea != 0 || GAMEDEMO != 0)
+    if (VehicleArea != 0 || GAMEDEMO != 0) {
         return;
-    if (force == 0 && (!(WORLD->current_level->flags & 2) || (WORLD->current_level->flags & 0x4e0)))
+    }
+    if (force == 0 && (!(WORLD->current_level->flags & 2) || (WORLD->current_level->flags & 0x4e0))) {
         return;
+    }
     ids[0] = first_id;
     ids[1] = second_id;
     for (index = 0; index < 2; ++index) {
         i32 id = ids[index];
         if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && id != PlayerID[index] && Collection_Got(id) == 1 &&
-            GCDataList[id].hover_fall_mode != 0 && id != PlayerID[(index - 1) & 1])
+            GCDataList[id].hover_fall_mode != 0 && id != PlayerID[(index - 1) & 1]) {
             PlayerID[index] = id;
+        }
     }
     if (first_id != second_id && first_id == PlayerID[1] && second_id == PlayerID[0]) {
         index = PlayerID[0];
@@ -338,10 +355,11 @@ void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
 NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
-    if ((i8)object->field_280 < 0 || (i8)object->field_280 >= 8)
+    if ((i8)object->field_280 < 0 || (i8)object->field_280 >= 8) {
         index = object->hostility_group;
-    else
+    } else {
         index = (i8)object->field_280;
+    }
     index %= 8;
     position = PlayerStartRecordInitPc[index].position;
     return position != NULL ? position : PlayerStartRecordInitPc[0].position;
@@ -361,12 +379,14 @@ i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position
     if (count > 0.0f) {
         f32 scale = 1.0f / count;
         NuVecScale(position, &total, scale);
-        if (socket_position != NULL)
+        if (socket_position != NULL) {
             ComplexSockPosition(WORLD->sock_sys, position, -1, -1, socket_position);
+        }
         return 1;
     }
-    if (socket_position != NULL)
+    if (socket_position != NULL) {
         socket_position->sock_index = -1;
+    }
     return 0;
 }
 
@@ -388,14 +408,16 @@ void __cdecl SetPlayer(void) {
 
 i32 __cdecl CanPullLevers(i32 id) {
     u32 flags = CDataList[id].model_flags;
-    if ((flags & 0x1000010) == 0x1000010)
+    if ((flags & 0x1000010) == 0x1000010) {
         return 0;
+    }
     return (flags & 0x40088) != 0;
 }
 
 __declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
-    if (Player_ClearContextFn != NULL)
+    if (Player_ClearContextFn != NULL) {
         Player_ClearContextFn(object, mode);
+    }
     Whip_Release(object);
     SuperCarry_Release(object);
     SpecialMove_ReleaseVictim(object);
@@ -406,10 +428,11 @@ void __cdecl Player_ResetContexts(void *packet_ptr) {
     PLAYER_RESET_PACKET_PC *packet = (PLAYER_RESET_PACKET_PC *)packet_ptr;
     packet->context_animation_time = 0.0f;
     packet->context_target = -1;
-    if ((packet->secondary_flags >> 16) & 1)
+    if ((packet->secondary_flags >> 16) & 1) {
         packet->context_blend = 1.0f;
-    else
+    } else {
         packet->context_blend = 0.0f;
+    }
     packet->context_distance = 5.0f;
     packet->unknown_76f = 0;
     packet->unknown_66c = 0.0f;
@@ -447,8 +470,9 @@ i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
         difference = RotDiff(object->pad->input_angle + GameCam->input_yaw, object->field_0x276);
-        if (difference < -0x4000 || difference > 0x4000)
+        if (difference < -0x4000 || difference > 0x4000) {
             return 1;
+        }
     }
     return 0;
 }
@@ -478,33 +502,41 @@ __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *m
     }
     for (i = 0; i < count; ++i, ++object) {
         if (object == excluded || !(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
-            (object->flags_e20 & 0x20))
+            (object->flags_e20 & 0x20)) {
             continue;
-        if ((flags & 2) && !object->field_281)
+        }
+        if ((flags & 2) && !object->field_281) {
             continue;
-        if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000)
+        }
+        if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) {
             continue;
-        if (object->character_data->game_character->flags_090 & 0x8000)
+        }
+        if (object->character_data->game_character->flags_090 & 0x8000) {
             continue;
+        }
         if (minimum->x > object->collision_max.x || maximum->x < object->collision_min.x ||
-            minimum->z > object->collision_max.z || maximum->z < object->collision_min.z)
+            minimum->z > object->collision_max.z || maximum->z < object->collision_min.z) {
             continue;
-        if ((flags & 1) && (minimum->y > object->collision_max.y || maximum->y < object->collision_min.y))
+        }
+        if ((flags & 1) && (minimum->y > object->collision_max.y || maximum->y < object->collision_min.y)) {
             continue;
+        }
         combined_radius = object->bounds_radius + radius;
         dx = object->position.x - position->x;
         dz = object->position.z - position->z;
         combined_radius *= combined_radius;
         if (dx * dx + dz * dz < combined_radius) {
-            if (dx == 0.0f && dz == 0.0f)
+            if (dx == 0.0f && dz == 0.0f) {
                 angle = qrand();
-            else
+            } else {
                 angle = NuAtan2D(dx, dz);
+            }
             speed = object->character_data->game_character->run_speed * speed_multiplier;
-            if (speed < 1.0f)
+            if (speed < 1.0f) {
                 speed = 1.0f;
-            else if (speed > 3.0f)
+            } else if (speed > 3.0f) {
                 speed = 3.0f;
+            }
             target.x = speed * NuTrigTable[angle >> 1];
             target.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
             object->velocity.x = SeekValF(object->velocity.x, target.x, 10.0f);
@@ -531,8 +563,9 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
             }
         }
     }
-    if (*nearest_player != NULL)
+    if (*nearest_player != NULL) {
         return 1;
+    }
     return 0;
 }
 
@@ -544,8 +577,9 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
         (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL ||
-        FreePlay == 0)
+        FreePlay == 0) {
         return;
+    }
     if ((MiniCutCam != 0 && object->player_controlled && (object->flags_1fc_word & 0x100) == 0) || object->dead != 0 ||
         object->pad == ViewCamGetGamePad()) {
         object->input_toggle_hold_time = TOGGLEHOLDTIME;
@@ -555,10 +589,11 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
     if (direction != 0) {
         left = 0;
         right = 0;
-        if (direction >= 1)
+        if (direction >= 1) {
             right = 1;
-        else
+        } else {
             left = 1;
+        }
     } else {
         left_mask = GAMEPAD_TOGGLELEFT;
         right_mask = GAMEPAD_TOGGLERIGHT;
@@ -582,74 +617,91 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
             } else {
                 hold_time = object->input_toggle_hold_time - FRAMETIME;
                 object->input_toggle_hold_time = hold_time;
-                if (hold_time <= 0.0f)
+                if (hold_time <= 0.0f) {
                     object->input_toggle_hold_time = TOGGLEREPEATTIME;
-                else {
+                } else {
                     left = 0;
                     right = 0;
                 }
             }
         }
         hold_time = object->input_toggle_hold_time;
-        if (left == 0 && right == 0)
+        if (left == 0 && right == 0) {
             return;
+        }
     }
     allowed = 0;
-    if (Player_ToggleSubCharacterFn != NULL && Player_ToggleSubCharacterFn(object, left, sound) != 0)
+    if (Player_ToggleSubCharacterFn != NULL && Player_ToggleSubCharacterFn(object, left, sound) != 0) {
         return;
-    for (index = 0; index < apicharsys->loaded_model_count; ++index)
-        if (object->id == (u16)apicharsys->models[index].model_id)
+    }
+    for (index = 0; index < apicharsys->loaded_model_count; ++index) {
+        if (object->id == (u16)apicharsys->models[index].model_id) {
             break;
-    if (index == apicharsys->loaded_model_count)
+        }
+    }
+    if (index == apicharsys->loaded_model_count) {
         return;
+    }
     attempts = 0;
     do {
         if (left != 0) {
-            if (--index == -1)
+            if (--index == -1) {
                 index = apicharsys->loaded_model_count - 1;
-        } else if (++index == apicharsys->loaded_model_count)
+            }
+        } else if (++index == apicharsys->loaded_model_count) {
             index = 0;
+        }
         id = apicharsys->models[index].model_id;
         ++attempts;
         collected = InCollectList_Index(id, NULL, 0);
-        if ((apicharsys->models[index].flags & 1) == 0)
+        if ((apicharsys->models[index].flags & 1) == 0) {
             goto next_character;
+        }
         if (collected == -1 && (GCDataList[id].flags_090 & 0x80000000) == 0 &&
             ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
             !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
-              (GCDataList[id].flags_094 & 0x2000000) != 0))
+              (GCDataList[id].flags_094 & 0x2000000) != 0)) {
             goto next_character;
+        }
         if (VehicleArea != 0) {
             if ((CDataList[id].model_flags & 0x2000) == 0 &&
                 !(BonusArea != 0 && (CDataList[id].model_flags & 0x4000000) != 0) &&
                 (GCDataList[id].flags_090 & 0x80000000) == 0 &&
-                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0))
+                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                 goto next_character;
+            }
             if (BonusArea != 0) {
                 area = AreaFromMiniKitID(id);
                 if (area != -1) {
-                    if (Game_AreaSave == NULL || Game_AreaSave[area].minikit_complete == 0)
+                    if (Game_AreaSave == NULL || Game_AreaSave[area].minikit_complete == 0) {
                         goto next_character;
+                    }
                 } else if ((GCDataList[id].flags_090 & 0x80000000) == 0 &&
                            !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
-                             (GCDataList[id].flags_094 & 0x2000000) != 0))
+                             (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                     goto next_character;
+                }
                 if (object->field_283 >= 0 && object->field_283 < 17 && (TerLayer[object->field_283].flags & 1) != 0 &&
-                    GCDataList[id].field_028 <= 0.0f)
+                    GCDataList[id].field_028 <= 0.0f) {
                     goto next_character;
+                }
             }
-        } else if ((CDataList[id].model_flags & 0x2000) != 0 || (GCDataList[id].flags_090 & 0x40) != 0)
+        } else if ((CDataList[id].model_flags & 0x2000) != 0 || (GCDataList[id].flags_090 & 0x40) != 0) {
             goto next_character;
+        }
         if (BonusArea == 0 || VehicleArea == 0) {
             if ((GCDataList[id].flags_090 & 0x80000000) != 0) {
-                if ((object->flags_1fc_word & 0x80) == 0 || Cheats_CheckFlags(0x100) == 0)
+                if ((object->flags_1fc_word & 0x80) == 0 || Cheats_CheckFlags(0x100) == 0) {
                     goto next_character;
+                }
             } else {
                 if ((object->flags_1fc_word & 0x80) == 0 && collected == -1 &&
-                    ((GCDataList[id].flags_094 >> 24) & 1) == 0)
+                    ((GCDataList[id].flags_094 >> 24) & 1) == 0) {
                     goto next_character;
-                if (((GCDataList[id].flags_094 >> 24) & 1) == 0 && (collected == -1 || Collection_Got(id) == 0))
+                }
+                if (((GCDataList[id].flags_094 >> 24) & 1) == 0 && (collected == -1 || Collection_Got(id) == 0)) {
                     goto next_character;
+                }
             }
         }
         if (object->floor_height != 2000000.0f && object->roof_height_pc != 2000000.0f &&
@@ -660,27 +712,32 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
         }
         allowed = 1;
     next_character:
-        if (attempts > apicharsys->loaded_model_count || allowed != 0 || id == (i16)object->id)
+        if (attempts > apicharsys->loaded_model_count || allowed != 0 || id == (i16)object->id) {
             break;
+        }
     } while (1);
-    if (attempts >= apicharsys->loaded_model_count || allowed == 0)
+    if (attempts >= apicharsys->loaded_model_count || allowed == 0) {
         return;
+    }
     if ((object->flags_1fc_word & 0x80) != 0) {
         Hint_SetComplete(LEGOHINT_FREEPLAYTOGGLE);
-        if (VehicleArea == 0)
+        if (VehicleArea == 0) {
             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+        }
     }
     NewPlayerCharacter(object, id, old_id, 1);
     RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
                       Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
-    if (Player_ToggledCharacterFn != NULL)
+    if (Player_ToggledCharacterFn != NULL) {
         Player_ToggledCharacterFn(object, left);
+    }
     object->input_toggle_hold_time = hold_time;
     if (sound != 0) {
-        if (left != 0)
+        if (left != 0) {
             GameAudio_PlaySfx(0x23, &object->collision_position, 0, 0);
-        else if (right != 0)
+        } else if (right != 0) {
             GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
+        }
     }
 }
 
@@ -690,35 +747,40 @@ i32 __cdecl Arcade_BothPlayersActive(void) {
 }
 
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x80) != 0)
+    if (Cheats_CheckFlags(0x80) != 0) {
         return 1;
+    }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 __cdecl Player_HasFastBuild(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x4000) != 0)
+    if (Cheats_CheckFlags(0x4000) != 0) {
         return 1;
+    }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x80000) != 0)
+    if (Cheats_CheckFlags(0x80000) != 0) {
         return 1;
+    }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
     GAMEOBJECT *object;
     i32 player;
-    if (bolt->flags & 1)
+    if (bolt->flags & 1) {
         player = 0;
-    else if (bolt->flags & 2)
+    } else if (bolt->flags & 2) {
         player = 1;
-    else
+    } else {
         return 0;
+    }
     object = Player[player];
-    if (Cheats_CheckFlags(2) != 0)
+    if (Cheats_CheckFlags(2) != 0) {
         return 1;
+    }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
@@ -731,13 +793,16 @@ i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
 
 i32 __cdecl CanWearHatsInFreePlay(i32 id) {
     u32 flags;
-    if ((GCDataList[id].flags_090 & 0x10) != 0)
+    if ((GCDataList[id].flags_090 & 0x10) != 0) {
         return 0;
+    }
     flags = CDataList[id].model_flags;
-    if ((flags & 0x1000010) == 0x1000010)
+    if ((flags & 0x1000010) == 0x1000010) {
         return 0;
-    if ((flags & 0x40000) == 0 && (flags & 0x88) == 0)
+    }
+    if ((flags & 0x40000) == 0 && (flags & 0x88) == 0) {
         return 0;
+    }
     return 1;
 }
 
@@ -747,16 +812,20 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
     i32 player_index;
     u16 facing;
     PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
-    if (object == NULL)
+    if (object == NULL) {
         return;
+    }
     restore_hitpoints = object->field_280 != 0xff && object->character_context == 0x2b;
     if (reset_moves != 0) {
-        if (position == NULL)
+        if (position == NULL) {
             position = Player_StartPos(object);
-        if (position != NULL)
+        }
+        if (position != NULL) {
             object->position = *position;
-        if (object->field_280 != 0xff)
+        }
+        if (object->field_280 != 0xff) {
             object->flags_ef4 |= 0x40;
+        }
         ResetPlayerMoves(object);
         object->collision_position = object->position;
         object->initial_position = object->position;
@@ -788,8 +857,9 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
                     object->position = object->sock_position.midpoint;
                     surface_y = FindGunshipHoverHeight(object);
                     snap_to_surface = 0;
-                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag[0] & 0xff) != 0)
+                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag[0] & 0xff) != 0) {
                         object->position.x = (f32)((f64)object->position.x + 12.0);
+                    }
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
                     if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
                         object->position = object->sock_position.midpoint;
@@ -812,10 +882,11 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
                 }
             }
         }
-        if ((i8)object->field_280 >= 0 && (i8)object->field_280 < 8)
+        if ((i8)object->field_280 >= 0 && (i8)object->field_280 < 8) {
             player_index = (i8)object->field_280;
-        else
+        } else {
             player_index = object->hostility_group;
+        }
         facing = (u16)starts[player_index].angle;
         object->pitch_angle = 0;
         object->movement_facing_angle = facing;
@@ -833,8 +904,9 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
         object->origin_joint_ready = 0;
         object->contact_count = 0;
         InitSurfaceInfo(object);
-        if ((f64)surface_y == 2000000.0)
+        if ((f64)surface_y == 2000000.0) {
             surface_y = GetHoverPosY(object);
+        }
         if (snap_to_surface != 0 && (object->character_data->model_flags & 0x2000) == 0) {
             SetObjOnSurface(object, 0);
         } else if ((f64)surface_y != 2000000.0) {
@@ -848,14 +920,16 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
         PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
         if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
             object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
-            if (object->current_hp > object->field_107e)
+            if (object->current_hp > object->field_107e) {
                 object->current_hp = (i8)object->field_107e;
+            }
             object->vehicle_secondary_hp = 4;
         }
         if ((ResetBits & 8) != 0) {
             player_index = (i8)object->field_280;
-            if (PlayerProgress[player_index].field_b != 0)
+            if (PlayerProgress[player_index].field_b != 0) {
                 object->jump_variant_state = 1;
+            }
             object->vehicle_secondary_hp = PlayerProgress[player_index].field_9;
         }
         ResetPlayerAI(object);
@@ -897,9 +971,11 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
 
 static i32 Customise_FindLetter(char character) {
     i32 letter = 0;
-    for (; letter != 38; ++letter)
-        if (character == CustomiseLetter[letter])
+    for (; letter != 38; ++letter) {
+        if (character == CustomiseLetter[letter]) {
             break;
+        }
+    }
     return letter == 38 ? 0 : letter;
 }
 

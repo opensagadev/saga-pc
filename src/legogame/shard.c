@@ -7,6 +7,7 @@ typedef struct shard_progress_recovered_pc_s {
     u32 active[4];
     u32 visible[4];
 } SHARD_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(SHARD_s) == 0x54);
 STATIC_ASSERT(offsetof(SHARD_s, position) == 0x10);
 STATIC_ASSERT(offsetof(SHARD_s, current_position) == 0x1c);
@@ -30,6 +31,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *ShardOutputNamePc;
 void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
+
 typedef struct SHARD_LOST_OWNER_PC {
     u8 unknown_00[0x3c];
     u8 state_flags;
@@ -38,6 +40,7 @@ typedef struct SHARD_LOST_OWNER_PC {
     GAMEOBJECT *collector;
     u8 unknown_48[0xc];
 } SHARD_LOST_OWNER_PC;
+
 typedef struct WORLD_SHARDS_READER_PC {
     u8 unknown_0000[0x5090];
     SHARD_LOST_OWNER_PC *shards;
@@ -89,11 +92,13 @@ static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
     shard->state_flags = (shard->state_flags & ~0x18u) | 3;
     shard->model_index = (i16)(qrand() / 9363);
     for (attempt = 0; attempt < 7; ++attempt) {
-        if (world->level_objects[shard->model_index + 65].active != 0)
+        if (world->level_objects[shard->model_index + 65].active != 0) {
             break;
+        }
         ++shard->model_index;
-        if (shard->model_index == 7)
+        if (shard->model_index == 7) {
             shard->model_index = 0;
+        }
     }
     shard->model_index += 65;
     shard->spin_angle = (u16)qrand();
@@ -106,8 +111,9 @@ static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
 void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     SHARD_s *progress_record;
     i32 index;
-    if (world == NULL || world->shards == NULL)
+    if (world == NULL || world->shards == NULL) {
         return;
+    }
     progress_record = (SHARD_s *)world->shards;
     for (index = 0; index < world->shard_count; ++index, ++progress_record) {
         ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
@@ -138,8 +144,9 @@ void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)data;
     i32 index;
-    for (index = 0; index < world->shard_count; ++index)
+    for (index = 0; index < world->shard_count; ++index) {
         ((SHARD_s *)world->shards)[index].state_flags &= ~0x20u;
+    }
 }
 
 void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
@@ -147,8 +154,9 @@ void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 de
     NUVEC target, velocity, offset;
     i32 index;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
-        if ((shard->state_flags & 2) != 0)
+        if ((shard->state_flags & 2) != 0) {
             NuCameraTransformScreenClip(&shard->screen_position, &shard->current_position, 1, NULL);
+        }
         if ((shard->state_flags & 4) != 0) {
             f32 acceleration;
             if (shard->collector == NULL) {
@@ -160,12 +168,13 @@ void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 de
             NuVecSub(&velocity, &target, &shard->current_position);
             NuVecScale(&velocity, &velocity, 3.0f);
             shard->collection_time = (f64)shard->collection_time + (f64)FRAMETIME;
-            if (shard->collection_time < 1.0f)
+            if (shard->collection_time < 1.0f) {
                 acceleration = 5.0f;
-            else if (shard->collection_time < 2.0f)
+            } else if (shard->collection_time < 2.0f) {
                 acceleration = ((f64)shard->collection_time - 1.0) * 5.0 + 5.0;
-            else
+            } else {
                 acceleration = 10.0f;
+            }
             shard->collection_velocity.x = SeekValF(shard->collection_velocity.x, velocity.x, acceleration);
             shard->collection_velocity.y = SeekValF(shard->collection_velocity.y, velocity.y, acceleration);
             shard->collection_velocity.z = SeekValF(shard->collection_velocity.z, velocity.z, acceleration);
@@ -197,37 +206,46 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = (SHARD_s *)world->shards;
     NUMTX matrix;
     i32 index;
-    if (shard == NULL)
+    if (shard == NULL) {
         return;
+    }
     for (index = 0; index < world->shard_count; ++index, ++shard) {
         shard->drawn = 0;
-        if (shard->collected || !shard->visible)
+        if (shard->collected || !shard->visible) {
             continue;
+        }
         if (shard->collecting) {
             u16 spin = (u16)(i32)((f64)shard->collection_time * 98304.0 + (f64)(i32)shard->spin_angle);
             u16 tumble, angle_z, angle_x;
             NuMtxSetRotationY(&matrix, spin);
             tumble = (u16)(i32)((f64)shard->collection_time * 60620.0);
             angle_z = shard->angle_z;
-            if (!shard->tumble_x)
+            if (!shard->tumble_x) {
                 angle_z += tumble;
-            if (angle_z != 0)
+            }
+            if (angle_z != 0) {
                 NuMtxRotateZ(&matrix, angle_z);
+            }
             angle_x = shard->angle_x;
-            if (shard->tumble_x)
+            if (shard->tumble_x) {
                 angle_x += tumble;
-            if (angle_x != 0)
+            }
+            if (angle_x != 0) {
                 NuMtxRotateX(&matrix, angle_x);
+            }
         } else {
             NuMtxSetRotationY(&matrix, shard->spin_angle);
-            if (shard->angle_z != 0)
+            if (shard->angle_z != 0) {
                 NuMtxRotateZ(&matrix, shard->angle_z);
-            if (shard->angle_x != 0)
+            }
+            if (shard->angle_x != 0) {
                 NuMtxRotateX(&matrix, shard->angle_x);
+            }
         }
         NuMtxTranslate(&matrix, &shard->current_position);
-        if (world->level_objects[shard->model_index].active != 0)
+        if (world->level_objects[shard->model_index].active != 0) {
             shard->drawn = NuSpecialDrawAt(&world->level_objects[shard->model_index].special, &matrix);
+        }
     }
 }
 
@@ -238,8 +256,9 @@ i32 __cdecl Shards_GetMaxGizmos(WORLDINFO *world) {
 void __cdecl Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
-        if (NuStrLen(((SHARD_s *)world->shards)[index].name) != 0)
+        if (NuStrLen(((SHARD_s *)world->shards)[index].name) != 0) {
             AddGizmo(system, type, NULL, &((SHARD_s *)world->shards)[index]);
+        }
     }
 }
 
@@ -250,6 +269,7 @@ char *__cdecl Shard_GetGizmoName(GIZMO_PC *gizmo) {
 i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((SHARD_s *)gizmo->object)->collected;
 }
+
 #pragma data_seg(".data$ShardOutputNamePc")
 char *ShardOutputNamePc = (char *)PCShardOutputTextPc;
 #pragma data_seg()
@@ -277,23 +297,29 @@ void __cdecl Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
 void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     SHARD_s *shard;
     i32 index;
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     Shards_ClearProgress(NULL, progress);
-    if (world == NULL || world->shards == NULL)
+    if (world == NULL || world->shards == NULL) {
         return;
+    }
     shard = (SHARD_s *)world->shards;
     for (index = 0; index < world->shard_count && index < 128; ++index, ++shard) {
         i32 word = index / 32;
         u32 mask = 1u << (index & 31);
-        if (shard->collected)
+        if (shard->collected) {
             progress->collected[word] |= mask;
-        if (!shard->visible)
+        }
+        if (!shard->visible) {
             progress->visible[word] &= ~mask;
-        if (!shard->active)
+        }
+        if (!shard->active) {
             progress->active[word] &= ~mask;
+        }
     }
 }
+
 #pragma data_seg(".data$ShardRegistryNamePc")
 char *ShardRegistryNamePc = (char *)PCContextName_Shard;
 #pragma data_seg()
@@ -354,7 +380,6 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
         if (!(shard->state_flags & 8) && (shard->state_flags & 4) && shard->collector == object) {
-
             shard->state_flags &= (u8)~4;
             shard->collection_time = 0.0f;
             shard->collector = NULL;

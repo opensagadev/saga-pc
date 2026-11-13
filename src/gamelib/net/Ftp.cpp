@@ -62,8 +62,9 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
             accepted = 1;
             break;
         case 2:
-            if (size > capacity)
+            if (size > capacity) {
                 return (i32)0xa0210001;
+            }
             buffer = new_buffer;
             capacity = new_capacity;
             accepted = 1;
@@ -75,8 +76,9 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
 }
 
 i32 FtpFile::Accept(i32 new_size) {
-    if (new_size > capacity)
+    if (new_size > capacity) {
         return (i32)0xa0210001;
+    }
     size = new_size;
     accepted = 1;
     return 0;
@@ -90,8 +92,9 @@ i32 FtpFile::Accept() {
 FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address, i32 direction) {
     for (FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse() && file->CompareAddress(address) == 0 && NuStrICmp(file->name, name) == 0 &&
-            (direction == 0 || file->direction == direction))
+            (direction == 0 || file->direction == direction)) {
             return file;
+        }
     }
     return NULL;
 }
@@ -99,8 +102,9 @@ FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address
 const FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address, i32 direction) const {
     for (const FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse() && file->CompareAddress(address) == 0 && NuStrICmp(file->name, name) == 0 &&
-            (direction == 0 || file->direction == direction))
+            (direction == 0 || file->direction == direction)) {
             return file;
+        }
     }
     return NULL;
 }

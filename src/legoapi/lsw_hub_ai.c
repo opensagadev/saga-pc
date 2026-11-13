@@ -5,47 +5,62 @@
 extern i16 CharacterFixupIdPc007f18c4;
 
 i32 __cdecl Hub_CurrentArea(void) {
-    if (WORLD->current_level == HUB_LDATA)
+    if (WORLD->current_level == HUB_LDATA) {
         return HubAiMusicStatePc.area;
+    }
     return -1;
 }
 
 i32 __cdecl Hub_Outside(void) {
-    if (Hub_CurrentArea() == 7)
+    if (Hub_CurrentArea() == 7) {
         return 1;
+    }
     return 0;
 }
+
 static void Hub_MakeListCharactersAvailable(i16 *characters) {
     i32 character;
     GAMEOBJECT *object;
     i32 object_index;
-    for (character = 0; character < CHARCOUNT; ++character)
+    for (character = 0; character < CHARCOUNT; ++character) {
         characters[character] = apicharsys->playermodelids[character];
+    }
     object = Obj;
     for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
-        if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0)
+        if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0) {
             characters[(i16)object->id] = -1;
+        }
     }
-    if (id_BARMAN != -1)
+    if (id_BARMAN != -1) {
         characters[id_BARMAN] = -1;
-    if (VehicleBoltId7f1910Pc != -1)
+    }
+    if (VehicleBoltId7f1910Pc != -1) {
         characters[VehicleBoltId7f1910Pc] = -1;
-    if (DefaultAnimationJabbaIdPc != -1)
+    }
+    if (DefaultAnimationJabbaIdPc != -1) {
         characters[DefaultAnimationJabbaIdPc] = -1;
-    if (CharacterFixupIdPc007f18c4 != -1)
+    }
+    if (CharacterFixupIdPc007f18c4 != -1) {
         characters[CharacterFixupIdPc007f18c4] = -1;
-    if (PermanentWeirdo1IdPc != -1)
+    }
+    if (PermanentWeirdo1IdPc != -1) {
         characters[PermanentWeirdo1IdPc] = -1;
-    if (PermanentWeirdo2IdPc != -1)
+    }
+    if (PermanentWeirdo2IdPc != -1) {
         characters[PermanentWeirdo2IdPc] = -1;
-    if (id_CANTINABAND != -1)
+    }
+    if (id_CANTINABAND != -1) {
         characters[id_CANTINABAND] = -1;
-    if (id_DROIDEKA != -1)
+    }
+    if (id_DROIDEKA != -1) {
         characters[id_DROIDEKA] = -1;
-    if (id_BOB != -1)
+    }
+    if (id_BOB != -1) {
         characters[id_BOB] = -1;
-    if (PunchRangeCompanionIdPc != -1)
+    }
+    if (PunchRangeCompanionIdPc != -1) {
         characters[PunchRangeCompanionIdPc] = -1;
+    }
 }
 
 /* Native HubAI producer family. Insert in lsw_hub_ai.c after the existing
@@ -83,46 +98,57 @@ void __cdecl LSW_Hub_InitAI(WORLDINFO *world) {
         HubAiMusicStatePc.counter_a[counter] = AIPathFindLocator(world->ai_sys, name);
         sprintf(name, HubAICounterBFormatPc, counter);
         HubAiMusicStatePc.counter_b[counter] = AIPathFindLocator(world->ai_sys, name);
-        if (HubAiMusicStatePc.counter_a[counter] == NULL || HubAiMusicStatePc.counter_b[counter] == NULL)
+        if (HubAiMusicStatePc.counter_a[counter] == NULL || HubAiMusicStatePc.counter_b[counter] == NULL) {
             break;
+        }
         ++HubAiMusicStatePc.counter_count;
     }
     HubAiMusicStatePc.serve_player = AIPathFindLocator(world->ai_sys, (char *)HubAIServePlayerPc);
     HubAiMusicStatePc.table_count = 0;
-    for (index = 0; index < 8; ++index)
+    for (index = 0; index < 8; ++index) {
         HubAiMusicStatePc.table_locators[index] = NULL;
+    }
 }
+
 /* 0x491570/39 */
 void __cdecl LSW_Hub_ResetAI(WORLDINFO *world) {
     HubAiMusicStatePc.area = -1;
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, (char *)HubAIBandDoorPc);
 }
+
 /* 0x491760/155; retail private EDX-argument helper. */
 static i32 HubChooseRandomCharacterPc(i16 *characters) {
     i32 candidates[340];
     i32 count = 0;
     i32 index;
     for (index = 0; index < CHARCOUNT; ++index) {
-        if (characters[index] != -1)
+        if (characters[index] != -1) {
             candidates[count++] = index;
+        }
     }
-    if (count != 0)
+    if (count != 0) {
         return candidates[NuRandInt() % count];
+    }
     count = 0;
-    if (id_MOSEISLEYCITIZEN != -1 && apicharsys->playermodelids[id_MOSEISLEYCITIZEN] != -1)
+    if (id_MOSEISLEYCITIZEN != -1 && apicharsys->playermodelids[id_MOSEISLEYCITIZEN] != -1) {
         candidates[count++] = id_MOSEISLEYCITIZEN;
-    if (id_CANTINAALIEN != -1 && apicharsys->playermodelids[id_CANTINAALIEN] != -1)
+    }
+    if (id_CANTINAALIEN != -1 && apicharsys->playermodelids[id_CANTINAALIEN] != -1) {
         candidates[count++] = id_CANTINAALIEN;
-    if (count != 0)
+    }
+    if (count != 0) {
         return candidates[NuRandInt() % count];
+    }
     return -1;
 }
+
 /* 0x491800/56 */
 i32 __cdecl Hub_GetRandomCharType(void) {
     i16 characters[340];
     Hub_MakeListCharactersAvailable(characters);
     return HubChooseRandomCharacterPc(characters);
 }
+
 /* 0x491840/595 */
 void HubGoneThroughDoorPc(WORLDINFO *world) {
     i32 new_area, index;
@@ -130,8 +156,9 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     GAMEOBJECT *object;
     AIPATH_PC *path;
     char name[32];
-    if (player == NULL)
+    if (player == NULL) {
         return;
+    }
     new_area = -1;
     for (index = 0; index < 10; ++index) {
         if (CheckPosAIArea(HubAiMusicStatePc.areas[index], PlayerStartRecordInitPc[(i8)player->field_280].position,
@@ -140,8 +167,9 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
             break;
         }
     }
-    if (new_area == -1 || new_area == HubAiMusicStatePc.area)
+    if (new_area == -1 || new_area == HubAiMusicStatePc.area) {
         return;
+    }
     HubAiMusicStatePc.area = (i16)new_area;
     path = HubAiMusicStatePc.paths[HubAiMusicStatePc.area];
     if (path != NULL && AISysSetLevelPath(world->ai_sys, (char *)path) != 0) {
@@ -158,8 +186,9 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_half & 1) == 0 || (i8)object->field_280 != -1 ||
-            object->ai_packet.creature_index != 0xff)
+            object->ai_packet.creature_index != 0xff) {
             continue;
+        }
         object->tag_object_callback = NULL;
         FreeTorpedoPacket(&object->torpedo);
         RemoveGameObject(object, 1);
@@ -168,32 +197,38 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     HubAiMusicStatePc.customer = NULL;
     HubAiMusicStatePc.serving_object = NULL;
     SetGizAIMessage(gizaimessagesys, HubAIServingCustomerPc, 0.0f, HubAiMusicStatePc.serving_customer_message);
-    if (HubAiMusicStatePc.area_message != NULL)
+    if (HubAiMusicStatePc.area_message != NULL) {
         HubAiMusicStatePc.area_message->value = (f32)HubAiMusicStatePc.area;
+    }
     HubAiMusicStatePc.table_count = 0;
     for (index = 0; index < 8; ++index) {
-        if (HubAiMusicStatePc.area != 0)
+        if (HubAiMusicStatePc.area != 0) {
             sprintf(name, HubAITableAreaFormatPc, HubAiMusicStatePc.area, index);
-        else
+        } else {
             sprintf(name, HubAITableFormatPc, index);
+        }
         HubAiMusicStatePc.table_locators[index] = AIPathFindLocator(world->ai_sys, name);
-        if (HubAiMusicStatePc.table_locators[index] == NULL)
+        if (HubAiMusicStatePc.table_locators[index] == NULL) {
             return;
+        }
         ++HubAiMusicStatePc.table_count;
     }
 }
+
 /* 0x491aa0/130 */
 void __cdecl LSW_Hub_UpdateAI(WORLDINFO *world) {
     if (hub_character_ready != -1) {
         SetLevelSfxBits(world);
         hub_character_ready = -1;
     }
-    if (netclient != 0)
+    if (netclient != 0) {
         return;
+    }
     if (HubAiMusicStatePc.area == -1) {
         HubGoneThroughDoorPc(world);
-        if (netclient != 0)
+        if (netclient != 0) {
             return;
+        }
     }
     if (LevGizObst[0] != NULL) {
         if (aicreature_sets_alive[2] != 0) {
@@ -205,21 +240,25 @@ void __cdecl LSW_Hub_UpdateAI(WORLDINFO *world) {
         }
     }
 }
+
 /* 0x491b30/56 */
 void *__cdecl Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     i32 index;
     if (name != NULL) {
         for (index = 0; index < 10; ++index) {
-            if (NuStrICmp(name, HubAreaNamesPc[index]) == 0)
+            if (NuStrICmp(name, HubAreaNamesPc[index]) == 0) {
                 return (void *)index;
+            }
         }
     }
     return (void *)-1;
 }
+
 /* 0x491b70/19 */
 f32 __cdecl Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                 void *area) {
-    if (HubAiMusicStatePc.area == (i32)area)
+    if (HubAiMusicStatePc.area == (i32)area) {
         return 1.0f;
+    }
     return 0.0f;
 }

@@ -16,15 +16,19 @@ typedef struct FILE_DIRECTORY_TIME_PC {
     u8 second, minute, hour, day, month, reserved;
     u16 year;
 } FILE_DIRECTORY_TIME_PC;
+
 typedef struct FILE_DIRECTORY_ENTRY_PC {
     u32 flags, size;
     FILE_DIRECTORY_TIME_PC created, modified;
     char name[256];
 } FILE_DIRECTORY_ENTRY_PC;
+
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+
 typedef struct FILE_DIRECTORY_RAW_TIME_PC {
     u8 second, minute, hour, day, month, year_low, year_high;
 } FILE_DIRECTORY_RAW_TIME_PC;
+
 typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
     u32 flags;
     u8 reserved_04[4];
@@ -39,6 +43,7 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
     u8 reserved_28[0x18];
     char name[MAX_PATH];
 } FILE_DIRECTORY_HOST_ENTRY_PC;
+
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
@@ -108,22 +113,26 @@ NUFILE __cdecl NuFileOpenDir(char *path) {
     char formatted[256];
     NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
     i32 result;
-    if (device == NULL)
+    if (device == NULL) {
         device = FileDirectoryDefaultDevicePc;
+    }
     device->format_name_fn(device, formatted, path, 256);
-    if (device->id == 2)
+    if (device->id == 2) {
         strcat(formatted, ";1");
+    }
     if (device->id == 1) {
         i32 port = formatted[2] - '0';
         i32 slot = formatted[3] - '0';
         result = FileDirectoryMcOpenPc(port, slot, formatted + device->name_len);
-        if (result >= 0)
+        if (result >= 0) {
             return result + 0x1000;
+        }
         return 0;
     }
     result = FileDirectoryHostOpenPc(formatted);
-    if (result < 0)
+    if (result < 0) {
         return 0;
+    }
     return result + 1;
 }
 
@@ -134,13 +143,15 @@ void __cdecl NuFileCloseDir(NUFILE file) {
     }
     FileDirectoryHostClosePc(file - 1);
 }
+
 i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
     FILE_DIRECTORY_HOST_ENTRY_PC host;
     i32 result;
     u32 flags;
     i32 length = 0;
-    if (file >= 0x1000)
+    if (file >= 0x1000) {
         return FileDirectoryMcReadPc(file - 0x1000, entry);
+    }
     result = FileDirectoryHostReadPc(file - 1, &host);
     if (result > 0) {
         flags = (((host.flags >> 2) & 0x800) | (host.flags & 0x100));
@@ -161,18 +172,21 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
         entry->modified.year = (u16)(((u16)host.modified.year_high << 8) + host.modified.year_low);
         strcpy(entry->name, host.name);
         length = strlen(entry->name);
-    } else if (result < 0)
+    } else if (result < 0) {
         FileDirectoryErrorPc(result);
+    }
     return length;
 }
 
 i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;
-    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0)
+    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0) {
         flags = 0x180;
-    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 0x10) != 0)
+    }
+    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 0x10) != 0) {
         flags += 0x2000;
+    }
     entry->flags = flags;
     entry->size = FileDirectoryFindDataPc[file].nFileSizeLow;
     entry->unused_24 = 0;
@@ -201,10 +215,12 @@ i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entr
     entry->accessed.month = (u8)time.wMonth;
     entry->accessed.year_low = (u8)time.wYear;
     entry->accessed.year_high = 0;
-    if (FileDirectoryFindDataPc[file].dwFileAttributes == 0xffffffff)
+    if (FileDirectoryFindDataPc[file].dwFileAttributes == 0xffffffff) {
         return 0;
-    if (FindNextFileA(FileDirectoryHostHandlesPc[file], &FileDirectoryFindDataPc[file]) != 1)
+    }
+    if (FindNextFileA(FileDirectoryHostHandlesPc[file], &FileDirectoryFindDataPc[file]) != 1) {
         FileDirectoryFindDataPc[file].dwFileAttributes = 0xffffffff;
+    }
     return strlen(entry->name);
 }
 
@@ -214,16 +230,21 @@ extern char *FileDirectoryPathSlotsPc[16]; /* 921270 */
 i32 __cdecl FileDirectoryHostOpenPc(char *path) {
     char search[200];
     i32 slot;
-    if (FileDirectoryOpenCountPc == 16)
+    if (FileDirectoryOpenCountPc == 16) {
         return 0;
-    for (slot = 0; slot < 16; ++slot)
-        if (FileDirectoryPathSlotsPc[slot] == NULL)
+    }
+    for (slot = 0; slot < 16; ++slot) {
+        if (FileDirectoryPathSlotsPc[slot] == NULL) {
             break;
-    if (slot == 16)
+        }
+    }
+    if (slot == 16) {
         return 0;
+    }
     strcpy(search, path);
-    if (search[strlen(search) - 1] != '\\')
+    if (search[strlen(search) - 1] != '\\') {
         strcat(search, "\\");
+    }
     strcat(search, "*.*");
     FileDirectoryPathSlotsPc[slot] = (char *)NuAlloc(strlen(search) + 4, FileDirectorySourceNamePc, 0x21a);
     strcpy(FileDirectoryPathSlotsPc[slot], search);

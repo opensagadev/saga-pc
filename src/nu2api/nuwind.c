@@ -16,8 +16,9 @@ void __cdecl NuWindInit(void) {
     NuWindDir = 0;
     NuWindWave = 0;
     count = NuWindMaxGroupsPC;
-    for (index = 0; index < count; ++index)
+    for (index = 0; index < count; ++index) {
         NuWindGroup[index].in_use = 0;
+    }
 }
 
 PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void) {
@@ -32,8 +33,9 @@ PC_NUWINDGROUP *__cdecl NuWindAllocateGrp(void) {
 }
 
 void __cdecl NuWindFreeGrp(PC_NUWINDGROUP *group) {
-    if (group != NULL)
+    if (group != NULL) {
         group->in_use = 0;
+    }
 }
 
 PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 value20, f32 value24,
@@ -64,18 +66,24 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     min_x = min_y = min_z = 10000000.0f;
     max_x = max_y = max_z = -10000000.0f;
     for (index = 0; index < count; ++index, ++matrix) {
-        if (matrix->m30 < min_x)
+        if (matrix->m30 < min_x) {
             min_x = matrix->m30;
-        if (matrix->m31 < min_y)
+        }
+        if (matrix->m31 < min_y) {
             min_y = matrix->m31;
-        if (matrix->m32 < min_z)
+        }
+        if (matrix->m32 < min_z) {
             min_z = matrix->m32;
-        if (matrix->m30 > max_x)
+        }
+        if (matrix->m30 > max_x) {
             max_x = matrix->m30;
-        if (matrix->m31 > max_y && matrix->m31 < 2000000.0)
+        }
+        if (matrix->m31 > max_y && matrix->m31 < 2000000.0) {
             max_y = matrix->m31;
-        if (matrix->m32 > max_z)
+        }
+        if (matrix->m32 > max_z) {
             max_z = matrix->m32;
+        }
     }
     group->center.x = 0.5 * (max_x + min_x);
     group->center.y = 0.5 * (max_y + min_y);
@@ -145,13 +153,15 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                             matrix->m10 += (target_x - matrix->m10) * 0.2f;
                             matrix->m12 += (target_z - matrix->m12) * 0.2f;
                             scale = 1.0f - NuFsqrt(matrix->m10 * matrix->m10 + matrix->m12 * matrix->m12) * 0.35f;
-                            if (scale < 0.05f)
+                            if (scale < 0.05f) {
                                 scale = 0.05f;
+                            }
                             matrix->m10 *= scale;
                             matrix->m12 *= scale;
                             matrix->m23 = 1.0f / scale;
-                            if (scale < 0.19f)
+                            if (scale < 0.19f) {
                                 scale = 0.19f;
+                            }
                             matrix->m11 = (matrix->m33 / group->value20) * scale;
                         }
                     } else {
@@ -169,8 +179,9 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                                     }
                                 }
                             }
-                            if (closest == -1)
+                            if (closest == -1) {
                                 break;
+                            }
                             if (positions[closest]->y - matrix->m31 > (group->value24 * matrix->m33) / group->value20) {
                                 contact_radius = 0.0f;
                                 contact_height = (matrix->m33 * 0.2f) / group->value20;
@@ -252,13 +263,15 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                                 matrix->m12 += (target_z - matrix->m12) * 0.05f;
                             }
                             scale = 1.0f - NuFsqrt(matrix->m10 * matrix->m10 + matrix->m12 * matrix->m12) * 0.35f;
-                            if (scale < 0.05f)
+                            if (scale < 0.05f) {
                                 scale = 0.05f;
+                            }
                             matrix->m10 *= scale;
                             matrix->m12 *= scale;
                             matrix->m23 = 1.0f / scale;
-                            if (scale < 0.19f)
+                            if (scale < 0.19f) {
                                 scale = 0.19f;
+                            }
                             matrix->m11 = (matrix->m33 / group->value20) * scale;
                         }
                     }
@@ -310,8 +323,9 @@ void __cdecl NuWindDraw(void) {
                     }
                     special.scene = group->scene;
                     special.display_special = (NUMTX *)group->special;
-                    if (NuSpecialDrawAt(&special, matrix) != 0)
+                    if (NuSpecialDrawAt(&special, matrix) != 0) {
                         group->drawn = 1;
+                    }
                 }
                 matrix->m23 = saved_m23;
                 matrix->m33 = saved_m33;

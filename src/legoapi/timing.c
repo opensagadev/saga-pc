@@ -53,8 +53,9 @@ void UpdateTimer(TIMER *timer) {
         timer->time_elapsed_mod_seconds -= 1.0f;
     }
 
-    if ((u32)timer->update_count >= 0xffffffffu)
+    if ((u32)timer->update_count >= 0xffffffffu) {
         return;
+    }
 
     timer->update_count++;
 }
@@ -66,10 +67,12 @@ typedef struct GAME_TIMING_MISSION_DATA_PC {
     u8 unknown_00[0x10];
     u16 time;
 } GAME_TIMING_MISSION_DATA_PC;
+
 typedef struct GAME_TIMING_AREA_SAVE_PC {
     u8 unknown_00[8];
     f32 challenge_trial_time;
 } GAME_TIMING_AREA_SAVE_PC;
+
 STATIC_ASSERT(offsetof(GAME_TIMING_MISSION_DATA_PC, time) == 0x10);
 STATIC_ASSERT(sizeof(GAME_TIMING_AREA_SAVE_PC) == 0xc);
 STATIC_ASSERT(offsetof(GAME_TIMING_AREA_SAVE_PC, challenge_trial_time) == 8);

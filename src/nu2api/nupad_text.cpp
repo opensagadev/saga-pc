@@ -2,20 +2,24 @@
 #include <stdio.h>
 
 #pragma pack(push, 1)
+
 struct TEXT_INPUT_BINDING_PC {
     u8 type;
     u8 unknown_0001;
     i16 value;
 };
+
 struct TEXT_INPUT_DEVICE_PC {
     u8 unknown_0000[0x6e];
     TEXT_INPUT_BINDING_PC bindings[32];
     u8 unknown_00ee[0x8e];
 };
+
 struct TEXT_INPUT_DEVICE_KIND_PC {
     i8 kind;
     u8 unknown_0001[5];
 };
+
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(TEXT_INPUT_BINDING_PC) == 4);
 STATIC_ASSERT(offsetof(TEXT_INPUT_BINDING_PC, value) == 2);
@@ -37,6 +41,7 @@ class TEXT_INPUT_MANAGER_PC {
     i32 __thiscall ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
                               i32 alternate_labels, char *delimiters);
 };
+
 STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, devices) == 0x4e34);
 STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, custom_active) == 0x6354);
 STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, custom_bindings) == 0x6358);
@@ -45,6 +50,7 @@ STATIC_ASSERT(offsetof(TEXT_INPUT_MANAGER_PC, device_kind) == 0x67f0);
 
 extern "C" {
     extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
+
     i32 __cdecl TextInputLastDevicePc(void) {
         return TextInputLastDeviceIndexPc;
     }
@@ -249,12 +255,15 @@ extern "C" {
         TEXT_INPUT_MANAGER_PC *manager = reinterpret_cast<TEXT_INPUT_MANAGER_PC *>(nu_input_state);
         i32 previous = (i8)manager->use_keyboard_override;
         manager->use_keyboard_override = (u8)mode;
-        if (mode != previous)
+        if (mode != previous) {
             nu_keyboard_repeat_countdown = 6;
+        }
     }
+
     void __cdecl TextInputSetLastDevicePc(i32 device) {
         TextInputLastDeviceIndexPc = (i8)device;
     }
+
     i32 __cdecl TextInputIsKeyboardDevicePc(i32 device) {
         return (u32)device - 10u <= 3u;
     }
@@ -264,6 +273,7 @@ extern "C" {
     char **__cdecl TextInputGetKeyNamesPc(void) {
         return TextInputKeyNamesPc;
     }
+
     i32 __cdecl TextInputIsPrimaryDevicePc(i32 device) {
         return (u32)device <= 3u;
     }
@@ -280,6 +290,7 @@ extern "C" i32 __cdecl PcInputBindingButtonNamePc(i32 action, i32 port, char *de
 
 /* Append to nupad_text.cpp. Native6da3d0,51 bytes all stack cdecl. */
 extern "C" char TextInputActionLabelBufferPc[128]; /*2975970..29759ef*/
+
 extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 custom_index) {
     ((TEXT_INPUT_MANAGER_PC *)nu_input_state)
         ->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");

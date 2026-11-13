@@ -36,8 +36,9 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
     i32 index, particle_index, sound_index, play;
     seconds = NuVideoGetMode() == 3 ? elapsed / 50.0f : elapsed / 60.0f;
     for (index = 0; index < 64; ++index) {
-        if (AnimParams[index].instance_id == -1 || edanim_page_on[AnimParams[index].page] == 0)
+        if (AnimParams[index].instance_id == -1 || edanim_page_on[AnimParams[index].page] == 0) {
             continue;
+        }
         animation = NULL;
         if (edanim_page_scene[AnimParams[index].page] != NULL) {
             NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[index].page], AnimParams[index].instance_id);
@@ -49,8 +50,9 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                 case 1:
                     animation->flags &= ~1U;
                     if (AnimParams[index].control_switch != -1 &&
-                        debris_object_switches[AnimParams[index].control_switch] != 0)
+                        debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= 1;
+                    }
                     break;
                 case 2:
                     animation->flags &= ~8U;
@@ -63,14 +65,16 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                 case 3:
                     animation->flags |= 8;
                     if (AnimParams[index].control_switch != -1 &&
-                        debris_object_switches[AnimParams[index].control_switch] != 0)
+                        debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= 1;
+                    }
                     break;
                 case 4:
-                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance)
+                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
                         animation->flags |= 1;
-                    else
+                    } else {
                         animation->flags &= ~1U;
+                    }
                     break;
                 case 5:
                     animation->flags &= ~8U;
@@ -82,8 +86,9 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                     break;
                 case 6:
                     animation->flags |= 8;
-                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance)
+                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
                         animation->flags |= 1;
+                    }
                     break;
                 case 10:
                     animation->ltime = 1.0f;
@@ -96,8 +101,9 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                     animation->flags |= 9;
                     break;
             }
-            if (index == edanim_nearest_param_id && (edanim_particle_mode != 0 || edanim_sound_mode != 0))
+            if (index == edanim_nearest_param_id && (edanim_particle_mode != 0 || edanim_sound_mode != 0)) {
                 animation->ltime = 1.0f;
+            }
         }
         if (NuSpecialGetVisibilityFn(&special) != 0) {
             for (particle_index = 0; particle_index < AnimParams[index].effect_count; ++particle_index) {
@@ -135,16 +141,19 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                     if (AnimParams[index].sound_flags[sound_index] == 1) {
                         if ((i32)((f64)EdAnimLocalFrameCountPc + (f64)elapsed) /
                                 (i32)AnimParams[index].sound_values[sound_index] >
-                            EdAnimLocalFrameCountPc / (i32)AnimParams[index].sound_values[sound_index])
+                            EdAnimLocalFrameCountPc / (i32)AnimParams[index].sound_values[sound_index]) {
                             play = AnimParams[index].sound_ids[sound_index];
+                        }
                     } else if (animation != NULL) {
                         if (animation->ltime >= AnimParams[index].sound_values[sound_index] &&
-                            AnimParams[index].sound_values[sound_index] > AnimParams[index].field_17c)
+                            AnimParams[index].sound_values[sound_index] > AnimParams[index].field_17c) {
                             play = AnimParams[index].sound_ids[sound_index];
+                        }
                         if ((animation->flags & 0x10) != 0 &&
                             animation->ltime <= AnimParams[index].sound_values[sound_index] &&
-                            AnimParams[index].sound_values[sound_index] < EdAnimFabsPc(AnimParams[index].field_17c))
+                            AnimParams[index].sound_values[sound_index] < EdAnimFabsPc(AnimParams[index].field_17c)) {
                             play = AnimParams[index].sound_ids[sound_index];
+                        }
                     }
                     if (play != -1) {
                         NUMTX matrix;
@@ -164,10 +173,11 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
             }
         }
         if (animation != NULL) {
-            if ((animation->flags & 0x10) != 0)
+            if ((animation->flags & 0x10) != 0) {
                 AnimParams[index].field_17c = -animation->ltime;
-            else
+            } else {
                 AnimParams[index].field_17c = animation->ltime;
+            }
         }
     }
     EdAnimLocalFrameCountPc += (i32)elapsed;

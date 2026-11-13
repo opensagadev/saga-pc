@@ -6,8 +6,10 @@ typedef struct security_door_record_pc_s {
     NUVEC position;
     i16 platform_id[2];
     u16 yaw;
+
     union {
         u8 flags;
+
         struct {
             u8 active : 1;
             u8 visible : 1;
@@ -16,6 +18,7 @@ typedef struct security_door_record_pc_s {
             u8 unused : 4;
         } bits;
     };
+
     u8 state;
     NUVEC player_position;
     u16 terrain_angle_z;
@@ -23,11 +26,13 @@ typedef struct security_door_record_pc_s {
     f32 opening;
     u8 unknown_b8[8];
 } SECURITY_DOOR_RECORD_PC;
+
 typedef struct security_door_progress_pc_s {
     u32 visible_mask[1];
     u32 active_mask[1];
     u32 opened_mask[1];
 } SECURITY_DOOR_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(SECURITY_DOOR_RECORD_PC) == 0xc0);
 STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, name) == 0x80);
 STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, position) == 0x90);
@@ -153,15 +158,17 @@ static void SecurityDoorInitRecordPc(SECURITY_DOOR_RECORD_PC *door) {
 void __cdecl SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_PC *progress) {
     SECURITY_DOOR_RECORD_PC *door;
     i32 index;
-    if (world == NULL || world->security_doors == NULL)
+    if (world == NULL || world->security_doors == NULL) {
         return;
+    }
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
         SecurityDoorInitRecordPc(door);
-        if (progress == NULL || index >= 32)
+        if (progress == NULL || index >= 32) {
             continue;
+        }
         word = index / 32;
         mask = 1u << (index & 31);
         door->bits.visible = (progress->visible_mask[word] & mask) != 0;
@@ -178,8 +185,9 @@ void __cdecl SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_P
 void __cdecl SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     SECURITY_DOOR_RECORD_PC *door;
     i32 index;
-    if (world == NULL || world->security_doors == NULL)
+    if (world == NULL || world->security_doors == NULL) {
         return;
+    }
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUANG angle;
@@ -213,8 +221,9 @@ SECURITY_DOOR_RECORD_PC *__cdecl SecurityDoor_FindNearest(WORLDINFO *world, NUVE
         f32 candidate;
         if (object != NULL) {
             if ((door->flags & 2) == 0 || (door->flags & 1) == 0 || (door->flags & 4) != 0 || door->state != 0 ||
-                door->opening != 0.0f)
+                door->opening != 0.0f) {
                 continue;
+            }
             candidate = NuVecDistSqr(position, &door->player_position, NULL);
         } else {
             candidate = NuVecDistSqr(position, &door->position, NULL);
@@ -224,8 +233,9 @@ SECURITY_DOOR_RECORD_PC *__cdecl SecurityDoor_FindNearest(WORLDINFO *world, NUVE
             nearest = door;
         }
     }
-    if (distance != NULL)
+    if (distance != NULL) {
         *distance = best;
+    }
     return nearest;
 }
 
@@ -235,8 +245,9 @@ void __cdecl SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) 
     u16 rotation;
     f32 pulse;
     i32 index;
-    if (door == NULL)
+    if (door == NULL) {
         return;
+    }
     rotation = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     pulse =
         (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
@@ -246,25 +257,31 @@ void __cdecl SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) 
         NUMTX matrix;
         f32 distance;
         door->flags &= ~8u;
-        if ((door->flags & 2) == 0)
+        if ((door->flags & 2) == 0) {
             continue;
+        }
         if (world->level_objects[81].active != 0) {
             matrix = door->leaf_matrix[0];
-            if (NuSpecialDrawAt(&world->level_objects[81].special, &matrix) != 0)
+            if (NuSpecialDrawAt(&world->level_objects[81].special, &matrix) != 0) {
                 door->flags |= 8;
+            }
         }
         if (world->level_objects[82].active != 0) {
             matrix = door->leaf_matrix[1];
-            if (NuSpecialDrawAt(&world->level_objects[82].special, &matrix) != 0)
+            if (NuSpecialDrawAt(&world->level_objects[82].special, &matrix) != 0) {
                 door->flags |= 8;
+            }
         }
-        if ((door->flags & 4) != 0 || (door->flags & 1) == 0 || world->level_objects[85].active == 0)
+        if ((door->flags & 4) != 0 || (door->flags & 1) == 0 || world->level_objects[85].active == 0) {
             continue;
+        }
         NuMtxSetRotationY(&matrix, rotation);
-        if (door->terrain_angle_x != 0)
+        if (door->terrain_angle_x != 0) {
             NuMtxRotateZ(&matrix, door->terrain_angle_x);
-        if (door->terrain_angle_z != 0)
+        }
+        if (door->terrain_angle_z != 0) {
             NuMtxRotateX(&matrix, door->terrain_angle_z);
+        }
         NuMtxTranslate(&matrix, &door->player_position);
         if (FindNearestPlayerToVec(&door->position, &nearest_player, &distance, 1, 0x2000000)) {
             f64 phase = (f64)distance / 6.0 < 1.0 ? (f64)distance / 6.0 : 1.0;
@@ -282,8 +299,9 @@ i32 __cdecl SecurityDoors_GetMaxGizmos(WORLDINFO *world) {
 void __cdecl SecurityDoors_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        if (NuStrLen(((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].name) != 0)
+        if (NuStrLen(((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].name) != 0) {
             AddGizmo(system, type_id, NULL, &((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index]);
+        }
     }
 }
 
@@ -318,33 +336,40 @@ void __cdecl SecurityDoors_ClearProgress(void *world, SECURITY_DOOR_PROGRESS_PC 
 void __cdecl SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_PC *progress) {
     SECURITY_DOOR_RECORD_PC *door;
     i32 index;
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     progress->visible_mask[0] = 0xffffffffu;
     progress->active_mask[0] = 0xffffffffu;
     progress->opened_mask[0] = 0;
-    if (world == NULL || world->security_doors == NULL)
+    if (world == NULL || world->security_doors == NULL) {
         return;
+    }
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
-        if (index >= 32)
+        if (index >= 32) {
             break;
+        }
         word = index / 32;
         mask = 1u << (index & 31);
-        if (!door->bits.visible)
+        if (!door->bits.visible) {
             progress->visible_mask[word] &= ~mask;
-        if (!door->bits.active)
+        }
+        if (!door->bits.active) {
             progress->active_mask[word] &= ~mask;
-        if (door->bits.opened)
+        }
+        if (door->bits.opened) {
             progress->opened_mask[word] |= mask;
+        }
     }
 }
 
 NUVEC *__cdecl SecurityDoor_GetPos(GIZMO_PC *gizmo) {
-    if (gizmo == NULL)
+    if (gizmo == NULL) {
         return NULL;
+    }
     return &((SECURITY_DOOR_RECORD_PC *)gizmo->object)->position;
 }
 
@@ -408,8 +433,9 @@ static void SecurityDoorStartPc(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *doo
     object->grapple = door;
     object->field_7aa = 0xad;
     object->context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
-    if (object->context_duration <= 0.0f)
+    if (object->context_duration <= 0.0f) {
         object->context_duration = 1.0f;
+    }
     object->context_variant_flags |= 0x20;
     if (facing != 0) {
         object->movement_facing_angle = ((SECURITY_DOOR_RECORD_PC *)object->grapple)->yaw + 0x8000;
@@ -425,22 +451,26 @@ void __cdecl SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 elapsed;
         if (object->character_model->action_animations[object->field_7aa] != NULL) {
             playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
-            if (playing == NULL)
+            if (playing == NULL) {
                 return;
+            }
         }
         elapsed = (f64)object->context_timer + (f64)FRAMETIME;
         object->context_timer = elapsed;
         if (elapsed >= object->context_duration) {
             object->character_context = -1;
-            if ((object->context_variant_flags & 0x40) != 0)
+            if ((object->context_variant_flags & 0x40) != 0) {
                 return;
+            }
         } else {
             f32 frame;
-            if (playing == NULL)
+            if (playing == NULL) {
                 return;
+            }
             frame = AnimListFrame(object->character_model, object->field_7aa, 0);
-            if (!(frame >= 1.0f && *playing >= frame))
+            if (!(frame >= 1.0f && *playing >= frame)) {
                 return;
+            }
         }
         if ((object->context_variant_flags & 0x20) != 0) {
             object->context_variant_flags |= 0x40;
@@ -450,17 +480,20 @@ void __cdecl SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     if ((object->character_data->game_character->flags_090 & 0x2000000) == 0 || (object->flags_1fc_word & 0x80) == 0 ||
-        object->field_281 == 0 || ObjLandReady(object) == 0)
+        object->field_281 == 0 || ObjLandReady(object) == 0) {
         return;
+    }
     {
         f32 range = (f64)object->bounds_radius + 0.25;
         f32 distance;
         SECURITY_DOOR_RECORD_PC *door = SecurityDoor_FindNearest(world, &object->lower_position, object, &distance);
-        if (door == NULL)
+        if (door == NULL) {
             return;
+        }
         range = (f64)range * (f64)range;
-        if (!(distance < range) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0)
+        if (!(distance < range) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
             return;
+        }
         SecurityDoorStartPc(object, door, 1);
     }
 }

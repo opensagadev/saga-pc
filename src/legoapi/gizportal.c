@@ -10,6 +10,7 @@ typedef struct portal_callback_pc_s {
     u8 flags;
     u8 reserved_1d[3];
 } PORTAL_CALLBACK_PC;
+
 STATIC_ASSERT(sizeof(PORTAL_CALLBACK_PC) == 0x20);
 STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, id) == 0x1a);
 STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, flags) == 0x1c);
@@ -18,99 +19,126 @@ static char portal_gizmo_name_pc[16] = {0};
 
 static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL || world->current_gscn == NULL)
+    if (world == NULL || world->current_gscn == NULL) {
         return 0;
+    }
     return world->current_gscn->max_portals;
 }
+
 static void __cdecl Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 index;
-    if (world == NULL || world->current_gscn == NULL)
+    if (world == NULL || world->current_gscn == NULL) {
         return;
+    }
     for (index = 0; index < world->current_gscn->max_portals; ++index) {
-        if (world->current_gscn->portals[index].id != 0)
+        if (world->current_gscn->portals[index].id != 0) {
             AddGizmo(system, type_id, NULL, &world->current_gscn->portals[index]);
+        }
     }
 }
+
 static char *__cdecl Portal_GetGizmoName(GIZMO_PC *gizmo) {
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
+    }
     sprintf(portal_gizmo_name_pc, "%s%d", PortalRegistrationPrefixPc, ((PORTAL_CALLBACK_PC *)gizmo->object)->id);
     return portal_gizmo_name_pc;
 }
+
 static i32 __cdecl Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
-    if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1) != 0)
+    if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1) != 0) {
         return 1;
+    }
     return 0;
 }
+
 static char *__cdecl Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return portal_output_name_pc;
 }
+
 static i32 __cdecl Portal_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
+
 static void __cdecl Portal_Activate(GIZMO_PC *gizmo, i32 active) {
-    if (gizmo != NULL && gizmo->object != NULL)
+    if (gizmo != NULL && gizmo->object != NULL) {
         NuPortalSetActiveDirect((NUPORTAL *)gizmo->object, active);
+    }
 }
+
 static i32 __cdecl Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) {
     PORTAL_CALLBACK_PC *portal;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
+    }
     portal = (PORTAL_CALLBACK_PC *)gizmo->object;
     if ((check & 1) != 0) {
-        if (inactive != 0 && inactive != (portal->flags & 1))
+        if (inactive != 0 && inactive != (portal->flags & 1)) {
             return 0;
+        }
         return 1;
     }
     NuPortalSetActiveDirect((NUPORTAL *)portal, inactive == 0);
     return 1;
 }
+
 static void *__cdecl Portals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 4);
 }
+
 static void __cdecl Portals_ClearProgress(void *world, void *progress_ptr) {
-    if (progress_ptr != NULL)
+    if (progress_ptr != NULL) {
         *(u32 *)progress_ptr = 0xffffffff;
+    }
 }
+
 static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     u32 *progress = (u32 *)progress_ptr;
     i32 index, bit_index;
-    if (progress != NULL)
+    if (progress != NULL) {
         *progress = 0xffffffff;
-    if (world == NULL || world->current_gscn == NULL || progress == NULL)
+    }
+    if (world == NULL || world->current_gscn == NULL || progress == NULL) {
         return;
+    }
     bit_index = 0;
     for (index = 0; index < world->current_gscn->max_portals; ++index) {
         if (world->current_gscn->portals[index].id != 0 && bit_index < 32) {
             i32 word = bit_index / 32;
-            if ((world->current_gscn->portals[index].flags & 1) != 0)
+            if ((world->current_gscn->portals[index].flags & 1) != 0) {
                 progress[word] |= 1u << (bit_index & 31);
+            }
             ++bit_index;
         }
     }
 }
+
 static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     u32 *progress = (u32 *)progress_ptr;
     i32 index, bit_index;
-    if (world == NULL || world->current_gscn == NULL)
+    if (world == NULL || world->current_gscn == NULL) {
         return;
+    }
     PortalDoors_Reset(world);
     bit_index = 0;
     for (index = 0; index < world->current_gscn->max_portals; ++index) {
-        if (world->current_gscn->portals[index].id == 0)
+        if (world->current_gscn->portals[index].id == 0) {
             continue;
+        }
         NuPortalSetActiveDirect(&world->current_gscn->portals[index], 1);
         if (progress != NULL && bit_index < 32) {
             i32 word = bit_index / 32;
-            if ((world->current_gscn->portals[index].flags & 1) != 0)
+            if ((world->current_gscn->portals[index].flags & 1) != 0) {
                 progress[word] |= 1u << (bit_index & 31);
+            }
         }
         ++bit_index;
     }
 }
+
 ADDGIZMOTYPE_PC *__cdecl Portal_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
     addtype = Default_ADDGIZMOTYPE;

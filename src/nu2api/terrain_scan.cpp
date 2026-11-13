@@ -7,6 +7,7 @@ extern "C" {
     extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
 
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);
+
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
 #define TERRAIN_QUERY_PC (static_cast<TerrainQuery_s *>(TerI))
@@ -593,6 +594,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     }
     TerrOverRideScan = NULL;
 }
+
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TerrainQuery_s *query = TERRAIN_QUERY_PC;
     WallSplinesOnly = 0;

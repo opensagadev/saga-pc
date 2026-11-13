@@ -102,8 +102,9 @@ char NuKeyToAscii(u32 key, i32 shifted) {
 
     for (entry = NuKeyChar; entry->key != 0; ++entry) {
         if (entry->key == key) {
-            if (shifted)
+            if (shifted) {
                 return entry->shifted;
+            }
             return entry->normal;
         }
     }
@@ -141,8 +142,9 @@ i32 cbInteractMenuTitle(edui_interact_s *interact) {
 i32 cbInteractMenuScrollUp(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
     if (menu->field_0c) {
-        if (menu->field_0c->previous)
+        if (menu->field_0c->previous) {
             menu->field_0c = menu->field_0c->previous;
+        }
         menu->selected = menu->field_0c;
     }
     return 0;
@@ -151,8 +153,9 @@ i32 cbInteractMenuScrollUp(edui_interact_s *interact) {
 i32 cbInteractMenuScrollDown(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
     if (menu->field_10) {
-        if (menu->field_10->next)
+        if (menu->field_10->next) {
             menu->field_10 = menu->field_10->next;
+        }
         menu->selected = menu->field_10;
     }
     return 0;
@@ -162,8 +165,9 @@ i32 cbInteractMenuCancelChild(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
     if (menu != NULL) {
         eduimenu_s *child = menu->child;
-        if (child != NULL && child->callback != NULL)
+        if (child != NULL && child->callback != NULL) {
             child->callback(child, menu);
+        }
     }
     return 0;
 }
@@ -180,10 +184,11 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     NUMTX rotation;
     i32 yaw_delta;
 
-    if (camera->auto_zoom_dist_scale != 0.0f)
+    if (camera->auto_zoom_dist_scale != 0.0f) {
         zoom_scale = EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base;
-    else
+    } else {
         zoom_scale = 1.0f;
+    }
     mouse_y = NuMouseReadYRel();
     mouse_x = NuMouseReadXRel();
     mouse_z = NuMouseReadZRel();
@@ -204,12 +209,14 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     NuVecAdd(&old_opposite, &camera->position, &offset);
 
     yaw_delta = (i32)(mouse_x * 16.0f);
-    if (camera->freedoms & EDCAM_FREEDOM_PITCH)
+    if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
         camera->pitch += (i32)(mouse_y * 16.0f);
+    }
     camera->pitch = MIN(0x4000, camera->pitch);
     camera->pitch = MAX(-0x4000, camera->pitch);
-    if (camera->freedoms & EDCAM_FREEDOM_YAW)
+    if (camera->freedoms & EDCAM_FREEDOM_YAW) {
         camera->yaw += yaw_delta;
+    }
 
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
@@ -225,17 +232,21 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     offset.z = 0.0f;
     offset.y = 0.0f;
     offset.x = 0.0f;
-    if (buttons == 1)
+    if (buttons == 1) {
         offset.z = -delta_time * camera->distance;
-    else if (buttons == 2)
+    } else if (buttons == 2) {
         offset.z = delta_time * camera->distance;
+    }
     NuVecMtxRotate(&offset, &offset, &rotation);
-    if (camera->allow_position_x)
+    if (camera->allow_position_x) {
         camera->position.x += offset.x;
-    if (camera->allow_position_y)
+    }
+    if (camera->allow_position_y) {
         camera->position.y += offset.y;
-    if (camera->allow_position_z)
+    }
+    if (camera->allow_position_z) {
         camera->position.z += offset.z;
+    }
 }
 
 extern i32 edmain_cursor_enabled;
@@ -356,8 +367,9 @@ i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
 i32 __cdecl NuKeyboard_db(i32 key) {
     i32 page = (i8)nu_keyboard_page_index;
     u8 current = nu_keyboard_pages[(page << 8) + key];
-    if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0)
+    if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0) {
         return 1;
+    }
     return 0;
 }
 
@@ -373,14 +385,16 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     i32 yaw_delta;
     i32 pitch_delta;
 
-    if (camera->auto_move_dist_scale != 0.0f)
+    if (camera->auto_move_dist_scale != 0.0f) {
         move_speed = EdcamFabsPc(camera->distance) * camera->auto_move_dist_scale + camera->auto_move_base;
-    else
+    } else {
         move_speed = 1.0f;
-    if (camera->auto_zoom_dist_scale != 0.0f)
+    }
+    if (camera->auto_zoom_dist_scale != 0.0f) {
         zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
-    else
+    } else {
         zoom_speed = 1.0f;
+    }
     offset.z = 0.0f;
     offset.y = 0.0f;
     offset.x = 0.0f;
@@ -393,15 +407,17 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
 
     yaw_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_x, 32) * camera->pad_yaw_speed * delta_time * 64.0);
     pitch_delta = (i32)((f64)NuPs2ApplyDeadZone(pad->analog_right_y, 32) * camera->pad_pitch_speed * delta_time * 32.0);
-    if (camera->freedoms & EDCAM_FREEDOM_INVERT_PAD_PITCH)
+    if (camera->freedoms & EDCAM_FREEDOM_INVERT_PAD_PITCH) {
         pitch_delta = -pitch_delta;
+    }
     if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
         camera->pitch += pitch_delta;
         camera->pitch = MIN(0x4000, camera->pitch);
         camera->pitch = MAX(-0x4000, camera->pitch);
     }
-    if (camera->freedoms & EDCAM_FREEDOM_YAW)
+    if (camera->freedoms & EDCAM_FREEDOM_YAW) {
         camera->yaw += yaw_delta;
+    }
 
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
@@ -427,12 +443,15 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
     NuVecMtxRotate(&offset, &offset, &rotation);
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X)
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X) {
         camera->position.x += offset.x;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y)
+    }
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y) {
         camera->position.y += offset.y;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z)
+    }
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z) {
         camera->position.z += offset.z;
+    }
 }
 
 void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
@@ -447,28 +466,33 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
     movement.z = 0.0f;
     movement.y = 0.0f;
     movement.x = 0.0f;
-    if (!pad->is_valid)
+    if (!pad->is_valid) {
         return;
+    }
 
     frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
-    if (camera->auto_move_dist_scale != 0.0f)
+    if (camera->auto_move_dist_scale != 0.0f) {
         move_speed = camera->auto_move_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_move_base;
-    else
+    } else {
         move_speed = 1.0f;
-    if (camera->auto_zoom_dist_scale != 0.0f)
+    }
+    if (camera->auto_zoom_dist_scale != 0.0f) {
         zoom_speed = camera->auto_zoom_dist_scale * EdcamFabsPc(camera->distance) + camera->auto_zoom_base;
-    else
+    } else {
         zoom_speed = 1.0f;
+    }
     pad_yaw_axis = pad->analog_right_x;
     pad_pitch_axis = pad->analog_right_y;
     if (camera->freedoms & EDCAM_FREEDOM_DISTANCE) {
         f32 zoom = (f32)pad->analog_r1 * camera->distance_speed * zoom_speed;
-        if (zoom > 1.0f)
+        if (zoom > 1.0f) {
             zoom = 1.0f;
+        }
         camera->distance += zoom * frame_scale;
         zoom = (f32)pad->analog_r2 * camera->distance_speed * zoom_speed;
-        if (zoom > 1.0f)
+        if (zoom > 1.0f) {
             zoom = 1.0f;
+        }
         camera->distance -= zoom * frame_scale;
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
@@ -508,11 +532,13 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
  * The upper halves remain part of each view and are preserved by updates. */
 typedef union EdcamMayaAngleObservedPc {
     u32 word;
+
     struct {
         u16 angle;
         u16 upper;
     } parts;
 } EdcamMayaAngleObservedPc;
+
 STATIC_ASSERT(sizeof(EdcamMayaAngleObservedPc) == 4);
 STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.angle) == 0);
 STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.upper) == 2);
@@ -528,6 +554,7 @@ STATIC_ASSERT(offsetof(edcam_s, freedoms) == 0x90);
 
 #pragma section(".bss$EdcamMayaSmoothedAnglePc", read, write)
 #pragma section(".bss$EdcamMayaRawAnglePc", read, write)
+
 void do_maya_mouse_camera(edcam_s *camera) {
     /* The historical mapped name TargetAng denotes the smoothed PC slot. */
     __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObservedPc TargetAng = {0};
@@ -546,8 +573,9 @@ void do_maya_mouse_camera(edcam_s *camera) {
     movement.z = 0.0f;
     movement.y = 0.0f;
     movement.x = 0.0f;
-    if (NuKeyboard(0x38) == 0)
+    if (NuKeyboard(0x38) == 0) {
         return;
+    }
     mouse_x = NuMouseReadXVel() * camera->mouse_pitch_speed;
     mouse_y = NuMouseReadYVel() * camera->mouse_yaw_speed;
     mouse_z = NuMouseReadZVel() * camera->mouse_move_speed;
@@ -556,23 +584,27 @@ void do_maya_mouse_camera(edcam_s *camera) {
         if (camera->freedoms & EDCAM_FREEDOM_DISTANCE) {
             i32 difference;
             f32 sine;
-            if (mouse_x != 0.0f || mouse_y != 0.0f)
+            if (mouse_x != 0.0f || mouse_y != 0.0f) {
                 RawTargetAngPc.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
+            }
             difference = (RawTargetAngPc.word - TargetAng.word) & 0xffff;
-            if (difference >= 0x8000)
+            if (difference >= 0x8000) {
                 difference -= 0x10000;
-            if (abs(difference) > 20000)
+            }
+            if (abs(difference) > 20000) {
                 TargetAng.parts.angle = RawTargetAngPc.parts.angle;
-            else
+            } else {
                 TargetAng.parts.angle += difference / 4;
+            }
             sine = NuTrigTable[((i32)(TargetAng.word + 0x2000) >> 1) & 0x7fff];
             if (EdcamFabsPc(sine) > (f64)0.1f) {
                 f32 length_squared;
                 f32 zoom_delta;
-                if (sine > 0.0f)
+                if (sine > 0.0f) {
                     sine = (f32)(sine - (f64)0.1f);
-                else
+                } else {
                     sine = (f32)(sine + (f64)0.1f);
+                }
                 length_squared = mouse_x * mouse_x + mouse_y * mouse_y;
                 zoom_delta = NuFsqrt(length_squared) * sine;
                 camera->distance =
@@ -587,8 +619,9 @@ void do_maya_mouse_camera(edcam_s *camera) {
             camera->pitch = MIN(0x4000, camera->pitch);
             camera->pitch = MAX(-0x4000, camera->pitch);
         }
-        if (camera->freedoms & EDCAM_FREEDOM_YAW)
+        if (camera->freedoms & EDCAM_FREEDOM_YAW) {
             camera->yaw += (i32)(mouse_x * -16.0);
+        }
     } else if (buttons == 4 || buttons == 3) {
         movement.x = (f32)(movement.x + mouse_x * 0.0078125);
         movement.y = (f32)(movement.y - mouse_y * 0.0078125);
@@ -601,12 +634,15 @@ void do_maya_mouse_camera(edcam_s *camera) {
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     NuVecMtxRotate(&movement, &movement, &rotation);
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X)
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X) {
         camera->position.x += movement.x;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y)
+    }
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y) {
         camera->position.y += movement.y;
-    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z)
+    }
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z) {
         camera->position.z += movement.z;
+    }
 }
 
 f32 __cdecl edcamGetDist(void) {

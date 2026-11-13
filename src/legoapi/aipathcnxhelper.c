@@ -20,8 +20,9 @@ void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count)
         if (system != NULL) {
             system->helpers =
                 (AI_HELPER_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
-            if (system->helpers != NULL)
+            if (system->helpers != NULL) {
                 system->capacity = (i16)count;
+            }
         }
     }
     return system;
@@ -33,8 +34,9 @@ void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *syst
             memset(system->helpers, 0, (i32)system->count * sizeof(AI_HELPER_SLOT_PC));
             system->count = 0;
         }
-        if (AIPathCnxHelperSysInitFn != NULL)
+        if (AIPathCnxHelperSysInitFn != NULL) {
             AIPathCnxHelperSysInitFn(world);
+        }
     }
 }
 
@@ -47,8 +49,9 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *sys
             i32 index;
             for (index = 0; index < system->count; ++index, ++existing) {
                 if (existing->connection == connection && type == existing->type && target == existing->target) {
-                    if (existing->direction != direction)
+                    if (existing->direction != direction) {
                         existing->direction = 0xff;
+                    }
                     return existing;
                 }
             }
@@ -76,12 +79,14 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
         helper = system->helpers;
         for (index = 0; index < system->count; ++index, ++helper) {
             if (helper->connection == connection && (helper->direction == 0xff || helper->direction == direction) &&
-                type == helper->type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
+                type == helper->type && (filter == NULL || filter(helper, object, connection, direction, type) == 0)) {
                 return helper;
+            }
         }
     }
     return NULL;
 }
+
 /* Native 0x0043d0c0, 840-byte owner including its internal ten-case table. */
 STATIC_ASSERT(offsetof(AIPATHCNX_PC, traversal_flags) == 0);
 STATIC_ASSERT(offsetof(AIPATHCNX_PC, open) == 0x16);

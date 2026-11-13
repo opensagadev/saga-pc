@@ -48,10 +48,12 @@ i32 __cdecl Tube_InCylinder(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_d
 }
 
 i32 __cdecl ObjInTube(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_TUBE != -1 && object->character_context == LEGOCONTEXT_TUBE)
+    if (LEGOCONTEXT_TUBE != -1 && object->character_context == LEGOCONTEXT_TUBE) {
         return 1;
-    if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL)
+    }
+    if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL) {
         return 1;
+    }
     return 0;
 }
 
@@ -59,11 +61,13 @@ typedef struct TUBE_COOLDOWN_VIEW_PC {
     u8 unknown_00[0x30];
     f32 audio_cooldown;
 } TUBE_COOLDOWN_VIEW_PC;
+
 typedef struct TUBE_ENTRY_VIEW_PC {
     u8 unknown_000[0x79c];
     i32 entry_state;
     void *entry_data;
 } TUBE_ENTRY_VIEW_PC;
+
 STATIC_ASSERT(offsetof(TUBE_COOLDOWN_VIEW_PC, audio_cooldown) == 0x30);
 STATIC_ASSERT(offsetof(TUBE_ENTRY_VIEW_PC, entry_state) == 0x79c);
 STATIC_ASSERT(offsetof(TUBE_ENTRY_VIEW_PC, entry_data) == 0x7a0);
@@ -74,27 +78,33 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     TUBE_PC *tube;
     i32 index;
     if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL) {
-        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0) {
             object->techno = NULL;
+        }
         return;
     }
-    if (LEGOCONTEXT_TUBE == -1)
+    if (LEGOCONTEXT_TUBE == -1) {
         return;
+    }
     if (object->character_context == LEGOCONTEXT_TUBE) {
-        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0) {
             object->character_context = -1;
+        }
         return;
     }
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x400000) != 0 || world->tubes == NULL)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x400000) != 0 || world->tubes == NULL) {
         return;
+    }
     tube = world->tubes;
     for (index = 0; index < world->tube_count; ++index, ++tube) {
         TUBE_COOLDOWN_VIEW_PC *cooldown;
-        if ((tube->flags & 2) == 0 || (tube->flags & 1) == 0 || (tube->flags & 4) != 0)
+        if ((tube->flags & 2) == 0 || (tube->flags & 1) == 0 || (tube->flags & 4) != 0) {
             continue;
+        }
         if (Tube_InCylinder(object, tube, NULL, 0) == 0 &&
-            (((TUBE_ENTRY_VIEW_PC *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW_PC *)object)->entry_data == NULL))
+            (((TUBE_ENTRY_VIEW_PC *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW_PC *)object)->entry_data == NULL)) {
             continue;
+        }
         if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE) {
             object->techno = (TECHNO_PC *)tube;
             return;
@@ -115,8 +125,10 @@ typedef struct tube_callbacks_pc_s {
     char name[16];
     NUVEC position;
     f32 height, radius, directional_speed, top, radius_squared, audio_cooldown;
+
     union {
         u8 flags;
+
         struct {
             u8 active : 1;
             u8 visible : 1;
@@ -125,9 +137,11 @@ typedef struct tube_callbacks_pc_s {
             u8 unused : 4;
         } bits;
     };
+
     u8 padding[3];
     u32 occupied_object_masks[2];
 } TUBE_CALLBACKS_PC;
+
 STATIC_ASSERT(sizeof(TUBE_CALLBACKS_PC) == 0x40);
 STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, name) == 0);
 STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, position) == 0x10);
@@ -139,13 +153,16 @@ STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, radius_squared) == 0x2c);
 STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, audio_cooldown) == 0x30);
 STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, flags) == 0x34);
 STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, occupied_object_masks) == 0x38);
+
 typedef struct tube_progress_pc_s {
     /* Retail indexes both masks by tube / 32, although only 32 tubes are stored. */
     u32 visible_mask[1], active_mask[1];
 } TUBE_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(TUBE_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, visible_mask) == 0);
 STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, active_mask) == 4);
+
 static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     world->tubes = NULL;
@@ -157,45 +174,54 @@ static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
     }
     return world->tubes;
 }
+
 static void __cdecl Tube_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
         tube->bits.active = active != 0;
     }
 }
+
 static i32 __cdecl Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
     TUBE_CALLBACKS_PC *tube;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
+    }
     tube = (TUBE_CALLBACKS_PC *)gizmo->object;
-    if (check_only & 1)
+    if (check_only & 1) {
         return reverse != (((tube->flags >> 3) & 1));
-    if (reverse)
+    }
+    if (reverse) {
         tube->flags = (u8)((tube->flags & ~1) | 8);
-    else
+    } else {
         tube->flags = (u8)((tube->flags & ~8) | 1);
+    }
     return 1;
 }
+
 static void __cdecl Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
         tube->bits.visible = visible != 0;
     }
 }
+
 /* Derived cylinder values; retail keeps an out-of-line copy before Tubes_Reset. */
 static void Tube_ResetDerivedPc(TUBE_CALLBACKS_PC *tube) {
     tube->top = tube->position.y + tube->height;
     tube->radius_squared = tube->radius * tube->radius;
     tube->flags |= 3;
 }
+
 static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;
-    if (world == NULL || world->tubes == NULL)
+    if (world == NULL || world->tubes == NULL) {
         return;
+    }
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
         Tube_ResetDerivedPc(tube);
@@ -207,41 +233,51 @@ static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr)
         }
     }
 }
+
 static void __cdecl Tubes_Draw(void *world, void *data, f32 delta_time) {
     (void)world;
     (void)data;
     (void)delta_time;
 }
+
 static i32 __cdecl Tubes_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     return world != NULL ? world->current_level->max_tubes : 0;
 }
+
 static char *__cdecl Tube_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((TUBE_CALLBACKS_PC *)gizmo->object)->name : NULL;
 }
+
 static i32 __cdecl Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
     (void)output;
     (void)mode;
     return tube->bits.visible && tube->bits.active;
 }
+
 static const char *__cdecl Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
     return TubeOutputNamePc;
 }
+
 static i32 __cdecl Tube_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;
     return 1;
 }
+
 static NUVEC *__cdecl Tube_GetPos(GIZMO_PC *gizmo) {
-    if (gizmo == NULL)
+    if (gizmo == NULL) {
         return NULL;
+    }
     return &((TUBE_CALLBACKS_PC *)gizmo->object)->position;
 }
+
 static void *__cdecl Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 8);
 }
+
 static void __cdecl Tubes_ClearProgress(void *world, void *progress_ptr) {
     TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
     (void)world;
@@ -250,40 +286,50 @@ static void __cdecl Tubes_ClearProgress(void *world, void *progress_ptr) {
         progress->active_mask[0] = 0xffffffff;
     }
 }
+
 static void __cdecl Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     progress->visible_mask[0] = 0xffffffff;
     progress->active_mask[0] = 0xffffffff;
-    if (world == NULL || world->tubes == NULL)
+    if (world == NULL || world->tubes == NULL) {
         return;
+    }
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
         i32 word;
         u32 bit;
-        if (i >= 32)
+        if (i >= 32) {
             break;
+        }
         word = i / 32;
         bit = 1u << (i & 31);
-        if (!(tube->flags & 2))
+        if (!(tube->flags & 2)) {
             progress->visible_mask[word] &= ~bit;
-        if (!(tube->flags & 1))
+        }
+        if (!(tube->flags & 1)) {
             progress->active_mask[word] &= ~bit;
+        }
     }
 }
+
 static void __cdecl Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 i;
     (void)data;
-    for (i = 0; i < world->tube_count; ++i)
-        if (NuStrLen(((TUBE_CALLBACKS_PC *)world->tubes)[i].name) != 0)
+    for (i = 0; i < world->tube_count; ++i) {
+        if (NuStrLen(((TUBE_CALLBACKS_PC *)world->tubes)[i].name) != 0) {
             AddGizmo(system, type_id, NULL, &((TUBE_CALLBACKS_PC *)world->tubes)[i]);
+        }
+    }
 }
+
 static i32 __cdecl Tubes_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_CALLBACKS_PC *tube;
@@ -298,35 +344,42 @@ static i32 __cdecl Tubes_Load(void *world_ptr, void *data) {
             EdFileReadNuVec(&tube->position);
             tube->height = EdFileReadFloat();
             tube->radius = EdFileReadFloat();
-            if (version >= 2)
+            if (version >= 2) {
                 tube->bits.flag_04 = EdFileReadChar() != 0;
-            else
+            } else {
                 tube->bits.flag_04 = 0;
+            }
             tube->directional_speed = 1.25f;
         }
         return 1;
     }
     return 0;
 }
+
 void __cdecl Tube_SetObjBit(TUBE_CALLBACKS_PC *tube, i32 index) {
     tube->occupied_object_masks[index / 32] |= 1u << (index & 31);
 }
+
 i32 __cdecl Tube_IsObjBitSet(TUBE_CALLBACKS_PC *tube, i32 index) {
     return (tube->occupied_object_masks[index / 32] & (1u << (index & 31))) != 0;
 }
+
 static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i, j;
     (void)data;
-    if (world == NULL || world->tubes == NULL)
+    if (world == NULL || world->tubes == NULL) {
         return;
+    }
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
-        if (tube->audio_cooldown > 0.0f)
+        if (tube->audio_cooldown > 0.0f) {
             tube->audio_cooldown -= frame_time;
-        if (tube->audio_cooldown < 0.0f)
+        }
+        if (tube->audio_cooldown < 0.0f) {
             tube->audio_cooldown = 0.0f;
+        }
         if ((tube->flags & 4) != 0 && (tube->flags & 1) != 0 && (tube->flags & 2) != 0) {
             GAMEOBJECT *object;
             GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
@@ -335,10 +388,12 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 f32 distance, tx, tz, inverse;
                 u16 angle;
                 if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                    !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100))
+                    !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {
                     continue;
-                if (Tube_InCylinder(object, (TUBE_PC *)tube, &distance, 0) == 0)
+                }
+                if (Tube_InCylinder(object, (TUBE_PC *)tube, &distance, 0) == 0) {
                     continue;
+                }
                 tx = tube->position.x - object->collision_position.x;
                 tz = tube->position.z - object->collision_position.z;
                 angle = (u16)NuAtan2D(tx, tz);
@@ -346,8 +401,9 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 object->movement_direction_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
                 object->context_target_position = &tube->position;
                 if (Tube_IsObjBitSet(tube, object->hostility_group) != 0 || object->contact_count == 0 ||
-                    !(distance < 0.1224999949336052))
+                    !(distance < 0.1224999949336052)) {
                     continue;
+                }
                 if (TubesFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
                     inverse = 1.0f / NuFsqrt(distance);
                     tx *= inverse;

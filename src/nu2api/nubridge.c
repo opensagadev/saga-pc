@@ -100,8 +100,9 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
                 offsets[1].w = 1.0f;
                 for (i = 0; i < bridge->platform_count; ++i) {
                     if (NuSpecialExistsFn(&bridge->special)) {
-                        if (NuSpecialDrawAt(&bridge->special, &bridge->platform_matrices[i]))
+                        if (NuSpecialDrawAt(&bridge->special, &bridge->platform_matrices[i])) {
                             bridge->was_drawn = 1;
+                        }
                     }
                     if (i % (i8)bridge->field_ae7 == 0 && NuSpecialExistsFn(&bridge->second_special)) {
                         NuVec4MtxTransformVU0(&point, &offsets[0], &bridge->platform_matrices[i]);
@@ -138,8 +139,9 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
             }
         }
         boundaries[group + 1] = n;
-        if (n > 1)
+        if (n > 1) {
             NuBrdigeDrawRope(material, first, second, n, boundaries, Bridges[0].colour);
+        }
     }
 }
 
@@ -174,10 +176,12 @@ void NuBridgeUpdate(NUVEC *position) {
                                 delta.z * (position->z -
                                            (bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f);
                             t = t * (bridge->platform_count - 1) / (delta.x * delta.x + delta.z * delta.z);
-                            if (t < 0.0f)
+                            if (t < 0.0f) {
                                 t = 0.0f;
-                            if (t > bridge->platform_count - 1.0f)
+                            }
+                            if (t > bridge->platform_count - 1.0f) {
                                 t = bridge->platform_count - 1.0f;
+                            }
                             n = t;
                             t -= n;
                             side = 2.0f / (NuFsqrt(delta.x * delta.x + delta.z * delta.z) * bridge->width);
@@ -187,10 +191,12 @@ void NuBridgeUpdate(NUVEC *position) {
                                             (bridge->edge_positions[0][0].x + bridge->edge_positions[0][1].x) * 0.5f) +
                                  delta.x * ((bridge->edge_positions[0][0].z + bridge->edge_positions[0][1].z) * 0.5f -
                                             position->z));
-                            if (side > 1.0f)
+                            if (side > 1.0f) {
                                 side = 1.0f;
-                            if (side < -1.0f)
+                            }
+                            if (side < -1.0f) {
                                 side = -1.0f;
+                            }
                             left = bridge->gravity * (3.0f - side) * 0.25f;
                             right = bridge->gravity * (side + 3.0f) * 0.25f;
                             if (t == 0.0f) {
@@ -218,18 +224,22 @@ void NuBridgeUpdate(NUVEC *position) {
                         } else {
                             left = 0.0f;
                         }
-                        if (PlatInstGetHit(bridge->platforms[0]))
+                        if (PlatInstGetHit(bridge->platforms[0])) {
                             bridge->contact_frames = 5;
-                        if (PlatInstGetHit(bridge->platforms[bridge->platform_count - 1]))
-                            bridge->contact_frames = 5;
-                        for (i = 1; i < bridge->platform_count - 1; ++i) {
-                            if (PlatInstGetHit(bridge->platforms[i]))
-                                bridge->contact_frames = 5;
                         }
-                        if (bridge->contact_frames)
+                        if (PlatInstGetHit(bridge->platforms[bridge->platform_count - 1])) {
+                            bridge->contact_frames = 5;
+                        }
+                        for (i = 1; i < bridge->platform_count - 1; ++i) {
+                            if (PlatInstGetHit(bridge->platforms[i])) {
+                                bridge->contact_frames = 5;
+                            }
+                        }
+                        if (bridge->contact_frames) {
                             bridge->idle_frames = 0;
-                        else if (bridge->idle_frames < 16384)
+                        } else if (bridge->idle_frames < 16384) {
                             ++bridge->idle_frames;
+                        }
                         if (bridge->idle_frames < 180) {
                             for (i = 1; i < bridge->platform_count - 1; ++i) {
                                 bridge->edge_motion[i][0].x =
@@ -477,8 +487,9 @@ i32 __cdecl NuBridgeAlloc(void) {
     i32 index;
     NUBRIDGE_PC *bridge = Bridges;
     for (index = 0; index < 8; ++index, ++bridge) {
-        if (!bridge->active)
+        if (!bridge->active) {
             return index;
+        }
     }
     return -1;
 }
@@ -491,8 +502,9 @@ void __cdecl NuBridgeInit(void) {
         if (bridge->active) {
             TerrainSetCur(bridge->terrain);
             for (j = 0; j < bridge->platform_count; ++j) {
-                if (NuSpecialExistsFn(&bridge->special))
+                if (NuSpecialExistsFn(&bridge->special)) {
                     DeletePlatinst(bridge->platforms[j]);
+                }
             }
             bridge->active = 0;
         }
@@ -504,15 +516,17 @@ void __cdecl NuBridgeRemove(i32 index) {
     void *saved_terrain;
     NUBRIDGE_PC *bridge;
     i32 j;
-    if ((u32)index > 7)
+    if ((u32)index > 7) {
         return;
+    }
     saved_terrain = TerrainGetCur();
     bridge = &Bridges[index];
     if (bridge->active) {
         TerrainSetCur(bridge->terrain);
         for (j = 0; j < bridge->platform_count; ++j) {
-            if (NuSpecialExistsFn(&bridge->special))
+            if (NuSpecialExistsFn(&bridge->special)) {
                 DeletePlatinst(bridge->platforms[j]);
+            }
         }
         bridge->active = 0;
     }
@@ -533,13 +547,13 @@ i32 __cdecl NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDL
     NUVEC side;
     f32 inverse_length;
 
-    if (count > 24)
+    if (count > 24) {
         printf("to many sections/n");
+    }
 
     NuBridgeOn(1);
     index = NuBridgeAlloc();
     if (index != -1) {
-
         bridge = &Bridges[index];
         bridge->special = *first;
         bridge->second_special = *second;

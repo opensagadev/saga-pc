@@ -19,6 +19,7 @@ typedef struct racepod_resource_pc_s {
     void *next;
     u8 unknown_0098[8];
 } RACEPOD_RESOURCE_PC;
+
 STATIC_ASSERT(sizeof(RACEPOD_RESOURCE_PC) == 0xa0);
 STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, pitch) == 0x70);
 STATIC_ASSERT(offsetof(RACEPOD_RESOURCE_PC, yaw) == 0x74);
@@ -43,6 +44,7 @@ typedef struct podrace_resource_pc_s {
     u8 flags;
     u8 unknown_b021[15];
 } PODRACE_RESOURCE_PC;
+
 STATIC_ASSERT(sizeof(PODRACE_RESOURCE_PC) == 0xb030);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_entries) == 0xa600);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, mushroom_timer) == 0xb004);
@@ -62,7 +64,9 @@ typedef struct pod_race_countdown_reader_pc_s {
     u8 unknown_0000[0xb000];
     f32 lap_countdown;
 } POD_RACE_COUNTDOWN_READER_PC;
+
 STATIC_ASSERT(offsetof(POD_RACE_COUNTDOWN_READER_PC, lap_countdown) == 0xb000);
+
 typedef struct pod_merge_packet_reader_pc_s {
     u8 unknown_00[0x10];
     f32 blend_source_time;
@@ -73,6 +77,7 @@ typedef struct pod_merge_packet_reader_pc_s {
     i16 overlay_animation;
     f32 overlay_weight;
 } POD_MERGE_PACKET_READER_PC;
+
 STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, requested_animation) == 0x3a);
 STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, blend_source_time) == 0x10);
 STATIC_ASSERT(offsetof(POD_MERGE_PACKET_READER_PC, blend_target_time) == 0x14);
@@ -85,6 +90,7 @@ typedef struct podrace_levflag_pc_s {
     u8 mushroom_state;
     u8 remaining[14];
 } PODRACE_LEVFLAG_PC;
+
 STATIC_ASSERT(sizeof(PODRACE_LEVFLAG_PC) == 16);
 
 typedef struct gungan_a_pc_s {
@@ -97,6 +103,7 @@ typedef struct gungan_a_pc_s {
     i16 unknown_10a;
     i16 models[4];
 } GUNGAN_A_PC;
+
 STATIC_ASSERT(sizeof(GUNGAN_A_PC) == 0x114);
 STATIC_ASSERT(offsetof(GUNGAN_A_PC, targets) == 0x84);
 STATIC_ASSERT(offsetof(GUNGAN_A_PC, spawn_timer) == 0x104);
@@ -111,6 +118,7 @@ typedef struct mine_entry_pc_s {
     u16 rotx;
     u16 roty;
 } MINE_ENTRY_PC;
+
 STATIC_ASSERT(sizeof(MINE_ENTRY_PC) == 0x1c);
 
 typedef struct minesys_pc_s {
@@ -124,6 +132,7 @@ typedef struct minesys_pc_s {
     i32 mine_part;
     f32 update_timer;
 } MINESYS_PC;
+
 STATIC_ASSERT(sizeof(MINESYS_PC) == 0x748);
 STATIC_ASSERT(offsetof(MINESYS_PC, mines) == 0xc);
 STATIC_ASSERT(offsetof(MINESYS_PC, mine_radius) == 0x70c);
@@ -138,6 +147,7 @@ typedef struct client_mines_pc_s {
     u32 exploded_words[2];
     u32 unknown_310[2];
 } CLIENT_MINES_PC;
+
 STATIC_ASSERT(sizeof(CLIENT_MINES_PC) == 0x318);
 STATIC_ASSERT(offsetof(CLIENT_MINES_PC, present_words) == 0x300);
 
@@ -147,6 +157,7 @@ typedef struct cut_instance_reader_pc_s {
     u32 unknown_8c;
     f32 current_frame;
 } CUT_INSTANCE_READER_PC;
+
 STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, flags_88) == 0x88);
 STATIC_ASSERT(offsetof(CUT_INSTANCE_READER_PC, current_frame) == 0x90);
 
@@ -188,6 +199,7 @@ typedef struct podrace_netpacket_reader_pc_s {
     u32 unknown_0c;
     i32 lap;
 } PODRACE_NETPACKET_READER_PC;
+
 STATIC_ASSERT(offsetof(PODRACE_NETPACKET_READER_PC, lap) == 0x10);
 
 /* Pod sprint (Episode I bonus) level callbacks. */
@@ -208,8 +220,10 @@ typedef struct PODSPRINT_VIEW_PC {
     i8 ai_state;
     i8 ai_index;
     u8 unknown_90[2];
+
     union {
         u16 flags;
+
         struct {
             i16 halfway : 1;
             i16 unknown_1 : 1;
@@ -219,6 +233,7 @@ typedef struct PODSPRINT_VIEW_PC {
         } bits;
     };
 } PODSPRINT_VIEW_PC;
+
 STATIC_ASSERT(sizeof(PODSPRINT_VIEW_PC) == sizeof(PODSPRINT_PC));
 STATIC_ASSERT(offsetof(PODSPRINT_VIEW_PC, pacemaker) == 0x78);
 STATIC_ASSERT(offsetof(PODSPRINT_VIEW_PC, ai_state) == 0x8e);
@@ -238,6 +253,7 @@ typedef struct pod_race_panel_netpacket_pc_s {
     f32 lap_alpha;
     i32 lap;
 } POD_RACE_PANEL_NETPACKET_PC;
+
 STATIC_ASSERT(sizeof(POD_RACE_PANEL_NETPACKET_PC) == 0x14);
 STATIC_ASSERT(offsetof(POD_RACE_PANEL_NETPACKET_PC, lap_alpha) == 0x0c);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_countdown) == 0xb000);

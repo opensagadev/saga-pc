@@ -15,8 +15,9 @@ STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
 
 i32 __cdecl InitSpecialSfx(void *world_ptr) {
     SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
-    if (!world)
+    if (!world) {
         return 0;
+    }
     world->buffer.addr = (world->buffer.addr + 3) & ~3u;
     world->entries = (SPECIAL_RESOURCE_ENTRY_PC *)world->buffer.addr;
     world->buffer.addr += 0xf00;
@@ -37,19 +38,22 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     i32 length;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     SPECIAL_RESOURCE_EVENT_PC *event, *previous;
-    if (!world)
+    if (!world) {
         return 0;
+    }
     EdFileSetMedia(1);
-    if (!EdFileOpen(path, 0))
+    if (!EdFileOpen(path, 0)) {
         return 0;
+    }
     version = EdFileReadInt();
     if (version > 2) {
         EdFileClose();
         return 0;
     }
     count = EdFileReadInt();
-    if (count > 192)
+    if (count > 192) {
         count = 192;
+    }
     EdFileReadInt();
     world->special_sfx_count = 0;
     for (i = 0; i < count; ++i) {
@@ -85,17 +89,19 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
         entry = &world->special_sfx[i];
         entry->events = event;
         previous = event;
-        if (event == world->special_sfx_events + world->special_sfx_event_count)
+        if (event == world->special_sfx_events + world->special_sfx_event_count) {
             event = NULL;
-        else
+        } else {
             ++event;
+        }
         for (j = 0; j < entry->event_count - 1; ++j) {
             previous->next = event;
             previous = event;
             ++event;
         }
-        if (previous)
+        if (previous) {
             previous->next = NULL;
+        }
     }
     EdFileClose();
     return 1;
@@ -130,13 +136,16 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     for (i = 0; i < world->special_sfx_count; ++i) {
         entry = &world->special_sfx[i];
         event = entry->events;
-        if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0)
+        if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0) {
             continue;
+        }
         animation = (NUINSTANIM *)NuSpecialGetInstAnim(&entry->special);
-        if (animation == NULL)
+        if (animation == NULL) {
             continue;
-        if (((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index] == NULL)
+        }
+        if (((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index] == NULL) {
             continue;
+        }
         end_frame =
             NuAnimEndFrameOld(((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index]);
         frame = animation->ltime;
@@ -144,8 +153,9 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
             for (j = 0; j < entry->event_count; ++j) {
                 if (event != NULL) {
                     event->flags &= ~1u;
-                    if ((event->flags & 2) == 0 && frame < end_frame)
+                    if ((event->flags & 2) == 0 && frame < end_frame) {
                         event->previous_frame = 0.0f;
+                    }
                 }
                 event = event->next;
             }
@@ -160,8 +170,9 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
                 flags = event->flags;
                 if ((flags & 2) != 0) {
                     if ((direction == 0 && (flags & 4) != 0) || (flags & 4) != 0 && (flags & 8) != 0) {
-                        if (event->trigger_frame <= frame && frame <= event->previous_frame)
+                        if (event->trigger_frame <= frame && frame <= event->previous_frame) {
                             play = 1;
+                        }
                     } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame &&
                                frame >= event->previous_frame) {
                         play = 1;
@@ -170,21 +181,26 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
                     // bitfield member; the event flags are a plain u8 in saga.h
                 } else if (((flags >> 2) & 1) != 0 && (flags & 8) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
-                        (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame))
+                        (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame)) {
                         play = 1;
+                    }
                 } else if (((flags >> 2) & 1) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
-                        (event->previous_frame == 0.0f && event->trigger_frame == 1.0f))
+                        (event->previous_frame == 0.0f && event->trigger_frame == 1.0f)) {
                         play = 1;
+                    }
                 } else if ((flags & 8) != 0) {
                     if ((event->previous_frame > event->trigger_frame && frame <= event->trigger_frame) ||
-                        (event->previous_frame == end_frame && event->trigger_frame == end_frame))
+                        (event->previous_frame == end_frame && event->trigger_frame == end_frame)) {
                         play = 1;
+                    }
                 }
-                if (play != 0)
+                if (play != 0) {
                     GameAudio_PlaySfxById(event->sfx_id, position, 0, 0);
-                if ((event->flags & 2) == 0)
+                }
+                if ((event->flags & 2) == 0) {
                     event->previous_frame = frame;
+                }
             }
             event = event->next;
         }
@@ -194,12 +210,14 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
 
 void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
     i32 i;
-    if (world == NULL || world->special_sfx_event_count <= 0)
+    if (world == NULL || world->special_sfx_event_count <= 0) {
         return;
+    }
     for (i = 0; i < world->special_sfx_event_count; ++i) {
         i32 id = world->special_sfx_events[i].sfx_id;
-        if (id != -1)
+        if (id != -1) {
             ids[(*count)++] = id;
+        }
     }
 }
 
@@ -207,8 +225,9 @@ void __cdecl LoadSpecialSfxFile(void *world_ptr) {
     SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
     char path[256];
     sprintf(path, "%s.sfx", world->config_file);
-    if (NuFileExists(path))
+    if (NuFileExists(path)) {
         SpecialSfxLoad(path, world);
+    }
 }
 
 void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 category) {
@@ -219,12 +238,13 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     effect->category = (u8)(category);
     if (version < 28) {
         i16 rate = EdFileReadShort();
-        if (rate > 0)
+        if (rate > 0) {
             effect->frequency = (i16)(rate * 60);
-        else if (rate < 0)
+        } else if (rate < 0) {
             effect->frequency = (i16)(-60 / rate);
-        else
+        } else {
             effect->frequency = 0;
+        }
     } else {
         effect->frequency = EdFileReadShort();
     }
@@ -242,24 +262,28 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->emission_pause = EdFileReadFloat();
         effect->emission_pause_random = EdFileReadFloat();
     }
-    if ((f32)effect->frequency != 0.0f && effect->emission_period < 1.0f / (f32)effect->frequency)
+    if ((f32)effect->frequency != 0.0f && effect->emission_period < 1.0f / (f32)effect->frequency) {
         effect->emission_period = 1.0f / (f32)effect->frequency;
+    }
 
     effect->generator_type = (u8)(EdFileReadChar());
     effect->momentum_adjustment_type = (u8)(EdFileReadChar());
-    if (version < 35)
+    if (version < 35) {
         effect->cutscene_only = 0;
-    else
+    } else {
         effect->cutscene_only = (u8)(EdFileReadChar());
+    }
     effect->disabled = 0;
     effect->particle_type = (u8)(EdFileReadChar());
-    if (version < 39)
+    if (version < 39) {
         EdFileReadChar();
+    }
     effect->status = 1;
-    if (version < 40)
+    if (version < 40) {
         effect->camera_facing = 0;
-    else
+    } else {
         effect->camera_facing = (u8)(EdFileReadChar());
+    }
 
     effect->field_030 = EdFileReadFloat();
     if (version < 6) {
@@ -269,18 +293,21 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->cut_on = EdFileReadFloat();
         effect->clip_extent = EdFileReadFloat();
     }
-    if (version < 10)
+    if (version < 10) {
         effect->sound_range = 0.0f;
-    else
+    } else {
         effect->sound_range = EdFileReadFloat();
-    if (version < 23)
+    }
+    if (version < 23) {
         effect->sound_range_override = 0.0f;
-    else
+    } else {
         effect->sound_range_override = EdFileReadFloat();
-    if (version >= 24)
+    }
+    if (version >= 24) {
         effect->field_044 = EdFileReadFloat();
-    else
+    } else {
         effect->field_044 = 0.5f;
+    }
     if (version < 7) {
         EdFileReadInt();
         EdFileReadInt();
@@ -401,16 +428,19 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     } else {
         effect->process_spheres = 0;
     }
-    if (version >= 17)
+    if (version >= 17) {
         effect->time_group = (i8)(EdFileReadChar());
-    else
+    } else {
         effect->time_group = 0;
-    if (effect->particle_type == 7)
+    }
+    if (effect->particle_type == 7) {
         effect->time_group = 2;
-    if (version >= 31)
+    }
+    if (version >= 31) {
         effect->collision_flags = (u8)(EdFileReadChar());
-    else
+    } else {
         effect->collision_flags = 3;
+    }
     if (version >= 32) {
         effect->use_explicit_clip_box = (u8)(EdFileReadChar());
         effect->particle_box.x = EdFileReadFloat();
@@ -425,8 +455,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     if (version >= 36) {
         f32 thinning = EdFileReadFloat();
         effect->thinning = thinning;
-        if (version == 36 && thinning < 4.0f)
+        if (version == 36 && thinning < 4.0f) {
             effect->thinning = 4.0f;
+        }
     } else {
         effect->thinning = 4.0f;
     }
@@ -464,8 +495,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->torus_keys3[1].value = 1.0f;
     }
 
-    for (i = 0; i < 8; ++i)
+    for (i = 0; i < 8; ++i) {
         effect->particle_keys[i] = -1;
+    }
     if (version >= 23) {
         const i32 sound_count = EdFileReadInt();
         for (i = 0; i < sound_count; ++i) {
@@ -474,8 +506,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
             effect->sound_data[i * 3 + 1] = EdFileReadInt();
             effect->sound_data[i * 3 + 2] = EdFileReadInt();
         }
-        for (i = sound_count; i < 4; ++i)
+        for (i = sound_count; i < 4; ++i) {
             effect->sound_data[i * 3] = -1;
+        }
     } else {
         for (i = 0; i < 4; ++i) {
             if (version >= 11) {
@@ -490,29 +523,32 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         }
     }
     if (version >= 16) {
-        if (version >= 41)
+        if (version >= 41) {
             effect->trail_count = (i8)EdFileReadChar();
-        else
+        } else {
             effect->trail_count = (i8)EdFileReadInt();
+        }
         effect->trail_time = EdFileReadFloat();
     } else {
         effect->trail_count = 0;
         effect->trail_time = 0.0f;
     }
     if (version >= 25) {
-        if (version >= 41)
+        if (version >= 41) {
             effect->radial_segments = (u8)EdFileReadChar();
-        else
+        } else {
             effect->radial_segments = (u8)EdFileReadInt();
+        }
         effect->radial_floor = EdFileReadFloat();
     } else {
         effect->radial_segments = 5;
         effect->radial_floor = 0.5f;
     }
-    if (version >= 26)
+    if (version >= 26) {
         effect->scale_in_time = EdFileReadFloat();
-    else
+    } else {
         effect->scale_in_time = 0.0f;
+    }
     effect->scale = 1.0f;
     effect->base_effect_index = 0;
 }

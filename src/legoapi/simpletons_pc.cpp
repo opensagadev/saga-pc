@@ -34,6 +34,7 @@ extern "C" {
         matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
+
     static void MiniTrooperYawMatrixPc(NUMTX *matrix, i32 angle) {
         const f32 cosine = NU_COS_LUT(angle);
         const f32 sine = NU_SIN_LUT(angle);
@@ -54,6 +55,7 @@ extern "C" {
         matrix->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
         matrix->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
     }
+
     static void MiniTrooperRotateYawPc(NUMTX *matrix, i32 angle) {
         f32 cosine = NU_COS_LUT(angle), sine = NU_SIN_LUT(angle);
         f32 x0 = matrix->m00, x1 = matrix->m10, x2 = matrix->m20, x3 = matrix->m30;
@@ -66,6 +68,7 @@ extern "C" {
         matrix->m30 = x3 * cosine + sine * matrix->m32;
         matrix->m32 = cosine * matrix->m32 - x3 * sine;
     }
+
     static minitrooperteam_s *MiniTrooperFindTargetTeamPc(WORLDINFO *world, minitrooperteam_s *team, i32 team_index,
                                                           f32 *distance) {
         f32 nearest = 1.0e9f;
@@ -92,6 +95,7 @@ extern "C" {
         *distance = nearest;
         return result;
     }
+
     static i32 MiniTrooperCheckFormationPc(minitrooperteam_s *team, minisnowtrooper_s *trooper) {
         NUVEC delta;
         delta.x = trooper->shot_position.x - (team->origin_x + team->troopers[trooper->formation_index].formation_x);
@@ -102,6 +106,7 @@ extern "C" {
         }
         return 0;
     }
+
     static void MiniTrooperMovePc(minisnowtrooper_s *trooper) {
         if ((trooper->state_flags & 0x40) == 0) {
             NUVEC movement = v001;
@@ -111,30 +116,35 @@ extern "C" {
             trooper->shot_position.z += movement.z;
         }
     }
+
     static void MiniTrooperStepPc(minisnowtrooper_s *trooper) {
         f32 step_time = 1.0f / (f32)(i32)trooper->speed_divisor;
         if (trooper->timer >= step_time) {
             trooper->step_frame = trooper->step_frame + 1;
-            if (trooper->step_frame > 3)
+            if (trooper->step_frame > 3) {
                 trooper->step_frame = 0;
+            }
             trooper->timer = 0.0f;
         }
         trooper->timer += FRAMETIME;
     }
+
     static void MiniTrooperDebrisPc(WORLDINFO *world, minitrooperteam_s *team, i32 trooper_index) {
         if (team->state_flags & 1) {
             NUVEC position = {team->troopers[trooper_index].shot_position.x, team->height,
                               team->troopers[trooper_index].shot_position.z};
             i32 effect_index = TrooperGameDebrisPc[0];
             if (effect_index >= 0 && effect_index < world->game_debris_sys->capacity &&
-                world->game_debris_sys->entries[effect_index].effect != -1)
+                world->game_debris_sys->entries[effect_index].effect != -1) {
                 AddVariableShotDebrisEffect(world->game_debris_sys->entries[effect_index].effect, &position, 80, 0, 0);
+            }
             AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[1], &position);
             AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[2], &position);
             AddGameDebris(world->game_debris_sys, TrooperGameDebrisPc[3], &position);
         }
         team->debris_timer = (f32)qrand() * (4.0f / 65535.0f) + 2.0f;
     }
+
     static GAMEOBJECT *MiniTrooperNearestPlayerPc(minitrooperteam_s *team) {
         if (player != NULL) {
             NUVEC second, first;
@@ -143,8 +153,9 @@ extern "C" {
             if (player2 != NULL) {
                 second.x = player2->collision_position.x - team->position.x;
                 second.z = player2->collision_position.z - team->position.z;
-                if (first.x < second.x && first.z < second.z)
+                if (first.x < second.x && first.z < second.z) {
                     return player2;
+                }
             }
             return player;
         }
@@ -226,8 +237,9 @@ extern "C" {
                         trooper->formation_z = row_position.z;
                         row_position.x += width.x;
                         row_position.z += width.z;
-                        if (initialize_rotation != 0)
+                        if (initialize_rotation != 0) {
                             trooper->rotation = team->facing_angle;
+                        }
                         trooper->target_rotation = team->facing_angle;
                     }
 
@@ -253,10 +265,11 @@ extern "C" {
         team->facing_angle = NuAtan2D(delta.x, delta.z);
 
         if (droid_hack == 0) {
-            if (team->formation_mode != 1)
+            if (team->formation_mode != 1) {
                 team->formation_shape = qrand() / (0xffff / 3 + 1);
-            else
+            } else {
                 team->formation_shape = 1;
+            }
         } else {
             team->formation_shape = 4;
         }
@@ -265,10 +278,11 @@ extern "C" {
         minisnowtrooper_s *trooper = team->troopers;
         for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
             trooper->state_flags &= ~0x40;
-            if (droid_hack == 0)
+            if (droid_hack == 0) {
                 trooper->slot = qrand() / (0xffff / 3 + 1) + 1;
-            else
+            } else {
                 trooper->slot = 2;
+            }
             trooper->formation_index = static_cast<u8>(i);
         }
         team->mode_changed = 1;
@@ -365,8 +379,9 @@ extern "C" {
                     team->reserved_02c = GameShadow(NULL, &shadow_position, 5.0f, -1);
                     if (team->reserved_02c == 2000000.0f) {
                         team->reserved_02c = 0.0f;
-                        for (i32 i = 0; i < team->path->length; ++i)
+                        for (i32 i = 0; i < team->path->length; ++i) {
                             team->reserved_02c += team->path->pts[i].y;
+                        }
                         team->reserved_02c /= static_cast<f32>(team->path->length);
                     } else {
                         team->reserved_02c = 2000000.0f;
@@ -423,25 +438,30 @@ extern "C" {
 
         if (droid_hack == 0) {
             minitrooperteam_s *target = MiniTrooperFindTargetTeamPc(world, team, team_index, &nearest_distance_squared);
-            if (!(nearest_distance_squared < (f64)1.0e9f) || target == NULL || nearest_distance_squared == (f64)1.0e9f)
+            if (!(nearest_distance_squared < (f64)1.0e9f) || target == NULL ||
+                nearest_distance_squared == (f64)1.0e9f) {
                 goto fail;
+            }
             NuVecSub(&direction, &target->position, &shot_position);
         } else {
             f32 second_distance;
             f32 first_distance;
             first_distance = 9999.0f;
             second_distance = 9999.0f;
-            if (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)
+            if (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) {
                 first_distance = NuVecDist(&((GAMEOBJECT *)Player[0])->position, &shot_position, NULL);
-            if (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)
+            }
+            if (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) {
                 second_distance = NuVecDist(&((GAMEOBJECT *)Player[1])->position, &shot_position, NULL);
+            }
 
-            if (first_distance < second_distance && first_distance < 60.0)
+            if (first_distance < second_distance && first_distance < 60.0) {
                 NuVecSub(&direction, &((GAMEOBJECT *)Player[0])->position, &shot_position);
-            else if (60.0 > second_distance)
+            } else if (60.0 > second_distance) {
                 NuVecSub(&direction, &((GAMEOBJECT *)Player[1])->position, &shot_position);
-            else
+            } else {
                 goto fail;
+            }
         }
 
         *shot_angle = static_cast<u16>(NuAtan2D(direction.x, direction.z) + qrand() / 37 - 0x38e);
@@ -453,16 +473,18 @@ extern "C" {
         MiniTrooperRotateYawPc(&matrix, *shot_angle);
 
         BOLT_PC *bolt = Bolt_Add(NULL, &shot_position, &matrix, team->bolt_type, 0);
-        if (bolt != NULL)
+        if (bolt != NULL) {
             Bolt[bolt->index].flags &= ~4;
+        }
         return 1;
     fail:
         return 0;
     }
 
     void UpdateMiniSnowTroopers(WORLDINFO *world) {
-        if (hothtroopers == NULL)
+        if (hothtroopers == NULL) {
             return;
+        }
 
         NUVEC camera_dir = GameCam->dir;
         NUVEC camera_position = GameCam->position;
@@ -470,20 +492,23 @@ extern "C" {
             minitrooperteam_s *teams = static_cast<minitrooperteam_s *>(world->mini_trooper_teams);
             minitrooperteam_s *team = &teams[team_index];
             u32 flags = team->state_flags;
-            if ((flags & 4) == 0)
+            if ((flags & 4) == 0) {
                 continue;
+            }
 
             NUVEC total = v000;
             i32 shot = 0;
             i32 shoot_due = 0;
             team->fire_timer -= FRAMETIME;
             if ((team->fire_timer <= 0.0f)) {
-                if (flags & 1)
+                if (flags & 1) {
                     shoot_due = 1;
-                if (team->team_side == 0)
+                }
+                if (team->team_side == 0) {
                     team->fire_timer = 1.0f;
-                else
+                } else {
                     team->fire_timer = 0.5f;
+                }
             }
 
             u8 stopped_count = 0;
@@ -495,22 +520,26 @@ extern "C" {
             camera_delta.x = team->position.x - camera_position.x;
             camera_delta.z = team->position.z - camera_position.z;
             f32 camera_dot = camera_delta.z * camera_dir.z + camera_delta.x * camera_dir.x;
-            if (camera_dot <= (f64)0.1f)
+            if (camera_dot <= (f64)0.1f) {
                 flags &= ~1;
-            else
+            } else {
                 flags |= 1;
+            }
             team->state_flags = flags;
 
-            if (team->previous_mode != team->formation_mode)
+            if (team->previous_mode != team->formation_mode) {
                 team->mode_changed = 1;
-            else
+            } else {
                 team->mode_changed = 0;
+            }
             if (droid_hack != 0) {
-                if (team->formation_mode == 3 || team->formation_mode == 2)
+                if (team->formation_mode == 3 || team->formation_mode == 2) {
                     team->formation_mode = 1;
+                }
                 GAMEOBJECT *nearest = MiniTrooperNearestPlayerPc(team);
-                if (nearest != NULL && NuVecDist(team->route_point, &nearest->collision_position, NULL) < 40.0f)
+                if (nearest != NULL && NuVecDist(team->route_point, &nearest->collision_position, NULL) < 40.0f) {
                     team->formation_mode = 0;
+                }
             }
 
             minisnowtrooper_s *trooper = team->troopers;
@@ -519,46 +548,52 @@ extern "C" {
                 case 0: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-                        if (i == selected && shoot_due != 0)
+                        if (i == selected && shoot_due != 0) {
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
+                        }
 
                         trooper->state_flags = (trooper->state_flags & ~0xc) | 4;
                         trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                     ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                         if (static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <= 0x16c) {
-                            if (shot != 0)
+                            if (shot != 0) {
                                 trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
-                            else
+                            } else {
                                 trooper->target_rotation = (u16)qrand();
+                            }
                         }
 
                         total.x += trooper->shot_position.x;
                         total.z += trooper->shot_position.z;
                     }
                     team->state_timer -= FRAMETIME;
-                    if (team->state_timer <= 0.0f)
+                    if (team->state_timer <= 0.0f) {
                         TrooperTeamSetStateCode(team);
+                    }
                     break;
                 }
                 case 2: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-                        if (i == selected && shoot_due != 0)
+                        if (i == selected && shoot_due != 0) {
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
+                        }
 
                         if ((trooper->state_flags & 0x40) == 0) {
-                            if (MiniTrooperCheckFormationPc(team, trooper))
+                            if (MiniTrooperCheckFormationPc(team, trooper)) {
                                 ++stopped_count;
+                            }
                         } else {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                             if (static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
                                 0x16c) {
-                                if (shot != 0)
+                                if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
-                                else
+                                } else {
                                     trooper->target_rotation = (u16)qrand();
+                                }
                             }
                         }
                         if (((trooper->state_flags & 0x40) == 0)) {
@@ -576,8 +611,9 @@ extern "C" {
                         total.x += trooper->shot_position.x;
                         total.z += trooper->shot_position.z;
                     }
-                    if (stopped_count == team->trooper_count)
+                    if (stopped_count == team->trooper_count) {
                         TrooperTeamSetStateCode(team);
+                    }
                     break;
                 }
                 case 1: {
@@ -589,34 +625,39 @@ extern "C" {
                             const NUVEC &point = team->path->pts[team->waypoint_current];
                             const f32 dx = point.x - team->origin_x;
                             team->facing_angle = NuAtan2D(dx, point.z - team->origin_z);
-                            if (droid_hack == 0)
+                            if (droid_hack == 0) {
                                 team->formation_shape = 1;
-                            else
+                            } else {
                                 team->formation_shape = 4;
+                            }
                             GenerateTrooperTeamShape(team, 0);
                             trooper = team->troopers;
-                            for (i32 i = 0; i < team->trooper_count; ++i, ++trooper)
+                            for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                                 trooper->formation_index = static_cast<u8>(i);
+                            }
                         }
                     }
 
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-                        if (i == selected && shoot_due != 0)
+                        if (i == selected && shoot_due != 0) {
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
+                        }
 
                         if ((trooper->state_flags & 0x40) == 0) {
-                            if (MiniTrooperCheckFormationPc(team, trooper))
+                            if (MiniTrooperCheckFormationPc(team, trooper)) {
                                 ++stopped_count;
+                            }
                         } else {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                             if ((static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
                                  0x16c)) {
-                                if (shot != 0)
+                                if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
-                                else
+                                } else {
                                     trooper->target_rotation = (u16)qrand();
+                                }
                             }
                         }
 
@@ -645,15 +686,17 @@ extern "C" {
                         total.x += trooper->shot_position.x;
                         total.z += trooper->shot_position.z;
                     }
-                    if (aligned_count == team->trooper_count && stopped_count == team->trooper_count)
+                    if (aligned_count == team->trooper_count && stopped_count == team->trooper_count) {
                         TrooperTeamSetStateCode(team);
+                    }
                     break;
                 }
                 default: {
                     const i32 selected = (qrand() / (0xffff / team->trooper_count + 1));
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-                        if (i == selected && shoot_due != 0)
+                        if (i == selected && shoot_due != 0) {
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
+                        }
 
                         const minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
                         f32 dx = trooper->shot_position.x - (team->origin_x + slot->formation_x);
@@ -679,10 +722,11 @@ extern "C" {
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                             if ((static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
                                  0x16c)) {
-                                if (shot != 0)
+                                if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
-                                else
+                                } else {
                                     trooper->target_rotation = (u16)qrand();
+                                }
                             }
                         }
 
@@ -690,8 +734,9 @@ extern "C" {
                         total.z += trooper->shot_position.z;
                     }
                     team->state_timer -= FRAMETIME;
-                    if (team->state_timer <= 0.0f)
+                    if (team->state_timer <= 0.0f) {
                         TrooperTeamSetStateCode(team);
+                    }
                     break;
                 }
             }
@@ -741,7 +786,6 @@ extern "C" {
             minisnowtrooper_s *trooper = team->troopers;
             team->height = 0.0f;
             for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-
                 position.x = trooper->shot_position.x;
                 position.z = trooper->shot_position.z;
 

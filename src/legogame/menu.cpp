@@ -12,17 +12,20 @@ extern "C" {
     extern i16 TextIdPc88074c, TextIdPc880708, TextIdPc880764;
     extern const char ExtrasNameFormatPc[], ExtrasLockedNumberFormatPc[];
 }
+
 struct EXTRAS_AREA_SAVE_READER_PC {
     u8 unknown0[6];
     u8 red_brick_unlocked;
     u8 unknown7[5];
 };
+
 struct EXTRAS_SAVE_READER_PC {
     u8 unknown0[0x782c];
     EXTRAS_AREA_SAVE_READER_PC areas[72];
     u8 unknown7b8c[0x74];
     u32 unlocked[2];
 };
+
 STATIC_ASSERT(sizeof(EXTRAS_AREA_SAVE_READER_PC) == 12);
 STATIC_ASSERT(offsetof(EXTRAS_AREA_SAVE_READER_PC, red_brick_unlocked) == 6);
 STATIC_ASSERT(offsetof(EXTRAS_SAVE_READER_PC, unlocked) == 0x7c00);
@@ -58,23 +61,28 @@ extern "C" f32 MenuNewGameYPc;
 extern "C" {
     extern i32 MenuOptionsPlayerFlagPc, pause_i_pad;
 }
+
 typedef struct OPTIONS_MENU_READER_PC {
     u8 player_control[2];
 } OPTIONS_MENU_READER_PC;
+
 extern "C" {
     extern i16 TextIdPc88081c, TextIdPc880820, TextIdPc8809ec, TextIdPc880b0c;
     extern i32 saveload_slotcode[6];
     extern f32 MenuSaveSlotsWidthPc, MenuSaveSlotsStepYPc;
 }
+
 typedef struct GAME_STATE_MENU_READER_PC {
     u8 reserved[0x7c18];
     u16 completion;
 } GAME_STATE_MENU_READER_PC;
+
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
     u32 held, pressed, alternate_held, alternate_pressed;
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
+
 extern "C" {
     extern i8 DropInPendingPlayerPc, DropInConfigurationPlayerPc;
     void __cdecl PcControlInitializePc(i32, i32, i32, u8);
@@ -126,6 +134,7 @@ extern "C" {
             NewMenu(1, saveload_savepresent != 0, -1);
         }
     }
+
     __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistoryPc[15] = {0};
 
     void __cdecl MenuUpdateButtonHistoryPc(void) {
@@ -139,8 +148,9 @@ extern "C" {
             NuKeyboard_db(0x42);
             const u32 buttons = GamePadStorage[0].menu_buttons_pressed;
             if (buttons != 0) {
-                for (i32 index = 14; index > 0; --index)
+                for (i32 index = 14; index > 0; --index) {
                     MenuButtonHistoryPc[index] = MenuButtonHistoryPc[index - 1];
+                }
                 MenuButtonHistoryPc[0] = buttons;
             }
         }
@@ -153,10 +163,11 @@ extern "C" void __cdecl DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     char progress[32];
     char game_name[256];
     u8 red, green;
-    if (slot == -1)
+    if (slot == -1) {
         NuStrCpy(game_name, TTab[TextIdPc88081c]);
-    else
+    } else {
         sprintf(game_name, "%s %i", TTab[TextIdPc880820], slot + 1);
+    }
     if (highlight != 0 && menu_flash != 0) {
         red = 0;
         green = 255;
@@ -198,6 +209,7 @@ static void DrawSaveSlotsImplPc(MENU *menu, f32 y) {
 extern "C" void __cdecl DrawSaveSlots(MENU *menu, f32 y) {
     DrawSaveSlotsImplPc(menu, y);
 }
+
 extern "C" {
 
     void MenuEnterOptions(MENU *menu) {
@@ -270,6 +282,7 @@ extern "C" void __cdecl MenuUpdateOptions(MENU *menu) {
         MenuSFX = sound;
     }
 }
+
 extern "C" {
 
     void MenuDrawOptions(MENU *menu) {
@@ -288,12 +301,13 @@ extern "C" {
         GameDrawMenuEntry(menu, text);
 
         changed = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) != 0;
-        if (menu->selected_row != menu->draw_item && changed && menu_flash != 0)
+        if (menu->selected_row != menu->draw_item && changed && menu_flash != 0) {
             text[0] = '\0';
-        else if (changed)
+        } else if (changed) {
             NuStrCpy(text, TTab[tACCEPT]);
-        else
+        } else {
             NuStrCpy(text, TTab[tBACK]);
+        }
         dme_sy = menu->item_scale;
         GameDrawMenuEntry(menu, text);
     }
@@ -309,8 +323,9 @@ extern "C" void __cdecl MenuUpdateExtras(MENU *menu) {
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
         i32 locked = 1;
-        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, 0x200000)))
+        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, 0x200000))) {
             locked = 0;
+        }
         if (locked) {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             return;
@@ -342,8 +357,9 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
             if (save->unlocked[index / 32] & (1u << (index & 31))) {
                 alpha = 1.0f;
                 NuStrCpy(number, Cheat_IsOn(index) ? TTab[tON] : TTab[tOFF]);
-                if (BonusArea && Cheat_CheckFlags(index, 0x200000))
+                if (BonusArea && Cheat_CheckFlags(index, 0x200000)) {
                     alpha = 0.5f;
+                }
             } else {
                 alpha = 0.5f;
                 NuStrCpy(number, TTab[TextIdPc880764]);
@@ -351,8 +367,9 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
             sprintf(text, ExtrasNameFormatPc, TTab[*ExtrasCheatsPc[index].text_id], number);
         }
         dme_sy = menu->item_scale;
-        if (index >= 8)
+        if (index >= 8) {
             dme_rgb = 1;
+        }
         if (index == 44) {
             dme_r = 0xbf;
             dme_g = 0;
@@ -362,17 +379,20 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
             dme_g = 0x3f;
             dme_b = 0;
         }
+
         union {
             f32 value;
             u32 bits;
         } absolute, magnitude;
+
         absolute.value = menu->draw_y;
         magnitude.bits = absolute.bits & 0x7fffffff;
         if (magnitude.value > ExtrasFadeStartPc) {
-            if (magnitude.value > ExtrasFadeEndPc)
+            if (magnitude.value > ExtrasFadeEndPc) {
                 alpha = 0.0f;
-            else
+            } else {
                 alpha *= 1.0f - (magnitude.value - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
+            }
         }
         if (Paused) {
             dme_align = PauseMenus_Align;
@@ -386,9 +406,9 @@ static i32 MenuUpdateTitleFadePc(MENU *menu) {
     f32 music_volume = Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
     if (newgamefade != 0) {
         if (newgamefade == 1) {
-            if (newgamewait > 0.0f)
+            if (newgamewait > 0.0f) {
                 newgamewait -= FRAMETIME;
-            else {
+            } else {
                 newgamealpha += FRAMETIME * 2.0f;
                 if (newgamealpha > 1.0f) {
                     newgamealpha = 1.0f;
@@ -432,6 +452,7 @@ static i32 MenuUpdateTitleFadePc(MENU *menu) {
     legoSetMusicVolume(music_volume);
     return 0;
 }
+
 extern "C" {
 
     void MenuEnterNewGame(MENU *menu) {
@@ -444,8 +465,9 @@ extern "C" {
 
 extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
     i32 aspect_mode = PcWindowOptions.aspect_mode;
-    if (aspect_mode == 3)
+    if (aspect_mode == 3) {
         aspect_mode = PCDeviceBackend.active_aspect_mode;
+    }
     Game.options_save.widescreen = aspect_mode != 0;
     if (MenuLoadOccurred != 0) {
         MenuLoadOccurred = 0;
@@ -464,18 +486,21 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
         NuVideoSetBrightness((f32)((f64)brightness / 10.0));
         return;
     }
-    if (MenuUpdateTitleFadePc(menu))
+    if (MenuUpdateTitleFadePc(menu)) {
         return;
+    }
     if (menu->time_04 >= 30.0) {
         newgamefade = 2;
         return;
     }
-    if (GameTimer.time_elapsed < 4.0f)
+    if (GameTimer.time_elapsed < 4.0f) {
         return;
+    }
 
     for (i32 player = 0; player < 2; ++player) {
-        if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held & GAMEPAD_START) != 0)
+        if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held & GAMEPAD_START) != 0) {
             NuPadSetStatus(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->device, 1);
+        }
         if (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->input_ready == 0 ||
             ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->is_valid == 0) {
             PlayerProgress[player].active = 0;
@@ -484,8 +509,9 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
                      GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0 ||
                    (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held &
                     (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
-            if (g_nupadMapping[player].is_active != 0)
+            if (g_nupadMapping[player].is_active != 0) {
                 PlayerProgress[player].active = 1;
+            }
         }
     }
     startnewgame = 0;
@@ -532,8 +558,9 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
 
 extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
     i32 menu_alpha = (i32)((f32)MenuA * newgamealpha);
-    if (MenuLoadOccurred != 0 || newgame_menudrawoff != 0)
+    if (MenuLoadOccurred != 0 || newgame_menudrawoff != 0) {
         return;
+    }
     f32 title_alpha;
     if (GameTimer.time_elapsed < 3.5) {
         title_alpha = 0.0f;
@@ -549,16 +576,20 @@ extern "C" void __cdecl MenuDrawNewGame(MENU *menu) {
     DrawMenuEntryEx(menu, TTab[TextIdPc8808fc], alpha);
     DrawMenuEntryEx(menu, TTab[TextIdPc880850], alpha);
     DrawMenuEntryEx(menu, TTab[TextIdPc880bc4], alpha);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[18], alpha);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[29], alpha);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], alpha);
 }
+
 extern "C" {
 
     void __cdecl MenuUpdateSelectLanguage(MENU *menu) {
@@ -569,8 +600,9 @@ extern "C" {
     }
 
     void __cdecl MenuDrawSelectLanguage(MENU *menu) {
-        for (i32 i = 0; i < LANGUAGECOUNT; ++i)
+        for (i32 i = 0; i < LANGUAGECOUNT; ++i) {
             GameDrawMenuEntry(menu, Text_LanguageList[i].localized_name);
+        }
     }
 
     void __cdecl UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
@@ -584,20 +616,25 @@ extern "C" {
             MenuUpdateButtonHistoryPc();
         }
         menu_active = GetMenuID() != -1;
-        if (WORLD != NULL && (WORLD->current_level->flags & 0x400) != 0)
+        if (WORLD != NULL && (WORLD->current_level->flags & 0x400) != 0) {
             menu_active = 1;
-        if (Hub_InMenu() != 0)
+        }
+        if (Hub_InMenu() != 0) {
             menu_active = 0;
+        }
         if (MenuKeyboardAlwaysPc != 0 || MenuKeyboardSecondaryPc != 0 || menu_active != 0) {
             if (MenuKeyboardOverrideActivePc == 0) {
                 active_players = 0;
                 device = NuPadGetPort(TextInputLastDevicePc());
-                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
+                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
                     active_players = 1;
-                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
+                }
+                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
                     ++active_players;
-                if (active_players < 2 || TextInputIsKeyboardDevicePc(device) != 0)
+                }
+                if (active_players < 2 || TextInputIsKeyboardDevicePc(device) != 0) {
                     TextInputSetKeyboardOverridePc(1);
+                }
                 MenuKeyboardOverrideActivePc = 1;
             }
         } else if (MenuKeyboardOverrideActivePc != 0) {
@@ -628,21 +665,25 @@ extern "C" {
                     both_pads = 1;
                     readpads_always = 1;
                 }
-                if (second_active != 0 && first_active == 0)
+                if (second_active != 0 && first_active == 0) {
                     pad = (GAMEPAD_PC *)&GamePadStorage[1];
+                }
             } else if (Player[0] != NULL && Player[1] != NULL) {
                 second_active = ((GAMEOBJECT *)Player[1])->player_controlled;
                 first_active = ((GAMEOBJECT *)Player[0])->player_controlled;
-                if (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000)
+                if (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) {
                     first_active = 0;
-                if (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000)
+                }
+                if (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) {
                     second_active = 0;
+                }
                 if (first_active == 0 && second_active == 0) {
                     both_pads = 1;
                     readpads_always = 1;
                 }
-                if (second_active != 0 && first_active == 0)
+                if (second_active != 0 && first_active == 0) {
                     pad = ((GAMEOBJECT *)Player[1])->pad;
+                }
             } else {
                 first_active = 0;
                 both_pads = 1;
@@ -650,10 +691,11 @@ extern "C" {
             }
             if (GameMenuLevel != 0) {
                 if (both_pads != 0) {
-                    if (PlayerProgress[0].active != 0)
+                    if (PlayerProgress[0].active != 0) {
                         TextInputSetLastDevicePc(0);
-                    else
+                    } else {
                         TextInputSetLastDevicePc(1);
+                    }
                 } else if (first_active != 0) {
                     TextInputSetLastDevicePc(0);
                 } else {
@@ -694,14 +736,16 @@ extern "C" {
             if (MenuSFX == -1 && menu->selected_item != -1 && menu->selected_item_column != -1 && previous_item != -1 &&
                 previous_column != -1 &&
                 (previous_item != menu->selected_item || previous_column != menu->selected_item_column) &&
-                GetMenuID() == menu_id)
+                GetMenuID() == menu_id) {
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+            }
             if (result == 1 && Paused != 0) {
                 ResumeGame(1);
             }
         }
-        if (previous_menu != -1 && NewLData != NULL && gone_through_door_to_new_level == 0)
+        if (previous_menu != -1 && NewLData != NULL && gone_through_door_to_new_level == 0) {
             reset_area = 1;
+        }
     }
 
     void MenuEnterTitles(MENU *menu) {
@@ -717,27 +761,32 @@ extern "C" {
 
 extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
     i32 kind, value;
-    if (MenuUpdateTitleFadePc(menu))
+    if (MenuUpdateTitleFadePc(menu)) {
         return;
+    }
     if (menu->menu_time >= 30.0) {
         newgamefade = 2;
         return;
     }
-    if (!(GameTimer.time_elapsed >= 3.0f))
+    if (!(GameTimer.time_elapsed >= 3.0f)) {
         return;
+    }
     TextInputSetLastDevicePc(0);
     i32 port = PcInputSelectPressedDevicePc(0, 26, &kind, &value, 1);
-    if (port < 0)
+    if (port < 0) {
         return;
+    }
     port = PcInputMapKeyboardPortPc(port, 0);
     NuPadMapPlayerToPort(0, port);
     NuPadSetValid(port, 1);
     TextInputSetLastDevicePc(0);
-    if (PcInputSelectConfigurationPc(port, 0, -1))
+    if (PcInputSelectConfigurationPc(port, 0, -1)) {
         NewMenu(1, saveload_savepresent != 0, -1);
-    else
+    } else {
         NewMenu(22, 0, -1);
+    }
 }
+
 extern "C" {
 
     void __cdecl MenuDrawTitles(MENU *menu) {
@@ -757,14 +806,17 @@ extern "C" {
 
 extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3)
+    if (aspect == 3) {
         aspect = PCDeviceBackend.active_aspect_mode;
+    }
     Game.options_save.widescreen = aspect != 0;
-    if (!menu->confirm_pressed)
+    if (!menu->confirm_pressed) {
         return;
+    }
     i32 both = Arcade_BothPlayersActive();
-    if (MenuKeyboardPendingPc)
+    if (MenuKeyboardPendingPc) {
         both = 0;
+    }
     MenuSFX = GameAudio_GetSfxId(0x30);
     i32 item = menu->selected_item;
     if (item == 0) {
@@ -791,10 +843,11 @@ extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
     if (!GAMEDEMO) {
         next = 6;
         if (item == 5) {
-            if (SuperStory || ChallengeMode || Mission_Active(NULL))
+            if (SuperStory || ChallengeMode || Mission_Active(NULL)) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            else
+            } else {
                 NewMenu(5, -1, -1);
+            }
             return;
         }
     }
@@ -803,51 +856,62 @@ extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
         if (item == drop_item) {
             i32 player = -1;
             for (i32 i = 0; i < 8; ++i) {
-                if (Player[i] && ((GAMEOBJECT *)Player[i])->pad == (GAMEPAD_PC *)&GamePadStorage[pause_i_pad])
+                if (Player[i] && ((GAMEOBJECT *)Player[i])->pad == (GAMEPAD_PC *)&GamePadStorage[pause_i_pad]) {
                     player = i;
-                if (Player[i])
+                }
+                if (Player[i]) {
                     ((GAMEOBJECT *)Player[i])->flags_ef0 &= ~0x200000u;
+                }
             }
-            if (player != -1)
+            if (player != -1) {
                 DropOut(player, 1, 0, 0);
+            }
             return;
         }
     }
-    if (item == next)
+    if (item == next) {
         NewMenu(6, CanSaveAndExit(WORLD) != NULL ? 2 : 1, -1);
+    }
 }
 
 extern "C" void __cdecl MenuDrawPauseMain(MENU *menu) {
     i32 both = Arcade_BothPlayersActive();
-    if (MenuKeyboardPendingPc)
+    if (MenuKeyboardPendingPc) {
         both = 0;
+    }
     dme_r = 0;
     dme_g = 255;
     dme_b = 0x3f;
     GameDrawMenuEntry(menu, TTab[TextIdPc880838]);
     GameDrawMenuEntry(menu, TTab[TextIdPc880850]);
     GameDrawMenuEntry(menu, TTab[TextIdPc880bc4]);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     GameDrawMenuEntry(menu, (char *)MenuPcStrings[18]);
-    if (!MenuPcStringsInitialized)
+    if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
+    }
     GameDrawMenuEntry(menu, (char *)MenuPcStrings[29]);
-    if (!SuperStory && !ChallengeMode && !Mission_Active(NULL))
+    if (!SuperStory && !ChallengeMode && !Mission_Active(NULL)) {
         GameDrawMenuEntry(menu, TTab[TextIdPc88090c]);
-    else
+    } else {
         DrawMenuEntryEx(menu, TTab[TextIdPc88090c], (u8)(i32)(MenuA * 0.5));
-    if (both)
+    }
+    if (both) {
         GameDrawMenuEntry(menu, TTab[TextIdPc88089c]);
+    }
     if (WORLD->current_level != HUB_LDATA) {
-        if (GAMEDEMO)
+        if (GAMEDEMO) {
             GameDrawMenuEntry(menu, TTab[TextIdPc8808ec]);
-        else
+        } else {
             GameDrawMenuEntry(menu, TTab[TextIdPc8806f8]);
+        }
     } else {
         GameDrawMenuEntry(menu, TTab[TextIdPc880860]);
     }
 }
+
 extern "C" {
 
     void MenuUpdatePauseRestart(MENU_s *menu) {
@@ -908,8 +972,9 @@ extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
                     if (Arcade && pause_i_pad != -1) {
                         i32 other = pause_i_pad == 0;
                         if (PCArcadePointGoals[(i8)ArcadeItem.play] > 0 &&
-                            Arcade_Points[pause_i_pad] < Arcade_Points[other])
+                            Arcade_Points[pause_i_pad] < Arcade_Points[other]) {
                             ++Arcade_Score[other];
+                        }
                     }
                 } else {
                     NuPadSetStatus(0, 0);
@@ -986,6 +1051,7 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
         GameDrawMenuEntry(menu, TTab[TextIdPc880874]);
     }
 }
+
 extern "C" {
 
     void __cdecl EndShopMenu(i32) {
@@ -1003,8 +1069,9 @@ extern "C" {
             shop_save_done = 0;
             return;
         }
-        if (UpdateShop(menu) == 0)
+        if (UpdateShop(menu) == 0) {
             return;
+        }
         GameAudio_PlaySfx(0x31, NULL, 0, 0);
         SHOPACTIVE = 0;
         ShopNameAlpha = 0.0f;
@@ -1066,6 +1133,7 @@ extern "C" {
         (void)menu;
         Hub_UpdateKit();
     }
+
 #pragma data_seg(".data$MenuMiniKitUpperArrowYPc")
     f32 MenuMiniKitUpperArrowYPc = -0.175f;
 #pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
@@ -1081,8 +1149,9 @@ extern "C" {
         i32 colour;
         i32 opacity;
         (void)menu;
-        if (MenuStopDraw != 0)
+        if (MenuStopDraw != 0) {
             return;
+        }
         alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
         DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, alpha,
                      alpha, 1, NULL);
@@ -1160,8 +1229,9 @@ extern "C" {
     void __cdecl MenuDrawBonusComplete(MENU *menu) {
         i32 red, green;
         (void)menu;
-        if (MenuStopDraw != 0)
+        if (MenuStopDraw != 0) {
             return;
+        }
         red = 255;
         green = 191;
         if (menu_flash != 0) {

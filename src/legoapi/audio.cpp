@@ -9,6 +9,7 @@ struct PC_MUSIC_ACTION_PAIR_PC {
     i16 action_id;
     u8 unknown_004[0x18];
 };
+
 STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, quiet_id) == 0);
 STATIC_ASSERT(offsetof(PC_MUSIC_ACTION_PAIR_PC, action_id) == 2);
 STATIC_ASSERT(sizeof(PC_MUSIC_ACTION_PAIR_PC) == 0x1c);
@@ -25,6 +26,7 @@ extern "C" {
 // External declarations only; final shared integration must use canonical C linkage.
 extern i32(__cdecl *CheckMusicOtherFn)(void);
 extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
+
 struct MUSIC_PAIR_ARENA_PC {
     i32 prefix_word;
     u8 unknown_004[0x18];
@@ -33,6 +35,7 @@ struct MUSIC_PAIR_ARENA_PC {
     i16 ambient_first;
     u8 unknown_03a[2];
 };
+
 extern "C" {
     extern i32 last_currentmusicpair_quiet;
     extern i32 MusicOther;
@@ -43,8 +46,9 @@ extern "C" {
 
     i32 __cdecl GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
-        if (object != NULL && object->player_controlled)
+        if (object != NULL && object->player_controlled) {
             return 1 << object->field_280;
+        }
         return 0;
     }
 
@@ -70,8 +74,9 @@ extern "C" {
                 nusound_special_positions[2] = *position;
                 PlaySfxById(sfx_id, &nusound_special_positions[2]);
             }
-        } else
+        } else {
             PlaySfxById(sfx_id, position);
+        }
     }
 
     void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
@@ -81,28 +86,35 @@ extern "C" {
     }
 
     void __cdecl GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume) {
-        if ((u32)sfx <= 0x53)
+        if ((u32)sfx <= 0x53) {
             PlaySfxByIdAndSetVolume(GameAudio->sfx_ids[sfx], position, volume);
+        }
     }
 
     i32 __cdecl GameAudio_GetSfxId(i32 sfx) {
-        if ((u32)sfx <= 0x53)
+        if ((u32)sfx <= 0x53) {
             return GameAudio->sfx_ids[sfx];
+        }
         return -1;
     }
 
     void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
         i32 id, i;
-        if (ids == NULL || count == NULL || *count >= capacity)
+        if (ids == NULL || count == NULL || *count >= capacity) {
             return;
-        if ((u32)code > 83)
+        }
+        if ((u32)code > 83) {
             return;
+        }
         id = GameAudio->sfx_ids[code];
-        if (id == -1)
+        if (id == -1) {
             return;
-        for (i = 0; i < *count; ++i)
-            if (ids[i] == id)
+        }
+        for (i = 0; i < *count; ++i) {
+            if (ids[i] == id) {
                 return;
+            }
+        }
         ids[*count] = id;
         ++*count;
     }
@@ -144,6 +156,7 @@ f32 GameSetSoundVolume(OPTIONSSAVE *options) {
     music_man.SetClassVolume(0x10, cut_volume);
     return volume;
 }
+
 extern "C" {
 
     void __cdecl ResetLevSfx(WORLDINFO *world) {
@@ -165,20 +178,24 @@ extern "C" {
         }
 
         for (index = 0; index < world->level_sfx_count; index++) {
-            if (world->level_sfx[index].id == sfx_id)
+            if (world->level_sfx[index].id == sfx_id) {
                 break;
+            }
         }
         if (index < world->level_sfx_count) {
-            if (world->level_sfx[index].references < 0xff)
+            if (world->level_sfx[index].references < 0xff) {
                 world->level_sfx[index].references++;
+            }
             return;
         }
-        if (world->level_sfx_count >= 64)
+        if (world->level_sfx_count >= 64) {
             return;
-        if (position != NULL)
+        }
+        if (position != NULL) {
             world->level_sfx[world->level_sfx_count].position = *position;
-        else
+        } else {
             world->level_sfx[world->level_sfx_count].position = APIObjectZeroMomentumPC;
+        }
         world->level_sfx[world->level_sfx_count].id = (i16)sfx_id;
         world->level_sfx[world->level_sfx_count].references = 1;
         world->level_sfx_count++;
@@ -211,8 +228,9 @@ extern "C" {
         i32 sfx_id = character->sfx_engine;
         f32 target;
         f32 volume, pitch;
-        if (sfx_id == -1)
+        if (sfx_id == -1) {
             return;
+        }
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & 0x80) {
@@ -220,19 +238,22 @@ extern "C" {
                     f32 value;
                     u32 bits;
                 } magnitude;
+
                 magnitude.value = object->field_dc8;
                 magnitude.bits &= 0x7fffffff;
                 target = magnitude.value;
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }
-            if (target > 1.0f)
+            if (target > 1.0f) {
                 target = 1.0f;
+            }
         }
         object->engine_level = SeekLinearF(object->engine_level, target, (f32)((f64)FRAMETIME * .5));
         volume = (f32)((f64)object->engine_level * .5 + .5);
-        if ((object->flags_1fc & 0x80) == 0)
+        if ((object->flags_1fc & 0x80) == 0) {
             volume = (f32)((f64)volume * (f64).6f);
+        }
         pitch = (f32)((f64)object->engine_level * (f64).4f + (f64).6f);
         pitch += (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f);
         pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
@@ -243,9 +264,9 @@ extern "C" {
 void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
     i32 sfx;
     u32 flags = object->character_data->model_flags;
-    if ((flags & 0x40) != 0)
+    if ((flags & 0x40) != 0) {
         sfx = GameAudio->sfx_ids[1];
-    else if ((flags & 8) != 0) {
+    } else if ((flags & 8) != 0) {
         switch (type) {
             case 0:
                 sfx = GameAudio->sfx_ids[2];
@@ -265,15 +286,18 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
             default:
                 return;
         }
-    } else
+    } else {
         sfx = GameAudio->sfx_ids[0];
+    }
     if (sfx != -1) {
-        if ((object->flags_1fc & 0x80) == 0 && (object->portal_flags & 0x08000000) == 0)
+        if ((object->flags_1fc & 0x80) == 0 && (object->portal_flags & 0x08000000) == 0) {
             PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
-        else
+        } else {
             PlaySfxById(sfx, &object->lower_position);
+        }
     }
 }
+
 extern "C" {
 
     void __cdecl PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
@@ -281,8 +305,9 @@ extern "C" {
         i32 alternate;
         (void)ignored;
         if (type == 1) {
-            if ((object->character_data->model_flags & 8) == 0)
+            if ((object->character_data->model_flags & 8) == 0) {
                 return;
+            }
             sfx = GameAudio->sfx_ids[11];
         } else if (type == 2) {
             sfx = GameAudio->sfx_ids[12];
@@ -291,28 +316,33 @@ extern "C" {
         } else if (type == 4) {
             sfx = GameAudio->sfx_ids[14];
         } else {
-            if (object->is_underwater != 0 || object->water_intersects != 0)
+            if (object->is_underwater != 0 || object->water_intersects != 0) {
                 return;
+            }
             alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
             if ((object->character_data->model_flags & 0x10) != 0) {
-                if (alternate)
+                if (alternate) {
                     sfx = GameAudio->sfx_ids[10];
-                else
+                } else {
                     sfx = GameAudio->sfx_ids[9];
+                }
             } else {
-                if (type != 0)
+                if (type != 0) {
                     return;
-                if (alternate)
+                }
+                if (alternate) {
                     sfx = GameAudio->sfx_ids[8];
-                else
+                } else {
                     sfx = GameAudio->sfx_ids[7];
+                }
             }
         }
         if (sfx != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
+            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0) {
                 PlaySfxById(sfx, &object->lower_position);
-            else
+            } else {
                 PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
+            }
         }
     }
 
@@ -324,38 +354,43 @@ extern "C" {
         CHARACTERANIM_CONFIG_PC *config;
         ANIMPACKET_PC *packet = &object->anim_packet;
         if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
-            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0))
+            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0)) {
             on_platform = 1;
-        else
+        } else {
             on_platform = 0;
-        if (object->character_data->game_character->sfx_footstep != -1)
+        }
+        if (object->character_data->game_character->sfx_footstep != -1) {
             sound = object->character_data->game_character->sfx_footstep;
-        else {
+        } else {
             i32(__cdecl * override_footstep)(GAMEOBJECT *, i32) =
                 ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
                     alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
                     if ((object->character_data->model_flags & 0x10) != 0) {
-                        if (alternate)
+                        if (alternate) {
                             sound = GameAudio->sfx_ids[0x12];
-                        else
+                        } else {
                             sound = GameAudio->sfx_ids[0x11];
+                        }
                     } else {
-                        if (alternate)
+                        if (alternate) {
                             sound = GameAudio->sfx_ids[0x10];
-                        else
+                        } else {
                             sound = GameAudio->sfx_ids[0x0f];
+                        }
                     }
-                } else
+                } else {
                     sound = GameAudio->sfx_ids[0x13];
+                }
             }
         }
         if (sound != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
+            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0) {
                 PlaySfxById(sound, &object->lower_position);
-            else
+            } else {
                 PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
+            }
         }
         if (packet->blending == 0 && packet->animation_index != -1) {
             config = object->character_model->animation_configs[packet->animation_index];
@@ -374,109 +409,131 @@ extern "C" {
     void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
         CHARACTERDATA_PC *character = object->character_data;
         i32 sfx;
-        if (character->game_character->sfx_grunt != -1)
+        if (character->game_character->sfx_grunt != -1) {
             sfx = character->game_character->sfx_grunt;
-        else {
-            if (character->model_flags & 0x44002010)
+        } else {
+            if (character->model_flags & 0x44002010) {
                 return;
-            if (object->flags_ef4 & 0x800)
+            }
+            if (object->flags_ef4 & 0x800) {
                 sfx = GameAudio->sfx_ids[0x14];
-            else
+            } else {
                 sfx = GameAudio->sfx_ids[0x15];
+            }
         }
-        if (sfx != -1)
+        if (sfx != -1) {
             PlaySfxById(sfx, &object->collision_position);
+        }
     }
 
     void __cdecl PlayHurtSfx(GAMEOBJECT *object) {
         CHARACTERDATA_PC *character = object->character_data;
         i32 sfx;
-        if (character->game_character->sfx_hurt != -1)
+        if (character->game_character->sfx_hurt != -1) {
             sfx = character->game_character->sfx_hurt;
-        else {
-            if (character->model_flags & 0x44002010)
+        } else {
+            if (character->model_flags & 0x44002010) {
                 goto extra;
-            if (object->flags_ef4 & 0x800)
+            }
+            if (object->flags_ef4 & 0x800) {
                 sfx = GameAudio->sfx_ids[0x16];
-            else
+            } else {
                 sfx = GameAudio->sfx_ids[0x17];
+            }
         }
-        if (sfx != -1)
+        if (sfx != -1) {
             PlaySfxById(sfx, &object->collision_position);
+        }
     extra:
-        if (ExtraHurtSfxFn != NULL)
+        if (ExtraHurtSfxFn != NULL) {
             ExtraHurtSfxFn(object);
+        }
     }
 }
 
 extern "C" void __cdecl PlayDieSfx(GAMEOBJECT *object) {
     i32 sfx;
-    if (object->character_data->game_character->sfx_die != -1)
+    if (object->character_data->game_character->sfx_die != -1) {
         sfx = object->character_data->game_character->sfx_die;
-    else if ((object->character_data->game_character->flags_090 & 0x800) != 0)
+    } else if ((object->character_data->game_character->flags_090 & 0x800) != 0) {
         sfx = GameAudio->sfx_ids[0x18];
-    else if ((object->character_data->model_flags & 0x2000) != 0)
+    } else if ((object->character_data->model_flags & 0x2000) != 0) {
         sfx = GameAudio->sfx_ids[0x18];
-    else if ((object->character_data->model_flags & 0x04000000) != 0)
+    } else if ((object->character_data->model_flags & 0x04000000) != 0) {
         sfx = GameAudio->sfx_ids[0x19];
-    else if ((object->character_data->model_flags & 0x10) != 0)
+    } else if ((object->character_data->model_flags & 0x10) != 0) {
         sfx = GameAudio->sfx_ids[0x1a];
-    else if ((object->character_data->model_flags & 0x40000000) != 0)
+    } else if ((object->character_data->model_flags & 0x40000000) != 0) {
         sfx = -1;
-    else if ((object->flags_ef4 & 0x800) != 0)
+    } else if ((object->flags_ef4 & 0x800) != 0) {
         sfx = GameAudio->sfx_ids[0x1b];
-    else
+    } else {
         sfx = GameAudio->sfx_ids[0x1c];
-    if (sfx != -1)
+    }
+    if (sfx != -1) {
         PlaySfxById(sfx, &object->collision_position);
-    if (ExtraDieSfxFn != NULL)
+    }
+    if (ExtraDieSfxFn != NULL) {
         ExtraDieSfxFn(object);
+    }
 }
 
 extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
     u8 player = object->field_280;
     i32 bits = 0;
     (void)unused;
-    if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0)
+    if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {
         return;
-    if (object->flags_1fc & 0x80)
+    }
+    if (object->flags_1fc & 0x80) {
         bits = 1 << player;
+    }
     if (name != NULL) {
         i32 sfx = GetSfxId(name);
-        if (position == NULL)
+        if (position == NULL) {
             position = &object->collision_position;
+        }
         PlaySfxById(sfx, position);
     } else {
         i16 sfx = object->character_data->game_character->sfx_sabre;
-        if (sfx != -1)
+        if (sfx != -1) {
             GameAudio_PlaySfxById(sfx, &object->collision_position, bits, 1);
-        else
+        } else {
             PlaySfxById(GameAudio->sfx_ids[0x40], &object->collision_position);
+        }
     }
 }
+
 extern "C" {
 
     void __cdecl AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
         i32 id, i;
-        if (ids == NULL || count == NULL || *count >= capacity)
+        if (ids == NULL || count == NULL || *count >= capacity) {
             return;
+        }
         id = GetSfxId(name);
-        if (id == -1)
+        if (id == -1) {
             return;
-        for (i = 0; i < *count; ++i)
-            if (ids[i] == id)
+        }
+        for (i = 0; i < *count; ++i) {
+            if (ids[i] == id) {
                 return;
+            }
+        }
         ids[*count] = id;
         ++*count;
     }
 
     void __cdecl AddLevelSfxFromId(i32 id, i32 *ids, i32 *count, i32 capacity) {
         i32 i;
-        if (ids == NULL || count == NULL || *count >= capacity || id == -1)
+        if (ids == NULL || count == NULL || *count >= capacity || id == -1) {
             return;
-        for (i = 0; i < *count; ++i)
-            if (ids[i] == id)
+        }
+        for (i = 0; i < *count; ++i) {
+            if (ids[i] == id) {
                 return;
+            }
+        }
         ids[*count] = id;
         ++*count;
     }
@@ -484,12 +541,14 @@ extern "C" {
     void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
         i32(__cdecl * check_reverb)(void);
         SfxBitsRestore(&CurrentSFXTAB);
-        if (paused == 0 && (check_reverb = GameAudio->check_reverb_fn) != NULL && check_reverb() != 0)
+        if (paused == 0 && (check_reverb = GameAudio->check_reverb_fn) != NULL && check_reverb() != 0) {
             NuSound3SetReverb(1);
-        else
+        } else {
             NuSound3SetReverb(0);
-        if (paused == 0 && CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1)
+        }
+        if (paused == 0 && CUTSTOPGAME == 0 && world->current_level->sfx_ambient != -1) {
             PlaySfxById(world->current_level->sfx_ambient, NULL);
+        }
     }
 }
 i32 TickTockStatePc = 0;
@@ -508,8 +567,9 @@ extern "C" void __cdecl ResetRepeatSfx(void) {
     i32 i;
     memset(RepeatSfxQueue, 0, sizeof(RepeatSfxQueue));
     RepeatSfxQueueHead = 0;
-    for (i = 0; i < 32; ++i)
+    for (i = 0; i < 32; ++i) {
         RepeatSfxQueue[0].sfx_id = -1;
+    }
 }
 
 void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32 repeat_delay,
@@ -589,6 +649,7 @@ extern "C" void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options)
     GameSetSoundVolume(options);
     GameSetMusicVolume(options);
 }
+
 extern "C" {
 
     void __cdecl NewAreaMusicChanges(void) {
@@ -597,11 +658,13 @@ extern "C" {
 
     i32 __cdecl ActionFromQuiet(i32 quiet_index) {
         i32 index;
-        if (quiet_index == -1)
+        if (quiet_index == -1) {
             return -1;
+        }
         for (index = 0; ActionPairTab[index].quiet_id != -1; ++index) {
-            if (ActionPairTab[index].quiet_id == quiet_index)
+            if (ActionPairTab[index].quiet_id == quiet_index) {
                 return ActionPairTab[index].action_id;
+            }
         }
         return -1;
     }
@@ -682,19 +745,21 @@ extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAV
         return;
     }
     if (sticky_attack != 0) {
-        if (music_man.GetTrackHandle(2, NULL) != -1)
+        if (music_man.GetTrackHandle(2, NULL) != -1) {
             music_man.PlayTrack(2);
-        else if (music_man.GetTrackHandle(1, NULL) != -1)
+        } else if (music_man.GetTrackHandle(1, NULL) != -1) {
             music_man.PlayTrack(1);
-        else
+        } else {
             music_man.PlayTrack(0x20);
+        }
     } else {
-        if (music_man.GetTrackHandle(1, NULL) != -1)
+        if (music_man.GetTrackHandle(1, NULL) != -1) {
             music_man.PlayTrack(1);
-        else if (music_man.GetTrackHandle(2, NULL) != -1)
+        } else if (music_man.GetTrackHandle(2, NULL) != -1) {
             music_man.PlayTrack(2);
-        else
+        } else {
             music_man.PlayTrack(0x20);
+        }
     }
 }
 
@@ -702,37 +767,41 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
     if (GameAudio_ActionMusicFn != NULL) {
         MusicActiveReset = GameAudio_ActionMusicFn();
     } else {
-        if (DoubleScore != 0)
+        if (DoubleScore != 0) {
             MusicActiveReset = 1;
-        else if (Cheat_PowerUpActive(-1) != 0)
+        } else if (Cheat_PowerUpActive(-1) != 0) {
             MusicActiveReset = 1;
-        else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
-                                       (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
-                                        ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
-                                        ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f)))
+        } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
+                                         (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
+                                          ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
+                                          ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f))) {
             MusicActiveReset = 1;
-        else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
-                                       (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
-                                        ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
-                                        ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f)))
+        } else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
+                                         (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
+                                          ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
+                                          ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f))) {
             MusicActiveReset = 1;
-        else
+        } else {
             MusicActiveReset = 0;
+        }
     }
-    if (CheckMusicOtherFn != NULL)
+    if (CheckMusicOtherFn != NULL) {
         MusicOther = CheckMusicOtherFn();
-    else
+    } else {
         MusicOther = 0;
-    if (Paused == 0 && sticky_attack_time > 0.0f)
+    }
+    if (Paused == 0 && sticky_attack_time > 0.0f) {
         sticky_attack_time -= FRAMETIME;
+    }
     if (sticky_attack != MusicActiveReset && sticky_attack_time <= 0.0f) {
         sticky_attack = MusicActiveReset;
         sticky_attack_time = ActionMusicStickyTimeoutPc[MusicActiveReset];
     }
     if (CutStopInfo != NULL) {
         CUTINFO *cut = (CUTINFO *)CutStopInfo;
-        if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & 1) != 0)
+        if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & 1) != 0) {
             level = &LDataList[cut->skip_level];
+        }
     }
     music_man.SelectTrackByHandle(1, level->music_tracks[MusicOther]);
     music_man.SelectTrackByHandle(2, level->music_tracks[MusicOther + 2]);
@@ -740,19 +809,21 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
     if (options->music_enabled == 0) {
         music_man.PlayTrack(0x20);
     } else if (sticky_attack != 0) {
-        if (music_man.GetTrackHandle(2, NULL) != -1)
+        if (music_man.GetTrackHandle(2, NULL) != -1) {
             music_man.PlayTrack(2);
-        else if (music_man.GetTrackHandle(1, NULL) != -1)
+        } else if (music_man.GetTrackHandle(1, NULL) != -1) {
             music_man.PlayTrack(1);
-        else
+        } else {
             music_man.PlayTrack(0x20);
+        }
     } else {
-        if (music_man.GetTrackHandle(1, NULL) != -1)
+        if (music_man.GetTrackHandle(1, NULL) != -1) {
             music_man.PlayTrack(1);
-        else if (music_man.GetTrackHandle(2, NULL) != -1)
+        } else if (music_man.GetTrackHandle(2, NULL) != -1) {
             music_man.PlayTrack(2);
-        else
+        } else {
             music_man.PlayTrack(0x20);
+        }
     }
     music_man.Process(FRAMETIME);
 }
@@ -772,6 +843,7 @@ extern "C" void MusicClearAll() {
     MusicPlrsHoldAttack = 0;
     CurrentMusicPair_Quiet = -1;
 }
+
 extern "C" {
 
     void __cdecl GameAudio_Init(GAMEAUDIO_PC *audio) {

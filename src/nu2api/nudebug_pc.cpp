@@ -22,8 +22,9 @@ void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *for
         va_end(args);
     }
     sprintf(PCNativeDebugOutputBuffer, PCNativeDebugPrefix, PCNativeDebugFormatBuffer);
-    if (state->enabled != 0)
+    if (state->enabled != 0) {
         OutputDebugStringA(PCNativeDebugOutputBuffer);
+    }
 }
 
 void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
@@ -72,8 +73,9 @@ extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, cons
     }
     sprintf(PCNativeDebugOutputBuffer, "NUERROR: %s\r\n", PCNativeDebugFormatBuffer);
     OutputDebugStringA(PCNativeDebugOutputBuffer);
-    if (state->write_log && state->log_file != 0)
+    if (state->write_log && state->log_file != 0) {
         NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+    }
 }
 
 extern "C" void __cdecl PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
@@ -85,8 +87,9 @@ extern "C" void __cdecl PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, co
     }
     sprintf(PCNativeDebugOutputBuffer, "NUWARNING: %s\r\n", PCNativeDebugFormatBuffer);
     OutputDebugStringA(PCNativeDebugOutputBuffer);
-    if (state->write_log && state->log_file != 0)
+    if (state->write_log && state->log_file != 0) {
         NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+    }
 }
 
 /* Native 0x6e0260 and 0x6e0280: only format the text; the PC build draws nothing. */
@@ -129,8 +132,9 @@ extern "C" void __cdecl PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state,
     sprintf(PCNativeDebugOutputBuffer, "NUD3DWARNING: %s, DirectDescription: %s, %s\r\n", PCNativeDebugFormatBuffer,
             DXGetErrorString9A(result), DXGetErrorDescription9A(result));
     OutputDebugStringA(PCNativeDebugOutputBuffer);
-    if (state->write_log && state->log_file != 0)
+    if (state->write_log && state->log_file != 0) {
         NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+    }
 }
 
 void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
@@ -143,10 +147,12 @@ void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
     header.low_colour = 0xff2d3128;
     header.inner_colour = 0xff3e4637;
 }
+
 // Retail builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
 struct PC_NATIVE_DEBUG_POSITION_PC {
     f32 x, y, z, w;
 };
+
 #define DEBUG_POINT_PC(index, px, py)                                                                                  \
     do {                                                                                                               \
         position.x = (px);                                                                                             \
@@ -169,33 +175,44 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
     DEBUG_RECT_PC(0, left + 1, top + 1, right, bottom);
     DEBUG_RECT_PC(6, left, top, right - 1, bottom - 1);
     DEBUG_RECT_PC(12, left + 1, top + 1, right - 1, bottom - 1);
-    for (i32 i = 0; i < 6; i++)
+    for (i32 i = 0; i < 6; i++) {
         vertices[i].colour = current_header->low_colour;
-    for (i32 i = 6; i < 12; i++)
+    }
+    for (i32 i = 6; i < 12; i++) {
         vertices[i].colour = current_header->high_colour;
-    for (i32 i = 12; i < 18; i++)
+    }
+    for (i32 i = 12; i < 18; i++) {
         vertices[i].colour = current_header->face_colour;
+    }
     DEBUG_RECT_PC(18, left + 5, top + 15, (right - 5) - 1, (bottom - 40) - 1);
     DEBUG_RECT_PC(24, (left + 5) + 1, (top + 15) + 1, right - 5, bottom - 40);
     DEBUG_RECT_PC(30, (left + 5) + 1, (top + 15) + 1, (right - 5) - 1, (bottom - 40) - 1);
-    for (i32 i = 18; i < 24; i++)
+    for (i32 i = 18; i < 24; i++) {
         vertices[i].colour = current_header->low_colour;
-    for (i32 i = 24; i < 30; i++)
+    }
+    for (i32 i = 24; i < 30; i++) {
         vertices[i].colour = current_header->high_colour;
-    for (i32 i = 30; i < 36; i++)
+    }
+    for (i32 i = 30; i < 36; i++) {
         vertices[i].colour = current_header->inner_colour;
+    }
     DEBUG_RECT_PC(36, (left + 5) + 1, (bottom - 35) + 1, right - 5, bottom - 5);
     DEBUG_RECT_PC(42, left + 5, bottom - 35, (right - 5) - 1, (bottom - 5) - 1);
     DEBUG_RECT_PC(48, (left + 5) + 1, (bottom - 35) + 1, (right - 5) - 1, (bottom - 5) - 1);
-    for (i32 i = 36; i < 42; i++)
+    for (i32 i = 36; i < 42; i++) {
         vertices[i].colour = current_header->high_colour;
-    for (i32 i = 42; i < 48; i++)
+    }
+    for (i32 i = 42; i < 48; i++) {
         vertices[i].colour = current_header->low_colour;
-    for (i32 i = 48; i < 54; i++)
+    }
+    for (i32 i = 48; i < 54; i++) {
         vertices[i].colour = current_header->inner_colour;
+    }
 }
+
 #undef DEBUG_RECT_PC
 #undef DEBUG_POINT_PC
+
 void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     unknown_0 = 1;
     left = top = 100.0f;
@@ -208,14 +225,17 @@ void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
         char path[1024];
         sprintf(path, "Log.txt");
         log_file = NuFileOpen(path, 1);
-        if (log_file)
+        if (log_file) {
             NuFileWriteString(log_file, "-- Log Started --\n\n");
+        }
     }
 }
+
 void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
     if (unknown_0) {
         unknown_0 = 0;
-        if (write_log)
+        if (write_log) {
             NuFileClose(log_file);
+        }
     }
 }

@@ -48,8 +48,9 @@ struct NuNetEmuSegment {
 static i32 cbSortSeg(const void *left, const void *right) {
     u16 left_size = ((const NuNetEmuSegment *)left)->size;
     u16 right_size = ((const NuNetEmuSegment *)right)->size;
-    if (left_size > right_size)
+    if (left_size > right_size) {
         return -1;
+    }
     return left_size < right_size;
 }
 
@@ -273,12 +274,14 @@ i32 NuNetEmu::SendTo(void *data, i32 size, u32 *address, i32 flags) {
         i32 sent = size;
         switch (loss_mode) {
             case 1:
-                if (NuRandFloat() < loss_chance)
+                if (NuRandFloat() < loss_chance) {
                     return sent;
+                }
                 break;
             case 2:
-                if (burst_remaining == 0 && NuRandFloat() < loss_chance)
+                if (burst_remaining == 0 && NuRandFloat() < loss_chance) {
                     burst_remaining = (i32)(NuRandFloat() * (burst_max - burst_min)) + burst_min;
+                }
                 if (burst_remaining > 0) {
                     burst_remaining--;
                     return sent;
@@ -291,19 +294,22 @@ i32 NuNetEmu::SendTo(void *data, i32 size, u32 *address, i32 flags) {
             if (packet == NULL) {
                 packet = new EmuPacket(address);
                 u32 now = UtilGetFrameStartTime();
-                if (max_latency > 0)
+                if (max_latency > 0) {
                     packet->send_time = (u32)(NuRandFloat() * (max_latency - min_latency)) + min_latency + now;
-                else
+                } else {
                     packet->send_time = 0;
+                }
                 packet->creation_time = now;
                 packet->flush_time = now + flush_delay;
                 packet->next = NULL;
                 packet->previous = last_packet;
-                if (last_packet != NULL)
+                if (last_packet != NULL) {
                     last_packet->next = packet;
+                }
                 last_packet = packet;
-                if (first_packet == NULL)
+                if (first_packet == NULL) {
                     first_packet = packet;
+                }
                 packet_count++;
             }
             packet->AddPayload(data, size);

@@ -11,23 +11,29 @@ typedef struct coin_packet_pc_s {
     i16 last_coin;
     u8 unknown_0a[2];
 } COIN_PACKET_PC;
+
 typedef struct object_coin_packet_pc_s {
     u8 unknown_000[0x7fc];
     COIN_PACKET_PC *coin_packet;
 } OBJECT_COIN_PACKET_PC;
+
 typedef struct game_save_score_pc_s {
     u8 unknown_0000[0x7c14];
     u32 coins;
 } GAME_SAVE_SCORE_PC;
+
 typedef struct lose_coins_packet_pc_s {
     u32 coins;
 } LOSE_COINS_PACKET_PC;
+
 void __cdecl PartUpdate_Heart(PART_PC *part);
+
 typedef struct coinpacket_pickup_pc_s {
     u8 unknown0[0xa];
     u8 multiplier, unknown_b;
     f32 timer;
 } COINPACKET_PICKUP_PC;
+
 u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world);
 u32 __cdecl GizmoBlowups_TotalScore(WORLDINFO *world);
 u32 __cdecl GizBuildIts_TotalScore(WORLDINFO *world);
@@ -37,8 +43,9 @@ u32 __cdecl GizTurrets_TotalScore(WORLDINFO *world);
 u32 __cdecl GameAI_TotalScore(void);
 
 void __cdecl PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
-    if (VehicleArea == 0 && ParticlesPerSecond(10.0f, FRAMETIME) > 0)
+    if (VehicleArea == 0 && ParticlesPerSecond(10.0f, FRAMETIME) > 0) {
         AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 10923], position);
+    }
 }
 
 void __cdecl Pup_UpdatePowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
@@ -48,8 +55,9 @@ void __cdecl Pup_UpdatePowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
 
 static void __cdecl PowerUp_UpdateMsg(GAME_MESSAGE_PC *message) {
     message->parameter_e2 = (u16)(i32)(message->parameter_e2 + 16384.0 * FRAMETIME);
-    if (message->player_index == 0 || message->player_index == 1)
+    if (message->player_index == 0 || message->player_index == 1) {
         message->target_position.y = PowerUp_GetPanelY(message->player_index) + STATSPOSY;
+    }
 }
 
 static void PowerUp_ExistingIconPrivate(i32 player_index) {
@@ -71,8 +79,9 @@ static void PowerUp_ExistingIconPrivate(i32 player_index) {
 
 static void __cdecl PowerUp_EndMsg(GAME_MESSAGE_PC *message) {
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
-    if (FindGameMsgsWithID(7, 0, message->player_index, message))
+    if (FindGameMsgsWithID(7, 0, message->player_index, message)) {
         PowerUp_ExistingIconPrivate(message->player_index);
+    }
 }
 
 void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags) {
@@ -81,15 +90,17 @@ void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i
     GAME_MESSAGE_PC *queued;
     u16 panel_rotation;
     (void)flags;
-    if (object == NULL || ((i8)object->field_280 != 0 && (i8)object->field_280 != 1))
+    if (object == NULL || ((i8)object->field_280 != 0 && (i8)object->field_280 != 1)) {
         return;
+    }
     if (ONEPLAYERPOWERUPS != 0) {
         panel_rotation = (u16)(rotation - RotDiff(0, GameCam_GetAdjustedYRot(NULL)));
         target.x = (i8)object->field_280 == 0 ? -ICONX : ICONX;
         target.y = PowerUp_GetPanelY((i8)object->field_280) + STATSPOSY;
         target.z = 1.0f;
-        if (object->powerup_time > 0.0f)
+        if (object->powerup_time > 0.0f) {
             PowerUp_ExistingIconPrivate((i8)object->field_280);
+        }
         message = AddGameMsg_Default;
         message.icon = 0xd0;
         message.special = &WORLD->level_objects[0xd0].special;
@@ -124,9 +135,9 @@ void __cdecl Pup_CollectPowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
 void __cdecl PowerUp_Update(GAMEOBJECT *object) {
     if (object->powerup_time > 0.0f) {
         object->powerup_time -= FRAMETIME;
-        if (object->powerup_time <= 0.0f)
+        if (object->powerup_time <= 0.0f) {
             GameAudio_PlaySfx(0x52, NULL, 0, 0);
-        else {
+        } else {
             GameAudio_PlaySfx(0x51, NULL, 0, 0);
             ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * .5), 0.0f);
         }
@@ -144,8 +155,9 @@ void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
     NewBuzz(object->pad->bound_pad, 0.2f, 0);
     AddGameDebris(WORLD->game_debris_sys, 0x13, &pickup->position);
     objects = WORLD->level_objects;
-    if (objects[0xcf].active == 0)
+    if (objects[0xcf].active == 0) {
         return;
+    }
     target.x = KITPOSX;
     target.y = KITPOSY + PANEL_MINIKITY;
     target.z = 1.0f;
@@ -162,35 +174,41 @@ void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
     message.end_fn = MiniKit_GameMsg_End;
     message.allow_temporary = 1;
     queued = AddGameMsg(&message);
-    if (queued != NULL)
+    if (queued != NULL) {
         queued->target_is_coin_total = 6;
+    }
     DrawMiniKitTime = 2.0f;
-    if (AreaGlobals_PC.field_1c < 10)
+    if (AreaGlobals_PC.field_1c < 10) {
         ++AreaGlobals_PC.field_1c;
+    }
 }
 
 static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     i32 effect = WORLD->game_debris_sys->entries[index].effect;
     i32 count;
-    if (effect == -1)
+    if (effect == -1) {
         return;
+    }
     count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4 ? PartExtraCoinRate_PC * 0.5
                                                                                         : PartExtraCoinRate_PC,
                                FRAMETIME);
-    if (count > 0)
+    if (count > 0) {
         AddVariableShotDebrisEffect(effect, position, count, 0, 0);
+    }
 }
 
 void __cdecl Pup_UpdateBlueCoin(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
     (void)world;
-    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0)
+    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 56);
+    }
 }
 
 void __cdecl Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
     (void)world;
-    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0)
+    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 57);
+    }
 }
 
 void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
@@ -205,20 +223,21 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
     if (CoinsGoToMainTotal()) {
         if (message->icon != 0xffff) {
             icon = (i16)message->icon;
-            if ((u32)(icon - 0xb7) <= 3)
+            if ((u32)(icon - 0xb7) <= 3) {
                 icon -= 4;
-            else if ((u32)(icon - 0xbf) <= 3)
+            } else if ((u32)(icon - 0xbf) <= 3) {
                 icon -= 4;
-            else if ((u32)(icon - 0xc7) <= 3)
+            } else if ((u32)(icon - 0xc7) <= 3) {
                 icon -= 4;
-            else if ((u32)(icon - 0xd5) <= 3)
+            } else if ((u32)(icon - 0xd5) <= 3) {
                 icon += 4;
+            }
             cointotal_i_obj[message->player_index] = icon;
         }
         CoinTotalScale = 1.5f;
-        if (SuperStory != 0)
+        if (SuperStory != 0) {
             IncreaseScore(&SuperStoryScore, (u64)message->score, 0);
-        else {
+        } else {
             world = WorldInfo_CurrentlyActive();
             if (world->area != NULL && (world->area->flags & 0x100)) {
                 if ((u32)BonusCoinTotal < BonusCoinTarget) {
@@ -232,27 +251,32 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
                         ResetGameMessages();
                     }
                 }
-            } else
+            } else {
                 IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, (u64)message->score, 1);
+            }
         }
     } else {
-        if (message->player_index != 0 && message->player_index != 1)
+        if (message->player_index != 0 && message->player_index != 1) {
             goto counter_sound;
+        }
         player = (OBJECT_COIN_PACKET_PC *)Player[message->player_index];
-        if (player == NULL || player->coin_packet == NULL)
+        if (player == NULL || player->coin_packet == NULL) {
             goto counter_sound;
+        }
         old_coins = player->coin_packet->coins;
-        if ((i16)message->icon != -1)
+        if ((i16)message->icon != -1) {
             player->coin_packet->last_coin = (i16)message->icon;
+        }
         if (BonusWinner == -1) {
             IncreaseScore(&player->coin_packet->coins, (u64)message->score, 1);
             player->coin_packet->scale = 1.5f;
         }
-        if (BuildUpTotal == 0)
+        if (BuildUpTotal == 0) {
             BuildUpScale = 1.5f;
-        if (Arcade != 0)
+        }
+        if (Arcade != 0) {
             Arcade_CoinCollected(message->player_index, &player->coin_packet->coins, old_coins);
-        else if (BonusArea != 0 && BonusWinner == -1 && player->coin_packet->coins >= 1000000u) {
+        } else if (BonusArea != 0 && BonusWinner == -1 && player->coin_packet->coins >= 1000000u) {
             player->coin_packet->coins = 1000000;
             SetBonusWinner(message->player_index);
             BonusWinFlag = 0;
@@ -262,10 +286,11 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
         }
     }
 counter_sound:
-    if (DoubleScoreTime > 0.0f)
+    if (DoubleScoreTime > 0.0f) {
         PlayRepeatSfx((char *)ScoreCounterName, -1, 0.0f, 2, 0.1f, NULL);
-    else
+    } else {
         PlaySfx((char *)ScoreCounterName, NULL);
+    }
 }
 
 void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant,
@@ -277,37 +302,41 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     ADD_GAME_MESSAGE_PC message;
     char text[8];
     (void)ignored;
-    if (object != NULL)
+    if (object != NULL) {
         player_index = (i8)object->field_280;
-    else {
+    } else {
         player0_active = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
         player1_active = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
-        if (player0_active && player1_active)
+        if (player0_active && player1_active) {
             player_index = qrand() / 32768;
-        else if (player0_active)
+        } else if (player0_active) {
             player_index = 0;
-        else if (player1_active)
+        } else if (player1_active) {
             player_index = 1;
-        else
+        } else {
             return;
+        }
     }
-    if (player_index != 0 && player_index != 1)
+    if (player_index != 0 && player_index != 1) {
         return;
+    }
     switch (type_index) {
         case 2:
         case 3:
             if (object != NULL) {
-                if (world->area != NULL && (world->area->flags & 0x104) == 4)
+                if (world->area != NULL && (world->area->flags & 0x104) == 4) {
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
-                else
+                } else {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                }
             }
             break;
     }
-    if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3)
+    if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3) {
         PlaySfx((char *)PickupTypeLiteral758c5c, position);
-    else
+    } else {
         PlaySfx((char *)PickupCoinSfx_PC, position);
+    }
     if (CoinsGoToMainTotal()) {
         target.x = cointotal_x[player_index];
         main_total = 1;
@@ -323,8 +352,9 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
     }
     target.z = 1.0f;
     model_id = GizmoPickupType[type_index].first_model_id + model_variant;
-    if (model_id == -1 || world->level_objects[model_id].active == 0)
+    if (model_id == -1 || world->level_objects[model_id].active == 0) {
         return;
+    }
     score = GizmoPickupType[type_index].score;
     message = AddGameMsg_Default;
     message.icon = (i16)model_id;
@@ -341,8 +371,9 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
                 multiplier = ((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier < 10)
+                if (((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier < 10) {
                     ++((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
+                }
                 ((COINPACKET_PICKUP_PC *)object->coin_packet)->timer = 0.5f;
                 score = message.score;
             }
@@ -352,8 +383,9 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
             message.score = score;
         }
     }
-    if (main_total)
+    if (main_total) {
         message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;
+    }
     message.scale = PANEL_COINSCALE_START * AreaPickupScale;
     message.position = position;
     message.target_position = &target;
@@ -377,8 +409,9 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
 
 static void __cdecl EndRedBrickMessage(GAME_MESSAGE_PC *message) {
     (void)message;
-    if (AreaGlobals_PC.field_08 != 0)
+    if (AreaGlobals_PC.field_08 != 0) {
         AreaGlobals_PC.field_08 = 2;
+    }
     RedBrickScale = 2.0f;
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
     NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
@@ -408,8 +441,9 @@ void __cdecl CollectRedBrick(NUVEC *position) {
         message.duration = 1.0f;
         AddGameMsg(&message);
         DrawRedBrickTime = 2.0f;
-        if (WORLD->area_index != -1)
+        if (WORLD->area_index != -1) {
             AreaGlobals_PC.field_08 = 1;
+        }
     }
 }
 
@@ -418,8 +452,9 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
     NUVEC target;
     i32 area_id;
     (void)flags;
-    if (WORLD->level_objects[0xce].active == 0)
+    if (WORLD->level_objects[0xce].active == 0) {
         return;
+    }
     target.x = KITPOSX;
     target.y = KITPOSY + PANEL_MINIKITY;
     target.z = 1.0f;
@@ -439,18 +474,20 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
     AddGameMsg(&message);
     DrawMiniKitTime = 2.0f;
     if (area_id != -1 && Game.area_save[area_id].minikit_count < 10) {
-        if (NuStrLen(name) <= 8)
+        if (NuStrLen(name) <= 8) {
             NuStrCpy(NewMiniPiece[AreaGlobals_PC.new_minikit_count].name, name);
-        else
+        } else {
             NewMiniPiece[AreaGlobals_PC.new_minikit_count].name[0] = 0;
+        }
         NewMiniPiece[AreaGlobals_PC.new_minikit_count].level = (i16)WORLD->level_idx;
         ++AreaGlobals_PC.new_minikit_count;
         ++AreaGlobals_PC.area_phase;
         if (GAMEDEMO != 0) {
-            if (AreaGlobals_PC.area_phase == 1)
+            if (AreaGlobals_PC.area_phase == 1) {
                 Hint_SetHintFromId(0x26d, 0, 0);
-            else if (AreaGlobals_PC.area_phase == 10)
+            } else if (AreaGlobals_PC.area_phase == 10) {
                 Hint_SetHintFromId(0x26e, 0, 0);
+            }
         }
     }
     AddGameDebris(WORLD->game_debris_sys, 0x13, position);
@@ -460,13 +497,16 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
 static void __cdecl PartImpact_Coin(PART_PC *part) {
     f32 speed, volume;
     i32 angle;
-    if (!(coinimpactwait <= 0.0f))
+    if (!(coinimpactwait <= 0.0f)) {
         return;
+    }
     speed = NuVecMag(&part->velocity);
-    if (!(speed > 0.0f))
+    if (!(speed > 0.0f)) {
         return;
-    if (speed > 1.5f)
+    }
+    if (speed > 1.5f) {
         speed = 1.5f;
+    }
     angle = (i32)(((1.5 - (f64)speed) / 1.5) * 16384.0 + 16384.0);
     volume = NuTrigTable[(angle >> 1) & 0x7fff];
     if (GAMEDEMO != 0) {
@@ -480,18 +520,21 @@ static void __cdecl PartImpact_Coin(PART_PC *part) {
 }
 
 static void __cdecl PartExtra_BlueCoin(PART_PC *part) {
-    if ((part->active & 0x200) != 0)
+    if ((part->active & 0x200) != 0) {
         PartExtraCoinsPrivate(&part->position, 56);
+    }
 }
 
 void __cdecl PartExtra_PurpleCoin(PART_PC *part) {
-    if ((part->active & 0x200) != 0)
+    if ((part->active & 0x200) != 0) {
         PartExtraCoinsPrivate(&part->position, 57);
+    }
 }
 
 static __forceinline f32 NuFdiv(f32 a, f32 b) {
-    if (a == 0.0f || b == 0.0f)
+    if (a == 0.0f || b == 0.0f) {
         return 0.0f;
+    }
     return a / b;
 }
 
@@ -499,14 +542,16 @@ static void __cdecl PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
     f32 gain, target;
     GAMEOBJECT *object;
     (void)timestep;
-    if (part->initial_time == 0.0f)
+    if (part->initial_time == 0.0f) {
         gain = 0.0f;
-    else
+    } else {
         gain = 1.0f - NuFdiv(part->scale_time, part->initial_time);
+    }
     if (gain <= 0.0f) {
         part->active |= 2;
-        if (part->stop_fn != NULL)
+        if (part->stop_fn != NULL) {
             part->stop_fn(part);
+        }
         return;
     }
     object = FindNearestGameObject(&part->position, NULL, 0, 0.0f, 0.0f, -1, -1, 99, NULL, 0, NULL);
@@ -541,20 +586,22 @@ static void __cdecl PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
 static i32 __cdecl PartDraw_VehicleHeart(PART_PC *part) {
     NUVEC scaling;
     NUMTX matrix;
-    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA)
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
         scaling.x = PartVehicleHeartPodraceScale_PC;
-    else if ((BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) ||
-             (GUNSHIP_ADATA != NULL && WORLD->area == GUNSHIP_ADATA))
+    } else if ((BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) ||
+               (GUNSHIP_ADATA != NULL && WORLD->area == GUNSHIP_ADATA)) {
         scaling.x = PartVehicleHeartGunshipScale_PC;
-    else
+    } else {
         scaling.x = PartVehicleHeartScale_PC;
+    }
     scaling.x = (1.0f - part->time_remaining / PartVehicleHeartLifetime_PC) * scaling.x;
     if (scaling.x > 0.0f) {
         scaling.y = scaling.z = scaling.x;
         matrix = part->transform;
         NuMtxPreScale(&matrix, &scaling);
-        if (NuSpecialDrawAt(&part->special, &matrix) != 0)
+        if (NuSpecialDrawAt(&part->special, &matrix) != 0) {
             part->active |= 0x600;
+        }
     }
     return 0;
 }
@@ -580,8 +627,9 @@ void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 l
     params.update_fn = NULL;
     params.flags = 0x256;
     params.field_88 = lifetime;
-    if (params.gravity == 0.0f)
+    if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
+    }
     params.time_step = FRAMETIME;
     params.field_c0 = scale;
     part = AddPart(&params);
@@ -596,8 +644,9 @@ void __cdecl AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *veloc
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART_PC params;
     PART_PC *part;
-    if (recipient == NULL)
+    if (recipient == NULL) {
         return;
+    }
     params = Default_ADDPART;
     params.position = position;
     params.velocity = velocity;
@@ -618,14 +667,16 @@ void __cdecl AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *veloc
     } else {
         params.stop_fn = PartStop_Flickerer;
         params.draw_fn = PartDraw_Flickerer;
-        if (params.gravity == 0.0f)
+        if (params.gravity == 0.0f) {
             params.move_fn = PartMove_VehiclePickup;
+        }
     }
     params.time_step = FRAMETIME;
     params.field_c0 = scale;
     part = AddPart(&params);
-    if (part != NULL)
+    if (part != NULL) {
         part->rotation_y = (u16)qrand();
+    }
 }
 
 static void __cdecl PowerUp_ImpactPart(PART_PC *part) {
@@ -633,15 +684,17 @@ static void __cdecl PowerUp_ImpactPart(PART_PC *part) {
     f32 maximum = (f32)((f64)AreaPickupScale * 2.5);
     f32 speed = NuVecMag(&part->velocity);
     f32 volume;
-    if (speed >= maximum)
+    if (speed >= maximum) {
         volume = 1.0f;
-    else {
-        if (!(speed >= minimum))
+    } else {
+        if (!(speed >= minimum)) {
             return;
+        }
         volume = (speed - minimum) / (maximum - minimum);
     }
-    if (volume > 0.0f)
+    if (volume > 0.0f) {
         PlaySfxAndSetVolume((char *)PowerUpBounceSfx_PC, &part->position, volume);
+    }
 }
 
 static void __cdecl PowerUp_UpdatePart(PART_PC *part) {
@@ -679,13 +732,15 @@ void __cdecl PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 li
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
     params.field_88 = lifetime;
-    if (params.gravity == 0.0f)
+    if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
+    }
     params.time_step = FRAMETIME;
     params.field_c0 = scale;
     part = AddPart(&params);
-    if (part != NULL)
+    if (part != NULL) {
         part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+    }
 }
 
 /* Every stud the level can release, optionally split per source. AI
@@ -694,35 +749,43 @@ u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u3
                                 u32 *obstacles, u32 *turrets, u32 *characters) {
     u32 value = GizmoPickups_TotalScore(world);
     u32 total = value;
-    if (pickups != NULL)
+    if (pickups != NULL) {
         *pickups = value;
+    }
     value = GizmoBlowups_TotalScore(world);
     total += value;
-    if (blowups != NULL)
+    if (blowups != NULL) {
         *blowups = value;
+    }
     value = GizBuildIts_TotalScore(world);
     total += value;
-    if (buildits != NULL)
+    if (buildits != NULL) {
         *buildits = value;
+    }
     value = GizForce_TotalScore(world);
     total += value;
-    if (forces != NULL)
+    if (forces != NULL) {
         *forces = value;
+    }
     value = GizObstacles_TotalScore(world);
     total += value;
-    if (obstacles != NULL)
+    if (obstacles != NULL) {
         *obstacles = value;
+    }
     value = GizTurrets_TotalScore(world);
     total += value;
-    if (turrets != NULL)
+    if (turrets != NULL) {
         *turrets = value;
-    if (world->area != NULL && (world->area->flags & 0x100) != 0)
+    }
+    if (world->area != NULL && (world->area->flags & 0x100) != 0) {
         value = GameAI_TotalScore();
-    else
+    } else {
         value = 0;
+    }
     total += value;
-    if (characters != NULL)
+    if (characters != NULL) {
         *characters = value;
+    }
     return total;
 }
 
@@ -732,15 +795,18 @@ void __cdecl CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     // MATCH-EXCEPTION: retail tests the same range twice (likely a macro/PC variant pair that
     // expanded to the same check); a single test drops the second compare.
     if ((object->current_hp > 0 && object->current_hp < object->field_107e) ||
-        (object->current_hp > 0 && object->current_hp < object->field_107e))
+        (object->current_hp > 0 && object->current_hp < object->field_107e)) {
         ++object->current_hp;
-    if (object->saved_hitpoints < 4)
+    }
+    if (object->saved_hitpoints < 4) {
         ++object->saved_hitpoints;
+    }
     if (object->character_data->model_flags & 0x2000) {
         NuVecScale(&momentum, &object->velocity, 0.5f);
         AddGameDebrisMom(WORLD->game_debris_sys, 0x10, position, 15, &momentum);
-    } else
+    } else {
         AddGameDebris(WORLD->game_debris_sys, 15, position);
+    }
     GameAudio_PlaySfx(0x27, position, 0, 0);
     NewBuzz(object->pad->bound_pad, 0.1f, 0);
 }
@@ -765,28 +831,34 @@ i32 __cdecl ReleaseHearts(void) {
             total_hitpoints += hitpoints;
         }
     }
-    if (total_hitpoints == 0)
+    if (total_hitpoints == 0) {
         return 0;
+    }
     if (missing_hitpoints > 0 && MAXPARTS > 0) {
-        for (i = 0; i < MAXPARTS; ++i)
-            if ((Part[i].active & 1) && Part[i].part_id == 0xcb)
+        for (i = 0; i < MAXPARTS; ++i) {
+            if ((Part[i].active & 1) && Part[i].part_id == 0xcb) {
                 --missing_hitpoints;
+            }
+        }
     }
     base = 8;
-    if (Game.difficulty > 5)
+    if (Game.difficulty > 5) {
         base = 9;
+    }
     missing_hitpoints += base - Game.difficulty;
-    if (missing_hitpoints > total_hitpoints)
+    if (missing_hitpoints > total_hitpoints) {
         missing_hitpoints = total_hitpoints;
-    else if (missing_hitpoints < 0)
+    } else if (missing_hitpoints < 0) {
         missing_hitpoints = 0;
+    }
     chance = (missing_hitpoints << 16) / total_hitpoints;
     if (Cheat_IsOn(0x2c)) {
         adjustment = adtab[adaptivedifficulty.level][1];
-        if (adjustment == 1)
+        if (adjustment == 1) {
             chance /= 2;
-        else if (adjustment == -1)
+        } else if (adjustment == -1) {
             chance += chance;
+        }
     }
     return qrand() < chance;
 }
@@ -807,10 +879,11 @@ void __cdecl SetCoinType(i32 model, GIZMOPICKUP_PC *pickup) {
         pickup->model_variant = (u8)(model - 0xd5);
     }
     count = GizmoPickupType[pickup->type_index].random_model_count;
-    if (count > 0)
+    if (count > 0) {
         pickup->model_variant %= count;
-    else
+    } else {
         pickup->model_variant = 0;
+    }
 }
 
 i32 GetRandomCoinType() {
@@ -820,12 +893,15 @@ i32 GetRandomCoinType() {
 i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     u32 lost;
     i32 adjustment;
-    if (Player_HasInvincibility(object))
+    if (Player_HasInvincibility(object)) {
         return 0;
-    if (object->character_data->game_character->flags_090 & 0x8000)
+    }
+    if (object->character_data->game_character->flags_090 & 0x8000) {
         return 0;
-    if (object->coin_packet == NULL)
+    }
+    if (object->coin_packet == NULL) {
         return 0;
+    }
     switch (cause) {
         case 1:
             lost = BonusArea != 0 ? 25000 : 2000;
@@ -839,18 +915,21 @@ i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     }
     if (Cheat_IsOn(0x2c)) {
         adjustment = adtab[adaptivedifficulty.level][0];
-        if (adjustment == 1)
+        if (adjustment == 1) {
             lost += lost;
-        else if (adjustment == -1)
+        } else if (adjustment == -1) {
             lost >>= 1;
+        }
     }
     if (lost > ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins) {
         lost = ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins;
         ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins = 0;
-    } else if (lost > 0)
+    } else if (lost > 0) {
         ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins -= lost;
-    if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f)
+    }
+    if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f) {
         lost = 0;
+    }
     return (i32)lost;
 }
 
@@ -871,14 +950,15 @@ void __cdecl GizmoPickups_SetOnOff(void) {
             off = 0;
         } else {
             off = 1;
-            if (index == 6 && world->area_index != -1 && Game.area_save[world->area_index].red_brick_collected != 0)
+            if (index == 6 && world->area_index != -1 && Game.area_save[world->area_index].red_brick_collected != 0) {
                 off = 0;
-            else if (index == 4 && SuperStory != 0)
+            } else if (index == 4 && SuperStory != 0) {
                 off = 0;
-            else if (index == 9 && WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0)
+            } else if (index == 9 && WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0) {
                 off = 0;
-            else if ((arcade_flags & 0x10) != 0 && index != 5 && index != 9)
+            } else if ((arcade_flags & 0x10) != 0 && index != 5 && index != 9) {
                 off = 0;
+            }
         }
         GizmoPickupType[index].field_0f = off == 0;
     }
@@ -913,14 +993,16 @@ static void __cdecl PartStolen_Coin(PART_PC *part) {
     GAMEOBJECT *recipient;
     i32 first_active, second_active;
     GIZMOPICKUP_PC pickup;
-    if (netclient != 0 || (part->active & 0x200) == 0)
+    if (netclient != 0 || (part->active & 0x200) == 0) {
         return;
+    }
     recipient = Player[0];
     first_active = recipient != NULL && (recipient->flags_1fc & 0x80) != 0;
     second_active = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
     if (first_active) {
-        if (second_active)
+        if (second_active) {
             recipient = Player[qrand() / 32768];
+        }
     } else if (second_active) {
         recipient = Player[1];
     } else {
@@ -942,10 +1024,12 @@ static void __cdecl PartStop_Coin(PART_PC *part) {
     system = WORLD->pickup_runtime_sys;
     pickup = &system->temporary_pickups[system->temporary_cursor];
     ++system->temporary_cursor;
-    if (WORLD->pickup_runtime_sys->temporary_cursor >= 64)
+    if (WORLD->pickup_runtime_sys->temporary_cursor >= 64) {
         WORLD->pickup_runtime_sys->temporary_cursor = 0;
-    if ((pickup->flags & 1) != 0)
+    }
+    if ((pickup->flags & 1) != 0) {
         GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
+    }
     SetCoinType(part->part_id, pickup);
     pickup->flags = (pickup->flags & 0xf7) | 0x17;
     pickup->position = part->position;
@@ -965,10 +1049,12 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
     i32 model = type->first_model_id;
     ADDPART_PC params;
     PART_PC *part;
-    if (type->random_model_count > 0)
+    if (type->random_model_count > 0) {
         model += qrand() / (65535 / type->random_model_count + 1);
-    if (world->level_objects[model].active == 0)
+    }
+    if (world->level_objects[model].active == 0) {
         return;
+    }
     params = Default_ADDPART;
     params.position = position;
     params.velocity = velocity;
@@ -1015,29 +1101,35 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
     ADD_GAME_MESSAGE_PC message;
     (void)unused;
     (void)owner;
-    if (coins == 0)
+    if (coins == 0) {
         return;
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
+    }
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
         coins = 0;
+    }
     memset(counts, 0, sizeof(counts));
     remainder = coins % 10;
-    if (remainder > 0)
+    if (remainder > 0) {
         coins -= remainder;
-    if (coins > 512000)
+    }
+    if (coins > 512000) {
         coins = 512000;
-    if (coins > 0)
+    }
+    if (coins > 0) {
         PlaySfx((char *)PickupCoinsLandName, position);
+    }
     remaining = coins;
-    if (random_types)
+    if (random_types) {
         while (remaining > 0) {
             type = CoinTab[qrand() / 16384];
             score = GizmoPickupType[type].score;
-            if (remaining - score < 0)
+            if (remaining - score < 0) {
                 continue;
+            }
             ++counts[type];
             remaining -= score;
         }
-    else if (remaining > 0)
+    } else if (remaining > 0) {
         for (i = 3; remaining > 0; --i) {
             type = CoinTab[i];
             score = GizmoPickupType[type].score;
@@ -1046,8 +1138,10 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
                 remaining -= score;
             }
         }
-    if (player != 0 && player != 1)
+    }
+    if (player != 0 && player != 1) {
         player = -1;
+    }
     target.x = player == 1 ? PANEL_COINX : -PANEL_COINX;
     if (CoinsGoToMainTotal()) {
         main_total = 1;
@@ -1065,10 +1159,12 @@ void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused,
         base_model = pickup->first_model_id;
         for (j = counts[CoinTab[i]]; j > 0; --j) {
             model = base_model;
-            if (pickup->random_model_count > 0)
+            if (pickup->random_model_count > 0) {
                 model += qrand() / (65535 / pickup->random_model_count + 1);
-            if (world->level_objects[model].active == 0 || player == -1)
+            }
+            if (world->level_objects[model].active == 0 || player == -1) {
                 continue;
+            }
             message = AddGameMsg_Default;
             message.scale = 1.0f;
             message.target_scale = target_scale;
@@ -1106,46 +1202,57 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
     GAMEOBJECT *eligible[2];
     (void)unused;
     Arcade_GetMode(&arcade_flags);
-    if (arcade_flags & 0x10)
+    if (arcade_flags & 0x10) {
         coins = torpedoes = 0;
-    if (world->area != NULL && (world->area->flags & 0x104) == 4)
+    }
+    if (world->area != NULL && (world->area->flags & 0x104) == 4) {
         random_types = 0;
+    }
     if (world->current_level->flags & 0x80000) {
         to_panel = 1;
         if (player_id == -1) {
-            if (player2 != NULL)
+            if (player2 != NULL) {
                 player_id = qrand() / 32768;
-            else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80))
+            } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)) {
                 player_id = 0;
-            else
+            } else {
                 player_id = 1;
+            }
         }
     } else if (world->area != NULL && (world->area->flags & 0x100)) {
         player_id = qrand() / 32768;
         to_panel = 1;
-    } else
+    } else {
         to_panel = player_id == -1 ? 0 : panel;
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
+    }
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
         coins = 0;
-    if (speed == 1.0f)
+    }
+    if (speed == 1.0f) {
         speed *= scale;
+    }
     memset(counts, 0, sizeof(counts));
-    if (netclient != 0)
+    if (netclient != 0) {
         return;
+    }
     remainder = coins % 10;
-    if (remainder > 0)
+    if (remainder > 0) {
         coins -= remainder;
-    if (coins > 512000)
+    }
+    if (coins > 512000) {
         coins = 512000;
-    if (coins > 0)
+    }
+    if (coins > 0) {
         PlaySfx((char *)PickupCoinsLandName, position);
+    }
     remaining = coins;
     if (random_types) {
         while (remaining > 0) {
             type = CoinTab[qrand() / 16384];
             score = GizmoPickupType[type].score;
-            if (remaining - score < 0)
+            if (remaining - score < 0) {
                 continue;
+            }
             ++counts[type];
             remaining -= score;
         }
@@ -1159,11 +1266,13 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
             }
         }
     }
-    if (player_id != 0 && player_id != 1)
+    if (player_id != 0 && player_id != 1) {
         player_id = -1;
+    }
     if (to_panel) {
-        if (coins > 0)
+        if (coins > 0) {
             DrawBuildUpTime = (f32)(COINMSGTIME + 1.0);
+        }
         AddCoinsToPanel(coins, position, player_id, speed, owner, random_types);
     } else {
         for (i = 0; i < 4; ++i) {
@@ -1178,26 +1287,31 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
         Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
         hearts = 2;
         both_players = 1;
-    } else
+    } else {
         both_players = 0;
+    }
     for (i = 0; i < hearts; ++i) {
-        if (to_panel)
+        if (to_panel) {
             velocity = v000;
-        else
+        } else {
             MakePartVector(&velocity, direction, speed);
+        }
         recipient = NULL;
-        if (both_players)
+        if (both_players) {
             recipient = (GAMEOBJECT *)(i == 0 ? Player[0] : Player[1]);
-        else if (owner != NULL)
+        } else if (owner != NULL) {
             recipient = owner;
-        else {
+        } else {
             count = 0;
-            if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80))
+            if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)) {
                 eligible[count++] = (GAMEOBJECT *)Player[0];
-            if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80))
+            }
+            if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
                 eligible[count++] = (GAMEOBJECT *)Player[1];
-            if (count > 0)
+            }
+            if (count > 0) {
                 recipient = eligible[count == 1 ? 0 : qrand() / 32768];
+            }
         }
         AddHeartAsPart(recipient, position, &velocity, scale, lifetime);
     }
@@ -1205,11 +1319,12 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
         MakePartVector(&velocity, direction, speed);
         AddTorpedoAsPart(position, &velocity, scale, lifetime);
     }
-    if (!(world->current_level->flags & 0x80000))
+    if (!(world->current_level->flags & 0x80000)) {
         for (i = 0; i < powerups; ++i) {
             MakePartVector(&velocity, direction, speed);
             PowerUp_AddPart(position, &velocity, scale, lifetime);
         }
+    }
 }
 
 void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes) {

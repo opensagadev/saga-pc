@@ -948,8 +948,9 @@ i32 edanimFileSave(char *path) {
     i32 count, i, index;
     count = 0;
     for (i = 0; i < 64; ++i) {
-        if (AnimParams[i].instance_id != -1)
+        if (AnimParams[i].instance_id != -1) {
             ++count;
+        }
     }
     EdFileSetMedia(1);
     if (EdFileOpen(path, 1)) {
@@ -957,8 +958,9 @@ i32 edanimFileSave(char *path) {
         EdFileWriteInt(6);
         EdFileWriteInt(count);
         for (i = 0; i < 64; ++i) {
-            if (AnimParams[i].instance_id == -1)
+            if (AnimParams[i].instance_id == -1) {
                 continue;
+            }
             NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[i].instance_id);
             strncpy(name, NuSpecialGetName(&special), sizeof(name));
             name[sizeof(name) - 1] = 0;
@@ -1006,20 +1008,23 @@ void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 }
 
 void edanimcbSetSwitchId(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
         return;
+    }
     AnimParams[edanim_nearest_param_id].control_switch = (i32)((edui_slider_s *)item)->value;
 }
 
 void edanimcbSetSwitchDelay(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
         return;
+    }
     AnimParams[edanim_nearest_param_id].field_018 = ((edui_slider_s *)item)->value;
 }
 
 void edanimcbSetSwitchVar(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
         return;
+    }
     AnimParams[edanim_nearest_param_id].control_distance = ((edui_slider_s *)item)->value;
 }
 
@@ -1037,73 +1042,87 @@ void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_switchtype_menu =
         eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelSwitchTypeMenu, (char *)("Switch Type"));
-    if (!edanim_switchtype_menu)
+    if (!edanim_switchtype_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == 0, 1,
                                         edanimcbSetSwitchType, (char *)("None")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == 1, 1,
                                         edanimcbSetSwitchType, (char *)("Switch")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == 2, 1,
                                         edanimcbSetSwitchType, (char *)("Switch One Cycle")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == 3, 1,
                                         edanimcbSetSwitchType, (char *)("Switch Continuous")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == 4, 1,
                                         edanimcbSetSwitchType, (char *)("Proximity")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == 5, 1,
                                         edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == 6, 1,
                                         edanimcbSetSwitchType, (char *)("Proximity Continuous")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == 7, 1,
                                         edanimcbSetSwitchType, (char *)("Terrain")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == 8, 1,
                                         edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == 9, 1,
                                         edanimcbSetSwitchType, (char *)("Terrain Continuous")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == 10, 1,
                                         edanimcbSetSwitchType, (char *)("Override NoAnim")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == 11, 1,
                                         edanimcbSetSwitchType, (char *)("Override Play")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAddItem(edanim_switchtype_menu,
                     eduiItemCheckCreate(12, colours, AnimParams[edanim_nearest_param_id].control_mode == 12, 1,
                                         edanimcbSetSwitchType, (char *)("Override PlayCont")));
-    if (edui_last_item->highlighted)
+    if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
+    }
     eduiMenuAttach(parent, edanim_switchtype_menu);
     edanim_switchtype_menu->x = parent->x + 10;
     edanim_switchtype_menu->y = parent->y + 40;
@@ -1111,11 +1130,13 @@ void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
 
 void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    if (edanim_nearest == -1 || edanim_nearest_param_id == -1)
+    if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
         return;
+    }
     edanim_switch_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edanimcbCancelSwitchMenu, (char *)("Switch Menu"));
-    if (!edanim_switch_menu)
+    if (!edanim_switch_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_switch_menu,
                     eduiItemSelCreate(1, colours, 0, 0, edanimcbSwitchTypeMenu, (char *)("Switch Type...")));
     eduiMenuAddItem(edanim_switch_menu,
@@ -1162,8 +1183,9 @@ void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) 
 }
 
 static void edanimcbToggleParticleSwitch(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    if (edanim_nearest_param_id == -1 || edanim_nearest_particle == -1)
+    if (edanim_nearest_param_id == -1 || edanim_nearest_particle == -1) {
         return;
+    }
     AnimParams[edanim_nearest_param_id].effect_flags[edanim_nearest_particle] = item->highlighted & 1;
 }
 
@@ -1193,6 +1215,7 @@ void edanimcbCancelParticleTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_particletype_menu);
     edanim_particletype_menu = NULL;
 }
+
 void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     i32 selected;
@@ -1279,6 +1302,7 @@ void edanimcbCancelSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_sound_menu);
     edanim_sound_menu = NULL;
 }
+
 void edanimcbParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     i32 selected;
@@ -1312,6 +1336,7 @@ static void edanimcbCancelLocalParticleTypeMenu(eduimenu_s *unused0, eduimenu_s 
     eduiMenuDestroy(edanim_localparticletype_menu);
     edanim_localparticletype_menu = NULL;
 }
+
 void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest_param_id == -1) {
@@ -1335,6 +1360,7 @@ void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     edanim_particle_menu->x = parent->x + 10;
     edanim_particle_menu->y = parent->y + 40;
 }
+
 void edanimcbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edanim_active_menu = NULL;
 }
@@ -1344,23 +1370,27 @@ void edanimcbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char directory[256];
     char extension[256];
     char path[256];
-    if (edbits_level_save_directory[0] == 0)
+    if (edbits_level_save_directory[0] == 0) {
         sprintf(directory, ".");
-    else
+    } else {
         strcpy(directory, edbits_level_save_directory);
-    if (edbits_level_save_name[0] == 0)
+    }
+    if (edbits_level_save_name[0] == 0) {
         sprintf(name, "anims");
-    else
+    } else {
         strcpy(name, edbits_level_save_name);
-    if (edbits_level_save_extension[0] == 0)
+    }
+    if (edbits_level_save_extension[0] == 0) {
         sprintf(extension, "anm");
-    else
+    } else {
         strcpy(extension, edbits_level_save_extension);
+    }
     sprintf(path, "%s\\%s.%s", directory, name, extension);
-    if (edanimFileSave(path))
+    if (edanimFileSave(path)) {
         eduiCreateMessageMenu(menu, (char *)("Saved OK"), 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, (char *)("File Save Error"), 0);
+    }
 }
 
 extern const char MenuTechnicalDefaultTextPc75f29c[8];
@@ -1372,12 +1402,15 @@ static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 u
         eduiCreateMessageMenu(menu, (char *)("Not Present"), 0);
     }
 }
+
 void edanimcbMCTBCardType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    if (saveloadCheckCardType())
+    if (saveloadCheckCardType()) {
         eduiCreateMessageMenu(menu, (char *)("PS2 Card"), 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, (char *)("Not a PS2 Card"), 0);
+    }
 }
+
 void edanimcbMCTBCardCheckFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardFormatted()) {
         eduiCreateMessageMenu(menu, (char *)("Formatted"), 1);
@@ -1385,24 +1418,29 @@ void edanimcbMCTBCardCheckFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unus
         eduiCreateMessageMenu(menu, (char *)("Not Formatted"), 0);
     }
 }
+
 void edanimcbMCTBCardFreeSpace(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char message[32];
     sprintf(message, "Space = %05d", saveloadCheckCardFreeSpace(0));
     eduiCreateMessageMenu(menu, message, 1);
 }
+
 void edanimcbMCTBCardSlotsUsed(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char message[32];
     sprintf(message, "Slots Used = %02d", saveloadCheckSlotsUsed());
     eduiCreateMessageMenu(menu, message, 1);
 }
+
 void edanimcbMCTBCardSaveSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     char data[32];
     sprintf(data, "This is slot %d", item->data);
-    if (saveloadSaveSlot(item->data, data, sizeof(data)))
+    if (saveloadSaveSlot(item->data, data, sizeof(data))) {
         eduiCreateMessageMenu(menu, (char *)("Saved OK"), 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, (char *)("Save Error"), 0);
+    }
 }
+
 void edanimcbMCTBCardLoadSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     char data[32];
     if (saveloadLoadSlot(item->data, data, sizeof(data))) {
@@ -1411,12 +1449,15 @@ void edanimcbMCTBCardLoadSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         eduiCreateMessageMenu(menu, (char *)("Load Error"), 0);
     }
 }
+
 void edanimcbMCTBCardDeleteSlot(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    if (saveloadDeleteSlot(item->data))
+    if (saveloadDeleteSlot(item->data)) {
         eduiCreateMessageMenu(menu, (char *)("Delete OK"), 1);
-    else
+    } else {
         eduiCreateMessageMenu(menu, (char *)("Delete Error"), 0);
+    }
 }
+
 void edanimcbMCTBCardUnFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadUnFormatCard()) {
         eduiCreateMessageMenu(menu, (char *)("Unformat OK"), 1);
@@ -1424,6 +1465,7 @@ void edanimcbMCTBCardUnFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
         eduiCreateMessageMenu(menu, (char *)("Unformat Fail"), 0);
     }
 }
+
 void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadFormatCard()) {
         eduiCreateMessageMenu(menu, (char *)("Format OK"), 1);
@@ -1472,8 +1514,9 @@ void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_mctb_menu =
         eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelMCTBMenu, (char *)("Memory Card Test Menu"));
-    if (!edanim_mctb_menu)
+    if (!edanim_mctb_menu) {
         return;
+    }
     eduiMenuAddItem(edanim_mctb_menu,
                     eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBCardPresent, (char *)("Card Present Test")));
     eduiMenuAddItem(edanim_mctb_menu,
@@ -1516,28 +1559,33 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene
                                                  f32 end_frame, i32 append, void *gizmo_sys, char *prefix,
                                                  char *suffix) {
     NUSPECIALHANDLE special;
-    if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix))
+    if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix)) {
         return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
+    }
     return NULL;
 }
 
 void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
     struct gameanimobj_s *object;
-    if (set == NULL || special == NULL)
+    if (set == NULL || special == NULL) {
         return;
+    }
     object = set->objects;
     while (object != NULL && NuSpecialCompare(&object->special, special) == 0) {
         object = object->next;
     }
-    if (object != NULL)
+    if (object != NULL) {
         GameAnimSet_RemoveObject(set, object);
+    }
 }
+
 typedef struct gameanim_reflection_matrix_pc_s {
     f32 m00, m01, m02, m03;
     f32 m10, m11, m12, m13;
     f32 m20, m21, m22;
     f32 axis_coordinates[5];
 } GAMEANIM_REFLECTION_MATRIX_PC;
+
 STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX_PC) == sizeof(NUMTX));
 STATIC_ASSERT(offsetof(GAMEANIM_REFLECTION_MATRIX_PC, axis_coordinates) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
@@ -1545,21 +1593,25 @@ STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
+
 void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
     GAMEANIMOBJ *object;
     NUMTX reflection;
-    if (!set || !set->objects)
+    if (!set || !set->objects) {
         return;
-    if (!matrix)
+    }
+    if (!matrix) {
         matrix = NuSpecialGetMtx(&set->objects->special);
+    }
     plane = offset + ((GAMEANIM_REFLECTION_MATRIX_PC *)matrix)->axis_coordinates[axis];
     NuRndrStartReflectionRender(0);
     for (object = set->objects; object; object = object->next) {
         if (!(object->flags & 2) && NuSpecialGetVisibilityFn(&object->special)) {
             NUMTX *draw_matrix = NuSpecialGetDrawMtx(&object->special);
-            if (MatrixReflection(draw_matrix, axis, plane, WORLD->current_level->reflection_y, &reflection))
+            if (MatrixReflection(draw_matrix, axis, plane, WORLD->current_level->reflection_y, &reflection)) {
                 NuSpecialDrawAt(&object->special, &reflection);
+            }
         }
     }
     NuRndrEndReflectionRender();

@@ -13,6 +13,7 @@
 
 union PC_SHADER_KEY_BLOCK_PC {
     u8 bytes[104];
+
     struct {
         u32 vertex_flags, layer_flags, layer_flags_copy, program_hash[2];
     } words;
@@ -35,10 +36,11 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
         block.words.program_hash[0] = ShaderProgramHashPC[0];
         block.words.program_hash[1] = ShaderProgramHashPC[1];
     }
-    if (filter->variant != 0)
+    if (filter->variant != 0) {
         layer_word = 0x1000;
-    else
+    } else {
         layer_word = *(const u64 *)&desc->layer_flags & ~(u64)0x1c0;
+    }
     layer_low = (u32)layer_word;
     block.bytes[4] = (u8)layer_low;
     block.bytes[5] = (u8)(layer_low >> 8);
@@ -70,33 +72,38 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
     block.bytes[0x1e] = filter->HasLayer(3) ? desc->blend_ops[2] : 0;
     block.bytes[0x20] = 1;
     block.bytes[0x1f] = 1;
-    if (KEY_LAYER_BIT(filter, 0) && filter->descriptor->normal_threshold > filter->parameter)
+    if (KEY_LAYER_BIT(filter, 0) && filter->descriptor->normal_threshold > filter->parameter) {
         block.bytes[0x24] = 2;
-    else
+    } else {
         block.bytes[0x24] = (KEY_LAYER_BIT(filter, 1) && filter->descriptor->normal_threshold > filter->parameter) != 0;
-    if (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold > filter->parameter)
+    }
+    if (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold > filter->parameter) {
         block.bytes[0x25] = 2;
-    else
+    } else {
         block.bytes[0x25] =
             (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold <= filter->parameter) != 0;
+    }
     block.bytes[0x26] = filter->descriptor->extra_texture > 0;
     block.bytes[0x27] = filter->descriptor->environment_texture > 0;
     block.bytes[0x28] = KEY_TYPE_PLAIN(filter) || KEY_TYPE_ALTERNATE(filter) ? (u8)((desc->selectors >> 2) & 3) : 0;
     block.bytes[0x29] = 0;
-    if (desc->vertex_format & 0xc)
+    if (desc->vertex_format & 0xc) {
         block.bytes[0x29] = 1;
+    }
     block.bytes[0x2a] = desc->texture_units;
-    if (KEY_TYPE_PLAIN(filter))
+    if (KEY_TYPE_PLAIN(filter)) {
         block.bytes[0x2b] = 1;
-    else
+    } else {
         block.bytes[0x2b] = KEY_TYPE_ALTERNATE(filter) != 0 ? 2 : 0;
+    }
     block.bytes[0x2c] = 1;
     if (filter->material != NULL && filter->material->texture_id != 0) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
         if (texture != NULL && texture->resource != NULL) {
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
-            if (dimensions.format == 0x31545844)
+            if (dimensions.format == 0x31545844) {
                 block.bytes[0x2c] = 0;
+            }
         }
     }
     *key = (i16)CRC16::hashInverse(block.bytes, 104) << 16;

@@ -114,11 +114,13 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
     f64 random_product;
     f32 interval;
     f32 phase_product;
-    if (index == -1)
+    if (index == -1) {
         return;
+    }
     emitter = &part_emits[index];
-    if (emitter->effect_id == -1)
+    if (emitter->effect_id == -1) {
         return;
+    }
     type = &part_types[emitter->effect_id];
     if (type->emission_period_random == 0.0f && type->emission_pause_random == 0.0f) {
         period = type->emission_period + type->emission_pause;
@@ -126,10 +128,11 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
         emitter->time_24 = phase_product + offset;
         emitter->time_28 = emitter->time_24 + type->emission_period;
         while (partglobaltime > emitter->time_24 && partglobaltime > emitter->time_28) {
-            if (emitter->time_24 >= emitter->time_28)
+            if (emitter->time_24 >= emitter->time_28) {
                 emitter->time_28 = emitter->time_24 + type->emission_period;
-            else
+            } else {
                 emitter->time_24 = emitter->time_28 + type->emission_pause;
+            }
         }
     } else {
         emitter->time_24 = partglobaltime;
@@ -137,19 +140,22 @@ __declspec(noinline) void __cdecl PARTStartOffset(i32 index, f32 offset) {
         emitter->time_28 = ((f64)type->emission_period + emitter->time_24) + random_product;
     }
     interval = 1.0f / type->emission_rate;
-    if (partglobaltime > emitter->time_28)
+    if (partglobaltime > emitter->time_28) {
         emitter->time_20 = emitter->time_24 - interval;
-    else
+    } else {
         emitter->time_20 = (i32)(partglobaltime / interval) * interval;
+    }
     emitter->time_38 = partglobaltime;
 }
 
 __declspec(noinline) i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
     i32 i;
-    if (part_emits_used == 40)
+    if (part_emits_used == 40) {
         return -1;
-    if (part_types[effect].effect_ids[0] == -1)
+    }
+    if (part_types[effect].effect_ids[0] == -1) {
         return -1;
+    }
     for (i = 0; i < 40; ++i) {
         if (part_emits[i].effect_id == -1) {
             part_emits[i].position = *position;
@@ -175,10 +181,12 @@ __declspec(noinline) i32 __cdecl AddPARTEffect(i32 effect, NUVEC *position) {
 
 i32 __cdecl AddFiniteShotPART(i32 effect, NUVEC *position, i32 count) {
     i32 index;
-    if (effect == -1)
+    if (effect == -1) {
         return effect;
-    if (part_types[effect].effect_ids[0] == -1)
+    }
+    if (part_types[effect].effect_ids[0] == -1) {
         return -1;
+    }
     index = AddPARTEffect(effect, position);
     if (index != -1) {
         part_emits[index].shots_remaining = count;

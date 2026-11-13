@@ -40,11 +40,13 @@ void __cdecl Cheats_SetFlags(void) {
     for (index = 0; index < system->count; ++index) {
         CHEAT_PC *cheat = &system->cheats[index];
         if (cheat->enabled == 0) {
-            if (ONEPLAYERPOWERUPS != 0 || !(Cheat_PowerUpTime > 0.0f))
+            if (ONEPLAYERPOWERUPS != 0 || !(Cheat_PowerUpTime > 0.0f)) {
                 continue;
+            }
             if (VehicleArea != 0) {
-                if ((cheat->flags & 0x20000) == 0)
+                if ((cheat->flags & 0x20000) == 0) {
                     continue;
+                }
             } else if ((cheat->flags & 0x10000) == 0) {
                 continue;
             }
@@ -58,15 +60,17 @@ i32 __cdecl Cheats_CheckFlags(u32 flags) {
 }
 
 u32 __cdecl Cheat_CheckFlags(i32 index, u32 flags) {
-    if (index < 0 || index >= CheatSystemPtr->count)
+    if (index < 0 || index >= CheatSystemPtr->count) {
         return 0;
+    }
     return CheatSystemPtr->cheats[index].flags & flags;
 }
 
 void __cdecl Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
     (void)update_save;
-    if (cheat < 0 || cheat >= CheatSystemPtr->count)
+    if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return;
+    }
     CheatSystemPtr->cheats[cheat].enabled = on != 0;
     Cheats_SetFlags();
 }
@@ -82,8 +86,9 @@ i32 __cdecl Cheat_IsOn(i32 cheat) {
     }
     if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
         if (VehicleArea != 0) {
-            if (cheats[cheat].flags & 0x20000)
+            if (cheats[cheat].flags & 0x20000) {
                 return 1;
+            }
         } else if (cheats[cheat].flags & 0x10000) {
             return 1;
         }
@@ -94,16 +99,21 @@ i32 __cdecl Cheat_IsOn(i32 cheat) {
 /* Complete native0056e2a0..0056e2dc. */
 u32 __cdecl Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;
-    if ((flags & 4) != 0)
+    if ((flags & 4) != 0) {
         score *= 2;
-    if ((flags & 8) != 0)
+    }
+    if ((flags & 8) != 0) {
         score *= 4;
-    if ((flags & 16) != 0)
+    }
+    if ((flags & 16) != 0) {
         score *= 6;
-    if ((flags & 32) != 0)
+    }
+    if ((flags & 32) != 0) {
         score *= 8;
-    if ((flags & 64) != 0)
+    }
+    if ((flags & 64) != 0) {
         score *= 10;
+    }
     return score;
 }
 
@@ -111,8 +121,9 @@ void __cdecl Cheats_TurnOff(i32 only_powerups) {
     CHEATSYSTEM_PC *system = CheatSystemPtr;
     i32 index;
     for (index = 0; index < system->count; ++index) {
-        if (only_powerups == 0 || (system->cheats[index].flags & 0x200000) != 0)
+        if (only_powerups == 0 || (system->cheats[index].flags & 0x200000) != 0) {
             system->cheats[index].enabled = 0;
+        }
     }
     Cheats_SetFlags();
 }
@@ -120,8 +131,9 @@ void __cdecl Cheats_TurnOff(i32 only_powerups) {
 void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GAME_MESSAGE_PC *display;
     if (ONEPLAYERPOWERUPS != 0) {
-        if (object == NULL)
+        if (object == NULL) {
             return;
+        }
         object->powerup_time = CHEAT_POWERUPTIME;
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         GameCam_HitRoll();
@@ -130,11 +142,13 @@ void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         Cheat_PowerUpTime = CHEAT_POWERUPTIME;
     }
     display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255, 0x4023, 1.0f);
-    if (display != NULL)
+    if (display != NULL) {
         display->parameter_d4 = 0.75f;
+    }
     display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.25f, 255, 255, 255, 0x4023, 1.0f);
-    if (display != NULL)
+    if (display != NULL) {
         display->parameter_d4 = 0.75f;
+    }
     GameAudio_PlaySfx(0x50, NULL, 0, 0);
 }
 

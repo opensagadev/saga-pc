@@ -34,8 +34,9 @@ i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
 
     index = NuPSFileFindFreeHandle();
     pc_file_handles[index] = CreateFileA(path, access, FILE_SHARE_READ, NULL, creation, 0, NULL);
-    if (pc_file_handles[index] == INVALID_HANDLE_VALUE)
+    if (pc_file_handles[index] == INVALID_HANDLE_VALUE) {
         return -1;
+    }
     return index;
 }
 
@@ -53,8 +54,9 @@ i32 __cdecl NuPSFileRead(i32 index, void *destination, i32 size) {
 
 i32 __cdecl NuPSFileWrite(i32 index, const void *source, i32 size) {
     DWORD count = 0;
-    if (WriteFile(pc_file_handles[index], source, size, &count, NULL))
+    if (WriteFile(pc_file_handles[index], source, size, &count, NULL)) {
         return count;
+    }
     return 0;
 }
 
@@ -77,7 +79,8 @@ i64 __cdecl NuPSFileLSeek(i32 index, i64 offset, i32 origin) {
 
     distance.QuadPart = offset;
     position.QuadPart = 0;
-    if (SetFilePointerEx(pc_file_handles[index], distance, &position, method))
+    if (SetFilePointerEx(pc_file_handles[index], distance, &position, method)) {
         return position.QuadPart;
+    }
     return -1;
 }

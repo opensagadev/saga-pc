@@ -11,12 +11,14 @@ void __cdecl NuSevereWarning(const char *format, ...) {
     va_end(args);
     NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
     NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
-    if (PCWarningHandler != NULL)
+    if (PCWarningHandler != NULL) {
         PCWarningHandler(PCWarningOutputBuffer);
+    }
     PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, PCWarningOutputBuffer);
     message = PCWarningOutputBuffer;
-    while (*message != '\0' && bHaveErr < 1023)
+    while (*message != '\0' && bHaveErr < 1023) {
         PCWarningMessages[bHaveErr++] = *message++;
+    }
     PCWarningMessages[bHaveErr++] = '\0';
 }
 
@@ -31,8 +33,9 @@ void __cdecl NuClearError(void) {
 char *NuGetErrN(i32 entry) {
     i32 offset = 0, current = 0;
     while (current < entry && offset < bHaveErr) {
-        if (PCWarningMessages[offset++] == '\0')
+        if (PCWarningMessages[offset++] == '\0') {
             ++current;
+        }
     }
     return PCWarningMessages + offset;
 }

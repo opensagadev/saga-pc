@@ -7,6 +7,7 @@ typedef struct episode_area_save_reader_pc_s {
     u8 minikit_complete, minikit_count, red_brick_complete, challenge_complete;
     f32 challenge_time;
 } EPISODE_AREA_SAVE_READER_PC;
+
 STATIC_ASSERT(sizeof(EPISODE_AREA_SAVE_READER_PC) == 12);
 STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, complete) == 0);
 STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, area_complete) == 1);
@@ -134,24 +135,28 @@ i32 __cdecl Episode_ContainsArea(i32 area_id, i32 *area_index) {
         EPISODEDATA_PC *episode = &EDataList[i];
         for (j = 0; j < episode->area_count; ++j) {
             if (episode->area_ids[j] == area_id) {
-                if (area_index != NULL)
+                if (area_index != NULL) {
                     *area_index = j;
+                }
                 return i;
             }
         }
     }
-    if (area_index != NULL)
+    if (area_index != NULL) {
         *area_index = -1;
+    }
     return -1;
 }
+
 extern "C" {
 
     u32 __cdecl Episode_FindAreaFromFlags(EPISODEDATA_PC *episode, u32 flags, u32 wanted) {
         i32 index;
         for (index = 0; index < episode->area_count; ++index) {
             AREA_DATA_PC *area = &ADataList[episode->area_ids[index]];
-            if ((area->flags & flags) == wanted)
+            if ((area->flags & flags) == wanted) {
                 return area->index;
+            }
         }
         return 0xffffffff;
     }
@@ -161,13 +166,17 @@ extern "C" {
 extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
     COLLECTION_AREA_SAVE_PC *saves = Game_AreaSave;
     i32 completed = 0;
-    if (saves == NULL)
+    if (saves == NULL) {
         return 0;
-    for (i32 i = 0; i < episode->regular_areas; ++i)
-        if (saves[episode->area_ids[i]].area_complete != 0)
+    }
+    for (i32 i = 0; i < episode->regular_areas; ++i) {
+        if (saves[episode->area_ids[i]].area_complete != 0) {
             ++completed;
-    if (count != NULL)
+        }
+    }
+    if (count != NULL) {
         *count = completed;
+    }
     return completed == episode->regular_areas;
 }
 
@@ -177,11 +186,14 @@ extern "C" i32 __cdecl Episodes_Completed(void) {
         EPISODEDATA_PC *episode = &EDataList[i];
         i32 complete = 0;
         if (Game_AreaSave != NULL) {
-            for (i32 j = 0; j < episode->regular_areas; ++j)
-                if (Game_AreaSave[episode->area_ids[j]].area_complete != 0)
+            for (i32 j = 0; j < episode->regular_areas; ++j) {
+                if (Game_AreaSave[episode->area_ids[j]].area_complete != 0) {
                     ++complete;
-            if (complete == episode->regular_areas)
+                }
+            }
+            if (complete == episode->regular_areas) {
                 ++completed;
+            }
         }
     }
     return completed;
@@ -200,50 +212,59 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
     EpFreePlayBuildUpCount = EpFreePlayBuildUpTotal = 0;
     EpRedBrickCount = EpRedBrickTotal = 0;
     EpGoldBrickCount = EpGoldBrickTotal = 0;
-    if (episode_index == -1)
+    if (episode_index == -1) {
         return 0;
+    }
     if (EpisodeGoldBrickForSuperStoryPc != 0) {
         EpGoldBrickTotal = 1;
-        if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].superstory_complete != 0)
+        if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].superstory_complete != 0) {
             EpGoldBrickCount = 1;
+        }
     }
     EPISODEDATA_PC *episode = &EDataList[episode_index];
     for (i32 i = 0; i < episode->area_count; ++i) {
         i32 id = episode->area_ids[i];
-        if (area_index != -1 && id != area_index)
+        if (area_index != -1 && id != area_index) {
             continue;
-        if (&ADataList[id] == HUB_ADATA || (ADataList[id].flags & 0x22) != 0)
+        }
+        if (&ADataList[id] == HUB_ADATA || (ADataList[id].flags & 0x22) != 0) {
             continue;
+        }
         if ((ADataList[id].flags & 0x100) != 0) {
             if (EpisodeGoldBrickForSuperBonusPc != 0) {
                 ++EpGoldBrickTotal;
-                if (saves[i].area_complete != 0)
+                if (saves[i].area_complete != 0) {
                     ++EpGoldBrickCount;
+                }
             }
             continue;
         }
         if ((ADataList[id].flags & 4) != 0) {
             ++EpGoldBrickTotal;
             if ((f64)((EPISODE_AREA_SAVE_READER_PC *)&saves[id])->challenge_time <
-                (f64)ADataList[id].challenge_trial_time)
+                (f64)ADataList[id].challenge_trial_time) {
                 ++EpGoldBrickCount;
+            }
             continue;
         }
         EPISODE_AREA_SAVE_READER_PC *save = (EPISODE_AREA_SAVE_READER_PC *)&saves[id];
         ++EpCompleteTotal;
         EpMiniKitTotal += 10;
-        if (save->complete != 0)
+        if (save->complete != 0) {
             ++open;
+        }
         ++EpGoldBrickTotal;
         if (save->area_complete != 0) {
             ++EpCompleteCount;
             ++EpGoldBrickCount;
         }
-        if ((ADataList[id].flags & 0x10) == 0)
+        if ((ADataList[id].flags & 0x10) == 0) {
             continue;
+        }
         ++EpGoldBrickTotal;
-        if (save->minikit_complete != 0)
+        if (save->minikit_complete != 0) {
             ++EpGoldBrickCount;
+        }
         EpMiniKitCount += save->minikit_count;
         ++EpBuildUpTotal;
         ++EpGoldBrickTotal;
@@ -265,15 +286,18 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             ++EpGoldBrickCount;
         }
         ++EpRedBrickTotal;
-        if (save->red_brick_complete != 0)
+        if (save->red_brick_complete != 0) {
             ++EpRedBrickCount;
+        }
         ++EpCharKitTotal;
-        if (EpisodeGoldBrickForChallengePc != 0)
+        if (EpisodeGoldBrickForChallengePc != 0) {
             ++EpGoldBrickTotal;
+        }
         if (save->challenge_complete != 0) {
             ++EpCharKitCount;
-            if (EpisodeGoldBrickForChallengePc != 0)
+            if (EpisodeGoldBrickForChallengePc != 0) {
                 ++EpGoldBrickCount;
+            }
         }
     }
     return open;

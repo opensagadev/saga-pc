@@ -6,19 +6,24 @@ typedef struct guideline_record_pc_s {
     char name[8];
     NUVEC start_position;
     NUVEC end_position;
+
     union {
         u8 flags;
+
         struct {
             u8 active : 1;
             u8 visible : 1;
         };
     };
+
     u8 unknown_21[3];
 } GUIDELINE_RECORD_PC;
+
 typedef struct guideline_progress_pc_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } GUIDELINE_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(GUIDELINE_RECORD_PC) == 0x24);
 STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, start_position) == 8);
 STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, end_position) == 0x14);
@@ -78,8 +83,9 @@ void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
 void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
     GUIDELINE_RECORD_PC *guide;
     i32 index;
-    if (world == NULL || world->guidelines == NULL)
+    if (world == NULL || world->guidelines == NULL) {
         return;
+    }
     guide = (GUIDELINE_RECORD_PC *)world->guidelines;
     for (index = 0; index < world->guideline_count; ++index, ++guide) {
         guide->flags |= 3;
@@ -106,10 +112,12 @@ INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *wor
             }
         }
     }
-    if (endpoint != NULL)
+    if (endpoint != NULL) {
         *endpoint = nearest_endpoint;
-    if (distance != NULL)
+    }
+    if (distance != NULL) {
         *distance = nearest_distance;
+    }
     return nearest;
 }
 
@@ -134,8 +142,9 @@ i32 __cdecl GuideLines_GetMaxGizmos(WORLDINFO *world) {
 void __cdecl GuideLines_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->guideline_count; ++index) {
-        if (NuStrLen(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name) != 0)
+        if (NuStrLen(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name) != 0) {
             AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD_PC *)world->guidelines)[index]);
+        }
     }
 }
 
@@ -170,22 +179,27 @@ void __cdecl GuideLines_ClearProgress(void *world, GUIDELINE_PROGRESS_PC *progre
 void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
     GUIDELINE_RECORD_PC *guide;
     i32 index;
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     progress->active_mask[0] = 0xffffffffu;
     progress->visible_mask[0] = 0xffffffffu;
-    if (world == NULL || world->guidelines == NULL)
+    if (world == NULL || world->guidelines == NULL) {
         return;
+    }
     guide = (GUIDELINE_RECORD_PC *)world->guidelines;
     for (index = 0; index < world->guideline_count && index < 32; ++index, ++guide) {
         i32 word = index / 32;
         i32 bit = 1 << (index & 31);
-        if (!guide->visible)
+        if (!guide->visible) {
             progress->visible_mask[word] &= ~bit;
-        if (!guide->active)
+        }
+        if (!guide->active) {
             progress->active_mask[word] &= ~bit;
+        }
     }
 }
+
 #pragma data_seg(".data$GuideLineRegistryNamePc")
 char *GuideLineRegistryNamePc = (char *)PCContextName_GuideLine;
 #pragma data_seg()

@@ -34,11 +34,13 @@ bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 g
             __declspec(align(16)) NUVEC4 point = corners[corner_index];
             f32 distance = plane->a * point.x + point.y * plane->b + plane->c * point.z;
             distance += plane->d;
-            if (distance > 0.0f)
+            if (distance > 0.0f) {
                 break;
+            }
         }
-        if (corner_index == 8)
+        if (corner_index == 8) {
             return false;
+        }
     }
     return true;
 }
@@ -46,8 +48,9 @@ bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 g
 i32 PCFrustumClipSet::TestBoxes(const NUVEC *minimum, const NUVEC *maximum) {
     i32 result = 0;
     for (i32 group = 0; group < active_render_set_count; ++group) {
-        if (TestBox(minimum, maximum, group))
+        if (TestBox(minimum, maximum, group)) {
             result |= 1 << group;
+        }
     }
     return result;
 }

@@ -54,9 +54,11 @@ extern "C" {
         i32 texture_id;
         i32 extra_texture_ids[3];
     } SCENE_TEXTURE_PACKET_B0_PC;
+
     typedef struct SCENE_TEXTURE_PACKET_AE_PC {
         i32 texture_ids[3];
     } SCENE_TEXTURE_PACKET_AE_PC;
+
     STATIC_ASSERT(sizeof(SCENE_TEXTURE_PACKET_B0_PC) == 20);
     STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, kind) == 0);
     STATIC_ASSERT(offsetof(SCENE_TEXTURE_PACKET_B0_PC, texture_id) == 4);
@@ -75,6 +77,7 @@ extern "C" {
         NUVEC second;
         f32 second_w;
     } PORTAL_BOX_PC;
+
     STATIC_ASSERT(sizeof(PORTAL_BOX_PC) == 0x20);
     STATIC_ASSERT(offsetof(PORTAL_BOX_PC, second) == 0x10);
     STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
@@ -94,8 +97,10 @@ extern "C" {
         u8 u_mode, v_mode, reserved02[2];
         f32 u_amplitude, v_amplitude, u_frequency, v_frequency;
     } FRAME_MTL_ANIM_DESC_PC;
+
     STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_frequency) == 0xc);
+
     typedef struct FRAME_MTL_ANIM_PC {
         u8 reserved00[0x7b];
         u8 disable_u_animation, disable_v_animation;
@@ -105,23 +110,28 @@ extern "C" {
         u8 reserved1f0[8];
         FRAME_MTL_ANIM_DESC_PC animation[4];
     } FRAME_MTL_ANIM_PC;
+
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_u_animation) == 0x7b);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, disable_v_animation) == 0x7c);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_data) == 0x1c0);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, texture_animation_offsets) == 0x1d0);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_PC, animation) == 0x1f8);
+
     typedef struct FRAME_MTL_ANIM_SET_PC {
         NUDISPLAY_LIST_PC *scene;
         i32 material_count;
         i32 *material_indices;
         struct FRAME_MTL_ANIM_SET_PC *next;
     } FRAME_MTL_ANIM_SET_PC;
+
     STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_SET_PC) == 0x10);
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, next) == 0xc);
+
     typedef struct FRAME_MTL_SCENE_PC {
         u8 reserved00[0x158];
         i32 shader_texture_animation_enabled;
     } FRAME_MTL_SCENE_PC;
+
     STATIC_ASSERT(offsetof(FRAME_MTL_SCENE_PC, shader_texture_animation_enabled) == 0x158);
 
     STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
@@ -163,10 +173,12 @@ extern "C" {
 
     void __cdecl PCDeviceSetWorldIdentityPc(void);
     void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
+
     typedef struct CAMERA_RENDER_SPECULAR_READER_PC {
         u8 unknown_0000[0xdc];
         NUVEC direction;
     } CAMERA_RENDER_SPECULAR_READER_PC;
+
     STATIC_ASSERT(offsetof(CAMERA_RENDER_SPECULAR_READER_PC, direction) == 0xdc);
 
     static NUMTX RndrStateTransformPc = {0};
@@ -179,6 +191,7 @@ extern "C" {
 
     /* Native PC material-dependent transform state belongs to this original owner. */
     typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
+
     struct PC_TRANSFORM_MATERIAL_VIEW {
         u8 unknown_00[0x30];
         PC_TRANSFORM_MATERIAL_VIEW *next;
@@ -187,6 +200,7 @@ extern "C" {
         u8 unknown_64[0x35];
         u8 transform_kind;
     };
+
     STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, next) == 0x30);
     STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_scale) == 0x60);
     STATIC_ASSERT(offsetof(PC_TRANSFORM_MATERIAL_VIEW, transform_kind) == 0x99);
@@ -206,6 +220,7 @@ extern "C" {
         u32 flags;
         u32 size;
     } SCENE_FILE_TEXTURE_HEADER_PC;
+
     STATIC_ASSERT(sizeof(SCENE_FILE_TEXTURE_HEADER_PC) == 0x18);
     STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, width) == 0);
     STATIC_ASSERT(offsetof(SCENE_FILE_TEXTURE_HEADER_PC, height) == 4);
@@ -224,17 +239,21 @@ extern "C" {
         u8 unknown_2c[4];
         PC_BUFFER_RESOURCE_PC *dynamic_vertex_buffer;
     } SCENE_FIXUP_GEOMETRY_PC;
+
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_stride) == 8);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_count) == 0x18);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, index_buffer) == 0x20);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_buffer) == 0x24);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, vertex_format) == 0x28);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_GEOMETRY_PC, dynamic_vertex_buffer) == 0x30);
+
     typedef struct SCENE_FIXUP_VERTEX_STREAM_PC {
         u8 unknown_00[8];
         PC_BUFFER_RESOURCE_PC *vertex_buffer;
     } SCENE_FIXUP_VERTEX_STREAM_PC;
+
     STATIC_ASSERT(offsetof(SCENE_FIXUP_VERTEX_STREAM_PC, vertex_buffer) == 8);
+
     typedef struct SCENE_FIXUP_NATIVE_PC {
         u16 vertex_buffer_count;
         u8 unknown_02[2];
@@ -247,6 +266,7 @@ extern "C" {
         SCENE_FIXUP_VERTEX_STREAM_PC **vertex_streams;
         u32 vertex_stream_count;
     } SCENE_FIXUP_NATIVE_PC;
+
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_buffers) == 4);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffer_count) == 8);
     STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, index_buffers) == 0xc);
@@ -263,18 +283,22 @@ extern "C" {
         f32 z;
         f32 w;
     };
+
     STATIC_ASSERT(sizeof(PC_GEOMETRY_BASIS_VECTOR_PC) == 0x10);
+
     struct PC_GEOMETRY_BASIS_INPUT_RECORD_PC {
         PC_GEOMETRY_BASIS_VECTOR_PC rows[3];
         NUVEC weights;
         u8 bones[3];
         u8 unknown_3f;
     };
+
     struct PC_GEOMETRY_MORPH_DELTA_PC {
         u32 unknown_00;
         u32 unknown_04;
         PC_GEOMETRY_BASIS_VECTOR_PC *vectors;
     };
+
     struct PC_GEOMETRY_BASIS_SOURCE_PC {
         u32 unknown_00;
         i32 record_count;
@@ -284,13 +308,16 @@ extern "C" {
         PC_GEOMETRY_BASIS_INPUT_RECORD_PC *records;
         PC_GEOMETRY_MORPH_DELTA_PC *morph_deltas;
     };
+
     struct PC_GEOMETRY_MORPH_WEIGHTS_PC {
         f32 *weight_words;
     };
+
     struct PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC {
         PC_GEOMETRY_BASIS_VECTOR_PC rows[3];
         u8 unwritten_30[0x10];
     };
+
     STATIC_ASSERT(sizeof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC) == 0x40);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC, rows) == 0);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_BASIS_INPUT_RECORD_PC, weights) == 0x30);
@@ -352,12 +379,14 @@ extern "C" {
         i32 strip_segments;
         u8 unknown_1c[0x5c];
     } PC_GEOMETRY_FORMAT_RECORD_PC;
+
     typedef struct PC_GEOMETRY_FORMAT_PC {
         u32 unknown_00;
         u32 record_count;
         u32 unknown_08;
         PC_GEOMETRY_FORMAT_RECORD_PC *records;
     } PC_GEOMETRY_FORMAT_PC;
+
     typedef struct PC_DYNAMIC_GEOMETRY_PC {
         PC_GEOMETRY_FORMAT_PC *format;
         u8 unknown_04[0x10];
@@ -365,24 +394,29 @@ extern "C" {
         PC_BUFFER_RESOURCE_PC *strip_vertex_buffer;
         PC_BUFFER_RESOURCE_PC *strip_index_buffer;
     } PC_DYNAMIC_GEOMETRY_PC;
+
     typedef struct PC_GEOMETRY_STRIP_VERTEX_PC {
         f32 fraction, side;
         u8 unknown_08[8];
     } PC_GEOMETRY_STRIP_VERTEX_PC;
+
     typedef struct PC_GEOMETRY_CORNER_PC {
         NUVEC position;
         f32 w;
     } PC_GEOMETRY_CORNER_PC;
+
     typedef struct PC_GEOMETRY_OUTPUT_PC {
         PC_GEOMETRY_CORNER_PC corners[4];
         NUVEC basis_axis;
         f32 distance_squared;
     } PC_GEOMETRY_OUTPUT_PC;
+
     typedef struct PC_GEOMETRY_SORT_ITEM_PC {
         u32 output_index;
         f32 distance_squared;
         u32 unknown_08;
     } PC_GEOMETRY_SORT_ITEM_PC;
+
     STATIC_ASSERT(sizeof(PC_GEOMETRY_FORMAT_RECORD_PC) == 0x78);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_FORMAT_RECORD_PC, strip_segments) == 0x18);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_FORMAT_PC, record_count) == 4);
@@ -411,29 +445,35 @@ extern "C" {
         u8 skin_weights[3];
         u8 unknown_6f;
     } PC_GEOMETRY_INPUT_PC;
+
     typedef struct PC_GEOMETRY_GROUP_PC {
         u32 element_count;
         u32 first_element;
         u32 transform_index;
     } PC_GEOMETRY_GROUP_PC;
+
     typedef struct PC_GEOMETRY_MESH_PC {
         u8 unknown_00[8];
         u32 group_count;
         PC_GEOMETRY_INPUT_PC *elements;
         PC_GEOMETRY_GROUP_PC *groups;
     } PC_GEOMETRY_MESH_PC;
+
     typedef struct PC_GEOMETRY_SKIN_PC {
         u8 unknown_00[8];
         u32 matrix_group_count;
         u32 unknown_0c;
         NUMTX *matrices;
     } PC_GEOMETRY_SKIN_PC;
+
     typedef struct PC_GEOMETRY_BASIS_MATRIX_PC {
         PC_GEOMETRY_BASIS_VECTOR_PC rows[4];
     } PC_GEOMETRY_BASIS_MATRIX_PC;
+
     typedef struct PC_GEOMETRY_BASIS_PC {
         PC_GEOMETRY_BASIS_MATRIX_PC matrices[3];
     } PC_GEOMETRY_BASIS_PC;
+
     STATIC_ASSERT(sizeof(PC_GEOMETRY_INPUT_PC) == 0x70);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, corners) == 0);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, basis_weights) == 0x40);
@@ -471,6 +511,7 @@ extern "C" {
         PC_TEXTURE_RESOURCE_PC *vertex_declaration;
         u16 version;
     } PC_MATERIAL_UPDATE_VIEW;
+
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, display) == 0x3c);
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, attribs) == 0x44);
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, diffuse) == 0x54);
@@ -478,16 +519,20 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, shader) == 0xb4);
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, vertex_declaration) == 0x2bc);
     STATIC_ASSERT(offsetof(PC_MATERIAL_UPDATE_VIEW, version) == 0x2c0);
+
     typedef struct PC_SHADER_HANDLE_VIEW {
         i16 handle;
     } PC_SHADER_HANDLE_VIEW;
+
     STATIC_ASSERT(offsetof(PC_SHADER_HANDLE_VIEW, handle) == 0);
+
     struct PC_MATERIAL_DEVICE_CAPS_VIEW {
         u8 unknown_000[0x654];
         u8 shader_caps;
         i32 __thiscall ShaderVariant16();
         i32 __thiscall ShaderVariant1();
     };
+
     STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
 
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
@@ -728,15 +773,17 @@ extern "C" {
     extern "C" __declspec(noinline) void __cdecl NuMtlInitShaderResourcesPc(void) {
         NuDisplayMaterialDebrisProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
             PostShaderProgramCreatePc(2, NuMaterialShaderTokens769710Pc, NuMaterialShaderTokens769840Pc));
-        if (PCDeviceHardwareVertexProcessingPC > 1)
+        if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialGlassProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
                 PostShaderProgramCreatePc(2, NuMaterialShaderTokens7698f0Pc, NuMaterialShaderTokens769a58Pc));
-        else
+        } else {
             NuDisplayMaterialGlassProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
                 PostShaderProgramCreatePc(2, NuMaterialShaderTokens769c48Pc, NuMaterialShaderTokens769da8Pc));
-        if (PCDeviceHardwareVertexProcessingPC > 1)
+        }
+        if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialFaceOnDecalProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
                 PostShaderProgramCreatePc(2, NuMaterialShaderTokens769e80Pc, NuMaterialShaderTokens76a3c8Pc));
+        }
         NuDisplayMaterialFaceOnProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
             PostShaderProgramCreatePc(2, NuMaterialShaderTokens769e80Pc, NuMaterialShaderTokens76a298Pc));
         NuDisplayMaterialDefaultProgramsPc = reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR_PC *>(
@@ -750,6 +797,7 @@ extern "C" {
         texture->image_size = 0x338;
         NuDisplayMaterialDistortTexturePc = NuTexCreateNative(texture);
     }
+
     typedef struct PC_SPECIAL_GEOMETRY {
         u8 unknown_0000[8];
         u16 vertex_stride;
@@ -763,6 +811,7 @@ extern "C" {
         u32 unknown_0030;
         void *dynamic_vertices;
     } PC_SPECIAL_GEOMETRY;
+
     STATIC_ASSERT(sizeof(PC_SPECIAL_GEOMETRY) == 0x38);
     STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_stride) == 8);
     STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, joint_indices) == 0xa);
@@ -772,17 +821,22 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_count) == 0x28);
     STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_deltas) == 0x2c);
     STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, dynamic_vertices) == 0x34);
+
     typedef struct PC_SPECIAL_DEFORMER_WEIGHTS {
         u32 unknown_0000[2];
         f32 weights[1];
     } PC_SPECIAL_DEFORMER_WEIGHTS;
+
     STATIC_ASSERT(offsetof(PC_SPECIAL_DEFORMER_WEIGHTS, weights) == 8);
+
     typedef struct PC_SPECIAL_FACEON {
         i32 kind;
     } PC_SPECIAL_FACEON;
+
     typedef struct PC_SPECIAL_TRANSFORM_PACKET {
         NUMTX matrix;
     } PC_SPECIAL_TRANSFORM_PACKET;
+
     STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m32) == 0x38);
     STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m33) == 0x3c);
 
@@ -792,6 +846,7 @@ extern "C" {
         u32 vertex_count;
         u8 unknown_001c[0x1c];
     } DISPLAY_PRIMITIVE_PACKET_PC;
+
     STATIC_ASSERT(sizeof(DISPLAY_PRIMITIVE_PACKET_PC) == 0x38);
     STATIC_ASSERT(offsetof(DISPLAY_PRIMITIVE_PACKET_PC, vertex_count) == 0x18);
 
@@ -799,6 +854,7 @@ extern "C" {
         i32 count;
         f32 elements[1];
     } PC_DL_SKIN_PALETTE_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, count) == 0);
     STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, elements) == 4);
 
@@ -808,6 +864,7 @@ extern "C" {
         NUVEC4 direction[3];
         NUMTX shine_matrix;
     } PC_DL_LIGHTS_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_LIGHTS_READER) == 0xb0);
     STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, intensity) == 0x10);
     STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, direction) == 0x40);
@@ -815,11 +872,13 @@ extern "C" {
 
     typedef union PC_DL_NORMALIZED_DIRECTION {
         NUVEC4 four;
+
         struct {
             NUVEC three;
             f32 w;
         } normalized;
     } PC_DL_NORMALIZED_DIRECTION;
+
     STATIC_ASSERT(sizeof(PC_DL_NORMALIZED_DIRECTION) == 16);
     STATIC_ASSERT(offsetof(PC_DL_NORMALIZED_DIRECTION, normalized.w) == 12);
 
@@ -828,6 +887,7 @@ extern "C" {
         u32 colour;
         f32 near_distance, far_distance, density;
     } PC_DL_FOG_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_FOG_READER) == 0x14);
     STATIC_ASSERT(offsetof(PC_DL_FOG_READER, colour) == 4);
     STATIC_ASSERT(offsetof(PC_DL_FOG_READER, near_distance) == 8);
@@ -838,6 +898,7 @@ extern "C" {
         i32 texture_id[3];
         f32 x_offset, y_offset;
     } PC_DL_LEGACY_LIGHTMAP_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, x_offset) == 0xc);
     STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, y_offset) == 0x10);
 
@@ -846,6 +907,7 @@ extern "C" {
         NUMTX view, projection;
         f32 viewport[4];
     } PC_DL_CAMERA_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_CAMERA_READER) == 0x94);
     STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, view) == 4);
     STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, projection) == 0x44);
@@ -856,12 +918,14 @@ extern "C" {
         u8 unknown_0000[0x40];
         u32 reflection_flags;
     } PC_DL_MATERIAL_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
 
     typedef struct PC_DL_CAMERA_PROJECTION_READER {
         NUMTX projection;
         f32 viewport[4];
     } PC_DL_CAMERA_PROJECTION_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_CAMERA_PROJECTION_READER, viewport) == 0x40);
 
     typedef struct PC_DL_VERTEX_GROUPS_READER {
@@ -869,6 +933,7 @@ extern "C" {
         u32 flags;
         NUVEC4 values[1];
     } PC_DL_VERTEX_GROUPS_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, count) == 0);
     STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, flags) == 4);
     STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, values) == 8);
@@ -877,6 +942,7 @@ extern "C" {
         i32 count;
         NUVEC4 values[1];
     } PC_DL_VERTEX_OFFSETS_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, count) == 0);
     STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, values) == 4);
 
@@ -886,6 +952,7 @@ extern "C" {
     typedef struct PC_DL_AD_COLOURS {
         NUVEC colour[5];
     } PC_DL_AD_COLOURS;
+
     STATIC_ASSERT(sizeof(PC_DL_AD_COLOURS) == 0x3c);
 
     typedef struct PC_DL_AD_RECORD {
@@ -897,6 +964,7 @@ extern "C" {
         f32 pixel_parameter_x, pixel_parameter_y, pixel_parameter_z, pixel_scalar;
         PC_DL_AD_COLOURS colours;
     } PC_DL_AD_RECORD;
+
     STATIC_ASSERT(sizeof(PC_DL_AD_RECORD) == 0x78);
     STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, enabled) == 0x14);
     STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, segment_count) == 0x18);
@@ -916,6 +984,7 @@ extern "C" {
         u32 unknown_0008;
         PC_DL_AD_RECORD *records;
     } PC_DL_AD_RECORD_LIST;
+
     STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, count) == 4);
     STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, records) == 0xc);
 
@@ -925,6 +994,7 @@ extern "C" {
         u8 unknown_0008[0xc];
         PC_BUFFER_RESOURCE_PC *instance_buffer, *vertex_buffer, *index_buffer;
     } PC_DL_AD_PACKET;
+
     STATIC_ASSERT(sizeof(PC_DL_AD_PACKET) == 0x20);
     STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, list) == 0);
     STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instances) == 4);
@@ -944,6 +1014,7 @@ extern "C" {
         PC_BUFFER_RESOURCE_PC *dynamic_buffer;
         void *dynamic_vertices;
     } PC_DL_GEOMETRY_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_GEOMETRY_READER) == 0x38);
     STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, kind) == 0);
     STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, primitive_count) == 4);
@@ -961,6 +1032,7 @@ extern "C" {
         u8 unknown_0000[0x26c];
         u32 lightmap_flags;
     } PC_DL_GEOMETRY_MATERIAL_READER;
+
     STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_MATERIAL_READER, lightmap_flags) == 0x26c);
 
     typedef struct PC_DL_FACEON_DRAW_READER {
@@ -968,6 +1040,7 @@ extern "C" {
         PC_BUFFER_RESOURCE_PC *vertex_buffer;
         u32 first_vertex;
     } PC_DL_FACEON_DRAW_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_FACEON_DRAW_READER) == 0x10);
     STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, primitive_count) == 4);
     STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, vertex_buffer) == 8);
@@ -978,6 +1051,7 @@ extern "C" {
         u8 unknown_0001[3];
         u32 use_system_buffer, first_vertex, vertex_count;
     } PC_DL_DEBRIS_DRAW_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_DEBRIS_DRAW_READER) == 0x10);
     STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, buffer_index) == 0);
     STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, use_system_buffer) == 4);
@@ -989,6 +1063,7 @@ extern "C" {
         i32 texture_ids[3];
         f32 x_offset, y_offset;
     } PC_DL_LIGHTMAP_UPDATE_READER;
+
     STATIC_ASSERT(sizeof(PC_DL_LIGHTMAP_UPDATE_READER) == 0x1c);
     STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, mode) == 0);
     STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_id) == 4);
@@ -1032,10 +1107,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, pool) == 0x1c);
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
+
     typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS_PC {
         void *reserved00[13];
         u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *);
     } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;
+
     STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_COUNT_METHODS_PC, get_level_count) == 0x34);
 
     STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
@@ -1081,6 +1158,7 @@ extern "C" {
         f32 opacity;
         i16 texture_id;
     } NUQFNT_ATLAS_MATERIAL_PC;
+
     STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, attributes) == 0x40);
     STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, diffuse) == 0x54);
     STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, opacity) == 0x70);
@@ -1200,6 +1278,7 @@ extern "C" {
         f32 u;
         f32 v;
     } NUPRIMVERTEX_PC;
+
     STATIC_ASSERT(sizeof(NUPRIMVERTEX_PC) == 0x18);
     STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, colour) == 0x0c);
     STATIC_ASSERT(offsetof(NUPRIMVERTEX_PC, u) == 0x10);
@@ -1211,6 +1290,7 @@ extern "C" {
         i32 vertex_count;
         u8 unknown_001c[0x1c];
     } NUPRIM_PACKET_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_PACKET_PC) == 0x38);
     STATIC_ASSERT(offsetof(NUPRIM_PACKET_PC, vertex_count) == 0x18);
 
@@ -1221,6 +1301,7 @@ extern "C" {
         void *target;
         u32 unknown_0008[2];
     } NUPRIM_COMMAND_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_COMMAND_PC) == 0x10);
     STATIC_ASSERT(offsetof(NUPRIM_COMMAND_PC, target) == 4);
 
@@ -1231,12 +1312,14 @@ extern "C" {
         u32 unknown_0010;
         i32 texture_id;
     } NUPRIM_MATERIAL_STATE_PC;
+
     STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, material) == 0x08);
     STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, texture_id) == 0x14);
 
     typedef struct nuprim_transform_packet_pc_s {
         u8 unknown_0000[0x40];
     } NUPRIM_TRANSFORM_PACKET_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_TRANSFORM_PACKET_PC) == 0x40);
 
     typedef struct nuprim_render_state_ids_pc_s {
@@ -1250,6 +1333,7 @@ extern "C" {
         i16 vertex_groups_id;
         i16 reflection_id;
     } NUPRIM_RENDER_STATE_IDS_PC;
+
     STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, konst_id) == 0x1e);
     STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, global_id) == 0x20);
     STATIC_ASSERT(offsetof(NUPRIM_RENDER_STATE_IDS_PC, lights_id) == 0x24);
@@ -1264,6 +1348,7 @@ extern "C" {
         NUMTX projection;
         f32 viewport[4];
     } NUPRIM_CAMERA_PACKET_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_CAMERA_PACKET_PC) == 0x94);
     STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, view) == 4);
     STATIC_ASSERT(offsetof(NUPRIM_CAMERA_PACKET_PC, projection) == 0x44);
@@ -1275,6 +1360,7 @@ extern "C" {
         f32 z;
         f32 w;
     } NUPRIM_VEC4_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_VEC4_PC) == 0x10);
 
     typedef struct nuprim_light_packet_pc_s {
@@ -1284,6 +1370,7 @@ extern "C" {
         NUMTX specular_mtx;
         NUVEC specular_colour;
     } NUPRIM_LIGHT_PACKET_PC;
+
     STATIC_ASSERT(sizeof(NUPRIM_LIGHT_PACKET_PC) == 0xbc);
     STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_intensity) == 0x10);
     STATIC_ASSERT(offsetof(NUPRIM_LIGHT_PACKET_PC, light_direction) == 0x40);
@@ -1296,6 +1383,7 @@ extern "C" {
         u8 unknown_0000[0x58];
         u8 *material_used[2];
     } NUPRIM_SCENE_USAGE_PC;
+
     STATIC_ASSERT(offsetof(NUPRIM_SCENE_USAGE_PC, material_used) == 0x58);
     STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) ==
                   offsetof(NUPRIM_SCENE_USAGE_PC, material_used) + sizeof(u8 *));
@@ -1304,7 +1392,9 @@ extern "C" {
         u8 unknown_00[0x8c];
         f32 global_specular;
     } AMBIENT_SPECULAR_RENDER_VIEW_PC;
+
     STATIC_ASSERT(offsetof(AMBIENT_SPECULAR_RENDER_VIEW_PC, global_specular) == 0x8c);
+
     // @@FUNCTIONS
 
     /* The PC backend has no special-transform work: the leaf forwards to the shared empty
@@ -1341,11 +1431,12 @@ extern "C" {
 
     static __declspec(noinline) void NuLgtSetVertexColor(i32 colour) {
         i32 converted;
-        if (NuPrimNeedsOverbrightening)
+        if (NuPrimNeedsOverbrightening) {
             converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
-        else
+        } else {
             converted =
                 ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        }
         ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
     }
 
@@ -1393,8 +1484,9 @@ extern "C" {
         i32 i;
         i32 memory_delta;
         f32 multiplier;
-        if (texture == NULL)
+        if (texture == NULL) {
             return;
+        }
         for (i = 0; i != 32; ++i) {
             if (&PCGraphicsRenderTextures[i] == texture) {
                 if (texture->external_id == -1) {
@@ -1446,6 +1538,7 @@ extern "C" {
     /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE_PC::flags. */
     typedef union PC_SAMPLER_FLAGS_PC {
         u32 value;
+
         struct {
             u32 unknown_0 : 8;
             u32 address_u : 3;
@@ -1457,6 +1550,7 @@ extern "C" {
             u32 unknown_26 : 6;
         } bits;
     } PC_SAMPLER_FLAGS_PC;
+
     STATIC_ASSERT(sizeof(PC_SAMPLER_FLAGS_PC) == 4);
 
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second,
@@ -1617,8 +1711,9 @@ extern "C" {
             return;
         }
         d3d_usage = 0;
-        if (texture->usage == 1)
+        if (texture->usage == 1) {
             d3d_usage = format == 5 || format == 6 || format == 7 ? 2 : 1;
+        }
         PCDeviceCreateTexture(texture->width, texture->height, texture->mip_count, d3d_usage,
                               PCGraphicsFormatToD3d(format), texture->pool, &texture->resource);
         if (texture->resource != NULL) {
@@ -1638,8 +1733,9 @@ extern "C" {
      * byte-count conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
     __declspec(noinline) void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
                                                                     i32 height, i32 levels) {
-        if (texture == NULL)
+        if (texture == NULL) {
             return;
+        }
         f32 multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
         i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
         PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
@@ -1657,10 +1753,11 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
-        if (texture != NULL)
+        if (texture != NULL) {
             PCDeviceSetTexture(stage, texture->resource);
-        else
+        } else {
             PCDeviceSetTexture(stage, NULL);
+        }
     }
 
     void __cdecl PCGraphicsReleaseEffectTextures(void) {
@@ -1691,9 +1788,10 @@ extern "C" {
             if (PCGraphicsRenderTextureActive[index]) {
                 switch (texture->field_10) {
                     case 1:
-                        if (texture->external_id == -1 && texture->resource == NULL && texture->surface == NULL)
+                        if (texture->external_id == -1 && texture->resource == NULL && texture->surface == NULL) {
                             PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count,
                                                         texture->usage, texture->pool, texture->format);
+                        }
                         break;
                 }
             }
@@ -1715,29 +1813,35 @@ extern "C" {
         PC_EFFECT_SURFACE_PC *target = &framebuffer->targets[index];
         GRAPHICS_RENDER_TEXTURE_PC *texture = target->texture;
         if (texture == NULL) {
-            if (level != NULL)
+            if (level != NULL) {
                 *level = 0;
-            if (field != NULL)
+            }
+            if (field != NULL) {
                 *field = 0;
+            }
             return NULL;
         }
-        if (level != NULL)
+        if (level != NULL) {
             *level = target->level;
+        }
         /* Retail tests field but writes through level, including when level is null. */
-        if (field != NULL)
+        if (field != NULL) {
             *level = target->field_10;
+        }
         return texture;
     }
 
     i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer) {
-        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer) {
             return PCDeviceBackend.parameters.width;
+        }
         return framebuffer != NULL ? framebuffer->targets[0].width : 0;
     }
 
     i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer) {
-        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer) {
             return PCDeviceBackend.parameters.height;
+        }
         return framebuffer != NULL ? framebuffer->targets[0].height : 0;
     }
 
@@ -1753,13 +1857,14 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *frame) {
-        if (PcBoundFramebuffer == frame && (frame == NULL || frame->changed == 0))
+        if (PcBoundFramebuffer == frame && (frame == NULL || frame->changed == 0)) {
             return;
-        if (frame == PcDefaultFramebuffer)
+        }
+        if (frame == PcDefaultFramebuffer) {
             PCDeviceBackend.ConfigureCurrentTargets();
-        else if (frame == PcSecondaryFramebuffer)
+        } else if (frame == PcSecondaryFramebuffer) {
             PCDeviceBackend.ResetTargets();
-        else if (frame != NULL) {
+        } else if (frame != NULL) {
             PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[0], 0);
             PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[1], 1);
             PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[2], 2);
@@ -1767,8 +1872,9 @@ extern "C" {
             PCDeviceBackend.SetDepthStencilSurface(&frame->targets[4]);
         }
         PcBoundFramebuffer = frame;
-        if (frame != NULL)
+        if (frame != NULL) {
             frame->changed = 1;
+        }
     }
 
     void __cdecl PCGraphicsBindDefaultFramebuffer(void) {
@@ -1777,10 +1883,12 @@ extern "C" {
 
     void __cdecl PCGraphicsClearFramebuffer(u32 mask, i32 colour) {
         u32 flags = 0;
-        if (PcBoundFramebuffer->targets[0].texture != NULL && (mask & 0x100))
+        if (PcBoundFramebuffer->targets[0].texture != NULL && (mask & 0x100)) {
             flags = 1;
-        if (PcBoundFramebuffer->targets[4].texture != NULL && (mask & 0x200))
+        }
+        if (PcBoundFramebuffer->targets[4].texture != NULL && (mask & 0x200)) {
             flags |= 6;
+        }
         if (flags != 0) {
             i32 converted = (((colour >> 24) * 256 + (colour & 0xff)) * 256 + ((colour >> 8) & 0xff)) * 256 +
                             ((colour >> 16) & 0xff);
@@ -1801,8 +1909,9 @@ extern "C" {
         (void)end;
         NuStrFixExt(filename, name, (char *)NuTextureDdsExtensionPc, sizeof(filename));
         file = NuFileOpen(filename, 0);
-        if (file == 0)
+        if (file == 0) {
             return 0;
+        }
         size = (i32)NuFileOpenSize(file);
         data = NuAlloc(size, NuTextureSourcePathPC, 0x2f);
         NuFileRead(file, data, size);
@@ -2210,6 +2319,7 @@ extern "C" {
             f32 value;
             u32 bits;
         } bias;
+
         PCDeviceSetSamplerState(stage, 9, tuple[0] & 15);
         if ((((tuple[0] >> 4) ^ tuple[0]) & 15) == 0) {
             bias.value = -10.0f;
@@ -2681,14 +2791,16 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE_PC::Reset() {
-        if (texture != NULL && texture->surface != NULL)
+        if (texture != NULL && texture->surface != NULL) {
             surface = NULL;
+        }
         if (surface != NULL) {
             surface->methods->release(surface);
             surface = NULL;
         }
-        if (texture != NULL && owns_texture)
+        if (texture != NULL && owns_texture) {
             PCGraphicsDestroyRenderTexture(texture);
+        }
         texture = NULL;
         owns_texture = 0;
         level = 0;
@@ -2697,8 +2809,9 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE_PC::Attach(GRAPHICS_RENDER_TEXTURE_PC *new_texture, i32 new_level, bool own) {
-        if (texture == new_texture && (i32)level == new_level)
+        if (texture == new_texture && (i32)level == new_level) {
             return;
+        }
         Reset();
         texture = new_texture;
         owns_texture = (u8)own;
@@ -2706,8 +2819,9 @@ extern "C" {
         level = (u16)new_level;
         field_10 = 0;
         height = width = 0;
-        if (new_texture == NULL)
+        if (new_texture == NULL) {
             return;
+        }
         if (new_texture->surface != NULL) {
             surface = new_texture->surface;
             width = new_texture->width;
@@ -2725,8 +2839,9 @@ extern "C" {
         for (u32 index = 0; index != 256; ++index) {
             PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
             if (item != NULL && item->surface != NULL) {
-                if (item->texture->surface == NULL)
+                if (item->texture->surface == NULL) {
                     item->surface->methods->release(item->surface);
+                }
                 PcSurfaceRegistry[index]->surface = NULL;
             }
         }
@@ -2750,8 +2865,9 @@ extern "C" {
                         PcSurfaceRegistry[index]->width = (u16)description.width;
                         PcSurfaceRegistry[index]->height = (u16)description.height;
                     }
-                } else
+                } else {
                     PcSurfaceRegistry[index]->surface = NULL;
+                }
             }
         }
     }
@@ -2761,13 +2877,16 @@ extern "C" {
     }
 
     void NuDeferredFilter::ResizeTexturesPc(i32, i32) {
-        if (textures[2] != NULL)
+        if (textures[2] != NULL) {
             PCGraphicsResizeEffectTexture(textures[2], -1, -1, -1);
-        if (textures[0] != NULL)
+        }
+        if (textures[0] != NULL) {
             PCGraphicsResizeEffectTexture(textures[0], -1, -1, -1);
+        }
         for (i32 i = 0; i < 2; ++i) {
-            if (textures[4 + i] != NULL)
+            if (textures[4 + i] != NULL) {
                 PCGraphicsResizeEffectTexture(textures[4 + i], textures[2]->width, textures[2]->height, -1);
+            }
         }
     }
 
@@ -2799,18 +2918,21 @@ extern "C" {
         PCDeviceLockVertexBuffer(0, 0, (void **)&strip, 0, geometry->strip_vertex_buffer);
         for (i32 i = 0; i < vertices; ++i) {
             strip[i].fraction = (f32)(i - 1) / (f32)(vertices - 3);
-            if (strip[i].fraction < 0.0f)
+            if (strip[i].fraction < 0.0f) {
                 strip[i].fraction = 0.0f;
-            if (strip[i].fraction > 1.0f)
+            }
+            if (strip[i].fraction > 1.0f) {
                 strip[i].fraction = 1.0f;
+            }
             strip[i].side = (i & 1) == 0 ? 0.5f : -0.5f;
         }
         PCDeviceUnlockVertexBuffer(geometry->strip_vertex_buffer);
         PCDeviceCreateIndexBuffer((u32)vertices * sizeof(u16), 0, 0x65, 0, &geometry->strip_index_buffer, NULL);
         u16 *indices;
         geometry->strip_index_buffer->methods->lock(geometry->strip_index_buffer, 0, 0, (void **)&indices, 0);
-        for (i32 i = 0; i < vertices; ++i)
+        for (i32 i = 0; i < vertices; ++i) {
             indices[i] = (u16)i;
+        }
         geometry->strip_index_buffer->methods->unlock(geometry->strip_index_buffer);
         return 1;
     }
@@ -2861,8 +2983,9 @@ extern "C" {
                         }
                     }
                 } else {
-                    for (i32 corner = 0; corner < 4; ++corner)
+                    for (i32 corner = 0; corner < 4; ++corner) {
                         corners[corner] = input->corners[corner];
+                    }
                 }
                 NUMTX matrix;
                 matrix.m00 = row2.x;
@@ -2881,14 +3004,16 @@ extern "C" {
                 matrix.m31 = row0.y;
                 matrix.m32 = row0.z;
                 matrix.m33 = 1;
-                for (i32 corner = 0; corner < 4; ++corner)
+                for (i32 corner = 0; corner < 4; ++corner) {
                     NuVecMtxTransform(&corners[corner].position, &corners[corner].position, &matrix);
+                }
                 output->basis_axis.x = row1.x;
                 output->basis_axis.y = row1.y;
                 output->basis_axis.z = row1.z;
                 output->distance_squared = 0;
-                for (i32 corner = 0; corner < 4; ++corner)
+                for (i32 corner = 0; corner < 4; ++corner) {
                     corners[corner].w = input->output_w[corner];
+                }
                 ++*output_index;
             }
         }
@@ -2908,8 +3033,9 @@ extern "C" {
             delta.z = origin.z - position->z;
             output[i].distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         }
-        for (i32 i = 0; i < count; ++i)
+        for (i32 i = 0; i < count; ++i) {
             items[i].distance_squared = output[items[i].output_index].distance_squared;
+        }
         return 1;
     }
 
@@ -3008,10 +3134,11 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
         packet = (f32 *)cursor->void_ptr;
-        if (state->state_00f4 != 0)
+        if (state->state_00f4 != 0) {
             *packet = state->state_00f8;
-        else
+        } else {
             *packet = 1.0f;
+        }
         cursor->void_ptr = packet + 1;
         return packet;
     }
@@ -3149,8 +3276,9 @@ extern "C" {
         const PC_TRANSFORM_MATERIAL_VIEW *selected = (const PC_TRANSFORM_MATERIAL_VIEW *)material;
         f32 scale;
         NUVEC scaling;
-        if (selected->next != NULL)
+        if (selected->next != NULL) {
             selected = selected->next;
+        }
         if (selected->transform_kind != 0x81 && selected->transform_kind != 0x85) {
             *output = RndrStateTransformPc;
             return;
@@ -3203,8 +3331,9 @@ extern "C" {
                 nuprim_field_ba8 = RndrStreamSecondPc.addr + RndrStreamSizePc;
                 break;
         }
-        if (nudlist_stream_cursor.addr & 15)
+        if (nudlist_stream_cursor.addr & 15) {
             nudlist_stream_cursor.addr = (nudlist_stream_cursor.addr + 15) & ~15u;
+        }
         SAGA_SKIN_CALL(skin_trace_stream, (unsigned)RndrStreamIndexPc, nudlist_stream_cursor.addr,
                        nuprim_field_ba8 - nudlist_stream_cursor.addr);
     }
@@ -3218,8 +3347,9 @@ extern "C" {
                 RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamSecondPc.addr;
                 break;
         }
-        if (RndrStreamUsedPc > RndrStreamMaxUsedPc)
+        if (RndrStreamUsedPc > RndrStreamMaxUsedPc) {
             RndrStreamMaxUsedPc = RndrStreamUsedPc;
+        }
         if (RndrStreamUsedPc > (u32)RndrStreamSizePc) {
             PCGraphicsRenderTextureAllocationError();
             DebugBreak();
@@ -3252,27 +3382,32 @@ extern "C" {
         const void *vertices;
         u32 point_size;
         f32 point_size_float;
-        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0) {
             return;
+        }
         count = packet->vertex_count;
         vertices = packet + 1;
         switch (packet->type) {
             case 12:
             case 16:
-                if (count > 2)
+                if (count > 2) {
                     PCDeviceDrawPrimitiveUPPc(4, count / 3, vertices, 24);
+                }
                 break;
             case 15:
-                if (count > 1)
+                if (count > 1) {
                     PCDeviceDrawPrimitiveUPPc(3, count - 1, vertices, 24);
+                }
                 break;
             case 13:
-                if (count > 2)
+                if (count > 2) {
                     PCDeviceDrawPrimitiveUPPc(5, count - 2, vertices, 24);
+                }
                 break;
             case 14:
-                if (count > 1)
+                if (count > 1) {
                     PCDeviceDrawPrimitiveUPPc(2, count / 2, vertices, 24);
+                }
                 break;
             case 18:
                 point_size_float = 32.0f;
@@ -3292,8 +3427,9 @@ extern "C" {
         void *elements = packet->elements;
         PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
         if (shader != NULL) {
-            if (count > 8)
+            if (count > 8) {
                 NuPtlDmaSlotsExhaustedPc();
+            }
             NuShaderObjectSetElementsfv(shader, 0x18, 0, count, (const f32 *)elements);
             SAGA_SKIN_CALL(skin_trace_palette, (unsigned)arg, count);
         }
@@ -3301,8 +3437,9 @@ extern "C" {
 
     void __cdecl NuDisplayListDrawFaceOnPc(void *arg) {
         PC_DL_FACEON_DRAW_READER *packet = (PC_DL_FACEON_DRAW_READER *)arg;
-        if (packet == NULL)
+        if (packet == NULL) {
             return;
+        }
         PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 32);
         PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->primitive_count * 2u);
     }
@@ -3388,21 +3525,25 @@ extern "C" {
         i32 stage;
         f32 offset[3];
         if (PCGraphicsFrameScratchCount.lightmap_packet == NULL ||
-            (u32)PCGraphicsFrameScratchCount.lightmap_packet == (u32)PCGraphicsBoundShader)
+            (u32)PCGraphicsFrameScratchCount.lightmap_packet == (u32)PCGraphicsBoundShader) {
             return;
+        }
         packet = (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
         PCGraphicsBoundShader = (i32)(u32)PCGraphicsFrameScratchCount.lightmap_packet;
-        if (packet->mode == 2 && PcWindowOptions.usehires == 0)
+        if (packet->mode == 2 && PcWindowOptions.usehires == 0) {
             packet->mode = 1;
+        }
         if (packet->mode == 1) {
             NUTEXDIM_PC *texture;
             stage = 0;
-            if (PCDeviceHardwareVertexProcessingPC == 1)
+            if (PCDeviceHardwareVertexProcessingPC == 1) {
                 stage = 1;
-            if (packet->texture_id != -1)
+            }
+            if (packet->texture_id != -1) {
                 texture = NuTextureGetDimensions(packet->texture_id);
-            else
+            } else {
                 texture = NuTextureGetDimensions(1);
+            }
             PCDeviceSetTexture(stage, texture->resource);
             PCDeviceSetSamplerState(stage, 1, 1);
             PCDeviceSetSamplerState(stage, 2, 1);
@@ -3416,10 +3557,11 @@ extern "C" {
         } else if (packet->mode == 2) {
             for (stage = 0; stage < 3; ++stage) {
                 NUTEXDIM_PC *texture;
-                if (packet->texture_ids[stage] != -1)
+                if (packet->texture_ids[stage] != -1) {
                     texture = NuTextureGetDimensions(packet->texture_ids[stage]);
-                else
+                } else {
                     texture = NuTextureGetDimensions(1);
+                }
                 PCDeviceSetTexture(stage, texture->resource);
                 PCDeviceSetSamplerState(stage, 1, 1);
                 PCDeviceSetSamplerState(stage, 2, 1);
@@ -3440,10 +3582,11 @@ extern "C" {
         i32 i;
         for (i = 0; i < 3; ++i) {
             NUTEXDIM_PC *texture;
-            if (texture_ids[i] != -1)
+            if (texture_ids[i] != -1) {
                 texture = NuTextureGetDimensions(texture_ids[i]);
-            else
+            } else {
                 texture = NuTextureGetDimensions(1);
+            }
             PCDeviceSetTexture(i, texture->resource);
             PCDeviceSetSamplerState(i, 1, 1);
             PCDeviceSetSamplerState(i, 2, 1);
@@ -3457,10 +3600,11 @@ extern "C" {
         i32 i;
         for (i = 0; i < 3; ++i) {
             NUTEXDIM_PC *texture;
-            if (packet->texture_id[i] != -1)
+            if (packet->texture_id[i] != -1) {
                 texture = NuTextureGetDimensions(packet->texture_id[i]);
-            else
+            } else {
                 texture = NuTextureGetDimensions(1);
+            }
             PCDeviceSetTexture(i, texture->resource);
             PCDeviceSetSamplerState(i, 1, 1);
             PCDeviceSetSamplerState(i, 2, 1);
@@ -3479,8 +3623,9 @@ extern "C" {
         i32 segments;
         u32 vertex_count;
         u32 instances = packet->instances;
-        if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL)
+        if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL) {
             return;
+        }
         record = &packet->list->records[packet->list->count - 1];
         segments = record->segment_count;
         values.x = (f32)segments;
@@ -3582,8 +3727,9 @@ extern "C" {
         f32 rounded_width;
         f32 rounded_height;
         f32 reciprocal;
-        if (NuVpDirtyPc == 0)
+        if (NuVpDirtyPc == 0) {
             return;
+        }
         clipped_left = 0;
         clipped_top = 0;
         NuCameraProjectionGlobalScaleX = 1.0f;
@@ -3599,34 +3745,40 @@ extern "C" {
         bottom = (i32)((u32)y + (u32)height);
         limit_x = (i32)((u32)PS2_REZ_W << 4);
         limit_y = (i32)((u32)PS2_REZ_H << 4);
-        if (right < 0 || x >= limit_x || bottom < 0 || y >= limit_y)
+        if (right < 0 || x >= limit_x || bottom < 0 || y >= limit_y) {
             goto empty;
+        }
         if (x < 0) {
             width = right;
             x = 0;
             clipped_left = 1;
         }
-        if (right > limit_x)
+        if (right > limit_x) {
             width = (i32)((u32)width + (u32)limit_x - (u32)right);
+        }
         if (y < 0) {
             height = bottom;
             y = 0;
             clipped_top = 1;
         }
-        if (bottom > limit_y)
+        if (bottom > limit_y) {
             height = (i32)((u32)height + (u32)limit_y - (u32)bottom);
-        if (width <= 0 || height <= 0)
+        }
+        if (width <= 0 || height <= 0) {
             goto empty;
+        }
         rounded_width = (f32)width;
         NuCameraProjectionGlobalScaleX = (f32)((f64)vpCurrent.width / (f64)rounded_width);
         rounded_height = (f32)height;
         NuCameraProjectionGlobalScaleY = (f32)((f64)vpCurrent.height / (f64)rounded_height);
         NuCameraProjectionGlobalOffsetX = (f32)((f64)(i32)((u32)vpCurrent.width - (u32)width) / (f64)rounded_width);
         NuCameraProjectionGlobalOffsetY = (f32)(-(f64)(i32)((u32)vpCurrent.height - (u32)height) / (f64)rounded_height);
-        if (clipped_left != 0)
+        if (clipped_left != 0) {
             NuCameraProjectionGlobalOffsetX = -NuCameraProjectionGlobalOffsetX;
-        if (clipped_top != 0)
+        }
+        if (clipped_top != 0) {
             NuCameraProjectionGlobalOffsetY = -NuCameraProjectionGlobalOffsetY;
+        }
         goto submit;
     empty:
         x = y = width = height = 0;
@@ -3681,16 +3833,19 @@ extern "C" {
 
     i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
         i32 result;
-        if (handle->scene == NULL)
+        if (handle->scene == NULL) {
             return 0;
-        if (alpha <= 0.0f)
+        }
+        if (alpha <= 0.0f) {
             return 0;
+        }
         if (alpha < 1.0f) {
             NuSpecialConstAlpha(1, alpha);
             result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
             NuSpecialConstAlpha(0, 0.0f);
-        } else
+        } else {
             result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
+        }
         return result;
     }
 
@@ -3703,8 +3858,9 @@ extern "C" {
         NuDebrisUseSystemMemory = 0;
         NuDebrisCurrentVertexCount = 0;
         NuDebrisLastHeader = NULL;
-        for (index = 0; index != 4; ++index)
+        for (index = 0; index != 4; ++index) {
             PCDeviceCreateVertexBuffer(NuDebrisVertexBufferSize, 0x208, 0, 0, &NuDebrisVertexBuffers[index]);
+        }
         PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                                  NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
     }
@@ -3718,8 +3874,9 @@ extern "C" {
     }
 
     void __cdecl NuDebrisRendererFlushBuffers(void) {
-        if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL)
+        if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL) {
             PCDeviceUnlockVertexBuffer(NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
+        }
         NuDebrisVertexData = NULL;
         NuDebrisCurrentBufferIndex = 0;
         NuDebrisUseSystemMemory = 0;
@@ -3729,8 +3886,9 @@ extern "C" {
     }
 
     i32 __cdecl NuDebrisRendererNextBuffer(void) {
-        if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL)
+        if (NuDebrisUseSystemMemory == 0 && NuDebrisVertexData != NULL) {
             PCDeviceUnlockVertexBuffer(NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
+        }
         if (NuDebrisUseSystemMemory != 0) {
             if (NuDebrisCurrentBufferIndex + 1 >= 8) {
                 PCClipScreenUnsupported();
@@ -3744,18 +3902,20 @@ extern "C" {
             NuDebrisCurrentBufferIndex = (NuDebrisCurrentBufferIndex + 1) & 3;
         }
         NuDebrisCurrentVertexCount = 0;
-        if (NuDebrisUseSystemMemory != 0)
+        if (NuDebrisUseSystemMemory != 0) {
             NuDebrisVertexData = NuDebrisSystemBuffers[NuDebrisCurrentBufferIndex];
-        else
+        } else {
             PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                                      NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
+        }
         return 1;
     }
 
     void __cdecl NuDisplayListDrawDebrisPc(void *arg) {
         PC_DL_DEBRIS_DRAW_READER *packet = (PC_DL_DEBRIS_DRAW_READER *)arg;
-        if (packet->vertex_count == 0)
+        if (packet->vertex_count == 0) {
             return;
+        }
         if (packet->use_system_buffer != 0) {
             const void *vertices = (const u8 *)NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex * 24u;
             PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
@@ -4050,8 +4210,9 @@ extern "C" {
                 NuPortalVisibilityBitsPc[index >> 3] |= (u8)(1 << (index & 7));
             }
         } else {
-            for (i = 0; i < room->instance_count; ++i)
+            for (i = 0; i < room->instance_count; ++i) {
                 scene->instances[room->instance_indices[i]].flags |= 4;
+            }
         }
     }
 
@@ -4060,8 +4221,9 @@ extern "C" {
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 255, 625);
         } else {
-            for (i = 0; i < scene->num_instances; ++i)
+            for (i = 0; i < scene->num_instances; ++i) {
                 scene->instances[i].flags |= 4;
+            }
         }
     }
 
@@ -4070,8 +4232,9 @@ extern "C" {
         if (scene->display_list != NULL) {
             memset(NuPortalVisibilityBitsPc, 0, 625);
         } else {
-            for (i = 0; i < scene->num_instances; ++i)
+            for (i = 0; i < scene->num_instances; ++i) {
                 scene->instances[i].flags &= ~4U;
+            }
         }
     }
 
@@ -4083,20 +4246,22 @@ extern "C" {
                 u32 index = (u32)(i32)room->instance_indices[i];
                 u32 byte_index = index >> 3;
                 u32 bit = index & 7;
-                if (((NuPortalVisibilityBitsPc[byte_index] >> bit) & 1) != 0)
+                if (((NuPortalVisibilityBitsPc[byte_index] >> bit) & 1) != 0) {
                     continue;
+                }
                 display = scene->display_list;
                 if (((display->portal_visibility_overrides[byte_index] >> bit) & 1) != 0) {
                     NuPortalVisibilityBitsPc[byte_index] |= (u8)(1 << bit);
                 } else {
                     u8 flags = display->visibility_flags[index];
                     if ((flags & 1) != 0) {
-                        if ((flags & 8) != 0)
+                        if ((flags & 8) != 0) {
                             NuPortalVisibilityBitsPc[byte_index] |= (u8)(1 << bit);
-                        else if (NuPortalClipTestBox(&((PORTAL_BOX_PC *)scene->portal_boxes)[index].first,
-                                                     &((PORTAL_BOX_PC *)scene->portal_boxes)[index].second,
-                                                     frustum) != 0)
+                        } else if (NuPortalClipTestBox(&((PORTAL_BOX_PC *)scene->portal_boxes)[index].first,
+                                                       &((PORTAL_BOX_PC *)scene->portal_boxes)[index].second,
+                                                       frustum) != 0) {
                             NuPortalVisibilityBitsPc[byte_index] |= (u8)(1 << bit);
+                        }
                     }
                 }
             }
@@ -4106,8 +4271,9 @@ extern "C" {
                 u32 byte_index = index >> 3;
                 u32 bit = index & 7;
                 u8 bits = NuPortalVisibilityBitsPc[byte_index];
-                if (((bits >> bit) & 1) != 0)
+                if (((bits >> bit) & 1) != 0) {
                     continue;
+                }
                 /* Native dereferences a null display only for an unseen instance. */
                 display = scene->display_list;
                 if (((display->portal_visibility_overrides[byte_index] >> bit) & 1) != 0) {
@@ -4125,8 +4291,9 @@ extern "C" {
                     case 2:
                         if (clipTestBox(&((PORTAL_BOX_PC *)scene->portal_boxes)[index].first,
                                         &((PORTAL_BOX_PC *)scene->portal_boxes)[index].second, frustum->planes,
-                                        frustum->plane_count) != 0)
+                                        frustum->plane_count) != 0) {
                             NuPortalVisibilityBitsPc[byte_index] |= (u8)(1 << bit);
+                        }
                         break;
                 }
             }
@@ -4138,18 +4305,21 @@ extern "C" {
         NuShaderMtlDescInit(reinterpret_cast<PC_MATERIAL_CREATE_SHADER *>(&mtl->shader));
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
-            if (mtl->shader.texture_unit_count <= 0)
+            if (mtl->shader.texture_unit_count <= 0) {
                 mtl->shader.texture_unit_count = 1;
-            if ((mtl->shader.vertex_format & 0x3800) <= 0)
+            }
+            if ((mtl->shader.vertex_format & 0x3800) <= 0) {
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
+            }
         } else {
             u32 colour = static_cast<u8>(mtl->diffuse.z * 255.0) | 0xffffff00;
             colour = (colour << 8) | static_cast<u8>(mtl->diffuse.y * 255.0);
             colour = (colour << 8) | static_cast<u8>(mtl->diffuse.x * 255.0);
             mtl->shader.packed_diffuse_colour = colour;
         }
-        if (is_3d == 0)
+        if (is_3d == 0) {
             mtl->shader.vertex_format |= 0x40000;
+        }
     }
 
     void __cdecl NuMtlUpdatePS(NUMTL *material) {
@@ -4159,17 +4329,22 @@ extern "C" {
         PCFrameCriticalSectionEnter_candidate();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
-            if (mtl->shader.texture_unit_count <= 0)
+            if (mtl->shader.texture_unit_count <= 0) {
                 mtl->shader.texture_unit_count = 1;
-            if ((mtl->shader.vertex_format & 0x3800) <= 0)
+            }
+            if ((mtl->shader.vertex_format & 0x3800) <= 0) {
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
+            }
         }
-        if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL)
+        if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL) {
             mtl->shader.vertex_format |= 0x40000;
-        if (mtl->shader.shader_handle > 0)
+        }
+        if (mtl->shader.shader_handle > 0) {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handle));
-        if (mtl->shader.shader_variant_handle > 0)
+        }
+        if (mtl->shader.shader_variant_handle > 0) {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_variant_handle));
+        }
         if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL) {
             shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(
                 NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
@@ -4221,16 +4396,18 @@ extern "C" {
         if (material != NULL) {
             switch ((material->reflection_flags >> 12) & 3) {
                 case 0:
-                    if (reflection != 0)
+                    if (reflection != 0) {
                         PCDeviceSetRenderState(0x16, 2);
-                    else
+                    } else {
                         PCDeviceSetRenderState(0x16, 3);
+                    }
                     break;
                 case 1:
-                    if (reflection != 0)
+                    if (reflection != 0) {
                         PCDeviceSetRenderState(0x16, 3);
-                    else
+                    } else {
                         PCDeviceSetRenderState(0x16, 2);
+                    }
                     break;
             }
         }
@@ -4242,8 +4419,9 @@ extern "C" {
     void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
                             u32 colour, f32 end_width, f32 length) {
         i32 i;
-        if (NuLgtLaserCnt >= 64)
+        if (NuLgtLaserCnt >= 64) {
             return;
+        }
 
         NuLgtLaserData[NuLgtLaserCnt].arc = 0;
         NuLgtLaserData[NuLgtLaserCnt].type = (u8)type;
@@ -4268,8 +4446,9 @@ extern "C" {
     }
 
     void __cdecl NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
-        if (type >= 4)
+        if (type >= 4) {
             return;
+        }
         NuLgtArcMtl[type].material = material;
         NuLgtArcMtl[type].u0 = u0;
         NuLgtArcMtl[type].v0 = v0;
@@ -4287,22 +4466,27 @@ extern "C" {
         u32 alpha;
 
         alpha = ((u32)colour >> 24) * 2;
-        if (alpha > 255)
+        if (alpha > 255) {
             alpha = 255;
+        }
         alpha <<= 24;
         blue = ((u8)((u32)colour >> 16)) * 2;
-        if (blue > 255)
+        if (blue > 255) {
             blue = 255;
+        }
         green = ((u32)colour & 0xff00) * 2;
-        if (green > 0xff00)
+        if (green > 0xff00) {
             green = 0xff00;
+        }
         red = ((u8)colour) * 2;
-        if (red > 255)
+        if (red > 255) {
             red = 255;
+        }
 
         index = NuLgtArcLaserCnt;
-        if (index >= 16)
+        if (index >= 16) {
             return;
+        }
 
         NuLgtArcLaserData[index].type = (u8)type;
         NuLgtArcLaserData[index].start = *start;
@@ -4314,10 +4498,12 @@ extern "C" {
         NuLgtArcLaserData[index].bend_amount = bend_amount;
         NuLgtArcLaserData[index].colour = (red << 16) | green | blue | alpha;
         NuLgtArcLaserData[index].flags = flags;
-        if ((NuLgtArcLaserFrame & 1) == 0 || NuLgtArcLaserData[index].seed == 0)
+        if ((NuLgtArcLaserFrame & 1) == 0 || NuLgtArcLaserData[index].seed == 0) {
             NuLgtArcLaserData[index].seed = NU_LGT_RAND();
-        for (i = 0; i < 6; ++i)
+        }
+        for (i = 0; i < 6; ++i) {
             NU_LGT_RAND();
+        }
         ++NuLgtArcLaserCnt;
     }
 
@@ -4364,8 +4550,9 @@ extern "C" {
             } else {
                 skip_texture = 0;
                 if (PcWindowOptions.usehires == 0 && texture.width > 0 &&
-                    ((texture.flags & 0xc) != 0 || (texture.flags & 0x3c00) != 0))
+                    ((texture.flags & 0xc) != 0 || (texture.flags & 0x3c00) != 0)) {
                     skip_texture = 1;
+                }
                 data = SceneUploadBufferCursorPC.void_ptr;
                 SceneUploadBufferCursorPC.addr += texture.size;
                 bytes_read += NuFileRead(file, data, texture.size);
@@ -4385,8 +4572,9 @@ extern "C" {
                                                           1, -1, -1, 0, NULL, NULL, &SceneVideoResourcesPC.textures[i]);
                     }
                     PCFrameCriticalSectionLeave_candidate();
-                    if (bgProcIsBgThread() != 0 && PCFrameLoadingYieldEnabled() != 0)
+                    if (bgProcIsBgThread() != 0 && PCFrameLoadingYieldEnabled() != 0) {
                         Sleep(10);
+                    }
                 }
                 SceneUploadBufferCursorPC.addr -= texture.size;
             }
@@ -4462,22 +4650,25 @@ extern "C" {
 
     void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
         i32 i, j;
-        if (scene->display_list == NULL)
+        if (scene->display_list == NULL) {
             return;
+        }
         for (i = 0; i < scene->display_list->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
             if (item->type == 0xb0) {
                 SCENE_TEXTURE_PACKET_B0_PC *packet = (SCENE_TEXTURE_PACKET_B0_PC *)item->next;
                 if (packet->kind == 2) {
-                    for (j = 0; j < 3; ++j)
+                    for (j = 0; j < 3; ++j) {
                         packet->extra_texture_ids[j] = NuGScnFixupTID(scene, packet->extra_texture_ids[j]);
+                    }
                 }
                 packet->texture_id = NuGScnFixupTID(scene, packet->texture_id);
             } else if (item->type == 0xae || item->type == 0xaf) {
                 SCENE_TEXTURE_PACKET_AE_PC *packet = (SCENE_TEXTURE_PACKET_AE_PC *)item->next;
                 if (packet != NULL) {
-                    for (j = 0; j < 3; ++j)
+                    for (j = 0; j < 3; ++j) {
                         packet->texture_ids[j] = NuGScnFixupTID(scene, packet->texture_ids[j]);
+                    }
                 }
             }
         }
@@ -4485,22 +4676,25 @@ extern "C" {
 
     void __cdecl NuGScnRestoreTIDsPS(NUGSCN *scene) {
         i32 i, j;
-        if (scene->display_list == NULL)
+        if (scene->display_list == NULL) {
             return;
+        }
         for (i = 0; i < scene->display_list->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
             if (item->type == 0xb0) {
                 SCENE_TEXTURE_PACKET_B0_PC *packet = (SCENE_TEXTURE_PACKET_B0_PC *)item->next;
                 if (packet->kind == 2) {
-                    for (j = 0; j < 3; ++j)
+                    for (j = 0; j < 3; ++j) {
                         packet->extra_texture_ids[j] = NuGScnRestoreTID(scene, packet->extra_texture_ids[j]);
+                    }
                 }
                 packet->texture_id = NuGScnRestoreTID(scene, packet->texture_id);
             } else if (item->type == 0xae || item->type == 0xaf) {
                 SCENE_TEXTURE_PACKET_AE_PC *packet = (SCENE_TEXTURE_PACKET_AE_PC *)item->next;
                 if (packet != NULL) {
-                    for (j = 0; j < 3; ++j)
+                    for (j = 0; j < 3; ++j) {
                         packet->texture_ids[j] = NuGScnRestoreTID(scene, packet->texture_ids[j]);
+                    }
                 }
             }
         }
@@ -4543,8 +4737,9 @@ extern "C" {
                SceneVideoResourcesPC.vertex_buffer_count * sizeof(*native->vertex_buffers));
         memcpy(native->index_buffers, SceneVideoResourcesPC.index_buffers,
                SceneVideoResourcesPC.index_buffer_count * sizeof(*native->index_buffers));
-        for (material_index = 0; material_index < scene->material_count; ++material_index)
+        for (material_index = 0; material_index < scene->material_count; ++material_index) {
             NuMtlUpdate(scene->materials[material_index]);
+        }
         NuPortalMaxDepth(scene, scene->max_portals);
     }
 
@@ -4697,10 +4892,11 @@ extern "C" {
         ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
         ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->type = type;
         ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->id = 3;
-        if (target != NULL)
+        if (target != NULL) {
             ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = target;
-        else
+        } else {
             ((NUPRIM_COMMAND_PC *)cursor->void_ptr)->target = (NUPRIM_COMMAND_PC *)cursor->void_ptr + 2;
+        }
         ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].type = 0x8d;
         ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].id = 1;
         ((NUPRIM_COMMAND_PC *)cursor->void_ptr)[1].target = (NUPRIM_COMMAND_PC *)list->dynamic_geometry + 1;
@@ -4853,8 +5049,9 @@ extern "C" {
         i32 i;
         for (i = 0; i < scene->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[i];
-            if (item->type == 0x82)
+            if (item->type == 0x82) {
                 item->type = 0x82;
+            }
         }
     }
 
@@ -4879,8 +5076,9 @@ extern "C" {
         NUVEC4 *values = packet->values;
         i32 groups = (i32)((u32)packet->count + 3u) / 4;
         i32 i;
-        for (i = 0; i < groups && i < 32; ++i, ++values)
+        for (i = 0; i < groups && i < 32; ++i, ++values) {
             NuShaderManagerSetElementfv(0x4f, i, &values->x);
+        }
     }
 
     void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
@@ -4888,8 +5086,9 @@ extern "C" {
         i32 count = packet->count;
         i32 i;
         NUVEC4 *values = packet->values;
-        for (i = 0; i < count && i < 8; ++i, ++values)
+        for (i = 0; i < count && i < 8; ++i, ++values) {
             NuShaderManagerSetElementfv(0x4e, i, &values->x);
+        }
     }
 
     void __cdecl PostShadowSelectHandlersPc(i32 mode) {
@@ -4984,8 +5183,9 @@ extern "C" {
     GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32 texture_id) {
         FRAME_NATIVE_TEXTURE_PC *texture = (FRAME_NATIVE_TEXTURE_PC *)NuTextureGetDimensions(texture_id);
         u32 index = (u32)(texture - FrameNativeTexturePoolPc.records);
-        if (index > 15)
+        if (index > 15) {
             return NULL;
+        }
         return texture->render_texture;
     }
 
@@ -5031,11 +5231,14 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *frame) {
-        for (i32 index = 0; index != 5; ++index)
+        for (i32 index = 0; index != 5; ++index) {
             frame->targets[index].Reset();
-        for (i32 index = 0; index != 32; ++index)
-            if (&PcFramebufferPool[index] == frame)
+        }
+        for (i32 index = 0; index != 32; ++index) {
+            if (&PcFramebufferPool[index] == frame) {
                 PcFramebufferActive[index] = 0;
+            }
+        }
     }
 
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index, GRAPHICS_RENDER_TEXTURE_PC *texture,
@@ -5076,12 +5279,13 @@ extern "C" {
             memset(PcSurfaceRegistry, 0, sizeof(PcSurfaceRegistry));
             PcSurfaceRegistryInitialized = 1;
         }
-        for (i32 index = 0; index != 256; ++index)
+        for (i32 index = 0; index != 256; ++index) {
             if (PcSurfaceRegistry[index] == NULL) {
                 PcSurfaceRegistry[index] = this;
                 registry_index = (i16)index;
                 return;
             }
+        }
     }
 
     inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
@@ -5099,8 +5303,9 @@ extern "C" {
         }
         PcGeometryCopyMatrixPc(&identity, &ANI3_EVAL_IDENTITY_MATRIX);
         morph_count = source->morph_count;
-        if (morph == NULL)
+        if (morph == NULL) {
             morph_count = 0;
+        }
         for (u32 i = 0; i < (u32)source->record_count; ++i) {
             PC_GEOMETRY_BASIS_INPUT_RECORD_PC *input = &source->records[i];
             if (morph_count == 0 && input->bones[0] == 0xff && input->bones[1] == 0xff && input->bones[2] == 0xff) {
@@ -5256,15 +5461,18 @@ extern "C" {
 
     void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
         NUGLOBALRNDRSTATE_PC *previous;
-        if (state == NULL)
+        if (state == NULL) {
             return;
+        }
         previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
-        if (previous->counter_0020 == state->counter_0020)
+        if (previous->counter_0020 == state->counter_0020) {
             return;
+        }
         if (previous->vertex_groups_id != state->vertex_groups_id) {
             void *packet = DisplayListBuildVertexGroupPacket(state);
-            if (packet != NULL)
+            if (packet != NULL) {
                 NuDisplayListLinkItem(list, 0xa9, packet);
+            }
             previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
             previous->vertex_groups_id = state->vertex_groups_id;
         }
@@ -5277,11 +5485,13 @@ extern "C" {
         PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
         u32 primitive_count;
         const void *vertices;
-        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0) {
             return;
+        }
         primitive_count = packet->primitive_count;
-        if (material->lightmap_flags & 0x4000000)
+        if (material->lightmap_flags & 0x4000000) {
             NuDisplayListUpdateLightmapPc();
+        }
         vertices = packet + 1;
         switch (packet->kind) {
             case 6:
@@ -5311,8 +5521,9 @@ extern "C" {
                 PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
                 break;
             case 13:
-                if (packet->vertex_count >= 3u)
+                if (packet->vertex_count >= 3u) {
                     PCDeviceDrawPrimitiveUPPc(5, packet->vertex_count - 2u, vertices, 24);
+                }
                 break;
             case 14:
                 PCDeviceDrawPrimitiveUPPc(2, packet->vertex_count >> 1, vertices, 24);
@@ -5321,8 +5532,9 @@ extern "C" {
                 PCDeviceDrawPrimitiveUPPc(3, packet->vertex_count - 1u, vertices, 24);
                 break;
             case 17:
-                if (packet->vertex_count >= 3u)
+                if (packet->vertex_count >= 3u) {
                     PCDeviceDrawPrimitiveUPPc(6, packet->vertex_count - 2u, vertices, 24);
+                }
                 break;
             case 18: {
                 u32 point_size;
@@ -5453,8 +5665,9 @@ extern "C" {
         void *transform;
         NUPRIM_PACKET_PC *geometry;
         (void)vertex_format;
-        if (material == NULL)
+        if (material == NULL) {
             material = numtl_defaultmtl3d;
+        }
         NuPrimNeedsOverbrightening = material->texture_id != 0;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         list = material->display_list;
@@ -5479,8 +5692,9 @@ extern "C" {
         cursor->addr += sizeof(NUPRIM_COMMAND_PC);
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         primitive_buffer = NuDisplayListStreamCursor;
-        if (world_matrix == NULL)
+        if (world_matrix == NULL) {
             world_matrix = &numtx_identity;
+        }
         transform = DisplayListCreateGeomTransformPS(primitive_buffer, world_matrix, NULL, NULL, NULL);
         geometry = (NUPRIM_PACKET_PC *)primitive_buffer->void_ptr;
         primitive_buffer->void_ptr = geometry + 1;
@@ -5531,8 +5745,9 @@ extern "C" {
         f32 wobble_y;
         f32 neg_y;
         NULGTVERTEX_PC *vertex;
-        if (paused)
+        if (paused) {
             NuLgtLaserCnt = NuLgtLaserOldCnt;
+        }
         if (NuLgtArcMtl[0].material == NULL || NuLgtLaserCnt == 0) {
             NuLgtLaserOldCnt = 0;
             return;
@@ -5559,8 +5774,9 @@ extern "C" {
             vertices[5].z = NuLgtLaserData[i].end.z;
             vertices[5].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[5], &vertices[5], &clip_matrix);
-            if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f))
+            if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f)) {
                 continue;
+            }
 
             if (vertices[4].w < 0.5f) {
                 if (NuLgtLaserData[i].arc == 0) {
@@ -5624,14 +5840,18 @@ extern "C" {
             NuVec4ScaleForwardPc(&vertices[4], &vertices[4], 1.0f / vertices[4].w);
             NuVec4MtxTransformVU0(&vertices[5], &vertices[7], &clip_matrix);
             NuVec4ScaleForwardPc(&vertices[5], &vertices[5], 1.0f / vertices[5].w);
-            if (vertices[4].x < -1.0f && vertices[5].x < -1.0f)
+            if (vertices[4].x < -1.0f && vertices[5].x < -1.0f) {
                 continue;
-            if (vertices[4].x > 1.0f && vertices[5].x > 1.0f)
+            }
+            if (vertices[4].x > 1.0f && vertices[5].x > 1.0f) {
                 continue;
-            if (vertices[4].y < -1.0f && vertices[5].y < -1.0f)
+            }
+            if (vertices[4].y < -1.0f && vertices[5].y < -1.0f) {
                 continue;
-            if (vertices[4].y > 1.0f && vertices[5].y > 1.0f)
+            }
+            if (vertices[4].y > 1.0f && vertices[5].y > 1.0f) {
                 continue;
+            }
 
             perpendicular.x = (vertices[5].y - vertices[4].y) * aspect;
             perpendicular.y = vertices[4].x - vertices[5].x;
@@ -5648,14 +5868,16 @@ extern "C" {
             vertices[7].w -= vertices[6].w;
             length = dx * dx + dy * dy + dz * dz;
             length = NuFsqrt(length);
-            if (!(length > 0.0f))
+            if (!(length > 0.0f)) {
                 continue;
+            }
 
             step = NuLgtLaserData[i].segment_length / length;
             // Per-laser seeds make repeated and paused rendering deterministic.
             NuLgtSeed = NuLgtLaserData[i].seed;
-            if (step > 1.0f)
+            if (step > 1.0f) {
                 step = 1.0f;
+            }
 
             tex_u[0] = tex_u[2] = NuLgtArcMtl[0].u0;
             tex_u[1] = tex_u[3] = NuLgtArcMtl[0].u1;
@@ -5667,11 +5889,12 @@ extern "C" {
             width_scale = 1.0f / vertices[4].w;
             NuVec4ScaleForwardPc(&vertices[4], &vertices[4], width_scale);
             if (remaining < NuLgtLaserData[i].length) {
-                if (remaining < 0.0f)
+                if (remaining < 0.0f) {
                     width_scale *= NuLgtLaserData[i].end_width_ratio;
-                else
+                } else {
                     width_scale += (NuLgtLaserData[i].end_width_ratio * width_scale - width_scale) *
                                    (NuLgtLaserData[i].length - remaining) / NuLgtLaserData[i].length;
+                }
             }
             reds[0] = reds[1] = red;
             greens[0] = greens[1] = green;
@@ -5692,16 +5915,18 @@ extern "C" {
             while (fraction < 1.0f) {
                 next_fraction = fraction + step;
                 if (next_fraction >= 1.0f) {
-                    if (NuLgtLaserData[i].arc)
+                    if (NuLgtLaserData[i].arc) {
                         alphas[1] = 0;
+                    }
                     vertices[5].x = vertices[7].x + vertices[6].x;
                     vertices[5].y = vertices[6].y + vertices[7].y;
                     vertices[5].z = vertices[7].z + vertices[6].z;
                     tex_u[0] = tex_u[2] =
                         NuLgtArcMtl[0].u1 + (1.0f - fraction) * (NuLgtArcMtl[0].u0 - NuLgtArcMtl[0].u1) / step;
                 } else {
-                    if (NuLgtLaserData[i].arc)
+                    if (NuLgtLaserData[i].arc) {
                         alphas[1] = (i32)((1.0f - fraction - step) * alpha);
+                    }
                     vertices[5].x = vertices[7].x * next_fraction + vertices[6].x;
                     vertices[5].y = vertices[7].y * next_fraction + vertices[6].y;
                     vertices[5].z = vertices[7].z * next_fraction + vertices[6].z;
@@ -5711,11 +5936,12 @@ extern "C" {
                 width_scale = 1.0f / vertices[5].w;
                 NuVec4ScaleForwardPc(&vertices[5], &vertices[5], width_scale);
                 if (remaining < NuLgtLaserData[i].length) {
-                    if (remaining < 0.0f)
+                    if (remaining < 0.0f) {
                         width_scale *= NuLgtLaserData[i].end_width_ratio;
-                    else
+                    } else {
                         width_scale += (width_scale * NuLgtLaserData[i].end_width_ratio - width_scale) *
                                        (NuLgtLaserData[i].length - remaining) / NuLgtLaserData[i].length;
+                    }
                 }
 
                 if (fraction < wobble_limit && NuLgtLaserData[i].seed != 0) {
@@ -5823,8 +6049,9 @@ extern "C" {
         tex_v[1] = NuLgtArcMtl[0].v0;
         tex_v[2] = NuLgtArcMtl[0].v1;
         tex_v[3] = NuLgtArcMtl[0].v1;
-        if (paused)
+        if (paused) {
             NuLgtArcLaserCnt = NuLgtArcLaserOldCnt;
+        }
         if (!NuLgtArcMtl[0].material || NuLgtArcLaserCnt == 0) {
             NuLgtArcLaserOldCnt = 0;
             return;
@@ -5845,7 +6072,6 @@ extern "C" {
         NuPrimCoordSystemStack[NuPrimCSPos++] = 0;
         NuPrim2DBegin(12, 5, NuLgtArcMtl[0].material);
         for (i = 0; i < NuLgtArcLaserCnt; ++i) {
-
             vertices[4].x = NuLgtArcLaserData[i].start.x;
             vertices[4].y = NuLgtArcLaserData[i].start.y;
             vertices[4].z = NuLgtArcLaserData[i].start.z;
@@ -5856,8 +6082,9 @@ extern "C" {
             vertices[5].z = NuLgtArcLaserData[i].end.z;
             vertices[5].w = 1.0f;
             NuVec4MtxTransformVU0(&vertices[5], &vertices[5], clip);
-            if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f))
+            if (!(vertices[4].w >= 0.5f) && !(vertices[5].w >= 0.5f)) {
                 continue;
+            }
             if (vertices[4].w < 0.5f) {
                 vertices[6].x = (NuLgtArcLaserData[i].start.x - NuLgtArcLaserData[i].end.x) * (vertices[5].w - 0.5) /
                                     (vertices[5].w - vertices[4].w) +
@@ -5908,16 +6135,18 @@ extern "C" {
 
             length =
                 NuFsqrt(vertices[7].x * vertices[7].x + vertices[7].y * vertices[7].y + vertices[7].z * vertices[7].z);
-            if (!(length > 0.0f))
+            if (!(length > 0.0f)) {
                 continue;
+            }
             vertices[10].x = NuLgtArcLaserData[i].bend.x;
             vertices[10].y = NuLgtArcLaserData[i].bend.y;
             vertices[10].z = NuLgtArcLaserData[i].bend.z;
 
             factor =
                 (vertices[10].y * vertices[10].y) + (vertices[10].x * vertices[10].x) + vertices[10].z * vertices[10].z;
-            if (factor > 0.0f)
+            if (factor > 0.0f) {
                 factor = (f64)NuLgtArcLaserData[i].bend_amount / NuFsqrt(factor);
+            }
             vertices[10].x *= factor;
             vertices[10].y *= factor;
             vertices[10].z *= factor;
@@ -5944,7 +6173,6 @@ extern "C" {
             progress = 0.0f;
             wobble_limit = 1.0 - 1.5 * step;
             while (progress < 1.0f) {
-
                 next = progress + step;
                 if (next >= 1.0f) {
                     vertices[5].x = vertices[6].x + vertices[7].x;
@@ -5952,7 +6180,6 @@ extern "C" {
                     vertices[5].z = vertices[6].z + vertices[7].z;
                     u = NuLgtArcMtl[0].u1 + (1.0f - progress) * (NuLgtArcMtl[0].u0 - NuLgtArcMtl[0].u1) / step;
                 } else {
-
                     angle = ((i32)(next * 32768.0) >> 1) & 0x7fff;
                     trig = &NuTrigTable[angle];
                     vertices[5].x = vertices[7].x * next + vertices[6].x + vertices[10].x * *trig;
@@ -6007,8 +6234,9 @@ extern "C" {
         NuRndrEndSceneEx(0);
         NuLgtArcLaserOldCnt = NuLgtArcLaserCnt;
         NuLgtArcLaserCnt = 0;
-        if (!paused)
+        if (!paused) {
             ++NuLgtArcLaserFrame;
+        }
         NuScratchRelease();
     }
 
@@ -6020,12 +6248,14 @@ extern "C" {
         }
         while (aux != NULL) {
             PC_GOBJ_REGISTRY_AUX_PC *next = aux->next;
-            if (aux->payload != NULL)
+            if (aux->payload != NULL) {
                 aux->payload = NULL;
+            }
             aux = next;
         }
-        if (child->native_resource != NULL && child->native_resource->resource != NULL)
+        if (child->native_resource != NULL && child->native_resource->resource != NULL) {
             PCDeviceReleaseTexture(&child->native_resource->resource);
+        }
     }
 
     FRAME_NATIVE_TEXTURE_PC *FRAME_NATIVE_TEXTURE_POOL_PC::Allocate() {
@@ -6144,20 +6374,23 @@ extern "C" {
                 NuRndr_DebrisMtx.m30 = rotated.x + matrix->m30;
                 NuRndr_DebrisMtx.m31 = rotated.y + matrix->m31;
                 NuRndr_DebrisMtx.m32 = rotated.z + matrix->m32;
-                if (particle_type == 6 || particle_type == 7)
+                if (particle_type == 6 || particle_type == 7) {
                     NuRndrParticleSetRepeat((NUVEC *)&NuRndr_DebrisMtx.m30);
+                }
                 distance = NuRndr_DebrisPlane.y * NuRndr_DebrisMtx.m31 + NuRndr_DebrisPlane.x * NuRndr_DebrisMtx.m30 +
                            NuRndr_DebrisPlane.z * NuRndr_DebrisMtx.m32 + NuRndr_DebrisPlane.w;
-                if (distance < near_clip)
+                if (distance < near_clip) {
                     continue;
+                }
                 if (NuDebrisCurrentVertexCount + emitted + 6 > NuDebrisMaxVertexCount) {
                     VARIPTR *buffer;
                     NATIVE_PARTICLE_PACKET_PC *packet;
                     NuDebrisCurrentPacket->vertex_count += (i32)emitted;
                     NuDebrisFrameVertexCount += emitted;
                     emitted = 0;
-                    if (NuDebrisRendererNextBuffer() == 0)
+                    if (NuDebrisRendererNextBuffer() == 0) {
                         return;
+                    }
                     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
                     buffer = NuDisplayListStreamCursor;
                     packet = (NATIVE_PARTICLE_PACKET_PC *)buffer->void_ptr;
@@ -6242,8 +6475,9 @@ extern "C" {
     }
 
     void NuMainFilter::render() {
-        if (bloom_enabled)
+        if (bloom_enabled) {
             RenderBloomPc();
+        }
     }
 
     void __cdecl NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *chunks, DEBRIS_PART_HEADER_PC *header, NUMTL *material,
@@ -6258,8 +6492,9 @@ extern "C" {
             NuDebrisLastHeader = NULL;
             return;
         }
-        if (material == NULL || (material->particle_type_tag == -105 && PCDeviceHardwareVertexProcessingPC < 2))
+        if (material == NULL || (material->particle_type_tag == -105 && PCDeviceHardwareVertexProcessingPC < 2)) {
             return;
+        }
         if (header != NuDebrisLastHeader) {
             NUCAMERA camera;
             VARIPTR *buffer;
@@ -6269,10 +6504,11 @@ extern "C" {
                 material->attribs.unknown_2_4 = 1;
                 NuMtlUpdate(material);
             }
-            if (NuRndr_DebrisRotMtxPtr == NULL)
+            if (NuRndr_DebrisRotMtxPtr == NULL) {
                 NuMtxCalcDebrisFaceOn(&NuRndr_DebrisMtx);
-            else
+            } else {
                 NuRndr_DebrisMtx = *NuRndr_DebrisRotMtxPtr;
+            }
             NuCameraGet(&camera);
             NuRndr_DebrisPlane.x = camera.mtx.m20;
             NuRndr_DebrisPlane.y = camera.mtx.m21;
@@ -6290,9 +6526,10 @@ extern "C" {
             packet->material = material;
             packet->vertex_count = 0;
             NuDebrisCurrentPacket = packet;
-            if (NuDebrisVertexData == NULL)
+            if (NuDebrisVertexData == NULL) {
                 PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                                          NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
+            }
             AddParticleGroupToDisplayList(NuDebrisCurrentPacket);
             NuDebrisLastHeader = header;
         }
@@ -6317,8 +6554,9 @@ extern "C" {
                     break;
             }
             count++;
-            if (count > 0x100)
+            if (count > 0x100) {
                 break;
+            }
         }
     }
 
@@ -6334,12 +6572,15 @@ extern "C" {
                     NuGobjReleaseChildPc(child);
                     child = next_child;
                 }
-                while (aux != NULL)
+                while (aux != NULL) {
                     aux = aux->next;
-                if (entry->previous != NULL)
+                }
+                if (entry->previous != NULL) {
                     entry->previous->next = entry->next;
-                if (entry->next != NULL)
+                }
+                if (entry->next != NULL) {
                     entry->next->previous = entry->previous;
+                }
                 --NuGobjRegistryCountPc;
                 entry = next;
                 NuGobjRegistryFirstPc = entry;
@@ -6348,8 +6589,9 @@ extern "C" {
     }
 
     void __cdecl NuGobjRegistryInitPc(void) {
-        if (NuGobjRegistryInitializedPc != 0)
+        if (NuGobjRegistryInitializedPc != 0) {
             NuGobjRegistryCleanupPc();
+        }
         NuGobjRegistryFirstPc = NULL;
         NuGobjRegistryInitializedPc = 1;
     }
@@ -6404,6 +6646,7 @@ extern "C" {
     void __cdecl NuMtlInitExPS(VARIPTR *) {
         NuMtlInitShaderResourcesPc();
     }
+
     // @@END
 
 } // extern "C"
@@ -6412,9 +6655,11 @@ extern "C" {
 typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
 typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
+
 struct PC_HG_SHADOW_SHAPE48 {
     union {
         NUVEC axes[4];
+
         struct {
             f32 center_x;
             u32 flags;
@@ -6422,16 +6667,19 @@ struct PC_HG_SHADOW_SHAPE48 {
         } filter;
     };
 };
+
 struct PC_HG_SHADOW_SHAPE64 {
     PC_HG_SHADOW_SHAPE48 position;
     u8 unknown_30[16];
 };
+
 struct PC_HG_SHADOW_GROUP {
     PC_HG_SHADOW_SHAPE48 *ellipses;
     PC_HG_SHADOW_SHAPE64 *cylinders;
     void *third_shape;
     u8 ellipse_count, cylinder_count, third_count, joint_index;
 };
+
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
@@ -6448,16 +6696,18 @@ extern "C" {
     NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
         if ((i32)index < object->point_index_count) {
             index = object->point_index_map[index];
-            if (index != 0xff)
+            if (index != 0xff) {
                 return &object->points[index];
+            }
         }
         return NULL;
     }
 
     void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_count, void *cylinder,
                                        i32 cylinder_count, void *third, i32 third_count) {
-        if (PCShadowPacketCount >= 280)
+        if (PCShadowPacketCount >= 280) {
             return;
+        }
         PCShadowPackets[PCShadowPacketCount].near_value = PCShadowNearValue;
         PCShadowPackets[PCShadowPacketCount].far_value = PCShadowFarValue;
         PCShadowPackets[PCShadowPacketCount].state0 = PCShadowState.state0;
@@ -6482,8 +6732,9 @@ extern "C" {
 
         object = hierarchy;
         if (PcWindowOptions.shadowsenabled == 0 || PcWindowOptions.shadowmethod != 1 || object->shadow_groups == NULL ||
-            object->suppress_shadow_points != 0)
+            object->suppress_shadow_points != 0) {
             return;
+        }
         for (group = object->shadow_groups; group->joint_index != 255; ++group) {
             if (PCShadowPacketCount < 280 && PCShadowSubmissionEnabled != 0) {
                 NUMTX combined;
@@ -6500,6 +6751,7 @@ extern "C" {
 /* nupostdeferred's platform members: the empty framebuffer resolve and the shadow display-list handlers. */
 extern "C" void __cdecl PCGraphicsResolveFramebufferPc(i32) {
 }
+
 extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33, saved23 = matrix->m23;
@@ -6509,6 +6761,7 @@ extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
     matrix->m33 = saved33;
     matrix->m23 = saved23;
 }
+
 extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33, saved32 = matrix->m32;
@@ -6518,24 +6771,29 @@ extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
     matrix->m33 = saved33;
     matrix->m32 = saved32;
 }
+
 typedef struct PC_SHADOW_MATERIAL_READER_PC {
     union {
         NUMTL common;
+
         struct {
             u8 unknown_000[0x40];
             u32 attributes_word;
         };
     };
+
     u8 unknown_09c[0x154];
     u32 vertex_format;
     i16 shader_id, shadow_shader_id;
     u8 unknown_1f8[0xc4];
     PC_TEXTURE_RESOURCE_PC *vertex_declaration;
 } PC_SHADOW_MATERIAL_READER_PC;
+
 STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, attributes_word) == 0x40);
 STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_format) == 0x1f0);
 STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, shadow_shader_id) == 0x1f6);
 STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_declaration) == 0x2bc);
+
 extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
     PC_SHADOW_MATERIAL_READER_PC *material = (PC_SHADOW_MATERIAL_READER_PC *)data;
     PC_SHADER_OBJECT_FULL_VIEW *shader =
@@ -6549,8 +6807,9 @@ extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
         }
         u32 flags = material->attributes_word;
         u32 z_mode = flags & 0xc000;
-        if (z_mode == 0x4000)
+        if (z_mode == 0x4000) {
             material->attributes_word = (flags & 0xffff7fff) | z_mode;
+        }
         NuMtlSetRenderStatesPS(&material->common);
         PCDeviceSetRenderState(27, 0);
     }
@@ -6561,9 +6820,11 @@ extern "C" {
     extern i32 DwaWeightCapacityPc, DwaPointerCapacityPc, DwaBlockCapacityPc, DwaEnabledPc, DwaStreamCapacityPc;
     extern i32 DwaBlockCountPc;
     extern u8 DwaBlockTablePc[0x400];
+
     void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
+
     __declspec(noinline) void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
         state->mtl = NULL;
         state->tex_id = -1;
@@ -6573,15 +6834,18 @@ extern "C" {
         state->fog_id = -1;
         state->konst_id = -1;
     }
+
     void __cdecl RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
         (void)state;
         (void)material;
         (void)item;
     }
+
     void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
         (void)state;
         (void)item;
     }
+
     void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
         NuRndrStateInit();
         nudlist_field_9d8 = 0;
@@ -6603,6 +6867,7 @@ extern "C" {
         NuDisplayListSwapBuffersEndFrame();
         NuDisplayListBeginFrame();
     }
+
     void __cdecl NuRndrDwaInitPc(void) {
         DwaWeightCapacityPc = 0x4000;
         DwaPointerCapacityPc = 0x4000;
@@ -6614,25 +6879,31 @@ extern "C" {
         memset(DwaBlockTablePc, 0, sizeof(DwaBlockTablePc));
         DwaStreamCapacityPc = 0x2000;
     }
+
     /* Native PC entry 0x005fe450 is RET-only; PcRendererCleanup calls it while the D3D
      * device is torn down. Its historical name is unknown. */
     void __cdecl NuRndrDwaReleasePc(void) {
     }
+
     void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
         (void)a;
         (void)b;
         (void)c;
     }
+
     void __cdecl PermanentGraphicsResourceSetup(void) {
         NuPtlDmaSlotsExhaustedPc();
     }
+
     void __cdecl NuRndrShadowInit(u8 *random) {
         (void)random;
         NuPtlDmaSlotsExhaustedPc();
     }
+
     void __cdecl NuLightSpotFadeSet(u32 fade) {
         (void)fade;
     }
+
     DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
         i32 clear_bytes = count * 4 + 0x204;
         DWA_WEIGHT_BLOCK_PC *result;
@@ -6645,6 +6916,7 @@ extern "C" {
         memset(result, 0, clear_bytes);
         return result;
     }
+
     DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
         DwaPointerCursorPc -= count;
         if (DwaWeightCursorPc < 0) {
@@ -6653,12 +6925,14 @@ extern "C" {
         }
         return &DwaPointerPoolPc[DwaPointerCursorPc];
     }
+
     void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance) {
         PCShadowState.direction = *direction;
         PCShadowNearValue = near_distance;
         PCShadowFarValue = far_distance;
         PCShadowState.packed_colour = ((colour >> 1) & 0x007f7f7fu) + (colour & 0xff000000u) * 2u;
     }
+
     void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
         if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
             NuRndrShadPolDat[NuRndrShadowCnt].position = *position;
@@ -6667,17 +6941,20 @@ extern "C" {
             ++NuRndrShadowCnt;
         }
     }
+
     /* The debug 3D line batch is not drawn on PC. */
     void __cdecl NuRndrLine3dDbgFlush(void) {
     }
+
     void __cdecl NuRndrShadPolys(NUMTL *material) {
         i32 index;
         PC_SHADOW_QUEUE_RECORD *record;
         NUVEC position;
         f32 radius, left, right, front, back;
         u32 colour;
-        if (NuRndrShadowCnt == 0)
+        if (NuRndrShadowCnt == 0) {
             return;
+        }
         record = NuRndrShadPolDat;
         for (index = 0; index < NuRndrShadowCnt; ++index, ++record) {
             position = record->position;
@@ -6715,18 +6992,23 @@ extern "C" {
         }
         NuRndrShadowCnt = 0;
     }
+
     void __cdecl NuRndrInitWorld(void) {
     }
+
     /* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
     i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix) {
         PCClipScreenUnsupported();
         return 0;
     }
+
     i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
         return 0;
     }
+
     void __cdecl FaceYDirStream(i32 angle) {
     }
+
     i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
         static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
         static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -6734,10 +7016,12 @@ extern "C" {
         NUVEC view_direction, half_direction, light_direction, eye_direction, axis;
         NUMTX matrix;
         f32 horizontal, facing, weight, remainder;
-        if (direction != NULL)
+        if (direction != NULL) {
             rndrstream_specular_dir = *direction;
-        if (intensity != NULL)
+        }
+        if (intensity != NULL) {
             rndrstream_specular_intensity = *intensity;
+        }
         NuVecInvMtxRotate(&view_direction, &rndrstream_specular_dir, &global_camera.mtx);
         NuVecLerp(&half_direction, &view_direction, &camvec, 0.5f);
         NuVecMtxRotate(&half_direction, &half_direction, &global_camera.mtx);
@@ -6798,8 +7082,10 @@ extern "C" {
         NuRndrStateSetSpecularLightEx(&view_direction, &matrix, (const NUVEC *)&rndrstream_specular_intensity);
         return 1;
     }
+
     static f32 FrameShaderMaterialAnimationTimePc = 0;
     static i32 FrameShaderMaterialFirstCallPc = 1;
+
     void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
         i32 i;
         FrameShaderMaterialAnimationTimePc += frame_time;
@@ -6821,48 +7107,59 @@ extern "C" {
             FrameShaderMaterialFirstCallPc = 0;
         }
     }
+
     void NuMtlAnimate(f32 frame_time) {
         NuDisplayListAnimateMtls(frame_time * FrameMaterialAnimationSpeedPc);
         NuMtlAnimateShaderMtlTextures(frame_time);
     }
+
     void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
         NuRndrStreamInit(size, buffer);
         NuRndrInitConfigPc(buffer, end);
     }
+
     static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
     static NUMTX RendererConfigMatrixPc = {0};
     static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
     static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
+
     void __cdecl NuRndrGeometryBufferReleasePc(void) {
         PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
     }
+
     void __cdecl NuRndrGeometryBufferRestorePc(void) {
         PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
         PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
         NuRndrQuadBufferInitPc();
     }
+
     typedef struct RENDERER_CLEAR_RECORD_PC {
         u8 unknown_00[0x20];
         u16 active;
         u8 unknown_22[6];
     } RENDERER_CLEAR_RECORD_PC;
+
     STATIC_ASSERT(sizeof(RENDERER_CLEAR_RECORD_PC) == 0x28);
     STATIC_ASSERT(offsetof(RENDERER_CLEAR_RECORD_PC, active) == 0x20);
     static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
+
     typedef struct RENDERER_SHADOW_DEFAULTS_PC {
         f32 state0, state1, state2;
         u32 packed_colour;
     } RENDERER_SHADOW_DEFAULTS_PC;
+
     STATIC_ASSERT(sizeof(RENDERER_SHADOW_DEFAULTS_PC) == 16);
     STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state0) == 0);
     STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state1) == 4);
     STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state2) == 8);
     STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, packed_colour) == 12);
+
     typedef struct RENDERER_SCREEN_VERTEX_PC {
         f32 x, y, z, w;
         u32 attribute_bits;
         u8 unknown_14[8];
     } RENDERER_SCREEN_VERTEX_PC;
+
     STATIC_ASSERT(sizeof(RENDERER_SCREEN_VERTEX_PC) == 0x1c);
     STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, x) == 0);
     STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, y) == 4);
@@ -6871,6 +7168,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, attribute_bits) == 16);
     STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
+
     void __cdecl NuRndrQuadBufferInitPc(void) {
         void *data;
         if (RendererQuadVertexBufferPc != NULL) {
@@ -6878,8 +7176,9 @@ extern "C" {
             RendererQuadVertexBufferPc = NULL;
         }
         PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBufferPc);
-        if (RendererQuadVertexBufferPc->methods->lock(RendererQuadVertexBufferPc, 0, 0, &data, 0) < 0)
+        if (RendererQuadVertexBufferPc->methods->lock(RendererQuadVertexBufferPc, 0, 0, &data, 0) < 0) {
             return;
+        }
         QUAD_VERTEX[0].x = 0.0f;
         QUAD_VERTEX[0].y = 0.0f;
         QUAD_VERTEX[0].z = 0.5f;
@@ -6902,7 +7201,9 @@ extern "C" {
         QUAD_VERTEX[0].w = 1.0f;
         RendererQuadVertexBufferPc->methods->unlock(RendererQuadVertexBufferPc);
     }
+
 #undef QUAD_VERTEX
+
     void __cdecl NuRndrGeometryBuffersInitPc(void) {
         u16 *indices;
         i32 i;
@@ -6919,8 +7220,10 @@ extern "C" {
         PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
         NuRndrQuadBufferInitPc();
         PCDeviceCreateIndexBuffer(0xc000, 0, 0x65, 1, &RendererGeometryIndexBufferPc, NULL);
-        if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, (void **)&indices, 0) < 0)
+        if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, (void **)&indices, 0) <
+            0) {
             return;
+        }
         base = 0;
         for (i = 0; i < 0x1000; ++i) {
             *indices++ = (u16)base;
@@ -6933,6 +7236,7 @@ extern "C" {
         }
         RendererGeometryIndexBufferPc->methods->unlock(RendererGeometryIndexBufferPc);
     }
+
     void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
         PC_VERTEX_ELEMENT_PC elements[3];
         elements[0].stream = 0;
@@ -6958,24 +7262,30 @@ extern "C" {
         NuRndrQuadBufferInitPc();
         NuRndrGeometryBuffersInitPc();
     }
+
     void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
+
     /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
     void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
         PCGraphicsPostEffectWidthPc = width;
-        if (width >= 512)
+        if (width >= 512) {
             PCGraphicsPostEffectWidthPc = 512;
+        }
         PCGraphicsPostEffectHeightPc = height;
-        if (height >= 512)
+        if (height >= 512) {
             PCGraphicsPostEffectHeightPc = 512;
+        }
         if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
             u32 width_power = 1;
             u32 height_power = 1;
-            while (width_power <= (width < 512 ? width : 512))
+            while (width_power <= (width < 512 ? width : 512)) {
                 width_power += width_power;
+            }
             PCGraphicsPostEffectWidthPc = width_power >> 1;
-            while (height_power <= (height < 512 ? height : 512))
+            while (height_power <= (height < 512 ? height : 512)) {
                 height_power += height_power;
+            }
             PCGraphicsPostEffectHeightPc = height_power >> 1;
         }
         PCGraphicsCreatePostEffectWorkTexture(width, height);
@@ -6983,7 +7293,9 @@ extern "C" {
         PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
         PCGraphicsPostEffectBackBufferTexturePc = texture;
     }
+
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc;
+
     /* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures.
      */
     void __cdecl PCGraphicsResizePostEffectTexturesPc(u32 width, u32 height) {
@@ -6995,21 +7307,25 @@ extern "C" {
         if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
             target_width = 1;
             target_height = 1;
-            while (target_width <= (width < 512 ? width : 512))
+            while (target_width <= (width < 512 ? width : 512)) {
                 target_width += target_width;
+            }
             target_width >>= 1;
             PCGraphicsPostEffectWidthPc = target_width;
-            while (target_height <= (height < 512 ? height : 512))
+            while (target_height <= (height < 512 ? height : 512)) {
                 target_height += target_height;
+            }
             target_height >>= 1;
             PCGraphicsPostEffectHeightPc = target_height;
         }
         PCGraphicsResizeEffectTexture(PCGraphicsPostEffectWorkTexturePc, target_width, target_height, -1);
         PCGraphicsResizeEffectTexture(PCGraphicsPostEffectBackBufferTexturePc, PCGraphicsPostEffectWidthPc,
                                       PCGraphicsPostEffectHeightPc, -1);
-        if (PCGraphicsPostEffectAuxTexturePc != NULL)
+        if (PCGraphicsPostEffectAuxTexturePc != NULL) {
             PCGraphicsResizeEffectTexture(PCGraphicsPostEffectAuxTexturePc, -1, -1, -1);
+        }
     }
+
     void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
         RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
         NUVEC defaults;
@@ -7026,10 +7342,12 @@ extern "C" {
         PCShadowFarValue = 6.0f;
         shadow->packed_colour = 0x00101010;
         NuRndrShadowCnt = 0;
-        for (i = 0; i < 32; ++i)
+        for (i = 0; i < 32; ++i) {
             RendererClearRecordsPc[i].active = 0;
+        }
         NuRndrInitGeneric();
     }
+
     typedef struct PC_STARTUP_MATERIAL_READER_PC {
         u8 unknown_00[0x40];
         u32 render_flags;
@@ -7041,6 +7359,7 @@ extern "C" {
         i16 texture_id;
         i16 sort_priority;
     } PC_STARTUP_MATERIAL_READER_PC;
+
     STATIC_ASSERT(sizeof(PC_STARTUP_MATERIAL_READER_PC) == 0x78);
     STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, render_flags) == 0x40);
     STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, secondary_flags) == 0x44);
@@ -7049,6 +7368,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, texture_id) == 0x74);
     STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, sort_priority) == 0x76);
 #define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
+
     void __cdecl NuRndrInitStartupMaterialsPc(void) {
         PCStartupMaterial1Pc = NuMtlCreate(1);
         STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.y =
@@ -7094,7 +7414,9 @@ extern "C" {
         STARTUP_MATERIAL(PCStartupMaterial2Pc)->sort_priority = 0x100;
         NuMtlUpdate(PCStartupMaterial2Pc);
     }
+
 #undef STARTUP_MATERIAL
+
     void __cdecl NuRndrFx(i32 paused, void *context) {
         (void)context;
         NuLgtLaserDraw(paused);
@@ -7103,12 +7425,14 @@ extern "C" {
             NuRndrFxHeightPc = NuRndrFxHeightOverridePc;
             NuRndrFxColourPc = 0xc04080c0;
         }
-        if (paused != 0)
+        if (paused != 0) {
             NuRndrFxHeightPc = NuRndrFxPreviousHeightPc;
-        else
+        } else {
             NuRndrFxPreviousHeightPc = NuRndrFxHeightPc;
+        }
         currentScene.clear_flags = 1;
     }
+
     i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
         return 1;
     }
@@ -7151,19 +7475,22 @@ extern "C" {
         u8 codes[8];
         i32 i;
 
-        if (PCClipExtentsEnabled == 0)
+        if (PCClipExtentsEnabled == 0) {
             return 1;
+        }
         if (clip_screen != 0) {
             PCClipScreenUnsupported();
             for (;;) {
             }
         }
-        if (far_clip == 0.0f)
+        if (far_clip == 0.0f) {
             far_clip = global_camera.unknown_64 != 0.0f ? global_camera.unknown_64 : global_camera.far_clip;
-        if (world == NULL || world == &NuMtxSetIdentityTemplate)
+        }
+        if (world == NULL || world == &NuMtxSetIdentityTemplate) {
             clip_test_mtx = vmtx;
-        else
+        } else {
             NuMtxMul(&clip_test_mtx, world, &vmtx);
+        }
 
         ClipFarLimits[3] = far_clip;
         ClipFarLimits[2] = far_clip;
@@ -7202,8 +7529,9 @@ extern "C" {
                 NUCAMERA_CLIP_CODE(codes[i + 2], transformed[i + 2]);
                 NUCAMERA_CLIP_CODE(codes[i + 3], transformed[i + 3]);
             }
-            if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0)
+            if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0) {
                 return 0;
+            }
             return (codes[0] | codes[1] | codes[2] | codes[3] | codes[4] | codes[5] | codes[6] | codes[7]) != 0 ? 2 : 1;
         } else {
             u32 *outcode = clip_outcode_workspace_prefix;
@@ -7235,8 +7563,9 @@ extern "C" {
             if ((clip_outcode_workspace_prefix[7] & clip_outcode_workspace_prefix[6] &
                  clip_outcode_workspace_prefix[5] & clip_outcode_workspace_prefix[4] &
                  clip_outcode_workspace_prefix[3] & clip_outcode_workspace_prefix[2] &
-                 clip_outcode_workspace_prefix[1] & clip_outcode_workspace_prefix[0]) != 0)
+                 clip_outcode_workspace_prefix[1] & clip_outcode_workspace_prefix[0]) != 0) {
                 return 0;
+            }
             return (clip_outcode_workspace_prefix[7] | clip_outcode_workspace_prefix[6] |
                     clip_outcode_workspace_prefix[5] | clip_outcode_workspace_prefix[4] |
                     clip_outcode_workspace_prefix[3] | clip_outcode_workspace_prefix[2] |
@@ -7284,8 +7613,9 @@ extern "C" {
     void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *destination, NUVEC4BLOCK_PC *source, NUMTX *matrix,
                                              i32 count, u32 *outcodes) {
         count = (count + 3) >> 2;
-        if (count <= 0)
+        if (count <= 0) {
             return;
+        }
         __asm {
         push esi
         push edi

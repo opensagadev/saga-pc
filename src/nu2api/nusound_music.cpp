@@ -31,10 +31,12 @@ void NuMusic::SetMasterVolume(f32 volume) {
 i32 NuMusic::GetAlbumHandle(const char *name) {
     i32 i;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
+    }
     for (i = 0; i < album_count; i++) {
         if (NuStrICmp(albums[i].name, name) == 0) {
             return i + 0x12345678;
@@ -61,31 +63,41 @@ void NuMusic::SetClassVolume(u32 class_mask, f32 volume) {
 
     volume = MAX(0.0f, MIN(1.0f, volume));
 
-    if ((class_mask & 0x01) != 0)
+    if ((class_mask & 0x01) != 0) {
         class_volumes[0] = volume;
-    if ((class_mask & 0x02) != 0)
+    }
+    if ((class_mask & 0x02) != 0) {
         class_volumes[1] = volume;
-    if ((class_mask & 0x04) != 0)
+    }
+    if ((class_mask & 0x04) != 0) {
         class_volumes[2] = volume;
-    if ((class_mask & 0x08) != 0)
+    }
+    if ((class_mask & 0x08) != 0) {
         class_volumes[3] = volume;
-    if ((class_mask & 0x10) != 0)
+    }
+    if ((class_mask & 0x10) != 0) {
         class_volumes[4] = volume;
-    if ((class_mask & 0x20) != 0)
+    }
+    if ((class_mask & 0x20) != 0) {
         class_volumes[5] = volume;
+    }
 }
 
 void NuMusic::GetSoundFiles(nusound_filename_info_s **files, i32 *count) {
     if (this != NULL) {
-        if (files != NULL)
+        if (files != NULL) {
             *files = fileinfo;
-        if (count != NULL)
+        }
+        if (count != NULL) {
             *count = file_count;
+        }
     } else {
-        if (files != NULL)
+        if (files != NULL) {
             *files = NULL;
-        if (count != NULL)
+        }
+        if (count != NULL) {
             *count = 0;
+        }
     }
 }
 
@@ -126,8 +138,9 @@ void NuMusic::Track::SetEntryTime(f32 time) {
 
 NuMusic::Track *NuMusic::Album::GetTrack(u32 class_mask) {
     i32 index = ClassToIX(class_mask);
-    if (index != -1)
+    if (index != -1) {
         return tracks[index];
+    }
     return NULL;
 }
 
@@ -251,12 +264,15 @@ i32 NuMusic::PauseTrack(u32 class_mask) {
     i32 track_index;
     Voice *voice;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
-    if (album == NULL)
+    }
+    if (album == NULL) {
         return 0;
+    }
     if (album->GetTracks(class_mask, tracks_to_pause) != 0) {
         for (track_index = 0; track_index < 6; track_index++) {
             if (tracks_to_pause[track_index] != NULL) {
@@ -278,12 +294,15 @@ i32 NuMusic::ResumeTrack(u32 class_mask) {
     i32 track_index;
     Voice *voice;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
-    if (album == NULL)
+    }
+    if (album == NULL) {
         return 0;
+    }
     if (album->GetTracks(class_mask, tracks_to_resume) != 0) {
         for (track_index = 0; track_index < 6; track_index++) {
             if (tracks_to_resume[track_index] != NULL) {
@@ -300,10 +319,12 @@ i32 NuMusic::ResumeTrack(u32 class_mask) {
 }
 
 i32 NuMusic::SelectTrack(u32 class_mask, const char *name) {
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
+    }
     return SelectTrackByHandle(class_mask, GetTrackHandle(class_mask, name));
 }
 
@@ -385,10 +406,12 @@ i32 NuMusic::GetStatus(u32 class_mask, i32 *per_class_status) {
     i32 index;
     Voice *voice;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
+    }
     voice_status = 0;
     result = 0;
 
@@ -433,10 +456,12 @@ void NuMusic::Debug(i32 unused, i32 y) {
     const char *class_names[] = {NuMusicDebugClassInvalid,   NuMusicDebugClassQuiet,   NuMusicDebugClassAction,
                                  NuMusicDebugClassSignature, NuMusicDebugClassOverlay, NuMusicDebugClassCutscene,
                                  NuMusicDebugClassNoMusic};
+
     struct StreamInfoPc {
         u32 unknown_0000[3];
         f32 playback_position;
     } stream_info;
+
     STATIC_ASSERT(sizeof(StreamInfoPc) == 0x10);
     STATIC_ASSERT(offsetof(StreamInfoPc, playback_position) == 0x0c);
     NuQFntPushPrintMode(2);
@@ -486,6 +511,7 @@ struct PC_STEREO_PLAY_PACKET {
     i32 option9_mode;
     f32 start_offset;
 };
+
 STATIC_ASSERT(sizeof(PC_STEREO_PLAY_PACKET) == 36);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, stream_index) == 8);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
@@ -497,8 +523,9 @@ extern "C" f32 PCMusicDuckOverride;
 extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     va_list arguments;
     PC_STEREO_PLAY_PACKET packet;
-    if (NuSound3Initialized == 0)
+    if (NuSound3Initialized == 0) {
         return 0;
+    }
     packet.stream_index = 0;
     packet.reserved = -1;
     packet.first_sample = packet.last_sample = -1;
@@ -550,8 +577,9 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
         }
         token = va_arg(arguments, i32);
     }
-    if (packet.last_sample == -1)
+    if (packet.last_sample == -1) {
         packet.last_sample = packet.first_sample + 1;
+    }
     va_end(arguments);
     PCStereoStartPacket(&packet);
     return 1;
@@ -561,8 +589,9 @@ extern "C" __declspec(noinline) void PCStereoUnknownToken(...) {
 }
 
 i32 NuMusic::Voice::Unload(void) {
-    if (tracks[track_index] == NULL || track_index == 0)
+    if (tracks[track_index] == NULL || track_index == 0) {
         return 0;
+    }
     if (tracks[track_index]->clazz == 8) {
         --track_index;
         if (tracks[track_index] != NULL) {
@@ -589,8 +618,9 @@ i32 NuMusic::Voice::Unload(void) {
 }
 
 void NuMusic::Process(f32 delta) {
-    if (this == NULL || the_music_player == NULL)
+    if (this == NULL || the_music_player == NULL) {
         return;
+    }
     if (fader_current != fader_target) {
         if (fader_current < fader_target) {
             fader_current = delta * fader_rate + fader_current;
@@ -699,8 +729,9 @@ void NuMusic::Process(f32 delta) {
                         voice->status = 3;
                         if (voice->tracks[voice->track_index] != NULL) {
                             NuSound3StopStereoStream(voice->stream_index * 2);
-                            if (voice->tracks[voice->track_index]->clazz == 8)
+                            if (voice->tracks[voice->track_index]->clazz == 8) {
                                 voice->Unload();
+                            }
                         }
                     }
                     break;
@@ -709,8 +740,9 @@ void NuMusic::Process(f32 delta) {
             f32 attenuation = 1.0f;
             f32 class_volume = 1.0f;
             if (current_track != NULL) {
-                if ((current_track->flags & 1) != 0 || current_track->duck_volume != 1.0f)
+                if ((current_track->flags & 1) != 0 || current_track->duck_volume != 1.0f) {
                     duck = 1.0f;
+                }
                 class_volume = class_volumes[ClassToIX(current_track->clazz)];
                 attenuation = current_track->attenuation;
             }
@@ -724,8 +756,9 @@ void NuMusic::Process(f32 delta) {
         }
         voice->play_time += delta;
     }
-    if (PCMusicDuckOverride != 1.0f)
+    if (PCMusicDuckOverride != 1.0f) {
         duck_current = PCMusicDuckOverride;
+    }
 }
 
 static char NuMusicLanguageTokenPc[6] = "$lang";
@@ -747,8 +780,9 @@ void NuMusic::InitVoiceManager(void) {
 }
 
 i32 NuMusic::Initialise(const char *file, char *language_, VARIPTR *cursor, VARIPTR end) {
-    if (the_music_player != NULL)
+    if (the_music_player != NULL) {
         PCStereoUnknownToken();
+    }
     language = language_;
     the_music_player = this;
     pitch_default = 0x1000;
@@ -770,17 +804,23 @@ i32 NuMusic::Initialise(const char *file, char *language_, VARIPTR *cursor, VARI
 
 char *NuMusic::RemovePath(char *str) {
     char *last = NULL;
-    for (char *p = str; *p != 0; ++p)
-        if (*p == '\\' || *p == '/')
+    for (char *p = str; *p != 0; ++p) {
+        if (*p == '\\' || *p == '/') {
             last = p;
+        }
+    }
     return last == NULL ? str : last + 1;
 }
+
 char *NuMusic::FindString(const char *str) {
-    for (char *p = string_pool_start; p < string_pool_end; p += NuStrLen(p) + 1)
-        if (NuStrICmp(p, str) == 0)
+    for (char *p = string_pool_start; p < string_pool_end; p += NuStrLen(p) + 1) {
+        if (NuStrICmp(p, str) == 0) {
             return p;
+        }
+    }
     return NULL;
 }
+
 char *NuMusic::AllocString(const char *str) {
     char *p = FindString(str);
     if (p == NULL) {
@@ -790,6 +830,7 @@ char *NuMusic::AllocString(const char *str) {
     }
     return p;
 }
+
 void NuMusic::SubstituteString(char *dst, char *src, char *find, char *subst) {
     char *hit;
     while ((hit = NuStrIStr(src, find)) != NULL) {
@@ -804,12 +845,15 @@ void NuMusic::SubstituteString(char *dst, char *src, char *find, char *subst) {
 
 i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, const char *name, i32 streaming,
                                    i32 pitch_) {
-    if (name == NULL)
+    if (name == NULL) {
         return -1;
+    }
     i32 index = 0;
-    for (; index < *count; ++index)
-        if (NuStrICmp(files[index].filename, name) == 0)
+    for (; index < *count; ++index) {
+        if (NuStrICmp(files[index].filename, name) == 0) {
             return index;
+        }
+    }
     files[index].filename = (char *)name;
     files[index].pitch = pitch_;
     files[index].static_sample = streaming == 0;
@@ -818,6 +862,7 @@ i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, c
     ++*count;
     return index;
 }
+
 void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
     i32 count;
     i32 i;
@@ -841,6 +886,7 @@ void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
     count++;
     cursor->void_ptr = &fileinfo[count];
 }
+
 void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     VARIPTR original = *cursor;
     string_pool_start = string_pool_end = (char *)cursor->void_ptr;
@@ -884,47 +930,58 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     Track *old_tracks = extra_tracks;
     Track *new_tracks = (Track *)(((u32)(albums + album_count) + 3) & ~3u);
     if (new_tracks != old_tracks) {
-        if (extra_track_count != 0)
+        if (extra_track_count != 0) {
             PCByteCopy_candidate(new_tracks, old_tracks, extra_track_count * sizeof(Track));
+        }
         i32 delta = (i32)((char *)new_tracks - (char *)old_tracks);
         extra_tracks = new_tracks;
-        for (i32 i = 0; i < album_count; ++i)
-            if (albums[i].tracks_source != NULL)
+        for (i32 i = 0; i < album_count; ++i) {
+            if (albums[i].tracks_source != NULL) {
                 albums[i].tracks_source = (Track *)((char *)albums[i].tracks_source + delta);
+            }
+        }
     }
     f32 *old_indexes = indexes;
     f32 *new_indexes = (f32 *)(((u32)(extra_tracks + extra_track_count) + 3) & ~3u);
     if (new_indexes != old_indexes) {
-        if (index_count != 0)
+        if (index_count != 0) {
             PCByteCopy_candidate(new_indexes, old_indexes, index_count * sizeof(f32));
+        }
         i32 delta = (i32)((char *)new_indexes - (char *)old_indexes);
         indexes = new_indexes;
-        for (i32 i = 0; i < extra_track_count; ++i)
-            if (extra_tracks[i].entry_times != NULL)
+        for (i32 i = 0; i < extra_track_count; ++i) {
+            if (extra_tracks[i].entry_times != NULL) {
                 extra_tracks[i].entry_times = (f32 *)((char *)extra_tracks[i].entry_times + delta);
+            }
+        }
     }
     cursor->void_ptr = indexes + index_count;
-    for (i32 i = 0; i < album_count; ++i)
+    for (i32 i = 0; i < album_count; ++i) {
         albums[i].Initialise();
+    }
     BuildSoundTable(cursor, end);
 }
 
 void NuMusic::GlobalParseErrorFn(NUFPAR_PC *parser) {
     PCStereoUnknownToken(parser->word_buffer_ptr, parser->line_number, parser->file_name);
 }
+
 void NuMusic::TrackParseErrorFn(NUFPAR_PC *parser) {
     PCStereoUnknownToken(parser->word_buffer_ptr, parser->line_number, parser->file_name);
 }
+
 void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
     NUFPCOMFN old_handler = NULL;
     char substituted[256];
     char path[256];
 
-    if (extra_track_count >= 2048)
+    if (extra_track_count >= 2048) {
         PCStereoUnknownToken();
+    }
     current_track = &extra_tracks[extra_track_count++];
-    if (current_album != NULL)
+    if (current_album != NULL) {
         ++current_album->tracks_count;
+    }
     memset(current_track, 0, sizeof(*current_track));
     current_track->entry_times = indexes + index_count;
     current_track->clazz = category;
@@ -932,131 +989,165 @@ void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
     current_track->duck_volume = 1.0f;
     current_track->duck_fade = 1.0f;
     current_track->attenuation = 1.0f;
-    if (category != 4 && category != 8 && category != 16)
+    if (category != 4 && category != 8 && category != 16) {
         current_track->flags |= 2;
-    else
+    } else {
         current_track->flags &= ~2u;
+    }
     NuFParGetWord(parser);
     NuStrCpy(path, current_path);
     NuStrCat(path, parser->word_buffer_ptr);
     SubstituteString(substituted, path, NuMusicLanguageTokenPc, language);
     current_track->filenames[0] = AllocString(substituted);
     current_track->ident = RemovePath(current_track->filenames[0]);
-    if (strict_mode != 0)
+    if (strict_mode != 0) {
         old_handler = NuFParSetInterpreterErrorHandler(TrackParseErrorFn);
+    }
     NuFParPushComCTX(parser, track_jmp_tab);
     while (*parser->word_buffer_ptr != 0 && *parser->word_buffer_ptr != ';') {
         NuFParGetWord(parser);
         NuFParInterpretWordCTX(parser, this);
     }
     NuFParPopCom(parser);
-    if (strict_mode != 0)
+    if (strict_mode != 0) {
         NuFParSetInterpreterErrorHandler(old_handler);
+    }
 }
+
 void NuMusic::xAlbum(NUFPAR_PC *parser) {
-    if (album_count > 512)
+    if (album_count > 512) {
         PCStereoUnknownToken();
+    }
     current_album = &albums[album_count++];
     current_album->tracks_source = &extra_tracks[extra_track_count];
     current_album->tracks_count = 0;
     NuFParGetWord(parser);
     current_album->name = AllocString(parser->word_buffer_ptr);
 }
+
 void NuMusic::xIdent(NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     current_track->ident = AllocString(parser->word_buffer_ptr);
 }
+
 void NuMusic::xIndex(NUFPAR_PC *parser) {
-    if (index_count >= 2048)
+    if (index_count >= 2048) {
         PCStereoUnknownToken();
+    }
     indexes[index_count] = NuFParGetFloatRDP(parser);
     current_track->entry_count++;
     index_count++;
 }
+
 void NuMusic::xNoMusic(NUFPAR_PC *parser) {
     char substituted[256];
     NuFParGetWord(parser);
     SubstituteString(substituted, parser->word_buffer_ptr, NuMusicLanguageTokenPc, language);
     current_track->filenames[1] = AllocString(substituted);
 }
+
 void NuMusic::xNoDuck(NUFPAR_PC *parser) {
     current_track->flags |= 1;
 }
+
 void NuMusic::xLooping(NUFPAR_PC *parser) {
     current_track->flags |= 2;
 }
+
 void NuMusic::xNonLooping(NUFPAR_PC *parser) {
     current_track->flags &= ~2u;
 }
+
 void NuMusic::xPath(NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     NuStrCpy(current_path, parser->word_buffer_ptr);
 }
+
 void NuMusic::xStrict(NUFPAR_PC *parser) {
     strict_mode = 1;
     NuFParSetInterpreterErrorHandler(GlobalParseErrorFn);
 }
+
 void NuMusic::xAction(NUFPAR_PC *parser) {
     ParseTrack(2, parser);
 }
+
 void NuMusic::xQuiet(NUFPAR_PC *parser) {
     ParseTrack(1, parser);
 }
+
 void NuMusic::xOverlay(NUFPAR_PC *parser) {
     ParseTrack(8, parser);
 }
+
 void NuMusic::xSignature(NUFPAR_PC *parser) {
     ParseTrack(4, parser);
 }
+
 void NuMusic::xCutscene(NUFPAR_PC *parser) {
     ParseTrack(16, parser);
 }
+
 void NuMusic::xNoMusicC(NUFPAR_PC *parser) {
     ParseTrack(32, parser);
 }
+
 /* The inverse of NuMusicDecibelsToGain; uncalled in retail (0x695540). */
 f32 NuMusicGainToDecibels(f32 gain) {
-    if (gain <= 0.0f)
+    if (gain <= 0.0f) {
         return -100.0f;
-    if (gain >= 1.0f)
+    }
+    if (gain >= 1.0f) {
         return 0.0f;
+    }
     return RenderPostLogPc(gain) * 20.0;
 }
+
 /* Converts a decibel attenuation to a linear gain: -100 dB and below is silence. */
 static inline f32 NuMusicDecibelsToGain(f32 decibels) {
-    if (decibels <= -100.0)
+    if (decibels <= -100.0) {
         return 0.0f;
-    if (decibels >= 0.0f)
+    }
+    if (decibels >= 0.0f) {
         return 1.0f;
+    }
     return NuExp10((f32)(decibels / 20.0));
 }
 
 void NuMusic::xDuck(NUFPAR_PC *parser) {
     current_track->duck_volume = NuFParGetFloatRDP(parser);
-    if (current_track->duck_volume < 0.0f)
+    if (current_track->duck_volume < 0.0f) {
         current_track->duck_volume = NuMusicDecibelsToGain(current_track->duck_volume);
+    }
     current_track->duck_fade = NuFParGetFloatRDP(parser);
 }
+
 void NuMusic::xAttenuation(NUFPAR_PC *parser) {
     current_track->attenuation = NuFParGetFloatRDP(parser);
-    if (current_track->attenuation < 0.0f)
+    if (current_track->attenuation < 0.0f) {
         current_track->attenuation = NuMusicDecibelsToGain(current_track->attenuation);
+    }
 }
+
 void NuMusic::xGlobalAttenuation(NUFPAR_PC *parser) {
     global_attenuation = NuFParGetFloatRDP(parser);
-    if (global_attenuation < 0.0f)
+    if (global_attenuation < 0.0f) {
         global_attenuation = NuMusicDecibelsToGain(global_attenuation);
+    }
 }
 
 i32 NuMusic::SetAlbum(const char *name) {
     i32 handle;
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
+    }
     handle = GetAlbumHandle(name);
-    if (handle != 0)
+    if (handle != 0) {
         SetAlbum(handle);
+    }
     return handle;
 }
 
@@ -1160,8 +1251,9 @@ NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
                                             {NULL, NULL}};
 
 i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
-    if (track == tracks[track_index])
+    if (track == tracks[track_index]) {
         return 0;
+    }
     track_index = track->clazz == 8;
     NuSound3StopStereoStream(stream_index * 2);
     tracks[track_index] = track;
@@ -1177,12 +1269,15 @@ i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
 i32 NuMusic::Voice::Cue(void) {
     i32 result;
 
-    if (tracks[track_index] == NULL)
+    if (tracks[track_index] == NULL) {
         return -4;
-    if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1)
+    }
+    if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1) {
         return -4;
-    if (status == 6 || status == 7 || status == 4 || status == 5)
+    }
+    if (status == 6 || status == 7 || status == 4 || status == 5) {
         return -5;
+    }
     result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6,
                                  0, 10, tracks[track_index]->start_offset, 1);
     last_volume = 0.0f;
@@ -1198,10 +1293,12 @@ i32 NuMusic::Voice::Cue(void) {
 }
 
 i32 NuMusic::Voice::Play(void) {
-    if (tracks[track_index] == NULL)
+    if (tracks[track_index] == NULL) {
         return -4;
-    if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1)
+    }
+    if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1) {
         return -4;
+    }
     Voice *other = &the_music_player->voices[1 - stream_index];
     Track *other_track = other->tracks[other->track_index];
     f32 target_gain = 1.0f;
@@ -1224,8 +1321,9 @@ i32 NuMusic::Voice::Play(void) {
         }
     }
     gain = target_gain;
-    if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == 3)
+    if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == 3) {
         status = 1;
+    }
     if (status == 3) {
         NuSound3ResumeStereoStream(stream_index * 2);
         if (status != 6) {
@@ -1234,8 +1332,9 @@ i32 NuMusic::Voice::Play(void) {
         }
         return 1;
     }
-    if (status == 6 || status == 7)
+    if (status == 6 || status == 7) {
         return 1;
+    }
     Track *track = tracks[track_index];
     i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch,
                                      6, 0, 10, (f64)track->start_offset, 1);
@@ -1256,70 +1355,89 @@ i32 NuMusic::CueTrack(u32 class_mask) {
     i32 selected_subtrack;
     Voice *voice;
 
-    if (this == NULL)
+    if (this == NULL) {
         return -1;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return -1;
-    if (album == NULL)
+    }
+    if (album == NULL) {
         return -2;
+    }
     track = album->GetTrack(class_mask);
     if (track != NULL) {
         selected_subtrack = track_index;
-        if (track->file_indexes[selected_subtrack] == -1)
+        if (track->file_indexes[selected_subtrack] == -1) {
             return -3;
-        if (FindVoiceByTrack(track) != NULL)
+        }
+        if (FindVoiceByTrack(track) != NULL) {
             return 1;
+        }
         if (track->clazz == 8) {
             voice = FindVoiceByClass(8);
             if (voice != NULL) {
-                if (voice->status == 6 || voice->status == 7)
+                if (voice->status == 6 || voice->status == 7) {
                     return -5;
-                if (voice->Load(track, selected_subtrack) != 0)
+                }
+                if (voice->Load(track, selected_subtrack) != 0) {
                     return voice->Cue();
+                }
             }
         }
         voice = FindIdleVoice();
-        if (voice == NULL || voice->Load(track, track_index) == 0)
+        if (voice == NULL || voice->Load(track, track_index) == 0) {
             return -5;
+        }
         return voice->Cue();
     }
     return -3;
 }
 
 i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
-    if (this == NULL)
+    if (this == NULL) {
         return -1;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return -1;
-    if (album == NULL)
+    }
+    if (album == NULL) {
         return -2;
+    }
     Track *track = album->GetTrack(class_mask);
-    if (track == NULL || track->file_indexes[track_index] == -1)
+    if (track == NULL || track->file_indexes[track_index] == -1) {
         return -3;
+    }
     if (track->clazz != 0x10) {
-        if (FindVoiceByClassAndStatus(0x10, 6) != NULL)
+        if (FindVoiceByClassAndStatus(0x10, 6) != NULL) {
             return CueTrack(class_mask);
-        if (FindVoiceByClassAndStatus(0x10, 7) != NULL)
+        }
+        if (FindVoiceByClassAndStatus(0x10, 7) != NULL) {
             return CueTrack(class_mask);
+        }
     }
     Voice *voice = FindVoiceByTrack(track);
-    if (voice != NULL)
+    if (voice != NULL) {
         return voice->Play();
+    }
     if (track->clazz == 8) {
         voice = FindVoiceByClass(8);
         if (voice != NULL) {
-            if (voice->status != 1 && voice->status != 3)
+            if (voice->status != 1 && voice->status != 3) {
                 return -5;
-            if (voice->Load(track, track_index) != 0)
+            }
+            if (voice->Load(track, track_index) != 0) {
                 return voice->Play();
+            }
             return -5;
         }
     }
-    if (track->clazz == 0x10)
+    if (track->clazz == 0x10) {
         StopAll(0);
+    }
     voice = FindIdleVoice();
-    if (voice == NULL || voice->Load(track, track_index) == 0 || prepare_only != 0)
+    if (voice == NULL || voice->Load(track, track_index) == 0 || prepare_only != 0) {
         return -5;
+    }
     return voice->Play();
 }
 
@@ -1335,8 +1453,9 @@ extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_pa
     PC_SOUND_INIT_CONFIG config;
     va_list args;
     i32 i;
-    if (NuSound3Initialized != 0)
+    if (NuSound3Initialized != 0) {
         return 1;
+    }
     for (i = 0; i < 5; ++i) {
         nusound_special_positions[i].x = FLT_MAX;
         nusound_special_positions[i].y = FLT_MAX;
@@ -1391,6 +1510,7 @@ extern "C" i32 __cdecl NuSound3InitTablePc(SFX_FILE_INFO_PC *samples, i32 sample
     end.void_ptr = NULL;
     return NuSound3InitV(NULL, end, device_parameter, 1, samples, 2, sample_count, 0);
 }
+
 extern "C" i32 __cdecl NuSound3InitDefaultPc(SFX_FILE_INFO_PC *samples) {
     VARIPTR end;
     end.void_ptr = NULL;
@@ -1403,12 +1523,15 @@ i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
     i32 i;
     Voice *voice;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
-    if (album == NULL)
+    }
+    if (album == NULL) {
         return 0;
+    }
     if (album->GetTracks(class_mask, tracks) != 0) {
         for (i = 0; i < 6; ++i) {
             if (tracks[i] != NULL) {
@@ -1445,10 +1568,12 @@ i32 NuMusic::SetTrackEntryTimeByClass(u32 class_mask, f32 time) {
     Album *selected_album;
     i32 index;
 
-    if (this == NULL)
+    if (this == NULL) {
         return 0;
-    if (the_music_player == NULL)
+    }
+    if (the_music_player == NULL) {
         return 0;
+    }
     selected_album = album;
     if (selected_album != NULL) {
         index = ClassToIX(class_mask);

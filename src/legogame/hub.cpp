@@ -8,6 +8,7 @@ extern "C" {
     void __cdecl NewGameMode(void);           /* 55c5f0/16, gamestructure.obj. */
     void __cdecl InitSuperStory(i32 episode); /* 55c650/64, menu.obj. */
 }
+
 typedef struct hub_minikit_runtime_pc_s {
     NUVEC position;
     f32 scale, scalar_10;
@@ -17,12 +18,14 @@ typedef struct hub_minikit_runtime_pc_s {
     NUVEC collision_center, bounds_min, bounds_max;
     f32 radius, height_ratio, offset_x, offset_z, velocity_x, velocity_z;
 } HUB_MINIKIT_RUNTIME_PC;
+
 typedef struct hub_world_reader_pc_s {
     u8 unknown_0000[0x2984];
     struct hub_minikit_pieces_pc_s **pieces;
     u8 unknown_2988[0x158];
     HUB_MINIKIT_RUNTIME_PC *minikits;
 } HUB_WORLD_READER_PC;
+
 typedef struct hub_area_info_pc_s {
     const char *area_name, *door_name, *lock_name, *bonus_name, *second_bonus_name;
     f32 panel_offset, panel_scale;
@@ -32,6 +35,7 @@ typedef struct hub_area_info_pc_s {
     NUSPECIALHANDLE lock;
     void *bonus_gizmo, *second_bonus_gizmo;
 } HUB_AREA_INFO_PC;
+
 /* Research declaration only: original HubAreaInfo is source-private. Its
  * genuine 51-record keyword-sentinel initializer is pending the sole writer;
  * no zero placeholder or fictitious shared owner is emitted here. */
@@ -48,10 +52,12 @@ extern "C" {
     void __cdecl ClearSpecialMove(GAMEOBJECT *);
     extern const char LostTempleExitObstacleNamePc[] = "obstacle1";
 }
+
 typedef struct ARCADE_COIN_PACKET_PC {
     u32 coins;
     f32 scale;
 } ARCADE_COIN_PACKET_PC;
+
 extern "C" {
     extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
@@ -60,10 +66,12 @@ extern "C" {
     void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
     void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
+
 typedef struct HINT_COMPLETION_PC {
     u16 points;
     u8 reserved02, flags;
 } HINT_COMPLETION_PC;
+
 typedef struct hub_minikit_piece_pc_s {
     NUSPECIALHANDLE special;
     NUMTX matrix;
@@ -71,6 +79,7 @@ typedef struct hub_minikit_piece_pc_s {
     u8 enabled;
     u8 direction_index;
 } HUB_MINIKIT_PIECE_PC;
+
 typedef struct hub_minikit_pieces_pc_s {
     NUGSCN *scene;
     HUB_MINIKIT_PIECE_PC *pieces;
@@ -79,12 +88,15 @@ typedef struct hub_minikit_pieces_pc_s {
     i16 model_id;
     NUSPECIALHANDLE base;
 } HUB_MINIKIT_PIECES_PC;
+
 #define HUB_SIN_LUT_PC(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
+
 typedef struct hub_pad_reader_pc_s {
     void *pad;
     u32 held;
     u8 unknown_08[0x58];
 } HUB_PAD_READER_PC;
+
 /* Actual PC Draw3D omits the Android sign/episode scene branch. */
 typedef struct hub_game_stats_reader_pc_s {
     u8 unknown_0000[0x7c18];
@@ -92,6 +104,7 @@ typedef struct hub_game_stats_reader_pc_s {
     u8 unknown_7c1a[6];
     f32 elapsed;
 } HUB_GAME_STATS_READER_PC;
+
 typedef struct hub_episode_info_pc_s {
     i16 episode;
     u16 flags;
@@ -102,20 +115,25 @@ typedef struct hub_episode_info_pc_s {
     void *door;
     NUSPECIALHANDLE lock_on;
 } HUB_EPISODE_INFO_PC;
+
 typedef struct hub_init_world_reader_pc_s {
     u8 unknown_00[0x13c];
     NUGSCN *scene;
     u8 unknown_140[0x2988];
     void *gizmo_system;
 } HUB_INIT_WORLD_READER_PC;
+
 extern void(__cdecl *HubInitAIFnPc)(WORLDINFO *);
+
 typedef struct hub_door_object_reader_pc_s {
     u8 unknown_00[0x9c];
     u32 flags;
 } HUB_DOOR_OBJECT_READER_PC;
+
 typedef struct hub_door_reader_pc_s {
     HUB_DOOR_OBJECT_READER_PC *object;
 } HUB_DOOR_READER_PC;
+
 extern void(__cdecl *HubResetAIFnPc)(WORLDINFO *);
 // Add only to the genuine Hub owner, after its existing private table definition.
 struct GIZBUILDIT_PC;
@@ -164,10 +182,12 @@ extern f32 bonusmodetime, bonusmodeduration;
 extern f32 uprepeattime[2], downrepeattime[2], leftrepeattime[2], rightrepeattime[2];
 /* Native full menu17 control owner, private sourcefragment. */
 extern i32 HubIconWibbleRatePc[4];
+
 typedef struct hub_freeplay_pad_reader_pc_s {
     u8 unknown_00[0x78];
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER_PC;
+
 typedef struct world_minikit_reader_pc_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
@@ -181,6 +201,7 @@ static __forceinline f32 HubFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
+
 extern "C" const char HubTableTextPc00752d20[] = "grievous";
 extern "C" const char HubTableTextPc00752d48[] = "jabba";
 static const char HubTableTextPc00758fdc[] = "lock_B_on";
@@ -452,6 +473,7 @@ static void HubResolveAreaInfoPc(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
         NuSpecialFind(w->scene, &info->lock, (char *)info->lock_name, 1);
     }
 }
+
 static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
     {AreaFixUpName_Negotiations,
      HubTableTextPc007596cc,
@@ -1110,8 +1132,9 @@ extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
     if (HubAreaInfoPc[0].area_name != NULL) {
         HUB_AREA_INFO_PC *info = HubAreaInfoPc;
         do {
-            if (info->bonus_gizmo != NULL && ((GIZMO_PC *)info->bonus_gizmo)->object == buildit)
+            if (info->bonus_gizmo != NULL && ((GIZMO_PC *)info->bonus_gizmo)->object == buildit) {
                 return 1;
+            }
             ++info;
         } while (info->area_name != NULL);
     }
@@ -1124,27 +1147,31 @@ static void HubRestoreBuildItsPc(void) {
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
         GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
         if (gizmo != NULL) {
-            if (((1U << bit) & Game.hub_buildit_completed) != 0)
+            if (((1U << bit) & Game.hub_buildit_completed) != 0) {
                 GizBuildIt_SetToEnd((GIZBUILDIT_PC *)gizmo->object);
+            }
             ++bit;
         }
     }
-    if ((Game.hub_buildit_completed & 0x80) != 0 && LevGizmo[0] != NULL)
+    if ((Game.hub_buildit_completed & 0x80) != 0 && LevGizmo[0] != NULL) {
         GizBuildIt_SetToEnd((GIZBUILDIT_PC *)LevGizmo[0]->object);
+    }
 }
 
 /* 474df0/89, native source-private ABI receives buildit in EAX, count on stack.
  * Keep static in hub.cpp so VC8 can choose the native internal convention.
  */
 static void HubSetBuildItPiecesVisiblePc(GIZBUILDIT_PC *buildit, i32 count) {
-    if (buildit->linked_buildit != NULL)
+    if (buildit->linked_buildit != NULL) {
         buildit = buildit->linked_buildit;
+    }
     for (i32 i = 0; i < buildit->anim_object_count; ++i) {
         if (buildit->anim_objects[i] != NULL) {
-            if (i < count)
+            if (i < count) {
                 NuSpecialSetVisibility(&buildit->anim_objects[i]->special, 1);
-            else
+            } else {
                 NuSpecialSetVisibility(&buildit->anim_objects[i]->special, 0);
+            }
         }
     }
 }
@@ -1156,21 +1183,24 @@ static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
     const i32 gold_bricks = Game.gold_bricks;
     for (; HubAreaInfoPc[i].area_name != NULL; ++i) {
         GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
-        if (gizmo == NULL)
+        if (gizmo == NULL) {
             continue;
+        }
         if (GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
             gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
             GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)gizmo->object;
             if (buildit->anim_object_count <= gold_bricks) {
-                if ((buildit->availability_flags & 1) == 0)
+                if ((buildit->availability_flags & 1) == 0) {
                     GizmoActivate(world->gizmo_sys, gizmo, 1, 0);
+                }
             } else {
                 GizmoSetVisibility(world->gizmo_sys, gizmo, 0, 0);
                 HubSetBuildItPiecesVisiblePc(buildit, gold_bricks);
             }
         }
-        if (GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0)
+        if (GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0) {
             Game.hub_buildit_completed |= (u8)(1 << bit);
+        }
         ++bit;
     }
 }
@@ -1178,10 +1208,11 @@ static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
 static void HubResolveEpisodeInfoPc(HUB_EPISODE_INFO_PC *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
     for (; info->episode != -1; ++info) {
-        if (info->episode >= 0 && info->episode < EPISODECOUNT)
+        if (info->episode >= 0 && info->episode < EPISODECOUNT) {
             info->data = &EDataList[info->episode];
-        else
+        } else {
             info->data = NULL;
+        }
         info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
         NuSpecialFind(w->scene, &info->lock_on, (char *)info->lock_on_name, 1);
     }
@@ -1202,10 +1233,11 @@ extern "C" void __cdecl WipeBackToHub(void) {
 static void HubInitSelectModePc(void) {
     const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
     if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & 0x1000) != 0 ||
-        Game.area_save[area].area_complete == 0)
+        Game.area_save[area].area_complete == 0) {
         hub_selectmode = 0;
-    else
+    } else {
         hub_selectmode = 1;
+    }
     selectmodemode = 0;
 }
 
@@ -1268,8 +1300,9 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
 static AREA_DATA_PC *HubArcadePlayableAreaPc(i32 *unavailable) {
     AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.level];
     if (area == NULL || Game.area_save[area->index].complete == 0) {
-        if (unavailable != NULL)
+        if (unavailable != NULL) {
             *unavailable = 1;
+        }
         return NULL;
     }
     return area;
@@ -1281,30 +1314,36 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
     for (i32 i = 0; i < 5; ++i) {
         i32 opacity = full_opacity;
         char text[128], number[16];
-        if (ArcadeItem.entries[i].text != NULL)
+        if (ArcadeItem.entries[i].text != NULL) {
             NuStrCpy(text, TTab[*ArcadeItem.entries[i].text]);
-        else
+        } else {
             text[0] = 0;
+        }
         switch (i) {
             case 0: {
-                if (text[0] != 0)
+                if (text[0] != 0) {
                     NuStrCat(text, ": ");
+                }
                 AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.entries[i].index];
-                if (area != NULL && area->name_id != 0 && TTab[area->name_id] != NULL)
+                if (area != NULL && area->name_id != 0 && TTab[area->name_id] != NULL) {
                     NuStrCat(text, TTab[area->name_id]);
-                else
+                } else {
                     NuStrCat(text, "?");
-                if (Game.area_save[area->index].complete == 0)
+                }
+                if (Game.area_save[area->index].complete == 0) {
                     opacity /= 3;
+                }
                 break;
             }
             case 1: {
-                if (text[0] != 0)
+                if (text[0] != 0) {
                     NuStrCat(text, ": ");
-                if (TTab[*Arcade_Mode[ArcadeItem.entries[i].index].text] != NULL)
+                }
+                if (TTab[*Arcade_Mode[ArcadeItem.entries[i].index].text] != NULL) {
                     NuStrCat(text, TTab[*Arcade_Mode[ArcadeItem.entries[i].index].text]);
-                else
+                } else {
                     NuStrCat(text, "?");
+                }
                 if ((u32)Arcade_Mode[ArcadeItem.entries[i].index].target > 0) {
                     NuStrCat(text, " (");
                     Text_MakeScore(Arcade_Mode[ArcadeItem.entries[i].index].target, number);
@@ -1316,9 +1355,9 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
             case 2: {
                 NuStrCat(text, ": ");
                 const i32 target = PCArcadePointGoals[ArcadeItem.entries[i].index];
-                if (target == 0)
+                if (target == 0) {
                     NuStrCat(text, TTab[tOFF]);
-                else {
+                } else {
                     sprintf(number, "%i", target);
                     NuStrCat(text, number);
                     if (TTab[TextIdPc8807fc] != NULL) {
@@ -1331,13 +1370,15 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
             case 3:
                 NuStrCat(text, ": ");
                 NuStrCat(text, TTab[ArcadeItem.entries[i].index != 0 ? TextIdPc880864 : TextIdPc880874]);
-                if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0) {
                     opacity /= 3;
+                }
                 break;
             case 4: {
                 AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.level];
-                if (area == NULL || Game.area_save[area->index].complete == 0)
+                if (area == NULL || Game.area_save[area->index].complete == 0) {
                     opacity /= 3;
+                }
                 break;
             }
         }
@@ -1366,6 +1407,7 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
         y = (f32)(y - 0.17499999701976776);
     }
 }
+
 extern "C" {
 
     i32 __cdecl Arcade_GetMode(u32 *flags) {
@@ -1400,19 +1442,23 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
     DrawBonusScore(STATSPOSY, first, second, alpha, Arcade_Score);
     i32 text;
     if (GetMenuID() == 16) {
-        if (bonusmodearcade == 0 || hub_bonusmode != 4)
+        if (bonusmodearcade == 0 || hub_bonusmode != 4) {
             return;
+        }
         i32 unavailable;
-        if (HubArcadePlayableAreaPc(&unavailable) != NULL || unavailable != 1)
+        if (HubArcadePlayableAreaPc(&unavailable) != NULL || unavailable != 1) {
             return;
+        }
         text = TextIdPc8807c4;
     } else {
-        if (menu != -1 || Arcade_BothPlayersActive() != 0)
+        if (menu != -1 || Arcade_BothPlayersActive() != 0) {
             return;
+        }
         text = TextIdPc8807c0;
     }
-    if (text == -1)
+    if (text == -1) {
         return;
+    }
     const f64 pulse =
         (f64)NuTrigTable[(u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, .5f) * 2.0f) * 65536.0) >> 1] *
             .25 +
@@ -1420,6 +1466,7 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
     SmartTextEx(TTab[text], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
                 HubEpisodeTitleSizePc, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)(pulse * alpha_scaled));
 }
+
 extern "C" {
 #pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
     static f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
@@ -1442,8 +1489,9 @@ extern "C" {
 
     void __cdecl Arcade_DrawPanel(i32 paused) {
         f32 alpha, scale, size;
-        if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive() != 0)
+        if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive() != 0) {
             return;
+        }
         alpha =
             (f32)((f64)NuTrigTable[((i32)((f64)(NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >>
                                     1) &
@@ -1466,8 +1514,9 @@ extern "C" {
             Arcade_Score[player_index] = 0;
             earned = 1;
         } else {
-            if (BonusWinner != -1)
+            if (BonusWinner != -1) {
                 return;
+            }
             if (Arcade_BothPlayersActive()) {
                 earned = 1;
                 goal = PCArcadePointGoals[(i8)ArcadeItem.play];
@@ -1491,10 +1540,11 @@ extern "C" {
             GameAudio_PlaySfx(0x2c, NULL, 0, 0);
             GameAudio_PlaySfx(0x26, NULL, 0, 0);
         }
-        if (reset_score != 0)
+        if (reset_score != 0) {
             NuSPrintf(text, Text_TimeS, Arcade_Score[player_index]);
-        else
+        } else {
             NuSPrintf(text, Text_TimeS, Arcade_Points[player_index]);
+        }
         if (player_index == 0) {
             position.x = -0.015f;
             message.unknown_4f = 8;
@@ -1511,18 +1561,21 @@ extern "C" {
         message.flags = 0x4028;
         message.duration = 2.0f;
         AddGameMsg(&message);
-        if (reset_score != 0)
+        if (reset_score != 0) {
             return;
+        }
         if (earned == 0) {
             Arcade_NeedTwoPlayers_Scale = 1.5f;
             return;
         }
         character_id = (i16)((GAMEOBJECT *)Player[player_index])->id;
         icon = CDataList[character_id].icon_model;
-        if (icon == -1)
+        if (icon == -1) {
             return;
-        if (GCDataList[character_id].weapon_action == 0 && icon != PCArcadeUnpairedIconModel)
+        }
+        if (GCDataList[character_id].weapon_action == 0 && icon != PCArcadeUnpairedIconModel) {
             icon++;
+        }
         position.x = 0.0f;
         position.y = PCArcadeIconMessageY;
         position.z = 1.0f;
@@ -1542,8 +1595,9 @@ extern "C" {
     }
 
     void __cdecl Arcade_PlayerKilled(i32 player_index, i32 extra) {
-        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0)
+        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 1) == 0) {
             return;
+        }
         if (Arcade_BothPlayersActive()) {
             ++AreaGlobals_PC.arcade_player_kills[player_index];
             Arcade_AwardPoint(player_index, 0, extra);
@@ -1554,27 +1608,31 @@ extern "C" {
 
     void __cdecl Arcade_AIKilled(i32 player_index) {
         GAMEOBJECT *object;
-        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0)
+        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0) {
             return;
+        }
         if (Arcade_BothPlayersActive()) {
             ++AreaGlobals_PC.arcade_ai_kills[player_index];
             PlaySfx((char *)ArcadeAiKilledSoundNamePc, NULL);
             object = (GAMEOBJECT *)Player[player_index];
-            if (object != NULL && object->coin_packet != NULL)
+            if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+            }
             if (AreaGlobals_PC.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[(i8)ArcadeItem.mode].target) {
                 Arcade_AwardPoint(player_index, 0, 0);
                 AreaGlobals_PC.arcade_ai_kills[0] = 0;
                 AreaGlobals_PC.arcade_ai_kills[1] = 0;
                 object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
-                if (object != NULL && object->coin_packet != NULL)
+                if (object != NULL && object->coin_packet != NULL) {
                     ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+                }
             }
         } else {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             object = (GAMEOBJECT *)Player[player_index];
-            if (object != NULL && object->coin_packet != NULL)
+            if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+            }
             Arcade_NeedTwoPlayers_Scale = 1.5f;
         }
     }
@@ -1582,25 +1640,31 @@ extern "C" {
     void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
         GAMEOBJECT *object;
         ARCADE_COIN_PACKET_PC *packet;
-        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 4) == 0)
+        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 4) == 0) {
             return;
+        }
         if (Arcade_BothPlayersActive()) {
             object = (GAMEOBJECT *)Player[player_index];
-            if (object == NULL || object->coin_packet == NULL)
+            if (object == NULL || object->coin_packet == NULL) {
                 return;
+            }
             packet = (ARCADE_COIN_PACKET_PC *)object->coin_packet;
-            if (packet->coins < (u32)Arcade_Mode[(i8)ArcadeItem.mode].target)
+            if (packet->coins < (u32)Arcade_Mode[(i8)ArcadeItem.mode].target) {
                 return;
+            }
             Arcade_AwardPoint(player_index, 0, 0);
             object = (GAMEOBJECT *)Player[0];
-            if (object != NULL && object->coin_packet != NULL)
+            if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->coins = 0;
+            }
             object = (GAMEOBJECT *)Player[1];
-            if (object != NULL && object->coin_packet != NULL)
+            if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->coins = 0;
+            }
             object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
-            if (object != NULL && object->coin_packet != NULL)
+            if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+            }
         } else {
             *score = previous_score;
             Arcade_NeedTwoPlayers_Scale = 1.25f;
@@ -1609,10 +1673,11 @@ extern "C" {
 
     void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
         if (Arcade != 0 && (player_index == 0 || player_index == 1)) {
-            if ((killed_player == 0 || killed_player == 1))
+            if ((killed_player == 0 || killed_player == 1)) {
                 Arcade_PlayerKilled(player_index, 0);
-            else if (killed_player == -1)
+            } else if (killed_player == -1) {
                 Arcade_AIKilled(player_index);
+            }
         }
     }
 }
@@ -1627,8 +1692,9 @@ extern "C" void __cdecl Arcade_UpdateEndMenu(MENU *menu) {
 }
 
 extern "C" void __cdecl Arcade_DrawEndMenu(MENU *menu) {
-    if (MenuStopDraw != 0)
+    if (MenuStopDraw != 0) {
         return;
+    }
     SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, menu_flash ? 191 : 255, 0, 1.7f, 1,
                 NULL, 0, 128);
 }
@@ -1702,8 +1768,9 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
             blue = MENUENTRYB;
         }
         i32 opacity = full_opacity;
-        if (i == 2 && Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) < 1)
+        if (i == 2 && Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) < 1) {
             opacity = full_opacity / 4;
+        }
         SmartTextEx(text[i], 0.0f, y, 1.0f, .7f, .7f, .7f, 0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
         y = (f32)(y - 0.20000000298023224);
     }
@@ -1712,8 +1779,9 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
 static inline COLLECTION_BUILD_PC *HubFreePlayCollectionPc(i32 area) {
     const u16 flags = ADataList[area].flags;
     if ((flags & 1) != 0) {
-        if ((flags & 4) != 0)
+        if ((flags & 4) != 0) {
             return &MiniKitCollection;
+        }
         return &VehicleCollectionPc;
     }
     return &CharacterCollectionPc;
@@ -1731,8 +1799,9 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
             const i32 model = FreePlayModelList[index].model_id;
             if ((CDataList[model].model_flags & 0x4000000) == 0 ||
                 InCollectList_Index(model, MiniKitCollection.list, MiniKitCollection.count) == -1 ||
-                PlayerList[0] == model || PlayerList[1] == model || Collection_Got(model) == 0)
+                PlayerList[0] == model || PlayerList[1] == model || Collection_Got(model) == 0) {
                 continue;
+            }
             fplist[fpcount++] = FreePlayModelList[index];
         }
     } else {
@@ -1740,17 +1809,21 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
         APICHARACTERMODELLIST *entry = &FreePlayModelList[2];
         for (i32 index = 0; index < count; ++index, ++entry) {
             const i32 model = entry->model_id;
-            if (model == -1)
+            if (model == -1) {
                 break;
+            }
             if (area != -1) {
                 if ((ADataList[area].flags & 1) != 0) {
-                    if ((CDataList[model].model_flags & 0x2000) == 0)
+                    if ((CDataList[model].model_flags & 0x2000) == 0) {
                         continue;
-                } else if ((CDataList[model].model_flags & 0x2000) != 0)
+                    }
+                } else if ((CDataList[model].model_flags & 0x2000) != 0) {
                     continue;
+                }
             }
-            if (Collection_Got(model) != 0)
+            if (Collection_Got(model) != 0) {
                 fplist[fpcount++] = *entry;
+            }
         }
     }
     fplist[fpcount].model_id = -1;
@@ -1769,13 +1842,15 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
 
 /* 476a50/282; networkbranch mustremainreal, initial native flagzero. */
 static i32 HubCopyNetworkFreePlayListPc(void) {
-    if (net_recievedFreePlayList == 0)
+    if (net_recievedFreePlayList == 0) {
         return 0;
+    }
     fpcount = 0;
     for (i32 i = 0; i < net_FreePlayModelCount; ++i) {
         FreePlayModelList[i] = NetFreePlayModelList[i];
-        if (Collection_Got(NetFreePlayModelList[i].model_id) != 0)
+        if (Collection_Got(NetFreePlayModelList[i].model_id) != 0) {
             fplist[fpcount++] = NetFreePlayModelList[i];
+        }
     }
     fplist[fpcount].model_id = -1;
     if (fpcount > 3) {
@@ -1793,6 +1868,7 @@ static i32 HubCopyNetworkFreePlayListPc(void) {
     FreePlay = 1;
     return 1;
 }
+
 #pragma bss_seg(".bss$HubIconWibbleAnglePc")
 static u16 HubIconWibbleAnglePc[4] = {0};
 #pragma bss_seg()
@@ -1824,41 +1900,48 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
             index -= columns;
             if (index < 0) {
                 index += rows * columns;
-                if (index >= count)
+                if (index >= count) {
                     index -= columns;
+                }
             }
         } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 1) {
         do {
             index += columns;
             if (index >= count) {
-                if (index < rows * columns)
+                if (index < rows * columns) {
                     index += columns;
+                }
                 index -= rows * columns;
             }
         } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 2) {
         do {
             i32 column = index % columns - 1;
-            if (column < 0)
+            if (column < 0) {
                 column += columns;
+            }
             index = index / columns * columns + column;
-            if (index >= count)
+            if (index >= count) {
                 index = count - 1;
+            }
         } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 3) {
         do {
             i32 column = index % columns + 1;
-            if (column >= columns)
+            if (column >= columns) {
                 column -= columns;
+            }
             const i32 row = index / columns * columns;
             index = row + column;
-            if (index >= count)
+            if (index >= count) {
                 index = row;
+            }
         } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     }
     return index;
 }
+
 #pragma bss_seg(".bss$BigIconAlpha")
 static f32 BigIconAlpha[2] = {0};
 #pragma bss_seg()
@@ -1881,14 +1964,17 @@ static i32 hub_freeplay_area = 0;
 /* 476da0/2192, nativePC control excludesAndroidtouch/autoconfirm logic. */
 extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
-    if ((ADataList[hub_freeplay_area].flags & 1) != 0)
+    if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
-    else
+    } else {
         collection = &CharacterCollectionPc;
-    if (freeplay_time[0] > 0)
+    }
+    if (freeplay_time[0] > 0) {
         freeplay_time[0] -= FRAMETIME;
-    if (freeplay_time[1] > 0)
+    }
+    if (freeplay_time[1] > 0) {
         freeplay_time[1] -= FRAMETIME;
+    }
     HubUpdateIconWibblePc();
     switch (freeplaymode) {
         case 0:
@@ -1902,8 +1988,9 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                                                              collection->count);
                     if (freeplay_i[player] == -1) {
                         freeplay_i[player] = player;
-                        if (player == 1 && freeplay_i[0] == 1)
+                        if (player == 1 && freeplay_i[0] == 1) {
                             freeplay_i[1] = 0;
+                        }
                     }
                     freeplay_selected[player] = 0;
                 }
@@ -1916,14 +2003,15 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                 const i32 previous = freeplay_i[player];
                 i32 index = previous;
                 i32 select = 0, cancel = 0;
-                if (MissionMenuPacketPc.active_player[player] == 0)
+                if (MissionMenuPacketPc.active_player[player] == 0) {
                     continue;
+                }
                 const u32 digital = ((HUB_FREEPLAY_PAD_READER_PC *)GamePadStorage[player].pad)->digital_buttons_pressed;
-                if ((digital & GAMEPAD_MENUSELECT) != 0)
+                if ((digital & GAMEPAD_MENUSELECT) != 0) {
                     select = 1;
-                else if ((digital & GAMEPAD_MENUCANCEL) != 0)
+                } else if ((digital & GAMEPAD_MENUCANCEL) != 0) {
                     cancel = 1;
-                else if (freeplay_selected[player] == 0) {
+                } else if (freeplay_selected[player] == 0) {
                     const u32 held =
                         GamePadStorage[player].menu_buttons_held | GamePadStorage[player].menu_directions_held;
                     const u32 pressed =
@@ -1932,31 +2020,37 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                     i32 left_held = held & GAMEPAD_DLEFT, right_held = held & GAMEPAD_DRIGHT;
                     i32 up = pressed & GAMEPAD_DUP, down = pressed & GAMEPAD_DDOWN;
                     i32 left = pressed & GAMEPAD_DLEFT, right = pressed & GAMEPAD_DRIGHT;
-                    if (up && down)
+                    if (up && down) {
                         up = down = 0;
-                    if (left && right)
+                    }
+                    if (left && right) {
                         left = right = 0;
-                    if (up_held && down_held)
+                    }
+                    if (up_held && down_held) {
                         up_held = down_held = 0;
-                    if (left_held && right_held)
+                    }
+                    if (left_held && right_held) {
                         left_held = right_held = 0;
+                    }
                     MenuRepeat(&up_held, &up, &uprepeattime[player], &uprepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&down_held, &down, &downrepeattime[player], &downrepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], 0.1f,
                                FRAMETIME);
-                    if (up)
+                    if (up) {
                         index = HubMoveFreePlayCursorPc(collection, player, 0, previous);
-                    else if (down)
+                    } else if (down) {
                         index = HubMoveFreePlayCursorPc(collection, player, 1, previous);
-                    else if (left)
+                    } else if (left) {
                         index = HubMoveFreePlayCursorPc(collection, player, 2, previous);
-                    else if (right)
+                    } else if (right) {
                         index = HubMoveFreePlayCursorPc(collection, player, 3, previous);
+                    }
                 }
                 ++active;
-                if (freeplay_selected[player] >= 2)
+                if (freeplay_selected[player] >= 2) {
                     ++confirmed;
+                }
                 if (select) {
                     switch (freeplay_selected[player]) {
                         case 1:
@@ -1967,9 +2061,9 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                             break;
                         case 0:
                             if (freeplay_time[player] <= 0) {
-                                if (Collection_Got(collection->list[freeplay_i[player]].id) == 0)
+                                if (Collection_Got(collection->list[freeplay_i[player]].id) == 0) {
                                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                                else {
+                                } else {
                                     freeplay_selected[player] = 1;
                                     freeplay_time[player] = HubFreePlaySelectionWaitPc;
                                     GameAudio_PlaySfx(0x30, NULL, 0, 0);
@@ -1996,8 +2090,9 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                             }
                             break;
                         case 0:
-                            if (freeplay_time[player] <= 0)
+                            if (freeplay_time[player] <= 0) {
                                 exit = 1;
+                            }
                             break;
                     }
                 }
@@ -2009,10 +2104,11 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                 }
             }
             if (confirmed == active) {
-                if (netclient == 0)
+                if (netclient == 0) {
                     Hub_MakeFreePlayList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1]);
-                else if (HubCopyNetworkFreePlayListPc() == 0)
+                } else if (HubCopyNetworkFreePlayListPc() == 0) {
                     break;
+                }
                 freeplaymode = 3;
                 freeplaytime = 0;
                 freeplayduration = 1;
@@ -2045,8 +2141,9 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                 loadareacharacters_no_backdrop_reset = 1;
                 FinishLoop_On = 0;
                 if (hub_freeplaysource == 0) {
-                    if (hub_selectmode == 2)
+                    if (hub_selectmode == 2) {
                         InitChallenge((i8)NewLData->area_index);
+                    }
                 } else if (hub_freeplaysource == 1 && bonusmodearcade != 0) {
                     Arcade = 1;
                     Arcade_Points[0] = Arcade_Points[1] = 0;
@@ -2055,17 +2152,20 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
             break;
         case 2:
             freeplaytime += FRAMETIME;
-            if (freeplaytime >= freeplayduration)
+            if (freeplaytime >= freeplayduration) {
                 WipeBackToHub();
+            }
             break;
     }
     for (i32 player = 0; player < 2; ++player) {
-        if (freeplaymode == 1)
+        if (freeplaymode == 1) {
             BigIconAlpha[player] = SeekLinearF(BigIconAlpha[player], 1, FRAMETIME + FRAMETIME);
-        else
+        } else {
             BigIconAlpha[player] = 0;
+        }
     }
 }
+
 #pragma data_seg(".data$HubFreePlayCursorSizePc")
 static f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
 #pragma data_seg()
@@ -2073,32 +2173,38 @@ static f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
 /* PC477630668bytes, fullstackargs(collection,active_cursors,alpha,scale). */
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
     // MATCH-EXCEPTION: retail compares scale against a -0.0f constant (same result as 0.0f).
-    if (alpha <= 0.0f || scale < -0.0f)
+    if (alpha <= 0.0f || scale < -0.0f) {
         return;
+    }
     f32 z = 0.0f;
     for (i32 player = 1; player >= 0; --player) {
         i32 model = MissionMenuPacketPc.player_model[player];
         const i32 index = InCollectList_Index(model, collection->list, collection->count);
-        if (index == -1)
+        if (index == -1) {
             continue;
-        if (Collection_Got(model) == 0)
+        }
+        if (Collection_Got(model) == 0) {
             model = -1;
+        }
         const i32 frame = player != 0 ? 165 : 166;
         if (active_cursors != 0 && MissionMenuPacketPc.active_player[player] != 0) {
             z = (f32)(z - .0024999999441206455);
             f32 size = HubFreePlayCursorSizePc;
-            if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+            if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                 size = (f32)(size * .875);
+            }
             const f64 ratio = collection->scale / .675000011920929;
             size *= ratio;
             if (freeplay_time[player] > 0.0f) {
                 f32 progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
-                if (freeplay_selected[player] == 0)
+                if (freeplay_selected[player] == 0) {
                     progress = 1.0f - progress;
+                }
                 size =
                     (f32)(size * (1.0 - (NuTrigTable[((i32)(progress * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5));
-            } else if (freeplay_selected[player] != 0)
+            } else if (freeplay_selected[player] != 0) {
                 size = 0.0f;
+            }
             size *= scale;
             if (size > 0.0f) {
                 const f32 offset = (f32)(ratio * .009999999776482582);
@@ -2119,6 +2225,7 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
 extern "C" void __cdecl Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
     Customiser_LoadAll(CharacterCustomiser, world);
 }
+
 extern "C" {
 
     void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
@@ -2166,12 +2273,14 @@ extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
             kit->scalar_10 = 0;
             kit->rotation = (u16)qrand();
             for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-                if (info->area != NULL && info->area->index == i)
+                if (info->area != NULL && info->area->index == i) {
                     break;
+                }
             }
             height = GameShadow(NULL, &kit->position, 5.0f, -1);
-            if (height != 2000000.0f)
+            if (height != 2000000.0f) {
                 kit->position.y = height;
+            }
             kit->phase_x = qrand();
             kit->phase_y = qrand();
             kit->phase_z = qrand();
@@ -2197,8 +2306,9 @@ extern "C" void __cdecl Hub_InitMiniKits(WORLDINFO *world) {
 static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     const i32 model = ADataList[area_index].minikit_id;
     HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
-    if (model == -1 || w->minikits == NULL)
+    if (model == -1 || w->minikits == NULL) {
         return 0;
+    }
     HUB_MINIKIT_RUNTIME_PC *kit = &w->minikits[area_index];
     HUB_AREA_INFO_PC *info = NULL;
     for (HUB_AREA_INFO_PC *entry = HubAreaInfoPc; entry->area_name != NULL; ++entry) {
@@ -2231,6 +2341,7 @@ static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     kit->bounds_max.z = kit->collision_center.z + radius;
     return 1;
 }
+
 static i32 HubMiniKitViewerAreaPc = 0;
 static NUVEC HubMiniKitViewerPositionPc = {-27.0f, 0.10000000149011612f, -22.125f};
 static f32 HubMiniKitViewerAlphaPc = 0.0f;
@@ -2255,31 +2366,36 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         }
     }
     HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
-    if (w->pieces == NULL || w->minikits == NULL)
+    if (w->pieces == NULL || w->minikits == NULL) {
         return;
+    }
     if (viewer) {
         if (HubMiniKitViewerAlphaPc < 1.0f) {
             HubMiniKitViewerAlphaPc += FRAMETIME * 2.0f;
-            if (HubMiniKitViewerAlphaPc > 1.0f)
+            if (HubMiniKitViewerAlphaPc > 1.0f) {
                 HubMiniKitViewerAlphaPc = 1.0f;
+            }
         }
     } else {
         HubMiniKitViewerAlphaPc = 0.0f;
     }
     if (HubMiniKitViewerMoveWaitPc > 0.0f) {
         HubMiniKitViewerMoveWaitPc -= FRAMETIME;
-        if (HubMiniKitViewerMoveWaitPc <= 0.0f)
+        if (HubMiniKitViewerMoveWaitPc <= 0.0f) {
             HubMiniKitViewerMovePc = 0.0f;
+        }
     }
     PlaySfx("ui_hover_lp", &HubMiniKitViewerPositionPc);
     HUB_MINIKIT_RUNTIME_PC *kit = w->minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
         HUB_MINIKIT_PIECES_PC *pieces = w->pieces[i];
-        if (pieces == NULL)
+        if (pieces == NULL) {
             continue;
+        }
         count[i] = Game.area_save[i].minikit_count;
-        if (count[i] > pieces->piece_count)
+        if (count[i] > pieces->piece_count) {
             count[i] = pieces->piece_count;
+        }
         kit->scale = 1.0f;
         const f32 vx = (0.0 - kit->offset_x) * 5.0;
         const f32 vz = (0.0 - kit->offset_z) * 5.0;
@@ -2289,15 +2405,17 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         kit->offset_x += kit->velocity_x * FRAMETIME;
         kit->offset_z += kit->velocity_z * FRAMETIME;
         if (i == HubMiniKitViewerAreaPc) {
-            if (speed > 0.0f)
+            if (speed > 0.0f) {
                 kit->target_rotation =
                     TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
+            }
             kit->target_piece_count = count[i];
             const HUB_PAD_READER_PC *pads = (const HUB_PAD_READER_PC *)GamePadStorage;
             if (viewer && count[i] >= pieces->piece_count &&
                 ((MissionMenuPacketPc.active_player[0] != 0 && (pads[0].held & GAMEPAD_JUMP) != 0) ||
-                 (MissionMenuPacketPc.active_player[1] != 0 && (pads[1].held & GAMEPAD_JUMP) != 0)))
+                 (MissionMenuPacketPc.active_player[1] != 0 && (pads[1].held & GAMEPAD_JUMP) != 0))) {
                 kit->target_piece_count = 1;
+            }
         } else if (count[i] == 0) {
             kit->target_piece_count = 0;
             kit->displayed_piece_count = 0;
@@ -2306,21 +2424,24 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         }
         kit->rotation = SeekRot(kit->rotation, kit->target_rotation, 3.0f);
         i32 rate = (i32)((f64)RotDiff(old_rotation, kit->rotation) / FRAMETIME);
-        if (rate < -65536)
+        if (rate < -65536) {
             rate = -65536;
-        else if (rate > 65536)
+        } else if (rate > 65536) {
             rate = 65536;
+        }
         rate /= 8;
-        if (rate < -4551)
+        if (rate < -4551) {
             rate = -4551;
-        else if (rate > 4551)
+        } else if (rate > 4551) {
             rate = 4551;
+        }
         kit->rotation_velocity = SeekRot(kit->rotation_velocity, rate, 8.0f);
         i32 tilt = 0;
         if (i == HubMiniKitViewerAreaPc && speed > 0.0f) {
             const f32 angular_speed = (f64)abs(RotDiff(old_rotation, kit->rotation)) / FRAMETIME;
-            if (angular_speed < 32768.0f)
+            if (angular_speed < 32768.0f) {
                 tilt = (i32)((1.0 - (f64)angular_speed * (1.0 / 32768.0)) * 4551.0);
+            }
         }
         kit->tilt = SeekRot(kit->tilt, -tilt, 3.0f);
         const i32 visible = count[i];
@@ -2328,36 +2449,44 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
             pieces->pieces[j].enabled = 0;
             if (NuSpecialExistsFn(&pieces->pieces[j].special)) {
                 NuSpecialSetVisibility(&pieces->pieces[j].special, 0);
-                if (j < visible)
+                if (j < visible) {
                     pieces->pieces[j].enabled = 1;
+                }
             }
         }
         kit->phase_x = (i32)((f64)kit->rate_x * FRAMETIME + kit->phase_x);
-        if (kit->phase_x > 65536)
+        if (kit->phase_x > 65536) {
             kit->phase_x -= 65536;
+        }
         kit->phase_y = (i32)((f64)kit->rate_y * FRAMETIME + kit->phase_y);
-        if (kit->phase_y > 65536)
+        if (kit->phase_y > 65536) {
             kit->phase_y -= 65536;
+        }
         kit->phase_z = (i32)((f64)kit->rate_z * FRAMETIME + kit->phase_z);
-        if (kit->phase_z > 65536)
+        if (kit->phase_z > 65536) {
             kit->phase_z -= 65536;
+        }
         kit->phase_rotation = (i32)((f64)kit->rate_rotation * FRAMETIME + kit->phase_rotation);
-        if (kit->phase_rotation > 65536)
+        if (kit->phase_rotation > 65536) {
             kit->phase_rotation -= 65536;
+        }
         Hub_UpdateMiniKitBoundsPc(i, world);
     }
     kit = w->minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
-        if (w->pieces[i] == NULL)
+        if (w->pieces[i] == NULL) {
             continue;
+        }
         if (kit->displayed_piece_count != kit->target_piece_count &&
             (i32)((f64)GameTimer.time_elapsed / (f64)0.15f) != (i32)((f64)GameTimer.last_time_elapsed / (f64)0.15f)) {
-            if (kit->displayed_piece_count < kit->target_piece_count)
+            if (kit->displayed_piece_count < kit->target_piece_count) {
                 ++kit->displayed_piece_count;
-            else if (kit->displayed_piece_count > kit->target_piece_count)
+            } else if (kit->displayed_piece_count > kit->target_piece_count) {
                 --kit->displayed_piece_count;
-            if (i == HubMiniKitAreaPc)
+            }
+            if (i == HubMiniKitAreaPc) {
                 PlaySfx((char *)GameAudioName00758be8Pc, &kit->position);
+            }
             NewRumbleAllPlayers(0.0f, 0.0f, 1, 0);
         }
         if (count[i] > 0 && kit->displayed_piece_count > 0) {
@@ -2366,19 +2495,22 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         }
     }
 }
+
 static f32 HubMiniKitViewerStepPc = 2.0f;
 static f32 HubMiniKitViewerBaseYPc = 0.14300000667572021f;
 
 extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
-    if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL)
+    if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL) {
         return;
+    }
     i32 areas[72];
     i32 count = 0;
     i32 selected = -1;
     for (i32 area = 0; area < AREACOUNT; ++area) {
         if (ADataList[area].flags & 0x10) {
-            if (area == HubMiniKitViewerAreaPc)
+            if (area == HubMiniKitViewerAreaPc) {
                 selected = count;
+            }
             areas[count] = area;
             ++count;
         }
@@ -2386,8 +2518,9 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     for (i32 index = 0; index < count; ++index) {
         const i32 area = areas[index];
         HUB_MINIKIT_RUNTIME_PC *kit = &((HUB_WORLD_READER_PC *)world)->minikits[area];
-        if (((HUB_WORLD_READER_PC *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1)
+        if (((HUB_WORLD_READER_PC *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1) {
             continue;
+        }
         HUB_AREA_INFO_PC *info = NULL;
         for (HUB_AREA_INFO_PC *entry = HubAreaInfoPc; entry->area_name != NULL; ++entry) {
             if (entry->area != NULL && area == entry->area->index) {
@@ -2396,18 +2529,19 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
             }
         }
         f32 offset;
-        if (area == areas[(selected + (count - 2)) % count])
+        if (area == areas[(selected + (count - 2)) % count]) {
             offset = -HubMiniKitViewerStepPc * 2.0;
-        else if (area == areas[(selected + (count - 1)) % count])
+        } else if (area == areas[(selected + (count - 1)) % count]) {
             offset = -HubMiniKitViewerStepPc;
-        else if (area == areas[selected])
+        } else if (area == areas[selected]) {
             offset = 0.0f;
-        else if (area == areas[(selected + 1) % count])
+        } else if (area == areas[(selected + 1) % count]) {
             offset = HubMiniKitViewerStepPc;
-        else if (area == areas[(selected + 2) % count])
+        } else if (area == areas[(selected + 2) % count]) {
             offset = HubMiniKitViewerStepPc * 2.0;
-        else
+        } else {
             continue;
+        }
         f32 x = HubMiniKitViewerPositionPc.x + offset;
         if (HubMiniKitViewerMoveWaitPc > 0.0f) {
             const f32 wait_ease =
@@ -2468,10 +2602,11 @@ static void HubDrawMiniKitCountPc(f32 x, f32 y, i32 count, i32 total, f32 alpha)
     const i32 object = HubDrawMiniKitCharacterPc != 0 ? 207 : 206;
     HubDrawMiniKitCharacterPc = 0;
     char text[128];
-    if (total == 1)
+    if (total == 1) {
         NuStrCpy(text, count == 1 ? "$" : "X");
-    else
+    } else {
         sprintf(text, "%i/%i", count, total);
+    }
     Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
              0, 255, 0, 127, (u8)(i32)(128.0 * alpha));
     const u16 rotation = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
@@ -2489,14 +2624,16 @@ extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 
     DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, tilt, rotation, 0,
                              &WORLD->level_objects[object].special, 2);
     if (count > -1 && total > -1) {
-        if (total == 1)
+        if (total == 1) {
             NuStrCpy(text, count == 1 ? "$" : "X");
-        else
+        } else {
             sprintf(text, "%i/%i", count, total);
+        }
         Text3DEx(text, x, y, 1.0f, PANEL_MINIKITCOUNTSCALE * stats_xscale, PANEL_MINIKITCOUNTSCALE,
                  PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(128.0 * alpha));
     }
 }
+
 static f32 HubAreaPanelTwoPc[6] = {-0.30000001192092896f, 0.0f, 0.6000000238418579f,
                                    -0.6000000238418579f,  0.0f, 0.30000001192092896f};
 extern "C" f32 *HubAreaPanelXPc = HubAreaPanelTwoPc;
@@ -2508,8 +2645,9 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
         SmartTextEx(TTab[TextIdPc8807e8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
                     HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                     HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
-        if (Game.lost_temple_area_complete != 0)
+        if (Game.lost_temple_area_complete != 0) {
             Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleYPc - .05000000074505806), phase, -1, -1);
+        }
         return;
     }
     SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
@@ -2517,10 +2655,11 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
                 HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
     if ((area->flags & 0x10) == 0) {
         if (Game.area_save[area_index].area_complete != 0) {
-            if ((area->flags & 0x800) != 0)
+            if ((area->flags & 0x800) != 0) {
                 Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleYPc - .05000000074505806), phase, -1, -1);
-            else
+            } else {
                 Hub_DrawImportantBrick(211, 0.0f, (f32)(HubEpisodeSubtitleYPc + .05000000074505806), phase, -1, -1);
+            }
         }
         return;
     }
@@ -2557,9 +2696,10 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
-        if ((area->flags & 0x10) != 0)
+        if ((area->flags & 0x10) != 0) {
             HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, Game.area_save[area_index].minikit_count, 10,
                                   phase);
+        }
         Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase,
                                Game.area_save[area_index].red_brick_collected, 1);
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
@@ -2585,10 +2725,11 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     if (Game.area_save[index].minikit_complete) {
         scale = HubEpisodeTitleSizePc;
         i32 kit = area->minikit_id;
-        if (kit != -1 && CDataList[kit].name_id != -1)
+        if (kit != -1 && CDataList[kit].name_id != -1) {
             SmartTextEx(TTab[CDataList[kit].name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
                         HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                         HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+        }
         sprintf(title, "(%s)", TTab[area->name_id]);
         text = title;
     } else if (Game.area_save[index].minikit_count > 0) {
@@ -2604,9 +2745,10 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     } else {
         return;
     }
-    if (scale > 0.0f && text != NULL)
+    if (scale > 0.0f && text != NULL) {
         SmartTextEx(text, 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                     HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+    }
 }
 
 extern "C" void __cdecl Hub_UpdateKit(void) {
@@ -2615,13 +2757,15 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
         for (i32 player = 0; player < 2; ++player) {
             if (MissionMenuPacketPc.active_player[player] != 0) {
                 if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) != 0 &&
-                    (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) == 0)
+                    (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) == 0) {
                     ++left;
-                else if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) != 0 &&
-                         (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) == 0)
+                } else if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) != 0 &&
+                           (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) == 0) {
                     ++right;
-                if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
+                }
+                if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                     cancel = 1;
+                }
             }
         }
     }
@@ -2632,10 +2776,12 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
         i32 attempts = 0;
         do {
             index = (i32)((u32)index - 1u);
-            if (index < 0)
+            if (index < 0) {
                 index = AREACOUNT;
-            if (++attempts >= AREACOUNT)
+            }
+            if (++attempts >= AREACOUNT) {
                 break;
+            }
         } while ((ADataList[index].flags & 0x10) == 0);
         HubMiniKitViewerAreaPc = index;
     } else if (right != 0 && left == 0) {
@@ -2644,10 +2790,12 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
         i32 attempts = 0;
         do {
             index = (i32)((u32)index + 1u);
-            if (index >= AREACOUNT)
+            if (index >= AREACOUNT) {
                 index = 0;
-            if (++attempts >= AREACOUNT)
+            }
+            if (++attempts >= AREACOUNT) {
                 break;
+            }
         } while ((ADataList[index].flags & 0x10) == 0);
         HubMiniKitViewerAreaPc = index;
     }
@@ -2666,6 +2814,7 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
         LevTime[4] = 0.6f;
     }
 }
+
 static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
     {0, 1, HubTableTextPc0075906c, HubTableTextPc00759060, 0, 0, NULL, NULL, {NULL, NULL, 0}},
     {1, 1, HubTableTextPc0075905c, HubTableTextPc00759050, 0, 0, NULL, NULL, {NULL, NULL, 0}},
@@ -2681,16 +2830,20 @@ static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
 
 extern "C" void __cdecl Hub_Reset(WORLDINFO *world) {
     Customiser_Reset(CharacterCustomiser);
-    if (HubResetAIFnPc != NULL)
+    if (HubResetAIFnPc != NULL) {
         HubResetAIFnPc(world);
-    for (i32 i = 0; i < 32; i++) {
-        if ((LevHSpecialExists & ((u64)1 << (i + 20))) != 0)
-            NuSpecialSetVisibility(&LevHSpecial[i + 20], 1);
-        if ((LevHSpecialExists & ((u64)1 << (i + 52))) != 0)
-            NuSpecialSetVisibility(&LevHSpecial[i + 52], 0);
     }
-    if (NuSpecialExistsFn(&LevHSpecial[84]) != 0)
+    for (i32 i = 0; i < 32; i++) {
+        if ((LevHSpecialExists & ((u64)1 << (i + 20))) != 0) {
+            NuSpecialSetVisibility(&LevHSpecial[i + 20], 1);
+        }
+        if ((LevHSpecialExists & ((u64)1 << (i + 52))) != 0) {
+            NuSpecialSetVisibility(&LevHSpecial[i + 52], 0);
+        }
+    }
+    if (NuSpecialExistsFn(&LevHSpecial[84]) != 0) {
         NuSpecialSetVisibility(&LevHSpecial[84], 0);
+    }
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; i++) {
         if (HubAreaInfoPc[i].door != NULL) {
             if (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
@@ -2727,6 +2880,7 @@ extern "C" void __cdecl Hub_ClearStats(void) {
     cointotaltime = 0.0f;
     goldbricktime = 0.0f;
 }
+
 extern "C" {
     NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
@@ -2739,8 +2893,9 @@ extern "C" {
                 GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                     ++active;
-                    if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f)
+                    if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f) {
                         ++nearby;
+                    }
                 }
             }
             if (active > 0 && nearby == active) {
@@ -2829,10 +2984,11 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
     const i32 alpha = (i32)(128.0 * phase);
     Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
     if (EpCompleteCount == 0) {
-        if (episode->name_id != -1)
+        if (episode->name_id != -1) {
             SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc,
                         HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                         HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+        }
     } else {
         if (HubBothTrueJediGoldBricksPc) {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -2868,11 +3024,13 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
             HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
         }
     }
-    if (episode->text_id != -1)
+    if (episode->text_id != -1) {
         SmartTextEx(TTab[episode->text_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
                     HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                     HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+    }
 }
+
 extern "C" {
 
     i32 __cdecl Hub_InMenu(void) {
@@ -2904,14 +3062,16 @@ extern "C" void __cdecl MenuInitBonusMode(MENU *) {
 extern "C" void __cdecl MenuUpdateFreePlay(MENU *) {
     Hub_UpdateFreePlaySelect();
 } /*47a980/5*/
+
 extern "C" {
 
     void __cdecl Hub_ActivateDoorMenu(void *argument) {
         LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
         i32 area = (*level)->area_index;
         i32 menu;
-        if (area == -1)
+        if (area == -1) {
             return;
+        }
         if (HubDoorAreaPc != area) {
             *level = NULL;
             return;
@@ -2967,28 +3127,31 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     char text[64];
     char score[64];
     if (episode == -1) {
-        if (area == -1)
+        if (area == -1) {
             return;
+        }
         episode = ADataList[area].episode_index;
-        if (episode == -1)
+        if (episode == -1) {
             return;
+        }
     }
     const i32 opacity = (i32)(alpha * 128.0);
     const i32 character_area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 4);
     const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
     i32 title;
-    if (episode == 0)
+    if (episode == 0) {
         title = TextIdPc881018;
-    else if (episode == 1)
+    } else if (episode == 1) {
         title = TextIdPc881020;
-    else if (episode == 2)
+    } else if (episode == 2) {
         title = TextIdPc881028;
-    else if (episode == 3)
+    } else if (episode == 3) {
         title = TextIdPc881030;
-    else if (episode == 4)
+    } else if (episode == 4) {
         title = TextIdPc881038;
-    else
+    } else {
         title = TextIdPc881040;
+    }
     SmartTextEx(TTab[title], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                 HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
                 opacity);
@@ -3005,14 +3168,16 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
                      HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
             break;
         case 1:
-            if (character_area == -1)
+            if (character_area == -1) {
                 return;
+            }
             time = Game.area_save[character_area].challenge_trial_time;
             x = 0.0f;
             break;
         case 2:
-            if (vehicle_area == -1)
+            if (vehicle_area == -1) {
                 return;
+            }
             time = Game.area_save[vehicle_area].challenge_trial_time;
             x = 0.0f;
             break;
@@ -3032,18 +3197,21 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
         i32 count = 0;
         if (character_area != -1) {
             total++;
-            if (Game.area_save[character_area].challenge_trial_time < ADataList[character_area].challenge_trial_time)
+            if (Game.area_save[character_area].challenge_trial_time < ADataList[character_area].challenge_trial_time) {
                 count++;
+            }
         }
         if (vehicle_area != -1) {
             total++;
-            if (Game.area_save[vehicle_area].challenge_trial_time < ADataList[vehicle_area].challenge_trial_time)
+            if (Game.area_save[vehicle_area].challenge_trial_time < ADataList[vehicle_area].challenge_trial_time) {
                 count++;
+            }
         }
         if (EpisodeGoldBrickForSuperStoryPc != 0) {
             total++;
-            if (Game.episode_save[episode].superstory_complete != 0)
+            if (Game.episode_save[episode].superstory_complete != 0) {
                 count++;
+            }
         }
         Hub_DrawImportantBrick(211, 0.0f, HubEpisodeTitleYPc, alpha, count, total);
     }
@@ -3067,101 +3235,116 @@ static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *area, f32 alpha) {
         Text_MakeTime(Game.area_save[area->index].challenge_trial_time, 1, 1, 1, text);
         Text3DEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                  HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
-        if (EpisodeGoldBrickForSuperBonusPc != 0)
+        if (EpisodeGoldBrickForSuperBonusPc != 0) {
             Hub_DrawImportantBrick(211, 0.0f, (f32)(HubEpisodeTitleYPc + 0.125), alpha, -1, -1);
+        }
     }
 }
 
 static void HubDrawSelectModePc(void) {
     const i32 state = selectmodemode;
-    if ((state == 2 || state == 1 || state == 3) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
+    if ((state == 2 || state == 1 || state == 3) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f) {
         return;
-    if (state == 4 && pFadeInfo->fade > 0.0f)
+    }
+    if (state == 4 && pFadeInfo->fade > 0.0f) {
         return;
+    }
     f32 alpha = 1.0f;
     if (state == 2 || state == 1 || state == 3 || state == 4) {
-        if (!(selectmodetime < .5f))
+        if (!(selectmodetime < .5f)) {
             return;
+        }
         alpha = 1.0f - NuTrigTable[((i32)(selectmodetime / selectmodeduration * 16384.0) >> 1) & 0x7fff];
-        if (!(alpha > 0.0f))
+        if (!(alpha > 0.0f)) {
             return;
+        }
     }
-    if ((ADataList[HubDoorAreaPc].flags & 0x100) != 0)
+    if ((ADataList[HubDoorAreaPc].flags & 0x100) != 0) {
         HubDrawSuperBonusStatsPc(&ADataList[HubDoorAreaPc], alpha);
-    else if ((ADataList[HubDoorAreaPc].flags & 4) != 0)
+    } else if ((ADataList[HubDoorAreaPc].flags & 4) != 0) {
         HubDrawBonusStatsPc(alpha, -1, hub_bonusepisode, -1);
-    else
+    } else {
         HubDrawAreaStatsPc(alpha, HubDoorAreaPc, hub_selectmode);
+    }
     const f32 first_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
     DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166,
                  first_alpha, first_alpha, 1, NULL);
     const f32 second_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
     DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165,
                  second_alpha, second_alpha, 1, NULL);
-    if (MainRenderTime <= 0.0f)
+    if (MainRenderTime <= 0.0f) {
         HubDrawSelectModeMenuPc(1, alpha);
-    else if (MainRenderTime < 1.0f) {
+    } else if (MainRenderTime < 1.0f) {
         HubDrawSelectModeMenuPc(
             0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
-    if (!(MainRenderTime > 0.0f) && selectmodemode == 0 && alpha == 1.0f)
+    if (!(MainRenderTime > 0.0f) && selectmodemode == 0 && alpha == 1.0f) {
         DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], TextIdPc880888, 1.0f, -1, tBACK, -1, TextIdPc880eac,
                               MissionMenuPacketPc.active_player[1], TextIdPc880888, 1.0f, -1, tBACK, -1,
                               TextIdPc880eac);
+    }
 }
 
 static void HubDrawBonusModePc(void) {
     const i32 state = bonusmodemode;
-    if ((state == 1 || state == 2 || state == 3 || state == 4) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
+    if ((state == 1 || state == 2 || state == 3 || state == 4) && ((FADEINFO_PC *)&FadeSys)->fade > 0.0f) {
         return;
+    }
     f32 alpha = 1.0f;
     if (state == 1 || state == 2 || state == 3 || state == 4) {
-        if (!(bonusmodetime < .5f))
+        if (!(bonusmodetime < .5f)) {
             return;
+        }
         alpha = 1.0f - NuTrigTable[((i32)(bonusmodetime / bonusmodeduration * 16384.0) >> 1) & 0x7fff];
-        if (!(alpha > 0.0f))
+        if (!(alpha > 0.0f)) {
             return;
+        }
     }
-    if (bonusmodearcade != 0)
+    if (bonusmodearcade != 0) {
         HubDrawArcadeStatsPc(alpha);
-    else if (hub_bonusepisode != -1)
+    } else if (hub_bonusepisode != -1) {
         HubDrawBonusStatsPc(alpha, -1, hub_bonusepisode, hub_bonusmode);
-    else
+    } else {
         HubDrawSuperBonusStatsPc(hub_bonusarea != -1 ? &ADataList[hub_bonusarea] : NULL, alpha);
+    }
     f32 icon_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
     DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, icon_alpha,
                  icon_alpha, 1, NULL);
     icon_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
     DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, icon_alpha,
                  icon_alpha, 1, NULL);
-    if (MainRenderTime <= 0.0f)
+    if (MainRenderTime <= 0.0f) {
         HubDrawBonusModeMenuPc(1, alpha);
-    else if (MainRenderTime < 1.0f) {
+    } else if (MainRenderTime < 1.0f) {
         HubDrawBonusModeMenuPc(
             0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
-    if (MainRenderTime > 0.0f || bonusmodemode != 0 || alpha != 1.0f)
+    if (MainRenderTime > 0.0f || bonusmodemode != 0 || alpha != 1.0f) {
         return;
+    }
     f32 prompt_alpha = .333f;
     if (bonusmodearcade != 0) {
         AREA_DATA_PC *area;
         if ((hub_bonusmode == 4 && (area = *ArcadeLevelPc[ArcadeItem.level]) != NULL &&
              Game.area_save[area->index].complete != 0) ||
-            (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1))
+            (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1)) {
             prompt_alpha = 1.0f;
+        }
         const i32 colour = menu_flash != 0 ? 191 : 255;
         const f32 y = (f32)(STATSPOSY - .22499999403953552);
         for (i32 player = 0; player < 2; ++player) {
-            if (MissionMenuPacketPc.active_player[player] == 0)
+            if (MissionMenuPacketPc.active_player[player] == 0) {
                 continue;
+            }
             const f32 x = player == 0 ? -ICONX : ICONX;
             i32 horizontal_alpha;
-            if (hub_bonusmode == 4)
+            if (hub_bonusmode == 4) {
                 horizontal_alpha = 32;
-            else if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+            } else if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0) {
                 horizontal_alpha = 32;
-            else
+            } else {
                 horizontal_alpha = 128;
+            }
             const f32 left = BlipL[player] > 0.0f ? .015000000596046448f : 0.0f;
             Text3DEx("<", (f32)(x - .05000000074505806 - left), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
                      horizontal_alpha);
@@ -3186,18 +3369,22 @@ void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
     i32 first, second;
     if (collection == &VehicleCollectionPc) {
         first = first_model;
-        if (first == -1)
+        if (first == -1) {
             first = VehicleCollectionPc.list[0].id;
+        }
         second = second_model;
-        if (second == -1)
+        if (second == -1) {
             second = VehicleCollectionPc.list[1].id;
+        }
     } else if (collection == &MiniKitCollection) {
         first = first_model;
-        if (first == -1)
+        if (first == -1) {
             first = MiniKitCollection.list[0].id;
+        }
         second = second_model;
-        if (second == -1)
+        if (second == -1) {
             second = MiniKitCollection.list[1].id;
+        }
     } else {
         first = second = -1;
     }
@@ -3228,6 +3415,7 @@ void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
     }
     hub_freeplay_area = area;
 }
+
 #pragma data_seg(".data$COLLECTION_Y_HUB")
 static f32 COLLECTION_Y_HUB = -0.5f;
 #pragma data_seg()
@@ -3249,16 +3437,19 @@ static f32 HubFreePlayNameYPc = 0.125f;
 
 static void HubDrawFreePlaySelectPc(void) {
     COLLECTION_BUILD_PC *collection;
-    if ((ADataList[hub_freeplay_area].flags & 1) != 0)
+    if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
-    else
+    } else {
         collection = &CharacterCollectionPc;
-    if (((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
+    }
+    if (((FADEINFO_PC *)&FadeSys)->fade > 0.0f) {
         return;
+    }
     if (freeplaymode == 0) {
         f32 alpha = (f32)(freeplaytime / (freeplayduration * .5));
-        if (alpha > 1.0f)
+        if (alpha > 1.0f) {
             alpha = 1.0f;
+        }
         alpha = 1.0f - alpha;
         if (alpha > 0.0f) {
             AREA_DATA_PC *area = &ADataList[HubDoorAreaPc];
@@ -3282,49 +3473,60 @@ static void HubDrawFreePlaySelectPc(void) {
     if (freeplaymode != 3 && freeplaymode != 4) {
         f32 fade;
         if (freeplaymode == 2) {
-            if (freeplaytime >= freeplayduration - .10000000149011612)
+            if (freeplaytime >= freeplayduration - .10000000149011612) {
                 fade = 0.0f;
-            else
+            } else {
                 fade = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
-        } else
+            }
+        } else {
             fade = 1.0f;
+        }
         {
             i32 model = FreePlayModelList[0].model_id;
             f32 opacity = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
             if (freeplay_time[0] > 0.0f) {
                 f32 progress = freeplay_time[0] / HubFreePlaySelectionWaitPc;
-                if (freeplay_selected[0] == 0)
+                if (freeplay_selected[0] == 0) {
                     progress = 1.0f - progress;
+                }
                 opacity *= progress;
-            } else if (freeplay_selected[0] != 0)
+            } else if (freeplay_selected[0] != 0) {
                 model = MissionMenuPacketPc.player_model[0];
-            if (opacity > 0.0f)
+            }
+            if (opacity > 0.0f) {
                 DrawCharIcon(model, -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, opacity, opacity, 1, NULL);
+            }
         }
         {
             i32 model = FreePlayModelList[1].model_id;
             f32 opacity = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
             if (freeplay_time[1] > 0.0f) {
                 f32 progress = freeplay_time[1] / HubFreePlaySelectionWaitPc;
-                if (freeplay_selected[1] == 0)
+                if (freeplay_selected[1] == 0) {
                     progress = 1.0f - progress;
+                }
                 opacity *= progress;
-            } else if (freeplay_selected[1] != 0)
+            } else if (freeplay_selected[1] != 0) {
                 model = MissionMenuPacketPc.player_model[1];
-            if (opacity > 0.0f)
+            }
+            if (opacity > 0.0f) {
                 DrawCharIcon(model, ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, opacity, opacity, 1, NULL);
+            }
         }
         if (freeplaymode == 1) {
             for (i32 player = 0; player < 2; ++player) {
                 const i32 other = (player + 1) & 1;
-                if (MissionMenuPacketPc.active_player[player] == 0)
+                if (MissionMenuPacketPc.active_player[player] == 0) {
                     continue;
+                }
                 i32 model = MissionMenuPacketPc.player_model[player];
-                if (Collection_Got(model) == 0)
+                if (Collection_Got(model) == 0) {
                     model = -1;
+                }
                 f32 opacity = 1.0f;
-                if (freeplay_time[player] <= 0.0f)
+                if (freeplay_time[player] <= 0.0f) {
                     opacity *= BigIconAlpha[player];
+                }
                 f32 base_x;
                 i32 frame;
                 f32 target_x;
@@ -3337,18 +3539,21 @@ static void HubDrawFreePlaySelectPc(void) {
                     frame = 165;
                     target_x = ICONX;
                 }
-                if (MissionMenuPacketPc.active_player[other] == 0)
+                if (MissionMenuPacketPc.active_player[other] == 0) {
                     base_x = 0.0f;
+                }
                 f32 base_size = HubFreePlayBigSizePc;
-                if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+                if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                     base_size = (f32)(base_size * .875);
+                }
                 f32 target_y = STATSPOSY;
                 f32 target_size = COLLECTION_ICONSIZE;
                 f32 eased = 0.0f, progress = 1.0f;
                 if (freeplay_time[player] > 0.0f) {
                     progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
-                    if (freeplay_selected[player] == 0)
+                    if (freeplay_selected[player] == 0) {
                         progress = 1.0f - progress;
+                    }
                     eased =
                         (f32)(1.0 -
                               (NuTrigTable[((i32)((1.0f - progress) * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * .5);
@@ -3428,14 +3633,16 @@ static void HubDrawFreePlaySelectPc(void) {
             list[0].model_id = MissionMenuPacketPc.player_model[0];
             list[1].model_id = MissionMenuPacketPc.player_model[1];
             i32 count = 2;
-            for (i32 i = 0; i < fpcount; ++i)
+            for (i32 i = 0; i < fpcount; ++i) {
                 list[count++] = fplist[i];
+            }
             list[count].model_id = -1;
             f32 alpha;
-            if (freeplaytime >= freeplayduration - .10000000149011612)
+            if (freeplaytime >= freeplayduration - .10000000149011612) {
                 alpha = 0.0f;
-            else
+            } else {
                 alpha = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
+            }
             Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
             HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
             return;
@@ -3446,11 +3653,12 @@ static void HubDrawFreePlaySelectPc(void) {
     list[1].model_id = MissionMenuPacketPc.player_model[1];
     list[2].model_id = -1;
     i32 count = 2;
-    for (i32 i = 0; i < fpcount; ++i)
+    for (i32 i = 0; i < fpcount; ++i) {
         if (InModelList(list, fplist[i].model_id, NULL) == 0) {
             list[count++] = fplist[i];
             list[count].model_id = -1;
         }
+    }
     list[count].model_id = -1;
     const f32 progress = freeplaytime / freeplayduration;
     if (freeplaymode == 3) {
@@ -3458,21 +3666,25 @@ static void HubDrawFreePlaySelectPc(void) {
         Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
     }
     f32 size = HubFreePlayFinalSizePc;
-    if (count > 8)
+    if (count > 8) {
         size = (f32)(size - (count - 8) * .019999999552965164);
-    if (size < .10000000149011612)
+    }
+    if (size < .10000000149011612) {
         size = .1f;
+    }
     const f32 ratio = size / COLLECTION_ICONSIZE;
     f32 dx = COLLECTION_DX * ratio;
-    if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+    if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
         dx = (f32)(dx * .75);
+    }
     const f32 dy = (f32)(ratio * COLLECTION_DY * .5 * .875);
     f32 x = (f32)(-(count - 1) * dx * .5 * .5);
     for (i32 i = 0; i < count; ++i, x = (f32)(x + dx * .5)) {
         const f32 y = (i & 1) == 0 ? -dy : dy;
         f32 target_size = size;
-        if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+        if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
             target_size = (f32)(target_size * .875);
+        }
         if (freeplaymode == 3) {
             f32 source_x, source_y, source_size, opacity;
             i32 frame;
@@ -3484,13 +3696,15 @@ static void HubDrawFreePlaySelectPc(void) {
                 frame = i == 0 ? 166 : 165;
             } else {
                 const i32 index = InCollectList_Index(list[i].model_id, collection->list, collection->count);
-                if (index == -1)
+                if (index == -1) {
                     continue;
+                }
                 source_x = collection->list[index].grid_x;
                 source_y = collection->list[index].grid_y;
                 source_size = collection->scale * COLLECTION_ICONSIZE;
-                if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+                if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                     source_size = (f32)(source_size * .875);
+                }
                 opacity = 1.0f;
                 frame = 167;
             }
@@ -3509,6 +3723,7 @@ static void HubDrawFreePlaySelectPc(void) {
         }
     }
 }
+
 static void *HubMiniKitViewerGizmoPc = NULL;
 
 extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
@@ -3532,8 +3747,9 @@ extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
     NuSpecialFind(w->scene, &LevHSpecial[11], "lock_5_7_on", 1);
     NuSpecialFind(w->scene, &LevHSpecial[12], "lock_6_7_off", 1);
     NuSpecialFind(w->scene, &LevHSpecial[13], "lock_6_7_on", 1);
-    if (NuSpecialFind(w->scene, &LevHSpecial[15], "holo", 1) != 0)
+    if (NuSpecialFind(w->scene, &LevHSpecial[15], "holo", 1) != 0) {
         NuSpecialSetVisibility(&LevHSpecial[15], 0);
+    }
     NuSpecialFindMulti(w->scene, &LevHSpecial[20], "ps2_only_", 32, 0);
     NuSpecialFindMulti(w->scene, &LevHSpecial[52], "psp_only_", 32, 0);
     NuSpecialFind(w->scene, &LevHSpecial[84], "fake_wall", 1);
@@ -3552,8 +3768,9 @@ extern "C" void __cdecl Hub_Init(WORLDINFO *world) {
     HubHologramAlphaPc = 0;
     HubHologramTargetAlphaPc = 0;
     Customiser_Init(CharacterCustomiser);
-    if (HubInitAIFnPc != NULL)
+    if (HubInitAIFnPc != NULL) {
         HubInitAIFnPc(world);
+    }
     hub_startoutsidebonusdoor_area = -1;
     CutScenePlayer_Reset();
     HubBuildItPc = GizBuildIt_Find(world, "fountain");
@@ -3584,35 +3801,42 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
                       [((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0)) >> 1] *
                   16.0 +
               80.0);
-    if (menu == 8)
+    if (menu == 8) {
         HubJabbaAwakePc = 1;
-    else if (HubJabbaAwakePc > 0) {
+    } else if (HubJabbaAwakePc > 0) {
         HubJabbaAwakePc = (f32)((f64)HubJabbaAwakePc - (f64)FRAMETIME * ApplyGravityVelocityFactor);
-        if (HubJabbaAwakePc < 0)
+        if (HubJabbaAwakePc < 0) {
             HubJabbaAwakePc = 0;
+        }
     }
     HubHologramAlphaPc = SeekLinearF(HubHologramAlphaPc, HubHologramTargetAlphaPc, FRAMETIME * 20.0f);
-    if (HubHologramAlphaPc == HubHologramTargetAlphaPc)
+    if (HubHologramAlphaPc == HubHologramTargetAlphaPc) {
         HubHologramTargetAlphaPc = (f32)((f64)qrand() * PlayerRandomScalePc * 2.0 - 1.0);
-    if (HubPreventDropOutTimePc > 0)
+    }
+    if (HubPreventDropOutTimePc > 0) {
         HubPreventDropOutTimePc -= FRAMETIME;
+    }
     UpdateCharacterLoad();
 
     i32 available = 0;
-    if (SHOPACTIVE != 0)
+    if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
-    else if (GetMenuID() != 12) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 14))
+    } else if (GetMenuID() != 12) {
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 14)) {
             available = 1;
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 14))
+        }
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 14)) {
             available = 1;
+        }
     }
     if (LevLock[0] != 0) {
-        if (available == 0)
+        if (available == 0) {
             LevLock[0] = 0;
+        }
     } else if (LevTime[0] > 0) {
-        if (MenuInMemoryCard() == 0)
+        if (MenuInMemoryCard() == 0) {
             LevTime[0] -= FRAMETIME;
+        }
     } else if (GetMenuID() == -1 && available != 0) {
         memcpy(&TempGame, &Game, 0x7e4c);
         SHOPACTIVE = 1;
@@ -3626,17 +3850,21 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 15))
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 15)) {
             available = 1;
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 15))
+        }
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 15)) {
             available = 1;
+        }
     }
     if (LevLock[1] != 0) {
-        if (available == 0)
+        if (available == 0) {
             LevLock[1] = 0;
+        }
     } else if (LevTime[1] > 0) {
-        if (MenuInMemoryCard() == 0)
+        if (MenuInMemoryCard() == 0) {
             LevTime[1] -= FRAMETIME;
+        }
     } else if (GetMenuID() == -1 && available != 0) {
         memcpy(&OldCustomiseGame, &Game, 0x7e4c);
         MakeMenuPacket();
@@ -3649,17 +3877,21 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 20))
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 20)) {
             available = 1;
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 20))
+        }
+        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 20)) {
             available = 1;
+        }
     }
     if (LevLock[3] != 0) {
-        if (available == 0)
+        if (available == 0) {
             LevLock[3] = 0;
+        }
     } else if (LevTime[3] > 0) {
-        if (MenuInMemoryCard() == 0)
+        if (MenuInMemoryCard() == 0) {
             LevTime[3] -= FRAMETIME;
+        }
     } else if (GetMenuID() == -1 && available != 0) {
         MakeMenuPacket();
         NewMenu(8, -1, -1);
@@ -3673,19 +3905,21 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
         i32 selected = -1;
         for (i32 i = 0; HubEpisodeInfoPc[i].episode >= 0 && HubEpisodeInfoPc[i].episode < 9 && selected == -1; ++i) {
             if (HubEpisodeInfoPc[i].door != NULL &&
-                GizmoGetOutput(world->gizmo_sys, HubEpisodeInfoPc[i].door, HubEpisodeInfoPc[i].flags, 0) != 0)
+                GizmoGetOutput(world->gizmo_sys, HubEpisodeInfoPc[i].door, HubEpisodeInfoPc[i].flags, 0) != 0) {
                 selected = HubEpisodeInfoPc[i].episode;
+            }
         }
         i32 episode_index;
         for (episode_index = 0;
              HubEpisodeInfoPc[episode_index].episode >= 0 && HubEpisodeInfoPc[episode_index].episode < 9;
              ++episode_index) {
             if (HubEpisodeInfoPc[episode_index].door != NULL) {
-                if (HubEpisodeInfoPc[episode_index].episode != selected && selected != -1)
+                if (HubEpisodeInfoPc[episode_index].episode != selected && selected != -1) {
                     ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[episode_index].door)->object->flags |= 8;
-                else if ((u8)HubEpisodeInfoPc[episode_index].force_open != 0 ||
-                         Episode_CountOpenAreas(HubEpisodeInfoPc[episode_index].episode, -1, Game_AreaSave) != 0)
+                } else if ((u8)HubEpisodeInfoPc[episode_index].force_open != 0 ||
+                           Episode_CountOpenAreas(HubEpisodeInfoPc[episode_index].episode, -1, Game_AreaSave) != 0) {
                     ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[episode_index].door)->object->flags &= ~8U;
+                }
             }
         }
         if (Missions_PartyAvailable(MissionSys) != 0) {
@@ -3693,29 +3927,33 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
             NuSpecialSetVisibility(&HubEpisodeInfoPc[episode_index].lock_on, 1);
         }
         HubUpdateBonusBuildItsPc(world);
-        if (HubAreaTimePc == 0)
+        if (HubAreaTimePc == 0) {
             HubAreaPc = selected;
+        }
         HubAreaTimePc =
             SeekLinearF(HubAreaTimePc, HubAreaPc != -1 && HubAreaPc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
     }
     for (i32 episode = 0; episode < 6; ++episode) {
         i32 completed;
         Episode_IsComplete(HubEpisodeInfoPc[episode].data, &completed);
-        if (completed == HubCompletedAreasPc)
+        if (completed == HubCompletedAreasPc) {
             HubAreaInfoPc[(episode + 1) * HubAreasPerEpisodePc - 1].flags =
                 (HubAreaInfoPc[(episode + 1) * HubAreasPerEpisodePc - 1].flags & ~0xff00) | 0x100;
+        }
     }
     i32 selected_area = -1;
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL && selected_area == -1; ++i) {
         if (HubAreaInfoPc[i].area != NULL && HubAreaInfoPc[i].door != NULL &&
-            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].door, 1, 0) != 0)
+            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].door, 1, 0) != 0) {
             selected_area = HubAreaInfoPc[i].area->index;
+        }
     }
     if (selected_area != -1) {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
             if (HubAreaInfoPc[i].door != NULL && HubAreaInfoPc[i].area != NULL &&
-                HubAreaInfoPc[i].area->index != selected_area)
+                HubAreaInfoPc[i].area->index != selected_area) {
                 ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags |= 8;
+            }
         }
     } else {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
@@ -3732,8 +3970,9 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     }
     const i32 area_menu = GetMenuID();
     if (FadeSys.fade == 0 && area_menu == -1) {
-        if (HubAreaPc != -1 && HubAreaTimePc > 0)
+        if (HubAreaPc != -1 && HubAreaTimePc > 0) {
             selected_area = -1;
+        }
         if (HubEpisodeTimePc == 0) {
             HubLastAreaPc = selected_area;
             HubDoorAreaPc = selected_area;
@@ -3752,28 +3991,35 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     }
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
         if (HubAreaInfoPc[i].area == NULL || HubAreaInfoPc[i].second_bonus_gizmo == NULL ||
-            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo, 1, 0) == 0)
+            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo, 1, 0) == 0) {
             continue;
+        }
         NUVEC *position = GizmoGetPos((gizmosys_pc_s *)world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo);
-        if (position == NULL)
+        if (position == NULL) {
             continue;
+        }
         GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
         if (player != NULL && (player->flags_1fc & 0x80) != 0 &&
-            NuVecDistSqr(&player->position, position, NULL) < 0.25f)
+            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
+        }
         player = (GAMEOBJECT *)Player[1];
         if (player != NULL && (player->flags_1fc & 0x80) != 0 &&
-            NuVecDistSqr(&player->position, position, NULL) < 0.25f)
+            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
+        }
     }
     i32 candidate = -1;
-    if (HubMiniKitViewerGizmoPc != NULL && GizmoGetOutput(world->gizmo_sys, HubMiniKitViewerGizmoPc, 1, 0) != 0)
+    if (HubMiniKitViewerGizmoPc != NULL && GizmoGetOutput(world->gizmo_sys, HubMiniKitViewerGizmoPc, 1, 0) != 0) {
         candidate = HubMiniKitViewerAreaPc;
+    }
     if (LevLock[4] != 0) {
-        if (candidate == -1)
+        if (candidate == -1) {
             LevLock[4] = 0;
-    } else if (LevTime[4] > 0)
+        }
+    } else if (LevTime[4] > 0) {
         LevTime[4] -= FRAMETIME;
+    }
     if (FadeSys.fade != 0) {
         HubMiniKitAreaPc = -1;
         HubMiniKitPanelTimePc = 0;
@@ -3783,29 +4029,34 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
         if (!(HubAreaPc != -1 && HubAreaTimePc > 0) && !(HubLastAreaPc != -1 && HubEpisodeTimePc > 0) &&
             candidate != -1) {
             GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
-            if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0)
+            if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
                 selected = HubMiniKitViewerAreaPc;
-            else {
+            } else {
                 player = (GAMEOBJECT *)Player[1];
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0)
+                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
                     selected = HubMiniKitViewerAreaPc;
+                }
             }
         }
         if (HubMiniKitPanelTimePc == 0) {
-            if (HubMiniKitAreaPc != selected)
+            if (HubMiniKitAreaPc != selected) {
                 HubMiniKitOpenTimePc = 0;
+            }
             HubMiniKitAreaPc = selected;
-            for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i)
-                if (HubAreaInfoPc[i].area != NULL && HubAreaInfoPc[i].area->index == selected)
+            for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
+                if (HubAreaInfoPc[i].area != NULL && HubAreaInfoPc[i].area->index == selected) {
                     break;
+                }
+            }
         }
         f32 target = 0;
         if (HubMiniKitAreaPc != -1 && HubMiniKitAreaPc == selected) {
             HubMiniKitOpenTimePc += FRAMETIME;
             target = 1;
         }
-        if (GetMenuID() == 14)
+        if (GetMenuID() == 14) {
             target = 1;
+        }
         HubMiniKitPanelTimePc = SeekLinearF(HubMiniKitPanelTimePc, target, FRAMETIME * 2);
         if (HubMiniKitOpenTimePc >= HubMiniKitOpenThresholdPc) {
             MakeMenuPacket();
@@ -3828,8 +4079,9 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d) {
                     gizmo = (GIZMO_PC *)HubAreaInfoPc[i].bonus_gizmo;
                     GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)gizmo->object;
-                    if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))
+                    if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
                         selected = i;
+                    }
                 }
             }
         }
@@ -3838,53 +4090,62 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
                 GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
                 GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)HubBuildItPc;
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d &&
-                    ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)))
+                    ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))) {
                     selected = 999;
+                }
                 if ((f64)Game.gold_bricks < 160.0) {
                     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 0);
                     HubSetBuildItPiecesVisiblePc((GIZBUILDIT_PC *)LevGizmo[0]->object,
                                                  (i32)((f64)Game.gold_bricks * 0.5));
-                } else if ((((GIZBUILDIT_PC *)LevGizmo[0]->object)->availability_flags & 1) == 0)
+                } else if ((((GIZBUILDIT_PC *)LevGizmo[0]->object)->availability_flags & 1) == 0) {
                     GizmoActivate(world->gizmo_sys, LevGizmo[0], 1, 0);
-            } else if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0)
+                }
+            } else if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {
                 Game.hub_buildit_completed |= 0x80;
+            }
         }
-        if (HubStatsTimePc == 0)
+        if (HubStatsTimePc == 0) {
             HubEpisodePc = selected;
+        }
         HubStatsTimePc =
             SeekLinearF(HubStatsTimePc, HubEpisodePc != -1 && HubEpisodePc == selected ? 1.0f : 0.0f, FRAMETIME * 2);
     }
-    if (HubUpdateAIFnPc != NULL)
+    if (HubUpdateAIFnPc != NULL) {
         HubUpdateAIFnPc(world);
-    if (HubAreaPc != -1 || HubLastAreaPc != -1 || HubMiniKitAreaPc != -1 || HubEpisodePc != -1)
-        Hint_CancelCurrent();
-    else {
-        const i32 active_menu = GetMenuID();
-        if (active_menu != -1 && active_menu != 13)
-            Hint_CancelCurrent();
     }
-    if (GetMenuID() == -1 && Arcade_BothPlayersActive() == 0)
+    if (HubAreaPc != -1 || HubLastAreaPc != -1 || HubMiniKitAreaPc != -1 || HubEpisodePc != -1) {
+        Hint_CancelCurrent();
+    } else {
+        const i32 active_menu = GetMenuID();
+        if (active_menu != -1 && active_menu != 13) {
+            Hint_CancelCurrent();
+        }
+    }
+    if (GetMenuID() == -1 && Arcade_BothPlayersActive() == 0) {
         SetForceBack(0, &HubForceBackPositionPc, HubForceBackRadiusPc, 4);
-    else
+    } else {
         ResetForceBack();
+    }
 }
 
 extern "C" void Hub_DrawPanel(WORLDINFO *) {
     char text[256];
     if (newgamecam) {
         f32 alpha = 0.0f;
-        if (newgamecamtime < 2.0f)
+        if (newgamecamtime < 2.0f) {
             alpha = 0.0f;
-        else if (newgamecamtime < 2.5f)
+        } else if (newgamecamtime < 2.5f) {
             alpha = (newgamecamtime - 2.0f) * 2.0f;
-        else if (newgamecamtime < 7.5f)
+        } else if (newgamecamtime < 7.5f) {
             alpha = 1.0f;
-        else if (newgamecamtime < 8.0f)
+        } else if (newgamecamtime < 8.0f) {
             alpha = 1.0f - (newgamecamtime - 7.5f) * 2.0f;
-        if (alpha > 0.0f)
+        }
+        if (alpha > 0.0f) {
             SmartTextEx(TTab[TextIdPc8806f8], 0.0f, (HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5f, 1.0f, 0.8f,
                         0.8f, 0.8f, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
                         static_cast<i32>(alpha * 128.0));
+        }
     }
     DrawShopPanel();
 
@@ -3962,22 +4223,27 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
                     if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||
-                        (area->flags & 0x10) != 0 || (area->flags & 0x2000) != 0)
+                        (area->flags & 0x10) != 0 || (area->flags & 0x2000) != 0) {
                         continue;
+                    }
                     if ((area->flags & 0x100) != 0) {
-                        if (EpisodeGoldBrickForSuperBonusPc == 0)
+                        if (EpisodeGoldBrickForSuperBonusPc == 0) {
                             continue;
+                        }
                     } else if ((area->flags & 4) != 0) {
                         ++gold_total;
-                        if (!(save->challenge_trial_time < area->challenge_trial_time))
+                        if (!(save->challenge_trial_time < area->challenge_trial_time)) {
                             continue;
+                        }
                         ++gold_count;
                         continue;
-                    } else if ((area->flags & 0x800) != 0)
+                    } else if ((area->flags & 0x800) != 0) {
                         continue;
+                    }
                     ++gold_total;
-                    if (save->area_complete != 0)
+                    if (save->area_complete != 0) {
                         ++gold_count;
+                    }
                 }
             }
             f32 x = 0.0f;
@@ -3994,21 +4260,22 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
         }
     }
     if (HubLastAreaPc != -1 && HubEpisodeTimePc > 0.0f) {
-
         AREA_DATA_PC *area = &ADataList[HubLastAreaPc];
         if (area->flags & 0x100) {
             HubDrawSuperBonusStatsPc(area, HubEpisodeTimePc);
         } else if (area->flags & 4) {
-            if (SENATE_ADATA && SENATE_ADATA->index == HubLastAreaPc)
+            if (SENATE_ADATA && SENATE_ADATA->index == HubLastAreaPc) {
                 HubDrawArcadeStatsPc(HubEpisodeTimePc);
-            else
+            } else {
                 HubDrawBonusStatsPc(HubEpisodeTimePc, HubLastAreaPc, -1, -1);
+            }
         } else {
             HubDrawAreaStatsPc(HubEpisodeTimePc, HubLastAreaPc, -1);
         }
     }
-    if (GetMenuID() == 14)
+    if (GetMenuID() == 14) {
         HubDrawMiniKitStatsPc(HubMiniKitViewerAreaPc, HubMiniKitViewerAlphaPc);
+    }
 
     if (HubEpisodePc != -1) {
         const f32 alpha = HubStatsTimePc;
@@ -4023,8 +4290,9 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 if (gizmo != NULL) {
                     i32 count = Game.gold_bricks;
                     total = ((GIZBUILDIT_PC *)gizmo->object)->anim_object_count;
-                    if (count > total)
+                    if (count > total) {
                         count = total;
+                    }
                     Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, alpha, count, total);
                 }
             }
@@ -4033,18 +4301,21 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
 }
 
 extern "C" void __cdecl MenuDrawSelectMode(MENU *) {
-    if (MenuStopDraw == 0)
+    if (MenuStopDraw == 0) {
         HubDrawSelectModePc();
+    }
 } /*47e780/15*/
 
 extern "C" void __cdecl MenuDrawBonusMode(MENU *) {
-    if (MenuStopDraw == 0)
+    if (MenuStopDraw == 0) {
         HubDrawBonusModePc();
+    }
 } /*47e790/15*/
 
 extern "C" void __cdecl MenuDrawFreePlay(MENU *) {
-    if (MenuStopDraw == 0)
+    if (MenuStopDraw == 0) {
         HubDrawFreePlaySelectPc();
+    }
 } /*47e7a0/15*/
 
 /* 47e7b0/1268. Native PC intentionally has no Android FreePlayUnlocked,
@@ -4053,8 +4324,9 @@ extern "C" void __cdecl MenuDrawFreePlay(MENU *) {
  */
 static void HubUpdateSelectModePc(void) {
     i16 ids[340];
-    if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0)
+    if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0) {
         return;
+    }
     const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
     LEVELDATA_PC *level = &LDataList[HubDoorNewLevelPc];
     const i32 lost_temple = LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area;
@@ -4062,28 +4334,30 @@ static void HubUpdateSelectModePc(void) {
         case 0: {
             i32 confirm = 0, cancel = 0, up = 0, down = 0;
             i32 last_choice;
-            if (lost_temple)
+            if (lost_temple) {
                 last_choice = 1;
-            else {
+            } else {
                 last_choice = 0;
                 if ((ADataList[area].flags & 0x1000) == 0) {
                     last_choice = 1;
-                    if ((ADataList[area].flags & 0x10) != 0)
+                    if ((ADataList[area].flags & 0x10) != 0) {
                         last_choice = 2;
+                    }
                 }
             }
             for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacketPc.active_player[player] != 0) {
-                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0)
+                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         confirm = 1;
-                    else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
+                    } else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                         cancel = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0) {
                         up = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0) {
                         down = 1;
+                    }
                 }
             }
             if (confirm) {
@@ -4135,26 +4409,32 @@ static void HubUpdateSelectModePc(void) {
             } else {
                 const i32 previous = hub_selectmode;
                 if (up) {
-                    if (hub_selectmode <= 0)
+                    if (hub_selectmode <= 0) {
                         return;
+                    }
                     --hub_selectmode;
                 } else if (down) {
-                    if (hub_selectmode >= last_choice)
+                    if (hub_selectmode >= last_choice) {
                         return;
-                    if (!lost_temple && Game.area_save[area].area_complete == 0)
+                    }
+                    if (!lost_temple && Game.area_save[area].area_complete == 0) {
                         return;
+                    }
                     ++hub_selectmode;
-                } else
+                } else {
                     return;
-                if (hub_selectmode != previous)
+                }
+                if (hub_selectmode != previous) {
                     GameAudio_PlaySfx(0x2f, NULL, 0, 0);
+                }
             }
             return;
         }
         case 1:
             selectmodetime += FRAMETIME;
-            if (!(selectmodetime >= selectmodeduration))
+            if (!(selectmodetime >= selectmodeduration)) {
                 return;
+            }
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
                                   (i8)level->area_index, -1, 1);
             makeplayerlist_freeplay = 2;
@@ -4170,8 +4450,9 @@ static void HubUpdateSelectModePc(void) {
             return;
         case 2:
             selectmodetime += FRAMETIME;
-            if (!(selectmodetime >= selectmodeduration) || NewLData != NULL)
+            if (!(selectmodetime >= selectmodeduration) || NewLData != NULL) {
                 return;
+            }
             NextArea_FreePlay = 0;
             FreePlay = 0;
             NewLData = level;
@@ -4184,16 +4465,18 @@ static void HubUpdateSelectModePc(void) {
             return;
         case 3:
             selectmodetime += FRAMETIME;
-            if (selectmodetime >= selectmodeduration)
+            if (selectmodetime >= selectmodeduration) {
                 WipeBackToHub();
+            }
             return;
         case 4:
             selectmodetime += FRAMETIME;
             if (selectmodetime >= selectmodeduration) {
                 NewLData = HUB_LDATA;
                 PlayTrailer = hub_selectmode;
-                if (hub_selectmode == 1)
+                if (hub_selectmode == 1) {
                     Game.losttemple_trailer_watched = 1;
+                }
             }
             return;
         default:
@@ -4202,78 +4485,98 @@ static void HubUpdateSelectModePc(void) {
 }
 
 static void HubUpdateBonusModePc(void) {
-    if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0)
+    if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0) {
         return;
-    if (BlipL[0] > 0)
+    }
+    if (BlipL[0] > 0) {
         BlipL[0] -= FRAMETIME;
-    if (BlipR[0] > 0)
+    }
+    if (BlipR[0] > 0) {
         BlipR[0] -= FRAMETIME;
-    if (BlipU[0] > 0)
+    }
+    if (BlipU[0] > 0) {
         BlipU[0] -= FRAMETIME;
-    if (BlipD[0] > 0)
+    }
+    if (BlipD[0] > 0) {
         BlipD[0] -= FRAMETIME;
+    }
     i32 player_up[2] = {0, 0}, player_down[2] = {0, 0};
-    if (BlipL[1] > 0)
+    if (BlipL[1] > 0) {
         BlipL[1] -= FRAMETIME;
-    if (BlipR[1] > 0)
+    }
+    if (BlipR[1] > 0) {
         BlipR[1] -= FRAMETIME;
-    if (BlipU[1] > 0)
+    }
+    if (BlipU[1] > 0) {
         BlipU[1] -= FRAMETIME;
-    if (BlipD[1] > 0)
+    }
+    if (BlipD[1] > 0) {
         BlipD[1] -= FRAMETIME;
+    }
     i32 player_left[2] = {0, 0}, player_right[2] = {0, 0};
     switch (bonusmodemode) {
         case 0: {
             i32 confirm = 0, cancel = 0, up = 0, down = 0, left = 0, right = 0;
             for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacketPc.active_player[player] != 0) {
-                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0)
+                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         confirm = 1;
-                    else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
+                    } else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0) {
                         cancel = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0) {
                         player_up[player] = up = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0) {
                         player_down[player] = down = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DLEFT) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DLEFT) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DLEFT) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DLEFT) != 0) {
                         player_left[player] = left = 1;
-                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DRIGHT) != 0 ||
-                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DRIGHT) != 0)
+                    } else if ((GamePadStorage[player].menu_directions & GAMEPAD_DRIGHT) != 0 ||
+                               (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DRIGHT) != 0) {
                         player_right[player] = right = 1;
+                    }
                 }
             }
             if (bonusmodearcade != 0) {
                 /* Native PC suppresses only player1's up blip at row0. */
-                if (hub_bonusmode == 0)
+                if (hub_bonusmode == 0) {
                     player_up[1] = 0;
-                else if (hub_bonusmode >= 4)
+                } else if (hub_bonusmode >= 4) {
                     player_down[0] = player_down[1] = 0;
-                if (player_up[0])
+                }
+                if (player_up[0]) {
                     BlipU[0] = 0.1f;
-                if (player_down[0])
+                }
+                if (player_down[0]) {
                     BlipD[0] = 0.1f;
-                if (player_left[0])
+                }
+                if (player_left[0]) {
                     BlipL[0] = 0.1f;
-                if (player_right[0])
+                }
+                if (player_right[0]) {
                     BlipR[0] = 0.1f;
-                if (player_up[1])
+                }
+                if (player_up[1]) {
                     BlipU[1] = 0.1f;
-                if (player_down[1])
+                }
+                if (player_down[1]) {
                     BlipD[1] = 0.1f;
-                if (player_left[1])
+                }
+                if (player_left[1]) {
                     BlipL[1] = 0.1f;
-                if (player_right[1])
+                }
+                if (player_right[1]) {
                     BlipR[1] = 0.1f;
+                }
                 if (confirm) {
                     if (hub_bonusmode == 3) {
-                        if (ArcadeItem.entries[3].index != 1)
+                        if (ArcadeItem.entries[3].index != 1) {
                             return;
-                        if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                        }
+                        if (Arcade_Score[0] == 0 && Arcade_Score[1] == 0) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                        else {
+                        } else {
                             Arcade_AwardPoint(0, 1, 0);
                             Arcade_AwardPoint(1, 1, 0);
                             Arcade_Score[0] = Arcade_Score[1] = 0;
@@ -4281,9 +4584,9 @@ static void HubUpdateBonusModePc(void) {
                         }
                     } else if (hub_bonusmode == 4) {
                         AREA_DATA_PC *area = *ArcadeLevelPc[(i8)ArcadeItem.level];
-                        if (area == NULL || Game.area_save[area->index].complete == 0)
+                        if (area == NULL || Game.area_save[area->index].complete == 0) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                        else {
+                        } else {
                             GameAudio_PlaySfx(0x30, NULL, 0, 0);
                             HubDoorNewLevelPc = area->levels[0];
                             hub_freeplaysource = 1;
@@ -4309,21 +4612,25 @@ static void HubUpdateBonusModePc(void) {
                 } else {
                     const i32 count = ArcadeItem.entries[hub_bonusmode].count;
                     if (count > 1) {
-                        if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                        if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0) {
                             return;
+                        }
                         if (left) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                            if (--ArcadeItem.entries[hub_bonusmode].index < 0)
+                            if (--ArcadeItem.entries[hub_bonusmode].index < 0) {
                                 ArcadeItem.entries[hub_bonusmode].index = (i8)(count - 1);
+                            }
                         } else if (right) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                            if (++ArcadeItem.entries[hub_bonusmode].index >= count)
+                            if (++ArcadeItem.entries[hub_bonusmode].index >= count) {
                                 ArcadeItem.entries[hub_bonusmode].index = 0;
+                            }
                         }
                     }
                 }
-                if (hub_bonusmode != 3)
+                if (hub_bonusmode != 3) {
                     ArcadeItem.entries[3].index = 0;
+                }
                 return;
             }
             if (confirm) {
@@ -4382,8 +4689,9 @@ static void HubUpdateBonusModePc(void) {
                             MissionMenuPacketPc.player_model[0] = (i16)first;
                             bonusmodetime = 0;
                             bonusmodeduration = 0.6f;
-                        } else
+                        } else {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                        }
                         return;
                     }
                     default:
@@ -4397,19 +4705,23 @@ static void HubUpdateBonusModePc(void) {
                 bonusmodeduration = 0.6f;
                 return;
             }
-            if (hub_bonusepisode == -1)
+            if (hub_bonusepisode == -1) {
                 return;
+            }
             if (up) {
-                if (hub_bonusmode <= 0)
+                if (hub_bonusmode <= 0) {
                     return;
+                }
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                 --hub_bonusmode;
             } else if (down) {
                 if (hub_bonusmode >= 1) {
-                    if (hub_bonusmode != 1)
+                    if (hub_bonusmode != 1) {
                         return;
-                    if (Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) == 0)
+                    }
+                    if (Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) == 0) {
                         return;
+                    }
                 }
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                 ++hub_bonusmode;
@@ -4418,8 +4730,9 @@ static void HubUpdateBonusModePc(void) {
         }
         case 1:
             bonusmodetime += FRAMETIME;
-            if (!(bonusmodetime >= bonusmodeduration))
+            if (!(bonusmodetime >= bonusmodeduration)) {
                 return;
+            }
             InitSuperStory(SuperStoryEpisode);
             ((FADEINFO_PC *)&FadeSys)->fade = 1;
             FinishLoop_On = 0;
@@ -4429,8 +4742,9 @@ static void HubUpdateBonusModePc(void) {
         case 2:
         case 3:
             bonusmodetime += FRAMETIME;
-            if (!(bonusmodetime >= bonusmodeduration))
+            if (!(bonusmodetime >= bonusmodeduration)) {
                 return;
+            }
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
                                   (i8)LDataList[HubDoorNewLevelPc].area_index, -1, 1);
             ((FADEINFO_PC *)&FadeSys)->fade = 1;
@@ -4443,8 +4757,9 @@ static void HubUpdateBonusModePc(void) {
             return;
         case 4:
             bonusmodetime += FRAMETIME;
-            if (bonusmodetime >= bonusmodeduration)
+            if (bonusmodetime >= bonusmodeduration) {
                 WipeBackToHub();
+            }
             return;
         default:
             return;
@@ -4458,14 +4773,16 @@ extern "C" void __cdecl MenuUpdateSelectMode(MENU *) {
 extern "C" void __cdecl MenuUpdateBonusMode(MENU *) {
     HubUpdateBonusModePc();
 } /*47f5f0/5*/
+
 extern "C" {
 
     /* Original name unknown; retail keeps it uncalled at the head of the unit (0x47f620). */
     i32 __cdecl IndyConnectionHelperIsTypePc(GAMEOBJECT *owner, u8 type) {
         AI_HELPER_SLOT_PC *helper = owner->indy_connection_helper;
         if (helper != NULL && owner->ai_packet.path_info.connection == helper->connection &&
-            (helper->direction == 0xff || owner->ai_packet.path_info.direction == helper->direction))
+            (helper->direction == 0xff || owner->ai_packet.path_info.direction == helper->direction)) {
             return type == helper->type;
+        }
         return 0;
     }
 
@@ -4484,25 +4801,28 @@ extern "C" {
         NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
         NuVecAdd(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc, &destination->position);
         packet->movement_look_target = &owner->special_move_look_position_pc;
-        if (owner->character_context == 0x5b || owner->character_context == 0x55)
+        if (owner->character_context == 0x5b || owner->character_context == 0x55) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-        else
+        } else {
             owner->flags_ef4 |= 0x8000;
+        }
         node = owner->ai_packet.special_move_node;
         if (node->has_special != 0 && (node->runtime_flags & 2) != 0) {
             path = owner->ai_packet.path_info.path;
             skip_inside = 1;
             if (path != NULL) {
                 index = node - path->nodes;
-                if ((path->updated_node_bits[index / 8] & (1 << (index % 8))) == 0)
+                if ((path->updated_node_bits[index / 8] & (1 << (index % 8))) == 0) {
                     AIPathNodeUpdatePos(system, path, node);
+                }
             }
             if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
                 if (instance == ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)
                                     ->platforms[owner->supporting_platform_id]
-                                    .scene_object_index)
+                                    .scene_object_index) {
                     skip_inside = 0;
+                }
             }
         } else {
             skip_inside = 0;
@@ -4534,20 +4854,23 @@ extern "C" {
     i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         AIPATHNODE_PC *source, *destination;
-        if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection)
+        if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
             owner->indy_climb = FindClimbObject(WORLD->climb_objects, packet->path_info.connection);
+        }
         if (owner->indy_climb != NULL) {
             destination = &packet->path_info.path
                                ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             source =
                 &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
-            if (TryToTeleportToNextNode(owner, destination, 0))
+            if (TryToTeleportToNextNode(owner, destination, 0)) {
                 return 1;
-            if (destination->position.y > source->position.y)
+            }
+            if (destination->position.y > source->position.y) {
                 SetSpecialMove(owner, destination, source, 3);
-            else {
-                if (owner->field_281 && owner->position.y < source->min_height)
+            } else {
+                if (owner->field_281 && owner->position.y < source->min_height) {
                     return 0;
+                }
                 SetSpecialMove(owner, destination, source, 4);
             }
         }
@@ -4577,8 +4900,9 @@ extern "C" {
                     owner->indy_guideline_state.guideline = guide;
                 }
                 height = MIN(1.0f, guide->endpoints[owner->indy_guideline_state.endpoint].y - owner->position.y);
-                if (0.0 > height)
+                if (0.0 > height) {
                     height = 0.0f;
+                }
                 packet->movement_destination.x =
                     guide->endpoints[owner->indy_guideline_state.endpoint].x - owner->indy_climb->normal.x * height;
                 packet->movement_destination.y = guide->endpoints[owner->indy_guideline_state.endpoint].y;
@@ -4586,10 +4910,11 @@ extern "C" {
                     guide->endpoints[owner->indy_guideline_state.endpoint].z - owner->indy_climb->normal.z * height;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 if ((f64)distance < (f64)0.05f) {
-                    if (owner->indy_guideline_state.endpoint == 0)
+                    if (owner->indy_guideline_state.endpoint == 0) {
                         owner->indy_guideline_state.endpoint = 1;
-                    else if (owner->indy_guideline_state.endpoint == endpoint)
+                    } else if (owner->indy_guideline_state.endpoint == endpoint) {
                         owner->indy_guideline_state.endpoint = -1;
+                    }
                 }
             } else {
                 packet->movement_destination.x = owner->indy_climb->impact_x - owner->indy_climb->normal.x;
@@ -4624,8 +4949,9 @@ extern "C" {
                     owner->indy_guideline_state.guideline = guide;
                 }
                 height = MIN(1.0f, owner->position.y - guide->endpoints[owner->indy_guideline_state.endpoint].y);
-                if (0.0 > height)
+                if (0.0 > height) {
                     height = 0.0f;
+                }
                 packet->movement_destination.x =
                     guide->endpoints[owner->indy_guideline_state.endpoint].x + owner->indy_climb->normal.x * height;
                 packet->movement_destination.y = guide->endpoints[owner->indy_guideline_state.endpoint].y;
@@ -4633,10 +4959,11 @@ extern "C" {
                     guide->endpoints[owner->indy_guideline_state.endpoint].z + owner->indy_climb->normal.z * height;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 if ((f64)distance < (f64)0.05f) {
-                    if (owner->indy_guideline_state.endpoint == 1)
+                    if (owner->indy_guideline_state.endpoint == 1) {
                         owner->indy_guideline_state.endpoint = 0;
-                    else if (owner->indy_guideline_state.endpoint == endpoint)
+                    } else if (owner->indy_guideline_state.endpoint == endpoint) {
                         owner->indy_guideline_state.endpoint = -1;
+                    }
                 }
             } else {
                 packet->movement_destination.x = owner->indy_climb->impact_x + owner->indy_climb->normal.x;
@@ -4649,9 +4976,9 @@ extern "C" {
                 ClearSpecialMove(owner);
                 return 0;
             }
-            if (owner->field_281)
+            if (owner->field_281) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
-            else {
+            } else {
                 owner->ai_packet.movement_destination.x = owner->indy_climb->impact_x;
                 owner->ai_packet.movement_destination.y = owner->ai_packet.special_move_node->position.y;
                 owner->ai_packet.movement_destination.z = owner->indy_climb->impact_z;
@@ -4678,8 +5005,9 @@ extern "C" {
         GAMEOBJECT *occupant;
         NUVEC offset;
         f32 radius, distance;
-        if (TryToTeleportToNextNode(owner, destination, 0))
+        if (TryToTeleportToNextNode(owner, destination, 0)) {
             return 1;
+        }
         if (owner->indy_connection_helper != NULL) {
             if (owner->ai_packet.path_info.connection != owner->indy_connection_helper->connection ||
                 (owner->indy_connection_helper->direction != 0xff &&
@@ -4687,12 +5015,15 @@ extern "C" {
                 owner->indy_connection_helper->type != 1 ||
                 (!(owner->character_context == LEGOCONTEXT_GRAPPLE &&
                    owner->grapple == owner->indy_connection_helper->target) &&
-                 Grapple_Occupied(owner->indy_connection_helper->target, owner, packet->path_info.connection) != NULL))
+                 Grapple_Occupied(owner->indy_connection_helper->target, owner, packet->path_info.connection) !=
+                     NULL)) {
                 owner->indy_connection_helper = NULL;
+            }
         }
-        if (owner->indy_connection_helper == NULL)
+        if (owner->indy_connection_helper == NULL) {
             owner->indy_connection_helper =
                 AIPathCnxHelperSys_Find(WORLD->ai_connection_helpers, owner, NULL, 0, 1, IndyGrappleHelperOccupiedPc);
+        }
         if (owner->indy_connection_helper != NULL) {
             grapple = (GRAPPLE_DYNAMIC_PC *)owner->indy_connection_helper->target;
             GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
@@ -4710,8 +5041,9 @@ extern "C" {
             offset.y = 0;
             offset.z = destination->position.z - source->position.z;
             radius = source->radius;
-            if (radius < 0)
+            if (radius < 0) {
                 radius = 0;
+            }
             NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
             NuVecAdd(&packet->movement_destination, &source->position, &offset);
             owner->ai_packet.movement_stopping_distance = 0;
@@ -4723,14 +5055,16 @@ extern "C" {
                 return 1;
             }
             distance = NuVecXZDistSqr(&owner->position, &packet->movement_destination, &offset);
-            if (checks && distance < ai_moveradius * ai_moveradius)
+            if (checks && distance < ai_moveradius * ai_moveradius) {
                 SetSpecialMove(owner, destination, source, 6);
+            }
         } else {
             owner->ai_packet.movement_destination = owner->position;
             owner->ai_packet.movement_stopping_distance = 0;
         }
         return 1;
     }
+
     f32 IndyGrappleTimeoutPc = -2.0f;
 
     i32 __cdecl Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
@@ -4753,10 +5087,12 @@ extern "C" {
         }
         owner->ai_packet.movement_destination = grapple->ground_position;
         owner->ai_packet.movement_stopping_distance = 0;
-        if (owner->character_context != 0)
+        if (owner->character_context != 0) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        }
         return 1;
     }
+
     f32 IndyGrappleHeightTolerancePc = 0.1f;
 
     i32 __cdecl Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
@@ -4772,10 +5108,11 @@ extern "C" {
         owner->ai_packet.movement_stopping_distance = 0;
         if (owner->ai_packet.fallback_path_info.connection == owner->ai_packet.path_info.connection) {
             difference = owner->ai_packet.fallback_destination.y - owner->position.y;
-            if (difference > IndyGrappleHeightTolerancePc)
+            if (difference > IndyGrappleHeightTolerancePc) {
                 owner->indy_guideline_state.movement_direction = 1;
-            else if (difference < -IndyGrappleHeightTolerancePc)
+            } else if (difference < -IndyGrappleHeightTolerancePc) {
                 owner->indy_guideline_state.movement_direction = 2;
+            }
             owner->field_1087 = 50;
             return 1;
         }
@@ -4792,18 +5129,21 @@ extern "C" {
         if (difference > IndyGrappleHeightTolerancePc) {
             owner->indy_guideline_state.movement_direction = 1;
             // MATCH-EXCEPTION: negated <= keeps retail's unordered-compare branch (test ah,1).
-            if (!(owner->context_hover_target_y <= 0.0f))
+            if (!(owner->context_hover_target_y <= 0.0f)) {
                 return 1;
+            }
         } else if (difference < -IndyGrappleHeightTolerancePc) {
             owner->indy_guideline_state.movement_direction = 2;
-            if (!(owner->flags_e24 & 0x80))
+            if (!(owner->flags_e24 & 0x80)) {
                 return 1;
+            }
         }
         owner->ai_packet.movement_destination = owner->position;
         owner->ai_packet.movement_stopping_distance = 0;
         SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source_pc, 8);
         return 1;
     }
+
     f32 IndyGrappleReleaseRadiusPc = 1.0f;
 
     i32 __cdecl Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
@@ -4878,6 +5218,7 @@ extern "C" {
         }
         return 1;
     }
+
     f32 IndyJumpDistancePc[2] = {0.8f, 1.2f};
 
     i32 __cdecl Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
@@ -4918,8 +5259,9 @@ extern "C" {
                     distance = packet->path_info.distance * packet->path_info.connection->horizontal_distance;
                     packet->path_connection_state = 1;
                     if (packet->path_info.direction != 0) {
-                        if (source->radius > distance)
+                        if (source->radius > distance) {
                             packet->path_connection_state = 0;
+                        }
                     } else if (distance > packet->path_info.connection->horizontal_distance - destination->radius) {
                         packet->path_connection_state = 0;
                     }
@@ -4982,10 +5324,11 @@ extern "C" {
                         if (((source->runtime_flags | destination->runtime_flags) & 2) == 0 ||
                             distance - destination->radius > jump_distance) {
                             packet->path_connection_state = 3;
-                            if ((destination->runtime_flags & 2) == 0)
+                            if ((destination->runtime_flags & 2) == 0) {
                                 owner->ai_jump_destination_distance_pc = distance;
-                            else
+                            } else {
                                 owner->ai_jump_destination_distance_pc = 0.0f;
+                            }
                         }
                     }
                     break;
@@ -4995,8 +5338,9 @@ extern "C" {
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
                         if (((source->runtime_flags | destination->runtime_flags) & 2) != 0) {
-                            if (!(distance - destination->radius < jump_distance))
+                            if (!(distance - destination->radius < jump_distance)) {
                                 break;
+                            }
                         } else {
                             owner->ai_jump_destination_distance_pc = 0.0f;
                         }
@@ -5058,8 +5402,9 @@ extern "C" {
                                 continue;
                             }
                             distance = offset.x * offset.x + offset.z * offset.z;
-                            if (!(distance < clearance * clearance))
+                            if (!(distance < clearance * clearance)) {
                                 continue;
+                            }
                             packet->path_connection_state = 1;
                             ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
                             return 1;
@@ -5089,8 +5434,9 @@ extern "C" {
             ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
             return 1;
         }
-        if (TryToTeleportToNextNode(owner, destination, 0) != 0)
+        if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
             return 1;
+        }
         StartBigJump(owner, &destination->position, 0, 0.5f, 1.0f, 0);
         SetSpecialMove(owner, destination, NULL, 2);
         return 0;
@@ -5117,10 +5463,11 @@ extern "C" {
         f32 distance;
         f32 edge;
 
-        if (packet->path_info.distance > 0.5f)
+        if (packet->path_info.distance > 0.5f) {
             far_index = 0;
-        else
+        } else {
             far_index = 1;
+        }
         nodes = packet->path_info.path->nodes;
         near_node = &nodes[packet->path_info.connection->node_indices[far_index == 0]];
         far_node = &nodes[packet->path_info.connection->node_indices[far_index]];
@@ -5129,8 +5476,9 @@ extern "C" {
         offset.y = 0.0f;
         offset.z = far_node->position.z - near_node->position.z;
         radius = near_node->radius - packet->mover_height;
-        if (radius < 0.0f)
+        if (radius < 0.0f) {
             radius = 0.0f;
+        }
         scale = radius / packet->path_info.connection->horizontal_distance;
         NuVecScale(&offset, &offset, scale);
         NuVecAdd(&packet->movement_destination, &near_node->position, &offset);
@@ -5145,22 +5493,26 @@ extern "C" {
             if (packet->fallback_path_info.connection == packet->path_info.connection) {
                 edge = far_node->radius / packet->path_info.connection->horizontal_distance;
                 if (far_index != 0) {
-                    if (packet->fallback_path_info.distance < 1.0f - edge)
+                    if (packet->fallback_path_info.distance < 1.0f - edge) {
                         goto reset_connection;
+                    }
                 } else if (packet->fallback_path_info.distance > edge) {
                     goto reset_connection;
                 }
             }
-            if (packet->path_info.direction == far_index)
+            if (packet->path_info.direction == far_index) {
                 return 0;
+            }
             switch (packet->path_connection_state) {
                 case 0:
-                    if (packet->path_info.connection->open == 0)
+                    if (packet->path_info.connection->open == 0) {
                         packet->path_connection_state = 1;
+                    }
                     break;
                 case 1:
-                    if (packet->path_info.connection->open != 0)
+                    if (packet->path_info.connection->open != 0) {
                         SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                    }
                     break;
             }
         } else {
@@ -5234,6 +5586,7 @@ extern "C" {
         }
         return 0;
     }
+
     INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7] = {{3, Indy_PrepareJumpPc},
                                                                 {4, Indy_PrepareBigJumpPc},
                                                                 {8, Indy_PrepareGrapplePc},
@@ -5246,16 +5599,18 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         INDY_PREPARE_SPECIAL_MOVE_PC *entry;
         u32 flags, capabilities;
-        if (owner->character_context == 0x5b)
+        if (owner->character_context == 0x5b) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        }
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
         if (flags != 0 && (flags & 0x40000000) == 0) {
             capabilities = flags & packet->capabilities;
             if (capabilities != 0 && (flags & 0x98000000) == 0) {
                 for (entry = IndyPrepareSpecialMovePc; entry->prepare != NULL; ++entry) {
                     if ((entry->capabilities & capabilities) != 0) {
-                        if (entry->prepare(packet, apiobject, checks) != 0)
+                        if (entry->prepare(packet, apiobject, checks) != 0) {
                             return 1;
+                        }
                         break;
                     }
                 }
@@ -5268,14 +5623,16 @@ extern "C" {
             }
         }
         if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
-            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0)
+            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
             TryToTeleportToNextNode(
                 owner,
                 &packet->path_info.path
                      ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]],
                 0);
+        }
         return 0;
     }
+
     AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10] = {
         Indy_MidSpecialMove_DefaultPc,      Indy_MidSpecialMove_StartJumpPc,    Indy_MidSpecialMove_BigJumpPc,
         Indy_MidSpecialMove_ClimbUpPc,      Indy_MidSpecialMove_ClimbDownPc,    Indy_MidSpecialMove_SwingPc,
@@ -5287,12 +5644,13 @@ extern "C" {
         AI_MID_SPECIAL_MOVE_PC callback;
         owner->special_move_timer_pc -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
-            if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0)
+            if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
                 ClearSpecialMove(owner);
-            else {
+            } else {
                 callback = IndyMidSpecialMoveFnsPc[(i8)owner->field_1086];
-                if (callback != NULL)
+                if (callback != NULL) {
                     return callback(system, packet, apiobject);
+                }
             }
         }
         return 0;
@@ -5306,32 +5664,37 @@ extern "C" {
         AIPATHNODE_PC *first, *second;
         NUVEC midpoint;
         GRAPPLE_DYNAMIC_PC *grapple;
-        if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL)
+        if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL) {
             return;
+        }
         for (path_index = 0; path_index < world->ai_sys->path_sys->path_count; ++path_index) {
             path = world->ai_sys->path_sys->paths[path_index];
-            if (path == NULL)
+            if (path == NULL) {
                 continue;
+            }
             connection = path->connections;
             for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
                 for (direction = 0; direction < 2; ++direction) {
                     if ((8 & connection->traversal_flags[direction]) != 0) {
-                        if ((connection->traversal_flags[direction == 0] & 8) != 0)
+                        if ((connection->traversal_flags[direction == 0] & 8) != 0) {
                             direction = 0xff;
+                        }
                         first = &path->nodes[connection->node_indices[0]];
                         second = &path->nodes[connection->node_indices[1]];
                         midpoint.x = (second->position.x + first->position.x) * 0.5;
                         midpoint.y = (second->position.y + first->position.y) * 0.5;
                         midpoint.z = (second->position.z + first->position.z) * 0.5;
                         grapple = Grapple_FindNearestToPos(world, &midpoint);
-                        if (grapple != NULL)
+                        if (grapple != NULL) {
                             AIPathCnxHelperSys_AddHelper(world->ai_connection_helpers, connection, direction, grapple,
                                                          1);
+                        }
                     }
                 }
             }
         }
     }
+
     i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0, LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0;
 
     void __cdecl Indy_GameAISysInit(void) {
@@ -5353,49 +5716,68 @@ extern "C" {
 
     void __cdecl PlayerInitCapabilitiesVariant0Pc(GAMEOBJECT *object) {
         object->ai_packet.capabilities = 0x20000000;
-        if ((object->flags_1f8 & 1) != 0)
+        if ((object->flags_1f8 & 1) != 0) {
             object->ai_packet.capabilities |= 0x200;
-        else if ((object->flags_1f8 & 4) == 0)
+        } else if ((object->flags_1f8 & 4) == 0) {
             object->ai_packet.capabilities |= 0x100;
-        if (object->character_model->action_animations[6] != NULL)
+        }
+        if (object->character_model->action_animations[6] != NULL) {
             object->ai_packet.capabilities |= 3;
-        if ((object->character_data->model_flags & 0x200000) == 0)
+        }
+        if ((object->character_data->model_flags & 0x200000) == 0) {
             object->ai_packet.capabilities |= 4;
-        if ((object->character_data->model_flags & 0x100000) != 0)
+        }
+        if ((object->character_data->model_flags & 0x100000) != 0) {
             object->ai_packet.capabilities |= 8;
-        if ((u16)object->id == (u16)VehicleBoltId7f17d0Pc)
+        }
+        if ((u16)object->id == (u16)VehicleBoltId7f17d0Pc) {
             object->ai_packet.capabilities |= 0x400;
-        if (object->character_model->action_animations[0xcd] != NULL)
+        }
+        if (object->character_model->action_animations[0xcd] != NULL) {
             object->ai_packet.capabilities |= 0x10;
+        }
     }
 
     u32 __cdecl AIPathParseIndyFlagPc(char *name) {
-        if (NuStrICmp(name, "DBLJUMP") == 0)
+        if (NuStrICmp(name, "DBLJUMP") == 0) {
             return 2;
-        if (NuStrICmp(name, "BIGJUMP") == 0)
+        }
+        if (NuStrICmp(name, "BIGJUMP") == 0) {
             return 4;
-        if (NuStrICmp(name, "JUMP") == 0)
+        }
+        if (NuStrICmp(name, "JUMP") == 0) {
             return 1;
-        if (NuStrICmp(name, "GRAPPLE") == 0)
+        }
+        if (NuStrICmp(name, "GRAPPLE") == 0) {
             return 8;
-        if (NuStrICmp(name, "CLIMB") == 0)
+        }
+        if (NuStrICmp(name, "CLIMB") == 0) {
             return 0x10;
-        if (NuStrICmp(name, "NO_DEST_CHECK") == 0)
+        }
+        if (NuStrICmp(name, "NO_DEST_CHECK") == 0) {
             return 0x20;
-        if (NuStrICmp(name, "JUMP_NOW") == 0)
+        }
+        if (NuStrICmp(name, "JUMP_NOW") == 0) {
             return 0x40;
-        if (NuStrICmp(name, "DONT_JUMP_NOW") == 0)
+        }
+        if (NuStrICmp(name, "DONT_JUMP_NOW") == 0) {
             return 0x80;
-        if (NuStrICmp(name, "FORGOODIES") == 0)
+        }
+        if (NuStrICmp(name, "FORGOODIES") == 0) {
             return 0x100;
-        if (NuStrICmp(name, "FORBADDIES") == 0)
+        }
+        if (NuStrICmp(name, "FORBADDIES") == 0) {
             return 0x200;
-        if (NuStrICmp(name, "OBSTACLE") == 0)
+        }
+        if (NuStrICmp(name, "OBSTACLE") == 0) {
             return 0x20000000;
-        if (NuStrICmp(name, "WHIPSWING") == 0)
+        }
+        if (NuStrICmp(name, "WHIPSWING") == 0) {
             return 0x400;
+        }
         return 0;
     }
+
     SOCKPOSITION_PC LostTempleExitSockPositionPc = {0};
 }
 
@@ -5408,8 +5790,9 @@ extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *world) {
 
 extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world) {
     i32 inside = 0;
-    if (LevGizObst[0] == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0)
+    if (LevGizObst[0] == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0) {
         return;
+    }
     ComplexSockPosition(world->sock_sys, &LevGizObst[0]->evaluated_position, LostTempleExitSockPositionPc.sock_index,
                         LostTempleExitSockPositionPc.segment, &LostTempleExitSockPositionPc);
     f32 exit_distance = MidDistanceFromSockStart(world->sock_sys, &LostTempleExitSockPositionPc);
@@ -5426,11 +5809,13 @@ extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world) {
             }
         }
     }
-    if (inside == 0)
+    if (inside == 0) {
         return;
+    }
 complete:
-    if (FreePlay == 0 && LevelFixupSlotPc0087b2dc != NULL)
+    if (FreePlay == 0 && LevelFixupSlotPc0087b2dc != NULL) {
         GoToNewLevel(LevelFixupSlotPc0087b2dc->index);
-    else
+    } else {
         CompleteLevel(world);
+    }
 }

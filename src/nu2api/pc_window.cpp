@@ -20,8 +20,9 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wpar
     for (i32 index = 0; index < PcWindowCallbackCount; ++index) {
         i32 handled = 0;
         LRESULT result = PcWindowCallbacks[index](window, message, wparam, lparam, &handled);
-        if (handled != 0)
+        if (handled != 0) {
             return result;
+        }
     }
     switch (message) {
         case WM_ACTIVATE:
@@ -41,8 +42,9 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wpar
             return 0;
         }
         case WM_SETCURSOR:
-            if (PCDeviceBackend.parameters.windowed != 1)
+            if (PCDeviceBackend.parameters.windowed != 1) {
                 SetCursor(NULL);
+            }
             return 1;
         case WM_CLOSE:
             PcWindowQuit = 1;
@@ -65,8 +67,9 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wpar
             PcMouseY = (f32)HIWORD(lparam) / (f32)PcClientHeight;
             return 0;
         case WM_DEVICECHANGE:
-            if (wparam == 7 || wparam == 0x8000)
+            if (wparam == 7 || wparam == 0x8000) {
                 nu_keyboard_owner.ScheduleRescan(2.0f, 3);
+            }
             return 1;
         case WM_IME_SETCONTEXT:
             return DefWindowProcA(window, message, wparam, 0);
@@ -99,10 +102,12 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     i32 height = PcWindowOptions.client_height;
     i32 x = PcWindowOptions.window_x;
     i32 y = PcWindowOptions.window_y;
-    if (x < 0)
+    if (x < 0) {
         x = (i32)((u32)(PCDeviceBackend.desktop_mode.width - width) >> 1);
-    if (y < 0)
+    }
+    if (y < 0) {
         y = (i32)((u32)(PCDeviceBackend.desktop_mode.height - height) >> 1);
+    }
     HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameterPc, style, x, y, width, height, NULL, NULL,
                                   instance, NULL);
     if (!window) {
@@ -146,15 +151,17 @@ extern "C" void SetAccessibilityPc(u8 restore) {
 // Retail keeps standalone cdecl copies of both tokenizer helpers (0x6dcec0, 0x6dcee0) next to
 // ParsePlatformArgumentsPc, which inlines them.
 char *SkipArgumentSpacesPc(char *cursor) {
-    while (*cursor == ' ')
+    while (*cursor == ' ') {
         ++cursor;
+    }
     return cursor;
 }
 
 char *ParseArgumentTokenPc(char *cursor, char terminator, char **argument) {
     i32 length = 0;
-    if (*cursor == terminator)
+    if (*cursor == terminator) {
         ++cursor;
+    }
     *argument = cursor;
     while (*cursor != 0) {
         if (*cursor == terminator) {
@@ -164,8 +171,9 @@ char *ParseArgumentTokenPc(char *cursor, char terminator, char **argument) {
         ++cursor;
         ++length;
     }
-    if (length == 0)
+    if (length == 0) {
         *argument = NULL;
+    }
     return cursor;
 }
 
@@ -179,18 +187,20 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
     char *cursor = command_line;
     while (*cursor != 0) {
         cursor = SkipArgumentSpacesPc(cursor);
-        if (*cursor == '"')
+        if (*cursor == '"') {
             cursor = ParseArgumentTokenPc(cursor, '"', &PcArgv[PcArgc]);
-        else
+        } else {
             cursor = ParseArgumentTokenPc(cursor, ' ', &PcArgv[PcArgc]);
-        if (NuStrICmp(PcArgv[PcArgc], "-RelaunchMCE") == 0)
+        }
+        if (NuStrICmp(PcArgv[PcArgc], "-RelaunchMCE") == 0) {
             PcRelaunchMce = 1;
-        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Pause") == 0)
+        } else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Pause") == 0) {
             PcNoFocusPolicy = 0;
-        else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Process") == 0)
+        } else if (NuStrICmp(PcArgv[PcArgc], "-NoFocus_Process") == 0) {
             PcNoFocusPolicy = 1;
-        else if (NuStrICmp(PcArgv[PcArgc], "-AllowCrashDump") != 0 && PcArgv[PcArgc] != NULL)
+        } else if (NuStrICmp(PcArgv[PcArgc], "-AllowCrashDump") != 0 && PcArgv[PcArgc] != NULL) {
             ++PcArgc;
+        }
     }
 }
 
@@ -224,8 +234,9 @@ extern "C" void __cdecl PcRelaunchMediaCenter(void) {
     char filename[MAX_PATH];
     if (GetSystemMetrics(0x57) != 0 && PcRelaunchMce != 0) {
         if (ExpandEnvironmentStringsA("%SystemRoot%\\ehome\\ehshell.exe", filename, MAX_PATH) != 0) {
-            if (GetFileAttributesA(filename) != INVALID_FILE_ATTRIBUTES)
+            if (GetFileAttributesA(filename) != INVALID_FILE_ATTRIBUTES) {
                 ShellExecuteA(NULL, "open", filename, NULL, NULL, 1);
+            }
         }
     }
 }

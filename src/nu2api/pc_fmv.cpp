@@ -63,8 +63,9 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
         NuFileGetCurrentDirectory(path);
         NuStrCat(path, name);
         char *extension = NuStrIStr(path + 1, ".");
-        if (extension != NULL)
+        if (extension != NULL) {
             *extension = '\0';
+        }
         NuStrCat(path, ".bik");
         LOG_INFO("FMV requested: %s -> %s", name, path);
         if (FmvStartPc(path, volume, mode) != 0) {
@@ -75,10 +76,12 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
             while (FmvStepPc() != 0) {
                 if (callback != NULL) {
                     i32 callback_result = callback();
-                    if (callback_result == 1)
+                    if (callback_result == 1) {
                         break;
-                    if (callback_result == 2)
+                    }
+                    if (callback_result == 2) {
                         FmvSkipPc();
+                    }
                 }
                 PcInputEndFramePc();
                 NuPadUpdatePads();

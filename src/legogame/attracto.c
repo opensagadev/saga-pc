@@ -7,8 +7,10 @@ struct attracto_pc_s {
     u8 unknown_00[0x10];
     NUVEC position;
     u8 unknown_1c[0x46];
+
     union {
         u8 state_flags;
+
         struct {
             u8 active : 1;
             u8 visible : 1;
@@ -17,10 +19,12 @@ struct attracto_pc_s {
             u8 : 4;
         };
     };
+
     u8 unknown_63;
     NUVEC active_position;
     u8 unknown_70[4];
 };
+
 STATIC_ASSERT(sizeof(ATTRACTO_PC) == 0x74);
 STATIC_ASSERT(offsetof(ATTRACTO_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(ATTRACTO_PC, state_flags) == 0x62);
@@ -31,6 +35,7 @@ typedef struct attracto_world_reader_pc_s {
     ATTRACTO_PC *attractos;
     i32 attracto_count;
 } ATTRACTO_WORLD_READER_PC;
+
 STATIC_ASSERT(offsetof(ATTRACTO_WORLD_READER_PC, attractos) == 0x5098);
 STATIC_ASSERT(offsetof(ATTRACTO_WORLD_READER_PC, attracto_count) == 0x509c);
 STATIC_ASSERT(sizeof(((ATTRACTO_WORLD_READER_PC *)0)->attractos) == 4);
@@ -54,12 +59,14 @@ typedef struct attracto_record_recovered_pc_s {
     u16 ground_angle_z;
     u16 ground_angle_x;
 } ATTRACTO_RECORD_PC;
+
 typedef struct attracto_progress_recovered_pc_s {
     u8 counts[32];
     u32 visible[1];
     u32 active[1];
     u32 filled[1];
 } ATTRACTO_PROGRESS_PC;
+
 typedef struct attracto_shard_reader_pc_s {
     char name[16];
     NUVEC position;
@@ -69,8 +76,10 @@ typedef struct attracto_shard_reader_pc_s {
     u16 angle_x;
     u16 angle_z;
     u16 spin;
+
     union {
         u8 flags;
+
         struct {
             u8 active : 1;
             u8 visible : 1;
@@ -82,11 +91,13 @@ typedef struct attracto_shard_reader_pc_s {
             u8 reserved_state : 1;
         };
     };
+
     u8 unknown_3d[3];
     f32 collection_time;
     GAMEOBJECT *collector;
     NUVEC velocity;
 } ATTRACTO_SHARD_READER_PC;
+
 STATIC_ASSERT(sizeof(ATTRACTO_RECORD_PC) == 0x74);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, transform) == 0x1c);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, angle) == 0x5c);
@@ -141,10 +152,11 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
             EdFileReadNuVec(&attracto->position);
             attracto->angle = EdFileReadShort();
             attracto->capacity = EdFileReadUnsignedChar();
-            if (attracto->capacity < 1)
+            if (attracto->capacity < 1) {
                 attracto->capacity = 1;
-            else if (attracto->capacity >= 255)
+            } else if (attracto->capacity >= 255) {
                 attracto->capacity = 255;
+            }
             if (version == 2) {
                 i32 length = (i8)EdFileReadChar();
                 EdFileRead(legacy_name, length);
@@ -184,8 +196,9 @@ void __cdecl Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
 
 void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     ATTRACTO_RECORD_PC *attracto;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL || gizmo->object == NULL) {
         return;
+    }
     attracto = (ATTRACTO_RECORD_PC *)gizmo->object;
     attracto->visible = visible != 0;
     if (attracto->visible && attracto->platform_id == -1) {
@@ -228,8 +241,9 @@ static void AttractoInitRecordPc(ATTRACTO_RECORD_PC *attracto) {
 void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index;
-    if (world == NULL || world->attractos == NULL)
+    if (world == NULL || world->attractos == NULL) {
         return;
+    }
     attracto = (ATTRACTO_RECORD_PC *)world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         AttractoInitRecordPc(attracto);
@@ -246,22 +260,25 @@ void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index, alpha;
     char text[32];
-    if (world == NULL || world->attractos == NULL)
+    if (world == NULL || world->attractos == NULL) {
         return;
+    }
     alpha = (i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
     attracto = (ATTRACTO_RECORD_PC *)world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         NUVEC position;
         GAME_MESSAGE_PC *message;
-        if (!attracto->visible || !attracto->active || attracto->filled)
+        if (!attracto->visible || !attracto->active || attracto->filled) {
             continue;
+        }
         sprintf(text, "%i/%i", attracto->collected_count, attracto->capacity);
         position.x = attracto->position.x;
         position.y = (f64)attracto->position.y + (f64)0.7f;
         position.z = attracto->position.z;
         message = AddGameMessage(text, &position, 2.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
-        if (message != NULL)
+        if (message != NULL) {
             message->alpha = (u8)alpha;
+        }
     }
 }
 
@@ -274,8 +291,9 @@ ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAM
     for (index = 0; index < reader->attracto_count; ++index, ++attracto) {
         f32 candidate;
         if (object != NULL) {
-            if (!attracto->visible || !attracto->active || attracto->filled)
+            if (!attracto->visible || !attracto->active || attracto->filled) {
                 continue;
+            }
             candidate = NuVecDistSqr(position, &attracto->active_position, NULL);
         } else {
             candidate = NuVecDistSqr(position, &attracto->position, NULL);
@@ -285,8 +303,9 @@ ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAM
             nearest = attracto;
         }
     }
-    if (distance != NULL)
+    if (distance != NULL) {
         *distance = best;
+    }
     return nearest;
 }
 
@@ -296,8 +315,9 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     i32 index, phase;
     u16 spin;
     f32 pulse;
-    if (world->level_objects[72].active == 0 || world->attractos == NULL)
+    if (world->level_objects[72].active == 0 || world->attractos == NULL) {
         return;
+    }
     attracto = (ATTRACTO_RECORD_PC *)world->attractos;
     spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     phase = (i32)(((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0) * 65536.0);
@@ -307,18 +327,22 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         i32 drawn;
         f32 distance;
         attracto->drawn = 0;
-        if (!attracto->visible)
+        if (!attracto->visible) {
             continue;
+        }
         matrix = attracto->transform;
         drawn = NuSpecialDrawAt(&world->level_objects[72].special, &matrix);
         attracto->drawn = drawn;
-        if (attracto->filled || !attracto->active || world->level_objects[85].active == 0)
+        if (attracto->filled || !attracto->active || world->level_objects[85].active == 0) {
             continue;
+        }
         NuMtxSetRotationY(&matrix, spin);
-        if (attracto->ground_angle_x != 0)
+        if (attracto->ground_angle_x != 0) {
             NuMtxRotateZ(&matrix, attracto->ground_angle_x);
-        if (attracto->ground_angle_z != 0)
+        }
+        if (attracto->ground_angle_z != 0) {
             NuMtxRotateX(&matrix, attracto->ground_angle_z);
+        }
         NuMtxTranslate(&matrix, &attracto->active_position);
         if (FindNearestPlayerToVec(&attracto->position, &nearest_player, &distance, 0, 0)) {
             f64 normalized;
@@ -338,8 +362,9 @@ i32 __cdecl Attractos_GetMaxGizmos(WORLDINFO *world) {
 void __cdecl Attractos_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->attracto_count; ++index) {
-        if (NuStrLen(((ATTRACTO_RECORD_PC *)world->attractos)[index].name) != 0)
+        if (NuStrLen(((ATTRACTO_RECORD_PC *)world->attractos)[index].name) != 0) {
             AddGizmo(system, type, NULL, &((ATTRACTO_RECORD_PC *)world->attractos)[index]);
+        }
     }
 }
 
@@ -350,6 +375,7 @@ char *__cdecl Attracto_GetGizmoName(GIZMO_PC *gizmo) {
 i32 __cdecl Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((ATTRACTO_RECORD_PC *)gizmo->object)->filled;
 }
+
 #pragma data_seg(".data$AttractoOutputNamePc")
 char *AttractoOutputNamePc = (char *)PCAttractoOutputTextPc;
 #pragma data_seg()
@@ -378,8 +404,9 @@ void __cdecl Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS_PC *progress
 void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
     ATTRACTO_RECORD_PC *attracto;
     i32 index;
-    if (progress == NULL)
+    if (progress == NULL) {
         return;
+    }
     Attractos_ClearProgress(NULL, progress);
     if (world != NULL && world->attractos != NULL) {
         attracto = (ATTRACTO_RECORD_PC *)world->attractos;
@@ -389,19 +416,23 @@ void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PR
             progress->counts[index] = attracto->collected_count;
             word = index / 32;
             mask = 1 << (index & 31);
-            if (!attracto->visible)
+            if (!attracto->visible) {
                 progress->visible[word] &= ~mask;
-            if (!attracto->active)
+            }
+            if (!attracto->active) {
                 progress->active[word] &= ~mask;
-            if (attracto->filled)
+            }
+            if (attracto->filled) {
                 progress->filled[word] |= mask;
+            }
         }
     }
 }
 
 NUVEC *__cdecl Attracto_GetPos(GIZMO_PC *gizmo) {
-    if (gizmo == NULL)
+    if (gizmo == NULL) {
         return NULL;
+    }
     return &((ATTRACTO_RECORD_PC *)gizmo->object)->position;
 }
 
@@ -411,6 +442,7 @@ void __cdecl Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
         position->y = position->y + 1.0;
     }
 }
+
 #pragma data_seg(".data$AttractoRegistryNamePc")
 char *AttractoRegistryNamePc = (char *)PCContextName_Attracto;
 #pragma data_seg()
@@ -463,8 +495,9 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     i32 index;
 
     shard = (ATTRACTO_SHARD_READER_PC *)world->shards;
-    if (shard == NULL)
+    if (shard == NULL) {
         return NULL;
+    }
     best = 64.0f;
     nearest = NULL;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
@@ -491,14 +524,17 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
         target.z = 0.0f;
         target.x = 0.0f;
         target.y = 0.05f;
-        if (nearest->angle_z != 0)
+        if (nearest->angle_z != 0) {
             NuVecRotateZ(&target, &target, nearest->angle_z);
-        if (nearest->angle_x != 0)
+        }
+        if (nearest->angle_x != 0) {
             NuVecRotateX(&target, &target, nearest->angle_x);
+        }
         NuVecAdd(&target, &target, &nearest->position);
         NuVecSub(&ray, &target, &origin);
-        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) != 0)
+        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) != 0) {
             result = NULL;
+        }
     }
     return result;
 }
@@ -513,6 +549,7 @@ static void AttractoStartSuctionPc(GAMEOBJECT *object) {
     object->external_force.z = 1.0f;
     object->launch_origin = v000;
 }
+
 #pragma data_seg(".data$AttractoBackPackCountPos")
 NUVEC AttractoBackPackCountPos = {0.0f, 0.45f, 0.15f};
 #pragma data_seg()
@@ -528,18 +565,21 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
         message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
-        if (message != NULL)
+        if (message != NULL) {
             message->alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
+        }
     }
     if (object->character_context == 0x53) {
         if (object->character_model->action_animations[object->field_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL)
+            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
             return;
+        }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             object->context_timer = (f64)object->context_timer + (f64)FRAMETIME;
             object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
-            if (!(object->context_duration <= 0.0f))
+            if (!(object->context_duration <= 0.0f)) {
                 return;
+            }
             if (object->field_1062 > 0) {
                 ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)object->grapple;
                 if (attracto->collected_count < attracto->capacity) {
@@ -547,20 +587,23 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     ++attracto->collected_count;
                     object->context_duration = 0.2f;
                     attracto = (ATTRACTO_RECORD_PC *)object->grapple;
-                    if (attracto->collected_count == attracto->capacity)
+                    if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
-                    else if (object->field_1062 != 0)
+                    } else if (object->field_1062 != 0) {
                         goto check_context;
+                    }
                 }
             }
             object->character_context = -1;
         check_context:
-            if (object->character_context == -1)
+            if (object->character_context == -1) {
                 AttractoStartSuctionPc(object);
+            }
         } else {
             object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
-            if (object->context_duration <= 0.0f)
+            if (object->context_duration <= 0.0f) {
                 object->character_context = -1;
+            }
         }
         return;
     }
@@ -590,9 +633,9 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (nearest != NULL) {
                 object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
                                                          (f64)nearest->position.z - (f64)object->collision_position.z);
-                if (ParticlesPerSecond(3.0f, FRAMETIME) > 0)
+                if (ParticlesPerSecond(3.0f, FRAMETIME) > 0) {
                     Shard_Collect((SHARD_s *)nearest, object);
-                else {
+                } else {
                     nearest->flags |= 0x20;
                     NewRumble(object->pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
                 }
@@ -620,8 +663,9 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if (object->model_draw_result != 0 && object->camera_screen_position.z > 0.0f &&
-            (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0)
+            (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             AttractoStartSuctionPc(object);
+        }
     }
 }
 

@@ -158,10 +158,12 @@ void *__cdecl NuAllocUntracked(i32 size) {
     }
     memset(user_data, 0, (u32)size);
     allocation_end = (void *)((u32)user_data + (u32)size);
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0) {
         NuAllocPeakEnd0 = allocation_end;
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
+    }
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1) {
         NuAllocPeakEnd1 = allocation_end;
+    }
     return user_data;
 }
 
@@ -234,11 +236,13 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         memset(record, 0, allocation_size);
         NuAllocTrackedBytes += (u32)size;
         record->requested_size = (u32)size;
-        for (i = 0; i < 3; ++i)
+        for (i = 0; i < 3; ++i) {
             record->header_metadata[i] = NuAllocHeaderMetadata[i];
+        }
         tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
-        for (i = 0; i < 3; ++i)
+        for (i = 0; i < 3; ++i) {
             tail->metadata[i] = NuAllocTailMetadata[i];
+        }
         filename_copy = (char *)(tail + 1);
         filename_read = file;
         do {
@@ -251,17 +255,20 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         old_head = NuAllocRecordHead;
         record->source_line = line;
         record->next = old_head;
-        if (record->next != NULL)
+        if (record->next != NULL) {
             record->next->previous = record;
+        }
         record->previous = NULL;
         NuAllocRecordHead = record;
         user_data = (void *)((u32)record + 32);
     }
     allocation_end = (void *)((u32)user_data + (u32)size);
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0) {
         NuAllocPeakEnd0 = allocation_end;
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
+    }
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1) {
         NuAllocPeakEnd1 = allocation_end;
+    }
     return user_data;
 }
 
@@ -369,8 +376,9 @@ void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         NuAllocTrackedBytes += (u32)size - record->requested_size;
         record->requested_size = (u32)size;
         tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
-        for (i = 0; i < 3; ++i)
+        for (i = 0; i < 3; ++i) {
             tail->metadata[i] = NuAllocTailMetadata[i];
+        }
         filename_copy = (char *)(tail + 1);
         filename_read = file;
         do {
@@ -379,17 +387,20 @@ void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         } while (byte != 0);
         record->source_line = line;
         record->next = old_head;
-        if (old_head != NULL)
+        if (old_head != NULL) {
             old_head->previous = record;
+        }
         record->previous = NULL;
         NuAllocRecordHead = record;
         user_data = (void *)((u32)record + 32);
     }
     allocation_end = (void *)((u32)user_data + (u32)size);
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0) {
         NuAllocPeakEnd0 = allocation_end;
-    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
+    }
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1) {
         NuAllocPeakEnd1 = allocation_end;
+    }
     return user_data;
 }
 

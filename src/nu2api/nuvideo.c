@@ -78,8 +78,9 @@ static void __cdecl NuErrorFunction(char *format, ...) {
     va_end(args);
     NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
     NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
-    if (nuerror_handler != NULL)
+    if (nuerror_handler != NULL) {
         nuerror_handler(PCWarningOutputBuffer);
+    }
     NuErrorPrint(PCWarningOutputBuffer);
 }
 
@@ -100,8 +101,9 @@ static void __cdecl NuWarningFunction(char *format, ...) {
         va_end(args);
         NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
         NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
-        if (nuwarning_handler != NULL)
+        if (nuwarning_handler != NULL) {
             nuwarning_handler(PCWarningOutputBuffer);
+        }
         NuWarningPrint(PCWarningOutputBuffer);
     }
 }
@@ -119,6 +121,7 @@ void NuErrorSetFilter(char *filter) {
         NuStrNCpy(err_msg_filter, filter, 32);
     }
 }
+
 static void __cdecl NuDebugMsgFunction(char *format, ...) {
     char captxt[1024];
     va_list args;
@@ -130,14 +133,16 @@ static void __cdecl NuDebugMsgFunction(char *format, ...) {
             va_end(args);
             NuStrCat(captxt, PCWarningFormatBuffer);
             NuStrCat(captxt, PCWarningSuffix);
-            if (PCWarningHandler != NULL)
+            if (PCWarningHandler != NULL) {
                 PCWarningHandler(captxt);
+            }
             PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, captxt);
         }
     }
 }
 
 typedef void(__cdecl *NUDEBUGMSGFUNCTION_PC)(char *, ...);
+
 NUDEBUGMSGFUNCTION_PC __cdecl NuDebugMsgProlog(char *file, i32 line) {
     nufile = file;
     nuline = line;

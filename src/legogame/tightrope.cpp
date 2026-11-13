@@ -14,15 +14,18 @@ typedef struct TIGHTROPE_MOTION_PC {
     u16 rotation;
     u8 enabled, available;
 } TIGHTROPE_MOTION_PC;
+
 typedef struct WORLD_TIGHTROPE_VIEW_PC {
     u8 unknown_0000[0x5058];
     TIGHTROPE_MOTION_PC *tightropes;
     i32 tightrope_count;
 } WORLD_TIGHTROPE_VIEW_PC;
+
 typedef struct TIGHTROPE_OBJECT_AUX_PC {
     u8 unknown_0000[0xd28];
     f32 jump_reentry_timer;
 } TIGHTROPE_OBJECT_AUX_PC;
+
 STATIC_ASSERT(sizeof(TIGHTROPE_MOTION_PC) == 0x48);
 STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, start) == 0x10);
 STATIC_ASSERT(offsetof(TIGHTROPE_MOTION_PC, end) == 0x1c);
@@ -38,10 +41,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
+
 typedef struct tightrope_progress_recovered_pc_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS_PC;
+
 STATIC_ASSERT(sizeof(TIGHTROPE_s) == 0x48);
 STATIC_ASSERT(offsetof(TIGHTROPE_s, start_position) == 0x10);
 STATIC_ASSERT(offsetof(TIGHTROPE_s, end_position) == 0x1c);
@@ -78,6 +83,7 @@ extern "C" {
     extern char AIRegistryTextPc007575bc[7];
     extern char TextInputKeyNameTextPc7516c0[1];
 }
+
 typedef struct tightrope_movement_pc_s {
     u8 unknown_00[0x40];
     f32 horizontal_length;
@@ -107,8 +113,9 @@ extern "C" {
                     world->tightropes[index].field_0x2e = EdFileReadUnsignedShort();
                     world->tightropes[index].field_0x30 = EdFileReadUnsignedChar();
                     world->tightropes[index].field_0x31 = EdFileReadUnsignedChar();
-                    if (version >= 3)
+                    if (version >= 3) {
                         world->tightropes[index].field_0x32 = EdFileReadChar();
+                    }
                 }
             }
             return 1;
@@ -142,8 +149,9 @@ extern "C" {
     void __cdecl TightRopes_Reset(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
         TIGHTROPE_s *rope;
         i32 index;
-        if (world == NULL || world->tightropes == NULL)
+        if (world == NULL || world->tightropes == NULL) {
             return;
+        }
         rope = world->tightropes;
         for (index = 0; index < world->tightrope_count; ++index, ++rope) {
             TightRopeInitRecordPc(rope);
@@ -196,6 +204,7 @@ extern "C" TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *object, WO
     }
     return NULL;
 }
+
 extern "C" {
 
     void __cdecl TightRopes_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
@@ -205,10 +214,12 @@ extern "C" {
         f32 distances[64];
         NURND_VERTEX3D_PC vertices[66];
         i32 index, endpoint;
-        if (rope == NULL)
+        if (rope == NULL) {
             return;
-        for (index = 0; index < 66; ++index)
+        }
+        for (index = 0; index < 66; ++index) {
             vertices[index].colour = 0xffffffffu;
+        }
         for (index = 0; index < world->tightrope_count; ++index, ++rope) {
             i32 count, object_index, pass, point;
             GAMEOBJECT *object;
@@ -234,21 +245,24 @@ extern "C" {
                     }
                 }
             }
-            if (rope->active == 0 || rope->visible == 0)
+            if (rope->active == 0 || rope->visible == 0) {
                 continue;
+            }
             count = 0;
             object = Obj;
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
                 if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != 0x44 ||
-                    object->field_7aa == 6 || object->field_7aa == 5 || object->grapple != rope)
+                    object->field_7aa == 6 || object->field_7aa == 5 || object->grapple != rope) {
                     continue;
+                }
                 positions[count] = (object->character_data->game_character->flags_090 & 0x80000) != 0
                                        ? &object->lower_position
                                        : &object->upper_position;
                 distances[count] = NuVecDist(positions[count], &rope->start_position, NULL);
                 ++count;
-                if (count == 64)
+                if (count == 64) {
                     break;
+                }
             }
             for (pass = 0; pass < count - 1; ++pass) {
                 for (point = 0; point < count - 1; ++point) {
@@ -263,22 +277,26 @@ extern "C" {
                 }
             }
             vertices[0].position = rope->start_position;
-            for (point = 0; point < count; ++point)
+            for (point = 0; point < count; ++point) {
                 vertices[point + 1].position = *positions[point];
+            }
             vertices[count + 1].position = rope->end_position;
-            for (point = 0; point <= count; ++point)
+            for (point = 0; point <= count; ++point) {
                 NuRndrLine3d(&vertices[point], ZipUpLineMaterialPc, NULL);
+            }
         }
     }
 
     void __cdecl TightRope_Activate(GIZMO_PC *gizmo, i32 active) {
-        if (gizmo != NULL)
+        if (gizmo != NULL) {
             ((TIGHTROPE_s *)gizmo->object)->active = active != 0;
+        }
     }
 
     void __cdecl TightRope_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-        if (gizmo != NULL)
+        if (gizmo != NULL) {
             ((TIGHTROPE_s *)gizmo->object)->visible = visible != 0;
+        }
     }
 
     i32 __cdecl TightRopes_GetMaxGizmos(WORLDINFO *world) {
@@ -288,8 +306,9 @@ extern "C" {
     void __cdecl TightRopes_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
         i32 index;
         for (index = 0; index < world->tightrope_count; ++index) {
-            if (NuStrLen(world->tightropes[index].name) != 0)
+            if (NuStrLen(world->tightropes[index].name) != 0) {
                 AddGizmo(system, type_id, NULL, &world->tightropes[index]);
+            }
         }
     }
 
@@ -324,22 +343,27 @@ extern "C" {
     void __cdecl TightRopes_StoreProgress(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
         TIGHTROPE_s *rope;
         i32 index;
-        if (progress == NULL)
+        if (progress == NULL) {
             return;
+        }
         progress->active_mask[0] = 0xffffffffu;
         progress->visible_mask[0] = 0xffffffffu;
-        if (world == NULL || world->tightropes == NULL)
+        if (world == NULL || world->tightropes == NULL) {
             return;
+        }
         rope = world->tightropes;
         for (index = 0; index < world->tightrope_count && index < 32; ++index, ++rope) {
             i32 word = index / 32;
             u32 mask = 1 << (index & 31);
-            if (rope->visible == 0)
+            if (rope->visible == 0) {
                 progress->visible_mask[word] &= ~mask;
-            if (rope->active == 0)
+            }
+            if (rope->active == 0) {
                 progress->active_mask[word] &= ~mask;
+            }
         }
     }
+
 #pragma data_seg(".data$TightRopeRegistryNamePc")
     char *TightRopeRegistryNamePc = (char *)PCContextName_TightRope;
 #pragma data_seg()
@@ -390,10 +414,11 @@ static i32 TightRopeSetPositionPc(TIGHTROPE_MOTION_PC *rope, NUVEC *position, GA
     NuVecSub(position, position, &rope->start);
     position->z = NuVecDot(position, &rope->direction);
     if (object != NULL) {
-        if ((object->character_data->game_character->flags_090 & 0x10000000) != 0)
+        if ((object->character_data->game_character->flags_090 & 0x10000000) != 0) {
             margin = object->bounds_half_height;
-        else
+        } else {
             margin = object->bounds_radius;
+        }
     } else {
         margin = 0.1f;
     }
@@ -593,10 +618,12 @@ extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed)
             f32 *playing = AnimPlaying(&object->anim_packet, 0x8f, 1, 0);
             if (playing != NULL) {
                 f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+
                 union {
                     f32 value;
                     u32 bits;
                 } push, absolute;
+
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
                     (push.value = PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
                                                       ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation),
@@ -641,6 +668,7 @@ extern "C" void __cdecl TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed)
     object->external_force.z = 0.0f;
     object->external_force.y = 0.0f;
 }
+
 extern "C" {
 
     __declspec(noinline) i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
@@ -656,8 +684,9 @@ extern "C" {
         rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
         rotation = rope->rotation + 0x4000;
         fraction = object->context_hover_target_y / rope->horizontal_length;
-        if (fraction > 1.0f)
+        if (fraction > 1.0f) {
             fraction = 1.0f;
+        }
         amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * PlayerTightRopePhasePc)) >> 1) & 0x7fff];
         object->target_velocity.x +=
             (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];

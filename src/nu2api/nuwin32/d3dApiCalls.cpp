@@ -31,12 +31,14 @@ extern "C" {
     void __cdecl PCGraphicsClearFrameTexturesPc(void);
 }
 extern "C" void __cdecl NuPostEffectResizePc(void);
+
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX {
     FLOAT m11, m12, m13, m14;
     FLOAT m21, m22, m23, m24;
     FLOAT m31, m32, m33, m34;
     FLOAT m41, m42, m43, m44;
+
     D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31,
                FLOAT f32, FLOAT f33, FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {
         m11 = f11;
@@ -57,6 +59,7 @@ struct D3DXMATRIX {
         m44 = f44;
     }
 };
+
 STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 
 extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance) {
@@ -127,6 +130,7 @@ extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
     }
     return value;
 }
+
 extern "C" {
 
     void __cdecl PCFrameCriticalSectionEnter_candidate(void) {
@@ -151,6 +155,7 @@ extern "C" void __cdecl PCDeviceSetWorldIdentityPc(void) {
                                1.0f);
     PCDeviceSetTransform(0x100, (const NUMTX *)&identity);
 }
+
 extern "C" {
 
     void __cdecl PCDeviceResetState(void) {
@@ -183,8 +188,9 @@ extern "C" {
 
 extern "C" void __cdecl PCDeviceResetSamplerDefaultsPc(void) {
     u32 stage = 0;
-    if (PCDeviceBackend.caps.sampler_count_pc == 0)
+    if (PCDeviceBackend.caps.sampler_count_pc == 0) {
         return;
+    }
     do {
         PCDeviceSetSamplerState(stage, 5, 2);
         PCDeviceSetSamplerState(stage, 6, 2);
@@ -228,8 +234,9 @@ extern "C" void *__cdecl PcApiGetCallBuffer(void) {
 }
 
 extern "C" void __cdecl PcFreeApiCallBuffer(void) {
-    if (PcApiCallBuffer != NULL)
+    if (PcApiCallBuffer != NULL) {
         NuFree(PcApiCallBuffer, ".\\d3dApiCalls.cpp", 0x451);
+    }
     PcApiCallBuffer = NULL;
     PcApiCallBufferCount = 0;
 }

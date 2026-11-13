@@ -10,8 +10,9 @@ i32 __cdecl InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
     if (list == NULL) {
         list = CollectList;
         count = CollectCount;
-        if (list == NULL)
+        if (list == NULL) {
             return id;
+        }
     }
     for (index = 0; index < count; ++index, ++list) {
         if (list->id == id) {
@@ -30,22 +31,26 @@ typedef struct coin_reset_packet_pc_s {
     u8 unknown_0b;
     f32 double_score_timer;
 } COIN_RESET_PACKET_PC;
+
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, scale) == 4);
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, active) == 0xa);
 STATIC_ASSERT(offsetof(COIN_RESET_PACKET_PC, double_score_timer) == 0xc);
 
 i32 __cdecl Collection_Got(i32 id) {
     i32 area;
-    if (InCollectList_Index(id, NULL, 0) == -1)
-        return 0;
-    area = AreaFromMiniKitID(id);
-    if (area != -1) {
-        if (Game_AreaSave != NULL && Game_AreaSave[area].minikit_complete != 0)
-            return 2;
+    if (InCollectList_Index(id, NULL, 0) == -1) {
         return 0;
     }
-    if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 1) == 0)
+    area = AreaFromMiniKitID(id);
+    if (area != -1) {
+        if (Game_AreaSave != NULL && Game_AreaSave[area].minikit_complete != 0) {
+            return 2;
+        }
         return 0;
+    }
+    if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 1) == 0) {
+        return 0;
+    }
     return 1;
 }
 
@@ -54,6 +59,7 @@ typedef struct collection_variant_reader_pc_s {
     i8 variant_type;
     u8 unknown_117[9];
 } COLLECTION_VARIANT_READER_PC;
+
 STATIC_ASSERT(sizeof(COLLECTION_VARIANT_READER_PC) == 0x120);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(offsetof(COLLECTION_VARIANT_READER_PC, variant_type) == 0x116);
@@ -61,28 +67,35 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
 STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
+
 i32 __cdecl Collection_GotAnyOfType(i32 type, u32 flags) {
     i32 index;
-    if (CollectList == NULL)
+    if (CollectList == NULL) {
         return 0;
+    }
     for (index = 0; index < CollectCount; ++index) {
         i32 id = CollectList[index].id;
-        if (type != -1 && ((COLLECTION_VARIANT_READER_PC *)GCDataList)[id].variant_type != type)
+        if (type != -1 && ((COLLECTION_VARIANT_READER_PC *)GCDataList)[id].variant_type != type) {
             continue;
-        if (flags != 0 && (CDataList[id].model_flags & flags) != flags)
+        }
+        if (flags != 0 && (CDataList[id].model_flags & flags) != flags) {
             continue;
-        if (Collection_Got(id) != 0)
+        }
+        if (Collection_Got(id) != 0) {
             return 1;
+        }
     }
     return 0;
 }
 
 i32 AddToCollection(i32 id) {
     if (id > 0 && id < CHARCOUNT) {
-        if (InCollectList_Index(id, NULL, 0) == -1)
+        if (InCollectList_Index(id, NULL, 0) == -1) {
             return 0;
-        if (Collection_Got(id) != 0)
+        }
+        if (Collection_Got(id) != 0) {
             return 0;
+        }
         if (Game_CharacterSave != NULL) {
             Game_CharacterSave[id] |= SAVE_CHARACTER_UNLOCKED;
             Game_CharacterSave[id] |= SAVE_CHARACTER_AVAILABLE;
@@ -96,8 +109,9 @@ void CollectAllCharacters(i32 only_story) {
     i32 i;
 
     for (i = 0; i < CollectCount; i++) {
-        if (only_story == 0 || CollectList[i].selection_type == 1)
+        if (only_story == 0 || CollectList[i].selection_type == 1) {
             AddToCollection(CollectList[i].id);
+        }
     }
 }
 
@@ -107,6 +121,7 @@ typedef struct collection_buyable_reader_pc_s {
     u8 can_buy;
     u8 unknown_09[0x13];
 } COLLECTION_BUYABLE_READER_PC;
+
 STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
 STATIC_ASSERT(offsetof(COLLECTION_BUYABLE_READER_PC, can_buy) == 8);
 STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
@@ -143,25 +158,34 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
         for (index = 0; index < CollectCount; ++index) {
             COLLECTID_PC *source = &CollectList[index];
             i32 id = source->id;
-            if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0)
+            if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0) {
                 continue;
-            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER_PC *)source)->can_buy == 0)
+            }
+            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER_PC *)source)->can_buy == 0) {
                 continue;
-            if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags)
+            }
+            if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags) {
                 continue;
-            if (required_model_flags != 0 && (CDataList[id].model_flags & required_model_flags) != required_model_flags)
+            }
+            if (required_model_flags != 0 &&
+                (CDataList[id].model_flags & required_model_flags) != required_model_flags) {
                 continue;
+            }
             collection->list[collection->count++] = *source;
         }
     } else {
         for (index = 0; index < CHARCOUNT; ++index) {
-            if (excluded_model_flags != 0 && (apicharsys->char_data[index].model_flags & excluded_model_flags) != 0)
+            if (excluded_model_flags != 0 && (apicharsys->char_data[index].model_flags & excluded_model_flags) != 0) {
                 continue;
-            if (required_game_flags != 0 && (GCDataList[index].flags_090 & required_game_flags) != required_game_flags)
+            }
+            if (required_game_flags != 0 &&
+                (GCDataList[index].flags_090 & required_game_flags) != required_game_flags) {
                 continue;
+            }
             if (required_model_flags != 0 &&
-                (CDataList[index].model_flags & required_model_flags) != required_model_flags)
+                (CDataList[index].model_flags & required_model_flags) != required_model_flags) {
                 continue;
+            }
             memset(&collection->list[collection->count], 0, sizeof(COLLECTID_PC));
             collection->list[collection->count].id = (i16)index;
             collection->count++;
@@ -201,26 +225,32 @@ i32 __cdecl Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 
                                  i32 *second, i32 unused) {
     i32 index;
     i32 count = 0;
-    if (first != NULL)
+    if (first != NULL) {
         *first = -1;
-    if (second != NULL)
+    }
+    if (second != NULL) {
         *second = -1;
+    }
     for (index = 0; index < collection->count; ++index) {
         i32 id = collection->list[index].id;
-        if ((CDataList[id].model_flags & mask) != required || Collection_Got(id) == 0)
+        if ((CDataList[id].model_flags & mask) != required || Collection_Got(id) == 0) {
             continue;
-        if (out != NULL)
+        }
+        if (out != NULL) {
             out[count] = (i16)id;
+        }
         ++count;
         if (first != NULL) {
-            if (*first == -1)
+            if (*first == -1) {
                 *first = id;
-            else if (second != NULL && *second == -1)
+            } else if (second != NULL && *second == -1) {
                 *second = id;
+            }
         }
     }
-    if (out != NULL)
+    if (out != NULL) {
         out[count] = -1;
+    }
     return count;
 }
 
@@ -234,6 +264,7 @@ typedef struct collection_config_entry_pc_s {
     u16 gold_bricks;
     char cheat_code[16];
 } COLLECTION_CONFIG_ENTRY_PC;
+
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == 0x1c);
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
 STATIC_ASSERT(offsetof(COLLECTION_CONFIG_ENTRY_PC, id) == 0);
@@ -269,11 +300,13 @@ void __cdecl Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "collect") != 0 ||
-            NuFParGetWord(parser) == 0)
+            NuFParGetWord(parser) == 0) {
             continue;
+        }
         entry->id = (i16)CharIDFromName(parser->word_buffer_ptr);
-        if (entry->id == -1)
+        if (entry->id == -1) {
             continue;
+        }
         if (InCollectList_Index(entry->id, CollectList, CollectCount) != -1) {
             CollectionConfigDiagnosticPc(file, parser->word_buffer_ptr);
             continue;
@@ -343,12 +376,15 @@ typedef struct SHOP_UNLOCK_AREA_PC {
     u8 area_complete;
     u8 unknown_02[10];
 } SHOP_UNLOCK_AREA_PC;
+
 STATIC_ASSERT(sizeof(SHOP_UNLOCK_AREA_PC) == 12);
 STATIC_ASSERT(offsetof(SHOP_UNLOCK_AREA_PC, area_complete) == 1);
+
 typedef struct SHOP_UNLOCK_COMPLETION_PC {
     u8 unknown_00[2];
     u8 gold_bricks;
 } SHOP_UNLOCK_COMPLETION_PC;
+
 STATIC_ASSERT(offsetof(SHOP_UNLOCK_COMPLETION_PC, gold_bricks) == 2);
 i32 __cdecl Episodes_Completed(void);
 i32 __cdecl AllMiniKitsDone(AREASAVE_s *);
@@ -370,17 +406,20 @@ COLLECTID *__cdecl CollectIDUnlocked(i32 id) {
                     break;
                 case 2:
                     area = (i8)entry->field2_0x3;
-                    if (area != -1 && ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[area].area_complete != 0)
+                    if (area != -1 && ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[area].area_complete != 0) {
                         unlocked = 1;
+                    }
                     break;
                 case 3:
-                    if (Episodes_Completed() == EPISODECOUNT)
+                    if (Episodes_Completed() == EPISODECOUNT) {
                         unlocked = 1;
+                    }
                     break;
                 case 6:
                     if (CustomiserCompletionSavePc != NULL &&
-                        ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa)
+                        ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa) {
                         unlocked = 1;
+                    }
                     break;
                 case 7:
                     unlocked = Game_100PercentComplete();
@@ -390,8 +429,9 @@ COLLECTID *__cdecl CollectIDUnlocked(i32 id) {
                     break;
             }
         }
-        if (unlocked != 0)
+        if (unlocked != 0) {
             return (COLLECTID *)&CollectList[index];
+        }
     }
     return NULL;
 }

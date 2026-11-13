@@ -5,34 +5,42 @@
 extern "C" {
     int skin_trace_gate = -1;
 }
+
 namespace {
     const unsigned int max_lines = 42, max_log_bytes = 100 * 1024;
+
     struct Register {
         TraceWord value[4];
         unsigned int valid;
     };
+
     struct Stream {
         TraceWord base;
         unsigned int size, epoch;
     };
+
     struct Owner {
         TraceWord skin, hierarchy, joints, world[16];
         unsigned int count, stream, epoch, ordinal;
     };
+
     struct Item {
         TraceWord item, palette, geometry, hierarchy, joints, world[16];
         unsigned int stream, epoch, ordinal;
     };
+
     struct Thread {
         unsigned int id, depth;
         TraceWord item[4], palette;
         int palette_count;
         unsigned int palette_stream, palette_epoch;
     };
+
     struct Instance {
         TraceWord hierarchy, joints;
         unsigned int ordinal;
     };
+
     struct State {
         int configured, enabled, stopped, resetting;
         unsigned int start, delay, selected, samples, last_tick, lines, bytes, next_owner, next_item, instances;
@@ -47,10 +55,13 @@ namespace {
         Instance instance[32];
         Register vertex[256], pixel[224];
     };
+
     State state = {0};
     typedef char TraceStateWithin24KiB[sizeof(State) <= 24 * 1024 ? 1 : -1];
+
     struct Guard {
         TraceSaved saved;
+
         Guard() : saved(skin_trace_lock()) {
             if (!state.configured) {
                 state.configured = 1;
@@ -59,101 +70,134 @@ namespace {
                 state.start = skin_trace_tick();
             }
         }
+
         ~Guard() {
             skin_trace_unlock(saved);
         }
     };
+
     bool active() {
         return state.enabled && !state.stopped;
     }
+
     unsigned int stream_of(TraceWord address) {
-        for (unsigned int i = 0; i < 2; ++i)
+        for (unsigned int i = 0; i < 2; ++i) {
             if (state.stream[i].size && address >= state.stream[i].base &&
-                address - state.stream[i].base < state.stream[i].size)
+                address - state.stream[i].base < state.stream[i].size) {
                 return i;
+            }
+        }
         return 2;
     }
+
     Thread *thread_state() {
         unsigned int id = skin_trace_thread();
-        for (unsigned int i = 0; i < 4; ++i)
-            if (state.thread[i].id == id)
+        for (unsigned int i = 0; i < 4; ++i) {
+            if (state.thread[i].id == id) {
                 return &state.thread[i];
-        for (unsigned int j = 0; j < 4; ++j)
+            }
+        }
+        for (unsigned int j = 0; j < 4; ++j) {
             if (!state.thread[j].id) {
                 state.thread[j].id = id;
                 return &state.thread[j];
             }
+        }
         return 0;
     }
+
     bool device_writer() {
         unsigned int id = skin_trace_thread();
-        if (!state.writer)
+        if (!state.writer) {
             state.writer = id;
-        if (state.writer != id)
+        }
+        if (state.writer != id) {
             state.multiple_writers = 1;
+        }
         return state.multiple_writers == 0;
     }
+
     void invalidate_registers() {
-        for (unsigned int i = 0; i < 256; ++i)
+        for (unsigned int i = 0; i < 256; ++i) {
             state.vertex[i].valid = 0;
-        for (unsigned int j = 0; j < 224; ++j)
+        }
+        for (unsigned int j = 0; j < 224; ++j) {
             state.pixel[j].valid = 0;
+        }
         state.shader_valid[0] = state.shader_valid[1] = 0;
     }
+
     void hex(char *out, unsigned int &used, unsigned int capacity, TraceWord word) {
         const char digits[] = "0123456789abcdef";
-        if (used + 9 >= capacity)
+        if (used + 9 >= capacity) {
             return;
-        for (int n = 7; n >= 0; --n)
+        }
+        for (int n = 7; n >= 0; --n) {
             out[used++] = digits[(word >> (n * 4)) & 15];
+        }
         out[used++] = ' ';
         out[used] = 0;
     }
+
     void text(char *out, unsigned int &used, unsigned int capacity, const char *word) {
         unsigned int n = (unsigned int)strlen(word);
-        if (n >= capacity - used)
+        if (n >= capacity - used) {
             return;
+        }
         memcpy(out + used, word, n + 1);
         used += n;
     }
 } // namespace
+
 extern "C" void skin_trace_stream(unsigned int index, TraceWord base, unsigned int size) {
     Guard guard;
-    if (!active() || index >= 2)
+    if (!active() || index >= 2) {
         return;
+    }
     Stream &s = state.stream[index];
     s.base = base;
     s.size = size;
     ++s.epoch;
-    for (unsigned int i = 0; i < 32; ++i)
-        if (state.owner[i].stream == index)
+    for (unsigned int i = 0; i < 32; ++i) {
+        if (state.owner[i].stream == index) {
             state.owner[i].skin = 0;
-    for (unsigned int j = 0; j < 64; ++j)
-        if (state.item[j].stream == index)
+        }
+    }
+    for (unsigned int j = 0; j < 64; ++j) {
+        if (state.item[j].stream == index) {
             state.item[j].item = 0;
-    for (unsigned int k = 0; k < 4; ++k)
+        }
+    }
+    for (unsigned int k = 0; k < 4; ++k) {
         if (state.thread[k].palette_stream == index) {
             state.thread[k].palette = 0;
             state.thread[k].palette_count = 0;
         }
+    }
 }
+
 extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const void *world64, TraceWord skin,
                                 unsigned int count) {
     char record[512] = {0};
     bool emit = false;
     {
         Guard guard;
-        if (!active() || !world64 || !skin || skin_trace_tick() - state.start < state.delay)
+        if (!active() || !world64 || !skin || skin_trace_tick() - state.start < state.delay) {
             return;
+        }
         unsigned int stream = stream_of(skin);
-        if (stream >= 2)
+        if (stream >= 2) {
             return;
-        if (count > (state.stream[stream].size - (skin - state.stream[stream].base)) / 64)
+        }
+        if (count > (state.stream[stream].size - (skin - state.stream[stream].base)) / 64) {
             return;
+        }
         unsigned int ordinal = 0;
-        for (unsigned int i = 0; i < state.instances; ++i)
-            if (state.instance[i].hierarchy == hierarchy && state.instance[i].joints == joints)
+        for (unsigned int i = 0; i < state.instances; ++i) {
+            if (state.instance[i].hierarchy == hierarchy && state.instance[i].joints == joints) {
                 ordinal = state.instance[i].ordinal;
+            }
+        }
         if (!ordinal && state.instances < 32) {
             Instance &v = state.instance[state.instances++];
             v.hierarchy = hierarchy;
@@ -179,18 +223,23 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
                 }
             }
         }
-        if (!ordinal)
+        if (!ordinal) {
             return;
+        }
         for (unsigned int k = 0; k < 32; ++k) {
             Owner &prior = state.owner[k];
             if (prior.skin && prior.hierarchy == hierarchy && prior.joints == joints && prior.stream == stream &&
                 prior.epoch == state.stream[stream].epoch && memcmp(prior.world, world64, 64)) {
-                for (unsigned int a = 0; a < 32; ++a)
-                    if (state.owner[a].hierarchy == hierarchy && state.owner[a].joints == joints)
+                for (unsigned int a = 0; a < 32; ++a) {
+                    if (state.owner[a].hierarchy == hierarchy && state.owner[a].joints == joints) {
                         state.owner[a].ordinal = 0;
-                for (unsigned int b = 0; b < 64; ++b)
-                    if (state.item[b].hierarchy == hierarchy && state.item[b].joints == joints)
+                    }
+                }
+                for (unsigned int b = 0; b < 64; ++b) {
+                    if (state.item[b].hierarchy == hierarchy && state.item[b].joints == joints) {
                         state.item[b].ordinal = 0;
+                    }
+                }
                 ordinal = 0;
             }
         }
@@ -204,16 +253,20 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
         o.epoch = state.stream[stream].epoch;
         o.ordinal = ordinal;
     }
-    if (emit)
+    if (emit) {
         skin_trace_emit(record);
+    }
 }
+
 extern "C" void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWord geometry, TraceWord skin) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     unsigned int stream = stream_of(draw_item);
-    if (stream >= 2 || stream_of(palette) != stream)
+    if (stream >= 2 || stream_of(palette) != stream) {
         return;
+    }
     Owner *owner = 0;
     /* Newest registration wins; no borrowed native pointer is retained for later
      * reads. */
@@ -225,8 +278,9 @@ extern "C" void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWor
             break;
         }
     }
-    if (!owner || owner->ordinal != state.selected)
+    if (!owner || owner->ordinal != state.selected) {
         return;
+    }
     Item &i = state.item[state.next_item++ % 64];
     i.item = draw_item;
     i.palette = palette;
@@ -238,29 +292,38 @@ extern "C" void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWor
     i.epoch = owner->epoch;
     i.ordinal = owner->ordinal;
 }
+
 extern "C" void skin_trace_enter_item(TraceWord item) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     Thread *t = thread_state();
-    if (!t)
+    if (!t) {
         return;
-    if (t->depth < 4)
+    }
+    if (t->depth < 4) {
         t->item[t->depth] = item;
+    }
     ++t->depth;
 }
+
 extern "C" void skin_trace_leave_item() {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     Thread *t = thread_state();
-    if (t && t->depth)
+    if (t && t->depth) {
         --t->depth;
+    }
 }
+
 extern "C" void skin_trace_palette(TraceWord packet, int count) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     Thread *t = thread_state();
     if (t) {
         t->palette = packet;
@@ -269,11 +332,13 @@ extern "C" void skin_trace_palette(TraceWord packet, int count) {
         t->palette_epoch = t->palette_stream < 2 ? state.stream[t->palette_stream].epoch : 0;
     }
 }
+
 extern "C" void skin_trace_upload(int stage, unsigned int first, unsigned int count, const void *values,
                                   long result) { // NOLINT(google-runtime-int): Win32 HRESULT ABI.
     Guard guard;
-    if (!active() || stage < 0 || stage > 1)
+    if (!active() || stage < 0 || stage > 1) {
         return;
+    }
     if (state.resetting || !device_writer()) {
         invalidate_registers();
         return;
@@ -281,21 +346,25 @@ extern "C" void skin_trace_upload(int stage, unsigned int first, unsigned int co
     unsigned int limit = stage ? 224 : 256;
     Register *r = stage ? state.pixel : state.vertex;
     if (first >= limit || count > limit - first || !values) {
-        for (unsigned int i = 0; i < limit; ++i)
+        for (unsigned int i = 0; i < limit; ++i) {
             r[i].valid = 0;
+        }
         return;
     }
     for (unsigned int j = 0; j < count; ++j) {
         r[first + j].valid = result >= 0;
-        if (result >= 0)
+        if (result >= 0) {
             memcpy(r[first + j].value, (const char *)values + j * 16, 16);
+        }
     }
 }
+
 extern "C" void skin_trace_bind(int stage, TraceWord shader,
                                 long result) { // NOLINT(google-runtime-int): Win32 HRESULT ABI.
     Guard guard;
-    if (!active() || stage < 0 || stage > 1)
+    if (!active() || stage < 0 || stage > 1) {
         return;
+    }
     if (state.resetting || !device_writer()) {
         invalidate_registers();
         return;
@@ -303,55 +372,68 @@ extern "C" void skin_trace_bind(int stage, TraceWord shader,
     state.shader_valid[stage] = result >= 0;
     state.shader[stage] = shader;
 }
+
 namespace {
     void invalidate_locked(TraceWord device) {
         state.device = device;
         invalidate_registers();
         state.writer = skin_trace_thread();
         state.multiple_writers = 0;
-        for (unsigned int i = 0; i < 64; ++i)
+        for (unsigned int i = 0; i < 64; ++i) {
             state.item[i].item = 0;
-        for (unsigned int j = 0; j < 32; ++j)
+        }
+        for (unsigned int j = 0; j < 32; ++j) {
             state.owner[j].skin = 0;
+        }
         for (unsigned int k = 0; k < 4; ++k) {
             state.thread[k].palette = 0;
             state.thread[k].palette_count = 0;
         }
     }
 } // namespace
+
 extern "C" void skin_trace_invalidate(TraceWord device) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     invalidate_locked(device);
 }
+
 extern "C" void skin_trace_reset_begin(TraceWord device) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     invalidate_locked(device);
     state.resetting = 1;
 }
+
 extern "C" void skin_trace_reset_end(TraceWord device) {
     Guard guard;
-    if (!active())
+    if (!active()) {
         return;
+    }
     invalidate_locked(device);
     state.resetting = 0;
 }
+
 extern "C" void skin_trace_capture(const TraceDraw *draw) {
     char record[3000] = {0};
     bool emit = false;
     {
         Guard guard;
-        if (!active() || state.resetting || !draw)
+        if (!active() || state.resetting || !draw) {
             return;
+        }
         unsigned int now = skin_trace_tick();
-        if (now - state.start < state.delay || (state.samples && now - state.last_tick < 250))
+        if (now - state.start < state.delay || (state.samples && now - state.last_tick < 250)) {
             return;
+        }
         Thread *t = thread_state();
-        if (!t || !t->depth || t->depth > 4)
+        if (!t || !t->depth || t->depth > 4) {
             return;
+        }
         TraceWord current = t->item[t->depth - 1];
         Item *item = 0;
         unsigned int total = state.next_item < 64 ? state.next_item : 64;
@@ -364,16 +446,18 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
         }
         if (!item || item->ordinal != state.selected || item->palette != t->palette ||
             t->palette_stream != item->stream || t->palette_epoch != item->epoch || t->palette_count < 0 ||
-            t->palette_count > 8)
+            t->palette_count > 8) {
             return;
+        }
         TraceWord identity[4] = {draw->vertex_buffer, draw->index_buffer, draw->base_vertex, draw->start_index};
         if (!state.selected_draw) {
             memcpy(state.selected_geometry, identity, sizeof(identity));
             state.selected_material = draw->material;
             state.selected_draw = 1;
         } else if (memcmp(state.selected_geometry, identity, sizeof(identity)) ||
-                   state.selected_material != draw->material)
+                   state.selected_material != draw->material) {
             return;
+        }
         unsigned int used = 0;
         text(record, used, sizeof(record),
              "SKIN_TRACE pre-draw-attempt submission-instance "
@@ -400,14 +484,16 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
         hex(record, used, sizeof(record), draw->expected_vertex_shader);
         hex(record, used, sizeof(record), draw->expected_pixel_shader);
         for (unsigned int stage = 0; stage < 2; ++stage) {
-            if (state.shader_valid[stage])
+            if (state.shader_valid[stage]) {
                 hex(record, used, sizeof(record), state.shader[stage]);
-            else
+            } else {
                 text(record, used, sizeof(record), "unknown ");
+            }
         }
         text(record, used, sizeof(record), " submission-world: ");
-        for (unsigned int w = 0; w < 16; ++w)
+        for (unsigned int w = 0; w < 16; ++w) {
             hex(record, used, sizeof(record), item->world[w]);
+        }
         const char *names[] = {" world11:", " light6:", " light7:", " light8:", " spec49:", " skin18:", " ambient1:"};
         for (unsigned int p = 0; p < 14; ++p) {
             unsigned int semantic = p / 2;
@@ -421,8 +507,9 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
             unsigned int limit = v.stage ? 224 : 256;
             Register *r = v.stage ? state.pixel : state.vertex;
             unsigned int count = (unsigned int)v.count;
-            if (semantic == 5 && count > (unsigned int)t->palette_count * 4)
+            if (semantic == 5 && count > (unsigned int)t->palette_count * 4) {
                 count = t->palette_count * 4;
+            }
             if (count > (semantic == 5 ? 32u : (semantic == 0 || semantic == 4 ? 4u : 1u)) ||
                 (unsigned int)v.first >= limit || count > limit - (unsigned int)v.first) {
                 text(record, used, sizeof(record), "range-unknown ");
@@ -436,11 +523,13 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
                 continue;
             }
             for (unsigned int n = 0; n < count; ++n) {
-                if (!r[v.first + n].valid)
+                if (!r[v.first + n].valid) {
                     text(record, used, sizeof(record), "unknown ");
-                else
-                    for (unsigned int c = 0; c < 4; ++c)
+                } else {
+                    for (unsigned int c = 0; c < 4; ++c) {
                         hex(record, used, sizeof(record), r[v.first + n].value[c]);
+                    }
+                }
             }
         }
         if (state.lines >= max_lines || used + 160 > max_log_bytes - state.bytes) {
@@ -459,6 +548,7 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
         emit = true;
     }
     /* The state lock is released before entering the existing logger. */
-    if (emit)
+    if (emit) {
         skin_trace_emit(record);
+    }
 }

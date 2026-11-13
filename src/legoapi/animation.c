@@ -12,6 +12,7 @@ typedef struct character_joint_movement_pc_s {
     u8 unknown_fd8[0x107d - 0xfd8];
     u8 count;
 } CHARACTER_JOINT_MOVEMENT_PC;
+
 STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, overrides) == 0xf3c);
 STATIC_ASSERT(offsetof(CHARACTER_JOINT_MOVEMENT_PC, count) == 0x107d);
 STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
@@ -39,23 +40,28 @@ void __cdecl AddFootSteps(GAMEOBJECT *object) {
     f32 previous;
     f32 current;
     i32 index;
-    if (packet->blending != 0)
+    if (packet->blending != 0) {
         return;
+    }
     index = packet->animation_index;
-    if (index == -1 || object->character_model->action_animations[index] == NULL)
+    if (index == -1 || object->character_model->action_animations[index] == NULL) {
         return;
+    }
     config = object->character_model->animation_configs[index];
-    if ((config->flags & 0x100) == 0)
+    if ((config->flags & 0x100) == 0) {
         return;
+    }
     previous = packet->previous_time;
     current = packet->current_time;
-    if (current == previous)
+    if (current == previous) {
         return;
+    }
     crossed = 0;
     valid_interval = 0;
     if ((packet->flags & 2) != 0) {
-        if (previous > current)
+        if (previous > current) {
             valid_interval = 1;
+        }
     } else if (previous < current) {
         valid_interval = 1;
     }
@@ -68,9 +74,11 @@ void __cdecl AddFootSteps(GAMEOBJECT *object) {
     }
     FOOTSTEP_CHECK(2)
     FOOTSTEP_CHECK(3)
-    if (crossed)
+    if (crossed) {
         PlayFootStepSfx(object);
+    }
 }
+
 #undef FOOTSTEP_CHECK
 
 void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
@@ -102,10 +110,11 @@ void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unuse
     i32 joint;
     if (object != NULL && target != NULL && target->character_data != NULL) {
         joint = target->character_data->game_character->head_locator;
-        if (joint != -1)
+        if (joint != -1) {
             SetHeadTarget(object, (NUVEC *)&target->locator_matrices[joint].m30, 2, 1.0f, 0.0f, 0.0f);
-        else
+        } else {
             SetHeadTarget(object, &target->collision_position, 2, 1.0f, 0.0f, 0.0f);
+        }
     }
 }
 
@@ -135,34 +144,37 @@ static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
             animation = object->anim_packet.blend_source_animation;
             if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                 object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
+            }
         }
     } else {
         animation = object->anim_packet.animation_index;
         if (animation >= 0 && animation < apicharsys->model_id_capacity &&
             object->character_model->model_data_b[animation] != NULL &&
-            (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+            (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
             allowed = 0;
+        }
     }
     if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
         object->character_data->game_character->head_locator != -1 && allowed) {
-
         NuVecInvMtxTransform(&direction, &object->head_target_position,
                              &object->locator_matrices[object->character_data->game_character->head_locator]);
         if (direction.z < 0.0f) {
             f32 yaw = NuAtan2(-direction.x, -direction.z);
             first = joints->overrides[joints->count].rotation.x - yaw;
-            if (first >= object->character_data->game_character->field_050)
+            if (first >= object->character_data->game_character->field_050) {
                 first = object->character_data->game_character->field_050;
-            else if (first <= -object->character_data->game_character->field_050)
+            } else if (first <= -object->character_data->game_character->field_050) {
                 first = -object->character_data->game_character->field_050;
+            }
             angle = NuAtan2(-direction.y, -direction.z);
             second = joints->overrides[joints->count].rotation.y - angle;
-            if (second >= object->character_data->game_character->field_054)
+            if (second >= object->character_data->game_character->field_054) {
                 second = object->character_data->game_character->field_054;
-            else if (second <= -object->character_data->game_character->field_054)
+            } else if (second <= -object->character_data->game_character->field_054) {
                 second = -object->character_data->game_character->field_054;
+            }
         }
     }
     joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
@@ -190,10 +202,12 @@ static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
         joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc) {
         joints->overrides[joints->count].flags_pc = 1;
         if (allowed) {
-            if (joints->overrides[joints->count].rotation.x != 0.0f)
+            if (joints->overrides[joints->count].rotation.x != 0.0f) {
                 joints->overrides[joints->count].flags_pc |= 8;
-            if (joints->overrides[joints->count].rotation.y != 0.0f)
+            }
+            if (joints->overrides[joints->count].rotation.y != 0.0f) {
                 joints->overrides[joints->count].flags_pc |= 16;
+            }
         }
     }
     if (object->head_target != NULL) {
@@ -232,15 +246,17 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
                 animation = object->anim_packet.blend_source_animation;
                 if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                     object->character_model->model_data_b[animation] != NULL &&
-                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                     allowed = 0;
+                }
             }
         } else {
             animation = object->anim_packet.animation_index;
             if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                 object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
+            }
         }
 
         if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
@@ -252,18 +268,20 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = pitch - joints->overrides[joints->count].rotation.y;
-                if (first >= object->character_data->game_character->field_054)
+                if (first >= object->character_data->game_character->field_054) {
                     first = object->character_data->game_character->field_054;
-                else if (first <= -object->character_data->game_character->field_054)
+                } else if (first <= -object->character_data->game_character->field_054) {
                     first = -object->character_data->game_character->field_054;
+                }
                 angle = -NuAtan2(-direction.x, -direction.z);
                 second = angle - joints->overrides[joints->count].rotation.z;
-                if (second >= object->character_data->game_character->field_050)
+                if (second >= object->character_data->game_character->field_050) {
                     second = object->character_data->game_character->field_050;
-                else if (second <= -object->character_data->game_character->field_050)
+                } else if (second <= -object->character_data->game_character->field_050) {
                     second = -object->character_data->game_character->field_050;
-                else
+                } else {
                     object->flags_ef0 &= ~0x10000u;
+                }
             }
         }
         joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
@@ -291,10 +309,12 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
             joints->overrides[joints->count].rotation.z < -HeadMovementThresholdPc) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
-                if (joints->overrides[joints->count].rotation.y != 0.0f)
+                if (joints->overrides[joints->count].rotation.y != 0.0f) {
                     joints->overrides[joints->count].flags_pc |= 16;
-                if (joints->overrides[joints->count].rotation.z != 0.0f)
+                }
+                if (joints->overrides[joints->count].rotation.z != 0.0f) {
                     joints->overrides[joints->count].flags_pc |= 32;
+                }
             }
         }
         if (object->head_target != NULL) {
@@ -334,15 +354,17 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
                 animation = object->anim_packet.blend_source_animation;
                 if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                     object->character_model->model_data_b[animation] != NULL &&
-                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                     allowed = 0;
+                }
             }
         } else {
             animation = object->anim_packet.animation_index;
             if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                 object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
                 allowed = 0;
+            }
         }
 
         if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
@@ -354,18 +376,20 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = joints->overrides[joints->count].rotation.y - pitch;
-                if (first >= object->character_data->game_character->field_054)
+                if (first >= object->character_data->game_character->field_054) {
                     first = object->character_data->game_character->field_054;
-                else if (first <= -object->character_data->game_character->field_054)
+                } else if (first <= -object->character_data->game_character->field_054) {
                     first = -object->character_data->game_character->field_054;
+                }
                 angle = -NuAtan2(-direction.x, -direction.z);
                 second = joints->overrides[joints->count].rotation.z - angle;
-                if (second >= object->character_data->game_character->field_050)
+                if (second >= object->character_data->game_character->field_050) {
                     second = object->character_data->game_character->field_050;
-                else if (second <= -object->character_data->game_character->field_050)
+                } else if (second <= -object->character_data->game_character->field_050) {
                     second = -object->character_data->game_character->field_050;
-                else
+                } else {
                     object->flags_ef0 &= ~0x10000u;
+                }
             }
         }
         joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
@@ -393,10 +417,12 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             joints->overrides[joints->count].rotation.z < -HeadMovementThresholdPc) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
-                if (joints->overrides[joints->count].rotation.y != 0.0f)
+                if (joints->overrides[joints->count].rotation.y != 0.0f) {
                     joints->overrides[joints->count].flags_pc |= 16;
-                if (joints->overrides[joints->count].rotation.z != 0.0f)
+                }
+                if (joints->overrides[joints->count].rotation.z != 0.0f) {
                     joints->overrides[joints->count].flags_pc |= 32;
+                }
             }
         }
         if (object->head_target != NULL) {
@@ -413,14 +439,16 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
 }
 
 void __cdecl HeadMovement(GAMEOBJECT *object) {
-    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000) != 0) {
         return;
-    if ((object->character_data->game_character->flags_094 & 0x40000000) != 0)
+    }
+    if ((object->character_data->game_character->flags_094 & 0x40000000) != 0) {
         HeadMovementAlternatePc(object);
-    else if ((object->character_data->model_flags & 0x20000) != 0)
+    } else if ((object->character_data->model_flags & 0x20000) != 0) {
         HeadMovementLegacyPc(object);
-    else
+    } else {
         HeadMovementOrdinaryPc(object);
+    }
 }
 
 void __cdecl CloakMovement(GAMEOBJECT *object) {

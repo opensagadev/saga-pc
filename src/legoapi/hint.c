@@ -11,20 +11,26 @@ typedef struct HINT_CANCEL_PC {
     u8 unknown0c[0xc];
     f32 cooldown;
 } HINT_CANCEL_PC;
+
 STATIC_ASSERT(offsetof(HINT_CANCEL_PC, display_duration) == 8);
 STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
+
 typedef struct HINT_COMPLETION_PC {
     u16 points;
     u8 reserved02, flags;
 } HINT_COMPLETION_PC;
+
 STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
 STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, points) == 0);
 STATIC_ASSERT(offsetof(HINT_COMPLETION_PC, flags) == 3);
+
 typedef struct HINT_WORLD_TELEPORT_PC {
     u8 reserved00[0x4684];
     i32 teleport_count;
 } HINT_WORLD_TELEPORT_PC;
+
 STATIC_ASSERT(offsetof(HINT_WORLD_TELEPORT_PC, teleport_count) == 0x4684);
+
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
     u8 reserved00[0x61];
@@ -32,11 +38,13 @@ typedef struct HINT_PANEL_PC {
     u8 reserved63[0x29];
     f32 target_scale;
 } HINT_PANEL_PC;
+
 STATIC_ASSERT(sizeof(HINT_PANEL_PC) == 0x90);
 STATIC_ASSERT(offsetof(HINT_PANEL_PC, model_variant) == 0x61);
 STATIC_ASSERT(offsetof(HINT_PANEL_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(HINT_PANEL_PC, target_scale) == 0x8c);
 struct panel_movement_pc_s;
+
 typedef struct HINT_ZIPUP_PC {
     u8 name[16];
     NUVEC lower_position;
@@ -44,6 +52,7 @@ typedef struct HINT_ZIPUP_PC {
     u8 flags;
     u8 reserved69[0x13];
 } HINT_ZIPUP_PC;
+
 STATIC_ASSERT(sizeof(HINT_ZIPUP_PC) == 0x7c);
 STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, lower_position) == 0x10);
 STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, flags) == 0x68);
@@ -108,11 +117,13 @@ i32 __cdecl Hint_CurrentId(void) {
 
 HINT_PC *__cdecl Hint_FindHint(i32 hint_id) {
     HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
+    if (hint == NULL) {
         return NULL;
+    }
     while (hint->id != -1) {
-        if (hint->id == hint_id)
+        if (hint->id == hint_id) {
             return hint;
+        }
         ++hint;
     }
     return NULL;
@@ -121,25 +132,31 @@ HINT_PC *__cdecl Hint_FindHint(i32 hint_id) {
 i32 __cdecl Hint_isAvailable(i32 hint_id) {
     HINT_PC *active_hint = hintsys.active_hint;
     HINT_PC *hint;
-    if (active_hint != NULL && active_hint->id == hint_id)
+    if (active_hint != NULL && active_hint->id == hint_id) {
         return 0;
-    if (hint_id < 0 || TTab[hint_id] == NULL)
+    }
+    if (hint_id < 0 || TTab[hint_id] == NULL) {
         return 0;
+    }
     hint = Hint_FindHint(hint_id);
-    if (hint == NULL || hint->completed != 0)
+    if (hint == NULL || hint->completed != 0) {
         return 0;
-    if (hint->cooldown > 0.0f)
+    }
+    if (hint->cooldown > 0.0f) {
         return 0;
+    }
     return 1;
 }
 
 i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
     HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
+    if (hint == NULL) {
         return 0;
+    }
     while (hint->id != -1) {
-        if (hint->id == hint_id)
+        if (hint->id == hint_id) {
             return hint->completed;
+        }
         ++hint;
     }
     return 0;
@@ -163,16 +180,18 @@ void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC
 void __cdecl Hint_CancelCurrent(void) {
     HINT_CANCEL_PC *hint = (HINT_CANCEL_PC *)hintsys.active_hint;
     if (hint != NULL) {
-        if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed)
+        if (hint->display_duration != 0.0f && (f64)hint->display_duration - 0.5 > hintsys.display_elapsed) {
             hintsys.display_elapsed = (f32)((f64)hint->display_duration - 0.5);
+        }
         hint->cooldown = 0.0f;
     }
 }
 
 void __cdecl Hint_Reset(void) {
     HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
+    if (hint == NULL) {
         return;
+    }
     while (hint->id != -1) {
         hint->cooldown = 0.0f;
         ++hint;
@@ -186,12 +205,14 @@ void __cdecl Hint_Reset(void) {
 /* 00576630..00576668. Both arguments are ordinary cdecl stack arguments. */
 void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed) {
     HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
+    if (hint == NULL) {
         return;
+    }
     while (hint->id != -1) {
         if (hint->id == hint_id) {
-            if (reset_completed == 1)
+            if (reset_completed == 1) {
                 hint->completed = 0;
+            }
             hintsys.display_elapsed = 0.0f;
             return;
         }
@@ -201,8 +222,9 @@ void __cdecl Hint_ResetHint(i32 hint_id, i32 reset_completed) {
 
 void __cdecl Hint_ClearHintsAndDoneFlags(void) {
     HINT_PC *hint = hintsys.hints;
-    if (hint == NULL)
+    if (hint == NULL) {
         return;
+    }
     while (hint->id != -1) {
         hint->flags &= 0xfd;
         hint->completed = 0;
@@ -213,12 +235,14 @@ void __cdecl Hint_ClearHintsAndDoneFlags(void) {
 void __cdecl Hint_SaveGameState(HINT_PC *hint) {
     HINT_PC *candidate;
     i32 index;
-    if (hintsys.hints == NULL || hintsys.save_bits == NULL)
+    if (hintsys.hints == NULL || hintsys.save_bits == NULL) {
         return;
+    }
     for (candidate = hintsys.hints, index = 0; candidate->id != -1; ++candidate, ++index) {
         if ((u16)candidate->id == (u16)hint->id) {
-            if (index / 32 < hintsys.save_word_count)
+            if (index / 32 < hintsys.save_word_count) {
                 hintsys.save_bits[index / 32] |= 1u << (index & 31);
+            }
             return;
         }
     }
@@ -227,13 +251,15 @@ void __cdecl Hint_SaveGameState(HINT_PC *hint) {
 void __cdecl Hint_LoadAllGameState(void) {
     HINT_PC *hint = hintsys.hints;
     i32 index;
-    if (hint == NULL || hintsys.save_bits == NULL)
+    if (hint == NULL || hintsys.save_bits == NULL) {
         return;
+    }
     index = 0;
     while (hint->id != -1) {
         i32 word = index / 32;
-        if (word >= hintsys.save_word_count)
+        if (word >= hintsys.save_word_count) {
             break;
+        }
         hint->completed = (hintsys.save_bits[word] & (1U << (index % 32))) != 0;
         ++hint;
         ++index;
@@ -242,20 +268,24 @@ void __cdecl Hint_LoadAllGameState(void) {
 
 /* PC576840/31; append to hint.c; update_fn alias below names native+0. */
 void __cdecl Hint_Draw(i32 viewport) {
-    if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL)
+    if (hintsys.active_hint != NULL && hintsys.draw_fn != NULL) {
         hintsys.draw_fn(hintsys.active_hint, viewport);
+    }
 }
 
 void __cdecl Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
     i32 state;
-    if (hintsys.active_hint != NULL && hintsys.active_hint == hint)
+    if (hintsys.active_hint != NULL && hintsys.active_hint == hint) {
         return;
+    }
     if (hint != NULL) {
         if (force == 0) {
-            if (hint->completed != 0 && allow_completed == 0)
+            if (hint->completed != 0 && allow_completed == 0) {
                 return;
-            if (hint->cooldown > 0.0f)
+            }
+            if (hint->cooldown > 0.0f) {
                 return;
+            }
         }
         hintsys.active_hint = hint;
         hintsys.display_elapsed = 0.0f;
@@ -277,21 +307,24 @@ void __cdecl Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
 
 void __cdecl Hint_SetHintFromId(i32 hint_id, i32 force, i32 allow_completed) {
     HINT_PC *hint;
-    if (hintsys.active_hint != NULL && hintsys.active_hint->id == hint_id)
+    if (hintsys.active_hint != NULL && hintsys.active_hint->id == hint_id) {
         return;
+    }
     if (hint_id < 0 || TTab[hint_id] == NULL) {
         hintsys.active_hint = NULL;
         return;
     }
     hint = Hint_FindHint(hint_id);
-    if (hint != NULL)
+    if (hint != NULL) {
         Hint_SetHint(hint, force, allow_completed);
+    }
 }
 
 void __cdecl Hint_SetComplete(i32 hint_id) {
     HINT_PC *hint;
-    if (hint_id == -1)
+    if (hint_id == -1) {
         return;
+    }
     hint = Hint_FindHint(hint_id);
     if (hint != NULL && hint->completed == 0) {
         hint->completed = 1;
@@ -313,25 +346,31 @@ void __cdecl Hint_Process(f32 elapsed) {
     HINT_PC *hint;
     f32 target;
     f32 step;
-    if (hintsys.hints == NULL)
+    if (hintsys.hints == NULL) {
         return;
+    }
 
     /* Existing historical symbol names the DWORD native reads at00803984. */
     if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 ||
         SuperStory != 0 || BonusArea != 0 || (world->current_level->flags & 0x200) != 0 ||
         (world->area != NULL && (world->area->flags & 0x124) != 0) || GetMenuID() != -1 || FadeSys.fade != 0.0f ||
-        (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0))
+        (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0)) {
         available = 0;
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
+    }
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
         available = 0;
+    }
 
     for (hint = hintsys.hints; hint->id != -1; ++hint) {
-        if (hintsys.active_hint != hint && hint->cooldown > 0.0f)
+        if (hintsys.active_hint != hint && hint->cooldown > 0.0f) {
             hint->cooldown -= elapsed;
-        if (!available || hintsys.active_hint != NULL || hint->completed != 0 || hint->update_fn == NULL)
+        }
+        if (!available || hintsys.active_hint != NULL || hint->completed != 0 || hint->update_fn == NULL) {
             continue;
-        if (hint->update_fn(hint) == 0 || hint->cooldown > 0.0f || hint->completed == 1)
+        }
+        if (hint->update_fn(hint) == 0 || hint->cooldown > 0.0f || hint->completed == 1) {
             continue;
+        }
         Hint_SetHint(hint, 0, 0);
     }
     target = Hint_AlphaTargetFn != NULL ? Hint_AlphaTargetFn() : 1.0f;
@@ -340,8 +379,9 @@ void __cdecl Hint_Process(f32 elapsed) {
     hint = hintsys.active_hint;
     if (hint != NULL) {
         hintsys.display_elapsed += elapsed;
-        if (hint->display_duration > 0.0f && hintsys.display_elapsed >= hint->display_duration)
+        if (hint->display_duration > 0.0f && hintsys.display_elapsed >= hint->display_duration) {
             hintsys.active_hint = NULL;
+        }
     }
 }
 

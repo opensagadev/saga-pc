@@ -1,3 +1,4 @@
+# House style (docs/cleanup-audit.md, section 3). `make format` applies it to src/.
 BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 120
@@ -6,4 +7,22 @@ AllowShortFunctionsOnASingleLine: None
 NamespaceIndentation: All
 IndentExternBlock: Indent
 IndentCaseLabels: true
+
+# Include order steers VC8 code generation in a few units (the audit lists them): never reorder.
 SortIncludes: Never
+IncludeBlocks: Preserve
+
+# Paragraphs: one blank line between definitions (functions, structs, enums), at most one empty
+# line anywhere, none at the start of a block, one newline at the end of a file.
+SeparateDefinitionBlocks: Always
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+KeepEmptyLinesAtEOF: false
+EmptyLineBeforeAccessModifier: LogicalBlock
+EmptyLineAfterAccessModifier: Never
+InsertNewlineAtEOF: true
+LineEnding: LF
+
+# Every if/else/for/while/do body in braces; no stray semicolon after a function body.
+InsertBraces: true
+RemoveSemicolon: true

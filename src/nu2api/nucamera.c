@@ -29,8 +29,9 @@ NUCAMERA *__cdecl NuCameraCreate(void) {
 }
 
 void __cdecl NuCameraDestroy(NUCAMERA *camera) {
-    if (camera != NULL)
+    if (camera != NULL) {
         NuFree(camera, NuCameraAllocSource, 0x13e);
+    }
 }
 
 /* Builds the orthographic projection used when NuCameraOrthographic is set. */
@@ -218,14 +219,16 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
         f32 cotangent;
         f32 horizontal;
         i32 angle;
-        if (camera->unknown_64 == 0.0f)
+        if (camera->unknown_64 == 0.0f) {
             far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
-        else
+        } else {
             far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
-        if (camera->unknown_60 == 0.0f)
+        }
+        if (camera->unknown_60 == 0.0f) {
             near_clip = camera->near_clip;
-        else
+        } else {
             near_clip = camera->unknown_60;
+        }
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
@@ -248,14 +251,16 @@ void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera
         f32 cotangent;
         f32 horizontal;
         i32 angle;
-        if (camera->unknown_64 == 0.0f)
+        if (camera->unknown_64 == 0.0f) {
             far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
-        else
+        } else {
             far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
-        if (camera->unknown_60 == 0.0f)
+        }
+        if (camera->unknown_60 == 0.0f) {
             near_clip = camera->near_clip;
-        else
+        } else {
             near_clip = camera->unknown_60;
+        }
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
         cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
@@ -279,19 +284,25 @@ i32 __cdecl NuCameraClipTestSphere(NUVEC *point, f32 radius, NUMTX *world) {
     } else {
         NuVecMtxTransform(&transformed, point, &vmtx);
     }
-    if (0.0f > (transformed.z - global_camera.near_clip) + radius)
+    if (0.0f > (transformed.z - global_camera.near_clip) + radius) {
         goto rejected;
-    if (0.0f > (global_camera.far_clip - transformed.z) + radius)
+    }
+    if (0.0f > (global_camera.far_clip - transformed.z) + radius) {
         goto rejected;
+    }
     NuVec4MtxTransform(&plane_distances, &transformed, &clip_planes);
-    if (plane_distances.x < -radius)
+    if (plane_distances.x < -radius) {
         goto rejected;
-    if (-radius > plane_distances.y)
+    }
+    if (-radius > plane_distances.y) {
         goto rejected;
-    if (-radius > plane_distances.z)
+    }
+    if (-radius > plane_distances.z) {
         goto rejected;
-    if (-radius > plane_distances.w)
+    }
+    if (-radius > plane_distances.w) {
         goto rejected;
+    }
     return 0;
 rejected:
     return 1;
@@ -305,8 +316,9 @@ void __cdecl FaceYDirStream(i32 angle);
 void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     global_camera = *camera;
     FaceYDirStream(NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22));
-    if (fast == 0)
+    if (fast == 0) {
         NuVpUpdate();
+    }
     if (NuCameraMode == 0) {
         NuMtxInvVU0(&vmtx, &global_camera.mtx);
         NuMtxScaleVU0(&vmtx, &global_camera.scale);
@@ -319,8 +331,9 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         NuMtxInv(&camera_inverse, &global_camera.mtx);
         NuMtxInv(&reflection_inverse, &global_reflect.mtx);
         vmtx = reflection_inverse;
-        if (NuCameraMode == 1)
+        if (NuCameraMode == 1) {
             NuMtxMul(&vmtx, &vmtx, &mirror);
+        }
         NuMtxMul(&vmtx, &vmtx, &global_reflect.mtx);
         NuMtxMul(&vmtx, &vmtx, &camera_inverse);
     }
@@ -341,10 +354,11 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
         fast = 0;
         NuCameraPreviousClipScissorToViewport = NuCameraClipScissorToViewport;
     }
-    if (NuCameraClipScissorToViewport != 0)
+    if (NuCameraClipScissorToViewport != 0) {
         NuCameraSetVPortClipMtx(&vpc_sci_mtx, &vmtx, &global_camera, fast);
-    else
+    } else {
         NuCameraSetScissorClipMtx(&vpc_sci_mtx, &vmtx, &global_camera, fast);
+    }
     smtx = NuCameraScalingTemplate;
     NuMtxMulH(&vpmtx, &vmtx, &pmtx);
     NuMtxMulH(&vpsmtx, &vpmtx, &smtx);
@@ -397,6 +411,7 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
         f32 far_plane;
         f32 near_plane;
     } distance, radius;
+
     f32 saved_far = AxisClipNearFarPlanesPc.m30;
     if (far_clip != 0.0f) {
         AxisClipNearFarPlanesPc.m30 -= global_camera.far_clip;
@@ -423,8 +438,9 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
 
     if (distance.sides.x < -radius.sides.x || distance.sides.y < -radius.sides.y ||
         distance.sides.z < -radius.sides.z || distance.fourth < -radius.fourth ||
-        distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane)
+        distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane) {
         return 0;
+    }
     if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
         distance.fourth < radius.fourth) {
         NuVecMtxTransform(&distance.sides, center, &AxisClipScissorPlanesPc);
@@ -436,8 +452,9 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
                         (extent->z * AxisClipAbsScissorPlanesPc.m23 +
                          (extent->y * AxisClipAbsScissorPlanesPc.m13 + extent->x * AxisClipAbsScissorPlanesPc.m03));
         if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y ||
-            distance.sides.z < radius.sides.z || distance.fourth < radius.fourth)
+            distance.sides.z < radius.sides.z || distance.fourth < radius.fourth) {
             return 2;
+        }
     }
     return 1;
 }
@@ -472,20 +489,22 @@ f32 __cdecl NuCameraCalcAperture(f32 focal_length, f32 root_fstop) {
     f32 aperture;
 
     root_fstop = root_fstop * root_fstop;
-    if (focal_length == 0.0f || root_fstop == 0.0f)
+    if (focal_length == 0.0f || root_fstop == 0.0f) {
         aperture = 0.0f;
-    else
+    } else {
         aperture = focal_length / root_fstop;
+    }
     return aperture;
 }
 
 f32 __cdecl NuCameraCalcRootFStop(f32 focal_length, f32 aperture) {
     f32 ratio;
 
-    if (focal_length == 0.0f || aperture == 0.0f)
+    if (focal_length == 0.0f || aperture == 0.0f) {
         ratio = 0.0f;
-    else
+    } else {
         ratio = focal_length / aperture;
+    }
     return NuFsqrt(ratio);
 }
 
@@ -493,10 +512,11 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
     NUMTX matrix;
     i32 common;
     i32 i;
-    if (world_matrix != NULL)
+    if (world_matrix != NULL) {
         NuMtxMulH(&matrix, world_matrix, &vmtx);
-    else
+    } else {
         matrix = vmtx;
+    }
     common = -1;
     for (i = 0; i < count; ++i) {
         NUVEC t;
@@ -504,19 +524,25 @@ i32 __cdecl NuCameraClipTestPoints(NUVEC *points, i32 count, NUMTX *world_matrix
         f32 negative_z;
         NuVecMtxTransform(&t, &points[i], &matrix);
         flags = 0;
-        if (t.z < global_camera.near_clip)
+        if (t.z < global_camera.near_clip) {
             flags |= 0x20;
-        if (t.z > global_camera.far_clip)
+        }
+        if (t.z > global_camera.far_clip) {
             flags |= 0x10;
+        }
         negative_z = -t.z;
-        if (t.x < negative_z * zx)
+        if (t.x < negative_z * zx) {
             flags |= 1;
-        if (t.z * zx < t.x)
+        }
+        if (t.z * zx < t.x) {
             flags |= 2;
-        if (t.y < negative_z * zy)
+        }
+        if (t.y < negative_z * zy) {
             flags |= 8;
-        if (t.y > t.z * zy)
+        }
+        if (t.y > t.z * zy) {
             flags |= 4;
+        }
         common &= flags;
     }
     return common;
@@ -598,12 +624,14 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
     NUVEC view[8];
     char results[8];
     i32 i;
-    if (far_clip == 0.0f)
+    if (far_clip == 0.0f) {
         far_clip = global_camera.far_clip;
-    if (world_mtx == NULL || world_mtx == &NuMtxSetIdentityTemplate)
+    }
+    if (world_mtx == NULL || world_mtx == &NuMtxSetIdentityTemplate) {
         transform = vmtx;
-    else
+    } else {
         NuMtxMul(&transform, world_mtx, &vmtx);
+    }
     corners[0].x = min->x;
     corners[0].y = min->y;
     corners[0].z = min->z;
@@ -639,16 +667,20 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
     *min_depth = FLT_MAX;
     memset(results, 0, sizeof(results));
     for (i = 0; i < 8; ++i) {
-        if (view[i].z < *min_depth)
+        if (view[i].z < *min_depth) {
             *min_depth = view[i].z;
+        }
         NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, zx, zy);
     }
-    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
+    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0) {
         return 0;
-    if ((results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
+    }
+    if ((results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0) {
         return 1;
-    if ((flags & 1) != 0)
+    }
+    if ((flags & 1) != 0) {
         return 2;
+    }
     memset(results, 0, sizeof(results));
     for (i = 0; i < 8; i += 4) {
         NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
@@ -661,8 +693,9 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
                               VisibilityAlternateHeightPc);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0 ||
-        (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
+        (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0) {
         return 1;
+    }
     return 2;
 }
 
@@ -693,56 +726,66 @@ void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, 
 void __cdecl NuCameraTransformView(NUVEC *view, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix != NULL)
+    if (matrix != NULL) {
         NuMtxMul(&transform, matrix, &vmtx);
-    else
+    } else {
         transform = vmtx;
-    while (world < end)
+    }
+    while (world < end) {
         NuVecMtxTransform(view++, world++, &transform);
+    }
 }
 
 void __cdecl NuCameraTransformScreenClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix != NULL)
+    if (matrix != NULL) {
         NuMtxMulH(&transform, matrix, &vpc_vport_mtx);
-    else
+    } else {
         transform = vpc_vport_mtx;
-    while (world < end)
+    }
+    while (world < end) {
         NuVecMtxTransformH(screen++, world++, &transform);
+    }
 }
 
 void __cdecl NuCameraTransformScissorClip(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix != NULL)
+    if (matrix != NULL) {
         NuMtxMulH(&transform, matrix, &vpc_sci_mtx);
-    else
+    } else {
         transform = vpc_sci_mtx;
-    while (world < end)
+    }
+    while (world < end) {
         NuVecMtxTransformH(screen++, world++, &transform);
+    }
 }
 
 void __cdecl NuCameraTransformScreen(NUVEC *screen, NUVEC *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC *end = world + count;
-    if (matrix != NULL)
+    if (matrix != NULL) {
         NuMtxMulH(&transform, matrix, &vpsmtx);
-    else
+    } else {
         transform = vpsmtx;
-    while (world < end)
+    }
+    while (world < end) {
         NuVecMtxTransformH(screen++, world++, &transform);
+    }
 }
 
 void NuCameraTransformScreenVU0(NUVEC4 *screen, NUVEC4 *world, i32 count, NUMTX *matrix) {
     NUMTX transform;
     NUVEC4 *end = world + count;
-    if (matrix != NULL)
+    if (matrix != NULL) {
         NuMtxMulVU0(&transform, matrix, &vpsmtx);
-    else
+    } else {
         transform = vpsmtx;
-    while (world < end)
+    }
+    while (world < end) {
         NuVec4MtxTransformHVU0(screen++, world++, &transform);
+    }
 }
 
 i32 __cdecl NuCameraSaveState(void) {
@@ -814,8 +857,9 @@ void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC
     f32 x, y;
     i32 angle;
 
-    if (camera == NULL)
+    if (camera == NULL) {
         camera = &global_camera;
+    }
 
     half_fov = camera->fov * 0.5;
     angle = (i32)(half_fov * AIPathAngularScale);
