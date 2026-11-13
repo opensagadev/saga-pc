@@ -8939,10 +8939,15 @@ address,symbol,size,ctype
 0x64ae50,_PARTStartOffset,373,"void __cdecl (i32, f32)"
 0x64afd0,_PARTLookupType,74,i32 __cdecl (char *)
 0x64b020,_PARTLookupTypePageOnly,161,"i32 __cdecl (char *, i32)"
+0x64b0d0,_GetPartCount,76,"i32 __cdecl (void)"
+0x64b120,_GetMaxPartTypes,6,"i32 __cdecl (void)"
+0x64b130,_GetPartName,29,"char * __cdecl (i32)"
+0x64b160,_PARTGetTotalOnTime,38,"f32 __cdecl (i32)"
+0x64b190,_PARTGetTotalOffTime,38,"f32 __cdecl (i32)"
 0x64b1c0,_AddPARTEffect,249,"i32 __cdecl (i32, NUVEC *)"
-0x64b2c0,_KillPARTEffect,41,"void __cdecl (i32)"
-0x64b2f0,_SetPARTEffectPos,52,"void __cdecl (i32, f32, f32, f32)"
-0x64b330,_SetPARTEffectRot,58,"void __cdecl (i32, i16, i16, i16)"
+0x64b2c0,_RemovePARTEffect,41,"void __cdecl (i32)"
+0x64b2f0,_PARTEmitterPos,52,"void __cdecl (i32, f32, f32, f32)"
+0x64b330,_PARTEmitterOrientation,58,"void __cdecl (i32, i16, i16, i16)"
 0x64b370,_AddFiniteShotPART,155,"i32 __cdecl (i32, NUVEC *, i32)"
 0x64b410,_CreateScaledPARTEffect,928,"i32 __cdecl(i32, f32)"
 0x64b7f0,_KillPartsByScene,83,void __cdecl (NUGSCN *)
