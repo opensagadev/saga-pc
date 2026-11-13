@@ -11853,11 +11853,10 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 param_count, i32 first_time, f32 unused_delta) {
     NUVEC position;
-    AIPATHINFO_PC *path;
-    i32 yaw;
+    AIPATHINFO_PC *path = NULL;
+    i32 yaw = 0;
     i32 index;
-    f32 delay;
-    i32 offset_applied;
+    i32 offset_applied = 0;
     i32 minimum = -1, maximum = -1, count = 1;
     i32 start_locator = 0, inherit = 1;
     i32 offscreen = 0, nearest = 0, onscreen = 0;
@@ -11875,6 +11874,7 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     i32 locator_count = 0, zipup_count = 0, model_count = 0;
     f32 fall_chance = 0.0f;
     f32 crate_height = 0.0f, crate_delay = 0.0f;
+    f32 delay = 0.0f;
     GAMEOBJECT *rider = NULL;
     char *state = NULL;
     f32 max_range = 1000000000.0f, min_dy = 1000000000.0f, max_dy = 1000000000.0f;
@@ -11886,9 +11886,6 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
         path = &packet->path_info;
         position = packet->owner->position;
         yaw = packet->owner->field_0x276;
-    } else {
-        yaw = 0;
-        path = NULL;
     }
     for (index = 0; index < param_count; ++index) {
         char *value;
@@ -12046,26 +12043,26 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
         } else if (maximum == minimum)
             count = maximum;
     }
-    delay = 0.0f;
-    offset_applied = 0;
     while (count != 0) {
-        i32 model;
+        i16 model;
         AILOCATOR_PC *locator;
         ZIPUP_s *zipup;
-        if ((locator_count | zipup_count) == 0 && rider == NULL && start_locator == 0)
+        if (locator_count == 0 && zipup_count == 0 && rider == NULL && start_locator == 0)
             break;
         if (model_count == 0)
             break;
         model = models[NuRand(NULL) % model_count];
         locator = NULL;
         zipup = NULL;
-        if ((locator_count | start_locator) != 0) {
+        if (locator_count != 0 || start_locator != 0) {
             if (start_locator != 0 && locator_set != NULL) {
                 locator = FirstSpawnSetLocator(locator_set, sys);
             } else {
-                f32 clip_radius = 0.0f;
+                f32 clip_radius;
                 if (offscreen != 0)
-                    clip_radius = 0.5f + apicharsys->char_data[(i16)model].collision_radius;
+                    clip_radius = 0.5f + apicharsys->char_data[model].collision_radius;
+                else
+                    clip_radius = 0.0f;
                 if (nearest != 0)
                     locator = LocalGetNearestLocator(locators, locator_count, clip_radius, &player->position, max_range,
                                                      onscreen, max_dy, min_dy);
@@ -12100,21 +12097,17 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
             offset_applied = 1;
         }
         if (count > 0) {
-            AIGROUP_PC *group;
+            AIGROUP_PC *group = NULL;
             i32 member;
-            i32 members = 1;
-            i32 make_group = 0;
-            if (grouped == 0)
-                --count;
-            else {
+            i32 members;
+            if (grouped != 0)
                 members = count;
-                make_group = count > 1;
-                count = 0;
-            }
-            group = NULL;
+            else
+                members = 1;
+            count -= members;
             for (member = 0; member < members; ++member) {
                 GAMEOBJECT *object;
-                if (member == 0 && make_group != 0) {
+                if (member == 0 && members > 1) {
                     PLAYERCHARACTERCONFIG_PC *data = apicharsys->char_data[model].game_character;
                     group = CreateAIGroup(sys, across, xspacing, zspacing, data->run_speed);
                 }
