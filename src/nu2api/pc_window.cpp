@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* TODO(saga.h): PC_WINDOW_CALLBACK_PC returns LRESULT; WindowProcPc returns the callback's result
+   when the callback marks the message handled. Drop this typedef and the cast once it does. */
+typedef LRESULT(__cdecl *PC_WINDOW_RESULT_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
+
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
@@ -17,9 +21,10 @@ extern "C" i32 PublishWindowPc(HWND window, i32 show) {
 extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     for (i32 index = 0; index < PcWindowCallbackCount; ++index) {
         i32 handled = 0;
-        PcWindowCallbacks[index](window, message, wparam, lparam, &handled);
+        LRESULT result =
+            ((PC_WINDOW_RESULT_CALLBACK_PC)PcWindowCallbacks[index])(window, message, wparam, lparam, &handled);
         if (handled != 0)
-            return 1;
+            return result;
     }
     switch (message) {
         case WM_ACTIVATE:
