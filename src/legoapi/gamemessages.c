@@ -5,24 +5,28 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     GAME_MESSAGE_PC *slot;
     GAME_MESSAGE_PC fallback;
     i32 temporary = 0;
-    i32 slot_index = -1;
     f32 best = 1000000.0f;
-    f32 value;
+    f32 value, duration;
     i32 index = GameMessageIndex;
+    i32 slot_index = -1;
     i32 count, text_index, length;
     for (count = 0; count < 128; ++count) {
         slot = &GameMessage[index];
         if (slot->active == 0) {
-            slot_index = index;
-            break;
+            GameMessageIndex = index;
+            goto found;
         }
         if (!(slot->flags & 0x1000)) {
-            if (slot->expired != 0)
+            if (slot->expired != 0) {
                 value = 1.0f;
-            else if (slot->elapsed == 0.0f || slot->duration == 0.0f)
-                value = 0.0f;
-            else
-                value = slot->elapsed / slot->duration;
+            } else {
+                value = slot->elapsed;
+                duration = slot->duration;
+                if (value == 0.0f || duration == 0.0f)
+                    value = 0.0f;
+                else
+                    value = value / duration;
+            }
             if (slot_index == -1 || value > best) {
                 best = value;
                 slot_index = index;
@@ -33,15 +37,17 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
             index = 0;
     }
     if (slot_index == -1 && message->allow_temporary != 0) {
-        memset(&fallback, 0, sizeof(fallback));
         slot = &fallback;
+        memset(slot, 0, sizeof(GAME_MESSAGE_PC));
         temporary = 1;
     } else {
         if (slot_index != -1)
             GameMessageIndex = slot_index;
         slot = &GameMessage[GameMessageIndex];
     }
-    if (slot->active != 0 && slot->score != 0 && (u8)slot->player_index <= 1 && slot->end_fn != NULL)
+found:
+    if (slot->active != 0 && slot->score > 0 && (slot->player_index == 0 || slot->player_index == 1) &&
+        slot->end_fn != NULL)
         slot->end_fn(slot);
     slot->text = NULL;
     text_index = 0;
@@ -57,7 +63,7 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
                 return NULL;
             slot->text = message->text;
         } else {
-            for (; text_index < length && text_index < 0x77; ++text_index)
+            for (; text_index < 0x77 && text_index < length; ++text_index)
                 slot->text_buffer[text_index] = message->text[text_index];
             if (text_index == 0)
                 return NULL;
@@ -67,24 +73,30 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     slot->parameter_d4 = 0.0f;
     slot->position = *message->position;
     slot->position_a = slot->position;
-    slot->scale_start = message->scale;
-    slot->scale_initial = message->scale;
+    slot->scale_start = slot->scale_initial = message->scale;
     slot->elapsed = 0.0f;
-    slot->duration = (message->flags & 0x80) ? 0.0f : message->duration;
+    if (message->flags & 0x80)
+        slot->duration = 0.0f;
+    else
+        slot->duration = message->duration;
     slot->red = message->red;
     slot->green = message->green;
     slot->blue = message->blue;
     slot->alpha = message->alpha;
     slot->flags = message->flags;
-    slot->target_position = message->target_position != NULL ? *message->target_position : *message->position;
+    if (message->target_position != NULL)
+        slot->target_position = *message->target_position;
+    else
+        slot->target_position = *message->position;
     slot->target_scale = message->target_scale;
-    if (!(slot->flags & 1)) {
+    if (slot->flags & 1) {
+        slot->has_start_position = 0;
+    } else {
         slot->scale_current = slot->scale_initial;
         slot->start_position = slot->position;
         slot->has_start_position = 1;
         slot->parameter_fb = 0;
-    } else
-        slot->has_start_position = 0;
+    }
     slot->expired = 0;
     slot->active = 1;
     slot->parameter_fc = message->unknown_4f;
@@ -97,7 +109,9 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     slot->score = message->score;
     slot->parameter_c4 = message->unknown_30;
     slot->parameter_c8 = message->unknown_34;
-    slot->parameter_e0 = slot->parameter_e2 = slot->parameter_e4 = 0;
+    slot->parameter_e0 = 0;
+    slot->parameter_e2 = 0;
+    slot->parameter_e4 = 0;
     slot->delay_fn = message->delay_fn;
     slot->tick_fn = message->tick_fn;
     slot->update_fn = message->update_fn;
