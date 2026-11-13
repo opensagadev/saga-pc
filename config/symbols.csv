@@ -13810,7 +13810,6 @@ address,symbol,size,ctype
 0x00751780,__real@3fe6a09e60000000,8,const f64
 0x751788,_TerrainScanMargin10Pc,8,const f64
 0x00751788,__real@3fb99999a0000000,8,const f64
-0x751788,__real@3fb999999999999a,8,const f64
 0x00751790,_ActionSnapWeightedRandomZeroPc,8,const f64
 0x00751790,__real@0000000000000000,8,const f64
 0x00751798,_NuTimeBarQFontSize,4,const f32
@@ -15286,7 +15285,6 @@ address,symbol,size,ctype
 0x00755d18,_AIPathAngularScale,8,const f64
 0x00755d18,__real@40c45f3060000000,8,f64
 0x00755d20,__real@bfb99999a0000000,8,const f64
-0x755d20,__real@bfb999999999999a,8,const f64
 0x755d28,_GameAIEveryonePc,9,
 0x755d34,??_C@_06BHOKJAAC@TIPTOE?$AA@,7,char []
 0x755d3c,??_C@_04PKELMGAL@WALK?$AA@,5,char []

@@ -192,9 +192,9 @@ template <class T> void EdValueControl<T>::cbButton(eduimenu_s *menu, eduiitem_s
         if (pad->analog_left_y < 0x80)
             change = sensitivity * -10.0 * (128.0 - pad->analog_left_y);
         if (pad->analog_right_y > 128.0)
-            change = sensitivity * 0.1 * (pad->analog_right_y - 128.0);
+            change = sensitivity * 0.1f * (pad->analog_right_y - 128.0);
         if (pad->analog_right_y < 0x80)
-            change = sensitivity * -0.1 * (128.0 - pad->analog_right_y);
+            change = sensitivity * -0.1f * (128.0 - pad->analog_right_y);
         value -= (T)change;
     } else {
         eduiGetCursorDelta(&dx, &change);

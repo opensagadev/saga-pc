@@ -398,7 +398,7 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
         to_position = *(NUVEC *)&data->end_mtx.m30;
         result.m30 = (to_position.x - from_position.x) * progress + from_position.x;
         result.m31 =
-            (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1;
+            (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1f;
         result.m32 = (to_position.z - from_position.z) * progress + from_position.z;
         *draw = result;
     }
@@ -434,7 +434,7 @@ extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflect
         NuQuatToMtx(&rotation, &result);
         to_position = *(NUVEC *)&data->end_mtx.m30;
         result.m30 = (to_position.x - matrix.m30) * progress + matrix.m30;
-        result.m31 = (to_position.y - matrix.m31) * progress + matrix.m31 + NU_SIN_LUT(progress * 32768.0) * 0.1;
+        result.m31 = (to_position.y - matrix.m31) * progress + matrix.m31 + NU_SIN_LUT(progress * 32768.0) * 0.1f;
         result.m32 = (to_position.z - matrix.m32) * progress + matrix.m32;
         matrix = result;
     }

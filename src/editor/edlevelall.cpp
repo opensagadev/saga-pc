@@ -4820,7 +4820,7 @@ void ClassEditor::cbEdClassRemoveDuplicates(eduimenu_s *, eduiitem_s *, u32) {
             if (thePlaceableHelper.object_types[object_type].object_interface->scene_id == object->scene_id)
                 break;
         }
-        if (!(VuVecLength(first_position) > 0.1))
+        if (!(VuVecLength(first_position) > 0.1f))
             continue;
         for (i32 second = first + 1; second < count; second++) {
             Placeable *other = objects[second];
@@ -4834,9 +4834,9 @@ void ClassEditor::cbEdClassRemoveDuplicates(eduimenu_s *, eduiitem_s *, u32) {
                 if (thePlaceableHelper.object_types[other_type].object_interface->scene_id == other->scene_id)
                     break;
             }
-            if (!(VuVecLength(first_position) > 0.1))
+            if (!(VuVecLength(first_position) > 0.1f))
                 continue;
-            if (VuVecLength(first_position - second_position) < 0.1 && object_type == other_type &&
+            if (VuVecLength(first_position - second_position) < 0.1f && object_type == other_type &&
                 (NuStrStr((char *)name, other_name) != NULL || NuStrStr((char *)other_name, name) != NULL)) {
                 thePlaceableHelper.object_types[other_type].object_interface->DestroyObject(other, 0);
                 objects[second] = NULL;
@@ -7873,7 +7873,7 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
     if (input.GetHold(14) != 0.0f)
         Scale += step * input.delta_time;
     if (input.GetHold(15) != 0.0f) {
-        if (Scale > 0.1)
+        if (Scale > 0.1f)
             Scale -= step * input.delta_time;
         else
             Scale = 0.1f;
@@ -8746,9 +8746,9 @@ void SplineKnot::Smooth() {
     delta.x = before.x - after.x;
     delta.y = before.y - after.y;
     delta.z = before.z - after.z;
-    before.x = delta.x * 0.1;
-    before.y = delta.y * 0.1;
-    before.z = delta.z * 0.1;
+    before.x = delta.x * 0.1f;
+    before.y = delta.y * 0.1f;
+    before.z = delta.z * 0.1f;
     after.x = before.x + centre.x;
     after.y = before.y + centre.y;
     after.z = before.z + centre.z;
