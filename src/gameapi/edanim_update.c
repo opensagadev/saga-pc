@@ -34,6 +34,7 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
     NUINSTANIM *animation;
     NUSPECIALHANDLE special;
     f32 seconds;
+    NUMTX orientation;
     i32 index, particle_index, sound_index, play;
     seconds = NuVideoGetMode() == 3 ? elapsed / 50.0f : elapsed / 60.0f;
     for (index = 0; index < 64; ++index) {
@@ -108,7 +109,6 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
                         (animation != NULL && (animation->flags & 1) != 0)) {
                         NUMTX matrix;
                         NUVEC position;
-                        NUMTX orientation;
                         NuMtxInvRSS(&matrix, NuSpecialGetMtx(&special));
                         NuMtxMul(&matrix, &matrix, NuSpecialGetDrawMtx(&special));
                         position = *(NUVEC *)AnimParams[index].effect_positions[particle_index];
