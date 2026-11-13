@@ -27,6 +27,13 @@ Write kinds (each one is a separate, reviewable change to symbols.csv):
 
   eh-sizes        blank sizes of C++ EH tables (__ehfuncinfo$, __unwindtable$,
                   __tryblocktable$, __catchsym$) from the FuncInfo they belong to
+  owner-extents   sizes of mapped functions whose own control flow (branch
+                  targets, jump and index tables, fallthrough to an unaligned
+                  byte) reaches unmapped bytes right after their mapped end
+
+`--functions` lists the decoded extents of unmapped code (see function_extents):
+every function start, its end from recursive descent (branches, switch jump
+tables and byte index tables), and owner extensions of mapped functions.
 
 `--dry-run literals` lists unnamed strings that mapped code references, with
 the name MSVC would give a literal of those bytes. They are not written: the
@@ -35,7 +42,8 @@ bytes cannot tell a pooled literal from a `const char name[]` array.
 Every derivable name is checked against the bytes it names: a ??_C@ name carries
 the literal's length and CRC, a __real@ name its value. Names that already map
 elsewhere are never added again (one linker name, one address). Nothing here
-names a function: unmapped code is only classified (see docs/mapping-status.md).
+names a function: unmapped code is bounded here and identified by tools/codemap.py
+(see docs/mapping-status.md).
 """
 import argparse
 import bisect
@@ -357,6 +365,242 @@ def classify_text(ctx):
     return rows
 
 
+# ---------------------------------------------------------------- function extents
+#
+# The classes above split unmapped .text at filler runs. The extents below are
+# decoded: recursive descent from each entry point, following conditional and
+# unconditional branches, switch jump tables (`jmp [reg*4+table]`) and byte
+# index tables (`movzx reg, byte [reg+table]`) inside the range being bounded.
+# A function ends at the end of the last instruction or table its own flow
+# reaches; filler after it up to the next 16-byte boundary is alignment.
+#
+# Unmapped bytes right after a mapped function that this function's flow
+# reaches (a branch target, a jump or index table it reads, or the instruction
+# after its last mapped one when that is not a ret/jmp and the next byte is not
+# 16-aligned) belong to that function: its mapped size is too short. They are
+# reported as an owner extension and never as a function of their own.
+
+FILLERS = (0xcc, 0x90)
+EXTENT_KINDS = ("owner extension", "function")
+
+
+class Extent(collections.namedtuple("Extent", "start end kind owner reached tables")):
+    """One decoded unmapped extent.
+
+    kind is one of EXTENT_KINDS; owner is the mapped row (address, symbol) an
+    owner extension belongs to, else None; reached counts the bytes covered by
+    decoded instructions and tables (end - start minus internal holes); tables
+    lists the (start, end) of jump and index tables inside the extent.
+    """
+
+
+def _capstone():
+    import capstone  # Optional dependency of the decoder (pinned in the setup like match.py's use).
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    md.detail = True
+    return md, capstone.x86
+
+
+class Flow:
+    """Recursive-descent decoder over the retail .text."""
+
+    def __init__(self, ctx):
+        self.ctx = ctx
+        self.md, self.x86 = _capstone()
+        self._cache = {}
+
+    def instruction(self, va):
+        """(size, mnemonic, kind, targets, table) of the instruction at va, or None.
+
+        kind: 'ret', 'jmp' (unconditional, ends the block), 'jcc', 'call', 'stop'
+        (int3, hlt, undecodable) or ''. targets: direct branch targets. table:
+        ('jump', address) or ('index', address) for a table operand.
+        """
+        if va in self._cache:
+            return self._cache[va]
+        ctx = self.ctx
+        offset = va - ctx.text_start
+        result = None
+        if 0 <= offset < len(ctx.text):
+            for ins in self.md.disasm(ctx.text[offset:offset + 16], va, 1):
+                x86 = self.x86
+                groups, mnemonic = set(ins.groups), ins.mnemonic
+                kind, targets, table = "", (), None
+                if mnemonic in ("int3", "hlt") or ins.bytes == b"\xcc":
+                    kind = "stop"
+                elif x86.X86_GRP_RET in groups or mnemonic in ("ret", "retn", "retf", "iretd"):
+                    kind = "ret"
+                elif x86.X86_GRP_JUMP in groups:
+                    op = ins.operands[0]
+                    if op.type == x86.X86_OP_IMM:
+                        targets = (op.imm & 0xffffffff,)
+                        kind = "jmp" if mnemonic == "jmp" else "jcc"
+                    else:
+                        kind = "jmp"
+                        if op.type == x86.X86_OP_MEM and op.mem.scale == 4 and op.mem.base == 0 and op.mem.disp:
+                            table = ("jump", op.mem.disp & 0xffffffff)
+                elif x86.X86_GRP_CALL in groups:
+                    kind = "call"
+                    op = ins.operands[0]
+                    if op.type == x86.X86_OP_IMM:
+                        targets = (op.imm & 0xffffffff,)
+                elif mnemonic == "movzx" and len(ins.operands) == 2 and ins.operands[1].size == 1:
+                    op = ins.operands[1]
+                    if op.type == x86.X86_OP_MEM and op.mem.disp and op.mem.scale == 1 \
+                            and (op.mem.base == 0) != (op.mem.index == 0):
+                        table = ("index", op.mem.disp & 0xffffffff)
+                result = (ins.size, mnemonic, kind, targets, table)
+            if result is None:
+                result = (1, "(bad)", "stop", (), None)
+        self._cache[va] = result
+        return result
+
+    def descend(self, entries, lo, hi, table_lo=None):
+        """Decode from `entries`, staying inside [lo, hi).
+
+        Returns (instructions {va: size}, tables [(start, end, kind)]). A jump
+        table runs while its dwords point into [table_lo, hi) (table_lo defaults
+        to lo); an index table runs while its bytes index that function's
+        largest jump table and are not filler.
+        """
+        table_lo = lo if table_lo is None else table_lo
+        text = self.ctx.text
+        base = self.ctx.text_start
+        seen, jump_tables, index_tables = {}, {}, set()
+        work = list(entries)
+        while work:
+            va = work.pop()
+            while lo <= va < hi and va not in seen:
+                info = self.instruction(va)
+                size, _, kind, targets, table = info
+                if kind == "stop" or va + size > hi:
+                    break
+                seen[va] = size
+                if table and lo <= table[1] < hi:
+                    if table[0] == "jump" and table[1] not in jump_tables:
+                        count = 0
+                        while table[1] + 4 * (count + 1) <= hi:
+                            value = struct.unpack_from("<I", text, table[1] + 4 * count - base)[0]
+                            if not table_lo <= value < hi:
+                                break
+                            work.append(value)
+                            count += 1
+                        jump_tables[table[1]] = count
+                    elif table[0] == "index":
+                        index_tables.add(table[1])
+                for target in targets:
+                    if kind in ("jcc", "jmp"):
+                        work.append(target)
+                if kind in ("ret", "jmp"):
+                    break
+                va += size
+        tables = [(a, a + 4 * n, "jump") for a, n in jump_tables.items() if n]
+        limit = max(jump_tables.values(), default=0)
+        starts = sorted([a for a, _, _ in tables] + list(seen))
+        for a in sorted(index_tables):
+            if a in seen or not limit:
+                continue
+            nxt = starts[bisect.bisect_right(starts, a)] if bisect.bisect_right(starts, a) < len(starts) else hi
+            end = a
+            while end < min(nxt, hi) and text[end - base] < limit:
+                end += 1
+            if end > a:
+                tables.append((a, end, "index"))
+        return seen, sorted(tables)
+
+
+def _extent_end(seen, tables, start):
+    return max([va + n for va, n in seen.items()] + [b for _, b, _ in tables] + [start])
+
+
+def _reached(seen, tables, lo, hi):
+    covered = merge([(va, va + n) for va, n in seen.items()] + [(a, b) for a, b, _ in tables])
+    return sum(max(0, min(b, hi) - max(a, lo)) for a, b in covered)
+
+
+def _fill_run(ctx, va, hi):
+    """End of the filler run at va (stops at hi)."""
+    while va < hi and ctx.text[va - ctx.text_start] in FILLERS:
+        va += 1
+    return va
+
+
+def library_functions():
+    """Linker names of the archive-member functions config/library-objects.json places."""
+    path = ROOT / "config/library-objects.json"
+    if not path.is_file():
+        return set()
+    return {name for entry in json.loads(path.read_text())["entries"] for name in entry.get("symbols", ())}
+
+
+def owner_extents(ctx, flow=None):
+    """Corrected sizes of mapped functions whose own flow reaches past their mapped end.
+
+    Rows of archive-member functions are left alone: the member's COFF section
+    proves their extent (asm labels of the x87 helpers share code), and bytes
+    after them are another member function. Returns derive() rows.
+    """
+    sizes = {(r["address"], r["symbol"]): r for r in ctx.records if r["address"] and r["size"]}
+    library = library_functions()
+    out = []
+    for extent in function_extents(ctx, flow):
+        if extent.kind != EXTENT_KINDS[0] or extent.owner[1] in library or "#" in extent.owner[1]:
+            continue
+        address, symbol = extent.owner
+        row = sizes[(address, symbol)]
+        out.append((address, symbol, extent.end - address, row["ctype"], True))
+    return out
+
+
+def function_extents(ctx, flow=None):
+    """Decoded extents of every unmapped .text byte that is not alignment fill.
+
+    Deterministic: gaps are visited in address order; inside a gap the first
+    candidate is an extension of the mapped function ending at the gap, then
+    each new function starts at the next non-filler byte after the previous
+    extent and ends where its own flow ends.
+    """
+    flow = flow or Flow(ctx)
+    ends = collections.defaultdict(list)
+    for r in ctx.records:
+        if r["address"] and r["size"] and ctx.text_start <= r["address"] < ctx.text_start + len(ctx.text):
+            ends[r["address"] + r["size"]].append((r["address"], r["symbol"]))
+    result = []
+    for a, b in ctx.gaps(".text"):
+        if all(byte in FILLERS for byte in ctx.read(a, b - a)):
+            continue
+        cursor = a
+        owners = sorted(ends.get(a, ()))
+        if owners:
+            owner_start, owner_symbol = owners[0]
+            seen, tables = flow.descend([owner_start], owner_start, b)
+            inside = {va: n for va, n in seen.items() if va >= a}
+            gap_tables = [t for t in tables if t[0] >= a]
+            last = max((va for va in seen if va < a), default=None)
+            reached_by_branch = any(a <= target < b for va in seen if va < a
+                                    for target in flow.instruction(va)[3]
+                                    if flow.instruction(va)[2] in ("jcc", "jmp")) or gap_tables
+            fallthrough = last is not None and last + seen[last] == a and flow.instruction(last)[2] not in ("ret", "jmp")
+            if (inside or gap_tables) and (reached_by_branch or (fallthrough and a % PADDING_ALIGNMENT)):
+                end = _extent_end(inside, gap_tables, a)
+                result.append(Extent(a, end, EXTENT_KINDS[0], (owner_start, owner_symbol),
+                                     _reached(inside, gap_tables, a, end), tuple((x, y) for x, y, _ in gap_tables)))
+                cursor = end
+        while True:
+            cursor = _fill_run(ctx, cursor, b)
+            if cursor >= b:
+                break
+            seen, tables = flow.descend([cursor], cursor, b)
+            end = _extent_end(seen, tables, cursor)
+            if end <= cursor:
+                end = cursor + flow.instruction(cursor)[0]
+                end = min(end, b)
+            result.append(Extent(cursor, end, EXTENT_KINDS[1], None, _reached(seen, tables, cursor, end),
+                                 tuple((x, y) for x, y, _ in tables)))
+            cursor = end
+    return result
+
+
 DATA_CLASSES = (
     "PE structure (import/debug/load config)",
     "named string literal, size in its name",
@@ -564,7 +808,7 @@ def section_totals(ctx):
 
 # ---------------------------------------------------------------- derivations
 
-WRITE_KINDS = ("literal-sizes", "real-sizes", "pe", "library-data", "eh-sizes")
+WRITE_KINDS = ("literal-sizes", "real-sizes", "pe", "library-data", "eh-sizes", "owner-extents")
 
 
 def derive(ctx, kind, library=None):
@@ -605,6 +849,8 @@ def derive(ctx, kind, library=None):
         return out
     if kind == "library-data":
         return derive_library_data(ctx, by_name)
+    if kind == "owner-extents":
+        return owner_extents(ctx)
     if kind in ("literals", "reals"):
         classified = {name: classify_data(ctx, name, library) for name in (".rdata", ".data")}
         wanted = DATA_CLASSES[6] if kind == "literals" else DATA_CLASSES[8]
@@ -890,12 +1136,16 @@ def verify(ctx):
                 or r["symbol"] in ("__NULL_IMPORT_DESCRIPTOR", "___safe_se_handler_table", "__load_config_used"):
             if structures.get((r["address"], r["symbol"])) != r["size"]:
                 errors.append(f"{r['symbol']} at {r['address']:#x}: not this PE structure")
+    for address, symbol, size, _, _ in owner_extents(ctx):
+        errors.append(f"{symbol} at {address:#x}: its own control flow reaches {size} bytes "
+                      "(python3 tools/unmapped.py --write owner-extents)")
     return errors
 
 
 # ---------------------------------------------------------------- symbols.csv edits
 
-def write_rows(rows):
+def write_rows(rows, resize=False):
+    """Add rows and fill blank sizes; with `resize`, also replace the size of existing rows."""
     path = ROOT / project()["symbols"]
     lines = path.read_text().splitlines()
     header, body = lines[0], lines[1:]
@@ -906,7 +1156,7 @@ def write_rows(rows):
             continue
         key = (int(row[0], 16), row[1].strip())
         if key in sizes:
-            if not row[2].strip():
+            if not row[2].strip() or (resize and row[2].strip() != str(sizes[key][0])):
                 row[2] = str(sizes[key][0])
                 out = io.StringIO()
                 csv.writer(out, lineterminator="").writerow(row)
@@ -1002,6 +1252,8 @@ def main():
     mode.add_argument("--markdown", action="store_true")
     mode.add_argument("--worklist", action="store_true", help="unmapped code/data bytes per original compiland")
     mode.add_argument("--list", metavar="CLASS")
+    mode.add_argument("--functions", action="store_true",
+                      help="decoded extents of unmapped code: start, size, kind, owner or first bytes")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--write", choices=WRITE_KINDS, help="add the provable rows of one kind to symbols.csv")
     mode.add_argument("--dry-run", choices=WRITE_KINDS + ("literals",), help="list the rows --write would add")
@@ -1016,6 +1268,13 @@ def main():
             return 1
         print("All derivable map rows (string literals, constants, PE structures) agree with retail.")
         return 0
+    if args.functions:
+        for e in function_extents(ctx):
+            what = e.owner[1] if e.owner else ctx.read(e.start, min(8, e.end - e.start)).hex()
+            holes = e.end - e.start - e.reached
+            print(f"{e.start:#010x} {e.end - e.start:>6} {e.kind:<16} {what}"
+                  + (f"  tables {len(e.tables)}" if e.tables else "") + (f"  unreached {holes}" if holes else ""))
+        return 0
     kind = args.write or args.dry_run
     if kind:
         rows = derive(ctx, kind, library_symbols())
@@ -1023,7 +1282,7 @@ def main():
         print(f"{kind}: {len(rows)} rows, {total} bytes "
               f"({sum(1 for r in rows if r[4])} complete existing rows)")
         if args.write and rows:
-            write_rows(rows)
+            write_rows(rows, resize=kind == "owner-extents")
         elif rows:
             for row in rows[:20]:
                 print(f"  {row[0]:#x} {row[1]} {row[2]}")

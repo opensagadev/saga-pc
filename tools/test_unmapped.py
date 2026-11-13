@@ -113,6 +113,47 @@ class TextClassTests(unittest.TestCase):
         self.assertEqual(classes.count(unmapped.TEXT_CLASSES[7]), 2)
 
 
+class FunctionExtentTests(unittest.TestCase):
+    def extents(self, text, mapped, records=()):
+        ctx = FakeContext(text, mapped, records=records)
+        return [(e.start, e.end, e.kind, e.owner, e.tables) for e in unmapped.function_extents(ctx)]
+
+    def test_two_functions_without_fill_between_them(self):
+        # test eax, eax; je +1; ret; ret | xor eax, eax; ret
+        text = b"\xc3" + b"\xcc" * 15 + b"\x85\xc0\x74\x01\xc3\xc3" + b"\x33\xc0\xc3" + b"\xcc" * 7 + b"\xc3" * 16
+        self.assertEqual(self.extents(text, [(0x1000, 0x1001), (0x1020, 0x1030)]), [
+            (0x1010, 0x1016, "function", None, ()), (0x1016, 0x1019, "function", None, ())])
+
+    def test_switch_table_belongs_to_its_function(self):
+        # jmp [eax*4 + 0x1018]; ret; dd 0x1017, 0x1017
+        body = b"\xff\x24\x85\x18\x10\x00\x00\xc3" + b"\x17\x10\x00\x00" * 2
+        text = b"\xc3" + b"\xcc" * 15 + body + b"\xcc" * 16 + b"\xc3" * 16
+        self.assertEqual(self.extents(text, [(0x1000, 0x1001), (0x1030, 0x1040)]), [
+            (0x1010, 0x1020, "function", None, ((0x1018, 0x1020),))])
+
+    def test_index_table_runs_while_it_indexes_the_jump_table(self):
+        # movzx eax, byte [eax + 0x1028]; jmp [eax*4 + 0x1020]; ret; ret | dd 0x101e, 0x101f | db 0, 1, 1
+        body = b"\x0f\xb6\x80\x28\x10\x00\x00" + b"\xff\x24\x85\x20\x10\x00\x00" + b"\xc3\xc3" \
+            + b"\x1e\x10\x00\x00\x1f\x10\x00\x00" + b"\x00\x01\x01"
+        text = b"\xc3" + b"\xcc" * 15 + body + b"\xcc" * 5 + b"\xc3" * 16
+        extents = self.extents(text, [(0x1000, 0x1001), (0x1030, 0x1040)])
+        self.assertEqual(extents, [(0x1010, 0x102b, "function", None, ((0x1020, 0x1028), (0x1028, 0x102b)))])
+
+    def test_code_reached_by_the_preceding_mapped_function_extends_it(self):
+        # mapped: test eax, eax; jne +1 | unmapped: ret; ret (branch target)
+        text = b"\x85\xc0\x75\x01\xc3\xc3" + b"\xcc" * 10 + b"\xc3" * 16
+        records = [{"address": 0x1000, "size": 4, "symbol": "_f", "ctype": ""}]
+        self.assertEqual(self.extents(text, [(0x1000, 0x1004), (0x1010, 0x1020)], records), [
+            (0x1004, 0x1006, "owner extension", (0x1000, "_f"), ())])
+
+    def test_aligned_fallthrough_alone_is_not_an_extension(self):
+        # mapped: call rel32 (may not return), 16 bytes; unmapped aligned function after it
+        text = b"\x90" * 11 + b"\xe8\x00\x00\x00\x00" + b"\x33\xc0\xc3" + b"\xcc" * 13 + b"\xc3" * 16
+        records = [{"address": 0x1000, "size": 16, "symbol": "_f", "ctype": ""}]
+        self.assertEqual(self.extents(text, [(0x1000, 0x1010), (0x1020, 0x1030)], records), [
+            (0x1010, 0x1013, "function", None, ())])
+
+
 class MapSizeTests(unittest.TestCase):
     target = {"image_base": "0x400000", "image_size": "0x1000000", "text_va": "0x401000", "text_size": "0x1000"}
 

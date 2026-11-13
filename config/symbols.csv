@@ -104,7 +104,7 @@ address,symbol,size,ctype
 0x409980,_DrawCables,2326,void __cdecl(void)
 0x40a2a0,_CableTargetGameObject,517,"GAMEOBJECT *__cdecl(GAMEOBJECT*,NUVEC*,f32)"
 0x40a520,@PCDeviceBackend_GetActiveAspectPc@4,64,f32 __fastcall (PC_DEVICE_BACKEND_PC *)
-0x40a570,_PlayerCamPos,1080,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
+0x40a570,_PlayerCamPos,1162,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *)"
 0x40aa00,_ViewCamSetActive,79,"void __cdecl (i32, GAMEPAD_PC *)"
 0x40aa50,_ViewCamGetMode,6,i32 __cdecl (void)
 0x0040aa60,_ViewCamGetGamePad,6,GAMEPAD_PC *__cdecl (void)
@@ -263,7 +263,7 @@ address,symbol,size,ctype
 0x421320,_PcControlRegisterPc,210,
 0x00421410,_PlayerDevicePortPc,20,i32 __cdecl (i32)
 0x421430,?RefreshItems@PC_CONTROL_SCREEN_PC@@QAEXXZ,746,
-0x421720,?Update@PC_CONTROL_SCREEN_PC@@QAEHPAUFRAME_PAD_PC@@0M@Z,3056,
+0x421720,?Update@PC_CONTROL_SCREEN_PC@@QAEHPAUFRAME_PAD_PC@@0M@Z,3100,
 0x422340,?DrawTextA@PC_CONTROL_SCREEN_PC@@QAEMPADMMMHMMIHM@Z,393,
 0x4224d0,?DrawQueuedText@PC_CONTROL_SCREEN_PC@@QAEXM@Z,608,
 0x422730,?Draw@PC_CONTROL_SCREEN_PC@@QAEXXZ,3404,
@@ -1034,7 +1034,7 @@ address,symbol,size,ctype
 0x460280,_RedBrick_LSW_Draw,598,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x004604e0,_Coins_LSW_Skip,79,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460530,_Coins_LSW_Update,452,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
-0x00460700,_Coins_LSW_Draw,1243,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
+0x00460700,_Coins_LSW_Draw,1260,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x00460bf0,_GoldBrick_LSW_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00460c10,_GoldBrick_LSW_Update,824,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x460f50,_GoldBrick_LSW_Draw,883,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
@@ -1746,7 +1746,7 @@ address,symbol,size,ctype
 0x49f800,_LightSabre_ColourFromObj,69,
 0x49f850,_LightSabreDebris,512,void __cdecl(GAMEOBJECT*)
 0x0049fa50,_LightSabreStreakCode,3747,"void (GAMEOBJECT *, i32, i32) [private EDI object; two stack arguments]"
-0x004a0900,_AfterAnimationSabreCode,635,"void (GAMEOBJECT *, i32) [private EAX object; one stack argument]"
+0x004a0900,_AfterAnimationSabreCode,692,"void (GAMEOBJECT *, i32) [private EAX object; one stack argument]"
 0x4a0bc0,_JediLightCode,1249,
 0x4a10c0,_LightSabreComboCode,2991,
 0x4a1c70,_SwipeCode,724,
@@ -2940,7 +2940,7 @@ address,symbol,size,ctype
 0x004f8e90,_NuStringTableGetByName,123,u16 *__cdecl (char *)
 0x004f8f10,_NuStrFixExtPlatform,419,"void __cdecl (char *, char *, char *, i32, char *)"
 0x004f90c0,_NuStrFixExt,45,"void __cdecl (char *, char *, char *, i32)"
-0x4f90f0,_NuTimeWait,255,void __cdecl (f32)
+0x4f90f0,_NuTimeWait,256,void __cdecl (f32)
 0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
 0x4f9570,_ImplodeReadOffsetLengthsPrivatePc,319,
@@ -3815,7 +3815,7 @@ address,symbol,size,ctype
 0x52c6d0,_AIScriptLoadAll,190,"void __cdecl(char *, VARIPTR *, VARIPTR *, AISYS_PC *)"
 0x0052c790,_AIScriptSetBaseScriptStateByName,103,"i32 __cdecl (AISCRIPTPROCESS_PC *, char *)"
 0x0052c800,_AIScriptFillRemainingComplexOperands,114,
-0x0052c880,_AIScriptProcessStateConditions,587,
+0x0052c880,_AIScriptProcessStateConditions,612,
 0x0052caf0,_AIScriptProcessReferences,401,
 0x0052cc90,_AIScriptProcess,989,"void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, f32)"
 0x52d070,_Condition_LocatorRangeInit,26,"void *__cdecl(AISYS_PC *,char *,AISCRIPT_PC *)"
@@ -4718,7 +4718,7 @@ address,symbol,size,ctype
 0x567190,_GizmoSortBlowups,302,void __cdecl (WORLDINFO *)
 0x5672c0,_BlowupObjEmit_Stop,1,void __cdecl (PART_PC *)
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
-0x00567800,_GizmoBlowupBlowup,1385,"i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
+0x00567800,_GizmoBlowupBlowup,1440,"i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
 0x568010,_GizmoBlowupEarlyUpdate,1122,"void __cdecl (void *, void *, f32)"
 0x568480,_PlayAnim,106,"void __cdecl (NUINSTANIM *, f32 *, f32, i32)"
@@ -5693,7 +5693,7 @@ address,symbol,size,ctype
 0x0059d9d0,_LoopCountLoopingInputsEx,96,"i32 __cdecl(FLOWBOX_PC *, FLOWBOX_PC *, i32, u8)"
 0x0059da30,_LoopCountLoopingInputs,48,
 0x0059da60,_ResetForLoopEx,153,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, FLOWBOX_PC *, u8)"
-0x0059db00,_ProcessConditionFlowBox,692,"i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
+0x0059db00,_ProcessConditionFlowBox,716,"i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
 0x0059ddd0,_CheckOutputConditionFlowBox,104,"i32 __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, u8)"
 0x0059de40,_CheckIfParentsFinished,291,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *)"
 0x0059df70,_FlowBoxActivationFeedback,191,
@@ -6529,7 +6529,7 @@ address,symbol,size,ctype
 0x005c9140,_buildBitCountTable,118,void __cdecl (void)
 0x5c91c0,_NuAnimCurveCalcVal2,364,"f32 __cdecl (NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *)"
 0x5c9330,_NuAnimCurveSetApplyToMatrix,482,"void __cdecl (NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *)"
-0x005c9520,_NuAnimCurve2CalcValEx,1373,
+0x005c9520,_NuAnimCurve2CalcValEx,1420,
 0x005c9ab0,_NuAnimGetAnimDataSizeANI3,49,u32 __cdecl (ANI3_HEADER_PC *)
 0x5c9af0,_NuAnimRelocatePtrsANI3,97,"void __cdecl (ANI3_HEADER_PC *, i32)"
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
@@ -6564,7 +6564,7 @@ address,symbol,size,ctype
 0x005ccd60,_ANI_SimpleAni3PlayerV4Joint_Blend_Quat3W,1952,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
 0x005cd500,_ANI_SimpleAni3PlayerV4Joint_Blend_EulerQuat,2125,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
 0x005cdd50,_ANI_SimpleAni3PlayerV4Joint_Blend,1521,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, f32, i32, i32, NUVEC *)"
-0x005ce350,_ANI_Ani3ExtractAllNodeCurves,1122,"void __cdecl (ANI3_HEADER_PC *, f32, f32 *, i32, char *)"
+0x005ce350,_ANI_Ani3ExtractAllNodeCurves,1164,"void __cdecl (ANI3_HEADER_PC *, f32, f32 *, i32, char *)"
 0x005ce7e0,_NuAnimCurveExtractAllNodeCurves_3,59,"f32 *__cdecl (ANI3_HEADER_PC *, i32, f32, char *)"
 0x5ce820,_NuAnimCurveSetApplyBlendToJoint2,1722,"void __cdecl (NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, f32, NUHGOBJ_EVAL_JOINT_PC *, NUVEC *, NUVEC *, NUMTX *, NUHGOBJ_JOINT_OVERRIDE_PC *)"
 0x005ceee0,_PCBuildLegacySkeletalJoint,1400,
@@ -7124,7 +7124,7 @@ address,symbol,size,ctype
 0x5efbf0,_NuDisplayListCreateDynMtlList_candidate,1012,"void __cdecl(VARIPTR *,VARIPTR)"
 0x005efff0,_NuDisplayListAddRenderScene,746,i32 (void)
 0x005f02e0,_NuDisplayListDrawRenderScene_candidate,210,void __cdecl(i32)
-0x005f03c0,_NuDisplayListDrawRenderScenes_candidate,171,void __cdecl (void)
+0x005f03c0,_NuDisplayListDrawRenderScenes_candidate,172,void __cdecl (void)
 0x5f0470,_NuDisplaySceneClone,1612,"NUDISPLAY_LIST_PC *__cdecl(NUDISPLAY_LIST_PC *,VARIPTR *)"
 0x5f0ac0,_DisplayClipMaterialsPC,688,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5f0d70,_NuDisplayListSwapBuffersEndFrame,392,void __cdecl(void)
@@ -7280,7 +7280,7 @@ address,symbol,size,ctype
 0x5faaf0,_NuQFntAtlasReadPSPc,349,"i32 __cdecl (VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR)"
 0x5fac50,_NuQFntMapComparePc,34,"int __cdecl (const void *, const void *)"
 0x5fac80,_NuQFntCreateFromBmpPc,1998,"VUFNT *__cdecl (const char *, i32, i32, i32, u16 *, i32, i32, VARIPTR *, VARIPTR)"
-0x5fb450,_PCGraphicsResizePostEffectTexturesPc,214,"void __cdecl (u32, u32)"
+0x5fb450,_PCGraphicsResizePostEffectTexturesPc,215,"void __cdecl (u32, u32)"
 0x5fb530,_PCGraphicsDestroyPostEffectTexturesPc,18,void __cdecl (void)
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
 0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
@@ -10881,7 +10881,7 @@ address,symbol,size,ctype
 0x6c44c0,?CreateEditorList@LevelEditor@@QAEXPAUeduimenu_s@@PAUeduiitem_s@@@Z,159,
 0x6c4560,?Enter@LevelEditor@@QAEXXZ,71,
 0x6c45b0,?Exit@LevelEditor@@QAEXXZ,77,
-0x6c4600,?SelectAxis@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@11PAUVuMtx@@@Z,908,
+0x6c4600,?SelectAxis@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@11PAUVuMtx@@@Z,936,
 0x6c49b0,?DrawAxis@EdManipulator@@QAEXAAUVuVec@@PAUVuMtx@@@Z,2004,
 0x6c5190,?SelectRotator@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@1@Z,1483,
 0x6c5760,??_EPlaceableNameControl@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableNameControl@@UAEPAXI@Z; no independent body
@@ -11066,7 +11066,7 @@ address,symbol,size,ctype
 0x6cc020,?RotateItem@EdManRotate@@QAEHAAUEdInputContext@@AAUClassObjectList@@HH@Z,472,
 0x6cc200,?Process@EdManRotate@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,278,
 0x6cc320,?Render@EdManRotate@@UAEXAAUClassObjectList@@@Z,64,
-0x6cc360,?Process@EdManScale@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,1657,
+0x6cc360,?Process@EdManScale@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,1688,
 0x6cca00,?Render@EdManScale@@UAEXAAUClassObjectList@@@Z,95,
 0x6cca60,?Initialise@PlaceableHelper@@QAEXXZ,493,
 0x6ccc50,?GetMemberData@EdRefPlaceable@@UAEXPAXH0H@Z,268,
@@ -11256,7 +11256,7 @@ address,symbol,size,ctype
 0x6d7350,?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z,188,"u8 __thiscall(i32,i32)"
 0x6d7430,?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
-0x6d7960,?PollKeyboardPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,35,i32 __thiscall(void)
+0x6d7960,?PollKeyboardPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,42,i32 __thiscall(void)
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
 0x6d7d80,?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z,1360,"i32 __thiscall(i32,PC_INPUT_SAMPLE_PC*,i32,PC_INPUT_RAW_SAMPLE_PC*,PC_INPUT_MOUSE_RUNTIME_PC*,u8**)"
 0x6d8370,?CombineUiButtonsPc@PC_INPUT_RUNTIME_PC@@QAEIHI@Z,285,"u32 __thiscall(i32,u32)"
@@ -11707,7 +11707,7 @@ address,symbol,size,ctype
 0x6e74ac,_V6_HeapAlloc,79,
 0x6e74fb,__heap_alloc,117,
 0x006e7570,_malloc,195,void *__cdecl (size_t)
-0x006e7633,_free,133,void __cdecl (void *)
+0x006e7633,_free,142,void __cdecl (void *)
 0x6e76c1,_realloc,539,"void *__cdecl (void *, size_t); supplied pinned static CRT"
 0x6e78dc,__recalloc,121,
 0x6e7955,_printf,281,
