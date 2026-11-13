@@ -16435,7 +16435,6 @@ i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     char *value;
     f32 distance_squared;
     f32 range;
-    f32 remaining_time;
 
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL || (packet->owner->flags_1f8 & 0x400) == 0 ||
@@ -16475,7 +16474,7 @@ i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
             }
         }
         if (processor->action_timer == 0.0f) {
-            if (min_time < max_time) {
+            if (max_time > min_time) {
                 processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
             } else {
                 processor->action_timer = 0.01f;
@@ -16496,15 +16495,14 @@ i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     range = packet->movement_instruction_parameter + ai_moveradius;
     range = elapsed * packet->owner->horizontal_velocity_magnitude + range;
     if (distance_squared < range * range) {
-        remaining_time = processor->action_timer;
         packet->movement_look_target = &processor->action_pos;
-        if (!(remaining_time > 0.0f)) {
+        if (processor->action_timer > 0.0f) {
+            processor->action_timer -= elapsed;
+            if (processor->action_timer < 0.0f) {
+                processor->action_timer = 0.0f;
+            }
+        } else {
             return 1;
-        }
-        remaining_time -= elapsed;
-        processor->action_timer = remaining_time;
-        if (remaining_time < 0.0f) {
-            processor->action_timer = 0.0f;
         }
     }
     return 0;
