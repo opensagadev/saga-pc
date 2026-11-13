@@ -8321,11 +8321,14 @@ extern "C" {
                     if (material != NULL && enabled != 0) {
                         if (PCDeviceHardwareVertexProcessingPC != 1) {
                             enabled = material->blend_operation[0] != 0xff;
-                        } else if (material->blend_operation[0] != 0xff && (i32)material->blend_operation[0] +
-                                                                                   material->blend_operation[1] +
-                                                                                   material->blend_operation[2] !=
-                                                                               0) {
-                            list->mtl_item->id = 1;
+                        } else {
+                            if (material->blend_operation[0] == 0xff || (i32)material->blend_operation[0] +
+                                                                                material->blend_operation[1] +
+                                                                                material->blend_operation[2] ==
+                                                                            0)
+                                list->mtl_item->id = 0;
+                            else
+                                list->mtl_item->id = 1;
                             goto next;
                         }
                     }
@@ -14788,7 +14791,6 @@ extern "C" {
         for (i = 0; (i32)i < object->joint_count; ++i) {
             NUMTX *output = &matrices[i];
             NUHGOBJ_JOINT_OVERRIDE_PC *override_anim;
-            NUHGOBJ_EVAL_JOINT_PC *joint;
             DWA_CURVE_CELL_PC *curves;
             i8 *types;
             i32 flags;
@@ -14801,19 +14803,18 @@ extern "C" {
             types = &legacy->prefix.curve_types[i * legacy->prefix.curve_count];
             flags = legacy->node_flags[i];
             if (i == 0) {
-                joint = &object->joints[0];
-                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[0],
-                                           &scales[joint->parent_index], &local_matrix, override_anim, &translation,
-                                           &locator_translation);
+                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, &object->joints[i], &scales[i],
+                                           &scales[object->joints[i].parent_index], &local_matrix, override_anim,
+                                           &translation, &locator_translation);
                 if (root_fn != NULL)
                     root_fn(&local_matrix, root_data, &translation, NULL, &locator_translation, 0.0f);
             } else {
-                joint = &object->joints[i];
-                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[i],
-                                           &scales[joint->parent_index], &local_matrix, override_anim, NULL, NULL);
+                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, &object->joints[i], &scales[i],
+                                           &scales[object->joints[i].parent_index], &local_matrix, override_anim, NULL,
+                                           NULL);
             }
-            joint = &object->joints[i];
-            if (joint->parent_index == 255) {
+            u8 parent = object->joints[i].parent_index;
+            if (parent == 255) {
                 if (flags & 0x40) {
                     scales[i].x = 1.0f;
                     scales[i].y = 1.0f;
@@ -14821,7 +14822,7 @@ extern "C" {
                 }
                 *output = local_matrix;
             } else {
-                NuMtxMulVU0(output, &local_matrix, &matrices[joint->parent_index]);
+                NuMtxMulVU0(output, &local_matrix, &matrices[parent]);
             }
         }
     }
