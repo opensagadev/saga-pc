@@ -445,7 +445,7 @@ void NuKeyboardOwner_PC::Shutdown() {
             device = NULL;
         }
     }
-    for (i32 index = 10; index < 14; ++index)
+    for (u16 index = 10; index < 14; ++index)
         devices[index].device = NULL;
     for (i32 index = 4; index < 14; ++index) {
         if (devices[index].device != NULL) {
