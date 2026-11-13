@@ -497,10 +497,10 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     }
     if (object->character_context == 0x2a) {
         phase = object->context_timer / TURNTIME;
-        if (object->movement_facing_angle > 0x8000)
-            target.x = (1.0f - phase) * -TrenchLaneOffsetPc + phase * TrenchLaneOffsetPc;
-        else
+        if (object->movement_facing_angle <= 0x8000)
             target.x = (1.0f - phase) * TrenchLaneOffsetPc + phase * -TrenchLaneOffsetPc;
+        else
+            target.x = (1.0f - phase) * -TrenchLaneOffsetPc + phase * TrenchLaneOffsetPc;
         target.x = trenchrun.position.x + target.x;
     } else if (object->movement_facing_angle > 0x8000) {
         target.x = trenchrun.position.x + TrenchLaneOffsetPc;
