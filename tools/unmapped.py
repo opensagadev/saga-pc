@@ -603,34 +603,67 @@ def derive(ctx, kind, library=None):
     raise ValueError(f"Unknown kind {kind!r}")
 
 
+# Pinned archives whose members' data the map may place.
+CONTENT_ARCHIVES = ("libcmt.lib", "libcpmt.lib", "dxsdk/DxErr9.lib", "dxsdk/dxguid.lib", "dxsdk/dinput8.lib",
+                    "dxsdk/dsound.lib", "dxsdk/d3d9.lib", "dxsdk/d3dx9.lib", "dxsdk/XInput.lib")
+MIN_CONTENT = 16
+_ARCHIVE_OBJECTS = None
+
+
+def archive_objects():
+    """[(archive, index, prepared COFF, defined symbols)] of every object member of CONTENT_ARCHIVES."""
+    global _ARCHIVE_OBJECTS
+    if _ARCHIVE_OBJECTS is None:
+        _ARCHIVE_OBJECTS = []
+        for archive in CONTENT_ARCHIVES:
+            try:
+                members = list(archive_members(archive_path(archive)))
+            except (OSError, ValueError):
+                continue
+            for index, _, body in members:
+                if body[:4] == b"\0\0\xff\xff":
+                    continue  # short import record
+                try:
+                    obj = prepare_member(COFF(library_member_path(archive, index, body)), archive, index)
+                    _ARCHIVE_OBJECTS.append((archive, index, obj, obj.defined_symbols()))
+                except (BinaryError, OSError, ValueError):
+                    continue
+    return _ARCHIVE_OBJECTS
+
+
+def _data_sections(obj):
+    for number, section in enumerate(obj.sections, 1):
+        flags = section["characteristics"]
+        bss = bool(flags & 0x80)
+        if flags & 0x20 or not flags & 0xc0 or not section["raw_size"] \
+                or bool(section["raw_offset"]) == bss or section["name"].startswith((".debug", ".drectve")):
+            continue
+        yield number, section, bss
+
+
 def library_layout(ctx):
-    """Place whole data sections of linked archive members from one mapped symbol.
+    """Place whole data sections of pinned archive members from one mapped symbol.
 
     The linker contributes a section whole, so a symbol the map already binds
     (libmatch derives those from relocations of byte-exact library code) fixes
-    the address of every other symbol of its section. Initialized sections must
-    then equal retail byte for byte (relocation fields: bound targets compared,
+    the address of every other symbol of its section. The anchoring name must
+    belong to a member recorded in config/library-objects.json or be defined by
+    no other member of the pinned archives. Initialized sections must then
+    equal retail byte for byte (relocation fields: bound targets compared,
     others masked); an uninitialized section must lie in retail zero bytes.
     Each symbol extends to the next symbol of its section or the section end.
     Returns {(address, linker name): extent}.
     """
     bindings = bindings_for(ctx.records)
+    linked = {(e["archive"], e["index"]) for e in library_entries()}
+    objects = archive_objects()
+    definers = collections.Counter(s["name"] for _, _, _, symbols in objects for s in symbols)
     layout = {}
-    for entry in library_entries():
-        try:
-            obj = prepare_member(COFF(library_member_path(entry["archive"], entry["index"])),
-                                 entry["archive"], entry["index"])
-        except (BinaryError, OSError, ValueError):
-            continue
-        symbols = obj.defined_symbols()
-        for number, section in enumerate(obj.sections, 1):
-            flags = section["characteristics"]
-            bss = bool(flags & 0x80)
-            if flags & 0x20 or not flags & 0xc0 or not section["raw_size"] \
-                    or bool(section["raw_offset"]) == bss or section["name"].startswith((".debug", ".drectve")):
-                continue
+    for archive, index, obj, symbols in objects:
+        for number, section, bss in _data_sections(obj):
             members = sorted((s for s in symbols if s["section"] == number), key=lambda s: s["value"])
-            anchors = {bindings[s["name"]] - s["value"] for s in members if s["name"] in bindings}
+            anchors = {bindings[s["name"]] - s["value"] for s in members if s["name"] in bindings
+                       and ((archive, index) in linked or definers[s["name"]] == 1)}
             if len(anchors) != 1:
                 continue
             base = anchors.pop()
@@ -653,12 +686,6 @@ def library_layout(ctx):
     return layout
 
 
-# Pinned archives whose data members may be linked without a mapped anchor.
-CONTENT_ARCHIVES = ("libcmt.lib", "libcpmt.lib", "dxsdk/DxErr9.lib", "dxsdk/dxguid.lib", "dxsdk/dinput8.lib",
-                    "dxsdk/dsound.lib", "dxsdk/d3d9.lib", "dxsdk/d3dx9.lib", "dxsdk/XInput.lib")
-MIN_CONTENT = 16
-
-
 def library_content_layout(ctx):
     """Place relocation-free archive data sections by their unique bytes in retail.
 
@@ -673,30 +700,15 @@ def library_content_layout(ctx):
         start, _, file_end = ctx.sections[name]
         blobs.append((start, ctx.read(start, file_end - start)))
     offers = collections.defaultdict(set)
-    for archive in CONTENT_ARCHIVES:
-        try:
-            members = list(archive_members(archive_path(archive)))
-        except (OSError, ValueError):
-            continue
-        for index, _, body in members:
-            if body[:4] == b"\0\0\xff\xff":
-                continue  # short import record
-            try:
-                obj = prepare_member(COFF(library_member_path(archive, index, body)), archive, index)
-                symbols = obj.defined_symbols()
-            except (BinaryError, OSError, ValueError):
+    for _, _, obj, symbols in archive_objects():
+        for number, section, bss in _data_sections(obj):
+            if bss or section["raw_size"] < MIN_CONTENT or section["relocation_count"]:
                 continue
-            for number, section in enumerate(obj.sections, 1):
-                flags = section["characteristics"]
-                if flags & 0xa0 or not flags & 0x40 or section["raw_size"] < MIN_CONTENT \
-                        or not section["raw_offset"] or section["relocation_count"] \
-                        or section["name"].startswith((".debug", ".drectve")):
-                    continue
-                data = COFF_section_bytes(obj, section)
-                names = tuple(sorted((s["value"], s["name"]) for s in symbols if s["section"] == number))
-                if any(data) and names:
-                    alignment = 1 << max(0, ((flags >> 20) & 0xf) - 1)
-                    offers[data].add((names, alignment, len(data)))
+            data = COFF_section_bytes(obj, section)
+            names = tuple(sorted((s["value"], s["name"]) for s in symbols if s["section"] == number))
+            if any(data) and names:
+                alignment = 1 << max(0, ((section["characteristics"] >> 20) & 0xf) - 1)
+                offers[data].add((names, alignment, len(data)))
     layout = {}
     for data, choices in offers.items():
         if len({names for names, _, _ in choices}) != 1:
