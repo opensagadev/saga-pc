@@ -42,7 +42,7 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
     const f32 first_x = (f32)(x - (columns - 1) * dx * .5);
     for (i32 row = 0; row < rows; ++row) {
         f32 px = first_x;
-        for (i32 col = 0; col < columns; ++col) {
+        for (i32 col = 0; col < columns; ++col, px += dx) {
             const i32 index = row * columns + col;
             if (index < count) {
                 COLLECTID_PC *entry = &collection->list[index];
@@ -54,10 +54,8 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                     f32 opacity = 1.0f;
                     i32 model_index;
                     if (models != NULL && InModelList(models, id, &model_index) != 0) {
-                        if (hide_selected != 0) {
-                            px += dx;
+                        if (hide_selected != 0)
                             continue;
-                        }
                         if (model_index == 0) {
                             frame = LEGOOBJ_ICON_FRAME_BLUE;
                             opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
@@ -106,7 +104,6 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                     }
                 }
             }
-            px += dx;
         }
         py += dy;
     }
