@@ -8501,6 +8501,13 @@ address,symbol,size,ctype
 0x633e40,_RtlDirectionStatePc,183,
 0x633f00,_RtlAmbientStatePc,36,static void (NUVEC *)
 0x633f30,_RtlSpecularStatePc,129,"static void (const NUVEC *, const NUVEC4 *)"
+0x633fc0,?RtlVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,"static void (VuVec &, const VuVec &)"
+0x634000,?RtlVuVecAdd@@YA?AUVuVec@@ABU1@0@Z,29,"static VuVec (const VuVec &, const VuVec &)"
+0x634020,?RtlVuVecSub@@YA?AUVuVec@@ABU1@0@Z,29,"static VuVec (const VuVec &, const VuVec &)"
+0x634040,?RtlVuVecScale@@YA?AUVuVec@@ABU1@M@Z,29,"static VuVec (const VuVec &, f32)"
+0x634060,?RtlVuVecNormalise@@YAXAAUVuVec@@0@Z,18,"static void (VuVec &, VuVec &)"
+0x634080,?RtlVuVecLengthSq@@YAMABUVuVec@@@Z,33,static f32 (const VuVec &)
+0x6340b0,?RtlVuVecLength@@YAMABUVuVec@@@Z,46,static f32 (const VuVec &)
 0x6340e0,?RtlHelperCopyMtx@@YAXPAUnumtx_s@@PBU1@@Z,95,
 0x634170,?Length@VuVec@@QAEMXZ,46,
 0x6341e0,??0EdClassInterface@@QAE@XZ,16,
