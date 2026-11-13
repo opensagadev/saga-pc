@@ -2523,8 +2523,10 @@ extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char 
         NuStrCpy(first, TextInputActionLabelPc(device0, action, 0, 0));
     if (player1 != NULL && device1 >= 0)
         NuStrCpy(second, TextInputActionLabelPc(device1, action, 0, 0));
-    NuSPrintf(HubButtonStringBufferPc, first[0] != 0 && second[0] != 0 ? "~0%s~~ \\ ~0%s~~" : "~0%s%s~~", first,
-              second);
+    if (first[0] != 0 && second[0] != 0)
+        NuSPrintf(HubButtonStringBufferPc, "~0%s~~ \\ ~0%s~~", first, second);
+    else
+        NuSPrintf(HubButtonStringBufferPc, "~0%s%s~~", first, second);
     return HubButtonStringBufferPc;
 }
 /* PC4015e0 462 bytes. Exact command family, no prefix/default substitution. */
