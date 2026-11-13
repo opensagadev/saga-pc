@@ -8773,8 +8773,11 @@ address,symbol,size,ctype
 0x6424c0,_PartRuntimeMatrixCopyPrivate,95,
 0x642530,_PartRayCast,48,"i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)"
 0x642570,_CastPart,1315,"void __cdecl CastPart(PART_PC *part, f32 time)"
+0x642aa0,_edpartRegisterPointerToGameCharLocation,5,"void __cdecl (NUVEC *)"
+0x642ab0,_edpartPtlShelve,49,"void __cdecl (i32)"
 0x642af0,_edpartPlace,84,
 0x642b50,_edpartMultipleCopyCopy,285,
+0x642c70,_edpartMultipleCopyClear,13,"void __cdecl (void)"
 0x642c80,_edpartDrawCursor,4985,
 0x644000,_edpartDetermineNearest,311,void __cdecl edpartDetermineNearest(f32 distance)
 0x644140,_edpartHighlightNearest,548,
@@ -8950,6 +8953,7 @@ address,symbol,size,ctype
 0x64b330,_PARTEmitterOrientation,58,"void __cdecl (i32, i16, i16, i16)"
 0x64b370,_AddFiniteShotPART,155,"i32 __cdecl (i32, NUVEC *, i32)"
 0x64b410,_CreateScaledPARTEffect,928,"i32 __cdecl(i32, f32)"
+0x64b7b0,_AddScaledFiniteShotPART,52,"i32 __cdecl (i32, NUVEC *, i32, f32)"
 0x64b7f0,_KillPartsByScene,83,void __cdecl (NUGSCN *)
 0x64b860,_edpartDestroy,36,
 0x64b890,_edpartCreate,19,"void __cdecl (NUVEC *, i32)"
@@ -8970,6 +8974,7 @@ address,symbol,size,ctype
 0x64eb00,_UpdateParts,2755,void __cdecl UpdateParts(f32 time)
 0x64f5d0,_DrawParts,422,void __cdecl DrawParts(i32 keep_offscreen)
 0x64f780,_AddScaledVariableShotPARTEffect,64,
+0x64f7c0,_edpartDestroyAllPages,32,"void __cdecl (void)"
 0x64f7e0,_edpartDoInput,1375,
 0x64fd40,_edpartProc,76,
 0x0064fdb0,_TerrainDiagnosticNoOpPC,1,"void __cdecl (const void *, ...)"
