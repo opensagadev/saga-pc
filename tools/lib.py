@@ -3,6 +3,7 @@ import sys
 import csv
 import hashlib
 import json
+import re
 import struct
 from pathlib import Path
 
@@ -534,6 +535,34 @@ def covered_bytes(ranges):
         end = max(end, new_end)
     return total
 
+LITERAL_NAME = re.compile(r"\?\?_C@_([01])(?:([0-9])|([A-P]+)@)([A-P]{0,8})@")
+
+
+def _from_letters(text):
+    value = 0
+    for char in text:
+        value = value * 16 + ord(char) - 65
+    return value
+
+
+def parse_literal_name(symbol):
+    """(wide, byte length, CRC) that an MSVC ??_C@ string literal name encodes, or None."""
+    match = LITERAL_NAME.match(symbol)
+    if not match:
+        return None
+    length = int(match.group(2)) + 1 if match.group(2) else _from_letters(match.group(3))
+    return bool(int(match.group(1))), length, _from_letters(match.group(4))
+
+
+def derived_size(symbol):
+    """The byte size a compiler-generated constant name proves (??_C@, __real@, __xmm@), or None."""
+    literal = parse_literal_name(symbol)
+    if literal:
+        return literal[1]
+    match = re.fullmatch(r"__real@([0-9a-f]{8}|[0-9a-f]{16})|__xmm@([0-9a-f]{32})", symbol)
+    return len(match.group(1) or match.group(2)) // 2 if match else None
+
+
 def map_errors(records, target):
     """Validate known original extents using the committed PE boundaries."""
     image_start = number(target["image_base"])
@@ -557,6 +586,9 @@ def map_errors(records, target):
             errors.append(f"{context}: mapped extent is outside the original image")
         if ((address < text_start < end) or (address < text_end < end)):
             errors.append(f"{context}: mapped extent crosses an original .text boundary")
+        proven = derived_size(row["symbol"])
+        if size is not None and proven is not None and size != proven:
+            errors.append(f"{context}: size {size} contradicts the {proven} bytes its constant name encodes")
     return errors
 
 
