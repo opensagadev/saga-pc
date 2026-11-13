@@ -7901,31 +7901,11 @@ extern "C" {
                     NuRndrRect2di((i32)(left * screen_width), (i32)(0.05f * screen_height),
                                   (i32)((right - left) * screen_width), (i32)((bottom - 0.05f) * screen_height),
                                   timebar->colours[slot], NULL);
-                    if (NuQFntModeStackIndex < 16) {
-                        NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
-                    }
-                    NuQFntMode = 2;
-                    if (NuQFntCSModeStackIndex < 16) {
-                        NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
-                    }
-                    qfnt_rezscale_w = 0.0625f;
-                    qfnt_rezscale_h = 0.0625f;
-                    nuqfnt_cs_mode = 1;
-                    qfnt_offscale_x = 0.0f;
-                    qfnt_offscale_y = 0.0f;
-                    qfnt_len_scale = 16.0f;
-                    qfnt_height_scale = 16.0f;
-                    if (system_qfont != NULL) {
-                        nuqfnt_space_width = system_qfont->space_width;
-                        system_qfont->mode = 1;
-                        *system_qfont->x_scale = 1.0f;
-                        if ((NuQFntMode & 4) != 0) {
-                            *system_qfont->y_scale = 1.0f;
-                        } else {
-                            *system_qfont->y_scale = 0.5f;
-                        }
-                        system_qfont->platform_data->colour = 0xe0e0e0e0;
-                    }
+                    NuQFntPushPrintMode(2);
+                    NuQFntPushCoordinateSystem(1);
+                    NuQFntSet(system_qfont);
+                    NuQFntSetScale(system_qfont, 1.0f, 1.0f);
+                    NuQFntSetColour(system_qfont, 0xe0e0e0e0);
                     vrez_w = (f32)PS2_VREZ_W;
                     text_x = (i32)(vrez_w * 0.025f * 0.5) - (i32)(vrez_w * -0.025f) * (slot + 1) * 3;
                     if (timebar->field_18[slot] != 0) {
@@ -7976,12 +7956,8 @@ extern "C" {
                         }
                         NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, timebar->slot_names[slot]);
                     }
-                    if (NuQFntModeStackIndex > 0) {
-                        NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
-                    }
-                    if (NuQFntCSModeStackIndex > 0) {
-                        NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
-                    }
+                    NuQFntPopPrintMode();
+                    NuQFntPopCoordinateSystem();
                 }
                 if (timebar->field_28 != 0) {
                     NuTimeBarSlotReset(set, slot);
