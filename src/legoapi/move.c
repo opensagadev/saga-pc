@@ -1728,7 +1728,7 @@ static void MovementMtxRotateY(NUMTX *m, NUANG angle) {
 void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     f32 seek_rate;
     f32 displacement;
-    i32 effect, count, heading, pitch, yaw, roll;
+    i32 effect, count, pitch, yaw, roll;
     NUVEC position, local_velocity;
     NUMTX matrix;
     object->flags_e20 &= ~0x10000000;
@@ -1774,12 +1774,12 @@ void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object) {
     matrix = object->transform;
     matrix.m30 = matrix.m31 = matrix.m32 = 0.0f;
     object->movement_mode = 0;
-    heading = NuAtan2D(object->velocity.x, object->velocity.z);
-    NuVecRotateY(&local_velocity, &object->velocity, -heading);
-    MovementMtxRotateY(&matrix, -heading);
+    yaw = NuAtan2D(object->velocity.x, object->velocity.z);
+    NuVecRotateY(&local_velocity, &object->velocity, -yaw);
+    MovementMtxRotateY(&matrix, -yaw);
     displacement = FRAMETIME * local_velocity.z / object->collision_radius;
     MovementMtxRotateX(&matrix, (i32)(displacement * 10430.3779296875));
-    MovementMtxRotateY(&matrix, heading);
+    MovementMtxRotateY(&matrix, yaw);
     NuMtxGetEulerXYZ(&matrix, &pitch, &yaw, &roll);
     object->pitch_angle = pitch;
     object->field_0x276 = yaw;
