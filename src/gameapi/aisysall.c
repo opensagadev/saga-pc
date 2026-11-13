@@ -6702,7 +6702,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     NUVEC difference;
     f32 distance_squared;
     f32 distance;
-    f32 scale;
     AIPATHCNX_PC *target;
     AIPATHCNX_PC *current;
     i32 goal_index;
@@ -6714,9 +6713,6 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
     f32 destination_distance_1;
     AIPATHNODE_PC *node;
     f32 candidate;
-    f32 candidate_2;
-    f32 candidate_3;
-    f32 candidate_4;
     AIPATHCNX_PC *next;
     u32 flags;
     AIPATHCNX_PC *current_2;
@@ -6840,18 +6836,18 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     {
                         if (destination_distance_1 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
-                            candidate_2 = AIPathNodeDistanceToPathNode(
+                            candidate = AIPathNodeDistanceToPathNode(
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction == 0],
                                 destination_connection->node_indices[1], packet->current_route, 0);
-                            if (candidate_2 != FLT_MAX) {
-                                candidate_2 +=
+                            if (candidate != FLT_MAX) {
+                                candidate +=
                                     endpoint_distances[packet->path_info.direction == 0] + destination_distance_1;
                             }
                         } else {
-                            candidate_2 = FLT_MAX;
+                            candidate = FLT_MAX;
                         }
-                        if (candidate_2 < best_distance) {
-                            best_distance = candidate_2;
+                        if (candidate < best_distance) {
+                            best_distance = candidate;
                             goal_index = destination_connection->node_indices[1];
                             direction = packet->path_info.direction;
                             packet->flags &= ~0x00100000u;
@@ -6862,17 +6858,17 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     {
                         if (destination_distance_0 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction] != FLT_MAX) {
-                            candidate_3 = AIPathNodeDistanceToPathNode(
+                            candidate = AIPathNodeDistanceToPathNode(
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction],
                                 destination_connection->node_indices[0], packet->current_route, 0);
-                            if (candidate_3 != FLT_MAX) {
-                                candidate_3 += destination_distance_0 + endpoint_distances[packet->path_info.direction];
+                            if (candidate != FLT_MAX) {
+                                candidate += destination_distance_0 + endpoint_distances[packet->path_info.direction];
                             }
                         } else {
-                            candidate_3 = FLT_MAX;
+                            candidate = FLT_MAX;
                         }
-                        if (candidate_3 < best_distance) {
-                            best_distance = candidate_3;
+                        if (candidate < best_distance) {
+                            best_distance = candidate;
                             direction = packet->path_info.direction == 0;
                             goal_index = destination_connection->node_indices[0];
                             packet->flags &= ~0x00100000u;
@@ -6881,18 +6877,18 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     {
                         if (destination_distance_1 != FLT_MAX &&
                             endpoint_distances[packet->path_info.direction] != FLT_MAX) {
-                            candidate_4 = AIPathNodeDistanceToPathNode(
+                            candidate = AIPathNodeDistanceToPathNode(
                                 packet->path_info.path, connection->node_indices[packet->path_info.direction],
                                 destination_connection->node_indices[1], packet->current_route, 0);
-                            if (candidate_4 != FLT_MAX) {
-                                candidate_4 = candidate_4 + (destination_distance_1 +
-                                                             endpoint_distances[packet->path_info.direction]);
+                            if (candidate != FLT_MAX) {
+                                candidate = candidate +
+                                            (destination_distance_1 + endpoint_distances[packet->path_info.direction]);
                             }
                         } else {
-                            candidate_4 = FLT_MAX;
+                            candidate = FLT_MAX;
                         }
-                        if (candidate_4 < best_distance) {
-                            best_distance = candidate_4;
+                        if (candidate < best_distance) {
+                            best_distance = candidate;
                             direction = packet->path_info.direction == 0;
                             goal_index = destination_connection->node_indices[1];
                             packet->flags &= ~0x00100000u;
@@ -6990,8 +6986,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
             }
         }
         distance = NuFsqrt(distance_squared);
-        scale = packet->movement_parameter / distance;
-        NuVecScale(&difference, &difference, scale);
+        NuVecScale(&difference, &difference, packet->movement_parameter / distance);
         packet->movement_destination.x = packet->fallback_destination.x - difference.x;
         packet->movement_destination.y = packet->fallback_destination.y;
         packet->movement_destination.z = packet->fallback_destination.z - difference.z;
@@ -7003,7 +6998,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
         return;
     }
     shared = NULL;
-    if (destination_connection->node_indices[0] == current_2->node_indices[0]) {
+    if (current_2->node_indices[0] == destination_connection->node_indices[0]) {
         shared = &path->nodes[destination_connection->node_indices[0]];
         direction = 0;
     } else if (current_2->node_indices[0] == destination_connection->node_indices[1]) {
@@ -7060,7 +7055,8 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                         NuVecSub(&offset, &packet->left_diversion, &object->position);
                         angle = NuAtan2D(offset.x, offset.z);
                         NuVecSub(&offset, &target_2, &object->position);
-                        if (NuAngSub(NuAtan2D(offset.x, offset.z), angle) < 0) {
+                        angle_2 = NuAtan2D(offset.x, offset.z);
+                        if (NuAngSub(angle_2, angle) < 0) {
                             target_2 = packet->left_diversion;
                             packet->flags |= 0x00080000u;
                             use_left = 1;
@@ -7068,9 +7064,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     }
                     if (!use_left && (packet->flags & 0x00000020u) != 0) {
                         NuVecSub(&offset, &packet->right_diversion, &object->position);
-                        angle_2 = NuAtan2D(offset.x, offset.z);
+                        angle = NuAtan2D(offset.x, offset.z);
                         NuVecSub(&offset, &target_2, &object->position);
-                        if (NuAngSub(NuAtan2D(offset.x, offset.z), angle_2) > 0) {
+                        angle_2 = NuAtan2D(offset.x, offset.z);
+                        if (NuAngSub(angle_2, angle) > 0) {
                             target_2 = packet->right_diversion;
                             packet->flags |= 0x00080000u;
                         }
