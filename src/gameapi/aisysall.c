@@ -18486,6 +18486,7 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
     EDAIPATHNODE_s *start;
     f32 step;
     i32 named;
+    i32 forward;
     if (pad->digital_buttons_pressed & 0x80)
         return pathEditor_MainMenu();
     if (aieditor->current_path != NULL) {
@@ -18645,72 +18646,72 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
             aieditor->flags |= 1;
         }
         named = 0;
-        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))
-            goto next_node;
-        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2))
-            goto previous_node;
-        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
+        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8)) {
+            forward = 1;
+        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2)) {
+            forward = 0;
+        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
+            forward = 1;
             named = 1;
-            goto next_node;
-        }
-        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
+        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
+            forward = 0;
             named = 1;
-            goto previous_node;
-        }
-        if (aieditorsettings.display_options & 0x80)
+        } else if (aieditorsettings.display_options & 0x80) {
             goto done;
-        if (pad->digital_buttons_pressed & 0x1000)
-            goto next_node;
-        if (!(pad->digital_buttons_pressed & 0x4000))
+        } else if (pad->digital_buttons_pressed & 0x1000) {
+            forward = 1;
+        } else if (pad->digital_buttons_pressed & 0x4000) {
+            forward = 0;
+        } else {
             goto done;
-    previous_node:
-        if (aieditor->current_path->current_node != NULL)
-            aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
-                &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-        if (aieditor->current_path->current_node == NULL)
-            aieditor->current_path->current_node =
-                (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
-        if (named && aieditor->current_path->current_node != NULL &&
-            NuStrLen(aieditor->current_path->current_node->name) == 0) {
-            start = aieditor->current_path->current_node;
-            do {
-                aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
-                    &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-                if (aieditor->current_path->current_node == NULL) {
-                    aieditor->current_path->current_node =
-                        (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
-                    if (aieditor->current_path->current_node == NULL)
-                        break;
-                }
-                if (aieditor->current_path->current_node == start)
-                    break;
-            } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
         }
-        goto set_camera;
-    next_node:
-        if (aieditor->current_path->current_node != NULL)
-            aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
-                &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-        if (aieditor->current_path->current_node == NULL)
-            aieditor->current_path->current_node =
-                (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
-        if (named && aieditor->current_path->current_node != NULL &&
-            NuStrLen(aieditor->current_path->current_node->name) == 0) {
-            start = aieditor->current_path->current_node;
-            do {
+        if (forward) {
+            if (aieditor->current_path->current_node != NULL)
                 aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
                     &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-                if (aieditor->current_path->current_node == NULL) {
-                    aieditor->current_path->current_node =
-                        (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
-                    if (aieditor->current_path->current_node == NULL)
+            if (aieditor->current_path->current_node == NULL)
+                aieditor->current_path->current_node =
+                    (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+            if (named && aieditor->current_path->current_node != NULL &&
+                NuStrLen(aieditor->current_path->current_node->name) == 0) {
+                start = aieditor->current_path->current_node;
+                do {
+                    aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
+                        &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+                    if (aieditor->current_path->current_node == NULL) {
+                        aieditor->current_path->current_node =
+                            (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+                        if (aieditor->current_path->current_node == NULL)
+                            break;
+                    }
+                    if (aieditor->current_path->current_node == start)
                         break;
-                }
-                if (aieditor->current_path->current_node == start)
-                    break;
-            } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+                } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+            }
+        } else {
+            if (aieditor->current_path->current_node != NULL)
+                aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
+                    &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+            if (aieditor->current_path->current_node == NULL)
+                aieditor->current_path->current_node =
+                    (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+            if (named && aieditor->current_path->current_node != NULL &&
+                NuStrLen(aieditor->current_path->current_node->name) == 0) {
+                start = aieditor->current_path->current_node;
+                do {
+                    aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
+                        &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+                    if (aieditor->current_path->current_node == NULL) {
+                        aieditor->current_path->current_node =
+                            (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+                        if (aieditor->current_path->current_node == NULL)
+                            break;
+                    }
+                    if (aieditor->current_path->current_node == start)
+                        break;
+                } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+            }
         }
-    set_camera:
         if (aieditor->current_path->current_node != NULL)
             edcamSetPos(&aieditor->current_path->current_node->position);
     done:
