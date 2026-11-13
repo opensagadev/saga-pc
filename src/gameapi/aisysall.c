@@ -12928,22 +12928,17 @@ i32 __cdecl Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
 
 i32 __cdecl Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 elapsed) {
-    char *name;
     char *value;
     char buffer[64];
-    i32 personal;
-    i32 indexed;
-    i32 random_count;
+    i32 personal = 0;
+    i32 indexed = 0;
+    i32 random_count = 0;
+    char *name = NULL;
     i32 index;
-    APIOBJECT_PC *object;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL ||
         packet->path_info.path == NULL || packet->path_info.connection == NULL || first_time == 0)
         return 1;
     processor->locator = NULL;
-    name = NULL;
-    personal = 0;
-    indexed = 0;
-    random_count = 0;
     for (index = 0; index < count; index++) {
         value = NuStrIStr(params[index], "name");
         if (value != NULL)
@@ -12959,11 +12954,10 @@ i32 __cdecl Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
         }
     }
     if (name != NULL) {
-        object = (APIOBJECT_PC *)packet->owner;
-        if (indexed != 0 && object->locator_name_index != -1)
-            sprintf(buffer, AILocatorIndexedFormat, name, object->locator_name_index);
-        else if (personal != 0 && object->character_data != NULL)
-            sprintf(buffer, AILocatorPersonalFormat, name, object->character_data->name);
+        if (indexed != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1)
+            sprintf(buffer, AILocatorIndexedFormat, name, ((APIOBJECT_PC *)packet->owner)->locator_name_index);
+        else if (personal != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL)
+            sprintf(buffer, AILocatorPersonalFormat, name, ((APIOBJECT_PC *)packet->owner)->character_data->name);
         else if (random_count != 0)
             sprintf(buffer, AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
         else
