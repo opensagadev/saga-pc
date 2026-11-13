@@ -3765,33 +3765,6 @@ void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socke
     object->target_velocity = object->velocity;
 }
 
-__declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
-    f32 y;
-    i32 placed;
-
-    placed = 0;
-    if (object->floor_height != GameObjectNearFloorNoFloorHeight &&
-        (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000u) == 0) {
-        if (mode == 2) {
-            y = (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale +
-                0.10000000149011612;
-            object->position.y = y;
-            object->initial_position.y = y;
-            object->collision_position.y = y;
-        }
-        if (mode == 0 || !((f64)object->position.y + (f64)object->character_bottom * object->origin_scale >
-                           (f64)object->floor_height + 0.10000000149011612)) {
-            y = (f64)object->floor_height - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
-            object->position.y = y;
-            object->initial_position.y = y;
-            object->collision_position.y = y;
-            placed = 1;
-        }
-        object->velocity.y = -1.0f;
-    }
-    return placed;
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
@@ -3810,81 +3783,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
 STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
-
-void __cdecl GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
-    i32 raw_surface;
-    i32 surface_index;
-    i8 material;
-    i8 roof_surface;
-    u8 material_mask;
-    void(__cdecl * extra_reflect)(GAMEOBJECT *);
-
-    if (floor_height != GameObjectNearFloorNoFloorHeight) {
-        raw_surface = ShadowInfo();
-        surface_index = raw_surface;
-        if (surface_index < 0 || surface_index >= 32)
-            surface_index = 0;
-        object->reflection_enabled = 2;
-        if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 &&
-            (TerSurface[surface_index].flags & 2u) != 0)
-            object->reflection_height = floor_height;
-        else
-            object->reflection_height = 2000000.0f;
-        object->terrain_platform_id = (i16)NewShadowOnPlatform();
-    } else {
-        raw_surface = 0;
-        surface_index = 0;
-        object->reflection_height = 2000000.0f;
-        object->reflection_enabled = 0;
-        object->terrain_platform_id = -1;
-    }
-
-    if (update_fields != 0) {
-        object->raw_surface_id_pc = (u8)raw_surface;
-        object->jump_animation_state = (u8)surface_index;
-        if (object->floor_height == GameObjectNearFloorNoFloorHeight)
-            object->surface_normal = v010;
-        else
-            object->surface_normal = GetSurfaceInfoSurfaceNormalPc;
-    }
-
-    object->water_height = EShadY;
-    if (object->water_height != GameObjectNearFloorNoFloorHeight) {
-        material = (i8)EShadowInfo();
-        object->field_283 = material;
-        if (VehicleArea != 0 && BonusArea != 0 && (material == 7 || material == 16)) {
-            object->water_height = 2000000.0f;
-            object->field_105e = 0;
-            object->field_105c = 0;
-            object->field_283 = -1;
-        } else {
-            if (material < 0 || material >= 17)
-                object->field_283 = 0;
-            material_mask = GetSurfaceInfoDefaultMaskPc.low | GetSurfaceInfoRuntimeMaskPc.low | 0x40u;
-            object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
-            FindAnglesZX(&GetSurfaceInfoWaterNormalPc, NULL, NULL);
-            object->field_105c = temp_zrot;
-            object->field_105e = temp_xrot;
-        }
-    } else {
-        object->field_105e = 0;
-        object->field_105c = 0;
-        object->field_283 = -1;
-    }
-
-    object->roof_height_pc = GetSurfaceInfoRoofHeightPc;
-    if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
-        roof_surface = (i8)ShadowRoofInfo();
-        object->roof_surface_id_pc = (u8)roof_surface;
-        if (roof_surface < 0 || roof_surface >= 32)
-            object->roof_surface_id_pc = 0;
-    } else
-        object->roof_surface_id_pc = 0xff;
-
-    extra_reflect = SurfaceInfo_ExtraReflectFn;
-    if (extra_reflect != NULL)
-        extra_reflect(object);
-}
 
 /* Source-private in gameobjects.c. Forward pointer uses struct tag in saga.h.
  * Tail[1] exposes actual counted traversal; it is NOT owner/allocation count.
@@ -3908,55 +3806,6 @@ STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, entries) == 0x18);
  * character_data pointer54 -> game_character pointer24 -> field_028 f32.
  * No new aggregate/type claim in this private source access view.
  */
-
-void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
-    void(__cdecl * extra_reflect)(GAMEOBJECT *);
-
-    object->floor_height = GameShadow(object, &object->position, 5.0f, -1);
-    if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
-        GetSurfaceInfo(object, 1, object->floor_height);
-        if (TerSurface[(i8)object->jump_animation_state].flags & 8)
-            object->surface_flag8_scale_pc = 1.0f;
-        else
-            object->surface_flag8_scale_pc = 0.0f;
-        FindAnglesZX(&object->surface_normal, NULL, NULL);
-        object->field_1056 = temp_zrot;
-        object->field_1052 = temp_zrot;
-        object->field_1058 = temp_xrot;
-        object->field_1054 = temp_xrot;
-    } else {
-        GetSurfaceInfo(object, 0, object->floor_height);
-        object->surface_flag8_scale_pc = 0.0f;
-        object->jump_animation_state = 0;
-        object->raw_surface_id_pc = 0;
-        object->surface_normal = v010;
-    }
-
-    object->unknown_0286 =
-        (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
-    object->water_intersects = (object->field_283 == 1 || object->field_283 == 9) &&
-                               object->water_height <= object->collision_max.y &&
-                               object->water_height >= object->collision_min.y;
-
-    object->water_height = LevelConfigFarDistance;
-    object->roof_height_pc = LevelConfigFarDistance;
-    object->field_283 = -1;
-    object->roof_surface_id_pc = 0xff;
-    GetSurfaceInfo(object, 1, object->floor_height);
-
-    if (!(object->character_data->game_character->flags_090 & 0x8000) &&
-        object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
-        f32 reflection = FindReflectionNoPlatforms(&object->position);
-        if (reflection != GameObjectNearFloorNoFloorHeight) {
-            object->reflection_height = reflection;
-            object->reflection_enabled = 2;
-        }
-    }
-
-    extra_reflect = SurfaceInfo_ExtraReflectFn;
-    if (extra_reflect != NULL)
-        extra_reflect(object);
-}
 
 #include <string.h>
 void __cdecl ClearGameObjects(APIOBJECTSYS_PC *system) {

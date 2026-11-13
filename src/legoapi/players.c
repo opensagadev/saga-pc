@@ -318,15 +318,6 @@ void __cdecl SetPushAngle(GAMEOBJECT *object) {
     }
 }
 
-i32 __cdecl Conveyor_AdjustSpeed(NUVEC *velocity) {
-    WORLD_CONVEYOR_PC *world = (WORLD_CONVEYOR_PC *)WorldInfo_CurrentlyActive();
-    if (world != NULL && world->conveyor != NULL) {
-        velocity->x += world->current_level->conveyor_x_speed;
-        velocity->z += world->current_level->conveyor_z_speed;
-    }
-    return 0;
-}
-
 __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum,
                                            GAMEOBJECT *object, GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
     i32 count, i;
