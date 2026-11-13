@@ -2259,26 +2259,26 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
     AIREFSCRIPT_PC *source_reference;
 
     copy = (AISTATE_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AISTATE_PC));
-    if (copy == NULL)
-        return NULL;
-    copy->name = AIScriptCopyStringPc(source_state->name, buffer, end_buffer);
-    AIScriptCopyConditions(&source_state->conditions, &copy->conditions, buffer, end_buffer);
-    AIScriptCopyActions(&source_state->actions, &copy->actions, buffer, end_buffer);
-    source_reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&source_state->reference_scripts);
-    while (source_reference != NULL) {
-        AIREFSCRIPT_PC *reference_copy;
-        reference_copy = (AIREFSCRIPT_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
-        if (reference_copy != NULL) {
-            reference_copy->name = AIScriptCopyStringPc(source_reference->name, buffer, end_buffer);
-            reference_copy->return_state_name =
-                AIScriptCopyStringPc(source_reference->return_state_name, buffer, end_buffer);
-            reference_copy->check_global_scripts = source_reference->check_global_scripts;
-            reference_copy->check_level_scripts = source_reference->check_level_scripts;
-            AIScriptCopyConditions(&source_reference->conditions, &reference_copy->conditions, buffer, end_buffer);
-            NuLinkedListAppend(&copy->reference_scripts, &reference_copy->link);
+    if (copy != NULL) {
+        copy->name = AIScriptCopyStringPc(source_state->name, buffer, end_buffer);
+        AIScriptCopyConditions(&source_state->conditions, &copy->conditions, buffer, end_buffer);
+        AIScriptCopyActions(&source_state->actions, &copy->actions, buffer, end_buffer);
+        source_reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&source_state->reference_scripts);
+        while (source_reference != NULL) {
+            AIREFSCRIPT_PC *reference_copy;
+            reference_copy = (AIREFSCRIPT_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
+            if (reference_copy != NULL) {
+                reference_copy->name = AIScriptCopyStringPc(source_reference->name, buffer, end_buffer);
+                reference_copy->return_state_name =
+                    AIScriptCopyStringPc(source_reference->return_state_name, buffer, end_buffer);
+                reference_copy->check_global_scripts = source_reference->check_global_scripts;
+                reference_copy->check_level_scripts = source_reference->check_level_scripts;
+                AIScriptCopyConditions(&source_reference->conditions, &reference_copy->conditions, buffer, end_buffer);
+                NuLinkedListAppend(&copy->reference_scripts, &reference_copy->link);
+            }
+            source_reference =
+                (AIREFSCRIPT_PC *)NuLinkedListGetNext(&source_state->reference_scripts, &source_reference->link);
         }
-        source_reference =
-            (AIREFSCRIPT_PC *)NuLinkedListGetNext(&source_state->reference_scripts, &source_reference->link);
     }
     return copy;
 }
