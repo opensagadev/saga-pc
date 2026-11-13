@@ -318,6 +318,8 @@ class CommonMatchTests(unittest.TestCase):
             stack.enter_context(patch.object(match_module, "object_path",
                                              side_effect=lambda unit: root / (Path(unit).stem + ".obj")))
             objdiff_run = stack.enter_context(patch.object(match_module, "run"))
+            # The reproduced-data inputs compare the real objects and archives.
+            stack.enter_context(patch.object(match_module, "reproduced_inputs", return_value=({}, {})))
             stack.enter_context(patch("sys.argv", ["match.py", "--require-match"]))
             stack.enter_context(redirect_stdout(io.StringIO()))
             status = match_module.main()

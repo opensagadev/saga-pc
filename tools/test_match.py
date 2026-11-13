@@ -305,6 +305,30 @@ class DataPaddingTests(unittest.TestCase):
             self.assertNotIn("90.000", text)
 
 
+class ReproducedDataTests(unittest.TestCase):
+    def test_each_byte_counts_in_its_strongest_class(self):
+        storage = {"file_backed_data": [(0x100, 0x140)], "zero_fill_data": [(0x140, 0x180)]}
+        classes = {"exact": [(0x100, 8)], "library": [(0x104, 12)], "different_padding": [(0x110, 4)],
+                   "different": [(0x114, 4)], "undefined": [(0x100, 0x20), (0x140, 0x10)],
+                   "padding": [(0x120, 2)]}
+        result = match.reproduced_data(storage, classes)
+        self.assertEqual([result[f"reproduced_file_backed_data_{name}_bytes"] for name, _ in match.REPRODUCED_CLASSES],
+                         [8, 8, 4, 4, 8, 2, 30])
+        self.assertEqual(result["reproduced_file_backed_data_bytes"], 16)
+        self.assertEqual(result["reproduced_file_backed_data_percent"], 25.0)
+        self.assertEqual(result["reproduced_zero_fill_data_undefined_bytes"], 16)
+        self.assertEqual(result["reproduced_zero_fill_data_unidentified_bytes"], 48)
+
+    def test_address_named_code_is_reported_apart(self):
+        target = {"text_va": "0x401000", "text_size": "0x100"}
+        records = [{"address": 0x401000, "size": 0x40, "symbol": "_NuRand"},
+                   {"address": 0x401040, "size": 0x20, "symbol": "_fun_00401040"},
+                   {"address": 0x500000, "size": 4, "symbol": "_dat_00500000"}]
+        result = match.code_name_progress(records, target)
+        self.assertEqual((result["mapping_code_named_bytes"], result["mapping_code_address_named_bytes"],
+                          result["mapping_code_address_named_functions"]), (0x40, 0x20, 1))
+
+
 class ObjdiffProgressTests(unittest.TestCase):
     def functions(self, copies=1):
         return [{"target_size": 16, "objects": [{} for _ in range(copies)]},
@@ -456,6 +480,8 @@ class InlinedInventoryTests(unittest.TestCase):
                                 ("retail", pe), ("objdiff", ("unused", {"version": "fixture"})),
                                 ("compiled_objects", objects or {})):
                 stack.enter_context(patch.object(match, name, return_value=value))
+            # The reproduced-data inputs compare the real objects and archives.
+            stack.enter_context(patch.object(match, "reproduced_inputs", return_value=({}, {})))
             stack.enter_context(patch("sys.argv", ["match.py", *args]))
             output = stack.enter_context(redirect_stdout(io.StringIO()))
             self.assertEqual(match.main(), 0)

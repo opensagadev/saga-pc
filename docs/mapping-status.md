@@ -26,6 +26,8 @@ python3 tools/unmapped.py --write KIND    # add the provable rows of one kind (s
 | mapped code | union of sized map rows in `.text`, plus proven alignment padding between known extents | original `.text` (VirtualSize) |
 | mapped file-backed data | union of sized map rows and typed data members in the raw-data part of `.rdata` and `.data`, plus proven zero padding between known extents | file-backed `.rdata` + `.data` |
 | mapped zero-fill/BSS | the same union in the zero-filled tail of `.data` | VirtualSize minus raw size of `.data` |
+| named code | mapped code bytes whose row has an identified name; rows under a standard address name (`fun_XXXXXXXX`) are reported apart as `mapping_code_address_named_*` and in the row's text | original `.text` |
+| reproduced file-backed data | file-backed bytes our objects define exactly plus bytes pinned library members provide exactly ([Reproduced data](#reproduced-data)) | file-backed `.rdata` + `.data` |
 
 "Mapped" means identified: an address, a linker name and a complete extent.
 It does not mean compiled or matched; the exact badge measures that. Until
@@ -77,40 +79,34 @@ aligned pointers in initialized data. They are not decoded instructions.
 
 | Section | Class | Ranges | Bytes |
 | --- | --- | ---: | ---: |
-| .text | **mapped** (sized map rows) | | 3,262,669 |
-| .text | alignment padding (match.py rule) | 10,236 | 83,195 |
-| .text | unmapped code: unreferenced | 1,443 | 76,957 |
-| .text | alignment fill after unmapped code | 2,547 | 22,822 |
-| .text | unmapped code: unreferenced identical copy | 1,134 | 15,366 |
-| .text | alignment fill after a mapped extent, before unmapped code | 1,000 | 8,469 |
-| .text | unmapped code: address taken | 31 | 1,050 |
-| .text | unmapped code: static initializer/terminator (.CRT$X* table entry) | 23 | 480 |
-| .text | unmapped code: direct call/jump target from mapped code | 2 | 186 |
-| .text | switch jump table | 2 | 52 |
+| .text | **mapped** (sized map rows) | | 3,356,783 |
+| .text | alignment padding (match.py rule) | 13,758 | 114,463 |
 | .text | **section total** | | 3,471,246 |
-| .rdata | **mapped** (sized map rows) | | 608,294 |
+| .rdata | **mapped** (sized map rows) | | 608,318 |
 | .rdata | alignment padding (match.py rule) | 11,750 | 23,297 |
 | .rdata | zero fill (unreferenced) | 863 | 4,275 |
-| .rdata | unknown data, unreferenced | 223 | 3,654 |
-| .rdata | unknown data, referenced | 121 | 2,992 |
-| .rdata | string (unnamed, referenced) | 260 | 2,975 |
-| .rdata | string bytes (unnamed, unreferenced) | 87 | 750 |
-| .rdata | zero fill after an unnamed string, to 4-byte alignment | 261 | 497 |
+| .rdata | unknown data, unreferenced | 222 | 3,594 |
+| .rdata | string (unnamed, referenced) | 277 | 3,347 |
+| .rdata | unknown data, referenced | 120 | 2,972 |
+| .rdata | zero fill after an unnamed string, to 4-byte alignment | 260 | 495 |
+| .rdata | string bytes (unnamed, unreferenced) | 69 | 388 |
+| .rdata | x87 constant (unnamed, FPU operand in mapped code) | 7 | 48 |
 | .rdata | named, extent unknown | 4 | 32 |
 | .rdata | **section total** | | 646,766 |
 | .data (file-backed) | **mapped** (sized map rows) | | 385,699 |
-| .data (file-backed) | unknown data, unreferenced | 324 | 24,476 |
-| .data (file-backed) | unknown data, referenced | 88 | 3,220 |
+| .data (file-backed) | unknown data, unreferenced | 317 | 24,080 |
+| .data (file-backed) | unknown data, referenced | 115 | 3,568 |
 | .data (file-backed) | named, extent unknown | 11 | 1,676 |
 | .data (file-backed) | zero fill (unreferenced) | 54 | 1,617 |
 | .data (file-backed) | alignment padding (match.py rule) | 413 | 816 |
-| .data (file-backed) | string bytes (unnamed, unreferenced) | 68 | 246 |
+| .data (file-backed) | string bytes (unnamed, unreferenced) | 64 | 234 |
+| .data (file-backed) | x87 constant (unnamed, FPU operand in mapped code) | 13 | 52 |
 | .data (file-backed) | zero fill after an unnamed string, to 4-byte alignment | 20 | 38 |
-| .data (file-backed) | x87 constant (unnamed, FPU operand in mapped code) | 1 | 4 |
+| .data (file-backed) | string (unnamed, referenced) | 4 | 12 |
 | .data (file-backed) | **section total** | | 417,792 |
 | .data (zero-fill) | **mapped** (sized map rows) | | 34,154,793 |
-| .data (zero-fill) | zero-fill/BSS, referenced | 42 | 777,363 |
-| .data (zero-fill) | zero-fill/BSS, unreferenced | 1,118 | 17,736 |
+| .data (zero-fill) | zero-fill/BSS, referenced | 99 | 787,763 |
+| .data (zero-fill) | zero-fill/BSS, unreferenced | 1,061 | 7,336 |
 | .data (zero-fill) | named library data (archive member) | 21 | 4,480 |
 | .data (zero-fill) | named, extent unknown | 9 | 36 |
 | .data (zero-fill) | **section total** | | 34,954,408 |
@@ -143,15 +139,118 @@ Nothing here names a function. Unmapped functions need names from source,
 reference symbol data or sibling builds; the cleanup plan removes address
 names rather than adding them (docs/cleanup-audit.md, batch 8).
 
+## Code: every `.text` byte, by evidence class
+
+`.text` is now 3,356,783 bytes of sized map rows plus 114,463 bytes of proven
+alignment padding: 100 % of the section, with no unknown remainder. The bytes
+that had no row were bounded and named by these steps, strongest evidence
+first. Every row they add is recorded with its evidence in
+[`config/code-evidence.csv`](../config/code-evidence.csv) (`tools/codemap.py`;
+the format and naming rules are in [`config/symbols.md`](../config/symbols.md)).
+
+| Step / class | Functions | Bytes | Named | Address-named | Evidence |
+| --- | ---: | ---: | ---: | ---: | --- |
+| boundaries: owner extensions | 16 rows resized | 15,017 | 16 | | the mapped function's own branches or jump tables reach past its mapped end (`unmapped.py --functions`, `--write owner-extents`) |
+| `libmatch` | 40 | 219 | 40 | | masked bytes of a pinned runtime member, placed by object order, by tiling between (or after) placed neighbours of the same member, or where its relocations point at names the map already binds; byte-exact after relocation |
+| `copy` | 400 | 8,863 | 340 | 60 | byte-identical (near calls masked) to a known header-static helper (`VuVecMake`, `Fabs`, `VuVecCopy`, `NuFdiv`, `NuACos`, ...); named per compiland; the empty `ret` heading 68 compilands is `NuError` |
+| `compiler` | 47 | 1,112 | 12 | 35 | `.CRT$XC` initializers and the `atexit` destructors they register; `??__E`/`??__F` names where the stub passes its object as `this` |
+| `sibling` | 38 | 4,672 | 15 | 23 (with a proposed name) | the sibling build has one function of that name between the same named neighbours of the same file and at least one content signal agrees; C++ compilands get proposals only |
+| `extent` | 2,144 | 78,777 | 0 | 2,144 | decoded extent only (recursive descent from fill-delimited starts, jump and index tables followed) |
+| **ledger total** | **2,629** | **93,424** | **367 (9,518 bytes)** | **2,262 (83,906 bytes)** | |
+
+The padding rule now also accepts filler shorter than the alignment of the
+start it ends on (runtime assembler sections and import thunks start on 4- or
+8-byte boundaries); that turned 5 bytes of int3 into padding. No byte of
+`.text` is left as an "explicitly listed unknown".
+
+**Compiland boundaries.** A second copy of one header-static helper inside one
+layout row proves a compiland boundary (each TU emits its own copy once). Fed
+into `tools/layoutscan.py` (`--batman`, marker `second VuVecMake`), the layout
+went from 243 to 274 compilands: 31 new boundaries, 1 more named compiland
+(201) and 30 more undetermined (73); compiland starts moved onto the copy run
+that opens them. The undetermined ones are small (one copy plus a few
+address-named functions each); their names need a reference build that has
+the same files.
+
+### Port worklist
+
+`config/code-evidence.csv` is the machine-readable worklist: one row per new
+function with its compiland, evidence and, where the Android port defines the
+same name, the port source (`port`, 26 rows). `python3 tools/codemap.py
+--worklist` summarises it per compiland: 192 compiland rows (191 compilands
+plus "undetermined", 343 functions / 8,810 bytes). The largest:
+
+| Compiland | Functions | Bytes | Named | copy | compiler | sibling | extent | Port source |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| nu2api/nu3d_includes.cpp | 417 | 21,179 | 11 | 11 | 0 | 6 | 400 | 5 |
+| nu2api/nu3d_pc_includes.cpp | 306 | 13,481 | 7 | 7 | 0 | 9 | 290 | 3 |
+| (compiland undetermined) | 343 | 8,810 | 15 | 51 | 45 | 0 | 247 | 0 |
+| gameapi/gameliball.cpp | 83 | 5,234 | 1 | 1 | 0 | 3 | 79 | 0 |
+| nu2api/PCInput.cpp | 106 | 4,856 | 3 | 3 | 0 | 0 | 103 | 0 |
+| editor/edlevelall.cpp | 157 | 3,422 | 0 | 0 | 0 | 0 | 157 | 0 |
+| gameapi/edtoolsall.cpp | 58 | 2,919 | 3 | 3 | 0 | 0 | 55 | 0 |
+| gameapi/gamemenuall.cpp | 67 | 2,515 | 2 | 2 | 0 | 2 | 63 | 2 |
+| nu2api/nuwin32/d3dApiCalls.cpp | 35 | 2,353 | 2 | 2 | 0 | 0 | 33 | 0 |
+| nu2api/nucore_includes.cpp | 60 | 1,751 | 0 | 0 | 0 | 1 | 59 | 1 |
+| nu2api/nusound3/pc/nusound.cpp | 72 | 1,487 | 3 | 2 | 1 | 0 | 69 | 0 |
+| gameapi/aisysall.cpp | 10 | 1,351 | 2 | 2 | 0 | 0 | 8 | 0 |
+| legogame/chris.cpp | 45 | 1,326 | 10 | 10 | 0 | 0 | 35 | 0 |
+| nu2api/nurain.c | 5 | 639 | 0 | 0 | 0 | 0 | 5 | 0 |
+| nu2api/ShaderObjectKey.cpp | 38 | 608 | 1 | 2 | 0 | 0 | 36 | 0 |
+| gameapi/apiobject.c | 16 | 597 | 2 | 1 | 0 | 1 | 14 | 0 |
+| legogame/episodeI.c | 16 | 591 | 8 | 8 | 0 | 0 | 8 | 0 |
+| nu2api/numath_includes.cpp | 18 | 591 | 4 | 4 | 0 | 0 | 14 | 0 |
+| nu2api/CRC16.cpp | 17 | 569 | 1 | 1 | 0 | 0 | 16 | 0 |
+| nu2api/nuwin32/Stubs.cpp | 62 | 568 | 1 | 3 | 0 | 0 | 59 | 0 |
+
+The 27 "not implemented" function rows in the matching report before this
+change are a separate set: map rows that were named earlier with no source
+definition (15 game functions such as `_NetworkSyncPause` and the `NuMusic`
+members; 12 runtime functions such as `_sprintf`, `__ftol2` and
+`__except_handler4` whose archive member is not pinned for comparison). None
+of them is in the ledger. Every ledger row is also defined by no object, so
+after `match.py --update` the report lists them as "not implemented" too; the
+port worklist is those rows plus the 27.
+
+## Reproduced data
+
+"Mapped" says a byte belongs to a known extent; it says nothing about whether
+the build produces it. `match.py` therefore also reports
+`reproduced_<kind>_*` for file-backed data (`.rdata` plus the initialised part
+of `.data`) and zero-fill/BSS. Each byte counts in the first class that holds
+it:
+
+| Class | File-backed bytes | Zero-fill bytes | Meaning |
+| --- | ---: | ---: | --- |
+| exact | 510,704 | 34,145,149 | defined by our objects and equal to retail (`tools/datadiff.py` class `=`; for zero-fill: defined with the right size) |
+| library | 452,843 | 2,775 | provided by a pinned archive member whose whole section is proven in place (`unmapped.library_layout`: bytes equal after relocation, or unique bytes in retail, or retail zero for BSS); dxerr9's strings are most of it |
+| different, padding only | 23,297 | 6,905 | defined by us; datadiff class `p` (our extent has extra zero padding) |
+| different | 2,800 | 0 | defined by us with a real difference (datadiff classes a-f, u) |
+| identified, defined nowhere | 6,001 | 0 | mapped, but no object or pinned member defines it |
+| proven padding | 24,113 | 0 | alignment fill between known extents |
+| unidentified | 44,800 | 799,579 | not mapped |
+| **total** | **1,064,558** | **34,954,408** | |
+
+**Reproduced** is exact plus library: 963,547 file-backed bytes (90.511 %)
+and 34,147,924 zero-fill bytes (97.693 %). The README shows the file-backed
+number.
+
+The comparison is datadiff's: it compares every current object definition
+slot by slot and names pointers, so a pointer to an unmapped local compares by
+the bytes it points to. It is authoritative where it disagrees with the blob
+comparison of the data rows in `matching.json`: 31 rows the report calls
+"different" are exact under datadiff, and no row goes the other way
+(`progress.reproduced_data_comparison`). The objects of five units changed
+since they were built (`data.cpp`, `editor/edlevelall.cpp`,
+`legoapi/gizbuildit.cpp`, `legoapi/rtlhelper.cpp`, `gameapi/message.cpp`);
+their rows reflect the last build.
+
 ## What remains, and what it needs
 
 | Section | Class | Bytes | Work |
 | --- | --- | ---: | --- |
-| .text | unreferenced functions (1,414 of 1,443 start 16-aligned; no call, pointer or table reference from mapped code or data) | 76,957 | functions kept although nothing mapped reaches them: name from reference data or Android/sibling builds, then source. 34.7 k of all unmapped code lies in `nu3d_includes.cpp` and `nu3d_pc_includes.cpp` |
-| .text | identical unreferenced copies | 15,366 | header `static` helpers emitted per compiland (the 28-byte vector store appears 172 times): one source definition per owning compiland, not map rows |
-| .text | fill after or before unmapped code | 31,291 | becomes rule padding once the neighbouring function is mapped |
-| .text | address-taken, called, initializer stubs, jump tables | 1,768 | 23 `.CRT$XC` initializer/terminator stubs (`??__E`/`??__F` of their globals), 31 callbacks, 2 called functions, 2 switch tables |
-| .text | of the above, code outside the compiland table (runtime/SDK) | 5,849 | run `tools/libmatch.py` against a full build; whatever it does not accept is code the pinned archives do not contain |
+| .text | address-named functions (`extent`, `copy`, `compiler`, `sibling` rows without a real name) | 83,906 | 2,262 functions bounded but not identified: names from reference data or the Android/sibling builds (23 proposals are recorded), then source; 34.7 k of the ledger bytes lie in `nu3d_includes.cpp` and `nu3d_pc_includes.cpp` |
+| .text | undetermined compilands | 8,810 | 343 ledger functions in 73 compilands without a name; each needs a reference build that has the file |
 | .rdata | unnamed strings and their fill | 4,222 | referenced only from unmapped code or tables; literal or `const char[]` cannot be told apart from bytes (`--dry-run literals` lists the code-referenced ones with the literal name) |
 | .rdata | unknown data and zero fill | 10,921 | game tables and runtime data without anchor: typed globals in their owning compilands |
 | .data file-backed | unknown initialized data, zero fill and stray strings | 29,601 | game globals not yet declared; see the worklist |

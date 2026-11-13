@@ -128,6 +128,7 @@ class CandidateConstantTests(unittest.TestCase):
                 stack.enter_context(patch.object(match, name, return_value=value))
             stack.enter_context(patch.object(match, 'object_path', return_value=self.root / 'build/obj/fixture.obj'))
             stack.enter_context(patch.object(candidate_only, 'load', return_value=allow))
+            stack.enter_context(patch.object(match, 'reproduced_inputs', return_value=({}, {})))  # real objects and archives
             stack.enter_context(patch('sys.argv', ['match.py']))
             stack.enter_context(redirect_stdout(io.StringIO()))
             self.assertEqual(match.main(), 0)

@@ -361,6 +361,7 @@ class FullMatchMemberRegressionTests(unittest.TestCase):
                                 ("compiled_objects",{})):
                 stack.enter_context(patch.object(match,name,return_value=value))
             evaluator=stack.enter_context(patch.object(members,"evaluate_members",return_value=(list(current),None)))
+            stack.enter_context(patch.object(match, 'reproduced_inputs', return_value=({}, {})))  # real objects and archives
             stack.enter_context(patch("sys.argv",["match.py"]))
             stack.enter_context(redirect_stdout(io.StringIO()))
             result=match.main()

@@ -132,6 +132,134 @@ def data_padding_runs(ranges, sections, image_base, read):
     return runs
 
 
+ADDRESS_NAME = re.compile(r"_?fun_[0-9a-f]{8}")
+
+
+def code_name_progress(records, target):
+    """Mapped .text split into identified names and standard address names (fun_XXXXXXXX)."""
+    lower = number(target["text_va"])
+    upper = lower + number(target["text_size"])
+
+    def clipped(rows):
+        return [(max(lower, r["address"]), min(upper, r["address"] + r["size"]) - max(lower, r["address"]))
+                for r in rows if r["address"] is not None and r["size"]
+                and r["address"] < upper and r["address"] + r["size"] > lower]
+    rows = [r for r in records if r["address"] is not None and r["size"]]
+    every = covered_bytes(clipped(rows))
+    address = covered_bytes(clipped([r for r in rows if ADDRESS_NAME.fullmatch(r["symbol"])]))
+    total = upper - lower
+    return {"mapping_code_named_bytes": every - address,
+            "mapping_code_named_percent": 100 * (every - address) / total,
+            "mapping_code_address_named_bytes": address,
+            "mapping_code_address_named_percent": 100 * address / total,
+            "mapping_code_address_named_functions": sum(bool(ADDRESS_NAME.fullmatch(r["symbol"])) for r in rows
+                                                        if lower <= r["address"] < upper)}
+
+
+# Classes of initialised and zero-fill data storage, strongest first; a byte
+# counts in the first class whose ranges hold it.
+REPRODUCED_CLASSES = (
+    ("exact", "defined by our objects and byte-exact (tools/datadiff.py class =)"),
+    ("library", "provided by a pinned archive member whose section is proven byte-exact in place"),
+    ("different_padding", "defined by our objects; differs only by zero padding (datadiff class p)"),
+    ("different", "defined by our objects with real differences (datadiff classes a-f, u)"),
+    ("undefined", "identified (mapped) but defined by no object or member"),
+    ("padding", "proven alignment padding between known extents"),
+    ("unidentified", "not mapped"),
+)
+
+
+def reproduced_data(storage, classes):
+    """Bytes of each storage kind in each class of REPRODUCED_CLASSES.
+
+    `storage` is {kind: [(start, end)]}; `classes` is {class: [(start, size)]}.
+    `reproduced_<kind>_bytes` is exact plus library: bytes an object or archive
+    member we link would place exactly.
+    """
+    def merge(ranges):
+        out = []
+        for start, end in sorted(ranges):
+            if end <= start:
+                continue
+            if out and start <= out[-1][1]:
+                out[-1][1] = max(out[-1][1], end)
+            else:
+                out.append([start, end])
+        return out
+
+    def inside(ranges, lower, upper):
+        return sum(max(0, min(upper, b) - max(lower, a)) for a, b in ranges)
+    result = {}
+    for kind, regions in storage.items():
+        total = sum(b - a for a, b in regions)
+        seen, counts = [], {}
+        for name, _ in REPRODUCED_CLASSES[:-1]:
+            ranges = merge([(a, a + n) for a, n in classes.get(name, ())] + [tuple(r) for r in seen])
+            counts[name] = sum(inside(ranges, a, b) - inside(seen, a, b) for a, b in regions)
+            seen = ranges
+        counts["unidentified"] = total - sum(counts.values())
+        for name, count in counts.items():
+            result[f"reproduced_{kind}_{name}_bytes"] = count
+        reproduced = counts["exact"] + counts["library"]
+        result[f"reproduced_{kind}_bytes"] = reproduced
+        result[f"reproduced_{kind}_total_bytes"] = total
+        result[f"reproduced_{kind}_percent"] = 100 * reproduced / total if total else 0.0
+    result["reproduced_classes"] = dict(REPRODUCED_CLASSES)
+    return result
+
+
+def data_storage(sections, image_base):
+    """{"file_backed_data": [(start, end)], "zero_fill_data": [...]} of the data sections."""
+    storage = {"file_backed_data": [], "zero_fill_data": []}
+    for section in sections:
+        flags = section["characteristics"]
+        if section["name"] in (".rsrc", ".reloc") or flags & 0x20 or not flags & 0xc0 or not section["virtual_size"]:
+            continue
+        start = image_base + section["virtual_address"]
+        boundary = start + min(section["raw_size"], section["virtual_size"])
+        storage["file_backed_data"].append((start, boundary))
+        storage["zero_fill_data"].append((boundary, start + section["virtual_size"]))
+    return storage
+
+
+def reproduced_inputs(records, member_ranges, padding, data_rows):
+    """Class ranges for reproduced_data from tools/datadiff.py and tools/unmapped.py.
+
+    datadiff compares every current object definition slot by slot (pointers by
+    name); where it disagrees with the blob comparison in `data_rows`
+    (matching.json "exact"/"different"), datadiff is authoritative. Returns
+    (classes, disagreements).
+    """
+    from tools import datadiff
+    from tools.unmapped import Context, library_layout
+    scanner = datadiff.Scanner()
+    worst = {}
+    for row in datadiff.scan(scanner, datadiff.data_rows(scanner)):
+        key = (number(row["address"]), row["symbol"])
+        cls = row["class"]
+        rank = "=" if cls == "=" else "p" if cls == "p" else "x"
+        previous = worst.get(key, ("=", 0))[0]
+        order = "=px"
+        worst[key] = (max(previous, rank, key=order.index), max(row.get("size") or 0, worst.get(key, ("", 0))[1]))
+    classes = {"exact": [], "different_padding": [], "different": []}
+    for (address, _), (rank, size) in worst.items():
+        classes[{"=": "exact", "p": "different_padding", "x": "different"}[rank]].append((address, size))
+    ctx = Context(retail(project()["target"]), records, member_ranges)
+    classes["library"] = [(address, extent) for (address, _), extent in library_layout(ctx).items()]
+    classes["undefined"] = [(r["address"], r["size"]) for r in records if r["address"] is not None and r["size"]] \
+        + list(member_ranges)
+    classes["padding"] = list(padding)
+    by_display = {(number(r["address"]), r["name"]): r["status"] for r in data_rows if r.get("address")}
+    disagreements = {"exact_in_report_different_in_datadiff": 0, "different_in_report_exact_in_datadiff": 0}
+    for (address, name), (rank, _) in worst.items():
+        status = by_display.get((address, name))
+        if status == "exact" and rank != "=":
+            disagreements["exact_in_report_different_in_datadiff"] += 1
+        elif status == "different" and rank == "=":
+            disagreements["different_in_report_exact_in_datadiff"] += 1
+    return classes, disagreements
+
+
 def text_coverage(functions, target, externals=(), padding=(), data=()):
     """Describe original text categories without changing exact-match credit.
 
@@ -320,6 +448,16 @@ def update_badge(stats):
              else "Known data stored in the executable."),
             ("mapped%20zero--fill%2FBSS", "mapping_zero_fill_data_percent", "mapped zero-fill/BSS",
              "Known zero-initialized storage.")]
+    if "mapping_code_named_percent" in stats:
+        rows.insert(2, ("named%20code", "mapping_code_named_percent", "named code",
+                        f"Mapped code under identified names; another "
+                        f"{stats['mapping_code_address_named_percent']:.3f}% is bounded under address names "
+                        f"(`fun_XXXXXXXX`)."))
+    if "reproduced_file_backed_data_percent" in stats:
+        rows.insert(-1, ("reproduced%20file--backed%20data", "reproduced_file_backed_data_percent",
+                         "reproduced file-backed data",
+                         "Data stored in the executable that our objects or pinned library members define "
+                         "byte-exactly ([details](docs/mapping-status.md#reproduced-data))."))
     table = ("<!-- mapping-badge -->\n\n| Metric / coverage | Meaning |\n"
              "| --- | --- |\n"
              + "\n".join(f"| {image(label, field, alt)} | {meaning} |" for label, field, alt, meaning in rows)
@@ -544,6 +682,13 @@ def main():
             records, target, pe.sections, member_ranges,
             [(number(run["address"]), run["size"]) for run in padding] +
             [(run["address"], run["size"]) for run in data_padding]))
+        result["progress"].update(code_name_progress(records, target))
+        classes, disagreements = reproduced_inputs(records, member_ranges,
+                                                   [(run["address"], run["size"]) for run in data_padding], data)
+        result["progress"].update(reproduced_data(data_storage(pe.sections, number(target["image_base"])), classes))
+        result["progress"]["reproduced_data_comparison"] = {
+            "authority": "tools/datadiff.py (slot by slot, pointers by name) over the blob comparison of data rows",
+            **disagreements}
         if "data_members" in config:
             result["data_members"] = members
             result["data_member_proof"] = member_proof
@@ -571,6 +716,14 @@ def main():
                   f"{stats[f'mapping_{kind}_total_bytes']} bytes "
                   f"({stats[f'mapping_{kind}_percent']:.3f}% of original section storage; "
                   f"{stats.get(f'mapping_{kind}_with_padding_percent', 0.0):.3f}% with proven alignment padding)")
+        print(f"Mapped code under real names: {stats['mapping_code_named_bytes']} bytes "
+              f"({stats['mapping_code_named_percent']:.3f}%); under address names: "
+              f"{stats['mapping_code_address_named_bytes']} bytes ({stats['mapping_code_address_named_percent']:.3f}%, "
+              f"{stats['mapping_code_address_named_functions']} functions)")
+        for kind, label in (("file_backed_data", "file-backed data"), ("zero_fill_data", "zero-fill/BSS")):
+            parts = ", ".join(f"{name} {stats[f'reproduced_{kind}_{name}_bytes']}" for name, _ in REPRODUCED_CLASSES)
+            print(f"Reproduced {label}: {stats[f'reproduced_{kind}_bytes']}/{stats[f'reproduced_{kind}_total_bytes']} "
+                  f"bytes ({stats[f'reproduced_{kind}_percent']:.3f}%; {parts})")
     if args.function and units:
         for unit in units:
             diff_path = OUT / (unit["name"] + ".diff.json")
