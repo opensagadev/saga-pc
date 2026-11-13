@@ -2165,10 +2165,11 @@ void __cdecl DrawSubItemMenu2D(void) {
     item = &items[ids[3]];
     name = item->name;
     if (item->type == 1) {
-        if (item->unlocked == 1)
+        if (item->unlocked == 1) {
             show_name = 1;
-        else if ((u16)item->item_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
-                                                             : CollectIDUnlocked((u16)item->item_id) != 0)
+            buyable = 0;
+        } else if ((u16)item->item_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+                                                               : CollectIDUnlocked((u16)item->item_id) != 0)
             buyable = show_name = 1;
         else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
@@ -2176,14 +2177,16 @@ void __cdecl DrawSubItemMenu2D(void) {
                         1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
     } else if (item->type == 0) {
+        show_name = 0;
         buyable = item->unlocked != 1 && item->price != 0;
     } else if (item->type == 2) {
         id = (u16)item->item_id;
         NuStrCpy(subtitle, TTab[ExtrasCheatsPc[id].text_id != NULL ? *ExtrasCheatsPc[id].text_id : tUNKNOWN]);
         name = subtitle;
-        if (items[ids[3]].unlocked == 1)
+        if (items[ids[3]].unlocked == 1) {
             show_name = 1;
-        else {
+            buyable = 0;
+        } else {
             area = ExtrasCheatsPc[id].area_index;
             if (id < 8 || area == -1 || Game.area_save[area].red_brick_collected != 0)
                 buyable = show_name = 1;
@@ -2194,15 +2197,17 @@ void __cdecl DrawSubItemMenu2D(void) {
                             (i32)((f64)ShopNameAlpha * 128.0));
                 SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
                             1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+                buyable = show_name = 0;
             }
         }
     } else if (item->type == 4) {
         id = (u16)item->item_id;
         sprintf(title, "%s %i", TTab[TextIdPc880778], id + 1);
         name = title;
-        if (items[ids[3]].unlocked == 1)
+        if (items[ids[3]].unlocked == 1) {
             show_name = 1;
-        else if (Game.game_time >= id * 3600)
+            buyable = 0;
+        } else if (Game.game_time >= id * 3600)
             buyable = show_name = 1;
         else {
             SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
@@ -2210,6 +2215,7 @@ void __cdecl DrawSubItemMenu2D(void) {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.6f);
             SmartTextEx(TTab[TextIdPc880708], 0.0f, HubEpisodeSubtitleYPc, 1.0f, scale, scale, scale, 0, 255, 0, 0,
                         1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
+            buyable = show_name = 0;
         }
     } else if (item->type == 5) {
         id = (u16)item->item_id;
