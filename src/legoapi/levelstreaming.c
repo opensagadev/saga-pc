@@ -75,17 +75,19 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
                     }
                 }
             }
-            load = LevelLoad;
-            for (i = 0; i < LevelLoadCount; ++i, ++load) {
-                if (load->level == world->level_idx &&
-                    (((load->flags & 1) && InStory() != 0) || ((load->flags & 2) && InStory() == 0)))
-                    break;
-            }
-            if (i < LevelLoadCount) {
-                if (load->first_level == load->second_level)
-                    other_level = load->first_level;
-                else
-                    LevelStreamingChooseSplitPc(world, &position, load->first_level, load->second_level);
+            if (LevelLoadCount > 0) {
+                load = LevelLoad;
+                for (i = 0; i < LevelLoadCount; ++i, ++load) {
+                    if (load->level == world->level_idx &&
+                        (((load->flags & 1) && InStory() != 0) || ((load->flags & 2) && InStory() == 0)))
+                        break;
+                }
+                if (i < LevelLoadCount) {
+                    if (load->first_level == load->second_level)
+                        other_level = load->first_level;
+                    else
+                        LevelStreamingChooseSplitPc(world, &position, load->first_level, load->second_level);
+                }
             }
             if (other_level != -1 && InStory() == 0 && (LDataList[other_level].flags & 0x80)) {
                 status = Area_FindStatusLevel(world->area, NULL);
