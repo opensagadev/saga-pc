@@ -3546,8 +3546,8 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *, i32);
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *, i32);
 static void ParaphernaliaThrustPc(GAMEOBJECT *, i32);
 void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
-void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
-void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
+static void ParaphernaliaPlacePc(GAMEOBJECT *, i32, i32, i32);
+static void ParaphernaliaRemovePc(GAMEOBJECT *, i32, i32, i32);
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32);
 void __cdecl Grapple_DrawLine(GAMEOBJECT *);
 void __cdecl SuperCarry_DrawObject(GAMEOBJECT *);
@@ -4017,7 +4017,7 @@ void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     }
 }
 
-void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+static void ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;
@@ -4025,7 +4025,6 @@ void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection,
     f32 end;
     f32 start;
     f32 marker;
-    f32 scale;
     i32 extra_model;
     if (WORLD->level_objects[model].active == 0 || locator == -1 ||
         object->character_model->points_of_interest[locator] == NULL)
@@ -4047,14 +4046,14 @@ void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection,
     if (end < marker)
         marker = end;
     if (*frame < marker)
-        scale = (*frame - start) / (marker - start);
+        scaling.x = (*frame - start) / (marker - start);
     else
-        scale = 1.0f;
-    scaling.x = scaling.y = scaling.z = scale;
+        scaling.x = 1.0f;
+    scaling.y = scaling.z = scaling.x;
     matrix = object->locator_matrices[locator];
     if (model == 0xec) {
-        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
         extra_model = 0xed;
+        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
     } else {
         extra_model = -1;
     }
@@ -4071,7 +4070,7 @@ void __cdecl ParaphernaliaPlacePc(GAMEOBJECT *object, i32 model, i32 reflection,
     }
 }
 
-void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
+static void ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection, i32 locator) {
     NUVEC scaling;
     NUMTX matrix;
     NUMTX reflected;
@@ -4080,7 +4079,6 @@ void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection
     f32 start;
     f32 fade_start;
     f32 fade_end;
-    f32 scale;
     i32 extra_model;
     if (WORLD->level_objects[model].active == 0 || locator == -1 ||
         object->character_model->points_of_interest[locator] == NULL)
@@ -4102,22 +4100,22 @@ void __cdecl ParaphernaliaRemovePc(GAMEOBJECT *object, i32 model, i32 reflection
     fade_end = AnimListFrame(object->character_model, object->field_7aa, 2);
     if (fade_end < fade_start)
         fade_end = fade_start;
-    if (end < fade_end)
-        fade_end = end;
     if (end < fade_start)
         fade_start = end;
+    if (end < fade_end)
+        fade_end = end;
     if (*frame <= fade_start) {
-        scale = 1.0f;
+        scaling.x = 1.0f;
     } else {
-        if (*frame >= fade_end || fade_start >= fade_end)
+        if (!(*frame < fade_end) || !(fade_start < fade_end))
             return;
-        scale = 1.0f - (*frame - fade_start) / (fade_end - fade_start);
+        scaling.x = 1.0f - (*frame - fade_start) / (fade_end - fade_start);
     }
-    scaling.x = scaling.y = scaling.z = scale;
+    scaling.y = scaling.z = scaling.x;
     matrix = object->locator_matrices[locator];
     if (model == 0xec) {
-        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
         extra_model = 0xed;
+        NuMtxPreRotateY(&matrix, object->takeover_start_angle);
     } else {
         extra_model = -1;
     }
