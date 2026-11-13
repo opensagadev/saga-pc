@@ -11,8 +11,8 @@ start,end,unit,inner_files,area,evidence,confidence,marker,functions,bytes,imple
 0x40e700,0x413b50,src/legogame/chris.cpp,,legogame,code+marker+review,medium,ret fabs 28,53,19457,19457,6604,1297,0,legogame/chris.cpp:19456 legoapi/flightspline_diagnostic_pc.c:1
 0x413b70,0x413efe,src/legogame/config.c,,legogame,batman,medium,,1,910,910,910,0,0,legoapi/charconfig.c:910
 0x413f00,0x42009e,src/legogame/creature.c,,legogame,batman+marker,high,fabs,76,48588,48588,18823,1602,1191,legoapi/players.c:26872 legogame/creature.c:19755 legoapi/characters.cpp:1919 legogame/game.cpp:42
-0x4200c0,0x4238cb,src/legogame/?0x4200c0,,legogame,review+android,none,,30,12914,12914,4036,1071,0,legoapi/control_setup.cpp:12298 legoapi/customise.c:596 legoapi/player_device_port_pc.c:20
-0x4238d0,0x426b06,src/legogame/customise.c,,legogame,review,medium,,22,12610,12610,1678,547,0,legoapi/customise.c:12372 legoapi/characters.cpp:146 legoapi/hub.cpp:92
+0x4200c0,0x42362f,src/legogame/?0x4200c0,,legogame,review+android,none,,27,12318,12318,3440,1071,0,legoapi/control_setup.cpp:12298 legoapi/player_device_port_pc.c:20
+0x423670,0x426b06,src/legogame/customise.c,,legogame,review,medium,,25,13206,13206,2274,547,0,legoapi/customise.c:12968 legoapi/characters.cpp:146 legoapi/hub.cpp:92
 0x426b30,0x4277a2,src/legogame/detonator.c,,legogame,batman,medium,,9,3115,3115,3115,0,0,legogame/detonator.cpp:3115
 0x4277d0,0x428930,src/legogame/dropinout.c,,legogame,batman,medium,,9,4398,4398,1434,106,7,legoapi/players_dropin.cpp:3418 legoapi/menu_pause.cpp:495 legogame/dropinout.c:485
 0x428930,0x42f461,src/legogame/game.c,,legogame,batman+marker,high,fabs 28,95,26617,26617,19758,878,0,legogame/game.cpp:26440 legoapi/cutscene_hooks.c:177
