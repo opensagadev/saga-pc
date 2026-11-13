@@ -260,8 +260,8 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA_
     for (slot = 0; slot < 3; ++slot) {
         if (lighting_data->ambient_lights[slot] != NULL) {
             strength = ApplyAntilights(lighting_data->ambient_lights[slot], lighting_data,
-                                           lighting_data->ambient_lights[slot]->intensity *
-                                               lighting_data->ambient_strengths[slot]);
+                                       lighting_data->ambient_lights[slot]->intensity *
+                                           lighting_data->ambient_strengths[slot]);
 #define RTL_AMBIENT_COMPONENT(component)                                                                               \
     lighting_data->ambient.component =                                                                                 \
         lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength > 1.0f    \
