@@ -2682,6 +2682,8 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
 
 extern "C" {
     void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
+        i32 bolts[5], bolt_count = 0;
+        i32 used_locator = 0;
         BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
         u32 flags = type->flags_60;
         f32 speed = type->field_10;
@@ -2694,8 +2696,6 @@ extern "C" {
         i16 sounds[8];
         NUVEC sound_positions[8];
         i32 sound_count = 0;
-        i32 bolts[5], bolt_count = 0;
-        i32 used_locator = 0;
         i32 index;
         u16 heading;
 
