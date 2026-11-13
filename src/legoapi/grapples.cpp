@@ -318,14 +318,12 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
     for (i32 index = 0; index < count; ++index, ++grapple) {
         f32 distance;
         if (object != NULL) {
-            u8 hooked;
             f32 side_distance;
-            if (!(grapple->flags & 2) || !(grapple->flags & 1) ||
+            if (!grapple->visible || !grapple->active ||
                 (grapple->has_terrain_platform != 0 && grapple->attached_object == NULL)) {
                 continue;
             }
-            hooked = (grapple->flags >> 2) & 1;
-            if (hooked) {
+            if (grapple->disabled) {
                 if (Grapple_Occupied(grapple, NULL, NULL) != NULL) {
                     continue;
                 }
@@ -337,17 +335,16 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
                     continue;
                 }
             }
-            if ((grapple->flags & 8) != 0 &&
-                ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !hooked)) {
+            if (grapple->reversed &&
+                ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !grapple->disabled)) {
                 continue;
             }
             if (!(object->upper_position.y < grapple->shadow_probe_position.y)) {
                 continue;
             }
-            // MATCH-EXCEPTION: hooked != 1 (not !hooked) keeps the retail re-test of hooked.
-            if (!((hooked &&
+            if (!((grapple->disabled &&
                    object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length)) ||
-                  (hooked != 1 && object->collision_position.y > grapple->ground_position.y))) {
+                  (!grapple->disabled && object->collision_position.y > grapple->ground_position.y))) {
                 continue;
             }
             NuVecSub(&local, &object->upper_position, &grapple->hook_position);
