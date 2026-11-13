@@ -867,7 +867,7 @@ void __cdecl GizmoPickups_SetOnOff(void) {
                 off = 0;
             else if (index == 4 && SuperStory != 0)
                 off = 0;
-            else if (index == 9 && world->area != NULL && (world->area->flags & 0x100) != 0)
+            else if (index == 9 && WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0)
                 off = 0;
             else if ((arcade_flags & 0x10) != 0 && index != 5 && index != 9)
                 off = 0;
