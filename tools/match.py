@@ -463,60 +463,51 @@ def oklch_to_srgb(lightness, chroma, hue):
 
 
 # The percentage badges are our own SVG files in shields' for-the-badge look (shields
-# forces white text on darker colours and has no text colour parameter): one dark text
-# colour on every badge, and a saturated colour that keeps it readable.
-BADGE_TEXT = (0x22, 0x22, 0x22)
-BADGE_MIN_TEXT_CONTRAST = 4.5  # WCAG AA
-# (percent, OKLCH hue): red-orange at 0, orange at 75, then amber, yellow and lime; the hue
-# runs linearly in log10(101 - percent) between these points, so 90, 94, 97, 99 and 99.9
-# each get a hue of their own.
-BADGE_HUE_POINTS = ((0, 34), (75, 57), (90, 70), (94, 85), (97, 99), (99, 116), (99.9, 133), (100, 136))
-BADGE_FULL_GREEN = "4fff88"  # only for a displayed 100.000
+# forces white text on darker colours and has no text colour parameter), with one text
+# colour on every badge. Set BADGE_TEXT to (0xff, 0xff, 0xff) for shields' white text.
+BADGE_TEXT = (0x1a, 0x1a, 0x1a)
+# A gradient over shields' classic named colours (red, orange, yellow, yellowgreen,
+# green): (percent, colour) stops, interpolated in OKLCH and placed linearly in
+# log10(101 - percent), so the stops crowd towards 100 and 90, 94, 97, 99 and 99.9 differ.
+BADGE_STOPS = ((0, "e05d44"), (60, "fe7d37"), (91.5, "dfb317"), (97.8, "a4a61d"), (99.9, "97ca00"))
+BADGE_FULL_GREEN = "44cc11"  # brightgreen, only for a displayed 100.000
 
 
-def badge_hue(shown):
-    """OKLCH hue of a badge for a displayed percentage below 100."""
-    x = math.log10(101 - shown)
-    for (low, low_hue), (high, high_hue) in zip(BADGE_HUE_POINTS, BADGE_HUE_POINTS[1:]):
-        if shown <= high:
-            start, end = math.log10(101 - low), math.log10(101 - high)
-            return low_hue + (high_hue - low_hue) * (x - start) / (end - start)
-    return BADGE_HUE_POINTS[-1][1]
+def srgb_to_oklch(rgb):
+    """(lightness, chroma, hue in degrees) of an (r, g, b) colour of 0..255 channels."""
+    r, g, b = (srgb_linear(channel) for channel in rgb)
+    l, m, s = (value ** (1 / 3) for value in (0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+                                             0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+                                             0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b))
+    a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+    b = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+    return (0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, math.hypot(a, b),
+            math.degrees(math.atan2(b, a)) % 360)
 
 
 @functools.lru_cache(maxsize=None)
 def badge_color(value):
     """Hex colour (RRGGBB, no '#') for a percentage badge, from the value as the badge displays it.
 
-    Only a displayed 100.000 gets BADGE_FULL_GREEN. Below it the hue follows
-    BADGE_HUE_POINTS, and each hue takes the most saturated colour inside the sRGB gamut
-    (its OKLCH cusp), made lighter only as far as BADGE_TEXT needs for a contrast of
-    BADGE_MIN_TEXT_CONTRAST.
+    Only a displayed 100.000 gets BADGE_FULL_GREEN; below it the colour runs through
+    BADGE_STOPS, with the chroma reduced where the interpolation leaves the sRGB gamut.
     """
     shown = min(max(float(f"{value:.3f}"), 0), 100)
     if shown >= 100:
         return BADGE_FULL_GREEN
-    hue = badge_hue(shown)
-
-    def widest(lightness):
-        low, high = 0.0, 0.4  # chroma; 0.4 lies outside the sRGB gamut at every hue
-        for _ in range(25):
-            middle = (low + high) / 2
-            low, high = (middle, high) if oklch_to_srgb(lightness, middle, hue) else (low, middle)
-        return low, oklch_to_srgb(lightness, low, hue)
-    # The widest chroma rises with lightness up to the hue's cusp and falls after it,
-    # while the contrast with the dark text keeps rising.
-    low, high = 0.4, 1.0
-    for _ in range(40):
-        left, right = low + (high - low) / 3, high - (high - low) / 3
-        low, high = (left, high) if widest(left)[0] < widest(right)[0] else (low, right)
-    cusp = low
-    low, high = 0.4, 1.0
-    for _ in range(30):
-        middle = (low + high) / 2
-        enough = contrast(widest(middle)[1], BADGE_TEXT) >= BADGE_MIN_TEXT_CONTRAST
-        low, high = (low, middle) if enough else (middle, high)
-    return bytes(widest(max(cusp, high))[1]).hex()
+    x = math.log10(101 - shown)
+    for (low, low_color), (high, high_color) in zip(BADGE_STOPS, BADGE_STOPS[1:]):
+        if shown <= high:
+            start, end = math.log10(101 - low), math.log10(101 - high)
+            t = (x - start) / (end - start)
+            first, second = (srgb_to_oklch(bytes.fromhex(color)) for color in (low_color, high_color))
+            hue_step = (second[2] - first[2] + 180) % 360 - 180
+            lightness, chroma = (a + (b - a) * t for a, b in zip(first[:2], second[:2]))
+            hue = first[2] + hue_step * t
+            while (rgb := oklch_to_srgb(lightness, chroma, hue)) is None:
+                chroma -= 0.001
+            return bytes(rgb).hex()
+    return BADGE_STOPS[-1][1]
 
 
 # Character widths of Verdana 10px from anafanafo 2.0.0 (the table shields' badge-maker

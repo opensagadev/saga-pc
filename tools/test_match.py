@@ -157,22 +157,29 @@ class ProgressTests(unittest.TestCase):
     def test_badge_hue_rises_monotonically_to_full_green_only_at_100(self):
         values = [step / 10 for step in range(1001)] + [99.95, 99.99, 99.999, 99.9994]
         hues = [self.hue(value) for value in sorted(values)]
-        self.assertEqual(hues, sorted(hues))
+        # Rounding to 8-bit channels moves a hue by a fraction of a degree, no more.
+        for lower, higher in zip(hues, hues[1:]):
+            self.assertGreater(higher, lower - 0.5)
         key = [self.hue(value) for value in (0, 60, 90, 94, 97, 99, 99.9, 100)]
         self.assertEqual(key, sorted(set(key)))
         full = match.badge_color(100)
         self.assertEqual(match.badge_color(99.9996), full)  # displayed as 100.000
         self.assertEqual([value for value in values if match.badge_color(value) == full], [100.0])
-        self.assertGreater(self.hue(100) - self.hue(99.999), 30)
+        self.assertGreater(self.hue(100) - self.hue(99.999), 20)
 
     def test_badge_colors_near_the_top_are_distinct(self):
         def distance(a, b):
             a, b = bytes.fromhex(match.badge_color(a)), bytes.fromhex(match.badge_color(b))
             return math.dist(a, b)
+        def oklab(value):
+            lightness, chroma, hue = match.srgb_to_oklch(bytes.fromhex(match.badge_color(value)))
+            return lightness, chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
+        # shields' yellow, yellowgreen and green lie close together, which bounds these distances.
         values = (60, 90, 94, 97, 99, 99.9, 100)
         for low, high in zip(values, values[1:]):
             with self.subTest(low=low, high=high):
-                self.assertGreaterEqual(distance(low, high), 25)
+                self.assertGreaterEqual(distance(low, high), 20)
+                self.assertGreaterEqual(math.dist(oklab(low), oklab(high)), 0.03)
         self.assertGreater(distance(99.9, 100), 80)
         self.assertGreater(distance(60, 95), 80)
 
@@ -183,14 +190,13 @@ class ProgressTests(unittest.TestCase):
                 self.assertGreaterEqual(match.contrast(rgb, match.BADGE_TEXT), 4.5)
         self.assertEqual(match.contrast((255, 255, 255), (0, 0, 0)), 21)
 
-    def test_badge_low_end_is_saturated_orange_red(self):
-        for value in (0, 25, 50, 75):
+    def test_badge_stops_are_shields_named_colours(self):
+        for value, color in match.BADGE_STOPS[:-1]:
             with self.subTest(value=value):
-                r, g, b = bytes.fromhex(match.badge_color(value))
-                self.assertEqual(r, 255)
-                self.assertLess(b, 0x20)
-        self.assertLess(self.hue(0), 20)
-        self.assertTrue(25 < self.hue(75) < 40)
+                self.assertEqual(match.badge_color(value), color)
+        self.assertEqual([color for _, color in match.BADGE_STOPS] + [match.BADGE_FULL_GREEN],
+                         ["e05d44", "fe7d37", "dfb317", "a4a61d", "97ca00", "44cc11"])
+        self.assertLess(math.dist(bytes.fromhex(match.badge_color(99.9)), bytes.fromhex("97ca00")), 8)
 
 
 def badge_img(name, message, label=""):
@@ -216,14 +222,14 @@ class BadgeSvgTests(unittest.TestCase):
         self.assertEqual((label.text, label.get("textLength"), label.get("x"), label.get("fill")),
                          ("FUZZY CODE MATCH", "1240", "740", None))
         self.assertEqual((message.text, message.get("textLength"), message.get("x"), message.get("fill"),
-                          message.get("font-weight")), ("94.207%", "597.5", "1900", "#222222", "bold"))
+                          message.get("font-weight")), ("94.207%", "597.5", "1900", "#1a1a1a", "bold"))
 
     def test_message_only_badge(self):
         root = ElementTree.fromstring(match.badge_svg("100.000%", match.badge_color(100)))
         ns = "{http://www.w3.org/2000/svg}"
         self.assertEqual(root.get("width"), "92")
         (rect,) = root.iter(ns + "rect")
-        self.assertEqual((rect.get("x"), rect.get("fill")), (None, "#4fff88"))
+        self.assertEqual((rect.get("x"), rect.get("fill")), (None, "#44cc11"))
         (text,) = root.iter(ns + "text")
         self.assertEqual((text.text, text.get("x"), text.get("textLength")), ("100.000%", "460", "680"))
 
