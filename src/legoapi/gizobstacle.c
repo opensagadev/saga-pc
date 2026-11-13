@@ -1252,9 +1252,13 @@ static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_
             GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
             NUVEC *position;
             i32 point_index;
+            f32 obstacle_radius;
             if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
                 continue;
-            if (maximum->x < obstacle->evaluated_position.x - obstacle->evaluated_radius ||
+            // MATCH-EXCEPTION: the radius local feeds only the first bound; retail then loads the position before
+            // the radius in the z and y "+" bounds, which no other form of this test reproduces.
+            obstacle_radius = obstacle->evaluated_radius;
+            if (maximum->x < obstacle->evaluated_position.x - obstacle_radius ||
                 minimum->x > obstacle->evaluated_position.x + obstacle->evaluated_radius ||
                 maximum->z < obstacle->evaluated_position.z - obstacle->evaluated_radius ||
                 minimum->z > obstacle->evaluated_position.z + obstacle->evaluated_radius ||
