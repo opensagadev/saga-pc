@@ -88,19 +88,6 @@ typedef struct WORLD_SHARDS_READER_PC {
 } WORLD_SHARDS_READER_PC;
 STATIC_ASSERT(offsetof(WORLD_SHARDS_READER_PC, shards) == 0x5090);
 STATIC_ASSERT(offsetof(WORLD_SHARDS_READER_PC, shard_count) == 0x5094);
-void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
-    WORLD_SHARDS_READER_PC *world = (WORLD_SHARDS_READER_PC *)opaque_world;
-    SHARD_LOST_OWNER_PC *shard = world->shards;
-    i32 i;
-    for (i = 0; i < world->shard_count; ++i, ++shard) {
-        if (!(shard->state_flags & 8) && (shard->state_flags & 4) && shard->collector == object) {
-
-            shard->state_flags &= (u8)~4;
-            shard->collection_time = 0.0f;
-            shard->collector = NULL;
-        }
-    }
-}
 
 /* Same-TU matrix helpers; retail keeps their standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopyPc(NUMTX *destination, const NUMTX *source) {

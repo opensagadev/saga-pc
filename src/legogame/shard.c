@@ -1,5 +1,7 @@
 #include "saga.h"
 
+/* Retail unit 0x4c0100-0x4c0d50: definitions in retail address order. */
+
 typedef struct shard_progress_recovered_pc_s {
     u32 collected[4];
     u32 active[4];
@@ -27,37 +29,28 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_shards) == 0xf1);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *ShardOutputNamePc;
-
 void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
-static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
-    i32 attempt;
-    shard->state_flags = (shard->state_flags & ~0x18u) | 3;
-    shard->model_index = (i16)(qrand() / 9363);
-    for (attempt = 0; attempt < 7; ++attempt) {
-        if (world->level_objects[shard->model_index + 65].active != 0)
-            break;
-        ++shard->model_index;
-        if (shard->model_index == 7)
-            shard->model_index = 0;
-    }
-    shard->model_index += 65;
-    shard->spin_angle = (u16)qrand();
-    shard->collection_time = 0.0f;
-    shard->state_flags &= ~0x24u;
-    shard->current_position = shard->position;
-    shard->collector = NULL;
-}
-void *__cdecl Shards_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
-    world->shards = NULL;
-    world->shard_count = 0;
-    if (level->max_shards > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->shards = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += level->max_shards * sizeof(SHARD_s);
-    }
-    return world->shards;
-}
+typedef struct SHARD_LOST_OWNER_PC {
+    u8 unknown_00[0x3c];
+    u8 state_flags;
+    u8 unknown_3d[3];
+    f32 collection_time;
+    GAMEOBJECT *collector;
+    u8 unknown_48[0xc];
+} SHARD_LOST_OWNER_PC;
+typedef struct WORLD_SHARDS_READER_PC {
+    u8 unknown_0000[0x5090];
+    SHARD_LOST_OWNER_PC *shards;
+    i32 shard_count;
+} WORLD_SHARDS_READER_PC;
+
+#pragma const_seg(".rdata$PCContextName_Shard")
+const char PCContextName_Shard[6] = "Shard";
+#pragma const_seg()
+#pragma const_seg(".rdata$PCShardOutputTextPc")
+const char PCShardOutputTextPc[4] = "Got";
+#pragma const_seg()
+
 i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
     i32 index, version;
     if (world->shard_count == 0) {
@@ -78,24 +71,77 @@ i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
     }
     return 0;
 }
+
+void *__cdecl Shards_ReserveBufferSpace(WORLDINFO *world) {
+    LEVELDATA_PC *level = world->current_level;
+    world->shards = NULL;
+    world->shard_count = 0;
+    if (level->max_shards > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        world->shards = world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += level->max_shards * sizeof(SHARD_s);
+    }
+    return world->shards;
+}
+
+static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
+    i32 attempt;
+    shard->state_flags = (shard->state_flags & ~0x18u) | 3;
+    shard->model_index = (i16)(qrand() / 9363);
+    for (attempt = 0; attempt < 7; ++attempt) {
+        if (world->level_objects[shard->model_index + 65].active != 0)
+            break;
+        ++shard->model_index;
+        if (shard->model_index == 7)
+            shard->model_index = 0;
+    }
+    shard->model_index += 65;
+    shard->spin_angle = (u16)qrand();
+    shard->collection_time = 0.0f;
+    shard->state_flags &= ~0x24u;
+    shard->current_position = shard->position;
+    shard->collector = NULL;
+}
+
+void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
+    SHARD_s *progress_record;
+    i32 index;
+    if (world == NULL || world->shards == NULL)
+        return;
+    progress_record = (SHARD_s *)world->shards;
+    for (index = 0; index < world->shard_count; ++index, ++progress_record) {
+        ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
+        if (progress != NULL && index < 128) {
+            i32 word = index / 32;
+            u32 mask = 1u << (index & 31);
+            progress_record->collected = (progress->collected[word] & mask) != 0;
+            progress_record->visible = (progress->visible[word] & mask) != 0;
+            progress_record->active = (progress->active[word] & mask) != 0;
+        }
+    }
+}
+
 void __cdecl Shard_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SHARD_s *shard = (SHARD_s *)gizmo->object;
         shard->active = active != 0;
     }
 }
+
 void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SHARD_s *shard = (SHARD_s *)gizmo->object;
         shard->visible = visible != 0;
     }
 }
+
 void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index)
         ((SHARD_s *)world->shards)[index].state_flags &= ~0x20u;
 }
+
 void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = (SHARD_s *)world->shards;
     NUVEC target, velocity, offset;
@@ -146,6 +192,7 @@ void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 de
         }
     }
 }
+
 void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = (SHARD_s *)world->shards;
     NUMTX matrix;
@@ -183,21 +230,11 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
             shard->drawn = NuSpecialDrawAt(&world->level_objects[shard->model_index].special, &matrix);
     }
 }
+
 i32 __cdecl Shards_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_shards : 0;
 }
-char *__cdecl Shard_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
-}
-i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    return ((SHARD_s *)gizmo->object)->collected;
-}
-char *__cdecl Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ShardOutputNamePc;
-}
-i32 __cdecl Shard_GetNumOutputs(GIZMO_PC *gizmo) {
-    return 1;
-}
+
 void __cdecl Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
@@ -205,6 +242,30 @@ void __cdecl Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, v
             AddGizmo(system, type, NULL, &((SHARD_s *)world->shards)[index]);
     }
 }
+
+char *__cdecl Shard_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
+}
+
+i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    return ((SHARD_s *)gizmo->object)->collected;
+}
+#pragma data_seg(".data$ShardOutputNamePc")
+char *ShardOutputNamePc = (char *)PCShardOutputTextPc;
+#pragma data_seg()
+
+char *__cdecl Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    return ShardOutputNamePc;
+}
+
+i32 __cdecl Shard_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}
+
+void *__cdecl Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
+    return GizmoBufferAlloc(start, end, sizeof(SHARD_PROGRESS_PC));
+}
+
 void __cdecl Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
     if (progress != NULL) {
         memset(progress->collected, 0, 16);
@@ -212,9 +273,7 @@ void __cdecl Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
         memset(progress->visible, 0xff, 16);
     }
 }
-void *__cdecl Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
-    return GizmoBufferAlloc(start, end, sizeof(SHARD_PROGRESS_PC));
-}
+
 void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
     SHARD_s *shard;
     i32 index;
@@ -235,39 +294,13 @@ void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS
             progress->active[word] &= ~mask;
     }
 }
-void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
-    SHARD_s *progress_record;
-    i32 index;
-    if (world == NULL || world->shards == NULL)
-        return;
-    progress_record = (SHARD_s *)world->shards;
-    for (index = 0; index < world->shard_count; ++index, ++progress_record) {
-        ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
-        if (progress != NULL && index < 128) {
-            i32 word = index / 32;
-            u32 mask = 1u << (index & 31);
-            progress_record->collected = (progress->collected[word] & mask) != 0;
-            progress_record->visible = (progress->visible[word] & mask) != 0;
-            progress_record->active = (progress->active[word] & mask) != 0;
-        }
-    }
-}
-
-#pragma const_seg(".rdata$PCContextName_Shard")
-const char PCContextName_Shard[6] = "Shard";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCShardOutputTextPc")
-const char PCShardOutputTextPc[4] = "Got";
-#pragma const_seg()
 #pragma data_seg(".data$ShardRegistryNamePc")
 char *ShardRegistryNamePc = (char *)PCContextName_Shard;
-#pragma data_seg()
-#pragma data_seg(".data$ShardOutputNamePc")
-char *ShardOutputNamePc = (char *)PCShardOutputTextPc;
 #pragma data_seg()
 #pragma data_seg(".data$ShardAddTypePc")
 ADDGIZMOTYPE_PC ShardAddTypePc = {0};
 #pragma data_seg()
+
 ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;
     ShardAddTypePc = Default_ADDGIZMOTYPE;
@@ -302,4 +335,29 @@ ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddTypePc.fns.post_load_fn = NULL;
     ShardAddTypePc.fns.add_level_sfx_fn = NULL;
     return &ShardAddTypePc;
+}
+
+void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
+    shard->collection_time = 0.0f;
+    shard->collecting = 1;
+    shard->collector = object;
+    NuVecRotateZ(&shard->collection_velocity, &v010, shard->angle_z);
+    NuVecRotateZ(&shard->collection_velocity, &shard->collection_velocity, shard->angle_x);
+    NuVecScale(&shard->collection_velocity, &shard->collection_velocity, 3.0f);
+    NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
+    shard->tumble_x = qrand() < 0x8000;
+}
+
+void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
+    WORLD_SHARDS_READER_PC *world = (WORLD_SHARDS_READER_PC *)opaque_world;
+    SHARD_LOST_OWNER_PC *shard = world->shards;
+    i32 i;
+    for (i = 0; i < world->shard_count; ++i, ++shard) {
+        if (!(shard->state_flags & 8) && (shard->state_flags & 4) && shard->collector == object) {
+
+            shard->state_flags &= (u8)~4;
+            shard->collection_time = 0.0f;
+            shard->collector = NULL;
+        }
+    }
 }

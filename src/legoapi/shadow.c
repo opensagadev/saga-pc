@@ -66,17 +66,6 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
     }
 }
 
-void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
-    shard->collection_time = 0.0f;
-    shard->collecting = 1;
-    shard->collector = object;
-    NuVecRotateZ(&shard->collection_velocity, &v010, shard->angle_z);
-    NuVecRotateZ(&shard->collection_velocity, &shard->collection_velocity, shard->angle_x);
-    NuVecScale(&shard->collection_velocity, &shard->collection_velocity, 3.0f);
-    NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
-    shard->tumble_x = qrand() < 0x8000;
-}
-
 void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
     packet->shadows[0].position.y = 2000000.0f;
     packet->shadows[1].position.y = 2000000.0f;
