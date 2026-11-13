@@ -8024,8 +8024,8 @@ static __declspec(noinline) EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
                     NuVecRotateY(&difference, &difference, -(i16)area->rotation);
                     if (difference.x < area->size.x && difference.y < area->size.y && difference.z < area->size.z &&
                         difference.x > -area->size.x && difference.y > -2.0f && difference.z > -area->size.z) {
-                        best = distance;
                         nearest = area;
+                        best = distance;
                     }
                 }
             } else {
