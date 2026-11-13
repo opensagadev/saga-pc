@@ -1758,7 +1758,6 @@ void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour)
         __declspec(align(16)) NUVEC position;
         NUVEC delta;
         f32 start_distance;
-        f32 limit;
         if (aieditor && (aieditor->flags & 2))
             position = aieditor->camera_position;
         else
@@ -1770,8 +1769,10 @@ void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour)
         delta.x = position.x - x1;
         delta.y = position.y - y1;
         delta.z = position.z - z1;
-        limit = AiRndrCullDistance * AiRndrCullDistance;
-        if (start_distance < limit || delta.x * delta.x + delta.y * delta.y + delta.z * delta.z < limit)
+        // MATCH-EXCEPTION: retail rounds the end distance through the start_distance slot before comparing.
+        if (start_distance < AiRndrCullDistance * AiRndrCullDistance ||
+            (start_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z) <
+                AiRndrCullDistance * AiRndrCullDistance)
             NuRndrLine3dDbg(x0, y0, z0, x1, y1, z1, colour);
     } else {
         NuRndrLine3dDbg(x0, y0, z0, x1, y1, z1, colour);
