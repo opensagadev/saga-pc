@@ -4828,13 +4828,12 @@ typedef struct beast_ground_contact_view_pc_s {
 STATIC_ASSERT(offsetof(BEAST_GROUND_CONTACT_VIEW_PC, ground_contact_grace_timer) == 0xd24);
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *);
 void __cdecl ForcedBackCode(GAMEOBJECT *object) {
-    f32 distance;
+    f32 radius, distance;
     if (ForceBackPosPc != NULL && (object->flags_ef0 & 0x10000000) == 0)
         distance = NuVecDistSqr(&object->collision_position, ForceBackPosPc, NULL);
     else
         distance = 1000000.0f;
     if (object->character_context == 0x22) {
-        f32 radius;
         if (MosEisleyC_PastBarrier(object))
             object->position.z = 5.85f;
         object->context_hover_target_y += FRAMETIME;
@@ -4862,7 +4861,7 @@ void __cdecl ForcedBackCode(GAMEOBJECT *object) {
                (ForceBackTypePc != 2 || (object->character_data->model_flags & 0x10) != 0) &&
                !MosEisleyC_PastBarrier(object) &&
                (ForceBackTypePc != 3 || ForceBackObjPc == NULL || ForceBackObjPc->force_target == object)) {
-        f32 radius = (f32)((f64)ForceBackRadiusPc - (f64)0.2f);
+        radius = (f32)((f64)ForceBackRadiusPc - (f64)0.2f);
         if (distance < radius * radius) {
             Player_ClearContext(object, 1);
             Player_ResetContexts(&((TERRAIN_PARENT_CONTEXT_VIEW_PC *)object)->reset_context);
