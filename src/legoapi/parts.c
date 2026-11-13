@@ -1605,13 +1605,11 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     i32 j;
     i32 particle;
     i32 particle_count;
-    i32 maximum_particles;
     i32 particle_key_slot;
     i32 new_key_index;
     DEBRISKEY_PC *key;
     i32 required_particles;
     i32 required_chunks;
-    i32 allocated_chunks;
     i32 new_chunk_count;
     i32 total_chunk_count;
     DEBRISPARTICLE_PC *generated;
@@ -1621,10 +1619,10 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     DEBRIS_PARTICLE_CHUNK_PC *last_chunk;
 
     if (debris_suspended != 0 || update_debris_enabled == 0 || effect_index == -1 || effect_index == 0 ||
-        debinf_count <= effect_index)
+        effect_index >= debinf_count)
         return;
     effect = debtab[effect_index];
-    if (effect == NULL || effect->disabled != 0 || count < 1)
+    if (effect == NULL || effect->disabled != 0 || count <= 0)
         return;
     if (4 != effect->time_group) {
         NUVEC extent;
@@ -1646,13 +1644,16 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         emitter_orientation = &NuMtxSetIdentityTemplate;
     if (particle_orientation == NULL)
         particle_orientation = &NuMtxSetIdentityTemplate;
-    panel_time = effect->time_group == 4;
-    now = panel_time ? panelglobaltime : globaltime;
+    if (effect->time_group == 4) {
+        now = panelglobaltime;
+        panel_time = 1;
+    } else {
+        now = globaltime;
+        panel_time = 0;
+    }
     end_time = now + duration;
     emission_epoch = ((f32)(i32)DebrisDivide(now, emission_interval)) * emission_interval;
-    emission_time = emission_interval + emission_epoch;
-    if (!(emission_time <= end_time))
-        return;
+    emission_time = emission_epoch + emission_interval;
     emission_count = 0;
     next_emission_time = emission_time;
     i = 0;
@@ -1665,13 +1666,17 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     if (emission_count == 0)
         return;
     particle_count = emission_count * ((i32)effect->trail_count + 1);
-    maximum_particles = effect->particle_type == 7 ? 0x180 : 0x400;
     particle_key_slot = -1;
     key = NULL;
     for (i = 0; i < 8; ++i) {
         if (effect->particle_keys[i] != -1) {
             key = &debkeydata[effect->particle_keys[i]];
-            if (key->particle_count + particle_count <= maximum_particles) {
+            if (effect->particle_type == 7) {
+                if (key->particle_count + particle_count <= 0x180) {
+                    particle_key_slot = i;
+                    break;
+                }
+            } else if (key->particle_count + particle_count <= 0x400) {
                 particle_key_slot = i;
                 break;
             }
@@ -1696,16 +1701,15 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     }
     if (key == NULL)
         return;
-    required_particles = key->particle_count + particle_count;
+    required_particles = particle_count + key->particle_count;
     if (effect->particle_type == 7) {
-        allocated_chunks = key->allocated_chunk_count;
-        if (allocated_chunks * 12 < required_particles) {
-            if (allocated_chunks <= -1) {
+        if (required_particles > key->allocated_chunk_count * 12) {
+            if (key->allocated_chunk_count < 0) {
                 key->allocated_chunk_count = 0;
             }
             required_chunks = (required_particles + 12 - 1) / 12;
             new_chunk_count = required_chunks - key->allocated_chunk_count;
-            if (debrischunksglass <= freedebchkptrg + new_chunk_count || required_chunks > 32)
+            if (freedebchkptrg + new_chunk_count >= debrischunksglass || required_chunks > 32)
                 return;
             for (i = 0; i < new_chunk_count; ++i) {
                 key->particle_chunks[key->allocated_chunk_count] = freedebchunksglass[freedebchkptrg++];
@@ -1732,14 +1736,13 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
             }
         }
     } else {
-        allocated_chunks = key->allocated_chunk_count;
-        if (allocated_chunks * 32 < required_particles) {
-            if (allocated_chunks <= -1) {
+        if (required_particles > key->allocated_chunk_count * 32) {
+            if (key->allocated_chunk_count < 0) {
                 key->allocated_chunk_count = 0;
             }
             required_chunks = (required_particles + 32 - 1) / 32;
             new_chunk_count = required_chunks - key->allocated_chunk_count;
-            if (debrischunks <= freedebchkptr + new_chunk_count || required_chunks > 32)
+            if (freedebchkptr + new_chunk_count >= debrischunks || required_chunks > 32)
                 return;
             for (i = 0; i < new_chunk_count; ++i) {
                 key->particle_chunks[key->allocated_chunk_count] = freedebchunks[freedebchkptr++];
@@ -1767,24 +1770,28 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
         }
     }
     key->particle_count += (i16)particle_count;
-    if (NULL == momentum) {
-        key->momentum.x = 0.0f;
-        key->momentum.y = 0.0f;
-        key->momentum.z = 0.0f;
-    } else {
+    if (momentum != NULL) {
         key->momentum.x = momentum->x;
         key->momentum.y = momentum->y;
         key->momentum.z = momentum->z;
+    } else {
+        key->momentum.x = 0.0f;
+        key->momentum.y = 0.0f;
+        key->momentum.z = 0.0f;
     }
     DebrisEmitterOrientationMtx(effect->particle_keys[particle_key_slot], emitter_orientation);
     key->emission_epoch = emission_epoch;
-    for (i = 1; i < 100 && emission_time <= end_time; ++i) {
-        if (position_delta == NULL) {
+    i = 0;
+    while (emission_time <= end_time) {
+        if (++i >= 100)
+            break;
+        if (position_delta != NULL) {
+            NuVecAddScale(&key->emission_position, position, position_delta, emission_time - end_time);
+        } else {
             key->emission_position.x = position->x;
             key->emission_position.y = position->y;
             key->emission_position.z = position->z;
-        } else
-            NuVecAddScale(&key->emission_position, position, position_delta, emission_time - end_time);
+        }
         key->emission_time = emission_time;
         generated = key->generator(key, effect, emission_time);
         if (effect->process_spheres != 0 && generated != NULL && i == 1)
