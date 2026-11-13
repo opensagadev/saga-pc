@@ -67,11 +67,6 @@ jobs:
         run: python3 tools/dependencies.py
       - name: Download or verify pinned tools
         run: python3 tools/setup.py
-      - name: Check C and C++ formatting and lint
-        run: make -j"$(nproc)" lint
-        env:
-          CLANG_FORMAT: clang-format-18
-          CLANG_TIDY: clang-tidy-18
       - name: Cache declaration scan facts
         # tools/declscan.py keys each unit by its text and all headers; a restored older
         # cache still covers the units whose inputs did not change.
@@ -118,3 +113,78 @@ jobs:
             build/Debug/warnings.json
           if-no-files-found: ignore
       # Matching runs locally against the user's copy of the original executable.
+
+  # clang-format and clang-tidy (make lint) run beside the build, with the clang-tidy jobs split over
+  # four runners. Each runner keeps the passes of its own share in build/lint/tidy-cache (see
+  # tools/lintcache.py): a pass is reused only while the tool, policy, flags and every file the unit
+  # read are unchanged, so a typical push analyses only the units it touched.
+  lint:
+    name: Lint ${{ matrix.shard }}/4
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Install Clang 18 tools
+        # The runner image ships them; install only if an image update dropped them.
+        run: |
+          if ! command -v clang-format-18 >/dev/null || ! command -v clang-tidy-18 >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends clang-format-18 clang-tidy-18
+          fi
+      - name: Restore pinned compilers and SDK
+        # Restore only: the build job saves this cache with everything it installs.
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            build/tools/msvc8
+            build/tools/msvc8-rtm
+            build/tools/msvc8-runtime
+            build/tools/bin
+          key: matching-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('config/toolchain.json', 'config/tools.json') }}
+      - name: Restore pinned adapted Ogg and Vorbis
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: lib/.cache
+          key: ogg-vorbis-${{ hashFiles('config/ogg-vorbis.json') }}
+      - name: Materialize Ogg and Vorbis, verify or download the pinned SDK headers
+        run: |
+          python3 tools/dependencies.py
+          python3 tools/setup.py --compiler-only
+      - name: Cache clang-tidy passes
+        # Saved under this commit; the newest earlier cache of this share is the starting point.
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: build/lint/tidy-cache
+          key: tidy-${{ matrix.shard }}of4-${{ github.sha }}
+          restore-keys: tidy-${{ matrix.shard }}of4-
+      - name: Check C and C++ formatting
+        if: matrix.shard == 1
+        run: python3 tools/check.py --format
+        env:
+          CLANG_FORMAT: clang-format-18
+      - name: Lint with clang-tidy (share ${{ matrix.shard }} of 4)
+        run: python3 tools/check.py --tidy --jobs "$(nproc)" --shard ${{ matrix.shard }}/4
+        env:
+          CLANG_TIDY: clang-tidy-18
+
+  lint-result:
+    # One stable check name for branch protection, whatever the number of shares.
+    name: Lint
+    needs: lint
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: All lint shares passed
+        run: test "$LINT_RESULT" = success
+        env:
+          LINT_RESULT: ${{ needs.lint.result }}
