@@ -4263,17 +4263,15 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                                 length = (i8)EdFileReadChar();
                                 EdFileRead(special_name, length);
                                 if (SpecialRouteCharacterTypeIDFn != NULL) {
-                                    u8 type = (u8)SpecialRouteCharacterTypeIDFn(special_name);
-                                    if (type < 64) {
-                                        u64 mask = (u64)1 << type;
-                                        route->character_mask[0] |= (u32)mask;
-                                        route->character_mask[1] |= (u32)(mask >> 32);
-                                        route->character_mask[2] |= (u32)mask;
-                                        route->character_mask[3] |= (u32)(mask >> 32);
-                                    } else {
-                                        route->character_mask[0] = 0xffffffff;
-                                        route->character_mask[1] = 0xffffffff;
-                                        route->character_mask[3] |= 0x80000000;
+                                    i32 type = SpecialRouteCharacterTypeIDFn(special_name);
+                                    if (type >= 0) {
+                                        if (type < 64) {
+                                            *(u64 *)&route->character_mask[0] |= (u64)1 << type;
+                                            *(u64 *)&route->character_mask[2] |= (u64)1 << type;
+                                        } else {
+                                            *(u64 *)&route->character_mask[0] = 0xffffffffffffffff;
+                                            *(u64 *)&route->character_mask[2] |= 0x8000000000000000;
+                                        }
                                     }
                                 }
                             }
