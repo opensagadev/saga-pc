@@ -13112,18 +13112,15 @@ i32 __cdecl Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *pr
 i32 __cdecl Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                           char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 direction;
-    char *from;
-    char *to;
-    i32 open;
+    char *from = NULL;
+    char *to = NULL;
+    i32 open = 0;
     i32 i;
     char *value;
     AIPATHCNX_PC *connection;
 
     direction = 0;
     if (sys != NULL && first_time != 0) {
-        from = NULL;
-        to = NULL;
-        open = 0;
         for (i = 0; i < param_count; i++) {
             value = NuStrIStr(params[i], (char *)AIActionFromName);
             if (value != NULL) {
@@ -13134,7 +13131,7 @@ i32 __cdecl Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *pro
                 open = 1;
             }
         }
-        if (to != NULL && from != NULL) {
+        if (from != NULL && to != NULL) {
             connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, NULL, from, to, &direction));
             if (connection != NULL && (connection->traversal_flags[0] & 0x20000000) != 0) {
                 connection->open = open;
