@@ -807,11 +807,11 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
         bit = (u64)1 << object->hostility_group;
         if (object->field_280 != 0xff)
             player_slot_mask |= bit;
-        data = object->character_data->game_character;
-        if (data->field_028 > 0)
+        if (object->character_data->game_character->field_028 > 0)
             vertical_movement_mask |= bit;
         else
             no_vertical_movement_mask |= bit;
+        data = object->character_data->game_character;
         is_player = (flags >> 7) & 1;
         if ((is_player || (object->flags_ef4 & 0x80000)) && !(data->flags_090 & 0x40))
             player_collision_mask |= bit;
