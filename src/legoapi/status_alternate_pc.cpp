@@ -2078,12 +2078,13 @@ extern "C" {
     void __cdecl AllMiniKits_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
         f32 icon_alpha = 0.0f;
         f32 title_alpha;
-        i32 sliding = 1;
+        i32 sliding;
         (void)packet;
         if (current == 0 || stage->field_0x14 <= 0)
             return;
+        sliding = 1;
         if (stage->field_0x18 < 0.5f) {
-            title_alpha = stage->field_0x18 + stage->field_0x18;
+            title_alpha = stage->field_0x18 * 2.0f;
         } else if (stage->field_0x18 < 3.5) {
             title_alpha = 1.0f;
         } else if (stage->field_0x18 < 4.0f) {
