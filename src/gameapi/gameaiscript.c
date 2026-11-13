@@ -8063,10 +8063,7 @@ i32 __cdecl Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     backwards = 0;
     snap = 0;
     restart = 0;
-    if (param_5 == 0) {
-        return 1;
-    }
-    if (param_4 != 0) {
+    if (param_5 != 0 && param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
             if (value != NULL) {
@@ -8083,28 +8080,25 @@ i32 __cdecl Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             }
         }
 
-        if (special == NULL) {
-            return 1;
-        }
-        if (backwards != 0) {
-            if (snap != 0) {
-                GameAnimSet_JumpToStart(special->anim_set);
-                return 1;
-            }
-            if (restart != 0) {
+        if (special != NULL) {
+            if (backwards != 0) {
+                if (snap != 0) {
+                    GameAnimSet_JumpToStart(special->anim_set);
+                } else {
+                    if (restart != 0) {
+                        GameAnimSet_JumpToEnd(special->anim_set);
+                    }
+                    GameAnimSet_Play(special->anim_set, -1.0f, 1);
+                }
+            } else if (snap != 0) {
                 GameAnimSet_JumpToEnd(special->anim_set);
+            } else {
+                if (restart != 0) {
+                    GameAnimSet_JumpToStart(special->anim_set);
+                }
+                GameAnimSet_Play(special->anim_set, 1.0f, 1);
             }
-            GameAnimSet_Play(special->anim_set, -1.0f, 1);
-            return 1;
         }
-        if (snap != 0) {
-            GameAnimSet_JumpToEnd(special->anim_set);
-            return 1;
-        }
-        if (restart != 0) {
-            GameAnimSet_JumpToStart(special->anim_set);
-        }
-        GameAnimSet_Play(special->anim_set, 1.0f, 1);
     }
     return 1;
 }
