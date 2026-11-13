@@ -4879,6 +4879,10 @@ extern "C" {
 // occlusion (OccluderSet/OcclusionManager and the PostShadow helpers).
 extern "C" void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
 
+static inline void OccluderCross(NUVEC *dst, const NUVEC &a, const NUVEC &b) {
+    NuVecCross(dst, const_cast<NUVEC *>(&a), const_cast<NUVEC *>(&b));
+}
+
 bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
     if (!queries_prepared)
         return false;
@@ -4900,9 +4904,9 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
         if (projected.x - screen_radius > record.max_x || projected.y - screen_radius > record.max_y ||
             projected.x + screen_radius < record.min_x || projected.y + screen_radius < record.min_y)
             continue;
-        NUVEC4 *v = record.transformed;
         NUVEC cross;
-        NuVecCross(&cross, &(v[2] - v[0]), &(v[1] - v[0]));
+        OccluderCross(&cross, record.transformed[2] - record.transformed[0],
+                      record.transformed[1] - record.transformed[0]);
         bool clockwise = cross.z > 0.0f;
         __declspec(align(16)) NUVEC4 normal;
         normal.z = normal.w = 0.0f;
@@ -4914,13 +4918,15 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
                 end = 3 - end;
                 start = 3 - edge;
             }
-            normal.x = v[end].y - v[start].y;
-            normal.y = -(v[end].x - v[start].x);
+            const NUVEC4 &first = record.transformed[start];
+            const NUVEC4 &second = record.transformed[end];
+            normal.x = second.y - first.y;
+            normal.y = -(second.x - first.x);
             NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
             normal.z = normal.w = 0.0f;
             NUVEC delta;
-            delta.x = projected.x - v[start].x;
-            delta.y = projected.y - v[start].y;
+            delta.x = projected.x - first.x;
+            delta.y = projected.y - first.y;
             delta.z = 0.0f;
             f32 distance = normal.x * delta.x + normal.y * delta.y + normal.z * delta.z;
             if (distance - screen_radius < 0.0)
@@ -5311,10 +5317,6 @@ void OcclusionManager::RenderStats() const {
     NuQFntPopPrintMode();
     if (OcclusionRenderOccludersPc != 0)
         current_set->RenderOccluders(false);
-}
-
-static inline void OccluderCross(NUVEC *dst, const NUVEC &a, const NUVEC &b) {
-    NuVecCross(dst, const_cast<NUVEC *>(&a), const_cast<NUVEC *>(&b));
 }
 
 void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
