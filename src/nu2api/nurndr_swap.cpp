@@ -1,10 +1,33 @@
 #include "saga.h"
 
 extern "C" {
-    i32 __cdecl PCFrameBeginScenePc(void);
+    i32 __cdecl PCFrameBeginScenePc(i32 begin); /* retail pushes 1; the d3d_api_lifetime body ignores it */
     void __cdecl PCFrameResetTargetsPc(void);
     void __cdecl PCFrameConfigureTargetsPc(void);
     void __cdecl NuDisplayListHtmlEndPc(void);
+}
+
+extern "C" PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
+
+/* Header-inline in retail: the swap loop's local target expands Reset() and the destructor. */
+inline void PC_EFFECT_SURFACE_PC::Reset() {
+    if (texture != NULL && texture->surface != NULL)
+        surface = NULL;
+    else if (surface != NULL) {
+        surface->methods->release(surface);
+        surface = NULL;
+    }
+    if (texture != NULL && owns_texture)
+        PCGraphicsDestroyRenderTexture(texture);
+    texture = NULL;
+    owns_texture = 0;
+    level = 0;
+    field_10 = 0;
+    width = height = 0;
+}
+inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
+    Reset();
+    PcSurfaceRegistry[registry_index] = NULL;
 }
 
 /* Full native 60aff0 control reconstruction, with genuinely missing VOID
@@ -14,7 +37,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     RenderFrameShaderTimePc += nuapi.frame_time;
     DwaWeightCursorPc = 0xef00;
     DwaPointerCursorPc = 0x800;
-    PCFrameBeginScenePc();
+    PCFrameBeginScenePc(1);
     PCFrameCriticalSectionEnter_candidate();
     PCDeviceSetTexture(0, NULL);
     PCDeviceSetTexture(1, NULL);
@@ -55,14 +78,14 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
-        bool rendered_effect = false;
+        i32 rendered_effect = 0;
+        PC_FRAMEBUFFER_PC *destination = PcBootFramebuffersPc.slots[i >= last_effect_scene];
         RenderFrameSceneFlagsPc = scene->unknown_24;
-        PC_FRAMEBUFFER_PC *destination = i >= last_effect_scene ? PcBootSecondaryFramebuffer : PcBootDefaultFramebuffer;
         NUVEC4 dimensions;
         dimensions.x = (f32)PS2_REZ_W;
         dimensions.y = (f32)PS2_REZ_H;
-        dimensions.z = 1.0f / dimensions.x;
-        dimensions.w = 1.0f / dimensions.y;
+        dimensions.z = 1.0f / (f32)PS2_REZ_W;
+        dimensions.w = 1.0f / (f32)PS2_REZ_H;
         if (scene->dyn_light_count != 0) {
             NURNDRLIGHTRECORD *light = static_cast<NURNDRLIGHTRECORD *>(scene->dyn_light_ptr);
             if (NuDynamicLightIsEnabled(light)) {
@@ -80,18 +103,18 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
             NuPostEffectEnable(4);
             NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS_PC *>(&scene->burnout_parameters_pc));
             scene->unknown_58 = 0;
-            rendered_effect = true;
+            rendered_effect = 1;
         }
         if (scene->unknown_48 != 0) {
             NuPostEffectEnable(0x20);
             NuPostEffectDeferredShading(reinterpret_cast<const f32 *>(&scene->unknown_48));
             scene->unknown_48 = 0;
-            rendered_effect = true;
+            rendered_effect = 1;
         }
         if (scene->unknown_188 != 0) {
             NuPostEffectEnable(0x80);
             NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS_PC *>(&scene->unknown_188));
-            rendered_effect = true;
+            rendered_effect = 1;
         }
         if (i <= last_effect_scene) {
             PCFrameConfigureTargetsPc();
@@ -111,10 +134,11 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
                 clear |= 2;
             if (flags & 0x1800)
                 clear |= 4;
-            u32 colour = (u32)scene->bg_colour | 0xff000000u;
-            scene->bg_colour = (i32)colour;
-            colour = (colour & 0xff000000u) | ((colour & 0xffu) << 16) | (colour & 0xff00u) | ((colour >> 16) & 0xffu);
-            PCDeviceClear(0, NULL, clear, colour, scene->clear_alpha, 0x60);
+            i32 colour = scene->bg_colour | 0xff000000;
+            scene->bg_colour = colour;
+            const u8 *rgba = reinterpret_cast<const u8 *>(&colour);
+            const u32 argb = (((colour >> 24) * 256 + rgba[0]) * 256 + rgba[1]) * 256 + rgba[2];
+            PCDeviceClear(0, NULL, clear, argb, scene->clear_alpha, 0x60);
             PCDeviceSetRenderState(52, 0);
         }
         if (scene->scene_id != -1) {
@@ -134,13 +158,16 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
                 reinterpret_cast<FRAME_NATIVE_TEXTURE_PC *>(NuTextureGetDimensions((i32)scene->unknown_214));
             i32 index =
                 (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE_PC);
-            if ((u32)index <= 15u && texture->render_texture != NULL) {
-                i32 width = NuTexGetWidth((i32)scene->unknown_214);
-                i32 height = NuTexGetHeight((i32)scene->unknown_214);
-                bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
-                PC_EFFECT_SURFACE_PC target;
-                target.Attach(texture->render_texture, 0, false);
-                PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+            if ((u32)index <= 15u) {
+                GRAPHICS_RENDER_TEXTURE_PC *render_texture = texture->render_texture;
+                if (render_texture != NULL) {
+                    i32 width = NuTexGetWidth((i32)scene->unknown_214);
+                    i32 height = NuTexGetHeight((i32)scene->unknown_214);
+                    bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
+                    PC_EFFECT_SURFACE_PC target;
+                    target.Attach(render_texture, 0, false);
+                    PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
+                }
             }
         }
     }
