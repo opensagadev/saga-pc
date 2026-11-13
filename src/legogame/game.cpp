@@ -1080,18 +1080,18 @@ static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) 
         object->suit = Suit_GetDefault((i16)object->id);
     }
     if (previous != object->suit) {
-        u8 current_route = object->ai_packet.current_route;
-        u8 next_route = object->ai_packet.next_route;
         AIPATHINFO_PC path_info = object->ai_packet.path_info;
+        u8 next_route = object->ai_packet.next_route;
+        u32 toggled = object->character_toggled;
+        u8 current_route = object->ai_packet.current_route;
         AILOCATOR_PC *escape_locator = object->doomed_escape_locator;
         i32 route_frame_state = object->route_frame_state;
         i32 frame_state = object->ai_packet.frame_state;
-        u32 preserve_flag = object->flags_ef0 & 0x200000;
         InitPlayerAI(object);
         object->ai_packet.path_info = path_info;
         object->ai_packet.next_route = next_route;
         object->doomed_escape_locator = escape_locator;
-        object->flags_ef0 = (object->flags_ef0 & ~0x200000u) | preserve_flag;
+        object->character_toggled = toggled;
         object->ai_packet.current_route = current_route;
         object->route_frame_state = route_frame_state;
         object->ai_packet.frame_state = frame_state;
