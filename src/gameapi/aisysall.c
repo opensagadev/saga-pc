@@ -15078,18 +15078,19 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                                             }
                                             next = 0;
                                             for (slot = 0; slot < 8; ++slot) {
-                                                EDAIPATHNODE_s *other = node->connections[slot].node;
-                                                if (other == NULL) {
+                                                AIPATHNODE_PC *other_runtime;
+                                                if (node->connections[slot].node == NULL) {
                                                     continue;
                                                 }
-                                                if (other->index < node->index) {
-                                                    AIPATHNODE_PC *other_runtime = &path->nodes[other->index];
+                                                other_runtime = &path->nodes[node->connections[slot].node->index];
+                                                if (node->connections[slot].node->index < node->index) {
                                                     i32 reverse;
                                                     for (reverse = 0; reverse < other_runtime->connection_count;
                                                          ++reverse) {
-                                                        AIPATHCNX_PC *connection = other_runtime->connections[reverse];
-                                                        if (connection->node_indices[1] == node->index) {
-                                                            runtime->connections[next] = connection;
+                                                        if (other_runtime->connections[reverse]->node_indices[1] ==
+                                                            node->index) {
+                                                            runtime->connections[next] =
+                                                                other_runtime->connections[reverse];
                                                             runtime->connections[next]->traversal_flags[1] =
                                                                 node->connections[slot].flags;
                                                             runtime->connections[next]->original_traversal_flags[1] =
@@ -15165,51 +15166,50 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                             pathEditorCreateSpecialRouteData(path, editor_path, &scratch, scratch_limit);
                         }
                     }
-                    if (system->path_count > 1) {
-                        AIPATHINFO_PC info;
-                        AIPATH_PC *first_path = system->paths[0];
-                        u32 info_path_index;
-                        memset(&info, 0, sizeof(info));
-                        for (info_path_index = 1; info_path_index < system->path_count; ++info_path_index) {
-                            AIPATH_PC *path = system->paths[info_path_index];
-                            i32 node_index;
-                            for (node_index = 0; node_index < path->node_count; ++node_index) {
-                                AIPATHNODE_PC *node = &path->nodes[node_index];
-                                AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0,
-                                                  NULL);
-                                if ((info.flags & 1)) {
-                                    f64 half = InitOnceHalf;
-                                    f64 path_distance = info.distance;
-                                    node->path_flags = info.connection - path->connections;
-                                    if (path_distance > half || (info.direction != 0 && path_distance < half)) {
-                                        node->runtime_flags |= 4;
-                                    }
-                                    node->runtime_flags |= 1;
-                                    node->path_flags = info.connection - info.path->connections;
-                                    path->flags |= 2;
-                                } else {
-                                    node->path_flags = -1;
-                                    node->runtime_flags &= (u8)~1;
+                }
+                if (system->path_count > 1) {
+                    AIPATHINFO_PC info;
+                    AIPATH_PC *first_path = system->paths[0];
+                    u32 info_path_index;
+                    memset(&info, 0, sizeof(info));
+                    for (info_path_index = 1; info_path_index < system->path_count; ++info_path_index) {
+                        AIPATH_PC *path = system->paths[info_path_index];
+                        i32 node_index;
+                        for (node_index = 0; node_index < path->node_count; ++node_index) {
+                            AIPATHNODE_PC *node = &path->nodes[node_index];
+                            AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
+                            if ((info.flags & 1)) {
+                                f64 half = InitOnceHalf;
+                                f64 path_distance = info.distance;
+                                node->path_flags = info.connection - path->connections;
+                                if (path_distance > half || (info.direction != 0 && path_distance < half)) {
+                                    node->runtime_flags |= 4;
                                 }
+                                node->runtime_flags |= 1;
+                                node->path_flags = info.connection - info.path->connections;
+                                path->flags |= 2;
+                            } else {
+                                node->path_flags = -1;
+                                node->runtime_flags &= (u8)~1;
                             }
-                            if ((!(path->flags & 2) || distance_tables == NULL ||
-                                 distance_tables[info_path_index] == NULL)) {
+                        }
+                        if ((!(path->flags & 2) || distance_tables == NULL ||
+                             distance_tables[info_path_index] == NULL)) {
+                            continue;
+                        }
+                        for (node_index = 0; node_index < path->node_count; ++node_index) {
+                            AIPATHNODE_PC *node = &path->nodes[node_index];
+                            f32 nearest;
+                            i32 candidate;
+                            if (node->runtime_flags & 1) {
                                 continue;
                             }
-                            for (node_index = 0; node_index < path->node_count; ++node_index) {
-                                AIPATHNODE_PC *node = &path->nodes[node_index];
-                                f32 nearest;
-                                i32 candidate;
-                                if (node->runtime_flags & 1) {
-                                    continue;
-                                }
-                                nearest = FLT_MAX;
-                                for (candidate = 0; candidate < path->node_count; ++candidate) {
-                                    if (&path->nodes[candidate] != node && (path->nodes[candidate].runtime_flags & 1) &&
-                                        distance_tables[info_path_index][node_index][candidate] < nearest) {
-                                        node->path_flags = candidate;
-                                        nearest = distance_tables[info_path_index][node_index][candidate];
-                                    }
+                            nearest = FLT_MAX;
+                            for (candidate = 0; candidate < path->node_count; ++candidate) {
+                                if (&path->nodes[candidate] != node && (path->nodes[candidate].runtime_flags & 1) &&
+                                    distance_tables[info_path_index][node_index][candidate] < nearest) {
+                                    node->path_flags = candidate;
+                                    nearest = distance_tables[info_path_index][node_index][candidate];
                                 }
                             }
                         }
