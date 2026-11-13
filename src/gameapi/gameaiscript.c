@@ -8613,11 +8613,11 @@ i32 __cdecl Action_CannotDropIn(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
     (void)processor;
     (void)param_6;
+    object = NULL;
+    enabled = 1;
     if (param_5 != 0) {
-        object = NULL;
         if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
-        enabled = 1;
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (value != NULL) {
@@ -8629,7 +8629,7 @@ i32 __cdecl Action_CannotDropIn(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             }
         }
         if (object != NULL) {
-            object->portal_flags = (object->portal_flags & ~0x4000000u) | ((enabled & 1) << 26);
+            object->portal_flags = (object->portal_flags & ~0x4000000u) | ((enabled << 26) & 0x4000000u);
         }
     }
     return 1;
