@@ -927,9 +927,8 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                 CutSceneRemapFocusPc(scene, buffer);
             } else {
                 addr = scene->stream_buffer_offset + buffer->addr;
-                addr += 15;
-                scene->stream_buffer_0 = (void *)(addr & ~15);
-                addr = (addr & ~15) + scene->stream_buffer_size + 0x400;
+                scene->stream_buffer_0 = (void *)((addr + 15) & ~15);
+                addr = ((addr + 15) & ~15) + scene->stream_buffer_size + 0x400;
                 if (CutSceneSingleStreamBufferPc == 0) {
                     addr += 15;
                     scene->stream_buffer_1 = (void *)(addr & ~15);
