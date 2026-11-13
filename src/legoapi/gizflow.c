@@ -748,7 +748,7 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
         GIZFLOW_BOX_LOADER_PREFIX_PC *state = (GIZFLOW_BOX_LOADER_PREFIX_PC *)load_flowbox;
         FlowGizmoFlagsPc packed;
         packed.value = state->state_flags;
-        packed.bits.start_invisible = flags & 1;
+        packed.bits.start_invisible = load_g_flags & 1;
         packed.bits.end_invisible = (flags >> 1) & 1;
         packed.bits.end_deactivated = (flags >> 3) & 1;
         packed.bits.reverse = (flags >> 2) & 1;
