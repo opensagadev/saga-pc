@@ -1,4 +1,6 @@
 #include "saga.h"
+
+/* Retail unit 0x4d55a0-0x4d8185: definitions in retail address order. */
 #pragma data_seg(".data$GrapSwing_text")
 static char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
@@ -88,6 +90,309 @@ STATIC_ASSERT(offsetof(ZIPUP_PC, lower_ground_x_rotation) == 0x74);
 STATIC_ASSERT(offsetof(ZIPUP_PC, upper_ground_x_rotation) == 0x76);
 STATIC_ASSERT(offsetof(ZIPUP_PC, lower_ground_z_rotation) == 0x78);
 STATIC_ASSERT(offsetof(ZIPUP_PC, upper_ground_z_rotation) == 0x7a);
+i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
+typedef struct HINT_ZIPUP_PC {
+    u8 name[16];
+    NUVEC lower_position;
+    u8 reserved1c[0x4c];
+    u8 flags;
+    u8 reserved69[0x13];
+} HINT_ZIPUP_PC;
+typedef struct zipup_transport_view_pc_s {
+    u8 unknown_00[0x748];
+    NUVEC entry, start, swing, landing;
+    u8 unknown_778[0x634];
+    f32 detach_fall_delay;
+} ZIPUP_TRANSPORT_VIEW_PC;
+STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, detach_fall_delay) == 0xdac);
+STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, entry) == 0x748);
+STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, start) == 0x754);
+STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, swing) == 0x760);
+STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
+#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define ASIN_POW2(x) ((x) * (x))
+#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
+#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
+#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
+#define NU_SIN_LUT(a) NuTrigTable[((i32)(a) >> 1) & 0x7fff]
+#define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
+typedef struct zipup_progress_pc_s {
+    u32 active_mask[1], visible_mask[1];
+} ZIPUP_PROGRESS_PC;
+STATIC_ASSERT(sizeof(ZIPUP_PROGRESS_PC) == 8);
+STATIC_ASSERT(offsetof(ZIPUP_PROGRESS_PC, active_mask) == 0);
+STATIC_ASSERT(offsetof(ZIPUP_PROGRESS_PC, visible_mask) == 4);
+enum ZIPUP_FLAGS {
+    ZIPUP_FLAG_CONFIG_0 = 1,
+    ZIPUP_FLAG_CONFIG_1 = 2,
+    ZIPUP_FLAG_CONFIG_2 = 4,
+    ZIPUP_FLAG_CONFIG_3 = 8,
+    ZIPUP_FLAG_CONFIG_4 = 0x10,
+    ZIPUP_FLAG_CONFIG_5 = 0x20,
+    ZIPUP_FLAG_ACTIVE = 0x40,
+    ZIPUP_FLAG_VISIBLE = 0x80
+};
+typedef struct zipup_rope_vertex_pc_s {
+    NUVEC position, normal;
+    u32 colour;
+    f32 u, v;
+} ZIPUP_ROPE_VERTEX_PC;
+STATIC_ASSERT(sizeof(ZIPUP_ROPE_VERTEX_PC) == 36);
+STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, normal) == 12);
+STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, colour) == 24);
+STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, u) == 28);
+STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, v) == 32);
+typedef struct zipup_rope_material_pc_s {
+    u8 unknown_0[0x70];
+    f32 opacity;
+} ZIPUP_ROPE_MATERIAL_PC;
+STATIC_ASSERT(offsetof(ZIPUP_ROPE_MATERIAL_PC, opacity) == 0x70);
+
+static __inline f32 ZipUpFabsPc(f32 value);
+
+static i32 __cdecl ZipUpArcSinePc(f32 sin) {
+    f32 abs;
+    f32 sqrt;
+    f32 unknown_a;
+    f32 unknown_b;
+    f32 unknown_c;
+    f32 unknown_d;
+
+    abs = ZipUpFabsPc(sin);
+    sqrt = NuFsqrt(1.0f - sin * sin);
+
+    unknown_a = MIN(sqrt, abs);
+
+    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+
+    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
+    unknown_c = MAX(unknown_c, -1.0f);
+
+    unknown_d = unknown_b * unknown_c + unknown_c;
+
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
+             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+           10430.4f;
+}
+
+// The retail rope draw inlines these numtx rotations (other units call the
+// exported versions), so this unit carries local copies of their bodies.
+static void RopeMtxSetRotationZ(NUMTX *m, NUANG a) {
+    f32 cosz = NU_COS_LUT(a);
+    f32 sinz = NU_SIN_LUT(a);
+
+    m->m00 = cosz;
+    m->m01 = sinz;
+    m->m02 = 0.0f;
+    m->m03 = 0.0f;
+    m->m10 = -sinz;
+    m->m11 = cosz;
+    m->m12 = 0.0f;
+    m->m13 = 0.0f;
+    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+}
+
+static void RopeMtxRotateX(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m01;
+    f32 m11;
+    f32 m21;
+    f32 m31;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m01 = m->m01;
+    m11 = m->m11;
+    m21 = m->m21;
+    m31 = m->m31;
+
+    m->m01 = (m01 * cosx) - (m->m02 * sinx);
+    m->m02 = (m01 * sinx) + (m->m02 * cosx);
+    m->m11 = (m11 * cosx) - (m->m12 * sinx);
+    m->m12 = (m11 * sinx) + (m->m12 * cosx);
+    m->m21 = (m21 * cosx) - (m->m22 * sinx);
+    m->m22 = (m21 * sinx) + (m->m22 * cosx);
+    m->m31 = (m31 * cosx) - (m->m32 * sinx);
+    m->m32 = (m31 * sinx) + (m->m32 * cosx);
+}
+
+static void RopeMtxRotateY(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m00;
+    f32 m10;
+    f32 m20;
+    f32 m30;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m00 = m->m00;
+    m10 = m->m10;
+    m20 = m->m20;
+    m30 = m->m30;
+
+    m->m00 = m00 * cosx + m->m02 * sinx;
+    m->m02 = m->m02 * cosx - m00 * sinx;
+    m->m10 = m10 * cosx + m->m12 * sinx;
+    m->m12 = m->m12 * cosx - m10 * sinx;
+    m->m20 = m20 * cosx + m->m22 * sinx;
+    m->m22 = m->m22 * cosx - m20 * sinx;
+    m->m30 = m30 * cosx + m->m32 * sinx;
+    m->m32 = m->m32 * cosx - m30 * sinx;
+}
+
+static void RopeMtxRotateZ(NUMTX *m, NUANG a) {
+    f32 cosx;
+    f32 sinx;
+    f32 m00;
+    f32 m10;
+    f32 m20;
+    f32 m30;
+
+    cosx = NU_COS_LUT(a);
+    sinx = NU_SIN_LUT(a);
+    m00 = m->m00;
+    m10 = m->m10;
+    m20 = m->m20;
+    m30 = m->m30;
+
+    m->m00 = (m00 * cosx) - (m->m01 * sinx);
+    m->m01 = (m00 * sinx) + (m->m01 * cosx);
+    m->m10 = (m10 * cosx) - (m->m11 * sinx);
+    m->m11 = (m10 * sinx) + (m->m11 * cosx);
+    m->m20 = (m20 * cosx) - (m->m21 * sinx);
+    m->m21 = (m20 * sinx) + (m->m21 * cosx);
+    m->m30 = (m30 * cosx) - (m->m31 * sinx);
+    m->m31 = (m30 * sinx) + (m->m31 * cosx);
+}
+
+static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
+    ZIPUP_PC *zipup;
+
+    if (gizmo == NULL)
+        return 0;
+    zipup = (ZIPUP_PC *)gizmo->object;
+    if (zipup == NULL)
+        return 0;
+    if (query & 1)
+        return active != zipup->direction;
+    if (active != 0) {
+        zipup->direction = 1;
+        zipup->flags_word &= ~0x40;
+    } else {
+        zipup->flags_word |= 0x40;
+        zipup->direction = 0;
+    }
+    return 1;
+}
+
+extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
+    i32 version, index;
+
+    if (world->zipup_count == 0) {
+        version = EdFileReadInt();
+        world->zipup_count = EdFileReadInt();
+        for (index = 0; index < world->zipup_count; ++index) {
+            EdFileRead(world->zipups[index].name, sizeof(world->zipups[index].name));
+            EdFileReadNuVec(&world->zipups[index].lower_position);
+            EdFileReadNuVec(&world->zipups[index].hook_origin);
+            EdFileReadNuVec(&world->zipups[index].upper_position);
+            world->zipups[index].hook_x_rotation = EdFileReadUnsignedShort();
+            world->zipups[index].hook_y_rotation = EdFileReadUnsignedShort();
+            world->zipups[index].config.bit_01 = EdFileReadUnsignedChar() != 0;
+            world->zipups[index].config.bit_02 = EdFileReadUnsignedChar() != 0;
+            world->zipups[index].config.bit_08 = EdFileReadUnsignedChar() != 0;
+            if (version >= 2)
+                world->zipups[index].config.bit_10 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_10 = 1;
+            if (version >= 3)
+                world->zipups[index].config.bit_20 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_20 = 0;
+            if (version >= 4)
+                world->zipups[index].config.bit_04 = EdFileReadUnsignedChar() != 0;
+            else
+                world->zipups[index].config.bit_04 = 1;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+extern void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world) {
+    world->zipups = NULL;
+    world->zipup_count = 0;
+    if (world->current_level->max_zipups > 0) {
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+        world->zipups = (ZIPUP_PC *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_zipups * sizeof(ZIPUP_PC);
+    }
+    return world->zipups;
+}
+
+static void ZipUpResetSinglePc(ZIPUP_PC *zipup) {
+    NuVecRotateX(&zipup->hook_position, (NUVEC *)&ZipUpHookOffsetPc, zipup->hook_x_rotation);
+    NuVecRotateY(&zipup->hook_position, &zipup->hook_position, zipup->hook_y_rotation);
+    NuVecAdd(&zipup->hook_position, &zipup->hook_origin, &zipup->hook_position);
+    NewTerrPlatformsOff();
+    zipup->lower_ground_height = GameShadow(NULL, &zipup->lower_position, 5.0f, -1);
+    if (zipup->lower_ground_height != 2000000.0) {
+        zipup->lower_ground_height += (f64)0.005f;
+        FindAnglesZX(&ShadNorm, &zipup->lower_ground_x_rotation, &zipup->lower_ground_z_rotation);
+    }
+    NewTerrPlatformsOff();
+    zipup->upper_ground_height = GameShadow(NULL, &zipup->upper_position, 5.0f, -1);
+    if (zipup->upper_ground_height != 2000000.0) {
+        zipup->upper_ground_height += (f64)0.005f;
+        FindAnglesZX(&ShadNorm, &zipup->upper_ground_x_rotation, &zipup->upper_ground_z_rotation);
+    }
+    zipup->facing_angle =
+        NuAtan2D(zipup->upper_position.x - zipup->lower_position.x, zipup->upper_position.z - zipup->lower_position.z);
+    zipup->occupant = NULL;
+    zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
+}
+
+extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
+    ZIPUP_PC *zipup;
+
+    (void)unused;
+    if (world == NULL)
+        return;
+    zipup = world->zipups;
+    if (zipup != NULL) {
+        i32 index;
+
+        for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
+            ZipUpResetSinglePc(zipup);
+            if (progress != NULL && index < 32) {
+                i32 word = index / 32;
+                u32 mask = 1 << (index & 31);
+
+                zipup->state.visible = (progress->visible_mask[word] & mask) != 0;
+                zipup->state.active = (progress->active_mask[word] & mask) != 0;
+            }
+        }
+    }
+}
+
 ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint,
                                     GAMEOBJECT *object) {
     ZIPUP_PC *nearest;
@@ -133,117 +438,6 @@ ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radiu
         *distance = best_distance;
     return nearest;
 }
-
-extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
-    i32 version, index;
-
-    if (world->zipup_count == 0) {
-        version = EdFileReadInt();
-        world->zipup_count = EdFileReadInt();
-        for (index = 0; index < world->zipup_count; ++index) {
-            EdFileRead(world->zipups[index].name, sizeof(world->zipups[index].name));
-            EdFileReadNuVec(&world->zipups[index].lower_position);
-            EdFileReadNuVec(&world->zipups[index].hook_origin);
-            EdFileReadNuVec(&world->zipups[index].upper_position);
-            world->zipups[index].hook_x_rotation = EdFileReadUnsignedShort();
-            world->zipups[index].hook_y_rotation = EdFileReadUnsignedShort();
-            world->zipups[index].config.bit_01 = EdFileReadUnsignedChar() != 0;
-            world->zipups[index].config.bit_02 = EdFileReadUnsignedChar() != 0;
-            world->zipups[index].config.bit_08 = EdFileReadUnsignedChar() != 0;
-            if (version >= 2)
-                world->zipups[index].config.bit_10 = EdFileReadUnsignedChar() != 0;
-            else
-                world->zipups[index].config.bit_10 = 1;
-            if (version >= 3)
-                world->zipups[index].config.bit_20 = EdFileReadUnsignedChar() != 0;
-            else
-                world->zipups[index].config.bit_20 = 0;
-            if (version >= 4)
-                world->zipups[index].config.bit_04 = EdFileReadUnsignedChar() != 0;
-            else
-                world->zipups[index].config.bit_04 = 1;
-        }
-        return 1;
-    }
-    return 0;
-}
-extern void *__cdecl ZipUps_ReserveBufferSpace(WORLDINFO *world) {
-    world->zipups = NULL;
-    world->zipup_count = 0;
-    if (world->current_level->max_zipups > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->zipups = (ZIPUP_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_zipups * sizeof(ZIPUP_PC);
-    }
-    return world->zipups;
-}
-
-typedef struct zipup_transport_view_pc_s {
-    u8 unknown_00[0x748];
-    NUVEC entry, start, swing, landing;
-    u8 unknown_778[0x634];
-    f32 detach_fall_delay;
-} ZIPUP_TRANSPORT_VIEW_PC;
-STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, detach_fall_delay) == 0xdac);
-STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, entry) == 0x748);
-STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, start) == 0x754);
-STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, swing) == 0x760);
-STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
-
-static __inline f32 ZipUpFabsPc(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
-}
-
-#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define ASIN_POW2(x) ((x) * (x))
-#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
-#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
-#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-static i32 __cdecl ZipUpArcSinePc(f32 sin) {
-    f32 abs;
-    f32 sqrt;
-    f32 unknown_a;
-    f32 unknown_b;
-    f32 unknown_c;
-    f32 unknown_d;
-
-    abs = ZipUpFabsPc(sin);
-    sqrt = NuFsqrt(1.0f - sin * sin);
-
-    unknown_a = MIN(sqrt, abs);
-
-    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
-
-    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
-
-    unknown_d = unknown_b * unknown_c + unknown_c;
-
-    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
-             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
-            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
-            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
-                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
-           10430.4f;
-}
-#undef ASIN_NEG_1_OVER_6
-#undef ASIN_NEG_3_OVER_40
-#undef ASIN_NEG_5_OVER_112
-#undef ASIN_NEG_35_OVER_1152
-#undef ASIN_POW2
-#undef ASIN_POW3
-#undef ASIN_POW4
-#undef ASIN_POW5
-
-#define NU_SIN_LUT(a) NuTrigTable[((i32)(a) >> 1) & 0x7fff]
-#define NU_COS_LUT(a) NuTrigTable[(((i32)(a) + 0x4000) >> 1) & 0x7fff]
 
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     ZIPUP_TRANSPORT_VIEW_PC *transport;
@@ -563,56 +757,26 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     }
 }
 
-typedef struct zipup_progress_pc_s {
-    u32 active_mask[1], visible_mask[1];
-} ZIPUP_PROGRESS_PC;
-STATIC_ASSERT(sizeof(ZIPUP_PROGRESS_PC) == 8);
-STATIC_ASSERT(offsetof(ZIPUP_PROGRESS_PC, active_mask) == 0);
-STATIC_ASSERT(offsetof(ZIPUP_PROGRESS_PC, visible_mask) == 4);
+static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
+    i32 joint;
 
-static void ZipUpResetSinglePc(ZIPUP_PC *zipup) {
-    NuVecRotateX(&zipup->hook_position, (NUVEC *)&ZipUpHookOffsetPc, zipup->hook_x_rotation);
-    NuVecRotateY(&zipup->hook_position, &zipup->hook_position, zipup->hook_y_rotation);
-    NuVecAdd(&zipup->hook_position, &zipup->hook_origin, &zipup->hook_position);
-    NewTerrPlatformsOff();
-    zipup->lower_ground_height = GameShadow(NULL, &zipup->lower_position, 5.0f, -1);
-    if (zipup->lower_ground_height != 2000000.0) {
-        zipup->lower_ground_height += (f64)0.005f;
-        FindAnglesZX(&ShadNorm, &zipup->lower_ground_x_rotation, &zipup->lower_ground_z_rotation);
-    }
-    NewTerrPlatformsOff();
-    zipup->upper_ground_height = GameShadow(NULL, &zipup->upper_position, 5.0f, -1);
-    if (zipup->upper_ground_height != 2000000.0) {
-        zipup->upper_ground_height += (f64)0.005f;
-        FindAnglesZX(&ShadNorm, &zipup->upper_ground_x_rotation, &zipup->upper_ground_z_rotation);
-    }
-    zipup->facing_angle =
-        NuAtan2D(zipup->upper_position.x - zipup->lower_position.x, zipup->upper_position.z - zipup->lower_position.z);
-    zipup->occupant = NULL;
-    zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
-}
-extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
-    ZIPUP_PC *zipup;
-
-    (void)unused;
-    if (world == NULL)
-        return;
-    zipup = world->zipups;
-    if (zipup != NULL) {
-        i32 index;
-
-        for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
-            ZipUpResetSinglePc(zipup);
-            if (progress != NULL && index < 32) {
-                i32 word = index / 32;
-                u32 mask = 1 << (index & 31);
-
-                zipup->state.visible = (progress->visible_mask[word] & mask) != 0;
-                zipup->state.active = (progress->active_mask[word] & mask) != 0;
-            }
-        }
+    PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
+    if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
+        object->origin_joint_ready != 0) {
+        *position = object->locator_matrices[joint].translation;
+    } else if ((joint = character->weapon_shoot_joints[0]) != -1 &&
+               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+        *position = object->locator_matrices[joint].translation;
+    } else if ((joint = character->weapon_joints[0]) != -1 &&
+               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
+        *position = object->locator_matrices[joint].translation;
+    } else {
+        position->x = object->collision_position.x;
+        position->y = object->collision_position.y + object->field_b0;
+        position->z = object->collision_position.z;
     }
 }
+
 extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     ZIPUP_PC *zipup;
     i32 index;
@@ -637,51 +801,21 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     }
 }
 
-enum ZIPUP_FLAGS {
-    ZIPUP_FLAG_CONFIG_0 = 1,
-    ZIPUP_FLAG_CONFIG_1 = 2,
-    ZIPUP_FLAG_CONFIG_2 = 4,
-    ZIPUP_FLAG_CONFIG_3 = 8,
-    ZIPUP_FLAG_CONFIG_4 = 0x10,
-    ZIPUP_FLAG_CONFIG_5 = 0x20,
-    ZIPUP_FLAG_ACTIVE = 0x40,
-    ZIPUP_FLAG_VISIBLE = 0x80
-};
-
-typedef struct zipup_rope_vertex_pc_s {
-    NUVEC position, normal;
-    u32 colour;
-    f32 u, v;
-} ZIPUP_ROPE_VERTEX_PC;
-STATIC_ASSERT(sizeof(ZIPUP_ROPE_VERTEX_PC) == 36);
-STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, normal) == 12);
-STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, colour) == 24);
-STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, u) == 28);
-STATIC_ASSERT(offsetof(ZIPUP_ROPE_VERTEX_PC, v) == 32);
-typedef struct zipup_rope_material_pc_s {
-    u8 unknown_0[0x70];
-    f32 opacity;
-} ZIPUP_ROPE_MATERIAL_PC;
-STATIC_ASSERT(offsetof(ZIPUP_ROPE_MATERIAL_PC, opacity) == 0x70);
-
-static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
-    i32 joint;
-
-    PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-    if ((joint = character->grapple_locators[0]) != -1 && object->character_model->points_of_interest[joint] != NULL &&
-        object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
-    } else if ((joint = character->weapon_shoot_joints[0]) != -1 &&
-               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
-    } else if ((joint = character->weapon_joints[0]) != -1 &&
-               object->character_model->points_of_interest[joint] != NULL && object->origin_joint_ready != 0) {
-        *position = object->locator_matrices[joint].translation;
-    } else {
-        position->x = object->collision_position.x;
-        position->y = object->collision_position.y + object->field_b0;
-        position->z = object->collision_position.z;
+i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    HINT_ZIPUP_PC *zipups;
+    i32 index;
+    if (world->area != NULL && world->area == HUB_ADATA)
+        return 0;
+    zipups = (HINT_ZIPUP_PC *)world->zipups;
+    if (zipups == NULL)
+        return 0;
+    for (index = 0; index < world->zipup_count; ++index) {
+        if (hint->completed == 0 && CanDrawZipUpSwirls != 0 && (zipups[index].flags & 0x40) != 0 &&
+            ActivePlayerInRange(&zipups[index].lower_position, 2.0f, NULL) != 0)
+            return 1;
     }
+    return 0;
 }
 
 static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
@@ -791,6 +925,132 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
     }
 }
 
+static void ZipUp_Activate(GIZMO_PC *gizmo, i32 active) {
+    ZIPUP_PC *zipup;
+
+    zipup = ((ZIPUP_PC *)(gizmo->object));
+    if (active) {
+        zipup->direction = 0;
+        zipup->flags_word |= 0x40;
+    } else
+        zipup->flags_word &= ~0x40;
+}
+
+static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    if (gizmo) {
+        ZIPUP_PC *zipup;
+
+        zipup = ((ZIPUP_PC *)(gizmo->object));
+        zipup->state.visible = visible != 0;
+    }
+}
+
+static i32 ZipUps_GetMaxGizmos(void *world_ptr) {
+    WORLDINFO *world;
+
+    world = ((WORLDINFO *)(world_ptr));
+    return world ? world->current_level->max_zipups : 0;
+}
+
+static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
+    i32 index;
+
+    for (index = 0; index < world->zipup_count; ++index)
+        if (NuStrLen(world->zipups[index].name) != 0)
+            AddGizmo(system, type_id, NULL, &world->zipups[index]);
+}
+
+static char *ZipUp_GetGizmoName(GIZMO_PC *gizmo) {
+    return gizmo ? ((ZIPUP_PC *)(gizmo->object))->name : NULL;
+}
+
+static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
+    return GizmoBufferAlloc(buffer, end, sizeof(ZIPUP_PROGRESS_PC));
+}
+
+static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS_PC *progress) {
+    if (progress) {
+        progress->active_mask[0] = ~0u;
+        progress->visible_mask[0] = ~0u;
+    }
+}
+
+static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
+    ZIPUP_PC *zipup;
+    i32 i;
+    i32 word;
+    u32 mask;
+
+    if (!progress)
+        return;
+    progress->active_mask[0] = ~0u;
+    progress->visible_mask[0] = ~0u;
+    if (world && (zipup = world->zipups) != NULL) {
+        for (i = 0; i < world->zipup_count; ++i, ++zipup) {
+            if (i >= 32)
+                break;
+            word = i / 32;
+            mask = 1 << (i & 31);
+            if (!(zipup->flags & 0x80))
+                progress->visible_mask[word] &= ~mask;
+            if (!(zipup->flags & 0x40))
+                progress->active_mask[word] &= ~mask;
+        }
+    }
+}
+
+static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    if (gizmo != NULL)
+        return ((ZIPUP_PC *)(gizmo->object))->state.active;
+    return 0;
+}
+static char ZipUpOutputNamePc[] = "Active";
+
+static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    return ZipUpOutputNamePc;
+}
+
+static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}
+static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
+
+extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
+    ZipUpAddTypePc = Default_ADDGIZMOTYPE;
+    ZipUpAddTypePc.name = ZipUpTypeNamePtrPc;
+    ZipUpAddTypePc.prefix = "";
+    ZipUpAddTypePc.fns.options = 8;
+    ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
+    ZipUpAddTypePc.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
+    ZipUpAddTypePc.fns.early_update_fn = NULL;
+    ZipUpAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Update;
+    ZipUpAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Draw;
+    ZipUpAddTypePc.fns.panel_draw_fn = NULL;
+    ZipUpAddTypePc.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
+    ZipUpAddTypePc.fns.get_output_fn = (void *)ZipUp_GetOutput;
+    ZipUpAddTypePc.fns.get_output_name_fn = (void *)ZipUp_GetOutputName;
+    ZipUpAddTypePc.fns.get_num_outputs_fn = (void *)ZipUp_GetNumOutputs;
+    ZipUpAddTypePc.fns.activate_fn = (void *)ZipUp_Activate;
+    ZipUpAddTypePc.fns.activate_rev_fn = (void *)ZipUp_ActivateRev;
+    ZipUpAddTypePc.fns.set_visibility_fn = (void *)ZipUp_SetVisibility;
+    ZipUpAddTypePc.fns.get_visibility_fn = NULL;
+    ZipUpAddTypePc.fns.get_pos_fn = NULL;
+    ZipUpAddTypePc.fns.using_special_fn = NULL;
+    ZipUpAddTypePc.fns.bolt_hit_plat_fn = NULL;
+    ZipUpAddTypePc.fns.get_best_bolt_target_fn = NULL;
+    ZipUpAddTypePc.fns.bolt_hit_fn = NULL;
+    ZipUpAddTypePc.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
+    ZipUpAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))ZipUps_ClearProgress;
+    ZipUpAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_StoreProgress;
+    ZipUpAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_Reset;
+    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))ZipUps_ReserveBufferSpace;
+    ZipUpAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))ZipUps_Load;
+    ZipUpAddTypePc.fns.post_load_fn = NULL;
+    ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
+    zipup_gizmotype_id = type_id;
+    return &ZipUpAddTypePc;
+}
+
 void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     char path[64] = "stuff\\";
     if (name != NULL) {
@@ -814,105 +1074,6 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     } else {
         ropemtl = NULL;
     }
-}
-
-// The retail rope draw inlines these numtx rotations (other units call the
-// exported versions), so this unit carries local copies of their bodies.
-static void RopeMtxSetRotationZ(NUMTX *m, NUANG a) {
-    f32 cosz = NU_COS_LUT(a);
-    f32 sinz = NU_SIN_LUT(a);
-
-    m->m00 = cosz;
-    m->m01 = sinz;
-    m->m02 = 0.0f;
-    m->m03 = 0.0f;
-    m->m10 = -sinz;
-    m->m11 = cosz;
-    m->m12 = 0.0f;
-    m->m13 = 0.0f;
-    m->m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
-    m->m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
-    m->m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
-    m->m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
-    m->m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
-    m->m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
-    m->m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
-    m->m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
-}
-
-static void RopeMtxRotateX(NUMTX *m, NUANG a) {
-    f32 cosx;
-    f32 sinx;
-    f32 m01;
-    f32 m11;
-    f32 m21;
-    f32 m31;
-
-    cosx = NU_COS_LUT(a);
-    sinx = NU_SIN_LUT(a);
-    m01 = m->m01;
-    m11 = m->m11;
-    m21 = m->m21;
-    m31 = m->m31;
-
-    m->m01 = (m01 * cosx) - (m->m02 * sinx);
-    m->m02 = (m01 * sinx) + (m->m02 * cosx);
-    m->m11 = (m11 * cosx) - (m->m12 * sinx);
-    m->m12 = (m11 * sinx) + (m->m12 * cosx);
-    m->m21 = (m21 * cosx) - (m->m22 * sinx);
-    m->m22 = (m21 * sinx) + (m->m22 * cosx);
-    m->m31 = (m31 * cosx) - (m->m32 * sinx);
-    m->m32 = (m31 * sinx) + (m->m32 * cosx);
-}
-
-static void RopeMtxRotateY(NUMTX *m, NUANG a) {
-    f32 cosx;
-    f32 sinx;
-    f32 m00;
-    f32 m10;
-    f32 m20;
-    f32 m30;
-
-    cosx = NU_COS_LUT(a);
-    sinx = NU_SIN_LUT(a);
-    m00 = m->m00;
-    m10 = m->m10;
-    m20 = m->m20;
-    m30 = m->m30;
-
-    m->m00 = m00 * cosx + m->m02 * sinx;
-    m->m02 = m->m02 * cosx - m00 * sinx;
-    m->m10 = m10 * cosx + m->m12 * sinx;
-    m->m12 = m->m12 * cosx - m10 * sinx;
-    m->m20 = m20 * cosx + m->m22 * sinx;
-    m->m22 = m->m22 * cosx - m20 * sinx;
-    m->m30 = m30 * cosx + m->m32 * sinx;
-    m->m32 = m->m32 * cosx - m30 * sinx;
-}
-
-static void RopeMtxRotateZ(NUMTX *m, NUANG a) {
-    f32 cosx;
-    f32 sinx;
-    f32 m00;
-    f32 m10;
-    f32 m20;
-    f32 m30;
-
-    cosx = NU_COS_LUT(a);
-    sinx = NU_SIN_LUT(a);
-    m00 = m->m00;
-    m10 = m->m10;
-    m20 = m->m20;
-    m30 = m->m30;
-
-    m->m00 = (m00 * cosx) - (m->m01 * sinx);
-    m->m01 = (m00 * sinx) + (m->m01 * cosx);
-    m->m10 = (m10 * cosx) - (m->m11 * sinx);
-    m->m11 = (m10 * sinx) + (m->m11 * cosx);
-    m->m20 = (m20 * cosx) - (m->m21 * sinx);
-    m->m21 = (m20 * sinx) + (m->m21 * cosx);
-    m->m30 = (m30 * cosx) - (m->m31 * sinx);
-    m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
 void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, float time, float grow_time, float spacing,
@@ -1129,136 +1290,7 @@ void ZipUps_DrawLines() {
     }
 }
 
-static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
-    ZIPUP_PC *zipup;
-
-    if (gizmo == NULL)
-        return 0;
-    zipup = (ZIPUP_PC *)gizmo->object;
-    if (zipup == NULL)
-        return 0;
-    if (query & 1)
-        return active != zipup->direction;
-    if (active != 0) {
-        zipup->direction = 1;
-        zipup->flags_word &= ~0x40;
-    } else {
-        zipup->flags_word |= 0x40;
-        zipup->direction = 0;
-    }
-    return 1;
-}
-static void ZipUp_Activate(GIZMO_PC *gizmo, i32 active) {
-    ZIPUP_PC *zipup;
-
-    zipup = ((ZIPUP_PC *)(gizmo->object));
-    if (active) {
-        zipup->direction = 0;
-        zipup->flags_word |= 0x40;
-    } else
-        zipup->flags_word &= ~0x40;
-}
-static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    if (gizmo) {
-        ZIPUP_PC *zipup;
-
-        zipup = ((ZIPUP_PC *)(gizmo->object));
-        zipup->state.visible = visible != 0;
-    }
-}
-static i32 ZipUps_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world;
-
-    world = ((WORLDINFO *)(world_ptr));
-    return world ? world->current_level->max_zipups : 0;
-}
-static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
-    i32 index;
-
-    for (index = 0; index < world->zipup_count; ++index)
-        if (NuStrLen(world->zipups[index].name) != 0)
-            AddGizmo(system, type_id, NULL, &world->zipups[index]);
-}
-static char *ZipUp_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo ? ((ZIPUP_PC *)(gizmo->object))->name : NULL;
-}
-static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, sizeof(ZIPUP_PROGRESS_PC));
-}
-static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS_PC *progress) {
-    if (progress) {
-        progress->active_mask[0] = ~0u;
-        progress->visible_mask[0] = ~0u;
-    }
-}
-static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
-    ZIPUP_PC *zipup;
-    i32 i;
-    i32 word;
-    u32 mask;
-
-    if (!progress)
-        return;
-    progress->active_mask[0] = ~0u;
-    progress->visible_mask[0] = ~0u;
-    if (world && (zipup = world->zipups) != NULL) {
-        for (i = 0; i < world->zipup_count; ++i, ++zipup) {
-            if (i >= 32)
-                break;
-            word = i / 32;
-            mask = 1 << (i & 31);
-            if (!(zipup->flags & 0x80))
-                progress->visible_mask[word] &= ~mask;
-            if (!(zipup->flags & 0x40))
-                progress->active_mask[word] &= ~mask;
-        }
-    }
-}
-static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    if (gizmo != NULL)
-        return ((ZIPUP_PC *)(gizmo->object))->state.active;
-    return 0;
-}
-static char ZipUpOutputNamePc[] = "Active";
-static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return ZipUpOutputNamePc;
-}
-static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
-    return 1;
-}
-static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
-extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
-    ZipUpAddTypePc = Default_ADDGIZMOTYPE;
-    ZipUpAddTypePc.name = ZipUpTypeNamePtrPc;
-    ZipUpAddTypePc.prefix = "";
-    ZipUpAddTypePc.fns.options = 8;
-    ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
-    ZipUpAddTypePc.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
-    ZipUpAddTypePc.fns.early_update_fn = NULL;
-    ZipUpAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Update;
-    ZipUpAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))ZipUps_Draw;
-    ZipUpAddTypePc.fns.panel_draw_fn = NULL;
-    ZipUpAddTypePc.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
-    ZipUpAddTypePc.fns.get_output_fn = (void *)ZipUp_GetOutput;
-    ZipUpAddTypePc.fns.get_output_name_fn = (void *)ZipUp_GetOutputName;
-    ZipUpAddTypePc.fns.get_num_outputs_fn = (void *)ZipUp_GetNumOutputs;
-    ZipUpAddTypePc.fns.activate_fn = (void *)ZipUp_Activate;
-    ZipUpAddTypePc.fns.activate_rev_fn = (void *)ZipUp_ActivateRev;
-    ZipUpAddTypePc.fns.set_visibility_fn = (void *)ZipUp_SetVisibility;
-    ZipUpAddTypePc.fns.get_visibility_fn = NULL;
-    ZipUpAddTypePc.fns.get_pos_fn = NULL;
-    ZipUpAddTypePc.fns.using_special_fn = NULL;
-    ZipUpAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    ZipUpAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    ZipUpAddTypePc.fns.bolt_hit_fn = NULL;
-    ZipUpAddTypePc.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
-    ZipUpAddTypePc.fns.clear_progress_fn = (void(__cdecl *)(void *, void *))ZipUps_ClearProgress;
-    ZipUpAddTypePc.fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_StoreProgress;
-    ZipUpAddTypePc.fns.reset_fn = (void(__cdecl *)(void *, void *, void *))ZipUps_Reset;
-    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.fns.load_fn = (i32(__cdecl *)(void *, void *))ZipUps_Load;
-    ZipUpAddTypePc.fns.post_load_fn = NULL;
-    ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
-    zipup_gizmotype_id = type_id;
-    return &ZipUpAddTypePc;
+static __inline f32 ZipUpFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
 }

@@ -2,8 +2,6 @@
 
 /* Retail unit 0x576340-0x576bb3: definitions in retail address order. */
 
-i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
-
 STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 
@@ -377,23 +375,6 @@ i32 __cdecl IndyUnlocked_UpdateHint(HINT_PC *hint) {
         Game.losttemple_trailer_watched != 0) {
         hint->colour_index = 4;
         return 1;
-    }
-    return 0;
-}
-
-i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
-    HINT_ZIPUP_PC *zipups;
-    i32 index;
-    if (world->area != NULL && world->area == HUB_ADATA)
-        return 0;
-    zipups = (HINT_ZIPUP_PC *)world->zipups;
-    if (zipups == NULL)
-        return 0;
-    for (index = 0; index < world->zipup_count; ++index) {
-        if (hint->completed == 0 && CanDrawZipUpSwirls != 0 && (zipups[index].flags & 0x40) != 0 &&
-            ActivePlayerInRange(&zipups[index].lower_position, 2.0f, NULL) != 0)
-            return 1;
     }
     return 0;
 }
