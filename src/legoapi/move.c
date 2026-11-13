@@ -7515,6 +7515,7 @@ static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position
 void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     NUVEC position;
     u16 wall_angle;
+    i16 animation;
     if (LEGOCONTEXT_LEDGETERRAIN == -1)
         return;
     if (object->character_context == LEGOCONTEXT_LEDGETERRAIN) {
@@ -7628,11 +7629,12 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     object->velocity = v000;
     object->context_timer = 0.0f;
     object->field_7b3 = 0;
-    if (LEGOACT_LEDGE_GRAB != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_GRAB] != NULL) {
-        object->field_7aa = LEGOACT_LEDGE_GRAB;
-        object->context_hover_target_y = AnimDuration((i16)object->id, LEGOACT_LEDGE_GRAB, 0.0f, 0.0f, 1);
+    animation = LEGOACT_LEDGE_GRAB;
+    if (animation != -1 && object->character_model->model_data_b[animation] != NULL) {
+        object->field_7aa = animation;
+        object->context_hover_target_y = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
     } else {
-        i16 animation = LEGOACT_LEDGE_IDLE;
+        animation = LEGOACT_LEDGE_IDLE;
         object->context_hover_target_y = 0.1f;
         object->field_7aa = animation;
         ResetAnimPacket(&object->anim_packet, animation);
