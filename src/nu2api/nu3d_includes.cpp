@@ -689,8 +689,8 @@ extern "C" {
         u32 allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
         NuAnimReadData *animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
         memset(animation, 0, allocation_size);
-        animation->chunk_count = chunk_count;
         animation->chunks = animation->chunk_storage;
+        animation->chunk_count = chunk_count;
         return animation;
     }
 
@@ -3048,7 +3048,7 @@ extern "C" {
                 }
                 for (curve_index = 0; curve_index < chunk->curve_sets[set_index]->curve_count; ++curve_index) {
                     NuAnimReadCurveSet *curve_set = chunk->curve_sets[set_index];
-                    if (curve_set->constants[curve_index] == NuAnimDataFloatMax) {
+                    if (curve_set->constants[curve_index] == (f64)FLT_MAX) {
                         NuAnimReadSharedCurve *shared_curve = (NuAnimReadSharedCurve *)shared_cursor;
                         curve_set->curves[curve_index] = shared_curve;
                         ++chunk->shared_curve_count;
