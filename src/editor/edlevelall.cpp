@@ -8349,20 +8349,23 @@ void SplineKnot::Smooth() {
         after.x = previous->position.x;
         after.y = previous->position.y;
         after.z = previous->position.z;
-    } else if (next != NULL) {
-        before.x = next->position.x;
-        before.y = next->position.y;
-        before.z = next->position.z;
-        after.x = position.x;
-        after.y = position.y;
-        after.z = position.z;
-    } else if (previous != NULL) {
-        before.x = position.x;
-        before.y = position.y;
-        before.z = position.z;
-        after.x = previous->position.x;
-        after.y = previous->position.y;
-        after.z = previous->position.z;
+    } else {
+        if (next != NULL) {
+            before.x = next->position.x;
+            before.y = next->position.y;
+            before.z = next->position.z;
+            after.x = position.x;
+            after.y = position.y;
+            after.z = position.z;
+        }
+        if (previous != NULL) {
+            before.x = position.x;
+            before.y = position.y;
+            before.z = position.z;
+            after.x = previous->position.x;
+            after.y = previous->position.y;
+            after.z = previous->position.z;
+        }
     }
     delta.x = before.x - after.x;
     delta.y = before.y - after.y;
