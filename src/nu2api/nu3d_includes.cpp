@@ -5441,6 +5441,8 @@ NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
 /* NuDynamicLight shadow helpers; unreferenced in retail but kept by the linker. */
 extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *plane) {
     i32 count = 0;
+    NUVEC4 *out = output;
+    NUVEC4 *dst;
     for (i32 edge = 0; edge < 12; ++edge) {
         const NUVEC4 *a = &input[cubeEdgeIndices[edge][0]];
         const NUVEC4 *b = &input[cubeEdgeIndices[edge][1]];
@@ -5449,16 +5451,18 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
         f32 dot_b = plane->x * b->x + plane->y * b->y + b->z * plane->z;
         f32 db = dot_b + plane->w;
         if (da > 0.0f) {
-            output[count].x = a->x;
-            output[count].y = a->y;
-            output[count].z = a->z;
-            output[count].w = a->w;
+            dst = out++;
+            dst->x = a->x;
+            dst->y = a->y;
+            dst->z = a->z;
+            dst->w = a->w;
             ++count;
             if (db > 0.0f) {
-                output[count].x = b->x;
-                output[count].y = b->y;
-                output[count].z = b->z;
-                output[count].w = b->w;
+                dst = out++;
+                dst->x = b->x;
+                dst->y = b->y;
+                dst->z = b->z;
+                dst->w = b->w;
                 ++count;
             } else {
                 f32 t = da / (da - db);
@@ -5474,17 +5478,19 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
                 point.x = a->x + scaled.x;
                 point.y = a->y + scaled.y;
                 point.z = a->z + scaled.z;
-                output[count].x = point.x;
-                output[count].y = point.y;
-                output[count].z = point.z;
-                output[count].w = point.w;
+                dst = out++;
+                dst->x = point.x;
+                dst->y = point.y;
+                dst->z = point.z;
+                dst->w = point.w;
                 ++count;
             }
         } else if (db > 0.0f) {
-            output[count].x = b->x;
-            output[count].y = b->y;
-            output[count].z = b->z;
-            output[count].w = b->w;
+            dst = out++;
+            dst->x = b->x;
+            dst->y = b->y;
+            dst->z = b->z;
+            dst->w = b->w;
             ++count;
             f32 t = -da / (db - da);
             __declspec(align(16)) NUVEC4 delta;
@@ -5499,10 +5505,11 @@ extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const N
             point.x = a->x + scaled.x;
             point.y = a->y + scaled.y;
             point.z = a->z + scaled.z;
-            output[count].x = point.x;
-            output[count].y = point.y;
-            output[count].z = point.z;
-            output[count].w = point.w;
+            dst = out++;
+            dst->x = point.x;
+            dst->y = point.y;
+            dst->z = point.z;
+            dst->w = point.w;
             ++count;
         }
     }
