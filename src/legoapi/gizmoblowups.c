@@ -482,29 +482,32 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
     BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, world);
     u16 near_angle = TargetDeg_Near, mid_angle = TargetDeg_Mid, far_angle = TargetDeg_Far, angle;
     f32 near_distance = TargetDist_Near2, mid_distance = TargetDist_Mid2;
-    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups, *nearest = NULL, *fallback = NULL;
-    f32 min_x, max_x, min_z, max_z, nearest_distance = 100000000.0f, distance, dot;
-    NUVEC aim, delta;
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups, *nearest, *fallback;
+    f32 nearest_distance, distance, dot;
+    NUVEC aim, delta, min, max;
     i32 count, i;
     if (blowup == NULL)
         return NULL;
     if (GizmoBlowUp_NoTargetFn != NULL && GizmoBlowUp_NoTargetFn(world, object) != 0)
         return NULL;
+    nearest_distance = 100000000.0f;
+    nearest = NULL;
+    fallback = NULL;
     aim = *direction;
-    min_x = position->x - radius;
-    max_x = position->x + radius;
-    min_z = position->z - radius;
-    max_z = position->z + radius;
+    min.x = position->x - radius;
+    min.z = position->z - radius;
+    max.x = position->x + radius;
+    max.z = position->z + radius;
     if (directional != 0 && (bolt->flags_60 & 0x20000) != 0) {
         aim.y = 0.0f;
         NuVecNorm(&aim, &aim);
     }
-    count = world->blowup_target_candidate_count;
-    if (count <= 0) {
+    if (world->blowup_target_candidate_count > 0)
+        count = world->blowup_target_candidate_count;
+    else
         count = world->gizmo_blowup_count;
-        if (world->blowup_target_candidate_count == 0)
-            blowup = world->gizmo_blowups;
-    }
+    if (world->blowup_target_candidate_count == 0)
+        blowup = world->gizmo_blowups;
     for (i = 0; i < count; ++i, ++blowup) {
         if (world->blowup_target_candidate_count != 0)
             blowup = world->blowup_target_candidates[i];
@@ -513,12 +516,12 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
             continue;
         if ((blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)
             continue;
-        if (blowup->mid_position.x < min_x || blowup->mid_position.x > max_x || blowup->mid_position.z < min_z ||
-            blowup->mid_position.z > max_z)
+        if (blowup->mid_position.x < min.x || blowup->mid_position.x > max.x || blowup->mid_position.z < min.z ||
+            blowup->mid_position.z > max.z)
             continue;
-        distance = planar != 0 ? NuVecXZDistSqr(&blowup->mid_position, position, &delta)
-                               : NuVecDistSqr(&blowup->mid_position, position, &delta);
-        if (!(range_squared > distance))
+        distance = planar == 0 ? NuVecDistSqr(&blowup->mid_position, position, &delta)
+                               : NuVecXZDistSqr(&blowup->mid_position, position, &delta);
+        if (!(distance < range_squared))
             continue;
         if (directional == 0)
             NuVecRotateY(&aim, &v001,
@@ -535,14 +538,16 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
             angle = far_angle;
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
             continue;
-        if (object != NULL && object->collision_target == (GAMEOBJECT *)blowup)
+        if (object != NULL && (GAMEOBJECT *)blowup == object->collision_target)
             fallback = blowup;
         else {
             nearest_distance = distance;
             nearest = blowup;
         }
     }
-    return nearest != NULL ? nearest : fallback;
+    if (nearest == NULL && fallback != NULL)
+        nearest = fallback;
+    return nearest;
 }
 
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, bounds_min) == 0x58);
