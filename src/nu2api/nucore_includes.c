@@ -3725,8 +3725,8 @@ i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser) {
                 return 1;
             }
         }
-        commands = parser->command_stack2[parser->command_position];
-        if (commands != NULL) {
+        if (parser->command_stack2[parser->command_position] != NULL) {
+            commands = parser->command_stack2[parser->command_position];
             for (index = 0; commands[index].keyword != NULL; index++) {
                 if (NuStrICmp(commands[index].keyword, buffer) == 0) {
                     commands[index].callback(parser);
@@ -3752,29 +3752,32 @@ i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    if (buffer[0] != '\0' && buffer[0] != ';') {
-        if (parser->command_position > -1) {
-            commands = parser->command_stack_ctx[parser->command_position];
+    if (buffer[0] == '\0')
+        return 0;
+    if (buffer[0] == ';')
+        return 0;
+
+    if (parser->command_position >= 0) {
+        commands = parser->command_stack_ctx[parser->command_position];
+        for (index = 0; commands[index].keyword != NULL; index++) {
+            if (NuStrICmp(commands[index].keyword, buffer) == 0) {
+                commands[index].callback(parser, context);
+                return 1;
+            }
+        }
+        if (parser->command_stack2_ctx[parser->command_position] != NULL) {
+            commands = parser->command_stack2_ctx[parser->command_position];
             for (index = 0; commands[index].keyword != NULL; index++) {
                 if (NuStrICmp(commands[index].keyword, buffer) == 0) {
                     commands[index].callback(parser, context);
                     return 1;
                 }
             }
-            commands = parser->command_stack2_ctx[parser->command_position];
-            if (commands != NULL) {
-                for (index = 0; commands[index].keyword != NULL; index++) {
-                    if (NuStrICmp(commands[index].keyword, buffer) == 0) {
-                        commands[index].callback(parser, context);
-                        return 1;
-                    }
-                }
-            }
         }
+    }
 
-        if (fnInterpreterError != NULL) {
-            fnInterpreterError(parser);
-        }
+    if (fnInterpreterError != NULL) {
+        fnInterpreterError(parser);
     }
     return 0;
 }
