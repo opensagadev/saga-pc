@@ -27,6 +27,7 @@ own (a comment line directly above, a trailing comment, or a `MATCH-EXCEPTION`
 nearby keep it), and drops `extern "C" {}` blocks left empty.
 """
 import argparse
+import difflib
 import hashlib
 import json
 import multiprocessing
@@ -40,7 +41,7 @@ if __package__ in (None, ""):
 
 from tools.lib import ROOT, dependency_files  # noqa: E402
 
-VERSION = 3
+VERSION = 4
 CLASSES = "ABCDE"
 CACHE = ROOT / "build/declscan/cache.json"
 OUTPUT = ROOT / "build/declscan.json"
@@ -138,9 +139,10 @@ def collect(tu, main):
 
     visit(tu.cursor)
     wanted = {decl["usr"] for decl in decls}
-    refs = Counter()
+    refs, users = Counter(), defaultdict(set)
     ref_kinds = (K.DECL_REF_EXPR, K.MEMBER_REF_EXPR, K.OVERLOADED_DECL_REF)
     for root in roots:
+        user = None
         for node in root.walk_preorder():
             if node.kind in ref_kinds:
                 target = node.referenced
@@ -148,13 +150,17 @@ def collect(tu, main):
                     usr = target.get_usr()
                     if usr in wanted:
                         refs[usr] += 1
+                        if user is None:
+                            user = root.mangled_name or root.spelling
+                        users[usr].add(f"{root.extent.start.line}:{user}")
     for diagnostic in tu.diagnostics:
         if diagnostic.severity >= 3:
             errors.append(str(diagnostic))
     return {"decls": decls, "local": {u: local[u] for u in wanted},
             "header": {u: header[u] for u in wanted if u in header},
             "aux_header": sorted(aux_header & wanted), "definitions": definitions,
-            "exports": exports, "refs": dict(refs), "errors": errors[:20]}
+            "exports": exports, "refs": dict(refs),
+            "users": {u: sorted(v) for u, v in users.items()}, "errors": errors[:20]}
 
 
 def _work(job):
@@ -173,7 +179,7 @@ def classify(unit, facts, exports, text):
         usr, seq = decl["usr"], decl["seq"]
         record = {"unit": unit, "line": decl["line"], "end": decl["end"], "name": decl["name"],
                   "kind": decl["kind"], "link": decl["link"], "type": decl["type"],
-                  "used": facts["refs"].get(usr, 0) > 0}
+                  "used": facts["refs"].get(usr, 0) > 0, "users": facts.get("users", {}).get(usr, [])}
         earlier_header = [h for h in facts["header"].get(usr, []) if h[0] < seq]
         later_header = [h for h in facts["header"].get(usr, []) if h[0] > seq]
         earlier_local = [d for d in facts["local"].get(usr, []) if d[0] < seq]
@@ -379,6 +385,7 @@ def main(argv=None):
     parser.add_argument("--list", action="store_true", help="print one line per declaration")
     parser.add_argument("--classes", default=CLASSES, help="classes to list (default ABCDE)")
     parser.add_argument("--fix", action="store_true", help="delete removable class A and unused class E declarations")
+    parser.add_argument("--dry-run", action="store_true", help="with --fix: print the diff, change nothing")
     parser.add_argument("--fix-classes", default="AE", help="classes --fix deletes (A, E; default both)")
     parser.add_argument("--top", type=int, default=40, help="rows of the per-file table (0: all)")
     args = parser.parse_args(argv)
@@ -407,8 +414,13 @@ def main(argv=None):
                 by_unit[record["unit"]].append(record)
         for unit, chosen in sorted(by_unit.items()):
             path = ROOT / unit
-            path.write_bytes(apply_fix(read(path), chosen).encode("latin-1"))
-        print(f"removed {sum(map(len, by_unit.values()))} declarations from {len(by_unit)} units")
+            fixed = apply_fix(read(path), chosen)
+            if args.dry_run:
+                sys.stdout.writelines(difflib.unified_diff(read(path).splitlines(True), fixed.splitlines(True),
+                                                           f"a/{unit}", f"b/{unit}"))
+            else:
+                path.write_bytes(fixed.encode("latin-1"))
+        print(f"{'would remove' if args.dry_run else 'removed'} {sum(map(len, by_unit.values()))} declarations from {len(by_unit)} units")
     return 0
 
 
