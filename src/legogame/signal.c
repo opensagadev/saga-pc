@@ -386,16 +386,14 @@ void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRES
     if (progress == NULL || world == NULL || world->signals == NULL)
         return;
     signal = world->signals;
-    for (index = 0; index < world->signal_count; ++index, ++signal) {
-        if (index < 32) {
-            i32 word = index / 32;
-            u32 bit = 1 << (index & 31);
-            progress->suit_letters[index] = signal->suit->letter;
-            if (!signal->visible)
-                progress->visible_mask[word] &= ~bit;
-            if (!signal->active)
-                progress->active_mask[word] &= ~bit;
-        }
+    for (index = 0; index < world->signal_count && index < 32; ++index, ++signal) {
+        i32 word = index / 32;
+        u32 bit = 1 << (index & 31);
+        progress->suit_letters[index] = world->signals[index].suit->letter;
+        if (!signal->visible)
+            progress->visible_mask[word] &= ~bit;
+        if (!signal->active)
+            progress->active_mask[word] &= ~bit;
     }
 }
 #pragma data_seg(".data$SignalRegistryNamePc")
