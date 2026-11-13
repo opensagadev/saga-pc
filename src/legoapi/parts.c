@@ -2306,9 +2306,9 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         NUVEC part_position, velocity;
         NUSPECIALHANDLE special;
         NUMTX matrix;
-        f32 random, range;
+        f32 range;
         i16 angle_x, angle_y, angle_z;
-        i32 variant = 0, axis, sound;
+        i32 variant, axis, sound;
         part_position.x = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.x - type->position_random.x;
         part_position.y = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.y - type->position_random.y;
         part_position.z = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.z - type->position_random.z;
@@ -2320,30 +2320,31 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
         velocity.y += NuRandFloatSeeded(&partseed) * 2.0f * type->velocity_random.y - type->velocity_random.y;
         velocity.z += NuRandFloatSeeded(&partseed) * 2.0f * type->velocity_random.z - type->velocity_random.z;
         NuVecMtxTransformVU0(&velocity, &velocity, orientation);
+        params.gravity = type->gravity;
         params.position = &part_position;
         params.velocity = &velocity;
-        params.gravity = type->gravity;
         params.field_20 = type->bounce;
-        if (type->variant_count != 0 && (type->variant_mode == 0 || type->variant_mode == 1))
+        if (type->variant_count == 0)
+            variant = 0;
+        else if (type->variant_mode == 0 || type->variant_mode == 1)
             variant = (i32)((f64)NuRandFloatSeeded(&partseed) * 65535.0) % type->variant_count;
+        else
+            variant = 0;
         params.part_id = type->effect_ids[variant];
-        if (params.part_id == 9999)
+        if (type->effect_ids[variant] == 9999)
             params.special = NULL;
-        else if (params.part_id != -1) {
+        else if (type->effect_ids[variant] != -1) {
             params.special = &special;
             NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
         }
         params.field_a4 = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
         NuMtxSetIdentity(&matrix);
         range = (f32)type->rotation_random[0];
-        random = NuRandFloatSeeded(&partseed);
-        angle_x = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[0] - range);
+        angle_x = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[0] - range);
         range = (f32)type->rotation_random[1];
-        random = NuRandFloatSeeded(&partseed);
-        angle_y = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[1] - range);
+        angle_y = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[1] - range);
         range = (f32)type->rotation_random[2];
-        random = NuRandFloatSeeded(&partseed);
-        angle_z = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[2] - range);
+        angle_z = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[2] - range);
         for (axis = 0; axis < 3; ++axis) {
             params.field_a8[axis] = type->rotation[axis];
             params.field_a8[axis + 3] = type->rotation_random[axis];
