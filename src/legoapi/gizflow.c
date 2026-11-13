@@ -578,7 +578,7 @@ static VARIPTR *load_buff = 0;
 static VARIPTR *load_endbuff = 0;
 static FLOWBOX_PC *load_flowbox = 0;
 static i32 load_conditiontype = 0;
-static u8 load_conditionParam = 0;
+static i8 load_conditionParam = 0;
 static char load_gizmoname[32] = {0};
 static GIZFLOW_PC *load_gizflow = 0;
 static i32 load_gizmotype = 0;
@@ -954,7 +954,7 @@ static void GizFlowConfigConditionPc(NUFPAR_PC *parser) {
         return;
     load_flowbox->type = 1;
     load_conditiontype = -1;
-    load_conditionParam = 0xff;
+    load_conditionParam = -1;
     NuStrCpy(load_gizmoname, "");
     NuFParPushCom(parser, cfgtab_condition_pc);
     while (NuFParGetLine(parser)) {
