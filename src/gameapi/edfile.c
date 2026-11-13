@@ -402,7 +402,7 @@ STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
 STATIC_ASSERT(offsetof(eduimenu_s, title) == 0x34);
 
 extern i32 editor_return;
-extern void *dir_list;
+extern struct FILE_DIRECTORY_ENTRY_PC *dir_list;
 extern i32 edui_filepick_listsize;
 
 static void eduiFilePickAllocDirListPc(void) {
@@ -4015,6 +4015,9 @@ typedef struct FILE_DIRECTORY_ENTRY_PC {
     char name[256];
 } FILE_DIRECTORY_ENTRY_PC;
 
+/* FILE_DIRECTORY_ENTRY_PC.flags: the entry is a directory (listed as <name>, opened on selection). */
+enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
+
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
 
 /* As in retail, the key cascade tests the key pointers instead of the keys, so
@@ -4116,15 +4119,15 @@ static void eduicbSelectDirectoryEntry(eduimenu_s *menu, eduiitem_s *item, u32 v
         }
         filepick_item->reopen_directory = 1;
     }
-    if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].flags & 8) {
+    if (dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
         if (filepick_item->filename[0]) {
             NuStrCat(filepick_item->filename, "/");
         }
-        NuStrCat(filepick_item->filename, ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].name);
+        NuStrCat(filepick_item->filename, dir_list[item->data].name);
         filepick_item->reopen_directory = 1;
     }
-    if (!(((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].flags & 8)) {
-        NuStrCpy(filepick_item->name, ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].name);
+    if (!(dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC)) {
+        NuStrCpy(filepick_item->name, dir_list[item->data].name);
         if (filepick_item->changed) {
             filepick_item->changed(filepick_menu, &filepick_item->base, value);
         }
@@ -4155,8 +4158,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
     directory = NuFileOpenDir(text);
     if (directory) {
         dir_size = 0;
-        while (NuFileReadDir(directory, &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[dir_size]) > 0 &&
-               dir_size < edui_filepick_listsize) {
+        while (NuFileReadDir(directory, &dir_list[dir_size]) > 0 && dir_size < edui_filepick_listsize) {
             dir_size++;
         }
         if (picker->compare_entries) {
@@ -4169,27 +4171,23 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             eduiMenuAddItem(directory_menu, item);
         }
         for (index = 0; index < dir_size; index++) {
-            if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].flags & 8) {
-                NuSPrintf(text, "<%s>", ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name);
+            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
+                NuSPrintf(text, "<%s>", dir_list[index].name);
                 item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
                 item->text_alignment = 0x10;
                 eduiMenuAddItem(directory_menu, item);
             }
         }
         for (index = 0; index < dir_size; index++) {
-            if (picker->filter[0] && !NuStrIStr(((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name, picker->filter)) {
+            if (picker->filter[0] && !NuStrIStr(dir_list[index].name, picker->filter)) {
                 continue;
             }
-            if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].flags & 8) {
+            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
                 continue;
             }
-            NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].size,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.day,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.month,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.year,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.hour,
-                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.minute);
+            NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", dir_list[index].name, dir_list[index].size,
+                      dir_list[index].modified.day, dir_list[index].modified.month, dir_list[index].modified.year,
+                      dir_list[index].modified.hour, dir_list[index].modified.minute);
             item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
             item->text_alignment = 0x10;
             eduiMenuAddItem(directory_menu, item);

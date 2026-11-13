@@ -30230,7 +30230,7 @@ extern "C" {
     char ed_levelfile[256] = {0};
 
 #pragma bss_seg(".bss$dir_list")
-    void *dir_list = 0;
+    struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 
 #pragma data_seg(".data$edui_filepick_listsize")
     i32 edui_filepick_listsize = 8;
