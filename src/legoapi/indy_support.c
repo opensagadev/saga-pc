@@ -93,7 +93,6 @@ void __cdecl InitClimbObjectSys(WORLDINFO *world) {
     i32 index, connection_index;
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
-    CLIMB_SYSTEM_PC *system;
     CLIMB_SLOT_PC *object;
     if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL || world->climb_objects == NULL)
         return;
@@ -105,11 +104,10 @@ void __cdecl InitClimbObjectSys(WORLDINFO *world) {
             continue;
         connection = path->connections;
         for (connection_index = 0; connection_index < path->connection_count; ++connection_index, ++connection) {
-            system = world->climb_objects;
-            if (system->count < system->capacity &&
+            if (world->climb_objects->count < world->climb_objects->capacity &&
                 (connection->traversal_flags[0] &
                  (LEGO_AIPATHCNX_VARIANT_FLAG0_PC | LEGO_AIPATHCNX_VARIANT_FLAG1_PC)) != 0) {
-                object = &system->objects[system->count++];
+                object = &world->climb_objects->objects[world->climb_objects->count++];
                 object->connection = connection;
                 object->path = path;
                 ClimbObject_FindNormalPc(object);
