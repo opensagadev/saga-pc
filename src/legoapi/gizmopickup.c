@@ -744,18 +744,23 @@ void __cdecl CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
 
 i32 __cdecl ReleaseHearts(void) {
     GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
-    i32 total_hitpoints = 0;
     i32 missing_hitpoints = 0;
-    i32 i, hitpoints, chance, adjustment;
-    if (player != NULL && player->dead == 0 && player->field_107e > 0) {
-        total_hitpoints = player->field_107e;
-        missing_hitpoints = total_hitpoints - player->current_hp;
+    i32 total_hitpoints = 0;
+    i32 i, hitpoints, base, chance, adjustment;
+    if (player != NULL && player->dead == 0) {
+        hitpoints = player->field_107e;
+        if (hitpoints > 0) {
+            missing_hitpoints = hitpoints - player->current_hp;
+            total_hitpoints = hitpoints;
+        }
     }
     player = (GAMEOBJECT *)Player[1];
-    if (player != NULL && player->dead == 0 && player->field_107e > 0) {
+    if (player != NULL && player->dead == 0) {
         hitpoints = player->field_107e;
-        missing_hitpoints += hitpoints - player->current_hp;
-        total_hitpoints += hitpoints;
+        if (hitpoints > 0) {
+            missing_hitpoints += hitpoints - player->current_hp;
+            total_hitpoints += hitpoints;
+        }
     }
     if (total_hitpoints == 0)
         return 0;
@@ -764,7 +769,10 @@ i32 __cdecl ReleaseHearts(void) {
             if ((Part[i].active & 1) && Part[i].part_id == 0xcb)
                 --missing_hitpoints;
     }
-    missing_hitpoints += (Game.difficulty <= 5 ? 8 : 9) - Game.difficulty;
+    base = 8;
+    if (Game.difficulty > 5)
+        base = 9;
+    missing_hitpoints += base - Game.difficulty;
     if (missing_hitpoints > total_hitpoints)
         missing_hitpoints = total_hitpoints;
     else if (missing_hitpoints < 0)
@@ -777,7 +785,7 @@ i32 __cdecl ReleaseHearts(void) {
         else if (adjustment == -1)
             chance += chance;
     }
-    return chance > qrand();
+    return qrand() < chance;
 }
 
 void __cdecl SetCoinType(i32 model, GIZMOPICKUP_PC *pickup) {
