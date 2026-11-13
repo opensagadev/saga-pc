@@ -54,34 +54,29 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
     i32 index;
     i32 level;
     u8 character_index;
-    TAKEOVEROBJECT_PC *record;
     GAMEOBJECT *object;
     if (netclient != 0)
         return;
     level = WORLD->current_level->area_level_index;
-    record = takeoverobjects;
-    for (index = 0; index < num_takeoverobjects; ++index, ++record) {
-        object = record->object;
+    for (index = 0; index < num_takeoverobjects; ++index) {
+        object = takeoverobjects[index].object;
         if (object == NULL)
             continue;
-        record->last_safe_position = object->last_safe_position;
-        record->heading = object->field_0x276;
+        takeoverobjects[index].last_safe_position = object->last_safe_position;
+        takeoverobjects[index].heading = object->field_0x276;
         if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
             object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER && object->field_280 != 0xff &&
-            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0) {
-            if (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc ||
-                ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
-                 (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))
-                record->contact_index = record->object->field_280;
-            else
-                record->contact_index = 0xff;
-        } else {
-            record->contact_index = 0xff;
-        }
-        record->hitpoints = record->object->current_hp;
-        if (record->hitpoints == 0 && record->object->field_107e != 0)
-            record->hitpoints = record->object->field_107e;
-        record->current_level = (u8)level;
+            Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
+            (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc ||
+             ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
+              (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0)))
+            takeoverobjects[index].contact_index = takeoverobjects[index].object->field_280;
+        else
+            takeoverobjects[index].contact_index = 0xff;
+        takeoverobjects[index].hitpoints = takeoverobjects[index].object->current_hp;
+        if (takeoverobjects[index].hitpoints == 0 && takeoverobjects[index].object->field_107e != 0)
+            takeoverobjects[index].hitpoints = takeoverobjects[index].object->field_107e;
+        takeoverobjects[index].current_level = (u8)level;
     }
 }
 
