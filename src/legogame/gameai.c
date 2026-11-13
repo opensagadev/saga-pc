@@ -210,6 +210,13 @@ const char GameAIBatmanPc[7] = "Batman";
 const char GameAIRobinPc[6] = "Robin";
 const char GameAIGlidePackPc[11] = "Glide_Pack";
 
+typedef struct bulk_ai_full_object_pc_s {
+    APIOBJECT_PC object;
+    u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)];
+} BULK_AI_FULL_OBJECT_PC;
+STATIC_ASSERT(sizeof(BULK_AI_FULL_OBJECT_PC) == 0x2b8);
+STATIC_ASSERT(sizeof(AIPACKET_PC) <= 0x210);
+
 i32 OpponentCanAcquirePc(APIOBJECT_PC *observer, APIOBJECT_PC *target, f32 distance, u64 awareness, f32 dx, f32 dz) {
     f32 facing_dot;
     if (party_under_cover != 0 && ((observer->motion_flags & 0x400) == 0 || (target->motion_flags & 0x400) == 0))
@@ -1946,6 +1953,25 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
         }
     }
     return object;
+}
+
+void __cdecl AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
+                              AIPATH_PC *path, i32 flags) {
+    if (system != NULL && position != NULL && path_info != NULL) {
+        /* The packet is a raw byte buffer (retail places it above the object as a /GS buffer). */
+        u8 packet_data[0x210];
+        AIPACKET_PC *packet = (AIPACKET_PC *)packet_data;
+        BULK_AI_FULL_OBJECT_PC object;
+        memset(&object, 0, sizeof(object));
+        memset(packet_data, 0, sizeof(packet_data));
+        object.object.ai = packet;
+        object.object.position = *position;
+        packet->terrain_origin = *position;
+        AISysGetCharacterPathPos(system, &object.object, packet, 0xff, 1);
+        *path_info = packet->path_info;
+        if (path_position != NULL)
+            *path_position = packet->last_path_position;
+    }
 }
 
 i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
