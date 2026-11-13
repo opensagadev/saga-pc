@@ -49,7 +49,6 @@ i32 nufile_lsn_allowed = 1;
 PC_FILEEXTINFO extensions[64];
 i32 num_extensions;
 PC_WINDOW_OPTIONS_PC PcWindowOptions;
-i32 fpk_err;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
@@ -377,13 +376,21 @@ static int exercise_file_pak(i32 version) {
             items = (PC_FILEPAKITEM *)((PC_FILEPAKHDR *)header + 1);
             break;
     }
-    fpk_err = 5;
-    REQUIRE(NuFilePakGetLastError() == 5 && fpk_err == 5);
+    /* fpk_err is private to nucore; an over-aligned load is the public way to latch error 5. */
+    {
+        VARIPTR unused;
+        VARIPTR unused_end;
+        unused.void_ptr = storage.bytes;
+        unused_end.void_ptr = storage.bytes + sizeof(storage.bytes);
+        REQUIRE(NuFilePakLoadKey(paths[version], &unused, unused_end, 0x4000, NULL, 0) == NULL);
+        REQUIRE(unused.void_ptr == storage.bytes);
+    }
+    REQUIRE(NuFilePakGetLastError() == 5);
     REQUIRE(NuFilePakGetSize(header) == sizeof(original) && NuFilePakGetLastError() == 0);
     REQUIRE(NuFilePakGetItem(header, "drop") == 1);
     REQUIRE(NuFilePakGetItem(header, "KEEP.BIN") == 2);
     REQUIRE(NuFilePakGetItem(header, "old.bin") == 0);
-    REQUIRE(NuFilePakGetItem(header, "ABSENT") == 0 && fpk_err == 0);
+    REQUIRE(NuFilePakGetItem(header, "ABSENT") == 0 && NuFilePakGetLastError() == 0);
     address = storage.bytes;
     size = -777;
     REQUIRE(NuFilePakGetItemInfo(header, 0, &address, &size) == 0);
