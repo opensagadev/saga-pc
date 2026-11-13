@@ -8737,26 +8737,26 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
                 }
             }
         }
-    } else if ((object->flags_e20 & 0x10000) != 0 && object->field_e33 == 0 && pressed && object->field_281 != 0 &&
+    } else if ((object->field_e22 & 1) != 0 && object->field_e33 == 0 && pressed && object->field_281 != 0 &&
                object->character_model != NULL &&
-               (object->character_context == 1 || object->character_context == -1 || object->character_context == 2 ||
+               (object->character_context == -1 || object->character_context == 1 || object->character_context == 2 ||
                 object->character_context == 4 || object->character_context == 3) &&
                SetComboOpponent(object, 0.6f, 0, 2) == 1) {
-        NUVEC *position;
+        NUVEC *position = NULL;
         NUVEC delta;
         if (object->force_target != NULL)
             position = &object->force_target->position;
         else if (object->blowup_target != NULL)
             position = &object->blowup_target->mid_position;
-        else
+        if (position == NULL)
             return;
         NuVecSub(&delta, position, &object->position);
         NuVecRotateY(&delta, &delta, -object->movement_facing_angle);
-        if ((object->pad->input_magnitude <= 0.0f || fabs((f64)delta.x) <= fabs((f64)delta.z)) && delta.z < 0.0f &&
-            ComboOpponent_Range2 < 0.48999998f) {
+        if ((!(object->pad->input_magnitude > 0.0f) || !(MovePlayerFabs(delta.x) > MovePlayerFabs(delta.z))) &&
+            delta.z < 0.0f && ComboOpponent_Range2 < 0.48999998f) {
             object->field_7aa = 0x29;
             if (object->character_model->model_data_b[0x29] != NULL) {
-                object->context_timer = AnimDuration(object->id, 0x29, 0.0f, 0.0f, 1);
+                object->context_timer = AnimDuration((i16)object->id, 0x29, 0.0f, 0.0f, 1);
                 if (object->context_timer > 0.0f) {
                     object->character_context = 0x10;
                     object->context_variant_flags &= ~0x40;
