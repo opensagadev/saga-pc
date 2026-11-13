@@ -748,10 +748,16 @@ static void CC_helmet_locator(NUFPAR_PC *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->helmet_locator);
 }
 
+/* Reads the next word as a locator index; zero when the line has no more words. */
+// MATCH-EXCEPTION: retail inlines this reader into both callers with no out-of-line copy and without rotating
+// the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
+#define CC_READ_LOCATOR_INDEX(parser, locator)                                                                         \
+    (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
+
 static void CC_shadow_locators(NUFPAR_PC *parser) {
+    u32 locator;
     charconfig.runtime->shadow_locators = 0;
-    while (NuFParGetWord(parser) != 0) {
-        const u32 locator = NuAToI(parser->word_buffer_ptr);
+    while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
         if (locator <= 15) {
             charconfig.runtime->shadow_locators |= 1u << locator;
         }
@@ -759,9 +765,9 @@ static void CC_shadow_locators(NUFPAR_PC *parser) {
 }
 
 static void CC_thrust_locators(NUFPAR_PC *parser) {
+    u32 locator;
     charconfig.runtime->thrust_locators = 0;
-    while (NuFParGetWord(parser) != 0) {
-        const u32 locator = NuAToI(parser->word_buffer_ptr);
+    while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
         if (locator <= 15) {
             charconfig.runtime->thrust_locators |= 1u << locator;
         }
