@@ -8614,12 +8614,9 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
             theSplineHelper.first_object = spline;
         theSplineHelper.object_count++;
     }
-    SplineKnot *knot = (SplineKnot *)theMemoryManager.AllocPool(sizeof(SplineKnot), 1);
+    SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
     if (knot == NULL)
         return NULL;
-    knot->next = NULL;
-    knot->previous = NULL;
-    knot->led_file = Placeable::CurrentLedFile;
     knot->spline = spline;
     spline->knots.InsertAfter(knot, selected_knot);
     knot->Smooth();
