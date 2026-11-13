@@ -118,8 +118,8 @@ static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NU
             if (local.x >= piece->start.x && local.x <= piece->end.x) {
                 distance = LedgeFabsPc(local.z);
                 if (distance < segment_distance) {
-                    segment_distance = distance;
                     local.z = 0.0f;
+                    segment_distance = distance;
                     nearest_segment = ledge;
                     NuVecRotateY(&local, &local, ledge->y_rotation);
                     NuVecAdd(&segment_position, &local, &ledge->position);
