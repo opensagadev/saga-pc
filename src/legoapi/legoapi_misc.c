@@ -16,16 +16,17 @@ void __cdecl ClearLastSafeTakeOver(GAMEOBJECT *object) {
 void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     i32 angle;
     f32 sine;
+    f32 scale;
     phase = NuFmod(phase + GameTimer.time_elapsed, 1.25f);
     if (phase < 1.0f) {
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
         sine = NuTrigTable[(angle >> 1) & 0x7fff];
-        *(u32 *)&phase = *(u32 *)&sine & 0x7fffffff;
-        phase = 1.0f - phase;
+        *(u32 *)&scale = *(u32 *)&sine & 0x7fffffff;
+        scale = 1.0f - scale;
     } else {
-        phase = 0.0f;
+        scale = 0.0f;
     }
-    strength = phase * strength;
+    strength = scale * strength;
     if (object != NULL) {
         if (object->flags_1fc_word & 0x80)
             NewRumble(object->pad->bound_pad, strength, 0);
