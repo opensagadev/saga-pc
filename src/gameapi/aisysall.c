@@ -17072,7 +17072,6 @@ void __cdecl AISYSRebuildFromEditorData(void) {
             for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
                  locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
                 AILOCATOR_PC *runtime;
-                AIPATH_PC *path;
                 i32 connection_index;
                 locator->runtime_index = 0xff;
                 if (locator->path_check.path == NULL)
@@ -17156,7 +17155,6 @@ void __cdecl AISYSRebuildFromEditorData(void) {
             for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
                  creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
                 AICREATURE_PC *runtime = &aieditor->ai_system->creatures[index++];
-                AIPATH_PC *path;
                 i32 connection_index;
                 i32 item;
                 strcpy(runtime->name, creature->name);
@@ -17176,10 +17174,10 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 runtime->path_info.width = creature->check.width;
                 for (item = 0; item < 4; ++item)
                     runtime->script_params[item] = creature->script_params[item];
-                path = runtime->path_info.path;
-                if (path != NULL && path->connection_count != 0) {
-                    for (connection_index = 0; connection_index < path->connection_count; ++connection_index) {
-                        AIPATHCNX_PC *connection = &path->connections[connection_index];
+                if (runtime->path_info.path != NULL) {
+                    for (connection_index = 0; connection_index < runtime->path_info.path->connection_count;
+                         ++connection_index) {
+                        AIPATHCNX_PC *connection = &runtime->path_info.path->connections[connection_index];
                         i32 first = creature->check.first->index;
                         if (connection->node_indices[0] == first &&
                             (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
