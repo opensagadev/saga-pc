@@ -23,10 +23,10 @@ python3 tools/unmapped.py --write KIND    # add the provable rows of one kind (s
 | --- | --- | --- |
 | fuzzy code match | objdiff similarity of compiled functions, weighted by original size | original `.text` |
 | exact code match | byte-identical functions after relocation, plus the alignment padding that follows an exact function | original `.text` |
-| mapped code | union of sized map rows in `.text`, plus proven alignment padding between known extents | original `.text` (VirtualSize) |
+| mapped code | union of sized map rows in `.text`, plus proven alignment padding between known extents (the padding is about 3.3 % of the section; the README row says so) | original `.text` (VirtualSize) |
 | mapped file-backed data | union of sized map rows and typed data members in the raw-data part of `.rdata` and `.data`, plus proven zero padding between known extents | file-backed `.rdata` + `.data` |
 | mapped zero-fill/BSS | the same union in the zero-filled tail of `.data` | VirtualSize minus raw size of `.data` |
-| named code | mapped code bytes whose row has an identified name; rows under a standard address name (`fun_XXXXXXXX`) are reported apart as `mapping_code_address_named_*` and in the row's text | original `.text` |
+| named code | mapped function bytes whose row has an identified name (`mapping_code_named_bytes`) | mapped function bytes without padding: named plus address-named (`fun_XXXXXXXX`, `mapping_code_address_named_bytes`); the row's text gives the address-named rest. The report keeps `mapping_code_named_percent` over original `.text` |
 | reproduced file-backed data | file-backed bytes our objects define exactly plus bytes pinned library members provide exactly ([Reproduced data](#reproduced-data)) | file-backed `.rdata` + `.data` |
 
 "Mapped" means identified: an address, a linker name and a complete extent.

@@ -351,7 +351,8 @@ class DataPaddingTests(unittest.TestCase):
                                 "mapping_file_backed_data_with_padding_percent": 41,
                                 "mapping_zero_fill_data_percent": 5, "mapping_zero_fill_data_with_padding_percent": 5})
             text = path.read_text()
-            self.assertIn("**Mapped**: known code extents and the alignment padding between them. | "
+            self.assertIn("**Mapped**: known code extents, including the alignment padding between functions "
+                          "(2.5% of the section). | "
                           f"![92.500%](https://img.shields.io/badge/-92.500%25-{match.badge_color(92.500)}?style=for-the-badge) |", text)
             self.assertIn("**Mapped file-backed**: known data stored in the executable and the zero padding "
                           f"between it. | ![41.000%](https://img.shields.io/badge/-41.000%25-{match.badge_color(41.000)}"
@@ -364,8 +365,8 @@ class DataPaddingTests(unittest.TestCase):
             path.write_text("<!-- matching-badge -->old<!-- /matching-badge -->\n\n"
                             "<!-- mapping-badge -->old<!-- /mapping-badge -->\n")
             match.update_badge({"fuzzy_coverage_percent": 80, "matching_percent": 30,
-                                "mapping_code_percent": 90, "mapping_code_named_percent": 85,
-                                "mapping_code_address_named_percent": 2.5,
+                                "mapping_code_percent": 90, "mapping_code_named_percent": 85.5,
+                                "mapping_code_address_named_percent": 4.5,
                                 "mapping_file_backed_data_percent": 40, "reproduced_file_backed_data_percent": 20,
                                 "mapping_zero_fill_data_percent": 5})
             lines = path.read_text().splitlines()
@@ -373,9 +374,12 @@ class DataPaddingTests(unittest.TestCase):
             self.assertEqual([line.split("**")[1] for line in lines[start + 2:start + 11]],
                              ["Code", "Fuzzy match", "Exact match", "Mapped", "Named", "Data",
                               "Mapped file-backed", "Reproduced", "Mapped zero-fill/BSS"])
-            self.assertIn("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: mapped code under identified names; "
-                          "another 2.500% is bounded under address names (`fun_XXXXXXXX`). | "
-                          f"![85.000%](https://img.shields.io/badge/-85.000%25-{match.badge_color(85.000)}?style=for-the-badge) |", lines)
+            # Named is a share of the mapped function bytes: 85.5 / (85.5 + 4.5), padding left out.
+            self.assertIn("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: share of mapped function bytes (without "
+                          "the padding) under identified names; the other 5.0% carry address names "
+                          "(`fun_XXXXXXXX`). | "
+                          f"![95.000%](https://img.shields.io/badge/-95.000%25-{match.badge_color(95.000)}?style=for-the-badge) |", lines)
+            self.assertNotIn("85.500", "\n".join(lines))
             self.assertTrue(lines[start + 9].startswith("| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: "))
             self.assertTrue(lines[start + 9].endswith(
                 f"| ![20.000%](https://img.shields.io/badge/-20.000%25-{match.badge_color(20.000)}?style=for-the-badge) |"))

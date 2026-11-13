@@ -512,6 +512,13 @@ def update_badge(stats):
     # The mapped rows count proven alignment padding between known extents when the
     # report has it; mapping_<kind>_percent stays the symbol-only number.
     padded = "mapping_code_with_padding_percent" in stats
+    # Mapped code counts the padding; the named figures do not. Show named as a share of
+    # the mapped function bytes alone so that it and the address-named rest add up to 100 %.
+    padding = stats["mapping_code_with_padding_percent"] - stats["mapping_code_percent"] if padded else 0
+    if "mapping_code_named_percent" in stats:
+        named, address_named = stats["mapping_code_named_percent"], stats["mapping_code_address_named_percent"]
+        stats = {**stats, "mapping_code_named_share_percent": 100 * named / (named + address_named)
+                 if named + address_named else 0}
     # (depth, name, field, meaning); a row without a field is a group heading.
     rows = [(0, "Code", None, None),
             (1, "Fuzzy match", "fuzzy_coverage_percent",
@@ -520,13 +527,14 @@ def update_badge(stats):
              "count as 0). Same definition as the Android decompilation's whole-binary objdiff fuzzy match."),
             (1, "Exact match", *exact),
             (1, "Mapped", "mapping_code_with_padding_percent" if padded else "mapping_code_percent",
-             "known code extents and the alignment padding between them." if padded
+             f"known code extents, including the alignment padding between functions "
+             f"({padding:.1f}% of the section)." if padded
              else "known code extents.")]
     if "mapping_code_named_percent" in stats:
-        rows.append((2, "Named", "mapping_code_named_percent",
-                     f"mapped code under identified names; another "
-                     f"{stats['mapping_code_address_named_percent']:.3f}% is bounded under address names "
-                     f"(`fun_XXXXXXXX`)."))
+        share = stats["mapping_code_named_share_percent"]
+        rows.append((2, "Named", "mapping_code_named_share_percent",
+                     f"share of mapped function bytes (without the padding) under identified names; the "
+                     f"other {100 - share:.1f}% carry address names (`fun_XXXXXXXX`)."))
     rows += [(0, "Data", None, None),
              (1, "Mapped file-backed", "mapping_file_backed_data_with_padding_percent" if padded
               else "mapping_file_backed_data_percent",
