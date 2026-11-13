@@ -34891,6 +34891,9 @@ extern "C" {
 i32 PostShadowCubeFaceIndicesPc[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4},
                                          {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
 f32 PostShadowPlaneExtrusionPc = 120.0f;
+/* Mutable half-texel terms read by PostBlur7x7HighPc (input -0.5, output +1.0). */
+f32 PostBlurHighInputBiasPc = -0.5f;
+f32 PostBlurHighOutputBiasPc = 1.0f;
 
 extern "C" {
 #pragma data_seg(".data$Hints_LSW")

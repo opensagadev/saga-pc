@@ -16090,10 +16090,10 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
             OccluderVertexSet(&vertical[6], 0, (f32) - (dy * 3.0), .05f, 0);
-            f32 bias[4] = {1, 1, -.5f / (f32)width, -.5f / (f32)height};
-            // Native PC output half-texel terms are positive 1/work extent.
+            f32 bias[4] = {1, 1, PostBlurHighInputBiasPc / (f32)width, PostBlurHighInputBiasPc / (f32)height};
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
-                                  1.0f / (f32)work_width, 1.0f / (f32)work_height};
+                                  PostBlurHighOutputBiasPc / (f32)work_width,
+                                  PostBlurHighOutputBiasPc / (f32)work_height};
             PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, PCGraphicsPostEffectWorkTexturePc, 0);
             PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
             PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);

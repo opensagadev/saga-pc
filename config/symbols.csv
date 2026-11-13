@@ -35189,6 +35189,8 @@ address,symbol,size,ctype
 0x80bee4,??_R0?AVNuMotionFilter@@@8,29,native exactVT binding; unimplemented extent unclaimed
 0x80bf04,??_R0?AVNuCopyFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
 0x80bf20,_NuPostEffectBackBufferFramePc,4,i32
+0x80bf28,_PostBlurHighOutputBiasPc,4,f32
+0x80bf2c,_PostBlurHighInputBiasPc,4,f32
 0x80bf30,??_R0?AVNuMotionAccumFilterGen@@@8,37,native exactVT binding; unimplemented extent unclaimed
 0x80bf58,??_R0?AVNuSpeedBlurFilterGen@@@8,35,native exactVT binding; unimplemented extent unclaimed
 0x80bf7c,_PostShadowPlaneExtrusionPc,4,f32

@@ -29071,6 +29071,8 @@ extern "C" {
     void __cdecl SetShadowLight(void);
     extern i32 PostShadowCubeFaceIndicesPc[6][4];
     extern f32 PostShadowPlaneExtrusionPc;
+    extern f32 PostBlurHighInputBiasPc;
+    extern f32 PostBlurHighOutputBiasPc;
     void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *, NUVEC4 *, NUVEC4 *);
     i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *);
     void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *, const NUVEC4 *, NUVEC4 *, NUVEC4 *, f32 *);
