@@ -1934,11 +1934,12 @@ extern "C" {
     void __cdecl ChrisAllocLevelStuff(WORLDINFO *world) {
         world->has_level_specific_data = 1;
         if (world->current_level == DOGFIGHTA_LDATA) {
+            DOGFIGHT_SPACE_PC *space;
             world->level_specific_data =
                 GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE_PC));
-            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_buffer.records =
-                ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_records;
-            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->reset_buffer.capacity = 256;
+            space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
+            space->reset_buffer.records = space->reset_records;
+            space->reset_buffer.capacity = 256;
             ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed = 1.0f;
             if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f)
                 ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed =
