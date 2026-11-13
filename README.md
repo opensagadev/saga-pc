@@ -1,15 +1,17 @@
 # saga-pc
 
 <!-- matching-badge -->
-![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-90.877%25-brightgreen)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-90.913%25-brightgreen)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 <!-- mapping-badge -->
 
 | Metric / coverage | Meaning |
 | --- | --- |
-| ![exact code match](https://img.shields.io/badge/exact%20code%20match-60.327%25-orange) | Byte-identical code and the alignment padding after it. |
-| ![mapped code](https://img.shields.io/badge/mapped%20code-96.388%25-brightgreen) | Known code extents and the alignment padding between them. |
+| ![exact code match](https://img.shields.io/badge/exact%20code%20match-60.545%25-orange) | Byte-identical code and the alignment padding after it. |
+| ![mapped code](https://img.shields.io/badge/mapped%20code-100.000%25-brightgreen) | Known code extents and the alignment padding between them. |
+| ![named code](https://img.shields.io/badge/named%20code-94.285%25-brightgreen) | Mapped code under identified names; another 2.417% is bounded under address names (`fun_XXXXXXXX`). |
 | ![mapped file-backed data](https://img.shields.io/badge/mapped%20file--backed%20data-95.639%25-brightgreen) | Known data stored in the executable and the zero padding between it. |
+| ![reproduced file-backed data](https://img.shields.io/badge/reproduced%20file--backed%20data-90.511%25-brightgreen) | Data stored in the executable that our objects or pinned library members define byte-exactly ([details](docs/mapping-status.md#reproduced-data)). |
 | ![mapped zero-fill/BSS](https://img.shields.io/badge/mapped%20zero--fill%2FBSS-97.712%25-brightgreen) | Known zero-initialized storage. |
 
 <!-- /mapping-badge -->
