@@ -1225,8 +1225,8 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 } else if (force->anim_set->state != 4 && force->stop_sfx_id != -1) {
                     GameAudio_PlaySfxById(force->stop_sfx_id, &force->position, 0, 0);
                 }
-            } else if (((force->anim_set->flags & 1) != 0 || (force->anim_set->flags & 4) != 0) && force->field_50 == 0.0f &&
-                       playing_forwards) {
+            } else if (((force->anim_set->flags & 1) != 0 || (force->anim_set->flags & 4) != 0) &&
+                       force->field_50 == 0.0f && playing_forwards) {
                 if (force->start_sfx_id != -1) {
                     if (force->anim_set->state == 0 || IsSfxLooping(force->start_sfx_id))
                         GameAudio_PlaySfxById(force->start_sfx_id, &force->position, 0, 0);
