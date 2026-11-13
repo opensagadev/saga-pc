@@ -7720,14 +7720,16 @@ void __cdecl AILocatorSet_AssignFurthestLocator(AISYS_PC *system, AILOCATORSET_P
             if (distance > furthest_distance) {
                 if (second_position != NULL) {
                     f32 second_distance = NuVecDistSqr(second_position, &locator->position, &difference);
-                    if (!(second_distance > furthest_distance)) {
-                        continue;
+                    if (second_distance > furthest_distance) {
+                        if (second_distance < distance) {
+                            distance = second_distance;
+                        }
+                        if (max_range == 0.0f || max_range * max_range > distance) {
+                            furthest_distance = distance;
+                            furthest_index = index;
+                        }
                     }
-                    if (second_distance < distance) {
-                        distance = second_distance;
-                    }
-                }
-                if (max_range == 0.0f || max_range * max_range > distance) {
+                } else if (max_range == 0.0f || max_range * max_range > distance) {
                     furthest_distance = distance;
                     furthest_index = index;
                 }
