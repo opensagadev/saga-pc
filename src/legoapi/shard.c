@@ -2136,7 +2136,7 @@ STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 6);
 
 /* 004c64f0..004c6bec instructions;004c6bec..004c6c04 six-entry table. */
 void __cdecl DrawSubItemMenu2D(void) {
-    shopitem_s *items, *item;
+    shopitem_s *items;
     i32 *ids;
     char title[128], subtitle[128];
     char *name;
@@ -2162,26 +2162,29 @@ void __cdecl DrawSubItemMenu2D(void) {
         return;
     if (items == NULL)
         return;
-    item = &items[ids[3]];
-    name = item->name;
-    if (item->type == 1) {
-        if (item->unlocked == 1) {
+    name = items[ids[3]].name;
+    if (items[ids[3]].type == 1) {
+        if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if ((u16)item->item_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
-                                                               : CollectIDUnlocked((u16)item->item_id) != 0)
+        } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4Pc
+                       ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+                       : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0)
             buyable = show_name = 1;
         else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
             SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleYPc + (f64)HubEpisodeSubtitleYPc) * 0.5),
                         1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
-    } else if (item->type == 0) {
+    } else if (items[ids[3]].type == 0) {
         show_name = 0;
-        buyable = item->unlocked != 1 && item->price != 0;
-    } else if (item->type == 2) {
-        id = (u16)item->item_id;
-        NuStrCpy(subtitle, TTab[ExtrasCheatsPc[id].text_id != NULL ? *ExtrasCheatsPc[id].text_id : tUNKNOWN]);
+        buyable = items[ids[3]].unlocked == 1 ? 0 : (u32)items[ids[3]].price > 0;
+    } else if (items[ids[3]].type == 2) {
+        id = (u16)items[ids[3]].item_id;
+        // MATCH-EXCEPTION: retail selects the 16-bit text id before sign-extending it once, which the
+        // casts reproduce; the plain ternary widens each arm separately.
+        NuStrCpy(subtitle,
+                 TTab[(i16)(ExtrasCheatsPc[id].text_id != NULL ? (u16)*ExtrasCheatsPc[id].text_id : tUNKNOWN)]);
         name = subtitle;
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
@@ -2200,8 +2203,8 @@ void __cdecl DrawSubItemMenu2D(void) {
                 buyable = show_name = 0;
             }
         }
-    } else if (item->type == 4) {
-        id = (u16)item->item_id;
+    } else if (items[ids[3]].type == 4) {
+        id = (u16)items[ids[3]].item_id;
         sprintf(title, "%s %i", TTab[TextIdPc880778], id + 1);
         name = title;
         if (items[ids[3]].unlocked == 1) {
@@ -2216,8 +2219,8 @@ void __cdecl DrawSubItemMenu2D(void) {
             buyable = show_name = 0;
         } else
             buyable = show_name = 1;
-    } else if (item->type == 5) {
-        id = (u16)item->item_id;
+    } else if (items[ids[3]].type == 5) {
+        id = (u16)items[ids[3]].item_id;
         available = CutScenePlayer_CanStart(id);
         CutScenePlayer_GetText(id, title, subtitle, available);
         SmartTextEx(title, 0.0f, HubEpisodeTitleYPc, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
