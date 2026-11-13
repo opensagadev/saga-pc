@@ -8997,7 +8997,8 @@ i32 LevelEditor::LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *
     result = 0;
     if (!multi_load_active)
         theClassEditor.PreLoadInitialisation(&source, &scratch);
-    NUFILE file = NuMemFileOpen(file_begin->void_ptr, file_end->addr - file_begin->addr, 0);
+    i32 file_size = file_end->addr - file_begin->addr;
+    NUFILE file = NuMemFileOpen(file_begin->void_ptr, file_size, 0);
     if (file) {
         EdFileInputStream stream(&source, &scratch);
         stream.Open(file, 4);
