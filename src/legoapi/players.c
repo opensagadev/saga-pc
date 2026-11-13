@@ -17,13 +17,16 @@ i32 __cdecl MakePlayerList(i32 count) {
         else if (makeplayerlist_freeplay != 2)
             PlayerList[player_count] = player->id;
         progress = &PlayerProgress[player_count];
-        progress->active = (u8)((player->flags_1fc >> 7) & 1);
+        progress->active = player->player_controlled;
         if (player->character_context != 6 && player->field_e33 != 2 &&
             ((player->field_e22 & 1) != 0 || player->field_e33 != 0))
             progress->field_7 = 1;
         else
             progress->field_7 = 0;
-        progress->coins = player->coin_packet != NULL ? ((PLAYER_COIN_PACKET_PC *)player->coin_packet)->coins : 0;
+        if (player->coin_packet != NULL)
+            progress->coins = ((PLAYER_COIN_PACKET_PC *)player->coin_packet)->coins;
+        else
+            progress->coins = 0;
         progress->field_b = player->jump_variant_state == 1;
         if (player->dead != 0) {
             progress->hitpoints = player->field_107e;
@@ -36,7 +39,10 @@ i32 __cdecl MakePlayerList(i32 count) {
         progress->unknown_0004 = player->field_1062;
         progress->field_c = player->powerup_time;
         PlayerSuit[player_count] = player->suit;
-        PlayerTorpedoCount[player_count] = player->torpedo != NULL ? player->torpedo->count : 0;
+        if (player->torpedo != NULL)
+            PlayerTorpedoCount[player_count] = player->torpedo->count;
+        else
+            PlayerTorpedoCount[player_count] = 0;
         ++player_count;
     }
     makeplayerlist_freeplay = 0;
@@ -332,15 +338,18 @@ i32 __cdecl Conveyor_AdjustSpeed(NUVEC *velocity) {
 
 __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum,
                                            GAMEOBJECT *object, GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
-    i32 count = 1, i;
+    i32 count, i;
     NUVEC bounds_min, bounds_max;
-    f32 dx, dz, combined_radius, speed, target_x, target_z;
+    NUVEC target;
+    f32 dx, dz, combined_radius, speed;
     u16 angle;
     if (object == NULL) {
         object = Obj;
         count = HIGHGAMEOBJECT;
+    } else {
+        count = 1;
     }
-    if (maximum == NULL || minimum == NULL) {
+    if (minimum == NULL || maximum == NULL) {
         bounds_min.x = position->x - radius;
         bounds_min.y = position->y - radius;
         bounds_min.z = position->z - radius;
@@ -351,7 +360,7 @@ __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *m
         maximum = &bounds_max;
     }
     for (i = 0; i < count; ++i, ++object) {
-        if (object == excluded || (object->flags_1fc_word & 0x1001) != 0x1001 || object->dead ||
+        if (object == excluded || !(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
             (object->flags_e20 & 0x20))
             continue;
         if ((flags & 2) && !object->field_281)
@@ -360,28 +369,29 @@ __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *m
             continue;
         if (object->character_data->game_character->flags_090 & 0x8000)
             continue;
-        if (minimum->x > object->collision_max.x || object->collision_min.x > maximum->x ||
-            minimum->z > object->collision_max.z || object->collision_min.z > maximum->z)
+        if (minimum->x > object->collision_max.x || maximum->x < object->collision_min.x ||
+            minimum->z > object->collision_max.z || maximum->z < object->collision_min.z)
             continue;
-        if ((flags & 1) && (minimum->y > object->collision_max.y || object->collision_min.y > maximum->y))
+        if ((flags & 1) && (minimum->y > object->collision_max.y || maximum->y < object->collision_min.y))
             continue;
+        combined_radius = object->bounds_radius + radius;
         dx = object->position.x - position->x;
         dz = object->position.z - position->z;
-        combined_radius = radius + object->bounds_radius;
-        if (dx * dx + dz * dz < combined_radius * combined_radius) {
-            if (dz == 0.0f && dx == 0.0f)
+        combined_radius *= combined_radius;
+        if (dx * dx + dz * dz < combined_radius) {
+            if (dx == 0.0f && dz == 0.0f)
                 angle = qrand();
             else
                 angle = NuAtan2D(dx, dz);
-            speed = speed_multiplier * object->character_data->game_character->run_speed;
+            speed = object->character_data->game_character->run_speed * speed_multiplier;
             if (speed < 1.0f)
                 speed = 1.0f;
             else if (speed > 3.0f)
                 speed = 3.0f;
-            target_x = speed * NuTrigTable[angle >> 1];
-            target_z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-            object->velocity.x = SeekValF(object->velocity.x, target_x, 10.0f);
-            object->velocity.z = SeekValF(object->velocity.z, target_z, 10.0f);
+            target.x = speed * NuTrigTable[angle >> 1];
+            target.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+            object->velocity.x = SeekValF(object->velocity.x, target.x, 10.0f);
+            object->velocity.z = SeekValF(object->velocity.z, target.z, 10.0f);
         }
     }
 }
