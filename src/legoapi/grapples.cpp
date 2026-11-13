@@ -725,7 +725,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
                 grapple->hook_position.z;
         }
         distance = NuVecDist(&attachment, &grapple->hook_position, &direction);
-        if (grapple->rope_length > distance) {
+        if (distance < grapple->rope_length) {
             inverse_distance = 1.0 / (f64)distance;
             direction.x *= inverse_distance;
             direction.y *= inverse_distance;
