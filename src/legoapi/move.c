@@ -5978,9 +5978,7 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
     GIZFORCE_PC *force;
     object->flags_ef4 &= ~0x100000u;
     if (object->character_context == 8) {
-        if ((!held && !(object->pad->runtime_flags & 4)) || target->force == NULL)
-            object->character_context = -1;
-        else {
+        if ((held || (object->pad->runtime_flags & 4)) && target->force != NULL) {
             if (dagobah_training != 0 && object->rider == NULL && FreePlay == 0)
                 can_use = 0;
             else if (GizForce_Complete(target->force))
@@ -5994,8 +5992,8 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
                     ((f64)attention->head_facing < (f64)-0.85f || (f64)attention->head_facing > (f64)0.85f))
                     can_use = 0;
                 if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == (u16)id_LUKESKYWALKERDAGOBAH &&
-                    LevGizmo[0] != NULL && LevGizmo[0]->object == target->force &&
-                    GameAnimSet_GetCompletionRatio(target->force->anim_set) > 0.5f)
+                    LevGizmo[0] != NULL && target->force == LevGizmo[0]->object &&
+                    GameAnimSet_GetCompletionRatio(((GIZFORCE_PC *)LevGizmo[0]->object)->anim_set) > 0.5f)
                     can_use = 0;
                 if (can_use) {
                     target->force->using_object = object;
@@ -6008,7 +6006,8 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
                 target->force = NULL;
                 object->character_context = -1;
             }
-        }
+        } else
+            object->character_context = -1;
         if (object->character_context == -1)
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         return;
@@ -6018,7 +6017,7 @@ static __declspec(noinline) void ForceCode(GAMEOBJECT *object, i32 pressed, i32 
         return;
     if (object->field_281 &&
         (object->character_context == -1 || (U64_PAIR(&CInfo[object->character_context].flags) & 4) != 0)) {
-        if (((object->flags_1fc & 0x80) && pressed) || (object->pad->runtime_flags & 4) || (held && previous))
+        if (((object->flags_1fc & 0x80) && pressed) || (object->pad->runtime_flags & 4) || (previous && held))
             start = 1;
     }
     if (start) {
