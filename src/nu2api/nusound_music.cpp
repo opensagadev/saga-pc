@@ -1254,24 +1254,26 @@ i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
     Track *track = album->GetTrack(class_mask);
     if (track == NULL || track->file_indexes[track_index] == -1)
         return -3;
-    u32 track_class = track->clazz;
-    if (track_class != 0x10 &&
-        (FindVoiceByClassAndStatus(0x10, 6) != NULL || FindVoiceByClassAndStatus(0x10, 7) != NULL))
-        return CueTrack(class_mask);
+    if (track->clazz != 0x10) {
+        if (FindVoiceByClassAndStatus(0x10, 6) != NULL)
+            return CueTrack(class_mask);
+        if (FindVoiceByClassAndStatus(0x10, 7) != NULL)
+            return CueTrack(class_mask);
+    }
     Voice *voice = FindVoiceByTrack(track);
     if (voice != NULL)
         return voice->Play();
-    if (track_class == 8) {
+    if (track->clazz == 8) {
         voice = FindVoiceByClass(8);
         if (voice != NULL) {
             if (voice->status != 1 && voice->status != 3)
                 return -5;
-            if (voice->Load(track, track_index) == 0)
-                return -5;
-            return voice->Play();
+            if (voice->Load(track, track_index) != 0)
+                return voice->Play();
+            return -5;
         }
     }
-    if (track_class == 0x10)
+    if (track->clazz == 0x10)
         StopAll(0);
     voice = FindIdleVoice();
     if (voice == NULL || voice->Load(track, track_index) == 0 || prepare_only != 0)
