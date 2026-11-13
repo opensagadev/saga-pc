@@ -208,14 +208,12 @@ void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
 
 void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
     i32 icon;
-    i8 player_index;
-    GAMEOBJECT *player;
-    COIN_PACKET_PC *packet;
+    OBJECT_COIN_PACKET_PC *player;
     u32 old_coins;
     WORLDINFO *world;
     if (CoinsGoToMainTotal()) {
-        icon = (i16)message->icon;
         if (message->icon != 0xffff) {
+            icon = (i16)message->icon;
             if ((u32)(icon - 0xb7) <= 3)
                 icon -= 4;
             else if ((u32)(icon - 0xbf) <= 3)
@@ -247,27 +245,25 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
                 IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, (u64)message->score, 1);
         }
     } else {
-        player_index = message->player_index;
-        if ((u8)player_index > 1 || Player[player_index] == NULL)
+        if (message->player_index != 0 && message->player_index != 1)
             goto counter_sound;
-        player = (GAMEOBJECT *)Player[player_index];
-        packet = ((OBJECT_COIN_PACKET_PC *)player)->coin_packet;
-        if (packet == NULL)
+        player = (OBJECT_COIN_PACKET_PC *)Player[message->player_index];
+        if (player == NULL || player->coin_packet == NULL)
             goto counter_sound;
-        old_coins = packet->coins;
-        if (message->icon != 0xffff)
-            packet->last_coin = (i16)message->icon;
+        old_coins = player->coin_packet->coins;
+        if ((i16)message->icon != -1)
+            player->coin_packet->last_coin = (i16)message->icon;
         if (BonusWinner == -1) {
-            IncreaseScore(&packet->coins, (u64)message->score, 1);
-            packet->scale = 1.5f;
+            IncreaseScore(&player->coin_packet->coins, (u64)message->score, 1);
+            player->coin_packet->scale = 1.5f;
         }
         if (BuildUpTotal == 0)
             BuildUpScale = 1.5f;
         if (Arcade != 0)
-            Arcade_CoinCollected(player_index, &packet->coins, old_coins);
-        else if (BonusArea != 0 && BonusWinner == -1 && packet->coins >= 1000000u) {
-            packet->coins = 1000000;
-            SetBonusWinner(player_index);
+            Arcade_CoinCollected(message->player_index, &player->coin_packet->coins, old_coins);
+        else if (BonusArea != 0 && BonusWinner == -1 && player->coin_packet->coins >= 1000000u) {
+            player->coin_packet->coins = 1000000;
+            SetBonusWinner(message->player_index);
             BonusWinFlag = 0;
             NewMenu(19, -1, -1);
             PlaySfx((char *)ScorePanelName, NULL);
