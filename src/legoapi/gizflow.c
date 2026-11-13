@@ -520,7 +520,10 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     ResetGizFlowPointers(system);
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         FlowResetBoxPc *state = (FlowResetBoxPc *)box;
-        state->flags.value &= (u16)~0x20;
+        // MATCH-EXCEPTION: retail clears 0x20 and sets 0x400 in memory and then reloads the
+        // flags, which the u16 view next to the bitfield view reproduces; its later clear mask
+        // (0xfedd) repeats the already-clear 0x20 bit.
+        FLOWBOX_FLAGS(box) &= (u16)~0x20;
         box->last_process_frame = 0;
 
         if (progress != NULL && progress->valid != 0) {
@@ -537,11 +540,11 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             continue;
         }
 
-        state->flags.value &= (u16) ~(2 | 0x100);
+        state->flags.value &= (u16) ~(2 | 0x20 | 0x100);
         if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
             ++gizflow_loop_checksum;
             box->loop_parent_count = (u8)LoopCountLoopingInputs(box, gizflow_loop_checksum);
-            state->flags.value |= 0x400;
+            FLOWBOX_FLAGS(box) |= 0x400;
             if (box->parent_count == box->loop_parent_count)
                 state->flags.value |= 0x801;
             else
@@ -560,7 +563,7 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
-        } else if ((box->state_flags_low & 1) == 0 && (box->state_flags_low & 4) != 0 && box->type == 0) {
+        } else if ((FLOWBOX_FLAGS(box) & 1) == 0 && (FLOWBOX_FLAGS(box) & 4) != 0 && box->type == 0) {
             FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j)
