@@ -4603,8 +4603,9 @@ extern "C" {
             PowerUp_PanelYRot[1] = (u16)(i32)((f64)PowerUp_PanelYRot[1] + (f64)FRAMETIME * 16384.0);
         }
         for (i = 0; i < 2; ++i) {
-            target =
-                Paused == 0 && Player[i] != NULL && ((GAMEOBJECT *)Player[i])->hud_icon_timer <= 0.0f ? 1.0f : 0.0f;
+            target = 0.0f;
+            if (Paused == 0 && Player[i] != NULL && ((GAMEOBJECT *)Player[i])->hud_icon_timer <= 0.0f)
+                target = 1.0f;
             PowerUp_PanelPosMul[i] = SeekLinearF(PowerUp_PanelPosMul[i], target, FRAMETIME + FRAMETIME);
         }
     }
