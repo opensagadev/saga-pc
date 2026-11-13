@@ -12475,6 +12475,7 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
     i32 i;
     i32 done;
     char filepath[0x80];
+    char message[0x40];
     char script_files[0x80][0x18];
 
     scripts = (sys != NULL) ? &sys->scripts : &global_aiscripts;
@@ -12513,7 +12514,7 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
             while (NuFParGetLine(parser) != 0) {
                 NuFParGetWord(parser);
                 if (NuStrLen(parser->word_buffer_ptr) > 0x0f) {
-                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
+                    AIScriptMissingStateDiagnostic(message);
                 }
                 NuStrCpy(script_files[file_count], parser->word_buffer_ptr);
                 NuStrCat(script_files[file_count], AIScriptFileExtension);
