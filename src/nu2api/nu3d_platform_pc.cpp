@@ -1428,10 +1428,10 @@ extern "C" {
 
     static i32 PCGraphicsFormatToD3d(i32 format) {
         switch (format) {
-            case 1:
-                return 22;
             case 2:
                 return 21;
+            case 1:
+                return 22;
             case 4:
                 return 75;
             case 5:
@@ -1762,10 +1762,15 @@ extern "C" {
         (void)unused;
         for (i32 index = 0; index != 32; ++index) {
             GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
-            if (PCGraphicsRenderTextureActive[index] && texture->usage == 1 && texture->external_id == -1 &&
-                texture->resource == NULL && texture->surface == NULL)
-                PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count,
-                                            texture->usage, texture->pool, texture->format);
+            if (PCGraphicsRenderTextureActive[index]) {
+                switch (texture->field_10) {
+                    case 1:
+                        if (texture->external_id == -1 && texture->resource == NULL && texture->surface == NULL)
+                            PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count,
+                                                        texture->usage, texture->pool, texture->format);
+                        break;
+                }
+            }
         }
     }
 
@@ -5033,9 +5038,14 @@ extern "C" {
                                                                       i32 format) {
         GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
         usage &= ~0x10;
-        if (usage != 0 && usage != 1) {
-            PCGraphicsRenderTextureAllocationError();
-            return NULL;
+        switch (usage) {
+            case 0:
+                break;
+            case 1:
+                break;
+            default:
+                PCGraphicsRenderTextureAllocationError();
+                return NULL;
         }
         PCGraphicsInitRenderTexture(texture, width, height, levels, usage, 0, format);
         return texture;
