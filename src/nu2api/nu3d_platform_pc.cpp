@@ -1734,7 +1734,10 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
-        PCDeviceSetTexture(stage, texture != NULL ? texture->resource : NULL);
+        if (texture != NULL)
+            PCDeviceSetTexture(stage, texture->resource);
+        else
+            PCDeviceSetTexture(stage, NULL);
     }
 
     void __cdecl PCGraphicsReleaseEffectTextures(void) {
