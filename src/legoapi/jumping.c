@@ -135,16 +135,17 @@ void __cdecl MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force);
 
 void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {
+        u32 attack_jump;
         object->character_context = (i8)LEGOCONTEXT_JUMP;
         object->action_movement_state = (u8)movement_state;
         object->field_7aa = LEGOACT_JUMP;
         object->context_timer = 0.0f;
-        // Bits 12 and 15 cleared, bit 16 is a 1-bit field set from the movement state.
-        object->context_variant_flags =
-            (object->context_variant_flags & ~0x19000) | (((movement_state == 4 || movement_state == 3) & 1) << 16);
+        attack_jump = movement_state == 4 || movement_state == 3;
         object->jump_start_height = object->collision_min.y;
         object->airborne_action_timer = 0.0f;
         object->jump_sequence = 1;
+        // Bits 12 and 15 cleared, bit 16 set for attack jumps (movement states 3 and 4).
+        object->context_variant_flags = (object->context_variant_flags & ~0x19000) | ((attack_jump & 1) << 16);
         if ((u8)movement_state != 6 && (u8)movement_state != 7)
             PlayJumpSfx(object, 0);
     }
