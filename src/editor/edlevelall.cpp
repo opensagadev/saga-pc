@@ -1167,6 +1167,7 @@ class SplinePointBlock : public CSListLink<SplinePointBlock> {
         theMemoryManager.FreePool(memory, sizeof(SplinePointBlock));
     }
     SplinePointBlock();
+    SplinePointBlock(i32 requested_capacity);
     virtual ~SplinePointBlock() {
         if (points != NULL)
             theMemoryManager.FreePool(points, capacity * sizeof(VuVec));
@@ -1186,6 +1187,8 @@ struct SplinePointList {
     i32 block_count;
 
     ~SplinePointList();
+    i32 GetNumPoints();
+    i32 GetPoint(i32 index, VuVec &point);
     void AddPoint(VuVec &point);
     void Clear();
     void Draw();
@@ -5872,6 +5875,30 @@ void EditorSettings::Serialise(EdStream &stream) {
 SplinePointBlock::SplinePointBlock() {
     capacity = 16;
     points = (VuVec *)theMemoryManager.AllocPool(capacity * sizeof(VuVec), 1);
+}
+
+SplinePointBlock::SplinePointBlock(i32 requested_capacity) {
+    capacity = requested_capacity;
+    points = (VuVec *)theMemoryManager.AllocPool(requested_capacity * sizeof(VuVec), 1);
+}
+
+/* The point count of the last block. */
+i32 SplinePointList::GetNumPoints() {
+    i32 point_count = 0;
+    for (SplinePointBlock *block = first; block != NULL; block = block->next)
+        point_count = block->point_count;
+    return point_count;
+}
+
+/* Copies a point of the first block that holds more than index points. */
+i32 SplinePointList::GetPoint(i32 index, VuVec &point) {
+    for (SplinePointBlock *block = first; block != NULL; block = block->next) {
+        if (index < block->point_count) {
+            VuVecCopy(point, block->points[index]);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /* Appends to the first block with room, or to a new block. */
