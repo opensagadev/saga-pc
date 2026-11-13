@@ -8,21 +8,19 @@ static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
 
 void __cdecl NuTexAnimAddList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;
-    PC_TEXTURE_ANIM_LIST *head;
     if (animation == NULL)
         return;
     PCThreadCriticalSectionEnter_candidate(g_texAnimCriticalSection);
-    node = ntal_free;
-    if (node != NULL) {
+    if (ntal_free != NULL) {
+        node = ntal_free;
         if (node->next == NULL)
             NuSevereWarning(NuTextureAnimationSlotsWarning);
         ntal_free = ntal_free->next;
-        head = ntal_first;
-        node->next = head;
+        node->next = ntal_first;
         node->previous = NULL;
         node->first = animation;
-        if (head != NULL)
-            head->previous = node;
+        if (node->next != NULL)
+            node->next->previous = node;
         ntal_first = node;
     }
     PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
@@ -873,6 +871,7 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *bu
     TEXTURE_ANIM_PROGRAM_PC *head;
     NUFPAR_PC *parser;
     i32 length;
+    TEXTURE_ANIM_PROGRAM_PC *result;
     (void)fps;
     if (buffer != NULL)
         program = (TEXTURE_ANIM_PROGRAM_PC *)((buffer->addr + 3) & ~3u);
@@ -882,37 +881,39 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *bu
     }
     memset(TextureAnimationLabelsPrivatePc, 0, sizeof(TextureAnimationLabelsPrivatePc));
     TextureAnimationLabelCountPrivatePc = 0;
+    result = NULL;
     parser = NuFParOpen(file);
-    if (parser == NULL)
-        return NULL;
-    NuFParPushCom(parser, TextureAnimationCommandsPrivatePc);
-    if ((u32)(program + 1) >= end.addr)
-        AnimationDiagnosticNoOpPc();
-    NuTexAnimProgInit(program);
-    TextureAnimationParseProgramPrivatePc = program;
-    while (NuFParGetLine(parser) != 0) {
-        length = NuFParGetWord(parser);
-        if (length != 0 && NuFParInterpretWord(parser) == 0 && parser->word_buffer_ptr[0] != 0 &&
-            parser->word_buffer_ptr[length - 1] == ':') {
-            i32 label;
-            parser->word_buffer_ptr[length - 1] = 0;
-            label = TextureAnimationLabelIndexPrivatePc(parser->word_buffer_ptr);
-            TextureAnimationLabelOffsetsPrivatePc[label] = TextureAnimationParseProgramPrivatePc->instruction_count;
-        }
-        if ((u32)(program->instructions + program->instruction_count) >= end.addr)
+    if (parser != NULL) {
+        NuFParPushCom(parser, TextureAnimationCommandsPrivatePc);
+        if ((u32)(program + 1) >= end.addr)
             AnimationDiagnosticNoOpPc();
+        NuTexAnimProgInit(program);
+        TextureAnimationParseProgramPrivatePc = program;
+        while (NuFParGetLine(parser) != 0) {
+            length = NuFParGetWord(parser);
+            if (length != 0 && NuFParInterpretWord(parser) == 0 && parser->word_buffer_ptr[0] != 0 &&
+                parser->word_buffer_ptr[length - 1] == ':') {
+                i32 label;
+                parser->word_buffer_ptr[length - 1] = 0;
+                label = TextureAnimationLabelIndexPrivatePc(parser->word_buffer_ptr);
+                TextureAnimationLabelOffsetsPrivatePc[label] = TextureAnimationParseProgramPrivatePc->instruction_count;
+            }
+            if ((u32)(program->instructions + program->instruction_count) >= end.addr)
+                AnimationDiagnosticNoOpPc();
+        }
+        if (buffer != NULL)
+            buffer->addr = (u32)(program->instructions + program->instruction_count);
+        NuFreeFPar(parser);
+        NuTexAnimProgAssembleEnd(program);
+        head = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC;
+        program->next = head;
+        if (head != NULL)
+            head->previous = program;
+        program->previous = NULL;
+        GHGTextureProgramsPC = program;
+        result = program;
     }
-    if (buffer != NULL)
-        buffer->addr = (u32)(program->instructions + program->instruction_count);
-    NuFreeFPar(parser);
-    NuTexAnimProgAssembleEnd(program);
-    head = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC;
-    program->next = head;
-    if (head != NULL)
-        head->previous = program;
-    program->previous = NULL;
-    GHGTextureProgramsPC = program;
-    return program;
+    return result;
 }
 
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps) {
