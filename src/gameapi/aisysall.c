@@ -12331,15 +12331,18 @@ void __cdecl xConditionMacro(NUFPAR_PC *parser) {
 
 void __cdecl xActionMacro(NUFPAR_PC *parser) {
     AIACTIONMACRO_PC *macro;
+    VARIPTR *buffer;
+    VARIPTR *buffer_end;
 
     if (NuFParGetWord(parser) == 0) {
         return;
     }
-    macro = (AIACTIONMACRO_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                          sizeof(AIACTIONMACRO_PC));
+    buffer = aiscript_load_buffer;
+    buffer_end = aiscript_load_end_buffer;
+    macro = (AIACTIONMACRO_PC *)AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AIACTIONMACRO_PC));
     if (macro != NULL) {
         memset(macro, 0, sizeof(AIACTIONMACRO_PC));
-        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, buffer, buffer_end);
         NuLinkedListAppend(&aiscript_load_script->action_macros, &macro->link);
         aiscript_load_actions = &macro->actions;
         xActions(parser);
