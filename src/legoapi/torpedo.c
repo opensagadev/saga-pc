@@ -651,33 +651,33 @@ void __cdecl Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
     NUMTX matrix;
     f32 lengths, dot, ratio;
     f64 velocity_length;
-    i16 angle;
+    i32 angle;
+    u8 flags;
     if (bolt == NULL || packet == NULL)
         return;
-    if ((packet->flags & 8) != 0) {
-        if (packet->ricochet_time == 0.0f) {
-            NuVecCross(&axis, &packet->ricochet_position, &bolt->velocity);
-            NuVecNorm(&axis, &axis);
-            NuMtxSetIdentity(&matrix);
-            velocity_length = NuVecMag(&bolt->velocity);
-            lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
-            dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
-            ratio = TorpedoRatioPc(dot, lengths);
-            angle = (i16)(0x4000 - TorpedoArcSinePc(ratio));
-            NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
-            NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
-            NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);
-            bolt->speed = (f32)(bolt->speed * (f64)0.8f);
-            AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[71].effect, &bolt->position, 60,
-                                              FRAMETIME, 0, 0, NULL);
-            packet->ricochet_time += FRAMETIME;
-            packet->flags |= 0x10;
-        } else if (packet->ricochet_time < (f64)0.2f) {
-            packet->ricochet_time += FRAMETIME;
-        } else {
-            packet->flags &= ~0x18;
-            packet->ricochet_position = v000;
-        }
+    flags = packet->flags;
+    if ((flags & 8) != 0 && packet->ricochet_time == 0.0f) {
+        NuVecCross(&axis, &packet->ricochet_position, &bolt->velocity);
+        NuVecNorm(&axis, &axis);
+        NuMtxSetIdentity(&matrix);
+        velocity_length = NuVecMag(&bolt->velocity);
+        lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
+        dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
+        ratio = TorpedoRatioPc(dot, lengths);
+        angle = 0x4000 - TorpedoArcSinePc(ratio);
+        NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
+        NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
+        NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);
+        bolt->speed = (f32)(bolt->speed * (f64)0.8f);
+        AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[71].effect, &bolt->position, 60, FRAMETIME, 0,
+                                          0, NULL);
+        packet->ricochet_time += FRAMETIME;
+        packet->flags |= 0x10;
+    } else if ((flags & 8) != 0 && packet->ricochet_time < (f64)0.2f) {
+        packet->ricochet_time += FRAMETIME;
+    } else if ((flags & 8) != 0) {
+        packet->flags = flags & ~0x18;
+        packet->ricochet_position = v000;
     }
     bolt->lifetime = (f32)(bolt->time + (f64)0.0001f);
 }
