@@ -2170,7 +2170,10 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 
 void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 duration, NUMTX *orientation) {
     PARTTYPE_LOOKUP_PC *type = &part_types[effect_index];
-    f32 interval, quotient, aligned_time, emission_time, end_time;
+    f32 interval;
+    f32 aligned_time;
+    f32 emission_time;
+    f32 end_time;
     i32 count;
     if (type->name[0] == 0 || type->emission_rate <= 0.0f)
         return;
@@ -2183,13 +2186,13 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
     else
         interval = 0.0f;
     end_time = partglobaltime + duration;
-    if (interval == 0.0f || partglobaltime == 0.0f)
-        quotient = 0.0f;
+    if (partglobaltime == 0.0f || interval == 0.0f)
+        emission_time = 0.0f;
     else
-        quotient = partglobaltime / interval;
-    aligned_time = (i32)quotient * interval;
+        emission_time = partglobaltime / interval;
+    aligned_time = (i32)emission_time * interval;
     emission_time = aligned_time + interval;
-    for (count = 0; emission_time <= end_time && ++count < 100;) {
+    for (count = 0; end_time >= emission_time && ++count < 100;) {
         ADDPART_PC params = Default_ADDPART;
         NUVEC part_position, velocity;
         NUSPECIALHANDLE special;
