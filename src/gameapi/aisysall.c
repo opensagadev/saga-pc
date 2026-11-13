@@ -16223,7 +16223,6 @@ i32 __cdecl Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *proce
 i32 __cdecl Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
-    AIPACKET_PC *target;
 
     if (packet == NULL) {
         return 1;
@@ -16241,9 +16240,8 @@ i32 __cdecl Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
         }
     }
     if (sys->player_1 != NULL) {
-        target = sys->player_1->ai;
-        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
-                          packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &sys->player_1->ai->last_path_position, sys->player_1->ai->mover_height,
+                          &sys->player_1->ai->path_info, 2, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &sys->player_1->position;
         }
@@ -16254,7 +16252,6 @@ i32 __cdecl Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
 i32 __cdecl Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                        i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
-    AIPACKET_PC *target;
 
     if (packet == NULL) {
         return 1;
@@ -16272,9 +16269,8 @@ i32 __cdecl Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
         }
     }
     if (sys->player_2 != NULL) {
-        target = sys->player_2->ai;
-        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
-                          packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &sys->player_2->ai->last_path_position, sys->player_2->ai->mover_height,
+                          &sys->player_2->ai->path_info, 2, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &sys->player_2->position;
         }
