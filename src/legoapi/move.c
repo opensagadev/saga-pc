@@ -3410,17 +3410,16 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
 }
 
 void __cdecl LightSabreDebris(GAMEOBJECT *object) {
-    i32 hit_effect = -1, blade_count, blade, effect, first, second;
+    i32 hit_effect, blade_count, blade, effect, first, second;
     PLAYERCHARACTERCONFIG_PC *data;
     NUVEC points[3];
-    if (object->blade_index != -1)
-        hit_effect = BladeTab[object->blade_index].hit_effect;
+    hit_effect = object->blade_index != -1 ? BladeTab[object->blade_index].hit_effect : -1;
     blade_count = object->id == (u16)id_GRIEVOUS ? 4 : object->id == (u16)id_DARTHMAUL ? 2 : 1;
     for (blade = 0; blade < blade_count; ++blade) {
         effect = hit_effect;
         if (object->id == (u16)id_GRIEVOUS && !(object->field_280 != 0xff && Cheat_IsOn(25)) &&
             !(object->field_280 != 0xff && Player_HasPurpleForce(object)))
-            effect = (blade == 3 || blade == 0) ? 3 : 2;
+            effect = (blade == 0 || blade == 3) ? 3 : 2;
         if (effect == -1 || object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
             continue;
         data = object->character_data->game_character;
