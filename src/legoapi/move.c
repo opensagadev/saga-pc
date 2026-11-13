@@ -2859,52 +2859,47 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 separate_seek_rates = 1;
             } else {
                 f32 water_speed_multiplier;
+                f32 speed;
                 f32 walking_speed;
                 u16 walking_angle;
-                if (object->character_context != 5) {
-                    f32 speed;
-                    speed = AnimSpeed(object->character_model, current_animation);
-                    if (speed != 0.0f) {
-                        f32 *frame;
-                        i32 stopped;
-                        if (CanStepBack(object) && StepBackFromTarget(object))
-                            break;
-                        speed = object->animation_speed_multiplier * speed;
-                        stop_frame = AnimStopFrame(object->character_model, current_animation);
-                        frame = AnimPlaying(&object->anim_packet, current_animation, 1, 0);
-                        stopped = stop_frame > 1.0f && frame != NULL && *frame >= stop_frame;
-                        if (!stopped && frame != NULL && object->field_281 != 0 &&
-                            object->character_model->model_data_b[current_animation] != NULL &&
-                            (((CHARACTERANIM_CONFIG_PC *)(object->character_model
-                                                              ->animation_configs[current_animation]))
-                                 ->flags &
-                             2) == 0 &&
-                            (object->anim_packet.flags & 1u) != 0)
-                            stopped = 1;
-                        if (stopped) {
-                            object->target_velocity.x = 0.0f;
-                            object->target_velocity.z = 0.0f;
-                            if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
-                                  (i8)object->jump_animation_state < 32 &&
-                                  TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
-                                object->velocity.x = 0.0f;
-                                object->velocity.z = 0.0f;
-                            }
-                        } else {
-                            u16 angle;
-                            angle = (object->character_data->game_character->flags_090 & 0x100) != 0 && direct_turn == 0
-                                        ? object->facing_angle
-                                        : object->movement_facing_angle;
-                            object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
-                            object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
-                            if (object->character_context == 0x25 && object->field_7aa != 0x58)
-                                NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
-                        }
+                if (object->character_context != 5 &&
+                    (speed = AnimSpeed(object->character_model, current_animation)) != 0.0f) {
+                    f32 *frame;
+                    i32 stopped;
+                    if (CanStepBack(object) && StepBackFromTarget(object))
                         break;
+                    speed = object->animation_speed_multiplier * speed;
+                    stop_frame = AnimStopFrame(object->character_model, current_animation);
+                    frame = AnimPlaying(&object->anim_packet, current_animation, 1, 0);
+                    stopped = stop_frame > 1.0f && frame != NULL && *frame >= stop_frame;
+                    if (!stopped && frame != NULL && object->field_281 != 0 &&
+                        object->character_model->model_data_b[current_animation] != NULL &&
+                        (((CHARACTERANIM_CONFIG_PC *)(object->character_model->animation_configs[current_animation]))
+                             ->flags &
+                         2) == 0 &&
+                        (object->anim_packet.flags & 1u) != 0)
+                        stopped = 1;
+                    if (stopped) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
+                        if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
+                              (i8)object->jump_animation_state < 32 &&
+                              TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
+                            object->velocity.x = 0.0f;
+                            object->velocity.z = 0.0f;
+                        }
+                    } else {
+                        u16 angle;
+                        angle = (object->character_data->game_character->flags_090 & 0x100) != 0 && direct_turn == 0
+                                    ? object->facing_angle
+                                    : object->movement_facing_angle;
+                        object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
+                        object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+                        if (object->character_context == 0x25 && object->field_7aa != 0x58)
+                            NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
                     }
-                }
-                if (object->character_context == 0x26 && object->special_move_pc != -1 &&
-                    object->force_target != NULL) {
+                } else if (object->character_context == 0x26 && object->special_move_pc != -1 &&
+                           object->force_target != NULL) {
                     SpecialMove_Attacker_SetTargetMom(object);
                 } else if (object->character_context == 0x33) {
                     move_vertical = Slide_SetTargetMom(object, input_angle, desired_speed);
