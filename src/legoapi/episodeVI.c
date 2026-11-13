@@ -70,7 +70,9 @@ void __cdecl EmperorFightA_Panel(WORLDINFO *world) {
 /* Native Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_pc_s {
     i32 state;
-    u8 enabled, zap, player_floor_mask, reserved;
+    u8 enabled, zap;
+    i8 player_floor_mask;
+    u8 reserved;
 } EMPEROR_UPDATE_PACKET_PC;
 STATIC_ASSERT(sizeof(EMPEROR_UPDATE_PACKET_PC) == 8);
 STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, player_floor_mask) == 6);
@@ -1156,6 +1158,7 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     i32 i;
     i32 floor;
     i32 floor_active;
+    NUVEC hands[2], end, delta;
 
     if (LevGameObject[0] == NULL)
         LevGameObject[0] = FindGameObject(id_THEEMPEROR, 1, 1, 0, 0);
@@ -1165,24 +1168,17 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
         KillBossPlayCutScene(id_THEEMPEROR, 0, 0.0f, "emperorfight_outro");
     if (!netclient) {
         GAMEOBJECT *player;
-        AIAREA_PC *area;
         GIZAIMESSAGE *message;
 
         EMPEROR_PACKET->player_floor_mask = 0;
         player = (GAMEOBJECT *)Player[0];
-        if (player != NULL && !player->dead && player->field_1010 <= 0.0f) {
-            area = LevArea[0];
-            if (area == NULL || !(U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)))
-                goto emperor_second_player_mask;
+        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])))
             EMPEROR_PACKET->player_floor_mask |= 1;
-        }
-        area = LevArea[0];
-    emperor_second_player_mask:
         player = (GAMEOBJECT *)Player[1];
-        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && area != NULL &&
-            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area))) {
+        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])))
             EMPEROR_PACKET->player_floor_mask |= 2;
-        }
         message = LevAIMessage[1];
         if (message->value == 1.0f && EMPEROR_PACKET->player_floor_mask != 0) {
             if (!EMPEROR_PACKET->zap) {
@@ -1222,7 +1218,6 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     }
     if (netclient && EMPEROR_PACKET->zap && EMPEROR_PACKET->player_floor_mask && LevGameObject[0] != NULL) {
         AILOCATOR_PC *locator;
-        NUVEC hands[2], end, delta;
         locator = AIPathFindLocator(world->ai_sys, "Zap");
 
         ForceLightning_Origin(LevGameObject[0], &hands[0], &hands[1]);
@@ -1260,7 +1255,7 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 f32 dz;
                 f64 velocity_x;
                 f64 push;
-                NUVEC floor_end, player_end, delta;
+                NUVEC floor_end, player_end, floor_delta;
                 f64 jitter;
                 f64 random;
                 f64 floor_x;
@@ -1302,7 +1297,7 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 player = ((GAMEOBJECT *)Player[i]);
                 velocity_x = player->velocity.x;
                 push = EmperorFloorPushPc;
-                if (!(dx <= 0.0f))
+                if (dx > 0.0f)
                     player->velocity.x = (f32)(velocity_x + push);
                 else
                     player->velocity.x = (f32)(velocity_x - push);
@@ -1351,9 +1346,9 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 player_end.y = (f32)(((f64)random_integer * 0.000015259021893143654) * ((f64)height * 0.5) +
                                      ((f64)height * 0.25 + player->lower_position.y));
                 player_end.z = player->collision_position.z;
-                distance = NuVecDist(&player_end, &floor_end, &delta);
-                NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end, &delta,
-                           0xff808040, testlaser_endw, distance);
+                distance = NuVecDist(&player_end, &floor_end, &floor_delta);
+                NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end,
+                           &floor_delta, 0xff808040, testlaser_endw, distance);
                 sound_position = &((GAMEOBJECT *)Player[i])->collision_position;
                 sound = GetSfxId("ForceLightningLp");
                 GameAudio_PlaySfxById(sound, sound_position, 0, 1);
@@ -1363,25 +1358,18 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
         if (floor_active) {
             GAMEOBJECT *player;
             f64 minimum;
-            AIAREA_PC *area;
             player = (GAMEOBJECT *)Player[0];
             minimum = EmperorFloorSafeXMinimumPc;
-
-            if (!player->dead && player->field_1010 <= 0.0f) {
-                area = LevArea[0];
-                if (area == NULL || !(U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)))
-                    goto emperor_second_safe_player;
-                if (!(player->collision_position.x < minimum))
-                    goto emperor_second_safe_player;
+            if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) &&
+                player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[0])->last_safe_position.x = (f32)minimum;
                 ((GAMEOBJECT *)Player[0])->respawn_position.x = (f32)minimum;
             }
-            area = LevArea[0];
-        emperor_second_safe_player:
             player = (GAMEOBJECT *)Player[1];
-            if (!player->dead && player->field_1010 <= 0.0f && area != NULL &&
-                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)) &&
+            if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) &&
                 player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[1])->last_safe_position.x = (f32)minimum;
