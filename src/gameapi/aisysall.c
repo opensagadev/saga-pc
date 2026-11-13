@@ -16417,31 +16417,30 @@ i32 __cdecl Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         return 1;
     }
     if (first_time != 0) {
-        if (param_count == 0) {
-            return 0;
-        }
-        selected = (i32)(NuRandFloat() * param_count);
-        if (selected >= param_count) {
-            selected = param_count - 1;
-        }
-        processor->action_data_3 = AIPathFindNode(sys, packet->path_info.path, params[selected]);
-        node = (AIPATHNODE_PC *)(processor->action_data_3);
-        if (node != NULL && node->connection_count != 0) {
-            node_index = node - packet->path_info.path->nodes;
-            processor->path_info.path = packet->path_info.path;
-            processor->path_info.connection = node->connections[0];
-            if (processor->path_info.connection->node_indices[0] == node_index) {
-                processor->path_info.distance = 0.0f;
-            } else {
-                processor->path_info.distance = 1.0f;
+        if (param_count != 0) {
+            selected = (i32)(NuRandFloat() * param_count);
+            if (selected >= param_count) {
+                selected = param_count - 1;
             }
-            processor->path_info.direction = 0;
-            processor->path_info.flags_word |= 1;
-            processor->path_info.width = 0.0f;
-            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
-                              packet->movement_instruction_parameter);
-        } else {
-            return 1;
+            processor->action_data_3 = AIPathFindNode(sys, packet->path_info.path, params[selected]);
+            node = (AIPATHNODE_PC *)(processor->action_data_3);
+            if (node != NULL && node->connection_count != 0) {
+                node_index = node - packet->path_info.path->nodes;
+                processor->path_info.path = packet->path_info.path;
+                processor->path_info.connection = node->connections[0];
+                if (processor->path_info.connection->node_indices[0] == node_index) {
+                    processor->path_info.distance = 0.0f;
+                } else {
+                    processor->path_info.distance = 1.0f;
+                }
+                processor->path_info.direction = 0;
+                processor->path_info.flags_word |= 1;
+                processor->path_info.width = 0.0f;
+                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
+                                  packet->movement_instruction_parameter);
+            } else {
+                return 1;
+            }
         }
         return 0;
     }
@@ -16452,7 +16451,10 @@ i32 __cdecl Action_GoToNodeRandom(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     distance_squared = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
     AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 1,
                       packet->movement_instruction_parameter);
-    return distance_squared < node_2->radius_squared;
+    if (!(distance_squared < node_2->radius_squared)) {
+        return 0;
+    }
+    return 1;
 }
 
 i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
