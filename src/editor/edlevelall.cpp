@@ -9268,7 +9268,6 @@ void EdRegistry::Serialise(EdStream &stream) {
  * the class descriptions in source_registry. */
 void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry) {
     char object_name[256];
-    EdMember member;
     i32 count;
     i32 object_count;
     i32 object_flags;
@@ -9313,13 +9312,10 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                 if (!IsStreamObject(stream, object_class, object))
                     continue;
                 object_flags = 0;
-                if (object_class->FindMember(&member, object, 1, 1))
-                    member.reference->GetAttributeData(member.object, 1, EdType_Int, &object_flags, 0);
+                object_class->GetAttributeData(object, 1, EdType_Int, &object_flags, 0);
                 stream.SerialiseBuffer(&object_flags, sizeof(object_flags), 1);
                 if ((object_flags & 0x2000000) || (object_class->flags & 0x4000000)) {
-                    if (object_class->FindMember(&member, object, 4, 1))
-                        member.reference->GetAttributeData(member.object, 4, EdType_String, object_name,
-                                                           sizeof(object_name));
+                    object_class->GetAttributeData(object, 4, EdType_String, object_name, sizeof(object_name));
                     stream.SerialiseString(object_name, sizeof(object_name));
                 }
                 object_class->SerialiseObject(stream, object);
