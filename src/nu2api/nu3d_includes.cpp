@@ -15542,8 +15542,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     }
     f32 fovy, aspect, near_plane, far_plane;
     NuMtxGetPerspectiveD3D(&PostShadowProjectionPc, &fovy, &aspect, &near_plane, &far_plane);
-    f64 depth = (f64)maximum.z - (f64)minimum.z;
-    volatile f32 depth32 = depth;
+    far_plane = maximum.z - minimum.z;
     f32 dot = camera_direction.y * light_direction.y + light_direction.x * camera_direction.x +
               camera_direction.z * light_direction.z;
     union {
@@ -15551,7 +15550,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
         u32 u;
     } absolute;
     absolute.u = *(u32 *)&dot & 0x7fffffff;
-    f32 product = near_plane * depth32;
+    f32 product = near_plane * far_plane;
     f32 distance = NuFsqrt(product) + near_plane;
     distance = set->parameter_110 * distance / (f32)(1.0f - absolute.f);
     camera_position.x = captured_inverse.m30;
@@ -15559,15 +15558,17 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     camera_position.z = captured_inverse.m32;
     NUVEC transformed_position;
     NuVecMtxTransformH(&transformed_position, &camera_position, &basis);
-    volatile f32 midpoint_y = (minimum.y + maximum.y) * 0.5;
-    volatile f32 lower_z = minimum.z - distance;
-    offset.x = -transformed_position.x;
-    offset.y = -midpoint_y;
-    offset.z = -lower_z;
+    NUVEC shift;
+    shift.x = transformed_position.x;
+    shift.y = (minimum.y + maximum.y) * 0.5;
+    shift.z = minimum.z - distance;
+    offset.x = -shift.x;
+    offset.y = -shift.y;
+    offset.z = -shift.z;
     f32 xmin, xmax, ymin, ymax;
     PostShadowProjectBoundsPc(10, projected, &offset, distance, &xmin, &xmax, &ymin, &ymax);
     NuMtxSetTranslation(&translation, &offset);
-    f32 far_distance = depth + distance;
+    f32 far_distance = maximum.z - minimum.z + distance;
     NuMtxSetFrustumBlend(&frustum, xmin, xmax, ymin, ymax, distance, far_distance);
     axis.m00 = 1.0f;
     axis.m01 = 0.0f;
