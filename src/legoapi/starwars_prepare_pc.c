@@ -503,7 +503,6 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     f32 jump_distance;
     i32 skip_ahead;
     GAMEOBJECT *other;
-    f32 clearance;
 
     owner = (GAMEOBJECT *)object->owner;
     if ((owner->flags_ef4 & 0x40000000) != 0) {
@@ -658,21 +657,20 @@ check:
                                    destination->position.y - 0.5 * ai_moveradius > other->collision_min.y) {
                             continue;
                         }
-                        clearance =
-                            other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
+                        radius = other->ai_packet.mover_height + other->ai_packet.mover_height + packet->mover_height;
                         offset.x = other->position.x - destination->position.x;
-                        if (!(offset.x < clearance && offset.x > -clearance)) {
+                        if (!(offset.x < radius && offset.x > -radius)) {
                             continue;
                         }
                         offset.z = other->position.z - destination->position.z;
                         // Retail tests offset.x against -clearance again here, not offset.z.
-                        if (!(offset.z < clearance && offset.x > -clearance) ||
+                        if (!(offset.z < radius && offset.x > -radius) ||
                             !(other->collision_max.y >= destination->position.y) ||
-                            other->collision_min.y > destination->position.y + owner->scaled_height) {
+                            !(other->collision_min.y <= destination->position.y + owner->scaled_height)) {
                             continue;
                         }
                         distance = offset.x * offset.x + offset.z * offset.z;
-                        if (!(distance < clearance * clearance))
+                        if (!(distance < radius * radius))
                             continue;
                         packet->path_connection_state = 1;
                         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
