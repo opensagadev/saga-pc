@@ -2628,22 +2628,22 @@ void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *owner, i32 paused) {
 }
 
 void __cdecl NuGCutSceneSysPostBackgroundLoad(void) {
-    INSTNUGCUTSCENE *owner = CutSceneBackgroundInstancesPc;
-    INSTNUGCUTSCENE *active = active_cutscene_instances;
-    if (owner == NULL)
-        return;
-    do {
-        CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-        INSTNUGCUTSCENE *next = instance->next;
-        instance->next = active;
-        if (active != NULL)
-            ((CUT_INSTANCE_LOAD_PC *)active)->previous = owner;
-        instance->previous = NULL;
-        active = owner;
-        owner = next;
-    } while (owner != NULL);
-    active_cutscene_instances = active;
-    CutSceneBackgroundInstancesPc = NULL;
+    INSTNUGCUTSCENE *next = CutSceneBackgroundInstancesPc;
+    INSTNUGCUTSCENE *active;
+    if (next != NULL) {
+        active = active_cutscene_instances;
+        while (next != NULL) {
+            INSTNUGCUTSCENE *owner = next;
+            next = ((CUT_INSTANCE_LOAD_PC *)owner)->next;
+            ((CUT_INSTANCE_LOAD_PC *)owner)->next = active;
+            if (active != NULL)
+                ((CUT_INSTANCE_LOAD_PC *)active)->previous = owner;
+            ((CUT_INSTANCE_LOAD_PC *)owner)->previous = NULL;
+            active = owner;
+        }
+        active_cutscene_instances = active;
+        CutSceneBackgroundInstancesPc = NULL;
+    }
 }
 
 i32 __cdecl NuGCutSceneIsBackgroundLoading(void) {
