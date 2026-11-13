@@ -166,9 +166,8 @@ void __cdecl oneAtOnce_MaintainArray(void) {
         }
     }
     for (player_index = 0; player_index < 8; ++player_index) {
-        slot = attacker_count[player_index];
-        AtOnce_attackingPlayer[player_index][slot].object = NULL;
-        AtOnce_attackingPlayer[player_index][slot].distance = 1.0e9f;
+        AtOnce_attackingPlayer[player_index][attacker_count[player_index]].object = NULL;
+        AtOnce_attackingPlayer[player_index][attacker_count[player_index]].distance = 1.0e9f;
     }
     for (player_index = 0; player_index < 8; ++player_index) {
         if (Player[player_index] == NULL)
