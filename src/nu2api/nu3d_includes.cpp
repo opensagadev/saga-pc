@@ -9636,10 +9636,10 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
         temporary_scene.display_list = scene;
         gscene = &temporary_scene;
     }
+    handle.scene = gscene;
     portal_filter = VisibilityPortalFilterEnabledPc != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0;
     if ((scene->instance_visibility_enabled & 1) != 0 || DisplaySceneSpecialsDisabledPc != 0)
         return;
-    handle.scene = gscene;
     for (i32 i = 0; i < scene->special_count; ++i) {
         VISIBILITY_DISPLAY_SPECIAL_READER_PC *special =
             reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER_PC *>(&scene->specials[i]);
