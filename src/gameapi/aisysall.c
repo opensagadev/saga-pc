@@ -7498,12 +7498,23 @@ void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i3
 
 void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3, i32 segments) {
     i32 i;
-    NUVEC previous = {centre->x, centre->y, centre->z + radius};
+    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D_PC *first = &(vertices[0]);
+    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    (*second).position.x = centre->x;
+    (*second).position.y = centre->y;
+    (*second).position.z = centre->z + radius;
     for (i = 1; i <= segments; ++i) {
-        i32 angle = (i * 65536) / segments;
-        NUVEC next = {centre->x + NU_SIN_LUT(angle) * radius, centre->y, centre->z + NU_COS_LUT(angle) * radius};
-        AiRndrLine3dDbg(previous.x, previous.y, previous.z, next.x, next.y, next.z, colour);
-        previous = next;
+        i32 angle;
+        (*first).position = (*second).position;
+        (*second).position.x = centre->x;
+        (*second).position.y = centre->y;
+        (*second).position.z = centre->z;
+        angle = (i << 16) / segments;
+        (*second).position.x += NU_SIN_LUT(angle) * radius;
+        (*second).position.z += radius * NU_COS_LUT(angle);
+        AiRndrLine3dDbg((*first).position.x, (*first).position.y, (*first).position.z, (*second).position.x,
+                        (*second).position.y, (*second).position.z, colour);
     }
 }
 
