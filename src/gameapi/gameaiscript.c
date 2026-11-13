@@ -4799,8 +4799,7 @@ i32 __cdecl Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
                     candidate = (GAMEOBJECT *)Player[player_index];
                     if (candidate != NULL && (candidate->flags_1fc_word & 1) != 0 &&
                         (candidate->flags_1fc_word & 0x1000) != 0 &&
-                        (candidate->dead == 0 || candidate->field_1010 > 0.0f) &&
-                        (candidate->flags_ef0 & 0x01000000u) == 0 &&
+                        (candidate->dead == 0 || candidate->field_1010 > 0.0f) && (candidate->flags_ef3 & 1) == 0 &&
                         (candidate->character_data->model_flags & 0x10u) != 0)
                         droids[droid_count++] = candidate;
                 }
@@ -4821,9 +4820,10 @@ i32 __cdecl Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
                     if (type != 255)
                         type = LevelCharacterGlobalIDFn(type);
                 }
-                for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
-                    if ((i16)Obj[object_index].id == type) {
-                        opponent = &Obj[object_index];
+                candidate = Obj;
+                for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++, candidate++) {
+                    if ((i16)candidate->id == type) {
+                        opponent = candidate;
                         break;
                     }
                 }
