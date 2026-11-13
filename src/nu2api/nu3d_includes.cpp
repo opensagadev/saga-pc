@@ -9530,13 +9530,13 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_RE
             goto next;
     check_flags:
         if ((flags & 1) != 0) {
-            NUVEC4 *center = &scene->clip_bounds[instance_index * 2];
+            NUVEC4 *center;
             __declspec(align(16)) NUVEC delta;
             f32 distance, far_clip;
             i32 fades, result;
-            delta.x = global_camera.mtx.m30 - center->x;
-            delta.y = global_camera.mtx.m31 - center->y;
-            delta.z = global_camera.mtx.m32 - center->z;
+            delta.x = global_camera.mtx.m30 - scene->clip_bounds[instance_index * 2].x;
+            delta.y = global_camera.mtx.m31 - scene->clip_bounds[instance_index * 2].y;
+            delta.z = global_camera.mtx.m32 - scene->clip_bounds[instance_index * 2].z;
             distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
             if (scene->fade_levels[clip_index] != 0.0f) {
                 while (distance < scene->fade_levels[clip_index])
@@ -9546,6 +9546,7 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_RE
             fades = flags & fade_mask;
             if (fades != 0 && view->fade_ranges[instance_index * 2 + 1] > view->fade_ranges[instance_index * 2])
                 far_clip = view->fade_ranges[instance_index * 2 + 1];
+            center = &scene->clip_bounds[instance_index * 2];
             result = NuCameraClipTestExtentsAxisAligned(reinterpret_cast<NUVEC *>(center),
                                                         reinterpret_cast<NUVEC *>(center + 1), far_clip);
             if (result != 0 && NuOcclusionManagerIsEnabled() != 0) {
