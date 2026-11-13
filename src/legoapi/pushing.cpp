@@ -35,69 +35,71 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
                 amount = ratio;
             }
         }
-        return amount;
-    }
-    planar = sock->flags & 4;
-    if (inner > 0.0f && outer > 0.0f) {
-        NUVEC delta;
-        f32 distance_squared;
-        f32 inner_squared = inner * inner;
-        if (planar != 0) {
-            delta.x = object->sock_position.midpoint.x - object->position.x;
-            delta.y = 0.0f;
-            delta.z = object->sock_position.midpoint.z - object->position.z;
-            distance_squared = delta.x * delta.x + delta.z * delta.z;
-        } else {
-            NuVecSub(&delta, &object->sock_position.midpoint, &object->position);
-            distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        }
-        if (distance_squared >= inner_squared) {
-            f32 inverse, speed;
-            ratio = (NuFsqrt(distance_squared) - inner) / (outer - inner);
-            if (ratio > 3.0f)
-                ratio = 3.0f;
-            if (ratio >= 0.0f) {
-                if (planar == 0 && sock->vertical_scale != 1.0f) {
-                    if (object->movement_mode == 4) {
-                        NuVecInvMtxRotate(&delta, &delta, &object->vehicle_orientation);
-                        delta.y *= 1.0f / sock->vertical_scale;
-                        NuVecMtxRotate(&delta, &delta, &object->vehicle_orientation);
-                    } else {
-                        i32 pitch = RotDiff(0, object->sock_position.midpoint_pitch);
-                        i32 yaw = RotDiff(0, object->sock_heading);
-                        NuVecRotateY(&delta, &delta, -yaw);
-                        NuVecRotateX(&delta, &delta, -pitch);
-                        delta.y *= 1.0f / sock->vertical_scale;
-                        NuVecRotateX(&delta, &delta, pitch);
-                        NuVecRotateY(&delta, &delta, yaw);
-                    }
-                }
-                inverse = 1.0f / NuFsqrt(distance_squared);
-                delta.x *= inverse;
-                if (planar == 0)
-                    delta.y *= inverse;
-                delta.z *= inverse;
-                speed = object->character_data->game_character->run_speed * ratio;
-                object->target_velocity.x += delta.x * speed;
-                if (planar == 0)
-                    object->target_velocity.y += delta.y * speed;
-                object->target_velocity.z += delta.z * speed;
-                amount = ratio;
+    } else {
+        planar = sock->flags & 4;
+        if (inner > 0.0f && outer > 0.0f) {
+            NUVEC delta;
+            f32 distance_squared;
+            f32 inner_squared = inner * inner;
+            if (planar != 0) {
+                delta.x = object->sock_position.midpoint.x - object->position.x;
+                delta.y = 0.0f;
+                delta.z = object->sock_position.midpoint.z - object->position.z;
+                distance_squared = delta.x * delta.x + delta.z * delta.z;
+            } else {
+                NuVecSub(&delta, &object->sock_position.midpoint, &object->position);
+                distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
             }
+            if (distance_squared >= inner_squared) {
+                f32 inverse, speed;
+                ratio = (NuFsqrt(distance_squared) - inner) / (outer - inner);
+                if (ratio > 3.0f)
+                    ratio = 3.0f;
+                if (ratio >= 0.0f) {
+                    if (planar == 0 && sock->vertical_scale != 1.0f) {
+                        if (object->movement_mode == 4) {
+                            NuVecInvMtxRotate(&delta, &delta, &object->vehicle_orientation);
+                            delta.y *= 1.0f / sock->vertical_scale;
+                            NuVecMtxRotate(&delta, &delta, &object->vehicle_orientation);
+                        } else {
+                            i32 pitch = RotDiff(0, object->sock_position.midpoint_pitch);
+                            i32 yaw = RotDiff(0, object->sock_heading);
+                            NuVecRotateY(&delta, &delta, -yaw);
+                            NuVecRotateX(&delta, &delta, -pitch);
+                            delta.y *= 1.0f / sock->vertical_scale;
+                            NuVecRotateX(&delta, &delta, pitch);
+                            NuVecRotateY(&delta, &delta, yaw);
+                        }
+                    }
+                    inverse = 1.0f / NuFsqrt(distance_squared);
+                    delta.x *= inverse;
+                    if (planar == 0)
+                        delta.y *= inverse;
+                    delta.z *= inverse;
+                    speed = object->character_data->game_character->run_speed * ratio;
+                    object->target_velocity.x += delta.x * speed;
+                    if (planar == 0)
+                        object->target_velocity.y += delta.y * speed;
+                    object->target_velocity.z += delta.z * speed;
+                    amount = ratio;
+                }
+            }
+            if (planar == 0)
+                goto done; // MATCH-EXCEPTION: retail leaves through the function's single return here, not its own
+                           // epilogue
         }
-        if (planar == 0)
-            goto done; // MATCH-EXCEPTION: retail leaves through the function's single return here, not its own epilogue
-    }
-    if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
-        CHARACTERDATA_PC *data = object->character_data;
-        f32 ceiling = (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
-        f32 vertical;
-        if (object->position.y < ceiling)
-            vertical =
-                (object->position.y - object->sock_position.midpoint.y) / (ceiling - object->sock_position.midpoint.y);
-        else
-            vertical = 1.0f;
-        object->target_velocity.y -= vertical * data->game_character->run_speed;
+        if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
+            CHARACTERDATA_PC *data = object->character_data;
+            f32 ceiling =
+                (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
+            f32 vertical;
+            if (object->position.y < ceiling)
+                vertical = (object->position.y - object->sock_position.midpoint.y) /
+                           (ceiling - object->sock_position.midpoint.y);
+            else
+                vertical = 1.0f;
+            object->target_velocity.y -= vertical * data->game_character->run_speed;
+        }
     }
 done:
     return amount;
