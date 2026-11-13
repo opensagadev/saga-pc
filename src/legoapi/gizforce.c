@@ -387,18 +387,21 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         if ((fields->config_flags & 0x10) && !(object->character_data->model_flags & 4) && !super_force)
             continue;
         group = fields->group;
-        if (group == NULL) {
-            if (GizForce_Complete(force))
-                continue;
-        } else if (group->count != 0 && force != group->forces[group->count - 1]) {
-            if (group->flags & 1)
-                continue;
-            if (fields->anim_set->state == 2)
-                continue;
-            if (group->forces[group->count - 1] != NULL &&
-                ((((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 7) ||
-                 ((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->using_object != NULL))
-                continue;
+        if (group != NULL) {
+            if (group->count != 0 && force != group->forces[group->count - 1]) {
+                if (group->flags & 1)
+                    continue;
+                if (fields->anim_set->state == 2)
+                    continue;
+                if (group->forces[group->count - 1] != NULL &&
+                    ((((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 1) ||
+                     (((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 2) ||
+                     (((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 4) ||
+                     ((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->using_object != NULL))
+                    continue;
+            }
+        } else if (GizForce_Complete(force)) {
+            continue;
         }
         if (GizForce_StoodOnForce(force, object))
             continue;
