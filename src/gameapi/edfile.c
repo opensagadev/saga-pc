@@ -1921,9 +1921,9 @@ static eduimenu_s *EduiMenuChainActivePc(eduimenu_s *menu) {
 
 static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu) {
     if (menu != NULL) {
-        if (menu->child != NULL)
-            return EduiDeepestChildPc(menu->child);
-        return menu;
+        if (menu->child == NULL)
+            return menu;
+        return EduiDeepestChildPc(menu->child);
     }
     return NULL;
 }
@@ -3508,7 +3508,7 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
     i32 direction;
     i32 current_length;
     i32 candidate_length;
-    if ((u32)mode > 1) {
+    if (mode != 0 && mode != 1) {
         u32 current_key;
         u32 candidate_key;
         i32 compare;
@@ -3542,23 +3542,26 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
             }
             current += current_length + 1;
         }
-    } else {
-        direction = mode == 0 ? 1 : -1;
-        for (current = start; current != end;) {
-            current_length = NuStrLen(current);
-            candidate = current + NuStrLen(current) + 1;
-            while (candidate != end) {
-                candidate_length = NuStrLen(candidate);
-                if (NuStrICmp(current + 7, candidate + 7) == direction) {
-                    NuStrCpy(temporary, candidate);
-                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
-                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
-                    current_length = candidate_length;
-                }
-                candidate += candidate_length + 1;
+        return;
+    }
+    if (mode == 0)
+        direction = 1;
+    else
+        direction = -1;
+    for (current = start; current != end;) {
+        current_length = NuStrLen(current);
+        candidate = current + NuStrLen(current) + 1;
+        while (candidate != end) {
+            candidate_length = NuStrLen(candidate);
+            if (NuStrICmp(current + 7, candidate + 7) == direction) {
+                NuStrCpy(temporary, candidate);
+                PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
+                PCByteCopy_candidate(current, temporary, candidate_length + 1);
+                current_length = candidate_length;
             }
-            current += current_length + 1;
+            candidate += candidate_length + 1;
         }
+        current += current_length + 1;
     }
 }
 
@@ -3857,7 +3860,6 @@ static void eduicbSelectDirectoryEntry(eduimenu_s *menu, eduiitem_s *item, u32 v
 static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker) {
     eduimenu_s *directory_menu;
     eduiitem_s *item;
-    FILE_DIRECTORY_ENTRY_PC *entry;
     i32 directory;
     i32 index;
     char text[1024];
@@ -3886,22 +3888,25 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             eduiMenuAddItem(directory_menu, item);
         }
         for (index = 0; index < dir_size; index++) {
-            entry = &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index];
-            if (entry->flags & 8) {
-                NuSPrintf(text, "<%s>", entry->name);
+            if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].flags & 8) {
+                NuSPrintf(text, "<%s>", ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name);
                 item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
                 item->text_alignment = 0x10;
                 eduiMenuAddItem(directory_menu, item);
             }
         }
         for (index = 0; index < dir_size; index++) {
-            entry = &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index];
-            if (picker->filter[0] && !NuStrIStr(entry->name, picker->filter))
+            if (picker->filter[0] && !NuStrIStr(((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name, picker->filter))
                 continue;
-            if (entry->flags & 8)
+            if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].flags & 8)
                 continue;
-            NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", entry->name, entry->size, entry->modified.day,
-                      entry->modified.month, entry->modified.year, entry->modified.hour, entry->modified.minute);
+            NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].name,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].size,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.day,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.month,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.year,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.hour,
+                      ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index].modified.minute);
             item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
             item->text_alignment = 0x10;
             eduiMenuAddItem(directory_menu, item);
