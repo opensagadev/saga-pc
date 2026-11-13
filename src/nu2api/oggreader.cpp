@@ -106,8 +106,7 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
     }
     PCThreadMillisecondsPc();
     i32 bitstream = 0;
-    char *cursor = (char *)output;
-    i32 got = ov_read(&vorbis_state, cursor, requested, 0, 2, 1, &bitstream);
+    i32 got = ov_read(&vorbis_state, (char *)output, requested, 0, 2, 1, &bitstream);
     if (got < 0) {
         if (read_count != NULL)
             *read_count = 0;
@@ -115,9 +114,9 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
         return E_FAIL;
     }
     i32 total = got;
-    cursor += total;
+    output = (char *)output + total;
     while (got > 0 && (u32)total < requested) {
-        got = ov_read(&vorbis_state, cursor, requested - total, 0, 2, 1, &bitstream);
+        got = ov_read(&vorbis_state, (char *)output, requested - total, 0, 2, 1, &bitstream);
         if (got < 0) {
             if (read_count != NULL)
                 *read_count = 0;
@@ -125,10 +124,10 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
             return E_FAIL;
         }
         total += got;
-        cursor += got;
+        output = (char *)output + got;
     }
     if ((u32)total < requested)
-        memset(cursor, 0, requested - total);
+        memset(output, 0, requested - total);
     if (read_count != NULL)
         *read_count = total;
     PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
