@@ -352,10 +352,11 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
     menu->draw_y = -menu->selected_row * MENUDY * menu->item_scale;
     for (i32 i = 0; i < 45; ++i) {
         i32 index = (i + 44) % 45;
-        f32 alpha = 0.5f;
+        f32 alpha;
         if (index >= 8 && !(save->unlocked[index / 32] & (1u << (index & 31))) &&
             ExtrasCheatsPc[index].area_index != -1 &&
             !save->areas[ExtrasCheatsPc[index].area_index].red_brick_unlocked) {
+            alpha = 0.5f;
             NuStrCpy(text, TTab[TextIdPc88074c]);
             sprintf(number, ExtrasLockedNumberFormatPc, index - 7);
             NuStrCat(text, number);
@@ -367,6 +368,7 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
                 if (BonusArea && Cheat_CheckFlags(index, 0x200000))
                     alpha = 0.5f;
             } else {
+                alpha = 0.5f;
                 NuStrCpy(number, TTab[TextIdPc880764]);
             }
             sprintf(text, ExtrasNameFormatPc, TTab[*ExtrasCheatsPc[index].text_id], number);
@@ -386,14 +388,14 @@ extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
         union {
             f32 value;
             u32 bits;
-        } absolute;
+        } absolute, magnitude;
         absolute.value = menu->draw_y;
-        absolute.bits &= 0x7fffffff;
-        if (absolute.value > ExtrasFadeStartPc) {
-            if (absolute.value > ExtrasFadeEndPc)
+        magnitude.bits = absolute.bits & 0x7fffffff;
+        if (magnitude.value > ExtrasFadeStartPc) {
+            if (magnitude.value > ExtrasFadeEndPc)
                 alpha = 0.0f;
             else
-                alpha *= 1.0f - (absolute.value - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
+                alpha *= 1.0f - (magnitude.value - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
         }
         if (Paused) {
             dme_align = PauseMenus_Align;
