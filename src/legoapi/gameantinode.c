@@ -301,14 +301,15 @@ void __cdecl GameAntinode_Update(void *opaque_system) {
             continue;
         GameAntinode_FindGridPosition(system->world, &object->collision_position, object->collision_radius_unscaled,
                                       object->collision_radius_unscaled, &min_x, &min_z, &max_x, &max_z);
-        for (x = 0; x <= (i32)max_x - (i32)min_x; ++x)
-            for (z = 0; z <= (i32)max_z - (i32)min_z; ++z)
+        for (x = 0; x < max_x - min_x + 1; ++x)
+            for (z = 0; z < max_z - min_z + 1; ++z)
                 GameAntinodeGridPc[min_x + x] |= (u64)1 << (min_z + z);
     }
     if (ViewCamGetMode() != 0) {
-        GameAntinode_FindGridPosition(system->world, ViewCamGetTgt(), .1f, .1f, &min_x, &min_z, &max_x, &max_z);
-        for (x = 0; x <= (i32)max_x - (i32)min_x; ++x)
-            for (z = 0; z <= (i32)max_z - (i32)min_z; ++z)
+        NUVEC *target = ViewCamGetTgt();
+        GameAntinode_FindGridPosition(system->world, target, .1f, .1f, &min_x, &min_z, &max_x, &max_z);
+        for (x = 0; x < max_x - min_x + 1; ++x)
+            for (z = 0; z < max_z - min_z + 1; ++z)
                 GameAntinodeGridPc[min_x + x] |= (u64)1 << (min_z + z);
     }
     for (node = system->active; node; node = next) {
@@ -322,8 +323,8 @@ void __cdecl GameAntinode_Update(void *opaque_system) {
             }
         }
         found = 0;
-        for (x = 0; x <= (i32)node->grid_max_x - (i32)node->grid_min_x && !found; ++x)
-            for (z = 0; z <= (i32)node->grid_max_z - (i32)node->grid_min_z && !found; ++z)
+        for (x = 0; x < node->grid_max_x - node->grid_min_x + 1 && !found; ++x)
+            for (z = 0; z < node->grid_max_z - node->grid_min_z + 1 && !found; ++z)
                 if (GameAntinodeGridPc[node->grid_min_x + x] & ((u64)1 << (node->grid_min_z + z)))
                     found = 1;
         if (found) {
