@@ -47,10 +47,10 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
         for (i32 col = 0; col < columns; ++col, px += dx) {
             const i32 index = row * columns + col;
             if (index < count) {
-                COLLECTID_PC *entry = &collection->list[index];
-                i32 id = entry->id;
-                entry->grid_x = px;
-                entry->grid_y = py;
+                COLLECTID_PC *list = collection->list;
+                i32 id = list[index].id;
+                list[index].grid_x = px;
+                list[index].grid_y = py;
                 if (!(alpha <= 0.0f)) {
                     i32 frame = LEGOOBJ_ICON_FRAME_NEUTRAL;
                     f32 opacity = 1.0f;
