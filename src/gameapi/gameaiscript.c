@@ -5980,36 +5980,34 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
                                  i32 num_params, i32 first_time, f32 unused6) {
     u16 angle;
     u16 pitch;
-    i32 model_count;
-    i32 spline_count;
-    i32 use_selected;
-    i32 min_group_size;
-    i32 max_group_size;
-    i32 group_size;
-    f32 min_distance;
-    f32 max_distance;
-    f32 distance;
-    i32 relative_to_player;
-    i32 creature_set;
-    i32 looping;
-    struct AILOCATOR_PC *relative_locator;
-    struct gameobject_s *rider;
+    i32 min_group_size = -1;
+    i32 max_group_size = -1;
+    i32 group_size = 1;
+    i32 model_count = 0;
+    i32 use_selected = 0;
+    i32 looping = 0;
+    i32 relative_to_player = 0;
+    char script_name[64] = "default";
+    f32 distance = 0.0f;
+    f32 min_distance = 1000000000.0f;
+    struct gameobject_s *rider = NULL;
+    f32 max_distance = 1000000000.0f;
+    i32 spline_count = 0;
+    i32 creature_set = 0;
+    struct AILOCATOR_PC *relative_locator = NULL;
+    NUVEC spline_offset = {0.0f, 0.0f, 0.0f};
     i32 i;
     struct nugspline_s *spline;
     i32 model;
     i16 models[10];
     struct nugspline_s *splines[32];
-    char script_name[64] = "default";
-    NUVEC spline_offset = {0.0f, 0.0f, 0.0f};
-    if (!first_time || num_params <= 0)
+    SPLINEPOS spline_position;
+    NUVEC position;
+    NUVEC offset;
+    i16 start;
+    i16 end;
+    if (!first_time)
         return 1;
-
-    model_count = 0, spline_count = 0, use_selected = 0;
-    min_group_size = -1, max_group_size = -1, group_size = 1;
-    min_distance = 1000000000.0f, max_distance = 1000000000.0f, distance = 0.0f;
-    relative_to_player = 0, creature_set = 0, looping = 0;
-    relative_locator = NULL;
-    rider = NULL;
     for (i = 0; i < num_params; i++) {
         char *value = NuStrIStr(params[i], "mingroupsize");
         if (value != NULL)
@@ -6020,7 +6018,7 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
             group_size = (i32)AIParamToFloat(processor, value + 10);
         else if ((value = NuStrIStr(params[i], "type")) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                u8 type = LevelCharacterTypeIDFn(value + 5);
+                u16 type = (u8)LevelCharacterTypeIDFn(value + 5);
                 if (type != 0xff) {
                     i16 model = LevelCharacterGlobalIDFn(type);
                     if (model != -1 && model_count < 10)
@@ -6069,13 +6067,13 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
         } else if ((value = NuStrIStr(params[i], "ridden_by=")) != NULL)
             rider = GetNamedGameObject(system, value + 10);
     }
-    if (min_group_size < max_group_size && min_group_size >= 0)
+    if (min_group_size >= 0 && max_group_size > min_group_size)
         group_size = NuRand(NULL) % (max_group_size + 1 - min_group_size) + min_group_size;
-    if (min_distance != 1000000000.0f && max_distance != 1000000000.0f) {
+    if (min_distance != 1000000000.0 && max_distance != 1000000000.0) {
         f32 fraction = NuRandFloat();
-        distance = max_distance * fraction + min_distance * (1.0f - fraction);
+        distance = (1.0f - fraction) * min_distance + fraction * max_distance;
     }
-    if ((spline_count | use_selected) == 0 || group_size <= 0 || model_count == 0)
+    if ((use_selected == 0 && spline_count == 0) || model_count == 0 || group_size <= 0)
         return 1;
     spline = use_selected ? script_spline_selected : splines[qrand() / (65535 / spline_count + 1)];
     model = models[NuRand(NULL) % model_count];
@@ -6085,23 +6083,20 @@ i32 Action_CreateSplineCreatures(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
         if (object == NULL)
             continue;
         if (relative_to_player || relative_locator != NULL) {
-            SPLINEPOS position;
-            i16 start = -1, end = -1;
+            start = -1;
+            end = -1;
             if (WORLD->current_level == PODSPRINTA_LDATA)
                 PodSprint_GetIAlongVals(spline, &start, &end);
             if (relative_to_player) {
-                GetNearestSplinePos(&player->collision_position, &position, spline, looping, start, end);
-                object->movement_spline_position = position;
+                GetNearestSplinePos(&player->collision_position, &spline_position, spline, looping, start, end);
+                object->movement_spline_position = spline_position;
             } else if (relative_locator != NULL) {
-                GetNearestSplinePos(&relative_locator->position, &position, spline, looping, start, end);
-                object->movement_spline_position = position;
+                GetNearestSplinePos(&relative_locator->position, &spline_position, spline, looping, start, end);
+                object->movement_spline_position = spline_position;
             }
         }
         if (distance != 0.0f) {
-            NUVEC position;
-            NUVEC offset;
             MoveSplinePosition(&object->movement_spline_position, distance);
-            position = position, offset = offset;
             PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &position,
                              &angle, &pitch, object->movement_spline_position.looping);
             object->movement_facing_angle = angle;
