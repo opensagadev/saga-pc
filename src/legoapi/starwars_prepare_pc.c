@@ -231,22 +231,20 @@ i32 __cdecl StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET_PC *pack
 
 i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
     GAMEOBJECT *object;
-    AIPATH_PC *path;
     AIPATHCNX_PC *connection;
     i32 from;
     i32 to;
     AIPATHNODE_PC *target;
 
     object = (GAMEOBJECT *)apiobject->owner;
-    path = packet->path_info.path;
     connection = packet->path_info.connection;
     from = connection->node_indices[packet->path_info.direction];
     to = connection->node_indices[packet->path_info.direction == 0];
-    target = &path->nodes[to];
-    packet->movement_destination = path->nodes[from].position;
+    target = &packet->path_info.path->nodes[to];
+    packet->movement_destination = packet->path_info.path->nodes[from].position;
     packet->movement_stopping_distance = 0.0f;
     if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
-        (path->previous_inside_node_bits[to / 8] & (1 << (to % 8))) != 0) {
+        (packet->path_info.path->previous_inside_node_bits[to / 8] & (1 << (to % 8))) != 0) {
         if (TryToTeleportToNextNode(object, target, 0) != 0) {
             return 1;
         }
