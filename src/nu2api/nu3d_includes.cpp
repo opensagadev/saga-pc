@@ -8670,14 +8670,20 @@ extern "C" {
         DisplayListLinkDynamicMtls();
         DisplayListSwapBuffersPS();
         UpdateMaterialClipBitsPC(&PCDynamicDisplayScene);
-        for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
-            NUDISPLAY_LIST_PC *scene = PCDisplayScenes[i];
-            if ((scene->render_flags & 4) != 0) {
-                DisplayUpdateClipWordsPC(scene);
-                DisplayUpdateAlphaPC(scene);
-            }
-            if ((scene->render_flags & 6) != 0)
-                UpdateMaterialClipBitsPC(scene);
+        i = 0;
+        if ((i32)nudlist_field_9d8 > 0) {
+            NUDISPLAY_LIST_PC **scenes = PCDisplayScenes;
+            do {
+                NUDISPLAY_LIST_PC *scene = *scenes;
+                if ((scene->render_flags & 4) != 0) {
+                    DisplayUpdateClipWordsPC(scene);
+                    DisplayUpdateAlphaPC(scene);
+                }
+                if ((scene->render_flags & 6) != 0)
+                    UpdateMaterialClipBitsPC(scene);
+                ++i;
+                ++scenes;
+            } while (i < (i32)nudlist_field_9d8);
         }
         for (i = 0; i < 24; ++i)
             PCSafeRenderScenes[i] = render_scene_ptrs[i];
