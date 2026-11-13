@@ -6706,11 +6706,11 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
 }
 
 i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
-    i32 i = 0;
-    i32 max_strings = 0;
+    i32 i;
+    i32 max_strings;
     NUSTRING *strings = NULL;
     NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
-    void *mem_buf = (void *)(buf_end.addr - 0x100000);
+    void *mem_buf;
     i32 bytes_read;
     NUFILE mem_file;
     NUFPAR_PC *parser;
@@ -6724,6 +6724,9 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     bank->strings = NULL;
     bank->max_strings = 0;
     bank->string_count = 0;
+    max_strings = 0;
+    i = 0;
+    mem_buf = (void *)(buf_end.addr - 0x100000);
     bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
     if ((i32)(0x100000 - bytes_read) < 0x8000) {
         NuFileError();
