@@ -15477,6 +15477,7 @@ extern "C" static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertic
         (dst).m33 = (src).m33;                                                                                         \
     } while (0)
 void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
+    NUMTX *shadow_matrix = &set->shadow_matrix_pc;
     NUMTX original = set->view_pc;
     NUMTX captured = PostShadowViewPc;
     NUMTX combined, combined_inverse, original_inverse, captured_inverse;
@@ -15589,7 +15590,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     NuMtxMulH(&transformed, &basis, &translation);
     NuMtxMulH(&translated_basis, &transformed, &frustum);
     NuMtxMulH(&combined_inverse, &translated_basis, &axis);
-    set->shadow_matrix_pc = combined_inverse;
+    *shadow_matrix = combined_inverse;
 }
 void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {
     NUMTX inverse, bias;
