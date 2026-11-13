@@ -1454,41 +1454,41 @@ i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
 
     file--;
     info = &file_info[file];
-    if (info->use_buf == 0)
-        return NuPSFileRead(file, destination, size);
+    if (info->use_buf != 0) {
+        if (info->buf == NULL)
+            AquireFileBuffer(info);
+        bytes_read = 0;
+        output = (char *)destination;
 
-    if (info->buf == NULL)
-        AquireFileBuffer(info);
-    bytes_read = 0;
-    output = (char *)destination;
+        while (size > 0) {
+            if (info->read_pos >= info->file_len)
+                return bytes_read;
 
-    while (size > 0) {
-        if (info->read_pos >= info->file_len)
-            return bytes_read;
+            if (info->read_pos < info->buf_start || info->read_pos >= info->buf_start + info->buf_len) {
+                if (info->read_pos != info->file_pos) {
+                    NuPSFileLSeek(info->handle, info->read_pos, 0);
+                    info->file_pos = info->read_pos;
+                }
 
-        if (info->read_pos < info->buf_start || info->read_pos >= info->buf_start + info->buf_len) {
-            if (info->read_pos != info->file_pos) {
-                NuPSFileLSeek(info->handle, info->read_pos, 0);
-                info->file_pos = info->read_pos;
+                info->buf_len = NuPSFileRead(info->handle, info->buf->data, sizeof(info->buf->data));
+                info->buf_start = info->file_pos;
+                info->file_pos += info->buf_len;
             }
 
-            info->buf_len = NuPSFileRead(info->handle, info->buf->data, sizeof(info->buf->data));
-            info->buf_start = info->file_pos;
-            info->file_pos += info->buf_len;
+            available = info->buf_len + (i32)(info->buf_start - info->read_pos);
+            if (available >= size)
+                available = size;
+            if (available != 0)
+                memcpy(output, info->buf->data + (i32)(info->read_pos - info->buf_start), available);
+            output += available;
+            bytes_read += available;
+            size -= available;
+            info->read_pos += available;
         }
 
-        available = info->buf_len + (i32)(info->buf_start - info->read_pos);
-        if (available >= size)
-            available = size;
-        if (available != 0)
-            memcpy(output, info->buf->data + (i32)(info->read_pos - info->buf_start), available);
-        output += available;
-        bytes_read += available;
-        size -= available;
-        info->read_pos += available;
+        return bytes_read;
     }
-
-    return bytes_read;
+    return NuPSFileRead(file, destination, size);
 }
 
 f32 __cdecl NuFileReadFloat(NUFILE file) {
