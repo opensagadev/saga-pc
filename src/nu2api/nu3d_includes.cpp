@@ -6376,7 +6376,7 @@ extern "C" {
 
     static i32 clipPortalAgainstFrustrum(NUGSCN *scene, i16 room_id, NUPORTAL *portal, NUPORTAL_FRUSTUM_PC *frustum,
                                          i16 next_room) {
-        i32 total_inside = 0, plane_index;
+        i32 total_inside, plane_index;
         if (scene->rooms[room_id].priority < scene->rooms[next_room].priority) {
             f32 distance = portal->plane.a * NuPortalWorldCameraPc.x + portal->plane.b * NuPortalWorldCameraPc.y +
                            portal->plane.c * NuPortalWorldCameraPc.z + portal->plane.d;
@@ -6385,16 +6385,18 @@ extern "C" {
             if (portal->front_room == (u16)room_id && distance > 0.0f)
                 return 0;
         }
+        total_inside = 0;
         for (plane_index = 0; plane_index < frustum->plane_count; ++plane_index) {
             i32 outside = 0, vertex_index;
-            NUPLANE *plane = &frustum->planes[plane_index];
             for (vertex_index = 0; vertex_index < portal->vertex_count; ++vertex_index) {
-                NUVEC *v = &portal->vertices[vertex_index];
-                f32 distance = plane->a * v->x + plane->b * v->y + plane->c * v->z + plane->d;
-                if (!(distance >= 0.0f))
-                    ++outside;
-                else
+                f32 distance = portal->vertices[vertex_index].x * frustum->planes[plane_index].a +
+                               portal->vertices[vertex_index].y * frustum->planes[plane_index].b +
+                               frustum->planes[plane_index].c * portal->vertices[vertex_index].z +
+                               frustum->planes[plane_index].d;
+                if (distance >= 0.0f)
                     ++total_inside;
+                else
+                    ++outside;
             }
             if (outside == portal->vertex_count)
                 return 0;
