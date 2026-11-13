@@ -15690,9 +15690,12 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, AiAntinodeRenderTitlePc);
     NuQFntSetColour(system_qfont, 0x80000000);
     NuQFntSetScale(system_qfont, xscale, yscale);
-    display = aieditor->selected_antinode;
-    if (display == NULL)
+    if (aieditor->selected_antinode != NULL)
+        display = aieditor->selected_antinode;
+    else if (aieditor->nearest_antinode != NULL)
         display = aieditor->nearest_antinode;
+    else
+        display = NULL;
     if (display != NULL)
         NuVecXZDist(&display->position, &aieditor->camera_position, &displacement);
     nearest = aieditor->nearest_antinode;
@@ -15715,23 +15718,25 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderIncreaseZPc,
                           aieditor->selected_antinode->base_height);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderDecreaseZPc);
-        } else if ((aieditorsettings.display_options & 0x100) && (aieditor->pad_buttons & 0x1000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x1000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseUpperPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseUpperPc);
-        } else if ((aieditorsettings.display_options & 0x100) && (aieditor->pad_buttons & 0x4000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x4000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseLowerPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseLowerPc);
         } else {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderRotateLeftPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderRotateRightPc);
-            if (aieditorsettings.display_options & 0x100) {
+            if ((i32)(aieditorsettings.display_options << 23) >> 31) {
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderAdjustUpperPc);
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderAdjustLowerPc);
             }
         }
     } else {
-        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16,
-                      nearest != NULL ? AiAntinodeRenderSelectPc : AiAntinodeRenderCreatePc);
+        if (nearest != NULL)
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderSelectPc);
+        else
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderCreatePc);
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
     }
     antinodeEditorDrawAntinodes();
