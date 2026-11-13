@@ -122,16 +122,15 @@ extern "C" {
         }
 
         NuFParDestroy(parser);
-        if (episode_count <= 0) {
-            EpisodesConfigDiagnosticPc(path);
-            return NULL;
+        if (episode_count > 0) {
+            buffer->void_ptr = episode;
+            if (count_out != NULL) {
+                *count_out = episode_count;
+            }
+            return episode_base;
         }
-
-        buffer->void_ptr = episode;
-        if (count_out != NULL) {
-            *count_out = episode_count;
-        }
-        return episode_base;
+        EpisodesConfigDiagnosticPc(path);
+        return NULL;
     }
 }
 
