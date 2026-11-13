@@ -427,6 +427,10 @@ Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOpPc` (to
 come before its definition; defining it after the last such caller kept
 `NuSpecialGetFirst`'s call and `NuSpecialList`'s register use (retail knew
 the hook preserves `eax`/`ecx`/`edx`, so it lives in the same unit).
+The same holds for x87: `StateAnimEvaluate` keeps the frame value on the x87
+stack and `edx` live across its argument-less call, so it is defined in
+`nu3d_includes.cpp` before the hook's definition (the sibling build also
+files it there); in its own unit it reloaded both (46.6 -> 50.2).
 
 ### I36: a local object pointer instead of repeated casts
 
@@ -527,6 +531,35 @@ at several uses is committed as a `MATCH-EXCEPTION` (`DestroyRippleMtls`,
 63 near-exact functions with such a local made 3 exact; `tools/mutate.py`
 has it as the `inline_cast` rule.
 
+### I46: a second `if` after the block instead of `else if`
+
+```
+retail                                   ours (else if)
+  fcom  [message_delay]                    fcom  [message_delay]
+  jp    .busy_or_result                    jnp   .busy
+  ...busy block, falls into ret            fcomp [result_delay] ; result test first
+.busy_or_result:                           ...
+  fcomp [result_delay]
+```
+
+`if (busy || delay > 0.0f) { result_delay = 1.5f; ... } else if (result_delay
+<= 0.0f) BackupMenu();` places the `else` block first. The original tests the
+result delay in a separate `if` after the busy block; VC8 knows the stored
+1.5 and skips the second test on the busy path, so the logic is unchanged.
+The sibling build (see docs/reference-symbols.md) shows it directly: its
+busy path falls into the shared `result_delay <= 0` compare. Made
+`MenuUpdateLoading`, `MenuUpdateSaving`, `MenuUpdateDeleting` and
+`MenuUpdateFormatting` exact (U19).
+
+### I47: `va_arg` instead of a walked parameter pointer
+
+A variadic function written as `i32 *argument = &first; ... *++argument`
+takes the address of the named parameter and keeps the pointer in a
+register; `va_list args; va_start(args, first); ... va_arg(args, T)` keeps
+the cursor in a stack slot and changes the loop's register use.
+`bgPostRequestV` (84.5 -> 88.9), `NuFmvPlayV` (86.0 -> 87.1). Read a float
+argument with `va_arg(args, f32)` where retail reads 4 bytes.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
@@ -583,7 +616,9 @@ as recorded differences.
   `PcInputSetDeadzonePc`.
 - U19 the `else` block of a float `||` test placed before the `then` block
   (or the reverse); every if/else/return arrangement compiled the same.
-  `MenuUpdateLoading`, `MenuUpdateSaving`, `MenuUpdateExtras`.
+  Closed for the memory card menus by I46 (`MenuUpdateLoading`,
+  `MenuUpdateSaving`, `MenuUpdateDeleting`, `MenuUpdateFormatting`);
+  `MenuUpdateExtras` not yet tried.
 
 - U20 exact only with an unnatural change found by `tools/permute2.py`
   (recorded, not committed): a copy of a parameter into a local

@@ -87,3 +87,61 @@ Remaining differences seen in the sample were known unexplained classes: U8
 callers that keep `eax` live across a call to the empty `NuFileError`
 (declaring it `noreturn` improved some callers and broke others, so retail
 probably calls two different, folded error functions).
+
+## Sibling build disassembly
+
+A private sibling build of the same engine (a later game, compiled by GCC for
+i386 with its symbol table and the source file of every function) shows the
+original source structure independently of VC8: which calls are made and in
+what order, which helpers stay calls, loop and branch shapes, constants,
+float versus double arithmetic, field offsets and the order of stores. It is
+kept untracked under `build/reference/` (git-ignored); the engine moved on
+between the two games, so it is a lead and retail bytes decide.
+
+`tools/sibling.py` (needs capstone) prints the sibling's disassembly of a
+function next to retail's and ours, with symbolised calls, globals and float
+constants, and a summary per side: calls in order, float constants, integer
+immediates and field offsets. It compares the call lists sibling -> retail and
+retail -> ours and lists constants and fields that only retail or only ours
+use. Without the reference directory it shows retail and ours only.
+
+```sh
+python3 tools/sibling.py NuPortalWhichRoom            # summaries and three listings
+python3 tools/sibling.py NuPortalWhichRoom --summary  # summaries only
+python3 tools/sibling.py --scan names.txt             # one line per function: call-list agreement
+python3 tools/sibling.py --reference DIR ...          # reference in another directory (default build/reference/batman-mac)
+```
+
+### Pilot (40 non-exact engine functions with a sibling counterpart)
+
+10 per match band (95-99.9, 85-95, 60-85; all 9 below 60), larger functions
+first, about 10-15 minutes each.
+
+| band | tried | sibling showed a difference | exact | improved |
+|---|---:|---:|---:|---:|
+| < 60 | 9 | 5 | 4 | 1 |
+| 60-85 | 11 | 4 | 0 | 3 (1 not from the sibling) |
+| 85-95 | 10 | 1 | 0 | 1 |
+| 95-99.9 | 10 | 3 | 0 | 0 |
+
+What the sibling showed, by yield:
+
+- A second `if` instead of `else if`: the sibling's then-path falls into the
+  same compare as the else-path (I46). Four memory card menu updates exact.
+- A store the source made conditional: the sibling writes
+  `candidates[count] = room` on every pass (`NuPortalWhichRoom`, 71.3 -> 83.3).
+- `va_start`/`va_arg` instead of a walked parameter pointer (I47).
+- File assignment: a function the sibling compiles in the same unit as an
+  empty hook it calls (`StateAnimEvaluate`, I35).
+- An error block at the end of the function (`NuDatOpenEx`, +0.04).
+- Seen but not productive: one shared tail store instead of an early return,
+  no cached index local (`TerrainSkinAllocate`), a ternary (`NewRayCastMask`),
+  separate locals per option (`Action_GoToLocator`), a bitfield where we OR a
+  word (`xConditions`, not tried: header-wide change).
+
+Most near-exact functions (95%+) differ in register choice, x87 order and
+store scheduling, which the sibling cannot show: GCC allocates and schedules
+differently. Many sibling functions were rewritten after the PC release
+(AI condition evaluation, vertex declarations, `edanimLoadPage` became a
+wrapper), and GCC inlines helpers that retail calls, so a call-list difference
+alone is mostly noise (213 of 284 engine leads differ sibling -> retail).
