@@ -1365,7 +1365,7 @@ static i32 maxundo = 0;
 static i32 rtl_undo_cnt = 0;
 static i32 rtl_undo_maxcnt = 0;
 i32 ctl_ix = 1;
-i32 helpmode = 0;
+static i32 helpmode = 0;
 i32 help_line = 190;
 char *userid_names[16] = {"NO ID", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
                           "ID 8",  "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
