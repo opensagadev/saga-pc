@@ -13026,10 +13026,10 @@ __declspec(noinline) void __cdecl AIPathCnxSetTemporaryBlock(AIPATH_PC *path, ch
 
 i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                              i32 param_4, i32 param_5, f32 param_6) {
-    char *from;
-    char *to;
-    i32 both_ways;
-    i32 blocked;
+    char *from = NULL;
+    char *to = NULL;
+    i32 both_ways = 0;
+    i32 blocked = 1;
     i32 index;
     char *value;
 
@@ -13037,10 +13037,6 @@ i32 __cdecl Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)packet;
     (void)param_6;
     if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0 && param_4 > 0) {
-        from = NULL;
-        to = NULL;
-        both_ways = 0;
-        blocked = 1;
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIActionFromName);
             if (value != NULL) {
