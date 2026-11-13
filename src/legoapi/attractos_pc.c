@@ -309,9 +309,13 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
     return 0;
 }
 
-/* NuFabs: the masked bits of a float temporary copied into another float. */
-#define ATTRACTO_FABS(destination, expression)                                                                         \
-    (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static __forceinline f32 AttractoFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
 
 static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJECT *object) {
     ATTRACTO_SHARD_READER_PC *shard;
@@ -328,10 +332,10 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     nearest = NULL;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
         if (shard->active && shard->visible && shard->drawn && !shard->collecting && !shard->collected) {
-            f32 temporary, dx, dy, distance;
-            ATTRACTO_FABS(dx, shard->screen_position.x - object->external_force.x);
+            f32 dx, dy, distance;
+            dx = AttractoFabsPc(shard->screen_position.x - object->external_force.x);
             if (dx < (f64)0.2f) {
-                ATTRACTO_FABS(dy, shard->screen_position.y - object->external_force.y);
+                dy = AttractoFabsPc(shard->screen_position.y - object->external_force.y);
                 if (dy < (f64)0.2f) {
                     distance = NuVecDistSqr(&shard->position, &object->collision_position, &delta);
                     if (distance < best) {
