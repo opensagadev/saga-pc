@@ -1200,6 +1200,7 @@ struct SplineKnotList {
     SplineKnot *Last();
     void Clear();
     i32 Count();
+    i32 GetPoint(i32 index, VuVec &point);
     void InsertAfter(SplineKnot *knot, SplineKnot *after);
     void Remove(SplineKnot *knot);
 };
@@ -1212,6 +1213,7 @@ class SplinePointBlock : public CSListLink<SplinePointBlock> {
     }
     SplinePointBlock();
     SplinePointBlock(i32 requested_capacity);
+    void Draw();
     virtual ~SplinePointBlock() {
         if (points != NULL)
             theMemoryManager.FreePool(points, capacity * sizeof(VuVec));
@@ -4643,6 +4645,22 @@ i32 SplineKnotList::Count() {
     return count;
 }
 
+/* Copies the position of the index-th knot. */
+i32 SplineKnotList::GetPoint(i32 index, VuVec &point) {
+    SplineKnot *knot = first;
+    while (index != 0) {
+        if (knot == NULL)
+            return 0;
+        index--;
+        knot = knot->next;
+    }
+    if (knot != NULL) {
+        VuVecCopy(point, knot->position);
+        return 1;
+    }
+    return 0;
+}
+
 void SplineKnotList::Remove(SplineKnot *knot) {
     if (knot->next != NULL)
         knot->next->previous = knot->previous;
@@ -6179,11 +6197,14 @@ void SplinePointList::Clear() {
     }
 }
 
+void SplinePointBlock::Draw() {
+    for (i32 index = 0; index < point_count; index++)
+        EdDrawLineCross(&points[index].xyz, 0.5f, -1);
+}
+
 void SplinePointList::Draw() {
-    for (SplinePointBlock *block = First(); block != NULL; block = block->next) {
-        for (i32 index = 0; index < block->point_count; index++)
-            EdDrawLineCross(&block->points[index].xyz, 0.5f, -1);
-    }
+    for (SplinePointBlock *block = First(); block != NULL; block = block->next)
+        block->Draw();
 }
 
 void SplineObject::ReverseKnots() {
