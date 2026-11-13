@@ -2372,30 +2372,28 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
             ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
         }
 
-        if (ref->script == NULL || script == ref->script) {
+        if (ref->script != NULL && ref->script != script) {
+            ref->return_state = AIStateFind(ref->return_state_name, script);
+            if (ref->return_state == NULL && ref->return_state_name != NULL) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(ref->return_state_name, script->name);
+                } else {
+                    AIScriptMissingStateDiagnostic(ref->return_state_name, script->name);
+                }
+            }
+
+            condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
+
+            while (condition != NULL) {
+                if (condition->definition->init_fn != NULL) {
+                    condition->initialized_argument =
+                        (*condition->definition->init_fn)(sys, condition->argument, script);
+                }
+
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
+            }
+        } else {
             NuLinkedListRemove(&script->reference_scripts, &ref->link);
-            ref = next;
-
-            continue;
-        }
-
-        ref->return_state = AIStateFind(ref->return_state_name, script);
-        if (ref->return_state == NULL && ref->return_state_name != NULL) {
-            if (AIActionDiagnosticMode == 1) {
-                AIScriptMissingStateDiagnosticAlternate(ref->return_state_name, script->name);
-            } else {
-                AIScriptMissingStateDiagnostic(ref->return_state_name, script->name);
-            }
-        }
-
-        condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
-
-        while (condition != NULL) {
-            if (condition->definition->init_fn != NULL) {
-                condition->initialized_argument = (*condition->definition->init_fn)(sys, condition->argument, script);
-            }
-
-            condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
         }
 
         ref = next;
@@ -2413,7 +2411,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
                 ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
             }
 
-            if (ref->script == NULL || script == ref->script) {
+            if (ref->script == NULL || ref->script == script) {
                 NuLinkedListRemove(&script->reference_scripts, &ref->link);
             }
 
