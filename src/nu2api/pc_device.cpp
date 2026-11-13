@@ -658,7 +658,6 @@ extern "C" {
     extern void(__cdecl *PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *);
 }
 void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
-    bool rebuild_resources = true;
     PCFrameCriticalSectionEnter_candidate();
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
@@ -666,6 +665,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     saved_multisample = multisample_index;
     saved_target_count = target_count;
     saved_aspect = PcWindowOptions.aspect_mode;
+    bool rebuild_resources = true;
     factory->methods->get_device_caps(factory, 0, 1, &caps);
     parameters.window = reinterpret_cast<HWND>(PCInputInstance_candidate);
     parameters.windowed = requested_windowed;
@@ -680,13 +680,14 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     parameters.interval = 1;
     if (parameters.windowed != 0 && reposition_window != 0) {
         i32 x = PcWindowOptions.window_x;
+        i32 width = PcWindowOptions.client_width;
+        i32 height = PcWindowOptions.client_height;
         i32 y = PcWindowOptions.window_y;
         if (x < 0)
-            x = (PCDeviceBackend.desktop_mode.width - PcWindowOptions.client_width) >> 1;
+            x = (PCDeviceBackend.desktop_mode.width - width) >> 1;
         if (y < 0)
-            y = (PCDeviceBackend.desktop_mode.height - PcWindowOptions.client_height) >> 1;
-        MoveWindow(reinterpret_cast<HWND>(PCInputInstance_candidate), x, y, PcWindowOptions.client_width,
-                   PcWindowOptions.client_height, TRUE);
+            y = (PCDeviceBackend.desktop_mode.height - height) >> 1;
+        MoveWindow(reinterpret_cast<HWND>(PCInputInstance_candidate), x, y, width, height, TRUE);
     }
     if (PCDeviceBackend.factory->methods->check_device_type(PCDeviceBackend.factory, 0, 1, modes[requested_mode].format,
                                                             21, parameters.windowed) < 0)
@@ -703,12 +704,16 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         creation_flags = 0x10;
     if (multithreaded != 0)
         creation_flags |= 4;
-    if (force_software == 0 && caps.vertex_shader_version >= 0xfffe0101)
-        creation_flags |= 0x40;
-    else if (force_software == 0 && (caps.device_caps & 0x10000) != 0)
-        creation_flags |= 0x80;
-    else
+    if (force_software == 0) {
+        if (caps.vertex_shader_version >= 0xfffe0101)
+            creation_flags |= 0x40;
+        else if ((caps.device_caps & 0x10000) != 0)
+            creation_flags |= 0x80;
+        else
+            creation_flags |= 0x20;
+    } else {
         creation_flags |= 0x20;
+    }
     device_type = 1;
     adapter = 0;
     factory->methods->get_adapter_identifier(factory, 0, 0, &identifier);
@@ -717,15 +722,15 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         for (i32 i = 0; i != 5; ++i) {
             u32 colour_quality = 0;
             u32 depth_quality = 0;
-            i32 supported = 1;
+            bool supported = true;
             if (factory->methods->check_multisample(factory, adapter, device_type, parameters.format,
                                                     parameters.windowed, PCGraphicsMultisampleTypes[i],
                                                     &colour_quality) < 0)
-                supported = 0;
+                supported = false;
             else if (factory->methods->check_multisample(factory, adapter, device_type, parameters.depth_format,
                                                          parameters.windowed, PCGraphicsMultisampleTypes[i],
                                                          &depth_quality) < 0)
-                supported = 0;
+                supported = false;
             u32 maximum = colour_quality > depth_quality ? colour_quality : depth_quality;
             quality[i] = maximum != 0 && supported != 0 ? maximum - 1 : -1;
         }
@@ -743,8 +748,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         SAGA_SKIN_CALL(skin_trace_invalidate, 0);
         PCDeviceLastResult = PCDeviceBackend.factory->methods->create_device(
             PCDeviceBackend.factory, adapter, device_type, parameters.window, creation_flags, &parameters, &device);
-        for (i32 retries = 15; PCDeviceLastResult < 0 && retries != 0; --retries) {
+        i32 retries = 15;
+        while (PCDeviceLastResult < 0 && retries != 0) {
             Sleep(500);
+            --retries;
             PCDeviceLastResult = PCDeviceBackend.factory->methods->create_device(
                 PCDeviceBackend.factory, adapter, device_type, parameters.window, creation_flags, &parameters, &device);
         }
@@ -783,10 +790,12 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         PS2_VCNTR_Y = PS2_REZ_H / 2;
     } else if (SoundVoiceEnabledGate != 0) {
         HRESULT cooperative = PCDeviceTestCooperativeLevel();
-        GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+        GRAPHICS_DEVICE_PC *view;
         if (cooperative < 0) {
             switch (cooperative) {
                 case static_cast<HRESULT>(0x88760827):
+                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+                    break;
                 default:
                     SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
                     break;
@@ -794,6 +803,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
                     PCDeviceEvictManagedResources();
                     PcRendererShutdown(0);
                     SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
+                    view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
                     if (view->methods->reset(view, &parameters) >= 0) {
                         SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
                         PCGraphicsRecreateResources(0);
@@ -811,6 +821,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
             PCDeviceEvictManagedResources();
             PcRendererShutdown(1);
             SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
+            view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
             view->methods->reset(view, &parameters);
             SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
             PS2_REZ_W = parameters.width;
@@ -862,7 +873,8 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         PcWindowOptions.SetRefresh(parameters.refresh_rate);
     PcWindowOptions.SetMultisample(multisample_index);
     PcWindowOptions.Save();
-    full_viewport.x = full_viewport.y = 0;
+    full_viewport.x = 0;
+    full_viewport.y = 0;
     full_viewport.width = PS2_REZ_W;
     full_viewport.height = PS2_REZ_H;
     full_viewport.min_z = 0.0f;
