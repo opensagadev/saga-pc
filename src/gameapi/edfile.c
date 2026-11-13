@@ -1415,12 +1415,11 @@ i32 __cdecl eduiMenuItemMoveDown(eduimenu_s *menu, eduiitem_s *item) {
 i32 __cdecl eduicbInteractSel(edui_interact_s *interact) {
     edui_sel_s *item = (edui_sel_s *)interact->item;
     eduimenu_s *menu = interact->menu;
-    i32(__cdecl * callback)(struct edui_interact_s *) = interact->callback;
-    if (callback && (edui_cursor_buttons_db & 0x40)) {
+    if (interact->callback && (edui_cursor_buttons_db & 0x40)) {
         item->selected(menu, &item->base, edui_cursor_buttons);
         return 0;
     }
-    if (callback && (edui_cursor_buttons & 0x40) && item->held)
+    if (interact->callback && (edui_cursor_buttons & 0x40) && item->held)
         item->held(menu, &item->base, edui_cursor_buttons);
     return 0;
 }
