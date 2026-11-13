@@ -323,6 +323,10 @@ class PropertyMenu : public CSListLink<PropertyMenu> {
     i32 order;
 
     ~PropertyMenu();
+    i32 ContainsObject(ClassObject &object);
+    i32 ContainsObject(void *object);
+    void AddObject(ClassObject &object);
+    void ClearObjecs();
     void SelectAttr(i32 selected);
 };
 
@@ -3305,6 +3309,31 @@ PropertyMenu::~PropertyMenu() {
     eduiMenuDestroy(menu);
 }
 
+i32 PropertyMenu::ContainsObject(ClassObject &object) {
+    for (i32 i = 0; i < object_count; i++) {
+        if (object.object == objects[i].object && object.reference == objects[i].reference)
+            return 1;
+    }
+    return 0;
+}
+
+i32 PropertyMenu::ContainsObject(void *object) {
+    for (i32 i = 0; i < object_count; i++) {
+        if (object == objects[i].object)
+            return 1;
+    }
+    return 0;
+}
+
+void PropertyMenu::AddObject(ClassObject &object) {
+    if (object_count < 8)
+        objects[object_count++] = object;
+}
+
+void PropertyMenu::ClearObjecs() {
+    object_count = 0;
+}
+
 void PropertyMenu::SelectAttr(i32 selected) {
     for (eduiitem_s *item = menu->first; item != NULL; item = item->next) {
         EdControl *control = static_cast<EdControl *>(item->data_ptr);
@@ -5640,10 +5669,8 @@ void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
 
 PropertyMenu *PropertyTool::FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry) {
     for (; menu != NULL; menu = menu->next) {
-        for (i32 i = 0; i < menu->object_count; i++) {
-            if (entry->object == menu->objects[i].object)
-                return menu;
-        }
+        if (menu->ContainsObject(entry->object))
+            return menu;
     }
     return NULL;
 }
@@ -9506,15 +9533,14 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         ClassObject &object = *reinterpret_cast<ClassObject *>(&entry->ed_class);
         menu = FindItemMenu(menus.first, entry);
         if (menu != NULL) {
-            menu->object_count = 0;
-            menu->objects[menu->object_count++] = object;
+            menu->ClearObjecs();
+            menu->AddObject(object);
             menus.Remove(menu);
             list.InsertSorted(menu);
         } else {
             menu = FindItemMenu(list.first, entry);
             if (menu != NULL) {
-                if (menu->object_count < 8)
-                    menu->objects[menu->object_count++] = object;
+                menu->AddObject(object);
             } else {
                 for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
                     eduimenu_s *other_menu = other->menu;
