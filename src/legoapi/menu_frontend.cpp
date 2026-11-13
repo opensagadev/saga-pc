@@ -494,17 +494,17 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
     if (GameTimer.time_elapsed < 4.0f)
         return;
 
-    GAMEPAD_RUNTIME_INPUT_PC *gamepads = (GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage;
     for (i32 player = 0; player < 2; ++player) {
-        GAMEPAD_RUNTIME_INPUT_PC *gamepad = &gamepads[player];
-        if ((gamepad->held & GAMEPAD_START) != 0)
-            NuPadSetStatus(gamepad->bound_pad->device, 1);
-        if (gamepad->input_ready == 0 || gamepad->bound_pad->is_valid == 0) {
+        if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held & GAMEPAD_START) != 0)
+            NuPadSetStatus(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->device, 1);
+        if (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->input_ready == 0 ||
+            ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->is_valid == 0) {
             PlayerProgress[player].active = 0;
-        } else if ((gamepad->held &
+        } else if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held &
                     (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_START | GAMEPAD_JUMP |
                      GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0 ||
-                   (gamepad->left_held & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
+                   (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held &
+                    (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
             if (g_nupadMapping[player].is_active != 0)
                 PlayerProgress[player].active = 1;
         }
