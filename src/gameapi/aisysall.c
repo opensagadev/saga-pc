@@ -17580,12 +17580,11 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_antinode != NULL)
             edcamSetPos(&aieditor->selected_antinode->position);
     } else if (pad->digital_buttons & 0x100) {
+        skip_platforms = 0;
         if (pad->digital_buttons_pressed & 8) {
             forward = 1;
-            skip_platforms = 0;
         } else if (pad->digital_buttons_pressed & 2) {
             forward = 0;
-            skip_platforms = 0;
         } else if (pad->digital_buttons_pressed & 4) {
             forward = 1;
             skip_platforms = 1;
