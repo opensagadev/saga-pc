@@ -2,11 +2,14 @@
 
 // The filter predicates below are small PC_SHADER_MATERIAL_FILTER_VIEW helpers that retail inlines here; each one
 // rereads filter->descriptor.
-#define KEY_LAYER_BIT(filter, bit) ((filter)->variant == 0 && (u8)(((filter)->descriptor->layer_flags >> (bit)) & 1))
+#define KEY_LAYER_BIT(filter, bit)                                                                                     \
+    ((filter)->variant == 0 ? (u8)(((filter)->descriptor->layer_flags >> (bit)) & 1) : (u8)0)
 #define KEY_TYPE_PLAIN(filter)                                                                                         \
-    ((filter)->variant == 0 && (i32)(filter)->descriptor->flags < 0 && ((filter)->descriptor->flags & 0x800000) == 0)
+    ((filter)->variant == 0 && ((filter)->descriptor->flags & 0x80000000) &&                                           \
+     ((filter)->descriptor->flags & 0x800000) == 0)
 #define KEY_TYPE_ALTERNATE(filter)                                                                                     \
-    ((filter)->variant == 0 && (i32)(filter)->descriptor->flags < 0 && ((filter)->descriptor->flags & 0x800000) != 0)
+    ((filter)->variant == 0 && ((filter)->descriptor->flags & 0x80000000) &&                                           \
+     ((filter)->descriptor->flags & 0x800000) != 0)
 
 union PC_SHADER_KEY_BLOCK_PC {
     u8 bytes[104];
@@ -54,10 +57,10 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
     block.bytes[0x23] = filter->second_path != 0;
     block.bytes[0x22] = filter->deferred_path != 0;
     block.bytes[0x15] = KEY_LAYER_BIT(filter, 0) || KEY_LAYER_BIT(filter, 1) ? desc->sampler_indices[0] : 0;
-    block.bytes[0x16] = filter->variant == 0 && (u8)(filter->descriptor->specular_threshold > filter->parameter)
+    block.bytes[0x16] = (u8)(filter->variant == 0 ? filter->descriptor->specular_threshold > filter->parameter : 0)
                             ? desc->sampler_indices[1]
                             : 0;
-    block.bytes[0x17] = filter->HasDiffuse(0);
+    block.bytes[0x17] = filter->HasDiffuse(0) != 0;
     block.bytes[0x18] = filter->HasDiffuse(1) ? desc->sampler_indices[2] : 0;
     block.bytes[0x19] = filter->HasDiffuse(2) ? desc->sampler_indices[3] : 0;
     block.bytes[0x1a] = filter->HasDiffuse(3) ? desc->sampler_indices[4] : 0;
@@ -67,12 +70,10 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
     block.bytes[0x1e] = filter->HasLayer(3) ? desc->blend_ops[2] : 0;
     block.bytes[0x20] = 1;
     block.bytes[0x1f] = 1;
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 1) &&
-        filter->descriptor->normal_threshold > filter->parameter)
+    if (KEY_LAYER_BIT(filter, 0) && filter->descriptor->normal_threshold > filter->parameter)
         block.bytes[0x24] = 2;
     else
-        block.bytes[0x24] = (filter->variant == 0 && (filter->descriptor->layer_flags & 2) &&
-                             filter->descriptor->normal_threshold > filter->parameter) != 0;
+        block.bytes[0x24] = (KEY_LAYER_BIT(filter, 1) && filter->descriptor->normal_threshold > filter->parameter) != 0;
     if (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold > filter->parameter)
         block.bytes[0x25] = 2;
     else
@@ -88,7 +89,7 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
     if (KEY_TYPE_PLAIN(filter))
         block.bytes[0x2b] = 1;
     else
-        block.bytes[0x2b] = KEY_TYPE_ALTERNATE(filter) ? 2 : 0;
+        block.bytes[0x2b] = KEY_TYPE_ALTERNATE(filter) != 0 ? 2 : 0;
     block.bytes[0x2c] = 1;
     if (filter->material != NULL && filter->material->texture_id != 0) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
