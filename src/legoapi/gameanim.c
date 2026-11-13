@@ -162,8 +162,8 @@ GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end
     if (capacity != 0) {
         pool = (GAMEANIMOBJPOOL *)GameBufferAlloc(buf, end, sizeof(GAMEANIMOBJPOOL));
         if (pool != NULL) {
-            pool->capacity = (u16)capacity;
             pool->object_data_size = (u16)object_data_size;
+            pool->capacity = (u16)capacity;
             pool->objects = (GAMEANIMOBJ *)GameBufferAlloc(buf, end, (u16)capacity * sizeof(GAMEANIMOBJ));
             if (object_data_size != 0) {
                 pool->object_data = GameBufferAlloc(buf, end, pool->object_data_size * pool->capacity);
