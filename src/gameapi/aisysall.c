@@ -5598,13 +5598,23 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
         delta.x = position->x - first->position.x;
         delta.z = position->z - first->position.z;
         distance_squared = delta.x * delta.x + delta.z * delta.z;
-        if (!(first_radius * first_radius >= distance_squared)) {
-            return 0;
+        if (first_radius * first_radius >= distance_squared) {
+            if (path_info != NULL) {
+                path_info->narrow_path = narrow;
+                path_info->on_path = 1;
+                path_info->direction = 0;
+                path_info->connection = connection;
+                path_info->distance = local.z / connection->horizontal_distance;
+                path_info->width = local.x;
+            }
+            return 1;
         }
+        return 0;
     } else {
         f32 abs_local_x = local.x < 0.0f ? -local.x : local.x;
         i32 intersection_angle;
         NUVEC wall;
+        NUVEC offset;
 
         if (abs_local_x > first_radius && abs_local_x > second_radius) {
             return 0;
@@ -5624,7 +5634,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
             if (position->y < first->min_height || position->y > first->max_height) {
                 return 0;
             }
-            if (NuVecXZDistSqr(position, &first->position, &delta) <= first_radius * first_radius) {
+            if (NuVecXZDistSqr(position, &first->position, &offset) <= first_radius * first_radius) {
                 if (path_info != NULL) {
                     path_info->narrow_path = narrow;
                     path_info->on_path = 1;
@@ -5644,7 +5654,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
                 if (position->y < second->min_height || position->y > second->max_height) {
                     return 0;
                 }
-                if (NuVecXZDistSqr(position, &second->position, &delta) <= second_radius * second_radius) {
+                if (NuVecXZDistSqr(position, &second->position, &offset) <= second_radius * second_radius) {
                     if (path_info != NULL) {
                         path_info->narrow_path = narrow;
                         path_info->on_path = 1;
@@ -5672,7 +5682,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
                     minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
                     maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
                 }
-                if (minimum > position->y || position->y > maximum)
+                if (position->y < minimum || position->y > maximum)
                     return 0;
                 if (!(first_radius > wall.x))
                     return 0;
