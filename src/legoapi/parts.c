@@ -3512,6 +3512,22 @@ void __cdecl KillPARTEffect(i32 index) {
     }
 }
 
+void __cdecl SetPARTEffectPos(i32 index, f32 x, f32 y, f32 z) {
+    if (index != -1 && part_emits[index].effect_id != -1) {
+        part_emits[index].position.x = x;
+        part_emits[index].position.y = y;
+        part_emits[index].position.z = z;
+    }
+}
+
+void __cdecl SetPARTEffectRot(i32 index, i16 x, i16 y, i16 z) {
+    if (index != -1 && part_emits[index].effect_id != -1) {
+        part_emits[index].rotation_30 = z;
+        part_emits[index].rotation_2e = y;
+        part_emits[index].rotation_2c = x;
+    }
+}
+
 void __cdecl UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
     i32 i, sound, axis, remaining, variant;
