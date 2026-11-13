@@ -7920,27 +7920,28 @@ void EdRefPlaceable::SetMemberData(void *object, i32 requested_type, void *data,
 
 PropertyMenu *PropertyTool::CreatePropertyMenu(ClassObject &object) {
     PropertyMenu *property_menu = new PropertyMenu;
-    if (property_menu == NULL)
-        return NULL;
-    PropertyMenuMetrics metrics = menu_startmetrics;
-    char name[64];
-    char title[128];
-    if (!object.GetAttributeData(2, EdType_String, name, sizeof(name)))
-        NuStrCpy(name, "no name");
-    NuSPrintf(title, "%s - %s", object.ed_class->name, name);
-    eduimenu_s *menu = eduiMenuCreate(metrics.x, metrics.y, metrics.width, metrics.height,
-                                      reinterpret_cast<void *>(EdLevelFnt), NULL, title);
-    if (menu != NULL) {
-        AddPropertyMenuItems(menu, object.ed_class, object.object, NULL);
-        menu->selected = menu->first;
-        eduiMenuFitWidth(menu, 5);
+    if (property_menu != NULL) {
+        PropertyMenuMetrics metrics = menu_startmetrics;
+        char name[64];
+        char title[128];
+        if (!object.GetAttributeData(2, EdType_String, name, sizeof(name)))
+            NuStrCpy(name, "no name");
+        NuSPrintf(title, "%s - %s", object.ed_class->name, name);
+        eduimenu_s *menu = eduiMenuCreate(metrics.x, metrics.y, metrics.width, metrics.height,
+                                          reinterpret_cast<void *>(EdLevelFnt), NULL, title);
+        if (menu != NULL) {
+            AddPropertyMenuItems(menu, object.ed_class, object.object, NULL);
+            menu->selected = menu->first;
+            eduiMenuFitWidth(menu, 5);
+        }
+        eduiMenuSetAttr(menu, &selected_attr.background);
+        property_menu->menu = menu;
+        property_menu->objects[0] = object;
+        property_menu->object_count = 1;
+        property_menu->control = NULL;
+        property_menu->SelectAttr(theClassEditor.manipulator != NULL ? theClassEditor.manipulator->selected_attribute
+                                                                     : 0);
     }
-    eduiMenuSetAttr(menu, &selected_attr.background);
-    property_menu->menu = menu;
-    property_menu->objects[0] = object;
-    property_menu->object_count = 1;
-    property_menu->control = NULL;
-    property_menu->SelectAttr(theClassEditor.manipulator != NULL ? theClassEditor.manipulator->selected_attribute : 0);
     return property_menu;
 }
 
