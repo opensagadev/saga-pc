@@ -217,6 +217,28 @@ def initializer_shape(flow, start, end):
     return obj, destructor
 
 
+def this_call(flow, start, end):
+    """(object, target) of the first `mov ecx, imm32` directly followed by a direct call or jmp."""
+    va, previous = start, None
+    x86 = flow.x86
+    while va < end:
+        offset = va - flow.ctx.text_start
+        ins = next(flow.md.disasm(flow.ctx.text[offset:offset + 16], va, 1), None)
+        if ins is None:
+            break
+        ops = ins.operands
+        if ins.mnemonic in ("call", "jmp") and previous is not None and ops and ops[0].type == x86.X86_OP_IMM:
+            return previous, ops[0].imm & 0xffffffff
+        previous = None
+        if ins.mnemonic == "mov" and len(ops) == 2 and ops[0].type == x86.X86_OP_REG \
+                and ins.reg_name(ops[0].reg) == "ecx" and ops[1].type == x86.X86_OP_IMM:
+            previous = ops[1].imm & 0xffffffff
+        va += ins.size
+        if ins.mnemonic in ("ret", "jmp"):
+            break
+    return None, None
+
+
 def named_at(records):
     """{address: name} of rows that start a sized data or code extent (first name wins)."""
     result = {}
@@ -426,6 +448,30 @@ def derive(ctx, reference=None, android=None, layout=None):
             add(dtor, f"??__F{source}@@YAXXZ" if source else None, "compiler",
                 signals=[f"atexit destructor registered by the initializer at {stub:#x}"]
                 + ([f"object {global_name}"] if global_name else []))
+    # compiler: the constructor or destructor an initializer or destructor stub calls with
+    # its object as `this` (`mov ecx, offset object; call/jmp target`): a special member of
+    # the object's class (its map type); without a vftable for the class the destructor is
+    # not virtual, and a constructor or destructor run from a global initializer is public.
+    ctypes = {r["address"]: r["ctype"] for r in ctx.records if r["address"] is not None and r["ctype"]}
+    vftables = {r["symbol"] for r in ctx.records if r["symbol"].startswith("??_7")}
+    stubs = [(r["address"], r["size"], r["symbol"]) for r in ctx.records if r["address"] and r["size"]]
+    stubs += [(int(r["address"], 16), int(r["size"]), r["symbol"]) for r in rows.values()]
+    for stub, size, symbol in sorted(stubs):
+        special = "??0" if symbol.startswith("??__E") else "??1" if symbol.startswith("??__F") else None
+        if special is None:
+            continue
+        obj, target = this_call(flow, stub, stub + size)
+        cls = ctypes.get(obj, "")
+        callee = by_start.get(target)
+        if callee is None or callee.start in rows or not re.fullmatch(r"[A-Za-z_]\w*", cls):
+            continue
+        what = "constructor" if special == "??0" else "destructor"
+        signals = [f"{what}: {symbol} calls it with {names.get(obj)} ({cls}) as this"]
+        if f"??_7{cls}@@6B@" in vftables:
+            add(callee, None, "compiler", proposed=f"{cls}::{'~' if special == '??1' else ''}{cls}()",
+                signals=signals + ["the class has a vftable: the destructor may be virtual"])
+        else:
+            add(callee, f"{special}{cls}@@QAE@XZ", "compiler", signals=signals)
     # copy: header-static helpers.
     for e in extents:
         if e.start in rows:
@@ -466,12 +512,33 @@ def derive(ctx, reference=None, android=None, layout=None):
             symbol = None if is_cxx(language) or "::" in name else "_" + name
             add(e, symbol, "sibling", proposed=demangled if symbol is None else "", signals=signals,
                 port=port_of(name, android))
-    # extent: the rest.
+    # extent: the rest, with what refers to it.
+    refs = ctx.references()
     for e in extents:
         if e.start not in rows:
-            add(e, None, "extent", signals=[f"{e.reached} of {e.end - e.start} bytes decoded"]
-                if e.reached != e.end - e.start else [])
+            signals = [f"{e.reached} of {e.end - e.start} bytes decoded"] if e.reached != e.end - e.start else []
+            signals.append(reference_note(ctx, refs.get(e.start, ())))
+            add(e, None, "extent", signals=signals)
     return [rows[k] for k in sorted(rows)]
+
+
+def reference_note(ctx, sources):
+    """What refers to a function start: calls and absolute operands in mapped code, dwords in data."""
+    if not sources:
+        return "unreferenced"
+    starts = ctx.mapped_starts
+    rows = sorted(((r["address"], r["size"], r["symbol"]) for r in ctx.records if r["address"] and r["size"]))
+    row_starts = [a for a, _, _ in rows]
+    parts = []
+    for source, kind in sorted(sources)[:4]:
+        i = bisect.bisect_right(row_starts, source) - 1
+        while i >= 0 and rows[i][0] + rows[i][1] <= source and source - rows[i][0] < 0x10000:
+            i -= 1
+        holder = rows[i][2] if i >= 0 and rows[i][0] <= source < rows[i][0] + rows[i][1] else "unmapped data"
+        what = {"call": "called from", "abs": "address operand in", "data": "pointer in"}.get(kind, kind)
+        parts.append(f"{what} {holder} at {source:#x}")
+    del starts
+    return "; ".join(parts) + (f" (+{len(sources) - 4})" if len(sources) > 4 else "")
 
 
 # ---------------------------------------------------------------- ledger
@@ -518,9 +585,9 @@ def check(ctx, ledger):
         if row["evidence"] == "copy" and masked(ctx.read(va, size)) not in helpers \
                 and not heads_helper_run(ctx, va, size, helpers):
             errors.append(f"{where}: bytes are no known helper's")
-        if row["evidence"] == "compiler" and not symbol.startswith(("??__E", "??__F")) \
+        if row["evidence"] == "compiler" and not symbol.startswith(("??__E", "??__F", "??0", "??1")) \
                 and not ADDRESS_NAME.fullmatch(symbol):
-            errors.append(f"{where}: compiler-generated row without an initializer name")
+            errors.append(f"{where}: compiler-generated row without an initializer or special-member name")
         seen_flow, tables = flow.descend([va], va, va + size)
         if unmapped._extent_end(seen_flow, tables, va) != va + size:
             errors.append(f"{where}: its control flow ends at "

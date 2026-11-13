@@ -10190,6 +10190,7 @@ address,symbol,size,ctype
 0x693b80,?Nusound3IncludeVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x00693bb0,?GetPlayer@NuMusic@@SAPAV1@XZ,6,NuMusic *__cdecl (void)
 0x00693bc0,??0NuMusic@@QAE@XZ,66,NuMusic *__thiscall (NuMusic *)
+0x693c10,??1NuMusic@@QAE@XZ,1,
 0x00693c20,?NoMusic@NuMusic@@QAEXH@Z,31,"void __thiscall (NuMusic *, i32)"
 0x693c40,?InitVoiceManager@NuMusic@@QAEXXZ,78,void  __thiscall NuMusic::InitVoiceManager(void)
 0x00693c90,?FindVoiceByTrack@NuMusic@@QAEPAVVoice@1@PAVTrack@1@@Z,72,"NuMusic::Voice *__thiscall (NuMusic *, NuMusic::Track *)"
@@ -10342,6 +10343,7 @@ address,symbol,size,ctype
 0x00698a00,_NuSound3SetLoopHoldTime,21,void __cdecl (f32)
 0x698a20,_NuSound3ClearLoopHold,1,"void __cdecl (NUVEC *, i32)"
 0x698a40,_NuSound3GetStreamInfo,1,"void __cdecl(i32, void *)"
+0x698b80,??1SoundVoiceManagerPC@@QAE@XZ,206,
 0x698c50,?StopAllVoices@SoundVoiceManagerPC@@QAEXXZ,101,void __thiscall (SoundVoiceManagerPC *)
 0x698cc0,?UpdateVoices@SoundVoiceManagerPC@@QAEXXZ,336,void __thiscall (SoundVoiceManagerPC *)
 0x00698e70,_NuSound3Update,86,void (void)
@@ -11827,6 +11829,8 @@ address,symbol,size,ctype
 0x6e0280,_PCNativeDebugFormatPc,28,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
 0x6e02a0,_PCNativeD3DWarningPrint,119,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, HRESULT, const char *, ...)"
 0x6e0320,?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,5091,void __thiscall(void)
+0x6e1710,??0PC_NATIVE_DEBUG_STATE_PC@@QAE@XZ,30,
+0x6e1730,??1PC_NATIVE_DEBUG_STATE_PC@@QAE@XZ,31,
 0x6e1750,?Initialize@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,172,void __thiscall(void)
 0x6e1820,_D3dCoreNuErrorPc,1,
 0x6e1830,?D3dCoreVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
@@ -13849,20 +13853,40 @@ address,symbol,size,ctype
 0x74fd19,libcpmt#00017:__ehhandler$?_Xinvarg@_String_base@std@@SAXXZ,27,
 0x74fd34,libcmt#00085:__ehhandler$?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z,27,
 0x74fd50,__ehhandler$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,27,
+0x74fd70,_fun_0074fd70,12,
 0x0074fd80,??__EStatusAltTextScalePc@@YAXXZ,13,
+0x74fd90,_fun_0074fd90,108,
 0x74fe00,??__EGame_LanguageList@@YAXXZ,69,
+0x74fe50,??__Emusic_man@@YAXXZ,22,
 0x74fe70,??__EText_LanguageList_Default@@YAXXZ,69,
+0x74fec0,_fun_0074fec0,12,
 0x74fed0,??__Efade@@YAXXZ,12,
 0x74fee0,??__EfadeWipe@@YAXXZ,12,
 0x74fef0,??__EfadeStillWipe@@YAXXZ,12,
 0x74ff00,??__EfadeStill@@YAXXZ,12,
+0x74ff10,_fun_0074ff10,12,
+0x74ff20,_fun_0074ff20,12,
+0x74ff30,_fun_0074ff30,12,
+0x74ff40,_fun_0074ff40,12,
 0x74ff50,??__ENuPostFilterAllocatorPc@@YAXXZ,32,native dynamic initializer
+0x74ff70,_fun_0074ff70,42,
+0x74ffa0,_fun_0074ffa0,12,
+0x74ffb0,_fun_0074ffb0,12,
+0x74ffc0,_fun_0074ffc0,12,
+0x74ffd0,_fun_0074ffd0,12,
+0x74ffe0,_fun_0074ffe0,12,
+0x74fff0,_fun_0074fff0,12,
+0x750000,_fun_00750000,12,
 0x750010,??__EPcFramebufferPool@@YAXXZ,58,
 0x750050,??__EPostVertexShaderCachePc@@YAXXZ,12,native atexit initializer
 0x750060,??__EPostPixelShaderCachePc@@YAXXZ,12,native atexit initializer
 0x750070,??__EtheTTNetwork@@YAXXZ,22,
+0x750090,_fun_00750090,44,
 0x7500c0,??__EtheNuNetEmu@@YAXXZ,171,
 0x750170,??__EFmvSurfacePc@@YAXXZ,22,
+0x750190,_fun_00750190,12,
+0x7501a0,_fun_007501a0,12,
+0x7501b0,??__ESoundVoiceManager@@YAXXZ,42,
 0x7501e0,??__EtheClassEditor@@YAXXZ,12,
 0x7501f0,??__EtheCursorTool@@YAXXZ,12,
 0x750200,??__EtheLevelEditor@@YAXXZ,22,
@@ -13871,14 +13895,32 @@ address,symbol,size,ctype
 0x750240,??__EtheSplineHelper@@YAXXZ,12,
 0x750250,??__EtheKnotHelper@@YAXXZ,12,
 0x750260,??__EtheSplineTool@@YAXXZ,12,
+0x750270,??__EPcWindowOptions@@YAXXZ,10,
 0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502a0,??__Enu_keyboard_owner@@YAXXZ,22,void __cdecl (void)
+0x7502c0,??__EPCNativeWarningDebugState@@YAXXZ,22,
+0x7502e0,??__EPCDeviceStateCachePc@@YAXXZ,10,
 0x7502f0,??__ECRC16InstancePC@@YAXXZ,10,void __cdecl(void)
+0x750300,_fun_00750300,1,
+0x750310,??__Fmusic_man@@YAXXZ,10,
+0x750320,_fun_00750320,1,
 0x750330,??__Ffade@@YAXXZ,11,
 0x750340,??__FfadeWipe@@YAXXZ,11,
 0x750350,??__FfadeStillWipe@@YAXXZ,11,
 0x750360,??__FfadeStill@@YAXXZ,11,
 0x750370,??__FNuPostFilterAllocatorPc@@YAXXZ,10,native atexit destructor thunk
+0x750380,_fun_00750380,27,
+0x7503a0,_fun_007503a0,27,
+0x7503c0,_fun_007503c0,27,
+0x7503e0,_fun_007503e0,27,
+0x750400,_fun_00750400,1,
+0x750410,_fun_00750410,27,
+0x750430,_fun_00750430,27,
+0x750450,_fun_00750450,27,
+0x750470,_fun_00750470,27,
+0x750490,_fun_00750490,27,
+0x7504b0,_fun_007504b0,27,
+0x7504d0,_fun_007504d0,1,
 0x7504e0,??__Fsurface@?1??copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z@YAXXZ,29,void __cdecl (void)
 0x750500,??__Fdestination_surface@?4??PostFilterCopyTexturePc@@9@YAXXZ,29,void __cdecl (void)
 0x750520,??__Fsource_surface@?4??PostFilterCopyTexturePc@@9@YAXXZ,29,void __cdecl (void)
@@ -13886,7 +13928,11 @@ address,symbol,size,ctype
 0x750570,??__FPostVertexShaderCachePc@@YAXXZ,49,native vector cleanup
 0x7505b0,??__FPostPixelShaderCachePc@@YAXXZ,49,native vector cleanup
 0x7505f0,??__FtheTTNetwork@@YAXXZ,71,
+0x750640,_fun_00750640,38,
 0x750670,??__FFmvSurfacePc@@YAXXZ,10,
+0x750680,_fun_00750680,11,
+0x750690,_fun_00750690,11,
+0x7506a0,??__FSoundVoiceManager@@YAXXZ,10,
 0x7506b0,??__FtheClassEditor@@YAXXZ,11,
 0x7506c0,??__FtheCursorTool@@YAXXZ,11,
 0x7506d0,??__FthePropertyTool@@YAXXZ,11,
@@ -13897,6 +13943,7 @@ address,symbol,size,ctype
 0x750730,??__FtheLevelEditor@@YAXXZ,20,
 0x750750,??__FPCDeviceBackend@@YAXXZ,10,void __cdecl(void)
 0x750760,??__Fnu_keyboard_owner@@YAXXZ,10,void __cdecl (void)
+0x750770,??__FPCNativeWarningDebugState@@YAXXZ,10,
 0x75077a,libcmt#00169:??__Fnomem@?5???2@YAPAXI@Z@YAXXZ,20,
 0x00751000,__imp__RegCloseKey@4,4,LONG (__stdcall *)(HKEY)
 0x00751004,__imp__RegOpenKeyExA@20,4,"LONG (__stdcall *)(HKEY, LPCSTR, DWORD, REGSAM, PHKEY)"
