@@ -232,59 +232,67 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         part->rotation_y = (u16)NuAtan2D(forward.x, forward.z);
         NuVecRotateY(&forward, &forward, -(i32)part->rotation_y);
         part->rotation_x = (u16)-NuAtan2D(forward.y, forward.z);
-    } else {
-        if (parameters->position == NULL) {
-            return NULL;
-        }
+    } else if (parameters->position != NULL) {
         NuMtxSetTranslation(&part->transform, parameters->position);
+    } else {
+        return NULL;
     }
     part->previous_position = part->position;
     part->owner = parameters->owner;
     part->recipient = parameters->recipient;
     part->velocity = *parameters->velocity;
+    part->time_remaining = part->initial_time = parameters->field_a4;
     part->field_206 = -1;
     part->field_20b = -1;
-    part->time_remaining = part->initial_time = parameters->field_a4;
-    part->active = (part->active & ~0x40u) | 0x20;
     part->scale_time = 0.0f;
     part->time_step = parameters->time_step;
+    part->active = (part->active & ~0x40u) | 0x20;
     part->radius = parameters->field_14;
     part->field_e0 = (part->time_step / PARTSCALEUPTIME) * part->radius;
     part->field_e4 = parameters->field_18;
     part->field_214 = parameters->field_c0;
     part->gravity = parameters->gravity;
     part->field_ec = parameters->field_20;
-    part->active = (part->active & ~2u) | 1;
-    part->part_id = (i16)parameters->part_id;
     part->field_f0 = parameters->field_88;
+    part->part_id = (i16)parameters->part_id;
+    part->active = (part->active & ~2u) | 1;
     part->flags = parameters->flags;
     part->flicker_flags = parameters->field_c4;
     part->active &= ~0x4000u;
     if (parameters->lighting_data != NULL) {
-        for (index = 0; index < 7; ++index) {
-            part->lighting[index] = parameters->lighting_data->values[index];
-        }
+        part->lighting[0] = parameters->lighting_data->values[0];
+        part->lighting[3] = parameters->lighting_data->values[3];
+        part->lighting[1] = parameters->lighting_data->values[1];
+        part->lighting[4] = parameters->lighting_data->values[4];
+        part->lighting[2] = parameters->lighting_data->values[2];
+        part->lighting[5] = parameters->lighting_data->values[5];
+        part->lighting[6] = parameters->lighting_data->values[6];
         part->active |= 8;
     } else {
         part->active &= ~8u;
         if (parameters->lighting_scale_x != 1.0f || parameters->lighting_scale_y != 1.0f ||
             parameters->lighting_scale_z != 1.0f) {
-            part->lighting[6].x = parameters->lighting_scale_x;
-            part->lighting[6].y = parameters->lighting_scale_y;
-            part->lighting[6].z = parameters->lighting_scale_z;
+            // lighting_scale_x/y/z are one NUVEC in the original (struct copy).
+            part->lighting[6] = *(NUVEC *)&parameters->lighting_scale_x;
             part->active |= 0x2000;
         } else {
             part->active &= ~0x2000u;
         }
     }
     part->source_special = parameters->special;
-    if (parameters->special != NULL) {
-        part->special = *parameters->special;
+    if (part->source_special != NULL) {
+        part->special = *part->source_special;
     } else {
         memset(&part->special, 0, sizeof(part->special));
     }
     part->active &= ~0x14u;
     part->field_f4 = 0.0f;
+    part->collision_min.x = part->position.x - part->radius;
+    part->collision_max.x = part->position.x + part->radius;
+    part->collision_min.y = part->position.y - part->radius;
+    part->collision_max.y = part->position.y + part->radius;
+    part->collision_min.z = part->position.z - part->radius;
+    part->collision_max.z = part->position.z + part->radius;
     part->callback_1ac = parameters->callback_30;
     part->move_fn = parameters->move_fn;
     part->deflect_fn = parameters->deflect_fn;
@@ -295,15 +303,7 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     part->stop_fn = parameters->stop_fn;
     part->destroy_fn = parameters->destroy_fn;
     part->draw_fn = parameters->draw_fn;
-    part->collision_min.x = part->position.x - part->radius;
-    part->collision_min.y = part->position.y - part->radius;
-    part->collision_min.z = part->position.z - part->radius;
-    part->collision_max.x = part->position.x + part->radius;
-    part->collision_max.y = part->position.y + part->radius;
-    part->collision_max.z = part->position.z + part->radius;
-    for (index = 0; index < 6; ++index) {
-        part->field_10c[index] = parameters->field_a8[index];
-    }
+    memcpy(part->field_10c, parameters->field_a8, sizeof(part->field_10c));
     for (index = 0; index < 5; ++index) {
         part->field_124[index] = 0;
     }
@@ -344,10 +344,8 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
     part->hostility_group = hostility_group;
     part->field_204 = 1;
     if ((part->flags & 0x2000) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
-        i32 light_id;
         part->lighting_handle = parameters->lighting_handle;
-        light_id = rtlDynamicAllocTemplate((RTL_SET_PC *)PartRTL, parameters->lighting_id);
-        *parameters->lighting_handle = light_id;
+        *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET_PC *)PartRTL, parameters->lighting_id);
     }
     if (++part_slot_cursor == MAXPARTS) {
         part_slot_cursor = 0;
