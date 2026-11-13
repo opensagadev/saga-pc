@@ -6607,24 +6607,22 @@ static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC 
 
 static i32 AIMoveApplyDivertNode(AIPACKET_PC *packet) {
     AIPATHNODE_PC *node;
-    f32 radius;
 
     node = &packet->path_info.path->nodes[packet->divert_node_index];
 
-    if (node->connection_count == 0) {
-        return 0;
+    if (node->connection_count != 0) {
+        packet->fallback_destination = node->position;
+        packet->fallback_stopping_distance = 0.0f;
+        packet->movement_parameter = node->radius - 1.0f > 1.0f ? node->radius - 1.0f : 1.0f;
+        memset(&packet->fallback_path_info, 0, sizeof(packet->fallback_path_info));
+        packet->fallback_path_info.path = packet->path_info.path;
+        packet->fallback_path_info.connection = node->connections[0];
+        packet->fallback_path_info.direction = node->connections[0]->node_indices[0] == packet->divert_node_index;
+        packet->fallback_path_info.distance =
+            node->connections[0]->node_indices[0] == packet->divert_node_index ? 0.0f : 1.0f;
+        return 1;
     }
-    packet->fallback_destination = node->position;
-    packet->fallback_stopping_distance = 0.0f;
-    radius = node->radius - 1.0f;
-    packet->movement_parameter = radius > 1.0f ? radius : 1.0f;
-    memset(&packet->fallback_path_info, 0, sizeof(packet->fallback_path_info));
-    packet->fallback_path_info.path = packet->path_info.path;
-    packet->fallback_path_info.connection = node->connections[0];
-    packet->fallback_path_info.direction = node->connections[0]->node_indices[0] == packet->divert_node_index;
-    packet->fallback_path_info.distance =
-        node->connections[0]->node_indices[0] == packet->divert_node_index ? 0.0f : 1.0f;
-    return 1;
+    return 0;
 }
 
 static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
