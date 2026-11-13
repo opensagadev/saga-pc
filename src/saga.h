@@ -30506,11 +30506,11 @@ struct FtpFile {
     }
     void Close() {
         if (InUse() && message.data != NULL) {
-            u32 references = message.data->references;
-            if (references > 1)
-                message.data->references = references - 1;
+            NETMESSAGE_PC::MessageData *data = message.data;
+            if (data->references > 1)
+                data->references--;
             else
-                message.data->references = 0;
+                data->references = 0;
         }
         transfer = 0;
     }
