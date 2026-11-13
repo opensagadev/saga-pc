@@ -1042,7 +1042,8 @@ void __cdecl PartCollide_3D(PART_PC *part) {
     PartCollidePC(part, 1);
 }
 
-void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
+// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+__declspec(noinline) void __cdecl DebrisEmitterPos(i32 handle, f32 x, f32 y, f32 z) {
     if (handle != -1) {
         debkeydata[handle].position.x = x;
         debkeydata[handle].position.y = y;
@@ -2333,7 +2334,8 @@ void __cdecl DebrisSetRoomID(i32 handle, NUGSCN *scene) {
     }
 }
 
-void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source) {
+// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+__declspec(noinline) void __cdecl DebrisOrientationMtx(i32 handle, NUMTX *source) {
     if (handle != -1) {
         debkeydata[handle].effect_orientation = *source;
         debkeydata[handle].effect_orientation.m30 = 0.0f;
@@ -4506,22 +4508,21 @@ i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
 }
 
 void UpdateParts(f32 time) {
-    i32 key, i, axis, angle;
-    PART_PC *parts, *part;
+    i32 i, axis, angle;
+    PART_PC *part;
     PART_TERRAIN_STATE_PC *state;
+    NUVEC velocity;
     NUVEC direction;
-    NUMTX impact_orientation;
-    NUMTX movement_orientation;
-    NUMTX emitter_orientation;
+    NUVEC offscreen;
+    NUMTX mtx;
     partglobaltime += time;
     if (partglobaltime > 900.0f)
         PartTimeSlip();
     PartCleanupTypes();
     part_platimpactcnt = 0;
     UpdatePartEmits(time);
-    parts = Part;
-    for (i = 0; i < MAXPARTS; ++i) {
-        part = &parts[i];
+    part = Part;
+    for (i = 0; i < MAXPARTS; ++i, ++part) {
         state = (PART_TERRAIN_STATE_PC *)part;
         if ((part->active & 1) == 0)
             continue;
@@ -4546,7 +4547,10 @@ void UpdateParts(f32 time) {
             f32 movement_time = time;
             if ((part->flags & 0x400) == 0) {
                 if (time >= part->field_f4) {
-                    part->active = (part->active & ~0x60) | (part->radius > part->field_e0 ? 0x20 : 0);
+                    if (part->field_e0 < part->radius)
+                        part->active = (part->active & ~0x40) | 0x20;
+                    else
+                        part->active &= ~0x60;
                     if ((part->active & 4) != 0) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
                             PartPlatformImpactListPc[part_platimpactcnt++] = state->platform_id;
@@ -4559,7 +4563,9 @@ void UpdateParts(f32 time) {
                                 KillPart(part, 0);
                         } else {
                             movement_time -= part->field_f4;
-                            part->position = part->impact_position;
+                            part->position.x = part->impact_position.x;
+                            part->position.y = part->impact_position.y;
+                            part->position.z = part->impact_position.z;
                             FullReflect(&part->impact_normal, &part->velocity, &part->velocity);
                             if ((part->flags & 0x80) != 0)
                                 NewPartRotation(part);
@@ -4568,7 +4574,7 @@ void UpdateParts(f32 time) {
                             part->velocity.x *= part->field_ec;
                             part->velocity.z *= part->field_ec;
                             if (part->impact_normal.y > 0.5f) {
-                                part->velocity.y *= part->field_ec;
+                                part->velocity.y = part->velocity.y * part->field_ec;
                                 if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
                                         part->velocity.z * part->velocity.z <
                                     PartStopSpeedSquaredPc) {
@@ -4584,12 +4590,12 @@ void UpdateParts(f32 time) {
                             }
                         }
                         if (part->effect_id_1f0 != -1) {
-                            key = -1;
-                            PartRuntimeMatrixCopyPrivate(&impact_orientation, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
-                            NuMtxAlignY(&impact_orientation, &part->impact_normal);
+                            i32 key = -1;
+                            PartRuntimeMatrixCopyPrivate(&mtx, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
+                            NuMtxAlignY(&mtx, &part->impact_normal);
                             AddScaledFiniteShotDebrisEffect(&key, part->effect_id_1f0, &part->impact_position, NULL,
                                                             NULL, 1, part->effect_scale);
-                            DebrisOrientationMtx(key, &impact_orientation);
+                            DebrisOrientationMtx(key, &mtx);
                         }
                         if (part->effect_id_1f8 != -1)
                             AddFiniteShotPART(part->effect_id_1f8, &part->impact_position, 1);
@@ -4608,9 +4614,9 @@ void UpdateParts(f32 time) {
                     part->move_fn(part, movement_time);
                 } else {
                     part->position.x += part->velocity.x * movement_time;
-                    part->position.y += part->velocity.y * movement_time;
-                    part->position.z += part->velocity.z * movement_time;
+                    part->position.y += movement_time * part->velocity.y;
                     part->velocity.y += part->gravity * movement_time;
+                    part->position.z += part->velocity.z * movement_time;
                 }
             }
             if ((part->active & 0x100) == 0 && part->field_f0 != 2000000.0f && part->position.y < part->field_f0)
@@ -4621,14 +4627,14 @@ void UpdateParts(f32 time) {
             part->collision_max.y = part->position.y + part->radius;
             part->collision_min.z = part->position.z - part->radius;
             part->collision_max.z = part->position.z + part->radius;
-            if ((part->active & 0x60) == 0x20) {
+            if (((part->active >> 5) & 3) == 1) {
                 part->time_step += time;
                 part->field_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
                 if (part->field_e0 > part->radius) {
                     part->field_e0 = part->radius;
                     part->active &= ~0x60;
                 }
-            } else if ((part->active & 0x60) == 0x40) {
+            } else if (((part->active >> 5) & 3) == 2) {
                 part->time_step -= time;
                 if (part->time_step <= 0.0f)
                     KillPart(part, 0);
@@ -4636,29 +4642,19 @@ void UpdateParts(f32 time) {
                     part->field_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
             }
             if ((part->flags & 0x80) != 0) {
-                angle = (i32)((f64)part->field_124[3] * time);
-                switch (part->rotation_axes[0]) {
-                    case 1:
-                        NuMtxPreRotateX(&part->transform, angle);
-                        break;
-                    case 2:
-                        NuMtxPreRotateY(&part->transform, angle);
-                        break;
-                    case 3:
-                        NuMtxPreRotateZ(&part->transform, angle);
-                        break;
-                }
-                angle = (i32)((f64)part->field_124[4] * time);
-                switch (part->rotation_axes[1]) {
-                    case 1:
-                        NuMtxPreRotateX(&part->transform, angle);
-                        break;
-                    case 2:
-                        NuMtxPreRotateY(&part->transform, angle);
-                        break;
-                    case 3:
-                        NuMtxPreRotateZ(&part->transform, angle);
-                        break;
+                for (axis = 0; axis < 2; ++axis) {
+                    angle = (i32)((f64)part->field_124[3 + axis] * time);
+                    switch (part->rotation_axes[axis]) {
+                        case 1:
+                            NuMtxPreRotateX(&part->transform, angle);
+                            break;
+                        case 2:
+                            NuMtxPreRotateY(&part->transform, angle);
+                            break;
+                        case 3:
+                            NuMtxPreRotateZ(&part->transform, angle);
+                            break;
+                    }
                 }
             }
             if ((part->flags & 0x100000) != 0) {
@@ -4673,9 +4669,24 @@ void UpdateParts(f32 time) {
                 direction.x = -part->velocity.x;
                 direction.y = -part->velocity.y;
                 direction.z = -part->velocity.z;
-                movement_orientation = ANI3_EVAL_IDENTITY_MATRIX;
-                NuMtxLookAtZ(&movement_orientation, &direction);
-                memmove(&part->transform, &movement_orientation, 0x30);
+                mtx.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
+                mtx.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
+                mtx.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
+                mtx.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
+                mtx.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+                mtx.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+                mtx.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+                mtx.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+                mtx.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+                mtx.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+                mtx.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+                mtx.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+                mtx.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+                mtx.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+                mtx.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+                mtx.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+                NuMtxLookAtZ(&mtx, &direction);
+                memmove(&part->transform, &mtx, 0x30);
             }
         }
         if ((part->active & 1) != 0) {
@@ -4692,13 +4703,28 @@ void UpdateParts(f32 time) {
             }
         }
         if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
-            emitter_orientation = ANI3_EVAL_IDENTITY_MATRIX;
-            direction = part->velocity;
-            direction.x = -direction.x;
-            direction.y = -direction.y;
-            direction.z = -direction.z;
-            NuMtxLookAtY(&emitter_orientation, &direction);
-            DebrisOrientationMtx(*part->debris_handle, &emitter_orientation);
+            velocity = part->velocity;
+            mtx.m00 = ANI3_EVAL_IDENTITY_MATRIX.m00;
+            mtx.m01 = ANI3_EVAL_IDENTITY_MATRIX.m01;
+            mtx.m02 = ANI3_EVAL_IDENTITY_MATRIX.m02;
+            mtx.m03 = ANI3_EVAL_IDENTITY_MATRIX.m03;
+            mtx.m10 = ANI3_EVAL_IDENTITY_MATRIX.m10;
+            mtx.m11 = ANI3_EVAL_IDENTITY_MATRIX.m11;
+            mtx.m12 = ANI3_EVAL_IDENTITY_MATRIX.m12;
+            mtx.m13 = ANI3_EVAL_IDENTITY_MATRIX.m13;
+            mtx.m20 = ANI3_EVAL_IDENTITY_MATRIX.m20;
+            mtx.m21 = ANI3_EVAL_IDENTITY_MATRIX.m21;
+            mtx.m22 = ANI3_EVAL_IDENTITY_MATRIX.m22;
+            mtx.m23 = ANI3_EVAL_IDENTITY_MATRIX.m23;
+            mtx.m30 = ANI3_EVAL_IDENTITY_MATRIX.m30;
+            mtx.m31 = ANI3_EVAL_IDENTITY_MATRIX.m31;
+            mtx.m32 = ANI3_EVAL_IDENTITY_MATRIX.m32;
+            mtx.m33 = ANI3_EVAL_IDENTITY_MATRIX.m33;
+            velocity.x = -velocity.x;
+            velocity.y = -velocity.y;
+            velocity.z = -velocity.z;
+            NuMtxLookAtY(&mtx, &velocity);
+            DebrisOrientationMtx(*part->debris_handle, &mtx);
             DebrisEmitterPos(*part->debris_handle, part->position.x, part->position.y, part->position.z);
             if (((part->flags & 0x200000) != 0 && (part->active & 2) != 0) || (part->flags & 0x1000) != 0)
                 DebrisStatusAlwaysOff(part->debris_handle);
@@ -4715,8 +4741,8 @@ void UpdateParts(f32 time) {
         }
         if (part->lighting_handle != NULL) {
             if ((part->flags & 0x1000) != 0) {
-                direction.x = direction.y = direction.z = 10000.0f;
-                rtlDynamicSetPos(*part->lighting_handle, &direction);
+                offscreen.x = offscreen.y = offscreen.z = 10000.0f;
+                rtlDynamicSetPos(*part->lighting_handle, &offscreen);
             } else {
                 rtlDynamicSetPos(*part->lighting_handle, &part->position);
             }
@@ -4731,8 +4757,10 @@ void UpdateParts(f32 time) {
     }
 }
 
-i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z_rotation,
-                                               i16 y_rotation, NUMTX *orientation, f32 scale) {
+// MATCH-EXCEPTION: noinline; retail calls this out of line from UpdateParts.
+__declspec(noinline) i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time,
+                                                                    i16 z_rotation, i16 y_rotation, NUMTX *orientation,
+                                                                    f32 scale) {
     i32 scaled = CreateScaledEffect(effect, scale);
     if (scaled != -1)
         AddVariableShotDebrisEffectTimed1(scaled, position, count, time, z_rotation, y_rotation, orientation);
