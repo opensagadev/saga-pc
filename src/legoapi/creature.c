@@ -2,7 +2,10 @@
 
 typedef struct level_ai_progress_pc_s {
     u8 unknown_0000[0x2808];
-    u32 disabled_ai_object_mask[2];
+    union {
+        u32 disabled_ai_object_mask[2];
+        u64 disabled_ai_objects;
+    };
 } LEVEL_AI_PROGRESS_PC;
 STATIC_ASSERT(offsetof(LEVEL_AI_PROGRESS_PC, disabled_ai_object_mask) == 0x2808);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
@@ -203,12 +206,7 @@ extern const char GameObjectState_InActive[9];
 void __cdecl ResetAICreatures(AISYS_PC *system) {
     GAMEOBJECT *object;
     AICREATURE_PC *creature;
-    AI_CREATURE_RESET_VIEW_PC *details;
-    AIPACKET_PC *packet;
-    AISCRIPTPROCESS_PC *processor;
     i32 index;
-    u64 bit;
-    LEVEL_AI_PROGRESS_PC *progress;
     if (system == NULL || (((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags & 1) != 0)
         return;
     ((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags |= 1;
@@ -217,34 +215,31 @@ void __cdecl ResetAICreatures(AISYS_PC *system) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1f8 & 0x400) == 0)
             continue;
         object->flags_1fc_word &= ~0x1000u;
-        progress = (LEVEL_AI_PROGRESS_PC *)WORLD->level_progress;
-        bit = (u8)index < 64 ? (u64)1 << (u8)index : 0;
-        if (progress != NULL && (((u32)bit & progress->disabled_ai_object_mask[0]) != 0 ||
-                                 ((u32)(bit >> 32) & progress->disabled_ai_object_mask[1]) != 0)) {
+        if (WORLD->level_progress != NULL &&
+            (((u64)1 << index) & ((LEVEL_AI_PROGRESS_PC *)WORLD->level_progress)->disabled_ai_objects) != 0) {
             object->dead = 1;
             object->ai_packet.reset_mode = 4;
             continue;
         }
-        packet = &object->ai_packet;
-        creature = &system->creatures[packet->creature_index];
-        details = (AI_CREATURE_RESET_VIEW_PC *)creature;
-        packet->respawn_count = 0;
-        packet->reset_mode = 0;
-        processor = &packet->script_processor;
-        AIScriptProcessorInit(WORLD->ai_sys, packet, processor, creature, details->script_name,
-                              (char *)GameObjectState_InActive, 1, NULL, NULL);
-        if (processor->state != NULL && processor->state->name != NULL &&
-            NuStrICmp(processor->state->name, GameObjectState_InActive) == 0)
+        creature = &system->creatures[object->ai_packet.creature_index];
+        object->ai_packet.respawn_count = 0;
+        object->ai_packet.reset_mode = 0;
+        AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
+                              ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, (char *)GameObjectState_InActive, 1,
+                              NULL, NULL);
+        if (object->ai_packet.script_processor.state != NULL &&
+            object->ai_packet.script_processor.state->name != NULL &&
+            NuStrICmp(object->ai_packet.script_processor.state->name, GameObjectState_InActive) == 0)
             creature->activation_type = 2;
         if (creature->activation_type != 0)
             continue;
         if (Game.difficulty < creature->activation_difficulty) {
-            packet->reset_mode = 4;
+            object->ai_packet.reset_mode = 4;
             continue;
         }
-        if (creature->count > 1 && creature->start_stagger > 0.0f && packet->group_member_index != 0) {
-            packet->reset_mode = 1;
-            packet->spawn_delay = (f32)packet->group_member_index * creature->start_stagger;
+        if (creature->count > 1 && creature->start_stagger > 0.0f && object->ai_packet.group_member_index != 0) {
+            object->ai_packet.spawn_delay = (f32)object->ai_packet.group_member_index * creature->start_stagger;
+            object->ai_packet.reset_mode = 1;
             continue;
         }
         ResetAICreature(object, system);
