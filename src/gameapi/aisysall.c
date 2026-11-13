@@ -15131,9 +15131,9 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                                     if (node->shared_node != NULL) {
                                         AIPATHSPECIALROUTE_PC *shared_route =
                                             &system->special_routes[node->shared_node->runtime_index];
-                                        AIPATHNODELINK_PC *link =
-                                            &path->special_routes[runtime->special_route_index =
-                                                                      path->special_route_count++];
+                                        AIPATHNODELINK_PC *link;
+                                        runtime->special_route_index = path->special_route_count++;
+                                        link = &path->special_routes[runtime->special_route_index];
                                         shared_route->paths[shared_route->path_count++] = path;
                                         link->node_index = node->index;
                                         link->special_route_index = node->shared_node->runtime_index;
@@ -15149,16 +15149,13 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                         if (path->node_count != 0) {
                             u8 **route_matrix;
                             f32 **distances;
+                            i32 source;
                             PATH_BUILD_ALLOCATE(u8 **, path->route_matrix, cursor, end,
                                                 path->node_count * sizeof(u8 *));
                             memset(path->route_matrix, 0, path->node_count * sizeof(u8 *));
-                            {
-                                u32 source;
-                                for (source = 0; source < path->node_count; ++source) {
-                                    PATH_BUILD_ALLOCATE(u8 *, path->route_matrix[source], cursor, end,
-                                                        path->node_count);
-                                    memset(path->route_matrix[source], 0, path->node_count);
-                                }
+                            for (source = 0; source < path->node_count; ++source) {
+                                PATH_BUILD_ALLOCATE(u8 *, path->route_matrix[source], cursor, end, path->node_count);
+                                memset(path->route_matrix[source], 0, path->node_count);
                             }
                             route_matrix = path->route_matrix;
                             distances = *distance_slot;
@@ -15170,7 +15167,7 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                 if (system->path_count > 1) {
                     AIPATHINFO_PC info;
                     AIPATH_PC *first_path = system->paths[0];
-                    u32 info_path_index;
+                    i32 info_path_index;
                     memset(&info, 0, sizeof(info));
                     for (info_path_index = 1; info_path_index < system->path_count; ++info_path_index) {
                         AIPATH_PC *path = system->paths[info_path_index];
