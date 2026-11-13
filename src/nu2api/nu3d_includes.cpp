@@ -8655,12 +8655,15 @@ extern "C" {
                 }
             }
         }
-        {
+        i = 0;
+        if ((i32)nudlist_field_9d8 > 0) {
             NUDISPLAY_LIST_PC **scenes = PCDisplayScenes;
-            for (i = 0; i < (i32)nudlist_field_9d8; ++i, ++scenes) {
+            do {
                 if ((*scenes)->local_state != NULL)
                     RndrStateResetGlobalState((*scenes)->local_state);
-            }
+                ++i;
+                ++scenes;
+            } while (i < (i32)nudlist_field_9d8);
         }
     }
 
