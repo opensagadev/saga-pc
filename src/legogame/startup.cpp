@@ -40,7 +40,6 @@ extern "C" {
     void __cdecl LoadPermLoadSaveIconScene(void);
     void __cdecl RegisterHelpers(void);
     void __cdecl LSW_registerStatusScreen(void);
-    void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
 
     extern LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                                       i32 *count_out, void *set_defaults_fn);

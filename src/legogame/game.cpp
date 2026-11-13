@@ -104,11 +104,6 @@ void __cdecl NewGame(void) {
  * Genuine subsystem suppliers are kept in their original owners.
  * All local callbacks are retained solely by the true publisher below. */
 extern "C" i32 __cdecl Hub_PanelBusy(void);
-extern "C" void __cdecl Hub_ResetPanel(void);
-
-extern "C" i32 __cdecl ObjZappedBlue(GAMEOBJECT *);
-extern "C" void __cdecl ResetShadowMapRenderingFn(void);
-extern "C" void __cdecl EnableShadowMapRenderingFn(void);
 
 #define GAME_PUBLISHER_ASSERT(expression)                                                                              \
     typedef char SAGA_JOIN(game_publisher_static_assert_, __LINE__)[(expression) ? 1 : -1]
@@ -545,7 +540,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
     void __cdecl SetTexAnimSignals(void);
     void __cdecl Bolts_Reset(void);
-    void __cdecl Batarangs_Reset(void);
     void __cdecl Detonators_Reset(void);
     void __cdecl ResetParts(void);
     void __cdecl Panel_Clear(void);
@@ -559,14 +553,11 @@ extern "C" {
     void __cdecl SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
     void __cdecl CutScene_StartAudio(void);
     void __cdecl Tag_SetMode(i32 mode);
-    void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
     extern const char ActionSnapPartyName[6];
     extern char AreaFixUpName_Jedi[8];
     extern i32 makebaddiesforgetinresetbits;
     extern i32 FalconDebKey[2];
-    extern i32 reset_reimport;
     extern i32 come_from_an_editor;
-    extern f32 VehicleAreaRememberSpeed;
 }
 
 extern "C" i32 __cdecl GetRandomCoinType(void);
@@ -936,7 +927,6 @@ static void __cdecl Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *p
 // Source lease: build/analysis/next-world-loading-wave/game-init-after-MM/player-movement-callbacks-v1/held2.cppfrag
 /* Genuine proposed supplier definitions remain in their original speederchase/suit owners. */
 extern "C" f32 __cdecl GetVehicleAreaRememberSpeed(void);
-extern "C" SUIT_LAYERS_PC *__cdecl Suit_GetLast(i32, i32);
 
 extern "C" {
     void __cdecl SetAnimBlendMode(i32 mode);
@@ -1118,8 +1108,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 // Declare only after sole-writer canonical audit. No backing supplied here.
 extern i32 selectmodemode;
-extern f32 selectmodetime;
-extern i32 CruiserD_LiftChase;
 // Original Android static game.cpp state; PC private visibility/TU unproved.
 extern i32 deathstar_hold_count;
 // External declarations only; final shared integration must use canonical C linkage.
@@ -1128,10 +1116,6 @@ extern i32(__cdecl *GameAudio_ActionMusicFn)(void);
 extern i32(__cdecl *PauseRenderOffFn)(void);
 // Genuine unresolved value suppliers: cannot activate music family with substitutes.
 i32 __cdecl Hub_Outside(void);
-i32 __cdecl KaminoInside(void);
-i32 __cdecl KaminoDiscoOn(void);
-i32 __cdecl DeathStarShieldDown(void);
-i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *world);
 
 // Source lease: build/analysis/publication-render-audio-next/source-contract-v2/render-bodies.cppfrag
 // Append inside the real publisher/private cohort only after owner review.
@@ -1395,8 +1379,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 
-extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit);
-
 static i32 __cdecl GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
     GAME_BUILDIT_READER_PC *buildit = (GAME_BUILDIT_READER_PC *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
@@ -1427,7 +1409,6 @@ static void __cdecl GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
 // build/analysis/next-world-loading-wave/game-init-after-MM/remaining22-contract-v4/collection-selecting.cppfrag Keep
 // in the coherent original private callback publication group; no wrappers.
 extern i32 freeplaymode;
-extern i32 freeplay_selected[2];
 GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 0xa);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
@@ -1615,8 +1596,6 @@ GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) ==
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
-
-extern f32 game_pulse;
 
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;

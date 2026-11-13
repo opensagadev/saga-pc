@@ -55,7 +55,6 @@ STATIC_ASSERT(offsetof(FADEINFO_s, field_28) == 0x28);
 
 STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 
-void ClearPause(void);
 void legoSetMusicVolume(f32 volume);
 
 extern "C" {
@@ -103,13 +102,11 @@ extern "C" {
     void __cdecl Faders_Draw(WORLDINFO *world);
     void __cdecl TrafficAnimSys_Draw(struct TRAFFICANIMSYS_s *system);
     void __cdecl GizmoSysDraw(void *system, void *world, f32 delta_time);
-    void __cdecl NuLgtLaserDraw(i32 paused);
     void __cdecl SpeedBlur_Apply(WORLDINFO *world);
 
     u8 NuAllocDumpOnLevelPc = 0;
     i32 NuMainSkipCutBordersPc = 0;
     i64 frameout_count = 0;
-    extern i16 TextIdPc8810c0;
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
 }
 
@@ -572,7 +569,6 @@ STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
 
 extern "C" {
     u8 StatusPlayerActivePc[8] = {0};
-    void __cdecl InitStatusScreen(WORLDINFO *);
     void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
     void __cdecl MusicClearAll(void);
     void __cdecl SoundKillAll(void);

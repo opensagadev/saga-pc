@@ -48,7 +48,6 @@ extern "C" {
     void __cdecl eduiSetCursorCoords(f32 x, f32 y);
     void __cdecl PcGetMousePositionPc(f32 *x, f32 *y);
     void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
-    eduimenu_s *__cdecl eduiGetActiveMenu(void);
     void __cdecl eduiSetCameraEnabled(i32 enabled);
     extern i32 NewPrim;
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
@@ -497,7 +496,6 @@ extern "C" {
     } while (0)
 
     extern NUMTL *EdDrawMtl[2];
-    extern i32 NewPrim;
     extern i32 NewMtl;
     extern NUMTX *NewMtx;
 
@@ -516,8 +514,6 @@ extern "C" {
         }
         ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
     }
-    void __cdecl EdDrawBegin(i32 index);
-    void __cdecl EdDrawEnd(void);
     void __cdecl EdDrawMtx(NUMTX *matrix);
     /* Appends a vertex position and moves the stream to the next vertex. */
     static inline void EdDrawAddXYZ(f32 x, f32 y, f32 z) {
@@ -527,8 +523,6 @@ extern "C" {
         NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX_PC);
         NuPrimVertexCount++;
     }
-    void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
-    void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
 #define EDDRAW_LINE_CIRCLE(rotate, base_y, base_z)                                                                     \
     do {                                                                                                               \
         VuVec &origin = *(VuVec *)centre;                                                                              \
@@ -547,9 +541,6 @@ extern "C" {
             EdDrawLineSegment(&previous.xyz, &point.xyz, colour);                                                      \
         }                                                                                                              \
     } while (0)
-    void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-    void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
 #define EDDRAW_SET_POINT(v, px, py, pz)                                                                                \
     do {                                                                                                               \
         (v).x = (px);                                                                                                  \
@@ -558,15 +549,7 @@ extern "C" {
         (v).w = 0.0f;                                                                                                  \
     } while (0)
     void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
-    void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
-    void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
     void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
-    void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
-                                    i32 colour, i32 cap_bottom, i32 cap_top);
-    void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
-                                 f32 radius_scale, f32 radius_bias);
-    void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
-                                  i32 segments);
     void __cdecl EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius,
                                       f32 limit, f32 offset);
 #define EDDRAW_AXIS_ARROW(row_x, row_y, row_z, colour)                                                                 \

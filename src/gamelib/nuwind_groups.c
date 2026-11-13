@@ -1,7 +1,5 @@
 #include "saga.h"
 
-extern i32 NuWindMaxMatsPC;
-
 void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
     NuWindMaxMatsPC = matrix_count;
     NuWindMaxGroupsPC = group_count;

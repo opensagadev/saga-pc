@@ -553,7 +553,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern char TextInputKeyNameTextPc7516c0[];
     char *AiLevelPathName = TextInputKeyNameTextPc7516c0;
     i32 ai_usepackfile = 1;
     i8 AiLoadMinimumRespawnCountPc = 0;
@@ -863,7 +862,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern char TextInputKeyNameTextPc7516c0[];
     extern const char InitOnceCompanyPc[10] = "LucasArts";
     extern const char InitOnceProductPc[35] = "LEGO Star Wars - The Complete Saga";
     extern const char InitOnceEmptyConfigPc[27] = "LUCASARTS\\LEGOSTARWARSSAGA";
@@ -8350,7 +8348,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIScriptKeywordLevel")
     extern const char AIScriptKeywordLevel[6] = "Level";
 #pragma const_seg()
-    extern const char NuBlankStringValue[2];
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
     extern const f64 GameObjectNearFloorRadiusDivisor = 0.22499999403953552;
@@ -11356,7 +11353,6 @@ extern "C" {
     };
 #pragma data_seg()
 #pragma data_seg(".data$ArcadeItem")
-    extern i16 TextIdPc8807cc, TextIdPc8808c0;
     ARCADE_ITEM_PC ArcadeItem = {{&PCArcadeLevelText,
                                   0,
                                   12,
@@ -16224,7 +16220,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern i16 id_CATAPULT, id_FIRETRUCK;
 #pragma data_seg(".data$AwkwardShapeSpherePc")
     AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {{&id_RANCOR, 4, 0, 0.30000001192092896f},
                                                         {&id_DEWBACK, 1, 1, 0.20000000298023224f},
@@ -28777,8 +28772,6 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma data_seg(".data$id_PENGUIN_GOON_GUN")
     i16 id_PENGUIN_GOON_GUN = -1;
@@ -29432,8 +29425,6 @@ extern "C" {
     struct eduimenu_s *edpart_instancescale_menu = 0;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edpart_copy_enclosed")
     i32 edpart_copy_enclosed = 0;
@@ -29467,8 +29458,6 @@ extern "C" {
 #pragma data_seg(".data$cable_speed")
     f32 cable_speed = 20.0f;
 }
-
-extern "C" {}
 
 extern "C" {
 #pragma data_seg(".data$melee_wavePhase")
@@ -29686,8 +29675,6 @@ extern "C" {
     struct eduimenu_s *edpart_grav_menu = 0;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$ptltypemenu")
     struct eduimenu_s *ptltypemenu = 0;
@@ -29789,8 +29776,6 @@ extern "C" {
     struct eduimenu_s *edbri_bridgeproperties_menu = 0;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edgra_instance_menu")
     struct eduimenu_s *edgra_instance_menu = 0;
@@ -29807,10 +29792,6 @@ extern "C" {
 #pragma bss_seg(".bss$edgra_dpadmode")
     i32 edgra_dpadmode = 0;
 }
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$PauseMenus_Align")
@@ -29928,10 +29909,6 @@ extern "C" {
     char *edpp_save_names[6] = {0};
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edui_cursor_buttons")
     u32 edui_cursor_buttons = 0;
@@ -29940,20 +29917,10 @@ extern "C" {
     struct edui_interact_s *eduiInteractLocked = 0;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edgra_nearest_instance")
     i32 edgra_nearest_instance = 0;
 }
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$edanim_bouncy_menu")
@@ -30036,8 +30003,6 @@ extern "C" {
     struct eduimenu_s *namemenu = 0;
 }
 
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edanim_localparticletype_menu")
     struct eduimenu_s *edanim_localparticletype_menu = 0;
@@ -30064,8 +30029,6 @@ extern "C" {
 #pragma bss_seg(".bss$lightning_type")
     i32 lightning_type = 0;
 }
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$force_array")
@@ -30117,25 +30080,15 @@ extern "C" {
     i32 do_mine = 0;
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma data_seg(".data$gizaimessage_gizmotype_id")
     i32 gizaimessage_gizmotype_id = -1;
 }
 
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma data_seg(".data$door_gizmotype_id")
     char door_gizmotype_id = -1;
 }
-
-extern "C" {}
 
 extern "C" {
 #pragma data_seg(".data$bombgen_gizmotype_id")
@@ -30247,24 +30200,10 @@ extern "C" {
     i32 edbri_cam_ay = 0;
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$edgra_size")
     f32 edgra_size = 0;
 }
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$FS_LastFileName")
@@ -30302,18 +30241,6 @@ extern "C" {
     nuhspecial_s thingsSceneBase = {0};
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
 #pragma bss_seg(".bss$factoryb_netpacket")
     void *factoryb_netpacket = 0;
@@ -30347,10 +30274,6 @@ extern "C" {
 #pragma bss_seg(".bss$edpp_showAllPlaced")
     i32 edpp_showAllPlaced = 0;
 }
-
-extern "C" {}
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$edpart_copy_source_vec")
@@ -32921,7 +32844,6 @@ extern "C" {
 extern "C" {
     /* Persistent native ControlSetup data proposals; include after types. */
     extern "C" {
-        extern i16 TextIdPc880890;
         extern i16 TextIdPc880f00;
         extern i16 TextIdPc880f04;
         extern i16 TextIdPc880f0c;
@@ -33897,10 +33819,6 @@ extern "C" {
 
 /* Append inside data.cpp; each original new owner gets its own section. */
 extern "C" {
-    extern i16 TextIdPc8807cc, TextIdPc8808c0;
-    extern AREA_DATA_PC *SENATE_ADATA, *UTAPAU_ADATA, *HOTH_ADATA, *BONUSDAGOBAH_ADATA, *BONUSKAMINO_ADATA,
-        *BONUSKASHYYYK_ADATA, *E1CHARACTER_ADATA, *E2CHARACTER_ADATA, *E3CHARACTER_ADATA, *E4CHARACTER_ADATA,
-        *E5CHARACTER_ADATA, *E6CHARACTER_ADATA;
 #pragma bss_seg(".bss$hub_bonusepisode")
     i32 hub_bonusepisode = 0;
 #pragma bss_seg()
@@ -34175,8 +34093,6 @@ extern "C" {
     f32 ShopTopBrickOffsetPc = -0.0325f;
 #pragma data_seg()
 }
-
-extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
@@ -35059,9 +34975,6 @@ extern "C" {
 }
 
 extern "C" {
-    void __cdecl xConditions(NUFPAR_PC *parser);
-    void __cdecl xActions(NUFPAR_PC *parser);
-    void __cdecl xRefScript(NUFPAR_PC *parser);
     void __cdecl xEndState(NUFPAR_PC *parser);
 #pragma data_seg(".data$AIScriptStateCommandsPc")
     NUFPCOMJMP AIScriptStateCommandsPc[5] = {{(char *)AIScriptKeywordConditions, xConditions},
