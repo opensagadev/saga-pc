@@ -62,7 +62,6 @@ extern "C" {
                                             {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
-
 /* Research-only declarations of genuine original Hub state; native initializer
  * and canonical/private ownership verification pending sole writer. */
 

@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 #include <float.h>
 STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
 STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);

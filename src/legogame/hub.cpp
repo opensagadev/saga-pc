@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 extern "C" {
     extern i32 HubDoorNewLevelPc;             /* 8795a8, data.obj, existing genuine owner. */
     extern void *Door_Last;                   /* 9513d0, data.obj, existing canonical void* type. */

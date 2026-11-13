@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 extern "C" {
     extern f32 HudBossIconYPc;
     extern f32 HudBossIconScalePc, MeleeRowsSpacingPc;

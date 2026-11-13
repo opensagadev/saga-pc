@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
 STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);

@@ -1,7 +1,6 @@
 #include "saga.h"
 static f32 PushBlockGapEpsilonPc = 0.00999999978f;
 
-
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, extra_terrain_info) == 0x14);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, supporting_block) == 0x1c);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, special) == 0x24);

@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-
 typedef struct PLAYER_PACKET_RESET_PC {
     u8 unknown_000[0x101];
     u8 context_state_flags;
@@ -3406,7 +3405,6 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->gizforce_target = NULL;
     ResetPlayerAI(object);
 }
-
 
 void SetPlayerGroupPosition(f32 x, f32 y, f32 z) {
     i32 i;

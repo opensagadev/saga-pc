@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-
 typedef struct customiser_anims_load_pc_s {
     u8 unknown_00[0x6c];
     i16 character_ids[2];
@@ -365,9 +364,8 @@ void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAM
         params.matrix = &object->locator_matrices[joint];
         params.velocity = &momentum;
         params.special = special;
-        params.lighting_data = Cheats_CheckFlags(1)
-                                   ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
-                                   : &((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting;
+        params.lighting_data = Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
+                                                    : &((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting;
         params.time_step = FRAMETIME;
         params.flags = mode == 0 ? 0x480 : 0x90;
         params.stop_fn = PartStop_Flickerer;

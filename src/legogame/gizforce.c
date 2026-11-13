@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 typedef struct GIZFORCE_ANIMATION_DATA_PC {
     u8 unknown_00[2];
     i16 platform_id;

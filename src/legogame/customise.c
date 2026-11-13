@@ -2,7 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-
 typedef struct customiser_names_pc_s {
     u8 unknown_00[0x6c];
     i16 character_ids[2];

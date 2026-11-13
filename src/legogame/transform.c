@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);

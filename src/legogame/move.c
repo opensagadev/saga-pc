@@ -11675,4 +11675,3 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
     GameObjectOrigin(object);
     AddSurfaceRipples(object);
 }
-

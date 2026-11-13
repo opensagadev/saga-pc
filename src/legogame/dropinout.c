@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 void __cdecl PcControlInitializePc(i32, i32, i32, u8);
 u8 __cdecl PcInputInstallDropInConfigurationPc(i32 port, i32 player_index);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, hitpoints) == 8);

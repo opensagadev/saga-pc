@@ -42,7 +42,6 @@ STATIC_ASSERT(offsetof(AITURRET_PARTIAL_PC, controller) == 0xe8);
 
 STATIC_ASSERT(offsetof(AIOBSTACLE_PARTIAL_PC, runtime_flags) == 0x9c);
 
-
 void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
@@ -283,7 +282,6 @@ f32 guided_life = 8.0f;
 f32 guided_start_time = 0.5f;
 
 i32 guided_rotate_speed = 240000;
-
 
 extern i32 __cdecl GizmoGetTypeIDByName(void *, char *);
 

@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 /* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {
     u8 unknown_0000[0x7bd4];

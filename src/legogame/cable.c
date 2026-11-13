@@ -2,7 +2,6 @@
 #include <math.h>
 #include <string.h>
 
-
 struct CABLE_RECORD_PC {
     GAMEOBJECT *source;
     GAMEOBJECT *target;

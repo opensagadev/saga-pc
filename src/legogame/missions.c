@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 typedef struct MISSION_END_DATA_VIEW_PC {
     i16 find_character;
 } MISSION_END_DATA_VIEW_PC;

@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-
 typedef struct shadow_world_view_pc_s {
     u8 reserved_0000[0x5110];
     EDGIZSHADOW_PC *shadow_editor;

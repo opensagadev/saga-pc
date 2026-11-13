@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 void __cdecl FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);

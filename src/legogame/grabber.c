@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 typedef struct grabber_progress_source_pc_s {
     u8 unknown_0000[0x484];
     f32 stored_tfactor;

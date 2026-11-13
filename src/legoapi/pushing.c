@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-
 typedef struct PUSH_CONTEXT_INFO_PC {
     const char *name;
     i32 action;

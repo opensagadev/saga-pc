@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *runtime;

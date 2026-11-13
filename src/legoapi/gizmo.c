@@ -1,6 +1,5 @@
 #include "saga.h"
 
-
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
 

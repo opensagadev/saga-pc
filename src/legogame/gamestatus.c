@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include "saga.h"
 
-
 void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
-
 
 static __forceinline f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
@@ -421,7 +419,7 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                                       0.0f, StatusCurrentMinikitPc, packet, 0.0f);
                 }
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                      : StatusCurrentMinikitPc;
+                                                  : StatusCurrentMinikitPc;
                 if (count < 0)
                     count = 0;
                 DrawMiniKitCount(blend, 1.0f, count, packet->minikit_max);
@@ -442,7 +440,7 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                 DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc, blend,
                                   StatusCurrentMinikitPc + 1, packet, 0.0f);
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                      : StatusCurrentMinikitPc;
+                                                  : StatusCurrentMinikitPc;
                 if (count < 0)
                     count = 0;
                 DrawMiniKitCount(1.0f, 1.0f, count, packet->minikit_max);
@@ -461,7 +459,7 @@ void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32
                 DrawStatusMiniKit(StatusMiniKitXPc, StatusMiniKitYPc, StatusAllMiniKitsZPc, StatusMiniKitScalePc,
                                   StatusMiniKitScalePc, StatusCurrentMinikitPc + 1, packet, blend);
                 count = packet->new_minikits <= 0 ? Game.area_save[packet->area->index].minikit_count
-                                                      : StatusCurrentMinikitPc;
+                                                  : StatusCurrentMinikitPc;
                 if (blend >= 0.5f)
                     count++;
                 if (count < 0)

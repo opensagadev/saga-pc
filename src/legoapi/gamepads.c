@@ -400,9 +400,9 @@ void __cdecl DoInput(WORLDINFO *world) {
                     continue;
             }
         }
-        if (player == NULL || NewMode != 0 || NewLData != NULL ||
-            ((FADEINFO_PC *)&FadeSys)->fade != 0.0f || editor_active != 0 ||
-            !(GameTimer.time_elapsed > 0.0f) || world == NULL || world->current_level == TITLES_LDATA)
+        if (player == NULL || NewMode != 0 || NewLData != NULL || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f ||
+            editor_active != 0 || !(GameTimer.time_elapsed > 0.0f) || world == NULL ||
+            world->current_level == TITLES_LDATA)
             continue;
         if (Paused == 0) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
