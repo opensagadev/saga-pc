@@ -3502,8 +3502,8 @@ extern "C" {
             return NULL;
         }
         if (((ANIMATION_PACK_HEADER_PC *)cursor->void_ptr)->format_tag >= (i32)0x414e4935) {
-            cursor->void_ptr = NuPtrBlockFix(cursor->void_ptr);
             pointer_block = 1;
+            cursor->void_ptr = NuPtrBlockFix(cursor->void_ptr);
         }
         *result = cursor->void_ptr;
         cursor->addr += file_size;
