@@ -289,6 +289,9 @@ def apply_fix(text, records):
         # ends in a blank line, an opening brace or nothing.
         if not line.strip() and index - 1 in drop and (not out or not out[-1].strip() or out[-1].rstrip().endswith("{")):
             continue
+        # Nor a blank line before a closing brace.
+        if line.lstrip().startswith("}") and index - 1 in drop and out and not out[-1].strip():
+            out.pop()
         out.append(line)
     return EMPTY_EXTERN_C.sub("", "\n".join(out))
 

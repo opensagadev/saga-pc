@@ -107,6 +107,11 @@ class TextTests(unittest.TestCase):
         fixed = declscan.apply_fix(text, [{"line": 4, "end": 4}, {"line": 7, "end": 7}])
         self.assertEqual(fixed, "int a;\n\nint b;\n")
 
+    def test_fix_leaves_no_blank_line_before_a_closing_brace(self):
+        text = 'extern "C" {\nvoid F(void) {\n}\n\nvoid G(void);\n}\n'
+        fixed = declscan.apply_fix(text, [{"line": 5, "end": 5}])
+        self.assertEqual(fixed, 'extern "C" {\nvoid F(void) {\n}\n}\n')
+
 
 if __name__ == "__main__":
     unittest.main()
