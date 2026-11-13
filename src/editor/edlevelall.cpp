@@ -1219,6 +1219,9 @@ struct SplineKnotList {
 /* A block of generated spline points. */
 class SplinePointBlock : public CSListLink<SplinePointBlock> {
   public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(SplinePointBlock));
     }
@@ -6244,7 +6247,7 @@ void SplinePointList::AddPoint(VuVec &point) {
             return;
         }
     }
-    block = new (theMemoryManager.AllocPool(sizeof(SplinePointBlock), 1)) SplinePointBlock;
+    block = new SplinePointBlock;
     if (block != NULL) {
         slot = &block->points[block->point_count++];
         slot->x = point.x;
