@@ -1,9 +1,10 @@
 #include "saga.h"
+
+/* Retail unit 0x54a550-0x54b50c: definitions in retail address order. */
 #include <string.h>
 
 /* Definitions in retail address order: five project-file functions (0x4017b0-0x401860), then the
-   retail unit 0x54a550-0x54b50c (legoapi/gamepads.c). Its PadOutPause (menu_pause.cpp) and DoInput
-   (input.cpp) are C++ and stay there. */
+   retail unit 0x54a550-0x54b50c (legoapi/gamepads.c). */
 
 /* Genuine native PC entry 0x004017b0 is RET-only; NuMainRenderWorld calls it after
  * SetDepthOfField. Its historical name is unknown. */
@@ -33,6 +34,16 @@ i32 __cdecl GameRestoreResourcesPc(void) {
 i32 __cdecl GameReleaseResourcesPc(void) {
     return 0;
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static __forceinline f32 HitsFabsPc(f32 f) {
@@ -229,15 +240,33 @@ void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
         NewRumbleAllPlayers(strength, 0.0f, 0, 0);
 }
 
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
+void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
+    i32 menu;
+    if (Paused)
+        return;
+    menu = GetMenuID();
+    if (!((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready ||
+        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4))
+        return;
+    if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS))
+        return;
+    if (NewMode || NewLData || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f)
+        return;
+    if (GamePads_IgnoreInputFn && GamePads_IgnoreInputFn())
+        return;
+    if (MiniCutCam)
+        return;
+    if (world->area && (world->area->flags & 2))
+        return;
+    if (world->current_level->flags & 0xe0)
+        return;
+    if (GetMenuID() != -1)
+        return;
+    if (CUTSTOPGAME && !CutScene_IsSkippable((CUTINFO *)CutStopInfo))
+        return;
+    if (!CutSceneWaiting)
+        PauseGame(index);
+}
 
 i32 __cdecl ReadPad(i32 port) {
     GAMEPAD_RUNTIME_INPUT_PC *gamepad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[port];
@@ -315,6 +344,88 @@ void __cdecl ReadPads(void) {
     for (port = 0; port < 2; ++port)
         ReadPad(port);
     readpads_always = 0;
+}
+
+void __cdecl DoInput(WORLDINFO *world) {
+    i32 input[2];
+    i32 keyboard_mask;
+    i32 changed;
+    i32 index;
+    FRAME_PAD_PC *pad;
+    GAMEOBJECT *player;
+    i32 escape;
+    if (world == NULL)
+        world = WorldInfo_CurrentlyActive();
+    for (index = 0; index < 2; ++index)
+        input[index] = ReadPad(index);
+    keyboard_mask = 0;
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(0)))
+        keyboard_mask = 1;
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(1)))
+        keyboard_mask |= 2;
+    changed = PlayersDropInOut();
+    for (index = 0; index < 2; ++index) {
+        pad = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[index])->bound_pad;
+        player = (GAMEOBJECT *)Player[index];
+        if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn())
+            continue;
+        if (input[index] == 0 || input[index] == 1) {
+            if (player != NULL && (player->flags_1fc_word & 0x80) && MiniCutCam == 0) {
+                PadOutPause(index, world);
+            }
+            continue;
+        }
+        if (changed)
+            continue;
+        if (player != NULL) {
+            if (!(player->flags_1fc_word & 0x80))
+                continue;
+            if (LEGOCONTEXT_DROPIN != -1 && (i8)player->character_context == LEGOCONTEXT_DROPIN)
+                continue;
+        }
+        if (!(pad->digital_buttons_pressed & GAMEPAD_START)) {
+            if (GetMenuID() != -1)
+                continue;
+            escape = NuKeyboard_db(1);
+            if (keyboard_mask != 0) {
+                if (!escape)
+                    continue;
+                if (keyboard_mask == 3)
+                    MenuKeyboardPendingPc = 1;
+                else if (!(keyboard_mask & (1 << index)))
+                    continue;
+            } else {
+                if (!escape && !NuKeyboard_db(14) && !NuKeyboard_db(197))
+                    continue;
+                if (Player[index] == NULL || !(((GAMEOBJECT *)Player[index])->flags_1fc_word & 0x80))
+                    continue;
+            }
+        }
+        if (player == NULL || NewMode != 0 || NewLData != NULL ||
+            ((FADEINFO_PC *)&FadeSys)->fade != 0.0f || editor_active != 0 ||
+            !(GameTimer.time_elapsed > 0.0f) || world == NULL || world->current_level == TITLES_LDATA)
+            continue;
+        if (Paused == 0) {
+            if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
+                if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo)) && MiniCutCam == 0 &&
+                    memcard_autosavestarted == 0 && !(memcard_autosavepostdelay > 0.0f) &&
+                    !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
+                    PauseGame((GAMEPAD_INIT_RECORD *)player->pad - GamePadStorage);
+                    changed = 1;
+                    continue;
+                }
+                if (Paused != 0)
+                    goto resume;
+            }
+            if (NetPaused == 0)
+                continue;
+        }
+    resume:
+        if (pause_i_pad == -1 || index == pause_i_pad) {
+            ResumeGame(1);
+            RestoreOptions();
+        }
+    }
 }
 
 u16 __cdecl GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {

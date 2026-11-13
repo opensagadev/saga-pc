@@ -53,33 +53,6 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
     }
 }
 
-extern "C" void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
-    if (Paused)
-        return;
-    i32 menu = GetMenuID();
-    if (!((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready ||
-        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4))
-        return;
-    if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS))
-        return;
-    if (NewMode || NewLData || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f)
-        return;
-    if (GamePads_IgnoreInputFn && GamePads_IgnoreInputFn())
-        return;
-    if (MiniCutCam)
-        return;
-    if (world->area && (world->area->flags & 2))
-        return;
-    if (world->current_level->flags & 0xe0)
-        return;
-    if (GetMenuID() != -1)
-        return;
-    if (CUTSTOPGAME && !CutScene_IsSkippable((CUTINFO *)CutStopInfo))
-        return;
-    if (!CutSceneWaiting)
-        PauseGame(index);
-}
-
 /* Replace/move the two unused static menu.c bodies with these PC-authoritative external bodies. */
 
 /* Native autosave-cancel child1011 reached by PauseGame; save1000 child already implemented. */

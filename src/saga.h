@@ -17780,11 +17780,11 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     i32 __cdecl AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
                                                    NUMTX *orientation, f32 scale);
     void __cdecl DebrisStatusAlwaysOff(i32 *handle);
+    extern i32 NetPaused;
 #ifdef __cplusplus
 }
 
 // These retain C++ linkage and are not exposed as C declarations.
-extern i32 NetPaused;
 void __cdecl ClearPause(void);
 extern i32 app_tbgameset;
 extern i32 app_tbplayerset;
