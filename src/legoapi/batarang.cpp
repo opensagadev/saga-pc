@@ -1012,7 +1012,6 @@ extern "C" {
             packet->flags |= 0x800000;
             packet->path_connection_state = 1;
         }
-        flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
         switch (packet->path_connection_state) {
             case 1:
                 if (ready != 0) {
@@ -1038,7 +1037,7 @@ extern "C" {
                 }
                 break;
             case 2:
-                if ((flags & 0x400) != 0) {
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
                     packet->path_connection_state = 4;
                 } else {
                     distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -1053,7 +1052,7 @@ extern "C" {
                 }
                 break;
             case 3:
-                if ((flags & 0x400) != 0) {
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
                     packet->path_connection_state = 4;
                 } else {
                     distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -1071,7 +1070,7 @@ extern "C" {
                 }
                 break;
             case 4:
-                if ((flags & 0x26) != 0) {
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x26) != 0) {
                     if (0.0f >= owner->jump_reentry_timer) {
                         packet->path_connection_state = 5;
                         owner->portal_flags |= 0x1000;
