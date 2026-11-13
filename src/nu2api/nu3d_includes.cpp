@@ -16233,15 +16233,21 @@ extern "C" void __cdecl PostGaussianKernelPc(i32 width, i32 height, NUVEC4 *taps
     for (i = -2; i <= 2; i++) {
         f32 x = (f32)i;
         for (j = -2; j <= 2; j++) {
-            f32 y = (f32)j;
-            if ((f32)fabs((f64)y) + (f32)fabs((f64)x) <= 2.0) {
-                taps[count].x = x * texel_width;
-                taps[count].y = y * texel_height;
-                taps[count].z = PostGaussianWeightPc(y, x, 1.0f);
-                taps[count].w = 0.0f;
-                total += taps[count].z;
-                count++;
-            }
+            f32 value, abs_x, abs_y, y;
+            /* NuFabs: clear the sign bit through memory. */
+            value = x;
+            *(i32 *)&abs_x = *(i32 *)&value & 0x7fffffff;
+            y = (f32)j;
+            value = y;
+            *(i32 *)&abs_y = *(i32 *)&value & 0x7fffffff;
+            if (abs_y + abs_x > 2.0)
+                continue;
+            taps[count].x = x * texel_width;
+            taps[count].y = y * texel_height;
+            taps[count].z = PostGaussianWeightPc(x, y, 1.0f);
+            taps[count].w = 0.0f;
+            total += taps[count].z;
+            count++;
         }
     }
     for (i = 0; i < count; i++) {
