@@ -16795,32 +16795,31 @@ i32 __cdecl Action_MoveAwayFromNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
         return 1;
     }
     if (first_time != 0) {
-        if (param_count == 0) {
-            return 0;
-        }
-        for (i = 1; i < param_count; i++) {
-            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) == 0) {
-                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+        if (param_count != 0) {
+            for (i = 1; i < param_count; i++) {
+                if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) == 0) {
+                    packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
+                }
             }
+            node = AIPathFindNode(sys, packet->path_info.path, params[0]);
+            processor->action_data_3 = node;
+            if (node == NULL || node->connection_count == 0) {
+                return 1;
+            }
+            index = node - packet->path_info.path->nodes;
+            AISysCharacterSetPath(packet, packet->path_info.path);
+            processor->path_info.connection = node->connections[0];
+            if (processor->path_info.connection->node_indices[0] == index) {
+                processor->path_info.distance = 0.0f;
+            } else {
+                processor->path_info.distance = 1.0f;
+            }
+            processor->path_info.direction = 0;
+            processor->path_info.flags_word |= 1;
+            processor->path_info.width = 0.0f;
+            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 2,
+                              packet->movement_instruction_parameter);
         }
-        node = AIPathFindNode(sys, packet->path_info.path, params[0]);
-        processor->action_data_3 = node;
-        if (node == NULL || node->connection_count == 0) {
-            return 1;
-        }
-        index = node - packet->path_info.path->nodes;
-        AISysCharacterSetPath(packet, packet->path_info.path);
-        processor->path_info.connection = node->connections[0];
-        if (processor->path_info.connection->node_indices[0] == index) {
-            processor->path_info.distance = 0.0f;
-        } else {
-            processor->path_info.distance = 1.0f;
-        }
-        processor->path_info.direction = 0;
-        processor->path_info.flags_word |= 1;
-        processor->path_info.width = 0.0f;
-        AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 2,
-                          packet->movement_instruction_parameter);
         return 0;
     }
     node_2 = (AIPATHNODE_PC *)(processor->action_data_3);
