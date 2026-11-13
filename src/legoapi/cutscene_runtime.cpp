@@ -1130,6 +1130,10 @@ extern "C" {
     static void __cdecl CutScene_DrawCharacter(INSTNUGCUTSCENE *cutscene_instance, CUT_DRAW_SCENE_PC *cutscene,
                                                CUT_DRAW_CHAR_INSTANCE_PC *instance, CUT_DRAW_CHARACTER_PC *character,
                                                f32 frame, i32 paused) {
+        f32 reflection_height = 2000000.0f;
+        i32 visible;
+        i32 layer_mask = -1;
+        GAMEOBJECT *scene_object = NULL;
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         CUTSYS_PC *cutscene_system = world->cutscene_sys;
         if (cutscene_system == NULL) {
@@ -1137,32 +1141,28 @@ extern "C" {
         }
 
         CUTINFO *cut = NULL;
-        for (i32 i = 0; i < cutscene_system->count; ++i) {
+        for (i32 i = 0; i < cutscene_system->count && cut == NULL; ++i) {
             CUTINFO *candidate = cutscene_system->records[i];
             if (candidate->instance == cutscene_instance) {
                 cut = candidate;
-                break;
             }
         }
 
-        GAMEOBJECT *scene_object = NULL;
-        CHARACTER_MODEL_LAYERS_PC *model = NULL;
-        if (cut != NULL && CutScene_ReplaceCharacterModelFn != NULL) {
-            i32 replacement_id =
-                CutScene_ReplaceCharacterModelFn(cut, reinterpret_cast<CUTSCENECHARACTER *>(character));
-            if (replacement_id != -1 && apicharsys->playermodelids[replacement_id] != -1) {
-                model = &apicharsys->models[apicharsys->playermodelids[replacement_id]];
-            }
+        CHARACTER_MODEL_LAYERS_PC *model;
+        i32 replacement_id;
+        if (cut != NULL && CutScene_ReplaceCharacterModelFn != NULL &&
+            (replacement_id =
+                 CutScene_ReplaceCharacterModelFn(cut, reinterpret_cast<CUTSCENECHARACTER *>(character))) != -1 &&
+            apicharsys->playermodelids[replacement_id] != -1) {
+            model = &apicharsys->models[apicharsys->playermodelids[replacement_id]];
+        } else if ((character->flags & 2) != 0) {
+            model = static_cast<CHARACTER_MODEL_LAYERS_PC *>(instance->character_model);
+        } else {
+            scene_object = static_cast<GAMEOBJECT *>(instance->character_model);
+            model = scene_object->character_model;
         }
-        if (NULL == model) {
-            if ((character->flags & 2) == 0) {
-                scene_object = static_cast<GAMEOBJECT *>(instance->character_model);
-                model = scene_object->character_model;
-            } else {
-                model = static_cast<CHARACTER_MODEL_LAYERS_PC *>(instance->character_model);
-            }
-        }
-        if (model->hierarchy == NULL) {
+        NUHGOBJ_EVAL_PC *hierarchy = model->hierarchy;
+        if (hierarchy == NULL) {
             return;
         }
 
@@ -1170,12 +1170,10 @@ extern "C" {
         CHARACTERDATA_PC *character_data = reinterpret_cast<CHARACTERDATA_PC *>(&apicharsys->char_data[character_id]);
         PLAYERCHARACTERCONFIG_PC *game_data = static_cast<PLAYERCHARACTERCONFIG_PC *>(character_data->game_character);
         NUMTX world_matrix;
-        i32 visible;
         u32 animation_index;
         f32 animation_rate;
         f32 blend_time;
         f32 animation_start_frame;
-        i32 layer_mask = -1;
         NuGCutCharAnimProcess(reinterpret_cast<CUT_CHARACTER_GENERIC_PC *>(character), frame, &world_matrix, &visible,
                               &animation_index, &animation_rate, &blend_time, &animation_start_frame, &layer_mask);
         if (paused != 0) {
@@ -1188,7 +1186,7 @@ extern "C" {
                 layer_mask = static_cast<i32>(game_data->layer_mask_special);
             }
         }
-        if (static_cast<i8>(reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)->flags) < 0) {
+        if ((reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)->flags & 0x80) != 0) {
             NuMtxMul(&world_matrix, &world_matrix,
                      &reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)->matrix);
         }
@@ -1196,7 +1194,7 @@ extern "C" {
             reinterpret_cast<CUT_DRAW_OBJECT_PC *>(scene_object)->matrix = world_matrix;
             scene_object->position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
         }
-        if (0 == visible) {
+        if (visible == 0) {
             return;
         }
 
@@ -1206,75 +1204,67 @@ extern "C" {
             return;
         }
 
-        if (instance->current_animation != animation_index) {
+        if (animation_index != instance->current_animation) {
             const u8 requested_animation = static_cast<u8>(animation_index);
             if (!(blend_time > 0.0f) || instance->current_animation == 0xff) {
                 instance->animation_a = requested_animation;
-                instance->animation_frame_a = !(animation_start_frame > 1.0f) ? 1.0f : animation_start_frame;
+                if (animation_start_frame > 1.0f) {
+                    instance->animation_frame_a = animation_start_frame;
+                } else {
+                    instance->animation_frame_a = 1.0f;
+                }
             } else {
                 if ((instance->flags & 1) != 0) {
                     instance->animation_a = instance->animation_b;
                     instance->animation_frame_a = instance->animation_frame_b;
-                    animation_index = instance->animation_b;
+                } else if (instance->current_animation > 0) {
+                    instance->animation_a = instance->current_animation;
                 } else {
-                    if (instance->current_animation != 0) {
-                        instance->animation_a = instance->current_animation;
-                        animation_index = instance->current_animation;
-                    } else {
-                        instance->animation_frame_a = frame;
-                        instance->animation_a = requested_animation;
-                    }
-                }
-                if (!(1.0f < animation_start_frame)) {
-                    animation_start_frame = 1.0f;
+                    instance->animation_a = requested_animation;
+                    instance->animation_frame_a = frame;
                 }
                 instance->animation_b = requested_animation;
-                instance->animation_frame_b = animation_start_frame;
-                if (requested_animation != static_cast<u8>(animation_index)) {
-                    instance->blend_progress = 0;
+                if (animation_start_frame > 1.0f) {
+                    instance->animation_frame_b = animation_start_frame;
+                } else {
+                    instance->animation_frame_b = 1.0f;
+                }
+                if (requested_animation != instance->animation_a) {
+                    instance->blend_progress = 0.0f;
                     instance->flags |= 1;
                 }
             }
             instance->current_animation = requested_animation;
         }
 
-        bool blending = (instance->flags & 1) != 0;
-        u32 animation_a_index = instance->animation_a;
-        if (blending) {
-            if (!(blend_time <= 0.0f)) {
-                instance->blend_progress += (1.0f / blend_time) * (FRAMETIME * 60.0f);
-                if (instance->blend_progress >= 1.0f) {
-                    instance->blend_progress = 0;
-                    animation_a_index = instance->animation_b;
-                    instance->flags ^= 1;
-                    instance->animation_a = instance->animation_b;
-                    instance->animation_frame_a = instance->animation_frame_b;
-                    blending = false;
-                }
+        if ((instance->flags & 1) != 0) {
+            if (blend_time <= 0.0f) {
+                instance->blend_progress = 1.0f;
             } else {
-                instance->blend_progress = 0;
-                animation_a_index = instance->animation_b;
-                instance->flags ^= 1;
-                instance->animation_a = instance->animation_b;
+                instance->blend_progress += (1.0f / blend_time) * (FRAMETIME * 60.0f);
+            }
+            if (instance->blend_progress >= 1.0f) {
+                instance->blend_progress = 0.0f;
                 instance->animation_frame_a = instance->animation_frame_b;
-                blending = false;
+                instance->animation_a = instance->animation_b;
+                instance->flags ^= 1;
             }
         }
 
         ANI3_HEADER_PC *animation_a;
         NUANIMDATA2_PC *dwa_animation_a;
-        if (animation_a_index == 0) {
+        if (instance->animation_a == 0) {
             instance->animation_frame_a = frame;
             animation_a = reinterpret_cast<ANI3_HEADER_PC *>(character->face_animation);
             dwa_animation_a = character->extra_animation;
         } else {
-            animation_a = static_cast<ANI3_HEADER_PC *>(model->model_data_b[animation_a_index - 1]);
-            dwa_animation_a = static_cast<NUANIMDATA2_PC *>(model->model_data_c[animation_a_index - 1]);
+            animation_a = static_cast<ANI3_HEADER_PC *>(model->model_data_b[instance->animation_a - 1]);
+            dwa_animation_a = static_cast<NUANIMDATA2_PC *>(model->model_data_c[instance->animation_a - 1]);
         }
 
         NUMTX joint_matrices[256];
-        DWA_WEIGHT_BLOCK_PC **dwa = NULL;
-        if (blending) {
+        DWA_WEIGHT_BLOCK_PC **dwa;
+        if ((instance->flags & 1) != 0) {
             ANI3_HEADER_PC *animation_b;
             NUANIMDATA2_PC *dwa_animation_b;
             if (instance->animation_b == 0) {
@@ -1285,62 +1275,72 @@ extern "C" {
                 animation_b = static_cast<ANI3_HEADER_PC *>(model->model_data_b[instance->animation_b - 1]);
                 dwa_animation_b = static_cast<NUANIMDATA2_PC *>(model->model_data_c[instance->animation_b - 1]);
             }
-            if (animation_a != NULL && animation_b != NULL) {
-                NuHGobjEvalAnimBlend2(model->hierarchy, animation_a, instance->animation_frame_a, animation_b,
-                                      instance->animation_frame_b, instance->blend_progress, 0, NULL, joint_matrices);
+            if (animation_a != NULL) {
+                if (animation_b != NULL) {
+                    NuHGobjEvalAnimBlend2(hierarchy, animation_a, instance->animation_frame_a, animation_b,
+                                          instance->animation_frame_b, instance->blend_progress, 0, NULL,
+                                          joint_matrices);
+                } else {
+                    NuHGobjEvalAnim2(hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
+                }
             } else if (animation_b != NULL) {
-                NuHGobjEvalAnim2(model->hierarchy, animation_b, instance->animation_frame_b, 0, NULL, joint_matrices);
-            } else if (animation_a != NULL) {
-                NuHGobjEvalAnim2(model->hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
+                NuHGobjEvalAnim2(hierarchy, animation_b, instance->animation_frame_b, 0, NULL, joint_matrices);
             } else {
-                NuHGobjEval(model->hierarchy, 0, NULL, joint_matrices);
+                NuHGobjEval(hierarchy, 0, NULL, joint_matrices);
             }
 
             if (dwa_animation_a != NULL && dwa_animation_b != NULL) {
                 dwa = NuHGobjEvalDwaBlend2(render_count, render_indices, dwa_animation_a, instance->animation_frame_a,
                                            dwa_animation_b, instance->animation_frame_b, instance->blend_progress);
+            } else {
+                dwa = NULL;
             }
 
-            if (animation_b != NULL && instance->animation_b != 0xff && instance->animation_b != 0 &&
+            if (animation_b != NULL && instance->animation_b != 0xff && instance->animation_b > 0 &&
                 (cut == NULL || cut != CutStopInfo || CutSceneWaiting == 0)) {
-                const f32 end_frame = AnimEndFrame(model, static_cast<u8>(instance->animation_b) - 1);
+                const i32 current_animation = instance->animation_b - 1;
+                const f32 end_frame = AnimEndFrame(model, current_animation);
                 instance->animation_frame_b += FRAMETIME * 60.0f * animation_rate;
                 if (instance->animation_frame_b > end_frame) {
-                    CHARACTERANIM_CONFIG_PC *animation_info = static_cast<CHARACTERANIM_CONFIG_PC *>(
-                        model->animation_configs[static_cast<u8>(instance->animation_b) - 1]);
-                    if ((animation_info->flags & 2) == 0) {
-                        instance->animation_frame_b = end_frame;
-                    } else {
+                    CHARACTERANIM_CONFIG_PC *animation_info =
+                        static_cast<CHARACTERANIM_CONFIG_PC *>(model->animation_configs[current_animation]);
+                    if ((animation_info->flags & 2) != 0) {
                         instance->animation_frame_b = instance->animation_frame_b - end_frame + 1.0f;
+                    } else {
+                        instance->animation_frame_b = end_frame;
                     }
                 }
             }
         } else {
             if (animation_a != NULL) {
-                NuHGobjEvalAnim2(model->hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
+                NuHGobjEvalAnim2(hierarchy, animation_a, instance->animation_frame_a, 0, NULL, joint_matrices);
             } else {
-                NuHGobjEval(model->hierarchy, 0, NULL, joint_matrices);
+                NuHGobjEval(hierarchy, 0, NULL, joint_matrices);
             }
             if (dwa_animation_a != NULL) {
                 dwa = NuHGobjEvalDwa2(render_count, render_indices, dwa_animation_a, instance->animation_frame_a);
+            } else {
+                dwa = NULL;
             }
         }
 
         NUVEC locator_positions[16];
         NUMTX locator_matrices[16];
+        NUMTX locator_parent;
         PCStoreModelLocatorCoordinates(model, &world_matrix, joint_matrices, locator_positions, locator_matrices);
 
-        if (animation_a != NULL && animation_a_index != 0 && animation_a_index != 0xff &&
+        if (animation_a != NULL && instance->animation_a != 0xff && instance->animation_a > 0 &&
             (cut == NULL || cut != CutStopInfo || CutSceneWaiting == 0)) {
-            const f32 end_frame = AnimEndFrame(model, animation_a_index - 1);
+            const i32 current_animation = instance->animation_a - 1;
+            const f32 end_frame = AnimEndFrame(model, current_animation);
             instance->animation_frame_a += FRAMETIME * 60.0f * animation_rate;
             if (instance->animation_frame_a > end_frame) {
                 CHARACTERANIM_CONFIG_PC *animation_info =
-                    static_cast<CHARACTERANIM_CONFIG_PC *>(model->animation_configs[animation_a_index - 1]);
-                if ((animation_info->flags & 2) == 0) {
-                    instance->animation_frame_a = end_frame;
-                } else {
+                    static_cast<CHARACTERANIM_CONFIG_PC *>(model->animation_configs[current_animation]);
+                if ((animation_info->flags & 2) != 0) {
                     instance->animation_frame_a = instance->animation_frame_a - end_frame + 1.0f;
+                } else {
+                    instance->animation_frame_a = end_frame;
                 }
             }
         }
@@ -1352,51 +1352,50 @@ extern "C" {
             FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
         }
 
-        u8 render_character = 1;
-        if ((character->flags & 0x20) == 0 && (character_data->model_flags & 0x10000) != 0) {
-            render_character = static_cast<u8>(((character->flags >> 4) ^ 1) & 1);
+        if ((character->flags & 0x20) == 0 && (character_data->model_flags & 0x10000) != 0 &&
+            (character->flags & 0x10) != 0) {
+            reinterpret_cast<CUT_DRAW_HIERARCHY_PC *>(hierarchy)->suppress_shadow_surface_points = 0;
+        } else {
+            reinterpret_cast<CUT_DRAW_HIERARCHY_PC *>(hierarchy)->suppress_shadow_surface_points = 1;
         }
-        reinterpret_cast<CUT_DRAW_HIERARCHY_PC *>(model->hierarchy)->suppress_shadow_surface_points = render_character;
 
         if ((game_data->flags_090 & 0x8000) != 0) {
-            APITransparentCharDraw(model->hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa,
+            APITransparentCharDraw(hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa,
                                    character->flags & 8);
         }
-        NuHGobjRndrMtxDwa(model->hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa,
+        NuHGobjRndrMtxDwa(hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa,
                           character->flags & 8);
 
         NUMTX *attachment_matrix = NULL;
         if ((character_data->flags & 1) != 0) {
-            attachment_matrix = &world_matrix;
             i32 locator = game_data->thingy_locator;
             if (locator != -1 && model->points_of_interest[locator] != NULL) {
                 attachment_matrix = &locator_matrices[locator];
+            } else {
+                attachment_matrix = &world_matrix;
             }
             CharScene_Draw(world, character_id, attachment_matrix, NULL);
         }
         ResetShadowMapRendering();
 
         f32 ground_height = 2000000.0f;
-        i32 platform = -1;
         i32 surface = -1;
-        bool shadow_sampled = false;
+        i32 platform = -1;
+        i32 shadow_sampled = 0;
         if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 && (character_data->model_flags & 0x10000) == 0 &&
             PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
-            i32 shadow_alpha = CutBlobShadowAlpha;
-            if (game_data->blob_shadow_alpha != 0xff) {
-                shadow_alpha = game_data->blob_shadow_alpha;
-            }
-            if (shadow_alpha != 0) {
-                f32 shadow_radius = game_data->field_08c;
+            i32 shadow_alpha = game_data->blob_shadow_alpha != 0xff ? game_data->blob_shadow_alpha : CutBlobShadowAlpha;
+            if (shadow_alpha > 0) {
+                f32 shadow_radius;
                 if (game_data->shadow_locators != 0) {
-                    if (!(shadow_radius < 99.0f)) {
-                        shadow_radius = character_data->collision_radius * character_data->model_scale;
-                    }
+                    shadow_radius = game_data->field_08c < 99.0f
+                                        ? game_data->field_08c
+                                        : character_data->model_scale * character_data->collision_radius;
                     if (shadow_radius > 0.0f) {
                         f32 alpha = BlobShadowFade(reinterpret_cast<NUVEC *>(&world_matrix.m30), CutBlobShadowFadeNear,
                                                    CutBlobShadowFadeFar, 1.0f);
                         if (alpha > 0.0f) {
-                            alpha *= static_cast<f32>(shadow_alpha);
+                            alpha *= shadow_alpha;
                             for (i32 i = 0; i < 16; ++i) {
                                 if ((game_data->shadow_locators & (1 << i)) != 0 &&
                                     model->points_of_interest[i] != NULL) {
@@ -1417,68 +1416,67 @@ extern "C" {
                             }
                         }
                     }
-                    ground_height = 2000000.0f;
-                    platform = -1;
-                    shadow_sampled = false;
                 } else {
-                    if (!(shadow_radius < 99.0f)) {
-                        shadow_radius = character_data->model_scale * character_data->collision_radius * 2.0f;
-                    }
+                    shadow_radius = game_data->field_08c < 99.0f
+                                        ? game_data->field_08c
+                                        : character_data->model_scale * character_data->collision_radius * 2.0f;
                     if (shadow_radius > 0.0f) {
                         ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
+                        shadow_sampled = 1;
                         if (ground_height != 2000000.0f) {
                             platform = NewShadowOnPlatform();
                             surface = ShadowInfo();
                             if (ShadNorm.y > 0.0f) {
-                                NUVEC shadow_position = *reinterpret_cast<NUVEC *>(&world_matrix.m30);
+                                NUVEC shadow_position;
+                                shadow_position.x = world_matrix.m30;
                                 shadow_position.y = ground_height + 0.005f;
+                                shadow_position.z = world_matrix.m32;
                                 f32 alpha = BlobShadowFade(&shadow_position, CutBlobShadowFadeNear,
                                                            CutBlobShadowFadeFar, ShadNorm.y);
                                 if (alpha > 0.0f) {
                                     u16 x_rotation;
                                     u16 z_rotation;
                                     FindAnglesZX(&ShadNorm, &x_rotation, &z_rotation);
-                                    NuRndrAddShadow(
-                                        &shadow_position, shadow_radius,
-                                        static_cast<i32>(static_cast<f32>(shadow_alpha) * alpha * ShadNorm.y),
-                                        x_rotation, 0, z_rotation);
+                                    NuRndrAddShadow(&shadow_position, shadow_radius,
+                                                    static_cast<i32>(shadow_alpha * alpha * ShadNorm.y), x_rotation, 0,
+                                                    z_rotation);
                                 }
                             }
                         }
-                        shadow_sampled = true;
                     }
                 }
             }
         }
 
-        f32 reflection_height = 2000000.0f;
         if ((character->flags & 0x20) != 0 && (game_data->flags_090 & 0x8000) == 0 &&
             NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30),
                          reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA_PC *>(GameCam)->render_matrix.m30),
                          NULL) < CutReflectRange2) {
-            if (!shadow_sampled) {
+            if (shadow_sampled == 0) {
                 ground_height = GameShadow(NULL, reinterpret_cast<NUVEC *>(&world_matrix.m30), 5.0f, -1);
                 if (ground_height != 2000000.0f) {
                     platform = NewShadowOnPlatform();
                     surface = ShadowInfo();
                 }
             }
-            if (surface >= 0 && surface <= 31 && (TerSurface[surface].flags & 2) != 0 && ground_height != 2000000.0f) {
-                reflection_height = ground_height;
-            } else if (platform != -1) {
-                (void)FindReflectionNoPlatforms(reinterpret_cast<NUVEC *>(&world_matrix.m30));
+            if (surface < 0 || surface > 31 || (TerSurface[surface].flags & 2) == 0) {
+                ground_height = 2000000.0f;
             }
-            if (reflection_height != 2000000.0f) {
+            if (ground_height == 2000000.0f && platform != -1) {
+                ground_height = FindReflectionNoPlatforms(reinterpret_cast<NUVEC *>(&world_matrix.m30));
+            }
+            if (ground_height != 2000000.0f) {
                 NUMTX reflection_matrix;
-                if (MatrixReflection(&world_matrix, 2, reflection_height, WORLD->current_level->reflection_y,
+                reflection_height = ground_height;
+                if (MatrixReflection(&world_matrix, 2, ground_height, WORLD->current_level->reflection_y,
                                      &reflection_matrix) != 0) {
                     NuRndrStartReflectionRender(0);
-                    NuHGobjRndrMtxDwa(model->hierarchy, &reflection_matrix, render_count, render_indices,
-                                      joint_matrices, dwa, character->flags & 8);
+                    NuHGobjRndrMtxDwa(hierarchy, &reflection_matrix, render_count, render_indices, joint_matrices, dwa,
+                                      character->flags & 8);
                     if (attachment_matrix != NULL) {
                         NUMTX attachment_reflection;
-                        if (MatrixReflection(attachment_matrix, 2, reflection_height,
-                                             WORLD->current_level->reflection_y, &attachment_reflection) != 0) {
+                        if (MatrixReflection(attachment_matrix, 2, ground_height, WORLD->current_level->reflection_y,
+                                             &attachment_reflection) != 0) {
                             CharScene_Draw(world, character_id, NULL, &attachment_reflection);
                         }
                     }
@@ -1501,26 +1499,24 @@ extern "C" {
 
         if (character->locator_index != 0xff) {
             CUT_DRAW_LOCATOR_SYS_PC *locator_system = cutscene->locator_system;
+            CUT_DRAW_LOCATOR_INSTANCE_SYS_PC *locator_instance =
+                reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)->locator_instance;
             for (i32 i = 0; i < character->locator_count; ++i) {
                 i32 locator_index = character->locator_index + i;
-                CUT_DRAW_LOCATOR_PC *locator = &locator_system->locators[locator_index];
-                NUMTX *parent_matrix = &world_matrix;
-                if (locator->joint_index != 0xff) {
-                    NUMTX locator_parent;
-                    NuMtxMulVU0(&locator_parent, &joint_matrices[locator->joint_index], &world_matrix);
+                if (locator_system->locators[locator_index].joint_index == 0xff) {
                     instNuGCutLocatorUpdate(
                         cutscene_instance, reinterpret_cast<CUT_LOAD_LOCATOR_SYSTEM *>(locator_system),
-                        reinterpret_cast<CUT_LOAD_LOCATOR_INSTANCE *>(
-                            &reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)
-                                 ->locator_instance->locators[locator_index]),
-                        reinterpret_cast<CUT_LOAD_LOCATOR *>(locator), frame, &locator_parent, paused);
+                        reinterpret_cast<CUT_LOAD_LOCATOR_INSTANCE *>(&locator_instance->locators[locator_index]),
+                        reinterpret_cast<CUT_LOAD_LOCATOR *>(&locator_system->locators[locator_index]), frame,
+                        &world_matrix, paused);
                 } else {
+                    NuMtxMulVU0(&locator_parent, &joint_matrices[locator_system->locators[locator_index].joint_index],
+                                &world_matrix);
                     instNuGCutLocatorUpdate(
                         cutscene_instance, reinterpret_cast<CUT_LOAD_LOCATOR_SYSTEM *>(locator_system),
-                        reinterpret_cast<CUT_LOAD_LOCATOR_INSTANCE *>(
-                            &reinterpret_cast<CUT_DRAW_INSTANCE_PC *>(cutscene_instance)
-                                 ->locator_instance->locators[locator_index]),
-                        reinterpret_cast<CUT_LOAD_LOCATOR *>(locator), frame, parent_matrix, paused);
+                        reinterpret_cast<CUT_LOAD_LOCATOR_INSTANCE *>(&locator_instance->locators[locator_index]),
+                        reinterpret_cast<CUT_LOAD_LOCATOR *>(&locator_system->locators[locator_index]), frame,
+                        &locator_parent, paused);
                 }
             }
         }
