@@ -7,8 +7,7 @@ extern "C" {
                                                             u8 direction, void *target, u8 type) {
         AI_HELPER_SLOT_PC *helper = NULL;
         if (system != NULL) {
-            i16 count = system->count;
-            if (count < system->capacity && connection != NULL && target != NULL) {
+            if (system->count < system->capacity && connection != NULL && target != NULL) {
                 AI_HELPER_SLOT_PC *existing = system->helpers;
                 for (i32 index = 0; index < system->count; ++index, ++existing) {
                     if (existing->connection == connection && type == existing->type && target == existing->target) {
@@ -17,9 +16,8 @@ extern "C" {
                         return existing;
                     }
                 }
-                helper = &system->helpers[count];
-                ++count;
-                system->count = count;
+                helper = &system->helpers[system->count];
+                system->count++;
                 helper->connection = connection;
                 helper->direction = direction;
                 helper->target = target;
