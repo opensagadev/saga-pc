@@ -121,22 +121,6 @@ void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *dat
     for (i = 0; i < ((ADD_AI_WORLD_PC *)WORLD)->count; ++i, ++item)
         AddGizmo(giz, type, NULL, item);
 }
-void __cdecl GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZAIMESSAGE *message;
-    (void)type;
-    (void)world;
-    (void)data;
-    if (gizaimessagesys == NULL)
-        return;
-    message = (GIZAIMESSAGE *)NuLinkedListGetHead(&gizaimessagesys->active_list);
-    while (message != NULL) {
-        if (message->flags & 1) {
-            AddGizmo(giz, gizaimessage_gizmotype_id, NULL, message);
-            message->flags |= 2;
-        }
-        message = (GIZAIMESSAGE *)NuLinkedListGetNext(&gizaimessagesys->active_list, &message->links);
-    }
-}
 void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     ADD_TORP_SYS_PC *s;

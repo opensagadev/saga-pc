@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "saga.h"
 
+/* Retail unit 0x5aab50-0x5ab073: definitions in retail address order. */
+
 void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     i32 i;
     if (sys == NULL) {
@@ -14,19 +16,6 @@ void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     for (i = 0; i < sys->count; ++i) {
         NuLinkedListAppend(&sys->free_list, &sys->messages[i].links);
     }
-}
-
-GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *buffer, VARIPTR *buffer_end, i32 count) {
-    GIZAIMESSAGESYS *sys = (GIZAIMESSAGESYS *)AISysBufferAlloc(buffer, buffer_end, sizeof(GIZAIMESSAGESYS));
-    if (sys != NULL) {
-        memset(sys, 0, sizeof(GIZAIMESSAGESYS));
-        sys->messages = (GIZAIMESSAGE *)AISysBufferAlloc(buffer, buffer_end, (u32)count * sizeof(GIZAIMESSAGE));
-        if (sys->messages != NULL) {
-            sys->count = count;
-            ResetGizAIMessageSys(sys);
-        }
-    }
-    return sys;
 }
 
 void ClearGizAIMessageSys(GIZAIMESSAGESYS *sys) {
@@ -78,22 +67,6 @@ GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMES
     return (GIZAIMESSAGE *)node;
 }
 
-GIZAIMESSAGE *SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message) {
-    GIZAIMESSAGE *result = CheckGizAIMessage(sys, name, message);
-    if (result != NULL) {
-        result->value = value;
-    }
-    return result;
-}
-
-f32 GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message) {
-    GIZAIMESSAGE *result = CheckGizAIMessage(sys, name, message);
-    if (result != NULL) {
-        return result->value;
-    }
-    return 0.0f;
-}
-
 GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message) {
     if (message == NULL) {
         return (GIZAIMESSAGE *)NuLinkedListGetHead(&sys->active_list);
@@ -103,6 +76,23 @@ GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message) {
 
 static i32 GizAIMessage_GetMaxGizmos(void *unused0) {
     return 0x40;
+}
+
+void __cdecl GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
+    GIZAIMESSAGE *message;
+    (void)type;
+    (void)world;
+    (void)data;
+    if (gizaimessagesys == NULL)
+        return;
+    message = (GIZAIMESSAGE *)NuLinkedListGetHead(&gizaimessagesys->active_list);
+    while (message != NULL) {
+        if (message->flags & 1) {
+            AddGizmo(giz, gizaimessage_gizmotype_id, NULL, message);
+            message->flags |= 2;
+        }
+        message = (GIZAIMESSAGE *)NuLinkedListGetNext(&gizaimessagesys->active_list, &message->links);
+    }
 }
 
 char *GizAIMessage_GetName(GIZAIMESSAGE *message) {
@@ -183,4 +173,33 @@ ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {
     gizaimessage_gizmotype_id = type_id;
 
     return &addtype;
+}
+
+GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *buffer, VARIPTR *buffer_end, i32 count) {
+    GIZAIMESSAGESYS *sys = (GIZAIMESSAGESYS *)AISysBufferAlloc(buffer, buffer_end, sizeof(GIZAIMESSAGESYS));
+    if (sys != NULL) {
+        memset(sys, 0, sizeof(GIZAIMESSAGESYS));
+        sys->messages = (GIZAIMESSAGE *)AISysBufferAlloc(buffer, buffer_end, (u32)count * sizeof(GIZAIMESSAGE));
+        if (sys->messages != NULL) {
+            sys->count = count;
+            ResetGizAIMessageSys(sys);
+        }
+    }
+    return sys;
+}
+
+f32 GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message) {
+    GIZAIMESSAGE *result = CheckGizAIMessage(sys, name, message);
+    if (result != NULL) {
+        return result->value;
+    }
+    return 0.0f;
+}
+
+GIZAIMESSAGE *SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message) {
+    GIZAIMESSAGE *result = CheckGizAIMessage(sys, name, message);
+    if (result != NULL) {
+        result->value = value;
+    }
+    return result;
 }
