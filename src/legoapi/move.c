@@ -2902,318 +2902,317 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         }
                         break;
                     }
-                    if (object->character_context == 0x26 && object->special_move_pc != -1 &&
-                        object->force_target != NULL) {
-                        SpecialMove_Attacker_SetTargetMom(object);
-                        break;
-                    }
-                    if (object->character_context == 0x33) {
-                        move_vertical = Slide_SetTargetMom(object, input_angle, desired_speed);
-                        break;
-                    }
-                    if (object->character_context == 0x58) {
-                        move_vertical = SuperCarry_SetTargetMom(object, desired_speed);
-                        break;
-                    }
-                    if (object->character_context == 0x5a) {
-                        if (object->field_7b3 > 0 || (object->flags_1fc_word & 2) != 0) {
-                            object->target_velocity.x = 0.0f;
-                            object->target_velocity.z = 0.0f;
-                        } else {
-                            object->target_velocity.x =
-                                -NuTrigTable[object->movement_facing_angle >> 1] * object->external_force.z;
-                            object->target_velocity.z =
-                                -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                                object->external_force.z;
-                        }
-                        break;
-                    }
                 }
-                context_flags = U64_PAIR(&CInfo[object->character_context].flags);
-                if ((context_flags & 2) != 0) {
-                    object->target_velocity.x = 0.0f;
-                    object->target_velocity.z = 0.0f;
-                    break;
-                }
-                if (object->character_context == 0x21) {
-                    object->target_velocity.x =
-                        -NuTrigTable[object->movement_facing_angle >> 1] * PlayerBackwardMomentumScalePc;
-                    object->target_velocity.z = -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                                                PlayerBackwardMomentumScalePc;
-                } else if (object->character_context == 0x5f) {
-                    object->target_velocity.x = object->external_force.x;
-                    object->target_velocity.z = object->external_force.z;
-                } else if (object->character_context == 0x22) {
-                    object->target_velocity.x =
-                        -NuTrigTable[object->movement_facing_angle >> 1] * PlayerSecondBackwardMomentumScalePc;
-                    object->target_velocity.z = -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                                                PlayerSecondBackwardMomentumScalePc;
-                } else if (object->character_context == 0 && object->action_movement_state == 3) {
-                    if (StepBackFromTarget(object) == 0) {
-                        object->target_velocity.x =
-                            NuTrigTable[object->movement_facing_angle >> 1] * object->context_hover_target_y;
-                        object->target_velocity.z =
-                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                            object->context_hover_target_y;
-                    }
-                } else if (object->character_context == 0x0c || object->character_context == 0x18) {
-                    if (object->incoming_bolt != NULL && desired_speed > 0.0f && (pad->runtime_flags & 2) == 0 &&
-                        (object->character_context == 0x18 || object->block_latch == 0)) {
-                        object->target_velocity.x =
-                            NuTrigTable[input_angle >> 1] * object->character_data->game_character->run_speed;
-                        object->target_velocity.z = NuTrigTable[((input_angle + 0x4000) >> 1) & 0x7fff] *
-                                                    object->character_data->game_character->run_speed;
+                if (object->character_context == 0x26 && object->special_move_pc != -1 &&
+                    object->force_target != NULL) {
+                    SpecialMove_Attacker_SetTargetMom(object);
+                } else if (object->character_context == 0x33) {
+                    move_vertical = Slide_SetTargetMom(object, input_angle, desired_speed);
+                } else if (object->character_context == 0x58) {
+                    move_vertical = SuperCarry_SetTargetMom(object, desired_speed);
+                } else if (object->character_context == 0x5a) {
+                    if (object->field_7b3 > 0 || (object->flags_1fc_word & 2) != 0) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
                     } else {
-                        object->target_velocity.x = object->target_velocity.z = 0.0f;
-                    }
-                } else if (object->character_context == 0x17 || object->character_context == 0x41 ||
-                           object->character_context == 0x1f || object->character_context == 0x3c ||
-                           (object->character_context == 0x29 && object->character_model->model_data_b[0x57] == NULL)) {
-                    object->target_velocity.x = 0.0f;
-                    object->target_velocity.z = 0.0f;
-                } else if (object->character_context == 0x2d) {
-                    position = object->position;
-                    GizGetBuildItPlayerPos(object, &position, NULL);
-                    object->target_velocity.x = (position.x - object->position.x) * 3.0f;
-                    object->target_velocity.z = (position.z - object->position.z) * 3.0f;
-                } else if (object->character_context == 0x1c) {
-                    move_vertical = ForcePushed_SetTargetMom(object, &seek_rates.x);
-                } else if (object->character_context == 0x19 || object->character_context == 1 ||
-                           object->character_context == 2 || object->character_context == 3 ||
-                           object->character_context == 4 || object->character_context == 0x0d ||
-                           object->character_context == 0x0e || object->character_context == 9 ||
-                           object->character_context == 0x0a || object->character_context == 0x16 ||
-                           object->character_context == 0x1d || object->character_context == 0x1b ||
-                           object->character_context == 0x12 || object->character_context == 8 ||
-                           object->character_context == 0x13 || object->character_context == 0x14 ||
-                           (object->character_context == 0 && object->action_movement_state == 4)) {
-                    // Action contexts move along their facing at the speed of their animation when CInfo permits
-                    // animation momentum.
-                    if ((context_flags & 0x10) != 0) {
-                        f32 speed;
-                        speed = AnimSpeed(object->character_model, object->field_7aa);
-                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                        object->target_velocity.x =
+                            -NuTrigTable[object->movement_facing_angle >> 1] * object->external_force.z;
                         object->target_velocity.z =
-                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-                    } else {
-                        object->target_velocity.x = object->target_velocity.z = 0.0f;
+                            -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                            object->external_force.z;
                     }
-                } else if (object->character_context == 5) {
-                    if ((object->context_flags_pc & 0x1c) == 0) {
+                } else {
+                    context_flags = U64_PAIR(&CInfo[object->character_context].flags);
+                    if ((context_flags & 2) != 0) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
+                    } else if (object->character_context == 0x21) {
+                        object->target_velocity.x =
+                            -NuTrigTable[object->movement_facing_angle >> 1] * PlayerBackwardMomentumScalePc;
+                        object->target_velocity.z =
+                            -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                            PlayerBackwardMomentumScalePc;
+                    } else if (object->character_context == 0x5f) {
+                        object->target_velocity.x = object->external_force.x;
+                        object->target_velocity.z = object->external_force.z;
+                    } else if (object->character_context == 0x22) {
+                        object->target_velocity.x =
+                            -NuTrigTable[object->movement_facing_angle >> 1] * PlayerSecondBackwardMomentumScalePc;
+                        object->target_velocity.z =
+                            -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                            PlayerSecondBackwardMomentumScalePc;
+                    } else if (object->character_context == 0 && object->action_movement_state == 3) {
                         if (StepBackFromTarget(object) == 0) {
+                            object->target_velocity.x =
+                                NuTrigTable[object->movement_facing_angle >> 1] * object->context_hover_target_y;
+                            object->target_velocity.z =
+                                NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                                object->context_hover_target_y;
+                        }
+                    } else if (object->character_context == 0x0c || object->character_context == 0x18) {
+                        if (object->incoming_bolt != NULL && desired_speed > 0.0f && (pad->runtime_flags & 2) == 0 &&
+                            (object->character_context == 0x18 || object->block_latch == 0)) {
+                            object->target_velocity.x =
+                                NuTrigTable[input_angle >> 1] * object->character_data->game_character->run_speed;
+                            object->target_velocity.z = NuTrigTable[((input_angle + 0x4000) >> 1) & 0x7fff] *
+                                                        object->character_data->game_character->run_speed;
+                        } else {
+                            object->target_velocity.x = object->target_velocity.z = 0.0f;
+                        }
+                    } else if (object->character_context == 0x17 || object->character_context == 0x41 ||
+                               object->character_context == 0x1f || object->character_context == 0x3c ||
+                               (object->character_context == 0x29 &&
+                                object->character_model->model_data_b[0x57] == NULL)) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
+                    } else if (object->character_context == 0x2d) {
+                        position = object->position;
+                        GizGetBuildItPlayerPos(object, &position, NULL);
+                        object->target_velocity.x = (position.x - object->position.x) * 3.0f;
+                        object->target_velocity.z = (position.z - object->position.z) * 3.0f;
+                    } else if (object->character_context == 0x1c) {
+                        move_vertical = ForcePushed_SetTargetMom(object, &seek_rates.x);
+                    } else if (object->character_context == 0x19 || object->character_context == 1 ||
+                               object->character_context == 2 || object->character_context == 3 ||
+                               object->character_context == 4 || object->character_context == 0x0d ||
+                               object->character_context == 0x0e || object->character_context == 9 ||
+                               object->character_context == 0x0a || object->character_context == 0x16 ||
+                               object->character_context == 0x1d || object->character_context == 0x1b ||
+                               object->character_context == 0x12 || object->character_context == 8 ||
+                               object->character_context == 0x13 || object->character_context == 0x14 ||
+                               (object->character_context == 0 && object->action_movement_state == 4)) {
+                        // Action contexts move along their facing at the speed of their animation when CInfo permits
+                        // animation momentum.
+                        if ((context_flags & 0x10) != 0) {
                             f32 speed;
                             speed = AnimSpeed(object->character_model, object->field_7aa);
                             object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
                             object->target_velocity.z =
                                 NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-                        }
-                    } else {
-                        object->target_velocity.x = 0.0f;
-                        object->velocity.x = 0.0f;
-                        object->target_velocity.z = 0.0f;
-                        object->velocity.z = 0.0f;
-                    }
-                } else if (object->character_context == 0 &&
-                           (object->action_movement_state == 2 ||
-                            ((object->context_variant_flags & 0x8000) == 0 &&
-                             (object->action_movement_state == 6 || object->action_movement_state == 7 ||
-                              object->action_movement_state == 9)))) {
-                    if (object->action_movement_state == 6 &&
-                        object->context_timer >= object->character_data->game_character->jump_duration) {
-                        turn_rate = object->velocity.x = object->velocity.z = 0.0f;
-                    } else if (object->action_movement_state == 6 || object->action_movement_state == 7 ||
-                               object->action_movement_state == 9) {
-                        turn_rate = object->airborne_action_timer;
-                    } else {
-                        turn_rate = (object->context_variant_flags & 0x2000) != 0
-                                        ? -object->character_data->game_character->run_speed
-                                        : object->character_data->game_character->run_speed;
-                    }
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
-                    object->target_velocity.z =
-                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
-                } else if (object->character_context == 0x15) {
-                    turn_rate = AnimSpeed(object->character_model, object->field_7aa);
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
-                    object->target_velocity.z =
-                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
-                } else if (object->character_context == 0x49) {
-                    object->target_velocity.x = (object->launch_origin.x - object->position.x) * 8.0f;
-                    object->target_velocity.z = (object->launch_origin.z - object->position.z) * 8.0f;
-                } else if (object->character_context == 0x0f) {
-                } else if (object->character_context == 0x47) {
-                    if (object->action_movement_state == 1) {
-                        object->target_velocity = v000;
-                        object->velocity = object->target_velocity;
-                    } else {
-                        DIRECTIONAL_ZIPUP_PC *zipup;
-                        zipup = (DIRECTIONAL_ZIPUP_PC *)(object->grapple);
-                        if ((zipup->flags & 1) != 0) {
-                            SeekVec(&object->position, &object->position, &zipup->rider_target_position, 8.0f);
                         } else {
-                            NuVecSub(&object->target_velocity, &zipup->hook_origin, &object->position);
-                            NuVecNorm(&object->target_velocity, &object->target_velocity);
-                            NuVecScale(&object->target_velocity, &object->target_velocity, 2.0f);
+                            object->target_velocity.x = object->target_velocity.z = 0.0f;
                         }
-                    }
-                    move_vertical = 1;
-                } else if (object->character_context == 0x10) {
-                    f32 speed;
-                    speed = object->field_7aa == 0x29 ? AnimSpeed(object->character_model, 0x29)
-                                                      : object->character_data->game_character->run_speed;
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-                    object->target_velocity.z =
-                        NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
-                } else if (object->character_context == 0x31 && (object->flags_1fc & 0x80) != 0) {
-                    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] *
-                                                object->character_data->game_character->run_speed;
-                    object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
-                                                object->character_data->game_character->run_speed;
-                } else if ((pad->runtime_flags & 2) != 0) {
-                    object->target_velocity.x = 0.0f;
-                    object->target_velocity.z = 0.0f;
-                } else if (object->character_context == 0x35) {
-                    object->target_velocity.x = 0.0f;
-                    object->target_velocity.z = 0.0f;
-                } else {
-                    if (!(pad->input_magnitude > 0.0f ||
-                          ((object->id == (u16)GameObjectRotationAtstId || object->id == (u16)id_MINIATST ||
-                            object->id == (u16)id_ATST_LOWRES || object->id == (u16)id_ATAT ||
-                            object->id == (u16)id_MINIATAT || object->id == (u16)id_MINIATTE) &&
-                           CurrentAnim(&object->anim_packet) == 0) ||
-                          (object->id == (u16)id_RANCOR &&
-                           (CurrentAnim(&object->anim_packet) == 0 || CurrentAnim(&object->anim_packet) == 0x40)))) {
-                        if (object->anim_packet.blending != 0) {
-                            f32 speed;
-                            speed = AnimSpeed(object->character_model, object->anim_packet.blend_source_animation);
-                            if (speed != 0.0f) {
-                                if ((((CHARACTERANIM_CONFIG_PC
-                                           *)(object->character_model
-                                                  ->animation_configs[object->anim_packet.blend_source_animation]))
-                                         ->flags &
-                                     2) != 0 ||
-                                    object->anim_packet.blend_source_time <
-                                        NuAnimEndFrame(
-                                            object->character_model
-                                                ->model_data_b[object->anim_packet.blend_source_animation])) {
-                                    if ((object->anim_packet.blend_source_animation >= 0x2e &&
-                                         object->anim_packet.blend_source_animation <= 0x3b) ||
-                                        ((stop_frame = AnimStopFrame(object->character_model,
-                                                                     object->anim_packet.blend_source_animation)) >
-                                             0.0f &&
-                                         object->anim_packet.blend_source_time >= stop_frame)) {
-                                        object->target_velocity.x = 0.0f;
-                                        object->target_velocity.z = 0.0f;
-                                        if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
-                                              (i8)object->jump_animation_state < 32 &&
-                                              TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
-                                            object->velocity.x = 0.0f;
-                                            object->velocity.z = 0.0f;
+                    } else if (object->character_context == 5) {
+                        if ((object->context_flags_pc & 0x1c) == 0) {
+                            if (StepBackFromTarget(object) == 0) {
+                                f32 speed;
+                                speed = AnimSpeed(object->character_model, object->field_7aa);
+                                object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                                object->target_velocity.z =
+                                    NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+                            }
+                        } else {
+                            object->target_velocity.x = 0.0f;
+                            object->velocity.x = 0.0f;
+                            object->target_velocity.z = 0.0f;
+                            object->velocity.z = 0.0f;
+                        }
+                    } else if (object->character_context == 0 &&
+                               (object->action_movement_state == 2 ||
+                                ((object->context_variant_flags & 0x8000) == 0 &&
+                                 (object->action_movement_state == 6 || object->action_movement_state == 7 ||
+                                  object->action_movement_state == 9)))) {
+                        if (object->action_movement_state == 6 &&
+                            object->context_timer >= object->character_data->game_character->jump_duration) {
+                            turn_rate = object->velocity.x = object->velocity.z = 0.0f;
+                        } else if (object->action_movement_state == 6 || object->action_movement_state == 7 ||
+                                   object->action_movement_state == 9) {
+                            turn_rate = object->airborne_action_timer;
+                        } else {
+                            turn_rate = (object->context_variant_flags & 0x2000) != 0
+                                            ? -object->character_data->game_character->run_speed
+                                            : object->character_data->game_character->run_speed;
+                        }
+                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
+                        object->target_velocity.z =
+                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
+                    } else if (object->character_context == 0x15) {
+                        turn_rate = AnimSpeed(object->character_model, object->field_7aa);
+                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * turn_rate;
+                        object->target_velocity.z =
+                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * turn_rate;
+                    } else if (object->character_context == 0x49) {
+                        object->target_velocity.x = (object->launch_origin.x - object->position.x) * 8.0f;
+                        object->target_velocity.z = (object->launch_origin.z - object->position.z) * 8.0f;
+                    } else if (object->character_context == 0x0f) {
+                    } else if (object->character_context == 0x47) {
+                        if (object->action_movement_state == 1) {
+                            object->target_velocity = v000;
+                            object->velocity = object->target_velocity;
+                        } else {
+                            DIRECTIONAL_ZIPUP_PC *zipup;
+                            zipup = (DIRECTIONAL_ZIPUP_PC *)(object->grapple);
+                            if ((zipup->flags & 1) != 0) {
+                                SeekVec(&object->position, &object->position, &zipup->rider_target_position, 8.0f);
+                            } else {
+                                NuVecSub(&object->target_velocity, &zipup->hook_origin, &object->position);
+                                NuVecNorm(&object->target_velocity, &object->target_velocity);
+                                NuVecScale(&object->target_velocity, &object->target_velocity, 2.0f);
+                            }
+                        }
+                        move_vertical = 1;
+                    } else if (object->character_context == 0x10) {
+                        f32 speed;
+                        speed = object->field_7aa == 0x29 ? AnimSpeed(object->character_model, 0x29)
+                                                          : object->character_data->game_character->run_speed;
+                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                        object->target_velocity.z =
+                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+                    } else if (object->character_context == 0x31 && (object->flags_1fc & 0x80) != 0) {
+                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] *
+                                                    object->character_data->game_character->run_speed;
+                        object->target_velocity.z =
+                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
+                            object->character_data->game_character->run_speed;
+                    } else if ((pad->runtime_flags & 2) != 0) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
+                    } else if (object->character_context == 0x35) {
+                        object->target_velocity.x = 0.0f;
+                        object->target_velocity.z = 0.0f;
+                    } else {
+                        if (!(pad->input_magnitude > 0.0f ||
+                              ((object->id == (u16)GameObjectRotationAtstId || object->id == (u16)id_MINIATST ||
+                                object->id == (u16)id_ATST_LOWRES || object->id == (u16)id_ATAT ||
+                                object->id == (u16)id_MINIATAT || object->id == (u16)id_MINIATTE) &&
+                               CurrentAnim(&object->anim_packet) == 0) ||
+                              (object->id == (u16)id_RANCOR && (CurrentAnim(&object->anim_packet) == 0 ||
+                                                                CurrentAnim(&object->anim_packet) == 0x40)))) {
+                            if (object->anim_packet.blending != 0) {
+                                f32 speed;
+                                speed = AnimSpeed(object->character_model, object->anim_packet.blend_source_animation);
+                                if (speed != 0.0f) {
+                                    if ((((CHARACTERANIM_CONFIG_PC
+                                               *)(object->character_model
+                                                      ->animation_configs[object->anim_packet.blend_source_animation]))
+                                             ->flags &
+                                         2) != 0 ||
+                                        object->anim_packet.blend_source_time <
+                                            NuAnimEndFrame(
+                                                object->character_model
+                                                    ->model_data_b[object->anim_packet.blend_source_animation])) {
+                                        if ((object->anim_packet.blend_source_animation >= 0x2e &&
+                                             object->anim_packet.blend_source_animation <= 0x3b) ||
+                                            ((stop_frame = AnimStopFrame(object->character_model,
+                                                                         object->anim_packet.blend_source_animation)) >
+                                                 0.0f &&
+                                             object->anim_packet.blend_source_time >= stop_frame)) {
+                                            object->target_velocity.x = 0.0f;
+                                            object->target_velocity.z = 0.0f;
+                                            if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
+                                                  (i8)object->jump_animation_state < 32 &&
+                                                  TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
+                                                object->velocity.x = 0.0f;
+                                                object->velocity.z = 0.0f;
+                                            }
+                                        } else {
+                                            u16 angle;
+                                            angle = direct_turn == 0 &&
+                                                            ((U64_PAIR(&CInfo[object->character_context].flags) &
+                                                              0x200000000ULL) != 0 ||
+                                                             (object->character_data->game_character->flags_090 &
+                                                              0x100) != 0)
+                                                        ? object->facing_angle
+                                                        : object->movement_facing_angle;
+                                            object->target_velocity.x = speed * NuTrigTable[angle >> 1];
+                                            object->target_velocity.z =
+                                                speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                                            if (object->anim_packet.blend_source_animation == 0x26 ||
+                                                object->anim_packet.blend_source_animation == 0x4f)
+                                                NuVecRotateY(&object->target_velocity, &object->target_velocity,
+                                                             0x4000);
                                         }
-                                    } else {
-                                        u16 angle;
-                                        angle =
-                                            direct_turn == 0 &&
-                                                    ((U64_PAIR(&CInfo[object->character_context].flags) &
-                                                      0x200000000ULL) != 0 ||
-                                                     (object->character_data->game_character->flags_090 & 0x100) != 0)
-                                                ? object->facing_angle
-                                                : object->movement_facing_angle;
-                                        object->target_velocity.x = speed * NuTrigTable[angle >> 1];
-                                        object->target_velocity.z =
-                                            speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-                                        if (object->anim_packet.blend_source_animation == 0x26 ||
-                                            object->anim_packet.blend_source_animation == 0x4f)
-                                            NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
+                                        break;
                                     }
-                                    break;
                                 }
                             }
+                            object->target_velocity.x = 0.0f;
+                            object->target_velocity.z = 0.0f;
+                            break;
                         }
-                        object->target_velocity.x = 0.0f;
-                        object->target_velocity.z = 0.0f;
-                        break;
-                    }
-                    if (object->character_context == 0x4b) {
-                        water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
-                    } else if (object->water_intersects != 0 && object->id != (u16)id_YODA &&
-                               object->id != (u16)id_YODAGHOST) {
-                        turn_rate = (object->water_height - object->collision_min.y) / object->bounds_half_height;
-                        if (turn_rate < 0.0f)
-                            water_speed_multiplier = 0.0f;
-                        else if (turn_rate > 0.5f)
+                        if (object->character_context == 0x4b) {
                             water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
-                        else
-                            water_speed_multiplier = 1.0f - turn_rate * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
-                    } else {
-                        water_speed_multiplier = 1.0f;
-                    }
-                    if ((object->flags_ef0 & 0x2000000) == 0 && IsAFallAnim(CurrentAnim(&object->anim_packet)) != 0) {
-                        walking_speed = 0.0f;
-                    } else {
-                        walking_speed = desired_speed;
-                        if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
-                            i32 forced_movement;
-                            forced_movement = object->weapon_scale == 1.0f || object->field_e33 == 1;
-                            if (object->character_context == 0 && object->action_movement_state == 0) {
-                                walking_speed = 1.2f;
-                            } else if (forced_movement && pad->input_magnitude > 0.0f) {
-                                walking_speed = object->character_data->game_character->run_speed;
-                            } else if (AnimPlaying(&object->anim_packet, 5, 1, 0) != NULL) {
-                                walking_speed = MovementWalkingSpeedPC(object, 0.7f);
-                            } else if (!forced_movement && pad->input_magnitude > 0.0f &&
-                                       object->character_context != 0) {
-                                walking_speed = object->character_data->game_character->tiptoe_speed;
-                            }
+                        } else if (object->water_intersects != 0 && object->id != (u16)id_YODA &&
+                                   object->id != (u16)id_YODAGHOST) {
+                            turn_rate = (object->water_height - object->collision_min.y) / object->bounds_half_height;
+                            if (turn_rate < 0.0f)
+                                water_speed_multiplier = 0.0f;
+                            else if (turn_rate > 0.5f)
+                                water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
+                            else
+                                water_speed_multiplier = 1.0f - turn_rate * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
                         } else {
-                            PLAYERCHARACTERCONFIG_PC *walking_character;
-                            walking_character = object->character_data->game_character;
-                            if ((walking_character->flags_094 & 0x10000000) != 0) {
-                                if (object->jump_variant_state == 1) {
-                                    walking_speed = MovementWalkingSpeedPC(object, 1.0f);
-                                } else {
-                                    walking_speed = walking_character->walk_speed;
+                            water_speed_multiplier = 1.0f;
+                        }
+                        if ((object->flags_ef0 & 0x2000000) == 0 &&
+                            IsAFallAnim(CurrentAnim(&object->anim_packet)) != 0) {
+                            walking_speed = 0.0f;
+                        } else {
+                            walking_speed = desired_speed;
+                            if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
+                                i32 forced_movement;
+                                forced_movement = object->weapon_scale == 1.0f || object->field_e33 == 1;
+                                if (object->character_context == 0 && object->action_movement_state == 0) {
+                                    walking_speed = 1.2f;
+                                } else if (forced_movement && pad->input_magnitude > 0.0f) {
+                                    walking_speed = object->character_data->game_character->run_speed;
+                                } else if (AnimPlaying(&object->anim_packet, 5, 1, 0) != NULL) {
+                                    walking_speed = MovementWalkingSpeedPC(object, 0.7f);
+                                } else if (!forced_movement && pad->input_magnitude > 0.0f &&
+                                           object->character_context != 0) {
+                                    walking_speed = object->character_data->game_character->tiptoe_speed;
                                 }
                             } else {
-                                if (object->id == (u16)id_GONKDROID) {
-                                    if (Cheat_IsOn(8) == 0)
-                                        if (CurrentAnim(&object->anim_packet) == 5)
-                                            walking_speed = 0.5f * object->character_data->game_character->run_speed;
-                                        else
-                                            walking_speed = object->character_data->game_character->walk_speed;
-                                } else if (object->id == (u16)id_C3PO || object->id == (u16)id_TC14) {
-                                    if (object->character_context == -1 && object->field_db0 > 0.0f) {
-                                        walking_speed = MovementWalkingSpeedPC(object, 0.6f);
+                                PLAYERCHARACTERCONFIG_PC *walking_character;
+                                walking_character = object->character_data->game_character;
+                                if ((walking_character->flags_094 & 0x10000000) != 0) {
+                                    if (object->jump_variant_state == 1) {
+                                        walking_speed = MovementWalkingSpeedPC(object, 1.0f);
+                                    } else {
+                                        walking_speed = walking_character->walk_speed;
                                     }
-                                } else if (object->id == (u16)id_DROIDEKA) {
-                                    if (object->anim_packet.requested_animation == 5)
-                                        walking_speed *= 0.5f;
-                                } else if (object->id == (u16)GameObjectRotationAtstId ||
-                                           object->id == (u16)id_MINIATST || object->id == (u16)id_ATST_LOWRES ||
-                                           object->id == (u16)id_ATAT || object->id == (u16)id_MINIATAT ||
-                                           object->id == (u16)id_MINIATTE || object->id == (u16)id_RANCOR) {
-                                    walking_speed = walking_character->run_speed;
+                                } else {
+                                    if (object->id == (u16)id_GONKDROID) {
+                                        if (Cheat_IsOn(8) == 0)
+                                            if (CurrentAnim(&object->anim_packet) == 5)
+                                                walking_speed =
+                                                    0.5f * object->character_data->game_character->run_speed;
+                                            else
+                                                walking_speed = object->character_data->game_character->walk_speed;
+                                    } else if (object->id == (u16)id_C3PO || object->id == (u16)id_TC14) {
+                                        if (object->character_context == -1 && object->field_db0 > 0.0f) {
+                                            walking_speed = MovementWalkingSpeedPC(object, 0.6f);
+                                        }
+                                    } else if (object->id == (u16)id_DROIDEKA) {
+                                        if (object->anim_packet.requested_animation == 5)
+                                            walking_speed *= 0.5f;
+                                    } else if (object->id == (u16)GameObjectRotationAtstId ||
+                                               object->id == (u16)id_MINIATST || object->id == (u16)id_ATST_LOWRES ||
+                                               object->id == (u16)id_ATAT || object->id == (u16)id_MINIATAT ||
+                                               object->id == (u16)id_MINIATTE || object->id == (u16)id_RANCOR) {
+                                        walking_speed = walking_character->run_speed;
+                                    }
                                 }
                             }
                         }
+                        if (object->character_context == 0 && object->action_movement_state == 0)
+                            walking_speed *= object->character_data->game_character->jump_move_speed_scale;
+                        if ((object->flags_ef0 & 0x4000) != 0)
+                            walking_speed *= object->character_data->game_character->backwards_factor;
+                        if (direct_turn == 0 &&
+                            ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000000ULL) != 0 ||
+                             (object->character_data->game_character->flags_090 & 0x100) != 0))
+                            walking_angle = object->facing_angle;
+                        else
+                            walking_angle = input_angle;
+                        if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
+                            GameCam->sock_position.sock_index == 0)
+                            walking_speed *= 1.0416666269302368f;
+                        object->target_velocity.x =
+                            NuTrigTable[walking_angle >> 1] * walking_speed * water_speed_multiplier;
+                        object->target_velocity.z = NuTrigTable[((walking_angle + 0x4000) >> 1) & 0x7fff] *
+                                                    walking_speed * water_speed_multiplier;
                     }
-                    if (object->character_context == 0 && object->action_movement_state == 0)
-                        walking_speed *= object->character_data->game_character->jump_move_speed_scale;
-                    if ((object->flags_ef0 & 0x4000) != 0)
-                        walking_speed *= object->character_data->game_character->backwards_factor;
-                    if (direct_turn == 0 &&
-                        ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000000ULL) != 0 ||
-                         (object->character_data->game_character->flags_090 & 0x100) != 0))
-                        walking_angle = object->facing_angle;
-                    else
-                        walking_angle = input_angle;
-                    if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
-                        GameCam->sock_position.sock_index == 0)
-                        walking_speed *= 1.0416666269302368f;
-                    object->target_velocity.x =
-                        NuTrigTable[walking_angle >> 1] * walking_speed * water_speed_multiplier;
-                    object->target_velocity.z =
-                        NuTrigTable[((walking_angle + 0x4000) >> 1) & 0x7fff] * walking_speed * water_speed_multiplier;
                 }
                 break;
             }
