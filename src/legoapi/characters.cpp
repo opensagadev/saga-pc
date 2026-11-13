@@ -329,6 +329,77 @@ extern "C" void CharScenes_AreaDump() {
     }
 }
 extern "C" {
+#pragma bss_seg(".bss$IconScenePc")
+    static NUGSCN **IconScenePc = 0;
+#pragma bss_seg()
+
+    static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
+    STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
+    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
+    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
+    STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
+    STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
+    STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
+    void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
+        u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
+        u32 addr = (buffer->addr + 3) & ~3u;
+        IconScenePc = (NUGSCN **)addr;
+        buffer->addr = addr + table_size;
+        memset((void *)addr, 0, table_size);
+        if (path != NULL && NuStrLen(path) < 0x40)
+            NuStrCpy(AreaIconPathPrivate, path);
+    }
+
+    NUGSCN *__cdecl IconScene_FindById(i32 id) {
+        if (id < 0 || id >= CHARCOUNT)
+            return NULL;
+        return IconScenePc[id];
+    }
+
+    void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
+        i32 id;
+        NUGSCN *scene;
+        NUGSCN **scenes;
+        if (list == NULL)
+            return;
+        scenes = IconScenePc;
+        if (scenes == NULL)
+            return;
+        for (; (id = list->model_id) != -1; ++list) {
+            i32 object_index;
+            char path[0x100];
+            if (scenes[id] != NULL || list->count == 0)
+                continue;
+            object_index = CDataList[id].icon_model;
+            if (object_index == -1)
+                continue;
+            NuStrCpy(path, AreaIconPathPrivate);
+            NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
+            NuStrCat(path, ".gsc");
+            scene = NuGScnRead(buffer, *end, path);
+            scenes = IconScenePc;
+            scenes[id] = scene;
+            if (scene != NULL && scene->display_list != NULL)
+                scene->display_list->render_flags |= 0x10;
+        }
+    }
+
+    void __cdecl IconScenes_Dump(void) {
+        i32 i;
+        NUGSCN **scenes = IconScenePc;
+        if (scenes == NULL) {
+            return;
+        }
+        for (i = 0; i < CHARCOUNT; ++i) {
+            NUGSCN *scene = scenes[i];
+            if (scene != NULL) {
+                NuGScnRemove(scene);
+                scenes = IconScenePc;
+                scenes[i] = NULL;
+            }
+        }
+    }
+
     void __cdecl DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id,
                               f32 character_alpha, f32 frame_alpha, i32 draw_character,
                               NUSPECIALHANDLE *override_special) {

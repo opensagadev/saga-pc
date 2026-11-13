@@ -1,7 +1,4 @@
 #include "saga.h"
-#pragma bss_seg(".bss$IconScenePc")
-static NUGSCN **IconScenePc = 0;
-#pragma bss_seg()
 
 #include <stdio.h>
 #include <string.h>
@@ -178,12 +175,6 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
     MenuValidated = 0;
     return (MENU *)menu;
 #undef NEWMENU_VIEW
-}
-
-NUGSCN *__cdecl IconScene_FindById(i32 id) {
-    if (id < 0 || id >= CHARCOUNT)
-        return NULL;
-    return IconScenePc[id];
 }
 
 void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue,
@@ -717,50 +708,6 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
     return MenuResult;
 }
 
-static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
-STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
-STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
-STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
-STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
-STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
-void __cdecl IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
-    u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);
-    u32 addr = (buffer->addr + 3) & ~3u;
-    IconScenePc = (NUGSCN **)addr;
-    buffer->addr = addr + table_size;
-    memset((void *)addr, 0, table_size);
-    if (path != NULL && NuStrLen(path) < 0x40)
-        NuStrCpy(AreaIconPathPrivate, path);
-}
-void __cdecl IconScenes_Load(APICHARACTERMODELLIST *list, i32 mode, VARIPTR *buffer, VARIPTR *end) {
-    i32 id;
-    NUGSCN *scene;
-    NUGSCN **scenes;
-    if (list == NULL)
-        return;
-    scenes = IconScenePc;
-    if (scenes == NULL)
-        return;
-    for (; (id = list->model_id) != -1; ++list) {
-        i32 object_index;
-        char path[0x100];
-        if (scenes[id] != NULL || list->count == 0)
-            continue;
-        object_index = CDataList[id].icon_model;
-        if (object_index == -1)
-            continue;
-        NuStrCpy(path, AreaIconPathPrivate);
-        NuStrCat(path, LevelObject_FindNameFromIndex(object_index));
-        NuStrCat(path, ".gsc");
-        scene = NuGScnRead(buffer, *end, path);
-        scenes = IconScenePc;
-        scenes[id] = scene;
-        if (scene != NULL && scene->display_list != NULL)
-            scene->display_list->render_flags |= 0x10;
-    }
-}
-
 void __cdecl MenuRememberCursor(MENU *menu) {
     if (menu->menu == -1)
         return;
@@ -926,22 +873,6 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     dme_align = 0;
     dme_sx = 1.0f;
     dme_sy = 1.0f;
-}
-
-void __cdecl IconScenes_Dump(void) {
-    i32 i;
-    NUGSCN **scenes = IconScenePc;
-    if (scenes == NULL) {
-        return;
-    }
-    for (i = 0; i < CHARCOUNT; ++i) {
-        NUGSCN *scene = scenes[i];
-        if (scene != NULL) {
-            NuGScnRemove(scene);
-            scenes = IconScenePc;
-            scenes[i] = NULL;
-        }
-    }
 }
 
 void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
