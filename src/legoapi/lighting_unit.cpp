@@ -493,25 +493,25 @@ extern "C" {
         }
         light->enabled = enabled;
     }
-}
 
-/* Native private EDI=center, stack=radius pointer. */
-extern "C" i32 __cdecl ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
-    *center = APIObjectZeroMomentumPC;
-    *radius = -1.0f;
-    i32 count = 0;
-    for (i32 i = 0; i < 2; ++i) {
-        if (Player[i] != NULL && (static_cast<GAMEOBJECT *>(Player[i])->flags_1fc & 0x80) != 0) {
-            NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->center);
-            *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius
-                          ? *radius
-                          : reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius;
-            ++count;
+    /* File-local, so VC8 passes center in EDI as retail does; radius stays on the stack. */
+    static i32 ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
+        *center = APIObjectZeroMomentumPC;
+        *radius = -1.0f;
+        i32 count = 0;
+        for (i32 i = 0; i < 2; ++i) {
+            if (Player[i] != NULL && (static_cast<GAMEOBJECT *>(Player[i])->flags_1fc & 0x80) != 0) {
+                NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->center);
+                *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius
+                              ? *radius
+                              : reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius;
+                ++count;
+            }
         }
+        if (count > 0)
+            NuVecScale(center, center, 1.0f / count);
+        return count;
     }
-    if (count > 0)
-        NuVecScale(center, center, 1.0f / count);
-    return count;
 }
 
 extern "C" void __cdecl RenderShadowLights(i32 paused) {
