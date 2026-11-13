@@ -267,9 +267,7 @@ const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) 
             break;
     }
     ShaderCompilerBufferAllocatorPc *buffer = &register_buffer;
-    if (buffer->length > 0) {
-        if (buffer->data[buffer->length - 1] == 0)
-            return reinterpret_cast<const char *>(buffer->data);
+    if (buffer->length > 0 && buffer->data[buffer->length - 1] != 0) {
         if (buffer->length + 1 > buffer->capacity)
             buffer->Resize((3 * (buffer->length + 1)) / 2);
         buffer->data[buffer->length++] = 0;
