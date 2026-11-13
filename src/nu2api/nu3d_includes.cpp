@@ -10579,9 +10579,10 @@ void NuMotionFilterGen::render() {
     __declspec(align(16)) f32 params[4];
     __declspec(align(16)) f32 weights[7][4];
     for (i32 i = 0; i < 7; ++i) {
-        weights[i][0] = (NuPow((f32)((i + 1.0) / 7.0), falloff) - 0.5) * ratio;
-        weights[i][1] = weights[i][0];
-        weights[i][3] = weights[i][2] = 0.0f;
+        f32 *weight = weights[i];
+        weight[0] = (NuPow((f32)((i + 1.0) / 7.0), falloff) - 0.5) * ratio;
+        weight[1] = weight[0];
+        weight[3] = weight[2] = 0.0f;
     }
     params[0] = ratio;
     params[1] = NuMotionFilterCentrePc;
