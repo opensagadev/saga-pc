@@ -78,7 +78,7 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                     opacity *= alpha;
                     if (opacity > 0.0f) {
                         u32 neighbours = 0;
-                        for (i32 i = 0; i < 2; ++i) {
+                        for (i32 i = 0; i != 2; ++i) {
                             const i32 cx = selected_x[i];
                             if (cx != -1) {
                                 const i32 cy = selected_y[i];
@@ -86,7 +86,8 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                                     if ((col == cx && (row == cy - 1 || row == cy + 1)) ||
                                         (row == cy && (col == cx - 1 || col == cx + 1)))
                                         neighbours |= 1;
-                                    else if ((col == cx - 1 || col == cx + 1) && (row == cy - 1 || row == cy + 1))
+                                    else if ((col == cx - 1 && row == cy - 1) || (col == cx - 1 && row == cy + 1) ||
+                                             (col == cx + 1 && row == cy - 1) || (col == cx + 1 && row == cy + 1))
                                         neighbours |= 2;
                                     else if ((col == cx && (row == cy - 2 || row == cy + 2)) ||
                                              (row == cy && (col == cx - 2 || col == cx + 2)))
