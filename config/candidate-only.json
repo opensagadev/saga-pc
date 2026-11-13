@@ -117,21 +117,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/legogame/zipup.c",
-   "symbol": "_ZipUpFabsPc",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/doors.c",
-   "symbol": "_DoorsFabsPc",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/utilities.c",
-   "symbol": "_UtilitiesFabsPc",
-   "kind": "function"
-  },
-  {
    "unit": "src/legoapi/grapples.cpp",
    "symbol": "?GrappleFabsPc@@YAMM@Z",
    "kind": "function"
@@ -372,18 +357,8 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/apiobject.c",
-   "symbol": "_APIObjectFabs",
-   "kind": "function"
-  },
-  {
    "unit": "src/gameapi/edanim_update.c",
    "symbol": "_EdAnimFabsPc",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legogame/hub.cpp",
-   "symbol": "?HubFabsPc@@YAMM@Z",
    "kind": "function"
   },
   {

@@ -1465,7 +1465,7 @@ address,symbol,size,ctype
 0x4746d0,_HatMachine_Activate,50,
 0x474710,_HatMachine_RegisterGizmo,282,ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
 0x474830,_HubNuErrorPc,1,
-0x474840,?HubFabs@@YAMM@Z,18,
+0x474840,?HubFabsPc@@YAMM@Z,18,
 0x474860,?HubVuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,
 0x474880,?HubVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x4748a0,?MiniKitSetRotationX@@YAXPAUnumtx_s@@H@Z,160,
@@ -2496,7 +2496,7 @@ address,symbol,size,ctype
 0x4d54c0,_Transform_TargettedByObj,131,GAMEOBJECT *__cdecl(void *)
 0x004d5550,_GizmoBlowup_TransformDraw_Game,67,
 0x4d55a0,_ZipupNuErrorPc,1,
-0x4d55b0,_ZipupFabsPc,18,
+0x4d55b0,_ZipUpFabsPc,18,
 0x4d55d0,_ZipUpArcSinePc,320,
 0x4d5710,_ZipupACosPc,27,
 0x4d5730,_ZipupVuVecCopyPc,23,
@@ -10028,7 +10028,7 @@ address,symbol,size,ctype
 0x62a500,_fun_0062a500,217,
 0x0062a5e0,_PCCharacterSystemExistingNoOp,1,void __cdecl(void)
 0x62a5f0,_PCCharacterModelDiagnosticNoOp,1,void __cdecl(void)
-0x62a600,_ApiobjectFabsPc,18,
+0x62a600,_APIObjectFabs,18,
 0x0062a620,_APIObjectSafeDividePc,54,
 0x62a660,_fun_0062a660,11,
 0x62a670,_AnimEndFrame,40,"f32 __cdecl(CHARACTER_MODEL_LAYERS_PC *,i32)"
