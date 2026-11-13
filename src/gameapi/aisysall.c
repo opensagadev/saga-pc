@@ -2103,7 +2103,7 @@ void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf
         dst_cond = (AICONDITION_PC *)AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AICONDITION_PC));
         if (dst_cond != NULL) {
             memset(dst_cond, 0, sizeof(AICONDITION_PC));
-            PCByteCopy_candidate(dst_cond, src_cond, sizeof(AICONDITION_PC));
+            PCByteCopy(dst_cond, src_cond, sizeof(AICONDITION_PC));
 
             memset(&dst_cond->link, 0, sizeof(dst_cond->link));
 

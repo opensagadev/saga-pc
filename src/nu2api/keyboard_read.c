@@ -352,12 +352,12 @@ void edcamSet(void) {
 
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
-extern HINSTANCE PCInputWindow_candidate;
+extern HINSTANCE PCInputWindow;
 i32 __cdecl PCDeviceShowCursorPc(i32 show);
 
-i32 __cdecl NuKeyboardPlatformStartup_candidate(void) {
+i32 __cdecl NuKeyboardPlatformStartup(void) {
     PcConfigureInputGraphicsCaps();
-    NuKeyboardCreateWindowState_candidate(PCInputInstance_candidate, PCInputWindow_candidate);
+    NuKeyboardCreateWindowState(PCInputInstance, PCInputWindow);
     SetCursor(NULL);
     PCDeviceShowCursorPc(0);
     PCDeviceSetRenderState(0x16, 1);

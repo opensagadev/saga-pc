@@ -3783,8 +3783,8 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
                 compare = candidate_key < current_key ? 1 : (candidate_key > current_key ? -1 : 0);
                 if (compare == direction) {
                     NuStrCpy(temporary, candidate);
-                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
-                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
+                    PCByteCopy(current + candidate_length + 1, current, candidate - current);
+                    PCByteCopy(current, temporary, candidate_length + 1);
                     current_key = candidate_key;
                     current_length = candidate_length;
                 }
@@ -3806,8 +3806,8 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
             candidate_length = NuStrLen(candidate);
             if (NuStrICmp(current + 7, candidate + 7) == direction) {
                 NuStrCpy(temporary, candidate);
-                PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
-                PCByteCopy_candidate(current, temporary, candidate_length + 1);
+                PCByteCopy(current + candidate_length + 1, current, candidate - current);
+                PCByteCopy(current, temporary, candidate_length + 1);
                 current_length = candidate_length;
             }
             candidate += candidate_length + 1;
@@ -4280,7 +4280,7 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
             header.encoded_day = 'A';
             header.encoded_month = 'A';
             header.encoded_year = '#';
-            PCByteCopy_candidate(next, &header, 7);
+            PCByteCopy(next, &header, 7);
             next += 7;
             NuStrCpy(next, drive);
             next += length;
@@ -4290,7 +4290,7 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
         FS_SortStrings(FS_FileList, next, 0);
     } else {
         directory = NuFileOpenDir(path);
-        PCByteCopy_candidate(FS_FileList, FS_ParentEntry, 7);
+        PCByteCopy(FS_FileList, FS_ParentEntry, 7);
         NuStrCpy(FS_FileList + 7, FileSelParentNamePc);
         ++FS_NumFiles;
         next = FS_FileList + 10;
@@ -4310,7 +4310,7 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
                 header.encoded_second = entry.created.second + 'A';
                 header.encoded_month = entry.created.month + 'A';
                 header.encoded_year = (u8)(entry.created.year - 123);
-                PCByteCopy_candidate(next, &header, 7);
+                PCByteCopy(next, &header, 7);
                 next += 7;
                 NuStrCpy(next, entry.name);
                 next += length;
@@ -4339,7 +4339,7 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
                 header.encoded_second = entry.modified.second + 'A';
                 header.encoded_month = entry.modified.month + 'A';
                 header.encoded_year = (u8)(entry.modified.year - 123);
-                PCByteCopy_candidate(next, &header, 7);
+                PCByteCopy(next, &header, 7);
                 next += 7;
                 NuStrCpy(next, entry.name);
                 next += length;

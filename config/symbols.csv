@@ -2907,7 +2907,7 @@ address,symbol,size,ctype
 0x4ef450,_NuAllocCheckRecords,356,void *__cdecl (void)
 0x4ef5c0,_NuAllocDumpRecords,98,void __cdecl(i32)
 0x4ef630,_NuAllocFreeRecords,35,void __cdecl (void)
-0x004ef660,_PCByteCopy_candidate,84,"void __cdecl (void *, const void *, u32)"
+0x004ef660,_PCByteCopy,84,"void __cdecl (void *, const void *, u32)"
 0x4ef6c0,_fun_004ef6c0,3,
 0x4ef6d0,_fun_004ef6d0,6,
 0x4ef6e0,_NuMemSet128,25,"void __cdecl(void *,u32,i32)"
@@ -3448,8 +3448,8 @@ address,symbol,size,ctype
 0x004ffa50,_FileHostDeletePathPc,12,i32 __cdecl (const char *)
 0x004ffa60,_PCThreadCriticalSectionCreate_candidate,48,i32 __cdecl (void)
 0x4ffa90,_PCThreadCriticalSectionDeleteNoOpPc,1,void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index)
-0x004ffaa0,_PCThreadCriticalSectionEnter_candidate,30,void __cdecl (i32)
-0x004ffac0,_PCThreadCriticalSectionLeave_candidate,30,void __cdecl (i32)
+0x004ffaa0,_NuThreadCriticalSectionBegin,30,void __cdecl (i32)
+0x004ffac0,_NuThreadCriticalSectionEnd,30,void __cdecl (i32)
 0x4ffae0,_PCThreadMillisecondsPc,51,i64 __cdecl PCThreadMillisecondsPc(void)
 0x004ffb20,_NuTimeGetTicksPS,111,"void __cdecl (u32 *, u32 *)"
 0x004ffb90,_NuTimeGetTicksPerSecondPS,29,"void __cdecl (u32 *, u32 *)"
@@ -3609,12 +3609,12 @@ address,symbol,size,ctype
 0x5060e0,_instNuGCutSceneEnd,251,void __cdecl(INSTNUGCUTSCENE *)
 0x5061e0,_instNuGCutSceneEndFirstFrame,221,void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *)
 0x005062c0,_CutSceneJumpToEndPc,194,
-0x00506390,_instNuGCutSceneJumpToEnd_candidate,11,void __cdecl (INSTNUGCUTSCENE *)
-0x005063a0,_instNuGCutSceneJumpToEndFlagged_candidate,14,void __cdecl (INSTNUGCUTSCENE *)
-0x005063b0,_instNuGCutSceneSetTranslation_candidate,43,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
-0x005063e0,_instNuGCutSceneTranslate_candidate,66,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
+0x00506390,_instNuGCutSceneJumpToEnd,11,void __cdecl (INSTNUGCUTSCENE *)
+0x005063a0,_instNuGCutSceneJumpToEndFlagged,14,void __cdecl (INSTNUGCUTSCENE *)
+0x005063b0,_instNuGCutSceneSetTranslation,43,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
+0x005063e0,_instNuGCutSceneTranslate,66,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
 0x00506430,_instNuGCutSceneSetMtx,42,"void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"
-0x00506460,_instNuGCutSceneRotateY_candidate,43,"void __cdecl (INSTNUGCUTSCENE *, NUANG)"
+0x00506460,_instNuGCutSceneRotateY,43,"void __cdecl (INSTNUGCUTSCENE *, NUANG)"
 0x506490,_instNuGCutSceneServiceLoad,627,void __cdecl (void)
 0x506710,_CutSceneStreamSkipPc,362,
 0x506880,_CutSceneCameraSysUpdatePc,1463,
@@ -7196,7 +7196,7 @@ address,symbol,size,ctype
 0x5c12b0,_fun_005c12b0,36,
 0x005c12e0,_AnimationDiagnosticNoOpPc,1,
 0x005c12f0,_PCAnimationLoadFailureNoOp,1,void __cdecl (char *)
-0x005c1300,_PCSpecialEmptyHandler_candidate,1,"void __cdecl (const char *, ...)"
+0x005c1300,_PCSpecialEmptyHandler,1,"void __cdecl (const char *, ...)"
 0x5c1310,_fun_005c1310,21,
 0x5c1330,_fun_005c1330,26,
 0x5c1350,_fun_005c1350,6,
@@ -8034,7 +8034,7 @@ address,symbol,size,ctype
 0x5dec60,_fun_005dec60,54,
 0x5deca0,_fun_005deca0,44,
 0x5decd0,_NuRndrEndFrameActionPc,1,
-0x005dece0,_NuDisplayListPurge_candidate,93,void __cdecl (void)
+0x005dece0,_NuDisplayListCaptureBegin,93,void __cdecl (void)
 0x005ded40,_NuDisplayListHtmlEndPc,51,void __cdecl(void)
 0x5ded80,_NuDisplaySceneAdd,182,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5dee40,_NuDisplaySceneDestroy,293,void __cdecl(NUDISPLAY_LIST_PC *)
@@ -8299,7 +8299,7 @@ address,symbol,size,ctype
 0x5efb90,_fun_005efb90,89,
 0x5efbf0,_NuDisplayListCreateDynMtlList_candidate,1012,"void __cdecl(VARIPTR *,VARIPTR)"
 0x005efff0,_NuDisplayListAddRenderScene,746,i32 (void)
-0x005f02e0,_NuDisplayListDrawRenderScene_candidate,210,void __cdecl(i32)
+0x005f02e0,_NuDisplayListDrawRenderScene,210,void __cdecl(i32)
 0x005f03c0,_NuDisplayListDrawRenderScenes_candidate,172,void __cdecl (void)
 0x5f0470,_NuDisplaySceneClone,1612,"NUDISPLAY_LIST_PC *__cdecl(NUDISPLAY_LIST_PC *,VARIPTR *)"
 0x5f0ac0,_DisplayClipMaterialsPC,688,void __cdecl(NUDISPLAY_LIST_PC *)
@@ -8545,7 +8545,7 @@ address,symbol,size,ctype
 0x5f9da0,_NuRndrShadowVolumesPc,167,void __cdecl(void)
 0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
 0x5f9e60,_NuRndrGeometryBufferRestorePc,42,void __cdecl(void)
-0x005f9e90,_NuRndrShadowOnOff_candidate,10,void __cdecl (i32)
+0x005f9e90,_NuRndrShadowOnOff,10,void __cdecl (i32)
 0x5f9ea0,_fun_005f9ea0,5,
 0x5f9eb0,_fun_005f9eb0,5,
 0x5f9ec0,_fun_005f9ec0,5,
@@ -13252,7 +13252,7 @@ address,symbol,size,ctype
 0x6d3120,_fun_006d3120,18,
 0x6d3140,_fun_006d3140,1,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
-0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)
+0x6d33d0,_NuKeyboardPlatformStartup,59,i32 __cdecl(void)
 0x6d3410,_fun_006d3410,3,
 0x6d3420,_FmvPlatformUpdatePc,1,
 0x006d3430,_StartupParseArgument,3,"i32 __cdecl (i32, char **)"
@@ -13307,14 +13307,14 @@ address,symbol,size,ctype
 0x6d4d50,_fun_006d4d50,8,
 0x6d4d60,_fun_006d4d60,1,
 0x6d4d70,_fun_006d4d70,21,
-0x006d4d90,@NuKeyboardResetInputRecords_candidate@4,49,void __fastcall (NuKeyboardState_PC *)
+0x006d4d90,@NuKeyboardResetInputRecords@4,49,void __fastcall (NuKeyboardState_PC *)
 0x006d4dd0,_TextInputSetNameCallbackPc,10,"void __cdecl(void (__cdecl *)(i32, char *))"
 0x6d4de0,_fun_006d4de0,60,
-0x006d4e20,@NuKeyboardSetStateValue6354_candidate@12,13,"void __fastcall (NuKeyboardState_PC *, i32, i32)"
-0x006d4e30,@NuKeyboardGetInputRecordCount_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e40,@NuKeyboardGetStateValue67e8_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e50,@NuKeyboardGetStateValue67ec_candidate@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e60,@NuKeyboardInsertInputRecord_candidate@28,135,"void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
+0x006d4e20,@fun_006d4e20@12,13,"void __fastcall (NuKeyboardState_PC *, i32, i32)"
+0x006d4e30,@NuKeyboardGetInputRecordCount@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
+0x006d4e40,@fun_006d4e40@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
+0x006d4e50,@fun_006d4e50@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
+0x006d4e60,@NuKeyboardInsertInputRecord@28,135,"void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
 0x6d4ef0,_fun_006d4ef0,108,
 0x6d4f60,_fun_006d4f60,96,
 0x6d4fc0,_fun_006d4fc0,30,
@@ -13470,7 +13470,7 @@ address,symbol,size,ctype
 0x6d94b0,_fun_006d94b0,59,
 0x6d94f0,_PcInputClearOtherBankConflictsPc,22,
 0x6d9510,_PcInputMapKeyboardPortPc,43,
-0x006d9540,_NuKeyboardApplyActionKeys_candidate,112,"void __cdecl (const i16 *, i32)"
+0x006d9540,_PcInput_EnableKeyboards,112,"void __cdecl (const i16 *, i32)"
 0x6d95b0,_PcInputSelectConfigurationPc,27,
 0x006d95d0,_PcInputInstallDropInConfigurationPc,22,"u8 __cdecl (i32, i32)"
 0x6d95f0,_PcInputBindingAvailablePc,32,
@@ -13733,7 +13733,7 @@ address,symbol,size,ctype
 0x6df050,_fun_006df050,12,
 0x6df060,_fun_006df060,7,
 0x6df070,_fun_006df070,7,
-0x6df080,_NuKeyboardCreateWindowState_candidate,55,"void __cdecl(HWND,HINSTANCE)"
+0x6df080,_NuKeyboardCreateWindowState,55,"void __cdecl(HWND,HINSTANCE)"
 0x6df0c0,_PcRendererCleanup,20,void __cdecl(void)
 0x6df0e0,_PcRendererShutdown,181,void __cdecl(i32)
 0x6df1a0,_fun_006df1a0,54,
@@ -13749,8 +13749,8 @@ address,symbol,size,ctype
 0x6df280,_fun_006df280,16,
 0x6df290,_PcInputAspectRatioPc,92,f32 __cdecl(void)
 0x6df2f0,_fun_006df2f0,6,
-0x006df300,_PCFrameCriticalSectionEnter_candidate,13,void __cdecl (void)
-0x006df310,_PCFrameCriticalSectionLeave_candidate,13,void __cdecl (void)
+0x006df300,_NudxFw_D3DBeginCriticalSection,13,void __cdecl (void)
+0x006df310,_NudxFw_D3DEndCriticalSection,13,void __cdecl (void)
 0x6df320,_PCFrameSetLoadingYieldEnabled,14,void __cdecl (i32)
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
 0x6df340,_fun_006df340,298,
@@ -16558,7 +16558,7 @@ address,symbol,size,ctype
 0x751a28,__real@4022a45a20000000,8,const f64
 0x751a30,__real@411522d1,4,const f32
 0x751a38,__real@3fb3333340000000,8,const f64
-0x00751a40,_PCKeyboardDefaultValue_candidate,4,const f32
+0x00751a40,_PCKeyboardDefaultValue,4,const f32
 0x00751a40,__real@3dcccccd,4,const f32
 0x751a48,__real@3fe54fdf40000000,8,const f64
 0x00751a50,__real@3f19999a,4,const f32
@@ -25612,10 +25612,10 @@ address,symbol,size,ctype
 0x775994,__real@43800000,4,const f32
 0x775998,??_C@_05DIALNFFA@?$CFs?5?$CFd?$AA@,6,char[6]
 0x7759a0,??_C@_04FHAANOGO@GFX?$DP?$AA@,5,char[5]
-0x007759a8,_PCKeyboard2Name_candidate,10,const char[10]
-0x007759b4,_PCKeyboardMouse2Name_candidate,16,const char[16]
-0x007759c4,_PCKeyboard1Name_candidate,10,const char[10]
-0x007759d0,_PCKeyboardMouse1Name_candidate,15,const char[15]
+0x007759a8,_PCKeyboard2Name,10,const char[10]
+0x007759b4,_PCKeyboardMouse2Name,16,const char[16]
+0x007759c4,_PCKeyboard1Name,10,const char[10]
+0x007759d0,_PCKeyboardMouse1Name,15,const char[15]
 0x7759e0,??_C@_05OPFMNJAF@P2900?$AA@,6,const char[6]
 0x7759e8,??_C@_05LHDPMJFD@P2600?$AA@,6,const char[6]
 0x7759f0,??_C@_06LGMJGAE@Saitek?$AA@,7,const char[7]
@@ -38185,8 +38185,8 @@ address,symbol,size,ctype
 0x80159c,_memcard_autosavecanceldelay,4,f32
 0x8015a0,_SAVESIZE,4,i32
 0x8015a4,_SAVESIZE_ADDITIONAL,4,i32
-0x008015ac,_TextScaleX_candidate,4,f32
-0x008015b0,_TextScaleY_candidate,4,f32
+0x008015ac,_TextScaleX,4,f32
+0x008015b0,_TextScaleY,4,f32
 0x008015b4,_QFONTSCALEX,4,f32
 0x8015b8,_QFONTSCALEY,4,f32
 0x8015bc,_SmartTextDefaultWidthPc,4,f32
@@ -41277,7 +41277,7 @@ address,symbol,size,ctype
 0x0091ef58,_implode_depth,4,i32
 0x0091ef60,_FileDirectoryHostHandlesPc,64,HANDLE[16]
 0x0091efa0,_NuTime_PerformanceFrequency,8,i64
-0x91efa8,_PCThreadCriticalSections_candidate,312,CRITICAL_SECTION[13]
+0x91efa8,_PCThreadCriticalSections,312,CRITICAL_SECTION[13]
 0x0091f1c8,_bgproc_work_event,4,HANDLE
 0x0091f1cc,_bgproc_resume_event,4,HANDLE
 0x91f1d0,_PCWarningHandler,4,void (__cdecl *)(char *)
@@ -41303,7 +41303,7 @@ address,symbol,size,ctype
 0x00921260,_bgproc_freeze,4,i32
 0x921264,_PcStartupCriticalSectionInitialized,4,i32
 0x00921268,_FileDirectoryOpenCountPc,4,i32
-0x0092126c,_PCThreadCriticalSectionCount_candidate,4,i32
+0x0092126c,_PCThreadCriticalSectionCount,4,i32
 0x00921270,_FileDirectoryPathSlotsPc,64,char *[16]
 0x009212b0,_bgproc_initialized,4,i32
 0x9212b8,_CutSceneCameraMatrixPc,64,NUMTX
@@ -41591,8 +41591,8 @@ address,symbol,size,ctype
 0x924870,_NuWindGroup,4,PC_NUWINDGROUP *
 0x924874,_NuWindCurGrp,4,PC_NUWINDGROUP *
 0x92487c,_PcWindowQuit,4,i32
-0x00924880,_PCInputWindow_candidate,4,HINSTANCE
-0x00924884,_PCInputInstance_candidate,4,HWND
+0x00924880,_PCInputWindow,4,HINSTANCE
+0x00924884,_PCInputInstance,4,HWND
 0x924888,_NuHwShowCommandPc,4,i32
 0x0092488c,_permbuffer_size,4,i32
 0x00924890,_original_permbuffer_base,4,VARIPTR
@@ -43660,7 +43660,7 @@ address,symbol,size,ctype
 0x0297ad94,_nuvideo_global_vbcnt,4,volatile i32
 0x297ada0,_MenuPcStrings,156,const char *[39]
 0x297ae3c,_MenuPcStringsInitialized,4,i32
-0x0297ae40,_PCFrameCriticalSectionIndex_candidate,4,i32
+0x0297ae40,_PCFrameCriticalSectionIndex,4,i32
 0x297ae44,_PCFrameLoadingYieldEnabledPC,1,u8
 0x297ae48,_PcApiCallBuffer,4,void *
 0x297ae4c,_PcApiCallBufferCount,4,i32

@@ -48,10 +48,9 @@ void __cdecl GroupBuffer_MoveToEnd(i32 group_id) {
         return;
     }
     NuSound3Groups[group_id].first_sample = (i16)buffer_length;
-    PCByteCopy_candidate(&NuSound3GroupSampleIds[buffer_length], &NuSound3GroupSampleIds[first_sample],
-                         sample_count * 2);
-    PCByteCopy_candidate(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[group_end],
-                         (NuSound3GroupSampleCount - first_sample) * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[buffer_length], &NuSound3GroupSampleIds[first_sample], sample_count * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[group_end],
+               (NuSound3GroupSampleCount - first_sample) * 2);
     for (index = 0; index < NuSound3GroupCount; index++) {
         if (NuSound3Groups[index].first_sample > first_sample) {
             NuSound3Groups[index].first_sample -= (i16)sample_count;
@@ -83,8 +82,8 @@ void __cdecl GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
     if (found == -1) {
         return;
     }
-    PCByteCopy_candidate(&NuSound3GroupSampleIds[found], &NuSound3GroupSampleIds[found + 1],
-                         (NuSound3GroupSampleCount - found - 1) * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[found], &NuSound3GroupSampleIds[found + 1],
+               (NuSound3GroupSampleCount - found - 1) * 2);
     NuSound3GroupSampleCount--;
     NuSound3Groups[group_id].sample_count--;
     NuSound3Groups[group_id].cursor = 0;
@@ -100,16 +99,16 @@ void __cdecl GroupBuffer_RemoveGroup(i32 group_id) {
     }
     first_sample = NuSound3Groups[group_id].first_sample;
     sample_count = NuSound3Groups[group_id].sample_count;
-    PCByteCopy_candidate(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[first_sample + sample_count],
-                         (NuSound3GroupSampleCount - sample_count - first_sample) * 2);
+    PCByteCopy(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[first_sample + sample_count],
+               (NuSound3GroupSampleCount - sample_count - first_sample) * 2);
     NuSound3GroupSampleCount -= sample_count;
     for (index = 0; index < NuSound3GroupCount; index++) {
         if (NuSound3Groups[index].first_sample > first_sample) {
             NuSound3Groups[index].first_sample -= (i16)sample_count;
         }
     }
-    PCByteCopy_candidate(&NuSound3Groups[group_id], &NuSound3Groups[group_id + 1],
-                         (NuSound3GroupCount - 1) * sizeof(SFX_GROUP_PC));
+    PCByteCopy(&NuSound3Groups[group_id], &NuSound3Groups[group_id + 1],
+               (NuSound3GroupCount - 1) * sizeof(SFX_GROUP_PC));
     NuSound3GroupCount--;
     for (index = SfxFileCount; index < NumSfxInst; index++) {
         if (SfxInfo[index].group > group_id) {
@@ -591,11 +590,11 @@ void __cdecl SfxBitsSetAll(u16 *bits) {
 }
 
 void __cdecl SfxBitsStore(SoundTable *sound_table) {
-    PCByteCopy_candidate(sound_table, SfxBits, 0xc8);
+    PCByteCopy(sound_table, SfxBits, 0xc8);
 }
 
 __declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table) {
-    PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
+    PCByteCopy(SfxBits, sound_table, 0xc8);
 }
 
 void __cdecl SfxBitMaskTable(u16 *bits, const u16 *mask) {
@@ -870,7 +869,7 @@ void RestoreGameCut(void) {
 }
 
 void __cdecl ResetSounds(void) {
-    PCByteCopy_candidate(SfxBits, GlobalSfxBits, 0xc8);
+    PCByteCopy(SfxBits, GlobalSfxBits, 0xc8);
 }
 
 void __cdecl UpdateBackgroundMusic(void) {
@@ -1159,7 +1158,7 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
     }
     SfxInfo[NumSfxInst].sample_id_flags &= ~0x100000u;
     SfxInfo[NumSfxInst].sample_id_flags |= 0x200000u;
-    PCByteCopy_candidate(&SfxRevertInfoPc[NumSfxInst], &SfxInfo[NumSfxInst], sizeof(SFX_RECORD_PC));
+    PCByteCopy(&SfxRevertInfoPc[NumSfxInst], &SfxInfo[NumSfxInst], sizeof(SFX_RECORD_PC));
     NumSfxInst++;
 }
 
@@ -1265,7 +1264,7 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
             GlobalSfxBits[sample >> 4] |= (u16)(1 << (sample & 15));
         }
     }
-    PCByteCopy_candidate(SfxBits, GlobalSfxBits, 200);
+    PCByteCopy(SfxBits, GlobalSfxBits, 200);
 }
 
 void __cdecl PauseGameAudio(i32 ignored) {

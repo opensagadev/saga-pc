@@ -325,7 +325,7 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     if (world->current_level == DEATHSTARRESCUEA_LDATA) {
         Grab_grabber->matrix.m31 += GrabConfigDataPc.level_y_offset;
     }
-    PCByteCopy_candidate(&Grab_grabber->initial_position, &Grab_grabber->matrix.m30, sizeof(NUVEC));
+    PCByteCopy(&Grab_grabber->initial_position, &Grab_grabber->matrix.m30, sizeof(NUVEC));
     NuSpecialFind(world->scene, &Grab_grabber->shadow_special, "grabber_shadow", 1);
     world->grabber->platform_id = -1;
 }

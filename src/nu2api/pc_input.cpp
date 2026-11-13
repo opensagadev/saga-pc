@@ -1,8 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" const char PCKeyboardMouse1Name_candidate[15], PCKeyboardMouse2Name_candidate[16],
-    PCKeyboard1Name_candidate[10], PCKeyboard2Name_candidate[10];
+extern "C" const char PCKeyboardMouse1Name[15], PCKeyboardMouse2Name[16], PCKeyboard1Name[10], PCKeyboard2Name[10];
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
@@ -149,7 +148,7 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
 
 void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     PC_INPUT_CONFIG_PC *config;
-    NuStrCpy(devices[10].name, PCKeyboardMouse1Name_candidate);
+    NuStrCpy(devices[10].name, PCKeyboardMouse1Name);
     devices[10].kind = 1;
     devices[10].product.Data1 = 1;
     devices[10].config_dirty = 1;
@@ -163,7 +162,7 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
         InstallConfig(config, 10, config->key, 0, 0);
     }
     devices[11].device = nu_keyboard_owner.device;
-    NuStrCpy(devices[11].name, PCKeyboard1Name_candidate);
+    NuStrCpy(devices[11].name, PCKeyboard1Name);
     devices[11].kind = 3;
     devices[11].product.Data1 = 3;
     devices[11].config_dirty = 1;
@@ -176,7 +175,7 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     if (config) {
         InstallConfig(config, 11, config->key, 0, 0);
     }
-    NuStrCpy(devices[12].name, PCKeyboardMouse2Name_candidate);
+    NuStrCpy(devices[12].name, PCKeyboardMouse2Name);
     devices[12].kind = 2;
     devices[12].product.Data1 = 2;
     devices[12].config_dirty = 1;
@@ -190,7 +189,7 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
         InstallConfig(config, 12, config->key, 0, 0);
     }
     devices[13].device = nu_keyboard_owner.device;
-    NuStrCpy(devices[13].name, PCKeyboard2Name_candidate);
+    NuStrCpy(devices[13].name, PCKeyboard2Name);
     devices[13].kind = 4;
     devices[13].product.Data1 = 4;
     devices[13].config_dirty = 1;
@@ -332,7 +331,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             length = 63;
         }
         memset(devices[port].name, 0, 63);
-        PCByteCopy_candidate(devices[port].name, instance->product_name, length);
+        PCByteCopy(devices[port].name, instance->product_name, length);
         devices[port].kind = 6;
         devices[port].capabilities_valid = 0;
         devices[port].deadzone = 64;
@@ -393,14 +392,14 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             length = 63;
         }
         memset(record->name, 0, 63);
-        PCByteCopy_candidate(record->name, instance->product_name, length);
+        PCByteCopy(record->name, instance->product_name, length);
         if (NuStrIStr((char *)instance->product_name, "Saitek") != NULL &&
             (NuStrIStr((char *)instance->product_name, "P2600") != NULL ||
              NuStrIStr((char *)instance->product_name, "P2900") != NULL)) {
             record->button_count -= 2;
         }
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetDataFormat(&PcJoystickDataFormat);
-        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel((HWND)PCInputInstance_candidate, 9);
+        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel((HWND)PCInputInstance, 9);
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->Acquire();
         ConfigureJoystickRangesPc(device);
         state->BindPreferredConfig(7, port);
@@ -412,8 +411,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         return TRUE;
     }
     PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);
-    nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, (HWND)PCInputInstance_candidate,
-                                                             22);
+    nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, (HWND)PCInputInstance, 22);
     nu_keyboard_owner.device->methods->set_format(nu_keyboard_owner.device, &PcKeyboardDataFormat);
     nu_keyboard_owner.device->methods->acquire(nu_keyboard_owner.device);
     nu_keyboard_owner.device->methods->get_caps(nu_keyboard_owner.device, &PcKeyboardCapabilities);
@@ -460,7 +458,7 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
         mouse_buttons = 0;
     }
     nu_input_state = (NuKeyboardState_PC *)new PC_INPUT_RUNTIME_PC;
-    NuKeyboardApplyActionKeys_candidate(NULL, 0);
+    PcInput_EnableKeyboards(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
     ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
@@ -571,9 +569,9 @@ i32 NuKeyboardOwner_PC::SetMouseCooperativePc(i32 value) {
     if (mouse != NULL) {
         mouse->methods->unacquire(mouse);
         if (value) {
-            mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 5);
+            mouse->methods->set_cooperative_level(mouse, PCInputInstance, 5);
         } else {
-            mouse->methods->set_cooperative_level(mouse, PCInputInstance_candidate, 6);
+            mouse->methods->set_cooperative_level(mouse, PCInputInstance, 6);
         }
         mouse->methods->acquire(mouse);
     }

@@ -4110,9 +4110,9 @@ i32 nugraphFileLoadGraph(char *filename, VARIPTR *buffer, VARIPTR *buffer_end) {
     VARIPTR start = *buffer;
 
     if (NuFileLoadBuffer(filename, start.void_ptr, buffer_end->addr - start.addr) != 0) {
-        PCByteCopy_candidate(&version, buffer->void_ptr, sizeof(version));
+        PCByteCopy(&version, buffer->void_ptr, sizeof(version));
         buffer->addr += sizeof(version);
-        PCByteCopy_candidate(start.void_ptr, buffer->void_ptr, sizeof(nugraph_s));
+        PCByteCopy(start.void_ptr, buffer->void_ptr, sizeof(nugraph_s));
         buffer->addr += sizeof(nugraph_s) - sizeof(version);
         return 1;
     }
@@ -4124,9 +4124,9 @@ i32 nugraphFileLoadTable(char *filename, VARIPTR *buffer, VARIPTR *buffer_end) {
     VARIPTR start = *buffer;
 
     if (NuFileLoadBuffer(filename, start.void_ptr, buffer_end->addr - start.addr) != 0) {
-        PCByteCopy_candidate(&version, buffer->void_ptr, sizeof(version));
+        PCByteCopy(&version, buffer->void_ptr, sizeof(version));
         buffer->addr += sizeof(version) + sizeof(nugraph_s);
-        PCByteCopy_candidate(start.void_ptr, buffer->void_ptr, 100 * sizeof(f32));
+        PCByteCopy(start.void_ptr, buffer->void_ptr, 100 * sizeof(f32));
         buffer->addr = start.addr + 100 * sizeof(f32);
         return 1;
     }

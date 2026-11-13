@@ -62,8 +62,8 @@ struct D3DXMATRIX {
 
 STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 
-extern "C" void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance) {
-    PCFrameCriticalSectionIndex_candidate = PCThreadCriticalSectionCreate_candidate();
+extern "C" void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
+    PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
     nu_keyboard_owner.Setup(window, instance);
     NuKeyboardWindowStateLeafPc();
@@ -133,12 +133,12 @@ extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
 
 extern "C" {
 
-    void __cdecl PCFrameCriticalSectionEnter_candidate(void) {
-        PCThreadCriticalSectionEnter_candidate(PCFrameCriticalSectionIndex_candidate);
+    void __cdecl NudxFw_D3DBeginCriticalSection(void) {
+        NuThreadCriticalSectionBegin(PCFrameCriticalSectionIndex);
     }
 
-    void __cdecl PCFrameCriticalSectionLeave_candidate(void) {
-        PCThreadCriticalSectionLeave_candidate(PCFrameCriticalSectionIndex_candidate);
+    void __cdecl NudxFw_D3DEndCriticalSection(void) {
+        NuThreadCriticalSectionEnd(PCFrameCriticalSectionIndex);
     }
 
     void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled) {
@@ -161,7 +161,7 @@ extern "C" {
     void __cdecl PCDeviceResetState(void) {
         i32 stage;
 
-        PCThreadCriticalSectionEnter_candidate(PCFrameCriticalSectionIndex_candidate);
+        NuThreadCriticalSectionBegin(PCFrameCriticalSectionIndex);
         PCDeviceSetRenderState(137, 0);
         PCDeviceSetRenderState(7, 1);
         PCDeviceSetRenderState(14, 1);
@@ -182,7 +182,7 @@ extern "C" {
         PCDeviceSetRenderState(22, 1);
         PCDeviceSetTextureStageState(1, 1, 1);
         PCDeviceSetTextureStageState(1, 4, 1);
-        PCThreadCriticalSectionLeave_candidate(PCFrameCriticalSectionIndex_candidate);
+        NuThreadCriticalSectionEnd(PCFrameCriticalSectionIndex);
     }
 }
 

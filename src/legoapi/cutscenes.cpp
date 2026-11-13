@@ -541,7 +541,7 @@ extern "C" {
             buffer->addr = ((u32)cursor + 3) & ~3U;
             CutList = static_cast<CUT_LOAD_LIST_ENTRY_PC *>(buffer->void_ptr);
             size = CUTCOUNT * sizeof(CUT_LOAD_LIST_ENTRY_PC);
-            PCByteCopy_candidate(CutList, entries, size);
+            PCByteCopy(CutList, entries, size);
             buffer->addr += size;
         }
     }
@@ -1042,7 +1042,7 @@ extern "C" {
             buf->addr = (buf->addr + 3) & ~3U;
             current->state_entries = reinterpret_cast<CUT_LOAD_STATE_PC *>(buf->void_ptr);
             u32 bytes = current->state_count * sizeof(CUT_LOAD_STATE_PC);
-            PCByteCopy_candidate(current->state_entries, states, bytes);
+            PCByteCopy(current->state_entries, states, bytes);
             buf->addr += bytes;
         } else {
             current->state_entries = NULL;
@@ -1157,7 +1157,7 @@ extern "C" {
             return NULL;
         }
         sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
-        PCByteCopy_candidate(sys->records, entries, sys->count * 4);
+        PCByteCopy(sys->records, entries, sys->count * 4);
         buf->addr = (buf->addr + sys->count * 4 * sys->count + 3) & ~3U;
         return sys;
     }
@@ -1269,7 +1269,7 @@ extern "C" CUT_LOAD_SYS_PC *__cdecl CutScenes_Load(char *config, NUGSCN *gscn1, 
     if (sys->count > 0) {
         sys->records = reinterpret_cast<CUT_LOAD_RECORD_PC **>(buf->void_ptr);
         u32 size = sys->count * sizeof(CUT_LOAD_RECORD_PC *);
-        PCByteCopy_candidate(sys->records, entries, size);
+        PCByteCopy(sys->records, entries, size);
         // Retail reserves count pointer-table rows after copying the count entries.
         buf->addr = (buf->addr + sys->count * size + 3) & ~3U;
         return sys;
@@ -2172,7 +2172,7 @@ extern "C" {
         NuFParDestroy(fp);
         if (player.clip_count > 0) {
             buffer->void_ptr = player.clips + player.clip_count;
-            PCByteCopy_candidate(buffer->void_ptr, &player, sizeof(player));
+            PCByteCopy(buffer->void_ptr, &player, sizeof(player));
             CutScenePlayer = (CUT_PLAYER_ACTIVE_PC *)buffer->void_ptr;
             buffer->addr += sizeof(player);
         } else {

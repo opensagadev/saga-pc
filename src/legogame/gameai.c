@@ -924,8 +924,8 @@ void __cdecl GameAISysStartFrame(AISYS_PC *system) {
     if (system->path_sys != NULL) {
         for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
             memset(system->path_sys->paths[path_index]->updated_node_bits, 0, 0x20);
-            PCByteCopy_candidate(system->path_sys->paths[path_index]->previous_inside_node_bits,
-                                 system->path_sys->paths[path_index]->inside_node_bits, 0x20);
+            PCByteCopy(system->path_sys->paths[path_index]->previous_inside_node_bits,
+                       system->path_sys->paths[path_index]->inside_node_bits, 0x20);
             memset(system->path_sys->paths[path_index]->inside_node_bits, 0, 0x20);
         }
         for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {

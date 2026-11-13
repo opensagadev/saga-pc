@@ -12414,7 +12414,7 @@ void __cdecl PCStereoUnknownToken(void);
     i32 __cdecl NuFileReadInt(NUFILE file);
     i8 __cdecl NuFileReadChar(NUFILE file);
     u16 __cdecl NuFileReadWChar(NUFILE file);
-    void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count);
+    void __cdecl PCByteCopy(void *destination, const void *source, u32 count);
 
     extern DAT_HANDLES_PC NuDatHandles;
     extern const char EpisodeIDat[14];
@@ -13696,19 +13696,19 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 nu_keyboard_repeat_countdown;
     extern i32 nu_keyboard_previous_key_index;
     extern i32 nu_keyboard_no_key_state;
-    extern HINSTANCE PCInputWindow_candidate;
-    extern HWND PCInputInstance_candidate;
-    i32 __cdecl NuKeyboardPlatformStartup_candidate(void);
-    void __cdecl NuKeyboardCreateWindowState_candidate(HWND window, HINSTANCE instance);
+    extern HINSTANCE PCInputWindow;
+    extern HWND PCInputInstance;
+    i32 __cdecl NuKeyboardPlatformStartup(void);
+    void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE instance);
     u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
-    extern const f32 PCKeyboardDefaultValue_candidate;
-    void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state);
-    void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
-                                                          i32 field_00, i32 field_01, i32 field_02, u16 field_04);
-    void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count);
-    extern i32 PCThreadCriticalSectionCount_candidate;
-    extern CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
-    extern i32 PCFrameCriticalSectionIndex_candidate;
+    extern const f32 PCKeyboardDefaultValue;
+    void __fastcall NuKeyboardResetInputRecords(NuKeyboardState_PC *state);
+    void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index, i32 field_00,
+                                                i32 field_01, i32 field_02, u16 field_04);
+    void __cdecl PcInput_EnableKeyboards(const i16 *keys, i32 count);
+    extern i32 PCThreadCriticalSectionCount;
+    extern CRITICAL_SECTION PCThreadCriticalSections[13];
+    extern i32 PCFrameCriticalSectionIndex;
     extern NUALLOC_RECORD *NuAllocRecordHead;
     extern u32 NuAllocTrackedBytes;
     extern NUALLOC_ARENA *NuAllocArena;
@@ -13901,8 +13901,8 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 NOSOUND;
     extern i32 NOMUSIC;
     extern MUSICPLAYBACK_PC Music;
-    extern f32 TextScaleX_candidate;
-    extern f32 TextScaleY_candidate;
+    extern f32 TextScaleX;
+    extern f32 TextScaleY;
     extern const f32 PermLegalScale;
     extern const char PermLegalBase[6];
     extern const char PermLegalSeparator[2];
@@ -16653,8 +16653,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc;
     extern i32 PCOggCriticalSectionPc;
     i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
-    void __cdecl PCThreadCriticalSectionEnter_candidate(i32);
-    void __cdecl PCThreadCriticalSectionLeave_candidate(i32);
+    void __cdecl NuThreadCriticalSectionBegin(i32);
+    void __cdecl NuThreadCriticalSectionEnd(i32);
     i64 __cdecl PCThreadMillisecondsPc(void);
     void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32);
     STATIC_ASSERT(sizeof(PC_DS_CAPS_VIEW) == 0x60);
@@ -17141,8 +17141,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture);
     void __cdecl PCDisplayListCriticalSectionEnterPc(void);
     void __cdecl PCDisplayListCriticalSectionLeavePc(void);
-    void __cdecl PCFrameCriticalSectionEnter_candidate(void);
-    void __cdecl PCFrameCriticalSectionLeave_candidate(void);
+    void __cdecl NudxFw_D3DBeginCriticalSection(void);
+    void __cdecl NudxFw_D3DEndCriticalSection(void);
     CHARACTER_MODEL_LAYERS_PC *__cdecl APICharacterLoaded(i32);
     f32 __cdecl AnimListFrame(CHARACTER_MODEL_LAYERS_PC *, i32, i32);
     f32 __cdecl AnimStopFrame(CHARACTER_MODEL_LAYERS_PC *, i32);
@@ -19173,14 +19173,14 @@ struct NETMESSAGE_PC {
 
     void Write8(const u8 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, &value, 1);
+            PCByteCopy(data->bytes + write_offset, &value, 1);
             write_offset++;
         }
     }
 
     void Write16(const i16 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, &value, 2);
+            PCByteCopy(data->bytes + write_offset, &value, 2);
             if (swap_endianness) {
                 EdFileSwapEndianess16(data->bytes + write_offset);
             }
@@ -19190,7 +19190,7 @@ struct NETMESSAGE_PC {
 
     void Write16(const u16 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, &value, 2);
+            PCByteCopy(data->bytes + write_offset, &value, 2);
             if (swap_endianness) {
                 EdFileSwapEndianess16(data->bytes + write_offset);
             }
@@ -19200,7 +19200,7 @@ struct NETMESSAGE_PC {
 
     void Write32(const i32 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, &value, 4);
+            PCByteCopy(data->bytes + write_offset, &value, 4);
             if (swap_endianness) {
                 EdFileSwapEndianess32(data->bytes + write_offset);
             }
@@ -19210,7 +19210,7 @@ struct NETMESSAGE_PC {
 
     void Write(const void *value, u32 size) {
         if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, value, size);
+            PCByteCopy(data->bytes + write_offset, value, size);
             write_offset += size;
         }
     }
@@ -19219,7 +19219,7 @@ struct NETMESSAGE_PC {
     void Write(const void *values, i32 size, i32 count) {
         if (data != NULL) {
             i32 bytes = size * count;
-            PCByteCopy_candidate(data->bytes + write_offset, values, bytes);
+            PCByteCopy(data->bytes + write_offset, values, bytes);
             if (swap_endianness && size > 1) {
                 u8 *element = data->bytes + write_offset;
                 for (i32 i = 0; i < count; i++) {
@@ -19241,7 +19241,7 @@ struct NETMESSAGE_PC {
     void Read(void *values, i32 size, i32 count) {
         if (data != NULL) {
             i32 bytes = size * count;
-            PCByteCopy_candidate(values, data->bytes + read_offset, bytes);
+            PCByteCopy(values, data->bytes + read_offset, bytes);
             if (swap_endianness && size > 1) {
                 u8 *element = (u8 *)values;
                 for (i32 i = 0; i < count; i++) {
@@ -19262,7 +19262,7 @@ struct NETMESSAGE_PC {
 
     void Read(void *value, u32 size) {
         if (data != NULL) {
-            PCByteCopy_candidate(value, data->bytes + read_offset, size);
+            PCByteCopy(value, data->bytes + read_offset, size);
             read_offset += size;
         }
     }
@@ -19271,14 +19271,14 @@ struct NETMESSAGE_PC {
     void Prepend8(u8 value) {
         if (data != NULL) {
             read_offset--;
-            PCByteCopy_candidate(data->bytes + read_offset, &value, 1);
+            PCByteCopy(data->bytes + read_offset, &value, 1);
         }
     }
 
     void Prepend16(const i16 &value) {
         if (data != NULL) {
             read_offset -= 2;
-            PCByteCopy_candidate(data->bytes + read_offset, &value, 2);
+            PCByteCopy(data->bytes + read_offset, &value, 2);
             if (swap_endianness) {
                 EdFileSwapEndianess16(data->bytes + read_offset);
             }
@@ -19287,14 +19287,14 @@ struct NETMESSAGE_PC {
 
     void Read8(u8 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(&value, data->bytes + read_offset, 1);
+            PCByteCopy(&value, data->bytes + read_offset, 1);
             read_offset++;
         }
     }
 
     void Read16(i16 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(&value, data->bytes + read_offset, 2);
+            PCByteCopy(&value, data->bytes + read_offset, 2);
             if (swap_endianness) {
                 EdFileSwapEndianess16(&value);
             }
@@ -19304,7 +19304,7 @@ struct NETMESSAGE_PC {
 
     void Read16(u16 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(&value, data->bytes + read_offset, 2);
+            PCByteCopy(&value, data->bytes + read_offset, 2);
             if (swap_endianness) {
                 EdFileSwapEndianess16(&value);
             }
@@ -19314,7 +19314,7 @@ struct NETMESSAGE_PC {
 
     void Read32(i32 &value) {
         if (data != NULL) {
-            PCByteCopy_candidate(&value, data->bytes + read_offset, 4);
+            PCByteCopy(&value, data->bytes + read_offset, 4);
             if (swap_endianness) {
                 EdFileSwapEndianess32(&value);
             }
@@ -24055,7 +24055,7 @@ extern "C" {
     HRESULT __cdecl PCDeviceEndScenePc(void);
     i32 __cdecl NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture);
     i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target);
-    void __cdecl NuDisplayListPurge_candidate(void);
+    void __cdecl NuDisplayListCaptureBegin(void);
     void __cdecl NuRndrEndSceneEx(i32 flags);
     void __cdecl NuTimeBarSetRender(i32 set);
     void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *framebuffer);
@@ -24229,7 +24229,7 @@ extern "C" {
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void);
     void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *, i32);
     void __cdecl PCGraphicsCopyFramebufferTex2DPc(i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, i32, i32);
-    void __cdecl NuDisplayListDrawRenderScene_candidate(i32);
+    void __cdecl NuDisplayListDrawRenderScene(i32);
     void __cdecl NuDisplayListDrawItems(NUDISPLAYLISTITEM *);
 #ifdef __cplusplus
 }

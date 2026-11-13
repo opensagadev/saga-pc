@@ -500,8 +500,8 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
 
     if (Mission_Active(MissionSys) != NULL && ((AREA_MISSION_READER_PC *)MissionSys)->character_count > 0) {
         i16 mission_characters[48];
-        PCByteCopy_candidate(mission_characters, ((AREA_MISSION_READER_PC *)MissionSys)->character_ids,
-                             ((AREA_MISSION_READER_PC *)MissionSys)->character_count * sizeof(i16));
+        PCByteCopy(mission_characters, ((AREA_MISSION_READER_PC *)MissionSys)->character_ids,
+                   ((AREA_MISSION_READER_PC *)MissionSys)->character_count * sizeof(i16));
         const u8 shuffle_count = ((AREA_MISSION_READER_PC *)MissionSys)->character_count;
         if (shuffle_count > 2) {
             for (index = 0; index < shuffle_count * 3; ++index) {
@@ -796,7 +796,7 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
     if (counter_count > 0) {
         characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
         ADataList[area].super_counters = (AREA_SUPERCOUNTER_PC *)characterbuffer_ptr.addr;
-        PCByteCopy_candidate(ADataList[area].super_counters, counters, counter_count * sizeof(AREA_SUPERCOUNTER_PC));
+        PCByteCopy(ADataList[area].super_counters, counters, counter_count * sizeof(AREA_SUPERCOUNTER_PC));
         ADataList[area].super_counter_count = (u8)counter_count;
         characterbuffer_ptr.addr += counter_count * sizeof(AREA_SUPERCOUNTER_PC);
     }

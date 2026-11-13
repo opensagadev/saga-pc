@@ -35,7 +35,7 @@ void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const ch
         va_end(arguments);
     }
     sprintf(PCNativeDebugOutputBuffer, "\n%s\n", PCNativeDebugFormatBuffer);
-    MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "Fatal Error!", 0x10);
+    MessageBoxA((HWND)PCInputInstance, PCNativeDebugOutputBuffer, "Fatal Error!", 0x10);
     raise(22);
     _exit(3);
 }
@@ -49,7 +49,7 @@ extern "C" void __cdecl PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, 
         va_end(arguments);
     }
     sprintf(PCNativeDebugOutputBuffer, "\n%s\n", PCNativeDebugFormatBuffer);
-    MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "", 0x30);
+    MessageBoxA((HWND)PCInputInstance, PCNativeDebugOutputBuffer, "", 0x30);
 }
 
 extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
@@ -63,7 +63,7 @@ extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, cons
             "Important. Do not ignore!\n\n%s\n\n(Your application has generated an error message)\n\n",
             PCNativeDebugFormatBuffer);
     PCNativeErrorHookPc(PCNativeDebugOutputBuffer);
-    switch (MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "Nu2Api Runtime Error!", 0x12)) {
+    switch (MessageBoxA((HWND)PCInputInstance, PCNativeDebugOutputBuffer, "Nu2Api Runtime Error!", 0x12)) {
         case IDABORT:
             raise(22);
             _exit(3);

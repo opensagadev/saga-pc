@@ -22,7 +22,7 @@ extern "C" i32 __cdecl FmvStartPc(const char *path, f32 volume, i32 option) {
     if (FmvInitializedPc == 0) {
         PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
         GRAPHICS_FACTORY_PC *factory = PCDeviceBackend.factory;
-        if (FmvInitializePc(PCInputInstance_candidate, factory, device, NuFmvGetSoundFactoryPc()) == 0) {
+        if (FmvInitializePc(PCInputInstance, factory, device, NuFmvGetSoundFactoryPc()) == 0) {
             FmvClosePc(&FmvMoviePc);
             return 0;
         }

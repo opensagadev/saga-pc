@@ -47,8 +47,6 @@ MissionIconPositionsPc,UpdateMissionIconX,function,high: called at the same posi
 NuApiPrintLinePc,PrintStartupString,function,high: called at the same position in NuFrameEnd
 NuApiSetEndFrameCallbackPc,NuRegisterEndFrameCallBackFn,function,high: called at the same position in DebrisSetup2
 NuDebrisCreateVertexBuffersPc,debris_InitializeD3D,function,high: called at the same position in NuInitDebrisRenderer
-NuDisplayListPurge_candidate,NuDisplayListCaptureBegin,function,high: called at the same position in NuRndrSwapScreen
-NuKeyboardApplyActionKeys_candidate,PcInput_EnableKeyboards,function,high: called at the same position in NuPadMapPlayerToPort
 NuKeyboardBasePortPc,PcInput_GetFirstKeyboardPort,function,high: called at the same position in PlayersDropInOut
 NuKeyboardClearActiveDevicesPc,PcInput_DisableAllKeyboards,function,high: called at the same position in NuPadMapPlayerToPort
 NuMtlInitShaderResourcesPc,Nu360MtlInit,function,high: called at the same position in NuMtlInitExPS
@@ -62,12 +60,8 @@ NuSound3GetMusicStreamStatusPc,NuSoundGetStereoStreamStatus,function,high: calle
 NuTexRegisterRenderTargetPc,NuEffectTexMapNative,function,low: called at the same position in NuTexCreateFramebufferCopy
 NuVec4ScaleForwardPc,NuVec4ScaleXYZVU0,function,high: called at the same position in NuLgtArcLaserDraw NuLgtLaserDraw
 NuVpSetIdentityPc,NuVpGetClippingMtx,function,low: called at the same position in NuCameraSet
-PCFrameCriticalSectionEnter_candidate,NudxFw_D3DBeginCriticalSection,function,high: called at the same position in NuGScnDestroyPS NuGScnFixupPS NuGScnUploadGfxDataFromFilePS NuTexCreatePS NuTexDestroyPS
-PCFrameCriticalSectionLeave_candidate,NudxFw_D3DEndCriticalSection,function,high: called at the same position in NuGScnDestroyPS NuGScnFixupPS NuGScnUploadGfxDataFromFilePS NuTexCreatePS NuTexDestroyPS
 PCGraphicsGetFramebufferAttachmentPc,NuFramebufferGetAttachedTex,function,high: called at the same position in NuMotionFilterGen::render
 PCPresentationPlatformLeafPc,NudxInput_Clearflags,function,low: called at the same position in GamePads_SkipMovie
-PCThreadCriticalSectionEnter_candidate,NuThreadCriticalSectionBegin,function,high: called at the same position in NuDisplayListSwapBuffersEndFrame NuDisplaySceneDestroy OggReader::Open
-PCThreadCriticalSectionLeave_candidate,NuThreadCriticalSectionEnd,function,high: called at the same position in NuDisplayListAnimateMtls NuDisplaySceneAdd NuDisplaySceneClone NuTexAnimProcess OggReader::Open
 PCThreadMillisecondsPc,NuTimeGetTime,function,low: called at the same position in OggReader::Open
 PcControlInitializePc,PC_StartCtrlConfig,function,low: called at the same position in PlayersDropInOut
 PcControlRegisterPc,PC_InitCtrlConfig,function,low: called at the same position in LoadPermData

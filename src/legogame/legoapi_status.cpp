@@ -1501,7 +1501,7 @@ extern "C" {
                                 new_level_from_menu = 1;
                                 break;
                             case 1:
-                                SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
+                                SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
                                 break;
                         }
                     } else if (up != 0) {
@@ -1519,7 +1519,7 @@ extern "C" {
                 return;
             case 2:
                 if (GameTimer.time_elapsed >= 8.0f) {
-                    SendMessageA(PCInputInstance_candidate, WM_CLOSE, 0, 0);
+                    SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
                 }
                 return;
             default:

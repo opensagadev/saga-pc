@@ -23,7 +23,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     rndr_blend_shape_deformer_wt_cnt = 0xef00;
     rndr_blend_shape_deformer_wt_ptrs_cnt = 0x800;
     PCFrameBeginScenePc(1);
-    PCFrameCriticalSectionEnter_candidate();
+    NudxFw_D3DBeginCriticalSection();
     PCDeviceSetTexture(0, NULL);
     PCDeviceSetTexture(1, NULL);
     PCDeviceSetTexture(2, NULL);
@@ -37,7 +37,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     NuDisplayListSwapBuffersEndFrame();
     NuRndrSwapStreamBuffers();
     _NuTimeBarSlotEnd(-1, 0);
-    NuDisplayListPurge_candidate();
+    NuDisplayListCaptureBegin();
     _NuTimeBarSlotBegin(-1, 4, "CPU_QUEUE_DRAW");
     for (i32 i = 0; i < nuspecial_vertex_noffsets && i * 16 < 0x80; ++i) {
         NuShaderManagerSetElementfv(0x4e, i, nuspecial_vertex_offsets[i]);
@@ -138,7 +138,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         }
         if (scene->scene_id != -1) {
             D3DPERF_BeginEvent((D3DCOLOR)-1, L"3D render");
-            NuDisplayListDrawRenderScene_candidate(scene->scene_id);
+            NuDisplayListDrawRenderScene(scene->scene_id);
             D3DPERF_EndEvent();
         }
         if (rendered_effect) {
@@ -184,7 +184,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     PCDeviceEndScenePc(); /* Genuine native10-byte wrapper6e4a10; result unused. */
     PcInputEndFramePc();
     PCFramePresentNativePc(mode, 1);
-    PCFrameCriticalSectionLeave_candidate();
+    NudxFw_D3DEndCriticalSection();
     NuTimeBarSlotReset(-1, 0);
     _NuTimeBarSlotBegin(-1, 0, "CPU");
     return 1;

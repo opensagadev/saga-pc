@@ -923,7 +923,7 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
             customiser->locator_y_offsets[category] = y_offsets[category];
             for (index = 0; index < count; ++index) {
                 if (categories[index] == category) {
-                    PCByteCopy_candidate(output, &pieces[index], sizeof(*output));
+                    PCByteCopy(output, &pieces[index], sizeof(*output));
                     ++customiser->piece_counts[category];
                     ++output;
                 }

@@ -1509,7 +1509,7 @@ i32 __cdecl NuFileCopy(char *destination, char *source) {
     return NuFileCopyEx(destination, source, buffer, sizeof(buffer));
 }
 
-void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count) {
+void __cdecl PCByteCopy(void *destination, const void *source, u32 count) {
     u8 *dst = (u8 *)destination;
     const u8 *src = (const u8 *)source;
 
@@ -2119,7 +2119,7 @@ i32 __cdecl NuDatFileGetFreeInfo(void) {
     i32 found = -1;
     i32 index;
 
-    PCThreadCriticalSectionEnter_candidate(file_criticalsection);
+    NuThreadCriticalSectionBegin(file_criticalsection);
     for (index = 0; index < 20; index++) {
         if (pc_dat_file_infos[index].is_used == 0) {
             found = index;
@@ -2127,7 +2127,7 @@ i32 __cdecl NuDatFileGetFreeInfo(void) {
             break;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(file_criticalsection);
+    NuThreadCriticalSectionEnd(file_criticalsection);
     return found;
 }
 
@@ -2135,7 +2135,7 @@ i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index) {
     i32 found = -1;
     i32 index;
 
-    PCThreadCriticalSectionEnter_candidate(file_criticalsection);
+    NuThreadCriticalSectionBegin(file_criticalsection);
     for (index = 0; index < 8; index++) {
         if (header->open_files[index].info_idx == -1) {
             header->open_files[index].info_idx = info_index;
@@ -2143,7 +2143,7 @@ i32 __cdecl NuDatFileGetFreeHandleIX(NUDATHDR *header, i32 info_index) {
             break;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(file_criticalsection);
+    NuThreadCriticalSectionEnd(file_criticalsection);
     return found;
 }
 
@@ -2348,12 +2348,12 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
                     hash += 2;
                 }
                 hashes_start = (u8 *)header->file_tree;
-                PCByteCopy_candidate(hashes_start, header->hash_idxs, header->file_count * sizeof(u32));
+                PCByteCopy(hashes_start, header->hash_idxs, header->file_count * sizeof(u32));
                 header->hash_idxs = (u32 *)hashes_start;
                 cursor = hashes_start + header->file_count * sizeof(u32);
                 if (header->hashes_len != 0) {
                     header->hashes = (char *)cursor;
-                    PCByteCopy_candidate(cursor, cursor, header->hashes_len);
+                    PCByteCopy(cursor, cursor, header->hashes_len);
                     cursor += header->hashes_len;
                 }
                 arena->void_ptr = cursor;
@@ -2709,8 +2709,8 @@ i32 __cdecl NuFilePakCondense(void *pak) {
                 removed_size &= ~(item->alignment - 1);
             }
             if (removed_size != 0) {
-                PCByteCopy_candidate((char *)header + item->data_offset - removed_size,
-                                     (char *)header + item->data_offset, item->size);
+                PCByteCopy((char *)header + item->data_offset - removed_size, (char *)header + item->data_offset,
+                           item->size);
                 item->data_offset -= removed_size;
             }
         } else {
@@ -2727,7 +2727,7 @@ void __cdecl NuFilePakRelocate(void *pak, void *destination) {
     u32 size = header->file_size;
 
     fpk_err = 0;
-    PCByteCopy_candidate(destination, header, size);
+    PCByteCopy(destination, header, size);
 }
 
 i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
@@ -7637,7 +7637,7 @@ f32 __cdecl NuFrameEnd(void) {
     NuWindAnimate(nuapi.wind, nuapi.frame_time);
     NuFrameEndLeafPc();
     PCDisplayListCriticalSectionEnterPc();
-    PCFrameCriticalSectionEnter_candidate();
+    NudxFw_D3DBeginCriticalSection();
     /* DispatchMessage may update the native focus and policy flags. */
     if (SoundVoiceEnabledGate == 0) {
         if (PcNoFocusPolicy != 0) {
@@ -7666,7 +7666,7 @@ f32 __cdecl NuFrameEnd(void) {
     NuTimeBarSetRender(-1);
     NuRndrSwapScreenEx(1, NuApiEndFrameCallbackPc);
     PCDisplayListCriticalSectionLeavePc();
-    PCFrameCriticalSectionLeave_candidate();
+    NudxFw_D3DEndCriticalSection();
 
     NuTimeGetTicksPS(&now.low, &now.high);
     if (now.high < 0) {
@@ -8196,7 +8196,7 @@ void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
 
         NuPadSetStatus(player, 1);
         PlayerLastPort[player] = (i16)port;
-        NuKeyboardApplyActionKeys_candidate(PlayerLastPort, 8);
+        PcInput_EnableKeyboards(PlayerLastPort, 8);
     } else {
         NuPadSetStatus(player, 0);
     }

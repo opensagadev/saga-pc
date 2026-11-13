@@ -590,7 +590,7 @@ void NetworkObjectManager::NetPeerPush::NextStage() {
 }
 
 void NetworkObjectManager::ChangeContext(NOSContext &new_context) {
-    PCByteCopy_candidate(&context, &new_context, sizeof(context));
+    PCByteCopy(&context, &new_context, sizeof(context));
 }
 
 void NetworkObjectManager::ReceiveStopMessage(NETMESSAGE_PC &, const V2Peer &peer) {
@@ -1148,7 +1148,7 @@ void NetworkObjectManager::Update() {
 }
 
 NOSContext &NOSContext::operator=(const NOSContext &other) {
-    PCByteCopy_candidate(this, &other, sizeof(*this));
+    PCByteCopy(this, &other, sizeof(*this));
     return *this;
 }
 
@@ -1402,7 +1402,7 @@ void NetworkObjectManager::BindReplicator(NetReplicator *replicator, const EdCla
 void NetworkObjectManager::Start(const NOSContext &new_context) {
     if (!active) {
         active = 1;
-        PCByteCopy_candidate(&context, &new_context, sizeof(context));
+        PCByteCopy(&context, &new_context, sizeof(context));
         NETMESSAGE_PC message(0x20);
         message.Write8(9);
         message.Write(&context, sizeof(context));
@@ -1748,7 +1748,7 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
                 NetTrace();
             }
             f32 actual[3];
-            PCByteCopy_candidate(actual, values, count * sizeof(f32));
+            PCByteCopy(actual, values, count * sizeof(f32));
             PredictorData *samples[3];
             for (i32 i = 0; i < count; i++) {
                 samples[i] = (PredictorData *)REPLICATOR_ALIGN(data.cursor);

@@ -2789,7 +2789,7 @@ STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 
 void __cdecl edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {
-        PCByteCopy_candidate(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
+        PCByteCopy(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
         edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
         curr_rtl_undo[rtl_undo_ix] = curr_rtl;
         rtl_locked_undo[rtl_undo_ix] = rtl_locked;
@@ -3950,14 +3950,14 @@ __declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = (char *)RtlFil
 
 void __cdecl edrtlUndo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {
-        PCByteCopy_candidate(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
+        PCByteCopy(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
         edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
         curr_rtl_undo[rtl_undo_ix] = curr_rtl;
         rtl_locked_undo[rtl_undo_ix] = rtl_locked;
         base_rtl_undo[rtl_undo_ix] = base_rtl;
         rtl_undo_ix = (rtl_undo_ix - 1) & (maxundo - 1);
         --rtl_undo_cnt;
-        PCByteCopy_candidate(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
+        PCByteCopy(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
         edcamSetPos(&curpos_undo[rtl_undo_ix]);
         burn_editor_position_pc = curpos_undo[rtl_undo_ix];
         curr_rtl = curr_rtl_undo[rtl_undo_ix];
@@ -3975,7 +3975,7 @@ void __cdecl edrtlRedo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt < rtl_undo_maxcnt) {
         rtl_undo_ix = (rtl_undo_ix + 1) & (maxundo - 1);
         ++rtl_undo_cnt;
-        PCByteCopy_candidate(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
+        PCByteCopy(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
         edcamSetPos(&curpos_undo[rtl_undo_ix]);
         burn_editor_position_pc = curpos_undo[rtl_undo_ix];
         curr_rtl = curr_rtl_undo[rtl_undo_ix];

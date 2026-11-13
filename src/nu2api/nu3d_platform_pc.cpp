@@ -1929,10 +1929,10 @@ extern "C" {
     void __cdecl NuTexCreatePS(NUTEXDIM_PC *texture) {
         PC_TEXTURE_LEVEL_DESC_PC description;
         if (texture != NULL && texture->image_data != NULL && texture->image_size != 0) {
-            PCFrameCriticalSectionEnter_candidate();
+            NudxFw_D3DBeginCriticalSection();
             PCDeviceCreateTextureFromMemory(texture->image_data, texture->image_size, &texture->resource);
             texture->resource->methods->get_level_desc(texture->resource, 0, &description);
-            PCFrameCriticalSectionLeave_candidate();
+            NudxFw_D3DEndCriticalSection();
             texture->width = (i32)description.width;
             texture->height = (i32)description.height;
             texture->image_data = NULL;
@@ -1942,9 +1942,9 @@ extern "C" {
 
     void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {
         if (texture != NULL) {
-            PCFrameCriticalSectionEnter_candidate();
+            NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&texture->resource);
-            PCFrameCriticalSectionLeave_candidate();
+            NudxFw_D3DEndCriticalSection();
         }
     }
 
@@ -2240,7 +2240,7 @@ extern "C" {
         PCShadowPacketCount = 0;
     }
 
-    void __cdecl NuRndrShadowOnOff_candidate(i32 value) {
+    void __cdecl NuRndrShadowOnOff(i32 value) {
         NuRndrControlStatePc = value;
     }
 
@@ -4324,7 +4324,7 @@ extern "C" {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
         PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
         PC_SHADER_HANDLE_VIEW *shader, *variant;
-        PCFrameCriticalSectionEnter_candidate();
+        NudxFw_D3DBeginCriticalSection();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
             if (mtl->shader.texture_unit_count <= 0) {
@@ -4367,7 +4367,7 @@ extern "C" {
             colour |= static_cast<u8>(mtl->diffuse.x * 255.0);
             mtl->shader.packed_diffuse_colour = colour;
         }
-        PCFrameCriticalSectionLeave_candidate();
+        NudxFw_D3DEndCriticalSection();
     }
 
     void NuMtlSetUVOffsetPS(NUMTL *mtl, u32 layer, f32 u, f32 v) {
@@ -4555,7 +4555,7 @@ extern "C" {
                 SceneUploadBufferCursorPC.addr += texture.size;
                 bytes_read += NuFileRead(file, data, texture.size);
                 if (skip_texture == 0) {
-                    PCFrameCriticalSectionEnter_candidate();
+                    NudxFw_D3DBeginCriticalSection();
                     if (texture.width < 0) {
                         texture.width = -texture.width;
                         PCDeviceCreateCubeTextureFromMemory(data, texture.size, &SceneVideoResourcesPC.textures[i]);
@@ -4569,7 +4569,7 @@ extern "C" {
                         PCDeviceCreateTextureFromMemoryEx(data, texture.size, texture.width, texture.height, -3, 0, 0,
                                                           1, -1, -1, 0, NULL, NULL, &SceneVideoResourcesPC.textures[i]);
                     }
-                    PCFrameCriticalSectionLeave_candidate();
+                    NudxFw_D3DEndCriticalSection();
                     if (bgProcIsBgThread() != 0 && PCFrameLoadingYieldEnabled() != 0) {
                         Sleep(10);
                     }
@@ -4592,13 +4592,13 @@ extern "C" {
                 SceneUploadBufferCursorPC.addr += size;
                 bytes_read += NuFileRead(file, data, size);
                 void *locked_data;
-                PCFrameCriticalSectionEnter_candidate();
+                NudxFw_D3DBeginCriticalSection();
                 PCDeviceCreateVertexBuffer(size, 0, 0, 1, &SceneVideoResourcesPC.vertex_buffers[i]);
                 SceneVideoResourcesPC.vertex_buffers[i]->methods->lock(SceneVideoResourcesPC.vertex_buffers[i], 0, 0,
                                                                        &locked_data, 0);
                 memcpy(locked_data, data, size);
                 SceneVideoResourcesPC.vertex_buffers[i]->methods->unlock(SceneVideoResourcesPC.vertex_buffers[i]);
-                PCFrameCriticalSectionLeave_candidate();
+                NudxFw_D3DEndCriticalSection();
                 SceneUploadBufferCursorPC.addr -= size;
             }
         }
@@ -4617,13 +4617,13 @@ extern "C" {
                 SceneUploadBufferCursorPC.addr += size;
                 bytes_read += NuFileRead(file, data, size);
                 void *locked_data;
-                PCFrameCriticalSectionEnter_candidate();
+                NudxFw_D3DBeginCriticalSection();
                 PCDeviceCreateIndexBuffer(size, 0, 0x65, 1, &SceneVideoResourcesPC.index_buffers[i], NULL);
                 SceneVideoResourcesPC.index_buffers[i]->methods->lock(SceneVideoResourcesPC.index_buffers[i], 0, 0,
                                                                       &locked_data, 0);
                 memcpy(locked_data, data, size);
                 SceneVideoResourcesPC.index_buffers[i]->methods->unlock(SceneVideoResourcesPC.index_buffers[i]);
-                PCFrameCriticalSectionLeave_candidate();
+                NudxFw_D3DEndCriticalSection();
                 SceneUploadBufferCursorPC.addr -= size;
             }
         }
@@ -4711,10 +4711,10 @@ extern "C" {
             geometry->vertex_buffer = SceneVideoResourcesPC.vertex_buffers[(u32)geometry->vertex_buffer];
             if (geometry->vertex_format != 0) {
                 dynamic = 1;
-                PCFrameCriticalSectionEnter_candidate();
+                NudxFw_D3DBeginCriticalSection();
                 PCDeviceCreateVertexBuffer(geometry->vertex_stride * geometry->vertex_count, 0x208, 0, 0,
                                            &geometry->dynamic_vertex_buffer);
-                PCFrameCriticalSectionLeave_candidate();
+                NudxFw_D3DEndCriticalSection();
             }
         }
         if (dynamic != 0) {
@@ -4747,19 +4747,19 @@ extern "C" {
         i32 i, j;
         u8 released;
         for (i = 0; i != native->vertex_buffer_count; ++i) {
-            PCFrameCriticalSectionEnter_candidate();
+            NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&native->vertex_buffers[i]);
-            PCFrameCriticalSectionLeave_candidate();
+            NudxFw_D3DEndCriticalSection();
         }
         for (i = 0; i != native->index_buffer_count; ++i) {
-            PCFrameCriticalSectionEnter_candidate();
+            NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&native->index_buffers[i]);
-            PCFrameCriticalSectionLeave_candidate();
+            NudxFw_D3DEndCriticalSection();
         }
         for (i = 0; i != scene->texture_count; ++i) {
-            PCFrameCriticalSectionEnter_candidate();
+            NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&scene->textures[i]->resource);
-            PCFrameCriticalSectionLeave_candidate();
+            NudxFw_D3DEndCriticalSection();
         }
         released = 0;
         for (i = 0; i != native->geometry_count; ++i) {
@@ -4767,10 +4767,10 @@ extern "C" {
             if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
                 PC_TEXTURE_RESOURCE_PC *resource;
                 released = 1;
-                PCFrameCriticalSectionEnter_candidate();
+                NudxFw_D3DBeginCriticalSection();
                 resource = geometry->resource;
                 resource->methods->release(resource);
-                PCFrameCriticalSectionLeave_candidate();
+                NudxFw_D3DEndCriticalSection();
             }
         }
         if (released) {
@@ -4803,9 +4803,9 @@ extern "C" {
                 for (j = 0; j != native->geometry_count; ++j) {
                     SCENE_FIXUP_GEOMETRY_PC *geometry = native->geometries[j];
                     if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
-                        PCFrameCriticalSectionEnter_candidate();
+                        NudxFw_D3DBeginCriticalSection();
                         geometry->dynamic_vertex_buffer->methods->release(geometry->dynamic_vertex_buffer);
-                        PCFrameCriticalSectionLeave_candidate();
+                        NudxFw_D3DEndCriticalSection();
                     }
                 }
             }
@@ -4823,10 +4823,10 @@ extern "C" {
                 for (j = 0; j != native->geometry_count; ++j) {
                     SCENE_FIXUP_GEOMETRY_PC *geometry = native->geometries[j];
                     if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
-                        PCFrameCriticalSectionEnter_candidate();
+                        NudxFw_D3DBeginCriticalSection();
                         PCDeviceCreateVertexBuffer(geometry->vertex_stride * geometry->vertex_count, 0x208, 0, 0,
                                                    &geometry->dynamic_vertex_buffer);
-                        PCFrameCriticalSectionLeave_candidate();
+                        NudxFw_D3DEndCriticalSection();
                     }
                 }
             }
@@ -4995,7 +4995,7 @@ extern "C" {
             buffer->addr = (buffer->addr + 31) & ~31u;
             buffer->addr += geometry->vertex_count * geometry->vertex_stride;
             destination = (u8 *)copy->dynamic_vertices;
-            PCByteCopy_candidate(destination, locked, geometry->vertex_count * geometry->vertex_stride);
+            PCByteCopy(destination, locked, geometry->vertex_count * geometry->vertex_stride);
             for (vertex = 0; vertex != geometry->vertex_count; ++vertex) {
                 for (morph = 0; morph != geometry->morph_count; ++morph) {
                     f32 weight = ((PC_SPECIAL_DEFORMER_WEIGHTS *)weights)->weights[morph];
@@ -5496,8 +5496,7 @@ extern "C" {
                 if (packet->dynamic_count != 0 && packet->dynamic_vertices != NULL) {
                     void *locked;
                     PCDeviceLockVertexBuffer(0, 0, &locked, 0x2000, packet->dynamic_buffer);
-                    PCByteCopy_candidate(locked, packet->dynamic_vertices,
-                                         packet->vertex_stride * packet->vertex_count);
+                    PCByteCopy(locked, packet->dynamic_vertices, packet->vertex_stride * packet->vertex_count);
                     PCDeviceUnlockVertexBuffer(packet->dynamic_buffer);
                     PCDeviceSetStreamSourcePc(0, packet->dynamic_buffer, 0, packet->vertex_stride);
                     PCDeviceSetIndicesPc(packet->index_buffer);

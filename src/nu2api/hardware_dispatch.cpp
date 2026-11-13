@@ -304,7 +304,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         if (show == 0) {
             NuHwShowCommandPc = 0;
         }
-        if (!CreateWindowPc(PCInputWindow_candidate, NuHwShowCommandPc, (u16)icon)) {
+        if (!CreateWindowPc(PCInputWindow, NuHwShowCommandPc, (u16)icon)) {
             exit(1);
         }
     } else {
@@ -314,7 +314,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     }
     NuPrimInit(buffer, *end);
     PCGraphicsInitRenderTexturePool(buffer, *end);
-    NuKeyboardPlatformStartup_candidate();
+    NuKeyboardPlatformStartup();
     nuapi.video_aspect =
         PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
     SetCursor(NULL);
@@ -337,10 +337,10 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
         }
         const char **names = (const char **)NuAlloc(count * 4, NuHwAllocSourcePc, 0x2a0);
         if (NuHwDfsNamePc && *NuHwDfsNamePc) {
-            PCByteCopy_candidate(names, &NuHwDfsNamePc, 4);
+            PCByteCopy(names, &NuHwDfsNamePc, 4);
         }
         if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
-            PCByteCopy_candidate(names + 1, &NuHwSoundDfsNamePc, 4);
+            PCByteCopy(names + 1, &NuHwSoundDfsNamePc, 4);
         }
         dat_names = names;
         dat_count = count;

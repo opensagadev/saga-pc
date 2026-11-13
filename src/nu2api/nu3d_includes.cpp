@@ -11,7 +11,7 @@
 // nufloat, numtx, nuhtml, nustateanim and nufrustum_pc stay separate: merged, their small leaves inline into
 // nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2, TestBox).
 // StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
-// PCSpecialEmptyHandler_candidate, so it knew the hook's register use (same unit).
+// PCSpecialEmptyHandler, so it knew the hook's register use (same unit).
 // nuvec and nucamera stay separate for the same reason (AnimationDiagnosticNoOpPc and the nucamera
 // getters fold into their callers); nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5%
 // to 66.3%.
@@ -192,7 +192,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, animation) == 8);
     STATIC_ASSERT(sizeof(NuAnimData2FileHeader_PC) == 12);
 
-    extern void __cdecl PCSpecialEmptyHandler_candidate(...);
+    extern void __cdecl PCSpecialEmptyHandler(...);
 
     typedef struct ANIMATION_PACK_HEADER_PC {
         u32 first_word;
@@ -3607,7 +3607,7 @@ extern "C" {
         }
         cursor->addr = (cursor->addr + 15) & ~15u;
         if (*(i32 *)*data > 0x10000 || *(i32 *)*data < 0) {
-            PCSpecialEmptyHandler_candidate();
+            PCSpecialEmptyHandler();
         }
         memcpy(cursor->void_ptr, *data, *(u32 *)*data);
         *data = cursor->void_ptr;
@@ -4559,7 +4559,7 @@ extern "C" {
         buffer->addr = (buffer->addr + 15) & ~15U;
         buffer->addr += reader->size;
         if (buffer->addr < end->addr) {
-            PCByteCopy_candidate(duplicate, font, reader->size);
+            PCByteCopy(duplicate, font, reader->size);
             duplicate->flags |= 1;
             duplicate->glyphs = (VUFNTCHAR *)((u32)duplicate->glyphs + (u32)duplicate - (u32)font);
             duplicate->unicode_map = (VUCHARIDX *)((u32)duplicate->unicode_map + (u32)duplicate - (u32)font);
@@ -4640,7 +4640,7 @@ extern "C" {
                 NuTexDestroy(texture_id);
             }
         }
-        PCSpecialEmptyHandler_candidate(path);
+        PCSpecialEmptyHandler(path);
         *buffer = saved;
         return NULL;
     }
@@ -6389,7 +6389,7 @@ extern "C" {
             if (next != 0) {
                 *value = state->values[next - 1];
             } else {
-                PCSpecialEmptyHandler_candidate();
+                PCSpecialEmptyHandler();
                 *value = state->values[0];
             }
             next = *index;
@@ -7153,13 +7153,13 @@ extern "C" {
             mtl->attributes_high |= 0x10;
             mtl->flags = (mtl->flags & 0xf00f) | (render_plane << 4) | 5;
             if (is_3d != 0) {
-                PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+                NuThreadCriticalSectionBegin(nudlist_field_fc4);
                 if (PCDisplayMaterialAddCount == 600) {
-                    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+                    NuThreadCriticalSectionEnd(nudlist_field_fc4);
                     AnimationDiagnosticNoOpPc();
                 } else {
                     PCDisplayMaterialAddQueue[PCDisplayMaterialAddCount++] = ((NUMTL *)(mtl));
-                    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+                    NuThreadCriticalSectionEnd(nudlist_field_fc4);
                 }
             } else {
                 mtl->attributes_high |= 0x800000;
@@ -8317,7 +8317,7 @@ extern "C" {
         if (scene == NULL) {
             return;
         }
-        PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionBegin(nudlist_field_fc4);
         NuDisplaySceneDestroyPS(scene);
         for (i = 0, cursor = PCDisplayScenes; i < (i32)nudlist_field_9d8; ++i, ++cursor) {
             if (*cursor == scene) {
@@ -8329,7 +8329,7 @@ extern "C" {
         }
     found:
         /* The folded no-op diagnostic takes the freed allocation as its argument. */
-        ((void(__cdecl *)(void *))PCSpecialEmptyHandler_candidate)(scene->allocation);
+        ((void(__cdecl *)(void *))PCSpecialEmptyHandler)(scene->allocation);
         for (i = 0; i < scene->sort_count; ++i) {
             NUSORTPRI *previous = NULL;
             NUSORTPRI *sort;
@@ -8364,15 +8364,15 @@ extern "C" {
         if (removed != 0) {
             --nudlist_field_9d8;
         }
-        PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
     void __cdecl NuDisplayListDestroyMtl(NUMTL *material) {
         u32 index;
         i32 found = -1;
-        PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionBegin(nudlist_field_fc4);
         if (material->display_list == NULL) {
-            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            NuThreadCriticalSectionEnd(nudlist_field_fc4);
             return;
         }
         for (index = 0; index < PCDisplayMaterialCount; ++index) {
@@ -8382,16 +8382,16 @@ extern "C" {
             }
         }
         if (found == -1) {
-            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            NuThreadCriticalSectionEnd(nudlist_field_fc4);
             return;
         }
         if (PCDisplayMaterialDeleteCount == 600) {
             AnimationDiagnosticNoOpPc();
-            PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+            NuThreadCriticalSectionEnd(nudlist_field_fc4);
             return;
         }
         PCDisplayMaterialDeleteQueue[PCDisplayMaterialDeleteCount++] = material;
-        PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
     static void __cdecl ResetSceneBeforeFramePC(NUDISPLAY_LIST_PC *scene, i32 force) {
@@ -8450,7 +8450,7 @@ extern "C" {
 
     void __cdecl NuDisplaySceneAdd(NUDISPLAY_LIST_PC *scene) {
         i32 i;
-        PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionBegin(nudlist_field_fc4);
         if ((i32)nudlist_field_9d8 >= 256) {
             AnimationDiagnosticNoOpPc();
         }
@@ -8469,13 +8469,13 @@ extern "C" {
         scene->render_flags &= 0xffffdfef;
         scene->alpha_values = NULL;
         NuDisplaySceneAddPS(scene);
-        PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
     void __cdecl NuDisplayListBeginFrame(void) {
         NUSORTPRI *sort;
         i32 i;
-        PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionBegin(nudlist_field_fc4);
         PCDynamicDisplayScene.render_flags =
             (PCDynamicDisplayScene.render_flags & ~0x8000u) | (~PCDynamicDisplayScene.render_flags & 0x8000u);
         ResetSceneBeforeFramePC(&PCDynamicDisplayScene, 0);
@@ -8498,7 +8498,7 @@ extern "C" {
             sort->flags &= ~2u;
         }
         RndrStateResetSharedGlobalState();
-        PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
     typedef struct pc_display_material_pc_s {
@@ -9010,7 +9010,7 @@ extern "C" {
 
     void __cdecl NuDisplayListSwapBuffersEndFrame(void) {
         i32 i;
-        PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionBegin(nudlist_field_fc4);
         DisplayListLinkDynamicMtls();
         DisplayListSwapBuffersPS();
         UpdateMaterialClipBitsPC(&PCDynamicDisplayScene);
@@ -9034,7 +9034,7 @@ extern "C" {
             PCSafeRenderScenes[i] = render_scene_ptrs[i];
         }
         DisplayProcessMaterialRenderStatesPC();
-        PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
     STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m30) == 0x30);
@@ -9151,7 +9151,7 @@ extern "C" NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *sou
     NUDISPLAYLISTITEM *heads;
     PC_CLONE_MATERIAL_VIEW *materials;
     i32 i, j, clip_bytes, material_bytes;
-    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
     scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4) + sizeof(*scene);
     *scene = *source;
@@ -9285,7 +9285,7 @@ extern "C" NUDISPLAY_LIST_PC *__cdecl NuDisplaySceneClone(NUDISPLAY_LIST_PC *sou
     }
     scene->render_flags = (scene->render_flags & ~16u) | 0x2000;
     NuDisplaySceneAddPS(scene);
-    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
     return scene;
 }
 
@@ -10104,7 +10104,7 @@ static f32 FrameMaterialAnimationTimePc = 0;
 void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
     FRAME_MTL_ANIM_SET_PC *set;
     FrameMaterialAnimationTimePc += frame_time;
-    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
     for (set = (FRAME_MTL_ANIM_SET_PC *)nudlist_field_fc8; set != NULL; set = set->next) {
         i32 index;
         NUDISPLAY_LIST_PC *scene = set->scene;
@@ -10167,7 +10167,7 @@ void __cdecl NuDisplayListAnimateMtls(f32 frame_time) {
             }
         }
     }
-    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_DESC_PC, u_mode) == 0x0);
@@ -10179,7 +10179,7 @@ STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, scene) == 0x0);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_count) == 0x4);
 STATIC_ASSERT(offsetof(FRAME_MTL_ANIM_SET_PC, material_indices) == 0x8);
 
-extern "C" void __cdecl NuDisplayListPurge_candidate(void) {
+extern "C" void __cdecl NuDisplayListCaptureBegin(void) {
     if (nudlist_field_9d0 != 0) {
         nudlist_frame_active = (i32)(nudlist_field_9d0 - 1U);
         nudlist_field_9d0 = 0;
@@ -10224,8 +10224,8 @@ extern "C" {
                                                 i32 file_handle);
 }
 
-extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
-    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+extern "C" void __cdecl NuDisplayListDrawRenderScene(i32 scene_id) {
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
     i32 count = PCSafeRenderScenes[scene_id]->nsort_pris;
     for (i32 index = 0; index < count; ++index) {
         NUSORTPRI *sort = PCSafeRenderScenes[scene_id]->sort_pris[index];
@@ -10244,7 +10244,7 @@ extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
         NuDisplayListDrawItems(sort->items);
     }
     NuDisplayListDrawItems(&PCSafeRenderScenes[scene_id]->render_2d_first);
-    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
 extern "C" void __cdecl DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *scene, i32 unused0, i32 unused1) {
@@ -11988,7 +11988,7 @@ extern "C" {
                     NuHtmlWrite("<font color = \"#000000\">");
                 }
             } else {
-                PCSpecialEmptyHandler_candidate();
+                PCSpecialEmptyHandler();
                 return;
             }
         }
@@ -12093,7 +12093,7 @@ extern "C" {
 } // extern "C"
 
 /* posteffect_ports_pc */
-extern "C" void __cdecl PCByteCopy_candidate(void *, const void *, u32);
+extern "C" void __cdecl PCByteCopy(void *, const void *, u32);
 extern "C" PC_POST_DATA_PORT_MANAGER PostResourceManagerPc;
 extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
 extern "C" PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
@@ -12109,7 +12109,7 @@ i32 __thiscall PC_POST_DATA_PORT_MANAGER::Register(const char *name, void *data)
     }
     for (entry = entries; entry < entries + 256; ++entry) {
         if (entry->references == 0) {
-            PCByteCopy_candidate(entry->name, name, NuStrLen(name) + 1);
+            PCByteCopy(entry->name, name, NuStrLen(name) + 1);
             entry->data = data;
             ++entry->references;
             return entry - entries;
@@ -12996,7 +12996,7 @@ extern "C" {
                 resolved = NuTexGetUnresolvedTextureTIDPS();
                 NuTexAddReferencePc(resolved);
                 texture = scene->textures[tid & 0x3fff];
-                PCSpecialEmptyHandler_candidate(
+                PCSpecialEmptyHandler(
                     texture->checksum[0], texture->checksum[1], texture->checksum[2], texture->checksum[3],
                     texture->checksum[4], texture->checksum[5], texture->checksum[6], texture->checksum[7],
                     texture->checksum[8], texture->checksum[9], texture->checksum[10], texture->checksum[11],
@@ -13252,7 +13252,7 @@ extern "C" {
             if (kind <= 1) {
                 memset(output, (u8)(kind - (kind << 1)), length);
             } else {
-                PCByteCopy_candidate(output, input, length);
+                PCByteCopy(output, input, length);
                 input += length;
             }
             output += length;
@@ -14363,14 +14363,14 @@ extern "C" {
         special->special = NULL;
         special->display_special = NULL;
         if (flags != 0) {
-            PCSpecialEmptyHandler_candidate();
+            PCSpecialEmptyHandler();
         }
         return 0;
     }
 
     /* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
      * nothing to a format and its arguments. */
-    void __cdecl PCSpecialEmptyHandler_candidate(...) {
+    void __cdecl PCSpecialEmptyHandler(...) {
     }
 
     i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene) {
@@ -14513,7 +14513,7 @@ extern "C" {
         }
         spline = scene->splines;
         for (index = 0; index < scene->spline_count; ++index, ++spline) {
-            PCSpecialEmptyHandler_candidate(index, spline->name);
+            PCSpecialEmptyHandler(index, spline->name);
         }
     }
 
@@ -14809,12 +14809,12 @@ extern "C" {
         }
         special = scene->specials;
         for (index = 0; index < scene->special_count; ++index, ++special) {
-            PCSpecialEmptyHandler_candidate((const char *)index, special->name);
+            PCSpecialEmptyHandler((const char *)index, special->name);
         }
         if (scene->display_list != NULL) {
             display_special = scene->display_list->specials;
             for (index = 0; index < scene->display_list->special_count; ++index, ++display_special) {
-                PCSpecialEmptyHandler_candidate((const char *)index, display_special->name);
+                PCSpecialEmptyHandler((const char *)index, display_special->name);
             }
         }
     }
@@ -14835,7 +14835,7 @@ extern "C" {
             }
         }
         if (flags != 0 && special_debug != 0) {
-            PCSpecialEmptyHandler_candidate(name);
+            PCSpecialEmptyHandler(name);
         }
         handle->scene = NULL;
         handle->special = NULL;
@@ -14901,7 +14901,7 @@ extern "C" {
             }
         }
         if (flags != 0 && special_debug != 0) {
-            PCSpecialEmptyHandler_candidate(pattern);
+            PCSpecialEmptyHandler(pattern);
         }
         return count;
     }
@@ -14941,11 +14941,11 @@ extern "C" {
                 }
             }
             if (flags != 0 && special_debug != 0) {
-                PCSpecialEmptyHandler_candidate(pattern);
+                PCSpecialEmptyHandler(pattern);
             }
             return count;
         }
-        PCSpecialEmptyHandler_candidate();
+        PCSpecialEmptyHandler();
         return 0;
     }
 
@@ -16376,7 +16376,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER_PC *) {
         }
     }
     for (i32 i = 0; i < set.count; ++i) {
-        NuDisplayListDrawRenderScene_candidate(set.pending[i]);
+        NuDisplayListDrawRenderScene(set.pending[i]);
     }
     PostShadowSelectHandlersPc(0);
 }

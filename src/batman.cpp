@@ -6,7 +6,7 @@ extern "C" void __cdecl NuRndrLine3dDbgFlush(void);
 
 extern "C" {
     extern i32 NuMainRendererControlPc;
-    void __cdecl NuRndrShadowOnOff_candidate(i32);
+    void __cdecl NuRndrShadowOnOff(i32);
     void __cdecl Grabber_Update(WORLDINFO *world);
     void __cdecl Detonators_Update(void);
     void __cdecl UpdateCables(void);
@@ -165,7 +165,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
-    NuRndrShadowOnOff_candidate(NuMainRendererControlPc);
+    NuRndrShadowOnOff(NuMainRendererControlPc);
     if (Paused == 0) {
         GameAISysStartFrame(world->ai_sys);
     }

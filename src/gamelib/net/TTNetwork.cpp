@@ -292,7 +292,7 @@ void NETMESSAGE_PC::MakeUnique() {
     entry = NULL;
 found:
     if (data != NULL && entry != NULL) {
-        PCByteCopy_candidate(entry->bytes + read_offset, data->bytes + read_offset, write_offset - read_offset);
+        PCByteCopy(entry->bytes + read_offset, data->bytes + read_offset, write_offset - read_offset);
     } else {
         NetMessagePoolError();
     }
@@ -302,7 +302,7 @@ found:
 
 void TTNetwork::Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) {
     if (message.GetSize() > 0) {
-        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
         peer->Send(message);
     }
@@ -311,7 +311,7 @@ void TTNetwork::Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) {
 
 void TTNetwork::SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) {
     if (message.GetSize() > 0) {
-        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
         peer->SendEx(message, arg0, arg1);
     }
@@ -320,7 +320,7 @@ void TTNetwork::SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0
 
 void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
     if (message.GetSize() > 0) {
-        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
         for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
             message.MakeUnique();
@@ -332,7 +332,7 @@ void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
 
 void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
     if (message.GetSize() > 0) {
-        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        PCByteCopy(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
         for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
             message.MakeUnique();

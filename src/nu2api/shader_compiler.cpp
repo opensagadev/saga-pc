@@ -559,7 +559,7 @@ i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *ou
     D3DXCreateEffectCompiler(source, length, NULL, NULL, 0, &compiler, NULL);
     compiler->methods->compile_effect(compiler, 0, &effect, NULL);
     size = effect->methods->get_buffer_size(effect);
-    PCByteCopy_candidate(output, effect->methods->get_buffer_pointer(effect), size);
+    PCByteCopy(output, effect->methods->get_buffer_pointer(effect), size);
     effect->methods->release(effect);
     if (compiler != NULL) {
         compiler->methods->release(compiler);

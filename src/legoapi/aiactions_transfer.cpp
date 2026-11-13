@@ -1,7 +1,7 @@
 #include "saga.h"
 
 extern "C" i32 special_debug;
-extern "C" void __cdecl PCSpecialEmptyHandler_candidate(...);
+extern "C" void __cdecl PCSpecialEmptyHandler(...);
 extern "C" {
     SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
@@ -34,7 +34,7 @@ static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, cha
         }
     }
     if (flags != 0 && special_debug != 0) {
-        PCSpecialEmptyHandler_candidate(name);
+        PCSpecialEmptyHandler(name);
     }
     return count;
 }
@@ -59,11 +59,11 @@ extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, 
             }
         }
         if (flags != 0 && special_debug != 0) {
-            PCSpecialEmptyHandler_candidate(name);
+            PCSpecialEmptyHandler(name);
         }
         return count;
     }
-    PCSpecialEmptyHandler_candidate();
+    PCSpecialEmptyHandler();
     return 0;
 }
 

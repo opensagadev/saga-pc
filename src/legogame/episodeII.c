@@ -929,8 +929,8 @@ void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
                     }
                     DrawMeleeTargetsAlphaPc(ids, spawned, NULL, count);
                     if (nethost != 0) {
-                        PCByteCopy_candidate(jedib_netpacket->ids, ids, count * 2);
-                        PCByteCopy_candidate(jedib_netpacket->spawned, spawned, count);
+                        PCByteCopy(jedib_netpacket->ids, ids, count * 2);
+                        PCByteCopy(jedib_netpacket->spawned, spawned, count);
                         jedib_netpacket->count = (i16)count;
                     }
                     break;
@@ -939,8 +939,8 @@ void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
                 case 6:
                     DrawMeleeTargetsAlphaPc(jedi_b.wave_ids, jedi_b.wave_spawned, NULL, 6);
                     if (nethost != 0) {
-                        PCByteCopy_candidate(jedib_netpacket->ids, jedi_b.wave_ids, 12);
-                        PCByteCopy_candidate(jedib_netpacket->spawned, jedi_b.wave_spawned, 6);
+                        PCByteCopy(jedib_netpacket->ids, jedi_b.wave_ids, 12);
+                        PCByteCopy(jedib_netpacket->spawned, jedi_b.wave_spawned, 6);
                     }
                     break;
                 case 7:

@@ -12,7 +12,7 @@ void __cdecl NuTexAnimAddList(void *animation) {
     if (animation == NULL) {
         return;
     }
-    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionBegin(nutexanm_critical_section);
     if (ntal_free != NULL) {
         node = ntal_free;
         if (node->next == NULL) {
@@ -27,12 +27,12 @@ void __cdecl NuTexAnimAddList(void *animation) {
         }
         ntal_first = node;
     }
-    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionEnd(nutexanm_critical_section);
 }
 
 void __cdecl NuTexAnimRemoveList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;
-    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionBegin(nutexanm_critical_section);
     for (node = ntal_first; node != NULL; node = node->next) {
         if (node->first == animation) {
             if (node->next != NULL) {
@@ -46,11 +46,11 @@ void __cdecl NuTexAnimRemoveList(void *animation) {
             node->next = ntal_free;
             ntal_free = node;
             NuThreadEnableThreadSwap();
-            PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
+            NuThreadCriticalSectionEnd(nutexanm_critical_section);
             return;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionEnd(nutexanm_critical_section);
 }
 
 PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *texture_ids, void *program) {
@@ -450,7 +450,7 @@ void __cdecl NuTexAnimInitMutex(void) {
 
 void __cdecl NuTexAnimProcess(f32 frame_time) {
     PC_TEXTURE_ANIM_LIST *list;
-    PCThreadCriticalSectionEnter_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionBegin(nutexanm_critical_section);
     nta_iframetime = (i32)(frame_time * 4096.0);
     nta_script_mask = script_mask;
     for (list = ntal_first; list != NULL; list = list->next) {
@@ -462,7 +462,7 @@ void __cdecl NuTexAnimProcess(f32 frame_time) {
             animation = animation->next;
         }
     }
-    PCThreadCriticalSectionLeave_candidate(nutexanm_critical_section);
+    NuThreadCriticalSectionEnd(nutexanm_critical_section);
 }
 
 void __cdecl NuTexAnimRestart(void) {
@@ -1011,10 +1011,10 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *bu
 
 extern i32 nutexanim_usepakfile;
 extern i32 NuTexAnimMissingPakDiagnosticPc;
-extern void __cdecl PCSpecialEmptyHandler_candidate(void);
+extern void __cdecl PCSpecialEmptyHandler(void);
 
 #define TEXANIM_DIAGNOSTIC(value) ((void(__cdecl *)(const void *))AnimationDiagnosticNoOpPc)(value)
-#define TEXANIM_EMPTY(value) ((void(__cdecl *)(const void *))PCSpecialEmptyHandler_candidate)(value)
+#define TEXANIM_EMPTY(value) ((void(__cdecl *)(const void *))PCSpecialEmptyHandler)(value)
 
 void __cdecl NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     char filename[128];

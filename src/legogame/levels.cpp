@@ -3454,9 +3454,9 @@ extern "C" {
     store_flags:
         if (progress != NULL) {
             if (progress != world->level_progress) {
-                PCByteCopy_candidate(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names,
-                                     world->level_progress->disabled_effect_names,
-                                     sizeof(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names));
+                PCByteCopy(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names,
+                           world->level_progress->disabled_effect_names,
+                           sizeof(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names));
             }
             ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags =
                 (((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags & ~4U) |

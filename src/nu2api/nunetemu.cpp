@@ -76,7 +76,7 @@ i32 NuNetEmu::RecvFrom(void *data, i32 size, u32 &address) {
         if (read_offset < unpacked_size && received >= 0) {
             i32 payload_size = unpacked_buffer[read_offset] | (unpacked_buffer[read_offset + 1] << 8);
             i32 copy_size = payload_size < size ? payload_size : size;
-            PCByteCopy_candidate(data, &unpacked_buffer[read_offset + 2], copy_size);
+            PCByteCopy(data, &unpacked_buffer[read_offset + 2], copy_size);
             read_offset += payload_size + 2;
             received = copy_size;
         }
@@ -93,7 +93,7 @@ NuNetEmu::EmuPacket::~EmuPacket() {
 void NuNetEmu::EmuPacket::AddPayload(void *data, i32 size) {
     payload[payload_size] = (u8)size;
     payload[payload_size + 1] = (u8)(size >> 8);
-    PCByteCopy_candidate(payload + payload_size + 2, data, size);
+    PCByteCopy(payload + payload_size + 2, data, size);
     payload_count++;
     payload_size += size + 2;
 }
@@ -257,8 +257,7 @@ i32 NuNetEmu::SplitSendPacket(EmuPacket *packet) {
     halves[1] = new EmuPacket(&packet->address);
     for (u32 i = 0; i < segment_count; i++) {
         EmuPacket *half = halves[halves[1]->payload_size < halves[0]->payload_size];
-        PCByteCopy_candidate(&half->payload[half->payload_size], &packet->payload[segments[i].offset],
-                             segments[i].size);
+        PCByteCopy(&half->payload[half->payload_size], &packet->payload[segments[i].offset], segments[i].size);
         half->payload_size += segments[i].size;
     }
 

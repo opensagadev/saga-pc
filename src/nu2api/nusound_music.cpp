@@ -924,14 +924,14 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     }
     Album *new_albums = (Album *)(((u32)string_pool_end + 3) & ~3u);
     if (new_albums != albums) {
-        PCByteCopy_candidate(new_albums, albums, album_count * sizeof(Album));
+        PCByteCopy(new_albums, albums, album_count * sizeof(Album));
         albums = new_albums;
     }
     Track *old_tracks = extra_tracks;
     Track *new_tracks = (Track *)(((u32)(albums + album_count) + 3) & ~3u);
     if (new_tracks != old_tracks) {
         if (extra_track_count != 0) {
-            PCByteCopy_candidate(new_tracks, old_tracks, extra_track_count * sizeof(Track));
+            PCByteCopy(new_tracks, old_tracks, extra_track_count * sizeof(Track));
         }
         i32 delta = (i32)((char *)new_tracks - (char *)old_tracks);
         extra_tracks = new_tracks;
@@ -945,7 +945,7 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     f32 *new_indexes = (f32 *)(((u32)(extra_tracks + extra_track_count) + 3) & ~3u);
     if (new_indexes != old_indexes) {
         if (index_count != 0) {
-            PCByteCopy_candidate(new_indexes, old_indexes, index_count * sizeof(f32));
+            PCByteCopy(new_indexes, old_indexes, index_count * sizeof(f32));
         }
         i32 delta = (i32)((char *)new_indexes - (char *)old_indexes);
         indexes = new_indexes;

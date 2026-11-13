@@ -154,7 +154,7 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
     }
     buffer_start->addr = (buffer_start->addr + 3) & ~3u;
     destination = buffer_start->void_ptr;
-    PCByteCopy_candidate(destination, &temporary, sizeof(temporary));
+    PCByteCopy(destination, &temporary, sizeof(temporary));
     buffer_start->addr = (buffer_start->addr + sizeof(temporary) + 3) & ~3u;
     return (MISSIONSYS_PC *)destination;
 }

@@ -12,7 +12,7 @@ extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
 extern "C" i32 PublishWindowPc(HWND window, i32 show) {
     ShowWindow(window, show);
     UpdateWindow(window);
-    PCInputInstance_candidate = window;
+    PCInputInstance = window;
     return 1;
 }
 
@@ -116,7 +116,7 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     }
     ShowWindow(window, show);
     UpdateWindow(window);
-    PCInputInstance_candidate = window;
+    PCInputInstance = window;
     ShowWindow(window, show);
     UpdateWindow(window);
     SendMessageA(window, WM_SETICON, 1, (LPARAM)icon);
@@ -209,7 +209,7 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
 extern "C" u8 __cdecl PcPlatformPolicy(u8 enabled);
 
 extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line, i32 show) {
-    PCInputWindow_candidate = instance;
+    PCInputWindow = instance;
     NuHwShowCommandPc = show;
     SystemParametersInfoA(SPI_GETSTICKYKEYS, sizeof(PcStickyKeys), &PcStickyKeys, 0);
     SystemParametersInfoA(SPI_GETTOGGLEKEYS, sizeof(PcToggleKeys), &PcToggleKeys, 0);
@@ -247,7 +247,7 @@ extern "C" const char *__cdecl PcFrameDelayMessagePc(void) {
 
 extern "C" void __cdecl PcShutdown(void) {
     PcWindowOptions.Save();
-    DestroyWindow(PCInputInstance_candidate);
+    DestroyWindow(PCInputInstance);
     PcFreeApiCallBuffer();
     PcRendererCleanup();
     PcDestroyPlatform();

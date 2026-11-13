@@ -4,37 +4,37 @@ STATIC_ASSERT(sizeof(CRITICAL_SECTION) == 0x18);
 
 /* PC-only state for the critical-section wrappers; their higher-level names
  * remain provisional until the original thread initialization path is mapped. */
-extern i32 PCThreadCriticalSectionCount_candidate;
-STATIC_ASSERT(sizeof(PCThreadCriticalSections_candidate) == 0x138);
+extern i32 PCThreadCriticalSectionCount;
+STATIC_ASSERT(sizeof(PCThreadCriticalSections) == 0x138);
 
 i32 __cdecl PCThreadCriticalSectionCreate_candidate(void) {
-    if (PCThreadCriticalSectionCount_candidate <= 12) {
-        ++PCThreadCriticalSectionCount_candidate;
-        InitializeCriticalSection(&PCThreadCriticalSections_candidate[PCThreadCriticalSectionCount_candidate - 1]);
-        return PCThreadCriticalSectionCount_candidate;
+    if (PCThreadCriticalSectionCount <= 12) {
+        ++PCThreadCriticalSectionCount;
+        InitializeCriticalSection(&PCThreadCriticalSections[PCThreadCriticalSectionCount - 1]);
+        return PCThreadCriticalSectionCount;
     }
 
     return 0;
 }
 
-__declspec(noinline) void __cdecl PCThreadCriticalSectionEnter_candidate(i32 section_index) {
+__declspec(noinline) void __cdecl NuThreadCriticalSectionBegin(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
-        EnterCriticalSection(&PCThreadCriticalSections_candidate[section_index - 1]);
+        EnterCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
 }
 
-__declspec(noinline) void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index) {
+__declspec(noinline) void __cdecl NuThreadCriticalSectionEnd(i32 section_index) {
     if (section_index >= 1 && section_index <= 12) {
-        LeaveCriticalSection(&PCThreadCriticalSections_candidate[section_index - 1]);
+        LeaveCriticalSection(&PCThreadCriticalSections[section_index - 1]);
     }
 }
 
 void __cdecl PCDisplayListCriticalSectionEnterPc(void) {
-    PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
 }
 
 void __cdecl PCDisplayListCriticalSectionLeavePc(void) {
-    PCThreadCriticalSectionLeave_candidate(nudlist_field_fc4);
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
 i64 __cdecl PCThreadMillisecondsPc(void) {

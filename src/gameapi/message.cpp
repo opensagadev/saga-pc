@@ -84,7 +84,7 @@ void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
                             i32 length = (i8)message.data->bytes[message.read_offset];
                             message.read_offset++;
                             memset(param_text[i], 0, sizeof(param_text[i]));
-                            PCByteCopy_candidate(param_text[i], message.data->bytes + message.read_offset, length);
+                            PCByteCopy(param_text[i], message.data->bytes + message.read_offset, length);
                             message.read_offset += length;
                         }
                         params[i] = param_text[i];
@@ -127,7 +127,7 @@ void AINet::ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet) {
             i32 length = NuStrLen(param);
             u8 *destination = message.data->bytes + message.write_offset;
             *destination++ = (u8)length;
-            PCByteCopy_candidate(destination, param, length);
+            PCByteCopy(destination, param, length);
             message.write_offset += length + 1;
         }
     }

@@ -165,7 +165,7 @@ extern "C" {
                 current_level->callbacks[5] = NULL;
                 current_level->callbacks[6] = NULL;
 
-                current_level->display.farclip_hack = PCKeyboardDefaultValue_candidate;
+                current_level->display.farclip_hack = PCKeyboardDefaultValue;
                 current_level->display.near_clip = 0.15f;
                 current_level->display.far_clip = 20000;
                 current_level->display.bg_red_bottom = 0;

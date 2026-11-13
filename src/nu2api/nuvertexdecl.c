@@ -31,7 +31,7 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
         i32 normal, tangent, binormal, diffuse, specular, texture_mode, half_texture_mode;
         i32 weights, colour2, skinned, instanced, element_count;
         i32 offset;
-        PCByteCopy_candidate(record + 1, record, (count - (record - PCVertexDeclarationCachePC)) * sizeof(*record));
+        PCByteCopy(record + 1, record, (count - (record - PCVertexDeclarationCachePC)) * sizeof(*record));
         ++PCVertexDeclarationCountPC;
         if ((descriptor & 8) != 0 || (descriptor & 0x880000) != 0) {
             normal = 2;

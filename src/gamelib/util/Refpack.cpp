@@ -116,7 +116,7 @@ extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
                 }
                 literal_count -= count;
                 *output++ = (u8)((count >> 2) - 0x21u);
-                PCByteCopy_candidate(output, literal_start, count);
+                PCByteCopy(output, literal_start, count);
                 literal_start += count;
                 output += count;
             }
@@ -136,7 +136,7 @@ extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
                 *output++ = (u8)(match_length - 5u);
             }
             if (literal_count != 0) {
-                PCByteCopy_candidate(output, literal_start, literal_count);
+                PCByteCopy(output, literal_start, literal_count);
                 output += literal_count;
                 literal_count = 0;
             }
@@ -155,13 +155,13 @@ extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
         }
         literal_count -= count;
         *output++ = (u8)((count >> 2) - 0x21u);
-        PCByteCopy_candidate(output, literal_start, count);
+        PCByteCopy(output, literal_start, count);
         literal_start += count;
         output += count;
     }
     *output++ = (u8)(literal_count - 4u);
     if (literal_count != 0) {
-        PCByteCopy_candidate(output, literal_start, literal_count);
+        PCByteCopy(output, literal_start, literal_count);
         output += literal_count;
     }
     return (i32)(output - destination);

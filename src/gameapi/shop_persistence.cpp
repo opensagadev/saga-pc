@@ -44,7 +44,7 @@ extern "C" {
 
     void __cdecl PcRegisterSaveMetadataPc(const void *metadata) {
         if (metadata != NULL) {
-            PCByteCopy_candidate(PcSaveHeaderMetadataPc, metadata, 16);
+            PCByteCopy(PcSaveHeaderMetadataPc, metadata, 16);
         }
     }
 
@@ -78,7 +78,7 @@ extern "C" {
         header.reserved_0c = 0;
         header.reserved_10 = 0;
         header.api_data_size = PcApiGetCallBufferCount();
-        PCByteCopy_candidate(header.metadata, PcSaveHeaderMetadataPc, 16);
+        PCByteCopy(header.metadata, PcSaveHeaderMetadataPc, 16);
         header.reserved_caption[0] = 0;
         GetDateFormatA(LOCALE_USER_DEFAULT, 0, NULL, NULL, date_time, 64);
         strcat(date_time, " ");

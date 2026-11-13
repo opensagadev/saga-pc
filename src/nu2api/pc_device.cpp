@@ -127,7 +127,7 @@ extern "C" void __cdecl PCDeviceSetTextureStageState(u32 stage, i32 state, u32 v
 extern "C" const char PCDeviceTextureCubeSourcePathPc[];
 
 extern "C" void __cdecl PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_PC **texture) {
-    PCFrameCriticalSectionEnter_candidate();
+    NudxFw_D3DBeginCriticalSection();
     u32 size = static_cast<u32>(NuFileSize(path));
     if (size > 0) {
         void *data = NuFileLoad(path);
@@ -138,7 +138,7 @@ extern "C" void __cdecl PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_R
             NuFree(data, PCDeviceTextureCubeSourcePathPc, 1032);
         }
     }
-    PCFrameCriticalSectionLeave_candidate();
+    NudxFw_D3DEndCriticalSection();
 }
 
 extern "C" void __cdecl PCDeviceCreateRenderToSurfacePc(u32 width, u32 height, i32 format, BOOL depth_stencil,
@@ -700,7 +700,7 @@ extern "C" {
 }
 
 void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
-    PCFrameCriticalSectionEnter_candidate();
+    NudxFw_D3DBeginCriticalSection();
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
     saved_feature = feature634;
@@ -709,7 +709,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     saved_aspect = PcWindowOptions.aspect_mode;
     bool rebuild_resources = true;
     factory->methods->get_device_caps(factory, 0, 1, &caps);
-    parameters.window = reinterpret_cast<HWND>(PCInputInstance_candidate);
+    parameters.window = reinterpret_cast<HWND>(PCInputInstance);
     parameters.windowed = requested_windowed;
     parameters.enable_depth = 1;
     parameters.flags = 2;
@@ -732,7 +732,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         if (y < 0) {
             y = (PCDeviceBackend.desktop_mode.height - height) >> 1;
         }
-        MoveWindow(reinterpret_cast<HWND>(PCInputInstance_candidate), x, y, width, height, TRUE);
+        MoveWindow(reinterpret_cast<HWND>(PCInputInstance), x, y, width, height, TRUE);
     }
     if (PCDeviceBackend.factory->methods->check_device_type(PCDeviceBackend.factory, 0, 1, modes[requested_mode].format,
                                                             21, parameters.windowed) < 0) {
@@ -846,10 +846,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         if (cooperative < 0) {
             switch (cooperative) {
                 case static_cast<HRESULT>(0x88760827):
-                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
                     break;
                 default:
-                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
                     break;
                 case static_cast<HRESULT>(0x88760869):
                     PCDeviceEvictManagedResources();
@@ -936,7 +936,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     requested_feature = feature634;
     requested_multisample = multisample_index;
     requested_target_count = target_count;
-    PCFrameCriticalSectionLeave_candidate();
+    NudxFw_D3DEndCriticalSection();
 }
 
 __declspec(noinline) void __cdecl PCDeviceEvictManagedResources() {
@@ -960,9 +960,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
             }
         } else if (present_result != static_cast<HRESULT>(0x88760827)) {
             /* Retail closes the window through separate branches for an internal driver error and the rest. */
-            SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+            SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
         } else {
-            SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+            SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
         }
     }
     for (i32 i = 0; i != 4; ++i) {
@@ -1090,8 +1090,8 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, 
                 if (SUCCEEDED(D3DXSaveSurfaceToFileInMemory(&buffer, D3DXIFF_BMP,
                                                             reinterpret_cast<IDirect3DSurface9 *>(copy), NULL, NULL))) {
                     *data = NuAlloc(buffer->methods->get_buffer_size(buffer), ".\\d3dCore.cpp", 0x989);
-                    PCByteCopy_candidate(*data, buffer->methods->get_buffer_pointer(buffer),
-                                         buffer->methods->get_buffer_size(buffer));
+                    PCByteCopy(*data, buffer->methods->get_buffer_pointer(buffer),
+                               buffer->methods->get_buffer_size(buffer));
                     size = buffer->methods->get_buffer_size(buffer);
                 }
             }
@@ -1371,7 +1371,7 @@ extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_
     i32 index;
     i32 y;
 
-    PCFrameCriticalSectionEnter_candidate();
+    NudxFw_D3DBeginCriticalSection();
     surface->methods->get_desc(surface, &desc);
     width = desc.width;
     height = desc.height;
@@ -1423,7 +1423,7 @@ extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_
         copy->methods->release(copy);
         copy = NULL;
     }
-    PCFrameCriticalSectionLeave_candidate();
+    NudxFw_D3DEndCriticalSection();
 }
 
 void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
@@ -1499,10 +1499,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     PCDeviceCreateVertexBuffer(sizeof(triangle), 8, 0, 0, &buffer688);
     void *data = NULL;
     PCDeviceLockVertexBuffer(0, sizeof(quad), &data, 0, buffer690);
-    PCByteCopy_candidate(data, quad, sizeof(quad));
+    PCByteCopy(data, quad, sizeof(quad));
     PCDeviceUnlockVertexBuffer(buffer690);
     PCDeviceLockVertexBuffer(0, sizeof(triangle), &data, 0, buffer688);
-    PCByteCopy_candidate(data, triangle, sizeof(triangle));
+    PCByteCopy(data, triangle, sizeof(triangle));
     PCDeviceUnlockVertexBuffer(buffer688);
     state6a0 = 16;
     state69c = (i32)(u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
@@ -2325,9 +2325,9 @@ extern "C" void __cdecl NuRndrEndFrameActionPc(void) {
 
 extern "C" i32 __cdecl PCDeviceShowCursorPc(i32 show) {
     if (PCDeviceBackend.device != NULL) {
-        PCFrameCriticalSectionEnter_candidate();
+        NudxFw_D3DBeginCriticalSection();
         PCDeviceLastResult = PCDeviceBackend.device->methods->show_cursor(PCDeviceBackend.device, show);
-        PCFrameCriticalSectionLeave_candidate();
+        NudxFw_D3DEndCriticalSection();
     }
     return 0;
 }

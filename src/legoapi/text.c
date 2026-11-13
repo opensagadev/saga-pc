@@ -696,8 +696,8 @@ void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale,
     if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
         return;
     }
-    x_scale = TextScaleX_candidate * x_scale;
-    y_scale = TextScaleY_candidate * y_scale;
+    x_scale = TextScaleX * x_scale;
+    y_scale = TextScaleY * y_scale;
     if (x < -2.0f || x > 2.0f || y < -2.0f || y > 2.0f) {
         return;
     }
@@ -951,13 +951,13 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
         return;
     }
 
-    x_scale = TextScaleX_candidate * x_scale;
-    y_scale = TextScaleY_candidate * y_scale;
-    saved_x_scale = TextScaleX_candidate;
-    saved_y_scale = TextScaleY_candidate;
+    x_scale = TextScaleX * x_scale;
+    y_scale = TextScaleY * y_scale;
+    saved_x_scale = TextScaleX;
+    saved_y_scale = TextScaleY;
 
-    TextScaleX_candidate = 1.0f;
-    TextScaleY_candidate = 1.0f;
+    TextScaleX = 1.0f;
+    TextScaleY = 1.0f;
     x = STCOORDSCALE * x;
     max_width = STCOORDSCALE * max_width;
     TextDecode(text, decoded);
@@ -1016,7 +1016,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
             if (length > 511) {
                 length = 511;
             }
-            PCByteCopy_candidate(lines[line], decoded + begin, length);
+            PCByteCopy(lines[line], decoded + begin, length);
             lines[line][length] = '\0';
             Text3DStringEncodeFont(lines[line], encoded, TEXT3D_FONT());
             width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
@@ -1059,7 +1059,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                         if (length > 511) {
                             length = 511;
                         }
-                        PCByteCopy_candidate(candidate, decoded + begin, length);
+                        PCByteCopy(candidate, decoded + begin, length);
                         candidate[length] = '\0';
                         Text3DStringEncodeFont(candidate, encoded, TEXT3D_FONT());
                     } while (NuQFntPrintLenW(TEXT3D_FONT(), encoded) < max_width);
@@ -1068,7 +1068,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 if (length > 511) {
                     length = 511;
                 }
-                PCByteCopy_candidate(lines[line], decoded + begin, length);
+                PCByteCopy(lines[line], decoded + begin, length);
                 lines[line][length] = '\0';
                 Text3DStringEncode((char *)(lines[line]), encoded);
                 width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
@@ -1103,7 +1103,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 if (length > 511) {
                     length = 511;
                 }
-                PCByteCopy_candidate(lines[line], decoded + begin, length);
+                PCByteCopy(lines[line], decoded + begin, length);
                 lines[line][length] = '\0';
                 Text3DStringEncode((char *)(lines[line]), encoded);
                 width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
@@ -1160,9 +1160,9 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
             Text3DEx((char *)(decoded), x, y, z, draw_x_scale, y_scale, z_scale, alignment, red, green, blue, alpha);
         }
     }
-    TextScaleX_candidate = saved_x_scale;
+    TextScaleX = saved_x_scale;
     followon_line = 0;
-    TextScaleY_candidate = saved_y_scale;
+    TextScaleY = saved_y_scale;
 }
 
 void __cdecl SmartTextEx2(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
@@ -1355,8 +1355,8 @@ void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     colour = ((u32)(alpha_scale * alpha) << 24) | ((red & 0xff) << 16) | ((green & 0xff) << 8) | TextCrawlBluePc;
     NuQFntSetColour(QFont3DZ, colour);
     y = (f32)(TextCrawlTimePc * (f64)0.4f - 4.5);
-    x_scale = TextCrawlScaleXPc * TextScaleX_candidate;
-    y_scale = TextCrawlScaleYPc * TextScaleY_candidate;
+    x_scale = TextCrawlScaleXPc * TextScaleX;
+    y_scale = TextCrawlScaleYPc * TextScaleY;
     if (episode_name != NULL) {
         if (text != NULL && NuStrCmp(text, "?") == 0) {
             NuQFntSetScale(QFont3DZ, (f32)(x_scale * 2.0), (f32)(y_scale * 3.0));

@@ -96,7 +96,7 @@ u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index)
             continue;
         }
         auxiliary_ports[bank] = linked_port;
-        PCByteCopy_candidate(auxiliary_bindings[bank], devices[linked_port].bindings, 0x80);
+        PCByteCopy(auxiliary_bindings[bank], devices[linked_port].bindings, 0x80);
     }
     i32 key = player_index;
     PC_INPUT_CONFIG_PC *config = NULL;
@@ -358,7 +358,7 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
             devices[i].reset_pairs[j].second = 0;
         }
     }
-    layout->unknown_6570 = PCKeyboardDefaultValue_candidate;
+    layout->unknown_6570 = PCKeyboardDefaultValue;
     layout->unknown_6568 = 0x1fff;
     layout->unknown_656c = 32;
     layout->unknown_4e04 = 0;
@@ -815,7 +815,7 @@ i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample
         for (i32 axis = 0; axis < 24; ++axis) {
             sample->axes[axis + 8] = (i16)state.extended_axes[axis];
         }
-        PCByteCopy_candidate(sample->buttons, state.buttons, devices[port].button_count);
+        PCByteCopy(sample->buttons, state.buttons, devices[port].button_count);
         if (state.pov[3] >= 0) {
             u8 direction = PcInputPovBitsPc[state.pov[3] / 4500];
             for (i32 bit = 0; bit < 4; ++bit) {
@@ -892,7 +892,7 @@ i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
             mbuttons = mask;
             PcMousePressedMaskPc = (mask ^ previous) & mask;
             memset(mouse.buttons, 0, 8);
-            PCByteCopy_candidate(mouse.buttons, state->buttons, button_count);
+            PCByteCopy(mouse.buttons, state->buttons, button_count);
             return 1;
         }
         memset(mouse.buttons, 0, 16);
@@ -1321,9 +1321,9 @@ void PC_INPUT_RUNTIME_PC::CopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
     }
     if (to_auxiliary) {
         auxiliary_ports[bank] = port;
-        PCByteCopy_candidate(auxiliary_bindings[bank], devices[port].bindings, 0x80);
+        PCByteCopy(auxiliary_bindings[bank], devices[port].bindings, 0x80);
     } else {
-        PCByteCopy_candidate(devices[port].bindings, auxiliary_bindings[bank], 0x80);
+        PCByteCopy(devices[port].bindings, auxiliary_bindings[bank], 0x80);
     }
 }
 
@@ -1722,7 +1722,7 @@ void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i
         }
     }
     memset(config->name, 0, 64);
-    PCByteCopy_candidate(config->name, devices[port].name, NuStrLen(devices[port].name));
+    PCByteCopy(config->name, devices[port].name, NuStrLen(devices[port].name));
     config->product_id = devices[port].product.Data1;
     config->guid_data2 = devices[port].product.Data2;
     config->guid_data3 = devices[port].product.Data3;
@@ -1751,9 +1751,9 @@ void PC_INPUT_RUNTIME_PC::PromoteConfigPc(PC_INPUT_CONFIG_PC *records, i32 count
         index = count - 1;
     }
     if (index > 0) {
-        PCByteCopy_candidate(records + 1, records, index * sizeof(*records));
+        PCByteCopy(records + 1, records, index * sizeof(*records));
     }
-    PCByteCopy_candidate(records, config, sizeof(*records));
+    PCByteCopy(records, config, sizeof(*records));
 }
 
 extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
@@ -1772,7 +1772,7 @@ extern const char PcInputProfileButton[], PcInputProfileButtonsEnd0[], PcInputPr
 extern const char PcInputProfileButtonsEnd2[], PcInputProfileButtonsEnd3[], PcInputProfileFileFormat[];
 
 void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destination) {
-    PCByteCopy_candidate(destination, name, 63);
+    PCByteCopy(destination, name, 63);
     destination[63] = 0;
     char *out = destination;
     for (char *in = destination; *in; ++in) {

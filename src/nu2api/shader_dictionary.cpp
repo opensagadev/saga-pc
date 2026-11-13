@@ -63,7 +63,7 @@ i32 ShaderCompilerDictionaryPc::GetProfile() const {
 
 void ShaderCompilerDictionaryPc::AddRegisterBlock(const char *name, i32 count) {
     ShaderRegisterBlockPc *block = &register_blocks[register_block_count++];
-    PCByteCopy_candidate(block->name, name, NuStrLen(name) + 1);
+    PCByteCopy(block->name, name, NuStrLen(name) + 1);
     block->register_count = count;
 }
 

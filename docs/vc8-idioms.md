@@ -423,7 +423,7 @@ retail placed it in (the unit's first or last function in address order).
 Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOpPc` (to
 `movies.cpp`), `FileDirectoryErrorPc` (next to `bgProcDataOversize` in
 `nuvideo.c`), `SaveCreateDirectoryPc` (to `nufile_pc.c`). A C++ varargs hook
-(`PCSpecialEmptyHandler_candidate(...)`) only loses argument-less calls that
+(`PCSpecialEmptyHandler(...)`) only loses argument-less calls that
 come before its definition; defining it after the last such caller kept
 `NuSpecialGetFirst`'s call and `NuSpecialList`'s register use (retail knew
 the hook preserves `eax`/`ecx`/`edx`, so it lives in the same unit).

@@ -108,14 +108,14 @@ STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, active_39) == 0x39);
 STATIC_ASSERT(offsetof(NuKeyboardProfile_PC, name) == 0x3a);
 STATIC_ASSERT(offsetof(NuKeyboardProfileLayout_PC, profiles) == 0x5d00);
 
-extern const char PCKeyboardMouse1Name_candidate[15];
-extern const char PCKeyboardMouse2Name_candidate[16];
-extern const char PCKeyboard2Name_candidate[10];
-extern const char PCKeyboard1Name_candidate[10];
+extern const char PCKeyboardMouse1Name[15];
+extern const char PCKeyboardMouse2Name[16];
+extern const char PCKeyboard2Name[10];
+extern const char PCKeyboard1Name[10];
 
 void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state);
 
-void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state) {
+void __fastcall NuKeyboardResetInputRecords(NuKeyboardState_PC *state) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
     i32 i;
 
@@ -128,25 +128,25 @@ void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state)
     layout->unknown_67e4 = 0;
 }
 
-void __fastcall NuKeyboardSetStateValue6354_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 value) {
+void __fastcall fun_006d4e20(NuKeyboardState_PC *state, i32 unused_edx, i32 value) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
 
     layout->unknown_6354 = value;
 }
 
-i32 __fastcall NuKeyboardGetInputRecordCount_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+i32 __fastcall NuKeyboardGetInputRecordCount(NuKeyboardState_PC *state, i32 unused_edx) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
 
     return layout->unknown_67e4;
 }
 
-i32 __fastcall NuKeyboardGetStateValue67e8_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+i32 __fastcall fun_006d4e40(NuKeyboardState_PC *state, i32 unused_edx) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
 
     return layout->unknown_67e8;
 }
 
-i32 __fastcall NuKeyboardGetStateValue67ec_candidate(NuKeyboardState_PC *state, i32 unused_edx) {
+i32 __fastcall fun_006d4e50(NuKeyboardState_PC *state, i32 unused_edx) {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)state;
 
     return layout->unknown_67ec;
@@ -170,7 +170,7 @@ STATIC_ASSERT(offsetof(NuKeyboardActionRecord_PC, active) == 0x28);
 STATIC_ASSERT(offsetof(NuKeyboardActionState_PC, records) == 0x4e34);
 STATIC_ASSERT(offsetof(NuKeyboardActionState_PC, fallback_action) == 0x6608);
 
-void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count) {
+void __cdecl PcInput_EnableKeyboards(const i16 *keys, i32 count) {
     NuKeyboardActionState_PC *state;
     i32 i;
     i32 recognized;
@@ -190,9 +190,9 @@ void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count) {
     }
 }
 
-__declspec(noinline) void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx,
-                                                                           i32 index, i32 field_00, i32 field_01,
-                                                                           i32 field_02, u16 field_04) {
+__declspec(noinline) void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
+                                                                 i32 field_00, i32 field_01, i32 field_02,
+                                                                 u16 field_04) {
     NuKeyboardInitLayout_PC *layout;
     i32 i;
 
@@ -222,11 +222,11 @@ void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC 
     NuKeyboardInitLayout_PC *layout;
 
     layout = (NuKeyboardInitLayout_PC *)state;
-    NuKeyboardResetInputRecords_candidate(state);
+    NuKeyboardResetInputRecords(state);
 
 #define ADD_DEFAULT_RECORD(field_00, field_01, field_02)                                                               \
     if (layout->unknown_67e4 < 0x20) {                                                                                 \
-        NuKeyboardInsertInputRecord_candidate(state, 0, layout->unknown_67e4, field_00, field_01, field_02, 0);        \
+        NuKeyboardInsertInputRecord(state, 0, layout->unknown_67e4, field_00, field_01, field_02, 0);                  \
         ++layout->unknown_67e4;                                                                                        \
     }
 

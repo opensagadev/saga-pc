@@ -1112,8 +1112,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         return;
     }
     f32 left = 0.0f, right = 0.0f;
-    f32 old_x = TextScaleX_candidate, old_y = TextScaleY_candidate;
-    TextScaleX_candidate = TextScaleY_candidate = 1.0f;
+    f32 old_x = TextScaleX, old_y = TextScaleY;
+    TextScaleX = TextScaleY = 1.0f;
     SmartTextSetFWNMode(2);
     if (draw_background) {
         draw_background(0.0f, 0.0f, fade);
@@ -1363,8 +1363,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     NuPrimSetCoordinateSystem(restore);
     NuQFntPopCoordinateSystem();
     NuQFntPopPrintMode();
-    TextScaleX_candidate = old_x;
-    TextScaleY_candidate = old_y;
+    TextScaleX = old_x;
+    TextScaleY = old_y;
 }
 
 extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
@@ -1386,7 +1386,7 @@ extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
             if (length > 511) {
                 length = 511;
             }
-            PCByteCopy_candidate(substring, text + line_start, length);
+            PCByteCopy(substring, text + line_start, length);
             substring[length] = 0;
             TextDecode((char *)substring, decoded);
             Text3DStringEncodeFont(decoded, encoded, SmartTextFont ? SmartTextFont : QFont2D);

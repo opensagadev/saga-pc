@@ -120,8 +120,8 @@ extern "C" {
                 NuStrCat(name, Text_GetLanguagePath(Text_Language));
             }
             if (Text_Language == 0) {
-                TextScaleX_candidate = PermLegalScale;
-                TextScaleY_candidate = PermLegalScale;
+                TextScaleX = PermLegalScale;
+                TextScaleY = PermLegalScale;
             }
         }
 

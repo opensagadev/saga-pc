@@ -3660,13 +3660,13 @@ i32 EdRef::GetAttributeData(void *object, i32 attribute, i32 requested_type, voi
         if ((attribute & 8) && type_id == EdType_VuMtx) {
             __declspec(align(16)) NUMTX matrix;
             GetMemberData(object, EdType_VuMtx, &matrix, 0);
-            PCByteCopy_candidate(data, &matrix.m30, sizeof(VuVec));
+            PCByteCopy(data, &matrix.m30, sizeof(VuVec));
             return 1;
         }
         if (attribute & 0x100) {
             i16 value;
             GetMemberData(object, EdType_Short, &value, 0);
-            PCByteCopy_candidate(data, &value, sizeof(i16));
+            PCByteCopy(data, &value, sizeof(i16));
             return 1;
         }
         GetMemberData(object, requested_type, data, data_size);
@@ -3682,7 +3682,7 @@ i32 EdRef::SetAttributeData(void *object, i32 attribute, i32 requested_type, voi
     if ((attribute & 8) && type_id == EdType_VuMtx) {
         __declspec(align(16)) NUMTX matrix;
         GetMemberData(object, EdType_VuMtx, &matrix, 0);
-        PCByteCopy_candidate(&matrix.m30, data, sizeof(VuVec));
+        PCByteCopy(&matrix.m30, data, sizeof(VuVec));
         SetMemberData(object, EdType_VuMtx, &matrix, 0, NULL);
         return 1;
     }
@@ -6179,7 +6179,7 @@ void EdRef::GetMemberData(void *object, i32 requested_type, void *data, i32 data
         if (attributes & 0x40000000) {
             member = *static_cast<void **>(member);
         }
-        PCByteCopy_candidate(data, member, type_size);
+        PCByteCopy(data, member, type_size);
     }
 }
 
@@ -6190,7 +6190,7 @@ void EdRef::SetMemberData(void *object, i32 requested_type, void *data, i32 data
         if (attributes & 0x40000000) {
             member = *static_cast<void **>(member);
         }
-        PCByteCopy_candidate(member, data, type_size);
+        PCByteCopy(member, data, type_size);
     }
 }
 

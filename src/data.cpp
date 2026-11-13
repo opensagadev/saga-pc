@@ -8644,13 +8644,13 @@ extern "C" {
     f32 qfnt_rezscale_h = 1.0f;
     extern const f32 nu_fsign_minus_one = -1.0f;
 #pragma const_seg(".rdata$PCKeyboard2Name_candidate")
-    extern const char PCKeyboard2Name_candidate[10] = "Keyboard2";
+    extern const char PCKeyboard2Name[10] = "Keyboard2";
 #pragma const_seg(".rdata$PCKeyboardMouse2Name_candidate")
-    extern const char PCKeyboardMouse2Name_candidate[16] = "KeyboardMouse2";
+    extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
 #pragma const_seg(".rdata$PCKeyboard1Name_candidate")
-    extern const char PCKeyboard1Name_candidate[10] = "Keyboard1";
+    extern const char PCKeyboard1Name[10] = "Keyboard1";
 #pragma const_seg(".rdata$PCKeyboardMouse1Name_candidate")
-    extern const char PCKeyboardMouse1Name_candidate[15] = "KeyboardMouse1";
+    extern const char PCKeyboardMouse1Name[15] = "KeyboardMouse1";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuQFntHalfScale")
     extern const f64 NuQFntHalfScale = 0.5;
@@ -8698,8 +8698,8 @@ extern "C" {
     i32 debinf_count = 0;
     DEBRIS_INFO_PC **debtab = 0;
     NUGSCN *save_icon_scene = 0;
-    f32 TextScaleX_candidate = 1.0f;
-    f32 TextScaleY_candidate = 1.0f;
+    f32 TextScaleX = 1.0f;
+    f32 TextScaleY = 1.0f;
     void *OldLevelHackData = 0;
     i32(__cdecl *CutScene_StartFn)(CUTINFO *cut) = 0;
     void(__cdecl *CutScene_PreUpdateFn)(CUTINFO *cut) = 0;
@@ -8919,8 +8919,8 @@ extern "C" {
     NUFILE_DEVICE *default_device = &host_device;
     i32 DontDoFileUpperCaseHack = 0;
     NuKeyboardState_PC *nu_input_state = 0;
-    HINSTANCE PCInputWindow_candidate = 0;
-    HWND PCInputInstance_candidate = 0;
+    HINSTANCE PCInputWindow = 0;
+    HWND PCInputInstance = 0;
     PC_DEVICE_BACKEND_PC PCDeviceBackend;
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200] = {0};
@@ -8932,9 +8932,9 @@ extern "C" {
     i32 nu_keyboard_repeat_countdown = 0;
     i32 nu_keyboard_previous_key_index = 0;
     i32 nu_keyboard_no_key_state = 0;
-    i32 PCThreadCriticalSectionCount_candidate = 0;
-    CRITICAL_SECTION PCThreadCriticalSections_candidate[13] = {0};
-    i32 PCFrameCriticalSectionIndex_candidate = 0;
+    i32 PCThreadCriticalSectionCount = 0;
+    CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
+    i32 PCFrameCriticalSectionIndex = 0;
     NUALLOC_RECORD *NuAllocRecordHead = 0;
     u32 NuAllocTrackedBytes = 0;
     NUALLOC_ARENA *NuAllocArena = 0;
@@ -10593,7 +10593,7 @@ extern "C" {
     extern const f64 nu_wind_scaled_time_multiplier = 5.0;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCKeyboardDefaultValue_candidate")
-    extern const f32 PCKeyboardDefaultValue_candidate = 0.1f;
+    extern const f32 PCKeyboardDefaultValue = 0.1f;
 #pragma const_seg()
     f32 dme_sy = 1.0f;
     f32 MASTERVOLUME = 1.0f;

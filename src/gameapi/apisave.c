@@ -127,7 +127,7 @@ void UpdateSaveSlots(void) {
                 memcard_loadcorrupt = 1;
                 saveload_autosave = -1;
             } else {
-                PCByteCopy_candidate(memcard_savedata, memcard_savedatabuffer, memcard_savedatasize);
+                PCByteCopy(memcard_savedata, memcard_savedatabuffer, memcard_savedatasize);
                 MenuLoadOccurred = 1;
             }
         } else {
@@ -161,7 +161,7 @@ void UpdateSaveSlots(void) {
             }
             save_hash = memcard_hashfn != NULL ? memcard_hashfn() : -1;
             if (memcard_slot != -1) {
-                PCByteCopy_candidate(memcard_savedatabuffer, memcard_savedata, memcard_savedatasize);
+                PCByteCopy(memcard_savedatabuffer, memcard_savedata, memcard_savedatasize);
                 *(i32 *)((char *)memcard_savedatabuffer + memcard_savedatasize) =
                     ChecksumSaveData(memcard_savedatabuffer, memcard_savedatasize);
                 saveloadASSave(memcard_slot, memcard_savedatabuffer, memcard_savedatasize + 4, (u32)save_hash);

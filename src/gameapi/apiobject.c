@@ -2889,7 +2889,7 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
     NuFParDestroy(parser);
     if (count > 0) {
         buffer_start->void_ptr = current;
-        PCByteCopy_candidate(buffer_start->void_ptr, strings, (u32)offset);
+        PCByteCopy(buffer_start->void_ptr, strings, (u32)offset);
         for (index = 0; index < count; ++index) {
             first[index].dir = (char *)buffer_start->void_ptr + directory_offsets[index];
             first[index].name = (char *)buffer_start->void_ptr + filename_offsets[index];

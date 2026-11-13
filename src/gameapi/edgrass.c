@@ -587,10 +587,10 @@ void __cdecl edgraSortVectorBuffer(i32 index) {
         u32 bytes = GrassClumps[index].element_count * sizeof(NUVEC);
         i32 i;
         NUVEC *tail;
-        PCByteCopy_candidate(temporary, GrassClumps[index].vector_buffer, bytes);
+        PCByteCopy(temporary, GrassClumps[index].vector_buffer, bytes);
         tail = (NUVEC *)GrassClumps[index].vector_buffer + GrassClumps[index].element_count;
-        PCByteCopy_candidate(GrassClumps[index].vector_buffer, tail, (u8 *)edgra_free_vecbuffer - (u8 *)tail);
-        PCByteCopy_candidate((u8 *)edgra_free_vecbuffer - bytes, temporary, bytes);
+        PCByteCopy(GrassClumps[index].vector_buffer, tail, (u8 *)edgra_free_vecbuffer - (u8 *)tail);
+        PCByteCopy((u8 *)edgra_free_vecbuffer - bytes, temporary, bytes);
         edgra_last_clump_in_buffer = index;
         for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
             if (i != index && GrassClumps[i].element_count &&

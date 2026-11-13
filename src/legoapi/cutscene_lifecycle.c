@@ -1732,22 +1732,22 @@ static __declspec(noinline) void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *
 }
 
 /* No retail references; named after what they do. */
-void __cdecl instNuGCutSceneJumpToEnd_candidate(INSTNUGCUTSCENE *owner) {
+void __cdecl instNuGCutSceneJumpToEnd(INSTNUGCUTSCENE *owner) {
     CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 0);
 }
 
-void __cdecl instNuGCutSceneJumpToEndFlagged_candidate(INSTNUGCUTSCENE *owner) {
+void __cdecl instNuGCutSceneJumpToEndFlagged(INSTNUGCUTSCENE *owner) {
     CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 1);
 }
 
-void __cdecl instNuGCutSceneSetTranslation_candidate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
+void __cdecl instNuGCutSceneSetTranslation(INSTNUGCUTSCENE *owner, NUVEC *translation) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     instance->flags_88 |= 0x80;
     NuMtxSetTranslation(&instance->matrix, translation);
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 
-void __cdecl instNuGCutSceneTranslate_candidate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
+void __cdecl instNuGCutSceneTranslate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     if ((instance->flags_88 & 0x80) == 0) {
         instance->flags_88 |= 0x80;
@@ -1764,7 +1764,7 @@ void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *owner, NUMTX *mtx) {
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 
-void __cdecl instNuGCutSceneRotateY_candidate(INSTNUGCUTSCENE *owner, NUANG angle) {
+void __cdecl instNuGCutSceneRotateY(INSTNUGCUTSCENE *owner, NUANG angle) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     instance->flags_88 |= 0x80;
     NuMtxRotateY(&instance->matrix, angle);
@@ -3105,7 +3105,7 @@ CUT_SCENE_LOAD_PC *__cdecl RelocateCutScene(CUT_SCENE_LOAD_PC *source, VARIPTR *
     if (delta != 0) {
         source->string_delta = delta;
         source->relocation_delta = delta;
-        PCByteCopy_candidate(scene, source, source->loaded_size);
+        PCByteCopy(scene, source, source->loaded_size);
         CutSceneFixPtrsPc(scene, delta, 1);
     }
     buffer->addr += scene->loaded_size;
