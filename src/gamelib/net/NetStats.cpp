@@ -12,13 +12,13 @@ STATIC_ASSERT(sizeof(NET_PRIM_VERTEX_PC) == 0x18);
 STATIC_ASSERT(offsetof(NET_PRIM_VERTEX_PC, colour) == 0xc);
 
 static void NetPrimSetColour(i32 colour) {
-    u32 converted;
     if (NuPrimNeedsOverbrightening != 0)
-        converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+        ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
+            ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00u);
     else
-        converted =
-            ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
-    ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+        ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
+            (((colour & 0xff) >> 1) << 16) + ((((colour >> 8) & 0xff) >> 1) << 8) + (((colour >> 16) & 0xff) >> 1) +
+            (colour & 0xff000000);
 }
 
 static void NetPrimPosition(f32 x, f32 y, f32 z) {
