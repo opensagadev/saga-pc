@@ -122,6 +122,20 @@ The bundled SDK's `winternl.h` omits `__stdcall` on `RtlUnwind`. The supplementa
 header corrects this one ABI declaration: the pinned `Kernel32.Lib` contains
 `__imp__RtlUnwind@16` and `_RtlUnwind@16`, corroborating the x86 calling convention.
 
+The rest of the import metadata stored in `.rdata` is mapped as what it is. The
+import descriptors use the linker names `__IMPORT_DESCRIPTOR_<module>` and
+`__NULL_IMPORT_DESCRIPTOR` (20 bytes each). The linker-generated pieces without
+a spellable linker name get provisional names: `saga_import_lookup_<dll>` (the
+import lookup table with its terminator), `saga_import_address_end_<dll>` (the
+IAT terminator, `\x7f<module>_NULL_THUNK_DATA` in the import library),
+`saga_import_name_<dll>_<api>` (hint/name entries, padded to two bytes) and
+`saga_import_dll_name_<dll>`. The debug directory (`saga_debug_directory`) and
+its CodeView record (`saga_debug_data_0`), the load configuration
+(`__load_config_used`, 72 bytes) and the SafeSEH handler table
+(`___safe_se_handler_table`) complete the PE structures inside sections.
+`python3 tools/unmapped.py --check` re-derives every one of these rows from the
+PE headers, and every `??_C@`/`__real@` row from the bytes its name encodes.
+
 The matcher recognizes mapped IAT slots and import thunks from the verified
 original PE and lists them separately under `externals`. They supply relocation
 bindings and count toward mapped image coverage; they do not count as reconstructed

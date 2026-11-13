@@ -13463,9 +13463,13 @@ address,symbol,size,ctype
 0x00751000,__imp__RegCloseKey@4,4,LONG (__stdcall *)(HKEY)
 0x00751004,__imp__RegOpenKeyExA@20,4,"LONG (__stdcall *)(HKEY, LPCSTR, DWORD, REGSAM, PHKEY)"
 0x00751008,__imp__RegQueryValueExA@24,4,"LONG (__stdcall *)(HKEY, LPCSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD)"
+0x75100c,saga_import_address_end_ADVAPI32_dll,4,
 0x00751010,__imp__DirectInput8Create@20,4,"HRESULT (__stdcall *)(HINSTANCE, DWORD, REFIID, void **, IUnknown *)"
+0x751014,saga_import_address_end_DINPUT8_dll,4,
 0x00751018,__imp__DirectSoundCreate8@12,4,"HRESULT (__stdcall *)(LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN)"
+0x75101c,saga_import_address_end_DSOUND_dll,4,
 0x00751020,__imp__DeleteObject@4,4,BOOL (__stdcall *)(HGDIOBJ)
+0x751024,saga_import_address_end_GDI32_dll,4,
 0x00751028,__imp__EnumSystemLocalesA@8,4,"BOOL (__stdcall *)(LOCALE_ENUMPROCA, DWORD)"
 0x0075102c,__imp__IsValidLocale@8,4,"BOOL (__stdcall *)(LCID, DWORD)"
 0x00751030,__imp__SetEndOfFile@4,4,BOOL (__stdcall *)(HANDLE)
@@ -13587,11 +13591,14 @@ address,symbol,size,ctype
 0x00751200,__imp__HeapCreate@12,4,"HANDLE (__stdcall *)(DWORD, SIZE_T, SIZE_T)"
 0x00751204,__imp__VirtualFree@12,4,"BOOL (__stdcall *)(LPVOID, SIZE_T, DWORD)"
 0x00751208,__imp__GetCurrentProcessId@0,4,DWORD (__stdcall *)(void)
+0x75120c,saga_import_address_end_KERNEL32_dll,4,
 0x00751210,__imp__SysAllocString@4,4,BSTR (__stdcall *)(const OLECHAR *)
 0x00751214,__imp__SysFreeString@4,4,void (__stdcall *)(BSTR)
+0x751218,saga_import_address_end_OLEAUT32_dll,4,
 0x0075121c,__imp__SHGetFolderPathA@20,4,"HRESULT (__stdcall *)(HWND, int, HANDLE, DWORD, LPSTR)"
 0x00751220,__imp__ShellExecuteA@24,4,"HINSTANCE (__stdcall *)(HWND, LPCSTR, LPCSTR, LPCSTR, LPCSTR, INT)"
 0x00751224,__imp__SHCreateDirectoryExA@12,4,"int (__stdcall *)(HWND, LPCSTR, LPSECURITY_ATTRIBUTES)"
+0x751228,saga_import_address_end_SHELL32_dll,4,
 0x0075122c,__imp__GetSystemMetrics@4,4,INT (__stdcall *)(INT)
 0x00751230,__imp__DispatchMessageA@4,4,LRESULT (__stdcall *)(const MSG*)
 0x00751234,__imp__TranslateMessage@4,4,BOOL (__stdcall *)(const MSG*)
@@ -13617,12 +13624,15 @@ address,symbol,size,ctype
 0x00751284,__imp__SetCursor@4,4,HCURSOR (__stdcall *)(HCURSOR)
 0x00751288,__imp__AdjustWindowRect@12,4,"BOOL (__stdcall *)(LPRECT, DWORD, BOOL)"
 0x0075128c,__imp__SendMessageA@16,4,"LRESULT (__stdcall *)(HWND, UINT, WPARAM, LPARAM)"
+0x751290,saga_import_address_end_USER32_dll,4,
 0x00751294,__imp__timeKillEvent@4,4,MMRESULT (__stdcall *)(UINT)
 0x00751298,__imp__timeSetEvent@20,4,"MMRESULT (__stdcall *)(UINT, UINT, LPTIMECALLBACK, DWORD_PTR, UINT)"
 0x0075129c,__imp__timeGetTime@0,4,DWORD (__stdcall *)(void)
+0x7512a0,saga_import_address_end_WINMM_dll,4,
 0x007512a4,__imp__XInputGetCapabilities@12,4,"DWORD (__stdcall *)(DWORD, DWORD, XINPUT_CAPABILITIES *)"
 0x007512a8,__imp__XInputGetState@8,4,"DWORD (__stdcall *)(DWORD, XINPUT_STATE *)"
 0x007512ac,__imp__XInputSetState@8,4,"DWORD (__stdcall *)(DWORD, XINPUT_VIBRATION *)"
+0x7512b0,saga_import_address_end_XINPUT1_3_dll,4,
 0x007512b4,_saga_import_binkw32_dll__BinkSetSoundTrack_8,4,void *
 0x7512b4,__imp__BinkSetSoundTrack@8,4,"void (__stdcall *)(u32, u32 *)"
 0x007512b8,_saga_import_binkw32_dll__BinkOpen_8,4,void *
@@ -13647,9 +13657,11 @@ address,symbol,size,ctype
 0x7512dc,__imp__BinkGoto@12,4,"void (__stdcall *)(PC_FMV_BINK_PC *, u32, u32)"
 0x007512e0,_saga_import_binkw32_dll__BinkClose_4,4,void *
 0x7512e0,__imp__BinkClose@4,4,void (__stdcall *)(PC_FMV_BINK_PC *)
+0x7512e4,saga_import_address_end_binkw32_dll,4,
 0x007512e8,__imp__Direct3DCreate9@4,4,IDirect3D9 * (__stdcall *)(UINT)
 0x007512ec,__imp__D3DPERF_EndEvent@0,4,int (__stdcall *)(void)
 0x007512f0,__imp__D3DPERF_BeginEvent@8,4,"int (__stdcall *)(D3DCOLOR, const WCHAR *)"
+0x7512f4,saga_import_address_end_d3d9_dll,4,
 0x007512f8,__imp__D3DXCreateEffect@36,4,"HRESULT (__stdcall *)(IDirect3DDevice9 *, const void *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectPool *, ID3DXEffect **, ID3DXBuffer **)"
 0x007512fc,__imp__D3DXCreateCubeTextureFromFileInMemory@16,4,"HRESULT (__stdcall *)(IDirect3DDevice9 *, const void *, UINT, IDirect3DCubeTexture9 **)"
 0x00751300,__imp__D3DXCreateTextureFromFileInMemoryEx@60,4,"HRESULT (__stdcall *)(IDirect3DDevice9 *, const void *, UINT, UINT, UINT, UINT, DWORD, D3DFORMAT, D3DPOOL, DWORD, DWORD, D3DCOLOR, D3DXIMAGE_INFO *, PALETTEENTRY *, IDirect3DTexture9 **)"
@@ -13664,11 +13676,13 @@ address,symbol,size,ctype
 0x00751324,__imp__D3DXMatrixMultiply@12,4,"D3DXMATRIX * (__stdcall *)(D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"
 0x00751328,__imp__D3DXMatrixLookAtLH@16,4,"D3DXMATRIX * (__stdcall *)(D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *, const D3DXVECTOR3 *)"
 0x0075132c,__imp__D3DXMatrixOrthoLH@20,4,"D3DXMATRIX * (__stdcall *)(D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT)"
+0x751330,saga_import_address_end_d3dx9_35_dll,4,
 0x00751334,__imp__CoInitializeEx@8,4,"HRESULT (__stdcall *)(void *, DWORD)"
 0x00751338,__imp__CoInitialize@4,4,HRESULT (__stdcall *)(void *)
 0x0075133c,__imp__CoCreateInstance@20,4,"HRESULT (__stdcall *)(REFCLSID, IUnknown *, DWORD, REFIID, void **)"
 0x00751340,__imp__CoUninitialize@0,4,void (__stdcall *)(void)
 0x00751344,__imp__CoSetProxyBlanket@32,4,"HRESULT (__stdcall *)(IUnknown *, DWORD, DWORD, OLECHAR *, DWORD, DWORD, RPC_AUTH_IDENTITY_HANDLE, DWORD)"
+0x751348,saga_import_address_end_ole32_dll,4,
 0x75134c,___xc_a,,
 0x00751354,_StatusAltTextScalePc$initializer$,4,native CRT pointer
 0x75135c,_Game_LanguageList$initializer$,4,native CRT pointer
@@ -13702,6 +13716,7 @@ address,symbol,size,ctype
 0x751440,___xp_z,,
 0x751444,___xt_a,,
 0x751448,___xt_z,,
+0x751450,saga_debug_directory,28,
 0x75146c,??_C@_0BC@MDMGKAHA@stuff?2pc_bits?4gsc?$AA@,18,const char[]
 0x751490,??_C@_0P@GHFPNOJB@bad?5allocation?$AA@,15,
 0x007514c0,_InitOnceAllocSource,15,const char[15]
@@ -32768,6 +32783,8 @@ address,symbol,size,ctype
 0x7ea3d8,__real@40fe240000000000,8,const f64
 0x7ea3e0,??_C@_03LINHFLNC@cre?$AA@,4,const char []
 0x7ea3e8,__real@3f60000000000000,8,const f64
+0x7ea3f8,__load_config_used,72,
+0x7ea440,saga_debug_data_0,83,
 0x7ea494,??_R4NetListenerInterface@@6B@,20,
 0x7ea4a8,??_R3NetListenerInterface@@8,16,
 0x7ea4b8,??_R2NetListenerInterface@@8,5,
@@ -33207,6 +33224,7 @@ address,symbol,size,ctype
 0x7ec988,??_R3ShaderManagerHLSL@@8,16,
 0x7ec998,??_R2ShaderManagerHLSL@@8,9,
 0x7ec9a4,??_R1A@?0A@EA@ShaderManagerHLSL@@8,28,
+0x7ec9c0,___safe_se_handler_table,68,
 0x7eca04,___rtc_iaa,,
 0x7eca08,___rtc_izz,,
 0x7eca0c,___rtc_taa,,
@@ -33346,6 +33364,240 @@ address,symbol,size,ctype
 0x7eda94,__ehfuncinfo$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,,
 0x7edab8,__tryblocktable$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,40,
 0x7edae0,libcmt#00486:__sehtable$_fputwc,,
+0x7edafc,__IMPORT_DESCRIPTOR_USER32,20,
+0x7edb10,__IMPORT_DESCRIPTOR_d3dx9_35,20,
+0x7edb24,__IMPORT_DESCRIPTOR_d3d9,20,
+0x7edb38,__IMPORT_DESCRIPTOR_WINMM,20,
+0x7edb4c,__IMPORT_DESCRIPTOR_DSOUND,20,
+0x7edb60,__IMPORT_DESCRIPTOR_DINPUT8,20,
+0x7edb74,__IMPORT_DESCRIPTOR_binkw32,20,
+0x7edb88,__IMPORT_DESCRIPTOR_XINPUT1_3,20,
+0x7edb9c,__IMPORT_DESCRIPTOR_KERNEL32,20,
+0x7edbb0,__IMPORT_DESCRIPTOR_GDI32,20,
+0x7edbc4,__IMPORT_DESCRIPTOR_ADVAPI32,20,
+0x7edbd8,__IMPORT_DESCRIPTOR_SHELL32,20,
+0x7edbec,__IMPORT_DESCRIPTOR_ole32,20,
+0x7edc00,__IMPORT_DESCRIPTOR_OLEAUT32,20,
+0x7edc14,__NULL_IMPORT_DESCRIPTOR,20,
+0x7edc28,saga_import_lookup_ADVAPI32_dll,16,
+0x7edc38,saga_import_lookup_DINPUT8_dll,8,
+0x7edc40,saga_import_lookup_DSOUND_dll,8,
+0x7edc48,saga_import_lookup_GDI32_dll,8,
+0x7edc50,saga_import_lookup_KERNEL32_dll,488,
+0x7ede38,saga_import_lookup_OLEAUT32_dll,12,
+0x7ede44,saga_import_lookup_SHELL32_dll,16,
+0x7ede54,saga_import_lookup_USER32_dll,104,
+0x7edebc,saga_import_lookup_WINMM_dll,16,
+0x7edecc,saga_import_lookup_XINPUT1_3_dll,16,
+0x7ededc,saga_import_lookup_binkw32_dll,52,
+0x7edf10,saga_import_lookup_d3d9_dll,16,
+0x7edf20,saga_import_lookup_d3dx9_35_dll,60,
+0x7edf5c,saga_import_lookup_ole32_dll,24,
+0x7edf74,saga_import_name_USER32_dll_SendMessageA,16,
+0x7edf84,saga_import_dll_name_USER32_dll,12,
+0x7edf90,saga_import_name_d3dx9_35_dll_D3DXMatrixMultiply,22,
+0x7edfa6,saga_import_name_d3dx9_35_dll_D3DXMatrixLookAtLH,22,
+0x7edfbc,saga_import_name_d3dx9_35_dll_D3DXMatrixOrthoLH,20,
+0x7edfd0,saga_import_name_d3dx9_35_dll_D3DXSaveSurfaceToFileInMemory,32,
+0x7edff0,saga_import_name_d3dx9_35_dll_D3DXCreateTextureFromFileInMemory,36,
+0x7ee014,saga_import_name_d3dx9_35_dll_D3DXCreateRenderToSurface,28,
+0x7ee030,saga_import_name_d3dx9_35_dll_D3DXCreateFontA,18,
+0x7ee042,saga_import_name_d3dx9_35_dll_D3DXCreateEffectFromFileA,28,
+0x7ee05e,saga_import_name_d3dx9_35_dll_D3DXCreateTextureFromFileInMemoryEx,38,
+0x7ee084,saga_import_name_d3dx9_35_dll_D3DXCreateCubeTextureFromFileInMemory,40,
+0x7ee0ac,saga_import_name_d3dx9_35_dll_D3DXCreateEffect,20,
+0x7ee0c0,saga_import_dll_name_d3dx9_35_dll,14,
+0x7ee0ce,saga_import_name_d3d9_dll_D3DPERF_BeginEvent,22,
+0x7ee0e4,saga_import_name_d3d9_dll_D3DPERF_EndEvent,20,
+0x7ee0f8,saga_import_name_d3d9_dll_Direct3DCreate9,18,
+0x7ee10a,saga_import_dll_name_d3d9_dll,10,
+0x7ee114,saga_import_name_WINMM_dll_timeGetTime,14,
+0x7ee122,saga_import_name_WINMM_dll_timeSetEvent,16,
+0x7ee132,saga_import_name_WINMM_dll_timeKillEvent,16,
+0x7ee142,saga_import_dll_name_WINMM_dll,10,
+0x7ee14c,saga_import_dll_name_DSOUND_dll,12,
+0x7ee158,saga_import_name_DINPUT8_dll_DirectInput8Create,22,
+0x7ee16e,saga_import_dll_name_DINPUT8_dll,12,
+0x7ee17a,saga_import_name_binkw32_dll__BinkGetRealtime@12,22,
+0x7ee190,saga_import_name_binkw32_dll__BinkCopyToBufferRect@44,28,
+0x7ee1ac,saga_import_name_binkw32_dll__BinkDoFrame@4,18,
+0x7ee1be,saga_import_name_binkw32_dll__BinkSetSoundSystem@8,24,
+0x7ee1d6,saga_import_name_binkw32_dll__BinkOpenDirectSound@4,26,
+0x7ee1f0,saga_import_name_binkw32_dll__BinkSetVolume@12,20,
+0x7ee204,saga_import_name_binkw32_dll__BinkClose@4,16,
+0x7ee214,saga_import_name_binkw32_dll__BinkOpen@8,14,
+0x7ee222,saga_import_name_binkw32_dll__BinkSetSoundTrack@8,24,
+0x7ee23a,saga_import_name_binkw32_dll__BinkNextFrame@4,20,
+0x7ee24e,saga_import_name_binkw32_dll__BinkWait@4,14,
+0x7ee25c,saga_import_name_binkw32_dll__BinkGoto@12,16,
+0x7ee26c,saga_import_dll_name_binkw32_dll,12,
+0x7ee278,saga_import_dll_name_XINPUT1_3_dll,14,
+0x7ee286,saga_import_name_KERNEL32_dll_Sleep,8,
+0x7ee28e,saga_import_name_KERNEL32_dll_SetEvent,12,
+0x7ee29a,saga_import_name_KERNEL32_dll_LeaveCriticalSection,24,
+0x7ee2b2,saga_import_name_KERNEL32_dll_EnterCriticalSection,24,
+0x7ee2ca,saga_import_name_KERNEL32_dll_WaitForSingleObject,22,
+0x7ee2e0,saga_import_name_KERNEL32_dll_ResumeThread,16,
+0x7ee2f0,saga_import_name_KERNEL32_dll_SetThreadPriority,20,
+0x7ee304,saga_import_name_KERNEL32_dll_CreateThread,16,
+0x7ee314,saga_import_name_KERNEL32_dll_CreateEventA,16,
+0x7ee324,saga_import_name_KERNEL32_dll_InitializeCriticalSection,28,
+0x7ee340,saga_import_name_KERNEL32_dll_ResetEvent,14,
+0x7ee34e,saga_import_name_KERNEL32_dll_GetCurrentThreadId,22,
+0x7ee364,saga_import_name_KERNEL32_dll_CreateFileA,14,
+0x7ee372,saga_import_name_KERNEL32_dll_CloseHandle,14,
+0x7ee380,saga_import_name_KERNEL32_dll_ReadFile,12,
+0x7ee38c,saga_import_name_KERNEL32_dll_WriteFile,12,
+0x7ee398,saga_import_name_KERNEL32_dll_SetFilePointerEx,20,
+0x7ee3ac,saga_import_name_KERNEL32_dll_MoveFileA,12,
+0x7ee3b8,saga_import_name_KERNEL32_dll_DeleteFileA,14,
+0x7ee3c6,saga_import_name_KERNEL32_dll_FindFirstFileA,18,
+0x7ee3d8,saga_import_name_KERNEL32_dll_FindClose,12,
+0x7ee3e4,saga_import_name_KERNEL32_dll_FindNextFileA,16,
+0x7ee3f4,saga_import_name_KERNEL32_dll_FileTimeToSystemTime,24,
+0x7ee40c,saga_import_name_KERNEL32_dll_CreateDirectoryA,20,
+0x7ee420,saga_import_name_KERNEL32_dll_GetFileAttributesExA,24,
+0x7ee438,saga_import_name_KERNEL32_dll_QueryPerformanceCounter,26,
+0x7ee452,saga_import_name_KERNEL32_dll_QueryPerformanceFrequency,28,
+0x7ee46e,saga_import_name_KERNEL32_dll_SetProcessAffinityMask,26,
+0x7ee488,saga_import_name_KERNEL32_dll_GetProcessAffinityMask,26,
+0x7ee4a2,saga_import_name_KERNEL32_dll_GetCurrentProcess,20,
+0x7ee4b6,saga_import_name_KERNEL32_dll_MultiByteToWideChar,22,
+0x7ee4cc,saga_import_name_KERNEL32_dll_GetTimeFormatA,18,
+0x7ee4de,saga_import_name_KERNEL32_dll_GetDateFormatA,18,
+0x7ee4f0,saga_import_name_KERNEL32_dll_GetTickCount,16,
+0x7ee500,saga_import_name_KERNEL32_dll_DebugBreak,14,
+0x7ee50e,saga_import_name_KERNEL32_dll_GetLogicalDriveStringsA,26,
+0x7ee528,saga_import_name_KERNEL32_dll_DeleteCriticalSection,24,
+0x7ee540,saga_import_name_KERNEL32_dll_WaitForMultipleObjects,26,
+0x7ee55a,saga_import_name_KERNEL32_dll_GetFileSize,14,
+0x7ee568,saga_import_name_KERNEL32_dll_GetUserGeoID,16,
+0x7ee578,saga_import_name_KERNEL32_dll_GetUserDefaultLangID,24,
+0x7ee590,saga_import_name_KERNEL32_dll_GetModuleFileNameA,22,
+0x7ee5a6,saga_import_name_KERNEL32_dll_GetModuleHandleA,20,
+0x7ee5ba,saga_import_name_KERNEL32_dll_VerifyVersionInfoA,22,
+0x7ee5d0,saga_import_name_KERNEL32_dll_VerSetConditionMask,22,
+0x7ee5e6,saga_import_name_KERNEL32_dll_GetFileAttributesA,22,
+0x7ee5fc,saga_import_name_KERNEL32_dll_ExpandEnvironmentStringsA,28,
+0x7ee618,saga_import_name_KERNEL32_dll_SetThreadExecutionState,26,
+0x7ee632,saga_import_name_KERNEL32_dll_SetThreadAffinityMask,24,
+0x7ee64a,saga_import_name_KERNEL32_dll_GetCurrentThread,20,
+0x7ee65e,saga_import_name_KERNEL32_dll_OutputDebugStringA,22,
+0x7ee674,saga_import_name_KERNEL32_dll_GetCommandLineA,18,
+0x7ee686,saga_import_name_KERNEL32_dll_HeapFree,12,
+0x7ee692,saga_import_name_KERNEL32_dll_GetVersionExA,16,
+0x7ee6a2,saga_import_name_KERNEL32_dll_HeapAlloc,12,
+0x7ee6ae,saga_import_name_KERNEL32_dll_GetProcessHeap,18,
+0x7ee6c0,saga_import_name_KERNEL32_dll_GetStartupInfoA,18,
+0x7ee6d2,saga_import_name_KERNEL32_dll_GetLastError,16,
+0x7ee6e2,saga_import_name_KERNEL32_dll_HeapReAlloc,14,
+0x7ee6f0,saga_import_name_KERNEL32_dll_TerminateProcess,20,
+0x7ee704,saga_import_name_KERNEL32_dll_UnhandledExceptionFilter,28,
+0x7ee720,saga_import_name_KERNEL32_dll_SetUnhandledExceptionFilter,30,
+0x7ee73e,saga_import_name_KERNEL32_dll_IsDebuggerPresent,20,
+0x7ee752,saga_import_name_KERNEL32_dll_RaiseException,18,
+0x7ee764,saga_import_name_KERNEL32_dll_RtlUnwind,12,
+0x7ee770,saga_import_name_KERNEL32_dll_GetProcAddress,18,
+0x7ee782,saga_import_name_KERNEL32_dll_ExitProcess,14,
+0x7ee790,saga_import_name_KERNEL32_dll_SetConsoleCtrlHandler,24,
+0x7ee7a8,saga_import_name_KERNEL32_dll_TlsGetValue,14,
+0x7ee7b6,saga_import_name_KERNEL32_dll_TlsAlloc,12,
+0x7ee7c2,saga_import_name_KERNEL32_dll_TlsSetValue,14,
+0x7ee7d0,saga_import_name_KERNEL32_dll_TlsFree,10,
+0x7ee7da,saga_import_name_KERNEL32_dll_InterlockedIncrement,24,
+0x7ee7f2,saga_import_name_KERNEL32_dll_SetLastError,16,
+0x7ee802,saga_import_name_KERNEL32_dll_InterlockedDecrement,24,
+0x7ee81a,saga_import_name_KERNEL32_dll_HeapSize,12,
+0x7ee826,saga_import_name_KERNEL32_dll_GetStdHandle,16,
+0x7ee836,saga_import_name_KERNEL32_dll_FreeEnvironmentStringsA,26,
+0x7ee850,saga_import_name_KERNEL32_dll_GetEnvironmentStrings,24,
+0x7ee868,saga_import_name_KERNEL32_dll_FreeEnvironmentStringsW,26,
+0x7ee882,saga_import_name_KERNEL32_dll_WideCharToMultiByte,22,
+0x7ee898,saga_import_name_KERNEL32_dll_GetEnvironmentStringsW,26,
+0x7ee8b2,saga_import_name_KERNEL32_dll_SetHandleCount,18,
+0x7ee8c4,saga_import_name_KERNEL32_dll_GetFileType,14,
+0x7ee8d2,saga_import_name_KERNEL32_dll_HeapDestroy,14,
+0x7ee8e0,saga_import_name_KERNEL32_dll_HeapCreate,14,
+0x7ee8ee,saga_import_name_KERNEL32_dll_VirtualFree,14,
+0x7ee8fc,saga_import_name_KERNEL32_dll_GetCurrentProcessId,22,
+0x7ee912,saga_import_name_KERNEL32_dll_GetSystemTimeAsFileTime,26,
+0x7ee92c,saga_import_name_KERNEL32_dll_FatalAppExitA,16,
+0x7ee93c,saga_import_name_KERNEL32_dll_VirtualAlloc,16,
+0x7ee94c,saga_import_name_KERNEL32_dll_SetFilePointer,18,
+0x7ee95e,saga_import_name_KERNEL32_dll_GetConsoleCP,16,
+0x7ee96e,saga_import_name_KERNEL32_dll_GetConsoleMode,18,
+0x7ee980,saga_import_name_KERNEL32_dll_FlushFileBuffers,20,
+0x7ee994,saga_import_name_KERNEL32_dll_GetCPInfo,12,
+0x7ee9a0,saga_import_name_KERNEL32_dll_GetACP,10,
+0x7ee9aa,saga_import_name_KERNEL32_dll_GetOEMCP,12,
+0x7ee9b6,saga_import_name_KERNEL32_dll_IsValidCodePage,18,
+0x7ee9c8,saga_import_name_KERNEL32_dll_LCMapStringA,16,
+0x7ee9d8,saga_import_name_KERNEL32_dll_LCMapStringW,16,
+0x7ee9e8,saga_import_name_KERNEL32_dll_SetStdHandle,16,
+0x7ee9f8,saga_import_name_KERNEL32_dll_FreeLibrary,14,
+0x7eea06,saga_import_name_KERNEL32_dll_InterlockedExchange,22,
+0x7eea1c,saga_import_name_KERNEL32_dll_LoadLibraryA,16,
+0x7eea2c,saga_import_name_KERNEL32_dll_GetLocaleInfoA,18,
+0x7eea3e,saga_import_name_KERNEL32_dll_GetLocaleInfoW,18,
+0x7eea50,saga_import_name_KERNEL32_dll_WriteConsoleA,16,
+0x7eea60,saga_import_name_KERNEL32_dll_GetConsoleOutputCP,22,
+0x7eea76,saga_import_name_KERNEL32_dll_WriteConsoleW,16,
+0x7eea86,saga_import_name_KERNEL32_dll_GetStringTypeA,18,
+0x7eea98,saga_import_name_KERNEL32_dll_GetStringTypeW,18,
+0x7eeaaa,saga_import_name_KERNEL32_dll_GetUserDefaultLCID,22,
+0x7eeac0,saga_import_name_KERNEL32_dll_EnumSystemLocalesA,22,
+0x7eead6,saga_import_name_KERNEL32_dll_IsValidLocale,16,
+0x7eeae6,saga_import_name_KERNEL32_dll_SetEndOfFile,16,
+0x7eeaf6,saga_import_name_KERNEL32_dll_GetTimeZoneInformation,26,
+0x7eeb10,saga_import_name_KERNEL32_dll_CompareStringA,18,
+0x7eeb22,saga_import_name_KERNEL32_dll_CompareStringW,18,
+0x7eeb34,saga_import_name_KERNEL32_dll_SetEnvironmentVariableA,26,
+0x7eeb4e,saga_import_name_KERNEL32_dll_OutputDebugStringW,22,
+0x7eeb64,saga_import_dll_name_KERNEL32_dll,14,
+0x7eeb72,saga_import_name_USER32_dll_SetCursor,12,
+0x7eeb7e,saga_import_name_USER32_dll_MapVirtualKeyExA,20,
+0x7eeb92,saga_import_name_USER32_dll_LoadKeyboardLayoutA,22,
+0x7eeba8,saga_import_name_USER32_dll_SystemParametersInfoA,24,
+0x7eebc0,saga_import_name_USER32_dll_MessageBoxA,14,
+0x7eebce,saga_import_name_USER32_dll_UpdateWindow,16,
+0x7eebde,saga_import_name_USER32_dll_ShowWindow,14,
+0x7eebec,saga_import_name_USER32_dll_GetSystemMetrics,20,
+0x7eec00,saga_import_name_USER32_dll_DispatchMessageA,20,
+0x7eec14,saga_import_name_USER32_dll_TranslateMessage,20,
+0x7eec28,saga_import_name_USER32_dll_PeekMessageA,16,
+0x7eec38,saga_import_name_USER32_dll_SetCursorPos,16,
+0x7eec48,saga_import_name_USER32_dll_DestroyWindow,16,
+0x7eec58,saga_import_name_USER32_dll_DefWindowProcA,18,
+0x7eec6a,saga_import_name_USER32_dll_PostQuitMessage,18,
+0x7eec7c,saga_import_name_USER32_dll_AdjustWindowRect,20,
+0x7eec90,saga_import_name_USER32_dll_GetWindowLongA,18,
+0x7eeca2,saga_import_name_USER32_dll_CreateWindowExA,18,
+0x7eecb4,saga_import_name_USER32_dll_RegisterClassExA,20,
+0x7eecc8,saga_import_name_USER32_dll_LoadCursorA,14,
+0x7eecd6,saga_import_name_USER32_dll_LoadIconA,12,
+0x7eece2,saga_import_name_USER32_dll_MoveWindow,14,
+0x7eecf0,saga_import_name_USER32_dll_MessageBoxW,14,
+0x7eecfe,saga_import_name_USER32_dll_GetForegroundWindow,22,
+0x7eed14,saga_import_name_GDI32_dll_DeleteObject,16,
+0x7eed24,saga_import_dll_name_GDI32_dll,10,
+0x7eed2e,saga_import_name_ADVAPI32_dll_RegCloseKey,14,
+0x7eed3c,saga_import_name_ADVAPI32_dll_RegQueryValueExA,20,
+0x7eed50,saga_import_name_ADVAPI32_dll_RegOpenKeyExA,16,
+0x7eed60,saga_import_dll_name_ADVAPI32_dll,14,
+0x7eed6e,saga_import_name_SHELL32_dll_ShellExecuteA,16,
+0x7eed7e,saga_import_name_SHELL32_dll_SHGetFolderPathA,20,
+0x7eed92,saga_import_name_SHELL32_dll_SHCreateDirectoryExA,24,
+0x7eedaa,saga_import_dll_name_SHELL32_dll,12,
+0x7eedb6,saga_import_name_ole32_dll_CoUninitialize,18,
+0x7eedc8,saga_import_name_ole32_dll_CoSetProxyBlanket,20,
+0x7eeddc,saga_import_name_ole32_dll_CoCreateInstance,20,
+0x7eedf0,saga_import_name_ole32_dll_CoInitialize,16,
+0x7eee00,saga_import_name_ole32_dll_CoInitializeEx,18,
+0x7eee12,saga_import_dll_name_ole32_dll,10,
+0x7eee1c,saga_import_dll_name_OLEAUT32_dll,14,
+0x7eee2a,saga_import_name_d3dx9_35_dll_D3DXCompileShader,20,
+0x7eee3e,saga_import_name_d3dx9_35_dll_D3DXCreateEffectCompiler,28,
+0x7eee5a,saga_import_name_d3dx9_35_dll_D3DXCreateBuffer,20,
 0x7ef00c,_InitOnceFileModePc,4,i32
 0x007ef01c,_SUPERBUFFERSIZE,4,i32
 0x007ef020,_CHARACTERBUFFERSIZE,4,i32
