@@ -7151,26 +7151,27 @@ extern "C" {
         }
         NuRndrScreenGrabTileEnd(&tile);
         ++dump_state;
-        if (yTiles * xTiles > dump_state) {
-            f32 left, right, x0, y0;
+        if ((f32)dump_state < yTiles * xTiles) {
+            f32 left, right;
+            f64 x0, y0;
             xPos += 1.0f;
             if (xPos >= xTiles) {
                 xPos = 0.0f;
                 yPos += 1.0f;
             }
             w = (f32)PS2_VREZ_W;
-            x0 = (f32)(w * xPos * 0.75);
+            x0 = w * xPos * 0.75;
             left = (f32)((-0.125 * w + x0) / scale);
             right = (f32)((x0 + w + -0.125 * w) / scale);
             if (right > w) {
                 xOffsetHack = (i32)(right - w);
-                left -= xOffsetHack;
                 right = w;
+                left -= xOffsetHack;
             } else {
                 xOffsetHack = 0;
             }
             h = (f32)PS2_VREZ_H;
-            y0 = (f32)(h * yPos * 0.75);
+            y0 = h * yPos * 0.75;
             RenderPostViewportSetPc(left, (f32)((y0 + -0.125 * h) / scale), right, (f32)((h + y0 + -0.125 * h) / scale),
                                     0.0f, 0.0f, w, h);
             delay = 3;
