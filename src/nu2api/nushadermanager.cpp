@@ -81,11 +81,11 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     colour0 = (v >> 16) & 1;
     if ((colour0 || (v & 0x20000)) && !(v & 0x400000))
         result |= 2;
-    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 1))
+    if (HasTexCoordSets(1))
         result |= 4;
-    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 2))
+    if (HasTexCoordSets(2))
         result |= 8;
-    if ((variant == 0 || descriptor->override_mode != 0) && SHADER_VERTEX_FORMAT_HAS_UV_SETS(v, 3))
+    if (HasTexCoordSets(3))
         result |= 0x10;
     if ((colour0 || (v & 0x20000)) && (v & 0x400000))
         result |= 0x40;
@@ -97,9 +97,19 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
         result |= 0x400;
     if (variant == 0 && (u8)(descriptor->layer_flags >> 31))
         result |= 0x800;
-    if ((variant == 0 || descriptor->override_mode != 0) && ((u8)(v >> 8) & 1))
+    if (HasLayerVertexFlag8(0))
         result |= 0x1000;
     return result;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasTexCoordSets(i32 count) const {
+    if (variant != 0 && descriptor->override_mode == 0)
+        return 0;
+    return (i32)((descriptor->vertex_format >> 9) & 3) >= count;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerVertexFlag8(i32 layer) const {
+    if ((variant != 0 && descriptor->override_mode == 0) || layer != 0)
+        return false;
+    return (descriptor->vertex_format >> 8) & 1 ? true : false;
 }
 const PC_SHADER_FILTER_DESC_VIEW *PC_SHADER_MATERIAL_FILTER_VIEW::GetDescriptor() const {
     return descriptor;
@@ -452,16 +462,13 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
 extern char uberShader2[158576];
 
 template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
-    for (i32 i = 0; i < 400; ++i)
-        PCShaderObjectCreateHLSLPc(&slots[i]);
     bound_slot = NULL;
     last_allocated = -1;
-    ++slots[0].ref_count;
+    PC_SHADER_OBJECT_FULL_VIEW *first = slots;
+    ++first->ref_count;
 }
 
 template <> PC_SHADER_MANAGER_VIEW::~ShaderManagerTemplate() {
-    for (i32 i = 399; i >= 0; --i)
-        PCShaderObjectDestroyHLSLPc(&slots[i]);
 }
 
 template <>

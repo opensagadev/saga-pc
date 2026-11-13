@@ -3852,7 +3852,7 @@ address,symbol,size,ctype
 0x0052fda0,_AIFormationFollow,401,void __cdecl (AIPACKET_PC *)
 0x0052ff40,_AIRetreatFromDestination2,517,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530150,_AIRetreatFromDestination,237,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
-0x00530240,_AISysCharacterMovement,433,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x00530240,_AISysCharacterMovement,464,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530410,_CreateAIMessageSys,142,"AIMESSAGESYS_PC *__cdecl (VARIPTR *, VARIPTR *, i32)"
 0x005304a0,_SetAIMessage,35,"void __cdecl (AIMESSAGESYS_PC *, char *, f32, AIMESSAGE_PC *)"
 0x005304d0,_GetAIMessage,34,"f32 __cdecl (AIMESSAGESYS_PC *, char *, AIMESSAGE_PC *)"
@@ -13118,6 +13118,8 @@ address,symbol,size,ctype
 0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32)"
 0x7444e0,?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,128,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32) const
 0x744560,?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,120,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32) const
+0x744600,?HasTexCoordSets@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHH@Z,48,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasTexCoordSets(i32) const
+0x744630,?HasLayerVertexFlag8@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,45,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerVertexFlag8(i32) const
 0x744660,?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,75,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32) const
 0x7446b0,?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ,292,u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags(void) const
 0x7447e0,?GetDescriptor@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUPC_SHADER_FILTER_DESC_VIEW@@XZ,3,
@@ -13156,6 +13158,8 @@ address,symbol,size,ctype
 0x7452f0,??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z,27,
 0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
 0x745310,??1ShaderBuilderGen@@UAE@XZ,53,
+0x745450,??0NuShaderObject@@QAE@XZ,16,void __thiscall NuShaderObject::NuShaderObject(void)
+0x745460,??1NuShaderObject@@QAE@XZ,8,void __thiscall NuShaderObject::~NuShaderObject(void)
 0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
 0x745810,?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,265,
 0x745950,??_EHLSLShaderBuilder@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit

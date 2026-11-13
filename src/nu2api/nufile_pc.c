@@ -267,31 +267,6 @@ i32 __cdecl FileHostMovePathPc(char *destination, char *source) {
     return MoveFileA(formatted_source, formatted_destination);
 }
 
-typedef struct AI_EDITOR_FILE_INFO_PC {
-    u32 flags;
-    u32 size;
-    i8 created_second;
-    i8 created_minute;
-    i8 created_hour;
-    i8 created_day;
-    i8 created_month;
-    u8 unknown_0d;
-    i16 created_year;
-    i8 second;
-    i8 minute;
-    i8 hour;
-    i8 day;
-    i8 month;
-    u8 unknown_15;
-    i16 year;
-    u8 unknown_18;
-    u8 unknown_19[3];
-} AI_EDITOR_FILE_INFO_PC;
-STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
-
 i32 __cdecl SaveCreateDirectoryPc(char *path) {
     SECURITY_ATTRIBUTES security;
     security.bInheritHandle = 1;
@@ -312,7 +287,7 @@ i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
     flags >>= 1;
     flags |= ~(attributes.dwFileAttributes << 1) & 2;
     info->flags = flags;
-    info->unknown_18 = 0;
+    info->name[0] = 0;
     info->size = attributes.nFileSizeLow;
     FileTimeToSystemTime(&attributes.ftCreationTime, &time);
     info->created_year = (i16)time.wYear;

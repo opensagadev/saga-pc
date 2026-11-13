@@ -719,34 +719,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
 extern char *(__cdecl *GlobalCharacterNameFn)(i32);
 
-typedef struct AI_EDITOR_FILE_INFO_PC {
-    u32 flags;
-    u32 size;
-    i8 created_second;
-    i8 created_minute;
-    i8 created_hour;
-    i8 created_day;
-    i8 created_month;
-    u8 unknown_0d;
-    i16 created_year;
-    i8 second;
-    i8 minute;
-    i8 hour;
-    i8 day;
-    i8 month;
-    u8 unknown_15;
-    i16 year;
-    char name[256]; /* NuFileGetInfo (PC) only clears name[0] */
-} AI_EDITOR_FILE_INFO_PC;
-
-STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x118);
-
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
-
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
-
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, name) == 0x18);
-
 typedef struct AI_EDITOR_MODE_ENTRY_PC {
     char name[32];
     void(__cdecl *enter)(void);
@@ -816,8 +788,6 @@ __declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS_PC aieditorsettin
 extern const char AiEditorDatedBackupFormatPc[];
 
 AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
-
-i32 __cdecl NuFileGetInfo(char *, AI_EDITOR_FILE_INFO_PC *);
 
 i32 __cdecl NuFileCopy(char *, char *);
 

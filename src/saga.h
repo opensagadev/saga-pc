@@ -11497,6 +11497,32 @@ void __cdecl PCStereoUnknownToken(void);
     i32 __cdecl NuDatFileFindTree(NUDATHDR *header, char *name);
     i32 __cdecl NuFileExistQuiet(char *filepath);
     i32 __cdecl NuFileExists(char *filepath);
+
+    /* NuFileGetInfo result; the AI editor's file browser reads it. */
+    typedef struct AI_EDITOR_FILE_INFO_PC {
+        u32 flags;
+        u32 size;
+        i8 created_second;
+        i8 created_minute;
+        i8 created_hour;
+        i8 created_day;
+        i8 created_month;
+        u8 unknown_0d;
+        i16 created_year;
+        i8 second;
+        i8 minute;
+        i8 hour;
+        i8 day;
+        i8 month;
+        u8 unknown_15;
+        i16 year;
+        char name[256]; /* NuFileGetInfo (PC) only clears name[0] */
+    } AI_EDITOR_FILE_INFO_PC;
+    STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x118);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, name) == 0x18);
+    i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info);
     f32 __cdecl NuFileReadFloat(NUFILE file);
     i32 __cdecl NuFileReadInt(NUFILE file);
     i8 __cdecl NuFileReadChar(NUFILE file);
@@ -20441,6 +20467,8 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     bool __thiscall HasDiffuse(i32) const;
     bool __thiscall HasLayer(i32) const;
     u32 __thiscall GetVertexFlags() const;
+    i32 HasTexCoordSets(i32 count) const;
+    bool HasLayerVertexFlag8(i32 layer) const;
     bool HasVertexSkin() const;
     bool HasVertexSkinAlt() const;
     i32 HasAnisoFlip() const;
@@ -20538,8 +20566,16 @@ STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
 STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
 
+extern "C" void __cdecl PCShaderObjectCreateHLSLPc(NuShaderObject *);
+extern "C" void __cdecl PCShaderObjectDestroyHLSLPc(NuShaderObject *);
 class NuShaderObject {
   public:
+    NuShaderObject() {
+        PCShaderObjectCreateHLSLPc(this);
+    }
+    ~NuShaderObject() {
+        PCShaderObjectDestroyHLSLPc(this);
+    }
     i32 marker;
     i32 ref_count;
     u32 key;
