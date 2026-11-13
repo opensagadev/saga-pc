@@ -613,9 +613,9 @@ extern "C" void __cdecl SetShadowLight(void) {
         eye.y -= ShadowLightEyeDistancePc * direction.y;
         eye.z -= ShadowLightEyeDistancePc * direction.z;
         secondary_eye = center;
-        secondary_eye.x += (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
+        secondary_eye.x += ShadowLightEyeDistancePc * 2.0f;
         secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
-        secondary_eye.z += (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
+        secondary_eye.z += ShadowLightEyeDistancePc * 2.0f;
     } else {
         eye = GameCam->position;
         eye.x = (f64)eye.x - 1.2000000476837158;
