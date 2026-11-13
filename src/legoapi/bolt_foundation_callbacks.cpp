@@ -123,8 +123,12 @@ extern "C" {
                 return 32;
             return 33;
         }
-        if (id == (i16)VehicleBoltId7f17d0Pc || id == (i16)VehicleBoltId7f17d4Pc || id == (i16)VehicleBoltId7f1aacPc)
-            return WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active != 0 ? 42 : 0;
+        if (id == (i16)VehicleBoltId7f17d0Pc || id == (i16)VehicleBoltId7f17d4Pc || id == (i16)VehicleBoltId7f1aacPc) {
+            result = 42;
+            if (WORLD->level_objects[GlobalBoltType[42].object_ids[0]].active == 0)
+                result = 0;
+            return result;
+        }
         if (id == (i16)id_CATAPULT)
             return 29;
         if (object->character_data->move_fn == Move_CANNON)
