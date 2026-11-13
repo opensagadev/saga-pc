@@ -259,21 +259,6 @@ STATIC_ASSERT(offsetof(GIZSPINNER_s, rotation) == 0x7c);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, target_rotation) == 0x7e);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
-i32 __cdecl Blowup_GetMaxGizmos(void *);
-void __cdecl Blowup_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl GizmoBlowupBurstDraw(void *, void *, f32);
-char *__cdecl Blowup_GetGizmoName(GIZMO_PC *);
-i32 __cdecl Blowup_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl Blowup_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl Blowup_GetNumOutputs(GIZMO_PC *);
-void __cdecl Blowup_Activate(GIZMO_PC *, i32);
-void __cdecl Blowup_SetVisibility(GIZMO_PC *, i32);
-i32 __cdecl Blowup_GetVisibility(GIZMO_PC *);
-NUVEC *__cdecl GizmoBlowup_GetPos(GIZMO_PC *);
-void *__cdecl Blowup_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl Blowup_ClearProgress(void *, void *);
-void __cdecl Blowup_StoreProgress(void *, void *, void *);
-void __cdecl Blowups_Reset(void *, void *, void *);
 #pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
 #pragma const_seg()
 void __cdecl GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);

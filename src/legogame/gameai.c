@@ -125,18 +125,10 @@ i32 __cdecl EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
 void __cdecl ClearAICreatures(void);
 void __cdecl StarWars_GameAISysInit(void);
 void __cdecl Indy_GameAISysInit(void);
-i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *object, NUMTX *matrix, i32 count, i16 *layers);
 i32 __cdecl TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
 extern i32 complexsockposition_forcesock;
-void __cdecl GameObjectDimensions(GAMEOBJECT *object);
-void __cdecl GetTopBot(GAMEOBJECT *object);
-void __cdecl GameObjectOrigin(GAMEOBJECT *object);
-__declspec(noinline) void __cdecl PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room,
-                                                   NUGSCN *scene);
-__declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
-                                                      f32 parameter);
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
     (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                       \

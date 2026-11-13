@@ -59,7 +59,6 @@ typedef struct USEFUL_MATERIAL_PC {
 } USEFUL_MATERIAL_PC;
 STATIC_ASSERT(offsetof(USEFUL_MATERIAL_PC, attributes) == 0x40);
 extern "C" {
-    extern NUMTL *FadeMtl2;
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
 extern "C" u8 ScreenGrabNeededPc;

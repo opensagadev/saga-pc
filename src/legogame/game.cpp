@@ -68,13 +68,9 @@ extern "C" {
     extern i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     extern i16 CharacterFixupIdPc007f18c4;
     extern AREA_DATA_PC *MOSEISLEY_ADATA, *TATOOINE_ADATA;
-    i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt);
-    i32 __cdecl NewBlockAction(GAMEOBJECT *object);
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    void __cdecl KillPart(PART_PC *part, i32 reason);
-    __declspec(noinline) void __cdecl AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position);
     extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
     void __cdecl Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
@@ -374,9 +370,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 
-extern "C" {
-    void __cdecl PartCollide_3D(PART_PC *part);
-}
 static i32 __cdecl AlternateGame_callback_925180_PC(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object);

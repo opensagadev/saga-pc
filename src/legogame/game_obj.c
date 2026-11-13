@@ -41,16 +41,6 @@ typedef struct kill_zipup_pc_s {
     u8 unknown_00[0x68];
     u16 runtime_flags;
 } KILL_ZIPUP_PC;
-void __cdecl RemoveGameObject(GAMEOBJECT *object, i32 unused);
-void __cdecl GameObjectDimensions(GAMEOBJECT *object);
-__declspec(noinline) void __cdecl ScaleGameObject(GAMEOBJECT *object);
-void __cdecl SetToLastSafePos(GAMEOBJECT *object);
-__declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
-                                                        i32 vehicle_only, i32 non_level_only);
-void __cdecl GameObjectOrigin(GAMEOBJECT *object);
-void __cdecl UpdateLastSafePosition(GAMEOBJECT *object);
-void __cdecl GameAIProcess(void);
-u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *object);
 typedef struct combat_coinpacket_pc_s {
     u32 coins;
 } COMBAT_COINPACKET_PC;
@@ -99,8 +89,6 @@ typedef struct collision_masks_view_pc_s {
     u64 collision_contact_mask;
 } COLLISION_MASKS_VIEW_PC;
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
-__declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode);
-void __cdecl Player_ResetContexts(void *packet_ptr);
 
 static void __cdecl CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;

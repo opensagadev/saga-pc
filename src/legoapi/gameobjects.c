@@ -680,7 +680,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, route_start_index) == 0x1081);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
 STATIC_ASSERT(offsetof(GAMEOBJECT, route_search_index) == 0x1089);
 
-void __movsd(unsigned long *, unsigned long const *, unsigned int);
 #pragma intrinsic(__movsd)
 
 /* Native 0x0043fda0, 390 bytes. */

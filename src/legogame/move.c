@@ -87,9 +87,6 @@ typedef struct pod_merge_packet_reader_pc_s {
     i16 overlay_animation;
     f32 overlay_weight;
 } POD_MERGE_PACKET_READER_PC;
-GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
-                                     f32 range_squared, u32 model_mask, i32 directional, i32 require_drawn,
-                                     i32 bolt_id);
 extern i32 FalconDebKey[2];
 extern i32 LandspeederExhaustJointsPc[3];
 typedef struct force_glow_reader_pc_s {
@@ -127,10 +124,6 @@ typedef struct movement_model_pc_s {
     void **model_data_b;
 } MOVEMENT_MODEL_PC;
 TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
-i32 __cdecl MovingBackwards(GAMEOBJECT *object);
-void __cdecl Climb_UpdateMagnetRotation(GAMEOBJECT *object);
-i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *object);
-i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object);
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
 #define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
@@ -405,9 +398,6 @@ typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_db0[0x8b];
     u8 action_suppressed;
 } JUMP_AUXILIARY_FIELDS_PC;
-void __cdecl Hang_MoveCode(GAMEOBJECT *object);
-void __cdecl Climb_MoveCode(GAMEOBJECT *object);
-void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object);
 extern i16 id_WATTO;
 extern u8 DroidCheat32EnabledPc;
 typedef struct critter_object_reader_pc_s {
@@ -442,7 +432,6 @@ typedef struct forcepush_feedback_view_pc_s {
     u8 reserved_d1c[0xe2d - 0xd1c];
     u8 candidate_kind;
 } FORCEPUSH_FEEDBACK_VIEW_PC;
-i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *object);
 typedef struct player_reset_fields_pc_s {
     u8 unknown_0[0xc50];
     NUVEC weapon_trail_offset;
@@ -471,9 +460,6 @@ static __inline f32 MovePlayerFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
-i32 __cdecl ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_mode, i32 allow_airborne,
-                      i32 fire_mode);
-void __cdecl Move_POD(GAMEOBJECT *object);
 
 /* NuASin polynomial; this unit carries its own instance. */
 static i16 MovementArcSine(f32 sin) {

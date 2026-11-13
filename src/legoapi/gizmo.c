@@ -100,7 +100,6 @@ typedef struct level_sfx_gizmotype_s {
 static i32 __cdecl DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 __cdecl DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
 static char *__cdecl DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
-void __cdecl GizmoDiagnosticPc(char *format, ...);
 ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {NULL,
                                         NULL,
                                         {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

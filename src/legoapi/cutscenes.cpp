@@ -391,43 +391,6 @@ extern "C" {
 }
 
 extern "C" {
-    static void CS_blobshadow_alpha(NUFPAR_PC *fp);
-    static void CS_blobshadow_fadefar(NUFPAR_PC *fp);
-    static void CS_blobshadow_fadenear(NUFPAR_PC *fp);
-    static void CS_burnout_flare(NUFPAR_PC *fp);
-    static void CS_burnout_intensity(NUFPAR_PC *fp);
-    static void CS_burnout_threshold(NUFPAR_PC *fp);
-    static void CS_cam_only(NUFPAR_PC *);
-    static void CS_cutsceneplayerobj(NUFPAR_PC *fp);
-    static void CS_deb_page(NUFPAR_PC *fp);
-    static void CS_draw_gizmo_sys(NUFPAR_PC *fp);
-    static void CS_draw_world(NUFPAR_PC *fp);
-    static void CS_fadefog(NUFPAR_PC *fp);
-    static void CS_farclip(NUFPAR_PC *fp);
-    static void CS_fpsec(NUFPAR_PC *fp);
-    static void CS_go_through_door(NUFPAR_PC *fp);
-    static void CS_goto_level(NUFPAR_PC *fp);
-    static void CS_hold_audio(NUFPAR_PC *);
-    static void CS_in_game(NUFPAR_PC *);
-    static void CS_level_intro(NUFPAR_PC *);
-    static void CS_looping(NUFPAR_PC *);
-    static void CS_nearclip(NUFPAR_PC *fp);
-    static void CS_new_mode(NUFPAR_PC *);
-    static void CS_next_cut_scene(NUFPAR_PC *fp);
-    static void CS_nextcutscene_inplayablelevel(NUFPAR_PC *);
-    static void CS_no_fog(NUFPAR_PC *);
-    static void CS_play_sfx(NUFPAR_PC *fp);
-    static void CS_playonce(NUFPAR_PC *);
-    static void CS_reflect_range(NUFPAR_PC *fp);
-    static void CS_render_group(NUFPAR_PC *fp);
-    static void CS_replace_players(NUFPAR_PC *);
-    static void CS_sfx(NUFPAR_PC *fp);
-    static void CS_snap_out(NUFPAR_PC *);
-    static void CS_start_cam(NUFPAR_PC *);
-    static void CS_subtitle(NUFPAR_PC *fp);
-    static void CS_super_widescreen(NUFPAR_PC *);
-    static void CS_tex_anim(NUFPAR_PC *fp);
-    static void CS_wipe_out(NUFPAR_PC *);
     static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *,
                                         CUT_DRAW_LOCATOR_PC *locator, f32 frame, NUMTX *parent, i32);
 }

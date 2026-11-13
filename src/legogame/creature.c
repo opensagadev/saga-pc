@@ -244,11 +244,6 @@ typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
     u8 unknown_11c[0xdc];
     u16 pitch;
 } KEEP_SCREEN_CAMERA_FIELDS_PC;
-i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused);
-void __cdecl ReleaseTakeOver(GAMEOBJECT *target, i32 unused);
-__declspec(noinline) i32 __cdecl SetObjOnSurface(GAMEOBJECT *object, i32 mode);
-void __cdecl InitSurfaceInfo(GAMEOBJECT *object);
-f32 __cdecl VehicleTurnOrLoopOffset(GAMEOBJECT *object);
 void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
 void __cdecl MovePlayer_ROLLING(GAMEOBJECT *object);
 i32 __cdecl MovePlayer_TWIST(GAMEOBJECT *object);
@@ -266,7 +261,6 @@ static __inline f32 MovePlayerFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
-void AICreatureResumeScript(GAMEOBJECT *object);
 
 void __cdecl FixUpCharacters(CHARFIXUP_PC *fixup) {
     i32 i;

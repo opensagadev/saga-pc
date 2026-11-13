@@ -156,8 +156,6 @@ typedef struct BURNOUT_CUT_PREFIX_PC {
 } BURNOUT_CUT_PREFIX_PC;
 STATIC_ASSERT(offsetof(BURNOUT_CUT_PREFIX_PC, flags) == 0x50);
 STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
-void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay,
-                       u32 start_color, u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity);
 typedef struct ripple_effect_pc_s {
     union {
         u32 start_color;

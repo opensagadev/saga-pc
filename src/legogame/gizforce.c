@@ -142,11 +142,6 @@ typedef struct {
     FORCE_PROGRESS_GROUP_PC groups[8];
 } FORCE_PROGRESS_SYSTEM_PC;
 
-static void __cdecl GizForceSFX_completesfx(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_forcename(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_processsfx(NUFPAR_PC *parser);
-static void __cdecl GizForceSFX_returnsfx(NUFPAR_PC *parser);
-
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *object) {
     if (object->gizforce_los_info != NULL)
         memset(object->gizforce_los_info, 0, 0x630);

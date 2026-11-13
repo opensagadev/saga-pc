@@ -1027,7 +1027,6 @@ extern i32(__cdecl *Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
 extern void(__cdecl *Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
 
-i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused);
 #pragma const_seg(".rdata$SpecialLayerName_bombbackpack")
 static const char SpecialLayerName_bombbackpack[13] = "bombbackpack";
 #pragma const_seg()

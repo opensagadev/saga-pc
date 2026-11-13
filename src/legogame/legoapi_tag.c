@@ -3,7 +3,6 @@
 
 /* Retail unit 0x486f20-0x488e82: definitions in retail address order. */
 
-extern i32 __cdecl TagCode(GAMEOBJECT *, GAMEOBJECT *, i32, i32, i32);
 extern GAMEOBJECT *player_tag_from;
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
@@ -16,7 +15,6 @@ STATIC_ASSERT(sizeof(Player) == 32);
     ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \
      (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \
      ((target)->tag_flags & 2) == 0)
-void __cdecl GameObjectOrigin(GAMEOBJECT *object);
 /* A copy of the actual 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE_PC {
@@ -37,7 +35,6 @@ typedef struct TAGFLAGS1FC_PC {
 #define TAG_FLAGS(object) ((TAGFLAGS1FC_PC *)&(object)->flags_1fc_word)
 /* Defined in render.c, the TU that owns 0x486f20; an in-TU empty body lets the call be dropped. */
 void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name);
-void __cdecl Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
 
 void __cdecl Tag_SetMode(i32 mode) {
     Tag_Mode = mode;

@@ -37,10 +37,6 @@ extern "C" {
     extern i32 last_currentmusicpair_quiet;
     extern i32 MusicOther;
     extern i32 sticky_attack;
-    __declspec(noinline) void __cdecl PlaySfxById(i32 sfx_id, NUVEC *position);
-    i32 __cdecl GetSfxId(char *name);
-    __declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table);
-    __declspec(noinline) i32 __cdecl NuSound3SetReverb(i32 enable);
 }
 
 extern "C" {

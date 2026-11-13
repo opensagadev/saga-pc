@@ -1225,14 +1225,6 @@ extern "C" {
     extern u8 HudPausePromptBluePc;
 }
 
-extern "C" void __cdecl LostTempleC_ResetPc(WORLDINFO *world);
-extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world);
-extern "C" i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser);
-void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores);
-extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 other0, i32 back0, i32 alternate0,
-                                      i32 selecting0, i32 active1, i32 select1, f32 alpha1, i32 other1, i32 back1,
-                                      i32 alternate1, i32 selecting1);
-void __cdecl DrawBuildUpBar(f32 x, f32 y, i32 count, i32 total, f32 scale_x, f32 scale_y, f32 alpha, i32 angle);
 static __forceinline f32 HubFabsPc(f32 value);
 extern "C" {
 #pragma data_seg(".data$HudAutoSaveScalePc")

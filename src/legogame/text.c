@@ -5,10 +5,6 @@
 /* Retail unit 0x4cf2a0-0x4cf653: definitions in retail address order. */
 
 extern i16 TextIdPc880894, TextIdPc880898;
-char *Text_GetLanguagePath(i32 language);
-__declspec(noinline) void IntroText_SetTextID(i32 id);
-void __cdecl Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
-__declspec(noinline) void TextRegisterButtonMapFn(void (*fn)(char *, char *));
 
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {

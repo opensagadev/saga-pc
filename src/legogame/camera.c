@@ -2,13 +2,11 @@
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
-void __cdecl GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode);
 __declspec(noinline) void __cdecl GameCam_ResetLookRot(GAMECAMERA *camera);
 void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera);
 void __cdecl MakePlayPlanes(GAMECAMERA *camera);
 void __cdecl GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
 void __cdecl CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
-void __cdecl GameCam_Reset(GAMECAMERA *camera);
 extern NUMTX CutCamMtx;
 extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
