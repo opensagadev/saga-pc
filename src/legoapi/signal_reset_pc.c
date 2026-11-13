@@ -420,9 +420,11 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 
 SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     SIGNAL_s *nearest = NULL;
-    f32 nearest_distance = 1000000000.0f;
-    SIGNAL_s *signal = world->signals;
+    f32 nearest_distance;
+    SIGNAL_s *signal;
     i32 index;
+    signal = world->signals;
+    nearest_distance = 1000000000.0f;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
         f32 signal_distance;
         if (object != NULL) {
