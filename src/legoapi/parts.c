@@ -3889,18 +3889,37 @@ impact:
     part->impact_position.z = part->position.z + cast_movement.z;
 }
 
-void edpartPlace(i32 index, NUVEC *position) {
-    PART_EMIT_PC *emitter = &part_emits[index];
-    emitter->position = *position;
-    emitter->rotation_2c = ((i16)(edpart_emitrotz));
-    emitter->rotation_30 = ((i16)(edpart_emitrotx));
-    emitter->rotation_2e = ((i16)(edpart_emitroty));
-}
+i32 edpartPlace(i32 index, NUVEC *position);
 
 void edpartDestroy(i32 index) {
     if (part_emits[index].effect_id != -1) {
         --part_emits_used;
         part_emits[index].effect_id = -1;
+    }
+}
+
+void __cdecl edpartCreate(NUVEC *position, i32 type) {
+    AddPARTEffect(type, position);
+}
+
+i32 edpartPtlChangeType(i32 index, i32 type) {
+    if (part_emits[index].effect_id != type) {
+        edpartDestroy(index);
+        AddDebrisEffect(&part_emits[index].instance_id, type, part_emits[index].position.x,
+                        part_emits[index].position.y, part_emits[index].position.z);
+        part_emits[index].effect_id = type;
+    }
+    return index;
+}
+
+void edpartDestroyAllEffects(void) {
+    i32 i;
+    // Retail walks 512 slots here although part_emits holds 40.
+    for (i = 0; i < 512; ++i) {
+        if (part_emits[i].effect_id != -1) {
+            part_emits[i].effect_id = -1;
+            --part_emits_used;
+        }
     }
 }
 
@@ -4070,6 +4089,14 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
             }
         }
     }
+}
+
+i32 edpartPlace(i32 index, NUVEC *position) {
+    part_emits[index].position = *position;
+    part_emits[index].rotation_2c = (i16)edpart_emitrotz;
+    part_emits[index].rotation_2e = (i16)edpart_emitroty;
+    part_emits[index].rotation_30 = (i16)edpart_emitrotx;
+    return index;
 }
 
 void edpartDrawCursor(void) {
