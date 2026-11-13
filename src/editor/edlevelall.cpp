@@ -7268,15 +7268,15 @@ void ClassEditor::cbEdClassDeleteObject(eduimenu_s *, eduiitem_s *, u32) {
  * not known. */
 void cbEdClassCycleMode(eduimenu_s *, eduiitem_s *, u32) {
     switch (theClassEditor.mode) {
-    case 3:
-        theClassEditor.mode = 4;
-        break;
-    case 4:
-        theClassEditor.mode = 5;
-        break;
-    case 5:
-        theClassEditor.mode = 3;
-        break;
+        case 3:
+            theClassEditor.mode = 4;
+            break;
+        case 4:
+            theClassEditor.mode = 5;
+            break;
+        case 5:
+            theClassEditor.mode = 3;
+            break;
     }
     theClassEditor.SetMode(theClassEditor.mode);
 }
