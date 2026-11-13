@@ -7521,12 +7521,8 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         f32 travelled;
         u16 input, sideways;
         f32 push, speed;
-        i16 action;
         NUVEC offset;
-        union {
-            f32 value;
-            u32 bits;
-        } magnitude;
+        f32 anim_speed, magnitude;
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             f32 height;
             StartJump(object, 0);
@@ -7575,24 +7571,21 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         sideways = object->movement_facing_angle + 0x4000;
         push = PushingTowardsAngle(input, sideways);
         if (push > NuTrigTable[0x3555]) {
-            action = LEGOACT_LEDGE_RIGHT;
-            if (action != -1 && object->character_model->model_data_b[action] != NULL) {
-                object->field_7aa = action;
-                magnitude.value = AnimSpeed(object->character_model, action);
-                magnitude.bits &= 0x7fffffff;
-                speed = magnitude.value;
+            if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
+                object->field_7aa = LEGOACT_LEDGE_RIGHT;
+                anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT);
+                *(u32 *)&speed = *(u32 *)&anim_speed & 0x7fffffff;
             } else {
                 if (LedgeTerrain_CheckAnims != 0)
                     return;
                 speed = 0.5f;
             }
         } else if (push < -NuTrigTable[0x3555]) {
-            action = LEGOACT_LEDGE_LEFT;
-            if (action != -1 && object->character_model->model_data_b[action] != NULL) {
-                object->field_7aa = action;
-                magnitude.value = AnimSpeed(object->character_model, action);
-                magnitude.bits &= 0x7fffffff;
-                speed = -magnitude.value;
+            if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
+                object->field_7aa = LEGOACT_LEDGE_LEFT;
+                anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT);
+                *(u32 *)&magnitude = *(u32 *)&anim_speed & 0x7fffffff;
+                speed = -magnitude;
             } else {
                 if (LedgeTerrain_CheckAnims != 0)
                     return;
