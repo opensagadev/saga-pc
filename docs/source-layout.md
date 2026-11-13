@@ -389,6 +389,14 @@ into a target file in retail order and rewrites `config/*.json` owners.
      `collection_render.cpp` 1); 87 functions in 14 compilands, plus the
      `dropinout`, `worldinfo`, `gamepads` and `parts` ones above.
 
+   Engine side (`src/nu2api`, `src/gameapi` targets), done: `shaderSemantics.cpp`
+   (new, from `nurndr.c` and `nushadermanager.cpp`), `nushaderobjectbase.cpp`
+   (all of `nushaderobjectbase.c` with the water table and HLSL helpers of
+   `nushaderobject_pc.cpp`) and `nuwin32/d3dApiCalls.cpp` (all of
+   `d3d_api_lifetime.cpp` and `nuframe.c`, strays of `nuthread.c`,
+   `nuvideo.c`, `hardware_dispatch.cpp`, `pc_device.cpp`). The exact set did
+   not change.
+
    Deferred merges, engine side (`src/nu2api`, `src/gameapi` targets):
    - `dsplay_bink`: with `pc_fmv_player.cpp` and `pc_fmv_control.cpp` merged,
      six FMV functions leave exact (`FmvRestorePc`, `FmvSkipPc`, `FmvDrawPc`,
@@ -398,6 +406,22 @@ into a target file in retail order and rewrites `config/*.json` owners.
      `ThingManager::operator delete` and its deleting destructor (retail
      0x5b15f0, emitted by another compiland) inline `FreePool` and leave
      exact.
+   - `VertexDeclarations` (0x741970): `PCShaderMaterialTextureNativePc`,
+     `PCShaderUnpackColourPc` and `PCShaderSamplerWrapPc` are statics with a
+     register ABI whose callers are in the next compiland
+     (`nushaderobject_pc.cpp`); made extern to move them, all three leave
+     exact. The 0x741970/0x742330 boundary is doubtful (see the
+     `nushaderobject` open question). `PCShaderFindConstantPc` (static, its
+     caller in `nushaderobject.c`) has the same problem.
+   - `nuwin32/windows.cpp` (0x6dddf0): `WinMain` reads `PcArgc`, which is a
+     static of `pc_window.cpp` that `ParsePlatformArgumentsPc` (pcapi) keeps
+     in a register; as an extern variable `ParsePlatformArgumentsPc` leaves
+     exact. `pcapi.cpp` has the same blocker.
+   - `nurain.c`: `NuFmvTextureReleasePc/RestorePc` (`pc_fmv_texture.cpp`)
+     are C++ (`pc_fmv_native.h` is C++ only); moving them into the C file
+     needs code changes.
+   - `rtl.c` (`c` by retail `__FILE__`): `legoapi/rtlhelper.cpp` is C++
+     (`RTLHelper` members), so it cannot move into the C file unchanged.
 
 3. **Splits of mixed files** (150 files, section `split`): first the 64 files
    with one or two stray functions (move the strays to their target), then the
