@@ -3290,23 +3290,22 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             f32 target_speed;
             current_speed = NuVecMag(&object->velocity);
             target_speed = NuVecMag(&object->target_velocity);
-            if (!(target_speed > 0.0f)) {
-                turn_rate = 5.0f;
-            } else {
+            if (target_speed > 0.0f) {
                 turn_rate = current_speed / target_speed;
                 if (turn_rate > 1.0f)
                     turn_rate = 1.0f - (turn_rate - 1.0f);
-                if (turn_rate < 0.7f)
-                    turn_rate = 5.0f;
-                else if (turn_rate < 0.8f)
-                    turn_rate = 4.0f;
-                else if (turn_rate < 0.9f)
-                    turn_rate = 3.0f;
-                else if (turn_rate < 1.0f)
-                    turn_rate = 2.0f - (turn_rate - 0.9f) / 0.1f;
-                else
-                    turn_rate = 1.0f;
-            }
+            } else
+                turn_rate = 0.0f;
+            if (turn_rate < 0.7f)
+                turn_rate = 5.0f;
+            else if (turn_rate < 0.8f)
+                turn_rate = 4.0f;
+            else if (turn_rate < 0.9f)
+                turn_rate = 3.0f;
+            else if (turn_rate < 1.0f)
+                turn_rate = 2.0f - (turn_rate - 0.9f) / 0.1f;
+            else
+                turn_rate = 1.0f;
             object->directional_seek_multiplier =
                 SeekLinearF(object->directional_seek_multiplier, turn_rate, 5.0f * FRAMETIME);
             if (object->directional_seek_multiplier > 1.0f) {
