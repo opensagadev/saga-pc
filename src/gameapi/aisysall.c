@@ -9493,7 +9493,6 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
     AIPATHROUTE_PC *route;
     AIPATHNODELINK_PC *link;
     AIPATHSPECIALROUTE_PC *group;
-    u64 character_mask;
 
     EdFileWriteInt(system->path_count);
     for (path_index = 0; path_index < system->path_count; ++path_index) {
@@ -9586,10 +9585,9 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
                         EdFileWrite(route->exit_nodes, route->exit_node_count);
                 }
                 if (SpecialRouteCharacterNameFn != NULL) {
-                    character_mask = *(u64 *)&route->character_mask[2];
                     character_count = 0;
                     for (character = 0; character < 64; ++character) {
-                        if ((((u64)1 << character) & character_mask) != 0)
+                        if ((((u64)1 << character) & *(u64 *)&route->character_mask[2]) != 0)
                             ++character_count;
                     }
                     EdFileWriteChar(character_count);
