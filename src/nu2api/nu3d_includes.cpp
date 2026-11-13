@@ -3138,10 +3138,10 @@ extern "C" {
         joint = evaluated->joints;
         joint_flags = evaluated->joint_flags;
         nodes = object->joints;
-        for (index = 0; index < count; ++index, ++joint, ++rotation) {
-            matrix = &matrices[index];
-            scale = &scales[index];
-            parent = nodes[index].parent_index;
+        matrix = matrices;
+        scale = scales;
+        for (index = 0; index < count; ++index, ++matrix, ++scale, ++nodes, ++joint, ++rotation) {
+            parent = nodes->parent_index;
             flags = *joint_flags++;
             if ((flags & 1) != 0) {
                 *rotation = *(NUQUAT *)&joint->rotation;
@@ -3199,8 +3199,8 @@ extern "C" {
             if (AnimBuffEvalCB != NULL && callback_data[index] != NULL)
                 AnimBuffEvalCB(matrix, callback_data[index], rotation);
         }
-        for (index = 0; index < count; ++index) {
-            matrix = &matrices[index];
+        matrix -= count;
+        for (index = 0; index < count; ++index, ++matrix) {
             matrix->m02 = -matrix->m02;
             matrix->m12 = -matrix->m12;
             matrix->m20 = -matrix->m20;
@@ -3208,8 +3208,8 @@ extern "C" {
             matrix->m23 = -matrix->m23;
             matrix->m32 = -matrix->m32;
         }
-        for (; index < object->joint_count; ++index)
-            matrices[index] = NuMtxSetIdentityTemplate;
+        for (; index < object->joint_count; ++index, ++matrix)
+            *matrix = NuMtxSetIdentityTemplate;
         AnimBuffEvalCB = NULL;
         AnimBuffEvalData = NULL;
         AnimBuffEvalJoint = NULL;
