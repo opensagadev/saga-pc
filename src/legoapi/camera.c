@@ -178,9 +178,9 @@ void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera) {
                         else
                             y = 0.0f;
                     } else {
-                        x = (f32)pad->bound_pad->analog_left_x - 127.5f;
+                        x = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_x - 127.5f;
                         x *= 1.0f / 127.5f;
-                        y = (f32)pad->bound_pad->analog_left_y - 127.5f;
+                        y = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_y - 127.5f;
                         y *= 1.0f / 127.5f;
                     }
                     camera->field_204 += (f32)((GameCamLookRotXPc << 16) / 360) * y;
