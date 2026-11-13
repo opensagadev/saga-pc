@@ -1586,21 +1586,25 @@ extern "C" {
             return;
         if ((u32)group->state <= 1) {
             if (group->state == 0) {
-                NuVecSub((NUVEC *)&group->velocity, (NUVEC *)&GameCam->render_mtx.m30, (NUVEC *)&group->matrix.m30);
-                group->velocity.w = 1.0f;
-                NuVecNorm((NUVEC *)&group->velocity, (NUVEC *)&group->velocity);
-                group->velocity.w = 1.0f;
+                NUVEC4 *velocity = &group->velocity;
+                NuVecSub((NUVEC *)velocity, (NUVEC *)&GameCam->render_mtx.m30, (NUVEC *)&group->matrix.m30);
+                velocity->w = 1.0f;
+                NuVecNorm((NUVEC *)velocity, (NUVEC *)velocity);
+                velocity->w = 1.0f;
                 speed = group->speed;
-                group->velocity.x *= speed;
-                group->velocity.y *= speed;
-                group->velocity.z *= speed;
+                velocity->x *= speed;
+                velocity->y *= speed;
+                velocity->z *= speed;
             }
             step.x = (f64)group->velocity.x * FRAMETIME;
             step.y = (f64)group->velocity.y * FRAMETIME;
             step.z = (f64)group->velocity.z * FRAMETIME;
-            group->matrix.m30 += step.x;
-            group->matrix.m31 += step.y;
-            group->matrix.m32 += step.z;
+            {
+                NUVEC *position = (NUVEC *)&group->matrix.m30;
+                position->x += step.x;
+                position->y += step.y;
+                position->z += step.z;
+            }
             NuVecInvMtxTransform((NUVEC *)&group->camera_position, (NUVEC *)&group->matrix.m30, &GameCam->render_mtx);
             group->duration -= FRAMETIME;
             if (group->duration < 0.0f || (group->camera_position.z > 800.0 && group->state == 1) ||
@@ -1647,7 +1651,7 @@ extern "C" {
     static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
         NUVEC4 *direction;
         f32 value;
-        i32 i;
+        i32 i = 6;
         GAMEOBJECT *first, *second;
         space->origin_end.x = DogfightOriginEndXPc;
         space->origin_end.y = DogfightOriginEndYPc;
@@ -1672,21 +1676,21 @@ extern "C" {
         value = NuFsqrt(value);
         space->direction_length = value;
         space->inverse_direction_length = (f32)(1.0 / value);
-        first = (GAMEOBJECT *)Player[0];
         second = (GAMEOBJECT *)Player[1];
-        for (i = 6; i != -1; --i) {
+        first = (GAMEOBJECT *)Player[0];
+        for (; i != -1; --i) {
             if (first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance)
                 break;
             if (second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance)
                 break;
         }
-        if (i >= 0) {
-            value = DogfightDoorsPc[i].timer;
-            space->door_time = value;
-            value = (f32)((f64)value * (f64)94.977417f / (f64)59.449684f);
-            space->door_countdown = value;
-            space->door_elapsed = (f32)(((f64)value - FRAMETIME) * (f64)94.977417f / (f64)59.449684f);
-        } else {
+        // Retail computes the door times first and clears them when no door was found.
+        value = DogfightDoorsPc[i].timer;
+        space->door_time = value;
+        value = (f32)((f64)value * (f64)94.977417f / (f64)59.449684f);
+        space->door_countdown = value;
+        space->door_elapsed = (f32)(((f64)value - FRAMETIME) * (f64)94.977417f / (f64)59.449684f);
+        if (i == -1) {
             space->door_countdown = 0.0f;
             space->door_time = 0.0f;
             space->door_elapsed = 0.0f;
