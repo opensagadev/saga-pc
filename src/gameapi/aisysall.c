@@ -7359,9 +7359,9 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
             packet->goal_path_node =
                 &packet->path_info.path
                      ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            packet->movement_target = NULL;
             packet->movement_destination = packet->goal_path_node->position;
             packet->movement_stopping_distance = 0.0f;
-            packet->movement_target = NULL;
         } else {
             packet->movement_destination =
                 packet->path_info.path
