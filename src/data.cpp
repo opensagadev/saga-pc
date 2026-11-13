@@ -12769,10 +12769,6 @@ extern "C" {
 #pragma data_seg(".data$psmtx")
     NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 #pragma data_seg()
-
-#pragma data_seg(".data$NuCameraOrthoScale")
-    f32 NuCameraOrthoScale = 0.1f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -13231,7 +13227,7 @@ extern "C" {
     i32 NuLgtLaserOldCnt = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$NuLgtSeed")
-    u32 NuLgtSeed = 12345;
+    i32 NuLgtSeed = 12345;
 #pragma data_seg()
 #pragma bss_seg(".bss$NuLgtArcMtl")
     NULGTARCMATERIAL_PC NuLgtArcMtl[4] = {0};
@@ -15937,11 +15933,6 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsTieSpinRatePc")
-    i32 KillPartsTieSpinRatePc = 200000;
-#pragma data_seg()
-}
-extern "C" {
 #pragma data_seg(".data$KillPartsTieTrailScalePc")
     f32 KillPartsTieTrailScalePc = 0.10000000149011612f;
 #pragma data_seg()
@@ -17794,7 +17785,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$DirectionalGrappleSeekScalePc")
     f32 DirectionalGrappleSeekScalePc = 0.5f;
-#pragma data_seg()
 #pragma data_seg(".data$DirectionalZipUpSeekRatePc")
     f32 DirectionalZipUpSeekRatePc = 8.0f;
 #pragma data_seg()
@@ -30367,12 +30357,6 @@ extern "C" {
     i32 edpp_showAllPlaced = 0;
 }
 
-extern "C" {
-
-#pragma bss_seg(".bss$shelfang")
-    u16 shelfang = 0;
-}
-
 extern "C" {}
 
 extern "C" {}
@@ -34133,21 +34117,6 @@ extern "C" {
 #pragma bss_seg(".bss$pickedbing")
     f32 pickedbing = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$scalenorm")
-    f32 scalenorm = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$scalepicked")
-    f32 scalepicked = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$scale2")
-    f32 scale2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$scale3")
-    f32 scale3 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$scale4")
-    f32 scale4 = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$TopShelfScale")
     f32 TopShelfScale[6] = {0};
 #pragma bss_seg()
@@ -34171,15 +34140,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$ShopSubInitBPc")
     f32 ShopSubInitBPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SubBigCharPush")
-    f32 SubBigCharPush = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SubNormCharPush")
-    f32 SubNormCharPush = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$subpush")
-    f32 subpush[3] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$codeshelfscale")
     f32 codeshelfscale[6] = {0};

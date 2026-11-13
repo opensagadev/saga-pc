@@ -1357,6 +1357,11 @@ struct AIPACKET_PC {
             u8 route_flags;
             u8 priority_flags;
         };
+        struct {
+            u32 : 15;
+            u32 antinode_clockwise : 1;
+            u32 : 16;
+        };
     };
     u32 navigation_flags;
     f32 movement_target_radius;
@@ -8902,6 +8907,12 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     void __thiscall SetSpeedBlurEnabled(u8 value);
     void __thiscall SetUseHires(u8 value);
     void __thiscall SetOption459(u8 value);
+    void __thiscall SetWindowX(i32 value);
+    void __thiscall SetWindowY(i32 value);
+    void __thiscall SetMouseSensitivity(i32 value);
+    void __thiscall SetInvertY(u8 value);
+    void __thiscall SetVibration(u8 value);
+    void __thiscall SetForceShaderModel(i32 value);
 
     void __thiscall SetAspectModePc(i32);
     void __thiscall SetShadowsEnabledPc(u8);
@@ -11303,7 +11314,6 @@ void __cdecl PCStereoUnknownToken(void);
     extern KILLPARTS_ACCESSORY_PC KillPartsAccessoriesPc[2][9];
     extern KILLPARTS_BIKE_PC KillPartsBikesPc[4];
     extern char KillPartsTieSpinsTextPc[10];
-    extern i32 KillPartsTieSpinRatePc;
     extern f32 KillPartsTieTrailScalePc;
     extern NUVEC KillPartsTieSpinTranslationPc;
     extern char KillPartsAtatExplodeTextPc[9];
@@ -13815,7 +13825,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
         NUVEC position;
         f32 length, field_14;
         i16 rotation_z, rotation_y;
-        u8 connection_index;
+        i8 connection_index;
         i8 field_1d, field_1e;
         u8 field_1f;
         i32 special_20, special_24;
@@ -14029,7 +14039,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
         f32 cutoff_distance;
         f32 last_update_time;
         f32 emission_epoch;
-        i16 render_priority;
+        u16 render_priority;
         i16 allocation_index;
         void *user_data;
     };
@@ -15208,7 +15218,6 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl NuVpSetIdentityPc(NUMTX *matrix);
     void __cdecl NuVpUpdate(void);
     extern NUMTX psmtx;
-    extern f32 NuCameraOrthoScale;
     extern f32 NuCameraProjectionGlobalScaleX;
     extern f32 NuCameraProjectionGlobalScaleY;
     extern f32 NuCameraProjectionGlobalOffsetX;
@@ -15958,7 +15967,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     i32 __cdecl Action_SetUseOneAtOnce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
     extern i32 NuLgtLaserCnt;
     extern i32 NuLgtLaserOldCnt;
-    extern u32 NuLgtSeed;
+    extern i32 NuLgtSeed;
     extern NULGTARCMATERIAL_PC NuLgtArcMtl[4];
     extern NULGTLASER_PC NuLgtLaserData[64];
     extern i32 NuLgtArcLaserCnt;
@@ -16583,7 +16592,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                                                    VARIPTR *buffer, i32 background);
     STATE_ANIM_PC *__cdecl StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
     void __cdecl CutSceneLoadDiagnosticPc(void *unused, ...);
-    void __cdecl CutSceneMissingObjectDiagnosticPc(char *unused);
+    void __cdecl CutSceneMissingObjectDiagnosticPc(char *format, ...);
     void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
 
     typedef struct edpp_particle_pc_s {
@@ -16600,7 +16609,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
         i16 reflection_rotation_z, reflection_rotation_y;
         f32 reflection_offset, reflection_bounce;
         i16 render_group;
-        i16 render_priority;
+        u16 render_priority;
         i8 dynamic_priority;
         i8 page, detail_levels;
         i8 facing_mode;
@@ -21621,7 +21630,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
+    APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
     void __cdecl CharScenes_Init(VARIPTR *, VARIPTR *);
     void __cdecl CharScenes_LevelLoad(WORLDINFO *);
     void __cdecl CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
@@ -22724,7 +22733,7 @@ STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, texture_id) == 0x2c);
 STATIC_ASSERT(sizeof(FRAME_NATIVE_TEXTURE_PC) == 0x30);
 typedef struct FRAME_NATIVE_TEXTURE_POOL_PC {
     FRAME_NATIVE_TEXTURE_PC records[16];
-    u8 occupied[2];
+    i8 occupied[2];
     u8 unknown_302[2];
     i32 cursor;
 #ifdef __cplusplus
@@ -26208,7 +26217,7 @@ struct eduiitem_s {
     i32 x;
     i32 y;
     char *text;
-    u32 colours[4];
+    i32 colours[4];
     i32(__cdecl *input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
     i32(__cdecl *process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
     i32(__cdecl *render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
@@ -26258,7 +26267,15 @@ struct edui_textpicker_s {
     i16 max_length;
     void(__cdecl *callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     char *format;
-    u32 keyboard_flags;
+    union {
+        u32 keyboard_flags;
+        u8 keyboard_flag_bits; /* the edfile.c keyboard handlers test the low byte */
+        struct {
+            u32 : 1;
+            u32 extended_keyboard : 1; /* five keyboard rows and the copy/paste keys */
+            u32 : 30;
+        };
+    };
 };
 STATIC_ASSERT(sizeof(struct edui_textpicker_s) == 360);
 
@@ -28361,7 +28378,6 @@ extern "C" {
     f32 __cdecl GetAspectRatio(void);
     extern f32 LastTouchTime;
     extern f32 TopShelfScale[6];
-    extern u16 shelfang;
     extern i32 subitemselected;
     extern f32 toppush[6];
     extern f32 topscale[6];

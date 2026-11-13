@@ -1237,8 +1237,7 @@ i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos,
    ellipsis (CutScriptExecutePc), VC8 keeps every later call and knows the body
    preserves eax/ecx/edx, which CutTriggerFirePc and CutTriggerUpdatePc rely on.
    Calls compiled before the definition stay ordinary external calls
-   (CutScriptParseBlockPc), so it is defined here rather than at the top.
-   saga.h still declares the fixed (char *) form. */
+   (CutScriptParseBlockPc), so it is defined here rather than at the top. */
 void __cdecl CutSceneMissingObjectDiagnosticPc(char *format, ...) {
 }
 

@@ -62,7 +62,7 @@ extern const f64 PanelVariantThreeTargetY, PanelVariantThreeTargetZ;
 extern const f32 PanelTrackEnterDistanceSquared, PanelTrackLeaveDistanceSquared;
 extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
 /* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
-extern f32 GizPanelPictureYPc, GizPanelPictureZPc;
+extern f32 GizPanelPictureYPc, GizPanelPictureZPc, GizPanelFloorLiftPc;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
 void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
@@ -441,6 +441,8 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
 /* Real mutable original globals: 007f90c4 Z and 007f90c8 Y, each4B. */
 f32 GizPanelPictureZPc = -0.123f;
 f32 GizPanelPictureYPc = 0.0775f;
+/* Lift of the panel target above the floor it was dropped onto (007f90cc). */
+f32 GizPanelFloorLiftPc = 0.001f;
 
 void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
@@ -930,7 +932,7 @@ void __cdecl GizPanel_Reset(void *context) {
     height = GameShadow(NULL, &probe_position, 0.2f, -1);
     panel->target_offset.y = height;
     if ((f64)height != GameObjectNearFloorNoFloorHeight) {
-        panel->target_offset.y = height + 0.001f;
+        panel->target_offset.y = height + GizPanelFloorLiftPc;
         FindAnglesZX(&ShadNorm, &panel->target_pitch, &panel->target_roll);
     }
     panel->flags = (u8)((panel->flags & 0xfcu) | 0x0cu);

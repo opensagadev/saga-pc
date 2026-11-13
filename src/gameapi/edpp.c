@@ -1250,7 +1250,7 @@ i32 __cdecl edppPtlCreate(NUVEC *position, i32 effect_index) {
         edpp_ptls[index].detail_levels = 7;
         particle_type = debtab[effect_index]->particle_type;
         if (particle_type == 2)
-            edpp_ptls[index].render_priority = (i16)40000;
+            edpp_ptls[index].render_priority = 40000;
         else if (particle_type == 3)
             edpp_ptls[index].render_priority = 30000;
         else if (particle_type == 0)

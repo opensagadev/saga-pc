@@ -149,8 +149,8 @@ static __inline void edppLoadDebrisSetGroupID(i32 handle, i16 group) {
 }
 
 void cbPtlChangePriority(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    edpp_ptls[edpp_nearest].render_priority = (i16)((edui_slider_s *)item)->value;
-    debkeydata[edpp_ptls[edpp_nearest].instance_id].render_priority = (i16)((edui_slider_s *)item)->value;
+    edpp_ptls[edpp_nearest].render_priority = (u16)((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].render_priority = (u16)((edui_slider_s *)item)->value;
 }
 
 void cbPtlToggleDynamicPriority(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -187,7 +187,7 @@ void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
 
     eduiMenuAddItem(edptl_instancesettings_menu,
                     eduiItemSliderCreateInt(0, edblack, 0, cbPtlChangePriority, 0, 0xffff,
-                                            ((u16)(edpp_ptls[edpp_nearest].render_priority)), "Base Priority"));
+                                            edpp_ptls[edpp_nearest].render_priority, "Base Priority"));
     eduiMenuAddItem(edptl_instancesettings_menu,
                     eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].dynamic_priority, 1,
                                          cbPtlToggleDynamicPriority, "Dynamic Priority"));
@@ -207,7 +207,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         DEBRIS_INFO_PC *effect = debtab[type];
         if ((i8)effect->particle_type != item->data) {
             if (item->data == 2)
-                edpp_ptls[edpp_nearest].render_priority = ((i16)(40000));
+                edpp_ptls[edpp_nearest].render_priority = 40000;
             else if (item->data == 3)
                 edpp_ptls[edpp_nearest].render_priority = 30000;
             else if (item->data == 0)

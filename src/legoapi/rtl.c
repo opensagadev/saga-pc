@@ -3496,16 +3496,12 @@ void __cdecl RefreshUI(void) {
         eduiItemSliderSetValEx((edui_slider_s *)jon_t_low_item, curr_rtl->parameters[2], 0, 0);
     }
     if (clipboard_light.type != 0) {
-        // MATCH-EXCEPTION: eduiitem_s.colours is u32 in saga.h but signed in the original; an unsigned
-        // destination turns the three float conversions into inline fistp qword instead of _ftol2 calls.
-        ((i32 *)paste_item->colours)[2] =
-            ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
-            (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
-            ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
-        ((i32 *)pasteinto_item->colours)[2] =
-            ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
-            (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
-            ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+        paste_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
+                                 (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+                                 ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+        pasteinto_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | (i32)0x80000000) |
+                                     (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+                                     ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
     }
 
     fog_copy_item->disabled = 1;

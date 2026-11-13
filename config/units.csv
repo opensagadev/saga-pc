@@ -148,7 +148,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x580e50,0x580ec8,src/gamelib/net/nufile_android.cpp,gamelib,file,medium,,1,120,120,120,0,0,gamelib/net/NetworkObjectManager.cpp:120
 0x580ed0,0x5811ef,src/legoapi/NuFileDeviceAndroidAPK.cpp,legoapi,android,low,,3,785,785,785,0,0,legoapi/bolts.cpp:668 gamelib/net/NetworkObjectManager.cpp:117
 0x5811f0,0x584592,src/legoapi/bolts.c,legoapi,android,low,,9,13141,13141,433,920,0,legoapi/bolts.cpp:13141
-0x5845a0,0x589f33,src/legoapi/charconfig.c,legoapi,marker,high,ret ret fabs 54 28,215,20882,20882,6858,3282,0,legoapi/charconfig.c:20881 legoapi/charconfig_diagnostic_pc.c:1
+0x5845a0,0x589f33,src/legoapi/charconfig.c,legoapi,marker,high,ret ret fabs 54 28,215,20882,20882,6858,3282,0,legoapi/charconfig.c:20881
 0x589f60,0x58a504,src/legoapi/charshadows.c,legoapi,file,medium,,3,1428,1428,26,169,0,legoapi/shadow.c:1428
 0x58a510,0x58aadc,src/legoapi/missions.c,legoapi,marker,high,ret 28,8,1391,1391,81,193,103,legoapi/mission.c:955 legoapi/missions.c:436
 0x58aae0,0x58b34c,src/legoapi/specialmoves.c,legoapi,marker,high,ret 28,12,1990,1990,968,134,28,legoapi/specialmoves.c:1817 legoapi/players.c:172 legoapi/specialmoves_diagnostic_pc.c:1

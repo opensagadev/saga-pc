@@ -305,6 +305,8 @@ void __cdecl SpeedBlur_Update(void) {
     cameraMtxs[lastCameraMtx] = GameCam->render_mtx;
 }
 
+f32 SpeedBlurScalePc = 0.5f;
+
 void SpeedBlur_Apply(WORLDINFO *world) {
     struct level_data_pc_s *level;
     if (editor_active != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0) {
@@ -326,7 +328,7 @@ void SpeedBlur_Apply(WORLDINFO *world) {
         }
     }
     NuSpeedBlurSetMotionFactors(0.01f, -0.024f, 0.02f);
-    NuLightSpeedBlur(Paused, 0.5f);
+    NuLightSpeedBlur(Paused, SpeedBlurScalePc);
 }
 
 i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {

@@ -20,7 +20,7 @@ void __cdecl edbriBridgesReset(void) {
     NuBridgeInit();
     for (i = 0; i < 64; ++i) {
         edBridges[i].instance_id = -1;
-        edBridges[i].connection_index = 0xff;
+        edBridges[i].connection_index = -1;
     }
     memset(edbri_page_used, 0, sizeof(edbri_page_used));
     memset(edbri_page_scene, 0, sizeof(edbri_page_scene));
@@ -44,7 +44,7 @@ void __cdecl edbriStopPage(i8 page) {
     if (edbri_page_used[page]) {
         for (index = 0; index < 64; ++index) {
             PC_EDBRIDGE *bridge = &edBridges[index];
-            if (bridge->connection_index == (u8)page && bridge->instance_id != -1) {
+            if (bridge->connection_index == page && bridge->instance_id != -1) {
                 NuBridgeRemove(bridge->instance_id);
                 bridge->instance_id = -1;
             }
@@ -56,8 +56,8 @@ void __cdecl edbriClearPage(i8 page) {
     i32 index;
     edbriStopPage(page);
     for (index = 0; index < 64; ++index) {
-        if (edBridges[index].connection_index == (u8)page) {
-            edBridges[index].connection_index = 0xff;
+        if (edBridges[index].connection_index == page) {
+            edBridges[index].connection_index = -1;
             --edbri_bridges_used;
         }
     }
@@ -173,7 +173,7 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
     index = 0;
     for (i = 0; i < count; i++) {
         /* Retail tests the record before checking the index limit. */
-        while (edBridges[index].connection_index != 0xff && index < 64)
+        while (edBridges[index].connection_index != -1 && index < 64)
             ++index;
         if (index < 64) {
             edBridges[index].instance_id = -1;
@@ -182,7 +182,7 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
             edBridges[index].field_14 = EdFileReadFloat();
             edBridges[index].rotation_z = EdFileReadShort();
             edBridges[index].rotation_y = EdFileReadShort();
-            edBridges[index].connection_index = (u8)page;
+            edBridges[index].connection_index = page;
             edBridges[index].field_1d = EdFileReadChar();
             edBridges[index].field_1e = EdFileReadChar();
             EdFileRead(name, sizeof(name));
@@ -306,7 +306,7 @@ void __cdecl edbriStartPage(i32 page_number) {
     i32 index;
     if (edbri_page_used[page] && edbri_page_scene[page]) {
         for (index = 0; index < 64; ++index) {
-            if (edBridges[index].connection_index == (u8)page)
+            if (edBridges[index].connection_index == page)
                 edbriBridgeUpdate(index, edbri_page_scene[page]);
         }
     }
@@ -390,7 +390,7 @@ i32 __cdecl edbriFileSave(char *path) {
     i32 count = 0;
     i32 i;
     for (i = 0; i < 64; ++i) {
-        if ((i8)edBridges[i].connection_index != -1)
+        if (edBridges[i].connection_index != -1)
             ++count;
     }
     EdFileSetMedia(1);
@@ -398,7 +398,7 @@ i32 __cdecl edbriFileSave(char *path) {
         EdFileWriteInt(1);
         EdFileWriteInt(count);
         for (i = 0; i < 64; ++i) {
-            if ((i8)edBridges[i].connection_index == -1)
+            if (edBridges[i].connection_index == -1)
                 continue;
             EdFileWriteNuVec(&edBridges[i].position);
             EdFileWriteFloat(edBridges[i].length);
@@ -533,7 +533,7 @@ i32 __cdecl edbriBridgeCreate(NUVEC *position) {
     i32 index = 0;
     if (edbri_bridges_used == 64)
         return -1;
-    while (edBridges[index].connection_index != 0xff)
+    while (edBridges[index].connection_index != -1)
         ++index;
     edBridges[index].connection_index = edbri_pageid;
     ++edbri_bridges_used;

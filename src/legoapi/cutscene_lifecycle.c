@@ -2707,7 +2707,7 @@ void __cdecl instNuGCutSceneServiceLoad(void) {
     ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c =
         ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c | 0x80;
     buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_size;
-    ((void(__cdecl *)(char *, ...))CutSceneMissingObjectDiagnosticPc)(path, buffer.void_ptr);
+    CutSceneMissingObjectDiagnosticPc(path, buffer.void_ptr);
     CutSceneStreamDiagnosticPc(path);
     NuGCutSceneLoad(path, &buffer, &buffer_end, 1);
     CutSceneStreamDiagnosticPc(path);

@@ -1183,7 +1183,7 @@ extern "C" {
     extern NULGTARCMATERIAL_PC NuLgtArcMtl[4];
     extern i32 NuLgtLaserCnt, NuLgtLaserOldCnt;
     extern i32 NuLgtArcLaserCnt, NuLgtArcLaserOldCnt, NuLgtArcLaserFrame;
-    extern u32 NuLgtSeed;
+    extern i32 NuLgtSeed;
     extern i32 PS2_REZ_W, PS2_REZ_H;
     extern i32 NuPrimCoordSystemStack[];
     void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);

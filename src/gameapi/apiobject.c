@@ -163,7 +163,7 @@ void __cdecl APIResetCharacterRemap(void) {
 }
 
 APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count, i32 named_count, char **names,
-                                        i8 page) {
+                                        i32 page) {
     APIDEBRISSYS_PC *system;
     i32 i;
     i32 j;

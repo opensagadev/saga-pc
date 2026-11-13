@@ -1365,16 +1365,16 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
 
     switch (effect->particle_type) {
         case 3:
-            debkeydata[key_index].render_priority = (i16)(40000);
+            debkeydata[key_index].render_priority = 40000;
             break;
         case 7:
-            debkeydata[key_index].render_priority = (i16)(20000);
+            debkeydata[key_index].render_priority = 20000;
             break;
         case 2:
-            debkeydata[key_index].render_priority = (i16)(50000);
+            debkeydata[key_index].render_priority = 50000;
             break;
         default:
-            debkeydata[key_index].render_priority = (i16)(30000);
+            debkeydata[key_index].render_priority = 30000;
             break;
     }
     for (i = 0; i < 4; ++i) {

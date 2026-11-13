@@ -4540,10 +4540,10 @@ static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antin
             if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
                  INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
-                object->ai->flags ^= 0x8000;
+                object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
             }
-            if ((object->ai->flags & 0x8000)) {
+            if (object->ai->antinode_clockwise) {
                 if (turn < 0) {
                     turn += 0x10000;
                 }
@@ -4552,9 +4552,9 @@ static void AISysCheckAntinode_Circle(APIOBJECT_PC *object, AIANTINODE_PC *antin
             }
         } else {
             if (turn > 0) {
-                object->ai->flags |= 0x8000;
+                object->ai->antinode_clockwise = 1;
             } else {
-                object->ai->flags &= ~0x8000u;
+                object->ai->antinode_clockwise = 0;
             }
         }
         if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
@@ -4631,10 +4631,10 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *anti
                 if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
                      INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
                     object->ai->antinode_timer < antinode_time) {
-                    object->ai->flags ^= 0x8000;
+                    object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                     object->ai->antinode_timer = antinode_time + antinode_reverse_time;
                 }
-                if ((object->ai->flags & 0x8000)) {
+                if (object->ai->antinode_clockwise) {
                     if (turn < 0) {
                         turn += 0x10000;
                     }
@@ -4642,9 +4642,9 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT_PC *object, AIANTINODE_PC *anti
                     turn -= 0x10000;
                 }
             } else if (turn > 0) {
-                object->ai->flags |= 0x8000;
+                object->ai->antinode_clockwise = 1;
             } else {
-                object->ai->flags &= ~0x8000u;
+                object->ai->antinode_clockwise = 0;
             }
             if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_timer = antinode_time;
@@ -4711,10 +4711,10 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
             if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
                  INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
-                object->ai->flags ^= 0x8000;
+                object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
             }
-            if ((object->ai->flags & 0x8000)) {
+            if (object->ai->antinode_clockwise) {
                 if (turn < 0) {
                     turn_offset = 0x10000;
                 }
@@ -4722,9 +4722,9 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
                 turn_offset = -0x10000;
             }
         } else if (turn > 0) {
-            object->ai->flags |= 0x8000;
+            object->ai->antinode_clockwise = 1;
         } else {
-            object->ai->flags &= ~0x8000u;
+            object->ai->antinode_clockwise = 0;
         }
         if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
             object->ai->antinode_timer = antinode_time;
@@ -4967,17 +4967,17 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
             if (first->ai->antinode_timer > antinode_time && second->ai->antinode_timer > antinode_time) {
                 if (first->ai->antinode_timer > second->ai->antinode_timer) {
                     second->ai->antinode_timer = first->ai->antinode_timer;
-                    second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+                    second->ai->antinode_clockwise = first->ai->antinode_clockwise;
                 } else {
                     first->ai->antinode_timer = second->ai->antinode_timer;
-                    first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+                    first->ai->antinode_clockwise = second->ai->antinode_clockwise;
                 }
             } else if (second->ai->antinode_timer > antinode_time) {
                 first->ai->antinode_timer = second->ai->antinode_timer;
-                first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+                first->ai->antinode_clockwise = second->ai->antinode_clockwise;
             } else if (first->ai->antinode_timer > 0.0f) {
                 second->ai->antinode_timer = first->ai->antinode_timer;
-                second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+                second->ai->antinode_clockwise = first->ai->antinode_clockwise;
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= 0x4000;
@@ -5065,17 +5065,17 @@ void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count,
             if (first->ai->antinode_timer > antinode_time && second->ai->antinode_timer > antinode_time) {
                 if (first->ai->antinode_timer > second->ai->antinode_timer) {
                     second->ai->antinode_timer = first->ai->antinode_timer;
-                    second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+                    second->ai->antinode_clockwise = first->ai->antinode_clockwise;
                 } else {
                     first->ai->antinode_timer = second->ai->antinode_timer;
-                    first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+                    first->ai->antinode_clockwise = second->ai->antinode_clockwise;
                 }
             } else if (second->ai->antinode_timer > antinode_time) {
                 first->ai->antinode_timer = second->ai->antinode_timer;
-                first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+                first->ai->antinode_clockwise = second->ai->antinode_clockwise;
             } else if (first->ai->antinode_timer > 0.0f) {
                 second->ai->antinode_timer = first->ai->antinode_timer;
-                second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+                second->ai->antinode_clockwise = first->ai->antinode_clockwise;
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= 0x4000;

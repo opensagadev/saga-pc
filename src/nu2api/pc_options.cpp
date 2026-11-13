@@ -21,6 +21,24 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetMultisample(i32 value) {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetAspectModePc(i32 value) {
     aspect_mode = value;
 }
+void __thiscall PC_WINDOW_OPTIONS_PC::SetWindowX(i32 value) {
+    window_x = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetWindowY(i32 value) {
+    window_y = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetMouseSensitivity(i32 value) {
+    mousesensitivity = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetInvertY(u8 value) {
+    inverty = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetVibration(u8 value) {
+    vibration = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetForceShaderModel(i32 value) {
+    forceshadermodel = value;
+}
 void __thiscall PC_WINDOW_OPTIONS_PC::Save() {
     FILE *file = fopen(file_name, "w");
     if (file != NULL) {

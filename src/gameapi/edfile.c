@@ -2949,12 +2949,12 @@ extern char EduiTextCopyBufferPc[64];
  * 4 and 5 the copy/paste row when the picker allows pasting (flag 2). */
 static void EduiTextPickPreviousRowPc(edui_textpicker_s *picker) {
     if (--picker->keyboard_row < 0)
-        picker->keyboard_row = (picker->keyboard_flags & 2) ? 5 : 3;
+        picker->keyboard_row = (picker->keyboard_flag_bits & 2) ? 5 : 3;
 }
 
 static void EduiTextPickNextRowPc(edui_textpicker_s *picker) {
     picker->keyboard_row++;
-    if (picker->keyboard_flags & 2) {
+    if (picker->keyboard_flag_bits & 2) {
         if (picker->keyboard_row > 5)
             picker->keyboard_row = 0;
     } else if (picker->keyboard_row > 3) {
@@ -2981,7 +2981,7 @@ static void EduiTextPickNextColumnPc(edui_textpicker_s *picker) {
 static void EduiTextPickPastePc(edui_textpicker_s *picker) {
     picker->cursor = 0;
     picker->value[0] = '\0';
-    if ((picker->keyboard_flags & 2) && EduiTextCopyBufferPc[0]) {
+    if ((picker->keyboard_flag_bits & 2) && EduiTextCopyBufferPc[0]) {
         NuStrNCpy(picker->value, EduiTextCopyBufferPc, picker->max_length - 1);
         picker->value[picker->max_length - 1] = '\0';
         picker->cursor = NuStrLen(picker->value);
@@ -3077,7 +3077,7 @@ void eduiAddTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
         picker->cursor = NuStrLen(picker->value);
         memcpy(picker->base.colours, item->colours, sizeof(picker->base.colours));
         picker->max_length = source->max_length;
-        picker->keyboard_flags = (picker->keyboard_flags & ~2u) | (source->keyboard_flags & 2);
+        picker->extended_keyboard = source->extended_keyboard;
     }
 }
 
@@ -3123,7 +3123,7 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
         picker->callback(menu, &picker->base, pad->digital_buttons);
     if ((pad->digital_buttons & 0xc) == 0xc)
         EduiTextPickPastePc(picker);
-    if ((pad->digital_buttons & 3) == 3 && (picker->keyboard_flags & 2)) {
+    if ((pad->digital_buttons & 3) == 3 && (picker->keyboard_flag_bits & 2)) {
         NuStrNCpy(EduiTextCopyBufferPc, picker->value, sizeof(EduiTextCopyBufferPc));
         picker->value[sizeof(EduiTextCopyBufferPc) - 1] = '\0';
     }

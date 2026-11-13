@@ -90,7 +90,7 @@ STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS098_PC) == 4);
 #define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
 
-/* Defined in charconfig_diagnostic_pc.c; retail calls it with and without a path. */
+/* Defined at the end of this file; retail calls it with and without a path. */
 void __cdecl CharConfigPakDiagnosticPc();
 
 f32 CharConfigAbsFloat(f32 value) {
@@ -2316,4 +2316,9 @@ void __cdecl ExtraCharacterFixUpAfterConfig(void) {
         CDataList[id_IMPERIALGUARD].move_fn = Move_JEDI;
         CDataList[id_IMPERIALGUARD].animate_fn = Animate_JEDI;
     }
+}
+
+/* Original source name unknown. Empty on PC (a bare RET at 0x5845b0). Defined
+   after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
+void __cdecl CharConfigPakDiagnosticPc(const char *format, ...) {
 }

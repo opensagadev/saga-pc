@@ -83,7 +83,7 @@ extern "C" void __cdecl CreateUsefulMaterials(void);
 extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void __cdecl ParticleReset(void);
-extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
+extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 typedef struct permanent_material_reader_pc_s {
     u8 unknown_0000[0x40];
     u32 attributes;
@@ -99,7 +99,7 @@ extern NUMTL *PermanentEffectsMaterialPc, *PermanentShadowMaterialPc, *Permanent
 extern void *things_scene_terrain;
 extern i32 PARTPAGE_GENERAL;
 extern char *debris_name[147];
-APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
+APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i32);
 extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 extern "C" void __cdecl CreateFadeMaterials(void);
 typedef struct permanent_customiser_save_pc_s {

@@ -15360,7 +15360,7 @@ extern "C" {
 extern "C" {
     extern NUMTX PostShadowViewPc, PostShadowProjectionPc;
     extern POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
-    void __cdecl PCGraphicsClearFramebuffer(i32, u32);
+    void __cdecl PCGraphicsClearFramebuffer(u32, i32);
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
     void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);

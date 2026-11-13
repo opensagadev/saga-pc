@@ -1,5 +1,7 @@
 #include "saga.h"
 
+static i32 KillPartsTieSpinRatePc = 200000;
+
 struct KILLPARTS_MINIKIT_PIECE_PC {
     NUSPECIALHANDLE special;
     NUMTX matrix;
