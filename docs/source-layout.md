@@ -95,6 +95,14 @@ Our mangled names are our own choice, not evidence. Evidence used:
 
 - `cpp`: thiscall member functions, constructors, `??_G`/`??_H` helpers or C++
   EH in the block (C cannot produce them), or a retail `.cpp` `__FILE__`.
+  The scan also reads the retail code of the block's ordinary functions
+  (`code` in the evidence column): a call to `operator new`/`delete` or to a
+  thiscall member, a C++ EH frame (`push -1; push handler; mov eax, fs:[0]`
+  with a `__CxxFrameHandler` handler), or a vtable operand. This makes 14
+  game compilands `cpp` (`chris`, `hub`, `legoapi_status`, both `levels`, the
+  `0x491b90` helpers, `menu`, `panel`, `startup`, `audio`, `gamestructure`,
+  `worldinfo`, `screen`, `cutscenes`, `lighting`, `credits`). The remaining
+  game compilands have no such construct and stay `c?`.
 - `c`: a retail `.c` `__FILE__` naming the primary file (`rtl.c`,
   `listman.c`), or Batman still a `.c` file (`apiobject.c`).
 - `c?`: no C++ construct in the block. TT's 2007 game and legoapi code was
@@ -113,7 +121,7 @@ Our mangled names are our own choice, not evidence. Evidence used:
 | named | 200: 103 high, 89 medium, 8 low confidence |
 | undetermined | 43 (631 functions, 115 KB) |
 | unity compilands | 14 (nucore, nucore_pc, numath, nu3d, nu3d_pc, cutscene, gamemenu, aisys, socksys, edtools, objects, gamelib, nusound3, edlevel) |
-| language | 30 `cpp`, 3 `c` with evidence; 12 `cpp?` (unity), 155 `c?` |
+| language | 47 `cpp`, 3 `c` with evidence; 10 `cpp?` (unity), 140 `c?` |
 
 Our functions against the target:
 
@@ -336,58 +344,47 @@ into a target file in retail order and rewrites `config/*.json` owners.
      another compiland cannot share a file with a small callee that retail
      kept in a different compiland; definition order does not help.
 
+   Language-blocked pieces, second pass. A piece moves into a target of the
+   other language only with minimal mechanical edits, and only when no exact
+   function is lost and no score drops. C++ to C: C casts for
+   `static_cast`/`reinterpret_cast`, declarations hoisted to the block start
+   (`const` dropped, aggregate initializers after a statement become member
+   assignments), unnamed parameters named, `bool` locals as `u8`, `typedef`s
+   for struct views, `inline` as `__inline`, mangled names in
+   `config/symbols.csv` renamed to C names. C to C++: an `extern "C"` block.
+   Moved this way: `transform`, `gameai`, `aipathcnxhelper`, `torpedo`,
+   `move`, game `missions`, `gizforce`, `game` (into its `extern "C"`
+   block), `creature` (48 `players.c` and 4 `characters.cpp` functions),
+   `characters`, `panel` (now `panel.cpp`), `hub`, `worldinfo`, `gamepads`
+   (`input.cpp` removed), `dropinout`, `game_obj`, `gamestatus`,
+   `customise`, `customiser`, `parts`, `pushing`, `bolt`, `gizactions`.
+   The second layout pass added: `players` (`CanPullLevers`), `config`
+   (`CC_variant` with its keyword table), and the moves of `cable`,
+   `grabber`, `shop`, `edgizshadow` and `hub` into their target directories.
+   Each move went with a boundary review in `tools/layoutscan.py`: `cable`,
+   `grabber`, `shop`, `startup`, `edgizshadow`, `customise`, `credits`,
+   `gizturret` and `panel` start with static helpers that only their own
+   code calls. Gains: `DrawCharIcon`, `TieSpinZPart_Move`.
+
    Deferred merges, game side (`src/legoapi`, `src/legogame` targets):
-   - `levels_diagnostic_pc.c`, `mission_diagnostic_pc.c` and the other empty
-     diagnostics above: folded RETs, see the first rule.
-   - `dropinout`: `players_dropin.cpp` and `DropOut` (`menu_pause.cpp`) are
-     C++ (declarations in mid-block), `DropInOutCode` assigns from the
-     `void *Player` array; either language needs code changes.
-   - `worldinfo`: `PortalDoors_Configure/_Update/_Reset` (`gizportal.c`) use
-     implicit declarations and `void *` conversions, so they do not compile
-     as C++.
-   - `characters`: `IconScenes_Init/_FindById/_Load/_Dump` (`menu.c`): the
-     creature stray `LoadSingleCharacter` in `characters.cpp` would inline
-     `IconScene_FindById` (exact -> 81%). Merge after it moves to `creature`
-     (`DrawCharIcon` then becomes exact: 99.45% -> 100%). The four creature
-     strays of `characters.cpp` (`LoadSingleCharacter`, `UpdateCharacterLoad`,
-     `UpdateCharacterIdle`, `NewCharacterIdle`) are C++ (mid-block
-     declarations, an unnamed parameter, a local static), so they cannot join
-     `legogame/creature.c` unchanged.
-   - `hub`: `indy_special.c` and `gizmo.c` pieces need `void *` casts as C++,
-     and the pieces declare the hub mode globals differently.
-   - `gamepads`: `PadOutPause` (`menu_pause.cpp`) and `DoInput`
-     (`input.cpp`) are C++ (`reinterpret_cast`, mid-block declarations).
-   - `parts`: `parts.c` is mostly `objectsall`/`gameliball` code; merge after
-     its split. `PartImpact_Brick` (`parts_breakup.cpp`) is C++.
-   - `pushing`: `Pushing` (`players.c`) is the only out-of-line user of the
-     header-static `PlayersFabsPc` copy mapped at the start of `creature`
-     (0x413f00); moving it drops that copy from exact. Three C++ functions of
-     `credits.cpp` sit at the end of the `pushing` row (likely a boundary).
-   - `customise` (game side): the moved code is the only out-of-line user of
-     the static `CustomiserMtx*Pc` helpers mapped in `customiser`.
-   - `config`: `CC_variant` is a static keyword handler of `charconfig.c`'s
-     parser table; it cannot move alone.
-   - `players`: `CanPullLevers` (`aicapabilities_pc.c`): `InitPlayerAI`, still
-     in `players.c`, would inline it (99.88% -> 91.78%); move after the real
-     `players.c` -> `creature` split (49 functions).
-   - `hub`: `Arcade_GetMode` (`arcade.c`): `DrawPlayerHudPc` (`panel`, still
-     in `hub.cpp`) would inline it (94.05% -> 91.70%).
-   - `jumping` (Fade COMDAT members), `gizactions`, `bolts`, `fade` (pieces
-     in engine files), `startup_dats.c` and `player_device_port_pc.c`
-     (undetermined targets): not attempted.
-   - Language only (C pieces cannot take the C++ pieces unchanged, or the
-     reverse): `creature` 5 (`characters.cpp` 4, `game.cpp` 1),
-     `gamestatus` 21 (`screen.cpp`), `game` 2 (`cutscene_hooks.c`: a
-     `const char[]` passed as `char *`, a local static), `gizforce` 3
-     (`gizmo_*_registration_pc.cpp`), `move` 7 (`bolt_foundation_callbacks.cpp`
-     3, `characters.cpp` 2, `pushing.cpp` 1, `game.cpp` 1), `transform` 1
-     (`game.cpp`), `pulses` 1 (`streaks.cpp`), `aipathcnxhelper` 1 and
-     `gameai` 1 (`aiactions_transfer.cpp`), game `missions` 5 (`menus.cpp`),
-     `torpedo` 2 (`bolt_foundation_callbacks.cpp`), `panel` 15 (`hub.cpp` 13,
-     `game.cpp` 2), `game_obj` 19 (`parts_breakup.cpp` 18,
-     `collection_render.cpp` 1), `collection` 4 (`lighting_unit.cpp` 3,
-     `collection_render.cpp` 1); 87 functions in 14 compilands, plus the
-     `dropinout`, `worldinfo`, `gamepads` and `parts` ones above.
+   - Folded-RET diagnostics (`*_diagnostic_pc.c`): see the first rule.
+   - `creature`: `ResetPlayer` stays in `players.c`. With
+     `Player_StartPos` defined out of view it drops from 97.44% to 93.91%.
+   - `parts`: `LoadPartFile` (`parts_load.c`). `parts.c` still holds the
+     `objectsall` edpart code; with it in view the function drops from exact
+     to 87.24%. Merge after the `parts.c` split.
+   - `pulses`: `StreakBezierPointPrivate` (`streaks.cpp`) is a static with a
+     private EDI/ESI convention that only streaks code calls; the
+     pulses/streaks boundary needs review.
+   - `game`: `CutScene_PostUpdateFn_LSW` (`cutscene_hooks.c`); the language
+     of `game` is open.
+   - `collection`: its only C++ evidence is two `PC_SPECIAL_SHADOW_LIGHT`
+     members at its tail (`lighting_unit.cpp`), which may belong to
+     `lighting`; review the boundary before choosing the language.
+   - `jumping` (Fade COMDAT members from `fade.cpp`; `jumping.c` needs
+     prototypes for its hook pointers as C++), `fade` (ThingManager members
+     defined in two units), `bolts` (engine-side pieces), `startup_dats.c`
+     and `player_device_port_pc.c` (undetermined targets): not attempted.
 
    Engine side (`src/nu2api`, `src/gameapi` targets), done: `shaderSemantics.cpp`
    (new, from `nurndr.c` and `nushadermanager.cpp`), `nushaderobjectbase.cpp`
