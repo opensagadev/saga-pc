@@ -53,32 +53,6 @@ STATIC_ASSERT(offsetof(SNIPER_s, pos) == 0xc);
 STATIC_ASSERT(offsetof(SNIPER_s, fire_timer) == 0x18);
 STATIC_ASSERT(offsetof(SNIPER_s, state) == 0x1c);
 
-void KaminoE_Init(WORLDINFO *world) {
-    void *g;
-    kaminoe_netpacket = SetLevelHack(0x14);
-    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "endblock_b08");
-    if (g != NULL)
-        LevForce = *(i32 *)g;
-}
-
-void FactoryG_Init(WORLDINFO *world) {
-    struct gizmo_pc_s *g;
-    if (netclient != 0)
-        return;
-    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force5");
-    if (g != NULL)
-        force_array[0] = (GIZFORCE_s *)g->object;
-    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force6");
-    if (g != NULL)
-        force_array[1] = (GIZFORCE_s *)g->object;
-    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force7");
-    if (g != NULL)
-        force_array[2] = (GIZFORCE_s *)g->object;
-    g = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force8");
-    if (g != NULL)
-        force_array[3] = (GIZFORCE_s *)g->object;
-}
-
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, max_lap_time) == 0xb010);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_time_increment) == 0xb014);
 STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, attempts_per_increment) == 0xb018);

@@ -1,14 +1,4 @@
 #include "saga.h"
-static KAMINOEPLATE *kamino_plate_1 = 0;
-static i32 kamino_plate_1_active = 0;
-static KAMINOEPLATE *kamino_plate_2 = 0;
-static i32 kamino_plate_2_active = 0;
-static KAMINOEPLATE *kamino_plate_3 = 0;
-static i32 kamino_plate_3_active = 0;
-static KAMINOEPLATE *kamino_plate_4 = 0;
-static i32 kamino_plate_4_active = 0;
-static KAMINOEPLATE *kamino_plate_hit = 0;
-static u16 kamino_plate_id = 0;
 
 #include <string.h>
 
@@ -37,37 +27,6 @@ void __cdecl SpeedBlur_Update(void) {
     NuLightSpeedBlurOldCameraPos(&cameraMtxs[lastCameraMtx]);
     lastCameraMtx = 1 - lastCameraMtx;
     cameraMtxs[lastCameraMtx] = GameCam->render_mtx;
-}
-
-i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
-    if (bolt->unknown_fa == kamino_plate_id) {
-        if (kamino_plate_1 != NULL && kamino_plate_1_active != 0) {
-            if ((kamino_plate_1->flags_13a & 0x30) == 0 && (kamino_plate_1->flags_13a & 0x2) != 0) {
-                if (kamino_plate_hit == NULL)
-                    kamino_plate_hit = kamino_plate_1;
-            }
-        }
-        if (kamino_plate_2 != NULL && kamino_plate_2_active != 0) {
-            if ((kamino_plate_2->flags_13a & 0x30) == 0 && (kamino_plate_2->flags_13a & 0x2) != 0) {
-                if (kamino_plate_hit == NULL)
-                    kamino_plate_hit = kamino_plate_2;
-            }
-        }
-        if (kamino_plate_3 != NULL && kamino_plate_3_active != 0) {
-            if ((kamino_plate_3->flags_13a & 0x30) == 0 && (kamino_plate_3->flags_13a & 0x2) != 0) {
-                if (kamino_plate_hit == NULL)
-                    kamino_plate_hit = kamino_plate_3;
-            }
-        }
-        if (kamino_plate_4 != NULL && kamino_plate_4_active != 0) {
-            if ((kamino_plate_4->flags_13a & 0x30) == 0 && (kamino_plate_4->flags_13a & 0x2) != 0) {
-                if (kamino_plate_hit == NULL)
-                    kamino_plate_hit = kamino_plate_4;
-            }
-        }
-        return 1;
-    }
-    return 0;
 }
 
 #define CUT_HAND_FLIP(m)                                                                                               \
