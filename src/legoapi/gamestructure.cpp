@@ -1,7 +1,97 @@
 #include "saga.h"
 
+/* Retail unit 0x55c0f0-0x55c8e6: definitions in retail address order. */
+
 extern "C" void __cdecl DumpAreaData(i32 mode, i32 last_area);
 extern "C" void __cdecl BackDrop_Dump(void);
+
+STATIC_ASSERT(offsetof(AREASAVE_s, area_complete) == 1);
+STATIC_ASSERT(offsetof(STATUSCOLLECT_s, completion_points) == 0);
+STATIC_ASSERT(offsetof(STATUSCOLLECT_s, flags) == 3);
+extern "C" {
+    extern void(__cdecl *PauseGame_ExtraCodeFn)(void);
+    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
+}
+
+extern "C" void __cdecl PauseGame(i32 pad) {
+    Paused = 1;
+    NuPause(1);
+    music_man.SetFader(0.0f, 0.5f);
+    music_man.PauseTrack(0x10);
+    NuSound3StopRumble();
+    if (memcard_autosaveenabled && memcard_autosavedisabled)
+        NewMenu(1011, 0, -1);
+    else
+        NewMenu(LEGOMENU_PAUSEMAIN, 0, -1);
+    ResetTimer(&PauseTimer, 0.0f);
+    GameAudio_PlaySfx(0x36, NULL, 0, 0);
+    DoubleScoreTime = 0.0f;
+    ResetTimer(&JoinInTimer, 0.0f);
+    pause_i_pad = pad;
+    TextInputSetLastDevicePc(pad);
+    for (i32 i = 0; i < 8; ++i) {
+        if (Player[i]) {
+            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
+            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
+            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
+        }
+    }
+    if (PauseGame_ExtraCodeFn)
+        PauseGame_ExtraCodeFn();
+}
+extern "C" {
+
+    void __cdecl ResumeGame(i32 play_sound) {
+        Paused = 0;
+        NetPaused = 0;
+        NuPause(0);
+        MenuRememberCursor(&GameMenu[GameMenuLevel]);
+        MenuReset();
+        music_man.SetFader(1.0f, 0.5f);
+        music_man.ResumeTrack(0x10);
+        if (play_sound != 0)
+            GameAudio_PlaySfx(0x37, NULL, 0, 0);
+        if (ResumeGame_ExtraCodeFn != NULL)
+            ResumeGame_ExtraCodeFn();
+    }
+}
+
+void ClearPause(void) {
+    Paused = 0;
+    NetPaused = 0;
+}
+
+extern "C" void NewGameMode() {
+    NewMode = 1;
+    reset_load = 1;
+}
+extern "C" {
+
+    void RestoreOptions(void) {
+        GameSetSoundVolume(Game_OptionsSave);
+        GameSetMusicVolume(Game_OptionsSave);
+        if (Game_OptionsSave != NULL) {
+            NuVideoSetBrightness((f32)((f64)Game_OptionsSave->brightness / 10.0));
+        }
+    }
+
+    void InitSuperStory(i32 episode) {
+        SuperStory = 1;
+        SuperStoryEpisode = episode;
+        ResetTimer(&SuperStoryTimer, 0.0f);
+        SuperStoryScore = 0;
+        NextArea_FreePlay = 0;
+        FreePlay = 0;
+        Cheats_TurnOff(0);
+    }
+}
+
+extern "C" i32 __cdecl InStory(void) {
+    if (FreePlay != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || Arcade != 0) {
+        return 0;
+    }
+    return 1;
+}
 
 i32 __cdecl Game_Exit(i32 last_area) {
     if (PcWindowQuit != 0) {
@@ -26,48 +116,6 @@ i32 __cdecl Game_Exit(i32 last_area) {
     return 0;
 }
 
-void ClearPause(void) {
-    Paused = 0;
-    NetPaused = 0;
-}
-
-extern "C" void NewGameMode() {
-    NewMode = 1;
-    reset_load = 1;
-}
-
-extern "C" i32 __cdecl InStory(void) {
-    if (FreePlay != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || Arcade != 0) {
-        return 0;
-    }
-    return 1;
-}
-
-extern "C" {
-    i32 __cdecl Game_100PercentComplete(void) {
-        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0)
-            return 1;
-        return 0;
-    }
-}
-
-extern "C" void AddToGoldBricks() {
-    if (CustomiserCompletionSavePc != NULL &&
-        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks < GOLDBRICKPOINTS) {
-        ++((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks;
-        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks == GOLDBRICKPOINTS &&
-            (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
-            if (Game_AllGoldBricksFn != NULL)
-                Game_AllGoldBricksFn();
-            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
-        }
-    }
-}
-
-STATIC_ASSERT(offsetof(AREASAVE_s, area_complete) == 1);
-STATIC_ASSERT(offsetof(STATUSCOLLECT_s, completion_points) == 0);
-STATIC_ASSERT(offsetof(STATUSCOLLECT_s, flags) == 3);
-
 extern "C" LEVELDATA_PC *__cdecl CanSaveAndExit(WORLDINFO *world) {
     if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA &&
         (world->area->flags & 0x146) == 0 && Mission_Active(NULL) == NULL && ChallengeMode == 0 && Arcade == 0 &&
@@ -90,6 +138,27 @@ extern "C" void __cdecl AddToCompletionPoints(u32 points) {
                     Game_100PercentFn();
                 ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_100_PERCENT;
             }
+        }
+    }
+}
+extern "C" {
+
+    i32 __cdecl Game_100PercentComplete(void) {
+        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0)
+            return 1;
+        return 0;
+    }
+}
+
+extern "C" void AddToGoldBricks() {
+    if (CustomiserCompletionSavePc != NULL &&
+        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks < GOLDBRICKPOINTS) {
+        ++((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks;
+        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks == GOLDBRICKPOINTS &&
+            (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
+            if (Game_AllGoldBricksFn != NULL)
+                Game_AllGoldBricksFn();
+            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
         }
     }
 }

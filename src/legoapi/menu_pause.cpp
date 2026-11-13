@@ -53,36 +53,6 @@ extern "C" void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32) {
     }
 }
 
-extern "C" {
-    extern void(__cdecl *PauseGame_ExtraCodeFn)(void);
-}
-extern "C" void __cdecl PauseGame(i32 pad) {
-    Paused = 1;
-    NuPause(1);
-    music_man.SetFader(0.0f, 0.5f);
-    music_man.PauseTrack(0x10);
-    NuSound3StopRumble();
-    if (memcard_autosaveenabled && memcard_autosavedisabled)
-        NewMenu(1011, 0, -1);
-    else
-        NewMenu(LEGOMENU_PAUSEMAIN, 0, -1);
-    ResetTimer(&PauseTimer, 0.0f);
-    GameAudio_PlaySfx(0x36, NULL, 0, 0);
-    DoubleScoreTime = 0.0f;
-    ResetTimer(&JoinInTimer, 0.0f);
-    pause_i_pad = pad;
-    TextInputSetLastDevicePc(pad);
-    for (i32 i = 0; i < 8; ++i) {
-        if (Player[i]) {
-            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
-            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
-            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
-        }
-    }
-    if (PauseGame_ExtraCodeFn)
-        PauseGame_ExtraCodeFn();
-}
-
 extern "C" void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     if (Paused)
         return;

@@ -275,23 +275,6 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
                           MissionMenuPacketPc.active_player[1], select1, 1.0f, -1, back1, -1, status1);
 }
 
-extern "C" {
-    extern void(__cdecl *ResumeGame_ExtraCodeFn)(void);
-    void __cdecl ResumeGame(i32 play_sound) {
-        Paused = 0;
-        NetPaused = 0;
-        NuPause(0);
-        MenuRememberCursor(&GameMenu[GameMenuLevel]);
-        MenuReset();
-        music_man.SetFader(1.0f, 0.5f);
-        music_man.ResumeTrack(0x10);
-        if (play_sound != 0)
-            GameAudio_PlaySfx(0x37, NULL, 0, 0);
-        if (ResumeGame_ExtraCodeFn != NULL)
-            ResumeGame_ExtraCodeFn();
-    }
-}
-
 /* 50b310/71. Existing menu globals and types, no new owner data. */
 extern "C" i32 __cdecl MenuInMemoryCard(void) {
     if (GameMenuLevel != -1 && MenuValidated != 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id >= 1000 &&

@@ -57,24 +57,6 @@ void MenuReset(void) {
     MenuSetPlatformState(-1);
 }
 
-void RestoreOptions(void) {
-    GameSetSoundVolume(Game_OptionsSave);
-    GameSetMusicVolume(Game_OptionsSave);
-    if (Game_OptionsSave != NULL) {
-        NuVideoSetBrightness((f32)((f64)Game_OptionsSave->brightness / 10.0));
-    }
-}
-
-void InitSuperStory(i32 episode) {
-    SuperStory = 1;
-    SuperStoryEpisode = episode;
-    ResetTimer(&SuperStoryTimer, 0.0f);
-    SuperStoryScore = 0;
-    NextArea_FreePlay = 0;
-    FreePlay = 0;
-    Cheats_TurnOff(0);
-}
-
 i32 __cdecl Hub_InMenu(void) {
     i32 id = GetMenuID();
     return id == 13 || id == 12 || id == 14 || id == 15 || id == 16 || id == 17 || id == 8;
