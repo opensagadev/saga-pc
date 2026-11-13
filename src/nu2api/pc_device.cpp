@@ -1042,6 +1042,15 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, 
         buffer->methods->release(buffer);
     return size;
 }
+
+u8 __thiscall PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
+    return multisample_tested != 0 && quality[index] != -1;
+}
+u8 __thiscall PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
+    return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode ||
+           requested_feature != feature634 || requested_multisample != multisample_index ||
+           requested_target_count != target_count;
+}
 void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.x = 0;
     requested_viewport.y = 0;

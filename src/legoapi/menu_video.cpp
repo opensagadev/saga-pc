@@ -1,14 +1,5 @@
 #include "saga.h"
 
-u8 __thiscall PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
-    return multisample_tested != 0 && quality[index] != -1;
-}
-u8 __thiscall PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
-    return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode ||
-           requested_feature != feature634 || requested_multisample != multisample_index ||
-           requested_target_count != target_count;
-}
-
 u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     if (aspect_mode != PcWindowOptions.aspect_mode)
         return 1;
