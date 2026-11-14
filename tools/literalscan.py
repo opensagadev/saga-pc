@@ -278,9 +278,13 @@ class SymbolMap:
         self.path.write_text("".join(line for line in self.lines if line is not None))
 
 
-def plan_symbols(symbols, decl):
+# VC8 names a literal emitted while a `#pragma const_seg("...")` is in effect with this extra suffix.
+SEGMENT_SUFFIX = "HMDOKFMK@"
+
+
+def plan_symbols(symbols, decl, in_segment=False):
     """(edits {line index: new line or None}, problem) for the symbols.csv rows of an inlined constant."""
-    literal = literal_name(decl["data"], False)
+    literal = literal_name(decl["data"], False) + (SEGMENT_SUFFIX if in_segment else "")
     named = symbols.named(decl["name"])
     existing = {int(r[0], 16) for _, r in symbols.by_symbol(literal)}
     addresses = {int(r[0], 16) for _, r in named}
@@ -329,47 +333,83 @@ def tidy_segments(text):
     return "".join(lines)
 
 
+def source_edits(sources, decl):
+    """{path: [(start, end, replacement)]} that inline one constant; the use's edit is marked "use"."""
+    edits = {}
+    source = next(s for s in sources if s.path == decl["file"])
+    start, end = remove_line_span(source.text, *decl["span"])
+    before = re.search(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*"\.rdata\$' + re.escape(decl["name"]) +
+                       r'"\s*\)[ \t]*\n\Z', source.text[:start], re.MULTILINE)
+    if before:
+        start = before.start()
+    edits.setdefault(source.path, []).append((start, end, "", None))
+    use_source, use_start, use_end, kind = decl["uses"][0]
+    if kind == "cast":
+        use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
+    edits.setdefault(use_source.path, []).append((use_start, use_end, decl["literal"], (decl["file"], decl["name"])))
+    for other in sources:
+        if other.path in HELD_DECLARATIONS:
+            continue
+        for span in extern_spans(other, decl["name"]):
+            edits.setdefault(other.path, []).append((*remove_line_span(other.text, *span), "", None))
+    return edits
+
+
+def apply_edits(text, changes):
+    """(new text, {use key: offset of its literal in the new text})."""
+    changes = sorted(set(changes))
+    shift, placed = 0, {}
+    for start, end, replacement, use in changes:
+        if use:
+            placed[use] = start + shift
+        shift += len(replacement) - (end - start)
+    for start, end, replacement, _ in reversed(changes):
+        text = text[:start] + replacement + text[end:]
+    return text, placed
+
+
+def in_named_segment(text, offset):
+    """Whether a `#pragma const_seg("...")` is in effect at offset."""
+    named = False
+    for match in re.finditer(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*("[^"\n]*")?', text[:offset], re.MULTILINE):
+        named = bool(match.group(1))
+    return named
+
+
 def fix(sources, found, only=None):
     """Inline every single-use constant (in PATHS when given); returns (fixed, skipped [(decl, reason)])."""
-    by_path = {s.path: s for s in sources}
-    symbols = SymbolMap()
-    edits = {}  # path -> [(start, end, replacement)]
-    fixed, skipped = [], []
-    for decl in found:
-        if decl["class"] != "single-use" or (only and not any(decl["file"].startswith(p) for p in only)):
-            continue
-        rows, problem = plan_symbols(symbols, decl)
-        if problem or rows is None:
-            skipped.append((decl, problem))
-            continue
-        for index, line in rows.items():
-            symbols.replace(index, line)
-        source = by_path[decl["file"]]
-        start, end = remove_line_span(source.text, *decl["span"])
-        text = source.text
-        before = re.search(r'^[ \t]*#\s*pragma\s+const_seg\s*\(\s*"\.rdata\$' + re.escape(decl["name"]) +
-                           r'"\s*\)[ \t]*\n\Z', text[:start], re.MULTILINE)
-        if before:
-            start = before.start()
-        edits.setdefault(source.path, []).append((start, end, ""))
-        use_source, use_start, use_end, kind = decl["uses"][0]
-        if kind == "cast":
-            use_start = CHAR_CAST.search(use_source.code[:use_start].rstrip()).start()
-        edits.setdefault(use_source.path, []).append((use_start, use_end, decl["literal"]))
-        for other in sources:
-            if other.path in HELD_DECLARATIONS:
+    chosen = [d for d in found
+              if d["class"] == "single-use" and (not only or any(d["file"].startswith(p) for p in only))]
+    skipped = []
+    while True:
+        edits = {}
+        for decl in chosen:
+            for path, changes in source_edits(sources, decl).items():
+                edits.setdefault(path, []).extend(changes)
+        by_path = {s.path: s for s in sources}
+        texts, segment = {}, {}
+        for path, changes in edits.items():
+            texts[path], placed = apply_edits(by_path[path].text, changes)
+            for name, offset in placed.items():
+                segment[name] = in_named_segment(texts[path], offset)
+        symbols = SymbolMap()
+        problems = []
+        for decl in chosen:
+            rows, problem = plan_symbols(symbols, decl, segment[(decl["file"], decl["name"])])
+            if problem or rows is None:
+                problems.append((decl, problem))
                 continue
-            for span in extern_spans(other, decl["name"]):
-                edits.setdefault(other.path, []).append((*remove_line_span(other.text, *span), ""))
-        fixed.append(decl)
-    for path, changes in edits.items():
-        text = by_path[path].text
-        for start, end, replacement in sorted(set(changes), reverse=True):
-            text = text[:start] + replacement + text[end:]
-        text = tidy_segments(text)
-        (ROOT / path).write_text(text, encoding="latin-1")
-    symbols.write()
-    return fixed, skipped
+            for index, line in rows.items():
+                symbols.replace(index, line)
+        if not problems:
+            break
+        skipped += problems
+        chosen = [d for d in chosen if all(d is not p for p, _ in problems)]
+    for path, text in texts.items():
+        (ROOT / path).write_text(tidy_segments(text), encoding="latin-1")
+    if chosen:
+        symbols.write()
+    return chosen, skipped
 
 
 def main(argv=None):

@@ -117,6 +117,14 @@ class LiteralScanTests(unittest.TestCase):
         self.assertEqual(fixed, [])
         self.assertIn("mapped at 0x752000", skipped[0][1])
 
+    def test_literal_inside_a_named_segment_gets_the_suffix(self):
+        unit = (self.root / "src/unit.c").read_text().replace('NuSevereWarning', '#pragma const_seg(".rdata$X")\n    NuSevereWarning')
+        (self.root / "src/unit.c").write_text(unit)
+        sources, found, _ = self.scan()
+        literalscan.fix(sources, [d for d in found if d["name"] == "WarningPc"])
+        symbols = (self.root / "config/symbols.csv").read_text()
+        self.assertRegex(symbols, r"0x751000,\?\?_C@_0BD@\w+@Your\S*@HMDOKFMK@,19")
+
     def test_tidy_segments(self):
         text = ('#pragma const_seg(".rdata$A")\n#pragma const_seg(".rdata$B")\nconst char B[] = "b";\n'
                 '#pragma const_seg()\n#pragma const_seg()\n')
