@@ -7,25 +7,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edptl.h, gameapi/edtools/edgra.h, legoapi/items/base/apiobject.h,
- * legoapi/legoapi_types.h, legoapi/render/core/gameliball.h, nu2api/nu3d/numtl.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h, nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edptl.h"
-#include "gameapi/edtools/edgra.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/render/core/gameliball.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_RENDER_FX_GAME_DEB_H_PART == 1 && !defined(SAGA_LEGOAPI_RENDER_FX_GAME_DEB_H_STOP)
+
+struct debris_info_pc_s;
+struct debris_key_pc_s;
+struct debris_part_header_pc_s;
+struct debris_particle_pc_s;
+struct gameobject_s;
+struct numtl_s;
+struct numtx_s;
+struct ripple_set_pc_s;
 
 typedef struct BURN_PARAMETERS_PC {
     i32 field_00;
@@ -83,7 +87,7 @@ extern "C" {
     extern i32 forced_debris_thinning;
     extern i32 freeDmaDebType;
     extern i32 EDPP_MAX_DMADEBTYPES;
-    extern DEBRIS_PART_HEADER_PC **DmaDebTypes;
+    extern struct debris_part_header_pc_s **DmaDebTypes;
     extern i32 debris_render_group;
     void DebrisProcessTriggers(void);
     void DebrisProcessGeneration(void);
@@ -94,15 +98,15 @@ extern "C" {
     u32 DebrisGetSeed(void);
     void DebrisSetTimeIncrement(f32 increment);
     void Debris(i32);
-    void BuildRippleMtx(NUMTX *, NUVEC *, NUVEC *, u16, u16);
+    void BuildRippleMtx(struct numtx_s *, NUVEC *, NUVEC *, u16, u16);
 
-    extern RIPPLE_SET_PC *RippleSetPc;
+    extern struct ripple_set_pc_s *RippleSetPc;
     extern f32 RipplePerturbationPc;
     extern f32 RippleSfxCooldownPc;
     extern f32 ForceFieldRippleRatePc;
     extern const char RippleForceFieldSoundNamePc[10];
     extern f32 GunshipDustEmissionRatePc;
-    void InitRippleMtl(char *, NUMTL **, VARIPTR *, VARIPTR *);
+    void InitRippleMtl(char *, struct numtl_s **, VARIPTR *, VARIPTR *);
     void BurnoutApply(i32);
 #ifdef __cplusplus
 }
@@ -118,10 +122,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddWaterSplash(GAMEOBJECT *object, NUVEC *position);
-    void AddSlamDebris(GAMEOBJECT *);
-    void AddSurfaceRipples(GAMEOBJECT *);
-    void AddSurfaceDebris(GAMEOBJECT *);
+    void AddWaterSplash(struct gameobject_s *object, NUVEC *position);
+    void AddSlamDebris(struct gameobject_s *);
+    void AddSurfaceRipples(struct gameobject_s *);
+    void AddSurfaceDebris(struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -136,7 +140,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRIS_INFO_PC **debtab;
+    extern struct debris_info_pc_s **debtab;
 #ifdef __cplusplus
 }
 #endif
@@ -151,9 +155,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DebrisStartOffsetEx(DEBRISKEY_PC *, f32);
-    void DebrisProcessSpheres(DEBRISPARTICLE_PC *, f32, DEBRIS_INFO_PC *, DEBRISKEY_PC *, i32);
-    void DebReAlloc(DEBRISKEY_PC *, i32);
+    void DebrisStartOffsetEx(struct debris_key_pc_s *, f32);
+    void DebrisProcessSpheres(struct debris_particle_pc_s *, f32, struct debris_info_pc_s *, struct debris_key_pc_s *,
+                              i32);
+    void DebReAlloc(struct debris_key_pc_s *, i32);
 #ifdef __cplusplus
 }
 #endif

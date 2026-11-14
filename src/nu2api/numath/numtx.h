@@ -6,16 +6,20 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/numath/nuquat.h, nu2api/numath/nuvec.h (not all
- * of it earlier in the shim). */
-
-#include "nu2api/numath/nuang.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/numath/nuquat.h"
+#include "nu2api/numath/nuang.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct NUANGVEC;
+struct nuquat_s;
 
 typedef struct numtx_s {
     f32 m00;
@@ -62,7 +66,7 @@ STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 extern "C" {
 #endif
     void NuMtxCalcCheapFaceY_v2(NUMTX *, NUVEC *);
-    void NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
+    void NuMtxSetRotationXYVU0(NUMTX *, struct NUANGVEC *);
 
     void NuMtxMulArrayVU0(NUMTX *, NUMTX *, NUMTX *, i32);
     void NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right);
@@ -76,8 +80,8 @@ extern "C" {
     void NuMtxSetScale(NUMTX *matrix, NUVEC *scale);
     void NuMtxMul(NUMTX *matrix, NUMTX *left, NUMTX *right);
     void NuMtxMulR(NUMTX *matrix, NUMTX *left, NUMTX *right);
-    void NuMtxSetRotateXYZ(NUMTX *matrix, NUANGVEC *angles);
-    void NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles);
+    void NuMtxSetRotateXYZ(NUMTX *matrix, struct NUANGVEC *angles);
+    void NuMtxSetRotateXYZVU0(NUMTX *matrix, struct NUANGVEC *angles);
     void NuMtxPreScaleVU0(NUMTX *matrix, NUVEC *scale);
     void NuMtxSetRotationX(NUMTX *matrix, NUANG angle);
     void NuMtxSetRotationY(NUMTX *matrix, NUANG angle);
@@ -99,7 +103,7 @@ extern "C" {
     void NuMtxGetYAxis(NUMTX *matrix, NUVEC *axis);
     void NuMtxGetZAxis(NUMTX *matrix, NUVEC *axis);
     void NuMtxGetTranslation(NUMTX *matrix, NUVEC *translation);
-    void NuMtxToQuat(NUMTX *matrix, NUQUAT *out);
+    void NuMtxToQuat(NUMTX *matrix, struct nuquat_s *out);
     void NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *target, NUVEC *up);
     void NuMtxSetPerspectiveD3D(NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane);
     void NuMtxSetFrustumD3D(NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);

@@ -7,23 +7,36 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
- * legoapi/menus/core/gamemessages.h, legoapi/menus/core/panel.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/gamemessages.h"
-#include "legoapi/menus/core/panel.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/gamemessages.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/gamemessages.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_STOP)
+
+struct GIZMO_PICKUP_TYPE_PC;
+struct WORLDINFO_s;
+struct gameobject_s;
+struct player_coin_packet_pc_s;
 
 typedef struct game_message_pc_s GAME_MESSAGE_PC;
 
@@ -111,17 +124,17 @@ STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void GizmoPickup_CollectCoin(WORLDINFO *, NUVEC *, i32, i32, GAMEOBJECT *, i32);
-    void SpecialMiniKits_Configure(WORLDINFO *, char *);
-    void SpecialMiniKits_Reset(WORLDINFO *);
-    void SpecialMiniKits_Draw(WORLDINFO *);
+    void GizmoPickup_CollectCoin(struct WORLDINFO_s *, NUVEC *, i32, i32, struct gameobject_s *, i32);
+    void SpecialMiniKits_Configure(struct WORLDINFO_s *, char *);
+    void SpecialMiniKits_Reset(struct WORLDINFO_s *);
+    void SpecialMiniKits_Draw(struct WORLDINFO_s *);
 
 #ifdef __cplusplus
 }
 #endif
 
 typedef struct PICKUP_TYPE_SYSTEM_PC {
-    GIZMO_PICKUP_TYPE_PC *types;
+    struct GIZMO_PICKUP_TYPE_PC *types;
     u8 *random_coin_types;
     u16 type_count;
     i8 minikit_type;
@@ -141,11 +154,11 @@ STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, alternate_type) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *);
-    void UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index);
+    extern f32 (*GizmoPickups_Collide2DFn)(struct gameobject_s *);
+    void UpdateCoinPacket(struct player_coin_packet_pc_s *packet, i32 active, i32 player_index);
     void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
-    GIZMOPICKUP_PC *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused);
-    i32 GizmoPickup_NumberOfType(WORLDINFO *, i32, u8);
+    GIZMOPICKUP_PC *GizmoPickups_Collide(struct WORLDINFO_s *world, struct gameobject_s *object, i32 unused);
+    i32 GizmoPickup_NumberOfType(struct WORLDINFO_s *, i32, u8);
 #ifdef __cplusplus
 }
 #endif

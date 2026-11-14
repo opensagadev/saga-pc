@@ -6,17 +6,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edui.h, legoapi/legoapi_types.h (not all of it earlier in the
- * shim). */
-
-#include "gameapi/gui/apimenu.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/nu3d/nuqfnt.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/legoapi_types.h"
+#include "gameapi/gui/apimenu.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#endif
+
+struct FRAME_PAD_PC;
+struct language_data_s;
+struct numtl_s;
+struct vufnt_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,20 +41,20 @@ extern "C" {
     extern i32 create_qfont2dz;
     extern i32 create_qfont3d;
     extern i32 create_qfont3dz;
-    extern VUFNT *QFont2DZ;
-    extern VUFNT *QFont3D;
+    extern struct vufnt_s *QFont2DZ;
+    extern struct vufnt_s *QFont3D;
     void UnloadGameFont(i32 unused);
-    extern VUFNT *QFont2DLower;
+    extern struct vufnt_s *QFont2DLower;
     extern f32 SmartTextDefaultWidthPc;
     extern f32 SmartTextLongestWidthPc;
-    extern NUMTL *MessageMtl;
+    extern struct numtl_s *MessageMtl;
     extern i32 MessageMtlInit;
-    extern VUFNT *QFont2DButtons;
+    extern struct vufnt_s *QFont2DButtons;
     extern f32 INTROTEXT_Y;
     extern f32 INTROTEXT_SCALE;
     extern f32 TextScaleX;
     extern f32 TextScaleY;
-    extern LANGUAGEDATA *Text_LanguageList;
+    extern struct language_data_s *Text_LanguageList;
     extern i32 LANGUAGECOUNT;
     extern i32 Text_Language;
     extern void *Text_AppFont;
@@ -64,8 +72,8 @@ extern "C" {
     extern const char TextPlatformWii[4];
     extern void (*buttonmapfn)(char *, char *);
     extern i32 smarttext_fwn;
-    extern VUFNT *SmartTextFont;
-    extern VUFNT *QFont3DZ;
+    extern struct vufnt_s *SmartTextFont;
+    extern struct vufnt_s *QFont3DZ;
     extern f32 QFONTSCALEX;
     extern f32 STCOORDSCALE;
     extern const char Text_WibbleCodeword[7];
@@ -119,7 +127,7 @@ struct PC_CONTROL_TEXT_PC {
 };
 
 struct PC_CONTROL_CONFIG_PC {
-    VUFNT *font;
+    struct vufnt_s *font;
     void (*draw_background)(f32, f32, f32);
     PC_CONTROL_ITEM_PC **rows;
     void (*play_sound)(i32);
@@ -156,12 +164,12 @@ struct PC_CONTROL_SCREEN_PC {
     f32 saved_deadzone[4];
     f32 keyboard_deadzone;
     f32 saved_keyboard_deadzone;
-    VUFNT *font;
+    struct vufnt_s *font;
     PC_CONTROL_ROW_PC rows[4];
     u8 unknownd4[4];
     PC_CONTROL_TEXT_PC text[12];
     f32 elapsed;
-    NUMTL *material;
+    struct numtl_s *material;
     void (*play_sound)(i32);
     i32 ItemAllowsBinding(PC_CONTROL_ROW_PC *, i32, i32);
     void AdvanceSelection(PC_CONTROL_ROW_PC *);
@@ -177,7 +185,7 @@ struct PC_CONTROL_SCREEN_PC {
     i32 HashConfiguration(void);
     void SaveConfiguration(void);
     i32 WaitForRelease(void);
-    i32 Update(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
+    i32 Update(struct FRAME_PAD_PC *, struct FRAME_PAD_PC *, f32);
     void DrawDeadzone(f32, f32, f32, f32, f32, f32, f32, f32);
     void QueueText(char *, f32, f32, f32, i32, f32, f32, u32, f32, f32, u32);
     f32 DrawText(char *, f32, f32, f32, i32, f32, f32, u32, i32, f32);

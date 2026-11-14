@@ -6,11 +6,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#endif
+struct CHARACTER_MODEL_LAYERS_PC;
 
 typedef struct animpacket_pc_s {
     f32 current_time;
@@ -62,7 +58,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(ANIMPACKET_PC, reversed_3e) == 0x3e);
     STATIC_ASSERT(offsetof(ANIMPACKET_PC, overlay_animation) == 0x42);
     f32 *AnimPlaying(ANIMPACKET_PC *, i32, i32, i32);
-    i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
+    i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

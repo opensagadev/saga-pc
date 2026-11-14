@@ -7,23 +7,34 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h,
- * legoapi/legoapi_types.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/collect/bolts.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_STOP)
+
+struct NUGSCN_s;
+struct WORLDINFO_s;
+struct bolt_s;
+struct gameobject_s;
+struct nuspecial_handle_s;
 
 typedef struct gizmo_pc_s {
     void *object;
@@ -200,7 +211,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Gizmo_FindNuSpecial(NUGSCN *, NUSPECIALHANDLE *, char *, i32, void *, char *, char *);
+    i32 Gizmo_FindNuSpecial(struct NUGSCN_s *, struct nuspecial_handle_s *, char *, i32, void *, char *, char *);
 #ifdef __cplusplus
 }
 #endif
@@ -215,10 +226,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, WORLDINFO *, i32 *, i32 *, i32);
+    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, struct WORLDINFO_s *, i32 *, i32 *, i32);
 
-    i32 GizmoSys_SetBestBoltTarget(void *, WORLDINFO *, GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-    i32 GizmoSys_BoltHitPlat(void *, WORLDINFO *, BOLT_PC *, u8 *);
+    i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32,
+                                   i32, i32);
+    i32 GizmoSys_BoltHitPlat(void *, struct WORLDINFO_s *, struct bolt_s *, u8 *);
     void ResetPaintPuzzle(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }

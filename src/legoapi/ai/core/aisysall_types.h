@@ -6,11 +6,21 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
-#include "nu2api/nucore/nulist.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 

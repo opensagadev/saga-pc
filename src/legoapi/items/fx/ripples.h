@@ -6,15 +6,31 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+#endif
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
 #ifdef __cplusplus

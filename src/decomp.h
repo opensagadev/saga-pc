@@ -7,18 +7,9 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, gameapi/edtools/edgra.h,
- * legoapi/actions/movement/dropinout.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
- * legoapi/menus/core/hint.h, legoapi/render/core/gameliball.h, legoapi/world/level.h, legoapi/world/missions.h,
- * legoapi/world/world.h, legogame/batman_gameai.h, nu2api/PCInput.h, nu2api/nu3d/ShaderManagerOpenGL.h,
- * nu2api/nu3d/android/nushaderobject.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nudlist.h,
- * nu2api/nucore/NuDynamicLight.h, nu2api/nufile/nufile.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h,
- * nu2api/nuwin32/d3dCore.h, nu2api/shader_parser.h, transitional/libogg/ogg.h, transitional/libvorbis/smallft.h (not
- * all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/ai/aisys/aisys.h"
 #include "gameapi/edtools/edgra.h"
 #include "legoapi/actions/movement/dropinout.h"
 #include "legoapi/items/base/apiobject.h"
@@ -32,21 +23,71 @@
 #include "nu2api/PCInput.h"
 #include "nu2api/nu3d/ShaderManagerOpenGL.h"
 #include "nu2api/nu3d/android/nushaderobject.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nudlist.h"
-#include "nu2api/nucore/NuDynamicLight.h"
-#include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nuwin32/d3dCore.h"
-#include "nu2api/shader_parser.h"
 #include "transitional/libogg/ogg.h"
 #include "transitional/libvorbis/smallft.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/edtools/edgra.h"
+#include "legoapi/actions/movement/dropinout.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/missions.h"
+#include "legoapi/world/world.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/android/nushaderobject.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "transitional/libogg/ogg.h"
+#include "transitional/libvorbis/smallft.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/edtools/edgra.h"
+#include "legoapi/actions/movement/dropinout.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/missions.h"
+#include "legoapi/world/world.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/android/nushaderobject.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "transitional/libogg/ogg.h"
+#include "transitional/libvorbis/smallft.h"
+#endif
+
 /* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_DECOMP_H_PART == 1 && !defined(SAGA_DECOMP_H_STOP)
+
+struct AIAREA_PC;
+struct AIPATH_PC;
+struct NU_POST_BLOOM_PARAMETERS_PC;
+struct NU_POST_SPEED_PARAMETERS_PC;
+struct NuDynamicLight;
+struct PC_FRAMEBUFFER_PC;
+struct PC_TEXTURE_RESOURCE_PC;
+struct nudathdr_s;
+struct nudisplaylistitem_s;
+struct nurndrlibstate_s;
 
 STATIC_ASSERT(sizeof(MSG) == 28);
 #ifdef __cplusplus
@@ -99,10 +140,10 @@ STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 
 typedef struct NU_LIGHT_SHADOW_LIST_VIEW_PC {
     u8 unknown_000[8];
-    NURNDRLIBSTATE *state;
+    struct nurndrlibstate_s *state;
     u8 unknown_00c[4];
-    NUDISPLAYLISTITEM *first;
-    NUDISPLAYLISTITEM *material_last;
+    struct nudisplaylistitem_s *first;
+    struct nudisplaylistitem_s *material_last;
     u8 unknown_018[0x2c];
 } NU_LIGHT_SHADOW_LIST_VIEW_PC;
 
@@ -182,7 +223,7 @@ extern "C" {
         u8 unknown_0[0x28];
         u32 vertex_format;
         u8 unknown_2c[4];
-        PC_TEXTURE_RESOURCE_PC *resource;
+        struct PC_TEXTURE_RESOURCE_PC *resource;
     } PC_GSCN_GEOMETRY_VIEW;
 
     STATIC_ASSERT(offsetof(PC_GSCN_GEOMETRY_VIEW, vertex_format) == 0x28);
@@ -191,10 +232,10 @@ extern "C" {
     typedef struct PC_GSCN_NATIVE_VIEW {
         u16 vertex_buffer_count;
         u8 unknown_2[2];
-        PC_TEXTURE_RESOURCE_PC **vertex_buffers;
+        struct PC_TEXTURE_RESOURCE_PC **vertex_buffers;
         u16 index_buffer_count;
         u8 unknown_a[2];
-        PC_TEXTURE_RESOURCE_PC **index_buffers;
+        struct PC_TEXTURE_RESOURCE_PC **index_buffers;
         PC_GSCN_GEOMETRY_VIEW **geometries;
         i32 geometry_count;
     } PC_GSCN_NATIVE_VIEW;
@@ -425,8 +466,8 @@ STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, layer_count) == 0x1c);
 #endif
 
 typedef struct HUB_AI_MUSIC_VIEW_PC {
-    AIAREA_PC *areas[10];
-    AIPATH_PC *paths[10];
+    struct AIAREA_PC *areas[10];
+    struct AIPATH_PC *paths[10];
     AILOCATOR_PC *area_locators[10][4];
     i16 area;
     i16 door_state;
@@ -482,7 +523,7 @@ typedef struct NU_POST_MAIN_VIEW_PC {
     void *vtable;
     u8 enabled;
     u8 unknown_005[0x63];
-    const NU_POST_BLOOM_PARAMETERS_PC *bloom;
+    const struct NU_POST_BLOOM_PARAMETERS_PC *bloom;
     f32 blur_radius;
     f32 dof_strength;
     f32 dof_near;
@@ -530,7 +571,7 @@ typedef struct NU_POST_SPEED_VIEW_PC {
     void *vtable;
     u8 enabled;
     u8 unknown_005[0x17];
-    const NU_POST_SPEED_PARAMETERS_PC *parameters;
+    const struct NU_POST_SPEED_PARAMETERS_PC *parameters;
 } NU_POST_SPEED_VIEW_PC;
 
 STATIC_ASSERT(offsetof(NU_POST_MAIN_VIEW_PC, bloom) == 0x68);
@@ -698,7 +739,7 @@ extern "C" {
 
 struct PC_AUDIO_DECODER_METHODS {
     void *(__thiscall *destroy)(PC_AUDIO_DECODER_VIEW *, u32);
-    HRESULT(__thiscall *open)(PC_AUDIO_DECODER_VIEW *, NUDATHDR *, char *, WAVEFORMATEX *);
+    HRESULT(__thiscall *open)(PC_AUDIO_DECODER_VIEW *, struct nudathdr_s *, char *, WAVEFORMATEX *);
     void *unknown_08;
     HRESULT(__thiscall *close)(PC_AUDIO_DECODER_VIEW *);
     WAVEFORMATEX *(__thiscall *get_format)(PC_AUDIO_DECODER_VIEW *);
@@ -751,8 +792,8 @@ extern "C" {
         i32 version;
         u32 field_18;
         PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-        PC_TEXTURE_RESOURCE_PC *vertex_shader;
-        PC_TEXTURE_RESOURCE_PC *pixel_shader;
+        struct PC_TEXTURE_RESOURCE_PC *vertex_shader;
+        struct PC_TEXTURE_RESOURCE_PC *pixel_shader;
         u32 stage_flags;
     };
 
@@ -850,11 +891,11 @@ extern "C" {
 
 typedef union PC_BOOT_FRAMEBUFFER_VIEW_PC {
     struct {
-        PC_FRAMEBUFFER_PC *default_framebuffer;
-        PC_FRAMEBUFFER_PC *secondary_framebuffer;
+        struct PC_FRAMEBUFFER_PC *default_framebuffer;
+        struct PC_FRAMEBUFFER_PC *secondary_framebuffer;
     } fields;
 
-    PC_FRAMEBUFFER_PC *slots[2];
+    struct PC_FRAMEBUFFER_PC *slots[2];
 } PC_BOOT_FRAMEBUFFER_VIEW_PC;
 
 STATIC_ASSERT(sizeof(PC_BOOT_FRAMEBUFFER_VIEW_PC) == 8);
@@ -868,7 +909,7 @@ typedef struct NU_POST_DEFERRED_VIEW_PC {
     u8 unknown_005[0x3f];
     f32 parameters[4];
     i32 dynamic_light_count;
-    NuDynamicLight *dynamic_lights[32];
+    struct NuDynamicLight *dynamic_lights[32];
     i32 deferred_geometry_count;
 } NU_POST_DEFERRED_VIEW_PC;
 

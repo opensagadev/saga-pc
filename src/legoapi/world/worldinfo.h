@@ -6,7 +6,7 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "legoapi/world/world.h"
+struct WORLDINFO_s;
 
 typedef struct ARCADE_MODE_PC_s {
     i16 *text;
@@ -57,7 +57,7 @@ STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, launch_entry) == 0x20);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern WORLDINFO *LWORLD;
+    extern struct WORLDINFO_s *LWORLD;
     extern i32 other_level;
     extern i32 LevMusicAction;
     extern i32 LevMusicAmbient;
@@ -83,7 +83,7 @@ STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, flags) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void LevelStreaming_Update(WORLDINFO *);
+    void LevelStreaming_Update(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

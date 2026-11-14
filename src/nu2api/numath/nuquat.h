@@ -7,17 +7,22 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/numath/nuang.h, nu2api/numath/numtx.h (not all of it earlier in the shim).
- */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/numath/nuang.h"
-#include "nu2api/numath/numtx.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuang.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NUMATH_NUQUAT_H_PART == 1 && !defined(SAGA_NU2API_NUMATH_NUQUAT_H_STOP)
+
+struct numtx_s;
 
 typedef struct nuquat_s {
     f32 x;
@@ -60,7 +65,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuQuatToMtx(NUQUAT *quat, NUMTX *out);
+    void NuQuatToMtx(NUQUAT *quat, struct numtx_s *out);
 #ifdef __cplusplus
 }
 #endif

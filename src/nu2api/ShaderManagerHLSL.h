@@ -6,15 +6,31 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, gamelib/util/CRC16.h, gamelib/util/gamelib_util_types.h (not all of it
- * earlier in the shim). */
-
-#include "nu2api/nu3d/ShaderObjectKey.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/ShaderManagerOpenGL.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
 #endif
 
 #ifdef __cplusplus

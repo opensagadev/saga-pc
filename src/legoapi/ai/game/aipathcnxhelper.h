@@ -7,21 +7,17 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, legoapi/items/base/apiobject.h, legoapi/world/world.h
- * (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
-#endif
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_AI_GAME_AIPATHCNXHELPER_H_PART == 1 && !defined(SAGA_LEGOAPI_AI_GAME_AIPATHCNXHELPER_H_STOP)
 
+struct AIPATHCNX_PC;
+struct WORLDINFO_s;
+struct gameobject_s;
+
 typedef struct ai_helper_slot_pc_s {
-    AIPATHCNX_PC *connection;
+    struct AIPATHCNX_PC *connection;
     void *target;
     u8 direction;
     u8 type;
@@ -47,7 +43,7 @@ STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, helpers) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, AIPATHCNX_PC *, u8, void *, u8);
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *, struct AIPATHCNX_PC *, u8, void *, u8);
 #ifdef __cplusplus
 }
 #endif
@@ -62,18 +58,18 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AIPathCnxHelperSysReset(WORLDINFO *, struct ai_helper_system_pc_s *);
+    void AIPathCnxHelperSysReset(struct WORLDINFO_s *, struct ai_helper_system_pc_s *);
 #ifdef __cplusplus
 }
 #endif
 
 /* Native Indy path-connection movement and lookup ABI. */
-typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8);
+typedef i32 (*AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, struct gameobject_s *, struct AIPATHCNX_PC *, u8, u8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object,
-                                               AIPATHCNX_PC *connection, u8 direction, u8 type,
+    AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, struct gameobject_s *object,
+                                               struct AIPATHCNX_PC *connection, u8 direction, u8 type,
                                                AI_HELPER_FILTER_PC filter);
 #ifdef __cplusplus
 }

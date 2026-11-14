@@ -7,23 +7,37 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/characters/core/charconfig.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/menus/core/hint.h, legoapi/misc/legoapi_status.h, legoapi/world/level.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/characters/core/charconfig.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/misc/legoapi_status.h"
-#include "legoapi/world/level.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/misc/legoapi_status.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/misc/legoapi_status.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
+
+struct CHARACTER_MODEL_LAYERS_PC;
+struct GAMECHARACTERLAYER_PC;
+struct PART_PC;
+struct gameobject_s;
+struct level_data_pc_s;
 
 typedef struct GAMEPAD_PC {
     struct FRAME_PAD_PC *bound_pad;
@@ -240,8 +254,8 @@ extern "C" {
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
 typedef struct PLAYERCHARACTERCONFIG_PC {
-    i32 (*make_layer_list)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    GAMECHARACTERLAYER_PC *layers;
+    i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    struct GAMECHARACTERLAYER_PC *layers;
     i8 *layer_lookup;
     f32 stop_speed;
     f32 idle_speed;
@@ -576,72 +590,72 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void LetGoOfBalloon(GAMEOBJECT *);
-    void PopBalloon(GAMEOBJECT *);
-    void LightSabreDebris(GAMEOBJECT *);
+    void LetGoOfBalloon(struct gameobject_s *);
+    void PopBalloon(struct gameobject_s *);
+    void LightSabreDebris(struct gameobject_s *);
     /* Shared declarations must have existing extern C linkage; no newsharedfield needed. */
 
-    void StartFlatten(GAMEOBJECT *, GAMEOBJECT *);
-    f32 FindGunshipHoverHeight(GAMEOBJECT *);
-    void CatchUpCode(GAMEOBJECT *, f32, f32, i32);
-    void FloatCode(GAMEOBJECT *);
-    void Disorientate(GAMEOBJECT *, NUVEC *);
-    void TractorBeamCode(GAMEOBJECT *);
-    i32 ShootCode(GAMEOBJECT *, i32, i32, i32, i32, i32);
-    void StartQuickShoot(GAMEOBJECT *, i32);
-    i32 ZapTarget(GAMEOBJECT *);
-    void SlideCode(GAMEOBJECT *);
-    void FlattenCode(GAMEOBJECT *);
-    void ForcedBackCode(GAMEOBJECT *);
-    void PooCode(GAMEOBJECT *);
-    void PodCollisionCode(GAMEOBJECT *);
-    f32 FindPodHoverHeight(GAMEOBJECT *);
-    void CableCode(GAMEOBJECT *, i32, f32);
-    extern void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *);
-    void AwkwardShapeCode(GAMEOBJECT *, i32);
-    void TakeHitCode(GAMEOBJECT *object);
-    i32 TwistLevel(LEVELDATA_PC *);
-    void LoopCode(GAMEOBJECT *, i32, i32, GAMEPAD_PC *, i32);
-    void EndForce(GAMEOBJECT *object, i32 mode);
-    void ReleaseForce(GAMEOBJECT *object, i32 mode);
-    void SetProtocolDroidDeactivatedAction(GAMEOBJECT *);
-    void CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotation);
-    u16 GetShootDirection_Batman(GAMEOBJECT *, NUVEC *);
-    f32 VehicleTurnOrLoopOffset(GAMEOBJECT *);
-    void BobaRocket_Move(PART_PC *, f32);
-    void PartImpact_Basketball(PART_PC *);
-    void BobaRocket_Deflect(PART_PC *);
-    void BobaRocket_Kill(PART_PC *, i32);
-    void PartUpdate_Basketball(PART_PC *);
-    f32 ForceTowardsMid(GAMEOBJECT *);
-    f32 GetVehicleSpeedMul(GAMEOBJECT *, f32);
-    void StartTurn(GAMEOBJECT *);
-    void TurnCode(GAMEOBJECT *, i32, GAMEPAD_PC *);
-    i32 FaceOpponent(GAMEOBJECT *, NUVEC *);
-    i32 ForcePushed_SetTargetMom(GAMEOBJECT *, f32 *);
-    i32 ForcePushed_YRotation(GAMEOBJECT *);
-    void MoveInactiveVehicle(GAMEOBJECT *, i32, GAMEOBJECT **);
-    f32 GetVehicleHoverHeight(GAMEOBJECT *, f32 *);
-    void SetForceBack(GAMEOBJECT *, NUVEC *, f32, i32);
+    void StartFlatten(struct gameobject_s *, struct gameobject_s *);
+    f32 FindGunshipHoverHeight(struct gameobject_s *);
+    void CatchUpCode(struct gameobject_s *, f32, f32, i32);
+    void FloatCode(struct gameobject_s *);
+    void Disorientate(struct gameobject_s *, NUVEC *);
+    void TractorBeamCode(struct gameobject_s *);
+    i32 ShootCode(struct gameobject_s *, i32, i32, i32, i32, i32);
+    void StartQuickShoot(struct gameobject_s *, i32);
+    i32 ZapTarget(struct gameobject_s *);
+    void SlideCode(struct gameobject_s *);
+    void FlattenCode(struct gameobject_s *);
+    void ForcedBackCode(struct gameobject_s *);
+    void PooCode(struct gameobject_s *);
+    void PodCollisionCode(struct gameobject_s *);
+    f32 FindPodHoverHeight(struct gameobject_s *);
+    void CableCode(struct gameobject_s *, i32, f32);
+    extern void (*VehicleSlowdownCallbackPc)(struct gameobject_s *);
+    void AwkwardShapeCode(struct gameobject_s *, i32);
+    void TakeHitCode(struct gameobject_s *object);
+    i32 TwistLevel(struct level_data_pc_s *);
+    void LoopCode(struct gameobject_s *, i32, i32, GAMEPAD_PC *, i32);
+    void EndForce(struct gameobject_s *object, i32 mode);
+    void ReleaseForce(struct gameobject_s *object, i32 mode);
+    void SetProtocolDroidDeactivatedAction(struct gameobject_s *);
+    void CurrentStart(struct gameobject_s *object, i32 allow_any_level, i32 use_socket_rotation);
+    u16 GetShootDirection_Batman(struct gameobject_s *, NUVEC *);
+    f32 VehicleTurnOrLoopOffset(struct gameobject_s *);
+    void BobaRocket_Move(struct PART_PC *, f32);
+    void PartImpact_Basketball(struct PART_PC *);
+    void BobaRocket_Deflect(struct PART_PC *);
+    void BobaRocket_Kill(struct PART_PC *, i32);
+    void PartUpdate_Basketball(struct PART_PC *);
+    f32 ForceTowardsMid(struct gameobject_s *);
+    f32 GetVehicleSpeedMul(struct gameobject_s *, f32);
+    void StartTurn(struct gameobject_s *);
+    void TurnCode(struct gameobject_s *, i32, GAMEPAD_PC *);
+    i32 FaceOpponent(struct gameobject_s *, NUVEC *);
+    i32 ForcePushed_SetTargetMom(struct gameobject_s *, f32 *);
+    i32 ForcePushed_YRotation(struct gameobject_s *);
+    void MoveInactiveVehicle(struct gameobject_s *, i32, struct gameobject_s **);
+    f32 GetVehicleHoverHeight(struct gameobject_s *, f32 *);
+    void SetForceBack(struct gameobject_s *, NUVEC *, f32, i32);
 
-    void SetBallooningHeight(GAMEOBJECT *, f32);
-    void SetObjAsHeadTarget(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32);
-    i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *, GAMEOBJECT *);
+    void SetBallooningHeight(struct gameobject_s *, f32);
+    void SetObjAsHeadTarget(struct gameobject_s *, struct gameobject_s *, i8, f32, f32, f32);
+    i32 ForcePushed_SuperPush_Occurring(struct gameobject_s *, struct gameobject_s *);
 
-    void Move_CHARACTER(GAMEOBJECT *);
-    i32 Glide_Start(GAMEOBJECT *);
-    i32 SetProtocolDroidFallAnim(GAMEOBJECT *);
-    void Animate_CHARACTER(GAMEOBJECT *);
-    void StartLunge(GAMEOBJECT *, f32, f32);
-    void Glide_MoveCode(GAMEOBJECT *);
-    void StartJetPackFall(GAMEOBJECT *, i32);
-    void JetPackCode(GAMEOBJECT *, i32, i32, i32);
-    void ReleaseEat(GAMEOBJECT *);
+    void Move_CHARACTER(struct gameobject_s *);
+    i32 Glide_Start(struct gameobject_s *);
+    i32 SetProtocolDroidFallAnim(struct gameobject_s *);
+    void Animate_CHARACTER(struct gameobject_s *);
+    void StartLunge(struct gameobject_s *, f32, f32);
+    void Glide_MoveCode(struct gameobject_s *);
+    void StartJetPackFall(struct gameobject_s *, i32);
+    void JetPackCode(struct gameobject_s *, i32, i32, i32);
+    void ReleaseEat(struct gameobject_s *);
 
     /* Source stack interfaces. */
-    GAMEOBJECT *PlayerOpponent(GAMEOBJECT *, f32, i32);
-    NUVEC *GetZapOrigin(GAMEOBJECT *);
-    void ZapCode(GAMEOBJECT *, i32, i32);
+    struct gameobject_s *PlayerOpponent(struct gameobject_s *, f32, i32);
+    NUVEC *GetZapOrigin(struct gameobject_s *);
+    void ZapCode(struct gameobject_s *, i32, i32);
     extern struct gameobject_s *ForceBackObj;
     void EatVictim(struct gameobject_s *object);
     void GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);

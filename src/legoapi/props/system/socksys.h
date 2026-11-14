@@ -7,20 +7,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/nu3d/nuspline.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/nuspline.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_PART == 1 && !defined(SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_STOP)
+
+struct NUGSCN_s;
+struct nugspline_s;
+struct numtx_s;
+struct nuspecial_handle_s;
 
 typedef struct sockrot_pc_s {
     u16 x;
@@ -204,7 +209,7 @@ typedef struct sock_pc_s {
     u32 overlap_exclusion_mask[2];
     char name[16];
     f32 overlap_blend_ratio;
-    NUSPECIALHANDLE *objects;
+    struct nuspecial_handle_s *objects;
     u16 object_count;
     u8 unknown_fe;
     u8 unknown_ff;
@@ -323,7 +328,7 @@ extern "C" {
     void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
     void SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
     STATIC_ASSERT(offsetof(SOCK_PC, vertical_scale) == 0x7c);
-    void SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32);
+    void SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION_PC *, struct numtx_s *, i32, i32);
     void ComplexSockPosition(SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *);
     f32 MidDistanceFromSockStart(SOCKSYS_PC *, SOCKPOSITION_PC *);
     void MoveSockPosition(SOCKSYS_PC *, SOCKPOSITION_PC *, f32, SOCKPOSITION_PC *);
@@ -343,8 +348,8 @@ extern "C" {
 extern "C" {
 #endif
 
-    void SockSysFindInScene(SOCKSYS_PC *, NUGSCN *);
-    SOCKSYS_PC *SockSysInit(VARIPTR *, VARIPTR, NUGSCN *);
+    void SockSysFindInScene(SOCKSYS_PC *, struct NUGSCN_s *);
+    SOCKSYS_PC *SockSysInit(VARIPTR *, VARIPTR, struct NUGSCN_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -359,7 +364,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SockSysPointAlongSpline(NUVEC *, NUGSPLINE *, i32, i32, f32);
+    void SockSysPointAlongSpline(NUVEC *, struct nugspline_s *, i32, i32, f32);
 #ifdef __cplusplus
 }
 #endif

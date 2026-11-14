@@ -7,38 +7,62 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gamelib/util/Refpack.h, legoapi/characters/core/characters.h,
- * legoapi/core/input/timer.h, legoapi/core/input/timing.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
- * legoapi/lib/hub.h, legoapi/menus/screens/customise.h, legoapi/world/level.h, legoapi/world/levels.h,
- * legoapi/world/world.h, legoapi/world/worldinfo.h, legogame/game.h, nu2api/nu3d/nucamera.h, nu2api/nu3d/nuqfnt.h,
- * nu2api/nu3d/nuspline.h, nu2api/nufile/nufpar.h, nu2api/numath/nuvec.h, nu2api/nusound/nusound.h (not all of it
- * earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gamelib/util/Refpack.h"
 #include "legoapi/characters/core/characters.h"
 #include "legoapi/core/input/timer.h"
 #include "legoapi/core/input/timing.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/lib/hub.h"
-#include "legoapi/menus/screens/customise.h"
-#include "legoapi/world/level.h"
 #include "legoapi/world/levels.h"
-#include "legoapi/world/world.h"
 #include "legoapi/world/worldinfo.h"
 #include "legogame/game.h"
-#include "nu2api/nu3d/nucamera.h"
-#include "nu2api/nu3d/nuqfnt.h"
-#include "nu2api/nu3d/nuspline.h"
-#include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nusound/nusound.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gamelib/util/Refpack.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/core/input/timing.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/worldinfo.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gamelib/util/Refpack.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/core/input/timing.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/worldinfo.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 5 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_GLOBALS_H_PART == 1 && !defined(SAGA_GLOBALS_H_STOP)
+
+struct CHARACTER_MODEL_LAYERS_PC;
+struct CUSTOMISER_LAYERS_PC;
+struct WORLDINFO_s;
+struct area_data_pc_s;
+struct collection_area_save_pc_s;
+struct gameobject_s;
+struct level_data_pc_s;
+struct level_progress_pc_s;
+struct nucamera_s;
+struct nufpcomjmp_s;
+struct nugspline_s;
+struct vufnt_s;
 
 typedef struct terrain_layer_pc_s {
     u32 flags;
@@ -260,11 +284,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_AREA_SAVE_PC *Game_AreaSave;
-    extern LEVEL_PROGRESS *LevelProgressData;
-    extern VUFNT *QFont2D;
-    extern NUCAMERA *pNuCam;
-    extern i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    extern struct collection_area_save_pc_s *Game_AreaSave;
+    extern struct level_progress_pc_s *LevelProgressData;
+    extern struct vufnt_s *QFont2D;
+    extern struct nucamera_s *pNuCam;
+    extern i32 (*MakeLayerList)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
 #ifdef __cplusplus
 }
 #endif
@@ -279,7 +303,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords;
+    extern struct nufpcomjmp_s *Level_ConfigBeforeLoad_GameKeywords;
 #ifdef __cplusplus
 }
 #endif
@@ -296,104 +320,104 @@ extern "C" {
 #endif
     /* SuperCarry_PartKill is static original carrying TU callback; no public declaration. */
 
-    extern AREA_DATA_PC *HOTHBATTLE_ADATA;
-    extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
-    extern AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA;
-    extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
-    extern LEVELDATA_PC *DAGOBAHC_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
-    extern LEVELDATA_PC *NEGOTIATIONSA_LDATA;
-    extern LEVELDATA_PC *NEGOTIATIONSB_LDATA;
-    extern LEVELDATA_PC *GUNGAN_A_LDATA;
-    extern LEVELDATA_PC *RESCUEC_LDATA;
-    extern LEVELDATA_PC *TATOOINEA_LDATA;
-    extern LEVELDATA_PC *TATOOINEB_LDATA;
-    extern LEVELDATA_PC *MOSEISLEYA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEC_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEE_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPED_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARESCAPEC_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLEC_LDATA;
-    extern LEVELDATA_PC *HOTHESCAPEA_LDATA;
-    extern LEVELDATA_PC *HOTHESCAPEC_LDATA;
-    extern LEVELDATA_PC *CLOUDCITYTRAPA_LDATA;
-    extern LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA;
-    extern LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEA_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEB_LDATA;
-    extern LEVELDATA_PC *JABBASPALACED_LDATA;
-    extern LEVELDATA_PC *JABBASPALACEE_LDATA;
-    extern LEVELDATA_PC *SARLACCPITB_LDATA;
-    extern LEVELDATA_PC *SARLACCPITC_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEA_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEB_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLED_LDATA;
-    extern LEVELDATA_PC *EMPERORFIGHTA_LDATA;
-    extern LEVELDATA_PC *MOSEISLEYC_LDATA;
-    extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
-    extern LEVELDATA_PC *SARLACCPITA_LDATA;
+    extern struct area_data_pc_s *HOTHBATTLE_ADATA;
+    extern struct area_data_pc_s *BOUNTYHUNTERPURSUIT_ADATA;
+    extern struct area_data_pc_s *BATTLEOVERCORUSCANT_ADATA;
+    extern struct level_data_pc_s *ASTEROIDCHASEC_LDATA;
+    extern struct level_data_pc_s *DAGOBAHC_LDATA;
+    extern struct level_data_pc_s *ENDORBATTLEC_LDATA;
+    extern struct level_data_pc_s *NEGOTIATIONSA_LDATA;
+    extern struct level_data_pc_s *NEGOTIATIONSB_LDATA;
+    extern struct level_data_pc_s *GUNGAN_A_LDATA;
+    extern struct level_data_pc_s *RESCUEC_LDATA;
+    extern struct level_data_pc_s *TATOOINEA_LDATA;
+    extern struct level_data_pc_s *TATOOINEB_LDATA;
+    extern struct level_data_pc_s *MOSEISLEYA_LDATA;
+    extern struct level_data_pc_s *DEATHSTARRESCUEB_LDATA;
+    extern struct level_data_pc_s *DEATHSTARRESCUEC_LDATA;
+    extern struct level_data_pc_s *DEATHSTARRESCUEE_LDATA;
+    extern struct level_data_pc_s *DEATHSTARESCAPEA_LDATA;
+    extern struct level_data_pc_s *DEATHSTARESCAPED_LDATA;
+    extern struct level_data_pc_s *DEATHSTARESCAPEB_LDATA;
+    extern struct level_data_pc_s *DEATHSTARESCAPEC_LDATA;
+    extern struct level_data_pc_s *DEATHSTARBATTLEA_LDATA;
+    extern struct level_data_pc_s *DEATHSTARBATTLEB_LDATA;
+    extern struct level_data_pc_s *DEATHSTARBATTLEC_LDATA;
+    extern struct level_data_pc_s *HOTHESCAPEA_LDATA;
+    extern struct level_data_pc_s *HOTHESCAPEC_LDATA;
+    extern struct level_data_pc_s *CLOUDCITYTRAPA_LDATA;
+    extern struct level_data_pc_s *CLOUDCITYESCAPEA_LDATA;
+    extern struct level_data_pc_s *CLOUDCITYESCAPEC_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLEB_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLED_LDATA;
+    extern struct level_data_pc_s *JABBASPALACEA_LDATA;
+    extern struct level_data_pc_s *JABBASPALACEB_LDATA;
+    extern struct level_data_pc_s *JABBASPALACED_LDATA;
+    extern struct level_data_pc_s *JABBASPALACEE_LDATA;
+    extern struct level_data_pc_s *SARLACCPITB_LDATA;
+    extern struct level_data_pc_s *SARLACCPITC_LDATA;
+    extern struct level_data_pc_s *ENDORBATTLEA_LDATA;
+    extern struct level_data_pc_s *ENDORBATTLEB_LDATA;
+    extern struct level_data_pc_s *ENDORBATTLED_LDATA;
+    extern struct level_data_pc_s *EMPERORFIGHTA_LDATA;
+    extern struct level_data_pc_s *MOSEISLEYC_LDATA;
+    extern i32 (*UsingExtraActionsFn)(struct gameobject_s *);
+    extern struct level_data_pc_s *SARLACCPITA_LDATA;
 
-    extern LEVELDATA_PC *ASTEROIDCHASEC_LDATA;
-    extern LEVELDATA_PC *ENDORBATTLEC_LDATA;
-    extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
+    extern struct level_data_pc_s *ASTEROIDCHASEC_LDATA;
+    extern struct level_data_pc_s *ENDORBATTLEC_LDATA;
+    extern i32 (*FindSlamOrigin_UseCPosFn)(struct gameobject_s *);
     extern void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
-    extern AREA_DATA_PC *DOGFIGHT_ADATA;
-    extern LEVELDATA_PC *SPEEDERCHASEA_LDATA;
-    extern LEVELDATA_PC *DEATHSTARBATTLED_LDATA;
-    extern GAMEOBJECT *CutDeadVehiclePlayer;
-    extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
-    extern AREA_DATA_PC *LOSTTEMPLE_ADATA;
-    extern LEVELDATA_PC *HUB_LDATA;
-    extern LEVELDATA_PC *STATUS_LDATA;
-    extern LEVELDATA_PC *CREDITS_LDATA;
+    extern struct area_data_pc_s *DOGFIGHT_ADATA;
+    extern struct level_data_pc_s *SPEEDERCHASEA_LDATA;
+    extern struct level_data_pc_s *DEATHSTARBATTLED_LDATA;
+    extern struct gameobject_s *CutDeadVehiclePlayer;
+    extern i32 (*CanMagnetClimbFn)(struct gameobject_s *);
+    extern struct area_data_pc_s *LOSTTEMPLE_ADATA;
+    extern struct level_data_pc_s *HUB_LDATA;
+    extern struct level_data_pc_s *STATUS_LDATA;
+    extern struct level_data_pc_s *CREDITS_LDATA;
     extern APICHARACTERMODELLIST Hub_ModelList[6];
     extern MAINFRAMECOUNTERS MainFrameCounters;
-    extern LEVELDATA_PC *MOSEISLEYB_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA;
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA;
-    extern GAMEOBJECT *LevGameObject[8];
-    extern LEVELDATA_PC *NEGOTIATIONSC_LDATA;
+    extern struct level_data_pc_s *MOSEISLEYB_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLEE_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLEF_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLEG_LDATA;
+    extern struct gameobject_s *LevGameObject[8];
+    extern struct level_data_pc_s *NEGOTIATIONSC_LDATA;
     extern GIZOBSTACLE *LevGizObst[8];
 
-    extern LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA;
-    extern LEVELDATA_PC *ASTEROIDCHASED_LDATA;
-    extern LEVELDATA_PC *DEATHSTARRESCUEA_LDATA;
+    extern struct level_data_pc_s *DEATHSTAR2BATTLEA_LDATA;
+    extern struct level_data_pc_s *ASTEROIDCHASED_LDATA;
+    extern struct level_data_pc_s *DEATHSTARRESCUEA_LDATA;
     extern ARCADE_MODE_PC Arcade_Mode[7];
     extern ARCADE_ITEM_PC ArcadeItem;
-    extern LEVELDATA_PC *HOTHBATTLEA_LDATA;
-    extern NUGSPLINE *ObstacleCamSpl;
+    extern struct level_data_pc_s *HOTHBATTLEA_LDATA;
+    extern struct nugspline_s *ObstacleCamSpl;
 
-    extern AREA_DATA_PC *PODSPRINT_ADATA;
-    extern GAMEOBJECT *BombGenerator_PlayerBomb[2];
-    extern NUGSPLINE *script_spline_selected;
-    extern NUGSPLINE *script_spline_selected;
+    extern struct area_data_pc_s *PODSPRINT_ADATA;
+    extern struct gameobject_s *BombGenerator_PlayerBomb[2];
+    extern struct nugspline_s *script_spline_selected;
+    extern struct nugspline_s *script_spline_selected;
     extern CHAR_CATEGORY_RECORD_PC *CharCategory;
     extern APICHARACTERMODELLIST FreePlayModelList[49];
     extern AREA_LEVEL_LOAD_PC LevelLoad[12];
     extern APICHARACTERMODELLIST Area_MissionModelList[49];
     extern APICHARACTERMODELLIST *CurrentCList;
     extern APICHARACTERMODELLIST *CurrentStoryCList;
-    extern i32 (*CanGlideFn)(GAMEOBJECT *);
-    extern i32 (*Jump_PreventJumpFn)(GAMEOBJECT *);
-    extern i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32);
-    extern void (*Jump_EndOfLandContextFn)(GAMEOBJECT *);
-    extern LEVELDATA_PC *TATOOINEE_LDATA;
-    extern LEVELDATA_PC *ASTEROIDCHASEA_LDATA;
-    extern LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA;
+    extern i32 (*CanGlideFn)(struct gameobject_s *);
+    extern i32 (*Jump_PreventJumpFn)(struct gameobject_s *);
+    extern i32 (*Slam_GetDebrisFn)(struct gameobject_s *, i32);
+    extern void (*Jump_EndOfLandContextFn)(struct gameobject_s *);
+    extern struct level_data_pc_s *TATOOINEE_LDATA;
+    extern struct level_data_pc_s *ASTEROIDCHASEA_LDATA;
+    extern struct level_data_pc_s *ASTEROIDCHASEMITRO_LDATA;
 
-    extern AREA_DATA_PC *SENATE_ADATA;
-    extern i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *);
-    extern AREA_DATA_PC *DEATHSTARESCAPE_ADATA;
+    extern struct area_data_pc_s *SENATE_ADATA;
+    extern i32 (*SetSoundFadeDistCallBackFn)(struct WORLDINFO_s *);
+    extern struct area_data_pc_s *DEATHSTARESCAPE_ADATA;
     extern DETONATOR_s Detonator[10];
-    extern AREA_DATA_PC *SENATE_ADATA;
+    extern struct area_data_pc_s *SENATE_ADATA;
 #ifdef __cplusplus
 }
 #endif
@@ -409,7 +433,7 @@ extern "C" {
 extern "C" {
 #endif
     extern GAMESAVE Game;
-    extern CUSTOMISER_LAYERS_PC *CharacterCustomiser;
+    extern struct CUSTOMISER_LAYERS_PC *CharacterCustomiser;
     extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
 #ifdef __cplusplus
 }

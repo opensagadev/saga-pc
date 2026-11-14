@@ -6,13 +6,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/lib/hub.h (not all of it earlier in the shim). */
-
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/menus/screens/store.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
 #include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/store.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/store.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/store.h"
 #endif
 
 #ifdef __cplusplus

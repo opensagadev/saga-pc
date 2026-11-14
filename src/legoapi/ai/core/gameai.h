@@ -7,22 +7,41 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aiscript_types.h, gameapi/ai/aisys/aisys.h,
- * legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h, legogame/game.h, nu2api/numath/nuvec.h (not all of it
- * earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
 #include "legogame/game.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/world/world.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/world/world.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART == 1 && !defined(SAGA_LEGOAPI_AI_CORE_GAMEAI_H_STOP)
+
+struct AIAREA_PC;
+struct AIPACKET_PC;
+struct AISYS_PC;
+struct APIOBJECT_PC;
+struct gameobject_s;
+struct gizmosys_pc_s;
 
 typedef struct level_script_process_pc_s {
     char name[16];
@@ -88,7 +107,7 @@ STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 CheckPosAIArea(AIAREA_PC *, NUVEC *, f32);
+    i32 CheckPosAIArea(struct AIAREA_PC *, NUVEC *, f32);
 #ifdef __cplusplus
 }
 #endif
@@ -103,19 +122,19 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef i32 (*AI_BIG_JUMP_TO_DESTINATION_PC)(APIOBJECT_PC *, NUVEC *);
-    APIOBJECT_PC *GameAPIOBJECTFromObjID(u8);
-    f32 GetCharacterGoalSpeed(APIOBJECT_PC *);
-    typedef i32 (*AI_RESPAWN_ON_PATH_PC)(APIOBJECT_PC *);
-    APIOBJECT_PC *GetNamedAPIObject(void *, char *);
-    NUVEC *GetAICreatureOrigin(AISYS_PC *, AIPACKET_PC *);
+    typedef i32 (*AI_BIG_JUMP_TO_DESTINATION_PC)(struct APIOBJECT_PC *, NUVEC *);
+    struct APIOBJECT_PC *GameAPIOBJECTFromObjID(u8);
+    f32 GetCharacterGoalSpeed(struct APIOBJECT_PC *);
+    typedef i32 (*AI_RESPAWN_ON_PATH_PC)(struct APIOBJECT_PC *);
+    struct APIOBJECT_PC *GetNamedAPIObject(void *, char *);
+    NUVEC *GetAICreatureOrigin(struct AISYS_PC *, struct AIPACKET_PC *);
 
-    void GameCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void GameCreatureInteraction2D(struct AISYS_PC *, i32, struct APIOBJECT_PC **, i32 *, f32);
 
-    void GameCreatureOpponentSelection(AISYS_PC *, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **,
-                                       u64, f32);
-    void GameAISysReset(AISYS_PC *);
-    void GameAISysStartFrame(AISYS_PC *);
+    void GameCreatureOpponentSelection(struct AISYS_PC *, i32, struct APIOBJECT_PC **, i32, struct APIOBJECT_PC **, i32,
+                                       struct APIOBJECT_PC **, u64, f32);
+    void GameAISysReset(struct AISYS_PC *);
+    void GameAISysStartFrame(struct AISYS_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -130,10 +149,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AlertSurroundingCreatures(GAMEOBJECT *, NUVEC *);
-    i32 oneAtOnce_CanAttack(GAMEOBJECT *, GAMEOBJECT *);
-    f32 oneAtOnce_GetHoldRange(GAMEOBJECT *);
-    extern GAMEOBJECT *alert_obj;
+    void AlertSurroundingCreatures(struct gameobject_s *, NUVEC *);
+    i32 oneAtOnce_CanAttack(struct gameobject_s *, struct gameobject_s *);
+    f32 oneAtOnce_GetHoldRange(struct gameobject_s *);
+    extern struct gameobject_s *alert_obj;
 
 #ifdef __cplusplus
 }

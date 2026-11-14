@@ -6,13 +6,17 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
-#include "nu2api/numath/numtx.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct numtx_s;
 
 typedef struct NUVEC4 {
     f32 x;
@@ -52,11 +56,11 @@ STATIC_ASSERT(offsetof(NUHALFVEC4, w) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuVec4MtxRotateVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
-    void NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *matrix);
-    void NuVec4MtxTransform(NUVEC4 *, NUVEC *, NUMTX *);
-    void NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, NUMTX *);
-    void NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
+    void NuVec4MtxRotateVU0(NUVEC4 *, NUVEC4 *, struct numtx_s *);
+    void NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, struct numtx_s *matrix);
+    void NuVec4MtxTransform(NUVEC4 *, NUVEC *, struct numtx_s *);
+    void NuVec4MtxTransformVU0(NUVEC4 *, NUVEC4 *, struct numtx_s *);
+    void NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, struct numtx_s *);
 #ifdef __cplusplus
 }
 #endif

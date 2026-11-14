@@ -6,11 +6,21 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/lib/hub.h (not all of it earlier in the shim). */
-
-#include "gameapi/gui/apimenu.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#include "legoapi/lib/hub.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#include "legoapi/lib/hub.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
 #include "legoapi/lib/hub.h"
 #endif
 

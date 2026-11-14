@@ -7,49 +7,69 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aiscript_types.h,
- * gameapi/ai/aisys/aisys.h, gameapi/ai/aisys/gameaiscript.h, legoapi/actions/character/suit.h,
- * legoapi/actions/movement/climbing.h, legoapi/ai/game/aipathcnxhelper.h, legoapi/characters/core/character.h,
- * legoapi/characters/core/characters.h, legoapi/characters/core/charconfig.h, legoapi/characters/core/players.h,
- * legoapi/characters/motion/move.h, legoapi/gizmos/fx/guidelines.h, legoapi/gizmos/transport/tubes.h,
- * legoapi/items/base/animpacket.h, legoapi/items/collect/bolt.h, legoapi/items/objects/objectsall.h,
- * legoapi/legoapi_types.h, legoapi/props/objects/techno.h, legoapi/props/system/socksys.h, legoapi/render/core/rtl.h,
- * legoapi/render/fx/edsplines.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/numtl.h, nu2api/nucore/nulist.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/ai/aisys/gameaiscript.h"
-#include "legoapi/actions/character/suit.h"
-#include "legoapi/actions/movement/climbing.h"
-#include "legoapi/ai/game/aipathcnxhelper.h"
-#include "legoapi/characters/core/character.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/characters/core/charconfig.h"
-#include "legoapi/characters/core/players.h"
-#include "legoapi/characters/motion/move.h"
-#include "legoapi/gizmos/fx/guidelines.h"
-#include "legoapi/gizmos/transport/tubes.h"
 #include "legoapi/items/base/animpacket.h"
-#include "legoapi/items/collect/bolt.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/props/objects/techno.h"
 #include "legoapi/props/system/socksys.h"
 #include "legoapi/render/core/rtl.h"
 #include "legoapi/render/fx/edsplines.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 8 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
+
+struct AIPATHCNX_PC;
+struct AIPATHNODE_PC;
+struct AITRIGGERSET_PARTIAL_PC;
+struct DRAW_ATTACHMENTS_MINI_PC;
+struct GAMEDEBRISENTRY_PC;
+struct GAMEPAD_PC;
+struct PLAYERCHARACTERCONFIG_PC;
+struct SUIT_LAYERS_PC;
+struct TUBE_PC;
+struct ai_helper_slot_pc_s;
+struct apicharactermodellist_s;
+struct blowup_target_pc_s;
+struct bolt_s;
+struct characterdata_pc_s;
+struct climb_slot_pc_s;
+struct indy_guideline_pc_s;
+struct numtl_s;
+struct techno_pc_s;
+
 struct gameobject_s;
 
 struct gameobject_s;
@@ -207,7 +227,7 @@ enum { CHARACTER_CONTEXT_DROP_OUT = 36 };
 typedef struct APIDEBRISSYS_PC {
     i32 named_count;
     i32 capacity;
-    GAMEDEBRISENTRY_PC *entries;
+    struct GAMEDEBRISENTRY_PC *entries;
 } APIDEBRISSYS_PC;
 
 STATIC_ASSERT(sizeof(APIDEBRISSYS_PC) == 0xc);
@@ -318,24 +338,24 @@ struct AIPACKET_PC {
     AIPATHINFO_PC path_info;      // 0x158
     NUVEC last_path_position;     // 0x170
 
-    union {                            // 0x17c
-        void *current_path_node;       // 0x17c
-        AIPATHNODE_PC *goal_path_node; // 0x17c
+    union {                                   // 0x17c
+        void *current_path_node;              // 0x17c
+        struct AIPATHNODE_PC *goal_path_node; // 0x17c
     };
 
     f32 movement_instruction_parameter; // 0x180
 
-    union {                               // 0x184
-        void *path_target;                // 0x184
-        AIPATHNODE_PC *special_move_node; // 0x184
+    union {                                      // 0x184
+        void *path_target;                       // 0x184
+        struct AIPATHNODE_PC *special_move_node; // 0x184
     };
 
-    AIPATHCNX_PC *movement_target;                // 0x188
-    f32 antinode_timer;                           // 0x18c
-    AIPATHCNX_PC *intersection_connection;        // 0x190
-    AIPATHCNX_PC *intersection_target_connection; // 0x194
-    NUVEC right_diversion;                        // 0x198
-    NUVEC left_diversion;                         // 0x1a4
+    struct AIPATHCNX_PC *movement_target;                // 0x188
+    f32 antinode_timer;                                  // 0x18c
+    struct AIPATHCNX_PC *intersection_connection;        // 0x190
+    struct AIPATHCNX_PC *intersection_target_connection; // 0x194
+    NUVEC right_diversion;                               // 0x198
+    NUVEC left_diversion;                                // 0x1a4
 
     union {                                   // 0x1b0
         u8 unknown_1b0[4];                    // 0x1b0
@@ -575,7 +595,7 @@ typedef struct apicharacterdata_s {
     char *name;
     CHARACTERANIM_CONFIG_PC *animations;
     u8 opaque_14_24[0x10];
-    PLAYERCHARACTERCONFIG_PC *game_character;
+    struct PLAYERCHARACTERCONFIG_PC *game_character;
     struct CHARACTER_EFFECT_CONFIG_PC *effects;
     f32 field13_0x2c;
     f32 collision_radius;
@@ -645,7 +665,7 @@ STATIC_ASSERT(offsetof(APICHARACTERDATA, game_character) == 0x24);
 extern "C" {
 #endif
     extern NUHGOBJ_EVAL_PC *Temphgobj;
-    extern NUMTL *APITrans_Mtl[2];
+    extern struct numtl_s *APITrans_Mtl[2];
 #ifdef __cplusplus
 }
 #endif
@@ -668,7 +688,7 @@ typedef struct AI_SPECIAL_PROGRESS_PC {
 typedef struct INDY_GUIDELINE_STATE_PC {
     u8 movement_direction;
     i8 endpoint;
-    INDY_GUIDELINE_PC *guideline;
+    struct indy_guideline_pc_s *guideline;
 } INDY_GUIDELINE_STATE_PC;
 
 #pragma pack(pop)
@@ -693,7 +713,7 @@ typedef struct gameobject_s {
 
     u8 unknown_004c[4];
     CHARACTER_MODEL_LAYERS_PC *character_model;
-    CHARACTERDATA_PC *character_data;
+    struct characterdata_pc_s *character_data;
     u16 facing_angle;
     u16 movement_facing_angle;
     NUVEC position;
@@ -920,14 +940,14 @@ typedef struct gameobject_s {
     f32 airborne_action_timer;
     f32 jump_start_height;
     struct gameobject_s *force_target;
-    BLOWUP_TARGET_PC *blowup_target;
+    struct blowup_target_pc_s *blowup_target;
 
     union {
         void *grapple;
         struct PART_PC *force_throw_part;
-        TECHNO_PC *techno;
+        struct techno_pc_s *techno;
         struct ZIPUP_s *attached_zipup;
-        TUBE_PC *attached_tube_pc;
+        struct TUBE_PC *attached_tube_pc;
     };
 
     i32 panel_use_request;
@@ -1054,13 +1074,13 @@ typedef struct gameobject_s {
     };
 
     NUVEC suspension_normal;
-    GAMEPAD_PC *pad;
+    struct GAMEPAD_PC *pad;
     SOCKPOSITION_PC *previous_sock_position;
     u32 directional_input_state;
     struct PART_PC *incoming_part;
     struct PART_PC *blocked_part;
     struct PART_PC *force_part;
-    SUIT_LAYERS_PC *suit;
+    struct SUIT_LAYERS_PC *suit;
 
     union {
         struct gameobject_s *field_cc0;
@@ -1079,8 +1099,8 @@ typedef struct gameobject_s {
     struct gameobject_s *block_attacker;
     struct gameobject_s *incoming_melee;
     struct gameobject_s *incoming_special;
-    BOLT *incoming_bolt;
-    BOLT *blocked_bolt;
+    struct bolt_s *incoming_bolt;
+    struct bolt_s *blocked_bolt;
 
     union {
         u8 unknown_d0c[0x8];
@@ -1471,7 +1491,7 @@ typedef struct gameobject_s {
         };
 
         u32 field_108c;
-        AI_HELPER_SLOT_PC *indy_connection_helper;
+        struct ai_helper_slot_pc_s *indy_connection_helper;
     };
 
     union {
@@ -1491,7 +1511,7 @@ typedef struct gameobject_s {
             u8 unknown_1096[2];
         };
 
-        AIPATHNODE_PC *special_move_source_pc;
+        struct AIPATHNODE_PC *special_move_source_pc;
     };
 
     union {
@@ -1510,7 +1530,7 @@ typedef struct gameobject_s {
 
     union {
         u8 unknown_10b4[4];
-        CLIMB_SLOT_PC *indy_climb;
+        struct climb_slot_pc_s *indy_climb;
     };
 
     f32 ai_elapsed_time;
@@ -1518,7 +1538,7 @@ typedef struct gameobject_s {
     f32 ai_vertical_velocity;
     void *gizforce_target;
     struct gameanimobj_s *gizforce_target_object;
-    AITRIGGERSET_PARTIAL_PC *active_trigger_set;
+    struct AITRIGGERSET_PARTIAL_PC *active_trigger_set;
 } GAMEOBJECT;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
@@ -1910,7 +1930,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_object_callback) == 0xea8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 InModelList(APICHARACTERMODELLIST *, i32, i32 *);
+    i32 InModelList(struct apicharactermodellist_s *, i32, i32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -1925,8 +1945,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AnimPacketMiniToFullPc(DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
-    void AnimPacketFullToMiniPc(ANIMPACKET_PC *, DRAW_ATTACHMENTS_MINI_PC *);
+    void AnimPacketMiniToFullPc(struct DRAW_ATTACHMENTS_MINI_PC *, ANIMPACKET_PC *);
+    void AnimPacketFullToMiniPc(ANIMPACKET_PC *, struct DRAW_ATTACHMENTS_MINI_PC *);
 #ifdef __cplusplus
 }
 #endif

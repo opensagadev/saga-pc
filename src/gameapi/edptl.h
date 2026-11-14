@@ -7,24 +7,39 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edgra.h, gameapi/edtools/edui.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, nu2api/nu3d/nugscn.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h, nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edgra.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_GAMEAPI_EDPTL_H_PART == 1 && !defined(SAGA_GAMEAPI_EDPTL_H_STOP)
+
+struct NUGSCN_s;
+struct debris_collision_entry_pc_s;
+struct debris_info_pc_s;
+struct debris_particle_chunk_pc_s;
+struct eduiitem_s;
+struct eduimenu_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -117,7 +132,7 @@ extern "C" {
     void edppClearPage(i8);
     void DebrisCleanUpDmaDebTypeTables(void);
 
-    extern DEBRIS_COLLISION_ENTRY_PC *spherecolldata;
+    extern struct debris_collision_entry_pc_s *spherecolldata;
     extern i32 DebrisProcessingEnabledPc;
     extern i32 debris_sort_delay;
     extern i32 debris_sort_this_stack;
@@ -147,7 +162,7 @@ extern "C" {
         NUMTX effect_orientation;
         NUMTX emitter_orientation;
         NUMTX particle_orientation;
-        DEBRIS_PARTICLE_CHUNK_PC *particle_chunks[32];
+        struct debris_particle_chunk_pc_s *particle_chunks[32];
         i16 allocated_chunk_count;
         i16 effect_index;
         u8 finite;
@@ -196,7 +211,7 @@ extern "C" {
         u8 field_2f9;
         u8 field_2fa;
         u8 unknown_2fb;
-        NUGSCN *gscene;
+        struct NUGSCN_s *gscene;
 
         union {
             f32 orientation_dirty;
@@ -334,8 +349,8 @@ extern "C" {
 #endif
 
     typedef struct debris_render_chunk_pc_s {
-        DEBRIS_PARTICLE_CHUNK_PC *particle_chunk;
-        DEBRIS_INFO_PC *effect;
+        struct debris_particle_chunk_pc_s *particle_chunk;
+        struct debris_info_pc_s *effect;
         DEBRISKEY_PC *key;
         NUMTX effect_orientation;
         NUVEC position;

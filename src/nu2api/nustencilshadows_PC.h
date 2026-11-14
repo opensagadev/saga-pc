@@ -7,11 +7,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, legoapi/legoapi_types.h, legoapi/render/core/gameliball.h,
- * nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nucamera.h, nu2api/nu3d/nudlist.h, nu2api/nu3d/nugscn.h,
- * nu2api/nu3d/numtl.h, nu2api/nu3d/nurndr.h, nu2api/nucamera_dlist.h, nu2api/nuhgo_dlist.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h, nu2api/numath/nuvec4.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "legoapi/legoapi_types.h"
@@ -19,20 +15,37 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nudlist.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nurndr.h"
 #include "nu2api/nucamera_dlist.h"
-#include "nu2api/nuhgo_dlist.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#include "nu2api/nuwin32/d3dCore.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nudlist.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nucamera_dlist.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#endif
+
 /* 7 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 1 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
+
+struct NUGSCN_s;
+struct PC_TEXTURE_RESOURCE_PC;
+struct PC_VERTEX_ELEMENT_PC;
+struct numtl_s;
 
 typedef struct __declspec(align(16)) NUVEC4BLOCK_PC {
     f32 x[4];
@@ -354,7 +367,7 @@ typedef struct SCENE_VIDEO_RESOURCE_HEADER_PC {
     PC_BUFFER_RESOURCE_PC **index_buffers;
     u16 texture_count;
     u16 unknown_12;
-    PC_TEXTURE_RESOURCE_PC **textures;
+    struct PC_TEXTURE_RESOURCE_PC **textures;
 } SCENE_VIDEO_RESOURCE_HEADER_PC;
 
 STATIC_ASSERT(sizeof(SCENE_VIDEO_RESOURCE_HEADER_PC) == 0x18);
@@ -371,25 +384,25 @@ extern "C" {
     extern NUVPCURRENT vpDevice;
     extern NUDISPLAYLISTITEM nudlist_2d_static;
     extern VARIPTR nudlist_stream_cursor;
-    void PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
+    void PCDeviceCreateVertexDeclaration(const struct PC_VERTEX_ELEMENT_PC *, struct PC_TEXTURE_RESOURCE_PC **);
     extern DEBRIS_PART_HEADER_PC *NuDebrisLastHeader;
     extern SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC;
     extern VARIPTR SceneUploadBufferStartPC;
     extern VARIPTR SceneUploadBufferCursorPC;
     extern VARIPTR SceneUploadBufferEndPC;
-    extern PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc;
-    extern PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc;
-    void PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-    void PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **);
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerPixelShaderCachePc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc;
-    extern PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc;
+    void PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, struct PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    void PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, struct PC_TEXTURE_RESOURCE_PC **);
+    extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerPixelShaderCachePc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc;
+    extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
 
     typedef struct PC_GOBJ_NATIVE_RESOURCE_PC {
         u8 unknown_00[0x10];
-        PC_TEXTURE_RESOURCE_PC *resource;
+        struct PC_TEXTURE_RESOURCE_PC *resource;
     } PC_GOBJ_NATIVE_RESOURCE_PC;
 
     STATIC_ASSERT(offsetof(PC_GOBJ_NATIVE_RESOURCE_PC, resource) == 0x10);
@@ -474,7 +487,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUMTL *dat_02854d00;
+    extern struct numtl_s *dat_02854d00;
     extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
     void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
     extern NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
@@ -485,7 +498,7 @@ extern "C" {
         i32 use_system_memory_vb;
         i32 first_vertex;
         i32 vertex_count;
-        NUMTL *material;
+        struct numtl_s *material;
     } NATIVE_PARTICLE_PACKET_PC;
 
     STATIC_ASSERT(sizeof(NATIVE_PARTICLE_PACKET_PC) == 0x14);
@@ -494,9 +507,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, first_vertex) == 8);
     STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, vertex_count) == 0xc);
     STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, material) == 0x10);
-    extern NUGSCN *PCRegisteredNativeScenes[100];
-    extern NUMTL *PCStartupMaterial1Pc;
-    extern NUMTL *PCStartupMaterial2Pc;
+    extern struct NUGSCN_s *PCRegisteredNativeScenes[100];
+    extern struct numtl_s *PCStartupMaterial1Pc;
+    extern struct numtl_s *PCStartupMaterial2Pc;
     extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
 #ifdef __cplusplus
 }
@@ -516,7 +529,7 @@ extern "C" {
     struct PC_EFFECT_SURFACE_PC {
         GRAPHICS_RENDER_TEXTURE_PC *texture;
         u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */
-        PC_TEXTURE_RESOURCE_PC *surface;
+        struct PC_TEXTURE_RESOURCE_PC *surface;
         u16 level;
         u16 unknown_0e;
         u32 field_10;

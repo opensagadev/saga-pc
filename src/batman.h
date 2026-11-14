@@ -6,13 +6,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "legoapi/audio/audio.h"
-#include "nu2api/nufile/nufile.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "legoapi/audio/audio.h"
 #include "legoapi/legoapi_types.h"
+#include "nu2api/nufile/nufile.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/audio/audio.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nufile/nufile.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/audio/audio.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nufile/nufile.h"
 #endif
 
 typedef struct dat_handles_pc_s {

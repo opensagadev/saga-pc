@@ -7,18 +7,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/core/input/timer.h, legoapi/items/base/apiobject.h,
- * legoapi/world/missions.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/core/input/timer.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/missions.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/core/input/timer.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_WORLD_MISSION_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_MISSION_H_STOP)
+
+struct MISSION_SAVE_READER_PC;
+struct gameobject_s;
+struct mission_sys_pc_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,13 +69,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern MISSIONSYS_PC *MissionSys;
-    MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *);
-    void CheckMissionEnd(MISSIONSYS_PC *system);
-    MISSIONSYS_PC *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
-    void EndMission(MISSIONSYS_PC *, i32, i32);
-    i32 Mission_CurrentState(MISSIONSYS_PC *);
-    i32 Missions_PickupsOff(MISSIONSYS_PC *);
+    extern struct mission_sys_pc_s *MissionSys;
+    MISSIONDATA_PC *Mission_Active(struct mission_sys_pc_s *);
+    void CheckMissionEnd(struct mission_sys_pc_s *system);
+    struct mission_sys_pc_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    void EndMission(struct mission_sys_pc_s *, i32, i32);
+    i32 Mission_CurrentState(struct mission_sys_pc_s *);
+    i32 Missions_PickupsOff(struct mission_sys_pc_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -97,7 +104,7 @@ STATIC_ASSERT(sizeof(struct MISSIONSYS_s) == 48);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *, u64 *);
+    struct gameobject_s *Mission_FindTarget(struct mission_sys_pc_s *, u64 *);
 #ifdef __cplusplus
 }
 #endif

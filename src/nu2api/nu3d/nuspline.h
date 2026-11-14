@@ -6,8 +6,17 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "nu2api/nu3d/nugscn.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct NUGSCN_s;
 
 typedef struct nugspline_s {
     i16 length;
@@ -24,8 +33,8 @@ STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    NUGSPLINE *NuSplineFind(NUGSCN *, char *);
-    i32 NuSplineFindAllBeg(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity);
+    NUGSPLINE *NuSplineFind(struct NUGSCN_s *, char *);
+    i32 NuSplineFindAllBeg(struct NUGSCN_s *scene, char *name, NUGSPLINE **results, i32 capacity);
     extern const char AITransferLiteral7577dc[8];
 #ifdef __cplusplus
 }

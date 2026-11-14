@@ -6,13 +6,22 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/base/gizmo.h, nu2api/numath/nuvec.h (not all of it earlier in the
- * shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/gizmo/base/gizmo.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct addgizmotype_pc_s;
 
 typedef struct edgizshadow_pc_s {
     NUVEC direction;
@@ -33,7 +42,7 @@ STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    SHADOW_REGISTRATION_PC *EdGizShadowMachine_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *EdGizShadowMachine_RegisterGizmo(i32 type_id);
 #ifdef __cplusplus
 }
 #endif

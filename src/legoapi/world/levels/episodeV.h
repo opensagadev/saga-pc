@@ -6,33 +6,37 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/objects/objectsall.h,
- * legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/gizmos/traps/gizbombgen.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/world.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
-
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
 #endif
 
-typedef void (*PART_KILL_PC)(PART_PC *, i32);
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct PART_PC;
+struct WORLDINFO_s;
+struct gameobject_s;
+struct gizmo_pc_s;
+struct level_data_pc_s;
+
+typedef void (*PART_KILL_PC)(struct PART_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i16 VehicleBoltId7f18b4Pc;
-    i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *, GAMEOBJECT *, NUVEC *);
+    i32 TakeOverYodaSeekDistanceHack(struct gameobject_s *, struct gameobject_s *, NUVEC *);
     extern i32 dagobah_training;
     extern u8 minikitCounter_C;
     extern u8 minikitCounter_A;
     extern const char AITransferLiteral758430[5];
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b250;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b250;
 #ifdef __cplusplus
 }
 #endif
@@ -76,9 +80,9 @@ extern "C" {
 #endif
 
 typedef struct TROOPERCANNON_PC {
-    GIZMO_PC *base;
+    struct gizmo_pc_s *base;
     GIZBUILDIT_s *buildit;
-    GAMEOBJECT *object;
+    struct gameobject_s *object;
     char character_name[32];
     u8 rebuilding;
     u8 padding[3];

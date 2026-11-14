@@ -7,19 +7,26 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/world/world.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_PROPS_OBJECTS_LEGOAPI_SIGNAL_H_PART == 1 && !defined(SAGA_LEGOAPI_PROPS_OBJECTS_LEGOAPI_SIGNAL_H_STOP)
+
+struct WORLDINFO_s;
+struct gameobject_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

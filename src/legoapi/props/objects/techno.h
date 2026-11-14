@@ -7,21 +7,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/characters/motion/move.h, legoapi/gizmo/base/gizmo.h,
- * legoapi/items/base/apiobject.h, nu2api/nu3d/nu3d_includes.h, nu2api/numath/nuvec.h (not all of it earlier in the
- * shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/characters/motion/move.h"
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/items/base/apiobject.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_PART == 1 && !defined(SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_STOP)
+
+struct GAMEPAD_PC;
+struct addgizmotype_pc_s;
+struct gameobject_s;
+struct nuspecial_handle_s;
 
 typedef struct techno_pc_s {
     u8 unknown_00[0x37];
@@ -31,7 +35,7 @@ typedef struct techno_pc_s {
     union {
         void *controlled_object;
         struct gameobject_s *controlled_player;
-        NUSPECIALHANDLE *controlled_special;
+        struct nuspecial_handle_s *controlled_special;
     };
 } TECHNO_PC;
 
@@ -59,7 +63,7 @@ extern "C" {
     extern const char *TechnoRegistrationNamePc;
     extern TECHNO_CONFIG_PC TechnoSysPc;
     extern i32 techno_gizmotype_id;
-    TECHNO_REGISTRATION_PC *Technos_RegisterGizmo(i32 type_id);
+    struct addgizmotype_pc_s *Technos_RegisterGizmo(i32 type_id);
     extern TECHNO_CONFIG_PC TechnoSysPc;
     extern const char *TechnoRegistrationNamePc;
     extern i32 techno_gizmotype_id;
@@ -119,9 +123,9 @@ STATIC_ASSERT(sizeof(struct TECHNO_s) == 112);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *);
+    TECHNO_PC *Technos_FindControllingTechno(struct gameobject_s *);
 
-    i32 Techno_FindOperator(void *, GAMEPAD_PC **, GAMEOBJECT **);
+    i32 Techno_FindOperator(void *, struct GAMEPAD_PC **, struct gameobject_s **);
 #ifdef __cplusplus
 }
 #endif

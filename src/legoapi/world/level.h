@@ -7,27 +7,35 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h,
- * legoapi/legoapi_types.h, legoapi/render/core/screen.h, legoapi/world/levels.h, legoapi/world/world.h,
- * nu2api/nu3d/nu3d_includes.h, nu2api/nufile/nufpar.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it
- * earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/collect/bolts.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/screen.h"
 #include "legoapi/world/levels.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/render/core/screen.h"
+#include "legoapi/world/levels.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
+
+struct BOLTTYPE_PC_s;
+struct WORLDINFO_s;
+struct bolt_s;
+struct cutinfo_s;
+struct cutsys_pc_s;
+struct gameobject_s;
+struct nufpcomjmp_s;
+struct numtx_s;
 
 typedef struct level_progress_pc_s {
     SCENEPROGRESS scene_progress;
@@ -314,7 +322,7 @@ STATIC_ASSERT(offsetof(LEVELFIXUP_PC, draw_status) == 0x20);
 extern "C" {
 #endif
     extern LEVELDATA_PC *TITLES_LDATA;
-    CUTINFO *NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4);
+    struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_pc_s *system, char *name, i32 unused_4);
     void Levels_FixUp(struct level_fixup_pc_s *levels);
     LEVELDATA_PC *Level_FindByName(char *name, i32 *index);
     extern LEVELDATA_PC *LDataList;
@@ -322,14 +330,14 @@ extern "C" {
     extern LEVELDATA_PC *LOADGAME_LDATA;
     extern LEVELDATA_PC *LastLData;
     extern LEVELDATA_PC *NewLData;
-    void ClearLevelProgress(i32 index, WORLDINFO *world);
-    BOLTTYPE_PC *BoltType_FindByID(i32, WORLDINFO *);
-    void ResetLevel(WORLDINFO *world, char *cutscene, i32 unused);
+    void ClearLevelProgress(i32 index, struct WORLDINFO_s *world);
+    struct BOLTTYPE_PC_s *BoltType_FindByID(i32, struct WORLDINFO_s *);
+    void ResetLevel(struct WORLDINFO_s *world, char *cutscene, i32 unused);
     void Level_SetDefaults(LEVELDATA_PC *level);
     extern LEVELDATA_PC *levelconfig_ldata;
-    i32 BoltType_FindIDByName(const char *, WORLDINFO *);
-    void Level_Update(WORLDINFO *world);
-    void Level_Draw(WORLDINFO *world);
+    i32 BoltType_FindIDByName(const char *, struct WORLDINFO_s *);
+    void Level_Update(struct WORLDINFO_s *world);
+    void Level_Draw(struct WORLDINFO_s *world);
     void FixUpLevels(struct level_fixup_pc_s *fixup);
 #ifdef __cplusplus
 }
@@ -339,7 +347,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Level_RegisterGameConfigKeywords(NUFPCOMJMP *, NUFPCOMJMP *);
+    void Level_RegisterGameConfigKeywords(struct nufpcomjmp_s *, struct nufpcomjmp_s *);
     void InitMiniSnowTroopers(struct WORLDINFO_s *arg0, i32 arg1, i32 arg2, i32 arg3);
     void UpdateMiniSnowTroopers(struct WORLDINFO_s *arg0);
 #ifdef __cplusplus
@@ -356,7 +364,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    BOLT_PC *Bolt_Add(GAMEOBJECT *, NUVEC *, NUMTX *, i32, i32);
+    struct bolt_s *Bolt_Add(struct gameobject_s *, NUVEC *, struct numtx_s *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

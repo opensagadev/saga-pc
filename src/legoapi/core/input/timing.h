@@ -6,7 +6,7 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "legoapi/world/world.h"
+struct WORLDINFO_s;
 
 typedef struct main_frame_counters_s {
     i8 warmup_frame;
@@ -20,7 +20,7 @@ STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void GameTiming(WORLDINFO *world, f32 *game_time);
+    void GameTiming(struct WORLDINFO_s *world, f32 *game_time);
     extern i32 do_multiframe_update;
     void ResetFrameCounters(void);
     void UpdateFrameCounters(void);

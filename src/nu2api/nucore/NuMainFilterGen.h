@@ -6,9 +6,26 @@
 
 #include "nu2api/nucore/common.h"
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nucore/NuPostFilter.h"
 #include "nu2api/numath/numtx.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/NuPostFilter.h"
+#include "nu2api/numath/numtx.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/NuPostFilter.h"
+#include "nu2api/numath/numtx.h"
+#endif
 
 #ifdef __cplusplus
 

@@ -7,19 +7,34 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, nu2api/nucore/nulist.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/ai/aisys/aisys.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
+
+struct AIACTIONDEF_PC;
+struct AICONDITIONDEF_PC;
 
 typedef struct AISCRIPT_PC AISCRIPT_PC;
 typedef struct AISTATE_PC AISTATE_PC;
@@ -110,25 +125,25 @@ typedef struct AISCRIPTPARAM_PC {
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
 
 struct AIACTION_PC {
-    NULISTLNK link;             // 0x00
-    char **params;              // 0x08
-    i32 param_count;            // 0x0c
-    AIACTIONDEF_PC *definition; // 0x10
+    NULISTLNK link;                    // 0x00
+    char **params;                     // 0x08
+    i32 param_count;                   // 0x0c
+    struct AIACTIONDEF_PC *definition; // 0x10
 }; // size 0x14
 
 struct AICONDITION_PC {
-    NULISTLNK link;                      // 0x00
-    f32 param_value;                     // 0x08
-    i8 comparison;                       // 0x0c
-    i8 param_index;                      // 0x0d
-    u16 flags;                           // 0x0e
-    char *complex_expression;            // 0x10
-    char *argument;                      // 0x14
-    void *initialized_argument;          // 0x18
-    AICONDITIONDEF_PC *definition;       // 0x1c
-    char *next_state_name;               // 0x20
-    AISTATE_PC *next_state;              // 0x24
-    AICONDITION_PC *parameter_condition; // 0x28
+    NULISTLNK link;                       // 0x00
+    f32 param_value;                      // 0x08
+    i8 comparison;                        // 0x0c
+    i8 param_index;                       // 0x0d
+    u16 flags;                            // 0x0e
+    char *complex_expression;             // 0x10
+    char *argument;                       // 0x14
+    void *initialized_argument;           // 0x18
+    struct AICONDITIONDEF_PC *definition; // 0x1c
+    char *next_state_name;                // 0x20
+    AISTATE_PC *next_state;               // 0x24
+    AICONDITION_PC *parameter_condition;  // 0x28
 }; // size 0x2c
 
 #undef SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART

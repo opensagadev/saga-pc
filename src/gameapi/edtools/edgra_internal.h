@@ -6,17 +6,28 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, gameapi/edptl.h, gameapi/edtools/edui.h (not all of it earlier in the
- * shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edptl.h"
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+#endif
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
 #include "gameapi/edptl.h"
-#include "gameapi/edtools/edui.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edptl.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
 #ifdef __cplusplus

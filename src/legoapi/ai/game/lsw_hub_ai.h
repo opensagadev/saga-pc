@@ -6,16 +6,31 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, gameapi/ai/aisys/aisys.h, legoapi/items/base/apiobject.h (not all of it
- * earlier in the shim). */
-
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "legoapi/world/world.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
 #include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
 #endif
 
 #ifdef __cplusplus

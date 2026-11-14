@@ -6,15 +6,27 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "legoapi/world/world.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "legogame/game.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-
-#ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#endif
+
+struct WORLDINFO_s;
+struct cutinfo_s;
+struct cutsys_pc_s;
 
 typedef NUANIMDATA2_SKELETAL_PC CUT_ANIMATION_PC;
 
@@ -46,14 +58,14 @@ extern "C" {
     extern CUT_DRAW_SETTINGS_PC CutSceneDrawSettingsPc;
     extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *);
-    CUTINFO *CutScene_Find(CUTSYS_PC *system, char *name);
-    extern CUTINFO *NewCutInfo[8];
+    struct cutinfo_s *CutScene_Find(struct cutsys_pc_s *system, char *name);
+    extern struct cutinfo_s *NewCutInfo[8];
     extern i32 NewCutInfoCount;
-    extern i32 (*CutScene_StartFn)(CUTINFO *cut);
-    extern void (*CutScene_PreUpdateFn)(CUTINFO *cut);
+    extern i32 (*CutScene_StartFn)(struct cutinfo_s *cut);
+    extern void (*CutScene_PreUpdateFn)(struct cutinfo_s *cut);
     extern void (*CutScene_PostUpdateFn)(void);
-    extern void (*CutScene_StoppedFn)(CUTINFO *cut);
-    extern i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character);
+    extern void (*CutScene_StoppedFn)(struct cutinfo_s *cut);
+    extern i32 (*CutScene_ReplaceCharacterModelFn)(struct cutinfo_s *cut, CUTSCENECHARACTER *character);
     extern i32 newlevel_resumecutaudio;
     void CutScenes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR end);
     extern const char AreaConfigKeyword_vehicle_area[13];
@@ -68,7 +80,7 @@ extern "C" {
     extern const char AreaResidentsDirectory[8];
     extern const char AreaResidentsExtension[5];
     extern const char LevelConfigKeyword_zspeed[7];
-    void CutScenes_Destroy(CUTSYS_PC *);
+    void CutScenes_Destroy(struct cutsys_pc_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -119,13 +131,13 @@ extern "C" {
     void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode);
     void CutScenePlayer_Configure(char *, VARIPTR *, VARIPTR *, i16 *, i16 *, i16 *, i16 *, i16 *);
 
-    void CutScenes_Start(WORLDINFO *world);
-    void CutScenes_Reset(WORLDINFO *world);
-    void CutScenes_Stop(CUTSYS_PC *system);
+    void CutScenes_Start(struct WORLDINFO_s *world);
+    void CutScenes_Reset(struct WORLDINFO_s *world);
+    void CutScenes_Stop(struct cutsys_pc_s *system);
     void CutScenes_End(void);
-    void CutScenes_Update(WORLDINFO *world, i32 paused);
-    void CutScenes_Draw(WORLDINFO *world);
-    void CutScenePlayer_SetObjects(CUTINFO *cut);
+    void CutScenes_Update(struct WORLDINFO_s *world, i32 paused);
+    void CutScenes_Draw(struct WORLDINFO_s *world);
+    void CutScenePlayer_SetObjects(struct cutinfo_s *cut);
     extern i32 CutSceneMusicStartFramePc;
     extern i32 CUTNOFOG;
     extern i32 CUTDRAWWORLD;
@@ -143,7 +155,7 @@ extern "C" {
     extern i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_pc_s *);
     extern i32 stream_cut_issued;
     void CutScene_SnapToEnd(void *cut);
-    i32 CutScene_IsSkippable(CUTINFO *cut);
+    i32 CutScene_IsSkippable(struct cutinfo_s *cut);
     extern const char CutPlayerTextSeparatorPc[4];
 #ifdef __cplusplus
 }

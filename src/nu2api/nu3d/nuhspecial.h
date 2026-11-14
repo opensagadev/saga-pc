@@ -6,14 +6,6 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
-
-#include "nu2api/nu3d/nugscn.h"
-
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#endif
-
 struct nuhspecial_s;
 typedef struct nuhspecial_s nuhspecial_s;
 

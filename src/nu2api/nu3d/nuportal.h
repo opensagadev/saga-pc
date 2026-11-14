@@ -7,19 +7,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/numath/nuplane.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuplane.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NU3D_NUPORTAL_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUPORTAL_H_STOP)
+
+struct NUGSCN_s;
+struct NUPORTAL_FRUSTUM_PC;
 
 typedef struct NUPORTAL {
     NUPLANE plane;
@@ -49,11 +55,11 @@ STATIC_ASSERT(offsetof(NUPORTALSPHERE_PC, radius) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 clipTestSphere(NUPORTALSPHERE_PC *, NUPORTAL_FRUSTUM_PC *);
+    i32 clipTestSphere(NUPORTALSPHERE_PC *, struct NUPORTAL_FRUSTUM_PC *);
     void NuPortalInit(void);
     /* All aggregate views stay named/local and already asserted; no new shared field/data required. */
     i32 clipTestBox(NUVEC *, NUVEC *, NUPLANE *, i32);
-    i32 NuPortalClipTestBox(NUVEC *, NUVEC *, NUPORTAL_FRUSTUM_PC *);
+    i32 NuPortalClipTestBox(NUVEC *, NUVEC *, struct NUPORTAL_FRUSTUM_PC *);
     void NuPortalSetActiveDirect(NUPORTAL *portal, i32 active);
 #ifdef __cplusplus
 }
@@ -72,10 +78,10 @@ enum { NUPORTAL_FLAG_ACTIVE = 1 };
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 NuPortalClipTest(NUGSCN *, NUVEC *, f32, i16);
-    i16 NuPortalWhichRoom(NUGSCN *, NUVEC *);
-    i32 NuPortalVisibility(NUGSCN *);
-    void NuPortalMaxDepth(NUGSCN *, i32);
+    i32 NuPortalClipTest(struct NUGSCN_s *, NUVEC *, f32, i16);
+    i16 NuPortalWhichRoom(struct NUGSCN_s *, NUVEC *);
+    i32 NuPortalVisibility(struct NUGSCN_s *);
+    void NuPortalMaxDepth(struct NUGSCN_s *, i32);
 #ifdef __cplusplus
 }
 #endif

@@ -6,21 +6,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nustencilshadows_PC.h (not all of it earlier in
- * the shim). */
-
-#include "nu2api/nuwin32/d3dCore.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nustencilshadows_PC.h"
 #endif
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nustencilshadows_PC.h"
+#endif
+
+struct PC_TEXTURE_RESOURCE_PC;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-    HRESULT PCDeviceCreateVertexShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
-    HRESULT PCDeviceCreatePixelShader(const DWORD *, PC_TEXTURE_RESOURCE_PC **);
+    HRESULT PCDeviceCreateVertexShader(const DWORD *, struct PC_TEXTURE_RESOURCE_PC **);
+    HRESULT PCDeviceCreatePixelShader(const DWORD *, struct PC_TEXTURE_RESOURCE_PC **);
 #ifdef __cplusplus
 }
 #endif

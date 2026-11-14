@@ -7,31 +7,50 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/thermaldetonators.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, legoapi/render/core/rtl.h,
- * legoapi/render/fx/edsplines.h, legoapi/world/levels/episodeV.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/thermaldetonators.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/rtl.h"
 #include "legoapi/render/fx/edsplines.h"
 #include "legoapi/world/levels/episodeV.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/items/collect/thermaldetonators.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "legoapi/world/levels/episodeV.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/items/collect/thermaldetonators.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "legoapi/world/levels/episodeV.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_STOP)
+
+struct PART_PC;
+struct WORLDINFO_s;
+struct gameobject_s;
+struct numtx_s;
+struct nuspecial_handle_s;
+
 typedef struct PART_LIGHTING_DATA_PC PART_LIGHTING_DATA_PC;
-typedef void (*PART_MOVE_PC)(PART_PC *, f32);
-typedef i32 (*PART_DRAW_PC)(PART_PC *);
+typedef void (*PART_MOVE_PC)(struct PART_PC *, f32);
+typedef i32 (*PART_DRAW_PC)(struct PART_PC *);
 
 struct PART_LIGHTING_DATA_PC {
     u8 unknown_0[0x78];
@@ -112,16 +131,16 @@ extern "C" {
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_STOP)
 
 typedef struct ADDPART_PC {
-    NUMTX *matrix;
+    struct numtx_s *matrix;
     NUVEC *position;
     NUVEC *velocity;
-    GAMEOBJECT *owner;
-    GAMEOBJECT *recipient;
+    struct gameobject_s *owner;
+    struct gameobject_s *recipient;
     f32 field_14;
     f32 field_18;
     f32 gravity;
     f32 field_20;
-    NUSPECIALHANDLE *special;
+    struct nuspecial_handle_s *special;
     i32 part_id;
     u32 flags;
     PART_ACTION_PC callback_30;
@@ -200,7 +219,7 @@ typedef struct KILLPARTS_BIKE_PC {
     SPLINEPOS spline_position;
     u8 active;
     u8 unknown_21[3];
-    GAMEOBJECT *rider;
+    struct gameobject_s *rider;
     NUVEC rider_position;
 } KILLPARTS_BIKE_PC;
 
@@ -212,23 +231,23 @@ STATIC_ASSERT(offsetof(KILLPARTS_BIKE_PC, rider_position) == 0x28);
 extern "C" {
 #endif
 
-    void InstantKillParts(GAMEOBJECT *, i32, f32);
-    void ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
-    void PlayerTakeHit(GAMEOBJECT *, GAMEOBJECT *);
-    i32 PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u32);
+    void InstantKillParts(struct gameobject_s *, i32, f32);
+    void ObjHitShield(struct gameobject_s *, struct gameobject_s *, i32, void *);
+    void PlayerTakeHit(struct gameobject_s *, struct gameobject_s *);
+    i32 PlayerTakeHitReactionPc(struct gameobject_s *, struct gameobject_s *, f32, u32);
 
-    void LoseHelmet(GAMEOBJECT *, i32, i32);
-    void SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
-    void KillParts_TIEFIGHTER(ADDPART_PC *, i32, i32, GAMEOBJECT *, i32, u16, u16, NUVEC *);
-    void KillParts_ATAT(ADDPART_PC *, i32, i32, GAMEOBJECT *);
-    i32 KillGameObject(GAMEOBJECT *, i32, i32);
+    void LoseHelmet(struct gameobject_s *, i32, i32);
+    void SpawnCreatureFromCrate(struct gameobject_s *, f32, f32);
+    void KillParts_TIEFIGHTER(ADDPART_PC *, i32, i32, struct gameobject_s *, i32, u16, u16, NUVEC *);
+    void KillParts_ATAT(ADDPART_PC *, i32, i32, struct gameobject_s *);
+    i32 KillGameObject(struct gameobject_s *, i32, i32);
     extern KILLPARTS_BIKE_PC KillPartsBikesPc[4];
     extern EXPLOSION_PC Explosions[8];
-    extern GAMEOBJECT *player_tag_to;
-    void ClearLastSafeTakeOver(GAMEOBJECT *);
-    void GameObjectToCameraCode(GAMEOBJECT *);
-    void CollideGameObjects(WORLDINFO *);
-    char *GameObj_GetNamePc(i32, GAMEOBJECT *, char *);
+    extern struct gameobject_s *player_tag_to;
+    void ClearLastSafeTakeOver(struct gameobject_s *);
+    void GameObjectToCameraCode(struct gameobject_s *);
+    void CollideGameObjects(struct WORLDINFO_s *);
+    char *GameObj_GetNamePc(i32, struct gameobject_s *, char *);
 #ifdef __cplusplus
 }
 #endif
@@ -243,16 +262,16 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void TiePart_Kill(PART_PC *, i32);
-    void TiePart_KillExplode(PART_PC *, i32);
-    void TiePart_Impact(PART_PC *);
-    void TiePart_Move(PART_PC *, f32);
-    void TieSpinZPart_Move(PART_PC *, f32);
-    void AtatPart_Stop(PART_PC *);
-    void AtatPart_Update(PART_PC *);
-    void SpeederPart_Kill(PART_PC *, i32);
-    void SpeederPart_Update(PART_PC *);
-    i32 SpeederPart_Draw(PART_PC *);
+    void TiePart_Kill(struct PART_PC *, i32);
+    void TiePart_KillExplode(struct PART_PC *, i32);
+    void TiePart_Impact(struct PART_PC *);
+    void TiePart_Move(struct PART_PC *, f32);
+    void TieSpinZPart_Move(struct PART_PC *, f32);
+    void AtatPart_Stop(struct PART_PC *);
+    void AtatPart_Update(struct PART_PC *);
+    void SpeederPart_Kill(struct PART_PC *, i32);
+    void SpeederPart_Update(struct PART_PC *);
+    i32 SpeederPart_Draw(struct PART_PC *);
 #ifdef __cplusplus
 }
 #endif

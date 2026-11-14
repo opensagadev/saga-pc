@@ -6,14 +6,19 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edui.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/nuerror_gen.h"
 #include "nu2api/nufile/nufile.h"
-
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nuerror_gen.h"
+#include "nu2api/nufile/nufile.h"
+#endif
+
+struct FRAME_PAD_PC;
 
 typedef struct NuKeyboardState_PC {
     u8 unknown_0000_to_4e10[0x4e10];
@@ -914,7 +919,7 @@ STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, sampler_count_pc) == 0x98);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored);
+    i32 GamePadReadBackendPc(struct FRAME_PAD_PC *pad, i32 ignored);
     i32 NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
     void PcInputEndFramePc(void);
     extern const u8 PcInputPovBitsPc[8];

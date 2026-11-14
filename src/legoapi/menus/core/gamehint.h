@@ -6,14 +6,23 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "legoapi/menus/core/hint.h"
-#include "legoapi/world/world.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#endif
+
+struct STATUSPACKET_s;
+struct WORLDINFO_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,10 +39,10 @@ extern "C" {
 
 typedef struct REGISTER_STATUS_PACKET_PC {
     struct STATUSPACKET_LSW_s *lsw_packet;
-    i32 (*init_callback)(WORLDINFO *, STATUSPACKET_s *);
-    i32 (*finish_callback)(WORLDINFO *, STATUSPACKET_s *, i32);
-    void (*reset_callback)(STATUSPACKET_s *);
-    void (*draw_background_callback)(STATUSPACKET_s *);
+    i32 (*init_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *);
+    i32 (*finish_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *, i32);
+    void (*reset_callback)(struct STATUSPACKET_s *);
+    void (*draw_background_callback)(struct STATUSPACKET_s *);
     f32 stage_delay;
 } REGISTER_STATUS_PACKET_PC;
 

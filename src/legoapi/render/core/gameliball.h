@@ -7,34 +7,45 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, gameapi/edptl.h, gameapi/edtools/edgra.h, gameapi/edtools/edui.h,
- * legoapi/items/base/apiobject.h, legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h,
- * nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/nu3d/numtl.h, nu2api/nufile/nufpar.h,
- * nu2api/numath/nuang.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h, nu2api/numath/nuvec4.h,
- * nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "decomp.h"
-#include "gameapi/edptl.h"
-#include "gameapi/edtools/edgra.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#endif
+
 /* 11 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 1 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
+
+struct APIDEBRISSYS_PC;
+struct FRAME_PAD_PC;
+struct NUGSCN_s;
+struct PC_SCENE_MTL_VIEW;
+struct debris_collision_entry_pc_s;
+struct debris_info_pc_s;
+struct debris_key_pc_s;
+struct debris_particle_chunk_pc_s;
+struct debris_render_chunk_pc_s;
+struct debris_scale_cache_pc_s;
+struct eduiitem_s;
+struct eduimenu_s;
+struct nufpar_pc_s;
+struct numtl_s;
 
 typedef struct SFX_GROUP_PC {
     i16 first_sample;
@@ -721,16 +732,16 @@ extern "C" {
 
     void DebrisOrientationMtx(i32, NUMTX *);
     i32 AddScaledVariableShotDebrisEffect2(i32, NUVEC *, i32, f32, NUMTX *, NUMTX *, f32);
-    extern DEBRIS_SCALE_CACHE_PC *debscale;
+    extern struct debris_scale_cache_pc_s *debscale;
     void AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
     void AddVariableShotDebrisEffectTimed3(i32, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *);
     struct TERRAIN_SET_PC;
     extern NUVEC4 tertempvec4;
     extern NUMTX tertempmat;
-    extern APIDEBRISSYS_PC *perm_debrissys;
+    extern struct APIDEBRISSYS_PC *perm_debrissys;
     void DebrisEmitterOrientationMtx(i32, NUMTX *);
     void DebrisShift(NUMTX *);
-    extern DEBRIS_COLLISION_ENTRY_PC *toruscolldata;
+    extern struct debris_collision_entry_pc_s *toruscolldata;
     i32 AddScaledVariableShotDebrisEffect1(i32 effect, NUVEC *position, i32 count, f32 time, i16 z, i16 y,
                                            NUMTX *orientation, f32 scale);
     struct TERRAIN_SET_PC;
@@ -773,17 +784,17 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DebrisSetRoomID(i32, NUGSCN *);
-    extern NUGSCN *EdppPageScenesPc[8];
-    extern NUMTL *DebMat[9];
-    extern NUGSCN *edbri_page_scene[8];
+    void DebrisSetRoomID(i32, struct NUGSCN_s *);
+    extern struct NUGSCN_s *EdppPageScenesPc[8];
+    extern struct numtl_s *DebMat[9];
+    extern struct NUGSCN_s *edbri_page_scene[8];
 
-    i32 edbitsLookupInstance(char *, NUGSCN *);
-    void edanimRegisterBaseScene(NUGSCN *scene);
-    NUMTL *CreateCopyMat(NUMTL *, i32, i32, i32, i32);
+    i32 edbitsLookupInstance(char *, struct NUGSCN_s *);
+    void edanimRegisterBaseScene(struct NUGSCN_s *scene);
+    struct numtl_s *CreateCopyMat(struct numtl_s *, i32, i32, i32, i32);
 
-    void edbriBridgeUpdate(i32 index, NUGSCN *scene);
-    i32 edppLoadPage(char *, i8, NUGSCN *);
+    void edbriBridgeUpdate(i32 index, struct NUGSCN_s *scene);
+    i32 edppLoadPage(char *, i8, struct NUGSCN_s *);
     extern struct NUGSCN_s *edbits_things_scene;
     void edgraDoInput(struct FRAME_PAD_PC *pad);
     void edppDoInput(struct FRAME_PAD_PC *pad);
@@ -802,8 +813,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRISKEY_PC *debkeydata;
-    void AudioGroup_Parse(NUFPAR_PC *);
+    extern struct debris_key_pc_s *debkeydata;
+    void AudioGroup_Parse(struct nufpar_pc_s *);
     void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4,
                                 i32 arg5);
 #ifdef __cplusplus
@@ -847,7 +858,7 @@ extern "C" {
         u8 unknown_100[4];
         VARIPTR buffer;
         u8 unknown_108[0x13c - 0x108];
-        NUGSCN *scene;
+        struct NUGSCN_s *scene;
         u8 unknown_140[0x46cc - 0x140];
         i32 entry_count;
         SPECIAL_RESOURCE_ENTRY_PC *entries;
@@ -888,15 +899,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRIS_INFO_PC *effecttypes;
-    void GenDebMomAdjFromPos(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void GenDebMomAdjFromPosAll(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void GenDebMomAdjFromPosRev(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void GenDebMomAdjFromSplash(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void GenDebMomAdjFromAshRock(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
-    void DebFreeOrphansInstantly(DEBRIS_INFO_PC *);
-    void FileLoadSingleEffectType(DEBRIS_INFO_PC *, i32, i8);
+    extern struct debris_info_pc_s *effecttypes;
+    void GenDebMomAdjFromPos(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosAll(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosRev(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromSplash(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromAshRock(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void GenDebMomAdjFromPosRevTree(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    void DebFreeOrphansInstantly(struct debris_info_pc_s *);
+    void FileLoadSingleEffectType(struct debris_info_pc_s *, i32, i8);
     void edanimcbCancelBouncyMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void edanimcbCancelLocalSoundTypeMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void edanimcbCancelSoundMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
@@ -959,19 +970,19 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRISKEY_PC *debris_keystack;
-    void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *, DEBRISKEY_PC *);
-    DEBRISPARTICLE_PC *GenDebIndex(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebDummy(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexRadialRotor(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexBounceY(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexBounceXZ(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexImprovedRadial(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    DEBRISPARTICLE_PC *GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    void DebReAlloc2(DEBRISKEY_PC *);
-    void RemoveDebrisEffectFromStack(DEBRISKEY_PC *);
+    extern struct debris_key_pc_s *debris_keystack;
+    void DebrisDrawCalculateClipBoxes(struct debris_info_pc_s *, struct debris_key_pc_s *);
+    DEBRISPARTICLE_PC *GenDebIndex(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebDummy(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadial(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadialRotor(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexSpheroid(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexBounceY(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexBounceXZ(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexImprovedRadial(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    DEBRISPARTICLE_PC *GenDebIndexRadialStar(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    void DebReAlloc2(struct debris_key_pc_s *);
+    void RemoveDebrisEffectFromStack(struct debris_key_pc_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -990,10 +1001,10 @@ extern "C" {
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2];
     void AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls;
-    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunks;
-    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass;
+    extern struct debris_particle_chunk_pc_s **freedebchunks;
+    extern struct debris_particle_chunk_pc_s **freedebchunksglass;
     void RemoveChunkControlFromStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);
-    void RemoveAnyChunkControls(DEBRIS_PARTICLE_CHUNK_PC *);
+    void RemoveAnyChunkControls(struct debris_particle_chunk_pc_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -1008,10 +1019,10 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender;
-    extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5];
-    void AddChunkToRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
-    void RemoveChunkFromRenderStack(DEBRIS_RENDER_CHUNK_PC *, DEBRIS_RENDER_CHUNK_PC **);
+    extern struct debris_render_chunk_pc_s *ParticleChunkToRender;
+    extern struct debris_render_chunk_pc_s *ParticleChunkRenderStack[5];
+    void AddChunkToRenderStack(struct debris_render_chunk_pc_s *, struct debris_render_chunk_pc_s **);
+    void RemoveChunkFromRenderStack(struct debris_render_chunk_pc_s *, struct debris_render_chunk_pc_s **);
 #ifdef __cplusplus
 }
 #endif

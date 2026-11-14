@@ -6,12 +6,23 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nustencilshadows_PC.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in
- * the shim). */
-
-#include "nu2api/numath/numtx.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/numtx.h"
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #endif

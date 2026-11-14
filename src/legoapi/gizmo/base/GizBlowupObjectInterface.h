@@ -6,15 +6,28 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/object/gizmoblowups.h, legoapi/items/base/apiobject.h (not all of it
- * earlier in the shim). */
-
-#include "legoapi/world/world.h"
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
 #ifdef __cplusplus

@@ -6,17 +6,27 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edptl.h, gameapi/edtools/edui.h, legoapi/legoapi_types.h,
- * nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edptl.h"
-#include "gameapi/edtools/edui.h"
 #include "legoapi/legoapi_types.h"
-#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct debris_part_header_pc_s;
+struct eduiitem_s;
+struct eduimenu_s;
 
 typedef struct debris_info_pc_s {
     char name[16];
@@ -80,7 +90,7 @@ typedef struct debris_info_pc_s {
     f32 texture_v0;
     f32 texture_u1;
     f32 texture_v1;
-    DEBRIS_PART_HEADER_PC *native_data;
+    struct debris_part_header_pc_s *native_data;
     f32 last_render_time;
     DEBRIS_FLOAT_KEY_PC collision_keys[8];
     i8 process_spheres;

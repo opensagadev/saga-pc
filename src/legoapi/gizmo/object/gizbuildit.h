@@ -6,18 +6,28 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct gameanimobj_s;
+struct gameanimset_s;
 
 typedef struct GIZBUILDIT_PC {
     char name[16];
-    GAMEANIMSET *anim_set;
-    GAMEANIMOBJ **anim_objects;
+    struct gameanimset_s *anim_set;
+    struct gameanimobj_s **anim_objects;
     struct GIZBUILDIT_PC *linked_buildit;
     NUVEC file_position;
     NUVEC start_position;

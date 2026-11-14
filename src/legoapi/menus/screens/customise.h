@@ -6,22 +6,26 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edui.h, legoapi/characters/core/customiser.h (not all of it earlier
- * in the shim). */
-
-#include "gameapi/gui/apimenu.h"
-#include "legoapi/world/world.h"
-#include "legogame/game.h"
-#include "nu2api/nufile/nufpar.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/characters/core/customiser.h"
+#include "gameapi/gui/apimenu.h"
+#include "legogame/game.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#include "legogame/game.h"
+#endif
+
+struct CUSTOMPIECE_LAYERS_PC;
+struct FRAME_PAD_PC;
+struct WORLDINFO_s;
+struct nufpar_pc_s;
 
 typedef struct CUSTOMISER_LAYERS_PC {
     u8 unknown_00[0x38];
-    CUSTOMPIECE_LAYERS_PC *pieces;
+    struct CUSTOMPIECE_LAYERS_PC *pieces;
     u8 unknown_3c[0x30];
     i16 character_ids[2];
 } CUSTOMISER_LAYERS_PC;
@@ -30,7 +34,7 @@ STATIC_ASSERT(offsetof(CUSTOMISER_LAYERS_PC, pieces) == 0x38);
 STATIC_ASSERT(offsetof(CUSTOMISER_LAYERS_PC, character_ids) == 0x6c);
 
 typedef struct GAMEPAD_RUNTIME_INPUT_PC {
-    FRAME_PAD_PC *bound_pad;
+    struct FRAME_PAD_PC *bound_pad;
     u32 held;
     u32 pressed;
     u32 left_held;
@@ -58,8 +62,8 @@ STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, input_ready) == 0x24);
 extern "C" {
 #endif
     extern i32 PCArcadeUnpairedIconModel;
-    void PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *, NUFPAR_PC *);
-    i32 PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *);
+    void PermanentCustomPieceConfigPc(struct CUSTOMPIECE_LAYERS_PC *, struct nufpar_pc_s *);
+    i32 PermanentCustomPieceAvailablePc(struct CUSTOMPIECE_LAYERS_PC *);
     extern f32 MissionPlayerIconSizePc;
     extern const char *TagAsciiDownPc;
     extern const char *InitAsciiUpPc;
@@ -67,9 +71,9 @@ extern "C" {
     extern i32 CustomiseMode[2];
     extern char CustomiseLetter[39];
     extern const char GameAudioName00753354Pc[11];
-    void Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
     i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
-    void Customiser_Update(CUSTOMISER_LAYERS_PC *, WORLDINFO *);
+    void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
     extern i32 customiser_save_done;
     extern i32 customiser_changed;
     extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */

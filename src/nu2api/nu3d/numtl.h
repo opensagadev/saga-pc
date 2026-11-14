@@ -6,14 +6,9 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nudlist.h (not all of it earlier
- * in the shim). */
-
-#ifndef SAGA_SHIM
-#include "decomp.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nudlist.h"
-#endif
+struct PC_MATERIAL_CREATE_SHADER;
+struct PC_MATERIAL_SHADER_DESC_VIEW;
+struct nudisplaylist_pc_s;
 
 typedef struct numtlattrib_s {
     u32 alpha_mode : 4;
@@ -36,7 +31,7 @@ typedef struct numtl_s {
     u8 unknown_0002[0x2e];
     struct numtl_s *next;
     u8 unknown_0034[0x8];
-    NUDISPLAYLIST_PC *display_list;
+    struct nudisplaylist_pc_s *display_list;
     NUMTLATTRIB attribs;
     u32 unknown_0044_0_4 : 5;
     u32 unknown_0044_5 : 1;
@@ -66,7 +61,7 @@ STATIC_ASSERT(offsetof(NUMTL, particle_type_tag) == 0x99);
 extern "C" {
 #endif
     /* Add inside existing C declarations. Native register helpers stay local. */
-    void NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *);
+    void NuShaderMtlDescInit(struct PC_MATERIAL_CREATE_SHADER *);
     void NuMtlCreatePS(NUMTL *, i32);
     NUMTL *NuMtlCreate(i32);
     NUMTL *NuMtlCreate3D(i32);

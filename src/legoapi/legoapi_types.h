@@ -7,60 +7,88 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: MechInputTouch/MechInputTouch_types.h, editor/edlevelall.h,
- * gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, gameapi/edptl.h, gameapi/edtools/edgra.h,
- * gameapi/edtools/edui.h, gamelib/util/gamelib_util_types.h, legoapi/gizmo/base/gizactions.h,
- * legoapi/gizmo/base/gizflow.h, legoapi/gizmo/base/gizmo.h, legoapi/gizmos/fx/gizmopickups.h,
- * legoapi/gizmos/traps/gizforce.h, legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h,
- * legoapi/items/objects/basething.h, legoapi/items/objects/objectsall.h, legoapi/lib/hub.h,
- * legoapi/props/system/socksys.h, legoapi/render/core/gameliball.h, legoapi/world/levels/episode.h,
- * legoapi/world/mission.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h,
- * nu2api/nu3d/nuhspecial.h, nu2api/nu3d/numtl.h, nu2api/nu3d/nuspline.h, nu2api/nucore/NuDynamicLight.h,
- * nu2api/nucore/nulist.h, nu2api/nufile/nufile.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h,
- * nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "MechInputTouch/MechInputTouch_types.h"
 #include "editor/edlevelall.h"
 #include "gameapi/ai/aisys/aipath.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edptl.h"
-#include "gameapi/edtools/edgra.h"
-#include "gameapi/edtools/edui.h"
 #include "gamelib/util/gamelib_util_types.h"
-#include "legoapi/gizmo/base/gizactions.h"
-#include "legoapi/gizmo/base/gizflow.h"
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/gizmos/fx/gizmopickups.h"
-#include "legoapi/gizmos/traps/gizforce.h"
-#include "legoapi/items/base/apiobject.h"
+#include "globals.h"
 #include "legoapi/items/collect/bolts.h"
 #include "legoapi/items/objects/basething.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/lib/hub.h"
 #include "legoapi/props/system/socksys.h"
 #include "legoapi/render/core/gameliball.h"
-#include "legoapi/world/levels/episode.h"
-#include "legoapi/world/mission.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/nu3d/nuspline.h"
-#include "nu2api/nucore/NuDynamicLight.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "MechInputTouch/MechInputTouch_types.h"
+#include "editor/edlevelall.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/items/objects/basething.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "MechInputTouch/MechInputTouch_types.h"
+#include "editor/edlevelall.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/items/objects/basething.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 14 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 1 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef void (*GIZACTIONFN_PC)(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32);
+struct BOLTTYPE_PC_s;
+struct FLOWBOX_PC;
+struct FORCE_RESET_GROUP_PC;
+struct FRAME_PAD_PC;
+struct GIZFLOW_PC;
+struct GIZMOPICKUP_PC;
+struct NUGSCN_s;
+struct PART_PC;
+struct VuMtx;
+struct WORLDINFO_s;
+struct debris_info_pc_s;
+struct debris_key_pc_s;
+struct debris_particle_chunk_pc_s;
+struct eduiitem_s;
+struct eduimenu_s;
+struct gameobject_s;
+struct mission_data_pc_s;
+struct numtl_s;
+
+typedef void (*GIZACTIONFN_PC)(struct GIZFLOW_PC *, struct FLOWBOX_PC *, char **, i32);
 
 typedef struct TERRAIN_TRACK_SLOT_PC {
     void *id;
@@ -1078,7 +1106,7 @@ extern "C" {
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 4 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct levelspline_pc_s {
-    NUGSCN **scene;
+    struct NUGSCN_s **scene;
     const char *name;
     u16 min_points;
     u16 max_points;
@@ -1117,9 +1145,9 @@ STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 struct OccluderSet {
     OccluderSet();
     ~OccluderSet();
-    static NUMTL *ms_pZOnlyMtl3D;
-    static NUMTL *ms_pZOnlyMtl2D;
-    static NUMTL *ms_pAlphaMtl2D;
+    static struct numtl_s *ms_pZOnlyMtl3D;
+    static struct numtl_s *ms_pZOnlyMtl2D;
+    static struct numtl_s *ms_pAlphaMtl2D;
     void Init(u32, VARIPTR *, VARIPTR);
     PC_OCCLUDER_RECORD *occluders;
     u32 *indices;
@@ -1419,7 +1447,7 @@ STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 6 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct BOLTSYS_PC_s {
-    BOLTTYPE_PC *types;
+    struct BOLTTYPE_PC_s *types;
     i32 count;
     void (*stop_targeting)(struct gameobject_s *, NUVEC *);
     void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
@@ -1438,7 +1466,7 @@ STATIC_ASSERT(offsetof(BOLTSYS_PC, alternate_fire) == 0x1c);
 STATIC_ASSERT(sizeof(BOLTSYS_PC) == 0x20);
 
 typedef struct bolt_s {
-    BOLTTYPE_PC *type;
+    struct BOLTTYPE_PC_s *type;
     void *owner;
     NUMTX orientation;
     NUMTX effect_orientation;
@@ -1494,7 +1522,7 @@ STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
 
 STATIC_ASSERT(offsetof(BOLT, speed) == 0xcc);
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
-typedef void (*PICKUP_UPDATE_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *);
+typedef void (*PICKUP_UPDATE_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1784,7 +1812,7 @@ typedef struct gizobstacle_s {
     NUVEC secondary_position;
     NUVEC evaluated_position;
     GAMEANIMSET *anim_set;
-    GAMEOBJECT *triggering_object;
+    struct gameobject_s *triggering_object;
     f32 auto_return_delay;
     f32 auto_return_timer;
     f32 trigger_radius;
@@ -1849,7 +1877,7 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE, forward_speed_factor) == 0x4c);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, backward_speed_factor) == 0x50);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, playback_state) == 0x90);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
-typedef void (*PICKUP_COLLECT_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
+typedef void (*PICKUP_COLLECT_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
 
 typedef struct GIZMO_PICKUP_TYPE_PC {
     char *name;
@@ -1900,9 +1928,9 @@ struct gizforce_pc_s {
     NUVEC position;
     GAMEANIMSET *anim_set;
     NUSPECIALHANDLE along_socket;
-    GAMEOBJECT *using_object;
+    struct gameobject_s *using_object;
     u32 reset_word;
-    FORCE_RESET_GROUP_PC *group;
+    struct FORCE_RESET_GROUP_PC *group;
     f32 force_strength;
     f32 field_48;
     f32 force_range;
@@ -1959,7 +1987,7 @@ extern "C" {
     typedef struct EXPLOSION_PC {
         i32 field_00;
         i32 field_04;
-        GAMEOBJECT *owner;
+        struct gameobject_s *owner;
         NUVEC position;
         f32 radius;
         f32 time;
@@ -2225,7 +2253,7 @@ struct STATUSPACKET_s {
     struct area_data_pc_s *area;
     struct episode_data_pc_s *episode;
     u32 *score;
-    MISSIONDATA_PC *mission;
+    struct mission_data_pc_s *mission;
     f32 player0_rumble_amount;
     f32 player0_rumble_time;
     f32 player0_rumble_duration;
@@ -2834,8 +2862,8 @@ STATIC_ASSERT(sizeof(struct GAMEANTINODE_s) == 56);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
-    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(DEBRISKEY_PC *, DEBRIS_INFO_PC *, DEBRISPARTICLE_PC *);
+    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
+    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -2868,10 +2896,10 @@ extern "C" {
 #endif
 
     typedef struct debris_chunk_control_pc_s {
-        DEBRIS_PARTICLE_CHUNK_PC *particle_chunk;
+        struct debris_particle_chunk_pc_s *particle_chunk;
         f32 expiry_time;
         i32 active;
-        DEBRISKEY_PC *owner;
+        struct debris_key_pc_s *owner;
         struct debris_chunk_control_pc_s *next;
         i32 particle_index;
         f32 collision_time;
@@ -3010,18 +3038,18 @@ class Placeable {
         return 1.0f;
     }
 
-    virtual const VuMtx *GetInitialTransform() const {
+    virtual const struct VuMtx *GetInitialTransform() const {
         return NULL;
     }
 
-    virtual void SetInitialTransform(const VuMtx *) {
+    virtual void SetInitialTransform(const struct VuMtx *) {
     }
 
-    virtual const VuMtx *GetCurrentTransform() const {
+    virtual const struct VuMtx *GetCurrentTransform() const {
         return NULL;
     }
 
-    virtual void SetCurrentTransform(const VuMtx *) {
+    virtual void SetCurrentTransform(const struct VuMtx *) {
     }
 
     virtual const VuVec *GetInitialPosition() const;
@@ -3029,7 +3057,7 @@ class Placeable {
     virtual const VuVec *GetCurrentPosition() const;
     virtual void SetCurrentPosition(const VuVec *position);
 
-    virtual void Render(const VuMtx *) const {
+    virtual void Render(const struct VuMtx *) const {
     }
 };
 
@@ -3116,7 +3144,7 @@ class BaseEditor : public CSListLink<BaseEditor> {
     virtual void Render() {
     }
 
-    virtual void AddMenuItems(eduimenu_s *) {
+    virtual void AddMenuItems(struct eduimenu_s *) {
     }
 
     static void WriteBeginBlock(NUFILE file, i32 type);
@@ -3145,7 +3173,7 @@ class ClassEditor : public BaseEditor {
     virtual void Exit();
     virtual void Process(EdInputContext &);
     virtual void Render();
-    virtual void AddMenuItems(eduimenu_s *);
+    virtual void AddMenuItems(struct eduimenu_s *);
 
     EdTool *first_tool;
     EdTool *last_tool;
@@ -3156,7 +3184,7 @@ class ClassEditor : public BaseEditor {
     ClassObject current_object;
     i32 field_3c;
     ClassObject pending_object;
-    eduimenu_s *menu;
+    struct eduimenu_s *menu;
     VuVec snap_ray;
     f32 snap_distance;
     i32 snap_mode;
@@ -3164,9 +3192,9 @@ class ClassEditor : public BaseEditor {
     i32 class_filter;
 
     void DrawObjectSphere(ClassObject &selected, i32 colour);
-    static void cbEdFilterLED(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdLevelSelectAll(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdLevelDeselectAll(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdFilterLED(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdLevelSelectAll(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdLevelDeselectAll(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
     void PreSaveInitialisation();
     void PostSaveInitialisation();
     void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
@@ -3197,26 +3225,26 @@ class ClassEditor : public BaseEditor {
     i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, ClassObject &after, i32 filter);
     static i32 cbEdCreateClassNewObject(i32 class_id);
     static i32 cbEdCopySelectedObject(EdInputContext &input);
-    static void SetViewMenuHilight(eduimenu_s *menu);
-    static void cbDestroyMenu(eduimenu_s *menu, eduimenu_s *);
-    static void cbDestroyObject(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassDeleteObject(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassFileMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassModeMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassNewMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassNewObject(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassRemoveDuplicates(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSelectClassMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSelectObject(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSelectObjectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSetMode(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSetPinned(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSetSnap(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSetView(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    static void cbEdClassSnapMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassToolsMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
-    static void cbFileSelected(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void SetViewMenuHilight(struct eduimenu_s *menu);
+    static void cbDestroyMenu(struct eduimenu_s *menu, struct eduimenu_s *);
+    static void cbDestroyObject(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassDeleteObject(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassFileMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassModeMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassNewMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassNewObject(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassRemoveDuplicates(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSelectClassMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSelectObject(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSelectObjectMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSetMode(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSetPinned(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSetSnap(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSetView(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassSnapMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassToolsMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbEdClassViewMenu(struct eduimenu_s *parent, struct eduiitem_s *item, u32 buttons);
+    static void cbFileSelected(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
     EdTool *fun_006b8be0();
     f32 &fun_006b8bf0();
     i32 fun_006b8c10();
@@ -3260,10 +3288,10 @@ class LevelEditor : public BaseThing {
     void AddInfoText(char *text);
     void SetCameraPosition(VuVec &position);
     void CreateMenu();
-    void CreateEditorList(eduimenu_s *parent, eduiitem_s *item);
+    void CreateEditorList(struct eduimenu_s *parent, struct eduiitem_s *item);
     void Enter();
     void Exit();
-    NUGSCN *GetScene(i32 index);
+    struct NUGSCN_s *GetScene(i32 index);
     LevelEditorScene *GetEdScene(i32 index);
     void Flush();
     i32 WriteStream(EdFileOutputStream &stream);
@@ -3275,7 +3303,7 @@ class LevelEditor : public BaseThing {
     i32 SaveState(variptr_u *buffer, variptr_u *buffer_end);
     void SetSaveFilename(char *name);
     void Reset();
-    i32 AddScene(char *name, NUGSCN *scene, i32 active);
+    i32 AddScene(char *name, struct NUGSCN_s *scene, i32 active);
     i32 FindSceneId(char *name);
     i32 IsEditable(i32 index);
     i32 Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags);
@@ -3296,9 +3324,9 @@ class LevelEditor : public BaseThing {
     void fun_006b90c0(i32 value);
     i32 fun_006b90e0();
     void fun_006b90f0(BaseEditor *editor);
-    NUGSCN *fun_006bc740(char *name);
-    i32 fun_006bc7e0(NUGSCN *scene);
-    void fun_006bc9d0(eduimenu_s *menu);
+    struct NUGSCN_s *fun_006bc740(char *name);
+    i32 fun_006bc7e0(struct NUGSCN_s *scene);
+    void fun_006bc9d0(struct eduimenu_s *menu);
     char *fun_006bc9e0(char *text);
 
     f32 background_colour[4];

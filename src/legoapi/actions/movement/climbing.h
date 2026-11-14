@@ -7,27 +7,38 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, gameapi/ai/aisys/gameaiscript.h,
- * legoapi/items/base/apiobject.h, legoapi/world/world.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/ai/aisys/gameaiscript.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ACTIONS_MOVEMENT_CLIMBING_H_PART == 1 && !defined(SAGA_LEGOAPI_ACTIONS_MOVEMENT_CLIMBING_H_STOP)
 
+struct AIPATHCNX_PC;
+struct AIPATH_PC;
+struct WORLDINFO_s;
+struct climb_system_pc_s;
+struct gameobject_s;
+
 typedef struct climb_slot_pc_s {
     NUVEC normal;
     f32 impact_x;
     f32 impact_z;
-    AIPATHCNX_PC *connection;
-    AIPATH_PC *path;
+    struct AIPATHCNX_PC *connection;
+    struct AIPATH_PC *path;
     u32 flags;
 } CLIMB_SLOT_PC;
 
@@ -55,30 +66,30 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void KeepWeaponOut(GAMEOBJECT *);
+    void KeepWeaponOut(struct gameobject_s *);
 
-    void SetWeaponIn(GAMEOBJECT *);
-    void FastWeaponIn(GAMEOBJECT *, i32);
+    void SetWeaponIn(struct gameobject_s *);
+    void FastWeaponIn(struct gameobject_s *, i32);
 
-    void SetWeaponOut(GAMEOBJECT *);
-    void FastWeaponOut(GAMEOBJECT *, i32);
-    void SlowWeaponOut(GAMEOBJECT *);
-    void SlowWeaponIn(GAMEOBJECT *);
-    extern i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *);
-    extern i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *);
-    i32 NewBlockAction(GAMEOBJECT *);
-    i32 CanStepBack(GAMEOBJECT *);
-    i32 StepBackFromTarget(GAMEOBJECT *);
-    void AutoWeaponOnOff(GAMEOBJECT *);
-    void BlockSfx(GAMEOBJECT *);
-    void Hang_MoveCode(GAMEOBJECT *);
-    void Climb_MoveCode(GAMEOBJECT *);
-    void WeaponOutCode(GAMEOBJECT *);
-    void WeaponInCode(GAMEOBJECT *);
-    void WeaponScalingCode(GAMEOBJECT *);
-    void LedgeTerrain_MoveCode(GAMEOBJECT *);
-    void InitClimbObjectSys(WORLDINFO *world);
-    CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection);
+    void SetWeaponOut(struct gameobject_s *);
+    void FastWeaponOut(struct gameobject_s *, i32);
+    void SlowWeaponOut(struct gameobject_s *);
+    void SlowWeaponIn(struct gameobject_s *);
+    extern i32 (*Fighting_WeaponInActionFn)(struct gameobject_s *);
+    extern i32 (*Fighting_WeaponOutActionFn)(struct gameobject_s *);
+    i32 NewBlockAction(struct gameobject_s *);
+    i32 CanStepBack(struct gameobject_s *);
+    i32 StepBackFromTarget(struct gameobject_s *);
+    void AutoWeaponOnOff(struct gameobject_s *);
+    void BlockSfx(struct gameobject_s *);
+    void Hang_MoveCode(struct gameobject_s *);
+    void Climb_MoveCode(struct gameobject_s *);
+    void WeaponOutCode(struct gameobject_s *);
+    void WeaponInCode(struct gameobject_s *);
+    void WeaponScalingCode(struct gameobject_s *);
+    void LedgeTerrain_MoveCode(struct gameobject_s *);
+    void InitClimbObjectSys(struct WORLDINFO_s *world);
+    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_pc_s *system, struct AIPATHCNX_PC *connection);
 #ifdef __cplusplus
 }
 #endif

@@ -7,19 +7,26 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/characters/core/characters.h, legoapi/world/world.h, legogame/game.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/characters/core/characters.h"
-#include "legoapi/world/world.h"
 #include "legogame/game.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_WORLD_AREAS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_AREAS_H_STOP)
+
+struct WORLDINFO_s;
 
 typedef struct area_supercounter_pc_s AREA_SUPERCOUNTER_PC;
 
@@ -146,10 +153,10 @@ STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, processed_flags) == 0x1e7);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SuperCounters_FixUpGizmos(WORLDINFO *world);
-    AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
+    void SuperCounters_FixUpGizmos(struct WORLDINFO_s *world);
+    AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, struct WORLDINFO_s *world,
                                                             AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
-    void SuperCounters_ResetProcessed(WORLDINFO *world);
+    void SuperCounters_ResetProcessed(struct WORLDINFO_s *world);
     struct area_supercounter_pc_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2,
                                                             void *arg3);
 #ifdef __cplusplus

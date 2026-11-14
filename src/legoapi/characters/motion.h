@@ -6,21 +6,46 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/characters/motion/move.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
-#include "nu2api/nu3d/nuspline.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-
-#ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
 #ifdef __cplusplus

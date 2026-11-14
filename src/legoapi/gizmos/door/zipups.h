@@ -7,20 +7,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h, legoapi/world/world.h,
- * nu2api/nu3d/numtl.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMOS_DOOR_ZIPUPS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_DOOR_ZIPUPS_H_STOP)
+
+struct WORLDINFO_s;
+struct gameobject_s;
+struct numtl_s;
 
 typedef struct zipup_pc_s ZIPUP_PC;
 #ifdef __cplusplus
@@ -43,9 +52,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, NUMTL *material, f32 time, f32 grow_time, f32 spacing,
-                        f32 scale);
-    extern NUMTL *ropemtl;
+    void DrawRopeSingle(NUVEC *start, NUVEC *end, f32 amount, struct numtl_s *material, f32 time, f32 grow_time,
+                        f32 spacing, f32 scale);
+    extern struct numtl_s *ropemtl;
 #ifdef __cplusplus
 }
 #endif
@@ -60,7 +69,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *, NUVEC *, f32, f32 *, i32 *, GAMEOBJECT *);
+    ZIPUP_PC *ZipUp_FindNearest(struct WORLDINFO_s *, NUVEC *, f32, f32 *, i32 *, struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

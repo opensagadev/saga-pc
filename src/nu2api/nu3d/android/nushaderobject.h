@@ -7,16 +7,23 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, nu2api/nu3d/numtl.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
-#include "nu2api/nu3d/numtl.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NU3D_ANDROID_NUSHADEROBJECT_H_PART == 1 && !defined(SAGA_NU2API_NU3D_ANDROID_NUSHADEROBJECT_H_STOP)
+
+struct numtl_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -147,7 +154,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
+    void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, struct numtl_s *);
 #ifdef __cplusplus
 }
 #endif

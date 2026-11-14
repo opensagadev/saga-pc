@@ -7,19 +7,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h,
- * legoapi/items/objects/objectsall.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/collect/bolts.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_COLLECT_BOLT_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_BOLT_H_STOP)
+
+struct PART_PC;
+struct bolt_s;
+struct gameobject_s;
 
 typedef struct GAMEDEBRISENTRY_PC {
     i32 effect;
@@ -78,11 +88,11 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Bolt_HitPart_LSW(BOLT_PC *, PART_PC *);
-    void Bolt_Debris_LSW(BOLT_PC *, NUVEC *, i32, NUVEC *, i32);
-    void UpdateBolt_Geonosian(BOLT_PC *);
-    i32 Bolt_AlternateFire_LSW(GAMEOBJECT *, i32);
-    void EndBolt_EwokTorpedo(BOLT_PC *bolt);
+    i32 Bolt_HitPart_LSW(struct bolt_s *, struct PART_PC *);
+    void Bolt_Debris_LSW(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
+    void UpdateBolt_Geonosian(struct bolt_s *);
+    i32 Bolt_AlternateFire_LSW(struct gameobject_s *, i32);
+    void EndBolt_EwokTorpedo(struct bolt_s *bolt);
 #ifdef __cplusplus
 }
 #endif

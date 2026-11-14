@@ -6,12 +6,6 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "nu2api/nustencilshadows_PC.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

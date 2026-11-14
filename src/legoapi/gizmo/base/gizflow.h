@@ -7,17 +7,13 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/base/gizactions.h, legoapi/gizmo/base/gizmo.h (not all of it earlier
- * in the shim). */
-
-#ifndef SAGA_SHIM
-#include "legoapi/gizmo/base/gizactions.h"
-#include "legoapi/gizmo/base/gizmo.h"
-#endif
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_STOP)
+
+struct GIZACTIONDEF_PC;
+struct GIZFLOW_PC;
 
 typedef struct GIZFLOWPROGRESS_PC {
     i32 valid;
@@ -145,13 +141,13 @@ typedef struct FLOWBOXACTION_PC {
     struct FLOWBOXACTION_PC *next;
     char **parameters;
     i32 parameter_count;
-    GIZACTIONDEF_PC *definition;
+    struct GIZACTIONDEF_PC *definition;
 } FLOWBOXACTION_PC;
 
 typedef struct FLOWBOX_CALLBACKS_PC {
-    void (*reset)(GIZFLOW_PC *, FLOWBOX_PC *);
-    i32 (*process)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
-    i32 (*check_output)(GIZFLOW_PC *, FLOWBOX_PC *, u8);
+    void (*reset)(struct GIZFLOW_PC *, FLOWBOX_PC *);
+    i32 (*process)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8);
+    i32 (*check_output)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8);
 } FLOWBOX_CALLBACKS_PC;
 
 STATIC_ASSERT(sizeof(FLOWBOXACTION_PC) == 0x10);
@@ -166,21 +162,21 @@ STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void GizFlowStoreProgress(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    void GizFlowStoreProgress(struct GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
     extern const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3];
-    i32 CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 ProcessConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 CheckOutputConditionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    i32 ProcessActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
-    void ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
-    FLOWBOX_PC *FlowBoxFindByName(GIZFLOW_PC *system, char *name);
-    void ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box);
-    i32 CheckOutputActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
-    void ResetGizFlowPointers(GIZFLOW_PC *system);
-    void ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time);
-    i32 ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 CheckOutputGizmoFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 ProcessConditionFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 CheckOutputConditionFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    i32 ProcessActionFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void PerformActionFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box);
+    void ResetGizFlow(struct GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress);
+    FLOWBOX_PC *FlowBoxFindByName(struct GIZFLOW_PC *system, char *name);
+    void ResetGizmoFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box);
+    i32 CheckOutputActionFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void ProcessFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
+    void ResetGizFlowPointers(struct GIZFLOW_PC *system);
+    void ProcessGizFlow(struct GIZFLOW_PC *system, f32 delta_time);
+    i32 ProcessGizmoFlowBox(struct GIZFLOW_PC *system, FLOWBOX_PC *box, u8 output);
 #ifdef __cplusplus
 }
 #endif

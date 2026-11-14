@@ -7,23 +7,35 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/characters/core/characters.h, legoapi/characters/motion/move.h,
- * legoapi/items/base/animpacket.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h, nu2api/nufile/nufpar.h,
- * nu2api/numath/numtx.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/characters/motion/move.h"
-#include "legoapi/items/base/animpacket.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/numtx.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_STOP)
+
+struct APIDEBRISSYS_PC;
+struct CHARACTER_MODEL_LAYERS_PC;
+struct PLAYERCHARACTERCONFIG_PC;
+struct animpacket_pc_s;
+struct apicharacterdata_s;
+struct apicharactermodellist_s;
+struct gameobject_s;
+struct nufpcomjmp_s;
+struct numtx_s;
 
 typedef struct GAMECHARACTERLAYER_PC {
     char name[0x18];
@@ -95,9 +107,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void CharConfig_ConfigureAll(i32, NUFPCOMJMP *);
-    i32 LayerFromName(PLAYERCHARACTERCONFIG_PC *, const char *);
-    i32 MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
+    void CharConfig_ConfigureAll(i32, struct nufpcomjmp_s *);
+    i32 LayerFromName(struct PLAYERCHARACTERCONFIG_PC *, const char *);
+    i32 MakeLayerList_Name(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
 #ifdef __cplusplus
 }
 #endif
@@ -113,13 +125,13 @@ extern "C" {
 extern "C" {
 #endif
     extern BOLTSYS_PC GlobalBoltSystem_Default;
-    void AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, GAMEOBJECT *,
-                        CHARACTER_EFFECT_CONFIG_PC *, i32, f32, void (*)(void *, GAMEOBJECT *, i32, i32),
-                        APIDEBRISSYS_PC *);
-    i32 CharCategory_IsCategory(GAMEOBJECT *, i32);
-    void GameLoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *, i32, i32);
-    i32 InModelListDataFlags(APICHARACTERMODELLIST *, u32, u32, i32, i32);
-    i32 RandomIDFromFlags(u32, u32, i32, APICHARACTERMODELLIST *, i32);
+    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_pc_s *,
+                        struct numtx_s *, struct gameobject_s *, CHARACTER_EFFECT_CONFIG_PC *, i32, f32,
+                        void (*)(void *, struct gameobject_s *, i32, i32), struct APIDEBRISSYS_PC *);
+    i32 CharCategory_IsCategory(struct gameobject_s *, i32);
+    void GameLoadCharacterModels(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *, i32, i32);
+    i32 InModelListDataFlags(struct apicharactermodellist_s *, u32, u32, i32, i32);
+    i32 RandomIDFromFlags(u32, u32, i32, struct apicharactermodellist_s *, i32);
 #ifdef __cplusplus
 }
 #endif

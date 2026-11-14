@@ -6,14 +6,18 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
-
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nugscn.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#endif
+
+struct NUGSCN_s;
+struct WORLDINFO_s;
 
 typedef struct level_display_pc_s {
     f32 farclip_hack;
@@ -39,7 +43,7 @@ extern "C" {
     void DrawParallax(NUSPECIALHANDLE *);
     void NoRender(void);
     extern NUSPECIALHANDLE RenderBackdropSpecialsPc[4];
-    extern NUGSCN *backdrop_scene;
+    extern struct NUGSCN_s *backdrop_scene;
     extern void (*RenderBackdropAlphaFnPc)(f32 *);
     void UpdateCutBorders(void);
     void GrabStillScreen(void);
@@ -78,7 +82,7 @@ extern "C" {
     STATIC_ASSERT(sizeof(GAMEFOG_STATE_PC) == 0x38);
     extern GAMEFOG_STATE_PC GameFog;
     extern GAMEFOG_STATE_PC GameFogOld;
-    void GameFog_Update(WORLDINFO *world);
+    void GameFog_Update(struct WORLDINFO_s *world);
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
     void NeedScreenGrab(i32);

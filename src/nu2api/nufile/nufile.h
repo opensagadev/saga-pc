@@ -6,11 +6,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nufile_pc.h (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "nu2api/nufile_pc.h"
-#endif
+struct AI_EDITOR_FILE_INFO_PC;
 
 typedef struct nudathdr_s NUDATHDR;
 
@@ -150,7 +146,7 @@ extern "C" {
     i32 NuDatFileFindTree(NUDATHDR *header, char *name);
     i32 NuFileExistQuiet(char *filepath);
     i32 NuFileExists(char *filepath);
-    i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info);
+    i32 NuFileGetInfo(char *path, struct AI_EDITOR_FILE_INFO_PC *info);
     f32 NuFileReadFloat(NUFILE file);
     i32 NuFileReadInt(NUFILE file);
     i8 NuFileReadChar(NUFILE file);

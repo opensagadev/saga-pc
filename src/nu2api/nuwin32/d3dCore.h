@@ -7,20 +7,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/PCInput.h, nu2api/nu3d/nu3d_includes.h, nu2api/nufmv/pc/Bink/dsplay_bink.h,
- * nu2api/nustencilshadows_PC.h, nu2api/nuwin32/pcapi.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/PCInput.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/pcapi.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/PCInput.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/pcapi.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NUWIN32_D3DCORE_H_PART == 1 && !defined(SAGA_NU2API_NUWIN32_D3DCORE_H_STOP)
+
+struct GRAPHICS_FACTORY_PC;
+struct GRAPHICS_RENDER_TEXTURE_PC;
+struct PC_D3D9_DEVICE_PC;
+
 typedef struct PC_TEXTURE_RESOURCE_PC PC_TEXTURE_RESOURCE_PC;
 
 typedef struct PC_LOCKED_RECT_PC {
@@ -225,8 +234,8 @@ extern "C" {
 #if SAGA_NU2API_NUWIN32_D3DCORE_H_PART == 2 && !defined(SAGA_NU2API_NUWIN32_D3DCORE_H_STOP)
 
 typedef struct PC_DEVICE_BACKEND_PC {
-    GRAPHICS_FACTORY_PC *factory;
-    PC_D3D9_DEVICE_PC *device;
+    struct GRAPHICS_FACTORY_PC *factory;
+    struct PC_D3D9_DEVICE_PC *device;
     GRAPHICS_CAPS_PC caps;
     GRAPHICS_PRESENT_PARAMETERS_PC parameters;
     PC_VIEWPORT_PC requested_viewport;
@@ -291,7 +300,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     i32 state6a8;
     PC_TEXTURE_RESOURCE_PC *declaration6ac;
     PC_TEXTURE_RESOURCE_PC *back_buffer;
-    GRAPHICS_RENDER_TEXTURE_PC *textures[4];
+    struct GRAPHICS_RENDER_TEXTURE_PC *textures[4];
     PC_TEXTURE_RESOURCE_PC *target_surfaces[4];
     i32 target_kinds[4];
     u16 target_count;
@@ -340,8 +349,8 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *);
     void ClearDepthStencilSurface();
     void RestoreDefaultPoolResources();
-    void CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *);
-    void CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *);
+    void CopyBackBuffer(struct GRAPHICS_RENDER_TEXTURE_PC *);
+    void CopyCurrentSurface(struct GRAPHICS_RENDER_TEXTURE_PC *);
 
     GRAPHICS_DISPLAY_MODE_PC *fun_00509090(i32 index);
     i32 fun_005090a0();

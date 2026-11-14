@@ -7,24 +7,33 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/objects/game_obj.h, legoapi/legoapi_types.h, legoapi/lib/hub.h,
- * legoapi/menus/core/gamehint.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/items/objects/game_obj.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
-#include "legoapi/menus/core/gamehint.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/lib/hub.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_PART == 1 && !defined(SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_STOP)
+
+struct REGISTER_STATUS_PACKET_PC;
+struct STATUSPACKET_s;
+struct STATUS_STAGE_s;
+struct WORLDINFO_s;
 
 typedef struct PAD_INPUT_PC {
     u8 unknown_00[0x92];
@@ -154,16 +163,16 @@ extern "C" {
 #endif
     extern AREA_DATA_PC *GOTHAMSTREETS_ADATA;
     void StatusStage_Reset(struct STATUS_STAGE_s *stage);
-    void NextStatusStage(STATUSPACKET_s *);
-    void RegisterStatusScreen(STATUS_STAGE_s *, i32 *, const REGISTER_STATUS_PACKET_PC *);
-    void DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
-    i32 UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
-    void StatusPacketReset(STATUSPACKET_s *);
-    i32 newCharactersCollected(STATUSPACKET_s *);
-    void InitStatusScreen(WORLDINFO *);
+    void NextStatusStage(struct STATUSPACKET_s *);
+    void RegisterStatusScreen(struct STATUS_STAGE_s *, i32 *, const struct REGISTER_STATUS_PACKET_PC *);
+    void DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, struct STATUSPACKET_s *, f32);
+    i32 UpdateNewMiniKits(struct STATUSPACKET_s *, struct STATUS_STAGE_s *);
+    void StatusPacketReset(struct STATUSPACKET_s *);
+    i32 newCharactersCollected(struct STATUSPACKET_s *);
+    void InitStatusScreen(struct WORLDINFO_s *);
     extern AREA_DATA_PC *NEGOTIATIONS_ADATA;
-    void SetDrawGoldBrick(STATUSPACKET_s *, i32);
-    void DrawBonusTime(STATUSPACKET_s *, f32, i32);
+    void SetDrawGoldBrick(struct STATUSPACKET_s *, i32);
+    void DrawBonusTime(struct STATUSPACKET_s *, f32, i32);
     extern struct STATUS_STAGE_s *StatusStages;
 #ifdef __cplusplus
 }

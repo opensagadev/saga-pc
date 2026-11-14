@@ -6,9 +6,20 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "nu2api/nu3d/numtl.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/nurand.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/nurand.h"
+#endif
+
+struct numtl_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,7 +50,7 @@ extern "C" {
         i32 wait_base;
         i32 wait_random;
         i32 wait_remaining;
-        NUMTL *material;
+        struct numtl_s *material;
         u16 *texture_ids;
         i32 texture_index;
         u32 flags;
@@ -53,7 +64,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, texture_index) == 0xe4);
     STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, flags) == 0xe8);
     extern PC_TEXTURE_ANIM_LIST *ntal_first;
-    PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, NUMTL *, u16 *, void *);
+    PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, struct numtl_s *, u16 *, void *);
     extern const char NuTextureAnimationSourcePathPC[50];
 
     typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
@@ -66,7 +77,7 @@ extern "C" {
     void NuTexAnimRestart(void);
     TEXTURE_ANIMATION_PC *NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char *name);
     void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation);
-    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, NUMTL *material,
+    TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *program, struct numtl_s *material,
                                           u16 *texture_ids, i32 texture_count);
     TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgFind(const char *name);
     void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program);

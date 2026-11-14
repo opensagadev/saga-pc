@@ -7,26 +7,37 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aiscript_types.h, gameapi/ai/aisys/aisys.h,
- * legoapi/gizmo/base/gizflow.h, legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h (not all of it earlier in
- * the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aiscript_types.h"
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/gizmo/base/gizflow.h"
 #include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/items/base/apiobject.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/base/gizmo.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/base/gizmo.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZACTIONS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZACTIONS_H_STOP)
 
+struct AIPACKET_PC;
+struct AISCRIPTPROCESS_PC;
+struct AISYS_PC;
+struct API_ACTION_INFO_PC;
+struct API_EXTRA_ACTION_PC;
+struct FLOWBOX_PC;
+
 typedef struct GIZFLOW_PC {
     void *gizmo_sys;
     i32 flowbox_count;
-    FLOWBOX_PC *flowboxes;
+    struct FLOWBOX_PC *flowboxes;
     u8 frame;
     u8 pointers_need_reset;
 } GIZFLOW_PC;
@@ -41,7 +52,7 @@ STATIC_ASSERT(offsetof(GIZFLOW_PC, pointers_need_reset) == 0xd);
 extern "C" {
 #endif
     extern const f32 PlayerBuildItNegativeLimitPc;
-    void SetActionInfo(API_ACTION_INFO_PC *, API_EXTRA_ACTION_PC *);
+    void SetActionInfo(struct API_ACTION_INFO_PC *, struct API_EXTRA_ACTION_PC *);
     i32 ActionFromName(const char *);
     extern const char AICameraLiteral7580f0[12];
     extern const char AICameraLiteral7580e4[12];
@@ -87,8 +98,9 @@ extern "C" {
 extern "C" {
 #endif
 
-    i32 Action_CameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
-    i32 Action_EndCameraCut(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_CameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
+    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32,
+                            f32);
     void RegisterGizActions(GIZACTIONDEF_PC *definitions);
     extern GIZACTIONDEF_PC game_gizactiondefs[24];
 #ifdef __cplusplus

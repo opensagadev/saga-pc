@@ -6,13 +6,17 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/render/core/gameliball.h (not all of it earlier in the shim). */
-
-#include "nu2api/numusic/numusic.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/render/core/gameliball.h"
+#include "nu2api/numusic/numusic.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numusic/numusic.h"
+#endif
+
+struct sfx_file_info_pc_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +64,7 @@ typedef struct PC_SOUND_INIT_CONFIG {
     VARIPTR *cursor;
     VARIPTR end;
     i32 device_parameter;
-    SFX_FILE_INFO_PC *sample_table;
+    struct sfx_file_info_pc_s *sample_table;
     i32 sample_capacity;
     i32 option_14;
     i32 option_18;

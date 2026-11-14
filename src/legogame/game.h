@@ -6,27 +6,37 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, globals.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, legoapi/lib/hub.h (not all of it earlier in the shim).
- */
-
-#include "legoapi/audio/audio.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/items/collect/shard.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/missions.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nufile/nufpar.h"
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "globals.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/items/collect/shard.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/lib/hub.h"
+#include "legoapi/world/missions.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "globals.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/items/collect/shard.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/missions.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct PART_PC;
+struct WORLDINFO_s;
+struct area_data_pc_s;
+struct gameobject_s;
+struct level_data_pc_s;
 
 typedef struct gamesave_s {
     union {
@@ -188,8 +198,8 @@ extern "C" {
 #endif
     extern f32 CombatReactionHorizontalScalePc;
     /* New public declarations only; private PartCollidePC stays original parts.c-local. */
-    void PartCollide_2D(PART_PC *);
-    void DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
+    void PartCollide_2D(struct PART_PC *);
+    void DeflectPart(struct PART_PC *, struct gameobject_s *, f32, f32, i32, i32);
     void InitGameMode(void);
 
     typedef union GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC {
@@ -216,8 +226,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, cheat_id) == 6);
     STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, normal_layers) == 7);
     extern i32 CutSceneLookupAllDebrisPagesPc;
-    extern AREA_DATA_PC *JABBASPALACE_ADATA;
-    extern AREA_DATA_PC *DAGOBAH_ADATA;
+    extern struct area_data_pc_s *JABBASPALACE_ADATA;
+    extern struct area_data_pc_s *DAGOBAH_ADATA;
     extern const char LevelConfigGameKeyword_max_guidelines[15];
     extern const char LevelConfigGameKeyword_max_timers[11];
     extern const char LevelConfigGameKeyword_max_attractos[14];
@@ -247,7 +257,7 @@ extern "C" {
     void CutScene_PostUpdateFn_LSW(void);
     void CutScene_StoppedFn_LSW(CUTINFO *cut);
     i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
-    i32 InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
+    i32 InitBolt_AddMomentumType_LSW(BOLT *bolt, struct gameobject_s *object, NUVEC *momentum);
     i32 Bolt_HitPlatFn_LSW(BOLT *bolt);
     i32 Bolt_HitCustomFn_LSW(void *bolt, void *points);
     void GameBlowUpBlownUpFn_LSW(void *blowup);
@@ -268,10 +278,10 @@ extern "C" {
     extern u16 podrace_die_angle_a;
     extern u16 podrace_die_angle_b;
     extern u16 podrace_die_angle_c;
-    void CompleteLevel(WORLDINFO *world);
+    void CompleteLevel(struct WORLDINFO_s *world);
     extern PC_SURFACE_MASK_PC GetSurfaceInfoDefaultMaskPc;
     extern PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc;
-    extern AREA_DATA_PC *SPEEDERCHASE_ADATA;
+    extern struct area_data_pc_s *SPEEDERCHASE_ADATA;
 
     extern f32 TargetDist_Near2;
     extern const f32 ApplyGravityMinimumFrameTime;
@@ -298,7 +308,7 @@ extern "C" {
     extern f32 SUPERCARRY_THROWSPEED_XZ;
     extern f32 SUPERCARRY_THROWSPEED_Y;
     extern f32 SUPERCARRY_RELEASESPEED_XZ;
-    void StoreLevelProgress(WORLDINFO *world);
+    void StoreLevelProgress(struct WORLDINFO_s *world);
     extern NUVEC GizmoBlowupUnitScalePc;
 // NOLINTNEXTLINE(readability-identifier-naming)
 #define TargetDeg_Mid LevInstAnimResetPc.fields.target_deg_mid
@@ -327,16 +337,16 @@ extern "C" {
     extern i16 FreePlayId007f1a98Pc;
     extern i32 DefaultMotionLedgeTerrainEnabledPc;
     extern i32 Grapple_RopeSwingsAvailable;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1a8;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1bc;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b1d0;
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2c4;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b1a8;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b1bc;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b1d0;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b2c4;
     extern i32 Lighting_FlashRedOnLastHeart;
-    extern AREA_DATA_PC *UTAPAU_ADATA;
-    extern AREA_DATA_PC *HOTH_ADATA;
-    extern AREA_DATA_PC *BONUSDAGOBAH_ADATA;
-    extern AREA_DATA_PC *BONUSKAMINO_ADATA;
-    extern AREA_DATA_PC *BONUSKASHYYYK_ADATA;
+    extern struct area_data_pc_s *UTAPAU_ADATA;
+    extern struct area_data_pc_s *HOTH_ADATA;
+    extern struct area_data_pc_s *BONUSDAGOBAH_ADATA;
+    extern struct area_data_pc_s *BONUSKAMINO_ADATA;
+    extern struct area_data_pc_s *BONUSKASHYYYK_ADATA;
     void NewGame(void);
     extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_LSW[41];
     extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1];
@@ -372,11 +382,11 @@ extern "C" {
     extern const char *InitAsciiBigArrowPc;
     extern const char *LEGOASCII_LEFT;
     extern const char *LEGOASCII_RIGHT;
-    extern AREA_DATA_PC *ASTEROIDCHASE_ADATA;
-    extern AREA_DATA_PC *DEATHSTARBATTLE2_ADATA;
-    extern AREA_DATA_PC *E1CHARACTER_ADATA;
-    extern AREA_DATA_PC *E2CHARACTER_ADATA;
-    extern AREA_DATA_PC *E3CHARACTER_ADATA;
+    extern struct area_data_pc_s *ASTEROIDCHASE_ADATA;
+    extern struct area_data_pc_s *DEATHSTARBATTLE2_ADATA;
+    extern struct area_data_pc_s *E1CHARACTER_ADATA;
+    extern struct area_data_pc_s *E2CHARACTER_ADATA;
+    extern struct area_data_pc_s *E3CHARACTER_ADATA;
     extern i32 SuperCarry_UseActionButton;
     extern i16 tCLIPi;
     extern i16 tINTRO;
@@ -385,7 +395,7 @@ extern "C" {
     extern i16 tENDING;
     extern i16 tPOWERUP;
 
-    extern AREA_DATA_PC *JIMTEST_ADATA;
+    extern struct area_data_pc_s *JIMTEST_ADATA;
     void LSW_SetIndy(i32 area_index);
 #ifdef __cplusplus
 }
@@ -399,17 +409,17 @@ extern "C" {
     extern GAMEAUDIO_PC GameAudioLswPc;
     extern GAMEAUDIO_PC GameAudioAlternatePc;
     extern const char ForceThrowExplodeNamePc[9];
-    extern AREA_DATA_PC *UTAPAU_ADATA;
-    extern AREA_DATA_PC *HOTH_ADATA;
-    extern AREA_DATA_PC *BONUSDAGOBAH_ADATA;
-    extern AREA_DATA_PC *BONUSKAMINO_ADATA;
-    extern AREA_DATA_PC *BONUSKASHYYYK_ADATA;
-    extern AREA_DATA_PC *E1CHARACTER_ADATA;
-    extern AREA_DATA_PC *E2CHARACTER_ADATA;
-    extern AREA_DATA_PC *E3CHARACTER_ADATA;
-    extern AREA_DATA_PC *E4CHARACTER_ADATA;
-    extern AREA_DATA_PC *E5CHARACTER_ADATA;
-    extern AREA_DATA_PC *E6CHARACTER_ADATA;
+    extern struct area_data_pc_s *UTAPAU_ADATA;
+    extern struct area_data_pc_s *HOTH_ADATA;
+    extern struct area_data_pc_s *BONUSDAGOBAH_ADATA;
+    extern struct area_data_pc_s *BONUSKAMINO_ADATA;
+    extern struct area_data_pc_s *BONUSKASHYYYK_ADATA;
+    extern struct area_data_pc_s *E1CHARACTER_ADATA;
+    extern struct area_data_pc_s *E2CHARACTER_ADATA;
+    extern struct area_data_pc_s *E3CHARACTER_ADATA;
+    extern struct area_data_pc_s *E4CHARACTER_ADATA;
+    extern struct area_data_pc_s *E5CHARACTER_ADATA;
+    extern struct area_data_pc_s *E6CHARACTER_ADATA;
 #ifdef __cplusplus
 }
 #endif

@@ -6,15 +6,20 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/render/fx/game_deb.h (not all of it earlier in the shim). */
-
-#include "nu2api/nucore/nulst.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nucore/nulst.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nulst.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct BURN_PARAMETERS_PC;
+struct numtx_s;
 
 typedef struct RTL_DATA_PC {
     struct RTL_LIGHT_PC *directional_lights[3];
@@ -222,7 +227,7 @@ extern "C" {
     void rtlResetEx(struct RTL_DATA_PC *, i32);
     i32 rtlDynamicMasterEnable(i32);
     void rtlSetLights(struct RTL_DATA_PC *);
-    void rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, NUMTX *, i32, f32);
+    void rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, struct numtx_s *, i32, f32);
     extern i32 rtl_dynamic_lights_enabled;
     extern i32 rtl_error;
     extern f32 rtl_frametime;
@@ -262,7 +267,7 @@ extern "C" {
     i32 edrtlBurnoutLoadSet(char *, BURN_SET_PC *);
     BURN_SET_PC *edrtlBurnoutLoad(char *, VARIPTR *, i32);
     void edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
-    void edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
+    void edrtlCalculateBurnoutEx(BURN_SET_PC *, struct BURN_PARAMETERS_PC *, NUVEC *, f32);
     void edrtlDrawLightEx(i32 index, i32 style);
     i32 rtlGetDirection(RTL_SET_PC *, i32, NUVEC **);
     f32 rtlSpecularValue(RTL_DATA_PC *);

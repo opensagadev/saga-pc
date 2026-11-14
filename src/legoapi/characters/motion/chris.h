@@ -7,17 +7,28 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/collect/spacelevel.h, nu2api/numath/nuvec4.h (not all of it earlier
- * in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/collect/spacelevel.h"
 #include "nu2api/numath/nuvec4.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec4.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec4.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_CHRIS_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_CHRIS_H_STOP)
+
+struct starfighter_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

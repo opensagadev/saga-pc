@@ -6,22 +6,37 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h (not all of it
- * earlier in the shim). */
-
-#include "legoapi/actions/character/suit.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "legoapi/characters/core/characters.h"
-#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/items/base/apiobject.h"
 #include "legoapi/menus/core/panel.h"
 #include "legoapi/props/system/socksys.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nuspline.h"
 #include "nu2api/numath/nuvec.h"
-
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/collect/bolts.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/props/system/socksys.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/props/system/socksys.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct SUIT_LAYERS_PC;
+struct WORLDINFO_s;
+struct bolt_s;
+struct nugspline_s;
 
 typedef struct playerprogress_s {
     u32 coins;
@@ -94,7 +109,7 @@ extern "C" {
     extern i16 Area_PlayerIDList[9];
     extern APICHARACTERMODELLIST Area_StoryModelList[49];
     extern SOCKPOSITION_PC OldPlrSPos[8];
-    extern SUIT_LAYERS_PC *PlayerSuit[8];
+    extern struct SUIT_LAYERS_PC *PlayerSuit[8];
     extern u8 PlayerTorpedoCount[8];
     extern PLAYER_COIN_PACKET_PC CoinPacket[2];
     extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
@@ -185,21 +200,21 @@ extern "C" {
      * canonical owner. */
 
     extern i32 PlayerStartSplineIndexPc;
-    extern NUGSPLINE *DoorCutSplinePc;
+    extern struct nugspline_s *DoorCutSplinePc;
     extern char PlayerMissionStartDoorPc[13];
     extern char PlayerArcadeStartDoorPc[16];
     /* Replace canonical DoorExitNamePc declaration with char[64]; selected copied exit-name length<=63. Remove
      * standalone MiscTime/TargetDeg_Mid/TargetDeg_Far externs before introducing the reviewed member macros. */
 
-    void Players_InitPositions(WORLDINFO *);
+    void Players_InitPositions(struct WORLDINFO_s *);
     /* C++ only, complete neutral class in original shadow owner; method in shared
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
     typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
     i32 Player_HasDeflectBolts(GAMEOBJECT *);
-    i32 Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *);
+    i32 Player_HasDoubleBoltDamage_FromBolt(struct bolt_s *);
     void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
-    void PlayerItemTypes_Reset(WORLDINFO *);
+    void PlayerItemTypes_Reset(struct WORLDINFO_s *);
     PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32);
     void SetPlayer(void);
 

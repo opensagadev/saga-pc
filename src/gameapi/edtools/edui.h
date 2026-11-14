@@ -7,19 +7,28 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h, nu2api/nu3d/nucamera.h, nu2api/nu3d/numtl.h,
- * nu2api/nucore/nucore_plain_types.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
-#include "nu2api/nu3d/nucamera.h"
-#include "nu2api/nu3d/numtl.h"
 #include "nu2api/nucore/nucore_plain_types.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nucore_plain_types.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nucore_plain_types.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_GAMEAPI_EDTOOLS_EDUI_H_PART == 1 && !defined(SAGA_GAMEAPI_EDTOOLS_EDUI_H_STOP)
+
+struct edcam_s;
+struct numtl_s;
 
 typedef struct FRAME_PAD_PC {
     i32 device;
@@ -259,7 +268,7 @@ extern "C" {
     struct eduiitem_s *eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);
     struct eduiitem_s *eduiItemSelWithClipColourCreate(u32 data, void *colours, i32 selected, i32 group, void *callback,
                                                        char *text);
-    extern edcam_s *gp_cam;
+    extern struct edcam_s *gp_cam;
     extern i32 ed_init;
     void edmainClose(void);
     extern struct nucamera_s *edinternalcam;
@@ -367,7 +376,7 @@ struct edui_texture_pick_s {
     f32 uv_x[2];
     f32 uv_y[2];
     void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    NUMTL *material;
+    struct numtl_s *material;
     i32 selected_corner;
     f32 zoom;
 };

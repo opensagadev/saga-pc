@@ -7,32 +7,54 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, legoapi/ai/core/gameai.h,
- * legoapi/characters/core/characters.h, legoapi/characters/core/charconfig.h, legoapi/characters/core/players.h,
- * legoapi/characters/motion/action_info.h, legoapi/characters/motion/move.h, legoapi/items/base/animpacket.h,
- * legoapi/items/base/apiobject.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/nucore/bgproc.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/ai/core/gameai.h"
-#include "legoapi/characters/core/characters.h"
-#include "legoapi/characters/core/charconfig.h"
 #include "legoapi/characters/core/players.h"
 #include "legoapi/characters/motion/action_info.h"
 #include "legoapi/characters/motion/move.h"
-#include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nucore/bgproc.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CHARACTER_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CHARACTER_H_STOP)
+
+struct DWA_WEIGHT_BLOCK_PC;
+struct NUGSCN_s;
+struct NUHGOBJ_EVAL_PC;
+struct NUHGOBJ_JOINT_OVERRIDE_PC;
+struct animpacket_pc_s;
+struct apicharactermodellist_s;
+struct numtx_s;
 
 typedef struct characterdata_pc_s {
     i32 name_id;
@@ -252,8 +274,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void APITransparentCharDraw(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *, NUMTX *, DWA_WEIGHT_BLOCK_PC **, i32);
-    NUGSCN *IconScene_FindById(i32);
+    void APITransparentCharDraw(struct NUHGOBJ_EVAL_PC *, struct numtx_s *, i32, i16 *, struct numtx_s *,
+                                struct DWA_WEIGHT_BLOCK_PC **, i32);
+    struct NUGSCN_s *IconScene_FindById(i32);
 #ifdef __cplusplus
 }
 #endif
@@ -268,11 +291,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, ANIMPACKET_PC *, NUMTX *, NUMTX *,
-                              NUMTX *, NUVEC *, NUMTX *, GAMEOBJECT *, u32, NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32,
-                              NUMTX *, void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
+    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_pc_s *,
+                              struct numtx_s *, struct numtx_s *, struct numtx_s *, NUVEC *, struct numtx_s *,
+                              GAMEOBJECT *, u32, struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, struct numtx_s *,
+                              void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
     i32 GetDefaultIdle(GAMEOBJECT *);
-    void IconScenes_Load(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR *);
+    void IconScenes_Load(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *);
     void PostAnimate_ASTROMECH(GAMEOBJECT *);
     void PostAnimate_FETT(GAMEOBJECT *);
 #ifdef __cplusplus

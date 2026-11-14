@@ -6,20 +6,24 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
-
-#include "legoapi/characters/motion/chris.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/nuspline.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/numath/nuvec4.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct NUGSCN_s;
+struct NUVEC4;
+struct flight_spline_resource_pc_s;
+struct nugspline_s;
+struct nuspecial_handle_s;
+
 typedef struct SPLINEPOS_s {
-    NUGSPLINE *spline;
+    struct nugspline_s *spline;
     i16 segment;
     i8 looping;
 
@@ -54,20 +58,20 @@ STATIC_ASSERT(offsetof(SPLINEPOS, along) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along);
-    i32 OutSideSplineArea(NUVEC *, NUGSPLINE *, NUVEC *, NUVEC *, i32);
-    void PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
+    void CalcSplinePoint(struct flight_spline_resource_pc_s *spline, struct NUVEC4 *result, f32 along);
+    i32 OutSideSplineArea(NUVEC *, struct nugspline_s *, NUVEC *, NUVEC *, i32);
+    void PointAlongSpline(struct nugspline_s *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
     void MoveSplinePosition(SPLINEPOS *position, f32 distance);
-    void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i32 looping, i16 first_point,
+    void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, struct nugspline_s *spline, i32 looping, i16 first_point,
                              i16 last_point);
-    void InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping);
-    extern NUGSPLINE *splineStore;
+    void InitSplinePosition(SPLINEPOS *position, struct nugspline_s *spline, f32 distance, i32 looping);
+    extern struct nugspline_s *splineStore;
     extern i32 numSplinesLoaded;
     extern const char *EDSPLINE_FILECHECK;
     extern const char EditorSplineFileCheckTextPc[13];
-    void GameAntiNodeData_Init(void *, NUSPECIALHANDLE *);
+    void GameAntiNodeData_Init(void *, struct nuspecial_handle_s *);
     void GameAntiNodeData_Read(void *);
-    NUGSPLINE *edSpline_SplineFind(NUGSCN *, char *);
+    struct nugspline_s *edSpline_SplineFind(struct NUGSCN_s *, char *);
 #ifdef __cplusplus
 }
 #endif

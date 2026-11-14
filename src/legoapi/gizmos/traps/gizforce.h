@@ -7,23 +7,36 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, legoapi/menus/core/hint.h, nu2api/numath/nuvec.h (not
- * all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/gizmo/base/gizmo.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/hint.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
-typedef ADDGIZMOTYPE_PC *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
+
+struct PART_PC;
+struct addgizmotype_pc_s;
+struct gameanimobj_s;
+struct gameobject_s;
+struct gizforce_pc_s;
+
+typedef struct addgizmotype_pc_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,7 +74,7 @@ extern "C" {
 typedef struct FORCE_RESET_GROUP_PC {
     union {
         struct {
-            GIZFORCE_PC *forces[8];
+            struct gizforce_pc_s *forces[8];
             f32 combined_height;
         };
 
@@ -83,8 +96,8 @@ typedef struct FORCE_RESET_GROUP_PC {
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 3 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
 typedef struct gizforce_target_record_pc_s {
-    GIZFORCE_PC *force;
-    GAMEANIMOBJ *animation;
+    struct gizforce_pc_s *force;
+    struct gameanimobj_s *animation;
     f32 distance;
     i32 index;
 } GIZFORCE_TARGET_RECORD_PC;
@@ -97,15 +110,15 @@ STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, index) == 12);
 extern "C" {
 #endif
     extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
-    i32 GizForce_FindBestForceTarget(void *, GAMEOBJECT *);
+    i32 GizForce_FindBestForceTarget(void *, struct gameobject_s *);
 
-    i32 GizForce_StoodOnForce(GIZFORCE_PC *, GAMEOBJECT *);
-    u16 GizForces_AngleToForce(NUVEC *, GIZFORCE_PC *);
-    i32 GizForce_Complete(GIZFORCE_PC *);
-    void ForceLightning_Origin(GAMEOBJECT *, NUVEC *, NUVEC *);
-    PART_PC *GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
-    void GizForce_ResetLOS(GAMEOBJECT *);
-    i32 GizForce_GameObjUsingForce(GAMEOBJECT *, GIZFORCE_PC *);
+    i32 GizForce_StoodOnForce(struct gizforce_pc_s *, struct gameobject_s *);
+    u16 GizForces_AngleToForce(NUVEC *, struct gizforce_pc_s *);
+    i32 GizForce_Complete(struct gizforce_pc_s *);
+    void ForceLightning_Origin(struct gameobject_s *, NUVEC *, NUVEC *);
+    struct PART_PC *GizForce_Throw(struct gameobject_s *, struct gizforce_pc_s *, f32, f32, i32);
+    void GizForce_ResetLOS(struct gameobject_s *);
+    i32 GizForce_GameObjUsingForce(struct gameobject_s *, struct gizforce_pc_s *);
 #ifdef __cplusplus
 }
 #endif

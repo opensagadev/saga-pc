@@ -6,13 +6,17 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/world/mission.h (not all of it earlier in the shim). */
-
-#include "legoapi/core/input/timer.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/world/mission.h"
+#include "legoapi/core/input/timer.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/core/input/timer.h"
+#endif
+
+struct mission_data_pc_s;
 
 typedef struct MISSION_SAVE_READER_PC {
     f32 best_times[20];
@@ -29,10 +33,10 @@ extern "C" {
     typedef struct mission_sys_pc_s {
         union {
             u8 unknown_00[4];
-            MISSIONDATA_PC *missions;
+            struct mission_data_pc_s *missions;
         };
 
-        MISSIONDATA_PC *active_mission;
+        struct mission_data_pc_s *active_mission;
 
         union {
             u8 unknown_08[0x15];

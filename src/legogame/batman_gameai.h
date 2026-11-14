@@ -6,18 +6,24 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h
- * (not all of it earlier in the shim). */
-
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
-typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(AIPACKET_PC *, APIOBJECT_PC *, i32);
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct AIPACKET_PC;
+struct AISYS_PC;
+struct APIOBJECT_PC;
+struct gameobject_s;
+
+typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET_PC *, struct APIOBJECT_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,7 +67,7 @@ extern "C" {
                     BATARANG_FLIGHT_STATE_PC flight_state;
                 };
 
-                GAMEOBJECT *owner;
+                struct gameobject_s *owner;
                 NUVEC sight_position;
                 NUVEC sight_velocity;
 
@@ -103,12 +109,12 @@ extern "C" {
     STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
     extern PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8];
     extern i16 PunchRangeUnitIdPc;
-    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
+    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(struct AISYS_PC *, struct AIPACKET_PC *, struct APIOBJECT_PC *);
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;
     extern const f64 PCPathArcSineCoefficient9;
-    void PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *);
+    void PlayerInitCapabilitiesDefaultPc(struct gameobject_s *);
     extern f32 BatarangCatwomanStunTimePc;
 #ifdef __cplusplus
 }

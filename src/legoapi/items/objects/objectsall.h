@@ -7,28 +7,52 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edgra.h, gameapi/edtools/edui.h, legoapi/items/base/apiobject.h,
- * legoapi/items/collect/thermaldetonators.h, legoapi/items/objects/game_obj.h, legoapi/legoapi_types.h,
- * legoapi/world/levels/episodeV.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/edtools/edgra.h"
-#include "gameapi/edtools/edui.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/thermaldetonators.h"
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/world/levels/episodeV.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edgra.h"
+#include "legoapi/items/collect/thermaldetonators.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/levels/episodeV.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edgra.h"
+#include "legoapi/items/collect/thermaldetonators.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/levels/episodeV.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_STOP)
+
+struct FRAME_PAD_PC;
+struct NUGSCN_s;
+struct eduiitem_s;
+struct eduimenu_s;
+struct gameobject_s;
 
 typedef struct parttype_lookup_pc_s {
     char name[16];
@@ -238,12 +262,12 @@ extern "C" {
 extern "C" {
 #endif
     extern NUMTX xzfacingmtx;
-    extern NUGSCN *part_scene[32];
-    void KillPartsByScene(NUGSCN *);
+    extern struct NUGSCN_s *part_scene[32];
+    void KillPartsByScene(struct NUGSCN_s *);
 
-    i32 edpartLookupObjectInScene(char *name, NUGSCN *scene);
-    i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count);
-    i32 edpartLoadPage(char *, i8, NUGSCN *);
+    i32 edpartLookupObjectInScene(char *name, struct NUGSCN_s *scene);
+    i32 edpartLoadPageEx(char *path, i8 mode, struct NUGSCN_s **scenes, i32 scene_count);
+    i32 edpartLoadPage(char *, i8, struct NUGSCN_s *);
     void edpartDoInput(struct FRAME_PAD_PC *pad);
 #ifdef __cplusplus
 }
@@ -276,8 +300,8 @@ struct PART_PC {
     NUVEC impact_normal;
     NUVEC guided_target;
     NUVEC previous_position;
-    GAMEOBJECT *owner;
-    GAMEOBJECT *recipient;
+    struct gameobject_s *owner;
+    struct gameobject_s *recipient;
     f32 radius;
     f32 field_e0;
     f32 field_e4;
@@ -380,8 +404,8 @@ STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Buck_Start(GAMEOBJECT *, GAMEOBJECT *);
-    void Buck_StartRiderJump(GAMEOBJECT *, GAMEOBJECT *);
+    void Buck_Start(struct gameobject_s *, struct gameobject_s *);
+    void Buck_StartRiderJump(struct gameobject_s *, struct gameobject_s *);
     void NewPartRotation(PART_PC *);
     void NewPartOrderedRotation(PART_PC *);
     extern PART_PC *Part;

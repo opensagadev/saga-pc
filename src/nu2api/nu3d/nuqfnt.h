@@ -7,17 +7,14 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/numath/numtx.h (not all of it earlier in the
- * shim). */
-
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/numath/numtx.h"
-#endif
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NU3D_NUQFNT_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUQFNT_H_STOP)
+
+struct FONT_LEGACY_READER_PC;
+struct numtx_s;
+
 typedef struct vufnt_s VUFNT;
 
 typedef struct vucharidx_s {
@@ -161,10 +158,10 @@ enum { NUQFNT_CSMODE_PS2 = 1 };
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuQFntSetMtx(VUFNT *, NUMTX *);
-    VUFNT *NuQFntCreate(FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
-    f32 NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, NUMTX *);
-    void NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix);
+    void NuQFntSetMtx(VUFNT *, struct numtx_s *);
+    VUFNT *NuQFntCreate(struct FONT_LEGACY_READER_PC *, i32, i32, VARIPTR *, VARIPTR *);
+    f32 NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, struct numtx_s *);
+    void NuQFntSetMtxRS(void *stream, VUFNT *font, struct numtx_s *matrix);
 #ifdef __cplusplus
 }
 #endif

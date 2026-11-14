@@ -7,29 +7,49 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/EdObjectNotifier.h, gameapi/edtools/edui.h,
- * legoapi/legoapi_types.h, nu2api/nu3d/nucamera.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier
- * in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/edtools/EdObjectNotifier.h"
-#include "gameapi/edtools/edui.h"
+#include "globals.h"
 #include "legoapi/legoapi_types.h"
-#include "nu2api/nu3d/nucamera.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/EdObjectNotifier.h"
+#include "globals.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/EdObjectNotifier.h"
+#include "globals.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_EDITOR_EDLEVELALL_H_PART == 1 && !defined(SAGA_EDITOR_EDLEVELALL_H_STOP)
+
+struct FRAME_PAD_PC;
+struct eduiiattr_s;
+struct eduiitem_s;
+struct eduimenu_s;
+struct nucamera_s;
+struct numtx_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
     void EdDrawBegin(i32 index);
     void EdDrawEnd(void);
-    void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
-                            i32 cap_bottom, i32 cap_top);
+    void EdDrawPolyCylinder(struct numtx_s *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
+                            i32 colour, i32 cap_bottom, i32 cap_top);
 #ifdef __cplusplus
 }
 #endif
@@ -174,7 +194,7 @@ class EdClassInterface {
     virtual f32 DistanceToObject(VuVec &start, VuVec &end, void *object, EdRef **reference);
     virtual f32 DistanceToObject(VuVec &position, void *object, EdRef **reference);
 
-    virtual void AddMenuItems(eduimenu_s *) {
+    virtual void AddMenuItems(struct eduimenu_s *) {
     }
 
     virtual void Import() {
@@ -221,11 +241,12 @@ class EdControl {
     virtual void Refresh();
     virtual void Process(EdInputContext &input);
     virtual void Render();
-    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
-    virtual void SetMenuItemAttr(i32 state, eduiitem_s *item, eduiiattr_s *normal, eduiiattr_s *highlighted);
+    virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void SetMenuItemAttr(i32 state, struct eduiitem_s *item, struct eduiiattr_s *normal,
+                                 struct eduiiattr_s *highlighted);
     i32 SelectSubObject();
-    static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
-    eduiitem_s *item;
+    static void cbSelected(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
+    struct eduiitem_s *item;
     EdRef *reference;
     void *object;
     static EdInputContext *Input;
@@ -245,13 +266,13 @@ class EdEnumControl : public EdControl {
     EdEnumControl(Item *items) : items(items) {
     }
 
-    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
     char *GetEnumString(i32 value);
     i32 fun_006ba010(char *name);
-    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
-    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
-    static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbChanged(struct eduimenu_s *, struct eduiitem_s *item, u32);
+    static void cbButton(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
+    static void cbSelectItem(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     static Item YesNoItems[];
     Item *items;
 };
@@ -265,11 +286,11 @@ class EdBitControl : public EdEnumControl {
     EdBitControl(u32 bit_mask, Item *items) : EdEnumControl(items), bit_mask(bit_mask) {
     }
 
-    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
-    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
-    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
-    static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbChanged(struct eduimenu_s *, struct eduiitem_s *item, u32);
+    static void cbButton(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
+    static void cbSelectItem(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
 
     u32 bit_mask;
 };
@@ -471,7 +492,7 @@ class EditorSettings {
   public:
     EditorSettings();
     virtual ~EditorSettings();
-    void AddMenuItems(eduimenu_s *menu);
+    void AddMenuItems(struct eduimenu_s *menu);
     void Serialise(EdStream &stream);
     f32 cursor_radius;
     i32 snap_terrain;
@@ -557,7 +578,7 @@ struct EdInputContext {
     VuVec view_direction;
     VuVec ray_start;
     VuVec ray_direction;
-    FRAME_PAD_PC *pad;
+    struct FRAME_PAD_PC *pad;
     f32 delta_time;
     f32 current_time;
     f32 repeat_window;
@@ -578,7 +599,7 @@ struct EdInputContext {
     f32 GetRelease(i32 input);
     f32 GetHold(i32 input);
     f32 GetRepeat(i32 input);
-    void Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool menu_active);
+    void Update(struct nucamera_s *camera, struct FRAME_PAD_PC *new_pad, f32 elapsed, bool menu_active);
 };
 #endif
 #undef SAGA_EDITOR_EDLEVELALL_H_PART

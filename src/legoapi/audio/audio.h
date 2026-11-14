@@ -6,19 +6,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
- * legoapi/render/core/gameliball.h, legoapi/world/level.h (not all of it earlier in the shim). */
-
-#include "legoapi/world/world.h"
-#include "nu2api/numath/nuvec.h"
-#include "nu2api/nusound/nusound.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/render/core/gameliball.h"
-#include "legoapi/world/level.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/legoapi_types.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct WORLDINFO_s;
+struct gameobject_s;
+struct level_data_pc_s;
+struct nusound_filename_info_s;
+struct sfx_file_info_pc_s;
 
 typedef struct repeat_sfx_entry_pc_s {
     i16 sfx_id;
@@ -70,15 +80,15 @@ extern "C" {
 #endif
     /* ObjHitObj/Shield prototypes belong to the independently reviewed combat SCC packet. */
 
-    void EngineNoiseCode(GAMEOBJECT *, i32);
+    void EngineNoiseCode(struct gameobject_s *, i32);
     void AddLevelSfxFromName(char *, i32 *, i32 *, i32);
     void AddLevelSfxFromId(i32, i32 *, i32 *, i32);
     void GameAudio_AddSfx(i32, i32 *, i32 *, i32);
-    void PlaySabreSfx(char *, GAMEOBJECT *, NUVEC *, i32);
-    void PlayGruntSfx(GAMEOBJECT *);
-    void PlayHurtSfx(GAMEOBJECT *object);
-    extern void (*ExtraHurtSfxFn)(GAMEOBJECT *object);
-    void PlayLandSfx(GAMEOBJECT *object, i32 variant, i32 ignored);
+    void PlaySabreSfx(char *, struct gameobject_s *, NUVEC *, i32);
+    void PlayGruntSfx(struct gameobject_s *);
+    void PlayHurtSfx(struct gameobject_s *object);
+    extern void (*ExtraHurtSfxFn)(struct gameobject_s *object);
+    void PlayLandSfx(struct gameobject_s *object, i32 variant, i32 ignored);
     extern i32 TerrainLastChatterSfxPc;
     extern f32 TerrainChatterWaitPc;
     f32 GameGetMusicVolume(OPTIONSSAVE *options);
@@ -87,19 +97,19 @@ extern "C" {
     void SfxCheckMusicOnOff(OPTIONSSAVE *options);
     void SetBackgroundMusic(i32 track);
     i32 GameAudio_GetPlrSfxBits(void *);
-    void PlayDieSfx(GAMEOBJECT *);
-    extern void (*ExtraDieSfxFn)(GAMEOBJECT *);
+    void PlayDieSfx(struct gameobject_s *);
+    extern void (*ExtraDieSfxFn)(struct gameobject_s *);
     void UpdateBackgroundMusic(void);
     void ClearLinkedCutSceneMusic(void *context);
-    void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options);
+    void ProcessMusicChanges(struct level_data_pc_s *level, OPTIONSSAVE *options);
     void PauseGameAudio(i32 ignored);
     void SetLinkedCutSceneMusic(void *context, i32 state);
-    void PlayJumpSfx(GAMEOBJECT *, i32);
+    void PlayJumpSfx(struct gameobject_s *, i32);
     i32 GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback);
     void GameAudio_PlaySfxById(i32, NUVEC *, i32, i32);
     void GameAudio_PlaySfx(i32, NUVEC *, i32, i32);
-    void AddLevSfx(WORLDINFO *, NUVEC *, char *, i32);
-    void UpdateLevelSfx(WORLDINFO *, i32);
+    void AddLevSfx(struct WORLDINFO_s *, NUVEC *, char *, i32);
+    void UpdateLevelSfx(struct WORLDINFO_s *, i32);
     extern const char AITransferLiteral757a38[12];
     extern const char AITransferLiteral757a70[11];
     extern i32 BeenAttacked;
@@ -109,9 +119,9 @@ extern "C" {
     void UpdateRepeatSfx(void);
     extern GAMEAUDIO_PC GameAudioStorage;
     extern GAMEAUDIO_PC *GameAudio;
-    void SfxSetFileTable(SFX_FILE_INFO_PC *records);
+    void SfxSetFileTable(struct sfx_file_info_pc_s *records);
     extern i16 *AmbientPairTab;
-    void PlayFootStepSfx(GAMEOBJECT *);
+    void PlayFootStepSfx(struct gameobject_s *);
     typedef struct PC_MUSIC_ACTION_PAIR_PC PC_MUSIC_ACTION_PAIR_PC;
     extern PC_MUSIC_ACTION_PAIR_PC *ActionPairTab;
     extern i32 (*CheckMusicOtherFn)(void);

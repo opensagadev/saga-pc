@@ -6,11 +6,21 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
-
-#include "legoapi/core/config/cheat.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "legoapi/core/config/cheat.h"
+#include "legoapi/legoapi_types.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/core/config/cheat.h"
+#include "legoapi/legoapi_types.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/core/config/cheat.h"
 #include "legoapi/legoapi_types.h"
 #endif
 

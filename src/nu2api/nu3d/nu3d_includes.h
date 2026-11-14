@@ -7,13 +7,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, legoapi/cutscenes/gcutscn.h, legoapi/render/fx/game_deb.h,
- * nu2api/nu3d/nucamera.h, nu2api/nu3d/nudlist.h, nu2api/nu3d/nugscn.h, nu2api/nu3d/nuhspecial.h, nu2api/nu3d/numtl.h,
- * nu2api/nu3d/nuqfnt.h, nu2api/nu3d/nutexanm.h, nu2api/nucore/nuhgobj.h, nu2api/nucore/nulst.h,
- * nu2api/nudynamiclight_gen.h, nu2api/nufile/nufile.h, nu2api/numath/nuang.h, nu2api/numath/numtx.h,
- * nu2api/numath/nuplane.h, nu2api/numath/nuquat.h, nu2api/numath/nuvec.h, nu2api/numath/nuvec4.h,
- * nu2api/nustencilshadows_PC.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "legoapi/cutscenes/gcutscn.h"
@@ -38,6 +32,33 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "legoapi/cutscenes/gcutscn.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nudlist.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nutexanm.h"
+#include "nu2api/nucore/nuhgobj.h"
+#include "nu2api/nucore/nulst.h"
+#include "nu2api/nudynamiclight_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuplane.h"
+#include "nu2api/numath/nuquat.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#endif
+
 /* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

@@ -6,21 +6,43 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h,
- * legoapi/legoapi_types.h, legoapi/lib/hub.h, nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
-
-#include "gameapi/ai/aisys/aipath.h"
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
-#include "legoapi/gizmo/base/gizmo.h"
+#include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
+#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/nuvec.h"
 #endif
 
 typedef struct kaminoeplate_s {

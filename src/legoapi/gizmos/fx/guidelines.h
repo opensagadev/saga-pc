@@ -6,8 +6,22 @@
 
 #include "nu2api/nucore/common.h"
 
-#include "legoapi/world/world.h"
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct WORLDINFO_s;
 
 typedef struct indy_guideline_pc_s {
     char name[8];
@@ -20,7 +34,7 @@ STATIC_ASSERT(offsetof(INDY_GUIDELINE_PC, endpoints) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    INDY_GUIDELINE_PC *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance);
+    INDY_GUIDELINE_PC *GuideLine_FindNearest(NUVEC *position, struct WORLDINFO_s *world, i32 *endpoint, f32 *distance);
 #ifdef __cplusplus
 }
 #endif

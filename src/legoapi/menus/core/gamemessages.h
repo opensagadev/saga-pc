@@ -7,19 +7,27 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/gizmo/object/gizmopickup.h, legoapi/gizmos/fx/gizmopickups.h,
- * nu2api/nu3d/nu3d_includes.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/fx/gizmopickups.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_PART == 1 && !defined(SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_STOP)
+
+struct nuspecial_handle_s;
+
 typedef void (*GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
 #ifdef __cplusplus
 extern "C" {
@@ -55,7 +63,7 @@ extern "C" {
 
     extern GAME_MESSAGE_PC GameMessage[128];
     GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message);
-    extern NUSPECIALHANDLE *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
+    extern struct nuspecial_handle_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
 #ifdef __cplusplus
 }
 #endif

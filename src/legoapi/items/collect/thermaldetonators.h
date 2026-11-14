@@ -7,20 +7,30 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/objects/objectsall.h,
- * legoapi/menus/core/hint.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
 #include "legoapi/menus/core/hint.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/menus/core/hint.h"
+#endif
+
+struct PART_PC;
+struct gameobject_s;
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 1 &&                                                        \
     !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
-typedef void (*PART_ACTION_PC)(PART_PC *);
+typedef void (*PART_ACTION_PC)(struct PART_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,12 +50,12 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 ThermalDetonator_MoveCode(GAMEOBJECT *);
-    void PartImpact_ThermalDetonator(PART_PC *part);
-    void PartUpdate_ThermalDetonator(PART_PC *part);
-    i32 PartDraw_ThermalDetonator(PART_PC *part);
-    void PartKill_ThermalDetonator(PART_PC *part, i32 unused);
-    void ThermalDetonator_Throw(GAMEOBJECT *object);
+    i32 ThermalDetonator_MoveCode(struct gameobject_s *);
+    void PartImpact_ThermalDetonator(struct PART_PC *part);
+    void PartUpdate_ThermalDetonator(struct PART_PC *part);
+    i32 PartDraw_ThermalDetonator(struct PART_PC *part);
+    void PartKill_ThermalDetonator(struct PART_PC *part, i32 unused);
+    void ThermalDetonator_Throw(struct gameobject_s *object);
 #ifdef __cplusplus
 }
 #endif

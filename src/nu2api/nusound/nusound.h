@@ -7,21 +7,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, legoapi/render/core/gameliball.h, nu2api/nufile/nufile.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h, nu2api/numusic_gen.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "legoapi/render/core/gameliball.h"
-#include "nu2api/nufile/nufile.h"
-#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/numusic_gen.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NUSOUND_NUSOUND_H_PART == 1 && !defined(SAGA_NU2API_NUSOUND_NUSOUND_H_STOP)
+
+struct PC_SOUND_INIT_CONFIG;
+struct PC_STEREO_PLAY_PACKET;
+struct nudathdr_s;
+struct numtx_s;
 
 typedef struct SoundSamplePC {
     IDirectSoundBuffer *buffer;
@@ -312,11 +320,11 @@ extern "C" {
 extern "C" {
 #endif
     void PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
-    extern NUDATHDR *NuSoundDat;
-    void NuSound3SetDat(NUDATHDR *header);
+    extern struct nudathdr_s *NuSoundDat;
+    void NuSound3SetDat(struct nudathdr_s *header);
     extern MUSICPLAYBACK_PC Music;
-    NUMTX *NuSound3GetListener(void);
-    extern NUMTX *NuSound3Listener;
+    struct numtx_s *NuSound3GetListener(void);
+    extern struct numtx_s *NuSound3Listener;
 #ifdef __cplusplus
 }
 #endif
@@ -344,7 +352,7 @@ extern "C" {
 #endif
     void NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
     i32 NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
-    i32 PCSoundInitializePc(PC_SOUND_INIT_CONFIG *);
+    i32 PCSoundInitializePc(struct PC_SOUND_INIT_CONFIG *);
     struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }

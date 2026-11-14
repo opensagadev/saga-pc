@@ -7,36 +7,58 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, gameapi/edtools/edui.h, gameapi/gui/apimenu.h,
- * legoapi/actions/movement/dropinout.h, legoapi/ai/game/aipathcnxhelper.h, legoapi/characters/core/characters.h,
- * legoapi/gizmo/object/gizbuildit.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
- * legoapi/menus/core/hint.h, legoapi/menus/screens/store.h, legoapi/world/areas.h, legoapi/world/level.h,
- * legoapi/world/world.h, legogame/batman_gameai.h, nu2api/nu3d/nuspline.h, nu2api/numath/nuvec.h (not all of it earlier
- * in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/edtools/edui.h"
 #include "gameapi/gui/apimenu.h"
 #include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/ai/game/aipathcnxhelper.h"
 #include "legoapi/characters/core/characters.h"
-#include "legoapi/gizmo/object/gizbuildit.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/menus/screens/store.h"
-#include "legoapi/world/areas.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/world.h"
 #include "legogame/batman_gameai.h"
-#include "nu2api/nu3d/nuspline.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#include "legoapi/actions/movement/dropinout.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/menus/screens/store.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/gui/apimenu.h"
+#include "legoapi/actions/movement/dropinout.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/menus/screens/store.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_LIB_HUB_H_PART == 1 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
+
+struct AIPACKET_PC;
+struct AIPATHCNX_PC;
+struct AISYS_PC;
+struct APIOBJECT_PC;
+struct GIZBUILDIT_PC;
+struct WORLDINFO_s;
+struct ai_helper_slot_pc_s;
+struct area_supercounter_pc_s;
+struct gameobject_s;
+struct level_data_pc_s;
+struct nugspline_s;
 
 typedef struct FADEINFO_PC {
     u32 direction;
@@ -243,24 +265,30 @@ extern "C" {
     extern f32 IndyGrappleReleaseRadiusPc;
     extern f32 IndyGrappleTimeoutPc;
     extern f32 IndyJumpDistancePc[2];
-    i32 Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_StartJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_BigJumpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_PrepareObstaclePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 Indy_PrepareWhipSwingPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused);
-    i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_PrepareBigJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused);
-    i32 Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks);
-    i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject);
-    i32 Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 Indy_MidSpecialMove_ClimbUpPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleStartPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleClimbPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_GrappleEndPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object);
-    i32 Indy_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
-    i32 Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks);
+    i32 Indy_MidSpecialMove_DefaultPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_StartJumpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                        struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_BigJumpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
+    i32 Indy_PrepareObstaclePc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks_unused);
+    i32 Indy_PrepareWhipSwingPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks_unused);
+    i32 Indy_MidSpecialMove_WhipSwingPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                        struct APIOBJECT_PC *object);
+    i32 Indy_PrepareBigJumpPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject, i32 checks_unused);
+    i32 Indy_PreparingForSpecialMove(struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject, i32 checks);
+    i32 Indy_MidSpecialMove(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *apiobject);
+    i32 Indy_PrepareClimbPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
+    i32 Indy_MidSpecialMove_ClimbUpPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_ClimbDownPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                        struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleStartPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                           struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleClimbPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                           struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_GrappleEndPc(struct AISYS_PC *system, struct AIPACKET_PC *packet,
+                                         struct APIOBJECT_PC *object);
+    i32 Indy_MidSpecialMove_SwingPc(struct AISYS_PC *system, struct AIPACKET_PC *packet, struct APIOBJECT_PC *object);
+    i32 Indy_PrepareJumpPc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
+    i32 Indy_PrepareGrapplePc(struct AIPACKET_PC *packet, struct APIOBJECT_PC *object, i32 checks);
 #ifdef __cplusplus
 }
 #endif
@@ -283,7 +311,7 @@ typedef struct area_data_pc_s {
     u8 level_count;
     i8 cheat;
     u8 super_counter_count;
-    AREA_SUPERCOUNTER_PC *super_counters;
+    struct area_supercounter_pc_s *super_counters;
     u16 challenge_trial_time;
     i8 episode_index;
     i8 area_index;
@@ -317,9 +345,9 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, hub_player_ids) == 0x98);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUGSPLINE *HubMiniKitViewerSplinePc;
-    extern void (*HubInitAIFnPc)(WORLDINFO *);
-    extern void (*HubResetAIFnPc)(WORLDINFO *);
+    extern struct nugspline_s *HubMiniKitViewerSplinePc;
+    extern void (*HubInitAIFnPc)(struct WORLDINFO_s *);
+    extern void (*HubResetAIFnPc)(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -327,7 +355,7 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void (*HubUpdateAIFnPc)(WORLDINFO *);
+    extern void (*HubUpdateAIFnPc)(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -336,7 +364,7 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, true_hero_targets) == 0x8c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Indy_AIPathCnxHelperSysInit(WORLDINFO *world);
+    void Indy_AIPathCnxHelperSysInit(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
 #endif
@@ -352,7 +380,7 @@ extern "C" {
 extern "C" {
 #endif
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
-    extern LEVELDATA_PC *LevelFixupSlotPc0087b2dc;
+    extern struct level_data_pc_s *LevelFixupSlotPc0087b2dc;
     i32 Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
     extern APICHARACTERMODELLIST fplist[341];
     extern APICHARACTERMODELLIST fplist[341];
@@ -371,8 +399,8 @@ extern "C" {
 #endif
     extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
     extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
-    i32 IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
-                                    u8 direction, u8 type);
+    i32 IndyGrappleHelperOccupiedPc(struct ai_helper_slot_pc_s *helper, struct gameobject_s *owner,
+                                    struct AIPATHCNX_PC *connection, u8 direction, u8 type);
 #ifdef __cplusplus
 }
 #endif

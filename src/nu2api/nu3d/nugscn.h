@@ -6,30 +6,29 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nuportal.h (not all of it earlier in the
- * shim). */
-
-#include "nu2api/nu3d/nu2api_nu3d_types.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/numtx.h"
-
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nu3d/nuportal.h"
-#endif
+struct NUGSCNROOM_s;
+struct NUPORTAL;
+struct NUPORTALSPHERE_PC;
+struct NUPORTAL_FRUSTUM_PC;
+struct nudisplay_list_pc_s;
+struct nuinstance_s;
+struct numtl_s;
+struct nuspecial_handle_s;
+struct nuspecial_legacy_pc_s;
+struct nutexdim_pc_s;
 
 typedef struct NUGSCN_s {
     i32 *texture_ids;
     i32 texture_count;
-    NUTEXDIM_PC **textures;
-    NUMTL **materials;
+    struct nutexdim_pc_s **textures;
+    struct numtl_s **materials;
     i32 material_count;
     i32 num_objects;
     struct nugobj_s **objects;
     i32 num_instances;
-    NUINSTANCE *instances;
+    struct nuinstance_s *instances;
     i32 special_count;
-    NUSPECIAL_LEGACY_PC *specials;
+    struct nuspecial_legacy_pc_s *specials;
     u32 unknown_002c;
     i32 spline_count;
     struct nugspline_s *splines;
@@ -47,21 +46,21 @@ typedef struct NUGSCN_s {
     void *texture_animations;
     u16 *texture_anim_ids;
     i32 max_portals;
-    NUPORTAL *portals;
+    struct NUPORTAL *portals;
     i32 num_rooms;
-    NUGSCNROOM *rooms;
+    struct NUGSCNROOM_s *rooms;
     u32 unknown_007c[8];
-    NUPORTAL_FRUSTUM_PC *portal_frusta[16];
+    struct NUPORTAL_FRUSTUM_PC *portal_frusta[16];
     i32 num_portal_frusta;
     i32 camera_room;
     i32 portal_depth;
     u32 unknown_e8[2];
     i32 sphere_count;
     i32 portal_instance_count;
-    NUPORTALSPHERE_PC *portal_spheres;
+    struct NUPORTALSPHERE_PC *portal_spheres;
     void *portal_boxes;
     u32 unknown_100[4];
-    NUDISPLAY_LIST_PC *display_list;
+    struct nudisplay_list_pc_s *display_list;
     u32 unknown_0114[10];
     u8 *instance_visibility_flags;
     u32 unknown_0140[10];
@@ -106,7 +105,7 @@ extern "C" {
 #endif
 
     void NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
-    i32 NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags);
+    i32 NuSpecialFind(NUGSCN *scene, struct nuspecial_handle_s *handle, char *name, i32 flags);
     void NuGScnRemove(NUGSCN *);
     void NuGScnFixupTIDs(NUGSCN *);
     void NuGScnFixupTIDsPS(NUGSCN *);

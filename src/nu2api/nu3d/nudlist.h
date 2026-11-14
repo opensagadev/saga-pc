@@ -7,19 +7,27 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nuhspecial.h, nu2api/nu3d/numtl.h,
- * nu2api/numath/numtx.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nu3d/numtl.h"
-#include "nu2api/numath/numtx.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nuhspecial.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
+
+struct nudisplay_list_pc_s;
+struct numtl_s;
+struct numtx_s;
+struct nurndrlibstate_s;
+struct nuspecial_handle_s;
+
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 
 typedef struct nudisplayscene_pc_s {
@@ -103,18 +111,18 @@ STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 extern "C" {
 #endif
 
-    i32 NuDisplayListRndrSpecial(NUSPECIALHANDLE *, NUMTX *, i32, NUMTX *, void *);
+    i32 NuDisplayListRndrSpecial(struct nuspecial_handle_s *, struct numtx_s *, i32, struct numtx_s *, void *);
     VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
-    void *DisplayListCreateGeomTransformPS(VARIPTR *, NUMTX *, NUMTL *, void *, void *);
-    void *DisplayListCreateSkinTransformPS(VARIPTR *, NUMTX *, void *, void *, void **, void *);
-    void *NuDisplayListPrepareFaceonPS(VARIPTR *, void *, NUMTX *);
+    void *DisplayListCreateGeomTransformPS(VARIPTR *, struct numtx_s *, struct numtl_s *, void *, void *);
+    void *DisplayListCreateSkinTransformPS(VARIPTR *, struct numtx_s *, void *, void *, void **, void *);
+    void *NuDisplayListPrepareFaceonPS(VARIPTR *, void *, struct numtx_s *);
     VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target);
-    void NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material);
-    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, NUMTL *);
-    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, NUMTL *);
-    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, NUMTL *);
-    void NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special);
-    void DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, struct numtl_s *material);
+    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListUpdateSpecial(struct nuspecial_handle_s *special);
+    void DisplayListUpdateSpecialTransformPS(struct nuspecial_handle_s *special, struct numtx_s *matrix);
 #ifdef __cplusplus
 }
 #endif
@@ -128,9 +136,9 @@ extern "C" {
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
 
 typedef struct nudisplaylist_s {
-    NUDISPLAY_LIST_PC *scene;
+    struct nudisplay_list_pc_s *scene;
     i32 material_id;
-    NURNDRLIBSTATE *state;
+    struct nurndrlibstate_s *state;
     NUDISPLAYLISTITEM *mtl_item;
     NUDISPLAYLISTITEM *first;
     NUDISPLAYLISTITEM *mtl_last;
@@ -174,7 +182,7 @@ typedef struct nusortpri_s {
     u32 sort_flags;
 
     union {
-        NUDISPLAY_LIST_PC *display_scene;
+        struct nudisplay_list_pc_s *display_scene;
         struct nudisplayscene_s *legacy_display_scene;
     };
 
@@ -202,17 +210,17 @@ STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    NUDISPLAY_LIST_PC *NuDisplaySceneClone(NUDISPLAY_LIST_PC *, VARIPTR *);
-    void NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *, NUDISPLAY_LIST_PC *, VARIPTR *);
-    void NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *);
-    void NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *);
-    void NuDisplaySceneAdd(NUDISPLAY_LIST_PC *);
-    void NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *);
+    struct nudisplay_list_pc_s *NuDisplaySceneClone(struct nudisplay_list_pc_s *, VARIPTR *);
+    void NuDisplaySceneClonePS(struct nudisplay_list_pc_s *, struct nudisplay_list_pc_s *, VARIPTR *);
+    void NuDisplaySceneDestroy(struct nudisplay_list_pc_s *);
+    void NuDisplaySceneDestroyPS(struct nudisplay_list_pc_s *);
+    void NuDisplaySceneAdd(struct nudisplay_list_pc_s *);
+    void NuDisplaySceneAddPS(struct nudisplay_list_pc_s *);
     /* New public original-source routines; original private colour helper remains local. */
-    void NuDisplayListCreate(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
-    void DisplayListCreatePS(NUDISPLAY_LIST_PC *, VARIPTR *, VARIPTR);
+    void NuDisplayListCreate(struct nudisplay_list_pc_s *, VARIPTR *, VARIPTR, i32, i32, i32, i32, i32, i32, i32);
+    void DisplayListCreatePS(struct nudisplay_list_pc_s *, VARIPTR *, VARIPTR);
 
-    void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *);
+    void NuDisplaySceneRndr(struct nudisplay_list_pc_s *);
     void NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices, i32 clip);
 #ifdef __cplusplus
 }

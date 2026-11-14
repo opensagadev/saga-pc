@@ -6,16 +6,20 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nu3d/nu3d_includes.h, nu2api/nustencilshadows_PC.h (not all of it earlier in
- * the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-
-#ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct CAMERA_CLIP_PACKET_PC;
+struct NUVEC4BLOCK_PC;
 
 typedef struct nucamera_s {
     NUMTX mtx;
@@ -63,7 +67,7 @@ extern "C" {
     extern NUMTX clip_test_mtx;
     extern f32 zx;
     extern f32 zy;
-    void PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *, NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
+    void PCVecMtxTransformClipBlocks(struct NUVEC4BLOCK_PC *, struct NUVEC4BLOCK_PC *, NUMTX *, i32, u32 *);
     i32 NuCameraClipTestExtents(NUVEC *, NUVEC *, NUMTX *, f32, i32);
     void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
     void NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast);
@@ -104,7 +108,7 @@ extern "C" {
     i32 NuCameraClipTestExtentsGeneric(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *);
     extern i32 cam_state_count;
 
-    void NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
+    void NuCameraCalcClipMtx(struct CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32);
     void NuCameraTransformView(NUVEC *, NUVEC *, i32, NUMTX *);
     void NuCameraTransformScreenClip(NUVEC *, NUVEC *, i32, NUMTX *);
     void NuCameraTransformScreen(NUVEC *, NUVEC *, i32, NUMTX *);

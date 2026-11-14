@@ -6,16 +6,12 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/lib/hub.h, legoapi/world/level.h (not all of it earlier in the shim). */
-
-#ifndef SAGA_SHIM
-#include "legoapi/lib/hub.h"
-#include "legoapi/world/level.h"
-#endif
+struct area_data_pc_s;
+struct level_data_pc_s;
 
 typedef struct area_fixup_pc_entry_s {
     char *name;
-    AREA_DATA_PC **area;
+    struct area_data_pc_s **area;
 } AREAFIXUP_PC;
 
 STATIC_ASSERT(sizeof(AREAFIXUP_PC) == 8);
@@ -24,19 +20,19 @@ STATIC_ASSERT(offsetof(AREAFIXUP_PC, area) == 4);
 extern "C" {
 #endif
     i32 AreaFromMiniKitID(i32);
-    extern AREA_DATA_PC *BONUS_GUNSHIP_ADATA;
-    extern AREA_DATA_PC *ADataList;
+    extern struct area_data_pc_s *BONUS_GUNSHIP_ADATA;
+    extern struct area_data_pc_s *ADataList;
     extern i32 AREACOUNT;
-    AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out);
-    LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out);
-    LEVELDATA_PC *Area_FindNextPlayLevel(i32 level_index);
+    struct area_data_pc_s *Area_FindByName(char *name, i32 *index_out);
+    struct level_data_pc_s *Area_FindStatusLevel(struct area_data_pc_s *area, i32 *index_out);
+    struct level_data_pc_s *Area_FindNextPlayLevel(i32 level_index);
     void Areas_FixUp(AREAFIXUP_PC *fixup);
     void FixUpAreas(void);
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;
     extern u16 AREA_DEFAULTCHALLENGETIME;
-    extern AREA_DATA_PC *LastAData;
-    extern AREA_DATA_PC *HUB_ADATA;
-    extern AREA_DATA_PC *VADER_ADATA;
+    extern struct area_data_pc_s *LastAData;
+    extern struct area_data_pc_s *HUB_ADATA;
+    extern struct area_data_pc_s *VADER_ADATA;
     extern i32 Area;
     extern i32 loadareacharacters_no_backdrop_reset;
 #ifdef __cplusplus

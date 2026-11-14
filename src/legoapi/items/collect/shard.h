@@ -6,14 +6,9 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h (not all of it earlier in the shim). */
-
-#include "legoapi/props/objects/legoapi_signal.h"
-#include "legoapi/world/world.h"
-
-#ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#endif
+struct SIGNAL_s;
+struct WORLDINFO_s;
+struct gameobject_s;
 
 typedef struct AREA_SAVE_PICKUP_PC {
     union {
@@ -51,7 +46,7 @@ STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
+    void Shards_HandleLostObj(struct WORLDINFO_s *, struct gameobject_s *);
     void Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
 #ifdef __cplusplus
 }

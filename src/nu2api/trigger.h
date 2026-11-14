@@ -6,11 +6,17 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: nu2api/nucore/nugcutscene.h (not all of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/nucore/nugcutscene.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/nugcutscene.h"
+#endif
+
+struct instnugcutscene_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,8 +29,8 @@ extern "C" {
      * promotion cast the installed callback addresses to these canonical ABI typedefs
      * and recompile full contexts. Do not publish private helper prototypes. */
     typedef struct CUT_LOOKAT_STATE_PC CUT_LOOKAT_STATE_PC;
-    void instNuGCutSceneEnd(INSTNUGCUTSCENE *);
-    void instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward);
+    void instNuGCutSceneEnd(struct instnugcutscene_s *);
+    void instNuGCutScenePlay(struct instnugcutscene_s *owner, i32 forward);
 #ifdef __cplusplus
 }
 #endif

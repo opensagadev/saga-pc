@@ -7,22 +7,47 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gamelib/util/gamelib_util_types.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, legoapi/world/world.h, nu2api/numath/nuvec.h (not all of
- * it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "gameapi/edtools/edfile.h"
+#include "gamelib/net/NetMessagePc.h"
 #include "gamelib/util/gamelib_util_types.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
+#include "globals.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edfile.h"
+#include "gamelib/net/NetMessagePc.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edfile.h"
+#include "gamelib/net/NetMessagePc.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 5 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_STOP)
+
+struct PART_PC;
+struct gameobject_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -98,15 +123,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    BOLT_PC *Bolt_Find(i32, NUVEC *, GAMEOBJECT *);
-    extern i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum);
-    void Bolt_GetShootOrigin_Default(GAMEOBJECT *, NUVEC *);
-    u16 Bolt_GetShootDirection_Default(GAMEOBJECT *, NUVEC *);
-    BOLT_PC *FindIncomingBolt(GAMEOBJECT *, i32, i32);
-    void Bolt_Shoot(GAMEOBJECT *, i32, i32);
-    PART_PC *Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
-    i32 Bolt_HitGameObject(BOLT_PC *, GAMEOBJECT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
-    extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
+    BOLT_PC *Bolt_Find(i32, NUVEC *, struct gameobject_s *);
+    extern i32 (*InitBolt_AddMomentumType)(BOLT *bolt, struct gameobject_s *object, NUVEC *momentum);
+    void Bolt_GetShootOrigin_Default(struct gameobject_s *, NUVEC *);
+    u16 Bolt_GetShootDirection_Default(struct gameobject_s *, NUVEC *);
+    BOLT_PC *FindIncomingBolt(struct gameobject_s *, i32, i32);
+    void Bolt_Shoot(struct gameobject_s *, i32, i32);
+    struct PART_PC *Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
+    i32 Bolt_HitGameObject(BOLT_PC *, struct gameobject_s *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    extern i32 (*BoltInitSfxFn)(struct gameobject_s *);
     void GuidedMissile_Deflect(struct PART_PC *part);
     void GuidedMissile_Kill(struct PART_PC *part, i32 reason);
     void GuidedMissile_Move(struct PART_PC *part, f32 time);

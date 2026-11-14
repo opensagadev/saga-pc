@@ -7,18 +7,30 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: decomp.h, nu2api/nu3d/android/nushaderobject.h, nu2api/nuwin32/d3dCore.h (not all
- * of it earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "decomp.h"
 #include "nu2api/nu3d/android/nushaderobject.h"
-#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nu3d/nushaderobjectbase.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "decomp.h"
+#include "nu2api/nu3d/android/nushaderobject.h"
+#include "nu2api/nu3d/nushaderobjectbase.h"
+#endif
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_PART == 1 && !defined(SAGA_NU2API_NU3D_SHADERMANAGEROPENGL_H_STOP)
+
+struct PC_SHADER_FILTER_DESC_VIEW;
+struct PC_SHADER_FILTER_MATERIAL_VIEW;
+struct PC_SHADER_MATERIAL_FILTER_VIEW;
+struct PC_TEXTURE_RESOURCE_PC;
+
 #ifdef __cplusplus
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +43,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuShaderObjectKeyGenerate3(u32 *, const PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
+    void NuShaderObjectKeyGenerate3(u32 *, const struct PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -63,8 +75,8 @@ class NuShaderObject {
     i32 version;
     u32 field_18;
     PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-    PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;
+    struct PC_TEXTURE_RESOURCE_PC *vertex_shader;
+    struct PC_TEXTURE_RESOURCE_PC *pixel_shader;
     u32 unknown_4d4;
 
     void fun_00741250();
@@ -83,14 +95,15 @@ template <class T> class ShaderManagerTemplate {
   public:
     ShaderManagerTemplate();
     virtual ~ShaderManagerTemplate();
-    virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
-    virtual void AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
+    virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
+    virtual void AdaptDescriptor(const struct PC_SHADER_FILTER_DESC_VIEW *,
+                                 const struct PC_SHADER_FILTER_MATERIAL_VIEW *);
     T slots[400];
     i32 last_allocated;
     PC_SHADER_OBJECT_FULL_VIEW *bound_slot;
     PC_SHADER_OBJECT_FULL_VIEW *AllocateSlot(i32 *index);
-    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *,
-                                         i32, i32, bool);
+    PC_SHADER_OBJECT_FULL_VIEW *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *,
+                                         const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
     void ReleaseShader(T *slot);
     void DestroyShaders();
     void SetCurrentShader(T *slot);

@@ -6,16 +6,31 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/edtools/edui.h, legoapi/characters/motion/move.h,
- * legoapi/items/base/apiobject.h, legoapi/misc/legoapi_status.h (not all of it earlier in the shim). */
-
-#include "legoapi/world/world.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/edtools/edui.h"
 #include "legoapi/characters/motion/move.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/misc/legoapi_status.h"
+#include "legoapi/world/world.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edui.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/legoapi_status.h"
+#include "legoapi/world/world.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edui.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/legoapi_status.h"
+#include "legoapi/world/world.h"
 #endif
 
 #ifdef __cplusplus

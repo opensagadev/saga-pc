@@ -6,40 +6,50 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, gameapi/ai/aisys/gameaiscript.h,
- * legoapi/ai/core/gameai.h, legoapi/ai/game/aipathcnxhelper.h, legoapi/gizmo/object/gizmoblowups.h,
- * legoapi/gizmos/door/zipups.h, legoapi/gizmos/transport/tubes.h, legoapi/items/base/apiobject.h,
- * legoapi/items/objects/objectsall.h, legoapi/legoapi_types.h, legoapi/misc/legoapi_status.h,
- * legoapi/props/objects/techno.h, legoapi/props/system/socksys.h, legoapi/world/level.h, legoapi/world/levels.h,
- * nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
-
-#include "legoapi/core/input/timer.h"
-#include "legoapi/gizmo/base/gizactions.h"
-#include "legoapi/gizmos/fx/edgizshadowmachine.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/bgproc.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/ai/aisys/aisys.h"
-#include "gameapi/ai/aisys/gameaiscript.h"
 #include "legoapi/ai/core/gameai.h"
-#include "legoapi/ai/game/aipathcnxhelper.h"
-#include "legoapi/gizmo/object/gizmoblowups.h"
-#include "legoapi/gizmos/door/zipups.h"
-#include "legoapi/gizmos/transport/tubes.h"
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/misc/legoapi_status.h"
-#include "legoapi/props/objects/techno.h"
-#include "legoapi/props/system/socksys.h"
-#include "legoapi/world/level.h"
+#include "legoapi/core/input/timer.h"
 #include "legoapi/world/levels.h"
 #include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/world/levels.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+struct AISYS_PC;
+struct APIDEBRISSYS_PC;
+struct APIOBJECTSYS_PC;
+struct GIZMOBLOWUPTYPE_PC;
+struct GIZMOBLOWUP_PC;
+struct LEVEL_OBJECT_RUNTIME_PC;
+struct NUGSCN_s;
+struct TUBE_PC;
+struct ai_helper_system_pc_s;
+struct bolt_s;
+struct climb_system_pc_s;
+struct cutsys_pc_s;
+struct edgizshadow_pc_s;
+struct gameanimsys_s;
+struct level_progress_pc_s;
+struct minikit_piece_pc_s;
+struct numtx_s;
+struct partdebrissys_s;
+struct rtlset_pc_s;
+struct socksys_pc_s;
+struct techno_pc_s;
+struct zipup_pc_s;
 
 typedef struct level_sfx_entry_pc_s {
     NUVEC position;
@@ -174,19 +184,19 @@ typedef struct WORLDINFO_s {
     i32 episode_index;
     struct level_data_pc_s *current_level;
     struct area_data_pc_s *area;
-    LEVEL_PROGRESS *level_progress;
-    APIDEBRISSYS_PC *game_debris_sys;
-    PARTDEBRISSYS *part_debris_sys;
-    NUGSCN *current_gscn;
-    NUGSCN *secondary_gscn;
+    struct level_progress_pc_s *level_progress;
+    struct APIDEBRISSYS_PC *game_debris_sys;
+    struct partdebrissys_s *part_debris_sys;
+    struct NUGSCN_s *current_gscn;
+    struct NUGSCN_s *secondary_gscn;
     NUVEC level_min;
     NUVEC level_max;
     SCENEPROGRESS scene_progress;
     void *terrain;
-    GAMEANIMSYS *game_anim_sys;
+    struct gameanimsys_s *game_anim_sys;
     u32 unknown_2964[9];
-    SOCKSYS_PC *sock_sys;
-    APIOBJECTSYS_PC *object_sys;
+    struct socksys_pc_s *sock_sys;
+    struct APIOBJECTSYS_PC *object_sys;
     u8 room_visibility_flag;
     u8 rooms_visible[0x100];
     u8 unknown_2a91[3];
@@ -197,11 +207,11 @@ typedef struct WORLDINFO_s {
     i32 page_grass;
     i32 page_bridge;
     i32 page_unknown;
-    CUTSYS_PC *cutscene_sys;
-    RTLSET_PC *rtl_set;
+    struct cutsys_pc_s *cutscene_sys;
+    struct rtlset_pc_s *rtl_set;
     i32 rtl_id;
     void *light_dir;
-    LEVEL_OBJECT_RUNTIME_PC *level_objects;
+    struct LEVEL_OBJECT_RUNTIME_PC *level_objects;
     struct nugspline_s **camera_splines;
     void *gizmo_sys;
     struct GIZFLOW_PC *giz_flow;
@@ -209,17 +219,17 @@ typedef struct WORLDINFO_s {
     struct shadow_platform_list_pc_s *shadow_platform_list_pc;
     struct HUBMINIKIT_s *hub_minikits;
     i32 ai_loaded;
-    AISYS_PC *ai_sys;
+    struct AISYS_PC *ai_sys;
     i32 script_processor_count;
     LEVEL_SCRIPT_PROCESS_PC script_processors[32];
     struct ai_control_system_pc_s *ai_path_cnx_control_sys;
-    AI_HELPER_SYSTEM_PC *ai_connection_helpers;
+    struct ai_helper_system_pc_s *ai_connection_helpers;
     void *ai_trigger_set;
-    CLIMB_SYSTEM_PC *climb_objects;
+    struct climb_system_pc_s *climb_objects;
     u8 unknown_4680[8];
-    ZIPUP_PC *zipups;
+    struct zipup_pc_s *zipups;
     i32 zipup_count;
-    TUBE_PC *tubes;
+    struct TUBE_PC *tubes;
     i32 tube_count;
     struct DOOR_s *doors;
     i32 door_count;
@@ -269,7 +279,7 @@ typedef struct WORLDINFO_s {
     i32 nlevers;
     struct GIZPANELSYS_s *giz_panel_sys;
     void *hat_machine_sys;
-    TECHNO_PC *technos;
+    struct techno_pc_s *technos;
     i32 techno_count;
     struct GRAPPLE_DYNAMIC_PC *grapples;
     i32 grapple_count;
@@ -287,12 +297,12 @@ typedef struct WORLDINFO_s {
     struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys;
     i32 gizmo_blowup_type_count;
     i32 gizmo_blowup_count;
-    GIZMOBLOWUPTYPE_PC *gizmo_blowup_types;
-    GIZMOBLOWUP_PC *gizmo_blowups;
+    struct GIZMOBLOWUPTYPE_PC *gizmo_blowup_types;
+    struct GIZMOBLOWUP_PC *gizmo_blowups;
     i32 blowup_target_candidate_count;
-    GIZMOBLOWUP_PC **blowup_target_candidates;
+    struct GIZMOBLOWUP_PC **blowup_target_candidates;
     char filler12a[20];
-    NUMTX *gizmo_blowup_mtx_buffer;
+    struct numtx_s *gizmo_blowup_mtx_buffer;
     void *minicuts;
     void *minicut_parts;
     i32 minicut_count;
@@ -302,7 +312,7 @@ typedef struct WORLDINFO_s {
     void *giz_randoms;
     void *giz_special_sys;
     void *game_antinode_sys;
-    EDGIZSHADOW_PC *shadow_editor;
+    struct edgizshadow_pc_s *shadow_editor;
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;
     i32 has_level_specific_data;
     void *level_specific_data;
@@ -395,7 +405,7 @@ extern "C" {
     WORLDINFO *WorldInfo_CurrentlyLoading(void);
     i32 WorldInfo_OtherLevel(WORLDINFO *world);
     void WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param);
-    void StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress);
+    void StoreLevelProgressFn(WORLDINFO *world, struct level_progress_pc_s *progress, i32 area_progress);
     void WorldInfo_Dump(WORLDINFO *);
     i32 WorldInfo_Reset(WORLDINFO *, i32);
     void WorldInfo_Load(WORLDINFO *);
@@ -403,11 +413,11 @@ extern "C" {
     void WorldInfo_LoadObjectAnimFile(WORLDINFO *);
     void WorldInfo_Register(WORLDINFO *world);
 
-    /* WORLDINFO existing unknown_2960 first DWORD -> GAMEANIMSYS *game_anim_sys @2960; retain next9 unknown DWORDs.
-     * Existing unknown_4698 split at46a4 -> void *giz_obstacle_sys; retain preceding0xc/following0x68 opaque.
-     * Existing unknown_50bc -> i32 gizmo_blowup_type_count; unknown_50c4 -> GIZMOBLOWUPTYPE_PC *gizmo_blowup_types.
-     * Existing GIZMOBLOWUPTYPE_PC tail90..d8 opaque, char name[32]@d8, tailf8..100 opaque, sizeof100.
-     * Preserve all previously asserted offsets. Authoritative actual reader/store spans in full ASM. */
+    /* WORLDINFO existing unknown_2960 first DWORD -> struct gameanimsys_s *game_anim_sys @2960; retain next9 unknown
+     * DWORDs. Existing unknown_4698 split at46a4 -> void *giz_obstacle_sys; retain preceding0xc/following0x68 opaque.
+     * Existing unknown_50bc -> i32 gizmo_blowup_type_count; unknown_50c4 -> struct GIZMOBLOWUPTYPE_PC
+     * *gizmo_blowup_types. Existing GIZMOBLOWUPTYPE_PC tail90..d8 opaque, char name[32]@d8, tailf8..100 opaque,
+     * sizeof100. Preserve all previously asserted offsets. Authoritative actual reader/store spans in full ASM. */
     STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
     STATIC_ASSERT(offsetof(WORLDINFO, giz_obstacle_sys) == 0x46a4);
     STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_type_count) == 0x50bc);
@@ -437,8 +447,8 @@ extern "C" {
 #endif
 
 typedef struct minikit_pc_s {
-    NUGSCN *scene;
-    MINIKIT_PIECE_PC *pieces;
+    struct NUGSCN_s *scene;
+    struct minikit_piece_pc_s *pieces;
     u8 piece_count;
     i8 area_index;
     i16 model_id;

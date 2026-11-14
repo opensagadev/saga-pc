@@ -6,8 +6,23 @@
 
 #include "nu2api/nucore/common.h"
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/numath/nuvec.h"
+#endif
 
 typedef struct nulgtlaser_pc_s {
     NUVEC start;

@@ -7,22 +7,35 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, legoapi/items/collect/bolts.h,
- * legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it
- * earlier in the shim). */
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
-#include "legoapi/items/collect/bolts.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
 #if SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_STOP)
+
+struct WORLDINFO_s;
+struct bolt_s;
+struct gameobject_s;
 
 typedef struct game_antinode_data_pc_s {
     NUVEC position;
@@ -305,24 +318,26 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *);
-    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, GAMEOBJECT *object);
-    i32 GizmoBlowupCheckProximity(WORLDINFO *, GAMEOBJECT *);
-    i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32);
-    GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *);
-    void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, WORLDINFO *);
-    void *gizmoblowup_reservebuffers(WORLDINFO *);
-    void GizmoBlowupsFinalSetup(WORLDINFO *);
-    void GizmoBlowupVisibilityOverrides(WORLDINFO *);
-    GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(WORLDINFO *, NUVEC *, f32);
-    void GizmoSortBlowups(WORLDINFO *);
-    i32 GizmoBlowupGetTypeFromNameTableId(WORLDINFO *, i32);
-    GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *, WORLDINFO *);
-    void GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
-    i32 InitGizmoBlowupTypes(WORLDINFO *);
-    i32 InitGizmoBlowups(WORLDINFO *);
-    i32 InitGizmoBlowupsMtxBuffer(WORLDINFO *);
-    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *);
+    extern i32 (*GizmoBlowUp_NoTargetFn)(struct WORLDINFO_s *, struct gameobject_s *);
+    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags,
+                                struct gameobject_s *object);
+    i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
+    i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
+    GIZMOBLOWUPTYPE_PC *GizmoBlowupTypeAdd(struct WORLDINFO_s *, NUSPECIALHANDLE *, i32, i32 *);
+    void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *, struct WORLDINFO_s *);
+    void *gizmoblowup_reservebuffers(struct WORLDINFO_s *);
+    void GizmoBlowupsFinalSetup(struct WORLDINFO_s *);
+    void GizmoBlowupVisibilityOverrides(struct WORLDINFO_s *);
+    GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(struct WORLDINFO_s *, NUVEC *, f32);
+    void GizmoSortBlowups(struct WORLDINFO_s *);
+    i32 GizmoBlowupGetTypeFromNameTableId(struct WORLDINFO_s *, i32);
+    GIZMOBLOWUPTYPE_PC *GizmoBlowup_FindType(char *, struct WORLDINFO_s *);
+    void GizmoBlowUpTypeBlowUp(struct WORLDINFO_s *, i32, NUVEC *);
+    i32 InitGizmoBlowupTypes(struct WORLDINFO_s *);
+    i32 InitGizmoBlowups(struct WORLDINFO_s *);
+    i32 InitGizmoBlowupsMtxBuffer(struct WORLDINFO_s *);
+    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32,
+                                    u8 *);
 #ifdef __cplusplus
 }
 #endif

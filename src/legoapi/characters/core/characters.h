@@ -6,17 +6,25 @@
 
 #include "nu2api/nucore/common.h"
 
-/* Included via saga.h only for now: legoapi/items/base/apiobject.h, nu2api/nu3d/nu3d_includes.h (not all of it earlier
- * in the shim). */
-
-#include "legoapi/world/world.h"
-#include "nu2api/nu3d/nugscn.h"
-#include "nu2api/numath/numtx.h"
-
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/items/base/apiobject.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#endif
+
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#endif
+
+struct NUGSCN_s;
+struct WORLDINFO_s;
+struct gameobject_s;
+struct numtx_s;
 
 typedef struct GAME_CUSTOMISER_START_PC {
     u16 pieces[9];
@@ -40,7 +48,7 @@ STATIC_ASSERT(sizeof(APICHARACTERMODELLIST) == 4);
 STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
 
 typedef struct KILLPARTS_CHARSCENE_PC {
-    NUGSCN *scene;
+    struct NUGSCN_s *scene;
     NUSPECIALHANDLE special_scene;
 } KILLPARTS_CHARSCENE_PC;
 
@@ -49,12 +57,12 @@ STATIC_ASSERT(offsetof(KILLPARTS_CHARSCENE_PC, special_scene) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void CharScene_Draw(WORLDINFO *, i32, NUMTX *, NUMTX *);
-    NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *, i32);
+    void CharScene_Draw(struct WORLDINFO_s *, i32, struct numtx_s *, struct numtx_s *);
+    NUSPECIALHANDLE *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
     extern KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc;
-    void HeadMovement(GAMEOBJECT *);
-    void HairMovement(GAMEOBJECT *);
-    void CharScenes_LevelDump(WORLDINFO *);
+    void HeadMovement(struct gameobject_s *);
+    void HairMovement(struct gameobject_s *);
+    void CharScenes_LevelDump(struct WORLDINFO_s *);
     extern const char PCContextName_ZipUp[6];
 
     typedef struct char_category_record_pc_s {
