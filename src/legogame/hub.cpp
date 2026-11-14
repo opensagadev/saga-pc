@@ -1576,9 +1576,7 @@ static i32 HubCopyNetworkFreePlayListPc(void) {
     return 1;
 }
 
-#pragma bss_seg(".bss$HubIconWibbleAnglePc")
 static u16 HubIconWibbleAnglePc[4] = {0};
-#pragma bss_seg()
 
 extern "C" void fun_00476b70() {
     for (i32 i = 0; i < 4; ++i) {
@@ -1653,24 +1651,14 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
     return index;
 }
 
-#pragma bss_seg(".bss$BigIconAlpha")
 static f32 BigIconAlpha[2] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$HubFreePlaySelectionWaitPc")
 static f32 HubFreePlaySelectionWaitPc = 0.75f;
 #pragma data_seg()
-#pragma bss_seg(".bss$freeplay_time")
 static f32 freeplay_time[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeplayduration")
 static f32 freeplayduration = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeplaytime")
 static f32 freeplaytime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hub_freeplay_area")
 static i32 hub_freeplay_area = 0;
-#pragma bss_seg()
 
 extern "C" void Hub_UpdateFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
@@ -3138,9 +3126,7 @@ static f32 HubFreePlayBigSizePc = 0.3499999940395355f;
 #pragma data_seg(".data$HubFreePlayBigYPc")
 static f32 HubFreePlayBigYPc = 0.3499999940395355f;
 #pragma data_seg()
-#pragma bss_seg(".bss$HubFreePlayDrawListPc")
 static APICHARACTERMODELLIST HubFreePlayDrawListPc[341] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$HubFreePlayFinalSizePc")
 static f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
 #pragma data_seg()

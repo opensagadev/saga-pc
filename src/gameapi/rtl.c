@@ -8,9 +8,7 @@ static i32 curr_version = 5;
 #pragma data_seg(".data$RtlUidCounterPc")
 static u16 rtl_uid = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$rtl_dynamic_cnt")
 static i32 rtl_dynamic_cnt = 0;
-#pragma bss_seg()
 
 typedef union RTL_FRAME_TIMER_VIEW_PC {
     i32 value; // 0x0

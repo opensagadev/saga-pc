@@ -1328,15 +1328,9 @@ void SarlaccPitC_Init(WORLDINFO *world) {
     SarlaccTargetShieldPc[1] = 0;
 }
 
-#pragma bss_seg(".bss$SarlaccBlowUpTargetCountPc")
 static i32 SarlaccBlowUpTargetCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccBlowUpTargetsPc")
 static GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccTakenOverPc")
 static i32 SarlaccTakenOverPc = 0;
-#pragma bss_seg()
 
 void SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
@@ -1381,9 +1375,7 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
     }
 }
 
-#pragma bss_seg(".bss$SarlaccRechargeTimerPc")
 static f32 SarlaccRechargeTimerPc = 0;
-#pragma bss_seg()
 
 void SarlaccPitC_Update(WORLDINFO *world) {
     SARLACC_WORLD_PC *script_world = (SARLACC_WORLD_PC *)world;

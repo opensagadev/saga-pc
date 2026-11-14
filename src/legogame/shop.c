@@ -306,13 +306,9 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
     }
 }
 
-#pragma bss_seg(".bss$CodePos")
 static NUVEC CodePos[6] = {0};
-#pragma bss_seg(".bss$ShelfPos")
 static NUVEC ShelfPos[6] = {0};
-#pragma bss_seg(".bss$splcharshelf")
 static struct nugspline_s *splcharshelf = NULL;
-#pragma bss_seg()
 static struct nugspline_s *splcodes = 0;
 static struct nugspline_s *splshelf = 0;
 

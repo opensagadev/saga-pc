@@ -1,6 +1,5 @@
 #include "saga.h"
-#pragma bss_seg(".bss$splcodes")
-#pragma bss_seg(".bss$splshelf")
+/* Integrate these declarations once. Keep all existing canonical data owners. */
 STATIC_ASSERT(offsetof(shopitem_s, item_id) == 0x60);
 STATIC_ASSERT(offsetof(shopitem_s, type) == 0x62);
 STATIC_ASSERT(offsetof(shopitem_s, unlocked) == 0x63);

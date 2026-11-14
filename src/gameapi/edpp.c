@@ -1,22 +1,11 @@
 #include "saga.h"
 #include <stdio.h>
-#pragma bss_seg(".bss$edptl_detail_menu")
 struct eduimenu_s *edptl_detail_menu = 0;
-#pragma bss_seg(".bss$grad_jib_x_amp_item")
 static struct edui_slider_s *grad_jib_x_amp_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_x_freq_item")
 static struct edui_slider_s *grad_jib_x_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_y_amp_item")
 static struct edui_slider_s *grad_jib_y_amp_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_y_freq_item")
 static struct edui_slider_s *grad_jib_y_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptljibmenu")
 struct eduimenu_s *ptljibmenu = 0;
-#pragma bss_seg()
 
 void edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {

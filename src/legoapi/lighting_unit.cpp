@@ -662,11 +662,8 @@ extern "C" {
     f32 ShadowLightEyeDistancePc = 20.0f;
     f32 ShadowLightFocusHeightPc = -2.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$ShadowLightSplitCountPc")
     i32 ShadowLightSplitCountPc = 0;
-#pragma bss_seg(".bss$EdMainCurrentCameraPc")
     NUCAMERA *EdMainCurrentCameraPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" void SetShadowLight(void) {

@@ -10,15 +10,9 @@
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
-#pragma bss_seg(".bss$NuDebrisCurrentPacket")
 static NATIVE_PARTICLE_PACKET_PC *NuDebrisCurrentPacket = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisCurrentVertexCount")
 static u32 NuDebrisCurrentVertexCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisVertexBufferSize")
 static u32 NuDebrisVertexBufferSize = 0;
-#pragma bss_seg()
 
 static f32 Nu3dPcIncludesVuVecLengthSq(const VuVec &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
@@ -126,9 +120,7 @@ extern "C" {
     i32 NuMainRendererControlPc = 1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$NuRndrControlStatePc")
     i32 NuRndrControlStatePc = 0;
-#pragma bss_seg()
 
     /* The shadow-volume pass reads the arena globals that nurndr.c defines as pointers through array
      * declarations, so it draws from the pointer variables' own addresses (the pass has no caller). */

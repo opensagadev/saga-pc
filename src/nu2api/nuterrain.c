@@ -1,10 +1,6 @@
 #include "saga.h"
-#pragma bss_seg(".bss$TerrainCrashDataPc")
 static u8 *TerrainCrashDataPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debug_index")
 static i16 debug_index = 0;
-#pragma bss_seg()
 
 void TerrainSetCur(void *terrain) {
     CurrentTerrain = terrain;

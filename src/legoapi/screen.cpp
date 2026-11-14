@@ -1,9 +1,7 @@
 #include "saga.h"
 
 #include <stdio.h>
-#pragma bss_seg(".bss$pause_rndr_mtl")
 static void *pause_rndr_mtl = 0;
-#pragma bss_seg(".bss$pause_rt")
 static i32 pause_rt = 0;
 
 typedef struct STILL_RENDER_MATERIAL_PC {

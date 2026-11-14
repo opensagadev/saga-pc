@@ -781,9 +781,7 @@ STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, position) == 0);
 STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
 STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 
-#pragma bss_seg(".bss$edbri_mtl")
 NUMTL *edbri_mtl = NULL;
-#pragma bss_seg()
 
 void edbriDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];

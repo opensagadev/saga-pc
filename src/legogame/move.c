@@ -5761,24 +5761,16 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     }
 }
 
-#pragma bss_seg(".bss$ForceBackObjPc")
 static GAMEOBJECT *ForceBackObjPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackPosPc")
 static NUVEC *ForceBackPosPc = 0;
-#pragma bss_seg()
 
 void ResetForceBack(void) {
     ForceBackObjPc = NULL;
     ForceBackPosPc = NULL;
 }
 
-#pragma bss_seg(".bss$ForceBackRadiusPc")
 static f32 ForceBackRadiusPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackTypePc")
 static i32 ForceBackTypePc = 0;
-#pragma bss_seg()
 
 void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
     ForceBackObjPc = object;
@@ -8560,9 +8552,7 @@ static f32 PODSPRINT_GRAVITY = -35.0f;
 #pragma data_seg(".data$SLAMGRAVITY")
 static f32 SLAMGRAVITY = -15.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$applygravity_extrahoveroffset")
 static f32 applygravity_extrahoveroffset = 0;
-#pragma bss_seg()
 
 void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
     CHARACTERDATA_PC *character;

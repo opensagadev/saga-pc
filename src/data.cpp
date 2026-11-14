@@ -7315,25 +7315,15 @@ extern "C" {
                                           "sebulbaspod",    "sidius",        "crowd",       0};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$shop_from_cutsceneplayer")
     i32 shop_from_cutsceneplayer = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DoorExitCameraSplineNamePc")
     char DoorExitCameraSplineNamePc[32] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DoorCutSplinePc")
     NUGSPLINE *DoorCutSplinePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DoorCutCameraPosition0Pc")
     NUVEC DoorCutCameraPosition0Pc = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DoorCutCameraPosition1Pc")
     NUVEC DoorCutCameraPosition1Pc = {0};
-#pragma bss_seg()
 
 #pragma data_seg(".data$PlayerMissionStartDoorPc")
     char PlayerMissionStartDoorPc[13] = "mission_door";
@@ -7343,76 +7333,41 @@ extern "C" {
     char PlayerArcadeStartDoorPc[16] = "door_to_network";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$ResetBits")
     u32 ResetBits = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevMusicAction")
     i32 LevMusicAction = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevMusicAmbient")
     i32 LevMusicAmbient = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevMusicOtherAction")
     i32 LevMusicOtherAction = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevMusicOtherAmbient")
     i32 LevMusicOtherAmbient = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$WorldInfo_InitMenuFn")
     void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$WorldInfo_InitLastFn")
     void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$LevPathNodes")
     i32 LevPathNodes[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevTime")
     f32 LevTime[5] = {0};
-#pragma bss_seg(".bss$LevPathCnx")
     void *LevPathCnx[16] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevGamePart")
     PART_PC *LevGamePart[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevBlowUp")
     GIZMOBLOWUP_PC *LevBlowUp[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevSfxId")
     i32 LevSfxId[4] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevelCodeSpline")
     NUGSPLINE *LevelCodeSpline[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevPathCnxDir")
     i32 LevPathCnxDir = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevelLocator")
     void *LevelLocator = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevPlatID")
     i32 LevPlatID[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevLock")
     u8 LevLock[5] = {0};
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuperStoryEpisode")
     i32 SuperStoryEpisode = -1;
@@ -7442,37 +7397,25 @@ extern "C" {
     char PodRaceIncrementKeywordPc[11] = "increment=";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$LevDeaths")
     i32 LevDeaths = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$newlevelfrommenu_newmenuid")
     i32 newlevelfrommenu_newmenuid = -1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$newlevelfrommenu_newmenuy")
     i32 newlevelfrommenu_newmenuy = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$LevInstAnimResetPc")
     LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc = {0};
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$ActionPairTab")
     PC_MUSIC_ACTION_PAIR_PC *ActionPairTab = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$GizObstacleTriggerCountPc")
     i32 ngizobstacletriggers = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$LastDoorPointerPc")
     void *LastDoorPointerPc = 0;
-#pragma bss_seg()
 }
 extern "C" {
 #pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
@@ -7483,13 +7426,9 @@ extern "C" {
     extern const char GizObstacleTypeNamePc[12] = "GizObstacle";
 #pragma const_seg()
 
-#pragma bss_seg(".bss$GizmoBlowupNameCountPc")
     i32 GizmoBlowupNameCountPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizmoBlowupNameTablePc")
     char GizmoBlowupNameTablePc[32][32] = {0};
-#pragma bss_seg()
 }
 extern "C" {
 #pragma const_seg(".rdata$PCSoundBuffer8IIDPc")
@@ -7505,81 +7444,43 @@ extern "C" {
     f32 TerrPlatScanDist = 10.0f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$BatarangPacketsPc")
     PLAYER_BATARANG_SLOT_PC BatarangPacketsPc[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PlayerSuit")
     SUIT_LAYERS_PC *PlayerSuit[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CoinPacket")
     PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizForceLOSInfo")
     PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PlayerTorpedoCount")
     u8 PlayerTorpedoCount[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Game_CharacterSave")
     u8 *Game_CharacterSave = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$BackUpPlayers")
     GAMEOBJECT BackUpPlayers[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$OldPlrSPos")
     SOCKPOSITION_PC OldPlrSPos[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Hub_UsePlayerList")
     i32 Hub_UsePlayerList = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Area_PlayerIDList")
     i16 Area_PlayerIDList[9] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Area_StoryModelListPc")
     APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Game_AreaSave")
     COLLECTION_AREA_SAVE_PC *Game_AreaSave = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$cntrots")
     i32 cntrots = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PlatCallback")
     TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PlatCodeCallback")
     i32 PlatCodeCallback = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCSoundStorageLockPc")
     CRITICAL_SECTION PCSoundStorageLockPc = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCSoundStorageLockReadyPc")
     i32 PCSoundStorageLockReadyPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCSoundDrainStartPc")
     i32 PCSoundDrainStartPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCSoundDrainRemainingPc")
     i32 PCSoundDrainRemainingPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -7766,92 +7667,46 @@ extern "C" {
     i32 DebrisDmaCleanupIndexPc = 1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$dat_0091eeec")
     i32 dat_0091eeec = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0091ef20")
     u32 dat_0091ef20 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuApiEndFrameCallbackPc")
     void (*NuApiEndFrameCallbackPc)(void) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$numtoruscolldata")
     i32 numtoruscolldata = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$edpp_cam_pos")
     NUVEC edpp_cam_pos = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$edpp_nearest")
     i32 edpp_nearest = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$numspherecolldata")
     i32 numspherecolldata = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$spherecolldata")
     DEBRIS_COLLISION_ENTRY_PC *spherecolldata = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$debris_collide_pt")
     NUVEC debris_collide_pt = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$toruscolldata")
     DEBRIS_COLLISION_ENTRY_PC *toruscolldata = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$globalframes")
     i32 globalframes = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DebrisArenaInitializedPc")
     i32 DebrisArenaInitializedPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$debris_sort_this_stack")
     i32 debris_sort_this_stack = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$debris_update_this_stack")
     i32 debris_update_this_stack = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DebrisDmaCleanupDelayPc")
     i32 DebrisDmaCleanupDelayPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$dat_02974ccc")
     u32 dat_02974ccc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_02974cd0")
     u32 dat_02974cd0 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_02974cd4")
     u32 dat_02974cd4 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_02974cd8")
     u32 dat_02974cd8 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_02974cec")
     u32 dat_02974cec = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_02974cf0")
     u32 dat_02974cf0 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDevicePrimitiveUPCallCountPc")
     u32 PCDevicePrimitiveUPCallCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceIndexedPrimitiveUPCallCountPc")
     u32 PCDeviceIndexedPrimitiveUPCallCountPc = 0;
-#pragma bss_seg()
 }
 
 struct SoundQueue;
@@ -7859,12 +7714,8 @@ struct PC_SOUND_COMMIT_PC;
 #pragma bss_seg(".bss$music_man")
 NuMusic music_man;
 #pragma bss_seg()
-#pragma bss_seg(".bss$the_music_player")
 NuMusic *the_music_player = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuSound3StereoStreams")
 SoundQueue *NuSound3StereoStreams[2] = {0};
-#pragma bss_seg()
 
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode = 0;
@@ -7885,15 +7736,11 @@ i32 level_already_loaded = -1;
 i32 next_level = 0;
 volatile i32 abort_load = 0;
 i32 dagobah_training = 0;
-#pragma bss_seg(".bss$party_cant_be_under_cover")
 i32 party_cant_be_under_cover = 0;
-#pragma bss_seg()
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
 i32 reset_restart = 0;
-#pragma bss_seg(".bss$NoMoreLoads")
 i32 no_more_loads = 0;
-#pragma bss_seg()
 i32 BonusWinner = -1;
 i32 BonusCoinTotal = 0;
 i32 NewMode = 0;
@@ -7913,16 +7760,12 @@ i32 peak_poly_count = 0;
 i32 poly_count = 0;
 i32 CUTSTOPGAME = 0;
 i32 Paused = 0;
-#pragma bss_seg(".bss$NetPaused")
 i32 NetPaused = 0;
-#pragma bss_seg()
 i32 FinishLoop_On = 1;
 i32 LevelChange = 0;
 i32 LevelChangesInArea = 0;
 i32 do_multiframe_update = 0;
-#pragma bss_seg(".bss$MainFrameCounters")
 MAINFRAMECOUNTERS MainFrameCounters = {0};
-#pragma bss_seg()
 i32 Arcade = 0;
 i32 hub_from_arcade = -1;
 i32 UsePlayerList = 0;
@@ -7953,9 +7796,7 @@ extern "C" {
 #pragma data_seg(".data$BoltShootParameter")
     f32 BoltShootParameter = 0.1f;
 #pragma data_seg()
-#pragma bss_seg(".bss$CurrentStringBank")
     i16 CurrentStringBank = 0;
-#pragma bss_seg()
     u32 nustring_format = 1;
     SFX_GROUP_PC NuSound3Groups[128] = {0};
     i16 NuSound3GroupSampleIds[512] = {0};
@@ -7993,12 +7834,8 @@ extern "C" {
 #pragma data_seg(".data$GameObjectRotationAtstId")
     u16 GameObjectRotationAtstId = 0xffff;
 #pragma data_seg()
-#pragma bss_seg(".bss$temp_xrot")
     u16 temp_xrot = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$temp_zrot")
     u16 temp_zrot = 0;
-#pragma bss_seg()
     i32 VehicleArea = 0;
     extern const char NuAnimSourceFileName[48] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c";
 #pragma const_seg(".rdata$AIScriptKeywordEnd")
@@ -8097,19 +7934,11 @@ extern "C" {
     i32 StartupGameFlag0 = 0;
     i32 StartupGameFlag1 = 1;
     u8 ForcePlayEndFrame = 0;
-#pragma bss_seg(".bss$ForceEulerToQuat")
     u8 ForceEulerToQuat = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_009737ff")
     u8 dat_009737ff = 0;
-#pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer = 0;
-#pragma bss_seg(".bss$DdMaxJointsPc")
     i32 ddmaxjoints = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MotionBlurAccumActiveThisFrame")
     i32 motionBlurAccumActiveThisFrame = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ModelAnimLayerListDispatchPc")
     i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
 #pragma data_seg()
@@ -8119,63 +7948,29 @@ extern "C" {
 #pragma data_seg(".data$DwaPointerCursorPc")
     i32 rndr_blend_shape_deformer_wt_ptrs_cnt = 2048;
 #pragma data_seg()
-#pragma bss_seg(".bss$DwaWeightPoolPc")
     DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$DwaPointerPoolPc")
     DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$AnimQuatDepthPc")
     i32 NumQuatPushes = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AnimQuatSavedPc")
     u8 AnimQuatSavedPc[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$AISysSpecialNodeCallback")
     AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AnimBuffEvalCB")
     ANI3_EVAL_CALLBACK_PC AnimBuffEvalCB = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AnimBuffEvalData")
     void **AnimBuffEvalData = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AnimBuffEvalJoint")
     i32 *AnimBuffEvalJoint = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$ANI3_EVAL_IDENTITY_MATRIX")
     extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
 #pragma const_seg()
-#pragma bss_seg(".bss$ANI3_EVAL_SCALE_ARRAY")
     NUVEC ANI3_EVAL_SCALE_ARRAY[256] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Bridges")
     NUBRIDGE_PC Bridges[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuBridgeProc")
     i32 NuBridgeProc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltShootIdScratch")
     i32 BoltShootIdScratch = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltShootPositionScratch")
     NUVEC BoltShootPositionScratch = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$CurrentTerrain")
     void *CurrentTerrain = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetNamedGameObjectCallback")
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RepeatSfxQueueHead")
     i32 RepeatSfxQueueHead = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RepeatSfxQueue")
     REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$TerLayer")
     TERRAIN_LAYER_PC TerLayer[17] = {
         {0x00000000, 0x0000ffff, 0x40000000}, {0x00000000, 0x0000ffff, 0x40000000},
@@ -8213,9 +8008,7 @@ extern "C" {
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
     NUDATHDR *StartupDatList[7] = {0};
     i32 StartupDatCount = 0;
-#pragma bss_seg(".bss$NuSoundDat")
     NUDATHDR *NuSoundDat = 0;
-#pragma bss_seg()
     GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
@@ -8279,9 +8072,7 @@ extern "C" {
     f32 qfnt_justify_stretch = 1.0f;
     u32 NuQFntMode = 0;
     i32 NuQFntModeStackIndex = 0;
-#pragma bss_seg(".bss$NuQFntModeStack")
     u32 NuQFntModeStack[16] = {0};
-#pragma bss_seg()
     i32 nuqfnt_cs_mode = 0;
     f32 qfnt_offscale_x = 0;
     f32 qfnt_offscale_y = 0;
@@ -8340,9 +8131,7 @@ extern "C" {
     i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
     i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
     void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
-#pragma bss_seg(".bss$GizObstacle_SetDefaultSFXFn")
     void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
-#pragma bss_seg()
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
@@ -8478,12 +8267,8 @@ extern "C" {
     FILEBUFF file_buff[4] = {0};
     i32 nufile_buffering_enabled = 0;
     i32 datsys_offset = 0;
-#pragma bss_seg(".bss$nufile_lasterror")
     i32 nufile_lasterror = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nufile_try_packed")
     i32 nufile_try_packed = 0;
-#pragma bss_seg()
     NUFILE_DEVICE devices[16] = {0};
     i32 numdevices = 0;
     NUFILE_DEVICE enum_devices[16] = {0};
@@ -8520,9 +8305,7 @@ extern "C" {
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200] = {0};
     char dat_029753c0[512] = {0};
-#pragma bss_seg(".bss$nu_keyboard_page_index")
     u8 nu_keyboard_page_index = 0;
-#pragma bss_seg()
     i32 nu_keyboard_device_flags = 0;
     i32 nu_keyboard_key_index = 0;
     i32 nu_keyboard_repeat_countdown = 0;
@@ -8535,9 +8318,7 @@ extern "C" {
     NUALLOC_RECORD *NuAllocRecordHead = 0;
     u32 NuAllocTrackedBytes = 0;
     NUALLOC_ARENA *NuAllocArena = 0;
-#pragma bss_seg(".bss$NuAllocManager")
     void *NuAllocManager = 0;
-#pragma bss_seg()
     void *NuAllocPeakEnd0 = 0;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
     u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
@@ -8573,16 +8354,9 @@ extern "C" {
     f32 NuCameraProjectionFarClipBias = 0.1f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$NuCameraScissorProjectionScratch")
     NUMTX NuCameraScissorProjectionScratch = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$clip_test_mtx")
     NUMTX clip_test_mtx = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$zx")
     f32 zx = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$zy")
     f32 zy = 0;
 #pragma const_seg(".rdata$ClipOutcodeMask32")
     __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
@@ -8611,24 +8385,14 @@ extern "C" {
 #pragma data_seg(".data$PCClipExtentsEnabled")
     i32 PCClipExtentsEnabled = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCClipUseSSE")
     i32 PCClipUseSSE = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ClipCornerBlocks")
     NUVEC4BLOCK_PC ClipCornerBlocks[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ClipTransformedBlocks")
     NUVEC4BLOCK_PC ClipTransformedBlocks[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$clip_outcode_workspace_prefix")
     u32 clip_outcode_workspace_prefix[8] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$AIPathConnectionMargin")
     f32 AIPathConnectionMargin = 0.05f;
 #pragma data_seg()
-#pragma bss_seg(".bss$pNuCam")
     NUCAMERA *pNuCam = 0;
-#pragma bss_seg()
 #define IDENTITY_NUMTX 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     NUMTX NuMtxSetIdentityTemplate = {IDENTITY_NUMTX};
     NUMTX vmtx = {IDENTITY_NUMTX};
@@ -8642,18 +8406,10 @@ extern "C" {
     NUMTX vpsmtx = {IDENTITY_NUMTX};
     NUMTX clip_planes = {IDENTITY_NUMTX};
 #undef IDENTITY_NUMTX
-#pragma bss_seg(".bss$nuspecial_const_alpha_enabled")
     i32 nuspecial_const_alpha_enabled = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nuspecial_const_tint_enabled")
     i32 nuspecial_const_tint_enabled = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nuspecial_draw_state")
     i32 nuspecial_draw_state = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTrigTable")
     f32 NuTrigTable[32768] = {0};
-#pragma bss_seg()
 
     // PC NuSound3 state and loop-hold conversion constants.
     extern const f64 NuScale1000 = 1000.0;
@@ -8671,9 +8427,7 @@ extern "C" {
 #pragma data_seg(".data$SoundVoiceEnabledGate")
     i32 SoundVoiceEnabledGate = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$SoundVoiceCriticalSection")
     CRITICAL_SECTION SoundVoiceCriticalSection = {0};
-#pragma bss_seg()
 #pragma const_seg(".rdata$SoundVoice3DBufferIID")
     extern const GUID SoundVoice3DBufferIID = {
         0x279afa86,
@@ -8682,35 +8436,17 @@ extern "C" {
         {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60},
     };
 #pragma const_seg()
-#pragma bss_seg(".bss$NuSound3VolumeTable")
     f32 NuSound3VolumeTable[0x4000] = {0};
-#pragma bss_seg()
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
-#pragma bss_seg(".bss$ADataList")
     AREA_DATA_PC *ADataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AREACOUNT")
     i32 AREACOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EDataList")
     EPISODEDATA_PC *EDataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EPISODECOUNT")
     i32 EPISODECOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LEVELCOUNT")
     i32 LEVELCOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CDataList")
     CHARACTERDATA_PC *CDataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CHARCOUNT")
     i32 CHARCOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CheatSystem")
     CHEATSYSTEM_PC CheatSystem = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$CheatSystemPtr")
     CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
 #pragma data_seg()
@@ -8722,406 +8458,141 @@ extern "C" {
     AREA_DATA_PC *LastAData = 0;
     AREA_DATA_PC *HUB_ADATA = 0;
 
-#pragma const_seg(".rdata$AreaFixUpName_Jedi")
     extern char AreaFixUpName_Jedi[8] = "Jedi";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gungan")
     extern char AreaFixUpName_Gungan[8] = "Gungan";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Senate")
     extern char AreaFixUpName_Senate[8] = "senate";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Losttemple")
     extern char AreaFixUpName_Losttemple[12] = "losttemple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Emperorfight")
     extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Moseisley")
     extern char AreaFixUpName_Moseisley[12] = "moseisley";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Tatooine")
     extern char AreaFixUpName_Tatooine[12] = "tatooine";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gunship")
     extern char AreaFixUpName_Gunship[8] = "gunship";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Pursuit")
     extern char AreaFixUpName_Pursuit[8] = "pursuit";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Podsprint")
     extern char AreaFixUpName_Podsprint[12] = "podsprint";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Negotiations")
     extern char AreaFixUpName_Negotiations[16] = "negotiations";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Fairground")
     extern char AreaFixUpName_Fairground[12] = "Fairground";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Rooftops")
     extern char AreaFixUpName_Rooftops[12] = "Rooftops";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gothamstreets")
     extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Batcave")
     extern char AreaFixUpName_Batcave[8] = "batcave";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Jimtest")
     extern char AreaFixUpName_Jimtest[8] = "JimTest";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbKashyyyk")
     extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbKamino")
     extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbDagobah")
     extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hoth")
     extern char AreaFixUpName_Hoth[8] = "hoth";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Utapau")
     extern char AreaFixUpName_Utapau[8] = "utapau";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_LostTemple")
     extern char AreaFixUpName_LostTemple[12] = "LostTemple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Bonus")
     extern char AreaFixUpName_Bonus[8] = "Bonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Bonus2")
     extern char AreaFixUpName_Bonus2[8] = "Bonus2";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Anewhope")
     extern char AreaFixUpName_Anewhope[12] = "ANewHope";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_BonusGunship")
     extern char AreaFixUpName_BonusGunship[16] = "Bonus_Gunship";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Anakinsflight")
     extern char AreaFixUpName_Anakinsflight[16] = "AnakinsFlight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Podrace")
     extern char AreaFixUpName_Podrace[8] = "PodRace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E6characterbonus")
     extern char AreaFixUpName_E6characterbonus[20] = "E6CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E5characterbonus")
     extern char AreaFixUpName_E5characterbonus[20] = "E5CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E4characterbonus")
     extern char AreaFixUpName_E4characterbonus[20] = "E4CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E3characterbonus")
     extern char AreaFixUpName_E3characterbonus[20] = "E3CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E2characterbonus")
     extern char AreaFixUpName_E2characterbonus[20] = "E2CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E1characterbonus")
     extern char AreaFixUpName_E1characterbonus[20] = "E1CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstar2battle")
     extern char AreaFixUpName_Deathstar2battle[20] = "DeathStar2Battle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Endorbattle")
     extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Speederchase")
     extern char AreaFixUpName_Speederchase[16] = "SpeederChase";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Sarlaccpit")
     extern char AreaFixUpName_Sarlaccpit[12] = "SarlaccPit";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Jabbaspalace")
     extern char AreaFixUpName_Jabbaspalace[16] = "JabbasPalace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cloudcityescape")
     extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cloudcitytrap")
     extern char AreaFixUpName_Cloudcitytrap[16] = "CloudCityTrap";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dagobah")
     extern char AreaFixUpName_Dagobah[8] = "Dagobah";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Asteroidchase")
     extern char AreaFixUpName_Asteroidchase[16] = "AsteroidChase";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hothescape")
     extern char AreaFixUpName_Hothescape[12] = "HothEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hothbattle")
     extern char AreaFixUpName_Hothbattle[12] = "HothBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarbattle")
     extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarescape")
     extern char AreaFixUpName_Deathstarescape[16] = "DeathStarEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarrescue")
     extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Blockaderunner")
     extern char AreaFixUpName_Blockaderunner[16] = "BlockadeRunner";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Vader")
     extern char AreaFixUpName_Vader[8] = "Vader";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Temple")
     extern char AreaFixUpName_Temple[8] = "Temple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Kashyyyk")
     extern char AreaFixUpName_Kashyyyk[12] = "Kashyyyk";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Grievous")
     extern char AreaFixUpName_Grievous[12] = "Grievous";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cruiser")
     extern char AreaFixUpName_Cruiser[8] = "Cruiser";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dogfight")
     extern char AreaFixUpName_Dogfight[12] = "Dogfight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dooku")
     extern char AreaFixUpName_Dooku[8] = "Dooku";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Factory")
     extern char AreaFixUpName_Factory[8] = "Factory";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Kamino")
     extern char AreaFixUpName_Kamino[8] = "Kamino";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Maul")
     extern char AreaFixUpName_Maul[8] = "Maul";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Retakepalace")
     extern char AreaFixUpName_Retakepalace[16] = "RetakePalace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Palacerescue")
     extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Map")
     extern char AreaFixUpName_Map[4] = "map";
-#pragma const_seg()
 
-#pragma bss_seg(".bss$GOTHAMSTREETS_ADATA")
     AREA_DATA_PC *GOTHAMSTREETS_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ROOFTOPS_ADATA")
     AREA_DATA_PC *ROOFTOPS_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$FAIRGROUND_ADATA")
     AREA_DATA_PC *FAIRGROUND_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NEGOTIATIONS_ADATA")
     AREA_DATA_PC *NEGOTIATIONS_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GUNGAN_ADATA")
     AREA_DATA_PC *GUNGAN_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RESCUE_ADATA")
     AREA_DATA_PC *RESCUE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PODSPRINT_ADATA")
     AREA_DATA_PC *PODSPRINT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RETAKE_ADATA")
     AREA_DATA_PC *RETAKE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MAUL_ADATA")
     AREA_DATA_PC *MAUL_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BOUNTYHUNTERPURSUIT_ADATA")
     AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$KAMINO_ADATA")
     AREA_DATA_PC *KAMINO_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$FACTORY_ADATA")
     AREA_DATA_PC *FACTORY_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$JEDI_ADATA")
     AREA_DATA_PC *JEDI_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DOOKU_ADATA")
     AREA_DATA_PC *DOOKU_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DOGFIGHT_ADATA")
     AREA_DATA_PC *DOGFIGHT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BATTLEOVERCORUSCANT_ADATA")
     AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CRUISER_ADATA")
     AREA_DATA_PC *CRUISER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GRIEVOUS_ADATA")
     AREA_DATA_PC *GRIEVOUS_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$KASHYYYK_ADATA")
     AREA_DATA_PC *KASHYYYK_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TEMPLE_ADATA")
     AREA_DATA_PC *TEMPLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VADER_ADATA")
     AREA_DATA_PC *VADER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BLOCKADERUNNER_ADATA")
     AREA_DATA_PC *BLOCKADERUNNER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TATOOINE_ADATA")
     AREA_DATA_PC *TATOOINE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MOSEISLEY_ADATA")
     AREA_DATA_PC *MOSEISLEY_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTARRESCUE_ADATA")
     AREA_DATA_PC *DEATHSTARRESCUE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTARESCAPE_ADATA")
     AREA_DATA_PC *DEATHSTARESCAPE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTARBATTLE_ADATA")
     AREA_DATA_PC *DEATHSTARBATTLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HOTHBATTLE_ADATA")
     AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HOTHBATTLEA_LDATA")
     LEVELDATA_PC *HOTHBATTLEA_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$getvehiclehoverheight_hothbattlehack")
     i32 getvehiclehoverheight_hothbattlehack = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$disable_narrow_socks")
     i32 disable_narrow_socks = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HOTHESCAPE_ADATA")
     AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ASTEROIDCHASE_ADATA")
     AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DAGOBAH_ADATA")
     AREA_DATA_PC *DAGOBAH_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CLOUDCITYTRAP_ADATA")
     AREA_DATA_PC *CLOUDCITYTRAP_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CLOUDCITYESCAPE_ADATA")
     AREA_DATA_PC *CLOUDCITYESCAPE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$JABBASPALACE_ADATA")
     AREA_DATA_PC *JABBASPALACE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SARLACCPIT_ADATA")
     AREA_DATA_PC *SARLACCPIT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SPEEDERCHASE_ADATA")
     AREA_DATA_PC *SPEEDERCHASE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ENDORBATTLE_ADATA")
     AREA_DATA_PC *ENDORBATTLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTARBATTLE2_ADATA")
     AREA_DATA_PC *DEATHSTARBATTLE2_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EMPERORFIGHT_ADATA")
     AREA_DATA_PC *EMPERORFIGHT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E1CHARACTER_ADATA")
     AREA_DATA_PC *E1CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E2CHARACTER_ADATA")
     AREA_DATA_PC *E2CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E3CHARACTER_ADATA")
     AREA_DATA_PC *E3CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E4CHARACTER_ADATA")
     AREA_DATA_PC *E4CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E5CHARACTER_ADATA")
     AREA_DATA_PC *E5CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E6CHARACTER_ADATA")
     AREA_DATA_PC *E6CHARACTER_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E1VEHICLE_ADATA")
     AREA_DATA_PC *E1VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E2VEHICLE_ADATA")
     AREA_DATA_PC *E2VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E3VEHICLE_ADATA")
     AREA_DATA_PC *E3VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E4VEHICLE_ADATA")
     AREA_DATA_PC *E4VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E5VEHICLE_ADATA")
     AREA_DATA_PC *E5VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$E6VEHICLE_ADATA")
     AREA_DATA_PC *E6VEHICLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PODRACE_ADATA")
     AREA_DATA_PC *PODRACE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ANAKINSFLIGHT_ADATA")
     AREA_DATA_PC *ANAKINSFLIGHT_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BONUS_GUNSHIP_ADATA")
     AREA_DATA_PC *BONUS_GUNSHIP_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ANEWHOPE_ADATA")
     AREA_DATA_PC *ANEWHOPE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LEGOCITY_ADATA")
     AREA_DATA_PC *LEGOCITY_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NEWTOWN_ADATA")
     AREA_DATA_PC *NEWTOWN_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LOSTTEMPLE_ADATA")
     AREA_DATA_PC *LOSTTEMPLE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SENATE_ADATA")
     AREA_DATA_PC *SENATE_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$UTAPAU_ADATA")
     AREA_DATA_PC *UTAPAU_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HOTH_ADATA")
     AREA_DATA_PC *HOTH_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BONUSDAGOBAH_ADATA")
     AREA_DATA_PC *BONUSDAGOBAH_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BONUSKAMINO_ADATA")
     AREA_DATA_PC *BONUSKAMINO_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BONUSKASHYYYK_ADATA")
     AREA_DATA_PC *BONUSKASHYYYK_ADATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$JIMTEST_ADATA")
     AREA_DATA_PC *JIMTEST_ADATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$SfxFileTable")
     SFX_FILE_INFO_PC *SfxFileTable = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SfxFileCount")
     i32 SfxFileCount = 0;
-#pragma bss_seg()
 
-#pragma const_seg(".rdata$AreaFixUpLSW")
     AREAFIXUP_PC AreaFixUpLSW[65] = {
         {AreaFixUpName_Map, &HUB_ADATA},
         {AreaFixUpName_Negotiations, &NEGOTIATIONS_ADATA},
@@ -9189,16 +8660,12 @@ extern "C" {
         {AreaFixUpName_Jimtest, &JIMTEST_ADATA},
         {NULL, NULL},
     };
-#pragma const_seg()
 
-#pragma const_seg(".rdata$AreaFixUpLostTemple")
     AREAFIXUP_PC AreaFixUpLostTemple[2] = {
         {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
         {NULL, NULL},
     };
-#pragma const_seg()
 
-#pragma const_seg(".rdata$AreaFixUpGotham")
     AREAFIXUP_PC AreaFixUpGotham[5] = {
         {AreaFixUpName_Batcave, &HUB_ADATA},
         {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
@@ -9206,7 +8673,6 @@ extern "C" {
         {AreaFixUpName_Fairground, &FAIRGROUND_ADATA},
         {NULL, NULL},
     };
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarSource")
     extern const char NuTimeBarSource[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c";
 #pragma const_seg()
@@ -9256,31 +8722,18 @@ extern "C" {
 #pragma data_seg(".data$NuTimeBarHorizontalPeakReset")
     extern i32 NuTimeBarHorizontalPeakReset = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuTimeBar_EngineEnabled")
     i32 NuTimeBar_EngineEnabled = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTimeBar_GpuFrameOutEnabled")
     i32 NuTimeBar_GpuFrameOutEnabled = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTimeBar_PeakReset")
     i32 NuTimeBar_PeakReset = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$TextLoadPermTextDirectory")
     extern const char TextLoadPermTextDirectory[12] = "stuff\\text\\";
 #pragma const_seg()
 
-#pragma bss_seg(".bss$tALONGTIMEAGO")
     i16 tALONGTIMEAGO = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuQFntCSModeStack")
     i32 NuQFntCSModeStack[16] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuQFntCSModeStackIndex")
     i32 NuQFntCSModeStackIndex = 0;
 
-#pragma bss_seg(".bss$gizmotypes")
     void *gizmotypes = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PS2_VREZ_W")
     i32 PS2_VREZ_W = 640;
 #pragma data_seg()
@@ -9349,12 +8802,8 @@ extern "C" {
     f32 PanelProjectionY = 1145.0f;
     f32 PanelWideWidth = 740.0f;
     f32 PanelWideHeight = 387.5f;
-#pragma bss_seg(".bss$Panel3DMulX")
     f32 PANEL3DMULX = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Panel3DMulY")
     f32 PANEL3DMULY = 0;
-#pragma bss_seg()
     LANGUAGEDATA Game_LanguageList[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH},  {4, apitxt_GERMAN},
                                          {5, apitxt_ITALIAN}, {3, apitxt_SPANISH}, {8, apitxt_DANISH},
                                          {-1, NULL}};
@@ -9392,47 +8841,21 @@ extern "C" {
     char *apitxt_SPANISH = const_cast<char *>("Espa\xc3\xb1"
                                               "ol");
     char *apitxt_DANISH = const_cast<char *>("Dansk");
-#pragma bss_seg(".bss$tNULL")
     i16 tNULL = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tUNKNOWN")
     i16 tUNKNOWN = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tENGLISH")
     i16 tENGLISH = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tFRENCH")
     i16 tFRENCH = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tGERMAN")
     i16 tGERMAN = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tITALIAN")
     i16 tITALIAN = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tSPANISH")
     i16 tSPANISH = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tDANISH")
     i16 tDANISH = 0;
-#pragma bss_seg()
 
-// NuWaterReset writes these standalone four-byte PC globals.
-#pragma bss_seg(".bss$NuWaterResetState")
+    // NuWaterReset writes these standalone four-byte PC globals.
     i32 nu_water_reset_state = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWaterFlowState")
     i32 nu_water_flow_state = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWaterResetStatus")
     i32 nu_water_reset_status = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTimeTickBase")
     i64 NuTime_TickBase = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTimePerformanceFrequency")
     i64 NuTime_PerformanceFrequency = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$NuTimeLowScale")
     extern const f64 NuTime_LowScale = 4294967295.0;
 #pragma const_seg()
@@ -9449,51 +8872,21 @@ extern "C" {
     VARIPTR fstack_limit = {0};
     i32 DebrisCutSceneMode = 0;
     RTLSET_PC *PartRTL = 0;
-#pragma bss_seg(".bss$edbits_base_scene")
     NUGSCN *edbits_base_scene = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbits_base_terrain")
     void *edbits_base_terrain = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuSound3Initialized")
     i32 NuSound3Initialized = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MusicInfo")
     struct nusound_filename_info_s *MusicInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SfxHashHeads")
     i16 *SfxHashHeads = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SfxInfo")
     SFX_RECORD_PC *SfxInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SfxCRCTable")
     u32 *SfxCRCTable = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SfxCRCTableInitialized")
     i32 SfxCRCTableInitialized = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPrimVertexGroupSource")
     NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AmbientPairTab")
     i16 *AmbientPairTab = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPrimNeedsOverbrightening")
     u8 NuPrimNeedsOverbrightening = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$levelconfig_ldata")
     LEVELDATA_PC *levelconfig_ldata = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Level_ConfigBeforeLoad_GameKeywords")
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Level_ConfigAfterLoad_GameKeywords")
     NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$fnInterpreterError")
     void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
-#pragma bss_seg()
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0, 0xffff},     {1.0f, 65, 0xffff},   {1.0f, 2, 0xffff},      {1.0f, 8, 0xffff},   {1.0f, 65536, 0xffff},
         {1.0f, 66560, 0xffff}, {1.0f, 0, 0xffff},    {1.0f, 2048, 0xffff},   {1.0f, 0, 0xffff},   {1.0f, 8192, 0xffff},
@@ -9650,36 +9043,16 @@ extern "C" {
 #pragma const_seg(".rdata$AreaConfigKeyword_name_id")
     extern const char AreaConfigKeyword_name_id[8] = "name_id";
 #pragma const_seg()
-#pragma bss_seg(".bss$SfxBits")
     u16 SfxBits[100] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GlobalSfxBits")
     u16 GlobalSfxBits[100] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$EdAnimLocalFrameCountPc")
     i32 EdAnimLocalFrameCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EdMainLocationVectorPc")
     NUVEC *ed_loc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_page_on")
     i32 edanim_page_on[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_page_used")
     i32 edanim_page_used[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_page_scene")
     NUGSCN *edanim_page_scene[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_next_param")
     i32 edanim_next_param = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_params_used")
     i32 edanim_params_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AnimParams")
     EDANIM_PARAM_PC AnimParams[64] = {0};
-#pragma bss_seg()
     f32 NuVideoFrameRate = 0;
 
     void MenuEnterNoMemoryCard(MENU *);
@@ -9747,9 +9120,7 @@ extern "C" {
     i32 MenuFadeEnabled = 0;
     i32 MenuDrawDropShadows = 0;
     NUMTL *MenuFadeMtl = 0;
-#pragma bss_seg(".bss$MENUHEADERR")
     u8 MENUHEADERR = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$MENUHEADERG")
     u8 MENUHEADERG = 0x7f;
 #pragma data_seg(".data$MENUHEADERB")
@@ -9768,18 +9139,10 @@ extern "C" {
 #pragma data_seg()
     NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                             0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-#pragma bss_seg(".bss$numtl_defaultmtl2d")
     NUMTL *numtl_defaultmtl2d = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$numtl_defaultmtl3d")
     NUMTL *numtl_defaultmtl3d = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDisplayListStreamCursor")
     VARIPTR *NuDisplayListStreamCursor = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$render_state")
     NUGLOBALRNDRSTATE_PC render_state = {0};
-#pragma bss_seg()
     f32 default_targetmomf = 4.0f;
     f32 default_ownermomf = 5.0f;
     f32 default_max_cable_length = 15.0f;
@@ -9789,27 +9152,16 @@ extern "C" {
     f32 max_cable_length = 15.0f;
     f32 tow_length = 6.0f;
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
-#pragma bss_seg(".bss$cables")
     u8 cables[0xf60] = {0};
-#pragma bss_seg(".bss$nsegments_drawn")
     i32 nsegments_drawn = 0;
-#pragma bss_seg(".bss$solid_cable")
     i32 solid_cable = 0;
-#pragma bss_seg()
     i32 menu_flash = 0;
-#pragma bss_seg(".bss$tAUDIOVOLUME")
     i16 tAUDIOVOLUME = 0;
-#pragma bss_seg(".bss$tMUSIC")
     i16 tMUSIC = 0;
-#pragma bss_seg(".bss$tON")
     i16 tON = 0;
-#pragma bss_seg(".bss$tOFF")
     i16 tOFF = 0;
-#pragma bss_seg(".bss$tACCEPT")
     i16 tACCEPT = 0;
-#pragma bss_seg(".bss$tBACK")
     i16 tBACK = 0;
-#pragma bss_seg()
     f32 MenuTitlesPromptYPc = -0.5f;
     f32 MenuTitlesWidePromptYPc = -0.575f;
     OPTIONSSAVE *Game_OptionsSave = 0;
@@ -9859,18 +9211,10 @@ extern "C" {
          0, 0, 0, 0, 0},
     };
 
-#pragma bss_seg(".bss$DebrisGlassInitialized")
     i32 DebrisGlassInitialized = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassCopyMaterial")
     void *DebrisGlassCopyMaterial = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassU1")
     f32 DebrisGlassU1 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassV1")
     f32 DebrisGlassV1 = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PS2_VCNTR_X")
     i32 PS2_VCNTR_X = 320;
 #pragma data_seg(".data$PS2_VCNTR_Y")
@@ -9902,9 +9246,7 @@ VARIPTR permbuffer_base = {0};
 VARIPTR permbuffer_ptr = {0};
 VARIPTR permbuffer_end = {0};
 VARIPTR characterbuffer_base = {0};
-#pragma bss_seg(".bss$CharacterBufferPtr")
 VARIPTR characterbuffer_ptr = {0};
-#pragma bss_seg()
 VARIPTR characterbuffer_end = {0};
 VARIPTR superbuffer_base = {0};
 VARIPTR superbuffer_ptr = {0};
@@ -10008,36 +9350,18 @@ i32 condition_has_no_goto = 0;
 
 // Movement, object and AI state recovered from the PC image.
 extern "C" {
-#pragma bss_seg(".bss$HIGHGAMEOBJECT")
     i32 HIGHGAMEOBJECT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Obj")
     GAMEOBJECT *Obj = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$plr_lastpos")
     NUVEC plr_lastpos = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$v000")
     NUVEC v000 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GameTimer")
     TIMER GameTimer = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$party_under_cover")
     i32 party_under_cover = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$alert_obj")
     GAMEOBJECT *alert_obj = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$alert_timer")
     f32 alert_timer = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ForcePush_Speed")
     f32 ForcePush_Speed = 2.5f;
 #pragma data_seg()
-#pragma bss_seg(".bss$ForcePush_SuperPush")
     i32 ForcePush_SuperPush = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$PCContextName_Jump")
     extern const char PCContextName_Jump[5] = "Jump";
 #pragma const_seg()
@@ -10173,9 +9497,7 @@ extern "C" {
 #pragma data_seg(".data$CInfo")
     CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
 #pragma data_seg()
-#pragma bss_seg(".bss$dynamic_antinodes")
     AIANTINODE_PC dynamic_antinodes[64] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$default_path_radius")
     f32 default_path_radius = 0.25f;
 #pragma data_seg()
@@ -10186,25 +9508,13 @@ extern "C" {
 
 // Additional PC movement, targeting, arcade and callback state.
 extern "C" {
-#pragma bss_seg(".bss$TargetDist_Near2")
     f32 TargetDist_Near2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TargetDist_Mid2")
     f32 TargetDist_Mid2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TargetDeg_Near")
     u16 TargetDeg_Near = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTAR2BATTLEA_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ASTEROIDCHASED_LDATA")
     LEVELDATA_PC *ASTEROIDCHASED_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTARRESCUEA_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$ForcePushApproachInnerSquare")
     extern const f32 ForcePushApproachInnerSquare = 0.010000000707805157f;
 #pragma const_seg()
@@ -10217,27 +9527,13 @@ extern "C" {
 #pragma data_seg(".data$ONEPLAYERPOWERUPS")
     i32 ONEPLAYERPOWERUPS = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$APIOBJECTFromObjIDFn")
     APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeModeText0")
     i16 PCArcadeModeText0 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeModeText1")
     i16 PCArcadeModeText1 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeModeText2")
     i16 PCArcadeModeText2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeLevelText")
     i16 PCArcadeLevelText = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeModeText")
     i16 PCArcadeModeText = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadePlayText")
     i16 PCArcadePlayText = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$Arcade_Mode")
     ARCADE_MODE_PC Arcade_Mode[7] = {
         {&PCArcadeModeText0, 0, 0x19},   {&PCArcadeModeText1, 10, 0x12}, {&PCArcadeModeText1, 25, 0x12},
@@ -10275,9 +9571,7 @@ extern "C" {
 
 // PC movement tuning, timers, input masks and parser path.
 extern "C" {
-#pragma bss_seg(".bss$GamePlayTimer")
     TIMER GamePlayTimer = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$GAMEPAD_JUMP")
     u32 GAMEPAD_JUMP = 64;
 #pragma data_seg()
@@ -10308,24 +9602,14 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AIRespawnOnPathFn")
     AI_RESPAWN_ON_PATH_PC AIRespawnOnPathFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetCharacterGoalSpeedFn")
     AI_CHARACTER_GOAL_SPEED_PC GetCharacterGoalSpeedFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MidSpecialMoveFn")
     AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GCDataList")
     PLAYERCHARACTERCONFIG_PC *GCDataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharacterCustomiser")
     CUSTOMISER_LAYERS_PC *CharacterCustomiser = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$id_BODYGUARD")
     i16 id_BODYGUARD = -1;
 #pragma data_seg()
@@ -10335,9 +9619,7 @@ extern "C" {
 #pragma data_seg(".data$id_CHEWBACCA")
     i16 id_CHEWBACCA = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$MAGNETOFFSET")
     f32 MAGNETOFFSET = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10391,18 +9673,11 @@ extern "C" {
     };
 #pragma data_seg()
 
-#pragma bss_seg(".bss$edpart_entry_position")
     NUVEC edpart_entry_position = {0};
 
-#pragma bss_seg(".bss$Part")
     PART_PC *Part = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_scene_pageid")
     i32 part_scene_pageid[32] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_page_used")
     i32 part_page_used[8] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$MAXPARTS")
     i32 MAXPARTS = 32;
 #pragma data_seg()
@@ -10412,9 +9687,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PreparingForSpecialMoveFn")
     AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$new_retreat")
     i32 new_retreat = 1;
 #pragma data_seg()
@@ -10428,24 +9701,14 @@ extern "C" {
     f32 AIMovementInstructionNegativeThreshold = -0.5f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$LevHSpecial")
     NUSPECIALHANDLE LevHSpecial[88] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevGizObst")
     GIZOBSTACLE *LevGizObst[8] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CarWashHack")
     GAMEOBJECT *CarWashHack = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$IDLESPEEDINNARROWSOCKSONLY")
     i32 IDLESPEEDINNARROWSOCKSONLY = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VehicleAreaRememberSpeed")
     f32 VehicleAreaRememberSpeed = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$VehicleCollisionDamageSpeedFraction")
     f32 VehicleCollisionDamageSpeedFraction = 0.6000000238418579f;
 #pragma data_seg()
@@ -10455,18 +9718,10 @@ extern "C" {
 #pragma data_seg(".data$VehicleCollisionRearAngle")
     i32 VehicleCollisionRearAngle = 10;
 #pragma data_seg()
-#pragma bss_seg(".bss$MOSEISLEYB_LDATA")
     LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTAR2BATTLEE_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTAR2BATTLEF_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DEATHSTAR2BATTLEG_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$id_LANDSPEEDER")
     i16 id_LANDSPEEDER = -1;
 #pragma data_seg()
@@ -10524,36 +9779,22 @@ extern "C" {
     f32 PARTSCALEUPTIME = 0.5f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$podsprint")
     PODSPRINT_PC podsprint = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NarrowSockException")
     NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$id_BASKETCANNON")
     i16 id_BASKETCANNON = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ScriptProcessFirstTimeActionFn")
     AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$current_packet")
     AIPACKET_PC *current_packet = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$current_processor")
     AISCRIPTPROCESS_PC *current_processor = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SaberSparksTimer")
     f32 SaberSparksTimer = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$SaberSparksName")
     extern const char SaberSparksName[12] = "SaberSparks";
 #pragma const_seg()
-#pragma bss_seg(".bss$GameParamToFloatFn")
     AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$AIExpressionMaxName")
     extern const char AIExpressionMaxName[4] = "max";
 #pragma const_seg(".rdata$AIActionDistName")
@@ -10562,12 +9803,8 @@ extern "C" {
 #pragma data_seg(".data$rocket_speed")
     f32 rocket_speed = 1.2000000476837158f;
 #pragma data_seg()
-#pragma bss_seg(".bss$GUNSHIPA_LDATA")
     LEVELDATA_PC *GUNSHIPA_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$perm_debrissys")
     APIDEBRISSYS_PC *perm_debrissys = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10583,55 +9820,28 @@ extern "C" {
 #pragma data_seg(".data$id_STAP2")
     i16 id_STAP2 = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$AIActionParseSpeedFn")
     AI_PARSE_SPEED_PC AIActionParseSpeedFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetViewRangeFn")
     AI_CHARACTER_DISTANCE_PC GetViewRangeFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetHearDistanceFn")
     AI_CHARACTER_DISTANCE_PC GetHearDistanceFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetMaxViewHeightFn")
     AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetMinViewHeightFn")
     AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetOriginPositionFn")
     AI_ORIGIN_POSITION_PC GetOriginPositionFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CHARPAK")
     i32 CHARPAK = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$LevGizmo")
     GIZMO_PC *LevGizmo[12] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Explosions")
     EXPLOSION_PC Explosions[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$i_explosion")
     i32 i_explosion = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShadowMode")
     i32 ShadowMode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CheckLostDataFn")
     CHECK_LOST_DATA_PC CheckLostDataFn = 0;
-#pragma bss_seg()
-// Includes the utility WORD at +0x10000.
-#pragma bss_seg(".bss$ConfigBuffer")
+    // Existing complete working bytes view retained, including the native utility WORD at +0x10000.
+    // The original owner capacity remains unknown; the CSV extent intentionally stays blank.
     CONFIG_BUFFER_PC ConfigBuffer = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SURFACEBITS_DUST")
     u16 SURFACEBITS_DUST = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10698,28 +9908,16 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionFalseName")
     const char AIActionFalseName[6] = "FALSE";
 #pragma const_seg()
-#pragma bss_seg(".bss$AIActionDiagnosticMode")
     i32 AIActionDiagnosticMode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackRadius2Pc")
     f32 ForceBackRadius2 = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$Tag_Mode")
     i32 Tag_Mode = 2;
 #pragma data_seg()
-#pragma bss_seg(".bss$player_tag_to")
     GAMEOBJECT *player_tag_to = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$player_tag_timer")
     f32 player_tag_timer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$do_player_tag")
     i32 do_player_tag = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Tag_DrawIconFn")
     TAG_DRAW_ICON_PC Tag_DrawIconFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$TakeOverATATJumpScale")
     f32 TakeOverATATJumpScale = 0.75f;
 #pragma data_seg()
@@ -10732,9 +9930,7 @@ extern "C" {
 #pragma data_seg(".data$SpeederChaseATATExitLandPos")
     NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.869999885559082f, -17.600000381469727f};
 #pragma data_seg()
-#pragma bss_seg(".bss$LastSafePosExtraFn")
     LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$LEGOCONTEXT_DOOMED")
     i32 LEGOCONTEXT_DOOMED = -1;
 #pragma data_seg()
@@ -10762,9 +9958,7 @@ extern "C" {
 #pragma data_seg(".data$BUCK_RIDERJUMPCLEARANCE")
     f32 BUCK_RIDERJUMPCLEARANCE = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$BuckStartExtraFn")
     TAG_DRAW_ICON_PC BuckStartExtraFn = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10815,18 +10009,12 @@ extern "C" {
 #pragma data_seg(".data$DEFAULT_PLAYERHITPOINTS")
     i32 DEFAULT_PLAYERHITPOINTS = 8;
 #pragma data_seg()
-#pragma bss_seg(".bss$VADERC_LDATA")
     LEVELDATA_PC *VADERC_LDATA = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$TOGGLEHOLDTIME")
     f32 TOGGLEHOLDTIME = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$CUTSKIPLOCK")
     i32 CUTSKIPLOCK = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$players_cannot_exit_speeder")
     i32 players_cannot_exit_speeder = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
     const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
 #pragma const_seg()
@@ -10860,18 +10048,12 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionOpenName")
     const char AIActionOpenName[5] = "open";
 #pragma const_seg()
-#pragma bss_seg(".bss$AIBigJumpToDestinationFn")
     AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AiSysStateDebugee")
     AISCRIPTPROCESS_PC *AiSysStateDebugee = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BonusArea")
     i32 BonusArea = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10890,15 +10072,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$aicreature_sets_alive")
     u8 aicreature_sets_alive[16] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevGameObject")
     GAMEOBJECT *LevGameObject[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevFlag")
     i32 LevFlag[4] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10911,36 +10087,24 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$party_follow_offsets")
     f32 party_follow_offsets[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ai_fighting")
     i32 ai_fighting = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$drop_back_in_timer")
     f32 drop_back_in_timer = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$aitol")
     f32 aitol = 0.5f;
 #pragma data_seg()
 #pragma data_seg(".data$direction_scale")
     f32 direction_scale = 100.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$player2")
     GAMEOBJECT *player2 = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$nethost")
     i32 nethost = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$id_PKDROID")
     i16 id_PKDROID = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$NEGOTIATIONSC_LDATA")
     LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$GameObjectState_InActive")
     const char GameObjectState_InActive[9] = "InActive";
 #pragma const_seg()
@@ -10950,9 +10114,7 @@ extern "C" {
 #pragma data_seg(".data$CurrentSpeed")
     f32 CurrentSpeed = 10.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$avg_currentspeed_mul")
     f32 avg_currentspeed_mul = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$TwistSockRotationModeA")
     i32 TwistSockRotationModeA = 3;
 #pragma data_seg()
@@ -10968,26 +10130,16 @@ extern "C" {
 #pragma data_seg(".data$TwistLateralSpeed")
     f32 TwistLateralSpeed = 8.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$TwistScaleLean")
     i32 TwistScaleLean = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-// Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
-// Original complete array capacities remain unknown; CSV sizes intentionally stay blank.
-#pragma bss_seg(".bss$PlayerPadCurrentSpeed")
+    // Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
+    // Original complete array capacities remain unknown; CSV sizes intentionally stay blank.
     f32 PlayerPadCurrentSpeed[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayerPadPreviousSpeed")
     f32 PlayerPadPreviousSpeed[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayerPadCurrentAngle")
     u16 PlayerPadCurrentAngle[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayerPadPreviousAngle")
     u16 PlayerPadPreviousAngle[2] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11042,12 +10194,8 @@ extern "C" {
 #pragma data_seg(".data$GUNSHIPAHACK")
     i32 GUNSHIPAHACK = 2;
 #pragma data_seg()
-#pragma bss_seg(".bss$podrace_section")
     i32 podrace_section = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$newgamecam")
     i32 newgamecam = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$GAMEPAD_DUP")
     i32 GAMEPAD_DUP = 4096;
 #pragma data_seg()
@@ -11066,31 +10214,17 @@ extern "C" {
 #pragma data_seg(".data$OFFSCREEN_CATCHUP_TIME")
     f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$LIFTPLAYER")
     i32 LIFTPLAYER = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-// Hub arrays are two-entry source views; full original capacities remain unknown.
-#pragma bss_seg(".bss$pod_roll")
+    // Hub arrays are two-entry source views; full original capacities remain unknown.
     f32 pod_roll[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$pod_roll_target")
     f32 pod_roll_target[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Hub_PadSpeed")
     f32 Hub_PadSpeed[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Hub_PadAngle")
     u16 Hub_PadAngle[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$MissionSys")
     MISSIONSYS_PC *MissionSys = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GameObjectDimensionsExtraFn")
     void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11100,18 +10234,10 @@ extern "C" {
 #pragma data_seg(".data$engagefiretime")
     f32 engagefiretime = 1.5f;
 #pragma data_seg()
-#pragma bss_seg(".bss$DEFAULT_MOVE_RANGE")
     f32 DEFAULT_MOVE_RANGE = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevelCharacterTypeIDFn")
     AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SpecialRouteCharacterTypeIDFn")
     AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevelCharacterGlobalIDFn")
     AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$AICombatOffscreenName")
     const char AICombatOffscreenName[10] = "offscreen";
 #pragma const_seg()
@@ -11169,9 +10295,7 @@ extern "C" {
 #pragma data_seg(".data$SuperCarry_AlignObject")
     i32 SuperCarry_AlignObject = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$Player_ClearContextFn")
     PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$AIFireIntervalMul")
     f32 AIFireIntervalMul = 1.0f;
 #pragma data_seg()
@@ -11184,27 +10308,17 @@ extern "C" {
 #pragma data_seg(".data$timebase_updates")
     i32 timebase_updates = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$tieonsfxwait")
     f32 tieonsfxwait = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tieoffsfxwait")
     f32 tieoffsfxwait = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CurrentSpeedOverride")
     f32 CurrentSpeedOverride = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$BaseCurrentSpeed")
     f32 BaseCurrentSpeed = 10.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$DoubleScore")
     i32 DoubleScore = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$id_SEBULBASPOD")
     i16 id_SEBULBASPOD = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$UpdateSockets_LDATA")
     LEVELDATA_PC *UpdateSockets_LDATA = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$adtabentries")
     i8 adtabentries[9][4] = {{-1, -1, -1, -1}, {-1, -1, -1, 0}, {-1, -1, 0, 0}, {-1, 0, 0, 0}, {0, 0, 0, 0},
                              {1, 0, 0, 0},     {1, 1, 0, 0},    {1, 1, 1, 0},   {1, 1, 1, 1}};
@@ -11212,9 +10326,7 @@ extern "C" {
 #pragma data_seg(".data$adtab")
     i8 (*adtab)[4] = &adtabentries[4];
 #pragma data_seg()
-#pragma bss_seg(".bss$adaptivedifficulty")
     ADAPTIVEDIFFICULTY_PC adaptivedifficulty = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
     f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
 #pragma data_seg()
@@ -11242,75 +10354,43 @@ extern "C" {
 #pragma data_seg(".data$id_MINISTARDESTROYER")
     i16 id_MINISTARDESTROYER = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$LEGO_AIPATHCNX_FORGOODIES")
     u32 LEGO_AIPATHCNX_FORGOODIES = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LEGO_AIPATHCNX_FORBADDIES")
     u32 LEGO_AIPATHCNX_FORBADDIES = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$v100")
     NUVEC v100 = {1.0f, 0.0f, 0.0f};
 #pragma data_seg()
 #pragma data_seg(".data$v010")
     NUVEC v010 = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
-// Eight queue slots are a source access view; the complete original extent is unknown.
-#pragma bss_seg(".bss$NewCutInfo")
+    // Eight queue slots are a source access view; the complete original extent is unknown.
     CUTINFO *NewCutInfo[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NewCutInfoCount")
     i32 NewCutInfoCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevelCompletionFallbackFlagPC")
     u32 LevelCompletionFallbackFlagPC = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$AIAnimSpeedValueName")
     const char AIAnimSpeedValueName[7] = "value=";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScaleOverrideResetName")
     const char AIScaleOverrideResetName[6] = "reset";
 #pragma const_seg()
-#pragma bss_seg(".bss$SurfaceInfo_ExtraReflectFn")
     void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShadPoly")
     TERRAIN_POLYGON_INFO_PC *ShadPoly = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EShadowPolygonPc")
     TERRAIN_POLYGON_INFO_PC *EShadPoly = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShadowRoofPolygonPc")
     TERRAIN_POLYGON_INFO_PC *ShadRoofPoly = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
     i16 castnum = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EShadY")
     f32 EShadY = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoRoofHeightPc")
     f32 GetSurfaceInfoRoofHeightPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoSurfaceNormalPc")
     NUVEC ShadNorm = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoWaterNormalPc")
     NUVEC GetSurfaceInfoWaterNormalPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GetSurfaceInfoRuntimeMaskPc")
     PC_SURFACE_MASK_PC GetSurfaceInfoRuntimeMaskPc = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$GetSurfaceInfoDefaultMaskPc")
     PC_SURFACE_MASK_PC GetSurfaceInfoDefaultMaskPc = {0x20};
 #pragma data_seg()
 }
 
 extern "C" {
-// Minimum access view for the reviewed 0x948 and nested 0xd0 requests,
-// including their two pointer trailers. The full original extent is unknown.
-#pragma bss_seg(".bss$NuScratchBackingAccessPc")
+    // Minimum access view for the reviewed 0x948 and nested 0xd0 requests,
+    // including their two pointer trailers. The full original extent is unknown.
     __declspec(align(4)) u8 NuScratchBackingAccessPc[0x4000] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$NuScratchCurrentPc")
     u8 *ps2_scratch_free = NuScratchBackingAccessPc;
 #pragma data_seg()
@@ -11332,82 +10412,36 @@ struct TERRAIN_SKIN_INFO_PC;
 struct TERRAIN_SKIN_USE_RECORD_PC;
 
 extern "C" {
-// Accessed terrain state and literals; full original allocation extents remain unknown.
-#pragma bss_seg(".bss$TerI")
+    // Accessed terrain state and literals; full original allocation extents remain unknown.
     TerrainQuery_s *TerI = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainPlatformsOffPc")
     u16 NuTerrPlatsOff = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainScaledShapeCursorPc")
     TERRAIN_POLYGON_INFO_PC *ScaleTerrain = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainShadowFloorIndexPc")
     i16 TerrainShadowFloorIndexPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainCastAuxPolygonPc")
     TERRAIN_POLYGON_INFO_PC *TerrainCastAuxPolygonPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainShadowHeightPc")
     f32 TerrainShadowHeightPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainCastAuxValidPc")
     u16 TerrainCastAuxValidPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainCastAuxIndexPc")
     i16 TerrainCastAuxIndexPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainCastAuxNormalPc")
     NUVEC TerrainCastAuxNormalPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainWaterCastIndexPc")
     u16 TerrainWaterCastIndexPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainRoofValidPc")
     u16 TerrainRoofValidPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainRoofIndexPc")
     i16 TerrainRoofIndexPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainRoofNormalPc")
     NUVEC TerrainRoofNormalPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSurfaceClassPc")
     u16 TerrainSurfaceClassPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinInfoCountPc")
     i32 PlatSkinCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinInfosPc")
     struct TERRAIN_SKIN_INFO_PC *PlatSkinInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinUseEpochPc")
     u32 TerrainUpadteCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinUseRecordsPc")
     struct TERRAIN_SKIN_USE_RECORD_PC *SkinMemInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinPoolSlotCountPc")
     i32 PlatSkinMaxStore = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinPoolSlotBytesPc")
     i32 PlatSkinMaxSize = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainSkinPoolBasePc")
     u8 *PlatSkinMem = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$TerrainCastLowerSentinel")
     extern const f32 TerrainCastLowerSentinel = -2000000.0f;
 #pragma const_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$TerrainShadowStatusPc")
     i32 TerrPolyObj = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainScaleWorkBasePc")
     TERRAIN_POLYGON_INFO_PC *ScaleTerrainT1 = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$LAYER_HOVERIGNORE")
     u32 LAYER_HOVERIGNORE = 0xffffffffu;
 #pragma data_seg()
@@ -11435,45 +10469,25 @@ extern "C" {
 
 extern "C" {
 
-#pragma bss_seg(".bss$NuCameraMode")
     i32 NuCameraMode = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$global_reflect")
     NUCAMERAREFLECT global_reflect = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraClipScissorToViewport")
     i32 NuCameraClipScissorToViewport = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraPreviousClipScissorToViewport")
     i32 NuCameraPreviousClipScissorToViewport = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraOrthographic")
     i32 NuCameraOrthographic = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraScalingTemplate")
     NUMTX NuCameraScalingTemplate = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraProjectionGlobalScaleX")
     f32 NuCameraProjectionGlobalScaleX = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraProjectionGlobalScaleY")
     f32 NuCameraProjectionGlobalScaleY = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraProjectionGlobalOffsetX")
     f32 NuCameraProjectionGlobalOffsetX = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraProjectionGlobalOffsetY")
     f32 NuCameraProjectionGlobalOffsetY = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$psmtx")
     NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -11481,13 +10495,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuVpDirtyPc")
     i32 vport_inval = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCDeviceLastResult")
     HRESULT PCDeviceLastResult = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$NuVpIdentityMatrixPc")
     NUMTX NuVpIdentityMatrixPc = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                                   0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -11534,33 +10544,15 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PCSoundMixSource")
     void *PCSoundMixSource = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundMixSampleCount")
     i32 PCSoundMixSampleCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundMixDestination")
     void *PCSoundMixDestination = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundStartedOneShotCountPc")
     i32 PCSoundStartedOneShotCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundStartedLoopCountPc")
     i32 PCSoundStartedLoopCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundUpdatedLoopCountPc")
     i32 PCSoundUpdatedLoopCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundListenerLoopPositionPc")
     NUVEC PCSoundListenerLoopPositionPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundMixEvent")
     HANDLE PCSoundMixEvent = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundCommitTarget")
     PC_SOUND_COMMIT_PC *PCSoundCommitTarget = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11599,18 +10591,12 @@ extern "C" {
 #pragma data_seg(".data$gizbuildit_gizmotype_id")
     i32 gizbuildit_gizmotype_id = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$APIObjPlaySfxByIdFn")
     void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Grass_Available")
     i32 Grass_Available = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$APIObjectZeroMomentumPC")
     NUVEC APIObjectZeroMomentumPC = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11620,21 +10606,15 @@ extern "C" {
 #pragma bss_seg(".bss$PCDeviceStateCachePc")
     PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceSamplerInvalidation")
     i32 PCDeviceSamplerInvalidation[16][2] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$nufile_lsn_allowed")
     i32 nufile_lsn_allowed = 1;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BackupGame")
     GAMESAVE BackupGame = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$areaSuitBits")
     u32 areaSuitBits = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11686,36 +10666,20 @@ extern "C" {
 #pragma const_seg(".rdata$NuFileExt_ca3_PC")
     extern const char NuFileExt_ca3_PC[5] = ".ca3";
 #pragma const_seg()
-#pragma bss_seg(".bss$extensions")
     PC_FILEEXTINFO extensions[64] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$num_extensions")
     i32 num_extensions = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Game_Customiser")
     void *Game_Customiser = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CUTCAM")
     i32 CUTCAM = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma const_seg(".rdata$APIObjectPakExtension")
     extern const char APIObjectPakExtension[5] = ".fpk";
 #pragma const_seg()
-#pragma bss_seg(".bss$append")
     i32 append = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nopakfile")
     i32 nopakfile = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RedirectAnimFn")
     i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RedirectAnimList")
     void *RedirectAnimList = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$RedirectAnimDir")
     char RedirectAnimDir[64] = "chars\\commonanims\\";
 #pragma data_seg()
@@ -11739,123 +10703,65 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-#pragma bss_seg(".bss$LSW2")
     i32 LSW2 = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$HIGHJUMPHEIGHT")
     f32 HIGHJUMPHEIGHT = 1.14f;
 #pragma data_seg()
-#pragma bss_seg(".bss$AreaTimer")
     TIMER AreaTimer = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$OldBonusScore")
     i32 OldBonusScore[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BonusScore")
     i32 BonusScore[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BombGenerator_PlayerBomb")
     GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Lap")
     i32 Lap = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BuildUpTotal")
     i32 BuildUpTotal = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BuildUpDone")
     i32 BuildUpDone = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AreaGlobals_PC")
     AREA_GLOBALS_PC AreaGlobals_PC = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuLgtLaserCnt")
     i32 NuLgtLaserCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtLaserOldCnt")
     i32 NuLgtLaserOldCnt = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$NuLgtSeed")
     i32 NuLgtSeed = 12345;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuLgtArcMtl")
     NULGTARCMATERIAL_PC NuLgtArcMtl[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtLaserData")
     NULGTLASER_PC NuLgtLaserData[64] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtArcLaserCnt")
     i32 NuLgtArcLaserCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtArcLaserOldCnt")
     i32 NuLgtArcLaserOldCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtArcLaserFrame")
     i32 NuLgtArcLaserFrame = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuLgtArcLaserData")
     NULGTARCLASER_PC NuLgtArcLaserData[16] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PS2_REZ_W")
     i32 PS2_REZ_W = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PS2_REZ_H")
     i32 PS2_REZ_H = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral75782c")
     extern const char AITransferLiteral75782c[5] = "name";
 #pragma const_seg()
-#pragma bss_seg(".bss$BeenAttacked")
     i32 BeenAttacked = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$takeoverobjects")
     TAKEOVEROBJECT_PC takeoverobjects[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$num_takeoverobjects")
     i32 num_takeoverobjects = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DoorExitNamePc")
     char DoorExitNamePc[64] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Door_Start")
     i32 Door_Start = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$Door_NextSock")
     i32 Door_NextSock = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$minikitCounter_C")
     u8 minikitCounter_C = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$minikitCounter_A")
     u8 minikitCounter_A = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma const_seg(".rdata$GizmoSnapOptionNamePc")
     extern const char GizmoSnapOptionNamePc[5] = "SNAP";
 #pragma const_seg()
-#pragma bss_seg(".bss$debkeydata")
     DEBRISKEY_PC *debkeydata = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Door_Last")
     void *Door_Last = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuPrimCoordSystemStack")
     i32 NuPrimCoordSystemStack[2] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -11893,9 +10799,7 @@ extern "C" {
 #pragma data_seg(".data$NuMusicDebugColour")
     u32 NuMusicDebugColour = 0x80ffffff;
 #pragma data_seg()
-#pragma bss_seg(".bss$bonus_gunship_store_progress_flag")
     i32 bonus_gunship_store_progress_flag = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$LEDGETERRAINLOOKAHEAD")
     f32 LEDGETERRAINLOOKAHEAD = 0.02f;
@@ -11918,96 +10822,38 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral757f28")
     extern const char AITransferLiteral757f28[8] = "target=";
 #pragma const_seg()
-#pragma bss_seg(".bss$part_types")
     PARTTYPE_LOOKUP_PC part_types[128] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$debug_condition")
     f32 debug_condition = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$script_spline_selected")
     NUGSPLINE *script_spline_selected = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_mtl_zoff")
     struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edBridges")
     PC_EDBRIDGE edBridges[64] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_page_used")
     i32 edbri_page_used[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_page_scene")
     NUGSCN *edbri_page_scene[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_bridges_used")
     i32 edbri_bridges_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_nearest")
     i32 edbri_nearest = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_cam_pos")
     NUVEC edbri_cam_pos = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_used")
     i32 edgra_page_used[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_scene")
     NUGSCN *edgra_page_scene[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_terrain")
     void *edgra_page_terrain[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_matrix_stack")
     NUMTX *edgra_page_matrix_stack[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_vectors_valid")
     i32 edgra_page_vectors_valid[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_nearest")
     i32 edgra_nearest = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_cam_pos")
     NUVEC edgra_cam_pos = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbits_editmode")
     i32 edbits_editmode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_mtxbuffer")
     NUMTX *edgra_mtxbuffer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_vecbuffer")
     NUVEC *edgra_vecbuffer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_free_vecbuffer")
     void *edgra_free_vecbuffer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EDGRA_MAX_CLUMPS")
     i32 EDGRA_MAX_CLUMPS = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EDGRA_MAX_INDIVIDUAL_CLUMPS")
     i32 EDGRA_MAX_INDIVIDUAL_CLUMPS = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP")
     i32 EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GrassClumps")
     PC_EDGRACLUMP *GrassClumps = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$IndGrassClumps")
     PC_EDGRAINDIVIDUAL *IndGrassClumps = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$IndGrassClumpsUsed")
     i32 *IndGrassClumpsUsed = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_ind_clumps_used")
     i32 edgra_ind_clumps_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_clumps_used")
     i32 edgra_clumps_used = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$edgra_last_clump_in_buffer")
     i32 edgra_last_clump_in_buffer = -1;
 #pragma data_seg()
@@ -12032,126 +10878,56 @@ extern "C" {
 #pragma data_seg(".data$edgra_elementthin")
     i32 edgra_elementthin = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$edgra_page_on")
     i32 edgra_page_on[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$rtl_dynamic_pool")
     NULSTHDR *rtl_dynamic_pool = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$rtl_dynamic_max")
     i32 rtl_dynamic_max = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_suspended")
     i32 debris_suspended = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$globaltime")
     f32 globaltime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$panelglobaltime")
     f32 panelglobaltime = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$update_debris_enabled")
     i32 update_debris_enabled = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$debris_keystack")
     DEBRISKEY_PC *debris_keystack = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebkeyptr")
     i32 freedebkeyptr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$maxdebkeys")
     i32 maxdebkeys = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebkeys")
     i16 *freedebkeys = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuFadeObjGroup")
     PC_NUFADEGROUP *NuFadeObjGroup = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeObjCurGrp")
     PC_NUFADEGROUP *NuFadeObjCurGrp = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeData")
     i16 *NuFadeData = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeObjDataIndex")
     i32 NuFadeObjDataIndex = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeObjWave")
     i32 NuFadeObjWave = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeObjDir")
     i32 NuFadeObjDir = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuFadeObjDir2")
     i32 NuFadeObjDir2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindGroup")
     PC_NUWINDGROUP *NuWindGroup = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindCurGrp")
     PC_NUWINDGROUP *NuWindCurGrp = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindMaxGroupsPC")
     i32 NuWindMaxGroupsPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindWave")
     i32 NuWindWave = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindDir")
     i32 NuWindDir = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindDir2")
     i32 NuWindDir2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_units_used")
     i32 edgra_units_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edgra_page_calculate_done")
     i32 edgra_page_calculate_done[8] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$debrischunks")
     i32 debrischunks = 256;
 #pragma data_seg()
 #pragma data_seg(".data$debrischunksglass")
     i32 debrischunksglass = 32;
 #pragma data_seg()
-#pragma bss_seg(".bss$freechunkcontrols")
     DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freechunkcontrolsptr")
     i32 freechunkcontrolsptr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_control_stack_lock")
     volatile i32 debris_control_stack_lock = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_chunk_control_stack")
     DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$CLOUDCITYTRAPB_LDATA")
     LEVELDATA_PC *CLOUDCITYTRAPB_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MAULA_LDATA")
     LEVELDATA_PC *MAULA_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MAULF_LDATA")
     LEVELDATA_PC *MAULF_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DOOKUC_LDATA")
     LEVELDATA_PC *DOOKUC_LDATA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeDmaDebType")
     i32 freeDmaDebType = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$EDPP_MAX_DMADEBTYPES")
     i32 EDPP_MAX_DMADEBTYPES = 64;
 #pragma data_seg()
-#pragma bss_seg(".bss$DmaDebTypes")
     DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$ForceThrowExplodeNamePc")
     extern const char ForceThrowExplodeNamePc[9] = "Explode1";
 #pragma const_seg()
@@ -12174,15 +10950,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuTextureCapacityPC")
     i32 NuTextureCapacityPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTextureLoadOrderPC")
     i32 *NuTextureLoadOrderPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuTextureLoadCountPC")
     i32 NuTextureLoadCountPC = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -12192,110 +10962,52 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$g_overrideList")
     NULSTHDR *g_overrideList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_00973820")
     POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_0097382c")
     POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_0097401c")
     i32 dat_0097401c = 0;
     i32 dat_00974020 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Char_MiniKit")
     i32 *Char_MiniKit = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$minikits_savecharacterbufferptr")
     VARIPTR minikits_savecharacterbufferptr = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$forced_debris_thinning")
     i32 forced_debris_thinning = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$debris_thinning_level")
     f32 debris_thinning_level = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$partglobaltime")
     f32 partglobaltime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_emits_used")
     i32 part_emits_used = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$SceneUploadBufferSizePC")
     i32 SceneUploadBufferSizePC = 41943040;
 #pragma data_seg()
-#pragma bss_seg(".bss$SceneUploadBufferStartPC")
     VARIPTR SceneUploadBufferStartPC = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$SceneUploadBufferCursorPC")
     VARIPTR SceneUploadBufferCursorPC = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$SceneUploadBufferEndPC")
     VARIPTR SceneUploadBufferEndPC = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDeviceHardwareVertexProcessingPC")
     i32 PCDeviceHardwareVertexProcessingPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCFrameLoadingYieldEnabledPC")
     u8 PCFrameLoadingYieldEnabledPC = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CameraClipPlanesPc")
     CAMERA_CLIP_PLANES_PC CameraClipPlanesPc = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$freedebchunksglass")
     DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebchunks")
     DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebchkptrg")
     i32 freedebchkptrg = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_chunk_controls")
     DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebchkptr")
     i32 freedebchkptr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_trash_space")
     u32 debris_trash_space = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_trash_size")
     u32 debris_trash_size = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_setup_called")
     i32 debris_setup_called = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SceneVideoResourcesPC")
     SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ParticleChunkToRender")
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ParticleChunkRenderStack")
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$nutexanim_usepakfile")
     i32 nutexanim_usepakfile = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ntal_first")
     PC_TEXTURE_ANIM_LIST *ntal_first = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCShaderSlots")
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCRegisteredNativeScenes")
     NUGSCN *PCRegisteredNativeScenes[100] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$NuUnresolvedTextureIDPC")
     i32 NuUnresolvedTextureIDPC = -1;
 #pragma data_seg()
@@ -12308,168 +11020,78 @@ extern "C" {
 #pragma const_seg(".rdata$NuTextureAnimationSourcePathPC")
     extern const char NuTextureAnimationSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c";
 #pragma const_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialDeleteQueue")
     NUMTL **PCDisplayMaterialDeleteQueue = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialDeleteCount")
     i32 PCDisplayMaterialDeleteCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayScenes")
     NUDISPLAY_LIST_PC *PCDisplayScenes[256] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuWindMaxMatsPC")
     i32 NuWindMaxMatsPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbri_page_on")
     i32 edbri_page_on[8] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PCDynamicDisplayScene")
     NUDISPLAY_LIST_PC PCDynamicDisplayScene = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$splineStore")
     NUGSPLINE *splineStore = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$numSplinesLoaded")
     i32 numSplinesLoaded = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$EDSPLINE_FILECHECK")
     const char *EDSPLINE_FILECHECK = "EDSPLINE v. ";
 #pragma data_seg()
-#pragma bss_seg(".bss$NuCutSceneDestroyCharacters")
     void (*NuCutSceneDestroyCharacters)(void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterDestroyData")
     void (*NuCutSceneCharacterDestroyData)(void *, void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterEval")
     void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterRelease")
     void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ReleaseLocatorVfxFn")
     void (*ReleaseLocatorVfxFn)(i32) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutSceneCameraCTRL")
     u8 CutSceneCameraCTRL = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_types_used")
     i32 part_types_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_platimpactcnt")
     i32 part_platimpactcnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$part_scene")
     NUGSCN *part_scene[32] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpp_page_on")
     i32 edpp_page_on[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpp_instances_used")
     i32 edpp_instances_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpp_types_used")
     i32 edpp_types_used = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpp_ptls")
     EDPP_PARTICLE_PC edpp_ptls[512] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbits_anim_page")
     i32 edbits_anim_page = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_particle_mode")
     i32 edanim_particle_mode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_nearest")
     i32 edanim_nearest = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_nearest_param_id")
     i32 edanim_nearest_param_id = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edanim_cam_pos")
     NUVEC edanim_cam_pos = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$numtl_renderplane")
     u32 numtl_renderplane = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma bss_seg(".bss$PCNativeWarningDebugState")
     PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCNativeDebugFormatBuffer")
     char PCNativeDebugFormatBuffer[2048] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCNativeDebugOutputBuffer")
     char PCNativeDebugOutputBuffer[2048] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCWarningFormatBuffer")
     char PCWarningFormatBuffer[1024] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCWarningOutputBuffer")
     char PCWarningOutputBuffer[1024] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCWarningMessages")
     char PCWarningMessages[1024] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCWarningHandler")
     void (*PCWarningHandler)(char *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nuerror_handler")
     void (*nuerror_handler)(char *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$nuwarning_handler")
     void (*nuwarning_handler)(char *) = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$PCWarningSuffix")
     extern const char PCWarningSuffix[2] = "\n";
 #pragma const_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ScaleTerrainT2")
     void *ScaleTerrainT2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TempScanStack")
     void *TempScanStack = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$WallSplList")
     void *WallSplList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$terraincnt")
     i32 terraincnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$curSphereter")
     i32 curSphereter = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$platinrange")
     i32 platinrange = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrPoly")
     TERRAIN_POLYGON_INFO_PC *TerrPoly = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrWallInfo")
     u8 TerrWallInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlatImpactId")
     i32 PlatImpactId = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrShapeAdjCnt")
     i32 TerrShapeAdjCnt = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$TerrainUnusedSpatialBlockPc")
     extern const f32 TerrainUnusedSpatialBlockPc = 2147483648.0f;
 #pragma const_seg()
@@ -12506,24 +11128,16 @@ extern "C" {
 #pragma data_seg(".data$LEGOACT_MAGNET_WALK_METAL")
     i16 LEGOACT_MAGNET_WALK_METAL = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$LevelHackSendTimer")
     f32 LevelHackSendTimer = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$debris_detail_level")
     i32 debris_detail_level = 4;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$emperorfighta_netpacket")
     void *emperorfighta_netpacket = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevSfxFlag")
     i32 LevSfxFlag[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_object_switches")
     u8 debris_object_switches[128] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -12560,12 +11174,8 @@ extern "C" {
 #pragma data_seg(".data$PlayerPushSpinnerDegreesPc")
     i32 PlayerPushSpinnerDegreesPc = 4;
 #pragma data_seg()
-#pragma bss_seg(".bss$CanMagnetClimbFn")
     i32 (*CanMagnetClimbFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
     struct specialmove_pc_s *SpecialMove = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$EpisodeVI_ShowHearts")
     extern const char EpisodeVI_ShowHearts[11] = "ShowHearts";
 #pragma const_seg()
@@ -12575,33 +11185,15 @@ extern "C" {
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$LevAIMessage")
     GIZAIMESSAGE *LevAIMessage[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevArea")
     AIAREA_PC *LevArea[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$routemask_efloor_on")
     u64 routemask_efloor_on = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$routemask_efloor_off")
     u64 routemask_efloor_off = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$eFloor_timer")
     f32 eFloor_timer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hspecial_efloor")
     NUSPECIALHANDLE *hspecial_efloor = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccPowerPc")
     i32 SarlaccPowerPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccRechargingPc")
     i32 SarlaccRechargingPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccTargetShieldPc")
     i32 SarlaccTargetShieldPc[2] = {0};
-#pragma bss_seg()
 #pragma const_seg(".rdata$EpisodeVI_ffieldoff")
     extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
 #pragma const_seg()
@@ -12611,79 +11203,38 @@ extern "C" {
 #pragma data_seg(".data$gizpanel_gizmotype_id")
     i32 gizpanel_gizmotype_id = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialAddCount")
     i32 PCDisplayMaterialAddCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialAddQueue")
     NUMTL **PCDisplayMaterialAddQueue = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialReferenceCounts")
     u8 *PCDisplayMaterialReferenceCounts = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialStreamStart")
     VARIPTR PCDisplayMaterialStreamStart = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialStreamEnd")
     VARIPTR PCDisplayMaterialStreamEnd = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayMaterialStreamUsed")
     u8 *PCDisplayMaterialStreamUsed = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PCMaterialGeometryItemIndex")
     i32 PCMaterialGeometryItemIndex = 6;
 #pragma data_seg()
 #pragma data_seg(".data$PCMaterialLinkItemIndex")
     i32 PCMaterialLinkItemIndex = 7;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCSafeRenderScenes")
     NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_render_global_time")
     f32 debris_render_global_time = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_render_panel_time")
     f32 debris_render_panel_time = 0;
-#pragma bss_seg()
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$WallSplCount")
     i32 WallSplCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$curPickInst")
     i32 curPickInst = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$IgnoreWallSplines")
     i32 IgnoreWallSplines = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$WallSplinesOnly")
     i32 WallSplinesOnly = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrOverRideScan")
     void *TerrOverRideScan = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$TerrainScanMargin10Pc")
     extern const f64 TerrainScanMargin10Pc = 0.10000000149011612;
 #pragma const_seg()
-#pragma bss_seg(".bss$NuRndr_DebrisRotMtxPtr")
     NUMTX *NuRndr_DebrisRotMtxPtr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_box_camera_cache")
     NUMTX debris_box_camera_cache = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndrStopUpdate")
     i32 NuRndrStopUpdate = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndrDebBase")
     NUVEC NuRndrDebBase = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndrDebRange")
     NUVEC NuRndrDebRange = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndrDebRangeInv")
     NUVEC NuRndrDebRangeInv = {0};
-#pragma bss_seg()
 #pragma const_seg(".rdata$debris_box_corners")
     extern const NUVEC debris_box_corners[8] = {{-0.2f, -0.2f, -0.05f}, {0.2f, -0.2f, -0.05f}, {-0.2f, 0.2f, -0.05f},
                                                 {0.2f, 0.2f, -0.05f},   {-0.5f, -0.5f, 0.8f},  {0.5f, -0.5f, 0.8f},
@@ -12692,18 +11243,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CRC16TablePC")
     u32 CRC16TablePC[256] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$ShaderProgramHashPC")
     u32 ShaderProgramHashPC[2] = {1482109315U, 2845988928U};
 #pragma data_seg()
-#pragma bss_seg(".bss$PCVertexDeclarationCountPC")
     i32 PCVertexDeclarationCountPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCVertexDeclarationCachePC")
     PC_VERTEX_DECL_ENTRY_PC PCVertexDeclarationCachePC[256] = {0};
-#pragma bss_seg()
 }
 
 #pragma bss_seg(".bss$CRC16InstancePC")
@@ -12962,39 +11507,17 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuDebrisVertexBuffers")
     PC_BUFFER_RESOURCE_PC *NuDebrisVertexBuffers[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisSystemBuffers")
     void *NuDebrisSystemBuffers[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisUseSystemMemory")
     i32 NuDebrisUseSystemMemory = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisMaxVertexCount")
     u32 NuDebrisMaxVertexCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisVertexData")
     void *NuDebrisVertexData = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisLastHeader")
     DEBRIS_PART_HEADER_PC *NuDebrisLastHeader = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisFrameVertexCount")
     u32 NuDebrisFrameVertexCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndr_DebrisMtx")
     NUMTX NuRndr_DebrisMtx = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuRndr_DebrisPlane")
     NUVEC4 NuRndr_DebrisPlane = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayClipSet")
     void *PCDisplayClipSet = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCDisplayClipGroupIndex")
     i32 PCDisplayClipGroupIndex = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PlayerGrappleSwingModePc")
     i32 PlayerGrappleSwingModePc = 1;
 #pragma data_seg()
@@ -13004,12 +11527,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuTexAnimMissingPakDiagnosticPc")
     i32 NuTexAnimMissingPakDiagnosticPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$GHGTextureProgramsPC")
     void *GHGTextureProgramsPC = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$GHGJointFormatWarningPC")
     extern const char GHGJointFormatWarningPC[95] =
         "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d";
@@ -13057,21 +11576,15 @@ extern "C" {
 #pragma data_seg(".data$id_DROIDEKA")
     i16 id_DROIDEKA = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$VADERA_LDATA")
     LEVELDATA_PC *VADERA_LDATA = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$TerrWallTab")
     u8 TerrWallTab[4] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CRUISERD_LDATA")
     LEVELDATA_PC *CRUISERD_LDATA = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13081,69 +11594,28 @@ extern "C" {
 #pragma data_seg(".data$TerConTol")
     f32 TerConTol = 0.1f;
 #pragma data_seg()
-#pragma bss_seg(".bss$TerrImpactPos")
     NUVEC TerrImpactPos = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$terrhitflags")
     i32 terrhitflags = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrImpact")
     i16 TerrImpact = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SphereData")
     TERRAIN_SPHERE_PC SphereData[16] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlatCrush")
     i32 PlatCrush = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrShape")
     TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tertempvec4")
     NUVEC4 tertempvec4 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrWallNorm")
     NUVEC TerrWallNorm = {0};
 
-#pragma bss_seg(".bss$edbitsGameSound")
     EDBITS_GAME_SOUND edbitsGameSound[320] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$plathitid")
     i32 plathitid = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlatImpactTer")
     TERRAIN_POLYGON_INFO_PC PlatImpactTer = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$tertempmat")
     NUMTX tertempmat = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrLastImpact")
     TERRAIN_LAST_IMPACT_PC TerrLastImpact = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrPolyInfo")
     TERRAIN_POLYGON_INFO_PC TerrPolyInfo = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$wallover")
     f32 wallover = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CurTrackInfo")
     TERRAIN_TRACK_SLOT_PC *CurTrackInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrImpactNormal")
     NUVEC TerrImpactNormal = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerImpactDataMax")
     i32 TerImpactDataMax = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerImpactDataCount")
     i32 *TerImpactDataCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlatImpactNorm")
     NUVEC PlatImpactNorm = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerImpactData")
     void *TerImpactData = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13171,39 +11643,23 @@ extern "C" {
 #pragma data_seg(".data$edbits_editor_enabled")
     i32 *edbits_editor_enabled = &edbits_editor_state;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuPortalCameraPlane")
     NUPLANE NuPortalCameraPlane = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebMat")
     NUMTL *DebMat[9] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$xzfacingmtx")
     NUMTX xzfacingmtx = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_rt")
     i32 debris_rt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$g_renderingDebris")
     i32 g_renderingDebris = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbits_editor_state")
     i32 edbits_editor_state = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$SuperCarryImpactSpeedPc")
     f32 SuperCarryImpactSpeedPc = 4.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$ExtraDieSfxFn")
     void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$TerrWallDeflectYScale")
     f32 TerrWallDeflectYScale = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13222,9 +11678,7 @@ extern "C" {
 #pragma data_seg(".data$MAXBLOWUPRANDSPANG")
     i32 MAXBLOWUPRANDSPANG = 60;
 #pragma data_seg()
-#pragma bss_seg(".bss$GizmoBlowUp_SfxFn")
     void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13234,21 +11688,13 @@ extern "C" {
 #pragma data_seg(".data$PCPortalsEnabled")
     i32 PCPortalsEnabled = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$AreaPickupGravity")
     f32 AreaPickupGravity = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AreaPickupScale")
     f32 AreaPickupScale = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GameMessage")
     GAME_MESSAGE_PC GameMessage[128] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GameMessageIndex")
     i32 GameMessageIndex = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13314,78 +11760,34 @@ extern "C" {
 #pragma data_seg(".data$BigJumpLandPreferredPc")
     i16 BigJumpLandPreferredPc = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$BonusCoinTarget")
     u32 BonusCoinTarget = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BonusWinFlag")
     i32 BonusWinFlag = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Arcade_Points")
     i32 Arcade_Points[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Arcade_Score")
     i32 Arcade_Score[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BuildUpScale")
     f32 BuildUpScale = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CoinTotalScale")
     f32 CoinTotalScale = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DrawBuildUpTime")
     f32 DrawBuildUpTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$cointotal_x")
     f32 cointotal_x[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuStopDraw")
     i32 MenuStopDraw = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuValidated")
     i32 MenuValidated = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuAlpha")
     f32 MenuAlpha = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuA")
     i32 MenuA = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CurrentMenuId")
     i32 CurrentMenuId = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainChatterWaitPc")
     f32 TerrainChatterWaitPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DoubleScoreTime")
     f32 DoubleScoreTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LookAtBoth")
     i32 LookAtBoth = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayPlanesUseRenderMtxPc")
     i32 PlayPlanesUseRenderMtxPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SuperStoryScore")
     u32 SuperStoryScore = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BigJump_EndOfLandFn")
     void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$FindSlamOrigin_UseCPosFn")
     i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AddCoinDelay")
     f32 AddCoinDelay[2] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$alert_time")
     f32 alert_time = 10.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$alert_pos")
     NUVEC alert_pos = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13460,15 +11862,9 @@ extern "C" {
 #pragma data_seg(".data$CHEAT_POWERUPTIME")
     f32 CHEAT_POWERUPTIME = 20.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$PowerUp_PanelPosMul")
     f32 PowerUp_PanelPosMul[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$POWERUP_TEXTID")
     i32 POWERUP_TEXTID = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hintsys")
     HINTSYS_PC hintsys = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13492,14 +11888,10 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$DrawMiniKitTime")
     f32 DrawMiniKitTime = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$MiniKitScale")
     f32 MiniKitScale = 0;
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$MiniKitModelId_PC")
@@ -13512,9 +11904,7 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$NewMiniPiece")
     NEW_MINI_PIECE_PC NewMiniPiece[10] = {0};
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$PANEL_REDBRICKSCALE")
@@ -13532,14 +11922,10 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$DrawRedBrickTime")
     f32 DrawRedBrickTime = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$RedBrickScale")
     f32 RedBrickScale = 0;
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$ICONX")
@@ -13552,9 +11938,7 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$PowerUp_PanelYRot")
     u16 PowerUp_PanelYRot[2] = {0};
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$PartExtraCoinRate_PC")
@@ -13592,9 +11976,7 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$coinimpactwait")
     f32 coinimpactwait = 0;
-#pragma bss_seg()
 }
 extern "C" {}
 extern "C" {
@@ -13620,24 +12002,16 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$SARLACCPITA_LDATA")
     LEVELDATA_PC *SARLACCPITA_LDATA = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsPreviousVariantPc")
     i32 KillPartsPreviousVariantPc = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsZeroLightingPc")
     RTL_DATA_PC KillPartsZeroLightingPc = {0};
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsBrickImpactWaitPc")
     f32 brickimpactwait = 0;
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$KillPartsLegoSingleTextPc")
@@ -13645,19 +12019,13 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsCharSceneAreaPc")
     KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc = 0;
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsAccessoriesPc")
     KILLPARTS_ACCESSORY_PC KillPartsAccessoriesPc[2][9] = {0};
-#pragma bss_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsBikesPc")
     KILLPARTS_BIKE_PC KillPartsBikesPc[4] = {0};
-#pragma bss_seg()
 }
 extern "C" {
 #pragma data_seg(".data$KillPartsTieSpinsTextPc")
@@ -13680,18 +12048,14 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$ExtraHurtSfxFn")
     void (*ExtraHurtSfxFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$GizBuilditGDeb")
     i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
 #pragma data_seg()
-#pragma bss_seg(".bss$DrawCoinTotalTime")
     f32 DrawCoinTotalTime = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PANEL_COINSCALE_START")
     f32 PANEL_COINSCALE_START = 1.0f;
 #pragma data_seg()
@@ -13704,51 +12068,29 @@ extern "C" {
 #pragma data_seg(".data$global_windspeed")
     f32 global_windspeed = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCWindFrameCount")
     u32 PCWindFrameCount = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$PCSpecialClipState")
     i32 PCSpecialClipState = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCSpecialActiveShadowLights")
     i32 PCSpecialActiveShadowLights = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialShadowClipResultsPresent")
     i32 PCSpecialShadowClipResultsPresent = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialForcedLOD")
     i32 PCSpecialForcedLOD = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialForcedMaterialTable")
     NUMTL **PCSpecialForcedMaterialTable = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialForcedMaterial")
     NUMTL *PCSpecialForcedMaterial = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialReflectionPass")
     i32 PCSpecialReflectionPass = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$PCSpecialProjectionAdjust")
     PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
 #pragma data_seg()
-#pragma bss_seg(".bss$PCSpecialShadowLights")
     struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialShadowClipResults")
     u32 PCSpecialShadowClipResults[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialProjectionTranslate")
     NUMTX PCSpecialProjectionTranslate = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSpecialProjectionScale")
     NUMTX PCSpecialProjectionScale = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13767,12 +12109,8 @@ extern "C" {
 #pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
     f32 SnakeDebrisUpwardSpeedPc = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCMaterialPoolPc")
     NUMTL *PCMaterialPoolPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCMaterialPoolCountPc")
     i32 PCMaterialPoolCountPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13847,41 +12185,23 @@ extern "C" {
     i32 LEGOCONTEXT_LAND_SLAM = -1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CRUISERC_LDATA")
     LEVELDATA_PC *CRUISERC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$builduptime")
     f32 builduptime = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ObstacleCamHoldUntilPlayersMove")
     i32 ObstacleCamHoldUntilPlayersMove = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_bolt")
     BOLT *objhitobj_bolt = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_nohurtsfx")
     i32 objhitobj_nohurtsfx = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_noimpactsfx")
     i32 objhitobj_noimpactsfx = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_noattackerrumble")
     i32 objhitobj_noattackerrumble = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_throwkillpartsup")
     i32 objhitobj_throwkillpartsup = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objhitobj_killparts_yrot")
     i16 *objhitobj_killparts_yrot = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13899,9 +12219,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$DynamicGrapplePc")
     GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13915,17 +12233,13 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$TractorBeamEnabledPc")
     u8 TractorBeamEnabledPc = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$DisorientAxisPc")
     u8 disorientAxis = 7;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$WeaponInOut_NoAIJediSfx")
     i32 WeaponInOut_NoAIJediSfx = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13935,19 +12249,13 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GizmoBlowUp_NoTargetFn")
     i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Fighting_WeaponInActionFn")
     i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Fighting_WeaponOutActionFn")
     i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -13994,20 +12302,14 @@ extern "C" {
     i32 PCStereoChannel1B = 3;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$PCStereoChannel0A")
     i32 PCStereoChannel0A = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PossibleForceTargetsPc")
     // Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
     GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[384] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LevelTimer")
     TIMER LevelTimer = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -14168,25 +12470,15 @@ extern "C" {
     f32 DEACTIVATEDTIME = 8.0f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$GUNSHIPB_LDATA")
     LEVELDATA_PC *GUNSHIPB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ForcePush_SuperMindTrick")
     i32 ForcePush_SuperMindTrick = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$VehicleGunshipAngleBPlayer2Pc")
     i32 VehicleGunshipAngleBPlayer2Pc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTSPEED")
     f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTDURATION")
     f32 BOLT_OVERRIDE_PLAYERBOLTDURATION = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -14198,109 +12490,57 @@ extern "C" {
     i32 PCShadowSurfaceSamplingEnabled = 1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$PCShadowPackets")
     PC_HG_SHADOW_PACKET PCShadowPackets[280] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCSpecialForceMaterialCount")
     i32 PCSpecialForceMaterialCount = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0280d838")
     u32 dat_0280d838 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0097f990")
     f32 dat_0097f990 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0280d3a0")
     f32 dat_0280d3a0 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854f54")
     i32 dat_02854f54 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0280a598")
     NU_CAMERA_STACK_ENTRY_PC dat_0280a598[64] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_0097391c")
     i32 dat_0097391c = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneBoundingBoxTrackRoot")
     u8 CutSceneBoundingBoxTrackRoot = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_009739d4")
     i32 dat_009739d4 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowPacketSequence")
     i32 PCShadowPacketSequence = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowNearValue")
     f32 PCShadowNearValue = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowFarValue")
     f32 PCShadowFarValue = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowPacketCount")
     i32 PCShadowPacketCount = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowState")
     PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$drawcharactermodel_nobsa")
     i32 drawcharactermodel_nobsa = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$drawcharactermodel_noani")
     i32 drawcharactermodel_noani = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$drawcharactermodel_restpose")
     i32 drawcharactermodel_restpose = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$drawcharactermodel_keepmergeaction")
     i32 drawcharactermodel_keepmergeaction = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$drawcharactermodel_locatorsupdated")
     i32 drawcharactermodel_locatorsupdated = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TempNumJoints")
     u8 TempNumJoints = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$notransparentchardraw")
     i32 notransparentchardraw = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$APIObjResetShadowMapRenderingFn")
     void (*APIObjResetShadowMapRenderingFn)(void) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$APIObjEnableShadowMapRenderingFn")
     void (*APIObjEnableShadowMapRenderingFn)(void) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Temphgobj")
     NUHGOBJ_EVAL_PC *Temphgobj = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$APITrans_Mtl")
     NUMTL *APITrans_Mtl[2] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -14336,19 +12576,13 @@ extern "C" {
     f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_ALIGN")
     u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_X")
     f32 CUTSUBTITLEDEFAULT_X = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$TextInputKeyNameTextPc7516c0")
     char TextInputKeyNameTextPc7516c0[1] = "";
-#pragma bss_seg()
 
 #pragma data_seg(".data$TextInputKeyNameTextPc753370")
     char TextInputKeyNameTextPc753370[2] = "]";
@@ -15048,41 +13282,23 @@ extern "C" {
     i8 TextInputButtonLabelIndexPc[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$text3d_height")
     f32 text3d_height = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$text3d_width")
     f32 text3d_width = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$followon_line")
     i32 followon_line = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TextPrintModePc")
     i32 TextPrintModePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TextInputAlternateLabelsPc")
     TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TextInputDefaultLabelsPc")
     TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TextInputNameCallbackPc")
     void (*TextInputNameCallbackPc)(i32, char *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TextInputLastDeviceIndexPc")
     i8 TextInputLastDeviceIndexPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$g_nupadMapping")
     NUPADMAPPING g_nupadMapping[3] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15098,13 +13314,9 @@ extern "C" {
     i16 id_CAPTAINTARPALS = -1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CheatPooPartsEnabledPc")
     u8 CheatPooPartsEnabledPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CheatPooCoinsEnabledPc")
     u8 CheatPooCoinsEnabledPc = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$test_ai_combo")
     i32 test_ai_combo = 1;
@@ -15150,247 +13362,127 @@ extern "C" {
     i32 CanPunchGirls = 1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$MOSEISLEYC_LDATA")
     LEVELDATA_PC *MOSEISLEYC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ComboOpponent_Behind")
     i32 ComboOpponent_Behind = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ComboOpponent_Range2")
     f32 ComboOpponent_Range2 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PooPositionPc")
     NUVEC PooPositionPc[2] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$objopponent_ignoreaiopponent")
     i32 objopponent_ignoreaiopponent = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$IsWearingBackPackFn")
     i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizmoBlowUpOpponent_Behind")
     i32 GizmoBlowUpOpponent_Behind = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizmoBlowUpOpponent_Range2")
     f32 GizmoBlowUpOpponent_Range2 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PlayerSpecialMoveCountPc")
     i32 SpecialMoveCount = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$UsingExtraActionsFn")
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CanStartHoldFn")
     i32 (*CanStartHoldFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Punch_GetDamageFn")
     i32 (*Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Punch_HitExtraCodeFn")
     void (*Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Punch_HitHoldFn")
     void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NEGOTIATIONSA_LDATA")
     LEVELDATA_PC *NEGOTIATIONSA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NEGOTIATIONSB_LDATA")
     LEVELDATA_PC *NEGOTIATIONSB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GUNGAN_A_LDATA")
     LEVELDATA_PC *GUNGAN_A_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RESCUEC_LDATA")
     LEVELDATA_PC *RESCUEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RETAKEB_LDATA")
     LEVELDATA_PC *RETAKEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RETAKED_LDATA")
     LEVELDATA_PC *RETAKED_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RETAKEE_LDATA")
     LEVELDATA_PC *RETAKEE_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MAULD_LDATA")
     LEVELDATA_PC *MAULD_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$FACTORYB_LDATA")
     LEVELDATA_PC *FACTORYB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$FACTORYD_LDATA")
     LEVELDATA_PC *FACTORYD_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$FACTORYF_LDATA")
     LEVELDATA_PC *FACTORYF_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$FACTORYG_LDATA")
     LEVELDATA_PC *FACTORYG_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$KAMINOC_LDATA")
     LEVELDATA_PC *KAMINOC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$KASHYYYKD_LDATA")
     LEVELDATA_PC *KASHYYYKD_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CRUISERG_LDATA")
     LEVELDATA_PC *CRUISERG_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TATOOINEA_LDATA")
     LEVELDATA_PC *TATOOINEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TATOOINEB_LDATA")
     LEVELDATA_PC *TATOOINEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MOSEISLEYA_LDATA")
     LEVELDATA_PC *MOSEISLEYA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARRESCUEB_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARRESCUEC_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARRESCUEE_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEE_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARESCAPEA_LDATA")
     LEVELDATA_PC *DEATHSTARESCAPEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARESCAPEB_LDATA")
     LEVELDATA_PC *DEATHSTARESCAPEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARESCAPEC_LDATA")
     LEVELDATA_PC *DEATHSTARESCAPEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARESCAPED_LDATA")
     LEVELDATA_PC *DEATHSTARESCAPED_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARBATTLEA_LDATA")
     LEVELDATA_PC *DEATHSTARBATTLEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARBATTLEB_LDATA")
     LEVELDATA_PC *DEATHSTARBATTLEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTARBATTLEC_LDATA")
     LEVELDATA_PC *DEATHSTARBATTLEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$HOTHESCAPEA_LDATA")
     LEVELDATA_PC *HOTHESCAPEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$HOTHESCAPEC_LDATA")
     LEVELDATA_PC *HOTHESCAPEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CLOUDCITYESCAPEA_LDATA")
     LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CLOUDCITYESCAPEC_LDATA")
     LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CLOUDCITYTRAPA_LDATA")
     LEVELDATA_PC *CLOUDCITYTRAPA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTAR2BATTLEB_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DEATHSTAR2BATTLED_LDATA")
     LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$EMPERORFIGHTA_LDATA")
     LEVELDATA_PC *EMPERORFIGHTA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$SARLACCPITB_LDATA")
     LEVELDATA_PC *SARLACCPITB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$SARLACCPITC_LDATA")
     LEVELDATA_PC *SARLACCPITC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$JABBASPALACEA_LDATA")
     LEVELDATA_PC *JABBASPALACEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$JABBASPALACEB_LDATA")
     LEVELDATA_PC *JABBASPALACEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$JABBASPALACED_LDATA")
     LEVELDATA_PC *JABBASPALACED_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$JABBASPALACEE_LDATA")
     LEVELDATA_PC *JABBASPALACEE_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ENDORBATTLEA_LDATA")
     LEVELDATA_PC *ENDORBATTLEA_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ENDORBATTLEB_LDATA")
     LEVELDATA_PC *ENDORBATTLEB_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ENDORBATTLED_LDATA")
     LEVELDATA_PC *ENDORBATTLED_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TorpedoFillEnabledPc")
     u8 TorpedoFillEnabledPc = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$TorpedoGrabRangeSquaredPc")
     f32 TorpedoGrabRangeSquaredPc = 36.0f;
@@ -15414,29 +13506,17 @@ extern "C" {
     i32 CutSceneSingleStreamBufferPc = 2;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$LookupLocatorVfxFn")
     i32 (*LookupLocatorVfxFn)(char *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneLookupAllDebrisPagesPc")
     i32 CutSceneLookupAllDebrisPagesPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneFindCharacters")
     void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneCharacterCreateData")
     void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneRequestSFX")
     i32 (*NuCutSceneRequestSFX)(char *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneLocatorFunctionsPc")
     CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctionsPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15526,67 +13606,37 @@ extern "C" {
     i32 LandspeederExhaustJointsPc[3] = {2, 3, 4};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$LswForceUsedHintFlagsPc")
     u32 LswForceUsedHintFlagsPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$BOUNTYHUNTERPURSUITE_LDATA")
     LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ASTEROIDCHASEC_LDATA")
     LEVELDATA_PC *ASTEROIDCHASEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DAGOBAHC_LDATA")
     LEVELDATA_PC *DAGOBAHC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$ENDORBATTLEC_LDATA")
     LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NOTERRAINSTOP")
     i32 NOTERRAINSTOP = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$VehicleSlowdownCallbackPc")
     void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$VehicleLaunchHoverOffsetPc")
     f32 VehicleLaunchHoverOffsetPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PodCollisionMagnitudePc")
     f32 PodCollisionMagnitudePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LEGO_AIPATHCNX_BLOCKAGE")
     i32 LEGO_AIPATHCNX_BLOCKAGE = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LEGO_AIPATHCNX_WALLSHUFFLE")
     i32 LEGO_AIPATHCNX_WALLSHUFFLE = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$LEGO_AIPATHCNX_FULLTERRAIN")
     i32 LEGO_AIPATHCNX_FULLTERRAIN = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CutScene_OverrideConfigFileNameFn")
     void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutList")
     CUT_LOAD_LIST_ENTRY_PC *CutList = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CUTCOUNT")
     i32 CUTCOUNT = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15619,37 +13669,21 @@ extern "C" {
     i32 DEBPAGE_AREA = -1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CutSceneCameraFocalLengthPc")
     f32 CutSceneCameraFocalLengthPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$things_scene")
     NUGSCN *things_scene = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DrawCharIconFindPc")
     i32 drawcharicon_find = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderBackdropSpecialsPc")
     NUSPECIALHANDLE RenderBackdropSpecialsPc[4] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderBackdropScenePc")
     NUGSCN *backdrop_scene = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderBackdropAlphaFnPc")
     void (*RenderBackdropAlphaFnPc)(f32 *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$SURFACEBITS_NODUST")
     u16 SURFACEBITS_NODUST = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$RenderHubFromCutscenePlayerPc")
     i32 RenderHubFromCutscenePlayerPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15694,60 +13728,34 @@ extern "C" {
     f32 rtlwob = 0.05000000074505806f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$PCShadowCurrentLight")
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCShadowSecondaryLight")
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PCGlobalLightingState")
     PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuRndrShadPolDat")
     PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuRndrShadowCnt")
     i32 NuRndrShadowCnt = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854c90")
     i32 dat_02854c90 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854c94")
     i32 dat_02854c94 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854cac")
     i32 dat_02854cac = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854cb0")
     i32 dat_02854cb0 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$rtl_error")
     i32 rtl_error = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$rtl_frametime")
     f32 rtl_frametime = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$rtltimer1adv")
     f32 rtltimer1adv = 2500.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$rtltimer1")
     i32 rtltimer1 = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dbg_rtlindex")
     RTL_INDEX_PC *dbg_rtlindex = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15779,21 +13787,13 @@ extern "C" {
     f32 MenuPromptPositionScalePc = 1.0f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$QFont2DLower")
     VUFNT *QFont2DLower = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ScreenGrabNeededPc")
     u8 ScreenGrabNeeded = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ScreenPauseFadePc")
     f32 pause_fade = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EdppPageScenesPc")
     NUGSCN *EdppPageScenesPc[8] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15821,41 +13821,23 @@ extern "C" {
     f32 SmartTextDefaultWidthPc = 1.5f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$SmartTextLongestWidthPc")
     f32 SmartTextLongestWidthPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MessageMtl")
     NUMTL *MessageMtl = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MenuDisableHeaders")
     i32 MenuDisableHeaders = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$predrawfn")
     void (*predrawfn)(MENU *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MENUNORMALB")
     u8 MENUNORMALB = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$memcard_autosavestarted")
     i32 memcard_autosavestarted = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$memcard_autosavepredelay")
     f32 memcard_autosavepredelay = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$memcard_autosavepostdelay")
     f32 memcard_autosavepostdelay = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$memcard_drawasiconfn")
     void (*memcard_drawasiconfn)(void) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15874,88 +13856,48 @@ extern "C" {
     CUT_DRAW_SETTINGS_PC *CutSceneSys = &CutSceneDrawSettingsPc;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$UpdateLocatorVfxFn")
     void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$TriggerLocatorVfxFn")
     i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneGetHGObj")
     NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneCharacterRender")
     void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneResetCharacters")
     void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneRigidPostRender")
     void (*NuCutSceneRigidPostRender)(void *, NUSPECIALHANDLE *, NUMTX *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCutSceneSFXUpdate")
     void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
                                 NUMTX *, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneDebrisAxisSizePc")
     f32 CutSceneDebrisAxisSizePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneDebrisProcessModePc")
     i32 CutSceneDebrisProcessModePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$MatrixReflection_CanOverrideFn")
     i32 (*MatrixReflection_CanOverrideFn)(void) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_gcdata")
     PLAYERCHARACTERCONFIG_PC *dco_gcdata = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_cmodel")
     CHARACTER_MODEL_LAYERS_PC *dco_cmodel = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_wearinghat")
     i32 dco_wearinghat = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_reflectaxis")
     i32 dco_reflectaxis = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_prerotatez")
     u16 dco_prerotatez = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dco_locatorposonly")
     i32 dco_locatorposonly = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DisguiseAdjustFn")
     void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$CutSceneWaiting")
     i32 CutSceneWaiting = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$effecttypes")
     DEBRIS_INFO_PC *effecttypes = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$debscale")
     DEBRIS_SCALE_CACHE_PC *debscale = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$EDPP_SCALE_TYPES")
     i32 EDPP_SCALE_TYPES = 20;
@@ -15963,9 +13905,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CutStopInfo")
     void *CutStopInfo = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -15973,89 +13913,65 @@ extern "C" {
     char SuitMetadataName0075314cPc[7] = "batman";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tBATMANSUIT")
     i16 tBATMANSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d280Pc")
     char SuitMetadataName0075d280Pc[14] = "batman_shadow";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tSHADOWSUIT")
     i16 tSHADOWSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d270Pc")
     char SuitMetadataName0075d270Pc[13] = "batman_glide";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tGLIDESUIT")
     i16 tGLIDESUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d25cPc")
     char SuitMetadataName0075d25cPc[18] = "batman_demolition";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tDEMOLITIONSUIT")
     i16 tDEMOLITIONSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d24cPc")
     char SuitMetadataName0075d24cPc[13] = "batman_sonar";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tSONARSUIT")
     i16 tSONARSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName00753144Pc")
     char SuitMetadataName00753144Pc[6] = "robin";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tROBINSUIT")
     i16 tROBINSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d240Pc")
     char SuitMetadataName0075d240Pc[12] = "robin_water";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tWATERSUIT")
     i16 tWATERSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d22cPc")
     char SuitMetadataName0075d22cPc[17] = "robin_technology";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tTECHNOLOGYSUIT")
     i16 tTECHNOLOGYSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d21cPc")
     char SuitMetadataName0075d21cPc[13] = "robin_magnet";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tMAGNETSUIT")
     i16 tMAGNETSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d20cPc")
     char SuitMetadataName0075d20cPc[14] = "robin_attract";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tATTRACTSUIT")
     i16 tATTRACTSUIT = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$NOAICREATURES")
     i32 NOAICREATURES = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$addcreature_override_id_check")
     i32 addcreature_override_id_check = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$default_mover_extra")
     f32 default_mover_extra = 0.05000000074505806f;
@@ -16087,13 +14003,9 @@ extern "C" {
         {SuitMetadataName00753144Pc, SuitMetadataName0075d20cPc, &tATTRACTSUIT, 384, 114, 'd', 0x0, 0, 0, 0}};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$PlayerStartRecordInitPc")
     PLAYER_START_INITIALIZER_RECORD_PC PlayerStart[8] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$PodPacemakerPc")
     GAMEOBJECT *PodPacemakerPc = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$PodRaceSplineIncrementPc")
     f32 PodRaceSplineIncrementPc = 0.0010000000474974513f;
@@ -16123,9 +14035,8 @@ extern "C" {
     char PodCreateDamagedKeywordPc[8] = "damaged";
 #pragma data_seg()
 
-/* PodRacePc is defined as a private static in legoapi/episodeI.c. */
-/* (was: void *PodRacePc) */
-#pragma bss_seg()
+    /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
+    /* (was: void *PodRacePc) */
 }
 
 extern "C" {
@@ -16138,17 +14049,11 @@ extern "C" {
     f32 ShoveMaximumPenetrationPc = 0.10000000149011612f;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$ObstacleReturnLevelPc")
     LEVELDATA_PC *ObstacleReturnLevelPc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizObstacleTriggersPc")
     NUVEC *GizObstacleTriggersPc[16] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$GizObstacleExcludeFnPc")
     i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -16172,45 +14077,25 @@ extern "C" {
     i32 LEGOHINT_FREEPLAYTOGGLE = -1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$FULLDEBUGTOGGLE")
     i32 FULLDEBUGTOGGLE = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Player_ToggleSubCharacterFn")
     i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$Player_ToggledCharacterFn")
     void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32) = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_inbuffer")
     char *implode_inbuffer = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_outbuffer")
     char *implode_outbuffer = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_bitbuf")
     u32 implode_bitbuf = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_compsize")
     u32 implode_compsize = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_left")
     u16 implode_left[0x3fb] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_right")
     u16 implode_right[0x3fb] = {0};
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$implode_origsize")
     u32 implode_origsize = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -16235,81 +14120,37 @@ extern "C" {
 #pragma data_seg(".data$PCSampleLoadEnabledPc")
     i32 PCSampleLoadEnabledPc = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCSoundSampleLimitPc")
     i32 PCSoundSampleLimitPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundStreamSerialPc")
     i32 PCSoundStreamSerialPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCOggCachePoolPc")
     struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCOggCriticalSectionPc")
     i32 PCOggCriticalSectionPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EdDrawMtl")
     NUMTL *EdDrawMtl[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NewPrim")
     i32 NewPrim = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NewMtl")
     i32 NewMtl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NewMtx")
     NUMTX *NewMtx = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevel2dMtl")
     NUMTL *edLevel2dMtl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevel3dMtl")
     NUMTL *edLevel3dMtl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelTexMtl")
     NUMTL *edLevelTexMtl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelActiveMenu")
     struct eduimenu_s *edLevelActiveMenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EdLevelFnt")
     i32 EdLevelFnt = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$EdLevelFntScale")
     i32 EdLevelFntScale = 24;
 #pragma data_seg()
 #pragma data_seg(".data$EdLevelAttr")
     struct eduiiattr_s EdLevelAttr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 #pragma data_seg()
-#pragma bss_seg(".bss$edLevelPinnedMenu")
     struct eduimenu_s *edLevelPinnedMenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelNextMenu")
     struct eduimenu_s *edLevelNextMenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelDestroyActiveMenu")
     i32 edLevelDestroyActiveMenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelDestroyThisMenu")
     struct eduimenu_s *edLevelDestroyThisMenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edLevelDestroyThisMenu2")
     struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edlevel_mouseandkeyboard")
     i32 edlevel_mouseandkeyboard = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$rtl_helper_radius_mode")
     i32 rtl_helper_radius_mode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$pad_disabled")
     i32 pad_disabled = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GameAntinodeGridPc")
     u64 GameAntinodeGridPc[64] = {0};
-#pragma bss_seg()
 #pragma const_seg(".rdata$ZipUpHookOffsetPc")
     extern const NUVEC ZipUpHookOffsetPc = {0.0f, -0.11429999768733978f, -0.08590000122785568f};
 #pragma const_seg()
@@ -16322,12 +14163,8 @@ extern "C" {
 #pragma data_seg(".data$ZipUpSwingJumpAnimationPc")
     u16 ZipUpSwingJumpAnimationPc = 0xffff;
 #pragma data_seg()
-#pragma bss_seg(".bss$CanDrawZipUpSwirls")
     i32 CanDrawZipUpSwirls = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ropemtl")
     NUMTL *ropemtl = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ZipUpMarkerOffsetYPc")
     f32 ZipUpMarkerOffsetYPc = 0.8399999737739563f;
 #pragma data_seg()
@@ -16343,9 +14180,7 @@ extern "C" {
 #pragma data_seg(".data$ZipUpLineCharacterIdPc")
     i16 ZipUpLineCharacterIdPc = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ZipUpLineMaterialPc")
     NUMTL *ZipUpLineMaterialPc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ZipUpTypeNamePtrPc")
     char *ZipUpTypeNamePtrPc = (char *)PCContextName_ZipUp;
 #pragma data_seg()
@@ -16358,9 +14193,7 @@ extern "C" {
 #pragma data_seg(".data$ZipUpWallShuffleContextPc")
     i32 ZipUpWallShuffleContextPc = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ZipUpRopeModulationPc")
     i32 ZipUpRopeModulationPc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$GrapAttach_text")
     char GrapAttach_text[11] = "GrapAttach";
 #pragma data_seg()
@@ -16370,60 +14203,26 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FindAnglesXFullTempPc")
     i32 i_temp_xrot = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$MiniCam")
     MINICAM_PC MiniCam = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutSpline")
     NUGSPLINE ObstacleCamCutSpline = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamTargetGuid")
     i32 ObstacleCamTargetGuid = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutPts")
     NUVEC ObstacleCamCutPts[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamSpl")
     NUGSPLINE *ObstacleCamSpl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamStart")
     f32 ObstacleCamStart = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamEnd")
     f32 ObstacleCamEnd = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamTime")
     f32 ObstacleCamTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamRotZ")
     i16 ObstacleCamRotZ = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBlendInTime")
     f32 ObstacleCamBlendInTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBlendOutTime")
     f32 ObstacleCamBlendOutTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutTgtPtr")
     NUVEC *ObstacleCamCutTgtPtr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutCamPtr")
     NUVEC *ObstacleCamCutCamPtr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBorders")
     i32 ObstacleCamBorders = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamAlwaysSnapAnglesPc")
     u8 ObstacleCamAlwaysSnapAnglesPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutBorderScale")
     f32 CutBorderScale = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$AICameraLiteral758090")
     const char AICameraLiteral758090[19] = "use_current_campos";
 #pragma const_seg()
@@ -16487,87 +14286,43 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuPortalCameraPc")
     NUCAMERA *NuPortalCameraPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalLocalViewPc")
     NUMTX NuPortalLocalViewPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalProjectionScratchPc")
     NUMTX NuPortalProjectionScratchPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalProjectionInversePc")
     NUMTX NuPortalProjectionInversePc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalFrustaPc")
     NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalFrustumCountPc")
     i32 *NuPortalFrustumCountPc = 0;
-#pragma bss_seg()
 #pragma const_seg(".rdata$NuPortalBoundsOnePc")
     const NUVEC NuPortalBoundsOnePc = {1.0f, 1.0f, 1.0f};
 #pragma const_seg()
 #pragma const_seg(".rdata$NuPortalBoundsMinusOnePc")
     const NUVEC NuPortalBoundsMinusOnePc = {-1.0f, -1.0f, -1.0f};
 #pragma const_seg()
-#pragma bss_seg(".bss$NuPortalVisibilityBitsPc")
     u8 NuPortalVisibilityBitsPc[625] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalWorldCameraPc")
     NUVEC NuPortalWorldCameraPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalOverrideCameraPc")
     NUVEC *NuPortalOverrideCameraPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_009739b4")
     i32 dat_009739b4 = 0;
     i32 dat_009739b8 = 0;
     i32 dat_009739bc = 0;
     i32 dat_009739c0 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_00971ad8")
     void *dat_00971ad8 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalCameraRoomPc")
     i16 NuPortalCameraRoomPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalRoomsVisitedPc")
     i16 NuPortalRoomsVisitedPc[16] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$NuPortalDebugDrawPc")
     i32 NuPortalDebugDrawPc = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuPortalNearPlanePc")
     NUPLANE NuPortalNearPlanePc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalDebugEnabledPc")
     i32 NuPortalDebugEnabledPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalCameraSelectPc")
     i32 NuPortalCameraSelectPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalDebugCameraPc")
     NUCAMERA NuPortalDebugCameraPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuPortalRestoreCameraPc")
     NUCAMERA NuPortalRestoreCameraPc = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BoltNoSfxPc")
     i32 BoltNoSfxPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltNoObjectMomentumPc")
     i32 BoltNoObjectMomentumPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltInitSfxFn")
     i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BlowupExFunc")
     i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$BoltBlockContextPc")
     i32 BoltBlockContextPc = -1;
 #pragma data_seg()
@@ -16586,81 +14341,39 @@ extern "C" {
 #pragma data_seg(".data$VisibilityInstanceTreeEnabledPc")
     i32 do_InstTree = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$VisibilityCameraLockPc")
     i32 VisibilityCameraLockPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityLoadedOcclusionPc")
     i32 VisibilityLoadedOcclusionPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityUsingOcclusionPc")
     i32 VisibilityUsingOcclusionPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$dat_00973984")
     i32 dat_00973984 = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$VisibilityCurrentViewBoxPc")
     i32 VisibilityCurrentViewBoxPc = -1;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$VisibilityTreeInitialisedPc")
     i32 TreeInitialised = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityCurrentResultPc")
     VISIBILITY_RESULT_READER_PC *myvisi = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityZeroMatrixTemplatePc")
     NUMTX VisibilityZeroMatrixTemplatePc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityPrimaryPlaneMatrixPc")
     NUMTX VisibilityPrimaryPlaneMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAlternatePlaneMatrixPc")
     NUMTX VisibilityAlternatePlaneMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityPrimaryWorldMatrixPc")
     NUMTX VisibilityPrimaryWorldMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAlternateWorldMatrixPc")
     NUMTX VisibilityAlternateWorldMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityPrimaryAbsoluteMatrixPc")
     NUMTX VisibilityPrimaryAbsoluteMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAlternateAbsoluteMatrixPc")
     NUMTX VisibilityAlternateAbsoluteMatrixPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityDepthPlanePc")
     NUPLANE VisibilityDepthPlanePc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAbsoluteDepthPlanePc")
     NUPLANE VisibilityAbsoluteDepthPlanePc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAlternateWidthPc")
     f32 zxs = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$cacheValues")
     u8 cacheValues[256] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$OcclusionBitArray")
     u8 OcclusionBitArray[0x320] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$VisibilityAlternateHeightPc")
     f32 zys = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$grapple_attach_frames")
     u8 grapple_attach_frames = 5;
 #pragma data_seg()
-#pragma bss_seg(".bss$CHARCATEGORYCOUNT")
     i32 CHARCATEGORYCOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharCategory")
     CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -16676,12 +14389,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$DisplaySceneRenderDisabledPc")
     i32 DisplaySceneRenderDisabledPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DisplaySceneSpecialsDisabledPc")
     i32 noscenespecials = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$VisibilityPortalFilterEnabledPc")
     i32 VisibilityPortalFilterEnabledPc = 1;
 #pragma data_seg()
@@ -16697,21 +14406,11 @@ extern "C" {
 #pragma data_seg(".data$PartNullInstanceNamePc")
     char PartNullInstanceNamePc[14] = "NULL instance";
 #pragma data_seg()
-#pragma bss_seg(".bss$edpart_nearest")
     i32 edpart_nearest = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PartEditorCameraPosPc")
     NUVEC PartEditorCameraPosPc = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpart_nearest_emit")
     PART_EMIT_PC *edpart_nearest_emit = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edpart_nearest_type")
     PARTTYPE_LOOKUP_PC *edpart_nearest_type = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PartGeneralPagePc")
     i32 PartGeneralPagePc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PartLevelPagePc")
     i32 PartLevelPagePc = 1;
 #pragma data_seg()
@@ -16758,9 +14457,7 @@ extern "C" {
 #pragma data_seg(".data$EdppTypesErrorPc")
     i32 EdppTypesErrorPc = 0;
 #pragma data_seg()
-#pragma bss_seg(".bss$edpp_num_orphans")
     i32 edpp_num_orphans = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PartDebrisNameListPc")
     char **PDebNameList = NULL;
 #pragma data_seg()
@@ -26004,7 +23701,7 @@ char uberShader2[158576] = {
 STATIC_ASSERT(sizeof(uberShader2) == 158576);
 
 #pragma data_seg(".data$FrameRenderCaptureStatePc")
-#pragma bss_seg(".bss$FrameRenderCaptureStatePc")
+/* Native pre-initialization state; original owning extents remain unknown. */
 extern "C" {
     f32 RenderFrameShaderTimePc = 0.0f;
     i32 nuspecial_vertex_noffsets = 0;
@@ -26023,22 +23720,18 @@ extern "C" {
     char *nudlist_field_18b0 = NULL;
     char PCDisplayCaptureBufferPc[0x1000] = {0};
 }
-#pragma bss_seg()
 #pragma data_seg()
 
 #pragma data_seg(".data$DisplayHandlerStatePc")
-#pragma bss_seg(".bss$DisplayHandlerStatePc")
 extern "C" {
     NUVEC4 NuDisplayHandlerTintPc = {0};
     void *NuDisplayHandlerMaterialPc = NULL;
     i32 NuDisplayHandlerReflectionPc = 0;
     i32 NuDisplayHandlerCameraIdPc = -1;
 }
-#pragma bss_seg()
 #pragma data_seg()
 
 #pragma data_seg(".data$DisplayHandlerBCDeviceStatePc")
-#pragma bss_seg(".bss$DisplayHandlerBCDeviceStatePc")
 extern "C" {
     f32 NuDisplayHandlerOpacityPc = -1.0f;
     i32 NuDisplayHandlerZModePc = -1;
@@ -26046,11 +23739,9 @@ extern "C" {
     u32 PCDevicePrimitiveCallCountPc = 0;
     u32 PCDeviceIndexedPrimitiveCallCountPc = 0;
 }
-#pragma bss_seg()
 #pragma data_seg()
 
 #pragma data_seg(".data$MaterialDispatcherEffectStatePc")
-#pragma bss_seg(".bss$MaterialDispatcherEffectStatePc")
 extern "C" {
     f32 PCShaderShininessFactorStorage = 1.0f;
     f32 PCShaderWaterThetaStep = 0.2666666805744171f;
@@ -26081,7 +23772,6 @@ extern "C" {
     GRAPHICS_RENDER_TEXTURE_PC *dat_0097ace4 = NULL;
     i32 PCFramePresentationStatePc = 0;
 }
-#pragma bss_seg()
 #pragma data_seg()
 
 #pragma const_seg(".rdata$MaterialSamplerConstantsPc")
@@ -26091,7 +23781,6 @@ extern "C" {
 #pragma const_seg()
 
 #pragma data_seg(".data$DisplayHandlerTablePc")
-#pragma bss_seg(".bss$DisplayHandlerTablePc")
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
     NuDisplayListMaterialPc,             /* item type 0x80 */
     NULL,                                /* item type 0x81 */
@@ -26144,11 +23833,9 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefixPc[49] = {
     NuDisplayListLightmapPacketPc,       /* item type 0xb0 */
 };
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable = PCDisplayItemHandlerPrefixPc;
-#pragma bss_seg()
 #pragma data_seg()
 
 #pragma data_seg(".data$PostEffectFilterStatePc")
-#pragma bss_seg(".bss$PostEffectFilterStatePc")
 extern "C" {
     i32 NuPostEffectsRanPc = 0;
     u8 NuPostLastFrameEffectPc = 0;
@@ -26158,7 +23845,6 @@ extern "C" {
     NU_POST_ACCUM_VIEW_PC *motionAccumFilter = NULL;
     NU_POST_SPEED_VIEW_PC *speedBlurFilter = NULL;
 }
-#pragma bss_seg()
 #pragma data_seg()
 
 /* Verified DWORD working inputs; original owning extents remain unknown. */
@@ -26329,161 +24015,117 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$stream_cut_issued")
     i32 stream_cut_issued = 0;
 
-#pragma bss_seg(".bss$cutscene_load_instance")
     void *cutscene_load_instance = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$EXBLOWUPFLAGS")
     u32 EXBLOWUPFLAGS = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$statstime")
     f32 statstime = 0;
 
-#pragma bss_seg(".bss$cointotaltime")
     f32 cointotaltime = 0;
 
-#pragma bss_seg(".bss$redbrickslidetime")
     f32 redbrickslidetime = 0;
 
-#pragma bss_seg(".bss$goldbricktime")
     f32 goldbricktime = 0;
 
-#pragma bss_seg(".bss$drawbosshitpoints")
     struct gameobject_s *drawbosshitpoints = 0;
 }
 
 extern "C" {
 
-#pragma bss_seg(".bss$GameFogOld")
     GAMEFOG_STATE_PC GameFogOld = {{0}};
 
-#pragma bss_seg(".bss$GameFog")
     GAMEFOG_STATE_PC GameFog = {{0}};
 }
 
 extern "C" {
 
-#pragma bss_seg(".bss$back_rgba")
     i32 back_rgba[2] = {0};
 
-#pragma bss_seg(".bss$old_pause_state")
     i32 old_pause_state = 0;
 
-#pragma bss_seg(".bss$FadeMtl2")
     NUMTL *FadeMtl2 = 0;
-#pragma bss_seg()
 
     f32 ScreenPauseFadeSpeedPc = 2.0f;
     u64 CharacterMaskAllPc = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};
 
-#pragma bss_seg(".bss$PauseTimer")
     TIMER PauseTimer = {0};
 
-#pragma bss_seg(".bss$makebaddiesforgetinresetbits")
     i32 makebaddiesforgetinresetbits = 0;
 
-#pragma bss_seg(".bss$reset_reimport")
     i32 reset_reimport = 0;
 
-#pragma bss_seg(".bss$come_from_an_editor")
     i32 come_from_an_editor = 0;
 
-#pragma bss_seg(".bss$gone_through_door_to_new_mode")
     i32 gone_through_door_to_new_mode = 0;
 
-#pragma bss_seg(".bss$newmode_cutinfo")
     void *newmode_cutinfo = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbits_things_scene")
     struct NUGSCN_s *edbits_things_scene = 0;
 
-#pragma bss_seg(".bss$edbits_numsounds")
     i32 edbits_numsounds = 0;
 
-#pragma bss_seg(".bss$edbitsPlaySound")
     void (*edbitsPlaySound)(NUVEC *position, i32 id) = 0;
 
-#pragma bss_seg(".bss$edbitsRequestSound")
     i32 (*edbitsRequestSound)(char *name) = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$sticky_attack_time")
     f32 sticky_attack_time = 0;
 
-#pragma bss_seg(".bss$MusicSwapDelay")
     f32 MusicSwapDelay = 0;
 
-#pragma bss_seg(".bss$MusicPlrsUnderAttack")
     i32 MusicPlrsUnderAttack = 0;
 
 #pragma data_seg(".data$MusicActive")
     i32 MusicActive = -1;
 
-#pragma bss_seg(".bss$MusicActiveReset")
     i32 MusicActiveReset = 0;
-#pragma bss_seg(".bss$MusicSeekIndex")
     i32 MusicSeekIndex = 0;
 
-#pragma bss_seg(".bss$PlayersUnderAttack")
     i32 PlayersUnderAttack = 0;
 
-#pragma bss_seg(".bss$MusicInside")
     i32 MusicInside = 0;
 
-#pragma bss_seg(".bss$MusicFindCut")
     i32 MusicFindCut = 0;
 
-#pragma bss_seg(".bss$MusicRestoreTrack")
     i32 MusicRestoreTrack = 0;
 
 #pragma data_seg(".data$MusicOnFlag")
     i32 MusicOnFlag = 1;
 
-#pragma bss_seg(".bss$MusicPlrsHoldAttack")
     i32 MusicPlrsHoldAttack = 0;
 
 #pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
 
-#pragma bss_seg(".bss$MoviePlayTime")
     f32 MoviePlayTime = 0;
 
-#pragma bss_seg(".bss$movie_skipped")
     i32 movie_skipped = 0;
 
-#pragma bss_seg(".bss$MovieInputFn")
     i32 (*MovieInputFn)(void) = 0;
 
-#pragma bss_seg(".bss$MovieFrameTime")
     f32 MovieFrameTime = 0;
 
 #pragma data_seg(".data$last_currentmusicpair_quiet")
     i32 last_currentmusicpair_quiet = -1;
 
-#pragma bss_seg(".bss$MusicOther")
     i32 MusicOther = 0;
 
-#pragma bss_seg(".bss$sticky_attack")
     i32 sticky_attack = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$RadioEntriesPc")
     u8 RadioEntriesPc[0xa0] = {0};
-#pragma bss_seg(".bss$radios_playing")
     i32 radios_playing = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -26507,22 +24149,16 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FS_CurrentPosFileNum")
     i32 FS_CurrentPosFileNum = 0;
 
-#pragma bss_seg(".bss$FS_NumFiles")
     i32 FS_NumFiles = 0;
 
-#pragma bss_seg(".bss$FS_FileList")
     char FS_FileList[65536] = {0};
 
-#pragma bss_seg(".bss$FS_Active")
     u8 FS_Active = 0;
 
-#pragma bss_seg(".bss$FS_RefreshDir")
     u8 FS_RefreshDir = 0;
 
-#pragma bss_seg(".bss$FS_Path")
     char FS_Path[256] = {0};
 
 #pragma data_seg(".data$FS_Width")
@@ -26531,37 +24167,28 @@ extern "C" {
 #pragma data_seg(".data$FS_SortMode")
     i32 FS_SortMode = 3;
 
-#pragma bss_seg(".bss$FS_ShowVolumes")
     u8 FS_ShowVolumes = 0;
 
-#pragma bss_seg(".bss$FS_Callback")
     void (*FS_Callback)(char *arg0, char *arg1) = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$gunship_bolts")
     i16 gunship_bolts[2] = {0};
 
-#pragma bss_seg(".bss$gunship_flags")
     u8 gunship_flags[10] = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$fireSplinePos")
     SPLINEPOS fireSplinePos = {0};
 
-#pragma bss_seg(".bss$fireBackPos")
     SPLINEPOS fireBackPos = {0};
 
-#pragma bss_seg(".bss$runningTotalPos")
     f32 runningTotalPos = 0;
 
-#pragma bss_seg(".bss$fireSpeedScale")
     f32 fireSpeedScale = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FadeLoop_ObjScene")
     struct NUGSCN_s *FadeLoop_ObjScene = 0;
 }
 
@@ -26569,97 +24196,70 @@ extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
     i32 gizmopickup_typeid = -1;
 
-#pragma bss_seg(".bss$hothtroopers")
     void *hothtroopers = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$drawptr")
     void (*drawptr)(void) = 0;
 
-#pragma bss_seg(".bss$picked")
     i32 picked = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpp_rotz")
     i32 edpp_rotz = 0;
 
-#pragma bss_seg(".bss$edpp_roty")
     i32 edpp_roty = 0;
 
-#pragma bss_seg(".bss$edpp_emitrotx")
     i32 edpp_emitrotx = 0;
 
-#pragma bss_seg(".bss$edpp_emitroty")
     i32 edpp_emitroty = 0;
 
-#pragma bss_seg(".bss$edpp_emitrotz")
     i32 edpp_emitrotz = 0;
 
-#pragma bss_seg(".bss$edpp_copyrotz")
     i32 edpp_copyrotz = 0;
 
-#pragma bss_seg(".bss$edpp_boxmtl")
     struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
 
-#pragma bss_seg(".bss$edpp_facroty")
     i32 edpp_facroty = 0;
 
-#pragma bss_seg(".bss$edpp_refroty")
     i32 edpp_refroty = 0;
 
-#pragma bss_seg(".bss$edpp_refrotz")
     i32 edpp_refrotz = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CustomiseMode")
     i32 CustomiseMode[2] = {0};
 
-#pragma bss_seg(".bss$makeplayerlist_freeplay")
     i32 makeplayerlist_freeplay = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Grievous_obj")
     struct gameobject_s *Grievous_obj = 0;
 
-#pragma bss_seg(".bss$KashyyykA_msg_TotalWookies")
     struct gizaimessage_s *KashyyykA_msg_TotalWookies = 0;
 
-#pragma bss_seg(".bss$KashyyykA_msg_WookiesToRescue")
     struct gizaimessage_s *KashyyykA_msg_WookiesToRescue = 0;
 
-#pragma bss_seg(".bss$vader_b_complete_msg")
     struct gizaimessage_s *vader_b_complete_msg = 0;
 
-#pragma bss_seg(".bss$vader_b_playersDead")
     u8 vader_b_playersDead = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
     NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$HintItems")
     struct shopitem_s *HintItems = 0;
 
-#pragma bss_seg(".bss$HintShelfIds")
     i32 HintShelfIds[7] = {0};
 
-#pragma bss_seg(".bss$SubShelfPos")
     NUVEC SubShelfPos[7] = {0};
 
-#pragma bss_seg(".bss$ShopNameAlpha")
     f32 ShopNameAlpha = 0;
 
-#pragma bss_seg(".bss$CutItems")
     shopitem_s CutItems[128] = {0};
 
-#pragma bss_seg(".bss$troopercannons_beenReset")
     u8 troopercannons_beenReset = 0;
 
 #pragma data_seg(".data$players_going_forward")
@@ -26675,32 +24275,24 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PadFlyMode")
     i32 PadFlyMode = 0;
 
-#pragma bss_seg(".bss$ed_remap_mtx")
     struct numtx_s *ed_remap_mtx = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AiRndrCullDistance")
     f32 AiRndrCullDistance = 0;
 
-#pragma bss_seg(".bss$aieditor")
     struct AIEDITOR_RENDER_STATE *aieditor = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpp_facrotx")
     i32 edpp_facrotx = 0;
 
-#pragma bss_seg(".bss$edpp_copy_mode")
     i32 edpp_copy_mode = 0;
 
-#pragma bss_seg(".bss$edpp_copy_source_count")
     i32 edpp_copy_source_count = 0;
 
-#pragma bss_seg(".bss$edpp_offset")
     f32 edpp_offset = 0;
 
     void edppInit(void);
@@ -26720,101 +24312,48 @@ extern "C" {
 #pragma data_seg(".data$edpp_create_type")
     i32 edpp_create_type = -1;
 
-#pragma bss_seg(".bss$edbits_what_game")
     i8 edbits_what_game = 0;
 
-#pragma bss_seg(".bss$edpp_effect_list")
     u8 edpp_effect_list = 0;
 
-#pragma bss_seg(".bss$edpp_snap_enabled")
     i32 edpp_snap_enabled = 0;
 
-#pragma bss_seg(".bss$edpp_copy_source")
     i32 edpp_copy_source[8] = {0};
 
-#pragma bss_seg(".bss$ptlcutoffmenu")
     struct eduimenu_s *ptlcutoffmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edptl_bounce_menu")
     struct eduimenu_s *edptl_bounce_menu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edptl_damageflag_menu")
     struct eduimenu_s *edptl_damageflag_menu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edptl_instancesettings_menu")
     struct eduimenu_s *edptl_instancesettings_menu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$texturemenu")
     struct eduimenu_s *texturemenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$textureselectmenu")
     struct eduimenu_s *textureselectmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edptl_star_menu")
     struct eduimenu_s *edptl_star_menu = 0;
-#pragma bss_seg(".bss$edptl_switch_menu")
     struct eduimenu_s *edptl_switch_menu = 0;
-#pragma bss_seg(".bss$edptl_switchtype_menu")
     struct eduimenu_s *edptl_switchtype_menu = 0;
-#pragma bss_seg(".bss$edptl_sounds_menu")
     struct eduimenu_s *edptl_sounds_menu = 0;
-#pragma bss_seg(".bss$edptl_soundx_menu")
     struct eduimenu_s *edptl_soundx_menu = 0;
-#pragma bss_seg(".bss$edptl_soundid_menu")
     struct eduimenu_s *edptl_soundid_menu = 0;
-#pragma bss_seg(".bss$edptl_soundcontrol_menu")
     struct eduimenu_s *edptl_soundcontrol_menu = 0;
-#pragma bss_seg(".bss$edptl_page_menu")
     struct eduimenu_s *edptl_page_menu = 0;
-#pragma bss_seg(".bss$gra_ptr")
     VARIPTR *gra_ptr = 0;
-#pragma bss_seg(".bss$gra_end")
     VARIPTR *gra_end = 0;
-#pragma bss_seg(".bss$edpp_curr")
     i32 edpp_curr = 0;
-#pragma bss_seg(".bss$edpp_first_time_this_level")
     i32 edpp_first_time_this_level = 0;
-#pragma bss_seg(".bss$entry_position")
     NUVEC entry_position = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$edptl_superscale")
     i32 edptl_superscale = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ptlemitvelmenu")
     struct eduimenu_s *ptlemitvelmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptlgravmenu")
     struct eduimenu_s *ptlgravmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$changegenratemenu")
     struct eduimenu_s *changegenratemenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$etimemenu")
     struct eduimenu_s *etimemenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$emittimemenu")
     struct eduimenu_s *emittimemenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edptl_ghost_menu")
     struct eduimenu_s *edptl_ghost_menu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptlvaremitmenu")
     struct eduimenu_s *ptlvaremitmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptlvarstartmenu")
     struct eduimenu_s *ptlvarstartmenu = 0;
-#pragma bss_seg(".bss$sscalemenu")
     struct eduimenu_s *sscalemenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptlstartvelmenu")
     struct eduimenu_s *ptlstartvelmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptlemitmenu")
     struct eduimenu_s *ptlemitmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edbits_particle_general_page")
     i32 edbits_particle_general_page = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$edbits_particle_char_page")
     i32 edbits_particle_char_page = 1;
 #pragma data_seg()
@@ -26829,63 +24368,47 @@ extern "C" {
     u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$edpp_cam_ay")
     i32 edpp_cam_ay = 0;
 
-#pragma bss_seg(".bss$edpp_cam_ax")
     i32 edpp_cam_ax = 0;
 
-#pragma bss_seg(".bss$ptloptmenu")
     struct eduimenu_s *ptloptmenu = 0;
 
-#pragma bss_seg(".bss$edpp_active_menu")
     struct eduimenu_s *edpp_active_menu = 0;
 
 #pragma data_seg(".data$edpp_copy_size")
     f32 edpp_copy_size = 0.20000000298023224f;
 
-#pragma bss_seg(".bss$edpp_dpad_mode")
     i32 edpp_dpad_mode = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$iconalphaoverride")
     f32 iconalphaoverride = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Door_CutCamWaitTime")
     f32 Door_CutCamWaitTime = 0;
 
-#pragma bss_seg(".bss$Door_CutCamWait")
     f32 Door_CutCamWait = 0;
 
-#pragma bss_seg(".bss$Door_CutCamBlendTime")
     f32 Door_CutCamBlendTime = 0;
 
-#pragma bss_seg(".bss$Door_CutLookAtPlayers")
     i32 Door_CutLookAtPlayers = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AnakinC")
     struct anakin_door_s *AnakinC = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$podsprint_netpacket")
     struct PODSPRINTNETPACKET_s *podsprint_netpacket = 0;
 
-#pragma bss_seg(".bss$Maul_obj")
     struct gameobject_s *Maul_obj = 0;
 
-#pragma bss_seg(".bss$kaminoe_netpacket")
     void *kaminoe_netpacket = 0;
 
-#pragma bss_seg(".bss$LevForce")
     i32 LevForce = 0;
 
-#pragma bss_seg(".bss$mushroom_collapse")
     i32 mushroom_collapse = 0;
 
 #pragma data_seg(".data$mushroom0_along")
@@ -26897,33 +24420,26 @@ extern "C" {
 #pragma data_seg(".data$mushroom_time_increment")
     f32 mushroom_time_increment = 1.0f;
 
-#pragma bss_seg(".bss$mushroom_nattempts_per_increment")
     i32 mushroom_nattempts_per_increment = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SuperStoryTimer")
     TIMER SuperStoryTimer = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$melee")
     HOTHBATTLE_MELEE_s melee = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$StatusStages")
     struct STATUS_STAGE_s *StatusStages = 0;
 
-#pragma bss_seg(".bss$StatusPacket")
     STATUSPACKET_s StatusPacket = {0};
 
-#pragma bss_seg(".bss$status_prompt")
     i32 status_prompt = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PodRace_nsnipers")
     i32 PodRace_nsnipers = 0;
 
 #pragma data_seg(".data$PodRace_sniper_fire_time")
@@ -26931,10 +24447,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpp_copy_source_vec")
     NUVEC edpp_copy_source_vec = {0};
 
-#pragma bss_seg(".bss$edpp_copyroty")
     i32 edpp_copyroty = 0;
 }
 
@@ -26947,15 +24461,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$HothBattleC_BombGenerator")
     struct GIZBOMBGEN_s *HothBattleC_BombGenerator = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_emitrotz")
     i32 edpart_emitrotz = 0;
 
-#pragma bss_seg(".bss$edpart_emitroty")
     i32 edpart_emitroty = 0;
 }
 
@@ -26968,188 +24479,129 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$temp_yrot")
     u16 temp_yrot = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_copy_mode")
     i32 edpart_copy_mode = 0;
 
-#pragma bss_seg(".bss$edpart_copyrotz")
     i32 edpart_copyrotz = 0;
 
-#pragma bss_seg(".bss$edpart_copyroty")
     i32 edpart_copyroty = 0;
 
-#pragma bss_seg(".bss$edpart_rotz")
     i32 edpart_rotz = 0;
 
-#pragma bss_seg(".bss$edpart_roty")
     i32 edpart_roty = 0;
 
-#pragma bss_seg(".bss$edpart_mtl")
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
 #pragma data_seg(".data$edpart_copy_size")
     f32 edpart_copy_size = 0.20000000298023224f;
 
-#pragma bss_seg(".bss$edpart_dpad_mode")
     i32 edpart_dpad_mode = 0;
 
-#pragma bss_seg(".bss$edpart_refrotz")
     i32 edpart_refrotz = 0;
 
-#pragma bss_seg(".bss$edpart_refroty")
     i32 edpart_refroty = 0;
 
-#pragma bss_seg(".bss$edpart_boxmtl")
     struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
 
-#pragma bss_seg(".bss$edpart_readout")
     i32 edpart_readout = 0;
 
-#pragma bss_seg(".bss$edpart_num_orphans")
     i32 edpart_num_orphans = 0;
 
 #pragma data_seg(".data$edpart_create_type")
     i32 edpart_create_type = -1;
 
-#pragma bss_seg(".bss$edpart_effect_list")
     i8 edpart_effect_list = 0;
 
-#pragma bss_seg(".bss$edpart_generaltype_menu")
     struct eduimenu_s *edpart_generaltype_menu = 0;
 
-#pragma bss_seg(".bss$edpart_leveltype_menu")
     struct eduimenu_s *edpart_leveltype_menu = 0;
 
-#pragma bss_seg(".bss$edpart_changegenrate_menu")
     struct eduimenu_s *edpart_changegenrate_menu = 0;
 
-#pragma bss_seg(".bss$edpart_maxlife_menu")
     struct eduimenu_s *edpart_maxlife_menu = 0;
 
-#pragma bss_seg(".bss$edpart_instancesettings_menu")
     struct eduimenu_s *edpart_instancesettings_menu = 0;
 
-#pragma bss_seg(".bss$edpart_worldinstance_menu")
     struct eduimenu_s *edpart_worldinstance_menu = 0;
 
-#pragma bss_seg(".bss$edpart_instanceorphans_menu")
     struct eduimenu_s *edpart_instanceorphans_menu = 0;
 
-#pragma bss_seg(".bss$edpart_set_debris")
     i32 edpart_set_debris = 0;
 
-#pragma bss_seg(".bss$edpart_particle_list")
     i32 edpart_particle_list = 0;
 
-#pragma bss_seg(".bss$edpart_part_list")
     i32 edpart_part_list = 0;
 
-#pragma bss_seg(".bss$edpart_trail1debris_menu")
     struct eduimenu_s *edpart_trail1debris_menu = 0;
 
-#pragma bss_seg(".bss$edpart_trail2debris_menu")
     struct eduimenu_s *edpart_trail2debris_menu = 0;
 
-#pragma bss_seg(".bss$edpart_emitterdebris_menu")
     struct eduimenu_s *edpart_emitterdebris_menu = 0;
 
-#pragma bss_seg(".bss$edpart_impactdebris_menu")
     struct eduimenu_s *edpart_impactdebris_menu = 0;
 
-#pragma bss_seg(".bss$edpart_impactpart_menu")
     struct eduimenu_s *edpart_impactpart_menu = 0;
 
-#pragma bss_seg(".bss$edpart_diedebris_menu")
     struct eduimenu_s *edpart_diedebris_menu = 0;
 
-#pragma bss_seg(".bss$edpart_debrisindex_menu")
     struct eduimenu_s *edpart_debrisindex_menu = 0;
 
-#pragma bss_seg(".bss$edpart_partindex_menu")
     struct eduimenu_s *edpart_partindex_menu = 0;
 
-#pragma bss_seg(".bss$edpart_varemit_menu")
     struct eduimenu_s *edpart_varemit_menu = 0;
 
-#pragma bss_seg(".bss$edpart_varstart_menu")
     struct eduimenu_s *edpart_varstart_menu = 0;
 
-#pragma bss_seg(".bss$edpart_emittime_menu")
     struct eduimenu_s *edpart_emittime_menu = 0;
 
-#pragma bss_seg(".bss$edpart_emitvel_menu")
     struct eduimenu_s *edpart_emitvel_menu = 0;
 
-#pragma bss_seg(".bss$edpart_emit_menu")
     struct eduimenu_s *edpart_emit_menu = 0;
 
-#pragma bss_seg(".bss$edpart_data_menu")
     struct eduimenu_s *edpart_data_menu = 0;
 
-#pragma bss_seg(".bss$edpart_first_time_this_level")
     i32 edpart_first_time_this_level = 0;
 
-#pragma bss_seg(".bss$edpart_curr")
     i32 edpart_curr = 0;
 
-#pragma bss_seg(".bss$edpart_copy_source")
     i32 edpart_copy_source[8] = {0};
 
-#pragma bss_seg(".bss$edpart_offset")
     f32 edpart_offset = 0;
 
-#pragma bss_seg(".bss$edpart_opt_menu")
     struct eduimenu_s *edpart_opt_menu = 0;
 
-#pragma bss_seg(".bss$edpart_snap_enabled")
     i32 edpart_snap_enabled = 0;
 
-#pragma bss_seg(".bss$edpart_cam_ax")
     i32 edpart_cam_ax = 0;
 
-#pragma bss_seg(".bss$edpart_cam_ay")
     i32 edpart_cam_ay = 0;
 
-#pragma bss_seg(".bss$edpart_sscale_menu")
     struct eduimenu_s *edpart_sscale_menu = 0;
 
-#pragma bss_seg(".bss$edpart_switch_menu")
     struct eduimenu_s *edpart_switch_menu = 0;
 
-#pragma bss_seg(".bss$edpart_switchtype_menu")
     struct eduimenu_s *edpart_switchtype_menu = 0;
 
-#pragma bss_seg(".bss$edpart_sounds_menu")
     struct eduimenu_s *edpart_sounds_menu = 0;
 
-#pragma bss_seg(".bss$edpart_soundx_menu")
     struct eduimenu_s *edpart_soundx_menu = 0;
 
-#pragma bss_seg(".bss$edpart_soundid_menu")
     struct eduimenu_s *edpart_soundid_menu = 0;
 
-#pragma bss_seg(".bss$edpart_soundcontrol_menu")
     struct eduimenu_s *edpart_soundcontrol_menu = 0;
 
-#pragma bss_seg(".bss$edpart_tint_menu")
     struct eduimenu_s *edpart_tint_menu = 0;
 
-#pragma bss_seg(".bss$edpart_instancescale_menu")
     struct eduimenu_s *edpart_instancescale_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_copy_enclosed")
     i32 edpart_copy_enclosed = 0;
-#pragma bss_seg(".bss$edpart_nearest_orphans")
     i32 edpart_nearest_orphans = 0;
-#pragma bss_seg(".bss$edpart_nearest_duplicates")
     i32 edpart_nearest_duplicates = 0;
-#pragma bss_seg(".bss$edpart_emitrotx")
     i32 edpart_emitrotx = 0;
 }
 
@@ -27180,16 +24632,12 @@ extern "C" {
 #pragma data_seg(".data$melee_wavePhase")
     i8 melee_wavePhase = -1;
 
-#pragma bss_seg(".bss$escape")
     nuhspecial_s escape[8] = {0};
 
-#pragma bss_seg(".bss$StarDestroyerTurrets")
     struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
 
-#pragma bss_seg(".bss$turretAliveCount")
     u8 turretAliveCount = 0;
 
-#pragma bss_seg(".bss$melee_waveDelay")
     f32 melee_waveDelay = 0;
 }
 
@@ -27208,71 +24656,52 @@ extern "C" {
 #pragma data_seg(".data$PodRace_sniper_fire_range_time")
     f32 PodRace_sniper_fire_range_time = 2.0f;
 
-#pragma bss_seg(".bss$PodRace_snipers")
     SNIPER_s PodRace_snipers[10] = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_mtl_zoff")
     struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
 
-#pragma bss_seg(".bss$edanim_sound_mode")
     i32 edanim_sound_mode = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$DisableDebugMsg")
     i32 DisableDebugMsg = 0;
 
-#pragma bss_seg(".bss$err_msg_filter")
     char err_msg_filter[32] = {0};
 
-#pragma bss_seg(".bss$nufile")
     char *nufile = 0;
 
-#pragma bss_seg(".bss$nuline")
     i32 nuline = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ed_fnt")
     void *ed_fnt = 0;
 
-#pragma bss_seg(".bss$edanim_soundtype_menu")
     struct eduimenu_s *edanim_soundtype_menu = 0;
 
-#pragma bss_seg(".bss$edanim_sound_type")
     i32 edanim_sound_type = 0;
 
-#pragma bss_seg(".bss$edSfxAllCount")
     i32 edSfxAllCount = 0;
 
-#pragma bss_seg(".bss$edbits_level_save_directory")
     char edbits_level_save_directory[256] = {0};
 
-#pragma bss_seg(".bss$edbits_level_save_name")
     char edbits_level_save_name[256] = {0};
 
-#pragma bss_seg(".bss$edbits_level_save_extension")
     char edbits_level_save_extension[256] = {0};
 
-#pragma bss_seg(".bss$edanim_mtl")
     void *edanim_mtl = 0;
 
-#pragma bss_seg(".bss$edanim_active_menu")
     struct eduimenu_s *edanim_active_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edptl_quickdel_menu")
     struct eduimenu_s *edptl_quickdel_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edgra_clumparea_menu")
     struct eduimenu_s *edgra_clumparea_menu = 0;
 
-#pragma bss_seg(".bss$edgra_clumpfade_menu")
     struct eduimenu_s *edgra_clumpfade_menu = 0;
 
 #pragma data_seg(".data$edgra_superscale")
@@ -27284,87 +24713,61 @@ extern "C" {
 #pragma data_seg(".data$edgra_copy_source")
     i32 edgra_copy_source = -1;
 
-#pragma bss_seg(".bss$edgra_clump_size")
     i32 edgra_clump_size = 0;
 
-#pragma bss_seg(".bss$edgra_cam_ax")
     i32 edgra_cam_ax = 0;
 
-#pragma bss_seg(".bss$edgra_cam_ay")
     i32 edgra_cam_ay = 0;
 
-#pragma bss_seg(".bss$edgra_pageid")
     i32 edgra_pageid = 0;
 
-#pragma bss_seg(".bss$edgra_rotz")
     i32 edgra_rotz = 0;
 
-#pragma bss_seg(".bss$edgra_roty")
     i32 edgra_roty = 0;
 
-#pragma bss_seg(".bss$edgra_options_menu")
     struct eduimenu_s *edgra_options_menu = 0;
 
-#pragma bss_seg(".bss$edgra_sscale_menu")
     struct eduimenu_s *edgra_sscale_menu = 0;
 
-#pragma bss_seg(".bss$edgra_changeinstance_menu")
     struct eduimenu_s *edgra_changeinstance_menu = 0;
 
-#pragma bss_seg(".bss$edgra_clumpsizes_menu")
     struct eduimenu_s *edgra_clumpsizes_menu = 0;
 
-#pragma bss_seg(".bss$edgra_mtl_zoff")
     struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
 
-#pragma bss_seg(".bss$edgra_mtl")
     struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
 
-#pragma bss_seg(".bss$selection_value")
     i32 selection_value = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$edui_last_item")
     struct eduiitem_s *edui_last_item = 0;
 
-#pragma bss_seg(".bss$fadeinitem")
     struct edui_slider_s *fadeinitem = 0;
 
-#pragma bss_seg(".bss$fadeoutitem")
     struct edui_slider_s *fadeoutitem = 0;
 
-#pragma bss_seg(".bss$edgra_clumpproperties_menu")
     struct eduimenu_s *edgra_clumpproperties_menu = 0;
 
-#pragma bss_seg(".bss$edgra_clumpmode_menu")
     struct eduimenu_s *edgra_clumpmode_menu = 0;
 
 #pragma data_seg(".data$edgra_mode")
     i32 edgra_mode = 1;
 
-#pragma bss_seg(".bss$edgra_globals_menu")
     struct eduimenu_s *edgra_globals_menu = 0;
 
-#pragma bss_seg(".bss$globalfadeinitem")
     struct edui_slider_s *globalfadeinitem = 0;
 
-#pragma bss_seg(".bss$globalfadeoutitem")
     struct edui_slider_s *globalfadeoutitem = 0;
 
-#pragma bss_seg(".bss$edgra_active_menu")
     struct eduimenu_s *edgra_active_menu = 0;
 
-#pragma bss_seg(".bss$edgra_editormode")
     i32 edgra_editormode = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_scaletype_menu")
     struct eduimenu_s *edpart_scaletype_menu = 0;
 
 #pragma data_seg(".data$edpart_scale_factor")
     f32 edpart_scale_factor = 1.0f;
 
-#pragma bss_seg(".bss$edpart_type_menu")
     struct eduimenu_s *edpart_type_menu = 0;
 
 #pragma data_seg(".data$edpart_set_part")
@@ -27376,96 +24779,61 @@ extern "C" {
 #pragma data_seg(".data$edpart_filter_string")
     char edpart_filter_string[16] = "PART";
 
-#pragma bss_seg(".bss$edpart_thingsinstance_menu")
     struct eduimenu_s *edpart_thingsinstance_menu = 0;
 
-#pragma bss_seg(".bss$edpart_filter")
     i32 edpart_filter = 0;
 
-#pragma bss_seg(".bss$edpart_cutoff_menu")
     struct eduimenu_s *edpart_cutoff_menu = 0;
 
 #pragma data_seg(".data$edpart_superscale")
     i32 edpart_superscale = 1;
 
-#pragma bss_seg(".bss$edpart_grav_menu")
     struct eduimenu_s *edpart_grav_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ptltypemenu")
     struct eduimenu_s *ptltypemenu = 0;
 
-#pragma bss_seg(".bss$effectlistmenu")
     struct eduimenu_s *effectlistmenu = 0;
 
-#pragma bss_seg(".bss$edptl_testdetail_menu")
     struct eduimenu_s *edptl_testdetail_menu = 0;
-#pragma bss_seg(".bss$edptl_torus_menu")
     struct eduimenu_s *edptl_torus_menu = 0;
-#pragma bss_seg(".bss$ptlrotmenu")
     struct eduimenu_s *ptlrotmenu = 0;
-#pragma bss_seg(".bss$collmenu")
     struct eduimenu_s *collmenu = 0;
-#pragma bss_seg(".bss$ptlgsortmenu")
     struct eduimenu_s *ptlgsortmenu = 0;
-#pragma bss_seg(".bss$ptlclipmenu")
     struct eduimenu_s *ptlclipmenu = 0;
-#pragma bss_seg(".bss$ptlgcodemenu")
     struct eduimenu_s *ptlgcodemenu = 0;
-#pragma bss_seg(".bss$edptl_group_menu")
     struct eduimenu_s *edptl_group_menu = 0;
-#pragma bss_seg(".bss$edptl_drawflag_menu")
     struct eduimenu_s *edptl_drawflag_menu = 0;
-#pragma bss_seg(".bss$grad_rot_item")
     struct eduiitem_s *grad_rot_item = 0;
-#pragma bss_seg(".bss$grad_rot_min_item")
     struct edui_slider_s *grad_rot_min_item = 0;
-#pragma bss_seg(".bss$grad_rot_max_item")
     struct edui_slider_s *grad_rot_max_item = 0;
-#pragma bss_seg(".bss$ptlcolmenu")
     struct eduimenu_s *ptlcolmenu = 0;
-#pragma bss_seg(".bss$grad_item")
     struct eduiitem_s *grad_item = 0;
-#pragma bss_seg(".bss$grad_alpha_item")
     struct eduiitem_s *grad_alpha_item = 0;
-#pragma bss_seg(".bss$ptlsizemenu")
     struct eduimenu_s *ptlsizemenu = 0;
-#pragma bss_seg(".bss$grad_size_w_item")
     struct eduiitem_s *grad_size_w_item = 0;
-#pragma bss_seg(".bss$grad_size_h_item")
     struct eduiitem_s *grad_size_h_item = 0;
-#pragma bss_seg(".bss$grad_size_min_item")
     struct edui_slider_s *grad_size_min_item = 0;
-#pragma bss_seg(".bss$grad_size_max_item")
     struct edui_slider_s *grad_size_max_item = 0;
-#pragma bss_seg(".bss$coll_env_item")
     struct eduiitem_s *coll_env_item = 0;
-#pragma bss_seg(".bss$torus_env1_item")
     struct eduiitem_s *torus_env1_item = 0;
-#pragma bss_seg(".bss$torus_env2_item")
     struct eduiitem_s *torus_env2_item = 0;
-#pragma bss_seg(".bss$torus_env3_item")
     struct eduiitem_s *torus_env3_item = 0;
 
-#pragma bss_seg(".bss$dpadmodemenu")
     struct eduimenu_s *dpadmodemenu = 0;
 
-#pragma bss_seg(".bss$edptl_orphanlist_menu")
     struct eduimenu_s *edptl_orphanlist_menu = 0;
 
-#pragma bss_seg(".bss$edptl_damage_menu")
     struct eduimenu_s *edptl_damage_menu = 0;
 
 #pragma data_seg(".data$edptl_clipboard_entry")
     i32 edptl_clipboard_entry = -1;
 
-#pragma bss_seg(".bss$edptl_count")
     i32 edptl_count = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_plankcount_menu")
     struct eduimenu_s *edbri_plankcount_menu = 0;
 
 #pragma data_seg(".data$edbri_planks")
@@ -27483,87 +24851,64 @@ extern "C" {
                              NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
 #pragma data_seg()
 
-#pragma bss_seg(".bss$edbri_dpadmode_menu")
     struct eduimenu_s *edbri_dpadmode_menu = 0;
 
-#pragma bss_seg(".bss$edbri_mode")
     i32 edbri_mode = 0;
 
-#pragma bss_seg(".bss$edbri_bridgeproperties_menu")
     struct eduimenu_s *edbri_bridgeproperties_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edgra_instance_menu")
     struct eduimenu_s *edgra_instance_menu = 0;
 
-#pragma bss_seg(".bss$edgra_filter")
     i32 edgra_filter = 0;
 
-#pragma bss_seg(".bss$edgra_instance_type")
     i32 edgra_instance_type = 0;
 
-#pragma bss_seg(".bss$edgra_dpadmode_menu")
     struct eduimenu_s *edgra_dpadmode_menu = 0;
 
-#pragma bss_seg(".bss$edgra_dpadmode")
     i32 edgra_dpadmode = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PauseMenus_Align")
     i32 PauseMenus_Align = 0;
 
-#pragma bss_seg(".bss$PauseMenus_X")
     f32 PauseMenus_X = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$iconback")
     nuhspecial_s iconback = {0};
 
-#pragma bss_seg(".bss$SHOPCHARCOUNT")
     i32 SHOPCHARCOUNT = 0;
 
-#pragma bss_seg(".bss$TopShelf")
     shopitem_s TopShelf[6] = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ptlreadoutmenu")
     struct eduimenu_s *ptlreadoutmenu = 0;
 
-#pragma bss_seg(".bss$edpp_readout")
     i32 edpp_readout = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_particletype_menu")
     struct eduimenu_s *edanim_particletype_menu = 0;
 
-#pragma bss_seg(".bss$edanim_particle_type")
     i32 edanim_particle_type = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_instanceflags_menu")
     struct eduimenu_s *edpart_instanceflags_menu = 0;
 
-#pragma bss_seg(".bss$edpart_debrisscale_menu")
     struct eduimenu_s *edpart_debrisscale_menu = 0;
 
-#pragma bss_seg(".bss$edpart_debrissettings_menu")
     struct eduimenu_s *edpart_debrissettings_menu = 0;
 
-#pragma bss_seg(".bss$edpart_active_menu")
     struct eduimenu_s *edpart_active_menu = 0;
 
-#pragma bss_seg(".bss$edpart_count")
     i32 edpart_count = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_active_menu")
     struct eduimenu_s *edbri_active_menu = 0;
 }
 
@@ -27573,13 +24918,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$active_menu")
     struct eduimenu_s *active_menu = 0;
 
-#pragma bss_seg(".bss$edui_donotdraw")
     i32 edui_donotdraw = 0;
 
-#pragma bss_seg(".bss$edui_font")
     void *edui_font = 0;
 
 #pragma data_seg(".data$edui_font_scale_y")
@@ -27603,155 +24945,113 @@ extern "C" {
 #pragma data_seg(".data$edui_textrow_lower")
     char *edui_textrow_lower[4] = {"1234567890", "qwertyuiop", "asdfghjkl_", "zxcvbnm<>?"};
 
-#pragma bss_seg(".bss$textrow")
     char *textrow[4] = {0};
 
-#pragma bss_seg(".bss$edui_cursor_buttons_db")
     u32 edui_cursor_buttons_db = 0;
 
-#pragma bss_seg(".bss$uimtls")
     struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
 
-#pragma bss_seg(".bss$edui_messagemenu")
     struct eduimenu_s *edui_messagemenu = 0;
-#pragma bss_seg(".bss$messagemenu")
     struct eduimenu_s *messagemenu = 0;
-#pragma bss_seg(".bss$ptldatamenu")
     struct eduimenu_s *ptldatamenu = 0;
-#pragma bss_seg(".bss$edbits_datapath")
     char edbits_datapath[256] = {0};
-#pragma bss_seg(".bss$edbits_override_backups")
     i32 edbits_override_backups = 0;
-#pragma bss_seg(".bss$edpp_save_names")
     char *edpp_save_names[6] = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edui_cursor_buttons")
     u32 edui_cursor_buttons = 0;
 
-#pragma bss_seg(".bss$eduiInteractLocked")
     struct edui_interact_s *eduiInteractLocked = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edgra_nearest_instance")
     i32 edgra_nearest_instance = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_bouncy_menu")
     struct eduimenu_s *edanim_bouncy_menu = 0;
 
-#pragma bss_seg(".bss$edanim_switchtype_menu")
     struct eduimenu_s *edanim_switchtype_menu = 0;
 
-#pragma bss_seg(".bss$edanim_mctb_menu")
     struct eduimenu_s *edanim_mctb_menu = 0;
 
-#pragma bss_seg(".bss$edanim_switch_menu")
     struct eduimenu_s *edanim_switch_menu = 0;
 
-#pragma bss_seg(".bss$edbits_cubecount")
     i32 edbits_cubecount = 0;
 
-#pragma bss_seg(".bss$NuRndrDoingScreenGrab")
     i32 NuRndrDoingScreenGrab = 0;
 
-#pragma bss_seg(".bss$edinternalcam")
     NUCAMERA *edinternalcam = 0;
 
-#pragma bss_seg(".bss$edmain_cursor_enabled")
     i32 edmain_cursor_enabled = 0;
 
-#pragma bss_seg(".bss$edmain_render_interacts")
     i32 edmain_render_interacts = 0;
 
-#pragma bss_seg(".bss$cubemapcam")
     NUCAMERA *cubemapcam = 0;
 
-#pragma bss_seg(".bss$edanim_localsound_menu")
     struct eduimenu_s *edanim_localsound_menu = 0;
 
-#pragma bss_seg(".bss$edanim_localsoundtype_menu")
     struct eduimenu_s *edanim_localsoundtype_menu = 0;
 
-#pragma bss_seg(".bss$edanim_nearest_sound")
     i32 edanim_nearest_sound = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_cam_ax")
     i32 edanim_cam_ax = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_cam_ay")
     i32 edanim_cam_ay = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_options_menu")
     struct eduimenu_s *edanim_options_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_emitrotz")
     i32 edanim_emitrotz = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_emitroty")
     i32 edanim_emitroty = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edgra_clumpdist_menu")
     struct eduimenu_s *edgra_clumpdist_menu = 0;
 
-#pragma bss_seg(".bss$edgra_clumpterrain_menu")
     struct eduimenu_s *edgra_clumpterrain_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_instorient_menu")
     struct eduimenu_s *edpart_instorient_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$namemenu")
     struct eduimenu_s *namemenu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_localparticletype_menu")
     struct eduimenu_s *edanim_localparticletype_menu = 0;
 
-#pragma bss_seg(".bss$edanim_nearest_particle")
     i32 edanim_nearest_particle = 0;
 
-#pragma bss_seg(".bss$edanim_localparticle_menu")
     struct eduimenu_s *edanim_localparticle_menu = 0;
 
-#pragma bss_seg(".bss$edanim_particle_menu")
     struct eduimenu_s *edanim_particle_menu = 0;
 
-#pragma bss_seg(".bss$edanim_sound_menu")
     struct eduimenu_s *edanim_sound_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_name_menu")
     struct eduimenu_s *edpart_name_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$lightning_type")
     i32 lightning_type = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$force_array")
     struct GIZFORCE_s *force_array[4] = {0};
 
 #pragma data_seg(".data$sockstep")
@@ -27790,13 +25090,10 @@ extern "C" {
 #pragma data_seg(".data$sebulba_goal_ahead_vals")
     f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
 #pragma data_seg()
-#pragma bss_seg(".bss$sebulba_fallback_speed_mul")
     f32 sebulba_fallback_speed_mul = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$sebulba_lerpf")
     f32 sebulba_lerpf = 0.5f;
 
-#pragma bss_seg(".bss$do_mine")
     i32 do_mine = 0;
 }
 
@@ -27819,16 +25116,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbits_level_filename")
     char edbits_level_filename[256] = {0};
 
-#pragma bss_seg(".bss$edbits_general_save_directory")
     char edbits_general_save_directory[256] = {0};
 
-#pragma bss_seg(".bss$edbits_general_save_name")
     char edbits_general_save_name[256] = {0};
 
-#pragma bss_seg(".bss$edbits_general_save_extension")
     char edbits_general_save_extension[256] = {0};
 }
 
@@ -27881,76 +25174,58 @@ extern "C" {
 #pragma data_seg(".data$edbri_width")
     f32 edbri_width = 0.5f;
 
-#pragma bss_seg(".bss$edbri_rotz")
     i32 edbri_rotz = 0;
 
-#pragma bss_seg(".bss$edbri_roty")
     i32 edbri_roty = 0;
 
-#pragma bss_seg(".bss$edbri_plank_instance_type")
     i32 edbri_plank_instance_type = 0;
 
-#pragma bss_seg(".bss$edbri_post_instance_type")
     i32 edbri_post_instance_type = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_pageid")
     i32 edbri_pageid = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_options_menu")
     struct eduimenu_s *edbri_options_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_ropecolour_menu")
     struct eduimenu_s *edbri_ropecolour_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_plankinstance_menu")
     struct eduimenu_s *edbri_plankinstance_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_postinstance_menu")
     struct eduimenu_s *edbri_postinstance_menu = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_cam_ax")
     i32 edbri_cam_ax = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edbri_cam_ay")
     i32 edbri_cam_ay = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edgra_size")
     f32 edgra_size = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FS_LastFileName")
     char FS_LastFileName[64] = {0};
 
-#pragma bss_seg(".bss$default_active_menu")
     struct eduimenu_s *default_active_menu = 0;
 
-#pragma bss_seg(".bss$ed_init")
     i32 ed_init = 0;
 
-#pragma bss_seg(".bss$editor_return")
     i32 editor_return = 0;
 
-#pragma bss_seg(".bss$ed_levelfile")
     char ed_levelfile[256] = {0};
 
-#pragma bss_seg(".bss$dir_list")
     struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 
 #pragma data_seg(".data$edui_filepick_listsize")
@@ -27966,18 +25241,14 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$thingsSceneBase")
     nuhspecial_s thingsSceneBase = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$factoryb_netpacket")
     void *factoryb_netpacket = 0;
 
-#pragma bss_seg(".bss$forcetube")
     struct gizmo_pc_s *forcetube = 0;
 
-#pragma bss_seg(".bss$green_light")
     nuhspecial_s green_light = {0};
 }
 
@@ -27989,43 +25260,33 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Detonator")
     DETONATOR_s Detonator[10] = {0};
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpp_copy_enclosed")
     i32 edpp_copy_enclosed = 0;
 
-#pragma bss_seg(".bss$edpp_mtl")
     struct PC_SCENE_MTL_VIEW *edpp_mtl = 0;
 
-#pragma bss_seg(".bss$edpp_showAllPlaced")
     i32 edpp_showAllPlaced = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_copy_source_vec")
     NUVEC edpart_copy_source_vec = {0};
 
-#pragma bss_seg(".bss$edpart_copy_source_count")
     i32 edpart_copy_source_count = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$netcamera")
     i32 netcamera = 0;
 
 #pragma data_seg(".data$movegamecamera_forcesock")
     i32 movegamecamera_forcesock = -1;
 
-#pragma bss_seg(".bss$PodCamDist")
     f32 PodCamDist = 0;
 
-#pragma bss_seg(".bss$CustomisePos")
     NUVEC CustomisePos[2] = {0};
 
-#pragma bss_seg(".bss$shopcampos")
     struct nuvec_s *shopcampos = 0;
 
 #pragma data_seg(".data$HUB_MINIKITVIEWER_CAMDY")
@@ -28036,20 +25297,15 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CutCamMtx")
     NUMTX CutCamMtx = {0};
 
-#pragma bss_seg(".bss$newgamecamtime")
     f32 newgamecamtime = 0;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SHOPACTIVE")
     i32 SHOPACTIVE = 0;
 
-#pragma bss_seg(".bss$shopcamlookat")
     NUVEC *shopcamlookat = 0;
-#pragma bss_seg(".bss$menuptr")
     i32 (*menuptr)(void *menu) = 0;
 
 #pragma data_seg(".data$GunshipAOffset")
@@ -29312,9 +26568,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BuilditHopSfxWaitPc")
     f32 BuilditHopSfxWaitPc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$GIZBUILDITWOBBLEJUMPHEIGHT")
     f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
 #pragma data_seg()
@@ -29346,9 +26600,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AIGizmoNameBufferPc")
     char AIGizmoNameBufferPc[16] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -29358,51 +26610,32 @@ extern "C" {
 #pragma data_seg(".data$PCGraphicsPostEffectHeightPc")
     u32 PCGraphicsPostEffectHeightPc = 512;
 #pragma data_seg()
-#pragma bss_seg(".bss$PCGraphicsPostEffectWorkTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PostGaussianTexelBiasPc")
     f32 PostGaussianTexelBiasPc = 0.0f;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuQFntScanXPc")
     i32 NuQFntScanXPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuQFntScanYPc")
     i32 NuQFntScanYPc = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$NuTexBmpErrorTextPc")
     char NuTexBmpErrorTextPc[0x80];
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuTexBmpPalettePc")
     NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
 #pragma bss_seg()
-#pragma bss_seg(".bss$PCGraphicsPostEffectAuxTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$door_cutscenesnap")
     i32 door_cutscenesnap = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$HubDoorAreaPc")
     i32 HubDoorAreaPc = 0;
-#pragma bss_seg(".bss$HubDoorNewLevelPc")
     i32 HubDoorNewLevelPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-/* Place actual owners in canonical data.cpp extern-C cohort. */
-#pragma bss_seg(".bss$GameKeepMergeActionPc")
+    /* Place actual owners in canonical data.cpp extern-C cohort. */
     i32 GameKeepMergeActionPc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$CharacterBlobShadowsOnPc")
     i32 CharacterBlobShadowsOnPc = 1;
 #pragma data_seg()
@@ -30172,33 +27405,24 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$MenuVideoOptionsPc")
     MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc = {0};
-#pragma bss_seg(".bss$MenuAppliedAspectPc")
     i32 MenuAppliedAspectPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuVideoConfirmDurationPc")
+    // Replace existing MenuInfo rows exactly (native row metadata is unchanged):
+    // {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
+    // {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
     f32 MenuVideoConfirmDurationPc = 0;
-#pragma bss_seg(".bss$MenuVideoConfirmWaitPc")
     i32 MenuVideoConfirmWaitPc = 0;
-#pragma bss_seg()
     // {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1, -1,
     // 0, 0, 0, 0}, {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc,
     // MenuExitHiresNoticePc, -1, -1, 0, 0, 0, 0},
 
-#pragma bss_seg(".bss$PauseSaveAndExitPc")
     i32 PauseSaveAndExitPc = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$MenuAutoSaveCancelFirstPc")
     u8 MenuAutoSaveCancelFirstPc = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$SaveloadPendingPc")
     i32 SaveloadPendingPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SaveloadStartedTickPc")
     u32 savetimer = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -30220,33 +27444,15 @@ extern "C" {
 #pragma data_seg(".data$HubForceBackRadiusPc")
     f32 HubForceBackRadiusPc = 2.299999952316284;
 #pragma data_seg()
-#pragma bss_seg(".bss$HubMiniKitOpenTimePc")
     f32 HubMiniKitOpenTimePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubUpdateAIFnPc")
     void (*HubUpdateAIFnPc)(WORLDINFO *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$shop_quit")
     i32 shop_quit = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$shop_save_done")
     i32 shop_save_done = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopLockedScalePc")
     f32 ShopLockedScalePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$customiser_save_done")
     i32 customiser_save_done = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$customiser_changed")
     i32 customiser_changed = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TempGame")
     GAMESAVE TempGame = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$OldCustomiseGame")
     GAMESAVE OldCustomiseGame = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -30340,18 +27546,12 @@ extern "C" {
 #pragma data_seg(".data$HubPromptOnColourPc")
     i32 HubPromptOnColourPc[3] = {223, 223, 223};
 #pragma data_seg()
-#pragma bss_seg(".bss$HubDrawMiniKitCharacterPc")
     i32 HubDrawMiniKitCharacterPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubEpisodeBluePc")
     u8 HubEpisodeBluePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubArcadeMenuYPc")
     f32 HubArcadeMenuYPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TextInputActionLabelBufferPc")
     char TextInputActionLabelBufferPc[128] = {0};
-#pragma bss_seg()
+/* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
+ * unsized. */
 #pragma data_seg(".data$HubButtonStringBufferPc")
     char HubButtonStringBufferPc[72] = "???";
 #pragma data_seg()
@@ -30359,93 +27559,35 @@ extern "C" {
 
 /* Append inside data.cpp; each original new owner gets its own section. */
 extern "C" {
-#pragma bss_seg(".bss$hub_bonusepisode")
     i32 hub_bonusepisode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$selectmodeduration")
     f32 selectmodeduration = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$bonusmodetime")
     f32 bonusmodetime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hub_selectmode")
     i32 hub_selectmode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hub_bonusarea")
     i32 hub_bonusarea = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hub_bonusmode")
     i32 hub_bonusmode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$fpcount")
     i32 fpcount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hub_freeplaysource")
     i32 hub_freeplaysource = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$fplist")
     APICHARACTERMODELLIST fplist[341] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$bonusmodemode")
     i32 bonusmodemode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$bonusmodeduration")
     f32 bonusmodeduration = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubIconWibbleTimePc")
     f32 HubIconWibbleTimePc[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BlipL")
     f32 BlipL[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BlipR")
     f32 BlipR[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BlipU")
     f32 BlipU[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BlipD")
     f32 BlipD[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$uprepeattime")
     f32 uprepeattime[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$downrepeattime")
     f32 downrepeattime[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$leftrepeattime")
     f32 leftrepeattime[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$rightrepeattime")
     f32 rightrepeattime[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$uprepeatcount")
     u8 uprepeatcount[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$downrepeatcount")
     u8 downrepeatcount[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$leftrepeatcount")
     u8 leftrepeatcount[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$rightrepeatcount")
     u8 rightrepeatcount[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubIconWibbleRatePc")
     i32 HubIconWibbleRatePc[4] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeplay_i")
     i32 freeplay_i[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NetFreePlayModelList")
     APICHARACTERMODELLIST NetFreePlayModelList[49] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$net_recievedFreePlayList")
     u8 net_recievedFreePlayList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$net_FreePlayModelCount")
     i8 net_FreePlayModelCount = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ArcadeLevelPc")
     AREA_DATA_PC **ArcadeLevelPc[12] = {&SENATE_ADATA,       &UTAPAU_ADATA,      &HOTH_ADATA,
                                         &BONUSDAGOBAH_ADATA, &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA,
@@ -30455,153 +27597,59 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ShopDrawPanelFnPc")
     void (*ShopDrawPanelFnPc)(void) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$charcheatix")
     i32 charcheatix = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$extracheatix")
     i32 extracheatix = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SHOPEXTRACOUNT")
     i32 SHOPEXTRACOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharItems")
     shopitem_s *CharItems = NULL;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ExtraItems")
     shopitem_s *ExtraItems = NULL;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CodeItems")
     shopitem_s *CodeItems = NULL;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BrickItems")
     shopitem_s *BrickItems = NULL;
-#pragma bss_seg()
-#pragma bss_seg(".bss$extrasils")
     nuhspecial_s extrasils[44] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$atoz0to9icon")
     nuhspecial_s atoz0to9icon[36] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$codelist")
     u32 codelist[144] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$infoblank")
     nuhspecial_s infoblank = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$cutblank")
     nuhspecial_s cutblank = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$cutfilm_unlocked")
     nuhspecial_s cutfilm_unlocked = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$cutfilm_locked")
     nuhspecial_s cutfilm_locked = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$toolblank")
     nuhspecial_s toolblank = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$codeblank")
     nuhspecial_s codeblank = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$question")
     nuhspecial_s question = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$arrow1")
     nuhspecial_s arrow1 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$arrow2")
     nuhspecial_s arrow2 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$arrow3")
     nuhspecial_s arrow3 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$arrow4")
     nuhspecial_s arrow4 = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$shopcamspline")
     struct nugspline_s *shopcamspline = NULL;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharCurPos")
     NUVEC CharCurPos[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$HintCurPos")
     NUVEC HintCurPos[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ExtraCurPos")
     NUVEC ExtraCurPos[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BrickCurPos")
     NUVEC BrickCurPos[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutCurPos")
     NUVEC CutCurPos[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharShelfIds")
     i32 CharShelfIds[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ExtraShelfIds")
     i32 ExtraShelfIds[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$BrickShelfIds")
     i32 BrickShelfIds[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutShelfIds")
     i32 CutShelfIds[7] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$SHOPCUTCOUNT")
     i32 SHOPCUTCOUNT = 128;
 #pragma data_seg()
-#pragma bss_seg(".bss$oldpicked")
     i32 oldpicked = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$subpicked")
     i32 subpicked = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$pickedbing")
     f32 pickedbing = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TopShelfScale")
     f32 TopShelfScale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$topscale")
     f32 topscale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TopBigScale")
     f32 TopBigScale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TopShelfPush")
     f32 TopShelfPush[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$TopBigPush")
     f32 TopBigPush[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$toppush")
     f32 toppush[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSubInitAPc")
     f32 ShopSubInitAPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSubInitBPc")
     f32 ShopSubInitBPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$codeshelfscale")
     f32 codeshelfscale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$codemenuscale")
     f32 codemenuscale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$codebigscale")
     f32 codebigscale[6] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$shopcutsceneplayer")
     struct CUT_PLAYER_ACTIVE_PC *shopcutsceneplayer = NULL;
-#pragma bss_seg()
 #pragma data_seg(".data$ShopNativeScalePc")
     f32 ShopNativeScalePc[6] = {0.9f, 0.9f, 0.28f, 0.95f, 0.8f, 0.9f};
 #pragma data_seg()
@@ -30617,15 +27665,11 @@ extern "C" {
 #pragma data_seg(".data$ShopNativeSubInitBPc")
     f32 ShopNativeSubInitBPc = 0.075f;
 #pragma data_seg()
-#pragma bss_seg(".bss$ShopCharTopOffsetPc")
     f32 ShopCharTopOffsetPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ShowPlayerCoordinatePc")
     i32 ShowPlayerCoordinatePc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -30635,9 +27679,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
     void (*AIPathCnxHelperSysInitFn)(WORLDINFO *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -30697,12 +27739,9 @@ extern "C" {
     i32 HudPausePromptRedPc = 255;
 #pragma data_seg(".data$HudPausePromptGreenPc")
     i32 HudPausePromptGreenPc = 191;
-#pragma bss_seg(".bss$HudPausePromptBluePc")
     u8 HudPausePromptBluePc = 0;
 #pragma data_seg()
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$DrawBossHitPointsTwoRowsPc")
     i32 DrawBossHitPointsTwoRowsPc = 0;
 #pragma data_seg(".data$PanelHeartSpacingPc")
     f32 PanelHeartSpacingPc = 0.3f;
@@ -30716,7 +27755,6 @@ extern "C" {
     f32 DoubleScoreTextScalePc = 0.5f;
 
 #pragma data_seg()
-#pragma bss_seg()
 
 #pragma data_seg(".data$CoinTotalScoreSizePc")
     f32 CoinTotalScoreSizePc = 0.5f;
@@ -30852,130 +27890,60 @@ extern "C" {
 #pragma const_seg(".rdata$AIControllerLiteralPc00757df0")
     extern const char AIControllerLiteralPc00757df0[10] = "cutscene=";
 #pragma const_seg()
-#pragma bss_seg(".bss$fakeanimendframe")
     f32 fakeanimendframe[1] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma bss_seg(".bss$ShopMenuPc")
     i32 ShopMenuPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopEaseSubInPc")
     i32 ShopEaseSubInPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopInOutScalePc")
     f32 ShopInOutScalePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopScaleOverridePc")
     f32 ShopScaleOverridePc[7] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopHintDrawWaitPc")
     f32 ShopHintDrawWaitPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldDrawFnPc")
     void (*ShopOldDrawFnPc)(void) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldDrawPanelFnPc")
     void (*ShopOldDrawPanelFnPc)(void) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldPickedPushPc")
     f32 ShopOldPickedPushPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopDrawParentPc")
     void (*ShopDrawParentPc[3])(void) = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldMenuLevelPc")
     i32 ShopOldMenuLevelPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopCheatNamePc")
     char *ShopCheatNamePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopEnteredPc")
     i32 ShopEnteredPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldPickedScalePc")
     f32 ShopOldPickedScalePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopColumnPc")
     i32 ShopColumnPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldMenuFnPc")
     i32 (*ShopOldMenuFnPc)(void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldMenuParentPc")
     i32 (*ShopOldMenuParentPc[3])(void *) = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSlideTimerPc")
     f32 ShopSlideTimerPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldDrawLevelPc")
     i32 ShopOldDrawLevelPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopMenuLevelPc")
     i32 ShopMenuLevelPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopOldDrawParentPc")
     void (*ShopOldDrawParentPc[3])(void) = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopDrawLevelPc")
     i32 ShopDrawLevelPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopMenuParentPc")
     i32 (*ShopMenuParentPc[3])(void *) = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopLastItemPc")
     i32 ShopLastItemPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopExitPc")
     i32 ShopExitPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSubMenuPc")
     i32 ShopSubMenuPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopMoveSfxLockPc")
     i32 ShopMoveSfxLockPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopItemChangedPc")
     i32 ShopItemChangedPc = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$ShopUserCodePc")
     char ShopUserCodePc[6] = {'A', 'A', 'A', 'A', 'A', 'A'};
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ShopMoveItemsPc")
     i32 ShopMoveItemsPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopScrollKeyHitPc")
     i32 ShopScrollKeyHitPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSubMoveSfxLockPc")
     i32 ShopSubMoveSfxLockPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PanelStormActivePc")
     u8 PanelStormActivePc = 0;
-#pragma bss_seg(".bss$PanelDroidActivePc")
     u8 PanelDroidActivePc = 0;
-#pragma bss_seg(".bss$PanelBountyHunterActivePc")
     u8 PanelBountyHunterActivePc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuRndrFxHeightOverridePc")
     f32 NuRndrFxHeightOverridePc = 0;
-#pragma bss_seg()
 
-#pragma bss_seg(".bss$dat_02854d00")
     NUMTL *dat_02854d00 = NULL;
-#pragma bss_seg()
 #pragma data_seg(".data$NuRndrFxHeightPc")
     f32 NuRndrFxHeightPc = -10000.0f;
 #pragma data_seg()
@@ -30986,18 +27954,12 @@ extern "C" {
 #pragma data_seg(".data$dat_0080e21c")
     i32 dat_0080e21c = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$NuRndrFxColourPc")
     u32 NuRndrFxColourPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ShopPurchasePulsePc")
     f32 ShopPurchasePulsePc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubForceShopSavePc")
     i32 HubForceShopSavePc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -31007,9 +27969,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$ShopCheatTimerPc")
     f32 ShopCheatTimerPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -31042,51 +28002,33 @@ extern "C" {
 extern "C" f32 ExplosionKnockbackScalePc = 2.0f;
 
 extern "C" {
-#pragma bss_seg(".bss$speeder_hitpoints_lost")
     i32 speeder_hitpoints_lost = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$StreakNodesPc")
     STREAK_NODE_PC StreakNodesPc[128] = {0};
-#pragma bss_seg(".bss$StreakReflectionMaterialPc")
     NUMTL *streakmtl_ref = 0;
-#pragma bss_seg(".bss$StreakNodesUsedPc")
     STREAK_NODE_PC *StreakNodesUsedPc = 0;
-#pragma bss_seg(".bss$StreakNodesFreePc")
     STREAK_NODE_PC *streaks_free = 0;
-#pragma bss_seg(".bss$StreakHeadersFreePc")
     STREAK_HEADER_PC *streakhdrs_free = 0;
-#pragma bss_seg(".bss$StreakMaterialPc")
     NUMTL *streakmtl = 0;
-#pragma bss_seg(".bss$StreakHeadersPc")
     STREAK_HEADER_PC StreakHeadersPc[32] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuRndrShadowVerticesPc")
     NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4] = {0};
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$fakeanimframe")
     f32 fakeanimframe[1] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$KashyyykDBoulderStatePc")
     NUVEC boulder_old_pos[2] = {0};
     f32 boulder_wait = 0.0f;
     PART_PC *boulder_part[2] = {NULL, NULL};
     i32 i_boulder = 0;
-#pragma bss_seg(".bss$JediBArenaStatePc")
     i32 JediBActiveCountPc = 0;
     JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
     JEDIB_STATE_PC jedi_b = {0};
-#pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
     i8 *DeathStarEscapeBNetPacketPc = 0;
-#pragma bss_seg()
 }
 
 /* Static-shadow frustum topology and mutable extrusion distance. */
@@ -31167,13 +28109,9 @@ extern "C" {
         {{{-1, 0, -1, 1000, 1.0f}}, 1.0f, {NULL}, 0, {0, 0, 0}, 0.0f},
     };
 
-#pragma bss_seg(".bss$PushBlockMissingSpecialPositionPc")
     NUVEC p000 = {0.0f, 0.0f, 0.0f};
-#pragma bss_seg(".bss$RunOutOfPosTabSpacePc")
     i32 RunOutOfPosTabSpacePc = 0;
-#pragma bss_seg(".bss$pushposincrease")
     i32 pushposincrease = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PushInitGroundOffsetPc")
     f32 PushInitGroundOffsetPc = -0.0010000000474974513f;
 #pragma data_seg(".data$PushInitCornerInsetPc")
@@ -31277,9 +28215,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$SebulbaMineSpecialPc")
     NUSPECIALHANDLE SebulbaMineSpecialPc = {0};
-#pragma bss_seg()
 }
 
 extern "C" {

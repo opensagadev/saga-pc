@@ -245,9 +245,7 @@ extern "C" void CharScenes_AreaDump() {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$IconScenePc")
     static NUGSCN **IconScenePc = 0;
-#pragma bss_seg()
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
     STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);

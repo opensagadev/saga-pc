@@ -5527,9 +5527,7 @@ OcclusionManager::OcclusionManager()
     : initialized(false), enabled(true), building_set(NULL), current_set(NULL), unknown_158(0.3f), unknown_15c(-1.0f) {
 }
 
-#pragma data_seg(".data$g_OcclusionManager")
 OcclusionManager g_OcclusionManager;
-#pragma data_seg()
 
 void OcclusionManager::EndFrame() {
 }
@@ -18095,11 +18093,8 @@ void NuDeferredFilterGen::render() {
     D3DPERF_EndEvent();
 }
 
-#pragma bss_seg(".bss$PostShadowViewPc")
 extern "C" NUMTX PostShadowViewPc = {0};
-#pragma bss_seg(".bss$PostShadowProjectionPc")
 extern "C" NUMTX PostShadowProjectionPc = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$PostShadowWhitePc")
 extern "C" NUVEC4 PostShadowWhitePc = {1.0f, 1.0f, 1.0f, 1.0f};
 #pragma data_seg()

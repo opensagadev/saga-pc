@@ -131,9 +131,7 @@ static const char GizActionLevelPrefixPc[7] = "level=";
 
 void FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
 
-#pragma bss_seg(".bss$prev_droid_ix")
 static i32 prev_droid_ix = 0;
-#pragma bss_seg()
 
 static const char CompleteLevelCutscenePrefix[10] = "cutscene=";
 

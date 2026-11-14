@@ -1,42 +1,19 @@
 #include "saga.h"
 #include <stdio.h>
 
-#pragma bss_seg(".bss$CS_area")
+/* Retail unit 0x57a810-0x57f647: definitions in retail address order. */
 static i32 CS_area = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_fadefogcount")
 static i32 CS_fadefogcount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_texanimcount")
 static i32 CS_texanimcount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_buffptr")
 static VARIPTR *CS_buffptr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_CutInfo")
 static CUT_LOAD_RECORD_PC *CS_CutInfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_worldinfo")
 static WORLDINFO *CS_worldinfo = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_cutsys")
 static CUT_LOAD_SYS_PC *CS_cutsys = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CS_buffend")
 static VARIPTR *CS_buffend = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutBlobShadowAlpha")
 static u8 CutBlobShadowAlpha = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutBlobShadowFadeFar")
 static f32 CutBlobShadowFadeFar = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutBlobShadowFadeNear")
 static f32 CutBlobShadowFadeNear = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutReflectRange2")
 static f32 CutReflectRange2 = 0;
-#pragma bss_seg()
 extern "C" void GameFog_Reset(void);
 extern "C" void Panel_Clear(void);
 extern "C" void PauseGameCut(void);

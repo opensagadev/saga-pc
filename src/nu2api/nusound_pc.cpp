@@ -4,18 +4,10 @@
 #include <float.h>
 #include <stdarg.h>
 #include <string.h>
-#pragma bss_seg(".bss$PCSoundLoopVoiceCount")
 static i32 PCSoundLoopVoiceCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
 static i32 PCSoundOneShotVoiceCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundUpdateClock")
 static i32 PCSoundUpdateClock = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCStereoSampleMetadata")
 static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
-#pragma bss_seg()
 static i32 SoundSampleCountPc = 0;
 
 extern "C" void PCSoundAlreadyPlayingHook(...) {

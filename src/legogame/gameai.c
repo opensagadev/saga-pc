@@ -1800,9 +1800,7 @@ i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     return Player[object->one_at_once_player] == opponent;
 }
 
-#pragma bss_seg(".bss$AtOnce_attackingPlayer")
 static AIONCEATTACKER_PC AtOnce_attackingPlayer[8][17] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$AtOnce_attackersPerRow")
 static i32 AtOnce_attackersPerRow = 32;
 #pragma data_seg()

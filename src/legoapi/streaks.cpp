@@ -1,5 +1,4 @@
 #include "saga.h"
-#pragma bss_seg(".bss$StreakHeadersUsedPc")
 static STREAK_HEADER_PC *streakhdrs_used = 0;
 
 // Takes the endpoint pointers in EDI/ESI and six stack arguments; the helper
