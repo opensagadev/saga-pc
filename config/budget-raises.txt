@@ -17,3 +17,4 @@ config/oddscan-budget.json pc-suffix 49861 one declarator per declaration (tools
 config/oddscan-budget.json view-use 1335 one declarator per declaration (tools/onedecl.py) repeats view type names in the specifiers
 config/oddscan-budget.json volatile-other 40 one declarator per declaration (tools/onedecl.py) repeats volatile in the specifiers
 config/oddscan-budget.json multi-declaration 19 new layout class (tools/oddscan.py group h) after tools/onedecl.py split every other declaration: 19 locals of an anonymous float/bits union type that two or three variables share
+config/castscan-budget.json declaration-type 1712 two casts change class (int-pointer and redundant-identity each drop by 2) once the cast pilot sits on the steering and declaration batches
