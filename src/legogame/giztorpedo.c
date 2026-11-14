@@ -20,12 +20,6 @@ typedef struct torpedo_machine_query_sys_s { // size 0xc
 i32 Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
 
 typedef struct {
-    char name[16];
-    u8 opaque[0x2b - 16];
-    u8 flags;
-} ADD_TORP;
-
-typedef struct {
     ADD_TORP *items;
     i32 count;
     f32 scale;

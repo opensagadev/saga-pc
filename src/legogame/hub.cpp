@@ -93,12 +93,6 @@ extern "C" {
     void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
 
-typedef struct HINT_COMPLETION {
-    u16 points;
-    u8 reserved02;
-    u8 flags;
-} HINT_COMPLETION;
-
 typedef struct hub_minikit_piece_s {
     NUSPECIALHANDLE special;
     NUMTX matrix;

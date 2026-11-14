@@ -147,15 +147,6 @@ typedef struct registry_buildit_system_pc_s {
 } REGISTRY_BUILDIT_SYSTEM_PC;
 
 typedef struct {
-    u8 unused00[0x6d];
-    u8 build_state;
-    u8 unused6e;
-    u8 built_object_count;
-    u8 unused70[10];
-    u16 flags;
-} BUILD_PROGRESS_RECORD;
-
-typedef struct {
     BUILD_PROGRESS_RECORD *records;
     u16 count;
 } BUILD_PROGRESS_SYSTEM;

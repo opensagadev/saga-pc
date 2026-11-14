@@ -7,14 +7,6 @@
 #include "vorbis/vorbisfile.h"
 #undef _ov_header_fseek_wrap
 
-struct PC_OGG_CACHE_RECORD { // size 0x114
-    char path[0x104];        // 0x000
-    u8 *data;                // 0x104
-    i32 bytes;               // 0x108
-    u32 last_used;           // 0x10c
-    volatile i32 references; // 0x110 shared with the streaming thread: every update is a separate load and store
-};
-
 #pragma pack(push, 4)
 
 class OggReader : public WavReader { // size 0x338

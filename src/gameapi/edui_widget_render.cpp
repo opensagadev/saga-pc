@@ -2251,18 +2251,6 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
     return 0;
 }
 
-typedef struct edui_gradient_stage_s { // size 0x24
-    f32 time;                          // 0x00
-    f32 hue;                           // 0x04
-    f32 saturation;                    // 0x08
-    f32 value;                         // 0x0c
-    f32 red;                           // 0x10
-    f32 green;                         // 0x14
-    f32 blue;                          // 0x18
-    u32 colour;                        // 0x1c
-    u32 metadata;                      // 0x20
-} EDUI_GRADIENT_STAGE;
-
 extern "C" edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue) {
     f32 hue;
     f32 saturation;

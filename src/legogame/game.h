@@ -439,3 +439,17 @@ typedef struct custom_piece_config_s {
     u32 gameplay_flags;
     u8 unknown_1c[12];
 } CUSTOM_PIECE_CONFIG;
+
+typedef struct {          // size 0x2c
+    char name[16];        // 0x00
+    u8 opaque[0x2b - 16]; // 0x10
+    u8 flags;             // 0x2b
+} ADD_TORP;
+
+typedef struct HINT_ZIPUP { // size 0x7c
+    u8 name[16];            // 0x00
+    NUVEC lower_position;   // 0x10
+    u8 reserved1c[0x4c];    // 0x1c
+    u8 flags;               // 0x68
+    u8 reserved69[0x13];    // 0x69
+} HINT_ZIPUP;

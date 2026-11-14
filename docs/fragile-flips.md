@@ -17,3 +17,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | duplicate types into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
 | conflicting unit types unified | BoulderSpawn | legogame/episodeIII.c | exact | different |
 | conflicting unit types unified | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
+| 27 more repeated types into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |

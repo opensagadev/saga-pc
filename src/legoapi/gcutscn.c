@@ -90,12 +90,6 @@ typedef struct CUT_PLAYER_RECORD { // size 0x50
     u8 state_count;                // 0x4c
 } CUT_PLAYER_RECORD;
 
-typedef struct CUT_PLAYER_INST_ANIM { // size 0x54
-    u8 unknown_00[0x4c];              // 0x00
-    f32 time;                         // 0x4c
-    u32 flags;                        // 0x50
-} CUT_PLAYER_INST_ANIM;
-
 typedef struct cut_average_rigid_system_s { // size 0x8
     void *rigids;                           // 0x0
     u16 count;                              // 0x4

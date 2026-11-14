@@ -43,13 +43,6 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 f32 getPodRoll(i32 arg0);
 
-typedef struct CAMERA_CONTEXT_PATH {
-    u8 unknown_00[0x40];
-    struct nugspline_s *path;
-    u8 unknown_44[8];
-    u8 flags;
-} CAMERA_CONTEXT_PATH;
-
 typedef struct CAMERA_CABLE {
     GAMEOBJECT *source;
     GAMEOBJECT *target;

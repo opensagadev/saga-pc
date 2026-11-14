@@ -62,8 +62,3 @@ typedef struct collision_exclusion_view_s { // size 0x2a8
     u8 unknown_029c[4];                     // 0x29c
     u64 exclusion_mask;                     // 0x2a0
 } COLLISION_EXCLUSION_VIEW;
-
-typedef struct collision_techno_view_s { // size 0x69
-    u8 unknown_0000[0x68];               // 0x00
-    u8 flags;                            // 0x68
-} COLLISION_TECHNO_VIEW;

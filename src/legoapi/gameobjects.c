@@ -8,14 +8,6 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) + 2 * sizeof(
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
-typedef union TAGSCRIPTSTATE { // size 0xcc
-    u32 words[0x33];
-
-    struct {                  // size 0xb4
-        u32 unknown000[0x2c]; // 0x00
-        u8 creature_set;      // 0xb0
-    } fields;
-} TAGSCRIPTSTATE;
 
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 

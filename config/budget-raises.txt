@@ -157,3 +157,7 @@ config/oddscan-budget.json volatile-other 41 the unified copy of a cache record 
 config/castscan-budget.json declaration-type 1815 112 casts between unit copies of 78 types (duplicate-type 1632 -> 1517) are now casts between distinct types once the copies merge into headers (same casts)
 config/castscan-budget.json record-pun 694 see declaration-type 1815
 config/standalone-budget.json non-standalone 231 one module header now holds unit types moved there after the headers they use (saga.h order); it compiles with saga.h, standalone with the header pass
+config/castscan-budget.json declaration-type 1924 154 casts between unit copies of 27 more types (duplicate-type 1517 -> 1363) become casts between distinct types once the copies merge (same casts)
+config/castscan-budget.json record-pun 738 see declaration-type 1924
+config/castscan-budget.json field-address 335 see declaration-type 1924
+config/standalone-budget.json non-standalone 233 module headers that now hold moved unit types compile with saga.h; standalone with the header pass

@@ -1,15 +1,5 @@
 #include "saga.h"
 
-typedef struct bulk_ai_panel_s {
-    u8 unknown_00[0x50];
-    NUVEC position;
-    u8 unknown_5c[5];
-    u8 model_variant;
-    u8 flags;
-    u8 unknown_63;
-    NUVEC floor_position;
-} BULK_AI_PANEL;
-
 typedef struct registry_panel_record_pc_s {
     u8 storage[0x90];
 } REGISTRY_PANEL_RECORD_PC;
@@ -24,12 +14,6 @@ typedef struct {
     u32 enabled[1];
     u32 visible[1];
 } PANEL_PROGRESS;
-
-typedef struct {
-    u8 unused00[0x62];
-    u8 flags;
-    u8 unused63[0x2d];
-} PANEL_PROGRESS_RECORD;
 
 typedef struct {
     i32 count;
@@ -76,13 +60,6 @@ extern u8 PanelBountyHunterActive;
 void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Hint updater records keep their packed field offsets. */
-typedef struct HINT_PANEL {
-    u8 reserved00[0x61];
-    u8 model_variant;
-    u8 flags;
-    u8 reserved63[0x29];
-    f32 target_scale;
-} HINT_PANEL;
 struct panel_movement_s;
 
 /* Terrain helper private to these callers (panel arrives in ESI). */

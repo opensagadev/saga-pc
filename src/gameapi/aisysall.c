@@ -366,12 +366,6 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColours) == 16);
 
 /* The record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
-typedef struct AI_PATH_CONNECTION_TYPE {           // size 0x4c
-    u32 connection_flag;                           // 0x00
-    void (*draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
-    char name[64];                                 // 0x08
-    u32 flags;                                     // 0x48
-} AI_PATH_CONNECTION_TYPE;
 
 extern i32 AIPathConnectionTypeCount;
 

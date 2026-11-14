@@ -5,12 +5,6 @@ typedef struct {          // size 0x7c
     u8 opaque[0x7c - 16]; // 0x10
 } ADD_BUILDIT;
 
-typedef struct {          // size 0x2c
-    char name[16];        // 0x00
-    u8 opaque[0x2b - 16]; // 0x10
-    u8 flags;             // 0x2b
-} ADD_TORP;
-
 typedef struct {          // size 0xf8
     char name[16];        // 0x00
     u8 opaque[0xf8 - 16]; // 0x10
@@ -55,44 +49,15 @@ typedef struct { // size 0x8
     u32 visible; // 0x4
 } GRAPPLE_PROGRESS;
 
-typedef struct {           // size 0x7c
-    u8 unused00[0x6d];     // 0x00
-    u8 build_state;        // 0x6d
-    u8 unused6e;           // 0x6e
-    u8 built_object_count; // 0x6f
-    u8 unused70[10];       // 0x70
-    u16 flags;             // 0x7a
-} BUILD_PROGRESS_RECORD;
-
 typedef struct {                    // size 0x8
     BUILD_PROGRESS_RECORD *records; // 0x0
     u16 count;                      // 0x4
 } BUILD_PROGRESS_SYSTEM;
 
-typedef struct {                    // size 0x158
-    FORCE_PROGRESS_RECORD *records; // 0x000
-    u8 unused04[10];                // 0x004
-    u16 count;                      // 0x00e
-    u8 unused10[8];                 // 0x010
-    FORCE_PROGRESS_GROUP groups[8]; // 0x018
-} FORCE_PROGRESS_SYSTEM;
-
-typedef struct {       // size 0x2c
-    u8 unused00[0x2a]; // 0x00
-    u8 flags;          // 0x2a
-    u8 unused2b;       // 0x2b
-} BOMB_PROGRESS_RECORD;
-
 typedef struct {                   // size 0x8
     BOMB_PROGRESS_RECORD *records; // 0x0
     u16 count;                     // 0x4
 } BOMB_PROGRESS_SYSTEM;
-
-typedef struct {       // size 0x90
-    u8 unused00[0x62]; // 0x00
-    u8 flags;          // 0x62
-    u8 unused63[0x2d]; // 0x63
-} PANEL_PROGRESS_RECORD;
 
 typedef struct {                    // size 0x8
     i32 count;                      // 0x0

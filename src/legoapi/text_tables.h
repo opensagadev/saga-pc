@@ -404,3 +404,71 @@ typedef struct shield_state_s { // size 0xd38
     f32 shield_enabled;         // 0xd30
     f32 shield_timer;           // 0xd34
 } SHIELD_STATE;
+
+typedef struct {       // size 0x2c
+    u8 unused00[0x2a]; // 0x00
+    u8 flags;          // 0x2a
+    u8 unused2b;       // 0x2b
+} BOMB_PROGRESS_RECORD;
+
+typedef struct {
+    u8 unused00[0x6d];
+    u8 build_state;
+    u8 unused6e;
+    u8 built_object_count;
+    u8 unused70[10];
+    u16 flags;
+} BUILD_PROGRESS_RECORD;
+
+typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
+    u8 unknown_00[0x62];
+    u8 flags;
+} CLOUDCITY_PANEL_FLAGS_VIEW;
+
+typedef struct CUT_PLAYER_INST_ANIM {
+    u8 unknown_00[0x4c];
+    f32 time;
+    u32 flags;
+} CUT_PLAYER_INST_ANIM;
+
+typedef struct HINT_COMPLETION { // size 0x4
+    u16 points;                  // 0x0
+    u8 reserved02;               // 0x2
+    u8 flags;                    // 0x3
+} HINT_COMPLETION;
+
+typedef struct HINT_PANEL { // size 0x90
+    u8 reserved00[0x61];    // 0x00
+    u8 model_variant;       // 0x61
+    u8 flags;               // 0x62
+    u8 reserved63[0x29];    // 0x63
+    f32 target_scale;       // 0x8c
+} HINT_PANEL;
+
+typedef struct {       // size 0x90
+    u8 unused00[0x62]; // 0x00
+    u8 flags;          // 0x62
+    u8 unused63[0x2d]; // 0x63
+} PANEL_PROGRESS_RECORD;
+
+typedef union TAGSCRIPTSTATE { // size 0xcc
+    u32 words[0x33];
+
+    struct {                  // size 0xb4
+        u32 unknown000[0x2c]; // 0x00
+        u8 creature_set;      // 0xb0
+    } fields;
+} TAGSCRIPTSTATE;
+
+typedef struct collision_techno_view_s { // size 0x69
+    u8 unknown_0000[0x68];               // 0x00
+    u8 flags;                            // 0x68
+} COLLISION_TECHNO_VIEW;
+
+typedef struct startup_object_light_s {
+    u8 unknown_000[0x1fc];
+    u32 flags;
+    u8 unknown_200[0xc04];
+    i32 dynamic_light_id;
+    u8 unknown_e08[0x2d0];
+} STARTUP_OBJECT_LIGHT;

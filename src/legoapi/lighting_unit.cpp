@@ -2,14 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct startup_object_light_s {
-    u8 unknown_000[0x1fc];
-    u32 flags;
-    u8 unknown_200[0xc04];
-    i32 dynamic_light_id;
-    u8 unknown_e08[0x2d0];
-} STARTUP_OBJECT_LIGHT;
-
 typedef struct BURN_SET {
     BURN_PARAMETERS parameters;
     BURN_PARAMETERS parameters_copy;

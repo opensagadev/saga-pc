@@ -3,12 +3,6 @@
 extern i32 come_from_an_editor;
 
 typedef struct {
-    u8 unused00[0x2a];
-    u8 flags;
-    u8 unused2b;
-} BOMB_PROGRESS_RECORD;
-
-typedef struct {
     BOMB_PROGRESS_RECORD *records;
     u16 count;
 } BOMB_PROGRESS_SYSTEM;

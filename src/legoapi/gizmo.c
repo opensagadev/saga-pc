@@ -4,16 +4,6 @@
 STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_num_outputs_fn) == 0x50);
 
-typedef struct area_gizmotypes_s {
-    i32 count;
-    i32 unknown_0004;
-    AREA_GIZMOTYPE *types;
-} AREA_GIZMOTYPES;
-
-typedef struct area_gizmosys_prefix_s {
-    AREA_GIZMOSET *sets;
-} AREA_GIZMOSYS_PREFIX;
-
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
 void GizmoDiagnostic(char *format, ...);

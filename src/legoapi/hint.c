@@ -7,32 +7,11 @@ typedef struct HINT_CANCEL { // size 0x1c
     f32 cooldown;            // 0x18
 } HINT_CANCEL;
 
-typedef struct HINT_COMPLETION { // size 0x4
-    u16 points;                  // 0x0
-    u8 reserved02;               // 0x2
-    u8 flags;                    // 0x3
-} HINT_COMPLETION;
-
 STATIC_ASSERT(sizeof(HINT_COMPLETION) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
 
 /* Hint updater records keep their packed field offsets. */
-typedef struct HINT_PANEL { // size 0x90
-    u8 reserved00[0x61];    // 0x00
-    u8 model_variant;       // 0x61
-    u8 flags;               // 0x62
-    u8 reserved63[0x29];    // 0x63
-    f32 target_scale;       // 0x8c
-} HINT_PANEL;
 
 struct panel_movement_s;
-
-typedef struct HINT_ZIPUP { // size 0x7c
-    u8 name[16];            // 0x00
-    NUVEC lower_position;   // 0x10
-    u8 reserved1c[0x4c];    // 0x1c
-    u8 flags;               // 0x68
-    u8 reserved69[0x13];    // 0x69
-} HINT_ZIPUP;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
 

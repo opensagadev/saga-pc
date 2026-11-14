@@ -6,16 +6,6 @@ extern "C" {
     void AreasConfigDiagnostic(char *message);
 }
 
-typedef struct area_gizmotypes_s { // size 0xc
-    i32 count;                     // 0x0
-    i32 unknown_0004;              // 0x4
-    AREA_GIZMOTYPE *types;         // 0x8
-} AREA_GIZMOTYPES;
-
-typedef struct area_gizmosys_prefix_s { // size 0x4
-    AREA_GIZMOSET *sets;                // 0x0
-} AREA_GIZMOSYS_PREFIX;
-
 AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
 

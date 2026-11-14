@@ -23,3 +23,13 @@ typedef struct HOTH_WORLD_SCRIPT {
     u8 reserved[0x2b00];
     AISCRIPTPROCESS processor;
 } HOTH_WORLD_SCRIPT;
+
+typedef struct area_gizmosys_prefix_s { // size 0x4
+    AREA_GIZMOSET *sets;                // 0x0
+} AREA_GIZMOSYS_PREFIX;
+
+typedef struct area_gizmotypes_s { // size 0xc
+    i32 count;                     // 0x0
+    i32 unknown_0004;              // 0x4
+    AREA_GIZMOTYPE *types;         // 0x8
+} AREA_GIZMOTYPES;

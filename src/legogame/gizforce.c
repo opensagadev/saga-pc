@@ -87,14 +87,6 @@ typedef struct registry_force_system_pc_s {
     GIZFORCEGROUP_s groups[8];
 } REGISTRY_FORCE_SYSTEM_PC;
 
-typedef struct {
-    FORCE_PROGRESS_RECORD *records;
-    u8 unused04[10];
-    u16 count;
-    u8 unused10[8];
-    FORCE_PROGRESS_GROUP groups[8];
-} FORCE_PROGRESS_SYSTEM;
-
 STATIC_ASSERT(sizeof(REGISTER_GIZMO_CONFIG_TYPE_FN) == 4);
 void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
 ADDGIZMOTYPE_PC *GizBuildIts_RegisterGizmo(i32);

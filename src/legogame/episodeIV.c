@@ -3,11 +3,6 @@
 #include <stdio.h>
 struct panel_movement_s;
 
-typedef struct CLOUDCITY_PANEL_FLAGS_VIEW { // size 0x63
-    u8 unknown_00[0x62];                    // 0x00
-    u8 flags;                               // 0x62
-} CLOUDCITY_PANEL_FLAGS_VIEW;
-
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 

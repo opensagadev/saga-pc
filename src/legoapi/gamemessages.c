@@ -3,11 +3,6 @@
 
 #include <string.h>
 
-typedef struct object_coin_packet_s { // size 0x800
-    u8 unknown_000[0x7fc];            // 0x000
-    COIN_PACKET *coin_packet;         // 0x7fc
-} OBJECT_COIN_PACKET;
-
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
 static f32 GameMessagesFabs(f32 f) {
     f32 rv;

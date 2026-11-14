@@ -2,14 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct startup_object_light_s { // size 0x10d8
-    u8 unknown_000[0x1fc];              // 0x0000
-    u32 flags;                          // 0x01fc
-    u8 unknown_200[0xc04];              // 0x0200
-    i32 dynamic_light_id;               // 0x0e04
-    u8 unknown_e08[0x2d0];              // 0x0e08
-} STARTUP_OBJECT_LIGHT;
-
 STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
 
 typedef struct BURN_SET {            // size 0x564

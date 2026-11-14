@@ -350,12 +350,6 @@ typedef struct CUT_PLAYER_RECORD {
     u8 state_count;
 } CUT_PLAYER_RECORD;
 
-typedef struct CUT_PLAYER_INST_ANIM {
-    u8 unknown_00[0x4c];
-    f32 time;
-    u32 flags;
-} CUT_PLAYER_INST_ANIM;
-
 extern "C" {
     extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG *);
 }

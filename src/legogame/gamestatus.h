@@ -115,3 +115,16 @@ typedef struct kaminoc_packet_s {
     u8 complete;
     u8 reserved_0d;
 } KAMINOC_PACKET_PC;
+
+typedef struct {                    // size 0x158
+    FORCE_PROGRESS_RECORD *records; // 0x000
+    u8 unused04[10];                // 0x004
+    u16 count;                      // 0x00e
+    u8 unused10[8];                 // 0x010
+    FORCE_PROGRESS_GROUP groups[8]; // 0x018
+} FORCE_PROGRESS_SYSTEM;
+
+typedef struct object_coin_packet_s { // size 0x800
+    u8 unknown_000[0x7fc];            // 0x000
+    COIN_PACKET *coin_packet;         // 0x7fc
+} OBJECT_COIN_PACKET;

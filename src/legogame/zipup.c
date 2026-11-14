@@ -90,14 +90,6 @@ struct zipup_s {   // size 0x7c
 
 i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
-typedef struct HINT_ZIPUP {
-    u8 name[16];
-    NUVEC lower_position;
-    u8 reserved1c[0x4c];
-    u8 flags;
-    u8 reserved69[0x13];
-} HINT_ZIPUP;
-
 typedef struct zipup_transport_view_s { // size 0xdb0
     u8 unknown_00[0x748];               // 0x000
     NUVEC entry;                        // 0x748

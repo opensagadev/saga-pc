@@ -17,11 +17,6 @@ void GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
 struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
-typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
-    u8 unknown_00[0x62];
-    u8 flags;
-} CLOUDCITY_PANEL_FLAGS_VIEW;
-
 extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 #define FALCON_SLOT(object) ((i8)(object)->unknown_280)

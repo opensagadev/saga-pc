@@ -39,3 +39,11 @@ typedef struct debris_material_flags_s { // size 0x4
     u32 alpha_test : 3;                  // 0x0:20
     u32 unknown_23_31 : 9;               // 0x0:23
 } DEBRIS_MATERIAL_FLAGS;
+
+struct PC_OGG_CACHE_RECORD { // size 0x114
+    char path[0x104];        // 0x000
+    u8 *data;                // 0x104
+    i32 bytes;               // 0x108
+    u32 last_used;           // 0x10c
+    volatile i32 references; // 0x110 shared with the streaming thread: every update is a separate load and store
+};

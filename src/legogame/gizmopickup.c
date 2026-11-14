@@ -3,11 +3,6 @@
 #include <string.h>
 #include <float.h>
 
-typedef struct object_coin_packet_s {
-    u8 unknown_000[0x7fc];
-    COIN_PACKET *coin_packet;
-} OBJECT_COIN_PACKET;
-
 void PartUpdate_Heart(PART_PC *part);
 
 typedef struct coinpacket_pickup_s {

@@ -274,16 +274,6 @@ typedef struct bulk_ai_lever_s { // size 0x98
     u16 flags;                   // 0x94
 } BULK_AI_LEVER;
 
-typedef struct bulk_ai_panel_s {
-    u8 unknown_00[0x50];
-    NUVEC position;
-    u8 unknown_5c[5];
-    u8 model_variant;
-    u8 flags;
-    u8 unknown_63;
-    NUVEC floor_position;
-} BULK_AI_PANEL;
-
 typedef struct bulk_ai_techno_s { // size 0x40
     u8 unknown_00[0x10];          // 0x00
     NUVEC position;               // 0x10

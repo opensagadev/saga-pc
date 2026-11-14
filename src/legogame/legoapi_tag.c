@@ -8,14 +8,6 @@ extern GAMEOBJECT *player_tag_from;
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
-typedef union TAGSCRIPTSTATE {
-    u32 words[0x33];
-
-    struct {
-        u32 unknown000[0x2c];
-        u8 creature_set;
-    } fields;
-} TAGSCRIPTSTATE;
 
 #define TAG_SCRIPT_STATE(object) (*(TAGSCRIPTSTATE *)&(object)->ai_packet.script_processor)
 

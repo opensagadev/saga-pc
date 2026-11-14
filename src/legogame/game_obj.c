@@ -33,11 +33,6 @@ typedef struct collision_exclusion_view_s {
     u64 exclusion_mask;
 } COLLISION_EXCLUSION_VIEW;
 
-typedef struct collision_techno_view_s {
-    u8 unknown_0000[0x68];
-    u8 flags;
-} COLLISION_TECHNO_VIEW;
-
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
 typedef struct KILLPARTS_MINIKIT_PIECE {
