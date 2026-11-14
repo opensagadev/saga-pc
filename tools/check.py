@@ -16,12 +16,12 @@ import time
 if __package__:
     from . import lintcache
     from .binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
+    from .lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail, clang_jobs
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools import lintcache
     from tools.binary import _COFFAnalysis, _PreparedBindings, relocate_data, relocate_function
-    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail
+    from tools.lib import ROOT, bindings_for, changed_trees, compiled_objects, dependency_files, load_code_groups, prepare_code_group_objects, load_json, load_symbols, map_errors, number, project, retail, clang_jobs
 
 
 def compiler_label_inside_mapped_function(obj, symbol, definitions, rows_by_name):
@@ -723,7 +723,7 @@ def main():
     mode.add_argument("--format-fix", action="store_true", help="Format src/ in place (make format)")
     mode.add_argument("--tidy", action="store_true", help="Analyze C/C++ using the original Windows x86 SDK")
     mode.add_argument("--editor", action="store_true", help="Prepare VS Code headers and clang-tidy compilation database")
-    parser.add_argument("--jobs", type=int, default=8, help="Parallel clang-tidy workers (default: 8)")
+    parser.add_argument("--jobs", type=int, default=None, help="Parallel clang-tidy workers (default 4, SAGA_CLANG_JOBS)")
     parser.add_argument("--matching-only", action="store_true",
                         help="With --tidy: skip the second analysis of game units with SAGA_DEBUG")
     parser.add_argument("--shard", metavar="INDEX/COUNT",
@@ -731,6 +731,7 @@ def main():
     parser.add_argument("--no-cache", action="store_true",
                         help="With --tidy/--format: analyse everything, ignoring and not updating build/lint caches")
     args = parser.parse_args()
+    args.jobs = clang_jobs(args.jobs)
     if args.format or args.format_fix:
         check_format(fix=args.format_fix, jobs=args.jobs, cache=not args.no_cache)
         return

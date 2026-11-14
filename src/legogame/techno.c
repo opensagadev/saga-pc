@@ -161,13 +161,6 @@ typedef struct techno_progress_s { // size 0x8
     u32 visible[1];                // 0x4
 } TECHNO_PROGRESS_PC;
 
-STATIC_ASSERT(sizeof(TECHNO_CONFIG_PC) == 0x4c);
-STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, interaction_time) == 0);
-STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_object_ids) == 4);
-STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, idle_offsets) == 0xc);
-STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_object_ids) == 0x30);
-STATIC_ASSERT(offsetof(TECHNO_CONFIG_PC, hand_offsets) == 0x34);
-
 static void Techno_ResetFields(TECHNO_CALLBACK_PC *techno) {
     f32 floor_height;
     techno->ground_position.y = 0.0f;
@@ -566,21 +559,6 @@ NUVEC *Technos_TgtPos(TECHNO_s *techno) {
     }
     return NULL;
 }
-
-STATIC_ASSERT(sizeof(TECHNO_s) == 0x70);
-STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
-STATIC_ASSERT(offsetof(TECHNO_s, target_mode) == 0x37);
-STATIC_ASSERT(offsetof(TECHNO_s, controlled_object) == 0x6c);
-STATIC_ASSERT(offsetof(TECHNO_s, target_name) == 0x3d);
-STATIC_ASSERT(offsetof(TECHNO_s, target_special_storage) == 0x60);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_f00) == 0xf00);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_x) == 0x30);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_z) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 
 #pragma data_seg(".data$TechnoMoveSpeedPc")
 f32 TechnoMoveSpeedPc[2] = {0.0f, 0.0f};

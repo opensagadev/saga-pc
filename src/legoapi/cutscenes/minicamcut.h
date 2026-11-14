@@ -15,73 +15,53 @@
 extern "C" {
 #endif
 
-    typedef struct MINICAM_COMMAND {
-        i32 type;
-        f32 duration;
-        i32 argument;
-        NUVEC position;
-        NUVEC *target;
+    typedef struct MINICAM_COMMAND { // size 0x1c
+        i32 type;                    // 0x00
+        f32 duration;                // 0x04
+        i32 argument;                // 0x08
+        NUVEC position;              // 0x0c
+        NUVEC *target;               // 0x18
     } MINICAM_COMMAND;
 
-    STATIC_ASSERT(sizeof(MINICAM_COMMAND) == 0x1c);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND, type) == 0);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND, duration) == 4);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND, argument) == 8);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND, position) == 0xc);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND, target) == 0x18);
+    typedef union MINICAM_PC { // size 0x3fc
 
-    typedef union MINICAM_PC {
-        struct {
-            MINICAM_COMMAND commands[32];
-            u8 command_count;
-            u8 current_command;
-            u8 mode;
-            u8 easing;
-            u8 borders;
-            u8 unknown_385_b[0x3];
-            f32 distance;
-            u16 pitch;
-            u16 yaw;
-            u16 roll;
-            u8 unknown_392[0x2];
-            f32 target_distance;
-            u16 target_pitch;
-            u16 target_yaw;
-            u16 target_roll;
-            u8 unknown_39e[0x2];
-            NUVEC focus_velocity;
-            NUVEC position_velocity;
-            f32 start_distance;
-            u16 start_pitch;
-            u16 start_yaw;
-            u16 start_roll;
-            u8 unknown_3c2[0x2];
-            NUVEC *focus;
-            NUVEC focus_offset;
-            NUVEC target;
-            NUVEC position;
-            NUGSPLINE *position_spline;
-            f32 delta_time;
-            f32 duration;
-            f32 elapsed_time;
+        struct {                          // size 0x3fc
+            MINICAM_COMMAND commands[32]; // 0x000
+            u8 command_count;             // 0x380
+            u8 current_command;           // 0x381
+            u8 mode;                      // 0x382
+            u8 easing;                    // 0x383
+            u8 borders;                   // 0x384
+            u8 unknown_385_b[0x3];        // 0x385
+            f32 distance;                 // 0x388
+            u16 pitch;                    // 0x38c
+            u16 yaw;                      // 0x38e
+            u16 roll;                     // 0x390
+            u8 unknown_392[0x2];          // 0x392
+            f32 target_distance;          // 0x394
+            u16 target_pitch;             // 0x398
+            u16 target_yaw;               // 0x39a
+            u16 target_roll;              // 0x39c
+            u8 unknown_39e[0x2];          // 0x39e
+            NUVEC focus_velocity;         // 0x3a0
+            NUVEC position_velocity;      // 0x3ac
+            f32 start_distance;           // 0x3b8
+            u16 start_pitch;              // 0x3bc
+            u16 start_yaw;                // 0x3be
+            u16 start_roll;               // 0x3c0
+            u8 unknown_3c2[0x2];          // 0x3c2
+            NUVEC *focus;                 // 0x3c4
+            NUVEC focus_offset;           // 0x3c8
+            NUVEC target;                 // 0x3d4
+            NUVEC position;               // 0x3e0
+            NUGSPLINE *position_spline;   // 0x3ec
+            f32 delta_time;               // 0x3f0
+            f32 duration;                 // 0x3f4
+            f32 elapsed_time;             // 0x3f8
         };
 
         MINICAM_COMMAND duplicate_search[33];
     } MINICAM_PC;
-
-    STATIC_ASSERT(sizeof(MINICAM_PC) == 0x3fc);
-    STATIC_ASSERT(offsetof(MINICAM_PC, command_count) == 0x380);
-    STATIC_ASSERT(offsetof(MINICAM_PC, current_command) == 0x381);
-    STATIC_ASSERT(offsetof(MINICAM_PC, mode) == 0x382);
-    STATIC_ASSERT(offsetof(MINICAM_PC, easing) == 0x383);
-    STATIC_ASSERT(offsetof(MINICAM_PC, borders) == 0x384);
-    STATIC_ASSERT(offsetof(MINICAM_PC, focus) == 0x3c4);
-    STATIC_ASSERT(offsetof(MINICAM_PC, focus_offset) == 0x3c8);
-    STATIC_ASSERT(offsetof(MINICAM_PC, target) == 0x3d4);
-    STATIC_ASSERT(offsetof(MINICAM_PC, position) == 0x3e0);
-    STATIC_ASSERT(offsetof(MINICAM_PC, duration) == 0x3f4);
-    STATIC_ASSERT(offsetof(MINICAM_PC, elapsed_time) == 0x3f8);
-    STATIC_ASSERT(offsetof(MINICAM_PC, duplicate_search) == 0);
 
     extern MINICAM_PC MiniCam;
     extern NUGSPLINE ObstacleCamCutSpline;

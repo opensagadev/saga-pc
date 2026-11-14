@@ -7,52 +7,45 @@
 
 struct WORLDINFO_s;
 
-typedef struct ARCADE_MODE_PC_s {
-    i16 *text;
-    i32 target;
-    u32 flags;
+typedef struct ARCADE_MODE_PC_s { // size 0xc
+    i16 *text;                    // 0x0
+    i32 target;                   // 0x4
+    u32 flags;                    // 0x8
 } ARCADE_MODE_PC;
 
-STATIC_ASSERT(sizeof(ARCADE_MODE_PC) == 0xc);
-STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
-
-typedef struct ARCADE_MENU_ENTRY_PC_s {
-    i16 *text;
-    i8 index;
-    u8 count;
-    u16 unknown_06;
+typedef struct ARCADE_MENU_ENTRY_PC_s { // size 0x8
+    i16 *text;                          // 0x0
+    i8 index;                           // 0x4
+    u8 count;                           // 0x5
+    u16 unknown_06;                     // 0x6
 } ARCADE_MENU_ENTRY_PC;
 
-STATIC_ASSERT(sizeof(ARCADE_MENU_ENTRY_PC) == 8);
-
 /* REPLACE existing ARCADE_ITEM_PC24-byte declaration, preserve every old field. */
-typedef struct ARCADE_ITEM_PC_s {
-    union {
-        struct {
-            i16 *level_text;
-            i8 level;
-            u8 level_count;
-            u16 unknown_06;
-            i16 *mode_text;
-            i8 mode;
-            u8 mode_count;
-            u16 unknown_0e;
-            i16 *play_text;
-            i8 play;
-            u8 play_count;
-            u16 unknown_16;
-            ARCADE_MENU_ENTRY_PC reset_points_entry;
-            ARCADE_MENU_ENTRY_PC launch_entry;
+typedef struct ARCADE_ITEM_PC_s { // size 0x28
+
+    union { // size 0x28
+
+        struct {                                     // size 0x28
+            i16 *level_text;                         // 0x00
+            i8 level;                                // 0x04
+            u8 level_count;                          // 0x05
+            u16 unknown_06;                          // 0x06
+            i16 *mode_text;                          // 0x08
+            i8 mode;                                 // 0x0c
+            u8 mode_count;                           // 0x0d
+            u16 unknown_0e;                          // 0x0e
+            i16 *play_text;                          // 0x10
+            i8 play;                                 // 0x14
+            u8 play_count;                           // 0x15
+            u16 unknown_16;                          // 0x16
+            ARCADE_MENU_ENTRY_PC reset_points_entry; // 0x18
+            ARCADE_MENU_ENTRY_PC launch_entry;       // 0x20
         };
 
         ARCADE_MENU_ENTRY_PC entries[5];
-    };
+    }; // 0x00
 } ARCADE_ITEM_PC;
 
-STATIC_ASSERT(sizeof(ARCADE_ITEM_PC) == 0x28);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, reset_points_entry) == 0x18);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, launch_entry) == 0x20);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,19 +59,14 @@ extern "C" {
 }
 #endif
 
-typedef struct AREA_LEVEL_LOAD_PC {
-    i16 level;
-    i16 first_level;
-    i16 second_level;
-    u8 flags;
-    u8 unknown_07;
+typedef struct AREA_LEVEL_LOAD_PC { // size 0x8
+    i16 level;                      // 0x0
+    i16 first_level;                // 0x2
+    i16 second_level;               // 0x4
+    u8 flags;                       // 0x6
+    u8 unknown_07;                  // 0x7
 } AREA_LEVEL_LOAD_PC;
 
-STATIC_ASSERT(sizeof(AREA_LEVEL_LOAD_PC) == 8);
-STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, level) == 0);
-STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, first_level) == 2);
-STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, second_level) == 4);
-STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, flags) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif

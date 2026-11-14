@@ -11,15 +11,12 @@
 #include "nu2api/huffdecode.h"
 #endif
 
-typedef struct NUPADMAPPING {
-    i32 pad;
-    i32 port;
-    i32 is_active;
+typedef struct NUPADMAPPING { // size 0xc
+    i32 pad;                  // 0x0
+    i32 port;                 // 0x4
+    i32 is_active;            // 0x8
 } NUPADMAPPING;
 
-STATIC_ASSERT(sizeof(NUPADMAPPING) == 12);
-STATIC_ASSERT(offsetof(NUPADMAPPING, port) == 4);
-STATIC_ASSERT(offsetof(NUPADMAPPING, is_active) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

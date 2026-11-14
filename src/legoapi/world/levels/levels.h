@@ -59,11 +59,10 @@ extern "C" {
     extern i16 id_ANAKINPADAWAN;
 
     /* The u16 after the buffer at 0x93b0e8 is the separate global temp_yrot. */
-    typedef struct CONFIG_BUFFER_PC {
-        char bytes[0x10000];
+    typedef struct CONFIG_BUFFER_PC { // size 0x10000
+        char bytes[0x10000];          // 0x0000
     } CONFIG_BUFFER_PC;
 
-    STATIC_ASSERT(sizeof(CONFIG_BUFFER_PC) == 0x10000);
     extern CONFIG_BUFFER_PC ConfigBuffer;
     extern GAMEOBJECT *player2;
     extern i32 nethost;

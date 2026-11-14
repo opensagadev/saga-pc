@@ -11,14 +11,12 @@
 #include "legoapi/world/world.h"
 #endif
 
-typedef struct NEW_MINI_PIECE_PC {
-    char name[8];
-    i16 level;
-    u8 padding_a[2];
+typedef struct NEW_MINI_PIECE_PC { // size 0xc
+    char name[8];                  // 0x0
+    i16 level;                     // 0x8
+    u8 padding_a[2];               // 0xa
 } NEW_MINI_PIECE_PC;
 
-STATIC_ASSERT(sizeof(NEW_MINI_PIECE_PC) == 0xc);
-STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,7 +26,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NEW_MINI_PIECE_PC, level) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

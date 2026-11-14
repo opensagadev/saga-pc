@@ -1,8 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
-STATIC_ASSERT(offsetof(GIZBOMBGEN_s, position) == 0x10);
 extern const char GizmoSnapOptionNamePc[5];
 
 void GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
@@ -39,7 +36,6 @@ void GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
     }
 }
 
-STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
 typedef struct gizobstacle_system_s { // size 0x14
@@ -79,8 +75,6 @@ typedef struct obstacle_runtime_flags_s { // size 0x4
     u32 destroyed : 1;                    // 0x0:7
     u32 unknown : 24;                     // 0x0:8
 } OBSTACLE_RUNTIME_FLAGS_PC;
-
-STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 
 void GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
     GIZMO_PC *gizmo = ptr;
@@ -509,8 +503,6 @@ typedef struct gizobstacle_object_data_s { // size 0x4
     i16 platform_id;                       // 0x2
 } GIZOBSTACLE_OBJECT_DATA_PC;
 
-STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
 extern i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *);
 
 void GizObstacle_Stop(GIZOBSTACLE *obstacle) {
@@ -1064,12 +1056,6 @@ void GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
     }
 }
 
-STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
-STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
-STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
-STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
-STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
-
 static i32 GizObstacles_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     return world ? world->current_level->max_obstacles : 0;
@@ -1284,12 +1270,6 @@ typedef struct bomb_generator_system_runtime_s { // size 0x14
 
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
               sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);
-STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
-STATIC_ASSERT(offsetof(CABLE_s, target) == 4);
-STATIC_ASSERT(offsetof(CABLE_s, max_length) == 0x1c4);
-STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-
-STATIC_ASSERT(offsetof(GIZBOMBGEN_s, flags) == 0x2a);
 
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 GizObstacles_TotalScore(WORLDINFO *world) {

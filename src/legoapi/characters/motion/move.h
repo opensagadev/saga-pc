@@ -30,64 +30,48 @@ struct PART_PC;
 struct gameobject_s;
 struct level_data_s;
 
-typedef struct GAMEPAD_PC {
-    struct FRAME_PAD_PC *bound_pad;
-    u32 buttons_held;
-    u32 buttons_pressed;
-    u32 buttons_released;
-    u32 left_directions;
-    u32 previous_left_directions;
-    u32 right_directions;
-    u32 previous_right_directions;
-    u32 ai_input_state;
-    u8 input_state;
-    u8 input_mode;
-    u16 input_angle;
-    f32 input_magnitude;
-    f32 input_direction_z;
-    f32 input_direction_x;
-    f32 animation_input_magnitude;
-    f32 previous_input_magnitude;
-    f32 waggle_magnitude;
+typedef struct GAMEPAD_PC {         // size 0x5c
+    struct FRAME_PAD_PC *bound_pad; // 0x00
+    u32 buttons_held;               // 0x04
+    u32 buttons_pressed;            // 0x08
+    u32 buttons_released;           // 0x0c
+    u32 left_directions;            // 0x10
+    u32 previous_left_directions;   // 0x14
+    u32 right_directions;           // 0x18
+    u32 previous_right_directions;  // 0x1c
+    u32 ai_input_state;             // 0x20
+    u8 input_state;                 // 0x24
+    u8 input_mode;                  // 0x25
+    u16 input_angle;                // 0x26
+    f32 input_magnitude;            // 0x28
+    f32 input_direction_z;          // 0x2c
+    f32 input_direction_x;          // 0x30
+    f32 animation_input_magnitude;  // 0x34
+    f32 previous_input_magnitude;   // 0x38
+    f32 waggle_magnitude;           // 0x3c
 
-    union {
+    union { // size 0x14
         u8 unknown_40[0x14];
         RUMBLE_PACKET_RESOURCE_PC rumble;
-    };
+    }; // 0x40
 
-    NUVEC *operator_data;
-    u16 previous_input_angle;
-    u16 runtime_flags;
+    NUVEC *operator_data;     // 0x54
+    u16 previous_input_angle; // 0x58
+    u16 runtime_flags;        // 0x5a
 } GAMEPAD_PC;
 
-STATIC_ASSERT(offsetof(GAMEPAD_PC, waggle_magnitude) == 0x3c);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0x0);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_z) == 0x2c);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 0x4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, input_angle) == 0x26);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, input_magnitude) == 0x28);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, previous_input_magnitude) == 0x38);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, previous_input_angle) == 0x58);
-
-typedef struct blowup_target_s {
-    u8 unknown_00[0x4c];
-    NUVEC mid_position;
+typedef struct blowup_target_s { // size 0x58
+    u8 unknown_00[0x4c];         // 0x00
+    NUVEC mid_position;          // 0x4c
 } BLOWUP_TARGET_PC;
 
-STATIC_ASSERT(offsetof(BLOWUP_TARGET_PC, mid_position) == 0x4c);
-
-typedef struct awkward_shape_sphere_s {
-    i16 *character_id;
-    i16 joint;
-    u16 flags;
-    f32 radius;
+typedef struct awkward_shape_sphere_s { // size 0xc
+    i16 *character_id;                  // 0x0
+    i16 joint;                          // 0x4
+    u16 flags;                          // 0x6
+    f32 radius;                         // 0x8
 } AWKWARD_SHAPE_SPHERE_PC;
 
-STATIC_ASSERT(sizeof(AWKWARD_SHAPE_SPHERE_PC) == 12);
-STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, character_id) == 0);
-STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, joint) == 4);
-STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, flags) == 6);
-STATIC_ASSERT(offsetof(AWKWARD_SHAPE_SPHERE_PC, radius) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -147,12 +131,6 @@ extern "C" {
     extern f32 VehicleCollisionDamageSpeedFraction;
     extern i32 VehicleCollisionFrontAngle;
     extern i32 VehicleCollisionRearAngle;
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_pressed) == 0x8);
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, input_mode) == 0x25);
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, input_direction_x) == 0x30);
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, animation_input_magnitude) == 0x34);
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, operator_data) == 0x54);
-    STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
     extern i32 TwistSockRotationModeA;
     extern i32 TwistSockRotationModeB;
     extern i32 TwistYawLeanDegrees;
@@ -238,332 +216,170 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
-typedef struct PLAYERCHARACTERCONFIG_PC {
-    i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    struct GAMECHARACTERLAYER *layers;
-    i8 *layer_lookup;
-    f32 stop_speed;
-    f32 idle_speed;
-    f32 tiptoe_speed;
-    f32 walk_speed;
-    f32 run_speed;
-    f32 backwards_factor;
-    f32 gravity;
-    f32 field_028;
-    f32 jump_speed;
-    f32 jump_duration;
-    f32 jump_height;
-    f32 second_jump_speed;
-    f32 second_jump_duration;
-    f32 second_jump_height;
+typedef struct PLAYERCHARACTERCONFIG_PC {                                   // size 0x120
+    i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32); // 0x000
+    struct GAMECHARACTERLAYER *layers;                                      // 0x004
+    i8 *layer_lookup;                                                       // 0x008
+    f32 stop_speed;                                                         // 0x00c
+    f32 idle_speed;                                                         // 0x010
+    f32 tiptoe_speed;                                                       // 0x014
+    f32 walk_speed;                                                         // 0x018
+    f32 run_speed;                                                          // 0x01c
+    f32 backwards_factor;                                                   // 0x020
+    f32 gravity;                                                            // 0x024
+    f32 field_028;                                                          // 0x028
+    f32 jump_speed;                                                         // 0x02c
+    f32 jump_duration;                                                      // 0x030
+    f32 jump_height;                                                        // 0x034
+    f32 second_jump_speed;                                                  // 0x038
+    f32 second_jump_duration;                                               // 0x03c
+    f32 second_jump_height;                                                 // 0x040
 
-    union {
+    union { // size 0x4
         f32 acceleration;
         f32 velocity_seek_rate;
-    };
+    }; // 0x044
 
-    f32 jump_hold_duration;
-    f32 collision_origin_radius;
-    f32 field_050;
-    f32 field_054;
-    f32 field_058;
-    f32 field_05c;
-    f32 field_060;
-    f32 viewdistance;
-    f32 heardistance;
-    f32 maxviewheight;
-    f32 minviewheight;
-    f32 turn_rate;
+    f32 jump_hold_duration;      // 0x048
+    f32 collision_origin_radius; // 0x04c
+    f32 field_050;               // 0x050
+    f32 field_054;               // 0x054
+    f32 field_058;               // 0x058
+    f32 field_05c;               // 0x05c
+    f32 field_060;               // 0x060
+    f32 viewdistance;            // 0x064
+    f32 heardistance;            // 0x068
+    f32 maxviewheight;           // 0x06c
+    f32 minviewheight;           // 0x070
+    f32 turn_rate;               // 0x074
 
-    union {
+    union { // size 0x4
         f32 turn_rate_2;
         f32 high_speed_turn_rate;
-    };
+    }; // 0x078
 
-    union {
+    union { // size 0x4
         f32 speed_up_time;
         f32 vehicle_acceleration_time;
-    };
+    }; // 0x07c
 
-    union {
+    union { // size 0x4
         f32 slow_down_time;
         f32 vehicle_deceleration_time;
-    };
+    }; // 0x080
 
-    f32 jump_move_speed_scale;
-    f32 field_088;
-    f32 field_08c;
-    u32 flags_090;
+    f32 jump_move_speed_scale; // 0x084
+    f32 field_088;             // 0x088
+    f32 field_08c;             // 0x08c
+    u32 flags_090;             // 0x090
 
-    union {
+    union { // size 0x4
         u32 flags_094;
         u8 flags_094_bytes[4];
-    };
+    }; // 0x094
 
-    u8 flags_098[4];
-    u32 layer_mask_special;
-    u32 layer_mask;
-    u32 layer_mask_medium;
-    u32 layer_mask_low;
-    u32 layer_mask_dead;
-    u32 ride_layers_off;
-    f32 layer_distance_medium;
-    f32 layer_distance_low;
-    f32 ai_update_distances[4];
-    u8 ai_update_intervals[4];
-    i16 sfx_misc[6];
-    i16 sfx_die;
-    i16 sfx_hurt;
-    i16 sfx_grunt;
-    i16 sfx_engine;
+    u8 flags_098[4];            // 0x098
+    u32 layer_mask_special;     // 0x09c
+    u32 layer_mask;             // 0x0a0
+    u32 layer_mask_medium;      // 0x0a4
+    u32 layer_mask_low;         // 0x0a8
+    u32 layer_mask_dead;        // 0x0ac
+    u32 ride_layers_off;        // 0x0b0
+    f32 layer_distance_medium;  // 0x0b4
+    f32 layer_distance_low;     // 0x0b8
+    f32 ai_update_distances[4]; // 0x0bc
+    u8 ai_update_intervals[4];  // 0x0cc
+    i16 sfx_misc[6];            // 0x0d0
+    i16 sfx_die;                // 0x0dc
+    i16 sfx_hurt;               // 0x0de
+    i16 sfx_grunt;              // 0x0e0
+    i16 sfx_engine;             // 0x0e2
 
-    union {
+    union { // size 0x2
         i16 sfx_shoot;
         i16 shoot_sfx;
-    };
+    }; // 0x0e4
 
-    i16 sfx_footstep;
-    i16 sfx_chatter;
-    i16 sfx_sabre;
-    i16 weapon_model;
-    i16 coin_value;
-    u16 shadow_locators;
-    u16 thrust_locators;
-    u8 hitpoints;
-    u8 shield_hitpoints;
-    u8 blob_shadow_alpha;
-    u8 unknown_0f7;
-    i8 weapon_joints[4];
+    i16 sfx_footstep;     // 0x0e6
+    i16 sfx_chatter;      // 0x0e8
+    i16 sfx_sabre;        // 0x0ea
+    i16 weapon_model;     // 0x0ec
+    i16 coin_value;       // 0x0ee
+    u16 shadow_locators;  // 0x0f0
+    u16 thrust_locators;  // 0x0f2
+    u8 hitpoints;         // 0x0f4
+    u8 shield_hitpoints;  // 0x0f5
+    u8 blob_shadow_alpha; // 0x0f6
+    u8 unknown_0f7;       // 0x0f7
+    i8 weapon_joints[4];  // 0x0f8
 
-    union {
+    union { // size 0x4
         i8 weapon_shoot_joints[4];
 
-        struct {
-            i8 first_shoot_joint;
-            i8 remaining_shoot_joints[3];
+        struct {                          // size 0x4
+            i8 first_shoot_joint;         // 0x0fc
+            i8 remaining_shoot_joints[3]; // 0x0fd
         };
-    };
+    }; // 0x0fc
 
-    i8 streak_joints[4][2];
-    i8 hand_locators[2];
-    i8 grapple_locators[2];
+    i8 streak_joints[4][2]; // 0x100
+    i8 hand_locators[2];    // 0x108
+    i8 grapple_locators[2]; // 0x10a
 
-    union {
+    union { // size 0x1
         i8 rocket_locator;
         i8 rocket_joint;
-    };
+    }; // 0x10c
 
-    union {
+    union { // size 0x1
         i8 shield_locator;
         i8 collision_origin_joint;
-    };
+    }; // 0x10d
 
-    union {
+    union { // size 0x1
         i8 head_locator;
         u8 unknown_010e;
-    };
+    }; // 0x10e
 
-    union {
+    union { // size 0x1
         i8 collision_locator;
         i8 model_origin_joint;
-    };
+    }; // 0x10f
 
-    i8 thingy_locator;
-    i8 helmet_locator;
-    i8 throw_locator;
-    i8 ride_locator;
-    i8 poo_locator;
-    i8 hair_layer;
+    i8 thingy_locator; // 0x110
+    i8 helmet_locator; // 0x111
+    i8 throw_locator;  // 0x112
+    i8 ride_locator;   // 0x113
+    i8 poo_locator;    // 0x114
+    i8 hair_layer;     // 0x115
 
-    union {
+    union { // size 0x1
         u8 hover_fall_mode;
         i8 weapon_action;
-    };
+    }; // 0x116
 
-    union {
+    union { // size 0x1
         u8 streak_color;
         i8 blade_colour;
-    };
+    }; // 0x117
 
-    i8 head_joint;
-    i8 cloak_joint;
-    i8 cloak_joint_2;
-    i8 place_locator;
-    i8 cape_layer;
-    i8 extra_character_locator;
-    u8 flags_11e;
-    u8 layer_count;
+    i8 head_joint;              // 0x118
+    i8 cloak_joint;             // 0x119
+    i8 cloak_joint_2;           // 0x11a
+    i8 place_locator;           // 0x11b
+    i8 cape_layer;              // 0x11c
+    i8 extra_character_locator; // 0x11d
+    u8 flags_11e;               // 0x11e
+    u8 layer_count;             // 0x11f
 } PLAYERCHARACTERCONFIG_PC;
 
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, idle_speed) == 0x10);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, velocity_seek_rate) == 0x44);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, turn_rate) == 0x74);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, high_speed_turn_rate) == 0x78);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, vehicle_acceleration_time) == 0x7c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, vehicle_deceleration_time) == 0x80);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shoot_sfx) == 0xe4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, first_shoot_joint) == 0xfc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, streak_joints) == 0x100);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, rocket_joint) == 0x10c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, blade_colour) == 0x117);
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layers) == 4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask) == 0xa0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_dead) == 0xac);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ride_layers_off) == 0xb0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_distance_low) == 0xb8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hair_layer) == 0x115);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, cape_layer) == 0x11c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_count) == 0x11f);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, gravity) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_hold_duration) == 0x48);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_088) == 0x88);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, collision_origin_radius) == 0x4c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
-
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, run_speed) == 0x1c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, collision_origin_joint) == 0x10d);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, model_origin_joint) == 0x10f);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_098) == 0x98);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_special) == 0x9c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ai_update_distances) == 0xbc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ai_update_intervals) == 0xcc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_misc) == 0xd0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shadow_locators) == 0xf0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hitpoints) == 0xf4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_joints) == 0xf8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_shoot_joints) == 0xfc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, streak_joints) == 0x100);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hand_locators) == 0x108);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, head_joint) == 0x118);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, make_layer_list) == 0x0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layers) == 0x4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_lookup) == 0x8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, stop_speed) == 0xc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, idle_speed) == 0x10);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, tiptoe_speed) == 0x14);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, run_speed) == 0x1c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, backwards_factor) == 0x20);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, gravity) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_speed) == 0x2c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_duration) == 0x30);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_height) == 0x34);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, second_jump_speed) == 0x38);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, second_jump_duration) == 0x3c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, second_jump_height) == 0x40);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, acceleration) == 0x44);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, velocity_seek_rate) == 0x44);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_hold_duration) == 0x48);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, collision_origin_radius) == 0x4c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_050) == 0x50);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_054) == 0x54);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_058) == 0x58);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_05c) == 0x5c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_060) == 0x60);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, viewdistance) == 0x64);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, heardistance) == 0x68);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, maxviewheight) == 0x6c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, minviewheight) == 0x70);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, turn_rate) == 0x74);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, turn_rate_2) == 0x78);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, high_speed_turn_rate) == 0x78);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, speed_up_time) == 0x7c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, vehicle_acceleration_time) == 0x7c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, slow_down_time) == 0x80);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, vehicle_deceleration_time) == 0x80);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, jump_move_speed_scale) == 0x84);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_088) == 0x88);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_08c) == 0x8c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_098) == 0x98);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_special) == 0x9c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask) == 0xa0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_medium) == 0xa4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_low) == 0xa8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_dead) == 0xac);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ride_layers_off) == 0xb0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_distance_medium) == 0xb4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_distance_low) == 0xb8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ai_update_distances) == 0xbc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ai_update_intervals) == 0xcc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_misc) == 0xd0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_die) == 0xdc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_hurt) == 0xde);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_grunt) == 0xe0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_engine) == 0xe2);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_shoot) == 0xe4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shoot_sfx) == 0xe4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_footstep) == 0xe6);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_chatter) == 0xe8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_sabre) == 0xea);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, coin_value) == 0xee);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shadow_locators) == 0xf0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thrust_locators) == 0xf2);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hitpoints) == 0xf4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shield_hitpoints) == 0xf5);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, blob_shadow_alpha) == 0xf6);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_joints) == 0xf8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_shoot_joints) == 0xfc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, first_shoot_joint) == 0xfc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, streak_joints) == 0x100);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hand_locators) == 0x108);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, grapple_locators) == 0x10a);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, rocket_locator) == 0x10c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, rocket_joint) == 0x10c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shield_locator) == 0x10d);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, collision_origin_joint) == 0x10d);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, head_locator) == 0x10e);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, collision_locator) == 0x10f);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, model_origin_joint) == 0x10f);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thingy_locator) == 0x110);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, helmet_locator) == 0x111);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, throw_locator) == 0x112);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, ride_locator) == 0x113);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, poo_locator) == 0x114);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hair_layer) == 0x115);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, streak_color) == 0x117);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, blade_colour) == 0x117);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, head_joint) == 0x118);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, cloak_joint) == 0x119);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, cloak_joint_2) == 0x11a);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, place_locator) == 0x11b);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, cape_layer) == 0x11c);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_11e) == 0x11e);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_count) == 0x11f);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_lookup) == 0x8);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_medium) == 0xa4);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_mask_low) == 0xa8);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_distance_medium) == 0xb4);
 
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, tiptoe_speed) == 0x14);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-    STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, make_layer_list) == 0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layers) == 4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, layer_lookup) == 8);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 #undef SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART
 #define SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART 3
 #ifdef SAGA_SHIM

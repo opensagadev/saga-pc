@@ -1,9 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(FADETYPE) == 4);
-STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
-STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
-
 /* Replace/move the two unused static menu.c bodies with these PC-authoritative external bodies. */
 
 /* Native autosave-cancel child1011 reached by PauseGame; save1000 child already implemented. */

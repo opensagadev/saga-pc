@@ -1,13 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
 #ifdef __cplusplus
 extern "C" {
 #endif

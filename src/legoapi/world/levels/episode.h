@@ -10,21 +10,16 @@
 #include "legoapi/items/base/apiobject.h"
 #endif
 
-typedef struct episode_data_s {
-    i16 name_id;
-    i16 text_id;
-    i16 area_ids[10];
-    u8 area_count;
-    u8 regular_areas;
-    u8 index;
-    u8 unknown_001b;
+typedef struct episode_data_s { // size 0x1c
+    i16 name_id;                // 0x00
+    i16 text_id;                // 0x02
+    i16 area_ids[10];           // 0x04
+    u8 area_count;              // 0x18
+    u8 regular_areas;           // 0x19
+    u8 index;                   // 0x1a
+    u8 unknown_001b;            // 0x1b
 } EPISODEDATA_PC;
 
-STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 0x04);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, index) == 0x1a);
 #ifdef __cplusplus
 extern "C" {
 #endif

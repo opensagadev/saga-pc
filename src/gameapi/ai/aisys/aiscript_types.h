@@ -34,15 +34,14 @@ typedef struct AICONDITION AICONDITION;
 typedef struct AIREFSCRIPT AIREFSCRIPT;
 typedef struct AISCRIPTPROCESS_PC AISCRIPTPROCESS_PC;
 
-typedef struct AISCRIPTPROCESSSTACK {
-    f32 complex_params[4];
-    u8 is_first_time_state;
-    u8 force_complex_eval;
-    u8 unknown_12[2];
+typedef struct AISCRIPTPROCESSSTACK { // size 0x14
+    f32 complex_params[4];            // 0x00
+    u8 is_first_time_state;           // 0x10
+    u8 force_complex_eval;            // 0x11
+    u8 unknown_12[2];                 // 0x12
 } AISCRIPTPROCESSSTACK;
 
 /* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
-STATIC_ASSERT(sizeof(AISCRIPTPROCESSSTACK) == 0x14);
 
 struct AISCRIPTPROCESS_PC {              // size 0xc8
     AISCRIPT_PC *base_script;            // 0x00

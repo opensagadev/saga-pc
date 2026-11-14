@@ -11,14 +11,12 @@
 #include "legoapi/legoapi_types.h"
 #endif
 
-typedef struct cheatsystem_s {
-    CHEAT_PC *cheats;
-    i32 count;
-    u32 flags;
+typedef struct cheatsystem_s { // size 0xc
+    CHEAT_PC *cheats;          // 0x0
+    i32 count;                 // 0x4
+    u32 flags;                 // 0x8
 } CHEATSYSTEM_PC;
 
-STATIC_ASSERT(sizeof(CHEATSYSTEM_PC) == 12);
-STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, flags) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

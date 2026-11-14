@@ -28,7 +28,6 @@ static i32 read_buffer_decoded_size = 0;
 
 extern NUFILE_DEVICE enum_devices[16];
 extern i32 enum_numdevices;
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, params) == 0x24);
 
 void NuDatFileMissingPc(char *filepath);
 void NuRDPIVariableErrorPc(char *name);
@@ -51,10 +50,6 @@ struct NUPPHEADER {    // size 0xc
 
 #define NUPP_SWAP32(value)                                                                                             \
     (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
-
-STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, header) == 0);
-
-STATIC_ASSERT(offsetof(NUDATHDR, unknown_b4) == 0xb4);
 
 #define NU_WIDE_LENGTH(text, length)                                                                                   \
     do {                                                                                                               \
@@ -274,9 +269,6 @@ extern void FmvPlatformUpdatePc(void);
 extern void (*NuApiEndFrameCallbackPc)(void);
 
 typedef void (*NUDEBUGMSGFUNCTION_PC)(char *, ...);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);

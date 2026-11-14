@@ -12,13 +12,11 @@
 #include "nu2api/nufile/nufile.h"
 #endif
 
-typedef struct dat_handles_s {
-    NUDATHDR *previous;
-    NUDATHDR *episode[6];
+typedef struct dat_handles_s { // size 0x1c
+    NUDATHDR *previous;        // 0x00
+    NUDATHDR *episode[6];      // 0x04
 } DAT_HANDLES_PC;
 
-STATIC_ASSERT(sizeof(DAT_HANDLES_PC) == 0x1c);
-STATIC_ASSERT(offsetof(DAT_HANDLES_PC, episode) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

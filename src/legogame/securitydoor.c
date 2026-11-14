@@ -33,24 +33,6 @@ typedef struct security_door_progress_s { // size 0xc
     u32 opened_mask[1];                   // 0x8
 } SECURITY_DOOR_PROGRESS_PC;
 
-STATIC_ASSERT(offsetof(WORLDINFO, security_doors) == 0x50b0);
-STATIC_ASSERT(offsetof(WORLDINFO, security_door_count) == 0x50b4);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_securitydoors) == 0xfa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *SecurityDoor_OutputName;
 

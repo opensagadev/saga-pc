@@ -5,79 +5,62 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct HINT_PC {
-    union {
-        struct {
-            i16 id;
-            u8 flags;
-            i8 colour_index;
-            u32 price;
-            f32 display_duration;
+typedef struct HINT_PC { // size 0x1c
+
+    union { // size 0xc
+
+        struct {                  // size 0xc
+            i16 id;               // 0x00
+            u8 flags;             // 0x02
+            i8 colour_index;      // 0x03
+            u32 price;            // 0x04
+            f32 display_duration; // 0x08
         };
 
         u8 unknown_duration_prefix[8];
         u8 unknown_price_prefix[4];
 
-        struct {
-            u8 unknown3_prefix[3];
-            u8 unknown3[9];
+        struct {                   // size 0xc
+            u8 unknown3_prefix[3]; // 0x00
+            u8 unknown3[9];        // 0x03
         };
 
-        struct {
-            u8 unknown_price_prefix_08[8];
-            u8 unknown_price_suffix[4];
+        struct {                           // size 0xc
+            u8 unknown_price_prefix_08[8]; // 0x00
+            u8 unknown_price_suffix[4];    // 0x08
         };
-    };
+    }; // 0x00
 
-    f32 repeat_delay;
+    f32 repeat_delay; // 0x0c
 
-    union {
+    union { // size 0x4
         i32 (*update_fn)(struct HINT_PC *);
         u8 unknown10[4];
-    };
+    }; // 0x10
 
-    u8 completed;
-    u8 unknown15[3];
-    f32 cooldown;
+    u8 completed;    // 0x14
+    u8 unknown15[3]; // 0x15
+    f32 cooldown;    // 0x18
 } HINT_PC;
 
-STATIC_ASSERT(sizeof(HINT_PC) == 0x1c);
-STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
-STATIC_ASSERT(offsetof(HINT_PC, flags) == 2);
-STATIC_ASSERT(offsetof(HINT_PC, colour_index) == 3);
-STATIC_ASSERT(offsetof(HINT_PC, unknown3) == 3);
-STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
-STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);
-STATIC_ASSERT(offsetof(HINT_PC, update_fn) == 0x10);
-STATIC_ASSERT(offsetof(HINT_PC, repeat_delay) == 0xc);
-STATIC_ASSERT(offsetof(HINT_PC, completed) == 0x14);
-STATIC_ASSERT(offsetof(HINT_PC, cooldown) == 0x18);
+typedef struct HINTSYS_PC { // size 0x20
 
-typedef struct HINTSYS_PC {
-    union {
+    union { // size 0x4
         u8 unknown0[4];
         void (*draw_fn)(HINT_PC *, i32);
-    };
+    }; // 0x00
 
-    HINT_PC *hints;
-    HINT_PC *active_hint;
-    u8 unknownc;
-    u8 state;
-    u8 unknowne[2];
-    u32 *save_bits;
-    i32 save_word_count;
-    f32 display_elapsed;
-    f32 alpha;
+    HINT_PC *hints;       // 0x04
+    HINT_PC *active_hint; // 0x08
+    u8 unknownc;          // 0x0c
+    u8 state;             // 0x0d
+    u8 unknowne[2];       // 0x0e
+    u32 *save_bits;       // 0x10
+    i32 save_word_count;  // 0x14
+    f32 display_elapsed;  // 0x18
+    f32 alpha;            // 0x1c
 } HINTSYS_PC;
 
-STATIC_ASSERT(sizeof(HINTSYS_PC) == 0x20);
-STATIC_ASSERT(offsetof(HINTSYS_PC, hints) == 0x4);
-STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 0x8);
-STATIC_ASSERT(offsetof(HINTSYS_PC, state) == 0xd);
-STATIC_ASSERT(offsetof(HINTSYS_PC, save_bits) == 0x10);
-STATIC_ASSERT(offsetof(HINTSYS_PC, save_word_count) == 0x14);
-STATIC_ASSERT(offsetof(HINTSYS_PC, display_elapsed) == 0x18);
-STATIC_ASSERT(offsetof(HINTSYS_PC, alpha) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -99,8 +82,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
-STATIC_ASSERT(offsetof(HINT_PC, unknown3) == 3);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -110,4 +91,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);

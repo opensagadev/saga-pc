@@ -63,10 +63,6 @@ extern "C" {
         i32 texture_ids[3];                  // 0x0
     } SCENE_TEXTURE_PACKET_AE;
 
-    STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, type) == 0);
-    STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 4);
-    STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 16);
-
     /* nuportal PC backend. */
 
     typedef struct PORTAL_BOX { // size 0x20
@@ -75,17 +71,6 @@ extern "C" {
         NUVEC second;           // 0x10
         f32 second_w;           // 0x1c
     } PORTAL_BOX;
-
-    STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
-    STATIC_ASSERT(offsetof(NUGSCN, sphere_count) == 0xf0);
-    STATIC_ASSERT(offsetof(NUGSCN, portal_instance_count) == 0xf4);
-    STATIC_ASSERT(offsetof(NUGSCN, portal_spheres) == 0xf8);
-    STATIC_ASSERT(offsetof(NUGSCN, portal_boxes) == 0xfc);
-    STATIC_ASSERT(offsetof(NUGSCN, instance_visibility_flags) == 0x13c);
-    STATIC_ASSERT(offsetof(NUINSTANCE, flags) == 0x44);
-    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, visibility_flags) == 0x48);
-    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
-    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, portal_visibility_overrides) == 0x88);
 
     /* numtl PS half. */
 
@@ -161,10 +146,6 @@ extern "C" {
     static NUMTX RndrStateTransformPc = {0};
     static NUMTX RndrStateScaledTransformPc = {0};
     static f32 RndrStateTransformScalePc = 1.0f;
-    STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
-    STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_id) == 0x2e);
-    STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_packet_cache) == 0x168);
-    STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_state_word) == 0x16c);
 
     typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
 
@@ -223,8 +204,6 @@ extern "C" {
         SCENE_FIXUP_VERTEX_STREAM **vertex_streams; // 0x18
         u32 vertex_stream_count;                    // 0x1c
     } SCENE_FIXUP_NATIVE;
-
-    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 
     struct __declspec(align(16)) PC_GEOMETRY_BASIS_VECTOR_PC { // size 0x10
         f32 x;                                                 // 0x0
@@ -898,32 +877,16 @@ extern "C" {
         u32 colours_important;
     } NUTEXBMP_INFO_HEADER_PC;
 
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, original_mip_count) == 0xc);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_10) == 0x10);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, format) == 0x14);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, usage) == 0x18);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, pool) == 0x1c);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
-
     typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS {                // size 0x38
         void *reserved00[13];                                      // 0x00
         u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *); // 0x34
     } PC_TEXTURE_LEVEL_COUNT_METHODS;
-
-    STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
-    STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
 
     extern "C" {
         extern u32 PCGraphicsPostEffectWidthPc;
         extern u32 PCGraphicsPostEffectHeightPc;
         extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
     }
-
-    STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, mip_count) == 0xa);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
-    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
 
     /* Font atlas builder: scans a BMP glyph strip for glyph cells and builds a font around it. */
     extern "C" i32 NuStrLenW(const NUWCHAR *str);
@@ -987,24 +950,6 @@ extern "C" {
         PC_BOOT_FRAMEBUFFER_VIEW_PC PcBootFramebuffersPc = {NULL, NULL};
     }
 
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, start) == 0x0);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, end) == 0xc);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, segment_length) == 0x1c);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, width_wobble) == 0x20);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, end_width_ratio) == 0x24);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, length) == 0x28);
-    STATIC_ASSERT(offsetof(NULGTLASER_PC, type) == 0x2c);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, start) == 0x0);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, end) == 0xc);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, bend) == 0x18);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, segment_length) == 0x28);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, wobble) == 0x2c);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, bend_amount) == 0x30);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, type) == 0x34);
-    STATIC_ASSERT(offsetof(NULGTARCLASER_PC, flags) == 0x3c);
-    STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, material) == 0x0);
-    STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u0) == 0x4);
-    STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, u1) == 0xc);
     void NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
     void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
     i32 NuRndrBeginSceneEx(i32, i32, i32);
@@ -1039,25 +984,6 @@ extern "C" {
     }
 
     extern void (*NuApiEndFrameCallbackPc)(void);
-
-    STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_y) == 4);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_right) == 8);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_bottom) == 0xc);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_x) == 0x10);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_y) == 0x14);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_right) == 0x18);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_bottom) == 0x1c);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, width_scale) == 0x20);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
-
-    STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, y) == 4);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, width) == 8);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
 
     typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;

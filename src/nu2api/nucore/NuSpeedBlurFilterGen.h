@@ -14,7 +14,7 @@
 
 #ifdef __cplusplus
 
-class NuSpeedBlurFilterGen : public NuPostFilter {
+class NuSpeedBlurFilterGen : public NuPostFilter { // size 0x20
   public:
     void fun_005c3130(bool enable);
     void fun_005c3140(const NU_POST_SPEED_PARAMETERS_PC *parameters);
@@ -22,10 +22,9 @@ class NuSpeedBlurFilterGen : public NuPostFilter {
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    void *programs[3];
-    GRAPHICS_RENDER_TEXTURE_PC *texture;
-    const NU_POST_SPEED_PARAMETERS_PC *parameters;
+    void *programs[3];                             // 0x0c
+    GRAPHICS_RENDER_TEXTURE_PC *texture;           // 0x18
+    const NU_POST_SPEED_PARAMETERS_PC *parameters; // 0x1c
 };
 
-STATIC_ASSERT(sizeof(NuSpeedBlurFilterGen) == 0x20);
 #endif

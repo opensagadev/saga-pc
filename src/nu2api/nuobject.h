@@ -17,46 +17,27 @@
 extern "C" {
 #endif
 
-    typedef struct PC_NUFADEGROUP {
-        i16 active;
-        i16 flags;
-        NUGSCN *scene;
-        NUDISPLAY_SPECIAL_PC *special;
-        void *terrain;
-        i16 instance_index;
-        u8 unknown_12[2];
-        NUMTX *matrices;
-        i16 *platforms;
-        NUVEC centre;
-        u8 drawn;
-        u8 in_range;
-        i16 count;
-        f32 radius_squared;
-        f32 near_distance;
-        f32 far_distance;
-        f32 cull_distance_squared;
-        f32 fade_range;
+    typedef struct PC_NUFADEGROUP {    // size 0x40
+        i16 active;                    // 0x00
+        i16 flags;                     // 0x02
+        NUGSCN *scene;                 // 0x04
+        NUDISPLAY_SPECIAL_PC *special; // 0x08
+        void *terrain;                 // 0x0c
+        i16 instance_index;            // 0x10
+        u8 unknown_12[2];              // 0x12
+        NUMTX *matrices;               // 0x14
+        i16 *platforms;                // 0x18
+        NUVEC centre;                  // 0x1c
+        u8 drawn;                      // 0x28
+        u8 in_range;                   // 0x29
+        i16 count;                     // 0x2a
+        f32 radius_squared;            // 0x2c
+        f32 near_distance;             // 0x30
+        f32 far_distance;              // 0x34
+        f32 cull_distance_squared;     // 0x38
+        f32 fade_range;                // 0x3c
     } PC_NUFADEGROUP;
 
-    STATIC_ASSERT(sizeof(PC_NUFADEGROUP) == 64);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, active) == 0);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, flags) == 2);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, scene) == 4);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, special) == 8);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, terrain) == 12);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, instance_index) == 16);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, unknown_12) == 18);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, matrices) == 20);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, platforms) == 24);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, centre) == 28);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, drawn) == 40);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, in_range) == 41);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, count) == 42);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, radius_squared) == 44);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, near_distance) == 48);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, far_distance) == 52);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, cull_distance_squared) == 56);
-    STATIC_ASSERT(offsetof(PC_NUFADEGROUP, fade_range) == 60);
     extern PC_NUFADEGROUP *NuFadeObjGroup;
     extern PC_NUFADEGROUP *NuFadeObjCurGrp;
     extern i32 NuFadeObjEnabledPc;

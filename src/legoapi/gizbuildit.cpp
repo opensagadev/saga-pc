@@ -93,12 +93,6 @@ typedef struct buildit_reset_s {            // size 0x7c
     }; // 0x7a
 } BUILDIT_RESET_PC;
 
-STATIC_ASSERT(sizeof(GIZBUILDITANIMDATA_s) == 0xc8);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, start_mtx) == 0);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, end_mtx) == 0x40);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, wobble_time) == 0xc0);
-
 typedef struct buildit_reset_system_s { // size 0x8
     BUILDIT_RESET_PC *buildits;         // 0x0
     u16 count;                          // 0x4
@@ -113,29 +107,11 @@ typedef struct buildit_reset_progress_s { // size 0x60
 } BUILDIT_RESET_PROGRESS_PC;
 
 extern "C" {}
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, was_drawn) == 0xc6);
 extern "C" {
     extern f32 BuilditHopSfxWaitPc;
     extern f32 GIZBUILDITWOBBLEJUMPHEIGHT;
 }
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, wobble_axis) == 0xc4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 4);
-STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) + offsetof(NUMTX, m30) == 0xb0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, panel_request_data) == 0x7a0);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, position) == 0x34);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, built_object_count) == 0x6f);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
-STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, buildits) == 0);
-STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
 
 typedef struct buildit_attracto_reader_s { // size 0x7c
     u8 unknown_00[0x18];                   // 0x00
@@ -145,14 +121,6 @@ typedef struct buildit_attracto_reader_s { // size 0x7c
     f32 step_duration;                     // 0x48
     u8 unknown_4c[0x30];                   // 0x4c
 } BUILDIT_ATTRACTO_READER_PC;
-
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_timer) == 0x44);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_duration) == 0x48);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_object_count) == 0x6c);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
 
 typedef struct {
     char name[16];

@@ -226,7 +226,9 @@ proof: PASS; functions 13513->13513 (+0 -0); data 15111->15111 (+0 -0); file dat
 
 Losses are listed by address; a loss of a function named in
 [docs/fragile-flips.md](docs/fragile-flips.md) is counted as a fragile flip, not
-a regression. Logs are in `build/proof/`. Set `SAGA_CLANG_PYTHON` to an
+a regression. Logs are in `build/proof/`. Tools that load libclang translation units (the scans, clang-tidy) use 4
+workers by default, about 1 GB each (`SAGA_CLANG_JOBS` or `--jobs` changes it), and the proof waits
+before each step while less than 6 GB of memory is free. Set `SAGA_CLANG_PYTHON` to an
 interpreter whose libclang is the pinned 18 when the default one has another.
 
 Measured on a 16-thread machine (seconds; scans and tests run side by side, so

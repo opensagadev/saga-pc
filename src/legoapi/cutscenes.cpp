@@ -256,8 +256,6 @@ typedef struct CUT_DRAW_INSTANCE {                   // size 0xac
     CUT_DRAW_LOCATOR_INSTANCE_SYS *locator_instance; // 0xa8
 } CUT_DRAW_INSTANCE;
 
-STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
-
 typedef struct CUT_DRAW_OBJECT { // size 0xf8
     u8 unknown_00[0xb8];         // 0x00
     NUMTX matrix;                // 0xb8
@@ -321,9 +319,6 @@ typedef struct CUT_CONTROLLER_INSTANCE { // size 0x9c
     f32 rate;                            // 0x98
 } CUT_CONTROLLER_INSTANCE;
 
-STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
-STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
-
 typedef struct CUT_CONTROLLER_PLAYER { // size 0x8
     void *clips;                       // 0x0
     void *active;                      // 0x4
@@ -339,12 +334,7 @@ typedef struct CUT_CONTROLLER_PROGRESS { // size 0x2801
     u8 scene_flags;                      // 0x2800
 } CUT_CONTROLLER_PROGRESS;
 
-STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
 struct FADEINFO_s;
-STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
-STATIC_ASSERT(sizeof(FADETYPE) == 4);
 extern "C" {
     void GizmoSysDraw(void *, WORLDINFO *, f32);
 }

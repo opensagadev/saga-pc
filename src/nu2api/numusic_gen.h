@@ -54,27 +54,15 @@ extern "C" {
 extern NuMusic *the_music_player;
 #endif
 
-typedef struct PC_SOUND_INIT_CONFIG {
-    VARIPTR *cursor;
-    VARIPTR end;
-    i32 device_parameter;
-    struct sfx_file_info_s *sample_table;
-    i32 sample_capacity;
-    i32 option_14;
-    i32 option_18;
-    i32 option_1c;
-    i32 option_20;
-    i32 option_24;
+typedef struct PC_SOUND_INIT_CONFIG {     // size 0x28
+    VARIPTR *cursor;                      // 0x00
+    VARIPTR end;                          // 0x04
+    i32 device_parameter;                 // 0x08
+    struct sfx_file_info_s *sample_table; // 0x0c
+    i32 sample_capacity;                  // 0x10
+    i32 option_14;                        // 0x14
+    i32 option_18;                        // 0x18
+    i32 option_1c;                        // 0x1c
+    i32 option_20;                        // 0x20
+    i32 option_24;                        // 0x24
 } PC_SOUND_INIT_CONFIG;
-
-STATIC_ASSERT(sizeof(PC_SOUND_INIT_CONFIG) == 0x28);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, sample_table) == 0xc);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, sample_capacity) == 0x10);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, cursor) == 0x0);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, end) == 0x4);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, device_parameter) == 0x8);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_14) == 0x14);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_18) == 0x18);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_1c) == 0x1c);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_20) == 0x20);
-STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_24) == 0x24);

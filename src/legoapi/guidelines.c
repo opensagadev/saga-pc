@@ -22,20 +22,7 @@ typedef struct guideline_progress_s { // size 0x8
     u32 visible_mask[1];              // 0x4
 } GUIDELINE_PROGRESS_PC;
 
-STATIC_ASSERT(offsetof(WORLDINFO, guidelines) == 0x50a0);
-STATIC_ASSERT(offsetof(WORLDINFO, guideline_count) == 0x50a4);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_guidelines) == 0xf8);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 extern char TextInputKeyNameTextPc7516c0[1];
-
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
-STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
 
 void GuideLines_Draw(void *world, void *unused, f32 delta_time);
 

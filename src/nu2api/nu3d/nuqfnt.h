@@ -22,59 +22,38 @@ struct numtx_s;
 
 typedef struct vufnt_s VUFNT;
 
-typedef struct vucharidx_s {
-    u16 unicode;
-    u16 index;
+typedef struct vucharidx_s { // size 0x4
+    u16 unicode;             // 0x0
+    u16 index;               // 0x2
 } VUCHARIDX;
 
-STATIC_ASSERT(sizeof(VUCHARIDX) == 4);
-STATIC_ASSERT(offsetof(VUCHARIDX, index) == 2);
-
-typedef struct vufntchar_s {
-    f32 x;
-    f32 y;
-    f32 width;
+typedef struct vufntchar_s { // size 0xc
+    f32 x;                   // 0x0
+    f32 y;                   // 0x4
+    f32 width;               // 0x8
 } VUFNTCHAR;
 
-STATIC_ASSERT(sizeof(VUFNTCHAR) == 12);
-STATIC_ASSERT(offsetof(VUFNTCHAR, x) == 0);
-STATIC_ASSERT(offsetof(VUFNTCHAR, y) == 4);
-STATIC_ASSERT(offsetof(VUFNTCHAR, width) == 8);
-
-struct vufnt_s {
-    u8 unknown_0000[8];
-    i32 size;
-    i32 glyph_count;
-    i32 unicode_count;
-    f32 height;
-    f32 baseline;
-    f32 space_width;
-    i32 mode;
-    f32 ic_gap;
-    void *legacy_font;
-    f32 *x_scale;
-    f32 *y_scale;
-    VUFNTCHAR *glyphs;
-    VUCHARIDX *unicode_map;
-    void *hdr;
-    struct numtl_s *material;
-    u32 *color_abgr;
-    struct nuqfnt_render_data_s *platform_data;
+struct vufnt_s {                                // size 0x4c
+    u8 unknown_0000[8];                         // 0x00
+    i32 size;                                   // 0x08
+    i32 glyph_count;                            // 0x0c
+    i32 unicode_count;                          // 0x10
+    f32 height;                                 // 0x14
+    f32 baseline;                               // 0x18
+    f32 space_width;                            // 0x1c
+    i32 mode;                                   // 0x20
+    f32 ic_gap;                                 // 0x24
+    void *legacy_font;                          // 0x28
+    f32 *x_scale;                               // 0x2c
+    f32 *y_scale;                               // 0x30
+    VUFNTCHAR *glyphs;                          // 0x34
+    VUCHARIDX *unicode_map;                     // 0x38
+    void *hdr;                                  // 0x3c
+    struct numtl_s *material;                   // 0x40
+    u32 *color_abgr;                            // 0x44
+    struct nuqfnt_render_data_s *platform_data; // 0x48
 };
 
-STATIC_ASSERT(offsetof(VUFNT, size) == 0x08);
-STATIC_ASSERT(offsetof(VUFNT, glyph_count) == 0x0c);
-STATIC_ASSERT(offsetof(VUFNT, unicode_count) == 0x10);
-STATIC_ASSERT(offsetof(VUFNT, height) == 0x14);
-STATIC_ASSERT(offsetof(VUFNT, baseline) == 0x18);
-STATIC_ASSERT(offsetof(VUFNT, space_width) == 0x1c);
-STATIC_ASSERT(offsetof(VUFNT, mode) == 0x20);
-STATIC_ASSERT(offsetof(VUFNT, ic_gap) == 0x24);
-STATIC_ASSERT(offsetof(VUFNT, x_scale) == 0x2c);
-STATIC_ASSERT(offsetof(VUFNT, glyphs) == 0x34);
-STATIC_ASSERT(offsetof(VUFNT, unicode_map) == 0x38);
-STATIC_ASSERT(offsetof(VUFNT, material) == 0x40);
-STATIC_ASSERT(offsetof(VUFNT, platform_data) == 0x48);
 #ifdef __cplusplus
 extern "C" {
 #endif

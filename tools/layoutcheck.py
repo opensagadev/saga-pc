@@ -69,7 +69,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.lib import ROOT  # noqa: E402
+from tools.lib import ROOT, clang_jobs  # noqa: E402
 
 DEBUG_DEFINE = "-DSAGA_DEBUG"
 SOURCE_SUFFIXES = {".c", ".cpp", ".h"}
@@ -534,6 +534,21 @@ def analyze(path, args, root=ROOT, text=None):
             "asserts": analyzer.evaluate_asserts(source.splitlines())}
 
 
+def analyze_in_saga(path, args, root=ROOT):
+    """Facts about a header seen the way the units see it: a translation unit of saga.h alone, with the
+    header's own records and asserts picked out (for module headers that do not compile on their own yet)."""
+    ci = cindex()
+    path = Path(path).resolve()
+    language = "cpp" if "c++" in args else "c"
+    probe = root / f"src/layoutcheck_probe.{language}"
+    tu = ci.Index.create().parse(str(probe), args=args, unsaved_files=[(str(probe), '#include "saga.h"\n')],
+                                 options=ci.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES)
+    errors = [f"{d.location.file}:{d.location.line}: {d.spelling}" for d in tu.diagnostics if d.severity >= 3]
+    analyzer = Analyzer(tu, path, root)
+    return {"file": rel_name(path, root), "errors": errors[:5], "records": analyzer.collect_records(),
+            "asserts": analyzer.evaluate_asserts(path.read_text(encoding="utf-8", errors="replace").splitlines())}
+
+
 def _analyze_job(job):
     rel, args = job
     facts = analyze(ROOT / rel, args)
@@ -542,6 +557,10 @@ def _analyze_job(job):
         retry = analyze(ROOT / rel, [*args, "-include", str(ROOT / "src/saga.h")])
         if not retry["errors"]:
             facts = retry
+        else:
+            retry = analyze_in_saga(ROOT / rel, args)
+            if not retry["errors"] and retry["records"]:
+                facts = retry
     return rel, args, facts
 
 
@@ -1054,8 +1073,9 @@ def main(argv=None):
                         help="rewrite the comments of every converted record (or of the named files) to the current "
                              "format; with --dry-run: report only")
     parser.add_argument("--stats", action="store_true", help="coverage by comments and asserts (parses all of src/)")
-    parser.add_argument("--jobs", type=int, default=min(8, multiprocessing.cpu_count()))
+    parser.add_argument("--jobs", type=int, default=None, help="libclang processes (default 4, SAGA_CLANG_JOBS)")
     args = parser.parse_args(argv)
+    args.jobs = clang_jobs(args.jobs)
     if args.convert:
         file, *_ = parse_target(args.convert)
         convert(args.convert, args.jobs, args.dry_run, args.all_records,

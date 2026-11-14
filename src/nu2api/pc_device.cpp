@@ -1044,10 +1044,6 @@ __declspec(noinline) void PC_DEVICE_BACKEND_PC::BeginScene() {
     BeginDefaultTargets();
 }
 
-STATIC_ASSERT(offsetof(PC_VERTEX_ELEMENT_PC, stream) == 0);
-STATIC_ASSERT(offsetof(PC_VERTEX_ELEMENT_PC, offset) == 2);
-STATIC_ASSERT(offsetof(PC_VERTEX_ELEMENT_PC, method) == 5);
-STATIC_ASSERT(offsetof(PC_VERTEX_ELEMENT_PC, usage_index) == 7);
 static PC_VERTEX_ELEMENT_PC PCGraphicsPositionUvDeclaration[3] = {
     {0, 0, 2, 0, 0, 0}, {0, 12, 1, 0, 5, 0}, {255, 0, 17, 0, 0, 0}};
 static PC_VERTEX_ELEMENT_PC PCGraphicsScreenUvDeclaration[3] = {

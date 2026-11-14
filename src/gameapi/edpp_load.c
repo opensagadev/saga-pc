@@ -836,16 +836,6 @@ __declspec(allocate(".bss$EdPtlScaleEffectMenuPc")) eduimenu_s *edptl_scaleeffec
 void edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);
 void edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
-STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, instance_id) == 0x10);
-STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
-STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
-
-STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
-STATIC_ASSERT(sizeof(DEBRISKEY_PC) == 0x330);
-STATIC_ASSERT(offsetof(DEBRISKEY_PC, effect_index) == 0x182);
-STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
-STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
 
 void edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edpp_scale_factor = ((edui_slider_s *)item)->value;

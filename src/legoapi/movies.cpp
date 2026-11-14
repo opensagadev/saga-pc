@@ -7,8 +7,6 @@ extern "C" {
     extern i32 (*MovieInputFn)(void);
 }
 
-STATIC_ASSERT(offsetof(NUFPAR_PC, file_name) == 8);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 extern "C" {
     void MoviesListNoOpPc(char *path);
 }

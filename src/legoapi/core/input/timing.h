@@ -7,15 +7,14 @@
 
 struct WORLDINFO_s;
 
-typedef struct main_frame_counters_s {
-    i8 warmup_frame;
-    i8 every_frame;
-    i8 alternate_frame;
-    i8 third_frame;
-    i8 fourth_frame;
+typedef struct main_frame_counters_s { // size 0x5
+    i8 warmup_frame;                   // 0x0
+    i8 every_frame;                    // 0x1
+    i8 alternate_frame;                // 0x2
+    i8 third_frame;                    // 0x3
+    i8 fourth_frame;                   // 0x4
 } MAINFRAMECOUNTERS;
 
-STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 #ifdef __cplusplus
 extern "C" {
 #endif

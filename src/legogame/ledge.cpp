@@ -41,9 +41,6 @@ typedef struct LEDGEPIECE { // size 0x20
     u16 arc_mid_angle;      // 0x1e
 } LEDGEPIECE;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
-STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_start_height) == 0x78c);
 static LEDGEPIECE LedgePiece[6] = {
     {79, '8', 1, {-0.3048f, 0.0f, 0.0f}, {0.3048f, 0.0f, 0.0f}, 0, 0},
     {75, '4', 1, {-0.1524f, 0.0f, 0.0f}, {0.1524f, 0.0f, 0.0f}, 0, 0},
@@ -297,9 +294,6 @@ typedef struct LEDGE_PROGRESS_PC { // size 0x20
     u32 visible[4];                // 0x10
 } LEDGE_PROGRESS_PC;
 
-STATIC_ASSERT(offsetof(WORLDINFO, ledges) == 0x50a8);
-STATIC_ASSERT(offsetof(WORLDINFO, ledge_count) == 0x50ac);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_ledges) == 0xf9);
 extern "C" {
     extern char TextInputKeyNameTextPc7516c0[1];
     extern char *LedgeOutputNamePc;

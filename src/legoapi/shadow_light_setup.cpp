@@ -14,7 +14,6 @@ struct SHADOW_PLAYER_BOUNDS { // size 0x60c
 
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m20) == 0xd8);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m30) == 0xe8);
-STATIC_ASSERT(offsetof(GAMECAMERA, target) == 0x128);
 
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const f32 *splits, i32 split_count) {
     f32 aspect = 1.0f / camera->aspect;

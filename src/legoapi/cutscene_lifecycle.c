@@ -18,8 +18,6 @@ typedef struct cut_rigid_lifecycle_s {    // size 0x5c
     u8 unknown_59[3];                     // 0x59
 } CUT_RIGID_LIFECYCLE_PC;
 
-STATIC_ASSERT(sizeof(CUT_CHARACTER_GENERIC_PC) == 0x64);
-
 typedef struct cut_rigid_instance_s { // size 0x10
     NUSPECIALHANDLE special;          // 0x0
     u8 state_index;                   // 0xc

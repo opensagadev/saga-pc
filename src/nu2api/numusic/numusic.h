@@ -21,7 +21,7 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class NuMusic {
+class NuMusic { // size 0x1e4
   public:
     class Track {
       public:
@@ -42,27 +42,28 @@ class NuMusic {
         void SetEntryTime(f32 time);
     };
 
-    class Voice {
+    class Voice { // size 0x34
       public:
-        i32 stream_index;
-        Track *tracks[2];
-        i32 track_sub[2];
-        i32 track_index;
-        i32 status;
-        f32 gain;
-        f32 volume;
-        f32 last_volume;
-        f32 fade_rate;
-        f32 play_time;
+        i32 stream_index; // 0x130
+        Track *tracks[2]; // 0x134
+        i32 track_sub[2]; // 0x13c
+        i32 track_index;  // 0x144
+        i32 status;       // 0x148
+        f32 gain;         // 0x14c
+        f32 volume;       // 0x150
+        f32 last_volume;  // 0x154
+        f32 fade_rate;    // 0x158
+        f32 play_time;    // 0x15c
 
-        union {
-            struct {
-                u8 flags;
-                u8 unknown_0031[3];
+        union { // size 0x4
+
+            struct {                // size 0x4
+                u8 flags;           // 0x160
+                u8 unknown_0031[3]; // 0x161
             };
 
             u32 flags_word;
-        };
+        }; // 0x160
 
         void SetStatusFn(i32 new_status, i32 tag);
         i32 Load(Track *track, i32 subtrack);
@@ -81,35 +82,35 @@ class NuMusic {
         void Initialise(void);
     };
 
-    Album *albums;
-    i32 album_count;
-    Track *extra_tracks;
-    i32 extra_track_count;
-    f32 *indexes;
-    i32 index_count;
-    i32 pitch_default;
-    Album *current_album;
-    Track *current_track;
-    char current_path[256];
-    u8 strict_mode;
-    u8 unknown_125[3];
-    char *string_pool_start;
-    char *string_pool_end;
-    Voice voices[2];
-    f32 master_volume;
-    f32 fader_current;
-    f32 fader_target;
-    f32 fader_rate;
-    f32 duck_gain;
-    f32 duck_current;
-    f32 duck_rate;
-    f32 class_volumes[6];
-    f32 global_attenuation;
-    i32 track_index;
-    char *language;
-    Album *album;
-    nusound_filename_info_s *fileinfo;
-    i32 file_count;
+    Album *albums;                     // 0x000
+    i32 album_count;                   // 0x004
+    Track *extra_tracks;               // 0x008
+    i32 extra_track_count;             // 0x00c
+    f32 *indexes;                      // 0x010
+    i32 index_count;                   // 0x014
+    i32 pitch_default;                 // 0x018
+    Album *current_album;              // 0x01c
+    Track *current_track;              // 0x020
+    char current_path[256];            // 0x024
+    u8 strict_mode;                    // 0x124
+    u8 unknown_125[3];                 // 0x125
+    char *string_pool_start;           // 0x128
+    char *string_pool_end;             // 0x12c
+    Voice voices[2];                   // 0x130
+    f32 master_volume;                 // 0x198
+    f32 fader_current;                 // 0x19c
+    f32 fader_target;                  // 0x1a0
+    f32 fader_rate;                    // 0x1a4
+    f32 duck_gain;                     // 0x1a8
+    f32 duck_current;                  // 0x1ac
+    f32 duck_rate;                     // 0x1b0
+    f32 class_volumes[6];              // 0x1b4
+    f32 global_attenuation;            // 0x1cc
+    i32 track_index;                   // 0x1d0
+    char *language;                    // 0x1d4
+    Album *album;                      // 0x1d8
+    nusound_filename_info_s *fileinfo; // 0x1dc
+    i32 file_count;                    // 0x1e0
 
     void InitVoiceManager(void);
     char *RemovePath(char *);
@@ -201,9 +202,6 @@ STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
 STATIC_ASSERT(offsetof(NuMusic::Track, attenuation) == 0x34);
 STATIC_ASSERT(offsetof(NuMusic::Track, duck_fade) == 0x30);
 STATIC_ASSERT(offsetof(NuMusic::Track, duck_volume) == 0x2c);
-STATIC_ASSERT(offsetof(NuMusic, global_attenuation) == 0x1cc);
-STATIC_ASSERT(offsetof(NuMusic, duck_rate) == 0x1b0);
-STATIC_ASSERT(offsetof(NuMusic, duck_gain) == 0x1a8);
 STATIC_ASSERT(offsetof(NuMusic::Track, filenames) == 0);
 STATIC_ASSERT(offsetof(NuMusic::Track, ident) == 0x08);
 STATIC_ASSERT(offsetof(NuMusic::Track, file_indexes) == 0x0c);
@@ -228,31 +226,6 @@ STATIC_ASSERT(offsetof(NuMusic::Voice, flags) == 0x30);
 STATIC_ASSERT(sizeof(NuMusic::Album) == 0x24);
 STATIC_ASSERT(offsetof(NuMusic::Album, name) == 0);
 STATIC_ASSERT(offsetof(NuMusic::Album, tracks) == 0x0c);
-STATIC_ASSERT(offsetof(NuMusic, albums) == 0);
-STATIC_ASSERT(offsetof(NuMusic, album_count) == 4);
-STATIC_ASSERT(offsetof(NuMusic, extra_tracks) == 0x08);
-STATIC_ASSERT(offsetof(NuMusic, extra_track_count) == 0x0c);
-STATIC_ASSERT(offsetof(NuMusic, voices) == 0x130);
-STATIC_ASSERT(offsetof(NuMusic, master_volume) == 0x198);
-STATIC_ASSERT(offsetof(NuMusic, fader_current) == 0x19c);
-STATIC_ASSERT(offsetof(NuMusic, fader_target) == 0x1a0);
-STATIC_ASSERT(offsetof(NuMusic, fader_rate) == 0x1a4);
-STATIC_ASSERT(offsetof(NuMusic, duck_current) == 0x1ac);
-STATIC_ASSERT(offsetof(NuMusic, class_volumes) == 0x1b4);
-STATIC_ASSERT(offsetof(NuMusic, track_index) == 0x1d0);
-STATIC_ASSERT(offsetof(NuMusic, album) == 0x1d8);
-STATIC_ASSERT(offsetof(NuMusic, fileinfo) == 0x1dc);
-STATIC_ASSERT(offsetof(NuMusic, file_count) == 0x1e0);
-STATIC_ASSERT(offsetof(NuMusic, indexes) == 0x10);
-STATIC_ASSERT(offsetof(NuMusic, index_count) == 0x14);
-STATIC_ASSERT(offsetof(NuMusic, pitch_default) == 0x18);
-STATIC_ASSERT(offsetof(NuMusic, current_album) == 0x1c);
-STATIC_ASSERT(offsetof(NuMusic, current_track) == 0x20);
-STATIC_ASSERT(offsetof(NuMusic, current_path) == 0x24);
-STATIC_ASSERT(offsetof(NuMusic, strict_mode) == 0x124);
-STATIC_ASSERT(offsetof(NuMusic, string_pool_start) == 0x128);
-STATIC_ASSERT(offsetof(NuMusic, string_pool_end) == 0x12c);
-STATIC_ASSERT(offsetof(NuMusic, language) == 0x1d4);
 STATIC_ASSERT(offsetof(NuMusic::Track, pitch) == 0x28);
 
 extern NuMusic music_man;

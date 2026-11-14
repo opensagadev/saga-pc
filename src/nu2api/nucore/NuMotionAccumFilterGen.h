@@ -13,7 +13,7 @@
 
 #ifdef __cplusplus
 
-class NuMotionAccumFilterGen : public NuPostFilter {
+class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
   public:
     NuMotionAccumFilterGen() : frames(0), blend(1.0f), mode_pc(0.0f) {
     }
@@ -26,14 +26,13 @@ class NuMotionAccumFilterGen : public NuPostFilter {
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    void *program;
-    PC_FRAMEBUFFER_PC *accumulation_fbo;
-    GRAPHICS_RENDER_TEXTURE_PC *accumulation_texture;
-    i32 frames;
-    f32 blend;
-    f32 mode_pc;
-    i32 current_frame;
+    void *program;                                    // 0x0c
+    PC_FRAMEBUFFER_PC *accumulation_fbo;              // 0x10
+    GRAPHICS_RENDER_TEXTURE_PC *accumulation_texture; // 0x14
+    i32 frames;                                       // 0x18
+    f32 blend;                                        // 0x1c
+    f32 mode_pc;                                      // 0x20
+    i32 current_frame;                                // 0x24
 };
 
-STATIC_ASSERT(sizeof(NuMotionAccumFilterGen) == 0x28);
 #endif

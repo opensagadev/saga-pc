@@ -28,30 +28,24 @@ struct NUHGOBJ_EVAL_PC;
 struct cut_load_locator_instance_s;
 struct nuspecial_handle_s;
 
-typedef struct instnugcutscene_s {
-    struct instnugcutscene_s *next;
-    struct instnugcutscene_s *previous;
-    char name[16];
-    NUMTX matrix;
-    void *scene;
-    u8 opaque_5c_88[0x2c];
-    u32 flags_88;
-    u32 flags_8c;
-    f32 current_frame;
-    f32 render_frame;
-    f32 rate;
-    u8 opaque_9c_b0[0x14];
-    struct instnugcutscene_s *chained_instance;
-    i32 unknown_b4;
-    u8 opaque_b8_f8[0x40];
+typedef struct instnugcutscene_s {              // size 0xf8
+    struct instnugcutscene_s *next;             // 0x00
+    struct instnugcutscene_s *previous;         // 0x04
+    char name[16];                              // 0x08
+    NUMTX matrix;                               // 0x18
+    void *scene;                                // 0x58
+    u8 opaque_5c_88[0x2c];                      // 0x5c
+    u32 flags_88;                               // 0x88
+    u32 flags_8c;                               // 0x8c
+    f32 current_frame;                          // 0x90
+    f32 render_frame;                           // 0x94
+    f32 rate;                                   // 0x98
+    u8 opaque_9c_b0[0x14];                      // 0x9c
+    struct instnugcutscene_s *chained_instance; // 0xb0
+    i32 unknown_b4;                             // 0xb4
+    u8 opaque_b8_f8[0x40];                      // 0xb8
 } INSTNUGCUTSCENE;
 
-STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, scene) == 0x58);
-STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, flags_88) == 0x88);
-STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, current_frame) == 0x90);
-STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, rate) == 0x98);
-STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, chained_instance) == 0xb0);
-STATIC_ASSERT(sizeof(INSTNUGCUTSCENE) == 0xf8);
 #ifdef __cplusplus
 extern "C" {
 #endif

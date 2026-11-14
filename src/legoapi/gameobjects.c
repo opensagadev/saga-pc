@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
-
 typedef struct grapple_rotation_s { // size 0x3c
     u8 unknown_00[0x30];            // 0x00
     NUVEC hook_position;            // 0x30
@@ -12,9 +10,6 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
 
 typedef struct kill_zipup_s { // size 0x6a
     u8 unknown_00[0x68];      // 0x00
@@ -41,25 +36,6 @@ typedef struct TAGFLAGS1FC {
     u32 ai : 1;
     u32 bits_9_31 : 23;
 } TAGFLAGS1FC;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
-STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
-STATIC_ASSERT(offsetof(GAMEOBJECT, roof_surface_id_pc) == 0x284);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
-STATIC_ASSERT(offsetof(GAMEOBJECT, raw_surface_id_pc) == 0xe42);
-STATIC_ASSERT(offsetof(GAMEOBJECT, surface_normal) == 0xf24);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_105c) == 0x105c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_105e) == 0x105e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 12);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
 
 /* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
@@ -92,10 +68,6 @@ typedef struct GAME_ANTI_NODE_DATA { // size 0x24
     u8 shape;                        // 0x22
     u8 mode;                         // 0x23
 } GAME_ANTI_NODE_DATA;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, rumble) == 0x40);
 
 void ClearGameObjects(APIOBJECTSYS_PC *system) {
     memset(Obj, 0, sizeof(GAMEOBJECT) * 64);
@@ -657,32 +629,6 @@ typedef struct OPPONENT_LOS_PC { // size 0x208
     GAMEOBJECT *objects;         // 0x004
     u64 line_of_sight[64];       // 0x008
 } OPPONENT_LOS_PC;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_visibility_extension) == 0x240);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_resolved_collision_priority_pc) == 0x294);
-STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_hop_timer) == 0xde8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, combat_flags) == 0xeec);
-STATIC_ASSERT(offsetof(GAMEOBJECT, combat_flags4) == 0xeef);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef3) == 0xef3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_update_flags) == 0xef4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_f00) == 0xf00);
-STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_frames) == 0xf01);
-STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_parameter) == 0xf04);
-STATIC_ASSERT(offsetof(GAMEOBJECT, route_frame_state) == 0xf08);
-STATIC_ASSERT(offsetof(GAMEOBJECT, route_suit_index) == 0x1068);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_frame_event) == 0x1072);
-STATIC_ASSERT(offsetof(GAMEOBJECT, route_start_index) == 0x1081);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
-STATIC_ASSERT(offsetof(GAMEOBJECT, route_search_index) == 0x1089);
-
-STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
-STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
-STATIC_ASSERT(offsetof(WORLDINFO, ai_path_cnx_control_sys) == 0x4670);
-STATIC_ASSERT(offsetof(WORLDINFO, ai_connection_helpers) == 0x4674);
 
 typedef struct ai_frame_world_s {           // size 0x4670
     u8 unknown_0000[0x2aec];                // 0x0000

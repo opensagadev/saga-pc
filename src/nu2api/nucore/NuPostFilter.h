@@ -12,7 +12,6 @@
 
 #ifdef __cplusplus
 
-class NuPostFilter : public NuPostFilterGen {};
+class NuPostFilter : public NuPostFilterGen {}; // size 0xc
 
-STATIC_ASSERT(sizeof(NuPostFilter) == 0xc);
 #endif

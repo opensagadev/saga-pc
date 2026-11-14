@@ -28,15 +28,6 @@ void BaseThing::Display(ThingRenderData *) {
 BaseThing::~BaseThing() {
 }
 
-STATIC_ASSERT(sizeof(ThingManager) == 0x24);
-STATIC_ASSERT(offsetof(ThingManager, things) == 0x4);
-STATIC_ASSERT(offsetof(ThingManager, max_things) == 0x8);
-STATIC_ASSERT(offsetof(ThingManager, count) == 0xc);
-STATIC_ASSERT(offsetof(ThingManager, permanent_count) == 0x10);
-STATIC_ASSERT(offsetof(ThingManager, pending) == 0x14);
-STATIC_ASSERT(offsetof(ThingManager, timebar) == 0x18);
-STATIC_ASSERT(offsetof(ThingManager, timing_thing) == 0x1c);
-STATIC_ASSERT(offsetof(ThingManager, timing_state) == 0x20);
 STATIC_ASSERT(sizeof(ThingProcessData) == 0x10);
 STATIC_ASSERT(offsetof(ThingProcessData, paused) == 0x4);
 STATIC_ASSERT(offsetof(ThingProcessData, pads) == 0x8);

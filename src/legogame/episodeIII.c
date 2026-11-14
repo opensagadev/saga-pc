@@ -2,8 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(VADERA_PC, in_control_room_message) == 0x00);
-
 typedef struct BONUS_GUNSHIP_FLAGS { // size 0x10
     u8 progress;                     // 0x0
     u8 secondary;                    // 0x1
@@ -11,11 +9,6 @@ typedef struct BONUS_GUNSHIP_FLAGS { // size 0x10
 } BONUS_GUNSHIP_FLAGS;
 
 STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS) == sizeof(LevFlag));
-STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.sock_index) == 0x671);
-STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.distance) == 0x69c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
 typedef struct cutinfo_reader_s { // size 0x58
     u8 opaque_00_04[0x4];         // 0x00

@@ -25,11 +25,11 @@
 #if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 1 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 
 #ifdef __cplusplus
-struct VirtualStackAllocator {
-    u8 owns_memory;
-    u8 *cursor;
-    u8 *end;
-    u8 *base;
+struct VirtualStackAllocator { // size 0x10
+    u8 owns_memory;            // 0x0
+    u8 *cursor;                // 0x4
+    u8 *end;                   // 0x8
+    u8 *base;                  // 0xc
     VirtualStackAllocator();
     VirtualStackAllocator(i32);
     VirtualStackAllocator(void *, u32);
@@ -40,18 +40,12 @@ struct VirtualStackAllocator {
     i32 fun_00741100() const;
 };
 
-STATIC_ASSERT(sizeof(VirtualStackAllocator) == 0x10);
-STATIC_ASSERT(offsetof(VirtualStackAllocator, owns_memory) == 0);
-STATIC_ASSERT(offsetof(VirtualStackAllocator, cursor) == 4);
-STATIC_ASSERT(offsetof(VirtualStackAllocator, end) == 8);
-STATIC_ASSERT(offsetof(VirtualStackAllocator, base) == 12);
-
 #endif
 #ifdef __cplusplus
 /* PC network session layer (0x60dee0-0x617d50). Provisional names except the
  * RTTI class names (NetStats, NetSmallStats, TTNetwork, V2SessionManager). */
-struct NetStatCounters {
-    u32 values[4];
+struct NetStatCounters { // size 0x10
+    u32 values[4];       // 0x0
     NetStatCounters();
     void Clear();
     NetStatCounters &KeepMax(const NetStatCounters &other);
@@ -71,17 +65,17 @@ class NetSmallStats {
     NetStatCounters totals;
 };
 
-class NetStats : public NetSmallStats {
+class NetStats : public NetSmallStats { // size 0x220
   public:
     NetStats(const char *name);
     virtual void Update();
     virtual void Draw(f32 x, f32 y, f32 width, f32 height, eInfo info);
 
-    i32 history_index;
-    u32 last_time;
-    NetStatCounters peak;
-    NetStatCounters previous;
-    NetStatCounters history[30];
+    i32 history_index;           // 0x018
+    u32 last_time;               // 0x01c
+    NetStatCounters peak;        // 0x020
+    NetStatCounters previous;    // 0x030
+    NetStatCounters history[30]; // 0x040
 };
 
 struct FtpFile;
@@ -194,7 +188,7 @@ class NetListenerInterface {
 };
 
 /* 0x250-byte pool-allocated entry registered with a NetTransporter. */
-class NetTransportEntry : public NetListLink {
+class NetTransportEntry : public NetListLink { // size 0x250
   public:
     NetTransportEntry(NetListenerInterface *client, u8 channel, const char *name);
     static void *operator new(u32 size);
@@ -202,10 +196,10 @@ class NetTransportEntry : public NetListLink {
     NetTransportEntry &operator=(const NetTransportEntry &other);
     i32 operator==(const NetTransportEntry &other);
 
-    NetListenerInterface *client;
-    u8 channel;
-    char name[0x21];
-    NetStats stats;
+    NetListenerInterface *client; // 0x008
+    u8 channel;                   // 0x00c
+    char name[0x21];              // 0x00d
+    NetStats stats;               // 0x030
 };
 
 class NetTransportList {
@@ -236,16 +230,17 @@ class NetTransporterInterface {
     }
 };
 
-class NetTransporter : public NetTransporterInterface {
+class NetTransporter : public NetTransporterInterface { // size 0x10
   public:
     virtual void AddListener(NetListenerInterface *client, u8 channel, const char *name);
     virtual void RemoveListener(NetListenerInterface *client, u8 channel);
 
-    NetTransportList clients;
+    NetTransportList clients; // 0x4
 };
 
 /* One file transfer slot of the NetFtpManager (0xb0 bytes). */
-struct FtpFile {
+struct FtpFile { // size 0xb0
+
     FtpFile() {
         transfer = 0;
     }
@@ -282,16 +277,16 @@ struct FtpFile {
     void Term();
     void Update();
 
-    u32 address;
-    i32 direction;
-    i32 accepted;
-    char name[0x80];
-    i32 size;
-    void *buffer;
-    i32 capacity;
-    i32 transferred;
-    NETMESSAGE_PC message;
-    u32 transfer;
+    u32 address;           // 0x00
+    i32 direction;         // 0x04
+    i32 accepted;          // 0x08
+    char name[0x80];       // 0x0c
+    i32 size;              // 0x8c
+    void *buffer;          // 0x90
+    i32 capacity;          // 0x94
+    i32 transferred;       // 0x98
+    NETMESSAGE_PC message; // 0x9c
+    u32 transfer;          // 0xac
 };
 
 /* The manager's 32 transfer slots. Retail destroys them through a separate
@@ -312,7 +307,7 @@ struct FtpFileArray {
 };
 
 /* File transfer listener on channel 2 (TTNetwork+0x2178). */
-class NetFtpManager : public NetListenerInterface {
+class NetFtpManager : public NetListenerInterface { // size 0x1608
   public:
     NetFtpManager();
     ~NetFtpManager();
@@ -330,8 +325,8 @@ class NetFtpManager : public NetListenerInterface {
     const FtpFile *GetTransfers() const;
     void fun_0060e6f0(i32 value);
 
-    FtpFileArray files;
-    i32 field_1604;
+    FtpFileArray files; // 0x0004
+    i32 field_1604;     // 0x1604
 };
 
 struct NOSContext {
@@ -351,7 +346,7 @@ class NOSFilter {
 };
 
 /* Replicates one group of an object's members. */
-class NetReplicator : public CSListLink<NetReplicator> {
+class NetReplicator : public CSListLink<NetReplicator> { // size 0x18
   public:
     NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds);
     virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
@@ -368,33 +363,33 @@ class NetReplicator : public CSListLink<NetReplicator> {
     i32 fun_00611c40() const;
     void fun_00611c50(u16 size);
 
-    u16 id;
-    u16 replication_group;
-    u16 minimum_interval;
-    u16 maximum_interval;
-    u16 data_size;
-    u16 message_size;
+    u16 id;                // 0x0c
+    u16 replication_group; // 0x0e
+    u16 minimum_interval;  // 0x10
+    u16 maximum_interval;  // 0x12
+    u16 data_size;         // 0x14
+    u16 message_size;      // 0x16
     static i32 smNextId;
 };
 
 /* One replicated object slot, indexed by guid. */
-struct NetworkObject {
+struct NetworkObject { // size 0x18
     void Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags);
     void Destroy();
 
-    i16 flags;
-    i16 id;
-    u32 unknown_04;
-    const V2Peer *owner;
-    void *object;
-    EdClass *object_class;
-    void *replicator_data;
+    i16 flags;             // 0x00
+    i16 id;                // 0x02
+    u32 unknown_04;        // 0x04
+    const V2Peer *owner;   // 0x08
+    void *object;          // 0x0c
+    EdClass *object_class; // 0x10
+    void *replicator_data; // 0x14
 };
 
 /* Network object system (listener channel 3, TTNetwork+0x3780). */
-class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifier {
+class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifier { // size 0xd970
   public:
-    struct NetPeerPush {
+    struct NetPeerPush { // size 0x14
         void FlushMessages();
 #pragma push_macro("GetMessage")
 #undef GetMessage
@@ -410,34 +405,35 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         i32 GetNextObject() const;
         void SetNextObject(i32 index);
 
-        const V2Peer *peer;
-        NETMESSAGE_PC *message;
-        NETMESSAGE_PC *reliable_message;
-        i32 stage;
-        i32 next_object;
+        const V2Peer *peer;              // 0xd838
+        NETMESSAGE_PC *message;          // 0xd83c
+        NETMESSAGE_PC *reliable_message; // 0xd840
+        i32 stage;                       // 0xd844
+        i32 next_object;                 // 0xd848
     };
 
-    struct PendingObject {
-        i32 requested;
-        u32 request_time;
-        NetworkObject *object;
+    struct PendingObject {     // size 0xc
+        i32 requested;         // 0xd034
+        u32 request_time;      // 0xd038
+        NetworkObject *object; // 0xd03c
     };
 
-    struct ReplicatorList {
+    struct ReplicatorList { // size 0xc
+
         ReplicatorList() : head(NULL), tail(NULL), count(0) {
         }
 
         void fun_00612f70(NetReplicator *replicator, NetReplicator *after);
 
-        NetReplicator *head;
-        NetReplicator *tail;
-        i32 count;
+        NetReplicator *head; // 0xd1b4
+        NetReplicator *tail; // 0xd1b8
+        i32 count;           // 0xd1bc
     };
 
-    struct RegisteredCall {
-        i32 type;
-        i32 flags;
-        void *callback;
+    struct RegisteredCall { // size 0xc
+        i32 type;           // 0xd6b4
+        i32 flags;          // 0xd6b8
+        void *callback;     // 0xd6bc
     };
 
     NetworkObjectManager();
@@ -513,25 +509,25 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void UpdateLocalObjectList();
     NetStats *fun_0060e740(i32 class_id);
 
-    i32 field_08;
-    i32 active;
-    NOSContext context;
-    const V2Peer *guid_peers[2];
-    i32 guid_group;
-    i32 next_guid;
-    NetworkObject objects[2048];
-    i32 local_object_count;
-    NetworkObject *local_objects[1024];
-    PendingObject pending_objects[32];
-    ReplicatorList replicators[64];
-    i32 replicator_data_sizes[64];
-    NOSFilter *filters[64];
-    RegisteredCall registered_calls[32];
-    i32 registered_call_count;
-    NetPeerPush peer_push[8];
-    NetPeerPush default_push;
-    NetStats *class_stats[32];
-    u8 allow_duplicates;
+    i32 field_08;                        // 0x0008
+    i32 active;                          // 0x000c
+    NOSContext context;                  // 0x0010
+    const V2Peer *guid_peers[2];         // 0x0020
+    i32 guid_group;                      // 0x0028
+    i32 next_guid;                       // 0x002c
+    NetworkObject objects[2048];         // 0x0030
+    i32 local_object_count;              // 0xc030
+    NetworkObject *local_objects[1024];  // 0xc034
+    PendingObject pending_objects[32];   // 0xd034
+    ReplicatorList replicators[64];      // 0xd1b4
+    i32 replicator_data_sizes[64];       // 0xd4b4
+    NOSFilter *filters[64];              // 0xd5b4
+    RegisteredCall registered_calls[32]; // 0xd6b4
+    i32 registered_call_count;           // 0xd834
+    NetPeerPush peer_push[8];            // 0xd838
+    NetPeerPush default_push;            // 0xd8d8
+    NetStats *class_stats[32];           // 0xd8ec
+    u8 allow_duplicates;                 // 0xd96c
 };
 
 extern NetworkObjectManager *theNos;
@@ -548,7 +544,7 @@ extern NetworkObjectManager *theNos;
 
 /* Session base class. Retail never constructs
  * it: the vtable is referenced only by the constructor. */
-class V2SessionManager {
+class V2SessionManager { // size 0x2c0
   public:
     V2SessionManager(const char *name);
 
@@ -626,27 +622,27 @@ class V2SessionManager {
     void Reset();
     void RemoveAllPeers(i32 reason);
 
-    i32 state;
-    u32 unknown_08[3];
-    char name[0x20];
-    i32 error;
-    i32 host_visibility;
-    i32 num_local_players;
-    i32 slot_mode;
-    i32 local_slot;
-    i32 player_slots[8];
-    f32 timer_68;
-    f32 timer_6c;
-    u32 unknown_70;
-    f32 timer_74;
-    u8 field_78;
-    u8 unknown_79[3];
-    i32 field_7c;
-    u32 unknown_80;
-    V2Peer *local_peer;
-    V2HostList host_list;
-    V2PeerList peer_list;
-    NetStats stats;
+    i32 state;             // 0x004
+    u32 unknown_08[3];     // 0x008
+    char name[0x20];       // 0x014
+    i32 error;             // 0x034
+    i32 host_visibility;   // 0x038
+    i32 num_local_players; // 0x03c
+    i32 slot_mode;         // 0x040
+    i32 local_slot;        // 0x044
+    i32 player_slots[8];   // 0x048
+    f32 timer_68;          // 0x068
+    f32 timer_6c;          // 0x06c
+    u32 unknown_70;        // 0x070
+    f32 timer_74;          // 0x074
+    u8 field_78;           // 0x078
+    u8 unknown_79[3];      // 0x079
+    i32 field_7c;          // 0x07c
+    u32 unknown_80;        // 0x080
+    V2Peer *local_peer;    // 0x084
+    V2HostList host_list;  // 0x088
+    V2PeerList peer_list;  // 0x094
+    NetStats stats;        // 0x0a0
 
     static V2SessionManager *mpSessionManager;
 };

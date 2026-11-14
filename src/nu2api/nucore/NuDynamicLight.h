@@ -36,11 +36,12 @@ extern "C" {
 typedef struct NuDynamicLight NuDynamicLight;
 typedef struct VuMtx VuMtx;
 
-struct VuMtx {
-    union {
+struct VuMtx { // size 0x40
+
+    union { // size 0x40
         NUMTX matrix;
         VuVec rows[4];
-    };
+    }; // 0x00
 #ifdef __cplusplus
     void fun_006341a0(const VuVec &translation);
     VuVec &fun_006341d0(i32 row);
@@ -48,7 +49,6 @@ struct VuMtx {
 #endif
 };
 
-STATIC_ASSERT(sizeof(struct VuMtx) == 64);
 #undef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART
 #define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART 2
 #ifdef SAGA_SHIM

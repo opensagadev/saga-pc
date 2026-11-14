@@ -26,22 +26,15 @@ extern "C" {
 }
 #endif
 
-typedef struct REGISTER_STATUS_PACKET_PC {
-    struct STATUSPACKET_LSW_s *lsw_packet;
-    i32 (*init_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *);
-    i32 (*finish_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *, i32);
-    void (*reset_callback)(struct STATUSPACKET_s *);
-    void (*draw_background_callback)(struct STATUSPACKET_s *);
-    f32 stage_delay;
+typedef struct REGISTER_STATUS_PACKET_PC {                                      // size 0x18
+    struct STATUSPACKET_LSW_s *lsw_packet;                                      // 0x00
+    i32 (*init_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *);        // 0x04
+    i32 (*finish_callback)(struct WORLDINFO_s *, struct STATUSPACKET_s *, i32); // 0x08
+    void (*reset_callback)(struct STATUSPACKET_s *);                            // 0x0c
+    void (*draw_background_callback)(struct STATUSPACKET_s *);                  // 0x10
+    f32 stage_delay;                                                            // 0x14
 } REGISTER_STATUS_PACKET_PC;
 
-STATIC_ASSERT(sizeof(REGISTER_STATUS_PACKET_PC) == 0x18);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, lsw_packet) == 0);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, init_callback) == 4);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, finish_callback) == 8);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, reset_callback) == 0xc);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, draw_background_callback) == 0x10);
-STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, stage_delay) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif

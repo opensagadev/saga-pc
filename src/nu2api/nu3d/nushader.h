@@ -32,26 +32,17 @@ extern "C" {
 }
 #endif
 
-typedef struct shader_uniform_record_pc_s {
-    const char *vertex_name;
-    const char *fragment_name;
-    i32 value_count;
-    i32 field_c;
-    i32 stage_mask;
-    i32 register_index;
-    i32 field_18;
-    f32 values[16];
+typedef struct shader_uniform_record_pc_s { // size 0x5c
+    const char *vertex_name;                // 0x00
+    const char *fragment_name;              // 0x04
+    i32 value_count;                        // 0x08
+    i32 field_c;                            // 0x0c
+    i32 stage_mask;                         // 0x10
+    i32 register_index;                     // 0x14
+    i32 field_18;                           // 0x18
+    f32 values[16];                         // 0x1c
 } ShaderUniformRecordPc;
 
-STATIC_ASSERT(sizeof(ShaderUniformRecordPc) == 0x5c);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, vertex_name) == 0);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, fragment_name) == 4);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, value_count) == 8);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, field_c) == 12);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, stage_mask) == 16);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, register_index) == 20);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, field_18) == 24);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 28);
 #ifdef __cplusplus
 extern "C" {
 #endif

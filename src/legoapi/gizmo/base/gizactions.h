@@ -29,20 +29,14 @@ struct API_ACTION_INFO_PC;
 struct API_EXTRA_ACTION_PC;
 struct FLOWBOX_PC;
 
-typedef struct GIZFLOW_PC {
-    void *gizmo_sys;
-    i32 flowbox_count;
-    struct FLOWBOX_PC *flowboxes;
-    u8 frame;
-    u8 pointers_need_reset;
+typedef struct GIZFLOW_PC {       // size 0x10
+    void *gizmo_sys;              // 0x0
+    i32 flowbox_count;            // 0x4
+    struct FLOWBOX_PC *flowboxes; // 0x8
+    u8 frame;                     // 0xc
+    u8 pointers_need_reset;       // 0xd
 } GIZFLOW_PC;
 
-STATIC_ASSERT(sizeof(GIZFLOW_PC) == 0x10);
-STATIC_ASSERT(offsetof(GIZFLOW_PC, gizmo_sys) == 0x0);
-STATIC_ASSERT(offsetof(GIZFLOW_PC, flowbox_count) == 0x4);
-STATIC_ASSERT(offsetof(GIZFLOW_PC, flowboxes) == 0x8);
-STATIC_ASSERT(offsetof(GIZFLOW_PC, frame) == 0xc);
-STATIC_ASSERT(offsetof(GIZFLOW_PC, pointers_need_reset) == 0xd);
 #ifdef __cplusplus
 extern "C" {
 #endif

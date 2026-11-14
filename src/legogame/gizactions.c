@@ -1,16 +1,6 @@
 #include "saga.h"
 
 void FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
 extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, locator) == 0x36c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, mover_height) == 0x3e8);
@@ -31,7 +21,6 @@ typedef struct GIZACTION_FORCE_ANIMATION { // size 0xa4
     u32 flags;                             // 0xa0
 } GIZACTION_FORCE_ANIMATION;
 
-STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
 i32 obstacle_gizmotype_id;
 const char GizObstacleActionNamePC[5];
 const char GizObstacleActionBackwardPC[9];

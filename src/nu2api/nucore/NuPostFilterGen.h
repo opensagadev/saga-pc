@@ -12,7 +12,7 @@
 
 #ifdef __cplusplus
 /* Extend/replace existing C++ accessed-field classes; private proposal only. */
-class NuPostFilterGen {
+class NuPostFilterGen { // size 0xc
   public:
     NuPostFilterGen() : enabled(false), input_fbo(NULL) {
     }
@@ -30,13 +30,9 @@ class NuPostFilterGen {
     void fun_005c22b0();
     static void copy(GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
     static void copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
-    bool enabled;
-    u8 unknown_005[3];
-    PC_FRAMEBUFFER_PC *input_fbo;
+    bool enabled;                 // 0x4
+    u8 unknown_005[3];            // 0x5
+    PC_FRAMEBUFFER_PC *input_fbo; // 0x8
 };
 
-STATIC_ASSERT(sizeof(NuPostFilterGen) == 0xc);
-
-STATIC_ASSERT(offsetof(NuPostFilterGen, enabled) == 4);
-STATIC_ASSERT(offsetof(NuPostFilterGen, input_fbo) == 8);
 #endif

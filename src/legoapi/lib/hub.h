@@ -41,44 +41,37 @@ struct gameobject_s;
 struct level_data_s;
 struct nugspline_s;
 
-typedef struct FADEINFO_PC {
-    u32 direction;
-    f32 fade;
-    f32 rate;
-    i32 busy;
-    i32 stage;
-    FadeBase *fades[4];
-    i32 pending_type;
-    i32 field_28;
+typedef struct FADEINFO_PC { // size 0x2c
+    u32 direction;           // 0x00
+    f32 fade;                // 0x04
+    f32 rate;                // 0x08
+    i32 busy;                // 0x0c
+    i32 stage;               // 0x10
+    FadeBase *fades[4];      // 0x14
+    i32 pending_type;        // 0x24
+    i32 field_28;            // 0x28
 } FADEINFO_PC;
 
-STATIC_ASSERT(sizeof(FADEINFO_PC) == 0x2c);
-STATIC_ASSERT(offsetof(FADEINFO_PC, fade) == 4);
-STATIC_ASSERT(offsetof(FADEINFO_PC, fades) == 0x14);
-STATIC_ASSERT(offsetof(FADEINFO_PC, pending_type) == 0x24);
-STATIC_ASSERT(offsetof(FADEINFO_PC, field_28) == 0x28);
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct collection_area_save_pc_s {
-        union {
+    typedef struct collection_area_save_pc_s { // size 0xc
+
+        union { // size 0x4
             u8 unknown_00[4];
 
-            struct {
-                u8 complete;
-                u8 area_complete;
-                u8 unknown_02[2];
+            struct {              // size 0x4
+                u8 complete;      // 0x0
+                u8 area_complete; // 0x1
+                u8 unknown_02[2]; // 0x2
             };
-        };
+        }; // 0x0
 
-        u8 minikit_complete;
-        u8 unknown_05[7];
+        u8 minikit_complete; // 0x4
+        u8 unknown_05[7];    // 0x5
     } COLLECTION_AREA_SAVE_PC;
 
-    STATIC_ASSERT(sizeof(COLLECTION_AREA_SAVE_PC) == 0xc);
-    STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
-    STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, minikit_complete) == 4);
     i32 Percent_UpdateHint(HINT_PC *);
     i32 IndyUnlocked_UpdateHint(HINT_PC *);
     extern i32 PCArcadePointGoals[5];
@@ -100,22 +93,15 @@ extern "C" {
 #endif
 
 /* Native constructor reader/writer minimum; no full allocation claim. */
-typedef struct collection_build_pc_s {
-    COLLECTID_PC *list;
-    u16 columns;
-    u16 count;
-    i16 *title_id;
-    char *name;
-    f32 scale;
+typedef struct collection_build_pc_s { // size 0x14
+    COLLECTID_PC *list;                // 0x00
+    u16 columns;                       // 0x04
+    u16 count;                         // 0x06
+    i16 *title_id;                     // 0x08
+    char *name;                        // 0x0c
+    f32 scale;                         // 0x10
 } COLLECTION_BUILD_PC;
 
-STATIC_ASSERT(sizeof(COLLECTION_BUILD_PC) == 0x14);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, list) == 0);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, columns) == 4);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, count) == 6);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, title_id) == 8);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, name) == 0xc);
-STATIC_ASSERT(offsetof(COLLECTION_BUILD_PC, scale) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -279,47 +265,39 @@ extern "C" {
 
 #if SAGA_LEGOAPI_LIB_HUB_H_PART == 2 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
-typedef struct area_data_pc_s {
-    char dir[0x40];
-    char file[0x20];
-    i16 levels[12];
-    i16 name_id;
-    u16 flags;
-    u8 index;
-    u8 level_count;
-    i8 cheat;
-    u8 super_counter_count;
-    struct area_supercounter_s *super_counters;
-    u16 challenge_trial_time;
-    i8 episode_index;
-    i8 area_index;
-    i16 area_music;
-    i16 minikit_id;
+typedef struct area_data_pc_s {                 // size 0x9c
+    char dir[0x40];                             // 0x00
+    char file[0x20];                            // 0x40
+    i16 levels[12];                             // 0x60
+    i16 name_id;                                // 0x78
+    u16 flags;                                  // 0x7a
+    u8 index;                                   // 0x7c
+    u8 level_count;                             // 0x7d
+    i8 cheat;                                   // 0x7e
+    u8 super_counter_count;                     // 0x7f
+    struct area_supercounter_s *super_counters; // 0x80
+    u16 challenge_trial_time;                   // 0x84
+    i8 episode_index;                           // 0x86
+    i8 area_index;                              // 0x87
+    i16 area_music;                             // 0x88
+    i16 minikit_id;                             // 0x8a
 
-    union {
-        struct {
-            u32 unknown_008c;
-            u32 unknown_0090;
+    union { // size 0x8
+
+        struct {              // size 0x8
+            u32 unknown_008c; // 0x8c
+            u32 unknown_0090; // 0x90
         };
 
         u32 true_hero_targets[2];
-    };
+    }; // 0x8c
 
-    i16 text_id;
-    u8 text_id_value;
-    u8 unknown_0097;
-    i16 *hub_player_ids;
+    i16 text_id;         // 0x94
+    u8 text_id_value;    // 0x96
+    u8 unknown_0097;     // 0x97
+    i16 *hub_player_ids; // 0x98
 } AREA_DATA_PC;
 
-STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, level_count) == 0x7d);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, cheat) == 0x7e);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id) == 0x94);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, hub_player_ids) == 0x98);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -329,7 +307,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -338,7 +315,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(AREA_DATA_PC, true_hero_targets) == 0x8c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -366,12 +342,11 @@ extern "C" {
 }
 #endif
 
-typedef struct INDY_PREPARE_SPECIAL_MOVE_PC {
-    u32 capabilities;
-    AI_PREPARING_SPECIAL_MOVE_PC prepare;
+typedef struct INDY_PREPARE_SPECIAL_MOVE_PC { // size 0x8
+    u32 capabilities;                         // 0x0
+    AI_PREPARING_SPECIAL_MOVE_PC prepare;     // 0x4
 } INDY_PREPARE_SPECIAL_MOVE_PC;
 
-STATIC_ASSERT(sizeof(INDY_PREPARE_SPECIAL_MOVE_PC) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -21,40 +21,29 @@ extern "C" {
     void NuTexAnimAddList(void *list);
     extern const char NuTextureAnimationSlotsWarning[31];
 
-    typedef struct PC_TEXTURE_ANIM_LIST {
-        void *first;
-        struct PC_TEXTURE_ANIM_LIST *next;
-        struct PC_TEXTURE_ANIM_LIST *previous;
+    typedef struct PC_TEXTURE_ANIM_LIST {      // size 0xc
+        void *first;                           // 0x0
+        struct PC_TEXTURE_ANIM_LIST *next;     // 0x4
+        struct PC_TEXTURE_ANIM_LIST *previous; // 0x8
     } PC_TEXTURE_ANIM_LIST;
 
-    STATIC_ASSERT(sizeof(PC_TEXTURE_ANIM_LIST) == 12);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_LIST, next) == 4);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_LIST, previous) == 8);
-
-    typedef struct PC_TEXTURE_ANIM_ENV {
-        void *program;
-        i32 instruction_index;
-        i32 loop_counts[16];
-        i32 loop_starts[16];
-        i32 loop_depth;
-        i32 return_stack[16];
-        i32 call_depth;
-        i32 wait_base;
-        i32 wait_random;
-        i32 wait_remaining;
-        struct numtl_s *material;
-        u16 *texture_ids;
-        i32 texture_index;
-        u32 flags;
+    typedef struct PC_TEXTURE_ANIM_ENV { // size 0xec
+        void *program;                   // 0x00
+        i32 instruction_index;           // 0x04
+        i32 loop_counts[16];             // 0x08
+        i32 loop_starts[16];             // 0x48
+        i32 loop_depth;                  // 0x88
+        i32 return_stack[16];            // 0x8c
+        i32 call_depth;                  // 0xcc
+        i32 wait_base;                   // 0xd0
+        i32 wait_random;                 // 0xd4
+        i32 wait_remaining;              // 0xd8
+        struct numtl_s *material;        // 0xdc
+        u16 *texture_ids;                // 0xe0
+        i32 texture_index;               // 0xe4
+        u32 flags;                       // 0xe8
     } PC_TEXTURE_ANIM_ENV;
 
-    STATIC_ASSERT(sizeof(PC_TEXTURE_ANIM_ENV) == 0xec);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, loop_depth) == 0x88);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, call_depth) == 0xcc);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, material) == 0xdc);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, texture_ids) == 0xe0);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, texture_index) == 0xe4);
-    STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, flags) == 0xe8);
     extern PC_TEXTURE_ANIM_LIST *ntal_first;
     PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, struct numtl_s *, u16 *, void *);
 

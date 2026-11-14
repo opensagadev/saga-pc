@@ -30,48 +30,11 @@ typedef struct TIGHTROPE_OBJECT_AUX { // size 0xd2c
     f32 jump_reentry_timer;           // 0xd28
 } TIGHTROPE_OBJECT_AUX;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
-
 typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS_PC;
 
-STATIC_ASSERT(sizeof(TIGHTROPE_s) == 0x48);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, start_position) == 0x10);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, end_position) == 0x1c);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x28) == 0x28);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x2a) == 0x2a);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x2c) == 0x2c);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x2e) == 0x2e);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x30) == 0x30);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x31) == 0x31);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, field_0x32) == 0x32);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, direction) == 0x34);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, length) == 0x40);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, y_rotation) == 0x44);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, visible) == 0x46);
-STATIC_ASSERT(offsetof(TIGHTROPE_s, active) == 0x47);
-STATIC_ASSERT(offsetof(WORLDINFO, tightropes) == 0x5058);
-STATIC_ASSERT(offsetof(WORLDINFO, tightrope_count) == 0x505c);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_tightropes) == 0xe8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
-STATIC_ASSERT(sizeof(NUMTX) == 0x40);
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
 extern "C" {
     extern char TextInputKeyNameTextPc7516c0[1];
 }

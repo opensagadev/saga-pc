@@ -5,22 +5,16 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct nulistlnk_s {
-    struct nulistlnk_s *next;
-    struct nulistlnk_s *prev;
+typedef struct nulistlnk_s {  // size 0x8
+    struct nulistlnk_s *next; // 0x0
+    struct nulistlnk_s *prev; // 0x4
 } NULISTLNK;
 
-typedef struct nulisthdr_s {
-    NULISTLNK *head;
-    NULISTLNK *tail;
+typedef struct nulisthdr_s { // size 0x8
+    NULISTLNK *head;         // 0x0
+    NULISTLNK *tail;         // 0x4
 } NULISTHDR;
 
-STATIC_ASSERT(sizeof(NULISTLNK) == 8);
-STATIC_ASSERT(offsetof(NULISTLNK, next) == 0);
-STATIC_ASSERT(offsetof(NULISTLNK, prev) == 4);
-STATIC_ASSERT(sizeof(NULISTHDR) == 8);
-STATIC_ASSERT(offsetof(NULISTHDR, head) == 0);
-STATIC_ASSERT(offsetof(NULISTHDR, tail) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

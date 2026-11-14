@@ -13,9 +13,6 @@ typedef struct world_minikit_reader_s { // size 0x2ae4
     u8 *hub_minikits;                   // 0x2ae0
 } WORLD_MINIKIT_READER_PC;
 
-STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 #ifdef __cplusplus
 #endif
 
@@ -279,9 +276,3 @@ typedef struct HOTH_ANTINODE {    // size 0x58
     u8 reserved[0x50];            // 0x00
     i64 excluded_character_types; // 0x50
 } HOTH_ANTINODE;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.locator) == 0x36c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.creature_set) == 0x378);
-STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);

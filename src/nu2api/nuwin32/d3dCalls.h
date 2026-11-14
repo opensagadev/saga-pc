@@ -36,16 +36,13 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef struct CPU_VENDOR_WORDS_PC {
-    u32 word0;
-    u32 word1;
-    u32 word2;
-    u8 terminator[4];
+typedef struct CPU_VENDOR_WORDS_PC { // size 0x10
+    u32 word0;                       // 0x0
+    u32 word1;                       // 0x4
+    u32 word2;                       // 0x8
+    u8 terminator[4];                // 0xc
 } CPU_VENDOR_WORDS_PC;
 
-STATIC_ASSERT(sizeof(CPU_VENDOR_WORDS_PC) == 16);
-STATIC_ASSERT(offsetof(CPU_VENDOR_WORDS_PC, word1) == 4);
-STATIC_ASSERT(offsetof(CPU_VENDOR_WORDS_PC, word2) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

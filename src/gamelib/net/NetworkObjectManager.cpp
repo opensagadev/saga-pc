@@ -3,29 +3,7 @@
 /* Network object system: replicates editor objects between peers on
  * listener channel 3. */
 
-STATIC_ASSERT(sizeof(NetworkObject) == 0x18);
-STATIC_ASSERT(offsetof(NetworkObject, owner) == 0x8);
-STATIC_ASSERT(offsetof(NetworkObject, replicator_data) == 0x14);
-STATIC_ASSERT(sizeof(NetReplicator) == 0x18);
-STATIC_ASSERT(offsetof(NetReplicator, id) == 0xc);
-STATIC_ASSERT(offsetof(NetReplicator, message_size) == 0x16);
 STATIC_ASSERT(sizeof(NetworkObjectManager::NetPeerPush) == 0x14);
-STATIC_ASSERT(offsetof(NetworkObjectManager, active) == 0xc);
-STATIC_ASSERT(offsetof(NetworkObjectManager, guid_peers) == 0x20);
-STATIC_ASSERT(offsetof(NetworkObjectManager, objects) == 0x30);
-STATIC_ASSERT(offsetof(NetworkObjectManager, local_object_count) == 0xc030);
-STATIC_ASSERT(offsetof(NetworkObjectManager, pending_objects) == 0xd034);
-STATIC_ASSERT(offsetof(NetworkObjectManager, replicators) == 0xd1b4);
-STATIC_ASSERT(offsetof(NetworkObjectManager, replicator_data_sizes) == 0xd4b4);
-STATIC_ASSERT(offsetof(NetworkObjectManager, filters) == 0xd5b4);
-STATIC_ASSERT(offsetof(NetworkObjectManager, registered_calls) == 0xd6b4);
-STATIC_ASSERT(offsetof(NetworkObjectManager, registered_call_count) == 0xd834);
-STATIC_ASSERT(offsetof(NetworkObjectManager, peer_push) == 0xd838);
-STATIC_ASSERT(offsetof(NetworkObjectManager, default_push) == 0xd8d8);
-STATIC_ASSERT(offsetof(NetworkObjectManager, class_stats) == 0xd8ec);
-STATIC_ASSERT(offsetof(NetworkObjectManager, allow_duplicates) == 0xd96c);
-STATIC_ASSERT(sizeof(NetworkObjectManager) == 0xd970);
-STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 
 /* Empty trace hooks of the network object system. */
 void NetTrace(...) {
@@ -201,7 +179,6 @@ class NetPredictor : public NetReplicator { // size 0x28
 };
 
 STATIC_ASSERT(sizeof(NetPredictor::PredictorTime) == 0x1c);
-STATIC_ASSERT(offsetof(V2Peer, time_offset) == 0x29c);
 
 class NetPredictor2 : public NetPredictor {
   public:

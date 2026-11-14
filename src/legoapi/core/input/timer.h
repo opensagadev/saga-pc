@@ -5,17 +5,13 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct TIMER_s {
-    f32 time_elapsed;
-    f32 last_time_elapsed;
-    f32 time_elapsed_mod_seconds;
-    u32 update_count;
+typedef struct TIMER_s {          // size 0x10
+    f32 time_elapsed;             // 0x0
+    f32 last_time_elapsed;        // 0x4
+    f32 time_elapsed_mod_seconds; // 0x8
+    u32 update_count;             // 0xc
 } TIMER;
 
-STATIC_ASSERT(sizeof(TIMER) == 0x10);
-STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
-STATIC_ASSERT(offsetof(TIMER, update_count) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

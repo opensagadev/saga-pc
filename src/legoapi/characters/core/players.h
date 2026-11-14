@@ -19,60 +19,44 @@ struct WORLDINFO_s;
 struct bolt_s;
 struct nugspline_s;
 
-typedef struct playerprogress_s {
-    u32 coins;
-    u16 unknown_0004;
-    u8 active;
-    u8 field_7;
-    u8 hitpoints;
-    u8 field_9;
-    u8 field_a;
-    u8 field_b;
-    f32 field_c;
+typedef struct playerprogress_s { // size 0x10
+    u32 coins;                    // 0x0
+    u16 unknown_0004;             // 0x4
+    u8 active;                    // 0x6
+    u8 field_7;                   // 0x7
+    u8 hitpoints;                 // 0x8
+    u8 field_9;                   // 0x9
+    u8 field_a;                   // 0xa
+    u8 field_b;                   // 0xb
+    f32 field_c;                  // 0xc
 } PLAYERPROGRESS;
 
-STATIC_ASSERT(sizeof(PLAYERPROGRESS) == 0x10);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, active) == 6);
-
-typedef struct DRAW_ATTACHMENTS_MINI_PC {
-    f32 current_time;
-    f32 previous_time;
-    f32 blend_elapsed;
-    f32 blend_duration;
-    f32 source_time;
-    f32 target_time;
-    u8 flags;
-    u8 blending;
-    i16 source_animation;
-    i16 target_animation;
-    i16 animation;
-    i16 previous_animation;
-    i16 requested_animation;
+typedef struct DRAW_ATTACHMENTS_MINI_PC { // size 0x24
+    f32 current_time;                     // 0x00
+    f32 previous_time;                    // 0x04
+    f32 blend_elapsed;                    // 0x08
+    f32 blend_duration;                   // 0x0c
+    f32 source_time;                      // 0x10
+    f32 target_time;                      // 0x14
+    u8 flags;                             // 0x18
+    u8 blending;                          // 0x19
+    i16 source_animation;                 // 0x1a
+    i16 target_animation;                 // 0x1c
+    i16 animation;                        // 0x1e
+    i16 previous_animation;               // 0x20
+    i16 requested_animation;              // 0x22
 } DRAW_ATTACHMENTS_MINI_PC;
 
-STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, blend_elapsed) == 8);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, blend_duration) == 0xc);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_time) == 0x10);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, target_time) == 0x14);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, requested_animation) == 0x22);
-
-typedef struct BLADE_PC {
-    i16 model_id;
-    i16 glow_model;
-    i16 hit_effect;
-    i16 effect_6;
-    i16 effect_8;
-    u8 colour[3];
-    u8 padding_d[3];
+typedef struct BLADE_PC { // size 0x10
+    i16 model_id;         // 0x0
+    i16 glow_model;       // 0x2
+    i16 hit_effect;       // 0x4
+    i16 effect_6;         // 0x6
+    i16 effect_8;         // 0x8
+    u8 colour[3];         // 0xa
+    u8 padding_d[3];      // 0xd
 } BLADE_PC;
 
-STATIC_ASSERT(sizeof(BLADE_PC) == 0x10);
-STATIC_ASSERT(offsetof(BLADE_PC, hit_effect) == 4);
-STATIC_ASSERT(offsetof(BLADE_PC, effect_8) == 8);
-STATIC_ASSERT(offsetof(BLADE_PC, colour) == 0xa);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -81,11 +65,10 @@ extern "C" {
     void ActivatePlayer(GAMEOBJECT *);
     void PostResetCode(GAMEOBJECT *);
 
-    typedef struct player_force_los_slot_s {
-        u8 unknown_00[0x630];
+    typedef struct player_force_los_slot_s { // size 0x630
+        u8 unknown_00[0x630];                // 0x000
     } PLAYER_FORCE_LOS_SLOT_PC;
 
-    STATIC_ASSERT(sizeof(PLAYER_FORCE_LOS_SLOT_PC) == 0x630);
     extern i32 Hub_UsePlayerList;
     extern i16 Area_PlayerIDList[9];
     extern APICHARACTERMODELLIST Area_StoryModelList[49];
@@ -96,14 +79,11 @@ extern "C" {
     extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
     extern GAMEOBJECT BackUpPlayers[2];
 
-    typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC {
+    typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC { // size 0x4
         u32 value;
         i16 low_word;
     } LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC;
 
-    STATIC_ASSERT(sizeof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC) == 4);
-    STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, value) == 0);
-    STATIC_ASSERT(offsetof(LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC, low_word) == 0);
     extern LEGOOBJ_DEFAULT_LAST_COIN_STORAGE_PC LEGOOBJ_DEFAULTLASTCOIN;
     void RememberPlayerIDs(i32, i32, i32);
     void Players_Init(void);
@@ -160,16 +140,14 @@ extern "C" {
     void InitPlayerAI(GAMEOBJECT *);
     GAMEOBJECT *AddCreature(i32, i32);
 
-    typedef struct PLAYER_START_INITIALIZER_RECORD_PC {
-        NUVEC *position;
-        i32 sock_location;
-        f32 sock_ratio;
-        i16 angle;
-        u8 unknown_0e[2];
+    typedef struct PLAYER_START_INITIALIZER_RECORD_PC { // size 0x10
+        NUVEC *position;                                // 0x0
+        i32 sock_location;                              // 0x4
+        f32 sock_ratio;                                 // 0x8
+        i16 angle;                                      // 0xc
+        u8 unknown_0e[2];                               // 0xe
     } PLAYER_START_INITIALIZER_RECORD_PC;
 
-    STATIC_ASSERT(sizeof(PLAYER_START_INITIALIZER_RECORD_PC) == 0x10);
-    STATIC_ASSERT(offsetof(PLAYER_START_INITIALIZER_RECORD_PC, position) == 0);
     NUVEC *Player_StartPos(GAMEOBJECT *);
     extern PLAYER_START_INITIALIZER_RECORD_PC PlayerStart[8];
     void Player_ToggleCharacter(GAMEOBJECT *, i32 direction, i32 sound);
@@ -220,19 +198,15 @@ extern "C" {
 
 /* Existing incomplete player_item_type_reset_s completed identically,
  * apart from readonly pointee qualification required by the source literals. */
-struct player_item_type_reset_s {
-    i16 id;
-    u8 unknown_02[2];
-    const char *bolt_name;
-    u8 unknown_08;
-    i8 bolt_id;
-    u8 unknown_0a[2];
+struct player_item_type_reset_s { // size 0xc
+    i16 id;                       // 0x0
+    u8 unknown_02[2];             // 0x2
+    const char *bolt_name;        // 0x4
+    u8 unknown_08;                // 0x8
+    i8 bolt_id;                   // 0x9
+    u8 unknown_0a[2];             // 0xa
 };
 
-STATIC_ASSERT(sizeof(struct player_item_type_reset_s) == 12);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_s, id) == 0);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_s, bolt_name) == 4);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_s, bolt_id) == 9);
 #ifdef __cplusplus
 extern "C" {
 #endif

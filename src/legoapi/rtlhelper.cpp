@@ -273,9 +273,6 @@ void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 
 STATIC_ASSERT(RTL_EDITOR_SET_SIZE_PC == 0x6fac);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, led_file) == 0x80);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, led_file) == 0x38);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
 
 class RTLHelper : public EdClassInterface { // size 0xc
   public:

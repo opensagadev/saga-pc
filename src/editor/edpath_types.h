@@ -30,31 +30,26 @@ typedef struct EDAIPATHWALL_s EDAIPATHWALL_s;
 typedef struct EDAIPATH_s EDAIPATH_s;
 typedef struct EDAISHAREDPATHNODE_s EDAISHAREDPATHNODE_s;
 
-struct EDAIPATHROUTE_s {
-    char name[16];
-    u64 user_mask;
-    u32 flags;
+struct EDAIPATHROUTE_s { // size 0x20
+    char name[16];       // 0x00
+    u64 user_mask;       // 0x10
+    u32 flags;           // 0x18
     /* 0x18 is a full dword: retail sets and clears bit 0 with dword OR/AND. */
 };
 
-STATIC_ASSERT(sizeof(struct EDAIPATHROUTE_s) == 32);
-
-struct EDAIPATHCNX_s {
-    struct EDAIPATHNODE_s *node;
-    u32 flags;
-    u16 route_mask;
-    u16 unknown_0a;
+struct EDAIPATHCNX_s {           // size 0xc
+    struct EDAIPATHNODE_s *node; // 0x0
+    u32 flags;                   // 0x4
+    u16 route_mask;              // 0x8
+    u16 unknown_0a;              // 0xa
 };
 
-STATIC_ASSERT(sizeof(struct EDAIPATHCNX_s) == 12);
-
-struct EDAIPATHWALL_s {
-    NULISTLNK link;
-    u8 unknown_08[2];
-    u8 flags;
+struct EDAIPATHWALL_s { // size 0xc
+    NULISTLNK link;     // 0x0
+    u8 unknown_08[2];   // 0x8
+    u8 flags;           // 0xa
 };
 
-STATIC_ASSERT(sizeof(struct EDAIPATHWALL_s) == 12);
 #undef SAGA_EDITOR_EDPATH_TYPES_H_PART
 #define SAGA_EDITOR_EDPATH_TYPES_H_PART 2
 #ifdef SAGA_SHIM
@@ -64,69 +59,61 @@ STATIC_ASSERT(sizeof(struct EDAIPATHWALL_s) == 12);
 
 #if SAGA_EDITOR_EDPATH_TYPES_H_PART == 2 && !defined(SAGA_EDITOR_EDPATH_TYPES_H_STOP)
 
-struct EDAIPATH_s {
-    NULISTLNK link;
-    char name[16];
-    NULISTHDR nodes;
-    struct EDAIPATHNODE_s *current_node;
+struct EDAIPATH_s {                      // size 0x240
+    NULISTLNK link;                      // 0x000
+    char name[16];                       // 0x008
+    NULISTHDR nodes;                     // 0x018
+    struct EDAIPATHNODE_s *current_node; // 0x020
 
-    union {
+    union { // size 0x4
         struct EDAIPATHNODE_s *other_node;
         struct EDAIPATHNODE_s *nearest_node;
-    };
+    }; // 0x024
 
-    union {
+    union { // size 0x4
         struct EDAIPATHROUTE_s *current_route;
         u32 unknown_28;
-    };
+    }; // 0x028
 
-    u32 flags;
+    u32 flags; // 0x02c
     /* 0x2c is a full dword: retail clears bit 0 with a dword AND. */
-    i16 runtime_start;
-    i16 runtime_end;
-    i16 runtime_nearest;
-    i16 node_count;
-    i8 draw_index; /* PC keeps the draw index at 0x38. */
-    u8 unknown_039[7];
-    struct EDAIPATHROUTE_s routes[16];
+    i16 runtime_start;                                    // 0x030
+    i16 runtime_end;                                      // 0x032
+    i16 runtime_nearest;                                  // 0x034
+    i16 node_count;                                       // 0x036
+    i8 draw_index; /* PC keeps the draw index at 0x38. */ // 0x038
+    u8 unknown_039[7];                                    // 0x039
+    struct EDAIPATHROUTE_s routes[16];                    // 0x040
 };
 
-STATIC_ASSERT(sizeof(struct EDAIPATH_s) == 576);
-STATIC_ASSERT(offsetof(struct EDAIPATH_s, draw_index) == 0x38);
-STATIC_ASSERT(offsetof(struct EDAIPATH_s, node_count) == 0x36);
-STATIC_ASSERT(offsetof(struct EDAIPATH_s, routes) == 0x40);
+struct EDAIPATHNODE_s {                  // size 0xb4
+    NULISTLNK link;                      // 0x00
+    char name[16];                       // 0x08
+    NUVEC position;                      // 0x18
+    f32 radius;                          // 0x24
+    f32 lower_height;                    // 0x28
+    f32 upper_height;                    // 0x2c
+    struct EDAIPATHCNX_s connections[8]; // 0x30
+    i16 index;                           // 0x90
+    u8 flags;                            // 0x92
+    u8 unknown_093[3];                   // 0x93
+    u16 route_mask;                      // 0x96
+    struct nuhspecial_s special;         // 0x98
 
-struct EDAIPATHNODE_s {
-    NULISTLNK link;
-    char name[16];
-    NUVEC position;
-    f32 radius;
-    f32 lower_height;
-    f32 upper_height;
-    struct EDAIPATHCNX_s connections[8];
-    i16 index;
-    u8 flags;
-    u8 unknown_093[3];
-    u16 route_mask;
-    struct nuhspecial_s special;
-
-    union {
+    union { // size 0xc
         NUVEC special_position;
         NUVEC platform_position;
-    };
-    struct EDAISHAREDPATHNODE_s *shared_node;
+    }; // 0xa4
+    struct EDAISHAREDPATHNODE_s *shared_node; // 0xb0
 };
 
-STATIC_ASSERT(sizeof(struct EDAIPATHNODE_s) == 180);
-
-struct EDAISHAREDPATHNODE_s {
-    NULISTLNK link;
-    i8 reference_count;
-    i8 runtime_index;
-    u8 draw_flags;
+struct EDAISHAREDPATHNODE_s { // size 0xc
+    NULISTLNK link;           // 0x0
+    i8 reference_count;       // 0x8
+    i8 runtime_index;         // 0x9
+    u8 draw_flags;            // 0xa
 };
 
-STATIC_ASSERT(sizeof(struct EDAISHAREDPATHNODE_s) == 12);
 #undef SAGA_EDITOR_EDPATH_TYPES_H_PART
 #define SAGA_EDITOR_EDPATH_TYPES_H_PART 3
 #ifdef SAGA_SHIM

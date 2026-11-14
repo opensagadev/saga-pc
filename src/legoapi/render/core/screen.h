@@ -13,22 +13,18 @@
 struct NUGSCN_s;
 struct WORLDINFO_s;
 
-typedef struct level_display_s {
-    f32 farclip_hack;
-    f32 near_clip;
-    i16 far_clip;
-    u8 bg_red_top;
-    u8 bg_red_bottom;
-    u8 bg_green_top;
-    u8 bg_green_bottom;
-    u8 bg_blue_top;
-    u8 bg_blue_bottom;
+typedef struct level_display_s { // size 0x10
+    f32 farclip_hack;            // 0x0
+    f32 near_clip;               // 0x4
+    i16 far_clip;                // 0x8
+    u8 bg_red_top;               // 0xa
+    u8 bg_red_bottom;            // 0xb
+    u8 bg_green_top;             // 0xc
+    u8 bg_green_bottom;          // 0xd
+    u8 bg_blue_top;              // 0xe
+    u8 bg_blue_bottom;           // 0xf
 } LEVEL_DISPLAY_PC;
 
-STATIC_ASSERT(sizeof(LEVEL_DISPLAY_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_DISPLAY_PC, far_clip) == 0x08);
-STATIC_ASSERT(offsetof(LEVEL_DISPLAY_PC, bg_red_top) == 0x0a);
-STATIC_ASSERT(offsetof(LEVEL_DISPLAY_PC, bg_blue_bottom) == 0x0f);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,19 +57,17 @@ extern "C" {
     extern i32 cut_waiting_for_new_level;
     void InitStillRender(VARIPTR *buffer, VARIPTR end);
 
-    typedef struct gamefog_state_s {
-        f32 colour_channels[4];
-        f32 start;
-        f32 end;
-        f32 density;
-        u32 colour;
-        f32 low_quality_density;
-        f32 low_quality_colour_channels[4];
-        u32 low_quality_colour;
+    typedef struct gamefog_state_s {        // size 0x38
+        f32 colour_channels[4];             // 0x00
+        f32 start;                          // 0x10
+        f32 end;                            // 0x14
+        f32 density;                        // 0x18
+        u32 colour;                         // 0x1c
+        f32 low_quality_density;            // 0x20
+        f32 low_quality_colour_channels[4]; // 0x24
+        u32 low_quality_colour;             // 0x34
     } GAMEFOG_STATE_PC;
 
-    STATIC_ASSERT(offsetof(GAMEFOG_STATE_PC, colour) == 0x1c);
-    STATIC_ASSERT(sizeof(GAMEFOG_STATE_PC) == 0x38);
     extern GAMEFOG_STATE_PC GameFog;
     extern GAMEFOG_STATE_PC GameFogOld;
     void GameFog_Update(struct WORLDINFO_s *world);

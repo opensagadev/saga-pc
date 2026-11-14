@@ -14,63 +14,36 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nubridge_s {
-    u8 active;
-    u8 unknown_01;
-    i16 idle_frames;
-    NUGSCN *scene;
-    void *terrain;
-    NUVEC edge_positions[24][2];
-    NUVEC edge_motion[24][2];
-    NUMTX platform_matrices[24];
-    NUSPECIALHANDLE special;
-    NUSPECIALHANDLE second_special;
-    NUVEC centre;
-    f32 cull_radius_squared;
-    i16 platforms[24];
-    u8 in_range;
-    u8 was_drawn;
-    i8 platform_count;
-    u8 field_ae7;
-    u32 colour;
-    u16 contact_frames;
-    i16 rotation_y;
-    f32 width;
-    f32 spring_strength;
-    f32 gravity;
-    f32 damping;
-    f32 load_multiplier;
-    f32 field_b04;
-    f32 field_b08;
+typedef struct nubridge_s {         // size 0xb0c
+    u8 active;                      // 0x000
+    u8 unknown_01;                  // 0x001
+    i16 idle_frames;                // 0x002
+    NUGSCN *scene;                  // 0x004
+    void *terrain;                  // 0x008
+    NUVEC edge_positions[24][2];    // 0x00c
+    NUVEC edge_motion[24][2];       // 0x24c
+    NUMTX platform_matrices[24];    // 0x48c
+    NUSPECIALHANDLE special;        // 0xa8c
+    NUSPECIALHANDLE second_special; // 0xa98
+    NUVEC centre;                   // 0xaa4
+    f32 cull_radius_squared;        // 0xab0
+    i16 platforms[24];              // 0xab4
+    u8 in_range;                    // 0xae4
+    u8 was_drawn;                   // 0xae5
+    i8 platform_count;              // 0xae6
+    u8 field_ae7;                   // 0xae7
+    u32 colour;                     // 0xae8
+    u16 contact_frames;             // 0xaec
+    i16 rotation_y;                 // 0xaee
+    f32 width;                      // 0xaf0
+    f32 spring_strength;            // 0xaf4
+    f32 gravity;                    // 0xaf8
+    f32 damping;                    // 0xafc
+    f32 load_multiplier;            // 0xb00
+    f32 field_b04;                  // 0xb04
+    f32 field_b08;                  // 0xb08
 } NUBRIDGE_PC;
 
-STATIC_ASSERT(sizeof(NUBRIDGE_PC) == 0xb0c);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, active) == 0x0);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, idle_frames) == 0x2);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, scene) == 0x4);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, terrain) == 0x8);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, edge_positions) == 0xc);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, edge_motion) == 0x24c);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, platform_matrices) == 0x48c);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, special) == 0xa8c);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, second_special) == 0xa98);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, centre) == 0xaa4);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, cull_radius_squared) == 0xab0);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, platforms) == 0xab4);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, in_range) == 0xae4);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, was_drawn) == 0xae5);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, platform_count) == 0xae6);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_ae7) == 0xae7);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, colour) == 0xae8);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, contact_frames) == 0xaec);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, rotation_y) == 0xaee);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, width) == 0xaf0);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, spring_strength) == 0xaf4);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, gravity) == 0xaf8);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, damping) == 0xafc);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, load_multiplier) == 0xb00);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_b04) == 0xb04);
-STATIC_ASSERT(offsetof(NUBRIDGE_PC, field_b08) == 0xb08);
 #ifdef __cplusplus
 extern "C" {
 #endif

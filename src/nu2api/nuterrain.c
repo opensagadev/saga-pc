@@ -2077,9 +2077,6 @@ typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC { // size 0x6c
     u32 *instance_flags;                       // 0x68
 } TERRAIN_PLATFORM_LIFECYCLE_PC;
 
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
-
 void noterraininit(void) {
     terraincnt = 0;
     curSphereter = 0;
@@ -2342,11 +2339,6 @@ typedef struct TERRAIN_PICKUP_SET_PC {   // size 0xa490
     u8 unknown_e90[0xa490 - 0xe90];      // 0x0e90
 } TERRAIN_PICKUP_SET_PC;
 
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
 static TERRAIN_PICKUP_SET_PC *PickupTerr = 0;
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET_PC *terrain) {
@@ -2698,10 +2690,6 @@ void ReassignPickupInst(i32 index, i32 type) {
 }
 
 /* Debug geometry uses the 100-byte polygon view. */
-STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
 
 void TerrDraw(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     TERRAIN_POLYGON_INFO_PC *record;
@@ -3112,10 +3100,6 @@ void DrawWallSpline(f32 height) {
 static i32 TerrainSkinInfoCapacityPc = 0;
 static u8 *TerrainSkinArenaEndPc = 0;
 static i32 TerrainSkinOriginalGroupCountPc = -1;
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, origin) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
 /* This preparation updates group bounds/radius, leaving the copied polygon
  * and batch bounds intact. */
 #define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
@@ -3546,11 +3530,6 @@ void RegisterSounds(SOUND_REGISTRY_PC *registry) {
         registry->table.bits[id >> 4] |= 1 << (id & 0xf);
     }
 }
-
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, points) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
 
 void TerrainScanWallSpline(TERRAIN_SPATIAL_NODE *node) {
     u32 first = 0;

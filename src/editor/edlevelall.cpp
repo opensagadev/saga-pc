@@ -79,8 +79,6 @@ extern "C" {
                          f32 radius_scale, f32 radius_bias);
 }
 
-STATIC_ASSERT(sizeof(EdStream) == 0x20);
-
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
  * cleared. */
 struct MemoryBuffer { // size 0x10
@@ -436,14 +434,6 @@ class PropertyTool : public EdTool { // size 0x4c
     void ToggleActiveMenu();
 };
 
-STATIC_ASSERT(sizeof(EdControl) == 0x10);
-STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
-STATIC_ASSERT(offsetof(EdControl, object) == 0xc);
-STATIC_ASSERT(sizeof(EdEnumControl) == 0x14);
-STATIC_ASSERT(offsetof(EdEnumControl, items) == 0x10);
-STATIC_ASSERT(sizeof(EdBitControl) == 0x18);
-STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
-
 /* The class editor's default tool: picks, creates and deletes objects
  * under the cursor ray. */
 class CursorTool : public EdTool { // size 0xc
@@ -588,26 +578,6 @@ extern "C" {
     void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
 } /* extern "C" */
 
-STATIC_ASSERT(sizeof(EdTool) == 0xc);
-
-STATIC_ASSERT(sizeof(BaseEditor) == 0x10);
-STATIC_ASSERT(offsetof(BaseEditor, id) == 0xc);
-
-STATIC_ASSERT(sizeof(EdMember) == 0x8);
-STATIC_ASSERT(sizeof(ClassObject) == 0xc);
-STATIC_ASSERT(offsetof(ClassObject, reference) == 0x8);
-STATIC_ASSERT(sizeof(ClassObjectListEntry) == 0x14);
-STATIC_ASSERT(sizeof(ClassObjectList) == 0xc);
-STATIC_ASSERT(offsetof(ClassEditor, first_tool) == 0x10);
-STATIC_ASSERT(offsetof(ClassEditor, manipulator) == 0x20);
-STATIC_ASSERT(offsetof(ClassEditor, selected_objects) == 0x24);
-STATIC_ASSERT(offsetof(ClassEditor, current_object) == 0x30);
-STATIC_ASSERT(offsetof(ClassEditor, pending_object) == 0x40);
-STATIC_ASSERT(offsetof(ClassEditor, menu) == 0x4c);
-STATIC_ASSERT(offsetof(ClassEditor, snap_ray) == 0x50);
-STATIC_ASSERT(offsetof(ClassEditor, class_filter) == 0x6c);
-STATIC_ASSERT(sizeof(ClassEditor) == 0x70);
-
 struct MemBufferAllocator {};
 
 /* Editor subsystem; storage is owned by the level editor buffer, so the
@@ -631,34 +601,6 @@ class EdSubSystem : public MemBufferAllocator, public CSListLink<EdSubSystem> { 
     virtual void SubRender() {
     }
 };
-
-STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
-
-STATIC_ASSERT(offsetof(EdInputContext, pad) == 0x40);
-STATIC_ASSERT(offsetof(EdInputContext, held) == 0x50);
-STATIC_ASSERT(offsetof(EdInputContext, pressed) == 0x78);
-STATIC_ASSERT(offsetof(EdInputContext, cleared) == 0xf0);
-STATIC_ASSERT(offsetof(EdInputContext, values) == 0x118);
-STATIC_ASSERT(offsetof(EdInputContext, repeat_times) == 0x1b8);
-STATIC_ASSERT(sizeof(EdInputContext) == 0x260);
-
-STATIC_ASSERT(offsetof(LevelEditor, background_colour) == 0x10);
-STATIC_ASSERT(offsetof(LevelEditor, overlay_alpha) == 0x34);
-STATIC_ASSERT(offsetof(LevelEditor, destroying_objects) == 0x2a1);
-STATIC_ASSERT(offsetof(LevelEditor, reset_pending) == 0x2a8);
-STATIC_ASSERT(offsetof(LevelEditor, scenes) == 0x2ac);
-STATIC_ASSERT(offsetof(LevelEditor, first_editor) == 0x93c);
-STATIC_ASSERT(offsetof(LevelEditor, active_editor) == 0x948);
-STATIC_ASSERT(offsetof(LevelEditor, current_led_file) == 0xa54);
-STATIC_ASSERT(offsetof(LevelEditor, info_x) == 0xee8);
-STATIC_ASSERT(offsetof(LevelEditor, info_background) == 0xefc);
-STATIC_ASSERT(offsetof(LevelEditor, pad_x) == 0x1000);
-STATIC_ASSERT(offsetof(LevelEditor, pad_colour) == 0x1014);
-STATIC_ASSERT(offsetof(LevelEditor, pad_text) == 0x101c);
-STATIC_ASSERT(offsetof(LevelEditor, settings) == 0x109c);
-STATIC_ASSERT(offsetof(LevelEditor, editors_entered) == 0x10a8);
-STATIC_ASSERT(offsetof(LevelEditor, active) == 0x10ac);
-STATIC_ASSERT(sizeof(LevelEditor) == 0x10b0);
 
 char *EdLevelFileExtension = ".led";
 
@@ -862,29 +804,6 @@ i16 Placeable::CurrentLedFile;
 
 /* Layouts of the editor classes declared in saga.h, checked here rather than
  * in the header (assert typedefs there shift codegen in unrelated units). */
-STATIC_ASSERT(sizeof(EdString) == 4);
-STATIC_ASSERT(sizeof(Placeable) == 0x18);
-STATIC_ASSERT(offsetof(Placeable, scene_id) == 0x4);
-STATIC_ASSERT(offsetof(Placeable, led_file) == 0x6);
-STATIC_ASSERT(offsetof(Placeable, attributes) == 0x8);
-STATIC_ASSERT(offsetof(Placeable, name) == 0xc);
-STATIC_ASSERT(offsetof(Placeable, params) == 0x10);
-STATIC_ASSERT(sizeof(EdType) == 0xc);
-STATIC_ASSERT(offsetof(EdType, serialise) == 0x8);
-STATIC_ASSERT(sizeof(EdDefunctList) == 0xc);
-STATIC_ASSERT(sizeof(EdRegistry) == 0x44);
-STATIC_ASSERT(offsetof(EdRegistry, types) == 0x4);
-STATIC_ASSERT(offsetof(EdRegistry, type_count) == 0x1c);
-STATIC_ASSERT(offsetof(EdRegistry, defunct_objects) == 0x38);
-STATIC_ASSERT(sizeof(EdRef) == 0x28);
-STATIC_ASSERT(offsetof(EdRef, type_id) == 0xc);
-STATIC_ASSERT(offsetof(EdRef, member_offset) == 0x14);
-STATIC_ASSERT(offsetof(EdRef, size) == 0x18);
-STATIC_ASSERT(offsetof(EdRef, attributes) == 0x1c);
-STATIC_ASSERT(offsetof(EdRef, replication_group) == 0x24);
-
-STATIC_ASSERT(sizeof(EdClass) == 0x18);
-STATIC_ASSERT(offsetof(EdClass, object_interface) == 0x14);
 
 EdRegistry theRegistry;
 

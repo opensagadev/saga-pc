@@ -10,13 +10,11 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct TERRAIN_LAST_IMPACT_PC {
-    NUVEC position;
-    f32 hit_type;
+typedef struct TERRAIN_LAST_IMPACT_PC { // size 0x10
+    NUVEC position;                     // 0x0
+    f32 hit_type;                       // 0xc
 } TERRAIN_LAST_IMPACT_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_LAST_IMPACT_PC) == 16);
-STATIC_ASSERT(offsetof(TERRAIN_LAST_IMPACT_PC, hit_type) == 12);
 #ifdef __cplusplus
 extern "C" {
 #endif

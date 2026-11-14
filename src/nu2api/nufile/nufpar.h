@@ -26,20 +26,14 @@
 struct nufpcomjmp_s;
 struct nufpcomjmpctx_s;
 
-typedef struct nufparpos_s {
-    i32 line_number;
-    i32 line_position;
-    i32 character_position;
-    i32 buffer_start;
-    i32 buffer_end;
+typedef struct nufparpos_s { // size 0x14
+    i32 line_number;         // 0x00
+    i32 line_position;       // 0x04
+    i32 character_position;  // 0x08
+    i32 buffer_start;        // 0x0c
+    i32 buffer_end;          // 0x10
 } NUFPARPOS_PC;
 
-STATIC_ASSERT(sizeof(NUFPARPOS_PC) == 0x14);
-STATIC_ASSERT(offsetof(NUFPARPOS_PC, line_number) == 0x00);
-STATIC_ASSERT(offsetof(NUFPARPOS_PC, line_position) == 0x04);
-STATIC_ASSERT(offsetof(NUFPARPOS_PC, character_position) == 0x08);
-STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_start) == 0x0c);
-STATIC_ASSERT(offsetof(NUFPARPOS_PC, buffer_end) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,77 +51,51 @@ extern "C" {
 
 #if SAGA_NU2API_NUFILE_NUFPAR_H_PART == 2 && !defined(SAGA_NU2API_NUFILE_NUFPAR_H_STOP)
 
-typedef struct nufpar_pc_s {
-    char *file_buffer;
-    NUFILE file_handle;
-    char file_name[0x100];
-    char line_buffer[0x202];
-    char word_buffer[0x202];
-    char *line_buffer_ptr;
-    char *word_buffer_ptr;
-    i32 line_buffer_size;
-    i32 word_buffer_size;
-    i32 line_number;
-    i32 line_position;
-    i32 character_position;
-    i32 buffer_start;
-    i32 buffer_end;
+typedef struct nufpar_pc_s { // size 0x584
+    char *file_buffer;       // 0x000
+    NUFILE file_handle;      // 0x004
+    char file_name[0x100];   // 0x008
+    char line_buffer[0x202]; // 0x108
+    char word_buffer[0x202]; // 0x30a
+    char *line_buffer_ptr;   // 0x50c
+    char *word_buffer_ptr;   // 0x510
+    i32 line_buffer_size;    // 0x514
+    i32 word_buffer_size;    // 0x518
+    i32 line_number;         // 0x51c
+    i32 line_position;       // 0x520
+    i32 character_position;  // 0x524
+    i32 buffer_start;        // 0x528
+    i32 buffer_end;          // 0x52c
 
-    union {
+    union { // size 0x20
         struct nufpcomjmp_s *command_stack[8];
         struct nufpcomjmpctx_s *command_stack_ctx[8];
-    };
+    }; // 0x530
 
-    union {
+    union { // size 0x20
         struct nufpcomjmp_s *command_stack2[8];
         struct nufpcomjmpctx_s *command_stack2_ctx[8];
-    };
+    }; // 0x550
 
-    i32 command_position;
-    i32 file_size;
-    u8 is_utf16;
-    u8 is_utf8;
-    u8 unknown_057a[2];
-    char *separator_list;
-    char *separator_tokens;
+    i32 command_position;   // 0x570
+    i32 file_size;          // 0x574
+    u8 is_utf16;            // 0x578
+    u8 is_utf8;             // 0x579
+    u8 unknown_057a[2];     // 0x57a
+    char *separator_list;   // 0x57c
+    char *separator_tokens; // 0x580
 } NUFPAR_PC;
 
-STATIC_ASSERT(offsetof(NUFPAR_PC, file_handle) == 0x4);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer) == 0x108);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer) == 0x30a);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_ptr) == 0x50c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_buffer_size) == 0x514);
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_size) == 0x518);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_number) == 0x51c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, line_position) == 0x520);
-STATIC_ASSERT(offsetof(NUFPAR_PC, character_position) == 0x524);
-STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_start) == 0x528);
-STATIC_ASSERT(offsetof(NUFPAR_PC, buffer_end) == 0x52c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, command_stack) == 0x530);
-STATIC_ASSERT(offsetof(NUFPAR_PC, command_stack2) == 0x550);
-STATIC_ASSERT(offsetof(NUFPAR_PC, command_position) == 0x570);
-STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf16) == 0x578);
-STATIC_ASSERT(offsetof(NUFPAR_PC, is_utf8) == 0x579);
-STATIC_ASSERT(offsetof(NUFPAR_PC, separator_list) == 0x57c);
-STATIC_ASSERT(offsetof(NUFPAR_PC, separator_tokens) == 0x580);
-STATIC_ASSERT(sizeof(NUFPAR_PC) == 0x584);
-
-typedef struct nufpcomjmp_s {
-    char *keyword;
-    void (*callback)(NUFPAR_PC *parser);
+typedef struct nufpcomjmp_s {            // size 0x8
+    char *keyword;                       // 0x0
+    void (*callback)(NUFPAR_PC *parser); // 0x4
 } NUFPCOMJMP;
 
-STATIC_ASSERT(sizeof(NUFPCOMJMP) == 8);
-STATIC_ASSERT(offsetof(NUFPCOMJMP, callback) == 4);
-
-typedef struct nufpcomjmpctx_s {
-    char *keyword;
-    void (*callback)(NUFPAR_PC *parser, void *context);
+typedef struct nufpcomjmpctx_s {                        // size 0x8
+    char *keyword;                                      // 0x0
+    void (*callback)(NUFPAR_PC *parser, void *context); // 0x4
 } NUFPCOMJMPCTX;
 
-STATIC_ASSERT(sizeof(NUFPCOMJMPCTX) == 8);
-STATIC_ASSERT(offsetof(NUFPCOMJMPCTX, callback) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

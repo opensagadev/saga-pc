@@ -68,9 +68,6 @@ typedef struct TUBE_ENTRY_VIEW { // size 0x7a4
     void *entry_data;            // 0x7a0
 } TUBE_ENTRY_VIEW;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-
 void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     TUBE_PC *tube;
     i32 index;

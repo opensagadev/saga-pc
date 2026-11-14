@@ -15,31 +15,20 @@
 extern "C" {
 #endif
 
-    typedef struct TAKEOVEROBJECT_PC {
-        GAMEOBJECT *object;
-        NUVEC last_safe_position;
-        u32 heading;
-        char script_name[16];
-        i16 character_id;
-        u8 source_creature;
-        u8 registered_level;
-        u8 current_level;
-        u8 hitpoints;
-        u8 contact_index;
-        u8 unknown_2b;
+    typedef struct TAKEOVEROBJECT_PC { // size 0x2c
+        GAMEOBJECT *object;            // 0x00
+        NUVEC last_safe_position;      // 0x04
+        u32 heading;                   // 0x10
+        char script_name[16];          // 0x14
+        i16 character_id;              // 0x24
+        u8 source_creature;            // 0x26
+        u8 registered_level;           // 0x27
+        u8 current_level;              // 0x28
+        u8 hitpoints;                  // 0x29
+        u8 contact_index;              // 0x2a
+        u8 unknown_2b;                 // 0x2b
     } TAKEOVEROBJECT_PC;
 
-    STATIC_ASSERT(sizeof(TAKEOVEROBJECT_PC) == 0x2c);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, object) == 0);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, script_name) == 0x14);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, character_id) == 0x24);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, source_creature) == 0x26);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, registered_level) == 0x27);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, current_level) == 0x28);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, last_safe_position) == 4);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, heading) == 0x10);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, hitpoints) == 0x29);
-    STATIC_ASSERT(offsetof(TAKEOVEROBJECT_PC, contact_index) == 0x2a);
     extern TAKEOVEROBJECT_PC takeoverobjects[8];
     void RegisterTakeOverObject(GAMEOBJECT *);
 

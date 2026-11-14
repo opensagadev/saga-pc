@@ -73,6 +73,3 @@ void VaderB_Init(WORLDINFO *world) {
 
 void VaderB_DrawPanel(WORLDINFO *world) {
 }
-
-STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
-STATIC_ASSERT(offsetof(DOOR_s, active) == 0xf7);

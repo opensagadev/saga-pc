@@ -28,19 +28,15 @@ struct WORLDINFO_s;
 struct climb_system_s;
 struct gameobject_s;
 
-typedef struct climb_slot_s {
-    NUVEC normal;
-    f32 impact_x;
-    f32 impact_z;
-    struct AIPATHCNX_PC *connection;
-    struct AIPATH_PC *path;
-    u32 flags;
+typedef struct climb_slot_s {        // size 0x20
+    NUVEC normal;                    // 0x00
+    f32 impact_x;                    // 0x0c
+    f32 impact_z;                    // 0x10
+    struct AIPATHCNX_PC *connection; // 0x14
+    struct AIPATH_PC *path;          // 0x18
+    u32 flags;                       // 0x1c
 } CLIMB_SLOT_PC;
 
-STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
-STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, connection) == 0x14);
-STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, path) == 0x18);
-STATIC_ASSERT(offsetof(CLIMB_SLOT_PC, flags) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif

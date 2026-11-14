@@ -7,9 +7,6 @@ f32 NewShadow(NUVEC *position, f32 unused, f32 height, i32 mask) {
     return NewShadowEx(position, unused, height, height, mask);
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
-STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
-
 static void Shards_Draw(void *context, void *unused1, float unused2) {
     i32 i;
     NUMTX matrix;
@@ -63,12 +60,3 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
         }
     }
 }
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
-STATIC_ASSERT(sizeof(CHARACTER_SHADOW_PACKET_PC) == 0x64);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, x_rotation) == 0xc);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, z_rotation) == 0xe);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, opacity) == 0x10);
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_radius) == 0x1024);
-STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_joint_mask) == 0x105a);

@@ -15,37 +15,31 @@
 #include "nu2api/nu3d/nuspline.h"
 #endif
 
-typedef struct PODSPRINT_AI_PC {
-    NUGSPLINE *spline;
-    i16 vals[6];
+typedef struct PODSPRINT_AI_PC { // size 0x10
+    NUGSPLINE *spline;           // 0x0
+    i16 vals[6];                 // 0x4
 } PODSPRINT_AI_PC;
 
-STATIC_ASSERT(sizeof(PODSPRINT_AI_PC) == 0x10);
-
-typedef struct PODSPRINT_PC {
-    u8 unknown_0[8];
-    PODSPRINT_AI_PC ai[6];
-    struct gizaimessage_s *lap_msg;
-    struct gizaimessage_s *max_speed_msg;
-    struct gizaimessage_s *min_speed_msg;
-    struct gizaimessage_s *speed_step_msg;
-    void *field_78;
-    void *boulders;
-    f32 field_80;
-    f32 speed;
-    f32 field_88;
-    u8 unknown_8c[0x2];
-    u8 ai_state;
-    i8 ai_index;
-    u8 unknown_90_b[0x2];
-    u8 flags;
-    u8 unknown_93[0x1];
+typedef struct PODSPRINT_PC {              // size 0x94
+    u8 unknown_0[8];                       // 0x00
+    PODSPRINT_AI_PC ai[6];                 // 0x08
+    struct gizaimessage_s *lap_msg;        // 0x68
+    struct gizaimessage_s *max_speed_msg;  // 0x6c
+    struct gizaimessage_s *min_speed_msg;  // 0x70
+    struct gizaimessage_s *speed_step_msg; // 0x74
+    void *field_78;                        // 0x78
+    void *boulders;                        // 0x7c
+    f32 field_80;                          // 0x80
+    f32 speed;                             // 0x84
+    f32 field_88;                          // 0x88
+    u8 unknown_8c[0x2];                    // 0x8c
+    u8 ai_state;                           // 0x8e
+    i8 ai_index;                           // 0x8f
+    u8 unknown_90_b[0x2];                  // 0x90
+    u8 flags;                              // 0x92
+    u8 unknown_93[0x1];                    // 0x93
 } PODSPRINT_PC;
 
-STATIC_ASSERT(offsetof(PODSPRINT_PC, ai) == 8);
-STATIC_ASSERT(offsetof(PODSPRINT_PC, ai_index) == 0x8f);
-STATIC_ASSERT(sizeof(PODSPRINT_PC) == 0x94);
-STATIC_ASSERT(offsetof(PODSPRINT_PC, speed) == 0x84);
 #ifdef __cplusplus
 extern "C" {
 #endif

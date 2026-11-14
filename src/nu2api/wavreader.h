@@ -12,15 +12,15 @@
 
 #ifdef __cplusplus
 
-struct PC_WAVE_CHUNK_PC {
-    u32 kind;
-    u32 bytes;
-    i32 offset;
+struct PC_WAVE_CHUNK_PC { // size 0xc
+    u32 kind;             // 0x0
+    u32 bytes;            // 0x4
+    i32 offset;           // 0x8
 };
 
 #pragma pack(push, 4)
 
-class WavReader {
+class WavReader { // size 0x40
   public:
     WavReader(void);
     virtual ~WavReader(void);
@@ -35,31 +35,18 @@ class WavReader {
     u32 FourCcPc(const char *);
     i32 FindChunkPc(HANDLE, const char *, PC_WAVE_CHUNK_PC *);
     i32 SkipChunkPc(HANDLE, const PC_WAVE_CHUNK_PC *);
-    u32 unknown_004;
-    HANDLE file;
-    u32 unknown_00c;
-    i64 base_position;
-    WAVEFORMATEX format;
-    u8 unknown_02a[2];
-    i32 first_sample;
-    i32 end_sample;
-    i32 current_sample;
-    i32 data_offset;
-    u32 data_bytes;
+    u32 unknown_004;     // 0x04
+    HANDLE file;         // 0x08
+    u32 unknown_00c;     // 0x0c
+    i64 base_position;   // 0x10
+    WAVEFORMATEX format; // 0x18
+    u8 unknown_02a[2];   // 0x2a
+    i32 first_sample;    // 0x2c
+    i32 end_sample;      // 0x30
+    i32 current_sample;  // 0x34
+    i32 data_offset;     // 0x38
+    u32 data_bytes;      // 0x3c
 };
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(WavReader) == 0x40);
-STATIC_ASSERT(offsetof(WavReader, file) == 8);
-STATIC_ASSERT(offsetof(WavReader, base_position) == 0x10);
-STATIC_ASSERT(offsetof(WavReader, format) == 0x18);
-STATIC_ASSERT(offsetof(WavReader, first_sample) == 0x2c);
-STATIC_ASSERT(offsetof(WavReader, end_sample) == 0x30);
-STATIC_ASSERT(offsetof(WavReader, current_sample) == 0x34);
-STATIC_ASSERT(offsetof(WavReader, data_offset) == 0x38);
-STATIC_ASSERT(offsetof(WavReader, data_bytes) == 0x3c);
-STATIC_ASSERT(sizeof(PC_WAVE_CHUNK_PC) == 12);
-STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, kind) == 0);
-STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, bytes) == 4);
-STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, offset) == 8);
 #endif

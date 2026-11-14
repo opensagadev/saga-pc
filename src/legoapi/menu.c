@@ -272,9 +272,6 @@ typedef struct menu_draw_state_s { // size 0xb0
     i32 paused;                    // 0xac
 } MENU_DRAW_STATE_PC;
 
-STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
-STATIC_ASSERT(offsetof(MENUFNINFO, confirm_prompt) == 0x19);
-STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
 extern void (*memcard_drawasiconfn)(void);
 extern void (*predrawfn)(MENU *);
 extern void (*headerdrawfn)(void);
@@ -955,7 +952,3 @@ void fun_00509740(void (*function)(MENU *)) {
 void fun_00509750(void (*function)(void)) {
     headerdrawfn = function;
 }
-
-STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);

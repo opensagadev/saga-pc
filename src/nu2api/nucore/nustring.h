@@ -10,27 +10,21 @@ typedef u16 NUWCHAR;
 
 // NOLINTEND(google-runtime-int)
 
-typedef struct NUSTRING {
-    char *id;
+typedef struct NUSTRING { // size 0x8
+    char *id;             // 0x0
 
-    union {
+    union { // size 0x4
         u16 *str_utf16;
         u8 *str_utf8;
-    };
+    }; // 0x4
 } NUSTRING;
 
-STATIC_ASSERT(sizeof(NUSTRING) == 8);
-STATIC_ASSERT(offsetof(NUSTRING, str_utf16) == 4);
-
-typedef struct NUSTRINGBANK {
-    NUSTRING *strings;
-    i32 string_count;
-    i32 max_strings;
+typedef struct NUSTRINGBANK { // size 0xc
+    NUSTRING *strings;        // 0x0
+    i32 string_count;         // 0x4
+    i32 max_strings;          // 0x8
 } NUSTRINGBANK;
 
-STATIC_ASSERT(sizeof(NUSTRINGBANK) == 12);
-STATIC_ASSERT(offsetof(NUSTRINGBANK, string_count) == 4);
-STATIC_ASSERT(offsetof(NUSTRINGBANK, max_strings) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

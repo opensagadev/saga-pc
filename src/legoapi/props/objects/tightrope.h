@@ -26,49 +26,47 @@ extern "C" {
 #endif
 typedef struct TIGHTROPE_s TIGHTROPE_s;
 
-struct TIGHTROPE_s {
-    char name[16];
+struct TIGHTROPE_s { // size 0x48
+    char name[16];   // 0x00
 
-    union {
+    union { // size 0xc
         NUVEC start_position;
         NUVEC start;
-    };
+    }; // 0x10
 
-    union {
+    union { // size 0xc
         NUVEC end_position;
         NUVEC end;
-    };
+    }; // 0x1c
 
-    u16 field_0x28;
-    u16 field_0x2a;
-    u16 field_0x2c;
-    u16 field_0x2e;
-    u8 field_0x30;
-    u8 field_0x31;
-    i8 field_0x32;
-    u8 pad_33;
-    NUVEC direction;
+    u16 field_0x28;  // 0x28
+    u16 field_0x2a;  // 0x2a
+    u16 field_0x2c;  // 0x2c
+    u16 field_0x2e;  // 0x2e
+    u8 field_0x30;   // 0x30
+    u8 field_0x31;   // 0x31
+    i8 field_0x32;   // 0x32
+    u8 pad_33;       // 0x33
+    NUVEC direction; // 0x34
 
-    union {
+    union { // size 0x4
         f32 length;
         f32 horizontal_length;
-    };
+    }; // 0x40
 
-    union {
+    union { // size 0x2
         u16 rotation;
         u16 y_rotation;
         u16 angle;
-    };
+    }; // 0x44
 
-    union {
+    union { // size 0x1
         u8 visible;
         u8 enabled;
-    };
+    }; // 0x46
 
-    union {
+    union { // size 0x1
         u8 active;
         u8 available;
-    };
+    }; // 0x47
 };
-
-STATIC_ASSERT(sizeof(struct TIGHTROPE_s) == 72);

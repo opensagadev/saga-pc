@@ -12,15 +12,6 @@ typedef struct ai_control_system_s { // size 0x18
     NULISTHDR active;                // 0x10
 } AI_CONTROL_SYSTEM_PC;
 
-STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
-STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, capacity) == 0);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, helpers) == 4);
-STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
-STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
-
 i16 GetGenericGoon(i32 armed) {
     if (armed) {
         if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN)) {

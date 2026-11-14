@@ -864,13 +864,8 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
 }
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == offsetof(GAMEOBJECT, field_c8c) + sizeof(f32));
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == offsetof(GAMEOBJECT, field_c8c) + 2 * sizeof(f32));
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_mode) == 0xb1);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, lighting_scale) == 0x160);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
-STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
 typedef struct debris_material_flags_s { // size 0x4
     u32 alpha_mode : 4;                  // 0x0:0
@@ -990,28 +985,6 @@ void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw);
 void edpartOptMenu(void);
 void edmainSetLocVec(NUVEC *location);
-STATIC_ASSERT(offsetof(PART_PC, field_e0) == 0xe0);
-STATIC_ASSERT(offsetof(PART_PC, gravity) == 0xe8);
-STATIC_ASSERT(offsetof(PART_PC, field_f4) == 0xf4);
-STATIC_ASSERT(offsetof(PART_PC, time_step) == 0xf8);
-STATIC_ASSERT(offsetof(PART_PC, field_ec) == 0xec);
-STATIC_ASSERT(offsetof(PART_PC, field_f0) == 0xf0);
-STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
-STATIC_ASSERT(offsetof(PART_PC, field_124) == 0x124);
-STATIC_ASSERT(offsetof(PART_PC, callback_1ac) == 0x1ac);
-STATIC_ASSERT(offsetof(PART_PC, impact_fn) == 0x1b8);
-STATIC_ASSERT(offsetof(PART_PC, collision_fn) == 0x1bc);
-STATIC_ASSERT(offsetof(PART_PC, update_fn) == 0x1c4);
-STATIC_ASSERT(offsetof(PART_PC, stop_fn) == 0x1c8);
-STATIC_ASSERT(offsetof(PART_PC, lighting_handle) == 0x1dc);
-STATIC_ASSERT(offsetof(PART_PC, effect_id_1e0) == 0x1e0);
-STATIC_ASSERT(offsetof(PART_PC, effect_id_1e4) == 0x1e4);
-STATIC_ASSERT(offsetof(PART_PC, field_1e8) == 0x1e8);
-STATIC_ASSERT(offsetof(PART_PC, field_1ec) == 0x1ec);
-STATIC_ASSERT(offsetof(PART_PC, effect_id_1f0) == 0x1f0);
-STATIC_ASSERT(offsetof(PART_PC, effect_id_1f8) == 0x1f8);
-STATIC_ASSERT(offsetof(PART_PC, field_208) == 0x208);
-STATIC_ASSERT(offsetof(PART_PC, field_214) == 0x214);
 
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;

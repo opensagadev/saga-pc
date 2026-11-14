@@ -13,7 +13,7 @@
 
 #ifdef __cplusplus
 
-class NuMotionFilterGen : public NuPostFilter {
+class NuMotionFilterGen : public NuPostFilter { // size 0xa0
   public:
     NuMotionFilterGen() : scale(0.0f), maximum(0.0f), falloff(1.0f) {
     }
@@ -21,13 +21,12 @@ class NuMotionFilterGen : public NuPostFilter {
     virtual void render();
     void fun_005c2de0(bool enable);
     void fun_005c2df0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
-    void *programs[2];
-    NUMTX previous;
-    NUMTX current;
-    f32 scale;
-    f32 maximum;
-    f32 falloff;
+    void *programs[2]; // 0x0c
+    NUMTX previous;    // 0x14
+    NUMTX current;     // 0x54
+    f32 scale;         // 0x94
+    f32 maximum;       // 0x98
+    f32 falloff;       // 0x9c
 };
 
-STATIC_ASSERT(sizeof(NuMotionFilterGen) == 0xa0);
 #endif

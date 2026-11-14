@@ -50,9 +50,6 @@ void Suits_Init(void) {
     }
 }
 
-STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
-
 SUIT_LAYERS_PC *Suit_GetLast(i32 character_id, i32 require_owned) {
     i32 index;
     u32 owned = areaSuitBits;

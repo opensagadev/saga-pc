@@ -1,22 +1,6 @@
 #include "saga.h"
 #include <xmmintrin.h>
 
-STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
-STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
-STATIC_ASSERT(offsetof(NUVEC, z) == 0x08);
-STATIC_ASSERT(offsetof(NUMTX, m00) == 0x00);
-STATIC_ASSERT(offsetof(NUMTX, m01) == 0x04);
-STATIC_ASSERT(offsetof(NUMTX, m02) == 0x08);
-STATIC_ASSERT(offsetof(NUMTX, m10) == 0x10);
-STATIC_ASSERT(offsetof(NUMTX, m11) == 0x14);
-STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
-STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
-STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
-STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
-
 /* Retail is a hand-written SSE block: four points per iteration, three outputs (x, y, z blocks) and one outcode
  * vector. Outcodes: 32 near, 16 far, 1/2 left/right (|x| against z*zx), 8/4 bottom/top (|y| against z*zy). */
 

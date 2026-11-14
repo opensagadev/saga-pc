@@ -43,35 +43,26 @@ struct nufpcomjmp_s;
 struct nugspline_s;
 struct vufnt_s;
 
-typedef struct terrain_layer_s {
-    u32 flags;
-    u32 unknown_04;
-    u32 unknown_08;
+typedef struct terrain_layer_s { // size 0xc
+    u32 flags;                   // 0x0
+    u32 unknown_04;              // 0x4
+    u32 unknown_08;              // 0x8
 } TERRAIN_LAYER_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_LAYER_PC) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, flags) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_04) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_LAYER_PC, unknown_08) == 8);
+struct EPISODESAVE_s {           // size 0xc
+    f32 superstory_time_limit;   // 0x0
+    i32 superstory_score_target; // 0x4
 
-struct EPISODESAVE_s {
-    f32 superstory_time_limit;
-    i32 superstory_score_target;
-
-    union {
+    union { // size 0x4
         u32 flags;
 
-        struct {
-            u8 superstory_complete;
-            u8 reserved_0x9[3];
+        struct {                    // size 0x4
+            u8 superstory_complete; // 0x8
+            u8 reserved_0x9[3];     // 0x9
         };
-    };
+    }; // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct EPISODESAVE_s) == 12);
-STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_time_limit) == 0);
-STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_score_target) == 4);
-STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_complete) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

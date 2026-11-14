@@ -35,116 +35,89 @@ struct eduiitem_s;
 struct eduimenu_s;
 struct gameobject_s;
 
-typedef struct parttype_lookup_s {
-    char name[16];
-    char object_names[16][8];
-    i16 effect_ids[8];
-    i8 effect_pages[8];
-    i8 scene_indices[8];
-    i8 variant_count;
-    u8 variant_mode;
-    i8 page;
-    u8 field_b3;
-    f32 particle_scale;
-    f32 effect_scale;
-    f32 lifetime;
-    f32 lifetime_random;
-    f32 speed;
-    f32 gravity;
-    f32 emission_rate;
-    f32 bounce;
-    NUVEC position_random;
-    NUVEC velocity_random;
-    f32 emission_period;
-    f32 emission_period_random;
-    f32 emission_pause;
-    f32 emission_pause_random;
-    i32 rotation[3];
-    i32 rotation_random[3];
-    u32 flags;
-    i32 trail_effects[2];
-    f32 trail_rates[2];
-    i32 attached_effect;
-    i32 impact_effect;
-    i32 impact_part;
-    char impact_part_name[16];
-    i32 kill_effect;
-    i32 sounds[4];
-    u8 sound_modes[4];
-    f32 maximum_distance;
+typedef struct parttype_lookup_s { // size 0x178
+    char name[16];                 // 0x000
+    char object_names[16][8];      // 0x010
+    i16 effect_ids[8];             // 0x090
+    i8 effect_pages[8];            // 0x0a0
+    i8 scene_indices[8];           // 0x0a8
+    i8 variant_count;              // 0x0b0
+    u8 variant_mode;               // 0x0b1
+    i8 page;                       // 0x0b2
+    u8 field_b3;                   // 0x0b3
+    f32 particle_scale;            // 0x0b4
+    f32 effect_scale;              // 0x0b8
+    f32 lifetime;                  // 0x0bc
+    f32 lifetime_random;           // 0x0c0
+    f32 speed;                     // 0x0c4
+    f32 gravity;                   // 0x0c8
+    f32 emission_rate;             // 0x0cc
+    f32 bounce;                    // 0x0d0
+    NUVEC position_random;         // 0x0d4
+    NUVEC velocity_random;         // 0x0e0
+    f32 emission_period;           // 0x0ec
+    f32 emission_period_random;    // 0x0f0
+    f32 emission_pause;            // 0x0f4
+    f32 emission_pause_random;     // 0x0f8
+    i32 rotation[3];               // 0x0fc
+    i32 rotation_random[3];        // 0x108
+    u32 flags;                     // 0x114
+    i32 trail_effects[2];          // 0x118
+    f32 trail_rates[2];            // 0x120
+    i32 attached_effect;           // 0x128
+    i32 impact_effect;             // 0x12c
+    i32 impact_part;               // 0x130
+    char impact_part_name[16];     // 0x134
+    i32 kill_effect;               // 0x144
+    i32 sounds[4];                 // 0x148
+    u8 sound_modes[4];             // 0x158
+    f32 maximum_distance;          // 0x15c
 
-    union {
+    union { // size 0xc
         NUVEC lighting_scale;
 
-        struct {
-            f32 field_160;
-            f32 field_164;
-            f32 field_168;
+        struct {           // size 0xc
+            f32 field_160; // 0x160
+            f32 field_164; // 0x164
+            f32 field_168; // 0x168
         };
-    };
+    }; // 0x160
 
-    f32 last_used_time;
-    f32 scale;
-    u8 unknown_174[0x4];
+    f32 last_used_time;  // 0x16c
+    f32 scale;           // 0x170
+    u8 unknown_174[0x4]; // 0x174
 } PARTTYPE_LOOKUP_PC;
 
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, name) == 0);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, effect_ids) == 0x90);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, effect_pages) == 0xa0);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, variant_count) == 0xb0);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, page) == 0xb2);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_rate) == 0xcc);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_period) == 0xec);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_period_random) == 0xf0);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_pause) == 0xf4);
-STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, emission_pause_random) == 0xf8);
-STATIC_ASSERT(sizeof(PARTTYPE_LOOKUP_PC) == 0x178);
-
-typedef struct partdebrisentry_s {
-    i32 id;
-    char name[16];
+typedef struct partdebrisentry_s { // size 0x14
+    i32 id;                        // 0x00
+    char name[16];                 // 0x04
 } PARTDEBRISENTRY;
 
-STATIC_ASSERT(sizeof(PARTDEBRISENTRY) == 0x14);
-STATIC_ASSERT(offsetof(PARTDEBRISENTRY, name) == 4);
-
-typedef struct partdebrissys_s {
-    i32 named_count;
-    i32 capacity;
-    PARTDEBRISENTRY *entries;
+typedef struct partdebrissys_s { // size 0xc
+    i32 named_count;             // 0x0
+    i32 capacity;                // 0x4
+    PARTDEBRISENTRY *entries;    // 0x8
 } PARTDEBRISSYS;
-
-STATIC_ASSERT(offsetof(PARTDEBRISSYS, entries) == 8);
-STATIC_ASSERT(offsetof(PARTDEBRISSYS, named_count) == 0);
-STATIC_ASSERT(offsetof(PARTDEBRISSYS, capacity) == 4);
-STATIC_ASSERT(sizeof(PARTDEBRISSYS) == 0xc);
 
 typedef struct rtlset_s RTLSET_PC;
 struct PART_PC;
 
-typedef struct debris_collision_entry_s {
-    i32 key_index;
-    u32 flags;
+typedef struct debris_collision_entry_s { // size 0x8
+    i32 key_index;                        // 0x0
+    u32 flags;                            // 0x4
 } DEBRIS_COLLISION_ENTRY_PC;
-
-STATIC_ASSERT(sizeof(DEBRIS_COLLISION_ENTRY_PC) == 8);
-STATIC_ASSERT(offsetof(DEBRIS_COLLISION_ENTRY_PC, flags) == 4);
 
 typedef struct PART_PC PART_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct debris_scale_cache_s {
-        i32 base_effect_index;
-        i32 scaled_effect_index;
-        f32 scale;
+    typedef struct debris_scale_cache_s { // size 0xc
+        i32 base_effect_index;            // 0x0
+        i32 scaled_effect_index;          // 0x4
+        f32 scale;                        // 0x8
     } DEBRIS_SCALE_CACHE_PC;
 
-    STATIC_ASSERT(sizeof(DEBRIS_SCALE_CACHE_PC) == 12);
-    STATIC_ASSERT(offsetof(DEBRIS_SCALE_CACHE_PC, base_effect_index) == 0);
-    STATIC_ASSERT(offsetof(DEBRIS_SCALE_CACHE_PC, scaled_effect_index) == 4);
-    STATIC_ASSERT(offsetof(DEBRIS_SCALE_CACHE_PC, scale) == 8);
     extern char KillPartsLegoSingleTextPc[11];
     extern PART_EMIT_PC part_emits[40];
     extern i32 part_page_on[8];
@@ -253,126 +226,97 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_STOP)
 
-struct PART_PC {
-    union {
+struct PART_PC { // size 0x220
+
+    union { // size 0x40
         NUMTX transform;
 
-        struct {
-            u8 transform_prefix[0x30];
-            NUVEC position;
-            f32 transform_m33;
+        struct {                       // size 0x40
+            u8 transform_prefix[0x30]; // 0x000
+            NUVEC position;            // 0x030
+            f32 transform_m33;         // 0x03c
         };
-    };
+    }; // 0x000
 
-    NUMTX previous_transform;
-    NUVEC velocity;
-    NUVEC collision_min;
-    NUVEC collision_max;
-    NUVEC impact_position;
-    NUVEC impact_normal;
-    NUVEC guided_target;
-    NUVEC previous_position;
-    struct gameobject_s *owner;
-    struct gameobject_s *recipient;
-    f32 radius;
-    f32 field_e0;
-    f32 field_e4;
-    f32 gravity;
-    f32 field_ec;
-    f32 field_f0;
-    f32 field_f4;
-    f32 time_step;
-    f32 scale_time;
-    f32 time_remaining;
-    f32 initial_time;
-    u32 flags;
+    NUMTX previous_transform;       // 0x040
+    NUVEC velocity;                 // 0x080
+    NUVEC collision_min;            // 0x08c
+    NUVEC collision_max;            // 0x098
+    NUVEC impact_position;          // 0x0a4
+    NUVEC impact_normal;            // 0x0b0
+    NUVEC guided_target;            // 0x0bc
+    NUVEC previous_position;        // 0x0c8
+    struct gameobject_s *owner;     // 0x0d4
+    struct gameobject_s *recipient; // 0x0d8
+    f32 radius;                     // 0x0dc
+    f32 field_e0;                   // 0x0e0
+    f32 field_e4;                   // 0x0e4
+    f32 gravity;                    // 0x0e8
+    f32 field_ec;                   // 0x0ec
+    f32 field_f0;                   // 0x0f0
+    f32 field_f4;                   // 0x0f4
+    f32 time_step;                  // 0x0f8
+    f32 scale_time;                 // 0x0fc
+    f32 time_remaining;             // 0x100
+    f32 initial_time;               // 0x104
+    u32 flags;                      // 0x108
 
-    union {
+    union { // size 0x18
         u32 field_10c[6];
         i32 rotation_parameters[6];
-    };
+    }; // 0x10c
 
-    i32 field_124[5];
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-    i16 part_id;
-    u16 field_140;
-    u8 rotation_axes[2];
-    u32 active;
-    NUSPECIALHANDLE special;
-    NUSPECIALHANDLE *source_special;
-    NUVEC lighting[7];
-    PART_ACTION_PC callback_1ac;
-    PART_MOVE_PC move_fn;
-    PART_ACTION_PC deflect_fn;
-    PART_ACTION_PC impact_fn;
-    PART_ACTION_PC collision_fn;
-    PART_KILL_PC kill_fn;
-    PART_ACTION_PC update_fn;
-    PART_ACTION_PC stop_fn;
-    PART_ACTION_PC destroy_fn;
-    PART_DRAW_PC draw_fn;
-    i32 inline_debris_handle;
-    i32 *debris_handle;
-    i32 *lighting_handle;
-    i32 effect_id_1e0;
-    i32 effect_id_1e4;
-    f32 field_1e8;
-    f32 field_1ec;
-    i32 effect_id_1f0;
-    i32 effect_id_1f4;
-    i32 effect_id_1f8;
-    f32 effect_scale;
-    u32 field_200;
-    u16 field_204;
-    i8 field_206;
-    u8 hostility_group;
-    u8 field_208;
-    u8 unknown_209;
-    u8 flicker_flags;
-    i8 field_20b;
-    f32 crate_spawn_delay;
-    u32 field_210;
-    f32 field_214;
-    u32 force_flags;
+    i32 field_124[5];                // 0x124
+    u16 rotation_x;                  // 0x138
+    u16 rotation_y;                  // 0x13a
+    u16 rotation_z;                  // 0x13c
+    i16 part_id;                     // 0x13e
+    u16 field_140;                   // 0x140
+    u8 rotation_axes[2];             // 0x142
+    u32 active;                      // 0x144
+    NUSPECIALHANDLE special;         // 0x148
+    NUSPECIALHANDLE *source_special; // 0x154
+    NUVEC lighting[7];               // 0x158
+    PART_ACTION_PC callback_1ac;     // 0x1ac
+    PART_MOVE_PC move_fn;            // 0x1b0
+    PART_ACTION_PC deflect_fn;       // 0x1b4
+    PART_ACTION_PC impact_fn;        // 0x1b8
+    PART_ACTION_PC collision_fn;     // 0x1bc
+    PART_KILL_PC kill_fn;            // 0x1c0
+    PART_ACTION_PC update_fn;        // 0x1c4
+    PART_ACTION_PC stop_fn;          // 0x1c8
+    PART_ACTION_PC destroy_fn;       // 0x1cc
+    PART_DRAW_PC draw_fn;            // 0x1d0
+    i32 inline_debris_handle;        // 0x1d4
+    i32 *debris_handle;              // 0x1d8
+    i32 *lighting_handle;            // 0x1dc
+    i32 effect_id_1e0;               // 0x1e0
+    i32 effect_id_1e4;               // 0x1e4
+    f32 field_1e8;                   // 0x1e8
+    f32 field_1ec;                   // 0x1ec
+    i32 effect_id_1f0;               // 0x1f0
+    i32 effect_id_1f4;               // 0x1f4
+    i32 effect_id_1f8;               // 0x1f8
+    f32 effect_scale;                // 0x1fc
+    u32 field_200;                   // 0x200
+    u16 field_204;                   // 0x204
+    i8 field_206;                    // 0x206
+    u8 hostility_group;              // 0x207
+    u8 field_208;                    // 0x208
+    u8 unknown_209;                  // 0x209
+    u8 flicker_flags;                // 0x20a
+    i8 field_20b;                    // 0x20b
+    f32 crate_spawn_delay;           // 0x20c
+    u32 field_210;                   // 0x210
+    f32 field_214;                   // 0x214
+    u32 force_flags;                 // 0x218
 
-    union {
+    union { // size 0x4
         u32 field_21c;
         f32 reflection_height;
-    };
+    }; // 0x21c
 };
 
-STATIC_ASSERT(offsetof(PART_PC, guided_target) == 0xbc);
-STATIC_ASSERT(offsetof(PART_PC, rotation_axes) == 0x142);
-STATIC_ASSERT(offsetof(PART_PC, rotation_parameters) == 0x10c);
-STATIC_ASSERT(offsetof(PART_PC, lighting) == 0x158);
-STATIC_ASSERT(sizeof(PART_PC) == 0x220);
-STATIC_ASSERT(offsetof(PART_PC, position) == 0x30);
-STATIC_ASSERT(offsetof(PART_PC, previous_transform) == 0x40);
-STATIC_ASSERT(offsetof(PART_PC, velocity) == 0x80);
-STATIC_ASSERT(offsetof(PART_PC, collision_min) == 0x8c);
-STATIC_ASSERT(offsetof(PART_PC, collision_max) == 0x98);
-STATIC_ASSERT(offsetof(PART_PC, impact_position) == 0xa4);
-STATIC_ASSERT(offsetof(PART_PC, impact_normal) == 0xb0);
-STATIC_ASSERT(offsetof(PART_PC, previous_position) == 0xc8);
-STATIC_ASSERT(offsetof(PART_PC, owner) == 0xd4);
-STATIC_ASSERT(offsetof(PART_PC, recipient) == 0xd8);
-STATIC_ASSERT(offsetof(PART_PC, radius) == 0xdc);
-STATIC_ASSERT(offsetof(PART_PC, time_remaining) == 0x100);
-STATIC_ASSERT(offsetof(PART_PC, flags) == 0x108);
-STATIC_ASSERT(offsetof(PART_PC, rotation_x) == 0x138);
-STATIC_ASSERT(offsetof(PART_PC, part_id) == 0x13e);
-STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
-STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
-STATIC_ASSERT(offsetof(PART_PC, kill_fn) == 0x1c0);
-STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
-STATIC_ASSERT(offsetof(PART_PC, debris_handle) == 0x1d8);
-STATIC_ASSERT(offsetof(PART_PC, lighting_handle) == 0x1dc);
-STATIC_ASSERT(offsetof(PART_PC, effect_id_1f4) == 0x1f4);
-STATIC_ASSERT(offsetof(PART_PC, effect_scale) == 0x1fc);
-STATIC_ASSERT(offsetof(PART_PC, flicker_flags) == 0x20a);
-STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
 #ifdef __cplusplus
 extern "C" {
 #endif

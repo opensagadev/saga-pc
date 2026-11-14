@@ -16,19 +16,14 @@ struct NUVEC4;
 struct numtl_s;
 struct numtx_s;
 
-typedef struct nurnd_vertex3d_pc_s {
-    NUVEC position;
-    NUVEC normal;
-    u32 colour;
-    f32 u;
-    f32 v;
+typedef struct nurnd_vertex3d_pc_s { // size 0x24
+    NUVEC position;                  // 0x00
+    NUVEC normal;                    // 0x0c
+    u32 colour;                      // 0x18
+    f32 u;                           // 0x1c
+    f32 v;                           // 0x20
 } NURND_VERTEX3D_PC;
 
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, position) == 0);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, u) == 0x1c);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, v) == 0x20);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -43,7 +38,6 @@ extern "C" {
     extern i32 NuRndrShadowCnt;
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
     STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC[4]) == 0x90);
-    STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, normal) == 0xc);
     void NuRndrShadPolys(struct numtl_s *);
     i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *,
                                      const NUVEC *);

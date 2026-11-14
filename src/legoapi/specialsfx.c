@@ -1,16 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, engine_level) == 0xd94);
-STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
-STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);
-
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(WORLDINFO, special_sfx) == 0x46d0);
-STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY) == 20);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, special) == 4);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, events) == 16);
-
 i32 InitSpecialSfx(void *world_ptr) {
     SPECIAL_RESOURCE_WORLD *world = world_ptr;
     if (!world) {

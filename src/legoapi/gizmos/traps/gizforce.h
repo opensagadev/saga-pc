@@ -62,19 +62,21 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
-typedef struct FORCE_RESET_GROUP {
-    union {
-        struct {
-            struct gizforce_s *forces[8];
-            f32 combined_height;
+typedef struct FORCE_RESET_GROUP { // size 0x28
+
+    union { // size 0x24
+
+        struct {                          // size 0x24
+            struct gizforce_s *forces[8]; // 0x00
+            f32 combined_height;          // 0x20
         };
 
         u32 slot_words[9];
-    };
+    }; // 0x00
 
-    u16 runtime_flags;
-    u8 member_count;
-    u8 configured_count;
+    u16 runtime_flags;   // 0x24
+    u8 member_count;     // 0x26
+    u8 configured_count; // 0x27
 } FORCE_RESET_GROUP;
 
 #undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
@@ -86,17 +88,13 @@ typedef struct FORCE_RESET_GROUP {
 
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 3 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
-typedef struct gizforce_target_record_s {
-    struct gizforce_s *force;
-    struct gameanimobj_s *animation;
-    f32 distance;
-    i32 index;
+typedef struct gizforce_target_record_s { // size 0x10
+    struct gizforce_s *force;             // 0x0
+    struct gameanimobj_s *animation;      // 0x4
+    f32 distance;                         // 0x8
+    i32 index;                            // 0xc
 } GIZFORCE_TARGET_RECORD_PC;
 
-STATIC_ASSERT(sizeof(GIZFORCE_TARGET_RECORD_PC) == 16);
-STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, animation) == 4);
-STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, distance) == 8);
-STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, index) == 12);
 #ifdef __cplusplus
 extern "C" {
 #endif

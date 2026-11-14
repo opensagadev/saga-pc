@@ -229,14 +229,6 @@ i32 edbriLoadPage(char *path, void *scene) {
     return page;
 }
 
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, instance_id) == 0);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, position) == 4);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1d) == 0x1d);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1e) == 0x1e);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, red) == 0x40);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, green) == 0x41);
-STATIC_ASSERT(offsetof(PC_EDBRIDGE, blue) == 0x42);
-
 void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     NUVEC end;
     NUVEC delta;
@@ -775,11 +767,6 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edbriDetermineNearest(1.0f);
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
-
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, position) == 0);
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
-STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 
 #pragma bss_seg(".bss$edbri_mtl")
 NUMTL *edbri_mtl = NULL;

@@ -44,18 +44,20 @@ extern "C" {
 #endif
 typedef struct VuVec VuVec;
 
-struct VuVec {
-    union {
-        struct {
-            f32 x;
-            f32 y;
-            f32 z;
+struct VuVec { // size 0x10
+
+    union { // size 0xc
+
+        struct {   // size 0xc
+            f32 x; // 0x0
+            f32 y; // 0x4
+            f32 z; // 0x8
         };
 
         NUVEC xyz;
-    };
+    }; // 0x0
 
-    f32 w;
+    f32 w; // 0xc
 #ifdef __cplusplus
     f32 Length();
     void fun_006b83b0();
@@ -67,8 +69,6 @@ struct VuVec {
     f32 fun_006b8440(const VuVec &other) const;
 #endif
 };
-
-STATIC_ASSERT(sizeof(struct VuVec) == 16);
 
 #ifdef __cplusplus
 struct DATAPTR;
@@ -107,7 +107,7 @@ struct EdManipulator;
 /* Editor object-class interface. MSVC lays
  * overloaded virtuals out in reverse declaration order, so the filtered
  * GetNextObject sits in slot 4 and the two-vector DistanceToObject in slot 27. */
-class EdClassInterface {
+class EdClassInterface { // size 0x8
   public:
     EdClassInterface() : object_class(NULL) {
     }
@@ -190,11 +190,8 @@ class EdClassInterface {
     virtual void Import() {
     }
 
-    EdClass *object_class;
+    EdClass *object_class; // 0x4
 };
-
-STATIC_ASSERT(sizeof(EdClassInterface) == 0x8);
-STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
 
 /* Intrusive list link; non-polymorphic, so it sits
  * after the vtable pointer of the classes that derive from it. */
@@ -216,7 +213,7 @@ template <class T> class CSListLink {
 
 /* Property-menu control bound to one EdRef of an edited object. Controls live
  * in theMemoryManager's size-class pools. */
-class EdControl {
+class EdControl { // size 0x10
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdControl));
@@ -236,13 +233,13 @@ class EdControl {
                                  struct eduiiattr_s *highlighted);
     i32 SelectSubObject();
     static void cbSelected(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
-    struct eduiitem_s *item;
-    EdRef *reference;
-    void *object;
+    struct eduiitem_s *item; // 0x4
+    EdRef *reference;        // 0x8
+    void *object;            // 0xc
     static EdInputContext *Input;
 };
 
-class EdEnumControl : public EdControl {
+class EdEnumControl : public EdControl { // size 0x14
   public:
     struct Item {
         char *name;
@@ -266,10 +263,10 @@ class EdEnumControl : public EdControl {
     static void cbButton(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     static void cbSelectItem(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     static Item YesNoItems[];
-    Item *items;
+    Item *items; // 0x10
 };
 
-class EdBitControl : public EdEnumControl {
+class EdBitControl : public EdEnumControl { // size 0x18
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdBitControl));
@@ -286,13 +283,13 @@ class EdBitControl : public EdEnumControl {
     static void cbButton(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     static void cbSelectItem(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
 
-    u32 bit_mask;
+    u32 bit_mask; // 0x14
 };
 
 /* Editor string: data[0] holds the pool block size, the text starts at
  * data + 1. */
-struct EdString {
-    char *data;
+struct EdString { // size 0x4
+    char *data;   // 0x0
 
     EdString() : data(NULL) {
     }
@@ -304,7 +301,7 @@ struct EdString {
 };
 
 /* Editor serialisation stream; mode is 1 reading, 2 writing. */
-class EdStream {
+class EdStream { // size 0x20
   public:
     EdStream();
 
@@ -338,13 +335,13 @@ class EdStream {
     i32 fun_006c1e00(i32 &value);
     i32 fun_006c1e20(u8 &value);
 
-    i32 version;
-    i32 mode;
-    i32 swap_endianness;
-    i32 unknown_10;
-    MemoryBuffer *memory_buffer;
-    MemoryBuffer *secondary_buffer;
-    i32 flags;
+    i32 version;                    // 0x04
+    i32 mode;                       // 0x08
+    i32 swap_endianness;            // 0x0c
+    i32 unknown_10;                 // 0x10
+    MemoryBuffer *memory_buffer;    // 0x14
+    MemoryBuffer *secondary_buffer; // 0x18
+    i32 flags;                      // 0x1c
 };
 
 /* Writes strings as a length-prefixed buffer through SerialiseBuffer. */
@@ -380,22 +377,22 @@ class EdInputStream : public EdStream {
 };
 
 /* A registered editor value type. */
-struct EdType {
-    char *name;
-    i32 size;
-    void (*serialise)(EdStream &, void *, i32);
+struct EdType {                                 // size 0xc
+    char *name;                                 // 0x0
+    i32 size;                                   // 0x4
+    void (*serialise)(EdStream &, void *, i32); // 0x8
 
     void Serialise(EdStream &stream);
 };
 
 /* A registered editor class: its member list and object interface. */
-struct EdClass {
-    char *name;
-    i32 flags;
-    EdRef *members;
-    EdRef *last_member;
-    i32 member_count;
-    EdClassInterface *object_interface; /* "interface" is an objbase.h macro */
+struct EdClass {                                                                // size 0x18
+    char *name;                                                                 // 0x00
+    i32 flags;                                                                  // 0x04
+    EdRef *members;                                                             // 0x08
+    EdRef *last_member;                                                         // 0x0c
+    i32 member_count;                                                           // 0x10
+    EdClassInterface *object_interface; /* "interface" is an objbase.h macro */ // 0x14
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
     i32 GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
@@ -412,19 +409,20 @@ struct EdClass {
     void SerialiseObject(EdStream &stream, void *object, EdClass *schema, struct EdRegistry *registry);
 };
 
-struct EdDefunctList {
+struct EdDefunctList { // size 0xc
+
     EdDefunctList() : first(NULL), last(NULL), count(0) {
     }
 
     void ReviveAll(i32 flags);
-    EdDefunctListEntry *first;
-    EdDefunctListEntry *last;
-    i32 count;
+    EdDefunctListEntry *first; // 0x0
+    EdDefunctListEntry *last;  // 0x4
+    i32 count;                 // 0x8
 };
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */
-class EdRef : public CSListLink<EdRef> {
+class EdRef : public CSListLink<EdRef> { // size 0x28
   public:
     EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
           EdControl *member_control, i32 group);
@@ -436,13 +434,13 @@ class EdRef : public CSListLink<EdRef> {
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 
-    i32 type_id;
-    char *name;
-    i32 member_offset;
-    i32 size;
-    i32 attributes;
-    EdControl *control;
-    i32 replication_group;
+    i32 type_id;           // 0x0c
+    char *name;            // 0x10
+    i32 member_offset;     // 0x14
+    i32 size;              // 0x18
+    i32 attributes;        // 0x1c
+    EdControl *control;    // 0x20
+    i32 replication_group; // 0x24
 
     i32 GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
@@ -452,19 +450,19 @@ class EdRef : public CSListLink<EdRef> {
 };
 
 /* A member reference bound to the object (or sub-object) that holds it. */
-struct EdMember {
-    void *object;
-    EdRef *reference;
+struct EdMember {     // size 0x8
+    void *object;     // 0x0
+    EdRef *reference; // 0x4
 
     i32 fun_006c1f60(i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 fun_006c1f90(i32 attribute, i32 requested_type, void *data, i32 data_size);
 };
 
 /* An editor object together with its class and the member it was picked by. */
-struct ClassObject {
-    EdClass *ed_class;
-    void *object;
-    EdRef *reference;
+struct ClassObject {   // size 0xc
+    EdClass *ed_class; // 0x0
+    void *object;      // 0x4
+    EdRef *reference;  // 0x8
 
     ClassObject(EdClass *object_class = NULL, void *object_data = NULL)
         : ed_class(object_class), object(object_data), reference(NULL) {
@@ -488,14 +486,14 @@ struct ClassObject {
     void GetName(char *destination, i32 size);
 };
 
-class EditorSettings {
+class EditorSettings { // size 0xc
   public:
     EditorSettings();
     virtual ~EditorSettings();
     void AddMenuItems(struct eduimenu_s *menu);
     void Serialise(EdStream &stream);
-    f32 cursor_radius;
-    i32 snap_terrain;
+    f32 cursor_radius; // 0x4
+    i32 snap_terrain;  // 0x8
 };
 #endif
 #undef SAGA_EDITOR_EDLEVELALL_H_PART
@@ -509,27 +507,28 @@ class EditorSettings {
 #ifdef __cplusplus
 
 /* The editor's type/class registry, theRegistry. */
-struct EdRegistry {
+struct EdRegistry { // size 0x44
+
     struct NameMapping {
         char *source;
         char *destination;
     };
 
-    i32 initialised;
-    EdType *types;
-    EdClass *classes;
-    NameMapping *mappings;
-    EdObjectNotifier **notifiers;
-    i32 (*create_object_guid)();
-    i32 type_capacity;
-    i32 type_count;
-    i32 class_capacity;
-    i32 class_count;
-    i32 mapping_capacity;
-    i32 object_count;
-    i32 notifier_capacity;
-    i32 notifier_count;
-    EdDefunctList defunct_objects;
+    i32 initialised;               // 0x00
+    EdType *types;                 // 0x04
+    EdClass *classes;              // 0x08
+    NameMapping *mappings;         // 0x0c
+    EdObjectNotifier **notifiers;  // 0x10
+    i32 (*create_object_guid)();   // 0x14
+    i32 type_capacity;             // 0x18
+    i32 type_count;                // 0x1c
+    i32 class_capacity;            // 0x20
+    i32 class_count;               // 0x24
+    i32 mapping_capacity;          // 0x28
+    i32 object_count;              // 0x2c
+    i32 notifier_capacity;         // 0x30
+    i32 notifier_count;            // 0x34
+    EdDefunctList defunct_objects; // 0x38
 
     void Initialise(VARIPTR &buffer, VARIPTR &, i32 max_classes, i32 max_types, i32 max_mappings, i32 max_notifiers);
     void Flush();
@@ -573,23 +572,23 @@ extern ClassEditor theClassEditor;
 /* The editor's per-frame input state: the camera
  * view, the cursor ray and 40 logical inputs with press/release/repeat
  * edges. */
-struct EdInputContext {
-    VuVec view_position;
-    VuVec view_direction;
-    VuVec ray_start;
-    VuVec ray_direction;
-    struct FRAME_PAD_PC *pad;
-    f32 delta_time;
-    f32 current_time;
-    f32 repeat_window;
-    u8 held[40];
-    u8 pressed[40];
-    u8 released[40];
-    u8 repeated[40];
-    u8 cleared[40];
-    f32 values[40];
-    f32 repeat_times[40];
-    u8 reserved_258[8];
+struct EdInputContext {       // size 0x260
+    VuVec view_position;      // 0x000
+    VuVec view_direction;     // 0x010
+    VuVec ray_start;          // 0x020
+    VuVec ray_direction;      // 0x030
+    struct FRAME_PAD_PC *pad; // 0x040
+    f32 delta_time;           // 0x044
+    f32 current_time;         // 0x048
+    f32 repeat_window;        // 0x04c
+    u8 held[40];              // 0x050
+    u8 pressed[40];           // 0x078
+    u8 released[40];          // 0x0a0
+    u8 repeated[40];          // 0x0c8
+    u8 cleared[40];           // 0x0f0
+    f32 values[40];           // 0x118
+    f32 repeat_times[40];     // 0x1b8
+    u8 reserved_258[8];       // 0x258
 
     void Set(i32 input, f32 value, f32 repeat_delay);
     void fun_006c1fc0(i32 input, i32 value, f32 repeat_delay);

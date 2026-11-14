@@ -40,74 +40,6 @@ extern i32 ai_onlyusepackfile;
 
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
 
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_creatures) == 0x3719c);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, creatures) == 0x371a4);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, nearest_creature) == 0x371ac);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, selected_creature) == 0x371b0);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, rotation_repeat) == 0x371b4);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_areas) == 0x383b8);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, areas) == 0x383c0);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, selected_area) == 0x383c8);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, hovered_area) == 0x383cc);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locators) == 0x3cbd8);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locator_sets) == 0x41200);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator_set) == 0x41208);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, antinode_pool) == 0x4120c);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_antinodes) == 0x4380c);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, antinodes) == 0x43814);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, selected_antinode) == 0x4381c);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, nearest_antinode) == 0x43820);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, preview_width) == 0x43824);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, flags) == 0x43828);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, level_directory) == 0x4382c);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, level_file) == 0x43830);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, level_subdirectory) == 0x43834);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, save_scratch) == 0x43838);
-
-STATIC_ASSERT(offsetof(EDAIAREA_s, position) == 0x18);
-
-STATIC_ASSERT(offsetof(EDAIAREA_s, rotation) == 0x30);
-
-STATIC_ASSERT(offsetof(EDAIAREA_s, flags) == 0x33);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, angle) == 0x34);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, check.path) == 0x3c);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, character_type) == 0x58);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, script_params) == 0x70);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, min_respawns) == 0x8d);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, view_distance) == 0x9c);
-
-STATIC_ASSERT(offsetof(EDAICREATURE_s, min_view_height) == 0xa8);
-
-STATIC_ASSERT(offsetof(EDLOCATOR_s, path_check.path) == 0x2c);
-
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
 /* Path-build view of the runtime path system (AIPATHSYS_PC is opaque here). */
@@ -121,11 +53,6 @@ typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
 } AI_PATH_BUILD_SYSTEM;
 
 STATIC_ASSERT(sizeof(((AIPATHROUTE *)0)->character_mask) == 16);
-STATIC_ASSERT(sizeof(EDAIPATHNODE_s) == 0xb4);
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, route_mask) == 0x96);
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, special) == 0x98);
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 
@@ -194,16 +121,6 @@ typedef struct AILOCALMESSAGE_PC {  // size 0x30
 } AILOCALMESSAGE_PC;
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_d20) == 0xd20);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
 typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
     u8 unknown[0x50];                      // 0x00
@@ -367,39 +284,17 @@ typedef struct ai_path_system_load_s {  // size 0x10
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_set) == 0x378);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-
 typedef struct condition_trigger_process_s { // size 0xa4
     u8 unknown_000[0xa0];                    // 0x00
     AIAREA_PC *trigger_area;                 // 0xa0
 } CONDITION_TRIGGER_PROCESS_PC;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
 extern char *(*GlobalCharacterNameFn)(i32);
 
@@ -503,79 +398,11 @@ extern i32 near_clip_at_cursor;
 
 f32 AiEditorNearClipOffsetPc = 5.0f;
 
-STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
-
-STATIC_ASSERT(offsetof(eduiitem_s, data) == 0xc);
-
-STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
-
-STATIC_ASSERT(offsetof(EDLOCATOR_s, name) == 8);
-
-STATIC_ASSERT(offsetof(edui_textpicker_s, value) == 0x4c);
-
-STATIC_ASSERT(offsetof(edui_textpicker_s, max_length) == 0x15a);
-
-STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
-
-STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, paths) == 0x4874);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator) == 0x3cbe0);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, name) == 8);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, nodes) == 0x18);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, current_node) == 0x20);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, current_route) == 0x28);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, flags) == 0x2c);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, routes) == 0x40);
-
-STATIC_ASSERT(sizeof(EDAIPATHROUTE_s) == 0x20);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, name) == 8);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, main_menu) == 4);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_locator_sets) == 0x411f8);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, locator_set_pool) == 0x3cbe8);
-
-STATIC_ASSERT(offsetof(EDLOCATORSET_s, name) == 8);
-
-STATIC_ASSERT(offsetof(EDLOCATORSET_s, locators) == 0x18);
-
-STATIC_ASSERT(sizeof(EDLOCATORSET_s) == 0x118);
-
-STATIC_ASSERT(offsetof(EDLOCATOR_s, position) == 0x18);
-
 extern const char MenuPcString75f2c0[3];
 
 extern const char MenuPcString75f2c4[4];
 
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, pending_locator_name) == 0x411e8);
-
-STATIC_ASSERT(offsetof(EDAIPATHROUTE_s, user_mask) == 0x10);
-
-STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
-
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
-
 extern i32 AiEditorRouteModeIdPc;
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, camera_position) == 0x28);
-
-STATIC_ASSERT(sizeof(EDLOCATOR_s) == 0x48);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, free_locators) == 0x3cbd0);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, nearest_locator) == 0x3cbe4);
 
 void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
@@ -605,26 +432,6 @@ static const char *AiEditorAntinodeTypeNamesPc[3] = {"Circle", "Ellipse", "Recta
 
 STATIC_ASSERT(sizeof(AiEditorAntinodeTypeNamesPc) == 12);
 
-STATIC_ASSERT(sizeof(EDANTINODE_s) == 76);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, radius) == 0x14);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, special.scene) == 0x20);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, special.special) == 0x24);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, special.display_special) == 0x28);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, base_radius) == 0x40);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, base_height) == 0x44);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, game_flags) == 0x48);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, link) == 0);
-
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 
 extern f32 AiEditorPickHeightTolerancePc;
@@ -633,23 +440,7 @@ extern void *(*GlobalCharacterHGobjFn)(i32);
 
 extern EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius);
 
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, cursor_platform) == 0x3c);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, position) == 8);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, lower_height) == 0x18);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, upper_height) == 0x1c);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, special_position) == 0x2c);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, rotation_offset) == 0x38);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, flags) == 0x3c);
-
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 
 /* Draw-family field views. */
 typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
@@ -657,28 +448,6 @@ typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
     u8 unknown_08[2];               // 0x8
     i16 flags;                      // 0xa
 } AI_PATH_DRAW_FLAGS;
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, path_walls) == 0x31b8c);
-
-STATIC_ASSERT(offsetof(EDAIPATH_s, other_node) == 0x24);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, route_mask) == 0x96);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, shared_node) == 0xb0);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
-
-STATIC_ASSERT(sizeof(EDAIPATHCNX_s) == 0x0c);
-
-STATIC_ASSERT(offsetof(EDAIPATHCNX_s, flags) == 4);
-
-STATIC_ASSERT(offsetof(EDAIPATHCNX_s, route_mask) == 8);
-
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
 
 extern i32 AiEditorPathsModeIdPc;
 
@@ -689,12 +458,6 @@ extern i32 AiEditorLocatorsModeIdPc;
 extern f32 AiEditorUpperHeightOverridePc;
 
 extern f32 AiEditorLowerHeightOverridePc;
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, radius) == 0x24);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, lower_height) == 0x28);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, upper_height) == 0x2c);
 
 extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
 
@@ -725,23 +488,7 @@ i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, 
 
 f32 AiEditorCursorRayScalePc = 1e-17f;
 
-STATIC_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
-
-STATIC_ASSERT(offsetof(EDAIPATHNODE_s, position) == 0x18);
-
-STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, fraction) == 0x10);
-
-STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, width) == 0x14);
-
-STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, angle) == 0x18);
-
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
-
-STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, pad_buttons) == 0xc3938);
-
-STATIC_ASSERT(offsetof(EDANTINODE_s, special) == 0x20);
-
-STATIC_ASSERT(sizeof(NUVEC) == 12);
 
 #pragma section(".data$AiEditorRouteYOffsetPc", read, write)
 __declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffsetPc = 0.1f;
@@ -802,8 +549,6 @@ typedef struct aiscript_const_record_s { // size 0x24
     char name[32];                       // 0x00
     f32 default_val;                     // 0x20
 } AISCRIPT_CONST_RECORD_PC;
-
-STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
 
 static void *load_pakfile = 0;
 
@@ -961,10 +706,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent_m
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
-
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
     AIAREA_PC *trigger_area;                        // 0xa0
@@ -975,33 +716,7 @@ typedef struct condition_trigger_player_reader_s { // size 0x2b8
     u64 membership;                                // 0x2b0
 } CONDITION_TRIGGER_PLAYER_READER_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, supporting_platform_id) == 0x27e);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_282) == 0x282);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_target) == 0xea4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 

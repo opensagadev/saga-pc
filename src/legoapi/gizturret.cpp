@@ -1,41 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(GIZTURRET_s, name) == 8);
-STATIC_ASSERT(offsetof(GIZTURRET_s, anim_set) == 0x18);
-STATIC_ASSERT(offsetof(GIZTURRET_s, primary_anim_obj) == 0x1c);
-STATIC_ASSERT(offsetof(GIZTURRET_s, position) == 0x24);
-STATIC_ASSERT(offsetof(GIZTURRET_s, opponent_origin) == 0x30);
-STATIC_ASSERT(offsetof(GIZTURRET_s, opponent_bounds) == 0x48);
-STATIC_ASSERT(offsetof(GIZTURRET_s, pitch) == 0x54);
-STATIC_ASSERT(offsetof(GIZTURRET_s, muzzle_offsets) == 0x74);
-STATIC_ASSERT(offsetof(GIZTURRET_s, relative_matrix) == 0xa4);
-STATIC_ASSERT(offsetof(GIZTURRET_s, opponent) == 0xe4);
-STATIC_ASSERT(offsetof(GIZTURRET_s, opponent_range) == 0xec);
-STATIC_ASSERT(offsetof(GIZTURRET_s, fire_interval) == 0xfc);
-STATIC_ASSERT(offsetof(GIZTURRET_s, behavior_flags) == 0x108);
-STATIC_ASSERT(offsetof(GIZTURRET_s, completion_score) == 0x10c);
-STATIC_ASSERT(offsetof(GIZTURRET_s, pickup_pitch) == 0x110);
-STATIC_ASSERT(offsetof(GIZTURRET_s, pickup_yaw) == 0x112);
-STATIC_ASSERT(offsetof(GIZTURRET_s, pickup_offset) == 0x114);
-STATIC_ASSERT(offsetof(GIZTURRET_s, pickup_radius) == 0x120);
-STATIC_ASSERT(offsetof(GIZTURRET_s, blowup_type) == 0x124);
-STATIC_ASSERT(offsetof(GIZTURRET_s, rotate_sfx) == 0x126);
-STATIC_ASSERT(offsetof(GIZTURRET_s, fire_sfx) == 0x12a);
-STATIC_ASSERT(offsetof(GIZTURRET_s, opponent_type) == 0x12c);
-STATIC_ASSERT(offsetof(GIZTURRET_s, state) == 0x12e);
-STATIC_ASSERT(offsetof(GIZTURRET_s, shots_required) == 0x131);
-STATIC_ASSERT(offsetof(GIZTURRET_s, shots_fired) == 0x132);
-STATIC_ASSERT(offsetof(GIZTURRET_s, y_rotation) == 0x134);
-STATIC_ASSERT(offsetof(GIZTURRET_s, destroy_sfx) == 0x138);
-STATIC_ASSERT(offsetof(GIZTURRET_s, flags) == 0x13a);
-STATIC_ASSERT(offsetof(GIZTURRETSYS_s, anim_pool) == 4);
-STATIC_ASSERT(offsetof(GIZTURRETSYS_s, count) == 8);
-STATIC_ASSERT(offsetof(GIZTURRETSYS_s, capacity) == 0xa);
-STATIC_ASSERT(offsetof(GIZTURRETSYS_s, opponent_cursor) == 0xc);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
-
 typedef struct TURRET_ANIM_DATA { // size 0x4
     u8 flags;                     // 0x0
     u8 role;                      // 0x1

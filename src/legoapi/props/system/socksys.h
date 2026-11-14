@@ -27,77 +27,47 @@ struct nugspline_s;
 struct numtx_s;
 struct nuspecial_handle_s;
 
-typedef struct sockrot_s {
-    u16 x;
-    u16 y;
+typedef struct sockrot_s { // size 0x4
+    u16 x;                 // 0x0
+    u16 y;                 // 0x2
 } SOCKROT_PC;
 
-STATIC_ASSERT(sizeof(SOCKROT_PC) == 4);
-STATIC_ASSERT(offsetof(SOCKROT_PC, x) == 0);
-STATIC_ASSERT(offsetof(SOCKROT_PC, y) == 2);
-
-typedef struct socksegment_s {
-    NUVEC min;
-    NUVEC max;
-    NUVEC planes[6];
-    NUVEC midpoint;
-    NUVEC next_midpoint;
-    f32 length;
-    f32 distance_from_start;
+typedef struct socksegment_s { // size 0x80
+    NUVEC min;                 // 0x00
+    NUVEC max;                 // 0x0c
+    NUVEC planes[6];           // 0x18
+    NUVEC midpoint;            // 0x60
+    NUVEC next_midpoint;       // 0x6c
+    f32 length;                // 0x78
+    f32 distance_from_start;   // 0x7c
 } SOCKSEGMENT_PC;
 
-STATIC_ASSERT(sizeof(SOCKSEGMENT_PC) == 0x80);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, min) == 0);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, max) == 0xc);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, planes) == 0x18);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, midpoint) == 0x60);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, next_midpoint) == 0x6c);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, length) == 0x78);
-STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, distance_from_start) == 0x7c);
+typedef struct sockposition_s { // size 0x38
+    u8 unknown_00;              // 0x00
+    i8 sock_index;              // 0x01
+    i16 segment;                // 0x02
+    f32 ratio;                  // 0x04
+    NUVEC midpoint;             // 0x08
+    NUVEC camera_position;      // 0x14
+    SOCKROT_PC camera_rotation; // 0x20
 
-typedef struct sockposition_s {
-    u8 unknown_00;
-    i8 sock_index;
-    i16 segment;
-    f32 ratio;
-    NUVEC midpoint;
-    NUVEC camera_position;
-    SOCKROT_PC camera_rotation;
-
-    union {
+    union { // size 0x4
         SOCKROT_PC midpoint_rotation;
 
-        struct {
-            u16 midpoint_pitch;
-            u16 heading;
+        struct {                // size 0x4
+            u16 midpoint_pitch; // 0x24
+            u16 heading;        // 0x26
         };
-    };
+    }; // 0x24
 
-    i16 next_segment;
-    i8 candidate_count;
-    u8 flags;
-    f32 distance;
-    f32 normalized_distance;
-    u32 candidate_mask;
+    i16 next_segment;        // 0x28
+    i8 candidate_count;      // 0x2a
+    u8 flags;                // 0x2b
+    f32 distance;            // 0x2c
+    f32 normalized_distance; // 0x30
+    u32 candidate_mask;      // 0x34
 } SOCKPOSITION_PC;
 
-STATIC_ASSERT(sizeof(SOCKPOSITION_PC) == 0x38);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, unknown_00) == 0x0);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, sock_index) == 0x1);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, segment) == 0x2);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, ratio) == 0x4);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint) == 0x8);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, camera_position) == 0x14);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, camera_rotation) == 0x20);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint_rotation) == 0x24);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, midpoint_pitch) == 0x24);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, heading) == 0x26);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, next_segment) == 0x28);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, candidate_count) == 0x2a);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, flags) == 0x2b);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, distance) == 0x2c);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, normalized_distance) == 0x30);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, candidate_mask) == 0x34);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -115,219 +85,146 @@ extern "C" {
 
 #if SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_PART == 2 && !defined(SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_STOP)
 
-typedef struct sock_s {
-    struct nugspline_s *cam;
-    struct nugspline_s *a;
-    struct nugspline_s *b;
-    struct nugspline_s *c;
-    struct nugspline_s *d;
-    struct nugspline_s *mid;
-    struct nugspline_s *left;
-    struct nugspline_s *right;
-    struct nugspline_s *look;
-    struct nugspline_s *lateral;
-    struct nugspline_s *trackin;
-    struct nugspline_s *limit;
-    u16 length;
-    u8 valid;
+typedef struct sock_s {          // size 0x13c
+    struct nugspline_s *cam;     // 0x000
+    struct nugspline_s *a;       // 0x004
+    struct nugspline_s *b;       // 0x008
+    struct nugspline_s *c;       // 0x00c
+    struct nugspline_s *d;       // 0x010
+    struct nugspline_s *mid;     // 0x014
+    struct nugspline_s *left;    // 0x018
+    struct nugspline_s *right;   // 0x01c
+    struct nugspline_s *look;    // 0x020
+    struct nugspline_s *lateral; // 0x024
+    struct nugspline_s *trackin; // 0x028
+    struct nugspline_s *limit;   // 0x02c
+    u16 length;                  // 0x030
+    u8 valid;                    // 0x032
 
-    union {
+    union { // size 0x1
         u8 unknown_33;
         u8 looping;
-    };
-    struct socksegment_s *segments;
-    struct sockrot_s *cam_rotations;
-    struct sockrot_s *mid_rotations;
-    NUVEC min;
-    NUVEC max;
-    NUVEC center;
-    f32 extent;
-    u16 flags;
-    u8 unknown_6a;
-    u8 unknown_6b;
-    u8 unknown_6c;
-    u8 look_ahead_segments;
-    u16 input_yaw;
+    }; // 0x033
+    struct socksegment_s *segments;  // 0x034
+    struct sockrot_s *cam_rotations; // 0x038
+    struct sockrot_s *mid_rotations; // 0x03c
+    NUVEC min;                       // 0x040
+    NUVEC max;                       // 0x04c
+    NUVEC center;                    // 0x058
+    f32 extent;                      // 0x064
+    u16 flags;                       // 0x068
+    u8 unknown_6a;                   // 0x06a
+    u8 unknown_6b;                   // 0x06b
+    u8 unknown_6c;                   // 0x06c
+    u8 look_ahead_segments;          // 0x06d
+    u16 input_yaw;                   // 0x06e
 
-    union {
-        struct {
-            u8 unknown_70;
-            u8 unknown_71;
-            u8 unknown_72;
-            u8 unknown_73;
+    union { // size 0x4
+
+        struct {           // size 0x4
+            u8 unknown_70; // 0x070
+            u8 unknown_71; // 0x071
+            u8 unknown_72; // 0x072
+            u8 unknown_73; // 0x073
         };
 
         f32 current_speed;
-    };
+    }; // 0x070
 
-    union {
-        struct {
-            u8 unknown_74;
-            u8 unknown_75;
-            u8 unknown_76;
-            u8 unknown_77;
+    union { // size 0x4
+
+        struct {           // size 0x4
+            u8 unknown_74; // 0x074
+            u8 unknown_75; // 0x075
+            u8 unknown_76; // 0x076
+            u8 unknown_77; // 0x077
         };
 
         f32 mid_force_inner_radius;
-    };
+    }; // 0x074
 
-    union {
-        struct {
-            u8 unknown_78;
-            u8 unknown_79;
-            u8 unknown_7a;
-            u8 unknown_7b;
+    union { // size 0x4
+
+        struct {           // size 0x4
+            u8 unknown_78; // 0x078
+            u8 unknown_79; // 0x079
+            u8 unknown_7a; // 0x07a
+            u8 unknown_7b; // 0x07b
         };
 
         f32 mid_force_outer_radius;
-    };
+    }; // 0x078
 
-    union {
+    union { // size 0x4
         f32 unknown_7c;
         f32 vertical_scale;
-    };
+    }; // 0x07c
 
-    f32 unknown_80;
-    f32 unknown_84;
-    f32 look_ratio_xz;
-    f32 look_ratio_y;
-    f32 camera_position_seek;
-    f32 camera_angle_seek;
-    f32 unknown_98;
-    f32 camera_local_x_ratio;
-    f32 camera_vertical_ratio;
-    f32 camera_lateral_ratio;
-    NUVEC camera_arena_offset;
-    f32 camera_rail_offset;
-    NUVEC camera_arena_blend;
-    f32 camera_distance_to_target;
-    f32 camera_pullback_ratio;
-    f32 single_player_pullback;
-    f32 two_player_pullback;
-    f32 camera_height_above_ground;
-    f32 camera_shake;
-    u32 overlap_exclusion_mask[2];
-    char name[16];
-    f32 overlap_blend_ratio;
-    struct nuspecial_handle_s *objects;
-    u16 object_count;
-    u8 unknown_fe;
-    u8 unknown_ff;
+    f32 unknown_80;                     // 0x080
+    f32 unknown_84;                     // 0x084
+    f32 look_ratio_xz;                  // 0x088
+    f32 look_ratio_y;                   // 0x08c
+    f32 camera_position_seek;           // 0x090
+    f32 camera_angle_seek;              // 0x094
+    f32 unknown_98;                     // 0x098
+    f32 camera_local_x_ratio;           // 0x09c
+    f32 camera_vertical_ratio;          // 0x0a0
+    f32 camera_lateral_ratio;           // 0x0a4
+    NUVEC camera_arena_offset;          // 0x0a8
+    f32 camera_rail_offset;             // 0x0b4
+    NUVEC camera_arena_blend;           // 0x0b8
+    f32 camera_distance_to_target;      // 0x0c4
+    f32 camera_pullback_ratio;          // 0x0c8
+    f32 single_player_pullback;         // 0x0cc
+    f32 two_player_pullback;            // 0x0d0
+    f32 camera_height_above_ground;     // 0x0d4
+    f32 camera_shake;                   // 0x0d8
+    u32 overlap_exclusion_mask[2];      // 0x0dc
+    char name[16];                      // 0x0e4
+    f32 overlap_blend_ratio;            // 0x0f4
+    struct nuspecial_handle_s *objects; // 0x0f8
+    u16 object_count;                   // 0x0fc
+    u8 unknown_fe;                      // 0x0fe
+    u8 unknown_ff;                      // 0x0ff
 
-    struct {
-        u8 value;
-        i8 edge;
-    } blend_entries[8];
+    struct {            // size 0x2
+        u8 value;       // 0x100
+        i8 edge;        // 0x101
+    } blend_entries[8]; // 0x100
 
-    union {
+    union { // size 0x4
         u32 unknown_110;
         u32 blend_count;
-    };
+    }; // 0x110
 
-    union {
+    union { // size 0x28
         u8 unknown_114[40];
 
-        struct {
-            f32 camera_character_close_lift;
-            f32 camera_min_distance;
-            f32 camera_range_of_effect;
-            f32 camera_tilt_angle_change;
-            f32 camera_tilt_angle_rate;
-            f32 camera_tilt_distance;
-            f32 camera_tilt_height;
-            f32 manual_camera_max_x;
-            f32 manual_camera_max_y;
-            i32 terrain_camera_inactive;
+        struct {                             // size 0x28
+            f32 camera_character_close_lift; // 0x114
+            f32 camera_min_distance;         // 0x118
+            f32 camera_range_of_effect;      // 0x11c
+            f32 camera_tilt_angle_change;    // 0x120
+            f32 camera_tilt_angle_rate;      // 0x124
+            f32 camera_tilt_distance;        // 0x128
+            f32 camera_tilt_height;          // 0x12c
+            f32 manual_camera_max_x;         // 0x130
+            f32 manual_camera_max_y;         // 0x134
+            i32 terrain_camera_inactive;     // 0x138
         };
-    };
+    }; // 0x114
 } SOCK_PC;
 
-STATIC_ASSERT(sizeof(SOCK_PC) == 0x13c);
-STATIC_ASSERT(offsetof(SOCK_PC, cam) == 0x0);
-STATIC_ASSERT(offsetof(SOCK_PC, a) == 0x4);
-STATIC_ASSERT(offsetof(SOCK_PC, b) == 0x8);
-STATIC_ASSERT(offsetof(SOCK_PC, c) == 0xc);
-STATIC_ASSERT(offsetof(SOCK_PC, d) == 0x10);
-STATIC_ASSERT(offsetof(SOCK_PC, mid) == 0x14);
-STATIC_ASSERT(offsetof(SOCK_PC, left) == 0x18);
-STATIC_ASSERT(offsetof(SOCK_PC, right) == 0x1c);
-STATIC_ASSERT(offsetof(SOCK_PC, look) == 0x20);
-STATIC_ASSERT(offsetof(SOCK_PC, lateral) == 0x24);
-STATIC_ASSERT(offsetof(SOCK_PC, trackin) == 0x28);
-STATIC_ASSERT(offsetof(SOCK_PC, limit) == 0x2c);
-STATIC_ASSERT(offsetof(SOCK_PC, length) == 0x30);
-STATIC_ASSERT(offsetof(SOCK_PC, valid) == 0x32);
-STATIC_ASSERT(offsetof(SOCK_PC, segments) == 0x34);
-STATIC_ASSERT(offsetof(SOCK_PC, cam_rotations) == 0x38);
-STATIC_ASSERT(offsetof(SOCK_PC, mid_rotations) == 0x3c);
-STATIC_ASSERT(offsetof(SOCK_PC, min) == 0x40);
-STATIC_ASSERT(offsetof(SOCK_PC, max) == 0x4c);
-STATIC_ASSERT(offsetof(SOCK_PC, center) == 0x58);
-STATIC_ASSERT(offsetof(SOCK_PC, extent) == 0x64);
-STATIC_ASSERT(offsetof(SOCK_PC, flags) == 0x68);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_6a) == 0x6a);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_6b) == 0x6b);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_6c) == 0x6c);
-STATIC_ASSERT(offsetof(SOCK_PC, look_ahead_segments) == 0x6d);
-STATIC_ASSERT(offsetof(SOCK_PC, input_yaw) == 0x6e);
-STATIC_ASSERT(offsetof(SOCK_PC, current_speed) == 0x70);
-STATIC_ASSERT(offsetof(SOCK_PC, mid_force_inner_radius) == 0x74);
-STATIC_ASSERT(offsetof(SOCK_PC, mid_force_outer_radius) == 0x78);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_7c) == 0x7c);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_80) == 0x80);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_84) == 0x84);
-STATIC_ASSERT(offsetof(SOCK_PC, look_ratio_xz) == 0x88);
-STATIC_ASSERT(offsetof(SOCK_PC, look_ratio_y) == 0x8c);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_position_seek) == 0x90);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_angle_seek) == 0x94);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_98) == 0x98);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_local_x_ratio) == 0x9c);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_vertical_ratio) == 0xa0);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_lateral_ratio) == 0xa4);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_arena_offset) == 0xa8);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_rail_offset) == 0xb4);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_arena_blend) == 0xb8);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_distance_to_target) == 0xc4);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_pullback_ratio) == 0xc8);
-STATIC_ASSERT(offsetof(SOCK_PC, single_player_pullback) == 0xcc);
-STATIC_ASSERT(offsetof(SOCK_PC, two_player_pullback) == 0xd0);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_height_above_ground) == 0xd4);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_shake) == 0xd8);
-STATIC_ASSERT(offsetof(SOCK_PC, overlap_exclusion_mask) == 0xdc);
-STATIC_ASSERT(offsetof(SOCK_PC, name) == 0xe4);
-STATIC_ASSERT(offsetof(SOCK_PC, overlap_blend_ratio) == 0xf4);
-STATIC_ASSERT(offsetof(SOCK_PC, objects) == 0xf8);
-STATIC_ASSERT(offsetof(SOCK_PC, object_count) == 0xfc);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_fe) == 0xfe);
-STATIC_ASSERT(offsetof(SOCK_PC, unknown_ff) == 0xff);
-STATIC_ASSERT(offsetof(SOCK_PC, blend_entries) == 0x100);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_character_close_lift) == 0x114);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_min_distance) == 0x118);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_range_of_effect) == 0x11c);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_tilt_angle_change) == 0x120);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_tilt_angle_rate) == 0x124);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_tilt_distance) == 0x128);
-STATIC_ASSERT(offsetof(SOCK_PC, camera_tilt_height) == 0x12c);
-STATIC_ASSERT(offsetof(SOCK_PC, manual_camera_max_x) == 0x130);
-STATIC_ASSERT(offsetof(SOCK_PC, manual_camera_max_y) == 0x134);
-STATIC_ASSERT(offsetof(SOCK_PC, terrain_camera_inactive) == 0x138);
-STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
-STATIC_ASSERT(offsetof(SOCK_PC, blend_count) == 0x110);
-
-typedef struct socksys_s {
-    SOCK_PC *socks;
-    i32 count;
+typedef struct socksys_s { // size 0x8
+    SOCK_PC *socks;        // 0x0
+    i32 count;             // 0x4
 } SOCKSYS_PC;
 
-STATIC_ASSERT(sizeof(SOCKSYS_PC) == 8);
-STATIC_ASSERT(offsetof(SOCKSYS_PC, socks) == 0);
-STATIC_ASSERT(offsetof(SOCKSYS_PC, count) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
     void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction);
     void SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
-    STATIC_ASSERT(offsetof(SOCK_PC, vertical_scale) == 0x7c);
     void SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION_PC *, struct numtx_s *, i32, i32);
     void ComplexSockPosition(SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *);
     f32 MidDistanceFromSockStart(SOCKSYS_PC *, SOCKPOSITION_PC *);

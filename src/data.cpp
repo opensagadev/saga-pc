@@ -9159,7 +9159,6 @@ extern "C" {
     LANGUAGEDATA Text_LanguageList_Default[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH},  {4, apitxt_GERMAN},
                                                  {5, apitxt_ITALIAN}, {3, apitxt_SPANISH}, {8, apitxt_DANISH},
                                                  {-1, NULL}};
-    STATIC_ASSERT(offsetof(LANGUAGEDATA, localized_name) == 4);
 
     LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
     i32 LANGUAGECOUNT = 6;

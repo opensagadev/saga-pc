@@ -1,12 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(CHARPIVOT_PC) == 0x14);
-STATIC_ASSERT(offsetof(CHARPIVOT_PC, animation) == 4);
-STATIC_ASSERT(offsetof(CHARPIVOT_PC, point_of_interest) == 6);
-STATIC_ASSERT(offsetof(CHARPIVOT_PC, start_frame) == 8);
-STATIC_ASSERT(offsetof(CHARPIVOT_PC, end_frame) == 0xc);
-STATIC_ASSERT(offsetof(CHARPIVOT_PC, character_id) == 0x10);
-
 static CHARPIVOT_PC *CharPivot = 0;
 
 void CharPivot_Init(CHARPIVOT_PC *table) {

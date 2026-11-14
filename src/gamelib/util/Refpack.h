@@ -5,15 +5,15 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct memorymanager_s {
-    u32 buffer_start;
-    u32 buffer_end;
-    u32 *start_anchor;
-    u32 *end_anchor;
-    u32 unknown_10;
-    u32 unknown_14;
-    u32 size;
-    void *free_lists[139];
+typedef struct memorymanager_s { // size 0x248
+    u32 buffer_start;            // 0x000
+    u32 buffer_end;              // 0x004
+    u32 *start_anchor;           // 0x008
+    u32 *end_anchor;             // 0x00c
+    u32 unknown_10;              // 0x010
+    u32 unknown_14;              // 0x014
+    u32 size;                    // 0x018
+    void *free_lists[139];       // 0x01c
 #ifdef __cplusplus
     void *AllocPool(u32 size, i32 clear);
     void FreePool(void *memory, u32 size);
@@ -22,12 +22,6 @@ typedef struct memorymanager_s {
 #endif
 } MEMORYMANAGER;
 
-STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, buffer_end) == 0x4);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, start_anchor) == 0x8);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, end_anchor) == 0xc);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, size) == 0x18);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, free_lists) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif

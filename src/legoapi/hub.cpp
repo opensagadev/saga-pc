@@ -8,46 +8,15 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
 extern "C" void LostTempleC_ResetPc(WORLDINFO *);
 extern "C" void LostTempleC_UpdatePc(WORLDINFO *);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
-STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, sock_index) == 1);
-STATIC_ASSERT(offsetof(SOCKPOSITION_PC, segment) == 2);
-STATIC_ASSERT(sizeof(SOCKPOSITION_PC) == 0x38);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_position) == 0x28);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_radius) == 0x58);
-STATIC_ASSERT(offsetof(GAMEANIMSET, flags) == 0xa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) == 0x670);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_obstacle_sys) == 0x46a4);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) == 0x68);
 /* Draw3D on PC has no sign/episode scene branch. */
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
 struct GIZBUILDIT_PC;
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, start_mtx) == 0);
 /* Takes action, player0 and player1; the last two are char* values tested
  * for nonzero rather than string contents. */
 extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32, i32);
 extern "C" char HubButtonStringBufferPc[];
-extern "C" {
-    STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-}
+extern "C" {}
 
 extern "C" {
     LEVELFIXUP_PC LevelFixupStartupPc[2] = {{"losttemple_c", &UpdateSockets_LDATA, NULL, NULL,

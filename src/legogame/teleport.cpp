@@ -16,8 +16,6 @@ typedef struct TELEPORT_CONFIG {      // size 0xfc
     NUMTX flap2_matrix;               // 0xbc
 } TELEPORT_CONFIG;
 
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-
 typedef struct WORLD_TELEPORT_CONFIG { // size 0x4688
     u8 unknown_00[0x104];              // 0x0000
     VARIPTR giz_buffer;                // 0x0104
@@ -80,14 +78,6 @@ typedef struct TELEPORT_VARIANT_VIEW { // size 0x7c0
     u32 forwards : 1;                  // 0x7bc:10
 } TELEPORT_VARIANT_VIEW;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
 STATIC_ASSERT(sizeof(((TELEPORT_MOTION_PC *)0)->flap_angle) == 4);
 
 typedef struct {

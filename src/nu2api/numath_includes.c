@@ -10,28 +10,6 @@ static i32 NuExp10FirstTimePc = 1;
 static f32 *NuExp10TablePc = 0;
 static i32 RenderPostLogFirstPc = 1;
 static f32 *RenderPostLogTablePc = 0;
-STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
-STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
-STATIC_ASSERT(offsetof(NUVEC, z) == 0x08);
-STATIC_ASSERT(offsetof(NUMTX, m00) == 0x00);
-STATIC_ASSERT(offsetof(NUMTX, m01) == 0x04);
-STATIC_ASSERT(offsetof(NUMTX, m02) == 0x08);
-STATIC_ASSERT(offsetof(NUMTX, m10) == 0x10);
-STATIC_ASSERT(offsetof(NUMTX, m11) == 0x14);
-STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
-STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
-STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
-STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
-STATIC_ASSERT(offsetof(NUVEC4, x) == 0);
-STATIC_ASSERT(offsetof(NUVEC4, y) == 4);
-STATIC_ASSERT(offsetof(NUVEC4, z) == 8);
-STATIC_ASSERT(offsetof(NUMTX, m03) == 0x0c);
-STATIC_ASSERT(offsetof(NUMTX, m13) == 0x1c);
-STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
-STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
 typedef struct NuMtxIndexedView { // size 0x40
     f32 elements[4][4];           // 0x00

@@ -432,10 +432,6 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
     i16 find_char;                        // 0x0
 } AREA_MISSION_DATA_READER;
 
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_other_index) == 0x9c);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
 #define AREA_STORY_MODELS_PC Area_StoryModelList
 
 static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id,
@@ -825,7 +821,6 @@ typedef struct area_loading_pad_reader_pc_s { // size 0x60
     u8 unknown_000c[0x54];                    // 0x0c
 } AREA_LOADING_PAD_READER_PC;
 
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_04) == 4);
 extern "C" u8 *Game_LevelSave;
 
 extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
@@ -855,20 +850,6 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINF
 }
 
 /* Append to areas.cpp; native573780316 +5738c0295. */
-STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counter_count) == 0x7f);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, gizmo) == 0);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_gizmo) == 4);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
-STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PICKUP_PC) == 0x30);
-STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PC) == 0x1e8);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, red) == 0x1e4);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, green) == 0x1e5);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, blue) == 0x1e6);
-STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 
 extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
                                                           void *output_pointer) {
@@ -940,9 +921,6 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP_PC
     }
 }
 
-STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counter_count) == 0x7f);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, super_counters) == 0x80);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_special) == 8);
 STATIC_ASSERT(sizeof(((AREA_SUPERCOUNTER_PICKUP_PC *)0)->position_special) == 12);
 
 extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {

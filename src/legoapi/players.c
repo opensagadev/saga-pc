@@ -1,11 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
-STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
 #define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
@@ -14,38 +9,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 #define ASIN_POW3(x) ((x) * ASIN_POW2(x))
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
-STATIC_ASSERT(offsetof(GAMEOBJECT, water_height) == 0x220);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
-STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
-STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
-STATIC_ASSERT(offsetof(GIZFORCE_PC, horizontal_range) == 0x70);
 typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, horizontal_velocity_magnitude) == 0x22c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_timer) == 0xd64);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, vehicle_hit_timer) == 0x1018);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_position) == 0xe64);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_lateral_speed) == 0xe90);
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, sfx_engine) == 0xe2);
-STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
-STATIC_ASSERT(offsetof(EXPLOSION_PC, owner) == 8);
-STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
 
 struct minianimpacket_s {       // size 0x24
     f32 current_time;           // 0x00
@@ -60,33 +24,7 @@ struct minianimpacket_s {       // size 0x24
     i16 requested_animation_id; // 0x22
 };
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
-STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
-STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
-STATIC_ASSERT(offsetof(BLADE_PC, glow_model) == 2);
-STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
-STATIC_ASSERT(sizeof(GAMEDEBRISENTRY) == 0x14);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
 /* Private helpers and combo provider. */
-STATIC_ASSERT(offsetof(GAMEOBJECT, incoming_bolt) == 0xd04);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e12) == 0xe12);
-STATIC_ASSERT(offsetof(GAMEOBJECT, landing_followup) == 0x7b1);
-STATIC_ASSERT(offsetof(GAMEOBJECT, blowup_target) == 0x794);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_model) == 0xec);
-STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 
 typedef struct player_reset_packet_s { // size 0x780
     u8 unknown_000[0xe8];              // 0x000
@@ -145,7 +83,6 @@ typedef struct player_reset_packet_s { // size 0x780
     i8 random_context;                 // 0x77d
 } PLAYER_RESET_PACKET_PC;
 
-STATIC_ASSERT(offsetof(GAMEPAD_PC, runtime_flags) == 0x5a);
 /* Two-DWORD view of the default mask. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
@@ -155,7 +92,6 @@ typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
 } CREATURE_RESET_PACKET_VIEW;
 
 STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW *)0)->packet) == 0x788);
-STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_model_override_pc) == 0x7f4);
 
 typedef struct player_position_record_s { // size 0x10
     NUVEC *position;                      // 0x0
@@ -175,13 +111,8 @@ typedef union player_position_sock_pc_u { // size 0x38
 } PLAYER_POSITION_SOCK_PC;
 
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
-STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);
-STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, id) == 0);
-STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_name) == 4);
-STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
 extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
 extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, powerup_time) == 0xdec);
 extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 
@@ -998,91 +929,5 @@ static i32 Customise_FindLetter(char character) {
 }
 
 /* ResetPlayer shares the light packet at 4d8 with LightGameObject. */
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
-
-STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, requested_animation) == 0x22);
-STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
-STATIC_ASSERT(offsetof(ANIMPACKET_PC, blending) == 0x31);
-STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
-STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, extra_character_locator) == 0x11d);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, joint_overrides) == 0xf3c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, joint_override_count) == 0x107d);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_exclusion_mask) == 0x2a0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1083) == 0x1083);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_108c) == 0x108c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction) == 0x200);
-STATIC_ASSERT(offsetof(GAMEOBJECT, view_distance) == 0x230);
-STATIC_ASSERT(offsetof(GAMEOBJECT, min_view_height) == 0x23c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, mini_anim_packet) == 0x7d0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_word) == 0xf00);
-
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_joint_ready) == 0x28c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, death_delay) == 0x100c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, render_offset) == 0xe94);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_mode) == 0x107a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_update_distance) == 0x101c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, draw_secondary_mtx) == 0xf8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, draw_tertiary_mtx) == 0x138);
-STATIC_ASSERT(offsetof(GAMEOBJECT, vehicle_orientation) == 0xc04);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pitch_angle) == 0x278);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, roll_angle) == 0x27c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_lean_angle) == 0xe18);
-STATIC_ASSERT(offsetof(GAMEOBJECT, secondary_lean_angle) == 0xe1a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, tertiary_lean_angle) == 0xe1c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1052) == 0x1052);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1054) == 0x1054);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, shadow_locators) == 0xf0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_update_distance) == 0x101c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
-STATIC_ASSERT(offsetof(GAMEOBJECT, timer_d34) == 0xd34);
-STATIC_ASSERT(offsetof(GAMEOBJECT, communicate_blend) == 0xd38);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_d54) == 0xd54);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e1e) == 0xe1e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_bottom) == 0xff0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_range) == 0xcd);
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);

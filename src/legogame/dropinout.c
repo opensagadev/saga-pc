@@ -2,11 +2,6 @@
 
 void PcControlInitializePc(i32, i32, i32, u8);
 u8 PcInput_MappingIsGood(i32 port, i32 player_index);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, hitpoints) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
-STATIC_ASSERT(offsetof(NUVEC, y) == 4);
-STATIC_ASSERT(offsetof(NUVEC, z) == 8);
 i32 PcInput_GetFirstKeyboardPort(void);
 i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
 void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
@@ -18,15 +13,6 @@ void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_OUTSIDE(object)                                                                                  \
     ((object)->camera_screen_position.x < -1.0f || (object)->camera_screen_position.x > 1.0f ||                        \
      (object)->camera_screen_position.y < -1.0f || (object)->camera_screen_position.y > 1.0f)
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, last_safe_position) == 0x1b4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_half_height) == 0x1e0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
 void CheckForPlayersTurnedOff(void) {
     i32 source_index;

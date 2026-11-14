@@ -12,12 +12,11 @@
 
 #ifdef __cplusplus
 
-class NuDeferredFilter : public NuDeferredFilterGen {
+class NuDeferredFilter : public NuDeferredFilterGen { // size 0x2f8
   public:
     void ResizeTexturesPc(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
 };
 
-STATIC_ASSERT(sizeof(NuDeferredFilter) == 0x2f8);
 #endif

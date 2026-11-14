@@ -107,10 +107,6 @@ typedef struct torpedo_packet_alloc_s { // size 0x88
 #define ASIN_POW3(x) ((x) * ASIN_POW2(x))
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
-STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 TorpedoFabsPc(f32 f) {

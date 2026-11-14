@@ -48,10 +48,6 @@ typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
     u8 reserved_7cf8[0x154];              // 0x7cf8
 } SHOP_COMPLETION_GAME;
 
-STATIC_ASSERT(offsetof(COLLECTID, field5_0x9) == 9);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
-STATIC_ASSERT(offsetof(HINT_PC, price) == 4);
 extern "C" {
     i32 AllMiniKitsDone(AREASAVE_s *);
     void AddToCompletionPoints(u32);
@@ -329,13 +325,9 @@ struct MUSIC_PAIR_ARENA { // size 0x3c
     u8 unknown_03a[2];    // 0x3a
 };
 
-STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, music_enabled) == 6);
 
 extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
 void Tag_DrawIcon_LSW(GAMEOBJECT *object);

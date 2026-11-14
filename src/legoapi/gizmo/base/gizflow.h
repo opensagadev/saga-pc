@@ -20,110 +20,74 @@
 struct GIZACTIONDEF_PC;
 struct GIZFLOW_PC;
 
-typedef struct GIZFLOWPROGRESS_PC {
-    i32 valid;
-    u32 active[16];
-    u32 triggered[16];
-    u32 completed[16];
-    u32 latched[16];
-    u32 output_state[16];
+typedef struct GIZFLOWPROGRESS_PC { // size 0x144
+    i32 valid;                      // 0x000
+    u32 active[16];                 // 0x004
+    u32 triggered[16];              // 0x044
+    u32 completed[16];              // 0x084
+    u32 latched[16];                // 0x0c4
+    u32 output_state[16];           // 0x104
 } GIZFLOWPROGRESS_PC;
 
-typedef struct FLOWBOXCONDITION {
-    u8 operation;
-    u8 threshold;
+typedef struct FLOWBOXCONDITION { // size 0x2
+    u8 operation;                 // 0x0
+    u8 threshold;                 // 0x1
 } FLOWBOXCONDITION;
-
-STATIC_ASSERT(offsetof(FLOWBOXCONDITION, operation) == 0);
-STATIC_ASSERT(offsetof(FLOWBOXCONDITION, threshold) == 1);
 
 typedef struct FLOWBOX_PC FLOWBOX_PC;
 typedef struct FLOWBOXGIZMOREF FLOWBOXGIZMOREF;
 typedef struct FLOWBOXGIZMODATA FLOWBOXGIZMODATA;
 
-struct FLOWBOX_PC {
-    u8 parent_count;
-    u8 loop_parent_count;
-    u8 child_count;
-    u8 type;
+struct FLOWBOX_PC {       // size 0x20
+    u8 parent_count;      // 0x00
+    u8 loop_parent_count; // 0x01
+    u8 child_count;       // 0x02
+    u8 type;              // 0x03
 
-    union {
+    union { // size 0x4
         i32 runtime_id;
 
-        struct {
-            u8 ai_trigger_group;
-            u8 unknown_05_trigger_group[3];
+        struct {                            // size 0x4
+            u8 ai_trigger_group;            // 0x04
+            u8 unknown_05_trigger_group[3]; // 0x05
         };
-    };
+    }; // 0x04
 
-    u8 last_process_frame;
-    u8 loop_checksum;
+    u8 last_process_frame; // 0x08
+    u8 loop_checksum;      // 0x09
 
-    union {
+    union { // size 0x2
         u16 state_flags;
 
-        struct {
-            u8 state_flags_low;
-            u8 state_flags_high;
+        struct {                 // size 0x2
+            u8 state_flags_low;  // 0x0a
+            u8 state_flags_high; // 0x0b
         };
 
-        struct {
-            u16 enabled : 1;
-            u16 reserved_state_flags : 15;
+        struct {                           // size 0x2
+            u16 enabled : 1;               // 0x0a:0
+            u16 reserved_state_flags : 15; // 0x0a:1
         };
-    };
+    }; // 0x0a
 
-    void *data;
-    FLOWBOX_PC **parents;
-    FLOWBOX_PC **children;
-    u8 *output_indices;
-    char *name;
+    void *data;            // 0x0c
+    FLOWBOX_PC **parents;  // 0x10
+    FLOWBOX_PC **children; // 0x14
+    u8 *output_indices;    // 0x18
+    char *name;            // 0x1c
 };
 
-struct FLOWBOXGIZMOREF {
-    void *gizmo;
-    char *name;
+struct FLOWBOXGIZMOREF { // size 0x8
+    void *gizmo;         // 0x0
+    char *name;          // 0x4
 };
 
-struct FLOWBOXGIZMODATA {
-    i32 gizmo_count;
-    i32 capacity;
-    FLOWBOXGIZMOREF **gizmos;
+struct FLOWBOXGIZMODATA {     // size 0xc
+    i32 gizmo_count;          // 0x0
+    i32 capacity;             // 0x4
+    FLOWBOXGIZMOREF **gizmos; // 0x8
 };
 
-STATIC_ASSERT(sizeof(GIZFLOWPROGRESS_PC) == 0x144);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, valid) == 0x0);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, active) == 0x4);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, triggered) == 0x44);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, completed) == 0x84);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, latched) == 0xc4);
-STATIC_ASSERT(offsetof(GIZFLOWPROGRESS_PC, output_state) == 0x104);
-
-STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, parent_count) == 0x0);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, loop_parent_count) == 0x1);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, child_count) == 0x2);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, type) == 0x3);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, runtime_id) == 0x4);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, last_process_frame) == 0x8);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, loop_checksum) == 0x9);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags) == 0xa);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_low) == 0xa);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_high) == 0xb);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, parents) == 0x10);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, children) == 0x14);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, output_indices) == 0x18);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, name) == 0x1c);
-
-STATIC_ASSERT(sizeof(FLOWBOXGIZMOREF) == 0x8);
-STATIC_ASSERT(offsetof(FLOWBOXGIZMOREF, gizmo) == 0x0);
-STATIC_ASSERT(offsetof(FLOWBOXGIZMOREF, name) == 0x4);
-
-STATIC_ASSERT(sizeof(FLOWBOXGIZMODATA) == 0xc);
-STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA, gizmo_count) == 0x0);
-STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA, capacity) == 0x4);
-STATIC_ASSERT(offsetof(FLOWBOXGIZMODATA, gizmos) == 0x8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -142,28 +106,19 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_STOP)
 
-typedef struct FLOWBOXACTION {
-    struct FLOWBOXACTION *next;
-    char **parameters;
-    i32 parameter_count;
-    struct GIZACTIONDEF_PC *definition;
+typedef struct FLOWBOXACTION {          // size 0x10
+    struct FLOWBOXACTION *next;         // 0x0
+    char **parameters;                  // 0x4
+    i32 parameter_count;                // 0x8
+    struct GIZACTIONDEF_PC *definition; // 0xc
 } FLOWBOXACTION;
 
-typedef struct FLOWBOX_CALLBACKS_PC {
-    void (*reset)(struct GIZFLOW_PC *, FLOWBOX_PC *);
-    i32 (*process)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8);
-    i32 (*check_output)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8);
+typedef struct FLOWBOX_CALLBACKS_PC {                           // size 0xc
+    void (*reset)(struct GIZFLOW_PC *, FLOWBOX_PC *);           // 0x0
+    i32 (*process)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8);      // 0x4
+    i32 (*check_output)(struct GIZFLOW_PC *, FLOWBOX_PC *, u8); // 0x8
 } FLOWBOX_CALLBACKS_PC;
 
-STATIC_ASSERT(sizeof(FLOWBOXACTION) == 0x10);
-STATIC_ASSERT(offsetof(FLOWBOXACTION, next) == 0);
-STATIC_ASSERT(offsetof(FLOWBOXACTION, parameters) == 4);
-STATIC_ASSERT(offsetof(FLOWBOXACTION, parameter_count) == 8);
-STATIC_ASSERT(offsetof(FLOWBOXACTION, definition) == 0xc);
-STATIC_ASSERT(sizeof(FLOWBOX_CALLBACKS_PC) == 0xc);
-STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, reset) == 0);
-STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, process) == 4);
-STATIC_ASSERT(offsetof(FLOWBOX_CALLBACKS_PC, check_output) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

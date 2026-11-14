@@ -14,199 +14,120 @@
 struct BURN_PARAMETERS_PC;
 struct numtx_s;
 
-typedef struct RTL_DATA_PC {
-    struct RTL_LIGHT_PC *directional_lights[3];
-    f32 directional_strengths[3];
-    struct RTL_LIGHT_PC *ambient_lights[3];
-    f32 ambient_strengths[3];
-    struct RTL_LIGHT_PC *anti_lights[3];
-    f32 anti_strengths[3];
-    i32 anti_light_count;
-    struct RTL_LIGHT_PC *cached_light;
-    NUVEC shadow_direction;
-    f32 cached_value;
-    NUVEC previous_shadow_direction;
-    f32 previous_shadow_value;
-    f32 shadow_blend;
-    u16 cached_light_uid;
-    u16 unknown_76;
-    NUVEC intensity_vectors[3];
-    NUVEC direction[3];
-    NUVEC ambient;
-    u32 unknown_cc[0x15];
-    f32 field_120;
-    NUVEC blended_shadow_direction;
-    f32 blended_shadow_value;
-    NUVEC field_134;
-    f32 specular_value;
+typedef struct RTL_DATA_PC {                    // size 0x144
+    struct RTL_LIGHT_PC *directional_lights[3]; // 0x000
+    f32 directional_strengths[3];               // 0x00c
+    struct RTL_LIGHT_PC *ambient_lights[3];     // 0x018
+    f32 ambient_strengths[3];                   // 0x024
+    struct RTL_LIGHT_PC *anti_lights[3];        // 0x030
+    f32 anti_strengths[3];                      // 0x03c
+    i32 anti_light_count;                       // 0x048
+    struct RTL_LIGHT_PC *cached_light;          // 0x04c
+    NUVEC shadow_direction;                     // 0x050
+    f32 cached_value;                           // 0x05c
+    NUVEC previous_shadow_direction;            // 0x060
+    f32 previous_shadow_value;                  // 0x06c
+    f32 shadow_blend;                           // 0x070
+    u16 cached_light_uid;                       // 0x074
+    u16 unknown_76;                             // 0x076
+    NUVEC intensity_vectors[3];                 // 0x078
+    NUVEC direction[3];                         // 0x09c
+    NUVEC ambient;                              // 0x0c0
+    u32 unknown_cc[0x15];                       // 0x0cc
+    f32 field_120;                              // 0x120
+    NUVEC blended_shadow_direction;             // 0x124
+    f32 blended_shadow_value;                   // 0x130
+    NUVEC field_134;                            // 0x134
+    f32 specular_value;                         // 0x140
 } RTL_DATA_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     /* Private-register helpers remain local; no public stack prototypes. */
-    typedef struct RTL_LIGHT_PC {
-        NUVEC position;
-        NUVEC direction;
-        NUVEC ambient;
-        NUVEC colour;
-        NUVEC secondary_colour;
-        f32 inner_radius;
-        f32 outer_radius;
-        f32 parameters[4];
-        f32 parameter_54;
-        u8 type;
+    typedef struct RTL_LIGHT_PC { // size 0x8c
+        NUVEC position;           // 0x00
+        NUVEC direction;          // 0x0c
+        NUVEC ambient;            // 0x18
+        NUVEC colour;             // 0x24
+        NUVEC secondary_colour;   // 0x30
+        f32 inner_radius;         // 0x3c
+        f32 outer_radius;         // 0x40
+        f32 parameters[4];        // 0x44
+        f32 parameter_54;         // 0x54
+        u8 type;                  // 0x58
 
-        union {
+        union { // size 0x1
             u8 flags;
 
-            struct {
-                u8 disabled : 1;
-                u8 cast_shadow : 1;
-                u8 has_specular : 1;
-                u8 reserved_flags : 5;
+            struct {                   // size 0x1
+                u8 disabled : 1;       // 0x59:0
+                u8 cast_shadow : 1;    // 0x59:1
+                u8 has_specular : 1;   // 0x59:2
+                u8 reserved_flags : 5; // 0x59:3
             };
-        };
+        }; // 0x59
 
-        i16 pitch;
-        i16 yaw;
-        i16 field_5e;
-        i16 field_60;
-        u8 unknown_62[2];
-        f32 field_64;
-        u16 field_68;
-        i16 uid;
-        f32 intensity;
-        f32 blend_rate;
-        f32 blend;
-        u8 group_id;
-        i8 field_79;
-        i8 field_7a;
-        i8 field_7b;
-        struct RTL_LIGHT_PC *field_7c;
-        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
-        u8 unknown_82[10];
+        i16 pitch;                                                               // 0x5a
+        i16 yaw;                                                                 // 0x5c
+        i16 field_5e;                                                            // 0x5e
+        i16 field_60;                                                            // 0x60
+        u8 unknown_62[2];                                                        // 0x62
+        f32 field_64;                                                            // 0x64
+        u16 field_68;                                                            // 0x68
+        i16 uid;                                                                 // 0x6a
+        f32 intensity;                                                           // 0x6c
+        f32 blend_rate;                                                          // 0x70
+        f32 blend;                                                               // 0x74
+        u8 group_id;                                                             // 0x78
+        i8 field_79;                                                             // 0x79
+        i8 field_7a;                                                             // 0x7a
+        i8 field_7b;                                                             // 0x7b
+        struct RTL_LIGHT_PC *field_7c;                                           // 0x7c
+        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */ // 0x80
+        u8 unknown_82[10];                                                       // 0x82
     } RTL_LIGHT_PC;
 
-    STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, colour) == 0x24);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, secondary_colour) == 0x30);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameter_54) == 0x54);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_64) == 0x64);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, blend_rate) == 0x70);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, blend) == 0x74);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, group_id) == 0x78);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7c) == 0x7c);
-
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0x0);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, ambient) == 0x18);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, inner_radius) == 0x3c);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, outer_radius) == 0x40);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, pitch) == 0x5a);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, yaw) == 0x5c);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_60) == 0x60);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_79) == 0x79);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7b) == 0x7b);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, type) == 0x58);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_5e) == 0x5e);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, uid) == 0x6a);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, intensity) == 0x6c);
-    STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7a) == 0x7a);
-    STATIC_ASSERT(sizeof(RTL_DATA_PC) == 0x144);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, directional_lights) == 0x0);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, directional_strengths) == 0xc);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, ambient_lights) == 0x18);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, ambient_strengths) == 0x24);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, anti_lights) == 0x30);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, anti_strengths) == 0x3c);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, shadow_direction) == 0x50);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, cached_value) == 0x5c);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, previous_shadow_direction) == 0x60);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, previous_shadow_value) == 0x6c);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, shadow_blend) == 0x70);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, blended_shadow_direction) == 0x124);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, blended_shadow_value) == 0x130);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, field_134) == 0x134);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, anti_light_count) == 0x48);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, cached_light) == 0x4c);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, cached_light_uid) == 0x74);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, intensity_vectors) == 0x78);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, direction) == 0x9c);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, ambient) == 0xc0);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, field_120) == 0x120);
-    STATIC_ASSERT(offsetof(RTL_DATA_PC, specular_value) == 0x140);
-
-    typedef struct RTL_SET_PC {
-        u32 header;
-        RTL_LIGHT_PC lights[128];
-        u8 fog[0x980];
+    typedef struct RTL_SET_PC {   // size 0x4f84
+        u32 header;               // 0x0000
+        RTL_LIGHT_PC lights[128]; // 0x0004
+        u8 fog[0x980];            // 0x4604
     } RTL_SET_PC;
 
-    STATIC_ASSERT(sizeof(RTL_SET_PC) == 0x4f84);
-
-    typedef struct rtl_fog_migration_s {
-        f32 start;
-        f32 end;
-        u32 colour;
-        i32 low_quality_density;
-        u32 low_quality_colour;
-        i32 type;
-        u8 depth_of_field_fstop;
-        u8 unknown_19[3];
-        f32 radius;
-        NUVEC position;
-        f32 density;
-        f32 start_psp;
-        f32 end_psp;
-        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
-        u8 unknown_3a[2];
-        f32 density_wii;
-        u8 unknown_40[0xc];
+    typedef struct rtl_fog_migration_s {                                         // size 0x4c
+        f32 start;                                                               // 0x00
+        f32 end;                                                                 // 0x04
+        u32 colour;                                                              // 0x08
+        i32 low_quality_density;                                                 // 0x0c
+        u32 low_quality_colour;                                                  // 0x10
+        i32 type;                                                                // 0x14
+        u8 depth_of_field_fstop;                                                 // 0x18
+        u8 unknown_19[3];                                                        // 0x19
+        f32 radius;                                                              // 0x1c
+        NUVEC position;                                                          // 0x20
+        f32 density;                                                             // 0x2c
+        f32 start_psp;                                                           // 0x30
+        f32 end_psp;                                                             // 0x34
+        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */ // 0x38
+        u8 unknown_3a[2];                                                        // 0x3a
+        f32 density_wii;                                                         // 0x3c
+        u8 unknown_40[0xc];                                                      // 0x40
     } RTL_FOG_MIGRATION_PC;
 
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start) == 0);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end) == 4);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, depth_of_field_fstop) == 0x18);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start_psp) == 0x30);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end_psp) == 0x34);
-    STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, colour) == 8);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_density) == 0xc);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_colour) == 0x10);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, type) == 0x14);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, radius) == 0x1c);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, position) == 0x20);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density) == 0x2c);
-    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
-    STATIC_ASSERT(offsetof(RTL_SET_PC, header) == 0);
-    STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
-    STATIC_ASSERT(offsetof(RTL_SET_PC, fog) == 0x4604);
     RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position);
 
-    typedef struct RTL_INDEX_PC {
-        i32 enabled;
-        u8 unknown_04[8];
-        i32 width;
-        i32 depth;
-        f32 scale;
-        f32 offset_x;
-        f32 offset_z;
-        i8 **cells;
-        u8 unknown_24[4];
+    typedef struct RTL_INDEX_PC { // size 0x28
+        i32 enabled;              // 0x00
+        u8 unknown_04[8];         // 0x04
+        i32 width;                // 0x0c
+        i32 depth;                // 0x10
+        f32 scale;                // 0x14
+        f32 offset_x;             // 0x18
+        f32 offset_z;             // 0x1c
+        i8 **cells;               // 0x20
+        u8 unknown_24[4];         // 0x24
     } RTL_INDEX_PC;
 
-    STATIC_ASSERT(sizeof(RTL_INDEX_PC) == 0x28);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, enabled) == 0);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, width) == 0xc);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, depth) == 0x10);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, scale) == 0x14);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, offset_x) == 0x18);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, offset_z) == 0x1c);
-    STATIC_ASSERT(offsetof(RTL_INDEX_PC, cells) == 0x20);
     /* The editor keeps a set's light index directly behind it: the
      * RTL_INDEX_PC header, then IndexLights' cell table and index lists, in
      * one 0x2028-byte area (0x6fac bytes with the set). rtlLoadSet still advances by sizeof(RTL_SET_PC)

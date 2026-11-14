@@ -16,41 +16,27 @@ struct FRAME_PAD_PC;
 struct WORLDINFO_s;
 struct nufpar_pc_s;
 
-typedef struct CUSTOMISER_LAYERS_PC {
-    u8 unknown_00[0x38];
-    struct CUSTOMPIECE_LAYERS_PC *pieces;
-    u8 unknown_3c[0x30];
-    i16 character_ids[2];
+typedef struct CUSTOMISER_LAYERS_PC {     // size 0x70
+    u8 unknown_00[0x38];                  // 0x00
+    struct CUSTOMPIECE_LAYERS_PC *pieces; // 0x38
+    u8 unknown_3c[0x30];                  // 0x3c
+    i16 character_ids[2];                 // 0x6c
 } CUSTOMISER_LAYERS_PC;
 
-STATIC_ASSERT(offsetof(CUSTOMISER_LAYERS_PC, pieces) == 0x38);
-STATIC_ASSERT(offsetof(CUSTOMISER_LAYERS_PC, character_ids) == 0x6c);
-
-typedef struct GAMEPAD_RUNTIME_INPUT_PC {
-    struct FRAME_PAD_PC *bound_pad;
-    u32 held;
-    u32 pressed;
-    u32 left_held;
-    u32 left_pressed;
-    u32 left_previous;
-    u32 right_held;
-    u32 right_pressed;
-    u32 right_previous;
-    u8 input_ready;
-    u8 unknown25[0x60 - 0x25];
+typedef struct GAMEPAD_RUNTIME_INPUT_PC { // size 0x60
+    struct FRAME_PAD_PC *bound_pad;       // 0x00
+    u32 held;                             // 0x04
+    u32 pressed;                          // 0x08
+    u32 left_held;                        // 0x0c
+    u32 left_pressed;                     // 0x10
+    u32 left_previous;                    // 0x14
+    u32 right_held;                       // 0x18
+    u32 right_pressed;                    // 0x1c
+    u32 right_previous;                   // 0x20
+    u8 input_ready;                       // 0x24
+    u8 unknown25[0x60 - 0x25];            // 0x25
 } GAMEPAD_RUNTIME_INPUT_PC;
 
-STATIC_ASSERT(sizeof(GAMEPAD_RUNTIME_INPUT_PC) == 0x60);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, bound_pad) == 0);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, held) == 4);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, pressed) == 8);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_held) == 0xc);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_pressed) == 0x10);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, left_previous) == 0x14);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_held) == 0x18);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_pressed) == 0x1c);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, right_previous) == 0x20);
-STATIC_ASSERT(offsetof(GAMEPAD_RUNTIME_INPUT_PC, input_ready) == 0x24);
 #ifdef __cplusplus
 extern "C" {
 #endif

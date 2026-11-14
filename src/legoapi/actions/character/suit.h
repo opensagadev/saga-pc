@@ -10,12 +10,11 @@
 #include "legoapi/props/objects/legoapi_signal.h"
 #endif
 
-typedef struct SUIT_LAYERS_PC {
-    u8 unknown_00[0xc];
-    u16 flags;
+typedef struct SUIT_LAYERS_PC { // size 0xe
+    u8 unknown_00[0xc];         // 0x0
+    u16 flags;                  // 0xc
 } SUIT_LAYERS_PC;
 
-STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

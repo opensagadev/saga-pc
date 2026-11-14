@@ -12,12 +12,12 @@
 #include "nu2api/nu3d/nuqfnt.h"
 #endif
 
-typedef struct MENU_VIDEO_OPTIONS_PC {
-    i32 aspect_mode;
-    i32 shadows_enabled;
-    i32 bloom_enabled;
-    i32 speed_blur_enabled;
-    i32 hires_enabled;
+typedef struct MENU_VIDEO_OPTIONS_PC { // size 0x14
+    i32 aspect_mode;                   // 0x00
+    i32 shadows_enabled;               // 0x04
+    i32 bloom_enabled;                 // 0x08
+    i32 speed_blur_enabled;            // 0x0c
+    i32 hires_enabled;                 // 0x10
 #ifdef __cplusplus
     u8 ChangedPc();
     void fun_005091f0();
@@ -25,12 +25,6 @@ typedef struct MENU_VIDEO_OPTIONS_PC {
 #endif
 } MENU_VIDEO_OPTIONS_PC;
 
-STATIC_ASSERT(sizeof(MENU_VIDEO_OPTIONS_PC) == 20);
-STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, aspect_mode) == 0);
-STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, shadows_enabled) == 4);
-STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, bloom_enabled) == 8);
-STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, speed_blur_enabled) == 12);
-STATIC_ASSERT(offsetof(MENU_VIDEO_OPTIONS_PC, hires_enabled) == 16);
 #ifdef __cplusplus
 extern "C" {
 #endif

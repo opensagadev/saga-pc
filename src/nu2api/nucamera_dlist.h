@@ -22,11 +22,11 @@ extern "C" {
 }
 #endif
 
-typedef struct FRAME_NATIVE_TEXTURE_POOL_PC {
-    FRAME_NATIVE_TEXTURE_PC records[16];
-    i8 occupied[2];
-    u8 unknown_302[2];
-    i32 cursor;
+typedef struct FRAME_NATIVE_TEXTURE_POOL_PC { // size 0x308
+    FRAME_NATIVE_TEXTURE_PC records[16];      // 0x000
+    i8 occupied[2];                           // 0x300
+    u8 unknown_302[2];                        // 0x302
+    i32 cursor;                               // 0x304
 #ifdef __cplusplus
     FRAME_NATIVE_TEXTURE_PC *Allocate();
     FRAME_NATIVE_TEXTURE_POOL_PC *fun_00605150();
@@ -37,11 +37,6 @@ typedef struct FRAME_NATIVE_TEXTURE_POOL_PC {
 #endif
 } FRAME_NATIVE_TEXTURE_POOL_PC;
 
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, records) == 0);
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, occupied) == 0x300);
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, unknown_302) == 0x302);
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_POOL_PC, cursor) == 0x304);
-STATIC_ASSERT(sizeof(FRAME_NATIVE_TEXTURE_POOL_PC) == 0x308);
 #ifdef __cplusplus
 extern "C" {
 #endif

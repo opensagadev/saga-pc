@@ -386,20 +386,6 @@ NULNKHDR *NuLstAlloc(NULSTHDR *list) {
     return NuLstAllocHead(list);
 }
 
-STATIC_ASSERT(offsetof(NULSTHDR, free) == 0x0);
-STATIC_ASSERT(offsetof(NULSTHDR, free_tail) == 0x4);
-STATIC_ASSERT(offsetof(NULSTHDR, head) == 0x8);
-STATIC_ASSERT(offsetof(NULSTHDR, tail) == 0xc);
-STATIC_ASSERT(offsetof(NULSTHDR, element_count) == 0x10);
-STATIC_ASSERT(offsetof(NULSTHDR, element_size) == 0x12);
-STATIC_ASSERT(offsetof(NULSTHDR, element_size_total) == 0x14);
-STATIC_ASSERT(offsetof(NULSTHDR, used_count) == 0x16);
-STATIC_ASSERT(offsetof(NULSTHDR, safe_thread) == 0x18);
-STATIC_ASSERT(offsetof(NULNKHDR, owner) == 0x0);
-STATIC_ASSERT(offsetof(NULNKHDR, next) == 0x4);
-STATIC_ASSERT(offsetof(NULNKHDR, prev) == 0x8);
-STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
-
 NULSTHDR *NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
     NULSTHDR *list = NULL;
     u32 stride;

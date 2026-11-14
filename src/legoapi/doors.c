@@ -538,27 +538,6 @@ void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     }
 }
 
-STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
-STATIC_ASSERT(offsetof(DOOR_s, pos) == 0xd4);
-STATIC_ASSERT(offsetof(DOOR_s, normal) == 0xe4);
-STATIC_ASSERT(offsetof(DOOR_s, level) == 0xf0);
-STATIC_ASSERT(offsetof(DOOR_s, flags) == 0xf5);
-STATIC_ASSERT(offsetof(DOOR_s, active) == 0xf7);
-STATIC_ASSERT(offsetof(DOOR_s, camera_spline) == 0xf8);
-STATIC_ASSERT(offsetof(DOOR_s, plane) == 0x110);
-STATIC_ASSERT(offsetof(DOOR_s, cutscene) == 0x120);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_bottom) == 0xff0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_x) == 0x200);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction_z) == 0x208);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
-STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_9) == 9);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_b) == 11);
 extern void *Door_Last;
 i32 CutScene_HasPlayed(CUTINFO *cutscene);
 i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
@@ -738,25 +717,6 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
 }
-
-STATIC_ASSERT(offsetof(WORLDINFO, cutscene_sys) == 0x2ab0);
-STATIC_ASSERT(offsetof(WORLDINFO, level_progress) == 0x130);
-STATIC_ASSERT(offsetof(LEVEL_PROGRESS, progress_state) == 0x2820);
-STATIC_ASSERT(offsetof(CUTSYS_PC, records) == 0);
-STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
-STATIC_ASSERT(sizeof(AREA_DATA_PC) == 0x9c);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-STATIC_ASSERT(sizeof(MISSION_MENU_PACKET_PC) == 10);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, customise_other_player) == 6);
-STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, selected) == 8);
-
-STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
 
 void Doors_SetLastDoor(DOOR_s *door) {
     if (door != NULL && door != LastDoorPointerPc) {

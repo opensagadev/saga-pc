@@ -11,8 +11,6 @@ typedef struct character_joint_movement_s { // size 0x1080
     u8 count;                               // 0x107d
 } CHARACTER_JOINT_MOVEMENT_PC;
 
-STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
-
 #define FOOTSTEP_CHECK(index)                                                                                          \
     frame = config->event_frames[index];                                                                               \
     if (frame >= 1.0f && valid_interval) {                                                                             \

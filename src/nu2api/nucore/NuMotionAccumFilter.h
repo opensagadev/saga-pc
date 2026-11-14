@@ -23,10 +23,9 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class NuMotionAccumFilter : public NuMotionAccumFilterGen {
+class NuMotionAccumFilter : public NuMotionAccumFilterGen { // size 0x28
   public:
     virtual void initResources();
 };
 
-STATIC_ASSERT(sizeof(NuMotionAccumFilter) == 0x28);
 #endif

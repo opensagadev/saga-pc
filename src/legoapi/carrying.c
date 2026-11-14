@@ -49,30 +49,11 @@ typedef struct carry_part_s { // size 0x21c
     GIZMOBLOWUP_PC *blowup;   // 0x218
 } CARRY_PART_PC;
 
-STATIC_ASSERT(offsetof(PART_PC, force_flags) == 0x218);
-STATIC_ASSERT(offsetof(PART_PC, rotation_y) == 0x13a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_start_angle) == 0x7a6);
-
 typedef struct carry_drop_s { // size 0x778
     u8 unknown_000[0x76c];    // 0x000
     NUVEC drop_position;      // 0x76c
 } CARRY_DROP_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, external_force) == 0x748);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, action_movement_state) == 0x7b8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_bits_pc) == 0x7bd);
-STATIC_ASSERT(offsetof(GAMEOBJECT, layer_mask) == 0x1048);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1050) == 0x1050);
-STATIC_ASSERT(offsetof(GAMEOBJECT, terrain_platform_id) == 0x106c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
 extern i32 SuperCarry_PutDownDrop;
 extern f32 SUPERCARRY_JUMPSPEED;
 extern u8 SuperCarryPlayerRgbPc[2][3];

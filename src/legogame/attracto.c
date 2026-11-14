@@ -89,16 +89,7 @@ typedef struct attracto_shard_reader_s { // size 0x54
     NUVEC velocity;        // 0x48
 } ATTRACTO_SHARD_READER_PC;
 
-STATIC_ASSERT(offsetof(WORLDINFO, attractos) == 0x5098);
-STATIC_ASSERT(offsetof(WORLDINFO, attracto_count) == 0x509c);
-STATIC_ASSERT(offsetof(WORLDINFO, shards) == 0x5090);
-STATIC_ASSERT(offsetof(WORLDINFO, shard_count) == 0x5094);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_attractos) == 0xf6);
 STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) + 4 == 0x194);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);

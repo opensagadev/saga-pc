@@ -11,7 +11,6 @@ typedef struct startup_object_light_s { // size 0x10d8
 } STARTUP_OBJECT_LIGHT_PC;
 
 STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT_PC) == sizeof(GAMEOBJECT));
-STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
 
 typedef struct OBJECT_LIGHT_STATE_GAME { // size 0x54
     NUVEC ambient;                       // 0x00
@@ -58,49 +57,27 @@ typedef struct BURN_SET_PC {            // size 0x564
     i32 field_560;                      // 0x560
 } BURN_SET_PC;
 
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_00) == 0x0);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_04) == 0x4);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_04) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_08) == 0x8);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_08) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_0c) == 0xc);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_0c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_10) == 0x10);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_10) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_14) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_18) == 0x18);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_18) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_1c) == 0x1c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_1c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_20) == 0x20);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_20) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_24) == 0x24);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_24) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_28) == 0x28);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_28) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_2c) == 0x2c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_2c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_30) == 0x30);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_30) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_34) == 0x34);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_34) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_38) == 0x38);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_38) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_3c) == 0x3c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_3c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_40) == 0x40);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_40) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_44) == 0x44);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_44) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_48) == 0x48);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_48) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_4c) == 0x4c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_50) == 0x50);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
-STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
 
 typedef struct LIGHTING_LOAD_WORLD { // size 0x2ab8
     u8 unknown_000[0x104];           // 0x0000
@@ -112,33 +89,11 @@ typedef struct LIGHTING_LOAD_WORLD { // size 0x2ab8
     RTL_SET_PC *rtl_set;             // 0x2ab4
 } LIGHTING_LOAD_WORLD;
 
-STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction) == 0x54);
-STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction_missing) == 0x60);
-STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, unknown_64) == 0x64);
-STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_intensity_present) == 0x74);
-STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
-STATIC_ASSERT(offsetof(GAMEOBJECT, surface_flag8_scale_pc) == 0xd6c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, arrow_blend) == 0xdd4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
-STATIC_ASSERT(offsetof(GAMEOBJECT, vehicle_hit_timer) == 0x1018);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
-
 /* Cut resource access prefix; the cut loader owns the resource. */
 typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u8 unknown_00[0x50];            // 0x00
     u32 flags;                      // 0x50
 } BURNOUT_CUT_PREFIX;
-
-STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
 
 typedef struct ripple_effect_s {
     union {

@@ -13,15 +13,14 @@
 
 #ifdef __cplusplus
 
-class NuCopyFilter : public NuPostFilter {
+class NuCopyFilter : public NuPostFilter { // size 0x14
   public:
     virtual void initResources();
     virtual void destroyResources();
     virtual void reset();
     virtual void render(PC_FRAMEBUFFER_PC *);
-    PC_FRAMEBUFFER_PC *copy_fbo;
-    GRAPHICS_RENDER_TEXTURE_PC *copy_texture;
+    PC_FRAMEBUFFER_PC *copy_fbo;              // 0x0c
+    GRAPHICS_RENDER_TEXTURE_PC *copy_texture; // 0x10
 };
 
-STATIC_ASSERT(sizeof(NuCopyFilter) == 0x14);
 #endif

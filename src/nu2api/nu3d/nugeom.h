@@ -10,9 +10,7 @@
 #include "nu2api/nu3d/numtl.h"
 #endif
 
-typedef struct nugeom_s {
-    struct nugeom_s *next;
-    NUMTL *mtl;
+typedef struct nugeom_s {  // size 0x8
+    struct nugeom_s *next; // 0x0
+    NUMTL *mtl;            // 0x4
 } NUGEOM;
-
-STATIC_ASSERT(offsetof(NUGEOM, mtl) == 4);

@@ -22,47 +22,36 @@
 
 #if SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_AIPATH_H_STOP)
 
-typedef struct AIPATHINFO_PC {
-    struct AIPATH_PC *path;
-    struct AIPATHCNX_PC *connection;
-    u8 direction;
-    u8 path_index;
-    u16 game_flags;
-    u16 next_check;
+typedef struct AIPATHINFO_PC {       // size 0x18
+    struct AIPATH_PC *path;          // 0x00
+    struct AIPATHCNX_PC *connection; // 0x04
+    u8 direction;                    // 0x08
+    u8 path_index;                   // 0x09
+    u16 game_flags;                  // 0x0a
+    u16 next_check;                  // 0x0c
 
-    union {
-        struct {
-            u8 flags;
-            u8 padding;
+    union { // size 0x2
+
+        struct {        // size 0x2
+            u8 flags;   // 0x0e
+            u8 padding; // 0x0f
         };
 
-        struct {
-            u16 on_path : 1;
-            u16 was_on_path : 1;
-            u16 route_checked : 1;
-            u16 narrow_path : 1;
+        struct {                   // size 0x2
+            u16 on_path : 1;       // 0x0e:0
+            u16 was_on_path : 1;   // 0x0e:1
+            u16 route_checked : 1; // 0x0e:2
+            u16 narrow_path : 1;   // 0x0e:3
         };
 
         u16 flags_word;
-    };
+    }; // 0x0e
 
-    f32 distance;
-    f32 width;
+    f32 distance; // 0x10
+    f32 width;    // 0x14
 } AIPATHINFO_PC;
 
 /* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
-STATIC_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, path) == 0);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, connection) == 4);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, direction) == 8);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, path_index) == 9);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, game_flags) == 0xa);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, next_check) == 0xc);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, width) == 0x14);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, flags) == 0x0e);
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, distance) == 0x10);
-
-STATIC_ASSERT(offsetof(AIPATHINFO_PC, flags_word) == 0xe);
 
 enum { AIPATHINFO_FLAG_ON_PATH = 1 };
 

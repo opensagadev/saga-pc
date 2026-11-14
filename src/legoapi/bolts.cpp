@@ -7,16 +7,6 @@
 extern "C" {
     extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
 }
-STATIC_ASSERT(offsetof(BOLTTYPE_PC, init_callback) == 0x44);
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1052) == 0x1052);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1054) == 0x1054);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 BoltsFdiv(f32 a, f32 b) {
@@ -27,24 +17,8 @@ static f32 BoltsFdiv(f32 a, f32 b) {
 }
 
 extern "C" {
-    STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
-    STATIC_ASSERT(offsetof(BOLT_PC, hit_debris) == 0xfc);
-    STATIC_ASSERT(offsetof(BOLT_PC, hit_part_debris) == 0xfe);
-
-    STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
-    STATIC_ASSERT(offsetof(BOLT_PC, active) == 0x100);
-    STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
 
     typedef i32 (*BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
-    STATIC_ASSERT(offsetof(BOLTSYS_PC, hit_part) == 0x18);
-    STATIC_ASSERT(offsetof(PART_PC, position) == 0x30);
-    STATIC_ASSERT(offsetof(PART_PC, velocity) == 0x80);
-    STATIC_ASSERT(offsetof(PART_PC, collision_min) == 0x8c);
-    STATIC_ASSERT(offsetof(PART_PC, collision_max) == 0x98);
-    STATIC_ASSERT(offsetof(PART_PC, field_e4) == 0xe4);
-    STATIC_ASSERT(offsetof(PART_PC, flags) == 0x108);
-    STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
-    STATIC_ASSERT(sizeof(PART_PC) == 0x220);
 
     typedef struct BOLT_CONFIG_PC {  // size 0xa4
         char name[16];               // 0x00
@@ -1210,31 +1184,12 @@ typedef struct bolt_context_info_s { // size 0x10
     u64 flags;                       // 0x8
 } BOLT_CONTEXT_INFO_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
-STATIC_ASSERT(offsetof(GAMEOBJECT, scaled_radius) == 0xa4);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
-
 typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
     u8 unknown_000[0x98];              // 0x00
     NUSPECIALHANDLE shadow_special;    // 0x98
 } BOLT_UPDATE_TYPE_PC;
 
 STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE_PC) == sizeof(BOLTTYPE_PC));
-
-STATIC_ASSERT(offsetof(BOLT_PC, effect_orientation) == 0x48);
-STATIC_ASSERT(offsetof(BOLT_PC, scale) == 0xc4);
-STATIC_ASSERT(offsetof(BOLT_PC, field_e4) == 0xe4);
-STATIC_ASSERT(offsetof(BOLT_PC, reflection_height) == 0xe8);
-STATIC_ASSERT(offsetof(BOLT_PC, surface_x_rotation) == 0xf4);
-STATIC_ASSERT(offsetof(BOLT_PC, surface_z_rotation) == 0xf6);
-STATIC_ASSERT(offsetof(BOLT_PC, field_102) == 0x102);
-STATIC_ASSERT(offsetof(BOLTTYPE_PC, field_24) == 0x24);
-STATIC_ASSERT(offsetof(BOLTTYPE_PC, flags_60) == 0x60);
-STATIC_ASSERT(offsetof(BOLTTYPE_PC, specials_68) == 0x68);
-STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, reflection_y) == 0xc0);
 
 extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
 

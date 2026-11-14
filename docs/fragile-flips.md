@@ -11,3 +11,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | stack 2 | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.92 % | 94.77 % |
 | literals at every use | BoulderSpawnPc | legogame/episodeIII.c | 83.28 % | exact |
 | literals at every use | BlockadeRunnerDEjectCreaturePc | legogame/episodeIV.c | 90.97 % | exact |
+| layout asserts to comments | BoulderSpawnPc | legogame/episodeIII.c | exact | different |
+| layout asserts to comments | BlockadeRunnerDEjectCreaturePc | legogame/episodeIV.c | exact | different |

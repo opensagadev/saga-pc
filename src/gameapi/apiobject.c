@@ -42,27 +42,6 @@ struct PC_HG_SHADOW_GROUP {          // size 0x10
     u8 joint_index;                  // 0xf
 };
 
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_shape) == 0x48);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state0) == 0x4c);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state1) == 0x50);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state2) == 0x54);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state_byte) == 0x58);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, near_value) == 0x5c);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, far_value) == 0x60);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse_count) == 0x64);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder_count) == 0x65);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_count) == 0x66);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, sequence) == 0x67);
-STATIC_ASSERT(sizeof(PC_HG_SHADOW_STATE_VIEW) == 16);
-STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, previous_animation_root) == 0x244);
-STATIC_ASSERT(offsetof(GAMEOBJECT, previous_animation_root_time) == 0x25c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, previous_blend_target_root_info) == 0x268);
-STATIC_ASSERT(offsetof(GAMEOBJECT, animation_root_delta) == 0x26c);
 #define BLEND_SOURCE_CONFIG_PC(object)                                                                                 \
     ((CHARACTERANIM_CONFIG_PC *)(object)                                                                               \
          ->character_model->animation_configs[(object)->anim_packet.blend_source_animation])
@@ -74,10 +53,6 @@ struct PC_ANIMATION_RENDER_VIEW { // size 0x48
     ANIMPACKET_PC packet;         // 0x00
     f32 overlay_weight;           // 0x44
 };
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
-STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
 typedef struct minianimpacket_s { // size 0x24
     f32 current_time;             // 0x00
@@ -92,23 +67,10 @@ typedef struct minianimpacket_s { // size 0x24
     i16 requested_animation_id;   // 0x22
 } MINIANIMPACKET_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction) == 0x200);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_exclusion_mask) == 0x2a0);
-STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_id) == 0);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 8);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
-
 typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
     u32 pointer_table;                    // 0x0
     u32 animation_magic;                  // 0x4
 } CHARACTER_PACK_ANIMATION;
-
-STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
 typedef struct CHARACTER_LIST_ENTRY {         // size 0x4c
     i32 name_id;                              // 0x00
@@ -137,16 +99,6 @@ typedef struct CHARACTER_LIST_ENTRY {         // size 0x4c
 
 STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY) == sizeof(CHARACTERDATA_PC));
 extern void NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
-STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
-STATIC_ASSERT(offsetof(APICHARSYS, loaded_model_count) == 0x10);
-STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
-STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, hierarchy) == 4);
-STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, object_size) == 0);
-STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, objects) == 4);
-STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, hostility_masks) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 
 static f32 APIObjectFabs(f32 value);
 

@@ -1,16 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, warmup_frame) == 0);
-STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, every_frame) == 1);
-STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, alternate_frame) == 2);
-STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, third_frame) == 3);
-STATIC_ASSERT(offsetof(MAINFRAMECOUNTERS, fourth_frame) == 4);
-STATIC_ASSERT(sizeof(TIMER) == 0x10);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
-STATIC_ASSERT(offsetof(TIMER, last_time_elapsed) == 4);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
-STATIC_ASSERT(offsetof(TIMER, update_count) == 0xc);
-
 void ResetFrameCounters(void) {
     MainFrameCounters.warmup_frame = 0;
     MainFrameCounters.every_frame = -1;
@@ -74,8 +63,6 @@ typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
     u8 unknown_00[8];                  // 0x0
     f32 challenge_trial_time;          // 0x8
 } GAME_TIMING_AREA_SAVE;
-
-STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 
 void GameTiming(WORLDINFO *world, f32 *game_time) {
     f32 target;

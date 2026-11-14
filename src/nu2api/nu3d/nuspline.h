@@ -12,18 +12,13 @@
 
 struct NUGSCN_s;
 
-typedef struct nugspline_s {
-    i16 length;
-    u16 pt_size;
-    char *name;
-    NUVEC *pts;
+typedef struct nugspline_s { // size 0xc
+    i16 length;              // 0x0
+    u16 pt_size;             // 0x2
+    char *name;              // 0x4
+    NUVEC *pts;              // 0x8
 } NUGSPLINE;
 
-STATIC_ASSERT(sizeof(NUGSPLINE) == 0xc);
-STATIC_ASSERT(offsetof(NUGSPLINE, length) == 0);
-STATIC_ASSERT(offsetof(NUGSPLINE, pt_size) == 2);
-STATIC_ASSERT(offsetof(NUGSPLINE, name) == 4);
-STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

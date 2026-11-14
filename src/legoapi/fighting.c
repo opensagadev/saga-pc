@@ -2,10 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-
 typedef struct PUNCH_BLOWUP_VIEW { // size 0x114
     u8 unknown_00[0x4c];           // 0x000
     NUVEC mid_position;            // 0x04c

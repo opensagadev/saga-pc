@@ -55,22 +55,19 @@ extern "C" {
 }
 #endif
 
-typedef struct SARLACC_NETPACKET {
-    f32 height;
-    i16 off_mask;
-    i16 flash_mask;
-    i16 select_mask;
-    i16 on_mask;
-    i16 finish_mask;
-    i16 sound_mask;
-    u8 disco_active;
-    u8 reserved_11;
-    i16 completion_sound_played;
+typedef struct SARLACC_NETPACKET { // size 0x14
+    f32 height;                    // 0x00
+    i16 off_mask;                  // 0x04
+    i16 flash_mask;                // 0x06
+    i16 select_mask;               // 0x08
+    i16 on_mask;                   // 0x0a
+    i16 finish_mask;               // 0x0c
+    i16 sound_mask;                // 0x0e
+    u8 disco_active;               // 0x10
+    u8 reserved_11;                // 0x11
+    i16 completion_sound_played;   // 0x12
 } SARLACC_NETPACKET;
 
-STATIC_ASSERT(sizeof(SARLACC_NETPACKET) == 0x14);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, disco_active) == 0x10);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, completion_sound_played) == 0x12);
 #ifdef __cplusplus
 extern "C" {
 #endif

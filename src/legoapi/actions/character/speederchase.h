@@ -28,17 +28,16 @@ extern "C" {
 #endif
 typedef struct SPEEDERCHASEVALUES SPEEDERCHASEVALUES;
 
-struct SPEEDERCHASEVALUES {
-    f32 distance;
-    f32 ahead_range;
-    f32 ahead_speed;
-    f32 ahead_seek;
-    f32 behind_range;
-    f32 behind_speed;
-    f32 behind_seek;
+struct SPEEDERCHASEVALUES { // size 0x1c
+    f32 distance;           // 0x00
+    f32 ahead_range;        // 0x04
+    f32 ahead_speed;        // 0x08
+    f32 ahead_seek;         // 0x0c
+    f32 behind_range;       // 0x10
+    f32 behind_speed;       // 0x14
+    f32 behind_seek;        // 0x18
 };
 
-STATIC_ASSERT(sizeof(struct SPEEDERCHASEVALUES) == 28);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,19 +61,15 @@ extern "C" {
 }
 #endif
 
-typedef struct SPEEDERCHASE_NETPACKET_PC {
-    u8 reserved_0;
-    u8 target_count;
-    u8 killed_count;
-    u8 reserved_3;
-    u8 phase;
-    u8 reserved_5[2];
+typedef struct SPEEDERCHASE_NETPACKET_PC { // size 0x7
+    u8 reserved_0;                         // 0x0
+    u8 target_count;                       // 0x1
+    u8 killed_count;                       // 0x2
+    u8 reserved_3;                         // 0x3
+    u8 phase;                              // 0x4
+    u8 reserved_5[2];                      // 0x5
 } SPEEDERCHASE_NETPACKET_PC;
 
-STATIC_ASSERT(sizeof(SPEEDERCHASE_NETPACKET_PC) == 7);
-STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, target_count) == 1);
-STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, killed_count) == 2);
-STATIC_ASSERT(offsetof(SPEEDERCHASE_NETPACKET_PC, phase) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -3,17 +3,6 @@
 /* Network file transfer manager. Only the bookkeeping survives on PC; the
  * transfer bodies are empty. */
 
-STATIC_ASSERT(sizeof(FtpFile) == 0xb0);
-STATIC_ASSERT(offsetof(FtpFile, name) == 0xc);
-STATIC_ASSERT(offsetof(FtpFile, size) == 0x8c);
-STATIC_ASSERT(offsetof(FtpFile, transferred) == 0x98);
-STATIC_ASSERT(offsetof(FtpFile, message) == 0x9c);
-STATIC_ASSERT(offsetof(FtpFile, transfer) == 0xac);
-STATIC_ASSERT(offsetof(NetFtpManager, files) == 0x4);
-STATIC_ASSERT(offsetof(NetFtpManager, field_1604) == 0x1604);
-STATIC_ASSERT(sizeof(NetFtpManager) == 0x1608);
-STATIC_ASSERT(offsetof(TTNetwork, ftp) == 0x2178);
-
 i32 FtpFile::CompareAddress(const NetAddress &other) const {
     return memcmp(&other, &address, sizeof(address));
 }

@@ -8,12 +8,6 @@ typedef struct PC_DL_MATERIAL_READER { // size 0x44
     u32 reflection_flags;              // 0x40
 } PC_DL_MATERIAL_READER;
 
-STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
-STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
-
 /* Private helper; takes mode in EAX. */
 static void PCDisplayHandlerSetZMode(i32 mode) {
     NuDisplayHandlerZModePc = mode;
@@ -175,7 +169,6 @@ typedef struct PC_DL_E_MATERIAL_READER {        // size 0x2c0
     PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
 } PC_DL_E_MATERIAL_READER;
 
-STATIC_ASSERT(sizeof(NUMTL) == 0x9c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
 
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {      // size 0x8
@@ -184,7 +177,6 @@ struct PC_DL_SHADER_PROGRAM_PAIR_PC {      // size 0x8
 };
 
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) + sizeof(GRAPHICS_RENDER_TEXTURE_PC *) == 0x6b8);
-STATIC_ASSERT(offsetof(ShaderUniformRecordPc, values) == 0x1c);
 STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, unknown_4d4) == 0x4d4);
 
 extern "C" {

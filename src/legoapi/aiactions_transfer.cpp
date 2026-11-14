@@ -98,12 +98,6 @@ extern "C" {
         return 1;
     }
 }
-STATIC_ASSERT(offsetof(ZIPUP_s, flags) == 0x68);
-STATIC_ASSERT(offsetof(ZIPUP_s, runtime_flags) == 0x69);
-STATIC_ASSERT(offsetof(ZIPUP_s, lower_position) == 0x10);
-STATIC_ASSERT(offsetof(ZIPUP_s, hook_origin) == 0x1c);
-STATIC_ASSERT(offsetof(ZIPUP_s, upper_position) == 0x28);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, run_speed) == 0x1c);
 extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
 extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *,

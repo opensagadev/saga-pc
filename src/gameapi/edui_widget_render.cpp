@@ -792,15 +792,6 @@ extern "C" {
     u32 eduimenu_outline_colour = 0x80404040;
     u32 eduimenu_selected_outline_colour = 0x80ffffff;
 }
-STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
-STATIC_ASSERT(offsetof(eduimenu_s, child) == 0x3c);
-STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
-STATIC_ASSERT(offsetof(eduiitem_s, render) == 0x40);
-STATIC_ASSERT(offsetof(edui_sel_s, interact) == 0x48);
-STATIC_ASSERT(sizeof(edui_interact_s) == 0x24);
-STATIC_ASSERT(offsetof(edui_interact_s, menu) == 0x10);
-STATIC_ASSERT(offsetof(edui_interact_s, callback) == 0x18);
-STATIC_ASSERT(offsetof(edui_interact_s, field_20) == 0x20);
 
 extern "C" {
     i32 cbInteractMenuTitle(edui_interact_s *);
@@ -1006,14 +997,6 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
-
-STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_x) == 0x4c);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, hue) == 0x54);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, saturation) == 0x58);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, value) == 0x5c);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, red) == 0x60);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, green) == 0x64);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, blue) == 0x68);
 
 extern "C" {
     static eduimenu_s *colourmenu = NULL;
@@ -1278,12 +1261,6 @@ extern "C" void AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 *red, f3
     eduiItemSetText(cp_info, text);
 }
 
-STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_x) == 0x4c);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_y) == 0x50);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, hue) == 0x54);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, saturation) == 0x58);
-STATIC_ASSERT(offsetof(edui_colour_pick_s, value) == 0x5c);
-
 typedef union edui_gradient_colour_pc_u { // size 0x4
     u32 word;
     u8 channel[4];
@@ -1479,12 +1456,6 @@ extern "C" i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 d
     return 0;
 }
 
-STATIC_ASSERT(offsetof(edui_interact_s, x) == 0);
-STATIC_ASSERT(offsetof(edui_interact_s, y) == 4);
-STATIC_ASSERT(offsetof(edui_interact_s, width) == 8);
-STATIC_ASSERT(offsetof(edui_interact_s, height) == 0xc);
-STATIC_ASSERT(offsetof(edui_interact_s, item) == 0x14);
-
 static i32 EduiColourPickWithinHuePc(edui_interact_s *interact) {
     return edui_cursor_x >= interact->x && edui_cursor_y >= interact->y &&
            edui_cursor_x < interact->x + interact->width && edui_cursor_y < interact->y + interact->height * 0.75;
@@ -1526,19 +1497,6 @@ extern "C" i32 eduicbInteractColourPick(edui_interact_s *interact) {
     }
     return pick->dragging_colour || pick->dragging_saturation;
 }
-
-STATIC_ASSERT(offsetof(edui_texture_pick_s, uv_x) == 0x4c);
-STATIC_ASSERT(offsetof(edui_texture_pick_s, uv_y) == 0x54);
-STATIC_ASSERT(offsetof(edui_texture_pick_s, material) == 0x60);
-STATIC_ASSERT(offsetof(edui_texture_pick_s, selected_corner) == 0x64);
-STATIC_ASSERT(offsetof(edui_texture_pick_s, zoom) == 0x68);
-STATIC_ASSERT(offsetof(edui_slider_s, changed) == 0x4c);
-STATIC_ASSERT(offsetof(edui_slider_s, normalized_value) == 0x50);
-STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
-STATIC_ASSERT(offsetof(edui_slider_s, minimum) == 0x58);
-STATIC_ASSERT(offsetof(edui_slider_s, range) == 0x5c);
-STATIC_ASSERT(offsetof(edui_slider_s, change_timer) == 0x60);
-STATIC_ASSERT(offsetof(edui_slider_s, granularity) == 0x68);
 
 extern "C" {
 #pragma data_seg(".data$EduiSliderAcceleration")
@@ -1824,17 +1782,6 @@ extern "C" {
         }
     }
 }
-STATIC_ASSERT(offsetof(edui_graph_s, graph) == 0x4c);
-STATIC_ASSERT(offsetof(edui_graph_s, onion_skins) == 0x50);
-STATIC_ASSERT(offsetof(edui_graph_s, cursor_x) == 0x74);
-STATIC_ASSERT(offsetof(edui_graph_s, width) == 0x7c);
-STATIC_ASSERT(offsetof(edui_graph_s, x_scale) == 0x84);
-STATIC_ASSERT(offsetof(edui_graph_s, selected_point) == 0x8c);
-STATIC_ASSERT(offsetof(edui_graph_s, x_label) == 0x90);
-STATIC_ASSERT(offsetof(nugraph_s, point_count) == 1);
-STATIC_ASSERT(offsetof(nugraph_s, y) == 0x24);
-STATIC_ASSERT(offsetof(nugraph_s, x_scale) == 0x44);
-STATIC_ASSERT(offsetof(nugraph_s, y_extent) == 0x50);
 
 /* Float fabs by clearing the sign bit. */
 static f32 EduiFabsPc(f32 value) {
@@ -2145,14 +2092,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
 
 extern "C" i32 EduiRenderWidthPc;
 
-STATIC_ASSERT(offsetof(edui_textpicker_s, value) == 0x4c);
-STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_column) == 0x14c);
-STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_row) == 0x150);
-STATIC_ASSERT(offsetof(edui_textpicker_s, cursor) == 0x154);
-STATIC_ASSERT(offsetof(edui_textpicker_s, editing) == 0x158);
 STATIC_ASSERT(sizeof(((edui_textpicker_s *)0)->editing) == 2);
-STATIC_ASSERT(offsetof(edui_textpicker_s, format) == 0x160);
-STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_flags) == 0x164);
 
 extern "C" {
 #pragma data_seg(".data$EduiTextCopyHelp")
@@ -2292,8 +2232,6 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
 }
 
 STATIC_ASSERT(offsetof(FRAME_PAD_PC, reserved98) + 1 == 0x99);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
 
 extern "C" {
 #pragma data_seg(".data$EduiColourSliderRepeatTimer")
@@ -2410,12 +2348,6 @@ typedef struct edui_gradient_stage_s { // size 0x24
     u32 colour;                        // 0x1c
     u32 metadata;                      // 0x20
 } EDUI_GRADIENT_STAGE_PC;
-
-STATIC_ASSERT(offsetof(edui_gradient_node_s, hue) == 0x10);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, saturation) == 0x14);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, value) == 0x18);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, metadata) == 0x1c);
-STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
 
 extern "C" edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,
                                                      f32 blue) {

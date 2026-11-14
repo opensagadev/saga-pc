@@ -11,30 +11,19 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct cheat_s {
-    char *name;
-    i16 *text_id;
-    u8 enabled;
-    u8 unknown_0009[2];
-    i8 area_index;
-    i32 field_0c;
-    char *code;
-    i32 extra_price;
-    char *extra_name;
-    u32 flags;
+typedef struct cheat_s { // size 0x20
+    char *name;          // 0x00
+    i16 *text_id;        // 0x04
+    u8 enabled;          // 0x08
+    u8 unknown_0009[2];  // 0x09
+    i8 area_index;       // 0x0b
+    i32 field_0c;        // 0x0c
+    char *code;          // 0x10
+    i32 extra_price;     // 0x14
+    char *extra_name;    // 0x18
+    u32 flags;           // 0x1c
 } CHEAT_PC;
 
-STATIC_ASSERT(sizeof(CHEAT_PC) == 0x20);
-STATIC_ASSERT(offsetof(CHEAT_PC, text_id) == 4);
-STATIC_ASSERT(offsetof(CHEAT_PC, code) == 0x10);
-STATIC_ASSERT(offsetof(CHEAT_PC, extra_price) == 0x14);
-STATIC_ASSERT(offsetof(CHEAT_PC, extra_name) == 0x18);
-
-STATIC_ASSERT(sizeof(CHEAT_PC) == 0x20);
-STATIC_ASSERT(offsetof(CHEAT_PC, enabled) == 0x8);
-STATIC_ASSERT(offsetof(CHEAT_PC, flags) == 0x1c);
-
-STATIC_ASSERT(offsetof(CHEAT_PC, area_index) == 0x0b);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -1,14 +1,6 @@
 #include "saga.h"
 
 #include <float.h>
-STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
-STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, capacity) == 0);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, helpers) == 4);
-STATIC_ASSERT(sizeof(CLIMB_SLOT_PC) == 0x20);
-STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 
 extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 
@@ -86,6 +78,3 @@ AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJE
 
 void fun_005ab280(void) {
 }
-
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
-STATIC_ASSERT(offsetof(struct ZIPUP_s, flags) == 0x68);

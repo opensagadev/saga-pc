@@ -1,13 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
-
 typedef struct MISSION_END_DATA_VIEW { // size 0x2
     i16 find_character;                // 0x0
 } MISSION_END_DATA_VIEW;
@@ -16,11 +8,6 @@ typedef struct MISSION_END_SYSTEM_VIEW { // size 0xc
     u8 unknown_00[8];                    // 0x0
     f32 elapsed_time;                    // 0x8
 } MISSION_END_SYSTEM_VIEW;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 
 typedef struct MISSION_SYSTEM_READER { // size 0x30
     MISSIONDATA_PC *missions;          // 0x00
@@ -42,20 +29,6 @@ typedef struct MISSION_SYSTEM_READER { // size 0x30
     u8 character_count;   // 0x1f
     i16 character_ids[8]; // 0x20
 } MISSION_SYSTEM_READER;
-
-STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, find_character) == 0);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, level) == 2);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, name_id) == 4);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, text_id) == 6);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, bounty) == 8);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, alternate_bounty) == 0xc);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
-STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
-STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
-STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
 /* Original name unknown. Empty on PC; called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file

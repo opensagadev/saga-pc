@@ -33,18 +33,13 @@ extern "C" {
 }
 #endif
 
-typedef struct HOTHBATTLEE_NETPACKET_PC {
-    i16 targets[12];
-    i8 defeated[12];
-    f32 alpha[12];
-    i32 count;
+typedef struct HOTHBATTLEE_NETPACKET_PC { // size 0x58
+    i16 targets[12];                      // 0x00
+    i8 defeated[12];                      // 0x18
+    f32 alpha[12];                        // 0x24
+    i32 count;                            // 0x54
 } HOTHBATTLEE_NETPACKET_PC;
 
-STATIC_ASSERT(sizeof(HOTHBATTLEE_NETPACKET_PC) == 0x58);
-STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, targets) == 0);
-STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, defeated) == 0x18);
-STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, alpha) == 0x24);
-STATIC_ASSERT(offsetof(HOTHBATTLEE_NETPACKET_PC, count) == 0x54);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,21 +66,15 @@ extern "C" {
 }
 #endif
 
-typedef struct TROOPERCANNON_PC {
-    struct gizmo_pc_s *base;
-    GIZBUILDIT_s *buildit;
-    struct gameobject_s *object;
-    char character_name[32];
-    u8 rebuilding;
-    u8 padding[3];
+typedef struct TROOPERCANNON_PC { // size 0x30
+    struct gizmo_pc_s *base;      // 0x00
+    GIZBUILDIT_s *buildit;        // 0x04
+    struct gameobject_s *object;  // 0x08
+    char character_name[32];      // 0x0c
+    u8 rebuilding;                // 0x2c
+    u8 padding[3];                // 0x2d
 } TROOPERCANNON_PC;
 
-STATIC_ASSERT(sizeof(TROOPERCANNON_PC) == 0x30);
-STATIC_ASSERT(offsetof(TROOPERCANNON_PC, base) == 0);
-STATIC_ASSERT(offsetof(TROOPERCANNON_PC, buildit) == 4);
-STATIC_ASSERT(offsetof(TROOPERCANNON_PC, object) == 8);
-STATIC_ASSERT(offsetof(TROOPERCANNON_PC, character_name) == 0xc);
-STATIC_ASSERT(offsetof(TROOPERCANNON_PC, rebuilding) == 0x2c);
 #ifdef __cplusplus
 extern "C" {
 #endif

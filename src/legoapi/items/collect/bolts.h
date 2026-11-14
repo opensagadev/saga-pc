@@ -59,17 +59,6 @@ extern "C" {
 #if SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_PART == 2 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_STOP)
 
 typedef BOLT BOLT_PC;
-STATIC_ASSERT(sizeof(BOLT_PC) == 0x138);
-STATIC_ASSERT(offsetof(BOLT_PC, time) == 0xc8);
-STATIC_ASSERT(offsetof(BOLT_PC, speed) == 0xcc);
-STATIC_ASSERT(offsetof(BOLT_PC, lifetime) == 0xd0);
-STATIC_ASSERT(offsetof(BOLT_PC, ray_time) == 0xdc);
-STATIC_ASSERT(offsetof(BOLT_PC, flags) == 0xf0);
-STATIC_ASSERT(offsetof(BOLT_PC, active) == 0x100);
-STATIC_ASSERT(offsetof(BOLT_PC, index) == 0x103);
-STATIC_ASSERT(offsetof(BOLT_PC, bounds_min) == 0x108);
-STATIC_ASSERT(offsetof(BOLT_PC, bounds_max) == 0x114);
-STATIC_ASSERT(offsetof(BOLT_PC, hit_normal) == 0x120);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -144,7 +133,8 @@ template <typename T, u32 COUNT> struct TPool {
     void fun_0060f370();
 };
 
-struct NETMESSAGE_PC {
+struct NETMESSAGE_PC { // size 0x10
+
     struct MessageData {
         u32 fun_00617420() const;
 
@@ -164,10 +154,10 @@ struct NETMESSAGE_PC {
     };
 
     static TPool<MessageData, 512> sm_poolMessageData;
-    i32 swap_endianness;
-    MessageData *data;
-    u32 read_offset;
-    u32 write_offset;
+    i32 swap_endianness; // 0x0
+    MessageData *data;   // 0x4
+    u32 read_offset;     // 0x8
+    u32 write_offset;    // 0xc
 
     NETMESSAGE_PC(u32 offset) {
         MessageData *entry;
@@ -413,11 +403,6 @@ struct NETMESSAGE_PC {
     i32 fun_00613230();
 };
 
-STATIC_ASSERT(sizeof(NETMESSAGE_PC) == 0x10);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC, swap_endianness) == 0);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC, data) == 4);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC, read_offset) == 8);
-STATIC_ASSERT(offsetof(NETMESSAGE_PC, write_offset) == 0xc);
 STATIC_ASSERT(sizeof(NETMESSAGE_PC::MessageData) == 0x4b4);
 STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, bytes) == 0);
 STATIC_ASSERT(offsetof(NETMESSAGE_PC::MessageData, references) == 0x4b0);
@@ -432,7 +417,7 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class V2Peer {
+class V2Peer { // size 0x2a0
   public:
     virtual ~V2Peer();
     virtual void Disconnect();
@@ -441,13 +426,13 @@ class V2Peer {
     virtual void unknown_slot_10();
     virtual i32 GetAvailableMessages();
 
-    V2Peer *next;
-    V2Peer *prev;
-    u8 local;
-    u8 unknown_0d[3];
-    NetStats stats;
-    u32 unknown_230[27];
-    i32 time_offset;
+    V2Peer *next;        // 0x004
+    V2Peer *prev;        // 0x008
+    u8 local;            // 0x00c
+    u8 unknown_0d[3];    // 0x00d
+    NetStats stats;      // 0x010
+    u32 unknown_230[27]; // 0x230
+    i32 time_offset;     // 0x29c
 
     u8 fun_00611a20() const;
     i32 fun_00611a60(i32 time) const;

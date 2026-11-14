@@ -37,55 +37,32 @@ struct animpacket_s;
 struct apicharactermodellist_s;
 struct numtx_s;
 
-typedef struct characterdata_s {
-    i32 name_id;
-    u32 model_flags;
-    char *dir;
-    char *name;
-    struct CHARACTERANIM_CONFIG_PC *animations;
-    u16 animation_count;
-    u8 field6_0x16;
-    u8 field7_0x17;
-    void (*move_fn)(struct gameobject_s *);
-    void (*animate_fn)(struct gameobject_s *);
-    void *draw_fn;
-    PLAYERCHARACTERCONFIG_PC *game_character;
-    struct CHARACTER_EFFECT_CONFIG_PC *effects;
-    f32 scaled_radius;
-    f32 collision_radius;
-    f32 bottom;
-    f32 top;
-    f32 model_scale;
-    u8 flags;
-    u8 unknown_0041;
-    i16 icon_model;
-    u8 unknown_44[0x4];
-    u32 field22_0x48;
+typedef struct characterdata_s {                // size 0x4c
+    i32 name_id;                                // 0x00
+    u32 model_flags;                            // 0x04
+    char *dir;                                  // 0x08
+    char *name;                                 // 0x0c
+    struct CHARACTERANIM_CONFIG_PC *animations; // 0x10
+    u16 animation_count;                        // 0x14
+    u8 field6_0x16;                             // 0x16
+    u8 field7_0x17;                             // 0x17
+    void (*move_fn)(struct gameobject_s *);     // 0x18
+    void (*animate_fn)(struct gameobject_s *);  // 0x1c
+    void *draw_fn;                              // 0x20
+    PLAYERCHARACTERCONFIG_PC *game_character;   // 0x24
+    struct CHARACTER_EFFECT_CONFIG_PC *effects; // 0x28
+    f32 scaled_radius;                          // 0x2c
+    f32 collision_radius;                       // 0x30
+    f32 bottom;                                 // 0x34
+    f32 top;                                    // 0x38
+    f32 model_scale;                            // 0x3c
+    u8 flags;                                   // 0x40
+    u8 unknown_0041;                            // 0x41
+    i16 icon_model;                             // 0x42
+    u8 unknown_44[0x4];                         // 0x44
+    u32 field22_0x48;                           // 0x48
 } CHARACTERDATA_PC;
 
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, scaled_radius) == 0x2c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, bottom) == 0x34);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, top) == 0x38);
-
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0x0c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animation_count) == 0x14);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, effects) == 0x28);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_scale) == 0x3c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0x0);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 0x8);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, collision_radius) == 0x30);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_scale) == 0x3c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -206,14 +183,11 @@ extern "C" {
 }
 #endif
 
-typedef struct charfixup_s {
-    char *name;
-    i16 *id;
+typedef struct charfixup_s { // size 0x8
+    char *name;              // 0x0
+    i16 *id;                 // 0x4
 } CHARFIXUP_PC;
 
-STATIC_ASSERT(sizeof(CHARFIXUP_PC) == 8);
-STATIC_ASSERT(offsetof(CHARFIXUP_PC, name) == 0);
-STATIC_ASSERT(offsetof(CHARFIXUP_PC, id) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

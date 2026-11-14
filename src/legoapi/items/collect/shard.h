@@ -9,39 +9,38 @@ struct SIGNAL_s;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct AREA_SAVE_PICKUP {
-    union {
-        struct {
-            u8 unknown0[5];
-            u8 minikit_count;
-            u8 red_brick_collected;
-            u8 unknown_07[5];
+typedef struct AREA_SAVE_PICKUP { // size 0xc
+
+    union { // size 0xc
+
+        struct {                    // size 0xc
+            u8 unknown0[5];         // 0x0
+            u8 minikit_count;       // 0x5
+            u8 red_brick_collected; // 0x6
+            u8 unknown_07[5];       // 0x7
         };
 
-        struct {
-            u8 complete;
-            u8 area_complete;
+        struct {              // size 0xc
+            u8 complete;      // 0x0
+            u8 area_complete; // 0x1
 
-            union {
+            union { // size 0x5
                 u8 newgame_reserved_02[5];
 
-                struct {
-                    u8 true_hero_complete[2];
-                    u8 minikit_complete;
-                    u8 preserved_minikit_count;
-                    u8 preserved_red_brick_collected;
+                struct {                              // size 0x5
+                    u8 true_hero_complete[2];         // 0x2
+                    u8 minikit_complete;              // 0x4
+                    u8 preserved_minikit_count;       // 0x5
+                    u8 preserved_red_brick_collected; // 0x6
                 };
-            };
+            }; // 0x2
 
-            u8 challenge_unlocked;
-            f32 challenge_trial_time;
+            u8 challenge_unlocked;    // 0x7
+            f32 challenge_trial_time; // 0x8
         };
-    };
+    }; // 0x0
 } AREA_SAVE_PICKUP;
 
-STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP) == 0xc);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, minikit_count) == 5);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, red_brick_collected) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif

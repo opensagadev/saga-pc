@@ -251,9 +251,6 @@ void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_sca
     Text3DEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, 128);
 }
 
-STATIC_ASSERT(offsetof(MENU, state) == 0xdc);
-STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
-
 void MenuEnterSaveConfirm(MENU *menu) {
     i32 slot = Menu_InHeaderSave != 0 ? SAVESLOTS : memcard_slot;
     (void)menu;

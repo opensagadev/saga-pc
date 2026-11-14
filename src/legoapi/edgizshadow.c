@@ -6,20 +6,6 @@ typedef struct shadow_world_view_s { // size 0x5114
     EDGIZSHADOW_PC *shadow_editor;   // 0x5110
 } SHADOW_WORLD_VIEW_PC;
 
-STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, direction) == 0);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_0c) == 0xc);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_10) == 0x10);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_14) == 0x14);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_18) == 0x18);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_1c) == 0x1c);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_20) == 0x20);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_24) == 0x24);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_28) == 0x28);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_2c) == 0x2c);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, field_30) == 0x30);
-STATIC_ASSERT(offsetof(EDGIZSHADOW_PC, preset) == 0x34);
-
 static i32 Shadow_GetMaxGizmos(void *world) {
     return 1;
 }

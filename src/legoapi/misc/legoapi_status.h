@@ -37,21 +37,22 @@ typedef struct PAD_INPUT_PC {
     u8 analog_left_y;
 } PAD_INPUT_PC;
 
-typedef struct RUMBLE_PACKET_RESOURCE_PC {
-    union {
+typedef struct RUMBLE_PACKET_RESOURCE_PC { // size 0x14
+
+    union { // size 0x4
         u8 unknown_00[4];
         f32 intensity;
-    };
+    }; // 0x00
 
-    f32 amount;
+    f32 amount; // 0x04
 
-    union {
+    union { // size 0x4
         u8 unknown_08[4];
         f32 decay_duration;
-    };
+    }; // 0x08
 
-    f32 duration;
-    u8 active;
+    f32 duration; // 0x0c
+    u8 active;    // 0x10
 } RUMBLE_PACKET_RESOURCE_PC;
 #ifdef __cplusplus
 extern "C" {
@@ -67,16 +68,10 @@ extern "C" {
     extern f32 DrawStatusScaleYPc;
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
-    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, amount) == 4);
-    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, duration) == 0xc);
-    STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, active) == 0x10);
     extern NUVEC PanelLightingDirectionsPc[3];
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, intensity) == 0);
-STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, decay_duration) == 8);
-STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -111,32 +106,22 @@ extern "C" {
 
 #if SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_PART == 2 && !defined(SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_STOP)
 
-typedef struct minikit_piece_s {
-    NUSPECIALHANDLE special;
-    NUMTX matrix;
-    u8 unknown_4c[0x18];
-    u8 direction;
-    u8 unknown_65_b[0x1];
-    u8 enabled;
-    u8 direction_index;
+typedef struct minikit_piece_s { // size 0x68
+    NUSPECIALHANDLE special;     // 0x00
+    NUMTX matrix;                // 0x0c
+    u8 unknown_4c[0x18];         // 0x4c
+    u8 direction;                // 0x64
+    u8 unknown_65_b[0x1];        // 0x65
+    u8 enabled;                  // 0x66
+    u8 direction_index;          // 0x67
 } MINIKIT_PIECE_PC;
 
-STATIC_ASSERT(sizeof(MINIKIT_PIECE_PC) == 0x68);
-STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, special) == 0);
-STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, matrix) == 0xc);
-STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction) == 0x64);
-STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction_index) == 0x67);
-
-typedef struct status_minikit_draw_cache_s {
-    NUMTX matrix;
-    MINIKIT_PIECE_PC *piece;
-    i32 active;
+typedef struct status_minikit_draw_cache_s { // size 0x48
+    NUMTX matrix;                            // 0x00
+    MINIKIT_PIECE_PC *piece;                 // 0x40
+    i32 active;                              // 0x44
 } STATUS_MINIKIT_DRAW_CACHE_PC;
 
-STATIC_ASSERT(sizeof(STATUS_MINIKIT_DRAW_CACHE_PC) == 0x48);
-STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, piece) == 0x40);
-STATIC_ASSERT(offsetof(STATUS_MINIKIT_DRAW_CACHE_PC, active) == 0x44);
 #ifdef __cplusplus
 extern "C" {
 #endif

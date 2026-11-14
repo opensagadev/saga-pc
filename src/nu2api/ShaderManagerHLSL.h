@@ -23,11 +23,11 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
+class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW { // size 0x791b0
   public:
-    ShaderCompilerBasePc *compiler;
-    ShaderCompilerBufferAllocatorPc vertex_source;
-    ShaderCompilerBufferAllocatorPc pixel_source;
+    ShaderCompilerBasePc *compiler;                // 0x7918c
+    ShaderCompilerBufferAllocatorPc vertex_source; // 0x79190
+    ShaderCompilerBufferAllocatorPc pixel_source;  // 0x791a0
     ShaderManagerHLSL(VirtualStackAllocator &);
     void SetUniformValues(i32 semantic, const f32 *values);
     void setElementfv(i32 semantic, i32 element, const f32 *values);
@@ -41,8 +41,4 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
 };
 
 typedef ShaderManagerHLSL ShaderManagerHLSLPc;
-STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, compiler) == 0x7918c);
-STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, vertex_source) == 0x79190);
-STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, pixel_source) == 0x791a0);
-STATIC_ASSERT(sizeof(ShaderManagerHLSLPc) == 0x791b0);
 #endif

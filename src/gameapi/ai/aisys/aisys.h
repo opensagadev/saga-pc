@@ -550,45 +550,41 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 8 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
-typedef struct EDAICREATURE_s { /* Editor creature record; its area/locator references are editor records. */
-    NULISTLNK link;
-    char name[16];
-    char script_name[16];
-    NUVEC position;
-    i32 angle;
-    struct EDAIPATHCHECK_s check;
-    u32 valid_positions;
-    i16 character_type;
-    u8 set;
-    u8 group_count;
-    u8 across_count;
-    u8 unknown_5d[3];
-    f32 x_spacing;
-    f32 z_spacing;
-    u32 flags;
-    struct EDAIAREA_s *activation_area;
-    f32 script_params[4];
-    struct EDAIAREA_s *trigger_area;
-    struct EDLOCATOR_s *locator;
-    struct EDLOCATOR_s *respawn_locator;
-    u8 difficulty;
-    i8 min_respawns;
-    i8 max_respawns;
-    u8 activation;
-    f32 min_respawn_time;
-    f32 max_respawn_time;
-    f32 stagger_start;
-    f32 view_distance;
-    f32 hear_distance;
-    f32 max_view_height;
-    f32 min_view_height;
+typedef struct EDAICREATURE_s { // size 0xac
+    /* Editor creature record; its area/locator references are editor records. */
+    NULISTLNK link;                      // 0x00
+    char name[16];                       // 0x08
+    char script_name[16];                // 0x18
+    NUVEC position;                      // 0x28
+    i32 angle;                           // 0x34
+    struct EDAIPATHCHECK_s check;        // 0x38
+    u32 valid_positions;                 // 0x54
+    i16 character_type;                  // 0x58
+    u8 set;                              // 0x5a
+    u8 group_count;                      // 0x5b
+    u8 across_count;                     // 0x5c
+    u8 unknown_5d[3];                    // 0x5d
+    f32 x_spacing;                       // 0x60
+    f32 z_spacing;                       // 0x64
+    u32 flags;                           // 0x68
+    struct EDAIAREA_s *activation_area;  // 0x6c
+    f32 script_params[4];                // 0x70
+    struct EDAIAREA_s *trigger_area;     // 0x80
+    struct EDLOCATOR_s *locator;         // 0x84
+    struct EDLOCATOR_s *respawn_locator; // 0x88
+    u8 difficulty;                       // 0x8c
+    i8 min_respawns;                     // 0x8d
+    i8 max_respawns;                     // 0x8e
+    u8 activation;                       // 0x8f
+    f32 min_respawn_time;                // 0x90
+    f32 max_respawn_time;                // 0x94
+    f32 stagger_start;                   // 0x98
+    f32 view_distance;                   // 0x9c
+    f32 hear_distance;                   // 0xa0
+    f32 max_view_height;                 // 0xa4
+    f32 min_view_height;                 // 0xa8
 } EDAICREATURE_s;
 
-STATIC_ASSERT(sizeof(EDAICREATURE_s) == 172);
-STATIC_ASSERT(offsetof(EDAICREATURE_s, angle) == 0x34);
-STATIC_ASSERT(offsetof(EDAICREATURE_s, check.path) == 0x3c);
-STATIC_ASSERT(offsetof(EDAICREATURE_s, character_type) == 0x58);
-STATIC_ASSERT(offsetof(EDAICREATURE_s, script_params) == 0x70);
 #ifdef __cplusplus
 extern "C" {
 #endif

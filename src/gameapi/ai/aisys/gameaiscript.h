@@ -29,12 +29,11 @@ struct AISYS_PC;
 struct climb_slot_s;
 struct gameobject_s;
 
-typedef struct AITRIGGERSET_PARTIAL {
-    u8 unknown_00[0x210];
-    u8 flags_low;
+typedef struct AITRIGGERSET_PARTIAL { // size 0x211
+    u8 unknown_00[0x210];             // 0x000
+    u8 flags_low;                     // 0x210
 } AITRIGGERSET_PARTIAL;
 
-STATIC_ASSERT(offsetof(AITRIGGERSET_PARTIAL, flags_low) == 0x210);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -159,15 +158,12 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP)
 
-typedef struct climb_system_s {
-    struct climb_slot_s *objects;
-    u16 count;
-    u16 capacity;
+typedef struct climb_system_s {   // size 0x8
+    struct climb_slot_s *objects; // 0x0
+    u16 count;                    // 0x4
+    u16 capacity;                 // 0x6
 } CLIMB_SYSTEM_PC;
 
-STATIC_ASSERT(sizeof(CLIMB_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, count) == 4);
-STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif

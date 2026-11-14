@@ -12,14 +12,12 @@
 
 struct WORLDINFO_s;
 
-typedef struct indy_guideline_s {
-    char name[8];
-    NUVEC endpoints[2];
-    u32 flags;
+typedef struct indy_guideline_s { // size 0x24
+    char name[8];                 // 0x00
+    NUVEC endpoints[2];           // 0x08
+    u32 flags;                    // 0x20
 } INDY_GUIDELINE_PC;
 
-STATIC_ASSERT(sizeof(INDY_GUIDELINE_PC) == 0x24);
-STATIC_ASSERT(offsetof(INDY_GUIDELINE_PC, endpoints) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

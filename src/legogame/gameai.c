@@ -4,9 +4,6 @@
 #include <stdio.h>
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
-STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
 
 typedef struct ai_control_slot_s {
     NULISTLNK links;

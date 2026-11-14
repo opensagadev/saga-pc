@@ -1,12 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, start_anchor) == 0x8);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, end_anchor) == 0xc);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, unknown_10) == 0x10);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, unknown_14) == 0x14);
-STATIC_ASSERT(offsetof(MEMORYMANAGER, size) == 0x18);
-
 /* Linear allocation from the memory manager's arena. */
 void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {
     void *memory = NULL;

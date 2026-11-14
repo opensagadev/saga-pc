@@ -16,17 +16,15 @@ struct gameobject_s;
 extern "C" {
 #endif
 
-    typedef struct player_coin_packet_s {
-        u32 coins;
-        f32 scale;
-        i16 last_coin;
-        u8 active;
-        u8 unknown_0b;
-        f32 multiplier_time;
+    typedef struct player_coin_packet_s { // size 0x10
+        u32 coins;                        // 0x0
+        f32 scale;                        // 0x4
+        i16 last_coin;                    // 0x8
+        u8 active;                        // 0xa
+        u8 unknown_0b;                    // 0xb
+        f32 multiplier_time;              // 0xc
     } PLAYER_COIN_PACKET_PC;
 
-    STATIC_ASSERT(sizeof(PLAYER_COIN_PACKET_PC) == 0x10);
-    STATIC_ASSERT(offsetof(PLAYER_COIN_PACKET_PC, last_coin) == 8);
     void DrawPanel(void);
     extern f32 PANEL_REDBRICKSCALE;
     extern f32 REDBRICKPOSX;

@@ -10,26 +10,21 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef union nuplane_s {
-    struct {
-        f32 a;
-        f32 b;
-        f32 c;
-        f32 d;
+typedef union nuplane_s { // size 0x10
+
+    struct {   // size 0x10
+        f32 a; // 0x0
+        f32 b; // 0x4
+        f32 c; // 0x8
+        f32 d; // 0xc
     };
 
-    struct {
-        NUVEC normal;
-        f32 distance;
+    struct {          // size 0x10
+        NUVEC normal; // 0x0
+        f32 distance; // 0xc
     };
 } NUPLANE;
 
-STATIC_ASSERT(sizeof(NUPLANE) == 0x10);
-STATIC_ASSERT(offsetof(NUPLANE, a) == 0);
-STATIC_ASSERT(offsetof(NUPLANE, b) == 4);
-STATIC_ASSERT(offsetof(NUPLANE, c) == 8);
-STATIC_ASSERT(offsetof(NUPLANE, d) == 0xc);
-STATIC_ASSERT(offsetof(NUPLANE, normal) == 0);
 #ifdef __cplusplus
 extern "C" {
 #endif

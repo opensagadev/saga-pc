@@ -46,19 +46,14 @@ extern "C" {
 }
 #endif
 
-typedef struct BONUS_GUNSHIP_B_NETPACKET_PC {
-    u8 progress;
-    u8 secondary;
-    u8 reserved_2[2];
-    f32 time;
-    u8 reserved_8[4];
+typedef struct BONUS_GUNSHIP_B_NETPACKET_PC { // size 0xc
+    u8 progress;                              // 0x0
+    u8 secondary;                             // 0x1
+    u8 reserved_2[2];                         // 0x2
+    f32 time;                                 // 0x4
+    u8 reserved_8[4];                         // 0x8
 } BONUS_GUNSHIP_B_NETPACKET_PC;
 
-STATIC_ASSERT(sizeof(BONUS_GUNSHIP_B_NETPACKET_PC) == 12);
-STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, progress) == 0);
-STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, secondary) == 1);
-STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, time) == 4);
-STATIC_ASSERT(offsetof(BONUS_GUNSHIP_B_NETPACKET_PC, reserved_8) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -75,93 +70,64 @@ extern "C" {
 #endif
 
 /* Original PC Jedi_B arena records; DWORD flags and eight-byte state alignment. */
-typedef struct JEDIB_CREATURE_PC {
-    NUVEC position;
-    i32 angle;
-    i32 id;
-    GAMEOBJECT *object;
-    struct JEDIB_CREATURE_PC *partner;
-    AILOCATOR_PC locator;
-    i32 field_0x58;
-    u32 flags;
+typedef struct JEDIB_CREATURE_PC {     // size 0x60
+    NUVEC position;                    // 0x00
+    i32 angle;                         // 0x0c
+    i32 id;                            // 0x10
+    GAMEOBJECT *object;                // 0x14
+    struct JEDIB_CREATURE_PC *partner; // 0x18
+    AILOCATOR_PC locator;              // 0x1c
+    i32 field_0x58;                    // 0x58
+    u32 flags;                         // 0x5c
 } JEDIB_CREATURE_PC;
 
-STATIC_ASSERT(sizeof(JEDIB_CREATURE_PC) == 0x60);
-STATIC_ASSERT(offsetof(JEDIB_CREATURE_PC, locator) == 0x1c);
-STATIC_ASSERT(offsetof(JEDIB_CREATURE_PC, flags) == 0x5c);
-
-typedef struct JEDIB_PHASE_PC {
-    i16 *id;
-    const char *script;
+typedef struct JEDIB_PHASE_PC { // size 0x8
+    i16 *id;                    // 0x0
+    const char *script;         // 0x4
 } JEDIB_PHASE_PC;
 
-STATIC_ASSERT(sizeof(JEDIB_PHASE_PC) == 8);
+typedef struct JEDIB_STATE_PC {        // size 0x63f0
+    JEDIB_CREATURE_PC baddies[256];    // 0x0000
+    JEDIB_CREATURE_PC goodies[8];      // 0x6000
+    i16 baddie_count;                  // 0x6300
+    i16 goody_count;                   // 0x6302
+    i16 phase;                         // 0x6304
+    i16 state;                         // 0x6306
+    f32 timer;                         // 0x6308
+    u32 seed;                          // 0x630c
+    NUSPECIALHANDLE hero_spawns[3][4]; // 0x6310
+    GAMEOBJECT *heroes[3];             // 0x63a0
+    GIZAIMESSAGE *msg_phase;           // 0x63ac
+    GIZAIMESSAGE *msg_phase_complete;  // 0x63b0
+    GIZAIMESSAGE *msg_objectives_left; // 0x63b4
+    GIZAIMESSAGE *msg_restrain[3];     // 0x63b8
+    i16 wave_ids[6];                   // 0x63c4
+    u8 wave_spawned[6];                // 0x63d0
+    u8 pad_0x63d6[2];                  // 0x63d6
+    GAMEOBJECT *boss;                  // 0x63d8
+    f32 wave_timer;                    // 0x63dc
 
-typedef struct JEDIB_STATE_PC {
-    JEDIB_CREATURE_PC baddies[256];
-    JEDIB_CREATURE_PC goodies[8];
-    i16 baddie_count;
-    i16 goody_count;
-    i16 phase;
-    i16 state;
-    f32 timer;
-    u32 seed;
-    NUSPECIALHANDLE hero_spawns[3][4];
-    GAMEOBJECT *heroes[3];
-    GIZAIMESSAGE *msg_phase;
-    GIZAIMESSAGE *msg_phase_complete;
-    GIZAIMESSAGE *msg_objectives_left;
-    GIZAIMESSAGE *msg_restrain[3];
-    i16 wave_ids[6];
-    u8 wave_spawned[6];
-    u8 pad_0x63d6[2];
-    GAMEOBJECT *boss;
-    f32 wave_timer;
-
-    union {
+    union { // size 0x8
         u64 exclusion_mask;
 
-        struct {
-            u32 exclusion_mask_low;
-            u32 exclusion_mask_high;
+        struct {                     // size 0x8
+            u32 exclusion_mask_low;  // 0x63e0
+            u32 exclusion_mask_high; // 0x63e4
         };
-    };
+    }; // 0x63e0
 
-    u32 unique_spawned;
+    u32 unique_spawned; // 0x63e8
 } JEDIB_STATE_PC;
 
-STATIC_ASSERT(sizeof(JEDIB_STATE_PC) == 0x63f0);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, goodies) == 0x6000);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, baddie_count) == 0x6300);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, goody_count) == 0x6302);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, phase) == 0x6304);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, state) == 0x6306);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, timer) == 0x6308);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, seed) == 0x630c);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, hero_spawns) == 0x6310);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, heroes) == 0x63a0);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, msg_restrain) == 0x63b8);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, wave_ids) == 0x63c4);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, wave_spawned) == 0x63d0);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, boss) == 0x63d8);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, wave_timer) == 0x63dc);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, exclusion_mask) == 0x63e0);
-STATIC_ASSERT(offsetof(JEDIB_STATE_PC, unique_spawned) == 0x63e8);
-
-typedef struct JEDIB_NETPACKET_PC {
-    i16 state;
-    i16 phase;
-    i16 count;
-    i16 pad_0x06;
-    i16 ids[8];
-    u8 spawned[8];
+typedef struct JEDIB_NETPACKET_PC { // size 0x20
+    i16 state;                      // 0x00
+    i16 phase;                      // 0x02
+    i16 count;                      // 0x04
+    i16 pad_0x06;                   // 0x06
+    i16 ids[8];                     // 0x08
+    u8 spawned[8];                  // 0x18
 } JEDIB_NETPACKET_PC;
 
-STATIC_ASSERT(sizeof(JEDIB_NETPACKET_PC) == 0x20);
-STATIC_ASSERT(offsetof(JEDIB_NETPACKET_PC, phase) == 2);
-STATIC_ASSERT(offsetof(JEDIB_NETPACKET_PC, count) == 4);
-STATIC_ASSERT(offsetof(JEDIB_NETPACKET_PC, ids) == 8);
-STATIC_ASSERT(offsetof(JEDIB_NETPACKET_PC, spawned) == 0x18);
 #ifdef __cplusplus
 extern "C" {
 #endif

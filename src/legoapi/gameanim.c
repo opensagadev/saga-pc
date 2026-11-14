@@ -1554,9 +1554,6 @@ void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 void fun_0065b5e0(void) {
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, mini_current_animation) == 0x7ee);
-STATIC_ASSERT(offsetof(GAMEOBJECT, mini_previous_animation) == 0x7f0);
-
 GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame, f32 end_frame,
                                          i32 append, void *gizmo_sys, char *prefix, char *suffix) {
     NUSPECIALHANDLE special;
@@ -1596,11 +1593,6 @@ typedef struct gameanim_reflection_matrix_s { // size 0x40
 } GAMEANIM_REFLECTION_MATRIX_PC;
 
 STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX_PC) == sizeof(NUMTX));
-STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
-STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
 void GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;

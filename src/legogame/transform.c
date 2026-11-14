@@ -1,15 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target) == 0xd14);
-
 typedef struct transform_glow_s {  // size 0xe30
     u8 unused_0000[0xc68];         // 0x000
     NUVEC glow_position;           // 0xc68

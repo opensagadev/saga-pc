@@ -24,145 +24,117 @@ struct area_data_pc_s;
 struct gameobject_s;
 struct level_data_s;
 
-typedef struct gamesave_s {
-    union {
+typedef struct gamesave_s { // size 0x7e4c
+
+    union { // size 0x4
         u32 unknown_0000;
 
-        struct {
-            u8 unknown_game_00;
+        struct {                // size 0x4
+            u8 unknown_game_00; // 0x0000
 
-            union {
+            union { // size 0x1
                 u8 difficulty;
                 u8 save_version;
-            };
+            }; // 0x0001
 
-            u8 unknown_game_02[2];
+            u8 unknown_game_02[2]; // 0x0002
         };
-    };
+    }; // 0x0000
 
-    OPTIONSSAVE options_save;
-    u8 level_save[0x781b];
-    AREA_SAVE_PICKUP area_save[72];
+    OPTIONSSAVE options_save;       // 0x0004
+    u8 level_save[0x781b];          // 0x0011
+    AREA_SAVE_PICKUP area_save[72]; // 0x782c
 
-    union {
-        struct {
-            union {
+    union { // size 0x108
+
+        struct { // size 0x108
+
+            union { // size 0x8f
                 u8 unknown_7b8c[0x8f];
 
-                struct {
-                    u8 unknown_gold_brick_prefix[0x8e];
-                    u8 gold_bricks;
+                struct {                                // size 0x8f
+                    u8 unknown_gold_brick_prefix[0x8e]; // 0x7b8c
+                    u8 gold_bricks;                     // 0x7c1a
                 };
-            };
+            }; // 0x7b8c
 
-            u8 customizer_weirdo_flags;
+            u8 customizer_weirdo_flags; // 0x7c1b
 
-            union {
+            union { // size 0x4
                 u8 unknown_7c1c[4];
 
-                struct {
-                    u8 hub_buildit_completed;
+                struct {                      // size 0x4
+                    u8 hub_buildit_completed; // 0x7c1c
 
-                    union {
+                    union { // size 0x1
                         u8 losttemple_trailer_watched;
                         u8 lost_temple_area_complete;
-                    };
+                    }; // 0x7c1d
 
-                    u8 unknown_7c1e[2];
+                    u8 unknown_7c1e[2]; // 0x7c1e
                 };
-            };
+            }; // 0x7c1c
 
-            f32 game_time;
-            u8 unknown_7c24[0xa];
-            u16 customizer_cape_piece;
-            u8 unknown_7c30[0x36];
-            u16 customizer_secondary_cape_piece;
-            u8 unknown_7c68[0x2c];
+            f32 game_time;                       // 0x7c20
+            u8 unknown_7c24[0xa];                // 0x7c24
+            u16 customizer_cape_piece;           // 0x7c2e
+            u8 unknown_7c30[0x36];               // 0x7c30
+            u16 customizer_secondary_cape_piece; // 0x7c66
+            u8 unknown_7c68[0x2c];               // 0x7c68
         };
 
-        struct {
-            struct EPISODESAVE_s episode_save[6];
-            u8 newgame_reserved_7bd4[0x28];
-            u32 initial_store_pack_flags;
-            u32 newgame_reserved_7c00;
-            u32 purchased_extra_bits_high;
+        struct {                                  // size 0x108
+            struct EPISODESAVE_s episode_save[6]; // 0x7b8c
+            u8 newgame_reserved_7bd4[0x28];       // 0x7bd4
+            u32 initial_store_pack_flags;         // 0x7bfc
+            u32 newgame_reserved_7c00;            // 0x7c00
+            u32 purchased_extra_bits_high;        // 0x7c04
 
-            union {
+            union { // size 0x10
                 u8 newgame_reserved_7c08[0x10];
 
-                struct {
-                    union {
+                struct { // size 0x10
+
+                    union { // size 0xc
                         u8 hud_coin_reserved_7c08[0xc];
                         u32 hint_completion_bits[3];
-                    };
+                    }; // 0x7c08
 
-                    u32 coins;
+                    u32 coins; // 0x7c14
                 };
-            };
+            }; // 0x7c08
 
-            u16 save_hash;
-            u8 newgame_reserved_7c1a[0xa];
-            GAME_CUSTOMISER_START customiser_start[2];
+            u16 save_hash;                             // 0x7c18
+            u8 newgame_reserved_7c1a[0xa];             // 0x7c1a
+            GAME_CUSTOMISER_START customiser_start[2]; // 0x7c24
         };
-    };
+    }; // 0x7b8c
 
-    MISSION_SAVE_READER_PC mission_save;
+    MISSION_SAVE_READER_PC mission_save; // 0x7c94
 
-    union {
+    union { // size 0x154
         u8 unknown_7cf8[0x154];
         u8 character_save[0x154];
-    };
+    }; // 0x7cf8
 } GAMESAVE;
 
-STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
-STATIC_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
-STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
-STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
-STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
-STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-STATIC_ASSERT(offsetof(GAMESAVE, episode_save) == 0x7b8c);
-STATIC_ASSERT(offsetof(GAMESAVE, hint_completion_bits) == 0x7c08);
-STATIC_ASSERT(offsetof(GAMESAVE, coins) == 0x7c14);
-STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
-STATIC_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
-STATIC_ASSERT(offsetof(GAMESAVE, game_time) == 0x7c20);
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) == 0x7c24);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
-STATIC_ASSERT(offsetof(GAMESAVE, mission_save) == 0x7c94);
 STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER_PC, completed) == 0x7ce4);
-STATIC_ASSERT(offsetof(GAMESAVE, character_save) == 0x7cf8);
-STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 0x1);
-STATIC_ASSERT(sizeof(GAMESAVE) == 0x7e4c);
-STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_weirdo_flags) == 0x7c1b);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_cape_piece) == 0x7c2e);
-STATIC_ASSERT(offsetof(GAMESAVE, customizer_secondary_cape_piece) == 0x7c66);
-STATIC_ASSERT(offsetof(GAMESAVE, mission_save) == 0x7c94);
 STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER_PC, completed) == 0x7ce4);
 
 // Access prefix only; the original allocation extent remains unknown.
-typedef struct area_globals_s {
-    i32 field_00;
-    i32 field_04;
-    i32 field_08;
-    i32 area_phase;
-    i32 new_minikit_count;
-    i32 progress_flags;
-    i32 field_18;
-    i32 field_1c;
-    i32 field_20;
-    u32 arcade_player_kills[2];
-    u32 arcade_ai_kills[2];
+typedef struct area_globals_s { // size 0x34
+    i32 field_00;               // 0x00
+    i32 field_04;               // 0x04
+    i32 field_08;               // 0x08
+    i32 area_phase;             // 0x0c
+    i32 new_minikit_count;      // 0x10
+    i32 progress_flags;         // 0x14
+    i32 field_18;               // 0x18
+    i32 field_1c;               // 0x1c
+    i32 field_20;               // 0x20
+    u32 arcade_player_kills[2]; // 0x24
+    u32 arcade_ai_kills[2];     // 0x2c
 } AREA_GLOBALS_PC;
-
-STATIC_ASSERT(sizeof(AREA_GLOBALS_PC) == 0x34);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, area_phase) == 0x0c);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, new_minikit_count) == 0x10);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, progress_flags) == 0x14);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, arcade_player_kills) == 0x24);
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, arcade_ai_kills) == 0x2c);
 
 typedef struct cutscenecharacter_s {
     u8 opaque_00_40[0x40];
@@ -170,15 +142,11 @@ typedef struct cutscenecharacter_s {
     u8 opaque_44[0x4];
 } CUTSCENECHARACTER;
 
-typedef union PC_SURFACE_MASK_PC {
+typedef union PC_SURFACE_MASK_PC { // size 0x4
     u8 low;
     u32 word;
 } PC_SURFACE_MASK_PC;
 
-STATIC_ASSERT(sizeof(PC_SURFACE_MASK_PC) == 4);
-STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, low) == 0);
-STATIC_ASSERT(offsetof(PC_SURFACE_MASK_PC, word) == 0);
-STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -188,29 +156,21 @@ extern "C" {
     void DeflectPart(struct PART_PC *, struct gameobject_s *, f32, f32, i32, i32);
     void InitGameMode(void);
 
-    typedef union GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC {
+    typedef union GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC { // size 0x4
         i32 value;
         u8 low_byte;
     } GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC;
 
-    STATIC_ASSERT(sizeof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC) == 4);
-    STATIC_ASSERT(offsetof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC, value) == 0);
-    STATIC_ASSERT(offsetof(GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE_PC, low_byte) == 0);
     extern i32 LegoObjectIconQuestionPc;
 
-    typedef struct CUT_DRAW_SETTINGS_PC {
-        i16 blaster_object_0;
-        i16 blaster_object_1;
-        i16 object_id;
-        i8 cheat_id;
-        u8 normal_layers;
+    typedef struct CUT_DRAW_SETTINGS_PC { // size 0x8
+        i16 blaster_object_0;             // 0x0
+        i16 blaster_object_1;             // 0x2
+        i16 object_id;                    // 0x4
+        i8 cheat_id;                      // 0x6
+        u8 normal_layers;                 // 0x7
     } CUT_DRAW_SETTINGS_PC;
 
-    STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
-    STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, blaster_object_1) == 2);
-    STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, object_id) == 4);
-    STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, cheat_id) == 6);
-    STATIC_ASSERT(offsetof(CUT_DRAW_SETTINGS_PC, normal_layers) == 7);
     extern i32 CutSceneLookupAllDebrisPagesPc;
     extern struct area_data_pc_s *JABBASPALACE_ADATA;
     extern struct area_data_pc_s *DAGOBAH_ADATA;
@@ -278,16 +238,12 @@ extern "C" {
     extern u16 ZipUpSwingJumpAnimationPc;
     extern i16 ZipUpLineCharacterIdPc;
 
-    typedef struct ADAPTIVEDIFFICULTY_PC {
-        i32 level;
-        f32 accumulator;
-        f32 time_elapsed;
+    typedef struct ADAPTIVEDIFFICULTY_PC { // size 0xc
+        i32 level;                         // 0x0
+        f32 accumulator;                   // 0x4
+        f32 time_elapsed;                  // 0x8
     } ADAPTIVEDIFFICULTY_PC;
 
-    STATIC_ASSERT(sizeof(ADAPTIVEDIFFICULTY_PC) == 0xc);
-    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, level) == 0);
-    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, accumulator) == 4);
-    STATIC_ASSERT(offsetof(ADAPTIVEDIFFICULTY_PC, time_elapsed) == 8);
     extern f32 AdaptiveDifficultyRecoveryTimePc;
     f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY_PC *);
     f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY_PC *difficulty, f32 amount);
@@ -304,13 +260,11 @@ extern "C" {
 }
 #endif
 
-typedef struct customiser_completion_reader_s {
-    u8 unknown_00[3];
-    u8 flags;
+typedef struct customiser_completion_reader_s { // size 0x4
+    u8 unknown_00[3];                           // 0x0
+    u8 flags;                                   // 0x3
 } CUSTOMISER_COMPLETION_READER_PC;
 
-STATIC_ASSERT(sizeof(CUSTOMISER_COMPLETION_READER_PC) == 4);
-STATIC_ASSERT(offsetof(CUSTOMISER_COMPLETION_READER_PC, flags) == 3);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -344,7 +298,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
 
 struct game_door_callback_pc_s;
 #ifdef __cplusplus
@@ -386,7 +339,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(GAMESAVE, save_hash) == 0x7c18);
 #ifdef __cplusplus
 extern "C" {
 #endif

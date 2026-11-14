@@ -3,10 +3,6 @@
 #include <stdio.h>
 
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
-STATIC_ASSERT(offsetof(WORLDINFO, camera_splines) == 0x2ac4);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, scene) == 0);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, max_points) == 0xa);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, level) == 0xc);
 typedef void (*LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
 extern "C" {
     void LevelsConfigDiagnosticPc(char *message);
@@ -37,14 +33,6 @@ typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
     u8 unknown_0000[0x2964];               // 0x0000
     NUGSCN *icons_gscn;                    // 0x2964
 } WORLD_OBJECT_SETUP_READER;
-
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 
 typedef struct menu_mission_reader_s { // size 0x13
     u8 unknown_00[0x12];               // 0x00

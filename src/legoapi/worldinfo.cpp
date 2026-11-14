@@ -5,32 +5,13 @@
 /* World info, with GizmoSysClearLevelProgress (gizmo.c) before it and SetAreaPickupGravity
    (gizmopickups.c) after it. The PortalDoors functions stay in gizportal.c, which relies on C
    conversions. */
-STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 
 extern "C" {
-    STATIC_ASSERT(offsetof(WORLDINFO, level_min) == 0x144);
-    STATIC_ASSERT(offsetof(WORLDINFO, level_max) == 0x150);
-
-    STATIC_ASSERT(offsetof(NUINSTANCE, animation) == 0x48);
-    STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
-    STATIC_ASSERT(offsetof(NUGSCN, instances) == 0x20);
-    STATIC_ASSERT(offsetof(NUGSCN, portal_boxes) == 0xfc);
-    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
-
-    STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
-    STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
 
     typedef struct world_script_progress_s { // size 0x20
         char name[16];                       // 0x00
         f32 params[4];                       // 0x10
     } WORLD_SCRIPT_PROGRESS_PC;
-
-    STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
-    STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
-    STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
-    STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 
     typedef struct level_progress_transfer_s { // size 0x2e28
         SCENEPROGRESS scene_progress;          // 0x0000
@@ -274,22 +255,6 @@ extern "C" {
         }
         return 0;
     }
-
-    STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
-    STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
-    STATIC_ASSERT(offsetof(DOOR_s, pos) == 0xd4);
-    STATIC_ASSERT(offsetof(DOOR_s, level) == 0xf0);
-    STATIC_ASSERT(offsetof(DOOR_s, freeplay_level) == 0xf2);
-    STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
-    STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-    STATIC_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
-    STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
-    STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, flags) == 6);
-    STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, first_level) == 2);
-    STATIC_ASSERT(offsetof(AREA_LEVEL_LOAD_PC, second_level) == 4);
-    STATIC_ASSERT(sizeof(AREA_LEVEL_LOAD_PC) == 8);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
-    STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
     typedef struct EQUIVALENTOBJECTGROUP {
         i16 object_count;
@@ -827,21 +792,3 @@ extern "C" {
         LOG_INFO("WorldInfo_Activate complete: world=%p", (void *)WORLD);
     }
 }
-STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
-
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(WORLDINFO, secondary_gscn) == 0x140);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, active) == 6);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);

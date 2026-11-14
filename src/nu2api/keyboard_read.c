@@ -475,16 +475,6 @@ typedef union EdcamMayaAngleObservedPc { // size 0x4
     } parts;
 } EdcamMayaAngleObservedPc;
 
-STATIC_ASSERT(offsetof(edcam_s, distance) == 0x14);
-STATIC_ASSERT(offsetof(edcam_s, distance_speed) == 0x6c);
-STATIC_ASSERT(offsetof(edcam_s, minimum_distance) == 0x70);
-STATIC_ASSERT(offsetof(edcam_s, mouse_pitch_speed) == 0x74);
-STATIC_ASSERT(offsetof(edcam_s, mouse_yaw_speed) == 0x78);
-STATIC_ASSERT(offsetof(edcam_s, mouse_move_speed) == 0x7c);
-STATIC_ASSERT(offsetof(edcam_s, auto_zoom_base) == 0x88);
-STATIC_ASSERT(offsetof(edcam_s, auto_zoom_dist_scale) == 0x8c);
-STATIC_ASSERT(offsetof(edcam_s, freedoms) == 0x90);
-
 #pragma section(".bss$EdcamMayaSmoothedAnglePc", read, write)
 #pragma section(".bss$EdcamMayaRawAnglePc", read, write)
 

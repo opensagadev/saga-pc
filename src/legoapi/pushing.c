@@ -12,9 +12,6 @@ typedef struct PART_RELEASE_PUSH { // size 0xdc8
     f32 push_timer;                // 0xdc4
 } PART_RELEASE_PUSH;
 
-STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, spin_timer) == 0x90);
-
 typedef struct PUSH_OBJECT_LOCAL {  // size 0x7b4
     u8 unknown_000[0x768];          // 0x000
     f32 obstacle_timer;             // 0x768

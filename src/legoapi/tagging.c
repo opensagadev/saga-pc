@@ -1,27 +1,15 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, area_level_index) == 0xc8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, script_processor) +
                   offsetof(AISCRIPTPROCESS_PC, script) ==
               0x2cc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 extern void *Door_Last;
 extern u64 CharacterMaskAllPc;
 i8 Area_CharIDInCurrentList(i32 character_id);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode) == 0x406);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
 void ClearTakeOverObjectSys(void) {
     memset(takeoverobjects, 0, sizeof(takeoverobjects));

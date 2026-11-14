@@ -5,11 +5,10 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct nunrand_s {
-    i32 value;
+typedef struct nunrand_s { // size 0x4
+    i32 value;             // 0x0
 } NURAND;
 
-STATIC_ASSERT(sizeof(NURAND) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

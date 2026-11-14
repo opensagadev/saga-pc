@@ -13,39 +13,35 @@
 typedef struct GIZBOMBGENSYS_s GIZBOMBGENSYS_s;
 typedef struct GIZBOMBGEN_s GIZBOMBGEN_s;
 
-struct GIZBOMBGEN_s {
-    char name[16];
-    NUVEC position;
-    struct gameanimset_s *anim_set;
-    i32 interval;
-    struct gameobject_s *generated_bomb;
-    i16 field_0x28;
+struct GIZBOMBGEN_s {                    // size 0x2c
+    char name[16];                       // 0x00
+    NUVEC position;                      // 0x10
+    struct gameanimset_s *anim_set;      // 0x1c
+    i32 interval;                        // 0x20
+    struct gameobject_s *generated_bomb; // 0x24
+    i16 field_0x28;                      // 0x28
 
-    union {
+    union { // size 0x2
         u16 flags;
 
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 reserved_flags : 14;
+        struct {                     // size 0x2
+            u16 active : 1;          // 0x2a:0
+            u16 visible : 1;         // 0x2a:1
+            u16 reserved_flags : 14; // 0x2a:2
         };
-    };
+    }; // 0x2a
 };
 
-STATIC_ASSERT(sizeof(struct GIZBOMBGEN_s) == 44);
-STATIC_ASSERT(offsetof(struct GIZBOMBGEN_s, flags) == 0x2a);
-
-struct GIZBOMBGENSYS_s {
-    struct GIZBOMBGEN_s *bomb_generators;
-    u16 count;
-    u16 capacity;
-    void *anim_object_pool;
-    u8 flags;
-    u8 reserved_0x0d[3];
-    void *progress;
+struct GIZBOMBGENSYS_s {                  // size 0x14
+    struct GIZBOMBGEN_s *bomb_generators; // 0x00
+    u16 count;                            // 0x04
+    u16 capacity;                         // 0x06
+    void *anim_object_pool;               // 0x08
+    u8 flags;                             // 0x0c
+    u8 reserved_0x0d[3];                  // 0x0d
+    void *progress;                       // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct GIZBOMBGENSYS_s) == 20);
 #ifdef __cplusplus
 extern "C" {
 #endif

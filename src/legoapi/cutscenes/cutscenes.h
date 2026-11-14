@@ -17,8 +17,6 @@ struct cutsys_s;
 
 typedef NUANIMDATA2_SKELETAL CUT_ANIMATION_PC;
 
-STATIC_ASSERT(offsetof(CUT_ANIMATION_PC, node_flags) == 0x14);
-
 typedef struct CUT_LOAD_RECORD_PC CUT_LOAD_RECORD_PC;
 
 typedef struct CUT_LOAD_SYS_PC CUT_LOAD_SYS_PC;
@@ -71,41 +69,25 @@ extern "C" {
 }
 #endif
 
-typedef struct cut_player_clip_config_pc_s {
-    i16 level_id;
-    u8 type;
-    i8 guest_episode;
-    char name[64];
+typedef struct cut_player_clip_config_pc_s { // size 0x44
+    i16 level_id;                            // 0x00
+    u8 type;                                 // 0x02
+    i8 guest_episode;                        // 0x03
+    char name[64];                           // 0x04
 } CUT_PLAYER_CLIP_CONFIG_PC;
 
-STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
-
-typedef struct CUT_PLAYER_ACTIVE_PC {
-    void *clips;
-    void *active;
-    u16 clip_count;
-    i16 return_door;
-    i16 *clip_text;
-    i16 *intro_text;
-    i16 *midtro_text;
-    i16 *outro_text;
-    i16 *ending_text;
+typedef struct CUT_PLAYER_ACTIVE_PC { // size 0x20
+    void *clips;                      // 0x00
+    void *active;                     // 0x04
+    u16 clip_count;                   // 0x08
+    i16 return_door;                  // 0x0a
+    i16 *clip_text;                   // 0x0c
+    i16 *intro_text;                  // 0x10
+    i16 *midtro_text;                 // 0x14
+    i16 *outro_text;                  // 0x18
+    i16 *ending_text;                 // 0x1c
 } CUT_PLAYER_ACTIVE_PC;
 
-STATIC_ASSERT(sizeof(CUT_PLAYER_ACTIVE_PC) == 0x20);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clips) == 0);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clip_count) == 8);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, return_door) == 0xa);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, clip_text) == 0xc);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, intro_text) == 0x10);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, midtro_text) == 0x14);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, outro_text) == 0x18);
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, ending_text) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif

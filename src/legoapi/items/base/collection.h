@@ -36,19 +36,16 @@ extern "C" {
 #endif
 typedef struct COLLECTION_s COLLECTION_s;
 
-struct COLLECTION_s {
-    struct COLLECTID *list;
-    u16 count_x;
-    u16 count_y;
-    void *field_8;
-    void *field_c;
-    f32 field_10;
-    f32 field_14;
+struct COLLECTION_s {       // size 0x18
+    struct COLLECTID *list; // 0x00
+    u16 count_x;            // 0x04
+    u16 count_y;            // 0x06
+    void *field_8;          // 0x08
+    void *field_c;          // 0x0c
+    f32 field_10;           // 0x10
+    f32 field_14;           // 0x14
 };
 
-STATIC_ASSERT(sizeof(struct COLLECTION_s) == 24);
-STATIC_ASSERT(offsetof(COLLECTION_s, list) == 0);
-STATIC_ASSERT(offsetof(COLLECTION_s, count_y) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif

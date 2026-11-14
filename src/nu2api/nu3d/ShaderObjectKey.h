@@ -21,15 +21,15 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class ShaderBuilderGen {
+class ShaderBuilderGen { // size 0xbd0
   public:
-    char save_directory[0x100];
-    char include_directories[0x100];
-    u32 unknown_204;
-    void *parsed_source;
-    ShaderCompilerDictionaryPc dictionary;
-    ShaderCompilerBufferAllocatorPc source_buffer;
-    VirtualStackAllocator parser_memory;
+    char save_directory[0x100];                    // 0x004
+    char include_directories[0x100];               // 0x104
+    u32 unknown_204;                               // 0x204
+    void *parsed_source;                           // 0x208
+    ShaderCompilerDictionaryPc dictionary;         // 0x20c
+    ShaderCompilerBufferAllocatorPc source_buffer; // 0xbb0
+    VirtualStackAllocator parser_memory;           // 0xbc0
     ShaderBuilderGen(VirtualStackAllocator &, i32);
     virtual ~ShaderBuilderGen();
     virtual void SetIncludeDirectories(const char *);
@@ -53,16 +53,8 @@ class ShaderBuilderGen {
 };
 
 typedef ShaderBuilderGen ShaderCompilerBasePc;
-STATIC_ASSERT(sizeof(ShaderCompilerBasePc) == 0xbd0);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, save_directory) == 4);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, include_directories) == 0x104);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, unknown_204) == 0x204);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parsed_source) == 0x208);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, dictionary) == 0x20c);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, source_buffer) == 0xbb0);
-STATIC_ASSERT(offsetof(ShaderCompilerBasePc, parser_memory) == 0xbc0);
 
-class HLSLShaderBuilder : public ShaderBuilderGen {
+class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
   public:
     HLSLShaderBuilder(VirtualStackAllocator &);
 
@@ -74,5 +66,4 @@ class HLSLShaderBuilder : public ShaderBuilderGen {
 };
 
 typedef HLSLShaderBuilder ShaderCompilerHLSLPc;
-STATIC_ASSERT(sizeof(ShaderCompilerHLSLPc) == 0xbd0);
 #endif

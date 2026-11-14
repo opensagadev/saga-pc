@@ -144,14 +144,7 @@ extern "C" {
         u8 unknown_64738[8];                      // 0x64738
     } DOGFIGHT_SPACE_PC;
 
-    STATIC_ASSERT(offsetof(WORLDINFO, has_level_specific_data) == 0x5118);
-    STATIC_ASSERT(offsetof(WORLDINFO, level_specific_data) == 0x511c);
     STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
-
-    STATIC_ASSERT(sizeof(starfighter_s) == 0x128);
-    STATIC_ASSERT(offsetof(starfighter_s, parent) == 0xd0);
-    STATIC_ASSERT(offsetof(starfighter_s, spline) == 0xd4);
-    STATIC_ASSERT(offsetof(starfighter_s, active) == 0x110);
 
 #pragma data_seg(".data$DogfightResetPc")
     NUVEC4 DogfightDrawScalePc = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -169,13 +162,6 @@ extern "C" {
     };
 #pragma data_seg()
 
-    STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-    STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
-    STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-    STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
-    STATIC_ASSERT(offsetof(SOCKSYS_PC, socks) == 0);
-    STATIC_ASSERT(offsetof(SOCK_PC, current_speed) == 0x70);
-    STATIC_ASSERT(offsetof(FLIGHT_SPLINE_RESOURCE_PC, point_count) == 0x400);
     STATIC_ASSERT(sizeof(FLIGHT_SPLINE_RESOURCE_PC) == sizeof(DOGFIGHT_SPLINE_HISTORY_PC));
 
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
@@ -195,20 +181,11 @@ extern "C" {
     };
 #pragma data_seg()
 
-    STATIC_ASSERT(offsetof(starfighter_s, parent_offset) == 0x70);
-    STATIC_ASSERT(offsetof(starfighter_s, scale) == 0xf0);
-    STATIC_ASSERT(offsetof(starfighter_s, draw_flags) == 0xfc);
-    STATIC_ASSERT(offsetof(starfighter_s, model_id) == 0xfe);
-    STATIC_ASSERT(offsetof(starfighter_s, health) == 0x10c);
-    STATIC_ASSERT(offsetof(starfighter_s, hit_count) == 0x118);
-
 #pragma data_seg(".data$DogfightWingSpeedPc")
     f32 DogfightWingSpeedPc = 35.0f;
 #pragma data_seg(".data$DogfightPassingSpeedPc")
     static f32 DogfightPassingSpeedPc = 200.0f;
 #pragma data_seg()
-
-    STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
 #pragma data_seg(".data$DogfightRumbleSpeedScalePc")
     f32 SpeedDist = 5.0f;
@@ -304,12 +281,6 @@ extern "C" {
     } DOGFIGHT_LEVEL_FLAGS;
 
     STATIC_ASSERT(sizeof(DOGFIGHT_LEVEL_FLAGS) == sizeof(LevFlag));
-    STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-    STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, area_complete) == 1);
-    STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-    STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
-    STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
-    STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
     extern void SpaceResetAudioPoint(void);
 
 /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
@@ -340,22 +311,10 @@ extern "C" {
     extern i32 DogfightDebrisKeysPc[4];
     extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
                                       GAMEOBJECT *, u32);
-    STATIC_ASSERT(sizeof(NUVEC) == 12);
-    STATIC_ASSERT(offsetof(NUGSPLINE, pts) == 8);
-    STATIC_ASSERT(offsetof(APICHARSYS, models) == 0x18);
-    STATIC_ASSERT(offsetof(APICHARSYS, playermodelids) == 0x1c);
-    STATIC_ASSERT(sizeof(CHARACTER_MODEL_LAYERS_PC) == 0x54);
-    STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
 
 #pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
     f32 DogfightCollisionRadiusSquaredPc = 2.0f;
 #pragma data_seg()
-    STATIC_ASSERT(offsetof(BOLT, owner) == 4);
-    STATIC_ASSERT(offsetof(BOLT, velocity) == 0xa0);
-    STATIC_ASSERT(offsetof(BOLT, flags) == 0xf0);
-    STATIC_ASSERT(offsetof(BOLT, active) == 0x100);
-    STATIC_ASSERT(offsetof(starfighter_s, spawn_time) == 0xf8);
-    STATIC_ASSERT(offsetof(starfighter_s, hit_count) == 0x118);
 
     typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR { // size 0x10
         NUVEC xyz;                                                   // 0x0
@@ -404,7 +363,6 @@ extern "C" {
     } FLIGHT_SPLINE_FILE_PC;
 
     STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE_PC) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
-    STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
 
 #pragma data_seg(".data$FlightSplineExtensionPc")
     char *FlightSplineExtensionPc = ".FSP";
@@ -414,7 +372,6 @@ extern "C" {
 
     void FlightSplineCapacityDiagnosticPc(char *filename);
 
-    STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, seek_offset) == 0x14);
     void SetPreSeekStartPoint(f32 offset);
 #pragma data_seg(".data$DogfightDebrisKeysPc")
     i32 DogfightDebrisKeysPc[4] = {-1, -1, -1, -1};

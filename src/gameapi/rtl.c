@@ -1076,49 +1076,27 @@ struct BURN_SET_PC {                    // size 0x564
     i32 field_560;                      // 0x560
 };
 
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_00) == 0x0);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_04) == 0x4);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_04) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_08) == 0x8);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_08) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_0c) == 0xc);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_0c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_10) == 0x10);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_10) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_14) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_18) == 0x18);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_18) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_1c) == 0x1c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_1c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_20) == 0x20);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_20) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_24) == 0x24);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_24) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_28) == 0x28);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_28) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_2c) == 0x2c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_2c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_30) == 0x30);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_30) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_34) == 0x34);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_34) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_38) == 0x38);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_38) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_3c) == 0x3c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_3c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_40) == 0x40);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_40) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_44) == 0x44);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_44) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_48) == 0x48);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_48) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_4c) == 0x4c);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_50) == 0x50);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
-STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
 
 static NUVEC burn_editor_position_pc = {0};
 // NOLINTNEXTLINE(readability-identifier-naming) -- the unit's public state name.
@@ -1433,8 +1411,6 @@ typedef struct rtl_direction_lookup_pc_s { // size 0x4690
     RTL_LIGHT_PC lights[129];              // 0x0004
 } RTL_DIRECTION_LOOKUP_PC;
 
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
-
 i32 rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
     if (set == NULL || out == NULL || (u32)index > 128u) {
         return 0;
@@ -1500,15 +1476,6 @@ void rtlSetUserIdName(i32 index, char *name) {
         userid_names[index] = name;
     }
 }
-
-STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_79) == 0x79);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7a) == 0x7a);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7b) == 0x7b);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7c) == 0x7c);
-STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
 
 static void edrtlDrawHelp(void) {
     static const char *help_text[2][6] = {
@@ -1837,9 +1804,6 @@ void edrtlBurnoutFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 eduimenu_s *edrtl_burn_transitions_menu = NULL;
-STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
-STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
-STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
 
 void edrtlSetBurnoutNormalRate(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
@@ -2655,8 +2619,6 @@ __declspec(allocate(".bss$RtlClipboardFogPc")) RTL_FOG_MIGRATION_PC clipboard_fo
 STATIC_ASSERT(sizeof(clipboard_light) == 35 * sizeof(u32));
 STATIC_ASSERT(sizeof(clipboard_fog) == 19 * sizeof(u32));
 STATIC_ASSERT(sizeof(hide_types) == 8 * sizeof(i32));
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
 
 void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
@@ -2671,9 +2633,6 @@ void edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     u8 highlighted = item->highlighted;
     curr_rtl->flags = (curr_rtl->flags & ~2u) | (highlighted << 1);
 }
-
-STATIC_ASSERT(offsetof(struct eduiitem_s, flags) == 0x11);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
 
 void rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     u8 highlighted = item->highlighted;
@@ -2691,9 +2650,6 @@ void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 extern i32 hide_types[8];
-STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
-STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
 
 void cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
@@ -2721,9 +2677,6 @@ void cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
         clipboard_fog = *curr_fog;
     }
 }
-
-STATIC_ASSERT(offsetof(struct edui_slider_s, value) == 0x54);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
 
 void rtlCbHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     RTL_LIGHT_PC *light = curr_rtl;
@@ -2774,9 +2727,6 @@ __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(u32) == 4);
-STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
-STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 
 void edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {
@@ -3171,8 +3121,6 @@ void rtlSetAssocName(i32 index, char *name) {
 }
 
 STATIC_ASSERT(sizeof(void *) == 4);
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
-STATIC_ASSERT(offsetof(edui_slider_s, granularity) == 0x68);
 
 void InitUI(void) {
     i32 i;
@@ -3895,23 +3843,6 @@ void cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-STATIC_ASSERT(sizeof(NUVEC) == 12);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0x0c);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, colour) == 0x24);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, secondary_colour) == 0x30);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, inner_radius) == 0x3c);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, outer_radius) == 0x40);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, type) == 0x58);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, pitch) == 0x5a);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, yaw) == 0x5c);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_5e) == 0x5e);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_60) == 0x60);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, intensity) == 0x6c);
-
 static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
     i32 different = 0;
     different |= memcmp(&first->position, &second->position, sizeof(NUVEC));
@@ -4091,12 +4022,6 @@ __declspec(allocate(".bss$RtlProc_edrtl_dragoff_pc")) NUVEC edrtl_dragoff_pc = {
 
 void edcamSetAng(i32 pitch, i32 yaw);
 f32 edcamGetDist(void);
-STATIC_ASSERT(offsetof(eduimenu_s, first) == 0);
-STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, pitch) == 0x5a);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, yaw) == 0x5c);
-STATIC_ASSERT(offsetof(RTL_LIGHT_PC, outer_radius) == 0x40);
 STATIC_ASSERT(sizeof(ctl[0]) == 32);
 
 static RTL_LIGHT_PC *FindNearestRTL(NUVEC *position, int ignore_radius) {

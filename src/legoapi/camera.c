@@ -310,8 +310,6 @@ void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVE
 void ViewCamDraw(void) {
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-
 typedef struct KEEP_SCREEN_CAMERA_FIELDS { // size 0x1fc
     u8 unknown_000[0x110];                 // 0x000
     NUVEC direction;                       // 0x110
@@ -377,16 +375,6 @@ typedef struct CAMERA_GRABBER { // size 0x498
     u8 unknown_000[0x48c];      // 0x000
     NUVEC grab_position;        // 0x48c
 } CAMERA_GRABBER;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, previous_position) == 0x1c0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-STATIC_ASSERT(offsetof(GAMEOBJECT, cable) == 0x1040);
-STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_part) == 0xcb8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
-STATIC_ASSERT(offsetof(WORLDINFO, grabber) == 0x46ec);
 
 #define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \
     do {                                                                                                               \

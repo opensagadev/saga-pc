@@ -14,21 +14,19 @@
 
 typedef struct EDANTINODE_s EDANTINODE_s;
 
-struct EDANTINODE_s {
-    NULISTLNK link;
-    NUVEC position;
-    f32 radius;
-    f32 lower_height;
-    f32 upper_height;
-    struct nuhspecial_s special;
-    NUVEC special_position;
-    i32 rotation_offset;
-    i32 flags;
-    f32 base_radius;
-    f32 base_height;
-    u8 game_flags;
-    u8 type;
-    u8 unknown_4a[2];
+struct EDANTINODE_s {            // size 0x4c
+    NULISTLNK link;              // 0x00
+    NUVEC position;              // 0x08
+    f32 radius;                  // 0x14
+    f32 lower_height;            // 0x18
+    f32 upper_height;            // 0x1c
+    struct nuhspecial_s special; // 0x20
+    NUVEC special_position;      // 0x2c
+    i32 rotation_offset;         // 0x38
+    i32 flags;                   // 0x3c
+    f32 base_radius;             // 0x40
+    f32 base_height;             // 0x44
+    u8 game_flags;               // 0x48
+    u8 type;                     // 0x49
+    u8 unknown_4a[2];            // 0x4a
 };
-
-STATIC_ASSERT(sizeof(struct EDANTINODE_s) == 76);

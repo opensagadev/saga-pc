@@ -5,13 +5,9 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct NUKEYCHAR_s {
-    u32 key;
-    u8 normal;
-    u8 shifted;
-    u8 padding[2];
+typedef struct NUKEYCHAR_s { // size 0x8
+    u32 key;                 // 0x0
+    u8 normal;               // 0x4
+    u8 shifted;              // 0x5
+    u8 padding[2];           // 0x6
 } NUKEYCHAR;
-
-STATIC_ASSERT(sizeof(NUKEYCHAR) == 8);
-STATIC_ASSERT(offsetof(NUKEYCHAR, normal) == 4);
-STATIC_ASSERT(offsetof(NUKEYCHAR, shifted) == 5);

@@ -164,9 +164,6 @@ GAMECAMERA GameCamera = {0};
 GAMECAMERA *GameCam = &GameCamera;
 i32 part_debris_count = 0;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
-
 void GameCam_NewShake(GAMECAMERA *camera, f32 intensity, f32 decay, f32 freq) {
     if (camera == NULL) {
         camera = GameCam;

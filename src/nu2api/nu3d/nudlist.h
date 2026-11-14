@@ -30,33 +30,26 @@ struct nuspecial_handle_s;
 
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 
-typedef struct nudisplayscene_pc_s {
-    u8 unknown_0000[0x58];
-    u8 *material_used_front;
-    u8 *material_used_back;
-    u8 unknown_0060[0x14];
+typedef struct nudisplayscene_pc_s { // size 0x78
+    u8 unknown_0000[0x58];           // 0x00
+    u8 *material_used_front;         // 0x58
+    u8 *material_used_back;          // 0x5c
+    u8 unknown_0060[0x14];           // 0x60
 
-    union {
+    union { // size 0x4
         u16 flags;
         u32 render_flags;
-    };
+    }; // 0x74
 } NUDISPLAYSCENE_PC;
 
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_front) == 0x58);
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) == 0x5c);
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, flags) == 0x74);
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, render_flags) == 0x74);
-
-typedef struct nudisplaylistitem_s {
-    u8 type;
-    u8 id;
-    u8 unknown_02[2];
-    void *next;
-    u32 data[2];
+typedef struct nudisplaylistitem_s { // size 0x10
+    u8 type;                         // 0x0
+    u8 id;                           // 0x1
+    u8 unknown_02[2];                // 0x2
+    void *next;                      // 0x4
+    u32 data[2];                     // 0x8
 } NUDISPLAYLISTITEM;
 
-STATIC_ASSERT(sizeof(NUDISPLAYLISTITEM) == 0x10);
-STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 0x4);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,23 +82,16 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 2 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
 
-struct nudisplaylist_pc_s {
-    NUDISPLAYSCENE_PC *scene;
-    i32 material_id;
-    void *render_state;
-    u8 unknown_000c[8];
-    void *material_last;
-    void *dynamic_geometry;
-    u8 unknown_001c[8];
-    void *items;
+struct nudisplaylist_pc_s {   // size 0x28
+    NUDISPLAYSCENE_PC *scene; // 0x00
+    i32 material_id;          // 0x04
+    void *render_state;       // 0x08
+    u8 unknown_000c[8];       // 0x0c
+    void *material_last;      // 0x14
+    void *dynamic_geometry;   // 0x18
+    u8 unknown_001c[8];       // 0x1c
+    void *items;              // 0x24
 };
-
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, scene) == 0x00);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, material_id) == 0x04);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, render_state) == 0x08);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, material_last) == 0x14);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, dynamic_geometry) == 0x18);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 
 #ifdef __cplusplus
 extern "C" {
@@ -135,78 +121,53 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NUDLIST_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NUDLIST_H_STOP)
 
-typedef struct nudisplaylist_s {
-    struct nudisplay_list_pc_s *scene;
-    i32 material_id;
-    struct nurndrlibstate_s *state;
-    NUDISPLAYLISTITEM *mtl_item;
-    NUDISPLAYLISTITEM *first;
-    NUDISPLAYLISTITEM *mtl_last;
-    NUDISPLAYLISTITEM *dynamic_geometry;
-    u32 texture_slots;
-    u32 bitfield;
-    struct nudisplaylistitem_s *items;
-    NUDISPLAYLISTITEM *scene_first[2];
-    NUDISPLAYLISTITEM *scene_next;
-    i32 scene_buffer;
+typedef struct nudisplaylist_s {         // size 0x38
+    struct nudisplay_list_pc_s *scene;   // 0x00
+    i32 material_id;                     // 0x04
+    struct nurndrlibstate_s *state;      // 0x08
+    NUDISPLAYLISTITEM *mtl_item;         // 0x0c
+    NUDISPLAYLISTITEM *first;            // 0x10
+    NUDISPLAYLISTITEM *mtl_last;         // 0x14
+    NUDISPLAYLISTITEM *dynamic_geometry; // 0x18
+    u32 texture_slots;                   // 0x1c
+    u32 bitfield;                        // 0x20
+    struct nudisplaylistitem_s *items;   // 0x24
+    NUDISPLAYLISTITEM *scene_first[2];   // 0x28
+    NUDISPLAYLISTITEM *scene_next;       // 0x30
+    i32 scene_buffer;                    // 0x34
 } NUDISPLAYLIST;
 
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_first) == 0x28);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_next) == 0x30);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene_buffer) == 0x34);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, state) == 0x08);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, scene) == 0);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, material_id) == 4);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, dynamic_geometry) == 0x18);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, mtl_item) == 0x0c);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, first) == 0x10);
-STATIC_ASSERT(offsetof(NUDISPLAYLIST, mtl_last) == 0x14);
-
-typedef struct nudisplayscene_s {
-    u8 opaque_00_54[0x54];
-    NUDISPLAYLIST **dlist_mtls;
-    u8 opaque_58_74[0x1c];
-    u8 flags;
-    u8 opaque_75_78[0x3];
+typedef struct nudisplayscene_s { // size 0x78
+    u8 opaque_00_54[0x54];        // 0x00
+    NUDISPLAYLIST **dlist_mtls;   // 0x54
+    u8 opaque_58_74[0x1c];        // 0x58
+    u8 flags;                     // 0x74
+    u8 opaque_75_78[0x3];         // 0x75
 } NUDISPLAYSCENE;
 
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE, dlist_mtls) == 0x54);
-STATIC_ASSERT(offsetof(NUDISPLAYSCENE, flags) == 0x74);
+typedef struct nusortpri_s {      // size 0x24
+    i32 sort_pri;                 // 0x00
+    NUDISPLAYLISTITEM *items;     // 0x04
+    struct nusortpri_s *sys_next; // 0x08
+    u8 opaque_0c_14[0x8];         // 0x0c
+    u32 flags;                    // 0x14
+    u32 sort_flags;               // 0x18
 
-typedef struct nusortpri_s {
-    i32 sort_pri;
-    NUDISPLAYLISTITEM *items;
-    struct nusortpri_s *sys_next;
-    u8 opaque_0c_14[0x8];
-    u32 flags;
-    u32 sort_flags;
-
-    union {
+    union { // size 0x4
         struct nudisplay_list_pc_s *display_scene;
         struct nudisplayscene_s *legacy_display_scene;
-    };
+    }; // 0x1c
 
-    u16 nmtls;
-    u16 mtl_first;
+    u16 nmtls;     // 0x20
+    u16 mtl_first; // 0x22
 } NUSORTPRI;
 
-STATIC_ASSERT(sizeof(NUSORTPRI) == 0x24);
-STATIC_ASSERT(offsetof(NUSORTPRI, items) == 0x04);
-STATIC_ASSERT(offsetof(NUSORTPRI, sys_next) == 0x08);
-STATIC_ASSERT(offsetof(NUSORTPRI, flags) == 0x14);
-STATIC_ASSERT(offsetof(NUSORTPRI, sort_flags) == 0x18);
-STATIC_ASSERT(offsetof(NUSORTPRI, display_scene) == 0x1c);
-STATIC_ASSERT(offsetof(NUSORTPRI, nmtls) == 0x20);
-STATIC_ASSERT(offsetof(NUSORTPRI, mtl_first) == 0x22);
-
-typedef struct nudisplaylistrenderscene_s {
-    i32 nsort_pris;
-    NUSORTPRI **sort_pris;
-    NUDISPLAYLISTITEM render_2d_first;
+typedef struct nudisplaylistrenderscene_s { // size 0x18
+    i32 nsort_pris;                         // 0x00
+    NUSORTPRI **sort_pris;                  // 0x04
+    NUDISPLAYLISTITEM render_2d_first;      // 0x08
 } NUDISPLAYLISTRENDERSCENE;
 
-STATIC_ASSERT(sizeof(NUDISPLAYLISTRENDERSCENE) == 0x18);
-STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, render_2d_first) == 0x08);
 #ifdef __cplusplus
 extern "C" {
 #endif

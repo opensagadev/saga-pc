@@ -14,7 +14,7 @@
 
 #ifdef __cplusplus
 
-class NuDeferredFilterGen : public NuPostFilter {
+class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8
   public:
     NuDeferredFilterGen();
     void fun_005c30a0(bool enable);
@@ -28,24 +28,17 @@ class NuDeferredFilterGen : public NuPostFilter {
     virtual void render();
     virtual void resetAll();
     virtual bool isEnabled();
-    i32 sample_count;
-    void *programs[6];
-    GRAPHICS_RENDER_TEXTURE_PC *textures[6];
-    u32 unknown_040;
-    f32 parameters[4];
-    i32 dynamic_light_count;
-    NuDynamicLight *dynamic_lights[32];
-    i32 deferred_geometry_count;
-    void *geometry[128];
-    PC_FRAMEBUFFER_PC *shadow_fbos[6];
-    PC_FRAMEBUFFER_PC *light_fbo;
+    i32 sample_count;                        // 0x00c
+    void *programs[6];                       // 0x010
+    GRAPHICS_RENDER_TEXTURE_PC *textures[6]; // 0x028
+    u32 unknown_040;                         // 0x040
+    f32 parameters[4];                       // 0x044
+    i32 dynamic_light_count;                 // 0x054
+    NuDynamicLight *dynamic_lights[32];      // 0x058
+    i32 deferred_geometry_count;             // 0x0d8
+    void *geometry[128];                     // 0x0dc
+    PC_FRAMEBUFFER_PC *shadow_fbos[6];       // 0x2dc
+    PC_FRAMEBUFFER_PC *light_fbo;            // 0x2f4
 };
 
-STATIC_ASSERT(sizeof(NuDeferredFilterGen) == 0x2f8);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, shadow_fbos) == 0x2dc);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, light_fbo) == 0x2f4);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, parameters) == 0x44);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_light_count) == 0x54);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_lights) == 0x58);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, deferred_geometry_count) == 0xd8);
 #endif

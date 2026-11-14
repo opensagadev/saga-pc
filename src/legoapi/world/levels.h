@@ -40,43 +40,35 @@
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals_PC.progress_flags)
 
-typedef struct scene_special_progress_s {
-    union {
+typedef struct scene_special_progress_s { // size 0x8
+
+    union { // size 0x4
         u32 flags;
 
-        struct {
-            u32 frame : 11;
-            u32 visible : 1;
-            u32 playing : 1;
-            u32 waiting : 1;
-            u32 repeating : 1;
-            u32 unused : 17;
+        struct {               // size 0x4
+            u32 frame : 11;    // 0x0:0
+            u32 visible : 1;   // 0x0:11
+            u32 playing : 1;   // 0x0:12
+            u32 waiting : 1;   // 0x0:13
+            u32 repeating : 1; // 0x0:14
+            u32 unused : 17;   // 0x0:15
         };
-    };
+    }; // 0x0
 
-    f32 tfactor;
+    f32 tfactor; // 0x4
 } SCENESPECIALPROGRESS_PC;
 
-STATIC_ASSERT(sizeof(SCENESPECIALPROGRESS_PC) == 8);
-STATIC_ASSERT(offsetof(SCENESPECIALPROGRESS_PC, tfactor) == 4);
-
-typedef struct scene_progress_s {
-    SCENESPECIALPROGRESS_PC specials[1280];
+typedef struct scene_progress_s {           // size 0x2800
+    SCENESPECIALPROGRESS_PC specials[1280]; // 0x0000
 } SCENEPROGRESS;
 
-STATIC_ASSERT(sizeof(SCENEPROGRESS) == 0x2800);
-
-typedef struct LEVEL_OBJECT_CONFIG_PC {
-    u8 kind;
-    u8 unknown_01;
-    i16 reflection;
-    char *name;
+typedef struct LEVEL_OBJECT_CONFIG_PC { // size 0x8
+    u8 kind;                            // 0x0
+    u8 unknown_01;                      // 0x1
+    i16 reflection;                     // 0x2
+    char *name;                         // 0x4
 } LEVEL_OBJECT_CONFIG_PC;
 
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, reflection) == 0x2);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, kind) == 0);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

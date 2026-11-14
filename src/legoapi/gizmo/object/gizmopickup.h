@@ -16,63 +16,36 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct add_game_message_s {
-    const char *text;
-    NUVEC *position;
-    NUVEC *target_position;
-    f32 scale;
-    f32 target_scale;
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 alpha;
-    u32 flags;
-    f32 duration;
-    f32 delay;
-    u16 unknown_24;
-    i16 icon;
-    void *special;
-    u32 score;
-    f32 unknown_30;
-    f32 unknown_34;
-    GAME_MESSAGE_CALLBACK_PC delay_fn;
-    GAME_MESSAGE_CALLBACK_PC tick_fn;
-    GAME_MESSAGE_CALLBACK_PC update_fn;
-    void *unknown_44;
-    GAME_MESSAGE_CALLBACK_PC end_fn;
-    i8 player_index;
-    u8 allow_temporary;
-    u8 target_is_coin_total;
-    u8 unknown_4f;
+typedef struct add_game_message_s {     // size 0x50
+    const char *text;                   // 0x00
+    NUVEC *position;                    // 0x04
+    NUVEC *target_position;             // 0x08
+    f32 scale;                          // 0x0c
+    f32 target_scale;                   // 0x10
+    u8 red;                             // 0x14
+    u8 green;                           // 0x15
+    u8 blue;                            // 0x16
+    u8 alpha;                           // 0x17
+    u32 flags;                          // 0x18
+    f32 duration;                       // 0x1c
+    f32 delay;                          // 0x20
+    u16 unknown_24;                     // 0x24
+    i16 icon;                           // 0x26
+    void *special;                      // 0x28
+    u32 score;                          // 0x2c
+    f32 unknown_30;                     // 0x30
+    f32 unknown_34;                     // 0x34
+    GAME_MESSAGE_CALLBACK_PC delay_fn;  // 0x38
+    GAME_MESSAGE_CALLBACK_PC tick_fn;   // 0x3c
+    GAME_MESSAGE_CALLBACK_PC update_fn; // 0x40
+    void *unknown_44;                   // 0x44
+    GAME_MESSAGE_CALLBACK_PC end_fn;    // 0x48
+    i8 player_index;                    // 0x4c
+    u8 allow_temporary;                 // 0x4d
+    u8 target_is_coin_total;            // 0x4e
+    u8 unknown_4f;                      // 0x4f
 } ADD_GAME_MESSAGE_PC;
 
-STATIC_ASSERT(sizeof(ADD_GAME_MESSAGE_PC) == 0x50);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, text) == 0x0);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, position) == 0x4);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_position) == 0x8);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, scale) == 0xc);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_scale) == 0x10);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, red) == 0x14);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, green) == 0x15);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, blue) == 0x16);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, alpha) == 0x17);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, flags) == 0x18);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, duration) == 0x1c);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, delay) == 0x20);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, icon) == 0x26);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, special) == 0x28);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, score) == 0x2c);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_30) == 0x30);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_34) == 0x34);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, delay_fn) == 0x38);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, tick_fn) == 0x3c);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, update_fn) == 0x40);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_44) == 0x44);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, end_fn) == 0x48);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, player_index) == 0x4c);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, allow_temporary) == 0x4d);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, target_is_coin_total) == 0x4e);
-STATIC_ASSERT(offsetof(ADD_GAME_MESSAGE_PC, unknown_4f) == 0x4f);
 #ifdef __cplusplus
 extern "C" {
 #endif

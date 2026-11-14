@@ -4,31 +4,7 @@ NetSessionManager *theNetSessionManager;
 
 /* TTNetwork object: network statistics and the TTNetwork singleton. */
 
-STATIC_ASSERT(offsetof(NetStats, history_index) == 0x18);
-STATIC_ASSERT(offsetof(NetStats, last_time) == 0x1c);
-STATIC_ASSERT(offsetof(NetStats, peak) == 0x20);
-STATIC_ASSERT(offsetof(NetStats, previous) == 0x30);
-STATIC_ASSERT(offsetof(NetTransportEntry, client) == 0x8);
-STATIC_ASSERT(offsetof(NetTransportEntry, channel) == 0xc);
-STATIC_ASSERT(offsetof(NetTransportEntry, stats) == 0x30);
-STATIC_ASSERT(sizeof(NetTransportEntry) == 0x250);
 STATIC_ASSERT(offsetof(TTNetwork, clients) == 0x4);
-STATIC_ASSERT(sizeof(NetTransporter) == 0x10);
-STATIC_ASSERT(offsetof(TTNetwork, log) == 0x20);
-STATIC_ASSERT(offsetof(NetLogFile, mode) == 0x104);
-STATIC_ASSERT(offsetof(NetLogFile, count) == 0x110);
-STATIC_ASSERT(sizeof(NetLogFile) == 0x2114);
-STATIC_ASSERT(offsetof(TTNetwork, frame_count) == 0x2134);
-STATIC_ASSERT(offsetof(TTNetwork, state) == 0x2140);
-STATIC_ASSERT(offsetof(TTNetwork, display_page) == 0x2150);
-STATIC_ASSERT(offsetof(TTNetwork, display_height) == 0x2160);
-STATIC_ASSERT(offsetof(TTNetwork, my_address) == 0x216c);
-STATIC_ASSERT(offsetof(TTNetwork, has_my_host_address) == 0x2174);
-STATIC_ASSERT(offsetof(TTNetwork, ftp) == 0x2178);
-STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
-STATIC_ASSERT(offsetof(TTNetwork, session_manager) == 0x110f0);
-STATIC_ASSERT(offsetof(V2SessionManager, peer_list) == 0x94);
-STATIC_ASSERT(offsetof(V2SessionManager, stats) == 0xa0);
 
 void *NetTransportEntry::operator new(u32 size) {
     return theMemoryManager.AllocPool(size, 1);

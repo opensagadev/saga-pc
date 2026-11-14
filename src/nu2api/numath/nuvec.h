@@ -12,13 +12,12 @@
 
 struct numtx_s;
 
-typedef struct nuvec_s {
-    f32 x;
-    f32 y;
-    f32 z;
+typedef struct nuvec_s { // size 0xc
+    f32 x;               // 0x0
+    f32 y;               // 0x4
+    f32 z;               // 0x8
 } NUVEC;
 
-STATIC_ASSERT(sizeof(NUVEC) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

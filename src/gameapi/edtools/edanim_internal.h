@@ -11,55 +11,35 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct edanim_param_s {
-    i32 instance_id;
-    i32 effect_count;
-    i32 sound_count;
-    i32 control_mode;
-    i32 control_switch;
-    f32 control_distance;
-    f32 field_018;
-    char effect_names[8][16];
-    i32 effect_ids[8];
-    i32 effect_intervals[8];
-    i32 effect_flags[8];
-    f32 effect_positions[8][3];
-    i16 effect_angles[8];
-    i16 effect_angle_ranges[8];
-    f32 field_17c;
-    char sound_names[8][16];
-    i32 sound_ids[8];
-    i32 sound_flags[8];
-    f32 sound_values[8];
-    f32 sound_positions[8][3];
-    i32 platform_id;
-    f32 bounce_impulse;
-    f32 bounce_spring;
-    f32 bounce_damping;
-    i8 page;
-    u8 unknown_2d1[3];
+typedef struct edanim_param_s { // size 0x2d4
+    i32 instance_id;            // 0x000
+    i32 effect_count;           // 0x004
+    i32 sound_count;            // 0x008
+    i32 control_mode;           // 0x00c
+    i32 control_switch;         // 0x010
+    f32 control_distance;       // 0x014
+    f32 field_018;              // 0x018
+    char effect_names[8][16];   // 0x01c
+    i32 effect_ids[8];          // 0x09c
+    i32 effect_intervals[8];    // 0x0bc
+    i32 effect_flags[8];        // 0x0dc
+    f32 effect_positions[8][3]; // 0x0fc
+    i16 effect_angles[8];       // 0x15c
+    i16 effect_angle_ranges[8]; // 0x16c
+    f32 field_17c;              // 0x17c
+    char sound_names[8][16];    // 0x180
+    i32 sound_ids[8];           // 0x200
+    i32 sound_flags[8];         // 0x220
+    f32 sound_values[8];        // 0x240
+    f32 sound_positions[8][3];  // 0x260
+    i32 platform_id;            // 0x2c0
+    f32 bounce_impulse;         // 0x2c4
+    f32 bounce_spring;          // 0x2c8
+    f32 bounce_damping;         // 0x2cc
+    i8 page;                    // 0x2d0
+    u8 unknown_2d1[3];          // 0x2d1
 } EDANIM_PARAM_PC;
 
-STATIC_ASSERT(sizeof(EDANIM_PARAM_PC) == 0x2d4);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_mode) == 0xc);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_switch) == 0x10);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, control_distance) == 0x14);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, field_018) == 0x18);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_count) == 4);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_count) == 8);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_ids) == 0x9c);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_intervals) == 0xbc);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_flags) == 0xdc);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_positions) == 0xfc);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_angles) == 0x15c);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, effect_angle_ranges) == 0x16c);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, field_17c) == 0x17c);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_names) == 0x180);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_ids) == 0x200);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_flags) == 0x220);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_values) == 0x240);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, sound_positions) == 0x260);
-STATIC_ASSERT(offsetof(EDANIM_PARAM_PC, page) == 0x2d0);
 #ifdef __cplusplus
 extern "C" {
 #endif

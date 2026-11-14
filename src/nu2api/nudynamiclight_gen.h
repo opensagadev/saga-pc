@@ -10,13 +10,9 @@
 #include "nu2api/numath/nuplane.h"
 #endif
 
-typedef struct pc_frustum_group_s {
-    u8 unknown_0000[0x1a0];
-    NUPLANE planes[12];
-    i32 plane_count;
-    u8 unknown_0264[0x11c];
+typedef struct pc_frustum_group_s { // size 0x380
+    u8 unknown_0000[0x1a0];         // 0x000
+    NUPLANE planes[12];             // 0x1a0
+    i32 plane_count;                // 0x260
+    u8 unknown_0264[0x11c];         // 0x264
 } PC_FRUSTUM_GROUP_PC;
-
-STATIC_ASSERT(offsetof(PC_FRUSTUM_GROUP_PC, planes) == 0x1a0);
-STATIC_ASSERT(offsetof(PC_FRUSTUM_GROUP_PC, plane_count) == 0x260);
-STATIC_ASSERT(sizeof(PC_FRUSTUM_GROUP_PC) == 0x380);

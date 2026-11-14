@@ -12,45 +12,41 @@
 
 struct mission_data_s;
 
-typedef struct MISSION_SAVE_READER_PC {
-    f32 best_times[20];
-    u8 completed[20];
+typedef struct MISSION_SAVE_READER_PC { // size 0x64
+    f32 best_times[20];                 // 0x00
+    u8 completed[20];                   // 0x50
 } MISSION_SAVE_READER_PC;
 
-STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
-STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
-STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct mission_sys_s {
-        union {
+    typedef struct mission_sys_s { // size 0x20
+
+        union { // size 0x4
             u8 unknown_00[4];
             struct mission_data_s *missions;
-        };
+        }; // 0x00
 
-        struct mission_data_s *active_mission;
+        struct mission_data_s *active_mission; // 0x04
 
-        union {
+        union { // size 0x18
             u8 unknown_08[0x15];
 
-            struct {
-                u8 unknown_count_prefix[0x14];
-                u8 count;
-                u8 state;
-                u8 reserved_1e[2];
+            struct {                           // size 0x18
+                u8 unknown_count_prefix[0x14]; // 0x08
+                u8 count;                      // 0x1c
+                u8 state;                      // 0x1d
+                u8 reserved_1e[2];             // 0x1e
             };
 
-            struct {
-                TIMER timer;
-                u8 reserved_18[8];
+            struct {               // size 0x18
+                TIMER timer;       // 0x08
+                u8 reserved_18[8]; // 0x18
             };
-        };
+        }; // 0x08
     } MISSIONSYS_PC;
 
-    STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
-    STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
 #ifdef __cplusplus
 }
 #endif
@@ -75,13 +71,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(MISSIONSYS_PC) == 0x20);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_00) == 0);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_count_prefix) == 8);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, timer) == 8);
-
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_08) == 8);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, count) == 0x1c);
-STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);

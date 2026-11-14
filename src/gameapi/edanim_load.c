@@ -11,9 +11,6 @@ extern i32 edqseed;
 extern char edbits_level_filename[256];
 extern i8 edbits_what_game;
 
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
-
 i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     i32 index;

@@ -32,56 +32,33 @@ struct gameobject_s;
 struct nufpcomjmp_s;
 struct numtx_s;
 
-typedef struct GAMECHARACTERLAYER {
-    char name[0x18];
-    i16 mask_bit;
-    i16 hierarchy_layer_index;
+typedef struct GAMECHARACTERLAYER { // size 0x1c
+    char name[0x18];                // 0x00
+    i16 mask_bit;                   // 0x18
+    i16 hierarchy_layer_index;      // 0x1a
 } GAMECHARACTERLAYER;
 
-STATIC_ASSERT(sizeof(GAMECHARACTERLAYER) == 0x1c);
-STATIC_ASSERT(offsetof(GAMECHARACTERLAYER, mask_bit) == 0x18);
-STATIC_ASSERT(offsetof(GAMECHARACTERLAYER, hierarchy_layer_index) == 0x1a);
-
-typedef struct CHARACTER_EFFECT_CONFIG_PC {
-    i16 character_id;
-    i16 debris_id;
-    i16 action_id;
-    u8 bits_on;
-    u8 bits_off;
-    f32 frame[2];
-    f32 particle_rate;
-    u32 flags;
-    u16 locators;
-    u8 random;
-    u8 particle_count;
-    f32 rumble;
-    f32 shake;
-    f32 judder;
-    i16 sound_id;
-    u16 surfaces;
-    f32 minimum;
-    f32 maximum;
+typedef struct CHARACTER_EFFECT_CONFIG_PC { // size 0x34
+    i16 character_id;                       // 0x00
+    i16 debris_id;                          // 0x02
+    i16 action_id;                          // 0x04
+    u8 bits_on;                             // 0x06
+    u8 bits_off;                            // 0x07
+    f32 frame[2];                           // 0x08
+    f32 particle_rate;                      // 0x10
+    u32 flags;                              // 0x14
+    u16 locators;                           // 0x18
+    u8 random;                              // 0x1a
+    u8 particle_count;                      // 0x1b
+    f32 rumble;                             // 0x1c
+    f32 shake;                              // 0x20
+    f32 judder;                             // 0x24
+    i16 sound_id;                           // 0x28
+    u16 surfaces;                           // 0x2a
+    f32 minimum;                            // 0x2c
+    f32 maximum;                            // 0x30
 } CHARACTER_EFFECT_CONFIG_PC;
 
-STATIC_ASSERT(sizeof(CHARACTER_EFFECT_CONFIG_PC) == 0x34);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, character_id) == 0);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, debris_id) == 2);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, action_id) == 4);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, bits_on) == 6);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, bits_off) == 7);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, frame) == 8);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, particle_rate) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, flags) == 0x14);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, locators) == 0x18);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, random) == 0x1a);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, particle_count) == 0x1b);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, rumble) == 0x1c);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, shake) == 0x20);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, judder) == 0x24);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, sound_id) == 0x28);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, surfaces) == 0x2a);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, minimum) == 0x2c);
-STATIC_ASSERT(offsetof(CHARACTER_EFFECT_CONFIG_PC, maximum) == 0x30);
 #ifdef __cplusplus
 extern "C" {
 #endif

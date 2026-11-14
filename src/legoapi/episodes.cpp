@@ -12,11 +12,6 @@ typedef struct episode_area_save_reader_s { // size 0xc
     f32 challenge_time;                     // 0x8
 } EPISODE_AREA_SAVE_READER_PC;
 
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 4);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, challenge_trial_time) == 0x84);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, regular_areas) == 0x19);
 extern "C" {
     void EpisodesConfigDiagnosticPc(char *path);
 

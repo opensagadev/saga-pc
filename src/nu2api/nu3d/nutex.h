@@ -29,10 +29,8 @@ extern "C" {
 #endif
 typedef struct nutex_s nutex_s;
 
-struct nutex_s {
-    i32 type;
-    i32 width;
-    i32 height;
+struct nutex_s { // size 0xc
+    i32 type;    // 0x0
+    i32 width;   // 0x4
+    i32 height;  // 0x8
 };
-
-STATIC_ASSERT(sizeof(struct nutex_s) == 12);

@@ -15,30 +15,26 @@ extern "C" {
 #endif
 
     /* NuFileGetInfo result; the AI editor's file browser reads it. */
-    typedef struct AI_EDITOR_FILE_INFO {
-        u32 flags;
-        u32 size;
-        i8 created_second;
-        i8 created_minute;
-        i8 created_hour;
-        i8 created_day;
-        i8 created_month;
-        u8 unknown_0d;
-        i16 created_year;
-        i8 second;
-        i8 minute;
-        i8 hour;
-        i8 day;
-        i8 month;
-        u8 unknown_15;
-        i16 year;
-        char name[256]; /* NuFileGetInfo (PC) only clears name[0] */
+    typedef struct AI_EDITOR_FILE_INFO {                             // size 0x118
+        u32 flags;                                                   // 0x000
+        u32 size;                                                    // 0x004
+        i8 created_second;                                           // 0x008
+        i8 created_minute;                                           // 0x009
+        i8 created_hour;                                             // 0x00a
+        i8 created_day;                                              // 0x00b
+        i8 created_month;                                            // 0x00c
+        u8 unknown_0d;                                               // 0x00d
+        i16 created_year;                                            // 0x00e
+        i8 second;                                                   // 0x010
+        i8 minute;                                                   // 0x011
+        i8 hour;                                                     // 0x012
+        i8 day;                                                      // 0x013
+        i8 month;                                                    // 0x014
+        u8 unknown_15;                                               // 0x015
+        i16 year;                                                    // 0x016
+        char name[256]; /* NuFileGetInfo (PC) only clears name[0] */ // 0x018
     } AI_EDITOR_FILE_INFO;
 
-    STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO) == 0x118);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, second) == 0x10);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, year) == 0x16);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, name) == 0x18);
 #ifdef __cplusplus
 }
 #endif

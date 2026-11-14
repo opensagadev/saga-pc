@@ -41,6 +41,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools import budget  # noqa: E402
+from tools.lib import clang_jobs  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = ROOT / "config/standalone-budget.json"
@@ -220,10 +221,11 @@ def main(argv=None):
     parser.add_argument("--list", action="store_true", help="list the headers that do not compile alone")
     parser.add_argument("--write-budget", action="store_true", help="lower the budget to the current count")
     parser.add_argument("--vc8", action="store_true", help="compile the named headers with VC8 instead")
-    parser.add_argument("--jobs", type=int, default=2)
+    parser.add_argument("--jobs", type=int, default=None, help="libclang processes (default 4, SAGA_CLANG_JOBS)")
     parser.add_argument("--no-cache", action="store_true")
     parser.add_argument("--budget", type=Path, default=BUDGET)
     args = parser.parse_args(argv)
+    args.jobs = clang_jobs(args.jobs)
     if args.vc8:
         return 1 if vc8(args.headers or module_headers()) else 0
     if args.headers:

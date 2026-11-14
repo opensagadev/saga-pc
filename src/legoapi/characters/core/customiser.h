@@ -29,14 +29,12 @@ struct apicharactermodellist_s;
 struct gameobject_s;
 struct nufpar_pc_s;
 
-typedef struct CUSTOMPIECE_LAYERS_PC {
-    u8 unknown_00[0x12];
-    u8 layer_flags;
-    u8 unknown_13[0x15];
+typedef struct CUSTOMPIECE_LAYERS_PC { // size 0x28
+    u8 unknown_00[0x12];               // 0x00
+    u8 layer_flags;                    // 0x12
+    u8 unknown_13[0x15];               // 0x13
 } CUSTOMPIECE_LAYERS_PC;
 
-STATIC_ASSERT(sizeof(CUSTOMPIECE_LAYERS_PC) == 0x28);
-STATIC_ASSERT(offsetof(CUSTOMPIECE_LAYERS_PC, layer_flags) == 0x12);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,14 +55,12 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_CORE_CUSTOMISER_H_STOP)
 
-typedef struct KILLPARTS_ACCESSORY_PC {
-    void *scene;
-    NUSPECIALHANDLE special;
-    u8 unknown_10[0x10];
+typedef struct KILLPARTS_ACCESSORY_PC { // size 0x20
+    void *scene;                        // 0x00
+    NUSPECIALHANDLE special;            // 0x04
+    u8 unknown_10[0x10];                // 0x10
 } KILLPARTS_ACCESSORY_PC;
 
-STATIC_ASSERT(sizeof(KILLPARTS_ACCESSORY_PC) == 0x20);
-STATIC_ASSERT(offsetof(KILLPARTS_ACCESSORY_PC, special) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

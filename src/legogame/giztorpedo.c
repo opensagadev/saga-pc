@@ -17,7 +17,6 @@ typedef struct torpedo_machine_query_sys_s { // size 0xc
     f32 scale;                               // 0x8
 } TORPEDO_MACHINE_QUERY_SYS_PC;
 
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 i32 Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
 
 typedef struct {

@@ -31,25 +31,21 @@ extern "C" {
 #endif
     void EndChallenge(i32, i32);
 
-    struct mission_data_s {
-        i16 find_character;
-        i16 level;
-        i16 name_id;
-        i16 text_id;
-        i32 bounty;
-        i32 alternate_bounty;
-        u16 time;
-        u8 index;
-        u8 unknown_13[5];
+    struct mission_data_s {   // size 0x18
+        i16 find_character;   // 0x00
+        i16 level;            // 0x02
+        i16 name_id;          // 0x04
+        i16 text_id;          // 0x06
+        i32 bounty;           // 0x08
+        i32 alternate_bounty; // 0x0c
+        u16 time;             // 0x10
+        u8 index;             // 0x12
+        u8 unknown_13[5];     // 0x13
     };
     typedef struct mission_data_s MISSIONDATA_PC;
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, level) == 2);
-STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
 typedef struct MISSIONSYS_s MISSIONSYS_s;
 #ifdef __cplusplus
 extern "C" {
@@ -80,19 +76,18 @@ extern "C" {
 }
 #endif
 
-struct MISSIONSYS_s {
-    struct MISSIONDATA_s *missions;
-    struct MISSIONDATA_s *mission;
-    TIMER timer;
-    struct MISSION_SAVE_READER_PC *mission_save;
-    u8 count;
-    u8 field8_0x1d;
-    u8 flags;
-    u8 character_count;
-    i16 character_ids[8];
+struct MISSIONSYS_s {                            // size 0x30
+    struct MISSIONDATA_s *missions;              // 0x00
+    struct MISSIONDATA_s *mission;               // 0x04
+    TIMER timer;                                 // 0x08
+    struct MISSION_SAVE_READER_PC *mission_save; // 0x18
+    u8 count;                                    // 0x1c
+    u8 field8_0x1d;                              // 0x1d
+    u8 flags;                                    // 0x1e
+    u8 character_count;                          // 0x1f
+    i16 character_ids[8];                        // 0x20
 };
 
-STATIC_ASSERT(sizeof(struct MISSIONSYS_s) == 48);
 #undef SAGA_LEGOAPI_WORLD_MISSION_H_PART
 #define SAGA_LEGOAPI_WORLD_MISSION_H_PART 3
 #ifdef SAGA_SHIM

@@ -12,11 +12,11 @@
 
 struct numtx_s;
 
-typedef struct NUVEC4 {
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 w;
+typedef struct NUVEC4 { // size 0x10
+    f32 x;              // 0x0
+    f32 y;              // 0x4
+    f32 z;              // 0x8
+    f32 w;              // 0xc
 #ifdef __cplusplus
     NUVEC operator-(const NUVEC4 &other) const {
         __declspec(align(16)) NUVEC result;
@@ -32,21 +32,13 @@ typedef struct NUVEC4 {
 #endif
 } NUVEC4;
 
-STATIC_ASSERT(sizeof(NUVEC4) == 16);
-STATIC_ASSERT(offsetof(NUVEC4, w) == 12);
-
-typedef struct NUHALFVEC4 {
-    i16 x;
-    i16 y;
-    i16 z;
-    i16 w;
+typedef struct NUHALFVEC4 { // size 0x8
+    i16 x;                  // 0x0
+    i16 y;                  // 0x2
+    i16 z;                  // 0x4
+    i16 w;                  // 0x6
 } NUHALFVEC4;
 
-STATIC_ASSERT(sizeof(NUHALFVEC4) == 8);
-STATIC_ASSERT(offsetof(NUHALFVEC4, x) == 0);
-STATIC_ASSERT(offsetof(NUHALFVEC4, y) == 2);
-STATIC_ASSERT(offsetof(NUHALFVEC4, z) == 4);
-STATIC_ASSERT(offsetof(NUHALFVEC4, w) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,11 +50,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(NUVEC4) == 0x10);
-STATIC_ASSERT(offsetof(NUVEC4, x) == 0);
-STATIC_ASSERT(offsetof(NUVEC4, y) == 4);
-STATIC_ASSERT(offsetof(NUVEC4, z) == 8);
-STATIC_ASSERT(offsetof(NUVEC4, w) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

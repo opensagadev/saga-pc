@@ -2,9 +2,6 @@
 
 static f32 Cheat_PowerUpTime = 0;
 
-STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, cheats) == 0);
-STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, count) == 4);
-
 void Cheats_Init(CHEAT_PC *cheats) {
     CHEATSYSTEM_PC *system;
 

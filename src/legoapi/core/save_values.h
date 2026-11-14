@@ -7,15 +7,12 @@
 
 typedef struct LEVELSAVE_s LEVELSAVE_s;
 
-struct LEVELSAVE_s {
-    char minikit_names[10][8];
-    u8 minikit_count;
-    u8 reserved_0x51[2];
-    u8 arcade_flags;
+struct LEVELSAVE_s {           // size 0x54
+    char minikit_names[10][8]; // 0x00
+    u8 minikit_count;          // 0x50
+    u8 reserved_0x51[2];       // 0x51
+    u8 arcade_flags;           // 0x53
 };
-
-STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 84);
-STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
 
 enum { SAVE_INCOMPLETE = 0 };
 

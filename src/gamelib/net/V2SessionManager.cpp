@@ -5,29 +5,7 @@
 /* PC-only network session manager, never constructed outside this
  * object. */
 
-STATIC_ASSERT(sizeof(NetStatCounters) == 0x10);
-STATIC_ASSERT(sizeof(NetStats) == 0x220);
 STATIC_ASSERT(offsetof(NetStats, totals) == 8);
-STATIC_ASSERT(offsetof(NetStats, history) == 0x40);
-STATIC_ASSERT(offsetof(V2Peer, next) == 4);
-STATIC_ASSERT(offsetof(V2Peer, prev) == 8);
-STATIC_ASSERT(offsetof(V2Peer, stats) == 0x10);
-STATIC_ASSERT(offsetof(V2SessionManager, state) == 4);
-STATIC_ASSERT(offsetof(V2SessionManager, name) == 0x14);
-STATIC_ASSERT(offsetof(V2SessionManager, error) == 0x34);
-STATIC_ASSERT(offsetof(V2SessionManager, host_visibility) == 0x38);
-STATIC_ASSERT(offsetof(V2SessionManager, num_local_players) == 0x3c);
-STATIC_ASSERT(offsetof(V2SessionManager, slot_mode) == 0x40);
-STATIC_ASSERT(offsetof(V2SessionManager, local_slot) == 0x44);
-STATIC_ASSERT(offsetof(V2SessionManager, player_slots) == 0x48);
-STATIC_ASSERT(offsetof(V2SessionManager, timer_68) == 0x68);
-STATIC_ASSERT(offsetof(V2SessionManager, timer_74) == 0x74);
-STATIC_ASSERT(offsetof(V2SessionManager, field_78) == 0x78);
-STATIC_ASSERT(offsetof(V2SessionManager, field_7c) == 0x7c);
-STATIC_ASSERT(offsetof(V2SessionManager, local_peer) == 0x84);
-STATIC_ASSERT(offsetof(V2SessionManager, host_list) == 0x88);
-STATIC_ASSERT(offsetof(V2SessionManager, peer_list) == 0x94);
-STATIC_ASSERT(offsetof(V2SessionManager, stats) == 0xa0);
 
 extern "C" {
     void PcDebugPrintLock(void);

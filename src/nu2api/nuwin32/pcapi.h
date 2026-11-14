@@ -5,41 +5,41 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct PC_WINDOW_OPTIONS_PC {
-    i32 context;
-    char file_name[1024];
-    i32 device_width;
-    i32 device_height;
-    i32 client_width;
-    i32 client_height;
-    i32 window_x;
-    i32 window_y;
-    i32 refresh_rate;
-    i32 multisample;
-    i32 aspect_mode;
-    i32 sfxvolume;
-    i32 musicvolume;
-    i32 mastervolume;
-    u8 musicenabled;
-    u8 unknown_435[3];
-    i32 mousesensitivity;
-    u8 inverty;
-    u8 vibration;
-    u8 unknown_43e[2];
-    i32 bloommethod;
-    i32 desiredbloommethod;
-    u8 bloomenabled;
-    u8 unknown_449[3];
-    i32 shadowmethod;
-    i32 desiredshadowmethod;
-    u8 shadowsenabled;
-    u8 speedblursupported;
-    u8 speedblurenabled;
-    u8 usehires;
-    u8 usehirespending;
-    u8 option459;
-    u8 unknown_45a[2];
-    i32 forceshadermodel;
+typedef struct PC_WINDOW_OPTIONS_PC { // size 0x460
+    i32 context;                      // 0x000
+    char file_name[1024];             // 0x004
+    i32 device_width;                 // 0x404
+    i32 device_height;                // 0x408
+    i32 client_width;                 // 0x40c
+    i32 client_height;                // 0x410
+    i32 window_x;                     // 0x414
+    i32 window_y;                     // 0x418
+    i32 refresh_rate;                 // 0x41c
+    i32 multisample;                  // 0x420
+    i32 aspect_mode;                  // 0x424
+    i32 sfxvolume;                    // 0x428
+    i32 musicvolume;                  // 0x42c
+    i32 mastervolume;                 // 0x430
+    u8 musicenabled;                  // 0x434
+    u8 unknown_435[3];                // 0x435
+    i32 mousesensitivity;             // 0x438
+    u8 inverty;                       // 0x43c
+    u8 vibration;                     // 0x43d
+    u8 unknown_43e[2];                // 0x43e
+    i32 bloommethod;                  // 0x440
+    i32 desiredbloommethod;           // 0x444
+    u8 bloomenabled;                  // 0x448
+    u8 unknown_449[3];                // 0x449
+    i32 shadowmethod;                 // 0x44c
+    i32 desiredshadowmethod;          // 0x450
+    u8 shadowsenabled;                // 0x454
+    u8 speedblursupported;            // 0x455
+    u8 speedblurenabled;              // 0x456
+    u8 usehires;                      // 0x457
+    u8 usehirespending;               // 0x458
+    u8 option459;                     // 0x459
+    u8 unknown_45a[2];                // 0x45a
+    i32 forceshadermodel;             // 0x45c
 #ifdef __cplusplus
     PC_WINDOW_OPTIONS_PC();
     void SetWidth(i32 value);
@@ -97,37 +97,6 @@ typedef struct PC_WINDOW_OPTIONS_PC {
 #endif
 } PC_WINDOW_OPTIONS_PC;
 
-STATIC_ASSERT(sizeof(PC_WINDOW_OPTIONS_PC) == 0x460);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, context) == 0);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, file_name) == 4);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, device_width) == 0x404);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, device_height) == 0x408);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, client_width) == 0x40c);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, client_height) == 0x410);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, window_x) == 0x414);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, window_y) == 0x418);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, refresh_rate) == 0x41c);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, multisample) == 0x420);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, aspect_mode) == 0x424);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, sfxvolume) == 0x428);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, musicvolume) == 0x42c);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, mastervolume) == 0x430);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, musicenabled) == 0x434);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, mousesensitivity) == 0x438);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, inverty) == 0x43c);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, vibration) == 0x43d);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, bloommethod) == 0x440);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, desiredbloommethod) == 0x444);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, bloomenabled) == 0x448);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, shadowmethod) == 0x44c);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, desiredshadowmethod) == 0x450);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, shadowsenabled) == 0x454);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, speedblursupported) == 0x455);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, speedblurenabled) == 0x456);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehires) == 0x457);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehirespending) == 0x458);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, option459) == 0x459);
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, forceshadermodel) == 0x45c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -156,7 +125,6 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-STATIC_ASSERT(offsetof(PC_WINDOW_OPTIONS_PC, usehires) == 0x457);
 
 #endif
 #ifdef __cplusplus

@@ -14,37 +14,22 @@
 struct CAMERA_CLIP_PACKET_PC;
 struct NUVEC4BLOCK_PC;
 
-typedef struct nucamera_s {
-    NUMTX mtx;
-    f32 fov;
-    f32 aspect;
-    f32 near_clip;
-    f32 far_clip;
-    f32 unknown_50;
-    f32 unknown_54;
-    f32 unknown_58;
-    f32 unknown_5c;
-    f32 unknown_60;
-    f32 unknown_64;
-    f32 portal_nearclip;
-    NUVEC scale;
+typedef struct nucamera_s { // size 0x78
+    NUMTX mtx;              // 0x00
+    f32 fov;                // 0x40
+    f32 aspect;             // 0x44
+    f32 near_clip;          // 0x48
+    f32 far_clip;           // 0x4c
+    f32 unknown_50;         // 0x50
+    f32 unknown_54;         // 0x54
+    f32 unknown_58;         // 0x58
+    f32 unknown_5c;         // 0x5c
+    f32 unknown_60;         // 0x60
+    f32 unknown_64;         // 0x64
+    f32 portal_nearclip;    // 0x68
+    NUVEC scale;            // 0x6c
 } NUCAMERA;
 
-STATIC_ASSERT(sizeof(NUCAMERA) == 0x78);
-
-STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
-STATIC_ASSERT(offsetof(NUCAMERA, fov) == 0x40);
-STATIC_ASSERT(offsetof(NUCAMERA, aspect) == 0x44);
-STATIC_ASSERT(offsetof(NUCAMERA, near_clip) == 0x48);
-STATIC_ASSERT(offsetof(NUCAMERA, far_clip) == 0x4c);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_50) == 0x50);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_54) == 0x54);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_58) == 0x58);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_5c) == 0x5c);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_60) == 0x60);
-STATIC_ASSERT(offsetof(NUCAMERA, unknown_64) == 0x64);
-STATIC_ASSERT(offsetof(NUCAMERA, portal_nearclip) == 0x68);
-STATIC_ASSERT(offsetof(NUCAMERA, scale) == 0x6c);
 #ifdef __cplusplus
 extern "C" {
 #endif

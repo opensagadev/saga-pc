@@ -3,6 +3,7 @@ import sys
 import csv
 import hashlib
 import json
+import os
 import re
 import struct
 from pathlib import Path
@@ -708,3 +709,12 @@ def section_mapping_progress(records, target, sections, member_ranges=(), paddin
             result[f"mapping_{kind}_with_padding_bytes"] = count
             result[f"mapping_{kind}_with_padding_percent"] = 100 * count / totals[kind] if totals[kind] else 0.0
     return result
+
+
+def clang_jobs(requested=None):
+    """Worker count for tools that load libclang translation units (scans, clang-tidy). Each worker holds
+    a parse of saga.h (about 1 GB), so the default is 4 whatever the core count; SAGA_CLANG_JOBS or an
+    explicit --jobs overrides it."""
+    if requested:
+        return requested
+    return int(os.environ.get("SAGA_CLANG_JOBS", "4"))

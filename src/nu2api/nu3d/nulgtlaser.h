@@ -11,58 +11,44 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nulgtlaser_s {
-    NUVEC start;
-    NUVEC end;
-    f32 width;
-    f32 segment_length;
-    f32 width_wobble;
-    f32 end_width_ratio;
-    f32 length;
-    u8 type;
-    u8 arc;
-    u8 padding[2];
-    u32 colour;
-    i32 seed;
+typedef struct nulgtlaser_s { // size 0x38
+    NUVEC start;              // 0x00
+    NUVEC end;                // 0x0c
+    f32 width;                // 0x18
+    f32 segment_length;       // 0x1c
+    f32 width_wobble;         // 0x20
+    f32 end_width_ratio;      // 0x24
+    f32 length;               // 0x28
+    u8 type;                  // 0x2c
+    u8 arc;                   // 0x2d
+    u8 padding[2];            // 0x2e
+    u32 colour;               // 0x30
+    i32 seed;                 // 0x34
 } NULGTLASER_PC;
 
-STATIC_ASSERT(sizeof(NULGTLASER_PC) == 0x38);
-STATIC_ASSERT(offsetof(NULGTLASER_PC, width) == 0x18);
-STATIC_ASSERT(offsetof(NULGTLASER_PC, arc) == 0x2d);
-STATIC_ASSERT(offsetof(NULGTLASER_PC, colour) == 0x30);
-STATIC_ASSERT(offsetof(NULGTLASER_PC, seed) == 0x34);
-
-typedef struct nulgtarclaser_s {
-    NUVEC start;
-    NUVEC end;
-    NUVEC bend;
-    f32 width;
-    f32 segment_length;
-    f32 wobble;
-    f32 bend_amount;
-    u8 type;
-    u8 padding[3];
-    i32 colour;
-    i32 flags;
-    i32 seed;
+typedef struct nulgtarclaser_s { // size 0x44
+    NUVEC start;                 // 0x00
+    NUVEC end;                   // 0x0c
+    NUVEC bend;                  // 0x18
+    f32 width;                   // 0x24
+    f32 segment_length;          // 0x28
+    f32 wobble;                  // 0x2c
+    f32 bend_amount;             // 0x30
+    u8 type;                     // 0x34
+    u8 padding[3];               // 0x35
+    i32 colour;                  // 0x38
+    i32 flags;                   // 0x3c
+    i32 seed;                    // 0x40
 } NULGTARCLASER_PC;
 
-STATIC_ASSERT(sizeof(NULGTARCLASER_PC) == 0x44);
-STATIC_ASSERT(offsetof(NULGTARCLASER_PC, width) == 0x24);
-STATIC_ASSERT(offsetof(NULGTARCLASER_PC, colour) == 0x38);
-STATIC_ASSERT(offsetof(NULGTARCLASER_PC, seed) == 0x40);
-
-typedef struct nulgtarcmaterial_s {
-    NUMTL *material;
-    f32 u0;
-    f32 v0;
-    f32 u1;
-    f32 v1;
+typedef struct nulgtarcmaterial_s { // size 0x14
+    NUMTL *material;                // 0x00
+    f32 u0;                         // 0x04
+    f32 v0;                         // 0x08
+    f32 u1;                         // 0x0c
+    f32 v1;                         // 0x10
 } NULGTARCMATERIAL_PC;
 
-STATIC_ASSERT(sizeof(NULGTARCMATERIAL_PC) == 0x14);
-STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v0) == 8);
-STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v1) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif

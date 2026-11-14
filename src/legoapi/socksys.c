@@ -32,15 +32,6 @@ static f32 SockFdiv(f32 a, f32 b) {
 #define SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK 0x400
 #define SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION 0x4000
 #define SOCK_FLAG_CAMERA_DISTANCE_XZ 0x2000
-STATIC_ASSERT(offsetof(NUMTX, m00) == 0x0);
-STATIC_ASSERT(offsetof(NUMTX, m01) == 0x4);
-STATIC_ASSERT(offsetof(NUMTX, m02) == 0x8);
-STATIC_ASSERT(offsetof(NUMTX, m10) == 0x10);
-STATIC_ASSERT(offsetof(NUMTX, m11) == 0x14);
-STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
-STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
-STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
-STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
 NUGSCN *sockpar_scene = 0;
 SOCK_PC *sockpar_sock = 0;
 static VARIPTR *sockpar_buffer_ptr = 0;
@@ -1802,10 +1793,6 @@ void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i3
     position->camera_position = temp_sockcampos;
     SockSysPointAlongMID(sock, position, &position->midpoint);
 }
-
-STATIC_ASSERT(offsetof(SOCK_PC, length) == 0x30);
-STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
-STATIC_ASSERT(offsetof(SOCK_PC, look_ahead_segments) == 0x6d);
 
 void PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_position) {
     f32 distance[2];

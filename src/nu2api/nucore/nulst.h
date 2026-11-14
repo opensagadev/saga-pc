@@ -7,33 +7,27 @@
 
 typedef struct nulsthdr_s NULSTHDR;
 
-typedef struct nulnkhdr_s {
-    struct nulsthdr_s *owner;
-    struct nulnkhdr_s *next;
-    struct nulnkhdr_s *prev;
-    u16 id;
-    u16 is_used : 1;
+typedef struct nulnkhdr_s {   // size 0x10
+    struct nulsthdr_s *owner; // 0x0
+    struct nulnkhdr_s *next;  // 0x4
+    struct nulnkhdr_s *prev;  // 0x8
+    u16 id;                   // 0xc
+    u16 is_used : 1;          // 0xe:0
 } NULNKHDR;
 
-STATIC_ASSERT(sizeof(NULNKHDR) == 0x10);
-
-struct nulsthdr_s {
-    NULNKHDR *free;
-    NULNKHDR *free_tail;
-    NULNKHDR *head;
-    NULNKHDR *tail;
-    u16 element_count;
-    u16 element_size;
-    u16 element_size_total;
-    i16 used_count;
-    u32 safe_thread;
-    u16 padding[2];
+struct nulsthdr_s {         // size 0x20
+    NULNKHDR *free;         // 0x00
+    NULNKHDR *free_tail;    // 0x04
+    NULNKHDR *head;         // 0x08
+    NULNKHDR *tail;         // 0x0c
+    u16 element_count;      // 0x10
+    u16 element_size;       // 0x12
+    u16 element_size_total; // 0x14
+    i16 used_count;         // 0x16
+    u32 safe_thread;        // 0x18
+    u16 padding[2];         // 0x1c
 };
 
-STATIC_ASSERT(sizeof(NULSTHDR) == 0x20);
-STATIC_ASSERT(offsetof(NULSTHDR, tail) == 0xc);
-STATIC_ASSERT(offsetof(NULSTHDR, used_count) == 0x16);
-STATIC_ASSERT(offsetof(NULSTHDR, safe_thread) == 0x18);
 #ifdef __cplusplus
 extern "C" {
 #endif

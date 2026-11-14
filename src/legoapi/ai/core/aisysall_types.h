@@ -11,15 +11,14 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct EDAIAREA_s { /* Editor area record: a list link ahead of an AIAREA_PC image (rebuild copies it). */
-    NULISTLNK link;
-    char name[16];
-    NUVEC position;
-    NUVEC size;
-    u16 rotation;
-    u8 unknown_32;
-    u8 flags;
-    u8 unknown_34[20];
+typedef struct EDAIAREA_s { // size 0x48
+    /* Editor area record: a list link ahead of an AIAREA_PC image (rebuild copies it). */
+    NULISTLNK link;    // 0x00
+    char name[16];     // 0x08
+    NUVEC position;    // 0x18
+    NUVEC size;        // 0x24
+    u16 rotation;      // 0x30
+    u8 unknown_32;     // 0x32
+    u8 flags;          // 0x33
+    u8 unknown_34[20]; // 0x34
 } EDAIAREA_s;
-
-STATIC_ASSERT(sizeof(EDAIAREA_s) == 72);

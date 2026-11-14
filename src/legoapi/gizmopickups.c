@@ -3,35 +3,7 @@
 extern i32 NuMainSkipCutBordersPc;
 extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
-STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
-STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_1fc_word) == 4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
-STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target) == 0x84);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
-STATIC_ASSERT(sizeof(GIZBOMBGEN_s) == 0x2c);
-STATIC_ASSERT(offsetof(GIZBOMBGEN_s, anim_set) == 0x1c);
-STATIC_ASSERT(sizeof(GIZBOMBGENSYS_s) == 0x14);
-STATIC_ASSERT(offsetof(GIZBOMBGENSYS_s, capacity) == 6);
-STATIC_ASSERT(offsetof(GIZBOMBGENSYS_s, anim_object_pool) == 8);
-STATIC_ASSERT(sizeof(GIZTORPMACHINE_s) == 0x2c);
-STATIC_ASSERT(sizeof(GIZTORPMACHINESYS_s) == 0xc);
-STATIC_ASSERT(offsetof(GIZTORPMACHINESYS_s, machines) == 0);
-STATIC_ASSERT(offsetof(GIZTORPMACHINESYS_s, scale) == 8);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_force_sys) == 0x46ac);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_bombgen_sys) == 0x5114);
 
 typedef struct coin_reset_packet_s {
     u8 unknown_00[4];
@@ -57,10 +29,6 @@ typedef struct lose_coins_packet_s { // size 0x4
     u32 coins;                       // 0x0
 } LOSE_COINS_PACKET_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, coin_packet) == 0x7fc);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-
 typedef struct SPECIAL_MINIKIT {    // size 0x3c
     NUSPECIALHANDLE special;        // 0x00
     NUINSTANIM *instance_animation; // 0x0c
@@ -82,22 +50,6 @@ typedef struct SPECIAL_MINIKIT_WORLD {        // size 0x5058
     u8 unknown_0[0x5054];                     // 0x0000
     SPECIAL_MINIKIT_SYSTEM *special_minikits; // 0x5054
 } SPECIAL_MINIKIT_WORLD;
-
-STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
-STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 0x1c);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickups) == 0);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, temporary_pickups) == 4);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickup_count) == 8);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, total_score) == 0x10);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, draw_distance) == 0x14);
-STATIC_ASSERT(offsetof(struct GIZMOPICKUPRUNTIMESYS_s, pickup_scale) == 0x18);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
-STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_14) == 0x14);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, activation_group) == 0x18);
 
 typedef struct PICKUP_RESET_RECORD { // size 0x2c
     char name[8];                    // 0x00
@@ -138,10 +90,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 activated[16];                 // 0xc0
 } PICKUP_RESET_PROGRESS;
 
-STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 0x54);
-STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
-STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
@@ -163,10 +111,6 @@ typedef struct pickup_counter_buildit_s { // size 0x6e
     u8 build_state;                       // 0x6d
 } PICKUP_COUNTER_BUILDIT_PC;
 
-STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
-STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
 
 typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
@@ -184,7 +128,6 @@ typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
 STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW) == sizeof(GIZMOPICKUP_PC));
 STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW, flags) == offsetof(GIZMOPICKUP_PC, flags));
 STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW *)0)->flags) == 1);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 
 static NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

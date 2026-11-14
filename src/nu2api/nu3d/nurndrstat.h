@@ -14,93 +14,56 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nuglobalrndrstate_s {
-    u8 unknown_0000[8];
-    i32 state_0008;
-    u8 unknown_000c[8];
-    i32 state_0014;
-    u8 unknown_0018[6];
-    u16 counter_001e;
-    u32 counter_0020;
-    u16 lights_id;
-    u16 unknown_0026[3];
-    u16 camera_id;
-    u16 fog_id;
-    u16 vertex_groups_id;
-    u16 reflection_id;
-    void *light_packet_cache;
-    NUVEC ambient_intensity;
-    NUVEC light_direction[3];
-    NUVEC light_intensity[3];
-    u8 unknown_008c[4];
-    NUMTX specular_mtx;
-    NUVEC specular_colour;
-    u8 unknown_00dc[0x18];
-    i32 state_00f4;
-    f32 state_00f8;
-    NUMTL *const_alpha_material;
-    i32 state_0100;
-    u8 unknown_0104[0x0c];
-    void *camera_packet_cache;
-    NUMTX camera_matrix;
-    f32 projection_0154;
-    f32 projection_0158;
-    f32 projection_015c;
-    f32 projection_0160;
-    f32 projection_0164;
-    void *fog_packet_cache;
-    u32 fog_state_word;
-    f32 fog_value_0170;
-    f32 fog_value_0174;
-    u32 fog_pointer_0178;
-    f32 fog_value_017c;
-    void *konst_packet_cache;
-    f32 viewport_x;
-    f32 viewport_y;
-    f32 viewport_width;
-    f32 viewport_height;
-    u32 reflection_state;
-    void *reflection_packet_cache;
-    u8 unknown_019c[8];
+typedef struct nuglobalrndrstate_s { // size 0x1a4
+    u8 unknown_0000[8];              // 0x000
+    i32 state_0008;                  // 0x008
+    u8 unknown_000c[8];              // 0x00c
+    i32 state_0014;                  // 0x014
+    u8 unknown_0018[6];              // 0x018
+    u16 counter_001e;                // 0x01e
+    u32 counter_0020;                // 0x020
+    u16 lights_id;                   // 0x024
+    u16 unknown_0026[3];             // 0x026
+    u16 camera_id;                   // 0x02c
+    u16 fog_id;                      // 0x02e
+    u16 vertex_groups_id;            // 0x030
+    u16 reflection_id;               // 0x032
+    void *light_packet_cache;        // 0x034
+    NUVEC ambient_intensity;         // 0x038
+    NUVEC light_direction[3];        // 0x044
+    NUVEC light_intensity[3];        // 0x068
+    u8 unknown_008c[4];              // 0x08c
+    NUMTX specular_mtx;              // 0x090
+    NUVEC specular_colour;           // 0x0d0
+    u8 unknown_00dc[0x18];           // 0x0dc
+    i32 state_00f4;                  // 0x0f4
+    f32 state_00f8;                  // 0x0f8
+    NUMTL *const_alpha_material;     // 0x0fc
+    i32 state_0100;                  // 0x100
+    u8 unknown_0104[0x0c];           // 0x104
+    void *camera_packet_cache;       // 0x110
+    NUMTX camera_matrix;             // 0x114
+    f32 projection_0154;             // 0x154
+    f32 projection_0158;             // 0x158
+    f32 projection_015c;             // 0x15c
+    f32 projection_0160;             // 0x160
+    f32 projection_0164;             // 0x164
+    void *fog_packet_cache;          // 0x168
+    u32 fog_state_word;              // 0x16c
+    f32 fog_value_0170;              // 0x170
+    f32 fog_value_0174;              // 0x174
+    u32 fog_pointer_0178;            // 0x178
+    f32 fog_value_017c;              // 0x17c
+    void *konst_packet_cache;        // 0x180
+    f32 viewport_x;                  // 0x184
+    f32 viewport_y;                  // 0x188
+    f32 viewport_width;              // 0x18c
+    f32 viewport_height;             // 0x190
+    u32 reflection_state;            // 0x194
+    void *reflection_packet_cache;   // 0x198
+    u8 unknown_019c[8];              // 0x19c
 } NUGLOBALRNDRSTATE_PC;
 
-STATIC_ASSERT(sizeof(NUGLOBALRNDRSTATE_PC) == 0x1a4);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0008) == 0x08);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0014) == 0x14);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_001e) == 0x1e);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, lights_id) == 0x24);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_id) == 0x2c);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_id) == 0x2e);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, vertex_groups_id) == 0x30);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_id) == 0x32);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_packet_cache) == 0x34);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, ambient_intensity) == 0x38);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_direction) == 0x44);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, light_intensity) == 0x68);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_mtx) == 0x90);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, specular_colour) == 0xd0);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f4) == 0xf4);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_00f8) == 0xf8);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, const_alpha_material) == 0xfc);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, state_0100) == 0x100);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_packet_cache) == 0x110);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, camera_matrix) == 0x114);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, projection_0154) == 0x154);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, projection_0164) == 0x164);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_packet_cache) == 0x168);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_state_word) == 0x16c);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_0170) == 0x170);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_0174) == 0x174);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_pointer_0178) == 0x178);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_value_017c) == 0x17c);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, konst_packet_cache) == 0x180);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_x) == 0x184);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_y) == 0x188);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_width) == 0x18c);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, viewport_height) == 0x190);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_state) == 0x194);
-STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_packet_cache) == 0x198);
 #ifdef __cplusplus
 extern "C" {
 #endif

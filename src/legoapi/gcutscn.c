@@ -78,8 +78,6 @@ void fun_00500490(INSTNUGCUTSCENE *owner, i32 count, VARIPTR *buffer) {
 void fun_005004d0(void) {
 }
 
-STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
-
 typedef struct CUT_PLAYER_STATE { // size 0x10
     NUSPECIALHANDLE special;      // 0x0
     u8 flags;                     // 0xc
@@ -98,12 +96,6 @@ typedef struct CUT_PLAYER_INST_ANIM { // size 0x54
     u32 flags;                        // 0x50
 } CUT_PLAYER_INST_ANIM;
 
-STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
-STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
-
 typedef struct cut_player_config_s {   // size 0x20
     CUT_PLAYER_CLIP_CONFIG_PC *clips;  // 0x00
     CUT_PLAYER_CLIP_CONFIG_PC *active; // 0x04
@@ -115,15 +107,6 @@ typedef struct cut_player_config_s {   // size 0x20
     i16 *outro_text;                   // 0x18
     i16 *ending_text;                  // 0x1c
 } CUT_PLAYER_CONFIG_PC;
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
-STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
-STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 
 typedef struct cut_average_rigid_system_s { // size 0x8
     void *rigids;                           // 0x0

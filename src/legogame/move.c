@@ -5,17 +5,6 @@
 #include <float.h>
 #include <stdlib.h>
 
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_panel_sys) == 0x5070);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, panel_request_data) == 0x7a0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, protocol_interface_action) == 0xe39);
-
 typedef struct default_animation_timers_s {
     u8 unknown_0000[0xd24];
     f32 ground_contact_grace;

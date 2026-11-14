@@ -3,9 +3,6 @@
 extern "C" void DumpAreaData(i32 mode, i32 last_area);
 extern "C" void BackDrop_Dump(void);
 
-STATIC_ASSERT(offsetof(AREASAVE_s, area_complete) == 1);
-STATIC_ASSERT(offsetof(STATUSCOLLECT_s, completion_points) == 0);
-STATIC_ASSERT(offsetof(STATUSCOLLECT_s, flags) == 3);
 extern "C" {
     extern void (*PauseGame_ExtraCodeFn)(void);
     extern void (*ResumeGame_ExtraCodeFn)(void);

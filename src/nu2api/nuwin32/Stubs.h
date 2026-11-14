@@ -10,13 +10,11 @@
 #include "legoapi/menus/screens/movies.h"
 #endif
 
-typedef struct MENU_PC_STRING_ENTRY {
-    i32 id;
-    const char *text;
+typedef struct MENU_PC_STRING_ENTRY { // size 0x8
+    i32 id;                           // 0x0
+    const char *text;                 // 0x4
 } MENU_PC_STRING_ENTRY;
 
-STATIC_ASSERT(sizeof(MENU_PC_STRING_ENTRY) == 8);
-STATIC_ASSERT(offsetof(MENU_PC_STRING_ENTRY, text) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

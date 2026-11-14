@@ -21,30 +21,21 @@ struct AIPATHCNX_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct ai_helper_slot_s {
-    struct AIPATHCNX_PC *connection;
-    void *target;
-    u8 direction;
-    u8 type;
-    u8 padding[2];
-    f32 jump_off_dy;
+typedef struct ai_helper_slot_s {    // size 0x10
+    struct AIPATHCNX_PC *connection; // 0x0
+    void *target;                    // 0x4
+    u8 direction;                    // 0x8
+    u8 type;                         // 0x9
+    u8 padding[2];                   // 0xa
+    f32 jump_off_dy;                 // 0xc
 } AI_HELPER_SLOT_PC;
 
-typedef struct ai_helper_system_s {
-    i16 capacity;
-    i16 count;
-    AI_HELPER_SLOT_PC *helpers;
+typedef struct ai_helper_system_s { // size 0x8
+    i16 capacity;                   // 0x0
+    i16 count;                      // 0x2
+    AI_HELPER_SLOT_PC *helpers;     // 0x4
 } AI_HELPER_SYSTEM_PC;
 
-STATIC_ASSERT(sizeof(AI_HELPER_SLOT_PC) == 0x10);
-STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, connection) == 0);
-STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, target) == 4);
-STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, direction) == 8);
-STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, type) == 9);
-STATIC_ASSERT(offsetof(AI_HELPER_SLOT_PC, jump_off_dy) == 0xc);
-STATIC_ASSERT(sizeof(AI_HELPER_SYSTEM_PC) == 8);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, count) == 2);
-STATIC_ASSERT(offsetof(AI_HELPER_SYSTEM_PC, helpers) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

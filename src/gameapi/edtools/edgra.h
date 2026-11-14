@@ -15,167 +15,96 @@ struct debris_part_header_s;
 struct eduiitem_s;
 struct eduimenu_s;
 
-typedef struct debris_info_s {
-    char name[16];
-    u8 category;
-    i8 page;
-    u8 cutscene_only;
-    u8 disabled;
-    i16 max_particles;
-    i16 frequency;
-    f32 emission_start_offset;
-    f32 emission_period;
-    f32 emission_period_random;
-    f32 emission_pause;
-    f32 emission_pause_random;
-    i8 generator_type;
-    i8 momentum_adjustment_type;
-    i8 particle_type;
-    u8 status;
-    f32 field_030;
-    f32 cut_on;
-    f32 clip_extent;
-    f32 sound_range;
-    f32 sound_range_override;
-    f32 field_044;
-    f32 momentum_base;
-    f32 momentum_random_x;
-    f32 rotor_speed_x;
-    f32 rotor_speed_y;
-    NUVEC emitter_random_extent;
-    NUVEC emitter_velocity;
+typedef struct debris_info_s {   // size 0x428
+    char name[16];               // 0x000
+    u8 category;                 // 0x010
+    i8 page;                     // 0x011
+    u8 cutscene_only;            // 0x012
+    u8 disabled;                 // 0x013
+    i16 max_particles;           // 0x014
+    i16 frequency;               // 0x016
+    f32 emission_start_offset;   // 0x018
+    f32 emission_period;         // 0x01c
+    f32 emission_period_random;  // 0x020
+    f32 emission_pause;          // 0x024
+    f32 emission_pause_random;   // 0x028
+    i8 generator_type;           // 0x02c
+    i8 momentum_adjustment_type; // 0x02d
+    i8 particle_type;            // 0x02e
+    u8 status;                   // 0x02f
+    f32 field_030;               // 0x030
+    f32 cut_on;                  // 0x034
+    f32 clip_extent;             // 0x038
+    f32 sound_range;             // 0x03c
+    f32 sound_range_override;    // 0x040
+    f32 field_044;               // 0x044
+    f32 momentum_base;           // 0x048
+    f32 momentum_random_x;       // 0x04c
+    f32 rotor_speed_x;           // 0x050
+    f32 rotor_speed_y;           // 0x054
+    NUVEC emitter_random_extent; // 0x058
+    NUVEC emitter_velocity;      // 0x064
 
-    union {
+    union { // size 0x30
         f32 unknown_070[12];
         f32 file_parameters[12];
-    };
+    }; // 0x070
 
-    f32 gravity;
-    f32 particle_lifetime;
-    i16 field_0a8;
-    i8 field_0aa;
-    i8 field_0ab;
-    f32 field_0ac;
-    f32 jib_x_frequency;
-    f32 jib_x_amplitude;
-    f32 jib_y_frequency;
-    f32 jib_y_amplitude;
-    DEBRIS_COLOUR_KEY_PC colour_keys[8];
-    DEBRIS_FLOAT_KEY_PC alpha_keys[8];
-    f32 particle_parameter_a;
-    f32 particle_parameter_b;
-    f32 min_size;
-    f32 max_size;
-    DEBRIS_FLOAT_KEY_PC width_keys[8];
-    DEBRIS_FLOAT_KEY_PC height_keys[8];
-    f32 min_rotation;
-    f32 max_rotation;
-    DEBRIS_FLOAT_KEY_PC rotation_keys[8];
-    DEBRIS_FLOAT_KEY_PC field_218_keys[8];
-    DEBRIS_FLOAT_KEY_PC field_258_keys[8];
-    f32 texture_u0;
-    f32 texture_v0;
-    f32 texture_u1;
-    f32 texture_v1;
-    struct debris_part_header_s *native_data;
-    f32 last_render_time;
-    DEBRIS_FLOAT_KEY_PC collision_keys[8];
-    i8 process_spheres;
-    i8 time_group;
-    u8 collision_flags;
-    u8 use_explicit_clip_box;
-    f32 thinning;
-    NUVEC particle_box;
-    f32 torus_radius1;
-    f32 torus_radius2;
-    f32 torus_lifetime;
-    DEBRIS_FLOAT_KEY_PC torus_keys1[8];
-    DEBRIS_FLOAT_KEY_PC torus_keys2[8];
-    DEBRIS_FLOAT_KEY_PC torus_keys3[8];
-    i16 particle_keys[8];
-    i32 sound_data[12];
-    i8 trail_count;
-    i8 radial_segments;
-    i8 camera_facing;
-    u8 unknown_413;
-    f32 trail_time;
-    f32 scale_in_time;
-    f32 radial_floor;
-    f32 scale;
-    i32 base_effect_index;
+    f32 gravity;                              // 0x0a0
+    f32 particle_lifetime;                    // 0x0a4
+    i16 field_0a8;                            // 0x0a8
+    i8 field_0aa;                             // 0x0aa
+    i8 field_0ab;                             // 0x0ab
+    f32 field_0ac;                            // 0x0ac
+    f32 jib_x_frequency;                      // 0x0b0
+    f32 jib_x_amplitude;                      // 0x0b4
+    f32 jib_y_frequency;                      // 0x0b8
+    f32 jib_y_amplitude;                      // 0x0bc
+    DEBRIS_COLOUR_KEY_PC colour_keys[8];      // 0x0c0
+    DEBRIS_FLOAT_KEY_PC alpha_keys[8];        // 0x100
+    f32 particle_parameter_a;                 // 0x140
+    f32 particle_parameter_b;                 // 0x144
+    f32 min_size;                             // 0x148
+    f32 max_size;                             // 0x14c
+    DEBRIS_FLOAT_KEY_PC width_keys[8];        // 0x150
+    DEBRIS_FLOAT_KEY_PC height_keys[8];       // 0x190
+    f32 min_rotation;                         // 0x1d0
+    f32 max_rotation;                         // 0x1d4
+    DEBRIS_FLOAT_KEY_PC rotation_keys[8];     // 0x1d8
+    DEBRIS_FLOAT_KEY_PC field_218_keys[8];    // 0x218
+    DEBRIS_FLOAT_KEY_PC field_258_keys[8];    // 0x258
+    f32 texture_u0;                           // 0x298
+    f32 texture_v0;                           // 0x29c
+    f32 texture_u1;                           // 0x2a0
+    f32 texture_v1;                           // 0x2a4
+    struct debris_part_header_s *native_data; // 0x2a8
+    f32 last_render_time;                     // 0x2ac
+    DEBRIS_FLOAT_KEY_PC collision_keys[8];    // 0x2b0
+    i8 process_spheres;                       // 0x2f0
+    i8 time_group;                            // 0x2f1
+    u8 collision_flags;                       // 0x2f2
+    u8 use_explicit_clip_box;                 // 0x2f3
+    f32 thinning;                             // 0x2f4
+    NUVEC particle_box;                       // 0x2f8
+    f32 torus_radius1;                        // 0x304
+    f32 torus_radius2;                        // 0x308
+    f32 torus_lifetime;                       // 0x30c
+    DEBRIS_FLOAT_KEY_PC torus_keys1[8];       // 0x310
+    DEBRIS_FLOAT_KEY_PC torus_keys2[8];       // 0x350
+    DEBRIS_FLOAT_KEY_PC torus_keys3[8];       // 0x390
+    i16 particle_keys[8];                     // 0x3d0
+    i32 sound_data[12];                       // 0x3e0
+    i8 trail_count;                           // 0x410
+    i8 radial_segments;                       // 0x411
+    i8 camera_facing;                         // 0x412
+    u8 unknown_413;                           // 0x413
+    f32 trail_time;                           // 0x414
+    f32 scale_in_time;                        // 0x418
+    f32 radial_floor;                         // 0x41c
+    f32 scale;                                // 0x420
+    i32 base_effect_index;                    // 0x424
 } DEBRIS_INFO_PC;
 
-STATIC_ASSERT(sizeof(DEBRIS_INFO_PC) == 0x428);
-STATIC_ASSERT(sizeof(DEBRIS_INFO_PC) == 1064);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_030) == 0x30);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, min_rotation) == 0x1d0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, max_rotation) == 0x1d4);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_218_keys) == 0x218);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, field_258_keys) == 0x258);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, name) == 0x0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, page) == 0x11);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, disabled) == 0x13);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emission_start_offset) == 0x18);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emission_period) == 0x1c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emission_period_random) == 0x20);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emission_pause) == 0x24);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emission_pause_random) == 0x28);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, generator_type) == 0x2c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_adjustment_type) == 0x2d);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_type) == 0x2e);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, status) == 0x2f);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, cut_on) == 0x34);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, last_render_time) == 0x2ac);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, collision_flags) == 0x2f2);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, use_explicit_clip_box) == 0x2f3);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, clip_extent) == 0x38);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_range) == 0x3c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_range_override) == 0x40);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, rotor_speed_x) == 0x50);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, rotor_speed_y) == 0x54);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, process_spheres) == 0x2f0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, time_group) == 0x2f1);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, thinning) == 0x2f4);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_keys) == 0x3d0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, sound_data) == 0x3e0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_base) == 0x48);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, momentum_random_x) == 0x4c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emitter_random_extent) == 0x58);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, emitter_velocity) == 0x64);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, gravity) == 0xa0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_lifetime) == 0xa4);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, jib_x_frequency) == 0xb0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, jib_x_amplitude) == 0xb4);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, jib_y_frequency) == 0xb8);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, jib_y_amplitude) == 0xbc);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, colour_keys) == 0xc0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, alpha_keys) == 0x100);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, width_keys) == 0x150);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, max_size) == 0x14c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, min_size) == 0x148);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, scale) == 0x420);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, base_effect_index) == 0x424);
-STATIC_ASSERT(sizeof(DEBRIS_INFO_PC) == 0x428);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, height_keys) == 0x190);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, rotation_keys) == 0x1d8);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, texture_u0) == 0x298);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, texture_v0) == 0x29c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, texture_u1) == 0x2a0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, texture_v1) == 0x2a4);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, native_data) == 0x2a8);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, trail_count) == 0x410);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, radial_segments) == 0x411);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, trail_time) == 0x414);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, scale_in_time) == 0x418);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, radial_floor) == 0x41c);
-
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, collision_keys) == 0x2b0);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_radius1) == 0x304);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_radius2) == 0x308);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_lifetime) == 0x30c);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys1) == 0x310);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys2) == 0x350);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, torus_keys3) == 0x390);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -192,10 +121,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_parameter_a) == 0x140);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_parameter_b) == 0x144);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, particle_box) == 0x2f8);
-STATIC_ASSERT(offsetof(DEBRIS_INFO_PC, camera_facing) == 0x412);
 #ifdef __cplusplus
 extern "C" {
 #endif

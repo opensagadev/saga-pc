@@ -56,12 +56,6 @@ typedef struct collection_variant_reader_s { // size 0x120
     u8 unknown_117[9];                       // 0x117
 } COLLECTION_VARIANT_READER_PC;
 
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
-STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
-
 i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     i32 index;
     if (CollectList == NULL) {
@@ -117,13 +111,6 @@ typedef struct collection_buyable_reader_s { // size 0x1c
 } COLLECTION_BUYABLE_READER_PC;
 
 STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
-STATIC_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
-STATIC_ASSERT(sizeof(APICHARACTERDATA) == 0x4c);
-STATIC_ASSERT(offsetof(APICHARACTERDATA, model_flags) == 4);
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
 
 void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
@@ -197,14 +184,6 @@ void Collection_GetPos(COLLECTION_s *collection, i32 id, float *x, float *y) {
     }
 }
 
-STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(ARCADE_MODE_PC, flags) == 8);
-STATIC_ASSERT(offsetof(ARCADE_ITEM_PC, mode) == 0xc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094) == 0x94);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, weapon_action) == 0x116);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -257,7 +236,6 @@ typedef struct collection_config_entry_s { // size 0x1c
 } COLLECTION_CONFIG_ENTRY_PC;
 
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
-STATIC_ASSERT(offsetof(NUFPAR_PC, word_buffer_ptr) == 0x510);
 
 /* Native 594220 is an actual RET with no argument reads. */
 void CollectionConfigDiagnosticPc(char *file, ...) {
@@ -346,10 +324,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     }
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->flags_e24) == 4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 

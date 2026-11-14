@@ -62,25 +62,6 @@ typedef struct {                 // size 0x14
     void *progress;              // 0x10
 } ADD_BOMB_RESET_SYS_PC;
 
-STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 0xdc);
-STATIC_ASSERT(sizeof(struct GIZSPINNER_s) == 0x304);
-STATIC_ASSERT(offsetof(struct GIZSPINNER_s, name) == 0x40);
-STATIC_ASSERT(offsetof(struct GIZSPINNER_s, flags) == 0xac);
-STATIC_ASSERT(offsetof(WORLDINFO, spinners) == 0x46e0);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_count) == 0x50c0);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowups) == 0x50c8);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_panel_sys) == 0x5070);
-STATIC_ASSERT(offsetof(WORLDINFO, grapples) == 0x5080);
-STATIC_ASSERT(offsetof(WORLDINFO, grapple_count) == 0x5084);
-STATIC_ASSERT(offsetof(WORLDINFO, torpedo_machine_sys) == 0x5100);
-STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
-STATIC_ASSERT(offsetof(struct GIZFORCESYS_s, count) == 0xe);
-STATIC_ASSERT(offsetof(struct GIZBOMBGENSYS_s, count) == 4);
-STATIC_ASSERT(offsetof(struct GIZPANELSYS_s, panels) == 4);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, name) == 0x40);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
-
 typedef struct {         // size 0x28
     u8 unknown_00[0x1c]; // 0x00
     NUVEC position;      // 0x1c
@@ -96,9 +77,6 @@ typedef struct {         // size 0x3c
     NUVEC position;      // 0x30
 } FLOW_BLOWUP_POSITION_PC;
 
-STATIC_ASSERT(offsetof(GIZSPINNER_s, position) == 0x5c);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, position) == 8);
-
 typedef struct ai_gizmo_name_process_s { // size 0xdc
     char name[16];                       // 0x00
     u8 unknown_10[4];                    // 0x10
@@ -110,19 +88,6 @@ typedef struct ai_gizmo_name_process_s { // size 0xdc
     u8 unknown_bc[0x20];                 // 0xbc
 } AI_GIZMO_NAME_PROCESS_PC;
 
-STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, output_count) == 0xa4);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, flags) == 0xac);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, anim_set) == 0x68);
-STATIC_ASSERT(sizeof(GIZSPINNER_s) == 0x304);
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinners) == 0xf2);
-STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
 extern char SpinnerOutputBufferPc[14];
@@ -249,23 +214,7 @@ typedef struct {                       // size 0x8
     PANEL_PROGRESS_RECORD_PC *records; // 0x4
 } PANEL_PROGRESS_SYSTEM_PC;
 
-STATIC_ASSERT(sizeof(GIZMOBLOWUP_PC) == 276);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, flags) == 0x17);
-STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 44);
-STATIC_ASSERT(offsetof(GIZMOPICKUPRUNTIMESYS_s, pickup_count) == 8);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, flags) == 0x1e);
-STATIC_ASSERT(sizeof(GRAPPLE_DYNAMIC_PC) == 248);
-STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
-STATIC_ASSERT(sizeof(GIZSPINNER_s) == 772);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, rotation) == 0x7c);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, target_rotation) == 0x7e);
-STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
-STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, anti_node_data) == 0xb4);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_z) == 0xec);
 
 typedef struct respawn_initial_s { // size 0x112
     u8 unknown_000[0x10f];         // 0x000
@@ -303,62 +252,7 @@ typedef struct blowup_effect_type_s {      // size 0xfc
 } BLOWUP_EFFECT_TYPE_PC;
 
 extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c8c) == 0xc8c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == 0xc94);
-STATIC_ASSERT(sizeof(NUVEC) == 12);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, bounds_min) == 0x58);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, secondary_flags) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, transform) == 0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, bounds_max) == 0x64);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, decal_offset) == 0x70);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, shadow_offset) == 0x88);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, decal_scale) == 0xc0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, decal_rotation_x) == 0xdc);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, decal_rotation_y) == 0xde);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, decal_rotation_z) == 0xe0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, shadow_rotation_x) == 0xe2);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, shadow_rotation_y) == 0xe4);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, shadow_rotation_z) == 0xe6);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_x) == 0xe8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_base_frame) == 0x90);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, particle_types) == 0xa0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, instance_count) == 0xb2);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_runtime_flags) == 0xfc);
-STATIC_ASSERT(sizeof(GIZMOBLOWUPTYPE_PC) == 0x100);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_mtx_buffer) == 0x50e8);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_gizmoblowups) == 0xda);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_gizmoblowuptypes) == 0xdc);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, alternate_specials) == 0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, shadow_special) == 0x48);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_time_scale) == 0x78);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, effect_flags) == 0x80);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_084) == 0x84);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_094) == 0x94);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_098) == 0x98);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_09c) == 0x9c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, name) == 0xd8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_0f8) == 0xf8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_0fb) == 0xfb);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, field_07c) == 0x7c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score) == 0xa0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_offset) == 0xc8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, reflection_height) == 0xd4);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, pickup_x_rotation) == 0xee);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, pickup_y_rotation) == 0xf0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name_terminator) == 0x102);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, field_10c) == 0x10c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score_multiplier) == 0x10d);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_state) == 0x10f);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
 extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, field_028) == 0x28);
-STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
-STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
-STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
 
 /* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
  * bitfield member of the shared struct. */
@@ -391,18 +285,6 @@ typedef struct {        // size 0x48
     u8 unknown00[0x44]; // 0x00
     f32 first_frame;    // 0x44
 } BLOWUP_ANIM_FIRST_DRAW_PC;
-
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, draw_flags) == 0x98);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, animation_time) == 0xbc);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, decal_special) == 0x3c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, burst_special) == 0x54);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_flags) == 0x7c);
-STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
-STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
-STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
-STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
 
 #pragma data_seg(".data$SpinnerOutputBufferPc")
 char SpinnerOutputBufferPc[14] = "100% Complete";

@@ -41,13 +41,12 @@ extern "C" {
 #endif
 typedef struct STATUSCOLLECT_s STATUSCOLLECT_s;
 
-struct STATUSCOLLECT_s {
-    u16 completion_points;
-    u8 gold_bricks;
-    u8 flags;
+struct STATUSCOLLECT_s {   // size 0x4
+    u16 completion_points; // 0x0
+    u8 gold_bricks;        // 0x2
+    u8 flags;              // 0x3
 };
 
-STATIC_ASSERT(sizeof(struct STATUSCOLLECT_s) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

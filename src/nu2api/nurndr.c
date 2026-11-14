@@ -464,8 +464,6 @@ void NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
     NuMtxInv(&parameters->current, &parameters->current);
 }
 
-STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
-
 void NuBackbufferCopy(i32 texture_id) {
     currentScene.unknown_214 = (u32)texture_id;
 }
@@ -1170,7 +1168,6 @@ void RenderPostClearScreenPc(void) {
     NuPrimSetCoordinateSystem(restore_mode);
 }
 
-STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
 #ifndef RENDER_POST_ALPHA_CACHE_PC
 #define RENDER_POST_ALPHA_CACHE_PC cacheValues
 #endif
@@ -2189,7 +2186,6 @@ i32 dat_0080b6e4 = 13;
 i32 NuLightSpeedBlurEnabledPc = 1;
 static NUMTX NuLightSpeedBlurViewProjectionPc = {0};
 static NUMTX NuLightSpeedBlurPreviousViewProjectionPc = {0};
-STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
 
 void NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
     NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;

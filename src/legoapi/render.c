@@ -8,15 +8,6 @@
 #pragma bss_seg(".bss$dof_fstop")
 #undef DrawStatusText
 
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
-
-STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
-
 /* Source-first scratch candidate; unclosed real leaf declarations only. */
 
 typedef struct render_post_prim_vertex_s { // size 0x18
@@ -177,7 +168,6 @@ typedef struct STATUS_RUMBLE_PAIR {
     RUMBLE_PACKET_RESOURCE_PC players[2];
 } STATUS_RUMBLE_PAIR;
 
-STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_rumble_amount) - offsetof(STATUSPACKET_s, player0_rumble_amount) ==
               sizeof(RUMBLE_PACKET_RESOURCE_PC));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==

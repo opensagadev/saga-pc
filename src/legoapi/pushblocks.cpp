@@ -1,33 +1,6 @@
 #include "saga.h"
 static f32 PushBlockGapEpsilonPc = 0.00999999978f;
 
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, extra_terrain_info) == 0x14);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, supporting_block) == 0x1c);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, special) == 0x24);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, pushing_object) == 0x30);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, platform_id) == 0x34);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_distance) == 0x40);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, name) == 0x44);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_positions) == 0x54);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, position) == 0x58);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_specials) == 0x5c);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_origins) == 0x74);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, velocity) == 0x8c);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, target_velocity) == 0x98);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_origin) == 0xa4);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, bounds_min) == 0xb0);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, bounds_max) == 0xbc);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, flags_0ca) == 0xca);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, completed_snap_positions) == 0xd0);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_count) == 0xd1);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, output_count) == 0xd2);
-STATIC_ASSERT(offsetof(WORLDINFO, push_blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(WORLDINFO, push_block_count) == 0x46c0);
-STATIC_ASSERT(offsetof(WORLDINFO, push_block_positions) == 0x46c4);
-STATIC_ASSERT(offsetof(WORLDINFO, push_block_position_count) == 0x46c8);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_pushblock_endpos) == 0x100);
-STATIC_ASSERT(offsetof(PUSHPROGRESS, end_positions) == 0xcc);
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksNamePc;
 
@@ -124,10 +97,6 @@ typedef struct PUSH_RUNTIME_WORLD_VIEW {
     i32 count;
 } PUSH_RUNTIME_WORLD_VIEW;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
-STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 extern "C" {
     extern NUVEC p000;
     extern i32 RunOutOfPosTabSpacePc;

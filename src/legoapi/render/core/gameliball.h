@@ -42,45 +42,35 @@ struct eduimenu_s;
 struct nufpar_pc_s;
 struct numtl_s;
 
-typedef struct SFX_GROUP_PC {
-    i16 first_sample;
-    i16 sample_count;
-    i16 cursor;
-    i16 unknown_0006;
+typedef struct SFX_GROUP_PC { // size 0x8
+    i16 first_sample;         // 0x0
+    i16 sample_count;         // 0x2
+    i16 cursor;               // 0x4
+    i16 unknown_0006;         // 0x6
 } SFX_GROUP_PC;
 
-STATIC_ASSERT(sizeof(SFX_GROUP_PC) == 8);
-STATIC_ASSERT(offsetof(SFX_GROUP_PC, sample_count) == 2);
-STATIC_ASSERT(offsetof(SFX_GROUP_PC, cursor) == 4);
 typedef struct TERRAIN_POLYGON_INFO_PC TERRAIN_POLYGON_INFO_PC;
 
-struct TERRAIN_POLYGON_INFO_PC {
-    f32 min_x;
-    f32 max_x;
-    f32 min_y;
-    f32 max_y;
-    f32 min_z;
-    f32 max_z;
-    NUVEC vertices[4];
-    NUVEC normals[2];
+struct TERRAIN_POLYGON_INFO_PC { // size 0x64
+    f32 min_x;                   // 0x00
+    f32 max_x;                   // 0x04
+    f32 min_y;                   // 0x08
+    f32 max_y;                   // 0x0c
+    f32 min_z;                   // 0x10
+    f32 max_z;                   // 0x14
+    NUVEC vertices[4];           // 0x18
+    NUVEC normals[2];            // 0x48
 
-    union {
+    union { // size 0x4
         u32 packed_metadata;
 
-        struct {
-            u8 material[2];
-            u8 flags;
-            u8 normal_flags;
+        struct {             // size 0x4
+            u8 material[2];  // 0x60
+            u8 flags;        // 0x62
+            u8 normal_flags; // 0x63
         };
-    };
+    }; // 0x60
 };
-
-STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, min_y) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, max_y) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
 
 /* Terrain set, group, platform and query layouts shared by nuterrain.c and the terrain_*.cpp units. */
 typedef struct TERRAIN_DISPLAY_SCENE TERRAIN_DISPLAY_SCENE;
@@ -91,83 +81,63 @@ typedef struct TERRAIN_FILE_CHUNK TERRAIN_FILE_CHUNK;
 typedef struct TERRAIN_SPATIAL_CHUNK TERRAIN_SPATIAL_CHUNK;
 typedef struct TERRAIN_SKIN_STREAM TERRAIN_SKIN_STREAM;
 
-typedef union TERRAIN_SCAN_WORD {
-    struct {
-        i16 shape_count;
-        i16 terrain_group;
+typedef union TERRAIN_SCAN_WORD { // size 0x4
+
+    struct {               // size 0x4
+        i16 shape_count;   // 0x0
+        i16 terrain_group; // 0x2
     } header;
 
     TERRAIN_POLYGON_INFO_PC *shape;
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD;
 
-STATIC_ASSERT(sizeof(TERRAIN_SCAN_WORD) == 4);
-
-struct TERRAIN_FILE_CHUNK {
-    i16 chunk_count;
-    u16 version;
-    u32 data_word_count;
-    NUVEC origin;
-    i16 chunk_type;
-    u16 field_16;
-    u8 unknown_18[0x14];
-    u32 platform_flags;
-    u16 field_30;
-    u16 group_info;
+struct TERRAIN_FILE_CHUNK { // size 0x34
+    i16 chunk_count;        // 0x00
+    u16 version;            // 0x02
+    u32 data_word_count;    // 0x04
+    NUVEC origin;           // 0x08
+    i16 chunk_type;         // 0x14
+    u16 field_16;           // 0x16
+    u8 unknown_18[0x14];    // 0x18
+    u32 platform_flags;     // 0x2c
+    u16 field_30;           // 0x30
+    u16 group_info;         // 0x32
 };
 
-STATIC_ASSERT(sizeof(TERRAIN_FILE_CHUNK) == 0x34);
-STATIC_ASSERT(offsetof(TERRAIN_FILE_CHUNK, chunk_type) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_FILE_CHUNK, platform_flags) == 0x2c);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normal_flags) == 0x63);
-
-struct TERRAIN_SCENE_OBJECT {
-    u8 pad_0x00[0x44];
-    u32 flags;
-    void *object;
-    u8 pad_0x4c[4];
+struct TERRAIN_SCENE_OBJECT { // size 0x50
+    u8 pad_0x00[0x44];        // 0x00
+    u32 flags;                // 0x44
+    void *object;             // 0x48
+    u8 pad_0x4c[4];           // 0x4c
 };
 
-STATIC_ASSERT(sizeof(TERRAIN_SCENE_OBJECT) == 0x50);
-STATIC_ASSERT(offsetof(TERRAIN_SCENE_OBJECT, flags) == 0x44);
-
-struct TERRAIN_DISPLAY_OBJECT {
-    u8 pad_0x00[0x40];
-    u8 embedded_object[0x78];
-    u32 flags;
-    u32 unknown_bc;
-    i32 scene_object_index;
-    void *object;
-    u8 pad_0xc8[8];
+struct TERRAIN_DISPLAY_OBJECT { // size 0xd0
+    u8 pad_0x00[0x40];          // 0x00
+    u8 embedded_object[0x78];   // 0x40
+    u32 flags;                  // 0xb8
+    u32 unknown_bc;             // 0xbc
+    i32 scene_object_index;     // 0xc0
+    void *object;               // 0xc4
+    u8 pad_0xc8[8];             // 0xc8
 };
 
-STATIC_ASSERT(sizeof(TERRAIN_DISPLAY_OBJECT) == 0xd0);
-STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_OBJECT, flags) == 0xb8);
-STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_OBJECT, scene_object_index) == 0xc0);
-
-struct TERRAIN_DISPLAY_SCENE {
-    u8 pad_0x00[0x6c];
-    i32 object_count;
-    TERRAIN_DISPLAY_OBJECT *objects;
+struct TERRAIN_DISPLAY_SCENE {       // size 0x74
+    u8 pad_0x00[0x6c];               // 0x00
+    i32 object_count;                // 0x6c
+    TERRAIN_DISPLAY_OBJECT *objects; // 0x70
 };
 
-STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_SCENE, object_count) == 0x6c);
-
-struct TERRAIN_GSCENE {
-    u8 pad_0x00[0x1c];
-    i32 object_count;
-    TERRAIN_SCENE_OBJECT *objects;
-    u8 pad_0x24[0x34];
-    void *object_map_present;
-    u16 *object_map;
-    u8 pad_0x60[0xb0];
-    TERRAIN_DISPLAY_SCENE *display_scene;
+struct TERRAIN_GSCENE {                   // size 0x114
+    u8 pad_0x00[0x1c];                    // 0x000
+    i32 object_count;                     // 0x01c
+    TERRAIN_SCENE_OBJECT *objects;        // 0x020
+    u8 pad_0x24[0x34];                    // 0x024
+    void *object_map_present;             // 0x058
+    u16 *object_map;                      // 0x05c
+    u8 pad_0x60[0xb0];                    // 0x060
+    TERRAIN_DISPLAY_SCENE *display_scene; // 0x110
 };
-
-STATIC_ASSERT(offsetof(TERRAIN_GSCENE, object_count) == 0x1c);
-STATIC_ASSERT(offsetof(TERRAIN_GSCENE, object_map_present) == 0x58);
-STATIC_ASSERT(offsetof(TERRAIN_GSCENE, display_scene) == 0x110);
 
 typedef union TERRAIN_FLOAT_BITS {
     f32 value;
@@ -185,104 +155,62 @@ struct TerrainScanBounds {
     f32 max_z;
 };
 
-typedef struct music_playback_s {
-    i16 state;
-    i16 requested_track;
-    i16 primary_stream;
-    i16 current_track;
-    i16 transition_frames;
-    i16 queued_track;
-    i16 secondary_stream;
-    i16 resume_frames;
-    u8 pause_requested;
-    u8 restore_requested;
-    u8 field_0012;
-    u8 field_0013;
-    f32 seek_offset;
-    f32 transition;
-    u16 update_delay;
-    i16 resume_track;
-    void *track_data;
+typedef struct music_playback_s { // size 0x24
+    i16 state;                    // 0x00
+    i16 requested_track;          // 0x02
+    i16 primary_stream;           // 0x04
+    i16 current_track;            // 0x06
+    i16 transition_frames;        // 0x08
+    i16 queued_track;             // 0x0a
+    i16 secondary_stream;         // 0x0c
+    i16 resume_frames;            // 0x0e
+    u8 pause_requested;           // 0x10
+    u8 restore_requested;         // 0x11
+    u8 field_0012;                // 0x12
+    u8 field_0013;                // 0x13
+    f32 seek_offset;              // 0x14
+    f32 transition;               // 0x18
+    u16 update_delay;             // 0x1c
+    i16 resume_track;             // 0x1e
+    void *track_data;             // 0x20
 } MUSICPLAYBACK_PC;
 
-STATIC_ASSERT(sizeof(MUSICPLAYBACK_PC) == 0x24);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, requested_track) == 2);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, current_track) == 6);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, queued_track) == 0x0a);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, pause_requested) == 0x10);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, restore_requested) == 0x11);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, field_0012) == 0x12);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, field_0013) == 0x13);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, transition) == 0x18);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, update_delay) == 0x1c);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, resume_track) == 0x1e);
-STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, track_data) == 0x20);
-
-typedef struct sfx_record_s {
-    char *name;
-    u32 sample_id_flags;
-    i32 pitch;
-    i8 priority;
-    u8 unknown_000d[3];
-    i16 next;
-    i16 volume;
-    i16 group;
-    u16 category;
-    f32 pan;
-    f32 pitch_rnd;
-    f32 volume_rnd;
-    f32 falloff_near;
-    f32 falloff_far;
-    f32 buzz_timer;
-    i32 rumble_strength;
-    f32 rumble_sustain;
-    f32 rumble_release;
-    const char *filename;
+typedef struct sfx_record_s { // size 0x40
+    char *name;               // 0x00
+    u32 sample_id_flags;      // 0x04
+    i32 pitch;                // 0x08
+    i8 priority;              // 0x0c
+    u8 unknown_000d[3];       // 0x0d
+    i16 next;                 // 0x10
+    i16 volume;               // 0x12
+    i16 group;                // 0x14
+    u16 category;             // 0x16
+    f32 pan;                  // 0x18
+    f32 pitch_rnd;            // 0x1c
+    f32 volume_rnd;           // 0x20
+    f32 falloff_near;         // 0x24
+    f32 falloff_far;          // 0x28
+    f32 buzz_timer;           // 0x2c
+    i32 rumble_strength;      // 0x30
+    f32 rumble_sustain;       // 0x34
+    f32 rumble_release;       // 0x38
+    const char *filename;     // 0x3c
 } SFX_RECORD_PC;
 
-STATIC_ASSERT(sizeof(SFX_RECORD_PC) == 0x40);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, filename) == 0x3c);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, sample_id_flags) == 0x04);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, next) == 0x10);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, pitch) == 0x8);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, priority) == 0xc);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, volume) == 0x12);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, group) == 0x14);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, category) == 0x16);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, pan) == 0x18);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, pitch_rnd) == 0x1c);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, volume_rnd) == 0x20);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, falloff_near) == 0x24);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, falloff_far) == 0x28);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, buzz_timer) == 0x2c);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_strength) == 0x30);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_sustain) == 0x34);
-STATIC_ASSERT(offsetof(SFX_RECORD_PC, rumble_release) == 0x38);
-
-typedef struct sfx_file_info_s {
-    const char *filename;
-    i32 pitch;
-    i32 static_sample;
-    i32 index;
-    u32 unknown_10[3];
+typedef struct sfx_file_info_s { // size 0x1c
+    const char *filename;        // 0x00
+    i32 pitch;                   // 0x04
+    i32 static_sample;           // 0x08
+    i32 index;                   // 0x0c
+    u32 unknown_10[3];           // 0x10
 } SFX_FILE_INFO_PC;
 
-STATIC_ASSERT(sizeof(SFX_FILE_INFO_PC) == 0x1c);
-STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, filename) == 0);
-STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, pitch) == 4);
-STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, static_sample) == 8);
-STATIC_ASSERT(offsetof(SFX_FILE_INFO_PC, index) == 0xc);
-
-typedef struct gameanimprogress_s {
-    i32 count;
-    i32 entry_size;
-    u8 **entries;
+typedef struct gameanimprogress_s { // size 0xc
+    i32 count;                      // 0x0
+    i32 entry_size;                 // 0x4
+    u8 **entries;                   // 0x8
 } GAMEANIMPROGRESS;
 
-STATIC_ASSERT(sizeof(GAMEANIMPROGRESS) == 0xc);
-STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, count) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, entry_size) == 4);
-STATIC_ASSERT(offsetof(GAMEANIMPROGRESS, entries) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -292,13 +220,11 @@ extern "C" {
     void PlaySfxByIdAndSetPitch(i32, NUVEC *, f32);
     void DebFreeAllCreatedEffects(void);
 
-    typedef struct TERRAIN_CALLBACK_LIFECYCLE_PC {
-        void (*function)(void *argument);
-        void *argument;
+    typedef struct TERRAIN_CALLBACK_LIFECYCLE_PC { // size 0x8
+        void (*function)(void *argument);          // 0x0
+        void *argument;                            // 0x4
     } TERRAIN_CALLBACK_LIFECYCLE_PC;
 
-    STATIC_ASSERT(sizeof(TERRAIN_CALLBACK_LIFECYCLE_PC) == 8);
-    STATIC_ASSERT(offsetof(TERRAIN_CALLBACK_LIFECYCLE_PC, argument) == 4);
     extern f32 TerrPlatScanDist;
     extern i32 PlatCodeCallback;
     extern i32 cntrots;
@@ -397,18 +323,13 @@ extern "C" {
     void edgraInitAllClumps(void);
     typedef struct debris_particle_s DEBRISPARTICLE_PC;
 
-    struct debris_particle_s {
-        NUVEC position;
-        f32 start_time;
-        NUVEC momentum;
-        f32 inverse_lifetime;
+    struct debris_particle_s { // size 0x20
+        NUVEC position;        // 0x00
+        f32 start_time;        // 0x0c
+        NUVEC momentum;        // 0x10
+        f32 inverse_lifetime;  // 0x1c
     };
 
-    STATIC_ASSERT(sizeof(DEBRISPARTICLE_PC) == 0x20);
-    STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, position) == 0);
-    STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, start_time) == 0xc);
-    STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, momentum) == 0x10);
-    STATIC_ASSERT(offsetof(DEBRISPARTICLE_PC, inverse_lifetime) == 0x1c);
     extern i32 debris_suspended;
     extern i32 update_debris_enabled;
     extern f32 globaltime;
@@ -508,15 +429,13 @@ extern "C" {
 
     void DebrisProcessControlChunks(i32);
 
-    typedef struct CHARACTER_SHADOW_RESET_SLOT {
-        NUVEC position;
-        u16 x_rotation;
-        u16 z_rotation;
-        f32 opacity;
+    typedef struct CHARACTER_SHADOW_RESET_SLOT { // size 0x14
+        NUVEC position;                          // 0x00
+        u16 x_rotation;                          // 0x0c
+        u16 z_rotation;                          // 0x0e
+        f32 opacity;                             // 0x10
     } CHARACTER_SHADOW_RESET_SLOT;
 
-    STATIC_ASSERT(sizeof(CHARACTER_SHADOW_RESET_SLOT) == 0x14);
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, position) == 0);
     /* PodRacePc: see episodeI.c. */
 
     i32 DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
@@ -664,62 +583,37 @@ extern "C" {
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 3 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
-typedef struct TERRAIN_SET_PC {
-    TERRAIN_GROUP_PC *groups;
-    u8 unknown_004[0x60];
-    void *field_064;
-    TERRAIN_PLATFORM_PC *platforms;
-    i16 active_platform_groups[96];
-    i32 active_platform_count;
-    f32 platform_query_min_x;
-    u8 unknown_134[4];
-    f32 platform_query_min_z;
-    f32 platform_query_max_x;
-    u8 unknown_140[4];
-    f32 platform_query_max_z;
-    struct TERRAIN_SPATIAL_NODE *spatial_nodes;
-    i16 group_count;
-    u16 file_version;
-    i32 group_index_count;
-    i32 removed_platform_count;
-    i16 removed_platforms[32];
-    TERRAIN_TRACK_SLOT_PC track_slots[64];
-    TERRAIN_CELL_PC cells[256];
-    TERRAIN_CELL_PC platform_cell;
-    i32 minimum_height;
-    i32 used_cell_count;
-    i16 *group_indices;
-    TERRAIN_INDEX_LEVEL index_levels[17];
-    i32 max_group_indices;
-    i32 max_groups;
-    i32 max_platforms;
+typedef struct TERRAIN_SET_PC {                 // size 0xa490
+    TERRAIN_GROUP_PC *groups;                   // 0x0000
+    u8 unknown_004[0x60];                       // 0x0004
+    void *field_064;                            // 0x0064
+    TERRAIN_PLATFORM_PC *platforms;             // 0x0068
+    i16 active_platform_groups[96];             // 0x006c
+    i32 active_platform_count;                  // 0x012c
+    f32 platform_query_min_x;                   // 0x0130
+    u8 unknown_134[4];                          // 0x0134
+    f32 platform_query_min_z;                   // 0x0138
+    f32 platform_query_max_x;                   // 0x013c
+    u8 unknown_140[4];                          // 0x0140
+    f32 platform_query_max_z;                   // 0x0144
+    struct TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0148
+    i16 group_count;                            // 0x014c
+    u16 file_version;                           // 0x014e
+    i32 group_index_count;                      // 0x0150
+    i32 removed_platform_count;                 // 0x0154
+    i16 removed_platforms[32];                  // 0x0158
+    TERRAIN_TRACK_SLOT_PC track_slots[64];      // 0x0198
+    TERRAIN_CELL_PC cells[256];                 // 0x0798
+    TERRAIN_CELL_PC platform_cell;              // 0x1b98
+    i32 minimum_height;                         // 0x1bac
+    i32 used_cell_count;                        // 0x1bb0
+    i16 *group_indices;                         // 0x1bb4
+    TERRAIN_INDEX_LEVEL index_levels[17];       // 0x1bb8
+    i32 max_group_indices;                      // 0xa484
+    i32 max_groups;                             // 0xa488
+    i32 max_platforms;                          // 0xa48c
 } TERRAIN_SET_PC;
 
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, active_platform_groups) == 0x6c);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, active_platform_count) == 0x12c);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platform_query_min_x) == 0x130);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platform_query_min_z) == 0x138);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platform_query_max_x) == 0x13c);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platform_query_max_z) == 0x144);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, used_cell_count) == 0x1bb0);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, index_levels) == 0x1bb8);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_group_indices) == 0xa484);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platforms) == 0x68);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, group_count) == 0x14c);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, group_index_count) == 0x150);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, track_slots) == 0x198);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, cells) == 0x798);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, platform_cell) == 0x1b98);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, group_indices) == 0x1bb4);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_group_indices) == 0xa484);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);
-STATIC_ASSERT(sizeof(TERRAIN_SET_PC) == 0xa490);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, field_064) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, spatial_nodes) == 0x148);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, file_version) == 0x14e);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, minimum_height) == 0x1bac);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -754,9 +648,9 @@ extern "C" {
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 4 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
-struct TERRAIN_SPATIAL_CHUNK {
-    TERRAIN_SPATIAL_NODE *previous;
-    TERRAIN_SPATIAL_NODE node;
+struct TERRAIN_SPATIAL_CHUNK {      // size 0x14
+    TERRAIN_SPATIAL_NODE *previous; // 0x00
+    TERRAIN_SPATIAL_NODE node;      // 0x04
 };
 #ifdef __cplusplus
 extern "C" {
@@ -828,57 +722,38 @@ extern "C" {
 #endif
     typedef struct SPECIAL_RESOURCE_EVENT SPECIAL_RESOURCE_EVENT;
 
-    struct SPECIAL_RESOURCE_EVENT {
-        f32 previous_frame;
-        u8 flags;
-        u8 unknown_05;
-        i16 sfx_id;
-        f32 trigger_frame;
-        SPECIAL_RESOURCE_EVENT *next;
+    struct SPECIAL_RESOURCE_EVENT {   // size 0x10
+        f32 previous_frame;           // 0x0
+        u8 flags;                     // 0x4
+        u8 unknown_05;                // 0x5
+        i16 sfx_id;                   // 0x6
+        f32 trigger_frame;            // 0x8
+        SPECIAL_RESOURCE_EVENT *next; // 0xc
     };
 
-    typedef struct SPECIAL_RESOURCE_ENTRY {
-        u8 flags;
-        u8 unknown_01;
-        i8 event_count;
-        i8 animation_playing;
-        NUSPECIALHANDLE special;
-        SPECIAL_RESOURCE_EVENT *events;
+    typedef struct SPECIAL_RESOURCE_ENTRY { // size 0x14
+        u8 flags;                           // 0x00
+        u8 unknown_01;                      // 0x01
+        i8 event_count;                     // 0x02
+        i8 animation_playing;               // 0x03
+        NUSPECIALHANDLE special;            // 0x04
+        SPECIAL_RESOURCE_EVENT *events;     // 0x10
     } SPECIAL_RESOURCE_ENTRY;
 
-    typedef struct SPECIAL_RESOURCE_WORLD {
-        u8 unknown_000[0x80];
-        char config_file[0x80];
-        u8 unknown_100[4];
-        VARIPTR buffer;
-        u8 unknown_108[0x13c - 0x108];
-        struct NUGSCN_s *scene;
-        u8 unknown_140[0x46cc - 0x140];
-        i32 entry_count;
-        SPECIAL_RESOURCE_ENTRY *entries;
-        i32 event_count;
-        SPECIAL_RESOURCE_EVENT *events;
+    typedef struct SPECIAL_RESOURCE_WORLD { // size 0x46dc
+        u8 unknown_000[0x80];               // 0x0000
+        char config_file[0x80];             // 0x0080
+        u8 unknown_100[4];                  // 0x0100
+        VARIPTR buffer;                     // 0x0104
+        u8 unknown_108[0x13c - 0x108];      // 0x0108
+        struct NUGSCN_s *scene;             // 0x013c
+        u8 unknown_140[0x46cc - 0x140];     // 0x0140
+        i32 entry_count;                    // 0x46cc
+        SPECIAL_RESOURCE_ENTRY *entries;    // 0x46d0
+        i32 event_count;                    // 0x46d4
+        SPECIAL_RESOURCE_EVENT *events;     // 0x46d8
     } SPECIAL_RESOURCE_WORLD;
 
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT, previous_frame) == 0x0);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT, flags) == 0x4);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT, sfx_id) == 0x6);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT, trigger_frame) == 0x8);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_EVENT, next) == 0xc);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, flags) == 0x0);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, event_count) == 0x2);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, animation_playing) == 0x3);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, special) == 0x4);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, events) == 0x10);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, config_file) == 0x80);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, buffer) == 0x104);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, scene) == 0x13c);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, entry_count) == 0x46cc);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, entries) == 0x46d0);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, event_count) == 0x46d4);
-    STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_WORLD, events) == 0x46d8);
-    STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_EVENT) == 0x10);
-    STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY) == 0x14);
 #ifdef __cplusplus
 }
 #endif

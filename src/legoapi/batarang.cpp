@@ -16,10 +16,6 @@ extern "C" {
     extern BATMAN_PREPARE_PC batman_prepareforspecialmove[11];
     extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];
 }
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_reentry_timer) == 0xd28);
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
 
 typedef struct character_ai_capabilities_s {
     u8 unknown_00[0x44];
@@ -31,24 +27,9 @@ typedef struct suit_ai_capabilities_s {
     u32 path_capabilities;
 } SUIT_AI_CAPABILITIES_PC;
 
-STATIC_ASSERT(sizeof(BATARANG_TARGET_s) == 0x14);
-STATIC_ASSERT(offsetof(BATARANG_TARGET_s, lost) == 5);
-STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, active) == 0x7c);
-STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, flight_state) == 0x7d);
-STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, owner) == 0x84);
-STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, cooldown) == 0xac);
-STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
 typedef PLAYER_BATARANG_SLOT_PC BATARANG_NATIVE_PC;
 #define BATARANG_PACKET_PC(object) ((object)->batarang)
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(DETONATOR_s, field_0x0c) == 0xc);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) + 8 == 0xc64);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define PI_OVER_4 0.785398f

@@ -13,31 +13,29 @@
 
 typedef struct SECURITYDOOR_s SECURITYDOOR_s;
 
-struct SECURITYDOOR_s {
-    NUMTX leaf_matrix[2];
-    char name[16];
-    NUVEC position;
-    i16 platform_id[2];
-    u16 yaw;
+struct SECURITYDOOR_s {   // size 0xc0
+    NUMTX leaf_matrix[2]; // 0x00
+    char name[16];        // 0x80
+    NUVEC position;       // 0x90
+    i16 platform_id[2];   // 0x9c
+    u16 yaw;              // 0xa0
 
-    union {
+    union { // size 0x2
         u16 flags;
 
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 opened : 1;
-            u16 flag_08 : 1;
-            u16 reserved_flags : 4;
-            u16 state : 8;
+        struct {                    // size 0x2
+            u16 active : 1;         // 0xa2:0
+            u16 visible : 1;        // 0xa2:1
+            u16 opened : 1;         // 0xa2:2
+            u16 flag_08 : 1;        // 0xa2:3
+            u16 reserved_flags : 4; // 0xa2:4
+            u16 state : 8;          // 0xa2:8
         };
-    };
+    }; // 0xa2
 
-    NUVEC player_position;
-    u16 terrain_angle_z;
-    u16 terrain_angle_x;
-    f32 opening;
-    char unknown_b8[8];
+    NUVEC player_position; // 0xa4
+    u16 terrain_angle_z;   // 0xb0
+    u16 terrain_angle_x;   // 0xb2
+    f32 opening;           // 0xb4
+    char unknown_b8[8];    // 0xb8
 };
-
-STATIC_ASSERT(sizeof(struct SECURITYDOOR_s) == 192);

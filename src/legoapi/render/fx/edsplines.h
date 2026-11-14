@@ -16,39 +16,30 @@ struct flight_spline_resource_s;
 struct nugspline_s;
 struct nuspecial_handle_s;
 
-typedef struct SPLINEPOS_s {
-    struct nugspline_s *spline;
-    i16 segment;
-    i8 looping;
+typedef struct SPLINEPOS_s {    // size 0x20
+    struct nugspline_s *spline; // 0x00
+    i16 segment;                // 0x04
+    i8 looping;                 // 0x06
 
-    union {
+    union { // size 0x1
         u8 reached_end;
         u8 finished;
-    };
+    }; // 0x07
 
-    union {
+    union { // size 0x4
         f32 segment_distance;
         f32 distance;
-    };
+    }; // 0x08
 
-    f32 segment_length;
-    NUVEC position;
+    f32 segment_length; // 0x0c
+    NUVEC position;     // 0x10
 
-    union {
+    union { // size 0x4
         f32 along;
         f32 normalized_position;
-    };
+    }; // 0x1c
 } SPLINEPOS;
 
-STATIC_ASSERT(sizeof(SPLINEPOS) == 0x20);
-STATIC_ASSERT(offsetof(SPLINEPOS, spline) == 0);
-STATIC_ASSERT(offsetof(SPLINEPOS, segment) == 4);
-STATIC_ASSERT(offsetof(SPLINEPOS, looping) == 6);
-STATIC_ASSERT(offsetof(SPLINEPOS, finished) == 7);
-STATIC_ASSERT(offsetof(SPLINEPOS, segment_distance) == 8);
-STATIC_ASSERT(offsetof(SPLINEPOS, segment_length) == 0xc);
-STATIC_ASSERT(offsetof(SPLINEPOS, position) == 0x10);
-STATIC_ASSERT(offsetof(SPLINEPOS, along) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -14,12 +14,9 @@ typedef struct {
 } GRAPPLE_PROGRESS_PC;
 
 extern "C" {}
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
                   offsetof(AIPATHINFO_PC, connection) ==
               0x424);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 typedef struct WORLD_GRAPPLE_MOTION_VIEW { // size 0x5088
     u8 unknown_0000[0x5080];               // 0x0000
@@ -38,25 +35,6 @@ typedef struct OBJECT_GRAPPLE_MOTION_VIEW { // size 0x1074
 } OBJECT_GRAPPLE_MOTION_VIEW;
 
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == sizeof(GRAPPLE_DYNAMIC_PC));
-STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, has_terrain_platform) == 0x1c);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, retain_attachment) == 0x1d);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, flags) == 0x1e);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, y_rotation) == 0x20);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, x_rotation) == 0x22);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_position) == 0x24);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, hook_position) == 0x30);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, shadow_probe_position) == 0x3c);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, swing_scale) == 0x4c);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, rope_length) == 0x50);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, attached_object) == 0x54);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, activation_progress) == 0x58);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, big_jump_animation) == 0x7b4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 
 typedef struct grapple_load_extra_s { // size 0xf8
@@ -66,38 +44,12 @@ typedef struct grapple_load_extra_s { // size 0xf8
     NUSPECIALHANDLE special;          // 0xec
 } GRAPPLE_LOAD_EXTRA_PC;
 
-STATIC_ASSERT(sizeof(GRAPPLE_DYNAMIC_PC) == 0xf8);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, flags) == 0x1e);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, y_rotation) == 0x20);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, x_rotation) == 0x22);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, field_4c) == 0x4c);
-STATIC_ASSERT(offsetof(GRAPPLE_DYNAMIC_PC, rope_length) == 0x50);
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, rope_points) == 0x5c);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, target_rope_points) == 0xa4);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_x_rotation) == 0x48);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_z_rotation) == 0x4a);
-STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
-STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, display_special) == 0xec);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, grapple_locators) == 0x10a);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) == 0x14);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 extern "C" {
     extern i32 RopeCurveSubdivisionsPc;
     extern u32 GRAPPLE_RGBA;
     extern i32 GrappleCurvedRopeEnabledPc;
 }
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
 extern "C" {}
 
 typedef struct grapple_movement_s {

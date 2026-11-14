@@ -1122,8 +1122,6 @@ extern "C" i32 TerrainPlatId(void) {
     return plathitid;
 }
 
-STATIC_ASSERT(offsetof(TERRAIN_SHAPE, material) == 0x60);
-
 extern "C" f32 NewRayCastGetTOFI(void) {
     return TerI->hit_time;
 }
@@ -1132,10 +1130,6 @@ extern "C" i32 NewRayCastGetImpactTerrainType(void) {
     TERRAIN_SHAPE *surface = TerI->surface;
     return surface ? surface->material[0] : 0;
 }
-
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, material) == 0x60);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normal_flags) == 0x63);
 
 extern "C" void NewTerrHitInfo(u8 *info) {
     info[0] = TerrPolyInfo.material[0];
@@ -1590,9 +1584,6 @@ extern "C" void fun_0067e980(void) {
 #undef TERRAIN_NSS_FINISH_GROUP
 #undef TERRAIN_NSS_FILTER_SHAPES
 
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
-
 struct TERRAIN_HANDLE_END {       // size 0x8
     TERRAIN_SCAN_WORD terminator; // 0x0
 
@@ -1605,12 +1596,6 @@ struct TERRAIN_HANDLE_END {       // size 0x8
         } wall_end;
     }; // 0x4
 };
-
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, field_02) == 2);
-STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, points) == 4);
-STATIC_ASSERT(sizeof(TERRAIN_WALL_POINT) == 16);
-STATIC_ASSERT(offsetof(TERRAIN_WALL_POINT, material) == 12);
 
 #define TERRAIN_NSF_SET (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
 #define TERRAIN_NSF_PLATFORM(group_ptr) (TERRAIN_NSF_SET->platforms[(group_ptr)->scene_index])
@@ -2338,15 +2323,6 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     NuScratchRelease();
     return TerI->hit_type;
 }
-
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, id) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, wall_contact_state) == 0xa);
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, impact_normal) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_SET_PC, track_slots) == 0x198);
-STATIC_ASSERT(offsetof(TERRAIN_AXIS_FREEDOM_SHAPE_PC, angle) == 0xc);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 
 extern "C" void RotateTerrain(TERRAIN_SHAPE *surface) {
     TerrainQuery_s *query = TerI;

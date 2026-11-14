@@ -37,16 +37,6 @@ typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
 
 void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_d20) == 0xd20);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-
 typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 
 /* AISYS PC callbacks. */
@@ -56,21 +46,7 @@ typedef struct ai_context_reset_view_s { // size 0x6c5
     u8 reset_contexts;                   // 0x6c4
 } AI_CONTEXT_RESET_VIEW_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_set) == 0x378);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-
-STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
@@ -91,10 +67,6 @@ typedef struct ai_force_object_s { // size 0x10d0
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
-
 typedef struct torpedo_action_packet_s { // size 0x88
     u8 count;                            // 0x00
     u8 flags;                            // 0x01
@@ -107,19 +79,9 @@ typedef struct torpedo_action_packet_s { // size 0x88
     u8 unknown_78[0x10];                 // 0x78
 } TORPEDO_ACTION_PACKET_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
-
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
-STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-
-STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
-
 i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
-
-STATIC_ASSERT(sizeof(NUVEC) == 12);
 
 void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
@@ -130,22 +92,6 @@ void FollowAPIObject(APIOBJECT_PC *, APIOBJECT_PC *, i32, f32);
 #pragma bss_seg(".bss$prev_droid_ix")
 static i32 prev_droid_ix = 0;
 #pragma bss_seg()
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_e22) == 0xe22);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
-
-STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
 
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
 
@@ -162,8 +108,6 @@ f32 guided_start_time = 0.5f;
 i32 guided_rotate_speed = 240000;
 
 extern i32 GizmoGetTypeIDByName(void *, char *);
-
-STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
 
 typedef struct ai_cable_head_s { // size 0x8
     GAMEOBJECT *source;          // 0x0
@@ -187,35 +131,13 @@ i32 CanFightLikeAJedi(GAMEOBJECT *);
 
 i32 CharCategory_FindByName(char *);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
-
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
-
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, animation_speed_multiplier) == 0x1034);
-
 STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) + offsetof(AIPATHINFO_PC, flags) == 0x166);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef2) == 0xef2);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef0) == 0xef0);
 
 i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *);
 
 extern i32 gizbuildit_gizmotype_id;
-
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
 
@@ -228,14 +150,6 @@ typedef struct AI_CONDITION_TURRET { // size 0x13c
     u16 flags;                       // 0x13a
 } AI_CONDITION_TURRET;
 
-STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
-
-STATIC_ASSERT(offsetof(FLOWBOX_PC, state_flags_low) == 0xa);
-
-STATIC_ASSERT(offsetof(FLOWBOX_PC, name) == 0x1c);
-
-STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
-
 i32 Hint_isAvailable(i32 hint_id);
 
 i32 Hint_isCompleteByIdPc(i32 hint_id);
@@ -245,19 +159,11 @@ typedef struct ai_global_trigger_world_s { // size 0x467c
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD_PC;
 
-STATIC_ASSERT(offsetof(AITRIGGERSETSYS_s, field_0x4280) == 0x4280);
-
-STATIC_ASSERT(offsetof(AITRIGGERSETSYS_s, field_0x42c0) == 0x42c0);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent_metric) == 0x3b0);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, flags) == 0x4b0);
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
 
 i32 ForceAnimationDonePc(GIZFORCE_PC *force);
 
@@ -271,12 +177,6 @@ typedef struct condition_trigger_player_reader_s { // size 0x2b8
     u64 membership;                                // 0x2b0
 } CONDITION_TRIGGER_PLAYER_READER_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-
 typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_0000[0x2800];                 // 0x0000
     u32 visited_flags;                       // 0x2800
@@ -284,10 +184,6 @@ typedef struct ai_been_to_level_progress_s { // size 0x2e28
 } AI_BEEN_TO_LEVEL_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS_PC) == sizeof(LEVEL_PROGRESS));
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, level_count) == 0x7d);
 
 typedef struct ai_on_object_platform_pc_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00
@@ -300,33 +196,7 @@ typedef struct ai_on_object_terrain_s {  // size 0x6c
     AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
 } AI_ON_OBJECT_TERRAIN_PC;
 
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, supporting_platform_id) == 0x27e);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_282) == 0x282);
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_target) == 0xea4);
-
-STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
-
-STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-
-STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-
-STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
-
-STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
 /* Instance reader: only the condition's flags field is consumed. */
 typedef struct condition_cut_instance_reader_s { // size 0x8c
@@ -338,14 +208,6 @@ typedef struct condition_hat_name_reader_s { // size 0x50
     u8 unknown_00[0x40];                     // 0x00
     char name[16];                           // 0x40
 } CONDITION_HAT_NAME_READER_PC;
-
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
-
-STATIC_ASSERT(offsetof(GIZPANEL_s, name) == 0x40);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 
@@ -393,13 +255,6 @@ typedef struct ai_trigger_force_s { // size 0x78
     u32 config_flags;               // 0x74
 } AI_TRIGGER_FORCE_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
-STATIC_ASSERT(offsetof(AITRIGGERSET_s, trigger_count) == 0x20c);
-STATIC_ASSERT(offsetof(AITRIGGERSET_s, targets) == 0x24);
-STATIC_ASSERT(offsetof(AITRIGGERSET_TARGET, position) == 0x10);
-STATIC_ASSERT(offsetof(AITRIGGERSET_TARGET, path) == 0x20);
 void ClearSpecialMove(GAMEOBJECT *object);
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 

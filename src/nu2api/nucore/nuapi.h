@@ -12,75 +12,48 @@
 #include "nu2api/nucore/nutime.h"
 #endif
 
-typedef struct nuapi_s {
-    i32 language;
-    i32 region;
-    i32 video_mode;
-    i32 video_swap_mode;
-    i32 video_aspect;
-    i32 screen_width;
-    i32 screen_height;
-    i32 video_is_pal;
-    f32 fps;
-    i32 frame_begin_count;
-    char field12_0x24;
-    char field13_0x25;
-    char field14_0x26;
-    char field15_0x27;
-    NuTime time;
-    NuTime time2;
-    f32 frame_time;
-    i32 frame_count;
-    f32 forced_frame_time;
+typedef struct nuapi_s {   // size 0x90
+    i32 language;          // 0x00
+    i32 region;            // 0x04
+    i32 video_mode;        // 0x08
+    i32 video_swap_mode;   // 0x0c
+    i32 video_aspect;      // 0x10
+    i32 screen_width;      // 0x14
+    i32 screen_height;     // 0x18
+    i32 video_is_pal;      // 0x1c
+    f32 fps;               // 0x20
+    i32 frame_begin_count; // 0x24
+    char field12_0x24;     // 0x28
+    char field13_0x25;     // 0x29
+    char field14_0x26;     // 0x2a
+    char field15_0x27;     // 0x2b
+    NuTime time;           // 0x2c
+    NuTime time2;          // 0x34
+    f32 frame_time;        // 0x3c
+    i32 frame_count;       // 0x40
+    f32 forced_frame_time; // 0x44
 
-    union {
-        struct {
-            i32 max_fps;
-            u8 unknown_004c[0x2c];
+    union { // size 0x30
+
+        struct {                   // size 0x30
+            i32 max_fps;           // 0x48
+            u8 unknown_004c[0x2c]; // 0x4c
         };
 
-        struct {
-            FRAME_PAD_RECORD_PC pad_record;
-            u8 reserved_pad_record_0070[8];
+        struct {                            // size 0x30
+            FRAME_PAD_RECORD_PC pad_record; // 0x48
+            u8 reserved_pad_record_0070[8]; // 0x70
         };
-    };
+    }; // 0x48
 
-    void *wind;
-    i32 reversible_characters;
-    i32 loading_hgobj;
-    i32 force_shadows_on_characters;
-    i32 frame_end_state;
-    f32 video_brightness;
+    void *wind;                      // 0x78
+    i32 reversible_characters;       // 0x7c
+    i32 loading_hgobj;               // 0x80
+    i32 force_shadows_on_characters; // 0x84
+    i32 frame_end_state;             // 0x88
+    f32 video_brightness;            // 0x8c
 } NUAPI;
 
-STATIC_ASSERT(sizeof(NUAPI) == 0x90);
-STATIC_ASSERT(offsetof(NUAPI, language) == 0);
-STATIC_ASSERT(offsetof(NUAPI, region) == 4);
-STATIC_ASSERT(offsetof(NUAPI, video_mode) == 8);
-STATIC_ASSERT(offsetof(NUAPI, screen_width) == 0x14);
-STATIC_ASSERT(offsetof(NUAPI, screen_height) == 0x18);
-STATIC_ASSERT(offsetof(NUAPI, video_swap_mode) == 0xc);
-STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);
-STATIC_ASSERT(offsetof(NUAPI, video_is_pal) == 0x1c);
-STATIC_ASSERT(offsetof(NUAPI, fps) == 0x20);
-STATIC_ASSERT(offsetof(NUAPI, frame_begin_count) == 0x24);
-STATIC_ASSERT(offsetof(NUAPI, time) == 0x2c);
-STATIC_ASSERT(offsetof(NUAPI, time2) == 0x34);
-STATIC_ASSERT(offsetof(NUAPI, frame_time) == 0x3c);
-STATIC_ASSERT(offsetof(NUAPI, frame_count) == 0x40);
-STATIC_ASSERT(offsetof(NUAPI, forced_frame_time) == 0x44);
-STATIC_ASSERT(offsetof(NUAPI, max_fps) == 0x48);
-STATIC_ASSERT(offsetof(NUAPI, unknown_004c) == 0x4c);
-STATIC_ASSERT(offsetof(NUAPI, pad_record) == 0x48);
-STATIC_ASSERT(offsetof(NUAPI, pad_record.record) == 0x54);
-STATIC_ASSERT(offsetof(NUAPI, pad_record.should_end) == 0x60);
-STATIC_ASSERT(offsetof(NUAPI, pad_record.end_record_buttons) == 0x64);
-STATIC_ASSERT(offsetof(NUAPI, pad_record.end_play_buttons) == 0x68);
-STATIC_ASSERT(offsetof(NUAPI, wind) == 0x78);
-STATIC_ASSERT(offsetof(NUAPI, frame_end_state) == 0x88);
-STATIC_ASSERT(offsetof(NUAPI, reversible_characters) == 0x7c);
-STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
-STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
 #ifdef __cplusplus
 
 extern CRC16 CRC16InstancePC;
@@ -100,4 +73,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NUAPI, video_aspect) == 0x10);

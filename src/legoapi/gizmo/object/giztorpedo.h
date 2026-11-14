@@ -24,34 +24,31 @@ extern "C" {
 typedef struct GIZTORPMACHINESYS_s GIZTORPMACHINESYS_s;
 typedef struct GIZTORPMACHINE_s GIZTORPMACHINE_s;
 
-struct GIZTORPMACHINE_s {
-    char name[16];
-    NUVEC position;
-    f32 activation_time;
-    u16 y_rotation;
-    u8 reserved_0x22[9];
+struct GIZTORPMACHINE_s { // size 0x2c
+    char name[16];        // 0x00
+    NUVEC position;       // 0x10
+    f32 activation_time;  // 0x1c
+    u16 y_rotation;       // 0x20
+    u8 reserved_0x22[9];  // 0x22
 
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 active : 1;
-            u8 visible : 1;
-            u8 alternate : 1;
-            u8 reserved_flags : 5;
+        struct {                   // size 0x1
+            u8 active : 1;         // 0x2b:0
+            u8 visible : 1;        // 0x2b:1
+            u8 alternate : 1;      // 0x2b:2
+            u8 reserved_flags : 5; // 0x2b:3
         };
-    };
+    }; // 0x2b
 };
 
-STATIC_ASSERT(sizeof(struct GIZTORPMACHINE_s) == 44);
-
-struct GIZTORPMACHINESYS_s {
-    struct GIZTORPMACHINE_s *machines;
-    i32 count;
-    f32 scale;
+struct GIZTORPMACHINESYS_s {           // size 0xc
+    struct GIZTORPMACHINE_s *machines; // 0x0
+    i32 count;                         // 0x4
+    f32 scale;                         // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct GIZTORPMACHINESYS_s) == 12);
 #ifdef __cplusplus
 extern "C" {
 #endif

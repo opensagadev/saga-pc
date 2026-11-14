@@ -14,47 +14,34 @@
 struct NUANGVEC;
 struct nuquat_s;
 
-typedef struct numtx_s {
-    f32 m00;
-    f32 m01;
-    f32 m02;
-    f32 m03;
-    f32 m10;
-    f32 m11;
-    f32 m12;
-    f32 m13;
-    f32 m20;
-    f32 m21;
-    f32 m22;
-    f32 m23;
+typedef struct numtx_s { // size 0x40
+    f32 m00;             // 0x00
+    f32 m01;             // 0x04
+    f32 m02;             // 0x08
+    f32 m03;             // 0x0c
+    f32 m10;             // 0x10
+    f32 m11;             // 0x14
+    f32 m12;             // 0x18
+    f32 m13;             // 0x1c
+    f32 m20;             // 0x20
+    f32 m21;             // 0x24
+    f32 m22;             // 0x28
+    f32 m23;             // 0x2c
 
-    union {
-        struct {
-            f32 m30;
-            f32 m31;
-            f32 m32;
+    union { // size 0xc
+
+        struct {     // size 0xc
+            f32 m30; // 0x30
+            f32 m31; // 0x34
+            f32 m32; // 0x38
         };
 
         NUVEC translation;
-    };
+    }; // 0x30
 
-    f32 m33;
+    f32 m33; // 0x3c
 } NUMTX;
 
-STATIC_ASSERT(sizeof(NUMTX) == 0x40);
-STATIC_ASSERT(offsetof(NUMTX, m00) == 0x0);
-STATIC_ASSERT(offsetof(NUMTX, m01) == 0x4);
-STATIC_ASSERT(offsetof(NUMTX, m02) == 0x8);
-STATIC_ASSERT(offsetof(NUMTX, m10) == 0x10);
-STATIC_ASSERT(offsetof(NUMTX, m11) == 0x14);
-STATIC_ASSERT(offsetof(NUMTX, m12) == 0x18);
-STATIC_ASSERT(offsetof(NUMTX, m20) == 0x20);
-STATIC_ASSERT(offsetof(NUMTX, m21) == 0x24);
-STATIC_ASSERT(offsetof(NUMTX, m22) == 0x28);
-STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
-STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
-STATIC_ASSERT(offsetof(NUMTX, m30) == 0x30);
-STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,8 +51,6 @@ extern "C" {
     void NuMtxMulArrayVU0(NUMTX *, NUMTX *, NUMTX *, i32);
     void NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right);
     void NuMtxSetIdentity(NUMTX *matrix);
-    STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
-    STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
     void NuMtxVecToEulerXYZ(NUVEC *, NUVEC *, NUANG *, NUANG *, NUANG *);
     void NuMtxGetEulerXYZ(NUMTX *, NUANG *, NUANG *, NUANG *);
     void NuMtxSetTranslation(NUMTX *matrix, NUVEC *translation);

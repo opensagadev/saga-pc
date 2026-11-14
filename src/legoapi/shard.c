@@ -1,13 +1,6 @@
 #include "saga.h"
 #pragma bss_seg(".bss$splcodes")
 #pragma bss_seg(".bss$splshelf")
-STATIC_ASSERT(offsetof(shopitem_s, item_id) == 0x60);
-STATIC_ASSERT(offsetof(shopitem_s, type) == 0x62);
-STATIC_ASSERT(offsetof(shopitem_s, unlocked) == 0x63);
-STATIC_ASSERT(offsetof(shopitem_s, price) == 0x64);
-STATIC_ASSERT(offsetof(shopitem_s, special) == 0x68);
-STATIC_ASSERT(offsetof(COLLECTID, cheat_code) == 0xc);
-STATIC_ASSERT(offsetof(COLLECTID, field3_0x4) == 4);
 
 /* The shop code clamps through nested min/max macros: the inner min is evaluated twice. */
 
@@ -106,12 +99,3 @@ typedef void (*SHOP_DRAW_CALLBACK_PC)(void);
 
 /* The move code is written out per shelf slot: any compiler-unrolled
  * loop in the function makes VC8 schedule the x87 operands differently. */
-
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
-
-STATIC_ASSERT(offsetof(GAMESAVE, game_time) == 0x7c20);
-STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP) == 0xc);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, red_brick_collected) == 6);

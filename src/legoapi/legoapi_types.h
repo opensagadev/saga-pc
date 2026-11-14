@@ -57,172 +57,127 @@ struct numtl_s;
 
 typedef void (*GIZACTIONFN_PC)(struct GIZFLOW_PC *, struct FLOWBOX_PC *, char **, i32);
 
-typedef struct TERRAIN_TRACK_SLOT_PC {
-    void *id;
-    i16 platform_index;
-    u16 flags;
-    i16 platform_contact_state;
-    i16 wall_contact_state;
-    NUVEC impact_normal;
+typedef struct TERRAIN_TRACK_SLOT_PC { // size 0x18
+    void *id;                          // 0x00
+    i16 platform_index;                // 0x04
+    u16 flags;                         // 0x06
+    i16 platform_contact_state;        // 0x08
+    i16 wall_contact_state;            // 0x0a
+    NUVEC impact_normal;               // 0x0c
 } TERRAIN_TRACK_SLOT_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 24);
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 4);
-
-typedef struct TERRAIN_SPHERE_PC {
-    NUVEC position;
-    f32 radius;
+typedef struct TERRAIN_SPHERE_PC { // size 0x10
+    NUVEC position;                // 0x0
+    f32 radius;                    // 0xc
 } TERRAIN_SPHERE_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_SPHERE_PC) == 16);
-STATIC_ASSERT(offsetof(TERRAIN_SPHERE_PC, radius) == 12);
-
-typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC {
-    NUVEC offset;
-    f32 angle;
-    f32 radius;
+typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC { // size 0x14
+    NUVEC offset;                              // 0x00
+    f32 angle;                                 // 0x0c
+    f32 radius;                                // 0x10
 } TERRAIN_AXIS_FREEDOM_SHAPE_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_AXIS_FREEDOM_SHAPE_PC) == 20);
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
 typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
-typedef struct TERRAIN_INDEX_LEVEL {
-    i16 cache_age;
-    u8 unknown_02[2];
-    f32 center_x;
-    f32 center_z;
-    TERRAIN_SCAN_WORD scan_words[512];
+typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
+    i16 cache_age;                     // 0x000
+    u8 unknown_02[2];                  // 0x002
+    f32 center_x;                      // 0x004
+    f32 center_z;                      // 0x008
+    TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
 } TERRAIN_INDEX_LEVEL;
 
-typedef struct TERRAIN_GROUP_PC {
-    NUVEC origin;
-    TERRAIN_SKIN_STREAM *data;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    u32 platform_flags;
-    i32 chunk_type;
-    i16 scene_index;
-    i16 group_info;
-    f32 radius;
+typedef struct TERRAIN_GROUP_PC { // size 0x38
+    NUVEC origin;                 // 0x00
+    TERRAIN_SKIN_STREAM *data;    // 0x0c
+    NUVEC bounds_min;             // 0x10
+    NUVEC bounds_max;             // 0x1c
+    u32 platform_flags;           // 0x28
+    i32 chunk_type;               // 0x2c
+    i16 scene_index;              // 0x30
+    i16 group_info;               // 0x32
+    f32 radius;                   // 0x34
 } TERRAIN_GROUP_PC;
 
-typedef struct TERRAIN_CELL_PC {
-    i16 first_group;
-    i16 group_count;
-    f32 min_x;
-    f32 min_z;
-    f32 max_x;
-    f32 max_z;
+typedef struct TERRAIN_CELL_PC { // size 0x14
+    i16 first_group;             // 0x00
+    i16 group_count;             // 0x02
+    f32 min_x;                   // 0x04
+    f32 min_z;                   // 0x08
+    f32 max_x;                   // 0x0c
+    f32 max_z;                   // 0x10
 } TERRAIN_CELL_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_INDEX_LEVEL) == 0x80c);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, cache_age) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, center_x) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, center_z) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, scan_words) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_z) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, max_x) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, max_z) == 0x10);
-STATIC_ASSERT(sizeof(TERRAIN_GROUP_PC) == 0x38);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, data) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, bounds_min) == 0x10);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, bounds_max) == 0x1c);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, chunk_type) == 0x2c);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, radius) == 0x34);
-STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 0x4);
-STATIC_ASSERT(sizeof(TERRAIN_CELL_PC) == 0x14);
 typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
 typedef TERRAIN_CELL_PC TERRAIN_CELL;
 typedef TERRAIN_POLYGON_INFO_PC TERRAIN_SHAPE;
 
-typedef struct TerrainQuery_s {
-    u32 flags;
-    NUVEC start_position;
-    NUVEC start_movement;
-    NUVEC position;
-    NUVEC movement;
-    u8 scan_result;
-    u8 shape_adjusted;
-    i16 object_index;
-    f32 radius;
-    f32 horizontal_movement_length;
-    u8 *hit_flags;
-    f32 movement_pitch;
-    f32 movement_yaw;
-    f32 movement_length;
-    f32 collision_radius;
-    f32 collision_radius_sq;
-    f32 inverse_collision_radius;
-    f32 object_scale;
-    f32 object_scale_sq;
-    f32 inverse_object_scale;
-    f32 inverse_object_scale_sq;
-    i16 terrain_group_index;
-    u8 pad_0x06e[2];
-    NUVEC local_start;
-    NUVEC local_end;
-    u8 hit_type;
-    u8 hit_edge;
-    i16 scan_group_index;
-    void *scan_list;
-    TERRAIN_SHAPE *surface;
-    TERRAIN_SHAPE *working_surface;
-    f32 hit_time;
-    f32 unclamped_hit_time;
-    f32 separation_epsilon;
-    f32 compare_epsilon;
-    NUVEC movement_normal;
-    NUVEC impact_normal;
-    NUVEC platform_position;
-    NUVEC platform_normal;
-    NUVEC previous_movement_normal;
-    u8 pad_0x0e4[0x18];
-    NUVEC transformed_vertices[4];
-    u8 pad_0x12c[0x1c];
+typedef struct TerrainQuery_s {     // size 0x948
+    u32 flags;                      // 0x000
+    NUVEC start_position;           // 0x004
+    NUVEC start_movement;           // 0x010
+    NUVEC position;                 // 0x01c
+    NUVEC movement;                 // 0x028
+    u8 scan_result;                 // 0x034
+    u8 shape_adjusted;              // 0x035
+    i16 object_index;               // 0x036
+    f32 radius;                     // 0x038
+    f32 horizontal_movement_length; // 0x03c
+    u8 *hit_flags;                  // 0x040
+    f32 movement_pitch;             // 0x044
+    f32 movement_yaw;               // 0x048
+    f32 movement_length;            // 0x04c
+    f32 collision_radius;           // 0x050
+    f32 collision_radius_sq;        // 0x054
+    f32 inverse_collision_radius;   // 0x058
+    f32 object_scale;               // 0x05c
+    f32 object_scale_sq;            // 0x060
+    f32 inverse_object_scale;       // 0x064
+    f32 inverse_object_scale_sq;    // 0x068
+    i16 terrain_group_index;        // 0x06c
+    u8 pad_0x06e[2];                // 0x06e
+    NUVEC local_start;              // 0x070
+    NUVEC local_end;                // 0x07c
+    u8 hit_type;                    // 0x088
+    u8 hit_edge;                    // 0x089
+    i16 scan_group_index;           // 0x08a
+    void *scan_list;                // 0x08c
+    TERRAIN_SHAPE *surface;         // 0x090
+    TERRAIN_SHAPE *working_surface; // 0x094
+    f32 hit_time;                   // 0x098
+    f32 unclamped_hit_time;         // 0x09c
+    f32 separation_epsilon;         // 0x0a0
+    f32 compare_epsilon;            // 0x0a4
+    NUVEC movement_normal;          // 0x0a8
+    NUVEC impact_normal;            // 0x0b4
+    NUVEC platform_position;        // 0x0c0
+    NUVEC platform_normal;          // 0x0cc
+    NUVEC previous_movement_normal; // 0x0d8
+    u8 pad_0x0e4[0x18];             // 0x0e4
+    NUVEC transformed_vertices[4];  // 0x0fc
+    u8 pad_0x12c[0x1c];             // 0x12c
 
-    union {
+    union { // size 0x800
         u8 scan_list_storage[0x800];
         TERRAIN_SCAN_WORD scan_words[512];
-    };
+    }; // 0x148
 } TerrainQuery_s;
 
-STATIC_ASSERT(sizeof(TerrainQuery_s) == 0x948);
-STATIC_ASSERT(offsetof(TerrainQuery_s, terrain_group_index) == 0x6c);
-STATIC_ASSERT(offsetof(TerrainQuery_s, surface) == 0x90);
-STATIC_ASSERT(offsetof(TerrainQuery_s, scan_words) == 0x148);
-STATIC_ASSERT(offsetof(TerrainQuery_s, position) == 0x1c);
-STATIC_ASSERT(offsetof(TerrainQuery_s, movement) == 0x28);
-STATIC_ASSERT(offsetof(TerrainQuery_s, scan_result) == 0x34);
-STATIC_ASSERT(offsetof(TerrainQuery_s, collision_radius) == 0x50);
-STATIC_ASSERT(offsetof(TerrainQuery_s, object_scale) == 0x5c);
-STATIC_ASSERT(offsetof(TerrainQuery_s, object_scale_sq) == 0x60);
-STATIC_ASSERT(offsetof(TerrainQuery_s, inverse_object_scale) == 0x64);
-STATIC_ASSERT(offsetof(TerrainQuery_s, scan_group_index) == 0x8a);
-STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list) == 0x8c);
-
-struct TERRAIN_SHAPE_BATCH {
-    i16 marker;
-    i16 shape_count;
-    f32 min_x;
-    f32 max_x;
-    f32 min_z;
-    f32 max_z;
+struct TERRAIN_SHAPE_BATCH { // size 0x14
+    i16 marker;              // 0x00
+    i16 shape_count;         // 0x02
+    f32 min_x;               // 0x04
+    f32 max_x;               // 0x08
+    f32 min_z;               // 0x0c
+    f32 max_z;               // 0x10
 };
 
-struct TERRAIN_WALL_POINT {
-    NUVEC position;
-    u8 material[4];
+struct TERRAIN_WALL_POINT { // size 0x10
+    NUVEC position;         // 0x0
+    u8 material[4];         // 0xc
 };
-
-STATIC_ASSERT(sizeof(TERRAIN_SHAPE_BATCH) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, wall_contact_state) == 0xa);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, platform_flags) == 0x28);
-STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, group_info) == 0x32);
 
 enum {
     TERRAIN_CHUNK_GROUP_PRIMARY = 0,
@@ -260,170 +215,112 @@ typedef struct gizaimessagesys_s { // size 0x18
     NULISTHDR active_list;         // 0x10
 } GIZAIMESSAGESYS;
 
-typedef struct part_emit_s {
-    NUVEC position;
-    i32 effect_id;
-    char name[16];
-    f32 time_20;
-    f32 time_24;
-    f32 time_28;
-    i16 rotation_2c;
-    i16 rotation_2e;
-    i16 rotation_30;
-    i8 page;
-    u8 field_33;
-    i32 shots_remaining;
-    f32 time_38;
-    u8 field_3c;
-    u8 field_3d;
-    u8 field_3e;
-    u8 field_3f;
-    f32 camera_distance;
-    i16 field_44;
-    i16 field_46;
-    i32 instance_id;
-    i32 trailing_state_words[8];
+typedef struct part_emit_s {     // size 0x6c
+    NUVEC position;              // 0x00
+    i32 effect_id;               // 0x0c
+    char name[16];               // 0x10
+    f32 time_20;                 // 0x20
+    f32 time_24;                 // 0x24
+    f32 time_28;                 // 0x28
+    i16 rotation_2c;             // 0x2c
+    i16 rotation_2e;             // 0x2e
+    i16 rotation_30;             // 0x30
+    i8 page;                     // 0x32
+    u8 field_33;                 // 0x33
+    i32 shots_remaining;         // 0x34
+    f32 time_38;                 // 0x38
+    u8 field_3c;                 // 0x3c
+    u8 field_3d;                 // 0x3d
+    u8 field_3e;                 // 0x3e
+    u8 field_3f;                 // 0x3f
+    f32 camera_distance;         // 0x40
+    i16 field_44;                // 0x44
+    i16 field_46;                // 0x46
+    i32 instance_id;             // 0x48
+    i32 trailing_state_words[8]; // 0x4c
 } PART_EMIT_PC;
 
-STATIC_ASSERT(sizeof(PART_EMIT_PC) == 0x6c);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, position) == 0);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, effect_id) == 0xc);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, name) == 0x10);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, time_20) == 0x20);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, time_24) == 0x24);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, time_28) == 0x28);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_2c) == 0x2c);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_2e) == 0x2e);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, rotation_30) == 0x30);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, page) == 0x32);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, shots_remaining) == 0x34);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, time_38) == 0x38);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, field_33) == 0x33);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, field_3d) == 0x3d);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, camera_distance) == 0x40);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, field_44) == 0x44);
-STATIC_ASSERT(offsetof(PART_EMIT_PC, field_46) == 0x46);
+typedef struct terrain_surface_s { // size 0xc
+    f32 movement_scale;            // 0x0
+    u32 flags;                     // 0x4
 
-typedef struct terrain_surface_s {
-    f32 movement_scale;
-    u32 flags;
-
-    union {
+    union { // size 0x4
         u32 field_08;
 
-        struct {
-            u16 object_id;
-            u16 unknown_object_high_word;
+        struct {                          // size 0x4
+            u16 object_id;                // 0x8
+            u16 unknown_object_high_word; // 0xa
         };
-    };
+    }; // 0x8
 } TERRAIN_SURFACE_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 0x0c);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
-
 struct bolt_s;
 struct bolt_s;
 
-typedef struct narrowsockexception_s {
-    const char *level_name;
-    i16 level_index;
-    i16 sock_index;
-    f32 start_distance;
-    f32 end_distance;
+typedef struct narrowsockexception_s { // size 0x10
+    const char *level_name;            // 0x0
+    i16 level_index;                   // 0x4
+    i16 sock_index;                    // 0x6
+    f32 start_distance;                // 0x8
+    f32 end_distance;                  // 0xc
 } NARROWSOCKEXCEPTION_PC;
 
-STATIC_ASSERT(sizeof(NARROWSOCKEXCEPTION_PC) == 0x10);
-STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, level_index) == 4);
-STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, sock_index) == 6);
-STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, start_distance) == 8);
-STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, end_distance) == 0xc);
 typedef struct cutsys_s CUTSYS_PC;
 typedef struct gameanimsys_s GAMEANIMSYS;
 
-typedef struct debris_float_key_s {
-    f32 time;
-    f32 value;
+typedef struct debris_float_key_s { // size 0x8
+    f32 time;                       // 0x0
+    f32 value;                      // 0x4
 } DEBRIS_FLOAT_KEY_PC;
 
-typedef struct debris_colour_key_s {
-    f32 time;
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 unknown_7;
+typedef struct debris_colour_key_s { // size 0x8
+    f32 time;                        // 0x0
+    u8 red;                          // 0x4
+    u8 green;                        // 0x5
+    u8 blue;                         // 0x6
+    u8 unknown_7;                    // 0x7
 } DEBRIS_COLOUR_KEY_PC;
 
-typedef struct debris_particle_frame_s {
-    NUVEC position;
-    NUVEC texture_offset;
-    NUVEC extent;
-    u32 colour;
+typedef struct debris_particle_frame_s { // size 0x28
+    NUVEC position;                      // 0x00
+    NUVEC texture_offset;                // 0x0c
+    NUVEC extent;                        // 0x18
+    u32 colour;                          // 0x24
 } DEBRIS_PARTICLE_FRAME_PC;
 
-STATIC_ASSERT(sizeof(DEBRIS_FLOAT_KEY_PC) == 8);
-STATIC_ASSERT(offsetof(DEBRIS_FLOAT_KEY_PC, value) == 4);
-STATIC_ASSERT(sizeof(DEBRIS_COLOUR_KEY_PC) == 8);
-STATIC_ASSERT(offsetof(DEBRIS_COLOUR_KEY_PC, red) == 4);
-STATIC_ASSERT(offsetof(DEBRIS_COLOUR_KEY_PC, green) == 5);
-STATIC_ASSERT(offsetof(DEBRIS_COLOUR_KEY_PC, blue) == 6);
-STATIC_ASSERT(sizeof(DEBRIS_PARTICLE_FRAME_PC) == 0x28);
-STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_FRAME_PC, position) == 0);
-STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_FRAME_PC, texture_offset) == 0xc);
-STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_FRAME_PC, extent) == 0x18);
-STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_FRAME_PC, colour) == 0x24);
-
-STATIC_ASSERT(sizeof(DEBRIS_FLOAT_KEY_PC) == 8);
-
-typedef struct SoundTable {
-    u16 bits[100];
+typedef struct SoundTable { // size 0xc8
+    u16 bits[100];          // 0x00
 } SoundTable;
 
-STATIC_ASSERT(sizeof(SoundTable) == 0xc8);
-
-typedef struct GAMEAUDIO_PC {
-    i32 (*override_footstep_fn)(struct gameobject_s *, i32);
-    i32 (*check_reverb_fn)(void);
-    char *sfx_names[84];
-    i16 sfx_ids[84];
+typedef struct GAMEAUDIO_PC {                                // size 0x200
+    i32 (*override_footstep_fn)(struct gameobject_s *, i32); // 0x000
+    i32 (*check_reverb_fn)(void);                            // 0x004
+    char *sfx_names[84];                                     // 0x008
+    i16 sfx_ids[84];                                         // 0x158
 } GAMEAUDIO_PC;
 
-STATIC_ASSERT(sizeof(GAMEAUDIO_PC) == 0x200);
-STATIC_ASSERT(offsetof(GAMEAUDIO_PC, override_footstep_fn) == 0);
-STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_names) == 8);
-STATIC_ASSERT(offsetof(GAMEAUDIO_PC, check_reverb_fn) == 4);
-STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
-
-typedef struct cutinfo_s {
-    u8 opaque_00_04[0x4];
-    void *instance;
-    char name[0x40];
-    u8 unknown_48[0x8];
-    u32 flags;
-    u8 unknown_54[0x98];
-    i16 skip_level;
+typedef struct cutinfo_s { // size 0xf0
+    u8 opaque_00_04[0x4];  // 0x00
+    void *instance;        // 0x04
+    char name[0x40];       // 0x08
+    u8 unknown_48[0x8];    // 0x48
+    u32 flags;             // 0x50
+    u8 unknown_54[0x98];   // 0x54
+    i16 skip_level;        // 0xec
 } CUTINFO;
 
-STATIC_ASSERT(offsetof(CUTINFO, flags) == 0x50);
-STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
-STATIC_ASSERT(offsetof(CUTINFO, name) == 8);
 typedef struct gameanimset_s GAMEANIMSET;
 
-typedef struct language_data_s {
-    i32 language;
-    char *localized_name;
+typedef struct language_data_s { // size 0x8
+    i32 language;                // 0x0
+    char *localized_name;        // 0x4
 } LANGUAGEDATA;
 
-STATIC_ASSERT(sizeof(LANGUAGEDATA) == 8);
-
-typedef struct text_entry_s {
-    i16 *text_id;
-    i16 value;
-    i16 pad;
+typedef struct text_entry_s { // size 0x8
+    i16 *text_id;             // 0x0
+    i16 value;                // 0x4
+    i16 pad;                  // 0x6
 } TEXTENTRY;
-
-STATIC_ASSERT(sizeof(TEXTENTRY) == 8);
-STATIC_ASSERT(offsetof(TEXTENTRY, value) == 4);
 
 typedef struct FadeBase FadeBase;
 #ifdef __cplusplus
@@ -437,125 +334,86 @@ enum FADETYPE_VALUE {
 
 struct FADEINFO_s;
 
-struct FADETYPE {
-    FADETYPE_VALUE type;
+struct FADETYPE {        // size 0x4
+    FADETYPE_VALUE type; // 0x0
 };
 #endif
 
-typedef struct OCCLUDERSET_s {
-    u8 unknown_0000[0xc];
-    u32 count;
-    u8 queries_prepared;
-    u8 unknown_0011[0x8f];
+typedef struct OCCLUDERSET_s { // size 0xa0
+    u8 unknown_0000[0xc];      // 0x00
+    u32 count;                 // 0x0c
+    u8 queries_prepared;       // 0x10
+    u8 unknown_0011[0x8f];     // 0x11
 } OCCLUDERSET;
 
-STATIC_ASSERT(sizeof(OCCLUDERSET) == 0xa0);
-STATIC_ASSERT(offsetof(OCCLUDERSET, count) == 0xc);
-STATIC_ASSERT(offsetof(OCCLUDERSET, queries_prepared) == 0x10);
-
-typedef struct OCCLUSIONMANAGER_s {
-    u8 initialized;
-    u8 enabled;
-    u8 unknown_0002[0xe];
-    OCCLUDERSET sets[2];
-    OCCLUDERSET *building_set;
-    OCCLUDERSET *current_set;
-    f32 unknown_0158;
-    f32 unknown_015c;
-    u32 unknown_0160;
-    u32 unknown_0164;
-    u8 unknown_0168[8];
+typedef struct OCCLUSIONMANAGER_s { // size 0x170
+    u8 initialized;                 // 0x000
+    u8 enabled;                     // 0x001
+    u8 unknown_0002[0xe];           // 0x002
+    OCCLUDERSET sets[2];            // 0x010
+    OCCLUDERSET *building_set;      // 0x150
+    OCCLUDERSET *current_set;       // 0x154
+    f32 unknown_0158;               // 0x158
+    f32 unknown_015c;               // 0x15c
+    u32 unknown_0160;               // 0x160
+    u32 unknown_0164;               // 0x164
+    u8 unknown_0168[8];             // 0x168
 } OCCLUSIONMANAGER;
-
-STATIC_ASSERT(sizeof(OCCLUSIONMANAGER) == 0x170);
-STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, building_set) == 0x150);
-STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, current_set) == 0x154);
-STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0160) == 0x160);
-STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0164) == 0x164);
 
 typedef struct gizforce_s GIZFORCE_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct BATARANG_TARGET_s {
-        void *object;
-        u8 type;
-        u8 lost;
-        u16 reserved_06_word;
+    typedef struct BATARANG_TARGET_s { // size 0x14
+        void *object;                  // 0x00
+        u8 type;                       // 0x04
+        u8 lost;                       // 0x05
+        u16 reserved_06_word;          // 0x06
 
-        union {
+        union { // size 0xc
             u8 reserved_08[12];
             NUVEC fallback_position;
-        };
+        }; // 0x08
     } BATARANG_TARGET_s;
 
-    STATIC_ASSERT(sizeof(BATARANG_TARGET_s) == 0x14);
-    STATIC_ASSERT(offsetof(BATARANG_TARGET_s, fallback_position) == 8);
     struct CHARPIVOT_PC;
 
-    typedef struct debris_process_sphere_s {
-        NUVEC position;
-        NUVEC momentum;
-        f32 time;
+    typedef struct debris_process_sphere_s { // size 0x1c
+        NUVEC position;                      // 0x00
+        NUVEC momentum;                      // 0x0c
+        f32 time;                            // 0x18
     } DEBRIS_PROCESS_SPHERE_PC;
 
-    STATIC_ASSERT(sizeof(DEBRIS_PROCESS_SPHERE_PC) == 0x1c);
-    STATIC_ASSERT(offsetof(DEBRIS_PROCESS_SPHERE_PC, time) == 0x18);
-
-    typedef struct edpp_particle_s {
-        NUVEC position;
-        i32 effect_index;
-        i32 instance_id;
-        i16 rotation_z;
-        i16 rotation_y;
-        i16 emitter_rotation_z;
-        i16 emitter_rotation_y;
-        i16 emitter_rotation_x;
-        u8 unknown_01e[2];
-        f32 start_offset;
-        char name[16];
-        i32 switch_type;
-        i32 switch_id;
-        f32 switch_variable;
-        i16 reflection_rotation_z;
-        i16 reflection_rotation_y;
-        f32 reflection_offset;
-        f32 reflection_bounce;
-        i16 render_group;
-        u16 render_priority;
-        i8 dynamic_priority;
-        i8 page;
-        i8 detail_levels;
-        i8 facing_mode;
-        i16 facing_rotation_x;
-        i16 facing_rotation_y;
+    typedef struct edpp_particle_s { // size 0x58
+        NUVEC position;              // 0x00
+        i32 effect_index;            // 0x0c
+        i32 instance_id;             // 0x10
+        i16 rotation_z;              // 0x14
+        i16 rotation_y;              // 0x16
+        i16 emitter_rotation_z;      // 0x18
+        i16 emitter_rotation_y;      // 0x1a
+        i16 emitter_rotation_x;      // 0x1c
+        u8 unknown_01e[2];           // 0x1e
+        f32 start_offset;            // 0x20
+        char name[16];               // 0x24
+        i32 switch_type;             // 0x34
+        i32 switch_id;               // 0x38
+        f32 switch_variable;         // 0x3c
+        i16 reflection_rotation_z;   // 0x40
+        i16 reflection_rotation_y;   // 0x42
+        f32 reflection_offset;       // 0x44
+        f32 reflection_bounce;       // 0x48
+        i16 render_group;            // 0x4c
+        u16 render_priority;         // 0x4e
+        i8 dynamic_priority;         // 0x50
+        i8 page;                     // 0x51
+        i8 detail_levels;            // 0x52
+        i8 facing_mode;              // 0x53
+        i16 facing_rotation_x;       // 0x54
+        i16 facing_rotation_y;       // 0x56
     } EDPP_PARTICLE_PC;
 
-    STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, position) == 0);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, effect_index) == 0xc);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, instance_id) == 0x10);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, rotation_z) == 0x14);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, rotation_y) == 0x16);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, emitter_rotation_z) == 0x18);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, emitter_rotation_y) == 0x1a);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, emitter_rotation_x) == 0x1c);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, start_offset) == 0x20);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, name) == 0x24);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, switch_type) == 0x34);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, switch_id) == 0x38);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, switch_variable) == 0x3c);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, reflection_rotation_z) == 0x40);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, reflection_rotation_y) == 0x42);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, reflection_offset) == 0x44);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, reflection_bounce) == 0x48);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, render_group) == 0x4c);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, page) == 0x51);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, detail_levels) == 0x52);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_mode) == 0x53);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_rotation_x) == 0x54);
-    STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_rotation_y) == 0x56);
     struct GIZTURRET_s;
 
     typedef struct ripple_set_s RIPPLE_SET_PC;
@@ -563,29 +421,17 @@ extern "C" {
 }
 #endif
 
-struct CHARPIVOT_PC {
-    const char *name;
-    i16 animation;
-    i16 point_of_interest;
-    f32 start_frame;
-    f32 end_frame;
-    u16 character_id;
-    u8 unknown_12[2];
+struct CHARPIVOT_PC {      // size 0x14
+    const char *name;      // 0x00
+    i16 animation;         // 0x04
+    i16 point_of_interest; // 0x06
+    f32 start_frame;       // 0x08
+    f32 end_frame;         // 0x0c
+    u16 character_id;      // 0x10
+    u8 unknown_12[2];      // 0x12
 };
 
-STATIC_ASSERT(sizeof(struct CHARPIVOT_PC) == 20);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, name) == 0);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, animation) == 4);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, point_of_interest) == 6);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, start_frame) == 8);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, end_frame) == 0xc);
-STATIC_ASSERT(offsetof(struct CHARPIVOT_PC, character_id) == 0x10);
-
 typedef struct CHARPIVOT_PC CHARPIVOT_PC;
-STATIC_ASSERT(sizeof(TERRAIN_SURFACE_PC) == 0x0c);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, object_id) == 8);
 typedef struct AIPATHCNXCONTROLLER_s AIPATHCNXCONTROLLER_s;
 typedef struct AITRIGGERSETSYS_s AITRIGGERSETSYS_s;
 typedef struct AITRIGGERSET_TARGET AITRIGGERSET_TARGET;
@@ -623,153 +469,130 @@ typedef struct minitrooperteam_s minitrooperteam_s;
 typedef struct nugraph_s nugraph_s;
 typedef struct shopitem_s shopitem_s;
 
-struct AREASAVE_s {
-    u8 complete;
-    u8 area_complete;
-    u8 true_hero_complete[2];
-    u8 minikit_complete;
+struct AREASAVE_s {           // size 0xc
+    u8 complete;              // 0x0
+    u8 area_complete;         // 0x1
+    u8 true_hero_complete[2]; // 0x2
+    u8 minikit_complete;      // 0x4
 
-    union {
+    union { // size 0x3
         u8 field_0x5[3];
 
-        struct {
-            u8 minikit_count;
-            u8 red_brick_collected;
-            u8 reserved_0x7;
+        struct {                    // size 0x3
+            u8 minikit_count;       // 0x5
+            u8 red_brick_collected; // 0x6
+            u8 reserved_0x7;        // 0x7
         };
-    };
+    }; // 0x5
 
-    f32 challenge_trial_time;
+    f32 challenge_trial_time; // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct AREASAVE_s) == 12);
-
-struct STATUSPACKET_LSW_s {
-    i32 field_0x00;
+struct STATUSPACKET_LSW_s { // size 0x4
+    i32 field_0x00;         // 0x0
 };
 
-STATIC_ASSERT(sizeof(struct STATUSPACKET_LSW_s) == 4);
+struct GIZFORCEANIMDATA_s { // size 0x8
+    u16 flags;              // 0x0
+    i16 platform_id;        // 0x2
 
-struct GIZFORCEANIMDATA_s {
-    u16 flags;
-    i16 platform_id;
-
-    union {
+    union { // size 0x4
         u32 field_0x04;
 
-        struct {
-            u32 force_glow_active : 1;
-            u32 : 31;
+        struct {                       // size 0x4
+            u32 force_glow_active : 1; // 0x4:0
+            u32 : 31;                  // 0x4:1
         };
-    };
+    }; // 0x4
 };
 
-STATIC_ASSERT(sizeof(struct GIZFORCEANIMDATA_s) == 8);
-
-struct TRAFFICANIMINSTANCE_s {
-    NULISTLNK link;
-    struct TRAFFICANIM_s *animation;
-    f32 frame;
-    i8 vehicle_index;
-    u8 reserved_11[3];
+struct TRAFFICANIMINSTANCE_s {       // size 0x14
+    NULISTLNK link;                  // 0x00
+    struct TRAFFICANIM_s *animation; // 0x08
+    f32 frame;                       // 0x0c
+    i8 vehicle_index;                // 0x10
+    u8 reserved_11[3];               // 0x11
 };
 
-STATIC_ASSERT(sizeof(struct TRAFFICANIMINSTANCE_s) == 20);
-
-struct SNIPER_s {
-    NUVEC prev;
-    NUVEC pos;
-    f32 fire_timer;
-    f32 state;
+struct SNIPER_s {   // size 0x20
+    NUVEC prev;     // 0x00
+    NUVEC pos;      // 0x0c
+    f32 fire_timer; // 0x18
+    f32 state;      // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct SNIPER_s) == 32);
-
-struct PODSPRINTNETPACKET_s {
-    i16 ai_state;
-    char pad_0x02[4];
-    i16 speed;
-    i16 speed2;
+struct PODSPRINTNETPACKET_s { // size 0xa
+    i16 ai_state;             // 0x0
+    char pad_0x02[4];         // 0x2
+    i16 speed;                // 0x6
+    i16 speed2;               // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct PODSPRINTNETPACKET_s) == 10);
+struct minisnowtrooper_s { // size 0x20
+    u8 formation_index;    // 0x00
 
-struct minisnowtrooper_s {
-    u8 formation_index;
-
-    union {
+    union { // size 0x1
         u8 state_flags;
 
-        struct {
-            u8 state_low : 2;
-            u8 step_frame : 2;
-            u8 slot : 2;
-            u8 state_high : 2;
+        struct {               // size 0x1
+            u8 state_low : 2;  // 0x01:0
+            u8 step_frame : 2; // 0x01:2
+            u8 slot : 2;       // 0x01:4
+            u8 state_high : 2; // 0x01:6
         };
-    };
+    }; // 0x01
 
-    u8 reserved_002;
-    u8 speed_divisor;
-    u16 rotation;
-    u16 target_rotation;
-    f32 timer;
-    f32 formation_x;
-    f32 formation_z;
-    NUVEC shot_position;
+    u8 reserved_002;     // 0x02
+    u8 speed_divisor;    // 0x03
+    u16 rotation;        // 0x04
+    u16 target_rotation; // 0x06
+    f32 timer;           // 0x08
+    f32 formation_x;     // 0x0c
+    f32 formation_z;     // 0x10
+    NUVEC shot_position; // 0x14
 };
 
-STATIC_ASSERT(sizeof(struct minisnowtrooper_s) == 32);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, state_flags) == 1);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, rotation) == 4);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, target_rotation) == 6);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, timer) == 8);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, formation_x) == 0xc);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, formation_z) == 0x10);
-STATIC_ASSERT(offsetof(struct minisnowtrooper_s, shot_position) == 0x14);
+struct edcam_s {              // size 0x94
+    NUVEC position;           // 0x00
+    i32 pitch;                // 0x0c
+    i32 yaw;                  // 0x10
+    f32 distance;             // 0x14
+    NUVEC offset;             // 0x18
+    NUVEC snap_origin;        // 0x24
+    NUVEC snap_step;          // 0x30
+    i32 pitch_snap_step;      // 0x3c
+    i32 yaw_snap_step;        // 0x40
+    NUVEC snapped_position;   // 0x44
+    i32 snapped_pitch;        // 0x50
+    i32 snapped_yaw;          // 0x54
+    NUVEC position_speed;     // 0x58
+    i32 pad_pitch_speed;      // 0x64
+    i32 pad_yaw_speed;        // 0x68
+    f32 distance_speed;       // 0x6c
+    f32 minimum_distance;     // 0x70
+    f32 mouse_pitch_speed;    // 0x74
+    f32 mouse_yaw_speed;      // 0x78
+    f32 mouse_move_speed;     // 0x7c
+    f32 auto_move_base;       // 0x80
+    f32 auto_move_dist_scale; // 0x84
+    f32 auto_zoom_base;       // 0x88
+    f32 auto_zoom_dist_scale; // 0x8c
 
-struct edcam_s {
-    NUVEC position;
-    i32 pitch;
-    i32 yaw;
-    f32 distance;
-    NUVEC offset;
-    NUVEC snap_origin;
-    NUVEC snap_step;
-    i32 pitch_snap_step;
-    i32 yaw_snap_step;
-    NUVEC snapped_position;
-    i32 snapped_pitch;
-    i32 snapped_yaw;
-    NUVEC position_speed;
-    i32 pad_pitch_speed;
-    i32 pad_yaw_speed;
-    f32 distance_speed;
-    f32 minimum_distance;
-    f32 mouse_pitch_speed;
-    f32 mouse_yaw_speed;
-    f32 mouse_move_speed;
-    f32 auto_move_base;
-    f32 auto_move_dist_scale;
-    f32 auto_zoom_base;
-    f32 auto_zoom_dist_scale;
-
-    union {
+    union { // size 0x4
         u32 freedoms;
 
-        struct {
-            u32 allow_position_x : 1;
-            u32 allow_position_y : 1;
-            u32 allow_position_z : 1;
-            u32 allow_pitch : 1;
-            u32 allow_yaw : 1;
-            u32 allow_distance : 1;
-            u32 invert_pad_pitch : 1;
-            u32 reserved_freedom : 1;
+        struct {                      // size 0x4
+            u32 allow_position_x : 1; // 0x90:0
+            u32 allow_position_y : 1; // 0x90:1
+            u32 allow_position_z : 1; // 0x90:2
+            u32 allow_pitch : 1;      // 0x90:3
+            u32 allow_yaw : 1;        // 0x90:4
+            u32 allow_distance : 1;   // 0x90:5
+            u32 invert_pad_pitch : 1; // 0x90:6
+            u32 reserved_freedom : 1; // 0x90:7
         };
-    };
+    }; // 0x90
 };
-
-STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 
 enum { EDCAM_FREEDOM_INVERT_PAD_PITCH = 64 };
 
@@ -802,18 +625,18 @@ struct ThingRemoveData;
 #ifdef __cplusplus
 
 /* Buffered append-only log file embedded in TTNetwork at +0x20. */
-class NetLogFile {
+class NetLogFile { // size 0x2114
   public:
     NetLogFile();
     ~NetLogFile();
     i32 Flush();
 
-    i32 state;
-    char name[0x100];
-    i32 mode;
-    u32 unknown_108[2];
-    i32 count;
-    u8 buffer[0x2000];
+    i32 state;          // 0x0000
+    char name[0x100];   // 0x0004
+    i32 mode;           // 0x0104
+    u32 unknown_108[2]; // 0x0108
+    i32 count;          // 0x0110
+    u8 buffer[0x2000];  // 0x0114
 };
 #endif
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
@@ -825,221 +648,180 @@ class NetLogFile {
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 2 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef struct TERRAIN_PLATFORM_PC {
-    NUMTX previous_matrix;
-    void *scene_object;
-    u32 unknown_44;
-    i16 terrain_group_index;
-    i16 scene_object_index;
+typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
+    NUMTX previous_matrix;           // 0x00
+    void *scene_object;              // 0x40
+    u32 unknown_44;                  // 0x44
+    i16 terrain_group_index;         // 0x48
+    i16 scene_object_index;          // 0x4a
 
-    union {
+    union { // size 0x4
         u32 flags;
 
-        struct {
-            u32 rotating : 1;
-            u32 : 31;
+        struct {              // size 0x4
+            u32 rotating : 1; // 0x4c:0
+            u32 : 31;         // 0x4c:1
         };
-    };
+    }; // 0x4c
 
-    u8 unknown_50[4];
-    f32 bounce_54;
-    f32 bounce_58;
-    f32 bounce_5c;
-    f32 bounce_60;
-    f32 bounce_64;
-    u32 *instance_flags;
+    u8 unknown_50[4];    // 0x50
+    f32 bounce_54;       // 0x54
+    f32 bounce_58;       // 0x58
+    f32 bounce_5c;       // 0x5c
+    f32 bounce_60;       // 0x60
+    f32 bounce_64;       // 0x64
+    u32 *instance_flags; // 0x68
 } TERRAIN_PLATFORM_PC;
 
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, previous_matrix) == 0);
-STATIC_ASSERT(sizeof(TERRAIN_PLATFORM_PC) == 0x6c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object) == 0x40);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, terrain_group_index) == 0x48);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, flags) == 0x4c);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_54) == 0x54);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, instance_flags) == 0x68);
 typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
 
-typedef struct gamecamera_s {
-    union {
+typedef struct gamecamera_s { // size 0x230
+
+    union { // size 0x38
         SOCKPOSITION_PC sock_position;
 
-        struct {
-            u8 unknown_00;
-            u8 sock;
+        struct {           // size 0x2
+            u8 unknown_00; // 0x000
+            u8 sock;       // 0x001
         };
-    };
+    }; // 0x000
 
-    NUMTX mtx;
-    NUMTX target_mtx;
-    NUMTX render_mtx;
-    NUVEC shaken_right;
-    NUVEC shaken_up;
-    NUVEC dir;
-    NUVEC position;
-    NUVEC target;
-    NUVEC blend_start_position;
-    NUVEC desired_position;
-    NUVEC blend_end_position;
-    NUVEC blend_destination_position;
-    NUVEC blend_start_target;
-    u8 unknown_170[0xc];
-    NUVEC blend_end_target;
-    NUVEC blend_destination_target;
-    NUVEC shake_offset;
-    NUVEC shake_direction;
-    NUVEC shake_target;
-    i32 field_1b8;
-    f32 blend_time;
-    f32 blend_duration;
-    f32 blend_curve;
-    f32 judder_time;
-    f32 judder_duration;
-    f32 shake_amplitude;
-    f32 shake_intensity;
-    f32 shake_decay;
-    f32 shake_freq;
-    f32 position_seek;
-    f32 angle_seek;
-    f32 field_1e8;
-    f32 field_1ec;
-    f32 field_1f0;
-    f32 field_1f4;
-    i32 pitch;
+    NUMTX mtx;                        // 0x038
+    NUMTX target_mtx;                 // 0x078
+    NUMTX render_mtx;                 // 0x0b8
+    NUVEC shaken_right;               // 0x0f8
+    NUVEC shaken_up;                  // 0x104
+    NUVEC dir;                        // 0x110
+    NUVEC position;                   // 0x11c
+    NUVEC target;                     // 0x128
+    NUVEC blend_start_position;       // 0x134
+    NUVEC desired_position;           // 0x140
+    NUVEC blend_end_position;         // 0x14c
+    NUVEC blend_destination_position; // 0x158
+    NUVEC blend_start_target;         // 0x164
+    u8 unknown_170[0xc];              // 0x170
+    NUVEC blend_end_target;           // 0x17c
+    NUVEC blend_destination_target;   // 0x188
+    NUVEC shake_offset;               // 0x194
+    NUVEC shake_direction;            // 0x1a0
+    NUVEC shake_target;               // 0x1ac
+    i32 field_1b8;                    // 0x1b8
+    f32 blend_time;                   // 0x1bc
+    f32 blend_duration;               // 0x1c0
+    f32 blend_curve;                  // 0x1c4
+    f32 judder_time;                  // 0x1c8
+    f32 judder_duration;              // 0x1cc
+    f32 shake_amplitude;              // 0x1d0
+    f32 shake_intensity;              // 0x1d4
+    f32 shake_decay;                  // 0x1d8
+    f32 shake_freq;                   // 0x1dc
+    f32 position_seek;                // 0x1e0
+    f32 angle_seek;                   // 0x1e4
+    f32 field_1e8;                    // 0x1e8
+    f32 field_1ec;                    // 0x1ec
+    f32 field_1f0;                    // 0x1f0
+    f32 field_1f4;                    // 0x1f4
+    i32 pitch;                        // 0x1f8
 
-    union {
+    union { // size 0x4
         i32 yaw;
         i32 input_yaw;
-    };
+    }; // 0x1fc
 
-    i32 roll;
-    f32 field_204;
-    f32 field_208;
-    f32 field_20c;
-    f32 field_210;
-    f32 field_214;
-    f32 adjusted_yaw_offset;
-    u16 blend_start_pitch;
-    u16 desired_pitch;
-    u16 blend_start_yaw;
-    u16 desired_yaw;
-    u16 blend_start_roll;
-    u16 desired_roll;
-    u8 judder_reverse;
-    u8 judder_axis;
-    u8 reset_blend;
-    u8 blend_mode;
-    i8 mode;
-    i8 previous_mode;
-    u8 previous_camera_mode;
+    i32 roll;                // 0x200
+    f32 field_204;           // 0x204
+    f32 field_208;           // 0x208
+    f32 field_20c;           // 0x20c
+    f32 field_210;           // 0x210
+    f32 field_214;           // 0x214
+    f32 adjusted_yaw_offset; // 0x218
+    u16 blend_start_pitch;   // 0x21c
+    u16 desired_pitch;       // 0x21e
+    u16 blend_start_yaw;     // 0x220
+    u16 desired_yaw;         // 0x222
+    u16 blend_start_roll;    // 0x224
+    u16 desired_roll;        // 0x226
+    u8 judder_reverse;       // 0x228
+    u8 judder_axis;          // 0x229
+    u8 reset_blend;          // 0x22a
+    u8 blend_mode;           // 0x22b
+    i8 mode;                 // 0x22c
+    i8 previous_mode;        // 0x22d
+    u8 previous_camera_mode; // 0x22e
 } GAMECAMERA;
 
-STATIC_ASSERT(offsetof(GAMECAMERA, input_yaw) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMECAMERA, yaw) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMECAMERA, sock) == 0x1);
-STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
-STATIC_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_offset) == 0x194);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_intensity) == 0x1d4);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_decay) == 0x1d8);
-STATIC_ASSERT(offsetof(GAMECAMERA, shake_freq) == 0x1dc);
-STATIC_ASSERT(offsetof(GAMECAMERA, mtx) == 0x38);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_end_target) == 0x17c);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_time) == 0x1bc);
-STATIC_ASSERT(sizeof(GAMECAMERA) == 0x230);
-STATIC_ASSERT(offsetof(GAMECAMERA, adjusted_yaw_offset) == 0x218);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_start_pitch) == 0x21c);
-STATIC_ASSERT(offsetof(GAMECAMERA, desired_pitch) == 0x21e);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_start_yaw) == 0x220);
-STATIC_ASSERT(offsetof(GAMECAMERA, desired_yaw) == 0x222);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_start_roll) == 0x224);
-STATIC_ASSERT(offsetof(GAMECAMERA, desired_roll) == 0x226);
-STATIC_ASSERT(offsetof(GAMECAMERA, reset_blend) == 0x22a);
-STATIC_ASSERT(offsetof(GAMECAMERA, blend_mode) == 0x22b);
-STATIC_ASSERT(offsetof(GAMECAMERA, mode) == 0x22c);
-STATIC_ASSERT(offsetof(GAMECAMERA, previous_mode) == 0x22d);
-STATIC_ASSERT(offsetof(GAMECAMERA, previous_camera_mode) == 0x22e);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    STATIC_ASSERT(offsetof(GAMECAMERA, blend_time) == 0x1bc);
-    STATIC_ASSERT(offsetof(GAMECAMERA, blend_duration) == 0x1c0);
 #ifdef __cplusplus
 }
 #endif
 
-struct AITRIGGERSET_TARGET {
-    u8 reserved_00[16];
-    NUVEC position;
-    u8 reserved_1c[4];
-    AIPATHINFO_PC path;
-    u8 reserved_38[4];
+struct AITRIGGERSET_TARGET { // size 0x3c
+    u8 reserved_00[16];      // 0x00
+    NUVEC position;          // 0x10
+    u8 reserved_1c[4];       // 0x1c
+    AIPATHINFO_PC path;      // 0x20
+    u8 reserved_38[4];       // 0x38
 };
 
-STATIC_ASSERT(sizeof(struct AITRIGGERSET_TARGET) == 60);
-
-struct GIZSPINNERARM_s {
-    NUMTX matrix;
-    i16 platform_id;
-    u8 field_0x42[2];
+struct GIZSPINNERARM_s { // size 0x44
+    NUMTX matrix;        // 0x00
+    i16 platform_id;     // 0x40
+    u8 field_0x42[2];    // 0x42
 };
 
-STATIC_ASSERT(sizeof(struct GIZSPINNERARM_s) == 68);
+struct GIZPANEL_s {   // size 0x9c
+    NUMTX matrix;     // 0x00
+    char name[16];    // 0x40
+    NUVEC position;   // 0x50
+    u16 y_rotation;   // 0x5c
+    u8 field_0x5e[3]; // 0x5e
+    u8 model_variant; // 0x61
+    u8 field_0x62[2]; // 0x62
+    f32 flash_timer;  // 0x64
 
-struct GIZPANEL_s {
-    NUMTX matrix;
-    char name[16];
-    NUVEC position;
-    u16 y_rotation;
-    u8 field_0x5e[3];
-    u8 model_variant;
-    u8 field_0x62[2];
-    f32 flash_timer;
-
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 reserved_flag : 1;
-            u8 state : 1;
-            u8 visible : 1;
-            u8 track_player : 1;
-            u8 player_near : 1;
-            u8 hide_base : 1;
-            u8 hide_target : 1;
-            u8 baddie : 1;
+        struct {                  // size 0x1
+            u8 reserved_flag : 1; // 0x68:0
+            u8 state : 1;         // 0x68:1
+            u8 visible : 1;       // 0x68:2
+            u8 track_player : 1;  // 0x68:3
+            u8 player_near : 1;   // 0x68:4
+            u8 hide_base : 1;     // 0x68:5
+            u8 hide_target : 1;   // 0x68:6
+            u8 baddie : 1;        // 0x68:7
         };
-    };
+    }; // 0x68
 
-    u8 draw_flags;
-    u8 field_0x6a[2];
-    NUVEC floor_position;
-    NUVEC target_offset;
-    u16 target_x_rotation;
-    u16 target_y_rotation;
-    u16 arm_x_rotation;
-    u16 target_pitch;
-    u16 target_roll;
-    i16 platform_id;
-    f32 activation_time;
-    f32 target_scale;
-    struct MechObjectInterface *mech_object_interface;
+    u8 draw_flags;                                     // 0x69
+    u8 field_0x6a[2];                                  // 0x6a
+    NUVEC floor_position;                              // 0x6c
+    NUVEC target_offset;                               // 0x78
+    u16 target_x_rotation;                             // 0x84
+    u16 target_y_rotation;                             // 0x86
+    u16 arm_x_rotation;                                // 0x88
+    u16 target_pitch;                                  // 0x8a
+    u16 target_roll;                                   // 0x8c
+    i16 platform_id;                                   // 0x8e
+    f32 activation_time;                               // 0x90
+    f32 target_scale;                                  // 0x94
+    struct MechObjectInterface *mech_object_interface; // 0x98
 };
 
-STATIC_ASSERT(sizeof(struct GIZPANEL_s) == 156);
-
-struct GIZBUILDITANIMDATA_s {
-    NUMTX start_mtx;
-    NUMTX end_mtx;
-    NUMTX draw_mtx;
-    f32 wobble_time;
-    u8 wobble_axis;
-    u8 padding_0xc5;
-    u8 was_drawn;
-    u8 padding_0xc7;
+struct GIZBUILDITANIMDATA_s { // size 0xc8
+    NUMTX start_mtx;          // 0x00
+    NUMTX end_mtx;            // 0x40
+    NUMTX draw_mtx;           // 0x80
+    f32 wobble_time;          // 0xc0
+    u8 wobble_axis;           // 0xc4
+    u8 padding_0xc5;          // 0xc5
+    u8 was_drawn;             // 0xc6
+    u8 padding_0xc7;          // 0xc7
 };
 
-STATIC_ASSERT(sizeof(struct GIZBUILDITANIMDATA_s) == 200);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 3
 #ifdef SAGA_SHIM
@@ -1051,10 +833,10 @@ STATIC_ASSERT(sizeof(struct GIZBUILDITANIMDATA_s) == 200);
 
 typedef TERRAIN_SET_PC TERRSET;
 
-struct TERRAIN_SPATIAL_NODE {
-    u16 point_count;
-    u16 field_02;
-    NUVEC points[1];
+struct TERRAIN_SPATIAL_NODE { // size 0x10
+    u16 point_count;          // 0x0
+    u16 field_02;             // 0x2
+    NUVEC points[1];          // 0x4
 };
 #ifdef __cplusplus
 extern "C" {
@@ -1072,58 +854,45 @@ extern "C" {
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 4 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef struct levelspline_s {
-    struct NUGSCN_s **scene;
-    const char *name;
-    u16 min_points;
-    u16 max_points;
-    i16 level;
-    i16 area;
+typedef struct levelspline_s { // size 0x10
+    struct NUGSCN_s **scene;   // 0x0
+    const char *name;          // 0x4
+    u16 min_points;            // 0x8
+    u16 max_points;            // 0xa
+    i16 level;                 // 0xc
+    i16 area;                  // 0xe
 } LEVELSPLINE_PC;
 
-STATIC_ASSERT(sizeof(LEVELSPLINE_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, name) == 4);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, min_points) == 8);
-STATIC_ASSERT(offsetof(LEVELSPLINE_PC, area) == 0xe);
-
-typedef struct nuinstanim_s {
-    NUMTX matrix;
-    f32 tfactor;
-    f32 first_frame;
-    f32 interval;
-    f32 ltime;
-    u32 flags;
-    f32 fparam1;
-    f32 prev_eval_time;
-    u16 animation_index;
-    u16 instance_index;
+typedef struct nuinstanim_s { // size 0x60
+    NUMTX matrix;             // 0x00
+    f32 tfactor;              // 0x40
+    f32 first_frame;          // 0x44
+    f32 interval;             // 0x48
+    f32 ltime;                // 0x4c
+    u32 flags;                // 0x50
+    f32 fparam1;              // 0x54
+    f32 prev_eval_time;       // 0x58
+    u16 animation_index;      // 0x5c
+    u16 instance_index;       // 0x5e
 } NUINSTANIM;
 
-STATIC_ASSERT(sizeof(NUINSTANIM) == 0x60);
-STATIC_ASSERT(offsetof(NUINSTANIM, matrix) == 0);
-STATIC_ASSERT(offsetof(NUINSTANIM, tfactor) == 0x40);
-STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
-STATIC_ASSERT(offsetof(NUINSTANIM, fparam1) == 0x54);
-STATIC_ASSERT(offsetof(NUINSTANIM, prev_eval_time) == 0x58);
-STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 #ifdef __cplusplus
 
-struct OccluderSet {
+struct OccluderSet { // size 0xa0
     OccluderSet();
     ~OccluderSet();
     static struct numtl_s *ms_pZOnlyMtl3D;
     static struct numtl_s *ms_pZOnlyMtl2D;
     static struct numtl_s *ms_pAlphaMtl2D;
     void Init(u32, VARIPTR *, VARIPTR);
-    PC_OCCLUDER_RECORD *occluders;
-    u32 *indices;
-    u32 capacity;
-    u32 count;
-    bool queries_prepared;
-    u8 unknown_11[15];
-    NUMTX projection_matrix;
-    NUMTX query_matrix;
+    PC_OCCLUDER_RECORD *occluders; // 0x00
+    u32 *indices;                  // 0x04
+    u32 capacity;                  // 0x08
+    u32 count;                     // 0x0c
+    bool queries_prepared;         // 0x10
+    u8 unknown_11[15];             // 0x11
+    NUMTX projection_matrix;       // 0x20
+    NUMTX query_matrix;            // 0x60
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void RenderOccluders(bool) const;
@@ -1137,30 +906,21 @@ struct OccluderSet {
     void Clear();
 };
 
-STATIC_ASSERT(sizeof(OccluderSet) == 0xa0);
-STATIC_ASSERT(offsetof(OccluderSet, occluders) == 0);
-STATIC_ASSERT(offsetof(OccluderSet, indices) == 4);
-STATIC_ASSERT(offsetof(OccluderSet, capacity) == 8);
-STATIC_ASSERT(offsetof(OccluderSet, count) == 0xc);
-STATIC_ASSERT(offsetof(OccluderSet, queries_prepared) == 0x10);
-STATIC_ASSERT(offsetof(OccluderSet, projection_matrix) == 0x20);
-STATIC_ASSERT(offsetof(OccluderSet, query_matrix) == 0x60);
-
-struct OcclusionManager {
+struct OcclusionManager { // size 0x170
     OcclusionManager();
     ~OcclusionManager();
     void Init(u32, VARIPTR *, VARIPTR);
-    bool initialized;
-    bool enabled;
-    u8 unknown_02[14];
-    OccluderSet sets[2];
-    OccluderSet *building_set;
-    OccluderSet *current_set;
-    f32 unknown_158;
-    f32 unknown_15c;
-    u32 occluded_count;
-    u32 query_count;
-    u8 unknown_168[8];
+    bool initialized;          // 0x000
+    bool enabled;              // 0x001
+    u8 unknown_02[14];         // 0x002
+    OccluderSet sets[2];       // 0x010
+    OccluderSet *building_set; // 0x150
+    OccluderSet *current_set;  // 0x154
+    f32 unknown_158;           // 0x158
+    f32 unknown_15c;           // 0x15c
+    u32 occluded_count;        // 0x160
+    u32 query_count;           // 0x164
+    u8 unknown_168[8];         // 0x168
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     bool IsOccludedSphere(const NUVEC *, f32);
     void EndFrame();
@@ -1180,15 +940,6 @@ struct OcclusionManager {
 };
 
 STATIC_ASSERT(sizeof(OcclusionManager) == sizeof(OCCLUSIONMANAGER));
-STATIC_ASSERT(offsetof(OcclusionManager, current_set) == 0x154);
-STATIC_ASSERT(offsetof(OcclusionManager, initialized) == 0);
-STATIC_ASSERT(offsetof(OcclusionManager, enabled) == 1);
-STATIC_ASSERT(offsetof(OcclusionManager, sets) == 0x10);
-STATIC_ASSERT(offsetof(OcclusionManager, building_set) == 0x150);
-STATIC_ASSERT(offsetof(OcclusionManager, unknown_158) == 0x158);
-STATIC_ASSERT(offsetof(OcclusionManager, unknown_15c) == 0x15c);
-STATIC_ASSERT(offsetof(OcclusionManager, occluded_count) == 0x160);
-STATIC_ASSERT(offsetof(OcclusionManager, query_count) == 0x164);
 #endif
 #ifdef __cplusplus
 #ifdef __cplusplus
@@ -1208,144 +959,127 @@ extern "C" {
 #endif
 #endif
 
-struct AITRIGGERSET_s {
-    union {
+struct AITRIGGERSET_s { // size 0x214
+
+    union { // size 0x204
         u8 pad_0x000[516];
 
-        struct {
-            union {
+        struct { // size 0x204
+
+            union { // size 0x4
                 u32 reserved_000;
                 struct FLOWBOX_PC *flowbox;
-            };
+            }; // 0x000
 
-            union {
+            union { // size 0x20
                 struct gizmo_pc_s *triggers[8];
                 struct gizmo_pc_s *gizmos[8];
-            };
+            }; // 0x004
 
-            union {
+            union { // size 0x1e0
                 struct AITRIGGERSET_TARGET targets[8];
                 AILOCATOR_PC locators[8];
-            };
+            }; // 0x024
         };
-    };
+    }; // 0x000
 
-    i8 trigger_indices[8];
+    i8 trigger_indices[8]; // 0x204
 
-    union {
+    union { // size 0x8
         u8 unknown_20c[0x2];
         u16 field_20e;
         u8 unknown_210[0x4];
 
-        struct {
-            u8 trigger_count;
-            u8 field_20d;
-            u16 field_0x20e;
+        struct {              // size 0x8
+            u8 trigger_count; // 0x20c
+            u8 field_20d;     // 0x20d
+            u16 field_0x20e;  // 0x20e
 
-            union {
+            union { // size 0x2
                 u16 flags_word;
 
-                struct {
-                    u8 flags;
-                    u8 reserved_211;
+                struct {             // size 0x2
+                    u8 flags;        // 0x210
+                    u8 reserved_211; // 0x211
                 };
-            };
+            }; // 0x210
 
-            u8 reserved_212[2];
+            u8 reserved_212[2]; // 0x212
         };
-    };
+    }; // 0x20c
 };
 
-STATIC_ASSERT(sizeof(struct AITRIGGERSET_s) == 532);
-
-struct AITRIGGERSETSYS_s {
-    struct AITRIGGERSET_s sets[32];
-    i8 field_0x4280[64];
-    i8 field_0x42c0[64];
-    i32 field_0x4300;
+struct AITRIGGERSETSYS_s {          // size 0x4304
+    struct AITRIGGERSET_s sets[32]; // 0x0000
+    i8 field_0x4280[64];            // 0x4280
+    i8 field_0x42c0[64];            // 0x42c0
+    i32 field_0x4300;               // 0x4300
 };
 
-STATIC_ASSERT(sizeof(struct AITRIGGERSETSYS_s) == 17156);
-
-struct shopitem_s {
-    char name[64];
-    char special_name[32];
-    i16 item_id;
-    u8 type;
-    u8 unlocked;
-    i32 price;
-    struct nuhspecial_s special;
+struct shopitem_s {              // size 0x74
+    char name[64];               // 0x00
+    char special_name[32];       // 0x40
+    i16 item_id;                 // 0x60
+    u8 type;                     // 0x62
+    u8 unlocked;                 // 0x63
+    i32 price;                   // 0x64
+    struct nuhspecial_s special; // 0x68
 };
 
-STATIC_ASSERT(sizeof(struct shopitem_s) == 116);
+struct AIPATHCNXCONTROLLER_s {       // size 0xa8
+    NULISTLNK links;                 // 0x00
+    struct AIPATHCNX_PC *connection; // 0x08
 
-struct AIPATHCNXCONTROLLER_s {
-    NULISTLNK links;
-    struct AIPATHCNX_PC *connection;
-
-    union {
+    union { // size 0xc
         void *target;
         NUSPECIALHANDLE special;
         i32 fake_animation_id;
-    };
+    }; // 0x0c
 
-    i32 gizmo_output;
-    u32 on_flags;
-    u32 off_flags;
-    u32 on_frames[32];
-    u8 target_type;
-    u8 path_index;
+    i32 gizmo_output;  // 0x18
+    u32 on_flags;      // 0x1c
+    u32 off_flags;     // 0x20
+    u32 on_frames[32]; // 0x24
+    u8 target_type;    // 0xa4
+    u8 path_index;     // 0xa5
 
-    union {
+    union { // size 0x2
         u16 flags_word;
 
-        struct {
-            u8 flags;
-            u8 padding_0xa7;
+        struct {             // size 0x2
+            u8 flags;        // 0xa6
+            u8 padding_0xa7; // 0xa7
         };
-    };
+    }; // 0xa6
 };
 
-STATIC_ASSERT(sizeof(struct AIPATHCNXCONTROLLER_s) == 168);
-
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, special) == 0xc);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, on_flags) == 0x1c);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, off_flags) == 0x20);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, on_frames) == 0x24);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, target_type) == 0xa4);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, path_index) == 0xa5);
-STATIC_ASSERT(offsetof(struct AIPATHCNXCONTROLLER_s, flags_word) == 0xa6);
-
-struct TRAFFICANIM_s {
-    struct nuhspecial_s special;
-    void *animation;
-    f32 end_frame;
-    f32 tfactor;
-    f32 frame_interval;
-    f32 random_interval;
-    f32 room_frame_interval;
-    f32 y_offset;
-    i8 vehicle_indices[16];
-    u8 rooms[256];
-    i8 vehicle_count;
-    u8 disabled;
-    u8 reserved_13a[2];
-    f32 next_spawn_time;
+struct TRAFFICANIM_s {           // size 0x140
+    struct nuhspecial_s special; // 0x000
+    void *animation;             // 0x00c
+    f32 end_frame;               // 0x010
+    f32 tfactor;                 // 0x014
+    f32 frame_interval;          // 0x018
+    f32 random_interval;         // 0x01c
+    f32 room_frame_interval;     // 0x020
+    f32 y_offset;                // 0x024
+    i8 vehicle_indices[16];      // 0x028
+    u8 rooms[256];               // 0x038
+    i8 vehicle_count;            // 0x138
+    u8 disabled;                 // 0x139
+    u8 reserved_13a[2];          // 0x13a
+    f32 next_spawn_time;         // 0x13c
 };
 
-STATIC_ASSERT(sizeof(struct TRAFFICANIM_s) == 320);
-
-struct LevelEditorScene {
-    char name[32];
-    char directory[128];
-    struct NUGSCN_s *scene;
-    i32 active : 1;
-    i32 editable : 1;
-    i32 saved : 1;
-    u32 reserved_flags : 29;
+struct LevelEditorScene {    // size 0xa8
+    char name[32];           // 0x00
+    char directory[128];     // 0x20
+    struct NUGSCN_s *scene;  // 0xa0
+    i32 active : 1;          // 0xa4:0
+    i32 editable : 1;        // 0xa4:1
+    i32 saved : 1;           // 0xa4:2
+    u32 reserved_flags : 29; // 0xa4:3
 };
 
-STATIC_ASSERT(sizeof(struct LevelEditorScene) == 168);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 5
 #ifdef SAGA_SHIM
@@ -1371,28 +1105,18 @@ class FadeBase {
     virtual FADETYPE_VALUE GetFadeType() const = 0;
 };
 
-struct FADEINFO_s {
-    u32 direction;
-    f32 fade;
-    f32 rate;
-    i32 busy;
-    i32 stage;
-    FadeBase *fades[4];
-    FADETYPE_VALUE pending_type;
-    i32 field_28;
+struct FADEINFO_s {              // size 0x2c
+    u32 direction;               // 0x00
+    f32 fade;                    // 0x04
+    f32 rate;                    // 0x08
+    i32 busy;                    // 0x0c
+    i32 stage;                   // 0x10
+    FadeBase *fades[4];          // 0x14
+    FADETYPE_VALUE pending_type; // 0x24
+    i32 field_28;                // 0x28
 };
 
-STATIC_ASSERT(sizeof(FADEINFO_s) == 0x2c);
-STATIC_ASSERT(offsetof(FADEINFO_s, direction) == 0x00);
-STATIC_ASSERT(offsetof(FADEINFO_s, fade) == 0x04);
-STATIC_ASSERT(offsetof(FADEINFO_s, rate) == 0x08);
-STATIC_ASSERT(offsetof(FADEINFO_s, busy) == 0x0c);
-STATIC_ASSERT(offsetof(FADEINFO_s, stage) == 0x10);
-STATIC_ASSERT(offsetof(FADEINFO_s, fades) == 0x14);
-STATIC_ASSERT(offsetof(FADEINFO_s, pending_type) == 0x24);
-STATIC_ASSERT(offsetof(FADEINFO_s, field_28) == 0x28);
-
-class FadeSystem : public FADEINFO_s {
+class FadeSystem : public FADEINFO_s { // size 0x2c
   public:
     void Init();
     void Update();
@@ -1402,7 +1126,6 @@ class FadeSystem : public FADEINFO_s {
     i32 AddFade(FadeBase *fade);
 };
 
-STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 #endif
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 6
@@ -1413,81 +1136,69 @@ STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 6 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef struct BOLTSYS_PC_s {
-    struct BOLTTYPE_PC_s *types;
-    i32 count;
-    void (*stop_targeting)(struct gameobject_s *, NUVEC *);
-    void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
-    void (*shoot_origin)(struct gameobject_s *, NUVEC *);
-    u16 (*shoot_direction)(struct gameobject_s *, NUVEC *);
-    i32 (*hit_part)(struct bolt_s *, struct PART_PC *);
-    i32 (*alternate_fire)(struct gameobject_s *, i32);
+typedef struct BOLTSYS_PC_s {                                    // size 0x20
+    struct BOLTTYPE_PC_s *types;                                 // 0x00
+    i32 count;                                                   // 0x04
+    void (*stop_targeting)(struct gameobject_s *, NUVEC *);      // 0x08
+    void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32); // 0x0c
+    void (*shoot_origin)(struct gameobject_s *, NUVEC *);        // 0x10
+    u16 (*shoot_direction)(struct gameobject_s *, NUVEC *);      // 0x14
+    i32 (*hit_part)(struct bolt_s *, struct PART_PC *);          // 0x18
+    i32 (*alternate_fire)(struct gameobject_s *, i32);           // 0x1c
 } BOLTSYS_PC;
 
-STATIC_ASSERT(offsetof(BOLTSYS_PC, stop_targeting) == 8);
-STATIC_ASSERT(offsetof(BOLTSYS_PC, debris) == 0xc);
-STATIC_ASSERT(offsetof(BOLTSYS_PC, shoot_origin) == 0x10);
-STATIC_ASSERT(offsetof(BOLTSYS_PC, shoot_direction) == 0x14);
-STATIC_ASSERT(offsetof(BOLTSYS_PC, hit_part) == 0x18);
-STATIC_ASSERT(offsetof(BOLTSYS_PC, alternate_fire) == 0x1c);
-STATIC_ASSERT(sizeof(BOLTSYS_PC) == 0x20);
+typedef struct bolt_s {         // size 0x138
+    struct BOLTTYPE_PC_s *type; // 0x000
+    void *owner;                // 0x004
+    NUMTX orientation;          // 0x008
+    NUMTX effect_orientation;   // 0x048
+    NUVEC position;             // 0x088
+    NUVEC previous_position;    // 0x094
+    NUVEC velocity;             // 0x0a0
+    NUVEC direction;            // 0x0ac
+    NUVEC ray_end;              // 0x0b8
+    f32 scale;                  // 0x0c4
+    f32 time;                   // 0x0c8
+    f32 speed;                  // 0x0cc
+    f32 lifetime;               // 0x0d0
+    f32 radius;                 // 0x0d4
+    f32 collision_radius;       // 0x0d8
+    f32 ray_time;               // 0x0dc
+    f32 ray_radius;             // 0x0e0
+    f32 field_e4;               // 0x0e4
+    f32 reflection_height;      // 0x0e8
+    f32 acceleration_y;         // 0x0ec
+    u32 flags;                  // 0x0f0
+    u16 surface_x_rotation;     // 0x0f4
+    u16 surface_z_rotation;     // 0x0f6
+    u16 hit_flags;              // 0x0f8
 
-typedef struct bolt_s {
-    struct BOLTTYPE_PC_s *type;
-    void *owner;
-    NUMTX orientation;
-    NUMTX effect_orientation;
-    NUVEC position;
-    NUVEC previous_position;
-    NUVEC velocity;
-    NUVEC direction;
-    NUVEC ray_end;
-    f32 scale;
-    f32 time;
-    f32 speed;
-    f32 lifetime;
-    f32 radius;
-    f32 collision_radius;
-    f32 ray_time;
-    f32 ray_radius;
-    f32 field_e4;
-    f32 reflection_height;
-    f32 acceleration_y;
-    u32 flags;
-    u16 surface_x_rotation;
-    u16 surface_z_rotation;
-    u16 hit_flags;
-
-    union {
+    union { // size 0x2
         i16 hit_platform;
         u16 unknown_fa;
-    };
+    }; // 0x0fa
 
-    i16 hit_debris;
-    i16 hit_part_debris;
-    u8 active;
-    u8 type_id;
-    u8 field_102;
-    u8 index;
-    i8 field_104;
-    i8 field_105;
-    u16 unknown_106;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    NUVEC hit_normal;
-    NUVEC dogfight_hit_position;
+    i16 hit_debris;              // 0x0fc
+    i16 hit_part_debris;         // 0x0fe
+    u8 active;                   // 0x100
+    u8 type_id;                  // 0x101
+    u8 field_102;                // 0x102
+    u8 index;                    // 0x103
+    i8 field_104;                // 0x104
+    i8 field_105;                // 0x105
+    u16 unknown_106;             // 0x106
+    NUVEC bounds_min;            // 0x108
+    NUVEC bounds_max;            // 0x114
+    NUVEC hit_normal;            // 0x120
+    NUVEC dogfight_hit_position; // 0x12c
 } BOLT;
 
 // Access prefixes only: the trailing name and complete original sizes are unknown.
-struct cutsys_s {
-    CUTINFO **records;
-    i32 count;
+struct cutsys_s {      // size 0x8
+    CUTINFO **records; // 0x0
+    i32 count;         // 0x4
 };
 
-STATIC_ASSERT(offsetof(CUTSYS_PC, records) == 0);
-STATIC_ASSERT(offsetof(CUTSYS_PC, count) == 4);
-
-STATIC_ASSERT(offsetof(BOLT, speed) == 0xcc);
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
 typedef void (*PICKUP_UPDATE_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *);
 #ifdef __cplusplus
@@ -1511,175 +1222,142 @@ typedef struct SPECIALMINIKITSYS_s SPECIALMINIKITSYS_s;
 typedef struct TRAFFICANIMSYS_s TRAFFICANIMSYS_s;
 typedef struct pushblock_s pushblock_s;
 
-struct LEVER_s {
-    NUMTX transform;
-    struct MechObjectInterface *mech_object;
-    NUVEC floor_position;
-    NUVEC target_offset;
-    char name[16];
-    NUVEC position;
-    f32 idle_animation_timer;
-    f32 pull_progress;
-    f32 auto_reset_timer;
-    f32 flash_timer;
-    f32 auto_reset_delay;
-    f32 target_indicator_scale;
-    u16 y_rotation;
-    i16 model_special_index;
-    i16 platform_id;
-    u16 animation_frame;
-    u16 target_x_rotation;
-    u16 target_z_rotation;
+struct LEVER_s {                             // size 0xa8
+    NUMTX transform;                         // 0x00
+    struct MechObjectInterface *mech_object; // 0x40
+    NUVEC floor_position;                    // 0x44
+    NUVEC target_offset;                     // 0x50
+    char name[16];                           // 0x5c
+    NUVEC position;                          // 0x6c
+    f32 idle_animation_timer;                // 0x78
+    f32 pull_progress;                       // 0x7c
+    f32 auto_reset_timer;                    // 0x80
+    f32 flash_timer;                         // 0x84
+    f32 auto_reset_delay;                    // 0x88
+    f32 target_indicator_scale;              // 0x8c
+    u16 y_rotation;                          // 0x90
+    i16 model_special_index;                 // 0x92
+    i16 platform_id;                         // 0x94
+    u16 animation_frame;                     // 0x96
+    u16 target_x_rotation;                   // 0x98
+    u16 target_z_rotation;                   // 0x9a
 
-    union {
+    union { // size 0x2
         u16 flags;
 
-        struct {
-            u8 interacting : 1;
-            u8 being_pulled : 1;
-            u8 goodie : 1;
-            u8 baddie : 1;
-            u8 visible : 1;
-            u8 auto_reset : 1;
-            u8 returning : 1;
-            u8 enabled : 1;
-            u8 flags_high;
+        struct {                 // size 0x2
+            u8 interacting : 1;  // 0x9c:0
+            u8 being_pulled : 1; // 0x9c:1
+            u8 goodie : 1;       // 0x9c:2
+            u8 baddie : 1;       // 0x9c:3
+            u8 visible : 1;      // 0x9c:4
+            u8 auto_reset : 1;   // 0x9c:5
+            u8 returning : 1;    // 0x9c:6
+            u8 enabled : 1;      // 0x9c:7
+            u8 flags_high;       // 0x9d
         };
-    };
+    }; // 0x9c
 
-    char model_variant;
-    u8 field_0x9f[9];
+    char model_variant; // 0x9e
+    u8 field_0x9f[9];   // 0x9f
 };
 
-STATIC_ASSERT(sizeof(struct LEVER_s) == 168);
-
-struct GIZPANELSYS_s {
-    i32 count;
-    struct GIZPANEL_s *panels;
+struct GIZPANELSYS_s {         // size 0x8
+    i32 count;                 // 0x0
+    struct GIZPANEL_s *panels; // 0x4
 };
 
-STATIC_ASSERT(sizeof(struct GIZPANELSYS_s) == 8);
-
-struct TRAFFICANIMSYS_s {
-    struct TRAFFICANIM_s animations[64];
-    struct nuhspecial_s vehicles[16];
-    struct TRAFFICANIMINSTANCE_s instances[500];
-    NULISTHDR free_instances;
-    NULISTHDR active_instances;
-    i8 animation_count;
-    i8 vehicle_count;
-    u8 reserved_77e2[2];
+struct TRAFFICANIMSYS_s {                        // size 0x77e4
+    struct TRAFFICANIM_s animations[64];         // 0x0000
+    struct nuhspecial_s vehicles[16];            // 0x5000
+    struct TRAFFICANIMINSTANCE_s instances[500]; // 0x50c0
+    NULISTHDR free_instances;                    // 0x77d0
+    NULISTHDR active_instances;                  // 0x77d8
+    i8 animation_count;                          // 0x77e0
+    i8 vehicle_count;                            // 0x77e1
+    u8 reserved_77e2[2];                         // 0x77e2
 };
 
-STATIC_ASSERT(sizeof(struct TRAFFICANIMSYS_s) == 30692);
-
-struct GIZMOPICKUPRUNTIMESYS_s {
-    struct GIZMOPICKUP_PC *pickups;
-    struct GIZMOPICKUP_PC *temporary_pickups;
-    i32 pickup_count;
-    i32 temporary_cursor;
-    i32 total_score;
-    f32 draw_distance;
-    f32 pickup_scale;
+struct GIZMOPICKUPRUNTIMESYS_s {              // size 0x1c
+    struct GIZMOPICKUP_PC *pickups;           // 0x00
+    struct GIZMOPICKUP_PC *temporary_pickups; // 0x04
+    i32 pickup_count;                         // 0x08
+    i32 temporary_cursor;                     // 0x0c
+    i32 total_score;                          // 0x10
+    f32 draw_distance;                        // 0x14
+    f32 pickup_scale;                         // 0x18
 };
 
-STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 28);
-
-struct SPECIALMINIKITSYS_s {
-    struct SPECIALMINIKIT_s *items;
-    i32 count;
+struct SPECIALMINIKITSYS_s {        // size 0x8
+    struct SPECIALMINIKIT_s *items; // 0x0
+    i32 count;                      // 0x4
 };
 
-STATIC_ASSERT(sizeof(struct SPECIALMINIKITSYS_s) == 8);
-
-struct SPECIALMINIKIT_s {
-    struct nuhspecial_s special;
-    void *inst_anim;
-    void *anim_data;
-    f32 end_frame;
-    char special_name[16];
-    char pickup_name[8];
-    struct gizmo_pc_s *special_gizmo;
-    struct gizmo_pc_s *pickup_gizmo;
-    u8 flags;
+struct SPECIALMINIKIT_s {             // size 0x3c
+    struct nuhspecial_s special;      // 0x00
+    void *inst_anim;                  // 0x0c
+    void *anim_data;                  // 0x10
+    f32 end_frame;                    // 0x14
+    char special_name[16];            // 0x18
+    char pickup_name[8];              // 0x28
+    struct gizmo_pc_s *special_gizmo; // 0x30
+    struct gizmo_pc_s *pickup_gizmo;  // 0x34
+    u8 flags;                         // 0x38
 };
 
-STATIC_ASSERT(sizeof(struct SPECIALMINIKIT_s) == 60);
-
-struct FADER_s {
-    struct nuhspecial_s special;
-    struct nuhspecial_s while_animating;
+struct FADER_s {                         // size 0x18
+    struct nuhspecial_s special;         // 0x00
+    struct nuhspecial_s while_animating; // 0x0c
 };
 
-STATIC_ASSERT(sizeof(struct FADER_s) == 24);
+struct minitrooperteam_s { // size 0x54
+    f32 origin_x;          // 0x00
+    f32 origin_z;          // 0x04
+    f32 height;            // 0x08
+    f32 formation_width;   // 0x0c
+    f32 formation_depth;   // 0x10
+    u16 facing_angle;      // 0x14
+    u8 reserved_016[2];    // 0x16
 
-struct minitrooperteam_s {
-    f32 origin_x;
-    f32 origin_z;
-    f32 height;
-    f32 formation_width;
-    f32 formation_depth;
-    u16 facing_angle;
-    u8 reserved_016[2];
-
-    union {
+    union { // size 0x4
         u32 packed_state;
 
-        struct {
-            u32 formation_shape : 4;
-            u32 formation_mode : 4;
-            u32 previous_mode : 4;
-            u32 mode_changed : 1;
-            u32 route_index : 3;
-            u32 waypoint_current : 3;
-            u32 waypoint_index : 3;
-            u32 waypoint_count : 3;
-            u32 team_side : 1;
-            u32 team_bits : 6;
+        struct {                      // size 0x4
+            u32 formation_shape : 4;  // 0x18:0
+            u32 formation_mode : 4;   // 0x18:4
+            u32 previous_mode : 4;    // 0x18:8
+            u32 mode_changed : 1;     // 0x18:12
+            u32 route_index : 3;      // 0x18:13
+            u32 waypoint_current : 3; // 0x18:16
+            u32 waypoint_index : 3;   // 0x18:19
+            u32 waypoint_count : 3;   // 0x18:22
+            u32 team_side : 1;        // 0x18:25
+            u32 team_bits : 6;        // 0x18:26
         };
 
-        struct {
-            u8 formation_state;
-            u8 route_state;
-            u8 waypoint_state;
-            u8 team_flags;
+        struct {                // size 0x4
+            u8 formation_state; // 0x18
+            u8 route_state;     // 0x19
+            u8 waypoint_state;  // 0x1a
+            u8 team_flags;      // 0x1b
         };
-    };
+    }; // 0x18
 
-    u8 trooper_count;
-    u8 reserved_01d[3];
-    u32 state_flags;
-    f32 state_timer;
-    f32 debris_timer;
-    f32 fire_timer;
-    f32 reserved_02c;
-    i32 bolt_type;
-    struct nuvec_s *route_point;
-    struct nugspline_s *path;
-    struct minisnowtrooper_s *troopers;
-    NUVEC position;
-    i32 target_index;
+    u8 trooper_count;                   // 0x1c
+    u8 reserved_01d[3];                 // 0x1d
+    u32 state_flags;                    // 0x20
+    f32 state_timer;                    // 0x24
+    f32 debris_timer;                   // 0x28
+    f32 fire_timer;                     // 0x2c
+    f32 reserved_02c;                   // 0x30
+    i32 bolt_type;                      // 0x34
+    struct nuvec_s *route_point;        // 0x38
+    struct nugspline_s *path;           // 0x3c
+    struct minisnowtrooper_s *troopers; // 0x40
+    NUVEC position;                     // 0x44
+    i32 target_index;                   // 0x50
 };
 
-STATIC_ASSERT(sizeof(struct minitrooperteam_s) == 0x54);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, facing_angle) == 0x14);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, packed_state) == 0x18);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, formation_state) == 0x18);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, route_state) == 0x19);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, waypoint_state) == 0x1a);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, team_flags) == 0x1b);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, trooper_count) == 0x1c);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, state_flags) == 0x20);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, state_timer) == 0x24);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, debris_timer) == 0x28);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, fire_timer) == 0x2c);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, reserved_02c) == 0x30);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, bolt_type) == 0x34);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, route_point) == 0x38);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, path) == 0x3c);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, troopers) == 0x40);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, position) == 0x44);
-STATIC_ASSERT(offsetof(struct minitrooperteam_s, target_index) == 0x50);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 7
 #ifdef SAGA_SHIM
@@ -1691,1049 +1369,849 @@ STATIC_ASSERT(offsetof(struct minitrooperteam_s, target_index) == 0x50);
 
 typedef struct gameanimobj_s GAMEANIMOBJ;
 
-struct gameanimobj_s {
-    GAMEANIMOBJ *next;
-    NUSPECIALHANDLE special;
-    NUINSTANIM *instance_animation;
-    void *animation;
-    f32 start_frame;
-    f32 end_frame;
+struct gameanimobj_s {              // size 0x28
+    GAMEANIMOBJ *next;              // 0x00
+    NUSPECIALHANDLE special;        // 0x04
+    NUINSTANIM *instance_animation; // 0x10
+    void *animation;                // 0x14
+    f32 start_frame;                // 0x18
+    f32 end_frame;                  // 0x1c
 
-    union {
-        struct {
-            u8 flags;
-            u8 reserved_21[3];
+    union { // size 0x4
+
+        struct {               // size 0x4
+            u8 flags;          // 0x20
+            u8 reserved_21[3]; // 0x21
         };
 
         u32 serialized_flags;
-    };
+    }; // 0x20
 
-    void *object_data;
+    void *object_data; // 0x24
 };
 
-STATIC_ASSERT(sizeof(GAMEANIMOBJ) == 0x28);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, instance_animation) == 0x10);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, animation) == 0x14);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, start_frame) == 0x18);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, flags) == 0x20);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, serialized_flags) == 0x20);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, reserved_21) == 0x21);
-STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
-
-struct gameanimobjpool_s {
-    u16 object_data_size;
-    u16 active_count;
-    u16 capacity;
-    u16 unknown_06;
-    GAMEANIMOBJ *objects;
-    GAMEANIMOBJ *free_objects;
-    void *object_data;
+struct gameanimobjpool_s {     // size 0x14
+    u16 object_data_size;      // 0x00
+    u16 active_count;          // 0x02
+    u16 capacity;              // 0x04
+    u16 unknown_06;            // 0x06
+    GAMEANIMOBJ *objects;      // 0x08
+    GAMEANIMOBJ *free_objects; // 0x0c
+    void *object_data;         // 0x10
 };
 
-STATIC_ASSERT(sizeof(GAMEANIMOBJPOOL) == 0x14);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, object_data_size) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, active_count) == 2);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, capacity) == 4);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, objects) == 8);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, free_objects) == 0xc);
-STATIC_ASSERT(offsetof(GAMEANIMOBJPOOL, object_data) == 0x10);
-
-struct gameanimset_s {
-    NULISTLNK links;
-    u8 object_count;
-    u8 animated_object_count;
-    u16 flags;
-    i32 state;
-    GAMEANIMOBJPOOL *object_pool;
-    GAMEANIMSYS *system;
-    GAMEANIMOBJ *objects;
+struct gameanimset_s {            // size 0x1c
+    NULISTLNK links;              // 0x00
+    u8 object_count;              // 0x08
+    u8 animated_object_count;     // 0x09
+    u16 flags;                    // 0x0a
+    i32 state;                    // 0x0c
+    GAMEANIMOBJPOOL *object_pool; // 0x10
+    GAMEANIMSYS *system;          // 0x14
+    GAMEANIMOBJ *objects;         // 0x18
 };
 
-STATIC_ASSERT(sizeof(GAMEANIMSET) == 0x1c);
-STATIC_ASSERT(offsetof(GAMEANIMSET, links) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMSET, object_count) == 8);
-STATIC_ASSERT(offsetof(GAMEANIMSET, animated_object_count) == 9);
-STATIC_ASSERT(offsetof(GAMEANIMSET, flags) == 0xa);
-STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
-STATIC_ASSERT(offsetof(GAMEANIMSET, object_pool) == 0x10);
-STATIC_ASSERT(offsetof(GAMEANIMSET, system) == 0x14);
-STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
-
-struct gameanimsys_s {
-    NULISTHDR active_sets;
-    i32 set_count;
-    GAMEANIMSET **sets;
+struct gameanimsys_s {     // size 0x10
+    NULISTHDR active_sets; // 0x0
+    i32 set_count;         // 0x8
+    GAMEANIMSET **sets;    // 0xc
 };
 
-STATIC_ASSERT(sizeof(GAMEANIMSYS) == 0x10);
-STATIC_ASSERT(offsetof(GAMEANIMSYS, active_sets) == 0);
-STATIC_ASSERT(offsetof(GAMEANIMSYS, set_count) == 8);
-STATIC_ASSERT(offsetof(GAMEANIMSYS, sets) == 0xc);
-
-typedef struct gizobstacle_s {
-    char name[16];
-    NUVEC position;
-    NUVEC secondary_position;
-    NUVEC evaluated_position;
-    GAMEANIMSET *anim_set;
-    struct gameobject_s *triggering_object;
-    f32 auto_return_delay;
-    f32 auto_return_timer;
-    f32 trigger_radius;
-    f32 animation_speed;
-    f32 forward_speed_factor;
-    f32 backward_speed_factor;
-    f32 reflection_alpha;
-    f32 evaluated_radius;
-    NUVEC trigger_box_half_extents;
-    u32 config_flags;
-    u32 exclude_flags;
-    NUVEC pickup_offset;
-    f32 pickup_scatter_height;
-    i16 pickup_direction_x;
-    i16 pickup_direction_y;
-    i16 trigger_box_yaw;
-    i16 room_id;
-    i16 blowup_type;
-    i16 pickup_count;
-    i16 start_sfx_id;
-    i16 stop_sfx_id;
-    u8 playback_state;
-    u8 mode;
-    u8 trigger_mode;
-    u8 unknown_093;
-    u32 progress_flags;
-    i32 proximity_output;
-    u32 runtime_flags;
+typedef struct gizobstacle_s {              // size 0xa0
+    char name[16];                          // 0x00
+    NUVEC position;                         // 0x10
+    NUVEC secondary_position;               // 0x1c
+    NUVEC evaluated_position;               // 0x28
+    GAMEANIMSET *anim_set;                  // 0x34
+    struct gameobject_s *triggering_object; // 0x38
+    f32 auto_return_delay;                  // 0x3c
+    f32 auto_return_timer;                  // 0x40
+    f32 trigger_radius;                     // 0x44
+    f32 animation_speed;                    // 0x48
+    f32 forward_speed_factor;               // 0x4c
+    f32 backward_speed_factor;              // 0x50
+    f32 reflection_alpha;                   // 0x54
+    f32 evaluated_radius;                   // 0x58
+    NUVEC trigger_box_half_extents;         // 0x5c
+    u32 config_flags;                       // 0x68
+    u32 exclude_flags;                      // 0x6c
+    NUVEC pickup_offset;                    // 0x70
+    f32 pickup_scatter_height;              // 0x7c
+    i16 pickup_direction_x;                 // 0x80
+    i16 pickup_direction_y;                 // 0x82
+    i16 trigger_box_yaw;                    // 0x84
+    i16 room_id;                            // 0x86
+    i16 blowup_type;                        // 0x88
+    i16 pickup_count;                       // 0x8a
+    i16 start_sfx_id;                       // 0x8c
+    i16 stop_sfx_id;                        // 0x8e
+    u8 playback_state;                      // 0x90
+    u8 mode;                                // 0x91
+    u8 trigger_mode;                        // 0x92
+    u8 unknown_093;                         // 0x93
+    u32 progress_flags;                     // 0x94
+    i32 proximity_output;                   // 0x98
+    u32 runtime_flags;                      // 0x9c
 } GIZOBSTACLE;
 
-STATIC_ASSERT(sizeof(GIZOBSTACLE) == 0xa0);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, name) == 0);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, position) == 0x10);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, stop_sfx_id) == 0x8e);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, secondary_position) == 0x1c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_delay) == 0x3c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, reflection_alpha) == 0x54);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_box_half_extents) == 0x5c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, config_flags) == 0x68);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, exclude_flags) == 0x6c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_offset) == 0x70);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_scatter_height) == 0x7c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_direction_x) == 0x80);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_direction_y) == 0x82);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_box_yaw) == 0x84);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, blowup_type) == 0x88);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, pickup_count) == 0x8a);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_mode) == 0x92);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_position) == 0x28);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, evaluated_radius) == 0x58);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, room_id) == 0x86);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, proximity_output) == 0x98);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, trigger_radius) == 0x44);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, start_sfx_id) == 0x8c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, mode) == 0x91);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, animation_speed) == 0x48);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, forward_speed_factor) == 0x4c);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, backward_speed_factor) == 0x50);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, playback_state) == 0x90);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 typedef void (*PICKUP_COLLECT_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP_PC *, i32, struct gameobject_s *, i32);
 
-typedef struct GIZMO_PICKUP_TYPE_PC {
-    char *name;
-    char *activation_sfx_name;
-    char *collection_sfx_name;
-    u8 field_c;
-    u8 random_model_count;
-    u8 flags;
-    u8 field_0f;
-    i16 first_model_id;
-    u16 score;
-    f32 shadow_radius_x;
-    f32 shadow_radius_z;
-    f32 draw_distance;
-    f32 bob_height;
-    PICKUP_UPDATE_FN_PC update_fn;
-    PICKUP_COLLECT_FN_PC collect_fn;
-    i16 debris_id;
-    i16 overlay_model_id;
-    f32 shadow_extent_x;
-    f32 shadow_extent_z;
+typedef struct GIZMO_PICKUP_TYPE_PC { // size 0x38
+    char *name;                       // 0x00
+    char *activation_sfx_name;        // 0x04
+    char *collection_sfx_name;        // 0x08
+    u8 field_c;                       // 0x0c
+    u8 random_model_count;            // 0x0d
+    u8 flags;                         // 0x0e
+    u8 field_0f;                      // 0x0f
+    i16 first_model_id;               // 0x10
+    u16 score;                        // 0x12
+    f32 shadow_radius_x;              // 0x14
+    f32 shadow_radius_z;              // 0x18
+    f32 draw_distance;                // 0x1c
+    f32 bob_height;                   // 0x20
+    PICKUP_UPDATE_FN_PC update_fn;    // 0x24
+    PICKUP_COLLECT_FN_PC collect_fn;  // 0x28
+    i16 debris_id;                    // 0x2c
+    i16 overlay_model_id;             // 0x2e
+    f32 shadow_extent_x;              // 0x30
+    f32 shadow_extent_z;              // 0x34
 } GIZMO_PICKUP_TYPE_PC;
 
-STATIC_ASSERT(sizeof(GIZMO_PICKUP_TYPE_PC) == 0x38);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, name) == 0x0);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, activation_sfx_name) == 0x4);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, collection_sfx_name) == 0x8);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, field_c) == 0xc);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, random_model_count) == 0xd);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, flags) == 0xe);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, field_0f) == 0xf);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, first_model_id) == 0x10);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, score) == 0x12);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_radius_x) == 0x14);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_radius_z) == 0x18);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, draw_distance) == 0x1c);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, bob_height) == 0x20);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, update_fn) == 0x24);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, collect_fn) == 0x28);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, debris_id) == 0x2c);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, overlay_model_id) == 0x2e);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_x) == 0x30);
-STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_z) == 0x34);
+struct gizforce_s {                    // size 0xa4
+    char name[16];                     // 0x00
+    NUVEC file_position;               // 0x10
+    NUVEC position;                    // 0x1c
+    GAMEANIMSET *anim_set;             // 0x28
+    NUSPECIALHANDLE along_socket;      // 0x2c
+    struct gameobject_s *using_object; // 0x38
+    u32 reset_word;                    // 0x3c
+    struct FORCE_RESET_GROUP *group;   // 0x40
+    f32 force_strength;                // 0x44
+    f32 field_48;                      // 0x48
+    f32 force_range;                   // 0x4c
+    f32 field_50;                      // 0x50
+    f32 interaction_radius;            // 0x54
+    f32 animation_speed;               // 0x58
+    f32 start_frame;                   // 0x5c
+    f32 end_frame;                     // 0x60
+    f32 effect_scale;                  // 0x64
+    f32 radius;                        // 0x68
+    f32 vertical_range;                // 0x6c
+    f32 horizontal_range;              // 0x70
+    u32 config_flags;                  // 0x74
+    u8 unknown_078[4];                 // 0x78
+    u8 group_index;                    // 0x7c
+    u8 collision_mask;                 // 0x7d
+    u8 activation_mode;                // 0x7e
+    u8 unknown_07f;                    // 0x7f
+    i16 room_id;                       // 0x80
+    i16 start_sfx_id;                  // 0x82
+    i16 loop_sfx_id;                   // 0x84
+    i16 stop_sfx_id;                   // 0x86
+    i16 blowup_type;                   // 0x88
+    i16 pickup_count;                  // 0x8a
+    i16 pickup_rotation_x;             // 0x8c
+    i16 pickup_rotation_y;             // 0x8e
+    NUVEC effect_position;             // 0x90
+    f32 activation_radius;             // 0x9c
 
-struct gizforce_s {
-    char name[16];
-    NUVEC file_position;
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    NUSPECIALHANDLE along_socket;
-    struct gameobject_s *using_object;
-    u32 reset_word;
-    struct FORCE_RESET_GROUP *group;
-    f32 force_strength;
-    f32 field_48;
-    f32 force_range;
-    f32 field_50;
-    f32 interaction_radius;
-    f32 animation_speed;
-    f32 start_frame;
-    f32 end_frame;
-    f32 effect_scale;
-    f32 radius;
-    f32 vertical_range;
-    f32 horizontal_range;
-    u32 config_flags;
-    u8 unknown_078[4];
-    u8 group_index;
-    u8 collision_mask;
-    u8 activation_mode;
-    u8 unknown_07f;
-    i16 room_id;
-    i16 start_sfx_id;
-    i16 loop_sfx_id;
-    i16 stop_sfx_id;
-    i16 blowup_type;
-    i16 pickup_count;
-    i16 pickup_rotation_x;
-    i16 pickup_rotation_y;
-    NUVEC effect_position;
-    f32 activation_radius;
-
-    union {
+    union { // size 0x4
         u32 runtime_flags;
 
-        struct {
-            u32 enabled : 1;
-            u32 visible : 1;
-            u32 runtime_bits_2_8 : 7;
-            u32 reward_released : 1;
-            u32 runtime_bit_10 : 1;
-            u32 socket_hidden : 1;
-            u32 runtime_bits_12_13 : 2;
-            u32 completion_released : 1;
-            u32 completion_pending : 1;
-            u32 destroyed : 1;
-            u32 runtime_bits_17_20 : 4;
-            u32 being_used : 1;
-            u32 runtime_bits_22_31 : 10;
+        struct {                         // size 0x4
+            u32 enabled : 1;             // 0xa0:0
+            u32 visible : 1;             // 0xa0:1
+            u32 runtime_bits_2_8 : 7;    // 0xa0:2
+            u32 reward_released : 1;     // 0xa0:9
+            u32 runtime_bit_10 : 1;      // 0xa0:10
+            u32 socket_hidden : 1;       // 0xa0:11
+            u32 runtime_bits_12_13 : 2;  // 0xa0:12
+            u32 completion_released : 1; // 0xa0:14
+            u32 completion_pending : 1;  // 0xa0:15
+            u32 destroyed : 1;           // 0xa0:16
+            u32 runtime_bits_17_20 : 4;  // 0xa0:17
+            u32 being_used : 1;          // 0xa0:21
+            u32 runtime_bits_22_31 : 10; // 0xa0:22
         };
-    };
+    }; // 0xa0
 };
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct EXPLOSION_PC {
-        i32 field_00;
-        i32 field_04;
-        struct gameobject_s *owner;
-        NUVEC position;
-        f32 radius;
-        f32 time;
-        f32 duration;
-        u32 flags;
-        u8 unknown_28[2];
-        u16 random_angle;
-        i16 effect_id;
-        u16 hit_flags;
-        u16 field_30;
-        u8 field_32;
-        i8 field_33;
-        u8 unknown_34[4];
+    typedef struct EXPLOSION_PC {   // size 0x38
+        i32 field_00;               // 0x00
+        i32 field_04;               // 0x04
+        struct gameobject_s *owner; // 0x08
+        NUVEC position;             // 0x0c
+        f32 radius;                 // 0x18
+        f32 time;                   // 0x1c
+        f32 duration;               // 0x20
+        u32 flags;                  // 0x24
+        u8 unknown_28[2];           // 0x28
+        u16 random_angle;           // 0x2a
+        i16 effect_id;              // 0x2c
+        u16 hit_flags;              // 0x2e
+        u16 field_30;               // 0x30
+        u8 field_32;                // 0x32
+        i8 field_33;                // 0x33
+        u8 unknown_34[4];           // 0x34
     } EXPLOSION_PC;
 
-    STATIC_ASSERT(sizeof(EXPLOSION_PC) == 0x38);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, owner) == 8);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, position) == 0xc);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, radius) == 0x18);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, time) == 0x1c);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, duration) == 0x20);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, field_00) == 0x0);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, field_04) == 0x4);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, random_angle) == 0x2a);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, effect_id) == 0x2c);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, hit_flags) == 0x2e);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, field_30) == 0x30);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, field_32) == 0x32);
-    STATIC_ASSERT(offsetof(EXPLOSION_PC, field_33) == 0x33);
 #ifdef __cplusplus
 }
 #endif
 
-struct GIZFORCE_s {
-    char name[16];
-    NUVEC file_position;
-    NUVEC position;
-    struct gameanimset_s *anim_set;
-    struct nuhspecial_s along_socket;
-    struct gameobject_s *using_object;
+struct GIZFORCE_s {                    // size 0xac
+    char name[16];                     // 0x00
+    NUVEC file_position;               // 0x10
+    NUVEC position;                    // 0x1c
+    struct gameanimset_s *anim_set;    // 0x28
+    struct nuhspecial_s along_socket;  // 0x2c
+    struct gameobject_s *using_object; // 0x38
 
-    union {
+    union { // size 0x4
         f32 field_0x3c;
         u32 field_0x3c_bits;
-    };
-    struct GIZFORCEGROUP_s *group;
-    f32 force_strength;
-    f32 field_0x48;
-    f32 force_range;
-    f32 field_0x50;
-    f32 interaction_radius;
-    f32 animation_speed;
-    f32 start_frame;
-    f32 end_frame;
-    f32 effect_scale;
-    f32 radius;
-    f32 strength_0x6c;
-    f32 vertical_range;
-    f32 horizontal_range;
-    u32 config_flags;
-    u32 field_0x7c;
-    u8 group_index;
-    u8 collision_mask;
-    u8 activation_mode;
-    u8 field_0x83;
-    i16 room_id;
-    i16 start_sfx_id;
-    i16 loop_sfx_id;
-    i16 stop_sfx_id;
-    i16 blowup_type;
+    }; // 0x3c
+    struct GIZFORCEGROUP_s *group; // 0x40
+    f32 force_strength;            // 0x44
+    f32 field_0x48;                // 0x48
+    f32 force_range;               // 0x4c
+    f32 field_0x50;                // 0x50
+    f32 interaction_radius;        // 0x54
+    f32 animation_speed;           // 0x58
+    f32 start_frame;               // 0x5c
+    f32 end_frame;                 // 0x60
+    f32 effect_scale;              // 0x64
+    f32 radius;                    // 0x68
+    f32 strength_0x6c;             // 0x6c
+    f32 vertical_range;            // 0x70
+    f32 horizontal_range;          // 0x74
+    u32 config_flags;              // 0x78
+    u32 field_0x7c;                // 0x7c
+    u8 group_index;                // 0x80
+    u8 collision_mask;             // 0x81
+    u8 activation_mode;            // 0x82
+    u8 field_0x83;                 // 0x83
+    i16 room_id;                   // 0x84
+    i16 start_sfx_id;              // 0x86
+    i16 loop_sfx_id;               // 0x88
+    i16 stop_sfx_id;               // 0x8a
+    i16 blowup_type;               // 0x8c
 
-    union {
+    union { // size 0x2
         i16 debris_type;
         u16 pickup_count;
         u16 completion_score;
-    };
+    }; // 0x8e
 
-    union {
+    union { // size 0x2
         i16 hit_points;
         u16 pickup_direction_x;
         u16 pickup_rotation_x;
-    };
+    }; // 0x90
 
-    union {
+    union { // size 0x2
         i16 score;
         u16 pickup_direction_y;
         u16 pickup_rotation_y;
-    };
+    }; // 0x92
 
-    union {
+    union { // size 0xc
         NUVEC effect_position;
         NUVEC pickup_offset;
-    };
+    }; // 0x94
 
-    union {
+    union { // size 0x4
         f32 activation_radius;
         f32 pickup_scatter_height;
-    };
+    }; // 0xa0
 
-    union {
+    union { // size 0x4
         u32 field_0xa4;
         struct MechObjectInterface *mech_object_interface;
-    };
+    }; // 0xa4
 
-    union {
-        struct {
-            union {
+    union { // size 0x4
+
+        struct { // size 0x4
+
+            union { // size 0x1
                 u8 progress_flags;
 
-                struct {
-                    u8 progress_enabled : 1;
-                    u8 progress_visible : 1;
-                    u8 : 2;
-                    u8 progress_reverse_active : 1;
-                    u8 progress_group_member : 1;
-                    u8 progress_animation_reversed : 1;
-                    u8 progress_draw_active : 1;
+                struct {                                // size 0x1
+                    u8 progress_enabled : 1;            // 0xa8:0
+                    u8 progress_visible : 1;            // 0xa8:1
+                    u8 : 2;                             // 0xa8:2
+                    u8 progress_reverse_active : 1;     // 0xa8:4
+                    u8 progress_group_member : 1;       // 0xa8:5
+                    u8 progress_animation_reversed : 1; // 0xa8:6
+                    u8 progress_draw_active : 1;        // 0xa8:7
                 };
-            };
+            }; // 0xa8
 
-            union {
+            union { // size 0x1
                 u8 runtime_flags;
 
-                struct {
-                    u8 runtime_has_platform : 1;
-                    u8 runtime_reward_released : 1;
-                    u8 runtime_pending_blowup_type : 1;
-                    u8 runtime_along_socket_hidden : 1;
-                    u8 runtime_offset_applied : 1;
-                    u8 runtime_force_range_complete : 1;
-                    u8 runtime_completion_released : 1;
-                    u8 runtime_pending_completion : 1;
+                struct {                                 // size 0x1
+                    u8 runtime_has_platform : 1;         // 0xa9:0
+                    u8 runtime_reward_released : 1;      // 0xa9:1
+                    u8 runtime_pending_blowup_type : 1;  // 0xa9:2
+                    u8 runtime_along_socket_hidden : 1;  // 0xa9:3
+                    u8 runtime_offset_applied : 1;       // 0xa9:4
+                    u8 runtime_force_range_complete : 1; // 0xa9:5
+                    u8 runtime_completion_released : 1;  // 0xa9:6
+                    u8 runtime_pending_completion : 1;   // 0xa9:7
                 };
-            };
+            }; // 0xa9
 
-            union {
+            union { // size 0x1
                 u8 field_0xaa;
                 u8 state_flags;
 
-                struct {
-                    u8 state_destroyed_or_thrown : 1;
-                    u8 state_debris_active : 1;
-                    u8 : 3;
-                    u8 state_being_used : 1;
-                    u8 : 2;
+                struct {                              // size 0x1
+                    u8 state_destroyed_or_thrown : 1; // 0xaa:0
+                    u8 state_debris_active : 1;       // 0xaa:1
+                    u8 : 3;                           // 0xaa:2
+                    u8 state_being_used : 1;          // 0xaa:5
+                    u8 : 2;                           // 0xaa:6
                 };
-            };
+            }; // 0xaa
 
-            u8 field_0xab;
+            u8 field_0xab; // 0xab
         };
 
         u32 packed_state;
-    };
+    }; // 0xa8
 };
 
-STATIC_ASSERT(sizeof(struct GIZFORCE_s) == 172);
-
-struct DETONATOR_s {
-    NUVEC position;
-    NUVEC field_0x0c;
-    NUVEC field_0x18;
-    struct gameobject_s *object;
-    u8 active;
-    u8 draw_result;
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-    f32 timer;
-    void *field_0x34;
+struct DETONATOR_s {             // size 0x38
+    NUVEC position;              // 0x00
+    NUVEC field_0x0c;            // 0x0c
+    NUVEC field_0x18;            // 0x18
+    struct gameobject_s *object; // 0x24
+    u8 active;                   // 0x28
+    u8 draw_result;              // 0x29
+    u16 rotation_x;              // 0x2a
+    u16 rotation_y;              // 0x2c
+    u16 rotation_z;              // 0x2e
+    f32 timer;                   // 0x30
+    void *field_0x34;            // 0x34
 };
 
-STATIC_ASSERT(sizeof(struct DETONATOR_s) == 56);
-
-struct EXPLOSION {
-    i32 field_0x00;
-    i32 field_0x04;
-    struct gameobject_s *object;
-    NUVEC position;
-    f32 field_0x18;
-    f32 field_0x1c;
-    f32 field_0x20;
-    i32 field_0x24;
-    u16 field_0x28;
-    u16 field_0x2a;
-    u16 field_0x2c;
-    u16 field_0x2e;
-    u16 field_0x30;
-    u8 field_0x32;
-    u8 field_0x33;
+struct EXPLOSION {               // size 0x34
+    i32 field_0x00;              // 0x00
+    i32 field_0x04;              // 0x04
+    struct gameobject_s *object; // 0x08
+    NUVEC position;              // 0x0c
+    f32 field_0x18;              // 0x18
+    f32 field_0x1c;              // 0x1c
+    f32 field_0x20;              // 0x20
+    i32 field_0x24;              // 0x24
+    u16 field_0x28;              // 0x28
+    u16 field_0x2a;              // 0x2a
+    u16 field_0x2c;              // 0x2c
+    u16 field_0x2e;              // 0x2e
+    u16 field_0x30;              // 0x30
+    u8 field_0x32;               // 0x32
+    u8 field_0x33;               // 0x33
 };
 
-STATIC_ASSERT(sizeof(struct EXPLOSION) == 52);
-
-struct CABLE_s {
-    struct gameobject_s *source;
-    struct gameobject_s *target;
-    NUVEC points[16];
-    NUVEC velocities[16];
-    f32 segment_lengths[15];
-    f32 max_length;
-    f32 total_length;
-    u8 unknown_1cc[4];
-    f32 slack;
-    f32 pull_time;
-    u8 wrap_indices[15];
-    u8 point_count;
-    u8 wrap_count;
-    u8 flags_1e9;
-    u8 unknown_1ea[2];
+struct CABLE_s {                 // size 0x1ec
+    struct gameobject_s *source; // 0x000
+    struct gameobject_s *target; // 0x004
+    NUVEC points[16];            // 0x008
+    NUVEC velocities[16];        // 0x0c8
+    f32 segment_lengths[15];     // 0x188
+    f32 max_length;              // 0x1c4
+    f32 total_length;            // 0x1c8
+    u8 unknown_1cc[4];           // 0x1cc
+    f32 slack;                   // 0x1d0
+    f32 pull_time;               // 0x1d4
+    u8 wrap_indices[15];         // 0x1d8
+    u8 point_count;              // 0x1e7
+    u8 wrap_count;               // 0x1e8
+    u8 flags_1e9;                // 0x1e9
+    u8 unknown_1ea[2];           // 0x1ea
 };
 
-STATIC_ASSERT(sizeof(struct CABLE_s) == 492);
+struct GIZBUILDIT_s {                                  // size 0x84
+    char name[16];                                     // 0x00
+    struct gameanimset_s *anim_set;                    // 0x10
+    struct gameanimobj_s **anim_objects;               // 0x14
+    struct GIZBUILDIT_s *linked_buildit;               // 0x18
+    struct MechObjectInterface *mech_object_interface; // 0x1c
+    NUVEC file_position;                               // 0x20
+    NUVEC start_position;                              // 0x2c
+    NUVEC position;                                    // 0x38
+    f32 bounds_radius;                                 // 0x44
+    f32 step_timer;                                    // 0x48
+    f32 step_duration;                                 // 0x4c
+    f32 interaction_radius;                            // 0x50
+    f32 field_0x54;                                    // 0x54
+    f32 radius_scale;                                  // 0x58
+    i16 field_0x5c;                                    // 0x5c
 
-struct GIZBUILDIT_s {
-    char name[16];
-    struct gameanimset_s *anim_set;
-    struct gameanimobj_s **anim_objects;
-    struct GIZBUILDIT_s *linked_buildit;
-    struct MechObjectInterface *mech_object_interface;
-    NUVEC file_position;
-    NUVEC start_position;
-    NUVEC position;
-    f32 bounds_radius;
-    f32 step_timer;
-    f32 step_duration;
-    f32 interaction_radius;
-    f32 field_0x54;
-    f32 radius_scale;
-    i16 field_0x5c;
-
-    union {
+    union { // size 0x2
         i16 field_0x5e;
         u16 completion_score;
-    };
+    }; // 0x5e
 
-    i16 field_0x60;
-    i16 field_0x62;
-    NUVEC effect_position;
-    f32 activation_radius;
-    u8 anim_object_count;
-    u8 build_state;
-    u8 builders_active;
-    u8 built_object_count;
-    u8 field_0x78;
-    u8 progress;
-    u16 state_flags;
-    u16 field_0x7c;
-    i16 room_index;
-    i16 blowup_type;
-    u8 availability_flags;
-    u8 field_0x83;
+    i16 field_0x60;        // 0x60
+    i16 field_0x62;        // 0x62
+    NUVEC effect_position; // 0x64
+    f32 activation_radius; // 0x70
+    u8 anim_object_count;  // 0x74
+    u8 build_state;        // 0x75
+    u8 builders_active;    // 0x76
+    u8 built_object_count; // 0x77
+    u8 field_0x78;         // 0x78
+    u8 progress;           // 0x79
+    u16 state_flags;       // 0x7a
+    u16 field_0x7c;        // 0x7c
+    i16 room_index;        // 0x7e
+    i16 blowup_type;       // 0x80
+    u8 availability_flags; // 0x82
+    u8 field_0x83;         // 0x83
 };
 
-STATIC_ASSERT(sizeof(struct GIZBUILDIT_s) == 132);
+struct STATUSPACKET_s {                                                                      // size 0x14c
+    struct STATUSPACKET_LSW_s *lsw_packet;                                                   // 0x000
+    i32 (*init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);             // 0x004
+    i32 (*finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2); // 0x008
+    void (*reset_callback)(struct STATUSPACKET_s *arg0);                                     // 0x00c
+    void (*draw_background_callback)(struct STATUSPACKET_s *arg0);                           // 0x010
+    struct area_data_pc_s *area;                                                             // 0x014
+    struct episode_data_s *episode;                                                          // 0x018
+    u32 *score;                                                                              // 0x01c
+    struct mission_data_s *mission;                                                          // 0x020
+    f32 player0_rumble_amount;                                                               // 0x024
+    f32 player0_rumble_time;                                                                 // 0x028
+    f32 player0_rumble_duration;                                                             // 0x02c
+    f32 player0_buzz_amount;                                                                 // 0x030
+    u8 player0_rumble_priority;                                                              // 0x034
+    u8 field_0x35[3];                                                                        // 0x035
+    f32 player1_rumble_amount;                                                               // 0x038
+    f32 player1_rumble_time;                                                                 // 0x03c
+    f32 player1_rumble_duration;                                                             // 0x040
+    f32 player1_buzz_amount;                                                                 // 0x044
+    u8 player1_rumble_priority;                                                              // 0x048
+    u8 field_0x49[3];                                                                        // 0x049
+    f32 area_time;                                                                           // 0x04c
+    f32 collected_score;                                                                     // 0x050
+    f32 true_hero_target;                                                                    // 0x054
+    f32 true_hero_percent;                                                                   // 0x058
+    f32 previous_best_time;                                                                  // 0x05c
+    f32 new_best_time;                                                                       // 0x060
+    f32 elapsed_time;                                                                        // 0x064
+    f32 field_0x68;                                                                          // 0x068
+    u32 previous_best_score;                                                                 // 0x06c
+    u32 new_best_score;                                                                      // 0x070
+    u32 original_score;                                                                      // 0x074
+    u32 reward_score;                                                                        // 0x078
+    u32 time_reward_score;                                                                   // 0x07c
+    u32 final_reward_score;                                                                  // 0x080
+    u32 coins_remaining[2];                                                                  // 0x084
+    u32 coins_collected[2];                                                                  // 0x08c
+    i32 new_minikits;                                                                        // 0x094
+    u32 field_0x98;                                                                          // 0x098
+    u16 player0_model;                                                                       // 0x09c
+    u16 player1_model;                                                                       // 0x09e
+    i16 area_id;                                                                             // 0x0a0
+    i8 episode_id;                                                                           // 0x0a2
+    u8 field_0xa3;                                                                           // 0x0a3
 
-struct STATUSPACKET_s {
-    struct STATUSPACKET_LSW_s *lsw_packet;
-    i32 (*init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);
-    i32 (*finish_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void (*reset_callback)(struct STATUSPACKET_s *arg0);
-    void (*draw_background_callback)(struct STATUSPACKET_s *arg0);
-    struct area_data_pc_s *area;
-    struct episode_data_s *episode;
-    u32 *score;
-    struct mission_data_s *mission;
-    f32 player0_rumble_amount;
-    f32 player0_rumble_time;
-    f32 player0_rumble_duration;
-    f32 player0_buzz_amount;
-    u8 player0_rumble_priority;
-    u8 field_0x35[3];
-    f32 player1_rumble_amount;
-    f32 player1_rumble_time;
-    f32 player1_rumble_duration;
-    f32 player1_buzz_amount;
-    u8 player1_rumble_priority;
-    u8 field_0x49[3];
-    f32 area_time;
-    f32 collected_score;
-    f32 true_hero_target;
-    f32 true_hero_percent;
-    f32 previous_best_time;
-    f32 new_best_time;
-    f32 elapsed_time;
-    f32 field_0x68;
-    u32 previous_best_score;
-    u32 new_best_score;
-    u32 original_score;
-    u32 reward_score;
-    u32 time_reward_score;
-    u32 final_reward_score;
-    u32 coins_remaining[2];
-    u32 coins_collected[2];
-    i32 new_minikits;
-    u32 field_0x98;
-    u16 player0_model;
-    u16 player1_model;
-    i16 area_id;
-    i8 episode_id;
-    u8 field_0xa3;
-
-    union {
+    union { // size 0x2
         u8 player_active[2];
 
-        struct {
-            u8 player0_active;
-            u8 player1_active;
+        struct {               // size 0x2
+            u8 player0_active; // 0x0a4
+            u8 player1_active; // 0x0a5
         };
-    };
+    }; // 0x0a4
 
-    u8 challenge_state;
-    u8 mission_state;
-    f32 superstory_time;
-    u32 superstory_score;
+    u8 challenge_state;   // 0x0a6
+    u8 mission_state;     // 0x0a7
+    f32 superstory_time;  // 0x0a8
+    u32 superstory_score; // 0x0ac
 
-    union {
+    union { // size 0x4
         u32 flags_word;
 
-        struct {
-            union {
+        struct { // size 0x4
+
+            union { // size 0x1
                 u8 field_0xb0;
 
-                struct {
-                    u8 : 2;
-                    u8 true_hero_complete : 1;
-                    u8 next_area_unlocked : 1;
-                    u8 new_minikit_complete : 1;
-                    u8 bonus_winner : 1;
-                    u8 free_play : 1;
-                    u8 vehicle_area : 1;
+                struct {                         // size 0x1
+                    u8 : 2;                      // 0x0b0:0
+                    u8 true_hero_complete : 1;   // 0x0b0:2
+                    u8 next_area_unlocked : 1;   // 0x0b0:3
+                    u8 new_minikit_complete : 1; // 0x0b0:4
+                    u8 bonus_winner : 1;         // 0x0b0:5
+                    u8 free_play : 1;            // 0x0b0:6
+                    u8 vehicle_area : 1;         // 0x0b0:7
                 };
-            };
+            }; // 0x0b0
 
-            union {
+            union { // size 0x1
                 u8 mode_flags;
 
-                struct {
-                    u8 bonus_mode : 1;
-                    u8 super_bonus_mode : 1;
-                    u8 super_story_mode : 1;
-                    u8 saved_and_exited : 1;
-                    u8 continue_story : 1;
-                    u8 : 3;
+                struct {                     // size 0x1
+                    u8 bonus_mode : 1;       // 0x0b1:0
+                    u8 super_bonus_mode : 1; // 0x0b1:1
+                    u8 super_story_mode : 1; // 0x0b1:2
+                    u8 saved_and_exited : 1; // 0x0b1:3
+                    u8 continue_story : 1;   // 0x0b1:4
+                    u8 : 3;                  // 0x0b1:5
                 };
-            };
+            }; // 0x0b1
 
-            u8 reserved_flags_b2[2];
+            u8 reserved_flags_b2[2]; // 0x0b2
         };
-    };
+    }; // 0x0b0
 
-    u8 status_flags;
-    u8 minikit_count;
-    u8 minikit_max;
-    u8 stage_count;
-    i8 current_gold_brick;
-    u8 save_state;
-    u8 prompt_choice;
-    u8 newly_completed;
-    u8 previous_completion;
-    u8 previous_gold_bricks;
-    u8 displayed_gold_bricks;
-    u8 field_0xbd;
-    i8 field_0xbe;
-    u8 field_0xbf[7];
-    i8 stage_types[40];
-    u8 gold_brick_enabled[40];
-    i16 next_area;
-    i8 chapter;
-    u8 field_0x119[1];
-    struct STATUS_STAGE_s *previous_stage_2;
-    struct STATUS_STAGE_s *previous_stage;
-    struct STATUS_STAGE_s *stage;
-    struct STATUS_STAGE_s *next_stage;
-    u8 field_0x12c[32];
+    u8 status_flags;                         // 0x0b4
+    u8 minikit_count;                        // 0x0b5
+    u8 minikit_max;                          // 0x0b6
+    u8 stage_count;                          // 0x0b7
+    i8 current_gold_brick;                   // 0x0b8
+    u8 save_state;                           // 0x0b9
+    u8 prompt_choice;                        // 0x0ba
+    u8 newly_completed;                      // 0x0bb
+    u8 previous_completion;                  // 0x0bc
+    u8 previous_gold_bricks;                 // 0x0bd
+    u8 displayed_gold_bricks;                // 0x0be
+    u8 field_0xbd;                           // 0x0bf
+    i8 field_0xbe;                           // 0x0c0
+    u8 field_0xbf[7];                        // 0x0c1
+    i8 stage_types[40];                      // 0x0c8
+    u8 gold_brick_enabled[40];               // 0x0f0
+    i16 next_area;                           // 0x118
+    i8 chapter;                              // 0x11a
+    u8 field_0x119[1];                       // 0x11b
+    struct STATUS_STAGE_s *previous_stage_2; // 0x11c
+    struct STATUS_STAGE_s *previous_stage;   // 0x120
+    struct STATUS_STAGE_s *stage;            // 0x124
+    struct STATUS_STAGE_s *next_stage;       // 0x128
+    u8 field_0x12c[32];                      // 0x12c
 };
 
-STATIC_ASSERT(sizeof(struct STATUSPACKET_s) == 332);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, lsw_packet) == 0x0);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, init_callback) == 0x4);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, finish_callback) == 0x8);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, reset_callback) == 0xc);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, draw_background_callback) == 0x10);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player0_rumble_amount) == 0x24);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player1_rumble_amount) == 0x38);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x68) == 0x68);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player0_model) == 0x9c);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, player_active) == 0xa4);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, flags_word) == 0xb0);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0xb0) == 0xb0);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, mode_flags) == 0xb1);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, status_flags) == 0xb4);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, minikit_count) == 0xb5);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, minikit_max) == 0xb6);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage_count) == 0xb7);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, current_gold_brick) == 0xb8);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, score) == 0x1c);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, elapsed_time) == 0x64);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, collected_score) == 0x50);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, true_hero_target) == 0x54);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, true_hero_percent) == 0x58);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, original_score) == 0x74);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, reward_score) == 0x78);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, episode_id) == 0xa2);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, coins_remaining) == 0x84);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, coins_collected) == 0x8c);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, save_state) == 0xb9);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, prompt_choice) == 0xba);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, challenge_state) == 0xa6);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, mission_state) == 0xa7);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage_types) == 0xc8);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, gold_brick_enabled) == 0xf0);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_area) == 0x118);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, chapter) == 0x11a);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage_2) == 0x11c);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_stage) == 0x120);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, stage) == 0x124);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, next_stage) == 0x128);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, field_0x12c) == 0x12c);
-STATIC_ASSERT(offsetof(STATUSPACKET_s, mission) == 0x20);
-STATIC_ASSERT(offsetof(struct STATUSPACKET_s, previous_gold_bricks) == 0xbd);
-
-struct STATUS_STAGE_s {
-    void (*draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);
-    void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2);
-    void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);
-    i32 type;
-    u16 field_0x10;
-    u8 field_0x12;
-    u8 pad_0x13;
-    i32 field_0x14;
-    f32 field_0x18;
-    f32 field_0x1c;
+struct STATUS_STAGE_s {                                                                          // size 0x20
+    void (*draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);   // 0x00
+    void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2); // 0x04
+    void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);             // 0x08
+    i32 type;                                                                                    // 0x0c
+    u16 field_0x10;                                                                              // 0x10
+    u8 field_0x12;                                                                               // 0x12
+    u8 pad_0x13;                                                                                 // 0x13
+    i32 field_0x14;                                                                              // 0x14
+    f32 field_0x18;                                                                              // 0x18
+    f32 field_0x1c;                                                                              // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct STATUS_STAGE_s) == 32);
-STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, type) == 0xc);
-STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x12) == 0x12);
-STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x14) == 0x14);
-STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x18) == 0x18);
-STATIC_ASSERT(offsetof(struct STATUS_STAGE_s, field_0x1c) == 0x1c);
+struct GIZTURRET_s {                          // size 0x13c
+    u8 field_0x00[8];                         // 0x000
+    char name[16];                            // 0x008
+    struct gameanimset_s *anim_set;           // 0x018
+    struct gameanimobj_s *primary_anim_obj;   // 0x01c
+    struct gameanimobj_s *secondary_anim_obj; // 0x020
+    NUVEC position;                           // 0x024
+    NUVEC opponent_origin;                    // 0x030
+    NUVEC initial_origin;                     // 0x03c
+    NUVEC opponent_bounds;                    // 0x048
+    i32 pitch;                                // 0x054
+    i32 pitch_upper;                          // 0x058
+    i32 pitch_lower;                          // 0x05c
+    i32 yaw;                                  // 0x060
+    i32 yaw_upper;                            // 0x064
+    i32 yaw_lower;                            // 0x068
+    i32 fixed_pitch;                          // 0x06c
+    i32 fixed_yaw;                            // 0x070
+    NUVEC muzzle_offsets[4];                  // 0x074
+    NUMTX relative_matrix;                    // 0x0a4
+    void *opponent;                           // 0x0e4
+    struct gameobject_s *controller;          // 0x0e8
+    f32 opponent_range;                       // 0x0ec
+    f32 fire_range;                           // 0x0f0
+    f32 reflection_alpha;                     // 0x0f4
+    f32 fire_cooldown;                        // 0x0f8
+    f32 fire_interval;                        // 0x0fc
+    f32 pitch_turn_speed;                     // 0x100
+    f32 yaw_turn_speed;                       // 0x104
 
-struct GIZTURRET_s {
-    u8 field_0x00[8];
-    char name[16];
-    struct gameanimset_s *anim_set;
-    struct gameanimobj_s *primary_anim_obj;
-    struct gameanimobj_s *secondary_anim_obj;
-    NUVEC position;
-    NUVEC opponent_origin;
-    NUVEC initial_origin;
-    NUVEC opponent_bounds;
-    i32 pitch;
-    i32 pitch_upper;
-    i32 pitch_lower;
-    i32 yaw;
-    i32 yaw_upper;
-    i32 yaw_lower;
-    i32 fixed_pitch;
-    i32 fixed_yaw;
-    NUVEC muzzle_offsets[4];
-    NUMTX relative_matrix;
-    void *opponent;
-    struct gameobject_s *controller;
-    f32 opponent_range;
-    f32 fire_range;
-    f32 reflection_alpha;
-    f32 fire_cooldown;
-    f32 fire_interval;
-    f32 pitch_turn_speed;
-    f32 yaw_turn_speed;
-
-    union {
+    union { // size 0x4
         u32 behavior_flags;
 
-        struct {
-            u8 behavior_flags_low;
-            u8 animation_flags;
-            u16 behavior_flags_high;
+        struct {                     // size 0x4
+            u8 behavior_flags_low;   // 0x108
+            u8 animation_flags;      // 0x109
+            u16 behavior_flags_high; // 0x10a
         };
-    };
+    }; // 0x108
 
-    union {
+    union { // size 0x2
         i16 field_0x10c;
         u16 completion_score;
-    };
+    }; // 0x10c
 
-    i16 room_id;
-    i16 pickup_pitch;
-    i16 pickup_yaw;
-    NUVEC pickup_offset;
-    f32 pickup_radius;
-    i16 blowup_type;
-    i16 rotate_sfx;
-    i16 base_y_rotation;
-    i16 fire_sfx;
-    u8 opponent_type;
-    i8 bolt_type_id;
-    u8 state;
-    u8 initial_state;
-    u8 muzzle_count;
-    u8 shots_required;
-    u8 shots_fired;
-    u8 field_0x133;
-    u16 y_rotation;
-    u8 field_0x136[2];
-    i16 destroy_sfx;
+    i16 room_id;         // 0x10e
+    i16 pickup_pitch;    // 0x110
+    i16 pickup_yaw;      // 0x112
+    NUVEC pickup_offset; // 0x114
+    f32 pickup_radius;   // 0x120
+    i16 blowup_type;     // 0x124
+    i16 rotate_sfx;      // 0x126
+    i16 base_y_rotation; // 0x128
+    i16 fire_sfx;        // 0x12a
+    u8 opponent_type;    // 0x12c
+    i8 bolt_type_id;     // 0x12d
+    u8 state;            // 0x12e
+    u8 initial_state;    // 0x12f
+    u8 muzzle_count;     // 0x130
+    u8 shots_required;   // 0x131
+    u8 shots_fired;      // 0x132
+    u8 field_0x133;      // 0x133
+    u16 y_rotation;      // 0x134
+    u8 field_0x136[2];   // 0x136
+    i16 destroy_sfx;     // 0x138
 
-    union {
+    union { // size 0x2
         u16 flags;
 
-        struct {
-            u16 : 1;
-            u16 active : 1;
-            u16 visible : 1;
-            u16 aim_locked : 1;
-            u16 aim_at_fixed_angles : 1;
-            u16 update_disabled : 1;
-            u16 rapid_fire_pending : 1;
-            u16 fired_this_frame : 1;
-            u16 blowup_pending : 1;
-            u16 has_platform : 1;
-            u16 reward_released : 1;
-            u16 rotation_sound_playing : 1;
-            u16 : 4;
+        struct {                            // size 0x2
+            u16 : 1;                        // 0x13a:0
+            u16 active : 1;                 // 0x13a:1
+            u16 visible : 1;                // 0x13a:2
+            u16 aim_locked : 1;             // 0x13a:3
+            u16 aim_at_fixed_angles : 1;    // 0x13a:4
+            u16 update_disabled : 1;        // 0x13a:5
+            u16 rapid_fire_pending : 1;     // 0x13a:6
+            u16 fired_this_frame : 1;       // 0x13a:7
+            u16 blowup_pending : 1;         // 0x13a:8
+            u16 has_platform : 1;           // 0x13a:9
+            u16 reward_released : 1;        // 0x13a:10
+            u16 rotation_sound_playing : 1; // 0x13a:11
+            u16 : 4;                        // 0x13a:12
         };
-    };
+    }; // 0x13a
 };
 
-STATIC_ASSERT(sizeof(struct GIZTURRET_s) == 0x13c);
-
-struct GIZFORCEGROUP_s {
-    struct GIZFORCE_s *forces[8];
-    f32 combined_height;
-    u8 field_0x24;
-    u8 count;
-    u8 configured_count;
-    u8 field_0x27;
+struct GIZFORCEGROUP_s {          // size 0x28
+    struct GIZFORCE_s *forces[8]; // 0x00
+    f32 combined_height;          // 0x20
+    u8 field_0x24;                // 0x24
+    u8 count;                     // 0x25
+    u8 configured_count;          // 0x26
+    u8 field_0x27;                // 0x27
 };
 
-STATIC_ASSERT(sizeof(struct GIZFORCEGROUP_s) == 40);
-
-struct GIZFORCESYS_s {
-    struct GIZFORCE_s *forces;
-    struct GIZFORCE_s **visible_forces;
-    struct gizmo_pc_s **hit_test_gizmos;
-    u16 capacity;
-    u16 count;
-    u16 visible_force_count;
-    u16 hit_test_gizmo_count;
-    struct gameanimobjpool_s *anim_pool;
-    struct GIZFORCEGROUP_s groups[8];
+struct GIZFORCESYS_s {                   // size 0x158
+    struct GIZFORCE_s *forces;           // 0x000
+    struct GIZFORCE_s **visible_forces;  // 0x004
+    struct gizmo_pc_s **hit_test_gizmos; // 0x008
+    u16 capacity;                        // 0x00c
+    u16 count;                           // 0x00e
+    u16 visible_force_count;             // 0x010
+    u16 hit_test_gizmo_count;            // 0x012
+    struct gameanimobjpool_s *anim_pool; // 0x014
+    struct GIZFORCEGROUP_s groups[8];    // 0x018
 };
 
-STATIC_ASSERT(sizeof(struct GIZFORCESYS_s) == 344);
+struct HOTHBATTLE_MELEE_WAVE_s {       // size 0x28
+    i16 character_id;                  // 0x00
+    u8 reserved_02[2];                 // 0x02
+    struct gameobject_s *creatures[4]; // 0x04
 
-struct HOTHBATTLE_MELEE_WAVE_s {
-    i16 character_id;
-    u8 reserved_02[2];
-    struct gameobject_s *creatures[4];
-
-    union {
+    union { // size 0x1
         u8 remaining_count;
         u8 field_0x18;
-    };
+    }; // 0x14
 
-    union {
+    union { // size 0x1
         u8 initial_count;
         u8 field_0x19;
-    };
+    }; // 0x15
 
-    union {
+    union { // size 0x1
         u8 active_count;
         u8 reserved_1a;
-    };
+    }; // 0x16
 
-    char name[13];
-    u8 reserved_24[4];
+    char name[13];     // 0x17
+    u8 reserved_24[4]; // 0x24
 };
 
-STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_WAVE_s) == 40);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, character_id) == 0);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, creatures) == 4);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, remaining_count) == 0x14);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, initial_count) == 0x15);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, active_count) == 0x16);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_WAVE_s, name) == 0x17);
+struct HOTHBATTLE_MELEE_s { // size 0xc8
 
-struct HOTHBATTLE_MELEE_s {
-    union {
+    union { // size 0x1
         u8 current_wave;
         u8 field_0x0;
-    };
+    }; // 0x00
 
-    union {
+    union { // size 0x1
         u8 next_wave;
         u8 field_0x1;
-    };
+    }; // 0x01
 
-    union {
+    union { // size 0x1
         u8 initialize_wave;
         u8 field_0x2;
-    };
+    }; // 0x02
 
-    u8 field_0x3;
+    u8 field_0x3; // 0x03
 
-    union {
+    union { // size 0x1
         i8 transition_phase;
         i8 field_0x4;
-    };
+    }; // 0x04
 
-    u8 field_0x5[3];
-    f32 wave_delay;
-    struct HOTHBATTLE_MELEE_WAVE_s waves[4];
-    struct gameobject_s *background_creatures[6];
-    u8 creature_count;
-    u8 reserved_0xc5[3];
+    u8 field_0x5[3];                              // 0x05
+    f32 wave_delay;                               // 0x08
+    struct HOTHBATTLE_MELEE_WAVE_s waves[4];      // 0x0c
+    struct gameobject_s *background_creatures[6]; // 0xac
+    u8 creature_count;                            // 0xc4
+    u8 reserved_0xc5[3];                          // 0xc5
 };
 
-STATIC_ASSERT(sizeof(struct HOTHBATTLE_MELEE_s) == 200);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, current_wave) == 0);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, next_wave) == 1);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, initialize_wave) == 2);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, transition_phase) == 4);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, wave_delay) == 8);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, waves) == 0xc);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, background_creatures) == 0xac);
-STATIC_ASSERT(offsetof(struct HOTHBATTLE_MELEE_s, creature_count) == 0xc4);
+struct GIZSPECIAL_s {               // size 0x28
+    char name[32];                  // 0x00
+    struct gameanimset_s *anim_set; // 0x20
 
-struct GIZSPECIAL_s {
-    char name[32];
-    struct gameanimset_s *anim_set;
-
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 is_reversed : 1;
-            u8 is_active : 1;
-            u8 field_0x24_2 : 6;
+        struct {                 // size 0x1
+            u8 is_reversed : 1;  // 0x24:0
+            u8 is_active : 1;    // 0x24:1
+            u8 field_0x24_2 : 6; // 0x24:2
         };
-    };
+    }; // 0x24
 
-    u8 field_0x25[3];
+    u8 field_0x25[3]; // 0x25
 };
 
-STATIC_ASSERT(sizeof(struct GIZSPECIAL_s) == 40);
-
-struct GIZOBSTACLESYS_s {
-    struct gizobstacle_s *obstacles;
-    struct gizmo_pc_s **active_gizmos;
-    u16 count;
-    u16 capacity;
-    u16 active_gizmo_count;
-    u16 field_0x0e;
-    struct gameanimobjpool_s *anim_pool;
+struct GIZOBSTACLESYS_s {                // size 0x14
+    struct gizobstacle_s *obstacles;     // 0x00
+    struct gizmo_pc_s **active_gizmos;   // 0x04
+    u16 count;                           // 0x08
+    u16 capacity;                        // 0x0a
+    u16 active_gizmo_count;              // 0x0c
+    u16 field_0x0e;                      // 0x0e
+    struct gameanimobjpool_s *anim_pool; // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct GIZOBSTACLESYS_s) == 20);
-
-struct CHARPLATFORM_s {
-    struct nuhspecial_s special;
-    i16 object_id;
-    i16 platform_id;
-    struct gameobject_s *object;
+struct CHARPLATFORM_s {          // size 0x14
+    struct nuhspecial_s special; // 0x00
+    i16 object_id;               // 0x0c
+    i16 platform_id;             // 0x0e
+    struct gameobject_s *object; // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct CHARPLATFORM_s) == 20);
-
-struct CHARPLATFORMSYS_s {
-    i32 field_0x00;
-    i32 platform_count;
-    struct CHARPLATFORM_s platforms[1];
+struct CHARPLATFORMSYS_s {              // size 0x1c
+    i32 field_0x00;                     // 0x00
+    i32 platform_count;                 // 0x04
+    struct CHARPLATFORM_s platforms[1]; // 0x08
 };
 
-STATIC_ASSERT(sizeof(struct CHARPLATFORMSYS_s) == 28);
-
-struct GIZBUILDITSYS_s {
-    struct GIZBUILDIT_s *buildits;
-    u16 count;
-    u16 capacity;
-    u16 max_animation_objects;
-    u16 field_0x0a;
-    struct gameanimobjpool_s *anim_pool;
-    struct gameanimobj_s **anim_objects;
+struct GIZBUILDITSYS_s {                 // size 0x14
+    struct GIZBUILDIT_s *buildits;       // 0x00
+    u16 count;                           // 0x04
+    u16 capacity;                        // 0x06
+    u16 max_animation_objects;           // 0x08
+    u16 field_0x0a;                      // 0x0a
+    struct gameanimobjpool_s *anim_pool; // 0x0c
+    struct gameanimobj_s **anim_objects; // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct GIZBUILDITSYS_s) == 20);
+struct pushblock_s { // size 0xd4
 
-struct pushblock_s {
-    union {
+    union { // size 0x4
         f32 ground_offset;
         f32 vertical_penetration;
-    };
+    }; // 0x00
 
-    union {
+    union { // size 0x4
         f32 ground_height;
         f32 support_height;
-    };
+    }; // 0x04
 
-    f32 snap_timer;
-    f32 settled_height;
-    i8 terrain_info[4];
+    f32 snap_timer;     // 0x08
+    f32 settled_height; // 0x0c
+    i8 terrain_info[4]; // 0x10
 
-    union {
+    union { // size 0x4
         i8 bytes[4];
         i32 word;
-    } extra_terrain_info;
+    } extra_terrain_info; // 0x14
 
-    i32 previous_extra_terrain_info;
+    i32 previous_extra_terrain_info; // 0x18
 
-    union {
+    union { // size 0x4
         struct pushblock_s *supporting_block;
         struct pushblock_s *block_below;
-    };
-    struct pushblock_s *previous_supporting_block;
-    NUSPECIALHANDLE special;
-    struct gameobject_s *pushing_object;
-    i32 platform_id;
-    u8 fields_038[8];
-    f32 snap_distance;
-    char name[16];
-    struct nuvec_s *snap_positions;
-    struct nuvec_s *position;
-    NUSPECIALHANDLE end_position_specials[2];
-    NUVEC end_position_origins[2];
-    NUVEC velocity;
-    NUVEC target_velocity;
-    NUVEC snap_origin;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
+    }; // 0x1c
+    struct pushblock_s *previous_supporting_block; // 0x20
+    NUSPECIALHANDLE special;                       // 0x24
+    struct gameobject_s *pushing_object;           // 0x30
+    i32 platform_id;                               // 0x34
+    u8 fields_038[8];                              // 0x38
+    f32 snap_distance;                             // 0x40
+    char name[16];                                 // 0x44
+    struct nuvec_s *snap_positions;                // 0x54
+    struct nuvec_s *position;                      // 0x58
+    NUSPECIALHANDLE end_position_specials[2];      // 0x5c
+    NUVEC end_position_origins[2];                 // 0x74
+    NUVEC velocity;                                // 0x8c
+    NUVEC target_velocity;                         // 0x98
+    NUVEC snap_origin;                             // 0xa4
+    NUVEC bounds_min;                              // 0xb0
+    NUVEC bounds_max;                              // 0xbc
 
-    union {
+    union { // size 0x4
         u32 packed_state_flags;
 
-        struct {
-            u8 runtime_flags_0c8;
-            u8 runtime_flags_0c9;
-            u8 flags_0ca;
-            u8 flags_0cb;
+        struct {                  // size 0x4
+            u8 runtime_flags_0c8; // 0xc8
+            u8 runtime_flags_0c9; // 0xc9
+            u8 flags_0ca;         // 0xca
+            u8 flags_0cb;         // 0xcb
         };
 
-        struct {
-            u32 flag_000 : 1;
-            u32 unknown_flags_001_005 : 5;
-            u32 flag_006 : 1;
-            u32 flag_007 : 1;
-            u32 unknown_flags_008_011 : 4;
-            u32 animation_positions : 3;
-            u32 unknown_flags_015_017 : 3;
-            u32 push_visible : 1;
-            u32 unknown_flags_019_023 : 5;
-            u32 push_active : 1;
-            u32 progress_state : 1;
-            u32 unknown_flags_026_031 : 6;
+        struct {                           // size 0x4
+            u32 flag_000 : 1;              // 0xc8:0
+            u32 unknown_flags_001_005 : 5; // 0xc8:1
+            u32 flag_006 : 1;              // 0xc8:6
+            u32 flag_007 : 1;              // 0xc8:7
+            u32 unknown_flags_008_011 : 4; // 0xc8:8
+            u32 animation_positions : 3;   // 0xc8:12
+            u32 unknown_flags_015_017 : 3; // 0xc8:15
+            u32 push_visible : 1;          // 0xc8:18
+            u32 unknown_flags_019_023 : 5; // 0xc8:19
+            u32 push_active : 1;           // 0xc8:24
+            u32 progress_state : 1;        // 0xc8:25
+            u32 unknown_flags_026_031 : 6; // 0xc8:26
         };
-    };
+    }; // 0xc8
 
-    u8 unknown_0cc[4];
-    u8 completed_snap_positions;
-    u8 end_position_count;
-    u8 output_count;
-    u8 unknown_0d3;
+    u8 unknown_0cc[4];           // 0xcc
+    u8 completed_snap_positions; // 0xd0
+    u8 end_position_count;       // 0xd1
+    u8 output_count;             // 0xd2
+    u8 unknown_0d3;              // 0xd3
 };
 
-STATIC_ASSERT(sizeof(struct pushblock_s) == 0xd4);
-
-struct GIZTURRETSYS_s {
-    struct GIZTURRET_s *turrets;
-    struct gameanimobjpool_s *anim_pool;
-    u16 count;
-    u16 capacity;
-    i8 opponent_cursor;
-    i8 field_0x0d[3];
+struct GIZTURRETSYS_s {                  // size 0x10
+    struct GIZTURRET_s *turrets;         // 0x0
+    struct gameanimobjpool_s *anim_pool; // 0x4
+    u16 count;                           // 0x8
+    u16 capacity;                        // 0xa
+    i8 opponent_cursor;                  // 0xc
+    i8 field_0x0d[3];                    // 0xd
 };
 
-STATIC_ASSERT(sizeof(struct GIZTURRETSYS_s) == 16);
-STATIC_ASSERT(offsetof(GIZBUILDIT_s, anim_set) == 0x10);
-STATIC_ASSERT(offsetof(GIZBUILDIT_s, state_flags) == 0x7a);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 8
 #ifdef SAGA_SHIM
@@ -2744,80 +2222,77 @@ STATIC_ASSERT(offsetof(GIZBUILDIT_s, state_flags) == 0x7a);
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 8 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 typedef struct GIZSPINNER_s GIZSPINNER_s;
 
-struct GIZSPINNER_s {
-    NUMTX matrix;
-    char name[16];
-    struct nuhspecial_s special;
-    NUVEC position;
-    struct gameanimset_s *anim_set;
-    struct gameanimobj_s *primary_anim_obj;
+struct GIZSPINNER_s {                       // size 0x304
+    NUMTX matrix;                           // 0x000
+    char name[16];                          // 0x040
+    struct nuhspecial_s special;            // 0x050
+    NUVEC position;                         // 0x05c
+    struct gameanimset_s *anim_set;         // 0x068
+    struct gameanimobj_s *primary_anim_obj; // 0x06c
 
-    union {
+    union { // size 0x8
         u8 field_0x070[8];
 
-        struct {
-            f32 field_70;
-            u32 field_74;
+        struct {          // size 0x8
+            f32 field_70; // 0x070
+            u32 field_74; // 0x074
         };
-    };
+    }; // 0x070
 
-    f32 animation_speed;
-    u16 rotation;
-    u16 target_rotation;
-    u16 previous_rotation;
-    u16 initial_rotation;
-    u32 state_flags;
-    u8 field_0x088;
-    i8 room_index;
-    u8 state;
-    u8 type;
-    u16 field_0x08c;
-    u8 field_0x08e[2];
-    f32 spin_timer;
-    f32 field_0x094;
-    f32 field_0x098;
-    f32 field_0x09c;
-    f32 ground_height;
-    u8 output_count;
-    u8 field_0x0a5[7];
-    u8 flags;
-    u8 field_0x0ad;
-    i16 platform_id;
-    u8 field_0x0b0[4];
-    struct GIZSPINNERARM_s arms[8];
+    f32 animation_speed;            // 0x078
+    u16 rotation;                   // 0x07c
+    u16 target_rotation;            // 0x07e
+    u16 previous_rotation;          // 0x080
+    u16 initial_rotation;           // 0x082
+    u32 state_flags;                // 0x084
+    u8 field_0x088;                 // 0x088
+    i8 room_index;                  // 0x089
+    u8 state;                       // 0x08a
+    u8 type;                        // 0x08b
+    u16 field_0x08c;                // 0x08c
+    u8 field_0x08e[2];              // 0x08e
+    f32 spin_timer;                 // 0x090
+    f32 field_0x094;                // 0x094
+    f32 field_0x098;                // 0x098
+    f32 field_0x09c;                // 0x09c
+    f32 ground_height;              // 0x0a0
+    u8 output_count;                // 0x0a4
+    u8 field_0x0a5[7];              // 0x0a5
+    u8 flags;                       // 0x0ac
+    u8 field_0x0ad;                 // 0x0ad
+    i16 platform_id;                // 0x0ae
+    u8 field_0x0b0[4];              // 0x0b0
+    struct GIZSPINNERARM_s arms[8]; // 0x0b4
 
-    union {
+    union { // size 0x4
         u8 field_0x2d4[4];
         f32 output_pause_time;
-    };
+    }; // 0x2d4
 
-    f32 field_0x2d8;
-    f32 animation_points[9];
-    struct GAMEANTINODE_s *anti_node;
+    f32 field_0x2d8;                  // 0x2d8
+    f32 animation_points[9];          // 0x2dc
+    struct GAMEANTINODE_s *anti_node; // 0x300
 };
 
-STATIC_ASSERT(sizeof(struct GIZSPINNER_s) == 772);
-
-struct GAMEANTINODE_s {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 max_y;
-    f32 extent_x;
-    f32 extent_z;
-    f32 remaining_time;
-    u32 user_data[2];
-    u16 angle;
-    u8 shape;
-    u8 grid_min_x;
-    u8 grid_min_z;
-    u8 grid_max_x;
-    u8 grid_max_z;
-    u8 reserved_33;
-    struct GAMEANTINODE_s *next;
+struct GAMEANTINODE_s {          // size 0x38
+    NUVEC position;              // 0x00
+    f32 radius;                  // 0x0c
+    f32 min_y;                   // 0x10
+    f32 max_y;                   // 0x14
+    f32 extent_x;                // 0x18
+    f32 extent_z;                // 0x1c
+    f32 remaining_time;          // 0x20
+    u32 user_data[2];            // 0x24
+    u16 angle;                   // 0x2c
+    u8 shape;                    // 0x2e
+    u8 grid_min_x;               // 0x2f
+    u8 grid_min_z;               // 0x30
+    u8 grid_max_x;               // 0x31
+    u8 grid_max_z;               // 0x32
+    u8 reserved_33;              // 0x33
+    struct GAMEANTINODE_s *next; // 0x34
 };
 
-STATIC_ASSERT(sizeof(struct GAMEANTINODE_s) == 56);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 9
 #ifdef SAGA_SHIM
@@ -2835,21 +2310,20 @@ extern "C" {
 }
 #endif
 
-struct nugraph_s {
-    i8 interpolation;
-    i8 point_count;
-    u8 pad_02[2];
-    f32 x[8];
-    f32 y[8];
-    f32 x_scale;
-    f32 y_scale;
-    f32 x_extent;
-    f32 y_extent;
-    f32 x_offset;
-    f32 y_offset;
+struct nugraph_s {    // size 0x5c
+    i8 interpolation; // 0x00
+    i8 point_count;   // 0x01
+    u8 pad_02[2];     // 0x02
+    f32 x[8];         // 0x04
+    f32 y[8];         // 0x24
+    f32 x_scale;      // 0x44
+    f32 y_scale;      // 0x48
+    f32 x_extent;     // 0x4c
+    f32 y_extent;     // 0x50
+    f32 x_offset;     // 0x54
+    f32 y_offset;     // 0x58
 };
 
-STATIC_ASSERT(sizeof(struct nugraph_s) == 92);
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 10
 #ifdef SAGA_SHIM
@@ -2862,30 +2336,22 @@ STATIC_ASSERT(sizeof(struct nugraph_s) == 92);
 extern "C" {
 #endif
 
-    typedef struct debris_chunk_control_s {
-        struct debris_particle_chunk_s *particle_chunk;
-        f32 expiry_time;
-        i32 active;
-        struct debris_key_s *owner;
-        struct debris_chunk_control_s *next;
-        i32 particle_index;
-        f32 collision_time;
-        i16 effect_index;
-        i16 field_01e;
-        i16 rotation_y;
-        i16 field_022;
-        f32 collision_plane;
-        f32 restitution;
+    typedef struct debris_chunk_control_s {             // size 0x2c
+        struct debris_particle_chunk_s *particle_chunk; // 0x00
+        f32 expiry_time;                                // 0x04
+        i32 active;                                     // 0x08
+        struct debris_key_s *owner;                     // 0x0c
+        struct debris_chunk_control_s *next;            // 0x10
+        i32 particle_index;                             // 0x14
+        f32 collision_time;                             // 0x18
+        i16 effect_index;                               // 0x1c
+        i16 field_01e;                                  // 0x1e
+        i16 rotation_y;                                 // 0x20
+        i16 field_022;                                  // 0x22
+        f32 collision_plane;                            // 0x24
+        f32 restitution;                                // 0x28
     } DEBRIS_CHUNK_CONTROL_PC;
 
-    STATIC_ASSERT(sizeof(DEBRIS_CHUNK_CONTROL_PC) == 0x2c);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, expiry_time) == 4);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, next) == 0x10);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, particle_index) == 0x14);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, effect_index) == 0x1c);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, rotation_y) == 0x20);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, collision_plane) == 0x24);
-    STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, restitution) == 0x28);
 #ifdef __cplusplus
 }
 #endif
@@ -2902,7 +2368,7 @@ extern "C" {
 /* Fixed-capacity list of BaseThings run once per pass.
  * Every pass is virtual; the 0x24-byte object comes from theMemoryManager's
  * pools and its thing array from the permanent buffer. */
-class ThingManager {
+class ThingManager { // size 0x24
   public:
     ThingManager(i32 max_things);
 
@@ -2932,14 +2398,14 @@ class ThingManager {
     static i32 edTimingProc(f32 delta_time, struct FRAME_PAD_PC *pad);
     static void edTimingRender();
 
-    BaseThing **things;
-    i32 max_things;
-    i32 count;
-    i32 permanent_count;
-    i32 pending;
-    i32 timebar;
-    i32 timing_thing;
-    i32 timing_state;
+    BaseThing **things;  // 0x04
+    i32 max_things;      // 0x08
+    i32 count;           // 0x0c
+    i32 permanent_count; // 0x10
+    i32 pending;         // 0x14
+    i32 timebar;         // 0x18
+    i32 timing_thing;    // 0x1c
+    i32 timing_state;    // 0x20
 };
 
 /* The game's ThingManager (theGameThings); PC registers no things. */
@@ -2969,14 +2435,14 @@ class GameThingManager : public ThingManager {
 #ifdef __cplusplus
 
 /* Base of every placeable level-editor object. */
-class Placeable {
+class Placeable { // size 0x18
   public:
-    i16 scene_id;
-    i16 led_file;
-    i32 attributes;
-    EdString name;
-    EdString params;
-    u32 reserved_14;
+    i16 scene_id;    // 0x04
+    i16 led_file;    // 0x06
+    i32 attributes;  // 0x08
+    EdString name;   // 0x0c
+    EdString params; // 0x10
+    u32 reserved_14; // 0x14
 
     static i16 CurrentLedFile;
 
@@ -3036,21 +2502,21 @@ class Placeable {
     void fun_006c22b0(const char *value);
 };
 
-struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry> {
+struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry> { // size 0x14
     static void *operator new(size_t size);
     static void operator delete(void *memory);
 
     ClassObjectListEntry();
 
-    EdClass *ed_class;
-    void *object;
-    EdRef *reference;
+    EdClass *ed_class; // 0x08
+    void *object;      // 0x0c
+    EdRef *reference;  // 0x10
 };
 
-struct ClassObjectList {
-    ClassObjectListEntry *first;
-    ClassObjectListEntry *last;
-    i32 count;
+struct ClassObjectList {         // size 0xc
+    ClassObjectListEntry *first; // 0x0
+    ClassObjectListEntry *last;  // 0x4
+    i32 count;                   // 0x8
 
     ClassObjectListEntry *fun_006c1440();
     void fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position);
@@ -3063,7 +2529,7 @@ struct ClassObjectList {
     i32 IsInList(EdClass *object_class);
 };
 
-class EdTool : public CSListLink<EdTool> {
+class EdTool : public CSListLink<EdTool> { // size 0xc
   public:
     virtual ~EdTool();
 
@@ -3082,7 +2548,7 @@ class EdTool : public CSListLink<EdTool> {
     }
 };
 
-class BaseEditor : public CSListLink<BaseEditor> {
+class BaseEditor : public CSListLink<BaseEditor> { // size 0x10
   public:
     virtual ~BaseEditor();
 
@@ -3130,13 +2596,13 @@ class BaseEditor : public CSListLink<BaseEditor> {
     static void WriteMetaData(NUFILE file, i32 type, i32 version, i32 count);
     void ReadBuffer(void **destination, void *source, i32 size);
 
-    i32 id;
+    i32 id; // 0xc
     static i32 blockStart[8];
     static i32 blockDepth;
 };
 
 /* The class/object editor, theClassEditor. */
-class ClassEditor : public BaseEditor {
+class ClassEditor : public BaseEditor { // size 0x70
   public:
     ClassEditor();
     virtual ~ClassEditor();
@@ -3153,21 +2619,21 @@ class ClassEditor : public BaseEditor {
     virtual void Render();
     virtual void AddMenuItems(struct eduimenu_s *);
 
-    EdTool *first_tool;
-    EdTool *last_tool;
-    i32 tool_count;
-    EdTool *active_tool;
-    EdManipulator *manipulator;
-    ClassObjectList selected_objects;
-    ClassObject current_object;
-    i32 field_3c;
-    ClassObject pending_object;
-    struct eduimenu_s *menu;
-    VuVec snap_ray;
-    f32 snap_distance;
-    i32 snap_mode;
-    i32 mode;
-    i32 class_filter;
+    EdTool *first_tool;               // 0x10
+    EdTool *last_tool;                // 0x14
+    i32 tool_count;                   // 0x18
+    EdTool *active_tool;              // 0x1c
+    EdManipulator *manipulator;       // 0x20
+    ClassObjectList selected_objects; // 0x24
+    ClassObject current_object;       // 0x30
+    i32 field_3c;                     // 0x3c
+    ClassObject pending_object;       // 0x40
+    struct eduimenu_s *menu;          // 0x4c
+    VuVec snap_ray;                   // 0x50
+    f32 snap_distance;                // 0x60
+    i32 snap_mode;                    // 0x64
+    i32 mode;                         // 0x68
+    i32 class_filter;                 // 0x6c
 
     void DrawObjectSphere(ClassObject &selected, i32 colour);
     static void cbEdFilterLED(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
@@ -3248,7 +2714,7 @@ class ClassEditor : public BaseEditor {
 #ifdef __cplusplus
 
 /* The level editor thing, theLevelEditor. */
-class LevelEditor : public BaseThing {
+class LevelEditor : public BaseThing { // size 0x10b0
   public:
     LevelEditor();
 
@@ -3307,56 +2773,56 @@ class LevelEditor : public BaseThing {
     void fun_006bc9d0(struct eduimenu_s *menu);
     char *fun_006bc9e0(char *text);
 
-    f32 background_colour[4];
-    i32 field_0x20;
-    i32 field_0x24;
-    i32 field_0x28;
-    i32 field_0x2c;
-    i32 field_0x30;
-    f32 overlay_alpha;
-    i32 field_0x38;
-    i32 editor_buffer_from_front;
-    EdInputContext input;
-    u8 loading;
-    u8 destroying_objects;
-    u8 reserved_0x2a2[2];
-    i32 editable_scene_count;
-    i32 reset_pending;
-    LevelEditorScene scenes[10];
-    BaseEditor *first_editor;
-    BaseEditor *last_editor;
-    i32 editor_count;
-    BaseEditor *active_editor;
-    char save_filename[0x80];
-    char editor_filename[0x80];
-    i32 file_version;
-    i32 multi_load_active;
-    i16 current_led_file;
-    u8 reserved_0xa56[2];
-    VARIPTR editor_buffer_cursor;
-    VARIPTR editor_buffer_begin;
-    VARIPTR editor_buffer_end;
-    char text_buffer[0x400];
-    i32 text_length;
-    char *info_text[32];
-    i32 info_x;
-    i32 info_y;
-    i32 info_width;
-    i32 info_height;
-    u32 info_colour;
-    u32 info_background;
-    u8 reserved_0xf00[0x100];
-    i32 pad_x;
-    i32 pad_y;
-    i32 pad_width;
-    i32 pad_height;
-    u32 pad_background;
-    u32 pad_colour;
-    u8 reserved_0x1018[4];
-    char *pad_text[32];
-    EditorSettings settings;
-    i32 editors_entered;
-    i32 active;
+    f32 background_colour[4];     // 0x0010
+    i32 field_0x20;               // 0x0020
+    i32 field_0x24;               // 0x0024
+    i32 field_0x28;               // 0x0028
+    i32 field_0x2c;               // 0x002c
+    i32 field_0x30;               // 0x0030
+    f32 overlay_alpha;            // 0x0034
+    i32 field_0x38;               // 0x0038
+    i32 editor_buffer_from_front; // 0x003c
+    EdInputContext input;         // 0x0040
+    u8 loading;                   // 0x02a0
+    u8 destroying_objects;        // 0x02a1
+    u8 reserved_0x2a2[2];         // 0x02a2
+    i32 editable_scene_count;     // 0x02a4
+    i32 reset_pending;            // 0x02a8
+    LevelEditorScene scenes[10];  // 0x02ac
+    BaseEditor *first_editor;     // 0x093c
+    BaseEditor *last_editor;      // 0x0940
+    i32 editor_count;             // 0x0944
+    BaseEditor *active_editor;    // 0x0948
+    char save_filename[0x80];     // 0x094c
+    char editor_filename[0x80];   // 0x09cc
+    i32 file_version;             // 0x0a4c
+    i32 multi_load_active;        // 0x0a50
+    i16 current_led_file;         // 0x0a54
+    u8 reserved_0xa56[2];         // 0x0a56
+    VARIPTR editor_buffer_cursor; // 0x0a58
+    VARIPTR editor_buffer_begin;  // 0x0a5c
+    VARIPTR editor_buffer_end;    // 0x0a60
+    char text_buffer[0x400];      // 0x0a64
+    i32 text_length;              // 0x0e64
+    char *info_text[32];          // 0x0e68
+    i32 info_x;                   // 0x0ee8
+    i32 info_y;                   // 0x0eec
+    i32 info_width;               // 0x0ef0
+    i32 info_height;              // 0x0ef4
+    u32 info_colour;              // 0x0ef8
+    u32 info_background;          // 0x0efc
+    u8 reserved_0xf00[0x100];     // 0x0f00
+    i32 pad_x;                    // 0x1000
+    i32 pad_y;                    // 0x1004
+    i32 pad_width;                // 0x1008
+    i32 pad_height;               // 0x100c
+    u32 pad_background;           // 0x1010
+    u32 pad_colour;               // 0x1014
+    u8 reserved_0x1018[4];        // 0x1018
+    char *pad_text[32];           // 0x101c
+    EditorSettings settings;      // 0x109c
+    i32 editors_entered;          // 0x10a8
+    i32 active;                   // 0x10ac
 };
 
 extern LevelEditor theLevelEditor;
@@ -3371,7 +2837,7 @@ extern LevelEditor theLevelEditor;
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 14 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
-class TTNetwork : public NetTransporter, public BaseThing {
+class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
   public:
     TTNetwork();
     ~TTNetwork();
@@ -3406,26 +2872,26 @@ class TTNetwork : public NetTransporter, public BaseThing {
     void ClearMyHostAddress();
     i32 fun_00611dc0() const;
 
-    NetLogFile log;
-    u32 frame_count;
-    i32 field_2138;
-    i32 field_213c;
-    i32 state;
-    i32 field_2144;
-    i32 field_2148;
-    i32 field_214c;
-    i32 display_page;
-    f32 display_x;
-    f32 display_y;
-    f32 display_width;
-    f32 display_height;
-    u32 unknown_2164[2];
-    NetAddress my_address;
-    NetAddress my_host_address;
-    i32 has_my_host_address;
-    NetFtpManager ftp;
-    NetworkObjectManager nos;
-    V2SessionManager *session_manager;
+    NetLogFile log;                    // 0x00020
+    u32 frame_count;                   // 0x02134
+    i32 field_2138;                    // 0x02138
+    i32 field_213c;                    // 0x0213c
+    i32 state;                         // 0x02140
+    i32 field_2144;                    // 0x02144
+    i32 field_2148;                    // 0x02148
+    i32 field_214c;                    // 0x0214c
+    i32 display_page;                  // 0x02150
+    f32 display_x;                     // 0x02154
+    f32 display_y;                     // 0x02158
+    f32 display_width;                 // 0x0215c
+    f32 display_height;                // 0x02160
+    u32 unknown_2164[2];               // 0x02164
+    NetAddress my_address;             // 0x0216c
+    NetAddress my_host_address;        // 0x02170
+    i32 has_my_host_address;           // 0x02174
+    NetFtpManager ftp;                 // 0x02178
+    NetworkObjectManager nos;          // 0x03780
+    V2SessionManager *session_manager; // 0x110f0
 };
 #endif
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART

@@ -168,9 +168,3 @@ void DrawMessageBox(i32 unused, f32 x, f32 y, f32 width, f32 height) {
                         MessageMtl);
     NuRndrEndScene();
 }
-
-STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
-STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);

@@ -1,8 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(HINTSYS_PC, active_hint) == 8);
-STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
-
 typedef struct HINT_CANCEL { // size 0x1c
     u8 unknown00[8];         // 0x00
     f32 display_duration;    // 0x08
@@ -43,13 +40,6 @@ typedef struct HINT_ZIPUP { // size 0x7c
 } HINT_ZIPUP;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
-STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, area_complete) == 1);
-STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
-STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 
 void Hint_ExpandButtons(char *input, char *output) {
     char token[256];

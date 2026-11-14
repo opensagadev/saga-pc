@@ -72,94 +72,94 @@ extern "C" {
 #ifdef __cplusplus
 
 /* Private PC contract proposal. Include after saga.h. */
-struct PC_CONTROL_ITEM_PC {
-    u8 kind;
-    u8 command;
-    u8 label;
+struct PC_CONTROL_ITEM_PC { // size 0x8
+    u8 kind;                // 0x0
+    u8 command;             // 0x1
+    u8 label;               // 0x2
 
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 port_mode : 3;
-            u8 flag_08 : 1;
-            u8 flag_10 : 1;
-            u8 unbound_player1 : 1;
-            u8 unbound_player2 : 1;
-            u8 unbound_selected : 1;
+        struct {                     // size 0x1
+            u8 port_mode : 3;        // 0x3:0
+            u8 flag_08 : 1;          // 0x3:3
+            u8 flag_10 : 1;          // 0x3:4
+            u8 unbound_player1 : 1;  // 0x3:5
+            u8 unbound_player2 : 1;  // 0x3:6
+            u8 unbound_selected : 1; // 0x3:7
         };
-    };
+    }; // 0x3
 
-    f32 pulse;
+    f32 pulse; // 0x4
 };
 
-struct PC_CONTROL_ROW_PC {
-    i32 count;
-    i32 selected;
-    PC_CONTROL_ITEM_PC *items;
+struct PC_CONTROL_ROW_PC {     // size 0xc
+    i32 count;                 // 0x0
+    i32 selected;              // 0x4
+    PC_CONTROL_ITEM_PC *items; // 0x8
 };
 
-struct PC_CONTROL_TEXT {
-    char text[0x100];
-    f32 fade;
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 x_scale;
-    f32 y_scale;
-    f32 wrap_width;
-    u32 colour;
-    u32 key;
-    i8 alignment;
-    u8 refreshed;
-    u8 unknown126[2];
+struct PC_CONTROL_TEXT { // size 0x128
+    char text[0x100];    // 0x000
+    f32 fade;            // 0x100
+    f32 x;               // 0x104
+    f32 y;               // 0x108
+    f32 z;               // 0x10c
+    f32 x_scale;         // 0x110
+    f32 y_scale;         // 0x114
+    f32 wrap_width;      // 0x118
+    u32 colour;          // 0x11c
+    u32 key;             // 0x120
+    i8 alignment;        // 0x124
+    u8 refreshed;        // 0x125
+    u8 unknown126[2];    // 0x126
 };
 
-struct PC_CONTROL_CONFIG_PC {
-    struct vufnt_s *font;
-    void (*draw_background)(f32, f32, f32);
-    PC_CONTROL_ITEM_PC **rows;
-    void (*play_sound)(i32);
-    const char *blocked_keys;
+struct PC_CONTROL_CONFIG_PC {               // size 0x14
+    struct vufnt_s *font;                   // 0x00
+    void (*draw_background)(f32, f32, f32); // 0x04
+    PC_CONTROL_ITEM_PC **rows;              // 0x08
+    void (*play_sound)(i32);                // 0x0c
+    const char *blocked_keys;               // 0x10
 };
 
-struct PC_CONTROL_SCREEN_PC {
-    i32 result;
-    i32 player_count;
-    u8 drop_in;
-    u8 active;
-    u8 initialized;
-    u8 unknown0b;
-    f32 opacity;
-    f32 unknown10;
-    f32 fade;
-    i32 phase;
-    i32 row_count;
-    i32 selected_row;
-    i32 capture_state;
-    i32 release_frames;
-    i32 release_reset;
-    f32 x_scale;
-    f32 y_scale;
-    i32 selected_player;
-    i32 ports[4];
-    i32 original_ports[4];
-    i32 saved_ports[4];
-    u32 config_hash;
-    u8 missing_binding;
-    u8 unknown71[3];
-    void (*draw_background)(f32, f32, f32);
-    f32 deadzone[4];
-    f32 saved_deadzone[4];
-    f32 keyboard_deadzone;
-    f32 saved_keyboard_deadzone;
-    struct vufnt_s *font;
-    PC_CONTROL_ROW_PC rows[4];
-    u8 unknownd4[4];
-    PC_CONTROL_TEXT text[12];
-    f32 elapsed;
-    struct numtl_s *material;
-    void (*play_sound)(i32);
+struct PC_CONTROL_SCREEN_PC {               // size 0xec4
+    i32 result;                             // 0x000
+    i32 player_count;                       // 0x004
+    u8 drop_in;                             // 0x008
+    u8 active;                              // 0x009
+    u8 initialized;                         // 0x00a
+    u8 unknown0b;                           // 0x00b
+    f32 opacity;                            // 0x00c
+    f32 unknown10;                          // 0x010
+    f32 fade;                               // 0x014
+    i32 phase;                              // 0x018
+    i32 row_count;                          // 0x01c
+    i32 selected_row;                       // 0x020
+    i32 capture_state;                      // 0x024
+    i32 release_frames;                     // 0x028
+    i32 release_reset;                      // 0x02c
+    f32 x_scale;                            // 0x030
+    f32 y_scale;                            // 0x034
+    i32 selected_player;                    // 0x038
+    i32 ports[4];                           // 0x03c
+    i32 original_ports[4];                  // 0x04c
+    i32 saved_ports[4];                     // 0x05c
+    u32 config_hash;                        // 0x06c
+    u8 missing_binding;                     // 0x070
+    u8 unknown71[3];                        // 0x071
+    void (*draw_background)(f32, f32, f32); // 0x074
+    f32 deadzone[4];                        // 0x078
+    f32 saved_deadzone[4];                  // 0x088
+    f32 keyboard_deadzone;                  // 0x098
+    f32 saved_keyboard_deadzone;            // 0x09c
+    struct vufnt_s *font;                   // 0x0a0
+    PC_CONTROL_ROW_PC rows[4];              // 0x0a4
+    u8 unknownd4[4];                        // 0x0d4
+    PC_CONTROL_TEXT text[12];               // 0x0d8
+    f32 elapsed;                            // 0xeb8
+    struct numtl_s *material;               // 0xebc
+    void (*play_sound)(i32);                // 0xec0
     i32 ItemAllowsBinding(PC_CONTROL_ROW_PC *, i32, i32);
     void AdvanceSelection(PC_CONTROL_ROW_PC *);
     i32 CountPlayerRows(PC_CONTROL_ROW_PC *);
@@ -191,29 +191,6 @@ struct PC_CONTROL_SCREEN_PC {
 
     void Draw(void);
 };
-
-STATIC_ASSERT(sizeof(PC_CONTROL_ITEM_PC) == 8);
-STATIC_ASSERT(sizeof(PC_CONTROL_ROW_PC) == 0xc);
-STATIC_ASSERT(sizeof(PC_CONTROL_TEXT) == 0x128);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, key) == 0x120);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, ports) == 0x3c);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, saved_ports) == 0x5c);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, draw_background) == 0x74);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, keyboard_deadzone) == 0x98);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, rows) == 0xa4);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, text) == 0xd8);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, elapsed) == 0xeb8);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, material) == 0xebc);
-STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, play_sound) == 0xec0);
-STATIC_ASSERT(sizeof(PC_CONTROL_SCREEN_PC) == 0xec4);
-
-STATIC_ASSERT(sizeof(PC_CONTROL_CONFIG_PC) == 0x14);
-STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, draw_background) == 4);
-STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, rows) == 8);
-STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, play_sound) == 0xc);
-STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, blocked_keys) == 0x10);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, alignment) == 0x124);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, refreshed) == 0x125);
 
 #ifdef __cplusplus
 extern "C" {

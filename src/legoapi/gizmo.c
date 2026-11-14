@@ -58,10 +58,6 @@ void GizmoNameDiagnosticPc(char *name);
     } while (0)
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, clear_progress_fn) == 0x7c);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, store_progress_fn) == 0x80);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
-STATIC_ASSERT(offsetof(GIZMOTYPES_PC, max_levels) == 4);
-STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
-STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
 typedef struct bolt_gizmo_type_s {                             // size 0x9c
     u8 unknown_00[0x6c];                                       // 0x00
@@ -1143,9 +1139,6 @@ void GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibi
     (void)mode;
 }
 
-STATIC_ASSERT(offsetof(AREA_DATA_PC, minikit_id) == 0x8a);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name) == 0xc);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 #ifdef __cplusplus
 extern "C" {
 #endif

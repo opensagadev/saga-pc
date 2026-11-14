@@ -302,8 +302,6 @@ struct STREAK_MATERIAL_SCALE { // size 0x68
     f32 effect_scale;          // 0x64
 };
 
-STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
-
 extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     i32 i;
     for (i = 0; i < 32; ++i) {

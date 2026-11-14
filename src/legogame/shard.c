@@ -6,25 +6,6 @@ typedef struct shard_progress_recovered_s { // size 0x30
     u32 visible[4];                         // 0x20
 } SHARD_PROGRESS_PC;
 
-STATIC_ASSERT(sizeof(SHARD_s) == 0x54);
-STATIC_ASSERT(offsetof(SHARD_s, position) == 0x10);
-STATIC_ASSERT(offsetof(SHARD_s, current_position) == 0x1c);
-STATIC_ASSERT(offsetof(SHARD_s, screen_position) == 0x28);
-STATIC_ASSERT(offsetof(SHARD_s, model_index) == 0x34);
-STATIC_ASSERT(offsetof(SHARD_s, angle_x) == 0x36);
-STATIC_ASSERT(offsetof(SHARD_s, angle_z) == 0x38);
-STATIC_ASSERT(offsetof(SHARD_s, spin_angle) == 0x3a);
-STATIC_ASSERT(offsetof(SHARD_s, state_flags) == 0x3c);
-STATIC_ASSERT(offsetof(SHARD_s, collection_time) == 0x40);
-STATIC_ASSERT(offsetof(SHARD_s, collector) == 0x44);
-STATIC_ASSERT(offsetof(SHARD_s, collection_velocity) == 0x48);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(WORLDINFO, shards) == 0x5090);
-STATIC_ASSERT(offsetof(WORLDINFO, shard_count) == 0x5094);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_shards) == 0xf1);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *Shard_OutputName;
 void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);

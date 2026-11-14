@@ -2,10 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(CHAR_CATEGORY_RECORD_PC) == 12);
-STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, name) == 0);
-STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, model_flags) == 4);
-STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, game_flags) == 8);
 extern "C" {
     extern char AreaFixUpName_Jedi[8];
 }
@@ -21,35 +17,10 @@ typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
     u32 *character_flags;               // 0x8
 } CHARACTER_SCENE_CUTSYS;
 
-STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
-STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-STATIC_ASSERT(offsetof(ANIMPACKET_PC, previous_animation) == 0x38);
-STATIC_ASSERT(offsetof(ANIMPACKET_PC, requested_animation) == 0x3a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, model_draw_result) == 0x288);
-STATIC_ASSERT(offsetof(GAMEOBJECT, origin_joint_ready) == 0x28c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thingy_locator) == 0x110);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
-STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
-STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
-STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
 STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c38);
 STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START) +
                   offsetof(GAME_CUSTOMISER_START, name) ==
               0x7c70);
-STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
-STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
-STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
 typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 
 typedef struct character_callback_writer_s {
@@ -249,11 +220,6 @@ extern "C" {
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
     STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
-    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
-    STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, render_flags) == 0x74);
-    STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, model_id) == 0);
-    STATIC_ASSERT(offsetof(APICHARACTERMODELLIST, count) == 2);
-    STATIC_ASSERT(offsetof(CHARACTERDATA_PC, icon_model) == 0x42);
 
     void IconScenes_Init(char *path, VARIPTR *buffer, VARIPTR *end) {
         u32 table_size = (u32)CHARCOUNT * sizeof(*IconScenePc);

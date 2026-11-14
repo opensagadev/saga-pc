@@ -15,8 +15,8 @@
 extern "C" {
 #endif
 
-    typedef struct CHARACTER_SHADOW_PACKET_PC {
-        CHARACTER_SHADOW_RESET_SLOT shadows[5];
+    typedef struct CHARACTER_SHADOW_PACKET_PC { // size 0x64
+        CHARACTER_SHADOW_RESET_SLOT shadows[5]; // 0x00
     } CHARACTER_SHADOW_PACKET_PC;
 
     STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 0 +

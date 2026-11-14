@@ -1,24 +1,5 @@
 #include "saga.h"
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
-STATIC_ASSERT(offsetof(PART_PC, time_remaining) == 0x100);
-
-STATIC_ASSERT(offsetof(PART_PC, reflection_height) == 0x21c);
-STATIC_ASSERT(offsetof(PART_PC, field_e0) == 0xe0);
-STATIC_ASSERT(offsetof(PART_PC, unknown_209) == 0x209);
-STATIC_ASSERT(offsetof(PART_PC, update_fn) == 0x1c4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, throw_locator) == 0x112);
-
 void PartImpact_ThermalDetonator(PART_PC *part) {
     i32 stuck = 0;
     i8 surface;

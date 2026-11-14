@@ -73,722 +73,644 @@ typedef struct rtldata_s rtldata_s;
 typedef struct spacelevel_cross_s spacelevel_cross_s;
 typedef struct storepack_s storepack_s;
 
-struct spacelevel_cross_s {
-    u8 reserved_00[16];
-    NUVEC4 local_position;
-    u8 reserved_20[16];
-    NUVEC4 world_position;
-    u16 flags;
-    u16 enabled;
-    u8 reserved_44[4];
-    u32 colour;
-    f32 scale;
+struct spacelevel_cross_s { // size 0x50
+    u8 reserved_00[16];     // 0x00
+    NUVEC4 local_position;  // 0x10
+    u8 reserved_20[16];     // 0x20
+    NUVEC4 world_position;  // 0x30
+    u16 flags;              // 0x40
+    u16 enabled;            // 0x42
+    u8 reserved_44[4];      // 0x44
+    u32 colour;             // 0x48
+    f32 scale;              // 0x4c
 };
 
-STATIC_ASSERT(sizeof(struct spacelevel_cross_s) == 80);
-
-struct _vuv_s {
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 w;
+struct _vuv_s { // size 0x10
+    f32 x;      // 0x0
+    f32 y;      // 0x4
+    f32 z;      // 0x8
+    f32 w;      // 0xc
 };
 
-STATIC_ASSERT(sizeof(struct _vuv_s) == 16);
+struct storepack_s { // size 0x34
+    char *name;      // 0x00
 
-struct storepack_s {
-    char *name;
-
-    union {
+    union { // size 0x4
         char *product_id;
 
-        struct {
-            u8 field1_0x4;
-            u8 field2_0x5;
-            u8 field3_0x6;
-            u8 field4_0x7;
+        struct {           // size 0x4
+            u8 field1_0x4; // 0x04
+            u8 field2_0x5; // 0x05
+            u8 field3_0x6; // 0x06
+            u8 field4_0x7; // 0x07
         };
-    };
+    }; // 0x04
 
-    union {
+    union { // size 0x2
         i16 message_text_index;
 
-        struct {
-            u8 field5_0x8;
-            u8 field6_0x9;
+        struct {           // size 0x2
+            u8 field5_0x8; // 0x08
+            u8 field6_0x9; // 0x09
         };
-    };
+    }; // 0x08
 
-    u8 field7_0xa;
-    u8 field8_0xb;
-    void (*unlock_fn)(void);
-    char *floor_target_door_name;
-    char *custodian_locator_set;
-    f32 offset_floor_target;
-    struct DOOR_s *floor_target_door;
-    i16 *id;
-    NUVEC custodian_position;
-    u16 custodian_angle;
-    u8 field44_0x32;
-    u8 field45_0x33;
+    u8 field7_0xa;                    // 0x0a
+    u8 field8_0xb;                    // 0x0b
+    void (*unlock_fn)(void);          // 0x0c
+    char *floor_target_door_name;     // 0x10
+    char *custodian_locator_set;      // 0x14
+    f32 offset_floor_target;          // 0x18
+    struct DOOR_s *floor_target_door; // 0x1c
+    i16 *id;                          // 0x20
+    NUVEC custodian_position;         // 0x24
+    u16 custodian_angle;              // 0x30
+    u8 field44_0x32;                  // 0x32
+    u8 field45_0x33;                  // 0x33
 };
 
-STATIC_ASSERT(sizeof(struct storepack_s) == 52);
+struct PLAYERCHARACTERCONFIG_s { // size 0x118
+    u8 unknown_00[48];           // 0x000
+    f32 reset_scale;             // 0x030
+    u8 unknown_34[24];           // 0x034
+    f32 collision_origin_radius; // 0x04c
+    u8 unknown_50[60];           // 0x050
+    f32 shadow_radius;           // 0x08c
+    u32 flags_090;               // 0x090
+    u32 flags_094;               // 0x094
+    u8 unknown_98[88];           // 0x098
+    u16 shadow_joint_mask;       // 0x0f0
+    u8 unknown_f2[4];            // 0x0f2
+    u8 blob_shadow_alpha;        // 0x0f6
+    u8 unknown_f7;               // 0x0f7
+    i8 weapon_joints[4];         // 0x0f8
+    i8 weapon_shoot_joints[4];   // 0x0fc
+    u8 unknown_100[8];           // 0x100
+    i8 hand_joints[2];           // 0x108
+    i8 grapple_joint_a;          // 0x10a
+    i8 grapple_joint_b;          // 0x10b
+    u8 unknown_10c;              // 0x10c
+    i8 collision_origin_joint;   // 0x10d
+    u8 unknown_10e;              // 0x10e
+    i8 model_origin_joint;       // 0x10f
+    u8 unknown_110;              // 0x110
+    i8 helmet_locator;           // 0x111
 
-struct PLAYERCHARACTERCONFIG_s {
-    u8 unknown_00[48];
-    f32 reset_scale;
-    u8 unknown_34[24];
-    f32 collision_origin_radius;
-    u8 unknown_50[60];
-    f32 shadow_radius;
-    u32 flags_090;
-    u32 flags_094;
-    u8 unknown_98[88];
-    u16 shadow_joint_mask;
-    u8 unknown_f2[4];
-    u8 blob_shadow_alpha;
-    u8 unknown_f7;
-    i8 weapon_joints[4];
-    i8 weapon_shoot_joints[4];
-    u8 unknown_100[8];
-    i8 hand_joints[2];
-    i8 grapple_joint_a;
-    i8 grapple_joint_b;
-    u8 unknown_10c;
-    i8 collision_origin_joint;
-    u8 unknown_10e;
-    i8 model_origin_joint;
-    u8 unknown_110;
-    i8 helmet_locator;
-
-    union {
+    union { // size 0x5
         u8 unknown_112[5];
 
-        struct {
-            i8 batarang_joint;
-            u8 unknown_113[4];
+        struct {               // size 0x5
+            i8 batarang_joint; // 0x112
+            u8 unknown_113[4]; // 0x113
         };
-    };
+    }; // 0x112
 
-    u8 variant;
+    u8 variant; // 0x117
 };
 
-STATIC_ASSERT(sizeof(struct PLAYERCHARACTERCONFIG_s) == 280);
+struct CUSTOMPIECE {       // size 0x28
+    char *name;            // 0x00
+    i16 character_id;      // 0x04
+    i16 icon_character_id; // 0x06
 
-struct CUSTOMPIECE {
-    char *name;
-    i16 character_id;
-    i16 icon_character_id;
-
-    union {
+    union { // size 0xa
         u8 unknown_08[10];
 
-        struct {
-            i16 weapon_model;
-            i16 unknown_indices_0a[3];
-            i8 field_0x10;
-            i8 collection_type;
+        struct {                       // size 0xa
+            i16 weapon_model;          // 0x08
+            i16 unknown_indices_0a[3]; // 0x0a
+            i8 field_0x10;             // 0x10
+            i8 collection_type;        // 0x11
         };
-    };
+    }; // 0x08
 
-    union {
-        struct {
-            u8 layer_flags;
-            u8 availability_flags_high;
+    union { // size 0x2
+
+        struct {                        // size 0x2
+            u8 layer_flags;             // 0x12
+            u8 availability_flags_high; // 0x13
         };
 
         u16 availability_flags;
-    };
+    }; // 0x12
 
-    u32 model_flags;
-    u32 gameplay_flags;
-    u8 unknown_1c[12];
+    u32 model_flags;    // 0x14
+    u32 gameplay_flags; // 0x18
+    u8 unknown_1c[12];  // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct CUSTOMPIECE) == 40);
-
-struct CUSTOMPIECECATEGORY {
-    char *name;
-    u8 uses_special;
-    i8 material_tag;
-    u8 pad_06[2];
-    char *shared_scene;
+struct CUSTOMPIECECATEGORY { // size 0xc
+    char *name;              // 0x0
+    u8 uses_special;         // 0x4
+    i8 material_tag;         // 0x5
+    u8 pad_06[2];            // 0x6
+    char *shared_scene;      // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct CUSTOMPIECECATEGORY) == 12);
-
-struct rtldata_s {
-    RTL_DATA_PC base;
+struct rtldata_s {    // size 0x144
+    RTL_DATA_PC base; // 0x000
 };
 
-STATIC_ASSERT(sizeof(struct rtldata_s) == 324);
-
-struct CHARACTER_SHADOW_s {
-    NUVEC position;
-    u16 x_rotation;
-    u16 z_rotation;
-    f32 opacity;
+struct CHARACTER_SHADOW_s { // size 0x14
+    NUVEC position;         // 0x00
+    u16 x_rotation;         // 0x0c
+    u16 z_rotation;         // 0x0e
+    f32 opacity;            // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct CHARACTER_SHADOW_s) == 20);
+struct PLAYERPACKET_s {                             // size 0x798
+    struct CHARACTER_SHADOW_s character_shadows[5]; // 0x000
+    u8 pad_064[132];                                // 0x064
+    u16 context_animation;                          // 0x0e8
+    u8 pad_0ea[4];                                  // 0x0ea
+    u8 context_mode;                                // 0x0ee
+    u8 pad_0ef[2];                                  // 0x0ef
+    i8 build_context;                               // 0x0f1
+    u8 pad_0f2[2];                                  // 0x0f2
+    u8 action_movement_state;                       // 0x0f4
+    u8 action_movement_variant;                     // 0x0f5
+    u8 pad_0f6[6];                                  // 0x0f6
+    f32 context_animation_time;                     // 0x0fc
+    i8 context_target;                              // 0x100
+    u8 context_state_flags;                         // 0x101
+    u8 pad_102[1234];                               // 0x102
+    NUVEC reset_up_direction;                       // 0x5d4
+    struct GAMEPAD_PC *gamepad;                     // 0x5e0
+    u8 pad_5e4[32];                                 // 0x5e4
+    void *field_0x604;                              // 0x604
+    u8 pad_608[4];                                  // 0x608
+    struct gameobject_s *linked_object;             // 0x60c
+    u8 pad_610[4];                                  // 0x610
+    u32 field_0x614;                                // 0x614
+    u32 field_0x618;                                // 0x618
+    u32 field_0x61c;                                // 0x61c
+    u32 field_0x620;                                // 0x620
+    u32 field_0x624;                                // 0x624
+    u32 field_0x628;                                // 0x628
+    u32 field_0x62c;                                // 0x62c
+    u32 field_0x630;                                // 0x630
+    u8 pad_634[20];                                 // 0x634
+    u32 field_0x648;                                // 0x648
+    u8 pad_64c[8];                                  // 0x64c
 
-struct PLAYERPACKET_s {
-    struct CHARACTER_SHADOW_s character_shadows[5];
-    u8 pad_064[132];
-    u16 context_animation;
-    u8 pad_0ea[4];
-    u8 context_mode;
-    u8 pad_0ef[2];
-    i8 build_context;
-    u8 pad_0f2[2];
-    u8 action_movement_state;
-    u8 action_movement_variant;
-    u8 pad_0f6[6];
-    f32 context_animation_time;
-    i8 context_target;
-    u8 context_state_flags;
-    u8 pad_102[1234];
-    NUVEC reset_up_direction;
-    struct GAMEPAD_PC *gamepad;
-    u8 pad_5e4[32];
-    void *field_0x604;
-    u8 pad_608[4];
-    struct gameobject_s *linked_object;
-    u8 pad_610[4];
-    u32 field_0x614;
-    u32 field_0x618;
-    u32 field_0x61c;
-    u32 field_0x620;
-    u32 field_0x624;
-    u32 field_0x628;
-    u32 field_0x62c;
-    u32 field_0x630;
-    u8 pad_634[20];
-    u32 field_0x648;
-    u8 pad_64c[8];
-
-    union {
+    union { // size 0x4
         i32 force_glow_mode;
         void *force_glow_object;
-    };
+    }; // 0x654
 
-    union {
+    union { // size 0x4
         i32 force_glow_state;
         void *force_glow_candidate;
-    };
+    }; // 0x658
 
-    u8 pad_65c[4];
-    u32 input_state;
-    u32 field_0x664;
-    u32 field_0x668;
-    u8 pad_66c[4];
-    u32 field_0x670;
-    u32 field_0x674;
-    u32 field_0x678;
-    f32 context_blend;
-    f32 context_distance;
-    u8 pad_684[4];
-    u32 field_0x688;
-    f32 delayed_turn_timer;
-    u32 field_0x690;
-    u32 field_0x694;
-    u8 pad_698[4];
-    u32 field_0x69c;
-    u32 field_0x6a0;
-    u32 field_0x6a4;
-    u8 pad_6a8[32];
-    u32 field_0x6c8;
-    f32 force_glow_x;
-    f32 force_glow_y;
-    f32 force_glow_intensity;
-    u8 pad_6d8[4];
-    f32 force_glow_z;
-    u32 field_0x6e0;
-    u8 pad_6e4[4];
-    u32 field_0x6e8;
-    f32 ground_height;
-    u8 pad_6f0[8];
-    u32 field_0x6f8;
-    u32 field_0x6fc;
-    u8 pad_700[16];
-    u32 field_0x710;
-    u8 pad_714[4];
-    u32 field_0x718;
-    u32 field_0x71c;
-    u32 field_0x720;
-    u32 field_0x724;
-    u32 field_0x728;
-    u8 pad_72c[4];
-    u32 field_0x730;
-    u32 field_0x734;
-    u8 pad_738[4];
-    u32 field_0x73c;
-    u8 pad_740[28];
-    i16 movement_angle_0;
-    i16 movement_angle_1;
-    i16 movement_angle_2;
-    i16 movement_angle_3;
-    i16 movement_lean_angle;
-    i16 secondary_lean_angle;
-    i16 tertiary_lean_angle;
-    i16 force_glow_index;
-    u8 movement_flags;
-    u8 secondary_flags;
-    u8 animation_flags;
-    u8 pad_76f;
-    u8 render_flags;
-    u8 field_0x771;
-    u8 pad_772;
-    u8 random_state[4];
-    u8 pad_777[6];
-    u8 field_0x77d;
-    u8 field_0x77e;
-    u8 pad_77f[13];
-    u8 random_context;
-    u8 pad_78d;
-    i8 surface_type;
-    u8 pad_78f[5];
-    u32 field_0x794;
+    u8 pad_65c[4];            // 0x65c
+    u32 input_state;          // 0x660
+    u32 field_0x664;          // 0x664
+    u32 field_0x668;          // 0x668
+    u8 pad_66c[4];            // 0x66c
+    u32 field_0x670;          // 0x670
+    u32 field_0x674;          // 0x674
+    u32 field_0x678;          // 0x678
+    f32 context_blend;        // 0x67c
+    f32 context_distance;     // 0x680
+    u8 pad_684[4];            // 0x684
+    u32 field_0x688;          // 0x688
+    f32 delayed_turn_timer;   // 0x68c
+    u32 field_0x690;          // 0x690
+    u32 field_0x694;          // 0x694
+    u8 pad_698[4];            // 0x698
+    u32 field_0x69c;          // 0x69c
+    u32 field_0x6a0;          // 0x6a0
+    u32 field_0x6a4;          // 0x6a4
+    u8 pad_6a8[32];           // 0x6a8
+    u32 field_0x6c8;          // 0x6c8
+    f32 force_glow_x;         // 0x6cc
+    f32 force_glow_y;         // 0x6d0
+    f32 force_glow_intensity; // 0x6d4
+    u8 pad_6d8[4];            // 0x6d8
+    f32 force_glow_z;         // 0x6dc
+    u32 field_0x6e0;          // 0x6e0
+    u8 pad_6e4[4];            // 0x6e4
+    u32 field_0x6e8;          // 0x6e8
+    f32 ground_height;        // 0x6ec
+    u8 pad_6f0[8];            // 0x6f0
+    u32 field_0x6f8;          // 0x6f8
+    u32 field_0x6fc;          // 0x6fc
+    u8 pad_700[16];           // 0x700
+    u32 field_0x710;          // 0x710
+    u8 pad_714[4];            // 0x714
+    u32 field_0x718;          // 0x718
+    u32 field_0x71c;          // 0x71c
+    u32 field_0x720;          // 0x720
+    u32 field_0x724;          // 0x724
+    u32 field_0x728;          // 0x728
+    u8 pad_72c[4];            // 0x72c
+    u32 field_0x730;          // 0x730
+    u32 field_0x734;          // 0x734
+    u8 pad_738[4];            // 0x738
+    u32 field_0x73c;          // 0x73c
+    u8 pad_740[28];           // 0x740
+    i16 movement_angle_0;     // 0x75c
+    i16 movement_angle_1;     // 0x75e
+    i16 movement_angle_2;     // 0x760
+    i16 movement_angle_3;     // 0x762
+    i16 movement_lean_angle;  // 0x764
+    i16 secondary_lean_angle; // 0x766
+    i16 tertiary_lean_angle;  // 0x768
+    i16 force_glow_index;     // 0x76a
+    u8 movement_flags;        // 0x76c
+    u8 secondary_flags;       // 0x76d
+    u8 animation_flags;       // 0x76e
+    u8 pad_76f;               // 0x76f
+    u8 render_flags;          // 0x770
+    u8 field_0x771;           // 0x771
+    u8 pad_772;               // 0x772
+    u8 random_state[4];       // 0x773
+    u8 pad_777[6];            // 0x777
+    u8 field_0x77d;           // 0x77d
+    u8 field_0x77e;           // 0x77e
+    u8 pad_77f[13];           // 0x77f
+    u8 random_context;        // 0x78c
+    u8 pad_78d;               // 0x78d
+    i8 surface_type;          // 0x78e
+    u8 pad_78f[5];            // 0x78f
+    u32 field_0x794;          // 0x794
 };
 
-STATIC_ASSERT(sizeof(struct PLAYERPACKET_s) == 1944);
+struct HINT_s {              // size 0x24
+    i16 control_mode_ids[2]; // 0x00
+    u8 flags;                // 0x04
+    u8 pad_0x05[3];          // 0x05
+    i32 shop_price;          // 0x08
+    f32 display_duration;    // 0x0c
+    f32 repeat_delay;        // 0x10
 
-struct HINT_s {
-    i16 control_mode_ids[2];
-    u8 flags;
-    u8 pad_0x05[3];
-    i32 shop_price;
-    f32 display_duration;
-    f32 repeat_delay;
-
-    union {
+    union { // size 0x4
         i32 (*availability_fn)(struct HINT_s *arg0);
         u8 pad_0x14[4];
-    };
+    }; // 0x14
 
-    void (*on_display)(struct HINT_s *arg0);
-    u8 completion_flags[4];
-    f32 field_0x20;
+    void (*on_display)(struct HINT_s *arg0); // 0x18
+    u8 completion_flags[4];                  // 0x1c
+    f32 field_0x20;                          // 0x20
 };
 
-STATIC_ASSERT(sizeof(struct HINT_s) == 36);
+struct AREA_GLOBAL_VALUES { // size 0x34
+    i32 field_0x00;         // 0x00
+    i32 field_0x04;         // 0x04
+    i32 field_0x08;         // 0x08
+    i32 field_0x0c;         // 0x0c
+    i32 field_0x10;         // 0x10
+    i32 field_0x14;         // 0x14
+    i32 field_0x18;         // 0x18
+    i32 field_0x1c;         // 0x1c
+    i32 field_0x20;         // 0x20
 
-struct AREA_GLOBAL_VALUES {
-    i32 field_0x00;
-    i32 field_0x04;
-    i32 field_0x08;
-    i32 field_0x0c;
-    i32 field_0x10;
-    i32 field_0x14;
-    i32 field_0x18;
-    i32 field_0x1c;
-    i32 field_0x20;
+    union { // size 0x8
 
-    union {
-        struct {
-            i32 field_0x24;
-            i32 field_0x28;
+        struct {            // size 0x8
+            i32 field_0x24; // 0x24
+            i32 field_0x28; // 0x28
         };
 
         u32 arcade_player_kills[2];
-    };
+    }; // 0x24
 
-    union {
-        struct {
-            i32 field_0x2c;
-            i32 field_0x30;
+    union { // size 0x8
+
+        struct {            // size 0x8
+            i32 field_0x2c; // 0x2c
+            i32 field_0x30; // 0x30
         };
 
         u32 arcade_ai_kills[2];
-    };
+    }; // 0x2c
 };
 
-STATIC_ASSERT(sizeof(struct AREA_GLOBAL_VALUES) == 52);
-
-struct SCENESPECIALPROGRESS_s {
-    u32 frame : 11;
-    u32 visible : 1;
-    u32 playing : 1;
-    u32 waiting : 1;
-    u32 repeating : 1;
-    u32 reserved : 17;
-    f32 tfactor;
+struct SCENESPECIALPROGRESS_s { // size 0x8
+    u32 frame : 11;             // 0x0:0
+    u32 visible : 1;            // 0x0:11
+    u32 playing : 1;            // 0x0:12
+    u32 waiting : 1;            // 0x0:13
+    u32 repeating : 1;          // 0x0:14
+    u32 reserved : 17;          // 0x0:15
+    f32 tfactor;                // 0x4
 };
 
-STATIC_ASSERT(sizeof(struct SCENESPECIALPROGRESS_s) == 8);
-
-struct SCENEPROGRESS_s {
-    struct SCENESPECIALPROGRESS_s specials[1280];
+struct SCENEPROGRESS_s {                          // size 0x2800
+    struct SCENESPECIALPROGRESS_s specials[1280]; // 0x0000
 };
 
-STATIC_ASSERT(sizeof(struct SCENEPROGRESS_s) == 10240);
+struct AIAREA_s {  // size 0x3c
+    char name[16]; // 0x00
 
-struct AIAREA_s {
-    char name[16];
-
-    union {
+    union { // size 0xc
         NUVEC position;
 
-        struct {
-            f32 min_x;
-            f32 min_y;
-            f32 min_z;
+        struct {       // size 0xc
+            f32 min_x; // 0x10
+            f32 min_y; // 0x14
+            f32 min_z; // 0x18
         };
-    };
+    }; // 0x10
 
-    union {
-        struct {
-            f32 half_width;
-            f32 height;
-            f32 half_depth;
+    union { // size 0xc
+
+        struct {            // size 0xc
+            f32 half_width; // 0x1c
+            f32 height;     // 0x20
+            f32 half_depth; // 0x24
         };
 
-        struct {
-            f32 max_x;
-            f32 max_y;
-            f32 max_z;
+        struct {       // size 0xc
+            f32 max_x; // 0x1c
+            f32 max_y; // 0x20
+            f32 max_z; // 0x24
         };
-    };
+    }; // 0x1c
 
-    union {
+    union { // size 0x2
         i16 rotation;
         i16 flags;
-    };
+    }; // 0x28
 
-    u8 runtime_flags;
-    u8 game_flags;
-    u8 padding_0x2c[8];
-    struct AISYS_PC *system;
-    u8 padding_0x38[4];
+    u8 runtime_flags;        // 0x2a
+    u8 game_flags;           // 0x2b
+    u8 padding_0x2c[8];      // 0x2c
+    struct AISYS_PC *system; // 0x34
+    u8 padding_0x38[4];      // 0x38
 };
 
-STATIC_ASSERT(sizeof(struct AIAREA_s) == 60);
-
-struct AIPATHCNXCONTROLSYS_s {
-    i32 controller_count;
-    struct AIPATHCNXCONTROLLER_s *controllers;
-    NULISTHDR available_controllers;
-    NULISTHDR active_controllers;
+struct AIPATHCNXCONTROLSYS_s {                 // size 0x18
+    i32 controller_count;                      // 0x00
+    struct AIPATHCNXCONTROLLER_s *controllers; // 0x04
+    NULISTHDR available_controllers;           // 0x08
+    NULISTHDR active_controllers;              // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct AIPATHCNXCONTROLSYS_s) == 24);
-
-struct nucolour3_s {
-    f32 r;
-    f32 g;
-    f32 b;
+struct nucolour3_s { // size 0xc
+    f32 r;           // 0x0
+    f32 g;           // 0x4
+    f32 b;           // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct nucolour3_s) == 12);
-
-struct TintStack {
-    struct nucolour3_s ambient;
+struct TintStack {              // size 0xc
+    struct nucolour3_s ambient; // 0x0
 };
 
-STATIC_ASSERT(sizeof(struct TintStack) == 12);
-
-struct LEVEL_PROGRESS_DATA_s {
-    u32 words[2560];
+struct LEVEL_PROGRESS_DATA_s { // size 0x2800
+    u32 words[2560];           // 0x0000
 };
 
-STATIC_ASSERT(sizeof(struct LEVEL_PROGRESS_DATA_s) == 10240);
-
-struct LEVELSCRIPTPROGRESS_s {
-    char name[16];
-    f32 params[4];
+struct LEVELSCRIPTPROGRESS_s { // size 0x20
+    char name[16];             // 0x00
+    f32 params[4];             // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROGRESS_s) == 32);
+struct LEVEL_PROGRESS_s {              // size 0x2e24
+    struct LEVEL_PROGRESS_DATA_s data; // 0x0000
 
-struct LEVEL_PROGRESS_s {
-    struct LEVEL_PROGRESS_DATA_s data;
-
-    union {
+    union { // size 0x4
         i32 flags;
 
-        struct {
-            u8 flags_low;
-            u8 flags_upper[3];
+        struct {               // size 0x4
+            u8 flags_low;      // 0x2800
+            u8 flags_upper[3]; // 0x2801
         };
-    };
+    }; // 0x2800
 
-    u32 disabled_ai_object_mask[2];
-    f32 grabber_field_0x48c;
-    f32 grabber_field_0x484;
-    f32 grabber_field_0x494;
-    u32 destroyed_trooper_cannon_mask;
-    u32 played_cutscene_mask;
-    struct LEVELSCRIPTPROGRESS_s scripts[32];
-    GIZFLOWPROGRESS_PC giz_flow_progress;
-    char disabled_effect_names[12][16];
+    u32 disabled_ai_object_mask[2];           // 0x2804
+    f32 grabber_field_0x48c;                  // 0x280c
+    f32 grabber_field_0x484;                  // 0x2810
+    f32 grabber_field_0x494;                  // 0x2814
+    u32 destroyed_trooper_cannon_mask;        // 0x2818
+    u32 played_cutscene_mask;                 // 0x281c
+    struct LEVELSCRIPTPROGRESS_s scripts[32]; // 0x2820
+    GIZFLOWPROGRESS_PC giz_flow_progress;     // 0x2c20
+    char disabled_effect_names[12][16];       // 0x2d64
 };
 
-STATIC_ASSERT(sizeof(struct LEVEL_PROGRESS_s) == 11812);
+struct RUMBLEPACKET {  // size 0x14
+    u32 field_0x00;    // 0x00
+    f32 rumble_amount; // 0x04
+    u32 field_0x08;    // 0x08
+    f32 rumble_time;   // 0x0c
 
-struct RUMBLEPACKET {
-    u32 field_0x00;
-    f32 rumble_amount;
-    u32 field_0x08;
-    f32 rumble_time;
-
-    union {
+    union { // size 0x4
         u32 field_0x10;
 
-        struct {
-            u8 active;
-            u8 pad_0x11[3];
+        struct {            // size 0x4
+            u8 active;      // 0x10
+            u8 pad_0x11[3]; // 0x11
         };
-    };
+    }; // 0x10
 };
 
-STATIC_ASSERT(sizeof(struct RUMBLEPACKET) == 20);
-
-struct PARTLIGHTSOURCE_s {
-    u8 reserved_00[120];
-    NUVEC values[7];
+struct PARTLIGHTSOURCE_s { // size 0xcc
+    u8 reserved_00[120];   // 0x00
+    NUVEC values[7];       // 0x78
 };
 
-STATIC_ASSERT(sizeof(struct PARTLIGHTSOURCE_s) == 204);
-
-struct PLAYERITEM_s {
-    struct PLAYERITEMTYPE_s *type;
-    u8 ammunition;
-    u8 field_0x5;
-    u8 reserved[2];
+struct PLAYERITEM_s {              // size 0x8
+    struct PLAYERITEMTYPE_s *type; // 0x0
+    u8 ammunition;                 // 0x4
+    u8 field_0x5;                  // 0x5
+    u8 reserved[2];                // 0x6
 };
 
-STATIC_ASSERT(sizeof(struct PLAYERITEM_s) == 8);
+struct SHOPINPUT { // size 0x28
 
-struct SHOPINPUT {
-    union {
+    union { // size 0x28
         i32 value[10];
 
-        struct {
-            i32 left_pressed;
-            i32 right_pressed;
-            i32 up_pressed;
-            i32 down_pressed;
-            i32 left_held;
-            i32 right_held;
-            i32 up_held;
-            i32 down_held;
-            i32 confirm;
-            i32 cancel;
+        struct {               // size 0x28
+            i32 left_pressed;  // 0x00
+            i32 right_pressed; // 0x04
+            i32 up_pressed;    // 0x08
+            i32 down_pressed;  // 0x0c
+            i32 left_held;     // 0x10
+            i32 right_held;    // 0x14
+            i32 up_held;       // 0x18
+            i32 down_held;     // 0x1c
+            i32 confirm;       // 0x20
+            i32 cancel;        // 0x24
         };
-    };
+    }; // 0x00
 };
 
-STATIC_ASSERT(sizeof(struct SHOPINPUT) == 40);
-
-struct NuSpecialBoundsDisplayLayout {
-    NUMTX mtx;
-    NUMTX draw_mtx;
-    NUVEC min;
-    f32 min_w;
-    NUVEC max;
-    f32 max_w;
-    NUVEC center;
-    f32 radius;
-    struct nuclipobject_s *clip_objects;
-    char *name;
-    u32 flags;
-    f32 *clip_range;
-    i32 instance_ix;
-    struct nuinstanim_s *instance_animation;
-    i16 wind_speed;
-    i16 wind_scale;
-    u32 pad_cc;
+struct NuSpecialBoundsDisplayLayout {        // size 0xd0
+    NUMTX mtx;                               // 0x00
+    NUMTX draw_mtx;                          // 0x40
+    NUVEC min;                               // 0x80
+    f32 min_w;                               // 0x8c
+    NUVEC max;                               // 0x90
+    f32 max_w;                               // 0x9c
+    NUVEC center;                            // 0xa0
+    f32 radius;                              // 0xac
+    struct nuclipobject_s *clip_objects;     // 0xb0
+    char *name;                              // 0xb4
+    u32 flags;                               // 0xb8
+    f32 *clip_range;                         // 0xbc
+    i32 instance_ix;                         // 0xc0
+    struct nuinstanim_s *instance_animation; // 0xc4
+    i16 wind_speed;                          // 0xc8
+    i16 wind_scale;                          // 0xca
+    u32 pad_cc;                              // 0xcc
 };
 
-STATIC_ASSERT(sizeof(struct NuSpecialBoundsDisplayLayout) == 208);
-
-struct NuSpecialLegacyObjectBoundsLayout {
-    struct NuSpecialLegacyMaterialLink *materials;
-    f32 origin_radius;
-    u8 pad_08[4];
-    NUVEC minimum;
-    NUVEC maximum;
-    NUVEC center;
-    f32 radius;
-    u8 pad_34[4];
-    struct NuSpecialLegacyObjectBoundsLayout *next;
+struct NuSpecialLegacyObjectBoundsLayout {          // size 0x3c
+    struct NuSpecialLegacyMaterialLink *materials;  // 0x00
+    f32 origin_radius;                              // 0x04
+    u8 pad_08[4];                                   // 0x08
+    NUVEC minimum;                                  // 0x0c
+    NUVEC maximum;                                  // 0x18
+    NUVEC center;                                   // 0x24
+    f32 radius;                                     // 0x30
+    u8 pad_34[4];                                   // 0x34
+    struct NuSpecialLegacyObjectBoundsLayout *next; // 0x38
 };
 
-STATIC_ASSERT(sizeof(struct NuSpecialLegacyObjectBoundsLayout) == 60);
-
-struct NuSpecialLegacySceneLayout {
-    u8 pad_00[24];
-    void **objects;
-    i32 instance_count;
-    u8 *instances;
+struct NuSpecialLegacySceneLayout { // size 0x24
+    u8 pad_00[24];                  // 0x00
+    void **objects;                 // 0x18
+    i32 instance_count;             // 0x1c
+    u8 *instances;                  // 0x20
 };
 
-STATIC_ASSERT(sizeof(struct NuSpecialLegacySceneLayout) == 36);
-
-struct MINEENTRY_s {
-    u32 active;
-    NUVEC pos;
-    f32 grow;
-    f32 grow_alpha;
-    u16 rotx;
-    u16 roty;
+struct MINEENTRY_s { // size 0x1c
+    u32 active;      // 0x00
+    NUVEC pos;       // 0x04
+    f32 grow;        // 0x10
+    f32 grow_alpha;  // 0x14
+    u16 rotx;        // 0x18
+    u16 roty;        // 0x1a
 };
 
-STATIC_ASSERT(sizeof(struct MINEENTRY_s) == 28);
-
-struct MINESYS_s {
-    struct nuhspecial_s mine_special;
-    struct MINEENTRY_s mines[64];
-    f32 mine_radius;
-    f32 spawn_timer;
-    void *nomine_areas[10];
-    i16 nomine_count;
-    i16 mine_debris;
-    i32 mine_part;
-    f32 update_timer;
+struct MINESYS_s {                    // size 0x748
+    struct nuhspecial_s mine_special; // 0x000
+    struct MINEENTRY_s mines[64];     // 0x00c
+    f32 mine_radius;                  // 0x70c
+    f32 spawn_timer;                  // 0x710
+    void *nomine_areas[10];           // 0x714
+    i16 nomine_count;                 // 0x73c
+    i16 mine_debris;                  // 0x73e
+    i32 mine_part;                    // 0x740
+    f32 update_timer;                 // 0x744
 };
 
-STATIC_ASSERT(sizeof(struct MINESYS_s) == 1864);
-
-struct SOCKSYS {
-    struct sock_s *sock;
-    i32 count;
+struct SOCKSYS {         // size 0x8
+    struct sock_s *sock; // 0x0
+    i32 count;           // 0x4
 };
 
-STATIC_ASSERT(sizeof(struct SOCKSYS) == 8);
-
-struct PLAYERSUBOBJ2_s {
-    char pad_0x00[28];
-    f32 value;
+struct PLAYERSUBOBJ2_s { // size 0x20
+    char pad_0x00[28];   // 0x00
+    f32 value;           // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct PLAYERSUBOBJ2_s) == 32);
-
-struct PLAYERSUBOBJ_s {
-    char pad_0x00[36];
-    void *field_0x24;
+struct PLAYERSUBOBJ_s { // size 0x28
+    char pad_0x00[36];  // 0x00
+    void *field_0x24;   // 0x24
 };
 
-STATIC_ASSERT(sizeof(struct PLAYERSUBOBJ_s) == 40);
-
-struct instNUGCUTRIGID_s {
-    struct NUGSCN_s *scene;
-    void *special;
-    void *display_special;
-    u8 state_index;
-    u8 visible;
-    u8 pad_0e[2];
+struct instNUGCUTRIGID_s {  // size 0x10
+    struct NUGSCN_s *scene; // 0x0
+    void *special;          // 0x4
+    void *display_special;  // 0x8
+    u8 state_index;         // 0xc
+    u8 visible;             // 0xd
+    u8 pad_0e[2];           // 0xe
 };
 
-STATIC_ASSERT(sizeof(struct instNUGCUTRIGID_s) == 16);
-
-struct CUTSYS {
-    void **cuts;
-    i32 count;
-    u32 *character_bits;
+struct CUTSYS {          // size 0xc
+    void **cuts;         // 0x0
+    i32 count;           // 0x4
+    u32 *character_bits; // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct CUTSYS) == 12);
-
-struct CLIMBOBJECTSYS_s {
-    struct CLIMBOBJECT_s *objects;
-    u16 count;
-    u16 capacity;
+struct CLIMBOBJECTSYS_s {          // size 0x8
+    struct CLIMBOBJECT_s *objects; // 0x0
+    u16 count;                     // 0x4
+    u16 capacity;                  // 0x6
 };
 
-STATIC_ASSERT(sizeof(struct CLIMBOBJECTSYS_s) == 8);
-
-struct CLIMBOBJECT_s {
-    NUVEC normal;
-    f32 impact_x;
-    f32 impact_z;
-    struct AIPATHCNX_PC *connection;
-    struct AIPATH_PC *path;
-    u8 flags;
-    u8 field_0x1d[3];
+struct CLIMBOBJECT_s {               // size 0x20
+    NUVEC normal;                    // 0x00
+    f32 impact_x;                    // 0x0c
+    f32 impact_z;                    // 0x10
+    struct AIPATHCNX_PC *connection; // 0x14
+    struct AIPATH_PC *path;          // 0x18
+    u8 flags;                        // 0x1c
+    u8 field_0x1d[3];                // 0x1d
 };
 
-STATIC_ASSERT(sizeof(struct CLIMBOBJECT_s) == 32);
-
-struct NuPlatform {
-    char *name;
-    char *texture_extension;
-    char *font_extension;
-    i32 current_platform;
+struct NuPlatform {          // size 0x10
+    char *name;              // 0x0
+    char *texture_extension; // 0x4
+    char *font_extension;    // 0x8
+    i32 current_platform;    // 0xc
 };
 
-STATIC_ASSERT(sizeof(struct NuPlatform) == 16);
+struct PLUG_s {     // size 0x34
+    char name[16];  // 0x00
+    NUVEC position; // 0x10
+    u16 x_rotation; // 0x1c
+    u16 y_rotation; // 0x1e
+    u16 z_rotation; // 0x20
+    u8 enabled;     // 0x22
 
-struct PLUG_s {
-    char name[16];
-    NUVEC position;
-    u16 x_rotation;
-    u16 y_rotation;
-    u16 z_rotation;
-    u8 enabled;
-
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 active : 1;
-            u8 visible : 1;
-            u8 reserved_flags : 6;
+        struct {                   // size 0x1
+            u8 active : 1;         // 0x23:0
+            u8 visible : 1;        // 0x23:1
+            u8 reserved_flags : 6; // 0x23:2
         };
-    };
+    }; // 0x23
 
-    u8 reserved[16];
+    u8 reserved[16]; // 0x24
 };
 
-STATIC_ASSERT(sizeof(struct PLUG_s) == 52);
-
-struct nuclipbounds_s {
-    NUVEC center;
-    f32 center_w;
-    NUVEC extent;
-    f32 extent_w;
+struct nuclipbounds_s { // size 0x20
+    NUVEC center;       // 0x00
+    f32 center_w;       // 0x0c
+    NUVEC extent;       // 0x10
+    f32 extent_w;       // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct nuclipbounds_s) == 32);
-
-struct nuclipobject_s {
-    i32 nmaterials;
-    i32 *material_ids;
-    i32 *indices;
+struct nuclipobject_s { // size 0xc
+    i32 nmaterials;     // 0x0
+    i32 *material_ids;  // 0x4
+    i32 *indices;       // 0x8
 };
 
-STATIC_ASSERT(sizeof(struct nuclipobject_s) == 12);
+struct NuLegacyInstanceLayout { // size 0x4c
+    u8 pad_00[68];              // 0x00
 
-struct NuLegacyInstanceLayout {
-    u8 pad_00[68];
-
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 visible : 1;
-            u8 on_screen : 1;
-            u8 unused_flag_2 : 1;
-            u8 no_visibility_test : 1;
-            u8 unused_flags_4_7 : 4;
+        struct {                       // size 0x1
+            u8 visible : 1;            // 0x44:0
+            u8 on_screen : 1;          // 0x44:1
+            u8 unused_flag_2 : 1;      // 0x44:2
+            u8 no_visibility_test : 1; // 0x44:3
+            u8 unused_flags_4_7 : 4;   // 0x44:4
         };
-    };
+    }; // 0x44
 
-    u8 pad_45[3];
-    struct nuinstanim_s *animation;
+    u8 pad_45[3];                   // 0x45
+    struct nuinstanim_s *animation; // 0x48
 };
 
-STATIC_ASSERT(sizeof(struct NuLegacyInstanceLayout) == 76);
-
-struct NuSpecialLegacyLayout {
-    u8 pad_00[64];
-    void *instance;
-    char *name;
-    u32 flags;
+struct NuSpecialLegacyLayout { // size 0x4c
+    u8 pad_00[64];             // 0x00
+    void *instance;            // 0x40
+    char *name;                // 0x44
+    u32 flags;                 // 0x48
 };
 
-STATIC_ASSERT(sizeof(struct NuSpecialLegacyLayout) == 76);
 #ifdef __cplusplus
 extern "C" {
 #endif

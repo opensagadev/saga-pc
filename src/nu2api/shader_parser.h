@@ -12,33 +12,33 @@
 
 #ifdef __cplusplus
 
-struct ShaderParserNodePc {
-    i32 kind;
-    ShaderParserNodePc *next;
+struct ShaderParserNodePc {   // size 0x8
+    i32 kind;                 // 0x0
+    ShaderParserNodePc *next; // 0x4
     ShaderParserNodePc(i32 kind);
 };
 
-struct ShaderParserTextNodePc : ShaderParserNodePc {
-    char *bytes;
-    i32 count;
+struct ShaderParserTextNodePc : ShaderParserNodePc { // size 0x10
+    char *bytes;                                     // 0x8
+    i32 count;                                       // 0xc
     ShaderParserTextNodePc(char *bytes, i32 count);
 };
 
-struct ShaderParserMacroNodePc : ShaderParserNodePc {
-    char *name;
-    char *value;
+struct ShaderParserMacroNodePc : ShaderParserNodePc { // size 0x10
+    char *name;                                       // 0x8
+    char *value;                                      // 0xc
     ShaderParserMacroNodePc(char *name, char *value);
 };
 
-struct ShaderParserUndefNodePc : ShaderParserNodePc {
-    char *name;
+struct ShaderParserUndefNodePc : ShaderParserNodePc { // size 0xc
+    char *name;                                       // 0x8
     ShaderParserUndefNodePc(char *name);
 };
 
-struct ShaderParserBranchNodePc : ShaderParserNodePc {
-    ShaderParserNodePc *if_true;
-    ShaderParserNodePc *if_false;
-    ShaderConditionNodePc *condition;
+struct ShaderParserBranchNodePc : ShaderParserNodePc { // size 0x14
+    ShaderParserNodePc *if_true;                       // 0x08
+    ShaderParserNodePc *if_false;                      // 0x0c
+    ShaderConditionNodePc *condition;                  // 0x10
     ShaderParserBranchNodePc(ShaderConditionNodePc *condition);
 };
 class ShaderCompilerParserPc;
@@ -92,21 +92,6 @@ STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, include_directories) == 0);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, includes) == 0x100);
 #endif
-STATIC_ASSERT(sizeof(ShaderParserNodePc) == 8);
-STATIC_ASSERT(offsetof(ShaderParserNodePc, kind) == 0);
-STATIC_ASSERT(offsetof(ShaderParserNodePc, next) == 4);
-STATIC_ASSERT(sizeof(ShaderParserTextNodePc) == 16);
-STATIC_ASSERT(offsetof(ShaderParserTextNodePc, bytes) == 8);
-STATIC_ASSERT(offsetof(ShaderParserTextNodePc, count) == 12);
-STATIC_ASSERT(sizeof(ShaderParserMacroNodePc) == 16);
-STATIC_ASSERT(offsetof(ShaderParserMacroNodePc, name) == 8);
-STATIC_ASSERT(offsetof(ShaderParserMacroNodePc, value) == 12);
-STATIC_ASSERT(sizeof(ShaderParserUndefNodePc) == 12);
-STATIC_ASSERT(offsetof(ShaderParserUndefNodePc, name) == 8);
-STATIC_ASSERT(sizeof(ShaderParserBranchNodePc) == 20);
-STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_true) == 8);
-STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, if_false) == 12);
-STATIC_ASSERT(offsetof(ShaderParserBranchNodePc, condition) == 16);
 #ifdef SAGA_SHADER_PARSER_TYPES
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, lexical_state) == 0x110);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, head) == 0x114);

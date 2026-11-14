@@ -37,11 +37,6 @@ typedef struct podrace_resource_s {        // size 0xb030
     u8 unknown_b021[15];                   // 0xb021
 } PODRACE_RESOURCE_PC;
 
-STATIC_ASSERT(offsetof(SNIPER_s, prev) == 0);
-STATIC_ASSERT(offsetof(SNIPER_s, pos) == 0xc);
-STATIC_ASSERT(offsetof(SNIPER_s, fire_timer) == 0x18);
-STATIC_ASSERT(offsetof(SNIPER_s, state) == 0x1c);
-
 typedef struct pod_race_countdown_reader_s { // size 0xb004
     u8 unknown_0000[0xb000];                 // 0x0000
     f32 lap_countdown;                       // 0xb000
@@ -198,8 +193,3 @@ typedef struct pod_race_panel_netpacket_s { // size 0x14
     f32 lap_alpha;                          // 0x0c
     i32 lap;                                // 0x10
 } POD_RACE_PANEL_NETPACKET_PC;
-
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0x0e);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);

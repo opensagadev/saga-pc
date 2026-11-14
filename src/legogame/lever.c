@@ -48,22 +48,6 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
     void *net_wait_info;        // 0x7a0
 } LEVER_NET_WAIT;
 
-STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, floor_position) == 0x40);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, target_offset) == 0x4c);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, position) == 0x68);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, pull_progress) == 0x78);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, auto_reset_timer) == 0x7c);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, target_indicator_scale) == 0x84);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, yaw) == 0x88);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, platform_id) == 0x8c);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, flags) == 0x94);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-
 void ReleaseLever(GAMEOBJECT *object) {
     if (object->character_context == 0x4a) {
         if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER_PC *)object->grapple)->being_pulled) {
@@ -210,14 +194,6 @@ typedef struct LEVER_PROGRESS { // size 0xc
     u32 visible[1];             // 0x8
 } LEVER_PROGRESS;
 
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, idle_animation_timer) == 0x74);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, auto_reset_delay) == 0x80);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_special_index) == 0x8a);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, animation_frame) == 0x8e);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_pitch) == 0x90);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, terrain_roll) == 0x92);
-STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, model_variant) == 0x96);
 static void Levers_Draw(void *, void *, f32);
 
 static void Lever_SelectModel(GIZMO_LEVER_PC *lever) {
@@ -609,12 +585,6 @@ ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
     lever_gizmotype_id = type_id;
     return &LeversAddTypePc;
 }
-
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
-STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
 
 static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;

@@ -10,13 +10,11 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
 
-typedef struct PC_VERTEX_DECL_ENTRY_PC {
-    u32 key;
-    PC_TEXTURE_RESOURCE_PC *resource;
+typedef struct PC_VERTEX_DECL_ENTRY_PC { // size 0x8
+    u32 key;                             // 0x0
+    PC_TEXTURE_RESOURCE_PC *resource;    // 0x4
 } PC_VERTEX_DECL_ENTRY_PC;
 
-STATIC_ASSERT(sizeof(PC_VERTEX_DECL_ENTRY_PC) == 8);
-STATIC_ASSERT(offsetof(PC_VERTEX_DECL_ENTRY_PC, resource) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -54,7 +54,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools import budget  # noqa: E402
-from tools.lib import ROOT  # noqa: E402
+from tools.lib import ROOT, clang_jobs  # noqa: E402
 
 VERSION = 6
 OUTPUT = ROOT / "build/castscan"
@@ -1415,7 +1415,7 @@ def check_budget(args, casts):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("paths", nargs="*", help="files or directories to report (default: all of src/)")
-    parser.add_argument("--jobs", type=int, help="parallel parses (default 2; all CPUs when CI is set)")
+    parser.add_argument("--jobs", type=int, help="parallel parses (default 4, SAGA_CLANG_JOBS)")
     parser.add_argument("--stats", action="store_true", help="counts per class")
     parser.add_argument("--report", action="store_true", help="root causes, largest first; CSV/JSON to build/castscan")
     parser.add_argument("--list", metavar="CLASSES", help="print the casts of these classes (comma separated)")
@@ -1431,7 +1431,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     # Two parses at a time on a shared machine; a CI runner has its CPUs to itself.
-    jobs = args.jobs or ((os.cpu_count() or 2) if os.environ.get("CI") else 2)
+    jobs = clang_jobs(args.jobs)
     facts = scan(jobs)
     casts, failures = gather(facts)
     for failure in failures:

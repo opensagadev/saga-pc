@@ -16,53 +16,32 @@
 extern "C" {
 #endif
 
-    typedef struct STREAK_NODE_PC {
-        struct STREAK_NODE_PC *next;
-        struct STREAK_NODE_PC *prev;
-        NUVEC position;
-        NUVEC previous_position;
-        NUVEC start_tangent;
-        NUVEC end_tangent;
-        NUVEC positions[7];
-        NUVEC tangents[7];
-        i32 segment_count;
-        f32 remaining_time;
+    typedef struct STREAK_NODE_PC {  // size 0xe8
+        struct STREAK_NODE_PC *next; // 0x00
+        struct STREAK_NODE_PC *prev; // 0x04
+        NUVEC position;              // 0x08
+        NUVEC previous_position;     // 0x14
+        NUVEC start_tangent;         // 0x20
+        NUVEC end_tangent;           // 0x2c
+        NUVEC positions[7];          // 0x38
+        NUVEC tangents[7];           // 0x8c
+        i32 segment_count;           // 0xe0
+        f32 remaining_time;          // 0xe4
     } STREAK_NODE_PC;
 
-    typedef struct STREAK_HEADER_PC {
-        struct STREAK_HEADER_PC *next;
-        struct STREAK_HEADER_PC *prev;
-        STREAK_NODE_PC *nodes;
-        u16 index;
-        u8 flags;
-        u8 unknown_0f;
-        i32 has_new_node;
-        void **owner_slot;
-        u32 colour;
-        GAMEOBJECT *owner;
+    typedef struct STREAK_HEADER_PC {  // size 0x20
+        struct STREAK_HEADER_PC *next; // 0x00
+        struct STREAK_HEADER_PC *prev; // 0x04
+        STREAK_NODE_PC *nodes;         // 0x08
+        u16 index;                     // 0x0c
+        u8 flags;                      // 0x0e
+        u8 unknown_0f;                 // 0x0f
+        i32 has_new_node;              // 0x10
+        void **owner_slot;             // 0x14
+        u32 colour;                    // 0x18
+        GAMEOBJECT *owner;             // 0x1c
     } STREAK_HEADER_PC;
 
-    STATIC_ASSERT(sizeof(STREAK_NODE_PC) == 0xe8);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, next) == 0x0);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, prev) == 0x4);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, position) == 0x8);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, previous_position) == 0x14);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, start_tangent) == 0x20);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, end_tangent) == 0x2c);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, positions) == 0x38);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, tangents) == 0x8c);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, segment_count) == 0xe0);
-    STATIC_ASSERT(offsetof(STREAK_NODE_PC, remaining_time) == 0xe4);
-    STATIC_ASSERT(sizeof(STREAK_HEADER_PC) == 0x20);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, next) == 0x0);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, prev) == 0x4);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, nodes) == 0x8);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, index) == 0xc);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, flags) == 0xe);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, has_new_node) == 0x10);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, owner_slot) == 0x14);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, colour) == 0x18);
-    STATIC_ASSERT(offsetof(STREAK_HEADER_PC, owner) == 0x1c);
     extern STREAK_NODE_PC StreakNodesPc[128];
     extern STREAK_HEADER_PC StreakHeadersPc[32];
     extern STREAK_NODE_PC *streaks_free;

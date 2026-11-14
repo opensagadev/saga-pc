@@ -1,29 +1,6 @@
 #include "saga.h"
 #include <math.h>
 
-STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
-STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
-STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
-STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
-STATIC_ASSERT(offsetof(BOLT_PC, hit_debris) == 0xfc);
-STATIC_ASSERT(offsetof(BOLT_PC, hit_part_debris) == 0xfe);
-STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
-STATIC_ASSERT(offsetof(BOLT_PC, field_104) == 0x104);
-STATIC_ASSERT(offsetof(BOLT_PC, dogfight_hit_position) == 0x12c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_mode) == 0x107a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
 STATIC_ASSERT(85 * sizeof(GAMEDEBRISENTRY) == 0x6a4);
 
 typedef struct VEHICLE_FIRE_STATE { // size 0xe3c

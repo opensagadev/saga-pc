@@ -52,7 +52,24 @@ CHECKS = [
 CLANG_SCANS = {"declscan", "castscan", "literalscan", "layoutcheck", "standalone"}
 
 
-def test_groups(count=6):
+def wait_for_memory(minimum_gb=6, limit=600):
+    """Wait (up to `limit` seconds) while less than `minimum_gb` of memory is available."""
+    deadline = time.monotonic() + limit
+    while time.monotonic() < deadline:
+        try:
+            for line in Path("/proc/meminfo").read_text().splitlines():
+                if line.startswith("MemAvailable:"):
+                    if int(line.split()[1]) >= minimum_gb * 1024 * 1024:
+                        return
+                    break
+            else:
+                return
+        except OSError:
+            return
+        time.sleep(5)
+
+
+def test_groups(count=2):
     """The tool tests in `count` groups of about equal size, run side by side."""
     files = sorted((ROOT / "tools").glob("test_*.py"), key=lambda p: -p.stat().st_size)
     groups = [[] for _ in range(count)]
@@ -154,10 +171,11 @@ def run(name, command, timings, **kwargs):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--no-tests", action="store_true", help="skip the tool tests")
-    parser.add_argument("--jobs", type=int, default=os.cpu_count() or 4)
+    parser.add_argument("--jobs", type=int, default=min(12, os.cpu_count() or 4), help="compiler jobs (default 12)")
     args = parser.parse_args(argv)
     timings, failures, digests = [], [], {}
     total = time.monotonic()
+    wait_for_memory()
     if run("build", ["make", f"-j{args.jobs}", "build"], timings, stdout=subprocess.DEVNULL):
         failures.append("build")
     if not failures:
@@ -173,22 +191,29 @@ def main(argv=None):
             print(f"  changed {path}")
         logs = ROOT / "build/proof"
         logs.mkdir(parents=True, exist_ok=True)
-        jobs = []
-        for name, command in CHECKS + ([] if args.no_tests else test_groups()):
-            out = open(logs / f"{name}.log", "w")
-            python = os.environ.get("SAGA_CLANG_PYTHON", sys.executable) if name in CLANG_SCANS else sys.executable
-            env = dict(os.environ, PYTHONPATH=os.pathsep.join(filter(None, [str(ROOT / "tools"), str(ROOT),
-                                                                         os.environ.get("PYTHONPATH")])))
-            jobs.append([name, time.monotonic(), out,
-                         subprocess.Popen([python, *command], cwd=ROOT, stdout=out, stderr=subprocess.STDOUT, env=env),
-                         None])
-        def clock(job):
-            job[3].wait()
-            job[4] = time.monotonic() - job[1]
+        env = dict(os.environ, PYTHONPATH=os.pathsep.join(filter(None, [str(ROOT / "tools"), str(ROOT),
+                                                                     os.environ.get("PYTHONPATH")])))
+        # Three lanes beside the match, each running its commands one after another: the libclang scans
+        # (each holds parses of saga.h, about 1 GB per worker), the other checks, and the tool tests. A lane
+        # waits before each command while less than 6 GB of memory is available.
+        lanes = [[c for c in CHECKS if c[0] in CLANG_SCANS], [c for c in CHECKS if c[0] not in CLANG_SCANS],
+                 [] if args.no_tests else test_groups()]
+        results = []
 
-        watchers = [threading.Thread(target=clock, args=(job,)) for job in jobs]
+        def lane(commands):
+            for name, command in commands:
+                wait_for_memory()
+                python = os.environ.get("SAGA_CLANG_PYTHON", sys.executable) if name in CLANG_SCANS else sys.executable
+                begin = time.monotonic()
+                with open(logs / f"{name}.log", "w") as out:
+                    code = subprocess.run([python, *command], cwd=ROOT, stdout=out, stderr=subprocess.STDOUT,
+                                          env=env).returncode
+                results.append((name, time.monotonic() - begin, code))
+
+        watchers = [threading.Thread(target=lane, args=(commands,)) for commands in lanes]
         for watcher in watchers:
             watcher.start()
+        wait_for_memory()
         if changed:
             if run("match", [sys.executable, "tools/match.py", "--update"], timings,
                    stdout=open(logs / "match.log", "w"), stderr=subprocess.STDOUT):
@@ -207,11 +232,8 @@ def main(argv=None):
             print("check failed: see build/proof/check.log")
         for watcher in watchers:
             watcher.join()
-        for job in jobs:
-            name, start, out, process, elapsed = job
-            code = process.wait()
-            out.close()
-            timings.append((name, elapsed if elapsed is not None else time.monotonic() - start, code))
+        for name, seconds, code in results:
+            timings.append((name, seconds, code))
             if code:
                 failures.append(name)
                 print(f"{name} failed: see build/proof/{name}.log")

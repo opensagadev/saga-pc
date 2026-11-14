@@ -412,12 +412,6 @@ void FS_SetFileSelPathFromName(char *name) {
     }
 }
 
-STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
-STATIC_ASSERT(offsetof(eduiitem_s, selection_group) == 0x18);
-STATIC_ASSERT(offsetof(eduiitem_s, text) == 0x24);
-STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
-STATIC_ASSERT(offsetof(eduimenu_s, title) == 0x34);
-
 extern i32 editor_return;
 extern struct FILE_DIRECTORY_ENTRY_PC *dir_list;
 extern i32 edui_filepick_listsize;
@@ -687,10 +681,6 @@ void eduiMenuDestroyItems(eduimenu_s *menu) {
         menu->field_10 = NULL;
     }
 }
-
-STATIC_ASSERT(offsetof(edui_interact_s, menu) == 0x10);
-STATIC_ASSERT(offsetof(eduimenu_s, child) == 0x3c);
-STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
 
 void eduiMenuDestroy(eduimenu_s *menu) {
     eduimenu_s *parent;
@@ -1621,8 +1611,6 @@ i32 eduicbInteractSel(edui_interact_s *interact) {
 
 i32 numInteracts = 0;
 edui_interact_s eduiInteracts[64] = {0};
-
-STATIC_ASSERT(offsetof(edui_interact_s, item) == 0x14);
 
 static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item);
 
@@ -4494,12 +4482,6 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
 
 f32 edui_cursor_y = 50.0f;
 
-STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
-STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
-STATIC_ASSERT(offsetof(eduiitem_s, process) == 0x3c);
-STATIC_ASSERT(offsetof(edui_interact_s, callback) == 0x18);
-STATIC_ASSERT(offsetof(edui_interact_s, field_20) == 0x20);
-
 /* Drops a locked interaction whose owner went away. */
 static void EduiReleaseStaleInteractPc(void) {
     if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) &&
@@ -4891,20 +4873,6 @@ void RenderFileSel2(i32 x, i32 y, i32 *width, i32 *height) {
 void RenderFileSel(void) {
     RenderFileSel3(1);
 }
-
-STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
-STATIC_ASSERT(offsetof(edui_gradient_pick_s, selected_stage) == 0x50);
-STATIC_ASSERT(offsetof(edui_gradient_pick_s, changed) == 0x54);
-STATIC_ASSERT(offsetof(edui_gradient_pick_s, change_timer) == 0x6c);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, next) == 0);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, previous) == 4);
-STATIC_ASSERT(offsetof(edui_gradient_node_s, time) == 8);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l1) == 0x9c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r1) == 0x9d);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
 
 i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;

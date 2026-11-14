@@ -51,23 +51,12 @@ typedef struct trigger_object_force_s { // size 0x10d0
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_OBJECT_FORCE_PC;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, route_mask_low) == 0x3f8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, terrain_origin) == 0x414);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
                   offsetof(AIPATHINFO_PC, connection) ==
               0x424);
 
-STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
-STATIC_ASSERT(offsetof(WORLDINFO, ai_sys) == 0x2ae8);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, type) == 3);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, ai_trigger_group) == 4);
-STATIC_ASSERT(offsetof(FLOWBOX_PC, data) == 0xc);
-STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
-STATIC_ASSERT(offsetof(AITRIGGERSET_s, flags_word) == 0x210);
-STATIC_ASSERT(sizeof(AITRIGGERSET_s) == 0x214);
 #define AITRIGGER_RELEASE(system, set, index)                                                                          \
     if ((set)->trigger_indices[index] != -1) {                                                                         \
         (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                    \

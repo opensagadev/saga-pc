@@ -12,9 +12,8 @@
 
 #ifdef __cplusplus
 
-class NuMotionFilter : public NuMotionFilterGen {
+class NuMotionFilter : public NuMotionFilterGen { // size 0xa0
   public:
 };
 
-STATIC_ASSERT(sizeof(NuMotionFilter) == 0xa0);
 #endif

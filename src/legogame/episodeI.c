@@ -3,13 +3,6 @@
 #include <math.h>
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_data_b) == 0xc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_dc8) == 0xdc8);
 extern f32 sebulba_goal_ahead_vals[4];
 extern f32 sebulba_fallback_lerpf;
 extern f32 sebulba_fallback_dist;

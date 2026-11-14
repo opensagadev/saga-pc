@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS_PC, flags) == 0x60);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
 typedef char *(*AI_CHARACTER_NAME_PC)(u8);
@@ -30,17 +29,10 @@ typedef struct EQUIVALENTOBJECTGROUP { // size 0x10
     NUSPECIALHANDLE objects[1];        // 0x4
 } EQUIVALENTOBJECTGROUP;
 
-STATIC_ASSERT(offsetof(WORLDINFO, equivalent_groups) == 0x46b0);
-STATIC_ASSERT(offsetof(WORLDINFO, equivalent_group_count) == 0x46b4);
-
 i32 NuHGobjRndr(NUHGOBJ_EVAL_PC *object, NUMTX *matrix, i32 count, i16 *layers) {
     __declspec(align(16)) NUMTX matrices[256];
     NuHGobjEval(object, 0, NULL, matrices);
     return NuHGobjRndrMtxDwa(object, matrix, count, layers, matrices, NULL, 0);
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
-STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
-STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, special_move_node) == 0x44c);

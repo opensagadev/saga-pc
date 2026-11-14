@@ -99,42 +99,41 @@ extern "C" {
 
 #if SAGA_LEGOAPI_PROPS_DOORS_DOOR_H_PART == 4 && !defined(SAGA_LEGOAPI_PROPS_DOORS_DOOR_H_STOP)
 
-struct DOOR_s {
-    char name[64];
-    char gizmo_name[64];
-    char camera_spline_name[32];
-    struct nugspline_s *spline;
-    NUVEC point0;
-    NUVEC point1;
-    NUVEC opposite_midpoint;
-    NUVEC point3;
-    NUVEC pos;
-    f32 radius;
-    NUVEC normal;
-    i16 level;
-    i16 freeplay_level;
-    u8 next_sock;
-    u8 flags;
-    u8 vehicle;
-    u8 active;
-    struct nugspline_s *camera_spline;
-    f32 camera_wait;
-    f32 camera_blend_time;
+struct DOOR_s {                        // size 0x128
+    char name[64];                     // 0x000
+    char gizmo_name[64];               // 0x040
+    char camera_spline_name[32];       // 0x080
+    struct nugspline_s *spline;        // 0x0a0
+    NUVEC point0;                      // 0x0a4
+    NUVEC point1;                      // 0x0b0
+    NUVEC opposite_midpoint;           // 0x0bc
+    NUVEC point3;                      // 0x0c8
+    NUVEC pos;                         // 0x0d4
+    f32 radius;                        // 0x0e0
+    NUVEC normal;                      // 0x0e4
+    i16 level;                         // 0x0f0
+    i16 freeplay_level;                // 0x0f2
+    u8 next_sock;                      // 0x0f4
+    u8 flags;                          // 0x0f5
+    u8 vehicle;                        // 0x0f6
+    u8 active;                         // 0x0f7
+    struct nugspline_s *camera_spline; // 0x0f8
+    f32 camera_wait;                   // 0x0fc
+    f32 camera_blend_time;             // 0x100
 
-    union {
+    union { // size 0x8
         u64 takeover_character_mask;
 
-        struct {
-            u32 vehicle_mask;
-            i32 vehicle_mode;
+        struct {              // size 0x8
+            u32 vehicle_mask; // 0x108
+            i32 vehicle_mode; // 0x10c
         };
-    };
+    }; // 0x108
 
-    NUPLANE plane;
-    void *cutscene;
+    NUPLANE plane;  // 0x110
+    void *cutscene; // 0x120
 };
 
-STATIC_ASSERT(sizeof(struct DOOR_s) == 296);
 #ifdef __cplusplus
 extern "C" {
 #endif

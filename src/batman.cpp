@@ -42,18 +42,6 @@ extern "C" void DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
 
-STATIC_ASSERT(sizeof(FADEINFO_s) == 0x2c);
-STATIC_ASSERT(offsetof(FADEINFO_s, direction) == 0x00);
-STATIC_ASSERT(offsetof(FADEINFO_s, fade) == 0x04);
-STATIC_ASSERT(offsetof(FADEINFO_s, rate) == 0x08);
-STATIC_ASSERT(offsetof(FADEINFO_s, busy) == 0x0c);
-STATIC_ASSERT(offsetof(FADEINFO_s, stage) == 0x10);
-STATIC_ASSERT(offsetof(FADEINFO_s, fades) == 0x14);
-STATIC_ASSERT(offsetof(FADEINFO_s, pending_type) == 0x24);
-STATIC_ASSERT(offsetof(FADEINFO_s, field_28) == 0x28);
-
-STATIC_ASSERT(sizeof(FadeSystem) == 0x2c);
-
 void legoSetMusicVolume(f32 volume);
 
 extern "C" {
@@ -564,9 +552,6 @@ typedef struct NU_MAIN_STATUS_PACKET { // size 0xb6
     u8 unknown_a6[0xe];                // 0xa6
     u8 status_flags;                   // 0xb4
 } NU_MAIN_STATUS_PACKET;
-
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_7) == 7);
-STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);
 
 extern "C" {
     u8 StatusPlayerActivePc[8] = {0};

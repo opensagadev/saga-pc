@@ -12,35 +12,27 @@
 
 struct gameobject_s;
 
-typedef struct gamepad_init_record_s {
-    NUPAD_INIT_STATE *pad;
+typedef struct gamepad_init_record_s { // size 0x60
+    NUPAD_INIT_STATE *pad;             // 0x00
 
-    union {
-        struct {
-            u8 unknown_04[0x56];
-            u16 allocated;
-            u8 unknown_5c[4];
+    union { // size 0x5c
+
+        struct {                 // size 0x5c
+            u8 unknown_04[0x56]; // 0x04
+            u16 allocated;       // 0x5a
+            u8 unknown_5c[4];    // 0x5c
         };
 
-        struct {
-            u32 menu_buttons_held;
-            u32 menu_buttons_pressed;
-            u32 menu_directions_held;
-            u32 menu_directions;
-            u8 unknown_14[0x4c];
+        struct {                      // size 0x5c
+            u32 menu_buttons_held;    // 0x04
+            u32 menu_buttons_pressed; // 0x08
+            u32 menu_directions_held; // 0x0c
+            u32 menu_directions;      // 0x10
+            u8 unknown_14[0x4c];      // 0x14
         };
-    };
+    }; // 0x04
 } GAMEPAD_INIT_RECORD;
 
-STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, pad) == 0);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, allocated) == 0x5a);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_buttons_held) == 4);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_buttons_pressed) == 8);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_directions_held) == 0xc);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, menu_directions) == 0x10);
-STATIC_ASSERT(offsetof(GAMEPAD_INIT_RECORD, unknown_5c) == 0x5c);
-STATIC_ASSERT(sizeof(GAMEPAD_INIT_RECORD) == 0x60);
 #ifdef __cplusplus
 extern "C" {
 #endif

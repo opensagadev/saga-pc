@@ -37,31 +37,21 @@ struct PC_TEXTURE_RESOURCE_PC;
 struct PC_VERTEX_ELEMENT_PC;
 struct numtl_s;
 
-typedef struct __declspec(align(16)) NUVEC4BLOCK_PC {
-    f32 x[4];
-    f32 y[4];
-    f32 z[4];
+typedef struct __declspec(align(16)) NUVEC4BLOCK_PC { // size 0x30
+    f32 x[4];                                         // 0x00
+    f32 y[4];                                         // 0x10
+    f32 z[4];                                         // 0x20
 } NUVEC4BLOCK_PC;
 
-STATIC_ASSERT(sizeof(NUVEC4BLOCK_PC) == 0x30);
-STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, x) == 0);
-STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, y) == 0x10);
-STATIC_ASSERT(offsetof(NUVEC4BLOCK_PC, z) == 0x20);
-
-typedef struct PC_TEXTURE_LEVEL_DESC_PC {
-    u32 format;
-    u32 type;
-    u32 usage;
-    u32 pool;
-    u32 unknown_10[2];
-    u32 width;
-    u32 height;
+typedef struct PC_TEXTURE_LEVEL_DESC_PC { // size 0x20
+    u32 format;                           // 0x00
+    u32 type;                             // 0x04
+    u32 usage;                            // 0x08
+    u32 pool;                             // 0x0c
+    u32 unknown_10[2];                    // 0x10
+    u32 width;                            // 0x18
+    u32 height;                           // 0x1c
 } PC_TEXTURE_LEVEL_DESC_PC;
-
-STATIC_ASSERT(sizeof(PC_TEXTURE_LEVEL_DESC_PC) == 0x20);
-STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, format) == 0);
-STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, width) == 0x18);
-STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, height) == 0x1c);
 
 typedef struct nutexbmp_colour_s {
     u8 blue;
@@ -70,70 +60,50 @@ typedef struct nutexbmp_colour_s {
     u8 alpha;
 } NUTEXBMP_COLOUR_PC;
 
-typedef struct nutexbmp_s {
-    i32 type;
-    i32 width;
-    i32 height;
-    i32 mips;
-    u8 *data;
-    u8 *palette;
-    u32 unknown_18[3];
+typedef struct nutexbmp_s { // size 0x24
+    i32 type;               // 0x00
+    i32 width;              // 0x04
+    i32 height;             // 0x08
+    i32 mips;               // 0x0c
+    u8 *data;               // 0x10
+    u8 *palette;            // 0x14
+    u32 unknown_18[3];      // 0x18
 } NUTEXBMP_PC;
 
-STATIC_ASSERT(offsetof(NUTEXBMP_PC, data) == 0x10);
-STATIC_ASSERT(offsetof(NUTEXBMP_PC, palette) == 0x14);
-STATIC_ASSERT(sizeof(NUTEXBMP_PC) == 0x24);
-
-typedef struct PC_VIEWPORT_PC {
-    u32 x;
-    u32 y;
-    u32 width;
-    u32 height;
-    f32 min_z;
-    f32 max_z;
+typedef struct PC_VIEWPORT_PC { // size 0x18
+    u32 x;                      // 0x00
+    u32 y;                      // 0x04
+    u32 width;                  // 0x08
+    u32 height;                 // 0x0c
+    f32 min_z;                  // 0x10
+    f32 max_z;                  // 0x14
 } PC_VIEWPORT_PC;
 
-typedef struct nulgtvertex_s {
-    f32 x;
-    f32 y;
-    f32 z;
-    u32 colour;
-    f32 u;
-    f32 v;
+typedef struct nulgtvertex_s { // size 0x18
+    f32 x;                     // 0x00
+    f32 y;                     // 0x04
+    f32 z;                     // 0x08
+    u32 colour;                // 0x0c
+    f32 u;                     // 0x10
+    f32 v;                     // 0x14
 } NULGTVERTEX_PC;
-
-STATIC_ASSERT(offsetof(NULGTVERTEX_PC, colour) == 0xc);
-STATIC_ASSERT(offsetof(NULGTVERTEX_PC, u) == 0x10);
-STATIC_ASSERT(offsetof(NULGTVERTEX_PC, v) == 0x14);
 
 typedef struct PC_BUFFER_RESOURCE_PC PC_BUFFER_RESOURCE_PC;
 
-typedef struct PC_BUFFER_RESOURCE_METHODS {
-    void *unknown_0000[2];
-    ULONG(__stdcall *release)(PC_BUFFER_RESOURCE_PC *);
-    void *unknown_000c[8];
-    HRESULT(__stdcall *lock)(PC_BUFFER_RESOURCE_PC *, u32, u32, void **, u32);
-    HRESULT(__stdcall *unlock)(PC_BUFFER_RESOURCE_PC *);
+typedef struct PC_BUFFER_RESOURCE_METHODS {                                    // size 0x34
+    void *unknown_0000[2];                                                     // 0x00
+    ULONG(__stdcall *release)(PC_BUFFER_RESOURCE_PC *);                        // 0x08
+    void *unknown_000c[8];                                                     // 0x0c
+    HRESULT(__stdcall *lock)(PC_BUFFER_RESOURCE_PC *, u32, u32, void **, u32); // 0x2c
+    HRESULT(__stdcall *unlock)(PC_BUFFER_RESOURCE_PC *);                       // 0x30
 } PC_BUFFER_RESOURCE_METHODS;
 
-struct PC_BUFFER_RESOURCE_PC {
-    const PC_BUFFER_RESOURCE_METHODS *methods;
+struct PC_BUFFER_RESOURCE_PC {                 // size 0x4
+    const PC_BUFFER_RESOURCE_METHODS *methods; // 0x0
 };
-
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_PC, methods) == 0);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, release) == 8);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, lock) == 0x2c);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, unlock) == 0x30);
 
 typedef struct PC_EFFECT_SURFACE_PC PC_EFFECT_SURFACE_PC;
 
-STATIC_ASSERT(sizeof(PC_VIEWPORT_PC) == 24);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, x) == 0);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, y) == 4);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, width) == 8);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, height) == 12);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, min_z) == 0x10);
-STATIC_ASSERT(offsetof(PC_VIEWPORT_PC, max_z) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -156,16 +126,13 @@ extern "C" {
     extern f32 PCShadowFarValue;
     extern i32 PCShadowPacketCount;
 
-    typedef struct PC_SHADOW_QUEUE_RECORD {
-        NUVEC position;
-        f32 radius;
-        u16 opacity;
-        u8 unknown_12[6];
+    typedef struct PC_SHADOW_QUEUE_RECORD { // size 0x18
+        NUVEC position;                     // 0x00
+        f32 radius;                         // 0x0c
+        u16 opacity;                        // 0x10
+        u8 unknown_12[6];                   // 0x12
     } PC_SHADOW_QUEUE_RECORD;
 
-    STATIC_ASSERT(sizeof(PC_SHADOW_QUEUE_RECORD) == 24);
-    STATIC_ASSERT(offsetof(PC_SHADOW_QUEUE_RECORD, radius) == 0xc);
-    STATIC_ASSERT(offsetof(PC_SHADOW_QUEUE_RECORD, opacity) == 0x10);
     extern i32 NuPrimVertexCount;
     extern i32 *NuPrimVertexCountPointer;
     extern i32 NuPrimCurrentPrimitiveType;
@@ -276,15 +243,12 @@ extern "C" {
 }
 #endif
 
-typedef struct PC_LIGHT_STATE_SLOT_PC {
-    u8 unknown_00[0x94];
-    i32 next;
-    i32 previous;
+typedef struct PC_LIGHT_STATE_SLOT_PC { // size 0x9c
+    u8 unknown_00[0x94];                // 0x00
+    i32 next;                           // 0x94
+    i32 previous;                       // 0x98
 } PC_LIGHT_STATE_SLOT_PC;
 
-STATIC_ASSERT(sizeof(PC_LIGHT_STATE_SLOT_PC) == 0x9c);
-STATIC_ASSERT(offsetof(PC_LIGHT_STATE_SLOT_PC, next) == 0x94);
-STATIC_ASSERT(offsetof(PC_LIGHT_STATE_SLOT_PC, previous) == 0x98);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -295,13 +259,12 @@ extern "C" {
     extern i32 NuLgtStateEnabledPc;
     extern i32 NuLgtStateUnknownPc;
 
-    typedef struct PC_GOBJ_REGISTRY_AUX_PC {
-        struct PC_GOBJ_REGISTRY_AUX_PC *next;
-        u8 unknown_04[8];
-        void *payload;
+    typedef struct PC_GOBJ_REGISTRY_AUX_PC {  // size 0x10
+        struct PC_GOBJ_REGISTRY_AUX_PC *next; // 0x0
+        u8 unknown_04[8];                     // 0x4
+        void *payload;                        // 0xc
     } PC_GOBJ_REGISTRY_AUX_PC;
 
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_AUX_PC, payload) == 0xc);
     extern i32 NuGobjRegistryInitializedPc;
     extern i32 NuGobjRegistryCountPc;
 #ifdef __cplusplus
@@ -322,47 +285,31 @@ extern "C" {
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 2 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
-typedef struct debris_part_header_s {
-    u8 fields_000[16];
-    f32 gravity;
-    f32 last_render_time;
-    u8 fields_018[16];
-    f32 texture_u0;
-    f32 texture_v0;
-    f32 texture_u1;
-    f32 texture_v1;
-    u8 fields_038[20];
-    DEBRIS_PARTICLE_FRAME_PC frames[64];
+typedef struct debris_part_header_s {    // size 0xa4c
+    u8 fields_000[16];                   // 0x000
+    f32 gravity;                         // 0x010
+    f32 last_render_time;                // 0x014
+    u8 fields_018[16];                   // 0x018
+    f32 texture_u0;                      // 0x028
+    f32 texture_v0;                      // 0x02c
+    f32 texture_u1;                      // 0x030
+    f32 texture_v1;                      // 0x034
+    u8 fields_038[20];                   // 0x038
+    DEBRIS_PARTICLE_FRAME_PC frames[64]; // 0x04c
 } DEBRIS_PART_HEADER_PC;
 
-STATIC_ASSERT(sizeof(DEBRIS_PART_HEADER_PC) == 0xa4c);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, gravity) == 0x10);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, last_render_time) == 0x14);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, texture_u0) == 0x28);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, texture_v0) == 0x2c);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, texture_u1) == 0x30);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, texture_v1) == 0x34);
-STATIC_ASSERT(offsetof(DEBRIS_PART_HEADER_PC, frames) == 0x4c);
-
-typedef struct SCENE_VIDEO_RESOURCE_HEADER_PC {
-    u16 vertex_buffer_count;
-    u16 unknown_02;
-    PC_BUFFER_RESOURCE_PC **vertex_buffers;
-    u16 index_buffer_count;
-    u16 unknown_0a;
-    PC_BUFFER_RESOURCE_PC **index_buffers;
-    u16 texture_count;
-    u16 unknown_12;
-    struct PC_TEXTURE_RESOURCE_PC **textures;
+typedef struct SCENE_VIDEO_RESOURCE_HEADER_PC { // size 0x18
+    u16 vertex_buffer_count;                    // 0x00
+    u16 unknown_02;                             // 0x02
+    PC_BUFFER_RESOURCE_PC **vertex_buffers;     // 0x04
+    u16 index_buffer_count;                     // 0x08
+    u16 unknown_0a;                             // 0x0a
+    PC_BUFFER_RESOURCE_PC **index_buffers;      // 0x0c
+    u16 texture_count;                          // 0x10
+    u16 unknown_12;                             // 0x12
+    struct PC_TEXTURE_RESOURCE_PC **textures;   // 0x14
 } SCENE_VIDEO_RESOURCE_HEADER_PC;
 
-STATIC_ASSERT(sizeof(SCENE_VIDEO_RESOURCE_HEADER_PC) == 0x18);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, vertex_buffer_count) == 0x0);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, vertex_buffers) == 0x4);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, index_buffer_count) == 0x8);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, index_buffers) == 0xc);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, texture_count) == 0x10);
-STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, textures) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -386,37 +333,29 @@ extern "C" {
     extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc;
     extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
 
-    typedef struct PC_GOBJ_NATIVE_RESOURCE {
-        u8 unknown_00[0x10];
-        struct PC_TEXTURE_RESOURCE_PC *resource;
+    typedef struct PC_GOBJ_NATIVE_RESOURCE {     // size 0x14
+        u8 unknown_00[0x10];                     // 0x00
+        struct PC_TEXTURE_RESOURCE_PC *resource; // 0x10
     } PC_GOBJ_NATIVE_RESOURCE;
 
-    STATIC_ASSERT(offsetof(PC_GOBJ_NATIVE_RESOURCE, resource) == 0x10);
-
-    typedef struct PC_GOBJ_REGISTRY_CHILD_PC {
-        struct PC_GOBJ_REGISTRY_CHILD_PC *next;
-        u8 unknown_04[0x1c];
-        void *owned_buffer;
-        u8 unknown_24[8];
-        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
-        u8 unknown_30[8];
-        PC_GOBJ_NATIVE_RESOURCE *native_resource;
+    typedef struct PC_GOBJ_REGISTRY_CHILD_PC {    // size 0x3c
+        struct PC_GOBJ_REGISTRY_CHILD_PC *next;   // 0x00
+        u8 unknown_04[0x1c];                      // 0x04
+        void *owned_buffer;                       // 0x20
+        u8 unknown_24[8];                         // 0x24
+        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;       // 0x2c
+        u8 unknown_30[8];                         // 0x30
+        PC_GOBJ_NATIVE_RESOURCE *native_resource; // 0x38
     } PC_GOBJ_REGISTRY_CHILD_PC;
 
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, owned_buffer) == 0x20);
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, auxiliary) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, native_resource) == 0x38);
-
-    typedef struct PC_GOBJ_REGISTRY_ENTRY_PC {
-        struct PC_GOBJ_REGISTRY_ENTRY_PC *next;
-        struct PC_GOBJ_REGISTRY_ENTRY_PC *previous;
-        u8 unknown_08[4];
-        PC_GOBJ_REGISTRY_CHILD_PC *children;
-        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
+    typedef struct PC_GOBJ_REGISTRY_ENTRY_PC {      // size 0x14
+        struct PC_GOBJ_REGISTRY_ENTRY_PC *next;     // 0x00
+        struct PC_GOBJ_REGISTRY_ENTRY_PC *previous; // 0x04
+        u8 unknown_08[4];                           // 0x08
+        PC_GOBJ_REGISTRY_CHILD_PC *children;        // 0x0c
+        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;         // 0x10
     } PC_GOBJ_REGISTRY_ENTRY_PC;
 
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, children) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, auxiliary) == 0x10);
     extern PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
 #ifdef __cplusplus
 }
@@ -478,21 +417,15 @@ extern "C" {
     void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *, NUMTX *, NUMTX *);
     extern NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4];
 
-    typedef struct NATIVE_PARTICLE_PACKET_PC {
-        u8 vertex_buffer_index;
-        u8 fields_001[3];
-        i32 use_system_memory_vb;
-        i32 first_vertex;
-        i32 vertex_count;
-        struct numtl_s *material;
+    typedef struct NATIVE_PARTICLE_PACKET_PC { // size 0x14
+        u8 vertex_buffer_index;                // 0x00
+        u8 fields_001[3];                      // 0x01
+        i32 use_system_memory_vb;              // 0x04
+        i32 first_vertex;                      // 0x08
+        i32 vertex_count;                      // 0x0c
+        struct numtl_s *material;              // 0x10
     } NATIVE_PARTICLE_PACKET_PC;
 
-    STATIC_ASSERT(sizeof(NATIVE_PARTICLE_PACKET_PC) == 0x14);
-    STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, vertex_buffer_index) == 0);
-    STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, use_system_memory_vb) == 4);
-    STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, first_vertex) == 8);
-    STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, vertex_count) == 0xc);
-    STATIC_ASSERT(offsetof(NATIVE_PARTICLE_PACKET_PC, material) == 0x10);
     extern struct NUGSCN_s *PCRegisteredNativeScenes[100];
     extern struct numtl_s *PCStartupMaterial1Pc;
     extern struct numtl_s *PCStartupMaterial2Pc;
@@ -512,16 +445,16 @@ extern "C" {
 extern "C" {
 #endif
 
-    struct PC_EFFECT_SURFACE_PC {
-        GRAPHICS_RENDER_TEXTURE_PC *texture;
-        u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */
-        struct PC_TEXTURE_RESOURCE_PC *surface;
-        u16 level;
-        u16 unknown_0e;
-        u32 field_10;
-        u16 width;
-        u16 height;
-        i16 registry_index; /* 0x1a..0x1b alignment padding */
+    struct PC_EFFECT_SURFACE_PC {                                                                          // size 0x1c
+        GRAPHICS_RENDER_TEXTURE_PC *texture;                                                               // 0x00
+        u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */ // 0x04
+        struct PC_TEXTURE_RESOURCE_PC *surface;                                                            // 0x08
+        u16 level;                                                                                         // 0x0c
+        u16 unknown_0e;                                                                                    // 0x0e
+        u32 field_10;                                                                                      // 0x10
+        u16 width;                                                                                         // 0x14
+        u16 height;                                                                                        // 0x16
+        i16 registry_index; /* 0x1a..0x1b alignment padding */                                             // 0x18
 #ifdef __cplusplus
         PC_EFFECT_SURFACE_PC();
         ~PC_EFFECT_SURFACE_PC();
@@ -538,16 +471,6 @@ extern "C" {
 #endif
     };
 
-    STATIC_ASSERT(sizeof(PC_EFFECT_SURFACE_PC) == 0x1c);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, texture) == 0);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, owns_texture) == 4);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, surface) == 8);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, level) == 0xc);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, field_10) == 0x10);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, width) == 0x14);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, height) == 0x16);
-    STATIC_ASSERT(offsetof(PC_EFFECT_SURFACE_PC, registry_index) == 0x18);
-
     extern GRAPHICS_RENDER_TEXTURE_PC PCGraphicsRenderTextures[32];
 
 #ifdef __cplusplus
@@ -555,16 +478,12 @@ extern "C" {
 #endif
 
 /* Minimum selected native producer/reader view; original allocation unknown. */
-typedef struct FRAME_NATIVE_TEXTURE_PC {
-    NUTEXDIM_PC dimensions;
-    GRAPHICS_RENDER_TEXTURE_PC *render_texture;
-    i32 texture_id;
+typedef struct FRAME_NATIVE_TEXTURE_PC {        // size 0x30
+    NUTEXDIM_PC dimensions;                     // 0x00
+    GRAPHICS_RENDER_TEXTURE_PC *render_texture; // 0x28
+    i32 texture_id;                             // 0x2c
 } FRAME_NATIVE_TEXTURE_PC;
 
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, dimensions) == 0);
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, render_texture) == 0x28);
-STATIC_ASSERT(offsetof(FRAME_NATIVE_TEXTURE_PC, texture_id) == 0x2c);
-STATIC_ASSERT(sizeof(FRAME_NATIVE_TEXTURE_PC) == 0x30);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -605,24 +524,18 @@ extern "C" {
 extern "C" {
 #endif
 
-    struct debris_particle_chunk_s {
-        u8 command;
-        u8 fields_001[3];
-        struct debris_particle_chunk_s *next;
-        u8 fields_008[12];
-        u32 field_014;
-        u32 field_018;
-        u32 field_01c;
-        DEBRISPARTICLE_PC particles[32];
-        u32 end_command;
+    struct debris_particle_chunk_s {          // size 0x424
+        u8 command;                           // 0x000
+        u8 fields_001[3];                     // 0x001
+        struct debris_particle_chunk_s *next; // 0x004
+        u8 fields_008[12];                    // 0x008
+        u32 field_014;                        // 0x014
+        u32 field_018;                        // 0x018
+        u32 field_01c;                        // 0x01c
+        DEBRISPARTICLE_PC particles[32];      // 0x020
+        u32 end_command;                      // 0x420
     };
 
-    STATIC_ASSERT(sizeof(DEBRIS_PARTICLE_CHUNK_PC) == 0x424);
-    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, command) == 0);
-    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, next) == 4);
-    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, field_014) == 0x14);
-    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, particles) == 0x20);
-    STATIC_ASSERT(offsetof(DEBRIS_PARTICLE_CHUNK_PC, end_command) == 0x420);
 #ifdef __cplusplus
 }
 #endif

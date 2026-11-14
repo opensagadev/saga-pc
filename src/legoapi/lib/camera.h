@@ -21,41 +21,29 @@ extern "C" {
     u16 GameCam_GetAdjustedYRot(GAMECAMERA *);
     void GameCam_HitRoll(void);
 
-    typedef struct VIEWCAM_PC {
-        i32 mode;
-        NUVEC target;
-        i16 pitch;
-        i16 yaw;
-        f32 distance;
-        f32 height;
-        f32 zoom_step;
-        u32 unknown_20;
-        GAMEPAD_PC *gamepad;
+    typedef struct VIEWCAM_PC { // size 0x28
+        i32 mode;               // 0x00
+        NUVEC target;           // 0x04
+        i16 pitch;              // 0x10
+        i16 yaw;                // 0x12
+        f32 distance;           // 0x14
+        f32 height;             // 0x18
+        f32 zoom_step;          // 0x1c
+        u32 unknown_20;         // 0x20
+        GAMEPAD_PC *gamepad;    // 0x24
     } VIEWCAM_PC;
 
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, mode) == 0);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, target) == 4);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, pitch) == 0x10);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, yaw) == 0x12);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, distance) == 0x14);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, height) == 0x18);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, zoom_step) == 0x1c);
-    STATIC_ASSERT(offsetof(VIEWCAM_PC, gamepad) == 0x24);
-    STATIC_ASSERT(sizeof(VIEWCAM_PC) == 0x28);
     extern i32 GUNSHIPAHACK;
 
     extern NARROWSOCKEXCEPTION_PC *NarrowSockException;
     i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
     void SetCameraMatrices(void);
 
-    typedef struct KEEP_SCREEN_PLANE_PC {
-        NUVEC point;
-        NUVEC normal;
+    typedef struct KEEP_SCREEN_PLANE_PC { // size 0x18
+        NUVEC point;                      // 0x00
+        NUVEC normal;                     // 0x0c
     } KEEP_SCREEN_PLANE_PC;
 
-    STATIC_ASSERT(sizeof(KEEP_SCREEN_PLANE_PC) == 24);
-    STATIC_ASSERT(offsetof(KEEP_SCREEN_PLANE_PC, point) == 0);
-    STATIC_ASSERT(offsetof(KEEP_SCREEN_PLANE_PC, normal) == 12);
     extern u8 CutSceneCameraMatrixSetPc;
     extern i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object);
 #ifdef __cplusplus

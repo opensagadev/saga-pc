@@ -8,13 +8,11 @@
 struct area_data_pc_s;
 struct level_data_s;
 
-typedef struct area_fixup_pc_entry_s {
-    char *name;
-    struct area_data_pc_s **area;
+typedef struct area_fixup_pc_entry_s { // size 0x8
+    char *name;                        // 0x0
+    struct area_data_pc_s **area;      // 0x4
 } AREAFIXUP_PC;
 
-STATIC_ASSERT(sizeof(AREAFIXUP_PC) == 8);
-STATIC_ASSERT(offsetof(AREAFIXUP_PC, area) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif

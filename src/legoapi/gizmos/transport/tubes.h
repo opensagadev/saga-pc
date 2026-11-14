@@ -25,25 +25,20 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct TUBE_PC {
-    u8 unknown_00[0x10];
-    NUVEC position;
-    f32 height;
-    f32 radius;
-    u8 unknown_24[0x4];
-    f32 top;
-    f32 radius_squared;
-    u8 unknown_30[4];
-    u8 flags;
-    u8 unknown_35_b[0x3];
-    u32 occupied_object_masks[2];
+typedef struct TUBE_PC {          // size 0x40
+    u8 unknown_00[0x10];          // 0x00
+    NUVEC position;               // 0x10
+    f32 height;                   // 0x1c
+    f32 radius;                   // 0x20
+    u8 unknown_24[0x4];           // 0x24
+    f32 top;                      // 0x28
+    f32 radius_squared;           // 0x2c
+    u8 unknown_30[4];             // 0x30
+    u8 flags;                     // 0x34
+    u8 unknown_35_b[0x3];         // 0x35
+    u32 occupied_object_masks[2]; // 0x38
 } TUBE_PC;
 
-STATIC_ASSERT(sizeof(TUBE_PC) == 0x40);
-STATIC_ASSERT(offsetof(TUBE_PC, position) == 0x10);
-STATIC_ASSERT(offsetof(TUBE_PC, top) == 0x28);
-STATIC_ASSERT(offsetof(TUBE_PC, radius_squared) == 0x2c);
-STATIC_ASSERT(offsetof(TUBE_PC, flags) == 0x34);
 #ifdef __cplusplus
 extern "C" {
 #endif

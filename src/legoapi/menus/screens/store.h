@@ -9,66 +9,53 @@
 extern "C" {
 #endif
 
-    typedef struct COLLECTID_PC {
-        union {
-            struct {
-                i16 id;
-                u8 unknown_02[0x1a];
+    typedef struct COLLECTID_PC { // size 0x1c
+
+        union { // size 0x1c
+
+            struct {                 // size 0x1c
+                i16 id;              // 0x00
+                u8 unknown_02[0x1a]; // 0x02
             };
 
-            struct {
-                u8 unknown_price_prefix[2];
-                u8 selection_type;
-                u8 unknown_price_03;
-                u32 price;
-                u8 shop_enabled;
-                u8 unknown_price_tail[0x13];
+            struct {                         // size 0x1c
+                u8 unknown_price_prefix[2];  // 0x00
+                u8 selection_type;           // 0x02
+                u8 unknown_price_03;         // 0x03
+                u32 price;                   // 0x04
+                u8 shop_enabled;             // 0x08
+                u8 unknown_price_tail[0x13]; // 0x09
             };
 
-            struct {
-                u8 unknown_grid_prefix[0x14];
-                f32 grid_x;
-                f32 grid_y;
+            struct {                          // size 0x1c
+                u8 unknown_grid_prefix[0x14]; // 0x00
+                f32 grid_x;                   // 0x14
+                f32 grid_y;                   // 0x18
             };
-        };
+        }; // 0x00
     } COLLECTID_PC;
 
-    STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
-    STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(sizeof(COLLECTID_PC) == 0x1c);
-STATIC_ASSERT(offsetof(COLLECTID_PC, id) == 0);
-STATIC_ASSERT(offsetof(COLLECTID_PC, unknown_02) == 2);
-STATIC_ASSERT(offsetof(COLLECTID_PC, selection_type) == 2);
-STATIC_ASSERT(offsetof(COLLECTID_PC, price) == 4);
-STATIC_ASSERT(offsetof(COLLECTID_PC, shop_enabled) == 8);
 typedef struct COLLECTID COLLECTID;
 
-struct COLLECTID {
-    i16 id;
-    u8 type;
-    u8 field2_0x3;
-    i32 field3_0x4;
-    u8 can_buy;
-    u8 field5_0x9;
-    u16 field6_0xa;
+struct COLLECTID {  // size 0x1c
+    i16 id;         // 0x00
+    u8 type;        // 0x02
+    u8 field2_0x3;  // 0x03
+    i32 field3_0x4; // 0x04
+    u8 can_buy;     // 0x08
+    u8 field5_0x9;  // 0x09
+    u16 field6_0xa; // 0x0a
 
-    union {
+    union { // size 0x10
         char cheat_code[16];
 
-        struct {
-            u8 grid_reserved[8];
-            f32 grid_x;
-            f32 grid_y;
+        struct {                 // size 0x10
+            u8 grid_reserved[8]; // 0x0c
+            f32 grid_x;          // 0x14
+            f32 grid_y;          // 0x18
         };
-    };
+    }; // 0x0c
 };
-
-STATIC_ASSERT(sizeof(struct COLLECTID) == 28);
-STATIC_ASSERT(offsetof(COLLECTID, grid_x) == 20);
-STATIC_ASSERT(offsetof(COLLECTID, grid_y) == 24);
-STATIC_ASSERT(offsetof(COLLECTID_PC, grid_x) == 20);
-STATIC_ASSERT(offsetof(COLLECTID_PC, grid_y) == 24);
-STATIC_ASSERT(offsetof(COLLECTID_PC, unknown_price_tail) == 9);

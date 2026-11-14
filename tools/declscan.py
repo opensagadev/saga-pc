@@ -48,7 +48,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools import budget  # noqa: E402
-from tools.lib import ROOT, dependency_files  # noqa: E402
+from tools.lib import ROOT, clang_jobs, dependency_files  # noqa: E402
 
 VERSION = 5
 DEBUG_DEFINE = "-DSAGA_DEBUG"
@@ -479,7 +479,7 @@ def class_counts(records):
 
 def check_budget(args):
     """Compare the class counts of all src/ units with the budget (budgets only go down)."""
-    src, facts = scan(args.jobs or os.cpu_count() or 2, debug=False)
+    src, facts = scan(clang_jobs(args.jobs), debug=False)
     records, failures = records_for(units_under([]), src, facts)
     if failures:
         for failure in failures:
@@ -506,7 +506,7 @@ def check_budget(args):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("paths", nargs="*", help="units or directories (default: all of src/)")
-    parser.add_argument("--jobs", type=int, help="parallel parses (default 2; all CPUs with --check)")
+    parser.add_argument("--jobs", type=int, help="parallel parses (default 4, SAGA_CLANG_JOBS)")
     parser.add_argument("--json", type=Path, default=OUTPUT, help=f"record list (default {OUTPUT.relative_to(ROOT)})")
     parser.add_argument("--list", action="store_true", help="print one line per declaration")
     parser.add_argument("--classes", default=CLASSES, help="classes to list (default ABCDE)")

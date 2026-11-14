@@ -25,107 +25,65 @@
 struct edcam_s;
 struct numtl_s;
 
-typedef struct FRAME_PAD_PC {
-    i32 device;
-    i32 slot;
-    i32 stage;
-    i32 id;
-    i32 digital_left_x;
-    i32 digital_left_y;
-    i32 digital_right_x;
-    i32 digital_right_y;
-    f32 left_x_normal;
-    f32 left_y_normal;
-    f32 left_x_unknown;
-    f32 left_y_unknown;
-    f32 left_x_unknown2;
-    f32 left_y_unknown2;
-    f32 right_x_normal;
-    f32 right_y_normal;
-    f32 right_x_unknown;
-    f32 right_y_unknown;
-    f32 right_x_unknown2;
-    f32 right_y_unknown2;
-    u8 reserved50[0x20];
-    u32 digital_buttons;
-    u32 digital_buttons_prev;
-    u32 digital_buttons_pressed;
-    u32 digital_buttons_released;
+typedef struct FRAME_PAD_PC {     // size 0xa4
+    i32 device;                   // 0x00
+    i32 slot;                     // 0x04
+    i32 stage;                    // 0x08
+    i32 id;                       // 0x0c
+    i32 digital_left_x;           // 0x10
+    i32 digital_left_y;           // 0x14
+    i32 digital_right_x;          // 0x18
+    i32 digital_right_y;          // 0x1c
+    f32 left_x_normal;            // 0x20
+    f32 left_y_normal;            // 0x24
+    f32 left_x_unknown;           // 0x28
+    f32 left_y_unknown;           // 0x2c
+    f32 left_x_unknown2;          // 0x30
+    f32 left_y_unknown2;          // 0x34
+    f32 right_x_normal;           // 0x38
+    f32 right_y_normal;           // 0x3c
+    f32 right_x_unknown;          // 0x40
+    f32 right_y_unknown;          // 0x44
+    f32 right_x_unknown2;         // 0x48
+    f32 right_y_unknown2;         // 0x4c
+    u8 reserved50[0x20];          // 0x50
+    u32 digital_buttons;          // 0x70
+    u32 digital_buttons_prev;     // 0x74
+    u32 digital_buttons_pressed;  // 0x78
+    u32 digital_buttons_released; // 0x7c
 
-    union {
+    union { // size 0x4
         u32 flags;
 
-        struct {
-            i32 has_analog_sticks : 1;
-            i32 has_analog_buttons : 1;
-            i32 is_valid : 1;
-            i32 must_have_analog_sticks : 1;
+        struct {                             // size 0x4
+            i32 has_analog_sticks : 1;       // 0x80:0
+            i32 has_analog_buttons : 1;      // 0x80:1
+            i32 is_valid : 1;                // 0x80:2
+            i32 must_have_analog_sticks : 1; // 0x80:3
         };
-    };
+    }; // 0x80
 
-    u8 reserved84[4];
-    u8 deadzone;
-    u8 reserved89[7];
-    u8 analog_right_x;
-    u8 analog_right_y;
-    u8 analog_left_x;
-    u8 analog_left_y;
-    u8 analog_left_pad_right;
-    u8 analog_left_pad_left;
-    u8 analog_left_pad_up;
-    u8 analog_left_pad_down;
-    u8 reserved98[4];
-    u8 analog_l1;
-    u8 analog_r1;
-    u8 analog_l2;
-    u8 analog_r2;
-    u8 unknown_b0;
-    u8 unknown_b1;
-    u8 reserveda2[2];
+    u8 reserved84[4];         // 0x84
+    u8 deadzone;              // 0x88
+    u8 reserved89[7];         // 0x89
+    u8 analog_right_x;        // 0x90
+    u8 analog_right_y;        // 0x91
+    u8 analog_left_x;         // 0x92
+    u8 analog_left_y;         // 0x93
+    u8 analog_left_pad_right; // 0x94
+    u8 analog_left_pad_left;  // 0x95
+    u8 analog_left_pad_up;    // 0x96
+    u8 analog_left_pad_down;  // 0x97
+    u8 reserved98[4];         // 0x98
+    u8 analog_l1;             // 0x9c
+    u8 analog_r1;             // 0x9d
+    u8 analog_l2;             // 0x9e
+    u8 analog_r2;             // 0x9f
+    u8 unknown_b0;            // 0xa0
+    u8 unknown_b1;            // 0xa1
+    u8 reserveda2[2];         // 0xa2
 } FRAME_PAD_PC;
 
-STATIC_ASSERT(sizeof(FRAME_PAD_PC) == 0xa4);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_left_x) == 0x10);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_normal) == 0x20);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_normal) == 0x38);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, flags) == 0x80);
-
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, deadzone) == 0x88);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_left) == 0x95);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l1) == 0x9c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, unknown_b0) == 0xa0);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, device) == 0x0);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, slot) == 0x4);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, stage) == 0x8);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, id) == 0xc);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_left_y) == 0x14);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_right_x) == 0x18);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_right_y) == 0x1c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_normal) == 0x24);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_unknown) == 0x28);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_unknown) == 0x2c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_x_unknown2) == 0x30);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, left_y_unknown2) == 0x34);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_normal) == 0x3c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_unknown) == 0x40);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_unknown) == 0x44);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_x_unknown2) == 0x48);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, right_y_unknown2) == 0x4c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_prev) == 0x74);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_released) == 0x7c);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_right) == 0x94);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_up) == 0x96);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_pad_down) == 0x97);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r1) == 0x9d);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, unknown_b1) == 0xa1);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -134,8 +92,6 @@ extern "C" {
     extern HINSTANCE PCInputWindow;
     i32 NuKeyboardPlatformStartup(void);
     void *NuAlloc(i32 size, const char *file, i32 line);
-    STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
-    STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
     extern NUKEYCHAR NuKeyChar[65];
     extern const char WorldObjectAnimFormat[7];
     i32 PcConfigureInputGraphicsCaps(void);
@@ -163,84 +119,77 @@ typedef struct eduiiattr_s eduiiattr_s;
 typedef struct eduiitem_s eduiitem_s;
 typedef struct eduimenu_s eduimenu_s;
 
-struct eduiitem_s {
-    struct eduiitem_s *next;
-    struct eduiitem_s *previous;
-    i32 type;
+struct eduiitem_s {              // size 0x48
+    struct eduiitem_s *next;     // 0x00
+    struct eduiitem_s *previous; // 0x04
+    i32 type;                    // 0x08
 
-    union {
+    union { // size 0x4
         i32 data;
         void *data_ptr;
         u8 unknown_0c[4];
-    };
+    }; // 0x0c
 
-    u8 unknown_10;
+    u8 unknown_10; // 0x10
 
-    union {
+    union { // size 0x1
         u8 flags;
 
-        struct {
-            u8 highlighted : 1;
-            u8 disabled : 1;
-            u8 unknown_flags : 6;
+        struct {                  // size 0x1
+            u8 highlighted : 1;   // 0x11:0
+            u8 disabled : 1;      // 0x11:1
+            u8 unknown_flags : 6; // 0x11:2
         };
-    };
+    }; // 0x11
 
-    i8 text_alignment;
-    u8 unknown_13[5];
-    i32 selection_group;
-    i32 x;
-    i32 y;
-    char *text;
-    i32 colours[4];
-    i32 (*input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);
-    i32 (*process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32 (*render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
-    void (*destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
+    i8 text_alignment;                                                                                       // 0x12
+    u8 unknown_13[5];                                                                                        // 0x13
+    i32 selection_group;                                                                                     // 0x18
+    i32 x;                                                                                                   // 0x1c
+    i32 y;                                                                                                   // 0x20
+    char *text;                                                                                              // 0x24
+    i32 colours[4];                                                                                          // 0x28
+    i32 (*input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);                      // 0x38
+    i32 (*process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);   // 0x3c
+    i32 (*render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5); // 0x40
+    void (*destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);                                       // 0x44
 };
 
-STATIC_ASSERT(sizeof(struct eduiitem_s) == 72);
-
-struct edui_gradient_node_s {
-    struct edui_gradient_node_s *next;
-    struct edui_gradient_node_s *previous;
-    f32 time;
-    u32 colour;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    u32 metadata;
+struct edui_gradient_node_s {              // size 0x20
+    struct edui_gradient_node_s *next;     // 0x00
+    struct edui_gradient_node_s *previous; // 0x04
+    f32 time;                              // 0x08
+    u32 colour;                            // 0x0c
+    f32 hue;                               // 0x10
+    f32 saturation;                        // 0x14
+    f32 value;                             // 0x18
+    u32 metadata;                          // 0x1c
 };
 
-STATIC_ASSERT(sizeof(struct edui_gradient_node_s) == 32);
-
-struct ed_module_s {
-    struct ed_module_s *next;
-    struct ed_module_s *previous;
-    char *name;
-    void (*init)(void);
-    void (*close)(void);
-    void (*activate)(void);
-    void (*deactivate)(void);
-    void (*apply)(void);
-    void (*write)(i32 arg0);
-    void (*read)(i32 arg0);
-    u32 block_id;
-    i32 (*process)(f32 arg0, struct FRAME_PAD_PC *arg1);
-    void (*render)(void);
-    void *reserved;
+struct ed_module_s {                                     // size 0x38
+    struct ed_module_s *next;                            // 0x00
+    struct ed_module_s *previous;                        // 0x04
+    char *name;                                          // 0x08
+    void (*init)(void);                                  // 0x0c
+    void (*close)(void);                                 // 0x10
+    void (*activate)(void);                              // 0x14
+    void (*deactivate)(void);                            // 0x18
+    void (*apply)(void);                                 // 0x1c
+    void (*write)(i32 arg0);                             // 0x20
+    void (*read)(i32 arg0);                              // 0x24
+    u32 block_id;                                        // 0x28
+    i32 (*process)(f32 arg0, struct FRAME_PAD_PC *arg1); // 0x2c
+    void (*render)(void);                                // 0x30
+    void *reserved;                                      // 0x34
 };
 
-STATIC_ASSERT(sizeof(struct ed_module_s) == 56);
-
-struct eduiiattr_s {
-    u32 background;
-    u32 text;
-    u32 highlight;
-    u32 disabled;
+struct eduiiattr_s { // size 0x10
+    u32 background;  // 0x0
+    u32 text;        // 0x4
+    u32 highlight;   // 0x8
+    u32 disabled;    // 0xc
 };
 
-STATIC_ASSERT(sizeof(struct eduiiattr_s) == 16);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -303,151 +252,139 @@ enum { EDUI_ITEM_HIGHLIGHTED = 1 };
 
 #if SAGA_GAMEAPI_EDTOOLS_EDUI_H_PART == 2 && !defined(SAGA_GAMEAPI_EDTOOLS_EDUI_H_STOP)
 
-struct eduimenu_s {
-    struct eduiitem_s *first;
-    struct eduiitem_s *last;
-    struct eduiitem_s *selected;
-    struct eduiitem_s *field_0c;
-    struct eduiitem_s *field_10;
-    i32 x;
-    i32 y;
-    i32 width;
-    i32 height;
-    i32 field_24;
-    i32 field_28;
-    void *font;
-    void (*callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    char *title;
+struct eduimenu_s {                                                     // size 0x44
+    struct eduiitem_s *first;                                           // 0x00
+    struct eduiitem_s *last;                                            // 0x04
+    struct eduiitem_s *selected;                                        // 0x08
+    struct eduiitem_s *field_0c;                                        // 0x0c
+    struct eduiitem_s *field_10;                                        // 0x10
+    i32 x;                                                              // 0x14
+    i32 y;                                                              // 0x18
+    i32 width;                                                          // 0x1c
+    i32 height;                                                         // 0x20
+    i32 field_24;                                                       // 0x24
+    i32 field_28;                                                       // 0x28
+    void *font;                                                         // 0x2c
+    void (*callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1); // 0x30
+    char *title;                                                        // 0x34
 
-    union {
-        struct {
-            u32 flags : 3;
-            u32 unknown_flags : 29;
+    union { // size 0x4
+
+        struct {                    // size 0x4
+            u32 flags : 3;          // 0x38:0
+            u32 unknown_flags : 29; // 0x38:3
         };
 
-        struct {
-            u32 : 1;
-            i32 horizontal : 1;
-            u32 pinned : 1;
-            u32 : 29;
+        struct {                // size 0x4
+            u32 : 1;            // 0x38:0
+            i32 horizontal : 1; // 0x38:1
+            u32 pinned : 1;     // 0x38:2
+            u32 : 29;           // 0x38:3
         };
-    };
-    struct eduimenu_s *child;
-    struct eduimenu_s *parent;
+    }; // 0x38
+    struct eduimenu_s *child;  // 0x3c
+    struct eduimenu_s *parent; // 0x40
 };
 
-STATIC_ASSERT(sizeof(struct eduimenu_s) == 68);
+struct edui_textpicker_s {                                                        // size 0x168
+    struct eduiitem_s base;                                                       // 0x000
+    i32 (*interact)(struct edui_interact_s *arg0);                                // 0x048
+    char value[256];                                                              // 0x04c
+    i32 keyboard_column;                                                          // 0x14c
+    i32 keyboard_row;                                                             // 0x150
+    i32 cursor;                                                                   // 0x154
+    i16 editing;                                                                  // 0x158
+    i16 max_length;                                                               // 0x15a
+    void (*callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x15c
+    char *format;                                                                 // 0x160
 
-struct edui_textpicker_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    char value[256];
-    i32 keyboard_column;
-    i32 keyboard_row;
-    i32 cursor;
-    i16 editing;
-    i16 max_length;
-    void (*callback)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    char *format;
-
-    union {
+    union { // size 0x4
         u32 keyboard_flags;
         u8 keyboard_flag_bits; /* the edfile.c keyboard handlers test the low byte */
 
-        struct {
-            u32 : 1;
-            u32 extended_keyboard : 1; /* five keyboard rows and the copy/paste keys */
-            u32 : 30;
+        struct {                                                                        // size 0x4
+            u32 : 1;                                                                    // 0x164:0
+            u32 extended_keyboard : 1; /* five keyboard rows and the copy/paste keys */ // 0x164:1
+            u32 : 30;                                                                   // 0x164:2
         };
-    };
+    }; // 0x164
 };
 
-STATIC_ASSERT(sizeof(struct edui_textpicker_s) == 360);
-
-struct edui_texture_pick_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    f32 uv_x[2];
-    f32 uv_y[2];
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    struct numtl_s *material;
-    i32 selected_corner;
-    f32 zoom;
+struct edui_texture_pick_s {                                                     // size 0x6c
+    struct eduiitem_s base;                                                      // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                               // 0x48
+    f32 uv_x[2];                                                                 // 0x4c
+    f32 uv_y[2];                                                                 // 0x54
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x5c
+    struct numtl_s *material;                                                    // 0x60
+    i32 selected_corner;                                                         // 0x64
+    f32 zoom;                                                                    // 0x68
 };
 
-STATIC_ASSERT(sizeof(struct edui_texture_pick_s) == 108);
-
-struct edui_graph_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    struct nugraph_s *graph;
-    struct nugraph_s *onion_skins[8];
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    f32 cursor_x;
-    f32 cursor_y;
-    i32 width;
-    i32 height;
-    f32 x_scale;
-    f32 y_scale;
-    i32 selected_point;
-    char x_label[16];
-    char y_label[16];
-    char title[16];
+struct edui_graph_s {                                                            // size 0xc0
+    struct eduiitem_s base;                                                      // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                               // 0x48
+    struct nugraph_s *graph;                                                     // 0x4c
+    struct nugraph_s *onion_skins[8];                                            // 0x50
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x70
+    f32 cursor_x;                                                                // 0x74
+    f32 cursor_y;                                                                // 0x78
+    i32 width;                                                                   // 0x7c
+    i32 height;                                                                  // 0x80
+    f32 x_scale;                                                                 // 0x84
+    f32 y_scale;                                                                 // 0x88
+    i32 selected_point;                                                          // 0x8c
+    char x_label[16];                                                            // 0x90
+    char y_label[16];                                                            // 0xa0
+    char title[16];                                                              // 0xb0
 };
 
-STATIC_ASSERT(sizeof(struct edui_graph_s) == 192);
-
-struct edui_slider_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    f32 normalized_value;
-    f32 value;
-    f32 minimum;
-    f32 range;
-    i32 change_timer;
-    char *format;
-    f32 granularity;
+struct edui_slider_s {                                                           // size 0x6c
+    struct eduiitem_s base;                                                      // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                               // 0x48
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x4c
+    f32 normalized_value;                                                        // 0x50
+    f32 value;                                                                   // 0x54
+    f32 minimum;                                                                 // 0x58
+    f32 range;                                                                   // 0x5c
+    i32 change_timer;                                                            // 0x60
+    char *format;                                                                // 0x64
+    f32 granularity;                                                             // 0x68
 };
 
-STATIC_ASSERT(sizeof(struct edui_slider_s) == 108);
-
-struct edui_prop_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    u32 editing : 1;
-    u32 dragging_label : 1;
-    u32 divider_active : 1;
-    u32 button_held : 1;
-    u32 button_hover : 1;
-    u32 button_latched : 1;
-    u32 button_type : 3;
-    u32 remaining_property_flags : 23;
-    i32 button_colour;
-    f32 label_width;
-    f32 button_size;
-    f32 button_x;
-    f32 button_y;
-    char *property_text;
-    u8 unknown_68[4];
-    i32 depth;
-    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    i32 extra_data;
+struct edui_prop_s {                                                              // size 0x80
+    struct eduiitem_s base;                                                       // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                                // 0x48
+    u32 editing : 1;                                                              // 0x4c:0
+    u32 dragging_label : 1;                                                       // 0x4c:1
+    u32 divider_active : 1;                                                       // 0x4c:2
+    u32 button_held : 1;                                                          // 0x4c:3
+    u32 button_hover : 1;                                                         // 0x4c:4
+    u32 button_latched : 1;                                                       // 0x4c:5
+    u32 button_type : 3;                                                          // 0x4c:6
+    u32 remaining_property_flags : 23;                                            // 0x4c:9
+    i32 button_colour;                                                            // 0x50
+    f32 label_width;                                                              // 0x54
+    f32 button_size;                                                              // 0x58
+    f32 button_x;                                                                 // 0x5c
+    f32 button_y;                                                                 // 0x60
+    char *property_text;                                                          // 0x64
+    u8 unknown_68[4];                                                             // 0x68
+    i32 depth;                                                                    // 0x6c
+    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x70
+    void (*button)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);   // 0x74
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);  // 0x78
+    i32 extra_data;                                                               // 0x7c
 };
 
-STATIC_ASSERT(sizeof(struct edui_prop_s) == 128);
-
-struct edui_colour_slider_s {
-    struct edui_slider_s base;
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 unknown_6f;
+struct edui_colour_slider_s {  // size 0x70
+    struct edui_slider_s base; // 0x00
+    u8 red;                    // 0x6c
+    u8 green;                  // 0x6d
+    u8 blue;                   // 0x6e
+    u8 unknown_6f;             // 0x6f
 };
 
-STATIC_ASSERT(sizeof(struct edui_colour_slider_s) == 112);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -521,89 +458,80 @@ extern "C" {
 
 #if SAGA_GAMEAPI_EDTOOLS_EDUI_H_PART == 3 && !defined(SAGA_GAMEAPI_EDTOOLS_EDUI_H_STOP)
 
-struct edui_gradient_pick_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    struct edui_gradient_node_s *first_stage;
-    struct edui_gradient_node_s *selected_stage;
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    i32 change_timer;
+struct edui_gradient_pick_s {                                                    // size 0x70
+    struct eduiitem_s base;                                                      // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                               // 0x48
+    struct edui_gradient_node_s *first_stage;                                    // 0x4c
+    struct edui_gradient_node_s *selected_stage;                                 // 0x50
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x54
+    void (*press)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);   // 0x58
+    void (*add)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);     // 0x5c
+    void (*remove)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);  // 0x60
+    void (*copy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);    // 0x64
+    void (*paste)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);   // 0x68
+    i32 change_timer;                                                            // 0x6c
 };
 
-STATIC_ASSERT(sizeof(struct edui_gradient_pick_s) == 112);
-
-struct edui_interact_s {
-    f32 x;
-    f32 y;
-    f32 width;
-    f32 height;
-    struct eduimenu_s *menu;
-    struct eduiitem_s *item;
-    i32 (*callback)(struct edui_interact_s *arg0);
-    u32 buttons;
-    i32 field_20;
+struct edui_interact_s {                           // size 0x24
+    f32 x;                                         // 0x00
+    f32 y;                                         // 0x04
+    f32 width;                                     // 0x08
+    f32 height;                                    // 0x0c
+    struct eduimenu_s *menu;                       // 0x10
+    struct eduiitem_s *item;                       // 0x14
+    i32 (*callback)(struct edui_interact_s *arg0); // 0x18
+    u32 buttons;                                   // 0x1c
+    i32 field_20;                                  // 0x20
 };
 
-STATIC_ASSERT(sizeof(struct edui_interact_s) == 36);
-
-struct edui_sel_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    void (*held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+struct edui_sel_s {                                                               // size 0x54
+    struct eduiitem_s base;                                                       // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0);                                // 0x48
+    void (*selected)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x4c
+    void (*held)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);     // 0x50
 };
 
-STATIC_ASSERT(sizeof(struct edui_sel_s) == 84);
-
-struct edui_file_pick_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    char *format;
-    u16 reserved_54;
-    u16 reopen_directory;
-    char name[64];
-    char directory[256];
-    char filename[256];
-    char filter[8];
-    i32 (*compare_entries)(void *arg0, void *arg1);
+struct edui_file_pick_s {                                                        // size 0x2a4
+    struct eduiitem_s base;                                                      // 0x000
+    i32 (*interact)(struct edui_interact_s *arg0);                               // 0x048
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x04c
+    char *format;                                                                // 0x050
+    u16 reserved_54;                                                             // 0x054
+    u16 reopen_directory;                                                        // 0x056
+    char name[64];                                                               // 0x058
+    char directory[256];                                                         // 0x098
+    char filename[256];                                                          // 0x198
+    char filter[8];                                                              // 0x298
+    i32 (*compare_entries)(void *arg0, void *arg1);                              // 0x2a0
 };
 
-STATIC_ASSERT(sizeof(struct edui_file_pick_s) == 676);
+struct edui_colour_pick_s {                        // size 0x74
+    struct eduiitem_s base;                        // 0x00
+    i32 (*interact)(struct edui_interact_s *arg0); // 0x48
+    f32 cursor_x;                                  // 0x4c
+    f32 cursor_y;                                  // 0x50
+    f32 hue;                                       // 0x54
+    f32 saturation;                                // 0x58
+    f32 value;                                     // 0x5c
+    f32 red;                                       // 0x60
+    f32 green;                                     // 0x64
+    f32 blue;                                      // 0x68
 
-struct edui_colour_pick_s {
-    struct eduiitem_s base;
-    i32 (*interact)(struct edui_interact_s *arg0);
-    f32 cursor_x;
-    f32 cursor_y;
-    f32 hue;
-    f32 saturation;
-    f32 value;
-    f32 red;
-    f32 green;
-    f32 blue;
-
-    union {
+    union { // size 0x1
         u8 interaction_flags;
 
-        struct {
-            u8 dragging_colour : 1;
-            u8 dragging_saturation : 1;
-            u8 confirm : 1;
-            u8 unknown_interaction_flags : 5;
+        struct {                              // size 0x1
+            u8 dragging_colour : 1;           // 0x6c:0
+            u8 dragging_saturation : 1;       // 0x6c:1
+            u8 confirm : 1;                   // 0x6c:2
+            u8 unknown_interaction_flags : 5; // 0x6c:3
         };
-    };
+    }; // 0x6c
 
-    u8 unknown_6d[3];
-    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    u8 unknown_6d[3];                                                            // 0x6d
+    void (*changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2); // 0x70
 };
 
-STATIC_ASSERT(sizeof(struct edui_colour_pick_s) == 116);
 #ifdef __cplusplus
 extern "C" {
 #endif

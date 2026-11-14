@@ -1087,7 +1087,6 @@ i32 NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }
 
-STATIC_ASSERT(offsetof(GAMEAUDIO_PC, sfx_ids) == 0x158);
 STATIC_ASSERT(sizeof(((GAMEAUDIO_PC *)0)->sfx_ids[0]) == 2);
 
 void InitSoundInfo(i32);

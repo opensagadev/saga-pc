@@ -1289,12 +1289,6 @@ typedef struct text_crawl_mission_view_s { // size 0x8
     i16 text_id;                           // 0x6
 } TEXT_CRAWL_MISSION_VIEW_PC;
 
-STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, area_index) == 0x87);
-STATIC_ASSERT(offsetof(AREA_DATA_PC, text_id_value) == 0x96);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, name_id) == 0);
-STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrentPc = 0;
 static NUMTX TextCrawlMatrixPc = {0};
 static NUVEC TextCrawlOffsetPc = {0.0f, -1.0f, 10.0f};
@@ -1690,9 +1684,6 @@ void MenuDrawViewTextStrings(MENU *menu) {
         }
     }
 }
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 4);
 
 void MenuUpdateViewTextStrings(MENU *menu) {
     if (menu->cancel_pressed != 0) {

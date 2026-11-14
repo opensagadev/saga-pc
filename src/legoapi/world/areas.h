@@ -28,22 +28,17 @@ struct WORLDINFO_s;
 
 typedef struct area_supercounter_s AREA_SUPERCOUNTER_PC;
 
-typedef struct area_supercounter_pickup_s {
-    void *gizmo;
-    void *position_gizmo;
-    void *position_special[3];
-    char name[8];
-    char position_name[16];
-    i16 level_index;
-    u8 use_special;
-    u8 unknown_002f;
+typedef struct area_supercounter_pickup_s { // size 0x30
+    void *gizmo;                            // 0x00
+    void *position_gizmo;                   // 0x04
+    void *position_special[3];              // 0x08
+    char name[8];                           // 0x14
+    char position_name[16];                 // 0x1c
+    i16 level_index;                        // 0x2c
+    u8 use_special;                         // 0x2e
+    u8 unknown_002f;                        // 0x2f
 } AREA_SUPERCOUNTER_PICKUP_PC;
 
-STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PICKUP_PC) == 0x30);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, name) == 0x14);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, position_name) == 0x1c);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, level_index) == 0x2c);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PICKUP_PC, use_special) == 0x2e);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -101,14 +96,11 @@ extern "C" {
 }
 #endif
 
-typedef struct AREA_EXTRA_MODEL_PC {
-    i16 *model_list;
-    i16 *extra_id;
+typedef struct AREA_EXTRA_MODEL_PC { // size 0x8
+    i16 *model_list;                 // 0x0
+    i16 *extra_id;                   // 0x4
 } AREA_EXTRA_MODEL_PC;
 
-STATIC_ASSERT(sizeof(AREA_EXTRA_MODEL_PC) == 8);
-STATIC_ASSERT(offsetof(AREA_EXTRA_MODEL_PC, model_list) == 0);
-STATIC_ASSERT(offsetof(AREA_EXTRA_MODEL_PC, extra_id) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -130,20 +122,16 @@ extern "C" {
 
 #if SAGA_LEGOAPI_WORLD_AREAS_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_AREAS_H_STOP)
 
-struct area_supercounter_s {
-    AREA_SUPERCOUNTER_PICKUP_PC pickups[10];
-    u16 pickup_count;
-    u16 collected_count;
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 processed_flags;
+struct area_supercounter_s {                 // size 0x1e8
+    AREA_SUPERCOUNTER_PICKUP_PC pickups[10]; // 0x000
+    u16 pickup_count;                        // 0x1e0
+    u16 collected_count;                     // 0x1e2
+    u8 red;                                  // 0x1e4
+    u8 green;                                // 0x1e5
+    u8 blue;                                 // 0x1e6
+    u8 processed_flags;                      // 0x1e7
 };
 
-STATIC_ASSERT(sizeof(AREA_SUPERCOUNTER_PC) == 0x1e8);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, pickup_count) == 0x1e0);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, collected_count) == 0x1e2);
-STATIC_ASSERT(offsetof(AREA_SUPERCOUNTER_PC, processed_flags) == 0x1e7);
 #ifdef __cplusplus
 extern "C" {
 #endif

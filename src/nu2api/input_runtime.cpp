@@ -445,12 +445,10 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
     }
 }
 
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xcc);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, vertex_shader_version) == 0xcc);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xd4);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x5cc);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_id) == 0x5d0);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, force_software) == 0x5f8);
 
 extern "C" i32 PcConfigureInputGraphicsCaps() {
     if (PcCapsConfigured) {
@@ -2051,8 +2049,6 @@ struct PC_INPUT_EXPORT_METADATA_PC { // size 0xc
     u16 alternate_deadzone_word;     // 0x8
     i16 key;                         // 0xa
 };
-
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
 
 void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i32 auxiliary, i32 bank, i32 key) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;

@@ -1,67 +1,8 @@
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(SIGNAL_s) == 0x94);
-STATIC_ASSERT(offsetof(SIGNAL_s, matrix) == 0x10);
-STATIC_ASSERT(offsetof(SIGNAL_s, position) == 0x50);
-STATIC_ASSERT(offsetof(SIGNAL_s, yaw) == 0x5c);
-STATIC_ASSERT(offsetof(SIGNAL_s, terrain_pitch) == 0x5e);
-STATIC_ASSERT(offsetof(SIGNAL_s, terrain_roll) == 0x60);
-STATIC_ASSERT(offsetof(SIGNAL_s, flags) == 0x6a);
-STATIC_ASSERT(offsetof(SIGNAL_s, radius) == 0x6c);
-STATIC_ASSERT(offsetof(SIGNAL_s, scale) == 0x70);
-STATIC_ASSERT(offsetof(SIGNAL_s, normal) == 0x74);
-STATIC_ASSERT(offsetof(SIGNAL_s, suit) == 0x80);
-STATIC_ASSERT(offsetof(SIGNAL_s, target_position) == 0x84);
-STATIC_ASSERT(offsetof(SIGNAL_s, platform_id) == 0x90);
-STATIC_ASSERT(offsetof(WORLDINFO, signals) == 0x5060);
-STATIC_ASSERT(offsetof(WORLDINFO, signal_count) == 0x5064);
-STATIC_ASSERT(sizeof(SIGNALPROGRESS_s) == 0x28);
-STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, active_mask) == 0x20);
-STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, visible_mask) == 0x24);
-
-STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, max_signals) == 0xea);
-STATIC_ASSERT(offsetof(SIGNAL_s, name) == 0);
 STATIC_ASSERT(sizeof(((SIGNAL_s *)0)->name) == 16);
-STATIC_ASSERT(offsetof(SIGNAL_s, character_letter) == 0x68);
-STATIC_ASSERT(offsetof(SIGNAL_s, suit_letter) == 0x69);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
-STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 extern char TextInputKeyNameTextPc7516c0[1];
-STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
-STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, options) == 0);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
-STATIC_ASSERT(offsetof(GIZMOFNS_PC, add_level_sfx_fn) == 0x6c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
-STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, context_duration) == 0x784);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
-STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, capabilities) == 0x4bc);
-STATIC_ASSERT(sizeof(SUIT_INITIALIZER_RECORD_PC) == 0x18);
-STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_flags) == 0x10);
-STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 
 i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;

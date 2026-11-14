@@ -23,18 +23,13 @@ extern "C" {
 }
 #endif
 
-typedef struct tag_transfer_s {
-    GAMEOBJECT *source;
-    NUVEC previous[3];
-    f32 height_fraction[3];
-    f32 elapsed;
+typedef struct tag_transfer_s { // size 0x38
+    GAMEOBJECT *source;         // 0x00
+    NUVEC previous[3];          // 0x04
+    f32 height_fraction[3];     // 0x28
+    f32 elapsed;                // 0x34
 } TAG_TRANSFER_PC;
 
-STATIC_ASSERT(sizeof(TAG_TRANSFER_PC) == 56);
-STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, source) == 0);
-STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, previous) == 4);
-STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, height_fraction) == 40);
-STATIC_ASSERT(offsetof(TAG_TRANSFER_PC, elapsed) == 52);
 #ifdef __cplusplus
 extern "C" {
 #endif

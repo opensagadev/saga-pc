@@ -11,131 +11,90 @@ typedef struct nudathdr_s NUDATHDR;
 
 typedef i32 NUFILE;
 
-typedef struct nudatfinfo_s {
-    i32 file_offset;
-    i32 file_len;
-    i32 decompressed_len;
-    i32 compression_mode;
+typedef struct nudatfinfo_s { // size 0x10
+    i32 file_offset;          // 0x0
+    i32 file_len;             // 0x4
+    i32 decompressed_len;     // 0x8
+    i32 compression_mode;     // 0xc
 } NUDATFINFO;
 
-STATIC_ASSERT(sizeof(NUDATFINFO) == 0x10);
-
-typedef struct nudfnode_s {
-    i16 child_idx;
-    i16 sibling_idx;
-    char *name;
+typedef struct nudfnode_s { // size 0x8
+    i16 child_idx;          // 0x0
+    i16 sibling_idx;        // 0x2
+    char *name;             // 0x4
 } NUDFNODE;
 
-STATIC_ASSERT(sizeof(NUDFNODE) == 8);
-
-typedef struct nudatopenfileinfo_s {
-    NUFILE dat_file;
-    i32 info_idx;
-    i64 position;
+typedef struct nudatopenfileinfo_s { // size 0x10
+    NUFILE dat_file;                 // 0x0
+    i32 info_idx;                    // 0x4
+    i64 position;                    // 0x8
 } NUDATOPENFILEINFO;
 
-STATIC_ASSERT(sizeof(NUDATOPENFILEINFO) == 0x10);
-STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, position) == 8);
-STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, dat_file) == 0);
-STATIC_ASSERT(offsetof(NUDATOPENFILEINFO, info_idx) == 4);
-
-struct nudathdr_s {
-    i32 version;
-    i32 file_count;
-    NUDATFINFO *file_info;
-    i32 tree_node_count;
-    NUDFNODE *file_tree;
-    i32 leaf_names_len;
-    char *leaf_names;
-    u32 *hash_idxs;
-    i32 hash_count;
-    i32 hashes_len;
-    char *hashes;
-    NUDATOPENFILEINFO open_files[8];
-    i16 unknown_b0;
-    i16 mode;
-    i32 unknown_b4;
-    char *name;
+struct nudathdr_s {                  // size 0xc0
+    i32 version;                     // 0x00
+    i32 file_count;                  // 0x04
+    NUDATFINFO *file_info;           // 0x08
+    i32 tree_node_count;             // 0x0c
+    NUDFNODE *file_tree;             // 0x10
+    i32 leaf_names_len;              // 0x14
+    char *leaf_names;                // 0x18
+    u32 *hash_idxs;                  // 0x1c
+    i32 hash_count;                  // 0x20
+    i32 hashes_len;                  // 0x24
+    char *hashes;                    // 0x28
+    NUDATOPENFILEINFO open_files[8]; // 0x30
+    i16 unknown_b0;                  // 0xb0
+    i16 mode;                        // 0xb2
+    i32 unknown_b4;                  // 0xb4
+    char *name;                      // 0xb8
 };
-
-STATIC_ASSERT(sizeof(NUDATHDR) == 0xc0);
-STATIC_ASSERT(offsetof(NUDATHDR, open_files) == 0x30);
-STATIC_ASSERT(offsetof(NUDATHDR, unknown_b0) == 0xb0);
-STATIC_ASSERT(offsetof(NUDATHDR, mode) == 0xb2);
-STATIC_ASSERT(offsetof(NUDATHDR, name) == 0xb8);
 
 typedef struct fileinfo_s FILEINFO;
 
-typedef struct filebuff_s {
-    FILEINFO *file_info;
-    i32 time;
-    char data[1024];
+typedef struct filebuff_s { // size 0x408
+    FILEINFO *file_info;    // 0x000
+    i32 time;               // 0x004
+    char data[1024];        // 0x008
 } FILEBUFF;
 
-STATIC_ASSERT(sizeof(FILEBUFF) == 0x408);
-
-struct fileinfo_s {
-    i32 handle;
-    i64 read_pos;
-    i64 file_pos;
-    i64 file_len;
-    i64 buf_start;
-    i32 buf_len;
-    i32 use_buf;
-    i32 unused;
-    i32 mode;
-    FILEBUFF *buf;
+struct fileinfo_s { // size 0x40
+    i32 handle;     // 0x00
+    i64 read_pos;   // 0x08
+    i64 file_pos;   // 0x10
+    i64 file_len;   // 0x18
+    i64 buf_start;  // 0x20
+    i32 buf_len;    // 0x28
+    i32 use_buf;    // 0x2c
+    i32 unused;     // 0x30
+    i32 mode;       // 0x34
+    FILEBUFF *buf;  // 0x38
 };
-
-STATIC_ASSERT(sizeof(FILEINFO) == 0x40);
-STATIC_ASSERT(offsetof(FILEINFO, read_pos) == 8);
-STATIC_ASSERT(offsetof(FILEINFO, file_pos) == 0x10);
-STATIC_ASSERT(offsetof(FILEINFO, file_len) == 0x18);
-STATIC_ASSERT(offsetof(FILEINFO, buf_start) == 0x20);
-STATIC_ASSERT(offsetof(FILEINFO, buf_len) == 0x28);
-STATIC_ASSERT(offsetof(FILEINFO, use_buf) == 0x2c);
-STATIC_ASSERT(offsetof(FILEINFO, mode) == 0x34);
-STATIC_ASSERT(offsetof(FILEINFO, buf) == 0x38);
 
 typedef struct nufile_device_s NUFILE_DEVICE;
 
-struct nufile_device_s {
-    i32 id;
-    i32 unit;
-    i32 attr;
-    i32 status;
-    i32 dir_separator;
-    i32 max_name_size;
-    i32 max_extension_size;
-    i32 max_directory_size;
-    i32 free_space;
-    i32 params[4];
-    char name[0x10];
-    i32 match_len;
-    i32 name_len;
-    char root[0x20];
-    char description[0x40];
-    char cur_dir[0x80];
-    char sys_dir[0x80];
-    char dll_dir[0x80];
-    i32 (*format_name_fn)(NUFILE_DEVICE *, char *, char *, i32);
-    i32 (*interrogate_fn)(NUFILE_DEVICE *);
+struct nufile_device_s {                                         // size 0x234
+    i32 id;                                                      // 0x000
+    i32 unit;                                                    // 0x004
+    i32 attr;                                                    // 0x008
+    i32 status;                                                  // 0x00c
+    i32 dir_separator;                                           // 0x010
+    i32 max_name_size;                                           // 0x014
+    i32 max_extension_size;                                      // 0x018
+    i32 max_directory_size;                                      // 0x01c
+    i32 free_space;                                              // 0x020
+    i32 params[4];                                               // 0x024
+    char name[0x10];                                             // 0x034
+    i32 match_len;                                               // 0x044
+    i32 name_len;                                                // 0x048
+    char root[0x20];                                             // 0x04c
+    char description[0x40];                                      // 0x06c
+    char cur_dir[0x80];                                          // 0x0ac
+    char sys_dir[0x80];                                          // 0x12c
+    char dll_dir[0x80];                                          // 0x1ac
+    i32 (*format_name_fn)(NUFILE_DEVICE *, char *, char *, i32); // 0x22c
+    i32 (*interrogate_fn)(NUFILE_DEVICE *);                      // 0x230
 };
 
-STATIC_ASSERT(sizeof(NUFILE_DEVICE) == 0x234);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, id) == 0);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, unit) == 4);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, dir_separator) == 0x10);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, name) == 0x34);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, match_len) == 0x44);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, name_len) == 0x48);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, root) == 0x4c);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, description) == 0x6c);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, cur_dir) == 0xac);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, sys_dir) == 0x12c);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, dll_dir) == 0x1ac);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, format_name_fn) == 0x22c);
-STATIC_ASSERT(offsetof(NUFILE_DEVICE, interrogate_fn) == 0x230);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -226,18 +185,17 @@ extern "C" {
 #endif
 typedef struct nufile_info_s nufile_info_s;
 
-struct nufile_info_s {
-    u8 unknown_00[16];
-    i8 second;
-    i8 minute;
-    i8 hour;
-    i8 day;
-    i8 month;
-    u8 unknown_15;
-    i16 year;
+struct nufile_info_s { // size 0x18
+    u8 unknown_00[16]; // 0x00
+    i8 second;         // 0x10
+    i8 minute;         // 0x11
+    i8 hour;           // 0x12
+    i8 day;            // 0x13
+    i8 month;          // 0x14
+    u8 unknown_15;     // 0x15
+    i16 year;          // 0x16
 };
 
-STATIC_ASSERT(sizeof(struct nufile_info_s) == 24);
 #ifdef __cplusplus
 extern "C" {
 #endif

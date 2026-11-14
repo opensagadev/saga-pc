@@ -32,10 +32,10 @@ struct APIOBJECT_PC;
 struct gameobject_s;
 struct gizmosys_s;
 
-typedef struct level_script_process_s {
-    char name[16];
-    AISCRIPTPROCESS_PC processor;
-    u8 unknown_d8[4];
+typedef struct level_script_process_s { // size 0xdc
+    char name[16];                      // 0x00
+    AISCRIPTPROCESS_PC processor;       // 0x10
+    u8 unknown_d8[4];                   // 0xd8
 } LEVEL_SCRIPT_PROCESS_PC;
 #ifdef __cplusplus
 extern "C" {
@@ -89,10 +89,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, unknown_d8) == 0xd8);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor.params) == 0x24);
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
 #ifdef __cplusplus
 extern "C" {
 #endif

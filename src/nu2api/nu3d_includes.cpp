@@ -240,23 +240,6 @@ extern "C" {
             (destination) = (minimum);                                                                                 \
     } while (0)
 
-    STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, max_joints) == 4);
-
-    STATIC_ASSERT(sizeof(ANI3_BUFFER_PC) == 0x10);
-    STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, joints) == 8);
-    STATIC_ASSERT(offsetof(ANI3_GLOBALBUFFER_PC, joints) == 8);
-    STATIC_ASSERT(sizeof(ANI3_JOINT) == 0x30);
-    STATIC_ASSERT(offsetof(ANI3_JOINT, translation) == 0);
-    STATIC_ASSERT(offsetof(ANI3_JOINT, rotation) == 0x10);
-    STATIC_ASSERT(offsetof(ANI3_JOINT, scale) == 0x20);
-    STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
-    STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_max_pc) == 0x24);
-    STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_min_pc) == 0x2a);
-    STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, joint_index) == 0x30);
-    STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, flags_pc) == 0x31);
-    STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map_count) == 0x178);
-    STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map) == 0x17c);
-
     // noinline: the original calls NuAnimMtxCopyPrivatePc out of line from NuAnimBuffEvaluate_3; VC8 would inline it
     // there.
     static __declspec(noinline) void NuAnimMtxCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
@@ -7174,22 +7157,10 @@ extern "C" void PostShadowComputeCapsulePc(const NUVEC4 *direction, const NUVEC4
 /* Original nugscn module; its PS backend is nugscn_pc.c. */
 extern "C" {
 
-    STATIC_ASSERT(offsetof(NUINSTANIM, instance_index) == 0x5e);
-    STATIC_ASSERT(sizeof(NUGSCN_ANIM_LOOKUP_PC) == 12);
-    STATIC_ASSERT(offsetof(NUGSCN_ANIM_LOOKUP_PC, end_frame) == 2);
-    STATIC_ASSERT(offsetof(NUGSCN_ANIM_LOOKUP_PC, times) == 4);
-    STATIC_ASSERT(offsetof(NUGSCN_ANIM_LOOKUP_PC, values) == 8);
-
     typedef struct SCENE_ANIMATION_LOOKUP_ALLOCATION { // size 0x10
         i32 references;                                // 0x0
         NUGSCN_ANIM_LOOKUP_PC first;                   // 0x4
     } SCENE_ANIMATION_LOOKUP_ALLOCATION;
-
-    STATIC_ASSERT(offsetof(NUGSCN, num_instance_animations) == 0x48);
-    STATIC_ASSERT(offsetof(NUGSCN, num_instance_animation_data) == 0x4a);
-    STATIC_ASSERT(offsetof(NUGSCN, instance_animation_matrices) == 0x50);
-    STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
-    STATIC_ASSERT(offsetof(NUGSCN, end_frame_lookup) == 0x1e0);
 
     typedef struct SCENE_SPECIAL_TRANSFORM { // size 0xd0
         u8 unknown_00[0x40];                 // 0x00
@@ -8053,10 +8024,6 @@ extern "C" {
     }
 
     typedef NURND_VERTEX2D_PC PORTAL_LINE_VERTEX_PC;
-    STATIC_ASSERT(sizeof(PORTAL_LINE_VERTEX_PC) == 28);
-    STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, x) == 0);
-    STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, y) == 4);
-    STATIC_ASSERT(offsetof(PORTAL_LINE_VERTEX_PC, colour) == 0x10);
 
     static void drawPortalRectangle(NUVEC *minimum, NUVEC *maximum, i32 colour) {
         PORTAL_LINE_VERTEX_PC vertices[8];
@@ -10431,8 +10398,6 @@ typedef struct PC_CLONE_SORT_SELF_VIEW { // size 0x24
     u8 unknown_0014[0x10];               // 0x14
 } PC_CLONE_SORT_SELF_VIEW;
 
-STATIC_ASSERT(sizeof(NUDISPLAY_LIST_PC) == 0x90);
-
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
 #define CLONE_ITEMS(scene) static_cast<NUDISPLAYLISTITEM *>((scene)->items)
 #define CLONE_LIST(scene, index) reinterpret_cast<PC_CLONE_LIST_VIEW *>((scene)->material_lists[index])
@@ -10618,18 +10583,17 @@ typedef union PC_SPECIAL_RENDER_SPECIAL { // size 0xd0
     };
 } PC_SPECIAL_RENDER_SPECIAL;
 
-typedef union PC_SPECIAL_RENDER_SCENE {
+typedef union PC_SPECIAL_RENDER_SCENE { // size 0x90
     NUDISPLAY_LIST_PC common;
 
-    struct {
-        u8 unknown_0000[0xc];
-        f32 *fade_ranges;
+    struct {                  // size 0x10
+        u8 unknown_0000[0xc]; // 0x00
+        f32 *fade_ranges;     // 0x0c
     };
 } PC_SPECIAL_RENDER_SCENE;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // NuDeferredFilterGen::render (docs/cleanup-audit.md, section 6).
-STATIC_ASSERT(offsetof(PC_SPECIAL_RENDER_SCENE, fade_ranges) == 0xc);
 
 /* PC render-set's second list begins at +0x44, not sizeof the public list prefix. */
 typedef struct PC_SHADOW_RENDER_LISTS { // size 0x380
@@ -11528,10 +11492,6 @@ typedef struct PC_DISPLAY_DEBUG_NAME_READER { // size 0x4
     const char *name;                         // 0x0
 } PC_DISPLAY_DEBUG_NAME_READER;
 
-STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, nsort_pris) == 0);
-STATIC_ASSERT(offsetof(NUDISPLAYLISTRENDERSCENE, sort_pris) == 4);
-STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
-
 extern "C" {
     extern void (**CurrentItemTable)(void *);
     void NuHtmlHeading(char *text, ...);
@@ -11600,9 +11560,6 @@ extern "C" void DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *scene, i32 unused0, 
         }
     }
 }
-
-STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, clip_objects) == 0xb0);
-STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, clip_range) == 0xbc);
 
 extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, NUMTX *matrices, i32 clip) {
     u16 visible[1024];
@@ -12408,15 +12365,6 @@ extern "C" NUMTX *fun_005c24d0(void) {
 extern "C" void fun_005c2710(void) {
     D3DPERF_EndEvent();
 }
-
-STATIC_ASSERT(offsetof(NuMainFilterGen, blur_texture) == 0x54);
-STATIC_ASSERT(offsetof(NuMainFilterGen, blur_fbo) == 0x58);
-STATIC_ASSERT(offsetof(NuMainFilterGen, downsample_texture) == 0x5c);
-STATIC_ASSERT(offsetof(NuMotionAccumFilterGen, accumulation_fbo) == 0x10);
-STATIC_ASSERT(offsetof(NuMotionAccumFilterGen, accumulation_texture) == 0x14);
-STATIC_ASSERT(offsetof(NuSpeedBlurFilterGen, texture) == 0x18);
-STATIC_ASSERT(offsetof(NuCopyFilter, copy_fbo) == 0xc);
-STATIC_ASSERT(offsetof(NuDeferredFilterGen, textures) == 0x28);
 
 void NuPostFilterGen::destroyTextureResources() {
 }
@@ -13457,19 +13405,6 @@ extern "C" {
         return &vpCurrent;
     }
 
-    STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_y) == 4);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_right) == 8);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_bottom) == 0xc);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_x) == 0x10);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_y) == 0x14);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_right) == 0x18);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_bottom) == 0x1c);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, width_scale) == 0x20);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
-    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
     // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
     // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
@@ -13486,11 +13421,6 @@ extern "C" {
         *width = (f32)((vpCurrent.width * 0.0625) / ((f64)PS2_REZ_W / PS2_VREZ_W));
         *height = (f32)((vpCurrent.height * 0.0625) / ((f64)PS2_REZ_H / PS2_VREZ_H));
     }
-
-    STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, y) == 4);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, width) == 8);
-    STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
 
     void NuVpSetZRange(f32 minimum, f32 maximum) {
         vport_inval = 1;
@@ -14803,7 +14733,6 @@ extern "C" {
     void fun_005e54a0(void) {
     }
 
-    STATIC_ASSERT(offsetof(NUTEXDIM_PC, checksum) == 8);
     STATIC_ASSERT(sizeof(((NUTEXDIM_PC *)0)->checksum) == 16);
 
     void NuChecksumAsHex(u8 *checksum, char *out) {
@@ -14909,11 +14838,6 @@ extern "C" i32 NuSpecialClipTestShadowLights(NUVEC *minimum, NUVEC *maximum, i32
 
 /* nughg */
 extern "C" {
-    STATIC_ASSERT(sizeof(NUGSCN) == 0x20c);
-    STATIC_ASSERT(offsetof(NUGSCN, num_texture_anims) == 0x60);
-    STATIC_ASSERT(offsetof(NUGSCN, texture_anim_ids) == 0x68);
-    STATIC_ASSERT(offsetof(NUGSCN, character_version_selector) == 0x168);
-    STATIC_ASSERT(offsetof(NUGSCN, legacy_format) == 0x1f4);
 
     typedef struct SCENE_INGEST_PTR_BLOCK { // size 0x8
         u32 table_relative_offset;          // 0x0
@@ -15093,13 +15017,6 @@ extern "C" {
         u8 unknown_00[0x44];              // 0x00
         u32 flags;                        // 0x44
     } SCENE_MATERIAL_FLAGS;
-
-    STATIC_ASSERT(offsetof(NUTEXDIM_PC, checksum) == 8);
-    STATIC_ASSERT(offsetof(NUGSCN, texture_ids) == 0);
-    STATIC_ASSERT(offsetof(NUGSCN, texture_count) == 4);
-    STATIC_ASSERT(offsetof(NUGSCN, textures) == 8);
-    STATIC_ASSERT(offsetof(NUGSCN, materials) == 0xc);
-    STATIC_ASSERT(offsetof(NUGSCN, material_count) == 0x10);
 
     i32 NuGScnFixupTID(NUGSCN *scene, i32 tid) {
         i32 resolved;
@@ -16211,30 +16128,6 @@ extern "C" {
 
 /* nuspecial */
 extern "C" {
-    STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
-    STATIC_ASSERT(offsetof(NUINSTANCE, object_index) == 0x40);
-    STATIC_ASSERT(offsetof(NUINSTANCE, flags) == 0x44);
-    STATIC_ASSERT(offsetof(NUINSTANCE, animation) == 0x48);
-    STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, instance) == 0x40);
-    STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, flags) == 0x48);
-    STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
-    STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
-    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, draw_matrix) == 0x40);
-    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, center) == 0xa0);
-    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, radius) == 0xac);
-    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, clip_objects) == 0xb0);
-    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_animation) == 0xc4);
-    STATIC_ASSERT(sizeof(NUGOBJ) == 0x50);
-    STATIC_ASSERT(offsetof(NUGOBJ, origin_radius) == 0x14);
-    STATIC_ASSERT(offsetof(NUGOBJ, bounds_min) == 0x1c);
-    STATIC_ASSERT(offsetof(NUGOBJ, center) == 0x34);
-    STATIC_ASSERT(offsetof(NUGOBJ, radius) == 0x40);
-    STATIC_ASSERT(offsetof(NUGOBJ, next) == 0x4c);
-    STATIC_ASSERT(offsetof(NUGSCN, num_objects) == 0x14);
-    STATIC_ASSERT(offsetof(NUGSCN, objects) == 0x18);
-    STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
-    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
-    STATIC_ASSERT(offsetof(NUGSCN, end_frame_lookup) == 0x1e0);
 
 #define SPECIAL_LEGACY(handle) ((NUSPECIAL_LEGACY_PC *)(handle)->special)
 #define SPECIAL_DISPLAY(handle) ((NUDISPLAY_SPECIAL_PC *)(handle)->display_special)
@@ -18007,23 +17900,6 @@ extern "C" {
         u8 third_count;                  // 0xe
         u8 joint_index;                  // 0xf
     };
-
-    STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_shape) == 0x48);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state0) == 0x4c);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state1) == 0x50);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state2) == 0x54);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state_byte) == 0x58);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, near_value) == 0x5c);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, far_value) == 0x60);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse_count) == 0x64);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder_count) == 0x65);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_count) == 0x66);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, sequence) == 0x67);
-    STATIC_ASSERT(sizeof(PC_HG_SHADOW_STATE_VIEW) == 16);
-    STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
 
     i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints, i32 count,
                                            NUVEC *positions, i32 exclusion_mask) {

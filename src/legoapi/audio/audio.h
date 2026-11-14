@@ -17,51 +17,39 @@ struct level_data_s;
 struct nusound_filename_info_s;
 struct sfx_file_info_s;
 
-typedef struct repeat_sfx_entry_s {
-    i16 sfx_id;
-    i8 state;
-    i8 play_count;
-    f32 start_delay;
-    f32 repeat_delay;
-    NUVEC *position;
+typedef struct repeat_sfx_entry_s { // size 0x10
+    i16 sfx_id;                     // 0x0
+    i8 state;                       // 0x2
+    i8 play_count;                  // 0x3
+    f32 start_delay;                // 0x4
+    f32 repeat_delay;               // 0x8
+    NUVEC *position;                // 0xc
 } REPEAT_SFX_ENTRY_PC;
 
-STATIC_ASSERT(sizeof(REPEAT_SFX_ENTRY_PC) == 0x10);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, sfx_id) == 0);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, state) == 2);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, play_count) == 3);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, start_delay) == 4);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, repeat_delay) == 8);
-STATIC_ASSERT(offsetof(REPEAT_SFX_ENTRY_PC, position) == 0xc);
+typedef struct optionssave_s { // size 0xd
 
-typedef struct optionssave_s {
-    union {
+    union { // size 0x3
         u8 unknown_0000[3];
 
-        struct {
-            u8 option_0000;
-            u8 option_0001;
-            u8 option_0002;
+        struct {            // size 0x3
+            u8 option_0000; // 0x0
+            u8 option_0001; // 0x1
+            u8 option_0002; // 0x2
         };
-    };
+    }; // 0x0
 
-    u8 sound_volume;
-    u8 music_volume;
-    u8 master_volume;
-    u8 music_enabled;
-    u8 option_0007;
-    u8 option_0008;
-    u8 option_0009;
-    u8 option_000a;
-    u8 widescreen;
-    u8 brightness;
+    u8 sound_volume;  // 0x3
+    u8 music_volume;  // 0x4
+    u8 master_volume; // 0x5
+    u8 music_enabled; // 0x6
+    u8 option_0007;   // 0x7
+    u8 option_0008;   // 0x8
+    u8 option_0009;   // 0x9
+    u8 option_000a;   // 0xa
+    u8 widescreen;    // 0xb
+    u8 brightness;    // 0xc
 } OPTIONSSAVE;
 
-STATIC_ASSERT(sizeof(OPTIONSSAVE) == 0x0d);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, sound_volume) == 3);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, music_volume) == 4);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, master_volume) == 5);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, widescreen) == 0x0b);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -118,7 +106,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(OPTIONSSAVE, option_0000) == 0);
 #ifdef __cplusplus
 extern "C" {
 #endif

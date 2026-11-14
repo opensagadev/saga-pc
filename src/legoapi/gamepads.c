@@ -32,16 +32,6 @@ i32 GameReleaseResourcesPc(void) {
     return 0;
 }
 
-STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_x) == 0x90);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_right_y) == 0x91);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 HitsFabsPc(f32 f) {
     f32 rv;

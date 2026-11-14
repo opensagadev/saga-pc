@@ -2,12 +2,6 @@
 #include <string.h>
 
 extern GAMEOBJECT *player_tag_from;
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_cooldown) == 0x7c0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, pending_tag_target) == 0x7c8);
 STATIC_ASSERT(sizeof(Player) == 32);
 #define TAG_CAN_TARGET(source, target)                                                                                 \
     ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \

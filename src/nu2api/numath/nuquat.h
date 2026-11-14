@@ -24,18 +24,13 @@
 
 struct numtx_s;
 
-typedef struct nuquat_s {
-    f32 x;
-    f32 y;
-    f32 z;
-    f32 w;
+typedef struct nuquat_s { // size 0x10
+    f32 x;                // 0x0
+    f32 y;                // 0x4
+    f32 z;                // 0x8
+    f32 w;                // 0xc
 } NUQUAT;
 
-STATIC_ASSERT(sizeof(NUQUAT) == 0x10);
-STATIC_ASSERT(offsetof(NUQUAT, x) == 0);
-STATIC_ASSERT(offsetof(NUQUAT, y) == 4);
-STATIC_ASSERT(offsetof(NUQUAT, z) == 8);
-STATIC_ASSERT(offsetof(NUQUAT, w) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

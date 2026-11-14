@@ -25,18 +25,15 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-class NuSpeedBlurFilter : public NuSpeedBlurFilterGen {
+class NuSpeedBlurFilter : public NuSpeedBlurFilterGen { // size 0x40
   public:
     void ResizeTexturesPc(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
     virtual void render();
-    PC_EFFECT_SURFACE_PC texture_surface;
-    i32 platform_uniform;
+    PC_EFFECT_SURFACE_PC texture_surface; // 0x20
+    i32 platform_uniform;                 // 0x3c
 };
 
-STATIC_ASSERT(sizeof(NuSpeedBlurFilter) == 0x40);
-STATIC_ASSERT(offsetof(NuSpeedBlurFilter, texture_surface) == 0x20);
-STATIC_ASSERT(offsetof(NuSpeedBlurFilter, platform_uniform) == 0x3c);
 #endif

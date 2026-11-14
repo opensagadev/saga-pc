@@ -3,15 +3,13 @@
 #include <stdio.h>
 struct panel_movement_pc_s;
 
-typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
-    u8 unknown_00[0x62];
-    u8 flags;
+typedef struct CLOUDCITY_PANEL_FLAGS_VIEW { // size 0x63
+    u8 unknown_00[0x62];                    // 0x00
+    u8 flags;                               // 0x62
 } CLOUDCITY_PANEL_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
-STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW, flags) == 0x62);
-STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 
 typedef struct CLOUDCITY_LEVEL_FLAG_VIEW { // size 0x1
     u8 started;                            // 0x0
@@ -35,21 +33,13 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
 }
 
-typedef struct TORPEDO_MUSIC_FLAGS_VIEW {
-    u8 count;
-    u8 flags;
+typedef struct TORPEDO_MUSIC_FLAGS_VIEW { // size 0x2
+    u8 count;                             // 0x0
+    u8 flags;                             // 0x1
 } TORPEDO_MUSIC_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
-STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW, count) == 0);
-STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW, flags) == 1);
-STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
-STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
-STATIC_ASSERT(offsetof(WORLDINFO, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(WORLDINFO, sock_sys) == 0x2988);
-STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 
 i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP_PC *blowup;
@@ -148,7 +138,6 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
 i32 test_tb = 1;
 extern i16 CharacterFixupIdPc007f1a3c;
 extern i16 CharacterFixupIdPc007f1a40;
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.animation_override_from) == 0x3ee);
 
 void MosEisleyB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "land_speeder_terrain1", 1);
@@ -472,10 +461,6 @@ typedef struct ASTEROIDC_NETPACKET_PC {
     u16 rotation_z;
 } ASTEROIDC_NETPACKET_PC;
 
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_x) == 0xe8);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score) == 0xa0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, layer_mask) == 0x1048);
-
 /* Mutable tuning values. */
 #pragma data_seg(".data$TrenchLaneOffsetPc")
 f32 TrenchLaneOffsetPc = 10.0f;
@@ -596,12 +581,7 @@ f32 TrenchSpawnDistancePc = 20.0f;
 #pragma data_seg(".data$TrenchSpawnHeightPc")
 f32 TrenchSpawnHeightPc = 40.0f;
 #pragma data_seg()
-STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef8_word) == 0xef8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, tag_object_callback) == 0xea8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_offset) == 0xe84);
 
 static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;

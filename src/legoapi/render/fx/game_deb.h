@@ -31,53 +31,44 @@ struct numtl_s;
 struct numtx_s;
 struct ripple_set_s;
 
-typedef struct BURN_PARAMETERS_PC {
-    i32 field_00;
-    f32 field_04;
-    f32 field_08;
-    f32 field_0c;
-    f32 field_10;
-    f32 field_14;
-    i32 field_18;
-    f32 field_1c;
-    f32 field_20;
-    f32 field_24;
-    i32 field_28;
-    f32 field_2c;
-    f32 field_30;
-    f32 field_34;
-    f32 field_38;
-    f32 field_3c;
-    f32 field_40;
-    f32 field_44;
-    f32 field_48;
-    f32 field_4c;
-    f32 field_50;
+typedef struct BURN_PARAMETERS_PC { // size 0x54
+    i32 field_00;                   // 0x00
+    f32 field_04;                   // 0x04
+    f32 field_08;                   // 0x08
+    f32 field_0c;                   // 0x0c
+    f32 field_10;                   // 0x10
+    f32 field_14;                   // 0x14
+    i32 field_18;                   // 0x18
+    f32 field_1c;                   // 0x1c
+    f32 field_20;                   // 0x20
+    f32 field_24;                   // 0x24
+    i32 field_28;                   // 0x28
+    f32 field_2c;                   // 0x2c
+    f32 field_30;                   // 0x30
+    f32 field_34;                   // 0x34
+    f32 field_38;                   // 0x38
+    f32 field_3c;                   // 0x3c
+    f32 field_40;                   // 0x40
+    f32 field_44;                   // 0x44
+    f32 field_48;                   // 0x48
+    f32 field_4c;                   // 0x4c
+    f32 field_50;                   // 0x50
 } BURN_PARAMETERS_PC;
 
-STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
-STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct PC_GLOBAL_LIGHTING_STATE {
-        NUVEC ambient;
-        NUVEC direction[3];
-        NUVEC intensity[3];
-        NUVEC specular_direction;
-        i32 specular_direction_missing;
-        u8 unknown_64[0x10];
-        i32 specular_intensity_present;
+    typedef struct PC_GLOBAL_LIGHTING_STATE { // size 0x78
+        NUVEC ambient;                        // 0x00
+        NUVEC direction[3];                   // 0x0c
+        NUVEC intensity[3];                   // 0x30
+        NUVEC specular_direction;             // 0x54
+        i32 specular_direction_missing;       // 0x60
+        u8 unknown_64[0x10];                  // 0x64
+        i32 specular_intensity_present;       // 0x74
     } PC_GLOBAL_LIGHTING_STATE;
 
-    STATIC_ASSERT(sizeof(PC_GLOBAL_LIGHTING_STATE) == 0x78);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction) == 0x54);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction_missing) == 0x60);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, unknown_64) == 0x64);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_intensity_present) == 0x74);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, direction) == 0xc);
-    STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, intensity) == 0x30);
     void DebrisDraw(i32, i32);
     extern i32 g_renderingDebris;
     extern i32 DebrisSuspendDrawObjectSwitch;

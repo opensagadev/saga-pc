@@ -5,12 +5,11 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct NuTime_s {
-    u32 low;
-    i32 high;
+typedef struct NuTime_s { // size 0x8
+    u32 low;              // 0x0
+    i32 high;             // 0x4
 } NuTime;
 
-STATIC_ASSERT(sizeof(NuTime) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif

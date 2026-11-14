@@ -16,53 +16,31 @@
 extern "C" {
 #endif
 
-    typedef struct PC_EDBRIDGE {
-        i32 instance_id;
-        NUVEC position;
-        f32 length;
-        f32 field_14;
-        i16 rotation_z;
-        i16 rotation_y;
-        i8 connection_index;
-        i8 field_1d;
-        i8 field_1e;
-        u8 field_1f;
-        i32 special_20;
-        i32 special_24;
-        f32 field_28;
-        f32 field_2c;
-        f32 field_30;
-        f32 field_34;
-        f32 field_38;
-        f32 field_3c;
-        u8 red;
-        u8 green;
-        u8 blue;
-        u8 field_43;
+    typedef struct PC_EDBRIDGE { // size 0x44
+        i32 instance_id;         // 0x00
+        NUVEC position;          // 0x04
+        f32 length;              // 0x10
+        f32 field_14;            // 0x14
+        i16 rotation_z;          // 0x18
+        i16 rotation_y;          // 0x1a
+        i8 connection_index;     // 0x1c
+        i8 field_1d;             // 0x1d
+        i8 field_1e;             // 0x1e
+        u8 field_1f;             // 0x1f
+        i32 special_20;          // 0x20
+        i32 special_24;          // 0x24
+        f32 field_28;            // 0x28
+        f32 field_2c;            // 0x2c
+        f32 field_30;            // 0x30
+        f32 field_34;            // 0x34
+        f32 field_38;            // 0x38
+        f32 field_3c;            // 0x3c
+        u8 red;                  // 0x40
+        u8 green;                // 0x41
+        u8 blue;                 // 0x42
+        u8 field_43;             // 0x43
     } PC_EDBRIDGE;
 
-    STATIC_ASSERT(sizeof(PC_EDBRIDGE) == 0x44);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, instance_id) == 0x0);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, position) == 0x4);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, length) == 0x10);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_14) == 0x14);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, rotation_z) == 0x18);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, rotation_y) == 0x1a);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, connection_index) == 0x1c);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1d) == 0x1d);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_1e) == 0x1e);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, special_20) == 0x20);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, special_24) == 0x24);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_28) == 0x28);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_2c) == 0x2c);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_30) == 0x30);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_34) == 0x34);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_38) == 0x38);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_3c) == 0x3c);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, red) == 0x40);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, green) == 0x41);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, blue) == 0x42);
-    STATIC_ASSERT(offsetof(PC_EDBRIDGE, field_43) == 0x43);
     extern i32 edbri_bridges_used;
     extern i32 edbri_nearest;
     void edbriClearPage(i8 page);

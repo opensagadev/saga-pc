@@ -12,10 +12,8 @@
 
 typedef struct LEVELSCRIPTPROCESS_s LEVELSCRIPTPROCESS_s;
 
-struct LEVELSCRIPTPROCESS_s {
-    char name[16];
-    AISCRIPTPROCESS_PC processor;
-    u32 unknown_d8;
+struct LEVELSCRIPTPROCESS_s {     // size 0xdc
+    char name[16];                // 0x00
+    AISCRIPTPROCESS_PC processor; // 0x10
+    u32 unknown_d8;               // 0xd8
 };
-
-STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 220);

@@ -5,14 +5,6 @@
 #include <math.h>
 #include <float.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_107e) == 0x107e);
-STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
-STATIC_ASSERT(offsetof(PART_PC, part_id) == 0x13e);
-STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
-STATIC_ASSERT(sizeof(PART_PC) == 0x220);
-STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
-
 typedef struct creature_crate_part_view_s {
     u8 unknown_000[0x20c];
     f32 spawn_delay;

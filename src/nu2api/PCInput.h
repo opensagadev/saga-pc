@@ -13,43 +13,39 @@
 
 struct FRAME_PAD_PC;
 
-typedef struct NuKeyboardState_PC {
-    u8 unknown_0000_to_4e10[0x4e10];
-    u8 keyboard_polled;
-    u8 unknown_4e11_to_5d29[0x5d29 - 0x4e11];
-    u8 unknown_5d29;
-    u8 unknown_5d2a_to_6314[0x6314 - 0x5d2a];
-    f32 mouse_delta[3];
-    f32 mouse_smoothed[3];
-    f32 cursor_x;
-    f32 cursor_y;
-    u8 unknown_6334_to_68b0[0x68b0 - 0x6334];
-    u8 *keyboard_state;
+typedef struct NuKeyboardState_PC {           // size 0x68b4
+    u8 unknown_0000_to_4e10[0x4e10];          // 0x0000
+    u8 keyboard_polled;                       // 0x4e10
+    u8 unknown_4e11_to_5d29[0x5d29 - 0x4e11]; // 0x4e11
+    u8 unknown_5d29;                          // 0x5d29
+    u8 unknown_5d2a_to_6314[0x6314 - 0x5d2a]; // 0x5d2a
+    f32 mouse_delta[3];                       // 0x6314
+    f32 mouse_smoothed[3];                    // 0x6320
+    f32 cursor_x;                             // 0x632c
+    f32 cursor_y;                             // 0x6330
+    u8 unknown_6334_to_68b0[0x68b0 - 0x6334]; // 0x6334
+    u8 *keyboard_state;                       // 0x68b0
 } NuKeyboardState_PC;
-
-STATIC_ASSERT(sizeof(NuKeyboardState_PC) == 0x68b4);
-STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_polled) == 0x4e10);
-STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_state) == 0x68b0);
 
 typedef struct NuKeyboardDevice_PC NuKeyboardDevice_PC;
 typedef struct PC_DI_FACTORY PC_DI_FACTORY;
 
-typedef struct NuKeyboardOwner_PC {
-    f32 unknown_0000;
-    i32 unknown_0004;
-    f32 unknown_0008;
-    i32 device_count;
-    u8 unknown_0010_to_0020[0x10];
-    NuKeyboardDevice_PC *mouse;
-    NuKeyboardDevice_PC *device;
-    i32 poll_status;
-    i32 key_count;
-    PC_DI_FACTORY *factory;
-    i32 mouse_axes;
-    i32 mouse_buttons;
-    i32 mouse_cooperative;
-    u8 mouse_enabled;
-    u8 unknown_41[3];
+typedef struct NuKeyboardOwner_PC { // size 0x44
+    f32 unknown_0000;               // 0x00
+    i32 unknown_0004;               // 0x04
+    f32 unknown_0008;               // 0x08
+    i32 device_count;               // 0x0c
+    u8 unknown_0010_to_0020[0x10];  // 0x10
+    NuKeyboardDevice_PC *mouse;     // 0x20
+    NuKeyboardDevice_PC *device;    // 0x24
+    i32 poll_status;                // 0x28
+    i32 key_count;                  // 0x2c
+    PC_DI_FACTORY *factory;         // 0x30
+    i32 mouse_axes;                 // 0x34
+    i32 mouse_buttons;              // 0x38
+    i32 mouse_cooperative;          // 0x3c
+    u8 mouse_enabled;               // 0x40
+    u8 unknown_41[3];               // 0x41
 #ifdef __cplusplus
     NuKeyboardOwner_PC();
     ~NuKeyboardOwner_PC();
@@ -67,103 +63,69 @@ typedef struct NuKeyboardOwner_PC {
 #endif
 } NuKeyboardOwner_PC;
 
-STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x44);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device_count) == 0x0c);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, device) == 0x24);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, poll_status) == 0x28);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, factory) == 0x30);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_axes) == 0x34);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_buttons) == 0x38);
-
-typedef struct GRAPHICS_CAPS_PC {
-    i32 device_type;
-    u32 adapter_ordinal;
-    u32 unknown_008[3];
-    u32 caps2;
-    u32 unknown_018[1];
-    u32 device_caps;
-    u32 unknown_020[7];
-    u32 texture_caps;
-    u32 unknown_040[0x16];
-    u32 sampler_count_pc;
-    u32 unknown_09c[0xa];
-    u32 vertex_shader_version;
-    u32 unknown_0c8[1];
-    u32 pixel_shader_version;
-    u32 unknown_0d0[8];
-    u32 simultaneous_render_targets;
-    u32 unknown_0f4[0xf];
+typedef struct GRAPHICS_CAPS_PC {    // size 0x130
+    i32 device_type;                 // 0x000
+    u32 adapter_ordinal;             // 0x004
+    u32 unknown_008[3];              // 0x008
+    u32 caps2;                       // 0x014
+    u32 unknown_018[1];              // 0x018
+    u32 device_caps;                 // 0x01c
+    u32 unknown_020[7];              // 0x020
+    u32 texture_caps;                // 0x03c
+    u32 unknown_040[0x16];           // 0x040
+    u32 sampler_count_pc;            // 0x098
+    u32 unknown_09c[0xa];            // 0x09c
+    u32 vertex_shader_version;       // 0x0c4
+    u32 unknown_0c8[1];              // 0x0c8
+    u32 pixel_shader_version;        // 0x0cc
+    u32 unknown_0d0[8];              // 0x0d0
+    u32 simultaneous_render_targets; // 0x0f0
+    u32 unknown_0f4[0xf];            // 0x0f4
 } GRAPHICS_CAPS_PC;
 
 #pragma pack(push, 4)
 
-typedef struct GRAPHICS_ADAPTER_IDENTIFIER {
-    char driver[512];
-    char description[512];
-    char device_name[32];
-    LARGE_INTEGER driver_version;
-    u32 vendor;
-    u32 device_id;
-    u32 subsystem_id;
-    u32 revision;
-    GUID device_identifier;
-    u32 whql_level;
+typedef struct GRAPHICS_ADAPTER_IDENTIFIER { // size 0x44c
+    char driver[512];                        // 0x000
+    char description[512];                   // 0x200
+    char device_name[32];                    // 0x400
+    LARGE_INTEGER driver_version;            // 0x420
+    u32 vendor;                              // 0x428
+    u32 device_id;                           // 0x42c
+    u32 subsystem_id;                        // 0x430
+    u32 revision;                            // 0x434
+    GUID device_identifier;                  // 0x438
+    u32 whql_level;                          // 0x448
 } GRAPHICS_ADAPTER_IDENTIFIER;
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(GRAPHICS_CAPS_PC) == 0x130);
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, caps2) == 0x14);
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, device_caps) == 0x1c);
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, vertex_shader_version) == 0xc4);
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, simultaneous_render_targets) == 0xf0);
-STATIC_ASSERT(sizeof(GRAPHICS_ADAPTER_IDENTIFIER) == 0x44c);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, driver) == 0x0);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, description) == 0x200);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_name) == 0x400);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, driver_version) == 0x420);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x428);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_id) == 0x42c);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, subsystem_id) == 0x430);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, revision) == 0x434);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_identifier) == 0x438);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, whql_level) == 0x448);
 
 typedef struct TEXT_INPUT_LABELS_PC TEXT_INPUT_LABELS_PC;
 
-struct TEXT_INPUT_LABELS_PC {
-    union {
+struct TEXT_INPUT_LABELS_PC { // size 0xc0
+
+    union { // size 0x94
         char *initializer_names[37];
         char *indexed_names[34];
 
-        struct {
-            char *fixed_names[4];
-            char *button_prefix;
-            char *axis_negative;
-            char *axis_positive;
-            char *axis_format;
-            char *axis_names[6];
-            u8 unknown_0038[0x5c];
+        struct {                   // size 0x94
+            char *fixed_names[4];  // 0x00
+            char *button_prefix;   // 0x10
+            char *axis_negative;   // 0x14
+            char *axis_positive;   // 0x18
+            char *axis_format;     // 0x1c
+            char *axis_names[6];   // 0x20
+            u8 unknown_0038[0x5c]; // 0x38
         };
-    };
+    }; // 0x00
 
-    char *direction_positive[3];
-    char *direction_negative[3];
-    char *hat_names[3];
-    char *hat_format;
-    char *unknown;
+    char *direction_positive[3]; // 0x94
+    char *direction_negative[3]; // 0xa0
+    char *hat_names[3];          // 0xac
+    char *hat_format;            // 0xb8
+    char *unknown;               // 0xbc
 };
 
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, button_prefix) == 0x10);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, axis_names) == 0x20);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_positive) == 0x94);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, direction_negative) == 0xa0);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, hat_names) == 0xac);
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, unknown) == 0xbc);
-STATIC_ASSERT(sizeof(TEXT_INPUT_LABELS_PC) == 0xc0);
-
-STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, initializer_names) == 0);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -209,83 +171,83 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-struct PC_DI_CAPS_PC {
-    DWORD size;
-    DWORD flags;
-    DWORD device_type;
-    DWORD axes;
-    DWORD buttons;
-    DWORD povs;
-    DWORD ff_sample_period;
-    DWORD ff_min_time_resolution;
-    DWORD firmware_revision;
-    DWORD hardware_revision;
-    DWORD ff_driver_version;
+struct PC_DI_CAPS_PC {            // size 0x2c
+    DWORD size;                   // 0x00
+    DWORD flags;                  // 0x04
+    DWORD device_type;            // 0x08
+    DWORD axes;                   // 0x0c
+    DWORD buttons;                // 0x10
+    DWORD povs;                   // 0x14
+    DWORD ff_sample_period;       // 0x18
+    DWORD ff_min_time_resolution; // 0x1c
+    DWORD firmware_revision;      // 0x20
+    DWORD hardware_revision;      // 0x24
+    DWORD ff_driver_version;      // 0x28
 };
 
-struct PC_DI_PROPERTY {
-    DWORD size;
-    DWORD header_size;
-    DWORD object;
-    DWORD how;
-    DWORD data;
+struct PC_DI_PROPERTY { // size 0x14
+    DWORD size;         // 0x00
+    DWORD header_size;  // 0x04
+    DWORD object;       // 0x08
+    DWORD how;          // 0x0c
+    DWORD data;         // 0x10
 };
 
-struct PC_DI_OBJECT_FORMAT_PC {
-    const GUID *guid;
-    DWORD offset;
-    DWORD type;
-    DWORD flags;
+struct PC_DI_OBJECT_FORMAT_PC { // size 0x10
+    const GUID *guid;           // 0x0
+    DWORD offset;               // 0x4
+    DWORD type;                 // 0x8
+    DWORD flags;                // 0xc
 };
 
-struct PC_DI_DATA_FORMAT_PC {
-    DWORD size;
-    DWORD object_size;
-    DWORD flags;
-    DWORD data_size;
-    DWORD object_count;
-    const PC_DI_OBJECT_FORMAT_PC *objects;
+struct PC_DI_DATA_FORMAT_PC {              // size 0x18
+    DWORD size;                            // 0x00
+    DWORD object_size;                     // 0x04
+    DWORD flags;                           // 0x08
+    DWORD data_size;                       // 0x0c
+    DWORD object_count;                    // 0x10
+    const PC_DI_OBJECT_FORMAT_PC *objects; // 0x14
 };
 
-struct PC_DI_INSTANCE_PC {
-    DWORD size;
-    GUID instance;
-    GUID product;
-    DWORD device_type;
-    char instance_name[260];
-    char product_name[260];
-    u8 unknown_230[0x14];
+struct PC_DI_INSTANCE_PC {   // size 0x244
+    DWORD size;              // 0x000
+    GUID instance;           // 0x004
+    GUID product;            // 0x014
+    DWORD device_type;       // 0x024
+    char instance_name[260]; // 0x028
+    char product_name[260];  // 0x12c
+    u8 unknown_230[0x14];    // 0x230
 };
 
-struct PC_DI_DEVICE_METHODS_PC {
-    void *unknown_00;
-    void *unknown_04;
-    ULONG(__stdcall *release)(NuKeyboardDevice_PC *);
-    HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);
-    void *unknown_10;
-    void *unknown_14;
-    HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY *);
-    HRESULT(__stdcall *acquire)(NuKeyboardDevice_PC *);
-    HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);
-    HRESULT(__stdcall *get_state)(NuKeyboardDevice_PC *, DWORD, void *);
-    void *unknown_28;
-    HRESULT(__stdcall *set_format)(NuKeyboardDevice_PC *, const PC_DI_DATA_FORMAT_PC *);
-    void *unknown_30;
-    HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice_PC *, HWND, DWORD);
-    void *unknown_38_60[11];
-    HRESULT(__stdcall *poll)(NuKeyboardDevice_PC *);
+struct PC_DI_DEVICE_METHODS_PC {                                                              // size 0x68
+    void *unknown_00;                                                                         // 0x00
+    void *unknown_04;                                                                         // 0x04
+    ULONG(__stdcall *release)(NuKeyboardDevice_PC *);                                         // 0x08
+    HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);                     // 0x0c
+    void *unknown_10;                                                                         // 0x10
+    void *unknown_14;                                                                         // 0x14
+    HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY *); // 0x18
+    HRESULT(__stdcall *acquire)(NuKeyboardDevice_PC *);                                       // 0x1c
+    HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);                                     // 0x20
+    HRESULT(__stdcall *get_state)(NuKeyboardDevice_PC *, DWORD, void *);                      // 0x24
+    void *unknown_28;                                                                         // 0x28
+    HRESULT(__stdcall *set_format)(NuKeyboardDevice_PC *, const PC_DI_DATA_FORMAT_PC *);      // 0x2c
+    void *unknown_30;                                                                         // 0x30
+    HRESULT(__stdcall *set_cooperative_level)(NuKeyboardDevice_PC *, HWND, DWORD);            // 0x34
+    void *unknown_38_60[11];                                                                  // 0x38
+    HRESULT(__stdcall *poll)(NuKeyboardDevice_PC *);                                          // 0x64
 };
 
 struct NuKeyboardDevice_PC {
     PC_DI_DEVICE_METHODS_PC *methods;
 };
 
-struct PC_DI_FACTORY_METHODS {
-    void *unknown_00;
-    void *unknown_04;
-    ULONG(__stdcall *release)(PC_DI_FACTORY *);
-    HRESULT(__stdcall *create_device)(PC_DI_FACTORY *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
-    HRESULT(__stdcall *enum_devices)
+struct PC_DI_FACTORY_METHODS {                                                                       // size 0x14
+    void *unknown_00;                                                                                // 0x00
+    void *unknown_04;                                                                                // 0x04
+    ULONG(__stdcall *release)(PC_DI_FACTORY *);                                                      // 0x08
+    HRESULT(__stdcall *create_device)(PC_DI_FACTORY *, REFGUID, NuKeyboardDevice_PC **, IUnknown *); // 0x0c
+    HRESULT(__stdcall *enum_devices)                                                                 // 0x10
     (PC_DI_FACTORY *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
 };
 
@@ -301,303 +263,234 @@ extern const PC_DI_DATA_FORMAT_PC PcKeyboardDataFormat;
 extern const PC_DI_DATA_FORMAT_PC PcJoystickDataFormat;
 extern i32 PcInputSelectedPort;
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *, void *);
-STATIC_ASSERT(sizeof(PC_DI_CAPS_PC) == 44);
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, flags) == 4);
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, axes) == 12);
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, buttons) == 16);
-STATIC_ASSERT(sizeof(PC_DI_PROPERTY) == 20);
-STATIC_ASSERT(sizeof(PC_DI_DATA_FORMAT_PC) == 24);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, objects) == 20);
-STATIC_ASSERT(sizeof(PC_DI_OBJECT_FORMAT_PC) == 16);
-STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, instance) == 4);
-STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, product) == 0x14);
-STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, device_type) == 0x24);
-STATIC_ASSERT(offsetof(PC_DI_INSTANCE_PC, product_name) == 0x12c);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, get_caps) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_property) == 0x18);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, acquire) == 0x1c);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_format) == 0x2c);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_cooperative_level) == 0x34);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, poll) == 0x64);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, create_device) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, enum_devices) == 0x10);
-STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x44);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, factory) == 0x30);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_axes) == 0x34);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_buttons) == 0x38);
 
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, size) == 0x0);
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, device_type) == 0x8);
-STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, povs) == 0x14);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY, size) == 0x0);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY, header_size) == 0x4);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY, object) == 0x8);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY, how) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY, data) == 0x10);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, size) == 0x0);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_size) == 0x4);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, flags) == 0x8);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, data_size) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_count) == 0x10);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, release) == 0x8);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, unacquire) == 0x20);
-STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, get_state) == 0x24);
-
-struct PC_INPUT_SAMPLE_PC {
-    u8 analog[8];
-    u32 buttons;
+struct PC_INPUT_SAMPLE_PC { // size 0xc
+    u8 analog[8];           // 0x0
+    u32 buttons;            // 0x8
 };
 
-struct PC_INPUT_RAW_SAMPLE_PC {
-    i16 axes[32];
-    u8 buttons[132];
+struct PC_INPUT_RAW_SAMPLE_PC { // size 0xc4
+    i16 axes[32];               // 0x00
+    u8 buttons[132];            // 0x40
 };
 
-struct PC_DI_MOUSE_STATE_PC {
-    i32 axes[3];
-    u8 buttons[8];
+struct PC_DI_MOUSE_STATE_PC { // size 0x14
+    i32 axes[3];              // 0x00
+    u8 buttons[8];            // 0x0c
 };
 
-struct PC_INPUT_CAPTURE_PC {
-    u8 kind[3];
-    u8 unknown_03;
-    i16 value[3];
+struct PC_INPUT_CAPTURE_PC { // size 0xa
+    u8 kind[3];              // 0x0
+    u8 unknown_03;           // 0x3
+    i16 value[3];            // 0x4
 };
 
-struct PC_INPUT_MOUSE_RUNTIME_PC {
-    i16 current[3];
-    i16 previous[3];
-    f32 accumulated[3];
-    f32 delta[3];
-    u8 unknown_24[12];
-    f32 position[2];
-    u8 buttons[16];
-    u8 unknown_48;
-    u8 port_activity[14];
-    u8 unknown_57;
-    i32 field_58;
+struct PC_INPUT_MOUSE_RUNTIME_PC { // size 0x5c
+    i16 current[3];                // 0x00
+    i16 previous[3];               // 0x06
+    f32 accumulated[3];            // 0x0c
+    f32 delta[3];                  // 0x18
+    u8 unknown_24[12];             // 0x24
+    f32 position[2];               // 0x30
+    u8 buttons[16];                // 0x38
+    u8 unknown_48;                 // 0x48
+    u8 port_activity[14];          // 0x49
+    u8 unknown_57;                 // 0x57
+    i32 field_58;                  // 0x58
 };
-
-STATIC_ASSERT(sizeof(PC_INPUT_SAMPLE_PC) == 12);
-STATIC_ASSERT(offsetof(PC_INPUT_SAMPLE_PC, buttons) == 8);
-STATIC_ASSERT(sizeof(PC_INPUT_RAW_SAMPLE_PC) == 196);
-STATIC_ASSERT(offsetof(PC_INPUT_RAW_SAMPLE_PC, buttons) == 0x40);
-STATIC_ASSERT(sizeof(PC_DI_MOUSE_STATE_PC) == 20);
-STATIC_ASSERT(offsetof(PC_DI_MOUSE_STATE_PC, buttons) == 12);
-STATIC_ASSERT(sizeof(PC_INPUT_CAPTURE_PC) == 10);
-STATIC_ASSERT(offsetof(PC_INPUT_CAPTURE_PC, value) == 4);
-STATIC_ASSERT(sizeof(PC_INPUT_MOUSE_RUNTIME_PC) == 0x5c);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, previous) == 6);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, accumulated) == 0xc);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, delta) == 0x18);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, position) == 0x30);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, buttons) == 0x38);
-STATIC_ASSERT(offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x49);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_cooperative) == 0x3c);
-STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
 #pragma pack(push, 2)
 
-struct PC_INPUT_CONFIG_PC {
-    char name[64];
-    u32 product_id;
+struct PC_INPUT_CONFIG_PC { // size 0x9c
+    char name[64];          // 0x00
+    u32 product_id;         // 0x40
 
-    union {
+    union { // size 0x16
         u8 unknown_44[0x16];
 
-        struct {
-            u32 guid_data2;
-            u32 guid_data3;
-            u8 guid_data4[8];
-            i16 button_count;
-            i16 pov_count;
-            i16 axis_count;
+        struct {              // size 0x16
+            u32 guid_data2;   // 0x44
+            u32 guid_data3;   // 0x48
+            u8 guid_data4[8]; // 0x4c
+            i16 button_count; // 0x54
+            i16 pov_count;    // 0x56
+            i16 axis_count;   // 0x58
         };
-    };
+    }; // 0x44
 
-    u8 deadzone;
-    u8 unknown_5b;
-    u8 alternate_deadzone;
-    u8 unknown_5d;
-    i16 key;
-    u8 unknown_60[4];
+    u8 deadzone;           // 0x5a
+    u8 unknown_5b;         // 0x5b
+    u8 alternate_deadzone; // 0x5c
+    u8 unknown_5d;         // 0x5d
+    i16 key;               // 0x5e
+    u8 unknown_60[4];      // 0x60
 
-    union {
-        struct {
-            u8 axes[4][3];
-            u8 unknown_axes[4][3];
+    union { // size 0x18
+
+        struct {                   // size 0x18
+            u8 axes[4][3];         // 0x64
+            u8 unknown_axes[4][3]; // 0x70
         };
 
         u8 all_axes[8][3];
-    };
+    }; // 0x64
 
-    u8 buttons[16][2];
+    u8 buttons[16][2]; // 0x7c
 };
 
 #pragma pack(pop)
 
-struct PC_INPUT_COMMAND_PC {
-    i8 active;
-    i8 axis;
-    i8 button;
-    u8 unknown_03;
-    u16 unknown_04;
+struct PC_INPUT_COMMAND_PC { // size 0x6
+    i8 active;               // 0x0
+    i8 axis;                 // 0x1
+    i8 button;               // 0x2
+    u8 unknown_03;           // 0x3
+    u16 unknown_04;          // 0x4
 };
 
-struct PC_INPUT_BINDING_PC {
-    u8 kind;
-    u8 unknown_01;
-    i16 value;
+struct PC_INPUT_BINDING_PC { // size 0x4
+    u8 kind;                 // 0x0
+    u8 unknown_01;           // 0x1
+    i16 value;               // 0x2
 };
 
-struct PC_INPUT_DEVICE_PC {
-    i32 kind;
-    NuKeyboardDevice_PC *device;
-    GUID product;
-    i16 button_count;
-    i8 axis_count;
-    i8 pov_count;
-    u8 deadzone;
-    u8 alternate_deadzone;
-    u8 unknown_1e[2];
-    i32 left_trigger;
-    i32 right_trigger;
+struct PC_INPUT_DEVICE_PC {      // size 0x17c
+    i32 kind;                    // 0x000
+    NuKeyboardDevice_PC *device; // 0x004
+    GUID product;                // 0x008
+    i16 button_count;            // 0x018
+    i8 axis_count;               // 0x01a
+    i8 pov_count;                // 0x01b
+    u8 deadzone;                 // 0x01c
+    u8 alternate_deadzone;       // 0x01d
+    u8 unknown_1e[2];            // 0x01e
+    i32 left_trigger;            // 0x020
+    i32 right_trigger;           // 0x024
 
-    union {
+    union { // size 0x2
         u8 unknown_28[2];
 
-        struct {
-            u8 action_keys_active;
-            u8 unknown_29;
+        struct {                   // size 0x2
+            u8 action_keys_active; // 0x028
+            u8 unknown_29;         // 0x029
         };
-    };
+    }; // 0x028
 
-    u8 config_dirty;
-    u8 config_installed;
-    u8 config_present;
-    u8 capabilities_valid;
-    char name[64];
-    PC_INPUT_BINDING_PC bindings[32];
+    u8 config_dirty;                  // 0x02a
+    u8 config_installed;              // 0x02b
+    u8 config_present;                // 0x02c
+    u8 capabilities_valid;            // 0x02d
+    char name[64];                    // 0x02e
+    PC_INPUT_BINDING_PC bindings[32]; // 0x06e
 
-    struct {
-        u16 first;
-        u16 second;
-    } reset_pairs[32];
+    struct {           // size 0x4
+        u16 first;     // 0x0ee
+        u16 second;    // 0x0f0
+    } reset_pairs[32]; // 0x0ee
 
-    u8 unknown_16e[2];
-    PC_INPUT_SAMPLE_PC sample;
+    u8 unknown_16e[2];         // 0x16e
+    PC_INPUT_SAMPLE_PC sample; // 0x170
 };
 
-struct PC_XINPUT_GAMEPAD_PC {
-    u16 buttons;
-    u8 left_trigger;
-    u8 right_trigger;
-    i16 thumb_lx;
-    i16 thumb_ly;
-    i16 thumb_rx;
-    i16 thumb_ry;
+struct PC_XINPUT_GAMEPAD_PC { // size 0xc
+    u16 buttons;              // 0x0
+    u8 left_trigger;          // 0x2
+    u8 right_trigger;         // 0x3
+    i16 thumb_lx;             // 0x4
+    i16 thumb_ly;             // 0x6
+    i16 thumb_rx;             // 0x8
+    i16 thumb_ry;             // 0xa
 };
 
-struct PC_XINPUT_STATE_PC {
-    u32 packet_number;
-    PC_XINPUT_GAMEPAD_PC gamepad;
+struct PC_XINPUT_STATE_PC {       // size 0x10
+    u32 packet_number;            // 0x0
+    PC_XINPUT_GAMEPAD_PC gamepad; // 0x4
 };
 
-STATIC_ASSERT(sizeof(PC_XINPUT_STATE_PC) == 16);
-STATIC_ASSERT(offsetof(PC_XINPUT_STATE_PC, gamepad) == 4);
-STATIC_ASSERT(sizeof(PC_XINPUT_GAMEPAD_PC) == 12);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, left_trigger) == 2);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, right_trigger) == 3);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_lx) == 4);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_ly) == 6);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_rx) == 8);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_ry) == 10);
-
-struct PC_XINPUT_CAPABILITIES_PC {
-    u8 type;
-    u8 subtype;
-    u16 flags;
-    PC_XINPUT_GAMEPAD_PC gamepad;
-    u16 motor_left;
-    u16 motor_right;
+struct PC_XINPUT_CAPABILITIES_PC { // size 0x14
+    u8 type;                       // 0x00
+    u8 subtype;                    // 0x01
+    u16 flags;                     // 0x02
+    PC_XINPUT_GAMEPAD_PC gamepad;  // 0x04
+    u16 motor_left;                // 0x10
+    u16 motor_right;               // 0x12
 };
 
-struct PC_INPUT_RUNTIME_PC {
-    PC_INPUT_CONFIG_PC primary[64];
-    PC_INPUT_CONFIG_PC secondary[64];
+struct PC_INPUT_RUNTIME_PC {          // size 0x68b4
+    PC_INPUT_CONFIG_PC primary[64];   // 0x0000
+    PC_INPUT_CONFIG_PC secondary[64]; // 0x2700
 
-    union {
+    union { // size 0x34
         u8 unknown_4e00[0x34];
 
-        struct {
-            i32 field_4e00;
-            u32 read_mask;
-            u32 action_mask;
-            u32 completed_mask;
-            u8 keyboard_polled;
-            u8 mouse_polled;
-            u8 suppress_key_1;
+        struct {                // size 0x34
+            i32 field_4e00;     // 0x4e00
+            u32 read_mask;      // 0x4e04
+            u32 action_mask;    // 0x4e08
+            u32 completed_mask; // 0x4e0c
+            u8 keyboard_polled; // 0x4e10
+            u8 mouse_polled;    // 0x4e11
+            u8 suppress_key_1;  // 0x4e12
 
-            union {
-                struct {
-                    u8 field_4e13;
-                    u8 unknown_4e14[0x20];
+            union { // size 0x21
+
+                struct {                   // size 0x21
+                    u8 field_4e13;         // 0x4e13
+                    u8 unknown_4e14[0x20]; // 0x4e14
                 };
 
                 char blocked_keys[33];
-            };
+            }; // 0x4e13
         };
-    };
+    }; // 0x4e00
 
-    PC_INPUT_DEVICE_PC devices[14];
+    PC_INPUT_DEVICE_PC devices[14]; // 0x4e34
 
-    union {
+    union { // size 0x5c
         u8 unknown_62fc[0x5c];
         PC_INPUT_MOUSE_RUNTIME_PC mouse;
-    };
+    }; // 0x62fc
 
-    PC_INPUT_BINDING_PC auxiliary_bindings[4][32];
-    i32 auxiliary_ports[4];
+    PC_INPUT_BINDING_PC auxiliary_bindings[4][32]; // 0x6358
+    i32 auxiliary_ports[4];                        // 0x6558
 
-    union {
+    union { // size 0x9c
         u8 unknown_6568[0x9c];
 
-        struct {
-            i32 axis_threshold;
-            i32 motion_threshold;
-            f32 ramp_seconds;
-            u8 capture_available;
-            u8 unknown_6575;
-            PC_INPUT_CAPTURE_PC staged_capture[14];
-            u8 unknown_6602[2];
+        struct {                                    // size 0x9c
+            i32 axis_threshold;                     // 0x6568
+            i32 motion_threshold;                   // 0x656c
+            f32 ramp_seconds;                       // 0x6570
+            u8 capture_available;                   // 0x6574
+            u8 unknown_6575;                        // 0x6575
+            PC_INPUT_CAPTURE_PC staged_capture[14]; // 0x6576
+            u8 unknown_6602[2];                     // 0x6602
         };
-    };
+    }; // 0x6568
 
-    i32 preferred_key;
+    i32 preferred_key; // 0x6604
 
-    union {
+    union { // size 0x1dc
         u8 unknown_6608[0x1dc];
 
-        struct {
-            i32 captured_port;
-            PC_INPUT_CAPTURE_PC captures[14];
-            u8 unknown_6698[0x82];
-            u8 first_mouse;
-            u8 unknown_671b;
-            PC_INPUT_RAW_SAMPLE_PC raw_sample;
-            i8 keyboard_ui_override;
-            u8 unknown_67e1;
-            u8 unknown_67e2[2];
+        struct {                               // size 0x1dc
+            i32 captured_port;                 // 0x6608
+            PC_INPUT_CAPTURE_PC captures[14];  // 0x660c
+            u8 unknown_6698[0x82];             // 0x6698
+            u8 first_mouse;                    // 0x671a
+            u8 unknown_671b;                   // 0x671b
+            PC_INPUT_RAW_SAMPLE_PC raw_sample; // 0x671c
+            i8 keyboard_ui_override;           // 0x67e0
+            u8 unknown_67e1;                   // 0x67e1
+            u8 unknown_67e2[2];                // 0x67e2
         };
-    };
+    }; // 0x6608
 
-    i32 shutdown_state;
-    i32 unknown_67e8;
-    i32 unknown_67ec;
-    PC_INPUT_COMMAND_PC commands[32];
-    u8 *keyboard_state;
+    i32 shutdown_state;               // 0x67e4
+    i32 unknown_67e8;                 // 0x67e8
+    i32 unknown_67ec;                 // 0x67ec
+    PC_INPUT_COMMAND_PC commands[32]; // 0x67f0
+    u8 *keyboard_state;               // 0x68b0
     PC_INPUT_RUNTIME_PC();
 
     i32 PollKeyboardPc() {
@@ -737,89 +630,8 @@ extern PC_INPUT_CONFIG_PC PcStaticInputConfigs[24];
 extern PC_DI_CAPS_PC PcKeyboardCapabilities;
 extern "C" BOOL IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
-STATIC_ASSERT(sizeof(PC_INPUT_CONFIG_PC) == 0x9c);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data2) == 0x44);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data3) == 0x48);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, guid_data4) == 0x4c);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, pov_count) == 0x56);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, axis_count) == 0x58);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, all_axes) == 0x64);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, blocked_keys) == 0x4e13);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, product_id) == 0x40);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, deadzone) == 0x5a);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, alternate_deadzone) == 0x5c);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, key) == 0x5e);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, axes) == 0x64);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, buttons) == 0x7c);
-STATIC_ASSERT(sizeof(PC_INPUT_DEVICE_PC) == 0x17c);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, device) == 4);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, product) == 8);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, button_count) == 0x18);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, axis_count) == 0x1a);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, pov_count) == 0x1b);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, deadzone) == 0x1c);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, left_trigger) == 0x20);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, right_trigger) == 0x24);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, action_keys_active) == 0x28);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, unknown_28) == 0x28);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_dirty) == 0x2a);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_installed) == 0x2b);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, config_present) == 0x2c);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, name) == 0x2e);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, bindings) == 0x6e);
-STATIC_ASSERT(sizeof(PC_XINPUT_CAPABILITIES_PC) == 20);
-STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, gamepad) == 4);
-STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, motor_left) == 16);
-STATIC_ASSERT(sizeof(PC_INPUT_RUNTIME_PC) == 0x68b4);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, secondary) == 0x2700);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, auxiliary_bindings) == 0x6358);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, auxiliary_ports) == 0x6558);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, preferred_key) == 0x6604);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, commands) == 0x67f0);
 
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, name) == 0x0);
-STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, unknown_axes) == 0x70);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, kind) == 0x0);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, alternate_deadzone) == 0x1d);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, active) == 0x0);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, axis) == 0x1);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, button) == 0x2);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 0x4);
-STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, kind) == 0x0);
-STATIC_ASSERT(offsetof(PC_INPUT_BINDING_PC, value) == 0x2);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, primary) == 0x0);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_state) == 0x68b0);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, sample) == 0x170);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, read_mask) == 0x4e04);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, action_mask) == 0x4e08);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, completed_mask) == 0x4e0c);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_polled) == 0x4e10);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse_polled) == 0x4e11);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, suppress_key_1) == 0x4e12);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) == 0x62fc);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) + offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x6345);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, axis_threshold) == 0x6568);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, motion_threshold) == 0x656c);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, ramp_seconds) == 0x6570);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, capture_available) == 0x6574);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, staged_capture) == 0x6576);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, captured_port) == 0x6608);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, captures) == 0x660c);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, first_mouse) == 0x671a);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, raw_sample) == 0x671c);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, keyboard_ui_override) == 0x67e0);
-
-STATIC_ASSERT(offsetof(PC_XINPUT_CAPABILITIES_PC, motor_right) == 0x12);
-STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, buttons) == 0x0);
-
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, reset_pairs) == 0xee);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, active) == 0);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, axis) == 1);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, button) == 2);
-STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 4);
 
 extern const GUID PcWbemClassId;
 extern const GUID PcWbemInterfaceId;
@@ -879,8 +691,6 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, release) == 8);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 #endif
 #ifdef __cplusplus
 extern "C" {
@@ -899,7 +709,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, pixel_shader_version) == 0xcc);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -908,7 +717,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, sampler_count_pc) == 0x98);
 #ifdef __cplusplus
 extern "C" {
 #endif

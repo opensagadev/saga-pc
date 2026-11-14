@@ -26,31 +26,22 @@
 struct NUGSCN_s;
 struct NUPORTAL_FRUSTUM_PC;
 
-typedef struct NUPORTAL {
-    NUPLANE plane;
-    NUVEC *vertices;
-    i16 vertex_count;
-    u16 front_room;
-    u16 back_room;
-    i8 id;
-    u8 unknown_1b[0x1];
-    u32 flags;
+typedef struct NUPORTAL { // size 0x20
+    NUPLANE plane;        // 0x00
+    NUVEC *vertices;      // 0x10
+    i16 vertex_count;     // 0x14
+    u16 front_room;       // 0x16
+    u16 back_room;        // 0x18
+    i8 id;                // 0x1a
+    u8 unknown_1b[0x1];   // 0x1b
+    u32 flags;            // 0x1c
 } NUPORTAL;
 
-STATIC_ASSERT(offsetof(NUPORTAL, flags) == 0x1c);
-STATIC_ASSERT(offsetof(NUPORTAL, vertex_count) == 0x14);
-STATIC_ASSERT(sizeof(NUPORTAL) == 0x20);
-STATIC_ASSERT(offsetof(NUPORTAL, vertices) == 0x10);
-STATIC_ASSERT(offsetof(NUPORTAL, front_room) == 0x16);
-STATIC_ASSERT(offsetof(NUPORTAL, back_room) == 0x18);
-
-typedef struct NUPORTALSPHERE_PC {
-    NUVEC center;
-    f32 radius;
+typedef struct NUPORTALSPHERE_PC { // size 0x10
+    NUVEC center;                  // 0x0
+    f32 radius;                    // 0xc
 } NUPORTALSPHERE_PC;
 
-STATIC_ASSERT(sizeof(NUPORTALSPHERE_PC) == 0x10);
-STATIC_ASSERT(offsetof(NUPORTALSPHERE_PC, radius) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -5,10 +5,6 @@
 void CutScene_PostUpdateFn_LSW(void) {
 }
 
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, position) == 0x30);
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
-STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
-
 #define CUT_HAND_FLIP(m)                                                                                               \
     do {                                                                                                               \
         (m)->m02 = -(m)->m02;                                                                                          \

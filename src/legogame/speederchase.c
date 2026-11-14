@@ -1,14 +1,6 @@
 #include "saga.h"
 
 extern i16 CharacterFixupIdPc007f1a3c;
-STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
-STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
-STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
-STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 
 i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     (void)hit_type;

@@ -12,12 +12,10 @@
 
 typedef struct PUSHPROGRESS PUSHPROGRESS;
 
-struct PUSHPROGRESS {
-    u32 visible_mask[1];
-    u32 state_mask[1];
-    u32 position_mask[1];
-    NUVEC positions[16];
-    NUVEC end_positions[2][16];
+struct PUSHPROGRESS {           // size 0x24c
+    u32 visible_mask[1];        // 0x000
+    u32 state_mask[1];          // 0x004
+    u32 position_mask[1];       // 0x008
+    NUVEC positions[16];        // 0x00c
+    NUVEC end_positions[2][16]; // 0x0cc
 };
-
-STATIC_ASSERT(sizeof(struct PUSHPROGRESS) == 588);

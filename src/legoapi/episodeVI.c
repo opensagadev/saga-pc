@@ -25,12 +25,6 @@ typedef struct SARLACC_DISCO_PC {   // size 0x400
     NUVEC *last_selected_position;  // 0x3fc
 } SARLACC_DISCO_PC;
 
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, off_mask) == 4);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, flash_mask) == 6);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, select_mask) == 8);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, on_mask) == 0xa);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, finish_mask) == 0xc);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET, sound_mask) == 0xe);
 f32 SarlaccDiscoBaseOffsetPc = -0.12f;
 
 static SARLACC_DISCO_PC sarlaccdisco = {0};
@@ -87,8 +81,6 @@ typedef struct emperor_update_packet_s { // size 0x8
 } EMPEROR_UPDATE_PACKET_PC;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
-STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
 #define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
     (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
@@ -106,13 +98,6 @@ STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE_PC, typ
 extern i16 CharacterFixupIdPc007f1a7c;
 extern i16 CharacterFixupIdPc007f1a88;
 #pragma section(".sarlrw", read, write)
-STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
-STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, movement_look_target) == 0x4ac);
 extern i32 EmperorFloorRouteOnPc;
 extern f32 EmperorFloorRadiusPc;

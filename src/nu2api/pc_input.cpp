@@ -542,13 +542,6 @@ void NuKeyboardOwner_PC::Shutdown() {
     }
 }
 
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, kind) == 0);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, device) == 4);
-STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, release) == 8);
-
 extern "C" void PcInput_DisableAllKeyboards(void) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     for (i32 device = 10; device < 14; ++device) {
@@ -870,9 +863,6 @@ i32 NuKeyboardOwner_PC::fun_006d5720(i32 *axes, i32 *buttons) {
 void NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
     mouse_enabled = enabled;
 }
-
-STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_delta) == 0x6314);
-STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_smoothed) == 0x6320);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 PCInputFabs(f32 f) {

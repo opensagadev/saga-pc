@@ -5,16 +5,13 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct CHARACTER_CONTEXT_INFO_PC_s {
-    const char *name;
-    i32 action;
-    u32 flags;
-    i32 parameter;
+typedef struct CHARACTER_CONTEXT_INFO_PC_s { // size 0x10
+    const char *name;                        // 0x0
+    i32 action;                              // 0x4
+    u32 flags;                               // 0x8
+    i32 parameter;                           // 0xc
 } CHARACTER_CONTEXT_INFO_PC;
 
-STATIC_ASSERT(sizeof(CHARACTER_CONTEXT_INFO_PC) == 0x10);
-STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, flags) == 8);
-STATIC_ASSERT(offsetof(CHARACTER_CONTEXT_INFO_PC, parameter) == 0xc);
 #ifdef __cplusplus
 extern "C" {
 #endif
