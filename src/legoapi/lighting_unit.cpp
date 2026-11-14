@@ -10,12 +10,6 @@ typedef struct startup_object_light_s {
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT;
 
-typedef struct OBJECT_LIGHT_STATE_GAME {
-    NUVEC ambient;
-    NUVEC intensity[3];
-    NUVEC direction[3];
-} OBJECT_LIGHT_STATE_GAME;
-
 typedef struct GAME_LIGHT_VIEW {
     u8 unknown000[0x285];
     i8 floor_surface;

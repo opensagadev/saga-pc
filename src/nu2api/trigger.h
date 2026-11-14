@@ -28,3 +28,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct cut_load_locator_instance_system_s {
+    CUT_LOAD_LOCATOR_INSTANCE *locators;
+} CUT_LOAD_LOCATOR_INSTANCE_SYSTEM;

@@ -12,12 +12,6 @@ typedef struct startup_object_light_s { // size 0x10d8
 
 STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
 
-typedef struct OBJECT_LIGHT_STATE_GAME { // size 0x54
-    NUVEC ambient;                       // 0x00
-    NUVEC intensity[3];                  // 0x0c
-    NUVEC direction[3];                  // 0x30
-} OBJECT_LIGHT_STATE_GAME;
-
 typedef struct GAME_LIGHT_VIEW {            // size 0x670
     u8 unknown000[0x285];                   // 0x000
     i8 floor_surface;                       // 0x285

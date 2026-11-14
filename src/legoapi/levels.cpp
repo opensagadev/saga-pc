@@ -8,11 +8,6 @@ extern "C" {
     void LevelsConfigDiagnostic(char *message);
 }
 
-typedef struct level_script_progress_s { // size 0x20
-    char name[16];                       // 0x00
-    f32 params[4];                       // 0x10
-} LEVEL_SCRIPT_PROGRESS;
-
 typedef struct ai_script_progress_view_s { // size 0x2c24
     u8 unknown_0000[0x2824];               // 0x0000
     LEVEL_SCRIPT_PROGRESS scripts[32];     // 0x2824

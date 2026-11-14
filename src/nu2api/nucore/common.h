@@ -72,3 +72,8 @@ typedef union variptr_u { // size 0x4
     char *char_ptr;
     u32 addr;
 } VARIPTR;
+
+typedef struct level_script_progress_s { // size 0x20
+    char name[16];                       // 0x00
+    f32 params[4];                       // 0x10
+} LEVEL_SCRIPT_PROGRESS;

@@ -320,11 +320,6 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-typedef struct level_script_progress_s {
-    char name[16];
-    f32 params[4];
-} LEVEL_SCRIPT_PROGRESS;
-
 typedef struct ai_script_progress_view_s {
     u8 unknown_0000[0x2824];
     LEVEL_SCRIPT_PROGRESS scripts[32];

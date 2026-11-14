@@ -87,3 +87,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct OBJECT_LIGHT_STATE_GAME {
+    NUVEC ambient;
+    NUVEC intensity[3];
+    NUVEC direction[3];
+} OBJECT_LIGHT_STATE_GAME;
+
+typedef struct cut_load_bounds_s { // size 0x18
+    NUVEC min;                     // 0x00
+    NUVEC max;                     // 0x0c
+} CUT_LOAD_BOUNDS;

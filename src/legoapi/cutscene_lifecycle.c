@@ -510,11 +510,6 @@ typedef struct cut_load_trigger_system_s {
     CUT_LOAD_TRIGGER_EVENT *events;
 } CUT_LOAD_TRIGGER_SYSTEM;
 
-typedef struct cut_load_bounds_s { // size 0x18
-    NUVEC min;                     // 0x00
-    NUVEC max;                     // 0x0c
-} CUT_LOAD_BOUNDS;
-
 struct cut_scene_load_s {                               // size 0x5c
     i32 version;                                        // 0x00
     i32 string_delta;                                   // 0x04
@@ -609,10 +604,6 @@ typedef struct cut_load_locator_instance_s { // size 0x8
         CUT_LOAD_SOUND_STATE *sound;
     } effect; // 0x4
 } CUT_LOAD_LOCATOR_INSTANCE;
-
-typedef struct cut_load_locator_instance_system_s {
-    CUT_LOAD_LOCATOR_INSTANCE *locators;
-} CUT_LOAD_LOCATOR_INSTANCE_SYSTEM;
 
 typedef struct cut_load_trigger_entry_s { // size 0x34
     char *name;                           // 0x00
