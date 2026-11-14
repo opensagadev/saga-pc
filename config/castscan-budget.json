@@ -1,6 +1,7 @@
 {
-  "redundant-identity": 807,
-  "redundant-implicit": 1587,
+  "redundant-identity": 27,
+  "redundant-implicit": 36,
+  "codegen-steering": 57,
   "discard": 1284,
   "null-pointer": 142,
   "address-constant": 52,
@@ -26,7 +27,7 @@
   "float-width": 3980,
   "truncation": 2088,
   "signedness": 1951,
-  "widening": 179,
+  "widening": 178,
   "class-hierarchy": 17,
   "other": 4
 }
